@@ -8,3 +8,6 @@ TriggerServerEvent("hsn-inventory:server:openStash", {name = 'Motel',slots = 15,
 Showcase --> https://streamable.com/kpvdj3
 
 Setup -- > https://streamable.com/esytcq
+
+You can contact with me for inventory bugs or dupes...
+https://discord.gg/6FQhKDXBJ6
