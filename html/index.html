@@ -1,0 +1,42 @@
+<html>
+	<head>
+		<link rel="stylesheet" href="reset.css" type="text/css">
+        <link rel="stylesheet" href="style.css" type="text/css">
+        <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js"></script>
+        <link href='https://fonts.googleapis.com/css?family=Basic' rel='stylesheet'>
+	</head>
+	<body>
+        <div class="inventory-main">
+            <div class= "inventory-main-leftside">
+
+            </div>
+            <div class="inventory-main-rightside">
+
+            </div>
+            <div class="playername">Hasan.</div>
+            <div class="rightside-name">Hasan.</div>
+            <div class="leftside-weight">0</div>
+            <div class="rightside-weight">0</div>
+            <input type="number" id="item-count" class="inv-option-item" min=0 value="0" oninput="validity.valid||(value='');"></input>
+            <div class="use">Use</div>
+            <button class="close">Close</button>
+            <div class="iteminfo">
+                <div class="iteminfo-label"></div>
+                <div class="iteminfo-description"></div>
+            </div>
+        </div>
+        <div class="hsn-hotbar">
+            <!-- auto generated -->
+        </div>
+        <div class="itemboxes-container">
+            <!-- <div class="itembox-container"> -->
+                <!-- <div id="itembox-action"></div>
+                <div id="itembox-label"><p>Joint</p></div>
+                <div id="itembox-image"></div> -->
+            <!-- </div> -->
+        </div>
+        <div class="itembox-container template"></div>
+        <script src="./script.js" type="text/javascript"></script>
+	</body>
+</html>
