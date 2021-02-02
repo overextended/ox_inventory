@@ -327,7 +327,7 @@ end)
 
 RegisterNetEvent("hsn-inventory:client:esxUseItem")
 AddEventHandler("hsn-inventory:client:esxUseItem",function(item)
-    TriggerServerEvent("esx:useItem",item)
+    TriggerServerEvent("esx:useItem",item.name)
 end)
 
 RegisterCommand("robplayer",function()
