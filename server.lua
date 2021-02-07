@@ -602,6 +602,14 @@ RegisterCommand("addItem",function(source,args)
 end)
 
 
+RegisterServerEvent("hsn-inventory:server:clearAllItems")
+AddEventHandler("hsn-inventory:server:clearAllItems",function(identifier)
+	if playerInventory[identifier] == nil then
+		playerInventory[identifier] = {}
+	end
+	playerInventory[identifier] = {}
+end)
+
 RegisterServerEvent("hsn-inventory:server:openInventory")
 AddEventHandler("hsn-inventory:server:openInventory",function(data)
     local src = source
