@@ -241,7 +241,7 @@ AddEventHandler("hsn-inventory:server:saveInventoryData",function(data)
                 end
             end
         elseif data.frominv ~= data.toinv and (data.toinv == 'Playerinv' and data.frominv == 'TargetPlayer') then
-            local playerId = string.sub(data.invid,13)
+            local playerId = string.sub(data.invid2,13) -- changed data.invid to data.invid2 thanks  Minato#4510
             local targetplayer = ESX.GetPlayerFromId(playerId)
             if playerInventory[targetplayer.identifier] ~= nil then
                 if data.type == 'swap' then
