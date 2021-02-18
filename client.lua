@@ -259,14 +259,34 @@ RegisterNUICallback("notification", function(data)
     TriggerEvent('notification',data.message,data.type)
 end)
 
+RegisterNetEvent('hsn-inventory:weapondraw')
+AddEventHandler('hsn-inventory:weapondraw', function()
+    local playerPed = PlayerPedId()
+    loadAnimDict('reaction@intimidation@1h')
+    TaskPlayAnimAdvanced(playerPed, "reaction@intimidation@1h", "intro", GetEntityCoords(playerPed, true), 0, 0, GetEntityHeading(playerPed), 8.0, 3.0, -1, 50, 0, 0, 0)
+    Citizen.Wait(1600)
+    ClearPedSecondaryTask(PlayerPedId())
+end)
+
+RegisterNetEvent('hsn-inventory:weaponaway')
+AddEventHandler('hsn-inventory:weaponaway', function()
+    local playerPed = PlayerPedId()
+    loadAnimDict('reaction@intimidation@1h')
+    TaskPlayAnimAdvanced(playerPed, "reaction@intimidation@1h", "outro", GetEntityCoords(playerPed, true), 0, 0, GetEntityHeading(playerPed), 8.0, 3.0, -1, 50, 0, 0, 0)
+    Citizen.Wait(1600)
+    ClearPedSecondaryTask(PlayerPedId())
+end)
+
 RegisterNetEvent("hsn-inventory:client:weapon")
 AddEventHandler("hsn-inventory:client:weapon",function(item)
     local curweapon = GetSelectedPedWeapon(PlayerPedId())
     if curweapon ==  GetHashKey(item.name) then
+	TriggerEvent("hsn-inventory:weaponaway")
         RemoveWeaponFromPed(PlayerPedId(), GetHashKey(item.name))
         SetCurrentPedWeapon(PlayerPedId(), "WEAPON_UNARMED", true)
         curweaponSlot = nil
     elseif curweapon ~= GetHashKey(item.name) then
+	TriggerEvent("hsn-inventory:weapondraw")
         curweaponSlot = item.slot
         GiveWeaponToPed(PlayerPedId(), GetHashKey(item.name), item.metadata.ammo, false, false)
         SetCurrentPedWeapon(PlayerPedId(), GetHashKey(item.name), true)
