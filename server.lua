@@ -190,8 +190,7 @@ AddEventHandler("hsn-inventory:server:saveInventoryData",function(data)
                 Drops[dropid].inventory[data.toSlot] = {name = data.newslotItem.name ,label = data.newslotItem.label, weight = data.newslotItem.weight, slot = data.toSlot, count = data.newslotItem.count, description = data.newslotItem.description, metadata = data.newslotItem.metadata, stackable = data.newslotItem.stackable, closeonuse = ESXItems[data.newslotItem.name].closeonuse}
             end
         elseif data.frominv == data.toinv and (data.frominv == "TargetPlayer") then
-               local playerId = string.sub(data.invid,13)
-               local targetplayer = ESX.GetPlayerFromId(playerId)
+               local targetplayer = tPlayer
                 if playerInventory[targetplayer.identifier] ~= nil then
                     if data.type == 'swap' then
                         playerInventory[targetplayer.identifier][data.toslot] = {name = data.toItem.name ,label = data.toItem.label, weight = data.toItem.weight, slot = data.toslot, count = data.toItem.count, description = data.toItem.description, metadata = data.toItem.metadata, stackable = data.toItem.stackable, closeonuse = ESXItems[data.toItem.name].closeonuse}
@@ -205,8 +204,7 @@ AddEventHandler("hsn-inventory:server:saveInventoryData",function(data)
                     end
                 end
         elseif data.frominv ~= data.toinv and (data.toinv == "TargetPlayer" and data.frominv == 'Playerinv') then
-            local playerId = string.sub(data.invid,13)
-            local targetplayer = ESX.GetPlayerFromId(playerId)
+            local targetplayer = tPlayer
             if playerInventory[targetplayer.identifier] ~= nil then
                 if data.type == 'swap' then
                     if IfInventoryCanCarry(playerInventory[targetplayer.identifier],ESX.GetConfig().MaxWeight, (data.toItem.weight * data.toItem.count)) then
@@ -241,8 +239,7 @@ AddEventHandler("hsn-inventory:server:saveInventoryData",function(data)
                 end
             end
         elseif data.frominv ~= data.toinv and (data.toinv == 'Playerinv' and data.frominv == 'TargetPlayer') then
-            local playerId = string.sub(data.invid2,13) -- changed data.invid to data.invid2 thanks  Minato#4510
-            local targetplayer = ESX.GetPlayerFromId(playerId)
+            local targetplayer = tPlayer
             if playerInventory[targetplayer.identifier] ~= nil then
                 if data.type == 'swap' then
                     if IfInventoryCanCarry(playerInventory[Player.identifier],ESX.GetConfig().MaxWeight, (data.toItem.weight * data.toItem.count)) then
@@ -675,7 +672,7 @@ end)
 RegisterServerEvent("hsn-inventory:server:robPlayer")
 AddEventHandler("hsn-inventory:server:robPlayer",function(TargetId)
     local Player = ESX.GetPlayerFromId(source)
-    local tPlayer = ESX.GetPlayerFromId(TargetId)
+    tPlayer = ESX.GetPlayerFromId(TargetId)
     if playerInventory[tPlayer.identifier] == nil then
         playerInventory[tPlayer.identifier] = {}
     end
