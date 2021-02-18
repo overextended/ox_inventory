@@ -244,11 +244,24 @@ AddEventHandler("hsn-inventory:client:removeDrop",function(dropid)
     currentDrop = nil
 end)
 
+function shouldCloseInventory(itemName)
+	for index, value in ipairs(Config.CloseUiItems) do
+		if value == itemName then
+			return true
+		end
+	end
+	return false
+end
+
 RegisterNUICallback("UseItem", function(data, cb)
     if data.inv ~= "Playerinv" then
         return
     end
     TriggerServerEvent("hsn-inventory:server:useItem",data.item)
+		
+    if shouldCloseInventory(data.item.name) then
+        TriggerEvent("hsn-inventory:client:closeInventory")
+    end
 end)
 
 RegisterNUICallback("saveinventorydata",function(data)
