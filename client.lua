@@ -300,6 +300,7 @@ AddEventHandler("hsn-inventory:client:weapon",function(item)
         curweaponSlot = nil
     elseif curweapon ~= GetHashKey(item.name) then
 	TriggerEvent("hsn-inventory:weapondraw")
+	Citizen.Wait(1600)
         curweaponSlot = item.slot
         GiveWeaponToPed(PlayerPedId(), GetHashKey(item.name), item.metadata.ammo, false, false)
         SetCurrentPedWeapon(PlayerPedId(), GetHashKey(item.name), true)
