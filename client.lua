@@ -365,15 +365,26 @@ AddEventHandler("hsn-inventory:client:esxUseItem",function(item)
 end)
 
 RegisterCommand("robplayer",function()
+    local ped = PlayerPedId()
+	if not IsPedInAnyVehicle(ped, true) then	 
+		rob()
+	end
+end)
+
+function rob()
     local closestPlayer, closestDistance = ESX.Game.GetClosestPlayer()
-    if closestPlayer ~= -1 and closestDistance <= 3.0 then
-        TriggerServerEvent("hsn-inventory:server:robPlayer",GetPlayerServerId(GetClosestPlayer))
+    if closestPlayer ~= -1 and closestDistance <= 2.0 then
+        local target, distance = ESX.Game.GetClosestPlayer()
+        local searchPlayerPed = GetPlayerPed(target)
+
+        if IsEntityPlayingAnim(searchPlayerPed, 'random@mugging3', 'handsup_standing_base', 3) or IsEntityPlayingAnim(searchPlayerPed, 'missminuteman_1ig_2', 'handsup_base', 3) then
+            TriggerServerEvent("hsn-inventory:server:robPlayer",GetPlayerServerId(closestPlayer))
+        else
+        end
     else
         TriggerEvent("notification",'No one is nearby')
     end
-end)
-
-
+end
 
 Citizen.CreateThread(function()
     while true do
