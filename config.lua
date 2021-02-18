@@ -1,7 +1,61 @@
 Config = Config or {}
 Config.PlayerSlot = 51
 Config.DurabilityDecraseAmount = {
-    ['WEAPON_PISTOL'] = 0.3,
+        ['WEAPON_PISTOL'] = 0.6,
+    ['WEAPON_ADVANCEDRIFLE'] = 0.6,
+    ['WEAPON_APPISTOL'] = 0.4,
+    ['WEAPON_ASSAULTRIFLE'] = 0.8,
+    ['WEAPON_ASSAULTRIFLE_MK2'] = 0.6,
+    ['WEAPON_ASSAULTSMG'] = 0.6,
+    ['WEAPON_BALL'] = 1.0,
+    ['WEAPON_BAT'] = 1.0,
+    ['WEAPON_BATTLEAXE'] = 5.0,
+    ['WEAPON_BOTTLE'] = 5.0,
+    ['WEAPON_BULLPUPRIFLE'] = 0.9,
+    ['WEAPON_BULLPUPRIFLE_MK2'] = 0.7,
+    ['WEAPON_CARBINERIFLE'] = 0.8,
+    ['WEAPON_CARBINERIFLE_MK2'] = 0.7,
+    ['WEAPON_COMBATPDW'] = 3.0,
+    ['WEAPON_COMBATPISTOL'] = 0.5,
+    ['WEAPON_COMPACTRIFLE'] = 0.7,
+    ['WEAPON_CROWBAR'] = 1.0,
+    ['WEAPON_DAGGER'] = 1.0,
+    ['WEAPON_DOUBLEACTION'] = 0.8,
+    ['WEAPON_FLAREGUN'] = 1.0,
+    ['WEAPON_FLASHLIGHT'] = 1.0,
+    ['WEAPON_GOLFCLUB'] = 1.0,
+    ['WEAPON_GUSENBERG'] = 0.8,
+    ['WEAPON_HAMMER'] = 1.0,
+    ['WEAPON_HATCHET'] = 1.0,
+    ['WEAPON_HEAVYPISTOL'] = 0.6,
+    ['WEAPON_KNIFE'] = 1.0,
+    ['WEAPON_KNUCKLE'] = 1.0,
+    ['WEAPON_MACHETE'] = 1.0,
+    ['WEAPON_MACHINEPISTOL'] = 0.7,
+    ['WEAPON_MARKSMANPISTOL'] = 4.0,
+    ['WEAPON_MICROSMG'] = 0.6,
+    ['WEAPON_MINISMG'] = 0.6,
+    ['WEAPON_MOLOTOV'] = 5.0,
+    ['WEAPON_MUSKET'] = 1.0,
+    ['WEAPON_NIGHTSTICK'] = 1.0,
+    ['WEAPON_PISTOL50'] = 0.8,
+    ['WEAPON_PISTOL_MK2'] = 0.5,
+    ['WEAPON_PUMPSHOTGUN'] = 0.8,
+    ['WEAPON_PUMPSHOTGUN_MK2'] = 0.7,
+    ['WEAPON_REVOLVER'] = 0.8,
+    ['WEAPON_REVOLVER_MK2'] = 0.7,
+    ['WEAPON_SAWNOFFSHOTGUN'] = 0.9,
+    ['WEAPON_SMG'] = 0.8,
+    ['WEAPON_SMK_MK2'] = 0.7,
+    ['WEAPON_SNSPISTOL'] = 0.7,
+    ['WEAPON_SNSPISTOL_MK2'] = 0.6,
+    ['WEAPON_SPECIALCARBINE'] = 0.8,
+    ['WEAPON_SPECIALCARBINE_MK2'] = 0.7,
+    ['WEAPON_STONE_HATCHET'] = 1.0,
+    ['WEAPON_STUNGUN'] = 0.6,
+    ['WEAPON_SWITCHBLADE'] = 1.0,
+    ['WEAPON_VINTAGEPISTOL'] = 0.7,
+    ['WEAPON_WRENCH'] = 1.0,
 }
 
 Config.CloseUiItems = {
@@ -2182,16 +2236,23 @@ Config.Shops = {
 }
 
 
-
 Config.Ammos = {
     ['hsn_pistol_ammo'] = {
         count = 40,
         weapons = {
             `WEAPON_PISTOL`,
+			`WEAPON_PISTOL_MK2`,
             `WEAPON_APPISTOL`,
             `WEAPON_HEAVYPISTOL`,
             `WEAPON_COMBATPISTOL`,
             `WEAPON_SNSPISTOL`,
+            `WEAPON_SNSPISTOL_MK2`,
+            `WEAPON_PISTOL50`,
+            `WEAPON_REVOLVER`,
+            `WEAPON_REVOLVER_MK2`,
+            `WEAPON_DOUBLEACTION`,
+            `WEAPON_MARKSMANPISTOL`,
+            `WEAPON_MACHINEPISTOL`,
             `WEAPON_VINTAGEPISTOL`,
         },
 
@@ -2200,11 +2261,95 @@ Config.Ammos = {
         count = 30,
         weapons = {
             `WEAPON_PISTOL`,
+			`WEAPON_PISTOL_MK2`,
             `WEAPON_APPISTOL`,
             `WEAPON_HEAVYPISTOL`,
             `WEAPON_COMBATPISTOL`,
             `WEAPON_SNSPISTOL`,
+            `WEAPON_SNSPISTOL_MK2`,
+            `WEAPON_PISTOL50`,
+            `WEAPON_REVOLVER`,
+            `WEAPON_REVOLVER_MK2`,
+            `WEAPON_DOUBLEACTION`,
+            `WEAPON_MARKSMANPISTOL`,
+            `WEAPON_MACHINEPISTOL`,
             `WEAPON_VINTAGEPISTOL`,
+        },
+		
+    },
+    ['hsn_rifle_ammo'] = {
+        count = 40,
+        weapons = {
+            `WEAPON_ADVANCEDRIFLE`,
+            `WEAPON_ASSAULTRIFLE`,
+            `WEAPON_ASSAULTRIFLE_MK2`,
+            `WEAPON_BULLPUPRIFLE`,
+            `WEAPON_BULLPUPRIFLE_MK2`,
+            `WEAPON_CARBINERIFLE`,
+            `WEAPON_CARBINERIFLE_MK2`,
+            `WEAPON_COMPACTRIFLE`,
+            `WEAPON_SPECIALCARBINE`,
+            `WEAPON_SPECIALCARBINE_MK2`,
+        },
+		
+    },
+    ['hsn_rpg_ammo'] = {
+        count = 40,
+        weapons = {
+            `WEAPON_GRENADELAUNCHER`,
+            `WEAPON_HOMINGLAUNCHER`,
+            `WEAPON_RPG`,
+            `WEAPON_COMPACTLAUNCHER`,
+            `WEAPON_FIREWORK`,
+        },
+		
+    },
+    ['hsn_shotgun_ammo'] = {
+        count = 40,
+        weapons = {
+            `WEAPON_ASSAULTSHOTGUN`,
+            `WEAPON_AUTOSHOTGUN`,
+            `WEAPON_BULLPUPSHOTGUN`,
+            `WEAPON_DBSHOTGUN`,
+            `WEAPON_SAWNOFFSHOTGUN`,
+            `WEAPON_PUMPSHOTGUN`,
+            `WEAPON_PUMPSHOTGUN_MK2`,
+            `WEAPON_HEAVYSHOTGUN`,
+        },
+		
+    },
+    ['hsn_lmg_ammo'] = {
+        count = 40,
+        weapons = {
+            `WEAPON_MG`,
+            `WEAPON_MINIGUN`,
+            `WEAPON_COMBATMG_MK2`,
+            `WEAPON_COMBATMG`,
+        },
+		
+    },
+    ['hsn_snipe_ammo'] = {
+        count = 40,
+        weapons = {
+            `WEAPON_SNIPERRIFLE`,
+            `WEAPON_MUSKET`,
+            `WEAPON_MARKSMANRIFLE_MK2`,
+            `WEAPON_MARKSMANRIFLE`,
+            `WEAPON_HEAVYSNIPER_MK2`,
+            `WEAPON_HEAVYSNIPER`,
+        },
+		
+    },
+    ['hsn_smg_ammo'] = {
+        count = 40,
+        weapons = {
+            `WEAPON_ASSAULTSMG`,
+            `WEAPON_MICROSMG`,
+            `WEAPON_MINISMG`,
+            `WEAPON_SMG`,
+            `WEAPON_SMG_MK2`,
+            `WEAPON_COMBATPDW`,
+            `WEAPON_GUSENBERG`,
         },
     },
 }
