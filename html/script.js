@@ -76,11 +76,11 @@
             quality = 100
         }
         var color = "#0bb80b"
-        var text = "PERFECT"
+        var text = "100"
         var width = 100
         if (quality == 100) {
             color = "#0bb80b",
-            text = parseInt(quality).toFixed(2),
+            text = 100,
             width = quality
         } else if (quality >= 80 && quality <= 100) {
             color = "#0bb80b",
@@ -205,7 +205,7 @@
                 $.each(data.rightinventory.inventory, function (i, item) {
                     if ((item != null)) {
                         rightweight = rightweight +(item.weight * item.count);
-                        $(".rightside-weight").html(rightweight.toFixed(1) + '/'+ 100 + 'kg' )
+                        $(".rightside-weight").html(rightweight.toFixed(1) + '/'+ 250 + 'kg' )
                         if ((item.name).split("_")[0] == "WEAPON") {
                             $(".inventory-main-rightside").find("[inventory-slot=" + item.slot + "]").html('<div class="item-slot-img"><img src="images/' + item.name + '.png'+'" alt="' + item.name + '" /></div><div class="item-slot-count"><p>' + item.count + ' (' + (item.weight * item.count).toFixed(1) + ')</p></div><div class="item-slot-label"><p><div class="item-slot-durability"><div class="item-slot-durability-bar"><p>100</p></div></div><div class="item-slot-label"><p>' + item.label + '</p></div></p></div>');
                             $(".inventory-main-rightside").find("[inventory-slot=" + item.slot + "]").data("ItemData", item);
