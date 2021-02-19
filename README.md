@@ -17,7 +17,15 @@ https://discord.gg/6FQhKDXBJ6
 
 Add this code ghmattimysql server.lua
 
-https://pastebin.pl/view/0991cdd5
+exports("ready", function (callback)
+  Citizen.CreateThread(function ()
+      -- add some more error handling
+      while GetResourceState('ghmattimysql') ~= 'started' do
+          Citizen.Wait(0)
+      end
+      callback()
+  end)
+end)
 
 es_extended server / main.lua
 https://imgur.com/a/L6zmAIf
