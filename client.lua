@@ -34,43 +34,20 @@ Citizen.CreateThread(function()
         DisableControlAction(0, 289, true) -- F2
         
         for k, v in pairs(keys) do
-            fuck = exports["esx_ambulancejob"]:GetDeath()
             local playerPed = PlayerPedId()
             local cuff = IsEntityPlayingAnim(playerPed, 'mp_arresting', 'idle', 3)
-            if IsDisabledControlJustReleased(0, v) and not fuck and not cuff then
+            if IsDisabledControlJustReleased(0, v) and not cuff then
                 TriggerServerEvent("hsn-inventory:server:useItemfromSlot",k)
             end
         end
-        --[[if IsPedInAnyVehicle(PlayerPedId(), false) then
-            if IsControlJustPressed(1,170) then -- [G]lovebox
-                local vehicle = GetVehiclePedIsIn(PlayerPedId(), false)
-                local plate = GetVehicleNumberPlateText(vehicle)
-                OpenGloveBox(plate)
-            end
-        else
-            if IsControlJustPressed(1,170) then
-                local vehicle = ESX.Game.GetClosestVehicle()
-                local pos = GetEntityCoords(PlayerPedId())
-                local trunkpos = GetOffsetFromEntityInWorldCoords(vehicle, 0, -2.5, 0)
-                if (GetDistanceBetweenCoords(pos.x, pos.y, pos.z, trunkpos) < 2.0) and not IsPedInAnyVehicle(PlayerPedId()) then
-                    if GetVehicleDoorLockStatus(vehicle) ~= 2 then
-                        local plate = GetVehicleNumberPlateText(vehicle)
-                        OpenTrunk(plate)
-                    else
-                        TriggerEvent('notification','Car locked',2)
-                    end
-                end
-            end
-        end]]
     end
 end)
 
 
 RegisterCommand('trunkinv', function()
-    local fuck = exports["esx_ambulancejob"]:GetDeath()
     local playerPed = PlayerPedId()
     local cuff = IsEntityPlayingAnim(playerPed, 'mp_arresting', 'idle', 3)
-    if not fuck and not cuff and not IsPedInAnyVehicle(playerPed, false) then
+    if not cuff and not IsPedInAnyVehicle(playerPed, false) then
         local vehicle = ESX.Game.GetClosestVehicle()
         local pos = GetEntityCoords(PlayerPedId())
         local trunkpos = GetOffsetFromEntityInWorldCoords(vehicle, 0, -2.5, 0)
@@ -87,11 +64,10 @@ end,false)
 
 RegisterCommand('glovebox', function()
     if IsPedInAnyVehicle(PlayerPedId(), false) then
-        local fuck = exports["esx_ambulancejob"]:GetDeath()
         local playerPed = PlayerPedId()
         local cuff = IsEntityPlayingAnim(playerPed, 'mp_arresting', 'idle', 3)
     
-        if not fuck and not cuff and IsPedInAnyVehicle(playerPed, false) then -- [G]lovebox
+        if not cuff and IsPedInAnyVehicle(playerPed, false) then -- [G]lovebox
             local vehicle = GetVehiclePedIsIn(PlayerPedId(), false)
             local plate = GetVehicleNumberPlateText(vehicle)
             OpenGloveBox(plate)
@@ -100,10 +76,9 @@ RegisterCommand('glovebox', function()
 end,false)
     
 RegisterCommand('inventory', function()
-    local fuck = exports["esx_ambulancejob"]:GetDeath()
     local playerPed = PlayerPedId()
     local cuff = IsEntityPlayingAnim(playerPed, 'mp_arresting', 'idle', 3)
-    if not fuck and not cuff then
+    if not cuff then
         TriggerEvent("randPickupAnim")
         TriggerServerEvent("hsn-inventory:server:openInventory",{type = 'drop',id = currentDrop})
     end
@@ -227,10 +202,9 @@ Citizen.CreateThread(function()
             if distance <= 2.5 then
                 DrawText3Ds(Config.Shops[i].coords.x,Config.Shops[i].coords.y,Config.Shops[i].coords.z+0.3,Config.Shops[i].text)
                 DrawMarker(2, Config.Shops[i].coords.x,Config.Shops[i].coords.y,Config.Shops[i].coords.z, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.3, 0.2, 0.15, 200, 0, 0, 222, false, false, false, true, false, false, false)
-                local fuck = exports["esx_ambulancejob"]:GetDeath()
                 local playerPed = PlayerPedId()
                 local cuff = IsEntityPlayingAnim(playerPed, 'mp_arresting', 'idle', 3)
-                if IsControlJustPressed(1,38) and not fuck and not cuff then
+                if IsControlJustPressed(1,38) and not cuff then
                     OpenShop(Config.Shops[i])
                 end
             end
@@ -251,9 +225,6 @@ Citizen.CreateThread(function()
         EndTextCommandSetBlipName(blip)
     end
 end)
-
-
-
 
 OpenShop = function(id)
     TriggerServerEvent("hsn-inventory:server:openInventory",{type = 'shop',id = id})
