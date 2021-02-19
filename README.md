@@ -1,3 +1,6 @@
+DO NOT USE
+I'm not finished fixing this to be plug in play. Will do a PR when it's ready.
+
 # hsn-inventory
 Advanced Inventory System for Fivem
 
