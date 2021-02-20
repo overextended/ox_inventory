@@ -502,8 +502,7 @@ AddEventHandler("hsn-inventory:server:saveInventoryData",function(data)
                 return TriggerClientEvent("notification",src,'You can not do this',2)
             elseif data.type == 'freeslot' then
                 if IfInventoryCanCarry(playerInventory[Player.identifier],ESX.GetConfig().MaxWeight, (data.item.weight * data.item.count)) then
-                    --local money = Player.getMoney()
-                    local money = exports["hsn-inventory"]:getItemCount(source,'cash')
+                    local money = exports["hsn-inventory"]:getItemCount(source,'cash')--Checks for item cash instead of xPlayer.getMoney() which would cause weird issues for me
                     if (money >= (data.item.price * data.item.count)) then
                         TriggerEvent("hsn-inventory:server:removeItem",src,'cash',data.item.price * data.item.count)
                         TriggerEvent("hsn-inventory:onAddInventoryItem",src,data.item.name,data.item.count)
@@ -893,7 +892,6 @@ AddEventHandler("hsn-inventory:server:useItemfromSlot",function(slot)
                 end
             else
                 TriggerClientEvent("hsn-inventory:client:esxUseItem",src,playerInventory[Player.identifier][slot].name)
-                --print(playerInventory[Player.identifier][slot].name)
                 TriggerClientEvent("hsn-inventory:client:addItemNotify",source,ESXItems[playerInventory[Player.identifier][slot].name],'Used 1x')
             end
         end
