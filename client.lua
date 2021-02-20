@@ -64,7 +64,7 @@ RegisterCommand('glovebox', function()
     if IsPedInAnyVehicle(PlayerPedId(), false) then
         local playerPed = PlayerPedId()
     
-        if and IsPedInAnyVehicle(playerPed, false) then -- [G]lovebox
+        if IsPedInAnyVehicle(playerPed, false) then -- [G]lovebox
             local vehicle = GetVehiclePedIsIn(PlayerPedId(), false)
             local plate = GetVehicleNumberPlateText(vehicle)
             OpenGloveBox(plate)
