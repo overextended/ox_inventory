@@ -3,8 +3,10 @@ local PlayerData = {}
 -- hsn inventory Hasan.#7803
 Citizen.CreateThread(function()
     while ESX == nil do
-        ESX = exports['es_extended']:getSharedObject()
-        Citizen.Wait(10)
+        TriggerEvent('esx:getSharedObject', function(obj)
+            ESX = obj
+        end)
+        Citizen.Wait(0)
     end
     while ESX.GetPlayerData().job == nil do
         Citizen.Wait(10)
@@ -30,44 +32,63 @@ Citizen.CreateThread(function()
         DisableControlAction(0, 164, true) -- 4
         DisableControlAction(0, 165, true) -- 5
         DisableControlAction(0, 289, true) -- F2
-        if IsDisabledControlJustPressed(1,289) then
-            TriggerEvent("randPickupAnim")
-            TriggerServerEvent("hsn-inventory:server:openInventory",{type = 'drop',id = currentDrop})
-        end
+        
         for k, v in pairs(keys) do
+            local playerPed = PlayerPedId()
             if IsDisabledControlJustReleased(0, v) then
                 TriggerServerEvent("hsn-inventory:server:useItemfromSlot",k)
-            end
-        end
-        if IsPedInAnyVehicle(PlayerPedId(), false) then
-           if IsControlJustPressed(1,47) then -- [G]lovebox
-               local vehicle = GetVehiclePedIsIn(PlayerPedId(), false)
-               local plate = GetVehicleNumberPlateText(vehicle)
-               OpenGloveBox(plate)
-            end
-       else
-            if IsControlJustPressed(1,48) then
-                local vehicle = ESX.Game.GetClosestVehicle()
-                local pos = GetEntityCoords(PlayerPedId())
-                local trunkpos = GetOffsetFromEntityInWorldCoords(vehicle, 0, -2.5, 0)
-                if (GetDistanceBetweenCoords(pos.x, pos.y, pos.z, trunkpos) < 2.0) and not IsPedInAnyVehicle(PlayerPedId()) then
-                    if GetVehicleDoorLockStatus(vehicle) ~= 2 then
-                        local plate = GetVehicleNumberPlateText(vehicle)
-                        OpenTrunk(plate)
-                    else
-                       TriggerEvent('notification','Car locked',2)
-                    end
-                end
             end
         end
     end
 end)
 
+
+RegisterCommand('trunkinv', function()
+    local playerPed = PlayerPedId()
+    if not IsPedInAnyVehicle(playerPed, false) then
+        local vehicle = ESX.Game.GetClosestVehicle()
+        local pos = GetEntityCoords(PlayerPedId())
+        local trunkpos = GetOffsetFromEntityInWorldCoords(vehicle, 0, -2.5, 0)
+        if GetDistanceBetweenCoords(pos.x, pos.y, pos.z, trunkpos) < 2.0 and not IsPedInAnyVehicle(PlayerPedId()) then
+            if GetVehicleDoorLockStatus(vehicle) ~= 2 then
+                local plate = GetVehicleNumberPlateText(vehicle)
+                OpenTrunk(plate)
+            else
+                TriggerEvent('notification','Car locked',2)
+            end
+        end
+    end
+end,false)
+
+RegisterCommand('glovebox', function()
+    if IsPedInAnyVehicle(PlayerPedId(), false) then
+        local playerPed = PlayerPedId()
+    
+        if IsPedInAnyVehicle(playerPed, false) then -- [G]lovebox
+            local vehicle = GetVehiclePedIsIn(PlayerPedId(), false)
+            local plate = GetVehicleNumberPlateText(vehicle)
+            OpenGloveBox(plate)
+        end
+    end
+end,false)
+    
+RegisterCommand('inventory', function()
+    TriggerEvent("randPickupAnim")
+    TriggerServerEvent("hsn-inventory:server:openInventory",{type = 'drop',id = currentDrop})
+    TriggerServerEvent('inventory:isShopOpen', false)
+end,false)
+        
+RegisterKeyMapping('inventory', 'Inv: Inventory Open', 'keyboard', 'F2')
+RegisterKeyMapping('trunkinv', 'Inv: Trunk Inventory', 'keyboard', 'F3')
+RegisterKeyMapping('glovebox', 'Inv: Glovebox Inventory', 'keyboard', 'F3')
+
 OpenGloveBox = function(gloveboxid)
     TriggerServerEvent("hsn-inventory:server:openInventory",{type = 'glovebox',id = 'glovebox-'..gloveboxid})
+    TriggerServerEvent('inventory:isShopOpen', false)
 end
 OpenTrunk = function(trunkid)
     TriggerServerEvent("hsn-inventory:server:openInventory",{type = 'trunk',id = 'trunk-'..trunkid})
+    TriggerServerEvent('inventory:isShopOpen', false)
 end
 RegisterNetEvent("hsn-inventory:client:openInventory")
 AddEventHandler("hsn-inventory:client:openInventory",function(inventory,other)
@@ -76,11 +97,13 @@ AddEventHandler("hsn-inventory:client:openInventory",function(inventory,other)
     -- if check then
     --     return
     -- end
+    
+    local playerID = GetPlayerServerId(PlayerId())
     SendNUIMessage({
         message = 'openinventory',
         inventory = inventory,
         slots = Config.PlayerSlot,
-        name = GetPlayerName(PlayerId())..' ['..GetPlayerServerId()..']',
+        name = GetPlayerName(PlayerId()).. '[' .. playerID ..']',
         maxweight = ESX.GetConfig().MaxWeight,
         rightinventory = other
     })
@@ -97,12 +120,13 @@ AddEventHandler("hsn-inventory:client:closeInventory",function(id)
     })
     SetNuiFocus(false,false)
     TriggerServerEvent("hsn-inventory:removecurrentInventory",id)
+    TriggerServerEvent('inventory:isShopOpen', false)
 end)
 
- RegisterCommand("teststash",function()
+--[[ RegisterCommand("teststash",function()
      TriggerServerEvent("hsn-inventory:server:openStash", {name = 'Hasqaws',slots = 15, type = 'stash'})
  end)
-
+]]
 RegisterNetEvent("hsn-inventory:client:refreshInventory")
 AddEventHandler("hsn-inventory:client:refreshInventory",function(inventory)
     SendNUIMessage({
@@ -174,6 +198,7 @@ Citizen.CreateThread(function()
             if distance <= 2.5 then
                 DrawText3Ds(Config.Shops[i].coords.x,Config.Shops[i].coords.y,Config.Shops[i].coords.z+0.3,Config.Shops[i].text)
                 DrawMarker(2, Config.Shops[i].coords.x,Config.Shops[i].coords.y,Config.Shops[i].coords.z, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.3, 0.2, 0.15, 200, 0, 0, 222, false, false, false, true, false, false, false)
+                local playerPed = PlayerPedId()
                 if IsControlJustPressed(1,38) then
                     OpenShop(Config.Shops[i])
                 end
@@ -196,15 +221,14 @@ Citizen.CreateThread(function()
     end
 end)
 
-
-
-
 OpenShop = function(id)
     TriggerServerEvent("hsn-inventory:server:openInventory",{type = 'shop',id = id})
+    TriggerServerEvent('inventory:isShopOpen', true)
 end
 
 OpenStash = function(id)
     TriggerServerEvent("hsn-inventory:server:openStash", {name = id.name, slots = id.slots, type = 'stash'})
+    TriggerServerEvent('inventory:isShopOpen', false)
 end
 
 RegisterNetEvent("hsn-inventory:Client:addnewDrop")
@@ -237,7 +261,6 @@ AddEventHandler('randPickupAnim', function()
     ClearPedSecondaryTask(PlayerPedId())
 end)
 
-
 RegisterNetEvent("hsn-inventory:client:removeDrop")
 AddEventHandler("hsn-inventory:client:removeDrop",function(dropid)
     Drops[dropid] = nil
@@ -257,8 +280,9 @@ RegisterNUICallback("UseItem", function(data, cb)
     if data.inv ~= "Playerinv" then
         return
     end
+
     TriggerServerEvent("hsn-inventory:server:useItem",data.item)
-		
+    
     if shouldCloseInventory(data.item.name) then
         TriggerEvent("hsn-inventory:client:closeInventory")
     end
@@ -294,13 +318,13 @@ RegisterNetEvent("hsn-inventory:client:weapon")
 AddEventHandler("hsn-inventory:client:weapon",function(item)
     local curweapon = GetSelectedPedWeapon(PlayerPedId())
     if curweapon ==  GetHashKey(item.name) then
-	TriggerEvent("hsn-inventory:weaponaway")
+        TriggerEvent("hsn-inventory:weaponaway")
         RemoveWeaponFromPed(PlayerPedId(), GetHashKey(item.name))
         SetCurrentPedWeapon(PlayerPedId(), "WEAPON_UNARMED", true)
         curweaponSlot = nil
     elseif curweapon ~= GetHashKey(item.name) then
-	TriggerEvent("hsn-inventory:weapondraw")
-	Citizen.Wait(1600)
+        TriggerEvent("hsn-inventory:weapondraw")
+        Citizen.Wait(1600)
         curweaponSlot = item.slot
         GiveWeaponToPed(PlayerPedId(), GetHashKey(item.name), item.metadata.ammo, false, false)
         SetCurrentPedWeapon(PlayerPedId(), GetHashKey(item.name), true)
@@ -326,12 +350,11 @@ AddEventHandler("hsn-inventory:addAmmo",function(item, name)
             ClearPedTasks(playerPed)
             local found, maxAmmo = GetMaxAmmo(playerPed, weapon)
             if newAmmo < maxAmmo then
-                TriggerServerEvent("hsn-inventory:server:addweaponAmmo",curweaponSlot,item.count)
+		TriggerServerEvent("hsn-inventory:server:addweaponAmmo",curweaponSlot,item.count)
                 TaskReloadWeapon(playerPed)
                 SetPedAmmo(playerPed, weapon, newAmmo)
                 TriggerEvent("notification","Reloaded")
-                TriggerServerEvent("hsn-inventory:client:removeItem",name,1)
-            else
+                TriggerServerEvent("hsn-inventory:client:removeItem",name,1)		
                 TriggerEvent("notification","Max Ammo")
             end
         end
@@ -361,12 +384,12 @@ end)
 
 RegisterNetEvent("hsn-inventory:client:esxUseItem")
 AddEventHandler("hsn-inventory:client:esxUseItem",function(item)
-    TriggerServerEvent("esx:useItem",item.name)
+    TriggerServerEvent("esx:useItem",item)
 end)
 
-RegisterCommand("robplayer",function()
+RegisterCommand("steal",function()
     local ped = PlayerPedId()
-	if not IsPedInAnyVehicle(ped, true) then	 
+	if not IsEntityPlayingAnim(ped, 'dead', 'dead_a', 3) and not IsPedInAnyVehicle(ped, true) then	 
 		rob()
 	end
 end)
@@ -377,7 +400,7 @@ function rob()
         local target, distance = ESX.Game.GetClosestPlayer()
         local searchPlayerPed = GetPlayerPed(target)
 
-        if IsEntityPlayingAnim(searchPlayerPed, 'random@mugging3', 'handsup_standing_base', 3) or IsEntityPlayingAnim(searchPlayerPed, 'missminuteman_1ig_2', 'handsup_base', 3) then
+        if IsEntityPlayingAnim(searchPlayerPed, 'random@mugging3', 'handsup_standing_base', 3) or IsEntityPlayingAnim(searchPlayerPed, 'missminuteman_1ig_2', 'handsup_base', 3) or IsEntityPlayingAnim(searchPlayerPed, 'dead', 'dead_a', 3) then
             TriggerServerEvent("hsn-inventory:server:robPlayer",GetPlayerServerId(closestPlayer))
         else
         end
