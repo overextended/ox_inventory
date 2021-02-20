@@ -156,21 +156,32 @@ RandomDropId = function()
     return random
 end
 
+RegisterNetEvent("inventory:isShopOpen")
+AddEventHandler("inventory:isShopOpen",function(state)
+    local state = state
+    if state == false then
+        shopOpen = false
+    elseif state == true then
+        shopOpen = true
+    end
+    return shopOpen        
+end)
+
 RegisterNetEvent("hsn-inventory:server:saveInventoryData")
 AddEventHandler("hsn-inventory:server:saveInventoryData",function(data)
     local src = source
     local Player = ESX.GetPlayerFromId(src)
     if data ~= nil then
-        if data.frominv == data.toinv and (data.frominv == 'Playerinv') then
-            if data.type == 'swap' then
+        if data.frominv == data.toinv and (data.frominv == 'Playerinv') and not shopOpen then
+            if data.type == 'swap' and not shopOpen then
                 TriggerClientEvent("hsn-inventory:client:checkweapon",src,data.fromItem)
                 playerInventory[Player.identifier][data.toslot] = {name = data.toItem.name ,label = data.toItem.label, weight = data.toItem.weight, slot = data.toslot, count = data.toItem.count, description = data.toItem.description, metadata = data.toItem.metadata, stackable = data.toItem.stackable, closeonuse = ESXItems[data.toItem.name].closeonuse}
                 playerInventory[Player.identifier][data.fromslot] = {name = data.fromItem.name ,label = data.fromItem.label, weight = data.fromItem.weight, slot = data.fromslot, count = data.fromItem.count, description = data.fromItem.description, metadata = data.fromItem.metadata, stackable = data.fromItem.stackable}
-            elseif data.type == 'freeslot' then
+            elseif data.type == 'freeslot' and not shopOpen then
                 TriggerClientEvent("hsn-inventory:client:checkweapon",src,data.item)
                 playerInventory[Player.identifier][data.emptyslot] = nil
                 playerInventory[Player.identifier][data.toslot] = {name = data.item.name ,label = data.item.label, weight = data.item.weight, slot = data.toslot, count = data.item.count, description = data.item.description, metadata = data.item.metadata, stackable = data.item.stackable, closeonuse = ESXItems[data.item.name].closeonuse}
-            elseif data.type == 'yarimswap' then
+            elseif data.type == 'yarimswap' and not shopOpen then
                 TriggerClientEvent("hsn-inventory:client:checkweapon",src,data.oldslotItem)
                 playerInventory[Player.identifier][data.fromSlot] = {name = data.oldslotItem.name ,label = data.oldslotItem.label, weight = data.oldslotItem.weight, slot = data.fromSlot, count = data.oldslotItem.count, description = data.oldslotItem.description, metadata = data.oldslotItem.metadata, stackable = data.oldslotItem.stackable, closeonuse = ESXItems[data.oldslotItem.name].closeonuse}
                 playerInventory[Player.identifier][data.toSlot] = {name = data.newslotItem.name ,label = data.newslotItem.label, weight = data.newslotItem.weight, slot = data.toSlot, count = data.newslotItem.count, description = data.newslotItem.description, metadata = data.newslotItem.metadata, stackable = data.newslotItem.stackable, closeonuse = ESXItems[data.newslotItem.name].closeonuse}
