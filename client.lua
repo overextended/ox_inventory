@@ -111,7 +111,6 @@ AddEventHandler("hsn-inventory:client:openInventory",function(inventory,other)
         maxweight = ESX.GetConfig().MaxWeight,
         rightinventory = other
     })
-    print(playerID)
     TriggerServerEvent("hsn-inventory:setcurrentInventory",other)
     SetNuiFocus(true, true)
 end)
@@ -263,7 +262,6 @@ AddEventHandler('randPickupAnim', function()
     Wait(1000)
     ClearPedSecondaryTask(PlayerPedId())
 end)
-TriggerEvent("randPickupAnim")
 
 RegisterNetEvent("hsn-inventory:client:removeDrop")
 AddEventHandler("hsn-inventory:client:removeDrop",function(dropid)
@@ -354,35 +352,11 @@ AddEventHandler("hsn-inventory:addAmmo",function(item, name)
             ClearPedTasks(playerPed)
             local found, maxAmmo = GetMaxAmmo(playerPed, weapon)
             if newAmmo < maxAmmo then
-                TriggerEvent("mythic_progbar:client:progress", {
-                    name = "reloading_weapon",
-                    duration = 2500,
-                    label = "Reloading Weapon",
-                    useWhileDead = false,
-                    canCancel = true,
-                    controlDisables = {
-                        disableMovement = false,
-                        disableCarMovement = false,
-                        disableMouse = false,
-                        disableCombat = true,
-                    },
-                    animation = {
-                        animDict = "",
-                        anim = "",
-                    },
-                    prop = {
-                        model = "",
-                    }
-                }, function(status)
-                    if not status then
-                        TriggerServerEvent("hsn-inventory:server:addweaponAmmo",curweaponSlot,item.count)
-                        TaskReloadWeapon(playerPed)
-                        SetPedAmmo(playerPed, weapon, newAmmo)
-                        TriggerEvent("notification","Reloaded")
-                        TriggerServerEvent("hsn-inventory:client:removeItem",name,1)
-                    end
-                end)
-            else
+		TriggerServerEvent("hsn-inventory:server:addweaponAmmo",curweaponSlot,item.count)
+                TaskReloadWeapon(playerPed)
+                SetPedAmmo(playerPed, weapon, newAmmo)
+                TriggerEvent("notification","Reloaded")
+                TriggerServerEvent("hsn-inventory:client:removeItem",name,1)		
                 TriggerEvent("notification","Max Ammo")
             end
         end
