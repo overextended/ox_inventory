@@ -81,6 +81,7 @@ RegisterCommand('inventory', function()
     if not cuff then
         TriggerEvent("randPickupAnim")
         TriggerServerEvent("hsn-inventory:server:openInventory",{type = 'drop',id = currentDrop})
+	TriggerServerEvent('inventory:isShopOpen', false)
     end
 end,false)
         
@@ -90,9 +91,11 @@ RegisterKeyMapping('glovebox', 'Inv: Glovebox Inventory', 'keyboard', 'F3')
 
 OpenGloveBox = function(gloveboxid)
     TriggerServerEvent("hsn-inventory:server:openInventory",{type = 'glovebox',id = 'glovebox-'..gloveboxid})
+    TriggerServerEvent('inventory:isShopOpen', false)
 end
 OpenTrunk = function(trunkid)
     TriggerServerEvent("hsn-inventory:server:openInventory",{type = 'trunk',id = 'trunk-'..trunkid})
+    TriggerServerEvent('inventory:isShopOpen', false)
 end
 RegisterNetEvent("hsn-inventory:client:openInventory")
 AddEventHandler("hsn-inventory:client:openInventory",function(inventory,other)
@@ -124,6 +127,7 @@ AddEventHandler("hsn-inventory:client:closeInventory",function(id)
     })
     SetNuiFocus(false,false)
     TriggerServerEvent("hsn-inventory:removecurrentInventory",id)
+    TriggerServerEvent('inventory:isShopOpen', false)
 end)
 
 --[[ RegisterCommand("teststash",function()
@@ -227,10 +231,12 @@ end)
 
 OpenShop = function(id)
     TriggerServerEvent("hsn-inventory:server:openInventory",{type = 'shop',id = id})
+    TriggerServerEvent('inventory:isShopOpen', true)
 end
 
 OpenStash = function(id)
     TriggerServerEvent("hsn-inventory:server:openStash", {name = id.name, slots = id.slots, type = 'stash'})
+    TriggerServerEvent('inventory:isShopOpen', false)
 end
 
 RegisterNetEvent("hsn-inventory:Client:addnewDrop")
