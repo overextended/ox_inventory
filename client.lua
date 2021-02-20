@@ -35,8 +35,7 @@ Citizen.CreateThread(function()
         
         for k, v in pairs(keys) do
             local playerPed = PlayerPedId()
-            local cuff = IsEntityPlayingAnim(playerPed, 'mp_arresting', 'idle', 3)
-            if IsDisabledControlJustReleased(0, v) and not cuff then
+            if IsDisabledControlJustReleased(0, v) then
                 TriggerServerEvent("hsn-inventory:server:useItemfromSlot",k)
             end
         end
@@ -46,8 +45,7 @@ end)
 
 RegisterCommand('trunkinv', function()
     local playerPed = PlayerPedId()
-    local cuff = IsEntityPlayingAnim(playerPed, 'mp_arresting', 'idle', 3)
-    if not cuff and not IsPedInAnyVehicle(playerPed, false) then
+    if not IsPedInAnyVehicle(playerPed, false) then
         local vehicle = ESX.Game.GetClosestVehicle()
         local pos = GetEntityCoords(PlayerPedId())
         local trunkpos = GetOffsetFromEntityInWorldCoords(vehicle, 0, -2.5, 0)
@@ -65,9 +63,8 @@ end,false)
 RegisterCommand('glovebox', function()
     if IsPedInAnyVehicle(PlayerPedId(), false) then
         local playerPed = PlayerPedId()
-        local cuff = IsEntityPlayingAnim(playerPed, 'mp_arresting', 'idle', 3)
     
-        if not cuff and IsPedInAnyVehicle(playerPed, false) then -- [G]lovebox
+        if and IsPedInAnyVehicle(playerPed, false) then -- [G]lovebox
             local vehicle = GetVehiclePedIsIn(PlayerPedId(), false)
             local plate = GetVehicleNumberPlateText(vehicle)
             OpenGloveBox(plate)
@@ -76,13 +73,9 @@ RegisterCommand('glovebox', function()
 end,false)
     
 RegisterCommand('inventory', function()
-    local playerPed = PlayerPedId()
-    local cuff = IsEntityPlayingAnim(playerPed, 'mp_arresting', 'idle', 3)
-    if not cuff then
-        TriggerEvent("randPickupAnim")
-        TriggerServerEvent("hsn-inventory:server:openInventory",{type = 'drop',id = currentDrop})
-	TriggerServerEvent('inventory:isShopOpen', false)
-    end
+    TriggerEvent("randPickupAnim")
+    TriggerServerEvent("hsn-inventory:server:openInventory",{type = 'drop',id = currentDrop})
+    TriggerServerEvent('inventory:isShopOpen', false)
 end,false)
         
 RegisterKeyMapping('inventory', 'Inv: Inventory Open', 'keyboard', 'F2')
@@ -206,8 +199,7 @@ Citizen.CreateThread(function()
                 DrawText3Ds(Config.Shops[i].coords.x,Config.Shops[i].coords.y,Config.Shops[i].coords.z+0.3,Config.Shops[i].text)
                 DrawMarker(2, Config.Shops[i].coords.x,Config.Shops[i].coords.y,Config.Shops[i].coords.z, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.3, 0.2, 0.15, 200, 0, 0, 222, false, false, false, true, false, false, false)
                 local playerPed = PlayerPedId()
-                local cuff = IsEntityPlayingAnim(playerPed, 'mp_arresting', 'idle', 3)
-                if IsControlJustPressed(1,38) and not cuff then
+                if IsControlJustPressed(1,38) then
                     OpenShop(Config.Shops[i])
                 end
             end
