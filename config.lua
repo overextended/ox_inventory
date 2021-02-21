@@ -1632,6 +1632,7 @@ Config.Shops = {
         name = 'Police Armoury',
         blip = {
             id = 110,
+            name = 'Police Armoury',
             color = 5,
             scale = 0.6,
         },
