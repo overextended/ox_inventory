@@ -388,7 +388,7 @@ AddEventHandler("hsn-inventory:addAmmo",function(item, name)
                 SetPedAmmo(playerPed, weapon, newAmmo)
                 TriggerEvent("notification","Reloaded")
                 TriggerServerEvent("hsn-inventory:client:removeItem",name,1)		
-                TriggerEvent("notification","Max Ammo")
+            else TriggerEvent("notification","Max Ammo")
             end
         end
     end
