@@ -68,7 +68,7 @@ Citizen.CreateThread(function()
     end
 end)
 
-RegisterCommand('trunkinv', function()
+RegisterCommand('vehinv', function()
     local playerPed = PlayerPedId()
     if not isDead and not isCuffed and not IsPedInAnyVehicle(playerPed, false) then
         local vehicle = ESX.Game.GetClosestVehicle()
@@ -82,24 +82,16 @@ RegisterCommand('trunkinv', function()
                 TriggerEvent('notification','Car locked',2)
             end
         end
-    end
-end,false)
-
-RegisterCommand('glovebox', function()
-    if IsPedInAnyVehicle(PlayerPedId(), false) then
-        local playerPed = PlayerPedId()
-    
-        if not isDead and not isCuffed and IsPedInAnyVehicle(playerPed, false) then -- [G]lovebox
-            local vehicle = GetVehiclePedIsIn(PlayerPedId(), false)
-            local plate = GetVehicleNumberPlateText(vehicle)
-            OpenGloveBox(plate)
-        end
+    elseif not isDead and not isCuffed and IsPedInAnyVehicle(playerPed, false) then -- [G]lovebox
+        local vehicle = GetVehiclePedIsIn(PlayerPedId(), false)
+        local plate = GetVehicleNumberPlateText(vehicle)
+        OpenGloveBox(plate)
     end
 end,false)
     
 RegisterCommand('inventory', function()
     local playerPed = PlayerPedId()
-    if not isDead and not isCuffed then
+    if not isDead and not isCuffed and not invOpen then
         TriggerEvent("randPickupAnim")
         TriggerServerEvent("hsn-inventory:server:openInventory",{type = 'drop',id = currentDrop})
         TriggerServerEvent('inventory:isShopOpen', false)
@@ -107,8 +99,7 @@ RegisterCommand('inventory', function()
 end, false)
         
 RegisterKeyMapping('inventory', 'Inv: Inventory Open', 'keyboard', 'F2')
-RegisterKeyMapping('trunkinv', 'Inv: Trunk Inventory', 'keyboard', 'F3')
-RegisterKeyMapping('glovebox', 'Inv: Glovebox Inventory', 'keyboard', 'F3')
+RegisterKeyMapping('vehinv', 'Inv: Vehicle Inventory', 'keyboard', 'F3')
 
 OpenGloveBox = function(gloveboxid)
     TriggerServerEvent("hsn-inventory:server:openInventory",{type = 'glovebox',id = 'glovebox-'..gloveboxid})
@@ -202,6 +193,7 @@ AddEventHandler("hsn-inventory:client:addItemNotify",function(item,text)
         item = item,
         text = text
     })
+    ExecuteCommand('fixinv')
 end)
 
 
