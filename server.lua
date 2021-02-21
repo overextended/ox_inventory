@@ -646,7 +646,7 @@ AddEventHandler("hsn-inventory:server:openInventory",function(data)
         elseif data.type == 'shop' then
             Shops[data.id.name] = {}
             Shops[data.id.name].inventory = SetupShopItems(data.id)
-            Shops[data.id.name].name = data.id.blip.name
+            Shops[data.id.name].name = data.id.name or 'Shop'
             Shops[data.id.name].type = 'shop'
             Shops[data.id.name].slots = #Shops[data.id.name].inventory + 1
             TriggerClientEvent("hsn-inventory:client:openInventory",src,playerInventory[Player.identifier],Shops[data.id.name])
