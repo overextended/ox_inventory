@@ -104,7 +104,7 @@ RegisterCommand('inventory', function()
         TriggerServerEvent("hsn-inventory:server:openInventory",{type = 'drop',id = currentDrop})
         TriggerServerEvent('inventory:isShopOpen', false)
     end
-end,false)
+end, false)
         
 RegisterKeyMapping('inventory', 'Inv: Inventory Open', 'keyboard', 'F2')
 RegisterKeyMapping('trunkinv', 'Inv: Trunk Inventory', 'keyboard', 'F3')
@@ -306,21 +306,9 @@ AddEventHandler("hsn-inventory:client:removeDrop",function(dropid)
     currentDrop = nil
 end)
 
-function shouldCloseInventory(itemName)
-	for index, value in ipairs(Config.CloseUiItems) do
-		if value == itemName then
-			return true
-		end
-	end
-	return false
-end
-
 RegisterNUICallback("UseItem", function(data, cb)
     if data.inv ~= "Playerinv" then
         return
-    end
-    if shouldCloseInventory(data.item.name) then
-        TriggerEvent("hsn-inventory:client:closeInventory")
     end
     TriggerServerEvent("hsn-inventory:server:useItem",data.item)
 end)
@@ -353,6 +341,7 @@ end)
 
 RegisterNetEvent("hsn-inventory:client:weapon")
 AddEventHandler("hsn-inventory:client:weapon",function(item)
+    TriggerEvent("hsn-inventory:client:closeInventory")
     local curweapon = GetSelectedPedWeapon(PlayerPedId())
     if curweapon ==  GetHashKey(item.name) then
         TriggerEvent("hsn-inventory:weaponaway")
@@ -426,11 +415,6 @@ AddEventHandler("hsn-inventory:clientweaponnotify",function(item)
     end
 end)
 
-RegisterNetEvent("hsn-inventory:client:esxUseItem")
-AddEventHandler("hsn-inventory:client:esxUseItem",function(item)
-    TriggerServerEvent("esx:useItem", item.name)
-end)
-
 RegisterCommand("steal",function()
     local ped = PlayerPedId()
 	if not IsPedInAnyVehicle(ped, true) and not isDead and not isCuffed then	 
@@ -460,7 +444,7 @@ Citizen.CreateThread(function()
         Citizen.Wait(3)
         if IsPedShooting(PlayerPedId()) then
             if curweaponSlot ~= nil then
-                TriggerServerEvent("hsn-inventory:server:decrasedurability",curweaponSlot)
+                TriggerServerEvent("hsn-inventory:server:decreasedurability",curweaponSlot)
             end
         end
     end
@@ -516,13 +500,16 @@ end, false)
 
 
 RegisterNetEvent("hsn-inventory:useItem")
-AddEventHandler("hsn-inventory:useItem",function(data, label)
-    data = Config.ItemList[data]
+AddEventHandler("hsn-inventory:useItem",function(item)
+    if item.name then item = item.name end
+    data = Config.ItemList[item]
+    data.item = item
+    if data.closeInv then TriggerEvent("hsn-inventory:client:closeInventory") end
     if data.animDict then
         exports['mythic_progbar']:Progress({
             name = "useitem",
             duration = data.useTime,
-            label = "Using "..label,
+            label = "Using "..data.item,
             useWhileDead = false,
             canCancel = false,
             controlDisables = { disableMovement = false, disableCarMovement = false, disableMouse = false, disableCombat = true },
@@ -535,7 +522,7 @@ AddEventHandler("hsn-inventory:useItem",function(data, label)
         exports['mythic_progbar']:Progress({
             name = "useitem",
             duration = data.useTime,
-            label = "Using "..label,
+            label = "Using "..data.item,
             useWhileDead = false,
             canCancel = false,
             controlDisables = { disableMovement = false, disableCarMovement = false, disableMouse = false, disableCombat = true },
@@ -558,7 +545,7 @@ function itemUsed(data)
         else TriggerEvent('esx_status:remove', 'thirst', data.thirst) end
     end
     --TriggerServerEvent('esx:removeInventoryItem', 'item_standard', data.item, 1)
-    if data.consume and data.consume > 0 then TriggerServerEvent('hsn-inventory:server:removeItem', data.item, data.consume) end
+    if data.consume then TriggerServerEvent('hsn-inventory:server:removeItem', data.item, data.consume) end
 
 
     if data.item == 'bandage' then
