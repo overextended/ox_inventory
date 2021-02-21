@@ -1,6 +1,6 @@
 Config = Config or {}
 Config.PlayerSlot = 51
-Config.DurabilityDecraseAmount = {
+Config.DurabilityDecreaseAmount = {
     ['WEAPON_PISTOL'] = 0.6,
     ['WEAPON_ADVANCEDRIFLE'] = 0.6,
     ['WEAPON_APPISTOL'] = 0.4,
