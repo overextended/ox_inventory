@@ -893,6 +893,11 @@ AddEventHandler("hsn-inventory:server:useItem",function(item,slot)
             end
         else
             if ESX.UsableItemsCallbacks[item.name] ~= nil then
+                if item.name:find("hsn") then
+                    local weps = Config.Ammos[item.name]
+                    TriggerClientEvent("hsn-inventory:addAmmo",src,weps,item.name)
+                    return
+                end
                 TriggerClientEvent('hsn-inventory:useItem', src, item)
                 
                 --TriggerClientEvent("hsn-inventory:client:addItemNotify",source,ESXItems[item.name],'Used 1x')
@@ -919,6 +924,11 @@ AddEventHandler("hsn-inventory:server:useItemfromSlot",function(slot)
                     TriggerClientEvent("notification",src,'This weapon is broken',2)
                 end
             else
+                if playerInventory[Player.identifier][slot].name:find("hsn") then
+                    local weps = Config.Ammos[playerInventory[Player.identifier][slot].name]
+                    TriggerClientEvent("hsn-inventory:addAmmo",src,weps,playerInventory[Player.identifier][slot].name)
+                    return
+                end
                 TriggerClientEvent("hsn-inventory:useItem",src,playerInventory[Player.identifier][slot])
                 --TriggerClientEvent("hsn-inventory:client:addItemNotify",source,ESXItems[playerInventory[Player.identifier][slot].name],'Used 1x')
             end
@@ -940,10 +950,10 @@ AddEventHandler("hsn-inventory:server:decreasedurability",function(slot, amount)
                     TriggerClientEvent("notification",src,'This weapon is broken',2)
                     return
                 end
-                if Config.DurabilitydecreaseAmount[playerInventory[Player.identifier][slot].name] == nil and not amount then
+                if Config.DurabilityDecreaseAmount[playerInventory[Player.identifier][slot].name] == nil and not amount then
                     decreaseamount = 0.5
-                elseif Config.DurabilitydecreaseAmount[playerInventory[Player.identifier][slot].name] then
-                    decreaseamount = Config.DurabilitydecreaseAmount[playerInventory[Player.identifier][slot].name]
+                elseif Config.DurabilityDecreaseAmount[playerInventory[Player.identifier][slot].name] then
+                    decreaseamount = Config.DurabilityDecreaseAmount[playerInventory[Player.identifier][slot].name]
                 else
                     decreaseamount = amount
                 end
@@ -973,16 +983,9 @@ AddEventHandler("hsn-inventory:server:addweaponAmmo",function(slot,count)
     end
 end)
 
-Citizen.CreateThread(function()
-    for k,v in pairs(Config.Ammos) do
-        ESX.RegisterUsableItem(k,function(source)
-            TriggerClientEvent("hsn-inventory:addAmmo",source,v,k)
-        end)
-    end
-end)
-
 RegisterServerEvent("hsn-inventory:server:removeItem")
 AddEventHandler("hsn-inventory:server:removeItem",function(item, count)
+    if count == 0 then return end
     local src = source
     local Player = ESX.GetPlayerFromId(src)
     if item == nil then
@@ -1195,8 +1198,15 @@ function getPlayerIdentification(xPlayer)
     return ('Name: %s | Sex: %s | Height: %s<br>DOB: %s (%s)'):format( xPlayer.getName(), xPlayer.get('sex'), xPlayer.get('height'), xPlayer.get('dateofbirth'), xPlayer.getIdentifier() )
 end
 
+
 for k, v in pairs(Config.ItemList) do
     ESX.RegisterUsableItem(v, function(source)
         TriggerClientEvent('hsn-inventory:useItem', source, k)
+    end)
+end
+
+for k,v in pairs(Config.Ammos) do
+    ESX.RegisterUsableItem(k,function(source)
+        TriggerClientEvent("hsn-inventory:addAmmo",source,v,k)
     end)
 end
