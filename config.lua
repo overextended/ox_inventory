@@ -58,27 +58,6 @@ Config.DurabilityDecraseAmount = {
     ['WEAPON_WRENCH'] = 1.0,
 }
 
-Config.CloseUiItems = {
-    "WEAPON_KNUCKLE",
-	"WEAPON_FLASHBANG",
-	"WEAPON_DBSHOTGUN",
-	"WEAPON_MACHINEPISTOL", 
-	"WEAPON_GUSENBERG", 
-	"WEAPON_ASSUALTRIFLE",
-	"WEAPON_MINISMG", 
-	"WEAPON_MICROSMG", 
-	"WEAPON_ADVANCEDRIFLE",
-	"WEAPON_VINTAGEPISTOL", 
-	"WEAPON_COMBATPDW", 
-	"WEAPON_COMPACTRIFLE", 
-	"WEAPON_BULLPUPSHOTGUN", 
-	"WEAPON_HEAVYPISTOL", 
-	"WEAPON_PISTOL50", 
-	"WEAPON_SAWNOFFSHOTGUN", 
-	"WEAPON_CARBINERIFLE_MK2",
-	"WEAPON_SG_PUMPSHOTGUN"
-}
-
 Config.Shops = {
     { -- 24/7
         coords = vector3(-531.14, -1221.33, 17.48),
@@ -2359,7 +2338,7 @@ Config.Ammos = {
 
 Config.ItemList = {
 
-    {   item = 'burger',
+    ['burger'] = {
         thirst = 0,
         hunger = 200000,
         animDict = "mp_player_inteat@burger",
@@ -2368,11 +2347,12 @@ Config.ItemList = {
         coords = { x = 0.02, y = 0.022, z = -0.02 },
         rotation = { x = 0.0, y = 5.0, z = 0.0 },
         useTime = 2500,
-        consume = 1
+        consume = 1,
+        closeInv = 1
 
     },
 
-    {   item = 'water',
+    ['water'] = {
         thirst = 200000,
         hunger = 0,
         animDict = "mp_player_intdrink",
@@ -2381,10 +2361,11 @@ Config.ItemList = {
         coords = { x = 0.03, y = 0.0, z = 0.02 },
         rotation = { x = 0.0, y = -13.5, z = -1.5 },
         useTime = 2500,
-        consume = 1
+        consume = 1,
+        closeInv = 1
     },
 
-    {   item = 'bandage',
+    ['bandage'] = {
         animDict = "missheistdockssetup1clipboard@idle_a",
         anim = "idle_a",
         flags = 49,
@@ -2392,10 +2373,11 @@ Config.ItemList = {
         coords = { x = -0.14, y = 0.02, z = -0.08 },
         rotation = { x = -50.0, y = -50.0, z = 0.0 },
         useTime = 2500,
-        consume = 1
+        consume = 1,
+        closeInv = 1
     },
 
-    {   item = 'identification',
+    ['identification'] = {   
         useTime = 0,
         consume = 0
     },
