@@ -881,6 +881,8 @@ RegisterServerEvent("hsn-inventory:server:useItem")
 AddEventHandler("hsn-inventory:server:useItem",function(item,slot)
     local src = source
     local Player = ESX.GetPlayerFromId(src)
+    local count = GetItemCount(Player.identifier, item.name)
+    if count == 0 then return end
     if playerInventory[Player.identifier][item.slot] ~= nil and playerInventory[Player.identifier][item.slot].name ~= nil then
         if item.name:find("WEAPON_") then
             if item.metadata.durability ~= nil then
@@ -914,6 +916,8 @@ AddEventHandler("hsn-inventory:server:useItemfromSlot",function(slot)
         if playerInventory[Player.identifier][slot] == nil then
             return
         end
+        local count = GetItemCount(Player.identifier, item.name)
+        if count == 0 then return end
         if playerInventory[Player.identifier][slot] ~= nil and playerInventory[Player.identifier][slot].name ~= nil then
             if playerInventory[Player.identifier][slot].name:find("WEAPON_") then
                 if playerInventory[Player.identifier][slot].metadata.durability > 0 then
