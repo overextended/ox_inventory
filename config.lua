@@ -59,7 +59,7 @@ Config.DurabilityDecraseAmount = {
 }
 
 Config.CloseUiItems = {
-	"WEAPON_KNUCKLE",
+    "WEAPON_KNUCKLE",
 	"WEAPON_FLASHBANG",
 	"WEAPON_DBSHOTGUN",
 	"WEAPON_MACHINEPISTOL", 
@@ -1665,15 +1665,15 @@ Config.Shops = {
     },
     -- Police
     {
+        job = 'police',
         coords = vector3(487.235, -997.108, 30.69),
         blip = {
             id = 110,
-            name = "One Stop Police Shop",
+            name = "Police Armoury",
             color = 5,
             scale = 0.6,
         },
         text = 'E - Open Shop',
-        name = 'Shop29', 
         inventory = {
             {
                 name = 'burger',
@@ -1685,7 +1685,7 @@ Config.Shops = {
                 price = 10,
                 count = 200
             },
-            {
+--[[            {
                 name = 'handcuffs',
                 price = 15,
                 count = 200
@@ -1709,19 +1709,19 @@ Config.Shops = {
                 name = 'bulletproofpd',
                 price = 15,
                 count = 200
-            },
+            },]]
             {
-                name = 'ammo_pistol',
+                name = 'hsn_pistol_ammo',
                 price = 250,
                 count = 200
             },
             {
-                name = 'ammo_shotgun',
+                name = 'hsn_shotgun_ammo',
                 price = 15,
                 count = 200
             },
             {
-                name = 'ammo_rifle',
+                name = 'hsn_rifle_ammo',
                 price = 15,
                 count = 200
             },
@@ -1729,49 +1729,49 @@ Config.Shops = {
                 name = 'WEAPON_STUNGUN',
                 price = 150,
                 count = 1,
-                metadata = {}
+                metadata = { weaponlicense = 'POL' }
             },
             {
                 name = 'WEAPON_COMBATPISTOL',
                 price = 250,
                 count = 1,
-                metadata = {}
+                metadata = { weaponlicense = 'POL' }
             },
             {
                 name = 'WEAPON_PISTOL50',
                 price = 400,
                 count = 1,
-                metadata = {}
+                metadata = { weaponlicense = 'POL' }
             },
             {
                 name = 'WEAPON_PUMPSHOTGUN',
                 price = 500,
                 count = 1,
-                metadata = {}
+                metadata = { weaponlicense = 'POL' }
             },
             {
                 name = 'WEAPON_CARBINERIFLE',
                 price = 500,
                 count = 1,
-                metadata = {}
+                metadata = { weaponlicense = 'POL' }
             },
             {
                 name = 'WEAPON_NIGHTSTICK',
                 price = 50,
                 count = 1,
-                metadata = {}
+                metadata = { weaponlicense = 'POL' }
             },
             {
                 name = 'WEAPON_KNIFE',
                 price = 20,
                 count = 1,
-                metadata = {}
+                metadata = { weaponlicense = 'POL' }
             },
             {
                 name = 'WEAPON_FLASHLIGHT',
                 price = 15,
                 count = 1,
-                metadata = {}
+                metadata = { weaponlicense = 'POL' }
             },
         },
     },--WeaponShop
@@ -1779,7 +1779,7 @@ Config.Shops = {
         coords = vector3(-662.180, -934.961, 20.829),
         blip = {
             id = 110,
-            name = "Ammu Nationnation",
+            name = "Ammunation",
             color = 5,
             scale = 0.6,
         },
@@ -1787,7 +1787,7 @@ Config.Shops = {
         name = 'Shop30', 
         inventory = {
             {
-                name = 'ammo_pistol',
+                name = 'hsn_pistol_ammo',
                 price = 250,
                 count = 10
             },
@@ -1827,7 +1827,7 @@ Config.Shops = {
         coords = vector3(810.25, -2157.60, 28.62),
         blip = {
             id = 110,
-            name = "Ammu Nation",
+            name = "Ammunation",
             color = 5,
             scale = 0.6,
         },
@@ -1835,7 +1835,7 @@ Config.Shops = {
         name = 'Shop31', 
         inventory = {
             {
-                name = 'ammo_pistol',
+                name = 'hsn_pistol_ammo',
                 price = 250,
                 count = 10
             },
@@ -1875,7 +1875,7 @@ Config.Shops = {
         coords = vector3(1693.44, 3760.16, 33.71),
         blip = {
             id = 110,
-            name = "Ammu Nation",
+            name = "Ammunation",
             color = 5,
             scale = 0.6,
         },
@@ -1883,7 +1883,7 @@ Config.Shops = {
         name = 'Shop32', 
         inventory = {
             {
-                name = 'ammo_pistol',
+                name = 'hsn_pistol_ammo',
                 price = 250,
                 count = 10
             },
@@ -1923,7 +1923,7 @@ Config.Shops = {
         coords = vector3(-330.24, 6083.88, 30.45),
         blip = {
             id = 110,
-            name = "Ammu Nation",
+            name = "Ammunation",
             color = 5,
             scale = 0.6,
         },
@@ -1931,7 +1931,7 @@ Config.Shops = {
         name = 'Shop33', 
         inventory = {
             {
-                name = 'ammo_pistol',
+                name = 'hsn_pistol_ammo',
                 price = 250,
                 count = 10
             },
@@ -1971,7 +1971,7 @@ Config.Shops = {
         coords = vector3(252.63, -50.00, 68.94),
         blip = {
             id = 110,
-            name = "Ammu Nation",
+            name = "Ammunation",
             color = 5,
             scale = 0.6,
         },
@@ -1979,7 +1979,7 @@ Config.Shops = {
         name = 'Shop34', 
         inventory = {
             {
-                name = 'ammo_pistol',
+                name = 'hsn_pistol_ammo',
                 price = 250,
                 count = 10
             },
@@ -2019,7 +2019,7 @@ Config.Shops = {
         coords = vector3(22.56, -1109.89, 28.80),
         blip = {
             id = 110,
-            name = "Ammu Nation",
+            name = "Ammunation",
             color = 5,
             scale = 0.6,
         },
@@ -2027,7 +2027,7 @@ Config.Shops = {
         name = 'Shop35', 
         inventory = {
             {
-                name = 'ammo_pistol',
+                name = 'hsn_pistol_ammo',
                 price = 250,
                 count = 10
             },
@@ -2067,7 +2067,7 @@ Config.Shops = {
         coords = vector3(2567.69, 294.38, 107.73),
         blip = {
             id = 110,
-            name = "Ammu Nation",
+            name = "Ammunation",
             color = 5,
             scale = 0.6,
         },
@@ -2075,7 +2075,7 @@ Config.Shops = {
         name = 'Shop36', 
         inventory = {
             {
-                name = 'ammo_pistol',
+                name = 'hsn_pistol_ammo',
                 price = 250,
                 count = 10
             },
@@ -2115,7 +2115,7 @@ Config.Shops = {
         coords = vector3(-1117.58, 2698.61, 17.55),
         blip = {
             id = 110,
-            name = "Ammu Nation",
+            name = "Ammunation",
             color = 5,
             scale = 0.6,
         },
@@ -2123,7 +2123,7 @@ Config.Shops = {
         name = 'Shop37', 
         inventory = {
             {
-                name = 'ammo_pistol',
+                name = 'hsn_pistol_ammo',
                 price = 250,
                 count = 10
             },
@@ -2163,7 +2163,7 @@ Config.Shops = {
         coords = vector3(842.44, -1033.42, 27.19),
         blip = {
             id = 110,
-            name = "Ammu Nation",
+            name = "Ammunation",
             color = 5,
             scale = 0.6,
         },
@@ -2171,7 +2171,7 @@ Config.Shops = {
         name = 'Shop38', 
         inventory = {
             {
-                name = 'ammo_pistol',
+                name = 'hsn_pistol_ammo',
                 price = 250,
                 count = 10
             },
@@ -2233,7 +2233,9 @@ Config.Shops = {
             },
         },
     },]]
+
 }
+
 
 
 Config.Ammos = {
@@ -2354,3 +2356,48 @@ Config.Ammos = {
     },
 }
 
+
+Config.ItemList = {
+
+    {   item = 'burger',
+        thirst = 0,
+        hunger = 200000,
+        animDict = "mp_player_inteat@burger",
+        anim = "mp_player_int_eat_burger_fp",
+        model = "prop_cs_burger_01",
+        coords = { x = 0.02, y = 0.022, z = -0.02 },
+        rotation = { x = 0.0, y = 5.0, z = 0.0 },
+        useTime = 2500,
+        consume = 1
+
+    },
+
+    {   item = 'water',
+        thirst = 200000,
+        hunger = 0,
+        animDict = "mp_player_intdrink",
+        anim = "loop_bottle",
+        model = "prop_ld_flow_bottle",
+        coords = { x = 0.03, y = 0.0, z = 0.02 },
+        rotation = { x = 0.0, y = -13.5, z = -1.5 },
+        useTime = 2500,
+        consume = 1
+    },
+
+    {   item = 'bandage',
+        animDict = "missheistdockssetup1clipboard@idle_a",
+        anim = "idle_a",
+        flags = 49,
+        model = "prop_rolled_sock_02",
+        coords = { x = -0.14, y = 0.02, z = -0.08 },
+        rotation = { x = -50.0, y = -50.0, z = 0.0 },
+        useTime = 2500,
+        consume = 1
+    },
+
+    {   item = 'identification',
+        useTime = 0,
+        consume = 0
+    },
+
+}
