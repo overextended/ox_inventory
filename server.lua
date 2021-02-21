@@ -916,7 +916,7 @@ AddEventHandler("hsn-inventory:server:useItemfromSlot",function(slot)
         if playerInventory[Player.identifier][slot] == nil then
             return
         end
-        local count = GetItemCount(Player.identifier, item.name)
+        local count = GetItemCount(Player.identifier, playerInventory[Player.identifier][slot].name)
         if count == 0 then return end
         if playerInventory[Player.identifier][slot] ~= nil and playerInventory[Player.identifier][slot].name ~= nil then
             if playerInventory[Player.identifier][slot].name:find("WEAPON_") then
