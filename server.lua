@@ -893,7 +893,8 @@ AddEventHandler("hsn-inventory:server:useItem",function(item,slot)
             end
         else
             if ESX.UsableItemsCallbacks[item.name] ~= nil then
-                TriggerClientEvent("hsn-inventory:client:esxUseItem",src,item)
+                TriggerClientEvent('hsn-inventory:useItem', src, item)
+                
                 --TriggerClientEvent("hsn-inventory:client:addItemNotify",source,ESXItems[item.name],'Used 1x')
             end
         end
@@ -918,7 +919,7 @@ AddEventHandler("hsn-inventory:server:useItemfromSlot",function(slot)
                     TriggerClientEvent("notification",src,'This weapon is broken',2)
                 end
             else
-                TriggerClientEvent("hsn-inventory:client:esxUseItem",src,playerInventory[Player.identifier][slot])
+                TriggerClientEvent("hsn-inventory:useItem",src,playerInventory[Player.identifier][slot])
                 --TriggerClientEvent("hsn-inventory:client:addItemNotify",source,ESXItems[playerInventory[Player.identifier][slot].name],'Used 1x')
             end
         end
@@ -1195,10 +1196,7 @@ function getPlayerIdentification(xPlayer)
 end
 
 for k, v in pairs(Config.ItemList) do
-    ESX.RegisterUsableItem(v.item, function(source)
-        local xPlayer = ESX.GetPlayerFromId(source)
-        local label = ESXItems[v.item].label
-
-        TriggerClientEvent('hsn-inventory:useItem', source, k, label)
+    ESX.RegisterUsableItem(v, function(source)
+        TriggerClientEvent('hsn-inventory:useItem', source, k)
     end)
 end
