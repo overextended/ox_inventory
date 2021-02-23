@@ -227,17 +227,18 @@
     position: absolute;
     bottom: 2vh;
     width: 100%;
-    height: 1.8vh;
+    height: 5px;
     line-height: 1.6vh;
-    background-color: rgba(32, 6, 6, 0.15);
+    background-color: #1d1d1de8;
+    box-shadow: inset 0 0 1px 1px rgba(0, 0, 0, 0.2);
 }
 
 .item-slot-durability-bar {
     position: absolute;
-    height: 15px;
+    height: 5px;
     width: 100%;
     text-align: center;
-    box-shadow: inset 0 0 .25vh 0 rgba(0, 0, 0, 0.2);
+    box-shadow: inset 0 0 1px 1px rgba(0, 0, 0, 0.2);
 }
 
 
