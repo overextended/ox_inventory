@@ -556,5 +556,5 @@ function itemUsed(data)
     end
 
     
-    if data.consume then TriggerServerEvent('hsn-inventory:server:removeItem', data.item, data.consume) end
+    if data.consume then TriggerServerEvent('hsn-inventory:client:removeItem', data.item, data.consume) end
 end
