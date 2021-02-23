@@ -894,16 +894,12 @@ AddEventHandler("hsn-inventory:server:useItem",function(item,slot)
                 end
             end
         else
-            if ESX.UsableItemsCallbacks[item.name] ~= nil then
-                if item.name:find("hsn") then
-                    local weps = Config.Ammos[item.name]
-                    TriggerClientEvent("hsn-inventory:addAmmo",src,weps,item.name)
-                    return
-                end
-                TriggerClientEvent('hsn-inventory:useItem', src, item)
-                
-                --TriggerClientEvent("hsn-inventory:client:addItemNotify",source,ESXItems[item.name],'Used 1x')
+            if item.name:find("hsn") then
+                local weps = Config.Ammos[item.name]
+                TriggerClientEvent("hsn-inventory:addAmmo",src,weps,item.name)
+                return
             end
+            TriggerClientEvent('hsn-inventory:useItem', src, item)
         end
     end
 end)
@@ -1200,17 +1196,4 @@ end)
 
 function getPlayerIdentification(xPlayer)
     return ('Name: %s | Sex: %s | Height: %s<br>DOB: %s (%s)'):format( xPlayer.getName(), xPlayer.get('sex'), xPlayer.get('height'), xPlayer.get('dateofbirth'), xPlayer.getIdentifier() )
-end
-
-
-for k, v in pairs(Config.ItemList) do
-    ESX.RegisterUsableItem(v, function(source)
-        TriggerClientEvent('hsn-inventory:useItem', source, k)
-    end)
-end
-
-for k,v in pairs(Config.Ammos) do
-    ESX.RegisterUsableItem(k,function(source)
-        TriggerClientEvent("hsn-inventory:addAmmo",source,v,k)
-    end)
 end
