@@ -490,13 +490,15 @@ RegisterCommand('closeinv', function()
 end, false)
 
 
-
 RegisterNetEvent("hsn-inventory:useItem")
 AddEventHandler("hsn-inventory:useItem",function(item)
     if item.name then item = item.name end
     data = Config.ItemList[item]
     data.item = item
     if data.closeInv then TriggerEvent("hsn-inventory:client:closeInventory") end
+    if data.item == 'lockpick' then
+        TriggerEvent('esx_lockpick:onUse')
+    end
     if data.animDict then
         exports['mythic_progbar']:Progress({
             name = "useitem",
@@ -504,7 +506,7 @@ AddEventHandler("hsn-inventory:useItem",function(item)
             label = "Using "..data.item,
             useWhileDead = false,
             canCancel = false,
-            controlDisables = { disableMovement = false, disableCarMovement = false, disableMouse = false, disableCombat = true },
+            controlDisables = { disableMovement = data.disableMove, disableCarMovement = false, disableMouse = false, disableCombat = true },
             animation = { animDict = data.animDict, anim = data.anim, flags = 49 },
             prop = { model = data.model, coords = data.coords, rotation = data.rotation }
         }, function()
@@ -517,7 +519,7 @@ AddEventHandler("hsn-inventory:useItem",function(item)
             label = "Using "..data.item,
             useWhileDead = false,
             canCancel = false,
-            controlDisables = { disableMovement = false, disableCarMovement = false, disableMouse = false, disableCombat = true },
+            controlDisables = { disableMovement = data.disableMove, disableCarMovement = false, disableMouse = false, disableCombat = true },
             animation = { animDict = 'pickup_object', anim = 'putdown_low', flags = 48 },
             prop = nil,
         }, function()
@@ -536,9 +538,6 @@ function itemUsed(data)
         if data.thirst > 0 then TriggerEvent('esx_status:add', 'thirst', data.thirst)
         else TriggerEvent('esx_status:remove', 'thirst', data.thirst) end
     end
-    --TriggerServerEvent('esx:removeInventoryItem', 'item_standard', data.item, 1)
-    if data.consume then TriggerServerEvent('hsn-inventory:server:removeItem', data.item, data.consume) end
-
 
     if data.item == 'bandage' then
         local maxHealth = 200
@@ -549,5 +548,6 @@ function itemUsed(data)
 		TriggerEvent('mythic_hospital:client:ReduceBleed')
     end
 
-
+    
+    if data.consume then TriggerServerEvent('hsn-inventory:server:removeItem', data.item, data.consume) end
 end
