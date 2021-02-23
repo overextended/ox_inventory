@@ -1,6 +1,6 @@
 ESX = nil
 local PlayerData = {}
-local invOpen, isDead, isCuffed = false, false, false
+local invOpen, isDead, isCuffed, currentWeapon = false, false, false, nil
 -- hsn inventory Hasan.#7803
 Citizen.CreateThread(function()
     while ESX == nil do
@@ -13,6 +13,7 @@ Citizen.CreateThread(function()
         Citizen.Wait(10)
     end
     PlayerData = ESX.GetPlayerData()
+    SetCurrentPedWeapon(PlayerPedId(), GetHashKey('WEAPON_UNARMED'), true)
 end)
 
 RegisterNetEvent('esx:setJob')
@@ -314,11 +315,14 @@ RegisterNUICallback("notification", function(data)
 end)
 
 RegisterNetEvent('hsn-inventory:weapondraw')
-AddEventHandler('hsn-inventory:weapondraw', function()
+AddEventHandler('hsn-inventory:weapondraw', function(item)
     local playerPed = PlayerPedId()
     loadAnimDict('reaction@intimidation@1h')
     TaskPlayAnimAdvanced(playerPed, "reaction@intimidation@1h", "intro", GetEntityCoords(playerPed, true), 0, 0, GetEntityHeading(playerPed), 8.0, 3.0, -1, 50, 0, 0, 0)
-    Citizen.Wait(1600)
+    Citizen.Wait(800)
+    RemoveWeaponFromPed(PlayerPedId(), GetHashKey(item.name))
+    SetCurrentPedWeapon(PlayerPedId(), "WEAPON_UNARMED", true)
+    Citizen.Wait(800)
     ClearPedSecondaryTask(PlayerPedId())
 end)
 
@@ -334,14 +338,16 @@ end)
 RegisterNetEvent("hsn-inventory:client:weapon")
 AddEventHandler("hsn-inventory:client:weapon",function(item)
     TriggerEvent("hsn-inventory:client:closeInventory")
-    local curweapon = GetSelectedPedWeapon(PlayerPedId())
-    if curweapon ==  GetHashKey(item.name) then
+    local newWeapon = item.metadata.weaponlicense
+    if currentWeapon == newWeapon then
         TriggerEvent("hsn-inventory:weaponaway")
+        Citizen.Wait(1600)
         RemoveWeaponFromPed(PlayerPedId(), GetHashKey(item.name))
         SetCurrentPedWeapon(PlayerPedId(), "WEAPON_UNARMED", true)
         curweaponSlot = nil
-    elseif curweapon ~= GetHashKey(item.name) then
-        TriggerEvent("hsn-inventory:weapondraw")
+        currentWeapon = nil
+    else
+        TriggerEvent("hsn-inventory:weapondraw",item)
         Citizen.Wait(1600)
         curweaponSlot = item.slot
         GiveWeaponToPed(PlayerPedId(), GetHashKey(item.name), item.metadata.ammo, false, false)
@@ -353,6 +359,7 @@ AddEventHandler("hsn-inventory:client:weapon",function(item)
             if component then GiveWeaponComponentToPed(PlayerPedId(), GetHashKey(item.name), component) end
         end
         SetPedAmmo(PlayerPedId(), GetHashKey(item.name), item.metadata.ammo)
+        currentWeapon = item.metadata.weaponlicense
     end
     TriggerEvent('hsn-inventory:currentWeapon', item) -- using for another resource
 end)
