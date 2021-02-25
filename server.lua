@@ -83,6 +83,7 @@ AddPlayerInventory = function(identifier, item, count, slot, metadata)
                     if playerInventory[identifier][i] == nil then
                         if metadata == nil then
                             metadata = {}
+                            metadata.description = ''
                             metadata.durability = 100
                             metadata.ammo = 0
                         end
@@ -109,7 +110,7 @@ AddPlayerInventory = function(identifier, item, count, slot, metadata)
                     playerInventory[identifier][slot] = {name = item ,label = ESXItems[item].label, weight = ESXItems[item].weight, slot = i, count = count, description = ESXItems[item].description, metadata = metadata or {}, stackable = ESXItems[item].stackable, closeonuse = ESXItems[item].closeonuse}
                 else
                     for i = 1, Config.PlayerSlot do
-                        if playerInventory[identifier][i] ~= nil and playerInventory[identifier][i].name == item and playerInventory[identifier][i].metadata.description == metadata.description then
+                        if playerInventory[identifier][i] ~= nil and playerInventory[identifier][i].name == item then
                             playerInventory[identifier][i] = {name = item ,label = ESXItems[item].label, weight = ESXItems[item].weight, slot = i, count = playerInventory[identifier][i].count + count, description = ESXItems[item].description, metadata = metadata or {}, stackable = ESXItems[item].stackable, closeonuse = ESXItems[item].closeonuse}
                             break
                         else
