@@ -83,7 +83,6 @@ AddPlayerInventory = function(identifier, item, count, slot, metadata)
                     if playerInventory[identifier][i] == nil then
                         if metadata == nil then
                             metadata = {}
-                            metadata.description = ''
                             metadata.durability = 100
                             metadata.ammo = 0
                         end
