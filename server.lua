@@ -886,7 +886,6 @@ AddEventHandler("hsn-inventory:server:useItem",function(item,slot)
             if item.metadata.durability ~= nil then
                 if item.metadata.durability > 0 then 
                     TriggerClientEvent("hsn-inventory:client:weapon",src,item)
-                    TriggerClientEvent("hsn-inventory:clientweaponnotify",src,ESXItems[item.name])
                 else
                     TriggerClientEvent("notification",src,'This weapon is broken',2)
                 end
@@ -915,7 +914,6 @@ AddEventHandler("hsn-inventory:server:useItemfromSlot",function(slot)
                 if playerInventory[Player.identifier][slot].metadata.durability > 0 then
                     TriggerClientEvent("hsn-inventory:client:weapon",src,playerInventory[Player.identifier][slot])
                     --TriggerClientEvent("hsn-inventory:client:addItemNotify",source,ESXItems[playerInventory[Player.identifier][slot].name],1,'use')
-                    TriggerClientEvent("hsn-inventory:clientweaponnotify",src,playerInventory[Player.identifier][slot])
                 else
                     TriggerClientEvent("notification",src,'This weapon is broken',2)
                 end
