@@ -50,7 +50,6 @@ GetRandomLicense = function(text)
     return license
 end
 
-
 GetItemsSlot = function(inventory, name)
     local returnData = {}
     for k,v in pairs(inventory) do
@@ -1079,6 +1078,15 @@ exports("getItemCount",function(src, item)
     end
     local ItemCount = GetItemCount(Player.identifier, item)
     return ItemCount
+end)
+
+exports("getItem",function(src, name)
+    local Player = ESX.GetPlayerFromId(src)
+    if playerInventory[Player.identifier] == nil then
+        return
+    end
+    local data = GetItemsSlot(playerInventory[Player.identifier], name)
+    return data
 end)
 
 RegisterNetEvent("hsn-inventory:server:getItemCount")
