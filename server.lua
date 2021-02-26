@@ -181,6 +181,9 @@ AddEventHandler("hsn-inventory:server:saveInventoryData",function(data)
     local src = source
     local Player = ESX.GetPlayerFromId(src)
     if data ~= nil then
+        local money = exports["hsn-inventory"]:getItemCount(source,'money')
+        Player.setMoney(money)
+        
         if data.frominv == data.toinv and (data.frominv == 'Playerinv') and not shopOpen then
             if data.type == 'swap' and not shopOpen then
                 TriggerClientEvent("hsn-inventory:client:checkweapon",src,data.fromItem)
@@ -1081,7 +1084,9 @@ exports("getItem",function(src, item)
     if playerInventory[Player.identifier] == nil then
         return
     end
-    return ESXItems[item]
+    local ESXItem = ESXItems[item]
+    ESXItem.count = GetItemCount(Player.identifier, item)
+    return ESXItem
 end)
 
 RegisterNetEvent("hsn-inventory:server:getItemCount")
