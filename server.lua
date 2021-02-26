@@ -181,7 +181,7 @@ AddEventHandler("hsn-inventory:server:saveInventoryData",function(data)
     local src = source
     local Player = ESX.GetPlayerFromId(src)
     if data ~= nil then
-        local money = exports["hsn-inventory"]:getItemCount(source,'money')
+        local money = exports["hsn-inventory"]:getItemCount(src,'money')
         Player.setMoney(money)
         
         if data.frominv == data.toinv and (data.frominv == 'Playerinv') and not shopOpen then
