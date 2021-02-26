@@ -521,11 +521,9 @@ AddEventHandler("hsn-inventory:server:saveInventoryData",function(data)
                 return TriggerClientEvent("notification",src,'You can not return your items',2)
             elseif data.type == 'freeslot' then
                 if IfInventoryCanCarry(playerInventory[Player.identifier],ESX.GetConfig().MaxWeight, (data.item.weight * data.item.count)) then
-                    --local money = Player.getMoney()
-                    local money = exports["hsn-inventory"]:getItemCount(source,'cash')
+                    local money = Player.getMoney()
                     if (money >= (data.item.price * data.item.count)) then
-                        --Player.removeMoney(data.item.price * data.item.count)
-                        TriggerEvent("hsn-inventory:server:removeItem",src,'cash',data.item.price * data.item.count)
+                        Player.removeMoney(data.item.price * data.item.count)
                         TriggerEvent("hsn-inventory:onAddInventoryItem",src,data.item.name,data.item.count)
                         if data.item.name:find('WEAPON_') then
                             if not data.item.metadata then data.item.metadata = {} end
@@ -546,8 +544,7 @@ AddEventHandler("hsn-inventory:server:saveInventoryData",function(data)
                     TriggerClientEvent("notification",src,"You can not carry this item",2)
                 end
             elseif data.type == 'yarimswap' then
-                --local money = Player.getMoney()
-                local money = exports["hsn-inventory"]:getItemCount(source,'cash')
+                local money = Player.getMoney()
                 if IfInventoryCanCarry(playerInventory[Player.identifier],ESX.GetConfig().MaxWeight, (data.newslotItem.weight * data.newslotItem.count)) then
                     if (money >= (data.newslotItem.price *  data.newslotItem.count)) then
                         if data.newslotItem.name:find('WEAPON_') then
@@ -559,8 +556,7 @@ AddEventHandler("hsn-inventory:server:saveInventoryData",function(data)
                             data.newslotItem.metadata = {}
                             data.newslotItem.metadata.description = getPlayerIdentification(Player)
                         end
-                        --Player.removeMoney(data.newslotItem.price *  data.newslotItem.count)
-                        TriggerEvent("hsn-inventory:server:removeItem",src,'cash', data.newslotItem.price *  data.newslotItem.count)
+                        Player.removeMoney(data.newslotItem.price *  data.newslotItem.count)
                         playerInventory[Player.identifier][data.toSlot] = {name = data.newslotItem.name ,label = data.newslotItem.label, weight = data.newslotItem.weight, slot = data.toSlot, count = data.newslotItem.count, description = data.newslotItem.description, metadata = data.newslotItem.metadata, stackable = data.newslotItem.stackable, closeonuse = ESXItems[data.newslotItem.name].closeonuse}
                         TriggerEvent("hsn-inventory:onAddInventoryItem",src,data.newslotItem.name,data.newslotItem.count)
                     else
