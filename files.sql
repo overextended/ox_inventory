@@ -16,7 +16,7 @@ INSERT INTO `items` (`name`, `label`, `weight`, `rare`, `can_remove`, `stackable
     ('water', 'Water', 1, 0, 1, 1, 1, ''),
     ('burger', 'Burger', 1, 0, 1, 1, 1, ''),
     ('cola', 'eCola', 1, 0, 1, 1, 1, ''),
-    ('cash', 'Money', 0, 0, 1, 1, 1, ''),
+    ('money', 'Money', 0, 0, 1, 1, 1, ''),
 	('hsn_lmg_ammo', 'Box of lmg ammo', 2, 0, 1, 1, 1, ''),
 	('hsn_pistol_ammo', 'Box of pistol ammo', 2, 0, 1, 1, 1, ''),
 	('hsn_pistol_ammo_big', 'Box of pistol ammo Large', 2, 0, 1, 1, 1, ''),
