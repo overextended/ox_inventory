@@ -1,6 +1,6 @@
 Config = Config or {}
 Config.PlayerSlot = 51
-Config.DurabilityDecraseAmount = {
+Config.DurabilityDecreaseAmount = {
     ['WEAPON_PISTOL'] = 0.6,
     ['WEAPON_ADVANCEDRIFLE'] = 0.6,
     ['WEAPON_APPISTOL'] = 0.4,
@@ -58,38 +58,16 @@ Config.DurabilityDecraseAmount = {
     ['WEAPON_WRENCH'] = 1.0,
 }
 
-Config.CloseUiItems = {
-	"WEAPON_KNUCKLE",
-	"WEAPON_FLASHBANG",
-	"WEAPON_DBSHOTGUN",
-	"WEAPON_MACHINEPISTOL", 
-	"WEAPON_GUSENBERG", 
-	"WEAPON_ASSUALTRIFLE",
-	"WEAPON_MINISMG", 
-	"WEAPON_MICROSMG", 
-	"WEAPON_ADVANCEDRIFLE",
-	"WEAPON_VINTAGEPISTOL", 
-	"WEAPON_COMBATPDW", 
-	"WEAPON_COMPACTRIFLE", 
-	"WEAPON_BULLPUPSHOTGUN", 
-	"WEAPON_HEAVYPISTOL", 
-	"WEAPON_PISTOL50", 
-	"WEAPON_SAWNOFFSHOTGUN", 
-	"WEAPON_CARBINERIFLE_MK2",
-	"WEAPON_SG_PUMPSHOTGUN"
-}
-
 Config.Shops = {
     { -- 24/7
         coords = vector3(-531.14, -1221.33, 17.48),
         blip = {
             id = 52,
-            name = "Shop",
             color = 5,
             scale = 0.6,
         },
         text = 'E - Open Shop',
-        name = 'Shop', 
+        name = 'Xero Gas', 
         inventory = {
             {
                 name = 'sandwich',
@@ -142,12 +120,11 @@ Config.Shops = {
         coords = vector3(2557.458,  382.282, 107.622),
         blip = {
             id = 52,
-            name = "Shop",
             color = 5,
             scale = 0.6,
         },
         text = 'E - Open Shop',
-        name = 'Shop2', 
+        name = '24/7', 
         inventory = {
             {
                 name = 'sandwich',
@@ -200,12 +177,11 @@ Config.Shops = {
         coords = vector3(-3038.939, 585.954, 6.908),
         blip = {
             id = 52,
-            name = "Shop",
             color = 5,
             scale = 0.6,
         },
         text = 'E - Open Shop',
-        name = 'Shop3', 
+        name = '24/7', 
         inventory = {
             {
                 name = 'sandwich',
@@ -258,12 +234,11 @@ Config.Shops = {
         coords = vector3(-3241.927, 1001.462, 11.830),
         blip = {
             id = 52,
-            name = "Shop",
             color = 5,
             scale = 0.6,
         },
         text = 'E - Open Shop',
-        name = 'Shop4', 
+        name = '24/7', 
         inventory = {
             {
                 name = 'sandwich',
@@ -316,12 +291,11 @@ Config.Shops = {
         coords = vector3(547.431, 2671.710, 41.156),
         blip = {
             id = 52,
-            name = "Shop",
             color = 5,
             scale = 0.6,
         },
         text = 'E - Open Shop',
-        name = 'Shop5', 
+        name = '24/7', 
         inventory = {
             {
                 name = 'sandwich',
@@ -374,12 +348,11 @@ Config.Shops = {
         coords = vector3(1961.464, 3740.672, 31.343),
         blip = {
             id = 52,
-            name = "Shop",
             color = 5,
             scale = 0.6,
         },
         text = 'E - Open Shop',
-        name = 'Shop6', 
+        name = '24/7', 
         inventory = {
             {
                 name = 'sandwich',
@@ -432,12 +405,11 @@ Config.Shops = {
         coords = vector3(2678.916, 3280.671, 54.241),
         blip = {
             id = 52,
-            name = "Shop",
             color = 5,
             scale = 0.6,
         },
         text = 'E - Open Shop',
-        name = 'Shop7', 
+        name = '24/7', 
         inventory = {
             {
                 name = 'sandwich',
@@ -490,12 +462,11 @@ Config.Shops = {
         coords = vector3(1729.216, 6414.131, 34.037),
         blip = {
             id = 52,
-            name = "Shop",
             color = 5,
             scale = 0.6,
         },
         text = 'E - Open Shop',
-        name = 'Shop8', 
+        name = '24/7', 
         inventory = {
             {
                 name = 'sandwich',
@@ -548,12 +519,11 @@ Config.Shops = {
         coords = vector3(-48.519, -1757.514, 28.421),
         blip = {
             id = 52,
-            name = "Shop",
             color = 5,
             scale = 0.6,
         },
         text = 'E - Open Shop',
-        name = 'Shop9', 
+        name = 'Davis LTD', 
         inventory = {
             {
                 name = 'sandwich',
@@ -606,12 +576,11 @@ Config.Shops = {
         coords = vector3(1163.373, -323.801, 68.205),
         blip = {
             id = 52,
-            name = "Shop",
             color = 5,
             scale = 0.6,
         },
         text = 'E - Open Shop',
-        name = 'Shop10', 
+        name = 'Mirror Park LTD', 
         inventory = {
             {
                 name = 'sandwich',
@@ -664,12 +633,11 @@ Config.Shops = {
         coords = vector3(-707.501, -914.260, 18.215),
         blip = {
             id = 52,
-            name = "Shop",
             color = 5,
             scale = 0.6,
         },
         text = 'E - Open Shop',
-        name = 'Shop11', 
+        name = 'Little Seoul LTD', 
         inventory = {
             {
                 name = 'sandwich',
@@ -722,12 +690,11 @@ Config.Shops = {
         coords = vector3(-1820.523, 792.518, 137.118),
         blip = {
             id = 52,
-            name = "Shop",
             color = 5,
             scale = 0.6,
         },
         text = 'E - Open Shop',
-        name = 'Shop12', 
+        name = 'Richman Glen LTD', 
         inventory = {
             {
                 name = 'sandwich',
@@ -780,12 +747,11 @@ Config.Shops = {
         coords = vector3(1698.388, 4924.404, 41.063),
         blip = {
             id = 52,
-            name = "Shop",
             color = 5,
             scale = 0.6,
         },
         text = 'E - Open Shop',
-        name = 'Shop13', 
+        name = 'Grapeseed LTD', 
         inventory = {
             {
                 name = 'sandwich',
@@ -838,12 +804,11 @@ Config.Shops = {
         coords = vector3(25.723, -1346.966, 28.497),
         blip = {
             id = 52,
-            name = "Shop",
             color = 5,
             scale = 0.6,
         },
         text = 'E - Open Shop',
-        name = 'Shop14', 
+        name = '24/7', 
         inventory = {
             {
                 name = 'sandwich',
@@ -896,12 +861,11 @@ Config.Shops = {
         coords = vector3(373.875, 325.896, 102.566),
         blip = {
             id = 52,
-            name = "Shop",
             color = 5,
             scale = 0.6,
         },
         text = 'E - Open Shop',
-        name = 'Shop15', 
+        name = '24/7', 
         inventory = {
             {
                 name = 'sandwich',
@@ -951,15 +915,14 @@ Config.Shops = {
         },
     },
     {
-        coords = vector3(-2540.88, 2314.22, 32.42),
+        coords = vector3(-2544.092, 2316.184, 33.2),
         blip = {
             id = 52,
-            name = "Shop",
             color = 5,
             scale = 0.6,
         },
         text = 'E - Open Shop',
-        name = 'Shop16', 
+        name = 'Lago Zancudo RON', 
         inventory = {
             {
                 name = 'sandwich',
@@ -1012,12 +975,11 @@ Config.Shops = {
         coords = vector3(161.27, 6640.28, 30.72),
         blip = {
             id = 52,
-            name = "Shop",
             color = 5,
             scale = 0.6,
         },
         text = 'E - Open Shop',
-        name = 'Shop17', 
+        name = "Don's Country Store", 
         inventory = {
             {
                 name = 'sandwich',
@@ -1076,7 +1038,7 @@ Config.Shops = {
             scale = 0.6,
         },
         text = 'E - Open Shop',
-        name = 'Shop18', 
+        name = 'Robs Liquor', 
         inventory = {
             {
                 name = 'water',
@@ -1123,7 +1085,7 @@ Config.Shops = {
                 scale = 0.6,
             },
             text = 'E - Open Shop',
-            name = 'Shop19', 
+            name = 'Robs Liquor', 
             inventory = {
                 {
                     name = 'water',
@@ -1171,7 +1133,7 @@ Config.Shops = {
                 scale = 0.6,
             },
             text = 'E - Open Shop',
-            name = 'Shop20', 
+            name = 'Robs Liquor', 
             inventory = {
                 {
                     name = 'water',
@@ -1219,7 +1181,7 @@ Config.Shops = {
                 scale = 0.6,
             },
             text = 'E - Open Shop',
-            name = 'Shop21', 
+            name = 'Robs Liquor', 
             inventory = {
                 {
                     name = 'water',
@@ -1267,7 +1229,7 @@ Config.Shops = {
                 scale = 0.6,
             },
             text = 'E - Open Shop',
-            name = 'Shop22', 
+            name = 'Robs Liquor', 
             inventory = {
                 {
                     name = 'water',
@@ -1315,7 +1277,7 @@ Config.Shops = {
                 scale = 0.6,
             },
             text = 'E - Open Shop',
-            name = 'Shop23', 
+            name = 'Robs Liquor', 
             inventory = {
                 {
                     name = 'water',
@@ -1363,7 +1325,7 @@ Config.Shops = {
                 scale = 0.6,
             },
             text = 'E - Open Shop',
-            name = 'Shop24', 
+            name = 'Robs Liquor', 
             inventory = {
                 {
                     name = 'water',
@@ -1411,7 +1373,7 @@ Config.Shops = {
                 scale = 0.6,
             },
             text = 'E - Open Shop',
-            name = 'Shop25', 
+            name = 'Robs Liquor', 
             inventory = {
                 {
                     name = 'water',
@@ -1460,7 +1422,7 @@ Config.Shops = {
             scale = 0.6,
         },
         text = 'E - Open Shop',
-        name = 'Shop26', 
+        name = 'YouTool', 
         inventory = {
             {
                 name = 'acetone',
@@ -1549,7 +1511,7 @@ Config.Shops = {
             scale = 0.6,
         },
         text = 'E - Open Shop',
-        name = 'Shop27', 
+        name = 'YouTool', 
         inventory = {
             {
                 name = 'acetone',
@@ -1634,12 +1596,12 @@ Config.Shops = {
         coords = vector3(1775.936, 2587.57, 44.713),
         blip = {
             id = 52,
-            name = "Prison Shop",
+            name = "Prison Commissary",
             color = 5,
             scale = 0.6,
         },
         text = 'E - Open Shop',
-        name = 'Shop28', 
+        name = 'Prison Commissary', 
         inventory = {
             {
                 name = 'bread',
@@ -1665,15 +1627,16 @@ Config.Shops = {
     },
     -- Police
     {
+        job = 'police',
         coords = vector3(487.235, -997.108, 30.69),
+        name = 'Police Armoury',
         blip = {
             id = 110,
-            name = "One Stop Police Shop",
+            name = 'Police Armoury',
             color = 5,
             scale = 0.6,
         },
         text = 'E - Open Shop',
-        name = 'Shop29', 
         inventory = {
             {
                 name = 'burger',
@@ -1685,7 +1648,7 @@ Config.Shops = {
                 price = 10,
                 count = 200
             },
-            {
+--[[            {
                 name = 'handcuffs',
                 price = 15,
                 count = 200
@@ -1709,19 +1672,19 @@ Config.Shops = {
                 name = 'bulletproofpd',
                 price = 15,
                 count = 200
-            },
+            },]]
             {
-                name = 'ammo_pistol',
+                name = 'hsn_pistol_ammo',
                 price = 250,
                 count = 200
             },
             {
-                name = 'ammo_shotgun',
+                name = 'hsn_shotgun_ammo',
                 price = 15,
                 count = 200
             },
             {
-                name = 'ammo_rifle',
+                name = 'hsn_rifle_ammo',
                 price = 15,
                 count = 200
             },
@@ -1729,49 +1692,49 @@ Config.Shops = {
                 name = 'WEAPON_STUNGUN',
                 price = 150,
                 count = 1,
-                metadata = {}
+                metadata = { weaponlicense = 'POL' }
             },
             {
                 name = 'WEAPON_COMBATPISTOL',
                 price = 250,
                 count = 1,
-                metadata = {}
+                metadata = { weaponlicense = 'POL' }
             },
             {
                 name = 'WEAPON_PISTOL50',
                 price = 400,
                 count = 1,
-                metadata = {}
+                metadata = { weaponlicense = 'POL' }
             },
             {
                 name = 'WEAPON_PUMPSHOTGUN',
                 price = 500,
                 count = 1,
-                metadata = {}
+                metadata = { weaponlicense = 'POL' }
             },
             {
                 name = 'WEAPON_CARBINERIFLE',
                 price = 500,
                 count = 1,
-                metadata = {}
+                metadata = { weaponlicense = 'POL' }
             },
             {
                 name = 'WEAPON_NIGHTSTICK',
                 price = 50,
                 count = 1,
-                metadata = {}
+                metadata = { weaponlicense = 'POL' }
             },
             {
                 name = 'WEAPON_KNIFE',
                 price = 20,
                 count = 1,
-                metadata = {}
+                metadata = { weaponlicense = 'POL' }
             },
             {
                 name = 'WEAPON_FLASHLIGHT',
                 price = 15,
                 count = 1,
-                metadata = {}
+                metadata = { weaponlicense = 'POL' }
             },
         },
     },--WeaponShop
@@ -1779,15 +1742,15 @@ Config.Shops = {
         coords = vector3(-662.180, -934.961, 20.829),
         blip = {
             id = 110,
-            name = "Ammu Nationnation",
+            name = "Ammunation",
             color = 5,
             scale = 0.6,
         },
         text = 'E - Open Shop',
-        name = 'Shop30', 
+        name = 'Ammunation', 
         inventory = {
             {
-                name = 'ammo_pistol',
+                name = 'hsn_pistol_ammo',
                 price = 250,
                 count = 10
             },
@@ -1827,15 +1790,15 @@ Config.Shops = {
         coords = vector3(810.25, -2157.60, 28.62),
         blip = {
             id = 110,
-            name = "Ammu Nation",
+            name = "Ammunation",
             color = 5,
             scale = 0.6,
         },
         text = 'E - Open Shop',
-        name = 'Shop31', 
+        name = 'Ammunation', 
         inventory = {
             {
-                name = 'ammo_pistol',
+                name = 'hsn_pistol_ammo',
                 price = 250,
                 count = 10
             },
@@ -1875,15 +1838,15 @@ Config.Shops = {
         coords = vector3(1693.44, 3760.16, 33.71),
         blip = {
             id = 110,
-            name = "Ammu Nation",
+            name = "Ammunation",
             color = 5,
             scale = 0.6,
         },
         text = 'E - Open Shop',
-        name = 'Shop32', 
+        name = 'Ammunation', 
         inventory = {
             {
-                name = 'ammo_pistol',
+                name = 'hsn_pistol_ammo',
                 price = 250,
                 count = 10
             },
@@ -1923,15 +1886,15 @@ Config.Shops = {
         coords = vector3(-330.24, 6083.88, 30.45),
         blip = {
             id = 110,
-            name = "Ammu Nation",
+            name = "Ammunation",
             color = 5,
             scale = 0.6,
         },
         text = 'E - Open Shop',
-        name = 'Shop33', 
+        name = 'Ammunation', 
         inventory = {
             {
-                name = 'ammo_pistol',
+                name = 'hsn_pistol_ammo',
                 price = 250,
                 count = 10
             },
@@ -1971,15 +1934,15 @@ Config.Shops = {
         coords = vector3(252.63, -50.00, 68.94),
         blip = {
             id = 110,
-            name = "Ammu Nation",
+            name = "Ammunation",
             color = 5,
             scale = 0.6,
         },
         text = 'E - Open Shop',
-        name = 'Shop34', 
+        name = 'Ammunation', 
         inventory = {
             {
-                name = 'ammo_pistol',
+                name = 'hsn_pistol_ammo',
                 price = 250,
                 count = 10
             },
@@ -2019,15 +1982,15 @@ Config.Shops = {
         coords = vector3(22.56, -1109.89, 28.80),
         blip = {
             id = 110,
-            name = "Ammu Nation",
+            name = "Ammunation",
             color = 5,
             scale = 0.6,
         },
         text = 'E - Open Shop',
-        name = 'Shop35', 
+        name = 'Ammunation', 
         inventory = {
             {
-                name = 'ammo_pistol',
+                name = 'hsn_pistol_ammo',
                 price = 250,
                 count = 10
             },
@@ -2067,15 +2030,15 @@ Config.Shops = {
         coords = vector3(2567.69, 294.38, 107.73),
         blip = {
             id = 110,
-            name = "Ammu Nation",
+            name = "Ammunation",
             color = 5,
             scale = 0.6,
         },
         text = 'E - Open Shop',
-        name = 'Shop36', 
+        name = 'Ammunation', 
         inventory = {
             {
-                name = 'ammo_pistol',
+                name = 'hsn_pistol_ammo',
                 price = 250,
                 count = 10
             },
@@ -2115,15 +2078,15 @@ Config.Shops = {
         coords = vector3(-1117.58, 2698.61, 17.55),
         blip = {
             id = 110,
-            name = "Ammu Nation",
+            name = "Ammunation",
             color = 5,
             scale = 0.6,
         },
         text = 'E - Open Shop',
-        name = 'Shop37', 
+        name = 'Ammunation', 
         inventory = {
             {
-                name = 'ammo_pistol',
+                name = 'hsn_pistol_ammo',
                 price = 250,
                 count = 10
             },
@@ -2163,15 +2126,15 @@ Config.Shops = {
         coords = vector3(842.44, -1033.42, 27.19),
         blip = {
             id = 110,
-            name = "Ammu Nation",
+            name = "Ammunation",
             color = 5,
             scale = 0.6,
         },
         text = 'E - Open Shop',
-        name = 'Shop38', 
+        name = 'Ammunation', 
         inventory = {
             {
-                name = 'ammo_pistol',
+                name = 'hsn_pistol_ammo',
                 price = 250,
                 count = 10
             },
@@ -2207,33 +2170,8 @@ Config.Shops = {
             },
         },
     },
-
-
-    --[[{
-        coords = vector3(316.3667, -200.783, 54.086),
-        blip = {
-            id = 52,
-            name = "Shop",
-            color = 5,
-            scale = 0.6,
-        },
-        text = 'E - Open Shop',
-        name = 'Shop', 
-        inventory = {
-            {
-                name = 'bread',
-                price = 15,
-                count = 200
-            },
-            {
-                name = 'WEAPON_PISTOL',
-                price = 1000,
-                count = 200,
-                metadata = {}
-            },
-        },
-    },]]
 }
+
 
 
 Config.Ammos = {
@@ -2354,3 +2292,51 @@ Config.Ammos = {
     },
 }
 
+
+Config.ItemList = {
+
+    ['burger'] = {
+        thirst = 0,
+        hunger = 200000,
+        animDict = "mp_player_inteat@burger",
+        anim = "mp_player_int_eat_burger_fp",
+        model = "prop_cs_burger_01",
+        coords = { x = 0.02, y = 0.022, z = -0.02 },
+        rotation = { x = 0.0, y = 5.0, z = 0.0 },
+        useTime = 2500,
+        consume = 1,
+        closeInv = 1
+
+    },
+
+    ['water'] = {
+        thirst = 200000,
+        hunger = 0,
+        animDict = "mp_player_intdrink",
+        anim = "loop_bottle",
+        model = "prop_ld_flow_bottle",
+        coords = { x = 0.03, y = 0.0, z = 0.02 },
+        rotation = { x = 0.0, y = -13.5, z = -1.5 },
+        useTime = 2500,
+        consume = 1,
+        closeInv = 1
+    },
+
+    ['bandage'] = {
+        animDict = "missheistdockssetup1clipboard@idle_a",
+        anim = "idle_a",
+        flags = 49,
+        model = "prop_rolled_sock_02",
+        coords = { x = -0.14, y = 0.02, z = -0.08 },
+        rotation = { x = -50.0, y = -50.0, z = 0.0 },
+        useTime = 2500,
+        consume = 1,
+        closeInv = 1
+    },
+
+    ['identification'] = {   
+        useTime = 0,
+        consume = 0
+    },
+
+}
