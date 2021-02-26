@@ -194,7 +194,7 @@ AddEventHandler("hsn-inventory:client:addItemNotify",function(item,text)
         item = item,
         text = text
     })
-    ExecuteCommand('fixinv')
+    TriggerServerEvent('hsn-inventory:server:refreshInventory')
 end)
 
 
@@ -541,7 +541,7 @@ AddEventHandler("hsn-inventory:useItem",function(item)
                     SetEntityHealth(PlayerPedId(), newHealth)
                     TriggerEvent('mythic_hospital:client:FieldTreatBleed')
                     TriggerEvent('mythic_hospital:client:ReduceBleed')
-                else
+                elseif not data.hunger and not data.thirst then
                     print('Item has no events setup')
                 end
 
