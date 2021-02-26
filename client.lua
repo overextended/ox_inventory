@@ -502,59 +502,57 @@ AddEventHandler("hsn-inventory:useItem",function(item)
     if item.name then item = item.name end
     data = Config.ItemList[item]
     data.item = item
-    if data.closeInv then TriggerEvent("hsn-inventory:client:closeInventory") end
-    if data.item == 'lockpick' then
-        TriggerEvent('esx_lockpick:onUse')
-    end
-    if data.animDict then
-        exports['mythic_progbar']:Progress({
-            name = "useitem",
-            duration = data.useTime,
-            label = "Using "..data.item,
-            useWhileDead = false,
-            canCancel = false,
-            controlDisables = { disableMovement = data.disableMove, disableCarMovement = false, disableMouse = false, disableCombat = true },
-            animation = { animDict = data.animDict, anim = data.anim, flags = 49 },
-            prop = { model = data.model, coords = data.coords, rotation = data.rotation }
-        }, function()
-            itemUsed(data)
-        end)
-    else
-        exports['mythic_progbar']:Progress({
-            name = "useitem",
-            duration = data.useTime,
-            label = "Using "..data.item,
-            useWhileDead = false,
-            canCancel = false,
-            controlDisables = { disableMovement = data.disableMove, disableCarMovement = false, disableMouse = false, disableCombat = true },
-            animation = { animDict = 'pickup_object', anim = 'putdown_low', flags = 48 },
-            prop = nil,
-        }, function()
-            itemUsed(data)
-        end)
-    end
+    if not data.animDict then data.animDict = 'pickup_object' end
+    if not data.anim then data.anim = 'putdown_low' end
+    if not data.flags then data.flags = 48 end
+    ESX.TriggerServerCallback("hsn-inventory:getItemCount",function(count)
+        if count > 0 then
+            if data.closeInv then TriggerEvent("hsn-inventory:client:closeInventory") end
 
+
+
+            if data.item == 'lockpick' then
+                TriggerEvent('esx_lockpick:onUse')
+            end
+
+
+
+            exports['mythic_progbar']:Progress({
+                name = "useitem",
+                duration = data.useTime,
+                label = "Using "..data.item,
+                useWhileDead = false,
+                canCancel = false,
+                controlDisables = { disableMovement = data.disableMove, disableCarMovement = false, disableMouse = false, disableCombat = true },
+                animation = { animDict = data.animDict, anim = data.anim, flags = data.flags },
+                prop = { model = data.model, coords = data.coords, rotation = data.rotation }
+            }, function()
+
+
+
+                if data.hunger then
+                    if data.hunger > 0 then TriggerEvent('esx_status:add', 'hunger', data.hunger)
+                    else TriggerEvent('esx_status:remove', 'hunger', data.hunger) end
+                end
+                if data.thirst then
+                    if data.thirst > 0 then TriggerEvent('esx_status:add', 'thirst', data.thirst)
+                    else TriggerEvent('esx_status:remove', 'thirst', data.thirst) end
+                end
+            
+                if data.item == 'bandage' then
+                    local maxHealth = 200
+                    local health = GetEntityHealth(PlayerPedId())
+                    local newHealth = math.min(maxHealth, math.floor(health + maxHealth / 16))
+                    SetEntityHealth(PlayerPedId(), newHealth)
+                    TriggerEvent('mythic_hospital:client:FieldTreatBleed')
+                    TriggerEvent('mythic_hospital:client:ReduceBleed')
+                end
+            
+                if data.consume then TriggerServerEvent('hsn-inventory:client:removeItem', data.item, data.consume) end
+
+
+
+            end)
+        end
+    end, item)
 end)
-
-function itemUsed(data)
-    if data.hunger then
-        if data.hunger > 0 then TriggerEvent('esx_status:add', 'hunger', data.hunger)
-        else TriggerEvent('esx_status:remove', 'hunger', data.hunger) end
-    end
-    if data.thirst then
-        if data.thirst > 0 then TriggerEvent('esx_status:add', 'thirst', data.thirst)
-        else TriggerEvent('esx_status:remove', 'thirst', data.thirst) end
-    end
-
-    if data.item == 'bandage' then
-        local maxHealth = 200
-		local health = GetEntityHealth(PlayerPedId())
-		local newHealth = math.min(maxHealth, math.floor(health + maxHealth / 16))
-        SetEntityHealth(PlayerPedId(), newHealth)
-		TriggerEvent('mythic_hospital:client:FieldTreatBleed')
-		TriggerEvent('mythic_hospital:client:ReduceBleed')
-    end
-
-    
-    if data.consume then TriggerServerEvent('hsn-inventory:client:removeItem', data.item, data.consume) end
-end
