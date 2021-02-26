@@ -339,6 +339,8 @@ RegisterNetEvent("hsn-inventory:client:weapon")
 AddEventHandler("hsn-inventory:client:weapon",function(item)
     TriggerEvent("hsn-inventory:client:closeInventory")
     local newWeapon = item.metadata.weaponlicense
+    local found, wepHash = GetCurrentPedWeapon(PlayerPedId(), true)
+    if wepHash == -1569615261 then currentWeapon = nil end
     if currentWeapon == newWeapon then
         TriggerEvent("hsn-inventory:weaponaway")
         Citizen.Wait(1600)
