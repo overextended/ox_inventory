@@ -1081,12 +1081,7 @@ exports("getItem",function(src, item)
     if playerInventory[Player.identifier] == nil then
         return
     end
-    local slots = GetItemsSlot(playerInventory[Player.identifier], item)
-    for i,j in pairs(slots) do
-        if j.name == item then
-            return j
-        end
-    end
+    return ESXItems[item]
 end)
 
 RegisterNetEvent("hsn-inventory:server:getItemCount")
