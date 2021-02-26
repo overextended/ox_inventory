@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500&amp;display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Signika:wght@300;400;500&amp;display=swap');
 * {
     font-family: "Basic";
     margin: 0;
@@ -103,9 +103,10 @@
     position: relative;
     width: 100px;
     height: 100px;
-    background-color: rgba(0, 0, 0, 0.267);
+    background-color: rgba(0, 0, 0, 0.3);
     float: left;
     margin: 1px;
+    box-shadow: 0 0 0 1px rgba(38, 38, 38, 0.3) inset;
 } 
 
 .inventory-main-leftside > .ItemBoxes:nth-child(1):after {
@@ -117,8 +118,8 @@
     height: 18px !important;
     width: 18px !important;
     font-size: 14px;
-    font-weight: bold;
-    font-family: "Roboto";
+    font-weight: 500;
+    font-family: "Signika";
     text-align: center;
     line-height: 18px;
     vertical-align: middle;
@@ -135,8 +136,8 @@
     height: 18px !important;
     width: 18px !important;
     font-size: 14px;
-    font-weight: bold;
-    font-family: "Roboto";
+    font-weight: 500;
+    font-family: "Signika";
     text-align: center;
     line-height: 18px;
     vertical-align: middle;
@@ -153,8 +154,8 @@
     height: 18px !important;
     width: 18px !important;
     font-size: 14px;
-    font-weight: bold;
-    font-family: "Roboto";
+    font-weight: 500;
+    font-family: "Signika";
     text-align: center;
     line-height: 18px;
     vertical-align: middle;
@@ -171,8 +172,8 @@
     height: 18px !important;
     width: 18px !important;
     font-size: 14px;
-    font-weight: bold;
-    font-family: "Roboto";
+    font-weight: 500;
+    font-family: "Signika";
     text-align: center;
     line-height: 18px;
     vertical-align: middle;
@@ -189,8 +190,8 @@
     height: 18px !important;
     width: 18px !important;
     font-size: 14px;
-    font-weight: bold;
-    font-family: "Roboto";
+    font-weight: 500;
+    font-family: "Signika";
     text-align: center;
     line-height: 18px;
     vertical-align: middle;
@@ -277,7 +278,7 @@
     line-height: 2.1vh;
     text-align: center;
     text-transform: lowercase;
-    font-family: Verdana, Geneva, Tahoma, sans-serif;
+    font-family: 'Signika';
     font-variant: small-caps;
 }
 
@@ -302,7 +303,7 @@
     position: absolute;
     bottom: 0;
     width: 100%;
-    background-color: rgba(24, 9, 9, 0.247);
+    background-color: rgba(12, 12, 12, 0.25);
     min-height: 2vh;
     height: auto;
 }
