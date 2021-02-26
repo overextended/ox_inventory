@@ -630,6 +630,12 @@ RegisterCommand("fixinv", function(source, args, rawCommand)
     TriggerClientEvent("hsn-inventory:client:refreshInventory",source,playerInventory[Player.identifier])
 end)
 
+RegisterServerEvent("hsn-inventory:server:refreshInventory")
+AddEventHandler("hsn-inventory:server:refreshInventory",function()
+    local Player = ESX.GetPlayerFromId(source)
+    TriggerClientEvent("hsn-inventory:client:refreshInventory",source,playerInventory[Player.identifier])
+end)
+
 RegisterServerEvent("hsn-inventory:server:openInventory")
 AddEventHandler("hsn-inventory:server:openInventory",function(data)
     local src = source
