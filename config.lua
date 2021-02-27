@@ -1708,7 +1708,7 @@ Config.Shops = {
                 count = 1,
                 metadata = {
                     weaponlicense = 'POL',
-                    components = { 'flashlight'},
+                    components = { 'flashlight' },
                     weapontint = 5
                 },
             },
@@ -1718,7 +1718,7 @@ Config.Shops = {
                 count = 1,
                 metadata = {
                     weaponlicense = 'POL',
-                    components = { 'flashlight'},
+                    components = { 'flashlight' },
                     weapontint = 5
                 },
             },
@@ -1728,7 +1728,7 @@ Config.Shops = {
                 count = 1,
                 metadata = {
                     weaponlicense = 'POL',
-                    components = { 'flashlight'},
+                    components = { 'flashlight' },
                     weapontint = 5
                 },
             },
@@ -1738,7 +1738,7 @@ Config.Shops = {
                 count = 1,
                 metadata = {
                     weaponlicense = 'POL',
-                    components = { 'flashlight'},
+                    components = { 'flashlight' },
                     weapontint = 5
                 },
             },
@@ -1748,7 +1748,7 @@ Config.Shops = {
                 count = 1,
                 metadata = {
                     weaponlicense = 'POL',
-                    components = { 'flashlight'},
+                    components = { 'flashlight' },
                     weapontint = 5
                 },
             },
@@ -1758,7 +1758,7 @@ Config.Shops = {
                 count = 1,
                 metadata = {
                     weaponlicense = 'POL',
-                    components = { 'flashlight'},
+                    components = { 'flashlight' },
                     weapontint = 5
                 },
             },
@@ -1768,7 +1768,7 @@ Config.Shops = {
                 count = 1,
                 metadata = {
                     weaponlicense = 'POL',
-                    components = { 'flashlight'},
+                    components = { 'flashlight' },
                     weapontint = 5
                 },
             },
@@ -2205,6 +2205,16 @@ Config.Shops = {
                 metadata = { registered = 'setname' },
             },
         },
+    },
+}
+
+Config.Stashes = {
+    {
+        name = 'Police Evidence', 
+        slots = 71,
+        coords = vector3(474.2242, -990.7516, 26.2638),
+        name = 'Police Evidence', 
+        job = 'police'
     },
 }
 
