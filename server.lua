@@ -1050,14 +1050,7 @@ RegisterServerEvent("hsn-inventory:client:removeItem")
 AddEventHandler("hsn-inventory:client:removeItem",function(item, count)
     local src = source
     local Player = ESX.GetPlayerFromId(src)
-    if item == nil then
-        return
-    end
-    if count == nil then
-        count = 1
-    end
-    TriggerClientEvent("hsn-inventory:client:addItemNotify",src,ESXItems[item],'Removed '..count..'x')
-    RemovePlayerInventory(Player.identifier,item,count)
+    Player.removeInventoryItem(item, count)
 end)
 
 RegisterServerEvent("hsn-inventory:client:addItem")
