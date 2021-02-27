@@ -103,6 +103,9 @@ RegisterCommand('vehinv', function()
                     local plate = GetVehicleNumberPlateText(vehicle)
                     SetVehicleDoorOpen(vehicle, open, false, false)
                     OpenTrunk(plate)
+                    TaskTurnPedToFaceEntity(PlayerPedId(), vehicle, -1)
+                    Citizen.Wait(500)
+                    TaskStartScenarioInPlace(PlayerPedId(), "PROP_HUMAN_BUM_BIN", 0, true)
                     while true do
                         while not invOpen do Citizen.Wait(50) end
                         Citizen.Wait(100)
@@ -121,18 +124,22 @@ RegisterCommand('vehinv', function()
                                 CloseToVehicle = true
                             else
                                 CloseToVehicle = false
-                                SetVehicleDoorShut(vehicle, open, false)
                                 lastVehicle = nil
                                 TriggerEvent("hsn-inventory:client:closeInventory")
                                 invOpen = false
+                                ClearPedTasks(PlayerPedId())
+                                Citizen.Wait(1200)
+                                SetVehicleDoorShut(vehicle, open, false)
                                 return
                             end
                         elseif not invOpen then
                             CloseToVehicle = false
-                            SetVehicleDoorShut(vehicle, open, false)
                             lastVehicle = nil
                             TriggerEvent("hsn-inventory:client:closeInventory")
-                                invOpen = false
+                            invOpen = false
+                            ClearPedTasks(PlayerPedId())
+                            Citizen.Wait(1200)
+                            SetVehicleDoorShut(vehicle, open, false)
                             return
                         end
                     end
