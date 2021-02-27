@@ -80,7 +80,7 @@ RegisterCommand('vehinv', function()
                 local plate = GetVehicleNumberPlateText(vehicle)
                 OpenTrunk(plate)
             else
-                TriggerEvent('notification','Car locked',2)
+                TriggerEvent('hsn-inventory:notification','Vehicle is locked',2)
             end
         end
     elseif not isDead and not isCuffed and IsPedInAnyVehicle(playerPed, false) then -- [G]lovebox
@@ -311,7 +311,7 @@ RegisterNUICallback("saveinventorydata",function(data)
 end)
 
 RegisterNUICallback("notification", function(data)
-    TriggerEvent('notification',data.message,data.type)
+    TriggerEvent('hsn-inventory:notification',data.message,data.type)
 end)
 
 RegisterNetEvent('hsn-inventory:weapondraw')
@@ -389,9 +389,9 @@ AddEventHandler("hsn-inventory:addAmmo",function(item, name)
                 TriggerServerEvent("hsn-inventory:server:addweaponAmmo",curweaponSlot,item.count)
                 TaskReloadWeapon(playerPed)
                 SetPedAmmo(playerPed, weapon, newAmmo)
-                TriggerEvent("notification","Reloaded")
+                TriggerEvent("hsn-inventory:notification","Reloaded")
                 TriggerServerEvent("hsn-inventory:client:removeItem",name,1)		
-            else TriggerEvent("notification","Max Ammo")
+            else TriggerEvent("hsn-inventory:notification","Max Ammo")
             end
         end
     end
@@ -426,7 +426,7 @@ function rob()
         else
         end
     else
-        TriggerEvent("notification",'There is nobody nearby')
+        TriggerEvent("hsn-inventory:notification",'There is nobody nearby')
     end
 end
 
@@ -478,8 +478,8 @@ function SetNuiFocusAdvanced(hasFocus, hasCursor, allowMovement)
     end
 end
 
-RegisterNetEvent("notification")
-AddEventHandler("notification",function(message, mtype)
+RegisterNetEvent("hsn-inventory:notification")
+AddEventHandler("hsn-inventory:notification",function(message, mtype)
     if mtype == 1 then mtype = { ['background-color'] = 'rgba(55,55,175)', ['color'] = 'white' }
     elseif not mtype or mtype == 2 then mtype = { ['background-color'] = 'rgba(175,55,55)', ['color'] = 'white' }
     end
@@ -497,12 +497,12 @@ AddEventHandler("hsn-inventory:useItem",function(item)
     data = Config.ItemList[item]
     if not data then return end
     data.item = item
-    if not data.animDict then data.animDict = 'pickup_object' end
-    if not data.anim then data.anim = 'putdown_low' end
-    if not data.flags then data.flags = 48 end
+    if data.closeInv then TriggerEvent("hsn-inventory:client:closeInventory") end
     ESX.TriggerServerCallback("hsn-inventory:getItemCount",function(count)
         if count > 0 then
-            if data.closeInv then TriggerEvent("hsn-inventory:client:closeInventory") end
+            if not data.animDict then data.animDict = 'pickup_object' end
+            if not data.anim then data.anim = 'putdown_low' end
+            if not data.flags then data.flags = 48 end
 
             -- Trigger effects before the progress bar
 
@@ -541,13 +541,12 @@ AddEventHandler("hsn-inventory:useItem",function(item)
                     SetEntityHealth(PlayerPedId(), newHealth)
                     TriggerEvent('mythic_hospital:client:FieldTreatBleed')
                     TriggerEvent('mythic_hospital:client:ReduceBleed')
-                elseif not data.hunger and not data.thirst then
-                    print('Item has no events setup')
                 end
 
 
                 ------------------------------------------------------------------------------------------------
                 if data.consume then TriggerServerEvent('hsn-inventory:client:removeItem', data.item, data.consume) end
+                return
             end)
         end
     end, item)
