@@ -695,9 +695,10 @@ AddEventHandler("hsn-inventory:server:openStash",function(stash)
     end
 end)
 
-RegisterServerEvent("hsn-inventory:server:robPlayer")
-AddEventHandler("hsn-inventory:server:robPlayer",function(TargetId)
-    local targetplayer = tPlayer
+RegisterServerEvent("hsn-inventory:server:openTargetInventory")
+AddEventHandler("hsn-inventory:server:openTargetInventory",function(TargetId)
+    local Player = ESX.GetPlayerFromId(source)
+    if not source == TargetId then tPlayer = ESX.GetPlayerFromId(TargetId) end -- Don't allow source and targetid to match
     if playerInventory[tPlayer.identifier] == nil then
         playerInventory[tPlayer.identifier] = {}
     end
