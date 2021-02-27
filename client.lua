@@ -63,20 +63,34 @@ end)
 Citizen.CreateThread(function()
     while true do
         Citizen.Wait(3)
-        DisableControlAction(0, 37, true)
-        for i = 19, 20 do 
-            HideHudComponentThisFrame(i) -- remove tab etc.
-        end
+        DisableControlAction(0, 37, true) -- tab
         DisableControlAction(0, 157, true) -- 1
         DisableControlAction(0, 158, true) -- 2
         DisableControlAction(0, 160, true) -- 3
         DisableControlAction(0, 164, true) -- 4
         DisableControlAction(0, 165, true) -- 5
         DisableControlAction(0, 289, true) -- F2
+        for i = 19, 20 do 
+            HideHudComponentThisFrame(i) -- remove weapon wheel
+        end
+
         if not invOpen then
             for k, v in pairs(keys) do
                 if IsDisabledControlJustReleased(0, v) and not dead and not isCuffed then
                     TriggerServerEvent("hsn-inventory:server:useItemfromSlot",k)
+                end
+            end
+
+            if swappingWeapon then
+                DisableControlAction(0, 24, true)
+                DisableControlAction(0, 25, true)
+                DisableControlAction(0, 142, true)
+                DisableControlAction(0, 257, true)
+            elseif currentWeapon then
+                if IsPedShooting(PlayerPedId()) then
+                    if curweaponSlot ~= nil then
+                        TriggerServerEvent("hsn-inventory:server:decreasedurability",curweaponSlot)
+                    end
                 end
             end
         end
@@ -399,16 +413,19 @@ end)
 
 RegisterNetEvent("hsn-inventory:client:weapon")
 AddEventHandler("hsn-inventory:client:weapon",function(item)
+    if swappingWeapon then return end
     TriggerEvent("hsn-inventory:client:closeInventory")
+    local playerPed = PlayerPedId()
     local newWeapon = item.metadata.weaponlicense
-    local found, wepHash = GetCurrentPedWeapon(PlayerPedId(), true)
+    local found, wepHash = GetCurrentPedWeapon(playerPed, true)
     if wepHash == -1569615261 then currentWeapon = nil end
     wepHash = GetHashKey(item.name)
+    swappingWeapon = true
     if currentWeapon == newWeapon then
         TriggerEvent("hsn-inventory:weaponaway")
         Citizen.Wait(1600)
-        RemoveWeaponFromPed(PlayerPedId(), wepHash)
-        SetCurrentPedWeapon(PlayerPedId(), "WEAPON_UNARMED", true)
+        RemoveWeaponFromPed(playerPed, wepHash)
+        SetCurrentPedWeapon(playerPed, "WEAPON_UNARMED", true)
         curweaponSlot = nil
         currentWeapon = nil
         TriggerEvent("hsn-inventory:client:addItemNotify",item,'Holstered')
@@ -416,20 +433,22 @@ AddEventHandler("hsn-inventory:client:weapon",function(item)
         TriggerEvent("hsn-inventory:weapondraw",item)
         Citizen.Wait(1600)
         curweaponSlot = item.slot
-        GiveWeaponToPed(PlayerPedId(), wepHash, item.metadata.ammo, false, false)
-        SetCurrentPedWeapon(PlayerPedId(), wepHash, true)
-        if item.metadata.weapontint then SetPedWeaponTintIndex(PlayerPedId(), item.name, item.metadata.weapontint) end
+        GiveWeaponToPed(playerPed, wepHash, item.metadata.ammo, false, false)
+        SetCurrentPedWeapon(playerPed, wepHash, true)
+        if item.metadata.weapontint then SetPedWeaponTintIndex(playerPed, item.name, item.metadata.weapontint) end
         if item.metadata.components then
             for k,v in pairs(item.metadata.components) do
                 local componentHash = ESX.GetWeaponComponent(item.name, v).hash
-                if componentHash then GiveWeaponComponentToPed(PlayerPedId(), wepHash, componentHash) end
+                if componentHash then GiveWeaponComponentToPed(playerPed, wepHash, componentHash) end
             end
         end
-        SetPedAmmo(PlayerPedId(), wepHash, item.metadata.ammo)
+        SetPedAmmo(playerPed, wepHash, item.metadata.ammo)
         currentWeapon = item.metadata.weaponlicense
         TriggerEvent("hsn-inventory:client:addItemNotify",item,'Equipped')
     end
     TriggerEvent('hsn-inventory:currentWeapon', item) -- using for another resource
+    Citizen.Wait(100)
+    swappingWeapon = nil
 end)
 
 RegisterNetEvent("hsn-inventory:addAmmo")
@@ -491,19 +510,6 @@ function openTargetInventory()
         TriggerEvent("hsn-inventory:notification",'There is nobody nearby')
     end
 end
-
-
-
-Citizen.CreateThread(function()
-    while true do
-        Citizen.Wait(3)
-        if IsPedShooting(PlayerPedId()) then
-            if curweaponSlot ~= nil then
-                TriggerServerEvent("hsn-inventory:server:decreasedurability",curweaponSlot)
-            end
-        end
-    end
-end)
 
 local nui_focus = {false, false}
 function SetNuiFocusAdvanced(hasFocus, hasCursor, allowMovement)
