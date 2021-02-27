@@ -2310,7 +2310,6 @@ Config.ItemList = {
         rotation = { x = 0.0, y = 5.0, z = 0.0 },
         useTime = 2500,
         consume = 1,
-        closeInv = 1
     },
 
     ['water'] = {
@@ -2323,7 +2322,6 @@ Config.ItemList = {
         rotation = { x = 0.0, y = -13.5, z = -1.5 },
         useTime = 2500,
         consume = 1,
-        closeInv = 1
     },
 
     ['cola'] = {
@@ -2336,7 +2334,6 @@ Config.ItemList = {
         rotation = { x = 5.0, y = -1.5, z = -180.5 },
         useTime = 2500,
         consume = 1,
-        closeInv = 1
     },
 
     ['bandage'] = {
@@ -2348,7 +2345,6 @@ Config.ItemList = {
         rotation = { x = -50.0, y = -50.0, z = 0.0 },
         useTime = 2500,
         consume = 1,
-        closeInv = 1
     },
 
     ['identification'] = {  
@@ -2361,8 +2357,7 @@ Config.ItemList = {
         animDict = "anim@amb@clubhouse@tutorial@bkr_tut_ig3@",
         anim = "machinic_loop_mechandplayer",
         useTime = 2000,
-        consume = 0,
-        closeInv = 1        
+        consume = 0   
     },
 
 }
