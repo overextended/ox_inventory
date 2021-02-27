@@ -609,7 +609,8 @@ CreateNewDrop = function(source,data)
     TriggerClientEvent("hsn-inventory:Client:addnewDrop",-1,source, dropid)
 end
 
-RegisterCommand("addItem",function(source, args, rawCommand)
+--[[ Should just be able to use /giveitem now
+    RegisterCommand("addItem",function(source, args, rawCommand)
     if source == 0 then
         return
     end
@@ -624,7 +625,7 @@ RegisterCommand("addItem",function(source, args, rawCommand)
     end
     AddPlayerInventory(tPlayer.identifier,item,count)
     TriggerEvent("hsn-inventory:onAddInventoryItem",tPlayerId,item,count)
-end, true)
+end, true)]]
 
 RegisterCommand("fixinv", function(source, args, rawCommand)
     local Player = ESX.GetPlayerFromId(source)
