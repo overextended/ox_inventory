@@ -606,7 +606,8 @@ CreateNewDrop = function(source,data)
         playerInventory[Player.identifier][data.fromSlot] = {name = data.oldslotItem.name ,label = data.oldslotItem.label, weight = data.oldslotItem.weight, slot = data.fromSlot, count = data.oldslotItem.count, description = data.oldslotItem.description, metadata = data.oldslotItem.metadata, stackable = data.oldslotItem.stackable, closeonuse = ESXItems[data.oldslotItem.name].closeonuse}
         Drops[dropid].inventory[data.toSlot] = {name = data.newslotItem.name ,label = data.newslotItem.label, weight = data.newslotItem.weight, slot = data.toSlot, count = data.newslotItem.count, description = data.newslotItem.description, metadata = data.newslotItem.metadata, stackable = data.newslotItem.stackable, closeonuse = ESXItems[data.newslotItem.name].closeonuse}
     end
-    TriggerClientEvent("hsn-inventory:Client:addnewDrop",-1,source, dropid)
+    local coords = GetEntityCoords(NetworkGetEntityFromNetworkId(src))
+    TriggerClientEvent("hsn-inventory:Client:addnewDrop", -1, coords, dropid)
 end
 
 --[[ Should just be able to use /giveitem now
@@ -1092,6 +1093,15 @@ exports("getItem",function(src, item)
     ESXItem.count = GetItemCount(Player.identifier, item)
     return ESXItem
 end)
+
+--[[ Example to retrieve items and count from player inventory
+    RegisterCommand("getitems", function(source, args, rawCommand)
+    local Player = ESX.GetPlayerFromId(source)
+    for k, v in pairs(ESXItems) do
+        v.count = GetItemCount(Player.identifier, v.name)
+        if v.count > 0 then print(v.name.. ' ' ..v.count) end
+    end
+end)]]
 
 RegisterNetEvent("hsn-inventory:server:getItemCount")
 AddEventHandler("hsn-inventory:server:getItemCount",function(source,cb,item)
