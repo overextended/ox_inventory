@@ -577,7 +577,7 @@ AddEventHandler("hsn-inventory:server:saveInventoryData",function(data)
         local money = exports["hsn-inventory"]:getItemCount(src,'money')
         Player.setMoney(money)
         local blackmoney = exports["hsn-inventory"]:getItemCount(src,'black_money')
-        Player.setAccountMoney('black_money', money)
+        Player.setAccountMoney('black_money', blackmoney)
     end
 end)
 
