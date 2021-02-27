@@ -263,16 +263,13 @@ OpenStash = function(id)
 end
 
 RegisterNetEvent("hsn-inventory:Client:addnewDrop")
-AddEventHandler("hsn-inventory:Client:addnewDrop",function(PlayerId,drop)
-    local coords = GetEntityCoords(GetPlayerPed(GetPlayerFromServerId(PlayerId)))
-    local forward = GetEntityForwardVector(GetPlayerPed(GetPlayerFromServerId(PlayerId)))
-	local x, y, z = table.unpack(coords + forward * 0.5)
+AddEventHandler("hsn-inventory:Client:addnewDrop",function(coords,drop)
     Drops[drop] = {
         dropid = drop,
         coords = {
-            x = x,
-            y = y,
-            z = z - 0.3,
+            x = coords.x,
+            y = coords.y,
+            z = coords.z - 0.3,
         },
     }
 end)
