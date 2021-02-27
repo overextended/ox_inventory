@@ -1697,49 +1697,81 @@ Config.Shops = {
                 name = 'WEAPON_STUNGUN',
                 price = 150,
                 count = 1,
-                metadata = { weaponlicense = 'POL' }
+                metadata = {
+                    weaponlicense = 'POL',
+                    components = { 'flashlight'},
+                    weapontint = 5
+                },
             },
             {
                 name = 'WEAPON_COMBATPISTOL',
                 price = 250,
                 count = 1,
-                metadata = { weaponlicense = 'POL' }
+                metadata = {
+                    weaponlicense = 'POL',
+                    components = { 'flashlight'},
+                    weapontint = 5
+                },
             },
             {
                 name = 'WEAPON_PISTOL50',
                 price = 400,
                 count = 1,
-                metadata = { weaponlicense = 'POL' }
+                metadata = {
+                    weaponlicense = 'POL',
+                    components = { 'flashlight'},
+                    weapontint = 5
+                },
             },
             {
                 name = 'WEAPON_PUMPSHOTGUN',
                 price = 500,
                 count = 1,
-                metadata = { weaponlicense = 'POL' }
+                metadata = {
+                    weaponlicense = 'POL',
+                    components = { 'flashlight'},
+                    weapontint = 5
+                },
             },
             {
                 name = 'WEAPON_CARBINERIFLE',
                 price = 500,
                 count = 1,
-                metadata = { weaponlicense = 'POL' }
+                metadata = {
+                    weaponlicense = 'POL',
+                    components = { 'flashlight'},
+                    weapontint = 5
+                },
             },
             {
                 name = 'WEAPON_NIGHTSTICK',
                 price = 50,
                 count = 1,
-                metadata = { weaponlicense = 'POL' }
+                metadata = {
+                    weaponlicense = 'POL',
+                    components = { 'flashlight'},
+                    weapontint = 5
+                },
             },
             {
                 name = 'WEAPON_KNIFE',
                 price = 20,
                 count = 1,
-                metadata = { weaponlicense = 'POL' }
+                metadata = {
+                    weaponlicense = 'POL',
+                    components = { 'flashlight'},
+                    weapontint = 5
+                },
             },
             {
                 name = 'WEAPON_FLASHLIGHT',
                 price = 15,
                 count = 1,
-                metadata = { weaponlicense = 'POL' }
+                metadata = {
+                    weaponlicense = 'POL',
+                    components = { 'flashlight'},
+                    weapontint = 5
+                },
             },
         },
     },--WeaponShop
