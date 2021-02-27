@@ -1,6 +1,20 @@
 ESX = nil
 local PlayerData = {}
 local invOpen, isDead, isCuffed, currentWeapon = false, false, false, nil
+local vehStorage = {}
+function setVehicleTable()
+	local vehicleTable = {['adder']=1, ['osiris']=0, ['pfister811']=0, ['penetrator']=0, ['autarch']=0, ['bullet']=0, ['cheetah']=0, ['cyclone']=0, ['voltic']=0, ['reaper']=1, ['entityxf']=0, ['t20']=0, ['taipan']=0, ['tempesta']=2, ['tezeract']=0, ['torero']=1, ['turismor']=0, ['fmj']=0, ['gp1']=2, ['infernus ']=0, ['italigtb']=1, ['italigtb2']=1, ['nero']=2, ['nero2']=0, ['vacca']=1, ['vagner']=0, ['visione']=0, ['prototipo']=0, ['xa21']=2, ['zentorno']=0}
+	--[[
+		0 = vehicle has no storage
+		1 = vehicle storage is in bonnet/hood
+	]]
+	for k, v in pairs(vehicleTable) do
+	getHash = GetHashKey(k)
+	vehStorage[getHash] = v
+	end
+end
+setVehicleTable()
+
 -- hsn inventory Hasan.#7803
 Citizen.CreateThread(function()
     while ESX == nil do
@@ -70,15 +84,59 @@ Citizen.CreateThread(function()
 end)
 
 RegisterCommand('vehinv', function()
+    if invOpen then return end
     local playerPed = PlayerPedId()
     if not isDead and not isCuffed and not IsPedInAnyVehicle(playerPed, false) then
         local vehicle = ESX.Game.GetClosestVehicle()
-        local pos = GetEntityCoords(PlayerPedId())
-        local trunkpos = GetOffsetFromEntityInWorldCoords(vehicle, 0, -2.5, 0)
-        if GetDistanceBetweenCoords(pos.x, pos.y, pos.z, trunkpos) < 2.0 and not IsPedInAnyVehicle(PlayerPedId()) then
+        local coords = GetEntityCoords(playerPed)
+        if not IsPedInAnyVehicle(PlayerPedId()) then
             if GetVehicleDoorLockStatus(vehicle) ~= 2 then
-                local plate = GetVehicleNumberPlateText(vehicle)
-                OpenTrunk(plate)
+                local vehHash = GetEntityModel(vehicle)
+                local checkVehicle = vehStorage[vehHash]
+                if checkVehicle == 1 then open, vehBone = 4, GetEntityBoneIndexByName(vehicle, 'bonnet')
+                elseif checkVehicle == nil then open, vehBone = 5, GetEntityBoneIndexByName(vehicle, 'boot') elseif checkVehicle == 2 then open, vehBone = 5, GetEntityBoneIndexByName(vehicle, 'boot') else --[[no vehicle nearby]] return end
+                local vehiclePos = GetWorldPositionOfEntityBone(vehicle, vehBone)
+                local pedDistance = #(coords - vehiclePos)
+				if (open == 5 and checkVehicle == nil) then if pedDistance < 3.0 then CloseToVehicle = true end elseif (open == 5 and checkVehicle == 2) then if pedDistance < 3.0 then CloseToVehicle = true end elseif open == 4 then if pedDistance < 3.0 then CloseToVehicle = true end end	
+                print(pedDistance)
+                if CloseToVehicle then
+                    local plate = GetVehicleNumberPlateText(vehicle)
+                    SetVehicleDoorOpen(vehicle, open, false, false)
+                    OpenTrunk(plate)
+                    while true do
+                        while not invOpen do Citizen.Wait(50) end
+                        Citizen.Wait(100)
+                        if CloseToVehicle and invOpen and not isCuffed and not isDead then
+                            local playerPed = GetPlayerPed(-1)
+                            coords = GetEntityCoords(playerPed)
+                            if checkVehicle == 1 then open, vehBone = 4, GetEntityBoneIndexByName(vehicle, 'bonnet')
+                            elseif checkVehicle == nil then open, vehBone = 5, GetEntityBoneIndexByName(vehicle, 'boot') elseif checkVehicle == 2 then open, vehBone = 5, GetEntityBoneIndexByName(vehicle, 'boot') else return end
+                            
+                            local vehiclePos = GetWorldPositionOfEntityBone(vehicle, vehBone)
+                            local pedDistance = #(coords - vehiclePos)
+                    
+                            local isClose = false
+                            if (open == 5 and checkVehicle == nil) then if pedDistance < 3.0 then isClose = true end elseif (open == 5 and checkVehicle == 2) then if pedDistance < 3.0 then isClose = true end elseif open == 4 then if pedDistance < 3.0 then isClose = true end end
+                            if DoesEntityExist(vehicle) and isClose then
+                                CloseToVehicle = true
+                            else
+                                CloseToVehicle = false
+                                SetVehicleDoorShut(vehicle, open, false)
+                                lastVehicle = nil
+                                TriggerEvent("hsn-inventory:client:closeInventory")
+                                invOpen = false
+                                return
+                            end
+                        elseif not invOpen then
+                            CloseToVehicle = false
+                            SetVehicleDoorShut(vehicle, open, false)
+                            lastVehicle = nil
+                            TriggerEvent("hsn-inventory:client:closeInventory")
+                                invOpen = false
+                            return
+                        end
+                    end
+                end
             else
                 TriggerEvent('hsn-inventory:notification','Vehicle is locked',2)
             end
