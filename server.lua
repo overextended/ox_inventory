@@ -675,7 +675,9 @@ AddEventHandler("hsn-inventory:server:openInventory",function(data)
             Shops[data.id.name].name = data.id.name or 'Shop'
             Shops[data.id.name].type = 'shop'
             Shops[data.id.name].slots = #Shops[data.id.name].inventory + 1
-            TriggerClientEvent("hsn-inventory:client:openInventory",src,playerInventory[Player.identifier],Shops[data.id.name])
+            if not data.id.job or data.id.job == Player.job.name then
+                TriggerClientEvent("hsn-inventory:client:openInventory",src,playerInventory[Player.identifier],Shops[data.id.name])
+            end
         elseif data.type == "glovebox" then
             if checkOpenable(src,data.id) then
                 Gloveboxes[data.id] = {}
@@ -711,12 +713,15 @@ AddEventHandler("hsn-inventory:server:openStash",function(stash)
         Stashs[stash.name].type = 'stash'
         Stashs[stash.name].slots = stash.slots
     end
-    if checkOpenable(src,stash.name) then
-        TriggerClientEvent("hsn-inventory:client:openInventory",src,playerInventory[Player.identifier], Stashs[stash.name])
+    if checkOpenable(src,stash.name,stash.id.coords) then
+        if not stash.id.job or stash.id.job == Player.job.name then
+            TriggerClientEvent("hsn-inventory:client:openInventory",src,playerInventory[Player.identifier], Stashs[stash.name])
+        end
     else
         TriggerClientEvent("hsn-inventory:notification",src,'You can not open this inventory',2)
     end
 end)
+
 
 RegisterServerEvent("hsn-inventory:server:openTargetInventory")
 AddEventHandler("hsn-inventory:server:openTargetInventory",function(TargetId)
@@ -726,7 +731,7 @@ AddEventHandler("hsn-inventory:server:openTargetInventory",function(TargetId)
         playerInventory[tPlayer.identifier] = {}
     end
     if tPlayer and Player then
-        if checkOpenable(source,'Player'..TargetId) then
+        if checkOpenable(source,'Player'..TargetId,GetEntityCoords(NetworkGetEntityFromNetworkId(TargetId))) then
             local data = {}
             data.name = 'Player'..TargetId -- do not touch
             data.type = "TargetPlayer"
@@ -742,9 +747,15 @@ AddEventHandler("hsn-inventory:server:saveInventory",function(data)
     SaveItems(data.type,data.invid)
 end)
 
-checkOpenable = function(source,id)
+checkOpenable = function(source,id,coords)
     local src = source
     local returnData = false
+
+    if coords then
+        local srcCoords = GetEntityCoords(NetworkGetEntityFromNetworkId(src))
+        if #(coords - srcCoords) > 5 then return false end
+    end
+
     if openedinventories[id] == nil then
         openedinventories[id] = {}
         openedinventories[id].opened = true
