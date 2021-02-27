@@ -98,7 +98,6 @@ RegisterCommand('vehinv', function()
                 local vehiclePos = GetWorldPositionOfEntityBone(vehicle, vehBone)
                 local pedDistance = #(coords - vehiclePos)
 				if (open == 5 and checkVehicle == nil) then if pedDistance < 3.0 then CloseToVehicle = true end elseif (open == 5 and checkVehicle == 2) then if pedDistance < 3.0 then CloseToVehicle = true end elseif open == 4 then if pedDistance < 3.0 then CloseToVehicle = true end end	
-                print(pedDistance)
                 if CloseToVehicle then
                     local plate = GetVehicleNumberPlateText(vehicle)
                     SetVehicleDoorOpen(vehicle, open, false, false)
@@ -474,19 +473,17 @@ end)
 RegisterCommand("steal",function()
     local ped = PlayerPedId()
 	if not IsPedInAnyVehicle(ped, true) and not isDead and not isCuffed then	 
-		rob()
+		openTargetInventory()
 	end
 end)
 
-function rob()
+function openTargetInventory()
     local closestPlayer, closestDistance = ESX.Game.GetClosestPlayer()
     if closestPlayer ~= -1 and closestDistance <= 2.0 then
-        local target, distance = ESX.Game.GetClosestPlayer()
-        local searchPlayerPed = GetPlayerPed(target)
-
-        if IsEntityPlayingAnim(searchPlayerPed, 'random@mugging3', 'handsup_standing_base', 3) or IsEntityPlayingAnim(searchPlayerPed, 'missminuteman_1ig_2', 'handsup_base', 3) then
-            TriggerServerEvent("hsn-inventory:server:robPlayer",GetPlayerServerId(closestPlayer))
-        else
+        local searchPlayerPed = GetPlayerPed(closestPlayer)
+        closestPlayer = PlayerId()
+        if IsEntityPlayingAnim(searchPlayerPed, 'random@mugging3', 'handsup_standing_base', 3) or IsEntityPlayingAnim(searchPlayerPed, 'missminuteman_1ig_2', 'handsup_base', 3) or IsEntityPlayingAnim(searchPlayerPed, 'dead', 'dead_a', 3) or IsEntityPlayingAnim(searchPlayerPed, 'mp_arresting', 'idle') then
+            TriggerServerEvent("hsn-inventory:server:openTargetInventory", GetPlayerServerId(closestPlayer))
         end
     else
         TriggerEvent("hsn-inventory:notification",'There is nobody nearby')
