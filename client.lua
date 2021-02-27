@@ -422,7 +422,7 @@ AddEventHandler("hsn-inventory:client:weapon",function(item)
         if item.metadata.components then
             for k,v in pairs(item.metadata.components) do
                 local componentHash = ESX.GetWeaponComponent(item.name, v).hash
-                GiveWeaponComponentToPed(PlayerPedId(), wepHash, componentHash)
+                if componentHash then GiveWeaponComponentToPed(PlayerPedId(), wepHash, componentHash) end
             end
         end
         SetPedAmmo(PlayerPedId(), wepHash, item.metadata.ammo)
