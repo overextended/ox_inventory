@@ -1,5 +1,10 @@
 Config = Config or {}
 Config.PlayerSlot = 51
+
+-- Blur the screen while accessing the inventory
+Config.EnableBlur = true
+
+
 Config.DurabilityDecreaseAmount = {
     ['WEAPON_PISTOL'] = 0.6,
     ['WEAPON_ADVANCEDRIFLE'] = 0.6,
@@ -2354,10 +2359,10 @@ Config.ItemList = {
     ['lockpick'] = {
         disableMove = true,
         animDict = "anim@amb@clubhouse@tutorial@bkr_tut_ig3@",
-        anim = "machinic_loop_mechandplayer", 
-        flags = 8,
+        anim = "machinic_loop_mechandplayer",
         useTime = 2000,
-        consume = 0
+        consume = 0,
+        closeInv = 1        
     },
 
 }
