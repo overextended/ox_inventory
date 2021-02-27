@@ -403,10 +403,11 @@ AddEventHandler("hsn-inventory:client:weapon",function(item)
     local newWeapon = item.metadata.weaponlicense
     local found, wepHash = GetCurrentPedWeapon(PlayerPedId(), true)
     if wepHash == -1569615261 then currentWeapon = nil end
+    wepHash = GetHashKey(item.name)
     if currentWeapon == newWeapon then
         TriggerEvent("hsn-inventory:weaponaway")
         Citizen.Wait(1600)
-        RemoveWeaponFromPed(PlayerPedId(), GetHashKey(item.name))
+        RemoveWeaponFromPed(PlayerPedId(), wepHash)
         SetCurrentPedWeapon(PlayerPedId(), "WEAPON_UNARMED", true)
         curweaponSlot = nil
         currentWeapon = nil
@@ -415,15 +416,16 @@ AddEventHandler("hsn-inventory:client:weapon",function(item)
         TriggerEvent("hsn-inventory:weapondraw",item)
         Citizen.Wait(1600)
         curweaponSlot = item.slot
-        GiveWeaponToPed(PlayerPedId(), GetHashKey(item.name), item.metadata.ammo, false, false)
-        SetCurrentPedWeapon(PlayerPedId(), GetHashKey(item.name), true)
-        local str = item.metadata.weaponlicense
-        if str:find('POL') then
-            SetPedWeaponTintIndex(PlayerPedId(), item.name, 5)
-            if item.name:find('PISTOL') then component = GetHashKey('COMPONENT_AT_PI_FLSH') end
-            if component then GiveWeaponComponentToPed(PlayerPedId(), GetHashKey(item.name), component) end
+        GiveWeaponToPed(PlayerPedId(), wepHash, item.metadata.ammo, false, false)
+        SetCurrentPedWeapon(PlayerPedId(), wepHash, true)
+        if item.metadata.weapontint then SetPedWeaponTintIndex(PlayerPedId(), item.name, item.metadata.weapontint) end
+        if item.metadata.components then
+            for k,v in pairs(item.metadata.components) do
+                local componentHash = ESX.GetWeaponComponent(item.name, v).hash
+                GiveWeaponComponentToPed(PlayerPedId(), wepHash, componentHash)
+            end
         end
-        SetPedAmmo(PlayerPedId(), GetHashKey(item.name), item.metadata.ammo)
+        SetPedAmmo(PlayerPedId(), wepHash, item.metadata.ammo)
         currentWeapon = item.metadata.weaponlicense
         TriggerEvent("hsn-inventory:client:addItemNotify",item,'Equipped')
     end
