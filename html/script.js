@@ -171,7 +171,7 @@
         })
 
 
-        $(".leftside-weight").html(toplamkg.toFixed(1) + '/'+ data.maxweight+ 'kg' )
+        $(".leftside-weight").html(toplamkg.toFixed(1)/1000 + '/'+ data.maxweight/1000 + 'kg' )
         if (data.rightinventory !== undefined) {
             $('.inventory-main-rightside').data("invTier", data.rightinventory.type)
             $('.inventory-main-rightside').data("invId", data.rightinventory.name)

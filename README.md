@@ -1,10 +1,14 @@
+# hsn-inventory
+Advanced Inventory System for Fivem
+### [For installation instructions, read the wiki](../../wiki)
+
+
 # Info
 hsn is no longer supporting the inventory and has put it on the back burner. I'm attempting to fix any major issues with it. This should work 100% and have no issues. Please report anything that comes up and I'll attempt to fix it. 
 
 Thanks for the inventory hsn.
 
-# hsn-inventory
-Advanced Inventory System for Fivem
+<hr>
 
 -- Stash Trigger
 

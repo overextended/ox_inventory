@@ -80,7 +80,7 @@ RegisterCommand('vehinv', function()
                 local plate = GetVehicleNumberPlateText(vehicle)
                 OpenTrunk(plate)
             else
-                TriggerEvent('notification','Car locked',2)
+                TriggerEvent('hsn-inventory:notification','Vehicle is locked',2)
             end
         end
     elseif not isDead and not isCuffed and IsPedInAnyVehicle(playerPed, false) then -- [G]lovebox
@@ -194,7 +194,7 @@ AddEventHandler("hsn-inventory:client:addItemNotify",function(item,text)
         item = item,
         text = text
     })
-    ExecuteCommand('fixinv')
+    TriggerServerEvent('hsn-inventory:server:refreshInventory')
 end)
 
 
@@ -263,16 +263,13 @@ OpenStash = function(id)
 end
 
 RegisterNetEvent("hsn-inventory:Client:addnewDrop")
-AddEventHandler("hsn-inventory:Client:addnewDrop",function(PlayerId,drop)
-    local coords = GetEntityCoords(GetPlayerPed(GetPlayerFromServerId(PlayerId)))
-    local forward = GetEntityForwardVector(GetPlayerPed(GetPlayerFromServerId(PlayerId)))
-	local x, y, z = table.unpack(coords + forward * 0.5)
+AddEventHandler("hsn-inventory:Client:addnewDrop",function(coords,drop)
     Drops[drop] = {
         dropid = drop,
         coords = {
-            x = x,
-            y = y,
-            z = z - 0.3,
+            x = coords.x,
+            y = coords.y,
+            z = coords.z - 0.3,
         },
     }
 end)
@@ -311,7 +308,7 @@ RegisterNUICallback("saveinventorydata",function(data)
 end)
 
 RegisterNUICallback("notification", function(data)
-    TriggerEvent('notification',data.message,data.type)
+    TriggerEvent('hsn-inventory:notification',data.message,data.type)
 end)
 
 RegisterNetEvent('hsn-inventory:weapondraw')
@@ -339,6 +336,8 @@ RegisterNetEvent("hsn-inventory:client:weapon")
 AddEventHandler("hsn-inventory:client:weapon",function(item)
     TriggerEvent("hsn-inventory:client:closeInventory")
     local newWeapon = item.metadata.weaponlicense
+    local found, wepHash = GetCurrentPedWeapon(PlayerPedId(), true)
+    if wepHash == -1569615261 then currentWeapon = nil end
     if currentWeapon == newWeapon then
         TriggerEvent("hsn-inventory:weaponaway")
         Citizen.Wait(1600)
@@ -346,6 +345,7 @@ AddEventHandler("hsn-inventory:client:weapon",function(item)
         SetCurrentPedWeapon(PlayerPedId(), "WEAPON_UNARMED", true)
         curweaponSlot = nil
         currentWeapon = nil
+        TriggerEvent("hsn-inventory:client:addItemNotify",item,'Holstered')
     else
         TriggerEvent("hsn-inventory:weapondraw",item)
         Citizen.Wait(1600)
@@ -360,6 +360,7 @@ AddEventHandler("hsn-inventory:client:weapon",function(item)
         end
         SetPedAmmo(PlayerPedId(), GetHashKey(item.name), item.metadata.ammo)
         currentWeapon = item.metadata.weaponlicense
+        TriggerEvent("hsn-inventory:client:addItemNotify",item,'Equipped')
     end
     TriggerEvent('hsn-inventory:currentWeapon', item) -- using for another resource
 end)
@@ -385,9 +386,9 @@ AddEventHandler("hsn-inventory:addAmmo",function(item, name)
                 TriggerServerEvent("hsn-inventory:server:addweaponAmmo",curweaponSlot,item.count)
                 TaskReloadWeapon(playerPed)
                 SetPedAmmo(playerPed, weapon, newAmmo)
-                TriggerEvent("notification","Reloaded")
+                TriggerEvent("hsn-inventory:notification","Reloaded")
                 TriggerServerEvent("hsn-inventory:client:removeItem",name,1)		
-            else TriggerEvent("notification","Max Ammo")
+            else TriggerEvent("hsn-inventory:notification","Max Ammo")
             end
         end
     end
@@ -401,16 +402,6 @@ AddEventHandler("hsn-inventory:client:checkweapon",function(item)
         RemoveWeaponFromPed(PlayerPedId(), GetHashKey(item.name))
         SetCurrentPedWeapon(PlayerPedId(), "WEAPON_UNARMED", true)
         curweaponSlot = nil
-    end
-end)
-
-RegisterNetEvent("hsn-inventory:clientweaponnotify")
-AddEventHandler("hsn-inventory:clientweaponnotify",function(item)
-    local curweapon = GetSelectedPedWeapon(PlayerPedId())
-    if curweapon ==  GetHashKey(item.name) then
-        TriggerEvent("hsn-inventory:client:addItemNotify",item,'Equip 1x')
-    else
-        TriggerEvent("hsn-inventory:client:addItemNotify",item,'Holster 1x')
     end
 end)
 
@@ -432,7 +423,7 @@ function rob()
         else
         end
     else
-        TriggerEvent("notification",'There is nobody nearby')
+        TriggerEvent("hsn-inventory:notification",'There is nobody nearby')
     end
 end
 
@@ -484,8 +475,8 @@ function SetNuiFocusAdvanced(hasFocus, hasCursor, allowMovement)
     end
 end
 
-RegisterNetEvent("notification")
-AddEventHandler("notification",function(message, mtype)
+RegisterNetEvent("hsn-inventory:notification")
+AddEventHandler("hsn-inventory:notification",function(message, mtype)
     if mtype == 1 then mtype = { ['background-color'] = 'rgba(55,55,175)', ['color'] = 'white' }
     elseif not mtype or mtype == 2 then mtype = { ['background-color'] = 'rgba(175,55,55)', ['color'] = 'white' }
     end
@@ -501,60 +492,59 @@ RegisterNetEvent("hsn-inventory:useItem")
 AddEventHandler("hsn-inventory:useItem",function(item)
     if item.name then item = item.name end
     data = Config.ItemList[item]
+    if not data then return end
     data.item = item
     if data.closeInv then TriggerEvent("hsn-inventory:client:closeInventory") end
-    if data.item == 'lockpick' then
-        TriggerEvent('esx_lockpick:onUse')
-    end
-    if data.animDict then
-        exports['mythic_progbar']:Progress({
-            name = "useitem",
-            duration = data.useTime,
-            label = "Using "..data.item,
-            useWhileDead = false,
-            canCancel = false,
-            controlDisables = { disableMovement = data.disableMove, disableCarMovement = false, disableMouse = false, disableCombat = true },
-            animation = { animDict = data.animDict, anim = data.anim, flags = 49 },
-            prop = { model = data.model, coords = data.coords, rotation = data.rotation }
-        }, function()
-            itemUsed(data)
-        end)
-    else
-        exports['mythic_progbar']:Progress({
-            name = "useitem",
-            duration = data.useTime,
-            label = "Using "..data.item,
-            useWhileDead = false,
-            canCancel = false,
-            controlDisables = { disableMovement = data.disableMove, disableCarMovement = false, disableMouse = false, disableCombat = true },
-            animation = { animDict = 'pickup_object', anim = 'putdown_low', flags = 48 },
-            prop = nil,
-        }, function()
-            itemUsed(data)
-        end)
-    end
+    ESX.TriggerServerCallback("hsn-inventory:getItemCount",function(count)
+        if count > 0 then
+            if not data.animDict then data.animDict = 'pickup_object' end
+            if not data.anim then data.anim = 'putdown_low' end
+            if not data.flags then data.flags = 48 end
 
+            -- Trigger effects before the progress bar
+
+            if data.item == 'lockpick' then
+                TriggerEvent('esx_lockpick:onUse')
+            end
+
+
+            ------------------------------------------------------------------------------------------------
+            exports['mythic_progbar']:Progress({
+                name = "useitem",
+                duration = data.useTime,
+                label = "Using "..data.item,
+                useWhileDead = false,
+                canCancel = false,
+                controlDisables = { disableMovement = data.disableMove, disableCarMovement = false, disableMouse = false, disableCombat = true },
+                animation = { animDict = data.animDict, anim = data.anim, flags = data.flags },
+                prop = { model = data.model, coords = data.coords, rotation = data.rotation }
+            }, function()
+                -- Restore player status
+                if data.hunger then
+                    if data.hunger > 0 then TriggerEvent('esx_status:add', 'hunger', data.hunger)
+                    else TriggerEvent('esx_status:remove', 'hunger', data.hunger) end
+                end
+                if data.thirst then
+                    if data.thirst > 0 then TriggerEvent('esx_status:add', 'thirst', data.thirst)
+                    else TriggerEvent('esx_status:remove', 'thirst', data.thirst) end
+                end
+                ------------------------------------------------------------------------------------------------
+            
+
+                if data.item == 'bandage' then
+                    local maxHealth = 200
+                    local health = GetEntityHealth(PlayerPedId())
+                    local newHealth = math.min(maxHealth, math.floor(health + maxHealth / 16))
+                    SetEntityHealth(PlayerPedId(), newHealth)
+                    TriggerEvent('mythic_hospital:client:FieldTreatBleed')
+                    TriggerEvent('mythic_hospital:client:ReduceBleed')
+                end
+
+
+                ------------------------------------------------------------------------------------------------
+                if data.consume then TriggerServerEvent('hsn-inventory:client:removeItem', data.item, data.consume) end
+                return
+            end)
+        end
+    end, item)
 end)
-
-function itemUsed(data)
-    if data.hunger then
-        if data.hunger > 0 then TriggerEvent('esx_status:add', 'hunger', data.hunger)
-        else TriggerEvent('esx_status:remove', 'hunger', data.hunger) end
-    end
-    if data.thirst then
-        if data.thirst > 0 then TriggerEvent('esx_status:add', 'thirst', data.thirst)
-        else TriggerEvent('esx_status:remove', 'thirst', data.thirst) end
-    end
-
-    if data.item == 'bandage' then
-        local maxHealth = 200
-		local health = GetEntityHealth(PlayerPedId())
-		local newHealth = math.min(maxHealth, math.floor(health + maxHealth / 16))
-        SetEntityHealth(PlayerPedId(), newHealth)
-		TriggerEvent('mythic_hospital:client:FieldTreatBleed')
-		TriggerEvent('mythic_hospital:client:ReduceBleed')
-    end
-
-    
-    if data.consume then TriggerServerEvent('hsn-inventory:client:removeItem', data.item, data.consume) end
-end

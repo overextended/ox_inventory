@@ -2306,7 +2306,6 @@ Config.ItemList = {
         useTime = 2500,
         consume = 1,
         closeInv = 1
-
     },
 
     ['water'] = {
@@ -2317,6 +2316,19 @@ Config.ItemList = {
         model = "prop_ld_flow_bottle",
         coords = { x = 0.03, y = 0.0, z = 0.02 },
         rotation = { x = 0.0, y = -13.5, z = -1.5 },
+        useTime = 2500,
+        consume = 1,
+        closeInv = 1
+    },
+
+    ['cola'] = {
+        thirst = 200000,
+        hunger = 0,
+        animDict = "mp_player_intdrink",
+        anim = "loop_bottle",
+        model = "prop_ecola_can",
+        coords = { x = 0.01, y = 0.0, z = 0.06 },
+        rotation = { x = 5.0, y = -1.5, z = -180.5 },
         useTime = 2500,
         consume = 1,
         closeInv = 1
@@ -2334,8 +2346,17 @@ Config.ItemList = {
         closeInv = 1
     },
 
-    ['identification'] = {   
+    ['identification'] = {  
         useTime = 0,
+        consume = 0
+    },
+
+    ['lockpick'] = {
+        disableMove = true,
+        animDict = "anim@amb@clubhouse@tutorial@bkr_tut_ig3@",
+        anim = "machinic_loop_mechandplayer", 
+        flags = 8,
+        useTime = 2000,
         consume = 0
     },
 
