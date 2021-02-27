@@ -74,6 +74,7 @@ AddPlayerInventory = function(identifier, item, count, slot, metadata)
     if playerInventory[identifier] == nil then
         playerInventory[identifier] = {}
     end
+    local xPlayer = ESX.GetPlayerFromIdentifier(identifier)
     if ESXItems[item] ~= nil then
         if item ~= nil and count ~= nil then
             if item:find('WEAPON_') then
@@ -87,12 +88,12 @@ AddPlayerInventory = function(identifier, item, count, slot, metadata)
                             metadata.components = {}
                         end
                         metadata.weaponlicense = GetRandomLicense(metadata.weaponlicense)
+                        if metadata.registered == 'setname' then metadata.registered = xPlayer.getName() end
                         playerInventory[identifier][i] = {name = item ,label = ESXItems[item].label , weight = ESXItems[item].weight, slot = i, count = count, description = ESXItems[item].description, metadata = metadata or {}, stackable = false, closeonuse = ESXItems[item].closeonuse} -- because weapon :)
                         break
                     end
                 end
             elseif item:find('identification') then
-                local xPlayer = ESX.GetPlayerFromIdentifier(identifier)
                 count = 1 
                 for i = 1, Config.PlayerSlot do
                     if playerInventory[identifier][i] == nil then
@@ -530,6 +531,7 @@ AddEventHandler("hsn-inventory:server:saveInventoryData",function(data)
                         if data.item.name:find('WEAPON_') then
                             if not data.item.metadata then data.item.metadata = {} end
                             data.item.metadata.weaponlicense = GetRandomLicense(data.item.metadata.weaponlicense)
+                            if data.item.metadata.registered == 'setname' then data.item.metadata.registered = Player.getName() end
                             if not data.item.metadata.components then data.item.metadata.components = {} end
                             data.item.metadata.ammo = 0
                             data.item.metadata.durability = 100
@@ -552,6 +554,7 @@ AddEventHandler("hsn-inventory:server:saveInventoryData",function(data)
                     if (money >= (data.newslotItem.price *  data.newslotItem.count)) then
                         if data.newslotItem.name:find('WEAPON_') then
                             if not data.newslotItem.metadata then data.newslotItem.metadata = {} end
+                            if data.newslotItem.metadata.registered == 'setname' then data.newslotItem.metadata.registered = Player.getName() end
                             data.newslotItem.metadata.weaponlicense = GetRandomLicense(data.newslotItem.metadata.weaponlicense)
                             if not data.newslotItem.metadata.components then data.newslotItem.metadata.components = {} end
                             data.newslotItem.metadata.ammo = 0
