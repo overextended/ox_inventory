@@ -494,12 +494,11 @@ end, false)
 RegisterNetEvent("hsn-inventory:useItem")
 AddEventHandler("hsn-inventory:useItem",function(item)
     if item.name then item = item.name end
-    data = Config.ItemList[item]
-    if not data then return end
-    data.item = item
-    if data.closeInv then TriggerEvent("hsn-inventory:client:closeInventory") end
-    ESX.TriggerServerCallback("hsn-inventory:getItemCount",function(count)
-        if count > 0 then
+    ESX.TriggerServerCallback("hsn-inventory:getItem",function(xItem)
+        local data = Config.ItemList[xItem.name]
+        if not data then return end
+        if xItem.closeonuse then TriggerEvent("hsn-inventory:client:closeInventory") end
+        if xItem.count > 0 then
             if not data.animDict then data.animDict = 'pickup_object' end
             if not data.anim then data.anim = 'putdown_low' end
             if not data.flags then data.flags = 48 end
@@ -515,7 +514,7 @@ AddEventHandler("hsn-inventory:useItem",function(item)
             exports['mythic_progbar']:Progress({
                 name = "useitem",
                 duration = data.useTime,
-                label = "Using "..data.item,
+                label = "Using "..xItem.name,
                 useWhileDead = false,
                 canCancel = false,
                 controlDisables = { disableMovement = data.disableMove, disableCarMovement = false, disableMouse = false, disableCombat = true },
@@ -532,7 +531,7 @@ AddEventHandler("hsn-inventory:useItem",function(item)
                     else TriggerEvent('esx_status:remove', 'thirst', data.thirst) end
                 end
                 ------------------------------------------------------------------------------------------------
-            
+                
 
                 if data.item == 'bandage' then
                     local maxHealth = 200
@@ -546,7 +545,6 @@ AddEventHandler("hsn-inventory:useItem",function(item)
 
                 ------------------------------------------------------------------------------------------------
                 if data.consume then TriggerServerEvent('hsn-inventory:client:removeItem', data.item, data.consume) end
-                return
             end)
         end
     end, item)
