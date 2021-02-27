@@ -363,6 +363,7 @@
     text-shadow: 1px 1px 0px black;
     background-color: rgba(0,0,0,0.267);
     user-select: all !important;
+    padding-bottom: 1vh;
 }
 
 
@@ -379,7 +380,6 @@
     font-size: 1.3vh;
     font-family: 'Basic';
     color: white;
-    padding-top: 3vh;
     padding-left: .5vh;
 }
 
@@ -408,9 +408,9 @@
     height: 40px;
     width: 150px;
     top: 30%;
-    background-color: rgba(0, 0, 0, 0.405);
-    /* rgba(20, 20, 20, 0.5) */
-    border: 1px solid rgba(0, 0, 0, .01);
+    border: none;
+    background-color:rgba(12, 12, 12, 0.35);
+    box-shadow: 0 0 0 1px rgba(38, 38, 38, 0.3) inset;
     color: white;
     text-align: center;
     transition: background-color .1s linear;
@@ -429,11 +429,11 @@
     width: 150px;
     top: 35%;
     border: none;
-    background-color:rgba(24, 9, 9, 0.322);
+    background-color:rgba(12, 12, 12, 0.35);
+    box-shadow: 0 0 0 1px rgba(38, 38, 38, 0.3) inset;
     color: white;
     text-align: center;
     border-radius: 2px;
-    /*border: 1px solid #ffffff; */
     transition: 0.2s ease-in-out all;
     line-height: 40px;
     font-family: "Basic";
@@ -454,8 +454,9 @@
     width: 150px;
     top: 40%;
     border: none;
-    background-color: rgba(24, 9, 9, 0.322);
     color: white;
+    background-color:rgba(12, 12, 12, 0.35);
+    box-shadow: 0 0 0 1px rgba(38, 38, 38, 0.3) inset;
 }
 
 .close:hover {
