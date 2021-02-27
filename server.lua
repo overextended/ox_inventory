@@ -896,10 +896,10 @@ AddEventHandler("hsn-inventory:server:useItem",function(item,slot)
                 TriggerClientEvent("hsn-inventory:addAmmo",src,weps,item.name)
                 return
             end
-            if ESX.UsableItemsCallbacks[item.name] ~= nil then
-                TriggerEvent("esx:useItem", src, item.name)
-            else
+            if Config.ItemList[item.name] then
                 TriggerClientEvent('hsn-inventory:useItem', src, item)
+            elseif ESX.UsableItemsCallbacks[item.name] ~= nil then
+                TriggerEvent("esx:useItem", src, item.name)
             end
         end
     end
