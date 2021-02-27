@@ -3,14 +3,15 @@ Advanced Inventory system for FiveM
 <h3 align='center'> <a href='https://github.com/thelindat/hsn-inventory/wiki'>For installation instructions, read the wiki</a> </h3>
 
 
-# Info
-hsn is no longer supporting the inventory and has put it on the back burner. I'm attempting to fix any major issues with it. This should work 100% and have no issues. Please report anything that comes up and I'll attempt to fix it. 
-
-Thanks for the inventory hsn.
-
-<hr>
-
+# Information
 Showcase --> https://streamable.com/kpvdj3
 
-You can contact with me for inventory bugs or dupes...
-https://discord.gg/6FQhKDXBJ6
+Hasan is no updating the inventory and has stopped development.  
+<img src='https://i.imgur.com/IZStQrx.png'/>  
+Thanks for the inventory hsn.
+
+Further development of this resource is continuing at <a href='https://github.com/thelindat/hsn-inventory'>thelindat/hsn-inventory</a>. All stable updates will be submitted to the main branch.
+
+Hasan's discord is available at https://discord.gg/6FQhKDXBJ6
+
+You can join my discord at https://discord.gg/hmcmv3P7YW
