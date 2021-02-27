@@ -36,12 +36,12 @@
     position: absolute;
     background: #ffffff;
     color: #000000;
-    padding: .3vh;
-    padding-left: .5vh;
-    padding-right: .5vh;
+    padding: .3pt;
+    padding-left: .5pt;
+    padding-right: .5pt;
     text-align: left;
-    font-size: 1.1vh;
-    line-height: 1.8vh;
+    font-size: 14px;
+    line-height: 18px;
     font-family: "Basic";
 }
 
@@ -66,6 +66,7 @@
     font-family: "Basic";
     font-size: 15px;
     padding-top: 3%;
+    text-shadow: 1px 1px 0px black;
 }
 
 .rightside-name {
@@ -76,6 +77,7 @@
     padding-left: 58%;
     font-weight: bold;
     font-size: 15px; 
+    text-shadow: 1px 1px 0px black;
 }
 
 .leftside-weight {
@@ -87,6 +89,7 @@
     font-weight: bold;
     font-size: 15px;
     font-family: "Basic";
+    text-shadow: 1px 1px 0px black;
 }
 
 .rightside-weight {
@@ -221,7 +224,7 @@
     position: relative;
     float: left;
     margin: 0 auto;
-    margin-right: 1vh;
+    margin-right: 1pt;
     width: 110px;
     height: 130px;
     
@@ -259,7 +262,7 @@
 }
 
 #itembox-action > p {
-    font-size: 12px;
+    font-size: 14px;
     font-family: 'Basic';
 }
 
@@ -268,18 +271,19 @@
     bottom: 0;
     width: 100%;
     background-color: rgba(var(--main-label-color), 0.35);
-    min-height: 2.2vh;
+    min-height: 18px;
     height: fit-content;
 }
 
 #itembox-label > p {
-    color: rgb(247, 247, 247);
-    font-size: 11.5px;
-    line-height: 2.1vh;
+    color: white;
+    font-size: 14px;
+    line-height: 18px;
     text-align: center;
     text-transform: lowercase;
     font-family: 'Signika';
     font-variant: small-caps;
+    text-shadow: 1px 1px 0px black;
 }
 
 .item-slot-img {
@@ -304,16 +308,23 @@
     bottom: 0;
     width: 100%;
     background-color: rgba(12, 12, 12, 0.25);
-    min-height: 2vh;
     height: auto;
+    color: rgb(247, 247, 247);
+    font-size: 10px;
+    line-height: 18px;
+    text-align: center;
+    text-transform: uppercase;
+    font-family: "Basic";
+    font-variant: small-caps;
+    text-shadow: 1px 1px 0px black;
 }
 
 .item-slot-durability {
     position: absolute;
-    bottom: 2vh;
+    bottom: 17px;
     width: 100%;
     height: 5px;
-    line-height: 1.6vh;
+    line-height: 1.6pt;
     background-color: #1d1d1de8;
     box-shadow: inset 0 0 1px 1px rgba(0, 0, 0, 0.2);
 }
@@ -327,22 +338,11 @@
 }
 
 
-
-.item-slot-label p {
-    color: rgb(247, 247, 247);
-    font-size: .95vh;
-    line-height: 2.2vh;
-    text-align: center;
-    text-transform: uppercase;
-    font-family: "Basic";
-    font-variant: small-caps;
-}
-
-
 .item-slot-count {
     position: absolute;
-    top:0.3vh;
-    right: 0.3vw;
+    top:2px;
+    right: 2px;
+    text-shadow: 1px 1px 0px black;
 }
 
 .iteminfo {
@@ -359,17 +359,17 @@
     margin: 0 auto;
     left: 0;
     right: 0;
-    width: 35vh;
+    width: 28%;
     text-shadow: 1px 1px 0px black;
     background-color: rgba(0,0,0,0.267);
     user-select: all !important;
-    padding-bottom: 1vh;
+    padding-bottom: 5px;
 }
 
 
 .iteminfo-label {
     font-family: "Basic";
-    font-size: 1.8vh;
+    font-size: 11pt;
     color: white;
     padding-top: 5px;
     padding-left: 5px;
@@ -377,10 +377,10 @@
 }
 
 .iteminfo-description {
-    font-size: 1.3vh;
+    font-size: 11pt;
     font-family: 'Basic';
     color: white;
-    padding-left: .5vh;
+    padding-left: 5px;
 }
 
 
@@ -395,7 +395,7 @@
     text-align: center;
     line-height: 48px;
     text-transform: uppercase;
-    font-size: 1.1vh;
+    font-size: 1.1pt;
     font-family: Verdana;
 }
 
