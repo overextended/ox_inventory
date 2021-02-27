@@ -84,7 +84,7 @@ AddPlayerInventory = function(identifier, item, count, slot, metadata)
                             metadata = {}
                             metadata.durability = 100
                             metadata.ammo = 0
-                            metadata.attachments = {}
+                            metadata.components = {}
                         end
                         metadata.weaponlicense = GetRandomLicense(metadata.weaponlicense)
                         playerInventory[identifier][i] = {name = item ,label = ESXItems[item].label , weight = ESXItems[item].weight, slot = i, count = count, description = ESXItems[item].description, metadata = metadata or {}, stackable = false, closeonuse = ESXItems[item].closeonuse} -- because weapon :)
@@ -530,7 +530,7 @@ AddEventHandler("hsn-inventory:server:saveInventoryData",function(data)
                         if data.item.name:find('WEAPON_') then
                             if not data.item.metadata then data.item.metadata = {} end
                             data.item.metadata.weaponlicense = GetRandomLicense(data.item.metadata.weaponlicense)
-                            data.item.metadata.attachments = {}
+                            if not data.item.metadata.components then data.item.metadata.components = {} end
                             data.item.metadata.ammo = 0
                             data.item.metadata.durability = 100
                         elseif data.item.name:find('identification') then
@@ -553,7 +553,7 @@ AddEventHandler("hsn-inventory:server:saveInventoryData",function(data)
                         if data.newslotItem.name:find('WEAPON_') then
                             if not data.newslotItem.metadata then data.newslotItem.metadata = {} end
                             data.newslotItem.metadata.weaponlicense = GetRandomLicense(data.newslotItem.metadata.weaponlicense)
-                            data.newslotItem.metadata.attachments = {}
+                            if not data.newslotItem.metadata.components then data.newslotItem.metadata.components = {} end
                             data.newslotItem.metadata.ammo = 0
                             data.newslotItem.metadata.durability = 100
                         elseif data.newslotItem.name:find('identification') then
@@ -613,7 +613,7 @@ CreateNewDrop = function(source,data)
     TriggerClientEvent("hsn-inventory:Client:addnewDrop", -1, coords, dropid)
 end
 
--- Override the default ESX command
+-- Override the default ESX command (only works on ESX 1.2+ and EXM)
 ESX.RegisterCommand({'giveitem', 'additem'}, 'admin', function(xPlayer, args, showError)
 	args.playerId.addInventoryItem(args.item, args.count)
 end, true, {help = 'give an item to a player', validate = true, arguments = {
@@ -621,6 +621,26 @@ end, true, {help = 'give an item to a player', validate = true, arguments = {
 	{name = 'item', help = 'item name', type = 'string'},
 	{name = 'count', help = 'item count', type = 'number'}
 }})
+
+--[[    Use this command instead for ESX 1.1
+RegisterCommand("addItem",function(source,args)
+    if source == 0 then
+        return
+    end
+    local src = source
+    local Player = ESX.GetPlayerFromId(src)
+    if Player.getGroup() == "superadmin" or Player.getGroup() == "admin" then
+        local tPlayerId = tonumber(args[1])
+        local item = args[2]
+        local count = tonumber(args[3])
+        local tPlayer = ESX.GetPlayerFromId(tPlayerId)
+        if tPlayer == nil then
+            return
+        end
+        tPlayer.addInventoryItem(item, count)
+    end
+end)
+]]
 
 RegisterCommand("fixinv", function(source, args, rawCommand)
     local Player = ESX.GetPlayerFromId(source)
