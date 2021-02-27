@@ -349,7 +349,7 @@ OpenShop = function(id)
 end
 
 OpenStash = function(id)
-    TriggerServerEvent("hsn-inventory:server:openStash", {id = id, name = id.name, slots = id.slots, type = 'stash'})
+    TriggerServerEvent("hsn-inventory:server:openStash", {id = id, slots = id.slots, type = 'stash'})
     TriggerServerEvent('inventory:isShopOpen', false)
 end
 
