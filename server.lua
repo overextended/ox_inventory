@@ -181,8 +181,6 @@ AddEventHandler("hsn-inventory:server:saveInventoryData",function(data)
     local src = source
     local Player = ESX.GetPlayerFromId(src)
     if data ~= nil then
-        local money = exports["hsn-inventory"]:getItemCount(src,'money')
-        Player.setMoney(money)
         
         if data.frominv == data.toinv and (data.frominv == 'Playerinv') and not shopOpen then
             if data.type == 'swap' and not shopOpen then
@@ -575,6 +573,11 @@ AddEventHandler("hsn-inventory:server:saveInventoryData",function(data)
             TriggerClientEvent("hsn-inventory:client:refreshInventory",src,playerInventory[Player.identifier])
             return TriggerClientEvent("notification",src,'You can not return your items',2)
         end
+        -- Sync ESX money with hsn-inventory
+        local money = exports["hsn-inventory"]:getItemCount(src,'money')
+        Player.setMoney(money)
+        local blackmoney = exports["hsn-inventory"]:getItemCount(src,'black_money')
+        Player.setAccountMoney('black_money', money)
     end
 end)
 
