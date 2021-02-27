@@ -1810,15 +1810,19 @@ Config.Shops = {
             },
             {
                 name = 'WEAPON_STUNGUN',
-                price = 400,
+                price = 1000,
                 count = 1,
-                metadata = {}
+                metadata = {},
+                metadata.registered == 'setname',
+                metadata.registered == 'setname'
             },
             {
                 name = 'WEAPON_PISTOL',
                 price = 1000,
                 count = 1,
-                metadata = {}
+                metadata = {},
+                metadata.registered == 'setname',
+                metadata.registered == 'setname'
             },
         },
     },
@@ -1858,15 +1862,17 @@ Config.Shops = {
             },
             {
                 name = 'WEAPON_STUNGUN',
-                price = 400,
+                price = 1000,
                 count = 1,
-                metadata = {}
+                metadata = {},
+                metadata.registered == 'setname'
             },
             {
                 name = 'WEAPON_PISTOL',
                 price = 1000,
                 count = 1,
-                metadata = {}
+                metadata = {},
+                metadata.registered == 'setname'
             },
         },
     },
@@ -1906,15 +1912,17 @@ Config.Shops = {
             },
             {
                 name = 'WEAPON_STUNGUN',
-                price = 400,
+                price = 1000,
                 count = 1,
-                metadata = {}
+                metadata = {},
+                metadata.registered == 'setname'
             },
             {
                 name = 'WEAPON_PISTOL',
                 price = 1000,
                 count = 1,
-                metadata = {}
+                metadata = {},
+                metadata.registered == 'setname'
             },
         },
     },
@@ -1954,15 +1962,17 @@ Config.Shops = {
             },
             {
                 name = 'WEAPON_STUNGUN',
-                price = 400,
+                price = 1000,
                 count = 1,
-                metadata = {}
+                metadata = {},
+                metadata.registered == 'setname'
             },
             {
                 name = 'WEAPON_PISTOL',
                 price = 1000,
                 count = 1,
-                metadata = {}
+                metadata = {},
+                metadata.registered == 'setname'
             },
         },
     },
@@ -2002,15 +2012,17 @@ Config.Shops = {
             },
             {
                 name = 'WEAPON_STUNGUN',
-                price = 400,
+                price = 1000,
                 count = 1,
-                metadata = {}
+                metadata = {},
+                metadata.registered == 'setname'
             },
             {
                 name = 'WEAPON_PISTOL',
                 price = 1000,
                 count = 1,
-                metadata = {}
+                metadata = {},
+                metadata.registered == 'setname'
             },
         },
     },
@@ -2050,15 +2062,17 @@ Config.Shops = {
             },
             {
                 name = 'WEAPON_STUNGUN',
-                price = 400,
+                price = 1000,
                 count = 1,
-                metadata = {}
+                metadata = {},
+                metadata.registered == 'setname'
             },
             {
                 name = 'WEAPON_PISTOL',
                 price = 1000,
                 count = 1,
-                metadata = {}
+                metadata = {},
+                metadata.registered == 'setname'
             },
         },
     },
@@ -2098,15 +2112,17 @@ Config.Shops = {
             },
             {
                 name = 'WEAPON_STUNGUN',
-                price = 400,
+                price = 1000,
                 count = 1,
-                metadata = {}
+                metadata = {},
+                metadata.registered == 'setname'
             },
             {
                 name = 'WEAPON_PISTOL',
                 price = 1000,
                 count = 1,
-                metadata = {}
+                metadata = {},
+                metadata.registered == 'setname'
             },
         },
     },
@@ -2146,15 +2162,17 @@ Config.Shops = {
             },
             {
                 name = 'WEAPON_STUNGUN',
-                price = 400,
+                price = 1000,
                 count = 1,
-                metadata = {}
+                metadata = {},
+                metadata.registered == 'setname'
             },
             {
                 name = 'WEAPON_PISTOL',
                 price = 1000,
                 count = 1,
-                metadata = {}
+                metadata = {},
+                metadata.registered == 'setname'
             },
         },
     },
@@ -2194,15 +2212,17 @@ Config.Shops = {
             },
             {
                 name = 'WEAPON_STUNGUN',
-                price = 400,
+                price = 1000,
                 count = 1,
-                metadata = {}
+                metadata = {},
+                metadata.registered == 'setname'
             },
             {
                 name = 'WEAPON_PISTOL',
                 price = 1000,
                 count = 1,
-                metadata = {}
+                metadata = {},
+                metadata.registered == 'setname'
             },
         },
     },
