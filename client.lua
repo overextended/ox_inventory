@@ -63,7 +63,7 @@ end)
 Citizen.CreateThread(function()
     while true do
         Citizen.Wait(3)
-        DisableControlAction(0, 37, true) -- tab
+        DisableControlAction(0, 37, true)
         DisableControlAction(0, 157, true) -- 1
         DisableControlAction(0, 158, true) -- 2
         DisableControlAction(0, 160, true) -- 3
@@ -71,7 +71,7 @@ Citizen.CreateThread(function()
         DisableControlAction(0, 165, true) -- 5
         DisableControlAction(0, 289, true) -- F2
         for i = 19, 20 do 
-            HideHudComponentThisFrame(i) -- remove weapon wheel
+            HideHudComponentThisFrame(i) -- remove tab etc.
         end
 
         if not invOpen then
@@ -307,6 +307,18 @@ Citizen.CreateThread(function()
                 wait = 2
             end
         end
+
+        for i = 1, #Config.Stashes do
+            distance = #(GetEntityCoords(PlayerPedId()) - Config.Stashes[i].coords)
+            if distance <= 2.5 and (not Config.Stashes[i].job or Config.Stashes[i].job == PlayerData.job.name) then
+                DrawMarker(2, Config.Stashes[i].coords.x,Config.Stashes[i].coords.y,Config.Stashes[i].coords.z, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.3, 0.15, 0.2, 30, 150, 30, 100, false, false, false, true, false, false, false)
+                if IsControlJustPressed(1,38) and distance <= 2 and not dead and not isCuffed then
+                    OpenStash(Config.Stashes[i])
+                end
+                wait = 2
+            end
+        end
+
         Citizen.Wait(wait)
     end
 end)
@@ -337,7 +349,7 @@ OpenShop = function(id)
 end
 
 OpenStash = function(id)
-    TriggerServerEvent("hsn-inventory:server:openStash", {name = id.name, slots = id.slots, type = 'stash'})
+    TriggerServerEvent("hsn-inventory:server:openStash", {id = id, name = id.name, slots = id.slots, type = 'stash'})
     TriggerServerEvent('inventory:isShopOpen', false)
 end
 
