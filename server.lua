@@ -610,23 +610,14 @@ CreateNewDrop = function(source,data)
     TriggerClientEvent("hsn-inventory:Client:addnewDrop", -1, coords, dropid)
 end
 
---[[ Should just be able to use /giveitem now
-    RegisterCommand("addItem",function(source, args, rawCommand)
-    if source == 0 then
-        return
-    end
-    local src = source
-    local Player = ESX.GetPlayerFromId(src)
-    local tPlayerId = tonumber(args[1])
-    local item = args[2]
-    local count = tonumber(args[3])
-    local tPlayer = ESX.GetPlayerFromId(tPlayerId)
-    if tPlayer == nil then
-        return
-    end
-    AddPlayerInventory(tPlayer.identifier,item,count)
-    TriggerEvent("hsn-inventory:onAddInventoryItem",tPlayerId,item,count)
-end, true)]]
+-- Override the default ESX command
+ESX.RegisterCommand({'giveitem', 'additem'}, 'admin', function(xPlayer, args, showError)
+	args.playerId.addInventoryItem(args.item, args.count)
+end, true, {help = 'give an item to a player', validate = true, arguments = {
+	{name = 'playerId', help = 'player id', type = 'player'},
+	{name = 'item', help = 'item name', type = 'string'},
+	{name = 'count', help = 'item count', type = 'number'}
+}})
 
 RegisterCommand("fixinv", function(source, args, rawCommand)
     local Player = ESX.GetPlayerFromId(source)
@@ -905,7 +896,11 @@ AddEventHandler("hsn-inventory:server:useItem",function(item,slot)
                 TriggerClientEvent("hsn-inventory:addAmmo",src,weps,item.name)
                 return
             end
-            TriggerClientEvent('hsn-inventory:useItem', src, item)
+            if ESX.UsableItemsCallbacks[item.name] ~= nil then
+                TriggerEvent("esx:useItem", src, item.name)
+            else
+                TriggerClientEvent('hsn-inventory:useItem', src, item)
+            end
         end
     end
 end)
