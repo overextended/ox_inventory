@@ -163,6 +163,7 @@ end)
 
 
 RegisterNUICallback("exit",function(data)
+    invOpen = false
     SetNuiFocusAdvanced(false,false)
     TriggerServerEvent('hsn-inventory:server:saveInventory',data)
     TriggerServerEvent("hsn-inventory:removecurrentInventory",data.invid)
@@ -448,6 +449,7 @@ function SetNuiFocusAdvanced(hasFocus, hasCursor, allowMovement)
     TriggerEvent("nui:focus", hasFocus, hasCursor)
 
     if nui_focus[1] then
+        if Config.EnableBlur then SetTimecycleModifier('hud_def_blur') end
         Citizen.CreateThread(function()
             local ticks = 0
             while true do
@@ -467,6 +469,7 @@ function SetNuiFocusAdvanced(hasFocus, hasCursor, allowMovement)
                     ticks = ticks + 1
                     if (IsDisabledControlJustReleased(0, 200, true) or ticks > 20) then
                         invOpen = false
+                        if Config.EnableBlur then SetTimecycleModifier('default') end
                         break
                     end
                 end
