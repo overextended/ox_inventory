@@ -581,6 +581,7 @@ AddEventHandler("hsn-inventory:useItem",function(item)
         if not data then return end
         if xItem.closeonuse then TriggerEvent("hsn-inventory:client:closeInventory") end
         if xItem.count > 0 then
+            if data.consume then TriggerServerEvent('hsn-inventory:client:removeItem', item, data.consume) end
             if not data.animDict then data.animDict = 'pickup_object' end
             if not data.anim then data.anim = 'putdown_low' end
             if not data.flags then data.flags = 48 end
@@ -626,7 +627,6 @@ AddEventHandler("hsn-inventory:useItem",function(item)
 
 
                 ------------------------------------------------------------------------------------------------
-                if data.consume then TriggerServerEvent('hsn-inventory:client:removeItem', data.item, data.consume) end
             end)
         end
     end, item)
