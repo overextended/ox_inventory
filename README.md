@@ -1,6 +1,6 @@
 # hsn-inventory
 Advanced Inventory System for Fivem
-### [For installation instructions, read the wiki](../../wiki)
+### [For installation instructions, read the wiki](https://github.com/thelindat/hsn-inventory/wiki)
 
 
 # Info
