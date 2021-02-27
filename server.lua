@@ -706,16 +706,16 @@ RegisterServerEvent("hsn-inventory:server:openStash")
 AddEventHandler("hsn-inventory:server:openStash",function(stash)
     local src = source
     local Player = ESX.GetPlayerFromId(src)
-    if Stashs[stash.name] == nil then
-        Stashs[stash.name] = {}
-        Stashs[stash.name].inventory = GetItems(stash.name)
-        Stashs[stash.name].name = stash.name
-        Stashs[stash.name].type = 'stash'
-        Stashs[stash.name].slots = stash.slots
+    if Stashs[stash.id.name] == nil then
+        Stashs[stash.id.name] = {}
+        Stashs[stash.id.name].inventory = GetItems(stash.id.name)
+        Stashs[stash.id.name].name = stash.id.name
+        Stashs[stash.id.name].type = 'stash'
+        Stashs[stash.id.name].slots = stash.slots
     end
-    if checkOpenable(src,stash.name,stash.id.coords) then
+    if checkOpenable(src,stash.id.name,stash.id.coords) then
         if not stash.id.job or stash.id.job == Player.job.name then
-            TriggerClientEvent("hsn-inventory:client:openInventory",src,playerInventory[Player.identifier], Stashs[stash.name])
+            TriggerClientEvent("hsn-inventory:client:openInventory",src,playerInventory[Player.identifier], Stashs[stash.id.name])
         end
     else
         TriggerClientEvent("hsn-inventory:notification",src,'You can not open this inventory',2)
