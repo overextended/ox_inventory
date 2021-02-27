@@ -84,6 +84,7 @@ AddPlayerInventory = function(identifier, item, count, slot, metadata)
                             metadata = {}
                             metadata.durability = 100
                             metadata.ammo = 0
+                            metadata.attachments = {}
                         end
                         metadata.weaponlicense = GetRandomLicense(metadata.weaponlicense)
                         playerInventory[identifier][i] = {name = item ,label = ESXItems[item].label , weight = ESXItems[item].weight, slot = i, count = count, description = ESXItems[item].description, metadata = metadata or {}, stackable = false, closeonuse = ESXItems[item].closeonuse} -- because weapon :)
@@ -529,6 +530,7 @@ AddEventHandler("hsn-inventory:server:saveInventoryData",function(data)
                         if data.item.name:find('WEAPON_') then
                             if not data.item.metadata then data.item.metadata = {} end
                             data.item.metadata.weaponlicense = GetRandomLicense(data.item.metadata.weaponlicense)
+                            data.item.metadata.attachments = {}
                             data.item.metadata.ammo = 0
                             data.item.metadata.durability = 100
                         elseif data.item.name:find('identification') then
@@ -551,6 +553,7 @@ AddEventHandler("hsn-inventory:server:saveInventoryData",function(data)
                         if data.newslotItem.name:find('WEAPON_') then
                             if not data.newslotItem.metadata then data.newslotItem.metadata = {} end
                             data.newslotItem.metadata.weaponlicense = GetRandomLicense(data.newslotItem.metadata.weaponlicense)
+                            data.newslotItem.metadata.attachments = {}
                             data.newslotItem.metadata.ammo = 0
                             data.newslotItem.metadata.durability = 100
                         elseif data.newslotItem.name:find('identification') then
@@ -896,11 +899,7 @@ AddEventHandler("hsn-inventory:server:useItem",function(item,slot)
                 TriggerClientEvent("hsn-inventory:addAmmo",src,weps,item.name)
                 return
             end
-            if Config.ItemList[item.name] then
-                TriggerClientEvent('hsn-inventory:useItem', src, item)
-            elseif ESX.UsableItemsCallbacks[item.name] ~= nil then
-                TriggerEvent("esx:useItem", src, item.name)
-            end
+            Player.useItem(item)
         end
     end
 end)
@@ -927,7 +926,7 @@ AddEventHandler("hsn-inventory:server:useItemfromSlot",function(slot)
                     TriggerClientEvent("hsn-inventory:addAmmo",src,weps,playerInventory[Player.identifier][slot].name)
                     return
                 end
-                TriggerClientEvent("hsn-inventory:useItem",src,playerInventory[Player.identifier][slot])
+                Player.useItem(playerInventory[Player.identifier][slot])
                 --TriggerClientEvent("hsn-inventory:client:addItemNotify",source,ESXItems[playerInventory[Player.identifier][slot].name],'Used 1x')
             end
         end
@@ -1089,6 +1088,14 @@ exports("getItem",function(src, item)
     return ESXItem
 end)
 
+exports('useItem', function(src, item)
+    if Config.ItemList[item.name] then
+        TriggerClientEvent('hsn-inventory:useItem', src, item)
+    elseif ESX.UsableItemsCallbacks[item.name] ~= nil then
+        TriggerEvent("esx:useItem", src, item.name)
+    end
+end)
+
 --[[ Example to retrieve items and count from player inventory
     RegisterCommand("getitems", function(source, args, rawCommand)
     local Player = ESX.GetPlayerFromId(source)
@@ -1122,6 +1129,17 @@ ESX.RegisterServerCallback("hsn-inventory:getItemCount",function(source, cb, ite
     end
     local ItemCount = GetItemCount(Player.identifier, item)
     cb(tonumber(ItemCount))
+end)
+
+ESX.RegisterServerCallback("hsn-inventory:getItem",function(source, cb, item)
+    local src = source
+    local Player = ESX.GetPlayerFromId(src)
+    if playerInventory[Player.identifier] == nil then
+        return
+    end
+    local ESXItem = ESXItems[item]
+    ESXItem.count = GetItemCount(Player.identifier, item)
+    cb(ESXItem)
 end)
 
 
