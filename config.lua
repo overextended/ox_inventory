@@ -1699,7 +1699,6 @@ Config.Shops = {
                 count = 1,
                 metadata = {
                     weaponlicense = 'POL',
-                    components = { 'flashlight'},
                     weapontint = 5
                 },
             },
