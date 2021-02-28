@@ -10,6 +10,7 @@ local Gloveboxes = {}
 local Trunks = {}
 TriggerEvent('esx:getSharedObject', function(obj) ESX = obj end)
 
+print( ('^1[%s]^2 is starting..^7'):format('hsn-inventory') )
 exports.ghmattimysql:ready(function()
 	exports.ghmattimysql:execute('SELECT * FROM items', {}, function(result)
 		for k,v in ipairs(result) do
@@ -22,9 +23,21 @@ exports.ghmattimysql:ready(function()
                 closeonuse = v.closeonuse
 			}
 		end
+        for k,v in pairs(Config.ItemList) do
+            if not ESXItems[k] then
+                print( ('^1[%s]^3 Item `%s` is missing from your database! Item has been created with placeholder data.^7'):format('hsn-inventory', k) )
+                ESXItems[k] = {
+                    name = k,
+                    label = k,
+                    weight = 1,
+                    stackable = 1,
+                    description = 'Item is not loaded in SQL',
+                    closeonuse = 1
+                }
+            end
+        end
     end)
-    print('[^2hsn-inventory^0] - Started!')
-    print('[^2hsn-inventory^0] - Items are created!')
+    print( ('^1[%s]^2 Items have been created!^7'):format('hsn-inventory') )
 end)
 
 IfInventoryCanCarry = function(inventory, maxweight, newWeight)
