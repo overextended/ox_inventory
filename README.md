@@ -1,57 +1,17 @@
 # hsn-inventory
-Advanced Inventory System for Fivem
-### [For installation instructions, read the wiki](../../wiki)
+Advanced Inventory system for FiveM
+<h3 align='center'> <a href='https://github.com/thelindat/hsn-inventory/wiki'>For installation instructions, read the wiki</a> </h3>
 
 
-# Info
-hsn is no longer supporting the inventory and has put it on the back burner. I'm attempting to fix any major issues with it. This should work 100% and have no issues. Please report anything that comes up and I'll attempt to fix it. 
-
-Thanks for the inventory hsn.
-
-<hr>
-
--- Stash Trigger
-
-TriggerServerEvent("hsn-inventory:server:openStash", {name = 'Motel',slots = 15, type = 'stash'})
-
+# Information
 Showcase --> https://streamable.com/kpvdj3
 
-Setup -- > https://streamable.com/esytcq
+Hasan is no updating the inventory and has stopped development.  
+<img src='https://i.imgur.com/IZStQrx.png'/>  
+Thanks for the inventory hsn.
 
-You can contact with me for inventory bugs or dupes...
-https://discord.gg/6FQhKDXBJ6
+Further development of this resource is continuing at <a href='https://github.com/thelindat/hsn-inventory'>thelindat/hsn-inventory</a>. All stable updates will be submitted to the main branch.
 
-Add this code ghmattimysql server.lua
+Hasan's discord is available at https://discord.gg/6FQhKDXBJ6
 
-exports("ready", function (callback)
-  Citizen.CreateThread(function ()
-      -- add some more error handling
-      while GetResourceState('ghmattimysql') ~= 'started' do
-          Citizen.Wait(0)
-      end
-      callback()
-  end)
-end)
-
-es_extended server / main.lua
-https://imgur.com/a/L6zmAIf
-
-##Use (/addItem playerId item count) command for give item.
-
-Server Side Remove Item
-
-TriggerEvent("hsn-inventory:server:removeItem",playerId,itemname,count)
-
-Server Side Add Item
-
-TriggerEvent("hsn-inventory:server:addItem",playerId,itemname,count)
-
-Client Side Add Item
-
-TriggerServerEvent("hsn-inventory:client:addItem",itemname,count)
-
-Client Side Remove Item
-
-TriggerServerEvent("hsn-inventory:client:removeItem",itemname,count)
-
-
+You can join my discord at https://discord.gg/hmcmv3P7YW

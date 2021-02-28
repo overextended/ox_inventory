@@ -1,5 +1,10 @@
 Config = Config or {}
 Config.PlayerSlot = 51
+
+-- Blur the screen while accessing the inventory
+Config.EnableBlur = true
+
+
 Config.DurabilityDecreaseAmount = {
     ['WEAPON_PISTOL'] = 0.6,
     ['WEAPON_ADVANCEDRIFLE'] = 0.6,
@@ -1692,49 +1697,80 @@ Config.Shops = {
                 name = 'WEAPON_STUNGUN',
                 price = 150,
                 count = 1,
-                metadata = { weaponlicense = 'POL' }
+                metadata = {
+                    weaponlicense = 'POL',
+                    weapontint = 5
+                },
             },
             {
                 name = 'WEAPON_COMBATPISTOL',
                 price = 250,
                 count = 1,
-                metadata = { weaponlicense = 'POL' }
+                metadata = {
+                    weaponlicense = 'POL',
+                    components = { 'flashlight' },
+                    weapontint = 5
+                },
             },
             {
                 name = 'WEAPON_PISTOL50',
                 price = 400,
                 count = 1,
-                metadata = { weaponlicense = 'POL' }
+                metadata = {
+                    weaponlicense = 'POL',
+                    components = { 'flashlight' },
+                    weapontint = 5
+                },
             },
             {
                 name = 'WEAPON_PUMPSHOTGUN',
                 price = 500,
                 count = 1,
-                metadata = { weaponlicense = 'POL' }
+                metadata = {
+                    weaponlicense = 'POL',
+                    components = { 'flashlight' },
+                    weapontint = 5
+                },
             },
             {
                 name = 'WEAPON_CARBINERIFLE',
                 price = 500,
                 count = 1,
-                metadata = { weaponlicense = 'POL' }
+                metadata = {
+                    weaponlicense = 'POL',
+                    components = { 'flashlight' },
+                    weapontint = 5
+                },
             },
             {
                 name = 'WEAPON_NIGHTSTICK',
                 price = 50,
                 count = 1,
-                metadata = { weaponlicense = 'POL' }
+                metadata = {
+                    weaponlicense = 'POL',
+                    components = { 'flashlight' },
+                    weapontint = 5
+                },
             },
             {
                 name = 'WEAPON_KNIFE',
                 price = 20,
                 count = 1,
-                metadata = { weaponlicense = 'POL' }
+                metadata = {
+                    weaponlicense = 'POL',
+                    components = { 'flashlight' },
+                    weapontint = 5
+                },
             },
             {
                 name = 'WEAPON_FLASHLIGHT',
                 price = 15,
                 count = 1,
-                metadata = { weaponlicense = 'POL' }
+                metadata = {
+                    weaponlicense = 'POL',
+                    components = { 'flashlight' },
+                    weapontint = 5
+                },
             },
         },
     },--WeaponShop
@@ -1774,15 +1810,15 @@ Config.Shops = {
             },
             {
                 name = 'WEAPON_STUNGUN',
-                price = 400,
+                price = 1000,
                 count = 1,
-                metadata = {}
+                metadata = { registered = 'setname' },
             },
             {
                 name = 'WEAPON_PISTOL',
                 price = 1000,
                 count = 1,
-                metadata = {}
+                metadata = { registered = 'setname' },
             },
         },
     },
@@ -1822,15 +1858,15 @@ Config.Shops = {
             },
             {
                 name = 'WEAPON_STUNGUN',
-                price = 400,
+                price = 1000,
                 count = 1,
-                metadata = {}
+                metadata = { registered = 'setname' },
             },
             {
                 name = 'WEAPON_PISTOL',
                 price = 1000,
                 count = 1,
-                metadata = {}
+                metadata = { registered = 'setname' },
             },
         },
     },
@@ -1870,15 +1906,15 @@ Config.Shops = {
             },
             {
                 name = 'WEAPON_STUNGUN',
-                price = 400,
+                price = 1000,
                 count = 1,
-                metadata = {}
+                metadata = { registered = 'setname' },
             },
             {
                 name = 'WEAPON_PISTOL',
                 price = 1000,
                 count = 1,
-                metadata = {}
+                metadata = { registered = 'setname' },
             },
         },
     },
@@ -1918,15 +1954,15 @@ Config.Shops = {
             },
             {
                 name = 'WEAPON_STUNGUN',
-                price = 400,
+                price = 1000,
                 count = 1,
-                metadata = {}
+                metadata = { registered = 'setname' },
             },
             {
                 name = 'WEAPON_PISTOL',
                 price = 1000,
                 count = 1,
-                metadata = {}
+                metadata = { registered = 'setname' },
             },
         },
     },
@@ -1966,15 +2002,15 @@ Config.Shops = {
             },
             {
                 name = 'WEAPON_STUNGUN',
-                price = 400,
+                price = 1000,
                 count = 1,
-                metadata = {}
+                metadata = { registered = 'setname' },
             },
             {
                 name = 'WEAPON_PISTOL',
                 price = 1000,
                 count = 1,
-                metadata = {}
+                metadata = { registered = 'setname' },
             },
         },
     },
@@ -2014,15 +2050,15 @@ Config.Shops = {
             },
             {
                 name = 'WEAPON_STUNGUN',
-                price = 400,
+                price = 1000,
                 count = 1,
-                metadata = {}
+                metadata = { registered = 'setname' },
             },
             {
                 name = 'WEAPON_PISTOL',
                 price = 1000,
                 count = 1,
-                metadata = {}
+                metadata = { registered = 'setname' },
             },
         },
     },
@@ -2062,15 +2098,15 @@ Config.Shops = {
             },
             {
                 name = 'WEAPON_STUNGUN',
-                price = 400,
+                price = 1000,
                 count = 1,
-                metadata = {}
+                metadata = { registered = 'setname' },
             },
             {
                 name = 'WEAPON_PISTOL',
                 price = 1000,
                 count = 1,
-                metadata = {}
+                metadata = { registered = 'setname' },
             },
         },
     },
@@ -2110,15 +2146,15 @@ Config.Shops = {
             },
             {
                 name = 'WEAPON_STUNGUN',
-                price = 400,
+                price = 1000,
                 count = 1,
-                metadata = {}
+                metadata = { registered = 'setname' },
             },
             {
                 name = 'WEAPON_PISTOL',
                 price = 1000,
                 count = 1,
-                metadata = {}
+                metadata = { registered = 'setname' },
             },
         },
     },
@@ -2158,17 +2194,27 @@ Config.Shops = {
             },
             {
                 name = 'WEAPON_STUNGUN',
-                price = 400,
+                price = 1000,
                 count = 1,
-                metadata = {}
+                metadata = { registered = 'setname' },
             },
             {
                 name = 'WEAPON_PISTOL',
                 price = 1000,
                 count = 1,
-                metadata = {}
+                metadata = { registered = 'setname' },
             },
         },
+    },
+}
+
+Config.Stashes = {
+    {
+        name = 'Police Evidence', 
+        slots = 71,
+        coords = vector3(474.2242, -990.7516, 26.2638),
+        name = 'Police Evidence', 
+        job = 'police'
     },
 }
 
@@ -2295,6 +2341,9 @@ Config.Ammos = {
 
 Config.ItemList = {
 
+    ['money'] = {},
+    ['black_money'] = {},
+
     ['burger'] = {
         thirst = 0,
         hunger = 200000,
@@ -2305,7 +2354,6 @@ Config.ItemList = {
         rotation = { x = 0.0, y = 5.0, z = 0.0 },
         useTime = 2500,
         consume = 1,
-        closeInv = 1
     },
 
     ['water'] = {
@@ -2318,7 +2366,6 @@ Config.ItemList = {
         rotation = { x = 0.0, y = -13.5, z = -1.5 },
         useTime = 2500,
         consume = 1,
-        closeInv = 1
     },
 
     ['cola'] = {
@@ -2331,7 +2378,6 @@ Config.ItemList = {
         rotation = { x = 5.0, y = -1.5, z = -180.5 },
         useTime = 2500,
         consume = 1,
-        closeInv = 1
     },
 
     ['bandage'] = {
@@ -2343,7 +2389,6 @@ Config.ItemList = {
         rotation = { x = -50.0, y = -50.0, z = 0.0 },
         useTime = 2500,
         consume = 1,
-        closeInv = 1
     },
 
     ['identification'] = {  
@@ -2354,10 +2399,9 @@ Config.ItemList = {
     ['lockpick'] = {
         disableMove = true,
         animDict = "anim@amb@clubhouse@tutorial@bkr_tut_ig3@",
-        anim = "machinic_loop_mechandplayer", 
-        flags = 8,
+        anim = "machinic_loop_mechandplayer",
         useTime = 2000,
-        consume = 0
+        consume = 0   
     },
 
 }

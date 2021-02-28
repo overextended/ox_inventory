@@ -10,6 +10,7 @@ local Gloveboxes = {}
 local Trunks = {}
 TriggerEvent('esx:getSharedObject', function(obj) ESX = obj end)
 
+print( ('^1[%s]^2 is starting..^7'):format('hsn-inventory') )
 exports.ghmattimysql:ready(function()
 	exports.ghmattimysql:execute('SELECT * FROM items', {}, function(result)
 		for k,v in ipairs(result) do
@@ -22,9 +23,21 @@ exports.ghmattimysql:ready(function()
                 closeonuse = v.closeonuse
 			}
 		end
+        for k,v in pairs(Config.ItemList) do
+            if not ESXItems[k] then
+                print( ('^1[%s]^3 Item `%s` is missing from your database! Item has been created with placeholder data.^7'):format('hsn-inventory', k) )
+                ESXItems[k] = {
+                    name = k,
+                    label = k,
+                    weight = 1,
+                    stackable = 1,
+                    description = 'Item is not loaded in SQL',
+                    closeonuse = 1
+                }
+            end
+        end
     end)
-    print('[^2hsn-inventory^0] - Started!')
-    print('[^2hsn-inventory^0] - Items are created!')
+    print( ('^1[%s]^2 Items have been created!^7'):format('hsn-inventory') )
 end)
 
 IfInventoryCanCarry = function(inventory, maxweight, newWeight)
@@ -74,6 +87,7 @@ AddPlayerInventory = function(identifier, item, count, slot, metadata)
     if playerInventory[identifier] == nil then
         playerInventory[identifier] = {}
     end
+    local xPlayer = ESX.GetPlayerFromIdentifier(identifier)
     if ESXItems[item] ~= nil then
         if item ~= nil and count ~= nil then
             if item:find('WEAPON_') then
@@ -84,14 +98,15 @@ AddPlayerInventory = function(identifier, item, count, slot, metadata)
                             metadata = {}
                             metadata.durability = 100
                             metadata.ammo = 0
+                            metadata.components = {}
                         end
                         metadata.weaponlicense = GetRandomLicense(metadata.weaponlicense)
+                        if metadata.registered == 'setname' then metadata.registered = xPlayer.getName() end
                         playerInventory[identifier][i] = {name = item ,label = ESXItems[item].label , weight = ESXItems[item].weight, slot = i, count = count, description = ESXItems[item].description, metadata = metadata or {}, stackable = false, closeonuse = ESXItems[item].closeonuse} -- because weapon :)
                         break
                     end
                 end
             elseif item:find('identification') then
-                local xPlayer = ESX.GetPlayerFromIdentifier(identifier)
                 count = 1 
                 for i = 1, Config.PlayerSlot do
                     if playerInventory[identifier][i] == nil then
@@ -529,6 +544,8 @@ AddEventHandler("hsn-inventory:server:saveInventoryData",function(data)
                         if data.item.name:find('WEAPON_') then
                             if not data.item.metadata then data.item.metadata = {} end
                             data.item.metadata.weaponlicense = GetRandomLicense(data.item.metadata.weaponlicense)
+                            if data.item.metadata.registered == 'setname' then data.item.metadata.registered = Player.getName() end
+                            if not data.item.metadata.components then data.item.metadata.components = {} end
                             data.item.metadata.ammo = 0
                             data.item.metadata.durability = 100
                         elseif data.item.name:find('identification') then
@@ -550,7 +567,9 @@ AddEventHandler("hsn-inventory:server:saveInventoryData",function(data)
                     if (money >= (data.newslotItem.price *  data.newslotItem.count)) then
                         if data.newslotItem.name:find('WEAPON_') then
                             if not data.newslotItem.metadata then data.newslotItem.metadata = {} end
+                            if data.newslotItem.metadata.registered == 'setname' then data.newslotItem.metadata.registered = Player.getName() end
                             data.newslotItem.metadata.weaponlicense = GetRandomLicense(data.newslotItem.metadata.weaponlicense)
+                            if not data.newslotItem.metadata.components then data.newslotItem.metadata.components = {} end
                             data.newslotItem.metadata.ammo = 0
                             data.newslotItem.metadata.durability = 100
                         elseif data.newslotItem.name:find('identification') then
@@ -606,27 +625,39 @@ CreateNewDrop = function(source,data)
         playerInventory[Player.identifier][data.fromSlot] = {name = data.oldslotItem.name ,label = data.oldslotItem.label, weight = data.oldslotItem.weight, slot = data.fromSlot, count = data.oldslotItem.count, description = data.oldslotItem.description, metadata = data.oldslotItem.metadata, stackable = data.oldslotItem.stackable, closeonuse = ESXItems[data.oldslotItem.name].closeonuse}
         Drops[dropid].inventory[data.toSlot] = {name = data.newslotItem.name ,label = data.newslotItem.label, weight = data.newslotItem.weight, slot = data.toSlot, count = data.newslotItem.count, description = data.newslotItem.description, metadata = data.newslotItem.metadata, stackable = data.newslotItem.stackable, closeonuse = ESXItems[data.newslotItem.name].closeonuse}
     end
-    local coords = GetEntityCoords(NetworkGetEntityFromNetworkId(src))
+    local ped = GetPlayerPed(src)
+    local coords = GetEntityCoords(ped)
     TriggerClientEvent("hsn-inventory:Client:addnewDrop", -1, coords, dropid)
 end
 
---[[ Should just be able to use /giveitem now
-    RegisterCommand("addItem",function(source, args, rawCommand)
+-- Override the default ESX command (only works on ESX 1.2+ and EXM)
+ESX.RegisterCommand({'giveitem', 'additem'}, 'admin', function(xPlayer, args, showError)
+	args.playerId.addInventoryItem(args.item, args.count)
+end, true, {help = 'give an item to a player', validate = true, arguments = {
+	{name = 'playerId', help = 'player id', type = 'player'},
+	{name = 'item', help = 'item name', type = 'string'},
+	{name = 'count', help = 'item count', type = 'number'}
+}})
+
+--[[    Use this command instead for ESX 1.1
+RegisterCommand("addItem",function(source,args)
     if source == 0 then
         return
     end
     local src = source
     local Player = ESX.GetPlayerFromId(src)
-    local tPlayerId = tonumber(args[1])
-    local item = args[2]
-    local count = tonumber(args[3])
-    local tPlayer = ESX.GetPlayerFromId(tPlayerId)
-    if tPlayer == nil then
-        return
+    if Player.getGroup() == "superadmin" or Player.getGroup() == "admin" then
+        local tPlayerId = tonumber(args[1])
+        local item = args[2]
+        local count = tonumber(args[3])
+        local tPlayer = ESX.GetPlayerFromId(tPlayerId)
+        if tPlayer == nil then
+            return
+        end
+        tPlayer.addInventoryItem(item, count)
     end
-    AddPlayerInventory(tPlayer.identifier,item,count)
-    TriggerEvent("hsn-inventory:onAddInventoryItem",tPlayerId,item,count)
-end, true)]]
+end)
+]]
 
 RegisterCommand("fixinv", function(source, args, rawCommand)
     local Player = ESX.GetPlayerFromId(source)
@@ -658,7 +689,9 @@ AddEventHandler("hsn-inventory:server:openInventory",function(data)
             Shops[data.id.name].name = data.id.name or 'Shop'
             Shops[data.id.name].type = 'shop'
             Shops[data.id.name].slots = #Shops[data.id.name].inventory + 1
-            TriggerClientEvent("hsn-inventory:client:openInventory",src,playerInventory[Player.identifier],Shops[data.id.name])
+            if not data.id.job or data.id.job == Player.job.name then
+                TriggerClientEvent("hsn-inventory:client:openInventory",src,playerInventory[Player.identifier],Shops[data.id.name])
+            end
         elseif data.type == "glovebox" then
             if checkOpenable(src,data.id) then
                 Gloveboxes[data.id] = {}
@@ -687,28 +720,33 @@ RegisterServerEvent("hsn-inventory:server:openStash")
 AddEventHandler("hsn-inventory:server:openStash",function(stash)
     local src = source
     local Player = ESX.GetPlayerFromId(src)
-    if Stashs[stash.name] == nil then
-        Stashs[stash.name] = {}
-        Stashs[stash.name].inventory = GetItems(stash.name)
-        Stashs[stash.name].name = stash.name
-        Stashs[stash.name].type = 'stash'
-        Stashs[stash.name].slots = stash.slots
+    if Stashs[stash.id.name] == nil then
+        Stashs[stash.id.name] = {}
+        Stashs[stash.id.name].inventory = GetItems(stash.id.name)
+        Stashs[stash.id.name].name = stash.id.name
+        Stashs[stash.id.name].type = 'stash'
+        Stashs[stash.id.name].slots = stash.slots
     end
-    if checkOpenable(src,stash.name) then
-        TriggerClientEvent("hsn-inventory:client:openInventory",src,playerInventory[Player.identifier], Stashs[stash.name])
+    if checkOpenable(src,stash.id.name,stash.id.coords) then
+        if not stash.id.job or stash.id.job == Player.job.name then
+            TriggerClientEvent("hsn-inventory:client:openInventory",src,playerInventory[Player.identifier], Stashs[stash.id.name])
+        end
     else
         TriggerClientEvent("hsn-inventory:notification",src,'You can not open this inventory',2)
     end
 end)
 
-RegisterServerEvent("hsn-inventory:server:robPlayer")
-AddEventHandler("hsn-inventory:server:robPlayer",function(TargetId)
-    local targetplayer = tPlayer
+
+RegisterServerEvent("hsn-inventory:server:openTargetInventory")
+AddEventHandler("hsn-inventory:server:openTargetInventory",function(TargetId)
+    local Player = ESX.GetPlayerFromId(source)
+    tPlayer = ESX.GetPlayerFromId(TargetId)
+    if source == TargetId then tPlayer = nil end -- Don't allow source and targetid to match
     if playerInventory[tPlayer.identifier] == nil then
         playerInventory[tPlayer.identifier] = {}
     end
     if tPlayer and Player then
-        if checkOpenable(source,'Player'..TargetId) then
+        if checkOpenable(source,'Player'..TargetId,GetEntityCoords(GetPlayerPed(TargetId))) then
             local data = {}
             data.name = 'Player'..TargetId -- do not touch
             data.type = "TargetPlayer"
@@ -724,9 +762,15 @@ AddEventHandler("hsn-inventory:server:saveInventory",function(data)
     SaveItems(data.type,data.invid)
 end)
 
-checkOpenable = function(source,id)
+checkOpenable = function(source,id,coords)
     local src = source
     local returnData = false
+
+    if coords then
+        local srcCoords = GetEntityCoords(GetPlayerPed(src))
+        if #(coords - srcCoords) > 5 then return false end
+    end
+
     if openedinventories[id] == nil then
         openedinventories[id] = {}
         openedinventories[id].opened = true
@@ -905,7 +949,7 @@ AddEventHandler("hsn-inventory:server:useItem",function(item,slot)
                 TriggerClientEvent("hsn-inventory:addAmmo",src,weps,item.name)
                 return
             end
-            TriggerClientEvent('hsn-inventory:useItem', src, item)
+            Player.useItem(item)
         end
     end
 end)
@@ -932,7 +976,7 @@ AddEventHandler("hsn-inventory:server:useItemfromSlot",function(slot)
                     TriggerClientEvent("hsn-inventory:addAmmo",src,weps,playerInventory[Player.identifier][slot].name)
                     return
                 end
-                TriggerClientEvent("hsn-inventory:useItem",src,playerInventory[Player.identifier][slot])
+                Player.useItem(playerInventory[Player.identifier][slot])
                 --TriggerClientEvent("hsn-inventory:client:addItemNotify",source,ESXItems[playerInventory[Player.identifier][slot].name],'Used 1x')
             end
         end
@@ -1021,14 +1065,7 @@ RegisterServerEvent("hsn-inventory:client:removeItem")
 AddEventHandler("hsn-inventory:client:removeItem",function(item, count)
     local src = source
     local Player = ESX.GetPlayerFromId(src)
-    if item == nil then
-        return
-    end
-    if count == nil then
-        count = 1
-    end
-    TriggerClientEvent("hsn-inventory:client:addItemNotify",src,ESXItems[item],'Removed '..count..'x')
-    RemovePlayerInventory(Player.identifier,item,count)
+    Player.removeInventoryItem(item, count)
 end)
 
 RegisterServerEvent("hsn-inventory:client:addItem")
@@ -1094,6 +1131,15 @@ exports("getItem",function(src, item)
     return ESXItem
 end)
 
+exports('useItem', function(src, item)
+    if Config.ItemList[item.name] then
+        if not next(Config.ItemList[item.name]) then return end
+        TriggerClientEvent('hsn-inventory:useItem', src, item)
+    elseif ESX.UsableItemsCallbacks[item.name] ~= nil then
+        TriggerEvent("esx:useItem", src, item.name)
+    end
+end)
+
 --[[ Example to retrieve items and count from player inventory
     RegisterCommand("getitems", function(source, args, rawCommand)
     local Player = ESX.GetPlayerFromId(source)
@@ -1127,6 +1173,17 @@ ESX.RegisterServerCallback("hsn-inventory:getItemCount",function(source, cb, ite
     end
     local ItemCount = GetItemCount(Player.identifier, item)
     cb(tonumber(ItemCount))
+end)
+
+ESX.RegisterServerCallback("hsn-inventory:getItem",function(source, cb, item)
+    local src = source
+    local Player = ESX.GetPlayerFromId(src)
+    if playerInventory[Player.identifier] == nil then
+        return
+    end
+    local ESXItem = ESXItems[item]
+    ESXItem.count = GetItemCount(Player.identifier, item)
+    cb(ESXItem)
 end)
 
 
