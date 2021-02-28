@@ -631,31 +631,31 @@ end)
 
 CreateNewDrop = function(source,data)
     local src = source
-    local dropid = RandomDropId()
-    local Player = ESX.GetPlayerFromId(src)
-    Drops[dropid] = {}
-    Drops[dropid].inventory = {}
-    Drops[dropid].name = dropid
-    Drops[dropid].slots = 50
-    if data.type == 'swap' then
-        TriggerClientEvent("hsn-inventory:client:checkweapon",src,data.toItem)
-        Drops[dropid].inventory[data.toslot] = {name = data.toItem.name ,label = data.toItem.label, weight = data.toItem.weight, slot = data.toslot, count = data.toItem.count, description = data.toItem.description, metadata = data.toItem.metadata, stackable = data.toItem.stackable, closeonuse = ESXItems[data.toItem.name].closeonuse}
-        playerInventory[Player.identifier][data.fromslot] = {name = data.fromItem.name ,label = data.fromItem.label, weight = data.fromItem.weight, slot = data.fromslot, count = data.fromItem.count, description = data.fromItem.description, metadata = data.fromItem.metadata, stackable = data.fromItem.stackable, closeonuse = ESXItems[data.fromItem.name].closeonuse}
-    elseif data.type == 'freeslot' then
-        TriggerClientEvent("hsn-inventory:client:checkweapon",src,data.item)
-        playerInventory[Player.identifier][data.emptyslot] = nil
-        Drops[dropid].inventory[data.toslot] = {name = data.item.name ,label = data.item.label, weight = data.item.weight, slot = data.toslot, count = data.item.count, description = data.item.description, metadata = data.item.metadata, stackable = data.item.stackable, closeonuse = ESXItems[data.item.name].closeonuse}
-        TriggerEvent("hsn-inventory:onRemoveInventoryItem",src,data.item.name,data.item.count)
-    elseif data.type == 'yarimswap' then
-        TriggerClientEvent("hsn-inventory:client:checkweapon",src,data.newslotItem)
-        playerInventory[Player.identifier][data.fromSlot] = {name = data.oldslotItem.name ,label = data.oldslotItem.label, weight = data.oldslotItem.weight, slot = data.fromSlot, count = data.oldslotItem.count, description = data.oldslotItem.description, metadata = data.oldslotItem.metadata, stackable = data.oldslotItem.stackable, closeonuse = ESXItems[data.oldslotItem.name].closeonuse}
-        Drops[dropid].inventory[data.toSlot] = {name = data.newslotItem.name ,label = data.newslotItem.label, weight = data.newslotItem.weight, slot = data.toSlot, count = data.newslotItem.count, description = data.newslotItem.description, metadata = data.newslotItem.metadata, stackable = data.newslotItem.stackable, closeonuse = ESXItems[data.newslotItem.name].closeonuse}
-    end
     local ped = GetPlayerPed(src)
     local coords = GetEntityCoords(ped)
-    if src and ped > 0 then
+    if src and ped > 0 and #(coords) ~= 0 then
+        local dropid = RandomDropId()
+        local Player = ESX.GetPlayerFromId(src)
+        Drops[dropid] = {}
+        Drops[dropid].inventory = {}
+        Drops[dropid].name = dropid
+        Drops[dropid].slots = 50
+        if data.type == 'swap' then
+            TriggerClientEvent("hsn-inventory:client:checkweapon",src,data.toItem)
+            Drops[dropid].inventory[data.toslot] = {name = data.toItem.name ,label = data.toItem.label, weight = data.toItem.weight, slot = data.toslot, count = data.toItem.count, description = data.toItem.description, metadata = data.toItem.metadata, stackable = data.toItem.stackable, closeonuse = ESXItems[data.toItem.name].closeonuse}
+            playerInventory[Player.identifier][data.fromslot] = {name = data.fromItem.name ,label = data.fromItem.label, weight = data.fromItem.weight, slot = data.fromslot, count = data.fromItem.count, description = data.fromItem.description, metadata = data.fromItem.metadata, stackable = data.fromItem.stackable, closeonuse = ESXItems[data.fromItem.name].closeonuse}
+        elseif data.type == 'freeslot' then
+            TriggerClientEvent("hsn-inventory:client:checkweapon",src,data.item)
+            playerInventory[Player.identifier][data.emptyslot] = nil
+            Drops[dropid].inventory[data.toslot] = {name = data.item.name ,label = data.item.label, weight = data.item.weight, slot = data.toslot, count = data.item.count, description = data.item.description, metadata = data.item.metadata, stackable = data.item.stackable, closeonuse = ESXItems[data.item.name].closeonuse}
+            TriggerEvent("hsn-inventory:onRemoveInventoryItem",src,data.item.name,data.item.count)
+        elseif data.type == 'yarimswap' then
+            TriggerClientEvent("hsn-inventory:client:checkweapon",src,data.newslotItem)
+            playerInventory[Player.identifier][data.fromSlot] = {name = data.oldslotItem.name ,label = data.oldslotItem.label, weight = data.oldslotItem.weight, slot = data.fromSlot, count = data.oldslotItem.count, description = data.oldslotItem.description, metadata = data.oldslotItem.metadata, stackable = data.oldslotItem.stackable, closeonuse = ESXItems[data.oldslotItem.name].closeonuse}
+            Drops[dropid].inventory[data.toSlot] = {name = data.newslotItem.name ,label = data.newslotItem.label, weight = data.newslotItem.weight, slot = data.toSlot, count = data.newslotItem.count, description = data.newslotItem.description, metadata = data.newslotItem.metadata, stackable = data.newslotItem.stackable, closeonuse = ESXItems[data.newslotItem.name].closeonuse}
+        end
         TriggerClientEvent("hsn-inventory:Client:addnewDrop", -1, coords, dropid)
-    else print( ("^1[hsn-inventory]^3 Server was unable to create a drop because the PlayerPed was invalid (is OneSync enabled?)") ) end
+    else print( ("^1[hsn-inventory]^3 Server was unable to create a drop (is OneSync enabled?)") ) end
 end
 
 -- Override the default ESX command (only works on ESX 1.2+ and EXM)
