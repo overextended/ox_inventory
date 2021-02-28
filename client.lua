@@ -300,6 +300,7 @@ Citizen.CreateThread(function()
         for i = 1, #Config.Shops do
             distance = #(GetEntityCoords(PlayerPedId()) - Config.Shops[i].coords)
             if distance <= 2.5 and (not Config.Shops[i].job or Config.Shops[i].job == PlayerData.job.name) then
+                DrawText3Ds(Config.Shops[i].coords.x,Config.Shops[i].coords.y,Config.Shops[i].coords.z, '[E] Access Shop')
                 DrawMarker(2, Config.Shops[i].coords.x,Config.Shops[i].coords.y,Config.Shops[i].coords.z, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.3, 0.15, 0.2, 30, 150, 30, 100, false, false, false, true, false, false, false)
                 if IsControlJustPressed(1,38) and distance <= 1 and not dead and not isCuffed then
                     OpenShop(Config.Shops[i])
@@ -311,6 +312,7 @@ Citizen.CreateThread(function()
         for i = 1, #Config.Stashes do
             distance = #(GetEntityCoords(PlayerPedId()) - Config.Stashes[i].coords)
             if distance <= 2.5 and (not Config.Stashes[i].job or Config.Stashes[i].job == PlayerData.job.name) then
+                DrawText3Ds(Config.Stashes[i].coords.x, Config.Stashes[i].coords.y, Config.Stashes[i].coords.z, '[E] Access Stash')
                 DrawMarker(2, Config.Stashes[i].coords.x,Config.Stashes[i].coords.y,Config.Stashes[i].coords.z, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.3, 0.15, 0.2, 30, 30, 150, 100, false, false, false, true, false, false, false)
                 if IsControlJustPressed(1,38) and distance <= 1 and not dead and not isCuffed then
                     OpenStash(Config.Stashes[i])
