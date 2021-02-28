@@ -655,7 +655,7 @@ CreateNewDrop = function(source,data)
             Drops[dropid].inventory[data.toSlot] = {name = data.newslotItem.name ,label = data.newslotItem.label, weight = data.newslotItem.weight, slot = data.toSlot, count = data.newslotItem.count, description = data.newslotItem.description, metadata = data.newslotItem.metadata, stackable = data.newslotItem.stackable, closeonuse = ESXItems[data.newslotItem.name].closeonuse}
         end
         TriggerClientEvent("hsn-inventory:Client:addnewDrop", -1, coords, dropid)
-    else print( ("^1[hsn-inventory]^3 Server was unable to create a drop (is OneSync enabled?)") ) end
+    else print( ("^1[hsn-inventory]^3 Server was unable to create a drop. Enable OneSync (seriously, it's free)") ) end
 end
 
 -- Override the default ESX command (only works on ESX 1.2+ and EXM)
