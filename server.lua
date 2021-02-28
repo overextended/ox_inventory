@@ -1132,6 +1132,7 @@ end)
 
 exports('useItem', function(src, item)
     if Config.ItemList[item.name] then
+        if not next(Config.ItemList[item.name]) then return end
         TriggerClientEvent('hsn-inventory:useItem', src, item)
     elseif ESX.UsableItemsCallbacks[item.name] ~= nil then
         TriggerEvent("esx:useItem", src, item.name)
