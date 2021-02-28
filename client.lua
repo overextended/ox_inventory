@@ -514,7 +514,6 @@ function openTargetInventory()
     local closestPlayer, closestDistance = ESX.Game.GetClosestPlayer()
     if closestPlayer ~= -1 and closestDistance <= 2.0 then
         local searchPlayerPed = GetPlayerPed(closestPlayer)
-        closestPlayer = PlayerId()
         if IsEntityPlayingAnim(searchPlayerPed, 'random@mugging3', 'handsup_standing_base', 3) or IsEntityPlayingAnim(searchPlayerPed, 'missminuteman_1ig_2', 'handsup_base', 3) or IsEntityPlayingAnim(searchPlayerPed, 'dead', 'dead_a', 3) or IsEntityPlayingAnim(searchPlayerPed, 'mp_arresting', 'idle') then
             TriggerServerEvent("hsn-inventory:server:openTargetInventory", GetPlayerServerId(closestPlayer))
         end
