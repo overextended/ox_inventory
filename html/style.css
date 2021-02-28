@@ -236,7 +236,6 @@
     position: absolute;
     background-color: white;
     padding: 4px;
-    top: 0;
     width: 93%;
     text-align: center;
     left: 0;
@@ -247,7 +246,6 @@
     max-width: 80%;
     max-height: 80%;
     padding: 0.5vw;
-    top: 0;
 }
 
 .itembox-img img {
@@ -259,7 +257,7 @@
     height: auto;
     max-width: 100%;
     max-height: 100%;
-    top: 0;
+    bottom: -10px;
 
 }
 
@@ -292,7 +290,6 @@
     max-width: 80%;
     max-height: 80%;
     padding: 0.5vw;
-    top: 0;
 }
 
 .item-slot-img img {
@@ -304,7 +301,6 @@
     height: auto;
     max-width: 100%;
     max-height: 100%;
-    top: 0;
 }
 
 .item-slot-label {
