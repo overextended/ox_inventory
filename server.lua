@@ -10,7 +10,6 @@ local Gloveboxes = {}
 local Trunks = {}
 TriggerEvent('esx:getSharedObject', function(obj) ESX = obj end)
 
-print( ('^1[%s]^2 is starting..^7'):format('hsn-inventory') )
 exports.ghmattimysql:ready(function()
 	exports.ghmattimysql:execute('SELECT * FROM items', {}, function(result)
 		for k,v in ipairs(result) do
@@ -36,8 +35,35 @@ exports.ghmattimysql:ready(function()
                 }
             end
         end
+        for k,v in pairs(Config.DurabilityDecreaseAmount) do
+            if not ESXItems[k] then
+                print( ('^1[%s]^3 `%s` is missing from your database! Item has been created with placeholder data.^7'):format('hsn-inventory', k) )
+                ESXItems[k] = {
+                    name = k,
+                    label = k,
+                    weight = 1,
+                    stackable = 1,
+                    description = 'Item is not loaded in SQL',
+                    closeonuse = 0
+                }
+            end
+        end
+        for k,v in pairs(Config.Ammos) do
+            if not ESXItems[k] then
+                print( ('^1[%s]^3 `%s` is missing from your database! Item has been created with placeholder data.^7'):format('hsn-inventory', k) )
+                --print( ("('%s', '%s', 20, 0, 1, 1, 0, ''),"):format(k, k) ) )
+                ESXItems[k] = {
+                    name = k,
+                    label = k,
+                    weight = 1,
+                    stackable = 1,
+                    description = 'Item is not loaded in SQL',
+                    closeonuse = 0
+                }
+            end
+        end
+        print( ('^1[%s]^2 Items have been created!^7'):format('hsn-inventory') )
     end)
-    print( ('^1[%s]^2 Items have been created!^7'):format('hsn-inventory') )
 end)
 
 IfInventoryCanCarry = function(inventory, maxweight, newWeight)
@@ -746,7 +772,7 @@ AddEventHandler("hsn-inventory:server:openTargetInventory",function(TargetId)
         playerInventory[tPlayer.identifier] = {}
     end
     if tPlayer and Player then
-        if checkOpenable(source,'Player'..TargetId,GetEntityCoords(GetPlayerPed(TargetId))) then
+        if checkOpenable(source, 'Player'..TargetId, GetEntityCoords(GetPlayerPed(TargetId))) then
             local data = {}
             data.name = 'Player'..TargetId -- do not touch
             data.type = "TargetPlayer"
@@ -944,7 +970,7 @@ AddEventHandler("hsn-inventory:server:useItem",function(item,slot)
                 end
             end
         else
-            if item.name:find("hsn") then
+            if item.name:find("ammo") then
                 local weps = Config.Ammos[item.name]
                 TriggerClientEvent("hsn-inventory:addAmmo",src,weps,item.name)
                 return
@@ -971,7 +997,7 @@ AddEventHandler("hsn-inventory:server:useItemfromSlot",function(slot)
                     TriggerClientEvent("hsn-inventory:notification",src,'This weapon is broken',2)
                 end
             else
-                if playerInventory[Player.identifier][slot].name:find("hsn") then
+                if playerInventory[Player.identifier][slot].name:find("ammo") then
                     local weps = Config.Ammos[playerInventory[Player.identifier][slot].name]
                     TriggerClientEvent("hsn-inventory:addAmmo",src,weps,playerInventory[Player.identifier][slot].name)
                     return
