@@ -290,6 +290,7 @@
     max-width: 80%;
     max-height: 80%;
     padding: 0.5vw;
+    padding-top: 0;
 }
 
 .item-slot-img img {
