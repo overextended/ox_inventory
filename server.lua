@@ -732,7 +732,7 @@ AddEventHandler("hsn-inventory:server:openTargetInventory",function(TargetId)
         playerInventory[tPlayer.identifier] = {}
     end
     if tPlayer and Player then
-        if checkOpenable(source,'Player'..TargetId,GetEntityCoords(NetworkGetEntityFromNetworkId(TargetId))) then
+        if checkOpenable(source,'Player'..TargetId,GetEntityCoords(GetPlayerPed(TargetId))) then
             local data = {}
             data.name = 'Player'..TargetId -- do not touch
             data.type = "TargetPlayer"
@@ -753,7 +753,7 @@ checkOpenable = function(source,id,coords)
     local returnData = false
 
     if coords then
-        local srcCoords = GetEntityCoords(NetworkGetEntityFromNetworkId(src))
+        local srcCoords = GetEntityCoords(GetPlayerPed(src))
         if #(coords - srcCoords) > 5 then return false end
     end
 
