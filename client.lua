@@ -362,7 +362,7 @@ AddEventHandler("hsn-inventory:Client:addnewDrop",function(coords,drop)
         coords = {
             x = coords.x,
             y = coords.y,
-            z = coords.z - 0.6,
+            z = coords.z - 0.4,
         },
     }
 end)
