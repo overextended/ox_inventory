@@ -2341,6 +2341,9 @@ Config.Ammos = {
 
 Config.ItemList = {
 
+    ['money'] = {},
+    ['black_money'] = {},
+
     ['burger'] = {
         thirst = 0,
         hunger = 200000,
