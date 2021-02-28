@@ -37,6 +37,7 @@ end)
 
 local Drops = {}
 local currentDrop = nil
+local currentDropCoords = nil
 local curweaponSlot = nil
 local keys = {
     157, 158, 160, 164, 165
@@ -172,7 +173,7 @@ RegisterCommand('inventory', function()
     local playerPed = PlayerPedId()
     if not isDead and not isCuffed and not invOpen then
         TriggerEvent("randPickupAnim")
-        TriggerServerEvent("hsn-inventory:server:openInventory",{type = 'drop',id = currentDrop})
+        TriggerServerEvent("hsn-inventory:server:openInventory",{type = 'drop',id = currentDrop, coords = currentDropCoords })
         TriggerServerEvent('inventory:isShopOpen', false)
     end
 end, false)
@@ -257,8 +258,10 @@ Citizen.CreateThread(function()
                 DrawMarker(2, v.coords.x,v.coords.y,v.coords.z, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.3, 0.2, 0.15, 150, 30, 30, 222, false, false, false, true, false, false, false)
                 if distance <= 1.0 then
                     currentDrop = v.dropid
+                    currentDropCoords = v.coords
                 else
                     currentDrop = nil
+                    currentDropCoords = nil
                 end
             end
         end
@@ -387,6 +390,7 @@ RegisterNetEvent("hsn-inventory:client:removeDrop")
 AddEventHandler("hsn-inventory:client:removeDrop",function(dropid)
     Drops[dropid] = nil
     currentDrop = nil
+    currentDropCoords = nil
 end)
 
 RegisterNUICallback("UseItem", function(data, cb)
