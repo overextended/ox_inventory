@@ -1,4 +1,4 @@
-ESX = nil
+ ESX = nil
 local PlayerData = {}
 local invOpen, isDead, isCuffed, currentWeapon = false, false, false, nil
 local vehStorage = {}
@@ -141,6 +141,7 @@ RegisterCommand('vehinv', function()
                                 lastVehicle = nil
                                 TriggerEvent("hsn-inventory:client:closeInventory")
                                 invOpen = false
+                                currentInventory = nil
                                 ClearPedTasks(PlayerPedId())
                                 Citizen.Wait(1200)
                                 SetVehicleDoorShut(vehicle, open, false)
@@ -151,6 +152,7 @@ RegisterCommand('vehinv', function()
                             lastVehicle = nil
                             TriggerEvent("hsn-inventory:client:closeInventory")
                             invOpen = false
+                            currentInventory = nil
                             ClearPedTasks(PlayerPedId())
                             Citizen.Wait(1200)
                             SetVehicleDoorShut(vehicle, open, false)
@@ -203,10 +205,11 @@ AddEventHandler("hsn-inventory:client:openInventory",function(inventory,other)
         inventory = inventory,
         slots = Config.PlayerSlot,
         name = GetPlayerName(PlayerId())..' ['.. playerID ..']',
-        maxweight = ESX.GetConfig().MaxWeight,
+        maxweight = Config.MaxWeight,
         rightinventory = other
     })
     TriggerServerEvent("hsn-inventory:setcurrentInventory",other)
+    currentInventory = other
     if other == nil then movement = true else movement = false end
     SetNuiFocusAdvanced(true, true, movement)
 end)
@@ -216,6 +219,7 @@ end)
 RegisterNetEvent("hsn-inventory:client:closeInventory")
 AddEventHandler("hsn-inventory:client:closeInventory",function(id)
     invOpen = false
+    currentInventory = nil
     SendNUIMessage({
         message = 'close',
     })
@@ -236,35 +240,44 @@ AddEventHandler("hsn-inventory:client:refreshInventory",function(inventory)
         inventory = inventory,
         slots = Config.PlayerSlot,
         name = GetPlayerName(PlayerId())..' ['.. playerID ..']',
-        maxweight = ESX.GetConfig().MaxWeight,
+        maxweight = Config.MaxWeight,
     })
 end)
 
 
 RegisterNUICallback("exit",function(data)
     invOpen = false
+    currentInventory = nil
     SetNuiFocusAdvanced(false,false)
     TriggerServerEvent('hsn-inventory:server:saveInventory',data)
     TriggerServerEvent("hsn-inventory:removecurrentInventory",data.invid)
 end)
+
 --- thread
 Citizen.CreateThread(function()
     while true do
         local wait = 1000
-        for k,v in pairs(Drops) do
-            distance = #(GetEntityCoords(PlayerPedId()) - vector3(v.coords.x,v.coords.y,v.coords.z))
-            if distance <= 10.0 then
-                wait = 1
-                DrawMarker(2, v.coords.x,v.coords.y,v.coords.z, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.3, 0.2, 0.15, 150, 30, 30, 222, false, false, false, true, false, false, false)
-                if distance <= 1.0 then
-                    currentDrop = v.dropid
-                    currentDropCoords = v.coords
-                else
-                    currentDrop = nil
-                    currentDropCoords = nil
+            for k,v in pairs(Drops) do
+                distance = #(GetEntityCoords(PlayerPedId()) - vector3(v.coords.x,v.coords.y,v.coords.z))
+                if distance <= 10.0 then
+                    wait = 1
+                    DrawMarker(2, v.coords.x,v.coords.y,v.coords.z, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.3, 0.2, 0.15, 150, 30, 30, 222, false, false, false, true, false, false, false)
+                    if distance <= 1.2 then
+                        currentDrop = v.dropid
+                        currentDropCoords = v.coords
+                    else
+                        currentDrop = nil
+                        currentDropCoords = nil
+                    end
                 end
             end
-        end
+        Citizen.CreateThread(function()
+            Citizen.Wait(100)
+            if not currentInventory and invOpen and currentDrop ~= currentInventory then
+                invOpen = false
+                ExecuteCommand('inventory')
+            end
+        end)
         Citizen.Wait(wait)
     end
 end)
@@ -365,7 +378,7 @@ AddEventHandler("hsn-inventory:Client:addnewDrop",function(coords,drop)
         coords = {
             x = coords.x,
             y = coords.y,
-            z = coords.z - 0.4,
+            z = coords.z - 0.3,
         },
     }
 end)
@@ -559,6 +572,7 @@ function SetNuiFocusAdvanced(hasFocus, hasCursor, allowMovement)
                     ticks = ticks + 1
                     if (IsDisabledControlJustReleased(0, 200, true) or ticks > 20) then
                         invOpen = false
+                        currentInventory = nil
                         if Config.EnableBlur then TriggerScreenblurFadeOut(0) end
                         break
                     end
