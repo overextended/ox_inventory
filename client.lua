@@ -578,7 +578,7 @@ AddEventHandler("hsn-inventory:useItem",function(item)
     if item.name then item = item.name end
     ESX.TriggerServerCallback("hsn-inventory:getItem",function(xItem)
         local data = Config.ItemList[xItem.name]
-        if not data then return end
+        if not data or not next(data) then return end
         if xItem.closeonuse then TriggerEvent("hsn-inventory:client:closeInventory") end
         if xItem.count > 0 then
             if data.consume then TriggerServerEvent('hsn-inventory:client:removeItem', item, data.consume) end
