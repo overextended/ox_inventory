@@ -78,7 +78,7 @@ Config.Shops = {
         name = 'Xero Gas', 
         inventory = {
             {
-                name = 'sandwich',
+                name = 'burger',
                 price = 10,
                 count = 200
             },
@@ -88,37 +88,12 @@ Config.Shops = {
                 count = 200
             },
             {
-                name = 'cocacola',
+                name = 'cola',
                 price = 10,
                 count = 200
             },
             {
                 name = 'bandage',
-                price = 10,
-                count = 200
-            },
-            {
-                name = 'notepad',
-                price = 15,
-                count = 200
-            },
-            {
-                name = 'donut',
-                price = 10,
-                count = 200
-            },
-            {
-                name = 'redgull',
-                price = 100,
-                count = 200
-            },
-            {
-                name = 'papers',
-                price = 10,
-                count = 200
-            },
-            {
-                name = 'coffee',
                 price = 10,
                 count = 200
             },
@@ -135,7 +110,7 @@ Config.Shops = {
         name = '24/7', 
         inventory = {
             {
-                name = 'sandwich',
+                name = 'burger',
                 price = 10,
                 count = 200
             },
@@ -145,37 +120,12 @@ Config.Shops = {
                 count = 200
             },
             {
-                name = 'cocacola',
+                name = 'cola',
                 price = 10,
                 count = 200
             },
             {
                 name = 'bandage',
-                price = 10,
-                count = 200
-            },
-            {
-                name = 'notepad',
-                price = 15,
-                count = 200
-            },
-            {
-                name = 'donut',
-                price = 10,
-                count = 200
-            },
-            {
-                name = 'redgull',
-                price = 100,
-                count = 200
-            },
-            {
-                name = 'papers',
-                price = 10,
-                count = 200
-            },
-            {
-                name = 'coffee',
                 price = 10,
                 count = 200
             },
@@ -192,7 +142,7 @@ Config.Shops = {
         name = '24/7', 
         inventory = {
             {
-                name = 'sandwich',
+                name = 'burger',
                 price = 10,
                 count = 200
             },
@@ -202,37 +152,12 @@ Config.Shops = {
                 count = 200
             },
             {
-                name = 'cocacola',
+                name = 'cola',
                 price = 10,
                 count = 200
             },
             {
                 name = 'bandage',
-                price = 10,
-                count = 200
-            },
-            {
-                name = 'notepad',
-                price = 15,
-                count = 200
-            },
-            {
-                name = 'donut',
-                price = 10,
-                count = 200
-            },
-            {
-                name = 'redgull',
-                price = 100,
-                count = 200
-            },
-            {
-                name = 'papers',
-                price = 10,
-                count = 200
-            },
-            {
-                name = 'coffee',
                 price = 10,
                 count = 200
             },
@@ -249,7 +174,7 @@ Config.Shops = {
         name = '24/7', 
         inventory = {
             {
-                name = 'sandwich',
+                name = 'burger',
                 price = 10,
                 count = 200
             },
@@ -259,37 +184,12 @@ Config.Shops = {
                 count = 200
             },
             {
-                name = 'cocacola',
+                name = 'cola',
                 price = 10,
                 count = 200
             },
             {
                 name = 'bandage',
-                price = 10,
-                count = 200
-            },
-            {
-                name = 'notepad',
-                price = 15,
-                count = 200
-            },
-            {
-                name = 'donut',
-                price = 10,
-                count = 200
-            },
-            {
-                name = 'redgull',
-                price = 100,
-                count = 200
-            },
-            {
-                name = 'papers',
-                price = 10,
-                count = 200
-            },
-            {
-                name = 'coffee',
                 price = 10,
                 count = 200
             },
@@ -306,7 +206,7 @@ Config.Shops = {
         name = '24/7', 
         inventory = {
             {
-                name = 'sandwich',
+                name = 'burger',
                 price = 10,
                 count = 200
             },
@@ -316,37 +216,12 @@ Config.Shops = {
                 count = 200
             },
             {
-                name = 'cocacola',
+                name = 'cola',
                 price = 10,
                 count = 200
             },
             {
                 name = 'bandage',
-                price = 10,
-                count = 200
-            },
-            {
-                name = 'notepad',
-                price = 15,
-                count = 200
-            },
-            {
-                name = 'donut',
-                price = 10,
-                count = 200
-            },
-            {
-                name = 'redgull',
-                price = 100,
-                count = 200
-            },
-            {
-                name = 'papers',
-                price = 10,
-                count = 200
-            },
-            {
-                name = 'coffee',
                 price = 10,
                 count = 200
             },
@@ -363,7 +238,7 @@ Config.Shops = {
         name = '24/7', 
         inventory = {
             {
-                name = 'sandwich',
+                name = 'burger',
                 price = 10,
                 count = 200
             },
@@ -373,37 +248,12 @@ Config.Shops = {
                 count = 200
             },
             {
-                name = 'cocacola',
+                name = 'cola',
                 price = 10,
                 count = 200
             },
             {
                 name = 'bandage',
-                price = 10,
-                count = 200
-            },
-            {
-                name = 'notepad',
-                price = 15,
-                count = 200
-            },
-            {
-                name = 'donut',
-                price = 10,
-                count = 200
-            },
-            {
-                name = 'redgull',
-                price = 100,
-                count = 200
-            },
-            {
-                name = 'papers',
-                price = 10,
-                count = 200
-            },
-            {
-                name = 'coffee',
                 price = 10,
                 count = 200
             },
@@ -420,7 +270,7 @@ Config.Shops = {
         name = '24/7', 
         inventory = {
             {
-                name = 'sandwich',
+                name = 'burger',
                 price = 10,
                 count = 200
             },
@@ -430,37 +280,12 @@ Config.Shops = {
                 count = 200
             },
             {
-                name = 'cocacola',
+                name = 'cola',
                 price = 10,
                 count = 200
             },
             {
                 name = 'bandage',
-                price = 10,
-                count = 200
-            },
-            {
-                name = 'notepad',
-                price = 15,
-                count = 200
-            },
-            {
-                name = 'donut',
-                price = 10,
-                count = 200
-            },
-            {
-                name = 'redgull',
-                price = 100,
-                count = 200
-            },
-            {
-                name = 'papers',
-                price = 10,
-                count = 200
-            },
-            {
-                name = 'coffee',
                 price = 10,
                 count = 200
             },
@@ -477,7 +302,7 @@ Config.Shops = {
         name = '24/7', 
         inventory = {
             {
-                name = 'sandwich',
+                name = 'burger',
                 price = 10,
                 count = 200
             },
@@ -487,37 +312,12 @@ Config.Shops = {
                 count = 200
             },
             {
-                name = 'cocacola',
+                name = 'cola',
                 price = 10,
                 count = 200
             },
             {
                 name = 'bandage',
-                price = 10,
-                count = 200
-            },
-            {
-                name = 'notepad',
-                price = 15,
-                count = 200
-            },
-            {
-                name = 'donut',
-                price = 10,
-                count = 200
-            },
-            {
-                name = 'redgull',
-                price = 100,
-                count = 200
-            },
-            {
-                name = 'papers',
-                price = 10,
-                count = 200
-            },
-            {
-                name = 'coffee',
                 price = 10,
                 count = 200
             },
@@ -534,7 +334,7 @@ Config.Shops = {
         name = 'Davis LTD', 
         inventory = {
             {
-                name = 'sandwich',
+                name = 'burger',
                 price = 10,
                 count = 200
             },
@@ -544,37 +344,12 @@ Config.Shops = {
                 count = 200
             },
             {
-                name = 'cocacola',
+                name = 'cola',
                 price = 10,
                 count = 200
             },
             {
                 name = 'bandage',
-                price = 10,
-                count = 200
-            },
-            {
-                name = 'notepad',
-                price = 15,
-                count = 200
-            },
-            {
-                name = 'donut',
-                price = 10,
-                count = 200
-            },
-            {
-                name = 'redgull',
-                price = 100,
-                count = 200
-            },
-            {
-                name = 'papers',
-                price = 10,
-                count = 200
-            },
-            {
-                name = 'coffee',
                 price = 10,
                 count = 200
             },
@@ -591,7 +366,7 @@ Config.Shops = {
         name = 'Mirror Park LTD', 
         inventory = {
             {
-                name = 'sandwich',
+                name = 'burger',
                 price = 10,
                 count = 200
             },
@@ -601,37 +376,12 @@ Config.Shops = {
                 count = 200
             },
             {
-                name = 'cocacola',
+                name = 'cola',
                 price = 10,
                 count = 200
             },
             {
                 name = 'bandage',
-                price = 10,
-                count = 200
-            },
-            {
-                name = 'notepad',
-                price = 15,
-                count = 200
-            },
-            {
-                name = 'donut',
-                price = 10,
-                count = 200
-            },
-            {
-                name = 'redgull',
-                price = 100,
-                count = 200
-            },
-            {
-                name = 'papers',
-                price = 10,
-                count = 200
-            },
-            {
-                name = 'coffee',
                 price = 10,
                 count = 200
             },
@@ -648,7 +398,7 @@ Config.Shops = {
         name = 'Little Seoul LTD', 
         inventory = {
             {
-                name = 'sandwich',
+                name = 'burger',
                 price = 10,
                 count = 200
             },
@@ -658,37 +408,12 @@ Config.Shops = {
                 count = 200
             },
             {
-                name = 'cocacola',
+                name = 'cola',
                 price = 10,
                 count = 200
             },
             {
                 name = 'bandage',
-                price = 10,
-                count = 200
-            },
-            {
-                name = 'notepad',
-                price = 15,
-                count = 200
-            },
-            {
-                name = 'donut',
-                price = 10,
-                count = 200
-            },
-            {
-                name = 'redgull',
-                price = 100,
-                count = 200
-            },
-            {
-                name = 'papers',
-                price = 10,
-                count = 200
-            },
-            {
-                name = 'coffee',
                 price = 10,
                 count = 200
             },
@@ -705,7 +430,7 @@ Config.Shops = {
         name = 'Richman Glen LTD', 
         inventory = {
             {
-                name = 'sandwich',
+                name = 'burger',
                 price = 10,
                 count = 200
             },
@@ -715,37 +440,12 @@ Config.Shops = {
                 count = 200
             },
             {
-                name = 'cocacola',
+                name = 'cola',
                 price = 10,
                 count = 200
             },
             {
                 name = 'bandage',
-                price = 10,
-                count = 200
-            },
-            {
-                name = 'notepad',
-                price = 15,
-                count = 200
-            },
-            {
-                name = 'donut',
-                price = 10,
-                count = 200
-            },
-            {
-                name = 'redgull',
-                price = 100,
-                count = 200
-            },
-            {
-                name = 'papers',
-                price = 10,
-                count = 200
-            },
-            {
-                name = 'coffee',
                 price = 10,
                 count = 200
             },
@@ -762,7 +462,7 @@ Config.Shops = {
         name = 'Grapeseed LTD', 
         inventory = {
             {
-                name = 'sandwich',
+                name = 'burger',
                 price = 10,
                 count = 200
             },
@@ -772,37 +472,12 @@ Config.Shops = {
                 count = 200
             },
             {
-                name = 'cocacola',
+                name = 'cola',
                 price = 10,
                 count = 200
             },
             {
                 name = 'bandage',
-                price = 10,
-                count = 200
-            },
-            {
-                name = 'notepad',
-                price = 15,
-                count = 200
-            },
-            {
-                name = 'donut',
-                price = 10,
-                count = 200
-            },
-            {
-                name = 'redgull',
-                price = 100,
-                count = 200
-            },
-            {
-                name = 'papers',
-                price = 10,
-                count = 200
-            },
-            {
-                name = 'coffee',
                 price = 10,
                 count = 200
             },
@@ -819,7 +494,7 @@ Config.Shops = {
         name = '24/7', 
         inventory = {
             {
-                name = 'sandwich',
+                name = 'burger',
                 price = 10,
                 count = 200
             },
@@ -829,37 +504,12 @@ Config.Shops = {
                 count = 200
             },
             {
-                name = 'cocacola',
+                name = 'cola',
                 price = 10,
                 count = 200
             },
             {
                 name = 'bandage',
-                price = 10,
-                count = 200
-            },
-            {
-                name = 'notepad',
-                price = 15,
-                count = 200
-            },
-            {
-                name = 'donut',
-                price = 10,
-                count = 200
-            },
-            {
-                name = 'redgull',
-                price = 100,
-                count = 200
-            },
-            {
-                name = 'papers',
-                price = 10,
-                count = 200
-            },
-            {
-                name = 'coffee',
                 price = 10,
                 count = 200
             },
@@ -876,7 +526,7 @@ Config.Shops = {
         name = '24/7', 
         inventory = {
             {
-                name = 'sandwich',
+                name = 'burger',
                 price = 10,
                 count = 200
             },
@@ -886,37 +536,12 @@ Config.Shops = {
                 count = 200
             },
             {
-                name = 'cocacola',
+                name = 'cola',
                 price = 10,
                 count = 200
             },
             {
                 name = 'bandage',
-                price = 10,
-                count = 200
-            },
-            {
-                name = 'notepad',
-                price = 15,
-                count = 200
-            },
-            {
-                name = 'donut',
-                price = 10,
-                count = 200
-            },
-            {
-                name = 'redgull',
-                price = 100,
-                count = 200
-            },
-            {
-                name = 'papers',
-                price = 10,
-                count = 200
-            },
-            {
-                name = 'coffee',
                 price = 10,
                 count = 200
             },
@@ -933,7 +558,7 @@ Config.Shops = {
         name = 'Lago Zancudo RON', 
         inventory = {
             {
-                name = 'sandwich',
+                name = 'burger',
                 price = 10,
                 count = 200
             },
@@ -943,37 +568,12 @@ Config.Shops = {
                 count = 200
             },
             {
-                name = 'cocacola',
+                name = 'cola',
                 price = 10,
                 count = 200
             },
             {
                 name = 'bandage',
-                price = 10,
-                count = 200
-            },
-            {
-                name = 'notepad',
-                price = 15,
-                count = 200
-            },
-            {
-                name = 'donut',
-                price = 10,
-                count = 200
-            },
-            {
-                name = 'redgull',
-                price = 100,
-                count = 200
-            },
-            {
-                name = 'papers',
-                price = 10,
-                count = 200
-            },
-            {
-                name = 'coffee',
                 price = 10,
                 count = 200
             },
@@ -990,7 +590,7 @@ Config.Shops = {
         name = "Don's Country Store", 
         inventory = {
             {
-                name = 'sandwich',
+                name = 'burger',
                 price = 10,
                 count = 200
             },
@@ -1000,37 +600,12 @@ Config.Shops = {
                 count = 200
             },
             {
-                name = 'cocacola',
+                name = 'cola',
                 price = 10,
                 count = 200
             },
             {
                 name = 'bandage',
-                price = 10,
-                count = 200
-            },
-            {
-                name = 'notepad',
-                price = 15,
-                count = 200
-            },
-            {
-                name = 'donut',
-                price = 10,
-                count = 200
-            },
-            {
-                name = 'redgull',
-                price = 100,
-                count = 200
-            },
-            {
-                name = 'papers',
-                price = 10,
-                count = 200
-            },
-            {
-                name = 'coffee',
                 price = 10,
                 count = 200
             },
@@ -1731,7 +1306,6 @@ Config.Shops = {
                 count = 1,
                 metadata = {
                     weaponlicense = 'POL',
-                    components = { 'flashlight' },
                     weapontint = 5
                 },
             },
@@ -1751,7 +1325,6 @@ Config.Shops = {
                 count = 1,
                 metadata = {
                     weaponlicense = 'POL',
-                    components = { 'flashlight' },
                     weapontint = 5
                 },
             },
