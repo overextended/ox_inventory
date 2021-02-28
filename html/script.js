@@ -109,6 +109,7 @@
     }
 
     HSN.RefreshInventory = function(data) {
+        toplamkg = 0
         $.each(data.inventory, function (i, item) {
             if ((item != null)) {
                 toplamkg = toplamkg +(item.weight * item.count);
@@ -153,6 +154,7 @@
         Display(true)
         // player inventory
         $('.inventory-main-leftside').data("invTier", "Playerinv")
+        toplamkg = 0
         $.each(data.inventory, function (i, item) {
             if ((item != null)) {
                 toplamkg = toplamkg +(item.weight * item.count);
