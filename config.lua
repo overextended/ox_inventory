@@ -4,6 +4,9 @@ Config.PlayerSlot = 51
 -- Blur the screen while accessing the inventory
 Config.EnableBlur = true
 
+-- Max weight as grams
+Config.MaxWeight = 24000
+
 
 Config.DurabilityDecreaseAmount = {
     ['WEAPON_PISTOL'] = 0.6,
@@ -1653,43 +1656,23 @@ Config.Shops = {
                 price = 10,
                 count = 200
             },
---[[            {
-                name = 'handcuffs',
-                price = 15,
-                count = 200
-            },
             {
-                name = 'coffee',
-                price = 10,
-                count = 200
-            },
-            {
-                name = 'medkit',
-                price = 15,
-                count = 200
-            },
-            {
-                name = 'radio',
-                price = 15,
-                count = 200
-            },
-            {
-                name = 'bulletproofpd',
-                price = 15,
-                count = 200
-            },]]
-            {
-                name = 'hsn_pistol_ammo',
+                name = 'ammo-9',
                 price = 250,
                 count = 200
             },
             {
-                name = 'hsn_shotgun_ammo',
+                name = 'ammo-50',
+                price = 250,
+                count = 200
+            },
+            {
+                name = 'ammo-shotgun',
                 price = 15,
                 count = 200
             },
             {
-                name = 'hsn_rifle_ammo',
+                name = 'ammo-rifle',
                 price = 15,
                 count = 200
             },
@@ -1786,7 +1769,7 @@ Config.Shops = {
         name = 'Ammunation', 
         inventory = {
             {
-                name = 'hsn_pistol_ammo',
+                name = 'ammo-9',
                 price = 250,
                 count = 10
             },
@@ -1834,7 +1817,7 @@ Config.Shops = {
         name = 'Ammunation', 
         inventory = {
             {
-                name = 'hsn_pistol_ammo',
+                name = 'ammo-9',
                 price = 250,
                 count = 10
             },
@@ -1882,7 +1865,7 @@ Config.Shops = {
         name = 'Ammunation', 
         inventory = {
             {
-                name = 'hsn_pistol_ammo',
+                name = 'ammo-9',
                 price = 250,
                 count = 10
             },
@@ -1930,7 +1913,7 @@ Config.Shops = {
         name = 'Ammunation', 
         inventory = {
             {
-                name = 'hsn_pistol_ammo',
+                name = 'ammo-9',
                 price = 250,
                 count = 10
             },
@@ -1978,7 +1961,7 @@ Config.Shops = {
         name = 'Ammunation', 
         inventory = {
             {
-                name = 'hsn_pistol_ammo',
+                name = 'ammo-9',
                 price = 250,
                 count = 10
             },
@@ -2026,7 +2009,7 @@ Config.Shops = {
         name = 'Ammunation', 
         inventory = {
             {
-                name = 'hsn_pistol_ammo',
+                name = 'ammo-9',
                 price = 250,
                 count = 10
             },
@@ -2074,7 +2057,7 @@ Config.Shops = {
         name = 'Ammunation', 
         inventory = {
             {
-                name = 'hsn_pistol_ammo',
+                name = 'ammo-9',
                 price = 250,
                 count = 10
             },
@@ -2122,7 +2105,7 @@ Config.Shops = {
         name = 'Ammunation', 
         inventory = {
             {
-                name = 'hsn_pistol_ammo',
+                name = 'ammo-9',
                 price = 250,
                 count = 10
             },
@@ -2170,7 +2153,7 @@ Config.Shops = {
         name = 'Ammunation', 
         inventory = {
             {
-                name = 'hsn_pistol_ammo',
+                name = 'ammo-9',
                 price = 250,
                 count = 10
             },
