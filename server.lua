@@ -653,7 +653,9 @@ CreateNewDrop = function(source,data)
     end
     local ped = GetPlayerPed(src)
     local coords = GetEntityCoords(ped)
-    TriggerClientEvent("hsn-inventory:Client:addnewDrop", -1, coords, dropid)
+    if src and ped > 0 then
+        TriggerClientEvent("hsn-inventory:Client:addnewDrop", -1, coords, dropid)
+    else print( ("^1[hsn-inventory]^3 Server was unable to create a drop because the PlayerPed was invalid (is OneSync enabled?)") ) end
 end
 
 -- Override the default ESX command (only works on ESX 1.2+ and EXM)
@@ -697,13 +699,13 @@ AddEventHandler("hsn-inventory:server:refreshInventory",function()
 end)
 
 RegisterServerEvent("hsn-inventory:server:openInventory")
-AddEventHandler("hsn-inventory:server:openInventory",function(data)
+AddEventHandler("hsn-inventory:server:openInventory",function(data, coords)
     local src = source
     local Player = ESX.GetPlayerFromId(src)
     if data ~= nil then
         if data.type == 'drop' then
             if Drops[data.id] ~= nil then
-                if checkOpenable(src,data.id) then
+                if checkOpenable(src,data.id,data.coords) then
                     TriggerClientEvent("hsn-inventory:client:openInventory",src,playerInventory[Player.identifier],Drops[data.id])
                 end
             else
@@ -794,7 +796,7 @@ checkOpenable = function(source,id,coords)
 
     if coords then
         local srcCoords = GetEntityCoords(GetPlayerPed(src))
-        if #(coords - srcCoords) > 5 then return false end
+        if #(vector3(coords.x, coords.y, coords.z) - srcCoords) > 5 then return false end
     end
 
     if openedinventories[id] == nil then
