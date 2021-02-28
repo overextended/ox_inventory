@@ -740,11 +740,12 @@ end)
 RegisterServerEvent("hsn-inventory:server:openTargetInventory")
 AddEventHandler("hsn-inventory:server:openTargetInventory",function(TargetId)
     local Player = ESX.GetPlayerFromId(source)
-    if not source == TargetId then tPlayer = ESX.GetPlayerFromId(TargetId) end -- Don't allow source and targetid to match
+    tPlayer = ESX.GetPlayerFromId(TargetId)
+    if source == TargetId then tPlayer = nil end -- Don't allow source and targetid to match
+    if playerInventory[tPlayer.identifier] == nil then
+        playerInventory[tPlayer.identifier] = {}
+    end
     if tPlayer and Player then
-        if playerInventory[tPlayer.identifier] == nil then
-            playerInventory[tPlayer.identifier] = {}
-        end
         if checkOpenable(source,'Player'..TargetId,GetEntityCoords(GetPlayerPed(TargetId))) then
             local data = {}
             data.name = 'Player'..TargetId -- do not touch
