@@ -612,7 +612,8 @@ CreateNewDrop = function(source,data)
         playerInventory[Player.identifier][data.fromSlot] = {name = data.oldslotItem.name ,label = data.oldslotItem.label, weight = data.oldslotItem.weight, slot = data.fromSlot, count = data.oldslotItem.count, description = data.oldslotItem.description, metadata = data.oldslotItem.metadata, stackable = data.oldslotItem.stackable, closeonuse = ESXItems[data.oldslotItem.name].closeonuse}
         Drops[dropid].inventory[data.toSlot] = {name = data.newslotItem.name ,label = data.newslotItem.label, weight = data.newslotItem.weight, slot = data.toSlot, count = data.newslotItem.count, description = data.newslotItem.description, metadata = data.newslotItem.metadata, stackable = data.newslotItem.stackable, closeonuse = ESXItems[data.newslotItem.name].closeonuse}
     end
-    local coords = GetEntityCoords(NetworkGetEntityFromNetworkId(src))
+    local ped = GetPlayerPed(src)
+    local coords = GetEntityCoords(ped)
     TriggerClientEvent("hsn-inventory:Client:addnewDrop", -1, coords, dropid)
 end
 
