@@ -254,7 +254,7 @@ Citizen.CreateThread(function()
             distance = #(GetEntityCoords(PlayerPedId()) - vector3(v.coords.x,v.coords.y,v.coords.z))
             if distance <= 10.0 then
                 wait = 1
-                DrawMarker(2, v.coords.x,v.coords.y,v.coords.z, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.3, 0.2, 0.15, 200, 0, 0, 222, false, false, false, true, false, false, false)
+                DrawMarker(2, v.coords.x,v.coords.y,v.coords.z, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.3, 0.2, 0.15, 150, 30, 30, 222, false, false, false, true, false, false, false)
                 if distance <= 1.0 then
                     currentDrop = v.dropid
                 else
@@ -311,7 +311,7 @@ Citizen.CreateThread(function()
         for i = 1, #Config.Stashes do
             distance = #(GetEntityCoords(PlayerPedId()) - Config.Stashes[i].coords)
             if distance <= 2.5 and (not Config.Stashes[i].job or Config.Stashes[i].job == PlayerData.job.name) then
-                DrawMarker(2, Config.Stashes[i].coords.x,Config.Stashes[i].coords.y,Config.Stashes[i].coords.z, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.3, 0.15, 0.2, 30, 150, 30, 100, false, false, false, true, false, false, false)
+                DrawMarker(2, Config.Stashes[i].coords.x,Config.Stashes[i].coords.y,Config.Stashes[i].coords.z, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.3, 0.15, 0.2, 30, 30, 150, 100, false, false, false, true, false, false, false)
                 if IsControlJustPressed(1,38) and distance <= 1 and not dead and not isCuffed then
                     OpenStash(Config.Stashes[i])
                 end
@@ -421,6 +421,9 @@ AddEventHandler('hsn-inventory:weaponaway', function()
     TaskPlayAnimAdvanced(playerPed, "reaction@intimidation@1h", "outro", GetEntityCoords(playerPed, true), 0, 0, GetEntityHeading(playerPed), 8.0, 3.0, -1, 50, 0, 0, 0)
     Citizen.Wait(1600)
     ClearPedSecondaryTask(PlayerPedId())
+    if IsPedUsingActionMode(playerPed) then
+        SetPedUsingActionMode(playerPed, -1, -1, 1)
+    end
 end)
 
 RegisterNetEvent("hsn-inventory:client:weapon")
@@ -530,7 +533,7 @@ function SetNuiFocusAdvanced(hasFocus, hasCursor, allowMovement)
     TriggerEvent("nui:focus", hasFocus, hasCursor)
 
     if nui_focus[1] then
-        if Config.EnableBlur then SetTimecycleModifier('hud_def_blur') end
+        if Config.EnableBlur then TriggerScreenblurFadeIn(0) end
         Citizen.CreateThread(function()
             local ticks = 0
             while true do
@@ -550,7 +553,7 @@ function SetNuiFocusAdvanced(hasFocus, hasCursor, allowMovement)
                     ticks = ticks + 1
                     if (IsDisabledControlJustReleased(0, 200, true) or ticks > 20) then
                         invOpen = false
-                        if Config.EnableBlur then SetTimecycleModifier('default') end
+                        if Config.EnableBlur then TriggerScreenblurFadeOut(0) end
                         break
                     end
                 end
@@ -567,9 +570,16 @@ AddEventHandler("hsn-inventory:notification",function(message, mtype)
     TriggerEvent('mythic_notify:client:SendAlert', {type = 'inform', text = message, length = 2500,style = mtype})
 end)
 
-RegisterCommand('closeinv', function()
+RegisterCommand('-nui', function()
         TriggerEvent("hsn-inventory:client:closeInventory")
 end, false)
+
+AddEventHandler('onResourceStop', function(resourceName)
+    if (GetCurrentResourceName() == resourceName) then
+        TriggerScreenblurFadeOut(0)
+        SetNuiFocusAdvanced(false, false)
+    end
+end)
 
 
 RegisterNetEvent("hsn-inventory:useItem")
