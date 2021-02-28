@@ -51,7 +51,7 @@ Config.DurabilityDecreaseAmount = {
     ['WEAPON_REVOLVER_MK2'] = 0.7,
     ['WEAPON_SAWNOFFSHOTGUN'] = 0.9,
     ['WEAPON_SMG'] = 0.8,
-    ['WEAPON_SMK_MK2'] = 0.7,
+    ['WEAPON_SMG_MK2'] = 0.7,
     ['WEAPON_SNSPISTOL'] = 0.7,
     ['WEAPON_SNSPISTOL_MK2'] = 0.6,
     ['WEAPON_SPECIALCARBINE'] = 0.8,
@@ -2213,7 +2213,6 @@ Config.Stashes = {
         name = 'Police Evidence', 
         slots = 71,
         coords = vector3(474.2242, -990.7516, 26.2638),
-        name = 'Police Evidence', 
         job = 'police'
     },
 }
@@ -2221,121 +2220,134 @@ Config.Stashes = {
 
 
 Config.Ammos = {
-    ['hsn_pistol_ammo'] = {
+    ['ammo-38'] = { -- .38 long colt
         count = 40,
         weapons = {
-            `WEAPON_PISTOL`,
-			`WEAPON_PISTOL_MK2`,
-            `WEAPON_APPISTOL`,
-            `WEAPON_HEAVYPISTOL`,
-            `WEAPON_COMBATPISTOL`,
-            `WEAPON_SNSPISTOL`,
-            `WEAPON_SNSPISTOL_MK2`,
-            `WEAPON_PISTOL50`,
-            `WEAPON_REVOLVER`,
-            `WEAPON_REVOLVER_MK2`,
-            `WEAPON_DOUBLEACTION`,
-            `WEAPON_MARKSMANPISTOL`,
-            `WEAPON_MACHINEPISTOL`,
-            `WEAPON_VINTAGEPISTOL`,
+            `WEAPON_DOUBLEACTION`
         },
+    },
 
-    },
-    ['hsn_pistol_ammo_big'] = {
-        count = 30,
+    ['ammo-44'] = { -- .44 magnum
+        count = 40,
         weapons = {
-            `WEAPON_PISTOL`,
-			`WEAPON_PISTOL_MK2`,
-            `WEAPON_APPISTOL`,
-            `WEAPON_HEAVYPISTOL`,
-            `WEAPON_COMBATPISTOL`,
-            `WEAPON_SNSPISTOL`,
-            `WEAPON_SNSPISTOL_MK2`,
-            `WEAPON_PISTOL50`,
             `WEAPON_REVOLVER`,
-            `WEAPON_REVOLVER_MK2`,
-            `WEAPON_DOUBLEACTION`,
-            `WEAPON_MARKSMANPISTOL`,
-            `WEAPON_MACHINEPISTOL`,
-            `WEAPON_VINTAGEPISTOL`,
+            `WEAPON_REVOLVER_MK2`
         },
-		
     },
-    ['hsn_rifle_ammo'] = {
+
+    ['ammo-45'] = { -- 45 acp
+        count = 40,
+        weapons = {
+            `WEAPON_GUSENBERG`,
+            `WEAPON_HEAVYPISTOL`,
+            `WEAPON_MICROSMG`,
+            `WEAPON_SNSPISTOL`,
+            `WEAPON_SNSPISTOL_MK2`
+        },
+    },
+
+    ['ammo-9'] = { -- 9mm variants (parabellum, makarov, etc)
+        count = 40,
+        weapons = {
+            `WEAPON_APPISTOL`,
+            `WEAPON_COMBATPDW`,
+            `WEAPON_COMBATPISTOL`,
+            `WEAPON_MACHINEPISTOL`,
+            `WEAPON_MINISMG`,
+            `WEAPON_PISTOL`,
+            `WEAPON_PISTOL_MK2`,
+            `WEAPON_SMG`,
+            `WEAPON_SMG_MK2`,
+            `WEAPON_VINTAGEPISTOL`
+        },
+    },
+
+    ['ammo-flare'] = {
+        count = 40,
+        weapons = {
+            `WEAPON_FLAREGUN`
+        },
+    },
+
+    ['ammo-musket'] = {
+        count = 40,
+        weapons = {
+            `WEAPON_MUSKET`
+        },
+    },
+
+    ['ammo-rifle'] = { -- 5.56
         count = 40,
         weapons = {
             `WEAPON_ADVANCEDRIFLE`,
-            `WEAPON_ASSAULTRIFLE`,
-            `WEAPON_ASSAULTRIFLE_MK2`,
+            `WEAPON_ASSAULTSMG`,
             `WEAPON_BULLPUPRIFLE`,
             `WEAPON_BULLPUPRIFLE_MK2`,
             `WEAPON_CARBINERIFLE`,
             `WEAPON_CARBINERIFLE_MK2`,
-            `WEAPON_COMPACTRIFLE`,
+            `WEAPON_COMBATMG`,
             `WEAPON_SPECIALCARBINE`,
             `WEAPON_SPECIALCARBINE_MK2`,
         },
-		
     },
-    ['hsn_rpg_ammo'] = {
+
+    ['ammo-rifle2'] = { -- 7.62 soviet
         count = 40,
         weapons = {
-            `WEAPON_GRENADELAUNCHER`,
-            `WEAPON_HOMINGLAUNCHER`,
-            `WEAPON_RPG`,
-            `WEAPON_COMPACTLAUNCHER`,
-            `WEAPON_FIREWORK`,
+            `WEAPON_ASSAULTRIFLE`,
+            `WEAPON_ASSAULTRIFLE_MK2`,
+            `WEAPON_COMBATMG_MK2`,
+            `WEAPON_COMPACTRIFLE`,
+            `WEAPON_MG`,
         },
-		
     },
-    ['hsn_shotgun_ammo'] = {
+
+    ['ammo-22'] = { -- .22 long rifle
+        count = 40,
+        weapons = {
+            `WEAPON_MARKSMANPISTOL`
+        },
+    },
+
+    ['ammo-50'] = { -- .50 action express
+        count = 40,
+        weapons = {
+            `WEAPON_PISTOL50`
+        },
+    },
+
+    ['ammo-sniper'] = { -- 7.62 NATO
+        count = 40,
+        weapons = {
+            `WEAPON_MARKSMANRIFLE`,
+            `WEAPON_MARKSMANRIFLE_MK2`,
+            `WEAPON_SNIPERRIFLE`
+        },
+    },
+
+    ['ammo-heavysniper'] = { -- .50 BMG
+        count = 40,
+        weapons = {
+            `WEAPON_HEAVYSNIPER`,
+            `WEAPON_HEAVYSNIPER_MK2`
+        },
+    },
+
+    ['ammo-shotgun'] = { -- 12 gauge
         count = 40,
         weapons = {
             `WEAPON_ASSAULTSHOTGUN`,
-            `WEAPON_AUTOSHOTGUN`,
             `WEAPON_BULLPUPSHOTGUN`,
             `WEAPON_DBSHOTGUN`,
-            `WEAPON_SAWNOFFSHOTGUN`,
+            `WEAPON_HEAVYSHOTGUN`,
             `WEAPON_PUMPSHOTGUN`,
             `WEAPON_PUMPSHOTGUN_MK2`,
-            `WEAPON_HEAVYSHOTGUN`,
-        },
-		
-    },
-    ['hsn_lmg_ammo'] = {
-        count = 40,
-        weapons = {
-            `WEAPON_MG`,
-            `WEAPON_MINIGUN`,
-            `WEAPON_COMBATMG_MK2`,
-            `WEAPON_COMBATMG`,
-        },
-		
-    },
-    ['hsn_snipe_ammo'] = {
-        count = 40,
-        weapons = {
-            `WEAPON_SNIPERRIFLE`,
-            `WEAPON_MUSKET`,
-            `WEAPON_MARKSMANRIFLE_MK2`,
-            `WEAPON_MARKSMANRIFLE`,
-            `WEAPON_HEAVYSNIPER_MK2`,
-            `WEAPON_HEAVYSNIPER`,
-        },
-		
-    },
-    ['hsn_smg_ammo'] = {
-        count = 40,
-        weapons = {
-            `WEAPON_ASSAULTSMG`,
-            `WEAPON_MICROSMG`,
-            `WEAPON_MINISMG`,
-            `WEAPON_SMG`,
-            `WEAPON_SMG_MK2`,
-            `WEAPON_COMBATPDW`,
-            `WEAPON_GUSENBERG`,
+            `WEAPON_SAWNOFFSHOTGUN`,
+            `WEAPON_SWEEPERSHOTGUN`
         },
     },
+
+
 }
 
 
