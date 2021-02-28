@@ -1,6 +1,6 @@
-@import url('https://fonts.googleapis.com/css2?family=Signika:wght@300;400;500&amp;display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Signika:wght@300;400;500;600&amp;display=swap');
 * {
-    font-family: "Basic";
+    font-family: 'Signika';
     margin: 0;
     padding: 0;
     user-select: none;
@@ -42,7 +42,7 @@
     text-align: left;
     font-size: 14px;
     line-height: 18px;
-    font-family: "Basic";
+    font-family: 'Signika';
 }
 
 
@@ -63,7 +63,7 @@
     color: white;
     /*width: auto; */
     font-weight: bold;
-    font-family: "Basic";
+    font-family: 'Signika';
     font-size: 15px;
     padding-top: 3%;
     text-shadow: 1px 1px 0px black;
@@ -72,7 +72,7 @@
 .rightside-name {
     position: absolute;
     color: white;
-    font-family: "Basic";
+    font-family: 'Signika';
     padding-top: 3%;
     padding-left: 58%;
     font-weight: bold;
@@ -88,7 +88,7 @@
     /*width: auto; */
     font-weight: bold;
     font-size: 15px;
-    font-family: "Basic";
+    font-family: 'Signika';
     text-shadow: 1px 1px 0px black;
 }
 
@@ -99,7 +99,7 @@
     padding-top: 3%; 
     font-weight: bold;
     font-size: 15px;
-    font-family: "Basic";
+    font-family: 'Signika';
 }
 
 .ItemBoxes {
@@ -118,10 +118,10 @@
     margin: 0 auto;
     position: absolute;
     content: '1';
-    height: 18px !important;
-    width: 18px !important;
-    font-size: 14px;
-    font-weight: 500;
+    height: 17px !important;
+    width: 17px !important;
+    font-size: 12px;
+    font-weight: 600;
     font-family: "Signika";
     text-align: center;
     line-height: 18px;
@@ -136,10 +136,10 @@
     margin: 0 auto;
     position: absolute;
     content: '2';
-    height: 18px !important;
-    width: 18px !important;
-    font-size: 14px;
-    font-weight: 500;
+    height: 17px !important;
+    width: 17px !important;
+    font-size: 12px;
+    font-weight: 600;
     font-family: "Signika";
     text-align: center;
     line-height: 18px;
@@ -154,10 +154,10 @@
     margin: 0 auto;
     position: absolute;
     content: '3';
-    height: 18px !important;
-    width: 18px !important;
-    font-size: 14px;
-    font-weight: 500;
+    height: 17px !important;
+    width: 17px !important;
+    font-size: 12px;
+    font-weight: 600;
     font-family: "Signika";
     text-align: center;
     line-height: 18px;
@@ -172,10 +172,10 @@
     margin: 0 auto;
     position: absolute;
     content: '4';
-    height: 18px !important;
-    width: 18px !important;
-    font-size: 14px;
-    font-weight: 500;
+    height: 17px !important;
+    width: 17px !important;
+    font-size: 12px;
+    font-weight: 600;
     font-family: "Signika";
     text-align: center;
     line-height: 18px;
@@ -190,10 +190,10 @@
     margin: 0 auto;
     position: absolute;
     content: '5';
-    height: 18px !important;
-    width: 18px !important;
-    font-size: 14px;
-    font-weight: 500;
+    height: 17px !important;
+    width: 17px !important;
+    font-size: 12px;
+    font-weight: 600;
     font-family: "Signika";
     text-align: center;
     line-height: 18px;
@@ -263,7 +263,7 @@
 
 #itembox-action > p {
     font-size: 14px;
-    font-family: 'Basic';
+    font-family: 'Signika';
 }
 
 #itembox-label {
@@ -314,7 +314,7 @@
     line-height: 18px;
     text-align: center;
     text-transform: uppercase;
-    font-family: "Basic";
+    font-family: 'Signika';
     font-variant: small-caps;
     text-shadow: 1px 1px 0px black;
 }
@@ -352,9 +352,11 @@
     background-color: steelblue;
     top: 85%;
     left: 38%; */
-    font-family: 'Basic';
+    font-family: 'Signika';
     display: none;
     position: absolute;
+    font-weight: 500;
+    font-size: 14px;
     top: 100%;
     margin: 0 auto;
     left: 0;
@@ -363,24 +365,15 @@
     text-shadow: 1px 1px 0px black;
     background-color: rgba(0,0,0,0.267);
     user-select: all !important;
-    padding-bottom: 5px;
+    padding: 5px;
+    color: white;
 }
 
 
 .iteminfo-label {
-    font-family: "Basic";
-    font-size: 11pt;
-    color: white;
-    padding-top: 5px;
-    padding-left: 5px;
+    font-size: 15px;
+    font-weight:600;
 
-}
-
-.iteminfo-description {
-    font-size: 11pt;
-    font-family: 'Basic';
-    color: white;
-    padding-left: 5px;
 }
 
 
@@ -436,7 +429,7 @@
     border-radius: 2px;
     transition: 0.2s ease-in-out all;
     line-height: 40px;
-    font-family: "Basic";
+    font-family: 'Signika';
     font-size: 90%;
 }
 
