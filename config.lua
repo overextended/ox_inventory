@@ -1390,7 +1390,7 @@ Config.Shops = {
         },
     },
     {
-        coords = vector3(810.25, -2157.60, 28.62),
+        coords = vector3(810.25, -2157.60, 29.62),
         blip = {
             id = 110,
             name = "Ammunation",
@@ -1788,14 +1788,12 @@ Config.Stashes = {
 
 Config.Ammos = {
     ['ammo-38'] = { -- .38 long colt
-        count = 40,
         weapons = {
             `WEAPON_DOUBLEACTION`
         },
     },
 
     ['ammo-44'] = { -- .44 magnum
-        count = 40,
         weapons = {
             `WEAPON_REVOLVER`,
             `WEAPON_REVOLVER_MK2`
@@ -1803,7 +1801,6 @@ Config.Ammos = {
     },
 
     ['ammo-45'] = { -- 45 acp
-        count = 40,
         weapons = {
             `WEAPON_GUSENBERG`,
             `WEAPON_HEAVYPISTOL`,
@@ -1814,7 +1811,6 @@ Config.Ammos = {
     },
 
     ['ammo-9'] = { -- 9mm variants (parabellum, makarov, etc)
-        count = 40,
         weapons = {
             `WEAPON_APPISTOL`,
             `WEAPON_COMBATPDW`,
@@ -1830,21 +1826,18 @@ Config.Ammos = {
     },
 
     ['ammo-flare'] = {
-        count = 40,
         weapons = {
             `WEAPON_FLAREGUN`
         },
     },
 
     ['ammo-musket'] = {
-        count = 40,
         weapons = {
             `WEAPON_MUSKET`
         },
     },
 
     ['ammo-rifle'] = { -- 5.56
-        count = 40,
         weapons = {
             `WEAPON_ADVANCEDRIFLE`,
             `WEAPON_ASSAULTSMG`,
@@ -1859,7 +1852,6 @@ Config.Ammos = {
     },
 
     ['ammo-rifle2'] = { -- 7.62 soviet
-        count = 40,
         weapons = {
             `WEAPON_ASSAULTRIFLE`,
             `WEAPON_ASSAULTRIFLE_MK2`,
@@ -1870,21 +1862,18 @@ Config.Ammos = {
     },
 
     ['ammo-22'] = { -- .22 long rifle
-        count = 40,
         weapons = {
             `WEAPON_MARKSMANPISTOL`
         },
     },
 
     ['ammo-50'] = { -- .50 action express
-        count = 40,
         weapons = {
             `WEAPON_PISTOL50`
         },
     },
 
     ['ammo-sniper'] = { -- 7.62 NATO
-        count = 40,
         weapons = {
             `WEAPON_MARKSMANRIFLE`,
             `WEAPON_MARKSMANRIFLE_MK2`,
@@ -1893,7 +1882,6 @@ Config.Ammos = {
     },
 
     ['ammo-heavysniper'] = { -- .50 BMG
-        count = 40,
         weapons = {
             `WEAPON_HEAVYSNIPER`,
             `WEAPON_HEAVYSNIPER_MK2`
@@ -1901,7 +1889,6 @@ Config.Ammos = {
     },
 
     ['ammo-shotgun'] = { -- 12 gauge
-        count = 40,
         weapons = {
             `WEAPON_ASSAULTSHOTGUN`,
             `WEAPON_BULLPUPSHOTGUN`,
