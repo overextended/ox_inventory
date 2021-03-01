@@ -9,6 +9,12 @@ local openedinventories = {}
 local Gloveboxes = {}
 local Trunks = {}
 TriggerEvent('esx:getSharedObject', function(obj) ESX = obj end)
+ESX.RegisterServerCallback("hsn-inventory:charname",function(source, cb)
+    local src = source
+    local Player = ESX.GetPlayerFromId(src)
+    cb(Player.getName())
+end)
+
 
 exports.ghmattimysql:ready(function()
 	exports.ghmattimysql:execute('SELECT * FROM items', {}, function(result)
