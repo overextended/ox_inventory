@@ -27,7 +27,11 @@ Citizen.CreateThread(function()
         Citizen.Wait(10)
     end
     PlayerData = ESX.GetPlayerData()
-    SetCurrentPedWeapon(PlayerPedId(), GetHashKey('WEAPON_UNARMED'), true)
+    for k,v in pairs(Config.DurabilityDecreaseAmount) do
+        local hash = GetHashKey(k)
+        RemoveAllPedWeapons(PlayerPedId(), true)
+        SetPedAmmo(PlayerPedId(), hash, 0)
+    end
 end)
 
 RegisterNetEvent('esx:setJob')
@@ -487,7 +491,7 @@ AddEventHandler("hsn-inventory:client:weapon",function(item)
 end)
 
 RegisterNetEvent("hsn-inventory:addAmmo")
-AddEventHandler("hsn-inventory:addAmmo",function(item, name)
+AddEventHandler("hsn-inventory:addAmmo",function(item, ammo)
     local playerPed = PlayerPedId()
     local weapon
     local found, currentWeapon = GetCurrentPedWeapon(playerPed, true) -- thanks https://github.com/DiscworldZA/gta-resources/blob/master/disc-ammo/client/main.lua
@@ -499,17 +503,20 @@ AddEventHandler("hsn-inventory:addAmmo",function(item, name)
             end
         end
         if weapon ~= nil then
-            local pedAmmo = GetAmmoInPedWeapon(playerPed, weapon)
-            local newAmmo = pedAmmo + item.count
-            ClearPedTasks(playerPed)
-            local found, maxAmmo = GetMaxAmmo(playerPed, weapon)
-            if newAmmo < maxAmmo then
-                TriggerServerEvent("hsn-inventory:server:addweaponAmmo",curweaponSlot,item.count)
+            local maxAmmo = GetWeaponClipSize(weapon)
+            local curAmmo = GetAmmoInPedWeapon(playerPed, weapon)
+            if curAmmo > maxAmmo then
+                SetPedAmmo(playerPed, weapon, maxAmmo)
+            elseif curAmmo == maxAmmo then
+                return
+            else
+                if curAmmo < maxAmmo then missingAmmo = maxAmmo - curAmmo end
+                if missingAmmo > ammo.count then removeAmmo = missingAmmo newAmmo = ammo.count else newAmmo = maxAmmo removeAmmo = missingAmmo end
+                ClearPedTasks(playerPed)
                 TaskReloadWeapon(playerPed)
                 SetPedAmmo(playerPed, weapon, newAmmo)
+                TriggerServerEvent("hsn-inventory:server:addweaponAmmo",curweaponSlot,ammo.name,removeAmmo,newAmmo)
                 TriggerEvent("hsn-inventory:notification","Reloaded")
-                TriggerServerEvent("hsn-inventory:client:removeItem",name,1)		
-            else TriggerEvent("hsn-inventory:notification","Max Ammo")
             end
         end
     end
