@@ -128,7 +128,7 @@ AddPlayerInventory = function(identifier, item, count, slot, metadata)
                         end
                         metadata.weaponlicense = GetRandomLicense(metadata.weaponlicense)
                         if metadata.registered == 'setname' then metadata.registered = xPlayer.getName() end
-                        playerInventory[identifier][i] = {name = item ,label = ESXItems[item].label , weight = ESXItems[item].weight, slot = i, count = count, description = ESXItems[item].description, metadata = metadata or {}, stackable = false, closeonuse = ESXItems[item].closeonuse} -- because weapon :)
+                        playerInventory[identifier][i] = {name = item ,label = ESXItems[item].label , weight = ESXItems[item].weight, slot = i, count = count, description = ESXItems[item].description, metadata = metadata, stackable = false, closeonuse = ESXItems[item].closeonuse} -- because weapon :)
                         break
                     end
                 end
@@ -138,23 +138,25 @@ AddPlayerInventory = function(identifier, item, count, slot, metadata)
                     if playerInventory[identifier][i] == nil then
                         if metadata == nil then
                             metadata = {}
-                            metadata.description = getPlayerIdentification(xPlayer)
+                            metadata.type = getPlayerIdentification(xPlayer)
                         end
-                            playerInventory[identifier][i] = {name = item ,label = ESXItems[item].label , weight = ESXItems[item].weight, slot = i, count = count, description = ESXItems[item].description, metadata = metadata or {}, stackable = false, closeonuse = ESXItems[item].closeonuse}
+                        if metadata == nil then metadata = {} end
+                            playerInventory[identifier][i] = {name = item ,label = ESXItems[item].label , weight = ESXItems[item].weight, slot = i, count = count, description = ESXItems[item].description, metadata = metadata, stackable = false, closeonuse = ESXItems[item].closeonuse}
                         break
                     end
                 end
             else
+                if metadata == nil then metadata = {} end
                 if slot ~= nil then
-                    playerInventory[identifier][slot] = {name = item ,label = ESXItems[item].label, weight = ESXItems[item].weight, slot = i, count = count, description = ESXItems[item].description, metadata = metadata or {}, stackable = ESXItems[item].stackable, closeonuse = ESXItems[item].closeonuse}
+                    playerInventory[identifier][slot] = {name = item ,label = ESXItems[item].label, weight = ESXItems[item].weight, slot = i, count = count, description = ESXItems[item].description, metadata = metadata, stackable = ESXItems[item].stackable, closeonuse = ESXItems[item].closeonuse}
                 else
                     for i = 1, Config.PlayerSlot do
                         if playerInventory[identifier][i] ~= nil and playerInventory[identifier][i].name == item then
-                            playerInventory[identifier][i] = {name = item ,label = ESXItems[item].label, weight = ESXItems[item].weight, slot = i, count = playerInventory[identifier][i].count + count, description = ESXItems[item].description, metadata = metadata or {}, stackable = ESXItems[item].stackable, closeonuse = ESXItems[item].closeonuse}
+                            playerInventory[identifier][i] = {name = item ,label = ESXItems[item].label, weight = ESXItems[item].weight, slot = i, count = playerInventory[identifier][i].count + count, description = ESXItems[item].description, metadata = metadata, stackable = ESXItems[item].stackable, closeonuse = ESXItems[item].closeonuse}
                             break
                         else
                             if playerInventory[identifier][i] == nil then
-                                playerInventory[identifier][i] = {name = item ,label = ESXItems[item].label, weight = ESXItems[item].weight, slot = i, count =  count, description = ESXItems[item].description, metadata = metadata or {}, stackable = ESXItems[item].stackable, closeonuse = ESXItems[item].closeonuse}
+                                playerInventory[identifier][i] = {name = item ,label = ESXItems[item].label, weight = ESXItems[item].weight, slot = i, count =  count, description = ESXItems[item].description, metadata = metadata, stackable = ESXItems[item].stackable, closeonuse = ESXItems[item].closeonuse}
                                 break
                             end
                         end
@@ -576,7 +578,7 @@ AddEventHandler("hsn-inventory:server:saveInventoryData",function(data)
                             data.item.metadata.durability = 100
                         elseif data.item.name:find('identification') then
                             data.item.metadata = {}
-                            data.item.metadata.description = getPlayerIdentification(Player)
+                            data.item.metadata.type = getPlayerIdentification(Player)
                         end
                             playerInventory[Player.identifier][data.toslot] = {name = data.item.name ,label = data.item.label, weight = data.item.weight, slot = data.toslot, count = data.item.count, description = data.item.description, metadata = data.item.metadata, stackable = data.item.stackable, closeonuse = ESXItems[data.item.name].closeonuse}
                             TriggerClientEvent("hsn-inventory:client:refreshInventory",src,playerInventory[Player.identifier])
@@ -600,7 +602,7 @@ AddEventHandler("hsn-inventory:server:saveInventoryData",function(data)
                             data.newslotItem.metadata.durability = 100
                         elseif data.newslotItem.name:find('identification') then
                             data.newslotItem.metadata = {}
-                            data.newslotItem.metadata.description = getPlayerIdentification(Player)
+                            data.newslotItem.metadata.type = getPlayerIdentification(Player)
                         end
                         Player.removeMoney(data.newslotItem.price *  data.newslotItem.count)
                         playerInventory[Player.identifier][data.toSlot] = {name = data.newslotItem.name ,label = data.newslotItem.label, weight = data.newslotItem.weight, slot = data.toSlot, count = data.newslotItem.count, description = data.newslotItem.description, metadata = data.newslotItem.metadata, stackable = data.newslotItem.stackable, closeonuse = ESXItems[data.newslotItem.name].closeonuse}
@@ -812,7 +814,8 @@ SetupShopItems = function(shopid)
     local inventory = {}
     for k,v in pairs(shopid.inventory) do
         if ESXItems[v.name] ~= nil then
-            inventory[k] = {name = v.name ,label = ESXItems[v.name].label, weight = ESXItems[v.name].weight, slot = k, count = v.count, description = ESXItems[v.name].description, metadata = v.metadata or {}, stackable = ESXItems[v.name].stackable,price = v.price}
+            if v.metadata == nil then v.metadata = {} end
+            inventory[k] = {name = v.name ,label = ESXItems[v.name].label, weight = ESXItems[v.name].weight, slot = k, count = v.count, description = ESXItems[v.name].description, metadata = v.metadata, stackable = ESXItems[v.name].stackable,price = v.price}
         else
             print("^1[hsn-inventory]^1 Item Not Found Check config.lua/Config.Shops and your items table^7")
         end
@@ -829,7 +832,8 @@ GetItems = function(id)
         if result[1].data ~= nil then
             local Inventory = json.decode(result[1].data)
             for k,v in pairs(Inventory) do
-                returnData[v.slot] = {name = v.name ,label = ESXItems[v.name].label, weight = ESXItems[v.name].weight, slot = v.slot, count = v.count, description = ESXItems[v.name].description, metadata = v.metadata or {}, stackable = ESXItems[v.name].stackable}
+                if v.metadata == nil then v.metadata = {} end
+                returnData[v.slot] = {name = v.name ,label = ESXItems[v.name].label, weight = ESXItems[v.name].weight, slot = v.slot, count = v.count, description = ESXItems[v.name].description, metadata = v.metadata, stackable = ESXItems[v.name].stackable}
             end
         end
     end
@@ -1203,6 +1207,7 @@ ESX.RegisterServerCallback("hsn-inventory:getItemCount",function(source, cb, ite
     cb(tonumber(ItemCount))
 end)
 
+
 ESX.RegisterServerCallback("hsn-inventory:getItem",function(source, cb, item)
     local src = source
     local Player = ESX.GetPlayerFromId(src)
@@ -1258,7 +1263,8 @@ AddEventHandler("hsn-inventory:setplayerInventory",function(identifier,inventory
     playerInventory[identifier] = {}
     local returnData = {}
     for k,v in pairs (inventory) do
-        playerInventory[identifier][v.slot] = {name = v.name ,label = ESXItems[v.name].label, weight = ESXItems[v.name].weight, slot = v.slot, count = v.count, description = ESXItems[v.name].description, metadata = v.metadata or {}, stackable = ESXItems[v.name].stackable}
+        if v.metadata == nil then v.metadata = {} end
+        playerInventory[identifier][v.slot] = {name = v.name ,label = ESXItems[v.name].label, weight = ESXItems[v.name].weight, slot = v.slot, count = v.count, description = ESXItems[v.name].description, metadata = v.metadata, stackable = ESXItems[v.name].stackable}
     end
 end)
 
