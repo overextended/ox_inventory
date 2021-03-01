@@ -74,7 +74,7 @@
     color: white;
     font-family: 'Signika';
     padding-top: 3%;
-    padding-left: 58%;
+    padding-left: 56.9%;
     font-weight: bold;
     font-size: 15px; 
     text-shadow: 1px 1px 0px black;
@@ -82,20 +82,14 @@
 
 .leftside-weight {
     position: absolute;
-    padding-top: 3%;
-    left: 480px;
     color: white;
-    /*width: auto; */
+    right: 0;
+    padding-right: 59%;
+    padding-top: 3%; 
     font-weight: bold;
     font-size: 15px;
     font-family: 'Signika';
     text-shadow: 1px 1px 0px black;
-}
-
-#leftside-weight-div {
-    top: 60;
-    right: 760;
-    position: fixed;
 }
 
 .rightside-weight {
@@ -109,11 +103,6 @@
     text-shadow: 1px 1px 0px black;
 }
 
-#rightside-weight-div {
-    top: 60;
-    right: 27;
-    position: fixed;
-}
 
 .ItemBoxes {
     position: relative;
