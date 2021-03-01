@@ -113,7 +113,7 @@ AddPlayerInventory = function(identifier, item, count, slot, metadata)
     if playerInventory[identifier] == nil then
         playerInventory[identifier] = {}
     end
-    local xPlayer = ESX.GetPlayerFromIdentifier(identifier)
+    local Player = ESX.GetPlayerFromIdentifier(identifier)
     if ESXItems[item] ~= nil then
         if item ~= nil and count ~= nil then
             if item:find('WEAPON_') then
@@ -127,7 +127,7 @@ AddPlayerInventory = function(identifier, item, count, slot, metadata)
                             metadata.components = {}
                         end
                         metadata.weaponlicense = GetRandomLicense(metadata.weaponlicense)
-                        if metadata.registered == 'setname' then metadata.registered = xPlayer.getName() end
+                        if metadata.registered == 'setname' then metadata.registered = Player.getName() end
                         playerInventory[identifier][i] = {name = item ,label = ESXItems[item].label , weight = ESXItems[item].weight, slot = i, count = count, description = ESXItems[item].description, metadata = metadata, stackable = false, closeonuse = ESXItems[item].closeonuse} -- because weapon :)
                         break
                     end
@@ -138,9 +138,9 @@ AddPlayerInventory = function(identifier, item, count, slot, metadata)
                     if playerInventory[identifier][i] == nil then
                         if metadata == nil then
                             metadata = {}
-                            metadata.type = getPlayerIdentification(xPlayer)
+                            metadata.type = Player.getName()
+                            metadata.description = getPlayerIdentification(Player)
                         end
-                        if metadata == nil then metadata = {} end
                             playerInventory[identifier][i] = {name = item ,label = ESXItems[item].label , weight = ESXItems[item].weight, slot = i, count = count, description = ESXItems[item].description, metadata = metadata, stackable = false, closeonuse = ESXItems[item].closeonuse}
                         break
                     end
@@ -578,7 +578,8 @@ AddEventHandler("hsn-inventory:server:saveInventoryData",function(data)
                             data.item.metadata.durability = 100
                         elseif data.item.name:find('identification') then
                             data.item.metadata = {}
-                            data.item.metadata.type = getPlayerIdentification(Player)
+                            data.item.metadata.type = Player.getName()
+                            data.item.metadata.description = getPlayerIdentification(Player)
                         end
                             playerInventory[Player.identifier][data.toslot] = {name = data.item.name ,label = data.item.label, weight = data.item.weight, slot = data.toslot, count = data.item.count, description = data.item.description, metadata = data.item.metadata, stackable = data.item.stackable, closeonuse = ESXItems[data.item.name].closeonuse}
                             TriggerClientEvent("hsn-inventory:client:refreshInventory",src,playerInventory[Player.identifier])
@@ -602,7 +603,8 @@ AddEventHandler("hsn-inventory:server:saveInventoryData",function(data)
                             data.newslotItem.metadata.durability = 100
                         elseif data.newslotItem.name:find('identification') then
                             data.newslotItem.metadata = {}
-                            data.newslotItem.metadata.type = getPlayerIdentification(Player)
+                            data.newslotItem.metadata.type = Player.getName()
+                            data.newslotItem.metadata.description = getPlayerIdentification(Player)
                         end
                         Player.removeMoney(data.newslotItem.price *  data.newslotItem.count)
                         playerInventory[Player.identifier][data.toSlot] = {name = data.newslotItem.name ,label = data.newslotItem.label, weight = data.newslotItem.weight, slot = data.toSlot, count = data.newslotItem.count, description = data.newslotItem.description, metadata = data.newslotItem.metadata, stackable = data.newslotItem.stackable, closeonuse = ESXItems[data.newslotItem.name].closeonuse}
@@ -1308,5 +1310,5 @@ end)
 
 
 function getPlayerIdentification(xPlayer)
-    return ('Name: %s | Sex: %s | Height: %s<br>DOB: %s (%s)'):format( xPlayer.getName(), xPlayer.get('sex'), xPlayer.get('height'), xPlayer.get('dateofbirth'), xPlayer.getIdentifier() )
+    return ('Sex: %s | Height: %s<br>DOB: %s (%s)'):format( xPlayer.get('sex'), xPlayer.get('height'), xPlayer.get('dateofbirth'), xPlayer.getIdentifier() )
 end
