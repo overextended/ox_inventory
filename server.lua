@@ -1006,6 +1006,14 @@ AddEventHandler("hsn-inventory:server:useItem",function(item,slot)
     end
 end)
 
+RegisterServerEvent("hsn-inventory:server:reloadWeapon")
+AddEventHandler("hsn-inventory:server:reloadWeapon",function(weapon)
+    local ammo = {}
+    ammo.name = weapon.ammotype
+    ammo.count = exports["hsn-inventory"]:getItemCount(source,ammo.name)
+    if ammo.count > 0 then TriggerClientEvent("hsn-inventory:addAmmo",source,weapon.name,ammo) end
+end)
+
 RegisterServerEvent("hsn-inventory:server:useItemfromSlot")
 AddEventHandler("hsn-inventory:server:useItemfromSlot",function(slot)
     local src = source
@@ -1215,7 +1223,6 @@ AddEventHandler("hsn-inventory:server:getItemCount",function(source,cb,item)
         cb(tonumber(ItemCount))
     end
 end)
-
 
 
 
