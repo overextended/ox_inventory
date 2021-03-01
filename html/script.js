@@ -276,6 +276,9 @@
                  fromData = fromInventory.find("[inventory-slot=" + curslot + "]").data("ItemData");
                 if (count == "" || count == 0) {
                     count = fromData.count
+                } else if (count.startsWith('0')) {
+                    count = fromData.count
+                    $("#item-count").val(0)
                 }
                 SwapItems(fromInventory, toInventory, curslot, toSlot)
             },
@@ -362,6 +365,23 @@
         Display(false)
     });
 
+    function matchingKeys (obj1, obj2) {
+        let matches = 0;
+        let key1, key2;
+        if (Object.keys(obj1).length === 0 && Object.keys(obj2).length === 0) {
+            return 1
+        }
+        for (key1 in obj1) {
+          for (key2 in obj2) {
+            if ( key1 === key2) {
+              matches = matches + 1;
+            }
+          }
+        }
+        return matches
+      }
+      
+
     SwapItems = function(fromInventory, toInventory, fromSlot, toSlot) {
         fromItem = fromInventory.find("[inventory-slot=" + fromSlot + "]").data("ItemData");
         inv = fromInventory.data('invTier')
@@ -396,35 +416,38 @@
                     invid: toinvId,
                     invid2 :toinvId2
                 }));
-            } else if (fromItem.name == toItem.name && toItem.stackable && count == fromItem.count && fromItem.metadata == toItem.metadata) { // stack
-                var fromcount = Number(fromItem.count) // set strings to number //  idk why i did this but it wasn't working
-                var toCount = Number(toItem.count)
-                var newcount = (fromcount + toCount)
-                var newDataItem = {}
-                newDataItem.name = toItem.name
-                newDataItem.label = toItem.label
-                newDataItem.count = newcount
-                newDataItem.metadata = toItem.metadata
-                newDataItem.stackable = toItem.metadata
-                newDataItem.description = toItem.description
-                newDataItem.weight = toItem.weight
-                newDataItem.price = toItem.price
-                toInventory.find("[inventory-slot=" + toSlot + "]").html('<div class="item-slot-img"><img src="images/' + toItem.name + '.png'+'" alt="' + toItem.name + '" /></div><div class="item-slot-count"><p>' + newcount + ' (' + ((toItem.weight * newcount)/1000).toFixed(2) + 'kg)</p></div><div class="item-slot-label"><p><div class="item-slot-label"><p>' + toItem.label + '</p></div></p></div>');
-                toInventory.find("[inventory-slot=" + toSlot + "]").data("ItemData", newDataItem);
-                fromInventory.find("[inventory-slot=" + fromSlot + "]").addClass("itemdragclose");
-                toInventory.find("[inventory-slot=" + toSlot + "]").addClass("drag-item");
-                $.post("http://hsn-inventory/saveinventorydata", JSON.stringify({
-                    type : "freeslot",
-                    frominv : inv,
-                    toinv : inv2,
-                    emptyslot : fromSlot,
-                    toslot: toSlot,
-                    item : newDataItem,
-                    invid: toinvId,
-                    invid2 :toinvId2
-                }));
-                HSN.RemoveItemFromSlot(fromInventory, fromSlot)
-            } else if (fromItem.name !== toItem.name && count == fromItem.count && fromItem.metadata == toItem.metadata) { // swap
+            } else if (fromItem.name == toItem.name && toItem.stackable && count == fromItem.count) { // stack
+                const result = matchingKeys(fromItem.metadata, toItem.metadata);
+                if (result) {
+                    var fromcount = Number(fromItem.count) // set strings to number //  idk why i did this but it wasn't working
+                    var toCount = Number(toItem.count)
+                    var newcount = (fromcount + toCount)
+                    var newDataItem = {}
+                    newDataItem.name = toItem.name
+                    newDataItem.label = toItem.label
+                    newDataItem.count = newcount
+                    newDataItem.metadata = toItem.metadata
+                    newDataItem.stackable = toItem.metadata
+                    newDataItem.description = toItem.description
+                    newDataItem.weight = toItem.weight
+                    newDataItem.price = toItem.price
+                    toInventory.find("[inventory-slot=" + toSlot + "]").html('<div class="item-slot-img"><img src="images/' + toItem.name + '.png'+'" alt="' + toItem.name + '" /></div><div class="item-slot-count"><p>' + newcount + ' (' + ((toItem.weight * newcount)/1000).toFixed(2) + 'kg)</p></div><div class="item-slot-label"><p><div class="item-slot-label"><p>' + toItem.label + '</p></div></p></div>');
+                    toInventory.find("[inventory-slot=" + toSlot + "]").data("ItemData", newDataItem);
+                    fromInventory.find("[inventory-slot=" + fromSlot + "]").addClass("itemdragclose");
+                    toInventory.find("[inventory-slot=" + toSlot + "]").addClass("drag-item");
+                    $.post("http://hsn-inventory/saveinventorydata", JSON.stringify({
+                        type : "freeslot",
+                        frominv : inv,
+                        toinv : inv2,
+                        emptyslot : fromSlot,
+                        toslot: toSlot,
+                        item : newDataItem,
+                        invid: toinvId,
+                        invid2 :toinvId2
+                    }));
+                    HSN.RemoveItemFromSlot(fromInventory, fromSlot)
+                }
+            } else if (fromItem.name !== toItem.name && count == fromItem.count) { // swap
                 if ((toItem.name).split("_")[0] == "WEAPON") {
                     var durability = HSN.InventoryGetDurability(toItem.metadata.durability)
                     fromInventory.find("[inventory-slot=" + fromSlot + "]").html('<div class="item-slot-img"><img src="images/' + toItem.name + '.png'+'" alt="' + toItem.name + '" /></div><div class="item-slot-count"><p>' + toItem.count + ' (' + (toItem.ammoweight + (toItem.weight * toItem.count)/1000).toFixed(2) + 'kg)</p></div><div class="item-slot-label"><p><div class="item-slot-durability"><div class="item-slot-durability-bar"><p>100</p></div></div><div class="item-slot-label"><p>' + toItem.label + '</p></div></p></div>');
