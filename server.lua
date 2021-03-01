@@ -998,7 +998,7 @@ AddEventHandler("hsn-inventory:server:useItem",function(item,slot)
         else
             if item.name:find("ammo") then
                 local weps = Config.Ammos[item.name]
-                TriggerClientEvent("hsn-inventory:addAmmo",src,weps,item.name)
+                TriggerClientEvent("hsn-inventory:addAmmo",src,weps,playerInventory[Player.identifier][item.slot])
                 return
             end
             Player.useItem(item)
@@ -1025,7 +1025,7 @@ AddEventHandler("hsn-inventory:server:useItemfromSlot",function(slot)
             else
                 if playerInventory[Player.identifier][slot].name:find("ammo") then
                     local weps = Config.Ammos[playerInventory[Player.identifier][slot].name]
-                    TriggerClientEvent("hsn-inventory:addAmmo",src,weps,playerInventory[Player.identifier][slot].name)
+                    TriggerClientEvent("hsn-inventory:addAmmo",src,weps,playerInventory[Player.identifier][slot])
                     return
                 end
                 Player.useItem(playerInventory[Player.identifier][slot])
@@ -1058,7 +1058,7 @@ AddEventHandler("hsn-inventory:server:decreasedurability",function(slot, amount)
                 end
                 playerInventory[Player.identifier][slot].metadata.durability = playerInventory[Player.identifier][slot].metadata.durability - decreaseamount
                 if playerInventory[Player.identifier][slot].metadata.durability == 0 then
-                    TriggerServerEvent('hsn-inventory:server:removeItem', src, data.item, 1)
+                    --TriggerServerEvent('hsn-inventory:server:removeItem', src, data.item, 1)
                 end
             end
             if playerInventory[Player.identifier][slot].metadata.ammo ~= nil then
@@ -1070,17 +1070,19 @@ end)
 
 
 
-
 RegisterServerEvent("hsn-inventory:server:addweaponAmmo")
-AddEventHandler("hsn-inventory:server:addweaponAmmo",function(slot,count)
+AddEventHandler("hsn-inventory:server:addweaponAmmo",function(slot,item,count,newAmmo)
     local src = source
     local Player = ESX.GetPlayerFromId(src)
     if  playerInventory[Player.identifier][slot] ~= nil then
         if playerInventory[Player.identifier][slot].metadata.ammo ~= nil then
-            playerInventory[Player.identifier][slot].metadata.ammo = playerInventory[Player.identifier][slot].metadata.ammo + count
+            if newAmmo < 0 then newAmmo = 0 end
+            playerInventory[Player.identifier][slot].metadata.ammo = newAmmo
+            TriggerEvent('hsn-inventory:server:removeItem', src, item, count)
         end
     end
 end)
+
 
 RegisterServerEvent("hsn-inventory:server:removeItem")
 AddEventHandler("hsn-inventory:server:removeItem",function(source, item, count)
