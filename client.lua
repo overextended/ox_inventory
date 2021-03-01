@@ -112,14 +112,15 @@ RegisterCommand('vehinv', function()
                 elseif checkVehicle == nil then open, vehBone = 5, GetEntityBoneIndexByName(vehicle, 'boot') elseif checkVehicle == 2 then open, vehBone = 5, GetEntityBoneIndexByName(vehicle, 'boot') else --[[no vehicle nearby]] return end
                 local vehiclePos = GetWorldPositionOfEntityBone(vehicle, vehBone)
                 local pedDistance = #(coords - vehiclePos)
-				if (open == 5 and checkVehicle == nil) then if pedDistance < 3.0 then CloseToVehicle = true end elseif (open == 5 and checkVehicle == 2) then if pedDistance < 3.0 then CloseToVehicle = true end elseif open == 4 then if pedDistance < 3.0 then CloseToVehicle = true end end	
+				if (open == 5 and checkVehicle == nil) then if pedDistance < 2.0 then CloseToVehicle = true end elseif (open == 5 and checkVehicle == 2) then if pedDistance < 2.0 then CloseToVehicle = true end elseif open == 4 then if pedDistance < 2.0 then CloseToVehicle = true end end	
                 if CloseToVehicle then
                     local plate = GetVehicleNumberPlateText(vehicle)
                     SetVehicleDoorOpen(vehicle, open, false, false)
-                    OpenTrunk(plate)
                     TaskTurnPedToFaceEntity(PlayerPedId(), vehicle, -1)
                     Citizen.Wait(500)
                     TaskStartScenarioInPlace(PlayerPedId(), "PROP_HUMAN_BUM_BIN", 0, true)
+                    Citizen.Wait(1000)
+                    OpenTrunk(plate)
                     while true do
                         while not invOpen do Citizen.Wait(50) end
                         Citizen.Wait(100)
@@ -133,7 +134,7 @@ RegisterCommand('vehinv', function()
                             local pedDistance = #(coords - vehiclePos)
                     
                             local isClose = false
-                            if (open == 5 and checkVehicle == nil) then if pedDistance < 3.0 then isClose = true end elseif (open == 5 and checkVehicle == 2) then if pedDistance < 3.0 then isClose = true end elseif open == 4 then if pedDistance < 3.0 then isClose = true end end
+                            if (open == 5 and checkVehicle == nil) then if pedDistance < 2.0 then isClose = true end elseif (open == 5 and checkVehicle == 2) then if pedDistance < 2.0 then isClose = true end elseif open == 4 then if pedDistance < 2.0 then isClose = true end end
                             if DoesEntityExist(vehicle) and isClose then
                                 CloseToVehicle = true
                             else
