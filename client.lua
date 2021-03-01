@@ -27,6 +27,10 @@ Citizen.CreateThread(function()
         Citizen.Wait(10)
     end
     PlayerData = ESX.GetPlayerData()
+    ESX.TriggerServerCallback("hsn-inventory:charname",function(name)
+        playerName = name
+        playerID = GetPlayerServerId(PlayerId())
+    end)
     for k,v in pairs(Config.DurabilityDecreaseAmount) do
         local hash = GetHashKey(k)
         RemoveAllPedWeapons(PlayerPedId(), true)
@@ -219,7 +223,7 @@ AddEventHandler("hsn-inventory:client:openInventory",function(inventory,other)
         message = 'openinventory',
         inventory = inventory,
         slots = Config.PlayerSlot,
-        name = GetPlayerName(PlayerId())..' ['.. playerID ..']',
+        name = playerName..' ['.. playerID ..']',
         maxweight = Config.MaxWeight,
         rightinventory = other
     })
@@ -254,7 +258,7 @@ AddEventHandler("hsn-inventory:client:refreshInventory",function(inventory)
         message = 'refresh',
         inventory = inventory,
         slots = Config.PlayerSlot,
-        name = GetPlayerName(PlayerId())..' ['.. playerID ..']',
+        name = playerName..' ['.. playerID ..']',
         maxweight = Config.MaxWeight,
     })
 end)
