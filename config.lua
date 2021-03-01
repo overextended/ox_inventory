@@ -100,7 +100,7 @@ Config.Shops = {
         },
     },
     {
-        coords = vector3(2557.458,  382.282, 107.622),
+        coords = vector3(2557.458,  382.282, 108.622),
         blip = {
             id = 52,
             color = 5,
@@ -1222,6 +1222,17 @@ Config.Shops = {
         text = 'E - Open Shop',
         inventory = {
             {
+                name = 'keys',
+                price = 15,
+                count = 200,
+                metadata = { type = 'lspd' }
+            },
+            {
+                name = 'identification',
+                price = 15,
+                count = 200,
+            },
+            {
                 name = 'burger',
                 price = 15,
                 count = 200
@@ -1911,6 +1922,8 @@ Config.ItemList = {
 
     ['money'] = {},
     ['black_money'] = {},
+    ['keys'] = {},
+    ['identification'] = {},
 
     ['burger'] = {
         thirst = 0,
