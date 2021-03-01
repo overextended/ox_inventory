@@ -1,4 +1,4 @@
- ESX = nil
+ESX = nil
 local PlayerData = {}
 local invOpen, isDead, isCuffed, currentWeapon = false, false, false, nil
 local vehStorage = {}
@@ -587,6 +587,7 @@ AddEventHandler("hsn-inventory:notification",function(message, mtype)
     if mtype == 1 then mtype = { ['background-color'] = 'rgba(55,55,175)', ['color'] = 'white' }
     elseif not mtype or mtype == 2 then mtype = { ['background-color'] = 'rgba(175,55,55)', ['color'] = 'white' }
     end
+    --print(message)
     TriggerEvent('mythic_notify:client:SendAlert', {type = 'inform', text = message, length = 2500,style = mtype})
 end)
 
@@ -617,7 +618,7 @@ AddEventHandler("hsn-inventory:useItem",function(item)
 
             -- Trigger effects before the progress bar
 
-            if data.item == 'lockpick' then
+            if item == 'lockpick' then
                 TriggerEvent('esx_lockpick:onUse')
             end
 
@@ -645,7 +646,7 @@ AddEventHandler("hsn-inventory:useItem",function(item)
                 ------------------------------------------------------------------------------------------------
                 
 
-                if data.item == 'bandage' then
+                if item == 'bandage' then
                     local maxHealth = 200
                     local health = GetEntityHealth(PlayerPedId())
                     local newHealth = math.min(maxHealth, math.floor(health + maxHealth / 16))
