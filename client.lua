@@ -94,6 +94,16 @@ Citizen.CreateThread(function()
             elseif currentWeapon then
                 if IsPedShooting(PlayerPedId()) then
                     if curweaponSlot ~= nil then
+                        if GetAmmoInPedWeapon(PlayerPedId(), currentWeapon.name) == 0 then
+                            while true do
+                                Citizen.Wait(0)
+                                local result, hash = GetCurrentPedWeapon(PlayerPedId(), 1)
+                                if hash ~= currentWeapon.hash then break end
+                            end
+                            Citizen.Wait(250) -- Is there a way to stop empty weapons from unequipping..?
+                            SetCurrentPedWeapon(PlayerPedId(), currentWeapon.hash, true)
+                            TriggerServerEvent("hsn-inventory:server:reloadWeapon", currentWeapon)
+                        end
                         TriggerServerEvent("hsn-inventory:server:decreasedurability",curweaponSlot)
                     end
                 end
@@ -460,7 +470,7 @@ AddEventHandler("hsn-inventory:client:weapon",function(item)
     if wepHash == -1569615261 then currentWeapon = nil end
     wepHash = GetHashKey(item.name)
     swappingWeapon = true
-    if currentWeapon == newWeapon then
+    if currentWeapon and currentWeapon.metadata.weaponlicense == newWeapon then
         TriggerEvent("hsn-inventory:weaponaway")
         Citizen.Wait(1600)
         RemoveWeaponFromPed(playerPed, wepHash)
@@ -482,7 +492,13 @@ AddEventHandler("hsn-inventory:client:weapon",function(item)
             end
         end
         SetPedAmmo(playerPed, wepHash, item.metadata.ammo)
-        currentWeapon = item.metadata.weaponlicense
+        currentWeapon = item
+        currentWeapon.hash = wepHash
+        for k,v in pairs(Config.Ammos) do
+            for k2, v2 in pairs(v) do
+                if v2 == currentWeapon.hash then currentWeapon.ammotype = k end
+            end
+        end
         TriggerEvent("hsn-inventory:client:addItemNotify",item,'Equipped')
     end
     TriggerEvent('hsn-inventory:currentWeapon', item) -- using for another resource
@@ -496,12 +512,14 @@ AddEventHandler("hsn-inventory:addAmmo",function(item, ammo)
     local weapon
     local found, currentWeapon = GetCurrentPedWeapon(playerPed, true) -- thanks https://github.com/DiscworldZA/gta-resources/blob/master/disc-ammo/client/main.lua
     if found then
-        for _, v in pairs(item.weapons) do
-            if currentWeapon == v then
-                weapon = v
-                break
+        if item[1] then
+            for _, v in pairs(item) do
+                if currentWeapon == v then
+                    weapon = v
+                    break
+                end
             end
-        end
+        else weapon = item end
         if weapon ~= nil then
             local maxAmmo = GetWeaponClipSize(weapon)
             local curAmmo = GetAmmoInPedWeapon(playerPed, weapon)
