@@ -475,7 +475,7 @@ AddEventHandler("hsn-inventory:client:weapon",function(item)
     if wepHash == -1569615261 then currentWeapon = nil end
     wepHash = GetHashKey(item.name)
     swappingWeapon = true
-    if currentWeapon and currentWeapon.item == newWeapon then
+    if currentWeapon and currentWeapon.item.metadata.weaponlicense == newWeapon.metadata.weaponlicense  then
         TriggerEvent("hsn-inventory:weaponaway")
         Citizen.Wait(1600)
         RemoveWeaponFromPed(playerPed, wepHash)
