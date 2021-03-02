@@ -633,6 +633,7 @@ AddEventHandler("hsn-inventory:server:saveInventoryData",function(data)
         Player.setMoney(money)
         local blackmoney = exports["hsn-inventory"]:getItemCount(src,'black_money')
         Player.setAccountMoney('black_money', blackmoney)
+
     end
 end)
 
@@ -676,6 +677,7 @@ end, true, {help = 'give an item to a player', validate = true, arguments = {
 	{name = 'item', help = 'item name', type = 'string'},
 	{name = 'count', help = 'item count', type = 'number'}
 }})
+
 
 --[[    Use this command instead for ESX 1.1
 RegisterCommand("addItem",function(source,args)
@@ -1072,10 +1074,11 @@ AddEventHandler("hsn-inventory:server:addweaponAmmo",function(slot,item,count,ne
     local Player = ESX.GetPlayerFromId(src)
     if playerInventory[Player.identifier][slot] ~= nil then
         if playerInventory[Player.identifier][slot].metadata.ammo ~= nil then
+            local ammo = count - newammo
             local ammoweight = ESXItems[item].weight
-            playerInventory[Player.identifier][slot].metadata.ammo = newammo
-            playerInventory[Player.identifier][slot].metadata.ammoweight = (newammo * ammoweight)
-            Player.setInventoryItem(item, count)
+            playerInventory[Player.identifier][slot].metadata.ammo = ammo
+            playerInventory[Player.identifier][slot].metadata.ammoweight = (ammo * ammoweight)
+            Player.setInventoryItem(item, ammo)
         end
     end
 end)
