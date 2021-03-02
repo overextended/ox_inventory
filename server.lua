@@ -175,7 +175,7 @@ AddPlayerInventory = function(identifier, item, count, slot, metadata)
     end
 end
 
-RemovePlayerInventory = function(identifier,item, count, slot, metadata)
+RemovePlayerInventory = function(identifier,item, count, slot)
     if ESXItems[item] ~= nil then
         for i = 1, Config.PlayerSlot do
             if playerInventory[identifier][i] ~= nil and playerInventory[identifier][i].name == item then
@@ -1070,9 +1070,11 @@ RegisterServerEvent("hsn-inventory:server:addweaponAmmo")
 AddEventHandler("hsn-inventory:server:addweaponAmmo",function(slot,item,count,newammo)
     local src = source
     local Player = ESX.GetPlayerFromId(src)
-    if  playerInventory[Player.identifier][slot] ~= nil then
+    if playerInventory[Player.identifier][slot] ~= nil then
         if playerInventory[Player.identifier][slot].metadata.ammo ~= nil then
+            local ammoweight = ESXItems[item].weight
             playerInventory[Player.identifier][slot].metadata.ammo = newammo
+            playerInventory[Player.identifier][slot].metadata.ammoweight = (newammo * ammoweight)
             Player.setInventoryItem(item, count)
         end
     end
