@@ -1069,15 +1069,16 @@ end)
 
 
 RegisterServerEvent('hsn-inventory:server:addweaponAmmo')
-AddEventHandler('hsn-inventory:server:addweaponAmmo',function(slot,item,count,newammo)
+AddEventHandler('hsn-inventory:server:addweaponAmmo',function(slot,item,totalAmmo,removeAmmo,newAmmo)
     local src = source
     local Player = ESX.GetPlayerFromId(src)
     if playerInventory[Player.identifier][slot] ~= nil then
         if playerInventory[Player.identifier][slot].metadata.ammo ~= nil then
-            local ammo = count - newammo
+            local ammo = totalAmmo - removeAmmo
             local ammoweight = ESXItems[item].weight
-            playerInventory[Player.identifier][slot].metadata.ammo = ammo
-            playerInventory[Player.identifier][slot].metadata.ammoweight = (ammo * ammoweight)
+            if ammo < 0 then ammo = 0 end
+            playerInventory[Player.identifier][slot].metadata.ammo = newAmmo
+            playerInventory[Player.identifier][slot].metadata.ammoweight = (newAmmo * ammoweight)
             Player.setInventoryItem(item, ammo)
         end
     end
