@@ -522,10 +522,12 @@ AddEventHandler('hsn-inventory:addAmmo',function(item, ammo)
         elseif curAmmo == maxAmmo then
             return
         else
+            local newAmmo = 0
             if curAmmo < maxAmmo then missingAmmo = maxAmmo - curAmmo end
             if missingAmmo > tonumber(ammo.count) then newAmmo = tonumber(ammo.count) else newAmmo = tonumber(maxAmmo) end
             ClearPedTasks(playerPed)
             TaskReloadWeapon(playerPed)
+            if newAmmo < 0 then newAmmo = 0 end
             SetPedAmmo(playerPed, weapon, newAmmo)
             local removeAmmo = maxAmmo - curAmmo
             TriggerServerEvent('hsn-inventory:server:addweaponAmmo',currentWeapon.slot,ammo.name,ammo.count,removeAmmo,newAmmo)
