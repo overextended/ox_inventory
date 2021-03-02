@@ -1788,30 +1788,23 @@ Config.Stashes = {
 
 Config.Ammos = {
     ['ammo-38'] = { -- .38 long colt
-        weapons = {
             `WEAPON_DOUBLEACTION`
-        },
     },
 
     ['ammo-44'] = { -- .44 magnum
-        weapons = {
             `WEAPON_REVOLVER`,
             `WEAPON_REVOLVER_MK2`
-        },
     },
 
     ['ammo-45'] = { -- 45 acp
-        weapons = {
             `WEAPON_GUSENBERG`,
             `WEAPON_HEAVYPISTOL`,
             `WEAPON_MICROSMG`,
             `WEAPON_SNSPISTOL`,
             `WEAPON_SNSPISTOL_MK2`
-        },
     },
 
     ['ammo-9'] = { -- 9mm variants (parabellum, makarov, etc)
-        weapons = {
             `WEAPON_APPISTOL`,
             `WEAPON_COMBATPDW`,
             `WEAPON_COMBATPISTOL`,
@@ -1822,23 +1815,17 @@ Config.Ammos = {
             `WEAPON_SMG`,
             `WEAPON_SMG_MK2`,
             `WEAPON_VINTAGEPISTOL`
-        },
     },
 
     ['ammo-flare'] = {
-        weapons = {
             `WEAPON_FLAREGUN`
-        },
     },
 
     ['ammo-musket'] = {
-        weapons = {
             `WEAPON_MUSKET`
-        },
     },
 
     ['ammo-rifle'] = { -- 5.56
-        weapons = {
             `WEAPON_ADVANCEDRIFLE`,
             `WEAPON_ASSAULTSMG`,
             `WEAPON_BULLPUPRIFLE`,
@@ -1848,48 +1835,36 @@ Config.Ammos = {
             `WEAPON_COMBATMG`,
             `WEAPON_SPECIALCARBINE`,
             `WEAPON_SPECIALCARBINE_MK2`,
-        },
     },
 
     ['ammo-rifle2'] = { -- 7.62 soviet
-        weapons = {
             `WEAPON_ASSAULTRIFLE`,
             `WEAPON_ASSAULTRIFLE_MK2`,
             `WEAPON_COMBATMG_MK2`,
             `WEAPON_COMPACTRIFLE`,
             `WEAPON_MG`,
-        },
     },
 
     ['ammo-22'] = { -- .22 long rifle
-        weapons = {
             `WEAPON_MARKSMANPISTOL`
-        },
     },
 
     ['ammo-50'] = { -- .50 action express
-        weapons = {
             `WEAPON_PISTOL50`
-        },
     },
 
     ['ammo-sniper'] = { -- 7.62 NATO
-        weapons = {
             `WEAPON_MARKSMANRIFLE`,
             `WEAPON_MARKSMANRIFLE_MK2`,
             `WEAPON_SNIPERRIFLE`
-        },
     },
 
     ['ammo-heavysniper'] = { -- .50 BMG
-        weapons = {
             `WEAPON_HEAVYSNIPER`,
             `WEAPON_HEAVYSNIPER_MK2`
-        },
     },
 
     ['ammo-shotgun'] = { -- 12 gauge
-        weapons = {
             `WEAPON_ASSAULTSHOTGUN`,
             `WEAPON_BULLPUPSHOTGUN`,
             `WEAPON_DBSHOTGUN`,
@@ -1898,7 +1873,6 @@ Config.Ammos = {
             `WEAPON_PUMPSHOTGUN_MK2`,
             `WEAPON_SAWNOFFSHOTGUN`,
             `WEAPON_SWEEPERSHOTGUN`
-        },
     },
 
 
