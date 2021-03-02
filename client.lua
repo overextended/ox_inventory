@@ -105,22 +105,14 @@ Citizen.CreateThread(function()
             DisableControlAction(0, 142, true)
             DisableControlAction(0, 257, true)
         end
-        if IsPedShooting(PlayerPedId()) then
+        if currentWeapon ~= nil and IsPedShooting(PlayerPedId()) then
             shooting = true
-            if currentWeapon.slot ~= nil then
-                if GetAmmoInPedWeapon(PlayerPedId(), currentWeapon.name) == 0 then
-                    while true do
-                        Citizen.Wait(0)
-                        local result, hash = GetCurrentPedWeapon(PlayerPedId(), 1)
-                        if hash ~= currentWeapon.hash then break end
-                    end
-                    Citizen.Wait(250) -- Is there a way to stop empty weapons from unequipping..?
-                    SetCurrentPedWeapon(PlayerPedId(), currentWeapon.hash, true)
-                    TriggerServerEvent('hsn-inventory:server:reloadWeapon', currentWeapon)
-                end
-                TriggerServerEvent('hsn-inventory:server:decreasedurability',currentWeapon.slot)
+            if GetAmmoInPedWeapon(PlayerPedId(), currentWeapon.hash) == 0 then
+                SetCurrentPedWeapon(PlayerPedId(), currentWeapon.hash, true)
+                TriggerServerEvent('hsn-inventory:server:reloadWeapon', currentWeapon)
             end
-        elseif shooting then shooting = false end
+            TriggerServerEvent('hsn-inventory:server:decreasedurability',currentWeapon.slot)
+        else shooting = false end
     end
 end)
 
@@ -536,7 +528,7 @@ AddEventHandler('hsn-inventory:addAmmo',function(item, ammo)
             TaskReloadWeapon(playerPed)
             SetPedAmmo(playerPed, weapon, newAmmo)
             local removeAmmo = maxAmmo - curAmmo
-            TriggerServerEvent('hsn-inventory:server:addweaponAmmo',currentWeapon.slot,ammo.name,ammo.count,removeAmmo)
+            TriggerServerEvent('hsn-inventory:server:addweaponAmmo',currentWeapon.slot,ammo.name,ammo.count,removeAmmo,newAmmo)
             TriggerEvent('hsn-inventory:notification','Reloaded')
         end
     end
