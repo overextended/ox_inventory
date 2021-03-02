@@ -526,15 +526,15 @@ AddEventHandler("hsn-inventory:addAmmo",function(item, ammo)
             end
         else weapon = item end
         if weapon ~= nil then
-            local maxAmmo = GetWeaponClipSize(weapon)
-            local curAmmo = GetAmmoInPedWeapon(playerPed, weapon)
+            local maxAmmo = tonumber(GetWeaponClipSize(weapon))
+            local curAmmo = tonumber(GetAmmoInPedWeapon(playerPed, weapon))
             if curAmmo > maxAmmo then
                 SetPedAmmo(playerPed, weapon, maxAmmo)
             elseif curAmmo == maxAmmo then
                 return
             else
                 if curAmmo < maxAmmo then missingAmmo = maxAmmo - curAmmo end
-                if missingAmmo > ammo.count then newAmmo = ammo.count else newAmmo = maxAmmo end
+                if missingAmmo > tonumber(ammo.count) then newAmmo = tonumber(ammo.count) else newAmmo = tonumber(maxAmmo) end
                 ClearPedTasks(playerPed)
                 TaskReloadWeapon(playerPed)
                 SetPedAmmo(playerPed, weapon, newAmmo)
