@@ -27,16 +27,20 @@ Citizen.CreateThread(function()
         Citizen.Wait(10)
     end
     PlayerData = ESX.GetPlayerData()
-    ESX.TriggerServerCallback("hsn-inventory:charname",function(name)
+    playerID = GetPlayerServerId(PlayerId())
+    ESX.TriggerServerCallback('hsn-inventory:charname',function(name)
         playerName = name
-        playerID = GetPlayerServerId(PlayerId())
     end)
+    clearWeapons()
+end)
+
+function clearWeapons()
+    RemoveAllPedWeapons(PlayerPedId(), true)
     for k,v in pairs(Config.DurabilityDecreaseAmount) do
         local hash = GetHashKey(k)
-        RemoveAllPedWeapons(PlayerPedId(), true)
         SetPedAmmo(PlayerPedId(), hash, 0)
     end
-end)
+end
 
 RegisterNetEvent('esx:setJob')
 AddEventHandler('esx:setJob', function(job)
@@ -85,7 +89,7 @@ Citizen.CreateThread(function()
         if not invOpen then
             for k, v in pairs(keys) do
                 if IsDisabledControlJustReleased(0, v) and not dead and not isCuffed then
-                    TriggerServerEvent("hsn-inventory:server:useItemfromSlot",k)
+                    TriggerServerEvent('hsn-inventory:server:useItemfromSlot',k)
                 end
             end
         end
@@ -112,9 +116,9 @@ Citizen.CreateThread(function()
                     end
                     Citizen.Wait(250) -- Is there a way to stop empty weapons from unequipping..?
                     SetCurrentPedWeapon(PlayerPedId(), currentWeapon.hash, true)
-                    TriggerServerEvent("hsn-inventory:server:reloadWeapon", currentWeapon)
+                    TriggerServerEvent('hsn-inventory:server:reloadWeapon', currentWeapon)
                 end
-                TriggerServerEvent("hsn-inventory:server:decreasedurability",currentWeapon.slot)
+                TriggerServerEvent('hsn-inventory:server:decreasedurability',currentWeapon.slot)
             end
         elseif shooting then shooting = false end
     end
@@ -140,7 +144,7 @@ RegisterCommand('vehinv', function()
                     SetVehicleDoorOpen(vehicle, open, false, false)
                     TaskTurnPedToFaceEntity(PlayerPedId(), vehicle, -1)
                     Citizen.Wait(500)
-                    TaskStartScenarioInPlace(PlayerPedId(), "PROP_HUMAN_BUM_BIN", 0, true)
+                    TaskStartScenarioInPlace(PlayerPedId(), 'PROP_HUMAN_BUM_BIN', 0, true)
                     Citizen.Wait(1000)
                     OpenTrunk(plate)
                     while true do
@@ -162,7 +166,7 @@ RegisterCommand('vehinv', function()
                             else
                                 CloseToVehicle = false
                                 lastVehicle = nil
-                                TriggerEvent("hsn-inventory:client:closeInventory")
+                                TriggerEvent('hsn-inventory:client:closeInventory')
                                 invOpen = false
                                 currentInventory = nil
                                 ClearPedTasks(PlayerPedId())
@@ -173,7 +177,7 @@ RegisterCommand('vehinv', function()
                         elseif not invOpen then
                             CloseToVehicle = false
                             lastVehicle = nil
-                            TriggerEvent("hsn-inventory:client:closeInventory")
+                            TriggerEvent('hsn-inventory:client:closeInventory')
                             invOpen = false
                             currentInventory = nil
                             ClearPedTasks(PlayerPedId())
@@ -197,8 +201,8 @@ end,false)
 RegisterCommand('inventory', function()
     local playerPed = PlayerPedId()
     if not isDead and not isCuffed and not invOpen then
-        TriggerEvent("randPickupAnim")
-        TriggerServerEvent("hsn-inventory:server:openInventory",{type = 'drop',id = currentDrop, coords = currentDropCoords })
+        TriggerEvent('randPickupAnim')
+        TriggerServerEvent('hsn-inventory:server:openInventory',{type = 'drop',id = currentDrop, coords = currentDropCoords })
         TriggerServerEvent('inventory:isShopOpen', false)
     end
 end, false)
@@ -207,18 +211,18 @@ RegisterKeyMapping('inventory', 'Inv: Inventory Open', 'keyboard', 'F2')
 RegisterKeyMapping('vehinv', 'Inv: Vehicle Inventory', 'keyboard', 'F3')
 
 OpenGloveBox = function(gloveboxid)
-    TriggerServerEvent("hsn-inventory:server:openInventory",{type = 'glovebox',id = 'glovebox-'..gloveboxid})
+    TriggerServerEvent('hsn-inventory:server:openInventory',{type = 'glovebox',id = 'glovebox-'..gloveboxid})
     TriggerServerEvent('inventory:isShopOpen', false)
 end
 OpenTrunk = function(trunkid)
-    TriggerServerEvent("hsn-inventory:server:openInventory",{type = 'trunk',id = 'trunk-'..trunkid})
+    TriggerServerEvent('hsn-inventory:server:openInventory',{type = 'trunk',id = 'trunk-'..trunkid})
     TriggerServerEvent('inventory:isShopOpen', false)
 end
-RegisterNetEvent("hsn-inventory:client:openInventory")
-AddEventHandler("hsn-inventory:client:openInventory",function(inventory,other)
+RegisterNetEvent('hsn-inventory:client:openInventory')
+AddEventHandler('hsn-inventory:client:openInventory',function(inventory,other)
     invOpen = true
     -- some players dupe while taskbar on screen
-    -- local check = exports["progressBars"]:onScreen()
+    -- local check = exports['progressBars']:onScreen()
     -- if check then
     --     return
     -- end
@@ -231,7 +235,7 @@ AddEventHandler("hsn-inventory:client:openInventory",function(inventory,other)
         maxweight = Config.MaxWeight,
         rightinventory = other
     })
-    TriggerServerEvent("hsn-inventory:setcurrentInventory",other)
+    TriggerServerEvent('hsn-inventory:setcurrentInventory',other)
     currentInventory = other
     if other == nil then movement = true else movement = false end
     SetNuiFocusAdvanced(true, true, movement)
@@ -239,24 +243,24 @@ end)
 
 
 
-RegisterNetEvent("hsn-inventory:client:closeInventory")
-AddEventHandler("hsn-inventory:client:closeInventory",function(id)
+RegisterNetEvent('hsn-inventory:client:closeInventory')
+AddEventHandler('hsn-inventory:client:closeInventory',function(id)
     invOpen = false
     currentInventory = nil
     SendNUIMessage({
         message = 'close',
     })
     SetNuiFocusAdvanced(false,false)
-    TriggerServerEvent("hsn-inventory:removecurrentInventory",id)
+    TriggerServerEvent('hsn-inventory:removecurrentInventory',id)
     TriggerServerEvent('inventory:isShopOpen', false)
 end)
 
---[[RegisterCommand("teststash",function()
-     TriggerServerEvent("hsn-inventory:server:openStash", {name = 'Hasqaws',slots = 15, type = 'stash'})
+--[[RegisterCommand('teststash',function()
+     TriggerServerEvent('hsn-inventory:server:openStash', {name = 'Hasqaws',slots = 15, type = 'stash'})
 end)]]
 
-RegisterNetEvent("hsn-inventory:client:refreshInventory")
-AddEventHandler("hsn-inventory:client:refreshInventory",function(inventory)
+RegisterNetEvent('hsn-inventory:client:refreshInventory')
+AddEventHandler('hsn-inventory:client:refreshInventory',function(inventory)
     local playerID = GetPlayerServerId(PlayerId())
     SendNUIMessage({
         message = 'refresh',
@@ -268,12 +272,12 @@ AddEventHandler("hsn-inventory:client:refreshInventory",function(inventory)
 end)
 
 
-RegisterNUICallback("exit",function(data)
+RegisterNUICallback('exit',function(data)
     invOpen = false
     currentInventory = nil
     SetNuiFocusAdvanced(false,false)
     TriggerServerEvent('hsn-inventory:server:saveInventory',data)
-    TriggerServerEvent("hsn-inventory:removecurrentInventory",data.invid)
+    TriggerServerEvent('hsn-inventory:removecurrentInventory',data.invid)
 end)
 
 --- thread
@@ -305,8 +309,8 @@ Citizen.CreateThread(function()
     end
 end)
 
-RegisterNetEvent("hsn-inventory:client:addItemNotify")
-AddEventHandler("hsn-inventory:client:addItemNotify",function(item,text)
+RegisterNetEvent('hsn-inventory:client:addItemNotify')
+AddEventHandler('hsn-inventory:client:addItemNotify',function(item,text)
     SendNUIMessage({
         message = 'notify',
         item = item,
@@ -323,7 +327,7 @@ function DrawText3Ds(x,y,z, text)
     SetTextFont(4)
     SetTextProportional(1)
     SetTextColour(255, 255, 255, 215)
-    SetTextEntry("STRING")
+    SetTextEntry('STRING')
     SetTextCentre(1)
     AddTextComponentString(text)
     DrawText(_x,_y)
@@ -374,7 +378,7 @@ Citizen.CreateThread(function()
             SetBlipScale(blip, v.blip.scale or 0.5)
             SetBlipColour(blip, v.blip.color or 1)
             SetBlipAsShortRange(blip, true)
-            BeginTextCommandSetBlipName("STRING")
+            BeginTextCommandSetBlipName('STRING')
             AddTextComponentString(v.blip.name or 'Shop')
             EndTextCommandSetBlipName(blip)
         end
@@ -385,17 +389,17 @@ end)
 
 
 OpenShop = function(id)
-    TriggerServerEvent("hsn-inventory:server:openInventory",{type = 'shop',id = id})
+    TriggerServerEvent('hsn-inventory:server:openInventory',{type = 'shop',id = id})
     TriggerServerEvent('inventory:isShopOpen', true)
 end
 
 OpenStash = function(id)
-    TriggerServerEvent("hsn-inventory:server:openStash", {id = id, slots = id.slots, type = 'stash'})
+    TriggerServerEvent('hsn-inventory:server:openStash', {id = id, slots = id.slots, type = 'stash'})
     TriggerServerEvent('inventory:isShopOpen', false)
 end
 
-RegisterNetEvent("hsn-inventory:Client:addnewDrop")
-AddEventHandler("hsn-inventory:Client:addnewDrop",function(coords,drop)
+RegisterNetEvent('hsn-inventory:Client:addnewDrop')
+AddEventHandler('hsn-inventory:Client:addnewDrop',function(coords,drop)
     Drops[drop] = {
         dropid = drop,
         coords = {
@@ -422,25 +426,25 @@ AddEventHandler('randPickupAnim', function()
 end)
 
 
-RegisterNetEvent("hsn-inventory:client:removeDrop")
-AddEventHandler("hsn-inventory:client:removeDrop",function(dropid)
+RegisterNetEvent('hsn-inventory:client:removeDrop')
+AddEventHandler('hsn-inventory:client:removeDrop',function(dropid)
     Drops[dropid] = nil
     currentDrop = nil
     currentDropCoords = nil
 end)
 
-RegisterNUICallback("UseItem", function(data, cb)
-    if data.inv ~= "Playerinv" then
+RegisterNUICallback('UseItem', function(data, cb)
+    if data.inv ~= 'Playerinv' then
         return
     end
-    TriggerServerEvent("hsn-inventory:server:useItem",data.item)
+    TriggerServerEvent('hsn-inventory:server:useItem',data.item)
 end)
 
-RegisterNUICallback("saveinventorydata",function(data)
+RegisterNUICallback('saveinventorydata',function(data)
     TriggerServerEvent('hsn-inventory:server:saveInventoryData',data)
 end)
 
-RegisterNUICallback("notification", function(data)
+RegisterNUICallback('notification', function(data)
     TriggerEvent('hsn-inventory:notification',data.message,data.type)
 end)
 
@@ -448,10 +452,10 @@ RegisterNetEvent('hsn-inventory:weapondraw')
 AddEventHandler('hsn-inventory:weapondraw', function(item)
     local playerPed = PlayerPedId()
     loadAnimDict('reaction@intimidation@1h')
-    TaskPlayAnimAdvanced(playerPed, "reaction@intimidation@1h", "intro", GetEntityCoords(playerPed, true), 0, 0, GetEntityHeading(playerPed), 8.0, 3.0, -1, 50, 0, 0, 0)
+    TaskPlayAnimAdvanced(playerPed, 'reaction@intimidation@1h', 'intro', GetEntityCoords(playerPed, true), 0, 0, GetEntityHeading(playerPed), 8.0, 3.0, -1, 50, 0, 0, 0)
     Citizen.Wait(800)
     RemoveWeaponFromPed(PlayerPedId(), GetHashKey(item.name))
-    SetCurrentPedWeapon(PlayerPedId(), "WEAPON_UNARMED", true)
+    SetCurrentPedWeapon(PlayerPedId(), 'WEAPON_UNARMED', true)
     Citizen.Wait(800)
     ClearPedSecondaryTask(PlayerPedId())
 end)
@@ -460,7 +464,7 @@ RegisterNetEvent('hsn-inventory:weaponaway')
 AddEventHandler('hsn-inventory:weaponaway', function()
     local playerPed = PlayerPedId()
     loadAnimDict('reaction@intimidation@1h')
-    TaskPlayAnimAdvanced(playerPed, "reaction@intimidation@1h", "outro", GetEntityCoords(playerPed, true), 0, 0, GetEntityHeading(playerPed), 8.0, 3.0, -1, 50, 0, 0, 0)
+    TaskPlayAnimAdvanced(playerPed, 'reaction@intimidation@1h', 'outro', GetEntityCoords(playerPed, true), 0, 0, GetEntityHeading(playerPed), 8.0, 3.0, -1, 50, 0, 0, 0)
     Citizen.Wait(1600)
     ClearPedSecondaryTask(PlayerPedId())
     if IsPedUsingActionMode(playerPed) then
@@ -468,10 +472,10 @@ AddEventHandler('hsn-inventory:weaponaway', function()
     end
 end)
 
-RegisterNetEvent("hsn-inventory:client:weapon")
-AddEventHandler("hsn-inventory:client:weapon",function(item)
+RegisterNetEvent('hsn-inventory:client:weapon')
+AddEventHandler('hsn-inventory:client:weapon',function(item)
     if swappingWeapon or shooting then return end
-    TriggerEvent("hsn-inventory:client:closeInventory")
+    TriggerEvent('hsn-inventory:client:closeInventory')
     local playerPed = PlayerPedId()
     local newWeapon = item.metadata.weaponlicense
     local found, wepHash = GetCurrentPedWeapon(playerPed, true)
@@ -479,14 +483,14 @@ AddEventHandler("hsn-inventory:client:weapon",function(item)
     wepHash = GetHashKey(item.name)
     swappingWeapon = true
     if currentWeapon and currentWeapon.item.metadata.weaponlicense == newWeapon  then
-        TriggerEvent("hsn-inventory:weaponaway")
+        TriggerEvent('hsn-inventory:weaponaway')
         Citizen.Wait(1600)
-        RemoveWeaponFromPed(playerPed, wepHash)
-        SetCurrentPedWeapon(playerPed, "WEAPON_UNARMED", true)
+        SetCurrentPedWeapon(playerPed, 'WEAPON_UNARMED', true)
+        clearWeapons()
         currentWeapon = nil
-        TriggerEvent("hsn-inventory:client:addItemNotify",item,'Holstered')
+        TriggerEvent('hsn-inventory:client:addItemNotify',item,'Holstered')
     else
-        TriggerEvent("hsn-inventory:weapondraw",item)
+        TriggerEvent('hsn-inventory:weapondraw',item)
         Citizen.Wait(1600)
         currentWeapon = {}
         currentWeapon.slot = item.slot
@@ -507,23 +511,20 @@ AddEventHandler("hsn-inventory:client:weapon",function(item)
             end
         end
         SetPedAmmo(playerPed, wepHash, item.metadata.ammo)
-        TriggerEvent("hsn-inventory:client:addItemNotify",item,'Equipped')
+        TriggerEvent('hsn-inventory:client:addItemNotify',item,'Equipped')
     end
     TriggerEvent('hsn-inventory:currentWeapon', currentWeapon) -- using for another resource
     Citizen.Wait(100)
     swappingWeapon = nil
 end)
 
-RegisterNetEvent("hsn-inventory:addAmmo")
-AddEventHandler("hsn-inventory:addAmmo",function(item, ammo)
+RegisterNetEvent('hsn-inventory:addAmmo')
+AddEventHandler('hsn-inventory:addAmmo',function(item, ammo)
     local playerPed = PlayerPedId()
     if currentWeapon and currentWeapon.ammotype == ammo.name and ammo.count > 0 then
         local weapon = currentWeapon.hash
         local maxAmmo = GetWeaponClipSize(weapon)
         local curAmmo = GetAmmoInPedWeapon(playerPed, weapon)
-        print(ammo.count)
-        print(curAmmo)
-        print(maxAmmo)
         if curAmmo > maxAmmo then
             SetPedAmmo(playerPed, weapon, maxAmmo)
         elseif curAmmo == maxAmmo then
@@ -535,24 +536,24 @@ AddEventHandler("hsn-inventory:addAmmo",function(item, ammo)
             TaskReloadWeapon(playerPed)
             SetPedAmmo(playerPed, weapon, newAmmo)
             local removeAmmo = maxAmmo - curAmmo
-            TriggerServerEvent("hsn-inventory:server:addweaponAmmo",currentWeapon.slot,ammo.name,ammo.count,removeAmmo)
-            TriggerEvent("hsn-inventory:notification","Reloaded")
+            TriggerServerEvent('hsn-inventory:server:addweaponAmmo',currentWeapon.slot,ammo.name,ammo.count,removeAmmo)
+            TriggerEvent('hsn-inventory:notification','Reloaded')
         end
     end
 end)
 
 
-RegisterNetEvent("hsn-inventory:client:checkweapon")
-AddEventHandler("hsn-inventory:client:checkweapon",function(item)
+RegisterNetEvent('hsn-inventory:client:checkweapon')
+AddEventHandler('hsn-inventory:client:checkweapon',function(item)
     local curweapon = GetSelectedPedWeapon(PlayerPedId())
     if curweapon == GetHashKey(item.name) then
         RemoveWeaponFromPed(PlayerPedId(), GetHashKey(item.name))
-        SetCurrentPedWeapon(PlayerPedId(), "WEAPON_UNARMED", true)
+        SetCurrentPedWeapon(PlayerPedId(), 'WEAPON_UNARMED', true)
         currentWeapon.slot = nil
     end
 end)
 
-RegisterCommand("steal",function()
+RegisterCommand('steal',function()
     local ped = PlayerPedId()
 	if not IsPedInAnyVehicle(ped, true) and not isDead and not isCuffed then	 
 		openTargetInventory()
@@ -564,10 +565,10 @@ function openTargetInventory()
     if closestPlayer ~= -1 and closestDistance <= 2.0 then
         local searchPlayerPed = GetPlayerPed(closestPlayer)
         if IsEntityPlayingAnim(searchPlayerPed, 'random@mugging3', 'handsup_standing_base', 3) or IsEntityPlayingAnim(searchPlayerPed, 'missminuteman_1ig_2', 'handsup_base', 3) or IsEntityPlayingAnim(searchPlayerPed, 'dead', 'dead_a', 3) or IsEntityPlayingAnim(searchPlayerPed, 'mp_arresting', 'idle') then
-            TriggerServerEvent("hsn-inventory:server:openTargetInventory", GetPlayerServerId(closestPlayer))
+            TriggerServerEvent('hsn-inventory:server:openTargetInventory', GetPlayerServerId(closestPlayer))
         end
     else
-        TriggerEvent("hsn-inventory:notification",'There is nobody nearby')
+        TriggerEvent('hsn-inventory:notification','There is nobody nearby')
     end
 end
 
@@ -576,7 +577,7 @@ function SetNuiFocusAdvanced(hasFocus, hasCursor, allowMovement)
     SetNuiFocus(hasFocus, hasCursor)
     SetNuiFocusKeepInput(hasFocus)
     nui_focus = {hasFocus, hasCursor}
-    TriggerEvent("nui:focus", hasFocus, hasCursor)
+    TriggerEvent('nui:focus', hasFocus, hasCursor)
 
     if nui_focus[1] then
         if Config.EnableBlur then TriggerScreenblurFadeIn(0) end
@@ -609,8 +610,8 @@ function SetNuiFocusAdvanced(hasFocus, hasCursor, allowMovement)
     end
 end
 
-RegisterNetEvent("hsn-inventory:notification")
-AddEventHandler("hsn-inventory:notification",function(message, mtype)
+RegisterNetEvent('hsn-inventory:notification')
+AddEventHandler('hsn-inventory:notification',function(message, mtype)
     if mtype == 1 then mtype = { ['background-color'] = 'rgba(55,55,175)', ['color'] = 'white' }
     elseif not mtype or mtype == 2 then mtype = { ['background-color'] = 'rgba(175,55,55)', ['color'] = 'white' }
     end
@@ -619,7 +620,7 @@ AddEventHandler("hsn-inventory:notification",function(message, mtype)
 end)
 
 RegisterCommand('-nui', function()
-        TriggerEvent("hsn-inventory:client:closeInventory")
+        TriggerEvent('hsn-inventory:client:closeInventory')
 end, false)
 
 AddEventHandler('onResourceStop', function(resourceName)
@@ -630,14 +631,14 @@ AddEventHandler('onResourceStop', function(resourceName)
 end)
 
 local usingItem = false
-RegisterNetEvent("hsn-inventory:useItem")
-AddEventHandler("hsn-inventory:useItem",function(item)
+RegisterNetEvent('hsn-inventory:useItem')
+AddEventHandler('hsn-inventory:useItem',function(item)
     if item.name then item = item.name end
     if usingItem then return end
-    ESX.TriggerServerCallback("hsn-inventory:getItem",function(xItem)
+    ESX.TriggerServerCallback('hsn-inventory:getItem',function(xItem)
         local data = Config.ItemList[xItem.name]
         if not data or not next(data) then return end
-        if xItem.closeonuse then TriggerEvent("hsn-inventory:client:closeInventory") end
+        if xItem.closeonuse then TriggerEvent('hsn-inventory:client:closeInventory') end
         if xItem.count > 0 then
             usingItem = true
             if data.consume then TriggerServerEvent('hsn-inventory:client:removeItem', item, data.consume) end
@@ -654,9 +655,9 @@ AddEventHandler("hsn-inventory:useItem",function(item)
 
             ------------------------------------------------------------------------------------------------
             exports['mythic_progbar']:Progress({
-                name = "useitem",
+                name = 'useitem',
                 duration = data.useTime,
-                label = "Using "..xItem.name,
+                label = 'Using '..xItem.name,
                 useWhileDead = false,
                 canCancel = false,
                 controlDisables = { disableMovement = data.disableMove, disableCarMovement = false, disableMouse = false, disableCombat = true },
