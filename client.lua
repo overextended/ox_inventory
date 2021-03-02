@@ -2,6 +2,7 @@ ESX = nil
 local PlayerData = {}
 local invOpen, isDead, isCuffed, currentWeapon = false, false, false, nil
 local vehStorage = {}
+local inventory = {}
 function setVehicleTable()
 	local vehicleTable = {['adder']=1, ['osiris']=0, ['pfister811']=0, ['penetrator']=0, ['autarch']=0, ['bullet']=0, ['cheetah']=0, ['cyclone']=0, ['voltic']=0, ['reaper']=1, ['entityxf']=0, ['t20']=0, ['taipan']=0, ['tempesta']=2, ['tezeract']=0, ['torero']=1, ['turismor']=0, ['fmj']=0, ['gp1']=2, ['infernus ']=0, ['italigtb']=1, ['italigtb2']=1, ['nero']=2, ['nero2']=0, ['vacca']=1, ['vagner']=0, ['visione']=0, ['prototipo']=0, ['xa21']=2, ['zentorno']=0}
 	--[[
@@ -28,11 +29,14 @@ Citizen.CreateThread(function()
     end
     PlayerData = ESX.GetPlayerData()
     playerID = GetPlayerServerId(PlayerId())
-    ESX.TriggerServerCallback('hsn-inventory:charname',function(name)
-        playerName = name
+    ESX.TriggerServerCallback('hsn-inventory:getData',function(data)
+        playerName = data.name
+        inventory = data.inventory
     end)
     clearWeapons()
 end)
+
+exports('getInventory', function() return inventory end)
 
 function clearWeapons()
     RemoveAllPedWeapons(PlayerPedId(), true)
@@ -107,11 +111,15 @@ Citizen.CreateThread(function()
         end
         if currentWeapon ~= nil and IsPedShooting(PlayerPedId()) then
             shooting = true
-            if GetAmmoInPedWeapon(PlayerPedId(), currentWeapon.hash) == 0 then
+            local currentAmmo = GetAmmoInPedWeapon(PlayerPedId(), currentWeapon.hash)
+            if currentAmmo < 0 then currentAmmo = 0 SetPedAmmo(playerPed, currentWeapon.hash, 0) end
+            currentWeapon.ammo = currentAmmo 
+            print(currentAmmo)
+            if currentAmmo == 0 then
                 SetCurrentPedWeapon(PlayerPedId(), currentWeapon.hash, true)
                 TriggerServerEvent('hsn-inventory:server:reloadWeapon', currentWeapon)
             end
-            TriggerServerEvent('hsn-inventory:server:decreasedurability',currentWeapon.slot)
+            TriggerServerEvent('hsn-inventory:server:decreasedurability',currentWeapon)
         else shooting = false end
     end
 end)
@@ -530,7 +538,7 @@ AddEventHandler('hsn-inventory:addAmmo',function(item, ammo)
             if newAmmo < 0 then newAmmo = 0 end
             SetPedAmmo(playerPed, weapon, newAmmo)
             local removeAmmo = maxAmmo - curAmmo
-            TriggerServerEvent('hsn-inventory:server:addweaponAmmo',currentWeapon.slot,ammo.name,ammo.count,removeAmmo,newAmmo)
+            TriggerServerEvent('hsn-inventory:server:addweaponAmmo',currentWeapon.slot,currentWeapon.item.name,ammo.name,ammo.count,removeAmmo,newAmmo)
             TriggerEvent('hsn-inventory:notification','Reloaded')
         end
     end
