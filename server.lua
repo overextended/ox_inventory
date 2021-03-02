@@ -131,6 +131,7 @@ AddPlayerInventory = function(identifier, item, count, slot, metadata)
                             metadata.durability = 100
                             metadata.ammo = 0
                             metadata.components = {}
+                            metadata.ammoweight = 0
                         end
                         metadata.weaponlicense = GetRandomLicense(metadata.weaponlicense)
                         if metadata.registered == 'setname' then metadata.registered = Player.getName() end
@@ -581,6 +582,7 @@ AddEventHandler('hsn-inventory:server:saveInventoryData',function(data)
                             if data.item.metadata.registered == 'setname' then data.item.metadata.registered = Player.getName() end
                             if not data.item.metadata.components then data.item.metadata.components = {} end
                             data.item.metadata.ammo = 0
+                            data.item.metadata.ammoweight = 0
                             data.item.metadata.durability = 100
                         elseif data.item.name:find('identification') then
                             data.item.metadata = {}
@@ -606,6 +608,7 @@ AddEventHandler('hsn-inventory:server:saveInventoryData',function(data)
                             data.newslotItem.metadata.weaponlicense = GetRandomLicense(data.newslotItem.metadata.weaponlicense)
                             if not data.newslotItem.metadata.components then data.newslotItem.metadata.components = {} end
                             data.newslotItem.metadata.ammo = 0
+                            data.newslotItem.metadata.ammoweight = 0
                             data.newslotItem.metadata.durability = 100
                         elseif data.newslotItem.name:find('identification') then
                             data.newslotItem.metadata = {}
