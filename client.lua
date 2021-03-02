@@ -37,8 +37,6 @@ Citizen.CreateThread(function()
     clearWeapons()
 end)
 
-exports('getInventory', function() return inventory end)
-
 function clearWeapons()
     RemoveAllPedWeapons(PlayerPedId(), true)
     for k,v in pairs(Config.DurabilityDecreaseAmount) do
