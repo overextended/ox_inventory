@@ -579,38 +579,6 @@ Config.Shops = {
             },
         },
     },
-    {
-        coords = vector3(161.27, 6640.28, 30.72),
-        blip = {
-            id = 52,
-            color = 5,
-            scale = 0.6,
-        },
-        text = 'E - Open Shop',
-        name = "Don's Country Store", 
-        inventory = {
-            {
-                name = 'burger',
-                price = 10,
-                count = 200
-            },
-            {
-                name = 'water',
-                price = 10,
-                count = 200
-            },
-            {
-                name = 'cola',
-                price = 10,
-                count = 200
-            },
-            {
-                name = 'bandage',
-                price = 10,
-                count = 200
-            },
-        },
-    },
     --LIQUOR
     {
         coords = vector3(1135.808, -982.281, 45.415),
@@ -629,370 +597,147 @@ Config.Shops = {
                 count = 200
             },
             {
-                name = 'coffee',
-                price = 20,
-                count = 200,
-            },
-            {
-                name = 'cocacola',
-                price = 10,
-                count = 200
-            },
-            {
-                name = 'bandage',
-                price = 10,
-                count = 200,
-            },
-            {
-                name = 'notepad',
-                price = 15,
-                count = 200
-            },
-            {
-                name = 'plasticpouch',
-                price = 25,
-                count = 200,
-            },
-            {
-                name = 'papers',
+                name = 'cola',
                 price = 10,
                 count = 200
             },
         },
-        {
-            coords = vector3(-1222.915, -906.983,  12.326),
-            blip = {
-                id = 93,
-                name = "Robs Liquor",
-                color = 5,
-                scale = 0.6,
+    },
+    {
+        coords = vector3(-1222.915, -906.983,  12.326),
+        blip = {
+            id = 93,
+            name = "Robs Liquor",
+            color = 5,
+            scale = 0.6,
+        },
+        text = 'E - Open Shop',
+        name = 'Robs Liquor', 
+        inventory = {
+            {
+                name = 'water',
+                price = 10,
+                count = 200
             },
-            text = 'E - Open Shop',
-            name = 'Robs Liquor', 
-            inventory = {
-                {
-                    name = 'water',
-                    price = 10,
-                    count = 200
-                },
-                {
-                    name = 'coffee',
-                    price = 20,
-                    count = 200,
-                },
-                {
-                    name = 'cocacola',
-                    price = 10,
-                    count = 200
-                },
-                {
-                    name = 'bandage',
-                    price = 10,
-                    count = 200,
-                },
-                {
-                    name = 'notepad',
-                    price = 15,
-                    count = 200
-                },
-                {
-                    name = 'plasticpouch',
-                    price = 25,
-                    count = 200,
-                },
-                {
-                    name = 'papers',
-                    price = 10,
-                    count = 200
-                },
+            {
+                name = 'cola',
+                price = 10,
+                count = 200
             },
         },
-        {
-            coords = vector3(-1487.553, -379.107,  39.163),
-            blip = {
-                id = 93,
-                name = "Robs Liquor",
-                color = 5,
-                scale = 0.6,
+    },
+    {
+        coords = vector3(-1487.553, -379.107,  39.163),
+        blip = {
+            id = 93,
+            name = "Robs Liquor",
+            color = 5,
+            scale = 0.6,
+        },
+        text = 'E - Open Shop',
+        name = 'Robs Liquor', 
+        inventory = {
+            {
+                name = 'water',
+                price = 10,
+                count = 200
             },
-            text = 'E - Open Shop',
-            name = 'Robs Liquor', 
-            inventory = {
-                {
-                    name = 'water',
-                    price = 10,
-                    count = 200
-                },
-                {
-                    name = 'coffee',
-                    price = 20,
-                    count = 200,
-                },
-                {
-                    name = 'cocacola',
-                    price = 10,
-                    count = 200
-                },
-                {
-                    name = 'bandage',
-                    price = 10,
-                    count = 200,
-                },
-                {
-                    name = 'notepad',
-                    price = 15,
-                    count = 200
-                },
-                {
-                    name = 'plasticpouch',
-                    price = 25,
-                    count = 200,
-                },
-                {
-                    name = 'papers',
-                    price = 10,
-                    count = 200
-                },
+            {
+                name = 'cola',
+                price = 10,
+                count = 200
             },
         },
-        {
-            coords = vector3(-2968.243, 390.910, 15.043),
-            blip = {
-                id = 93,
-                name = "Robs Liquor",
-                color = 5,
-                scale = 0.6,
+    },
+    {
+        coords = vector3(-2968.243, 390.910, 15.043),
+        blip = {
+            id = 93,
+            name = "Robs Liquor",
+            color = 5,
+            scale = 0.6,
+        },
+        text = 'E - Open Shop',
+        name = 'Robs Liquor', 
+        inventory = {
+            {
+                name = 'water',
+                price = 10,
+                count = 200
             },
-            text = 'E - Open Shop',
-            name = 'Robs Liquor', 
-            inventory = {
-                {
-                    name = 'water',
-                    price = 10,
-                    count = 200
-                },
-                {
-                    name = 'coffee',
-                    price = 20,
-                    count = 200,
-                },
-                {
-                    name = 'cocacola',
-                    price = 10,
-                    count = 200
-                },
-                {
-                    name = 'bandage',
-                    price = 10,
-                    count = 200,
-                },
-                {
-                    name = 'notepad',
-                    price = 15,
-                    count = 200
-                },
-                {
-                    name = 'plasticpouch',
-                    price = 25,
-                    count = 200,
-                },
-                {
-                    name = 'papers',
-                    price = 10,
-                    count = 200
-                },
+            {
+                name = 'cola',
+                price = 10,
+                count = 200
             },
         },
-        {
-            coords = vector3(1166.024, 2708.930, 38.157),
-            blip = {
-                id = 93,
-                name = "Robs Liquor",
-                color = 5,
-                scale = 0.6,
+    },
+    {
+        coords = vector3(1166.024, 2708.930, 38.157),
+        blip = {
+            id = 93,
+            name = "Robs Liquor",
+            color = 5,
+            scale = 0.6,
+        },
+        text = 'E - Open Shop',
+        name = 'Robs Liquor', 
+        inventory = {
+            {
+                name = 'water',
+                price = 10,
+                count = 200
             },
-            text = 'E - Open Shop',
-            name = 'Robs Liquor', 
-            inventory = {
-                {
-                    name = 'water',
-                    price = 10,
-                    count = 200
-                },
-                {
-                    name = 'coffee',
-                    price = 20,
-                    count = 200,
-                },
-                {
-                    name = 'cocacola',
-                    price = 10,
-                    count = 200
-                },
-                {
-                    name = 'bandage',
-                    price = 10,
-                    count = 200,
-                },
-                {
-                    name = 'notepad',
-                    price = 15,
-                    count = 200
-                },
-                {
-                    name = 'plasticpouch',
-                    price = 25,
-                    count = 200,
-                },
-                {
-                    name = 'papers',
-                    price = 10,
-                    count = 200
-                },
+            {
+                name = 'cola',
+                price = 10,
+                count = 200
             },
         },
-        {
-            coords = vector3(1392.562, 3604.684, 34.980),
-            blip = {
-                id = 93,
-                name = "Robs Liquor",
-                color = 5,
-                scale = 0.6,
+    },
+    {
+        coords = vector3(1392.562, 3604.684, 34.980),
+        blip = {
+            id = 93,
+            name = "Robs Liquor",
+            color = 5,
+            scale = 0.6,
+        },
+        text = 'E - Open Shop',
+        name = 'Robs Liquor', 
+        inventory = {
+            {
+                name = 'water',
+                price = 10,
+                count = 200
             },
-            text = 'E - Open Shop',
-            name = 'Robs Liquor', 
-            inventory = {
-                {
-                    name = 'water',
-                    price = 10,
-                    count = 200
-                },
-                {
-                    name = 'coffee',
-                    price = 20,
-                    count = 200,
-                },
-                {
-                    name = 'cocacola',
-                    price = 10,
-                    count = 200
-                },
-                {
-                    name = 'bandage',
-                    price = 10,
-                    count = 200,
-                },
-                {
-                    name = 'notepad',
-                    price = 15,
-                    count = 200
-                },
-                {
-                    name = 'plasticpouch',
-                    price = 25,
-                    count = 200,
-                },
-                {
-                    name = 'papers',
-                    price = 10,
-                    count = 200
-                },
+            {
+                name = 'cola',
+                price = 10,
+                count = 200
             },
         },
-        {
-            coords = vector3(-1393.409, -606.624, 30.319),
-            blip = {
-                id = 93,
-                name = "Robs Liquor",
-                color = 5,
-                scale = 0.6,
-            },
-            text = 'E - Open Shop',
-            name = 'Robs Liquor', 
-            inventory = {
-                {
-                    name = 'water',
-                    price = 10,
-                    count = 200
-                },
-                {
-                    name = 'coffee',
-                    price = 20,
-                    count = 200,
-                },
-                {
-                    name = 'cocacola',
-                    price = 10,
-                    count = 200
-                },
-                {
-                    name = 'bandage',
-                    price = 10,
-                    count = 200,
-                },
-                {
-                    name = 'notepad',
-                    price = 15,
-                    count = 200
-                },
-                {
-                    name = 'plasticpouch',
-                    price = 25,
-                    count = 200,
-                },
-                {
-                    name = 'papers',
-                    price = 10,
-                    count = 200
-                },
-            },
+    },
+    {
+        coords = vector3(-1393.409, -606.624, 30.319),
+        blip = {
+            id = 93,
+            name = "Robs Liquor",
+            color = 5,
+            scale = 0.6,
         },
-        {
-            coords = vector3(988.8, -96.72, 73.851),
-            blip = {
-                id = 93,
-                name = "Robs Liquor",
-                color = 5,
-                scale = 0.6,
+        text = 'E - Open Shop',
+        name = 'Robs Liquor', 
+        inventory = {
+            {
+                name = 'water',
+                price = 10,
+                count = 200
             },
-            text = 'E - Open Shop',
-            name = 'Robs Liquor', 
-            inventory = {
-                {
-                    name = 'water',
-                    price = 10,
-                    count = 200
-                },
-                {
-                    name = 'coffee',
-                    price = 20,
-                    count = 200,
-                },
-                {
-                    name = 'cocacola',
-                    price = 10,
-                    count = 200
-                },
-                {
-                    name = 'bandage',
-                    price = 10,
-                    count = 200,
-                },
-                {
-                    name = 'notepad',
-                    price = 15,
-                    count = 200
-                },
-                {
-                    name = 'plasticpouch',
-                    price = 25,
-                    count = 200,
-                },
-                {
-                    name = 'papers',
-                    price = 10,
-                    count = 200
-                },
+            {
+                name = 'cola',
+                price = 10,
+                count = 200
             },
         },
     },-- YouTOOL
@@ -1008,73 +753,8 @@ Config.Shops = {
         name = 'YouTool', 
         inventory = {
             {
-                name = 'acetone',
-                price = 100,
-                count = 200
-            },
-            {
-                name = 'blowtorch',
-                price = 50,
-                count = 200,
-            },
-            {
                 name = 'lockpick',
                 price = 200,
-                count = 200
-            },
-            {
-                name = 'bulletproof',
-                price = 500,
-                count = 200,
-            },
-            {
-                name = 'notepad',
-                price = 15,
-                count = 200
-            },
-            {
-                name = 'phone',
-                price = 150,
-                count = 200,
-            },
-            {
-                name = 'radio',
-                price = 420,
-                count = 200,
-            },
-            {
-                name = 'repairkit',
-                price = 250,
-                count = 200,
-            },
-            {
-                name = 'handcuffs',
-                price = 100,
-                count = 200,
-            },
-            {
-                name = 'fishingrod',
-                price = 250,
-                count = 200,
-            },
-            {
-                name = 'fishbait',
-                price = 20,
-                count = 200,
-            },
-            {
-                name = 'plastic',
-                price = 150,
-                count = 200,
-            },
-            {
-                name = 'gloves',
-                price = 100,
-                count = 200,
-            },
-            {
-                name = 'wateringcan',
-                price = 100,
                 count = 200,
             },
             {
@@ -1097,73 +777,8 @@ Config.Shops = {
         name = 'YouTool', 
         inventory = {
             {
-                name = 'acetone',
-                price = 100,
-                count = 200
-            },
-            {
-                name = 'blowtorch',
-                price = 50,
-                count = 200,
-            },
-            {
                 name = 'lockpick',
                 price = 200,
-                count = 200,
-            },
-            {
-                name = 'bulletproof',
-                price = 500,
-                count = 200,
-            },
-            {
-                name = 'notepad',
-                price = 15,
-                count = 200,
-            },
-            {
-                name = 'phone',
-                price = 150,
-                count = 200,
-            },
-            {
-                name = 'radio',
-                price = 420,
-                count = 200,
-            },
-            {
-                name = 'repairkit',
-                price = 250,
-                count = 200,
-            },
-            {
-                name = 'handcuffs',
-                price = 100,
-                count = 200,
-            },
-            {
-                name = 'fishingrod',
-                price = 250,
-                count = 200,
-            },
-            {
-                name = 'fishbait',
-                price = 20,
-                count = 200,
-            },
-            {
-                name = 'plastic',
-                price = 150,
-                count = 200,
-            },
-            {
-                name = 'gloves',
-                price = 100,
-                count = 200,
-            },
-            {
-                name = 'wateringcan',
-                price = 100,
                 count = 200,
             },
             {
@@ -1171,40 +786,6 @@ Config.Shops = {
                 price = 100,
                 count = 1,
                 metadata = {}
-            },
-        },
-    },
-    --Prison Shop
-    {
-        coords = vector3(1775.936, 2587.57, 44.713),
-        blip = {
-            id = 52,
-            name = "Prison Commissary",
-            color = 5,
-            scale = 0.6,
-        },
-        text = 'E - Open Shop',
-        name = 'Prison Commissary', 
-        inventory = {
-            {
-                name = 'bread',
-                price = 15,
-                count = 200,
-            },
-            {
-                name = 'water',
-                price = 10,
-                count = 200,
-            },
-            {
-                name = 'cigarette',
-                price = 15,
-                count = 5,
-            },
-            {
-                name = 'lighter',
-                price = 25,
-                count = 1,
             },
         },
     },
