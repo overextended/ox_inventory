@@ -126,13 +126,11 @@ AddPlayerInventory = function(identifier, item, count, slot, metadata)
                 count = 1 
                 for i = 1, Config.PlayerSlot do
                     if playerInventory[identifier][i] == nil then
-                        if metadata == nil then
-                            metadata = {}
-                            metadata.durability = 100
-                            metadata.ammo = 0
-                            metadata.components = {}
-                            metadata.ammoweight = 0
-                        end
+                        if metadata == nil then metadata = {} end
+                        if not metadata.durability then metadata.durability = 100 end
+                        if not metadata.ammo then metadata.ammo = 0 end
+                        if not metadata.components then metadata.components = {} end
+                        if not metadata.ammoweight then metadata.ammoweight = 0 end
                         metadata.weaponlicense = GetRandomLicense(metadata.weaponlicense)
                         if metadata.registered == 'setname' then metadata.registered = Player.getName() end
                         playerInventory[identifier][i] = {name = item ,label = ESXItems[item].label , weight = ESXItems[item].weight, slot = i, count = count, description = ESXItems[item].description, metadata = metadata, stackable = false, closeonuse = ESXItems[item].closeonuse} -- because weapon :)
@@ -1082,6 +1080,7 @@ AddEventHandler('hsn-inventory:server:addweaponAmmo',function(slot,item,totalAmm
             if ammo < 0 then ammo = 0 end
             playerInventory[Player.identifier][slot].metadata.ammo = newAmmo
             playerInventory[Player.identifier][slot].metadata.ammoweight = (newAmmo * ammoweight)
+            playerInventory[Player.identifier][slot].weight = playerInventory[Player.identifier][slot].weight + (newAmmo * ammoweight)
             Player.setInventoryItem(item, ammo)
         end
     end
@@ -1289,7 +1288,8 @@ AddEventHandler('hsn-inventory:setplayerInventory',function(identifier,inventory
     local returnData = {}
     for k,v in pairs (inventory) do
         if v.metadata == nil then v.metadata = {} end
-        playerInventory[identifier][v.slot] = {name = v.name ,label = ESXItems[v.name].label, weight = ESXItems[v.name].weight, slot = v.slot, count = v.count, description = ESXItems[v.name].description, metadata = v.metadata, stackable = ESXItems[v.name].stackable}
+        if v.metadata.ammoweight then weight = v.metadata.ammoweight + ESXItems[v.name].weight else weight = ESXItems[v.name].weight end
+        playerInventory[identifier][v.slot] = {name = v.name ,label = ESXItems[v.name].label, weight = weight, slot = v.slot, count = v.count, description = ESXItems[v.name].description, metadata = v.metadata, stackable = ESXItems[v.name].stackable}
     end
 end)
 
