@@ -32,6 +32,7 @@ Citizen.CreateThread(function()
     ESX.TriggerServerCallback('hsn-inventory:getData',function(data)
         playerName = data.name
         inventory = data.inventory
+        ESX.SetPlayerData('inventory', inventory) -- in progress
     end)
     clearWeapons()
 end)
@@ -227,6 +228,8 @@ AddEventHandler('hsn-inventory:client:openInventory',function(inventory,other)
     --     return
     -- end
     local playerID = GetPlayerServerId(PlayerId())
+    inventory = inventory
+    ESX.SetPlayerData('inventory', inventory) -- in progress
     SendNUIMessage({
         message = 'openinventory',
         inventory = inventory,
@@ -262,6 +265,8 @@ end)]]
 RegisterNetEvent('hsn-inventory:client:refreshInventory')
 AddEventHandler('hsn-inventory:client:refreshInventory',function(inventory)
     local playerID = GetPlayerServerId(PlayerId())
+    inventory = inventory
+    ESX.SetPlayerData('inventory', inventory) -- in progress
     SendNUIMessage({
         message = 'refresh',
         inventory = inventory,
