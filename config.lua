@@ -68,7 +68,7 @@ Config.DurabilityDecreaseAmount = {
 
 Config.Shops = {
     { -- 24/7
-        coords = vector3(-531.14, -1221.33, 17.48),
+        coords = vector3(-531.14, -1221.33, 18.48),
         blip = {
             id = 52,
             color = 5,
@@ -132,7 +132,7 @@ Config.Shops = {
         },
     },
     {
-        coords = vector3(-3038.939, 585.954, 6.908),
+        coords = vector3(-3038.939, 585.954, 7.908),
         blip = {
             id = 52,
             color = 5,
@@ -164,7 +164,7 @@ Config.Shops = {
         },
     },
     {
-        coords = vector3(-3241.927, 1001.462, 11.830),
+        coords = vector3(-3241.927, 1001.462, 12.830),
         blip = {
             id = 52,
             color = 5,
@@ -196,7 +196,7 @@ Config.Shops = {
         },
     },
     {
-        coords = vector3(547.431, 2671.710, 41.156),
+        coords = vector3(547.431, 2671.710, 42.156),
         blip = {
             id = 52,
             color = 5,
@@ -228,7 +228,7 @@ Config.Shops = {
         },
     },
     {
-        coords = vector3(1961.464, 3740.672, 31.343),
+        coords = vector3(1961.464, 3740.672, 32.343),
         blip = {
             id = 52,
             color = 5,
@@ -260,7 +260,7 @@ Config.Shops = {
         },
     },
     {
-        coords = vector3(2678.916, 3280.671, 54.241),
+        coords = vector3(2678.916, 3280.671, 55.241),
         blip = {
             id = 52,
             color = 5,
@@ -292,7 +292,7 @@ Config.Shops = {
         },
     },
     {
-        coords = vector3(1729.216, 6414.131, 34.037),
+        coords = vector3(1729.216, 6414.131, 35.037),
         blip = {
             id = 52,
             color = 5,
@@ -324,7 +324,7 @@ Config.Shops = {
         },
     },
     {
-        coords = vector3(-48.519, -1757.514, 28.421),
+        coords = vector3(-48.519, -1757.514, 29.421),
         blip = {
             id = 52,
             color = 5,
@@ -356,7 +356,7 @@ Config.Shops = {
         },
     },
     {
-        coords = vector3(1163.373, -323.801, 68.205),
+        coords = vector3(1163.373, -323.801, 69.205),
         blip = {
             id = 52,
             color = 5,
@@ -388,7 +388,7 @@ Config.Shops = {
         },
     },
     {
-        coords = vector3(-707.501, -914.260, 18.215),
+        coords = vector3(-707.501, -914.260, 19.215),
         blip = {
             id = 52,
             color = 5,
@@ -420,7 +420,7 @@ Config.Shops = {
         },
     },
     {
-        coords = vector3(-1820.523, 792.518, 137.118),
+        coords = vector3(-1820.523, 792.518, 138.118),
         blip = {
             id = 52,
             color = 5,
@@ -452,7 +452,7 @@ Config.Shops = {
         },
     },
     {
-        coords = vector3(1698.388, 4924.404, 41.063),
+        coords = vector3(1698.388, 4924.404, 42.063),
         blip = {
             id = 52,
             color = 5,
@@ -484,7 +484,7 @@ Config.Shops = {
         },
     },
     {
-        coords = vector3(25.723, -1346.966, 28.497),
+        coords = vector3(25.723, -1346.966, 29.497),
         blip = {
             id = 52,
             color = 5,
@@ -516,7 +516,7 @@ Config.Shops = {
         },
     },
     {
-        coords = vector3(373.875, 325.896, 102.566),
+        coords = vector3(373.875, 325.896, 103.566),
         blip = {
             id = 52,
             color = 5,
@@ -660,7 +660,7 @@ Config.Shops = {
             },
         },
         {
-            coords = vector3(-1222.915, -906.983,  11.326),
+            coords = vector3(-1222.915, -906.983,  12.326),
             blip = {
                 id = 93,
                 name = "Robs Liquor",
@@ -756,7 +756,7 @@ Config.Shops = {
             },
         },
         {
-            coords = vector3(-2968.243, 390.910, 14.043),
+            coords = vector3(-2968.243, 390.910, 15.043),
             blip = {
                 id = 93,
                 name = "Robs Liquor",
@@ -804,7 +804,7 @@ Config.Shops = {
             },
         },
         {
-            coords = vector3(1166.024, 2708.930, 37.157),
+            coords = vector3(1166.024, 2708.930, 38.157),
             blip = {
                 id = 93,
                 name = "Robs Liquor",
@@ -852,7 +852,7 @@ Config.Shops = {
             },
         },
         {
-            coords = vector3(1392.562, 3604.684, 33.980),
+            coords = vector3(1392.562, 3604.684, 34.980),
             blip = {
                 id = 93,
                 name = "Robs Liquor",
@@ -900,7 +900,7 @@ Config.Shops = {
             },
         },
         {
-            coords = vector3(-1393.409, -606.624, 29.319),
+            coords = vector3(-1393.409, -606.624, 30.319),
             blip = {
                 id = 93,
                 name = "Robs Liquor",
@@ -997,7 +997,7 @@ Config.Shops = {
         },
     },-- YouTOOL
     {
-        coords = vector3(2748.0, 3473.0, 54.67),
+        coords = vector3(2748.0, 3473.0, 55.67),
         blip = {
             id = 402,
             name = "YouTool",
@@ -1086,7 +1086,7 @@ Config.Shops = {
         },
     },
     {
-        coords = vector3(342.99, -1298.26, 31.51),
+        coords = vector3(342.99, -1298.26, 32.51),
         blip = {
             id = 402,
             name = "YouTool",
@@ -1342,7 +1342,7 @@ Config.Shops = {
         },
     },--WeaponShop
     {
-        coords = vector3(-662.180, -934.961, 20.829),
+        coords = vector3(-662.180, -934.961, 21.829),
         blip = {
             id = 110,
             name = "Ammunation",
@@ -1438,7 +1438,7 @@ Config.Shops = {
         },
     },
     {
-        coords = vector3(1693.44, 3760.16, 33.71),
+        coords = vector3(1693.44, 3760.16, 34.71),
         blip = {
             id = 110,
             name = "Ammunation",
@@ -1486,7 +1486,7 @@ Config.Shops = {
         },
     },
     {
-        coords = vector3(-330.24, 6083.88, 30.45),
+        coords = vector3(-330.24, 6083.88, 31.45),
         blip = {
             id = 110,
             name = "Ammunation",
@@ -1534,7 +1534,7 @@ Config.Shops = {
         },
     },
     {
-        coords = vector3(252.63, -50.00, 68.94),
+        coords = vector3(252.63, -50.00, 69.94),
         blip = {
             id = 110,
             name = "Ammunation",
@@ -1582,7 +1582,7 @@ Config.Shops = {
         },
     },
     {
-        coords = vector3(22.56, -1109.89, 28.80),
+        coords = vector3(22.56, -1109.89, 29.80),
         blip = {
             id = 110,
             name = "Ammunation",
@@ -1630,7 +1630,7 @@ Config.Shops = {
         },
     },
     {
-        coords = vector3(2567.69, 294.38, 107.73),
+        coords = vector3(2567.69, 294.38, 108.73),
         blip = {
             id = 110,
             name = "Ammunation",
@@ -1678,7 +1678,7 @@ Config.Shops = {
         },
     },
     {
-        coords = vector3(-1117.58, 2698.61, 17.55),
+        coords = vector3(-1117.58, 2698.61, 18.55),
         blip = {
             id = 110,
             name = "Ammunation",
@@ -1726,7 +1726,7 @@ Config.Shops = {
         },
     },
     {
-        coords = vector3(842.44, -1033.42, 27.19),
+        coords = vector3(842.44, -1033.42, 28.19),
         blip = {
             id = 110,
             name = "Ammunation",
