@@ -109,6 +109,14 @@ GetItemsSlot = function(inventory, name)
     return returnData
 end
 
+--[[RegisterCommand("itemcount", function(source, args, rawCommand)
+    local Player = ESX.GetPlayerFromId(source)
+    for k, v in pairs(playerInventory[Player.identifier]) do
+        print(  ('[%s] %s %s'):format(k, v.name, v.count)  )
+    end
+end)]]
+
+
 GetItemCount = function(identifier, item)
     local count = 0
     for i,j in pairs(playerInventory[identifier]) do
@@ -677,33 +685,14 @@ end
 
 -- Override the default ESX command (only works on ESX 1.2+ and EXM)
 ESX.RegisterCommand({'giveitem', 'additem'}, 'admin', function(xPlayer, args, showError)
+    if args.item == 'money' or args.item == 'black_money' then return end
+    if not ESXItems[args.item] then print('[^2hsn-inventory^0] - item not found') return end
 	args.playerId.addInventoryItem(args.item, args.count)
 end, true, {help = 'give an item to a player', validate = true, arguments = {
 	{name = 'playerId', help = 'player id', type = 'player'},
 	{name = 'item', help = 'item name', type = 'string'},
 	{name = 'count', help = 'item count', type = 'number'}
 }})
-
-
---[[    Use this command instead for ESX 1.1
-RegisterCommand('addItem',function(source,args)
-    if source == 0 then
-        return
-    end
-    local src = source
-    local Player = ESX.GetPlayerFromId(src)
-    if Player.getGroup() == 'superadmin' or Player.getGroup() == 'admin' then
-        local tPlayerId = tonumber(args[1])
-        local item = args[2]
-        local count = tonumber(args[3])
-        local tPlayer = ESX.GetPlayerFromId(tPlayerId)
-        if tPlayer == nil then
-            return
-        end
-        tPlayer.addInventoryItem(item, count)
-    end
-end)
-]]
 
 RegisterCommand('fixinv', function(source, args, rawCommand)
     local Player = ESX.GetPlayerFromId(source)
