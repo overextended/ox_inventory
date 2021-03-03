@@ -179,7 +179,7 @@ AddPlayerInventory = function(identifier, item, count, slot, metadata)
     end
 end
 
-RemovePlayerInventory = function(src, identifier,item, count, slot, metadata)
+RemovePlayerInventory = function(src, identifier, item, count, slot, metadata)
     if ESXItems[item] ~= nil then
         for i = 1, Config.PlayerSlot do
             if playerInventory[identifier][i] ~= nil and playerInventory[identifier][i].name == item and (playerInventory[identifier][i].metadata.type == metadata) then
@@ -194,6 +194,7 @@ RemovePlayerInventory = function(src, identifier,item, count, slot, metadata)
                     break
                 elseif playerInventory[identifier][i].count < count then
                     local slots = GetItemsSlot(playerInventory[identifier], item, metadata)
+                    local totalCount = 0
                     for i,j in pairs(slots) do
                         if j ~= nil then
                             j.count = tonumber(j.count)
@@ -202,14 +203,14 @@ RemovePlayerInventory = function(src, identifier,item, count, slot, metadata)
                                 playerInventory[identifier][j.slot] = nil
                                 count = count - tempCount
                             elseif j.count - count > 0 then
-                                playerInventory[identifier][j.slot].count = playerInventory[identifier][j.slot] - count
-                                TriggerClientEvent('hsn-inventory:client:addItemNotify',src,ESXItems[item],'Removed '..count..'x')
+                                totalCount = totalCount + playerInventory[identifier][j.slot].count
+                                playerInventory[identifier][j.slot].count = playerInventory[identifier][j.slot].count - count
                             elseif j.count - count == 0 then
                                 playerInventory[identifier][j.slot] = nil
-                                TriggerClientEvent('hsn-inventory:client:addItemNotify',src,ESXItems[item],'Removed '..count..'x')
                             end
                         end
                     end
+                    TriggerClientEvent('hsn-inventory:client:addItemNotify',src,ESXItems[item],'Removed '..totalCount..'x')
                     break
                 end
             end
@@ -646,7 +647,6 @@ AddEventHandler('hsn-inventory:server:saveInventoryData',function(data)
         Player.setMoney(money)
         local blackmoney = exports['hsn-inventory']:getItemCount(src,'black_money')
         Player.setAccountMoney('black_money', blackmoney)
-
     end
 end)
 
