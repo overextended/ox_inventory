@@ -88,7 +88,7 @@ Citizen.CreateThread(function()
         for i = 19, 20 do 
             HideHudComponentThisFrame(i) -- remove tab etc.
         end
-        if usingItem or usingWeapon then
+        if usingItem then
             DisableControlAction(0, 24, true)
             DisableControlAction(0, 25, true)
             DisableControlAction(0, 142, true)
@@ -516,8 +516,6 @@ AddEventHandler('hsn-inventory:addAmmo',function(item, ammo)
 
             if missingAmmo > ammo.count then
                 newAmmo = ammo.count + curAmmo removeAmmo = ammo.count - curAmmo
-                print(newAmmo)
-                print(removeAmmo)
             else
                 newAmmo = tonumber(maxAmmo) removeAmmo = missingAmmo
             end
