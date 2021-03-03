@@ -385,6 +385,10 @@
         var fromSlot = Number(fromSlot)
         var toSlot = Number(toSlot)
         if (toItem !== undefined) { // stack
+            if (fromItem.count < count) {
+                HSN.InventoryMessage('You can not do this',2)
+                return
+            }
             if(((fromItem.name).split("_")[0] == "WEAPON") && ((toItem.name).split("_")[0] == "WEAPON")) {
                 // fromItem durability
                 var durability = HSN.InventoryGetDurability(fromItem.metadata.durability)
