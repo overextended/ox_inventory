@@ -186,7 +186,7 @@ AddPlayerInventory = function(identifier, item, count, slot, metadata)
     end
 end
 
-RemovePlayerInventory = function(identifier,item, count, slot)
+RemovePlayerInventory = function(identifier,item, count, slot, metadata)
     if ESXItems[item] ~= nil then
         for i = 1, Config.PlayerSlot do
             if playerInventory[identifier][i] ~= nil and playerInventory[identifier][i].name == item then
@@ -207,7 +207,7 @@ RemovePlayerInventory = function(identifier,item, count, slot)
                                 playerInventory[identifier][j.slot] = nil
                                 count = count - tempCount
                             elseif j.count - count > 0 then
-                                playerInventory[identifier][j.slot].count = playerInventory[identifier][j.slot] - count
+                                playerInventory[identifier][j.slot].count = j.count - count
                             elseif j.count - count == 0 then
                                 playerInventory[identifier][j.slot] = nil
                             end
@@ -269,7 +269,8 @@ AddEventHandler('hsn-inventory:server:saveInventoryData',function(data)
                 Drops[dropid].inventory[data.toSlot] = {name = data.newslotItem.name ,label = data.newslotItem.label, weight = data.newslotItem.weight, slot = data.toSlot, count = data.newslotItem.count, description = data.newslotItem.description, metadata = data.newslotItem.metadata, stackable = data.newslotItem.stackable, closeonuse = ESXItems[data.newslotItem.name].closeonuse}
             end
         elseif data.frominv == data.toinv and (data.frominv == 'TargetPlayer') then
-            local targetplayer = tPlayer
+            local playerId = string.sub(data.invid,13)
+            local targetplayer = ESX.GetPlayerFromId(playerId)
                 if playerInventory[targetplayer.identifier] ~= nil then
                     if data.type == 'swap' then
                         playerInventory[targetplayer.identifier][data.toslot] = {name = data.toItem.name ,label = data.toItem.label, weight = data.toItem.weight, slot = data.toslot, count = data.toItem.count, description = data.toItem.description, metadata = data.toItem.metadata, stackable = data.toItem.stackable, closeonuse = ESXItems[data.toItem.name].closeonuse}
@@ -283,7 +284,8 @@ AddEventHandler('hsn-inventory:server:saveInventoryData',function(data)
                     end
                 end
         elseif data.frominv ~= data.toinv and (data.toinv == 'TargetPlayer' and data.frominv == 'Playerinv') then
-            local targetplayer = tPlayer
+            local playerId = string.sub(data.invid,13)
+            local targetplayer = ESX.GetPlayerFromId(playerId)
             if playerInventory[targetplayer.identifier] ~= nil then
                 if data.type == 'swap' then
                     if IfInventoryCanCarry(playerInventory[targetplayer.identifier],Config.MaxWeight, (data.toItem.weight * data.toItem.count)) then
@@ -318,7 +320,8 @@ AddEventHandler('hsn-inventory:server:saveInventoryData',function(data)
                 end
             end
         elseif data.frominv ~= data.toinv and (data.toinv == 'Playerinv' and data.frominv == 'TargetPlayer') then
-            local targetplayer = tPlayer
+            local playerId = string.sub(data.invid2,13)
+            local targetplayer = ESX.GetPlayerFromId(playerId)local targetplayer = tPlayer
             if playerInventory[targetplayer.identifier] ~= nil then
                 if data.type == 'swap' then
                     if IfInventoryCanCarry(playerInventory[Player.identifier],Config.MaxWeight, (data.toItem.weight * data.toItem.count)) then
@@ -777,7 +780,7 @@ RegisterServerEvent('hsn-inventory:server:openTargetInventory')
 AddEventHandler('hsn-inventory:server:openTargetInventory',function(TargetId)
     if notready then return end
     local Player = ESX.GetPlayerFromId(source)
-    tPlayer = ESX.GetPlayerFromId(TargetId)
+    local tPlayer = ESX.GetPlayerFromId(TargetId)
     if source == TargetId then tPlayer = nil end -- Don't allow source and targetid to match
     if playerInventory[tPlayer.identifier] == nil then
         playerInventory[tPlayer.identifier] = {}
@@ -996,9 +999,16 @@ end)
 
 RegisterServerEvent('hsn-inventory:server:reloadWeapon')
 AddEventHandler('hsn-inventory:server:reloadWeapon',function(weapon)
+    local Player = ESX.GetPlayerFromId(source)
     local ammo = {}
     ammo.name = weapon.ammotype
     ammo.count = exports['hsn-inventory']:getItemCount(source,ammo.name)
+    for k, v in pairs(playerInventory[Player.identifier]) do
+        if v.name:find(ammo.name) then
+            ammo.count = v
+            break  
+        end
+    end
     if ammo.count > 0 then TriggerClientEvent('hsn-inventory:addAmmo',source,weapon.item.name,ammo) end
 end)
 
@@ -1076,13 +1086,11 @@ AddEventHandler('hsn-inventory:server:addweaponAmmo',function(slot,weapon,item,t
     local Player = ESX.GetPlayerFromId(src)
     if playerInventory[Player.identifier][slot] ~= nil then
         if playerInventory[Player.identifier][slot].metadata.ammo ~= nil then
-            local ammo = totalAmmo - removeAmmo
             local ammoweight = ESXItems[item].weight
-            if ammo < 0 then ammo = 0 end
             playerInventory[Player.identifier][slot].metadata.ammo = newAmmo
             playerInventory[Player.identifier][slot].metadata.ammoweight = (newAmmo * ammoweight)
             playerInventory[Player.identifier][slot].weight = ESXItems[weapon].weight + (newAmmo * ammoweight)
-            Player.removeInventoryItem(item, removeAmmo)
+            RemovePlayerInventory(Player.identifier,item,removeAmmo)
         end
     end
 end)
@@ -1102,7 +1110,7 @@ end)
 
 
 RegisterServerEvent('hsn-inventory:server:removeItem')
-AddEventHandler('hsn-inventory:server:removeItem',function(source, item, count)
+AddEventHandler('hsn-inventory:server:removeItem',function(source, item, count, metadata)
     if count == 0 then return end
     local src = source
     local Player = ESX.GetPlayerFromId(src)
