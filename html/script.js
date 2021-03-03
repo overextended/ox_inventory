@@ -315,9 +315,9 @@
             if (Item.metadata.type) { $(".iteminfo-description").append('<p>'+Item.metadata.type+'</p>')};
             if (Item.metadata.description) { $(".iteminfo-description").append('<p>'+Item.metadata.description+'</p>')};
             if ((Item.name).split("_")[0] == "WEAPON") {
-                if (Item.metadata.weaponlicense) { Item.metadata.weaponlicense = "HSN" }
-                if (Item.metadata.durability) { Item.metadata.durability = 100 }
-                if (Item.metadata.ammo) { Item.metadata.ammo = "Unknown" }
+                if (Item.metadata.weaponlicense == undefined || null) { Item.metadata.weaponlicense = "HSN" }
+                if (Item.metadata.durability == undefined || null) { Item.metadata.durability = 100 }
+                if (Item.metadata.ammo == undefined || null) { Item.metadata.ammo = "Unknown" }
                 $(".iteminfo-description").append('<p>Weapon Ammo: '+Item.metadata.ammo+'</p>')
                 $(".iteminfo-description").append('<p>Durability: '+parseInt(Item.metadata.durability).toFixed(0)+''+'%</p>')
                 $(".iteminfo-description").append('<p>Serial Number: '+Item.metadata.weaponlicense+'</p>')
