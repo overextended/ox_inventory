@@ -493,7 +493,7 @@ AddEventHandler('hsn-inventory:client:weapon',function(item)
     end
     TriggerEvent('hsn-inventory:currentWeapon', currentWeapon) -- using for another resource
     Citizen.Wait(100)
-    usingItem = nil
+    usingItem = false
 end)
 
 RegisterNetEvent('hsn-inventory:addAmmo')
@@ -515,6 +515,7 @@ AddEventHandler('hsn-inventory:addAmmo',function(item, ammo)
             if missingAmmo > tonumber(ammo.count) then newAmmo = tonumber(ammo.count) else newAmmo = tonumber(maxAmmo) end
             ClearPedTasks(playerPed)
             TaskReloadWeapon(playerPed)
+            usingItem = false
             if newAmmo < 0 then newAmmo = 0 end
             SetPedAmmo(playerPed, weapon, newAmmo)
             local removeAmmo = maxAmmo - curAmmo
@@ -522,7 +523,6 @@ AddEventHandler('hsn-inventory:addAmmo',function(item, ammo)
             TriggerEvent('hsn-inventory:notification','Reloaded')
         end
     end
-    usingItem = false
 end)
 
 
@@ -669,6 +669,8 @@ AddEventHandler('hsn-inventory:useItem',function(item)
                     if data.thirst > 0 then TriggerEvent('esx_status:add', 'thirst', data.thirst)
                     else TriggerEvent('esx_status:remove', 'thirst', data.thirst) end
                 end
+                if data.consume then TriggerServerEvent('hsn-inventory:client:removeItem', item, data.consume) end
+                usingItem = false
                 ------------------------------------------------------------------------------------------------
                 
 
@@ -689,8 +691,6 @@ AddEventHandler('hsn-inventory:useItem',function(item)
 
 
                 ------------------------------------------------------------------------------------------------
-                if data.consume then TriggerServerEvent('hsn-inventory:client:removeItem', item, data.consume) end
-                usingItem = false
             end)
         end
     end, item)
