@@ -99,22 +99,15 @@ GetRandomLicense = function(text)
     return license
 end
 
-GetItemsSlot = function(inventory, name)
+GetItemsSlot = function(inventory, name, metadata)
     local returnData = {}
     for k,v in pairs(inventory) do
-        if v.name == name then
+        if (not metadata or v.metadata.type == metadata) and v.name == name then
             table.insert(returnData,v)
         end
     end
     return returnData
 end
-
---[[RegisterCommand("itemcount", function(source, args, rawCommand)
-    local Player = ESX.GetPlayerFromId(source)
-    for k, v in pairs(playerInventory[Player.identifier]) do
-        print(  ('[%s] %s %s'):format(k, v.name, v.count)  )
-    end
-end)]]
 
 
 GetItemCount = function(identifier, item)
@@ -186,19 +179,21 @@ AddPlayerInventory = function(identifier, item, count, slot, metadata)
     end
 end
 
-RemovePlayerInventory = function(identifier,item, count, slot, metadata)
+RemovePlayerInventory = function(src, identifier,item, count, slot, metadata)
     if ESXItems[item] ~= nil then
         for i = 1, Config.PlayerSlot do
-            if playerInventory[identifier][i] ~= nil and playerInventory[identifier][i].name == item then
+            if playerInventory[identifier][i] ~= nil and playerInventory[identifier][i].name == item and (playerInventory[identifier][i].metadata.type == metadata) then
                 playerInventory[identifier][i].count = tonumber(playerInventory[identifier][i].count)
                 if playerInventory[identifier][i].count > count then
                     playerInventory[identifier][i].count = playerInventory[identifier][i].count - count
+                    TriggerClientEvent('hsn-inventory:client:addItemNotify',src,ESXItems[item],'Removed '..count..'x')
                     break
                 elseif playerInventory[identifier][i].count == count then
                     playerInventory[identifier][i] = nil
+                    TriggerClientEvent('hsn-inventory:client:addItemNotify',src,ESXItems[item],'Removed '..count..'x')
                     break
                 elseif playerInventory[identifier][i].count < count then
-                    local slots = GetItemsSlot(playerInventory[identifier], item)
+                    local slots = GetItemsSlot(playerInventory[identifier], item, metadata)
                     for i,j in pairs(slots) do
                         if j ~= nil then
                             j.count = tonumber(j.count)
@@ -207,9 +202,11 @@ RemovePlayerInventory = function(identifier,item, count, slot, metadata)
                                 playerInventory[identifier][j.slot] = nil
                                 count = count - tempCount
                             elseif j.count - count > 0 then
-                                playerInventory[identifier][j.slot].count = playerInventory[identifier][j.slot].count - count
+                                playerInventory[identifier][j.slot].count = playerInventory[identifier][j.slot] - count
+                                TriggerClientEvent('hsn-inventory:client:addItemNotify',src,ESXItems[item],'Removed '..count..'x')
                             elseif j.count - count == 0 then
                                 playerInventory[identifier][j.slot] = nil
+                                TriggerClientEvent('hsn-inventory:client:addItemNotify',src,ESXItems[item],'Removed '..count..'x')
                             end
                         end
                     end
@@ -1084,7 +1081,7 @@ AddEventHandler('hsn-inventory:server:addweaponAmmo',function(slot,weapon,item,t
             playerInventory[Player.identifier][slot].metadata.ammo = newAmmo
             playerInventory[Player.identifier][slot].metadata.ammoweight = (newAmmo * ammoweight)
             playerInventory[Player.identifier][slot].weight = ESXItems[weapon].weight + (newAmmo * ammoweight)
-            RemovePlayerInventory(Player.identifier,item,removeAmmo)
+            RemovePlayerInventory(src,Player.identifier,item,removeAmmo)
         end
     end
 end)
@@ -1114,9 +1111,24 @@ AddEventHandler('hsn-inventory:server:removeItem',function(source, item, count, 
     if count == nil then
         count = 1
     end
-    TriggerClientEvent('hsn-inventory:client:addItemNotify',src,ESXItems[item],'Removed '..count..'x')
-    RemovePlayerInventory(Player.identifier,item,count)
+    RemovePlayerInventory(src,Player.identifier, item, count, nil, metadata)
 end)
+
+
+--[[ Example to remove an item with a specific metadata.type
+RegisterCommand("remove", function(source, args, rawCommand)
+    local Player = ESX.GetPlayerFromId(source)
+    Player.removeInventoryItem(args[1], 1, args[2])
+end)]]
+
+
+--[[ Example to retrieve items and count from player inventory
+    RegisterCommand("itemcount", function(source, args, rawCommand)
+    local Player = ESX.GetPlayerFromId(source)
+    for k, v in pairs(playerInventory[Player.identifier]) do
+        print(  ('[%s] %s %s'):format(k, v.name, v.count)  )
+    end
+end)]]
 
 RegisterServerEvent('hsn-inventory:server:addItem')
 AddEventHandler('hsn-inventory:server:addItem',function(src, item, count)
@@ -1158,7 +1170,7 @@ AddEventHandler('hsn-inventory:client:addItem',function(item, count)
     TriggerClientEvent('hsn-inventory:client:addItemNotify',src,ESXItems[item],'Added '..count..'x')
 end)
 
-exports('removeItem', function(src, item, count)
+exports('removeItem', function(src, item, count, metadata)
     local Player = ESX.GetPlayerFromId(src)
     if item == nil then
         return
@@ -1166,8 +1178,7 @@ exports('removeItem', function(src, item, count)
     if count == nil then
         count = 1
     end
-    RemovePlayerInventory(Player.identifier,item,count)
-    TriggerClientEvent('hsn-inventory:client:addItemNotify',src,ESXItems[item],'Removed '..count..'x')
+    RemovePlayerInventory(src,Player.identifier, item, count, nil, metadata)
 end)
 
 exports('addItem', function(src, item, count, metadata)
@@ -1194,14 +1205,17 @@ exports('getItemCount',function(src, item)
     return ItemCount
 end)
 
-exports('getItem',function(src, item)
+exports('getItem',function(src, item, metadata)
     local Player = ESX.GetPlayerFromId(src)
     if playerInventory[Player.identifier] == nil then
         return
     end
-    local ESXItem = ESXItems[item]
-    ESXItem.count = GetItemCount(Player.identifier, item)
-    return ESXItem
+    local inventory = playerInventory[Player.identifier]
+    for k, v in pairs(inventory) do
+        if v.name == item and (metadata == v.metadata.type) then
+            return v
+        end
+    end
 end)
 
 exports('useItem', function(src, item)
@@ -1212,15 +1226,6 @@ exports('useItem', function(src, item)
         TriggerEvent('esx:useItem', src, item.name)
     end
 end)
-
---[[ Example to retrieve items and count from player inventory
-    RegisterCommand('getitems', function(source, args, rawCommand)
-    local Player = ESX.GetPlayerFromId(source)
-    for k, v in pairs(ESXItems) do
-        v.count = GetItemCount(Player.identifier, v.name)
-        if v.count > 0 then print(v.name.. ' ' ..v.count) end
-    end
-end)]]
 
 RegisterNetEvent('hsn-inventory:server:getItemCount')
 AddEventHandler('hsn-inventory:server:getItemCount',function(source,cb,item)
