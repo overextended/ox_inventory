@@ -651,8 +651,6 @@ AddEventHandler('hsn-inventory:server:saveInventoryData',function(data)
 end)
 
 
-
-
 CreateNewDrop = function(source,data)
     local src = source
     local ped = GetPlayerPed(src)
@@ -683,7 +681,7 @@ CreateNewDrop = function(source,data)
     else print( ('^1[hsn-inventory]^3 Server was unable to create a drop. Enable OneSync (seriously, it\'s free)') ) end
 end
 
--- Override the default ESX command (only works on ESX 1.2+ and EXM)
+-- Override the default ESX command
 ESX.RegisterCommand({'giveitem', 'additem'}, 'admin', function(xPlayer, args, showError)
     if args.item == 'money' or args.item == 'black_money' then return end
     if not ESXItems[args.item] then print('[^2hsn-inventory^0] - item not found') return end
@@ -1085,6 +1083,19 @@ AddEventHandler('hsn-inventory:server:addweaponAmmo',function(slot,weapon,item,t
             playerInventory[Player.identifier][slot].metadata.ammoweight = (newAmmo * ammoweight)
             playerInventory[Player.identifier][slot].weight = ESXItems[weapon].weight + (newAmmo * ammoweight)
             Player.setInventoryItem(item, ammo)
+        end
+    end
+end)
+
+
+RegisterServerEvent('hsn-inventory:server:updateWeapon')
+AddEventHandler('hsn-inventory:server:updateWeapon',function(slot, item)
+    local src = source
+    local Player = ESX.GetPlayerFromId(src)
+    if playerInventory[Player.identifier][slot] ~= nil then
+        if playerInventory[Player.identifier][slot].metadata ~= nil then
+            playerInventory[Player.identifier][slot].metadata = item.metadata
+            TriggerClientEvent('hsn-inventory:client:refreshInventory',src,playerInventory[Player.identifier])
         end
     end
 end)
