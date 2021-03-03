@@ -1082,7 +1082,7 @@ AddEventHandler('hsn-inventory:server:addweaponAmmo',function(slot,weapon,item,t
             playerInventory[Player.identifier][slot].metadata.ammo = newAmmo
             playerInventory[Player.identifier][slot].metadata.ammoweight = (newAmmo * ammoweight)
             playerInventory[Player.identifier][slot].weight = ESXItems[weapon].weight + (newAmmo * ammoweight)
-            Player.setInventoryItem(item, ammo)
+            Player.removeInventoryItem(item, removeAmmo)
         end
     end
 end)
