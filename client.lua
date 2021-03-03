@@ -2,7 +2,6 @@ ESX = nil
 local PlayerData = {}
 local invOpen, isDead, isCuffed, currentWeapon = false, false, false, nil
 local vehStorage = {}
-local inventory = {}
 function setVehicleTable()
 	local vehicleTable = {['adder']=1, ['osiris']=0, ['pfister811']=0, ['penetrator']=0, ['autarch']=0, ['bullet']=0, ['cheetah']=0, ['cyclone']=0, ['voltic']=0, ['reaper']=1, ['entityxf']=0, ['t20']=0, ['taipan']=0, ['tempesta']=2, ['tezeract']=0, ['torero']=1, ['turismor']=0, ['fmj']=0, ['gp1']=2, ['infernus ']=0, ['italigtb']=1, ['italigtb2']=1, ['nero']=2, ['nero2']=0, ['vacca']=1, ['vagner']=0, ['visione']=0, ['prototipo']=0, ['xa21']=2, ['zentorno']=0}
 	--[[
@@ -31,8 +30,7 @@ Citizen.CreateThread(function()
     playerID = GetPlayerServerId(PlayerId())
     ESX.TriggerServerCallback('hsn-inventory:getData',function(data)
         playerName = data.name
-        inventory = data.inventory
-        ESX.SetPlayerData('inventory', inventory) -- in progress
+        ESX.SetPlayerData('inventory', data.inventory) -- in progress
     end)
     clearWeapons()
 end)
@@ -88,7 +86,12 @@ Citizen.CreateThread(function()
         for i = 19, 20 do 
             HideHudComponentThisFrame(i) -- remove tab etc.
         end
-
+        if swappingWeapon then
+            DisableControlAction(0, 24, true)
+            DisableControlAction(0, 25, true)
+            DisableControlAction(0, 142, true)
+            DisableControlAction(0, 257, true)
+        end
         if not invOpen then
             for k, v in pairs(keys) do
                 if IsDisabledControlJustReleased(0, v) and not dead and not isCuffed then
@@ -96,18 +99,7 @@ Citizen.CreateThread(function()
                 end
             end
         end
-    end
-end)
 
-Citizen.CreateThread(function()
-    while true do
-        Citizen.Wait(3)
-        if swappingWeapon or invOpen then
-            DisableControlAction(0, 24, true)
-            DisableControlAction(0, 25, true)
-            DisableControlAction(0, 142, true)
-            DisableControlAction(0, 257, true)
-        end
         if currentWeapon ~= nil and IsPedShooting(PlayerPedId()) then
             shooting = true
             local currentAmmo = GetAmmoInPedWeapon(PlayerPedId(), currentWeapon.hash)
@@ -122,6 +114,7 @@ Citizen.CreateThread(function()
         else shooting = false end
     end
 end)
+
 
 RegisterCommand('vehinv', function()
     if invOpen then return end
@@ -146,45 +139,31 @@ RegisterCommand('vehinv', function()
                     TaskStartScenarioInPlace(PlayerPedId(), 'PROP_HUMAN_BUM_BIN', 0, true)
                     Citizen.Wait(1000)
                     OpenTrunk(plate)
+                    while not invOpen do Citizen.Wait(50) end
                     while true do
-                        while not invOpen do Citizen.Wait(50) end
-                        Citizen.Wait(100)
+                        Citizen.Wait(50)
                         if CloseToVehicle and invOpen and not isCuffed and not isDead then
                             local playerPed = GetPlayerPed(-1)
                             coords = GetEntityCoords(playerPed)
                             if checkVehicle == 1 then open, vehBone = 4, GetEntityBoneIndexByName(vehicle, 'bonnet')
                             elseif checkVehicle == nil then open, vehBone = 5, GetEntityBoneIndexByName(vehicle, 'boot') elseif checkVehicle == 2 then open, vehBone = 5, GetEntityBoneIndexByName(vehicle, 'boot') else return end
-                            
                             local vehiclePos = GetWorldPositionOfEntityBone(vehicle, vehBone)
                             local pedDistance = #(coords - vehiclePos)
-                    
                             local isClose = false
                             if (open == 5 and checkVehicle == nil) then if pedDistance < 2.0 then isClose = true end elseif (open == 5 and checkVehicle == 2) then if pedDistance < 2.0 then isClose = true end elseif open == 4 then if pedDistance < 2.0 then isClose = true end end
                             if DoesEntityExist(vehicle) and isClose then
                                 CloseToVehicle = true
-                            else
-                                CloseToVehicle = false
-                                lastVehicle = nil
-                                TriggerEvent('hsn-inventory:client:closeInventory')
-                                invOpen = false
-                                currentInventory = nil
-                                ClearPedTasks(PlayerPedId())
-                                Citizen.Wait(1200)
-                                SetVehicleDoorShut(vehicle, open, false)
-                                return
-                            end
-                        elseif not invOpen then
-                            CloseToVehicle = false
-                            lastVehicle = nil
-                            TriggerEvent('hsn-inventory:client:closeInventory')
-                            invOpen = false
-                            currentInventory = nil
-                            ClearPedTasks(PlayerPedId())
-                            Citizen.Wait(1200)
-                            SetVehicleDoorShut(vehicle, open, false)
-                            return
-                        end
+                            else break end
+                        else break end
                     end
+                    CloseToVehicle = false
+                    lastVehicle = nil
+                    TriggerEvent('hsn-inventory:client:closeInventory')
+                    invOpen = false
+                    currentInventory = nil
+                    ClearPedTasks(PlayerPedId())
+                    Citizen.Wait(1200)
+                    SetVehicleDoorShut(vehicle, open, false)
                 end
             else
                 TriggerEvent('hsn-inventory:notification','Vehicle is locked',2)
@@ -226,7 +205,6 @@ AddEventHandler('hsn-inventory:client:openInventory',function(inventory,other)
     --     return
     -- end
     local playerID = GetPlayerServerId(PlayerId())
-    inventory = inventory
     ESX.SetPlayerData('inventory', inventory) -- in progress
     SendNUIMessage({
         message = 'openinventory',
@@ -263,7 +241,6 @@ end)]]
 RegisterNetEvent('hsn-inventory:client:refreshInventory')
 AddEventHandler('hsn-inventory:client:refreshInventory',function(inventory)
     local playerID = GetPlayerServerId(PlayerId())
-    inventory = inventory
     ESX.SetPlayerData('inventory', inventory) -- in progress
     SendNUIMessage({
         message = 'refresh',
@@ -287,27 +264,24 @@ end)
 Citizen.CreateThread(function()
     while true do
         local wait = 1000
-            for k,v in pairs(Drops) do
-                distance = #(GetEntityCoords(PlayerPedId()) - vector3(v.coords.x,v.coords.y,v.coords.z))
-                if distance <= 10.0 then
-                    wait = 1
-                    DrawMarker(2, v.coords.x,v.coords.y,v.coords.z, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.3, 0.2, 0.15, 150, 30, 30, 222, false, false, false, true, false, false, false)
-                    if distance <= 1.2 then
-                        currentDrop = v.dropid
-                        currentDropCoords = v.coords
-                    else
-                        currentDrop = nil
-                        currentDropCoords = nil
-                    end
+        for k,v in pairs(Drops) do
+            distance = #(GetEntityCoords(PlayerPedId()) - vector3(v.coords.x,v.coords.y,v.coords.z))
+            if (invOpen and distance <= 1.2) or distance <= 10.0 then
+                wait = 1
+                DrawMarker(2, v.coords.x,v.coords.y,v.coords.z, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.3, 0.2, 0.15, 150, 30, 30, 222, false, false, false, true, false, false, false)
+                if distance <= 1.2 then
+                    currentDrop = v.dropid
+                    currentDropCoords = v.coords
+                else
+                    currentDrop = nil
+                    currentDropCoords = nil
                 end
             end
-        Citizen.CreateThread(function()
-            Citizen.Wait(100)
-            if not currentInventory and invOpen and currentDrop ~= currentInventory then
-                invOpen = false
-                ExecuteCommand('inventory')
-            end
-        end)
+        end
+        if not currentInventory and invOpen and currentDrop then
+            invOpen = false
+            ExecuteCommand('inventory')
+        end
         Citizen.Wait(wait)
     end
 end)
