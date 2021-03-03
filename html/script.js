@@ -309,7 +309,7 @@
         var Item = $(this).data("ItemData")
         if (Item != undefined) {
             $(".iteminfo").fadeIn(100);
-            $(".iteminfo-label").html('<p>'+Item.label+' <span style="float:right;">(' + (Item.weight).toFixed(0) + 'g)</span></p><hr class="line">')
+            $(".iteminfo-label").html('<p>'+Item.label+' <span style="float:right;">(' + Item.weight + 'g)</span></p><hr class="line">')
             $(".iteminfo-description").html('')
             if (Item.description) { $(".iteminfo-description").append('<p>'+Item.description+'</p>')};
             if (Item.metadata.type) { $(".iteminfo-description").append('<p>'+Item.metadata.type+'</p>')};
