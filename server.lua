@@ -8,6 +8,8 @@ local invopened = {}
 local openedinventories = {}
 local Gloveboxes = {}
 local Trunks = {}
+local notready = true
+
 TriggerEvent('esx:getSharedObject', function(obj) ESX = obj end)
 ESX.RegisterServerCallback('hsn-inventory:getData',function(source, cb)
     local src = source
@@ -70,6 +72,7 @@ exports.ghmattimysql:ready(function()
             end
         end
         print( ('^1[%s]^2 Items have been created!^7'):format('hsn-inventory') )
+        notready = nil
     end)
 end)
 
@@ -709,12 +712,14 @@ end)
 
 RegisterServerEvent('hsn-inventory:server:refreshInventory')
 AddEventHandler('hsn-inventory:server:refreshInventory',function()
+    if notready then return end
     local Player = ESX.GetPlayerFromId(source)
     TriggerClientEvent('hsn-inventory:client:refreshInventory',source,playerInventory[Player.identifier])
 end)
 
 RegisterServerEvent('hsn-inventory:server:openInventory')
 AddEventHandler('hsn-inventory:server:openInventory',function(data, coords)
+    if notready then return end
     local src = source
     local Player = ESX.GetPlayerFromId(src)
     if data ~= nil then
@@ -761,6 +766,7 @@ end)
 
 RegisterServerEvent('hsn-inventory:server:openStash')
 AddEventHandler('hsn-inventory:server:openStash',function(stash)
+    if notready then return end
     local src = source
     local Player = ESX.GetPlayerFromId(src)
     if Stashs[stash.id.name] == nil then
@@ -782,6 +788,7 @@ end)
 
 RegisterServerEvent('hsn-inventory:server:openTargetInventory')
 AddEventHandler('hsn-inventory:server:openTargetInventory',function(TargetId)
+    if notready then return end
     local Player = ESX.GetPlayerFromId(source)
     tPlayer = ESX.GetPlayerFromId(TargetId)
     if source == TargetId then tPlayer = nil end -- Don't allow source and targetid to match
@@ -802,6 +809,7 @@ end)
 
 RegisterServerEvent('hsn-inventory:server:saveInventory')
 AddEventHandler('hsn-inventory:server:saveInventory',function(data)
+    if notready then return end
     SaveItems(data.type,data.invid)
 end)
 
@@ -1302,37 +1310,35 @@ end)
 AddEventHandler('onResourceStop', function(resourceName)
     if (GetCurrentResourceName() == resourceName) then
         local Players = ESX.GetPlayers()
-        for k,v in pairs(Players) do
-            local Player = ESX.GetPlayerFromId(v)
+        for i=1, #Players, 1 do
+            local Player = ESX.GetPlayerFromId(i)
             local inventory = {}
             inventory = json.encode(GetInventory(playerInventory[Player.identifier]))
-                exports.ghmattimysql:execute('UPDATE users SET inventory = @inventory WHERE identifier = @identifier', {
-                    ['@inventory'] = inventory,
-                    ['@identifier'] = Player.identifier
-                })
+            exports.ghmattimysql:execute('UPDATE `users` SET inventory = @inventory WHERE identifier = @identifier', {
+                ['@inventory'] = inventory,
+                ['@identifier'] = Player.identifier
+            })
         end
     end
 end)
 
 AddEventHandler('onResourceStart', function(resourceName)
     if (GetCurrentResourceName() == resourceName) then
-        Citizen.Wait(100)
+        while notready do Citizen.Wait(50) end
+        Citizen.Wait(50)
         local Players = ESX.GetPlayers()
         for k,v in pairs(Players) do
             local Player = ESX.GetPlayerFromId(v)
             playerInventory[Player.identifier] = {}
-            exports.ghmattimysql:ready(function()
-                exports.ghmattimysql:execute('SELECT inventory FROM users WHERE identifier = @identifier', {
-                    ['@identifier'] = Player.identifier
-                }, function(result)
-                    local inventory = {}
-                    if result[1].inventory and result[1].inventory ~= '' then
-                        inventory = json.decode(result[1].inventory)
-                    end
-                    TriggerEvent('hsn-inventory:setplayerInventory', Player.identifier, inventory)
-                end)
+            exports.ghmattimysql:execute('SELECT inventory FROM users WHERE identifier = @identifier', {
+                ['@identifier'] = Player.identifier
+            }, function(result)
+                local inventory = {}
+                if result[1].inventory and result[1].inventory ~= '' then
+                    inventory = json.decode(result[1].inventory)
+                end
+                TriggerEvent('hsn-inventory:setplayerInventory', Player.identifier, inventory)
             end)
-
         end
     end
 end)
