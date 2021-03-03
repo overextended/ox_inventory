@@ -80,26 +80,32 @@
     text-shadow: 1px 1px 0px black;
 }
 
+#leftside-weight-div {
+    top: 60;
+    right: 760;
+    position: fixed;
+}
+
 .leftside-weight {
-    position: absolute;
-    padding-top: 3%;
-    left: 480px;
     color: white;
-    /*width: auto; */
     font-weight: bold;
     font-size: 15px;
-    font-family: "Basic";
+    font-family: 'Signika';
     text-shadow: 1px 1px 0px black;
 }
 
+#rightside-weight-div {
+    top: 60;
+    right: 27;
+    position: fixed;
+}
+
 .rightside-weight {
-    position: absolute;
     color: white;
-    padding-left: 93%;
-    padding-top: 3%; 
     font-weight: bold;
     font-size: 15px;
-    font-family: "Basic";
+    font-family: 'Signika';
+    text-shadow: 1px 1px 0px black;
 }
 
 .ItemBoxes {
