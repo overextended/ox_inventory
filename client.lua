@@ -2,8 +2,9 @@ ESX = nil
 local PlayerData = {}
 local invOpen, isDead, isCuffed, currentWeapon = false, false, false, nil
 local vehStorage = {}
+
 function setVehicleTable()
-	local vehicleTable = {['adder']=1, ['osiris']=0, ['pfister811']=0, ['penetrator']=0, ['autarch']=0, ['bullet']=0, ['cheetah']=0, ['cyclone']=0, ['voltic']=0, ['reaper']=1, ['entityxf']=0, ['t20']=0, ['taipan']=0, ['tempesta']=2, ['tezeract']=0, ['torero']=1, ['turismor']=0, ['fmj']=0, ['gp1']=2, ['infernus ']=0, ['italigtb']=1, ['italigtb2']=1, ['nero']=2, ['nero2']=0, ['vacca']=1, ['vagner']=0, ['visione']=0, ['prototipo']=0, ['xa21']=2, ['zentorno']=0}
+	local vehicleTable = {['adder']=1, ['osiris']=0, ['pfister811']=0, ['penetrator']=0, ['autarch']=0, ['bullet']=0, ['cheetah']=0, ['cyclone']=0, ['voltic']=0, ['reaper']=1, ['entityxf']=0, ['t20']=0, ['taipan']=0, ['tezeract']=0, ['torero']=1, ['turismor']=0, ['fmj']=0, ['infernus ']=0, ['italigtb']=1, ['italigtb2']=1, ['nero2']=0, ['vacca']=1, ['vagner']=0, ['visione']=0, ['prototipo']=0, ['zentorno']=0}
 	--[[
 		0 = vehicle has no storage
 		1 = vehicle storage is in bonnet/hood
@@ -104,7 +105,7 @@ Citizen.CreateThread(function()
             shooting = true
             local currentAmmo = GetAmmoInPedWeapon(PlayerPedId(), currentWeapon.hash)
             if currentAmmo < 0 then currentAmmo = 0 SetPedAmmo(playerPed, currentWeapon.hash, 0) end
-            currentWeapon.ammo = currentAmmo 
+            currentWeapon.ammo = tonumber(currentAmmo)
             print(currentAmmo)
             if currentAmmo == 0 then
                 SetCurrentPedWeapon(PlayerPedId(), currentWeapon.hash, true)
@@ -362,9 +363,6 @@ Citizen.CreateThread(function()
     end
 end)
 
-
-
-
 OpenShop = function(id)
     TriggerServerEvent('hsn-inventory:server:openInventory',{type = 'shop',id = id})
     TriggerServerEvent('inventory:isShopOpen', true)
@@ -374,6 +372,9 @@ OpenStash = function(id)
     TriggerServerEvent('hsn-inventory:server:openStash', {id = id, slots = id.slots, type = 'stash'})
     TriggerServerEvent('inventory:isShopOpen', false)
 end
+
+-- exports['hsn-inventory']:openStash(id)
+exports('openStash', OpenStash)
 
 RegisterNetEvent('hsn-inventory:Client:addnewDrop')
 AddEventHandler('hsn-inventory:Client:addnewDrop',function(coords,drop)
@@ -487,7 +488,7 @@ AddEventHandler('hsn-inventory:client:weapon',function(item)
                 if componentHash then GiveWeaponComponentToPed(playerPed, wepHash, componentHash) end
             end
         end
-        SetPedAmmo(playerPed, wepHash, item.metadata.ammo)
+        SetPedAmmo(playerPed, wepHash, tonumber(item.metadata.ammo))
         TriggerEvent('hsn-inventory:client:addItemNotify',item,'Equipped')
     end
     TriggerEvent('hsn-inventory:currentWeapon', currentWeapon) -- using for another resource
@@ -498,6 +499,7 @@ end)
 RegisterNetEvent('hsn-inventory:addAmmo')
 AddEventHandler('hsn-inventory:addAmmo',function(item, ammo)
     local playerPed = PlayerPedId()
+    ammo.count = tonumber(ammo.count)
     if currentWeapon and currentWeapon.ammotype == ammo.name and ammo.count > 0 then
         local weapon = currentWeapon.hash
         local maxAmmo = GetWeaponClipSize(weapon)
