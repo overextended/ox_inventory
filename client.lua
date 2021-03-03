@@ -665,6 +665,14 @@ AddEventHandler('hsn-inventory:useItem',function(item)
                     TriggerEvent('mythic_hospital:client:ReduceBleed')
                 end
 
+                if item:find('attachment_') then
+                    local component = string.gsub(item, 'attachment_', '')
+                    local componentHash = ESX.GetWeaponComponent(currentWeapon.item.name, component).hash
+	                GiveWeaponComponentToPed(PlayerPedId(), currentWeapon.item.name, componentHash)
+                    table.insert(currentWeapon.item.metadata.components, component)
+                    TriggerServerEvent('hsn-inventory:server:updateWeapon', currentWeapon.slot, currentWeapon.item)
+                end
+
 
                 ------------------------------------------------------------------------------------------------
                 usingItem = false
