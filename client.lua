@@ -88,7 +88,7 @@ Citizen.CreateThread(function()
         for i = 19, 20 do 
             HideHudComponentThisFrame(i) -- remove tab etc.
         end
-        if usingItem then
+        if usingItem or usingWeapon then
             DisableControlAction(0, 24, true)
             DisableControlAction(0, 25, true)
             DisableControlAction(0, 142, true)
@@ -108,6 +108,7 @@ Citizen.CreateThread(function()
             if currentAmmo < 0 then currentAmmo = 0 SetPedAmmo(playerPed, currentWeapon.hash, 0) end
             currentWeapon.ammo = tonumber(currentAmmo)
             if currentAmmo == 0 then
+                ClearPedTasks(PlayerPedId())
                 SetCurrentPedWeapon(PlayerPedId(), currentWeapon.hash, true)
                 TriggerServerEvent('hsn-inventory:server:reloadWeapon', currentWeapon)
             end
@@ -436,6 +437,7 @@ AddEventHandler('hsn-inventory:weapondraw', function(item)
     SetCurrentPedWeapon(PlayerPedId(), 'WEAPON_UNARMED', true)
     Citizen.Wait(800)
     ClearPedSecondaryTask(PlayerPedId())
+    usingWeapon = false
 end)
 
 RegisterNetEvent('hsn-inventory:weaponaway')
@@ -448,18 +450,18 @@ AddEventHandler('hsn-inventory:weaponaway', function()
     if IsPedUsingActionMode(playerPed) then
         SetPedUsingActionMode(playerPed, -1, -1, 1)
     end
+    usingWeapon = false
 end)
 
 RegisterNetEvent('hsn-inventory:client:weapon')
 AddEventHandler('hsn-inventory:client:weapon',function(item)
-    if usingWeapon then return end
+    usingWeapon = true
     TriggerEvent('hsn-inventory:client:closeInventory')
     local playerPed = PlayerPedId()
     local newWeapon = item.metadata.weaponlicense
     local found, wepHash = GetCurrentPedWeapon(playerPed, true)
     if wepHash == -1569615261 then currentWeapon = nil end
     wepHash = GetHashKey(item.name)
-    usingWeapon = true
     if currentWeapon and currentWeapon.item.metadata.weaponlicense == newWeapon then
         TriggerEvent('hsn-inventory:weaponaway')
         Citizen.Wait(1600)
@@ -494,15 +496,12 @@ AddEventHandler('hsn-inventory:client:weapon',function(item)
     end
     TriggerEvent('hsn-inventory:currentWeapon', currentWeapon) -- using for another resource
     Citizen.Wait(100)
-    usingWeapon = false
 end)
 
 RegisterNetEvent('hsn-inventory:addAmmo')
 AddEventHandler('hsn-inventory:addAmmo',function(item, ammo)
-    usingItem = true
     local playerPed = PlayerPedId()
     ammo.count = ESX.Round(ammo.count)
-    print(ammo.count)
     if currentWeapon and currentWeapon.ammotype == ammo.name and ammo.count > 0 then
         local weapon = currentWeapon.hash
         local maxAmmo = GetWeaponClipSize(weapon)
@@ -523,7 +522,6 @@ AddEventHandler('hsn-inventory:addAmmo',function(item, ammo)
 
             ClearPedTasks(playerPed)
             TaskReloadWeapon(playerPed)
-            usingItem = false
             if newAmmo < 0 then newAmmo = 0 end
             SetPedAmmo(playerPed, weapon, newAmmo)
             TriggerServerEvent('hsn-inventory:server:addweaponAmmo',currentWeapon.slot,currentWeapon.item.name,ammo.name,ammo.count,removeAmmo,newAmmo)
