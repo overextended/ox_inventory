@@ -106,7 +106,6 @@ Citizen.CreateThread(function()
             local currentAmmo = GetAmmoInPedWeapon(PlayerPedId(), currentWeapon.hash)
             if currentAmmo < 0 then currentAmmo = 0 SetPedAmmo(playerPed, currentWeapon.hash, 0) end
             currentWeapon.ammo = tonumber(currentAmmo)
-            print(currentAmmo)
             if currentAmmo == 0 then
                 SetCurrentPedWeapon(PlayerPedId(), currentWeapon.hash, true)
                 TriggerServerEvent('hsn-inventory:server:reloadWeapon', currentWeapon)
