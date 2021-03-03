@@ -381,7 +381,7 @@ AddEventHandler('hsn-inventory:server:saveInventoryData',function(data)
             local dropid = data.invid
             if dropid == nil then
                 CreateNewDrop(src,data)
-                TriggerClientEvent('hsn-inventory:client:closeInventory',src,data.invid)
+                --TriggerClientEvent('hsn-inventory:client:closeInventory',src,data.invid)
             else
                 if data.type == 'swap' then
                     TriggerClientEvent('hsn-inventory:client:checkweapon',src,data.toItem)
@@ -668,6 +668,7 @@ CreateNewDrop = function(source,data)
             Drops[dropid].inventory[data.toSlot] = {name = data.newslotItem.name ,label = data.newslotItem.label, weight = data.newslotItem.weight, slot = data.toSlot, count = data.newslotItem.count, description = data.newslotItem.description, metadata = data.newslotItem.metadata, stackable = data.newslotItem.stackable, closeonuse = ESXItems[data.newslotItem.name].closeonuse}
         end
         TriggerClientEvent('hsn-inventory:Client:addnewDrop', -1, coords, dropid)
+        TriggerClientEvent('hsn-inventory:client:openInventory',src,playerInventory[Player.identifier],Drops[dropid])
     else print( ('^1[hsn-inventory]^3 Server was unable to create a drop. Enable OneSync (seriously, it\'s free)') ) end
 end
 
