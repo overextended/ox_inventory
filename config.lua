@@ -1466,6 +1466,7 @@ Config.ItemList = {
     ['black_money'] = {},
     ['keys'] = {},
     ['identification'] = {},
+    ['attachment_flashlight'] = { consume = 1, useTime = 2500 },
 
     ['burger'] = {
         thirst = 0,
