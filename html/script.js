@@ -385,10 +385,6 @@
         var fromSlot = Number(fromSlot)
         var toSlot = Number(toSlot)
         if (toItem !== undefined) { // stack
-            if (fromItem.count < count) {
-                HSN.InventoryMessage('You can not do this',2)
-                return
-            }
             if(((fromItem.name).split("_")[0] == "WEAPON") && ((toItem.name).split("_")[0] == "WEAPON")) {
                 // fromItem durability
                 var durability = HSN.InventoryGetDurability(fromItem.metadata.durability)
@@ -413,7 +409,7 @@
                     invid: toinvId,
                     invid2 :toinvId2
                 }));
-            } else if (fromItem.name == toItem.name && toItem.stackable && count == fromItem.count) { // stack
+            } else if (fromItem.name == toItem.name && toItem.stackable && count <= fromItem.count) { // stack
                 const result = matchingKeys(fromItem.metadata, toItem.metadata);
                 if (result) {
                     var fromcount = Number(fromItem.count) // set strings to number //  idk why i did this but it wasn't working
@@ -444,7 +440,7 @@
                     }));
                     HSN.RemoveItemFromSlot(fromInventory, fromSlot)
                 }
-            } else if (fromItem.name !== toItem.name && count == fromItem.count) { // swap
+            } else if (fromItem.name !== toItem.name && count <= fromItem.count) { // swap
                 if ((toItem.name).split("_")[0] == "WEAPON") {
                     var durability = HSN.InventoryGetDurability(toItem.metadata.durability)
                     fromInventory.find("[inventory-slot=" + fromSlot + "]").html('<div class="item-slot-img"><img src="images/' + toItem.name + '.png'+'" alt="' + toItem.name + '" /></div><div class="item-slot-count"><p>' + toItem.count + ' (' + ((toItem.weight * toItem.count)/1000).toFixed(2) + 'kg)</p></div><div class="item-slot-label"><p><div class="item-slot-durability"><div class="item-slot-durability-bar"><p>100</p></div></div><div class="item-slot-label"><p>' + toItem.label + '</p></div></p></div>');
@@ -485,7 +481,7 @@
                         invid: toinvId,
                         invid2 :toinvId2
                     }));
-                } else {
+                } else if (count <= fromItem.count) {
                     fromInventory.find("[inventory-slot=" + fromSlot + "]").html('<div class="item-slot-img"><img src="images/' + toItem.name + '.png'+'" alt="' + toItem.name + '" /></div><div class="item-slot-count"><p>' + toItem.count + ' (' + ((toItem.weight * toItem.count)/1000).toFixed(2) + 'kg)</p></div><div class="item-slot-label"><p><div class="item-slot-label"><p>' + toItem.label + '</p></div></p></div>');   
                     toInventory.find("[inventory-slot=" + toSlot + "]").html('<div class="item-slot-img"><img src="images/' + fromItem.name + '.png'+'" alt="' + fromItem.name + '" /></div><div class="item-slot-count"><p>' + fromItem.count + ' (' + ((fromItem.weight * fromItem.count)/1000).toFixed(2) + 'kg)</p></div><div class="item-slot-label"><p><div class="item-slot-label"><p>' + fromItem.label + '</p></div></p></div>');
                     fromInventory.find("[inventory-slot=" + fromSlot + "]").data("ItemData", toItem);
