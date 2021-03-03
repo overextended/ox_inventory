@@ -1,70 +1,87 @@
 Config = Config or {}
-Config.PlayerSlot = 51
-
--- Blur the screen while accessing the inventory
-Config.EnableBlur = true
-
--- Max weight as grams
-Config.MaxWeight = 24000
+Config.PlayerSlot = 51          -- Slots in the player inventory
+Config.EnableBlur = true        -- Blur the screen while accessing the inventory
+Config.MaxWeight = 24000        -- Max weight as grams
+Config.DurabilityDecreaseAmount = { ['WEAPON_PISTOL'] = 0.6, ['WEAPON_ADVANCEDRIFLE'] = 0.6, ['WEAPON_APPISTOL'] = 0.4, ['WEAPON_ASSAULTRIFLE'] = 0.8, ['WEAPON_ASSAULTRIFLE_MK2'] = 0.6, ['WEAPON_ASSAULTSMG'] = 0.6, ['WEAPON_BALL'] = 1.0, ['WEAPON_BAT'] = 1.0, ['WEAPON_BATTLEAXE'] = 5.0, ['WEAPON_BOTTLE'] = 5.0, ['WEAPON_BULLPUPRIFLE'] = 0.9, ['WEAPON_BULLPUPRIFLE_MK2'] = 0.7, ['WEAPON_CARBINERIFLE'] = 0.8, ['WEAPON_CARBINERIFLE_MK2'] = 0.7, ['WEAPON_COMBATPDW'] = 3.0, ['WEAPON_COMBATPISTOL'] = 0.5, ['WEAPON_COMPACTRIFLE'] = 0.7, ['WEAPON_CROWBAR'] = 1.0, ['WEAPON_DAGGER'] = 1.0, ['WEAPON_DOUBLEACTION'] = 0.8, ['WEAPON_FLAREGUN'] = 1.0, ['WEAPON_FLASHLIGHT'] = 1.0, ['WEAPON_GOLFCLUB'] = 1.0, ['WEAPON_GUSENBERG'] = 0.8, ['WEAPON_HAMMER'] = 1.0, ['WEAPON_HATCHET'] = 1.0, ['WEAPON_HEAVYPISTOL'] = 0.6, ['WEAPON_KNIFE'] = 1.0, ['WEAPON_KNUCKLE'] = 1.0, ['WEAPON_MACHETE'] = 1.0, ['WEAPON_MACHINEPISTOL'] = 0.7, ['WEAPON_MARKSMANPISTOL'] = 4.0, ['WEAPON_MICROSMG'] = 0.6, ['WEAPON_MINISMG'] = 0.6, ['WEAPON_MOLOTOV'] = 5.0, ['WEAPON_MUSKET'] = 1.0, ['WEAPON_NIGHTSTICK'] = 1.0, ['WEAPON_PISTOL50'] = 0.8, ['WEAPON_PISTOL_MK2'] = 0.5, ['WEAPON_PUMPSHOTGUN'] = 0.8, ['WEAPON_PUMPSHOTGUN_MK2'] = 0.7, ['WEAPON_REVOLVER'] = 0.8, ['WEAPON_REVOLVER_MK2'] = 0.7, ['WEAPON_SAWNOFFSHOTGUN'] = 0.9, ['WEAPON_SMG'] = 0.8, ['WEAPON_SMG_MK2'] = 0.7, ['WEAPON_SNSPISTOL'] = 0.7, ['WEAPON_SNSPISTOL_MK2'] = 0.6, ['WEAPON_SPECIALCARBINE'] = 0.8, ['WEAPON_SPECIALCARBINE_MK2'] = 0.7, ['WEAPON_STONE_HATCHET'] = 1.0, ['WEAPON_STUNGUN'] = 0.6, ['WEAPON_SWITCHBLADE'] = 1.0, ['WEAPON_VINTAGEPISTOL'] = 0.7, ['WEAPON_WRENCH'] = 1.0 }
 
 
-Config.DurabilityDecreaseAmount = {
-    ['WEAPON_PISTOL'] = 0.6,
-    ['WEAPON_ADVANCEDRIFLE'] = 0.6,
-    ['WEAPON_APPISTOL'] = 0.4,
-    ['WEAPON_ASSAULTRIFLE'] = 0.8,
-    ['WEAPON_ASSAULTRIFLE_MK2'] = 0.6,
-    ['WEAPON_ASSAULTSMG'] = 0.6,
-    ['WEAPON_BALL'] = 1.0,
-    ['WEAPON_BAT'] = 1.0,
-    ['WEAPON_BATTLEAXE'] = 5.0,
-    ['WEAPON_BOTTLE'] = 5.0,
-    ['WEAPON_BULLPUPRIFLE'] = 0.9,
-    ['WEAPON_BULLPUPRIFLE_MK2'] = 0.7,
-    ['WEAPON_CARBINERIFLE'] = 0.8,
-    ['WEAPON_CARBINERIFLE_MK2'] = 0.7,
-    ['WEAPON_COMBATPDW'] = 3.0,
-    ['WEAPON_COMBATPISTOL'] = 0.5,
-    ['WEAPON_COMPACTRIFLE'] = 0.7,
-    ['WEAPON_CROWBAR'] = 1.0,
-    ['WEAPON_DAGGER'] = 1.0,
-    ['WEAPON_DOUBLEACTION'] = 0.8,
-    ['WEAPON_FLAREGUN'] = 1.0,
-    ['WEAPON_FLASHLIGHT'] = 1.0,
-    ['WEAPON_GOLFCLUB'] = 1.0,
-    ['WEAPON_GUSENBERG'] = 0.8,
-    ['WEAPON_HAMMER'] = 1.0,
-    ['WEAPON_HATCHET'] = 1.0,
-    ['WEAPON_HEAVYPISTOL'] = 0.6,
-    ['WEAPON_KNIFE'] = 1.0,
-    ['WEAPON_KNUCKLE'] = 1.0,
-    ['WEAPON_MACHETE'] = 1.0,
-    ['WEAPON_MACHINEPISTOL'] = 0.7,
-    ['WEAPON_MARKSMANPISTOL'] = 4.0,
-    ['WEAPON_MICROSMG'] = 0.6,
-    ['WEAPON_MINISMG'] = 0.6,
-    ['WEAPON_MOLOTOV'] = 5.0,
-    ['WEAPON_MUSKET'] = 1.0,
-    ['WEAPON_NIGHTSTICK'] = 1.0,
-    ['WEAPON_PISTOL50'] = 0.8,
-    ['WEAPON_PISTOL_MK2'] = 0.5,
-    ['WEAPON_PUMPSHOTGUN'] = 0.8,
-    ['WEAPON_PUMPSHOTGUN_MK2'] = 0.7,
-    ['WEAPON_REVOLVER'] = 0.8,
-    ['WEAPON_REVOLVER_MK2'] = 0.7,
-    ['WEAPON_SAWNOFFSHOTGUN'] = 0.9,
-    ['WEAPON_SMG'] = 0.8,
-    ['WEAPON_SMG_MK2'] = 0.7,
-    ['WEAPON_SNSPISTOL'] = 0.7,
-    ['WEAPON_SNSPISTOL_MK2'] = 0.6,
-    ['WEAPON_SPECIALCARBINE'] = 0.8,
-    ['WEAPON_SPECIALCARBINE_MK2'] = 0.7,
-    ['WEAPON_STONE_HATCHET'] = 1.0,
-    ['WEAPON_STUNGUN'] = 0.6,
-    ['WEAPON_SWITCHBLADE'] = 1.0,
-    ['WEAPON_VINTAGEPISTOL'] = 0.7,
-    ['WEAPON_WRENCH'] = 1.0,
+Config.ItemList = {
+
+    ['money'] = {},
+    ['black_money'] = {},
+    ['keys'] = {},
+    ['identification'] = {},
+    ['at_flashlight_pistol'] = { component = `COMPONENT_AT_PI_FLSH`, consume = 1, useTime = 2500 },
+    ['at_flashlight_rifle'] = { component = `COMPONENT_AT_AR_FLSH`, consume = 1, useTime = 2500 },
+
+    ['burger'] = {
+        thirst = 0,
+        hunger = 200000,
+        animDict = "mp_player_inteat@burger",
+        anim = "mp_player_int_eat_burger_fp",
+        model = "prop_cs_burger_01",
+        coords = { x = 0.02, y = 0.022, z = -0.02 },
+        rotation = { x = 0.0, y = 5.0, z = 0.0 },
+        useTime = 2500,
+        consume = 1,
+    },
+
+    ['water'] = {
+        thirst = 200000,
+        hunger = 0,
+        animDict = "mp_player_intdrink",
+        anim = "loop_bottle",
+        model = "prop_ld_flow_bottle",
+        coords = { x = 0.03, y = 0.0, z = 0.02 },
+        rotation = { x = 0.0, y = -13.5, z = -1.5 },
+        useTime = 2500,
+        consume = 1,
+    },
+
+    ['cola'] = {
+        thirst = 200000,
+        hunger = 0,
+        animDict = "mp_player_intdrink",
+        anim = "loop_bottle",
+        model = "prop_ecola_can",
+        coords = { x = 0.01, y = 0.0, z = 0.06 },
+        rotation = { x = 5.0, y = -1.5, z = -180.5 },
+        useTime = 2500,
+        consume = 1,
+    },
+
+    ['bandage'] = {
+        animDict = "missheistdockssetup1clipboard@idle_a",
+        anim = "idle_a",
+        flags = 49,
+        model = "prop_rolled_sock_02",
+        coords = { x = -0.14, y = 0.02, z = -0.08 },
+        rotation = { x = -50.0, y = -50.0, z = 0.0 },
+        useTime = 2500,
+        consume = 1,
+    },
+
+    ['identification'] = {  
+        useTime = 0,
+        consume = 0
+    },
+
+    ['lockpick'] = {
+        disableMove = true,
+        animDict = "anim@amb@clubhouse@tutorial@bkr_tut_ig3@",
+        anim = "machinic_loop_mechandplayer",
+        useTime = 2000,
+        consume = 0   
+    },
+
 }
+
+
+Config.Stashes = {
+    { coords = vector3(474.2242, -990.7516, 26.2638), slots = 71, name = 'Police Evidence', job = 'police' },
+    { coords = vector3(301.4374, -599.2748, 43.2821), slots = 71, name = 'Hospital Cloakroom', job = 'ambulance'  }
+}
+
 
 Config.Shops = {
     { -- 24/7
@@ -581,7 +598,7 @@ Config.Shops = {
     },
     --LIQUOR
     {
-        coords = vector3(1135.808, -982.281, 45.415),
+        coords = vector3(1135.808, -982.281, 46.415),
         blip = {
             id = 93,
             name = "Robs Liquor",
@@ -627,7 +644,7 @@ Config.Shops = {
         },
     },
     {
-        coords = vector3(-1487.553, -379.107,  39.163),
+        coords = vector3(-1487.553, -379.107,  40.163),
         blip = {
             id = 93,
             name = "Robs Liquor",
@@ -792,7 +809,7 @@ Config.Shops = {
     -- Police
     {
         job = 'police',
-        coords = vector3(487.235, -997.108, 30.69),
+        coords = vector3(452.40, -980.04, 30.68), -- vector3(487.235, -997.108, 30.69) for gabz
         name = 'Police Armoury',
         blip = {
             id = 110,
@@ -1356,16 +1373,6 @@ Config.Shops = {
     },
 }
 
-Config.Stashes = {
-    {
-        name = 'Police Evidence', 
-        slots = 71,
-        coords = vector3(474.2242, -990.7516, 26.2638),
-        job = 'police'
-    },
-}
-
-
 
 Config.Ammos = {
     ['ammo-38'] = { -- .38 long colt
@@ -1455,76 +1462,4 @@ Config.Ammos = {
             `WEAPON_SAWNOFFSHOTGUN`,
             `WEAPON_SWEEPERSHOTGUN`
     },
-}
-
-
-Config.ItemList = {
-
-    ['money'] = {},
-    ['black_money'] = {},
-    ['keys'] = {},
-    ['identification'] = {},
-    ['at_flashlight_pistol'] = { component = `COMPONENT_AT_PI_FLSH`, consume = 1, useTime = 2500 },
-    ['at_flashlight_rifle'] = { component = `COMPONENT_AT_AR_FLSH`, consume = 1, useTime = 2500 },
-
-    ['burger'] = {
-        thirst = 0,
-        hunger = 200000,
-        animDict = "mp_player_inteat@burger",
-        anim = "mp_player_int_eat_burger_fp",
-        model = "prop_cs_burger_01",
-        coords = { x = 0.02, y = 0.022, z = -0.02 },
-        rotation = { x = 0.0, y = 5.0, z = 0.0 },
-        useTime = 2500,
-        consume = 1,
-    },
-
-    ['water'] = {
-        thirst = 200000,
-        hunger = 0,
-        animDict = "mp_player_intdrink",
-        anim = "loop_bottle",
-        model = "prop_ld_flow_bottle",
-        coords = { x = 0.03, y = 0.0, z = 0.02 },
-        rotation = { x = 0.0, y = -13.5, z = -1.5 },
-        useTime = 2500,
-        consume = 1,
-    },
-
-    ['cola'] = {
-        thirst = 200000,
-        hunger = 0,
-        animDict = "mp_player_intdrink",
-        anim = "loop_bottle",
-        model = "prop_ecola_can",
-        coords = { x = 0.01, y = 0.0, z = 0.06 },
-        rotation = { x = 5.0, y = -1.5, z = -180.5 },
-        useTime = 2500,
-        consume = 1,
-    },
-
-    ['bandage'] = {
-        animDict = "missheistdockssetup1clipboard@idle_a",
-        anim = "idle_a",
-        flags = 49,
-        model = "prop_rolled_sock_02",
-        coords = { x = -0.14, y = 0.02, z = -0.08 },
-        rotation = { x = -50.0, y = -50.0, z = 0.0 },
-        useTime = 2500,
-        consume = 1,
-    },
-
-    ['identification'] = {  
-        useTime = 0,
-        consume = 0
-    },
-
-    ['lockpick'] = {
-        disableMove = true,
-        animDict = "anim@amb@clubhouse@tutorial@bkr_tut_ig3@",
-        anim = "machinic_loop_mechandplayer",
-        useTime = 2000,
-        consume = 0   
-    },
-
 }
