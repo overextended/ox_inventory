@@ -101,13 +101,12 @@ Citizen.CreateThread(function()
                 end
             end
         end
-
         if currentWeapon ~= nil and IsPedShooting(PlayerPedId()) then
-            usingWeapon = true
             local currentAmmo = GetAmmoInPedWeapon(PlayerPedId(), currentWeapon.hash)
             if currentAmmo < 0 then currentAmmo = 0 SetPedAmmo(playerPed, currentWeapon.hash, 0) end
             currentWeapon.ammo = tonumber(currentAmmo)
             if currentAmmo == 0 then
+                usingWeapon = true
                 ClearPedTasks(PlayerPedId())
                 SetCurrentPedWeapon(PlayerPedId(), currentWeapon.hash, true)
                 TriggerServerEvent('hsn-inventory:server:reloadWeapon', currentWeapon)
@@ -521,8 +520,7 @@ AddEventHandler('hsn-inventory:addAmmo',function(item, ammo)
             ClearPedTasks(playerPed)
             TaskReloadWeapon(playerPed)
             if newAmmo < 0 then newAmmo = 0 end
-            SetPedAmmo(playerPed, weapon, newAmmo)            
-            TriggerEvent('hsn-inventory:client:addItemNotify',currentWeapon.item,'Loaded '..removeAmmo..'x')
+            SetPedAmmo(playerPed, weapon, newAmmo)
             TriggerServerEvent('hsn-inventory:server:addweaponAmmo',currentWeapon.slot,currentWeapon.item.name,ammo.name,ammo.count,removeAmmo,newAmmo)
             TriggerEvent('hsn-inventory:notification','Reloaded')
         end
