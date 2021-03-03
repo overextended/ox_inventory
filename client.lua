@@ -197,14 +197,16 @@ AddEventHandler("hsn-inventory:client:openInventory",function(inventory,other)
     --     return
     -- end
     local playerID = GetPlayerServerId(PlayerId())
-    SendNUIMessage({
-        message = 'openinventory',
-        inventory = inventory,
-        slots = Config.PlayerSlot,
-        name = GetPlayerName(PlayerId())..' ['.. playerID ..']',
-        maxweight = ESX.GetConfig().MaxWeight,
-        rightinventory = other
-    })
+    ESX.TriggerServerCallback("hsn-inventory:getCharName",function(charName)
+        SendNUIMessage({
+            message = 'openinventory',
+            inventory = inventory,
+            slots = Config.PlayerSlot,
+            name = charName .. ' [' .. playerID .. ']',
+            maxweight = Config.MaxWeight,
+            rightinventory = other
+        })
+    end, playerID)
     TriggerServerEvent("hsn-inventory:setcurrentInventory",other)
     if other == nil then movement = true else movement = false end
     SetNuiFocusAdvanced(true, true, movement)
@@ -230,13 +232,15 @@ end)]]
 RegisterNetEvent("hsn-inventory:client:refreshInventory")
 AddEventHandler("hsn-inventory:client:refreshInventory",function(inventory)
     local playerID = GetPlayerServerId(PlayerId())
-    SendNUIMessage({
-        message = 'refresh',
-        inventory = inventory,
-        slots = Config.PlayerSlot,
-        name = GetPlayerName(PlayerId())..' ['.. playerID ..']',
-        maxweight = ESX.GetConfig().MaxWeight,
-    })
+    ESX.TriggerServerCallback("hsn-inventory:getCharName",function(charName)
+        SendNUIMessage({
+            message = 'refresh',
+            inventory = inventory,
+            slots = Config.PlayerSlot,
+            name = charName .. ' [' .. playerID .. ']',
+            maxweight = Config.MaxWeight,
+        })
+    end, playerID)
 end)
 
 
