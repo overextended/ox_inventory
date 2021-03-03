@@ -311,19 +311,13 @@
             $(".iteminfo").fadeIn(100);
             $(".iteminfo-label").html('<p>'+Item.label+' <span style="float:right;">(' + (Item.weight).toFixed(0) + 'g)</span></p><hr class="line">')
             $(".iteminfo-description").html('')
-            if (Item.description != undefined || null) { $(".iteminfo-description").append('<p>'+Item.description+'</p>')};
-            if (Item.metadata.type != undefined || null) { $(".iteminfo-description").append('<p>'+Item.metadata.type+'</p>')};
-            if (Item.metadata.description != undefined || null) { $(".iteminfo-description").append('<p>'+Item.metadata.description+'</p>')};
+            if (Item.description) { $(".iteminfo-description").append('<p>'+Item.description+'</p>')};
+            if (Item.metadata.type) { $(".iteminfo-description").append('<p>'+Item.metadata.type+'</p>')};
+            if (Item.metadata.description) { $(".iteminfo-description").append('<p>'+Item.metadata.description+'</p>')};
             if ((Item.name).split("_")[0] == "WEAPON") {
-                if (Item.metadata.weaponlicense == null || undefined) {
-                    Item.metadata.weaponlicense = "HSN"
-                }
-                if (Item.metadata.durability == null || undefined) {
-                    Item.metadata.durability = 100
-                }
-                if (Item.metadata.ammo == null || undefined) {
-                    Item.metadata.ammo = "Unknown"
-                }
+                if (Item.metadata.weaponlicense) { Item.metadata.weaponlicense = "HSN" }
+                if (Item.metadata.durability) { Item.metadata.durability = 100 }
+                if (Item.metadata.ammo) { Item.metadata.ammo = "Unknown" }
                 $(".iteminfo-description").append('<p>Weapon Ammo: '+Item.metadata.ammo+'</p>')
                 $(".iteminfo-description").append('<p>Durability: '+parseInt(Item.metadata.durability).toFixed(0)+''+'%</p>')
                 $(".iteminfo-description").append('<p>Serial Number: '+Item.metadata.weaponlicense+'</p>')
