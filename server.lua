@@ -55,6 +55,14 @@ IfInventoryCanCarry = function(inventory, maxweight, newWeight)
 	return returnData
 end
 
+GetCharName = function(player)
+    local result = exports.ghmattimysql:executeSync('SELECT * FROM users WHERE identifier = @identifier', {
+        ['@identifier'] = player.identifier
+    })
+
+	return result[1].firstname .. ' ' .. result[1].lastname
+end
+
 GetRandomLicense = function(text)
     if not text then text = 'HSN' end
     local random = math.random(111111,999999)
@@ -1162,8 +1170,10 @@ AddEventHandler("hsn-inventory:server:getItemCount",function(source,cb,item)
     end
 end)
 
-
-
+ESX.RegisterServerCallback("hsn-inventory:getCharName",function(source, cb, playerId)
+    local Player = ESX.GetPlayerFromId(playerId)
+    cb(GetCharName(Player))
+end)
 
 ESX.RegisterServerCallback("hsn-inventory:getItemCount",function(source, cb, item)
     local src = source
