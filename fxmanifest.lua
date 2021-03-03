@@ -1,7 +1,7 @@
 fx_version 'adamant'
 game 'gta5'
 description 'hsn-inventory https://discord.gg/6FQhKDXBJ6'
-version '1.4.1'
+version '1.4.2'
 
 client_scripts {
     'config.lua',
