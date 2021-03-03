@@ -207,7 +207,7 @@ RemovePlayerInventory = function(identifier,item, count, slot, metadata)
                                 playerInventory[identifier][j.slot] = nil
                                 count = count - tempCount
                             elseif j.count - count > 0 then
-                                playerInventory[identifier][j.slot].count = j.count - count
+                                playerInventory[identifier][j.slot].count = playerInventory[identifier][j.slot].count - count
                             elseif j.count - count == 0 then
                                 playerInventory[identifier][j.slot] = nil
                             end
@@ -1003,12 +1003,6 @@ AddEventHandler('hsn-inventory:server:reloadWeapon',function(weapon)
     local ammo = {}
     ammo.name = weapon.ammotype
     ammo.count = exports['hsn-inventory']:getItemCount(source,ammo.name)
-    for k, v in pairs(playerInventory[Player.identifier]) do
-        if v.name:find(ammo.name) then
-            ammo.count = v
-            break  
-        end
-    end
     if ammo.count > 0 then TriggerClientEvent('hsn-inventory:addAmmo',source,weapon.item.name,ammo) end
 end)
 
