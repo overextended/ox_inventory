@@ -513,17 +513,16 @@ AddEventHandler('hsn-inventory:addAmmo',function(item, ammo)
         else
             local newAmmo = 0
             if curAmmo < maxAmmo then missingAmmo = maxAmmo - curAmmo end
-
             if missingAmmo > ammo.count then
                 newAmmo = ammo.count + curAmmo removeAmmo = ammo.count - curAmmo
             else
                 newAmmo = tonumber(maxAmmo) removeAmmo = missingAmmo
             end
-
             ClearPedTasks(playerPed)
             TaskReloadWeapon(playerPed)
             if newAmmo < 0 then newAmmo = 0 end
-            SetPedAmmo(playerPed, weapon, newAmmo)
+            SetPedAmmo(playerPed, weapon, newAmmo)            
+            TriggerEvent('hsn-inventory:client:addItemNotify',currentWeapon.item,'Loaded '..removeAmmo..'x')
             TriggerServerEvent('hsn-inventory:server:addweaponAmmo',currentWeapon.slot,currentWeapon.item.name,ammo.name,ammo.count,removeAmmo,newAmmo)
             TriggerEvent('hsn-inventory:notification','Reloaded')
         end
