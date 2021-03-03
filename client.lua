@@ -2,6 +2,7 @@ ESX = nil
 local PlayerData = {}
 local invOpen, isDead, isCuffed, currentWeapon = false, false, false, nil
 local vehStorage = {}
+local usingItem = false
 
 function setVehicleTable()
 	local vehicleTable = {['adder']=1, ['osiris']=0, ['pfister811']=0, ['penetrator']=0, ['autarch']=0, ['bullet']=0, ['cheetah']=0, ['cyclone']=0, ['voltic']=0, ['reaper']=1, ['entityxf']=0, ['t20']=0, ['taipan']=0, ['tezeract']=0, ['torero']=1, ['turismor']=0, ['fmj']=0, ['infernus ']=0, ['italigtb']=1, ['italigtb2']=1, ['nero2']=0, ['vacca']=1, ['vagner']=0, ['visione']=0, ['prototipo']=0, ['zentorno']=0}
@@ -87,7 +88,7 @@ Citizen.CreateThread(function()
         for i = 19, 20 do 
             HideHudComponentThisFrame(i) -- remove tab etc.
         end
-        if swappingWeapon then
+        if usingItem then
             DisableControlAction(0, 24, true)
             DisableControlAction(0, 25, true)
             DisableControlAction(0, 142, true)
@@ -451,14 +452,14 @@ end)
 
 RegisterNetEvent('hsn-inventory:client:weapon')
 AddEventHandler('hsn-inventory:client:weapon',function(item)
-    if swappingWeapon or shooting then return end
+    if usingItem or shooting then return end
     TriggerEvent('hsn-inventory:client:closeInventory')
     local playerPed = PlayerPedId()
     local newWeapon = item.metadata.weaponlicense
     local found, wepHash = GetCurrentPedWeapon(playerPed, true)
     if wepHash == -1569615261 then currentWeapon = nil end
     wepHash = GetHashKey(item.name)
-    swappingWeapon = true
+    usingItem = true
     if currentWeapon and currentWeapon.item.metadata.weaponlicense == newWeapon  then
         TriggerEvent('hsn-inventory:weaponaway')
         Citizen.Wait(1600)
@@ -492,11 +493,12 @@ AddEventHandler('hsn-inventory:client:weapon',function(item)
     end
     TriggerEvent('hsn-inventory:currentWeapon', currentWeapon) -- using for another resource
     Citizen.Wait(100)
-    swappingWeapon = nil
+    usingItem = nil
 end)
 
 RegisterNetEvent('hsn-inventory:addAmmo')
 AddEventHandler('hsn-inventory:addAmmo',function(item, ammo)
+    usingItem = true
     local playerPed = PlayerPedId()
     ammo.count = tonumber(ammo.count)
     if currentWeapon and currentWeapon.ammotype == ammo.name and ammo.count > 0 then
@@ -520,6 +522,7 @@ AddEventHandler('hsn-inventory:addAmmo',function(item, ammo)
             TriggerEvent('hsn-inventory:notification','Reloaded')
         end
     end
+    usingItem = false
 end)
 
 
@@ -610,7 +613,6 @@ AddEventHandler('onResourceStop', function(resourceName)
     end
 end)
 
-local usingItem = false
 RegisterNetEvent('hsn-inventory:useItem')
 AddEventHandler('hsn-inventory:useItem',function(item)
     if item.name then item = item.name end
@@ -620,19 +622,33 @@ AddEventHandler('hsn-inventory:useItem',function(item)
         if not data or not next(data) then return end
         if xItem.closeonuse then TriggerEvent('hsn-inventory:client:closeInventory') end
         if xItem.count > 0 then
-            usingItem = true
-            if data.consume then TriggerServerEvent('hsn-inventory:client:removeItem', item, data.consume) end
             if not data.animDict then data.animDict = 'pickup_object' end
             if not data.anim then data.anim = 'putdown_low' end
             if not data.flags then data.flags = 48 end
 
             -- Trigger effects before the progress bar
+            if data.component then
+                if not currentWeapon then return end
+                local type = item:gsub('at_', '')
+                if HasPedGotWeaponComponent(PlayerPedId(), currentWeapon.hash, data.component) then
+                    TriggerEvent('hsn-inventory:notification','This weapon already has a '..xItem.label,2) return
+                end
+                local result, esxWeapon = ESX.GetWeapon(currentWeapon.item.name)
+                for k,v in ipairs(esxWeapon.components) do
+                    if v.hash == data.component then
+                        component = {name = v.name, hash = data.component}
+                        break
+                    end
+                end
+                if component.hash ~= data.component then TriggerEvent('hsn-inventory:notification','This weapon is imcompatible with '..xItem.label,2) return end
+            end
 
             if item == 'lockpick' then
                 TriggerEvent('esx_lockpick:onUse')
             end
 
 
+            usingItem = true
             ------------------------------------------------------------------------------------------------
             exports['mythic_progbar']:Progress({
                 name = 'useitem',
@@ -665,16 +681,15 @@ AddEventHandler('hsn-inventory:useItem',function(item)
                     TriggerEvent('mythic_hospital:client:ReduceBleed')
                 end
 
-                if item:find('attachment_') then
-                    local component = string.gsub(item, 'attachment_', '')
-                    local componentHash = ESX.GetWeaponComponent(currentWeapon.item.name, component).hash
-	                GiveWeaponComponentToPed(PlayerPedId(), currentWeapon.item.name, componentHash)
-                    table.insert(currentWeapon.item.metadata.components, component)
+                if data.component then
+	                GiveWeaponComponentToPed(PlayerPedId(), currentWeapon.item.name, data.component)
+                    table.insert(currentWeapon.item.metadata.components, component.name)
                     TriggerServerEvent('hsn-inventory:server:updateWeapon', currentWeapon.slot, currentWeapon.item)
                 end
 
 
                 ------------------------------------------------------------------------------------------------
+                if data.consume then TriggerServerEvent('hsn-inventory:client:removeItem', item, data.consume) end
                 usingItem = false
             end)
         end
