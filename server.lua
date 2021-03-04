@@ -641,7 +641,6 @@ AddEventHandler('hsn-inventory:server:saveInventoryData',function(data)
             TriggerClientEvent('hsn-inventory:client:refreshInventory',src,playerInventory[Player.identifier])
             return TriggerClientEvent('hsn-inventory:notification',src,'You can not return your items',2)
         end
-        MoneySync(Player)
     end
 end) 
 
@@ -687,14 +686,15 @@ AddEventHandler('hsn-inventory:server:refreshInventory',function()
     TriggerClientEvent('hsn-inventory:client:refreshInventory',source,playerInventory[Player.identifier])
 end)
 
-MoneySync = function(Player)
-    for k,v in pairs(Config.Accounts) do
-        local money = GetItemCount(Player.identifier, v)
-        local moneyaccount = Player.getAccount(v).money
-        if moneyaccount ~= money then Player.setAccountMoney(v, money) end
-        if moneyaccount - money < 0 then RemovePlayerInventory(Player.identifier, v, money-moneyaccount) end
+MoneySync = function(source, account, amount, type)
+    local Player = ESX.GetPlayerFromId(source)
+    if Config.Accounts[account] then
+        local current = Player.getAccount(account, amount)
+        if type == 'add' then Player.addAccountMoney(account, amount) elseif type == 'remove' then Player.removeAccountMoney(account, amount) else Player.setAccountMoney(account, amount) end
     end
 end
+
+exports('MoneySync', MoneySync)
 
 RegisterServerEvent('hsn-inventory:server:openInventory')
 AddEventHandler('hsn-inventory:server:openInventory',function(data, coords)
@@ -1349,9 +1349,9 @@ end
 
 -- Override the default ESX commands
 ESX.RegisterCommand({'giveitem', 'additem'}, 'admin', function(xPlayer, args, showError)
+    if args.item == 'money' or args.item == 'black_money' then return end
     if not ESXItems[args.item] then print('[^2hsn-inventory^0] - item not found') return end
 	args.playerId.addInventoryItem(args.item, args.count)
-    if args.item == 'money' or args.item == 'black_money' then MoneySync(xPlayer) end
 end, true, {help = 'give an item to a player', validate = true, arguments = {
 	{name = 'playerId', help = 'player id', type = 'player'},
 	{name = 'item', help = 'item name', type = 'string'},
@@ -1359,12 +1359,12 @@ end, true, {help = 'give an item to a player', validate = true, arguments = {
 }})
 
 ESX.RegisterCommand({'giveaccountmoney', 'givemoney'}, 'admin', function(xPlayer, args, showError)
-	if args.playerId.getAccount(args.account) then
+	local getAccount = args.playerId.getAccount(args.account)
+	if getAccount then
         if args.account == 'bank' then
 		    args.playerId.addAccountMoney(args.account, args.amount)
         else
             args.playerId.addInventoryItem(args.account, args.amount)
-            MoneySync(xPlayer)
         end
 	else
 		showError('invalid account name')
@@ -1376,34 +1376,32 @@ end, true, {help = 'give account money', validate = true, arguments = {
 }})
 
 ESX.RegisterCommand({'removeaccountmoney', 'removemoney'}, 'admin', function(xPlayer, args, showError)
-	if args.playerId.getAccount(args.account) then
+	local getAccount = args.playerId.getAccount(args.account)
+	if getAccount and getAccount.money - args.amount >= 0 then
         if args.account == 'bank' then
 		    args.playerId.removeAccountMoney(args.account, args.amount)
         else
             args.playerId.removeInventoryItem(args.account, args.amount)
-            MoneySync(xPlayer)
         end
 	else
 		showError('invalid account name')
 	end
-end, true, {help = 'give account money', validate = true, arguments = {
+end, true, {help = 'remove account money', validate = true, arguments = {
 	{name = 'playerId', help = 'player id', type = 'player'},
 	{name = 'account', help = 'valid account name', type = 'string'},
-	{name = 'amount', help = 'amount to add', type = 'number'}
+	{name = 'amount', help = 'amount to remove', type = 'number'}
 }})
 
 ESX.RegisterCommand({'setaccountmoney', 'setmoney'}, 'admin', function(xPlayer, args, showError)
-	if args.playerId.getAccount(args.account) then
+    local getAccount = args.playerId.getAccount(args.account)
+	if getAccount then
         if args.account == 'bank' then
 		    args.playerId.setAccountMoney(args.account, args.amount)
         else
-            local count = GetItemCount(xPlayer.identifier, args.account)
-            if count > args.amount then
-                args.playerId.removeInventoryItem(args.account, count - args.amount)
-                MoneySync(xPlayer)
-            else
-                args.playerId.addInventoryItem(args.account, args.amount - count)
-                MoneySync(xPlayer)
+            local amount = exports['hsn-inventory']:getItemCount(args.playerId.source,args.account)
+            args.playerId.removeInventoryItem(args.account, amount)
+            if args.amount > 0 then
+                args.playerId.addInventoryItem(args.account, args.amount)
             end
         end
 	else
