@@ -1397,7 +1397,14 @@ ESX.RegisterCommand({'setaccountmoney', 'setmoney'}, 'admin', function(xPlayer, 
         if args.account == 'bank' then
 		    args.playerId.setAccountMoney(args.account, args.amount)
         else
-            -- to do
+            local count = GetItemCount(xPlayer.identifier, args.account)
+            if count > args.amount then
+                args.playerId.removeInventoryItem(args.account, count - args.amount)
+                MoneySync(xPlayer)
+            else
+                args.playerId.addInventoryItem(args.account, args.amount - count)
+                MoneySync(xPlayer)
+            end
         end
 	else
 		showError('invalid account name')
