@@ -248,7 +248,7 @@ AddEventHandler('hsn-inventory:client:refreshInventory',function(inventory)
         inventory = inventory,
         slots = Config.PlayerSlot,
         name = playerName..' ['.. playerID ..']',
-        maxweight = Config.MaxWeight,
+        maxweight = Config.MaxWeight
     })
 end)
 
@@ -294,7 +294,7 @@ AddEventHandler('hsn-inventory:client:addItemNotify',function(item,text)
         item = item,
         text = text
     })
-    TriggerServerEvent('hsn-inventory:server:refreshInventory')
+    TriggerEvent('hsn-inventory:client:refreshInventory')
 end)
 
 
@@ -603,6 +603,9 @@ AddEventHandler('hsn-inventory:notification',function(message, mtype)
     end
     --print(message)
     TriggerEvent('mythic_notify:client:SendAlert', {type = 'inform', text = message, length = 2500,style = mtype})
+    if invOpen then
+        TriggerEvent('hsn-inventory:client:refreshInventory', PlayerData.inventory)
+    end
 end)
 
 RegisterCommand('-nui', function()
