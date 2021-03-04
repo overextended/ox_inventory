@@ -1314,8 +1314,8 @@ AddEventHandler('hsn-inventory:setplayerInventory',function(identifier,inventory
         v.count = tonumber(v.count)
         if v.count < 0 then v.count = 0 print('Item `%s` had a negative count and was set to `0`'):format(v.name) end
         if v.metadata.ammoweight then weight = v.metadata.ammoweight + ESXItems[v.name].weight else weight = tonumber(ESXItems[v.name].weight) end
-        if Config.Accounts[v.name] then local money = Player.getAccount(v.name).money if v.count < money then v.count = moey end end
         playerInventory[identifier][v.slot] = {name = v.name ,label = ESXItems[v.name].label, weight = tonumber(weight), slot = v.slot, count = v.count, description = ESXItems[v.name].description, metadata = v.metadata, stackable = ESXItems[v.name].stackable}
+        if Config.Accounts[v.name] then local money = Player.getAccount(v.name).money local itemCount = GetItemCount(identifier, v.name) if itemCount < money then Player.addInventoryItem(v.name, money - itemCount) elseif itemCount > money then Player.removeInventoryItem(v.name, itemCount - money) end end
     end
 end)
 
