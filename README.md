@@ -9,9 +9,11 @@ Hasan's discord is available at https://discord.gg/6FQhKDXBJ6<br><br>
 Further development of this resource is continuing at <a href='https://github.com/thelindat/hsn-inventory'>thelindat/hsn-inventory</a>.<br>All stable updates will be submitted to the main repository as pull requests.</p>
 <br><br><br>
 
-<h1 align='center'>Installation Guide</h1><p align='center'>Requires either ESX 1.2, ESX Final, or ExtendedMode<br>OneSync must be enabled</p>
+<h1 align='center'>Installation Guide</h1>
 <h3 align='center'> <a href='https://github.com/thelindat/hsn-inventory/wiki'>More guides on the wiki</a> </h3>
 
+
+<p align='center'>Requires either ESX 1 Final, or ExtendedMode<br>OneSync must be enabled</p>
 
 ## ghmattimysql
 * Add this function to wait for sql connection to be established
@@ -205,10 +207,11 @@ end, xPlayer.identifier)
 `[@inventory'] = json.encode(xPlayer.getInventory(true))` with `['@inventory'] = json.encode(inventory)`
 
 <br>
-<h3 align='center'>If your framework doesn't load/CreateExtendedPlayer you have incorrectly inserted a function somewhere</h3>
+<h3 align='center'>If your framework doesn't load/CreateExtendedPlayer double check your edits</h3>
 
 ## Setting up items
 * As long as you have the above edits in place, you can continue to use ESX.RegiserUsableItem as you have been.  
 * Alternatively you are able to add items directly to hsn-inventory in `Config.ItemList`  
 * Modify the `hsn-inventory:useItem` event to add effects from using an item.  
 * Any items registered with hsn will override the default `esx:useItem` event, so don't worry about overlap.
+* You can use `xPlayer.useItem(item, type)` to use an item with specific `metadata.type`
