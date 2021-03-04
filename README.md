@@ -38,7 +38,7 @@ end)
 * Modifications to inventory related functions have changed _(1.4.4)_
 * Vanilla files: <a href='https://github.com/esx-framework/es_extended/blob/v1-final/server/classes/player.lua'>ESX Final</a> | <a href='https://github.com/esx-framework/es_extended/blob/1.2.0/server/classes/player.lua'>ESX 1.2</a> | <a href='https://github.com/extendedmode/extendedmode/blob/master/server/classes/player.lua'>EXM</a>
 ### server/classes/player.lua
-Insert the below code (replace the existing functions)
+* Search for `self.setAccountMoney`, delete everything from there until `self.canSwapItem` and replace with
 ```
 	self.setAccountMoney = function(accountName, money)
 		money = tonumber(money)
@@ -205,6 +205,7 @@ end, xPlayer.identifier)
 `[@inventory'] = json.encode(xPlayer.getInventory(true))` with `['@inventory'] = json.encode(inventory)`
 
 <br>
+<h3 align='center'>If your framework doesn't load/CreateExtendedPlayer you have incorrectly inserted a function somewhere</h3>
 
 ## Setting up items
 * As long as you have the above edits in place, you can continue to use ESX.RegiserUsableItem as you have been.  
