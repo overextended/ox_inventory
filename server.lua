@@ -238,8 +238,7 @@ RegisterNetEvent('hsn-inventory:server:saveInventoryData')
 AddEventHandler('hsn-inventory:server:saveInventoryData',function(data)
     local src = source
     local Player = ESX.GetPlayerFromId(src)
-    if data ~= nil then
-        
+    if data ~= nil then        
         if data.frominv == data.toinv and (data.frominv == 'Playerinv') and not shopOpen then
             if data.type == 'swap' and not shopOpen then
                 TriggerClientEvent('hsn-inventory:client:checkweapon',src,data.fromItem)
@@ -642,14 +641,9 @@ AddEventHandler('hsn-inventory:server:saveInventoryData',function(data)
             TriggerClientEvent('hsn-inventory:client:refreshInventory',src,playerInventory[Player.identifier])
             return TriggerClientEvent('hsn-inventory:notification',src,'You can not return your items',2)
         end
-        -- Sync ESX money with hsn-inventory
-        local money = exports['hsn-inventory']:getItemCount(src,'money')
-        Player.setMoney(money)
-        local blackmoney = exports['hsn-inventory']:getItemCount(src,'black_money')
-        Player.setAccountMoney('black_money', blackmoney)
+        MoneySync(Player)
     end
-end)
-
+end) 
 
 CreateNewDrop = function(source,data)
     local src = source
@@ -681,17 +675,6 @@ CreateNewDrop = function(source,data)
     else print( ('^1[hsn-inventory]^3 Server was unable to create a drop. Enable OneSync (seriously, it\'s free)') ) end
 end
 
--- Override the default ESX command
-ESX.RegisterCommand({'giveitem', 'additem'}, 'admin', function(xPlayer, args, showError)
-    if args.item == 'money' or args.item == 'black_money' then return end
-    if not ESXItems[args.item] then print('[^2hsn-inventory^0] - item not found') return end
-	args.playerId.addInventoryItem(args.item, args.count)
-end, true, {help = 'give an item to a player', validate = true, arguments = {
-	{name = 'playerId', help = 'player id', type = 'player'},
-	{name = 'item', help = 'item name', type = 'string'},
-	{name = 'count', help = 'item count', type = 'number'}
-}})
-
 RegisterCommand('fixinv', function(source, args, rawCommand)
     local Player = ESX.GetPlayerFromId(source)
     TriggerClientEvent('hsn-inventory:client:refreshInventory',source,playerInventory[Player.identifier])
@@ -703,6 +686,15 @@ AddEventHandler('hsn-inventory:server:refreshInventory',function()
     local Player = ESX.GetPlayerFromId(source)
     TriggerClientEvent('hsn-inventory:client:refreshInventory',source,playerInventory[Player.identifier])
 end)
+
+MoneySync = function(Player)
+    for k,v in pairs(Config.Accounts) do
+        local money = GetItemCount(Player.identifier, v)
+        local moneyaccount = Player.getAccount(v).money
+        if moneyaccount ~= money then Player.setAccountMoney(v, money) end
+        if moneyaccount - money < 0 then RemovePlayerInventory(Player.identifier, v, money-moneyaccount) end
+    end
+end
 
 RegisterServerEvent('hsn-inventory:server:openInventory')
 AddEventHandler('hsn-inventory:server:openInventory',function(data, coords)
@@ -1069,8 +1061,6 @@ AddEventHandler('hsn-inventory:server:decreasedurability',function(weapon)
     end
 end)
 
-
-
 RegisterServerEvent('hsn-inventory:server:addweaponAmmo')
 AddEventHandler('hsn-inventory:server:addweaponAmmo',function(slot,weapon,item,totalAmmo,removeAmmo,newAmmo)
     local src = source
@@ -1310,7 +1300,7 @@ AddEventHandler('hsn-inventory:setplayerInventory',function(identifier,inventory
     for k,v in pairs (inventory) do
         if v.metadata == nil then v.metadata = {} end
         if v.metadata.ammoweight then weight = v.metadata.ammoweight + ESXItems[v.name].weight else weight = ESXItems[v.name].weight end
-        playerInventory[identifier][v.slot] = {name = v.name ,label = ESXItems[v.name].label, weight = weight, slot = v.slot, count = v.count, description = ESXItems[v.name].description, metadata = v.metadata, stackable = ESXItems[v.name].stackable}
+        playerInventory[identifier][v.slot] = {name = v.name ,label = ESXItems[v.name].label, weight = tonumber(weight), slot = v.slot, count = v.count, description = ESXItems[v.name].description, metadata = v.metadata, stackable = ESXItems[v.name].stackable}
     end
 end)
 
@@ -1354,3 +1344,66 @@ end)
 function getPlayerIdentification(xPlayer)
     return ('Sex: %s | Height: %s<br>DOB: %s (%s)'):format( xPlayer.get('sex'), xPlayer.get('height'), xPlayer.get('dateofbirth'), xPlayer.getIdentifier() )
 end
+
+
+
+-- Override the default ESX commands
+ESX.RegisterCommand({'giveitem', 'additem'}, 'admin', function(xPlayer, args, showError)
+    if not ESXItems[args.item] then print('[^2hsn-inventory^0] - item not found') return end
+	args.playerId.addInventoryItem(args.item, args.count)
+    if args.item == 'money' or args.item == 'black_money' then MoneySync(xPlayer) end
+end, true, {help = 'give an item to a player', validate = true, arguments = {
+	{name = 'playerId', help = 'player id', type = 'player'},
+	{name = 'item', help = 'item name', type = 'string'},
+	{name = 'count', help = 'item count', type = 'number'}
+}})
+
+ESX.RegisterCommand({'giveaccountmoney', 'givemoney'}, 'admin', function(xPlayer, args, showError)
+	if args.playerId.getAccount(args.account) then
+        if args.account == 'bank' then
+		    args.playerId.addAccountMoney(args.account, args.amount)
+        else
+            args.playerId.addInventoryItem(args.account, args.amount)
+            MoneySync(xPlayer)
+        end
+	else
+		showError('invalid account name')
+	end
+end, true, {help = 'give account money', validate = true, arguments = {
+	{name = 'playerId', help = 'player id', type = 'player'},
+	{name = 'account', help = 'valid account name', type = 'string'},
+	{name = 'amount', help = 'amount to add', type = 'number'}
+}})
+
+ESX.RegisterCommand({'removeaccountmoney', 'removemoney'}, 'admin', function(xPlayer, args, showError)
+	if args.playerId.getAccount(args.account) then
+        if args.account == 'bank' then
+		    args.playerId.removeAccountMoney(args.account, args.amount)
+        else
+            args.playerId.removeInventoryItem(args.account, args.amount)
+            MoneySync(xPlayer)
+        end
+	else
+		showError('invalid account name')
+	end
+end, true, {help = 'give account money', validate = true, arguments = {
+	{name = 'playerId', help = 'player id', type = 'player'},
+	{name = 'account', help = 'valid account name', type = 'string'},
+	{name = 'amount', help = 'amount to add', type = 'number'}
+}})
+
+ESX.RegisterCommand({'setaccountmoney', 'setmoney'}, 'admin', function(xPlayer, args, showError)
+	if args.playerId.getAccount(args.account) then
+        if args.account == 'bank' then
+		    args.playerId.setAccountMoney(args.account, args.amount)
+        else
+            -- to do
+        end
+	else
+		showError('invalid account name')
+	end
+end, true, {help = 'set account money', validate = true, arguments = {
+	{name = 'playerId', help = 'player id', type = 'player'},
+	{name = 'account', help = 'valid account name', type = 'string'},
+	{name = 'amount', help = 'amount to set', type = 'number'}
+}})
