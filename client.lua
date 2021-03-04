@@ -618,13 +618,12 @@ end)
 
 RegisterNetEvent('hsn-inventory:useItem')
 AddEventHandler('hsn-inventory:useItem',function(item)
-    if item.name then item = item.name end
     if usingItem then return end
     ESX.TriggerServerCallback('hsn-inventory:getItem',function(xItem)
-        local data = Config.ItemList[xItem.name]
-        if not data or not next(data) then return end
-        if xItem.closeonuse then TriggerEvent('hsn-inventory:client:closeInventory') end
-        if xItem.count > 0 then
+        if xItem then
+            local data = Config.ItemList[xItem.name]
+            if not data or not next(data) then return end
+            if xItem.closeonuse then TriggerEvent('hsn-inventory:client:closeInventory') end
             if not data.animDict then data.animDict = 'pickup_object' end
             if not data.anim then data.anim = 'putdown_low' end
             if not data.flags then data.flags = 48 end
@@ -672,7 +671,7 @@ AddEventHandler('hsn-inventory:useItem',function(item)
                     if data.thirst > 0 then TriggerEvent('esx_status:add', 'thirst', data.thirst)
                     else TriggerEvent('esx_status:remove', 'thirst', data.thirst) end
                 end
-                if data.consume then TriggerServerEvent('hsn-inventory:client:removeItem', item, data.consume) end
+                if data.consume then TriggerServerEvent('hsn-inventory:client:removeItem', item.name, data.consume, item.metadata.type) end
                 usingItem = false
                 ------------------------------------------------------------------------------------------------
                 
@@ -696,5 +695,5 @@ AddEventHandler('hsn-inventory:useItem',function(item)
                 ------------------------------------------------------------------------------------------------
             end)
         end
-    end, item)
+    end, item.name, item.metadata.type)
 end)
