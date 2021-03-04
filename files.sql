@@ -9,8 +9,7 @@ ENGINE=InnoDB
 ALTER TABLE `items`
 	ADD `stackable` INT(11) NULL DEFAULT '1', 
      ADD `closeonuse` INT(11) NULL DEFAULT '1', 
-ADD `description` VARCHAR(50) NULL DEFAULT ''
-;
+ADD `description` VARCHAR(50) NULL DEFAULT NULL;
 
 INSERT INTO `items` (`name`, `label`, `weight`, `rare`, `can_remove`, `stackable`, `closeonuse`, `description`) VALUES
     ('ammo-musket', 'Musket ammo', 30, 0, 1, 1, 0, ''),
