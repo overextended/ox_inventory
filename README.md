@@ -13,7 +13,7 @@ Further development of this resource is continuing at <a href='https://github.co
 <h3 align='center'> <a href='https://github.com/thelindat/hsn-inventory/wiki'>More guides on the wiki</a> </h3>
 
 
-<p align='center'>Requires either ESX 1 Final, or ExtendedMode<br>OneSync must be enabled</p>
+<p align='center'>Requires either <a href='https://github.com/esx-framework/es_extended/tree/v1-final'>ESX v1 Final</a>, or <a href='https://github.com/extendedmode/extendedmode'>ExtendedMode</a><br>OneSync must be enabled</p>
 
 ## ghmattimysql
 * Add this function to wait for sql connection to be established
