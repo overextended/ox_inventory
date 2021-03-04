@@ -111,10 +111,10 @@ GetItemsSlot = function(inventory, name, metadata)
 end
 
 
-GetItemCount = function(identifier, item)
+GetItemCount = function(identifier, item, metadata)
     local count = 0
     for i,j in pairs(playerInventory[identifier]) do
-        if (j.name == item) then
+        if (j.name == item) and (not metadata or metadata == j.metadata) then
             count = count + j.count
         end
     end
@@ -1143,10 +1143,14 @@ AddEventHandler('hsn-inventory:server:addItem',function(src, item, count)
 end)
 
 RegisterServerEvent('hsn-inventory:client:removeItem')
-AddEventHandler('hsn-inventory:client:removeItem',function(item, count)
+AddEventHandler('hsn-inventory:client:removeItem',function(item, count, metadata)
     local src = source
     local Player = ESX.GetPlayerFromId(src)
-    Player.removeInventoryItem(item, count)
+    if metadata then 
+        RemovePlayerInventory(src,Player.identifier, item, count, nil, metadata)
+    else
+        RemovePlayerInventory(src,Player.identifier, item, count)
+    end
 end)
 
 RegisterServerEvent('hsn-inventory:client:addItem')
@@ -1215,6 +1219,7 @@ exports('getItem',function(src, item, metadata)
 end)
 
 exports('useItem', function(src, item)
+    local metadata = item.metadata.type
     if Config.ItemList[item.name] then
         if not next(Config.ItemList[item.name]) then return end
         TriggerClientEvent('hsn-inventory:useItem', src, item)
@@ -1249,15 +1254,14 @@ ESX.RegisterServerCallback('hsn-inventory:getItemCount',function(source, cb, ite
 end)
 
 
-ESX.RegisterServerCallback('hsn-inventory:getItem',function(source, cb, item)
+ESX.RegisterServerCallback('hsn-inventory:getItem',function(source, cb, item, metadata)
     local src = source
     local Player = ESX.GetPlayerFromId(src)
     if playerInventory[Player.identifier] == nil then
         return
     end
-    local ESXItem = ESXItems[item]
-    ESXItem.count = GetItemCount(Player.identifier, item)
-    cb(ESXItem)
+    local xItem = exports["hsn-inventory"]:getItem(source, item, metadata)
+    cb(xItem)
 end)
 
 
