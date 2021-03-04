@@ -294,7 +294,7 @@ AddEventHandler('hsn-inventory:client:addItemNotify',function(item,text)
         item = item,
         text = text
     })
-    TriggerEvent('hsn-inventory:client:refreshInventory')
+    TriggerServerEvent('hsn-inventory:server:refreshInventory')
 end)
 
 
