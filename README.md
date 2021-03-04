@@ -1,15 +1,12 @@
 <p align='center'><img src='https://i.imgur.com/JxZpgNM.png'/><br>
-Further development of this resource is continuing at <a href='https://github.com/thelindat/hsn-inventory'>thelindat/hsn-inventory</a>.<br>All stable updates will be submitted to the main repository as pull requests.<br>
 <a href='https://streamable.com/bggvpg'>Video showcase</a><br>
-You can join my discord at https://discord.gg/hmcmv3P7YW</p>
+https://discord.gg/hmcmv3P7YW</p>
 
-<h2 align='center'>Notice</h2><p align='center'>Hasan is no updating the inventory and has stopped development.  
-<img src='https://i.imgur.com/IZStQrx.png'/>  
-Thanks for the inventory hsn.
-
-Original Showcase --> https://streamable.com/kpvdj3
-
-Hasan's discord is available at https://discord.gg/6FQhKDXBJ6</p>
+<h2 align='center'>Notice</h2><p align='center'>Hasan is no updating the inventory and has stopped development.<br>
+<img src='https://i.imgur.com/IZStQrx.png'/><br><br>
+Original Showcase --> https://streamable.com/kpvdj3<br>
+Hasan's discord is available at https://discord.gg/6FQhKDXBJ6<br><br>
+Further development of this resource is continuing at <a href='https://github.com/thelindat/hsn-inventory'>thelindat/hsn-inventory</a>.<br>All stable updates will be submitted to the main repository as pull requests.</p>
 <br><br><br>
 
 <h1 align='center'>Installation Guide</h1><p align='center'>Requires either ESX 1.2, ESX Final, or ExtendedMode<br>OneSync must be enabled</p>
