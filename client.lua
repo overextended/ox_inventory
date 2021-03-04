@@ -32,7 +32,7 @@ Citizen.CreateThread(function()
     playerID = GetPlayerServerId(PlayerId())
     ESX.TriggerServerCallback('hsn-inventory:getData',function(data)
         playerName = data.name
-        ESX.SetPlayerData('inventory', data.inventory) -- in progress
+        ESX.SetPlayerData('inventory', data.inventory)
     end)
     clearWeapons()
 end)
@@ -206,7 +206,7 @@ AddEventHandler('hsn-inventory:client:openInventory',function(inventory,other)
     --     return
     -- end
     local playerID = GetPlayerServerId(PlayerId())
-    ESX.SetPlayerData('inventory', inventory) -- in progress
+    ESX.SetPlayerData('inventory', inventory)
     SendNUIMessage({
         message = 'openinventory',
         inventory = inventory,
@@ -241,8 +241,6 @@ end)]]
 
 RegisterNetEvent('hsn-inventory:client:refreshInventory')
 AddEventHandler('hsn-inventory:client:refreshInventory',function(inventory)
-    local playerID = GetPlayerServerId(PlayerId())
-    ESX.SetPlayerData('inventory', inventory) -- in progress
     SendNUIMessage({
         message = 'refresh',
         inventory = inventory,
@@ -601,11 +599,8 @@ AddEventHandler('hsn-inventory:notification',function(message, mtype)
     if mtype == 1 then mtype = { ['background-color'] = 'rgba(55,55,175)', ['color'] = 'white' }
     elseif not mtype or mtype == 2 then mtype = { ['background-color'] = 'rgba(175,55,55)', ['color'] = 'white' }
     end
-    --print(message)
     TriggerEvent('mythic_notify:client:SendAlert', {type = 'inform', text = message, length = 2500,style = mtype})
-    if invOpen then
-        TriggerEvent('hsn-inventory:client:refreshInventory', PlayerData.inventory)
-    end
+    TriggerEvent('hsn-inventory:client:refreshInventory', PlayerData.inventory)
 end)
 
 RegisterCommand('-nui', function()
