@@ -25,7 +25,7 @@ INSERT INTO `items` (`name`, `label`, `weight`, `rare`, `can_remove`, `stackable
     ('ammo-9', '9mm', 8, 0, 1, 1, 0, ''),
     ('ammo-38', '.38 Long Colt', 10, 0, 1, 1, 0, ''),
     ('ammo-44', '.44 Magnum', 16, 0, 1, 1, 0, ''),
-    ('water', 'Water', 600, 0, 1, 1, 1, ''),
+    ('water', 'Water', 500, 0, 1, 1, 1, ''),
     ('burger', 'Burger', 220, 0, 1, 1, 1, ''),
     ('cola', 'eCola', 350, 0, 1, 1, 1, ''),
     ('money', 'Money', 0, 0, 1, 1, 1, ''),
