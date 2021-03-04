@@ -115,10 +115,10 @@ end)
 		return 
 	end
 
-	self.addInventoryItem = function(name, count)
+	self.addInventoryItem = function(name, count, metadata)
 		if name and count > 0 then
 			count = ESX.Math.Round(count)
-			TriggerEvent("hsn-inventory:server:addItem", self.source, name, count)
+			exports["hsn-inventory"]:addItem(self.source, name, count, metadata)
 		end
 	end
 
@@ -129,14 +129,14 @@ end)
 		end
 	end
 
-	self.setInventoryItem = function(name, count)
-		local item = exports["hsn-inventory"]:getItem(self.source, name)
+	self.setInventoryItem = function(name, count, metadata)
+		local item = exports["hsn-inventory"]:getItem(self.source, name, metadata)
 		if item and count >= 0 then
 			count = ESX.Math.Round(count)
 			if count > item.count then
-				self.addInventoryItem(item.name, count - item.count)
+				self.addInventoryItem(item.name, count - item.count, metadata)
 			else
-				self.removeInventoryItem(item.name, item.count - count)
+				self.removeInventoryItem(item.name, item.count - count, metadata)
 			end
 		end
 	end
@@ -157,8 +157,8 @@ end)
 		return true
 	end
 
-	self.useItem = function(name)
-		return exports["hsn-inventory"]:useItem(self.source, name)
+	self.useItem = function(name, metadata)
+		return exports["hsn-inventory"]:useItem(self.source, name, metadata)
 	end
 ```
 
