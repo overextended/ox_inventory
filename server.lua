@@ -157,7 +157,7 @@ AddPlayerInventory = function(identifier, item, count, slot, metadata)
                     end
                 end
             else
-                if metadata == nil then metadata = {} end
+                if not metadata then metadata = {} else metadata = {type=metadata} end
                 if slot ~= nil then
                     playerInventory[identifier][slot] = {name = item ,label = ESXItems[item].label, weight = ESXItems[item].weight, slot = i, count = count, description = ESXItems[item].description, metadata = metadata, stackable = ESXItems[item].stackable, closeonuse = ESXItems[item].closeonuse}
                 else
@@ -1363,12 +1363,21 @@ end
 -- Override the default ESX commands
 ESX.RegisterCommand({'giveitem', 'additem'}, 'admin', function(xPlayer, args, showError)
     if args.item == 'money' or args.item == 'black_money' then return end
-    if not ESXItems[args.item] then print('[^2hsn-inventory^0] - item not found') return end
-	args.playerId.addInventoryItem(args.item, args.count)
-end, true, {help = 'give an item to a player', validate = true, arguments = {
+	args.playerId.addInventoryItem(args.item, args.count, args.type)
+end, true, {help = 'give an item to a player', validate = false, arguments = {
 	{name = 'playerId', help = 'player id', type = 'player'},
-	{name = 'item', help = 'item name', type = 'string'},
-	{name = 'count', help = 'item count', type = 'number'}
+	{name = 'item', help = 'item name', type = 'item'},
+	{name = 'count', help = 'item count', type = 'number'},
+    {name = 'type', help = 'item metadata type', type='any'}
+}})
+ESX.RegisterCommand('removeitem', 'admin', function(xPlayer, args, showError)
+    if args.item == 'money' or args.item == 'black_money' then return end
+	args.playerId.removeInventoryItem(args.item, args.count, args.type)
+end, true, {help = 'remove an item from a player', validate = false, arguments = {
+	{name = 'playerId', help = 'player id', type = 'player'},
+	{name = 'item', help = 'item name', type = 'item'},
+	{name = 'count', help = 'item count', type = 'number'},
+    {name = 'type', help = 'item metadata type', type='any'}
 }})
 
 ESX.RegisterCommand({'giveaccountmoney', 'givemoney'}, 'admin', function(xPlayer, args, showError)
