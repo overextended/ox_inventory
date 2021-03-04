@@ -38,7 +38,7 @@ end)
 ## Modifying your framework (ESX/EXM) - _Updated for 1.4.4_
 * Modifications to money related functions have changed _(1.4.4)_
 * Modifications to inventory related functions have changed _(1.4.4)_
-* Vanilla files: <a href='https://github.com/esx-framework/es_extended/blob/v1-final/server/classes/player.lua'>ESX Final</a> | <a href='https://github.com/esx-framework/es_extended/blob/1.2.0/server/classes/player.lua'>ESX 1.2</a> | <a href='https://github.com/extendedmode/extendedmode/blob/master/server/classes/player.lua'>EXM</a>
+* Vanilla files: <a href='https://github.com/esx-framework/es_extended/blob/v1-final/server/classes/player.lua'>ESX Final</a> | <a href='https://github.com/extendedmode/extendedmode/blob/master/server/classes/player.lua'>EXM</a>
 ### server/classes/player.lua
 * Search for `self.setAccountMoney`, delete everything from there until `self.canSwapItem` and replace with
 ```
