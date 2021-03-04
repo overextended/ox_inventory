@@ -182,6 +182,8 @@ end
 
 RemovePlayerInventory = function(src, identifier, item, count, slot, metadata)
     if ESXItems[item] ~= nil then
+        local ItemCount = GetItemCount(identifier, item)
+        if ItemCount - count < 0 then count = ItemCount end
         for i = 1, Config.PlayerSlot do
             if playerInventory[identifier][i] ~= nil and playerInventory[identifier][i].name == item and (playerInventory[identifier][i].metadata.type == metadata) then
                 playerInventory[identifier][i].count = tonumber(playerInventory[identifier][i].count)
