@@ -1,4 +1,5 @@
 ESX = nil
+local oneSync
 local playerInventory = {}
 local Stashs = {}
 local Drops = {}
@@ -9,18 +10,20 @@ local openedinventories = {}
 local Gloveboxes = {}
 local Trunks = {}
 local notready = true
+if GetConvar('onesync_enableInfinity', false) == 'true' or GetConvar('onesync', false) == 'on' then oneSync = true end
 
 TriggerEvent('esx:getSharedObject', function(obj) ESX = obj end)
 
 ESX.RegisterServerCallback('hsn-inventory:getData',function(source, cb)
     local src = source
     local Player = ESX.GetPlayerFromId(src)
-    local data = {name = Player.getName(), inventory = playerInventory[Player.identifier]}
+    local data = {name = Player.getName(), inventory = playerInventory[Player.identifier], oneSync = oneSync}
     cb(data)
 end)
 
 
 exports.ghmattimysql:ready(function()
+    local placeholder = ('^1[hsn-inventory]^3 Item `%s` is missing from your database! Item has been created with placeholder data.^7')
 	exports.ghmattimysql:execute('SELECT * FROM items', {}, function(result)
 		for k,v in ipairs(result) do
 			ESXItems[v.name] = {
@@ -34,7 +37,7 @@ exports.ghmattimysql:ready(function()
 		end
         for k,v in pairs(Config.ItemList) do
             if not ESXItems[k] then
-                print( ('^1[%s]^3 Item `%s` is missing from your database! Item has been created with placeholder data.^7'):format('hsn-inventory', k) )
+                print( placeholder:format(k) )
                 ESXItems[k] = {
                     name = k,
                     label = k,
@@ -47,7 +50,7 @@ exports.ghmattimysql:ready(function()
         end
         for k,v in pairs(Config.DurabilityDecreaseAmount) do
             if not ESXItems[k] then
-                print( ('^1[%s]^3 `%s` is missing from your database! Item has been created with placeholder data.^7'):format('hsn-inventory', k) )
+                print( placeholder:format(k) )
                 ESXItems[k] = {
                     name = k,
                     label = k,
@@ -60,7 +63,7 @@ exports.ghmattimysql:ready(function()
         end
         for k,v in pairs(Config.Ammos) do
             if not ESXItems[k] then
-                print( ('^1[%s]^3 `%s` is missing from your database! Item has been created with placeholder data.^7'):format('hsn-inventory', k) )
+                print( placeholder:format(k) )
                 --print( ('('%s', '%s', 20, 0, 1, 1, 0, ''),'):format(k, k) ) )
                 ESXItems[k] = {
                     name = k,
@@ -72,7 +75,8 @@ exports.ghmattimysql:ready(function()
                 }
             end
         end
-        print( ('^1[%s]^2 Items have been created!^7'):format('hsn-inventory') )
+        print('^1[hsn-inventory]^2 Items have been created!^7')
+        if not oneSync then print('^1[hsn-inventory]^3 OneSync is not enabled - running in legacy mode^7') end
         notready = nil
     end)
 end)
@@ -162,7 +166,7 @@ AddPlayerInventory = function(identifier, item, count, slot, metadata)
                     playerInventory[identifier][slot] = {name = item ,label = ESXItems[item].label, weight = ESXItems[item].weight, slot = i, count = count, description = ESXItems[item].description, metadata = metadata, stackable = ESXItems[item].stackable, closeonuse = ESXItems[item].closeonuse}
                 else
                     for i = 1, Config.PlayerSlot do
-                        if playerInventory[identifier][i] ~= nil and playerInventory[identifier][i].name == item then
+                        if playerInventory[identifier][i] ~= nil and playerInventory[identifier][i].name == item and (not metadata or playerInventory[identifier][i].metadata.type == metadata) then
                             playerInventory[identifier][i] = {name = item ,label = ESXItems[item].label, weight = ESXItems[item].weight, slot = i, count = playerInventory[identifier][i].count + count, description = ESXItems[item].description, metadata = metadata, stackable = ESXItems[item].stackable, closeonuse = ESXItems[item].closeonuse}
                             break
                         else
@@ -189,11 +193,11 @@ RemovePlayerInventory = function(src, identifier, item, count, slot, metadata)
                 playerInventory[identifier][i].count = tonumber(playerInventory[identifier][i].count)
                 if playerInventory[identifier][i].count > count then
                     playerInventory[identifier][i].count = playerInventory[identifier][i].count - count
-                    TriggerClientEvent('hsn-inventory:client:addItemNotify',src,ESXItems[item],'Removed '..count..'x')
+                    RemoveItemNotif(src, item, count)
                     break
                 elseif playerInventory[identifier][i].count == count then
                     playerInventory[identifier][i] = nil
-                    TriggerClientEvent('hsn-inventory:client:addItemNotify',src,ESXItems[item],'Removed '..count..'x')
+                    RemoveItemNotif(src, item, count)
                     break
                 elseif playerInventory[identifier][i].count < count then
                     local slots = GetItemsSlot(playerInventory[identifier], item, metadata)
@@ -213,7 +217,7 @@ RemovePlayerInventory = function(src, identifier, item, count, slot, metadata)
                             end
                         end
                     end
-                    TriggerClientEvent('hsn-inventory:client:addItemNotify',src,ESXItems[item],'Removed '..totalCount..'x')
+                    RemoveItemNotif(src, item, totalCount)
                     break
                 end
             end
@@ -222,8 +226,11 @@ RemovePlayerInventory = function(src, identifier, item, count, slot, metadata)
 end
 
 RandomDropId = function()
-    local random = math.random(11111,99999)
-    return random
+    while true do
+        local random = math.random(11111,99999)
+        if not Drops[random] then return random end
+        Citizen.Wait(5)
+    end
 end
 
 RegisterNetEvent('inventory:isShopOpen')
@@ -651,30 +658,29 @@ CreateNewDrop = function(source,data)
     local src = source
     local ped = GetPlayerPed(src)
     local coords = GetEntityCoords(ped)
-    if src and ped > 0 and #(coords) ~= 0 then
-        local dropid = RandomDropId()
-        local Player = ESX.GetPlayerFromId(src)
-        Drops[dropid] = {}
-        Drops[dropid].inventory = {}
-        Drops[dropid].name = dropid
-        Drops[dropid].slots = 50
-        if data.type == 'swap' then
-            TriggerClientEvent('hsn-inventory:client:checkweapon',src,data.toItem)
-            Drops[dropid].inventory[data.toslot] = {name = data.toItem.name ,label = data.toItem.label, weight = data.toItem.weight, slot = data.toslot, count = data.toItem.count, description = data.toItem.description, metadata = data.toItem.metadata, stackable = data.toItem.stackable, closeonuse = ESXItems[data.toItem.name].closeonuse}
-            playerInventory[Player.identifier][data.fromslot] = {name = data.fromItem.name ,label = data.fromItem.label, weight = data.fromItem.weight, slot = data.fromslot, count = data.fromItem.count, description = data.fromItem.description, metadata = data.fromItem.metadata, stackable = data.fromItem.stackable, closeonuse = ESXItems[data.fromItem.name].closeonuse}
-        elseif data.type == 'freeslot' then
-            TriggerClientEvent('hsn-inventory:client:checkweapon',src,data.item)
-            playerInventory[Player.identifier][data.emptyslot] = nil
-            Drops[dropid].inventory[data.toslot] = {name = data.item.name ,label = data.item.label, weight = data.item.weight, slot = data.toslot, count = data.item.count, description = data.item.description, metadata = data.item.metadata, stackable = data.item.stackable, closeonuse = ESXItems[data.item.name].closeonuse}
-            TriggerEvent('hsn-inventory:onRemoveInventoryItem',src,data.item.name,data.item.count)
-        elseif data.type == 'yarimswap' then
-            TriggerClientEvent('hsn-inventory:client:checkweapon',src,data.newslotItem)
-            playerInventory[Player.identifier][data.fromSlot] = {name = data.oldslotItem.name ,label = data.oldslotItem.label, weight = data.oldslotItem.weight, slot = data.fromSlot, count = data.oldslotItem.count, description = data.oldslotItem.description, metadata = data.oldslotItem.metadata, stackable = data.oldslotItem.stackable, closeonuse = ESXItems[data.oldslotItem.name].closeonuse}
-            Drops[dropid].inventory[data.toSlot] = {name = data.newslotItem.name ,label = data.newslotItem.label, weight = data.newslotItem.weight, slot = data.toSlot, count = data.newslotItem.count, description = data.newslotItem.description, metadata = data.newslotItem.metadata, stackable = data.newslotItem.stackable, closeonuse = ESXItems[data.newslotItem.name].closeonuse}
-        end
-        TriggerClientEvent('hsn-inventory:Client:addnewDrop', -1, coords, dropid)
-        TriggerClientEvent('hsn-inventory:client:openInventory',src,playerInventory[Player.identifier],Drops[dropid])
-    else print( ('^1[hsn-inventory]^3 Server was unable to create a drop. Enable OneSync (seriously, it\'s free)') ) end
+    local dropid = RandomDropId()
+    local Player = ESX.GetPlayerFromId(src)
+    Drops[dropid] = {}
+    Drops[dropid].inventory = {}
+    Drops[dropid].name = dropid
+    Drops[dropid].slots = 50
+    if data.type == 'swap' then
+        TriggerClientEvent('hsn-inventory:client:checkweapon',src,data.toItem)
+        Drops[dropid].inventory[data.toslot] = {name = data.toItem.name ,label = data.toItem.label, weight = data.toItem.weight, slot = data.toslot, count = data.toItem.count, description = data.toItem.description, metadata = data.toItem.metadata, stackable = data.toItem.stackable, closeonuse = ESXItems[data.toItem.name].closeonuse}
+        playerInventory[Player.identifier][data.fromslot] = {name = data.fromItem.name ,label = data.fromItem.label, weight = data.fromItem.weight, slot = data.fromslot, count = data.fromItem.count, description = data.fromItem.description, metadata = data.fromItem.metadata, stackable = data.fromItem.stackable, closeonuse = ESXItems[data.fromItem.name].closeonuse}
+    elseif data.type == 'freeslot' then
+        TriggerClientEvent('hsn-inventory:client:checkweapon',src,data.item)
+        playerInventory[Player.identifier][data.emptyslot] = nil
+        Drops[dropid].inventory[data.toslot] = {name = data.item.name ,label = data.item.label, weight = data.item.weight, slot = data.toslot, count = data.item.count, description = data.item.description, metadata = data.item.metadata, stackable = data.item.stackable, closeonuse = ESXItems[data.item.name].closeonuse}
+        TriggerEvent('hsn-inventory:onRemoveInventoryItem',src,data.item.name,data.item.count)
+    elseif data.type == 'yarimswap' then
+        TriggerClientEvent('hsn-inventory:client:checkweapon',src,data.newslotItem)
+        playerInventory[Player.identifier][data.fromSlot] = {name = data.oldslotItem.name ,label = data.oldslotItem.label, weight = data.oldslotItem.weight, slot = data.fromSlot, count = data.oldslotItem.count, description = data.oldslotItem.description, metadata = data.oldslotItem.metadata, stackable = data.oldslotItem.stackable, closeonuse = ESXItems[data.oldslotItem.name].closeonuse}
+        Drops[dropid].inventory[data.toSlot] = {name = data.newslotItem.name ,label = data.newslotItem.label, weight = data.newslotItem.weight, slot = data.toSlot, count = data.newslotItem.count, description = data.newslotItem.description, metadata = data.newslotItem.metadata, stackable = data.newslotItem.stackable, closeonuse = ESXItems[data.newslotItem.name].closeonuse}
+    end
+    if not oneSync then coords = src end -- Support not using OneSync
+    TriggerClientEvent('hsn-inventory:Client:addnewDrop', -1, coords, dropid)
+    TriggerClientEvent('hsn-inventory:client:openInventory',src,playerInventory[Player.identifier],Drops[dropid])
 end
 
 RegisterCommand('fixinv', function(source, args, rawCommand)
@@ -789,7 +795,7 @@ checkOpenable = function(source,id,coords)
     local src = source
     local returnData = false
 
-    if coords then
+    if oneSync and coords then
         local srcCoords = GetEntityCoords(GetPlayerPed(src))
         if #(vector3(coords.x, coords.y, coords.z) - srcCoords) > 5 then return false end
     end
@@ -954,8 +960,18 @@ end)
 RegisterNetEvent('hsn-inventory:onRemoveInventoryItem')
 AddEventHandler('hsn-inventory:onRemoveInventoryItem',function(source,item,count)
     if Config.Accounts[item] then MoneySync(source, item, count) end
-    TriggerClientEvent('hsn-inventory:client:addItemNotify',source,ESXItems[item],'Removed '..count..'x')
+    if count > 0 then
+        RemoveItemNotif(source, item, count)
+    end
 end)
+
+RemoveItemNotif = function(source, item, count)
+    if count > 0 then
+        TriggerClientEvent('hsn-inventory:client:addItemNotify',source,ESXItems[item],'Removed '..count..'x')
+    else
+        TriggerClientEvent('hsn-inventory:client:addItemNotify',source,ESXItems[item],'Used')
+    end
+end
 
 MoneySync = function(source, item, count)
     local Player = ESX.GetPlayerFromId(source)
