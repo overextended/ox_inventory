@@ -281,6 +281,7 @@
                 }
                 SwapItems(fromInventory, toInventory, curslot, toSlot)
             },
+
         });
     
          $(".use").droppable({
@@ -410,9 +411,7 @@
                         invid: toinvId,
                         invid2 :toinvId2
                     }));
-                } else if (fromItem.name == toItem.name && toItem.stackable) { // stack
-                    const result = matchingKeys(fromItem.metadata, toItem.metadata);
-                    if (result) {
+                } else if (fromItem.name == toItem.name && toItem.stackable && fromItem.metadata.type == toItem.metadata.type) { // stack
                         var fromcount = Number(fromItem.count) // set strings to number //  idk why i did this but it wasn't working
                         var toCount = Number(toItem.count)
                         var newcount = (fromcount + toCount)
@@ -440,7 +439,6 @@
                             invid2 :toinvId2
                         }));
                         HSN.RemoveItemFromSlot(fromInventory, fromSlot)
-                    }
                 } else if (fromItem.name !== toItem.name) { // swap
                     if ((toItem.name).split("_")[0] == "WEAPON") {
                         var durability = HSN.InventoryGetDurability(toItem.metadata.durability)
