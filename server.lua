@@ -21,7 +21,6 @@ ESX.RegisterServerCallback('hsn-inventory:getData',function(source, cb)
     cb(data)
 end)
 
-
 exports.ghmattimysql:ready(function()
     local placeholder = ('^1[hsn-inventory]^3 Item `%s` is missing from your database! Item has been created with placeholder data.^7')
 	exports.ghmattimysql:execute('SELECT * FROM items', {}, function(result)
@@ -954,7 +953,7 @@ end)
 RegisterNetEvent('hsn-inventory:onAddInventoryItem')
 AddEventHandler('hsn-inventory:onAddInventoryItem',function(source,item,count)
     if Config.Accounts[item] then MoneySync(source, item, count) end
-    TriggerClientEvent('hsn-inventory:client:addItemNotify',source,ESXItems[item],'Added '..count..'x')
+    AddItemNotif(source, item, count)
 end)
 
 RegisterNetEvent('hsn-inventory:onRemoveInventoryItem')
@@ -965,12 +964,13 @@ AddEventHandler('hsn-inventory:onRemoveInventoryItem',function(source,item,count
     end
 end)
 
+AddItemNotif = function(source, item, count)
+    if count > 0 then TriggerClientEvent('hsn-inventory:client:addItemNotify',source,ESXItems[item],'Added '..count..'x') end
+end
+
 RemoveItemNotif = function(source, item, count)
-    if count > 0 then
-        TriggerClientEvent('hsn-inventory:client:addItemNotify',source,ESXItems[item],'Removed '..count..'x')
-    else
-        TriggerClientEvent('hsn-inventory:client:addItemNotify',source,ESXItems[item],'Used')
-    end
+    if count > 0 then TriggerClientEvent('hsn-inventory:client:addItemNotify',source,ESXItems[item],'Removed '..count..'x')
+    else TriggerClientEvent('hsn-inventory:client:addItemNotify',source,ESXItems[item],'Used') end
 end
 
 MoneySync = function(source, item, count)
@@ -1111,22 +1111,6 @@ AddEventHandler('hsn-inventory:server:updateWeapon',function(slot, item)
     end
 end)
 
-
-RegisterServerEvent('hsn-inventory:server:removeItem')
-AddEventHandler('hsn-inventory:server:removeItem',function(source, item, count, metadata)
-    if count == 0 then return end
-    local src = source
-    local Player = ESX.GetPlayerFromId(src)
-    if item == nil then
-        return
-    end
-    if count == nil then
-        count = 1
-    end
-    RemovePlayerInventory(src,Player.identifier, item, count, nil, metadata)
-end)
-
-
 --[[ Example to remove an item with a specific metadata.type
 RegisterCommand("remove", function(source, args, rawCommand)
     local Player = ESX.GetPlayerFromId(source)
@@ -1142,48 +1126,9 @@ end)]]
     end
 end)]]
 
-RegisterServerEvent('hsn-inventory:server:addItem')
-AddEventHandler('hsn-inventory:server:addItem',function(src, item, count)
-    local Player = ESX.GetPlayerFromId(src)
-    if item == nil then
-        return
-    end
-    if count == nil then
-        count = 1
-    end
-    if playerInventory[Player.identifier] == nil then
-        playerInventory[Player.identifier]  = {}
-    end
-    AddPlayerInventory(Player.identifier, item, count)
-    TriggerClientEvent('hsn-inventory:client:addItemNotify',src,ESXItems[item],'Added '..count..'x')
-end)
-
-RegisterServerEvent('hsn-inventory:client:removeItem')
+RegisterNetEvent('hsn-inventory:client:removeItem')
 AddEventHandler('hsn-inventory:client:removeItem',function(item, count, metadata)
-    local src = source
-    local Player = ESX.GetPlayerFromId(src)
-    if metadata then 
-        RemovePlayerInventory(src,Player.identifier, item, count, nil, metadata)
-    else
-        RemovePlayerInventory(src,Player.identifier, item, count)
-    end
-end)
-
-RegisterServerEvent('hsn-inventory:client:addItem')
-AddEventHandler('hsn-inventory:client:addItem',function(item, count)
-    local src = source
-    local Player = ESX.GetPlayerFromId(src)
-    if item == nil then
-        return
-    end
-    if count == nil then
-        count = 1
-    end
-    if playerInventory[Player.identifier] == nil then
-        playerInventory[Player.identifier]  = {}
-    end
-    AddPlayerInventory(Player.identifier, item, count)
-    TriggerClientEvent('hsn-inventory:client:addItemNotify',src,ESXItems[item],'Added '..count..'x')
+    exports["hsn-inventory"]:removeItem(source, item, count, metadata)
 end)
 
 exports('removeItem', function(src, item, count, metadata)
@@ -1209,7 +1154,7 @@ exports('addItem', function(src, item, count, metadata)
         playerInventory[Player.identifier]  = {}
     end
     AddPlayerInventory(Player.identifier, item, count, nil, metadata)
-    TriggerClientEvent('hsn-inventory:client:addItemNotify',src,ESXItems[item],'Added '..count..'x')
+    AddItemNotif(src, item, count)
 end)
 
 exports('getItemCount',function(src, item)
@@ -1244,21 +1189,6 @@ exports('useItem', function(src, item)
     end
 end)
 
-RegisterNetEvent('hsn-inventory:server:getItemCount')
-AddEventHandler('hsn-inventory:server:getItemCount',function(source,cb,item)
-    local src = source
-    local Player = ESX.GetPlayerFromId(src)
-    if playerInventory[Player.identifier] == nil then
-        return
-    end
-    local ItemCount = GetItemCount(Player.identifier, item)
-    if cb then
-        cb(tonumber(ItemCount))
-    end
-end)
-
-
-
 ESX.RegisterServerCallback('hsn-inventory:getItemCount',function(source, cb, item)
     local src = source
     local Player = ESX.GetPlayerFromId(src)
@@ -1269,7 +1199,6 @@ ESX.RegisterServerCallback('hsn-inventory:getItemCount',function(source, cb, ite
     cb(tonumber(ItemCount))
 end)
 
-
 ESX.RegisterServerCallback('hsn-inventory:getItem',function(source, cb, item, metadata)
     local src = source
     local Player = ESX.GetPlayerFromId(src)
@@ -1279,8 +1208,6 @@ ESX.RegisterServerCallback('hsn-inventory:getItem',function(source, cb, item, me
     local xItem = exports["hsn-inventory"]:getItem(source, item, metadata)
     cb(xItem)
 end)
-
-
 
 ESX.RegisterServerCallback('hsn-inventory:getPlayerInventory',function(source,cb,playerId)
     local TargetPlayer = ESX.GetPlayerFromId(playerId)
@@ -1394,6 +1321,7 @@ end, true, {help = 'give an item to a player', validate = false, arguments = {
 	{name = 'count', help = 'item count', type = 'number'},
     {name = 'type', help = 'item metadata type', type='any'}
 }})
+
 ESX.RegisterCommand('removeitem', 'admin', function(xPlayer, args, showError)
     if args.item == 'money' or args.item == 'black_money' then return end
 	args.playerId.removeInventoryItem(args.item, args.count, args.type)
