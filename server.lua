@@ -247,7 +247,7 @@ RegisterNetEvent('hsn-inventory:server:saveInventoryData')
 AddEventHandler('hsn-inventory:server:saveInventoryData',function(data)
     local src = source
     local Player = ESX.GetPlayerFromId(src)
-    if data ~= nil then        
+    if data ~= nil then   
         if data.frominv == data.toinv and (data.frominv == 'Playerinv') and not shopOpen then
             if data.type == 'swap' and not shopOpen then
                 TriggerClientEvent('hsn-inventory:client:checkweapon',src,data.fromItem)
@@ -650,6 +650,12 @@ AddEventHandler('hsn-inventory:server:saveInventoryData',function(data)
             TriggerClientEvent('hsn-inventory:client:refreshInventory',src,playerInventory[Player.identifier])
             return TriggerClientEvent('hsn-inventory:notification',src,'You can not return your items',2)
         end
+
+        -- we'll clean this up later
+        for k, v in pairs(Config.Accounts) do
+            MoneySync(src, k)
+        end
+
     end
 end) 
 
@@ -952,16 +958,12 @@ end)
 
 RegisterNetEvent('hsn-inventory:onAddInventoryItem')
 AddEventHandler('hsn-inventory:onAddInventoryItem',function(source,item,count)
-    if Config.Accounts[item] then MoneySync(source, item, count) end
     AddItemNotif(source, item, count)
 end)
 
 RegisterNetEvent('hsn-inventory:onRemoveInventoryItem')
 AddEventHandler('hsn-inventory:onRemoveInventoryItem',function(source,item,count)
-    if Config.Accounts[item] then MoneySync(source, item, count) end
-    if count > 0 then
-        RemoveItemNotif(source, item, count)
-    end
+    RemoveItemNotif(source, item, count)
 end)
 
 AddItemNotif = function(source, item, count)
@@ -973,14 +975,15 @@ RemoveItemNotif = function(source, item, count)
     else TriggerClientEvent('hsn-inventory:client:addItemNotify',source,ESXItems[item],'Used') end
 end
 
-MoneySync = function(source, item, count)
+MoneySync = function(source, item)
     local Player = ESX.GetPlayerFromId(source)
     local getAccount = Player.getAccount(item)
-    local itemCount = GetItemCount(Player.identifier, item)
+    local itemCount = exports['hsn-inventory']:getItemCount(source, item)
+    local newCount = itemCount - getAccount.money
     if getAccount.money < itemCount then
-        Player.addAccountMoney(item, count)
+        Player.addAccountMoney(item, math.abs(newCount))
     elseif getAccount.money > itemCount then
-        Player.removeAccountMoney(item, count)
+        Player.removeAccountMoney(item, math.abs(newCount))
     end
 end
 
