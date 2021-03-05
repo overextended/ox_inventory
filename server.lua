@@ -1306,7 +1306,6 @@ end)
 RegisterNetEvent('hsn-inventory:setplayerInventory')
 AddEventHandler('hsn-inventory:setplayerInventory',function(identifier,inventory)
     playerInventory[identifier] = {}
-    Player = ESX.GetPlayerFromIdentifier(identifier)
     local returnData = {}
     for k,v in pairs (inventory) do
         if v.metadata == nil then v.metadata = {} end
@@ -1316,11 +1315,12 @@ AddEventHandler('hsn-inventory:setplayerInventory',function(identifier,inventory
         if v.metadata.ammoweight then weight = v.metadata.ammoweight + ESXItems[v.name].weight else weight = tonumber(ESXItems[v.name].weight) end
         playerInventory[identifier][v.slot] = {name = v.name ,label = ESXItems[v.name].label, weight = tonumber(weight), slot = v.slot, count = v.count, description = ESXItems[v.name].description, metadata = v.metadata, stackable = ESXItems[v.name].stackable}
     end
+    local Player = ESX.GetPlayerFromIdentifier(identifier)
     for k, v in pairs(Config.Accounts) do
-        local money = Player.getAccount(v).money
-        local itemCount = GetItemCount(identifier, v)
-        if itemCount < money then Player.addInventoryItem(v, money - itemCount)
-        elseif itemCount > money then Player.removeInventoryItem(v, itemCount - money)
+        local money = Player.getAccount(k).money
+        local itemCount = GetItemCount(identifier, k)
+        if itemCount < money then Player.addInventoryItem(k, money - itemCount)
+        elseif itemCount > money then Player.removeInventoryItem(k, itemCount - money)
         end
     end
 end)
