@@ -1335,6 +1335,16 @@ end, true, {help = 'remove an item from a player', validate = false, arguments =
     {name = 'type', help = 'item metadata type', type='any'}
 }})
 
+ESX.RegisterCommand('removeinventory', 'admin', function(xPlayer, args, showError)
+    local Player = args.playerId
+    local inventory = GetInventory(playerInventory[Player.identifier])
+    for k,v in pairs(inventory) do
+        RemovePlayerInventory(Player.source, Player.identifier, v.name, v.count, k, v.metadata.type)
+    end
+end, true, {help = 'clear a player\'s inventory', validate = true, arguments = {
+	{name = 'playerId', help = 'player id', type = 'player'}
+}})
+
 ESX.RegisterCommand({'giveaccountmoney', 'givemoney'}, 'admin', function(xPlayer, args, showError)
 	local getAccount = args.playerId.getAccount(args.account)
 	if getAccount then
