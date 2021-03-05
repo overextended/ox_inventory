@@ -33,7 +33,9 @@ Citizen.CreateThread(function()
     ESX.TriggerServerCallback('hsn-inventory:getData',function(data)
         playerName = data.name
         ESX.SetPlayerData('inventory', data.inventory)
+        oneSync = data.oneSync
     end)
+    while not playerName do Citizen.Wait(100) end
     clearWeapons()
 end)
 
@@ -375,7 +377,13 @@ end
 exports('openStash', OpenStash)
 
 RegisterNetEvent('hsn-inventory:Client:addnewDrop')
-AddEventHandler('hsn-inventory:Client:addnewDrop',function(coords,drop)
+AddEventHandler('hsn-inventory:Client:addnewDrop',function(coords, drop)
+    if not oneSync then -- Receive coords as an entity if not running OneSync
+        local entity = GetPlayerPed(GetPlayerFromServerId(coords))
+        local pos = GetEntityCoords(entity)
+        local offset = GetOffsetFromEntityInWorldCoords(entity, 0, 0.5, 0)
+        coords = offset
+    end
     Drops[drop] = {
         dropid = drop,
         coords = {
