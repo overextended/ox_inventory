@@ -608,7 +608,7 @@ AddEventHandler('hsn-inventory:notification',function(message, mtype)
     elseif not mtype or mtype == 2 then mtype = { ['background-color'] = 'rgba(175,55,55)', ['color'] = 'white' }
     end
     TriggerEvent('mythic_notify:client:SendAlert', {type = 'inform', text = message, length = 2500,style = mtype})
-    TriggerEvent('hsn-inventory:client:refreshInventory', PlayerData.inventory)
+    TriggerServerEvent('hsn-inventory:server:refreshInventory')
 end)
 
 RegisterCommand('-nui', function()
