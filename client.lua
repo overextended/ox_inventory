@@ -216,7 +216,6 @@ AddEventHandler('hsn-inventory:client:openInventory',function(inventory,other)
 	-- if check then
 	--	 return
 	-- end
-	local playerID = GetPlayerServerId(PlayerId())
 	ESX.SetPlayerData('inventory', inventory)
 	SendNUIMessage({
 		message = 'openinventory',
