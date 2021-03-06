@@ -14,6 +14,11 @@ Further development of this resource is continuing at <a href='https://github.co
 
 <p align='center'>Requires OneSync and either <a href='https://github.com/esx-framework/es_extended/tree/v1-final'>ESX v1 Final</a>, or <a href='https://github.com/extendedmode/extendedmode'>ExtendedMode</a><br>If you are looking to upgrade or starting fresh, a modified framework is <a href='https://github.com/thelindat/extendedmode-hsn-inventory-compatibility'>available here</a>.
 
+## Dependencies
+[ghmattimysql](https://github.com/GHMatti/ghmattimysql)  
+[mythic_progbar](https://github.com/thelindat/mythic_progbar)  
+[mythic_notify](https://github.com/FlawwsX/mythic_notify)  
+
 ## ghmattimysql
 * Add this function to wait for sql connection to be established
 ### ghmattimysql-server.lua
