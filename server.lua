@@ -23,6 +23,7 @@ end)
 
 exports.ghmattimysql:ready(function()
 	local placeholder = ('^1[hsn-inventory]^3 Item `%s` is missing from your database! Item has been created with placeholder data.^7')
+	--local placeholder = ("	('%s', '%s', 5, 0, 1, 1, 1, null),")
 	exports.ghmattimysql:execute('SELECT * FROM items', {}, function(result)
 		for k,v in ipairs(result) do
 			ESXItems[v.name] = {
@@ -36,7 +37,7 @@ exports.ghmattimysql:ready(function()
 		end
 		for k,v in pairs(Config.ItemList) do
 			if not ESXItems[k] then
-				print( placeholder:format(k) )
+				if not k:find('at_') then print( placeholder:format(k) ) end
 				ESXItems[k] = {
 					name = k,
 					label = k,
@@ -63,7 +64,6 @@ exports.ghmattimysql:ready(function()
 		for k,v in pairs(Config.Ammos) do
 			if not ESXItems[k] then
 				print( placeholder:format(k) )
-				--print( ('('%s', '%s', 20, 0, 1, 1, 0, ''),'):format(k, k) ) )
 				ESXItems[k] = {
 					name = k,
 					label = k,
@@ -1234,12 +1234,25 @@ RegisterNetEvent('hsn-inventory:setplayerInventory')
 AddEventHandler('hsn-inventory:setplayerInventory',function(identifier,inventory)
 	playerInventory[identifier] = {}
 	local returnData = {}
-	for k,v in pairs (inventory) do
-		if v.metadata == nil then v.metadata = {} end
+	local loop = 0
+	for k,v in pairs(inventory) do
+		if tonumber(v) ~= nil then -- Convert old inventory data
+			loop = loop + 1
+			local count = v
+			v = { slot = loop, name = k, count = count }
+			if k:find('WEAPON_') then
+				v.metadata = {}
+				v.metadata.durability = 100
+				v.metadata.ammo = 0
+				v.metadata.components = {}
+				v.metadata.ammoweight = 0
+				v.metadata.weaponlicense = GetRandomLicense()
+			end
+		end
+		if not v.metadata then v.metadata = {} end
 		v.weight = tonumber(v.weight)
 		v.count = tonumber(v.count)
-		if v.count < 0 then v.count = 0 print('Item `%s` had a negative count and was set to `0`'):format(v.name) end
-		if v.metadata.ammoweight then weight = v.metadata.ammoweight + ESXItems[v.name].weight else weight = tonumber(ESXItems[v.name].weight) end
+		if v.metadata and v.metadata.ammoweight then weight = v.metadata.ammoweight + ESXItems[v.name].weight else weight = tonumber(ESXItems[v.name].weight) end
 		playerInventory[identifier][v.slot] = {name = v.name ,label = ESXItems[v.name].label, weight = tonumber(weight), slot = v.slot, count = v.count, description = ESXItems[v.name].description, metadata = v.metadata, stackable = ESXItems[v.name].stackable}
 	end
 	local Player = ESX.GetPlayerFromIdentifier(identifier)
@@ -1250,6 +1263,7 @@ AddEventHandler('hsn-inventory:setplayerInventory',function(identifier,inventory
 		elseif itemCount > money then Player.removeInventoryItem(k, itemCount - money)
 		end
 	end
+	if loop > 0 then print( ('^1[hsn-inventory]^3 %s items were converted to new format for %s [%s]^7'):format(loop, Player.getName(), identifier) ) end
 end)
 
 AddEventHandler('onResourceStop', function(resourceName)

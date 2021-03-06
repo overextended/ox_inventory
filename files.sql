@@ -9,8 +9,8 @@ ENGINE=InnoDB
 ALTER TABLE `items`
 	ADD IF NOT EXISTS `stackable` INT(11) NULL DEFAULT '1', 
 	ADD IF NOT EXISTS `closeonuse` INT(11) NULL DEFAULT '1', 
-	ADD IF NOT EXISTS `description` VARCHAR(50) NULL DEFAULT NULL,
-	ADD PRIMARY KEY (`name`);
+	ADD IF NOT EXISTS `description` VARCHAR(50) NULL DEFAULT NULL;
+	PRIMARY KEY (name)
 
 
 INSERT INTO `items` (`name`, `label`, `weight`, `can_remove`, `stackable`, `closeonuse`, `description`) VALUES
@@ -145,5 +145,5 @@ INSERT INTO `items` (`name`, `label`, `weight`, `can_remove`, `stackable`, `clos
 	('WEAPON_VINTAGEPISTOL', 'Vintage Pistol', 100, 1, 1, 0, NULL),
 	('WEAPON_WRENCH', 'Wrench', 2500, 1, 1, 0, NULL),
 	('WEAPON_MUSKET', 'Musket', 4500, 1, 1, 0, NULL),
-	('WEAPON_BATTLEAXE', 'Battleaxe', 1200, 1, 1, 0, NULL),
-	('WEAPON_STONE_HATCHET', 'Stone hatchet', 800, 1, 1, 0, NULL);
+	('WEAPON_BATTLEAXE', 'Battle Axe', 1200, 1, 1, 0, NULL),
+	('WEAPON_STONE_HATCHET', 'Stone Hatchet', 800, 1, 1, 0, NULL);
