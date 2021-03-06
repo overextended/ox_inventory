@@ -12,7 +12,7 @@ Further development of this resource is continuing at <a href='https://github.co
 <h1 align='center'>Installation Guide</h1>
 <h3 align='center'> <a href='https://github.com/thelindat/hsn-inventory/wiki'>More guides on the wiki</a> </h3>
 
-<p align='center'>Requires OneSync and either <a href='https://github.com/esx-framework/es_extended/tree/v1-final'>ESX v1 Final</a>, or <a href='https://github.com/extendedmode/extendedmode'>ExtendedMode</a><br>If you are using ESX 1.1 or 1.2, consider upgrading</p>
+<p align='center'>Requires OneSync and either <a href='https://github.com/esx-framework/es_extended/tree/v1-final'>ESX v1 Final</a>, or <a href='https://github.com/extendedmode/extendedmode'>ExtendedMode</a><br>If you are looking to upgrade or starting fresh, a modified framework is <a href='https://github.com/thelindat/extendedmode-hsn-inventory-compatibility'>available here</a>.
 
 ## ghmattimysql
 * Add this function to wait for sql connection to be established
