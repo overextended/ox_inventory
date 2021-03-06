@@ -962,10 +962,12 @@ AddEventHandler('hsn-inventory:onRemoveInventoryItem',function(source,item,count
 end)
 
 AddItemNotif = function(source, item, count)
+    count = tonumber(count)
     if count > 0 then TriggerClientEvent('hsn-inventory:client:addItemNotify',source,ESXItems[item],'Added '..count..'x') end
 end
 
 RemoveItemNotif = function(source, item, count)
+    count = tonumber(count)
     if count > 0 then TriggerClientEvent('hsn-inventory:client:addItemNotify',source,ESXItems[item],'Removed '..count..'x')
     else TriggerClientEvent('hsn-inventory:client:addItemNotify',source,ESXItems[item],'Used') end
 end
