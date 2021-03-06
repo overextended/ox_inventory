@@ -1383,7 +1383,7 @@ end, true, {help = 'set account money', validate = true, arguments = {
 ESX.RegisterCommand('evidence', 'user', function(xPlayer, args, showError)
     if xPlayer.job.name == 'police' then
         local boxID = args.evidence
-        local stash = { name = ('evidence-%s'):format(boxID), slots = 30, job = 'police'}
+        local stash = { name = ('evidence-%s'):format(boxID), slots = 30, job = 'police', coords = Config.PoliceEvidence }
         OpenStash(xPlayer.source, {id = stash, slots = stash.slots, type = 'stash'})
     end
 end, true, {help = 'open police evidence', validate = true, arguments = {
