@@ -416,6 +416,7 @@ AddEventHandler('hsn-inventory:client:removeDrop',function(dropid)
 	Drops[dropid] = nil
 	currentDrop = nil
 	currentDropCoords = nil
+	TriggerEvent('hsn-inventory:client:closeInventory')
 end)
 
 RegisterNUICallback('UseItem', function(data, cb)
