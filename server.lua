@@ -441,7 +441,6 @@ AddEventHandler('hsn-inventory:server:saveInventoryData',function(data)
 			end
 			if next(Drops[dropid].inventory) == nil then
 				TriggerClientEvent('hsn-inventory:client:removeDrop',-1,dropid)
-				TriggerClientEvent('hsn-inventory:client:closeInventory',src,dropid) -- 
 			end
 		elseif data.frominv ~= data.toinv and (data.toinv == 'stash' and data.frominv == 'Playerinv') then
 			local stashId = data.invid
