@@ -627,18 +627,20 @@ AddEventHandler('hsn-inventory:useItem',function(item)
             -- Trigger effects before the progress bar
             if data.component then
                 if not currentWeapon then return end
-                local type = item:gsub('at_', '')
-                if HasPedGotWeaponComponent(PlayerPedId(), currentWeapon.hash, data.component) then
-                    TriggerEvent('hsn-inventory:notification','This weapon already has a '..xItem.label,2) return
-                end
                 local result, esxWeapon = ESX.GetWeapon(currentWeapon.item.name)
+                
                 for k,v in ipairs(esxWeapon.components) do
-                    if v.hash == data.component then
-                        component = {name = v.name, hash = data.component}
-                        break
+                    for k2, v2 in pairs(data.component) do
+                        if v.hash == v2 then
+                            component = {name = v.name, hash = v2}
+                            break
+                        end
                     end
                 end
-                if component.hash ~= data.component then TriggerEvent('hsn-inventory:notification','This weapon is imcompatible with '..xItem.label,2) return end
+                if not component then TriggerEvent('hsn-inventory:notification','This weapon is incompatible with '..xItem.label,2) return end
+                if HasPedGotWeaponComponent(PlayerPedId(), currentWeapon.hash, component.hash) then
+                    TriggerEvent('hsn-inventory:notification','This weapon already has a '..xItem.label,2) return
+                end
             end
 
             if item == 'lockpick' then
@@ -682,7 +684,7 @@ AddEventHandler('hsn-inventory:useItem',function(item)
                 end
 
                 if data.component then
-	                GiveWeaponComponentToPed(PlayerPedId(), currentWeapon.item.name, data.component)
+	                GiveWeaponComponentToPed(PlayerPedId(), currentWeapon.item.name, component.hash)
                     table.insert(currentWeapon.item.metadata.components, component.name)
                     TriggerServerEvent('hsn-inventory:server:updateWeapon', currentWeapon.slot, currentWeapon.item)
                 end
