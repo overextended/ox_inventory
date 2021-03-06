@@ -13,12 +13,12 @@ Config.ItemList = {
     ['at_flashlight_pistol'] = { component = {`COMPONENT_AT_PI_FLSH`}, consume = 1, useTime = 2500 },
     ['at_flashlight_rifle'] = { component = {`COMPONENT_AT_AR_FLSH`}, consume = 1, useTime = 2500 },
     ['at_flashlight_shotgun'] = { component = {`COMPONENT_AT_AR_FLSH`}, consume = 1, useTime = 2500 },
-    ['at_flashlight_smg'] = { component = {`COMPONENT_AT_AR_FLSH`, `COMPONENT_AT_PI_FLSH`, `}, consume = 1, useTime = 2500 },
+    ['at_flashlight_smg'] = { component = {`COMPONENT_AT_AR_FLSH`, `COMPONENT_AT_PI_FLSH`}, consume = 1, useTime = 2500 },
     ['at_flashlight_sniper'] = { component = {`COMPONENT_AT_AR_FLSH`}, consume = 1, useTime = 2500 },
     ['at_clip_extended_pistol'] = { component = {`COMPONENT_PISTOL_CLIP_02`, `COMPONENT_COMBATPISTOL_CLIP_02`, `COMPONENT_PISTOL50_CLIP_02`, `COMPONENT_HEAVYPISTOL_CLIP_02`, `COMPONENT_SNSPISTOL_CLIP_02`, `COMPONENT_VINTAGEPISTOL_CLIP_02`, `COMPONENT_MACHINEPISTOL_CLIP_02`}, consume = 1, useTime = 2500 },
     ['at_clip_extended_smg'] = { component = {`COMPONENT_SMG_CLIP_02`, `COMPONENT_ASSAULTSMG_CLIP_02`, `COMPONENT_MICROSMG_CLIP_02`, `COMPONENT_MINISMG_CLIP_02`, `COMPONENT_COMBATPDW_CLIP_02`}, consume = 1, useTime = 2500 },
     ['at_clip_extended_shotgun'] = { component = {`COMPONENT_HEAVYSHOTGUN_CLIP_02`}, consume = 1, useTime = 2500 },
-    ['at_clip_extended_rifle'] = { component = {`COMPONENT_ASSAULTRIFLE_CLIP_02`, `COMPONENT_CARBINERIFLE_CLIP_02`, `COMPONENT_ADVANCEDRIFLE_CLIP_02`, `COMPONENT_SPECIALCARBINE_CLIP_02`, `COMPONENT_BULLPUPRIFLE_CLIP_02`, `COMPONENT_COMPACTRIFLE_CLIP_02`, `}, consume = 1, useTime = 2500 },
+    ['at_clip_extended_rifle'] = { component = {`COMPONENT_ASSAULTRIFLE_CLIP_02`, `COMPONENT_CARBINERIFLE_CLIP_02`, `COMPONENT_ADVANCEDRIFLE_CLIP_02`, `COMPONENT_SPECIALCARBINE_CLIP_02`, `COMPONENT_BULLPUPRIFLE_CLIP_02`, `COMPONENT_COMPACTRIFLE_CLIP_02`}, consume = 1, useTime = 2500 },
     ['at_clip_extended_mg'] = { component = {`COMPONENT_MG_CLIP_02`, `COMPONENT_COMBATMG_CLIP_02`, `COMPONENT_GUSENBERG_CLIP_02`}, consume = 1, useTime = 2500 },
     ['at_clip_extended_sniper'] = { component = {`COMPONENT_MARKSMANRIFLE_CLIP_02`}, consume = 1, useTime = 2500 },
     ['at_suppressor_pistol'] = { component = {`COMPONENT_AT_PI_SUPP_02`, `COMPONENT_AT_AR_SUPP_02`, `COMPONENT_AT_PI_SUPP`}, consume = 1, useTime = 2500 },
@@ -43,7 +43,7 @@ Config.ItemList = {
     ['at_skin_mg'] = { component = {`COMPONENT_MG_VARMOD_LOWRIDER`, `COMPONENT_COMBATMG_VARMOD_LOWRIDER`}, consume = 1, useTime = 2500 },
     ['at_skin_pistol'] = { component = {`COMPONENT_PISTOL_VARMOD_LUXE`, `COMPONENT_PISTOL50_VARMOD_LUXE`, `COMPONENT_APPISTOL_VARMOD_LUXE`, `COMPONENT_COMBATPISTOL_VARMOD_LOWRIDER`}, consume = 1, useTime = 2500 },
     ['at_skin_shotgun'] = { component = {`COMPONENT_PUMPSHOTGUN_VARMOD_LOWRIDER`, `COMPONENT_SAWNOFFSHOTGUN_VARMOD_LUXE`}, consume = 1, useTime = 2500 },
-    ['at_skin_rifle'] = { component = {`COMPONENT_ASSAULTRIFLE_VARMOD_LUXE`, `COMPONENT_CARBINERIFLE_VARMOD_LUXE`, `COMPONENT_ADVANCEDRIFLE_VARMOD_LUXE`, `COMPONENT_SPECIALCARBINE_VARMOD_LOWRIDER`, `COMPONENT_BULLPUPRIFLE_VARMOD_LOW`, `COMPONENT_MG_VARMOD_LOWRIDER`, `}, consume = 1, useTime = 2500 },
+    ['at_skin_rifle'] = { component = {`COMPONENT_ASSAULTRIFLE_VARMOD_LUXE`, `COMPONENT_CARBINERIFLE_VARMOD_LUXE`, `COMPONENT_ADVANCEDRIFLE_VARMOD_LUXE`, `COMPONENT_SPECIALCARBINE_VARMOD_LOWRIDER`, `COMPONENT_BULLPUPRIFLE_VARMOD_LOW`, `COMPONENT_MG_VARMOD_LOWRIDER`}, consume = 1, useTime = 2500 },
 
 
     ['burger'] = {
