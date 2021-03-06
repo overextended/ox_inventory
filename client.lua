@@ -208,14 +208,10 @@ end
 OpenTrunk = function(trunkid)
 	TriggerServerEvent('hsn-inventory:server:openInventory',{type = 'trunk',id = 'trunk-'..trunkid})
 end
+
 RegisterNetEvent('hsn-inventory:client:openInventory')
 AddEventHandler('hsn-inventory:client:openInventory',function(inventory,other)
 	invOpen = true
-	-- some players dupe while taskbar on screen
-	-- local check = exports['progressBars']:onScreen()
-	-- if check then
-	--	 return
-	-- end
 	ESX.SetPlayerData('inventory', inventory)
 	SendNUIMessage({
 		message = 'openinventory',
@@ -225,13 +221,10 @@ AddEventHandler('hsn-inventory:client:openInventory',function(inventory,other)
 		maxweight = Config.MaxWeight,
 		rightinventory = other
 	})
-	TriggerServerEvent('hsn-inventory:setcurrentInventory',other)
-	currentInventory = other
-	if other == nil then movement = true else movement = false end
+	if not other then movement = true else TriggerServerEvent('hsn-inventory:setcurrentInventory',other) movement = false end
 	SetNuiFocusAdvanced(true, true, movement)
+	currentInventory = other
 end)
-
-
 
 RegisterNetEvent('hsn-inventory:client:closeInventory')
 AddEventHandler('hsn-inventory:client:closeInventory',function(id)
@@ -284,7 +277,8 @@ Citizen.CreateThread(function()
 		end
 		if not currentInventory and invOpen and currentDrop then
 			invOpen = false
-			ExecuteCommand('inventory')
+			movement = false
+			TriggerServerEvent('hsn-inventory:server:openInventory',{type = 'drop',id = currentDrop, coords = currentDropCoords })
 		end
 		Citizen.Wait(wait)
 	end
