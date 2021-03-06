@@ -8,11 +8,21 @@ ENGINE=InnoDB
 
 ALTER TABLE `items`
 	ADD IF NOT EXISTS `stackable` INT(11) NULL DEFAULT '1', 
-   ADD IF NOT EXISTS `closeonuse` INT(11) NULL DEFAULT '1', 
-   ADD IF NOT EXISTS `description` VARCHAR(50) NULL DEFAULT NULL;
+	ADD IF NOT EXISTS `closeonuse` INT(11) NULL DEFAULT '1', 
+	ADD IF NOT EXISTS `description` VARCHAR(50) NULL DEFAULT NULL,
+	ADD PRIMARY KEY (`name`);
 
 
-REPLACE INTO `items` (`name`, `label`, `weight`, `can_remove`, `stackable`, `closeonuse`, `description`) VALUES
+INSERT INTO `items` (`name`, `label`, `weight`, `can_remove`, `stackable`, `closeonuse`, `description`) VALUES
+	('bandage', 'Bandage', 115, 1, 1, 1, NULL),
+	('lockpick', 'Lockpick', 190, 1, 1, 1, NULL),
+	('water', 'Water', 500, 1, 1, 1, NULL),
+	('burger', 'Burger', 220, 1, 1, 1, NULL),
+	('cola', 'eCola', 350, 1, 1, 1, NULL),
+	('money', 'Money', 0, 1, 1, 1, NULL),
+	('identification', 'Identification', 0, 1, 1, 1, NULL),
+	('black_money', 'Money', 0, 1, 1, 1, NULL),
+	('keys', 'Set of keys', 21, 1, 1, 1, NULL),
 	('at_scope_sniper', 'Sniper Scope', 700, 1, 1, 1, NULL),
 	('at_scope_smg', 'SMG Sight', 250, 1, 1, 1, NULL),
 	('at_scope_rifle', 'Rifle Scope', 330, 1, 1, 1, NULL),
@@ -42,9 +52,6 @@ REPLACE INTO `items` (`name`, `label`, `weight`, `can_remove`, `stackable`, `clo
 	('at_clip_extended_shotgun', 'Extended Shotgun Clip', 5, 1, 1, 1, NULL),
 	('at_clip_drum_shotgun', 'Shotgun Drum Clip', 5, 1, 1, 1, NULL),
 	('at_clip_drum_rifle', 'Rifle Drum Clip', 5, 1, 1, 1, NULL),
-
-	('bandage', 'Bandage', 115, 1, 1, 1, NULL),
-	('lockpick', 'Lockpick', 190, 1, 1, 1, NULL),
 	('ammo-musket', 'Musket ammo', 30, 1, 1, 0, NULL),
 	('ammo-rifle', '5.56', 4, 1, 1, 0, NULL),
 	('ammo-rifle2', '7.62', 8, 1, 1, 0, NULL),
@@ -58,13 +65,6 @@ REPLACE INTO `items` (`name`, `label`, `weight`, `can_remove`, `stackable`, `clo
 	('ammo-9', '9mm', 8, 1, 1, 0, NULL),
 	('ammo-38', '.38 Long Colt', 10, 1, 1, 0, NULL),
 	('ammo-44', '.44 Magnum', 16, 1, 1, 0, NULL),
-	('water', 'Water', 500, 1, 1, 1, NULL),
-	('burger', 'Burger', 220, 1, 1, 1, NULL),
-	('cola', 'eCola', 350, 1, 1, 1, NULL),
-	('money', 'Money', 0, 1, 1, 1, NULL),
-	('identification', 'Identification', 0, 1, 1, 1, NULL),
-	('black_money', 'Money', 0, 1, 1, 1, NULL),
-	('keys', 'Set of keys', 21, 1, 1, 1, NULL),
 	('GADGET_PARACHUTE', 'Parachute', 8000, 1, 1, 0, NULL),
 	('WEAPON_ADVANCEDRIFLE', 'Advanced Rifle', 3180, 1, 1, 0, NULL),
 	('WEAPON_APPISTOL', 'AP Pistol', 1220, 1, 1, 0, NULL),
