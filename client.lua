@@ -518,7 +518,6 @@ AddEventHandler('hsn-inventory:addAmmo',function(item, ammo)
             if newAmmo < 0 then newAmmo = 0 end
             SetPedAmmo(playerPed, weapon, newAmmo)
             TriggerServerEvent('hsn-inventory:server:addweaponAmmo',currentWeapon.slot,currentWeapon.item.name,ammo.name,ammo.count,removeAmmo,newAmmo)
-            TriggerEvent('hsn-inventory:notification','Reloaded')
         end
     end
 end)
