@@ -645,7 +645,7 @@ AddEventHandler('hsn-inventory:server:saveInventoryData',function(data)
 
 		-- we'll clean this up later
 		for k, v in pairs(Config.Accounts) do
-			MoneySync(src, k)
+			MoneySync(src, v)
 		end
 
 	end
@@ -1257,10 +1257,10 @@ AddEventHandler('hsn-inventory:setplayerInventory',function(identifier,inventory
 	end
 	local Player = ESX.GetPlayerFromIdentifier(identifier)
 	for k, v in pairs(Config.Accounts) do
-		local money = Player.getAccount(k).money
-		local itemCount = GetItemCount(identifier, k)
-		if itemCount < money then Player.addInventoryItem(k, money - itemCount)
-		elseif itemCount > money then Player.removeInventoryItem(k, itemCount - money)
+		local money = Player.getAccount(v).money
+		local itemCount = GetItemCount(identifier, v)
+		if itemCount < money then Player.addInventoryItem(v, money - itemCount)
+		elseif itemCount > money then Player.removeInventoryItem(v, itemCount - money)
 		end
 	end
 	if loop > 0 then print( ('^1[hsn-inventory]^3 %s items were converted to new format for %s [%s]^7'):format(loop, Player.getName(), identifier) ) end
