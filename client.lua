@@ -658,31 +658,34 @@ AddEventHandler('hsn-inventory:useItem',function(item)
 				TriggerEvent('esx_lockpick:onUse')
 			end
 
-
 			usingItem = true
-			------------------------------------------------------------------------------------------------
-			exports['mythic_progbar']:Progress({
-				name = 'useitem',
-				duration = data.useTime,
-				label = 'Using '..xItem.name,
-				useWhileDead = false,
-				canCancel = false,
-				controlDisables = { disableMovement = data.disableMove, disableCarMovement = false, disableMouse = false, disableCombat = true },
-				animation = { animDict = data.animDict, anim = data.anim, flags = data.flags },
-				prop = { model = data.model, coords = data.coords, rotation = data.rotation }
-			}, function()
-				-- Restore player status
-				if data.hunger then
-					if data.hunger > 0 then TriggerEvent('esx_status:add', 'hunger', data.hunger)
-					else TriggerEvent('esx_status:remove', 'hunger', data.hunger) end
-				end
-				if data.thirst then
-					if data.thirst > 0 then TriggerEvent('esx_status:add', 'thirst', data.thirst)
-					else TriggerEvent('esx_status:remove', 'thirst', data.thirst) end
-				end
-				if data.consume then TriggerServerEvent('hsn-inventory:client:removeItem', item.name, data.consume, item.metadata.type) end
-				usingItem = false
+			if data.useTime >= 0 then
+				usingItem = true
 				------------------------------------------------------------------------------------------------
+				exports['mythic_progbar']:Progress({
+					name = 'useitem',
+					duration = data.useTime,
+					label = 'Using '..xItem.name,
+					useWhileDead = false,
+					canCancel = false,
+					controlDisables = { disableMovement = data.disableMove, disableCarMovement = false, disableMouse = false, disableCombat = true },
+					animation = { animDict = data.animDict, anim = data.anim, flags = data.flags },
+					prop = { model = data.model, coords = data.coords, rotation = data.rotation }
+				}, function() usingItem = false end)
+			else usingItem = false end
+			while usingItem do Citizen.Wait(10) end
+
+			if data.hunger then
+				if data.hunger > 0 then TriggerEvent('esx_status:add', 'hunger', data.hunger)
+				else TriggerEvent('esx_status:remove', 'hunger', data.hunger) end
+			end
+			if data.thirst then
+				if data.thirst > 0 then TriggerEvent('esx_status:add', 'thirst', data.thirst)
+				else TriggerEvent('esx_status:remove', 'thirst', data.thirst) end
+			end
+			if data.consume then TriggerServerEvent('hsn-inventory:client:removeItem', item.name, data.consume, item.metadata.type) end
+			usingItem = false
+			------------------------------------------------------------------------------------------------
 				
 
 				if item == 'bandage' then
@@ -702,7 +705,7 @@ AddEventHandler('hsn-inventory:useItem',function(item)
 
 
 				------------------------------------------------------------------------------------------------
-			end)
+
 		end
 	end, item.name, item.metadata.type)
 end)
