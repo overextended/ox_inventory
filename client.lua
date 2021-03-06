@@ -233,10 +233,6 @@ AddEventHandler('hsn-inventory:client:closeInventory',function(id)
     TriggerServerEvent('hsn-inventory:removecurrentInventory',id)
 end)
 
---[[RegisterCommand('teststash',function()
-     TriggerServerEvent('hsn-inventory:server:openStash', {name = 'Hasqaws',slots = 15, type = 'stash'})
-end)]]
-
 RegisterNetEvent('hsn-inventory:client:refreshInventory')
 AddEventHandler('hsn-inventory:client:refreshInventory',function(inventory)
     SendNUIMessage({
