@@ -1157,6 +1157,7 @@ exports('getItem',function(src, item, metadata)
 	local inventory = playerInventory[Player.identifier]
 	for k, v in pairs(inventory) do
 		if v.name == item and (metadata == v.metadata.type) then
+			v.closeonuse = ESXItems[v.name].closeonuse
 			return v
 		end
 	end
@@ -1329,7 +1330,7 @@ end, true, {help = 'remove an item from a player', validate = false, arguments =
 	{name = 'type', help = 'item metadata type', type='any'}
 }})
 
-ESX.RegisterCommand('removeinventory', 'admin', function(xPlayer, args, showError)
+ESX.RegisterCommand({'removeinventory', 'clearinventory'}, 'admin', function(xPlayer, args, showError)
 	local Player = args.playerId
 	local inventory = GetInventory(playerInventory[Player.identifier])
 	for k,v in pairs(inventory) do
