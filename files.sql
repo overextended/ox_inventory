@@ -131,7 +131,7 @@ INSERT INTO `items` (`name`, `label`, `weight`, `can_remove`, `stackable`, `clos
 	('WEAPON_SAWNOFFSHOTGUN', 'Sawn Off Shotgun', 2380, 1, 1, 0, NULL),
 	('WEAPON_SMG', 'SMG', 3084, 1, 1, 0, NULL),
 	('WEAPON_SMG_MK2', 'SMG Mk2', 2700, 1, 1, 0, NULL),
-	('WEAPON_SMOKEGRENADE', 'Smoke Gernade', 600, 1, 1, 0, NULL),
+	('WEAPON_SMOKEGRENADE', 'Smoke Grenade', 600, 1, 1, 0, NULL),
 	('WEAPON_SNIPERRIFLE', 'Sniper Rifle', 6500, 1, 1, 0, NULL),
 	('WEAPON_SNOWBALL', 'Snow Ball', 5, 1, 1, 0, NULL),
 	('WEAPON_SNSPISTOL', 'SNS Pistol', 465, 1, 1, 0, NULL),
