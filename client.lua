@@ -103,18 +103,30 @@ Citizen.CreateThread(function()
                 end
             end
         end
-        if currentWeapon ~= nil and IsPedShooting(PlayerPedId()) then
-            local currentAmmo = GetAmmoInPedWeapon(PlayerPedId(), currentWeapon.hash)
-            if currentAmmo < 0 then currentAmmo = 0 SetPedAmmo(playerPed, currentWeapon.hash, 0) end
-            currentWeapon.ammo = tonumber(currentAmmo)
-            if currentAmmo == 0 then
-                usingWeapon = true
-                ClearPedTasks(PlayerPedId())
-                SetCurrentPedWeapon(PlayerPedId(), currentWeapon.hash, true)
-                TriggerServerEvent('hsn-inventory:server:reloadWeapon', currentWeapon)
-            end
-            TriggerServerEvent('hsn-inventory:server:decreasedurability',currentWeapon)
-        else usingWeapon = false end
+        if currentWeapon then
+			if IsPedArmed(ped, 6) then
+				DisableControlAction(1, 140, true)
+                DisableControlAction(1, 141, true)
+                DisableControlAction(1, 142, true)
+			end
+			if IsPedShooting(PlayerPedId()) then
+				if currentWeapon.name == 'WEAPON_FIREEXTINGUISHER' or 'WEAPON_PETROLCAN' then
+					usingWeapon = true
+					SetPedInfiniteAmmo(playerPed, true, currentWeapon.hash)
+				else
+					local currentAmmo = GetAmmoInPedWeapon(PlayerPedId(), currentWeapon.hash)
+					if currentAmmo < 0 then currentAmmo = 0 SetPedAmmo(playerPed, currentWeapon.hash, 0) end
+					currentWeapon.ammo = tonumber(currentAmmo)
+					if currentAmmo == 0 then
+						usingWeapon = true
+						ClearPedTasks(PlayerPedId())
+						SetCurrentPedWeapon(PlayerPedId(), currentWeapon.hash, true)
+						TriggerServerEvent('hsn-inventory:server:reloadWeapon', currentWeapon)
+					end
+					TriggerServerEvent('hsn-inventory:server:decreasedurability',currentWeapon)
+				end
+			else usingWeapon = false end
+		end
     end
 end)
 
