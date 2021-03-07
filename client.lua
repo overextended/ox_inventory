@@ -37,6 +37,7 @@ Citizen.CreateThread(function()
 	end)
 	while not playerName do Citizen.Wait(100) end
 	playerPed = PlayerPedId()
+	clearWeapons()
 end)
 
 function clearWeapons()
@@ -434,7 +435,9 @@ AddEventHandler('hsn-inventory:weapondraw', function(item)
 	loadAnimDict('reaction@intimidation@1h')
 	TaskPlayAnimAdvanced(playerPed, 'reaction@intimidation@1h', 'intro', GetEntityCoords(playerPed, true), 0, 0, GetEntityHeading(playerPed), 8.0, 3.0, -1, 50, 0, 0, 0)
 	Citizen.Wait(800)
-	RemoveWeaponFromPed(playerPed, GetHashKey(item.name))
+	local hash = GetHashKey(item.name)
+	SetPedAmmo(playerPed, hash, 0)
+	RemoveWeaponFromPed(playerPed, hash)
 	SetCurrentPedWeapon(playerPed, 'WEAPON_UNARMED', true)
 	Citizen.Wait(800)
 	ClearPedSecondaryTask(playerPed)
@@ -465,6 +468,7 @@ AddEventHandler('hsn-inventory:client:weapon',function(item)
 		currentWeapon.item.metadata.ammo = GetAmmoInPedWeapon(playerPed, currentWeapon.hash)
 		TriggerEvent('hsn-inventory:weaponaway')
 		Citizen.Wait(1600)
+		SetPedAmmo(playerPed, currentWeapon.hash, 0)
 		RemoveWeaponFromPed(playerPed, GetHashKey(item.name))
 		SetCurrentPedWeapon(playerPed, 'WEAPON_UNARMED', true)
 		currentWeapon = nil
@@ -477,17 +481,16 @@ AddEventHandler('hsn-inventory:client:weapon',function(item)
 		currentWeapon.slot = item.slot
 		currentWeapon.item = item
 		currentWeapon.hash = wepHash
-		if item.metadata.ammo then
-			for k,v in pairs(Config.Ammos) do
-				for k2, v2 in pairs(v) do
-					if v2 == currentWeapon.hash then currentWeapon.ammotype = k end
-				end
+		if not item.metadata.ammo or item.metadata.ammo < 0 then item.metadata.ammo = 0 end
+		for k,v in pairs(Config.Ammos) do
+			for k2, v2 in pairs(v) do
+				if v2 == currentWeapon.hash then currentWeapon.ammotype = k end
 			end
-		else item.metadata.ammo = 1 end
+		end
 		GiveWeaponToPed(playerPed, wepHash, 0, false, false)
 		SetCurrentPedWeapon(playerPed, wepHash, true)
-		SetAmmoInClip(playerPed, wepHash, tonumber(item.metadata.ammo))
-		if currentWeapon.item.name == 'WEAPON_FIREEXTINGUISHER' or 'WEAPON_PETROLCAN' then SetAmmoInClip(playerPed, currentWeapon.hash, 500) end
+		SetPedAmmo(playerPed, wepHash, tonumber(item.metadata.ammo))
+		if currentWeapon.item.name == 'WEAPON_FIREEXTINGUISHER' or 'WEAPON_PETROLCAN' then SetPedAmmo(playerPed, currentWeapon.hash, 500) end
 		if item.metadata.weapontint then SetPedWeaponTintIndex(playerPed, item.name, item.metadata.weapontint) end
 		if item.metadata.components then
 			for k,v in pairs(item.metadata.components) do
@@ -532,7 +535,7 @@ end)
 
 RegisterNetEvent('hsn-inventory:client:checkweapon')
 AddEventHandler('hsn-inventory:client:checkweapon',function(item)
-	if currentWeapon.item.metadata.weaponlicense == item.metadata.weaponlicense then
+	if currentWeapon and currentWeapon.item.metadata.weaponlicense == item.metadata.weaponlicense then
 		RemoveWeaponFromPed(playerPed, GetHashKey(item.name))
 		SetCurrentPedWeapon(playerPed, 'WEAPON_UNARMED', true)
 		currentWeapon = nil
