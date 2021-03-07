@@ -300,52 +300,63 @@ AddEventHandler('hsn-inventory:client:addItemNotify',function(item,text)
 end)
 
 
-function DrawText3Ds(x,y,z, text)
-	local onScreen,_x,_y=World3dToScreen2d(x,y,z)
-	local px,py,pz=table.unpack(GetGameplayCamCoords())
-	SetTextScale(0.35, 0.35)
-	SetTextFont(4)
-	SetTextProportional(1)
-	SetTextColour(255, 255, 255, 215)
-	SetTextEntry('STRING')
-	SetTextCentre(1)
-	AddTextComponentString(text)
-	DrawText(_x,_y)
-	local factor = (string.len(text)) / 370
-	DrawRect(_x,_y+0.0125, 0.015+ factor, 0.03, 41, 11, 41, 68)
-	ClearDrawOrigin()
+DrawText3D = function(coords, text)
+    SetDrawOrigin(coords)
+    SetTextScale(0.35, 0.35)
+    SetTextFont(4)
+    SetTextEntry('STRING')
+    SetTextCentre(1)
+    AddTextComponentString(text)
+    DrawText(0.0, 0.0)
+    DrawRect(0.0, 0.0125, 0.015 + text:gsub('~.-~', ''):len() / 370, 0.03, 45, 45, 45, 150)
+    ClearDrawOrigin()
 end
 
 Citizen.CreateThread(function()
-	while true do
-		while not PlayerData.job do Citizen.Wait(0) end
-		local wait = 100
-		for i = 1, #Config.Shops do
-			distance = #(GetEntityCoords(playerPed) - Config.Shops[i].coords)
-			if distance <= 2.5 and (not Config.Shops[i].job or Config.Shops[i].job == PlayerData.job.name) then
-				DrawText3Ds(Config.Shops[i].coords.x,Config.Shops[i].coords.y,Config.Shops[i].coords.z, '[E] Access Shop')
-				DrawMarker(2, Config.Shops[i].coords.x,Config.Shops[i].coords.y,Config.Shops[i].coords.z, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.3, 0.15, 0.2, 30, 150, 30, 100, false, false, false, true, false, false, false)
-				if IsControlJustPressed(1,38) and distance <= 1 and not dead and not isCuffed then
-					OpenShop(Config.Shops[i])
-				end
-				wait = 2
-			end
-		end
+    while true do
+        local sleepThread = 1000
 
-		for i = 1, #Config.Stashes do
-			distance = #(GetEntityCoords(playerPed) - Config.Stashes[i].coords)
-			if distance <= 2.5 and (not Config.Stashes[i].job or Config.Stashes[i].job == PlayerData.job.name) then
-				DrawText3Ds(Config.Stashes[i].coords.x, Config.Stashes[i].coords.y, Config.Stashes[i].coords.z, '[E] Access Stash')
-				DrawMarker(2, Config.Stashes[i].coords.x,Config.Stashes[i].coords.y,Config.Stashes[i].coords.z, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.3, 0.15, 0.2, 30, 30, 150, 100, false, false, false, true, false, false, false)
-				if IsControlJustPressed(1,38) and distance <= 1 and not dead and not isCuffed then
-					openStash(Config.Stashes[i])
-				end
-				wait = 2
-			end
-		end
+        while not PlayerData.job do Citizen.Wait(0) end
+        for i = 1, #Config.Shops do
+            local text = Config.Shops[i].name
+            distance = #(GetEntityCoords(PlayerPedId()) - Config.Shops[i].coords)
 
-		Citizen.Wait(wait)
-	end
+            if distance <= 5.5 and (not Config.Shops[i].job or Config.Shops[i].job == PlayerData.job.name) then
+                sleepThread = 5
+                
+                if distance <= 1.5 then
+                    text = '[~g~E~s~] ' .. Config.Shops[i].name
+
+                    if IsControlJustPressed(1,38) and not dead and not isCuffed then
+                        OpenShop(Config.Shops[i])
+                    end
+                end
+                
+                DrawText3D(Config.Shops[i].coords, text)
+            end
+        end
+
+        for i = 1, #Config.Stashes do
+            local text = Config.Stashes[i].name
+            distance = #(GetEntityCoords(PlayerPedId()) - Config.Stashes[i].coords)
+
+            if distance <= 5.5 and (not Config.Stashes[i].job or Config.Stashes[i].job == PlayerData.job.name) then
+                sleepThread = 5
+
+                if distance <= 1.5 then
+                    text = '[~g~E~s~] ' .. Config.Stashes[i].name
+
+                    if IsControlJustPressed(1,38) and not dead and not isCuffed then
+                        OpenStash(Config.Stashes[i])
+                    end
+                end   
+                
+                DrawText3D(Config.Stashes[i].coords, text)
+            end
+        end
+
+        Citizen.Wait(sleepThread)
+    end
 end)
 
 Citizen.CreateThread(function()
