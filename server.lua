@@ -980,7 +980,7 @@ end
 MoneySync = function(source, item)
 	local Player = ESX.GetPlayerFromId(source)
 	local getAccount = Player.getAccount(item)
-	local itemCount = exports['hsn-inventory']:getItemCount(source, item)
+	local itemCount = getItemCount(source, item)
 	local newCount = itemCount - getAccount.money
 	if getAccount.money < itemCount then
 		Player.addAccountMoney(item, math.abs(newCount))
@@ -1020,7 +1020,7 @@ AddEventHandler('hsn-inventory:server:reloadWeapon',function(weapon)
 	local Player = ESX.GetPlayerFromId(source)
 	local ammo = {}
 	ammo.name = weapon.ammotype
-	ammo.count = exports['hsn-inventory']:getItemCount(source,ammo.name)
+	ammo.count = getItemCount(source,ammo.name)
 	if ammo.count > 0 then TriggerClientEvent('hsn-inventory:addAmmo',source,weapon.item.name,ammo) end
 end)
 
@@ -1133,10 +1133,10 @@ end)]]
 
 RegisterNetEvent('hsn-inventory:client:removeItem')
 AddEventHandler('hsn-inventory:client:removeItem',function(item, count, metadata)
-	exports["hsn-inventory"]:removeItem(source, item, count, metadata)
+	removeItem(source, item, count, metadata)
 end)
 
-exports('removeItem', function(src, item, count, metadata)
+removeItem = function(src, item, count, metadata)
 	local Player = ESX.GetPlayerFromId(src)
 	if item == nil then
 		return
@@ -1147,7 +1147,7 @@ exports('removeItem', function(src, item, count, metadata)
 	RemovePlayerInventory(src,Player.identifier, item, count, nil, metadata)
 end)
 
-exports('addItem', function(src, item, count, metadata)
+addItem = function(src, item, count, metadata)
 	local Player = ESX.GetPlayerFromId(src)
 	if item == nil then
 		return
@@ -1162,7 +1162,7 @@ exports('addItem', function(src, item, count, metadata)
 	ItemNotify(src, item, count, 'Added')
 end)
 
-exports('getItemCount',function(src, item)
+getItemCount = function(src, item)
 	local Player = ESX.GetPlayerFromId(src)
 	if playerInventory[Player.identifier] == nil then
 		return
@@ -1171,7 +1171,7 @@ exports('getItemCount',function(src, item)
 	return ItemCount
 end)
 
-exports('getItem',function(src, item, metadata)
+getItem = function(src, item, metadata)
 	local Player = ESX.GetPlayerFromId(src)
 	if playerInventory[Player.identifier] == nil then
 		return
@@ -1188,7 +1188,7 @@ exports('getItem',function(src, item, metadata)
 	return xItem
 end)
 
-exports('canCarryItem',function(src, item, count)
+canCarryItem = function(src, item, count)
 	local weight = 0
 	local newWeight = (ESXItems[item].weight * count)
 	local returnData = false
@@ -1206,8 +1206,7 @@ exports('canCarryItem',function(src, item, count)
 	return returnData
 end)
 
-
-exports('useItem', function(src, item)
+useItem = function(src, item)
 	local metadata = item.metadata.type
 	if Config.ItemList[item.name] then
 		if not next(Config.ItemList[item.name]) then return end
@@ -1233,7 +1232,7 @@ ESX.RegisterServerCallback('hsn-inventory:getItem',function(source, cb, item, me
 	if playerInventory[Player.identifier] == nil then
 		return
 	end
-	local xItem = exports["hsn-inventory"]:getItem(source, item, metadata)
+	local xItem = getItem(source, item, metadata)
 	cb(xItem)
 end)
 
@@ -1244,8 +1243,6 @@ ESX.RegisterServerCallback('hsn-inventory:getPlayerInventory',function(source,cb
 	end
 	cb(playerInventory[TargetPlayer.identifier])
 end)
-
-
 
 -- ESX.RegisterServerCallback('hsn-inventory:server:gethottbarItems',function(source,cb)
 --	 local src = source
@@ -1272,7 +1269,6 @@ AddEventHandler('hsn-inventory:getplayerInventory',function(cb,identifier)
 		cb(GetInventory(playerInventory[identifier]))
 	end
 end)
-
 
 RegisterNetEvent('hsn-inventory:setplayerInventory')
 AddEventHandler('hsn-inventory:setplayerInventory',function(identifier,inventory)
@@ -1346,11 +1342,9 @@ AddEventHandler('onResourceStart', function(resourceName)
 	end
 end)
 
-
 function getPlayerIdentification(xPlayer)
 	return ('Sex: %s | Height: %s<br>DOB: %s (%s)'):format( xPlayer.get('sex'), xPlayer.get('height'), xPlayer.get('dateofbirth'), xPlayer.getIdentifier() )
 end
-
 
 function validateItem(item)
 	if item == 'money' or item == 'black_money' then return end

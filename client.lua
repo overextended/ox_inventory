@@ -380,12 +380,10 @@ OpenShop = function(id)
 	TriggerServerEvent('hsn-inventory:server:openInventory',{type = 'shop',id = id})
 end
 
-OpenStash = function(id)
+-- exports['hsn-inventory']:openStash(id)
+openStash = function(id)
 	TriggerServerEvent('hsn-inventory:server:openStash', {id = id, slots = id.slots, type = 'stash'})
 end
-
--- exports['hsn-inventory']:openStash(id)
-exports('openStash', OpenStash)
 
 RegisterNetEvent('hsn-inventory:Client:addnewDrop')
 AddEventHandler('hsn-inventory:Client:addnewDrop',function(coords, drop)
