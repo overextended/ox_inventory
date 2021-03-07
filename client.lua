@@ -119,7 +119,7 @@ Citizen.CreateThread(function()
 					ClearPedTasks(playerPed)
 					SetCurrentPedWeapon(playerPed, currentWeapon.hash, true)
 					SetAmmoInClip(playerPed, currentWeapon.hash, 300)
-					TriggerServerEvent('hsn-inventory:server:decreasedurability', playerID, currentWeapon.slot, currentWeapon.item, 1000)
+					TriggerServerEvent('hsn-inventory:server:decreasedurability', playerID, currentWeapon.slot, currentWeapon.item, 300)
 				elseif currentWeapon.item.metadata.throwable then
 					TriggerServerEvent('hsn-inventory:client:removeItem', currentWeapon.item.name, 1)
 				else
@@ -607,11 +607,15 @@ end
 
 RegisterNetEvent('hsn-inventory:notification')
 AddEventHandler('hsn-inventory:notification',function(message, mtype)
-	if mtype == 1 then mtype = { ['background-color'] = 'rgba(55,55,175)', ['color'] = 'white' }
-	elseif not mtype or mtype == 2 then mtype = { ['background-color'] = 'rgba(175,55,55)', ['color'] = 'white' }
+	if message then
+		if mtype == 1 then mtype = { ['background-color'] = 'rgba(55,55,175)', ['color'] = 'white' }
+		elseif not mtype or mtype == 2 then mtype = { ['background-color'] = 'rgba(175,55,55)', ['color'] = 'white' }
+		end
+		TriggerEvent('mythic_notify:client:SendAlert', {type = 'inform', text = message, length = 2500,style = mtype})
 	end
-	TriggerEvent('mythic_notify:client:SendAlert', {type = 'inform', text = message, length = 2500,style = mtype})
-	TriggerServerEvent('hsn-inventory:server:refreshInventory')
+
+	TriggerServerEvent('hsn-inventory:removecurrentInventory',currentInventory.name)
+	TriggerEvent('hsn-inventory:client:closeInventory')
 end)
 
 RegisterCommand('-nui', function()
