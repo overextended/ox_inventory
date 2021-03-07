@@ -163,10 +163,6 @@ Replace the contents of `config.weapons.lua` contents with <a href='https://raw.
 	self.canSwapItem = function(firstItem, firstItemCount, testItem, testItemCount)
 		return true
 	end
-
-	self.useItem = function(name, metadata)
-		return exports["hsn-inventory"]:useItem(self.source, name, metadata)
-	end
 ```
 
 <br>
