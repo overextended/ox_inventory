@@ -428,7 +428,6 @@ AddEventHandler('hsn-inventory:client:removeDrop',function(dropid)
 	Drops[dropid] = nil
 	currentDrop = nil
 	currentDropCoords = nil
-	TriggerEvent('hsn-inventory:client:closeInventory')
 end)
 
 RegisterNUICallback('UseItem', function(data, cb)
@@ -626,9 +625,6 @@ AddEventHandler('hsn-inventory:notification',function(message, mtype)
 		end
 		TriggerEvent('mythic_notify:client:SendAlert', {type = 'inform', text = message, length = 2500,style = mtype})
 	end
-
-	TriggerServerEvent('hsn-inventory:removecurrentInventory',currentInventory.name)
-	TriggerEvent('hsn-inventory:client:closeInventory')
 end)
 
 RegisterCommand('-nui', function()
