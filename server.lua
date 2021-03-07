@@ -12,6 +12,7 @@ local Trunks = {}
 local notready = true
 if GetConvar('onesync_enableInfinity', false) == 'true' or GetConvar('onesync', false) == 'on' then oneSync = true end
 
+
 TriggerEvent('esx:getSharedObject', function(obj) ESX = obj end)
 
 ESX.RegisterServerCallback('hsn-inventory:getData',function(source, cb)
@@ -132,17 +133,21 @@ AddPlayerInventory = function(identifier, item, count, slot, metadata)
 	local Player = ESX.GetPlayerFromIdentifier(identifier)
 	if ESXItems[item] ~= nil then
 		if item ~= nil and count ~= nil then
-			if item:find('WEAPON_') then
-				count = 1 
+			if item:find('WEAPON_') then		
 				for i = 1, Config.PlayerSlot do
 					if playerInventory[identifier][i] == nil then
-						if metadata == nil then metadata = {} end
-						if not metadata.durability then metadata.durability = 100 end
-						if not metadata.ammo then metadata.ammo = 0 end
-						if not metadata.components then metadata.components = {} end
-						if not metadata.ammoweight then metadata.ammoweight = 0 end
-						metadata.weaponlicense = GetRandomLicense(metadata.weaponlicense)
-						if metadata.registered == 'setname' then metadata.registered = Player.getName() end
+						if item:find('_T_') then
+							metadata = {throwable=1}
+						else
+							count = 1 
+							if metadata == nil then metadata = {} end
+							if not metadata.durability then metadata.durability = 100 end
+							if not metadata.ammo then metadata.ammo = 0 end
+							if not metadata.components then metadata.components = {} end
+							if not metadata.ammoweight then metadata.ammoweight = 0 end
+							metadata.weaponlicense = GetRandomLicense(metadata.weaponlicense)
+							if metadata.registered == 'setname' then metadata.registered = Player.getName() end
+						end
 						playerInventory[identifier][i] = {name = item ,label = ESXItems[item].label , weight = ESXItems[item].weight, slot = i, count = count, description = ESXItems[item].description, metadata = metadata, stackable = false, closeonuse = ESXItems[item].closeonuse} -- because weapon :)
 						break
 					end
@@ -587,13 +592,17 @@ AddEventHandler('hsn-inventory:server:saveInventoryData',function(data)
 						Player.removeMoney(data.item.price * data.item.count)
 						ItemNotify(src,data.item.name,data.item.count,'Added')
 						if data.item.name:find('WEAPON_') then
-							if not data.item.metadata then data.item.metadata = {} end
-							data.item.metadata.weaponlicense = GetRandomLicense(data.item.metadata.weaponlicense)
-							if data.item.metadata.registered == 'setname' then data.item.metadata.registered = Player.getName() end
-							if not data.item.metadata.components then data.item.metadata.components = {} end
-							data.item.metadata.ammo = 0
-							data.item.metadata.ammoweight = 0
-							data.item.metadata.durability = 100
+							if data.item.name:find('_T_') then
+								-- throwable
+							else
+								if not data.item.metadata then data.item.metadata = {} end
+								data.item.metadata.weaponlicense = GetRandomLicense(data.item.metadata.weaponlicense)
+								if data.item.metadata.registered == 'setname' then data.item.metadata.registered = Player.getName() end
+								if not data.item.metadata.components then data.item.metadata.components = {} end
+								data.item.metadata.ammo = 0
+								data.item.metadata.ammoweight = 0
+								data.item.metadata.durability = 100
+							end
 						elseif data.item.name:find('identification') then
 							data.item.metadata = {}
 							data.item.metadata.type = Player.getName()
@@ -613,13 +622,17 @@ AddEventHandler('hsn-inventory:server:saveInventoryData',function(data)
 				if IfInventoryCanCarry(playerInventory[Player.identifier],Config.MaxWeight, (data.newslotItem.weight * data.newslotItem.count)) then
 					if (money >= (data.newslotItem.price *  data.newslotItem.count)) then
 						if data.newslotItem.name:find('WEAPON_') then
-							if not data.newslotItem.metadata then data.newslotItem.metadata = {} end
-							if data.newslotItem.metadata.registered == 'setname' then data.newslotItem.metadata.registered = Player.getName() end
-							data.newslotItem.metadata.weaponlicense = GetRandomLicense(data.newslotItem.metadata.weaponlicense)
-							if not data.newslotItem.metadata.components then data.newslotItem.metadata.components = {} end
-							data.newslotItem.metadata.ammo = 0
-							data.newslotItem.metadata.ammoweight = 0
-							data.newslotItem.metadata.durability = 100
+							if data.newslotItem:find('_T_') then
+								-- throwable
+							else
+								if not data.newslotItem.metadata then data.newslotItem.metadata = {} end
+								if data.newslotItem.metadata.registered == 'setname' then data.newslotItem.metadata.registered = Player.getName() end
+								data.newslotItem.metadata.weaponlicense = GetRandomLicense(data.newslotItem.metadata.weaponlicense)
+								if not data.newslotItem.metadata.components then data.newslotItem.metadata.components = {} end
+								data.newslotItem.metadata.ammo = 0
+								data.newslotItem.metadata.ammoweight = 0
+								data.newslotItem.metadata.durability = 100
+							end
 						elseif data.newslotItem.name:find('identification') then
 							data.newslotItem.metadata = {}
 							data.newslotItem.metadata.type = Player.getName()
@@ -981,6 +994,8 @@ AddEventHandler('hsn-inventory:server:useItem',function(item,slot)
 				else
 					TriggerClientEvent('hsn-inventory:notification',src,'This weapon is broken',2)
 				end
+			elseif item.name:find('_T_') then
+				TriggerClientEvent('hsn-inventory:client:weapon',src,item)
 			end
 		else
 			if item.name:find('ammo') then
@@ -1012,10 +1027,14 @@ AddEventHandler('hsn-inventory:server:useItemfromSlot',function(slot)
 		end
 		if playerInventory[Player.identifier][slot] ~= nil and playerInventory[Player.identifier][slot].name ~= nil then
 			if playerInventory[Player.identifier][slot].name:find('WEAPON_') then
-				if playerInventory[Player.identifier][slot].metadata.durability > 0 then
+				if playerInventory[Player.identifier][slot].metadata.durability ~= nil then
+					if playerInventory[Player.identifier][slot].metadata.durability > 0 then
+						TriggerClientEvent('hsn-inventory:client:weapon',src,playerInventory[Player.identifier][slot])
+					else
+						TriggerClientEvent('hsn-inventory:notification',src,'This weapon is broken',2)
+					end
+				elseif playerInventory[Player.identifier][slot].name:find('_T_') then
 					TriggerClientEvent('hsn-inventory:client:weapon',src,playerInventory[Player.identifier][slot])
-				else
-					TriggerClientEvent('hsn-inventory:notification',src,'This weapon is broken',2)
 				end
 			else
 				if playerInventory[Player.identifier][slot].name:find('ammo') then
@@ -1163,6 +1182,25 @@ exports('getItem',function(src, item, metadata)
 	end
 end)
 
+exports('canCarryItem',function(src, item, count)
+	local weight = 0
+	local newWeight = (ESXItems[item].weight * count)
+	local returnData = false
+	local Player = ESX.GetPlayerFromId(src)
+	if playerInventory[Player.identifier] == nil then
+		return returnData
+	end
+	local inventory = playerInventory[Player.identifier]
+	for k, v in pairs(inventory) do
+		weight = weight + (v.weight * v.count)
+	end
+	if weight + newWeight <= Config.MaxWeight then
+		returnData = true
+	end
+	return returnData
+end)
+
+
 exports('useItem', function(src, item)
 	local metadata = item.metadata.type
 	if Config.ItemList[item.name] then
@@ -1308,11 +1346,16 @@ function getPlayerIdentification(xPlayer)
 end
 
 
+function validateItem(item)
+	if item == 'money' or item == 'black_money' then return end
+	item = string.lower(item)
+	if item:find('weapon_') then item = string.upper(item) end
+	return item
+end
 
 -- Override the default ESX commands
 ESX.RegisterCommand({'giveitem', 'additem'}, 'admin', function(xPlayer, args, showError)
-	if args.item == 'money' or args.item == 'black_money' then return end
-	args.playerId.addInventoryItem(args.item, args.count, args.type)
+	args.playerId.addInventoryItem(validateItem(args.item), args.count, args.type)
 end, true, {help = 'give an item to a player', validate = false, arguments = {
 	{name = 'playerId', help = 'player id', type = 'player'},
 	{name = 'item', help = 'item name', type = 'string'},
@@ -1322,7 +1365,7 @@ end, true, {help = 'give an item to a player', validate = false, arguments = {
 
 ESX.RegisterCommand('removeitem', 'admin', function(xPlayer, args, showError)
 	if args.item == 'money' or args.item == 'black_money' then return end
-	args.playerId.removeInventoryItem(args.item, args.count, args.type)
+	args.playerId.removeInventoryItem(validateItem(args.item), args.count, args.type)
 end, true, {help = 'remove an item from a player', validate = false, arguments = {
 	{name = 'playerId', help = 'player id', type = 'player'},
 	{name = 'item', help = 'item name', type = 'string'},
