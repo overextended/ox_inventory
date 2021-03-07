@@ -1050,7 +1050,7 @@ end)
 
 
 RegisterServerEvent('hsn-inventory:server:decreasedurability')
-AddEventHandler('hsn-inventory:server:decreasedurability',function(source, slot, weapon)
+AddEventHandler('hsn-inventory:server:decreasedurability',function(source, slot, weapon, ammo)
 	local src = source
 	local Player = ESX.GetPlayerFromId(src)
 	local decreaseamount = 0
@@ -1063,11 +1063,11 @@ AddEventHandler('hsn-inventory:server:decreasedurability',function(source, slot,
 					return
 				end
 				if Config.DurabilityDecreaseAmount[playerInventory[Player.identifier][slot].name] == nil then
-					decreaseamount = 0.5
+					decreaseamount = 0.5 * (ammo / 15)
 				elseif Config.DurabilityDecreaseAmount[playerInventory[Player.identifier][slot].name] then
-					decreaseamount = Config.DurabilityDecreaseAmount[playerInventory[Player.identifier][slot].name]
+					decreaseamount = Config.DurabilityDecreaseAmount[playerInventory[Player.identifier][slot].name] * (ammo / 15)
 				else
-					decreaseamount = amount
+					decreaseamount = amount * (ammo / 15)
 				end
 				playerInventory[Player.identifier][slot].metadata.durability = playerInventory[Player.identifier][slot].metadata.durability - decreaseamount
 				if playerInventory[Player.identifier][slot].metadata.durability == 0 then
@@ -1087,12 +1087,12 @@ AddEventHandler('hsn-inventory:server:addweaponAmmo',function(slot,weapon,ammo,t
 		if playerInventory[Player.identifier][slot].metadata.ammo ~= nil then
 			local ammoweight = ESXItems[ammo].weight
 			playerInventory[Player.identifier][slot].metadata.ammo = newAmmo
-			playerInventory[Player.identifier][slot].metadata.ammoweight = (newAmmo * ammoweight)
-			playerInventory[Player.identifier][slot].weight = ESXItems[weapon.name].weight + (newAmmo * ammoweight)
+			playerInventory[Player.identifier][slot].metadata.ammoweight = 0 --[[(newAmmo * ammoweight)]]
+			--playerInventory[Player.identifier][slot].weight = ESXItems[weapon.name].weight + (newAmmo * ammoweight) disable ammo weight for now
 			RemovePlayerInventory(src,Player.identifier,ammo,removeAmmo)
 		end
 	end
-	TriggerEvent('hsn-inventory:server:decreasedurability',src, slot,weapon)
+	TriggerEvent('hsn-inventory:server:decreasedurability',src, slot,weapon,removeAmmo)
 end)
 
 
