@@ -6,7 +6,6 @@
 	var toplamkg = 0
 	var rightweight = 0
 	var count = 0
-	var dropweight = 50
 	var dropSlots = 50
 	var rightinvtype = null
 	var inventoryidd = null
@@ -14,6 +13,11 @@
 	var HSN = []
 	var leftinventory = 'playerinventory'
 	var rightinventory = null
+	var maxweight = 24000
+	var playerfreeweight = 0
+	var rightfreeweight = 0
+	var availableweight = 0
+
 	Display = function(bool) {
 		if (bool) {
 			$(".inventory-main").fadeIn(300);
@@ -145,6 +149,7 @@
 
 
 	HSN.SetupInventory = function(data) {	 
+		maxweight = data.maxweight
 		$('.playername').html(data.name)
 		for(i = 1; i < (data.slots); i++) {
 			$(".inventory-main-leftside").find("[inventory-slot=" + i + "]").remove();
@@ -173,12 +178,13 @@
 		})
 
 
-		$(".leftside-weight").html((toplamkg/1000).toFixed(2) + '/'+ data.maxweight/1000 + 'kg' )
+		$(".leftside-weight").html((toplamkg/1000).toFixed(2) + '/'+ maxweight/1000 + 'kg' )
 		if (data.rightinventory !== undefined) {
 			$('.inventory-main-rightside').data("invTier", data.rightinventory.type)
 			$('.inventory-main-rightside').data("invId", data.rightinventory.name)
 			inventoryidd = data.rightinventory.name
 			rightinvtype = data.rightinventory.type
+			data.rightinventory.maxweight = (data.rightinventory.slots*9).toFixed(0)
 			$('.rightside-name').html(data.rightinventory.name)
 				for(i = 1; i < (data.rightinventory.slots); i++) {
 					$(".inventory-main-rightside").find("[inventory-slot=" + i + "]").remove();
@@ -204,11 +210,11 @@
 						}
 					})
 				} else {
-					var rightweight = 0
+					rightweight = 0
+					$(".rightside-weight").html('')
 				$.each(data.rightinventory.inventory, function (i, item) {
 					if (item != null) {
 						rightweight = rightweight +(item.weight * item.count);
-						$(".rightside-weight").html((rightweight/1000).toFixed(2) + '/'+ 250 + 'kg' )
 						if ((item.name).split("_")[0] == "WEAPON" && item.metadata.durability !== undefined || null) {
 							
 							$(".inventory-main-rightside").find("[inventory-slot=" + item.slot + "]").html('<div class="item-slot-img"><img src="images/' + item.name + '.png'+'" alt="' + item.name + '" /></div><div class="item-slot-count"><p>' + item.count + ' (' + ((item.weight * item.count) /1000).toFixed(2) + 'kg)</p></div><div class="item-slot-label"><p><div class="item-slot-durability"><div class="item-slot-durability-bar"><p>100</p></div></div><div class="item-slot-label"><p>' + item.label + '</p></div></p></div>');
@@ -223,12 +229,15 @@
 						}
 					}
 				})
+				$(".rightside-weight").append('<span id="rightside-curweight">' + rightweight/1000 + '</span>')
+				$(".rightside-weight").append('/<span id="rightside-maxweight">' + data.rightinventory.maxweight + '</span>kg')
 			}
 		} else {
 			$('.rightside-name').html("Drop")
 			$('.inventory-main-rightside').data("invTier", "drop")
 			rightinvtype = 'drop'
-			$(".rightside-weight").html(0 + '/'+ dropweight + 'kg' )
+			$(".rightside-weight").html('')
+			$(".rightside-weight").append('<span id="rightside-curweight">' + rightweight/1000 + '</span>')
 			for(i = 1; i < (dropSlots); i++) {
 				$(".inventory-main-rightside").find("[inventory-slot=" + i + "]").remove();
 				$(".inventory-main-rightside").append('<div class="ItemBoxes" inventory-slot=' + i +'></div> ')
@@ -483,80 +492,24 @@
 				}	   
 			}
 		} else {
-			if (count <= fromItem.count) {
-				if(((fromItem.name).split("_")[0] == "WEAPON" && fromItem.metadata.durability !== undefined || null)) {
-					var durability = HSN.InventoryGetDurability(fromItem.metadata.durability)
-					toInventory.find("[inventory-slot=" + toSlot + "]").html('<div class="item-slot-img"><img src="images/' + fromItem.name + '.png'+'" alt="' + fromItem.name + '" /></div><div class="item-slot-count"><p>' + fromItem.count + ' (' + ((fromItem.weight * fromItem.count)/1000).toFixed(2) + 'kg)</p></div><div class="item-slot-label"><p><div class="item-slot-durability"><div class="item-slot-durability-bar"><p>100</p></div></div><div class="item-slot-label"><p>' + fromItem.label + '</p></div></p></div>');
-					toInventory.find("[inventory-slot=" + toSlot + "]").find(".item-slot-durability-bar").css({"background-color":durability[0],"width":durability[2]}).find('p').html(durability[1]);
-					toInventory.find("[inventory-slot=" + toSlot + "]").data("ItemData", fromItem);
-					toInventory.find("[inventory-slot=" + toSlot + "]").addClass("drag-item");
-					toInventory.find("[inventory-slot=" + toSlot + "]").removeClass("itemdragclose");
-					fromInventory.find("[inventory-slot=" + fromSlot + "]").addClass("itemdragclose");
-					HSN.RemoveItemFromSlot(fromInventory,fromSlot)
-					$.post("http://hsn-inventory/saveinventorydata", JSON.stringify({
-						type : "freeslot",
-						frominv : inv,
-						toinv : inv2,
-						emptyslot : fromSlot,
-						toslot: toSlot,
-						item : fromItem,
-						invid: toinvId,
-						invid2 :toinvId2
-					}));
-				} else {
-					if (fromItem.count > count) {
-						var oldslotCount = fromItem.count - count
-						oldItemData = {}
-						newItemData = {}
-						oldItemData.count = oldslotCount
-						oldItemData.name = fromItem.name
-						oldItemData.label = fromItem.label
-						oldItemData.stackable = fromItem.stackable
-						oldItemData.description = fromItem.description
-						oldItemData.metadata = fromItem.metadata
-						oldItemData.weight = fromItem.weight
-						oldItemData.slot = fromSlot
-						oldItemData.price = fromItem.price
-
-						newItemData.count = count
-						newItemData.label = fromItem.label
-						newItemData.name = fromItem.name
-						newItemData.stackable = fromItem.stackable
-						newItemData.description = fromItem.description
-						newItemData.metadata = fromItem.metadata
-						newItemData.weight = fromItem.weight
-						newItemData.slot = toSlot
-						newItemData.price = fromItem.price
-
-
-						fromInventory.find("[inventory-slot=" + fromSlot + "]").html('<div class="item-slot-img"><img src="images/' + oldItemData.name + '.png'+'" alt="' + oldItemData.name + '" /></div><div class="item-slot-count"><p>' + oldItemData.count + ' (' + ((oldItemData.weight * oldItemData.count)/1000).toFixed(2) + 'kg)</p></div><div class="item-slot-label"><p><div class="item-slot-label"><p>' + oldItemData.label + '</p></div></p></div>');
-						fromInventory.find("[inventory-slot=" + fromSlot + "]").data("ItemData", oldItemData);
-						toInventory.find("[inventory-slot=" + toSlot + "]").html('<div class="item-slot-img"><img src="images/' + newItemData.name + '.png'+'" alt="' + newItemData.name + '" /></div><div class="item-slot-count"><p>' + newItemData.count + ' (' + ((newItemData.weight * newItemData.count)/1000).toFixed(2) + 'kg)</p></div><div class="item-slot-label"><p><div class="item-slot-label"><p>' + newItemData.label + '</p></div></p></div>');
-						toInventory.find("[inventory-slot=" + toSlot + "]").data("ItemData", newItemData);
-						toInventory.find("[inventory-slot=" + toSlot + "]").addClass("drag-item");
-						toInventory.find("[inventory-slot=" + toSlot + "]").removeClass("itemdragclose");
-						fromInventory.find("[inventory-slot=" + fromSlot + "]").removeClass("itemdragclose");
-						fromInventory.find("[inventory-slot=" + fromSlot + "]").addClass("drag-item");
-						$.post("http://hsn-inventory/saveinventorydata", JSON.stringify({
-							type: "yarimswap",
-							frominv : inv,
-							toinv : inv2,
-							toSlot: toSlot,
-							fromSlot: fromSlot,
-							oldslotItem: oldItemData,
-							newslotItem: newItemData,
-							invid: toinvId,
-							invid2 :toinvId2
-						}));
-					} else if (fromItem.count == count) {
-					   var fromSlot = Number(fromSlot)
-					   var toSlot = Number(toSlot)
-						HSN.RemoveItemFromSlot(fromInventory,fromSlot)
-						toInventory.find("[inventory-slot=" + toSlot + "]").html('<div class="item-slot-img"><img src="images/' + fromItem.name + '.png'+'" alt="' + fromItem.name + '" /></div><div class="item-slot-count"><p>' + count + ' (' + ((fromItem.weight * count)/1000).toFixed(2) + 'kg)</p></div><div class="item-slot-label"><p><div class="item-slot-label"><p>' + fromItem.label + '</p></div></p></div>');
+			playerfreeweight = maxweight - toplamkg
+			rightfreeweight = 100000
+			if (document.body.contains(document.getElementById('rightside-maxweight'))) {rightfreeweight = (document.getElementById('rightside-maxweight').innerHTML)*1000}
+			availableweight = 0
+			//inv = from
+			//inv2 == to
+			if (inv2 !== 'Playerinv') {availableweight = rightfreeweight} else {availableweight = playerfreeweight}
+			if (availableweight !== 0 && (fromItem.weight * count) <= availableweight) {
+				if (count <= fromItem.count) {
+					if(((fromItem.name).split("_")[0] == "WEAPON" && fromItem.metadata.durability !== undefined || null)) {
+						var durability = HSN.InventoryGetDurability(fromItem.metadata.durability)
+						toInventory.find("[inventory-slot=" + toSlot + "]").html('<div class="item-slot-img"><img src="images/' + fromItem.name + '.png'+'" alt="' + fromItem.name + '" /></div><div class="item-slot-count"><p>' + fromItem.count + ' (' + ((fromItem.weight * fromItem.count)/1000).toFixed(2) + 'kg)</p></div><div class="item-slot-label"><p><div class="item-slot-durability"><div class="item-slot-durability-bar"><p>100</p></div></div><div class="item-slot-label"><p>' + fromItem.label + '</p></div></p></div>');
+						toInventory.find("[inventory-slot=" + toSlot + "]").find(".item-slot-durability-bar").css({"background-color":durability[0],"width":durability[2]}).find('p').html(durability[1]);
 						toInventory.find("[inventory-slot=" + toSlot + "]").data("ItemData", fromItem);
 						toInventory.find("[inventory-slot=" + toSlot + "]").addClass("drag-item");
 						toInventory.find("[inventory-slot=" + toSlot + "]").removeClass("itemdragclose");
 						fromInventory.find("[inventory-slot=" + fromSlot + "]").addClass("itemdragclose");
+						HSN.RemoveItemFromSlot(fromInventory,fromSlot)
 						$.post("http://hsn-inventory/saveinventorydata", JSON.stringify({
 							type : "freeslot",
 							frominv : inv,
@@ -566,10 +519,94 @@
 							item : fromItem,
 							invid: toinvId,
 							invid2 :toinvId2
-							
 						}));
+					} else {
+						if (fromItem.count > count) {
+							var oldslotCount = fromItem.count - count
+							oldItemData = {}
+							newItemData = {}
+							oldItemData.count = oldslotCount
+							oldItemData.name = fromItem.name
+							oldItemData.label = fromItem.label
+							oldItemData.stackable = fromItem.stackable
+							oldItemData.description = fromItem.description
+							oldItemData.metadata = fromItem.metadata
+							oldItemData.weight = fromItem.weight
+							oldItemData.slot = fromSlot
+							oldItemData.price = fromItem.price
+
+							newItemData.count = count
+							newItemData.label = fromItem.label
+							newItemData.name = fromItem.name
+							newItemData.stackable = fromItem.stackable
+							newItemData.description = fromItem.description
+							newItemData.metadata = fromItem.metadata
+							newItemData.weight = fromItem.weight
+							newItemData.slot = toSlot
+							newItemData.price = fromItem.price
+
+
+							fromInventory.find("[inventory-slot=" + fromSlot + "]").html('<div class="item-slot-img"><img src="images/' + oldItemData.name + '.png'+'" alt="' + oldItemData.name + '" /></div><div class="item-slot-count"><p>' + oldItemData.count + ' (' + ((oldItemData.weight * oldItemData.count)/1000).toFixed(2) + 'kg)</p></div><div class="item-slot-label"><p><div class="item-slot-label"><p>' + oldItemData.label + '</p></div></p></div>');
+							fromInventory.find("[inventory-slot=" + fromSlot + "]").data("ItemData", oldItemData);
+							toInventory.find("[inventory-slot=" + toSlot + "]").html('<div class="item-slot-img"><img src="images/' + newItemData.name + '.png'+'" alt="' + newItemData.name + '" /></div><div class="item-slot-count"><p>' + newItemData.count + ' (' + ((newItemData.weight * newItemData.count)/1000).toFixed(2) + 'kg)</p></div><div class="item-slot-label"><p><div class="item-slot-label"><p>' + newItemData.label + '</p></div></p></div>');
+							toInventory.find("[inventory-slot=" + toSlot + "]").data("ItemData", newItemData);
+							toInventory.find("[inventory-slot=" + toSlot + "]").addClass("drag-item");
+							toInventory.find("[inventory-slot=" + toSlot + "]").removeClass("itemdragclose");
+							fromInventory.find("[inventory-slot=" + fromSlot + "]").removeClass("itemdragclose");
+							fromInventory.find("[inventory-slot=" + fromSlot + "]").addClass("drag-item");
+							$.post("http://hsn-inventory/saveinventorydata", JSON.stringify({
+								type: "yarimswap",
+								frominv : inv,
+								toinv : inv2,
+								toSlot: toSlot,
+								fromSlot: fromSlot,
+								oldslotItem: oldItemData,
+								newslotItem: newItemData,
+								invid: toinvId,
+								invid2 :toinvId2
+							}));
+						} else if (fromItem.count == count) {
+						var fromSlot = Number(fromSlot)
+						var toSlot = Number(toSlot)
+							HSN.RemoveItemFromSlot(fromInventory,fromSlot)
+							toInventory.find("[inventory-slot=" + toSlot + "]").html('<div class="item-slot-img"><img src="images/' + fromItem.name + '.png'+'" alt="' + fromItem.name + '" /></div><div class="item-slot-count"><p>' + count + ' (' + ((fromItem.weight * count)/1000).toFixed(2) + 'kg)</p></div><div class="item-slot-label"><p><div class="item-slot-label"><p>' + fromItem.label + '</p></div></p></div>');
+							toInventory.find("[inventory-slot=" + toSlot + "]").data("ItemData", fromItem);
+							toInventory.find("[inventory-slot=" + toSlot + "]").addClass("drag-item");
+							toInventory.find("[inventory-slot=" + toSlot + "]").removeClass("itemdragclose");
+							fromInventory.find("[inventory-slot=" + fromSlot + "]").addClass("itemdragclose");
+							$.post("http://hsn-inventory/saveinventorydata", JSON.stringify({
+								type : "freeslot",
+								frominv : inv,
+								toinv : inv2,
+								emptyslot : fromSlot,
+								toslot: toSlot,
+								item : fromItem,
+								invid: toinvId,
+								invid2 :toinvId2
+								
+							}));
+						}
 					}
+
+					if (inv2 !== 'Playerinv') {
+						if (inv2 !== inv) {
+							rightweight = rightweight + (fromItem.weight * count)
+							$("#rightside-curweight").html(((rightweight)/1000).toFixed(2) )
+							toplamkg = toplamkg - (fromItem.weight * count)
+							$(".leftside-weight").html(((toplamkg)/1000).toFixed(2) + '/'+ maxweight/1000 + 'kg' )
+						}
+					} else {
+						if (inv2 !== inv) {
+							rightweight = rightweight - (fromItem.weight * count)
+							$("#rightside-curweight").html(((rightweight)/1000).toFixed(2) )
+							toplamkg = toplamkg + (fromItem.weight * count)
+							$(".leftside-weight").html(((toplamkg)/1000).toFixed(2) + '/'+ maxweight/1000 + 'kg' )
+						}
+					}
+
 				}
+			} else {
+				if (inv2 == 'Playerinv') { HSN.InventoryMessage('You are carrying too much', 2) }
 			}
 		}
 		DragAndDrop()
