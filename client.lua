@@ -112,23 +112,23 @@ Citizen.CreateThread(function()
 				DisableControlAction(1, 141, true)
 				DisableControlAction(1, 142, true)
 			end
-			if IsPedShooting(playerPed) then
+			local shooting = IsPedShooting(playerPed)
+			if shooting or IsControlJustReleased(0, 24) then
 				local ammo = GetAmmoInPedWeapon(playerPed, currentWeapon.hash)
 				if currentWeapon.item.name == 'WEAPON_FIREEXTINGUISHER' or currentWeapon.item.name == 'WEAPON_PETROLCAN' then
 					--
-				elseif string.find(currentWeapon.item.name, '_T_', 6, true) then
+				elseif currentWeapon.throwable then
 					TriggerServerEvent('hsn-inventory:client:removeItem', currentWeapon.item.name, 1)
 				else
 					currentWeapon.item.metadata.ammo = ammo
 					if ammo == 0 then
-						shooting = true
 						ClearPedSecondaryTask(playerPed)
 						SetCurrentPedWeapon(playerPed, currentWeapon.hash, true)
 						TriggerServerEvent('hsn-inventory:server:reloadWeapon', currentWeapon)
 					end
 					--TriggerServerEvent('hsn-inventory:server:decreasedurability', currentWeapon)
 				end
-			else shooting = true end
+			else shooting = false end
 		end
 	end
 end)
@@ -477,13 +477,13 @@ AddEventHandler('hsn-inventory:client:weapon',function(item)
 		currentWeapon = nil
 		TriggerEvent('hsn-inventory:client:addItemNotify',item,'Holstered')
 	else
-		usingItem = true
 		TriggerEvent('hsn-inventory:weapondraw',item)
 		Citizen.Wait(1600)
 		currentWeapon = {}
 		currentWeapon.slot = item.slot
 		currentWeapon.item = item
 		currentWeapon.hash = wepHash
+		if item.name:find('_T_') then currentWeapon.throwable = true item.metadata.ammo = 1 end
 		for k,v in pairs(Config.Ammos) do
 			for k2, v2 in pairs(v) do
 				if v2 == currentWeapon.hash then currentWeapon.ammotype = k end
@@ -505,6 +505,7 @@ AddEventHandler('hsn-inventory:client:weapon',function(item)
 	end
 	TriggerEvent('hsn-inventory:currentWeapon', currentWeapon) -- using for another resource
 	Citizen.Wait(100)
+	usingItem = false
 end)
 
 RegisterNetEvent('hsn-inventory:addAmmo')
@@ -626,13 +627,12 @@ AddEventHandler('hsn-inventory:useItem',function(item)
 	if usingItem or shooting then return end
 	ESX.TriggerServerCallback('hsn-inventory:getItem',function(xItem)
 		if xItem then
-			local data = Config.ItemList[xItem.name]
+			local data = Config.ItemList[item.name]
 			if not data or not next(data) then return end
 			if xItem.closeonuse then TriggerEvent('hsn-inventory:client:closeInventory') end
 			if not data.animDict then data.animDict = 'pickup_object' end
 			if not data.anim then data.anim = 'putdown_low' end
 			if not data.flags then data.flags = 48 end
-
 			-- Trigger effects before the progress bar
 			if data.component then
 				if not currentWeapon then return end
