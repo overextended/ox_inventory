@@ -13,6 +13,19 @@ server_scripts {
     'server.lua'
 }
 
+exports {
+	'openStash',
+}
+
+server_exports {
+	'removeItem',
+    'addItem',
+    'getItemCount',
+    'getItem',
+    'canCarryItem',
+    'useItem'
+}
+
 ui_page "html/index.html"
 files {
     'html/index.html',
