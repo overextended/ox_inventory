@@ -338,7 +338,7 @@ Citizen.CreateThread(function()
 				DrawText3Ds(Config.Stashes[i].coords.x, Config.Stashes[i].coords.y, Config.Stashes[i].coords.z, '[E] Access Stash')
 				DrawMarker(2, Config.Stashes[i].coords.x,Config.Stashes[i].coords.y,Config.Stashes[i].coords.z, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.3, 0.15, 0.2, 30, 30, 150, 100, false, false, false, true, false, false, false)
 				if IsControlJustPressed(1,38) and distance <= 1 and not dead and not isCuffed then
-					OpenStash(Config.Stashes[i])
+					openStash(Config.Stashes[i])
 				end
 				wait = 2
 			end
@@ -369,12 +369,10 @@ OpenShop = function(id)
 	TriggerServerEvent('hsn-inventory:server:openInventory',{type = 'shop',id = id})
 end
 
-OpenStash = function(id)
+-- exports['hsn-inventory']:openStash(id)
+openStash = function(id)
 	TriggerServerEvent('hsn-inventory:server:openStash', {id = id, slots = id.slots, type = 'stash'})
 end
-
--- exports['hsn-inventory']:openStash(id)
-exports('openStash', OpenStash)
 
 RegisterNetEvent('hsn-inventory:Client:addnewDrop')
 AddEventHandler('hsn-inventory:Client:addnewDrop',function(coords, drop)
