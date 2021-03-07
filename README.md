@@ -39,9 +39,9 @@ end)
 
 <br>
 
-## Modifying your framework (ESX/EXM) - _Updated for 1.4.5_
+## Modifying your framework (ESX/EXM) - _Updated for 1.4.8_
 * Modifications to money related functions have changed _(1.4.4)_
-* Modifications to inventory related functions have changed _(1.4.5)_
+* Modifications to inventory related functions have changed _(1.4.8)_
 * Vanilla files: <a href='https://github.com/esx-framework/es_extended/blob/v1-final/server/classes/player.lua'>ESX Final</a> | <a href='https://github.com/extendedmode/extendedmode/blob/master/server/classes/player.lua'>EXM</a>
 
 Replace the contents of `config.weapons.lua` contents with <a href='https://raw.githubusercontent.com/thelindat/extendedmode-hsn-inventory-compatibility/main/config.weapons.lua'>this file</a>
@@ -157,7 +157,7 @@ Replace the contents of `config.weapons.lua` contents with <a href='https://raw.
 	end
 
 	self.canCarryItem = function(name, count)
-		return true
+		return exports["hsn-inventory"]:canCarryItem(self.source, name, count)
 	end
 
 	self.canSwapItem = function(firstItem, firstItemCount, testItem, testItemCount)
