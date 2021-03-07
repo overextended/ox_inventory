@@ -7,9 +7,7 @@ https://discord.gg/hmcmv3P7YW</p>
 Original Showcase --> https://streamable.com/kpvdj3<br>
 Hasan's discord is available at https://discord.gg/6FQhKDXBJ6<br><br>
 Further development of this resource is continuing at <a href='https://github.com/thelindat/hsn-inventory'>thelindat/hsn-inventory</a>.<br>All stable updates will be submitted to the main repository as pull requests.</p>
-<br><br><br>
-
-<h1 align='center'>This inventory should work flawless and bugless, if you encounter any issue, please report them on issues section.</h1>
+<br><h3 align='center'>If you encounter any issues, please report them in the issues section (or discord).</h3><br><br>
 
 <h1 align='center'>Installation Guide</h1>
 <h3 align='center'> <a href='https://github.com/thelindat/hsn-inventory/wiki'>More guides on the wiki</a> </h3>
