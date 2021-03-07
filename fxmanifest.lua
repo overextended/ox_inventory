@@ -23,7 +23,7 @@ files {
 }
 
 exports {
-	'openStash',
+	'OpenStash',
 }
 
 server_exports {
