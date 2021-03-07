@@ -136,8 +136,10 @@ AddPlayerInventory = function(identifier, item, count, slot, metadata)
 			if item:find('WEAPON_') then		
 				for i = 1, Config.PlayerSlot do
 					if playerInventory[identifier][i] == nil then
-						if item:find('_T_') then
+						local stacks = false
+						if Config.Throwable[item] then
 							metadata = {throwable=1}
+							stacks = true
 						else
 							count = 1 
 							if metadata == nil then metadata = {} end
@@ -148,7 +150,7 @@ AddPlayerInventory = function(identifier, item, count, slot, metadata)
 							metadata.weaponlicense = GetRandomLicense(metadata.weaponlicense)
 							if metadata.registered == 'setname' then metadata.registered = Player.getName() end
 						end
-						playerInventory[identifier][i] = {name = item ,label = ESXItems[item].label , weight = ESXItems[item].weight, slot = i, count = count, description = ESXItems[item].description, metadata = metadata, stackable = false, closeonuse = ESXItems[item].closeonuse} -- because weapon :)
+						playerInventory[identifier][i] = {name = item ,label = ESXItems[item].label , weight = ESXItems[item].weight, slot = i, count = count, description = ESXItems[item].description, metadata = metadata, stackable = stacks, closeonuse = ESXItems[item].closeonuse} -- because weapon :)
 						break
 					end
 				end
@@ -592,8 +594,9 @@ AddEventHandler('hsn-inventory:server:saveInventoryData',function(data)
 						Player.removeMoney(data.item.price * data.item.count)
 						ItemNotify(src,data.item.name,data.item.count,'Added')
 						if data.item.name:find('WEAPON_') then
-							if data.item.name:find('_T_') then
-								-- throwable
+							if Config.Throwable[data.item.name] then
+								metadata = {throwable=1}
+								data.item.stackable = true
 							else
 								if not data.item.metadata then data.item.metadata = {} end
 								data.item.metadata.weaponlicense = GetRandomLicense(data.item.metadata.weaponlicense)
@@ -622,8 +625,9 @@ AddEventHandler('hsn-inventory:server:saveInventoryData',function(data)
 				if IfInventoryCanCarry(playerInventory[Player.identifier],Config.MaxWeight, (data.newslotItem.weight * data.newslotItem.count)) then
 					if (money >= (data.newslotItem.price *  data.newslotItem.count)) then
 						if data.newslotItem.name:find('WEAPON_') then
-							if data.newslotItem:find('_T_') then
-								-- throwable
+							if Config.Throwable[data.newslotItem.name] then
+								metadata = {throwable=1}
+								data.item.stackable = true
 							else
 								if not data.newslotItem.metadata then data.newslotItem.metadata = {} end
 								if data.newslotItem.metadata.registered == 'setname' then data.newslotItem.metadata.registered = Player.getName() end
@@ -994,7 +998,7 @@ AddEventHandler('hsn-inventory:server:useItem',function(item,slot)
 				else
 					TriggerClientEvent('hsn-inventory:notification',src,'This weapon is broken',2)
 				end
-			elseif item.name:find('_T_') then
+			elseif Config.Throwable[item] then
 				TriggerClientEvent('hsn-inventory:client:weapon',src,item)
 			end
 		else
@@ -1033,7 +1037,7 @@ AddEventHandler('hsn-inventory:server:useItemfromSlot',function(slot)
 					else
 						TriggerClientEvent('hsn-inventory:notification',src,'This weapon is broken',2)
 					end
-				elseif playerInventory[Player.identifier][slot].name:find('_T_') then
+				elseif Config.Throwable[playerInventory[Player.identifier][slot].name] then
 					TriggerClientEvent('hsn-inventory:client:weapon',src,playerInventory[Player.identifier][slot])
 				end
 			else
@@ -1063,6 +1067,7 @@ AddEventHandler('hsn-inventory:server:decreasedurability',function(source, slot,
 					return
 				end
 				if Config.DurabilityDecreaseAmount[playerInventory[Player.identifier][slot].name] == nil then
+					print('gsdf')
 					decreaseamount = 0.5 * (ammo / 15)
 				elseif Config.DurabilityDecreaseAmount[playerInventory[Player.identifier][slot].name] then
 					decreaseamount = Config.DurabilityDecreaseAmount[playerInventory[Player.identifier][slot].name] * (ammo / 15)
