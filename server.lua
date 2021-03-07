@@ -758,8 +758,8 @@ AddEventHandler('hsn-inventory:server:openInventory',function(data, coords)
 	end
 end)
 
-RegisterServerEvent('hsn-inventory:server:openStash')
-AddEventHandler('hsn-inventory:server:openStash',function(stash)
+RegisterServerEvent('hsn-inventory:server:OpenStash')
+AddEventHandler('hsn-inventory:server:OpenStash',function(stash)
 	OpenStash(source, stash)
 end)
 
@@ -990,7 +990,7 @@ MoneySync = function(source, item)
 end
 
 RegisterServerEvent('hsn-inventory:server:useItem')
-AddEventHandler('hsn-inventory:server:useItem',function(item,slot)
+AddEventHandler('hsn-inventory:server:useItem',function(item)
 	local src = source
 	local Player = ESX.GetPlayerFromId(src)
 	if playerInventory[Player.identifier][item.slot] ~= nil and playerInventory[Player.identifier][item.slot].name ~= nil then
@@ -1010,10 +1010,11 @@ AddEventHandler('hsn-inventory:server:useItem',function(item,slot)
 				TriggerClientEvent('hsn-inventory:addAmmo',src,weps,playerInventory[Player.identifier][item.slot])
 				return
 			end
-			Player.useItem(item)
+			useItem(src, item)
 		end
 	end
 end)
+
 
 RegisterServerEvent('hsn-inventory:server:reloadWeapon')
 AddEventHandler('hsn-inventory:server:reloadWeapon',function(weapon)
@@ -1049,7 +1050,7 @@ AddEventHandler('hsn-inventory:server:useItemfromSlot',function(slot)
 					TriggerClientEvent('hsn-inventory:addAmmo',src,weps,playerInventory[Player.identifier][slot])
 					return
 				end
-				Player.useItem(playerInventory[Player.identifier][slot])
+				useItem(src, playerInventory[Player.identifier][slot], slot)
 			end
 		end
 	end
@@ -1132,11 +1133,11 @@ end)]]
 end)]]
 
 RegisterNetEvent('hsn-inventory:client:removeItem')
-AddEventHandler('hsn-inventory:client:removeItem',function(item, count, metadata)
-	removeItem(source, item, count, metadata)
+AddEventHandler('hsn-inventory:client:removeItem',function(item, count, metadata, slot)
+	removeItem(source, item, count, metadata, slot)
 end)
 
-removeItem = function(src, item, count, metadata)
+removeItem = function(src, item, count, metadata, slot)
 	local Player = ESX.GetPlayerFromId(src)
 	if item == nil then
 		return
@@ -1144,8 +1145,8 @@ removeItem = function(src, item, count, metadata)
 	if count == nil then
 		count = 1
 	end
-	RemovePlayerInventory(src,Player.identifier, item, count, nil, metadata)
-end)
+	RemovePlayerInventory(src,Player.identifier, item, count, slot, metadata)
+end
 
 addItem = function(src, item, count, metadata)
 	local Player = ESX.GetPlayerFromId(src)
@@ -1160,7 +1161,7 @@ addItem = function(src, item, count, metadata)
 	end
 	AddPlayerInventory(Player.identifier, item, count, nil, metadata)
 	ItemNotify(src, item, count, 'Added')
-end)
+end
 
 getItemCount = function(src, item)
 	local Player = ESX.GetPlayerFromId(src)
@@ -1169,7 +1170,7 @@ getItemCount = function(src, item)
 	end
 	local ItemCount = GetItemCount(Player.identifier, item)
 	return ItemCount
-end)
+end
 
 getItem = function(src, item, metadata)
 	local Player = ESX.GetPlayerFromId(src)
@@ -1186,7 +1187,7 @@ getItem = function(src, item, metadata)
 		end
 	end
 	return xItem
-end)
+end
 
 canCarryItem = function(src, item, count)
 	local weight = 0
@@ -1204,17 +1205,18 @@ canCarryItem = function(src, item, count)
 		returnData = true
 	end
 	return returnData
-end)
+end
 
-useItem = function(src, item)
+
+useItem = function(src, item, slot)
 	local metadata = item.metadata.type
 	if Config.ItemList[item.name] then
 		if not next(Config.ItemList[item.name]) then return end
-		TriggerClientEvent('hsn-inventory:useItem', src, item)
+		TriggerClientEvent('hsn-inventory:useItem', src, item, slot)
 	elseif ESX.UsableItemsCallbacks[item.name] ~= nil then
 		TriggerEvent('esx:useItem', src, item.name)
 	end
-end)
+end
 
 ESX.RegisterServerCallback('hsn-inventory:getItemCount',function(source, cb, item)
 	local src = source
@@ -1244,6 +1246,8 @@ ESX.RegisterServerCallback('hsn-inventory:getPlayerInventory',function(source,cb
 	cb(playerInventory[TargetPlayer.identifier])
 end)
 
+
+
 -- ESX.RegisterServerCallback('hsn-inventory:server:gethottbarItems',function(source,cb)
 --	 local src = source
 --	 local Player = ESX.GetPlayerFromId(src)
@@ -1269,6 +1273,7 @@ AddEventHandler('hsn-inventory:getplayerInventory',function(cb,identifier)
 		cb(GetInventory(playerInventory[identifier]))
 	end
 end)
+
 
 RegisterNetEvent('hsn-inventory:setplayerInventory')
 AddEventHandler('hsn-inventory:setplayerInventory',function(identifier,inventory)
@@ -1342,9 +1347,11 @@ AddEventHandler('onResourceStart', function(resourceName)
 	end
 end)
 
+
 function getPlayerIdentification(xPlayer)
 	return ('Sex: %s | Height: %s<br>DOB: %s (%s)'):format( xPlayer.get('sex'), xPlayer.get('height'), xPlayer.get('dateofbirth'), xPlayer.getIdentifier() )
 end
+
 
 function validateItem(item)
 	if item == 'money' or item == 'black_money' then return end
