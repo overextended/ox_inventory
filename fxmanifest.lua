@@ -4,13 +4,22 @@ description 'https://github.com/hsnnnnn/hsn-inventory'
 version '1.4.8'
 
 client_scripts {
-    'config.lua',
-    'client.lua'
+	'config.lua',
+	'client.lua'
 }
 
 server_scripts {
-    'config.lua',
-    'server.lua'
+	'config.lua',
+	'server.lua'
+}
+
+ui_page "html/index.html"
+files {
+	'html/index.html',
+	'html/script.js',
+	'html/style.css',
+	'html/reset.css',
+	'html/images/*.png',
 }
 
 exports {
@@ -19,18 +28,9 @@ exports {
 
 server_exports {
 	'removeItem',
-    'addItem',
-    'getItemCount',
-    'getItem',
-    'canCarryItem',
-    'useItem'
-}
-
-ui_page "html/index.html"
-files {
-    'html/index.html',
-    'html/script.js',
-    'html/style.css',
-    'html/reset.css',
-    'html/images/*.png'
+	'addItem',
+	'getItemCount',
+	'getItem',
+	'canCarryItem',
+	'useItem'
 }
