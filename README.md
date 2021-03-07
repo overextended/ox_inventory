@@ -1,17 +1,223 @@
-# hsn-inventory
-Advanced Inventory system for FiveM
-<h3 align='center'> <a href='https://github.com/thelindat/hsn-inventory/wiki'>For installation instructions, read the wiki</a> </h3>
+<p align='center'><img src='https://i.imgur.com/JxZpgNM.png'/><br>
+<a href='https://streamable.com/bggvpg'>Video showcase</a><br>
+https://discord.gg/hmcmv3P7YW</p>
 
+<h2 align='center'>Notice</h2><p align='center'>Hasan is no updating the inventory and has stopped development.<br>
+<img src='https://i.imgur.com/IZStQrx.png'/><br><br>
+Original Showcase --> https://streamable.com/kpvdj3<br>
+Hasan's discord is available at https://discord.gg/6FQhKDXBJ6<br><br>
+Further development of this resource is continuing at <a href='https://github.com/thelindat/hsn-inventory'>thelindat/hsn-inventory</a>.<br>All stable updates will be submitted to the main repository as pull requests.</p>
+<br><br><br>
 
-# Information
-Showcase --> https://streamable.com/kpvdj3
+<h1 align='center'>Installation Guide</h1>
+<h3 align='center'> <a href='https://github.com/thelindat/hsn-inventory/wiki'>More guides on the wiki</a> </h3>
 
-Hasan is no updating the inventory and has stopped development.  
-<img src='https://i.imgur.com/IZStQrx.png'/>  
-Thanks for the inventory hsn.
+<p align='center'>Requires OneSync and either <a href='https://github.com/esx-framework/es_extended/tree/v1-final'>ESX v1 Final</a>, or <a href='https://github.com/extendedmode/extendedmode'>ExtendedMode</a><br>If you are looking to upgrade or starting fresh, a modified framework is <a href='https://github.com/thelindat/extendedmode-hsn-inventory-compatibility'>available here</a>.
 
-Further development of this resource is continuing at <a href='https://github.com/thelindat/hsn-inventory'>thelindat/hsn-inventory</a>. All stable updates will be submitted to the main branch.
+## Dependencies
+[ghmattimysql](https://github.com/GHMatti/ghmattimysql)  
+[mythic_progbar](https://github.com/thelindat/mythic_progbar)  
+[mythic_notify](https://github.com/FlawwsX/mythic_notify)  
 
-Hasan's discord is available at https://discord.gg/6FQhKDXBJ6
+## ghmattimysql
+* Add this function to wait for sql connection to be established
+### ghmattimysql-server.lua
+```
+exports("ready", function (callback)
+  Citizen.CreateThread(function ()
+      -- add some more error handling
+      while GetResourceState('ghmattimysql') ~= 'started' do
+          Citizen.Wait(0)
+      end
+      -- while not exports['mysql-async']:is_ready() do
+      --     Citizen.Wait(0)
+      -- end
+      callback()
+  end)
+end)
+```
 
-You can join my discord at https://discord.gg/hmcmv3P7YW
+<br>
+
+## Modifying your framework (ESX/EXM) - _Updated for 1.4.8_
+* Modifications to money related functions have changed _(1.4.4)_
+* Modifications to inventory related functions have changed _(1.4.8)_
+* Vanilla files: <a href='https://github.com/esx-framework/es_extended/blob/v1-final/server/classes/player.lua'>ESX Final</a> | <a href='https://github.com/extendedmode/extendedmode/blob/master/server/classes/player.lua'>EXM</a>
+
+Replace the contents of `config.weapons.lua` contents with <a href='https://raw.githubusercontent.com/thelindat/extendedmode-hsn-inventory-compatibility/main/config.weapons.lua'>this file</a>
+### server/classes/player.lua
+* Search for `self.setAccountMoney`, delete everything from there until `self.canSwapItem` and replace with
+```
+	self.setAccountMoney = function(accountName, money)
+		money = tonumber(money)
+		if money >= 0 then
+			local account = self.getAccount(accountName)
+
+			if account then
+				local prevMoney = account.money
+				local newMoney = ESX.Math.Round(money)
+				account.money = newMoney
+
+				self.triggerEvent('esx:setAccountMoney', account)
+				if accountName ~= 'bank' then
+					local itemCount = exports['hsn-inventory']:getItemCount(self.source, accountName)
+					self.removeInventoryItem(accountName, itemCount)
+					if money > 0 then
+						self.addInventoryItem(accountName, money)
+					end
+				end
+			end
+		end
+	end
+
+	self.addAccountMoney = function(accountName, money)
+		money = tonumber(money)
+		if money > 0 then
+			local account = self.getAccount(accountName)
+
+			if account then
+				local newMoney = account.money + ESX.Math.Round(money)
+				account.money = newMoney
+
+				self.triggerEvent('esx:setAccountMoney', account)
+				if accountName ~= 'bank' then
+					local itemCount = exports['hsn-inventory']:getItemCount(self.source, accountName)
+					if itemCount < account.money then
+						self.addInventoryItem(accountName, money)
+					elseif itemCount > account.money then
+						self.removeInventoryItem(accountName, money)
+					end
+				end
+			end
+		end
+	end
+
+	self.removeAccountMoney = function(accountName, money)
+		money = tonumber(money)
+		if money > 0 then
+			local account = self.getAccount(accountName)
+
+			if account then
+				local newMoney = account.money - ESX.Math.Round(money)
+				account.money = newMoney
+
+				self.triggerEvent('esx:setAccountMoney', account)
+				if accountName ~= 'bank' then
+					local itemCount = exports['hsn-inventory']:getItemCount(self.source, accountName)
+					if itemCount < account.money then
+						self.addInventoryItem(accountName, money)
+					elseif itemCount > account.money then
+						self.removeInventoryItem(accountName, money)
+					end
+				end
+			end
+		end
+	end
+
+	self.getInventoryItem = function(name, metadata)
+		local item = exports["hsn-inventory"]:getItem(self.source, name, metadata)
+		if item then
+			return item
+		end
+		return 
+	end
+
+	self.addInventoryItem = function(name, count, metadata)
+		if name and count > 0 then
+			count = ESX.Math.Round(count)
+			exports["hsn-inventory"]:addItem(self.source, name, count, metadata)
+		end
+	end
+
+	self.removeInventoryItem = function(name, count, metadata)
+		if name and count > 0 then
+			count = ESX.Math.Round(count)
+			exports["hsn-inventory"]:removeItem(self.source, name, count, metadata)
+		end
+	end
+
+	self.setInventoryItem = function(name, count, metadata)
+		local item = exports["hsn-inventory"]:getItem(self.source, name, metadata)
+		if item and count >= 0 then
+			count = ESX.Math.Round(count)
+			if count > item.count then
+				self.addInventoryItem(item.name, count - item.count, metadata)
+			else
+				self.removeInventoryItem(item.name, item.count - count, metadata)
+			end
+		end
+	end
+
+	self.getWeight = function()
+		return 0 --self.weight
+	end
+
+	self.getMaxWeight = function()
+		return self.maxWeight
+	end
+
+	self.canCarryItem = function(name, count)
+		return exports["hsn-inventory"]:canCarryItem(self.source, name, count)
+	end
+
+	self.canSwapItem = function(firstItem, firstItemCount, testItem, testItemCount)
+		return true
+	end
+
+	self.useItem = function(name, metadata)
+		return exports["hsn-inventory"]:useItem(self.source, name, metadata)
+	end
+```
+
+<br>
+
+### server/main.lua
+* Replace the event `esx:useItem` with the following  
+```
+RegisterNetEvent('esx:useItem')
+AddEventHandler('esx:useItem', function(source, itemName)
+	local xPlayer = ESX.GetPlayerFromId(source)
+	local item = xPlayer.getInventoryItem(itemName)
+	if item.count > 0 then
+		if item.closeonuse then TriggerClientEvent("hsn-inventory:client:closeInventory", source) end
+		ESX.UseItem(source, itemName)
+	end
+end)
+```
+
+* Search for `TriggerEvent('esx:playerLoaded', playerId, xPlayer)`, after which add  
+`TriggerEvent('hsn-inventory:setplayerInventory', xPlayer.identifier, xPlayer.inventory)`  
+
+<br>
+
+* Search for `if result[1].inventory and result[1].inventory ~= '' then`  
+* Remove or comment out the code below that references inventory and items (should be until it mentions `group`) <a href='https://i.imgur.com/cOAx3SU.png'>EXAMPLE</a>  
+* Add the following
+```
+if result[1].inventory and result[1].inventory ~= '' then
+	userData.inventory = json.decode(result[1].inventory)
+end
+```  
+
+<br>
+
+### server/functions.lua
+* Search for `ESX.SavePlayer = function(xPlayer, cb)` and at the top insert
+```
+local inventory = {}
+TriggerEvent('hsn-inventory:getplayerInventory', function(data)
+	inventory = data
+end, xPlayer.identifier)
+```
+* Inside the MySQL.Async.execute function, replace  
+`[@inventory'] = json.encode(xPlayer.getInventory(true))` with `['@inventory'] = json.encode(inventory)`
+
+<br>
+<h3 align='center'>If your framework doesn't load/CreateExtendedPlayer double check your edits</h3>
+
+## Setting up items
+* As long as you have the above edits in place, you can continue to use ESX.RegiserUsableItem as you have been.  
+* Alternatively you are able to add items directly to hsn-inventory in `Config.ItemList`  
+* Modify the `hsn-inventory:useItem` event to add effects from using an item.  
+* Any items registered with hsn will override the default `esx:useItem` event, so don't worry about overlap.
+* You can use `xPlayer.useItem(item, type)` to use an item with specific `metadata.type`
