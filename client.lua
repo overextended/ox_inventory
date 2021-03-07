@@ -109,17 +109,23 @@ Citizen.CreateThread(function()
 				DisableControlAction(1, 141, true)
 				DisableControlAction(1, 142, true)
 			end
-			if IsPedShooting(PlayerPedId()) then
-				local currentAmmo = GetAmmoInPedWeapon(PlayerPedId(), currentWeapon.hash)
-				if currentAmmo < 0 then currentAmmo = 0 SetPedAmmo(playerPed, currentWeapon.hash, 0) end
-				currentWeapon.ammo = tonumber(currentAmmo)
-				if currentAmmo == 0 then
-					shooting = true
-					ClearPedTasks(PlayerPedId())
-					SetCurrentPedWeapon(PlayerPedId(), currentWeapon.hash, true)
-					TriggerServerEvent('hsn-inventory:server:reloadWeapon', currentWeapon)
+			if IsPedShooting(PlayerPedId()) or GetAmmoInClip(playerPed, currentWeapon.hash) == 0 then
+				if currentWeapon.item.name == 'WEAPON_FIREEXTINGUISHER' or currentWeapon.item.name == 'WEAPON_PETROLCAN' then
+					--
+				elseif string.find(currentWeapon.item.name, '_T_', 6, true) then
+					TriggerServerEvent('hsn-inventory:client:removeItem', currentWeapon.item.name, 1)
+				else
+					local currentAmmo = GetAmmoInPedWeapon(PlayerPedId(), currentWeapon.hash)
+					if currentAmmo < 0 then currentAmmo = 0 SetPedAmmo(playerPed, currentWeapon.hash, 0) end
+					currentWeapon.ammo = tonumber(currentAmmo)
+					if currentAmmo == 0 then
+						shooting = true
+						ClearPedTasks(PlayerPedId())
+						SetCurrentPedWeapon(PlayerPedId(), currentWeapon.hash, true)
+						TriggerServerEvent('hsn-inventory:server:reloadWeapon', currentWeapon)
+					end
+					TriggerServerEvent('hsn-inventory:server:decreasedurability', currentWeapon)
 				end
-				TriggerServerEvent('hsn-inventory:server:decreasedurability',currentWeapon)
 			else shooting = true end
 		end
 	end
@@ -459,8 +465,7 @@ AddEventHandler('hsn-inventory:client:weapon',function(item)
 	local newWeapon = item.metadata.weaponlicense
 	local found, wepHash = GetCurrentPedWeapon(playerPed, true)
 	if wepHash == -1569615261 then currentWeapon = nil end
-	item.name = item.name:gsub('_T_', '_')
-	wepHash = GetHashKey(item.name)
+	if item.name:find('_T_') then wepHash = GetHashKey(item.name:gsub('_T_', '_')) else wepHash = GetHashKey(item.name) end
 	if currentWeapon and currentWeapon.item.metadata.weaponlicense == newWeapon then
 		TriggerEvent('hsn-inventory:weaponaway')
 		Citizen.Wait(1600)
@@ -482,22 +487,16 @@ AddEventHandler('hsn-inventory:client:weapon',function(item)
 					if v2 == currentWeapon.hash then currentWeapon.ammotype = k end
 				end
 			end
-		else item.metadata.ammo = 0 end
+		else item.metadata.ammo = 1 end
 		GiveWeaponToPed(playerPed, wepHash, item.metadata.ammo, false, false)
 		SetCurrentPedWeapon(playerPed, wepHash, true)
+		if currentWeapon.item.name == 'WEAPON_FIREEXTINGUISHER' or 'WEAPON_PETROLCAN' then SetAmmoInClip(playerPed, currentWeapon.hash, 500) end
 		if item.metadata.weapontint then SetPedWeaponTintIndex(playerPed, item.name, item.metadata.weapontint) end
 		if item.metadata.components then
 			for k,v in pairs(item.metadata.components) do
 				local componentHash = ESX.GetWeaponComponent(item.name, v).hash
 				if componentHash then GiveWeaponComponentToPed(playerPed, wepHash, componentHash) end
 			end
-		end
-		if item.metadata.ammo then
-			SetPedAmmo(playerPed, wepHash, tonumber(item.metadata.ammo))
-		elseif currentWeapon.name == 'WEAPON_FIREEXTINGUISHER' or 'WEAPON_PETROLCAN' then
-			SetPedInfiniteAmmo(playerPed, true, currentWeapon.hash)
-		else
-			SetPedAmmo(playerPed, wepHash, 0)
 		end
 		TriggerEvent('hsn-inventory:client:addItemNotify',item,'Equipped')
 	end
