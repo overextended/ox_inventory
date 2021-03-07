@@ -301,62 +301,67 @@ end)
 
 
 DrawText3D = function(coords, text)
-    SetDrawOrigin(coords)
-    SetTextScale(0.35, 0.35)
-    SetTextFont(4)
-    SetTextEntry('STRING')
-    SetTextCentre(1)
-    AddTextComponentString(text)
-    DrawText(0.0, 0.0)
-    DrawRect(0.0, 0.0125, 0.015 + text:gsub('~.-~', ''):len() / 370, 0.03, 45, 45, 45, 150)
-    ClearDrawOrigin()
+	SetDrawOrigin(coords)
+	SetTextScale(0.35, 0.35)
+	SetTextFont(4)
+	SetTextEntry('STRING')
+	SetTextCentre(1)
+	AddTextComponentString(text)
+	DrawText(0.0, 0.0)
+	DrawRect(0.0, 0.0125, 0.015 + text:gsub('~.-~', ''):len() / 370, 0.03, 45, 45, 45, 150)
+	ClearDrawOrigin()
 end
 
 Citizen.CreateThread(function()
-    while true do
-        local sleepThread = 1000
+	while true do
+		local sleepThread = 1000
 
-        while not PlayerData.job do Citizen.Wait(0) end
-        for i = 1, #Config.Shops do
-            local text = Config.Shops[i].name
-            distance = #(GetEntityCoords(PlayerPedId()) - Config.Shops[i].coords)
+		while not PlayerData.job do Citizen.Wait(0) end
+		for i = 1, #Config.Shops do
+			local text = Config.Shops[i].name
+			distance = #(GetEntityCoords(PlayerPedId()) - Config.Shops[i].coords)
 
-            if distance <= 5.5 and (not Config.Shops[i].job or Config.Shops[i].job == PlayerData.job.name) then
-                sleepThread = 5
-                
-                if distance <= 1.5 then
-                    text = '[~g~E~s~] ' .. Config.Shops[i].name
+			if distance <= 5.5 and (not Config.Shops[i].job or Config.Shops[i].job == PlayerData.job.name) then
+				sleepThread = 5
+				DrawMarker(2, Config.Shops[i].coords.x,Config.Shops[i].coords.y,Config.Shops[i].coords.z, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.3, 0.15, 0.2, 30, 150, 30, 100, false, false, false, true, false, false, false)
+				if not invOpen then
+					if distance <= 1.5 then
+						text = '[~g~E~s~] ' .. Config.Shops[i].name
 
-                    if IsControlJustPressed(1,38) and not dead and not isCuffed then
-                        OpenShop(Config.Shops[i])
-                    end
-                end
-                
-                DrawText3D(Config.Shops[i].coords, text)
-            end
-        end
+						if IsControlJustPressed(1,38) and not dead and not isCuffed then
+							OpenShop(Config.Shops[i])
+						end
+					end
 
-        for i = 1, #Config.Stashes do
-            local text = Config.Stashes[i].name
-            distance = #(GetEntityCoords(PlayerPedId()) - Config.Stashes[i].coords)
+					DrawText3D(Config.Shops[i].coords, text)
+				end
+			end
+		end
 
-            if distance <= 5.5 and (not Config.Stashes[i].job or Config.Stashes[i].job == PlayerData.job.name) then
-                sleepThread = 5
+		for i = 1, #Config.Stashes do
+			local text = Config.Stashes[i].name
+			distance = #(GetEntityCoords(PlayerPedId()) - Config.Stashes[i].coords)
 
-                if distance <= 1.5 then
-                    text = '[~g~E~s~] ' .. Config.Stashes[i].name
+			if distance <= 5.5 and (not Config.Stashes[i].job or Config.Stashes[i].job == PlayerData.job.name) then
+				sleepThread = 5
+				DrawMarker(2, Config.Stashes[i].coords.x,Config.Stashes[i].coords.y,Config.Stashes[i].coords.z, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.3, 0.15, 0.2, 30, 30, 150, 100, false, false, false, true, false, false, false)
+				
+				if not invOpen then
+					if distance <= 1.5 then
+						text = '[~g~E~s~] ' .. Config.Stashes[i].name
 
-                    if IsControlJustPressed(1,38) and not dead and not isCuffed then
-                        OpenStash(Config.Stashes[i])
-                    end
-                end   
-                
-                DrawText3D(Config.Stashes[i].coords, text)
-            end
-        end
+						if IsControlJustPressed(1,38) and not dead and not isCuffed then
+							OpenStash(Config.Stashes[i])
+						end
+					end   
 
-        Citizen.Wait(sleepThread)
-    end
+					DrawText3D(Config.Stashes[i].coords, text)
+				end
+			end
+		end
+
+		Citizen.Wait(sleepThread)
+	end
 end)
 
 Citizen.CreateThread(function()
@@ -380,9 +385,8 @@ OpenShop = function(id)
 	TriggerServerEvent('hsn-inventory:server:openInventory',{type = 'shop',id = id})
 end
 
--- exports['hsn-inventory']:openStash(id)
-openStash = function(id)
-	TriggerServerEvent('hsn-inventory:server:openStash', {id = id, slots = id.slots, type = 'stash'})
+OpenStash = function(id)
+	TriggerServerEvent('hsn-inventory:server:OpenStash', {id = id, slots = id.slots, type = 'stash'})
 end
 
 RegisterNetEvent('hsn-inventory:Client:addnewDrop')
@@ -640,11 +644,11 @@ AddEventHandler('onResourceStop', function(resourceName)
 end)
 
 RegisterNetEvent('hsn-inventory:useItem')
-AddEventHandler('hsn-inventory:useItem',function(item)
+AddEventHandler('hsn-inventory:useItem',function(item, slot)
 	if usingItem or shooting then return end
 	ESX.TriggerServerCallback('hsn-inventory:getItem',function(xItem)
 		if xItem then
-			local data = Config.ItemList[item.name]
+			local data = Config.ItemList[xItem.name]
 			if not data or not next(data) then return end
 			if xItem.closeonuse then TriggerEvent('hsn-inventory:client:closeInventory') end
 			if not data.animDict then data.animDict = 'pickup_object' end
@@ -698,12 +702,12 @@ AddEventHandler('hsn-inventory:useItem',function(item)
 				if data.thirst > 0 then TriggerEvent('esx_status:add', 'thirst', data.thirst)
 				else TriggerEvent('esx_status:remove', 'thirst', data.thirst) end
 			end
-			if data.consume then TriggerServerEvent('hsn-inventory:client:removeItem', item.name, data.consume, item.metadata.type) end
+			if data.consume then TriggerServerEvent('hsn-inventory:client:removeItem', xItem.name, data.consume, xItem.metadata.type, xItem.slot) end
 			usingItem = false
 			------------------------------------------------------------------------------------------------
 				
 
-				if item == 'bandage' then
+				if xItem.name == 'bandage' then
 					local maxHealth = 200
 					local health = GetEntityHealth(playerPed)
 					local newHealth = math.min(maxHealth, math.floor(health + maxHealth / 16))
