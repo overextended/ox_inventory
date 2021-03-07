@@ -1075,11 +1075,11 @@ AddEventHandler('hsn-inventory:server:decreasedurability',function(weapon)
 				end
 			end
 			if playerInventory[Player.identifier][weapon.slot].metadata.ammo ~= nil then
-				if not weapon.ammo or weapon.ammo < 0 then weapon.ammo = 0 end
-				playerInventory[Player.identifier][weapon.slot].metadata.ammo = weapon.ammo
+				if not weapon.item.metadata.ammo or weapon.item.metadata.ammo < 0 then weapon.item.ammo = 0 end
+				playerInventory[Player.identifier][weapon.slot].metadata.ammo = weapon.item.metadata.ammo
 				local ammoweight = ESXItems[weapon.ammotype].weight
-				playerInventory[Player.identifier][weapon.slot].metadata.ammoweight = (weapon.ammo * ammoweight)
-				playerInventory[Player.identifier][weapon.slot].weight = ESXItems[weapon.item.name].weight + (weapon.ammo * ammoweight)
+				playerInventory[Player.identifier][weapon.slot].metadata.ammoweight = (weapon.item.metadata.ammo * ammoweight)
+				playerInventory[Player.identifier][weapon.slot].weight = ESXItems[weapon.item.name].weight + (weapon.item.metadata.ammo * ammoweight)
 			end
 		end
 	end
