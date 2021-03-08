@@ -1,16 +1,12 @@
-<h3 align='center'> This work is licensed under a <a href='https://creativecommons.org/licenses/by-nc-sa/4.0/'>Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International License.</a> </h3>
-
 <p align='center'><img src='https://i.imgur.com/JxZpgNM.png'/><br>
-<a href='https://streamable.com/bggvpg'>Video showcase</a><br>
-https://discord.gg/hmcmv3P7YW</p>
-
-<h2 align='center'>Notice</h2><p align='center'>Hasan is no updating the inventory and has stopped development.<br>
+<a href='https://streamable.com/bggvpg'>Showcase</a> | <a href='https://discord.gg/hmcmv3P7YW'>Discord</a></p>
+<h2 align='center'>Notice</h2><p align='center'><a rel="license" href="http://creativecommons.org/licenses/by-nc-sa/4.0/"><img alt="Creative Commons License" style="border-width:0" src="https://i.creativecommons.org/l/by-nc-sa/4.0/88x31.png" /></a><br />This work is licensed under a <a rel="license" href="http://creativecommons.org/licenses/by-nc-sa/4.0/">Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International License</a>.<br><br>
+Hasan is no updating the inventory and has stopped development.<br>
 <img src='https://i.imgur.com/IZStQrx.png'/><br><br>
 Original Showcase --> https://streamable.com/kpvdj3<br>
 Hasan's discord is available at https://discord.gg/6FQhKDXBJ6<br><br>
 Further development of this resource is continuing at <a href='https://github.com/thelindat/hsn-inventory'>thelindat/hsn-inventory</a>.<br>All stable updates will be submitted to the main repository as pull requests.</p>
-<br><h3 align='center'>If you encounter any issues, please report them in the issues section (or discord).</h3><br><br>
-
+<br><h4 align='center'>If you encounter any issues, please report them in the issues section (or discord).</h4><br><br>
 <h1 align='center'>Installation Guide</h1>
 <h3 align='center'> <a href='https://github.com/thelindat/hsn-inventory/wiki'>More guides on the wiki</a> </h3>
 
