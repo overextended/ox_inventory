@@ -1,3 +1,5 @@
+<h3 align='center'> This work is licensed under a <a href='https://creativecommons.org/licenses/by-nc-sa/4.0/'>Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International License.</a> </h3>
+
 <p align='center'><img src='https://i.imgur.com/JxZpgNM.png'/><br>
 <a href='https://streamable.com/bggvpg'>Video showcase</a><br>
 https://discord.gg/hmcmv3P7YW</p>
