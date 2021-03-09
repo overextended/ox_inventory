@@ -733,7 +733,18 @@ AddEventHandler('hsn-inventory:server:openInventory',function(data, coords)
 			Shops[data.id.name].type = 'shop'
 			Shops[data.id.name].slots = #Shops[data.id.name].inventory + 1
 			if not data.id.job or data.id.job == Player.job.name then
-				TriggerClientEvent('hsn-inventory:client:openInventory',src,playerInventory[Player.identifier],Shops[data.id.name])
+				if data.id.license then
+					TriggerEvent('esx_license:checkLicense', src, data.id.license, function(haslicense)
+						print(haslicense)
+						if haslicense then
+							TriggerClientEvent('hsn-inventory:client:openInventory',src,playerInventory[Player.identifier],Shops[data.id.name])
+						else
+							TriggerClientEvent('hsn-inventory:notification',src,'You do not have a '..data.id.license..' license',2)
+						end
+					end)
+				else
+					TriggerClientEvent('hsn-inventory:client:openInventory',src,playerInventory[Player.identifier],Shops[data.id.name])
+				end
 			end
 		elseif data.type == 'glovebox' then
 			if checkOpenable(src,data.id) then
@@ -1358,7 +1369,7 @@ function validateItem(item)
 	if item == 'money' or item == 'black_money' then return end
 	item = string.lower(item)
 	if item:find('weapon_') then item = string.upper(item) end
-	return item
+	return item -- ESXItems[item]
 end
 
 -- Override the default ESX commands
@@ -1372,6 +1383,7 @@ end, true, {help = 'give an item to a player', validate = false, arguments = {
 }})
 
 ESX.RegisterCommand('removeitem', 'admin', function(xPlayer, args, showError)
+	if notready then return end
 	if args.item == 'money' or args.item == 'black_money' then return end
 	args.playerId.removeInventoryItem(validateItem(args.item), args.count, args.type)
 end, true, {help = 'remove an item from a player', validate = false, arguments = {
@@ -1382,6 +1394,7 @@ end, true, {help = 'remove an item from a player', validate = false, arguments =
 }})
 
 ESX.RegisterCommand({'removeinventory', 'clearinventory'}, 'admin', function(xPlayer, args, showError)
+	if notready then return end
 	local Player = args.playerId
 	local inventory = GetInventory(playerInventory[Player.identifier])
 	for k,v in pairs(inventory) do
@@ -1392,6 +1405,7 @@ end, true, {help = 'clear a player\'s inventory', validate = true, arguments = {
 }})
 
 ESX.RegisterCommand({'giveaccountmoney', 'givemoney'}, 'admin', function(xPlayer, args, showError)
+	if notready then return end
 	local getAccount = args.playerId.getAccount(args.account)
 	if getAccount then
 		args.playerId.addAccountMoney(args.account, args.amount)
@@ -1405,6 +1419,7 @@ end, true, {help = 'give account money', validate = true, arguments = {
 }})
 
 ESX.RegisterCommand({'removeaccountmoney', 'removemoney'}, 'admin', function(xPlayer, args, showError)
+	if notready then return end
 	local getAccount = args.playerId.getAccount(args.account)
 	if getAccount.money - args.amount < 0 then args.amount = getAccount.money end
 	if getAccount then
@@ -1419,6 +1434,7 @@ end, true, {help = 'remove account money', validate = true, arguments = {
 }})
 
 ESX.RegisterCommand({'setaccountmoney', 'setmoney'}, 'admin', function(xPlayer, args, showError)
+	if notready then return end
 	local getAccount = args.playerId.getAccount(args.account)
 	if getAccount then
 		args.playerId.setAccountMoney(args.account, args.amount)
@@ -1432,6 +1448,7 @@ end, true, {help = 'set account money', validate = true, arguments = {
 }})
 
 ESX.RegisterCommand('evidence', 'user', function(xPlayer, args, showError)
+	if notready then return end
 	if xPlayer.job.name == 'police' then
 		local boxID = args.evidence
 		local stash = { name = ('evidence-%s'):format(boxID), slots = 30, job = 'police', coords = Config.PoliceEvidence }
