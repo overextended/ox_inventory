@@ -1059,6 +1059,7 @@ Config.Shops = {
 		},
 		text = 'E - Open Shop',
 		name = 'Ammunation', 
+		license = 'weapon', 
 		inventory = {
 			{
 				name = 'ammo-9',
@@ -1107,6 +1108,7 @@ Config.Shops = {
 		},
 		text = 'E - Open Shop',
 		name = 'Ammunation', 
+		license = 'weapon', 
 		inventory = {
 			{
 				name = 'ammo-9',
@@ -1155,6 +1157,7 @@ Config.Shops = {
 		},
 		text = 'E - Open Shop',
 		name = 'Ammunation', 
+		license = 'weapon', 
 		inventory = {
 			{
 				name = 'ammo-9',
@@ -1203,6 +1206,7 @@ Config.Shops = {
 		},
 		text = 'E - Open Shop',
 		name = 'Ammunation', 
+		license = 'weapon', 
 		inventory = {
 			{
 				name = 'ammo-9',
@@ -1251,6 +1255,7 @@ Config.Shops = {
 		},
 		text = 'E - Open Shop',
 		name = 'Ammunation', 
+		license = 'weapon', 
 		inventory = {
 			{
 				name = 'ammo-9',
@@ -1299,6 +1304,7 @@ Config.Shops = {
 		},
 		text = 'E - Open Shop',
 		name = 'Ammunation', 
+		license = 'weapon', 
 		inventory = {
 			{
 				name = 'ammo-9',
@@ -1347,6 +1353,7 @@ Config.Shops = {
 		},
 		text = 'E - Open Shop',
 		name = 'Ammunation', 
+		license = 'weapon', 
 		inventory = {
 			{
 				name = 'ammo-9',
@@ -1395,6 +1402,7 @@ Config.Shops = {
 		},
 		text = 'E - Open Shop',
 		name = 'Ammunation', 
+		license = 'weapon', 
 		inventory = {
 			{
 				name = 'ammo-9',
@@ -1443,6 +1451,7 @@ Config.Shops = {
 		},
 		text = 'E - Open Shop',
 		name = 'Ammunation', 
+		license = 'weapon', 
 		inventory = {
 			{
 				name = 'ammo-9',
