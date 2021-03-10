@@ -12,7 +12,6 @@ local Trunks = {}
 local notready = true
 if GetConvar('onesync_enableInfinity', false) == 'true' or GetConvar('onesync', false) == 'on' then oneSync = true end
 
-
 TriggerEvent('esx:getSharedObject', function(obj) ESX = obj end)
 
 ESX.RegisterServerCallback('hsn-inventory:getData',function(source, cb)
@@ -289,7 +288,8 @@ AddEventHandler('hsn-inventory:server:saveInventoryData',function(data)
 					end
 				end
 		elseif data.frominv ~= data.toinv and (data.toinv == 'TargetPlayer' and data.frominv == 'Playerinv') then
-			local playerId = string.sub(data.invid,13)
+			--local playerId = string.sub(data.invid,13)
+			local playerId = string.gsub(data.invid, 'Player', '')
 			local targetplayer = ESX.GetPlayerFromId(playerId)
 			if playerInventory[targetplayer.identifier] ~= nil then
 				if data.type == 'swap' then
@@ -326,8 +326,9 @@ AddEventHandler('hsn-inventory:server:saveInventoryData',function(data)
 				end
 			end
 		elseif data.frominv ~= data.toinv and (data.toinv == 'Playerinv' and data.frominv == 'TargetPlayer') then
-			local playerId = string.sub(data.invid2,13)
-			local targetplayer = ESX.GetPlayerFromId(playerId)local targetplayer = tPlayer
+			--local playerId = string.sub(data.invid2,13)
+			local playerId = string.gsub(data.invid, 'Player', '')
+			local targetplayer = ESX.GetPlayerFromId(playerId)
 			if playerInventory[targetplayer.identifier] ~= nil then
 				if data.type == 'swap' then
 					if IfInventoryCanCarry(playerInventory[Player.identifier],Config.MaxWeight, (data.toItem.weight * data.toItem.count)) then
