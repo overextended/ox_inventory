@@ -485,7 +485,7 @@ AddEventHandler('hsn-inventory:client:weapon',function(item)
 	if currentWeapon and currentWeapon.item.metadata.weaponlicense == newWeapon then
 		currentWeapon.item.metadata.ammo = GetAmmoInPedWeapon(playerPed, currentWeapon.hash)
 		TriggerEvent('hsn-inventory:weaponaway')
-		while usingItem do Citizen.Wait(100) end
+		Citizen.Wait(1600)
 		RemoveWeaponFromPed(playerPed, GetHashKey(item.name))
 		SetCurrentPedWeapon(playerPed, 'WEAPON_UNARMED', true)
 		currentWeapon = nil
