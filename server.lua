@@ -735,7 +735,6 @@ AddEventHandler('hsn-inventory:server:openInventory',function(data, coords)
 			if not data.id.job or data.id.job == Player.job.name then
 				if data.id.license then
 					TriggerEvent('esx_license:checkLicense', src, data.id.license, function(haslicense)
-						print(haslicense)
 						if haslicense then
 							TriggerClientEvent('hsn-inventory:client:openInventory',src,playerInventory[Player.identifier],Shops[data.id.name])
 						else
