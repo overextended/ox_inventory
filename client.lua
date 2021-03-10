@@ -450,11 +450,9 @@ AddEventHandler('hsn-inventory:weapondraw', function(item)
 	loadAnimDict('reaction@intimidation@1h')
 	TaskPlayAnimAdvanced(playerPed, 'reaction@intimidation@1h', 'intro', GetEntityCoords(playerPed, true), 0, 0, GetEntityHeading(playerPed), 8.0, 3.0, -1, 50, 0, 0, 0)
 	Citizen.Wait(800)
-	if not IsPedArmed(playerPed, 1) then
-		local hash = GetHashKey(item.name)
-		SetPedAmmo(playerPed, hash, 0)
+	if currentWeapon then SetPedAmmo(playerPed, currentWeapon.hash, 0)
+	RemoveWeaponFromPed(playerPed, currentWeapon.hash)
 	end
-	RemoveWeaponFromPed(playerPed, hash)
 	SetCurrentPedWeapon(playerPed, 'WEAPON_UNARMED', true)
 	Citizen.Wait(800)
 	ClearPedSecondaryTask(playerPed)
@@ -465,6 +463,7 @@ RegisterNetEvent('hsn-inventory:weaponaway')
 AddEventHandler('hsn-inventory:weaponaway', function()
 	loadAnimDict('reaction@intimidation@1h')
 	TaskPlayAnimAdvanced(playerPed, 'reaction@intimidation@1h', 'outro', GetEntityCoords(playerPed, true), 0, 0, GetEntityHeading(playerPed), 8.0, 3.0, -1, 50, 0, 0, 0)
+	SetPedAmmo(playerPed, currentWeapon.hash, 0)
 	Citizen.Wait(1600)
 	ClearPedSecondaryTask(playerPed)
 	if IsPedUsingActionMode(playerPed) then
@@ -486,8 +485,7 @@ AddEventHandler('hsn-inventory:client:weapon',function(item)
 	if currentWeapon and currentWeapon.item.metadata.weaponlicense == newWeapon then
 		currentWeapon.item.metadata.ammo = GetAmmoInPedWeapon(playerPed, currentWeapon.hash)
 		TriggerEvent('hsn-inventory:weaponaway')
-		Citizen.Wait(1600)
-		SetPedAmmo(playerPed, currentWeapon.hash, 0)
+		while usingItem do Citizen.Wait(100) end
 		RemoveWeaponFromPed(playerPed, GetHashKey(item.name))
 		SetCurrentPedWeapon(playerPed, 'WEAPON_UNARMED', true)
 		currentWeapon = nil
@@ -507,7 +505,8 @@ AddEventHandler('hsn-inventory:client:weapon',function(item)
 		end
 		GiveWeaponToPed(playerPed, wepHash, 0, false, false)
 		SetCurrentPedWeapon(playerPed, wepHash, true)
-				if item.metadata.weapontint then SetPedWeaponTintIndex(playerPed, item.name, item.metadata.weapontint) end
+		SetPedCurrentWeaponVisible(playerPed, true, false, false, false)
+		if item.metadata.weapontint then SetPedWeaponTintIndex(playerPed, item.name, item.metadata.weapontint) end
 		if item.metadata.components then
 			for k,v in pairs(item.metadata.components) do
 				local componentHash = ESX.GetWeaponComponent(item.name, v).hash
@@ -516,8 +515,7 @@ AddEventHandler('hsn-inventory:client:weapon',function(item)
 		end
 		TriggerEvent('hsn-inventory:client:addItemNotify',item,'Equipped')
 		if currentWeapon.item.name == 'WEAPON_FIREEXTINGUISHER' or currentWeapon.item.name == 'WEAPON_PETROLCAN' then item.metadata.ammo = 300 end
-		SetPedAmmo(playerPed, wepHash, 0)
-		SetAmmoInClip(playerPed, wepHash, item.metadata.ammo)
+		SetAmmoInClip(playerPed, currentWeapon.hash, item.metadata.ammo)
 	end
 	TriggerEvent('hsn-inventory:currentWeapon', currentWeapon) -- using for another resource
 	Citizen.Wait(100)
@@ -545,6 +543,7 @@ AddEventHandler('hsn-inventory:addAmmo',function(item, ammo)
 			end
 			if newAmmo < 0 then newAmmo = 0 end
 			SetPedAmmo(playerPed, weapon, newAmmo)
+			TaskReloadWeapon(playerPed)
 			currentWeapon.item.metadata.ammo = newAmmo
 			TriggerServerEvent('hsn-inventory:server:addweaponAmmo',currentWeapon.slot,currentWeapon.item,ammo.name,ammo.count,removeAmmo,newAmmo)
 		end
