@@ -273,7 +273,7 @@ AddEventHandler('hsn-inventory:server:saveInventoryData',function(data)
 				ItemNotify(src,data.oldslotItem.name,data.oldslotItem.count,'Removed')
 			end
 		elseif data.frominv == data.toinv and (data.frominv == 'TargetPlayer') then
-			local playerId = string.sub(data.invid,13)
+			local playerId = string.gsub(data.invid, 'Player', '')
 			local targetplayer = ESX.GetPlayerFromId(playerId)
 				if playerInventory[targetplayer.identifier] ~= nil then
 					if data.type == 'swap' then
@@ -288,7 +288,6 @@ AddEventHandler('hsn-inventory:server:saveInventoryData',function(data)
 					end
 				end
 		elseif data.frominv ~= data.toinv and (data.toinv == 'TargetPlayer' and data.frominv == 'Playerinv') then
-			--local playerId = string.sub(data.invid,13)
 			local playerId = string.gsub(data.invid, 'Player', '')
 			local targetplayer = ESX.GetPlayerFromId(playerId)
 			if playerInventory[targetplayer.identifier] ~= nil then
@@ -326,8 +325,7 @@ AddEventHandler('hsn-inventory:server:saveInventoryData',function(data)
 				end
 			end
 		elseif data.frominv ~= data.toinv and (data.toinv == 'Playerinv' and data.frominv == 'TargetPlayer') then
-			--local playerId = string.sub(data.invid2,13)
-			local playerId = string.gsub(data.invid, 'Player', '')
+			local playerId = string.gsub(data.invid2, 'Player', '')
 			local targetplayer = ESX.GetPlayerFromId(playerId)
 			if playerInventory[targetplayer.identifier] ~= nil then
 				if data.type == 'swap' then
