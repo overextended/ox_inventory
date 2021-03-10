@@ -6,7 +6,7 @@
 	var toplamkg = 0
 	var rightweight = 0
 	var count = 0
-	var dropSlots = 50
+	var dropSlots = 51
 	var rightinvtype = null
 	var inventoryidd = null
 	var timer = null
