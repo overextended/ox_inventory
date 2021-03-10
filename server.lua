@@ -680,7 +680,7 @@ CreateNewDrop = function(source,data)
 	Drops[dropid] = {}
 	Drops[dropid].inventory = {}
 	Drops[dropid].name = dropid
-	Drops[dropid].slots = 50
+	Drops[dropid].slots = 51
 	if data.type == 'swap' then
 		TriggerClientEvent('hsn-inventory:client:checkweapon',src,data.toItem)
 		Drops[dropid].inventory[data.toslot] = {name = data.toItem.name ,label = data.toItem.label, weight = data.toItem.weight, slot = data.toslot, count = data.toItem.count, description = data.toItem.description, metadata = data.toItem.metadata, stackable = data.toItem.stackable, closeonuse = ESXItems[data.toItem.name].closeonuse}
