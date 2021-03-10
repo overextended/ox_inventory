@@ -1190,6 +1190,7 @@ getItem = function(src, item, metadata)
 	end
 	local inventory = playerInventory[Player.identifier]
 	local xItem = ESXItems[item]
+	if not xItem then print('^1[hsn-inventory]^3 Item '.. item ..' does not exist^7')
 	xItem.metadata = {type = metadata}
 	xItem.count = 0
 	for k, v in pairs(inventory) do
