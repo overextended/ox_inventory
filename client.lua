@@ -69,6 +69,15 @@ AddEventHandler('esx:onPlayerSpawn', function(spawn)
 	isDead = false
 end)
 
+AddEventHandler('playerSpawned', function(spawn)
+	isDead = false
+end)
+
+AddEventHandler('esx_ambulancejob:setDeathStatus', function(status)
+	isDead = status
+end)
+
+
 RegisterNetEvent('esx_policejob:handcuff')
 AddEventHandler('esx_policejob:handcuff', function()
 	isCuffed = not isCuffed
