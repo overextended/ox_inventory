@@ -800,10 +800,10 @@ AddEventHandler('hsn-inventory:server:openTargetInventory',function(TargetId)
 	local Player = ESX.GetPlayerFromId(source)
 	local tPlayer = ESX.GetPlayerFromId(TargetId)
 	if source == TargetId then tPlayer = nil end -- Don't allow source and targetid to match
-	if playerInventory[tPlayer.identifier] == nil then
-		playerInventory[tPlayer.identifier] = {}
-	end
 	if tPlayer and Player then
+		if playerInventory[tPlayer.identifier] == nil then
+			playerInventory[tPlayer.identifier] = {}
+		end
 		if checkOpenable(source, 'Player'..TargetId, GetEntityCoords(GetPlayerPed(TargetId))) then
 			local data = {}
 			data.name = 'Player'..TargetId -- do not touch
@@ -1148,10 +1148,10 @@ AddEventHandler('hsn-inventory:client:removeItem',function(item, count, metadata
 end)
 
 removeItem = function(src, item, count, metadata, slot)
-	local Player = ESX.GetPlayerFromId(src)
 	if item == nil then
 		return
 	end
+	local Player = ESX.GetPlayerFromId(src)
 	if count == nil then
 		count = 1
 	end
@@ -1159,10 +1159,10 @@ removeItem = function(src, item, count, metadata, slot)
 end
 
 addItem = function(src, item, count, metadata)
-	local Player = ESX.GetPlayerFromId(src)
 	if item == nil then
 		return
 	end
+	local Player = ESX.GetPlayerFromId(src)
 	if count == nil then
 		count = 1
 	end
@@ -1174,6 +1174,9 @@ addItem = function(src, item, count, metadata)
 end
 
 getItemCount = function(src, item)
+	if item == nil then
+		return
+	end
 	local Player = ESX.GetPlayerFromId(src)
 	if playerInventory[Player.identifier] == nil then
 		return
@@ -1183,6 +1186,9 @@ getItemCount = function(src, item)
 end
 
 getItem = function(src, item, metadata)
+	if item == nil then
+		return
+	end
 	local Player = ESX.GetPlayerFromId(src)
 	if playerInventory[Player.identifier] == nil then
 		return
@@ -1201,6 +1207,9 @@ getItem = function(src, item, metadata)
 end
 
 canCarryItem = function(src, item, count)
+	if item == nil then
+		return
+	end
 	local weight = 0
 	local newWeight = (ESXItems[item].weight * count)
 	local returnData = false
@@ -1220,6 +1229,9 @@ end
 
 
 useItem = function(src, item, slot)
+	if item == nil then
+		return
+	end
 	local metadata = item.metadata.type
 	if Config.ItemList[item.name] then
 		if not next(Config.ItemList[item.name]) then return end
@@ -1230,6 +1242,9 @@ useItem = function(src, item, slot)
 end
 
 ESX.RegisterServerCallback('hsn-inventory:getItemCount',function(source, cb, item)
+	if item == nil then
+		return
+	end
 	local src = source
 	local Player = ESX.GetPlayerFromId(src)
 	if playerInventory[Player.identifier] == nil then
@@ -1240,6 +1255,9 @@ ESX.RegisterServerCallback('hsn-inventory:getItemCount',function(source, cb, ite
 end)
 
 ESX.RegisterServerCallback('hsn-inventory:getItem',function(source, cb, item, metadata)
+	if item == nil then
+		return
+	end
 	local src = source
 	local Player = ESX.GetPlayerFromId(src)
 	if playerInventory[Player.identifier] == nil then
