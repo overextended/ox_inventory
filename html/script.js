@@ -194,7 +194,6 @@
 				for(i = 1; i < (data.rightinventory.slots); i++) {
 					$(".inventory-main-rightside").find("[inventory-slot=" + i + "]").remove();
 					$(".inventory-main-rightside").append('<div class="ItemBoxes" inventory-slot=' + i +'></div> ')
-					$(".inventory-main-rightside").find("[inventory-slot=" + i + "]").addClass("drag-item");
 				}
 				if (data.rightinventory.type == 'shop') {
 					inventoryidd = data.rightinventory.name
@@ -264,7 +263,6 @@
 			start: function(event, ui) {
 				IsDragging = true;
 				$(this).find("img").css("filter", "brightness(50%)");
-				var itemData = $(this).data("ItemData");
 				count = $("#item-count").val();
 			},
 			stop: function() {
