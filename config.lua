@@ -2,9 +2,15 @@ Config = Config or {}
 Config.PlayerSlot = 51		  -- Slots in the player inventory
 Config.EnableBlur = true		-- Blur the screen while accessing the inventory
 Config.MaxWeight = 24000		-- Max weight as grams
+
 Config.DurabilityDecreaseAmount = { ['WEAPON_PISTOL'] = 0.6, ['WEAPON_ADVANCEDRIFLE'] = 0.6, ['WEAPON_APPISTOL'] = 0.4, ['WEAPON_ASSAULTRIFLE'] = 0.8, ['WEAPON_ASSAULTRIFLE_MK2'] = 0.6, ['WEAPON_ASSAULTSMG'] = 0.6, ['WEAPON_BALL'] = 1.0, ['WEAPON_BAT'] = 1.0, ['WEAPON_BATTLEAXE'] = 5.0, ['WEAPON_BOTTLE'] = 5.0, ['WEAPON_BULLPUPRIFLE'] = 0.9, ['WEAPON_BULLPUPRIFLE_MK2'] = 0.7, ['WEAPON_CARBINERIFLE'] = 0.8, ['WEAPON_CARBINERIFLE_MK2'] = 0.7, ['WEAPON_COMBATPDW'] = 3.0, ['WEAPON_COMBATPISTOL'] = 0.5, ['WEAPON_COMPACTRIFLE'] = 0.7, ['WEAPON_CROWBAR'] = 1.0, ['WEAPON_DAGGER'] = 1.0, ['WEAPON_DOUBLEACTION'] = 0.8, ['WEAPON_FLAREGUN'] = 1.0, ['WEAPON_FLASHLIGHT'] = 1.0, ['WEAPON_GOLFCLUB'] = 1.0, ['WEAPON_GUSENBERG'] = 0.8, ['WEAPON_HAMMER'] = 1.0, ['WEAPON_HATCHET'] = 1.0, ['WEAPON_HEAVYPISTOL'] = 0.6, ['WEAPON_KNIFE'] = 1.0, ['WEAPON_KNUCKLE'] = 1.0, ['WEAPON_MACHETE'] = 1.0, ['WEAPON_MACHINEPISTOL'] = 0.7, ['WEAPON_MARKSMANPISTOL'] = 4.0, ['WEAPON_MICROSMG'] = 0.6, ['WEAPON_MINISMG'] = 0.6, ['WEAPON_MOLOTOV'] = 5.0, ['WEAPON_MUSKET'] = 1.0, ['WEAPON_NIGHTSTICK'] = 1.0, ['WEAPON_PISTOL50'] = 0.8, ['WEAPON_PISTOL_MK2'] = 0.5, ['WEAPON_PUMPSHOTGUN'] = 0.8, ['WEAPON_PUMPSHOTGUN_MK2'] = 0.7, ['WEAPON_REVOLVER'] = 0.8, ['WEAPON_REVOLVER_MK2'] = 0.7, ['WEAPON_SAWNOFFSHOTGUN'] = 0.9, ['WEAPON_SMG'] = 0.8, ['WEAPON_SMG_MK2'] = 0.7, ['WEAPON_SNSPISTOL'] = 0.7, ['WEAPON_SNSPISTOL_MK2'] = 0.6, ['WEAPON_SPECIALCARBINE'] = 0.8, ['WEAPON_SPECIALCARBINE_MK2'] = 0.7, ['WEAPON_STONE_HATCHET'] = 1.0, ['WEAPON_STUNGUN'] = 0.6, ['WEAPON_SWITCHBLADE'] = 1.0, ['WEAPON_VINTAGEPISTOL'] = 0.7, ['WEAPON_WRENCH'] = 1.0 }
 Config.Accounts = {'money', 'black_money'}
 Config.Throwable = {['WEAPON_GRENADE']=1, ['WEAPON_BZGAS']=1, ['WEAPON_MOLOTOV']=1, ['WEAPON_STICKYBOMB']=1, ['WEAPON_PROXMINE']=1, ['WEAPON_SNOWBALL']=1, ['WEAPON_PIPEBOMB']=1, ['WEAPON_BALL']=1, ['WEAPON_SMOKEGRENADE']=1, ['WEAPON_FLARE']=1 }
+
+-- 1 = Vehicle storage located in bonnet		0 = Vehicle has no storage space
+Config.VehicleStorage = {[`adder`]=1, [`osiris`]=0, [`pfister811`]=0, [`penetrator`]=0, [`autarch`]=0, [`bullet`]=0, [`cheetah`]=0, [`cyclone`]=0, [`voltic`]=0, [`reaper`]=1, [`entityxf`]=0, [`t20`]=0, [`taipan`]=0, [`tezeract`]=0, [`torero`]=1, [`turismor`]=0, [`fmj`]=0, [`infernus `]=0, [`italigtb`]=1, [`italigtb2`]=1, [`nero2`]=0, [`vacca`]=1, [`vagner`]=0, [`visione`]=0, [`prototipo`]=0, [`zentorno`]=0}
+
+
 
 Config.ItemList = {
 	['money'] = {},
