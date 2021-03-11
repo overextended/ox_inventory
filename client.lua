@@ -1,21 +1,7 @@
 ESX = nil
 local PlayerData = {}
 local invOpen, isDead, isCuffed, currentWeapon = false, false, false, nil
-local vehStorage = {}
 local usingItem = false
-
-function setVehicleTable()
-	local vehicleTable = {['adder']=1, ['osiris']=0, ['pfister811']=0, ['penetrator']=0, ['autarch']=0, ['bullet']=0, ['cheetah']=0, ['cyclone']=0, ['voltic']=0, ['reaper']=1, ['entityxf']=0, ['t20']=0, ['taipan']=0, ['tezeract']=0, ['torero']=1, ['turismor']=0, ['fmj']=0, ['infernus ']=0, ['italigtb']=1, ['italigtb2']=1, ['nero2']=0, ['vacca']=1, ['vagner']=0, ['visione']=0, ['prototipo']=0, ['zentorno']=0}
-	--[[
-		0 = vehicle has no storage
-		1 = vehicle storage is in bonnet/hood
-	]]
-	for k, v in pairs(vehicleTable) do
-	getHash = GetHashKey(k)
-	vehStorage[getHash] = v
-	end
-end
-setVehicleTable()
 
 -- hsn inventory Hasan.#7803
 Citizen.CreateThread(function()
@@ -149,13 +135,13 @@ end)
 RegisterCommand('vehinv', function()
 	if not playerName then return end
 	if invOpen then return end
-	if not isDead and not isCuffed and not IsPedInAnyVehicle(playerPed, false) then
+	if not isDead and not isCuffed and not IsPedInAnyVehicle(playerPed, false) then -- trunk
 		local vehicle = ESX.Game.GetClosestVehicle()
 		local coords = GetEntityCoords(playerPed)
 		if not IsPedInAnyVehicle(playerPed) then
 			if GetVehicleDoorLockStatus(vehicle) ~= 2 then
 				local vehHash = GetEntityModel(vehicle)
-				local checkVehicle = vehStorage[vehHash]
+				local checkVehicle = Config.VehicleStorage[vehHash]
 				if checkVehicle == 1 then open, vehBone = 4, GetEntityBoneIndexByName(vehicle, 'bonnet')
 				elseif checkVehicle == nil then open, vehBone = 5, GetEntityBoneIndexByName(vehicle, 'boot') elseif checkVehicle == 2 then open, vehBone = 5, GetEntityBoneIndexByName(vehicle, 'boot') else --[[no vehicle nearby]] return end
 				local vehiclePos = GetWorldPositionOfEntityBone(vehicle, vehBone)
@@ -168,7 +154,8 @@ RegisterCommand('vehinv', function()
 					Citizen.Wait(500)
 					TaskStartScenarioInPlace(playerPed, 'PROP_HUMAN_BUM_BIN', 0, true)
 					Citizen.Wait(1000)
-					OpenTrunk(plate)
+					local class = GetVehicleClass(vehicle)
+					OpenTrunk(plate, class)
 					while not invOpen do Citizen.Wait(50) end
 					while true do
 						Citizen.Wait(50)
@@ -198,10 +185,11 @@ RegisterCommand('vehinv', function()
 				TriggerEvent('hsn-inventory:notification','Vehicle is locked',2)
 			end
 		end
-	elseif not isDead and not isCuffed and IsPedInAnyVehicle(playerPed, false) then -- [G]lovebox
+	elseif not isDead and not isCuffed and IsPedInAnyVehicle(playerPed, false) then -- glovebox
 		local vehicle = GetVehiclePedIsIn(playerPed, false)
 		local plate = GetVehicleNumberPlateText(vehicle)
-		OpenGloveBox(plate)
+		local class = GetVehicleClass(vehicle)
+		OpenGloveBox(plate, class)
 	end
 end, false)
 	
@@ -216,11 +204,55 @@ end, false)
 RegisterKeyMapping('inventory', 'Inv: Inventory Open', 'keyboard', 'F2')
 RegisterKeyMapping('vehinv', 'Inv: Vehicle Inventory', 'keyboard', 'F3')
 
-OpenGloveBox = function(gloveboxid)
-	TriggerServerEvent('hsn-inventory:server:openInventory',{type = 'glovebox',id = 'glovebox-'..gloveboxid})
+OpenGloveBox = function(gloveboxid, class)
+	local slots = {
+		[0] = 11, -- compact
+		[1] = 11, -- sedan
+		[2] = 11, -- suv
+		[3] = 11, -- coupe
+		[4] = 11, -- muscle
+		[5] = 11, -- sports classic
+		[6] = 11, -- sports
+		[7] = 11, -- super
+		[8] = 5, -- motorcycle
+		[9] = 11, -- offroad
+		[10] = 11, -- industrial
+		[11] = 11, -- utility
+		[12] = 11, -- van
+		[14] = 11, -- boat
+		[15] = 11, -- helicopter
+		[16] = 11, -- plane
+		[17] = 11, -- service
+		[19] = 11, -- military
+		[20] = 11, -- commercial (trucks)
+	}
+	local storage = slots[class]
+	TriggerServerEvent('hsn-inventory:server:openInventory',{type = 'glovebox',id = 'glovebox-'..gloveboxid, slots=storage})
 end
-OpenTrunk = function(trunkid)
-	TriggerServerEvent('hsn-inventory:server:openInventory',{type = 'trunk',id = 'trunk-'..trunkid})
+OpenTrunk = function(trunkid, class)
+	local slots = {
+		[0] = 21, -- compact
+		[1] = 41, -- sedan
+		[2] = 51, -- suv
+		[3] = 31, -- coupe
+		[4] = 41, -- muscle
+		[5] = 31, -- sports classic
+		[6] = 31, -- sports
+		[7] = 21, -- super
+		[8] = 5, -- motorcycle
+		[9] = 51, -- offroad
+		[10] = 51, -- industrial
+		[11] = 41, -- utility
+		[12] = 61, -- van
+		[14] = 21, -- boat
+		[15] = 21, -- helicopter
+		[16] = 21, -- plane
+		[17] = 41, -- service
+		[19] = 41, -- military
+		[20] = 61, -- commercial
+	}
+	local storage = slots[class]
+	TriggerServerEvent('hsn-inventory:server:openInventory',{type = 'trunk',id = 'trunk-'..trunkid, slots=storage})
 end
 
 RegisterNetEvent('hsn-inventory:client:openInventory')
