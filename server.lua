@@ -593,6 +593,7 @@ AddEventHandler('hsn-inventory:server:saveInventoryData',function(data)
 			elseif data.type == 'freeslot' then
 				if IfInventoryCanCarry(playerInventory[Player.identifier],Config.MaxWeight, (data.item.weight * data.item.count)) then
 					local money = Player.getMoney()
+					if money and not data.item.price then TriggerClientEvent('hsn-inventory:client:refreshInventory',src,playerInventory[Player.identifier]) return end
 					if (money >= (data.item.price * data.item.count)) then
 						Player.removeMoney(data.item.price * data.item.count)
 						ItemNotify(src,data.item.name,data.item.count,'Added')
@@ -626,6 +627,7 @@ AddEventHandler('hsn-inventory:server:saveInventoryData',function(data)
 			elseif data.type == 'yarimswap' then
 				local money = Player.getMoney()
 				if IfInventoryCanCarry(playerInventory[Player.identifier],Config.MaxWeight, (data.newslotItem.weight * data.newslotItem.count)) then
+					if money and not data.newslotItem.price then TriggerClientEvent('hsn-inventory:client:refreshInventory',src,playerInventory[Player.identifier]) return end
 					if (money >= (data.newslotItem.price *  data.newslotItem.count)) then
 						if data.newslotItem.name:find('WEAPON_') then
 							if Config.Throwable[data.newslotItem.name] then
