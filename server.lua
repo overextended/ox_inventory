@@ -168,13 +168,15 @@ AddPlayerInventory = function(identifier, item, count, slot, metadata)
 				end
 			else
 				if not metadata then metadata = {} else metadata = {type=metadata} end
-				if slot ~= nil then
+				if slot then
 					playerInventory[identifier][slot] = {name = item ,label = ESXItems[item].label, weight = ESXItems[item].weight, slot = i, count = count, description = ESXItems[item].description, metadata = metadata, stackable = ESXItems[item].stackable, closeonuse = ESXItems[item].closeonuse}
 				else
 					for i = 1, Config.PlayerSlot do
-						if playerInventory[identifier][i] ~= nil and playerInventory[identifier][i].name == item and (not metadata or playerInventory[identifier][i].metadata.type == metadata) then
-							playerInventory[identifier][i] = {name = item ,label = ESXItems[item].label, weight = ESXItems[item].weight, slot = i, count = playerInventory[identifier][i].count + count, description = ESXItems[item].description, metadata = metadata, stackable = ESXItems[item].stackable, closeonuse = ESXItems[item].closeonuse}
-							break
+						if playerInventory[identifier][i] ~= nil and playerInventory[identifier][i].name == item then
+							if not metadata or playerInventory[identifier][i].metadata.type == metadata.type then
+								playerInventory[identifier][i] = {name = item ,label = ESXItems[item].label, weight = ESXItems[item].weight, slot = i, count = playerInventory[identifier][i].count + count, description = ESXItems[item].description, metadata = metadata, stackable = ESXItems[item].stackable, closeonuse = ESXItems[item].closeonuse}
+								break
+							end
 						else
 							if playerInventory[identifier][i] == nil then
 								playerInventory[identifier][i] = {name = item ,label = ESXItems[item].label, weight = ESXItems[item].weight, slot = i, count =  count, description = ESXItems[item].description, metadata = metadata, stackable = ESXItems[item].stackable, closeonuse = ESXItems[item].closeonuse}
@@ -1282,21 +1284,21 @@ end)
 
 
 
--- ESX.RegisterServerCallback('hsn-inventory:server:gethottbarItems',function(source,cb)
---	 local src = source
---	 local Player = ESX.GetPlayerFromId(src)
---	 if playerInventory[Player.identifier] == nil then
---		 playerInventory[Player.identifier] = {}
---	 end
---	 local cbData = {
---		 [1] = playerInventory[Player.identifier][1],
---		 [2] = playerInventory[Player.identifier][2],
---		 [3] = playerInventory[Player.identifier][3],
---		 [4] = playerInventory[Player.identifier][4],
---		 [5] = playerInventory[Player.identifier][5]
---	 }
---	 cb(cbData)
--- end)
+ ESX.RegisterServerCallback('hsn-inventory:server:gethottbarItems',function(source,cb)
+	 local src = source
+	 local Player = ESX.GetPlayerFromId(src)
+	 if playerInventory[Player.identifier] == nil then
+		 playerInventory[Player.identifier] = {}
+	 end
+	 local cbData = {
+		 [1] = playerInventory[Player.identifier][1],
+		 [2] = playerInventory[Player.identifier][2],
+		 [3] = playerInventory[Player.identifier][3],
+		 [4] = playerInventory[Player.identifier][4],
+		 [5] = playerInventory[Player.identifier][5]
+	 }
+	 cb(cbData)
+ end)
 
 RegisterNetEvent('hsn-inventory:getplayerInventory')
 AddEventHandler('hsn-inventory:getplayerInventory',function(cb,identifier)
@@ -1473,7 +1475,7 @@ ESX.RegisterCommand('evidence', 'user', function(xPlayer, args, showError)
 	if notready then return end
 	if xPlayer.job.name == 'police' then
 		local boxID = args.evidence
-		local stash = { name = ('evidence-%s'):format(boxID), slots = 30, job = 'police', coords = Config.PoliceEvidence }
+		local stash = { name = ('evidence-%s'):format(boxID), slots = 31, job = 'police', coords = Config.PoliceEvidence }
 		OpenStash(xPlayer.source, {id = stash, slots = stash.slots, type = 'stash'})
 	end
 end, true, {help = 'open police evidence', validate = true, arguments = {
