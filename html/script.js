@@ -33,7 +33,7 @@
 			toplamkg = 0
 		}
 	}
-	console.log("[hsn-inventory] = Successfully Loaded :)")
+	console.log("Successfully Loaded :)")
 	Display(false)
 	window.addEventListener('message', function(event) {
 		if (event.data.message == 'openinventory') {
@@ -45,6 +45,7 @@
 
 		} else if (event.data.message == 'refresh') {
 			HSN.RefreshInventory(event.data)
+			DragAndDrop()
 		} else if (event.data.message == 'hsn-hotbar') {
 			HSN.Hotbar(event.data.inventory) 
 		}else if (event.data.message == "notify") {
@@ -114,6 +115,10 @@
 
 	HSN.RefreshInventory = function(data) {
 		toplamkg = 0
+		for(i = 1; i < (data.slots); i++) {
+			$(".inventory-main-leftside").find("[inventory-slot=" + i + "]").remove();
+			$(".inventory-main-leftside").append('<div class="ItemBoxes" inventory-slot=' + i +'></div> ')
+		}
 		$.each(data.inventory, function (i, item) {
 			if (item != null) {
 				toplamkg = toplamkg +(item.weight * item.count);
@@ -148,7 +153,7 @@
 	}
 
 
-	HSN.SetupInventory = function(data) {	 
+	HSN.SetupInventory = function(data) {
 		maxweight = data.maxweight
 		$('.playername').html(data.name)
 		for(i = 1; i < (data.slots); i++) {
@@ -366,6 +371,7 @@
 	});
 	 
 
+	// really need to redo a lot of this stuff to validate items existences
 	SwapItems = function(fromInventory, toInventory, fromSlot, toSlot) {
 		fromItem = fromInventory.find("[inventory-slot=" + fromSlot + "]").data("ItemData");
 		inv = fromInventory.data('invTier')
@@ -428,6 +434,7 @@
 							invid: toinvId,
 							invid2 :toinvId2
 						}));
+						
 						HSN.RemoveItemFromSlot(fromInventory, fromSlot)
 				} else if (fromItem.name !== toItem.name && inv2 == inv) { // swap
 					if ((toItem.name).split("_")[0] == "WEAPON" && toItem.metadata.durability !== undefined || null) {
@@ -499,6 +506,7 @@
 			//inv = from
 			//inv2 == to
 			if (inv2 !== 'Playerinv') {availableweight = rightfreeweight} else {availableweight = playerfreeweight}
+			
 			if (availableweight !== 0 && (fromItem.weight * count) <= availableweight) {
 				if (count <= fromItem.count) {
 					if(((fromItem.name).split("_")[0] == "WEAPON" && fromItem.metadata.durability !== undefined || null)) {
