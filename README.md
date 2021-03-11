@@ -196,7 +196,7 @@ end
 <br>
 
 ### server/functions.lua
-* Search for `ESX.SavePlayer = function(xPlayer, cb)` and at the top insert
+* Search for `ESX.SavePlayer = function(xPlayer, cb)` and insert into it (at the top)
 ```
 local inventory = {}
 TriggerEvent('hsn-inventory:getplayerInventory', function(data)
