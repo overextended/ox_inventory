@@ -33,6 +33,7 @@ function clearWeapons()
 		SetPedAmmo(playerPed, hash, 0)
 	end
 	RemoveAllPedWeapons(playerPed, true)
+	SetPedCanSwitchWeapon(playerPed, false)
 end
 
 RegisterNetEvent('esx:setJob')
@@ -96,12 +97,23 @@ Citizen.CreateThread(function()
 		end
 		if not invOpen then
 			for k, v in pairs(keys) do
-				if IsDisabledControlJustReleased(0, v) and not dead and not isCuffed then
+				if IsDisabledControlJustReleased(0, v) and not isDead and not isCuffed then
 					TriggerServerEvent('hsn-inventory:server:useItemfromSlot',k)
 				end
 			end
+			--[[if IsDisabledControlJustReleased(0, 37) and not isDead and not isCuffed then -- show hotbar
+				ESX.TriggerServerCallback('hsn-inventory:server:gethottbarItems',function(data)
+					if data then
+						SendNUIMessage({
+							message = 'hsn-hotbar',
+							items = data
+						})
+					end
+				end)
+			end]]
 		end
 		if currentWeapon then
+			SetPedCurrentWeaponVisible(playerPed, true, false, false, false)
 			if IsPedArmed(ped, 6) then
 				DisableControlAction(1, 140, true)
 				DisableControlAction(1, 141, true)
@@ -371,7 +383,7 @@ Citizen.CreateThread(function()
 					if distance <= 1.5 then
 						text = '[~g~E~s~] ' .. Config.Shops[i].name
 
-						if IsControlJustPressed(1,38) and not dead and not isCuffed then
+						if IsControlJustPressed(1,38) and not isDead and not isCuffed then
 							OpenShop(Config.Shops[i])
 						end
 					end
@@ -393,7 +405,7 @@ Citizen.CreateThread(function()
 					if distance <= 1.5 then
 						text = '[~g~E~s~] ' .. Config.Stashes[i].name
 
-						if IsControlJustPressed(1,38) and not dead and not isCuffed then
+						if IsControlJustPressed(1,38) and not isDead and not isCuffed then
 							OpenStash(Config.Stashes[i])
 						end
 					end   
