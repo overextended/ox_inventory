@@ -795,8 +795,8 @@ OpenStash = function(source, stash)
 	end
 end
 
-
-RegisterServerEvent('hsn-inventory:server:openTargetInventory')
+-- DISABLE FOR NOW, works very inconsistently and has issues with duping
+--[[RegisterServerEvent('hsn-inventory:server:openTargetInventory')
 AddEventHandler('hsn-inventory:server:openTargetInventory',function(TargetId)
 	if notready then return end
 	local Player = ESX.GetPlayerFromId(source)
@@ -815,7 +815,7 @@ AddEventHandler('hsn-inventory:server:openTargetInventory',function(TargetId)
 			TriggerClientEvent('hsn-inventory:client:openInventory',source,playerInventory[Player.identifier], data)
 		end
 	end
-end)
+end)]]
 
 RegisterServerEvent('hsn-inventory:server:saveInventory')
 AddEventHandler('hsn-inventory:server:saveInventory',function(data)
