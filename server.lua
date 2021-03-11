@@ -752,7 +752,7 @@ AddEventHandler('hsn-inventory:server:openInventory',function(data, coords)
 				Gloveboxes[data.id].inventory =  GetItems(data.id)
 				Gloveboxes[data.id].name = data.id
 				Gloveboxes[data.id].type = 'glovebox'
-				Gloveboxes[data.id].slots = 100
+				Gloveboxes[data.id].slots = data.slots
 				TriggerClientEvent('hsn-inventory:client:openInventory',src,playerInventory[Player.identifier],Gloveboxes[data.id])
 			end
 		elseif data.type == 'trunk' then
@@ -761,7 +761,7 @@ AddEventHandler('hsn-inventory:server:openInventory',function(data, coords)
 				Trunks[data.id].inventory =  GetItems(data.id)
 				Trunks[data.id].name = data.id
 				Trunks[data.id].type = 'trunk'
-				Trunks[data.id].slots = 100
+				Trunks[data.id].slots = data.slots
 				TriggerClientEvent('hsn-inventory:client:openInventory',src,playerInventory[Player.identifier],Trunks[data.id])
 			end
 		end
