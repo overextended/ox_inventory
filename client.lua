@@ -225,6 +225,7 @@ end
 
 RegisterNetEvent('hsn-inventory:client:openInventory')
 AddEventHandler('hsn-inventory:client:openInventory',function(inventory,other)
+	if not playerName then return end
 	invOpen = true
 	ESX.SetPlayerData('inventory', inventory)
 	SendNUIMessage({
@@ -253,6 +254,7 @@ end)
 
 RegisterNetEvent('hsn-inventory:client:refreshInventory')
 AddEventHandler('hsn-inventory:client:refreshInventory',function(inventory)
+	if not playerName then return end
 	SendNUIMessage({
 		message = 'refresh',
 		inventory = inventory,
