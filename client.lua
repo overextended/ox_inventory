@@ -134,7 +134,7 @@ Citizen.CreateThread(function()
 				else
 					currentWeapon.item.metadata.ammo = ammo
 					if ammo == 0 then
-						ClearPedSecondaryTask(playerPed)
+						ClearPedTasks(playerPed)
 						SetCurrentPedWeapon(playerPed, currentWeapon.hash, true)
 						TriggerServerEvent('hsn-inventory:server:reloadWeapon', currentWeapon)
 					end
@@ -662,6 +662,7 @@ AddEventHandler('hsn-inventory:useItem',function(item, slot)
 			if not data.animDict then data.animDict = 'pickup_object' end
 			if not data.anim then data.anim = 'putdown_low' end
 			if not data.flags then data.flags = 48 end
+
 			-- Trigger effects before the progress bar
 			if data.component then
 				if not currentWeapon then return end
@@ -685,14 +686,14 @@ AddEventHandler('hsn-inventory:useItem',function(item, slot)
 				TriggerEvent('esx_lockpick:onUse')
 			end
 
+			------------------------------------------------------------------------------------------------
 			usingItem = true
 			if data.useTime >= 0 then
 				usingItem = true
-				------------------------------------------------------------------------------------------------
 				exports['mythic_progbar']:Progress({
 					name = 'useitem',
 					duration = data.useTime,
-					label = 'Using '..xItem.name,
+					label = 'Using '..xItem.label,
 					useWhileDead = false,
 					canCancel = false,
 					controlDisables = { disableMovement = data.disableMove, disableCarMovement = false, disableMouse = false, disableCombat = true },
@@ -713,6 +714,12 @@ AddEventHandler('hsn-inventory:useItem',function(item, slot)
 			if data.consume then TriggerServerEvent('hsn-inventory:client:removeItem', xItem.name, data.consume, xItem.metadata.type, xItem.slot) end
 			usingItem = false
 			------------------------------------------------------------------------------------------------
+
+				if data.component then
+					GiveWeaponComponentToPed(playerPed, currentWeapon.item.name, component.hash)
+					table.insert(currentWeapon.item.metadata.components, component.name)
+					TriggerServerEvent('hsn-inventory:server:updateWeapon', currentWeapon.slot, currentWeapon.item)
+				end
 				
 
 				if xItem.name == 'bandage' then
@@ -724,15 +731,8 @@ AddEventHandler('hsn-inventory:useItem',function(item, slot)
 					TriggerEvent('mythic_hospital:client:ReduceBleed')
 				end
 
-				if data.component then
-					GiveWeaponComponentToPed(playerPed, currentWeapon.item.name, component.hash)
-					table.insert(currentWeapon.item.metadata.components, component.name)
-					TriggerServerEvent('hsn-inventory:server:updateWeapon', currentWeapon.slot, currentWeapon.item)
-				end
 
-
-				------------------------------------------------------------------------------------------------
-
+			------------------------------------------------------------------------------------------------
 		end
 	end, item.name, item.metadata.type)
 end)
