@@ -1034,7 +1034,10 @@ AddEventHandler('hsn-inventory:server:reloadWeapon',function(weapon)
 	local ammo = {}
 	ammo.name = weapon.ammotype
 	ammo.count = getItemCount(source,ammo.name)
-	if ammo.count > 0 then TriggerClientEvent('hsn-inventory:addAmmo',source,weapon.item.name,ammo) end
+	if ammo.count > 0 then TriggerClientEvent('hsn-inventory:addAmmo',source,weapon.item.name,ammo)
+	else
+		playerInventory[Player.identifier][slot].metadata.ammo = 0
+	end
 end)
 
 RegisterServerEvent('hsn-inventory:server:useItemfromSlot')
