@@ -1024,7 +1024,7 @@ AddEventHandler('hsn-inventory:server:useItem',function(item)
 				TriggerClientEvent('hsn-inventory:addAmmo',src,weps,playerInventory[Player.identifier][item.slot])
 				return
 			end
-			useItem(src, item)
+			useItem(src, item, item.slot)
 		end
 	end
 end)
@@ -1067,7 +1067,7 @@ AddEventHandler('hsn-inventory:server:useItemfromSlot',function(slot)
 					TriggerClientEvent('hsn-inventory:addAmmo',src,weps,playerInventory[Player.identifier][slot])
 					return
 				end
-				useItem(src, playerInventory[Player.identifier][slot], slot)
+				useItem(src, playerInventory[Player.identifier][slot])
 			end
 		end
 	end
@@ -1235,14 +1235,13 @@ canCarryItem = function(src, item, count)
 end
 
 
-useItem = function(src, item, slot)
+useItem = function(src, item)
 	if item == nil then
 		return
 	end
-	local metadata = item.metadata.type
 	if Config.ItemList[item.name] then
 		if not next(Config.ItemList[item.name]) then return end
-		TriggerClientEvent('hsn-inventory:useItem', src, item, slot)
+		TriggerClientEvent('hsn-inventory:useItem', src, item)
 	elseif ESX.UsableItemsCallbacks[item.name] ~= nil then
 		TriggerEvent('esx:useItem', src, item.name)
 	end
