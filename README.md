@@ -214,4 +214,3 @@ end, xPlayer.identifier)
 * Alternatively you are able to add items directly to hsn-inventory in `Config.ItemList`  
 * Modify the `hsn-inventory:useItem` event to add effects from using an item.  
 * Any items registered with hsn will override the default `esx:useItem` event, so don't worry about overlap.
-* You can use `xPlayer.useItem(item, type)` to use an item with specific `metadata.type`
