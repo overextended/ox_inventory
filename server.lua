@@ -142,12 +142,15 @@ AddPlayerInventory = function(identifier, item, count, slot, metadata)
 						else
 							count = 1 
 							if metadata == nil then metadata = {} end
+							if metadata.registered == 'setname' then
+								metadata = {}
+								metadata.registered = Player.getName()
+							end
 							if not metadata.durability then metadata.durability = 100 end
 							if not metadata.ammo then metadata.ammo = 0 end
 							if not metadata.components then metadata.components = {} end
 							if not metadata.ammoweight then metadata.ammoweight = 0 end
 							metadata.weaponlicense = GetRandomLicense(metadata.weaponlicense)
-							if metadata.registered == 'setname' then metadata.registered = Player.getName() end
 						end
 						playerInventory[identifier][i] = {name = item ,label = ESXItems[item].label , weight = ESXItems[item].weight, slot = i, count = count, description = ESXItems[item].description, metadata = metadata, stackable = stacks, closeonuse = ESXItems[item].closeonuse} -- because weapon :)
 						break
@@ -605,8 +608,11 @@ AddEventHandler('hsn-inventory:server:saveInventoryData',function(data)
 								data.item.stackable = true
 							else
 								if not data.item.metadata then data.item.metadata = {} end
+								if data.item.metadata.registered == 'setname' then
+									data.item.metadata = {}
+									data.item.metadata.registered = Player.getName()
+								end
 								data.item.metadata.weaponlicense = GetRandomLicense(data.item.metadata.weaponlicense)
-								if data.item.metadata.registered == 'setname' then data.item.metadata.registered = Player.getName() end
 								if not data.item.metadata.components then data.item.metadata.components = {} end
 								data.item.metadata.ammo = 0
 								data.item.metadata.ammoweight = 0
@@ -637,7 +643,10 @@ AddEventHandler('hsn-inventory:server:saveInventoryData',function(data)
 								data.item.stackable = true
 							else
 								if not data.newslotItem.metadata then data.newslotItem.metadata = {} end
-								if data.newslotItem.metadata.registered == 'setname' then data.newslotItem.metadata.registered = Player.getName() end
+								if data.newslotItem.metadata.registered == 'setname' then
+									data.newslotItem.metadata = {}
+									data.newslotItem.metadata.registered = Player.getName()
+								end
 								data.newslotItem.metadata.weaponlicense = GetRandomLicense(data.newslotItem.metadata.weaponlicense)
 								if not data.newslotItem.metadata.components then data.newslotItem.metadata.components = {} end
 								data.newslotItem.metadata.ammo = 0
