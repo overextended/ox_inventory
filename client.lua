@@ -206,8 +206,7 @@ RegisterCommand('vehinv', function()
 end, false)
 	
 RegisterCommand('inventory', function()
-	if not playerName then return end
-	if not isDead and not isCuffed and not invOpen then
+	if not playerName and not IsPauseMenuActive() and not isDead and not isCuffed and not invOpen then
 		TriggerEvent('randPickupAnim')
 		TriggerServerEvent('hsn-inventory:server:openInventory',{type = 'drop',id = currentDrop, coords = currentDropCoords })
 	end
