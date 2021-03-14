@@ -211,7 +211,7 @@ CanOpenInventory = function()
 end
 	
 RegisterCommand('inventory', function()
-	if CanOpenInventory then
+	if CanOpenInventory() then
 		TriggerEvent('randPickupAnim')
 		TriggerServerEvent('hsn-inventory:server:openInventory',{type = 'drop',id = currentDrop, coords = currentDropCoords })
 	end
