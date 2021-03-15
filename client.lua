@@ -234,6 +234,7 @@ OpenGloveBox = function(gloveboxid, class)
 		[15] = 11, -- helicopter
 		[16] = 11, -- plane
 		[17] = 11, -- service
+		[18] = 11, -- emergency
 		[19] = 11, -- military
 		[20] = 11, -- commercial (trucks)
 	}
@@ -259,6 +260,7 @@ OpenTrunk = function(trunkid, class)
 		[15] = 21, -- helicopter
 		[16] = 21, -- plane
 		[17] = 41, -- service
+		[18] = 41, -- emergency
 		[19] = 41, -- military
 		[20] = 61, -- commercial
 	}
