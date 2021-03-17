@@ -204,9 +204,14 @@ RegisterCommand('vehinv', function()
 		OpenGloveBox(plate, class)
 	end
 end, false)
+
+CanOpenInventory = function()
+	if not playerName and not IsPauseMenuActive() and not isDead and not isCuffed and not invOpen then return true end
+	return false
+end
 	
 RegisterCommand('inventory', function()
-	if not playerName and not IsPauseMenuActive() and not isDead and not isCuffed and not invOpen then
+	if CanOpenInventory() then
 		TriggerEvent('randPickupAnim')
 		TriggerServerEvent('hsn-inventory:server:openInventory',{type = 'drop',id = currentDrop, coords = currentDropCoords })
 	end
