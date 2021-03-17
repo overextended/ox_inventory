@@ -716,8 +716,8 @@ CreateNewDrop = function(source,data)
 		Drops[dropid].inventory[data.toSlot] = {name = data.newslotItem.name ,label = data.newslotItem.label, weight = data.newslotItem.weight, slot = data.toSlot, count = data.newslotItem.count, description = data.newslotItem.description, metadata = data.newslotItem.metadata, stackable = data.newslotItem.stackable, closeonuse = ESXItems[data.newslotItem.name].closeonuse}
 	end
 	if not oneSync then coords = src end -- Support not using OneSync
-	TriggerClientEvent('hsn-inventory:Client:addnewDrop', -1, coords, dropid)
-	TriggerClientEvent('hsn-inventory:client:openInventory',src,playerInventory[Player.identifier],Drops[dropid])
+	TriggerClientEvent('hsn-inventory:Client:addnewDrop', -1, coords, dropid, src)
+	--TriggerClientEvent('hsn-inventory:client:openInventory',src,playerInventory[Player.identifier],Drops[dropid])
 end
 
 RegisterCommand('fixinv', function(source, args, rawCommand)
@@ -756,6 +756,7 @@ AddEventHandler('hsn-inventory:server:openInventory',function(data, coords)
 			Shops[data.id.name].name = data.id.name or 'Shop'
 			Shops[data.id.name].type = 'shop'
 			Shops[data.id.name].slots = #Shops[data.id.name].inventory + 1
+			Shops[data.id.name].coords = data.id.coords
 			if not data.id.job or data.id.job == Player.job.name then
 				if data.id.license then
 					TriggerEvent('esx_license:checkLicense', src, data.id.license, function(haslicense)
@@ -788,12 +789,6 @@ AddEventHandler('hsn-inventory:server:openInventory',function(data, coords)
 				TriggerClientEvent('hsn-inventory:client:openInventory',src,playerInventory[Player.identifier],Trunks[data.id])
 			end
 		end
-	else
-		if checkOpenable(src, 'Player'..src, GetEntityCoords(GetPlayerPed(src))) then
-			TriggerClientEvent('hsn-inventory:client:openInventory',src,playerInventory[Player.identifier])
-		else
-			TriggerClientEvent('hsn-inventory:notification',src,'You can not open this inventory',2)
-		end
 	end
 end)
 
@@ -812,6 +807,7 @@ OpenStash = function(source, stash)
 		Stashs[stash.id.name].name = stash.id.name
 		Stashs[stash.id.name].type = 'stash'
 		Stashs[stash.id.name].slots = stash.id.slots
+		Stash[stash.id.coords].coords = stash.id.coords
 	end
 	if checkOpenable(src,stash.id.name,stash.id.coords) then
 		if not stash.id.job or stash.id.job == Player.job.name then
