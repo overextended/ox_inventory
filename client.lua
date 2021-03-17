@@ -336,8 +336,9 @@ end)
 Citizen.CreateThread(function()
 	while true do
 		local wait = 1000
+		playerCoords = GetEntityCoords(playerPed)
 		for k,v in pairs(Drops) do
-			distance = #(GetEntityCoords(playerPed) - vector3(v.coords.x,v.coords.y,v.coords.z))
+			distance = #(playerCoords - vector3(v.coords.x,v.coords.y,v.coords.z))
 			if (invOpen and distance <= 1.2) or distance <= 10.0 then
 				wait = 1
 				DrawMarker(2, v.coords.x,v.coords.y,v.coords.z, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.3, 0.2, 0.15, 150, 30, 30, 222, false, false, false, true, false, false, false)
@@ -354,6 +355,16 @@ Citizen.CreateThread(function()
 			invOpen = false
 			movement = false
 			TriggerServerEvent('hsn-inventory:server:openInventory',{type = 'drop',id = currentDrop, coords = currentDropCoords })
+		end
+		if currentInventory and currentInventory.name:find('Player') then
+			local str = string.sub(currentInventory.name, 7)
+			local id = GetPlayerFromServerId(tonumber(str))
+			local ped = GetPlayerPed(id)
+			local pedCoords = GetEntityCoords(ped)
+			local dist = #(playerCoords - pedCoords)
+			if dist > 1.0 or not CanOpenTarget(ped) then
+				TriggerEvent('hsn-inventory:client:closeInventory', currentInventory.name)
+			end
 		end
 		Citizen.Wait(wait)
 	end
