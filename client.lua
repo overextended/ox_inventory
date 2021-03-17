@@ -378,7 +378,7 @@ Citizen.CreateThread(function()
 			movement = false
 			TriggerServerEvent('hsn-inventory:server:openInventory',{type = 'drop',id = currentDrop, coords = currentDropCoords })
 		end
-		if currentInventory and currentInventory.name:find('Player') then
+		if currentInventory and string.find(currentInventory.name, 'Player') then
 			local str = string.sub(currentInventory.name, 7)
 			local id = GetPlayerFromServerId(tonumber(str))
 			local ped = GetPlayerPed(id)
