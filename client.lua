@@ -32,7 +32,7 @@ function StartInventory()
 	playerID = GetPlayerServerId(PlayerId())
 	ESX.TriggerServerCallback('hsn-inventory:getData',function(data)
 		playerName = data.name
-		ESX.SetPlayerData('inventory', data.inventory)
+		--ESX.SetPlayerData('inventory', data.inventory)
 		oneSync = data.oneSync
 	end)
 	while not playerName do Citizen.Wait(100) end
@@ -217,6 +217,12 @@ RegisterCommand('vehinv', function()
 		local plate = GetVehicleNumberPlateText(vehicle)
 		local class = GetVehicleClass(vehicle)
 		OpenGloveBox(plate, class)
+		while true do
+			Citizen.Wait(100)
+			if not IsPedInAnyVehicle(playerPed, false) then
+				TriggerEvent('hsn-inventory:client:closeInventory', currentInventory)
+			end
+		end
 	end
 end, false)
 
@@ -225,15 +231,15 @@ CanOpenInventory = function()
 	return false
 end
 	
-RegisterCommand('inventory', function()
+RegisterCommand('inv', function()
 	if CanOpenInventory() then
 		TriggerEvent('randPickupAnim')
 		TriggerServerEvent('hsn-inventory:server:openInventory',{type = 'drop',id = currentDrop, coords = currentDropCoords })
 	end
 end, false)
 		
-RegisterKeyMapping('inventory', 'Inv: Inventory Open', 'keyboard', 'F2')
-RegisterKeyMapping('vehinv', 'Inv: Vehicle Inventory', 'keyboard', 'F3')
+RegisterKeyMapping('inv', 'Open player inventory', 'keyboard', 'F2')
+RegisterKeyMapping('vehinv', 'Open vehicle inventory', 'keyboard', 'F3')
 
 OpenGloveBox = function(gloveboxid, class)
 	local slots = {
@@ -290,9 +296,10 @@ end
 
 RegisterNetEvent('hsn-inventory:client:openInventory')
 AddEventHandler('hsn-inventory:client:openInventory',function(inventory,other)
+	movement = false
 	if not playerName then return end
 	invOpen = true
-	ESX.SetPlayerData('inventory', inventory)
+	--ESX.SetPlayerData('inventory', inventory)
 	SendNUIMessage({
 		message = 'openinventory',
 		inventory = inventory,
@@ -373,12 +380,7 @@ Citizen.CreateThread(function()
 				end
 			end
 		end
-		if not currentInventory and invOpen and currentDrop then
-			invOpen = false
-			movement = false
-			TriggerServerEvent('hsn-inventory:server:openInventory',{type = 'drop',id = currentDrop, coords = currentDropCoords })
-		end
-		if currentInventory and string.find(currentInventory.name, 'Player') then
+		if currentInventory and currentInventory.name and string.find(currentInventory.name, 'Player') then
 			local str = string.sub(currentInventory.name, 7)
 			local id = GetPlayerFromServerId(tonumber(str))
 			local ped = GetPlayerPed(id)
@@ -386,6 +388,11 @@ Citizen.CreateThread(function()
 			local dist = #(playerCoords - pedCoords)
 			if dist > 1.0 or not CanOpenTarget(ped) then
 				TriggerEvent('hsn-inventory:client:closeInventory', currentInventory.name)
+			end
+		elseif currentInventory and currentInventory.coords then
+			local dist = #(playerCoords - currentInventory.coords)
+			if dist > 1.0 or CanOpenTarget(playerPed) then
+				TriggerEvent('hsn-inventory:client:closeInventory', currentInventory)
 			end
 		end
 		Citizen.Wait(wait)
@@ -485,15 +492,18 @@ Citizen.CreateThread(function()
 end)
 
 OpenShop = function(id)
+	if CanOpenTarget(playerPed) then return end
 	TriggerServerEvent('hsn-inventory:server:openInventory',{type = 'shop',id = id})
 end
 
 OpenStash = function(id)
+	if CanOpenTarget(playerPed) then return end
 	TriggerServerEvent('hsn-inventory:server:OpenStash', {id = id, slots = id.slots, type = 'stash'})
 end
 
 RegisterNetEvent('hsn-inventory:Client:addnewDrop')
-AddEventHandler('hsn-inventory:Client:addnewDrop',function(coords, drop)
+AddEventHandler('hsn-inventory:Client:addnewDrop',function(coords, drop, src)
+	print(drop)
 	if not oneSync then -- Receive coords as an entity if not running OneSync
 		local entity = GetPlayerPed(GetPlayerFromServerId(coords))
 		local pos = GetEntityCoords(entity)
@@ -508,6 +518,11 @@ AddEventHandler('hsn-inventory:Client:addnewDrop',function(coords, drop)
 			z = coords.z - 0.3,
 		},
 	}
+	Citizen.Wait(0)
+	if src == playerID then
+		currentInventory = {type = 'drop',id = drop, coords = coords }
+		TriggerServerEvent('hsn-inventory:server:openInventory',{type = 'drop',id = drop, coords = coords })
+	end
 end)
 
 function loadAnimDict( dict )
