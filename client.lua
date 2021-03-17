@@ -221,7 +221,8 @@ RegisterCommand('vehinv', function()
 			Citizen.Wait(100)
 			if not IsPedInAnyVehicle(playerPed, false) then
 				TriggerEvent('hsn-inventory:client:closeInventory', currentInventory)
-			end
+				return
+			elseif not invOpen then return end
 		end
 	end
 end, false)
