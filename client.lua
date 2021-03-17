@@ -373,7 +373,8 @@ Citizen.CreateThread(function()
 				DrawMarker(2, v.coords.x,v.coords.y,v.coords.z, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.3, 0.2, 0.15, 150, 30, 30, 222, false, false, false, true, false, false, false)
 				if distance <= 1.2 then
 					currentDrop = v.dropid
-					currentDropCoords = v.coords
+					currentDropCoords = vector3(v.coords.x,v.coords.y,v.coords.z)
+					break
 				else
 					currentDrop = nil
 					currentDropCoords = nil
