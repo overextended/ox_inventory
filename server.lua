@@ -324,7 +324,7 @@ AddEventHandler('hsn-inventory:server:saveInventoryData',function(data)
 						TriggerClientEvent('hsn-inventory:notification',src,'You can not carry this item',2)
 					end
 				elseif data.type == 'yarimswap' then
-					if tonumber(GetItemCount(targetplayer.identifier, data.oldslotItem.name)) < tonumber(data.newslotItem.count) then return end -- prevent duping
+					--if tonumber(GetItemCount(targetplayer.identifier, data.newslotItem.name)) < tonumber(data.newslotItem.count) then return end -- prevent duping
 					if IfInventoryCanCarry(playerInventory[targetplayer.identifier],Config.MaxWeight, (data.newslotItem.weight * data.newslotItem.count))  then
 						TriggerClientEvent('hsn-inventory:client:checkweapon',src,data.newslotItem)
 						playerInventory[Player.identifier][data.fromSlot] = {name = data.oldslotItem.name ,label = data.oldslotItem.label, weight = data.oldslotItem.weight, slot = data.fromSlot, count = data.oldslotItem.count, description = data.oldslotItem.description, metadata = data.oldslotItem.metadata, stackable = data.oldslotItem.stackable, closeonuse = ESXItems[data.oldslotItem.name].closeonuse}
@@ -368,7 +368,7 @@ AddEventHandler('hsn-inventory:server:saveInventoryData',function(data)
 						TriggerClientEvent('hsn-inventory:notification',src,'You can not carry this item',2)
 					end
 				elseif data.type == 'yarimswap' then
-					if tonumber(GetItemCount(Player.identifier, data.oldslotItem.name)) < tonumber(data.newslotItem.count) then return end -- prevent duping
+					--if tonumber(GetItemCount(Player.identifier, data.newslotItem.name)) < tonumber(data.newslotItem.count) then return end -- prevent duping
 					if IfInventoryCanCarry(playerInventory[Player.identifier],Config.MaxWeight, (data.newslotItem.weight * data.newslotItem.count)) then
 						TriggerClientEvent('hsn-inventory:client:checkweapon',targetplayer.source,data.newslotItem)
 						playerInventory[targetplayer.identifier][data.fromSlot] = {name = data.oldslotItem.name ,label = data.oldslotItem.label, weight = data.oldslotItem.weight, slot = data.fromSlot, count = data.oldslotItem.count, description = data.oldslotItem.description, metadata = data.oldslotItem.metadata, stackable = data.oldslotItem.stackable, closeonuse = ESXItems[data.oldslotItem.name].closeonuse}
@@ -822,7 +822,6 @@ OpenStash = function(source, stash)
 	end
 end
 
--- DISABLE FOR NOW, works very inconsistently and has issues with duping
 RegisterServerEvent('hsn-inventory:server:openTargetInventory')
 AddEventHandler('hsn-inventory:server:openTargetInventory',function(TargetId)
 	if notready then return end
