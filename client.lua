@@ -165,6 +165,11 @@ RegisterCommand('vehinv', function()
 				local checkVehicle = Config.VehicleStorage[vehHash]
 				if checkVehicle == 1 then open, vehBone = 4, GetEntityBoneIndexByName(vehicle, 'bonnet')
 				elseif checkVehicle == nil then open, vehBone = 5, GetEntityBoneIndexByName(vehicle, 'boot') elseif checkVehicle == 2 then open, vehBone = 5, GetEntityBoneIndexByName(vehicle, 'boot') else --[[no vehicle nearby]] return end
+				
+				if vehBone == -1 then
+					vehBone = GetEntityBoneIndexByName(vehicle, 'wheel_rr')
+				end
+				
 				local vehiclePos = GetWorldPositionOfEntityBone(vehicle, vehBone)
 				local pedDistance = #(coords - vehiclePos)
 				if (open == 5 and checkVehicle == nil) then if pedDistance < 2.0 then CloseToVehicle = true end elseif (open == 5 and checkVehicle == 2) then if pedDistance < 2.0 then CloseToVehicle = true end elseif open == 4 then if pedDistance < 2.0 then CloseToVehicle = true end end	
@@ -192,8 +197,6 @@ RegisterCommand('vehinv', function()
 						Citizen.Wait(50)
 						if CloseToVehicle and invOpen then
 							coords = GetEntityCoords(playerPed)
-							if checkVehicle == 1 then open, vehBone = 4, GetEntityBoneIndexByName(vehicle, 'bonnet')
-							elseif checkVehicle == nil then open, vehBone = 5, GetEntityBoneIndexByName(vehicle, 'boot') elseif checkVehicle == 2 then open, vehBone = 5, GetEntityBoneIndexByName(vehicle, 'boot') else return end
 							local vehiclePos = GetWorldPositionOfEntityBone(vehicle, vehBone)
 							local pedDistance = #(coords - vehiclePos)
 							local isClose = false
