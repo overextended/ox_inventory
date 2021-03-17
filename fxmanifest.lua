@@ -1,7 +1,7 @@
 fx_version 'adamant'
 game 'gta5'
 description 'https://github.com/hsnnnnn/hsn-inventory'
-version '1.5.0'
+version '1.5.1'
 
 client_scripts {
 	'config.lua',
