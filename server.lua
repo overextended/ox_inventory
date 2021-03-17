@@ -971,6 +971,10 @@ end
 RegisterServerEvent('hsn-inventory:setcurrentInventory')
 AddEventHandler('hsn-inventory:setcurrentInventory',function(other)
 	local src = source
+	local id = 'Player'..src
+	openedinventories[id] = {}
+	openedinventories[id].opened = true
+	openedinventories[id].owner = src
 	if other ~= nil then
 		invopened[src] = {
 			curInventory = other.name,
@@ -983,12 +987,14 @@ end)
 RegisterServerEvent('hsn-inventory:removecurrentInventory')
 AddEventHandler('hsn-inventory:removecurrentInventory',function(name)
 	local src = source
-	if not name then name = 'Player'..src end
 	if invopened[src] ~= nil then
 		invopened[src] = nil
 	end
 	if openedinventories[name] ~= nil then
 		openedinventories[name] = nil
+	end
+	if openedinventories['Player'..src] ~= nil then
+		openedinventories['Player'..src] = nil
 	end
 end)
 
