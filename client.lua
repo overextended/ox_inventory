@@ -170,17 +170,27 @@ RegisterCommand('vehinv', function()
 				if (open == 5 and checkVehicle == nil) then if pedDistance < 2.0 then CloseToVehicle = true end elseif (open == 5 and checkVehicle == 2) then if pedDistance < 2.0 then CloseToVehicle = true end elseif open == 4 then if pedDistance < 2.0 then CloseToVehicle = true end end	
 				if CloseToVehicle then
 					local plate = GetVehicleNumberPlateText(vehicle)
+					local class = GetVehicleClass(vehicle)
+					OpenTrunk(plate, class)
+					local timeout = 10
+					while not invOpen do
+						if timeout == 0 then
+							CloseToVehicle = false
+							lastVehicle = nil
+							return
+						end
+						Citizen.Wait(50) timeout = timeout - 1
+					end
 					SetVehicleDoorOpen(vehicle, open, false, false)
 					TaskTurnPedToFaceEntity(playerPed, vehicle, -1)
 					Citizen.Wait(500)
 					TaskStartScenarioInPlace(playerPed, 'PROP_HUMAN_BUM_BIN', 0, true)
 					Citizen.Wait(1000)
-					local class = GetVehicleClass(vehicle)
-					OpenTrunk(plate, class)
-					while not invOpen do Citizen.Wait(50) end
+					lastVehicle = vehicle
+					trunkid = currentInventory
 					while true do
 						Citizen.Wait(50)
-						if CloseToVehicle and invOpen and not isCuffed and not isDead then
+						if CloseToVehicle and invOpen then
 							coords = GetEntityCoords(playerPed)
 							if checkVehicle == 1 then open, vehBone = 4, GetEntityBoneIndexByName(vehicle, 'bonnet')
 							elseif checkVehicle == nil then open, vehBone = 5, GetEntityBoneIndexByName(vehicle, 'boot') elseif checkVehicle == 2 then open, vehBone = 5, GetEntityBoneIndexByName(vehicle, 'boot') else return end
@@ -193,14 +203,7 @@ RegisterCommand('vehinv', function()
 							else break end
 						else break end
 					end
-					CloseToVehicle = false
-					lastVehicle = nil
-					TriggerEvent('hsn-inventory:client:closeInventory', currentInventory)
-					invOpen = false
-					currentInventory = nil
-					ClearPedTasks(playerPed)
-					Citizen.Wait(1200)
-					SetVehicleDoorShut(vehicle, open, false)
+					TriggerEvent('hsn-inventory:client:closeInventory', trunkid)
 				end
 			else
 				TriggerEvent('hsn-inventory:notification','Vehicle is locked',2)
@@ -303,6 +306,14 @@ end)
 RegisterNetEvent('hsn-inventory:client:closeInventory')
 AddEventHandler('hsn-inventory:client:closeInventory',function(id)
 	invOpen = false
+	TriggerScreenblurFadeOut(0)
+	if lastVehicle then
+		ClearPedTasks(playerPed)
+		Citizen.Wait(1200)
+		SetVehicleDoorShut(lastVehicle, open, false)
+		CloseToVehicle = false
+		lastVehicle = nil
+	end
 	currentInventory = nil
 	SendNUIMessage({
 		message = 'close',
@@ -326,6 +337,14 @@ end)
 
 RegisterNUICallback('exit',function(data)
 	invOpen = false
+	TriggerScreenblurFadeOut(0)
+	if lastVehicle then
+		ClearPedTasks(playerPed)
+		Citizen.Wait(1200)
+		SetVehicleDoorShut(lastVehicle, open, false)
+		CloseToVehicle = false
+		lastVehicle = nil
+	end
 	currentInventory = nil
 	SetNuiFocusAdvanced(false,false)
 	TriggerServerEvent('hsn-inventory:server:saveInventory',data)
