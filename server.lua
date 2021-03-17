@@ -1378,6 +1378,7 @@ AddEventHandler('hsn-inventory:setplayerInventory',function(identifier,inventory
 
 	for k,v in pairs(inventory) do
 		if tonumber(v) ~= nil then -- Convert old inventory data
+			
 			loop = loop + 1
 			local count = v
 			v = { slot = loop, name = k, count = count }
@@ -1396,15 +1397,18 @@ AddEventHandler('hsn-inventory:setplayerInventory',function(identifier,inventory
 		if v.metadata and v.metadata.ammoweight then weight = v.metadata.ammoweight + ESXItems[v.name].weight else weight = tonumber(ESXItems[v.name].weight) end
 		playerInventory[identifier][v.slot] = {name = v.name ,label = ESXItems[v.name].label, weight = tonumber(weight), slot = v.slot, count = v.count, description = ESXItems[v.name].description, metadata = v.metadata, stackable = ESXItems[v.name].stackable}
 	end
+	
 	local Player = ESX.GetPlayerFromIdentifier(identifier)
-	for k, v in pairs(Config.Accounts) do
-		local money = Player.getAccount(v).money
-		local itemCount = GetItemCount(identifier, v)
-		if itemCount < money then Player.addInventoryItem(v, money - itemCount)
-		elseif itemCount > money then Player.removeInventoryItem(v, itemCount - money)
+	if loop > 0 then
+		for k, v in pairs(Config.Accounts) do
+			local money = Player.getAccount(v).money
+			local itemCount = GetItemCount(identifier, v)
+			if itemCount < money then Player.addInventoryItem(v, money - itemCount)
+			elseif itemCount > money then Player.removeInventoryItem(v, itemCount - money)
+			end
 		end
+		print( ('^1[hsn-inventory]^3 %s items were converted to new format for %s [%s]^7'):format(loop, Player.getName(), identifier) )
 	end
-	if loop > 0 then print( ('^1[hsn-inventory]^3 %s items were converted to new format for %s [%s]^7'):format(loop, Player.getName(), identifier) ) end
 end)
 
 AddEventHandler('onResourceStop', function(resourceName)
