@@ -8,7 +8,7 @@ Config.Accounts = {'money', 'black_money'}
 Config.Throwable = {['WEAPON_GRENADE']=1, ['WEAPON_BZGAS']=1, ['WEAPON_MOLOTOV']=1, ['WEAPON_STICKYBOMB']=1, ['WEAPON_PROXMINE']=1, ['WEAPON_SNOWBALL']=1, ['WEAPON_PIPEBOMB']=1, ['WEAPON_BALL']=1, ['WEAPON_SMOKEGRENADE']=1, ['WEAPON_FLARE']=1 }
 
 -- 1 = Vehicle storage located in bonnet		0 = Vehicle has no storage space
-Config.VehicleStorage = {[`adder`]=1, [`osiris`]=0, [`pfister811`]=0, [`penetrator`]=0, [`autarch`]=0, [`bullet`]=0, [`cheetah`]=0, [`cyclone`]=0, [`voltic`]=0, [`reaper`]=1, [`entityxf`]=0, [`t20`]=0, [`taipan`]=0, [`tezeract`]=0, [`torero`]=1, [`turismor`]=0, [`fmj`]=0, [`infernus `]=0, [`italigtb`]=1, [`italigtb2`]=1, [`nero2`]=0, [`vacca`]=1, [`vagner`]=0, [`visione`]=0, [`prototipo`]=0, [`zentorno`]=0}
+Config.VehicleStorage = {[`jester`]=1, [`adder`]=1, [`osiris`]=0, [`pfister811`]=0, [`penetrator`]=0, [`autarch`]=0, [`bullet`]=0, [`cheetah`]=0, [`cyclone`]=0, [`voltic`]=0, [`reaper`]=1, [`entityxf`]=0, [`t20`]=0, [`taipan`]=0, [`tezeract`]=0, [`torero`]=1, [`turismor`]=0, [`fmj`]=0, [`infernus `]=0, [`italigtb`]=1, [`italigtb2`]=1, [`nero2`]=0, [`vacca`]=1, [`vagner`]=0, [`visione`]=0, [`prototipo`]=0, [`zentorno`]=0}
 
 
 
