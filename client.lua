@@ -200,10 +200,11 @@ RegisterCommand('vehinv', function()
 							local vehiclePos = GetWorldPositionOfEntityBone(vehicle, vehBone)
 							local pedDistance = #(coords - vehiclePos)
 							local isClose = false
-							if (open == 5 and checkVehicle == nil) then if pedDistance < 2.0 then isClose = true end elseif (open == 5 and checkVehicle == 2) then if pedDistance < 2.0 then isClose = true end elseif open == 4 then if pedDistance < 2.0 then isClose = true end end
-							if DoesEntityExist(vehicle) and isClose then
-								CloseToVehicle = true
-							else break end
+							if (open == 5 and checkVehicle == nil) then if pedDistance < 3.0 then isClose = true end elseif (open == 5 and checkVehicle == 2) then if pedDistance < 3.0 then isClose = true end elseif open == 4 then if pedDistance < 3.0 then isClose = true end end
+							if not DoesEntityExist(vehicle) or not isClose then
+								CloseToVehicle = nil
+								break
+							end
 						else break end
 					end
 					TriggerEvent('hsn-inventory:client:closeInventory', trunkid)
