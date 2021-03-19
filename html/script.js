@@ -393,11 +393,11 @@
 					toInventory.find("[inventory-slot=" + toSlot + "]").addClass("drag-item");
 					$.post("http://hsn-inventory/saveinventorydata", JSON.stringify({
 						type : "swap",
-						toslot:  toSlot,
+						toSlot:  toSlot,
 						frominv : inv,
 						toinv : inv2,
 						toItem: fromItem,
-						fromslot: fromSlot,
+						fromSlot: fromSlot,
 						fromItem: toItem,
 						invid: toinvId,
 						invid2 :toinvId2
@@ -409,7 +409,7 @@
 						var newDataItem = {}
 						newDataItem.name = toItem.name
 						newDataItem.label = toItem.label
-						newDataItem.count = newcount
+						newDataItem.count = Number(newcount)
 						newDataItem.metadata = toItem.metadata
 						newDataItem.stackable = toItem.metadata
 						newDataItem.description = toItem.description
@@ -424,7 +424,7 @@
 							frominv : inv,
 							toinv : inv2,
 							emptyslot : fromSlot,
-							toslot: toSlot,
+							toSlot: toSlot,
 							item : newDataItem,
 							invid: toinvId,
 							invid2 :toinvId2
@@ -443,11 +443,11 @@
 						toInventory.find("[inventory-slot=" + toSlot + "]").addClass("drag-item");
 						$.post("http://hsn-inventory/saveinventorydata", JSON.stringify({
 							type: "swap",
-							toslot:  toSlot,
+							toSlot:  toSlot,
 							frominv : inv,
 							toinv : inv2,
 							toItem: fromItem,
-							fromslot: fromSlot,
+							fromSlot: fromSlot,
 							fromItem: toItem,
 							invid: toinvId,
 							invid2 :toinvId2
@@ -463,11 +463,11 @@
 						toInventory.find("[inventory-slot=" + toSlot + "]").addClass("drag-item");
 						$.post("http://hsn-inventory/saveinventorydata", JSON.stringify({
 							type : "swap",
-							toslot:  toSlot,
+							toSlot:  toSlot,
 							frominv : inv,
 							toinv : inv2,
 							toItem: fromItem,
-							fromslot: fromSlot,
+							fromSlot: fromSlot,
 							fromItem: toItem,
 							invid: toinvId,
 							invid2 :toinvId2
@@ -481,11 +481,11 @@
 						toInventory.find("[inventory-slot=" + toSlot + "]").addClass("drag-item");
 						$.post("http://hsn-inventory/saveinventorydata", JSON.stringify({
 							type : "swap",
-							toslot:  toSlot,
+							toSlot:  toSlot,
 							frominv : inv,
 							toinv : inv2,
 							toItem: fromItem,
-							fromslot: fromSlot,
+							fromSlot: fromSlot,
 							fromItem: toItem,
 							invid: toinvId,
 							invid2 :toinvId2
@@ -518,7 +518,7 @@
 							frominv : inv,
 							toinv : inv2,
 							emptyslot : fromSlot,
-							toslot: toSlot,
+							toSlot: toSlot,
 							item : fromItem,
 							invid: toinvId,
 							invid2 :toinvId2
@@ -528,7 +528,7 @@
 							var oldslotCount = fromItem.count - count
 							oldItemData = {}
 							newItemData = {}
-							oldItemData.count = oldslotCount
+							oldItemData.count = Number(oldslotCount)
 							oldItemData.name = fromItem.name
 							oldItemData.label = fromItem.label
 							oldItemData.stackable = fromItem.stackable
@@ -538,7 +538,7 @@
 							oldItemData.slot = fromSlot
 							oldItemData.price = fromItem.price
 
-							newItemData.count = count
+							newItemData.count = Number(count)
 							newItemData.label = fromItem.label
 							newItemData.name = fromItem.name
 							newItemData.stackable = fromItem.stackable
@@ -582,7 +582,7 @@
 								frominv : inv,
 								toinv : inv2,
 								emptyslot : fromSlot,
-								toslot: toSlot,
+								toSlot: toSlot,
 								item : fromItem,
 								invid: toinvId,
 								invid2 :toinvId2
