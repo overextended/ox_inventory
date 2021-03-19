@@ -69,6 +69,7 @@ AddEventHandler('playerSpawned', function(spawn)
 	isDead = false
 end)
 
+RegisterNetEvent('esx_ambulancejob:setDeathStatus')
 AddEventHandler('esx_ambulancejob:setDeathStatus', function(status)
 	isDead = status
 end)
