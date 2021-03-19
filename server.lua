@@ -1115,7 +1115,6 @@ AddEventHandler('hsn-inventory:server:decreasedurability',function(source, slot,
 					return
 				end
 				if Config.DurabilityDecreaseAmount[playerInventory[Player.identifier][slot].name] == nil then
-					print('gsdf')
 					decreaseamount = 0.5 * (ammo / 15)
 				elseif Config.DurabilityDecreaseAmount[playerInventory[Player.identifier][slot].name] then
 					decreaseamount = Config.DurabilityDecreaseAmount[playerInventory[Player.identifier][slot].name] * (ammo / 15)
