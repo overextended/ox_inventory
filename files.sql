@@ -146,4 +146,8 @@ INSERT INTO `items` (`name`, `label`, `weight`, `can_remove`, `stackable`, `clos
 	('WEAPON_WRENCH', 'Wrench', 2500, 1, 1, 0, NULL),
 	('WEAPON_MUSKET', 'Musket', 4500, 1, 1, 0, NULL),
 	('WEAPON_BATTLEAXE', 'Battle Axe', 1200, 1, 1, 0, NULL),
-	('WEAPON_STONE_HATCHET', 'Stone Hatchet', 800, 1, 1, 0, NULL);
+	('WEAPON_STONE_HATCHET', 'Stone Hatchet', 800, 1, 1, 0, NULL),
+	('WEAPON_CERAMICPISTOL', 'Ceramic Pistol', 700, 1, 1, 0, NULL),
+	('WEAPON_COMBATSHOTGUN', 'Combat Shotgun', 4400, 1, 1, 0, NULL),
+	('WEAPON_MILITARYRIFLE', 'Military Rifle', 3600, 1, 1, 0, NULL),
+	('WEAPON_NAVYREVOLVER', 'Navy Revolver', 2000, 1, 1, 0, NULL);
