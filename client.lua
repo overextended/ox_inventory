@@ -159,7 +159,8 @@ RegisterCommand('vehinv', function()
 	if not isDead and not isCuffed and not IsPedInAnyVehicle(playerPed, false) then -- trunk
 		local vehicle = ESX.Game.GetClosestVehicle()
 		local coords = GetEntityCoords(playerPed)
-		local CloseToVehicle, lastVehicle
+		CloseToVehicle = false
+		lastVehicle = nil
 		if not IsPedInAnyVehicle(playerPed) then
 			if GetVehicleDoorLockStatus(vehicle) ~= 2 then
 				local vehHash = GetEntityModel(vehicle)
@@ -189,9 +190,15 @@ RegisterCommand('vehinv', function()
 					end
 					SetVehicleDoorOpen(vehicle, open, false, false)
 					TaskTurnPedToFaceEntity(playerPed, vehicle, -1)
-					Citizen.Wait(500)
-					TaskStartScenarioInPlace(playerPed, 'PROP_HUMAN_BUM_BIN', 0, true)
-					Citizen.Wait(1000)
+					local animDict = 'anim@heists@prison_heiststation@cop_reactions'
+					local anim = 'cop_b_idle'
+					RequestAnimDict(animDict)
+					while not HasAnimDictLoaded(animDict) do
+						Citizen.Wait(100)
+					end
+					Citizen.Wait(200)
+					TaskPlayAnim(playerPed, animDict, anim, 3.0, 3.0, -1, 49, 0, 0, 0, 0)
+					Citizen.Wait(100)
 					lastVehicle = vehicle
 					while true do
 						Citizen.Wait(50)
@@ -202,13 +209,9 @@ RegisterCommand('vehinv', function()
 							local isClose = false
 							if (open == 5 and checkVehicle == nil) then if pedDistance < 3.0 then isClose = true end elseif (open == 5 and checkVehicle == 2) then if pedDistance < 3.0 then isClose = true end elseif open == 4 then if pedDistance < 3.0 then isClose = true end end
 							if not DoesEntityExist(vehicle) or not isClose then
-								CloseToVehicle = nil
-								lastVehicle = nil
 								break
 							end
 						else
-							CloseToVehicle = nil
-							lastVehicle = nil 
 							break
 						end
 					end
@@ -325,8 +328,8 @@ AddEventHandler('hsn-inventory:client:closeInventory',function(id)
 	invOpen = false
 	TriggerScreenblurFadeOut(0)
 	if lastVehicle then
+		Citizen.Wait(500)
 		ClearPedTasks(playerPed)
-		Citizen.Wait(1200)
 		SetVehicleDoorShut(lastVehicle, open, false)
 		CloseToVehicle = false
 		lastVehicle = nil
@@ -356,8 +359,8 @@ RegisterNUICallback('exit',function(data)
 	invOpen = false
 	TriggerScreenblurFadeOut(0)
 	if lastVehicle then
+		Citizen.Wait(500)
 		ClearPedTasks(playerPed)
-		Citizen.Wait(1200)
 		SetVehicleDoorShut(lastVehicle, open, false)
 		CloseToVehicle = false
 		lastVehicle = nil
