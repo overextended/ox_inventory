@@ -348,7 +348,6 @@ end
 RegisterNetEvent('hsn-inventory:client:closeInventory')
 AddEventHandler('hsn-inventory:client:closeInventory',function(id)
 	invOpen = false
-	if id.name then id = id.name end
 	TriggerScreenblurFadeOut(0)
 	if lastVehicle then
 		CloseVehicle(lastVehicle)
