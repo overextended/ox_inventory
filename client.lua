@@ -179,6 +179,7 @@ RegisterCommand('vehinv', function()
 				if CloseToVehicle then
 					local plate = GetVehicleNumberPlateText(vehicle)
 					local class = GetVehicleClass(vehicle)
+					TaskTurnPedToFaceCoord(playerPed, vehiclePos)
 					OpenTrunk(plate, class)
 					local timeout = 10
 					while true do
@@ -191,7 +192,6 @@ RegisterCommand('vehinv', function()
 						Citizen.Wait(50) timeout = timeout - 1
 					end
 					SetVehicleDoorOpen(vehicle, open, false, false)
-					TaskTurnPedToFaceEntity(playerPed, vehicle, -1)
 					local animDict = 'anim@heists@prison_heiststation@cop_reactions'
 					local anim = 'cop_b_idle'
 					RequestAnimDict(animDict)
@@ -209,10 +209,11 @@ RegisterCommand('vehinv', function()
 							local vehiclePos = GetWorldPositionOfEntityBone(vehicle, vehBone)
 							local pedDistance = #(coords - vehiclePos)
 							local isClose = false
-							if pedDistance < 3.0 then isClose = true end
+							if pedDistance < 2.0 then isClose = true end
 							if not DoesEntityExist(vehicle) or not isClose then
 								break
 							end
+							TaskTurnPedToFaceCoord(playerPed, vehiclePos)
 						else
 							break
 						end
@@ -326,17 +327,31 @@ AddEventHandler('hsn-inventory:client:openInventory',function(inventory,other)
 	currentInventory = other
 end)
 
+function CloseVehicle(veh)
+	local animDict = 'anim@heists@fleeca_bank@scope_out@return_case'
+	local anim = 'trevor_action'
+	RequestAnimDict(animDict)
+	while not HasAnimDictLoaded(animDict) do
+		Citizen.Wait(100)
+	end
+	ClearPedTasks(playerPed)
+	Citizen.Wait(100)
+	local playerRot = GetEntityRotation(playerPed)
+	TaskPlayAnimAdvanced(playerPed, animDict, anim, playerCoords.x, playerCoords.y, playerCoords.z, playerRot.x, playerRot.y, playerRot.z, 1.0, 1.0, 1000, 49, 0.25, 0, 0)
+	Citizen.Wait(1000)
+	ClearPedTasks(playerPed)
+	SetVehicleDoorShut(veh, open, false)
+	CloseToVehicle = false
+	lastVehicle = nil
+end
+
 RegisterNetEvent('hsn-inventory:client:closeInventory')
 AddEventHandler('hsn-inventory:client:closeInventory',function(id)
 	invOpen = false
 	if id.name then id = id.name end
 	TriggerScreenblurFadeOut(0)
 	if lastVehicle then
-		Citizen.Wait(500)
-		ClearPedTasks(playerPed)
-		SetVehicleDoorShut(lastVehicle, open, false)
-		CloseToVehicle = false
-		lastVehicle = nil
+		CloseVehicle(lastVehicle)
 	end
 	currentInventory = nil
 	SendNUIMessage({
@@ -363,11 +378,7 @@ RegisterNUICallback('exit',function(data)
 	invOpen = false
 	TriggerScreenblurFadeOut(0)
 	if lastVehicle then
-		Citizen.Wait(500)
-		ClearPedTasks(playerPed)
-		SetVehicleDoorShut(lastVehicle, open, false)
-		CloseToVehicle = false
-		lastVehicle = nil
+		CloseVehicle(lastVehicle)
 	end
 	currentInventory = nil
 	SetNuiFocusAdvanced(false,false)
