@@ -10,7 +10,7 @@ local openedinventories = {}
 local Gloveboxes = {}
 local Trunks = {}
 local notready = true
-if GetConvar('onesync_enableInfinity', false) == 'true' or GetConvar('onesync', false) == 'on' then oneSync = true end
+if GetConvar('onesync_enableInfinity', false) == 'true' or GetConvar('onesync_enabled', false) == 'true' then oneSync = true end
 
 TriggerEvent('esx:getSharedObject', function(obj) ESX = obj end)
 
