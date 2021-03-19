@@ -181,7 +181,8 @@ RegisterCommand('vehinv', function()
 					local class = GetVehicleClass(vehicle)
 					OpenTrunk(plate, class)
 					local timeout = 10
-					while not invOpen do
+					while true do
+						if invOpen then break end
 						if timeout == 0 then
 							CloseToVehicle = false
 							lastVehicle = nil
@@ -208,7 +209,7 @@ RegisterCommand('vehinv', function()
 							local vehiclePos = GetWorldPositionOfEntityBone(vehicle, vehBone)
 							local pedDistance = #(coords - vehiclePos)
 							local isClose = false
-							if (open == 5 and checkVehicle == nil) then if pedDistance < 3.0 then isClose = true end elseif (open == 5 and checkVehicle == 2) then if pedDistance < 3.0 then isClose = true end elseif open == 4 then if pedDistance < 3.0 then isClose = true end end
+							if pedDistance < 3.0 then isClose = true end
 							if not DoesEntityExist(vehicle) or not isClose then
 								break
 							end
@@ -216,7 +217,8 @@ RegisterCommand('vehinv', function()
 							break
 						end
 					end
-					TriggerEvent('hsn-inventory:client:closeInventory', currentInventory)
+					TriggerEvent('hsn-inventory:client:closeInventory', currentInventory.name)
+					return
 				end
 			else
 				TriggerEvent('hsn-inventory:notification','Vehicle is locked',2)
@@ -230,7 +232,7 @@ RegisterCommand('vehinv', function()
 		while true do
 			Citizen.Wait(100)
 			if not IsPedInAnyVehicle(playerPed, false) then
-				TriggerEvent('hsn-inventory:client:closeInventory', currentInventory)
+				TriggerEvent('hsn-inventory:client:closeInventory', currentInventory.name)
 				return
 			elseif not invOpen then return end
 		end
@@ -327,6 +329,7 @@ end)
 RegisterNetEvent('hsn-inventory:client:closeInventory')
 AddEventHandler('hsn-inventory:client:closeInventory',function(id)
 	invOpen = false
+	if id.name then id = id.name end
 	TriggerScreenblurFadeOut(0)
 	if lastVehicle then
 		Citizen.Wait(500)
@@ -401,10 +404,10 @@ Citizen.CreateThread(function()
 			if dist > 1.0 or not CanOpenTarget(ped) then
 				TriggerEvent('hsn-inventory:client:closeInventory', currentInventory.name)
 			end
-		elseif currentInventory and currentInventory.coords then
+		elseif not lastVehicle and currentInventory and currentInventory.coords then
 			local dist = #(playerCoords - currentInventory.coords)
 			if dist > 1.0 or CanOpenTarget(playerPed) then
-				TriggerEvent('hsn-inventory:client:closeInventory', currentInventory)
+				TriggerEvent('hsn-inventory:client:closeInventory', currentInventory.name)
 			end
 		end
 		Citizen.Wait(wait)
@@ -515,7 +518,6 @@ end
 
 RegisterNetEvent('hsn-inventory:Client:addnewDrop')
 AddEventHandler('hsn-inventory:Client:addnewDrop',function(coords, drop, src)
-	print(drop)
 	if not oneSync then -- Receive coords as an entity if not running OneSync
 		local entity = GetPlayerPed(GetPlayerFromServerId(coords))
 		local pos = GetEntityCoords(entity)
@@ -607,7 +609,7 @@ AddEventHandler('hsn-inventory:client:weapon',function(item)
 	if usingItem then return end
 	usingItem = true
 	if currentWeapon then TriggerServerEvent('hsn-inventory:server:updateWeapon', currentWeapon.slot, currentWeapon.item) end
-	TriggerEvent('hsn-inventory:client:closeInventory', currentInventory)
+	TriggerEvent('hsn-inventory:client:closeInventory', currentInventory.name)
 	local newWeapon = item.metadata.weaponlicense
 	local found, wepHash = GetCurrentPedWeapon(playerPed, true)
 	if wepHash == -1569615261 then currentWeapon = nil end
@@ -769,7 +771,7 @@ AddEventHandler('hsn-inventory:notification',function(message, mtype)
 end)
 
 RegisterCommand('-nui', function()
-		TriggerEvent('hsn-inventory:client:closeInventory', currentInventory)
+		TriggerEvent('hsn-inventory:client:closeInventory', currentInventory.name)
 end, false)
 
 AddEventHandler('onResourceStop', function(resourceName)
@@ -787,7 +789,7 @@ AddEventHandler('hsn-inventory:useItem',function(item, slot)
 		if xItem then
 			local data = Config.ItemList[xItem.name]
 			if not data or not next(data) then return end
-			if xItem.closeonuse then TriggerEvent('hsn-inventory:client:closeInventory', currentInventory) end
+			if xItem.closeonuse then TriggerEvent('hsn-inventory:client:closeInventory', currentInventory.name) end
 			if not data.animDict then data.animDict = 'pickup_object' end
 			if not data.anim then data.anim = 'putdown_low' end
 			if not data.flags then data.flags = 48 end
