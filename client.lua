@@ -159,6 +159,7 @@ RegisterCommand('vehinv', function()
 	if not isDead and not isCuffed and not IsPedInAnyVehicle(playerPed, false) then -- trunk
 		local vehicle = ESX.Game.GetClosestVehicle()
 		local coords = GetEntityCoords(playerPed)
+		local CloseToVehicle, lastVehicle
 		if not IsPedInAnyVehicle(playerPed) then
 			if GetVehicleDoorLockStatus(vehicle) ~= 2 then
 				local vehHash = GetEntityModel(vehicle)
@@ -192,7 +193,6 @@ RegisterCommand('vehinv', function()
 					TaskStartScenarioInPlace(playerPed, 'PROP_HUMAN_BUM_BIN', 0, true)
 					Citizen.Wait(1000)
 					lastVehicle = vehicle
-					trunkid = currentInventory
 					while true do
 						Citizen.Wait(50)
 						if CloseToVehicle and invOpen then
@@ -203,11 +203,16 @@ RegisterCommand('vehinv', function()
 							if (open == 5 and checkVehicle == nil) then if pedDistance < 3.0 then isClose = true end elseif (open == 5 and checkVehicle == 2) then if pedDistance < 3.0 then isClose = true end elseif open == 4 then if pedDistance < 3.0 then isClose = true end end
 							if not DoesEntityExist(vehicle) or not isClose then
 								CloseToVehicle = nil
+								lastVehicle = nil
 								break
 							end
-						else break end
+						else
+							CloseToVehicle = nil
+							lastVehicle = nil 
+							break
+						end
 					end
-					TriggerEvent('hsn-inventory:client:closeInventory', trunkid)
+					TriggerEvent('hsn-inventory:client:closeInventory', currentInventory)
 				end
 			else
 				TriggerEvent('hsn-inventory:notification','Vehicle is locked',2)
