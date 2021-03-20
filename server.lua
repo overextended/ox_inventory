@@ -106,7 +106,7 @@ end
 GetItemsSlot = function(inventory, name, metadata)
 	local returnData = {}
 	for k,v in pairs(inventory) do
-		if (not metadata or is_table_equal(v.metadata == metadata)) and v.name == name then
+		if v.name == name then
 			table.insert(returnData,v)
 		end
 	end
@@ -132,7 +132,6 @@ AddPlayerInventory = function(identifier, item, count, slot, metadata)
 	local Player = ESX.GetPlayerFromIdentifier(identifier)
 	if ESXItems[item] ~= nil then
 		if item ~= nil and count ~= nil then
-
 			if item:find('WEAPON_') then		
 				for i = 1, Config.PlayerSlot do
 					if playerInventory[identifier][i] == nil then
@@ -168,16 +167,14 @@ AddPlayerInventory = function(identifier, item, count, slot, metadata)
 					end
 				end
 			else
-				if metadata and type(metadata) ~= 'table' then metadata = {type = metadata} end
+				if metadata and type(metadata) ~= 'table' then metadata = {type = metadata} else metadata = nil end
 				if slot then
 					playerInventory[identifier][slot] = {name = item ,label = ESXItems[item].label, weight = ESXItems[item].weight, slot = i, count = count, description = ESXItems[item].description, metadata = metadata, stackable = ESXItems[item].stackable, closeonuse = ESXItems[item].closeonuse}
 				else
 					for i = 1, Config.PlayerSlot do
-						if playerInventory[identifier][i] ~= nil and playerInventory[identifier][i].name == item then
-							if not metadata or (playerInventory[identifier][i].metadata and playerInventory[identifier][i].metadata.type == metadata.type) then
-								playerInventory[identifier][i] = {name = item ,label = ESXItems[item].label, weight = ESXItems[item].weight, slot = i, count = playerInventory[identifier][i].count + count, description = ESXItems[item].description, metadata = metadata, stackable = ESXItems[item].stackable, closeonuse = ESXItems[item].closeonuse}
-								break
-							end
+						if playerInventory[identifier][i] ~= nil and playerInventory[identifier][i].name == item and (not metadata or is_table_equal(metadata, playerInventory[identifier][i].metadata)) then
+							playerInventory[identifier][i] = {name = item ,label = ESXItems[item].label, weight = ESXItems[item].weight, slot = i, count = playerInventory[identifier][i].count + count, description = ESXItems[item].description, metadata = metadata, stackable = ESXItems[item].stackable, closeonuse = ESXItems[item].closeonuse}
+							break
 						else
 							if playerInventory[identifier][i] == nil then
 								playerInventory[identifier][i] = {name = item ,label = ESXItems[item].label, weight = ESXItems[item].weight, slot = i, count =  count, description = ESXItems[item].description, metadata = metadata, stackable = ESXItems[item].stackable, closeonuse = ESXItems[item].closeonuse}
@@ -216,40 +213,39 @@ end
 RemovePlayerInventory = function(src, identifier, item, count, slot, metadata)
 	count = tonumber(count)
 	if ESXItems[item] ~= nil then
-		if type(metadata) ~= 'table' then metadata = {type = metadata} end
-		local ItemCount = GetItemCount(identifier, item, metadata)
-		if ItemCount - count < 0 then count = ItemCount end
+		if metadata and type(metadata) ~= 'table' then metadata = {type = metadata} end
 		for i = 1, Config.PlayerSlot do
-			if playerInventory[identifier][i] ~= nil and playerInventory[identifier][i].name == item and is_table_equal(playerInventory[identifier][i].metadata, metadata) then
-				playerInventory[identifier][i].count = tonumber(playerInventory[identifier][i].count)
-				if playerInventory[identifier][i].count > count then
-					playerInventory[identifier][i].count = playerInventory[identifier][i].count - count
-					ItemNotify(src, item, count, 'Removed')
-					break
-				elseif playerInventory[identifier][i].count == count then
-					playerInventory[identifier][i] = nil
-					ItemNotify(src, item, count, 'Removed')
-					break
-				elseif playerInventory[identifier][i].count < count then
-					local slots = GetItemsSlot(playerInventory[identifier], item, metadata)
-					local tempCount = 0
-					for i,j in pairs(slots) do
-						if j ~= nil then
-							j.count = tonumber(j.count)
-							if j.count - count < 0 then
-								tempCount = playerInventory[identifier][j.slot].count
-								playerInventory[identifier][j.slot] = nil
-								count = count - tempCount
-							elseif j.count - count > 0 then
-								playerInventory[identifier][j.slot].count = playerInventory[identifier][j.slot].count - count
-							elseif j.count - count == 0 then
-								playerInventory[identifier][j.slot] = nil
+			if playerInventory[identifier][i] ~= nil and playerInventory[identifier][i].name == item then
+				if not metadata or is_table_equal(playerInventory[identifier][i].metadata, metadata) then
+					if playerInventory[identifier][i].count > count then
+						playerInventory[identifier][i].count = playerInventory[identifier][i].count - count
+						ItemNotify(src, item, count, 'Removed')
+						break
+					elseif playerInventory[identifier][i].count == count then
+						playerInventory[identifier][i] = nil
+						ItemNotify(src, item, count, 'Removed')
+						break
+					elseif playerInventory[identifier][i].count < count then
+						local slots = GetItemsSlot(playerInventory[identifier], item, metadata)
+						local tempCount = 0
+						for i,j in pairs(slots) do
+							if j ~= nil and (not metadata or is_table_equal(metadata, playerInventory[identifier][j.slot].metadata)) then
+								j.count = tonumber(j.count)
+								if j.count - count < 0 then
+									tempCount = playerInventory[identifier][j.slot].count
+									playerInventory[identifier][j.slot] = nil
+									count = count - tempCount
+								elseif j.count - count > 0 then
+									playerInventory[identifier][j.slot].count = playerInventory[identifier][j.slot].count - count
+								elseif j.count - count == 0 then
+									playerInventory[identifier][j.slot] = nil
+								end
 							end
 						end
+						totalCount = count + tempCount
+						ItemNotify(src, item, totalCount, 'Removed')
+						break
 					end
-					totalCount = count + tempCount
-					ItemNotify(src, item, totalCount, 'Removed')
-					break
 				end
 			end
 		end
@@ -725,10 +721,10 @@ AddEventHandler('hsn-inventory:server:saveInventoryData',function(data)
 			return TriggerClientEvent('hsn-inventory:notification',src,'You can not return your items',2)
 		end
 
-		-- we'll clean this up later
+--[[		-- we'll clean this up later
 		for k, v in pairs(Config.Accounts) do
 			MoneySync(src, v)
-		end
+		end]]
 
 	end
 end) 
@@ -755,7 +751,7 @@ AddEventHandler('hsn-inventory:buyItem', function(info)
 		if IfInventoryCanCarry(playerInventory[xPlayer.identifier], Config.MaxWeight, (data.weight * count)) then
 			if data.price then
 				if money >= data.price then
-					xPlayer.removeMoney(data.price)
+					RemovePlayerInventory(src, xPlayer.identifier, 'money', data.price)
 					AddPlayerInventory(xPlayer.identifier, data.name, count, nil, data.metadata)
 				else
 					TriggerClientEvent('hsn-inventory:notification',src,'You can not afford that (missing $'..(data.price - money)..')',2)
@@ -1097,7 +1093,7 @@ ItemNotify = function(source, item, count, type)
 	else TriggerClientEvent('hsn-inventory:client:addItemNotify',source,ESXItems[item],'Used') end
 end
 
-MoneySync = function(source, item)
+--[[MoneySync = function(source, item)
 	local Player = ESX.GetPlayerFromId(source)
 	local getAccount = Player.getAccount(item)
 	local itemCount = getItemCount(source, item)
@@ -1107,7 +1103,7 @@ MoneySync = function(source, item)
 	elseif getAccount.money > itemCount then
 		Player.removeAccountMoney(item, math.abs(newCount))
 	end
-end
+end]]
 
 RegisterServerEvent('hsn-inventory:server:useItem')
 AddEventHandler('hsn-inventory:server:useItem',function(item)
@@ -1285,7 +1281,7 @@ addItem = function(src, item, count, metadata)
 	ItemNotify(src, item, count, 'Added')
 end
 
-getItemCount = function(src, item)
+getItemCount = function(src, item, metadata)
 	if item == nil then
 		return
 	end
@@ -1293,7 +1289,7 @@ getItemCount = function(src, item)
 	if playerInventory[Player.identifier] == nil then
 		return
 	end
-	local ItemCount = GetItemCount(Player.identifier, item, nil)
+	local ItemCount = GetItemCount(Player.identifier, item, metadata)
 	return ItemCount
 end
 
@@ -1422,43 +1418,47 @@ AddEventHandler('hsn-inventory:setplayerInventory',function(identifier,inventory
 	local returnData = {}
 	local loop = 0
 
-	exports.ghmattimysql:execute('SELECT loadout FROM users WHERE identifier = @identifier', {
-		['@identifier'] = identifier
-	}, function(result)
-		local loadout = {}
-		if result[1].loadout and result[1].loadout ~= '' then
-			loadout = json.decode(result[1].loadout)
-			for k,v in pairs(loadout) do
-				loop = loop + 1
-				local weapon
-				if v.name then
-					weapon = v.name
-				else
-					weapon = k
-				end
+	if Config.ConvertToHSN then
+		-- Convert old loadout data to items
+		exports.ghmattimysql:execute('SELECT loadout FROM users WHERE identifier = @identifier', {
+			['@identifier'] = identifier
+		}, function(result)
+			local loadout = {}
+			if result[1].loadout ~= nil and result[1].loadout ~= '[]' and result[1].loadout ~= '' then
+				loadout = json.decode(result[1].loadout)
+				for k,v in pairs(loadout) do
+					loop = loop + 1
+					local weapon
+					if v.name then
+						weapon = v.name
+					else
+						weapon = k
+					end
 
-				if weapon then
-					v = { slot = loop, name = weapon, count = 1 }
-					v.metadata = {}
-					v.metadata.durability = 100
-					v.metadata.ammo = 0
-					v.metadata.components = {}
-					v.metadata.ammoweight = 0
-					v.metadata.weaponlicense = GetRandomLicense()
+					if weapon then
+						v = { slot = loop, name = weapon, count = 1 }
+						v.metadata = {}
+						v.metadata.durability = 100
+						v.metadata.ammo = 0
+						v.metadata.components = {}
+						v.metadata.ammoweight = 0
+						v.metadata.weaponlicense = GetRandomLicense()
 
-					v.count = tonumber(v.count)
-					if v.metadata and v.metadata.ammoweight then weight = v.metadata.ammoweight + ESXItems[v.name].weight else weight = tonumber(ESXItems[v.name].weight) end
-					playerInventory[identifier][v.slot] = {name = v.name ,label = ESXItems[v.name].label, weight = tonumber(weight), slot = v.slot, count = v.count, description = ESXItems[v.name].description, metadata = v.metadata, stackable = ESXItems[v.name].stackable}
+						v.count = tonumber(v.count)
+						if v.metadata and v.metadata.ammoweight then weight = v.metadata.ammoweight + ESXItems[v.name].weight else weight = tonumber(ESXItems[v.name].weight) end
+						playerInventory[identifier][v.slot] = {name = v.name ,label = ESXItems[v.name].label, weight = tonumber(weight), slot = v.slot, count = v.count, description = ESXItems[v.name].description, metadata = v.metadata, stackable = ESXItems[v.name].stackable}
+					end
 				end
+				exports.ghmattimysql:execute('UPDATE `users` SET loadout = NULL WHERE identifier = @identifier', {
+					['@identifier'] = identifier
+				})
 			end
-			exports.ghmattimysql:execute('UPDATE `users` SET loadout = NULL WHERE identifier = @identifier', {
-				['@identifier'] = identifier
-			})
-		end
-	end)
+		end)
+	end
 
+	local getAccounts = true
 	for k,v in pairs(inventory) do
-		if tonumber(v) ~= nil then -- Convert old inventory data
+		if tonumber(v) ~= nil then -- Convert old inventory data to new format
 			
 			loop = loop + 1
 			local count = v
@@ -1475,21 +1475,41 @@ AddEventHandler('hsn-inventory:setplayerInventory',function(identifier,inventory
 		end
 		if not v.metadata then v.metadata = {} end
 		v.count = tonumber(v.count)
+		if getAccounts and v.name:find('money') then getAccounts = false end
 		if v.metadata and v.metadata.ammoweight then weight = v.metadata.ammoweight + ESXItems[v.name].weight else weight = tonumber(ESXItems[v.name].weight) end
 		if v.metadata and next(v.metadata) == nil then v.metadata = {} end
 		playerInventory[identifier][v.slot] = {name = v.name ,label = ESXItems[v.name].label, weight = tonumber(weight), slot = v.slot, count = v.count, description = ESXItems[v.name].description, metadata = v.metadata, stackable = ESXItems[v.name].stackable}
 	end
+
 	
-	local Player = ESX.GetPlayerFromIdentifier(identifier)
-	if loop > 0 then
-		for k, v in pairs(Config.Accounts) do
-			local money = Player.getAccount(v).money
-			local itemCount = GetItemCount(identifier, v)
-			if itemCount < money then Player.addInventoryItem(v, money - itemCount)
-			elseif itemCount > money then Player.removeInventoryItem(v, itemCount - money)
+	if Config.ConvertToHSN and getAccounts then
+		-- Convert old account data to items
+		exports.ghmattimysql:execute('SELECT accounts FROM users WHERE identifier = @identifier', {
+			['@identifier'] = identifier
+		}, function(result)
+			local accounts = {}
+			if result[1].accounts and result[1].accounts ~= '[]' and result[1].accounts ~= '' then
+				accounts = json.decode(result[1].accounts)
+				local bank
+				for k,v in pairs(accounts) do
+					if k ~= 'bank' then
+						if tonumber(v) ~= nil then
+							loop = loop + 1
+							local count = v
+							v = { slot = loop, name = k, count = count }	
+						end
+						v.count = tonumber(v.count)
+						if v.count > 0 then
+							playerInventory[identifier][v.slot] = {name = v.name ,label = ESXItems[v.name].label, weight = ESXItems[v.name].weight, slot = v.slot, count = v.count, description = ESXItems[v.name].description, metadata = v.metadata, stackable = ESXItems[v.name].stackable}
+						end
+					else bank = '{"bank":'..v..'}' end
+				end
+				exports.ghmattimysql:execute('UPDATE `users` SET accounts = @bank WHERE identifier = @identifier', {
+					['@identifier'] = identifier,
+					['@bank'] = bank
+				})
 			end
-		end
-		print( ('^1[hsn-inventory]^3 %s items were converted to new format for %s [%s]^7'):format(loop, Player.getName(), identifier) )
+		end)
 	end
 end)
 
@@ -1536,7 +1556,6 @@ end
 
 
 function ValidateString(item)
-	if item == 'money' or item == 'black_money' then return end
 	item = string.lower(item)
 	if item:find('weapon_') then item = string.upper(item) end
 	return item -- ESXItems[item]
@@ -1554,7 +1573,6 @@ end, true, {help = 'give an item to a player', validate = false, arguments = {
 
 ESX.RegisterCommand('removeitem', 'admin', function(xPlayer, args, showError)
 	if notready then return end
-	if args.item == 'money' or args.item == 'black_money' then return end
 	args.playerId.removeInventoryItem(ValidateString(args.item), args.count, args.type)
 end, true, {help = 'remove an item from a player', validate = false, arguments = {
 	{name = 'playerId', help = 'player id', type = 'player'},
@@ -1568,7 +1586,7 @@ ESX.RegisterCommand({'removeinventory', 'clearinventory'}, 'admin', function(xPl
 	local Player = args.playerId
 	local inventory = GetInventory(playerInventory[Player.identifier])
 	for k,v in pairs(inventory) do
-		RemovePlayerInventory(Player.source, Player.identifier, v.name, v.count, k, v.metadata.type)
+		RemovePlayerInventory(Player.source, Player.identifier, v.name, v.count, k, v.metadata)
 	end
 end, true, {help = 'clear a player\'s inventory', validate = true, arguments = {
 	{name = 'playerId', help = 'player id', type = 'player'}
