@@ -788,7 +788,7 @@ AddEventHandler('onResourceStop', function(resourceName)
 end)
 
 RegisterNetEvent('hsn-inventory:useItem')
-AddEventHandler('hsn-inventory:useItem',function(item, slot)
+AddEventHandler('hsn-inventory:useItem',function(item)
 	if usingItem or shooting then return end
 	ESX.TriggerServerCallback('hsn-inventory:getItem',function(xItem)
 		if xItem then
@@ -847,7 +847,7 @@ AddEventHandler('hsn-inventory:useItem',function(item, slot)
 				if data.thirst > 0 then TriggerEvent('esx_status:add', 'thirst', data.thirst)
 				else TriggerEvent('esx_status:remove', 'thirst', data.thirst) end
 			end
-			if data.consume then TriggerServerEvent('hsn-inventory:client:removeItem', xItem.name, data.consume, xItem.metadata.type, xItem.slot) end
+			if data.consume then TriggerServerEvent('hsn-inventory:client:removeItem', xItem.name, data.consume, xItem.metadata) end
 			usingItem = false
 			------------------------------------------------------------------------------------------------
 
@@ -870,5 +870,5 @@ AddEventHandler('hsn-inventory:useItem',function(item, slot)
 
 			------------------------------------------------------------------------------------------------
 		end
-	end, item.name, item.metadata.type)
+	end, item.name, item.metadata)
 end)
