@@ -347,18 +347,9 @@ end
 
 RegisterNetEvent('hsn-inventory:client:closeInventory')
 AddEventHandler('hsn-inventory:client:closeInventory',function(id)
-	if id and id.name then id = id.name end
-	invOpen = false
-	TriggerScreenblurFadeOut(0)
-	if lastVehicle then
-		CloseVehicle(lastVehicle)
-	end
-	currentInventory = nil
 	SendNUIMessage({
 		message = 'close',
 	})
-	SetNuiFocusAdvanced(false,false)
-	TriggerServerEvent('hsn-inventory:removecurrentInventory',id)
 end)
 
 RegisterNetEvent('hsn-inventory:client:refreshInventory')
@@ -406,7 +397,7 @@ Citizen.CreateThread(function()
 				end
 			end
 		end
-		if currentInventory and string.find(currentInventory.name, 'Player') then
+		if type(currentInventory) == 'table' and string.find(currentInventory.name, 'Player') then
 			local str = string.sub(currentInventory, 7)
 			local id = GetPlayerFromServerId(tonumber(str))
 			local ped = GetPlayerPed(id)
