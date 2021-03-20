@@ -364,6 +364,9 @@ AddEventHandler('hsn-inventory:client:refreshInventory',function(inventory)
 	})
 end)
 
+RegisterNUICallback('BuyFromShop', function(data)
+    TriggerServerEvent('hsn-inventory:buyItem', data)
+end)
 
 RegisterNUICallback('exit',function(data)
 	invOpen = false
@@ -456,7 +459,7 @@ Citizen.CreateThread(function()
 						text = '[~g~E~s~] ' .. Config.Shops[i].name
 
 						if IsControlJustPressed(1,38) and not isDead and not isCuffed then
-							OpenShop(Config.Shops[i])
+							OpenShop(Config.Shops[i], i)
 						end
 					end
 
@@ -508,9 +511,9 @@ Citizen.CreateThread(function()
 	end
 end)
 
-OpenShop = function(id)
+OpenShop = function(id, index)
 	if CanOpenTarget(playerPed) then return end
-	TriggerServerEvent('hsn-inventory:server:openInventory',{type = 'shop',id = id})
+	TriggerServerEvent('hsn-inventory:server:openInventory',{type = 'shop',id = id, index = index})
 end
 
 OpenStash = function(id)
