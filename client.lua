@@ -406,7 +406,7 @@ Citizen.CreateThread(function()
 				end
 			end
 		end
-		if currentInventory and currentInventory and string.find(currentInventory, 'Player') then
+		if currentInventory and string.find(currentInventory.name, 'Player') then
 			local str = string.sub(currentInventory, 7)
 			local id = GetPlayerFromServerId(tonumber(str))
 			local ped = GetPlayerPed(id)
