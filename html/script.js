@@ -40,8 +40,7 @@
 			HSN.SetupInventory(event.data)
 			DragAndDrop()
 		} else if (event.data.message == 'close') {
-			Display(false)
-			inventoryidd = null
+			HSN.CloseInventory()
 
 		} else if (event.data.message == 'refresh') {
 			HSN.RefreshInventory(event.data)
