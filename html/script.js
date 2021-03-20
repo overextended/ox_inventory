@@ -198,14 +198,14 @@
 						if (item != null) {
 							if ((item.name).split("_")[0] == "WEAPON" && item.metadata.durability !== undefined || null) {
 								$(".inventory-main-rightside").find("[inventory-slot=" + item.slot + "]").html('<div class="item-slot-img"><img src="images/' + item.name + '.png'+'" alt="' + item.name + '" /></div><div class="item-slot-count"><p>' + item.count + ' (' + (item.price) + '$)</p></div><div class="item-slot-label"><p><div class="item-slot-durability"><div class="item-slot-durability-bar"><p>100</p></div></div><div class="item-slot-label"><p>' + item.label + '</p></div></p></div>');
-								$(".inventory-main-rightside").find("[inventory-slot=" + item.slot + "]").data("ItemData", item);
-								$(".inventory-main-rightside").find("[inventory-slot=" + item.slot + "]").addClass("drag-item");
+								$(".inventory-main-rightside").find("[inventory-slot=" + item.slot + "]").data("ItemData", item).data("location", data.rightinventory.name);
+								//$(".inventory-main-rightside").find("[inventory-slot=" + item.slot + "]").addClass("drag-item");
 									var durability = HSN.InventoryGetDurability(item.metadata.durability)
 									$(".inventory-main-rightside").find("[inventory-slot=" + item.slot + "]").find(".item-slot-durability-bar").css({"background-color": durability[0],"width":durability[2]}).find('p').html(durability[1]);
 							} else {
 								$(".inventory-main-rightside").find("[inventory-slot=" + item.slot + "]").html('<div class="item-slot-img"><img src="images/' + item.name + '.png'+'" alt="' + item.name + '" /></div><div class="item-slot-count"><p>' + item.count + ' (' + (item.price) + '$)</p></div><div class="item-slot-label"><p><div class="item-slot-label"><p>' + item.label + '</p></div></p></div>');
-								$(".inventory-main-rightside").find("[inventory-slot=" + item.slot + "]").data("ItemData", item);
-								$(".inventory-main-rightside").find("[inventory-slot=" + item.slot + "]").addClass("drag-item");
+								$(".inventory-main-rightside").find("[inventory-slot=" + item.slot + "]").data("ItemData", item).data("location", data.rightinventory.name);;
+								//$(".inventory-main-rightside").find("[inventory-slot=" + item.slot + "]").addClass("drag-item");
 							}
 						}
 					})
@@ -311,6 +311,21 @@
 			}
 		});
 	}
+
+	$(document).on("click", ".ItemBoxes", function(e){
+        e.preventDefault();
+        var Item = $(this).data("ItemData")
+        var location = $(this).data("location")
+        var htmlCount = $("#item-count").val()
+        console.log(htmlCount)
+        if ((Item != undefined) && (location != undefined)) {
+            $.post("http://hsn-inventory/BuyFromShop", JSON.stringify({
+                data : Item,
+                location : location,
+                count : htmlCount
+            }));
+        }
+    })
 
 
 	$(document).on("mouseenter", ".ItemBoxes", function(e){
