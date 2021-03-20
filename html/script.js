@@ -204,7 +204,7 @@
 									$(".inventory-main-rightside").find("[inventory-slot=" + item.slot + "]").find(".item-slot-durability-bar").css({"background-color": durability[0],"width":durability[2]}).find('p').html(durability[1]);
 							} else {
 								$(".inventory-main-rightside").find("[inventory-slot=" + item.slot + "]").html('<div class="item-slot-img"><img src="images/' + item.name + '.png'+'" alt="' + item.name + '" /></div><div class="item-slot-count"><p>' + item.count + ' (' + (item.price) + '$)</p></div><div class="item-slot-label"><p><div class="item-slot-label"><p>' + item.label + '</p></div></p></div>');
-								$(".inventory-main-rightside").find("[inventory-slot=" + item.slot + "]").data("ItemData", item).data("location", data.rightinventory.name);;
+								$(".inventory-main-rightside").find("[inventory-slot=" + item.slot + "]").data("ItemData", item).data("location", data.rightinventory.name);
 								//$(".inventory-main-rightside").find("[inventory-slot=" + item.slot + "]").addClass("drag-item");
 							}
 						}
@@ -336,14 +336,16 @@
 			$(".iteminfo-label").html('<p>'+Item.label+' <span style="float:right;">(' + Item.weight + 'g)</span></p><hr class="line">')
 			$(".iteminfo-description").html('')
 			if (Item.description) { $(".iteminfo-description").append('<p>'+Item.description+'</p>')};
-			if (Item.metadata.type) { $(".iteminfo-description").append('<p>'+Item.metadata.type+'</p>')};
-			if (Item.metadata.description) { $(".iteminfo-description").append('<p>'+Item.metadata.description+'</p>')};
-			if ((Item.name).split("_")[0] == "WEAPON" && Item.metadata.durability !== undefined || null) {
-				if (Item.metadata.ammo !== undefined || null) { $(".iteminfo-description").append('<p>Weapon Ammo: '+Item.metadata.ammo+'</p>') }
-				if (Item.metadata.durability !== undefined || null) { $(".iteminfo-description").append('<p>Durability: '+parseInt(Item.metadata.durability).toFixed(0)+''+'%</p>') }
-				if (Item.metadata.weaponlicense !== undefined || null) { $(".iteminfo-description").append('<p>Serial Number: '+Item.metadata.weaponlicense+'</p>') }
-				if (Item.metadata.components) { $(".iteminfo-description").append('<p>Components: '+Item.metadata.components+'</p>')};
-				if (Item.metadata.weapontint) { $(".iteminfo-description").append('<p>Tint: '+Item.metadata.weapontint+'</p>')};
+			if (Item.metadata) {
+				if (Item.metadata.type) { $(".iteminfo-description").append('<p>'+Item.metadata.type+'</p>')};
+				if (Item.metadata.description) { $(".iteminfo-description").append('<p>'+Item.metadata.description+'</p>')};
+				if ((Item.name).split("_")[0] == "WEAPON" && Item.metadata.durability !== undefined || null) {
+					if (Item.metadata.ammo !== undefined || null) { $(".iteminfo-description").append('<p>Weapon Ammo: '+Item.metadata.ammo+'</p>') }
+					if (Item.metadata.durability !== undefined || null) { $(".iteminfo-description").append('<p>Durability: '+parseInt(Item.metadata.durability).toFixed(0)+''+'%</p>') }
+					if (Item.metadata.weaponlicense !== undefined || null) { $(".iteminfo-description").append('<p>Serial Number: '+Item.metadata.weaponlicense+'</p>') }
+					if (Item.metadata.components) { $(".iteminfo-description").append('<p>Components: '+Item.metadata.components+'</p>')};
+					if (Item.metadata.weapontint) { $(".iteminfo-description").append('<p>Tint: '+Item.metadata.weapontint+'</p>')};
+				}
 			}
 		} else {
 			$(".iteminfo").fadeOut(100);
@@ -416,7 +418,7 @@
 						invid: toinvId,
 						invid2 :toinvId2
 					}));
-				} else if (fromItem.name == toItem.name && toItem.stackable && fromItem.metadata.type == toItem.metadata.type) { // stack
+				} else if (fromItem.name == toItem.name && toItem.stackable && (toItem.metadata.type == fromItem.metadata.type)) { // stack
 						var fromcount = Number(fromItem.count) // set strings to number //  idk why i did this but it wasn't working
 						var toCount = Number(toItem.count)
 						var newcount = (fromcount + toCount)
