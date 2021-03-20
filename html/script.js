@@ -418,7 +418,7 @@
 						invid: toinvId,
 						invid2 :toinvId2
 					}));
-				} else if (fromItem.name == toItem.name && toItem.stackable && (toItem.metadata.type == fromItem.metadata.type)) { // stack
+				} else if (fromItem.name == toItem.name && toItem.stackable && (toItem.metadata === fromItem.metadata)) { // stack
 						var fromcount = Number(fromItem.count) // set strings to number //  idk why i did this but it wasn't working
 						var toCount = Number(toItem.count)
 						var newcount = (fromcount + toCount)
