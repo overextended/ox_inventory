@@ -106,7 +106,7 @@ end
 GetItemsSlot = function(inventory, name, metadata)
 	local returnData = {}
 	for k,v in pairs(inventory) do
-		if (not metadata or v.metadata.type == metadata) and v.name == name then
+		if (not metadata or is_table_equal(v.metadata == metadata)) and v.name == name then
 			table.insert(returnData,v)
 		end
 	end
@@ -117,7 +117,7 @@ end
 GetItemCount = function(identifier, item, metadata)
 	local count = 0
 	for i,j in pairs(playerInventory[identifier]) do
-		if (j.name == item) and (not metadata or metadata == j.metadata) then
+		if (j.name == item) and (not metadata or is_table_equal(metadata, j.metadata)) then
 			count = count + j.count
 		end
 	end
@@ -132,6 +132,7 @@ AddPlayerInventory = function(identifier, item, count, slot, metadata)
 	local Player = ESX.GetPlayerFromIdentifier(identifier)
 	if ESXItems[item] ~= nil then
 		if item ~= nil and count ~= nil then
+
 			if item:find('WEAPON_') then		
 				for i = 1, Config.PlayerSlot do
 					if playerInventory[identifier][i] == nil then
@@ -162,18 +163,18 @@ AddPlayerInventory = function(identifier, item, count, slot, metadata)
 							metadata.type = Player.getName()
 							metadata.description = getPlayerIdentification(Player)
 						end
-							playerInventory[identifier][i] = {name = item ,label = ESXItems[item].label , weight = ESXItems[item].weight, slot = i, count = count, description = ESXItems[item].description, metadata = metadata, stackable = true, closeonuse = ESXItems[item].closeonuse}
+						playerInventory[identifier][i] = {name = item ,label = ESXItems[item].label , weight = ESXItems[item].weight, slot = i, count = count, description = ESXItems[item].description, metadata = metadata, stackable = true, closeonuse = ESXItems[item].closeonuse}
 						break
 					end
 				end
 			else
-				if not metadata then metadata = {} else metadata = {type=metadata} end
+				if metadata and type(metadata) ~= 'table' then metadata = {type = metadata} end
 				if slot then
 					playerInventory[identifier][slot] = {name = item ,label = ESXItems[item].label, weight = ESXItems[item].weight, slot = i, count = count, description = ESXItems[item].description, metadata = metadata, stackable = ESXItems[item].stackable, closeonuse = ESXItems[item].closeonuse}
 				else
 					for i = 1, Config.PlayerSlot do
 						if playerInventory[identifier][i] ~= nil and playerInventory[identifier][i].name == item then
-							if not metadata or playerInventory[identifier][i].metadata.type == metadata.type then
+							if not metadata or (playerInventory[identifier][i].metadata and playerInventory[identifier][i].metadata.type == metadata.type) then
 								playerInventory[identifier][i] = {name = item ,label = ESXItems[item].label, weight = ESXItems[item].weight, slot = i, count = playerInventory[identifier][i].count + count, description = ESXItems[item].description, metadata = metadata, stackable = ESXItems[item].stackable, closeonuse = ESXItems[item].closeonuse}
 								break
 							end
@@ -192,13 +193,34 @@ AddPlayerInventory = function(identifier, item, count, slot, metadata)
 	end
 end
 
+function is_table_equal(t1,t2,ignore_mt)
+	local ty1 = type(t1)
+	local ty2 = type(t2)
+	if ty1 ~= ty2 then return false end
+	-- non-table types can be directly compared
+	if ty1 ~= 'table' and ty2 ~= 'table' then return t1 == t2 end
+	-- as well as tables which have the metamethod __eq
+	local mt = getmetatable(t1)
+	if not ignore_mt and mt and mt.__eq then return t1 == t2 end
+	for k1,v1 in pairs(t1) do
+	   local v2 = t2[k1]
+	   if v2 == nil or not is_table_equal(v1,v2) then return false end
+	end
+	for k2,v2 in pairs(t2) do
+	   local v1 = t1[k2]
+	   if v1 == nil or not is_table_equal(v1,v2) then return false end
+	end
+	return true
+end
+
 RemovePlayerInventory = function(src, identifier, item, count, slot, metadata)
 	count = tonumber(count)
 	if ESXItems[item] ~= nil then
-		local ItemCount = GetItemCount(identifier, item)
+		if type(metadata) ~= 'table' then metadata = {type = metadata} end
+		local ItemCount = GetItemCount(identifier, item, metadata)
 		if ItemCount - count < 0 then count = ItemCount end
 		for i = 1, Config.PlayerSlot do
-			if playerInventory[identifier][i] ~= nil and playerInventory[identifier][i].name == item and (playerInventory[identifier][i].metadata.type == metadata) then
+			if playerInventory[identifier][i] ~= nil and playerInventory[identifier][i].name == item and is_table_equal(playerInventory[identifier][i].metadata, metadata) then
 				playerInventory[identifier][i].count = tonumber(playerInventory[identifier][i].count)
 				if playerInventory[identifier][i].count > count then
 					playerInventory[identifier][i].count = playerInventory[identifier][i].count - count
@@ -721,6 +743,7 @@ AddEventHandler('hsn-inventory:buyItem', function(info)
 	local count = tonumber(info.count)
 	local checkShop = Config.Shops[location].inventory[data.slot]
 	if count > 0 then
+		if data.name:find('WEAPON_') then count = 1 end
 		data.price = data.price * count
 
 		if checkShop.name ~= data.name then
@@ -733,7 +756,7 @@ AddEventHandler('hsn-inventory:buyItem', function(info)
 			if data.price then
 				if money >= data.price then
 					xPlayer.removeMoney(data.price)
-					xPlayer.addInventoryItem(data.name, count, data.metadata)
+					AddPlayerInventory(xPlayer.identifier, data.name, count, nil, data.metadata)
 				else
 					TriggerClientEvent('hsn-inventory:notification',src,'You can not afford that (missing $'..(data.price - money)..')',2)
 				end
@@ -1107,7 +1130,7 @@ AddEventHandler('hsn-inventory:server:useItem',function(item)
 				TriggerClientEvent('hsn-inventory:addAmmo',src,weps,playerInventory[Player.identifier][item.slot])
 				return
 			end
-			useItem(src, item, item.slot)
+			useItem(src, playerInventory[Player.identifier][item.slot])
 		end
 	end
 end)
@@ -1232,11 +1255,11 @@ end)]]
 end)]]
 
 RegisterNetEvent('hsn-inventory:client:removeItem')
-AddEventHandler('hsn-inventory:client:removeItem',function(item, count, metadata, slot)
-	removeItem(source, item, count, metadata, slot)
+AddEventHandler('hsn-inventory:client:removeItem',function(item, count, metadata)
+	removeItem(source, item, count, metadata)
 end)
 
-removeItem = function(src, item, count, metadata, slot)
+removeItem = function(src, item, count, metadata)
 	if item == nil then
 		return
 	end
@@ -1244,7 +1267,7 @@ removeItem = function(src, item, count, metadata, slot)
 	if count == nil then
 		count = 1
 	end
-	RemovePlayerInventory(src,Player.identifier, item, count, slot, metadata)
+	RemovePlayerInventory(src,Player.identifier, item, count, nil, metadata)
 end
 
 addItem = function(src, item, count, metadata)
@@ -1270,7 +1293,7 @@ getItemCount = function(src, item)
 	if playerInventory[Player.identifier] == nil then
 		return
 	end
-	local ItemCount = GetItemCount(Player.identifier, item)
+	local ItemCount = GetItemCount(Player.identifier, item, nil)
 	return ItemCount
 end
 
@@ -1285,10 +1308,11 @@ getItem = function(src, item, metadata)
 	local inventory = playerInventory[Player.identifier]
 	local xItem = ESXItems[item]
 	if not xItem then print('^1[hsn-inventory]^3 Item '.. item ..' does not exist^7') end
-	xItem.metadata = {type = metadata}
+	if type(metadata) ~= 'table' then metadata = {type = metadata} end
+	xItem.metadata = metadata
 	xItem.count = 0
 	for k, v in pairs(inventory) do
-		if v.name == item and (metadata == v.metadata.type) then
+		if v.name == item and (v.metadata and is_table_equal(v.metadata, metadata)) then
 			xItem.count = xItem.count + v.count
 		end
 	end
@@ -1452,6 +1476,7 @@ AddEventHandler('hsn-inventory:setplayerInventory',function(identifier,inventory
 		if not v.metadata then v.metadata = {} end
 		v.count = tonumber(v.count)
 		if v.metadata and v.metadata.ammoweight then weight = v.metadata.ammoweight + ESXItems[v.name].weight else weight = tonumber(ESXItems[v.name].weight) end
+		if v.metadata and next(v.metadata) == nil then v.metadata = {} end
 		playerInventory[identifier][v.slot] = {name = v.name ,label = ESXItems[v.name].label, weight = tonumber(weight), slot = v.slot, count = v.count, description = ESXItems[v.name].description, metadata = v.metadata, stackable = ESXItems[v.name].stackable}
 	end
 	
