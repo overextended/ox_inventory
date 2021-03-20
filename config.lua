@@ -1,4 +1,8 @@
 Config = Config or {}
+
+Config.ConvertToHSN = true		-- Enable this for player loadouts and accounts to get converted to HSN Inventory
+-- This should be disabled if conversion does not need to occur! In the future I will add a command to convert all player data
+
 Config.PlayerSlot = 51		  -- Slots in the player inventory
 Config.EnableBlur = true		-- Blur the screen while accessing the inventory
 Config.MaxWeight = 24000		-- Max weight as grams
