@@ -167,7 +167,7 @@ AddPlayerInventory = function(identifier, item, count, slot, metadata)
 					end
 				end
 			else
-				if metadata and type(metadata) ~= 'table' then metadata = {type = metadata} else metadata = nil end
+				if metadata and type(metadata) ~= 'table' then metadata = {type = metadata} else metadata = {} end
 				if slot then
 					playerInventory[identifier][slot] = {name = item ,label = ESXItems[item].label, weight = ESXItems[item].weight, slot = i, count = count, description = ESXItems[item].description, metadata = metadata, stackable = ESXItems[item].stackable, closeonuse = ESXItems[item].closeonuse}
 				else
