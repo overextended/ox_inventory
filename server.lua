@@ -749,6 +749,7 @@ AddEventHandler('hsn-inventory:buyItem', function(info)
 				if money >= data.price then
 					RemovePlayerInventory(src, xPlayer.identifier, 'money', data.price)
 					AddPlayerInventory(xPlayer.identifier, data.name, count, nil, data.metadata)
+					TriggerClientEvent('hsn-inventory:client:refreshInventory',src,playerInventory[xPlayer.identifier])
 				else
 					TriggerClientEvent('hsn-inventory:notification',src,'You can not afford that (missing $'..(data.price - money)..')',2)
 				end
@@ -759,7 +760,6 @@ AddEventHandler('hsn-inventory:buyItem', function(info)
 	else
 		TriggerClientEvent('hsn-inventory:notification',src,'You must select an amount to buy',2)
 	end
-	TriggerClientEvent('hsn-inventory:client:refreshInventory',src,playerInventory[xPlayer.identifier])
 end)
 
 CreateNewDrop = function(source,data)
