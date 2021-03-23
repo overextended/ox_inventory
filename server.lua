@@ -273,11 +273,7 @@ function ValidateItem(type, xPlayer, fromSlot, toSlot, oldItem, newItem)
 	end
 
 	if reason then TriggerBanEvent(xPlayer, reason) return false else return true end
-end
-
-function titleCase( first, rest )
-	return first:upper()..rest:lower()
- end 
+end 
 
 RegisterNetEvent('hsn-inventory:server:saveInventoryData')
 AddEventHandler('hsn-inventory:server:saveInventoryData',function(data)
@@ -1473,11 +1469,10 @@ AddEventHandler('hsn-inventory:setplayerInventory',function(identifier,inventory
 				v.metadata.weaponlicense = GetRandomLicense()
 			end
 		end
-		if not v.metadata then v.metadata = {} end
 		v.count = tonumber(v.count)
 		if getAccounts and v.name:find('money') then getAccounts = false end
 		if v.metadata and v.metadata.ammoweight then weight = v.metadata.ammoweight + ESXItems[v.name].weight else weight = tonumber(ESXItems[v.name].weight) end
-		if v.metadata and next(v.metadata) == nil then v.metadata = {} end
+		if not v.metadata or (v.metadata and next(v.metadata) == nil) then v.metadata = {} end
 		playerInventory[identifier][v.slot] = {name = v.name ,label = ESXItems[v.name].label, weight = tonumber(weight), slot = v.slot, count = v.count, description = ESXItems[v.name].description, metadata = v.metadata, stackable = ESXItems[v.name].stackable}
 	end
 
