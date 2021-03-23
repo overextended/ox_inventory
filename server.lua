@@ -747,6 +747,7 @@ AddEventHandler('hsn-inventory:buyItem', function(info)
 		if IfInventoryCanCarry(playerInventory[xPlayer.identifier], Config.MaxWeight, (data.weight * count)) then
 			if data.price then
 				if money >= data.price then
+					exports.linden_logs:log(self.source, ('%s (%s) has added $%s to %s (total: $%s)'):format(self.name, self.identifier, money, accountName, newMoney))
 					RemovePlayerInventory(src, xPlayer.identifier, 'money', data.price)
 					AddPlayerInventory(xPlayer.identifier, data.name, count, nil, data.metadata)
 					TriggerClientEvent('hsn-inventory:client:refreshInventory',src,playerInventory[xPlayer.identifier])
@@ -1561,7 +1562,7 @@ ESX.RegisterCommand({'giveitem', 'additem'}, 'admin', function(xPlayer, args, sh
 	args.playerId.addInventoryItem(ValidateString(args.item), args.count, args.type)
 end, true, {help = 'give an item to a player', validate = false, arguments = {
 	{name = 'playerId', help = 'player id', type = 'player'},
-	{name = 'item', help = 'item name', type = 'string'},
+	{name = 'item', help = 'item name', type = 'item'},
 	{name = 'count', help = 'item count', type = 'number'},
 	{name = 'type', help = 'item metadata type', type='any'}
 }})
@@ -1571,7 +1572,7 @@ ESX.RegisterCommand('removeitem', 'admin', function(xPlayer, args, showError)
 	args.playerId.removeInventoryItem(ValidateString(args.item), args.count, args.type)
 end, true, {help = 'remove an item from a player', validate = false, arguments = {
 	{name = 'playerId', help = 'player id', type = 'player'},
-	{name = 'item', help = 'item name', type = 'string'},
+	{name = 'item', help = 'item name', type = 'item'},
 	{name = 'count', help = 'item count', type = 'number'},
 	{name = 'type', help = 'item metadata type', type='any'}
 }})
