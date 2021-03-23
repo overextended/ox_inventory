@@ -317,7 +317,6 @@
         var Item = $(this).data("ItemData")
         var location = $(this).data("location")
         var htmlCount = $("#item-count").val()
-        console.log(htmlCount)
         if ((Item != undefined) && (location != undefined)) {
             $.post("http://hsn-inventory/BuyFromShop", JSON.stringify({
                 data : Item,
@@ -380,9 +379,17 @@
 		
 		Display(false)
 	});
+
+	is_table_equal = function(obj1, obj2) {
+		const obj1Len = Object.keys(obj1).length;
+		const obj2Len = Object.keys(obj2).length;
+		if (obj1Len === obj2Len) {
+			return Object.keys(obj1).every(key => obj2.hasOwnProperty(key) && obj2[key] === obj1[key]);
+		}
+		return false
+	}
 	 
 
-	// really need to redo a lot of this stuff to validate items existences
 	SwapItems = function(fromInventory, toInventory, fromSlot, toSlot) {
 		fromItem = fromInventory.find("[inventory-slot=" + fromSlot + "]").data("ItemData");
 		inv = fromInventory.data('invTier')
@@ -418,7 +425,7 @@
 						invid: toinvId,
 						invid2 :toinvId2
 					}));
-				} else if (fromItem.name == toItem.name && toItem.stackable && (toItem.metadata === fromItem.metadata)) { // stack
+				} else if (fromItem.name == toItem.name && toItem.stackable && is_table_equal(toItem.metadata, fromItem.metadata)) { // stack
 						var fromcount = Number(fromItem.count) // set strings to number //  idk why i did this but it wasn't working
 						var toCount = Number(toItem.count)
 						var newcount = (fromcount + toCount)
