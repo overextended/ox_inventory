@@ -817,7 +817,7 @@ AddEventHandler('hsn-inventory:useItem',function(item)
 				end
 			end
 
-			if item == 'lockpick' then
+			if xItem.name == 'lockpick' then
 				TriggerEvent('esx_lockpick:onUse')
 			end
 
