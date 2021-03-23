@@ -209,6 +209,7 @@
 							}
 						}
 					})
+
 				} else {
 					rightweight = 0
 					$(".rightside-weight").html('')
@@ -313,18 +314,20 @@
 	}
 
 	$(document).on("click", ".ItemBoxes", function(e){
-        e.preventDefault();
-        var Item = $(this).data("ItemData")
-        var location = $(this).data("location")
-        var htmlCount = $("#item-count").val()
-        if ((Item != undefined) && (location != undefined)) {
-            $.post("http://hsn-inventory/BuyFromShop", JSON.stringify({
-                data : Item,
-                location : location,
-                count : htmlCount
-            }));
-        }
-    })
+		if ($(this).data("location") !== undefined || null) {
+			e.preventDefault();
+			var Item = $(this).data("ItemData")
+			var location = $(this).data("location")
+			var htmlCount = $("#item-count").val()
+			if ((Item != undefined) && (location != undefined)) {
+				$.post("http://hsn-inventory/BuyFromShop", JSON.stringify({
+					data : Item,
+					location : location,
+					count : htmlCount
+				}));
+			}
+		}
+	})
 
 
 	$(document).on("mouseenter", ".ItemBoxes", function(e){
