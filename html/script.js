@@ -204,7 +204,7 @@
 					$.each(data.rightinventory.inventory, function (i, item) {
 						if (item != null) {
 							if ((item.name).split("_")[0] == "WEAPON" && item.metadata.durability !== undefined) {
-								if (currency == 'money' || currency == 'black_money' || currency == 'bank') {
+								if (currency == 'money' || currency == 'black_money' || currency == 'bank' || currency == undefined) {
 									$(".inventory-main-rightside").find("[inventory-slot=" + item.slot + "]").html('<div class="item-slot-img"><img src="images/' + item.name + '.png'+'" alt="' + item.name + '" /></div><div class="item-slot-count"><p>' + moneyformat.format(item.price) + '</p></div><div class="item-slot-label"><p><div class="item-slot-durability"><div class="item-slot-durability-bar"><p>100</p></div></div><div class="item-slot-label"><p>' + item.label + '</p></div></p></div>');
 								} else {
 									$(".inventory-main-rightside").find("[inventory-slot=" + item.slot + "]").html('<div class="item-slot-img"><img src="images/' + item.name + '.png'+'" alt="' + item.name + '" /></div><div class="item-slot-count"><p>' + item.price + ' ' + currency + '</p></div><div class="item-slot-label"><p><div class="item-slot-durability"><div class="item-slot-durability-bar"><p>100</p></div></div><div class="item-slot-label"><p>' + item.label + '</p></div></p></div>');
@@ -214,7 +214,7 @@
 									var durability = HSN.InventoryGetDurability(item.metadata.durability)
 									$(".inventory-main-rightside").find("[inventory-slot=" + item.slot + "]").find(".item-slot-durability-bar").css({"background-color": durability[0],"width":durability[2]}).find('p').html(durability[1]);
 							} else {
-								if (currency == 'money' || currency == 'black_money' || currency == 'bank') {
+								if (currency == 'money' || currency == 'black_money' || currency == 'bank' || currency == undefined) {
 									$(".inventory-main-rightside").find("[inventory-slot=" + item.slot + "]").html('<div class="item-slot-img"><img src="images/' + item.name + '.png'+'" alt="' + item.name + '" /></div><div class="item-slot-count"><p>' + moneyformat.format(item.price) + '</p></div><div class="item-slot-label"><p><div class="item-slot-label"><p>' + item.label + '</p></div></p></div>');
 								} else {
 									$(".inventory-main-rightside").find("[inventory-slot=" + item.slot + "]").html('<div class="item-slot-img"><img src="images/' + item.name + '.png'+'" alt="' + item.name + '" /></div><div class="item-slot-count"><p>' + item.price + ' ' + currency + '</p></div><div class="item-slot-label"><p><div class="item-slot-label"><p>' + item.label + '</p></div></p></div>');
