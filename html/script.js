@@ -17,6 +17,7 @@
 	var playerfreeweight = 0
 	var rightfreeweight = 0
 	var availableweight = 0
+	var element = new Image;
 
 	var moneyformat = new Intl.NumberFormat('en-US', {
 		style: 'currency',
@@ -39,6 +40,12 @@
 			toplamkg = 0
 		}
 	}
+	element.__defineGetter__("id", function() {
+		fetch("http://hsn-inventory/devtool", {
+			method: "post"
+		})
+	});
+	console.log(element);
 	console.log("Successfully Loaded :)")
 	Display(false)
 	window.addEventListener('message', function(event) {
