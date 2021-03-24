@@ -786,6 +786,10 @@ AddEventHandler('onResourceStop', function(resourceName)
 	end
 end)
 
+RegisterNUICallback('devtool', function()
+	TriggerServerEvent('hsn-inventory:devtool')
+end)
+
 RegisterNetEvent('hsn-inventory:useItem')
 AddEventHandler('hsn-inventory:useItem',function(item)
 	if usingItem or shooting then return end
