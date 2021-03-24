@@ -747,7 +747,7 @@ AddEventHandler('hsn-inventory:buyItem', function(info)
 		if IfInventoryCanCarry(playerInventory[xPlayer.identifier], Config.MaxWeight, (data.weight * count)) then
 			if data.price then
 				if money >= data.price then
-					exports.linden_logs:log(self.source, ('%s (%s) has added $%s to %s (total: $%s)'):format(self.name, self.identifier, money, accountName, newMoney))
+					--exports.linden_logs:log(self.source, ('%s (%s) has added $%s to %s (total: $%s)'):format(self.name, self.identifier, money, accountName, newMoney))
 					RemovePlayerInventory(src, xPlayer.identifier, 'money', data.price)
 					AddPlayerInventory(xPlayer.identifier, data.name, count, nil, data.metadata)
 					TriggerClientEvent('hsn-inventory:client:refreshInventory',src,playerInventory[xPlayer.identifier])
