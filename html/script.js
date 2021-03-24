@@ -13,7 +13,7 @@
 	var HSN = []
 	var leftinventory = 'playerinventory'
 	var rightinventory = null
-	var maxweight = 24000
+	var maxweight = 30000
 	var playerfreeweight = 0
 	var rightfreeweight = 0
 	var availableweight = 0
@@ -282,13 +282,15 @@
 				 toInventory = $(this).parent()
 				 toSlot = $(this).attr("inventory-slot");
 				 fromData = fromInventory.find("[inventory-slot=" + curslot + "]").data("ItemData");
-				if (count == "" || count == 0) {
-					count = fromData.count
-				} else if (count.startsWith('0')) {
-					count = fromData.count
-					$("#item-count").val(0)
+				 if ((fromData !== undefined || null) && (count !== undefined || null)) {
+					if (count == "" || count == 0) {
+						count = fromData.count
+					} else if (count.startsWith('0')) {
+						count = fromData.count
+						$("#item-count").val(0)
+					}
+					SwapItems(fromInventory, toInventory, curslot, toSlot)
 				}
-				SwapItems(fromInventory, toInventory, curslot, toSlot)
 			},
 
 		});
