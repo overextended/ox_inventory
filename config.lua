@@ -1043,6 +1043,7 @@ Config.Shops = {
 				name = 'WEAPON_CARBINERIFLE',
 				price = 500,
 				count = 1,
+				grade = 2, -- restrict carbine rifle to grade 2+ police
 				metadata = {
 					weaponlicense = 'POL',
 					components = { 'flashlight' },
