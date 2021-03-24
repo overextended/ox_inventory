@@ -735,7 +735,7 @@ AddEventHandler('hsn-inventory:buyItem', function(info)
 	local data = info.data
 	local location = info.location
 	local xPlayer = ESX.GetPlayerFromId(src)
-	local money, currency, item
+	local money, currency, item = nil, nil, {}
 	local count = tonumber(info.count)
 	local checkShop = Config.Shops[location].inventory[data.slot]
 	local shopCurrency = Config.Shops[location].currency
@@ -744,8 +744,8 @@ AddEventHandler('hsn-inventory:buyItem', function(info)
 		currency = 'bank'
 		money = xPlayer.getAccount('bank').money
 		if not shopCurrency and money < data.price then
-			item = ESXItems[money]
-			currency = item.label
+			item.name = 'money'
+			currency = 'Money'
 			money = xPlayer.getInventoryItem(item.name).count
 		end
 	else
