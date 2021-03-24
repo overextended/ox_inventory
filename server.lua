@@ -132,6 +132,7 @@ AddPlayerInventory = function(identifier, item, count, slot, metadata)
 	local Player = ESX.GetPlayerFromIdentifier(identifier)
 	if ESXItems[item] ~= nil then
 		if item ~= nil and count ~= nil then
+			if metadata == nil or metadata[1] == nil then metadata = {} end
 			if item:find('WEAPON_') then		
 				for i = 1, Config.PlayerSlot do
 					if playerInventory[identifier][i] == nil then
@@ -154,10 +155,13 @@ AddPlayerInventory = function(identifier, item, count, slot, metadata)
 					end
 				end
 			elseif item:find('identification') then
+				for k, v in pairs(metadata) do
+					print(k)
+				end
 				count = 1 
 				for i = 1, Config.PlayerSlot do
 					if playerInventory[identifier][i] == nil then
-						if metadata == nil then
+						if metadata == nil or metadata[1] == nil then
 							metadata = {}
 							metadata.type = Player.getName()
 							metadata.description = getPlayerIdentification(Player)
@@ -1575,7 +1579,8 @@ end
 function ValidateString(item)
 	item = string.lower(item)
 	if item:find('weapon_') then item = string.upper(item) end
-	return item -- ESXItems[item]
+	local xItem = ESXItems[item]
+	if xItem then return xItem.name end
 end
 
 -- Override the default ESX commands
@@ -1583,7 +1588,7 @@ ESX.RegisterCommand({'giveitem', 'additem'}, 'admin', function(xPlayer, args, sh
 	args.playerId.addInventoryItem(ValidateString(args.item), args.count, args.type)
 end, true, {help = 'give an item to a player', validate = false, arguments = {
 	{name = 'playerId', help = 'player id', type = 'player'},
-	{name = 'item', help = 'item name', type = 'item'},
+	{name = 'item', help = 'item name', type = 'string'},
 	{name = 'count', help = 'item count', type = 'number'},
 	{name = 'type', help = 'item metadata type', type='any'}
 }})
@@ -1593,7 +1598,7 @@ ESX.RegisterCommand('removeitem', 'admin', function(xPlayer, args, showError)
 	args.playerId.removeInventoryItem(ValidateString(args.item), args.count, args.type)
 end, true, {help = 'remove an item from a player', validate = false, arguments = {
 	{name = 'playerId', help = 'player id', type = 'player'},
-	{name = 'item', help = 'item name', type = 'item'},
+	{name = 'item', help = 'item name', type = 'string'},
 	{name = 'count', help = 'item count', type = 'number'},
 	{name = 'type', help = 'item metadata type', type='any'}
 }})
