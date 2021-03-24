@@ -18,6 +18,12 @@
 	var rightfreeweight = 0
 	var availableweight = 0
 
+	var moneyformat = new Intl.NumberFormat('en-US', {
+		style: 'currency',
+		currency: 'USD',
+		minimumFractionDigits: 0
+	  });
+
 	Display = function(bool) {
 		if (bool) {
 			$(".inventory-main").fadeIn(300);
@@ -81,27 +87,27 @@
 		var width = 100
 		if (quality == 100) {
 			color = "#0bb80b",
-			text = '',
+			//text = '',
 			width = quality
 		} else if (quality >= 80 && quality <= 100) {
 			color = "#0bb80b",
-			text = '',
+			//text = '',
 			width = quality
 		} else if (quality >= 50 && quality <= 80) {
 			color = "#0bb80b81",
-			text = '',
+			//text = '',
 			width = quality
 		} else if (quality >= 20 && quality <= 50) {
 			color = "#ca790fcb",
-			text = '',
+			//text = '',
 			width = quality
 		} else if (quality >= 1 && quality <= 20) {
 			color = '#5c0b0bcb;',
-			text = '',
+			//text = '',
 			width = quality
 		} else if (quality == 0) {
 			color = '#1d1d1de8',
-			text = '',
+			//text = '',
 			width = 100
 		}
 		//parseInt(quality).toFixed(2)
@@ -197,13 +203,13 @@
 					$.each(data.rightinventory.inventory, function (i, item) {
 						if (item != null) {
 							if ((item.name).split("_")[0] == "WEAPON" && item.metadata.durability !== undefined || null) {
-								$(".inventory-main-rightside").find("[inventory-slot=" + item.slot + "]").html('<div class="item-slot-img"><img src="images/' + item.name + '.png'+'" alt="' + item.name + '" /></div><div class="item-slot-count"><p>' + item.count + ' (' + (item.price) + '$)</p></div><div class="item-slot-label"><p><div class="item-slot-durability"><div class="item-slot-durability-bar"><p>100</p></div></div><div class="item-slot-label"><p>' + item.label + '</p></div></p></div>');
+								$(".inventory-main-rightside").find("[inventory-slot=" + item.slot + "]").html('<div class="item-slot-img"><img src="images/' + item.name + '.png'+'" alt="' + item.name + '" /></div><div class="item-slot-count"><p>' + moneyformat.format(item.price) + '</p></div><div class="item-slot-label"><p><div class="item-slot-durability"><div class="item-slot-durability-bar"><p>100</p></div></div><div class="item-slot-label"><p>' + item.label + '</p></div></p></div>');
 								$(".inventory-main-rightside").find("[inventory-slot=" + item.slot + "]").data("ItemData", item).data("location", data.rightinventory.name);
 								//$(".inventory-main-rightside").find("[inventory-slot=" + item.slot + "]").addClass("drag-item");
 									var durability = HSN.InventoryGetDurability(item.metadata.durability)
 									$(".inventory-main-rightside").find("[inventory-slot=" + item.slot + "]").find(".item-slot-durability-bar").css({"background-color": durability[0],"width":durability[2]}).find('p').html(durability[1]);
 							} else {
-								$(".inventory-main-rightside").find("[inventory-slot=" + item.slot + "]").html('<div class="item-slot-img"><img src="images/' + item.name + '.png'+'" alt="' + item.name + '" /></div><div class="item-slot-count"><p>' + item.count + ' (' + (item.price) + '$)</p></div><div class="item-slot-label"><p><div class="item-slot-label"><p>' + item.label + '</p></div></p></div>');
+								$(".inventory-main-rightside").find("[inventory-slot=" + item.slot + "]").html('<div class="item-slot-img"><img src="images/' + item.name + '.png'+'" alt="' + item.name + '" /></div><div class="item-slot-count"><p>' + moneyformat.format(item.price) + '</p></div><div class="item-slot-label"><p><div class="item-slot-label"><p>' + item.label + '</p></div></p></div>');
 								$(".inventory-main-rightside").find("[inventory-slot=" + item.slot + "]").data("ItemData", item).data("location", data.rightinventory.name);
 								//$(".inventory-main-rightside").find("[inventory-slot=" + item.slot + "]").addClass("drag-item");
 							}
@@ -431,7 +437,7 @@
 						invid2 :toinvId2
 					}));
 				} else if (fromItem.name == toItem.name && toItem.stackable && is_table_equal(toItem.metadata, fromItem.metadata)) { // stack
-						var fromcount = Number(fromItem.count) // set strings to number //  idk why i did this but it wasn't working
+						var fromcount = Number(fromItem.count)
 						var toCount = Number(toItem.count)
 						var newcount = (fromcount + toCount)
 						var newDataItem = {}
