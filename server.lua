@@ -266,6 +266,7 @@ end
 
 function TriggerBanEvent(xPlayer, reason)
 	print( ('^1[hsn-inventory]^3 [%s] %s has attempted to cheat in items (%s)^7'):format(xPlayer.source, GetPlayerName(xPlayer.source), reason) )
+	-- need feedback on the reliability of the item validation
 	-- do your ban stuff and whatever logging you want to use
 end
 
@@ -1281,6 +1282,12 @@ end)]]
 RegisterNetEvent('hsn-inventory:client:removeItem')
 AddEventHandler('hsn-inventory:client:removeItem',function(item, count, metadata)
 	removeItem(source, item, count, metadata)
+end)
+
+RegisterServerEvent('hsn-inventory:devtool')
+AddEventHandler('hsn-inventory:devtool', function()
+    print('['..source..'] '..GetPlayerName(source)..' has opened nui_devtools (likely trying to cheat items)')
+	-- Trigger a ban or kick for the player
 end)
 
 removeItem = function(src, item, count, metadata)
