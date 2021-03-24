@@ -738,6 +738,12 @@ AddEventHandler('hsn-inventory:buyItem', function(info)
 	local money, currency, item = nil, nil, {}
 	local count = tonumber(info.count)
 	local checkShop = Config.Shops[location].inventory[data.slot]
+
+	if checkShop.grade > xPlayer.job.grade then
+		TriggerClientEvent('hsn-inventory:notification',src,'You can not purchase this item',2)
+		return
+	end
+
 	local shopCurrency = Config.Shops[location].currency
 	data.price = data.price * count
 	if not shopCurrency or shopCurrency == 'bank' then
