@@ -539,12 +539,13 @@
 		} else {
 			playerfreeweight = maxweight - toplamkg
 			rightfreeweight = 100000
-			if (document.body.contains(document.getElementById('rightside-maxweight'))) {rightfreeweight = (document.getElementById('rightside-maxweight').innerHTML)*1000}
+			if (document.body.contains(document.getElementById('rightside-maxweight'))) {
+				rightfreeweight = (document.getElementById('rightside-maxweight').innerHTML)*1000 - (document.getElementById('rightside-curweight').innerHTML)*1000
+			}
 			availableweight = 0
 			//inv = from
 			//inv2 == to
 			if (inv2 !== 'Playerinv') {availableweight = rightfreeweight} else {availableweight = playerfreeweight}
-			
 			if (availableweight !== 0 && (fromItem.weight * count) <= availableweight) {
 				if (count <= fromItem.count) {
 					if(((fromItem.name).split("_")[0] == "WEAPON" && fromItem.metadata.durability !== undefined)) {
