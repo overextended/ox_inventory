@@ -731,28 +731,48 @@ AddEventHandler('hsn-inventory:buyItem', function(info)
 	local data = info.data
 	local location = info.location
 	local xPlayer = ESX.GetPlayerFromId(src)
-	local money = xPlayer.getMoney()
+	local money, currency, item
 	local count = tonumber(info.count)
 	local checkShop = Config.Shops[location].inventory[data.slot]
+	local shopCurrency = Config.Shops[location].currency
+	data.price = data.price * count
+	if not shopCurrency or shopCurrency == 'bank' then
+		currency = 'bank'
+		money = xPlayer.getAccount('bank').money
+		if not shopCurrency and money < data.price then
+			item = ESXItems[money]
+			currency = item.label
+			money = xPlayer.getInventoryItem(item.name).count
+		end
+	else
+		item = ESXItems[shopCurrency]
+		currency = item.label
+		money = xPlayer.getInventoryItem(item.name).count
+	end
+
 	if count > 0 then
 		if data.name:find('WEAPON_') then count = 1 end
-		data.price = data.price * count
+		
 
 		if checkShop.name ~= data.name then
 			TriggerBanEvent(xPlayer, 'tried to buy '..data.name..' but slot contains '..checkShop.name)
 		elseif (checkShop.price * count) ~= data.price then
-			TriggerBanEvent(xPlayer, 'tried to buy '..count..'x '..data.name..' for $'..data.price..(', actual cost is $'..(checkShop.price * count)))
+			TriggerBanEvent(xPlayer, 'tried to buy '..count..'x '..data.name..' for '..data.price..' '..currency..'(actual cost is '..ESX.Round(checkShop.price * count)..')')
 		end
 
 		if IfInventoryCanCarry(playerInventory[xPlayer.identifier], Config.MaxWeight, (data.weight * count)) then
 			if data.price then
 				if money >= data.price then
-					--exports.linden_logs:log(self.source, ('%s (%s) has added $%s to %s (total: $%s)'):format(self.name, self.identifier, money, accountName, newMoney))
-					RemovePlayerInventory(src, xPlayer.identifier, 'money', data.price)
+					--exports.linden_logs:log(xPlayer.source, ('%s (%s) bought %sx %s from %s for $%s'):format(xPlayer.name, xPlayer.identifier, count, data.name, Config.Shops[location].name, data.price), 'test')
+					if currency == 'bank' then
+						xPlayer.removeAccountMoney('bank', data.price)
+					else
+						RemovePlayerInventory(src, xPlayer.identifier, item.name, data.price)
+					end
 					AddPlayerInventory(xPlayer.identifier, data.name, count, nil, data.metadata)
 					TriggerClientEvent('hsn-inventory:client:refreshInventory',src,playerInventory[xPlayer.identifier])
 				else
-					TriggerClientEvent('hsn-inventory:notification',src,'You can not afford that (missing $'..(data.price - money)..')',2)
+					TriggerClientEvent('hsn-inventory:notification',src,'You can not afford that (missing '..ESX.Round(data.price - money)..' '..currency..')',2)
 				end
 			end
 		else
