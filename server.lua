@@ -721,6 +721,7 @@ AddEventHandler('hsn-inventory:buyItem', function(info)
 						RemovePlayerInventory(src, xPlayer.identifier, item.name, data.price)
 					end
 					AddPlayerInventory(xPlayer.identifier, data.name, count, nil, data.metadata)
+					TriggerClientEvent('hsn-inventory:client:refreshInventory',src,playerInventory[xPlayer.identifier])
 					--TriggerClientEvent('hsn-inventory:client:openInventory',src,playerInventory[xPlayer.identifier],Shops[Config.Shops[location].name])
 				else
 					TriggerClientEvent('hsn-inventory:notification',src,'You can not afford that (missing '..ESX.Round(data.price - money)..' '..currency..')',2)
