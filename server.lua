@@ -459,7 +459,6 @@ AddEventHandler('hsn-inventory:server:saveInventoryData',function(data)
 					ItemNotify(src,data.toItem.name,data.toItem.count,'Removed')
 					ItemNotify(src,data.fromItem.name,data.fromItem.count,'Added')
 				elseif data.type == 'freeslot' then
-					if tonumber(GetItemCount(Player.identifier, data.item.name)) < tonumber(data.item.count) then return end -- prevent duping
 					TriggerClientEvent('hsn-inventory:client:checkweapon',src,data.item)
 					playerInventory[Player.identifier][data.emptyslot] = nil
 					Drops[dropid].inventory[data.toSlot] = {name = data.item.name ,label = data.item.label, weight = data.item.weight, slot = data.toSlot, count = data.item.count, description = data.item.description, metadata = data.item.metadata, stackable = data.item.stackable, closeonuse = ESXItems[data.item.name].closeonuse}
