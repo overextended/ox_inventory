@@ -18,7 +18,7 @@ Citizen.CreateThread(function()
 end)
 
 function clearWeapons()
-	SetCurrentPedWeapon(playerPed, 'WEAPON_UNARMED', true)
+	SetCurrentPedWeapon(playerPed, `WEAPON_UNARMED`, true)
 	for k,v in pairs(Config.DurabilityDecreaseAmount) do
 		local hash = GetHashKey(k)
 		SetPedAmmo(playerPed, hash, 0)
@@ -86,6 +86,7 @@ AddEventHandler('esx_policejob:unrestrain', function()
 end)
 
 Citizen.CreateThread(function()
+	local wait = false
 	while true do
 		Citizen.Wait(3)
 		playerPed = PlayerPedId()
@@ -137,9 +138,16 @@ Citizen.CreateThread(function()
 					SetCurrentPedWeapon(playerPed, currentWeapon.hash, true)
 					SetAmmoInClip(playerPed, currentWeapon.hash, 300)
 					TriggerServerEvent('hsn-inventory:server:decreasedurability', playerID, currentWeapon.slot, currentWeapon.item, 300)
-				elseif currentWeapon.item.metadata.throwable then
-					TriggerServerEvent('hsn-inventory:client:removeItem', currentWeapon.item.name, 1)
-				else
+				elseif currentWeapon.item.metadata.throwable and not wait then
+					Citizen.CreateThread(function()
+						wait = true
+						Citizen.Wait(800)
+						TriggerServerEvent('hsn-inventory:client:removeItem', currentWeapon.item.name, 1)
+						SetCurrentPedWeapon(playerPed, `WEAPON_UNARMED`, true)
+						currentWeapon = nil
+						wait = false
+					end)
+				elseif not currentWeapon.item.metadata.throwable then
 					currentWeapon.item.metadata.ammo = ammo
 					if ammo == 0 then
 						ClearPedTasks(playerPed)
@@ -589,7 +597,7 @@ AddEventHandler('hsn-inventory:weapondraw', function(item)
 	if currentWeapon then SetPedAmmo(playerPed, currentWeapon.hash, 0)
 	RemoveWeaponFromPed(playerPed, currentWeapon.hash)
 	end
-	SetCurrentPedWeapon(playerPed, 'WEAPON_UNARMED', true)
+	SetCurrentPedWeapon(playerPed, `WEAPON_UNARMED`, true)
 	Citizen.Wait(800)
 	ClearPedSecondaryTask(playerPed)
 	usingItem = false
@@ -623,7 +631,7 @@ AddEventHandler('hsn-inventory:client:weapon',function(item)
 		TriggerEvent('hsn-inventory:weaponaway')
 		Citizen.Wait(1600)
 		RemoveWeaponFromPed(playerPed, GetHashKey(item.name))
-		SetCurrentPedWeapon(playerPed, 'WEAPON_UNARMED', true)
+		SetCurrentPedWeapon(playerPed, `WEAPON_UNARMED`, true)
 		currentWeapon = nil
 		TriggerEvent('hsn-inventory:client:addItemNotify',item,'Holstered')
 	else
@@ -691,7 +699,7 @@ RegisterNetEvent('hsn-inventory:client:checkweapon')
 AddEventHandler('hsn-inventory:client:checkweapon',function(item)
 	if currentWeapon and currentWeapon.item.metadata.weaponlicense == item.metadata.weaponlicense then
 		RemoveWeaponFromPed(playerPed, GetHashKey(item.name))
-		SetCurrentPedWeapon(playerPed, 'WEAPON_UNARMED', true)
+		SetCurrentPedWeapon(playerPed, `WEAPON_UNARMED`, true)
 		currentWeapon = nil
 	end
 end)
