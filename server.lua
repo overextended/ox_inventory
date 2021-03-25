@@ -149,7 +149,7 @@ AddPlayerInventory = function(identifier, item, count, slot, metadata)
 							if not metadata.ammo then metadata.ammo = 0 end
 							if not metadata.components then metadata.components = {} end
 							if not metadata.ammoweight then metadata.ammoweight = 0 end
-							metadata.weaponlicense = GetRandomLicense(metadata.weaponlicense)
+							metadata.serial = GetRandomLicense(metadata.serial)
 							if metadata.registered == 'setname' then metadata.registered = Player.getName() end
 						end
 						playerInventory[identifier][i] = {name = item ,label = ESXItems[item].label , weight = ESXItems[item].weight, slot = i, count = count, description = ESXItems[item].description, metadata = metadata, stackable = stacks, closeonuse = ESXItems[item].closeonuse} -- because weapon :)
@@ -640,88 +640,7 @@ AddEventHandler('hsn-inventory:server:saveInventoryData',function(data)
 					TriggerClientEvent('hsn-inventory:notification',src,'You can not carry this item',2)
 				end
 			end
-		elseif data.frominv ~= data.toinv and (data.toinv == 'Playerinv' and data.frominv == 'shop') then
-			if data.type == 'swap' then
-				return TriggerClientEvent('hsn-inventory:notification',src,'You can not return your items',2)
-			elseif data.type == 'freeslot' then
-				if IfInventoryCanCarry(playerInventory[Player.identifier],Config.MaxWeight, (data.item.weight * data.item.count)) then
-					local money = Player.getMoney()
-					if money and not data.item.price then TriggerClientEvent('hsn-inventory:client:refreshInventory',src,playerInventory[Player.identifier]) return end
-					if (money >= (data.item.price * data.item.count)) then
-						Player.removeMoney(data.item.price * data.item.count)
-						ItemNotify(src,data.item.name,data.item.count,'Added')
-						if data.item.name:find('WEAPON_') then
-							if Config.Throwable[data.item.name] then
-								metadata = {throwable=1}
-								data.item.stackable = true
-							else
-								if not data.item.metadata then data.item.metadata = {} end
-								data.item.metadata.weaponlicense = GetRandomLicense(data.item.metadata.weaponlicense)
-								if data.item.metadata.registered == 'setname' then data.item.metadata.registered = Player.getName() end
-								if not data.item.metadata.components then data.item.metadata.components = {} end
-								data.item.metadata.ammo = 0
-								data.item.metadata.ammoweight = 0
-								data.item.metadata.durability = 100
-							end
-						elseif data.item.name:find('identification') then
-							data.item.metadata = {}
-							data.item.metadata.type = Player.getName()
-							data.item.metadata.description = getPlayerIdentification(Player)
-						end
-							playerInventory[Player.identifier][data.toSlot] = {name = data.item.name ,label = data.item.label, weight = data.item.weight, slot = data.toSlot, count = data.item.count, description = data.item.description, metadata = data.item.metadata, stackable = data.item.stackable, closeonuse = ESXItems[data.item.name].closeonuse}
-							TriggerClientEvent('hsn-inventory:client:refreshInventory',src,playerInventory[Player.identifier])
-					else
-						TriggerClientEvent('hsn-inventory:notification',src,'You can not afford this item ('..data.item.price * data.item.count..'$)',2)
-						TriggerClientEvent('hsn-inventory:client:refreshInventory',src,playerInventory[Player.identifier])
-					end
-				else
-					TriggerClientEvent('hsn-inventory:notification',src,'You can not carry this item',2)
-				end
-			elseif data.type == 'yarimswap' then
-				local money = Player.getMoney()
-				if IfInventoryCanCarry(playerInventory[Player.identifier],Config.MaxWeight, (data.newslotItem.weight * data.newslotItem.count)) then
-					if money and not data.newslotItem.price then TriggerClientEvent('hsn-inventory:client:refreshInventory',src,playerInventory[Player.identifier]) return end
-					if (money >= (data.newslotItem.price *  data.newslotItem.count)) then
-						if data.newslotItem.name:find('WEAPON_') then
-							if Config.Throwable[data.newslotItem.name] then
-								metadata = {throwable=1}
-								data.item.stackable = true
-							else
-								if not data.newslotItem.metadata then data.newslotItem.metadata = {} end
-								if data.newslotItem.metadata.registered == 'setname' then data.newslotItem.metadata.registered = Player.getName() end
-								data.newslotItem.metadata.weaponlicense = GetRandomLicense(data.newslotItem.metadata.weaponlicense)
-								if not data.newslotItem.metadata.components then data.newslotItem.metadata.components = {} end
-								data.newslotItem.metadata.ammo = 0
-								data.newslotItem.metadata.ammoweight = 0
-								data.newslotItem.metadata.durability = 100
-							end
-						elseif data.newslotItem.name:find('identification') then
-							data.newslotItem.metadata = {}
-							data.newslotItem.metadata.type = Player.getName()
-							data.newslotItem.metadata.description = getPlayerIdentification(Player)
-						end
-						Player.removeMoney(data.newslotItem.price *  data.newslotItem.count)
-						playerInventory[Player.identifier][data.toSlot] = {name = data.newslotItem.name ,label = data.newslotItem.label, weight = data.newslotItem.weight, slot = data.toSlot, count = data.newslotItem.count, description = data.newslotItem.description, metadata = data.newslotItem.metadata, stackable = data.newslotItem.stackable, closeonuse = ESXItems[data.newslotItem.name].closeonuse}
-						ItemNotify(src,data.newslotItem.name,data.newslotItem.count,'Added')
-					else
-						Citizen.Wait(5)
-						TriggerClientEvent('hsn-inventory:client:refreshInventory',src,playerInventory[Player.identifier])
-						TriggerClientEvent('hsn-inventory:notification',src,'You can not afford this item ('..data.newslotItem.price *  data.newslotItem.count..'$)',2)
-					end
-				else
-					TriggerClientEvent('hsn-inventory:notification',src,'You can not carry this item',2)
-				end
-			end
-		elseif data.frominv ~= data.toinv and (data.toinv == 'shop' and data.frominv == 'Playerinv') then
-			TriggerClientEvent('hsn-inventory:client:refreshInventory',src,playerInventory[Player.identifier])
-			return TriggerClientEvent('hsn-inventory:notification',src,'You can not return your items',2)
 		end
-
---[[		-- we'll clean this up later
-		for k, v in pairs(Config.Accounts) do
-			MoneySync(src, v)
-		end]]
-
 	end
 end) 
 
@@ -1472,7 +1391,7 @@ AddEventHandler('hsn-inventory:setplayerInventory',function(identifier,inventory
 						v.metadata.ammo = 0
 						v.metadata.components = {}
 						v.metadata.ammoweight = 0
-						v.metadata.weaponlicense = GetRandomLicense()
+						v.metadata.serial = GetRandomLicense()
 
 						v.count = tonumber(v.count)
 						if v.metadata and v.metadata.ammoweight then weight = v.metadata.ammoweight + ESXItems[v.name].weight else weight = tonumber(ESXItems[v.name].weight) end
@@ -1488,7 +1407,7 @@ AddEventHandler('hsn-inventory:setplayerInventory',function(identifier,inventory
 
 	local getAccounts = true
 	for k,v in pairs(inventory) do
-		if tonumber(v) ~= nil then -- Convert old inventory data to new format
+		if Config.ConvertToHSN and type(v) == 'number' then -- Convert old inventory data to new format
 			
 			loop = loop + 1
 			local count = v
@@ -1500,13 +1419,14 @@ AddEventHandler('hsn-inventory:setplayerInventory',function(identifier,inventory
 				v.metadata.ammo = 0
 				v.metadata.components = {}
 				v.metadata.ammoweight = 0
-				v.metadata.weaponlicense = GetRandomLicense()
+				v.metadata.serial = GetRandomLicense()
 			end
 		end
 		v.count = tonumber(v.count)
 		if getAccounts and v.name:find('money') then getAccounts = false end
 		if v.metadata and v.metadata.ammoweight then weight = v.metadata.ammoweight + ESXItems[v.name].weight else weight = tonumber(ESXItems[v.name].weight) end
 		if not v.metadata or (v.metadata and next(v.metadata) == nil) then v.metadata = {} end
+		--[[ temporary, update weapon metadata]]if v.metadata and v.metadata.weaponlicense then v.metadata.serial = v.metadata.weaponlicense v.metadata.weaponlicense = nil end
 		playerInventory[identifier][v.slot] = {name = v.name ,label = ESXItems[v.name].label, weight = tonumber(weight), slot = v.slot, count = v.count, description = ESXItems[v.name].description, metadata = v.metadata, stackable = ESXItems[v.name].stackable}
 	end
 
