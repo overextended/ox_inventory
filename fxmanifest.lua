@@ -1,6 +1,6 @@
 fx_version 'adamant'
 game 'gta5'
-description 'https://github.com/hsnnnnn/hsn-inventory'
+description 'https://github.com/thelindat/hsn-inventory'
 version '1.5.4'
 
 client_scripts {
