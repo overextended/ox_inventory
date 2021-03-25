@@ -116,6 +116,7 @@ end
 
 GetItemCount = function(identifier, item, metadata)
 	local count = 0
+	if type(metadata) ~= 'table' then metadata = {type = metadata} elseif not metadata then metadata = {} end
 	for i,j in pairs(playerInventory[identifier]) do
 		if (j.name == item) and (not metadata or is_table_equal(metadata, j.metadata)) then
 			count = count + j.count
@@ -219,6 +220,12 @@ RemovePlayerInventory = function(src, identifier, item, count, slot, metadata)
 	count = tonumber(count)
 	if ESXItems[item] ~= nil then
 		if metadata and type(metadata) ~= 'table' then metadata = {type = metadata} end
+		if metadata == nil or (type(metadata) == 'table' and not next(metadata)) then
+			if metadata then
+				metadata = {type=metadata}
+			else metadata = {}
+			end
+		elseif metadata and type(metadata) == 'string' then metadata = {type=metadata} end
 		for i = 1, Config.PlayerSlot do
 			if playerInventory[identifier][i] ~= nil and playerInventory[identifier][i].name == item then
 				if not metadata or is_table_equal(playerInventory[identifier][i].metadata, metadata) then
@@ -1287,7 +1294,7 @@ getItem = function(src, item, metadata)
 	local inventory = playerInventory[Player.identifier]
 	local xItem = ESXItems[item]
 	if not xItem then print('^1[hsn-inventory]^3 Item '.. item ..' does not exist^7') end
-	if type(metadata) ~= 'table' then metadata = {type = metadata} end
+	if type(metadata) ~= 'table' then metadata = {type = metadata} elseif not metadata then metadata = {} end
 	xItem.metadata = metadata
 	xItem.count = 0
 	for k, v in pairs(inventory) do
