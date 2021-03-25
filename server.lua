@@ -133,7 +133,7 @@ AddPlayerInventory = function(identifier, item, count, slot, metadata)
 	if ESXItems[item] ~= nil then
 		if item ~= nil and count ~= nil then
 			if metadata == nil or metadata[1] == nil then
-				if metadata == 'setname' then local name = Player.getName() metadata = {description = name} else metadata = {} end
+				if metadata == 'setname' then local name = Player.getName() metadata = {description = name} elseif metadata then metadata = {type=metadata} else metadata = {} end
 			end
 			if item:find('WEAPON_') then		
 				for i = 1, Config.PlayerSlot do
@@ -170,7 +170,6 @@ AddPlayerInventory = function(identifier, item, count, slot, metadata)
 					end
 				end
 			else
-				if not metadata then metadata = {} elseif metadata and type(metadata) ~= 'table' then metadata = {type = metadata} end
 				if slot then
 					playerInventory[identifier][slot] = {name = item ,label = ESXItems[item].label, weight = ESXItems[item].weight, slot = i, count = count, description = ESXItems[item].description, metadata = metadata, stackable = ESXItems[item].stackable, closeonuse = ESXItems[item].closeonuse}
 				else
