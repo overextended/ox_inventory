@@ -30,7 +30,7 @@ function StartInventory()
 	playerID = GetPlayerServerId(PlayerId())
 	ESX.TriggerServerCallback('hsn-inventory:getData',function(data)
 		playerName = data.name
-		--ESX.SetPlayerData('inventory', data.inventory)
+		ESX.SetPlayerData('inventory', data.inventory)
 		oneSync = data.oneSync
 	end)
 	while not playerName do Citizen.Wait(100) end
@@ -177,7 +177,7 @@ end)
 
 RegisterCommand('vehinv', function()
 	if not playerName then return end
-	if invOpen then return end
+	if not CanOpenInventory() then return end
 	if not isDead and not isCuffed and not IsPedInAnyVehicle(playerPed, false) then -- trunk
 		local vehicle = ESX.Game.GetClosestVehicle()
 		local coords = GetEntityCoords(playerPed)
@@ -375,7 +375,7 @@ end)
 RegisterNetEvent('hsn-inventory:client:refreshInventory')
 AddEventHandler('hsn-inventory:client:refreshInventory',function(inventory)
 	if not playerName then return end
-	--ESX.SetPlayerData('inventory', inventory)
+	ESX.SetPlayerData('inventory', inventory)
 	SendNUIMessage({
 		message = 'refresh',
 		inventory = inventory,
@@ -468,49 +468,50 @@ Citizen.CreateThread(function()
 		local sleepThread = 1000
 
 		while not PlayerData.job do Citizen.Wait(0) end
-		for i = 1, #Config.Shops do
-			local text = Config.Shops[i].name
-			distance = #(GetEntityCoords(PlayerPedId()) - Config.Shops[i].coords)
+		if CanOpenInventory() then
+			for i = 1, #Config.Shops do
+				local text = Config.Shops[i].name
+				distance = #(GetEntityCoords(PlayerPedId()) - Config.Shops[i].coords)
 
-			if distance <= 5.5 and (not Config.Shops[i].job or Config.Shops[i].job == PlayerData.job.name) then
-				sleepThread = 5
-				DrawMarker(2, Config.Shops[i].coords.x,Config.Shops[i].coords.y,Config.Shops[i].coords.z, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.3, 0.15, 0.2, 30, 150, 30, 100, false, false, false, true, false, false, false)
-				if not invOpen then
-					if distance <= 1.5 then
-						text = '[~g~E~s~] ' .. Config.Shops[i].name
+				if distance <= 5.5 and (not Config.Shops[i].job or Config.Shops[i].job == PlayerData.job.name) then
+					sleepThread = 5
+					DrawMarker(2, Config.Shops[i].coords.x,Config.Shops[i].coords.y,Config.Shops[i].coords.z, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.3, 0.15, 0.2, 30, 150, 30, 100, false, false, false, true, false, false, false)
+					if not invOpen then
+						if distance <= 1.5 then
+							text = '[~g~E~s~] ' .. Config.Shops[i].name
 
-						if IsControlJustPressed(1,38) and not isDead and not isCuffed then
-							OpenShop(Config.Shops[i], i)
+							if IsControlJustPressed(1,38) then
+								OpenShop(Config.Shops[i], i)
+							end
 						end
+
+						DrawText3D(Config.Shops[i].coords, text)
 					end
-
-					DrawText3D(Config.Shops[i].coords, text)
 				end
 			end
-		end
 
-		for i = 1, #Config.Stashes do
-			local text = Config.Stashes[i].name
-			distance = #(GetEntityCoords(PlayerPedId()) - Config.Stashes[i].coords)
+			for i = 1, #Config.Stashes do
+				local text = Config.Stashes[i].name
+				distance = #(GetEntityCoords(PlayerPedId()) - Config.Stashes[i].coords)
 
-			if distance <= 5.5 and (not Config.Stashes[i].job or Config.Stashes[i].job == PlayerData.job.name) then
-				sleepThread = 5
-				DrawMarker(2, Config.Stashes[i].coords.x,Config.Stashes[i].coords.y,Config.Stashes[i].coords.z, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.3, 0.15, 0.2, 30, 30, 150, 100, false, false, false, true, false, false, false)
-				
-				if not invOpen then
-					if distance <= 1.5 then
-						text = '[~g~E~s~] ' .. Config.Stashes[i].name
+				if distance <= 5.5 and (not Config.Stashes[i].job or Config.Stashes[i].job == PlayerData.job.name) then
+					sleepThread = 5
+					DrawMarker(2, Config.Stashes[i].coords.x,Config.Stashes[i].coords.y,Config.Stashes[i].coords.z, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.3, 0.15, 0.2, 30, 30, 150, 100, false, false, false, true, false, false, false)
+					
+					if not invOpen then
+						if distance <= 1.5 then
+							text = '[~g~E~s~] ' .. Config.Stashes[i].name
 
-						if IsControlJustPressed(1,38) and not isDead and not isCuffed then
-							OpenStash(Config.Stashes[i])
-						end
-					end   
+							if IsControlJustPressed(1,38) then
+								OpenStash(Config.Stashes[i])
+							end
+						end   
 
-					DrawText3D(Config.Stashes[i].coords, text)
+						DrawText3D(Config.Stashes[i].coords, text)
+					end
 				end
 			end
-		end
-
+		else sleepThread = 50 end
 		Citizen.Wait(sleepThread)
 	end
 end)
@@ -722,7 +723,7 @@ end)
 
 RegisterCommand('steal',function()
 	local ped = playerPed
-	if not IsPedInAnyVehicle(ped, true) and not isDead and not isCuffed then	 
+	if not IsPedInAnyVehicle(ped, true) and CanOpenInventory() then	 
 		openTargetInventory()
 	end
 end)
