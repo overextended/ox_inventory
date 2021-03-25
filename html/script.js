@@ -35,7 +35,7 @@
 
 	var gram = new Intl.NumberFormat('en-US', {
 		style: 'unit',
-		unit: 'kilogram', // yeah we're using the superior units of measurement
+		unit: 'gram', // yeah we're using the superior units of measurement
 		unitDisplay: 'narrow',
 		minimumFractionDigits: 0
 	});
