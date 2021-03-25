@@ -21,7 +21,7 @@ INSERT INTO `items` (`name`, `label`, `weight`, `can_remove`, `stackable`, `clos
 	('cola', 'eCola', 350, 1, 1, 1, NULL),
 	('money', 'Money', 0, 1, 1, 1, NULL),
 	('identification', 'Identification', 0, 1, 1, 1, NULL),
-	('black_money', 'Money', 0, 1, 1, 1, NULL),
+	('black_money', 'Dirty Money', 0, 1, 1, 1, NULL),
 	('keys', 'Set of keys', 21, 1, 1, 1, NULL),
 	('at_scope_sniper', 'Sniper Scope', 700, 1, 1, 1, NULL),
 	('at_scope_smg', 'SMG Sight', 250, 1, 1, 1, NULL),
