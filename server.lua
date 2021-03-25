@@ -132,7 +132,7 @@ AddPlayerInventory = function(identifier, item, count, slot, metadata)
 	local Player = ESX.GetPlayerFromIdentifier(identifier)
 	if ESXItems[item] ~= nil then
 		if item ~= nil and count ~= nil then
-			if metadata == nil or metadata[1] == nil then
+			if metadata == nil or not next(metadata) then
 				if metadata == 'setname' then local name = Player.getName() metadata = {description = name} elseif metadata then metadata = {type=metadata} else metadata = {} end
 			end
 			if item:find('WEAPON_') then		
@@ -160,11 +160,8 @@ AddPlayerInventory = function(identifier, item, count, slot, metadata)
 				count = 1 
 				for i = 1, Config.PlayerSlot do
 					if playerInventory[identifier][i] == nil then
-						if metadata == nil or metadata[1] == nil then
-							metadata = {}
-							metadata.type = Player.getName()
-							metadata.description = getPlayerIdentification(Player)
-						end
+						metadata.type = Player.getName()
+						metadata.description = getPlayerIdentification(Player)
 						playerInventory[identifier][i] = {name = item ,label = ESXItems[item].label , weight = ESXItems[item].weight, slot = i, count = count, description = ESXItems[item].description, metadata = metadata, stackable = true, closeonuse = ESXItems[item].closeonuse}
 						break
 					end
@@ -738,7 +735,7 @@ AddEventHandler('hsn-inventory:buyItem', function(info)
 	local count = tonumber(info.count)
 	local checkShop = Config.Shops[location].inventory[data.slot]
 
-	if checkShop.grade > xPlayer.job.grade then
+	if checkShop.grade and checkShop.grade > xPlayer.job.grade then
 		TriggerClientEvent('hsn-inventory:notification',src,'You can not purchase this item',2)
 		return
 	end
