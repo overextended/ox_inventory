@@ -848,7 +848,7 @@ OpenStash = function(source, stash)
 		Stashs[stash.id.name].name = stash.id.name
 		Stashs[stash.id.name].type = 'stash'
 		Stashs[stash.id.name].slots = stash.id.slots
-		Stash[stash.id.coords].coords = stash.id.coords
+		Stashs[stash.id.name].coords = stash.id.coords
 	end
 	if checkOpenable(src,stash.id.name,stash.id.coords) then
 		if not stash.id.job or stash.id.job == Player.job.name then
