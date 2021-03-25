@@ -548,6 +548,7 @@ AddEventHandler('hsn-inventory:Client:addnewDrop',function(coords, drop, src)
 	if src == playerID then
 		currentInventory = {type = 'drop',id = drop, coords = coords }
 		TriggerServerEvent('hsn-inventory:server:openInventory',{type = 'drop',id = drop, coords = coords })
+		SetNuiFocusAdvanced(true, true, false)
 	end
 end)
 
