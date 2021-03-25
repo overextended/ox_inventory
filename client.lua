@@ -130,7 +130,7 @@ Citizen.CreateThread(function()
 				DisableControlAction(1, 142, true)
 			end
 			local shooting = IsPedShooting(playerPed)
-			if shooting or (currentWeapon.item.metadata.throwable and IsControlJustReleased(0, 24)) then
+			if shooting or ((currentWeapon.item.metadata.throwable or currentWeapon.item.metadata[1] == nil) and IsControlJustReleased(0, 24)) then
 				local ammo = GetAmmoInPedWeapon(playerPed, currentWeapon.hash)
 				currentWeapon.item.metadata.durability = currentWeapon.item.metadata.durability - 0.1
 				if (currentWeapon.item.name == 'WEAPON_FIREEXTINGUISHER' or currentWeapon.item.name == 'WEAPON_PETROLCAN') and not wait then
@@ -162,7 +162,13 @@ Citizen.CreateThread(function()
 						SetCurrentPedWeapon(playerPed, currentWeapon.hash, true)
 						TriggerServerEvent('hsn-inventory:server:reloadWeapon', currentWeapon)
 					end
-					--TriggerServerEvent('hsn-inventory:server:decreasedurability', currentWeapon)
+				elseif Config.Melee[currentWeapon.item.name] and not wait then
+					Citizen.CreateThread(function()
+						wait = true
+						TriggerServerEvent('hsn-inventory:server:decreasedurability', playerID, currentWeapon.slot, currentWeapon.item.name, 1)
+						Citizen.Wait(400)
+						wait = false
+					end)
 				end
 			else shooting = false end
 		end
