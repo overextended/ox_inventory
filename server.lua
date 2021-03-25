@@ -132,7 +132,9 @@ AddPlayerInventory = function(identifier, item, count, slot, metadata)
 	local Player = ESX.GetPlayerFromIdentifier(identifier)
 	if ESXItems[item] ~= nil then
 		if item ~= nil and count ~= nil then
-			if metadata == nil or metadata[1] == nil then metadata = {} end
+			if metadata == nil or metadata[1] == nil then
+				if metadata == 'setname' then local name = Player.getName() metadata = {description = name} else metadata = {} end
+			end
 			if item:find('WEAPON_') then		
 				for i = 1, Config.PlayerSlot do
 					if playerInventory[identifier][i] == nil then
@@ -155,9 +157,6 @@ AddPlayerInventory = function(identifier, item, count, slot, metadata)
 					end
 				end
 			elseif item:find('identification') then
-				for k, v in pairs(metadata) do
-					print(k)
-				end
 				count = 1 
 				for i = 1, Config.PlayerSlot do
 					if playerInventory[identifier][i] == nil then
@@ -171,7 +170,7 @@ AddPlayerInventory = function(identifier, item, count, slot, metadata)
 					end
 				end
 			else
-				if metadata and type(metadata) ~= 'table' then metadata = {type = metadata} else metadata = {} end
+				if not metadata then metadata = {} elseif metadata and type(metadata) ~= 'table' then metadata = {type = metadata} end
 				if slot then
 					playerInventory[identifier][slot] = {name = item ,label = ESXItems[item].label, weight = ESXItems[item].weight, slot = i, count = count, description = ESXItems[item].description, metadata = metadata, stackable = ESXItems[item].stackable, closeonuse = ESXItems[item].closeonuse}
 				else
