@@ -1006,7 +1006,7 @@ Config.Shops = {
 				price = 150,
 				count = 1,
 				metadata = {
-					weaponlicense = 'POL',
+					serial = 'POL',
 					weapontint = 5
 				},
 			},
@@ -1015,7 +1015,7 @@ Config.Shops = {
 				price = 250,
 				count = 1,
 				metadata = {
-					weaponlicense = 'POL',
+					serial = 'POL',
 					components = { 'flashlight' },
 					weapontint = 5
 				},
@@ -1025,7 +1025,7 @@ Config.Shops = {
 				price = 400,
 				count = 1,
 				metadata = {
-					weaponlicense = 'POL',
+					serial = 'POL',
 					components = { 'flashlight' },
 					weapontint = 5
 				},
@@ -1035,7 +1035,7 @@ Config.Shops = {
 				price = 500,
 				count = 1,
 				metadata = {
-					weaponlicense = 'POL',
+					serial = 'POL',
 					components = { 'flashlight' },
 					weapontint = 5
 				},
@@ -1046,7 +1046,7 @@ Config.Shops = {
 				count = 1,
 				grade = 2, -- restrict carbine rifle to grade 2+ police
 				metadata = {
-					weaponlicense = 'POL',
+					serial = 'POL',
 					components = { 'flashlight' },
 					weapontint = 5
 				},
@@ -1056,7 +1056,7 @@ Config.Shops = {
 				price = 50,
 				count = 1,
 				metadata = {
-					weaponlicense = 'POL',
+					serial = 'POL',
 					weapontint = 5
 				},
 			},
@@ -1065,7 +1065,7 @@ Config.Shops = {
 				price = 20,
 				count = 1,
 				metadata = {
-					weaponlicense = 'POL',
+					serial = 'POL',
 					components = { 'flashlight' },
 					weapontint = 5
 				},
@@ -1075,7 +1075,7 @@ Config.Shops = {
 				price = 15,
 				count = 1,
 				metadata = {
-					weaponlicense = 'POL',
+					serial = 'POL',
 					weapontint = 5
 				},
 			},
