@@ -132,9 +132,6 @@ AddPlayerInventory = function(identifier, item, count, slot, metadata)
 	local Player = ESX.GetPlayerFromIdentifier(identifier)
 	if ESXItems[item] ~= nil then
 		if item ~= nil and count ~= nil then
-			if metadata == nil or not next(metadata) then
-				if metadata == 'setname' then local name = Player.getName() metadata = {description = name} elseif metadata then metadata = {type=metadata} else metadata = {} end
-			end
 			if item:find('WEAPON_') then		
 				for i = 1, Config.PlayerSlot do
 					if playerInventory[identifier][i] == nil then
@@ -167,6 +164,15 @@ AddPlayerInventory = function(identifier, item, count, slot, metadata)
 					end
 				end
 			else
+				if metadata == nil or (type(metadata) == 'table' and not next(metadata)) then
+					if metadata == 'setname' then
+						local name = Player.getName()
+						metadata = {description = name}
+					elseif metadata then
+						metadata = {type=metadata}
+					else metadata = {}
+					end
+				elseif metadata and type(metadata) == 'string' then metadata = {type=metadata} end
 				if slot then
 					playerInventory[identifier][slot] = {name = item ,label = ESXItems[item].label, weight = ESXItems[item].weight, slot = i, count = count, description = ESXItems[item].description, metadata = metadata, stackable = ESXItems[item].stackable, closeonuse = ESXItems[item].closeonuse}
 				else
@@ -1207,7 +1213,6 @@ RegisterCommand("remove", function(source, args, rawCommand)
 	Player.removeInventoryItem(args[1], 1, args[2])
 end)]]
 
-
 --[[ Example to retrieve items and count from player inventory
 	RegisterCommand("itemcount", function(source, args, rawCommand)
 	local Player = ESX.GetPlayerFromId(source)
@@ -1454,7 +1459,7 @@ AddEventHandler('hsn-inventory:setplayerInventory',function(identifier,inventory
 		v.count = tonumber(v.count)
 		if getAccounts and v.name:find('money') then getAccounts = false end
 		if v.metadata and v.metadata.ammoweight then weight = v.metadata.ammoweight + ESXItems[v.name].weight else weight = tonumber(ESXItems[v.name].weight) end
-		if not v.metadata or (v.metadata and next(v.metadata) == nil) then v.metadata = {} end
+		if not v.metadata or (type(v.metadata == 'table') and next(v.metadata) == nil) then v.metadata = {} end
 		--[[ temporary, update weapon metadata]]if v.metadata and v.metadata.weaponlicense then v.metadata.serial = v.metadata.weaponlicense v.metadata.weaponlicense = nil end
 		playerInventory[identifier][v.slot] = {name = v.name ,label = ESXItems[v.name].label, weight = tonumber(weight), slot = v.slot, count = v.count, description = ESXItems[v.name].description, metadata = v.metadata, stackable = ESXItems[v.name].stackable}
 	end
