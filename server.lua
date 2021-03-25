@@ -116,7 +116,7 @@ end
 
 GetItemCount = function(identifier, item, metadata)
 	local count = 0
-	if type(metadata) ~= 'table' then metadata = {type = metadata} elseif not metadata then metadata = {} end
+	metadata = setMetadata(metadata)
 	for i,j in pairs(playerInventory[identifier]) do
 		if (j.name == item) and (not metadata or is_table_equal(metadata, j.metadata)) then
 			count = count + j.count
@@ -165,15 +165,7 @@ AddPlayerInventory = function(identifier, item, count, slot, metadata)
 					end
 				end
 			else
-				if metadata == nil or (type(metadata) == 'table' and not next(metadata)) then
-					if metadata == 'setname' then
-						local name = Player.getName()
-						metadata = {description = name}
-					elseif metadata then
-						metadata = {type=metadata}
-					else metadata = {}
-					end
-				elseif metadata and type(metadata) == 'string' then metadata = {type=metadata} end
+				metadata = setMetadata(metadata)
 				if slot then
 					playerInventory[identifier][slot] = {name = item ,label = ESXItems[item].label, weight = ESXItems[item].weight, slot = i, count = count, description = ESXItems[item].description, metadata = metadata, stackable = ESXItems[item].stackable, closeonuse = ESXItems[item].closeonuse}
 				else
@@ -194,6 +186,16 @@ AddPlayerInventory = function(identifier, item, count, slot, metadata)
 	else
 		print('[^2hsn-inventory^0] - item not found')
 	end
+end
+
+function setMetadata(metadata)
+	if metadata == nil or (type(metadata) == 'table' and not next(metadata)) then
+		if metadata == 'setname' then
+			local name = Player.getName()
+			metadata = {description = name}
+		else metadata = {} end
+	elseif metadata and type(metadata) == 'string' then metadata = {type=metadata} end
+	return metadata
 end
 
 function is_table_equal(t1,t2,ignore_mt)
@@ -219,13 +221,7 @@ end
 RemovePlayerInventory = function(src, identifier, item, count, slot, metadata)
 	count = tonumber(count)
 	if ESXItems[item] ~= nil then
-		if metadata and type(metadata) ~= 'table' then metadata = {type = metadata} end
-		if metadata == nil or (type(metadata) == 'table' and not next(metadata)) then
-			if metadata then
-				metadata = {type=metadata}
-			else metadata = {}
-			end
-		elseif metadata and type(metadata) == 'string' then metadata = {type=metadata} end
+		metadata = setMetadata(metadata)
 		for i = 1, Config.PlayerSlot do
 			if playerInventory[identifier][i] ~= nil and playerInventory[identifier][i].name == item then
 				if not metadata or is_table_equal(playerInventory[identifier][i].metadata, metadata) then
@@ -1294,7 +1290,7 @@ getItem = function(src, item, metadata)
 	local inventory = playerInventory[Player.identifier]
 	local xItem = ESXItems[item]
 	if not xItem then print('^1[hsn-inventory]^3 Item '.. item ..' does not exist^7') end
-	if type(metadata) ~= 'table' then metadata = {type = metadata} elseif not metadata then metadata = {} end
+	metadata = setMetadata(metadata)
 	xItem.metadata = metadata
 	xItem.count = 0
 	for k, v in pairs(inventory) do
@@ -1468,6 +1464,7 @@ AddEventHandler('hsn-inventory:setplayerInventory',function(identifier,inventory
 		if v.metadata and v.metadata.ammoweight then weight = v.metadata.ammoweight + ESXItems[v.name].weight else weight = tonumber(ESXItems[v.name].weight) end
 		if not v.metadata or (type(v.metadata == 'table') and next(v.metadata) == nil) then v.metadata = {} end
 		--[[ temporary, update weapon metadata]]if v.metadata and v.metadata.weaponlicense then v.metadata.serial = v.metadata.weaponlicense v.metadata.weaponlicense = nil end
+		--[[ temporary, fix weird metadata]]if v.metadata.type and type(v.metadata.type) == 'table' then v.metadata = {} end
 		playerInventory[identifier][v.slot] = {name = v.name ,label = ESXItems[v.name].label, weight = tonumber(weight), slot = v.slot, count = v.count, description = ESXItems[v.name].description, metadata = v.metadata, stackable = ESXItems[v.name].stackable}
 	end
 
