@@ -800,7 +800,8 @@ AddEventHandler('hsn-inventory:server:openInventory',function(data, coords)
 		elseif data.type == 'shop' then
 			Shops[data.id.name] = {}
 			Shops[data.id.name].inventory = SetupShopItems(data.id)
-			Shops[data.id.name].name = data.index
+			Shops[data.id.name].name = data.id.name
+			Shops[data.id.name].id = data.index
 			Shops[data.id.name].type = 'shop'
 			Shops[data.id.name].slots = #Shops[data.id.name].inventory + 1
 			Shops[data.id.name].coords = data.id.coords
