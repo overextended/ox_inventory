@@ -292,19 +292,16 @@ AddEventHandler('hsn-inventory:server:saveInventoryData',function(data)
 		if data.invid2 and data.invid2 ~= invopened[src].curInventory then TriggerBanEvent(Player, 'secondary inventory id does not match') end
 		if data.frominv == data.toinv and (data.frominv == 'Playerinv') then
 			if data.type == 'swap' then
-				if tonumber(GetItemCount(Player.identifier, data.toItem.name)) < tonumber(data.toItem.count) then return end -- prevent duping
 				TriggerClientEvent('hsn-inventory:client:checkweapon',src,data.fromItem)
 				playerInventory[Player.identifier][data.toSlot] = {name = data.toItem.name ,label = data.toItem.label, weight = data.toItem.weight, slot = data.toSlot, count = data.toItem.count, description = data.toItem.description, metadata = data.toItem.metadata, stackable = data.toItem.stackable, closeonuse = ESXItems[data.toItem.name].closeonuse}
 				playerInventory[Player.identifier][data.fromSlot] = {name = data.fromItem.name ,label = data.fromItem.label, weight = data.fromItem.weight, slot = data.fromSlot, count = data.fromItem.count, description = data.fromItem.description, metadata = data.fromItem.metadata, stackable = data.fromItem.stackable}
 			elseif data.type == 'freeslot' then
 				if not ValidateItem(data.type, Player, playerInventory[Player.identifier][data.emptyslot],playerInventory[Player.identifier][data.toSlot], data.item, data.item) then return end
-				if tonumber(GetItemCount(Player.identifier, data.item.name)) < tonumber(data.item.count) then return end -- prevent duping
 				TriggerClientEvent('hsn-inventory:client:checkweapon',src,data.item)
 				playerInventory[Player.identifier][data.emptyslot] = nil
 				playerInventory[Player.identifier][data.toSlot] = {name = data.item.name ,label = data.item.label, weight = data.item.weight, slot = data.toSlot, count = data.item.count, description = data.item.description, metadata = data.item.metadata, stackable = data.item.stackable, closeonuse = ESXItems[data.item.name].closeonuse}
 			elseif data.type == 'split' then
 				if not ValidateItem(data.type, Player, playerInventory[Player.identifier][data.fromSlot],playerInventory[Player.identifier][data.toSlot], data.oldslotItem, data.newslotItem) then return end
-				if tonumber(GetItemCount(Player.identifier, data.oldslotItem.name)) < tonumber(data.oldslotItem.count) + tonumber(data.newslotItem.count) then return end -- prevent duping
 				TriggerClientEvent('hsn-inventory:client:checkweapon',src,data.oldslotItem)
 				playerInventory[Player.identifier][data.fromSlot] = {name = data.oldslotItem.name ,label = data.oldslotItem.label, weight = data.oldslotItem.weight, slot = data.fromSlot, count = data.oldslotItem.count, description = data.oldslotItem.description, metadata = data.oldslotItem.metadata, stackable = data.oldslotItem.stackable, closeonuse = ESXItems[data.oldslotItem.name].closeonuse}
 				playerInventory[Player.identifier][data.toSlot] = {name = data.newslotItem.name ,label = data.newslotItem.label, weight = data.newslotItem.weight, slot = data.toSlot, count = data.newslotItem.count, description = data.newslotItem.description, metadata = data.newslotItem.metadata, stackable = data.newslotItem.stackable, closeonuse = ESXItems[data.newslotItem.name].closeonuse}
@@ -355,7 +352,6 @@ AddEventHandler('hsn-inventory:server:saveInventoryData',function(data)
 						TriggerClientEvent('hsn-inventory:notification',src,'You can not carry this item',2)
 					end
 				elseif data.type == 'freeslot' then
-					if tonumber(GetItemCount(Player.identifier, data.item.name)) < tonumber(data.item.count) then return end -- prevent duping
 					if IfInventoryCanCarry(playerInventory[targetplayer.identifier],Config.MaxWeight, (data.item.weight * data.item.count))  then
 						TriggerClientEvent('hsn-inventory:client:checkweapon',src,data.item)
 						local count = playerInventory[Player.identifier][data.emptyslot].count
@@ -372,9 +368,9 @@ AddEventHandler('hsn-inventory:server:saveInventoryData',function(data)
 						TriggerClientEvent('hsn-inventory:client:checkweapon',src,data.newslotItem)
 						playerInventory[Player.identifier][data.fromSlot] = {name = data.oldslotItem.name ,label = data.oldslotItem.label, weight = data.oldslotItem.weight, slot = data.fromSlot, count = data.oldslotItem.count, description = data.oldslotItem.description, metadata = data.oldslotItem.metadata, stackable = data.oldslotItem.stackable, closeonuse = ESXItems[data.oldslotItem.name].closeonuse}
 						playerInventory[targetplayer.identifier][data.toSlot] = {name = data.newslotItem.name ,label = data.newslotItem.label, weight = data.newslotItem.weight, slot = data.toSlot, count = data.newslotItem.count, description = data.newslotItem.description, metadata = data.newslotItem.metadata, stackable = data.newslotItem.stackable, closeonuse = ESXItems[data.newslotItem.name].closeonuse}
-						TriggerClientEvent('hsn-inventory:client:refreshInventory',targetplayer.source,playerInventory[targetplayer.identifier])
 						ItemNotify(src,data.newslotItem.name,data.newslotItem.count,'Removed', data.invid)
-						--ItemNotify(targetplayer.source,data.newslotItem.name,data.newslotItem.count,'Added', 'Player '..src)
+						ItemNotify(targetplayer.source,data.newslotItem.name,data.newslotItem.count,'Added', 'Player '..src)
+						TriggerClientEvent('hsn-inventory:client:refreshInventory',targetplayer.source,playerInventory[targetplayer.identifier])
 					else
 						TriggerClientEvent('hsn-inventory:notification',src,'You can not carry this item',2)
 					end
@@ -391,17 +387,16 @@ AddEventHandler('hsn-inventory:server:saveInventoryData',function(data)
 						playerInventory[targetplayer.identifier][data.fromSlot] = {name = data.fromItem.name ,label = data.fromItem.label, weight = data.fromItem.weight, slot = data.fromSlot, count = data.fromItem.count, description = data.fromItem.description, metadata = data.fromItem.metadata, stackable = data.fromItem.stackable, closeonuse = ESXItems[data.fromItem.name].closeonuse}
 						ItemNotify(src,data.toItem.name,data.toItem.count,'Added', data.invid2)
 						ItemNotify(src,data.fromItem.name,data.fromItem.count,'Removed', data.invid2)
-						ItemNotify(targetPlayer.source,data.toItem.name,data.toItem.count,'Removed', 'Player '..src)
-						ItemNotify(targetPlayer.source,data.fromItem.name,data.fromItem.count,'Removed', 'Player '..src)
+						ItemNotify(targetplayer.source,data.toItem.name,data.toItem.count,'Removed', 'Player '..src)
+						ItemNotify(targetplayer.source,data.fromItem.name,data.fromItem.count,'Removed', 'Player '..src)
 						TriggerClientEvent('hsn-inventory:client:refreshInventory',targetplayer.source,playerInventory[targetplayer.identifier])
 					else
 						TriggerClientEvent('hsn-inventory:notification',src,'You can not carry this item',2)
 					end
 				elseif data.type == 'freeslot' then
-					if tonumber(GetItemCount(targetplayer.identifier, data.item.name)) < tonumber(data.item.count) then return end -- prevent duping
 					if IfInventoryCanCarry(playerInventory[Player.identifier],Config.MaxWeight, (data.item.weight * data.item.count))  then
 						TriggerClientEvent('hsn-inventory:client:checkweapon',targetplayer.source,data.item)
-						local count = playerInventory[Player.identifier][data.emptyslot].count
+						local count = playerInventory[targetplayer.identifier][data.emptyslot].count
 						playerInventory[targetplayer.identifier][data.emptyslot] = nil
 						playerInventory[Player.identifier][data.toSlot] = {name = data.item.name ,label = data.item.label, weight = data.item.weight, slot = data.toSlot, count = data.item.count, description = data.item.description, metadata = data.item.metadata, stackable = data.item.stackable, closeonuse = ESXItems[data.item.name].closeonuse}
 						ItemNotify(src,data.item.name,count,'Added',data.invid2)
@@ -416,7 +411,7 @@ AddEventHandler('hsn-inventory:server:saveInventoryData',function(data)
 						playerInventory[targetplayer.identifier][data.fromSlot] = {name = data.oldslotItem.name ,label = data.oldslotItem.label, weight = data.oldslotItem.weight, slot = data.fromSlot, count = data.oldslotItem.count, description = data.oldslotItem.description, metadata = data.oldslotItem.metadata, stackable = data.oldslotItem.stackable, closeonuse = ESXItems[data.oldslotItem.name].closeonuse}
 						playerInventory[Player.identifier][data.toSlot] = {name = data.newslotItem.name ,label = data.newslotItem.label, weight = data.newslotItem.weight, slot = data.toSlot, count = data.newslotItem.count, description = data.newslotItem.description, metadata = data.newslotItem.metadata, stackable = data.newslotItem.stackable, closeonuse = ESXItems[data.newslotItem.name].closeonuse}
 						ItemNotify(src,data.newslotItem.name,data.newslotItem.count,'Added',data.invid2)
-						--ItemNotify(targetplayer.source,data.newslotItem.name,data.newslotItem.count,'Removed','Player '..src)
+						ItemNotify(targetplayer.source,data.newslotItem.name,data.newslotItem.count,'Removed','Player '..src)
 						TriggerClientEvent('hsn-inventory:client:refreshInventory',targetplayer.source,playerInventory[targetplayer.identifier])
 					else
 						TriggerClientEvent('hsn-inventory:notification',src,'You can not carry this item',2)
