@@ -140,6 +140,16 @@ AddPlayerInventory = function(identifier, item, count, slot, metadata)
 						if Config.Throwable[item] then
 							metadata = {throwable=1}
 							stacks = true
+						elseif Config.Melee[item] then
+							count = 1 
+							metadata = {melee=1}
+							stacks = false
+							if not metadata.durability then metadata.durability = 100 end
+						elseif Config.Miscellaneous[item] then
+							count = 1 
+							metadata = {misc=1}
+							stacks = false
+							if not metadata.durability then metadata.durability = 100 end
 						else
 							count = 1 
 							if metadata == nil then metadata = {} end
@@ -562,8 +572,8 @@ AddEventHandler('hsn-inventory:server:saveInventoryData',function(data)
 					TriggerClientEvent('hsn-inventory:notification',src,'You can not carry this item',2)
 				end
 			elseif data.type == 'freeslot' then
-				if  IfInventoryCanCarry(playerInventory[Player.identifier],Config.MaxWeight, (data.item.weight * data.item.count))  then	
-					local count = playerInventory[Player.identifier][data.emptyslot].count
+				if IfInventoryCanCarry(playerInventory[Player.identifier],Config.MaxWeight, (data.item.weight * data.item.count))  then	
+					local count = Trunks[plate].inventory[data.emptyslot].count
 					Trunks[plate].inventory[data.emptyslot] = nil
 					playerInventory[Player.identifier][data.toSlot] = {name = data.item.name ,label = data.item.label, weight = data.item.weight, slot = data.toSlot, count = data.item.count, description = data.item.description, metadata = data.item.metadata, stackable = data.item.stackable, closeonuse = ESXItems[data.item.name].closeonuse}
 					ItemNotify(src,data.item.name,count,'Added', 'Trunk '..plate)
@@ -712,7 +722,7 @@ AddEventHandler('hsn-inventory:buyItem', function(info)
 						RemovePlayerInventory(src, xPlayer.identifier, item.name, data.price)
 					end
 					AddPlayerInventory(xPlayer.identifier, data.name, count, nil, data.metadata)
-					TriggerClientEvent('hsn-inventory:client:refreshInventory',src,playerInventory[xPlayer.identifier])
+					--TriggerClientEvent('hsn-inventory:client:openInventory',src,playerInventory[xPlayer.identifier],Shops[Config.Shops[location].name])
 				else
 					TriggerClientEvent('hsn-inventory:notification',src,'You can not afford that (missing '..ESX.Round(data.price - money)..' '..currency..')',2)
 				end
