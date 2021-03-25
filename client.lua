@@ -653,6 +653,7 @@ AddEventHandler('hsn-inventory:client:weapon',function(item)
 		TriggerEvent('hsn-inventory:client:addItemNotify',item,'Holstered')
 	else
 		TriggerEvent('hsn-inventory:weapondraw',item)
+		GiveWeaponToPed(playerPed, wepHash, 0, true, false)
 		Citizen.Wait(1600)
 		currentWeapon = {}
 		currentWeapon.slot = item.slot
@@ -664,7 +665,6 @@ AddEventHandler('hsn-inventory:client:weapon',function(item)
 				if v2 == currentWeapon.hash then currentWeapon.ammotype = k end
 			end
 		end
-		GiveWeaponToPed(playerPed, wepHash, 0, false, false)
 		SetCurrentPedWeapon(playerPed, wepHash, true)
 		SetPedCurrentWeaponVisible(playerPed, true, false, false, false)
 		if item.metadata.weapontint then SetPedWeaponTintIndex(playerPed, item.name, item.metadata.weapontint) end
@@ -675,8 +675,8 @@ AddEventHandler('hsn-inventory:client:weapon',function(item)
 			end
 		end
 		TriggerEvent('hsn-inventory:client:addItemNotify',item,'Equipped')
+		SetAmmoInClip(playerPed, currentWeapon.hash, item.metadata.ammo)
 		if currentWeapon.item.name == 'WEAPON_FIREEXTINGUISHER' or currentWeapon.item.name == 'WEAPON_PETROLCAN' then SetAmmoInClip(playerPed, currentWeapon.hash, 10000) end
-		if item.metadata.ammo then SetAmmoInClip(playerPed, currentWeapon.hash, item.metadata.ammo) end
 	end
 	TriggerEvent('hsn-inventory:currentWeapon', currentWeapon) -- using for another resource
 	Citizen.Wait(100)
