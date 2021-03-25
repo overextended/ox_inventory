@@ -3,7 +3,6 @@ local PlayerData = {}
 local invOpen, isDead, isCuffed, currentWeapon = false, false, false, nil
 local usingItem = false
 
--- hsn inventory Hasan.#7803
 Citizen.CreateThread(function()
 	while ESX == nil do
 		TriggerEvent('esx:getSharedObject', function(obj)
@@ -362,6 +361,7 @@ end)
 RegisterNetEvent('hsn-inventory:client:refreshInventory')
 AddEventHandler('hsn-inventory:client:refreshInventory',function(inventory)
 	if not playerName then return end
+	--ESX.SetPlayerData('inventory', inventory)
 	SendNUIMessage({
 		message = 'refresh',
 		inventory = inventory,
@@ -408,7 +408,7 @@ Citizen.CreateThread(function()
 			end
 		end
 		if currentInventory and currentInventory.name and string.find(currentInventory.name, 'Player') then
-			local str = string.sub(currentInventory, 7)
+			local str = string.sub(currentInventory.name, 7)
 			local id = GetPlayerFromServerId(tonumber(str))
 			local ped = GetPlayerPed(id)
 			local pedCoords = GetEntityCoords(ped)
@@ -548,7 +548,6 @@ AddEventHandler('hsn-inventory:Client:addnewDrop',function(coords, drop, src)
 	if src == playerID then
 		currentInventory = {type = 'drop',id = drop, coords = coords }
 		TriggerServerEvent('hsn-inventory:server:openInventory',{type = 'drop',id = drop, coords = coords })
-		SetNuiFocusAdvanced(true, true, false)
 	end
 end)
 
@@ -747,7 +746,7 @@ function SetNuiFocusAdvanced(hasFocus, hasCursor, allowMovement)
 		Citizen.CreateThread(function()
 			local ticks = 0
 			while true do
-				Citizen.Wait(0)
+				Citizen.Wait(2)
 				DisableAllControlActions(0)
 				if not nui_focus[2] then
 					EnableControlAction(0, 1, true)
@@ -755,7 +754,7 @@ function SetNuiFocusAdvanced(hasFocus, hasCursor, allowMovement)
 				end
 				EnableControlAction(0, 249, true) -- N for PTT
 				EnableControlAction(0, 20, true) -- Z for proximity
-				if allowMovement then
+				if allowMovement and not currentInventory then
 					EnableControlAction(0, 30, true) -- movement
 					EnableControlAction(0, 31, true) -- movement
 				end
