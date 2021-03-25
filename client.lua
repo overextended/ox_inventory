@@ -132,11 +132,20 @@ Citizen.CreateThread(function()
 			local shooting = IsPedShooting(playerPed)
 			if shooting or (currentWeapon.item.metadata.throwable and IsControlJustReleased(0, 24)) then
 				local ammo = GetAmmoInPedWeapon(playerPed, currentWeapon.hash)
-				if ammo == 0 and (currentWeapon.item.name == 'WEAPON_FIREEXTINGUISHER' or currentWeapon.item.name == 'WEAPON_PETROLCAN') then
-					ClearPedTasks(playerPed)
-					SetCurrentPedWeapon(playerPed, currentWeapon.hash, true)
-					SetAmmoInClip(playerPed, currentWeapon.hash, 300)
-					TriggerServerEvent('hsn-inventory:server:decreasedurability', playerID, currentWeapon.slot, currentWeapon.item, 300)
+				currentWeapon.item.metadata.durability = currentWeapon.item.metadata.durability - 0.1
+				if (currentWeapon.item.name == 'WEAPON_FIREEXTINGUISHER' or currentWeapon.item.name == 'WEAPON_PETROLCAN') and not wait then
+					if currentWeapon.item.metadata.durability <= 0 then
+						Citizen.CreateThread(function()
+							wait = true
+							ClearPedTasks(playerPed)
+							SetCurrentPedWeapon(playerPed, currentWeapon.hash, true)
+							TriggerServerEvent('hsn-inventory:client:removeItem', currentWeapon.item.name, 1, currentWeapon.item.metadata, currentWeapon.slot)
+							Citizen.Wait(200)
+							SetCurrentPedWeapon(playerPed, `WEAPON_UNARMED`, true)
+							currentWeapon = nil
+							wait = false
+						end)
+					end
 				elseif currentWeapon.item.metadata.throwable and not wait then
 					Citizen.CreateThread(function()
 						wait = true
@@ -146,7 +155,7 @@ Citizen.CreateThread(function()
 						currentWeapon = nil
 						wait = false
 					end)
-				elseif not currentWeapon.item.metadata.throwable then
+				elseif currentWeapon.item.metadata.serial then
 					currentWeapon.item.metadata.ammo = ammo
 					if ammo == 0 then
 						ClearPedTasks(playerPed)
@@ -622,12 +631,14 @@ AddEventHandler('hsn-inventory:client:weapon',function(item)
 	usingItem = true
 	if currentWeapon then TriggerServerEvent('hsn-inventory:server:updateWeapon', currentWeapon.slot, currentWeapon.item) end
 	TriggerEvent('hsn-inventory:client:closeInventory', currentInventory)
-	local newWeapon = item.metadata.weaponlicense
+	local newWeapon = item.metadata.serial
 	local found, wepHash = GetCurrentPedWeapon(playerPed, true)
 	if wepHash == -1569615261 then currentWeapon = nil end
-	if item.name:find('_T_') then wepHash = GetHashKey(item.name:gsub('_T_', '_')) else wepHash = GetHashKey(item.name) end
-	if currentWeapon and currentWeapon.item.metadata.weaponlicense == newWeapon then
-		currentWeapon.item.metadata.ammo = GetAmmoInPedWeapon(playerPed, currentWeapon.hash)
+	wepHash = GetHashKey(item.name)
+	if currentWeapon and currentWeapon.item.metadata.serial == newWeapon then
+		if not currentWeapon.item.name == 'WEAPON_FIREEXTINGUISHER' or currentWeapon.item.name == 'WEAPON_PETROLCAN' then
+			currentWeapon.item.metadata.ammo = GetAmmoInPedWeapon(playerPed, currentWeapon.hash)
+		end
 		TriggerEvent('hsn-inventory:weaponaway')
 		Citizen.Wait(1600)
 		RemoveWeaponFromPed(playerPed, GetHashKey(item.name))
@@ -658,8 +669,8 @@ AddEventHandler('hsn-inventory:client:weapon',function(item)
 			end
 		end
 		TriggerEvent('hsn-inventory:client:addItemNotify',item,'Equipped')
-		if currentWeapon.item.name == 'WEAPON_FIREEXTINGUISHER' or currentWeapon.item.name == 'WEAPON_PETROLCAN' then item.metadata.ammo = 300 end
-		SetAmmoInClip(playerPed, currentWeapon.hash, item.metadata.ammo)
+		if currentWeapon.item.name == 'WEAPON_FIREEXTINGUISHER' or currentWeapon.item.name == 'WEAPON_PETROLCAN' then SetAmmoInClip(playerPed, currentWeapon.hash, 10000) end
+		if item.metadata.ammo then SetAmmoInClip(playerPed, currentWeapon.hash, item.metadata.ammo) end
 	end
 	TriggerEvent('hsn-inventory:currentWeapon', currentWeapon) -- using for another resource
 	Citizen.Wait(100)
@@ -697,7 +708,7 @@ end)
 
 RegisterNetEvent('hsn-inventory:client:checkweapon')
 AddEventHandler('hsn-inventory:client:checkweapon',function(item)
-	if currentWeapon and currentWeapon.item.metadata.weaponlicense == item.metadata.weaponlicense then
+	if currentWeapon and currentWeapon.item.metadata.serial == item.metadata.serial then
 		RemoveWeaponFromPed(playerPed, GetHashKey(item.name))
 		SetCurrentPedWeapon(playerPed, `WEAPON_UNARMED`, true)
 		currentWeapon = nil
