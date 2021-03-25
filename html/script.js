@@ -25,20 +25,19 @@
 		minimumFractionDigits: 0
 	});
 
-	var kg = new Intl.NumberFormat('en-GB', { // yeah we're using the superior units of measurement
+	var kg = new Intl.NumberFormat('en-US', {
 		style: 'unit',
-		unit: 'kilogram',
+		unit: 'kilogram', // yeah we're using the superior units of measurement
 		unitDisplay: 'narrow',
 		minimumFractionDigits: 0,
 		maximumFractionDigits: 2
 	});
 
-	var gram = new Intl.NumberFormat('en-GB', { // yeah we're using the superior units of measurement
+	var gram = new Intl.NumberFormat('en-US', {
 		style: 'unit',
-		unit: 'gram',
+		unit: 'kilogram', // yeah we're using the superior units of measurement
 		unitDisplay: 'narrow',
-		minimumFractionDigits: 0,
-		maximumFractionDigits: 2
+		minimumFractionDigits: 0
 	});
 
 	Display = function(bool) {
