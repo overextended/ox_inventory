@@ -1,7 +1,6 @@
 ESX = nil
 local PlayerData = {}
-local invOpen, isDead, isCuffed, currentWeapon = false, false, false, nil
-local usingItem = false
+local invOpen, isDead, isCuffed, usingItem, currentWeapon = false, false, false, false, nil
 
 Citizen.CreateThread(function()
 	while ESX == nil do
@@ -263,7 +262,7 @@ RegisterCommand('vehinv', function()
 end, false)
 
 CanOpenInventory = function()
-	if playerName and not IsPauseMenuActive() and not isDead and not isCuffed and not invOpen then return true end
+	if playerName and not IsPauseMenuActive() and not isDead and not isCuffed and not invOpen and not usingItem then return true end
 	return false
 end
 	
