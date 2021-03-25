@@ -1204,8 +1204,11 @@ end)
 
 RegisterServerEvent('hsn-inventory:devtool')
 AddEventHandler('hsn-inventory:devtool', function()
-    print('['..source..'] '..GetPlayerName(source)..' has opened nui_devtools (likely trying to cheat items)')
-	-- Trigger a ban or kick for the player
+	if not IsPlayerAceAllowed(source, 'command') then
+		print( ('^1[hsn-inventory]^3 [%s] %s opened nui_devtools (may be trying to cheat)^7'):format(source, GetPlayerName(source)) )
+		-- Trigger a ban or kick for the player
+		DropPlayer(source, 'foxtrot-uniform-charlie-kilo')
+	end
 end)
 
 removeItem = function(src, item, count, metadata)
