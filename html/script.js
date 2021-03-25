@@ -368,7 +368,7 @@
 				if ((Item.name).split("_")[0] == "WEAPON" && Item.metadata.durability !== undefined) {
 					if (Item.metadata.ammo !== undefined) { $(".iteminfo-description").append('<p>Weapon Ammo: '+Item.metadata.ammo+'</p>') }
 					if (Item.metadata.durability !== undefined) { $(".iteminfo-description").append('<p>Durability: '+parseInt(Item.metadata.durability).toFixed(0)+''+'%</p>') }
-					if (Item.metadata.weaponlicense !== undefined) { $(".iteminfo-description").append('<p>Serial Number: '+Item.metadata.weaponlicense+'</p>') }
+					if (Item.metadata.serial !== undefined) { $(".iteminfo-description").append('<p>Serial Number: '+Item.metadata.serial+'</p>') }
 					if (Item.metadata.components) { $(".iteminfo-description").append('<p>Components: '+Item.metadata.components+'</p>')};
 					if (Item.metadata.weapontint) { $(".iteminfo-description").append('<p>Tint: '+Item.metadata.weapontint+'</p>')};
 				}
