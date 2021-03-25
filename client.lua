@@ -850,8 +850,7 @@ AddEventHandler('hsn-inventory:useItem',function(item)
 			end
 
 			------------------------------------------------------------------------------------------------
-			usingItem = true
-			if data.useTime >= 0 then
+			if data.useTime and data.useTime >= 0 then
 				usingItem = true
 				exports['mythic_progbar']:Progress({
 					name = 'useitem',
