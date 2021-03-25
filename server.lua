@@ -140,14 +140,13 @@ AddPlayerInventory = function(identifier, item, count, slot, metadata)
 						if Config.Throwable[item] then
 							metadata = {throwable=1}
 							stacks = true
-						elseif Config.Melee[item] then
+						elseif Config.Melee[item] or Config.Miscellaneous[item] then
 							count = 1 
-							metadata = {melee=1}
+							metadata = {}
 							stacks = false
 							if not metadata.durability then metadata.durability = 100 end
 						elseif Config.Miscellaneous[item] then
-							count = 1 
-							metadata = {misc=1}
+							count = 1
 							stacks = false
 							if not metadata.durability then metadata.durability = 100 end
 						else
@@ -231,7 +230,7 @@ end
 RemovePlayerInventory = function(src, identifier, item, count, slot, metadata)
 	count = tonumber(count)
 	if ESXItems[item] ~= nil then
-		metadata = setMetadata(metadata)
+		if slot then metadata = nil else metadata = setMetadata(metadata) end
 		for i = 1, Config.PlayerSlot do
 			if playerInventory[identifier][i] ~= nil and playerInventory[identifier][i].name == item then
 				if not metadata or is_table_equal(playerInventory[identifier][i].metadata, metadata) then
@@ -239,7 +238,7 @@ RemovePlayerInventory = function(src, identifier, item, count, slot, metadata)
 						playerInventory[identifier][i].count = playerInventory[identifier][i].count - count
 						ItemNotify(src, item, count, 'Removed')
 						break
-					elseif playerInventory[identifier][i].count == count then
+					elseif playerInventory[identifier][i].count == count and (not durability or durability == playerInventory[identifier][i].metadata.durability) then
 						playerInventory[identifier][i] = nil
 						ItemNotify(src, item, count, 'Removed')
 						break
@@ -671,7 +670,7 @@ AddEventHandler('hsn-inventory:server:saveInventoryData',function(data)
 	end
 end) 
 
-RegisterServerEvent('hsn-inventory:buyItem')
+RegisterNetEvent('hsn-inventory:buyItem')
 AddEventHandler('hsn-inventory:buyItem', function(info)
 	local src = source
 	local data = info.data
@@ -773,14 +772,14 @@ RegisterCommand('fixinv', function(source, args, rawCommand)
 	TriggerClientEvent('hsn-inventory:client:refreshInventory',source,playerInventory[Player.identifier])
 end)
 
-RegisterServerEvent('hsn-inventory:server:refreshInventory')
+RegisterNetEvent('hsn-inventory:server:refreshInventory')
 AddEventHandler('hsn-inventory:server:refreshInventory',function()
 	if notready then return end
 	local Player = ESX.GetPlayerFromId(source)
 	TriggerClientEvent('hsn-inventory:client:refreshInventory',source,playerInventory[Player.identifier])
 end)
 
-RegisterServerEvent('hsn-inventory:server:openInventory')
+RegisterNetEvent('hsn-inventory:server:openInventory')
 AddEventHandler('hsn-inventory:server:openInventory',function(data, coords)
 	if notready then return end
 	local src = source
@@ -841,7 +840,7 @@ AddEventHandler('hsn-inventory:server:openInventory',function(data, coords)
 	end
 end)
 
-RegisterServerEvent('hsn-inventory:server:OpenStash')
+RegisterNetEvent('hsn-inventory:server:OpenStash')
 AddEventHandler('hsn-inventory:server:OpenStash',function(stash)
 	OpenStash(source, stash)
 end)
@@ -867,7 +866,7 @@ OpenStash = function(source, stash)
 	end
 end
 
-RegisterServerEvent('hsn-inventory:server:openTargetInventory')
+RegisterNetEvent('hsn-inventory:server:openTargetInventory')
 AddEventHandler('hsn-inventory:server:openTargetInventory',function(TargetId)
 	if notready then return end
 	local Player = ESX.GetPlayerFromId(source)
@@ -888,7 +887,7 @@ AddEventHandler('hsn-inventory:server:openTargetInventory',function(TargetId)
 	end
 end)
 
-RegisterServerEvent('hsn-inventory:server:saveInventory')
+RegisterNetEvent('hsn-inventory:server:saveInventory')
 AddEventHandler('hsn-inventory:server:saveInventory',function(data)
 	if notready then return end
 	SaveItems(data.type,data.invid)
@@ -1013,7 +1012,7 @@ end
 
 
 
-RegisterServerEvent('hsn-inventory:setcurrentInventory')
+RegisterNetEvent('hsn-inventory:setcurrentInventory')
 AddEventHandler('hsn-inventory:setcurrentInventory',function(other)
 	local src = source
 	local id = 'Player'..src
@@ -1029,7 +1028,7 @@ AddEventHandler('hsn-inventory:setcurrentInventory',function(other)
 	end
 end)
 
-RegisterServerEvent('hsn-inventory:removecurrentInventory')
+RegisterNetEvent('hsn-inventory:removecurrentInventory')
 AddEventHandler('hsn-inventory:removecurrentInventory',function(name)
 	local src = source
 	if invopened[src] ~= nil then
@@ -1085,7 +1084,7 @@ end
 	end
 end]]
 
-RegisterServerEvent('hsn-inventory:server:useItem')
+RegisterNetEvent('hsn-inventory:server:useItem')
 AddEventHandler('hsn-inventory:server:useItem',function(item)
 	local src = source
 	local Player = ESX.GetPlayerFromId(src)
@@ -1112,7 +1111,7 @@ AddEventHandler('hsn-inventory:server:useItem',function(item)
 end)
 
 
-RegisterServerEvent('hsn-inventory:server:reloadWeapon')
+RegisterNetEvent('hsn-inventory:server:reloadWeapon')
 AddEventHandler('hsn-inventory:server:reloadWeapon',function(weapon)
 	local Player = ESX.GetPlayerFromId(source)
 	local ammo = {}
@@ -1124,7 +1123,7 @@ AddEventHandler('hsn-inventory:server:reloadWeapon',function(weapon)
 	end
 end)
 
-RegisterServerEvent('hsn-inventory:server:useItemfromSlot')
+RegisterNetEvent('hsn-inventory:server:useItemfromSlot')
 AddEventHandler('hsn-inventory:server:useItemfromSlot',function(slot)
 	local src = source
 	local Player = ESX.GetPlayerFromId(src)
@@ -1156,7 +1155,7 @@ AddEventHandler('hsn-inventory:server:useItemfromSlot',function(slot)
 end)
 
 
-RegisterServerEvent('hsn-inventory:server:decreasedurability')
+RegisterNetEvent('hsn-inventory:server:decreasedurability')
 AddEventHandler('hsn-inventory:server:decreasedurability',function(source, slot, weapon, ammo)
 	local src = source
 	local Player = ESX.GetPlayerFromId(src)
@@ -1167,6 +1166,9 @@ AddEventHandler('hsn-inventory:server:decreasedurability',function(source, slot,
 				if playerInventory[Player.identifier][slot].metadata.durability <= 0 then
 					TriggerClientEvent('hsn-inventory:client:checkweapon',src,playerInventory[Player.identifier][slot])
 					TriggerClientEvent('hsn-inventory:notification',src,'This weapon is broken',2)
+					if playerInventory[Player.identifier][slot].name:find('WEAPON_FIREEXTINGUISHER') or playerInventory[Player.identifier][slot].name:find('WEAPON_PETROLCAN') then
+						RemovePlayerInventory(src,Player.identifier, playerInventory[Player.identifier][slot].name, 1, slot)
+					end
 					return
 				end
 				if Config.DurabilityDecreaseAmount[playerInventory[Player.identifier][slot].name] == nil then
@@ -1177,16 +1179,13 @@ AddEventHandler('hsn-inventory:server:decreasedurability',function(source, slot,
 					decreaseamount = amount * (ammo / 15)
 				end
 				playerInventory[Player.identifier][slot].metadata.durability = playerInventory[Player.identifier][slot].metadata.durability - decreaseamount
-				if playerInventory[Player.identifier][slot].metadata.durability == 0 then
-					--TriggerServerEvent('hsn-inventory:server:removeItem', src, data.item, 1)
-				end
 			end
 			TriggerClientEvent('hsn-inventory:client:refreshInventory',src,playerInventory[Player.identifier])
 		end
 	end
 end)
 
-RegisterServerEvent('hsn-inventory:server:addweaponAmmo')
+RegisterNetEvent('hsn-inventory:server:addweaponAmmo')
 AddEventHandler('hsn-inventory:server:addweaponAmmo',function(slot,weapon,ammo,totalAmmo,removeAmmo,newAmmo)
 	local src = source
 	local Player = ESX.GetPlayerFromId(src)
@@ -1203,7 +1202,7 @@ AddEventHandler('hsn-inventory:server:addweaponAmmo',function(slot,weapon,ammo,t
 end)
 
 
-RegisterServerEvent('hsn-inventory:server:updateWeapon')
+RegisterNetEvent('hsn-inventory:server:updateWeapon')
 AddEventHandler('hsn-inventory:server:updateWeapon',function(slot, item)
 	local src = source
 	local Player = ESX.GetPlayerFromId(src)
@@ -1230,11 +1229,11 @@ end)]]
 end)]]
 
 RegisterNetEvent('hsn-inventory:client:removeItem')
-AddEventHandler('hsn-inventory:client:removeItem',function(item, count, metadata)
-	removeItem(source, item, count, metadata)
+AddEventHandler('hsn-inventory:client:removeItem',function(item, count, metadata, slot)
+	removeItem(source, item, count, metadata, slot)
 end)
 
-RegisterServerEvent('hsn-inventory:devtool')
+RegisterNetEvent('hsn-inventory:devtool')
 AddEventHandler('hsn-inventory:devtool', function()
 	if not IsPlayerAceAllowed(source, 'command') then
 		print( ('^1[hsn-inventory]^3 [%s] %s was kicked for opening nui_devtools^7'):format(source, GetPlayerName(source)) )
@@ -1246,7 +1245,7 @@ AddEventHandler('hsn-inventory:devtool', function()
 	end
 end)
 
-removeItem = function(src, item, count, metadata)
+removeItem = function(src, item, count, metadata, slot)
 	if item == nil then
 		return
 	end
@@ -1254,7 +1253,7 @@ removeItem = function(src, item, count, metadata)
 	if count == nil then
 		count = 1
 	end
-	RemovePlayerInventory(src,Player.identifier, item, count, nil, metadata)
+	RemovePlayerInventory(src,Player.identifier, item, count, slot, metadata)
 end
 
 addItem = function(src, item, count, metadata)
