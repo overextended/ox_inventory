@@ -24,6 +24,7 @@ files {
 
 exports {
 	'OpenStash',
+	'openTargetInventory'
 }
 
 server_exports {
