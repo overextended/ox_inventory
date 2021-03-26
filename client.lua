@@ -610,9 +610,10 @@ AddEventHandler('hsn-inventory:weapondraw', function(item)
 	TaskPlayAnimAdvanced(playerPed, 'reaction@intimidation@1h', 'intro', GetEntityCoords(playerPed, true), 0, 0, GetEntityHeading(playerPed), 8.0, 3.0, -1, 50, 0, 0, 0)
 	Citizen.Wait(800)
 	if currentWeapon then SetPedAmmo(playerPed, currentWeapon.hash, 0)
-	RemoveWeaponFromPed(playerPed, currentWeapon.hash)
+		SetCurrentPedWeapon(playerPed, `WEAPON_UNARMED`, true)
+		Citizen.Wait(0)
+		RemoveWeaponFromPed(playerPed, currentWeapon.hash)
 	end
-	SetCurrentPedWeapon(playerPed, `WEAPON_UNARMED`, true)
 	Citizen.Wait(800)
 	ClearPedSecondaryTask(playerPed)
 	usingItem = false
@@ -620,15 +621,24 @@ end)
 
 RegisterNetEvent('hsn-inventory:weaponaway')
 AddEventHandler('hsn-inventory:weaponaway', function()
+	local hash = currentWeapon.hash
 	loadAnimDict('reaction@intimidation@1h')
 	TaskPlayAnimAdvanced(playerPed, 'reaction@intimidation@1h', 'outro', GetEntityCoords(playerPed, true), 0, 0, GetEntityHeading(playerPed), 8.0, 3.0, -1, 50, 0, 0, 0)
-	SetPedAmmo(playerPed, currentWeapon.hash, 0)
+	SetPedAmmo(playerPed, hash, 0)
 	Citizen.Wait(1600)
+	SetCurrentPedWeapon(playerPed, `WEAPON_UNARMED`, true)
+	Citizen.Wait(0)
+	RemoveWeaponFromPed(playerPed, hash)
 	ClearPedSecondaryTask(playerPed)
 	if IsPedUsingActionMode(playerPed) then
 		SetPedUsingActionMode(playerPed, -1, -1, 1)
 	end
 	usingItem = false
+end)
+
+RegisterNetEvent('hsn-inventory:client:updateWeapon')
+AddEventHandler('hsn-inventory:client:updateWeapon',function(data)
+	currentWeapon.item.metadata = data
 end)
 
 RegisterNetEvent('hsn-inventory:client:weapon')
@@ -647,8 +657,6 @@ AddEventHandler('hsn-inventory:client:weapon',function(item)
 		end
 		TriggerEvent('hsn-inventory:weaponaway')
 		Citizen.Wait(1600)
-		RemoveWeaponFromPed(playerPed, GetHashKey(item.name))
-		SetCurrentPedWeapon(playerPed, `WEAPON_UNARMED`, true)
 		currentWeapon = nil
 		TriggerEvent('hsn-inventory:client:addItemNotify',item,'Holstered')
 	else
