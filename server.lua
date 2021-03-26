@@ -208,6 +208,8 @@ function setMetadata(metadata)
 end
 
 function is_table_equal(t1,t2,ignore_mt)
+	t1 = setMetadata(t1)
+	t2 = setMetadata(t2)
 	local ty1 = type(t1)
 	local ty2 = type(t2)
 	if ty1 ~= ty2 then return false end
@@ -1212,6 +1214,7 @@ AddEventHandler('hsn-inventory:server:updateWeapon',function(slot, item)
 		if playerInventory[Player.identifier][slot].metadata ~= nil then
 			playerInventory[Player.identifier][slot].metadata = item.metadata
 			TriggerClientEvent('hsn-inventory:client:refreshInventory',src,playerInventory[Player.identifier])
+			TriggerClientEvent('hsn-inventory:client:updateWeapon', src, playerInventory[Player.identifier][slot].metadata)
 		end
 	end
 end)
