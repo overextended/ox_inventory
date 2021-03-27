@@ -797,6 +797,8 @@ AddEventHandler('hsn-inventory:server:openInventory',function(data, coords)
 	local src = source
 	local Player = ESX.GetPlayerFromId(src)
 	if data ~= nil then
+		if invopened[src] then TriggerEvent("hsn-inventory:removecurrentInventory", invopened[src].curInventory) Citizen.Wait(100) end
+		Citizen.Wait(500)
 		if data.type == 'drop' then
 			if Drops[data.id] ~= nil then
 				if checkOpenable(src,data.id,data.coords) then
@@ -862,6 +864,7 @@ OpenStash = function(source, stash)
 	if notready then return end
 	local src = source
 	local Player = ESX.GetPlayerFromId(src)
+	if invopened[src] then TriggerEvent("hsn-inventory:removecurrentInventory", invopened[src].curInventory) Citizen.Wait(100) end
 	if Stashs[stash.id.name] == nil then
 		Stashs[stash.id.name] = {}
 		Stashs[stash.id.name].inventory = GetItems(stash.id.name)
@@ -889,6 +892,7 @@ AddEventHandler('hsn-inventory:server:openTargetInventory',function(TargetId)
 		if playerInventory[tPlayer.identifier] == nil then
 			playerInventory[tPlayer.identifier] = {}
 		end
+		if invopened[src] then TriggerEvent("hsn-inventory:removecurrentInventory", invopened[source].curInventory) Citizen.Wait(100) end
 		if checkOpenable(source, 'Player'..TargetId, GetEntityCoords(GetPlayerPed(TargetId))) then
 			local data = {}
 			data.name = 'Player'..TargetId -- do not touch
