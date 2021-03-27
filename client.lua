@@ -606,21 +606,27 @@ end)
 
 RegisterNetEvent('hsn-inventory:weapondraw')
 AddEventHandler('hsn-inventory:weapondraw', function(item)
-	loadAnimDict('reaction@intimidation@1h')
-	TaskPlayAnimAdvanced(playerPed, 'reaction@intimidation@1h', 'intro', GetEntityCoords(playerPed, true), 0, 0, GetEntityHeading(playerPed), 8.0, 3.0, -1, 50, 0, 0, 0)
-	Citizen.Wait(800)
+	ClearPedSecondaryTask(playerPed)
+	if PlayerData.job.name == 'police' then
+		loadAnimDict('reaction@intimidation@cop@unarmed')
+		TaskPlayAnimAdvanced(playerPed, 'reaction@intimidation@cop@unarmed', 'intro', GetEntityCoords(playerPed, true), 0, 0, GetEntityHeading(playerPed), 8.0, 3.0, -1, 50, 1, 0, 0)
+	else
+		loadAnimDict('reaction@intimidation@1h')
+		TaskPlayAnimAdvanced(playerPed, 'reaction@intimidation@1h', 'intro', GetEntityCoords(playerPed, true), 0, 0, GetEntityHeading(playerPed), 8.0, 3.0, -1, 50, 0, 0, 0)
+		Citizen.Wait(800)
+	end
 	if currentWeapon then SetPedAmmo(playerPed, currentWeapon.hash, 0)
 		SetCurrentPedWeapon(playerPed, `WEAPON_UNARMED`, true)
 		Citizen.Wait(0)
 		RemoveWeaponFromPed(playerPed, currentWeapon.hash)
 	end
 	Citizen.Wait(800)
-	ClearPedSecondaryTask(playerPed)
 	usingItem = false
 end)
 
 RegisterNetEvent('hsn-inventory:weaponaway')
 AddEventHandler('hsn-inventory:weaponaway', function()
+	ClearPedSecondaryTask(playerPed)
 	local hash = currentWeapon.hash
 	loadAnimDict('reaction@intimidation@1h')
 	TaskPlayAnimAdvanced(playerPed, 'reaction@intimidation@1h', 'outro', GetEntityCoords(playerPed, true), 0, 0, GetEntityHeading(playerPed), 8.0, 3.0, -1, 50, 0, 0, 0)
@@ -638,7 +644,7 @@ end)
 
 RegisterNetEvent('hsn-inventory:client:updateWeapon')
 AddEventHandler('hsn-inventory:client:updateWeapon',function(data)
-	currentWeapon.item.metadata = data
+	if currentWeapon then currentWeapon.item.metadata = data end
 end)
 
 RegisterNetEvent('hsn-inventory:client:weapon')
@@ -662,7 +668,7 @@ AddEventHandler('hsn-inventory:client:weapon',function(item)
 	else
 		TriggerEvent('hsn-inventory:weapondraw',item)
 		GiveWeaponToPed(playerPed, wepHash, 0, true, false)
-		Citizen.Wait(1600)
+		if PlayerData.job.name == 'police' then Citizen.Wait(800) else Citizen.Wait(1600) end
 		currentWeapon = {}
 		currentWeapon.slot = item.slot
 		currentWeapon.item = item
@@ -688,6 +694,7 @@ AddEventHandler('hsn-inventory:client:weapon',function(item)
 	end
 	TriggerEvent('hsn-inventory:currentWeapon', currentWeapon) -- using for another resource
 	Citizen.Wait(100)
+	ClearPedSecondaryTask(playerPed)
 	usingItem = false
 end)
 
