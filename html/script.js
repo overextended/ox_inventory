@@ -244,7 +244,7 @@
 			$('.inventory-main-rightside').data("invId", data.rightinventory.name)
 			inventoryidd = data.rightinventory.name
 			rightinvtype = data.rightinventory.type
-			if (rightinvtype == 'TargetPlayer') { maxweight } else {
+			if (rightinvtype == 'TargetPlayer') { data.rightinventory.maxweight = maxweight/1000 } else {
 				data.rightinventory.maxweight = (data.rightinventory.slots*9).toFixed(0)
 			}
 			$('.rightside-name').html(data.rightinventory.name)
