@@ -37,9 +37,10 @@ end)
 
 <br>
 
-## Modifying your framework (ESX/EXM) - _Updated for 1.5.2_
+## Modifying your framework (ESX/EXM) - _Updated for 1.5.6_
 * Modifications to money related functions have changed _(1.5.2)_
 * Modifications to inventory related functions have changed _(1.5.2)_
+* Removal of loadouts _(1.5.6)_
 * Vanilla files: <a href='https://github.com/esx-framework/es_extended/blob/v1-final/server/classes/player.lua'>ESX Final</a> | <a href='https://github.com/extendedmode/extendedmode/blob/master/server/classes/player.lua'>EXM</a>
 
 Replace the contents of `config.weapons.lua` contents with <a href='https://raw.githubusercontent.com/thelindat/extendedmode-hsn-inventory-compatibility/main/config.weapons.lua'>this file</a>
@@ -208,6 +209,8 @@ if result[1].inventory and result[1].inventory ~= '' then
 	userData.inventory = json.decode(result[1].inventory)
 end
 ```  
+##### As of 1.5.6
+* Remove all references to loadouts
 
 <br>
 
@@ -221,6 +224,8 @@ end, xPlayer.identifier)
 ```
 * Inside the MySQL.Async.execute function, replace  
 `[@inventory'] = json.encode(xPlayer.getInventory(true))` with `['@inventory'] = json.encode(inventory)`
+* Remove `loadout = @loadout,`
+* Remove `['@loadout'] = json.encode(xPlayer.getLoadout(true)),`
 
 <br>
 <h3 align='center'>If your framework doesn't load/CreateExtendedPlayer double check your edits</h3>
