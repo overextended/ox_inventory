@@ -63,7 +63,7 @@
 	var nf = Intl.NumberFormat();
 
 	var numberFormat = function(num, item) {
-		if (item.search('money') != -1) {
+		if (item && item.search('money') != -1) {
 			return money.format(num)
 		} else {
 			return nf.format(num)
