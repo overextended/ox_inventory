@@ -710,14 +710,14 @@ AddEventHandler('hsn-inventory:buyItem', function(info)
 		if checkShop.name ~= data.name then
 			TriggerBanEvent(xPlayer, 'tried to buy '..data.name..' but slot contains '..checkShop.name)
 		elseif (checkShop.price * count) ~= data.price then
-			TriggerBanEvent(xPlayer, 'tried to buy '..count..'x '..data.name..' for '..data.price..' '..currency..'(actual cost is '..ESX.Round(checkShop.price * count)..')')
+			TriggerBanEvent(xPlayer, 'tried to buy '..ESX.Math.GroupDigits(count)..'x '..data.name..' for '..ESX.Math.GroupDigits(data.price)..' '..currency..'(actual cost is '..ESX.Math.GroupDigits(ESX.Round(checkShop.price * count))..')')
 		end
 
 		if IfInventoryCanCarry(playerInventory[xPlayer.identifier], Config.MaxWeight, (data.weight * count)) then
 			if data.price then
 				if money >= data.price then
 					local cost
-					if currency == 'bank' or currency:find('money') then cost = '$'..data.price..' currency' else cost = data.price..'x '..currency end
+					if currency == 'bank' or currency:find('money') then cost = '$'..ESX.Math.GroupDigits(data.price)..' currency' else cost = ESX.Math.GroupDigits(data.price)..'x '..currency end
 					if currency == 'bank' then
 						xPlayer.removeAccountMoney('bank', data.price)
 					else
@@ -725,15 +725,15 @@ AddEventHandler('hsn-inventory:buyItem', function(info)
 					end
 					AddPlayerInventory(xPlayer.identifier, data.name, count, nil, data.metadata)
 					TriggerClientEvent('hsn-inventory:client:refreshInventory',src,playerInventory[xPlayer.identifier])
-					if Config.Logs then exports.linden_logs:log(xPlayer.source, ('%s (%s) bought %s %s from %s for %s'):format(xPlayer.name, xPlayer.identifier, count, data.label, Config.Shops[location].name, cost), 'test') end
+					if Config.Logs then exports.linden_logs:log(xPlayer.source, ('%s (%s) bought %s %s from %s for %s'):format(xPlayer.name, xPlayer.identifier, ESX.Math.GroupDigits(count), data.label, Config.Shops[location].name, cost), 'test') end
 				else
 					local missing
 					if currency == 'bank' or item.name == 'money' then
-						missing = '$'..ESX.Round(data.price - money)
+						missing = '$'..ESX.Math.GroupDigits(ESX.Round(data.price - money)).. ' '..currency
 					elseif item.name == 'black_money' then
-						missing = '$'..ESX.Round(data.price - money).. ' '..string.lower(item.label)
+						missing = '$'..ESX.Math.GroupDigits(ESX.Round(data.price - money)).. ' '..string.lower(item.label)
 					else
-						missing = ''..ESX.Round(data.price - money)..' '..currency
+						missing = ''..ESX.Math.GroupDigits(ESX.Round(data.price - money))..' '..currency
 					end
 					TriggerClientEvent('hsn-inventory:notification',src,'You can not afford that (missing '..missing..')',2)
 				end
@@ -1080,7 +1080,7 @@ ItemNotify = function(source, item, count, type, id)
 		if Config.Logs then
 			local Player = ESX.GetPlayerFromId(source)
 			if id then id = '('..id..')' else id = '' end
-			exports.linden_logs:log(Player.source, ('%s (%s) has %s %sx %s %s'):format(Player.name, Player.identifier, string.lower(type), count, ESXItems[item].label, id), 'test')
+			exports.linden_logs:log(Player.source, ('%s (%s) has %s %sx %s %s'):format(Player.name, Player.identifier, string.lower(type), ESX.Math.GroupDigits(count), ESXItems[item].label, id), 'test')
 		end
 	else TriggerClientEvent('hsn-inventory:client:addItemNotify',source,ESXItems[item],'Used') end
 end
