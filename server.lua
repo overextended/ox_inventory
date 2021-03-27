@@ -716,7 +716,8 @@ AddEventHandler('hsn-inventory:buyItem', function(info)
 		if IfInventoryCanCarry(playerInventory[xPlayer.identifier], Config.MaxWeight, (data.weight * count)) then
 			if data.price then
 				if money >= data.price then
-					if Config.Logs then exports.linden_logs:log(xPlayer.source, ('%s (%s) bought %sx %s from %s for $%s'):format(xPlayer.name, xPlayer.identifier, count, data.label, Config.Shops[location].name, data.price), 'test') end
+					local cost
+					if currency == 'bank' or currency:find('money') then cost = '$'..data.price..' currency' else cost = data.price..'x '..currency end
 					if currency == 'bank' then
 						xPlayer.removeAccountMoney('bank', data.price)
 					else
@@ -724,9 +725,17 @@ AddEventHandler('hsn-inventory:buyItem', function(info)
 					end
 					AddPlayerInventory(xPlayer.identifier, data.name, count, nil, data.metadata)
 					TriggerClientEvent('hsn-inventory:client:refreshInventory',src,playerInventory[xPlayer.identifier])
-					--TriggerClientEvent('hsn-inventory:client:openInventory',src,playerInventory[xPlayer.identifier],Shops[Config.Shops[location].name])
+					if Config.Logs then exports.linden_logs:log(xPlayer.source, ('%s (%s) bought %s %s from %s for %s'):format(xPlayer.name, xPlayer.identifier, count, data.label, Config.Shops[location].name, cost), 'test') end
 				else
-					TriggerClientEvent('hsn-inventory:notification',src,'You can not afford that (missing '..ESX.Round(data.price - money)..' '..currency..')',2)
+					local missing
+					if currency == 'bank' or currency == 'money' then
+						missing = '$'..ESX.Round(data.price - money)
+					elseif currency == 'black_money' then
+						missing = '$'..ESX.Round(data.price - money)..' dirty money'
+					else
+						missing = ESX.Round(data.price - money)..' '..currency
+					end
+					TriggerClientEvent('hsn-inventory:notification',src,'You can not afford that (missing '..missing..')',2)
 				end
 			end
 		else
