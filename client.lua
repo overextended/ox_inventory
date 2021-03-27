@@ -154,7 +154,7 @@ Citizen.CreateThread(function()
 						currentWeapon = nil
 						wait = false
 					end)
-				elseif currentWeapon.item.metadata.serial then
+				elseif currentWeapon.item.metadata.serial and currentWeapon.item.metadata.ammo then
 					currentWeapon.item.metadata.ammo = ammo
 					if ammo == 0 then
 						ClearPedTasks(playerPed)
