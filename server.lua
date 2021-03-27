@@ -728,12 +728,12 @@ AddEventHandler('hsn-inventory:buyItem', function(info)
 					if Config.Logs then exports.linden_logs:log(xPlayer.source, ('%s (%s) bought %s %s from %s for %s'):format(xPlayer.name, xPlayer.identifier, count, data.label, Config.Shops[location].name, cost), 'test') end
 				else
 					local missing
-					if currency == 'bank' or currency == 'money' then
+					if currency == 'bank' or item.name == 'money' then
 						missing = '$'..ESX.Round(data.price - money)
-					elseif currency == 'black_money' then
-						missing = '$'..ESX.Round(data.price - money)..' dirty money'
+					elseif item.name == 'black_money' then
+						missing = '$'..ESX.Round(data.price - money).. ' '..string.lower(item.label)
 					else
-						missing = ESX.Round(data.price - money)..' '..currency
+						missing = ''..ESX.Round(data.price - money)..' '..currency
 					end
 					TriggerClientEvent('hsn-inventory:notification',src,'You can not afford that (missing '..missing..')',2)
 				end
@@ -1062,7 +1062,7 @@ AddEventHandler('playerDropped', function(reason) --  https://github.com/CylexVI
 		if invopened[src].curInventory ~= nil and invopened[src].invopened then
 			SaveItems(invopened[src].type,invopened[src].curInventory)
 			invopened[src] = nil
-			print('^1[hsn-inventory]^1 One player left the game when his inventory open and inventory saved ^1[DUPE Alert]^1 ')
+			print('^1[hsn-inventory]^1 One player left the game when his inventory open and inventory saved ^1[DUPE Alert]^7')
 		end
 	end
 	for k,v in pairs(openedinventories) do
@@ -1312,8 +1312,11 @@ getItem = function(src, item, metadata)
 	xItem.metadata = metadata
 	xItem.count = 0
 	for k, v in pairs(inventory) do
-		if v.name == item and (v.metadata and is_table_equal(v.metadata, metadata)) then
-			xItem.count = xItem.count + v.count
+		if v.name == item then
+			if metadata and not v.metadata then v.metadata = {} end
+			if is_table_equal(v.metadata, metadata) then
+				xItem.count = xItem.count + v.count
+			end
 		end
 	end
 	return xItem
