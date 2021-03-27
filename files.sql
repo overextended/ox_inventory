@@ -120,7 +120,7 @@ INSERT INTO `items` (`name`, `label`, `weight`, `can_remove`, `stackable`, `clos
 	('WEAPON_PETROLCAN', 'Gas Can', 12000, 1, 1, 0, NULL),
 	('WEAPON_PIPEBOMB', 'Pipe Bomb', 1800, 1, 1, 0, NULL),
 	('WEAPON_PISTOL', 'Pistol', 970, 1, 1, 0, NULL),
-	('WEAPON_PISTOL50', 'PIstol .50', 2000, 1, 1, 0, NULL),
+	('WEAPON_PISTOL50', 'Pistol .50', 2000, 1, 1, 0, NULL),
 	('WEAPON_PISTOL_MK2', 'Pistol MK2', 970, 1, 1, 0, NULL),
 	('WEAPON_POOLCUE', 'Pool Cue', 146, 1, 1, 0, NULL),
 	('WEAPON_PROXMINE', 'Proximity Mine', 2500, 1, 1, 0, NULL),
