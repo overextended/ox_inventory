@@ -19,16 +19,20 @@
 	var availableweight = 0
 	var element = new Image;
 
-	var weightFormat = function(num, parenthesis) {
+	var weightFormat = function(num, parenthesis, showZero) {
 		if (parenthesis == false) {
 			if (num == 0) {
-				return ''
+				if (showZero) { return '0' } else {
+					return ''
+				}
 			} else if (num > 1) {
 				return kg.format(num)
 			} else { return gram.format(num*1000) }
 		} else {
 			if (num == 0) {
-				return ''
+				if (showZero) { return '0' } else {
+					return ''
+				}
 			} else if (num > 1) {
 				return '(' + kg.format(num) + ')'
 			} else { return '(' + gram.format(num*1000) + ')' }
@@ -234,7 +238,7 @@
 		})
 
 
-		$(".leftside-weight").html(weightFormat(totalkg/1000, false) + '/'+ weightFormat(maxweight/1000, false))
+		$(".leftside-weight").html(weightFormat(totalkg/1000, false, true) + '/'+ weightFormat(maxweight/1000, false))
 		if (data.rightinventory !== undefined) {
 			$('.inventory-main-rightside').data("invTier", data.rightinventory.type)
 			$('.inventory-main-rightside').data("invId", data.rightinventory.name)
@@ -296,7 +300,7 @@
 						}
 					}
 				})
-				$(".rightside-weight").append('<span id="rightside-curweight">' + weightFormat(rightweight/1000, false) + '</span>')
+				$(".rightside-weight").append('<span id="rightside-curweight">' + weightFormat(rightweight/1000, false, true) + '</span>')
 				$(".rightside-weight").append('/<span id="rightside-maxweight">' + weightFormat(data.rightinventory.maxweight, false) + '</span>')
 			}
 		} else {
@@ -304,7 +308,7 @@
 			$('.inventory-main-rightside').data("invTier", "drop")
 			rightinvtype = 'drop'
 			$(".rightside-weight").html('')
-			$(".rightside-weight").append('<span id="rightside-curweight">' + weightFormat(rightweight/1000) + '</span>')
+			$(".rightside-weight").append('<span id="rightside-curweight">' + weightFormat(rightweight/1000, false, true) + '</span>')
 			for(i = 1; i < (dropSlots); i++) {
 				$(".inventory-main-rightside").find("[inventory-slot=" + i + "]").remove();
 				$(".inventory-main-rightside").append('<div class="ItemBoxes" inventory-slot=' + i +'></div> ')
@@ -706,16 +710,16 @@
 				if (inv2 !== 'Playerinv') {
 					if (inv2 !== inv) {
 						rightweight = rightweight + (fromItem.weight * count)
-						$("#rightside-curweight").html(weightFormat(rightweight/1000) )
+						$("#rightside-curweight").html(weightFormat(rightweight/1000, false, true) )
 						totalkg = totalkg - (fromItem.weight * count)
-						$(".leftside-weight").html(weightFormat(totalkg/1000) + '/'+ weightFormat(maxweight/1000))
+						$(".leftside-weight").html(weightFormat(totalkg/1000, false, true) + '/'+ weightFormat(maxweight/1000))
 					}
 				} else {
 					if (inv2 !== inv) {
 						rightweight = rightweight - (fromItem.weight * count)
-						$("#rightside-curweight").html(weightFormat(rightweight/1000) )
+						$("#rightside-curweight").html(weightFormat(rightweight/1000, false, true) )
 						totalkg = totalkg + (fromItem.weight * count)
-						$(".leftside-weight").html(weightFormat(totalkg/1000) + '/'+ weightFormat(maxweight/1000))
+						$(".leftside-weight").html(weightFormat(totalkg/1000, false, true) + '/'+ weightFormat(maxweight/1000))
 					}
 				}
 			} else {
