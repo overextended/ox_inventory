@@ -240,7 +240,9 @@
 			$('.inventory-main-rightside').data("invId", data.rightinventory.name)
 			inventoryidd = data.rightinventory.name
 			rightinvtype = data.rightinventory.type
-			data.rightinventory.maxweight = (data.rightinventory.slots*9).toFixed(0)
+			if (rightinvtype == 'TargetPlayer') { maxweight } else {
+				data.rightinventory.maxweight = (data.rightinventory.slots*9).toFixed(0)
+			}
 			$('.rightside-name').html(data.rightinventory.name)
 				for(i = 1; i < (data.rightinventory.slots); i++) {
 					$(".inventory-main-rightside").find("[inventory-slot=" + i + "]").remove();
@@ -496,8 +498,8 @@
 						if (fromItem.metadata.durability) { var durability = HSN.InventoryGetDurability(fromItem.metadata.durability) }
 						// toItem durability
 						if (toItem.metadata.durability) { var durability2 = HSN.InventoryGetDurability(toItem.metadata.durability) }
-						toInventory.find("[inventory-slot=" + toSlot + "]").html('<div class="item-slot-img"><img src="images/' + fromItem.name + '.png'+'" alt="' + fromItem.name + '" /></div><div class="item-slot-count"><p>' + numberFormat(fromItem.count) + ' ' + weightFormat(fromItem.weight/1000 * fromItem.count) + '</p></div><div class="item-slot-label"><p><div class="item-slot-durability"><div class="item-slot-durability-bar"><p>100</p></div></div><div class="item-slot-label"><p>' + fromItem.label + '</p></div></p></div>');
-						fromInventory.find("[inventory-slot=" + fromSlot + "]").html('<div class="item-slot-img"><img src="images/' + toItem.name + '.png'+'" alt="' + toItem.name + '" /></div><div class="item-slot-count"><p>' + numberFormat(toItem.count) + ' ' + weightFormat(toItem.weight/1000 * toItem.count) + '</p></div><div class="item-slot-label"><p><div class="item-slot-durability"><div class="item-slot-durability-bar"><p>100</p></div></div><div class="item-slot-label"><p>' + toItem.label + '</p></div></p></div>');
+						toInventory.find("[inventory-slot=" + toSlot + "]").html('<div class="item-slot-img"><img src="images/' + fromItem.name + '.png'+'" alt="' + fromItem.name + '" /></div><div class="item-slot-count"><p>' + numberFormat(fromItem.count, fromItem.name) + ' ' + weightFormat(fromItem.weight/1000 * fromItem.count) + '</p></div><div class="item-slot-label"><p><div class="item-slot-durability"><div class="item-slot-durability-bar"><p>100</p></div></div><div class="item-slot-label"><p>' + fromItem.label + '</p></div></p></div>');
+						fromInventory.find("[inventory-slot=" + fromSlot + "]").html('<div class="item-slot-img"><img src="images/' + toItem.name + '.png'+'" alt="' + toItem.name + '" /></div><div class="item-slot-count"><p>' + numberFormat(toItem.count, toItem.name) + ' ' + weightFormat(toItem.weight/1000 * toItem.count) + '</p></div><div class="item-slot-label"><p><div class="item-slot-durability"><div class="item-slot-durability-bar"><p>100</p></div></div><div class="item-slot-label"><p>' + toItem.label + '</p></div></p></div>');
 						toInventory.find("[inventory-slot=" + toSlot + "]").find(".item-slot-durability-bar").css({"background-color":durability[0],"width":durability[2]}).find('p').html(durability[1]);
 						fromInventory.find("[inventory-slot=" + fromSlot + "]").find(".item-slot-durability-bar").css({"background-color":durability2[0],"width":durability2[2]}).find('p').html(durability2[1]);
 						toInventory.find("[inventory-slot=" + toSlot + "]").data("ItemData", fromItem);
@@ -547,9 +549,9 @@
 					} else if (fromItem.name !== toItem.name && inv2 == inv) { // swap
 						if ((toItem.name).split("_")[0] == "WEAPON" && toItem.metadata.durability !== undefined) {
 							var durability = HSN.InventoryGetDurability(toItem.metadata.durability)
-							fromInventory.find("[inventory-slot=" + fromSlot + "]").html('<div class="item-slot-img"><img src="images/' + toItem.name + '.png'+'" alt="' + toItem.name + '" /></div><div class="item-slot-count"><p>' + numberFormat(toItem.count) + ' ' + weightFormat(toItem.weight/1000 * toItem.count) + '</p></div><div class="item-slot-label"><p><div class="item-slot-durability"><div class="item-slot-durability-bar"><p>100</p></div></div><div class="item-slot-label"><p>' + toItem.label + '</p></div></p></div>');
+							fromInventory.find("[inventory-slot=" + fromSlot + "]").html('<div class="item-slot-img"><img src="images/' + toItem.name + '.png'+'" alt="' + toItem.name + '" /></div><div class="item-slot-count"><p>' + numberFormat(toItem.count, toItem.name) + ' ' + weightFormat(toItem.weight/1000 * toItem.count) + '</p></div><div class="item-slot-label"><p><div class="item-slot-durability"><div class="item-slot-durability-bar"><p>100</p></div></div><div class="item-slot-label"><p>' + toItem.label + '</p></div></p></div>');
 							fromInventory.find("[inventory-slot=" + fromSlot + "]").find(".item-slot-durability-bar").css({"background-color":durability[0],"width":durability[2]}).find('p').html(durability[1]);
-							toInventory.find("[inventory-slot=" + toSlot + "]").html('<div class="item-slot-img"><img src="images/' + fromItem.name + '.png'+'" alt="' + fromItem.name + '" /></div><div class="item-slot-count"><p>' + numberFormat(fromItem.count) + ' ' + weightFormat(fromItem.weight/1000 * fromItem.count) + '</p></div><div class="item-slot-label"><p><div class="item-slot-label"><p>' + fromItem.label + '</p></div></p></div>');   
+							toInventory.find("[inventory-slot=" + toSlot + "]").html('<div class="item-slot-img"><img src="images/' + fromItem.name + '.png'+'" alt="' + fromItem.name + '" /></div><div class="item-slot-count"><p>' + numberFormat(fromItem.count, fromItem.name) + ' ' + weightFormat(fromItem.weight/1000 * fromItem.count) + '</p></div><div class="item-slot-label"><p><div class="item-slot-label"><p>' + fromItem.label + '</p></div></p></div>');   
 							toInventory.find("[inventory-slot=" + toSlot + "]").data("ItemData", fromItem);
 							fromInventory.find("[inventory-slot=" + fromSlot + "]").data("ItemData", toItem);
 							fromInventory.find("[inventory-slot=" + fromSlot + "]").addClass("drag-item");
@@ -568,9 +570,9 @@
 							success = true
 						} else if ((fromItem.name).split("_")[0] == "WEAPON" && fromItem.metadata.durability !== undefined) {
 							var durability = HSN.InventoryGetDurability(fromItem.metadata.durability)
-							toInventory.find("[inventory-slot=" + toSlot + "]").html('<div class="item-slot-img"><img src="images/' + fromItem.name + '.png'+'" alt="' + fromItem.name + '" /></div><div class="item-slot-count"><p>' + numberFormat(fromItem.count) + ' ' + weightFormat(fromItem.weight/1000 * fromItem.count) + '</p></div><div class="item-slot-label"><p><div class="item-slot-durability"><div class="item-slot-durability-bar"><p>100</p></div></div><div class="item-slot-label"><p>' + fromItem.label + '</p></div></p></div>');
+							toInventory.find("[inventory-slot=" + toSlot + "]").html('<div class="item-slot-img"><img src="images/' + fromItem.name + '.png'+'" alt="' + fromItem.name + '" /></div><div class="item-slot-count"><p>' + numberFormat(fromItem.count, fromItem.name) + ' ' + weightFormat(fromItem.weight/1000 * fromItem.count) + '</p></div><div class="item-slot-label"><p><div class="item-slot-durability"><div class="item-slot-durability-bar"><p>100</p></div></div><div class="item-slot-label"><p>' + fromItem.label + '</p></div></p></div>');
 							toInventory.find("[inventory-slot=" + toSlot + "]").find(".item-slot-durability-bar").css({"background-color":durability[0],"width":durability[2]}).find('p').html(durability[1]);
-							fromInventory.find("[inventory-slot=" + fromSlot + "]").html('<div class="item-slot-img"><img src="images/' + toItem.name + '.png'+'" alt="' + toItem.name + '" /></div><div class="item-slot-count"><p>' + numberFormat(toItem.count) + ' ' + weightFormat(toItem.weight/1000 * toItem.count) + '</p></div><div class="item-slot-label"><p><div class="item-slot-label"><p>' + toItem.label + '</p></div></p></div>');   
+							fromInventory.find("[inventory-slot=" + fromSlot + "]").html('<div class="item-slot-img"><img src="images/' + toItem.name + '.png'+'" alt="' + toItem.name + '" /></div><div class="item-slot-count"><p>' + numberFormat(toItem.count, toItem.name) + ' ' + weightFormat(toItem.weight/1000 * toItem.count) + '</p></div><div class="item-slot-label"><p><div class="item-slot-label"><p>' + toItem.label + '</p></div></p></div>');   
 							fromInventory.find("[inventory-slot=" + fromSlot + "]").data("ItemData", toItem);
 							toInventory.find("[inventory-slot=" + toSlot + "]").data("ItemData", fromItem);
 							fromInventory.find("[inventory-slot=" + fromSlot + "]").addClass("drag-item");
@@ -613,7 +615,7 @@
 				if (count <= fromItem.count) {
 					if(((fromItem.name).split("_")[0] == "WEAPON" && fromItem.metadata.durability !== undefined)) {
 						var durability = HSN.InventoryGetDurability(fromItem.metadata.durability)
-						toInventory.find("[inventory-slot=" + toSlot + "]").html('<div class="item-slot-img"><img src="images/' + fromItem.name + '.png'+'" alt="' + fromItem.name + '" /></div><div class="item-slot-count"><p>' + numberFormat(fromItem.count) + ' ' + weightFormat(fromItem.weight/1000 * fromItem.count) + '</p></div><div class="item-slot-label"><p><div class="item-slot-durability"><div class="item-slot-durability-bar"><p>100</p></div></div><div class="item-slot-label"><p>' + fromItem.label + '</p></div></p></div>');
+						toInventory.find("[inventory-slot=" + toSlot + "]").html('<div class="item-slot-img"><img src="images/' + fromItem.name + '.png'+'" alt="' + fromItem.name + '" /></div><div class="item-slot-count"><p>' + numberFormat(fromItem.count, fromItem.name) + ' ' + weightFormat(fromItem.weight/1000 * fromItem.count) + '</p></div><div class="item-slot-label"><p><div class="item-slot-durability"><div class="item-slot-durability-bar"><p>100</p></div></div><div class="item-slot-label"><p>' + fromItem.label + '</p></div></p></div>');
 						toInventory.find("[inventory-slot=" + toSlot + "]").find(".item-slot-durability-bar").css({"background-color":durability[0],"width":durability[2]}).find('p').html(durability[1]);
 						toInventory.find("[inventory-slot=" + toSlot + "]").data("ItemData", fromItem);
 						toInventory.find("[inventory-slot=" + toSlot + "]").addClass("drag-item");
@@ -654,9 +656,9 @@
 							newItemData.weight = fromItem.weight
 							newItemData.slot = toSlot
 							newItemData.price = fromItem.price
-							fromInventory.find("[inventory-slot=" + fromSlot + "]").html('<div class="item-slot-img"><img src="images/' + oldItemData.name + '.png'+'" alt="' + oldItemData.name + '" /></div><div class="item-slot-count"><p>' + numberFormat(oldItemData.count) + ' ' + weightFormat(oldItemData.weight/1000 * oldItemData.count) + '</p></div><div class="item-slot-label"><p><div class="item-slot-label"><p>' + oldItemData.label + '</p></div></p></div>');
+							fromInventory.find("[inventory-slot=" + fromSlot + "]").html('<div class="item-slot-img"><img src="images/' + oldItemData.name + '.png'+'" alt="' + oldItemData.name + '" /></div><div class="item-slot-count"><p>' + numberFormat(oldItemData.count, oldItemData.name) + ' ' + weightFormat(oldItemData.weight/1000 * oldItemData.count) + '</p></div><div class="item-slot-label"><p><div class="item-slot-label"><p>' + oldItemData.label + '</p></div></p></div>');
 							fromInventory.find("[inventory-slot=" + fromSlot + "]").data("ItemData", oldItemData);
-							toInventory.find("[inventory-slot=" + toSlot + "]").html('<div class="item-slot-img"><img src="images/' + newItemData.name + '.png'+'" alt="' + newItemData.name + '" /></div><div class="item-slot-count"><p>' + numberFormat(newItemData.count) + ' ' + weightFormat(newItemData.weight/1000 * newItemData.count) + '</p></div><div class="item-slot-label"><p><div class="item-slot-label"><p>' + newItemData.label + '</p></div></p></div>');
+							toInventory.find("[inventory-slot=" + toSlot + "]").html('<div class="item-slot-img"><img src="images/' + newItemData.name + '.png'+'" alt="' + newItemData.name + '" /></div><div class="item-slot-count"><p>' + numberFormat(newItemData.count, newItemData.name) + ' ' + weightFormat(newItemData.weight/1000 * newItemData.count) + '</p></div><div class="item-slot-label"><p><div class="item-slot-label"><p>' + newItemData.label + '</p></div></p></div>');
 							toInventory.find("[inventory-slot=" + toSlot + "]").data("ItemData", newItemData);
 							toInventory.find("[inventory-slot=" + toSlot + "]").addClass("drag-item");
 							toInventory.find("[inventory-slot=" + toSlot + "]").removeClass("itemdragclose");
