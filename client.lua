@@ -370,6 +370,7 @@ AddEventHandler('hsn-inventory:client:closeInventory',function(id)
 	SendNUIMessage({
 		message = 'close',
 	})
+	TriggerServerEvent('hsn-inventory:removecurrentInventory',id)
 end)
 
 RegisterNetEvent('hsn-inventory:client:refreshInventory')
