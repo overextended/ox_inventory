@@ -26,14 +26,14 @@ function clearWeapons()
 end
 
 function StartInventory()
-	PlayerData = ESX.GetPlayerData()
-	playerID = GetPlayerServerId(PlayerId())
 	ESX.TriggerServerCallback('hsn-inventory:getData',function(data)
 		playerName = data.name
 		ESX.SetPlayerData('inventory', data.inventory)
 		oneSync = data.oneSync
 	end)
 	while not playerName do Citizen.Wait(100) end
+	PlayerData = ESX.GetPlayerData()
+	playerID = GetPlayerServerId(PlayerId())
 	playerPed = PlayerPedId()
 	clearWeapons()
 end
@@ -263,7 +263,7 @@ RegisterCommand('vehinv', function()
 end, false)
 
 CanOpenInventory = function()
-	if playerName and not IsPedDeadOrDying(searchPlayerPed, 1) and not IsPauseMenuActive() and not isDead and not isCuffed and not invOpen and not usingItem then return true end
+	if playerName and not IsPedDeadOrDying(playerPed, 1) and not IsPauseMenuActive() and not isDead and not isCuffed and not invOpen and not usingItem then return true end
 	return false
 end
 	
