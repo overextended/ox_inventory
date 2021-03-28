@@ -956,7 +956,6 @@ GetItems = function(id)
 		end
 	end
 	return returnData
-
 end
 
 GetInventory = function(inventory)
@@ -1427,8 +1426,33 @@ AddEventHandler('hsn-inventory:setplayerInventory',function(identifier,inventory
 	playerInventory[identifier] = {}
 	local returnData = {}
 	local loop = 0
+	local convert
+	for k,v in pairs(inventory) do
+		if Config.ConvertToHSN and type(v) == 'number' then -- Convert old inventory data to new format
+			loop = loop + 1
+			local count = v
+			v = { slot = loop, name = k, count = count }
+			if k:find('WEAPON_') then
+				v.count = 1
+				v.metadata = {}
+				v.metadata.durability = 100
+				v.metadata.ammo = 0
+				v.metadata.components = {}
+				v.metadata.ammoweight = 0
+				v.metadata.serial = GetRandomLicense()
+			end
+			if convert ~= true then convert = true end
+		end
+		v.count = tonumber(v.count)
+		if v.metadata and v.metadata.ammoweight then weight = v.metadata.ammoweight + ESXItems[v.name].weight else weight = tonumber(ESXItems[v.name].weight) end
+		if not v.metadata or (type(v.metadata == 'table') and next(v.metadata) == nil) then v.metadata = {} end
+		--[[ temporary, update weapon metadata]]if v.metadata and v.metadata.weaponlicense then v.metadata.serial = v.metadata.weaponlicense v.metadata.weaponlicense = nil end
+		--[[ temporary, fix weird metadata]]if v.metadata.type and type(v.metadata.type) == 'table' then v.metadata = {} end
+		playerInventory[identifier][v.slot] = {name = v.name ,label = ESXItems[v.name].label, weight = tonumber(weight), slot = v.slot, count = v.count, description = ESXItems[v.name].description, metadata = v.metadata, stackable = ESXItems[v.name].stackable}
+	end
 
-	if Config.ConvertToHSN then
+	if Config.ConvertToHSN and convert then
+		xPlayer = GetPlayerFromIdentifier(identifier)
 		-- Convert old loadout data to items
 		exports.ghmattimysql:execute('SELECT loadout FROM users WHERE identifier = @identifier', {
 			['@identifier'] = identifier
@@ -1464,36 +1488,6 @@ AddEventHandler('hsn-inventory:setplayerInventory',function(identifier,inventory
 				})
 			end
 		end)
-	end
-
-	local getAccounts = true
-	for k,v in pairs(inventory) do
-		if Config.ConvertToHSN and type(v) == 'number' then -- Convert old inventory data to new format
-			
-			loop = loop + 1
-			local count = v
-			v = { slot = loop, name = k, count = count }
-			if k:find('WEAPON_') then
-				v.count = 1
-				v.metadata = {}
-				v.metadata.durability = 100
-				v.metadata.ammo = 0
-				v.metadata.components = {}
-				v.metadata.ammoweight = 0
-				v.metadata.serial = GetRandomLicense()
-			end
-		end
-		v.count = tonumber(v.count)
-		if getAccounts and v.name:find('money') then getAccounts = false end
-		if v.metadata and v.metadata.ammoweight then weight = v.metadata.ammoweight + ESXItems[v.name].weight else weight = tonumber(ESXItems[v.name].weight) end
-		if not v.metadata or (type(v.metadata == 'table') and next(v.metadata) == nil) then v.metadata = {} end
-		--[[ temporary, update weapon metadata]]if v.metadata and v.metadata.weaponlicense then v.metadata.serial = v.metadata.weaponlicense v.metadata.weaponlicense = nil end
-		--[[ temporary, fix weird metadata]]if v.metadata.type and type(v.metadata.type) == 'table' then v.metadata = {} end
-		playerInventory[identifier][v.slot] = {name = v.name ,label = ESXItems[v.name].label, weight = tonumber(weight), slot = v.slot, count = v.count, description = ESXItems[v.name].description, metadata = v.metadata, stackable = ESXItems[v.name].stackable}
-	end
-
-	
-	if Config.ConvertToHSN and getAccounts then
 		-- Convert old account data to items
 		exports.ghmattimysql:execute('SELECT accounts FROM users WHERE identifier = @identifier', {
 			['@identifier'] = identifier
@@ -1519,6 +1513,7 @@ AddEventHandler('hsn-inventory:setplayerInventory',function(identifier,inventory
 					['@identifier'] = identifier,
 					['@bank'] = bank
 				})
+				xPlayer.setAccountMoney('bank', bank)
 			end
 		end)
 	end
