@@ -263,7 +263,7 @@ RegisterCommand('vehinv', function()
 end, false)
 
 CanOpenInventory = function()
-	if playerName and not IsPauseMenuActive() and not isDead and not isCuffed and not invOpen and not usingItem then return true end
+	if playerName and not IsPedDeadOrDying(searchPlayerPed, 1) and not IsPauseMenuActive() and not isDead and not isCuffed and not invOpen and not usingItem then return true end
 	return false
 end
 	
