@@ -534,7 +534,7 @@
 							newDataItem.description = toItem.description
 							newDataItem.weight = toItem.weight
 							newDataItem.price = toItem.price
-							toInventory.find("[inventory-slot=" + toSlot + "]").html('<div class="item-slot-img"><img src="images/' + toItem.name + '.png'+'" alt="' + toItem.name + '" /></div><div class="item-slot-count"><p>' + newcount + ' ' + weightFormat(toItem.weight/1000 * newcount) + '</p></div><div class="item-slot-label"><p><div class="item-slot-label"><p>' + toItem.label + '</p></div></p></div>');
+							toInventory.find("[inventory-slot=" + toSlot + "]").html('<div class="item-slot-img"><img src="images/' + toItem.name + '.png'+'" alt="' + toItem.name + '" /></div><div class="item-slot-count"><p>' + numberFormat(newcount, toItem.name) + ' ' + weightFormat(toItem.weight/1000 * newcount) + '</p></div><div class="item-slot-label"><p><div class="item-slot-label"><p>' + toItem.label + '</p></div></p></div>');
 							toInventory.find("[inventory-slot=" + toSlot + "]").data("ItemData", newDataItem);
 							fromInventory.find("[inventory-slot=" + fromSlot + "]").addClass("itemdragclose");
 							toInventory.find("[inventory-slot=" + toSlot + "]").addClass("drag-item");
@@ -685,7 +685,7 @@
 						var fromSlot = Number(fromSlot)
 						var toSlot = Number(toSlot)
 							HSN.RemoveItemFromSlot(fromInventory,fromSlot)
-							toInventory.find("[inventory-slot=" + toSlot + "]").html('<div class="item-slot-img"><img src="images/' + fromItem.name + '.png'+'" alt="' + fromItem.name + '" /></div><div class="item-slot-count"><p>' + count + ' ' + weightFormat(fromItem.weight/1000 * count) + '</p></div><div class="item-slot-label"><p><div class="item-slot-label"><p>' + fromItem.label + '</p></div></p></div>');
+							toInventory.find("[inventory-slot=" + toSlot + "]").html('<div class="item-slot-img"><img src="images/' + fromItem.name + '.png'+'" alt="' + fromItem.name + '" /></div><div class="item-slot-count"><p>' + numberFormat(count, fromItem.name) + ' ' + weightFormat(fromItem.weight/1000 * count) + '</p></div><div class="item-slot-label"><p><div class="item-slot-label"><p>' + fromItem.label + '</p></div></p></div>');
 							toInventory.find("[inventory-slot=" + toSlot + "]").data("ItemData", fromItem);
 							toInventory.find("[inventory-slot=" + toSlot + "]").addClass("drag-item");
 							toInventory.find("[inventory-slot=" + toSlot + "]").removeClass("itemdragclose");
