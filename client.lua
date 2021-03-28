@@ -158,7 +158,8 @@ Citizen.CreateThread(function()
 					currentWeapon.item.metadata.ammo = ammo
 					if ammo == 0 then
 						ClearPedTasks(playerPed)
-						SetCurrentPedWeapon(playerPed, currentWeapon.hash, true)
+						SetCurrentPedWeapon(playerPed, currentWeapon.hash, false)
+						SetPedCurrentWeaponVisible(playerPed, true, false, false, false)
 						TriggerServerEvent('hsn-inventory:server:reloadWeapon', currentWeapon)
 					end
 				elseif Config.Melee[currentWeapon.item.name] and not wait then
