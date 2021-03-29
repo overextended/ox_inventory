@@ -203,9 +203,9 @@ RegisterCommand('vehinv', function()
 					local class = GetVehicleClass(vehicle)
 					TaskTurnPedToFaceCoord(playerPed, vehiclePos)
 					OpenTrunk(plate, class)
-					local timeout = 10
+					local timeout = 20
 					while true do
-						if invOpen then break end
+						if currentInventory and currentInventory.type == 'trunk' then break end
 						if timeout == 0 then
 							CloseToVehicle = false
 							lastVehicle = nil
