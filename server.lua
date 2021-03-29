@@ -992,6 +992,7 @@ GetItems = function(id)
 	local result = exports.ghmattimysql:executeSync('SELECT data FROM hsn_inventory WHERE name = @name', {
 		['@name'] = id
 	})
+	print(id)
 	if result[1] ~= nil then
 		if result[1].data ~= nil then
 			local Inventory = json.decode(result[1].data)
@@ -1500,7 +1501,7 @@ AddEventHandler('hsn-inventory:setplayerInventory',function(identifier,inventory
 	end
 
 	if Config.ConvertToHSN and convert then
-		xPlayer = GetPlayerFromIdentifier(identifier)
+		xPlayer = ESX.GetPlayerFromIdentifier(identifier)
 		-- Convert old loadout data to items
 		exports.ghmattimysql:execute('SELECT loadout FROM users WHERE identifier = @identifier', {
 			['@identifier'] = identifier
