@@ -228,6 +228,11 @@ end, xPlayer.identifier)
 * Remove `['@loadout'] = json.encode(xPlayer.getLoadout(true)),`
 
 <br>
+
+### client/main.lua
+* Remove all references to loadouts
+
+<br>
 <h3 align='center'>If your framework doesn't load/CreateExtendedPlayer double check your edits</h3>
 
 ## Setting up items
