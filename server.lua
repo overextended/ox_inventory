@@ -916,7 +916,7 @@ checkOpenable = function(source,id,coords)
 
 	if oneSync and coords then
 		local srcCoords = GetEntityCoords(GetPlayerPed(src))
-		if #(vector3(coords.x, coords.y, coords.z) - srcCoords) > 5 then return false end
+		if #(vector3(coords.x, coords.y, coords.z) - srcCoords) > 2 then return false end
 	end
 
 	if openedinventories[id] == nil then
