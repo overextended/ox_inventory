@@ -429,12 +429,12 @@ Citizen.CreateThread(function()
 			local ped = GetPlayerPed(id)
 			local pedCoords = GetEntityCoords(ped)
 			local dist = #(playerCoords - pedCoords)
-			if dist > 1.0 or not CanOpenTarget(ped) then
+			if dist > 1 or not CanOpenTarget(ped) then
 				TriggerEvent('hsn-inventory:client:closeInventory', currentInventory)
 			end
 		elseif not lastVehicle and currentInventory and currentInventory.coords then
 			local dist = #(playerCoords - currentInventory.coords)
-			if dist > 1.0 or CanOpenTarget(playerPed) then
+			if dist > 2 or CanOpenTarget(playerPed) then
 				TriggerEvent('hsn-inventory:client:closeInventory', currentInventory)
 			end
 		end
@@ -757,7 +757,7 @@ end
 
 function openTargetInventory()
 	local closestPlayer, closestDistance = ESX.Game.GetClosestPlayer()
-	if closestPlayer ~= -1 and closestDistance <= 2.0 then
+	if closestPlayer ~= -1 and closestDistance <= 1.0 then
 		local searchPlayerPed = GetPlayerPed(closestPlayer)
 		if CanOpenTarget(searchPlayerPed) then
 			TriggerServerEvent('hsn-inventory:server:openTargetInventory', GetPlayerServerId(closestPlayer))
