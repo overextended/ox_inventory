@@ -292,15 +292,16 @@ OpenGloveBox = function(gloveboxid, class)
 		[10] = 11, -- industrial
 		[11] = 11, -- utility
 		[12] = 11, -- van
-		[14] = 11, -- boat
-		[15] = 11, -- helicopter
-		[16] = 11, -- plane
+		[14] = 31, -- boat
+		[15] = 31, -- helicopter
+		[16] = 51, -- plane
 		[17] = 11, -- service
 		[18] = 11, -- emergency
 		[19] = 11, -- military
 		[20] = 11, -- commercial (trucks)
 	}
 	local storage = slots[class]
+	if not storage then return end
 	TriggerServerEvent('hsn-inventory:server:openInventory',{type = 'glovebox',id = 'glovebox-'..gloveboxid, slots=storage})
 end
 OpenTrunk = function(trunkid, class)
@@ -318,15 +319,16 @@ OpenTrunk = function(trunkid, class)
 		[10] = 51, -- industrial
 		[11] = 41, -- utility
 		[12] = 61, -- van
-		[14] = 21, -- boat
-		[15] = 21, -- helicopter
-		[16] = 21, -- plane
+		--[14] = 21, -- boat		no trunk
+		--[15] = 21, -- helicopter	no trunk
+		--[16] = 21, -- plane		no trunk
 		[17] = 41, -- service
 		[18] = 41, -- emergency
 		[19] = 41, -- military
 		[20] = 61, -- commercial
 	}
 	local storage = slots[class]
+	if not storage then return end
 	TriggerServerEvent('hsn-inventory:server:openInventory',{type = 'trunk',id = 'trunk-'..trunkid, slots=storage})
 end
 
