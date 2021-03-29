@@ -1355,6 +1355,8 @@ useItem = function(src, item)
 		TriggerClientEvent('hsn-inventory:useItem', src, item)
 	elseif ESX.UsableItemsCallbacks[item.name] ~= nil then
 		TriggerEvent('esx:useItem', src, item.name)
+	elseif type(item) ~= 'table' then
+		TriggerEvent('esx:useItem', src, item)
 	end
 end
 
