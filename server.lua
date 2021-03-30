@@ -1212,18 +1212,18 @@ end)
 
 
 RegisterNetEvent('hsn-inventory:server:decreasedurability')
-AddEventHandler('hsn-inventory:server:decreasedurability',function(source, slot, weapon, ammo)
+AddEventHandler('hsn-inventory:server:decreasedurability',function(source, item, ammo)
 	local src = source
 	local Player = ESX.GetPlayerFromId(src)
 	local decreaseamount = 0
 	if type(slot) == 'number' then
-		if playerInventory[Player.identifier][slot] ~= nil then
-			if playerInventory[Player.identifier][slot].metadata.durability ~= nil then
-				if playerInventory[Player.identifier][slot].metadata.durability <= 0 then
-					TriggerClientEvent('hsn-inventory:client:checkweapon',src,playerInventory[Player.identifier][slot])
+		if playerInventory[Player.identifier][item.slot] ~= nil then
+			if playerInventory[Player.identifier][item.slot].metadata.durability ~= nil then
+				if playerInventory[Player.identifier][item.slot].metadata.durability <= 0 then
+					TriggerClientEvent('hsn-inventory:client:checkweapon',src,playerInventory[Player.identifier][item.slot])
 					TriggerClientEvent('hsn-inventory:notification',src,'This weapon is broken',2)
-					if playerInventory[Player.identifier][slot].name:find('WEAPON_FIREEXTINGUISHER') or playerInventory[Player.identifier][slot].name:find('WEAPON_PETROLCAN') then
-						RemovePlayerInventory(src,Player.identifier, playerInventory[Player.identifier][slot].name, 1, slot)
+					if playerInventory[Player.identifier][item.slot].name:find('WEAPON_FIREEXTINGUISHER') or playerInventory[Player.identifier][item.slot].name:find('WEAPON_PETROLCAN') then
+						RemovePlayerInventory(src,Player.identifier, playerInventory[Player.identifier][item.slot].name, 1, item.slot)
 					end
 					return
 				end
@@ -1242,29 +1242,29 @@ AddEventHandler('hsn-inventory:server:decreasedurability',function(source, slot,
 end)
 
 RegisterNetEvent('hsn-inventory:server:addweaponAmmo')
-AddEventHandler('hsn-inventory:server:addweaponAmmo',function(slot,weapon,ammo,totalAmmo,removeAmmo,newAmmo)
+AddEventHandler('hsn-inventory:server:addweaponAmmo',function(item,ammo,totalAmmo,removeAmmo,newAmmo)
 	local src = source
 	local Player = ESX.GetPlayerFromId(src)
-	if playerInventory[Player.identifier][slot] ~= nil then
-		if playerInventory[Player.identifier][slot].metadata.ammo ~= nil then
+	if playerInventory[Player.identifier][item.slot] ~= nil then
+		if playerInventory[Player.identifier][item.slot].metadata.ammo ~= nil then
 			local ammoweight = ESXItems[ammo].weight
-			playerInventory[Player.identifier][slot].metadata.ammo = newAmmo
-			playerInventory[Player.identifier][slot].metadata.ammoweight = 0 --[[(newAmmo * ammoweight)]]
+			playerInventory[Player.identifier][item.slot].metadata.ammo = newAmmo
+			playerInventory[Player.identifier][item.slot].metadata.ammoweight = 0 --[[(newAmmo * ammoweight)]]
 			--playerInventory[Player.identifier][slot].weight = ESXItems[weapon.name].weight + (newAmmo * ammoweight) disable ammo weight for now
 			RemovePlayerInventory(src,Player.identifier,ammo,removeAmmo)
 		end
 	end
-	TriggerEvent('hsn-inventory:server:decreasedurability',src, slot,weapon,removeAmmo)
+	TriggerEvent('hsn-inventory:server:decreasedurability',src,item,removeAmmo)
 end)
 
 
 RegisterNetEvent('hsn-inventory:server:updateWeapon')
-AddEventHandler('hsn-inventory:server:updateWeapon',function(slot, item)
+AddEventHandler('hsn-inventory:server:updateWeapon',function(item)
 	local src = source
 	local Player = ESX.GetPlayerFromId(src)
-	if playerInventory[Player.identifier][slot] ~= nil then
-		if playerInventory[Player.identifier][slot].metadata ~= nil then
-			playerInventory[Player.identifier][slot].metadata = item.metadata
+	if playerInventory[Player.identifier][item.slot] ~= nil then
+		if playerInventory[Player.identifier][item.slot].metadata ~= nil then
+			playerInventory[Player.identifier][item.slot].metadata = item.metadata
 			TriggerClientEvent('hsn-inventory:client:refreshInventory',src,playerInventory[Player.identifier])
 			TriggerClientEvent('hsn-inventory:client:updateWeapon', src, playerInventory[Player.identifier][slot].metadata)
 		end
