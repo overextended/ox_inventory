@@ -174,12 +174,12 @@ AddPlayerInventory = function(identifier, item, count, slot, metadata)
 					end
 				end
 			else
-				metadata = setMetadata(metadata)
+				if metadata == 'setname' then metadata = {description = Player.getName} else metadata = setMetadata(metadata) end
 				if slot then
 					playerInventory[identifier][slot] = {name = item ,label = ESXItems[item].label, weight = ESXItems[item].weight, slot = i, count = count, description = ESXItems[item].description, metadata = metadata, stackable = ESXItems[item].stackable, closeonuse = ESXItems[item].closeonuse}
 				else
 					for i = 1, Config.PlayerSlot do
-						if playerInventory[identifier][i] ~= nil and playerInventory[identifier][i].name == item and (not metadata or is_table_equal(metadata, playerInventory[identifier][i].metadata)) then
+						if playerInventory[identifier][i] ~= nil and playerInventory[identifier][i].name == item and (is_table_equal(metadata, playerInventory[identifier][i].metadata)) then
 							playerInventory[identifier][i] = {name = item ,label = ESXItems[item].label, weight = ESXItems[item].weight, slot = i, count = playerInventory[identifier][i].count + count, description = ESXItems[item].description, metadata = metadata, stackable = ESXItems[item].stackable, closeonuse = ESXItems[item].closeonuse}
 							break
 						else
@@ -198,35 +198,30 @@ AddPlayerInventory = function(identifier, item, count, slot, metadata)
 end
 
 function setMetadata(metadata)
-	if metadata == nil or (type(metadata) == 'table' and not next(metadata)) then
-		if metadata == 'setname' then
-			local name = Player.getName()
-			metadata = {description = name}
-		else metadata = {} end
-	elseif metadata and type(metadata) == 'string' then metadata = {type=metadata} end
-	return metadata
+	local data = metadata
+	if data == nil then return {}
+	elseif type(data) == 'string' then return { type = data } end
+	return data
 end
 
 function is_table_equal(t1,t2,ignore_mt)
-	t1 = setMetadata(t1)
-	t2 = setMetadata(t2)
-	local ty1 = type(t1)
-	local ty2 = type(t2)
-	if ty1 ~= ty2 then return false end
-	-- non-table types can be directly compared
-	if ty1 ~= 'table' and ty2 ~= 'table' then return t1 == t2 end
-	-- as well as tables which have the metamethod __eq
-	local mt = getmetatable(t1)
-	if not ignore_mt and mt and mt.__eq then return t1 == t2 end
-	for k1,v1 in pairs(t1) do
-	   local v2 = t2[k1]
-	   if v2 == nil or not is_table_equal(v1,v2) then return false end
-	end
-	for k2,v2 in pairs(t2) do
-	   local v1 = t1[k2]
-	   if v1 == nil or not is_table_equal(v1,v2) then return false end
-	end
-	return true
+   local ty1 = type(t1)
+   local ty2 = type(t2)
+   if ty1 ~= ty2 then return false end
+   -- non-table types can be directly compared
+   if ty1 ~= 'table' and ty2 ~= 'table' then return t1 == t2 end
+   -- as well as tables which have the metamethod __eq
+   local mt = getmetatable(t1)
+   if not ignore_mt and mt and mt.__eq then return t1 == t2 end
+   for k1,v1 in pairs(t1) do
+      local v2 = t2[k1]
+      if v2 == nil or not is_table_equal(v1,v2) then return false end
+   end
+   for k2,v2 in pairs(t2) do
+      local v1 = t1[k2]
+      if v1 == nil or not is_table_equal(v1,v2) then return false end
+   end
+   return true
 end
 
 RemovePlayerInventory = function(src, identifier, item, count, slot, metadata)
