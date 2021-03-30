@@ -680,7 +680,7 @@ AddEventHandler('hsn-inventory:server:saveInventoryData',function(data)
 		elseif data.frominv ~= data.toinv and (data.toinv == 'Playerinv' and data.frominv == 'stash') then
 			local stashId = data.invid2
 			if data.type == 'swap' then
-				if not ValidateItem(data.type, Player, playerInventory[Player.identifier][data.fromSlot], Stashs[stashId].inventory[data.toSlot], data.fromItem, data.toItem) then return end
+				if not ValidateItem(data.type, Player, Stashs[stashId].inventory[data.fromSlot], playerInventory[Player.identifier][data.toSlot], data.fromItem, data.toItem) then return end
 				if IfInventoryCanCarry(playerInventory[Player.identifier],Config.MaxWeight, (data.toItem.weight * data.toItem.count)) then
 					ItemNotify(src,data.toItem.name,data.toItem.count,'Added', 'Stash '..stashId)
 					ItemNotify(src,data.fromItem.name,data.fromItem.count,'Removed', 'Stash '..stashId)
@@ -690,7 +690,7 @@ AddEventHandler('hsn-inventory:server:saveInventoryData',function(data)
 					TriggerClientEvent('hsn-inventory:notification',src,'You can not carry this item',2)
 				end
 			elseif data.type == 'freeslot' then
-				if not ValidateItem(data.type, Player, playerInventory[Player.identifier][data.emptyslot], Stashs[stashId].inventory[data.toSlot], data.item, data.item) then return end
+				if not ValidateItem(data.type, Player, Stashs[stashId].inventory[data.emptyslot], playerInventory[Player.identifier][data.toSlot], data.item, data.item) then return end
 				if IfInventoryCanCarry(playerInventory[Player.identifier],Config.MaxWeight, (data.item.weight * data.item.count)) then
 					Stashs[stashId].inventory[data.emptyslot] = nil
 					playerInventory[Player.identifier][data.toSlot] = {name = data.item.name ,label = data.item.label, weight = data.item.weight, slot = data.toSlot, count = data.item.count, description = data.item.description, metadata = data.item.metadata, stackable = data.item.stackable, closeonuse = ESXItems[data.item.name].closeonuse}
@@ -699,7 +699,7 @@ AddEventHandler('hsn-inventory:server:saveInventoryData',function(data)
 					TriggerClientEvent('hsn-inventory:notification',src,'You can not carry this item',2)
 				end
 			elseif data.type == 'split' then
-				if not ValidateItem(data.type, Player, playerInventory[Player.identifier][data.fromSlot], Stashs[stashId].inventory[data.toSlot], data.oldslotItem, data.newslotItem) then return end
+				if not ValidateItem(data.type, Player, Stashs[stashId].inventory[data.fromSlot], playerInventory[Player.identifier][data.toSlot], data.oldslotItem, data.newslotItem) then return end
 				if IfInventoryCanCarry(playerInventory[Player.identifier],Config.MaxWeight, (data.newslotItem.weight * data.newslotItem.count)) then
 					Stashs[stashId].inventory[data.fromSlot] = {name = data.oldslotItem.name ,label = data.oldslotItem.label, weight = data.oldslotItem.weight, slot = data.fromSlot, count = data.oldslotItem.count, description = data.oldslotItem.description, metadata = data.oldslotItem.metadata, stackable = data.oldslotItem.stackable, closeonuse = ESXItems[data.oldslotItem.name].closeonuse}
 					playerInventory[Player.identifier][data.toSlot] = {name = data.newslotItem.name ,label = data.newslotItem.label, weight = data.newslotItem.weight, slot = data.toSlot, count = data.newslotItem.count, description = data.newslotItem.description, metadata = data.newslotItem.metadata, stackable = data.newslotItem.stackable, closeonuse = ESXItems[data.newslotItem.name].closeonuse}
@@ -987,7 +987,6 @@ GetItems = function(id)
 	local result = exports.ghmattimysql:executeSync('SELECT data FROM hsn_inventory WHERE name = @name', {
 		['@name'] = id
 	})
-	print(id)
 	if result[1] ~= nil then
 		if result[1].data ~= nil then
 			local Inventory = json.decode(result[1].data)
