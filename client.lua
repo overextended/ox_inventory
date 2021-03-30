@@ -131,7 +131,7 @@ Citizen.CreateThread(function()
 			local shooting = IsPedShooting(playerPed)
 			if shooting or ((currentWeapon.item.metadata.throwable or currentWeapon.item.metadata[1] == nil) and IsControlJustReleased(0, 24)) then
 				local ammo = GetAmmoInPedWeapon(playerPed, currentWeapon.hash)
-				currentWeapon.item.metadata.durability = currentWeapon.item.metadata.durability - 0.1
+				if currentWeapon.item.metadata.durability then currentWeapon.item.metadata.durability = currentWeapon.item.metadata.durability - 0.1 end
 				if (currentWeapon.item.name == 'WEAPON_FIREEXTINGUISHER' or currentWeapon.item.name == 'WEAPON_PETROLCAN') and not wait then
 					if currentWeapon.item.metadata.durability <= 0 then
 						Citizen.CreateThread(function()
@@ -723,7 +723,7 @@ AddEventHandler('hsn-inventory:addAmmo',function(item, ammo)
 			end
 			if newAmmo < 0 then newAmmo = 0 end
 			SetPedAmmo(playerPed, weapon, newAmmo)
-			TaskReloadWeapon(playerPed)
+			MakePedReload(playerPed)
 			currentWeapon.item.metadata.ammo = newAmmo
 			TriggerServerEvent('hsn-inventory:server:addweaponAmmo',currentWeapon.slot,currentWeapon.item,ammo.name,ammo.count,removeAmmo,newAmmo)
 		end
