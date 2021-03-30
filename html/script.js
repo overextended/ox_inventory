@@ -385,15 +385,6 @@
 		});
 	}
 
-	$(".inventory-main-leftside").on("scroll", function(e){
-		e.preventDefault();
-	})
-
-	
-	$(".inventory-main-rightside").on("scroll", function(e){
-		e.preventDefault();
-	})
-
 
 	$(document).on("click", ".ItemBoxes", function(e){
 		if ($(this).data("location") !== undefined) {
