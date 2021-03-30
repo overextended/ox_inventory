@@ -138,7 +138,7 @@ Citizen.CreateThread(function()
 							wait = true
 							ClearPedTasks(playerPed)
 							SetCurrentPedWeapon(playerPed, currentWeapon.hash, true)
-							TriggerServerEvent('hsn-inventory:client:removeItem', currentWeapon.item.name, 1, currentWeapon.item.metadata, currentWeapon.slot)
+							TriggerServerEvent('hsn-inventory:client:removeItem', currentWeapon.item.name, 1, currentWeapon.item.metadata, currentWeapon.item.slot)
 							Citizen.Wait(200)
 							SetCurrentPedWeapon(playerPed, `WEAPON_UNARMED`, true)
 							currentWeapon = nil
@@ -165,7 +165,7 @@ Citizen.CreateThread(function()
 				elseif Config.Melee[currentWeapon.item.name] and not wait then
 					Citizen.CreateThread(function()
 						wait = true
-						TriggerServerEvent('hsn-inventory:server:decreasedurability', playerID, currentWeapon.slot, currentWeapon.item.name, 1)
+						TriggerServerEvent('hsn-inventory:server:decreasedurability', playerID, currentWeapon.item.slot, currentWeapon.item.name, 1)
 						Citizen.Wait(400)
 						wait = false
 					end)
@@ -655,7 +655,7 @@ RegisterNetEvent('hsn-inventory:client:weapon')
 AddEventHandler('hsn-inventory:client:weapon',function(item)
 	if usingItem then return end
 	usingItem = true
-	if currentWeapon then TriggerServerEvent('hsn-inventory:server:updateWeapon', currentWeapon.slot, currentWeapon.item) end
+	if currentWeapon then TriggerServerEvent('hsn-inventory:server:updateWeapon', currentWeapon.item) end
 	TriggerEvent('hsn-inventory:client:closeInventory', currentInventory)
 	local newWeapon = item.metadata.serial
 	local found, wepHash = GetCurrentPedWeapon(playerPed, true)
@@ -674,7 +674,6 @@ AddEventHandler('hsn-inventory:client:weapon',function(item)
 		GiveWeaponToPed(playerPed, wepHash, 0, true, false)
 		if PlayerData.job.name == 'police' then Citizen.Wait(800) else Citizen.Wait(1600) end
 		currentWeapon = {}
-		currentWeapon.slot = item.slot
 		currentWeapon.item = item
 		currentWeapon.hash = wepHash
 		if item.metadata.throwable then item.metadata.ammo = 1 end
@@ -725,7 +724,7 @@ AddEventHandler('hsn-inventory:addAmmo',function(item, ammo)
 			SetPedAmmo(playerPed, weapon, newAmmo)
 			MakePedReload(playerPed)
 			currentWeapon.item.metadata.ammo = newAmmo
-			TriggerServerEvent('hsn-inventory:server:addweaponAmmo',currentWeapon.slot,currentWeapon.item,ammo.name,ammo.count,removeAmmo,newAmmo)
+			TriggerServerEvent('hsn-inventory:server:addweaponAmmo',currentWeapon.item,ammo.name,ammo.count,removeAmmo,newAmmo)
 		end
 	end
 end)
@@ -901,7 +900,7 @@ AddEventHandler('hsn-inventory:useItem',function(item)
 				if data.component then
 					GiveWeaponComponentToPed(playerPed, currentWeapon.item.name, component.hash)
 					table.insert(currentWeapon.item.metadata.components, component.name)
-					TriggerServerEvent('hsn-inventory:server:updateWeapon', currentWeapon.slot, currentWeapon.item)
+					TriggerServerEvent('hsn-inventory:server:updateWeapon', currentWeapon.item)
 				end
 				
 
