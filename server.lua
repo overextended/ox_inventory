@@ -276,7 +276,7 @@ RandomDropId = function()
 end
 
 function TriggerBanEvent(xPlayer, reason)
-	print( ('^1[hsn-inventory]^3 [%s] %s has attempted to cheat in items [IGNORE, NOT YET ACCURATE] (%s)^7'):format(xPlayer.source, GetPlayerName(xPlayer.source), reason) )
+	print( ('^1[hsn-inventory]^3 [%s] %s has attempted to cheat in items (%s)^7'):format(xPlayer.source, GetPlayerName(xPlayer.source), reason) )
 	TriggerClientEvent('hsn-inventory:client:refreshInventory',xPlayer.source,playerInventory[xPlayer.identifier])
 	-- need feedback on the reliability of the item validation
 	-- do your ban stuff and whatever logging you want to use
@@ -289,7 +289,11 @@ function ValidateItem(type, xPlayer, fromSlot, toSlot, fromItem, toItem)
 		if tonumber(toItem.count) > (fromItem.count + toItem.count) then reason = 'new item count is higher than source item count' end
 	end
 
-	if reason then TriggerBanEvent(xPlayer, reason) return false else return true end
+	if reason then
+		print( ('[%s] %s failed item validation (type: %s, fromSlot: %s, toSlot: %s, fromItem: %s, toItem: %s, reason: %s)'):format(xPlayer.source, GetPlayerName(xPlayer.source), type, fromSlot, toSlot, fromItem, toItem) )
+	end
+	--if reason then TriggerBanEvent(xPlayer, reason) return false else return true end
+	return true -- allow it through for now, there's an issue somewhere causing all item validations to fail after it occurs
 end 
 
 RegisterNetEvent('hsn-inventory:server:saveInventoryData')
@@ -490,7 +494,7 @@ AddEventHandler('hsn-inventory:server:saveInventoryData',function(data)
 				CreateNewDrop(src,data)
 			else
 				if data.type == 'swap' then
-					if not ValidateItem(data.type, Player, playerInventory[Player.identifier][data.fromSlot],  Drops[dropid].inventory[data.toSlot], data.fromItem, data.toItem) then return end
+					if not ValidateItem(data.type, Player, playerInventory[Player.identifier][data.fromSlot], Drops[dropid].inventory[data.toSlot], data.fromItem, data.toItem) then return end
 					TriggerClientEvent('hsn-inventory:client:checkweapon',src,data.toItem)
 					Drops[dropid].inventory[data.toSlot] = {name = data.toItem.name ,label = data.toItem.label, weight = data.toItem.weight, slot = data.toSlot, count = data.toItem.count, description = data.toItem.description, metadata = data.toItem.metadata, stackable = data.toItem.stackable, closeonuse = ESXItems[data.toItem.name].closeonuse}
 					playerInventory[Player.identifier][data.fromSlot] = {name = data.fromItem.name ,label = data.fromItem.label, weight = data.fromItem.weight, slot = data.fromSlot, count = data.fromItem.count, description = data.fromItem.description, metadata = data.fromItem.metadata, stackable = data.fromItem.stackable, closeonuse = ESXItems[data.fromItem.name].closeonuse}
@@ -722,7 +726,8 @@ AddEventHandler('hsn-inventory:buyItem', function(info)
 	local location = info.location
 	local xPlayer = ESX.GetPlayerFromId(src)
 	local money, currency, item = nil, nil, {}
-	if info.count == nil then info.count = 0 else info.count = ESX.Round(tonumber(info.count)) end
+	if info.count == nil then info.count = 0 end
+	info.count = ESX.Round(tonumber(info.count)) end
 	local count = info.count
 	local checkShop = Config.Shops[location].inventory[data.slot]
 
@@ -798,19 +803,22 @@ CreateNewDrop = function(source,data)
 	Drops[dropid] = {}
 	Drops[dropid].inventory = {}
 	Drops[dropid].name = dropid
-	Drops[dropid].slots = 51
+	Drops[dropid].slots = 51		
 	if data.type == 'swap' then
+		if not ValidateItem(data.type, Player, playerInventory[Player.identifier][data.fromSlot], Drops[dropid].inventory[data.toSlot], data.fromItem, data.toItem) then return end
 		TriggerClientEvent('hsn-inventory:client:checkweapon',src,data.toItem)
 		Drops[dropid].inventory[data.toSlot] = {name = data.toItem.name ,label = data.toItem.label, weight = data.toItem.weight, slot = data.toSlot, count = data.toItem.count, description = data.toItem.description, metadata = data.toItem.metadata, stackable = data.toItem.stackable, closeonuse = ESXItems[data.toItem.name].closeonuse}
 		playerInventory[Player.identifier][data.fromSlot] = {name = data.fromItem.name ,label = data.fromItem.label, weight = data.fromItem.weight, slot = data.fromSlot, count = data.fromItem.count, description = data.fromItem.description, metadata = data.fromItem.metadata, stackable = data.fromItem.stackable, closeonuse = ESXItems[data.fromItem.name].closeonuse}
 		ItemNotify(src,data.toItem.name,data.toItem.count,'Removed', 'Drop '..dropid)
 		ItemNotify(src,data.fromItem.name,data.fromItem.count,'Added', 'Drop '..dropid)
 	elseif data.type == 'freeslot' then
+		if not ValidateItem(data.type, Player, playerInventory[Player.identifier][data.emptyslot], Drops[dropid].inventory[data.toSlot], data.item, data.item) then return end
 		TriggerClientEvent('hsn-inventory:client:checkweapon',src,data.item)
 		playerInventory[Player.identifier][data.emptyslot] = nil
 		Drops[dropid].inventory[data.toSlot] = {name = data.item.name ,label = data.item.label, weight = data.item.weight, slot = data.toSlot, count = data.item.count, description = data.item.description, metadata = data.item.metadata, stackable = data.item.stackable, closeonuse = ESXItems[data.item.name].closeonuse}
 		ItemNotify(src,data.item.name,data.item.count,'Removed', 'Drop '..dropid)
 	elseif data.type == 'split' then
+		if not ValidateItem(data.type, Player, playerInventory[Player.identifier][data.fromSlot], Drops[dropid].inventory[data.toSlot], data.oldslotItem, data.newslotItem) then return end
 		TriggerClientEvent('hsn-inventory:client:checkweapon',src,data.newslotItem)
 		playerInventory[Player.identifier][data.fromSlot] = {name = data.oldslotItem.name ,label = data.oldslotItem.label, weight = data.oldslotItem.weight, slot = data.fromSlot, count = data.oldslotItem.count, description = data.oldslotItem.description, metadata = data.oldslotItem.metadata, stackable = data.oldslotItem.stackable, closeonuse = ESXItems[data.oldslotItem.name].closeonuse}
 		Drops[dropid].inventory[data.toSlot] = {name = data.newslotItem.name ,label = data.newslotItem.label, weight = data.newslotItem.weight, slot = data.toSlot, count = data.newslotItem.count, description = data.newslotItem.description, metadata = data.newslotItem.metadata, stackable = data.newslotItem.stackable, closeonuse = ESXItems[data.newslotItem.name].closeonuse}
