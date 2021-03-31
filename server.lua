@@ -1109,10 +1109,6 @@ AddEventHandler('playerDropped', function(reason) --  https://github.com/CylexVI
 			print('^1[hsn-inventory]^1 One player left the game when his inventory open and inventory saved ^1[DUPE Alert]^7')
 		end
 	end
-	local id = 'Player'..src
-	if openedinventories[id] then
-		openedinventories[id] = nil
-	end
 	for k,v in pairs(openedinventories) do
 		if openedinventories[k].owner == src then
 			openedinventories[k] = nil -- :)
@@ -1470,6 +1466,9 @@ end)
 
 RegisterNetEvent('hsn-inventory:setplayerInventory')
 AddEventHandler('hsn-inventory:setplayerInventory',function(identifier,inventory)
+	xPlayer = ESX.GetPlayerFromIdentifier(identifier)
+	local id = 'Player'..xPlayer.source
+	openedinventories[id] = nil
 	playerInventory[identifier] = {}
 	local returnData = {}
 	local loop = 0
@@ -1499,7 +1498,6 @@ AddEventHandler('hsn-inventory:setplayerInventory',function(identifier,inventory
 	end
 
 	if Config.ConvertToHSN and convert then
-		xPlayer = ESX.GetPlayerFromIdentifier(identifier)
 		-- Convert old loadout data to items
 		exports.ghmattimysql:execute('SELECT loadout FROM users WHERE identifier = @identifier', {
 			['@identifier'] = identifier
