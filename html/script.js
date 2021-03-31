@@ -352,7 +352,7 @@
 				 toInventory = $(this).parent()
 				 toSlot = $(this).attr("inventory-slot");
 				 fromData = fromInventory.find("[inventory-slot=" + curslot + "]").data("ItemData");
-				 if ((fromData !== undefined) && (count !== undefined)) {
+				 if (fromData !== undefined && count !== undefined) {
 					if (count == "" || count == 0) {
 						count = fromData.count
 					} else if (count.startsWith('0')) {
@@ -387,7 +387,7 @@
 
 
 	$(document).on("click", ".ItemBoxes", function(e){
-		if ($(this).data("location") !== undefined) {
+		if ($(this).data("location") !== undefined && $("#item-count").val() >= 0) {
 			e.preventDefault();
 			var Item = $(this).data("ItemData")
 			var location = $(this).data("location")
