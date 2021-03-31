@@ -1489,12 +1489,12 @@ AddEventHandler('hsn-inventory:setplayerInventory',function(identifier,inventory
 			end
 			if convert ~= true then convert = true end
 		end
-		v.count = tonumber(v.count)
-		if v.metadata and v.metadata.ammoweight then weight = v.metadata.ammoweight + ESXItems[v.name].weight else weight = tonumber(ESXItems[v.name].weight) end
-		if not v.metadata or (type(v.metadata == 'table') and next(v.metadata) == nil) then v.metadata = {} end
-		--[[ temporary, update weapon metadata]]if v.metadata and v.metadata.weaponlicense then v.metadata.serial = v.metadata.weaponlicense v.metadata.weaponlicense = nil end
-		--[[ temporary, fix weird metadata]]if v.metadata.type and type(v.metadata.type) == 'table' then v.metadata = {} end
-		playerInventory[identifier][v.slot] = {name = v.name ,label = ESXItems[v.name].label, weight = tonumber(weight), slot = v.slot, count = v.count, description = ESXItems[v.name].description, metadata = v.metadata, stackable = ESXItems[v.name].stackable}
+		if ESXItems[v.name] then
+			v.count = tonumber(v.count)
+			if v.metadata and v.metadata.ammoweight then weight = v.metadata.ammoweight + ESXItems[v.name].weight else weight = tonumber(ESXItems[v.name].weight) end
+			if not v.metadata or (type(v.metadata == 'table') and next(v.metadata) == nil) then v.metadata = {} end
+			playerInventory[identifier][v.slot] = {name = v.name ,label = ESXItems[v.name].label, weight = tonumber(weight), slot = v.slot, count = v.count, description = ESXItems[v.name].description, metadata = v.metadata, stackable = ESXItems[v.name].stackable}
+		end
 	end
 
 	if Config.ConvertToHSN and convert then
