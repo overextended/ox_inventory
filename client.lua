@@ -431,13 +431,15 @@ Citizen.CreateThread(function()
 			local ped = GetPlayerPed(id)
 			local pedCoords = GetEntityCoords(ped)
 			local dist = #(playerCoords - pedCoords)
-			if dist > 1 or not CanOpenTarget(ped) then
+			if dist > 1.5 or not CanOpenTarget(ped) then
 				TriggerEvent('hsn-inventory:client:closeInventory', currentInventory)
+				TriggerEvent('hsn-inventory:notification','No longer able to access this inventory',2)
 			end
 		elseif not lastVehicle and currentInventory and currentInventory.coords then
 			local dist = #(playerCoords - currentInventory.coords)
 			if dist > 2 or CanOpenTarget(playerPed) then
 				TriggerEvent('hsn-inventory:client:closeInventory', currentInventory)
+				TriggerEvent('hsn-inventory:notification','No longer able to access this inventory',2)
 			end
 		end
 		Citizen.Wait(wait)
@@ -763,7 +765,7 @@ function openTargetInventory()
 		if CanOpenTarget(searchPlayerPed) then
 			TriggerServerEvent('hsn-inventory:server:openTargetInventory', GetPlayerServerId(closestPlayer))
 		else
-			TriggerEvent('hsn-inventory:notification','You can not steal from this person')
+			TriggerEvent('hsn-inventory:notification','You can not open this inventory')
 		end
 	else
 		TriggerEvent('hsn-inventory:notification','There is nobody nearby')
