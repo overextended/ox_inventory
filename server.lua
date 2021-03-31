@@ -167,6 +167,7 @@ AddPlayerInventory = function(identifier, item, count, slot, metadata)
 				count = 1 
 				for i = 1, Config.PlayerSlot do
 					if playerInventory[identifier][i] == nil then
+						metadata = {}
 						metadata.type = Player.getName()
 						metadata.description = getPlayerIdentification(Player)
 						playerInventory[identifier][i] = {name = item ,label = ESXItems[item].label , weight = ESXItems[item].weight, slot = i, count = count, description = ESXItems[item].description, metadata = metadata, stackable = true, closeonuse = ESXItems[item].closeonuse}
@@ -275,7 +276,8 @@ RandomDropId = function()
 end
 
 function TriggerBanEvent(xPlayer, reason)
-	print( ('^1[hsn-inventory]^3 [%s] %s has attempted to cheat in items (%s)^7'):format(xPlayer.source, GetPlayerName(xPlayer.source), reason) )
+	print( ('^1[hsn-inventory]^3 [%s] %s has attempted to cheat in items [IGNORE, NOT YET ACCURATE] (%s)^7'):format(xPlayer.source, GetPlayerName(xPlayer.source), reason) )
+	TriggerClientEvent('hsn-inventory:client:refreshInventory',xPlayer.source,playerInventory[xPlayer.identifier])
 	-- need feedback on the reliability of the item validation
 	-- do your ban stuff and whatever logging you want to use
 end
@@ -320,7 +322,7 @@ AddEventHandler('hsn-inventory:server:saveInventoryData',function(data)
 				Drops[dropid].inventory[data.toSlot] = {name = data.toItem.name ,label = data.toItem.label, weight = data.toItem.weight, slot = data.toSlot, count = data.toItem.count, description = data.toItem.description, metadata = data.toItem.metadata, stackable = data.toItem.stackable, closeonuse = ESXItems[data.toItem.name].closeonuse}
 				Drops[dropid].inventory[data.fromSlot] = {name = data.fromItem.name ,label = data.fromItem.label, weight = data.fromItem.weight, slot = data.fromSlot, count = data.fromItem.count, description = data.fromItem.description, metadata = data.fromItem.metadata, stackable = data.fromItem.stackable,closeonuse = ESXItems[data.fromItem.name].closeonuse}
 			elseif data.type == 'freeslot' then
-				if not ValidateItem(data.type, Player, Drops[dropid].inventory[data.emptyslot],Drops[dropid].inventory[data.toSlot], data.item, data.item) then return end
+				if not ValidateItem(data.type, Player, Drops[dropid].inventory[data.emptyslot], Drops[dropid].inventory[data.toSlot], data.item, data.item) then return end
 				Drops[dropid].inventory[data.emptyslot] = nil
 				Drops[dropid].inventory[data.toSlot] = {name = data.item.name ,label = data.item.label, weight = data.item.weight, slot = data.toSlot, count = data.item.count, description = data.item.description, metadata = data.item.metadata, stackable = data.item.stackable, closeonuse = ESXItems[data.item.name].closeonuse}
 			elseif data.type == 'split' then
@@ -720,7 +722,8 @@ AddEventHandler('hsn-inventory:buyItem', function(info)
 	local location = info.location
 	local xPlayer = ESX.GetPlayerFromId(src)
 	local money, currency, item = nil, nil, {}
-	local count = tonumber(info.count)
+	if info.count == nil then info.count = 0 else info.count = ESX.Round(tonumber(info.count)) end
+	local count = info.count
 	local checkShop = Config.Shops[location].inventory[data.slot]
 
 	if checkShop.grade and checkShop.grade > xPlayer.job.grade then
