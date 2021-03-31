@@ -703,14 +703,14 @@
 						rightweight = rightweight + (fromItem.weight * count)
 						$("#rightside-curweight").html(weightFormat(rightweight/1000, false, true) )
 						totalkg = totalkg - (fromItem.weight * count)
-						$(".leftside-weight").html(weightFormat(totalkg/1000, false, true) + '/'+ weightFormat(maxweight/1000))
+						$(".leftside-weight").html(weightFormat(totalkg/1000, false, true) + '/'+ weightFormat(maxweight/1000, false))
 					}
 				} else {
 					if (inv2 !== inv) {
 						rightweight = rightweight - (fromItem.weight * count)
 						$("#rightside-curweight").html(weightFormat(rightweight/1000, false, true) )
 						totalkg = totalkg + (fromItem.weight * count)
-						$(".leftside-weight").html(weightFormat(totalkg/1000, false, true) + '/'+ weightFormat(maxweight/1000))
+						$(".leftside-weight").html(weightFormat(totalkg/1000, false, true) + '/'+ weightFormat(maxweight/1000, false))
 					}
 				}
 			} else {
