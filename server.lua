@@ -728,25 +728,24 @@ AddEventHandler('hsn-inventory:buyItem', function(info)
 		return
 	end
 
-	local shopCurrency = Config.Shops[location].currency
-	data.price = data.price * count
-	if not shopCurrency or shopCurrency == 'bank' then
-		currency = 'bank'
-		money = xPlayer.getAccount('bank').money
-		if not shopCurrency and money < data.price then
-			item.name = 'money'
-			currency = 'Money'
-			money = xPlayer.getInventoryItem(item.name).count
-		end
-	else
-		item = ESXItems[shopCurrency]
-		currency = item.label
-		money = xPlayer.getInventoryItem(item.name).count
-	end
-
 	if count > 0 then
 		if data.name:find('WEAPON_') then count = 1 end
-		
+
+		local shopCurrency = Config.Shops[location].currency
+		data.price = data.price * count
+		if not shopCurrency or shopCurrency == 'bank' then
+			currency = 'bank'
+			money = xPlayer.getAccount('bank').money
+			if not shopCurrency and money < data.price then
+				item.name = 'money'
+				currency = 'Money'
+				money = xPlayer.getInventoryItem(item.name).count
+			end
+		else
+			item = ESXItems[shopCurrency]
+			currency = item.label
+			money = xPlayer.getInventoryItem(item.name).count
+		end
 
 		if checkShop.name ~= data.name then
 			TriggerBanEvent(xPlayer, 'tried to buy '..data.name..' but slot contains '..checkShop.name)
