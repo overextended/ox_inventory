@@ -1109,6 +1109,10 @@ AddEventHandler('playerDropped', function(reason) --  https://github.com/CylexVI
 			print('^1[hsn-inventory]^1 One player left the game when his inventory open and inventory saved ^1[DUPE Alert]^7')
 		end
 	end
+	local id = 'Player'..src
+	if openedinventories[id] then
+		openedinventories[id] = nil
+	end
 	for k,v in pairs(openedinventories) do
 		if openedinventories[k].owner == src then
 			openedinventories[k] = nil -- :)
@@ -1174,8 +1178,8 @@ AddEventHandler('hsn-inventory:server:reloadWeapon',function(weapon)
 	local ammo = {}
 	ammo.name = weapon.ammotype
 	ammo.count = getItemCount(source,ammo.name)
-	if ammo.count then playerInventory[Player.identifier][weapon.slot].metadata.ammo = 0
-		if ammo.count > 0 then TriggerClientEvent('hsn-inventory:addAmmo',source,weapon.item.name,ammo) end
+	if ammo.count then playerInventory[Player.identifier][weapon.item.slot].metadata.ammo = 0
+		if ammo.count > 0 then TriggerClientEvent('hsn-inventory:addAmmo',source, weapon.item.name,ammo) end
 	end
 end)
 
@@ -1266,7 +1270,7 @@ AddEventHandler('hsn-inventory:server:updateWeapon',function(item)
 		if playerInventory[Player.identifier][item.slot].metadata ~= nil then
 			playerInventory[Player.identifier][item.slot].metadata = item.metadata
 			TriggerClientEvent('hsn-inventory:client:refreshInventory',src,playerInventory[Player.identifier])
-			TriggerClientEvent('hsn-inventory:client:updateWeapon', src, playerInventory[Player.identifier][slot].metadata)
+			TriggerClientEvent('hsn-inventory:client:updateWeapon', src, playerInventory[Player.identifier][item.slot].metadata)
 		end
 	end
 end)
