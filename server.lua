@@ -732,8 +732,8 @@ AddEventHandler('hsn-inventory:buyItem', function(info)
 	local location = info.location
 	local xPlayer = ESX.GetPlayerFromId(src)
 	local money, currency, item = nil, nil, {}
-	if info.count == nil then info.count = 0 else info.count = ESX.Round(tonumber(info.count)) end
-	local count = info.count
+	if info.count ~= nil then info.count = tonumber(info.count) else info.count = 0 end
+	local count = ESX.Round(info.count)
 	local checkShop = Config.Shops[location].inventory[data.slot]
 
 	if checkShop.grade and checkShop.grade > xPlayer.job.grade then
