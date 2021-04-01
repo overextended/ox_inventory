@@ -290,7 +290,7 @@ function ValidateItem(type, xPlayer, fromSlot, toSlot, fromItem, toItem)
 	end
 
 	if reason then
-		print( ('[%s] %s failed item validation (type: %s, fromSlot: %s, toSlot: %s, fromItem: %s, toItem: %s, reason: %s)'):format(xPlayer.source, GetPlayerName(xPlayer.source), type, fromSlot, toSlot, fromItem, toItem) )
+		print( ('[%s] %s failed item validation (type: %s, fromSlot: %s, toSlot: %s, fromItem: %s, toItem: %s, reason: %s)'):format(xPlayer.source, GetPlayerName(xPlayer.source), type, fromSlot, toSlot, fromItem, toItem, reason) )
 	end
 	--if reason then TriggerBanEvent(xPlayer, reason) return false else return true end
 	return true -- allow it through for now, there's an issue somewhere causing all item validations to fail after it occurs
@@ -727,7 +727,7 @@ AddEventHandler('hsn-inventory:buyItem', function(info)
 	local xPlayer = ESX.GetPlayerFromId(src)
 	local money, currency, item = nil, nil, {}
 	if info.count == nil then info.count = 0 end
-	info.count = ESX.Round(tonumber(info.count)) end
+	info.count = ESX.Round(tonumber(info.count))
 	local count = info.count
 	local checkShop = Config.Shops[location].inventory[data.slot]
 
@@ -1421,6 +1421,7 @@ ESX.RegisterServerCallback('hsn-inventory:getItemCount',function(source, cb, ite
 		return
 	end
 	local ItemCount = GetItemCount(Player.identifier, item)
+	if not ItemCount then ItemCount = 0 end
 	cb(tonumber(ItemCount))
 end)
 
