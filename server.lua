@@ -283,6 +283,7 @@ function TriggerBanEvent(xPlayer, reason)
 end
 
 function ValidateItem(type, xPlayer, fromSlot, toSlot, fromItem, toItem)
+	local reason
 	if not fromSlot then reason = 'source slot is empty' else
 		if type ~= 'swap' and fromSlot.name ~= fromItem.name then reason = 'source slot contains different item' end
 		if type == 'split' and tonumber(fromSlot.count) - tonumber(toItem.count) < 1 then reason = 'source item count has increased' end
