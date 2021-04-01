@@ -292,9 +292,8 @@ function ValidateItem(type, xPlayer, fromSlot, toSlot, fromItem, toItem)
 
 	if reason then
 		print( ('[%s] %s failed item validation (type: %s, fromSlot: %s, toSlot: %s, fromItem: %s, toItem: %s, reason: %s)'):format(xPlayer.source, GetPlayerName(xPlayer.source), type, fromSlot, toSlot, fromItem, toItem, reason) )
-	end
-	--if reason then TriggerBanEvent(xPlayer, reason) return false else return true end
-	return true -- allow it through for now, there's an issue somewhere causing all item validations to fail after it occurs
+		return false
+	else return true end
 end 
 
 RegisterNetEvent('hsn-inventory:server:saveInventoryData')
@@ -302,7 +301,7 @@ AddEventHandler('hsn-inventory:server:saveInventoryData',function(data)
 	local src = source
 	local Player = ESX.GetPlayerFromId(src)
 	if data ~= nil then
-		if data.invid2 and data.invid2 ~= invopened[src].curInventory then TriggerBanEvent(Player, 'secondary inventory id does not match') end
+		if data.invid2 and data.invid2 ~= invopened[src].curInventory then TriggerBanEvent(Player, 'secondary inventory id does not match') return end
 		if data.frominv == data.toinv and (data.frominv == 'Playerinv') then
 			if data.type == 'swap' then
 				TriggerClientEvent('hsn-inventory:client:checkweapon',src,data.fromItem)
@@ -338,7 +337,7 @@ AddEventHandler('hsn-inventory:server:saveInventoryData',function(data)
 		elseif data.frominv == data.toinv and (data.frominv == 'TargetPlayer') then
 			local playerId = string.gsub(data.invid, 'Player', '')
 			local targetplayer = ESX.GetPlayerFromId(playerId)
-				if playerInventory[targetplayer.identifier] ~= nil then
+				if targetplayer and playerInventory[targetplayer.identifier] ~= nil then
 					if data.type == 'swap' then
 						if not ValidateItem(data.type, Player, playerInventory[targetplayer.identifier][data.fromSlot], playerInventory[targetplayer.identifier][data.toSlot], data.fromItem, data.toItem) then return end
 						playerInventory[targetplayer.identifier][data.toSlot] = {name = data.toItem.name ,label = data.toItem.label, weight = data.toItem.weight, slot = data.toSlot, count = data.toItem.count, description = data.toItem.description, metadata = data.toItem.metadata, stackable = data.toItem.stackable, closeonuse = ESXItems[data.toItem.name].closeonuse}
@@ -357,7 +356,7 @@ AddEventHandler('hsn-inventory:server:saveInventoryData',function(data)
 		elseif data.frominv ~= data.toinv and (data.toinv == 'TargetPlayer' and data.frominv == 'Playerinv') then
 			local playerId = string.gsub(data.invid, 'Player', '')
 			local targetplayer = ESX.GetPlayerFromId(playerId)
-			if playerInventory[targetplayer.identifier] ~= nil then
+			if targetplayer and playerInventory[targetplayer.identifier] ~= nil then
 				if data.type == 'swap' then
 					if not ValidateItem(data.type, Player, playerInventory[Player.identifier][data.fromSlot], playerInventory[targetplayer.identifier][data.toSlot], data.fromItem, data.toItem) then return end
 					if IfInventoryCanCarry(playerInventory[targetplayer.identifier],Config.MaxWeight, (data.toItem.weight * data.toItem.count)) then
@@ -402,7 +401,7 @@ AddEventHandler('hsn-inventory:server:saveInventoryData',function(data)
 		elseif data.frominv ~= data.toinv and (data.toinv == 'Playerinv' and data.frominv == 'TargetPlayer') then
 			local playerId = string.gsub(data.invid2, 'Player', '')
 			local targetplayer = ESX.GetPlayerFromId(playerId)
-			if playerInventory[targetplayer.identifier] ~= nil then
+			if targetplayer and playerInventory[targetplayer.identifier] ~= nil then
 				if data.type == 'swap' then
 					if not ValidateItem(data.type, Player, playerInventory[targetplayer.identifier][data.fromSlot], playerInventory[Player.identifier][data.toSlot], data.fromItem, data.toItem) then return end
 					if IfInventoryCanCarry(playerInventory[Player.identifier],Config.MaxWeight, (data.toItem.weight * data.toItem.count)) then
@@ -444,7 +443,7 @@ AddEventHandler('hsn-inventory:server:saveInventoryData',function(data)
 					end
 				end
 			end
-		elseif data.frominv == data.toinv and (data.frominv == 'stash') then
+		elseif Stashs[stashId] and data.frominv == data.toinv and (data.frominv == 'stash') then
 			local stashId = data.invid
 			if data.type == 'swap' then
 				if not ValidateItem(data.type, Player, Stashs[stashId].inventory[data.fromSlot], Stashs[stashId].inventory[data.toSlot], data.fromItem, data.toItem) then return end
@@ -459,7 +458,7 @@ AddEventHandler('hsn-inventory:server:saveInventoryData',function(data)
 				Stashs[stashId].inventory[data.fromSlot] = {name = data.oldslotItem.name ,label = data.oldslotItem.label, weight = data.oldslotItem.weight, slot = data.fromSlot, count = data.oldslotItem.count, description = data.oldslotItem.description, metadata = data.oldslotItem.metadata, stackable = data.oldslotItem.stackable, closeonuse = ESXItems[data.oldslotItem.name].closeonuse}
 				Stashs[stashId].inventory[data.toSlot] = {name = data.newslotItem.name ,label = data.newslotItem.label, weight = data.newslotItem.weight, slot = data.toSlot, count = data.newslotItem.count, description = data.newslotItem.description, metadata = data.newslotItem.metadata, stackable = data.newslotItem.stackable, closeonuse = ESXItems[data.newslotItem.name].closeonuse}
 			end
-		elseif data.frominv == data.toinv and (data.frominv == 'trunk') then
+		elseif Trunks[plate] and data.frominv == data.toinv and (data.frominv == 'trunk') then
 			local plate = data.invid
 			if data.type == 'swap' then
 				if not ValidateItem(data.type, Player, Trunks[plate].inventory[data.fromSlot], Trunks[plate].inventory[data.toSlot], data.fromItem, data.toItem) then return end
@@ -474,7 +473,7 @@ AddEventHandler('hsn-inventory:server:saveInventoryData',function(data)
 				Trunks[plate].inventory[data.fromSlot] = {name = data.oldslotItem.name ,label = data.oldslotItem.label, weight = data.oldslotItem.weight, slot = data.fromSlot, count = data.oldslotItem.count, description = data.oldslotItem.description, metadata = data.oldslotItem.metadata, stackable = data.oldslotItem.stackable, closeonuse = ESXItems[data.oldslotItem.name].closeonuse}
 				Trunks[plate].inventory[data.toSlot] = {name = data.newslotItem.name ,label = data.newslotItem.label, weight = data.newslotItem.weight, slot = data.toSlot, count = data.newslotItem.count, description = data.newslotItem.description, metadata = data.newslotItem.metadata, stackable = data.newslotItem.stackable, closeonuse = ESXItems[data.newslotItem.name].closeonuse}
 			end
-		elseif data.frominv == data.toinv and (data.frominv == 'glovebox') then
+		elseif Gloveboxes[plate] and data.frominv == data.toinv and (data.frominv == 'glovebox') then
 			local plate = data.invid
 			if data.type == 'swap' then
 				if not ValidateItem(data.type, Player, Gloveboxes[plate].inventory[data.fromSlot], Gloveboxes[plate].inventory[data.toSlot], data.fromItem, data.toItem) then return end
@@ -493,7 +492,7 @@ AddEventHandler('hsn-inventory:server:saveInventoryData',function(data)
 			local dropid = data.invid
 			if dropid == nil then
 				CreateNewDrop(src,data)
-			else
+			elseif Drops[dropid] then
 				if data.type == 'swap' then
 					if not ValidateItem(data.type, Player, playerInventory[Player.identifier][data.fromSlot], Drops[dropid].inventory[data.toSlot], data.fromItem, data.toItem) then return end
 					TriggerClientEvent('hsn-inventory:client:checkweapon',src,data.toItem)
@@ -516,7 +515,7 @@ AddEventHandler('hsn-inventory:server:saveInventoryData',function(data)
 					ItemNotify(src,data.newslotItem.name,data.newslotItem.count,'Removed', 'Drop '..dropid)
 				end
 			end
-		elseif data.frominv ~= data.toinv and (data.toinv == 'Playerinv' and data.frominv == 'drop') then
+		elseif Drops[dropid] and data.frominv ~= data.toinv and (data.toinv == 'Playerinv' and data.frominv == 'drop') then
 			local dropid = data.invid2
 			if data.type == 'swap' then
 				if not ValidateItem(data.type, Player, Drops[dropid].inventory[data.fromSlot], playerInventory[Player.identifier][data.toSlot], data.fromItem, data.toItem) then return end
@@ -551,7 +550,7 @@ AddEventHandler('hsn-inventory:server:saveInventoryData',function(data)
 				TriggerClientEvent('hsn-inventory:client:removeDrop',-1, dropid)
 				TriggerClientEvent("hsn-inventory:client:closeInventory",src,dropid)
 			end
-		elseif data.frominv ~= data.toinv and (data.toinv == 'stash' and data.frominv == 'Playerinv') then
+		elseif Stashs[stashId] and data.frominv ~= data.toinv and (data.toinv == 'stash' and data.frominv == 'Playerinv') then
 			local stashId = data.invid
 			if data.type == 'swap' then
 				if not ValidateItem(data.type, Player, playerInventory[Player.identifier][data.fromSlot], Stashs[stashId].inventory[data.toSlot], data.fromItem, data.toItem) then return end
@@ -574,7 +573,7 @@ AddEventHandler('hsn-inventory:server:saveInventoryData',function(data)
 				Stashs[stashId].inventory[data.toSlot] = {name = data.newslotItem.name ,label = data.newslotItem.label, weight = data.newslotItem.weight, slot = data.toSlot, count = data.newslotItem.count, description = data.newslotItem.description, metadata = data.newslotItem.metadata, stackable = data.newslotItem.stackable, closeonuse = ESXItems[data.newslotItem.name].closeonuse}
 				ItemNotify(src,data.newslotItem.name,data.newslotItem.count,'Removed', 'Stash '..stashId)
 			end
-		elseif data.frominv ~= data.toinv and (data.toinv == 'trunk' and data.frominv == 'Playerinv') then
+		elseif Trunks[plate] and data.frominv ~= data.toinv and (data.toinv == 'trunk' and data.frominv == 'Playerinv') then
 			local plate = data.invid
 			if data.type == 'swap' then
 				if not ValidateItem(data.type, Player, playerInventory[Player.identifier][data.fromSlot], Trunks[plate].inventory[data.toSlot], data.fromItem, data.toItem) then return end
@@ -597,7 +596,7 @@ AddEventHandler('hsn-inventory:server:saveInventoryData',function(data)
 				Trunks[plate].inventory[data.toSlot] = {name = data.newslotItem.name ,label = data.newslotItem.label, weight = data.newslotItem.weight, slot = data.toSlot, count = data.newslotItem.count, description = data.newslotItem.description, metadata = data.newslotItem.metadata, stackable = data.newslotItem.stackable, closeonuse = ESXItems[data.newslotItem.name].closeonuse}
 				ItemNotify(src,data.newslotItem.name,data.newslotItem.count,'Removed', 'Trunk '..plate)
 			end
-		elseif data.frominv ~= data.toinv and (data.toinv == 'Playerinv' and data.frominv == 'trunk') then
+		elseif Trunks[plate] and data.frominv ~= data.toinv and (data.toinv == 'Playerinv' and data.frominv == 'trunk') then
 			local plate = data.invid2
 			if data.type == 'swap' then
 				if not ValidateItem(data.type, Player, Trunks[plate].inventory[data.fromSlot], playerInventory[Player.identifier][data.toSlot], data.fromItem, data.toItem) then return end
@@ -629,7 +628,7 @@ AddEventHandler('hsn-inventory:server:saveInventoryData',function(data)
 					TriggerClientEvent('hsn-inventory:notification',src,'You can not carry this item',2)
 				end
 			end
-		elseif data.frominv ~= data.toinv and (data.toinv == 'glovebox' and data.frominv == 'Playerinv') then
+		elseif Gloveboxes[plate] and data.frominv ~= data.toinv and (data.toinv == 'glovebox' and data.frominv == 'Playerinv') then
 			local plate = data.invid
 			if data.type == 'swap' then
 				if not ValidateItem(data.type, Player, playerInventory[Player.identifier][data.fromSlot], Gloveboxes[plate].inventory[data.toSlot], data.fromItem, data.toItem) then return end
@@ -653,7 +652,7 @@ AddEventHandler('hsn-inventory:server:saveInventoryData',function(data)
 				Gloveboxes[plate].inventory[data.toSlot] = {name = data.newslotItem.name ,label = data.newslotItem.label, weight = data.newslotItem.weight, slot = data.toSlot, count = data.newslotItem.count, description = data.newslotItem.description, metadata = data.newslotItem.metadata, stackable = data.newslotItem.stackable, closeonuse = ESXItems[data.newslotItem.name].closeonuse}
 				ItemNotify(src,data.newslotItem.name,data.newslotItem.count,'Removed', 'Glovebox '..plate)
 			end
-		elseif data.frominv ~= data.toinv and (data.toinv == 'Playerinv' and data.frominv == 'glovebox') then
+		elseif Gloveboxes[plate] and data.frominv ~= data.toinv and (data.toinv == 'Playerinv' and data.frominv == 'glovebox') then
 			local plate = data.invid2
 			if data.type == 'swap' then
 				if not ValidateItem(data.type, Player, Gloveboxes[plate].inventory[data.fromSlot], playerInventory[Player.identifier][data.toSlot], data.fromItem, data.toItem) then return end
@@ -684,7 +683,7 @@ AddEventHandler('hsn-inventory:server:saveInventoryData',function(data)
 					TriggerClientEvent('hsn-inventory:notification',src,'You can not carry this item',2)
 				end
 			end
-		elseif data.frominv ~= data.toinv and (data.toinv == 'Playerinv' and data.frominv == 'stash') then
+		elseif Stashs[stashId] and data.frominv ~= data.toinv and (data.toinv == 'Playerinv' and data.frominv == 'stash') then
 			local stashId = data.invid2
 			if data.type == 'swap' then
 				if not ValidateItem(data.type, Player, Stashs[stashId].inventory[data.fromSlot], playerInventory[Player.identifier][data.toSlot], data.fromItem, data.toItem) then return end
@@ -716,7 +715,6 @@ AddEventHandler('hsn-inventory:server:saveInventoryData',function(data)
 				end
 			end
 		end
-		TriggerClientEvent('hsn-inventory:client:refreshInventory',src,playerInventory[Player.identifier])
 	end
 end) 
 
@@ -727,8 +725,7 @@ AddEventHandler('hsn-inventory:buyItem', function(info)
 	local location = info.location
 	local xPlayer = ESX.GetPlayerFromId(src)
 	local money, currency, item = nil, nil, {}
-	if info.count == nil then info.count = 0 end
-	info.count = ESX.Round(tonumber(info.count))
+	if info.count == nil then info.count = 0 else info.count = ESX.Round(tonumber(info.count)) end
 	local count = info.count
 	local checkShop = Config.Shops[location].inventory[data.slot]
 
@@ -1139,6 +1136,7 @@ ItemNotify = function(source, item, count, type, id)
 	count = tonumber(count)
 	if count > 0 then
 		TriggerClientEvent('hsn-inventory:client:addItemNotify',source,ESXItems[item], ('%s %sx'):format(type, count))
+		TriggerClientEvent('hsn-inventory:client:refreshInventory',src,playerInventory[Player.identifier])
 		if Config.Logs then
 			local Player = ESX.GetPlayerFromId(source)
 			if id then id = '('..id..')' else id = '' end
