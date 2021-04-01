@@ -735,6 +735,7 @@ AddEventHandler('hsn-inventory:client:checkweapon',function(item)
 		RemoveWeaponFromPed(playerPed, GetHashKey(item.name))
 		SetCurrentPedWeapon(playerPed, `WEAPON_UNARMED`, true)
 		currentWeapon = nil
+		TriggerEvent('hsn-inventory:currentWeapon', nil)
 	end
 end)
 
