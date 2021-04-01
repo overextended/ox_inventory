@@ -366,8 +366,8 @@ AddEventHandler('hsn-inventory:server:saveInventoryData',function(data)
 						playerInventory[Player.identifier][data.fromSlot] = {name = data.fromItem.name ,label = data.fromItem.label, weight = data.fromItem.weight, slot = data.fromSlot, count = data.fromItem.count, description = data.fromItem.description, metadata = data.fromItem.metadata, stackable = data.fromItem.stackable, closeonuse = ESXItems[data.fromItem.name].closeonuse}
 						ItemNotify(src,data.toItem.name,data.toItem.count,'Removed', data.invid)
 						ItemNotify(src,data.fromItem.name,data.fromItem.count,'Added', data.invid)
-						ItemNotify(targetplayer.source,data.toItem.name,data.toItem.count,'Added', 'Player '..src)
-						ItemNotify(targetplayer.source,data.fromItem.name,data.fromItem.count,'Removed', 'Player '..src)
+						ItemNotify(targetplayer.source,data.toItem.name,data.toItem.count,'Added', 'Player'..src)
+						ItemNotify(targetplayer.source,data.fromItem.name,data.fromItem.count,'Removed', 'Player'..src)
 						TriggerClientEvent('hsn-inventory:client:refreshInventory',targetplayer.source,playerInventory[targetplayer.identifier])
 					else
 						TriggerClientEvent('hsn-inventory:notification',src,'You can not carry this item',2)
@@ -380,7 +380,7 @@ AddEventHandler('hsn-inventory:server:saveInventoryData',function(data)
 						playerInventory[Player.identifier][data.emptyslot] = nil
 						playerInventory[targetplayer.identifier][data.toSlot] = {name = data.item.name ,label = data.item.label, weight = data.item.weight, slot = data.toSlot, count = data.item.count, description = data.item.description, metadata = data.item.metadata, stackable = data.item.stackable, closeonuse = ESXItems[data.item.name].closeonuse}
 						ItemNotify(src,data.item.name,count,'Removed', data.invid)
-						ItemNotify(targetplayer.source,data.item.name,count,'Added', 'Player '..src)
+						ItemNotify(targetplayer.source,data.item.name,count,'Added', 'Player'..src)
 						TriggerClientEvent('hsn-inventory:client:refreshInventory',targetplayer.source,playerInventory[targetplayer.identifier])
 					else
 						TriggerClientEvent('hsn-inventory:notification',src,'You can not carry this item',2)
@@ -392,7 +392,7 @@ AddEventHandler('hsn-inventory:server:saveInventoryData',function(data)
 						playerInventory[Player.identifier][data.fromSlot] = {name = data.oldslotItem.name ,label = data.oldslotItem.label, weight = data.oldslotItem.weight, slot = data.fromSlot, count = data.oldslotItem.count, description = data.oldslotItem.description, metadata = data.oldslotItem.metadata, stackable = data.oldslotItem.stackable, closeonuse = ESXItems[data.oldslotItem.name].closeonuse}
 						playerInventory[targetplayer.identifier][data.toSlot] = {name = data.newslotItem.name ,label = data.newslotItem.label, weight = data.newslotItem.weight, slot = data.toSlot, count = data.newslotItem.count, description = data.newslotItem.description, metadata = data.newslotItem.metadata, stackable = data.newslotItem.stackable, closeonuse = ESXItems[data.newslotItem.name].closeonuse}
 						ItemNotify(src,data.newslotItem.name,data.newslotItem.count,'Removed', data.invid)
-						ItemNotify(targetplayer.source,data.newslotItem.name,data.newslotItem.count,'Added', 'Player '..src)
+						ItemNotify(targetplayer.source,data.newslotItem.name,data.newslotItem.count,'Added', 'Player'..src)
 						TriggerClientEvent('hsn-inventory:client:refreshInventory',targetplayer.source,playerInventory[targetplayer.identifier])
 					else
 						TriggerClientEvent('hsn-inventory:notification',src,'You can not carry this item',2)
@@ -411,8 +411,8 @@ AddEventHandler('hsn-inventory:server:saveInventoryData',function(data)
 						playerInventory[targetplayer.identifier][data.fromSlot] = {name = data.fromItem.name ,label = data.fromItem.label, weight = data.fromItem.weight, slot = data.fromSlot, count = data.fromItem.count, description = data.fromItem.description, metadata = data.fromItem.metadata, stackable = data.fromItem.stackable, closeonuse = ESXItems[data.fromItem.name].closeonuse}
 						ItemNotify(src,data.toItem.name,data.toItem.count,'Added', data.invid2)
 						ItemNotify(src,data.fromItem.name,data.fromItem.count,'Removed', data.invid2)
-						ItemNotify(targetplayer.source,data.toItem.name,data.toItem.count,'Removed', 'Player '..src)
-						ItemNotify(targetplayer.source,data.fromItem.name,data.fromItem.count,'Removed', 'Player '..src)
+						ItemNotify(targetplayer.source,data.toItem.name,data.toItem.count,'Removed', 'Player'..src)
+						ItemNotify(targetplayer.source,data.fromItem.name,data.fromItem.count,'Removed', 'Player'..src)
 						TriggerClientEvent('hsn-inventory:client:refreshInventory',targetplayer.source,playerInventory[targetplayer.identifier])
 					else
 						TriggerClientEvent('hsn-inventory:notification',src,'You can not carry this item',2)
@@ -425,7 +425,7 @@ AddEventHandler('hsn-inventory:server:saveInventoryData',function(data)
 						playerInventory[targetplayer.identifier][data.emptyslot] = nil
 						playerInventory[Player.identifier][data.toSlot] = {name = data.item.name ,label = data.item.label, weight = data.item.weight, slot = data.toSlot, count = data.item.count, description = data.item.description, metadata = data.item.metadata, stackable = data.item.stackable, closeonuse = ESXItems[data.item.name].closeonuse}
 						ItemNotify(src,data.item.name,count,'Added',data.invid2)
-						ItemNotify(targetplayer.source,data.item.name,count,'Removed','Player '..src)
+						ItemNotify(targetplayer.source,data.item.name,count,'Removed','Player'..src)
 						TriggerClientEvent('hsn-inventory:client:refreshInventory',targetplayer.source,playerInventory[targetplayer.identifier])
 					else
 						TriggerClientEvent('hsn-inventory:notification',src,'You can not carry this item',2)
@@ -437,7 +437,7 @@ AddEventHandler('hsn-inventory:server:saveInventoryData',function(data)
 						playerInventory[targetplayer.identifier][data.fromSlot] = {name = data.oldslotItem.name ,label = data.oldslotItem.label, weight = data.oldslotItem.weight, slot = data.fromSlot, count = data.oldslotItem.count, description = data.oldslotItem.description, metadata = data.oldslotItem.metadata, stackable = data.oldslotItem.stackable, closeonuse = ESXItems[data.oldslotItem.name].closeonuse}
 						playerInventory[Player.identifier][data.toSlot] = {name = data.newslotItem.name ,label = data.newslotItem.label, weight = data.newslotItem.weight, slot = data.toSlot, count = data.newslotItem.count, description = data.newslotItem.description, metadata = data.newslotItem.metadata, stackable = data.newslotItem.stackable, closeonuse = ESXItems[data.newslotItem.name].closeonuse}
 						ItemNotify(src,data.newslotItem.name,data.newslotItem.count,'Added',data.invid2)
-						ItemNotify(targetplayer.source,data.newslotItem.name,data.newslotItem.count,'Removed','Player '..src)
+						ItemNotify(targetplayer.source,data.newslotItem.name,data.newslotItem.count,'Removed','Player'..src)
 						TriggerClientEvent('hsn-inventory:client:refreshInventory',targetplayer.source,playerInventory[targetplayer.identifier])
 					else
 						TriggerClientEvent('hsn-inventory:notification',src,'You can not carry this item',2)
@@ -774,7 +774,7 @@ AddEventHandler('hsn-inventory:buyItem', function(info)
 					end
 					AddPlayerInventory(xPlayer.identifier, data.name, count, nil, data.metadata)
 					TriggerClientEvent('hsn-inventory:client:refreshInventory',src,playerInventory[xPlayer.identifier])
-					if Config.Logs then exports.linden_logs:log(xPlayer.source, ('%s (%s) bought %s %s from %s for %s'):format(xPlayer.name, xPlayer.identifier, ESX.Math.GroupDigits(count), data.label, Config.Shops[location].name, cost), 'test') end
+					if Config.Logs then exports.linden_logs:log(xPlayer.source, ('%s (%s) bought %sx %s from %s for %s'):format(xPlayer.name, xPlayer.identifier, ESX.Math.GroupDigits(count), data.label, Config.Shops[location].name, cost), 'test') end
 				else
 					local missing
 					if currency == 'bank' or item.name == 'money' then
