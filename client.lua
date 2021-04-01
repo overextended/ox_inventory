@@ -28,7 +28,6 @@ end
 function StartInventory()
 	ESX.TriggerServerCallback('hsn-inventory:getData',function(data)
 		playerName = data.name
-		ESX.SetPlayerData('inventory', data.inventory)
 		oneSync = data.oneSync
 	end)
 	while not playerName do Citizen.Wait(100) end
@@ -337,7 +336,6 @@ AddEventHandler('hsn-inventory:client:openInventory',function(inventory,other)
 	movement = false
 	if not playerName then return end
 	invOpen = true
-	--ESX.SetPlayerData('inventory', inventory)
 	SendNUIMessage({
 		message = 'openinventory',
 		inventory = inventory,
@@ -379,7 +377,6 @@ end)
 RegisterNetEvent('hsn-inventory:client:refreshInventory')
 AddEventHandler('hsn-inventory:client:refreshInventory',function(inventory)
 	if not playerName then return end
-	ESX.SetPlayerData('inventory', inventory)
 	SendNUIMessage({
 		message = 'refresh',
 		inventory = inventory,
@@ -431,7 +428,7 @@ Citizen.CreateThread(function()
 			local ped = GetPlayerPed(id)
 			local pedCoords = GetEntityCoords(ped)
 			local dist = #(playerCoords - pedCoords)
-			if dist > 1.5 or not CanOpenTarget(ped) then
+			if not id or dist > 1.5 or not CanOpenTarget(ped) then
 				TriggerEvent('hsn-inventory:client:closeInventory', currentInventory)
 				TriggerEvent('hsn-inventory:notification','No longer able to access this inventory',2)
 			end
