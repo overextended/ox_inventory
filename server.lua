@@ -1031,6 +1031,7 @@ SaveItems = function(type,id)
 			})
 			if result[1] == nil then
 				local inventory = GetInventory(Stashs[id].inventory)
+				if next(inventory) == nil then return end
 				exports.ghmattimysql:execute('INSERT INTO hsn_inventory (name, data) VALUES (@name, @data)', {
 					['@name'] = id,
 					['@data'] = json.encode(inventory)
@@ -1048,6 +1049,7 @@ SaveItems = function(type,id)
 			})
 			if result[1] == nil then
 				local inventory = GetInventory(Gloveboxes[id].inventory)
+				if next(inventory) == nil then return end
 				exports.ghmattimysql:execute('INSERT INTO hsn_inventory (name, data) VALUES (@name, @data)', {
 					['@name'] = id,
 					['@data'] = json.encode(inventory)
@@ -1065,6 +1067,7 @@ SaveItems = function(type,id)
 			})
 			if result[1] == nil then
 				local inventory = GetInventory(Trunks[id].inventory)
+				if next(inventory) == nil then return end
 				exports.ghmattimysql:execute('INSERT INTO hsn_inventory (name, data) VALUES (@name, @data)', {
 					['@name'] = id,
 					['@data'] = json.encode(inventory)
@@ -1405,7 +1408,7 @@ useItem = function(src, item)
 		return
 	end
 	if Config.ItemList[item.name] then
-		if not next(Config.ItemList[item.name]) then return end
+		if next(Config.ItemList[item.name]) == nil then return end
 		TriggerClientEvent('hsn-inventory:useItem', src, item)
 	elseif ESX.UsableItemsCallbacks[item.name] ~= nil then
 		TriggerEvent('esx:useItem', src, item.name)
