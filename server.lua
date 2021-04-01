@@ -175,7 +175,7 @@ AddPlayerInventory = function(identifier, item, count, slot, metadata)
 					end
 				end
 			else
-				if metadata == 'setname' then metadata = {description = Player.getName} else metadata = setMetadata(metadata) end
+				if metadata == 'setname' then metadata = {description = Player.getName()} else metadata = setMetadata(metadata) end
 				if slot then
 					playerInventory[identifier][slot] = {name = item ,label = ESXItems[item].label, weight = ESXItems[item].weight, slot = i, count = count, description = ESXItems[item].description, metadata = metadata, stackable = ESXItems[item].stackable, closeonuse = ESXItems[item].closeonuse}
 				else
