@@ -1012,13 +1012,15 @@ end
 
 GetInventory = function(inventory)
 	local returnData = {}
-	for k,v in pairs(inventory) do
-		returnData[k] = {
-			name = v.name,
-			count = v.count,
-			metadata = v.metadata,
-			slot = k
-		} 
+	if inventory ~= nil then
+		for k,v in pairs(inventory) do
+			returnData[k] = {
+				name = v.name,
+				count = v.count,
+				metadata = v.metadata,
+				slot = k
+			} 
+		end
 	end
 	return returnData
 end
