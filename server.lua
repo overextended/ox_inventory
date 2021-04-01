@@ -319,7 +319,7 @@ AddEventHandler('hsn-inventory:server:saveInventoryData',function(data)
 				playerInventory[Player.identifier][data.fromSlot] = {name = data.oldslotItem.name ,label = data.oldslotItem.label, weight = data.oldslotItem.weight, slot = data.fromSlot, count = data.oldslotItem.count, description = data.oldslotItem.description, metadata = data.oldslotItem.metadata, stackable = data.oldslotItem.stackable, closeonuse = ESXItems[data.oldslotItem.name].closeonuse}
 				playerInventory[Player.identifier][data.toSlot] = {name = data.newslotItem.name ,label = data.newslotItem.label, weight = data.newslotItem.weight, slot = data.toSlot, count = data.newslotItem.count, description = data.newslotItem.description, metadata = data.newslotItem.metadata, stackable = data.newslotItem.stackable, closeonuse = ESXItems[data.newslotItem.name].closeonuse}
 			end
-		elseif data.frominv == data.toinv and (data.frominv == 'drop') then
+		elseif Drops[dropid] and data.frominv == data.toinv and (data.frominv == 'drop') then
 			local dropid = data.invid
 			if data.type == 'swap' then
 				if not ValidateItem(data.type, Player, Drops[dropid].inventory[data.fromSlot], Drops[dropid].inventory[data.toSlot], data.fromItem, data.toItem) then return end
@@ -1619,7 +1619,7 @@ end)
 
 
 function getPlayerIdentification(xPlayer)
-	return ('Sex: %s | Height: %s<br>DOB: %s (%s)'):format( xPlayer.get('sex'), xPlayer.get('height'), xPlayer.get('dateofbirth'), xPlayer.getIdentifier() )
+	return ('Sex: %s | DOB: %s (%s)'):format( xPlayer.get('sex'), xPlayer.get('dateofbirth'), xPlayer.getIdentifier() )
 end
 
 AddEventHandler('hsn-inventory:clearPlayerInventory', function(xPlayer)
