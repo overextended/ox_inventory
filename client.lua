@@ -160,7 +160,7 @@ Citizen.CreateThread(function()
 						wait = false
 					end)
 				end
-			elseif currentWeapon.item.metadata.throwable and IsControlJustReleased(0, 24)) and not wait then
+			elseif currentWeapon.item.metadata.throwable and not wait and IsControlJustReleased(0, 24) then
 				Citizen.CreateThread(function()
 					wait = true
 					Citizen.Wait(800)
