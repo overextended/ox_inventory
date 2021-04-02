@@ -230,7 +230,7 @@ RemovePlayerInventory = function(src, identifier, item, count, slot, metadata)
 	if ESXItems[item] ~= nil then
 		if slot then metadata = nil else metadata = setMetadata(metadata) end
 		local weapon = false
-		if item.name:find('WEAPON_') then weapon = true end
+		if item:find('WEAPON_') then weapon = true end
 		for i = 1, Config.PlayerSlot do
 			if playerInventory[identifier][i] ~= nil and playerInventory[identifier][i].name == item then
 				if not metadata or is_table_equal(playerInventory[identifier][i].metadata, metadata) then
@@ -1148,29 +1148,17 @@ AddEventHandler('playerDropped', function(reason) --  https://github.com/CylexVI
 end)
 
 ItemNotify = function(source, item, count, type, id)
+	local Player = ESX.GetPlayerFromId(source)
 	count = tonumber(count)
 	if count > 0 then
 		TriggerClientEvent('hsn-inventory:client:addItemNotify',source,ESXItems[item], ('%s %sx'):format(type, count))
-		TriggerClientEvent('hsn-inventory:client:refreshInventory',src,playerInventory[Player.identifier])
+		TriggerClientEvent('hsn-inventory:client:refreshInventory',source,playerInventory[Player.identifier])
 		if Config.Logs then
-			local Player = ESX.GetPlayerFromId(source)
 			if id then id = '('..id..')' else id = '' end
 			exports.linden_logs:log(Player.source, ('%s (%s) has %s %sx %s %s'):format(Player.name, Player.identifier, string.lower(type), ESX.Math.GroupDigits(count), ESXItems[item].label, id), 'test')
 		end
 	else TriggerClientEvent('hsn-inventory:client:addItemNotify',source,ESXItems[item],'Used') end
 end
-
---[[MoneySync = function(source, item)
-	local Player = ESX.GetPlayerFromId(source)
-	local getAccount = Player.getAccount(item)
-	local itemCount = getItemCount(source, item)
-	local newCount = itemCount - getAccount.money
-	if getAccount.money < itemCount then
-		Player.addAccountMoney(item, math.abs(newCount))
-	elseif getAccount.money > itemCount then
-		Player.removeAccountMoney(item, math.abs(newCount))
-	end
-end]]
 
 RegisterNetEvent('hsn-inventory:server:useItem')
 AddEventHandler('hsn-inventory:server:useItem',function(item)
