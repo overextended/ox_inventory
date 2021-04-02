@@ -1040,59 +1040,56 @@ end
 SaveItems = function(type,id)
 	if id then
 		if type == 'stash' then
-			local result = exports.ghmattimysql:executeSync('SELECT data FROM hsn_inventory WHERE name = @name', {
-				['@name'] = id
-			})
-			if result[1] == nil then
+			exports.ghmattimysql:scalarSync('SELECT data FROM hsn_inventory WHERE name = @name', {['@name'] = name}, function(result)
+			if not result then
 				local inventory = GetInventory(Stashs[id].inventory)
-				if next(inventory) == nil then return end
-				exports.ghmattimysql:execute('INSERT INTO hsn_inventory (name, data) VALUES (@name, @data)', {
-					['@name'] = id,
-					['@data'] = json.encode(inventory)
-				})
+				if next(inventory) then
+					exports.ghmattimysql:execute('INSERT INTO hsn_inventory (name, data) VALUES (@name, @data)', {
+						['@name'] = id,
+						['@data'] = json.encode(inventory)
+					})
+				end
 			else
 				local inventory = GetInventory(Stashs[id].inventory)
 				exports.ghmattimysql:execute('UPDATE hsn_inventory SET data = @data WHERE name = @name', {
 					['@data'] = json.encode(inventory),
 					['@name'] = id
 				})
-			end
+			end)
 		elseif type == 'glovebox' then
-			local result = exports.ghmattimysql:executeSync('SELECT data FROM hsn_inventory WHERE name = @name', {
-				['@name'] = id
-			})
-			if result[1] == nil then
+			exports.ghmattimysql:scalarSync('SELECT data FROM hsn_inventory WHERE name = @name', {['@name'] = name}, function(result)
+			if not result then
 				local inventory = GetInventory(Gloveboxes[id].inventory)
-				if next(inventory) == nil then return end
-				exports.ghmattimysql:execute('INSERT INTO hsn_inventory (name, data) VALUES (@name, @data)', {
-					['@name'] = id,
-					['@data'] = json.encode(inventory)
-				})
+				if next(inventory) then
+					exports.ghmattimysql:execute('INSERT INTO hsn_inventory (name, data) VALUES (@name, @data)', {
+						['@name'] = id,
+						['@data'] = json.encode(inventory)
+					})
+				end
 			else
 				local inventory = GetInventory(Gloveboxes[id].inventory)
 				exports.ghmattimysql:execute('UPDATE hsn_inventory SET data = @data WHERE name = @name', {
 					['@data'] = json.encode(inventory),
 					['@name'] = id
 				})
-			end
+			end)
 		elseif type == 'trunk' then
-			local result = exports.ghmattimysql:executeSync('SELECT data FROM hsn_inventory WHERE name = @name', {
-				['@name'] = id
-			})
-			if result[1] == nil then
+			exports.ghmattimysql:scalarSync('SELECT data FROM hsn_inventory WHERE name = @name', {['@name'] = name}, function(result)
+			if not result then
 				local inventory = GetInventory(Trunks[id].inventory)
-				if next(inventory) == nil then return end
-				exports.ghmattimysql:execute('INSERT INTO hsn_inventory (name, data) VALUES (@name, @data)', {
-					['@name'] = id,
-					['@data'] = json.encode(inventory)
-				})
+				if next(inventory) then
+					exports.ghmattimysql:execute('INSERT INTO hsn_inventory (name, data) VALUES (@name, @data)', {
+						['@name'] = id,
+						['@data'] = json.encode(inventory)
+					})
+				end
 			else
 				local inventory = GetInventory(Trunks[id].inventory)
 				exports.ghmattimysql:execute('UPDATE hsn_inventory SET data = @data WHERE name = @name', {
 					['@data'] = json.encode(inventory),
 					['@name'] = id
 				})
-			end
+			end)
 		end
 	end
 end
