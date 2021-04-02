@@ -87,7 +87,7 @@ Citizen.CreateThread(function()
 	while true do
 		Citizen.Wait(3)
 		playerPed = PlayerPedId()
-		DisableControlAction(0, 37, true)
+		DisableControlAction(0, 37, true)  -- tab
 		DisableControlAction(0, 157, true) -- 1
 		DisableControlAction(0, 158, true) -- 2
 		DisableControlAction(0, 160, true) -- 3
@@ -105,7 +105,7 @@ Citizen.CreateThread(function()
 		end
 		if not invOpen then
 			for k, v in pairs(keys) do
-				if IsDisabledControlJustReleased(0, v) and not isDead and not isCuffed then
+				if IsDisabledControlJustReleased(0, v) and CanOpenInventory() then
 					TriggerServerEvent('hsn-inventory:server:useItemfromSlot',k)
 				end
 			end
@@ -128,7 +128,7 @@ Citizen.CreateThread(function()
 				DisableControlAction(1, 142, true)
 			end
 			local shooting = IsPedShooting(playerPed)
-			if shooting or ((currentWeapon.item.metadata.throwable or currentWeapon.item.metadata[1] == nil) and IsControlJustReleased(0, 24)) then
+			if shooting then
 				local ammo = GetAmmoInPedWeapon(playerPed, currentWeapon.hash)
 				if currentWeapon.item.metadata.durability then currentWeapon.item.metadata.durability = currentWeapon.item.metadata.durability - 0.1 end
 				if (currentWeapon.item.name == 'WEAPON_FIREEXTINGUISHER' or currentWeapon.item.name == 'WEAPON_PETROLCAN') and not wait then
@@ -144,15 +144,6 @@ Citizen.CreateThread(function()
 							wait = false
 						end)
 					end
-				elseif currentWeapon.item.metadata.throwable and not wait then
-					Citizen.CreateThread(function()
-						wait = true
-						Citizen.Wait(800)
-						TriggerServerEvent('hsn-inventory:client:removeItem', currentWeapon.item.name, 1)
-						SetCurrentPedWeapon(playerPed, `WEAPON_UNARMED`, true)
-						currentWeapon = nil
-						wait = false
-					end)
 				elseif currentWeapon.item.metadata.serial and currentWeapon.item.metadata.ammo then
 					currentWeapon.item.metadata.ammo = ammo
 					if ammo == 0 then
@@ -169,6 +160,15 @@ Citizen.CreateThread(function()
 						wait = false
 					end)
 				end
+			elseif currentWeapon.item.metadata.throwable and IsControlJustReleased(0, 24)) and not wait then
+				Citizen.CreateThread(function()
+					wait = true
+					Citizen.Wait(800)
+					TriggerServerEvent('hsn-inventory:client:removeItem', currentWeapon.item.name, 1, currentWeapon.item.metadata, currentWeapon.item.slot)
+					SetCurrentPedWeapon(playerPed, `WEAPON_UNARMED`, true)
+					currentWeapon = nil
+					wait = false
+				end)
 			else shooting = false end
 		end
 	end
