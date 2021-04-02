@@ -1585,7 +1585,7 @@ AddEventHandler('onResourceStop', function(resourceName)
 			local Player = ESX.GetPlayerFromId(Players[i])
 			local inventory = {}
 			inventory = json.encode(GetInventory(playerInventory[Player.identifier]))
-			exports.ghmattimysql:executeSync('UPDATE `users` SET inventory = @inventory WHERE identifier = @identifier', {
+			exports.ghmattimysql:execute('UPDATE `users` SET inventory = @inventory WHERE identifier = @identifier', {
 				['@inventory'] = inventory,
 				['@identifier'] = Player.identifier
 			})
