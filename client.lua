@@ -262,6 +262,12 @@ RegisterCommand('vehinv', function()
 end, false)
 
 CanOpenInventory = function()
+	-- some players dupe while taskbar on screen
+    -- local check = exports["progressBars"]:onScreen()
+    -- if check then
+    --     return false
+    -- end
+
 	if playerName and not IsPedDeadOrDying(playerPed, 1) and not IsPauseMenuActive() and not isDead and not isCuffed and not invOpen and not usingItem then return true end
 	return false
 end
@@ -630,14 +636,14 @@ end)
 RegisterNetEvent('hsn-inventory:weaponaway')
 AddEventHandler('hsn-inventory:weaponaway', function()
 	ClearPedSecondaryTask(playerPed)
-	local hash = currentWeapon.hash
 	loadAnimDict('reaction@intimidation@1h')
 	TaskPlayAnimAdvanced(playerPed, 'reaction@intimidation@1h', 'outro', GetEntityCoords(playerPed, true), 0, 0, GetEntityHeading(playerPed), 8.0, 3.0, -1, 50, 0, 0, 0)
-	SetPedAmmo(playerPed, hash, 0)
+	SetPedAmmo(playerPed, currentWeapon.hash, 0)
 	Citizen.Wait(1600)
 	SetCurrentPedWeapon(playerPed, `WEAPON_UNARMED`, true)
 	Citizen.Wait(0)
-	RemoveWeaponFromPed(playerPed, hash)
+	RemoveWeaponFromPed(playerPed, currentWeapon.hash)
+	SetPedCurrentWeaponVisible(playerPed, false, false, false, false)
 	ClearPedSecondaryTask(playerPed)
 	if IsPedUsingActionMode(playerPed) then
 		SetPedUsingActionMode(playerPed, -1, -1, 1)
@@ -867,6 +873,7 @@ AddEventHandler('hsn-inventory:useItem',function(item)
 
 			if xItem.name == 'lockpick' then
 				TriggerEvent('esx_lockpick:onUse')
+				TriggerEvent('lockpick:vehicleUse')
 			end
 
 			------------------------------------------------------------------------------------------------
@@ -910,7 +917,6 @@ AddEventHandler('hsn-inventory:useItem',function(item)
 					local newHealth = math.min(maxHealth, math.floor(health + maxHealth / 16))
 					SetEntityHealth(playerPed, newHealth)
 					TriggerEvent('mythic_hospital:client:FieldTreatBleed')
-					TriggerEvent('mythic_hospital:client:ReduceBleed')
 				end
 
 
