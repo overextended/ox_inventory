@@ -1430,7 +1430,6 @@ ESX.RegisterServerCallback('hsn-inventory:getItemCount',function(source, cb, ite
 		return
 	end
 	local ItemCount = GetItemCount(Player.identifier, item)
-	if not ItemCount then ItemCount = 0 end
 	cb(tonumber(ItemCount))
 end)
 
