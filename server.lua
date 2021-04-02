@@ -192,7 +192,13 @@ AddPlayerInventory = function(identifier, item, count, slot, metadata)
 					end
 				end
 			end
-			TriggerClientEvent("hsn-inventory:client:closeInventory",src,invopened[src].curInventory)
+
+			if invopened[xPlayer.source] then
+				TriggerClientEvent("hsn-inventory:client:closeInventory",src,invopened[xPlayer.source].curInventory)
+			else
+				TriggerClientEvent("hsn-inventory:client:closeInventory",xPlayer.source,nil)
+			end
+
 		end
 	else
 		print('[^2hsn-inventory^0] - item not found')
@@ -301,7 +307,11 @@ function ValidateItem(type, xPlayer, fromSlot, toSlot, fromItem, toItem)
 		-- item validation should not be used to ban until all bugs are dealt with
 		-- for now, close inventory and refresh items
 		TriggerClientEvent('hsn-inventory:notification',src,'Inventory has been refreshed (desync)',2)
-		TriggerClientEvent("hsn-inventory:client:closeInventory",src,invopened[src].curInventory)
+		if invopened[src] then
+			TriggerClientEvent("hsn-inventory:client:closeInventory",src,invopened[src].curInventory)
+		else
+			TriggerClientEvent("hsn-inventory:client:closeInventory",src,nil)
+		end
 		return false
 	else return true end
 end 
@@ -1646,8 +1656,8 @@ end)
 AddEventHandler('onResourceStop', function(resourceName)
 	if (GetCurrentResourceName() == resourceName) then
 		local xPlayers = ESX.GetPlayers()
-		for i=1, #Players, 1 do
-			local xPlayer = ESX.GetPlayerFromId(Players[i])
+		for i=1, #xPlayers, 1 do
+			local xPlayer = ESX.GetPlayerFromId(xPlayers[i])
 			local inventory = {}
 			inventory = json.encode(GetInventory(playerInventory[xPlayer.identifier]))
 			exports.ghmattimysql:execute('UPDATE `users` SET inventory = @inventory WHERE identifier = @identifier', {
@@ -1663,7 +1673,7 @@ AddEventHandler('onResourceStart', function(resourceName)
 		while notready do Citizen.Wait(50) end
 		Citizen.Wait(50)
 		local xPlayers = ESX.GetPlayers()
-		for k,v in pairs(Players) do
+		for k,v in pairs(xPlayers) do
 			local xPlayer = ESX.GetPlayerFromId(v)
 			playerInventory[xPlayer.identifier] = {}
 			exports.ghmattimysql:execute('SELECT inventory FROM users WHERE identifier = @identifier', {
