@@ -192,6 +192,7 @@ AddPlayerInventory = function(identifier, item, count, slot, metadata)
 					end
 				end
 			end
+			TriggerClientEvent("hsn-inventory:client:closeInventory",src,invopened[src].curInventory)
 		end
 	else
 		print('[^2hsn-inventory^0] - item not found')
@@ -281,9 +282,9 @@ end
 
 function TriggerBanEvent(xPlayer, reason)
 	print( ('^1[hsn-inventory]^3 [%s] %s has attempted to cheat in items (%s)^7'):format(xPlayer.source, GetPlayerName(xPlayer.source), reason) )
-	TriggerClientEvent('hsn-inventory:client:refreshInventory',xPlayer.source,playerInventory[xPlayer.identifier])
-	-- need feedback on the reliability of the item validation
+	TriggerClientEvent("hsn-inventory:client:closeInventory",xPlayer.source,invopened[xPlayer.source].curInventory)
 	-- do your ban stuff and whatever logging you want to use
+	-- only trigger bans when it is guaranteed to be cheating and not desync
 end
 
 function ValidateItem(type, xPlayer, fromSlot, toSlot, fromItem, toItem)
@@ -296,6 +297,11 @@ function ValidateItem(type, xPlayer, fromSlot, toSlot, fromItem, toItem)
 
 	if reason then
 		print( ('[%s] %s failed item validation (type: %s, fromSlot: %s, toSlot: %s, fromItem: %s, toItem: %s, reason: %s)'):format(xPlayer.source, GetPlayerName(xPlayer.source), type, fromSlot, toSlot, fromItem, toItem, reason) )
+		-- currently have a bug where moving items around while also adding/removing items can result in client-sided item duplication
+		-- item validation should not be used to ban until all bugs are dealt with
+		-- for now, close inventory and refresh items
+		TriggerClientEvent('hsn-inventory:notification',src,'Inventory has been refreshed (desync)',2)
+		TriggerClientEvent("hsn-inventory:client:closeInventory",src,invopened[src].curInventory)
 		return false
 	else return true end
 end 
@@ -305,7 +311,6 @@ AddEventHandler('hsn-inventory:server:saveInventoryData',function(data)
 	local src = source
 	local Player = ESX.GetPlayerFromId(src)
 	if data ~= nil then
-		if data.invid2 and data.invid2 ~= invopened[src].curInventory then TriggerBanEvent(Player, 'secondary inventory id does not match') return end
 		if data.frominv == data.toinv and (data.frominv == 'Playerinv') then
 			if data.type == 'swap' then
 				TriggerClientEvent('hsn-inventory:client:checkweapon',src,data.fromItem)
@@ -843,11 +848,6 @@ CreateNewDrop = function(source,data)
 	TriggerClientEvent('hsn-inventory:client:refreshInventory',src,playerInventory[Player.identifier])
 end
 
-RegisterCommand('fixinv', function(source, args, rawCommand)
-	local Player = ESX.GetPlayerFromId(source)
-	TriggerClientEvent('hsn-inventory:client:refreshInventory',source,playerInventory[Player.identifier])
-end)
-
 RegisterNetEvent('hsn-inventory:server:refreshInventory')
 AddEventHandler('hsn-inventory:server:refreshInventory',function()
 	if notready then return end
@@ -1095,7 +1095,6 @@ SaveItems = function(type,id)
 end
 
 
-
 RegisterNetEvent('hsn-inventory:setcurrentInventory')
 AddEventHandler('hsn-inventory:setcurrentInventory',function(other)
 	local src = source
@@ -1149,7 +1148,6 @@ ItemNotify = function(source, item, count, type, id)
 	count = tonumber(count)
 	if count > 0 then
 		TriggerClientEvent('hsn-inventory:client:addItemNotify',source,ESXItems[item], ('%s %sx'):format(type, count))
-		TriggerClientEvent('hsn-inventory:client:refreshInventory',source,playerInventory[Player.identifier])
 		if Config.Logs then
 			if id then id = '('..id..')' else id = '' end
 			exports.linden_logs:log(Player.source, ('%s (%s) has %s %sx %s %s'):format(Player.name, Player.identifier, string.lower(type), ESX.Math.GroupDigits(count), ESXItems[item].label, id), 'test')
@@ -1587,7 +1585,7 @@ AddEventHandler('onResourceStop', function(resourceName)
 			local Player = ESX.GetPlayerFromId(Players[i])
 			local inventory = {}
 			inventory = json.encode(GetInventory(playerInventory[Player.identifier]))
-			exports.ghmattimysql:execute('UPDATE `users` SET inventory = @inventory WHERE identifier = @identifier', {
+			exports.ghmattimysql:executeSync('UPDATE `users` SET inventory = @inventory WHERE identifier = @identifier', {
 				['@inventory'] = inventory,
 				['@identifier'] = Player.identifier
 			})
