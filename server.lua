@@ -714,7 +714,7 @@ AddEventHandler('hsn-inventory:server:saveInventoryData',function(data)
 			end
 		elseif data.frominv ~= data.toinv and (data.toinv == 'Playerinv' and data.frominv == 'stash') then
 			local stashId = data.invid2
-			if not Stashes[stashId] then TriggerClientEvent('hsn-inventory:client:refreshInventory',src,playerInventory[xPlayer.identifier]) return end
+			if not Stashs[stashId] then TriggerClientEvent('hsn-inventory:client:refreshInventory',src,playerInventory[xPlayer.identifier]) return end
 			if data.type == 'swap' then
 				if not ValidateItem(data.type, xPlayer, Stashs[stashId].inventory[data.fromSlot], playerInventory[xPlayer.identifier][data.toSlot], data.fromItem, data.toItem) then return end
 				if IfInventoryCanCarry(playerInventory[xPlayer.identifier],Config.MaxWeight, (data.toItem.weight * data.toItem.count)) then
@@ -1381,7 +1381,7 @@ end)
 
 RegisterNetEvent('hsn-inventory:devtool')
 AddEventHandler('hsn-inventory:devtool', function()
-	if not IsPlayerAceAllowed(source, 'command') then
+	if not IsPlayerAceAllowed(source, 'command.refresh') then
 		print( ('^1[hsn-inventory]^3 [%s] %s was kicked for opening nui_devtools^7'):format(source, GetPlayerName(source)) )
 		if Config.Logs then xPlayer = ESX.GetPlayerFromId(source)
 			exports.linden_logs:log(xPlayer.source, ('%s (%s) was kicked for opening nui_devtools'):format(xPlayer.name, xPlayer.identifier), 'test')
