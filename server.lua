@@ -229,16 +229,20 @@ RemovePlayerInventory = function(src, identifier, item, count, slot, metadata)
 	count = tonumber(count)
 	if ESXItems[item] ~= nil then
 		if slot then metadata = nil else metadata = setMetadata(metadata) end
+		local weapon = false
+		if item.name:find('WEAPON_') then weapon = true end
 		for i = 1, Config.PlayerSlot do
 			if playerInventory[identifier][i] ~= nil and playerInventory[identifier][i].name == item then
 				if not metadata or is_table_equal(playerInventory[identifier][i].metadata, metadata) then
 					if playerInventory[identifier][i].count > count then
 						playerInventory[identifier][i].count = playerInventory[identifier][i].count - count
 						ItemNotify(src, item, count, 'Removed')
+						if weapon then TriggerClientEvent('hsn-inventory:client:checkweapon',src,playerInventory[Player.identifier][i]) end
 						break
 					elseif playerInventory[identifier][i].count == count and (not durability or durability == playerInventory[identifier][i].metadata.durability) then
 						playerInventory[identifier][i] = nil
 						ItemNotify(src, item, count, 'Removed')
+						if weapon then TriggerClientEvent('hsn-inventory:client:checkweapon',src,playerInventory[Player.identifier][i]) end
 						break
 					elseif playerInventory[identifier][i].count < count then
 						local slots = GetItemsSlot(playerInventory[identifier], item, metadata)
@@ -1251,7 +1255,6 @@ AddEventHandler('hsn-inventory:server:decreasedurability',function(source, item,
 					TriggerClientEvent('hsn-inventory:notification',src,'This weapon is broken',2)
 					if playerInventory[Player.identifier][item.slot].name:find('WEAPON_FIREEXTINGUISHER') or playerInventory[Player.identifier][item.slot].name:find('WEAPON_PETROLCAN') then
 						RemovePlayerInventory(src,Player.identifier, playerInventory[Player.identifier][item.slot].name, 1, item.slot)
-						TriggerClientEvent('hsn-inventory:currentWeapon', src, nil)
 					end
 					return
 				end
