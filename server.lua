@@ -229,7 +229,7 @@ end
 RemovePlayerInventory = function(src, identifier, item, count, slot, metadata)
 	count = tonumber(count)
 	if ESXItems[item] ~= nil then
-		if slot then metadata = nil else metadata = setMetadata(metadata) end
+		if slot then metadata = nil elseif metadata then metadata = setMetadata(metadata) end
 		local weapon = false
 		if item:find('WEAPON_') then weapon = true end
 		for i = 1, Config.PlayerSlot do
