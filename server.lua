@@ -169,7 +169,7 @@ AddPlayerInventory = function(identifier, item, count, slot, metadata)
 					if playerInventory[identifier][i] == nil then
 						metadata = {}
 						metadata.type = xPlayer.getName()
-						metadata.description = getPlayerIdentification(Player)
+						metadata.description = getPlayerIdentification(xPlayer)
 						playerInventory[identifier][i] = {name = item ,label = ESXItems[item].label , weight = ESXItems[item].weight, slot = i, count = count, description = ESXItems[item].description, metadata = metadata, stackable = true, closeonuse = ESXItems[item].closeonuse}
 						break
 					end
