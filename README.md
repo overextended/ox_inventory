@@ -233,7 +233,7 @@ end, xPlayer.identifier)
 * Remove all references to loadouts
 
 <br>
-<h3 align='center'>If your framework doesn't load/CreateExtendedPlayer double check your edits</h3>
+<h3 align='center'>If your framework is not working, restart it and look at the errors in console</h3>
 
 ## Setting up items
 * As long as you have the above edits in place, you can continue to use ESX.RegiserUsableItem as you have been.  
