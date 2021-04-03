@@ -87,6 +87,7 @@ Citizen.CreateThread(function()
 	while true do
 		Citizen.Wait(3)
 		playerPed = PlayerPedId()
+		playerCoords = GetEntityCoords(playerPed)
 		DisableControlAction(0, 37, true)  -- tab
 		DisableControlAction(0, 157, true) -- 1
 		DisableControlAction(0, 158, true) -- 2
@@ -279,8 +280,8 @@ RegisterCommand('inv', function()
 	end
 end, false)
 		
-RegisterKeyMapping('inv', 'Open player inventory', 'keyboard', 'F2')
-RegisterKeyMapping('vehinv', 'Open vehicle inventory', 'keyboard', 'F3')
+RegisterKeyMapping('inv', 'Open player inventory', 'keyboard', Config.InventoryKey)
+RegisterKeyMapping('vehinv', 'Open vehicle inventory', 'keyboard', Config.VehicleInventoryKey)
 
 OpenGloveBox = function(gloveboxid, class)
 	local slots = {
@@ -411,10 +412,10 @@ end)
 --- thread
 Citizen.CreateThread(function()
 	while true do
+		while not PlayerData.job do Citizen.Wait(10) end
 		local wait = 1000
-		playerCoords = GetEntityCoords(playerPed)
 		for k,v in pairs(Drops) do
-			distance = #(playerCoords - vector3(v.coords.x,v.coords.y,v.coords.z))
+			local distance = #(playerCoords - vector3(v.coords.x,v.coords.y,v.coords.z))
 			if (invOpen and distance <= 1.2) or distance <= 10.0 then
 				wait = 1
 				DrawMarker(2, v.coords.x,v.coords.y,v.coords.z, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.3, 0.2, 0.15, 150, 30, 30, 222, false, false, false, true, false, false, false)
@@ -474,13 +475,12 @@ end
 
 Citizen.CreateThread(function()
 	while true do
+		while not PlayerData.job do Citizen.Wait(10) end
 		local sleepThread = 1000
-
-		while not PlayerData.job do Citizen.Wait(0) end
 		if CanOpenInventory() then
 			for i = 1, #Config.Shops do
 				local text = Config.Shops[i].name
-				distance = #(GetEntityCoords(PlayerPedId()) - Config.Shops[i].coords)
+				local distance = #(playerCoords - Config.Shops[i].coords)
 
 				if distance <= 5.5 and (not Config.Shops[i].job or Config.Shops[i].job == PlayerData.job.name) then
 					sleepThread = 5
@@ -501,7 +501,7 @@ Citizen.CreateThread(function()
 
 			for i = 1, #Config.Stashes do
 				local text = Config.Stashes[i].name
-				distance = #(GetEntityCoords(PlayerPedId()) - Config.Stashes[i].coords)
+				local distance = #(playerCoords - Config.Stashes[i].coords)
 
 				if distance <= 5.5 and (not Config.Stashes[i].job or Config.Stashes[i].job == PlayerData.job.name) then
 					sleepThread = 5
@@ -520,13 +520,51 @@ Citizen.CreateThread(function()
 					end
 				end
 			end
+
+			if Config.WeaponsLicense then
+				local coords = vector3(12.47, -1105.5, 29.8)
+				local text = "Weapons License"
+				local distance = #(playerCoords - coords)
+				local license = 'weapon'
+
+				if distance <= 5.5 then
+					sleepThread = 5
+					DrawMarker(2, coords, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.3, 0.15, 0.2, 30, 150, 30, 100, false, false, false, true, false, false, false)
+					
+					if not invOpen then
+						if distance <= 1.5 then
+							text = '[~g~E~s~] Purchase license'
+
+							if IsControlJustPressed(1,38) then
+								ESX.TriggerServerCallback('esx_license:checkLicense', function(hasWeaponLicense)
+									if hasWeaponLicense then
+										TriggerEvent('hsn-inventory:notification',"You already have a weapon's license")
+									else
+										ESX.TriggerServerCallback('hsn-inventory:buyLicense', function(bought)
+											if bought then
+												TriggerEvent('hsn-inventory:notification',"You have purchased a weapon's license",1)
+											else
+												TriggerEvent('hsn-inventory:notification', "You can not afford a weapon's license")
+											end
+										end, license)
+									end
+									Citizen.Wait(1000)
+								end, playerID, license)
+							end
+						end   
+
+						DrawText3D(coords, text)
+					end
+				end
+			end
+
 		else sleepThread = 50 end
 		Citizen.Wait(sleepThread)
 	end
 end)
 
 Citizen.CreateThread(function()
-	while not PlayerData.job do Citizen.Wait(0) end
+	while not PlayerData.job do Citizen.Wait(10) end
 	for k,v in pairs(Config.Shops) do
 		if (not Config.Shops[k].job or Config.Shops[k].job == PlayerData.job.name) then
 			local blip = AddBlipForCoord(v.coords.x, v.coords.y, v.coords.z)
