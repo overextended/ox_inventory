@@ -635,14 +635,15 @@ end)
 
 RegisterNetEvent('hsn-inventory:weaponaway')
 AddEventHandler('hsn-inventory:weaponaway', function()
+	local hash = currentWeapon.hash
 	ClearPedSecondaryTask(playerPed)
 	loadAnimDict('reaction@intimidation@1h')
 	TaskPlayAnimAdvanced(playerPed, 'reaction@intimidation@1h', 'outro', GetEntityCoords(playerPed, true), 0, 0, GetEntityHeading(playerPed), 8.0, 3.0, -1, 50, 0, 0, 0)
-	SetPedAmmo(playerPed, currentWeapon.hash, 0)
+	SetPedAmmo(playerPed, hash, 0)
 	Citizen.Wait(1600)
 	SetCurrentPedWeapon(playerPed, `WEAPON_UNARMED`, true)
 	Citizen.Wait(0)
-	RemoveWeaponFromPed(playerPed, currentWeapon.hash)
+	RemoveWeaponFromPed(playerPed, hash)
 	SetPedCurrentWeaponVisible(playerPed, false, false, false, false)
 	ClearPedSecondaryTask(playerPed)
 	if IsPedUsingActionMode(playerPed) then
