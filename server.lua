@@ -1527,21 +1527,36 @@ end)
 
 
 
- ESX.RegisterServerCallback('hsn-inventory:server:gethottbarItems',function(source,cb)
-	 local src = source
-	 local xPlayer = ESX.GetPlayerFromId(src)
-	 if playerInventory[xPlayer.identifier] == nil then
-		 playerInventory[xPlayer.identifier] = {}
-	 end
-	 local cbData = {
-		 [1] = playerInventory[xPlayer.identifier][1],
-		 [2] = playerInventory[xPlayer.identifier][2],
-		 [3] = playerInventory[xPlayer.identifier][3],
-		 [4] = playerInventory[xPlayer.identifier][4],
-		 [5] = playerInventory[xPlayer.identifier][5]
-	 }
-	 cb(cbData)
- end)
+ESX.RegisterServerCallback('hsn-inventory:server:gethottbarItems',function(source,cb)
+	local src = source
+	local xPlayer = ESX.GetPlayerFromId(src)
+	if playerInventory[xPlayer.identifier] == nil then
+		playerInventory[xPlayer.identifier] = {}
+	end
+	local cbData = {
+		[1] = playerInventory[xPlayer.identifier][1],
+		[2] = playerInventory[xPlayer.identifier][2],
+		[3] = playerInventory[xPlayer.identifier][3],
+		[4] = playerInventory[xPlayer.identifier][4],
+		[5] = playerInventory[xPlayer.identifier][5]
+	}
+	cb(cbData)
+end)
+
+ESX.RegisterServerCallback('hsn-inventory:buyLicense', function(source, cb)
+	local src = source
+	local xPlayer = ESX.GetPlayerFromId(src)
+
+	if xPlayer.getMoney() >= Config.WeaponsLicensePrice then
+		xPlayer.removeMoney(Config.WeaponsLicensePrice)
+
+		TriggerEvent('esx_license:addLicense', src, 'weapon', function()
+			cb(true)
+		end)
+	else
+		cb(false)
+	end
+end)
 
 RegisterNetEvent('hsn-inventory:getplayerInventory')
 AddEventHandler('hsn-inventory:getplayerInventory',function(cb,identifier)
