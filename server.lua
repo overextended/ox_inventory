@@ -1216,6 +1216,14 @@ ItemNotify = function(source, item, count, type, id)
 	count = tonumber(count)
 	if count > 0 then
 		TriggerClientEvent('hsn-inventory:client:addItemNotify',source,ESXItems[item], ('%s %sx'):format(type, count))
+
+		if item:find('money') then
+			local account = {}
+			account.name = item
+			account.money = xPlayer.getAccount(item).money
+			xPlayer.triggerEvent('esx:setAccountMoney', account)
+		end
+
 		if Config.Logs then
 			if id then id = '('..id..')' else id = '' end
 			exports.linden_logs:log(xPlayer.source, ('%s (%s) has %s %sx %s %s'):format(xPlayer.name, xPlayer.identifier, string.lower(type), ESX.Math.GroupDigits(count), ESXItems[item].label, id), 'test')
