@@ -192,13 +192,7 @@ AddPlayerInventory = function(identifier, item, count, slot, metadata)
 					end
 				end
 			end
-
-			if invopened[xPlayer.source] then
-				TriggerClientEvent("hsn-inventory:client:closeInventory",xPlayer.source,invopened[xPlayer.source].curInventory)
-			else
-				TriggerClientEvent("hsn-inventory:client:closeInventory",xPlayer.source,nil)
-			end
-
+			TriggerClientEvent('hsn-inventory:client:refreshInventory',xPlayer.source,playerInventory[xPlayer.identifier])
 		end
 	else
 		print('[^2hsn-inventory^0] - item not found')
@@ -800,7 +794,6 @@ AddEventHandler('hsn-inventory:buyItem', function(info)
 						RemovePlayerInventory(src, xPlayer.identifier, item.name, data.price)
 					end
 					AddPlayerInventory(xPlayer.identifier, data.name, count, nil, data.metadata)
-					TriggerClientEvent('hsn-inventory:client:refreshInventory',src,playerInventory[xPlayer.identifier])
 					if Config.Logs then exports.linden_logs:log(xPlayer.source, ('%s (%s) bought %sx %s from %s for %s'):format(xPlayer.name, xPlayer.identifier, ESX.Math.GroupDigits(count), data.label, Config.Shops[location].name, cost), 'test') end
 				else
 					local missing
