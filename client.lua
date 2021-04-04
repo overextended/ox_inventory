@@ -1,6 +1,4 @@
 ESX = nil
-local PlayerData = {}
-local invOpen, isDead, isCuffed, isBusy, currentWeapon = false, false, false, false, nil
 
 Citizen.CreateThread(function()
 	while ESX == nil do
@@ -26,6 +24,7 @@ function clearWeapons()
 end
 
 function StartInventory()
+	PlayerData, playerID, playerPed, invOpen, isDead, isCuffed, isBusy, currentWeapon = nil, nil, nil, false, false, false, false, nil
 	ESX.TriggerServerCallback('hsn-inventory:getData',function(data)
 		playerName = data.name
 		oneSync = data.oneSync
@@ -177,7 +176,7 @@ end)
 
 
 RegisterCommand('vehinv', function()
-	if not playerName then return end
+	if not playerID then return end
 	if isBusy then TriggerEvent('hsn-inventory:notification','You can\'t open your inventory right now',2) return end 
 	if not CanOpenInventory() then return end
 	if not isDead and not isCuffed and not IsPedInAnyVehicle(playerPed, false) then -- trunk
@@ -337,7 +336,7 @@ end
 RegisterNetEvent('hsn-inventory:client:openInventory')
 AddEventHandler('hsn-inventory:client:openInventory',function(inventory,other)
 	movement = false
-	if not playerName then return end
+	if not playerID then return end
 	invOpen = true
 	SendNUIMessage({
 		message = 'openinventory',
@@ -379,7 +378,7 @@ end)
 
 RegisterNetEvent('hsn-inventory:client:refreshInventory')
 AddEventHandler('hsn-inventory:client:refreshInventory',function(inventory)
-	if not playerName then return end
+	if not playerID then return end
 	SendNUIMessage({
 		message = 'refresh',
 		inventory = inventory,
@@ -408,7 +407,7 @@ end)
 --- thread
 Citizen.CreateThread(function()
 	while true do
-		while not PlayerData.job do Citizen.Wait(10) end
+		while not playerID do Citizen.Wait(10) end
 		local wait = 1000
 		for k,v in pairs(Drops) do
 			local distance = #(playerCoords - vector3(v.coords.x,v.coords.y,v.coords.z))
@@ -471,7 +470,7 @@ end
 
 Citizen.CreateThread(function()
 	while true do
-		while not PlayerData.job do Citizen.Wait(10) end
+		while not playerID do Citizen.Wait(10) end
 		local sleepThread = 1000
 		if CanOpenInventory() then
 			for i = 1, #Config.Shops do
@@ -560,7 +559,7 @@ Citizen.CreateThread(function()
 end)
 
 Citizen.CreateThread(function()
-	while not PlayerData.job do Citizen.Wait(10) end
+	while not playerID do Citizen.Wait(10) end
 	for k,v in pairs(Config.Shops) do
 		if (not Config.Shops[k].job or Config.Shops[k].job == PlayerData.job.name) then
 			local blip = AddBlipForCoord(v.coords.x, v.coords.y, v.coords.z)
