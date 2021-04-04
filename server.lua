@@ -1730,5 +1730,17 @@ ESX.RegisterCommand('evidence', 'user', function(xPlayer, args, showError)
 		OpenStash(xPlayer.source, {id = stash, slots = stash.slots, type = 'stash'})
 	end
 end, true, {help = 'open police evidence', validate = true, arguments = {
-	{name = 'evidence', help = 'evidence #', type = 'number'}
+	{name = 'evidence', help = 'number', type = 'number'}
+}})
+
+ESX.RegisterCommand('clearevidence', 'user', function(xPlayer, args, showError)
+	if notready then return end
+	if xPlayer.job.name == 'police' and xPlayer.job.grade_name == 'boss' then
+		local id = 'evidence-'..args.evidence
+		exports.ghmattimysql:execute('DELETE FROM hsn_inventory WHERE name = @name', {
+			['@name'] = id
+		})
+	end
+end, true, {help = 'clear police evidence', validate = true, arguments = {
+	{name = 'evidence', help = 'number', type = 'number'}
 }})
