@@ -178,6 +178,7 @@ end)
 
 RegisterCommand('vehinv', function()
 	if not playerName then return end
+	if isBusy then TriggerEvent('hsn-inventory:notification','You can\'t open your inventory right now',2) return end 
 	if not CanOpenInventory() then return end
 	if not isDead and not isCuffed and not IsPedInAnyVehicle(playerPed, false) then -- trunk
 		local vehicle = ESX.Game.GetClosestVehicle()
@@ -268,6 +269,7 @@ CanOpenInventory = function()
 end
 	
 RegisterCommand('inv', function()
+	if isBusy then TriggerEvent('hsn-inventory:notification','You can\'t open your inventory right now',2) return end 
 	if CanOpenInventory() then
 		TriggerEvent('randPickupAnim')
 		TriggerServerEvent('hsn-inventory:server:openInventory',{type = 'drop',id = currentDrop, coords = currentDropCoords })
