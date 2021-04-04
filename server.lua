@@ -1010,19 +1010,16 @@ end
 
 GetItems = function(id)
 	local returnData = {}
-	local result = exports.ghmattimysql:executeSync('SELECT data FROM hsn_inventory WHERE name = @name', {
-		['@name'] = id
-	})
-	if result[1] ~= nil then
-		if result[1].data ~= nil then
-			local Inventory = json.decode(result[1].data)
+	exports.ghmattimysql:scalar('SELECT data FROM hsn_inventory WHERE name = @name', {['@name'] = id}, function(result)
+		if result then
+			local Inventory = json.decode(result)
 			for k,v in pairs(Inventory) do
 				if v.metadata == nil then v.metadata = {} end
 				returnData[v.slot] = {name = v.name ,label = ESXItems[v.name].label, weight = ESXItems[v.name].weight, slot = v.slot, count = v.count, description = ESXItems[v.name].description, metadata = v.metadata, stackable = ESXItems[v.name].stackable}
 			end
 		end
-	end
-	return returnData
+		return returnData
+	end)
 end
 
 GetInventory = function(inventory)
