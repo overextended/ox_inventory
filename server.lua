@@ -300,11 +300,11 @@ function ValidateItem(type, xPlayer, fromSlot, toSlot, fromItem, toItem)
 		-- currently have a bug where moving items around while also adding/removing items can result in client-sided item duplication
 		-- item validation should not be used to ban until all bugs are dealt with
 		-- for now, close inventory and refresh items
-		TriggerClientEvent('hsn-inventory:notification',src,'Inventory has been refreshed (desync)',2)
-		if invopened[src] then
-			TriggerClientEvent("hsn-inventory:client:closeInventory",src,invopened[src].curInventory)
+		TriggerClientEvent('hsn-inventory:notification',xPlayer.source,'Inventory has been refreshed (desync)',2)
+		if invopened[xPlayer.source] then
+			TriggerClientEvent("hsn-inventory:client:closeInventory",xPlayer.source,invopened[xPlayer.source].curInventory)
 		else
-			TriggerClientEvent("hsn-inventory:client:closeInventory",src,nil)
+			TriggerClientEvent("hsn-inventory:client:closeInventory",xPlayer.source,nil)
 		end
 		return false
 	else return true end
