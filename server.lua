@@ -151,7 +151,7 @@ AddPlayerInventory = function(identifier, item, count, slot, metadata)
 							if not metadata.durability then metadata.durability = 100 end
 						else
 							count = 1 
-							if metadata == nil then metadata = {} end
+							if type(metadata) ~= 'table' then metadata = {} end
 							if not metadata.durability then metadata.durability = 100 end
 							if not metadata.ammo then metadata.ammo = 0 end
 							if not metadata.components then metadata.components = {} end
