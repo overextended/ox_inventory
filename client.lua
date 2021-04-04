@@ -1,6 +1,6 @@
 ESX = nil
 local PlayerData = {}
-local invOpen, isDead, isCuffed, usingItem, currentWeapon = false, false, false, false, nil
+local invOpen, isDead, isCuffed, isBusy, currentWeapon = false, false, false, false, nil
 
 Citizen.CreateThread(function()
 	while ESX == nil do
@@ -98,7 +98,7 @@ Citizen.CreateThread(function()
 		for i = 19, 20 do 
 			HideHudComponentThisFrame(i) -- remove tab etc.
 		end
-		if usingItem then
+		if isBusy then
 			DisableControlAction(0, 24, true)
 			DisableControlAction(0, 25, true)
 			DisableControlAction(0, 142, true)
@@ -263,13 +263,7 @@ RegisterCommand('vehinv', function()
 end, false)
 
 CanOpenInventory = function()
-	-- some players dupe while taskbar on screen
-    -- local check = exports["progressBars"]:onScreen()
-    -- if check then
-    --     return false
-    -- end
-
-	if playerName and not IsPedDeadOrDying(playerPed, 1) and not IsPauseMenuActive() and not isDead and not isCuffed and not invOpen and not usingItem then return true end
+	if playerName and not isBusy and not IsPedDeadOrDying(playerPed, 1) and not IsPauseMenuActive() and not isDead and not isCuffed and not invOpen then return true end
 	return false
 end
 	
@@ -668,7 +662,7 @@ AddEventHandler('hsn-inventory:weapondraw', function(item)
 		RemoveWeaponFromPed(playerPed, currentWeapon.hash)
 	end
 	Citizen.Wait(800)
-	usingItem = false
+	isBusy = false
 end)
 
 RegisterNetEvent('hsn-inventory:weaponaway')
@@ -687,7 +681,7 @@ AddEventHandler('hsn-inventory:weaponaway', function()
 	if IsPedUsingActionMode(playerPed) then
 		SetPedUsingActionMode(playerPed, -1, -1, 1)
 	end
-	usingItem = false
+	isBusy = false
 end)
 
 RegisterNetEvent('hsn-inventory:client:updateWeapon')
@@ -697,8 +691,8 @@ end)
 
 RegisterNetEvent('hsn-inventory:client:weapon')
 AddEventHandler('hsn-inventory:client:weapon',function(item)
-	if usingItem then return end
-	usingItem = true
+	if isBusy then return end
+	isBusy = true
 	if currentWeapon then TriggerServerEvent('hsn-inventory:server:updateWeapon', currentWeapon.item) end
 	TriggerEvent('hsn-inventory:client:closeInventory', currentInventory)
 	local newWeapon = item.metadata.serial
@@ -742,7 +736,7 @@ AddEventHandler('hsn-inventory:client:weapon',function(item)
 	TriggerEvent('hsn-inventory:currentWeapon', currentWeapon) -- using for another resource
 	Citizen.Wait(100)
 	ClearPedSecondaryTask(playerPed)
-	usingItem = false
+	isBusy = false
 end)
 
 RegisterNetEvent('hsn-inventory:addAmmo')
@@ -879,9 +873,14 @@ RegisterNUICallback('devtool', function()
 	TriggerServerEvent('hsn-inventory:devtool')
 end)
 
+AddEventHandler('hsn-inventory:busy',function(busy)
+	isBusy = busy
+	if isBusy and invOpen then TriggerEvent('hsn-inventory:client:closeInventory', currentInventory) end
+end)
+
 RegisterNetEvent('hsn-inventory:useItem')
 AddEventHandler('hsn-inventory:useItem',function(item)
-	if usingItem or shooting then return end
+	if isBusy or shooting then return end
 	ESX.TriggerServerCallback('hsn-inventory:getItem',function(xItem)
 		if xItem then
 			local data = Config.ItemList[xItem.name]
@@ -917,7 +916,7 @@ AddEventHandler('hsn-inventory:useItem',function(item)
 
 			------------------------------------------------------------------------------------------------
 			if data.useTime and data.useTime >= 0 then
-				usingItem = true
+				isBusy = true
 				exports['mythic_progbar']:Progress({
 					name = 'useitem',
 					duration = data.useTime,
@@ -927,9 +926,9 @@ AddEventHandler('hsn-inventory:useItem',function(item)
 					controlDisables = { disableMovement = data.disableMove, disableCarMovement = false, disableMouse = false, disableCombat = true },
 					animation = { animDict = data.animDict, anim = data.anim, flags = data.flags },
 					prop = { model = data.model, coords = data.coords, rotation = data.rotation }
-				}, function() usingItem = false end)
-			else usingItem = false end
-			while usingItem do Citizen.Wait(10) end
+				}, function() isBusy = false end)
+			else isBusy = false end
+			while isBusy do Citizen.Wait(10) end
 
 			if data.hunger then
 				if data.hunger > 0 then TriggerEvent('esx_status:add', 'hunger', data.hunger)
@@ -940,7 +939,7 @@ AddEventHandler('hsn-inventory:useItem',function(item)
 				else TriggerEvent('esx_status:remove', 'thirst', data.thirst) end
 			end
 			if data.consume then TriggerServerEvent('hsn-inventory:client:removeItem', xItem.name, data.consume, xItem.metadata) end
-			usingItem = false
+			isBusy = false
 			------------------------------------------------------------------------------------------------
 
 				if data.component then
