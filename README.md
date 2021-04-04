@@ -238,8 +238,8 @@ end, xPlayer.identifier)
 
 ### Progress bars
 * Either use the dependency shared above or modify your progress bars
-* Add `TriggerEvent('hsn-inventory:busy', true) end` when the progress bar starts
-* Add `TriggerEvent('hsn-inventory:busy', false) end` when the progress bar ends
+* Add `TriggerEvent('hsn-inventory:busy', true)` when the progress bar starts
+* Add `TriggerEvent('hsn-inventory:busy', false)` when the progress bar ends
 
 ## Setting up items
 * As long as you have the above edits in place, you can continue to use ESX.RegiserUsableItem as you have been.  
