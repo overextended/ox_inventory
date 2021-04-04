@@ -1615,11 +1615,10 @@ AddEventHandler('hsn-inventory:setplayerInventory',function(identifier,inventory
 	end
 end)
 
-
-ESX.RegisterCommand({'closeallinv'}, 'superadmin', function(xPlayer, args, showError)
+RegisterCommand('closeallinv', function(source, args, rawCommand)
+	if source then return end
 	TriggerClientEvent("hsn-inventory:client:closeInventory", -1)
-end, false, {help = 'close all inventories'})
-
+end, true)
 
 AddEventHandler('onResourceStop', function(resourceName)
 	if (GetCurrentResourceName() == resourceName) then
