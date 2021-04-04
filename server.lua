@@ -95,12 +95,22 @@ IfInventoryCanCarry = function(inventory, maxweight, newWeight)
 	return returnData
 end
 
-GetRandomLicense = function(text)
-	if not text then text = 'HSN' end
+function doText(numLetters)
+	local blacklist = {'POL', 'EMS'}
+	::begin::
+    local totTxt = ""
+    for i = 1,numLetters do
+        totTxt = totTxt..string.char(math.random(65,90))
+    end
+	if blacklist[totTxt] then goto begin else return totTxt end
+end
+
+GetRandomSerial = function(text)
+	if not text then text = doText(3) end
 	local random = math.random(111111,999999)
 	local random2 = math.random(111111,999999)
-	local license = ('%s%s%s'):format(random, text, random2)
-	return license
+	local serial = ('%s%s%s'):format(random, text, random2)
+	return serial
 end
 
 GetItemsSlot = function(inventory, name, metadata)
@@ -156,7 +166,7 @@ AddPlayerInventory = function(identifier, item, count, slot, metadata)
 							if not metadata.ammo then metadata.ammo = 0 end
 							if not metadata.components then metadata.components = {} end
 							if not metadata.ammoweight then metadata.ammoweight = 0 end
-							metadata.serial = GetRandomLicense(metadata.serial)
+							metadata.serial = GetRandomSerial(metadata.serial)
 							if metadata.registered == 'setname' then metadata.registered = xPlayer.getName() end
 						end
 						playerInventory[identifier][i] = {name = item ,label = ESXItems[item].label , weight = ESXItems[item].weight, slot = i, count = count, description = ESXItems[item].description, metadata = metadata, stackable = stacks, closeonuse = ESXItems[item].closeonuse} -- because weapon :)
@@ -1515,7 +1525,7 @@ AddEventHandler('hsn-inventory:setplayerInventory',function(identifier,inventory
 				v.metadata.ammo = 0
 				v.metadata.components = {}
 				v.metadata.ammoweight = 0
-				v.metadata.serial = GetRandomLicense()
+				v.metadata.serial = GetRandomSerial()
 			end
 			if convert ~= true then convert = true end
 		end
@@ -1552,7 +1562,7 @@ AddEventHandler('hsn-inventory:setplayerInventory',function(identifier,inventory
 						v.metadata.ammo = 0
 						v.metadata.components = {}
 						v.metadata.ammoweight = 0
-						v.metadata.serial = GetRandomLicense()
+						v.metadata.serial = GetRandomSerial()
 
 						v.count = tonumber(v.count)
 						if v.metadata and v.metadata.ammoweight then weight = v.metadata.ammoweight + ESXItems[v.name].weight else weight = tonumber(ESXItems[v.name].weight) end
