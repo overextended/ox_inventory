@@ -1,7 +1,7 @@
 ESX = nil
 local oneSync
 local playerInventory = {}
-local Stashs = {}
+local Stashes = {}
 local Drops = {}
 local ESXItems = {}
 local Shops = {}
@@ -459,19 +459,19 @@ AddEventHandler('hsn-inventory:server:saveInventoryData',function(data)
 			end
 		elseif data.frominv == data.toinv and (data.frominv == 'stash') then
 			local stashId = data.invid
-			if not Stashs[stashId] then TriggerClientEvent('hsn-inventory:client:refreshInventory',src,playerInventory[xPlayer.identifier]) return end
+			if not Stashes[stashId] then TriggerClientEvent('hsn-inventory:client:refreshInventory',src,playerInventory[xPlayer.identifier]) return end
 			if data.type == 'swap' then
-				if not ValidateItem(data.type, xPlayer, Stashs[stashId].inventory[data.fromSlot], Stashs[stashId].inventory[data.toSlot], data.fromItem, data.toItem) then return end
-				Stashs[stashId].inventory[data.toSlot] = {name = data.toItem.name ,label = data.toItem.label, weight = data.toItem.weight, slot = data.toSlot, count = data.toItem.count, description = data.toItem.description, metadata = data.toItem.metadata, stackable = data.toItem.stackable, closeonuse = ESXItems[data.toItem.name].closeonuse}
-				Stashs[stashId].inventory[data.fromSlot] = {name = data.fromItem.name ,label = data.fromItem.label, weight = data.fromItem.weight, slot = data.fromSlot, count = data.fromItem.count, description = data.fromItem.description, metadata = data.fromItem.metadata, stackable = data.fromItem.stackable, closeonuse = ESXItems[data.fromItem.name].closeonuse}
+				if not ValidateItem(data.type, xPlayer, Stashes[stashId].inventory[data.fromSlot], Stashes[stashId].inventory[data.toSlot], data.fromItem, data.toItem) then return end
+				Stashes[stashId].inventory[data.toSlot] = {name = data.toItem.name ,label = data.toItem.label, weight = data.toItem.weight, slot = data.toSlot, count = data.toItem.count, description = data.toItem.description, metadata = data.toItem.metadata, stackable = data.toItem.stackable, closeonuse = ESXItems[data.toItem.name].closeonuse}
+				Stashes[stashId].inventory[data.fromSlot] = {name = data.fromItem.name ,label = data.fromItem.label, weight = data.fromItem.weight, slot = data.fromSlot, count = data.fromItem.count, description = data.fromItem.description, metadata = data.fromItem.metadata, stackable = data.fromItem.stackable, closeonuse = ESXItems[data.fromItem.name].closeonuse}
 			elseif data.type == 'freeslot' then
-				if not ValidateItem(data.type, xPlayer, Stashs[stashId].inventory[data.emptyslot],Stashs[stashId].inventory[data.toSlot], data.item, data.item) then return end
-				Stashs[stashId].inventory[data.emptyslot] = nil
-				Stashs[stashId].inventory[data.toSlot] = {name = data.item.name ,label = data.item.label, weight = data.item.weight, slot = data.toSlot, count = data.item.count, description = data.item.description, metadata = data.item.metadata, stackable = data.item.stackable, closeonuse = ESXItems[data.item.name].closeonuse}
+				if not ValidateItem(data.type, xPlayer, Stashes[stashId].inventory[data.emptyslot],Stashes[stashId].inventory[data.toSlot], data.item, data.item) then return end
+				Stashes[stashId].inventory[data.emptyslot] = nil
+				Stashes[stashId].inventory[data.toSlot] = {name = data.item.name ,label = data.item.label, weight = data.item.weight, slot = data.toSlot, count = data.item.count, description = data.item.description, metadata = data.item.metadata, stackable = data.item.stackable, closeonuse = ESXItems[data.item.name].closeonuse}
 			elseif data.type == 'split' then
-				if not ValidateItem(data.type, xPlayer, Stashs[stashId].inventory[data.fromSlot],Stashs[stashId].inventory[data.toSlot], data.oldslotItem, data.newslotItem) then return end
-				Stashs[stashId].inventory[data.fromSlot] = {name = data.oldslotItem.name ,label = data.oldslotItem.label, weight = data.oldslotItem.weight, slot = data.fromSlot, count = data.oldslotItem.count, description = data.oldslotItem.description, metadata = data.oldslotItem.metadata, stackable = data.oldslotItem.stackable, closeonuse = ESXItems[data.oldslotItem.name].closeonuse}
-				Stashs[stashId].inventory[data.toSlot] = {name = data.newslotItem.name ,label = data.newslotItem.label, weight = data.newslotItem.weight, slot = data.toSlot, count = data.newslotItem.count, description = data.newslotItem.description, metadata = data.newslotItem.metadata, stackable = data.newslotItem.stackable, closeonuse = ESXItems[data.newslotItem.name].closeonuse}
+				if not ValidateItem(data.type, xPlayer, Stashes[stashId].inventory[data.fromSlot],Stashes[stashId].inventory[data.toSlot], data.oldslotItem, data.newslotItem) then return end
+				Stashes[stashId].inventory[data.fromSlot] = {name = data.oldslotItem.name ,label = data.oldslotItem.label, weight = data.oldslotItem.weight, slot = data.fromSlot, count = data.oldslotItem.count, description = data.oldslotItem.description, metadata = data.oldslotItem.metadata, stackable = data.oldslotItem.stackable, closeonuse = ESXItems[data.oldslotItem.name].closeonuse}
+				Stashes[stashId].inventory[data.toSlot] = {name = data.newslotItem.name ,label = data.newslotItem.label, weight = data.newslotItem.weight, slot = data.toSlot, count = data.newslotItem.count, description = data.newslotItem.description, metadata = data.newslotItem.metadata, stackable = data.newslotItem.stackable, closeonuse = ESXItems[data.newslotItem.name].closeonuse}
 			end
 		elseif data.frominv == data.toinv and (data.frominv == 'trunk') then
 			local plate = data.invid
@@ -570,26 +570,26 @@ AddEventHandler('hsn-inventory:server:saveInventoryData',function(data)
 			end
 		elseif data.frominv ~= data.toinv and (data.toinv == 'stash' and data.frominv == 'Playerinv') then
 			local stashId = data.invid
-			if not Stashs[stashId] then TriggerClientEvent('hsn-inventory:client:refreshInventory',src,playerInventory[xPlayer.identifier]) return end
+			if not Stashes[stashId] then TriggerClientEvent('hsn-inventory:client:refreshInventory',src,playerInventory[xPlayer.identifier]) return end
 			if data.type == 'swap' then
-				if not ValidateItem(data.type, xPlayer, playerInventory[xPlayer.identifier][data.fromSlot], Stashs[stashId].inventory[data.toSlot], data.fromItem, data.toItem) then return end
+				if not ValidateItem(data.type, xPlayer, playerInventory[xPlayer.identifier][data.fromSlot], Stashes[stashId].inventory[data.toSlot], data.fromItem, data.toItem) then return end
 				ItemNotify(src,data.toItem.name,data.toItem.count,'Removed', 'Stash '..stashId)
 				ItemNotify(src,data.fromItem.name,data.fromItem.count,'Added', 'Stash '..stashId)
 				TriggerClientEvent('hsn-inventory:client:checkweapon',src,data.toItem)
-				Stashs[stashId].inventory[data.toSlot] = {name = data.toItem.name ,label = data.toItem.label, weight = data.toItem.weight, slot = data.toSlot, count = data.toItem.count, description = data.toItem.description, metadata = data.toItem.metadata, stackable = data.toItem.stackable, closeonuse = ESXItems[data.toItem.name].closeonuse}
+				Stashes[stashId].inventory[data.toSlot] = {name = data.toItem.name ,label = data.toItem.label, weight = data.toItem.weight, slot = data.toSlot, count = data.toItem.count, description = data.toItem.description, metadata = data.toItem.metadata, stackable = data.toItem.stackable, closeonuse = ESXItems[data.toItem.name].closeonuse}
 				playerInventory[xPlayer.identifier][data.fromSlot] = {name = data.fromItem.name ,label = data.fromItem.label, weight = data.fromItem.weight, slot = data.fromSlot, count = data.fromItem.count, description = data.fromItem.description, metadata = data.fromItem.metadata, stackable = data.fromItem.stackable, closeonuse = ESXItems[data.fromItem.name].closeonuse}
 			elseif data.type == 'freeslot' then
-				if not ValidateItem(data.type, xPlayer, playerInventory[xPlayer.identifier][data.emptyslot], Stashs[stashId].inventory[data.toSlot], data.item, data.item) then return end
+				if not ValidateItem(data.type, xPlayer, playerInventory[xPlayer.identifier][data.emptyslot], Stashes[stashId].inventory[data.toSlot], data.item, data.item) then return end
 				TriggerClientEvent('hsn-inventory:client:checkweapon',src,data.item)
 				local count = playerInventory[xPlayer.identifier][data.emptyslot].count
 				playerInventory[xPlayer.identifier][data.emptyslot] = nil
-				Stashs[stashId].inventory[data.toSlot] = {name = data.item.name ,label = data.item.label, weight = data.item.weight, slot = data.toSlot, count = data.item.count, description = data.item.description, metadata = data.item.metadata, stackable = data.item.stackable, closeonuse = ESXItems[data.item.name].closeonuse}
+				Stashes[stashId].inventory[data.toSlot] = {name = data.item.name ,label = data.item.label, weight = data.item.weight, slot = data.toSlot, count = data.item.count, description = data.item.description, metadata = data.item.metadata, stackable = data.item.stackable, closeonuse = ESXItems[data.item.name].closeonuse}
 				ItemNotify(src,data.item.name,count,'Removed', 'Stash '..stashId)
 			elseif data.type == 'split' then
-				if not ValidateItem(data.type, xPlayer, playerInventory[xPlayer.identifier][data.fromSlot], Stashs[stashId].inventory[data.toSlot], data.oldslotItem, data.newslotItem) then return end
+				if not ValidateItem(data.type, xPlayer, playerInventory[xPlayer.identifier][data.fromSlot], Stashes[stashId].inventory[data.toSlot], data.oldslotItem, data.newslotItem) then return end
 				TriggerClientEvent('hsn-inventory:client:checkweapon',src,data.newslotItem)
 				playerInventory[xPlayer.identifier][data.fromSlot] = {name = data.oldslotItem.name ,label = data.oldslotItem.label, weight = data.oldslotItem.weight, slot = data.fromSlot, count = data.oldslotItem.count, description = data.oldslotItem.description, metadata = data.oldslotItem.metadata, stackable = data.oldslotItem.stackable, closeonuse = ESXItems[data.oldslotItem.name].closeonuse}
-				Stashs[stashId].inventory[data.toSlot] = {name = data.newslotItem.name ,label = data.newslotItem.label, weight = data.newslotItem.weight, slot = data.toSlot, count = data.newslotItem.count, description = data.newslotItem.description, metadata = data.newslotItem.metadata, stackable = data.newslotItem.stackable, closeonuse = ESXItems[data.newslotItem.name].closeonuse}
+				Stashes[stashId].inventory[data.toSlot] = {name = data.newslotItem.name ,label = data.newslotItem.label, weight = data.newslotItem.weight, slot = data.toSlot, count = data.newslotItem.count, description = data.newslotItem.description, metadata = data.newslotItem.metadata, stackable = data.newslotItem.stackable, closeonuse = ESXItems[data.newslotItem.name].closeonuse}
 				ItemNotify(src,data.newslotItem.name,data.newslotItem.count,'Removed', 'Stash '..stashId)
 			end
 		elseif data.frominv ~= data.toinv and (data.toinv == 'trunk' and data.frominv == 'Playerinv') then
@@ -708,30 +708,30 @@ AddEventHandler('hsn-inventory:server:saveInventoryData',function(data)
 			end
 		elseif data.frominv ~= data.toinv and (data.toinv == 'Playerinv' and data.frominv == 'stash') then
 			local stashId = data.invid2
-			if not Stashs[stashId] then TriggerClientEvent('hsn-inventory:client:refreshInventory',src,playerInventory[xPlayer.identifier]) return end
+			if not Stashes[stashId] then TriggerClientEvent('hsn-inventory:client:refreshInventory',src,playerInventory[xPlayer.identifier]) return end
 			if data.type == 'swap' then
-				if not ValidateItem(data.type, xPlayer, Stashs[stashId].inventory[data.fromSlot], playerInventory[xPlayer.identifier][data.toSlot], data.fromItem, data.toItem) then return end
+				if not ValidateItem(data.type, xPlayer, Stashes[stashId].inventory[data.fromSlot], playerInventory[xPlayer.identifier][data.toSlot], data.fromItem, data.toItem) then return end
 				if IfInventoryCanCarry(playerInventory[xPlayer.identifier],Config.MaxWeight, (data.toItem.weight * data.toItem.count)) then
 					ItemNotify(src,data.toItem.name,data.toItem.count,'Added', 'Stash '..stashId)
 					ItemNotify(src,data.fromItem.name,data.fromItem.count,'Removed', 'Stash '..stashId)
 					playerInventory[xPlayer.identifier][data.toSlot] = {name = data.toItem.name ,label = data.toItem.label, weight = data.toItem.weight, slot = data.toSlot, count = data.toItem.count, description = data.toItem.description, metadata = data.toItem.metadata, stackable = data.toItem.stackable, closeonuse = ESXItems[data.toItem.name].closeonuse}
-					Stashs[stashId].inventory[data.fromSlot] = {name = data.fromItem.name ,label = data.fromItem.label, weight = data.fromItem.weight, slot = data.fromSlot, count = data.fromItem.count, description = data.fromItem.description, metadata = data.fromItem.metadata, stackable = data.fromItem.stackable, closeonuse = ESXItems[data.fromItem.name].closeonuse}
+					Stashes[stashId].inventory[data.fromSlot] = {name = data.fromItem.name ,label = data.fromItem.label, weight = data.fromItem.weight, slot = data.fromSlot, count = data.fromItem.count, description = data.fromItem.description, metadata = data.fromItem.metadata, stackable = data.fromItem.stackable, closeonuse = ESXItems[data.fromItem.name].closeonuse}
 				else
 					TriggerClientEvent('hsn-inventory:notification',src,'You can not carry this item',2)
 				end
 			elseif data.type == 'freeslot' then
-				if not ValidateItem(data.type, xPlayer, Stashs[stashId].inventory[data.emptyslot], playerInventory[xPlayer.identifier][data.toSlot], data.item, data.item) then return end
+				if not ValidateItem(data.type, xPlayer, Stashes[stashId].inventory[data.emptyslot], playerInventory[xPlayer.identifier][data.toSlot], data.item, data.item) then return end
 				if IfInventoryCanCarry(playerInventory[xPlayer.identifier],Config.MaxWeight, (data.item.weight * data.item.count)) then
-					Stashs[stashId].inventory[data.emptyslot] = nil
+					Stashes[stashId].inventory[data.emptyslot] = nil
 					playerInventory[xPlayer.identifier][data.toSlot] = {name = data.item.name ,label = data.item.label, weight = data.item.weight, slot = data.toSlot, count = data.item.count, description = data.item.description, metadata = data.item.metadata, stackable = data.item.stackable, closeonuse = ESXItems[data.item.name].closeonuse}
 					ItemNotify(src,data.item.name,data.item.count,'Added', 'Stash '..stashId)
 				else
 					TriggerClientEvent('hsn-inventory:notification',src,'You can not carry this item',2)
 				end
 			elseif data.type == 'split' then
-				if not ValidateItem(data.type, xPlayer, Stashs[stashId].inventory[data.fromSlot], playerInventory[xPlayer.identifier][data.toSlot], data.oldslotItem, data.newslotItem) then return end
+				if not ValidateItem(data.type, xPlayer, Stashes[stashId].inventory[data.fromSlot], playerInventory[xPlayer.identifier][data.toSlot], data.oldslotItem, data.newslotItem) then return end
 				if IfInventoryCanCarry(playerInventory[xPlayer.identifier],Config.MaxWeight, (data.newslotItem.weight * data.newslotItem.count)) then
-					Stashs[stashId].inventory[data.fromSlot] = {name = data.oldslotItem.name ,label = data.oldslotItem.label, weight = data.oldslotItem.weight, slot = data.fromSlot, count = data.oldslotItem.count, description = data.oldslotItem.description, metadata = data.oldslotItem.metadata, stackable = data.oldslotItem.stackable, closeonuse = ESXItems[data.oldslotItem.name].closeonuse}
+					Stashes[stashId].inventory[data.fromSlot] = {name = data.oldslotItem.name ,label = data.oldslotItem.label, weight = data.oldslotItem.weight, slot = data.fromSlot, count = data.oldslotItem.count, description = data.oldslotItem.description, metadata = data.oldslotItem.metadata, stackable = data.oldslotItem.stackable, closeonuse = ESXItems[data.oldslotItem.name].closeonuse}
 					playerInventory[xPlayer.identifier][data.toSlot] = {name = data.newslotItem.name ,label = data.newslotItem.label, weight = data.newslotItem.weight, slot = data.toSlot, count = data.newslotItem.count, description = data.newslotItem.description, metadata = data.newslotItem.metadata, stackable = data.newslotItem.stackable, closeonuse = ESXItems[data.newslotItem.name].closeonuse}
 					ItemNotify(src,data.newslotItem.name,data.newslotItem.count,'Added', 'Stash '..stashId)
 				else
@@ -932,17 +932,17 @@ OpenStash = function(source, stash)
 	local src = source
 	local xPlayer = ESX.GetPlayerFromId(src)
 	if invopened[src] then TriggerEvent("hsn-inventory:removecurrentInventory", invopened[src].curInventory) Citizen.Wait(100) end
-	if Stashs[stash.id.name] == nil then
-		Stashs[stash.id.name] = {}
-		Stashs[stash.id.name].inventory = GetItems(stash.id.name)
-		Stashs[stash.id.name].name = stash.id.name
-		Stashs[stash.id.name].type = 'stash'
-		Stashs[stash.id.name].slots = stash.id.slots
-		Stashs[stash.id.name].coords = stash.id.coords
+	if Stashes[stash.id.name] == nil then
+		Stashes[stash.id.name] = {}
+		Stashes[stash.id.name].inventory = GetItems(stash.id.name)
+		Stashes[stash.id.name].name = stash.id.name
+		Stashes[stash.id.name].type = 'stash'
+		Stashes[stash.id.name].slots = stash.id.slots
+		Stashes[stash.id.name].coords = stash.id.coords
 	end
 	if checkOpenable(src,stash.id.name,stash.id.coords) then
 		if not stash.id.job or stash.id.job == xPlayer.job.name then
-			TriggerClientEvent('hsn-inventory:client:openInventory',src,playerInventory[xPlayer.identifier], Stashs[stash.id.name])
+			TriggerClientEvent('hsn-inventory:client:openInventory',src,playerInventory[xPlayer.identifier], Stashes[stash.id.name])
 		end
 	else
 		TriggerClientEvent('hsn-inventory:notification',src,'You can not open this inventory',2)
@@ -1040,95 +1040,34 @@ GetInventory = function(inventory)
 	return returnData
 end
 
---[[SaveItems = function(type,id)
-	if id then
-		if type == 'stash' then
-			exports.ghmattimysql:scalarSync('SELECT data FROM hsn_inventory WHERE name = @name', {['@name'] = name}, function(result)
-				if not result then
-					local inventory = GetInventory(Stashs[id].inventory)
-					if next(inventory) then
-						exports.ghmattimysql:execute('INSERT INTO hsn_inventory (name, data) VALUES (@name, @data)', {
-							['@name'] = id,
-							['@data'] = json.encode(inventory)
-						})
-					end
-				else
-					local inventory = GetInventory(Stashs[id].inventory)
-					exports.ghmattimysql:execute('UPDATE hsn_inventory SET data = @data WHERE name = @name', {
-						['@data'] = json.encode(inventory),
-						['@name'] = id
-					})
-				end
-			end)
-		elseif type == 'glovebox' then
-			exports.ghmattimysql:scalarSync('SELECT data FROM hsn_inventory WHERE name = @name', {['@name'] = name}, function(result)
-			if not result then
-				local inventory = GetInventory(Gloveboxes[id].inventory)
-				if next(inventory) then
-					exports.ghmattimysql:execute('INSERT INTO hsn_inventory (name, data) VALUES (@name, @data)', {
-						['@name'] = id,
-						['@data'] = json.encode(inventory)
-					})
-				end
-			else
-				local inventory = GetInventory(Gloveboxes[id].inventory)
-				exports.ghmattimysql:execute('UPDATE hsn_inventory SET data = @data WHERE name = @name', {
-					['@data'] = json.encode(inventory),
-					['@name'] = id
-				})
-				end
-			end)
-		elseif type == 'trunk' then
-			exports.ghmattimysql:scalarSync('SELECT data FROM hsn_inventory WHERE name = @name', {['@name'] = name}, function(result)
-				if not result then
-					local inventory = GetInventory(Trunks[id].inventory)
-					if next(inventory) then
-						exports.ghmattimysql:execute('INSERT INTO hsn_inventory (name, data) VALUES (@name, @data)', {
-							['@name'] = id,
-							['@data'] = json.encode(inventory)
-						})
-					end
-				else
-					local inventory = GetInventory(Trunks[id].inventory)
-					exports.ghmattimysql:execute('UPDATE hsn_inventory SET data = @data WHERE name = @name', {
-						['@data'] = json.encode(inventory),
-						['@name'] = id
-					})
-				end
-			end)
-		end
-	end
-end]]
-
-
 SaveItems = function(type,id)
 	if id then
 		if type == 'stash' then
-			local result = exports.ghmattimysql:executeSync('SELECT data FROM hsn_inventory WHERE name = @name', {
+			local result = exports.ghmattimysql:scalarSync('SELECT data FROM hsn_inventory WHERE name = @name', {
 				['@name'] = id
 			})
-			if result[1] == nil then
-				local inventory = GetInventory(Stashs[id].inventory)
+			if result == nil then
+				local inventory = GetInventory(Stashes[id].inventory)
 				if next(inventory) == nil then return end
-				exports.ghmattimysql:execute('REPLACE INTO hsn_inventory (name, data) VALUES (@name, @data)', {
+				exports.ghmattimysql:execute('INSERT INTO hsn_inventory (name, data) VALUES (@name, @data)', {
 					['@name'] = id,
 					['@data'] = json.encode(inventory)
 				})
 			else
-				local inventory = GetInventory(Stashs[id].inventory)
+				local inventory = GetInventory(Stashes[id].inventory)
 				exports.ghmattimysql:execute('UPDATE hsn_inventory SET data = @data WHERE name = @name', {
 					['@data'] = json.encode(inventory),
 					['@name'] = id
 				})
 			end
 		elseif type == 'glovebox' then
-			local result = exports.ghmattimysql:executeSync('SELECT data FROM hsn_inventory WHERE name = @name', {
+			local result = exports.ghmattimysql:scalarSync('SELECT data FROM hsn_inventory WHERE name = @name', {
 				['@name'] = id
 			})
-			if result[1] == nil then
+			if result == nil then
 				local inventory = GetInventory(Gloveboxes[id].inventory)
 				if next(inventory) == nil then return end
-				exports.ghmattimysql:execute('REPLACE INTO hsn_inventory (name, data) VALUES (@name, @data)', {
+				exports.ghmattimysql:execute('INSERT INTO hsn_inventory (name, data) VALUES (@name, @data)', {
 					['@name'] = id,
 					['@data'] = json.encode(inventory)
 				})
@@ -1140,13 +1079,13 @@ SaveItems = function(type,id)
 				})
 			end
 		elseif type == 'trunk' then
-			local result = exports.ghmattimysql:executeSync('SELECT data FROM hsn_inventory WHERE name = @name', {
+			local result = exports.ghmattimysql:scalarSync('SELECT data FROM hsn_inventory WHERE name = @name', {
 				['@name'] = id
 			})
-			if result[1] == nil then
+			if result == nil then
 				local inventory = GetInventory(Trunks[id].inventory)
 				if next(inventory) == nil then return end
-				exports.ghmattimysql:execute('REPLACE INTO hsn_inventory (name, data) VALUES (@name, @data)', {
+				exports.ghmattimysql:execute('INSERT INTO hsn_inventory (name, data) VALUES (@name, @data)', {
 					['@name'] = id,
 					['@data'] = json.encode(inventory)
 				})
@@ -1160,8 +1099,6 @@ SaveItems = function(type,id)
 		end
 	end
 end
-
-
 
 RegisterNetEvent('hsn-inventory:setcurrentInventory')
 AddEventHandler('hsn-inventory:setcurrentInventory',function(other)
