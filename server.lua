@@ -1020,16 +1020,19 @@ end
 
 GetItems = function(id)
 	local returnData = {}
-	exports.ghmattimysql:scalar('SELECT data FROM hsn_inventory WHERE name = @name', {['@name'] = id}, function(result)
-		if result then
-			local Inventory = json.decode(result)
+	local result = exports.ghmattimysql:executeSync('SELECT data FROM hsn_inventory WHERE name = @name', {
+		['@name'] = id
+	})
+	if result[1] ~= nil then
+		if result[1].data ~= nil then
+			local Inventory = json.decode(result[1].data)
 			for k,v in pairs(Inventory) do
 				if v.metadata == nil then v.metadata = {} end
 				returnData[v.slot] = {name = v.name ,label = ESXItems[v.name].label, weight = ESXItems[v.name].weight, slot = v.slot, count = v.count, description = ESXItems[v.name].description, metadata = v.metadata, stackable = ESXItems[v.name].stackable}
 			end
 		end
-		return returnData
-	end)
+	end
+	return returnData
 end
 
 GetInventory = function(inventory)
@@ -1507,6 +1510,7 @@ end)
 RegisterNetEvent('hsn-inventory:setplayerInventory')
 AddEventHandler('hsn-inventory:setplayerInventory',function(identifier,inventory)
 	xPlayer = ESX.GetPlayerFromIdentifier(identifier)
+	if not xPlayer then return end
 	local id = 'Player'..xPlayer.source
 	openedinventories[id] = nil
 	playerInventory[identifier] = {}
@@ -1604,6 +1608,12 @@ AddEventHandler('hsn-inventory:setplayerInventory',function(identifier,inventory
 		end)
 	end
 end)
+
+
+ESX.RegisterCommand({'closeallinv'}, 'superadmin', function(xPlayer, args, showError)
+	TriggerClientEvent("hsn-inventory:client:closeInventory", -1)
+end, false, {help = 'close all inventories'})
+
 
 AddEventHandler('onResourceStop', function(resourceName)
 	if (GetCurrentResourceName() == resourceName) then
