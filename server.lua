@@ -1155,11 +1155,11 @@ AddEventHandler('playerDropped', function(reason) --  https://github.com/CylexVI
 	end
 end)
 
-function SyncAccount(item, count)
+function SyncAccount(xPlayer, item, count)
 	local account = {}
 	account.name = item
 	account.money = count or xPlayer.getAccount(item).money
-	xPlayer.triggerEvent('esx:setAccountMoney', account)
+	TriggerClientEvent('esx:setAccountMoney', xPlayer.source, account)
 end
 
 ItemNotify = function(source, item, count, type, id)
@@ -1167,7 +1167,7 @@ ItemNotify = function(source, item, count, type, id)
 	count = tonumber(count)
 	if count > 0 then
 		TriggerClientEvent('hsn-inventory:client:addItemNotify',source,ESXItems[item], ('%s %sx'):format(type, count))
-		if item:find('money') then SyncAccount(item) end
+		if item:find('money') then SyncAccount(xPlayer, item) end
 		if Config.Logs then
 			if id then id = '('..id..')' else id = '' end
 			exports.linden_logs:log(xPlayer.source, ('%s (%s) has %s %sx %s %s'):format(xPlayer.name, xPlayer.identifier, string.lower(type), ESX.Math.GroupDigits(count), ESXItems[item].label, id), 'test')
@@ -1544,7 +1544,7 @@ AddEventHandler('hsn-inventory:setplayerInventory',function(identifier,inventory
 			if v.metadata and v.metadata.ammoweight then weight = v.metadata.ammoweight + ESXItems[v.name].weight else weight = tonumber(ESXItems[v.name].weight) end
 			if not v.metadata or (type(v.metadata == 'table') and next(v.metadata) == nil) then v.metadata = {} end
 			playerInventory[identifier][v.slot] = {name = v.name ,label = ESXItems[v.name].label, weight = tonumber(weight), slot = v.slot, count = v.count, description = ESXItems[v.name].description, metadata = v.metadata, stackable = ESXItems[v.name].stackable}
-			if v.name:find('money') then SyncAccount(v.name, v.count) end
+			if v.name:find('money') then SyncAccount(xPlayer, v.name, v.count) end
 		end
 	end
 
