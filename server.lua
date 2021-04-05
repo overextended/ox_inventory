@@ -1649,6 +1649,7 @@ AddEventHandler('onResourceStart', function(resourceName)
 					inventory = json.decode(result)
 				end
 				TriggerEvent('hsn-inventory:setplayerInventory', xPlayer.identifier, inventory)
+				TriggerClientEvent('esx:registerSuggestions', xPlayer.source, ESX.RegisteredCommands)
 			end)
 		end
 	end
