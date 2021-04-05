@@ -1539,7 +1539,10 @@ AddEventHandler('hsn-inventory:setplayerInventory',function(identifier,inventory
 			if v.metadata and v.metadata.ammoweight then weight = v.metadata.ammoweight + ESXItems[v.name].weight else weight = tonumber(ESXItems[v.name].weight) end
 			if not v.metadata or (type(v.metadata == 'table') and next(v.metadata) == nil) then v.metadata = {} end
 			playerInventory[identifier][v.slot] = {name = v.name ,label = ESXItems[v.name].label, weight = tonumber(weight), slot = v.slot, count = v.count, description = ESXItems[v.name].description, metadata = v.metadata, stackable = ESXItems[v.name].stackable}
-			if v.name:find('money') then SyncAccount(xPlayer, v.name, v.count) end
+			if v.name:find('money') then Citizen.CreateThread(function()
+				Citizen.Wait(500)
+				SyncAccount(xPlayer, v.name, v.count) end)
+			end
 		end
 	end
 
