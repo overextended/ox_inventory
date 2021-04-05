@@ -1760,6 +1760,7 @@ ESX.RegisterCommand('clearevidence', 'user', function(xPlayer, args, showError)
 	if notready then return end
 	if xPlayer.job.name == 'police' and xPlayer.job.grade_name == 'boss' then
 		local id = 'evidence-'..args.evidence
+		Stashes[id] = nil
 		exports.ghmattimysql:execute('DELETE FROM hsn_inventory WHERE name = @name', {
 			['@name'] = id
 		})
