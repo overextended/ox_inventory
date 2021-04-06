@@ -1241,18 +1241,18 @@ end)
 
 
 RegisterNetEvent('hsn-inventory:server:decreasedurability')
-AddEventHandler('hsn-inventory:server:decreasedurability',function(source, item, ammo)
+AddEventHandler('hsn-inventory:server:decreasedurability',function(source, slot, item, ammo)
 	local src = source
 	local xPlayer = ESX.GetPlayerFromId(src)
 	local decreaseamount = 0
 	if type(slot) == 'number' then
-		if playerInventory[xPlayer.identifier][item.slot] ~= nil then
-			if playerInventory[xPlayer.identifier][item.slot].metadata.durability ~= nil then
-				if playerInventory[xPlayer.identifier][item.slot].metadata.durability <= 0 then
-					TriggerClientEvent('hsn-inventory:client:checkweapon',src,playerInventory[xPlayer.identifier][item.slot])
+		if playerInventory[xPlayer.identifier][slot] ~= nil then
+			if playerInventory[xPlayer.identifier][slot].metadata.durability ~= nil then
+				if playerInventory[xPlayer.identifier][slot].metadata.durability <= 0 then
+					TriggerClientEvent('hsn-inventory:client:checkweapon',src,playerInventory[xPlayer.identifier][slot])
 					TriggerClientEvent('hsn-inventory:notification',src,'This weapon is broken',2)
-					if playerInventory[xPlayer.identifier][item.slot].name:find('WEAPON_FIREEXTINGUISHER') or playerInventory[xPlayer.identifier][item.slot].name:find('WEAPON_PETROLCAN') then
-						RemovePlayerInventory(src,xPlayer.identifier, playerInventory[xPlayer.identifier][item.slot].name, 1, item.slot)
+					if playerInventory[xPlayer.identifier][slot].name:find('WEAPON_FIREEXTINGUISHER') or playerInventory[xPlayer.identifier][slot].name:find('WEAPON_PETROLCAN') then
+						RemovePlayerInventory(src,xPlayer.identifier, playerInventory[xPlayer.identifier][slot].name, 1, slot)
 					end
 					return
 				end
@@ -1283,7 +1283,7 @@ AddEventHandler('hsn-inventory:server:addweaponAmmo',function(item,ammo,totalAmm
 			RemovePlayerInventory(src,xPlayer.identifier,ammo,removeAmmo)
 		end
 	end
-	TriggerEvent('hsn-inventory:server:decreasedurability',src,item,removeAmmo)
+	TriggerEvent('hsn-inventory:server:decreasedurability',src,item.slot,item.name,removeAmmo)
 end)
 
 
