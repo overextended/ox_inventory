@@ -1520,19 +1520,21 @@ AddEventHandler('hsn-inventory:setplayerInventory',function(identifier,inventory
 	local convert
 	for k,v in pairs(inventory) do
 		if Config.ConvertToHSN and type(v) == 'number' then -- Convert old inventory data to new format
-			loop = loop + 1
-			local count = v
-			v = { slot = loop, name = k, count = count }
-			if k:find('WEAPON_') then
-				v.count = 1
-				v.metadata = {}
-				v.metadata.durability = 100
-				v.metadata.ammo = 0
-				v.metadata.components = {}
-				v.metadata.ammoweight = 0
-				v.metadata.serial = GetRandomSerial()
+			if v > 0 then
+				loop = loop + 1
+				local count = v
+				v = { slot = loop, name = k, count = count }
+				if k:find('WEAPON_') then
+					v.count = 1
+					v.metadata = {}
+					v.metadata.durability = 100
+					v.metadata.ammo = 0
+					v.metadata.components = {}
+					v.metadata.ammoweight = 0
+					v.metadata.serial = GetRandomSerial()
+				end
+				if convert ~= true then convert = true end
 			end
-			if convert ~= true then convert = true end
 		end
 		if ESXItems[v.name] then
 			v.count = tonumber(v.count)
