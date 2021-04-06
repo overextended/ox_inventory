@@ -512,7 +512,7 @@ Citizen.CreateThread(function()
 			end
 
 			if Config.WeaponsLicense then
-				local coords = vector3(12.47, -1105.5, 29.8)
+				local coords = vector3(12.42198, -1105.82, 29.7854)
 				local text = "Weapons License"
 				local distance = #(playerCoords - coords)
 				local license = 'weapon'
