@@ -28,12 +28,11 @@ function StartInventory()
 	ESX.TriggerServerCallback('hsn-inventory:getData',function(data)
 		playerName = data.name
 		oneSync = data.oneSync
+		PlayerData = ESX.GetPlayerData()
+		playerID = GetPlayerServerId(PlayerId())
+		playerPed = PlayerPedId()
+		clearWeapons()
 	end)
-	while not playerName do Citizen.Wait(100) end
-	PlayerData = ESX.GetPlayerData()
-	playerID = GetPlayerServerId(PlayerId())
-	playerPed = PlayerPedId()
-	clearWeapons()
 end
 
 RegisterNetEvent('esx:setJob')
@@ -53,17 +52,11 @@ local keys = {
 	157, 158, 160, 164, 165
 }
 
-AddEventHandler('esx:onPlayerDeath', function(data)
-	isDead = true
-end)
 
 AddEventHandler('esx:onPlayerSpawn', function(spawn)
 	isDead = false
 end)
 
-AddEventHandler('playerSpawned', function(spawn)
-	isDead = false
-end)
 
 RegisterNetEvent('esx_ambulancejob:setDeathStatus')
 AddEventHandler('esx_ambulancejob:setDeathStatus', function(status)
@@ -146,19 +139,13 @@ Citizen.CreateThread(function()
 					end
 				elseif currentWeapon.item.metadata.serial and currentWeapon.item.metadata.ammo then
 					currentWeapon.item.metadata.ammo = ammo
+					TriggerEvent('hsn-inventory:usedWeapon', currentWeapon) -- Use in other resources
 					if ammo == 0 then
 						ClearPedTasks(playerPed)
 						SetCurrentPedWeapon(playerPed, currentWeapon.hash, false)
 						SetPedCurrentWeaponVisible(playerPed, true, false, false, false)
 						TriggerServerEvent('hsn-inventory:server:reloadWeapon', currentWeapon)
 					end
-				elseif Config.Melee[currentWeapon.item.name] and not wait then
-					Citizen.CreateThread(function()
-						wait = true
-						TriggerServerEvent('hsn-inventory:server:decreasedurability', playerID, currentWeapon.item.slot, currentWeapon.item.name, 1)
-						Citizen.Wait(400)
-						wait = false
-					end)
 				end
 			elseif currentWeapon.item.metadata.throwable and not wait and IsControlJustReleased(0, 24) then
 				Citizen.CreateThread(function()
@@ -167,6 +154,14 @@ Citizen.CreateThread(function()
 					TriggerServerEvent('hsn-inventory:client:removeItem', currentWeapon.item.name, 1, currentWeapon.item.metadata, currentWeapon.item.slot)
 					SetCurrentPedWeapon(playerPed, `WEAPON_UNARMED`, true)
 					currentWeapon = nil
+					wait = false
+				end)
+			elseif Config.Melee[currentWeapon.item.name] and not wait and IsPedInMeleeCombat(playerPed) and IsControlPressed(0, 24) then
+				Citizen.CreateThread(function()
+					wait = true
+					TriggerServerEvent('hsn-inventory:server:decreasedurability', playerID, currentWeapon.item.slot, currentWeapon.item.name, 1)
+					TriggerEvent('hsn-inventory:usedWeapon', currentWeapon) -- Use in other resources
+					Citizen.Wait(400)
 					wait = false
 				end)
 			else shooting = false end
@@ -938,6 +933,14 @@ AddEventHandler('hsn-inventory:useItem',function(item)
 			if data.thirst then
 				if data.thirst > 0 then TriggerEvent('esx_status:add', 'thirst', data.thirst)
 				else TriggerEvent('esx_status:remove', 'thirst', data.thirst) end
+			end
+			if data.stress then
+				if data.stress > 0 then TriggerEvent('esx_status:add', 'stress', data.stress)
+				else TriggerEvent('esx_status:remove', 'stress', data.stress) end
+			end
+			if data.drunk then
+				if data.drunk > 0 then TriggerEvent('esx_status:add', 'drunk', data.drunk)
+				else TriggerEvent('esx_status:remove', 'drunk', data.drunk) end
 			end
 			if data.consume then TriggerServerEvent('hsn-inventory:client:removeItem', xItem.name, data.consume, xItem.metadata) end
 			isBusy = false
