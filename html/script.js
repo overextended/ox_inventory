@@ -1,4 +1,3 @@
-
 	var disabled = false
 	var drag = false
 	var dropLabel = 'Drop'
@@ -135,36 +134,23 @@
 			quality = 100
 		}
 		var color = "#1d1d1de8"
-		var text = ''
 		var width = 100
-		if (quality == 100) {
-			color = "#0bb80b",
-			//text = '',
-			width = quality
-		} else if (quality >= 80 && quality <= 100) {
-			color = "#0bb80b",
-			//text = '',
-			width = quality
+		if (quality >= 80) {
+			color = "#0bb80b"
 		} else if (quality >= 50 && quality <= 80) {
-			color = "#0bb80b81",
-			//text = '',
-			width = quality
+			color = "#0bb80b81"
 		} else if (quality >= 20 && quality <= 50) {
-			color = "#ca790fcb",
-			//text = '',
-			width = quality
+			color = "#ca790fcb"
 		} else if (quality >= 1 && quality <= 20) {
-			color = '#5c0b0bcb;',
-			//text = '',
-			width = quality
-		} else if (quality == 0) {
-			color = '#1d1d1de8',
-			//text = '',
+			color = '#5c0b0bcb;'
+		} 
+		if (quality == 0) {
+			color = '#1d1d1de8'
 			width = 100
+		} else {
+			width = quality
 		}
-		//parseInt(quality).toFixed(2)
-		return [color = color,text = text,width = width];
-
+		return color, width
 	}
 
 	HSN.RefreshInventory = function(data) {
@@ -177,7 +163,7 @@
 			if (item != null) {
 				totalkg = totalkg +(item.weight * item.count);
 				if ((item.name).split("_")[0] == "WEAPON" && item.metadata.durability !== undefined) {
-					$(".inventory-main-leftside").find("[inventory-slot=" + item.slot + "]").html('<div class="item-slot-img"><img src="images/' + item.name + '.png'+'" alt="' + item.name + '" /></div><div class="item-slot-count"><p>' + numberFormat(item.count, item.name) + ' ' + weightFormat(item.weight/1000 * item.count) + '</p></div><div class="item-slot-label"><p><div class="item-slot-durability"><div class="item-slot-durability-bar"><p>100</p></div></div><div class="item-slot-label"><p>' + item.label + '</p></div></p></div>');
+					$(".inventory-main-leftside").find("[inventory-slot=" + item.slot + "]").html('<div class="item-slot-img"><img src="images/' + item.name + '.png'+'" alt="' + item.name + '" /></div><div class="item-slot-count"><p>' + numberFormat(item.count, item.name) + ' ' + weightFormat(item.weight/1000 * item.count) + '</p></div><div class="item-slot-label"><p><div class="item-slot-durability"></div><div class="item-slot-label"><p>' + item.label + '</p></div></p></div>');
 					$(".inventory-main-leftside").find("[inventory-slot=" + item.slot + "]").data("ItemData", item);
 					$(".inventory-main-leftside").find("[inventory-slot=" + item.slot + "]").addClass("drag-item");
 					var durability = HSN.InventoryGetDurability(item.metadata.durability)
@@ -224,7 +210,7 @@
 			if ((item != null)) {
 				totalkg = totalkg +(item.weight * item.count);
 				if ((item.name).split("_")[0] == "WEAPON" && item.metadata.durability !== undefined) {					
-					$(".inventory-main-leftside").find("[inventory-slot=" + item.slot + "]").html('<div class="item-slot-img"><img src="images/' + item.name + '.png'+'" alt="' + item.name + '" /></div><div class="item-slot-count"><p>' + numberFormat(item.count, item.name) + ' ' + weightFormat(item.weight/1000 * item.count) + '</p></div><div class="item-slot-label"><p><div class="item-slot-durability"><div class="item-slot-durability-bar"><p>100</p></div></div><div class="item-slot-label"><p>' + item.label + '</p></div></p></div>');
+					$(".inventory-main-leftside").find("[inventory-slot=" + item.slot + "]").html('<div class="item-slot-img"><img src="images/' + item.name + '.png'+'" alt="' + item.name + '" /></div><div class="item-slot-count"><p>' + numberFormat(item.count, item.name) + ' ' + weightFormat(item.weight/1000 * item.count) + '</p></div><div class="item-slot-label"><p><div class="item-slot-durability"></div><div class="item-slot-label"><p>' + item.label + '</p></div></p></div>');
 					$(".inventory-main-leftside").find("[inventory-slot=" + item.slot + "]").data("ItemData", item);
 					$(".inventory-main-leftside").find("[inventory-slot=" + item.slot + "]").addClass("drag-item");
 						var durability = HSN.InventoryGetDurability(item.metadata.durability)
@@ -260,9 +246,9 @@
 						if (item != null) {
 							if ((item.name).split("_")[0] == "WEAPON" && item.metadata.durability !== undefined) {
 								if (currency == 'money' || currency == 'black_money' || currency == 'bank' || currency == undefined) {
-									$(".inventory-main-rightside").find("[inventory-slot=" + item.slot + "]").html('<div class="item-slot-img"><img src="images/' + item.name + '.png'+'" alt="' + item.name + '" /></div><div class="item-slot-count"><p>' + numberFormat(item.price, 'money') + '</p></div><div class="item-slot-label"><p><div class="item-slot-durability"><div class="item-slot-durability-bar"><p>100</p></div></div><div class="item-slot-label"><p>' + item.label + '</p></div></p></div>');
+									$(".inventory-main-rightside").find("[inventory-slot=" + item.slot + "]").html('<div class="item-slot-img"><img src="images/' + item.name + '.png'+'" alt="' + item.name + '" /></div><div class="item-slot-count"><p>' + numberFormat(item.price, 'money') + '</p></div><div class="item-slot-label"><p><div class="item-slot-durability"></div><div class="item-slot-label"><p>' + item.label + '</p></div></p></div>');
 								} else {
-									$(".inventory-main-rightside").find("[inventory-slot=" + item.slot + "]").html('<div class="item-slot-img"><img src="images/' + item.name + '.png'+'" alt="' + item.name + '" /></div><div class="item-slot-count"><p>' + item.price + ' ' + currency + '</p></div><div class="item-slot-label"><p><div class="item-slot-durability"><div class="item-slot-durability-bar"><p>100</p></div></div><div class="item-slot-label"><p>' + item.label + '</p></div></p></div>');
+									$(".inventory-main-rightside").find("[inventory-slot=" + item.slot + "]").html('<div class="item-slot-img"><img src="images/' + item.name + '.png'+'" alt="' + item.name + '" /></div><div class="item-slot-count"><p>' + item.price + ' ' + currency + '</p></div><div class="item-slot-label"><p><div class="item-slot-durability"></div><div class="item-slot-label"><p>' + item.label + '</p></div></p></div>');
 								}
 									$(".inventory-main-rightside").find("[inventory-slot=" + item.slot + "]").data("ItemData", item).data("location", data.rightinventory.id);
 								//$(".inventory-main-rightside").find("[inventory-slot=" + item.slot + "]").addClass("drag-item");
@@ -288,7 +274,7 @@
 						rightweight = rightweight +(item.weight * item.count);
 						if ((item.name).split("_")[0] == "WEAPON" && item.metadata.durability !== undefined) {
 							
-							$(".inventory-main-rightside").find("[inventory-slot=" + item.slot + "]").html('<div class="item-slot-img"><img src="images/' + item.name + '.png'+'" alt="' + item.name + '" /></div><div class="item-slot-count"><p>' + numberFormat(item.count, item.name) + ' ' + weightFormat(item.weight/1000 * item.count) + '</p></div><div class="item-slot-label"><p><div class="item-slot-durability"><div class="item-slot-durability-bar"><p>100</p></div></div><div class="item-slot-label"><p>' + item.label + '</p></div></p></div>');
+							$(".inventory-main-rightside").find("[inventory-slot=" + item.slot + "]").html('<div class="item-slot-img"><img src="images/' + item.name + '.png'+'" alt="' + item.name + '" /></div><div class="item-slot-count"><p>' + numberFormat(item.count, item.name) + ' ' + weightFormat(item.weight/1000 * item.count) + '</p></div><div class="item-slot-label"><p><div class="item-slot-durability"></div><div class="item-slot-label"><p>' + item.label + '</p></div></p></div>');
 							$(".inventory-main-rightside").find("[inventory-slot=" + item.slot + "]").data("ItemData", item);
 							$(".inventory-main-rightside").find("[inventory-slot=" + item.slot + "]").addClass("drag-item");
 								var durability = HSN.InventoryGetDurability(item.metadata.durability)
@@ -316,9 +302,6 @@
 		}
 	}
 
-	
-
-	
 	function DragAndDrop() {
 		$(".drag-item").draggable({
 			helper: 'clone',
@@ -346,13 +329,13 @@
 				setTimeout(function(){
 					IsDragging = false;
 				}, 300)
-				 curslot = ui.draggable.attr("inventory-slot");
-				 fromInventory = ui.draggable.parent();
-				 var inv = fromInventory.data('invTier')
-				 toInventory = $(this).parent()
-				 toSlot = $(this).attr("inventory-slot");
-				 fromData = fromInventory.find("[inventory-slot=" + curslot + "]").data("ItemData");
-				 if (fromData !== undefined && count !== undefined) {
+				curslot = ui.draggable.attr("inventory-slot");
+				fromInventory = ui.draggable.parent();
+				var inv = fromInventory.data('invTier')
+				toInventory = $(this).parent()
+				toSlot = $(this).attr("inventory-slot");
+				fromData = fromInventory.find("[inventory-slot=" + curslot + "]").data("ItemData");
+				if (fromData !== undefined && count !== undefined) {
 					if (count == "" || count == 0) {
 						count = fromData.count
 					} else if (count.startsWith('0')) {
@@ -365,7 +348,7 @@
 
 		});
 	
-		 $(".use").droppable({
+		$(".use").droppable({
 			hoverClass: 'button-hover',
 			drop: function(event, ui) {
 				setTimeout(function(){
@@ -410,16 +393,16 @@
 			$(".iteminfo").fadeIn(100);
 			$(".iteminfo-label").html('<p>'+Item.label+' <span style="float:right;">' + gram.format(Item.weight) + '</span></p><hr class="line">')
 			$(".iteminfo-description").html('')
-			if (Item.description) { $(".iteminfo-description").append('<p>'+Item.description+'</p>')};
+			if (Item.description) { $(".iteminfo-description").append('<p>'+Item.description+'</p>')}
 			if (Item.metadata) {
-				if (Item.metadata.type) { $(".iteminfo-description").append('<p>'+Item.metadata.type+'</p>')};
-				if (Item.metadata.description) { $(".iteminfo-description").append('<p>'+Item.metadata.description+'</p>')};
+				if (Item.metadata.type) { $(".iteminfo-description").append('<p>'+Item.metadata.type+'</p>')}
+				if (Item.metadata.description) { $(".iteminfo-description").append('<p>'+Item.metadata.description+'</p>')}
 				if ((Item.name).split("_")[0] == "WEAPON" && Item.metadata.durability !== undefined) {
 					if (Item.metadata.ammo !== undefined) { $(".iteminfo-description").append('<p>Weapon Ammo: '+Item.metadata.ammo+'</p>') }
 					if (Item.metadata.durability !== undefined) { $(".iteminfo-description").append('<p>Durability: '+parseInt(Item.metadata.durability).toFixed(0)+''+'%</p>') }
 					if (Item.metadata.serial !== undefined) { $(".iteminfo-description").append('<p>Serial Number: '+Item.metadata.serial+'</p>') }
-					if (Item.metadata.components) { $(".iteminfo-description").append('<p>Components: '+Item.metadata.components+'</p>')};
-					if (Item.metadata.weapontint) { $(".iteminfo-description").append('<p>Tint: '+Item.metadata.weapontint+'</p>')};
+					if (Item.metadata.components) { $(".iteminfo-description").append('<p>Components: '+Item.metadata.components+'</p>')}
+					if (Item.metadata.weapontint) { $(".iteminfo-description").append('<p>Tint: '+Item.metadata.weapontint+'</p>')}
 				}
 			}
 		} else {
@@ -434,6 +417,7 @@
 		}));
 		
 		Display(false)
+		return
 	}
 
 
@@ -447,6 +431,7 @@
 			return
 		}
 	};
+	
 	$(document).on('click', '.close', function(e){
 		$.post('http://hsn-inventory/exit', JSON.stringify({
 			type : rightinvtype,
@@ -454,6 +439,7 @@
 		}));
 		
 		Display(false)
+		return
 	});
 
 	is_table_equal = function(obj1, obj2) {
@@ -464,7 +450,7 @@
 		}
 		return false
 	}
-	 
+	
 
 	SwapItems = function(fromInventory, toInventory, fromSlot, toSlot) {
 		fromItem = fromInventory.find("[inventory-slot=" + fromSlot + "]").data("ItemData");
@@ -493,8 +479,8 @@
 						if (fromItem.metadata.durability) { var durability = HSN.InventoryGetDurability(fromItem.metadata.durability) }
 						// toItem durability
 						if (toItem.metadata.durability) { var durability2 = HSN.InventoryGetDurability(toItem.metadata.durability) }
-						toInventory.find("[inventory-slot=" + toSlot + "]").html('<div class="item-slot-img"><img src="images/' + fromItem.name + '.png'+'" alt="' + fromItem.name + '" /></div><div class="item-slot-count"><p>' + numberFormat(fromItem.count, fromItem.name) + ' ' + weightFormat(fromItem.weight/1000 * fromItem.count) + '</p></div><div class="item-slot-label"><p><div class="item-slot-durability"><div class="item-slot-durability-bar"><p>100</p></div></div><div class="item-slot-label"><p>' + fromItem.label + '</p></div></p></div>');
-						fromInventory.find("[inventory-slot=" + fromSlot + "]").html('<div class="item-slot-img"><img src="images/' + toItem.name + '.png'+'" alt="' + toItem.name + '" /></div><div class="item-slot-count"><p>' + numberFormat(toItem.count, toItem.name) + ' ' + weightFormat(toItem.weight/1000 * toItem.count) + '</p></div><div class="item-slot-label"><p><div class="item-slot-durability"><div class="item-slot-durability-bar"><p>100</p></div></div><div class="item-slot-label"><p>' + toItem.label + '</p></div></p></div>');
+						toInventory.find("[inventory-slot=" + toSlot + "]").html('<div class="item-slot-img"><img src="images/' + fromItem.name + '.png'+'" alt="' + fromItem.name + '" /></div><div class="item-slot-count"><p>' + numberFormat(fromItem.count, fromItem.name) + ' ' + weightFormat(fromItem.weight/1000 * fromItem.count) + '</p></div><div class="item-slot-label"><p><div class="item-slot-durability"></div><div class="item-slot-label"><p>' + fromItem.label + '</p></div></p></div>');
+						fromInventory.find("[inventory-slot=" + fromSlot + "]").html('<div class="item-slot-img"><img src="images/' + toItem.name + '.png'+'" alt="' + toItem.name + '" /></div><div class="item-slot-count"><p>' + numberFormat(toItem.count, toItem.name) + ' ' + weightFormat(toItem.weight/1000 * toItem.count) + '</p></div><div class="item-slot-label"><p><div class="item-slot-durability"></div><div class="item-slot-label"><p>' + toItem.label + '</p></div></p></div>');
 						toInventory.find("[inventory-slot=" + toSlot + "]").find(".item-slot-durability-bar").css({"background-color":durability[0],"width":durability[2]}).find('p').html(durability[1]);
 						fromInventory.find("[inventory-slot=" + fromSlot + "]").find(".item-slot-durability-bar").css({"background-color":durability2[0],"width":durability2[2]}).find('p').html(durability2[1]);
 						toInventory.find("[inventory-slot=" + toSlot + "]").data("ItemData", fromItem);
@@ -544,7 +530,7 @@
 					} else if (fromItem.name !== toItem.name && inv2 == inv) { // swap
 						if ((toItem.name).split("_")[0] == "WEAPON" && toItem.metadata.durability !== undefined) {
 							var durability = HSN.InventoryGetDurability(toItem.metadata.durability)
-							fromInventory.find("[inventory-slot=" + fromSlot + "]").html('<div class="item-slot-img"><img src="images/' + toItem.name + '.png'+'" alt="' + toItem.name + '" /></div><div class="item-slot-count"><p>' + numberFormat(toItem.count, toItem.name) + ' ' + weightFormat(toItem.weight/1000 * toItem.count) + '</p></div><div class="item-slot-label"><p><div class="item-slot-durability"><div class="item-slot-durability-bar"><p>100</p></div></div><div class="item-slot-label"><p>' + toItem.label + '</p></div></p></div>');
+							fromInventory.find("[inventory-slot=" + fromSlot + "]").html('<div class="item-slot-img"><img src="images/' + toItem.name + '.png'+'" alt="' + toItem.name + '" /></div><div class="item-slot-count"><p>' + numberFormat(toItem.count, toItem.name) + ' ' + weightFormat(toItem.weight/1000 * toItem.count) + '</p></div><div class="item-slot-label"><p><div class="item-slot-durability"></div><div class="item-slot-label"><p>' + toItem.label + '</p></div></p></div>');
 							fromInventory.find("[inventory-slot=" + fromSlot + "]").find(".item-slot-durability-bar").css({"background-color":durability[0],"width":durability[2]}).find('p').html(durability[1]);
 							toInventory.find("[inventory-slot=" + toSlot + "]").html('<div class="item-slot-img"><img src="images/' + fromItem.name + '.png'+'" alt="' + fromItem.name + '" /></div><div class="item-slot-count"><p>' + numberFormat(fromItem.count, fromItem.name) + ' ' + weightFormat(fromItem.weight/1000 * fromItem.count) + '</p></div><div class="item-slot-label"><p><div class="item-slot-label"><p>' + fromItem.label + '</p></div></p></div>');   
 							toInventory.find("[inventory-slot=" + toSlot + "]").data("ItemData", fromItem);
@@ -565,7 +551,7 @@
 							success = true
 						} else if ((fromItem.name).split("_")[0] == "WEAPON" && fromItem.metadata.durability !== undefined) {
 							var durability = HSN.InventoryGetDurability(fromItem.metadata.durability)
-							toInventory.find("[inventory-slot=" + toSlot + "]").html('<div class="item-slot-img"><img src="images/' + fromItem.name + '.png'+'" alt="' + fromItem.name + '" /></div><div class="item-slot-count"><p>' + numberFormat(fromItem.count, fromItem.name) + ' ' + weightFormat(fromItem.weight/1000 * fromItem.count) + '</p></div><div class="item-slot-label"><p><div class="item-slot-durability"><div class="item-slot-durability-bar"><p>100</p></div></div><div class="item-slot-label"><p>' + fromItem.label + '</p></div></p></div>');
+							toInventory.find("[inventory-slot=" + toSlot + "]").html('<div class="item-slot-img"><img src="images/' + fromItem.name + '.png'+'" alt="' + fromItem.name + '" /></div><div class="item-slot-count"><p>' + numberFormat(fromItem.count, fromItem.name) + ' ' + weightFormat(fromItem.weight/1000 * fromItem.count) + '</p></div><div class="item-slot-label"><p><div class="item-slot-durability"></div><div class="item-slot-label"><p>' + fromItem.label + '</p></div></p></div>');
 							toInventory.find("[inventory-slot=" + toSlot + "]").find(".item-slot-durability-bar").css({"background-color":durability[0],"width":durability[2]}).find('p').html(durability[1]);
 							fromInventory.find("[inventory-slot=" + fromSlot + "]").html('<div class="item-slot-img"><img src="images/' + toItem.name + '.png'+'" alt="' + toItem.name + '" /></div><div class="item-slot-count"><p>' + numberFormat(toItem.count, toItem.name) + ' ' + weightFormat(toItem.weight/1000 * toItem.count) + '</p></div><div class="item-slot-label"><p><div class="item-slot-label"><p>' + toItem.label + '</p></div></p></div>');   
 							fromInventory.find("[inventory-slot=" + fromSlot + "]").data("ItemData", toItem);
@@ -604,13 +590,13 @@
 							}));
 							success = true
 						}
-					}	   
+					}	  
 				}
 			} else {
 				if (count <= fromItem.count) {
 					if(((fromItem.name).split("_")[0] == "WEAPON" && fromItem.metadata.durability !== undefined)) {
 						var durability = HSN.InventoryGetDurability(fromItem.metadata.durability)
-						toInventory.find("[inventory-slot=" + toSlot + "]").html('<div class="item-slot-img"><img src="images/' + fromItem.name + '.png'+'" alt="' + fromItem.name + '" /></div><div class="item-slot-count"><p>' + numberFormat(fromItem.count, fromItem.name) + ' ' + weightFormat(fromItem.weight/1000 * fromItem.count) + '</p></div><div class="item-slot-label"><p><div class="item-slot-durability"><div class="item-slot-durability-bar"><p>100</p></div></div><div class="item-slot-label"><p>' + fromItem.label + '</p></div></p></div>');
+						toInventory.find("[inventory-slot=" + toSlot + "]").html('<div class="item-slot-img"><img src="images/' + fromItem.name + '.png'+'" alt="' + fromItem.name + '" /></div><div class="item-slot-count"><p>' + numberFormat(fromItem.count, fromItem.name) + ' ' + weightFormat(fromItem.weight/1000 * fromItem.count) + '</p></div><div class="item-slot-label"><p><div class="item-slot-durability"></div><div class="item-slot-label"><p>' + fromItem.label + '</p></div></p></div>');
 						toInventory.find("[inventory-slot=" + toSlot + "]").find(".item-slot-durability-bar").css({"background-color":durability[0],"width":durability[2]}).find('p').html(durability[1]);
 						toInventory.find("[inventory-slot=" + toSlot + "]").data("ItemData", fromItem);
 						toInventory.find("[inventory-slot=" + toSlot + "]").addClass("drag-item");
@@ -671,10 +657,7 @@
 								invid2 :toinvId2
 							}));
 							success = true
-							fromItem.weight = fromItem.weight
 						} else if (fromItem.count == count) {
-						var fromSlot = Number(fromSlot)
-						var toSlot = Number(toSlot)
 							HSN.RemoveItemFromSlot(fromInventory,fromSlot)
 							toInventory.find("[inventory-slot=" + toSlot + "]").html('<div class="item-slot-img"><img src="images/' + fromItem.name + '.png'+'" alt="' + fromItem.name + '" /></div><div class="item-slot-count"><p>' + numberFormat(count, fromItem.name) + ' ' + weightFormat(fromItem.weight/1000 * count) + '</p></div><div class="item-slot-label"><p><div class="item-slot-label"><p>' + fromItem.label + '</p></div></p></div>');
 							toInventory.find("[inventory-slot=" + toSlot + "]").data("ItemData", fromItem);
