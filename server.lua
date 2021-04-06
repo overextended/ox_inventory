@@ -17,7 +17,7 @@ TriggerEvent('esx:getSharedObject', function(obj) ESX = obj end)
 ESX.RegisterServerCallback('hsn-inventory:getData',function(source, cb)
 	local src = source
 	local xPlayer = ESX.GetPlayerFromId(src)
-	local data = {name = xPlayer.getName(), inventory = playerInventory[xPlayer.identifier], oneSync = oneSync}
+	local data = {name = xPlayer.getName(), oneSync = oneSync}
 	cb(data)
 end)
 
