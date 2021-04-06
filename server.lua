@@ -1251,7 +1251,7 @@ AddEventHandler('hsn-inventory:server:decreasedurability',function(source, slot,
 				if playerInventory[xPlayer.identifier][slot].metadata.durability <= 0 then
 					TriggerClientEvent('hsn-inventory:client:checkweapon',src,playerInventory[xPlayer.identifier][slot])
 					TriggerClientEvent('hsn-inventory:notification',src,'This weapon is broken',2)
-					if playerInventory[xPlayer.identifier][slot].name:find('WEAPON_FIREEXTINGUISHER') or playerInventory[xPlayer.identifier][slot].name:find('WEAPON_PETROLCAN') then
+					if playerInventory[xPlayer.identifier][slot].name:find('WEAPON_FIREEXTINGUISHER') then
 						RemovePlayerInventory(src,xPlayer.identifier, playerInventory[xPlayer.identifier][slot].name, 1, slot)
 					end
 					return
