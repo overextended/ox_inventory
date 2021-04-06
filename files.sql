@@ -7,11 +7,19 @@ COLLATE='utf8mb4_general_ci'
 ENGINE=InnoDB;
 
 
+CREATE TABLE IF NOT EXISTS `items` (
+  `name` varchar(50) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `label` varchar(50) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `weight` int(11) NOT NULL DEFAULT 1,
+  `can_remove` tinyint(4) NOT NULL DEFAULT 1
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+
 ALTER TABLE `items`
 	ADD IF NOT EXISTS `stackable` INT(11) NULL DEFAULT '1', 
 	ADD IF NOT EXISTS `closeonuse` INT(11) NULL DEFAULT '1', 
 	ADD IF NOT EXISTS `description` VARCHAR(50) NULL DEFAULT NULL,
-	UNIQUE KEY (`name`);
+	PRIMARY KEY (`name`);
 
 
 INSERT INTO `items` (`name`, `label`, `weight`, `can_remove`, `stackable`, `closeonuse`, `description`) VALUES
