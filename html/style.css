@@ -326,11 +326,8 @@
 
 .item-slot-durability {
     position: absolute;
-    bottom: 17px;
     width: 100%;
     height: 5px;
-    line-height: 1.6pt;
-    background-color: #1d1d1de8;
     box-shadow: inset 0 0 1px 1px rgba(0, 0, 0, 0.2);
 }
 
@@ -338,7 +335,10 @@
     position: absolute;
     height: 5px;
     width: 100%;
+    bottom: 17px;
+    line-height: 1.6pt;
     text-align: center;
+    background-color: #1d1d1de8;
     box-shadow: inset 0 0 1px 1px rgba(0, 0, 0, 0.2);
 }
 
