@@ -14,6 +14,10 @@ CREATE TABLE IF NOT EXISTS `items` (
   `can_remove` tinyint(4) NOT NULL DEFAULT 1
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
+REPLACE INTO `licenses` (`type`, `label`) VALUES
+	('weapon', "Weapons license")
+;
+
 
 ALTER TABLE `items`
 	ADD IF NOT EXISTS `stackable` INT(11) NULL DEFAULT '1', 
