@@ -1625,7 +1625,7 @@ AddEventHandler('onResourceStop', function(resourceName)
 			local xPlayer = ESX.GetPlayerFromId(xPlayers[i])
 			local inventory = {}
 			inventory = json.encode(GetInventory(playerInventory[xPlayer.identifier]))
-			exports.ghmattimysql:execute('UPDATE `users` SET inventory = @inventory WHERE identifier = @identifier', {
+			exports.ghmattimysql:execute('UPDATE `users` SET `inventory` = @inventory WHERE identifier = @identifier', {
 				['@inventory'] = inventory,
 				['@identifier'] = xPlayer.identifier
 			})
@@ -1649,7 +1649,6 @@ AddEventHandler('onResourceStart', function(resourceName)
 					inventory = json.decode(result)
 				end
 				TriggerEvent('hsn-inventory:setplayerInventory', xPlayer.identifier, inventory)
-				TriggerClientEvent('esx:registerSuggestions', xPlayer.source, ESX.RegisteredCommands)
 			end)
 		end
 	end
