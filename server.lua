@@ -10,21 +10,6 @@ local openedinventories = {}
 local Gloveboxes = {}
 local Trunks = {}
 local notready = true
-local AmmoType = {}
-
-function SetupAmmo()
-	for k,v in pairs(Config.Ammos) do
-		for k2, v2 in pairs(v) do
-			AmmoType[v2] = k
-		end
-	end
-end
-SetupAmmo()
-
-function GetAmmoType(weapon)
-	if type(weapon) == 'string' then weapon = GetHashKey(weapon) end
-	return AmmoType[weapon]
-end
 
 if GetConvar('onesync_enableInfinity', false) == 'true' or GetConvar('onesync_enabled', false) == 'true' then oneSync = true end
 
@@ -1247,8 +1232,7 @@ AddEventHandler('hsn-inventory:server:useItemfromSlot',function(slot)
 				end
 			else
 				if playerInventory[xPlayer.identifier][slot].name:find('ammo') then
-					local weps = Config.Ammos[playerInventory[xPlayer.identifier][slot].name]
-					TriggerClientEvent('hsn-inventory:addAmmo',src,weps,playerInventory[xPlayer.identifier][slot])
+					TriggerClientEvent('hsn-inventory:addAmmo',src,playerInventory[xPlayer.identifier][slot])
 					return
 				end
 				useItem(src, playerInventory[xPlayer.identifier][slot])
@@ -1300,7 +1284,7 @@ AddEventHandler('hsn-inventory:server:addweaponAmmo',function(item,ammo,totalAmm
 			ammo.weight = ESXItems[ammo.type].weight
 			ammo.addweight = (ammo.count * ammo.weight)
 			playerInventory[xPlayer.identifier][item.slot].weight = ESXItems[item.name].weight + ammo.addweight
-			RemovePlayerInventory(src,xPlayer.identifier,ammo,removeAmmo)
+			RemovePlayerInventory(src,xPlayer.identifier,ammo.type,removeAmmo)
 		end
 	end
 	TriggerEvent('hsn-inventory:server:decreasedurability',src,item.slot,item.name,removeAmmo)
