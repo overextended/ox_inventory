@@ -125,7 +125,7 @@ Citizen.CreateThread(function()
 		end
 		if currentWeapon then
 			if weaponTimer == 3 then
-				TriggerServerEvent('hsn-inventory:server:updateWeapon', currentWeapon.item, currentWeapon.ammotype)
+				TriggerServerEvent('hsn-inventory:server:updateWeapon', currentWeapon.item)
 				weaponTimer = 0
 			elseif weaponTimer > 3 then weaponTimer = weaponTimer - 3 end
 			SetPedCurrentWeaponVisible(playerPed, true, false, false, false)
@@ -134,8 +134,8 @@ Citizen.CreateThread(function()
 				DisableControlAction(1, 141, true)
 				DisableControlAction(1, 142, true)
 			end
-			local shooting = IsPedShooting(playerPed)
-			if shooting then
+			usingWeapon = IsPedShooting(playerPed)
+			if usingWeapon then
 				local ammo = GetAmmoInPedWeapon(playerPed, currentWeapon.hash)
 				if currentWeapon.item.metadata.durability then currentWeapon.item.metadata.durability = currentWeapon.item.metadata.durability - 0.1 end
 				if (currentWeapon.item.name == 'WEAPON_FIREEXTINGUISHER' or currentWeapon.item.name == 'WEAPON_PETROLCAN') and not wait then
@@ -162,6 +162,7 @@ Citizen.CreateThread(function()
 					else TriggerEvent('hsn-inventory:usedWeapon', currentWeapon) end
 				end
 			elseif currentWeapon.item.metadata.throwable and not wait and IsControlJustReleased(0, 24) then
+				usingWeapon = true
 				Citizen.CreateThread(function()
 					wait = true
 					Citizen.Wait(800)
@@ -171,6 +172,7 @@ Citizen.CreateThread(function()
 					wait = false
 				end)
 			elseif Config.Melee[currentWeapon.item.name] and not wait and IsPedInMeleeCombat(playerPed) and IsControlPressed(0, 24) then
+				usingWeapon = true
 				Citizen.CreateThread(function()
 					wait = true
 					TriggerServerEvent('hsn-inventory:server:decreasedurability', playerID, currentWeapon.item.slot, currentWeapon.item.name, 1)
@@ -178,7 +180,7 @@ Citizen.CreateThread(function()
 					Citizen.Wait(400)
 					wait = false
 				end)
-			else shooting = false end
+			else usingWeapon = false end
 		end
 	end
 end)
@@ -272,7 +274,7 @@ RegisterCommand('vehinv', function()
 end, false)
 
 CanOpenInventory = function()
-	if playerName and not isBusy and not IsPedDeadOrDying(playerPed, 1) and not IsPauseMenuActive() and not isDead and not isCuffed and not invOpen then return true end
+	if playerName and not isBusy and not isShooting and not isDead and not isCuffed and not invOpen and not IsPedDeadOrDying(playerPed, 1) and not IsPauseMenuActive() then return true end
 	return false
 end
 	
@@ -703,7 +705,7 @@ RegisterNetEvent('hsn-inventory:client:weapon')
 AddEventHandler('hsn-inventory:client:weapon',function(item)
 	if isBusy then return end
 	isBusy = true
-	if currentWeapon then TriggerServerEvent('hsn-inventory:server:updateWeapon', currentWeapon.item, currentWeapon.ammotype) end
+	if currentWeapon then TriggerServerEvent('hsn-inventory:server:updateWeapon', currentWeapon.item) end
 	TriggerEvent('hsn-inventory:client:closeInventory', currentInventory)
 	local newWeapon = item.metadata.serial
 	local found, wepHash = GetCurrentPedWeapon(playerPed, true)
@@ -724,12 +726,8 @@ AddEventHandler('hsn-inventory:client:weapon',function(item)
 		currentWeapon = {}
 		currentWeapon.item = item
 		currentWeapon.hash = wepHash
+		currentWeapon.ammo = GetAmmoType(currentWeapon.item.name)
 		if item.metadata.throwable then item.metadata.ammo = 1 end
-		for k,v in pairs(Config.Ammos) do
-			for k2, v2 in pairs(v) do
-				if v2 == currentWeapon.hash then currentWeapon.ammotype = k end
-			end
-		end
 		SetCurrentPedWeapon(playerPed, wepHash, true)
 		SetPedCurrentWeaponVisible(playerPed, true, false, false, false)
 		if item.metadata.weapontint then SetPedWeaponTintIndex(playerPed, item.name, item.metadata.weapontint) end
@@ -750,9 +748,14 @@ AddEventHandler('hsn-inventory:client:weapon',function(item)
 end)
 
 RegisterNetEvent('hsn-inventory:addAmmo')
-AddEventHandler('hsn-inventory:addAmmo',function(item, ammo)
+AddEventHandler('hsn-inventory:addAmmo',function(ammo)
+	if not currentWeapon then return end
+	if currentWeapon.ammo ~= ammo.name then
+		TriggerEvent('hsn-inventory:notification',('You can\'t load the %s with %s ammo'):format(currentWeapon.item.label, ammo.label) )
+		return
+	end
 	ammo.count = ESX.Round(ammo.count)
-	if currentWeapon and currentWeapon.ammotype == ammo.name and ammo.count > 0 then
+	if currentWeapon and ammo.count > 0 then
 		local weapon = currentWeapon.hash
 		local maxAmmo = GetWeaponClipSize(weapon)
 		local curAmmo = GetAmmoInPedWeapon(playerPed, weapon)
@@ -771,8 +774,7 @@ AddEventHandler('hsn-inventory:addAmmo',function(item, ammo)
 			if newAmmo < 0 then newAmmo = 0 end
 			SetPedAmmo(playerPed, weapon, newAmmo)
 			MakePedReload(playerPed)
-			currentWeapon.item.metadata.ammo = newAmmo
-			TriggerServerEvent('hsn-inventory:server:addweaponAmmo',currentWeapon.item,ammo.name,ammo.count,removeAmmo,newAmmo)
+			TriggerServerEvent('hsn-inventory:server:addweaponAmmo',currentWeapon.item,currentWeapon.ammo,removeAmmo,newAmmo)
 		end
 	end
 end)
@@ -784,7 +786,7 @@ AddEventHandler('hsn-inventory:client:checkweapon',function(item)
 		currentWeapon.item.metadata.ammo = GetAmmoInPedWeapon(playerPed, currentWeapon.hash)
 		RemoveWeaponFromPed(playerPed, GetHashKey(item.name))
 		SetCurrentPedWeapon(playerPed, `WEAPON_UNARMED`, true)
-		TriggerServerEvent('hsn-inventory:server:updateWeapon', currentWeapon.item, currentWeapon.ammotype)
+		TriggerServerEvent('hsn-inventory:server:updateWeapon', currentWeapon.item)
 		TriggerEvent('hsn-inventory:currentWeapon', nil)
 	end
 end)
@@ -891,7 +893,7 @@ end)
 
 RegisterNetEvent('hsn-inventory:useItem')
 AddEventHandler('hsn-inventory:useItem',function(item)
-	if isBusy or shooting then return end
+	if not CanOpenInventory() then return end
 	ESX.TriggerServerCallback('hsn-inventory:getItem',function(xItem)
 		if xItem then
 			local data = Config.ItemList[xItem.name]
@@ -964,7 +966,7 @@ AddEventHandler('hsn-inventory:useItem',function(item)
 				if data.component then
 					GiveWeaponComponentToPed(playerPed, currentWeapon.item.name, component.hash)
 					table.insert(currentWeapon.item.metadata.components, component.name)
-					TriggerServerEvent('hsn-inventory:server:updateWeapon', currentWeapon.item)
+					TriggerServerEvent('hsn-inventory:server:updateWeapon', currentWeapon.item, component.name)
 				end
 				
 
