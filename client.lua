@@ -74,6 +74,16 @@ AddEventHandler('esx_policejob:unrestrain', function()
 	isCuffed = false
 end)
 
+
+AddEventHandler('hsn-inventory:currentWeapon',function(weapon)
+	currentWeapon = weapon
+end)
+
+local weaponTimer = 0
+AddEventHandler('hsn-inventory:usedWeapon',function(weapon)
+	weaponTimer = (100 * 3)
+end)
+
 Citizen.CreateThread(function()
 	local wait = false
 	while true do
@@ -114,6 +124,10 @@ Citizen.CreateThread(function()
 			end]]
 		end
 		if currentWeapon then
+			if weaponTimer == 3 then
+				TriggerServerEvent('hsn-inventory:server:updateWeapon', currentWeapon.item, currentWeapon.ammotype)
+				weaponTimer = 0
+			elseif weaponTimer > 3 then weaponTimer = weaponTimer - 3 end
 			SetPedCurrentWeaponVisible(playerPed, true, false, false, false)
 			if IsPedArmed(ped, 6) then
 				DisableControlAction(1, 140, true)
@@ -139,13 +153,13 @@ Citizen.CreateThread(function()
 					end
 				elseif currentWeapon.item.metadata.serial and currentWeapon.item.metadata.ammo then
 					currentWeapon.item.metadata.ammo = ammo
-					TriggerEvent('hsn-inventory:usedWeapon', currentWeapon) -- Use in other resources
 					if ammo == 0 then
+						weaponTimer = 0
 						ClearPedTasks(playerPed)
 						SetCurrentPedWeapon(playerPed, currentWeapon.hash, false)
 						SetPedCurrentWeaponVisible(playerPed, true, false, false, false)
 						TriggerServerEvent('hsn-inventory:server:reloadWeapon', currentWeapon)
-					end
+					else TriggerEvent('hsn-inventory:usedWeapon', currentWeapon) end
 				end
 			elseif currentWeapon.item.metadata.throwable and not wait and IsControlJustReleased(0, 24) then
 				Citizen.CreateThread(function()
@@ -160,7 +174,7 @@ Citizen.CreateThread(function()
 				Citizen.CreateThread(function()
 					wait = true
 					TriggerServerEvent('hsn-inventory:server:decreasedurability', playerID, currentWeapon.item.slot, currentWeapon.item.name, 1)
-					TriggerEvent('hsn-inventory:usedWeapon', currentWeapon) -- Use in other resources
+					TriggerEvent('hsn-inventory:usedWeapon', currentWeapon)
 					Citizen.Wait(400)
 					wait = false
 				end)
@@ -689,7 +703,7 @@ RegisterNetEvent('hsn-inventory:client:weapon')
 AddEventHandler('hsn-inventory:client:weapon',function(item)
 	if isBusy then return end
 	isBusy = true
-	if currentWeapon then TriggerServerEvent('hsn-inventory:server:updateWeapon', currentWeapon.item) end
+	if currentWeapon then TriggerServerEvent('hsn-inventory:server:updateWeapon', currentWeapon.item, currentWeapon.ammotype) end
 	TriggerEvent('hsn-inventory:client:closeInventory', currentInventory)
 	local newWeapon = item.metadata.serial
 	local found, wepHash = GetCurrentPedWeapon(playerPed, true)
@@ -729,7 +743,7 @@ AddEventHandler('hsn-inventory:client:weapon',function(item)
 		SetAmmoInClip(playerPed, currentWeapon.hash, item.metadata.ammo)
 		if currentWeapon.item.name == 'WEAPON_FIREEXTINGUISHER' or currentWeapon.item.name == 'WEAPON_PETROLCAN' then SetAmmoInClip(playerPed, currentWeapon.hash, 10000) end
 	end
-	TriggerEvent('hsn-inventory:currentWeapon', currentWeapon) -- using for another resource
+	TriggerEvent('hsn-inventory:currentWeapon', currentWeapon)
 	Citizen.Wait(100)
 	ClearPedSecondaryTask(playerPed)
 	isBusy = false
@@ -767,9 +781,10 @@ end)
 RegisterNetEvent('hsn-inventory:client:checkweapon')
 AddEventHandler('hsn-inventory:client:checkweapon',function(item)
 	if currentWeapon and currentWeapon.item.metadata.serial == item.metadata.serial then
+		currentWeapon.item.metadata.ammo = GetAmmoInPedWeapon(playerPed, currentWeapon.hash)
 		RemoveWeaponFromPed(playerPed, GetHashKey(item.name))
 		SetCurrentPedWeapon(playerPed, `WEAPON_UNARMED`, true)
-		currentWeapon = nil
+		TriggerServerEvent('hsn-inventory:server:updateWeapon', currentWeapon.item, currentWeapon.ammotype)
 		TriggerEvent('hsn-inventory:currentWeapon', nil)
 	end
 end)
