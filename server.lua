@@ -10,6 +10,22 @@ local openedinventories = {}
 local Gloveboxes = {}
 local Trunks = {}
 local notready = true
+local AmmoType = {}
+
+function SetupAmmo()
+	for k,v in pairs(Config.Ammos) do
+		for k2, v2 in pairs(v) do
+			AmmoType[v2] = k
+		end
+	end
+end
+SetupAmmo()
+
+function GetAmmoType(weapon)
+	if type(weapon) == 'string' then weapon = GetHashKey(weapon) end
+	return AmmoType[weapon]
+end
+
 if GetConvar('onesync_enableInfinity', false) == 'true' or GetConvar('onesync_enabled', false) == 'true' then oneSync = true end
 
 TriggerEvent('esx:getSharedObject', function(obj) ESX = obj end)
@@ -34,6 +50,7 @@ exports.ghmattimysql:ready(function()
 				description = v.description,
 				closeonuse = v.closeonuse
 			}
+			if v.name:find('WEAPON') then local AmmoType = GetAmmoType(v.name) if AmmoType then ESXItems[v.name].ammotype = AmmoType end end
 		end
 		for k,v in pairs(Config.ItemList) do
 			if not ESXItems[k] then
@@ -165,7 +182,6 @@ AddPlayerInventory = function(identifier, item, count, slot, metadata)
 							if not metadata.durability then metadata.durability = 100 end
 							if not metadata.ammo then metadata.ammo = 0 end
 							if not metadata.components then metadata.components = {} end
-							if not metadata.ammoweight then metadata.ammoweight = 0 end
 							metadata.serial = GetRandomSerial(metadata.serial)
 							if metadata.registered == 'setname' then metadata.registered = xPlayer.getName() end
 						end
@@ -1201,11 +1217,11 @@ RegisterNetEvent('hsn-inventory:server:reloadWeapon')
 AddEventHandler('hsn-inventory:server:reloadWeapon',function(weapon)
 	local xPlayer = ESX.GetPlayerFromId(source)
 	local ammo = {}
-	ammo.name = weapon.ammotype
+	ammo.name = ESXItems[weapon.item.name].ammotype
 	ammo.count = getItemCount(source,ammo.name)
 	if ammo.count then playerInventory[xPlayer.identifier][weapon.item.slot].metadata.ammo = 0
 		if ammo.count > 0 then TriggerClientEvent('hsn-inventory:addAmmo',source, weapon.item.name,ammo) else
-			TriggerEvent('hsn-inventory:server:updateWeapon', weapon.item, weapon.ammotype, xPlayer)
+			TriggerEvent('hsn-inventory:server:updateWeapon', weapon.item, ammo.name, xPlayer)
 		end
 	end
 end)
@@ -1278,10 +1294,12 @@ AddEventHandler('hsn-inventory:server:addweaponAmmo',function(item,ammo,totalAmm
 	local xPlayer = ESX.GetPlayerFromId(src)
 	if playerInventory[xPlayer.identifier][item.slot] ~= nil then
 		if playerInventory[xPlayer.identifier][item.slot].metadata.ammo ~= nil then
-			local ammoweight = ESXItems[ammo].weight
-			playerInventory[xPlayer.identifier][item.slot].metadata.ammo = newAmmo
-			playerInventory[xPlayer.identifier][item.slot].metadata.ammoweight = (newAmmo * ammoweight)
-			playerInventory[xPlayer.identifier][item.slot].weight = ESXItems[item.name].weight + (newAmmo * ammoweight)
+			local ammo = {}
+			ammo.type = ESXItems[item.name].ammotype
+			ammo.count = playerInventory[xPlayer.identifier][item.slot].metadata.ammo
+			ammo.weight = ESXItems[ammo.type].weight
+			ammo.addweight = (ammo.count * ammo.weight)
+			playerInventory[xPlayer.identifier][item.slot].weight = ESXItems[item.name].weight + ammo.addweight
 			RemovePlayerInventory(src,xPlayer.identifier,ammo,removeAmmo)
 		end
 	end
@@ -1290,18 +1308,19 @@ end)
 
 
 RegisterNetEvent('hsn-inventory:server:updateWeapon')
-AddEventHandler('hsn-inventory:server:updateWeapon',function(item, ammo, xPlayer)
+AddEventHandler('hsn-inventory:server:updateWeapon',function(item, type, xPlayer)
 	local src = source
 	local xPlayer = xPlayer or ESX.GetPlayerFromId(src)
 	if playerInventory[xPlayer.identifier][item.slot] ~= nil then
 		if playerInventory[xPlayer.identifier][item.slot].metadata ~= nil then
 			playerInventory[xPlayer.identifier][item.slot].metadata = item.metadata
-			if ammo then
-				local ammocount = playerInventory[xPlayer.identifier][item.slot].metadata.ammo
-				local ammoweight = ESXItems[ammo].weight
-				local addweight = (ammocount * ammoweight)
-				playerInventory[xPlayer.identifier][item.slot].metadata.ammoweight = addweight
-				playerInventory[xPlayer.identifier][item.slot].weight = ESXItems[item.name].weight + addweight
+			if type == nil then
+				local ammo = {}
+				ammo.type = ESXItems[item.name].ammotype
+				ammo.count = playerInventory[xPlayer.identifier][item.slot].metadata.ammo
+				ammo.weight = ESXItems[ammo.type].weight
+				ammo.addweight = (ammo.count * ammo.weight)
+				playerInventory[xPlayer.identifier][item.slot].weight = ESXItems[item.name].weight + ammo.addweight
 			end
 			TriggerClientEvent('hsn-inventory:client:refreshInventory',xPlayer.source,playerInventory[xPlayer.identifier])
 			TriggerClientEvent('hsn-inventory:client:updateWeapon', xPlayer.source, playerInventory[xPlayer.identifier][item.slot].metadata)
@@ -1539,7 +1558,6 @@ AddEventHandler('hsn-inventory:setplayerInventory',function(identifier,inventory
 					v.metadata.durability = 100
 					v.metadata.ammo = 0
 					v.metadata.components = {}
-					v.metadata.ammoweight = 0
 					v.metadata.serial = GetRandomSerial()
 				end
 				if convert ~= true then convert = true end
@@ -1547,8 +1565,17 @@ AddEventHandler('hsn-inventory:setplayerInventory',function(identifier,inventory
 		end
 		if ESXItems[v.name] then
 			v.count = tonumber(v.count)
-			if v.metadata and v.metadata.ammoweight then weight = v.metadata.ammoweight + ESXItems[v.name].weight else weight = tonumber(ESXItems[v.name].weight) end
+			--[[temporary; clean up old metadata]] if v.metadata and v.metadata.ammoweight then v.metadata.ammoweight = nil end
 			if not v.metadata or (type(v.metadata == 'table') and next(v.metadata) == nil) then v.metadata = {} end
+			if v.metadata.ammo then
+				local ammo = {}
+				ammo.type = ESXItems[v.name].ammotype
+				ammo.count = v.metadata.ammo
+				ammo.weight = ESXItems[ammo.type].weight
+				weight = ESXItems[v.name].weight + (ammo.weight * ammo.count )
+			else
+				weight = tonumber(ESXItems[v.name].weight)
+			end
 			playerInventory[identifier][v.slot] = {name = v.name ,label = ESXItems[v.name].label, weight = tonumber(weight), slot = v.slot, count = v.count, description = ESXItems[v.name].description, metadata = v.metadata, stackable = ESXItems[v.name].stackable}
 			if v.name:find('money') then Citizen.CreateThread(function()
 				Citizen.Wait(500)
@@ -1580,11 +1607,9 @@ AddEventHandler('hsn-inventory:setplayerInventory',function(identifier,inventory
 						v.metadata.durability = 100
 						v.metadata.ammo = 0
 						v.metadata.components = {}
-						v.metadata.ammoweight = 0
 						v.metadata.serial = GetRandomSerial()
 
 						v.count = tonumber(v.count)
-						if v.metadata and v.metadata.ammoweight then weight = v.metadata.ammoweight + ESXItems[v.name].weight else weight = tonumber(ESXItems[v.name].weight) end
 						playerInventory[identifier][v.slot] = {name = v.name ,label = ESXItems[v.name].label, weight = tonumber(weight), slot = v.slot, count = v.count, description = ESXItems[v.name].description, metadata = v.metadata, stackable = ESXItems[v.name].stackable}
 					end
 				end
