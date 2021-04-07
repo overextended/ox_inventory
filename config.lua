@@ -1627,3 +1627,18 @@ Config.Ammos = {
 		`WEAPON_COMBATSHOTGUN`
 	},
 }
+Config.AmmoType = {}
+
+function SetupAmmo()
+	for k,v in pairs(Config.Ammos) do
+		for k2, v2 in pairs(v) do
+			Config.AmmoType[v2] = k
+		end
+	end
+end
+SetupAmmo()
+
+function GetAmmoType(weapon)
+	if type(weapon) == 'string' then weapon = GetHashKey(weapon) end
+	return Config.AmmoType[weapon]
+end
