@@ -1200,12 +1200,11 @@ end)
 RegisterNetEvent('hsn-inventory:server:reloadWeapon')
 AddEventHandler('hsn-inventory:server:reloadWeapon',function(weapon)
 	local xPlayer = ESX.GetPlayerFromId(source)
-	local ammo = {}
-	ammo.name = weapon.ammotype
-	ammo.count = getItemCount(source,ammo.name)
+	local ammo = ESXItems[weapon.ammo]
+	ammo.count = getItemCount(source, weapon.ammo)
 	if ammo.count then playerInventory[xPlayer.identifier][weapon.item.slot].metadata.ammo = 0
-		if ammo.count > 0 then TriggerClientEvent('hsn-inventory:addAmmo', source, ammo.name) else
-			TriggerEvent('hsn-inventory:server:updateWeapon', weapon.item, ammo.name, xPlayer)
+		if ammo.count > 0 then TriggerClientEvent('hsn-inventory:addAmmo', source, ammo) else
+			TriggerEvent('hsn-inventory:server:updateWeapon', weapon.item, weapon.ammo, xPlayer)
 		end
 	end
 end)
