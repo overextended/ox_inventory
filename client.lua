@@ -137,8 +137,8 @@ Citizen.CreateThread(function()
 			usingWeapon = IsPedShooting(playerPed)
 			if usingWeapon then
 				local ammo = GetAmmoInPedWeapon(playerPed, currentWeapon.hash)
-				if currentWeapon.item.metadata.durability then currentWeapon.item.metadata.durability = currentWeapon.item.metadata.durability - 0.1 end
 				if (currentWeapon.item.name == 'WEAPON_FIREEXTINGUISHER' or currentWeapon.item.name == 'WEAPON_PETROLCAN') and not wait then
+					if currentWeapon.item.metadata.durability then currentWeapon.item.metadata.durability = currentWeapon.item.metadata.durability - 0.1 end
 					if currentWeapon.item.metadata.durability <= 0 then
 						Citizen.CreateThread(function()
 							wait = true
