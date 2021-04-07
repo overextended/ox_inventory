@@ -1,7 +1,7 @@
 fx_version 'bodacious'
 game 'gta5'
 description 'https://github.com/thelindat/hsn-inventory'
-version '1.5.8'
+version '1.5.9'
 
 client_scripts {
 	'config.lua',
