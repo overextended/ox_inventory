@@ -49,7 +49,7 @@ getInventoryItem = function(xPlayer, name, metadata)
 	if not xItem then print(('^1[error]^7 %s does not exist'):format(name)) return end
 	metadata = setMetadata(metadata)
 	xItem.count = 0
-	for k, v in ipairs(Inventories['Player-'..xPlayer.source].inventory) do
+	for k, v in pairs(Inventories[xPlayer.source].inventory) do
 		if v.name == name then
 			if not v.metadata then v.metadata = {} end
 			if is_table_equal(v.metadata, metadata) then
@@ -75,11 +75,8 @@ removeInventoryItem = function(xPlayer, name, count, metadata)
 	local item = getInventoryItem(xPlayer, name)
 	if item and count > 0 then
 		count = ESX.Math.Round(count)
-		local newCount = item.count - count
-
-		if newCount >= 0 then
-			RemovePlayerInventory(xPlayer, item.name, count, slot, metadata)
-		end
+		if count > item.count then count = item.count end
+		RemovePlayerInventory(xPlayer, item.name, count, slot, metadata)
 	end
 end
 exports('removeInventoryItem', removeInventoryItem)
@@ -90,8 +87,10 @@ setInventoryItem = function(xPlayer, name, count, metadata)
 	if item and count > 0 then
 		count = ESX.Math.Round(count)
 		if count > item.count then
+			count = count - item.count
 			AddPlayerInventory(xPlayer, item.name, count, metadata, slot)
 		else
+			count = item.count - count
 			RemovePlayerInventory(xPlayer, item.name, count, metadata, slot)
 		end
 	end
@@ -100,14 +99,14 @@ exports('setInventoryItem', setInventoryItem)
 
 
 updateWeight = function(xPlayer)
-	Inventories['Player-'..xPlayer.source].weight = getWeight(xPlayer)
+	Inventories[xPlayer.source].weight = getWeight(xPlayer)
 end
 
 
 getWeight = function(xPlayer)
 	local weight = 0
-	if Inventories['Player-'..xPlayer.source] then
-		for k, v in ipairs(Inventories['Player-'..xPlayer.source].inventory) do
+	if Inventories[xPlayer.source] then
+		for k, v in pairs(Inventories[xPlayer.source].inventory) do
 			weight = weight + (v.weight * v.count)
 		end
 	end
@@ -117,13 +116,13 @@ exports('getWeight', getWeight)
 
 
 getMaxWeight = function(xPlayer)
-	return Inventories['Player-'..xPlayer.source].maxWeight
+	return Inventories[xPlayer.source].maxWeight
 end
 exports('getMaxWeight', getMaxWeight)
 
 
 setMaxWeight = function(xPlayer, newWeight)
-	Inventories['Player-'..xPlayer.source].maxWeight = newWeight
+	Inventories[xPlayer.source].maxWeight = newWeight
 end
 exports('setMaxWeight', setMaxWeight)
 
@@ -132,9 +131,9 @@ canCarryItem = function(xPlayer, name, count)
 	local xItem = Items[name]
 	if xItem then
 		if count == nil then count = 1 end
-		local curWeight, itemWeight = Inventories['Player-'..xPlayer.source].weight, xItem.weight
+		local curWeight, itemWeight = Inventories[xPlayer.source].weight, xItem.weight
 		local newWeight = curWeight + (itemWeight * count)
-		return newWeight <= Inventories['Player-'..xPlayer.source].maxWeight
+		return newWeight <= Inventories[xPlayer.source].maxWeight
 	end
 	return false
 end
@@ -142,12 +141,12 @@ exports('canCarryItem', canCarryItem)
 
 
 canSwapItem = function(firstItem, firstItemCount, testItem, testItemCount)
-	local curWeight = Inventories['Player-'..xPlayer.source].weight
+	local curWeight = Inventories[xPlayer.source].weight
 	local firstItemObject = getInventoryItem(xPlayer, firstItem)
 	if firstItemObject.count >= firstItemCount then
 		local weightWithoutFirstItem = curWeight - (firstItemObject.weight * firstItemCount)
 		local weightWithTestItem = weightWithoutFirstItem + (testItemObject.weight * testItemCount)
-		return weightWithTestItem <= Inventories['Player-'..xPlayer.source].maxWeight
+		return weightWithTestItem <= Inventories[xPlayer.source].maxWeight
 	end
 	return false
 end
@@ -155,7 +154,7 @@ exports('canSwapItem', canSwapItem)
 
 
 getPlayerInventory = function(xPlayer)
-	local inventory = Inventories['Player-'..xPlayer.source] or {}
+	local inventory = Inventories[xPlayer.source] or {}
 	return getInventory(inventory)
 end
 exports('getPlayerInventory', getPlayerInventory)
@@ -163,7 +162,7 @@ exports('getPlayerInventory', getPlayerInventory)
 
 getPlayerSlot = function(xPlayer, slot)
 	if slot > Config.PlayerSlots then return nil end
-	local getSlot = Inventories['Player-'..xPlayer.source].inventory[slot]
+	local getSlot = Inventories[xPlayer.source].inventory[slot]
 	if getSlot and getSlot.name ~= item then slot = nil end
 	return slot
 end
@@ -174,7 +173,7 @@ getInventoryItemSlots = function(xPlayer, name, metadata)
 	local xItem = Items[name]
 	if not xItem then print(('^1[error]^7 %s does not exist'):format(name)) return end
 	xItem.count = 0
-	for k, v in ipairs(Inventories['Player-'..xPlayer.source].inventory) do
+	for k, v in pairs(Inventories[xPlayer.source].inventory) do
 		if v.name == name then
 			if not v.metadata then v.metadata = {} end
 			if is_table_equal(v.metadata, metadata) then
