@@ -76,8 +76,8 @@ local StartInventory = function()
 end
 
 local CanOpenInventory = function()
-	if not playerName then return false end
-	return true
+	if playerName and not isBusy and not isShooting and not isDead and not isCuffed and not IsPedDeadOrDying(playerPed, 1) and not IsPauseMenuActive() then return true end
+	return false
 end
 
 local CanOpenTarget = function(searchPlayerPed)
@@ -133,13 +133,13 @@ AddEventHandler('randPickupAnim', function()
 end)
 
 local OpenShop = function(id)
-	if CanOpenInventory() and not CanOpenTarget(playerPed) then
+	if not invOpen and CanOpenInventory() and not CanOpenTarget(playerPed) then
 		TriggerServerEvent('linden_inventory:openInventory', {type = 'shop', id = id })
 	end
 end
 
 local OpenStash = function(data)
-	if CanOpenInventory() and not CanOpenTarget(playerPed) then
+	if not invOpen and CanOpenInventory() and not CanOpenTarget(playerPed) then
 		TriggerServerEvent('linden_inventory:openInventory', {type = 'stash', id = data.name, slots = data.slots, coords = data.coords, job = data.job  })
 	end
 end
@@ -430,7 +430,7 @@ Citizen.CreateThread(function()
 				DisableControlAction(0, 25, true)
 				DisableControlAction(0, 142, true)
 				DisableControlAction(0, 257, true)
-			elseif CanOpenInventory(false) then
+			elseif not invOpen and CanOpenInventory() then
 				for i=1, #Keys, 1 do
 					if IsDisabledControlJustReleased(0, Keys[i]) then
 						TriggerServerEvent('linden_inventory:useSlotItem', i)
@@ -717,7 +717,7 @@ end)
 
 
 RegisterCommand('inv', function()
-	if isBusy then error("You can't open your inventory right now") return end 
+	if isBusy or invOpen then error("You can't open your inventory right now") return end 
 	if CanOpenInventory() then
 		TriggerEvent('randPickupAnim')
 		TriggerServerEvent('linden_inventory:openInventory', {type = 'drop', drop = currentDrop })
@@ -726,7 +726,7 @@ end)
 
 RegisterCommand('vehinv', function()
 	if not playerID then return end
-	if isBusy then error("You can't open your inventory right now") return end 
+	if isBusy or invOpen then error("You can't open your inventory right now") return end 
 	if not CanOpenInventory() then return end
 	if not isDead and not isCuffed and not IsPedInAnyVehicle(playerPed, false) then -- trunk
 		local vehicle, vehiclePos = ESX.Game.GetVehicleInDirection()
@@ -814,7 +814,7 @@ RegisterKeyMapping('inv', 'Open player inventory', 'keyboard', Config.InventoryK
 RegisterKeyMapping('vehinv', 'Open vehicle inventory', 'keyboard', Config.VehicleInventoryKey)
 
 RegisterCommand('steal', function()
-	if not IsPedInAnyVehicle(playerPed, true) and CanOpenInventory() then	 
+	if not IsPedInAnyVehicle(playerPed, true) and not invOpen and CanOpenInventory() then	 
 		openTargetInventory()
 	end
 end)
@@ -844,7 +844,6 @@ RegisterNUICallback('BuyFromShop', function(data)
 end)
 
 RegisterNUICallback('exit',function(data)
-	invOpen = false
 	TriggerScreenblurFadeOut(0)
 	if lastVehicle then
 		CloseVehicle(lastVehicle)
@@ -852,4 +851,6 @@ RegisterNUICallback('exit',function(data)
 	currentInventory = nil
 	SetNuiFocusAdvanced(false, false)
 	TriggerServerEvent('linden_inventory:saveInventory', data)
+	Citizen.Wait(200)
+	invOpen = false
 end)
