@@ -108,9 +108,16 @@ ItemNotify = function(xPlayer, item, count, type, invid)
 		if Config.Logs then
 			-- todo
 		end
-		if item:find('money') then TriggerEvent('linden_inventory:syncAccounts', xPlayer, item) end
+		if item:find('money') then SyncAccounts(xPlayer, item) end
 	else notification = 'Used' end
 	TriggerClientEvent('linden_inventory:refreshInventory', xPlayer.source, Inventories[xPlayer.source], xItem, notification )
+end
+
+SyncAccounts = function(xPlayer, name)
+	local account = xPlayer.getAccount(name)
+	account.money = getInventoryItem(xPlayer, name).count
+	xPlayer.setAccount(account)
+	xPlayer.triggerEvent('esx:setAccountMoney', account)
 end
 
 AddPlayerInventory = function(xPlayer, item, count, metadata, slot)
