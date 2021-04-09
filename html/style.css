@@ -324,13 +324,6 @@
     text-shadow: 1px 1px 0px black;
 }
 
-.item-slot-durability {
-    position: absolute;
-    width: 100%;
-    height: 5px;
-    box-shadow: inset 0 0 1px 1px rgba(0, 0, 0, 0.2);
-}
-
 .item-slot-durability-bar {
     position: absolute;
     height: 5px;
