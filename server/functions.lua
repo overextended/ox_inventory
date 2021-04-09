@@ -217,19 +217,34 @@ end
 CreateNewDrop = function(xPlayer, data)
 	local playerPed = GetPlayerPed(xPlayer.source)
 	local playerCoords = GetEntityCoords(playerPed)
-	local dropId = RandomDropId()
-	Drops[dropId] = {}
-	Drops[dropId].inventory = {}
-	Drops[dropId].name = dropid
-	Drops[dropid].slots = 51
-	if data.type == 'freeslot' then
-
+	local invid = RandomDropId()
+	local invid2 = xPlayer.source
+	Drops[invid] = {
+		name = invid,
+		inventory = {},
+		slots = 51,
+		coords = playerCoords
+	}
+	if data.type == 'swap' then
+		if not ValidateItem(data.type, xPlayer, Inventories[invid2].inventory[data.fromSlot], Drops[invid].inventory[data.toSlot], data.fromItem, data.toItem) then return end
+		Drops[invid].inventory[data.toSlot] = {name = data.toItem.name, label = data.toItem.label, weight = data.toItem.weight, slot = data.toSlot, count = data.toItem.count, description = data.toItem.description, metadata = data.toItem.metadata, stackable = data.toItem.stackable, closeonuse = Items[data.toItem.name].closeonuse}
+		Inventories[invid2].inventory[data.fromSlot] = {name = data.fromItem.name, label = data.fromItem.label, weight = data.fromItem.weight, slot = data.fromSlot, count = data.fromItem.count, description = data.fromItem.description, metadata = data.fromItem.metadata, stackable = data.fromItem.stackable, closeonuse = Items[data.fromItem.name].closeonuse}
+		ItemNotify(xPlayer, data.toItem.name, data.toItem.count, 'Removed', invid)
+		ItemNotify(xPlayer, data.fromItem.name, data.fromItem.count, 'Added', invid)
+	elseif data.type == 'freeslot' then
+		if not ValidateItem(data.type, xPlayer, Inventories[invid2].inventory[data.emptyslot], Drops[invid].inventory[data.toSlot], data.item, data.item) then return end
+		local count = Inventories[invid2].inventory[data.emptyslot].count
+		Inventories[invid2].inventory[data.emptyslot] = nil
+		Drops[invid].inventory[data.toSlot] = {name = data.item.name, label = data.item.label, weight = data.item.weight, slot = data.toSlot, count = data.item.count, description = data.item.description, metadata = data.item.metadata, stackable = data.item.stackable, closeonuse = Items[data.item.name].closeonuse}
+		ItemNotify(xPlayer, data.item.name, count, 'Removed', invid)
 	elseif data.type == 'split' then
-
+		if not ValidateItem(data.type, xPlayer, Inventories[invid2].inventory[data.fromSlot], Drops[invid].inventory[data.toSlot], data.oldslotItem, data.newslotItem) then return end
+		Inventories[invid2].inventory[data.fromSlot] = {name = data.oldslotItem.name, label = data.oldslotItem.label, weight = data.oldslotItem.weight, slot = data.fromSlot, count = data.oldslotItem.count, description = data.oldslotItem.description, metadata = data.oldslotItem.metadata, stackable = data.oldslotItem.stackable, closeonuse = Items[data.oldslotItem.name].closeonuse}
+		Drops[invid].inventory[data.toSlot] = {name = data.newslotItem.name, label = data.newslotItem.label, weight = data.newslotItem.weight, slot = data.toSlot, count = data.newslotItem.count, description = data.newslotItem.description, metadata = data.newslotItem.metadata, stackable = data.newslotItem.stackable, closeonuse = Items[data.newslotItem.name].closeonuse}
+		ItemNotify(xPlayer, data.newslotItem.name, data.newslotItem.count, 'Removed', invid)
 	end
-	TriggerClientEvent('linden_inventory:createDrop', -1, playerCoords, dropid, xPlayer.source)
+	TriggerClientEvent('linden_inventory:createDrop', -1, Drops[invid], xPlayer.source)
 end
-
 
 --[[local randomPrice = function(price)
 	local random = math.random(95,107)
