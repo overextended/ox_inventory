@@ -42,7 +42,7 @@ Config.Ammunation = {
 		{ name = 'ammo-9', price = 5, },
 		{ name = 'WEAPON_KNIFE', price = 200 },
 		{ name = 'WEAPON_BAT', price = 100 },
-		{ name = 'WEAPON_PISTOL', price = 1000, metadata = { registered = 'setname' }, license = 'weapon' },
+		{ name = 'WEAPON_PISTOL', price = 1000, metadata = { registered = true }, license = 'weapon' },
 	}
 }
 
@@ -55,7 +55,7 @@ Config.PoliceArmoury = {
 		{ name = 'ammo-9', price = 5, },
 		{ name = 'WEAPON_KNIFE', price = 200 },
 		{ name = 'WEAPON_BAT', price = 100 },
-		{ name = 'WEAPON_PISTOL', price = 1000, metadata = { registered = 'setname', serial = 'POL' }, license = 'weapon' },
+		{ name = 'WEAPON_PISTOL', price = 1000, metadata = { registered = true, serial = 'POL' }, license = 'weapon' },
 	}
 }
 
