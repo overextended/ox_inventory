@@ -124,12 +124,15 @@ end)
 
 AddEventHandler('linden_inventory:syncAccounts', function(xPlayer, name)
 	Citizen.Wait(50)
-	local count = getInventoryItem(xPlayer, name).count
-	local account = {}
-	account.name = name
-	account.money = count
-	xPlayer.set(name, account)
-	xPlayer.triggerEvent('esx:setAccountMoney', account)
+	for k, v in pairs(xPlayer.accounts) do
+		if v.name ~= 'bank' then
+			local account = v
+			local count = getInventoryItem(xPlayer, v.name).count
+			v.money = count
+			xPlayer.accounts[k] = v
+			xPlayer.triggerEvent('esx:setAccountMoney', xPlayer.accounts[k])
+		end
+	end
 end)
 
 AddEventHandler('linden_inventory:setPlayerInventory', function(xPlayer, data)
@@ -157,11 +160,11 @@ AddEventHandler('linden_inventory:setPlayerInventory', function(xPlayer, data)
 					weight = xItem.weight + (ammo.weight * ammo.count)
 				else weight = xItem.weight end
 				Inventories[invid].inventory[v.slot] = {name = v.name, label = xItem.label, weight = weight, slot = v.slot, count = v.count, description = xItem.description, metadata = v.metadata, stackable = xItem.stackable}
-				if v.name:find('money') then TriggerEvent('linden_inventory:syncAccounts', xPlayer, v.name) end
 			end
 		end
 	end
 	updateWeight(xPlayer)
+	TriggerEvent('linden_inventory:syncAccounts', xPlayer, 'money')
 end)
 
 AddEventHandler('linden_inventory:clearPlayerInventory', function(xPlayer)
