@@ -1,37 +1,27 @@
-fx_version 'bodacious'
+fx_version 'cerulean'
 game 'gta5'
-description 'https://github.com/thelindat/hsn-inventory'
-version '1.5.9'
+author 'Linden'
+description 'https://github.com/thelindat/linden_inventory'
+version '1.0.0'
 
 client_scripts {
 	'config.lua',
-	'client.lua'
+	'shared/*.lua',
+	'client/*.lua'
 }
 
 server_scripts {
 	'config.lua',
-	'server.lua'
+	'shared/*.lua',
+	'server/*.lua'
 }
 
-ui_page "html/index.html"
+ui_page 'html/index.html'
+
 files {
 	'html/index.html',
 	'html/script.js',
-	'html/style.css',
-	'html/reset.css',
 	'html/images/*.png',
-}
-
-exports {
-	'OpenStash',
-	'openTargetInventory'
-}
-
-server_exports {
-	'removeItem',
-	'addItem',
-	'getItemCount',
-	'getItem',
-	'canCarryItem',
-	'useItem'
+	'html/reset.css',
+	'html/style.css'
 }
