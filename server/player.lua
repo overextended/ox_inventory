@@ -5,7 +5,7 @@ setAccountMoney = function(xPlayer, accountName, money)
 			local prevMoney = account.money
 			local newMoney = ESX.Math.Round(money)
 			account.money = newMoney
-			if accountName ~= 'bank' then setInventoryItem(xPlayer, accountName, money) end
+			if accountName ~= 'bank' then setInventoryItem(xPlayer, accountName, money) else xPlayer.triggerEvent('esx:setAccountMoney', account) end
 		end
 	end
 end
@@ -18,7 +18,7 @@ addAccountMoney = function(xPlayer, accountName, money)
 		if account then
 			local newMoney = account.money + ESX.Math.Round(money)
 			account.money = newMoney
-			if accountName ~= 'bank' then addInventoryItem(xPlayer, accountName, money) end
+			if accountName ~= 'bank' then addInventoryItem(xPlayer, accountName, money) else xPlayer.triggerEvent('esx:setAccountMoney', account) end
 		end
 	end
 end
@@ -31,7 +31,7 @@ removeAccountMoney = function(xPlayer, accountName, money)
 		if account then
 			local newMoney = account.money - ESX.Math.Round(money)
 			account.money = newMoney
-			if accountName ~= 'bank' then removeInventoryItem(xPlayer, accountName, money) end
+			if accountName ~= 'bank' then removeInventoryItem(xPlayer, accountName, money) else xPlayer.triggerEvent('esx:setAccountMoney', account) end
 		end
 	end
 end
