@@ -146,58 +146,13 @@ end
 exports('OpenStash', OpenStash)
 
 OpenGloveBox = function(gloveboxid, class)
-	local slots = {
-		[0] = 11, -- compact
-		[1] = 11, -- sedan
-		[2] = 11, -- suv
-		[3] = 11, -- coupe
-		[4] = 11, -- muscle
-		[5] = 11, -- sports classic
-		[6] = 11, -- sports
-		[7] = 11, -- super
-		[8] = 5, -- motorcycle
-		[9] = 11, -- offroad
-		[10] = 11, -- industrial
-		[11] = 11, -- utility
-		[12] = 11, -- van
-		[14] = 31, -- boat
-		[15] = 31, -- helicopter
-		[16] = 51, -- plane
-		[17] = 11, -- service
-		[18] = 11, -- emergency
-		[19] = 11, -- military
-		[20] = 11, -- commercial (trucks)
-	}
-	local storage = slots[class]
-	if not storage then return end
-	TriggerServerEvent('linden_inventory:openInventory', {type = 'glovebox', id = 'glovebox-'..gloveboxid, slots = storage})
+	local storage = Config.GloveboxSlots[class]
+	if storage then TriggerServerEvent('linden_inventory:openInventory', {type = 'glovebox',id  = 'glovebox-'..gloveboxid, slots = storage}) end
 end
+
 OpenTrunk = function(trunkid, class)
-	local slots = {
-		[0] = 21, -- compact
-		[1] = 41, -- sedan
-		[2] = 51, -- suv
-		[3] = 31, -- coupe
-		[4] = 41, -- muscle
-		[5] = 31, -- sports classic
-		[6] = 31, -- sports
-		[7] = 21, -- super
-		[8] = 5, -- motorcycle
-		[9] = 51, -- offroad
-		[10] = 51, -- industrial
-		[11] = 41, -- utility
-		[12] = 61, -- van
-		--[14] = 21, -- boat		no trunk
-		--[15] = 21, -- helicopter	no trunk
-		--[16] = 21, -- plane		no trunk
-		[17] = 41, -- service
-		[18] = 41, -- emergency
-		[19] = 41, -- military
-		[20] = 61, -- commercial
-	}
-	local storage = slots[class]
-	if not storage then return end
-	TriggerServerEvent('linden_inventory:openInventory', {type = 'trunk',id  = 'trunk-'..trunkid, slots=storage})
+	local storage = Config.TrunkSlots[class]
+	if storage then TriggerServerEvent('linden_inventory:openInventory', {type = 'trunk',id  = 'trunk-'..trunkid, slots = storage}) end
 end
 
 local CloseVehicle = function(veh)
