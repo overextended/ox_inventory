@@ -270,18 +270,19 @@ AddEventHandler('linden_inventory:refreshInventory', function(data, item, text)
 end)
 
 RegisterNetEvent('linden_inventory:createDrop')
-AddEventHandler('linden_inventory:createDrop', function(coords, id, owner)
-	Drops[id] = {
-		dropid = id,
-		coords = vector3(coords.x, coords.y, coords.z-0.2)
-	}
-	if owner == playerID then TriggerServerEvent('linden_inventory:openInventory', {type = 'drop', drop = Drops[id] }) end
+AddEventHandler('linden_inventory:createDrop', function(data, owner)
+	Drops[data.name] = data
+	Drops[data.name].coords = vector3(data.coords.x, data.coords.y,data.coords.z - 0.2)
+	Citizen.Wait(0)
+	if owner == playerID then TriggerServerEvent('linden_inventory:openInventory', {type = 'drop', drop = Drops[data.name] }) end
 end)
 
 RegisterNetEvent('linden_inventory:removeDrop')
-AddEventHandler('linden_inventory:removeDrop', function(id)
+AddEventHandler('linden_inventory:removeDrop', function(id, owner)
 	Drops[id] = nil
-	if currentDrop.id == id then currentDrop = {} end
+	if currentDrop.name == id then currentDrop = {} end
+	Citizen.Wait(0)
+	if owner == playerID then TriggerServerEvent('linden_inventory:openInventory', {type = 'drop', drop = {} }) end
 end)
 
 local HolsterWeapon = function(item)
@@ -505,47 +506,64 @@ Citizen.CreateThread(function()
 end)
 
 Citizen.CreateThread(function()
+	local id
+	local type
+	local text = ''
 	while true do
 		local sleep = 250
 		playerPed = PlayerPedId()
 		playerCoords = GetEntityCoords(playerPed)
 		if not invOpen and playerID then
-			for i=1, #Config.Shops do
-				local text = Config.Shops[i].name
-				local distance = #(playerCoords - Config.Shops[i].coords)
-
-				if distance <= 5 and (not Config.Shops[i].job or Config.Shops[i].job == ESX.PlayerData.job.name) then
+			if not id or type == 'shop' then
+				if id then
 					sleep = 5
-					DrawMarker(2, Config.Shops[i].coords.x,Config.Shops[i].coords.y,Config.Shops[i].coords.z, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.3, 0.15, 0.2, 30, 150, 30, 100, false, false, false, true, false, false, false)
-					if distance <= 1.5 then
-						text = '[~g~E~s~] ' .. Config.Shops[i].name
+					DrawMarker(2, Config.Shops[id].coords.x,Config.Shops[id].coords.y,Config.Shops[id].coords.z, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.3, 0.2, 0.15, 30, 150, 30, 222, false, false, false, true, false, false, false)			
+					local distance = #(playerCoords - Config.Shops[id].coords)
+					if distance <= 1 then text='[~g~E~s~] '..Config.Shops[id].name
 						if IsControlJustPressed(0, 38) then
-							OpenShop(i)
-							Citizen.Wait(sleep)
+							OpenShop(id)
+						end
+					elseif distance > 4 then id, type = nil, nil
+					else text = Config.Shops[id].name end
+					if distance <= 2 then DrawText3D(Config.Shops[id].coords, text) end
+				else
+					for k, v in pairs(Config.Shops) do
+						if v.coords then
+							local distance = #(playerCoords - v.coords)
+							if distance <= 4 then
+								sleep = 10
+								id = k
+								type = 'shop'
+							end
 						end
 					end
-					DrawText3D(Config.Shops[i].coords, text)
 				end
 			end
-
-			for i=1, #Config.Stashes do
-				local text = Config.Stashes[i].name
-				local distance = #(playerCoords - Config.Stashes[i].coords)
-
-				if distance <= 5 and not (Config.Stashes[i].job or Config.Shops[i].job == ESX.PlayerData.job.name) then
+			if not id or type == 'stash' then
+				if id then
 					sleep = 5
-					DrawMarker(2, Config.Stashes[i].coords.x,Config.Stashes[i].coords.y,Config.Stashes[i].coords.z, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.3, 0.15, 0.2, 30, 30, 150, 100, false, false, false, true, false, false, false)
-					if distance <= 1.5 then
-						text = '[~g~E~s~] ' .. Config.Stashes[i].name
+					DrawMarker(2, Config.Stashes[id].coords.x,Config.Stashes[id].coords.y,Config.Stashes[id].coords.z, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.3, 0.2, 0.15, 30, 30, 150, 222, false, false, false, true, false, false, false)			
+					local distance = #(playerCoords - Config.Stashes[id].coords)
+					if distance <= 1 then text='[~g~E~s~] '..Config.Stashes[id].name
 						if IsControlJustPressed(0, 38) then
-							OpenStash(Config.Stashes[i])
-							Citizen.Wait(sleep)
+							OpenStash(Config.Stashes[id])
+						end
+					elseif distance > 4 then id, type = nil, nil
+					else text = Config.Stashes[id].name end
+					if distance <= 2 then DrawText3D(Config.Stashes[id].coords, text) end
+				else
+					for k, v in pairs(Config.Stashes) do
+						if v.coords then
+							local distance = #(playerCoords - v.coords)
+							if distance <= 4 then
+								sleep = 10
+								id = k
+								type = 'stash'
+							end
 						end
 					end
-					DrawText3D(Config.Stashes[i].coords, text)
 				end
 			end
-
 			if Config.WeaponsLicense then
 				local coords, text, license = vector3(12.42198, -1105.82, 29.7854), "Weapons License", 'weapon'
 				local distance = #(playerCoords - coords)
@@ -585,28 +603,30 @@ end)
 Citizen.CreateThread(function()
 	while true do
 		local sleep = 250
-		if playerID then
+		if Drops and not invOpen then
+			local closestDrop
 			for k, v in pairs(Drops) do
-				v.distance = #(playerCoords - v.coords)
-				if (invOpen and distance <= 1.2) or distance <= 8 then
-					sleep = 5
-					DrawMarker(2, v.coords.x,v.coords.y,v.coords.z, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.3, 0.2, 0.15, 150, 30, 30, 222, false, false, false, true, false, false, false)
-					local closestDrop
-					if distance <= 1.2 and (not closestDrop or v.distance < closestDrop) then
-						closestDrop = {}
-						closestDrop.id = v.id
-						closestDrop.coords = v.coords
-						closestDrop.distance = v.distance
+				if v.coords then
+					local distance = #(playerCoords - v.coords)
+					if distance <= 8 then
+						sleep = 5
+						DrawMarker(2, v.coords.x,v.coords.y,v.coords.z, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.3, 0.2, 0.15, 150, 30, 30, 222, false, false, false, true, false, false, false)
+						if distance <= 1 and (not closestDrop or distance < closestDrop.distance) then
+							closestDrop = {}
+							closestDrop.name = v.name
+							closestDrop.coords = v.coords
+							closestDrop.distance = distance
+						end
 					end
 				end
 			end
 			if closestDrop then
 				local distance = #(playerCoords - closestDrop.coords)
-				if distance <= 1.2 then currentDrop = closestDrop else currentDrop = {} end
+				if distance <= 1 then currentDrop = closestDrop else currentDrop = {} end
 			end
 			if currentInventory then
 				sleep = 125
-				if currentInventory.name:find('Player') then
+				if string.find(currentInventory.name, 'Player') then
 					local str = string.sub(currentInventory.name, 7)
 					local id = GetPlayerFromServerId(tonumber(str))
 					local dist = #(playerCoords - playerCoords)
