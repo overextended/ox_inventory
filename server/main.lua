@@ -72,7 +72,7 @@ ESX.RegisterServerCallback('linden_inventory:setup',function(source, cb)
 		if loop == 10 then return end
 		Citizen.Wait(100)
 	end
-	local data = {drops = Drops, name = Inventories['Player-'..src].name, playerID = src }
+	local data = {drops = Drops, name = Inventories[src].name, playerID = src }
 	cb(data)
 end)
 
@@ -112,7 +112,7 @@ AddEventHandler('onResourceStop', function(resourceName)
 		for i=1, #xPlayers, 1 do
 			local xPlayer = ESX.GetPlayerFromId(xPlayers[i])
 			local identifier = xPlayer.identifier
-			local inventory = json.encode(getInventory(Inventories['Player-'..xPlayer.source]))
+			local inventory = json.encode(getInventory(Inventories[xPlayer.source]))
 			exports.ghmattimysql:execute('UPDATE `users` SET `inventory` = @inventory WHERE identifier = @identifier', {
 				['@inventory'] = inventory,
 				['@identifier'] = identifier
@@ -122,7 +122,7 @@ AddEventHandler('onResourceStop', function(resourceName)
 end)
 
 AddEventHandler('linden_inventory:setPlayerInventory', function(xPlayer, data)
-	local invid = 'Player-'..xPlayer.source
+	local invid = xPlayer.source
 	Inventories[invid] = {
 		id = xPlayer.source,
 		name = xPlayer.getName(),
@@ -154,8 +154,10 @@ end)
 
 AddEventHandler('linden_inventory:clearPlayerInventory', function(xPlayer)
 	if type(xPlayer) ~= 'table' then xPlayer = ESX.GetPlayerFromId(xPlayer) end
-	for k,v in pairs(Inventories['Player-'..xPlayer.source].inventory) do
-		RemovePlayerInventory(xPlayer.source, xPlayer.identifier, v.name, v.count, k, v.metadata)
+	Inventories[xPlayer.source].inventory = {}
+	Inventories[xPlayer.source].weight = 0
+	if Opened[xPlayer.source] then TriggerClientEvent('linden_inventory:closeInventory', Opened[xPlayer.source].invid)
+	TriggerClientEvent('linden_inventory:refreshInventory', xPlayer.source, Inventories[xPlayer.source])
 	end
 end)
 
@@ -164,9 +166,7 @@ AddEventHandler('linden_inventory:openInventory',function(data, player)
 	if data then
 		local xPlayer
 		if player then xPlayer = player else xPlayer = ESX.GetPlayerFromId(source) end
-		if Opened[xPlayer.source] then
-			return TriggerClientEvent('linden_inventory:closeInventory', xPlayer.source)
-		end
+		if Opened[xPlayer.source] then return end
 		if data.type == 'drop' then
 			if Drops[data.drop.id] ~= nil then
 				Drops[data.drop.id] = {
@@ -174,12 +174,12 @@ AddEventHandler('linden_inventory:openInventory',function(data, player)
 					coords = data.id.coords,
 				}
 				if CheckOpenable(xPlayer, data.drop.id, data.drop.coords) then
-					Opened[xPlayer.source] = {invid = 'data.drop.id', type = 'drop'}
-					TriggerClientEvent('linden_inventory:openInventory', xPlayer.source, Inventories['Player-'..xPlayer.source], Drops[id])
+					Opened[xPlayer.source] = {invid = data.drop.id, type = 'drop'}
+					TriggerClientEvent('linden_inventory:openInventory', xPlayer.source, Inventories[xPlayer.source], Drops[id])
 				end
 			else
 				Opened[xPlayer.source] = {invid = xPlayer.source, type = 'Playerinv'}
-				TriggerClientEvent('linden_inventory:openInventory',  xPlayer.source, Inventories['Player-'..xPlayer.source])
+				TriggerClientEvent('linden_inventory:openInventory',  xPlayer.source, Inventories[xPlayer.source])
 			end
 		elseif data.type == 'shop' then
 			local id = data.id
@@ -198,7 +198,7 @@ AddEventHandler('linden_inventory:openInventory',function(data, player)
 				local srcCoords = GetEntityCoords(GetPlayerPed(xPlayer.source))
 				if #(shop.coords - srcCoords) <= 2 then
 					Opened[xPlayer.source] = {invid = xPlayer.source, type = 'Playerinv'}
-					TriggerClientEvent('linden_inventory:openInventory', xPlayer.source, Inventories['Player-'..xPlayer.source], Shops[id])
+					TriggerClientEvent('linden_inventory:openInventory', xPlayer.source, Inventories[xPlayer.source], Shops[id])
 				end
 			end
 		elseif data.type == 'glovebox' or data.type == 'trunk' or data.type == 'stash' then
@@ -212,7 +212,7 @@ AddEventHandler('linden_inventory:openInventory',function(data, player)
 			}
 			if CheckOpenable(xPlayer, id, data.coords) then
 				Opened[xPlayer.source] = {invid = id, type = data.type}
-				TriggerClientEvent('linden_inventory:openInventory', xPlayer.source, Inventories['Player-'..xPlayer.source], Inventories[id])
+				TriggerClientEvent('linden_inventory:openInventory', xPlayer.source, Inventories[xPlayer.source], Inventories[id])
 			end
 		end
 	end
@@ -224,14 +224,24 @@ AddEventHandler('linden_inventory:openTargetInventory',function(targetId)
 	local xTarget = ESX.GetPlayerFromId(targetId)
 	if source == TargetId then tTarget = nil end
 	if xTarget and xPlayer then
+		if Opened[xTarget.source] then return end
 		if CheckOpenable(source, 'Player'..targetId, GetEntityCoords(GetPlayerPed(targetId))) then
-			local data = {}
-			data.name = 'Player'..targetId
-			data.type = 'TargetPlayer'
-			data.slots = Config.PlayerSlots
-			data.inventory = Inventories[xTarget.source]
-			if Opened[xTarget.source] then TriggerClientEvent('linden_inventory:closeInventory', xTarget.source) end
-			TriggerClientEvent('linden_inventory:openInventory', xPlayer.source, Inventories['Player-'..xPlayer.source], data)
+			local TargetPlayer = Inventories[xTarget.source]
+			local data = {
+				id = xTarget.source,
+				name = 'Player '..xTarget.identifier,
+				type = 'TargetPlayer',
+				slots = TargetPlayer.slots,
+				maxWeight = TargetPlayer.maxWeight,
+				weight = TargetPlayer.weight,
+				inventory = TargetPlayer.inventory
+			}
+
+			
+			Opened[xPlayer.source] = {invid = xTarget.source, type = data.type}
+			Opened[xTarget.source] = {invid = xPlayer.source, type = data.type}
+			TriggerClientEvent('linden_inventory:openInventory',  xPlayer.source, data)
+
 		end
 	end
 end)
@@ -313,14 +323,14 @@ AddEventHandler('linden_inventory:saveInventoryData',function(data)
 	local xPlayer = ESX.GetPlayerFromId(source)
 	if data then
 		local inv = {['stash']=true, ['trunk']=true, ['glovebox']=true, ['drop']=true, ['TargetPlayer']=true}
-		local playerinv, invid = 'Player-'..xPlayer.source
+		local playerinv, invid = xPlayer.source
 		if data.frominv == data.toinv then
 			if data.frominv == 'Playerinv' then
 				invid = playerinv
 			elseif data.frominv == 'TargetPlayer' then
-				local targetId = string.gsub(data.invid, 'Player', '')
+				local targetId = string.gsub(data.invid, 'Player ', '')
 				local xTarget = ESX.GetPlayerFromId(playerId)
-				invid = 'Player-'..xTarget.source
+				invid = xTarget.source
 			elseif inv[data.frominv] then
 				invid = data.invid
 			end
@@ -341,39 +351,39 @@ AddEventHandler('linden_inventory:saveInventoryData',function(data)
 				end
 				Inventories[invid].changed = true
 			else
-				if not Inventories[invid] then TriggerClientEvent('linden_inventory:refreshInventory', xPlayer.source, Inventories['Player-'..xPlayer.source]) return end
+				if not Inventories[invid] then TriggerClientEvent('linden_inventory:refreshInventory', xPlayer.source, Inventories[xPlayer.source]) return end
 			end
 		elseif data.frominv ~= data.toinv then
 			if data.frominv == 'Playerinv' and inv[data.toinv] then
-				playerinv = 'Player-'..xPlayer.source
+				playerinv = xPlayer.source
 				if data.frominv == 'Playerinv' then
 					invid = data.invid
 					invid2 = playerinv
 				elseif data.frominv == 'TargetPlayer' then
-					local targetId = string.gsub(data.invid, 'Player', '')
+					local targetId = string.gsub(data.invid, 'Player ', '')
 					local xTarget = ESX.GetPlayerFromId(playerId)
-					invid = 'Player-'..xTarget.source
+					invid = xTarget.source
 					invid2 = playerinv
 				elseif inv[data.frominv] then
 					invid = data.invid
 					invid2 = playerinv
 				end
 			elseif data.toinv == 'Playerinv' and inv[data.frominv] then
-				playerinv = 'Player-'..xPlayer.source
+				playerinv = xPlayer.source
 				if data.to == 'Playerinv' then
 					invid = playerinv
 					invid2 = data.invid2
 				elseif data.frominv == 'TargetPlayer' then
-					local targetId = string.gsub(data.invid2, 'Player', '')
+					local targetId = string.gsub(data.invid2, 'Player ', '')
 					local xTarget = ESX.GetPlayerFromId(playerId)
 					invid = playerinv
-					invid2 = 'Player-'..xTarget.source
+					invid2 = xTarget.source
 				elseif inv[data.frominv] then
 					invid = playerinv
 					invid2 = data.invid2
 				end
 			end
-			if not Inventories[invid] then TriggerClientEvent('linden_inventory:refreshInventory', xPlayer.source, Inventories['Player-'..xPlayer.source]) return end
+			if not Inventories[invid] then TriggerClientEvent('linden_inventory:refreshInventory', xPlayer.source, Inventories[xPlayer.source]) return end
 			if data.type == 'swap' then
 				if not ValidateItem(data.type, xPlayer, Inventories[invid2].inventory[data.fromSlot], Inventories[invid].inventory[data.toSlot], data.fromItem, data.toItem) then return end
 				Inventories[invid].inventory[data.toSlot] = {name = data.toItem.name, label = data.toItem.label, weight = data.toItem.weight, slot = data.toSlot, count = data.toItem.count, description = data.toItem.description, metadata = data.toItem.metadata, stackable = data.toItem.stackable, closeonuse = Items[data.toItem.name].closeonuse}
