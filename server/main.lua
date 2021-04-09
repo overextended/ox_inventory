@@ -95,6 +95,7 @@ AddEventHandler('onResourceStart', function(resourceName)
 				end
 				TriggerClientEvent('linden_inventory:forceStart', -1)
 				if #xPlayers > 1 then message('Created inventories for '..#(results)..' active players', 2) else message('Created inventory for 1 active player', 2) end
+				Citizen.Wait(10)
 				Status[1] = 'ready'
 			end)
 		end
@@ -122,20 +123,8 @@ AddEventHandler('onResourceStop', function(resourceName)
 	end
 end)
 
-AddEventHandler('linden_inventory:syncAccounts', function(xPlayer, name)
-	Citizen.Wait(50)
-	for k, v in pairs(xPlayer.accounts) do
-		if v.name ~= 'bank' then
-			local account = v
-			local count = getInventoryItem(xPlayer, v.name).count
-			v.money = count
-			xPlayer.accounts[k] = v
-			xPlayer.triggerEvent('esx:setAccountMoney', xPlayer.accounts[k])
-		end
-	end
-end)
-
 AddEventHandler('linden_inventory:setPlayerInventory', function(xPlayer, data)
+	Citizen.Wait(50)
 	local invid = xPlayer.source
 	Inventories[invid] = {
 		id = xPlayer.source,
@@ -160,11 +149,11 @@ AddEventHandler('linden_inventory:setPlayerInventory', function(xPlayer, data)
 					weight = xItem.weight + (ammo.weight * ammo.count)
 				else weight = xItem.weight end
 				Inventories[invid].inventory[v.slot] = {name = v.name, label = xItem.label, weight = weight, slot = v.slot, count = v.count, description = xItem.description, metadata = v.metadata, stackable = xItem.stackable}
+				if v.name:find('money') then SyncAccounts(xPlayer, v.name) end
 			end
 		end
 	end
 	updateWeight(xPlayer)
-	TriggerEvent('linden_inventory:syncAccounts', xPlayer, 'money')
 end)
 
 AddEventHandler('linden_inventory:clearPlayerInventory', function(xPlayer)
@@ -181,16 +170,13 @@ AddEventHandler('linden_inventory:openInventory', function(data, player)
 	if data then
 		local xPlayer
 		if player then xPlayer = player else xPlayer = ESX.GetPlayerFromId(source) end
-		if Opened[xPlayer.source] then return end
+		if data.type ~= 'drop' and Opened[xPlayer.source] then return end
 		if data.type == 'drop' then
-			if Drops[data.drop.id] ~= nil then
-				Drops[data.drop.id] = {
-					id = data.drop.id,
-					coords = data.id.coords,
-				}
-				if CheckOpenable(xPlayer, data.drop.id, data.drop.coords) then
-					Opened[xPlayer.source] = {invid = data.drop.id, type = 'drop'}
-					TriggerClientEvent('linden_inventory:openInventory', xPlayer.source, Inventories[xPlayer.source], Drops[id])
+			local invid = data.drop.name
+			if Drops[invid] ~= nil then
+				if CheckOpenable(xPlayer, Drops[invid].name, Drops[invid].coords) then
+					Opened[xPlayer.source] = {invid = invid, type = 'drop'}
+					TriggerClientEvent('linden_inventory:openInventory', xPlayer.source, Inventories[xPlayer.source], Drops[invid])
 				end
 			else
 				Opened[xPlayer.source] = {invid = xPlayer.source, type = 'Playerinv'}
@@ -337,8 +323,7 @@ RegisterNetEvent('linden_inventory:saveInventoryData')
 AddEventHandler('linden_inventory:saveInventoryData', function(data)
 	local xPlayer = ESX.GetPlayerFromId(source)
 	if data then
-		local inv = {['stash']=true, ['trunk']=true, ['glovebox']=true, ['drop']=true, ['TargetPlayer']=true}
-		local playerinv, invid = xPlayer.source
+		local playerinv, invid, invid2 = xPlayer.source
 		if data.frominv == data.toinv then
 			if data.frominv == 'Playerinv' then
 				invid = playerinv
@@ -346,11 +331,24 @@ AddEventHandler('linden_inventory:saveInventoryData', function(data)
 				local targetId = string.gsub(data.invid, 'Player ', '')
 				local xTarget = ESX.GetPlayerFromId(playerId)
 				invid = xTarget.source
-			elseif inv[data.frominv] then
+			else
 				invid = data.invid
 			end
-			if Inventories[invid] then
-				if data.frominv == 'drop' and not Drops[invid] then TriggerClientEvent('linden_inventory:removeDrop', xPlayer.source, invid) return end
+			if data.frominv == 'drop' or data.toinv =='drop' then
+				if data.type == 'swap' then
+					if not ValidateItem(data.type, xPlayer, Drops[invid].inventory[data.fromSlot], Drops[invid].inventory[data.toSlot], data.fromItem, data.toItem) then return end
+					Drops[invid].inventory[data.toSlot] = {name = data.toItem.name, label = data.toItem.label, weight = data.toItem.weight, slot = data.toSlot, count = data.toItem.count, description = data.toItem.description, metadata = data.toItem.metadata, stackable = data.toItem.stackable, closeonuse = Items[data.toItem.name].closeonuse}
+					Drops[invid].inventory[data.fromSlot] = {name = data.fromItem.name, label = data.fromItem.label, weight = data.fromItem.weight, slot = data.fromSlot, count = data.fromItem.count, description = data.fromItem.description, metadata = data.fromItem.metadata, stackable = data.fromItem.stackable, closeonuse = Items[data.fromItem.name].closeonuse}
+				elseif data.type == 'freeslot' then
+					if not ValidateItem(data.type, xPlayer, Drops[invid].inventory[data.emptyslot], Drops[invid].inventory[data.toSlot], data.item, data.item) then return end
+					Drops[invid].inventory[data.emptyslot] = nil
+					Drops[invid].inventory[data.toSlot] = {name = data.item.name, label = data.item.label, weight = data.item.weight, slot = data.toSlot, count = data.item.count, description = data.item.description, metadata = data.item.metadata, stackable = data.item.stackable, closeonuse = Items[data.item.name].closeonuse}
+				elseif data.type == 'split' then
+					if not ValidateItem(data.type, xPlayer, Drops[invid].inventory[data.fromSlot], Drops[invid].inventory[data.toSlot], data.oldslotItem, data.newslotItem) then return end
+					Drops[invid].inventory[data.fromSlot] = {name = data.oldslotItem.name, label = data.oldslotItem.label, weight = data.oldslotItem.weight, slot = data.fromSlot, count = data.oldslotItem.count, description = data.oldslotItem.description, metadata = data.oldslotItem.metadata, stackable = data.oldslotItem.stackable, closeonuse = Items[data.oldslotItem.name].closeonuse}
+					Drops[invid].inventory[data.toSlot] = {name = data.newslotItem.name, label = data.newslotItem.label, weight = data.newslotItem.weight, slot = data.toSlot, count = data.newslotItem.count, description = data.newslotItem.description, metadata = data.newslotItem.metadata, stackable = data.newslotItem.stackable, closeonuse = Items[data.newslotItem.name].closeonuse}
+				end
+			else
 				if data.type == 'swap' then
 					if not ValidateItem(data.type, xPlayer, Inventories[invid].inventory[data.fromSlot], Inventories[invid].inventory[data.toSlot], data.fromItem, data.toItem) then return end
 					Inventories[invid].inventory[data.toSlot] = {name = data.toItem.name, label = data.toItem.label, weight = data.toItem.weight, slot = data.toSlot, count = data.toItem.count, description = data.toItem.description, metadata = data.toItem.metadata, stackable = data.toItem.stackable, closeonuse = Items[data.toItem.name].closeonuse}
@@ -365,11 +363,13 @@ AddEventHandler('linden_inventory:saveInventoryData', function(data)
 					Inventories[invid].inventory[data.toSlot] = {name = data.newslotItem.name, label = data.newslotItem.label, weight = data.newslotItem.weight, slot = data.toSlot, count = data.newslotItem.count, description = data.newslotItem.description, metadata = data.newslotItem.metadata, stackable = data.newslotItem.stackable, closeonuse = Items[data.newslotItem.name].closeonuse}
 				end
 				Inventories[invid].changed = true
-			else
-				if not Inventories[invid] then TriggerClientEvent('linden_inventory:refreshInventory', xPlayer.source, Inventories[xPlayer.source]) return end
 			end
 		elseif data.frominv ~= data.toinv then
-			if data.frominv == 'Playerinv' and inv[data.toinv] then
+			if data.toinv == 'drop' and not Drops[data.invid] then
+				CreateNewDrop(xPlayer, data)
+				return
+			end
+			if data.frominv == 'Playerinv' then
 				playerinv = xPlayer.source
 				if data.frominv == 'Playerinv' then
 					invid = data.invid
@@ -379,11 +379,11 @@ AddEventHandler('linden_inventory:saveInventoryData', function(data)
 					local xTarget = ESX.GetPlayerFromId(playerId)
 					invid = xTarget.source
 					invid2 = playerinv
-				elseif inv[data.frominv] then
+				else
 					invid = data.invid
 					invid2 = playerinv
 				end
-			elseif data.toinv == 'Playerinv' and inv[data.frominv] then
+			elseif data.toinv == 'Playerinv' then
 				playerinv = xPlayer.source
 				if data.to == 'Playerinv' then
 					invid = playerinv
@@ -393,32 +393,80 @@ AddEventHandler('linden_inventory:saveInventoryData', function(data)
 					local xTarget = ESX.GetPlayerFromId(playerId)
 					invid = playerinv
 					invid2 = xTarget.source
-				elseif inv[data.frominv] then
+				else
 					invid = playerinv
 					invid2 = data.invid2
 				end
 			end
-			if not Inventories[invid] then TriggerClientEvent('linden_inventory:refreshInventory', xPlayer.source, Inventories[xPlayer.source]) return end
-			if data.type == 'swap' then
-				if not ValidateItem(data.type, xPlayer, Inventories[invid2].inventory[data.fromSlot], Inventories[invid].inventory[data.toSlot], data.fromItem, data.toItem) then return end
-				Inventories[invid].inventory[data.toSlot] = {name = data.toItem.name, label = data.toItem.label, weight = data.toItem.weight, slot = data.toSlot, count = data.toItem.count, description = data.toItem.description, metadata = data.toItem.metadata, stackable = data.toItem.stackable, closeonuse = Items[data.toItem.name].closeonuse}
-				Inventories[invid2].inventory[data.fromSlot] = {name = data.fromItem.name, label = data.fromItem.label, weight = data.fromItem.weight, slot = data.fromSlot, count = data.fromItem.count, description = data.fromItem.description, metadata = data.fromItem.metadata, stackable = data.fromItem.stackable, closeonuse = Items[data.fromItem.name].closeonuse}
-				ItemNotify(xPlayer, data.toItem.name, data.toItem.count, 'Removed', invid)
-				ItemNotify(xPlayer, data.fromItem.name, data.fromItem.count, 'Added', invid)
-			elseif data.type == 'freeslot' then
-				if not ValidateItem(data.type, xPlayer, Inventories[invid2].inventory[data.emptyslot], Inventories[invid].inventory[data.toSlot], data.item, data.item) then return end
-				local count = Inventories[invid2].inventory[data.emptyslot].count
-				Inventories[invid2].inventory[data.emptyslot] = nil
-				Inventories[invid].inventory[data.toSlot] = {name = data.item.name, label = data.item.label, weight = data.item.weight, slot = data.toSlot, count = data.item.count, description = data.item.description, metadata = data.item.metadata, stackable = data.item.stackable, closeonuse = Items[data.item.name].closeonuse}
-				ItemNotify(xPlayer, data.item.name, count, 'Removed', invid)
-			elseif data.type == 'split' then
-				if not ValidateItem(data.type, xPlayer, Inventories[invid2].inventory[data.fromSlot], Inventories[invid].inventory[data.toSlot], data.oldslotItem, data.newslotItem) then return end
-				Inventories[invid2].inventory[data.fromSlot] = {name = data.oldslotItem.name, label = data.oldslotItem.label, weight = data.oldslotItem.weight, slot = data.fromSlot, count = data.oldslotItem.count, description = data.oldslotItem.description, metadata = data.oldslotItem.metadata, stackable = data.oldslotItem.stackable, closeonuse = Items[data.oldslotItem.name].closeonuse}
-				Inventories[invid].inventory[data.toSlot] = {name = data.newslotItem.name, label = data.newslotItem.label, weight = data.newslotItem.weight, slot = data.toSlot, count = data.newslotItem.count, description = data.newslotItem.description, metadata = data.newslotItem.metadata, stackable = data.newslotItem.stackable, closeonuse = Items[data.newslotItem.name].closeonuse}
-				ItemNotify(xPlayer, data.newslotItem.name, data.newslotItem.count, 'Removed', invid)
+			if data.frominv == 'drop' or data.toinv =='drop' then
+				local dropid
+				if data.frominv == 'Playerinv' then
+					dropid = invid
+					if data.type == 'swap' then
+						if not ValidateItem(data.type, xPlayer, Inventories[invid2].inventory[data.fromSlot], Drops[invid].inventory[data.toSlot], data.fromItem, data.toItem) then return end
+						Drops[invid].inventory[data.toSlot] = {name = data.toItem.name, label = data.toItem.label, weight = data.toItem.weight, slot = data.toSlot, count = data.toItem.count, description = data.toItem.description, metadata = data.toItem.metadata, stackable = data.toItem.stackable, closeonuse = Items[data.toItem.name].closeonuse}
+						Inventories[invid2].inventory[data.fromSlot] = {name = data.fromItem.name, label = data.fromItem.label, weight = data.fromItem.weight, slot = data.fromSlot, count = data.fromItem.count, description = data.fromItem.description, metadata = data.fromItem.metadata, stackable = data.fromItem.stackable, closeonuse = Items[data.fromItem.name].closeonuse}
+						ItemNotify(xPlayer, data.toItem.name, data.toItem.count, 'Removed', invid)
+						ItemNotify(xPlayer, data.fromItem.name, data.fromItem.count, 'Added', invid)
+					elseif data.type == 'freeslot' then
+						if not ValidateItem(data.type, xPlayer, Inventories[invid2].inventory[data.emptyslot], Drops[invid].inventory[data.toSlot], data.item, data.item) then return end
+						local count = Inventories[invid2].inventory[data.emptyslot].count
+						Inventories[invid2].inventory[data.emptyslot] = nil
+						Drops[invid].inventory[data.toSlot] = {name = data.item.name, label = data.item.label, weight = data.item.weight, slot = data.toSlot, count = data.item.count, description = data.item.description, metadata = data.item.metadata, stackable = data.item.stackable, closeonuse = Items[data.item.name].closeonuse}
+						ItemNotify(xPlayer, data.item.name, count, 'Removed', invid)
+					elseif data.type == 'split' then
+						if not ValidateItem(data.type, xPlayer, Inventories[invid2].inventory[data.fromSlot], Drops[invid].inventory[data.toSlot], data.oldslotItem, data.newslotItem) then return end
+						Inventories[invid2].inventory[data.fromSlot] = {name = data.oldslotItem.name, label = data.oldslotItem.label, weight = data.oldslotItem.weight, slot = data.fromSlot, count = data.oldslotItem.count, description = data.oldslotItem.description, metadata = data.oldslotItem.metadata, stackable = data.oldslotItem.stackable, closeonuse = Items[data.oldslotItem.name].closeonuse}
+						Drops[invid].inventory[data.toSlot] = {name = data.newslotItem.name, label = data.newslotItem.label, weight = data.newslotItem.weight, slot = data.toSlot, count = data.newslotItem.count, description = data.newslotItem.description, metadata = data.newslotItem.metadata, stackable = data.newslotItem.stackable, closeonuse = Items[data.newslotItem.name].closeonuse}
+						ItemNotify(xPlayer, data.newslotItem.name, data.newslotItem.count, 'Removed', invid)
+					end
+				elseif data.toinv == 'Playerinv' then
+					dropid = invid2
+					if data.type == 'swap' then
+						if not ValidateItem(data.type, xPlayer, Drops[invid2].inventory[data.fromSlot], Inventories[invid].inventory[data.toSlot], data.fromItem, data.toItem) then return end
+						Inventories[invid].inventory[data.toSlot] = {name = data.toItem.name, label = data.toItem.label, weight = data.toItem.weight, slot = data.toSlot, count = data.toItem.count, description = data.toItem.description, metadata = data.toItem.metadata, stackable = data.toItem.stackable, closeonuse = Items[data.toItem.name].closeonuse}
+						Drops[invid2].inventory[data.fromSlot] = {name = data.fromItem.name, label = data.fromItem.label, weight = data.fromItem.weight, slot = data.fromSlot, count = data.fromItem.count, description = data.fromItem.description, metadata = data.fromItem.metadata, stackable = data.fromItem.stackable, closeonuse = Items[data.fromItem.name].closeonuse}
+						ItemNotify(xPlayer, data.toItem.name, data.toItem.count, 'Removed', invid)
+						ItemNotify(xPlayer, data.fromItem.name, data.fromItem.count, 'Added', invid)
+					elseif data.type == 'freeslot' then
+						if not ValidateItem(data.type, xPlayer, Drops[invid2].inventory[data.emptyslot], Inventories[invid].inventory[data.toSlot], data.item, data.item) then return end
+						local count = Drops[invid2].inventory[data.emptyslot].count
+						Drops[invid2].inventory[data.emptyslot] = nil
+						Inventories[invid].inventory[data.toSlot] = {name = data.item.name, label = data.item.label, weight = data.item.weight, slot = data.toSlot, count = data.item.count, description = data.item.description, metadata = data.item.metadata, stackable = data.item.stackable, closeonuse = Items[data.item.name].closeonuse}
+						ItemNotify(xPlayer, data.item.name, count, 'Removed', invid)
+					elseif data.type == 'split' then
+						if not ValidateItem(data.type, xPlayer, Drops[invid2].inventory[data.fromSlot], Inventories[invid].inventory[data.toSlot], data.oldslotItem, data.newslotItem) then return end
+						Drops[invid2].inventory[data.fromSlot] = {name = data.oldslotItem.name, label = data.oldslotItem.label, weight = data.oldslotItem.weight, slot = data.fromSlot, count = data.oldslotItem.count, description = data.oldslotItem.description, metadata = data.oldslotItem.metadata, stackable = data.oldslotItem.stackable, closeonuse = Items[data.oldslotItem.name].closeonuse}
+						Inventories[invid].inventory[data.toSlot] = {name = data.newslotItem.name, label = data.newslotItem.label, weight = data.newslotItem.weight, slot = data.toSlot, count = data.newslotItem.count, description = data.newslotItem.description, metadata = data.newslotItem.metadata, stackable = data.newslotItem.stackable, closeonuse = Items[data.newslotItem.name].closeonuse}
+						ItemNotify(xPlayer, data.newslotItem.name, data.newslotItem.count, 'Removed', invid)
+					end
+				end
+				if next(Drops[dropid].inventory) == nil then
+					TriggerClientEvent('linden_inventory:removeDrop', -1, dropid, xPlayer.source)
+					Drops[dropid] = nil
+				end
+			else
+				if data.type == 'swap' then
+					if not ValidateItem(data.type, xPlayer, Inventories[invid2].inventory[data.fromSlot], Inventories[invid].inventory[data.toSlot], data.fromItem, data.toItem) then return end
+					Inventories[invid].inventory[data.toSlot] = {name = data.toItem.name, label = data.toItem.label, weight = data.toItem.weight, slot = data.toSlot, count = data.toItem.count, description = data.toItem.description, metadata = data.toItem.metadata, stackable = data.toItem.stackable, closeonuse = Items[data.toItem.name].closeonuse}
+					Inventories[invid2].inventory[data.fromSlot] = {name = data.fromItem.name, label = data.fromItem.label, weight = data.fromItem.weight, slot = data.fromSlot, count = data.fromItem.count, description = data.fromItem.description, metadata = data.fromItem.metadata, stackable = data.fromItem.stackable, closeonuse = Items[data.fromItem.name].closeonuse}
+					ItemNotify(xPlayer, data.toItem.name, data.toItem.count, 'Removed', invid)
+					ItemNotify(xPlayer, data.fromItem.name, data.fromItem.count, 'Added', invid)
+				elseif data.type == 'freeslot' then
+					if not ValidateItem(data.type, xPlayer, Inventories[invid2].inventory[data.emptyslot], Inventories[invid].inventory[data.toSlot], data.item, data.item) then return end
+					local count = Inventories[invid2].inventory[data.emptyslot].count
+					Inventories[invid2].inventory[data.emptyslot] = nil
+					Inventories[invid].inventory[data.toSlot] = {name = data.item.name, label = data.item.label, weight = data.item.weight, slot = data.toSlot, count = data.item.count, description = data.item.description, metadata = data.item.metadata, stackable = data.item.stackable, closeonuse = Items[data.item.name].closeonuse}
+					ItemNotify(xPlayer, data.item.name, count, 'Removed', invid)
+				elseif data.type == 'split' then
+					if not ValidateItem(data.type, xPlayer, Inventories[invid2].inventory[data.fromSlot], Inventories[invid].inventory[data.toSlot], data.oldslotItem, data.newslotItem) then return end
+					Inventories[invid2].inventory[data.fromSlot] = {name = data.oldslotItem.name, label = data.oldslotItem.label, weight = data.oldslotItem.weight, slot = data.fromSlot, count = data.oldslotItem.count, description = data.oldslotItem.description, metadata = data.oldslotItem.metadata, stackable = data.oldslotItem.stackable, closeonuse = Items[data.oldslotItem.name].closeonuse}
+					Inventories[invid].inventory[data.toSlot] = {name = data.newslotItem.name, label = data.newslotItem.label, weight = data.newslotItem.weight, slot = data.toSlot, count = data.newslotItem.count, description = data.newslotItem.description, metadata = data.newslotItem.metadata, stackable = data.newslotItem.stackable, closeonuse = Items[data.newslotItem.name].closeonuse}
+					ItemNotify(xPlayer, data.newslotItem.name, data.newslotItem.count, 'Removed', invid)
+				end
+				if invid ~= playerinv then Inventories[invid].changed = true end
+				if invid2 ~= playerinv then Inventories[invid2].changed = true end
 			end
-			if invid ~= playerinv then Inventories[invid].changed = true end
-			if invid2 ~= playerinv then Inventories[invid2].changed = true end
 		end
 	end
 end)
@@ -427,8 +475,8 @@ end)
 RegisterNetEvent('linden_inventory:saveInventory')
 AddEventHandler('linden_inventory:saveInventory', function(data)
 	local xPlayer = ESX.GetPlayerFromId(source)
-	if data.invid ~= nil and Opened[xPlayer.source].invid == data.invid then
-		if Inventories[data.invid].changed then
+	if data.invid and Opened[xPlayer.source].invid == data.invid then
+		if data.type and data.type ~= 'drop' and Inventories[data.invid].changed then
 			SaveItems(data.type, data.invid)
 			Inventories[data.invid].changed = false
 		end
