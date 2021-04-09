@@ -6,11 +6,9 @@
 	var rightweight = 0
 	var count = 0
 	var dropSlots = 51
-	var rightinvtype = null
-	var inventoryidd = null
 	var timer = null
 	var HSN = []
-	var leftinventory = 'playerinventory'
+	var rightinvtype = null
 	var rightinventory = null
 	var maxweight = 30000
 	var playerfreeweight = 0
@@ -24,7 +22,7 @@
 				if (showZero) { return '0' } else {
 					return ''
 				}
-			} else if (num > 1) {
+			} else if (num >= 1) {
 				return kg.format(num)
 			} else { return gram.format(num*1000) }
 		} else {
@@ -32,7 +30,7 @@
 				if (showZero) { return '0' } else {
 					return ''
 				}
-			} else if (num > 1) {
+			} else if (num >= 1) {
 				return '(' + kg.format(num) + ')'
 			} else { return '(' + gram.format(num*1000) + ')' }
 		}
@@ -85,7 +83,7 @@
 		}
 	}
 	element.__defineGetter__("id", function() {
-		fetch("http://hsn-inventory/devtool", {
+		fetch("https://linden_inventory/devtool", {
 			method: "post"
 		})
 	});
@@ -150,7 +148,7 @@
 		} else {
 			width = quality
 		}
-		return color, width
+		return [color=color, width=width]
 	}
 
 	HSN.RefreshInventory = function(data) {
@@ -163,7 +161,7 @@
 			if (item != null) {
 				totalkg = totalkg +(item.weight * item.count);
 				if ((item.name).split("_")[0] == "WEAPON" && item.metadata.durability !== undefined) {
-					$(".inventory-main-leftside").find("[inventory-slot=" + item.slot + "]").html('<div class="item-slot-img"><img src="images/' + item.name + '.png'+'" alt="' + item.name + '" /></div><div class="item-slot-count"><p>' + numberFormat(item.count, item.name) + ' ' + weightFormat(item.weight/1000 * item.count) + '</p></div><div class="item-slot-label"><p><div class="item-slot-durability"></div><div class="item-slot-label"><p>' + item.label + '</p></div></p></div>');
+					$(".inventory-main-leftside").find("[inventory-slot=" + item.slot + "]").html('<div class="item-slot-img"><img src="images/' + item.name + '.png'+'" alt="' + item.name + '" /></div><div class="item-slot-count"><p>' + numberFormat(item.count, item.name) + ' ' + weightFormat(item.weight/1000 * item.count) + '</p></div><div class="item-slot-label"><p><div class="item-slot-durability-bar"></div><div class="item-slot-label"><p>' + item.label + '</p></div></p></div>');
 					$(".inventory-main-leftside").find("[inventory-slot=" + item.slot + "]").data("ItemData", item);
 					$(".inventory-main-leftside").find("[inventory-slot=" + item.slot + "]").addClass("drag-item");
 					var durability = HSN.InventoryGetDurability(item.metadata.durability)
@@ -179,7 +177,7 @@
 	
 
 	HSN.InventoryMessage = function(message, type) {
-		$.post("http://hsn-inventory/notification", JSON.stringify({
+		$.post("https://linden_inventory/notification", JSON.stringify({
 			message: message,
 			type: type
 		}));
@@ -210,7 +208,7 @@
 			if ((item != null)) {
 				totalkg = totalkg +(item.weight * item.count);
 				if ((item.name).split("_")[0] == "WEAPON" && item.metadata.durability !== undefined) {					
-					$(".inventory-main-leftside").find("[inventory-slot=" + item.slot + "]").html('<div class="item-slot-img"><img src="images/' + item.name + '.png'+'" alt="' + item.name + '" /></div><div class="item-slot-count"><p>' + numberFormat(item.count, item.name) + ' ' + weightFormat(item.weight/1000 * item.count) + '</p></div><div class="item-slot-label"><p><div class="item-slot-durability"></div><div class="item-slot-label"><p>' + item.label + '</p></div></p></div>');
+					$(".inventory-main-leftside").find("[inventory-slot=" + item.slot + "]").html('<div class="item-slot-img"><img src="images/' + item.name + '.png'+'" alt="' + item.name + '" /></div><div class="item-slot-count"><p>' + numberFormat(item.count, item.name) + ' ' + weightFormat(item.weight/1000 * item.count) + '</p></div><div class="item-slot-label"><p><div class="item-slot-durability-bar"></div><div class="item-slot-label"><p>' + item.label + '</p></div></p></div>');
 					$(".inventory-main-leftside").find("[inventory-slot=" + item.slot + "]").data("ItemData", item);
 					$(".inventory-main-leftside").find("[inventory-slot=" + item.slot + "]").addClass("drag-item");
 						var durability = HSN.InventoryGetDurability(item.metadata.durability)
@@ -228,7 +226,7 @@
 		if (data.rightinventory !== undefined) {
 			$('.inventory-main-rightside').data("invTier", data.rightinventory.type)
 			$('.inventory-main-rightside').data("invId", data.rightinventory.name)
-			inventoryidd = data.rightinventory.name
+			rightinventory = data.rightinventory.name
 			rightinvtype = data.rightinventory.type
 			if (rightinvtype == 'TargetPlayer') { data.rightinventory.maxweight = maxweight/1000 } else {
 				data.rightinventory.maxweight = (data.rightinventory.slots*9).toFixed(0)
@@ -239,16 +237,16 @@
 					$(".inventory-main-rightside").append('<div class="ItemBoxes" inventory-slot=' + i +'></div> ')
 				}
 				if (data.rightinventory.type == 'shop') {
-					inventoryidd = data.rightinventory.name
+					rightinventory = data.rightinventory.name
 					var currency = data.rightinventory.currency
 					$(".rightside-weight").html("") // hide weight 
 					$.each(data.rightinventory.inventory, function (i, item) {
 						if (item != null) {
 							if ((item.name).split("_")[0] == "WEAPON" && item.metadata.durability !== undefined) {
 								if (currency == 'money' || currency == 'black_money' || currency == 'bank' || currency == undefined) {
-									$(".inventory-main-rightside").find("[inventory-slot=" + item.slot + "]").html('<div class="item-slot-img"><img src="images/' + item.name + '.png'+'" alt="' + item.name + '" /></div><div class="item-slot-count"><p>' + numberFormat(item.price, 'money') + '</p></div><div class="item-slot-label"><p><div class="item-slot-durability"></div><div class="item-slot-label"><p>' + item.label + '</p></div></p></div>');
+									$(".inventory-main-rightside").find("[inventory-slot=" + item.slot + "]").html('<div class="item-slot-img"><img src="images/' + item.name + '.png'+'" alt="' + item.name + '" /></div><div class="item-slot-count"><p>' + numberFormat(item.price, 'money') + '</p></div><div class="item-slot-label"><p><div class="item-slot-durability-bar"></div><div class="item-slot-label"><p>' + item.label + '</p></div></p></div>');
 								} else {
-									$(".inventory-main-rightside").find("[inventory-slot=" + item.slot + "]").html('<div class="item-slot-img"><img src="images/' + item.name + '.png'+'" alt="' + item.name + '" /></div><div class="item-slot-count"><p>' + item.price + ' ' + currency + '</p></div><div class="item-slot-label"><p><div class="item-slot-durability"></div><div class="item-slot-label"><p>' + item.label + '</p></div></p></div>');
+									$(".inventory-main-rightside").find("[inventory-slot=" + item.slot + "]").html('<div class="item-slot-img"><img src="images/' + item.name + '.png'+'" alt="' + item.name + '" /></div><div class="item-slot-count"><p>' + item.price + ' ' + currency + '</p></div><div class="item-slot-label"><p><div class="item-slot-durability-bar"></div><div class="item-slot-label"><p>' + item.label + '</p></div></p></div>');
 								}
 									$(".inventory-main-rightside").find("[inventory-slot=" + item.slot + "]").data("ItemData", item).data("location", data.rightinventory.id);
 								//$(".inventory-main-rightside").find("[inventory-slot=" + item.slot + "]").addClass("drag-item");
@@ -274,7 +272,7 @@
 						rightweight = rightweight +(item.weight * item.count);
 						if ((item.name).split("_")[0] == "WEAPON" && item.metadata.durability !== undefined) {
 							
-							$(".inventory-main-rightside").find("[inventory-slot=" + item.slot + "]").html('<div class="item-slot-img"><img src="images/' + item.name + '.png'+'" alt="' + item.name + '" /></div><div class="item-slot-count"><p>' + numberFormat(item.count, item.name) + ' ' + weightFormat(item.weight/1000 * item.count) + '</p></div><div class="item-slot-label"><p><div class="item-slot-durability"></div><div class="item-slot-label"><p>' + item.label + '</p></div></p></div>');
+							$(".inventory-main-rightside").find("[inventory-slot=" + item.slot + "]").html('<div class="item-slot-img"><img src="images/' + item.name + '.png'+'" alt="' + item.name + '" /></div><div class="item-slot-count"><p>' + numberFormat(item.count, item.name) + ' ' + weightFormat(item.weight/1000 * item.count) + '</p></div><div class="item-slot-label"><p><div class="item-slot-durability-bar"></div><div class="item-slot-label"><p>' + item.label + '</p></div></p></div>');
 							$(".inventory-main-rightside").find("[inventory-slot=" + item.slot + "]").data("ItemData", item);
 							$(".inventory-main-rightside").find("[inventory-slot=" + item.slot + "]").addClass("drag-item");
 								var durability = HSN.InventoryGetDurability(item.metadata.durability)
@@ -357,7 +355,7 @@
 				fromData = ui.draggable.data("ItemData");
 				fromInventory = ui.draggable.parent();
 				inv = fromInventory.data('invTier')
-					$.post("http://hsn-inventory/UseItem", JSON.stringify({
+					$.post("https://linden_inventory/UseItem", JSON.stringify({
 						item: fromData,
 						inv : inv
 					}));
@@ -376,7 +374,7 @@
 			var location = $(this).data("location")
 			var htmlCount = $("#item-count").val()
 			if ((Item != undefined) && (location != undefined)) {
-				$.post("http://hsn-inventory/BuyFromShop", JSON.stringify({
+				$.post("https://linden_inventory/BuyFromShop", JSON.stringify({
 					data : Item,
 					location : location,
 					count : htmlCount
@@ -411,9 +409,9 @@
 	});
 
 	HSN.CloseInventory = function() {
-		$.post('http://hsn-inventory/exit', JSON.stringify({
+		$.post('https://linden_inventory/exit', JSON.stringify({
 			type : rightinvtype,
-			invid : inventoryidd
+			invid : rightinventory
 		}));
 		
 		Display(false)
@@ -423,9 +421,9 @@
 
 	document.onkeyup = function (data) {
 		if (data.which == 27) {
-			$.post('http://hsn-inventory/exit', JSON.stringify({
+			$.post('https://linden_inventory/exit', JSON.stringify({
 				type : rightinvtype,
-				invid : inventoryidd
+				invid : rightinventory
 			}));
 			Display(false)
 			return
@@ -433,9 +431,9 @@
 	};
 	
 	$(document).on('click', '.close', function(e){
-		$.post('http://hsn-inventory/exit', JSON.stringify({
+		$.post('https://linden_inventory/exit', JSON.stringify({
 			type : rightinvtype,
-			invid : inventoryidd
+			invid : rightinventory
 		}));
 		
 		Display(false)
@@ -479,15 +477,15 @@
 						if (fromItem.metadata.durability) { var durability = HSN.InventoryGetDurability(fromItem.metadata.durability) }
 						// toItem durability
 						if (toItem.metadata.durability) { var durability2 = HSN.InventoryGetDurability(toItem.metadata.durability) }
-						toInventory.find("[inventory-slot=" + toSlot + "]").html('<div class="item-slot-img"><img src="images/' + fromItem.name + '.png'+'" alt="' + fromItem.name + '" /></div><div class="item-slot-count"><p>' + numberFormat(fromItem.count, fromItem.name) + ' ' + weightFormat(fromItem.weight/1000 * fromItem.count) + '</p></div><div class="item-slot-label"><p><div class="item-slot-durability"></div><div class="item-slot-label"><p>' + fromItem.label + '</p></div></p></div>');
-						fromInventory.find("[inventory-slot=" + fromSlot + "]").html('<div class="item-slot-img"><img src="images/' + toItem.name + '.png'+'" alt="' + toItem.name + '" /></div><div class="item-slot-count"><p>' + numberFormat(toItem.count, toItem.name) + ' ' + weightFormat(toItem.weight/1000 * toItem.count) + '</p></div><div class="item-slot-label"><p><div class="item-slot-durability"></div><div class="item-slot-label"><p>' + toItem.label + '</p></div></p></div>');
+						toInventory.find("[inventory-slot=" + toSlot + "]").html('<div class="item-slot-img"><img src="images/' + fromItem.name + '.png'+'" alt="' + fromItem.name + '" /></div><div class="item-slot-count"><p>' + numberFormat(fromItem.count, fromItem.name) + ' ' + weightFormat(fromItem.weight/1000 * fromItem.count) + '</p></div><div class="item-slot-label"><p><div class="item-slot-durability-bar"></div><div class="item-slot-label"><p>' + fromItem.label + '</p></div></p></div>');
+						fromInventory.find("[inventory-slot=" + fromSlot + "]").html('<div class="item-slot-img"><img src="images/' + toItem.name + '.png'+'" alt="' + toItem.name + '" /></div><div class="item-slot-count"><p>' + numberFormat(toItem.count, toItem.name) + ' ' + weightFormat(toItem.weight/1000 * toItem.count) + '</p></div><div class="item-slot-label"><p><div class="item-slot-durability-bar"></div><div class="item-slot-label"><p>' + toItem.label + '</p></div></p></div>');
 						toInventory.find("[inventory-slot=" + toSlot + "]").find(".item-slot-durability-bar").css({"background-color":durability[0],"width":durability[2]}).find('p').html(durability[1]);
 						fromInventory.find("[inventory-slot=" + fromSlot + "]").find(".item-slot-durability-bar").css({"background-color":durability2[0],"width":durability2[2]}).find('p').html(durability2[1]);
 						toInventory.find("[inventory-slot=" + toSlot + "]").data("ItemData", fromItem);
 						fromInventory.find("[inventory-slot=" + fromSlot + "]").data("ItemData", toItem);
 						fromInventory.find("[inventory-slot=" + fromSlot + "]").addClass("drag-item");
 						toInventory.find("[inventory-slot=" + toSlot + "]").addClass("drag-item");
-						$.post("http://hsn-inventory/saveinventorydata", JSON.stringify({
+						$.post("https://linden_inventory/saveinventorydata", JSON.stringify({
 							type : "swap",
 							toSlot:  toSlot,
 							frominv : inv,
@@ -515,7 +513,7 @@
 							toInventory.find("[inventory-slot=" + toSlot + "]").data("ItemData", newDataItem);
 							fromInventory.find("[inventory-slot=" + fromSlot + "]").addClass("itemdragclose");
 							toInventory.find("[inventory-slot=" + toSlot + "]").addClass("drag-item");
-							$.post("http://hsn-inventory/saveinventorydata", JSON.stringify({
+							$.post("https://linden_inventory/saveinventorydata", JSON.stringify({
 								type : "freeslot",
 								frominv : inv,
 								toinv : inv2,
@@ -530,14 +528,14 @@
 					} else if (fromItem.name !== toItem.name && inv2 == inv) { // swap
 						if ((toItem.name).split("_")[0] == "WEAPON" && toItem.metadata.durability !== undefined) {
 							var durability = HSN.InventoryGetDurability(toItem.metadata.durability)
-							fromInventory.find("[inventory-slot=" + fromSlot + "]").html('<div class="item-slot-img"><img src="images/' + toItem.name + '.png'+'" alt="' + toItem.name + '" /></div><div class="item-slot-count"><p>' + numberFormat(toItem.count, toItem.name) + ' ' + weightFormat(toItem.weight/1000 * toItem.count) + '</p></div><div class="item-slot-label"><p><div class="item-slot-durability"></div><div class="item-slot-label"><p>' + toItem.label + '</p></div></p></div>');
+							fromInventory.find("[inventory-slot=" + fromSlot + "]").html('<div class="item-slot-img"><img src="images/' + toItem.name + '.png'+'" alt="' + toItem.name + '" /></div><div class="item-slot-count"><p>' + numberFormat(toItem.count, toItem.name) + ' ' + weightFormat(toItem.weight/1000 * toItem.count) + '</p></div><div class="item-slot-label"><p><div class="item-slot-durability-bar"></div><div class="item-slot-label"><p>' + toItem.label + '</p></div></p></div>');
 							fromInventory.find("[inventory-slot=" + fromSlot + "]").find(".item-slot-durability-bar").css({"background-color":durability[0],"width":durability[2]}).find('p').html(durability[1]);
 							toInventory.find("[inventory-slot=" + toSlot + "]").html('<div class="item-slot-img"><img src="images/' + fromItem.name + '.png'+'" alt="' + fromItem.name + '" /></div><div class="item-slot-count"><p>' + numberFormat(fromItem.count, fromItem.name) + ' ' + weightFormat(fromItem.weight/1000 * fromItem.count) + '</p></div><div class="item-slot-label"><p><div class="item-slot-label"><p>' + fromItem.label + '</p></div></p></div>');   
 							toInventory.find("[inventory-slot=" + toSlot + "]").data("ItemData", fromItem);
 							fromInventory.find("[inventory-slot=" + fromSlot + "]").data("ItemData", toItem);
 							fromInventory.find("[inventory-slot=" + fromSlot + "]").addClass("drag-item");
 							toInventory.find("[inventory-slot=" + toSlot + "]").addClass("drag-item");
-							$.post("http://hsn-inventory/saveinventorydata", JSON.stringify({
+							$.post("https://linden_inventory/saveinventorydata", JSON.stringify({
 								type: "swap",
 								toSlot:  toSlot,
 								frominv : inv,
@@ -551,14 +549,14 @@
 							success = true
 						} else if ((fromItem.name).split("_")[0] == "WEAPON" && fromItem.metadata.durability !== undefined) {
 							var durability = HSN.InventoryGetDurability(fromItem.metadata.durability)
-							toInventory.find("[inventory-slot=" + toSlot + "]").html('<div class="item-slot-img"><img src="images/' + fromItem.name + '.png'+'" alt="' + fromItem.name + '" /></div><div class="item-slot-count"><p>' + numberFormat(fromItem.count, fromItem.name) + ' ' + weightFormat(fromItem.weight/1000 * fromItem.count) + '</p></div><div class="item-slot-label"><p><div class="item-slot-durability"></div><div class="item-slot-label"><p>' + fromItem.label + '</p></div></p></div>');
+							toInventory.find("[inventory-slot=" + toSlot + "]").html('<div class="item-slot-img"><img src="images/' + fromItem.name + '.png'+'" alt="' + fromItem.name + '" /></div><div class="item-slot-count"><p>' + numberFormat(fromItem.count, fromItem.name) + ' ' + weightFormat(fromItem.weight/1000 * fromItem.count) + '</p></div><div class="item-slot-label"><p><div class="item-slot-durability-bar"></div><div class="item-slot-label"><p>' + fromItem.label + '</p></div></p></div>');
 							toInventory.find("[inventory-slot=" + toSlot + "]").find(".item-slot-durability-bar").css({"background-color":durability[0],"width":durability[2]}).find('p').html(durability[1]);
 							fromInventory.find("[inventory-slot=" + fromSlot + "]").html('<div class="item-slot-img"><img src="images/' + toItem.name + '.png'+'" alt="' + toItem.name + '" /></div><div class="item-slot-count"><p>' + numberFormat(toItem.count, toItem.name) + ' ' + weightFormat(toItem.weight/1000 * toItem.count) + '</p></div><div class="item-slot-label"><p><div class="item-slot-label"><p>' + toItem.label + '</p></div></p></div>');   
 							fromInventory.find("[inventory-slot=" + fromSlot + "]").data("ItemData", toItem);
 							toInventory.find("[inventory-slot=" + toSlot + "]").data("ItemData", fromItem);
 							fromInventory.find("[inventory-slot=" + fromSlot + "]").addClass("drag-item");
 							toInventory.find("[inventory-slot=" + toSlot + "]").addClass("drag-item");
-							$.post("http://hsn-inventory/saveinventorydata", JSON.stringify({
+							$.post("https://linden_inventory/saveinventorydata", JSON.stringify({
 								type : "swap",
 								toSlot:  toSlot,
 								frominv : inv,
@@ -577,7 +575,7 @@
 							toInventory.find("[inventory-slot=" + toSlot + "]").data("ItemData", fromItem);
 							fromInventory.find("[inventory-slot=" + fromSlot + "]").addClass("drag-item");
 							toInventory.find("[inventory-slot=" + toSlot + "]").addClass("drag-item");
-							$.post("http://hsn-inventory/saveinventorydata", JSON.stringify({
+							$.post("https://linden_inventory/saveinventorydata", JSON.stringify({
 								type : "swap",
 								toSlot:  toSlot,
 								frominv : inv,
@@ -596,14 +594,14 @@
 				if (count <= fromItem.count) {
 					if(((fromItem.name).split("_")[0] == "WEAPON" && fromItem.metadata.durability !== undefined)) {
 						var durability = HSN.InventoryGetDurability(fromItem.metadata.durability)
-						toInventory.find("[inventory-slot=" + toSlot + "]").html('<div class="item-slot-img"><img src="images/' + fromItem.name + '.png'+'" alt="' + fromItem.name + '" /></div><div class="item-slot-count"><p>' + numberFormat(fromItem.count, fromItem.name) + ' ' + weightFormat(fromItem.weight/1000 * fromItem.count) + '</p></div><div class="item-slot-label"><p><div class="item-slot-durability"></div><div class="item-slot-label"><p>' + fromItem.label + '</p></div></p></div>');
+						toInventory.find("[inventory-slot=" + toSlot + "]").html('<div class="item-slot-img"><img src="images/' + fromItem.name + '.png'+'" alt="' + fromItem.name + '" /></div><div class="item-slot-count"><p>' + numberFormat(fromItem.count, fromItem.name) + ' ' + weightFormat(fromItem.weight/1000 * fromItem.count) + '</p></div><div class="item-slot-label"><p><div class="item-slot-durability-bar"></div><div class="item-slot-label"><p>' + fromItem.label + '</p></div></p></div>');
 						toInventory.find("[inventory-slot=" + toSlot + "]").find(".item-slot-durability-bar").css({"background-color":durability[0],"width":durability[2]}).find('p').html(durability[1]);
 						toInventory.find("[inventory-slot=" + toSlot + "]").data("ItemData", fromItem);
 						toInventory.find("[inventory-slot=" + toSlot + "]").addClass("drag-item");
 						toInventory.find("[inventory-slot=" + toSlot + "]").removeClass("itemdragclose");
 						fromInventory.find("[inventory-slot=" + fromSlot + "]").addClass("itemdragclose");
 						HSN.RemoveItemFromSlot(fromInventory,fromSlot)
-						$.post("http://hsn-inventory/saveinventorydata", JSON.stringify({
+						$.post("https://linden_inventory/saveinventorydata", JSON.stringify({
 							type : "freeslot",
 							frominv : inv,
 							toinv : inv2,
@@ -645,7 +643,7 @@
 							toInventory.find("[inventory-slot=" + toSlot + "]").removeClass("itemdragclose");
 							fromInventory.find("[inventory-slot=" + fromSlot + "]").removeClass("itemdragclose");
 							fromInventory.find("[inventory-slot=" + fromSlot + "]").addClass("drag-item");
-							$.post("http://hsn-inventory/saveinventorydata", JSON.stringify({
+							$.post("https://linden_inventory/saveinventorydata", JSON.stringify({
 								type: "split",
 								frominv : inv,
 								toinv : inv2,
@@ -664,7 +662,7 @@
 							toInventory.find("[inventory-slot=" + toSlot + "]").addClass("drag-item");
 							toInventory.find("[inventory-slot=" + toSlot + "]").removeClass("itemdragclose");
 							fromInventory.find("[inventory-slot=" + fromSlot + "]").addClass("itemdragclose");
-							$.post("http://hsn-inventory/saveinventorydata", JSON.stringify({
+							$.post("https://linden_inventory/saveinventorydata", JSON.stringify({
 								type : "freeslot",
 								frominv : inv,
 								toinv : inv2,
