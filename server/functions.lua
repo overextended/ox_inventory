@@ -108,7 +108,7 @@ ItemNotify = function(xPlayer, item, count, type, invid)
 		if Config.Logs then
 			-- todo
 		end
-		if item:find('money') then SyncAccount(xPlayer, item) end
+		if item:find('money') then TriggerEvent('linden_inventory:syncAccounts', xPlayer, item) end
 	else notification = 'Used' end
 	TriggerClientEvent('linden_inventory:refreshInventory', xPlayer.source, Inventories[xPlayer.source], xItem, notification )
 end
@@ -310,14 +310,6 @@ ValidateString = function(item)
 	if item:find('weapon_') then item = string.upper(item) end
 	local xItem = Items[item]
 	if xItem then return xItem.name end
-end
-
-SyncAccount = function(xPlayer, name)
-	local account = {}
-	local count = getInventoryItem(xPlayer, name).count
-	account.name = name
-	account.money = count
-	xPlayer.triggerEvent('esx:setAccountMoney', account)
 end
 
 UseItem = function(xPlayer, item)
