@@ -310,6 +310,8 @@ local DrawWeapon = function(item)
 		SetCurrentPedWeapon(playerPed, `WEAPON_UNARMED`, true)
 		RemoveWeaponFromPed(playerPed, currentWeapon.hash)
 	end
+	TriggerEvent('linden_inventory:currentWeapon', item)
+	GiveWeaponToPed(playerPed, currentWeapon.hash, 0, true, false)
 	Citizen.Wait(800)
 	SendNUIMessage({ message = 'notify', item = item, text = 'Equipped' })
 end
@@ -373,14 +375,15 @@ AddEventHandler('linden_inventory:addAmmo', function(ammo)
 			local curAmmo = GetAmmoInPedWeapon(playerPed, currentWeapon.hash)
 			if curAmmo > maxAmmo then SetPedAmmo(playerPed, currentWeapon.hash, maxAmmo) elseif curAmmo == maxAmmo then return
 			else
+				print(ammo.count)
 				local newAmmo = 0
 				if curAmmo < maxAmmo then missingAmmo = maxAmmo - curAmmo end
 				if missingAmmo > ammo.count then newAmmo = ammo.count + curAmmo removeAmmo = ammo.count - curAmmo
 				else newAmmo = maxAmmo removeAmmo = missingAmmo end
 				if newAmmo < 0 then newAmmo = 0 end
-				SetPedAmmo(playerPed, weapon, newAmmo)
+				SetPedAmmo(playerPed, currentWeapon.hash, newAmmo)
 				MakePedReload(playerPed)
-				TriggerServerEvent('linden_inventory:addWeaponAmmo', currentWeapon, removeAmmo, newAmmo)
+				TriggerServerEvent('linden_inventory:addweaponAmmo', currentWeapon, removeAmmo, newAmmo)
 			end
 		else
 			error("You can't load the %s with %s ammo"):format(currentWeapon.label, ammo.label)
@@ -390,7 +393,7 @@ end)
 
 RegisterNetEvent('linden_inventory:updateWeapon')
 AddEventHandler('linden_inventory:updateWeapon',function(data)
-	if currentWeapon then currentWeapon.item.metadata = data end
+	if currentWeapon then currentWeapon.metadata = data end
 end)
 
 AddEventHandler('linden_inventory:busy',function(busy)
