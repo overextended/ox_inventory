@@ -130,6 +130,7 @@ exports('setMaxWeight', setMaxWeight)
 canCarryItem = function(xPlayer, name, count)
 	local xItem = Items[name]
 	if xItem then
+		if xItem.weight == 0 then return true end
 		if count == nil then count = 1 end
 		local curWeight, itemWeight = Inventories[xPlayer.source].weight, xItem.weight
 		local newWeight = curWeight + (itemWeight * count)
