@@ -122,6 +122,16 @@ AddEventHandler('onResourceStop', function(resourceName)
 	end
 end)
 
+AddEventHandler('linden_inventory:syncAccounts', function(xPlayer, name)
+	Citizen.Wait(50)
+	local count = getInventoryItem(xPlayer, name).count
+	local account = {}
+	account.name = name
+	account.money = count
+	xPlayer.set(name, account)
+	xPlayer.triggerEvent('esx:setAccountMoney', account)
+end)
+
 AddEventHandler('linden_inventory:setPlayerInventory', function(xPlayer, data)
 	local invid = xPlayer.source
 	Inventories[invid] = {
@@ -147,7 +157,7 @@ AddEventHandler('linden_inventory:setPlayerInventory', function(xPlayer, data)
 					weight = xItem.weight + (ammo.weight * ammo.count)
 				else weight = xItem.weight end
 				Inventories[invid].inventory[v.slot] = {name = v.name, label = xItem.label, weight = weight, slot = v.slot, count = v.count, description = xItem.description, metadata = v.metadata, stackable = xItem.stackable}
-				if v.name:find('money') then SyncAccount(xPlayer, v.name) end
+				if v.name:find('money') then TriggerEvent('linden_inventory:syncAccounts', xPlayer, v.name) end
 			end
 		end
 	end
@@ -540,7 +550,7 @@ AddEventHandler('linden_inventory:decreaseDurability', function(slot, item, ammo
 				else
 					decreaseamount = amount * (ammo / 15)
 				end
-				Inventories[xPlayer.source].inventory[slot].metadata.durability = Inventories[xPlayer.source].inventory[slot].metadata.durability - decreaseamount
+				Inventories[xPlayer.source].inventory[slot].metadata.durability = Inventories[xPlayer.source].inventory[slot].metadata.durability - ESX.Round(decreaseamount, 2)
 				TriggerClientEvent('linden_inventory:refreshInventory', xPlayer.source, Inventories[xPlayer.source].inventory)
 				TriggerClientEvent('linden_inventory:updateWeapon', xPlayer.source, Inventories[xPlayer.source].inventory[slot].metadata)
 			end
