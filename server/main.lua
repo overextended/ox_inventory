@@ -564,7 +564,7 @@ AddEventHandler('linden_inventory:reloadWeapon', function(weapon)
 	ammo.count = getInventoryItem(xPlayer, ammo.name).count
 	if ammo.count then Inventories[xPlayer.source].inventory[weapon.slot].metadata.ammo = 0
 		if ammo.count > 0 then TriggerClientEvent('linden_inventory:addAmmo', xPlayer.source, ammo) else
-			TriggerEvent('linden_inventory:updateWeapon', weapon, xPlayer)
+			TriggerEvent('linden_inventory:updateWeapon', weapon, nil, xPlayer)
 		end
 	end
 end)
