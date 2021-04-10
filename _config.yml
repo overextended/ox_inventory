@@ -1,13 +1,5 @@
 theme: jekyll-theme-cayman
-title: Documentation - linden_inventory
+title: Documentation
+description: installing and using linden_inventory
 author: Linden
-
-
-navbar-links:
-Installation: 'index'
-Usage: 'usage'
-Snippets: 'snippets'
-
- 
-social-network-links:
-discord: 'https://discord.gg/qq9HQjsQeu'
+show_downloads: true
