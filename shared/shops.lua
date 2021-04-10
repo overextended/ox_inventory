@@ -53,11 +53,26 @@ Config.PoliceArmoury = {
 		scale = 0.6
 	}, inventory = {
 		{ name = 'ammo-9', price = 5, },
-		{ name = 'WEAPON_KNIFE', price = 200 },
-		{ name = 'WEAPON_BAT', price = 100 },
-		{ name = 'WEAPON_PISTOL', price = 1000, metadata = { registered = true, serial = 'POL' }, license = 'weapon' },
+		{ name = 'ammo-rifle', price = 5, },
+		{ name = 'WEAPON_FLASHLIGHT', price = 200 },
+		{ name = 'WEAPON_NIGHTSTICK', price = 100 },
+		{ name = 'WEAPON_PISTOL', price = 500, metadata = { registered = true, serial = 'POL' }, license = 'weapon' },
+		{ name = 'WEAPON_CARBINERIFLE', price = 1000, metadata = { registered = true, serial = 'POL' }, license = 'weapon', grade = 3 },
+		{ name = 'WEAPON_STUNGUN', price = 500, metadata = { registered = true, serial = 'POL'} },
 	}
 }
+
+Config.Medicine = {
+	blip = {
+		id = 403,
+		colour = 69,
+		scale = 0.6
+	}, inventory = {
+		{ name = 'medikit', price = 26 },
+		{ name = 'WEAPON_STUNGUN', price = 500, metadata = { registered = true, serial = 'EMS' } },
+	}
+}
+
 
 Config.Shops = {
 	{ type = Config.Ammunation, coords = vector3(-662.180, -934.961, 21.829), name = 'Ammunation' },
@@ -100,4 +115,5 @@ Config.Shops = {
 
 	
 	{ type = Config.PoliceArmoury, job = 'police', coords = vector3(487.235, -997.108, 30.69), name = 'Police Armoury'},
+	{ type = Config.Medicine, job = 'ambulance', coords = vector3(306.3687, -601.5139, 43.28406), name = 'Medicine Cabinet'},
 }
