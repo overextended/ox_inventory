@@ -1,5 +1,4 @@
-| [Installation](index.md) | [Usage](usage.md) | [Snippets](snippets.md) |
-| --------------- | --------------- | --------------- |
+| [Installation](index) | [Usage](usage) | [Snippets](snippets) |
 
 <h1 align='center'>Requirements</h1>
 
