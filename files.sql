@@ -21,7 +21,7 @@ ALTER TABLE `items`
 	ADD IF NOT EXISTS `stackable` INT(11) NULL DEFAULT '1', 
 	ADD IF NOT EXISTS `closeonuse` INT(11) NULL DEFAULT '1', 
 	ADD IF NOT EXISTS `description` VARCHAR(50) NULL DEFAULT NULL,
-	PRIMARY KEY (`name`);
+	ADD PRIMARY KEY IF NOT EXISTS (`name`);
 
 
 INSERT INTO `items` (`name`, `label`, `weight`, `can_remove`, `stackable`, `closeonuse`, `description`) VALUES
