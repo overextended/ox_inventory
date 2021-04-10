@@ -253,7 +253,7 @@ AddEventHandler('linden_inventory:openTargetInventory', function(targetId)
 			}
 			Opened[xPlayer.source] = {invid = xTarget.source, type = data.type}
 			Opened[xTarget.source] = {invid = xPlayer.source, type = data.type}
-			TriggerClientEvent('linden_inventory:openInventory',  xPlayer.source, data)
+			TriggerClientEvent('linden_inventory:openInventory',  xPlayer.source, Inventories[xPlayer.source], data)
 		end
 	end
 end)
@@ -494,15 +494,17 @@ end)
 RegisterNetEvent('linden_inventory:saveInventory')
 AddEventHandler('linden_inventory:saveInventory', function(data)
 	local xPlayer = ESX.GetPlayerFromId(source)
-	if data.invid then 
-		if data.type and not data.type:find('Player') and Inventories[data.invid].changed then
-			SaveItems(data.type, data.invid)
-			Inventories[data.invid].changed = false
+	if xPlayer then
+		if data.invid and data.type and not data.type:find('Player') and Inventories[data.invid] then
+			if Inventories[data.invid].changed then 
+				SaveItems(data.type, data.invid)
+				Inventories[data.invid].changed = false
+			end
+			Opened[data.invid] = nil
 		end
-		Opened[data.invid] = nil
+		Opened[xPlayer.source] = nil
+		updateWeight(xPlayer)
 	end
-	Opened[xPlayer.source] = nil
-	updateWeight(xPlayer)
 end)
 
 AddEventHandler('playerDropped', function()
@@ -688,7 +690,7 @@ ESX.RegisterServerCallback('linden_inventory:getItemCount', function(source, cb,
 end)
 
 ESX.RegisterServerCallback('linden_inventory:getPlayerData',function(source, cb)
-	local xPlayer = ESX.GetPlayerFromId(playerId)
+	local xPlayer = ESX.GetPlayerFromId(source)
 	if Inventories[xPlayer.source] then
 		cb(Inventories[xPlayer.source])
 	end
