@@ -85,7 +85,7 @@ AddEventHandler('onResourceStart', function(resourceName)
 		local query = 'SELECT identifier, inventory FROM users WHERE'
 		for i=1, #xPlayers, 1 do
 			local identifier = ESX.GetPlayerFromId(xPlayers[i]).identifier
-			query = query..' identifier LIKE '..identifier..' OR'
+			query = query..' identifier = "'..identifier..'" OR'
 		end
 		if #xPlayers > 0 then
 			exports.ghmattimysql:execute(query:sub(0, -3), function(results)
