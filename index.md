@@ -182,7 +182,7 @@ end
 ## client/main.lua
 * Find and remove anything related to `'esx:restoreLoadout'`
 * If using EXM, remove `isLoadoutLoaded = false` from the skinchanger event
-* Find `-- Keep track of ammo` and remove the threaded function (lines 392 to 413 in ESX | 385 to 406 in EXM)
+* Find `-- Keep track of ammo` and remove the threaded function (lines 392 to 413 in ESX or 385 to 406 in EXM)
 * Find `if IsControlJustReleased(0, 289) then` and remove the function
 * Find `-- Pickups` and remove the function
 #### Optional
@@ -195,7 +195,7 @@ end
 
 
 ## client/functions.lua
-* Remove the `ESX.ShowInventory` function (lines 706 -> 1006 in ESX | 875 to 1120 in EXM)
+* Remove the `ESX.ShowInventory` function (lines 706 -> 1006 in ESX or 875 to 1120 in EXM)
 * Find and remove the following thread (if it exists)
 ```lua
 Citizen.CreateThread(function()
