@@ -1,6 +1,6 @@
 | [Installation](index) | [Usage](usage) | [Snippets](snippets) |
 
-### Weight fix for esx_skin
+## Weight fix for esx_skin
 * Either returns errors or sets the player weight incorrectly, due to getting ESX's weight
 ```lua
 RegisterServerEvent('esx_skin:save')
@@ -22,11 +22,11 @@ AddEventHandler('esx_skin:save', function(skin)
 end)
 ````
 
-### Police body search, without having to /steal
+## Police body search, without having to /steal
 * It's just /steal in a menu basically, has all the same requirements (dead, handsup, cuffed, etc)
 `exports['linden_inventory']:OpenTargetInventory()`
 
-### Create a stash with esx_property
+## Create a stash with esx_property
 * Find and remove the following two blocks of code
 ```lua
 	table.insert(elements, {label = _U('remove_object'),  value = 'room_inventory'})
@@ -44,4 +44,11 @@ end)
 	if IsDisabledControlJustPressed(0, 289) and CurrentAction == 'room_menu' then
 			exports['linden_inventory']:OpenStash({ name = ('%s-%s'):format(CurrentActionData.property.name, CurrentActionData.owner), slots = 71})
 		end
+```
+
+## Set player death status
+* There are better ways to do this, but for the simplest method search go to `esx_ambulancejob/server/main.lua`
+* Locate `RegisterNetEvent('esx_ambulancejob:setDeathStatus')` and add the following
+```lua
+	TriggerEvent('esx_ambulancejob:setDeathStatus', xPlayer.source, isDead)
 ```
