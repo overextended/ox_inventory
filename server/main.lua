@@ -42,6 +42,9 @@ Citizen.CreateThread(function()
 end)
 
 exports.ghmattimysql:ready(function()
+	while GetResourceState('linden_inventory') ~= 'started' do
+		Citizen.Wait(0)
+	end
 	if Status[1] ~= 'error' then
 		local result = exports.ghmattimysql:executeSync('SELECT * FROM items', {})
 		if result then
@@ -107,7 +110,7 @@ AddEventHandler('onResourceStart', function(resourceName)
 end)
 
 RegisterCommand('closeallinv', function(source, args, rawCommand)
-	if source then return end
+	if source > 0 then return end
 	TriggerClientEvent("linden_inventory:closeInventory", -1)
 end, true)
 
@@ -494,7 +497,7 @@ end)
 RegisterNetEvent('linden_inventory:saveInventory')
 AddEventHandler('linden_inventory:saveInventory', function(data)
 	local xPlayer = ESX.GetPlayerFromId(source)
-	if data.invid and Opened[xPlayer.source].invid == data.invid then
+	if data.invid and (Opened[xPlayer.source].invid == data.invid) then
 		if data.type and data.type ~= 'drop' and Inventories[data.invid].changed then
 			SaveItems(data.type, data.invid)
 			Inventories[data.invid].changed = false
@@ -549,7 +552,8 @@ AddEventHandler('linden_inventory:useItem', function(item)
 	else
 		local slot = Inventories[xPlayer.source].inventory[item.slot]
 		local invItem = getInventoryItem(xPlayer, item.name)
-		local consume = Config.ItemList[item.name].consume or 1
+		local consume = 1
+		if Config.ItemList[item.name].consume then consume = Config.ItemList[item.name].consume end
 		if slot == nil or slot.name ~= item.name then
 			if invItem.count > consume then
 				slot = item
@@ -652,7 +656,7 @@ AddEventHandler('linden_inventory:updateWeapon', function(item, type, player)
 	if Inventories[xPlayer.source].inventory[item.slot] ~= nil then
 		if Inventories[xPlayer.source].inventory[item.slot].metadata.ammo ~= nil then
 			Inventories[xPlayer.source].inventory[item.slot].metadata = item.metadata
-			if type == nil then
+			if type == nil and item.ammoType then
 				local ammo = Items[item.ammoType]
 				ammo.count = Inventories[xPlayer.source].inventory[item.slot].metadata.ammo
 				ammo.addweight = (ammo.count * ammo.weight)
