@@ -83,81 +83,81 @@ end
 
 * Locate `self.setAccountMoney` and replace the functions as below
 ```lua
-self.setAccountMoney = function(accountName, money)
-	if money >= 0 then
-		local account = self.getAccount(accountName)
+	self.setAccountMoney = function(accountName, money)
+		if money >= 0 then
+			local account = self.getAccount(accountName)
 
-		if account then
-			local prevMoney = account.money
-			local newMoney = ESX.Math.Round(money)
-			account.money = newMoney
-			if accountName ~= 'bank' then exports['linden_inventory']:setInventoryItem(self, accountName, money) end
-			self.triggerEvent('esx:setAccountMoney', account)
+			if account then
+				local prevMoney = account.money
+				local newMoney = ESX.Math.Round(money)
+				account.money = newMoney
+				if accountName ~= 'bank' then exports['linden_inventory']:setInventoryItem(self, accountName, money) end
+				self.triggerEvent('esx:setAccountMoney', account)
+			end
 		end
 	end
-end
 
-self.addAccountMoney = function(accountName, money)
-	if money > 0 then
-		local account = self.getAccount(accountName)
+	self.addAccountMoney = function(accountName, money)
+		if money > 0 then
+			local account = self.getAccount(accountName)
 
-		if account then
-			local newMoney = account.money + ESX.Math.Round(money)
-			account.money = newMoney
-			if accountName ~= 'bank' then exports['linden_inventory']:addInventoryItem(self, accountName, money) end
-			self.triggerEvent('esx:setAccountMoney', account)
+			if account then
+				local newMoney = account.money + ESX.Math.Round(money)
+				account.money = newMoney
+				if accountName ~= 'bank' then exports['linden_inventory']:addInventoryItem(self, accountName, money) end
+				self.triggerEvent('esx:setAccountMoney', account)
+			end
 		end
 	end
-end
 
-self.removeAccountMoney = function(accountName, money)
-	if money > 0 then
-		local account = self.getAccount(accountName)
+	self.removeAccountMoney = function(accountName, money)
+		if money > 0 then
+			local account = self.getAccount(accountName)
 
-		if account then
-			local newMoney = account.money - ESX.Math.Round(money)
-			account.money = newMoney
-			if accountName ~= 'bank' then exports['linden_inventory']:removeInventoryItem(self, accountName, money) end
-			self.triggerEvent('esx:setAccountMoney', account)
+			if account then
+				local newMoney = account.money - ESX.Math.Round(money)
+				account.money = newMoney
+				if accountName ~= 'bank' then exports['linden_inventory']:removeInventoryItem(self, accountName, money) end
+				self.triggerEvent('esx:setAccountMoney', account)
+			end
 		end
 	end
-end
 
-self.getInventoryItem = function(name, metadata)
-	return exports['linden_inventory']:getInventoryItem(self, name, metadata)
-end
+	self.getInventoryItem = function(name, metadata)
+		return exports['linden_inventory']:getInventoryItem(self, name, metadata)
+	end
 
-self.addInventoryItem = function(name, count, metadata, slot)
-	exports['linden_inventory']:addInventoryItem(self, name, count, metadata, slot)
-end
+	self.addInventoryItem = function(name, count, metadata, slot)
+		exports['linden_inventory']:addInventoryItem(self, name, count, metadata, slot)
+	end
 
-self.removeInventoryItem = function(name, count, metadata)
-	exports['linden_inventory']:removeInventoryItem(self, name, count, metadata)
-end
+	self.removeInventoryItem = function(name, count, metadata)
+		exports['linden_inventory']:removeInventoryItem(self, name, count, metadata)
+	end
 
-self.setInventoryItem = function(name, count, metadata)
-	exports['linden_inventory']:setInventoryItem(self, name, count, metadata)
-end
+	self.setInventoryItem = function(name, count, metadata)
+		exports['linden_inventory']:setInventoryItem(self, name, count, metadata)
+	end
 
-self.getWeight = function()
-	return exports['linden_inventory']:getWeight(self)
-end
+	self.getWeight = function()
+		return exports['linden_inventory']:getWeight(self)
+	end
 
-self.getMaxWeight = function()
-	return exports['linden_inventory']:getMaxWeight(self)
-end
+	self.getMaxWeight = function()
+		return exports['linden_inventory']:getMaxWeight(self)
+	end
 
-self.canCarryItem = function(name, count)
-	return exports['linden_inventory']:canCarryItem(self, name, count)
-end
+	self.canCarryItem = function(name, count)
+		return exports['linden_inventory']:canCarryItem(self, name, count)
+	end
 
-self.canSwapItem = function(firstItem, firstItemCount, testItem, testItemCount)
-	return exports['linden_inventory']:canSwapItem(self, firstItem, firstItemCount, testItem, testItemCount)
-end
+	self.canSwapItem = function(firstItem, firstItemCount, testItem, testItemCount)
+		return exports['linden_inventory']:canSwapItem(self, firstItem, firstItemCount, testItem, testItemCount)
+	end
 
-self.setMaxWeight = function(newWeight)
-	exports['linden_inventory']:canSwapItem(self, newWeight)
-end
+	self.setMaxWeight = function(newWeight)
+		exports['linden_inventory']:canSwapItem(self, newWeight)
+	end
 ```
 * Remove any reference to loadouts or weapons
 
