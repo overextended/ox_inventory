@@ -145,7 +145,7 @@ AddPlayerInventory = function(xPlayer, item, count, metadata, slot)
 				count = 1
 				if type(metadata) ~= 'table' then metadata = {} end
 				if not metadata.durability then metadata.durability = 100 end
-				if not metadata.ammo then metadata.ammo = 0 end
+				if Items[item].ammoType then metadata.ammo = 0 end
 				if not metadata.components then metadata.components = {} end
 				metadata.serial = GenerateSerial(metadata.serial)
 				if metadata.registered == true then metadata.registered = xPlayer.getName() end
