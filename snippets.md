@@ -1,4 +1,4 @@
-| [Installation](index) | [Usage](usage) | [Snippets](snippets) |
+| [Installation](index) | [Usage](usage) | [Snippets](snippets) | [Other Resources](resources)
 
 ## Weight fix for esx_skin
 * Either returns errors or sets the player weight incorrectly, due to getting ESX's weight
