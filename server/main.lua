@@ -165,7 +165,6 @@ AddEventHandler('linden_inventory:clearPlayerInventory', function(xPlayer)
 	for i=1, #accounts do
 		local account = xPlayer.getAccount(accounts[i])
 		account.money = 0
-		print(account.name)
 		xPlayer.setAccount(account)
 		xPlayer.triggerEvent('esx:setAccountMoney', account)
 	end
