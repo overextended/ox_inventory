@@ -27,6 +27,9 @@ Moving items around while the inventory is refreshing can cause the client to de
 
 
 <h1 align='center'>Modifying your framework</h1>
+* If you are updating from hsn-inventory, some functions may need to be reverted to default
+* If you notice any remaining functions that aren't included in this guide, revert them to default
+
 
 ## server/main.lua
 * Search for `-- Inventory` (line 137 for ESX, 142 for EXM)
@@ -59,7 +62,6 @@ end)
 
 
 ## server/classes/player.lua
-* If you are updating from hsn-inventory, revert all functions to the default
 * Remove `loadout` from CreateExtendedPlayer
 * Remove `self.loadout = loadout`
 * Remove `self.maxWeight = Config.MaxWeight`
