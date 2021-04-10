@@ -749,7 +749,7 @@ RegisterKeyMapping('vehinv', 'Open vehicle inventory', 'keyboard', Config.Vehicl
 
 RegisterCommand('steal', function()
 	if not IsPedInAnyVehicle(playerPed, true) and not invOpen and CanOpenInventory() then	 
-		openTargetInventory()
+		OpenTargetInventory()
 	end
 end)
 
