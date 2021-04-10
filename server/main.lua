@@ -124,7 +124,6 @@ AddEventHandler('onResourceStop', function(resourceName)
 end)
 
 AddEventHandler('linden_inventory:setPlayerInventory', function(xPlayer, data)
-	Citizen.Wait(50)
 	local invid = xPlayer.source
 	Inventories[invid] = {
 		id = xPlayer.source,
@@ -269,6 +268,14 @@ AddEventHandler('linden_inventory:buyItem', function(info)
 		TriggerClientEvent('mythic_notify:client:SendAlert', xPlayer.source, { type = 'error', text = 'You are not authorised to purchase this item' })
 		return
 	end
+
+	--[[if checkShop.license then
+		local hasLicense = CheckLicense(xPlayer.identifier, checkShop.license)
+		if not hasLicense then
+			TriggerClientEvent('mythic_notify:client:SendAlert', xPlayer.source, { type = 'error', text = 'You do not have a license' })
+			return
+		end
+	end]]
 
 	if count > 0 then
 		if data.name:find('WEAPON_') then count = 1 end
