@@ -240,7 +240,7 @@ AddEventHandler('linden_inventory:openTargetInventory', function(targetId)
 	if source == TargetId then tTarget = nil end
 	if xTarget and xPlayer then
 		if Opened[xTarget.source] then return end
-		if CheckOpenable(source, 'Player'..targetId, GetEntityCoords(GetPlayerPed(targetId))) then
+		if CheckOpenable(xPlayer, 'Player'..targetId, GetEntityCoords(GetPlayerPed(targetId))) then
 			local TargetPlayer = Inventories[xTarget.source]
 			local data = {
 				id = xTarget.source,
