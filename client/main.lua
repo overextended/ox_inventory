@@ -664,6 +664,7 @@ RegisterCommand('vehinv', function()
 	if not CanOpenInventory() then return end
 	if not isDead and not isCuffed and not IsPedInAnyVehicle(playerPed, false) then -- trunk
 		local vehicle, vehiclePos = ESX.Game.GetVehicleInDirection()
+		if not vehiclePos then vehiclePos = GetEntityCoords(vehicle) end
 		CloseToVehicle = false
 		lastVehicle = nil
 		if vehicle and #(playerCoords - vehiclePos) < 6 then
