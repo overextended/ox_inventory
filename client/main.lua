@@ -263,7 +263,7 @@ end)
 
 RegisterNetEvent('linden_inventory:refreshInventory')
 AddEventHandler('linden_inventory:refreshInventory', function(data, item, text)
-	SendNUIMessage({ message = 'notify', item = item, text = text })
+	if text then SendNUIMessage({ message = 'notify', item = item, text = text }) end
 	SendNUIMessage({
 		message = 'refresh',
 		inventory = data.inventory,
