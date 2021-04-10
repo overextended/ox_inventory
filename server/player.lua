@@ -70,7 +70,8 @@ exports('getWeight', getWeight)
 
 
 getMaxWeight = function(xPlayer)
-	return Inventories[xPlayer.source].maxWeight
+	if not Inventories[xPlayer.source] then return Config.PlayerWeight
+	else return Inventories[xPlayer.source].maxWeight end
 end
 exports('getMaxWeight', getMaxWeight)
 
