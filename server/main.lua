@@ -699,7 +699,7 @@ end)
 ESX.RegisterServerCallback('linden_inventory:getInventory',function(source, cb, target)
 	local xPlayer = ESX.GetPlayerFromId(target)
 	if Inventories[target] then
-		cb(Inventories[target])
+		cb(Inventories[target].inventory)
 	end
 end)
 
