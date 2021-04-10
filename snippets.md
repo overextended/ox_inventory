@@ -63,7 +63,7 @@ function OpenDrugShop()
 
 	ESX.TriggerServerCallback('hsn-inventory:getPlayerInventory',function(playerInventory)
 
-		for k, v in pairs(playerInventory) do
+		for k, v in pairs(playerInventory.inventory) do
 			local price = Config.DrugDealerItems[v.name]
 	
 			if price and v.count > 0 then
