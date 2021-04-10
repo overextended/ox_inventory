@@ -42,6 +42,7 @@ local StartInventory = function()
 	end
 	playerID, playerPed, invOpen, isDead, isCuffed, isBusy, isShooting, usingWeapon, weight, currentDrop = nil, nil, false, false, false, false, false, false, Config.PlayerWeight, {}
 	ESX.TriggerServerCallback('linden_inventory:setup',function(data)
+		while ESX.GetPlayerData().job == nil do Citizen.Wait(100) end
 		ESX.PlayerData = ESX.GetPlayerData()
 		playerPed = PlayerPedId()
 		playerID = data.playerID
@@ -643,98 +644,6 @@ Citizen.CreateThread(function()
 	end
 end)
 
-RegisterNetEvent('linden_inventory:useItem')
-AddEventHandler('linden_inventory:useItem',function(item)
-	if not CanOpenInventory() then return end
-	ESX.TriggerServerCallback('linden_inventory:getItem',function(xItem)
-		if xItem then
-			local data = Config.ItemList[xItem.name]
-			if not data or not next(data) then return end
-			if xItem.closeonuse then TriggerEvent('linden_inventory:closeInventory') end
-			if not data.animDict then data.animDict = 'pickup_object' end
-			if not data.anim then data.anim = 'putdown_low' end
-			if not data.flags then data.flags = 48 end
-
-			-- Trigger effects before the progress bar
-			if data.component then
-				if not currentWeapon then return end
-				local result, esxWeapon = ESX.GetWeapon(currentWeapon.name)
-				
-				for k,v in ipairs(esxWeapon.components) do
-					for k2, v2 in pairs(data.component) do
-						if v.hash == v2 then
-							component = {name = v.name, hash = v2}
-							break
-						end
-					end
-				end
-				if not component then error("This weapon is incompatible with "..xItem.label) return end
-				if HasPedGotWeaponComponent(playerPed, currentWeapon.hash, component.hash) then
-					error("This weapon already has a "..xItem.label) return
-				end
-			end
-
-			if xItem.name == 'lockpick' then
-				TriggerEvent('esx_lockpick:onUse')
-			end
-
-			------------------------------------------------------------------------------------------------
-			if data.useTime and data.useTime >= 0 then
-				TriggerEvent('linden_inventory:busy', true)
-				exports['mythic_progbar']:Progress({
-					name = 'useitem',
-					duration = data.useTime,
-					label = 'Using '..xItem.label,
-					useWhileDead = false,
-					canCancel = false,
-					controlDisables = { disableMovement = data.disableMove, disableCarMovement = false, disableMouse = false, disableCombat = true },
-					animation = { animDict = data.animDict, anim = data.anim, flags = data.flags },
-					prop = { model = data.model, coords = data.coords, rotation = data.rotation }
-				}, function() TriggerEvent('linden_inventory:busy', false) end)
-			else TriggerEvent('linden_inventory:busy', false) end
-			while isBusy do Citizen.Wait(10) end
-
-			if data.hunger then
-				if data.hunger > 0 then TriggerEvent('esx_status:add', 'hunger', data.hunger)
-				else TriggerEvent('esx_status:remove', 'hunger', data.hunger) end
-			end
-			if data.thirst then
-				if data.thirst > 0 then TriggerEvent('esx_status:add', 'thirst', data.thirst)
-				else TriggerEvent('esx_status:remove', 'thirst', data.thirst) end
-			end
-			if data.stress then
-				if data.stress > 0 then TriggerEvent('esx_status:add', 'stress', data.stress)
-				else TriggerEvent('esx_status:remove', 'stress', data.stress) end
-			end
-			if data.drunk then
-				if data.drunk > 0 then TriggerEvent('esx_status:add', 'drunk', data.drunk)
-				else TriggerEvent('esx_status:remove', 'drunk', data.drunk) end
-			end
-			if data.consume then TriggerServerEvent('linden_inventory:removeItem', xItem.name, data.consume, xItem.metadata) end
-			TriggerEvent('linden_inventory:busy', false)
-			------------------------------------------------------------------------------------------------
-
-				if data.component then
-					GiveWeaponComponentToPed(playerPed, currentWeapon.name, component.hash)
-					table.insert(currentWeapon.metadata.components, component.name)
-					TriggerServerEvent('linden_inventory:updateWeapon', currentWeapon, component.name)
-				end
-				
-
-				if xItem.name == 'bandage' then
-					local maxHealth = 200
-					local health = GetEntityHealth(playerPed)
-					local newHealth = math.min(maxHealth, math.floor(health + maxHealth / 16))
-					SetEntityHealth(playerPed, newHealth)
-				end
-
-
-			------------------------------------------------------------------------------------------------
-		end
-	end, item.name, item.metadata)
-end)
-
-
 RegisterCommand('inv', function()
 	if isBusy or invOpen then error("You can't open your inventory right now") return end 
 	if CanOpenInventory() then
@@ -872,4 +781,97 @@ RegisterNUICallback('exit',function(data)
 	TriggerServerEvent('linden_inventory:saveInventory', data)
 	Citizen.Wait(200)
 	invOpen = false
+end)
+
+
+
+RegisterNetEvent('linden_inventory:useItem')
+AddEventHandler('linden_inventory:useItem',function(item)
+	if not CanOpenInventory() then return end
+	ESX.TriggerServerCallback('linden_inventory:getItem',function(xItem)
+		if xItem then
+			local data = Config.ItemList[xItem.name]
+			if not data or not next(data) then return end
+			if xItem.closeonuse then TriggerEvent('linden_inventory:closeInventory') end
+			if not data.animDict then data.animDict = 'pickup_object' end
+			if not data.anim then data.anim = 'putdown_low' end
+			if not data.flags then data.flags = 48 end
+
+			-- Trigger effects before the progress bar
+			if data.component then
+				if not currentWeapon then return end
+				local result, esxWeapon = ESX.GetWeapon(currentWeapon.name)
+				
+				for k,v in ipairs(esxWeapon.components) do
+					for k2, v2 in pairs(data.component) do
+						if v.hash == v2 then
+							component = {name = v.name, hash = v2}
+							break
+						end
+					end
+				end
+				if not component then error("This weapon is incompatible with "..xItem.label) return end
+				if HasPedGotWeaponComponent(playerPed, currentWeapon.hash, component.hash) then
+					error("This weapon already has a "..xItem.label) return
+				end
+			end
+
+			if xItem.name == 'lockpick' then
+				TriggerEvent('esx_lockpick:onUse')
+			end
+
+			------------------------------------------------------------------------------------------------
+			if data.useTime and data.useTime >= 0 then
+				TriggerEvent('linden_inventory:busy', true)
+				exports['mythic_progbar']:Progress({
+					name = 'useitem',
+					duration = data.useTime,
+					label = 'Using '..xItem.label,
+					useWhileDead = false,
+					canCancel = false,
+					controlDisables = { disableMovement = data.disableMove, disableCarMovement = false, disableMouse = false, disableCombat = true },
+					animation = { animDict = data.animDict, anim = data.anim, flags = data.flags },
+					prop = { model = data.model, coords = data.coords, rotation = data.rotation }
+				}, function() TriggerEvent('linden_inventory:busy', false) end)
+			else TriggerEvent('linden_inventory:busy', false) end
+			while isBusy do Citizen.Wait(10) end
+
+			if data.hunger then
+				if data.hunger > 0 then TriggerEvent('esx_status:add', 'hunger', data.hunger)
+				else TriggerEvent('esx_status:remove', 'hunger', data.hunger) end
+			end
+			if data.thirst then
+				if data.thirst > 0 then TriggerEvent('esx_status:add', 'thirst', data.thirst)
+				else TriggerEvent('esx_status:remove', 'thirst', data.thirst) end
+			end
+			if data.stress then
+				if data.stress > 0 then TriggerEvent('esx_status:add', 'stress', data.stress)
+				else TriggerEvent('esx_status:remove', 'stress', data.stress) end
+			end
+			if data.drunk then
+				if data.drunk > 0 then TriggerEvent('esx_status:add', 'drunk', data.drunk)
+				else TriggerEvent('esx_status:remove', 'drunk', data.drunk) end
+			end
+			if data.consume then TriggerServerEvent('linden_inventory:removeItem', xItem.name, data.consume, xItem.metadata) end
+			TriggerEvent('linden_inventory:busy', false)
+			------------------------------------------------------------------------------------------------
+
+				if data.component then
+					GiveWeaponComponentToPed(playerPed, currentWeapon.name, component.hash)
+					table.insert(currentWeapon.metadata.components, component.name)
+					TriggerServerEvent('linden_inventory:updateWeapon', currentWeapon, component.name)
+				end
+				
+
+				if xItem.name == 'bandage' then
+					local maxHealth = 200
+					local health = GetEntityHealth(playerPed)
+					local newHealth = math.min(maxHealth, math.floor(health + maxHealth / 16))
+					SetEntityHealth(playerPed, newHealth)
+				end
+
+
+			------------------------------------------------------------------------------------------------
+		end
+	end, item.name, item.metadata)
 end)
