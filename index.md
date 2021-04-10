@@ -27,8 +27,12 @@ Moving items around while the inventory is refreshing can cause the client to de
 
 
 <h1 align='center'>Modifying your framework</h1>
-* If you are updating from hsn-inventory, some functions may need to be reverted to default
-* If you notice any remaining functions that aren't included in this guide, revert them to default
+
+#### Updating from hsn-inventory
+* Though the changes being applied are mostly the same, there are some minor differences (aside from the obvious name change)
+* `ESX.SavePlayer` is no longer being modified and should be reverted to default
+* `self.getAccounts` and `self.getAccount` are no longer being modified and should be reverted to default
+* That should be everything, but let me know if I missed anything leftover
 
 
 ## server/main.lua
