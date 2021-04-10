@@ -127,12 +127,11 @@ AddPlayerInventory = function(xPlayer, item, count, metadata, slot)
 		local toSlot, existing
 		if slot == nil then
 			for i=1, Config.PlayerSlots do
-				if xItem.stackable == 1 and Inventories[xPlayer.source].inventory[i] and Inventories[xPlayer.source].inventory[i].name == item then print('a') toSlot = i existing = true break
-				elseif Inventories[xPlayer.source].inventory[i] == nil then print('b') toSlot = i existing = false break end
+				if xItem.stackable == 1 and Inventories[xPlayer.source].inventory[i] and Inventories[xPlayer.source].inventory[i].name == item then toSlot = i existing = true break
+				elseif Inventories[xPlayer.source].inventory[i] == nil then toSlot = i existing = false break end
 			end
 			slot = toSlot
 		end
-		print(slot)
 		if item:find('WEAPON_') then
 			xItem.stackable = false
 			if Config.Throwable[item] then
