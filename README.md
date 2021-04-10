@@ -1,6 +1,6 @@
 <h1 align='center'><a href='https://thelindat.github.io/linden_inventory/'>Installation Guide</a></h1>
 
-<p align='center'><img src='https://i.imgur.com/JxZpgNM.png'/><br>
+<p align='center'><br>
 <a href='https://streamable.com/bggvpg'>Showcase</a> | <a href='https://discord.gg/hmcmv3P7YW'>Discord</a></p>
 
 ## What's changed?
