@@ -1,3 +1,3 @@
-| [Installation]() | [Usage](usage) | [Snippets](snippets) |
+| [Installation](/) | [Usage](usage) | [Snippets](snippets) |
 
 # todo
