@@ -37,8 +37,6 @@ Citizen.CreateThread(function()
 	if Status[1] == 'error' then message(Status[2], 2) return end
 	while (Status[1] == 'loaded') do Citizen.Wait(125) if Status[1] == 'ready' then break end end
 	message('Inventory setup is complete', 2)
-	Citizen.Wait(500)
-	TriggerClientEvent('linden_inventory:forceStart', -1)
 end)
 
 exports.ghmattimysql:ready(function()
@@ -495,8 +493,8 @@ RegisterNetEvent('linden_inventory:saveInventory')
 AddEventHandler('linden_inventory:saveInventory', function(data)
 	local xPlayer = ESX.GetPlayerFromId(source)
 	if xPlayer then
-		if data.invid and data.type and not data.type:find('Player') and Inventories[data.invid] then
-			if Inventories[data.invid].changed then 
+		if data.invid then
+			if data.type and not data.type:find('Player') and Inventories[data.invid] and Inventories[data.invid].changed then 
 				SaveItems(data.type, data.invid)
 				Inventories[data.invid].changed = false
 			end
