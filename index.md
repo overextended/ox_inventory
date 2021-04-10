@@ -1,3 +1,6 @@
+| [Installation](index.md) | [Usage](usage.md) | [Snippets](snippets.md) |
+| --------------- | --------------- | --------------- |
+
 <h1 align='center'>Requirements</h1>
 
 * OneSync must be enabled on your server (Legacy or Infinity)
@@ -5,6 +8,8 @@
 * [ghmattimysql](https://github.com/GHMatti/ghmattimysql/releases)
 * [mythic_progbar](https://github.com/thelindat/mythic_progbar)
 * [mythic_notify](https://github.com/thelindat/mythic_notify)
+
+* If I say to remove something, feel free to keep it in a comment block `--[[ ]]`
 <br><br>
 
 <h1 align='center'>Modifying third-party resources</h1>
@@ -165,7 +170,7 @@ end
 		exports['linden_inventory']:canSwapItem(self, newWeight)
 	end
 ```
-* Remove any reference to loadouts or weapons
+* Remove any functions related to loadouts or weapons
 
 
 ## server/functions.lua
