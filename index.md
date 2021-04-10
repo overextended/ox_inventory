@@ -1,4 +1,4 @@
-| [Installation]() | [Usage](usage) | [Snippets](snippets) |
+| [Installation](index) | [Usage](usage) | [Snippets](snippets) |
 
 <h1 align='center'>Requirements</h1>
 
@@ -177,9 +177,9 @@ end
 
 
 ## client/main.lua
-* Find and remove any reference to `'esx:restoreLoadout'`
+* Find and remove anything related to `'esx:restoreLoadout'`
 * If using EXM, remove `isLoadoutLoaded = false` from the skinchanger event
-* Find `-- Keep track of ammo` and remove the threaded function (for ESX this is within `StartServerSyncLoops()`, do not remove the main function)
+* Find `-- Keep track of ammo` and remove the threaded function (lines 392 to 413 in ESX | 385 to 406 in EXM)
 * Find `if IsControlJustReleased(0, 289) then` and remove the function
 * Find `-- Pickups` and remove the function
 #### Optional
@@ -192,4 +192,6 @@ end
 
 
 ## client/functions.lua
-* Remove the `ESX.ShowInventory` function
+* Remove the `ESX.ShowInventory` function (lines 706 -> 1006 in ESX | 875 to 1120 in EXM)
+
+<h4 align='center'>Getting errors? You need to check your edits and confirm you removed it all properly<br>Restarting your framework should show lines causing errors (in server or client console)</h4>
