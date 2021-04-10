@@ -417,10 +417,6 @@ AddEventHandler('onResourceStop', function(resourceName)
 	end
 end)
 
-AddEventHandler('gameEventTriggered', function(name, args)
-print('event '.. name .. ' (' .. json.encode(args) .. ')')
-end)
-
 Citizen.CreateThread(function()
 	local Keys = {157, 158, 160, 164, 165}
 	local wait = false
