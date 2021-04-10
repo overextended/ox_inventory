@@ -790,6 +790,7 @@ end, true, {help = 'set account money', validate = true, arguments = {
 OpenStash = function(xPlayer, data)
 	TriggerEvent('linden_inventory:openInventory', {type = 'stash', id = data.name, slots = data.slots, coords = data.coords, job = data.job  }, xPlayer)
 end
+exports('OpenStash', OpenStash)
 
 ESX.RegisterCommand('evidence', 'user', function(xPlayer, args, showError)
 	if xPlayer.job.name == 'police' then
