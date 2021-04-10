@@ -651,7 +651,8 @@ Citizen.CreateThread(function()
 end)
 
 RegisterCommand('inv', function()
-	if isBusy or invOpen then error("You can't open your inventory right now") return end 
+	if not playerID and ESX.GetPlayerData().job ~= nil then StartInventory() end
+	if isBusy or invOpen then error("You can't open your inventory right now") return end
 	if CanOpenInventory() then
 		TriggerEvent('randPickupAnim')
 		TriggerServerEvent('linden_inventory:openInventory', {type = 'drop', drop = currentDrop })
