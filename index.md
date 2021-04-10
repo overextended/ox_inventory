@@ -1,4 +1,4 @@
-| [Installation](index) | [Usage](usage) | [Snippets](snippets) |
+| [Installation]() | [Usage](usage) | [Snippets](snippets) |
 
 <h1 align='center'>Requirements</h1>
 
@@ -179,7 +179,7 @@ end
 ## client/main.lua
 * Find and remove any reference to `'esx:restoreLoadout'`
 * If using EXM, remove `isLoadoutLoaded = false` from the skinchanger event
-* Find `-- Keep track of ammo` and remove the function
+* Find `-- Keep track of ammo` and remove the threaded function (for ESX this is within `StartServerSyncLoops()`, do not remove the main function)
 * Find `if IsControlJustReleased(0, 289) then` and remove the function
 * Find `-- Pickups` and remove the function
 #### Optional
