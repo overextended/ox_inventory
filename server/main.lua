@@ -658,6 +658,33 @@ ESX.RegisterServerCallback('linden_inventory:getItem', function(source, cb, item
 	cb(xItem)
 end)
 
+ESX.RegisterServerCallback('linden_inventory:getItemCount', function(source, cb, item, metadata)
+	local xPlayer = ESX.GetPlayerFromId(source)
+	local xItem = getInventoryItem(xPlayer, item, metadata)
+	cb(xItem.count)
+end)
+
+ESX.RegisterServerCallback('linden_inventory:getPlayerData',function(source, cb)
+	local xPlayer = ESX.GetPlayerFromId(playerId)
+	if Inventories[xPlayer.source] then
+		cb(Inventories[xPlayer.source])
+	end
+end)
+
+ESX.RegisterServerCallback('linden_inventory:getOtherPlayerData',function(source, cb, target)
+	local xPlayer = ESX.GetPlayerFromId(target)
+	if Inventories[xPlayer.source] then
+		cb(Inventories[xPlayer.source])
+	end
+end)
+
+ESX.RegisterServerCallback('linden_inventory:getInventory',function(source, cb, target)
+	local xPlayer = ESX.GetPlayerFromId(target)
+	if Inventories[target] then
+		cb(Inventories[target])
+	end
+end)
+
 ESX.RegisterServerCallback('linden_inventory:buyLicense', function(source, cb)
 	local xPlayer = ESX.GetPlayerFromId(source)
 
