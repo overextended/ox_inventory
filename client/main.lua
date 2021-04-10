@@ -389,7 +389,7 @@ AddEventHandler('linden_inventory:addAmmo', function(ammo)
 				TriggerServerEvent('linden_inventory:addweaponAmmo', currentWeapon, removeAmmo, newAmmo)
 			end
 		else
-			error("You can't load the %s with %s ammo"):format(currentWeapon.label, ammo.label)
+			error("You can't load the "..currentWeapon.label.." with "..ammo.label.." ammo")
 		end
 	end
 end)
