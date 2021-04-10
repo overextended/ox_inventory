@@ -141,7 +141,7 @@ AddEventHandler('linden_inventory:setPlayerInventory', function(xPlayer, data)
 			local xItem = Items[v.name]
 			if xItem then
 				local weight
-				if v.metadata.ammo then
+				if xItem.ammoType then
 					local ammo = {}
 					ammo.type = xItem.ammoType
 					ammo.count = v.metadata.ammo
@@ -149,6 +149,7 @@ AddEventHandler('linden_inventory:setPlayerInventory', function(xPlayer, data)
 					weight = xItem.weight + (ammo.weight * ammo.count)
 				else weight = xItem.weight end
 				Inventories[invid].inventory[v.slot] = {name = v.name, label = xItem.label, weight = weight, slot = v.slot, count = v.count, description = xItem.description, metadata = v.metadata, stackable = xItem.stackable}
+				if xItem.ammoType then Inventories[invid].inventory[v.slot].ammoType = xItem.ammoType end
 				if v.name:find('money') then SyncAccounts(xPlayer, v.name) end
 			end
 		end
@@ -230,7 +231,7 @@ AddEventHandler('linden_inventory:openTargetInventory', function(targetId)
 			local TargetPlayer = Inventories[xTarget.source]
 			local data = {
 				id = xTarget.source,
-				name = 'Player '..xTarget.identifier,
+				name = 'Player '..xTarget.source,
 				type = 'TargetPlayer',
 				slots = TargetPlayer.slots,
 				maxWeight = TargetPlayer.maxWeight,
@@ -545,11 +546,11 @@ end)
 RegisterNetEvent('linden_inventory:reloadWeapon')
 AddEventHandler('linden_inventory:reloadWeapon', function(weapon)
 	local xPlayer = ESX.GetPlayerFromId(source)
-	local ammo = Items[weapon.ammo]
-	ammo.count = getItemCount(source, weapon.ammo)
-	if ammo.count then Inventories[xPlayer.source].inventory[weapon.item.slot].metadata.ammo = 0
-		if ammo.count > 0 then TriggerClientEvent('linden_inventory:addAmmo', source, ammo) else
-			TriggerEvent('linden_inventory:updateWeapon', weapon.item, weapon.ammo, xPlayer)
+	local ammo = Items[weapon.ammoType]
+	ammo.count = getInventoryItem(xPlayer, ammo.name).count
+	if ammo.count then Inventories[xPlayer.source].inventory[weapon.slot].metadata.ammo = 0
+		if ammo.count > 0 then TriggerClientEvent('linden_inventory:addAmmo', xPlayer.source, ammo) else
+			TriggerEvent('linden_inventory:updateWeapon', weapon, xPlayer)
 		end
 	end
 end)
@@ -602,7 +603,7 @@ AddEventHandler('linden_inventory:decreaseDurability', function(slot, item, ammo
 					decreaseamount = amount * (ammo / 15)
 				end
 				Inventories[xPlayer.source].inventory[slot].metadata.durability = Inventories[xPlayer.source].inventory[slot].metadata.durability - ESX.Round(decreaseamount, 2)
-				TriggerClientEvent('linden_inventory:refreshInventory', xPlayer.source, Inventories[xPlayer.source].inventory)
+				TriggerClientEvent('linden_inventory:refreshInventory', xPlayer.source, Inventories[xPlayer.source])
 				TriggerClientEvent('linden_inventory:updateWeapon', xPlayer.source, Inventories[xPlayer.source].inventory[slot].metadata)
 			end
 		end
@@ -614,14 +615,12 @@ AddEventHandler('linden_inventory:addweaponAmmo', function(item, removeAmmo, new
 	local xPlayer = ESX.GetPlayerFromId(source)
 	if Inventories[xPlayer.source].inventory[item.slot] ~= nil then
 		if Inventories[xPlayer.source].inventory[item.slot].metadata.ammo ~= nil then
-			local ammo = {}
-			ammo.type = Items[item.name].ammoType
-			ammo.count = newAmmo
-			ammo.weight = Items[ammo.type].weight
-			ammo.addweight = (ammo.count * ammo.weight)
-			Inventories[xPlayer.source].inventory[item.slot].metadata.ammo = ammo.count
-			Inventories[xPlayer.source].inventory[item.slot].weight = Items[item.name].weight + ammo.addweight
-			RemovePlayerInventory(xPlayer, ammo.type, removeAmmo)
+			local ammo = Items[item.ammoType]
+			local count = newAmmo
+			local addweight = (count * ammo.weight)
+			Inventories[xPlayer.source].inventory[item.slot].metadata.ammo = count
+			Inventories[xPlayer.source].inventory[item.slot].weight = Items[item.name].weight + addweight
+			RemovePlayerInventory(xPlayer, ammo.name, removeAmmo)
 		end
 		TriggerEvent('linden_inventory:decreaseDurability', item.slot, item.name, removeAmmo, xPlayer)
 	end
@@ -629,21 +628,20 @@ end)
 
 
 RegisterNetEvent('linden_inventory:updateWeapon')
-AddEventHandler('linden_inventory:updateWeapon', function(item, type, xPlayer)
-	local xPlayer = xPlayer or ESX.GetPlayerFromId(source)
+AddEventHandler('linden_inventory:updateWeapon', function(item, type, player)
+	local xPlayer
+	if player then xPlayer = player else xPlayer = ESX.GetPlayerFromId(source) end
 	if Inventories[xPlayer.source].inventory[item.slot] ~= nil then
 		if Inventories[xPlayer.source].inventory[item.slot].metadata.ammo ~= nil then
 			Inventories[xPlayer.source].inventory[item.slot].metadata = item.metadata
 			if type == nil then
-				local ammo = {}
-				ammo.type = Items[item.name].ammoType
+				local ammo = Items[item.ammoType]
 				ammo.count = Inventories[xPlayer.source].inventory[item.slot].metadata.ammo
-				ammo.weight = Items[ammo.type].weight
 				ammo.addweight = (ammo.count * ammo.weight)
 				Inventories[xPlayer.source].inventory[item.slot].weight = Items[item.name].weight + ammo.addweight
 			end
 			TriggerClientEvent('linden_inventory:refreshInventory', xPlayer.source, Inventories[xPlayer.source])
-			TriggerClientEvent('linden_inventory:updateWeapon', xPlayer.source, Inventories[xPlayer.source][item.slot].metadata)
+			TriggerClientEvent('linden_inventory:updateWeapon', xPlayer.source, Inventories[xPlayer.source].inventory[item.slot].metadata)
 		end
 	end
 end)
