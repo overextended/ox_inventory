@@ -420,10 +420,16 @@ end)
 
 Citizen.CreateThread(function()
 	local Keys = {157, 158, 160, 164, 165}
+	local Disable = {37, 157, 158, 160, 164, 165, 289}
 	local wait = false
 	while true do
 		sleep = 3
-		
+		for i=1, #Disable, 1 do
+			DisableControlAction(0, Disable[i], true)
+		end
+		for i = 19, 20 do
+			HideHudComponentThisFrame(i)
+		end
 		if isBusy then
 			DisableControlAction(0, 24, true)
 			DisableControlAction(0, 25, true)
