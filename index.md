@@ -40,6 +40,7 @@ Moving items around while the inventory is refreshing can cause the client to de
 
 
 ## server/main.lua
+* Remove `loadout,` from `MySQL.Async.fetchAll`
 * Search for `-- Inventory` (line 137 for ESX, 142 for EXM)
 * Remove everything from this line until you reach `-- Group`, then add
 ```lua
@@ -174,6 +175,8 @@ end
 
 ## server/functions.lua
 * Remove the `ESX.CreatePickup` function
+* Remove `loadout = @loadout` from the MySQL function
+* Remove `['@loadout'] = json.encode(xPlayer.getLoadout(true)),` from `ESX.SavePlayer`
 
 
 ## client/main.lua
@@ -193,5 +196,7 @@ end
 
 ## client/functions.lua
 * Remove the `ESX.ShowInventory` function (lines 706 -> 1006 in ESX | 875 to 1120 in EXM)
+
+#### Confirm you have removed all functions trying to get loadout data
 
 <h4 align='center'>Getting errors? You need to check your edits and confirm you removed it all properly<br>Restarting your framework should show lines causing errors (in server or client console)</h4>
