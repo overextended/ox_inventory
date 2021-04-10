@@ -552,13 +552,15 @@ AddEventHandler('linden_inventory:useItem', function(item)
 	else
 		local slot = Inventories[xPlayer.source].inventory[item.slot]
 		local invItem = getInventoryItem(xPlayer, item.name)
-		local consume = 1
-		if Config.ItemList[item.name].consume then consume = Config.ItemList[item.name].consume end
-		if slot == nil or slot.name ~= item.name then
-			if invItem.count > consume then
-				slot = item
-			else
-				print('not enough')
+		if Config.ItemList[item.name] then
+			local consume = Config.ItemList[item.name].consume or 1
+			if slot == nil or slot.name ~= item.name then
+				if invItem.count > consume then
+					slot = item
+				else
+					print('not enough')
+					return
+				end
 			end
 		end
 		UseItem(xPlayer, slot)
