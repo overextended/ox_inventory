@@ -251,12 +251,9 @@ AddEventHandler('linden_inventory:openTargetInventory', function(targetId)
 				weight = TargetPlayer.weight,
 				inventory = TargetPlayer.inventory
 			}
-
-			
 			Opened[xPlayer.source] = {invid = xTarget.source, type = data.type}
 			Opened[xTarget.source] = {invid = xPlayer.source, type = data.type}
 			TriggerClientEvent('linden_inventory:openInventory',  xPlayer.source, data)
-
 		end
 	end
 end)
@@ -352,7 +349,7 @@ AddEventHandler('linden_inventory:saveInventoryData', function(data)
 			elseif data.frominv == 'TargetPlayer' then
 				local targetId = string.gsub(data.invid, 'Player ', '')
 				local xTarget = ESX.GetPlayerFromId(playerId)
-				invid = xTarget.source
+				invid = 'Player '..xTarget.source
 			else
 				invid = data.invid
 			end
@@ -399,7 +396,7 @@ AddEventHandler('linden_inventory:saveInventoryData', function(data)
 				elseif data.frominv == 'TargetPlayer' then
 					local targetId = string.gsub(data.invid, 'Player ', '')
 					local xTarget = ESX.GetPlayerFromId(playerId)
-					invid = xTarget.source
+					invid = 'Player '..xTarget.source
 					invid2 = playerinv
 				else
 					invid = data.invid
@@ -414,7 +411,7 @@ AddEventHandler('linden_inventory:saveInventoryData', function(data)
 					local targetId = string.gsub(data.invid2, 'Player ', '')
 					local xTarget = ESX.GetPlayerFromId(playerId)
 					invid = playerinv
-					invid2 = xTarget.source
+					invid2 = 'Player '..xTarget.source
 				else
 					invid = playerinv
 					invid2 = data.invid2
@@ -497,8 +494,8 @@ end)
 RegisterNetEvent('linden_inventory:saveInventory')
 AddEventHandler('linden_inventory:saveInventory', function(data)
 	local xPlayer = ESX.GetPlayerFromId(source)
-	if data.invid and (Opened[xPlayer.source].invid == data.invid) then
-		if data.type and data.type ~= 'drop' and Inventories[data.invid].changed then
+	if data.invid then 
+		if data.type and not data.type:find('Player') and Inventories[data.invid].changed then
 			SaveItems(data.type, data.invid)
 			Inventories[data.invid].changed = false
 		end
@@ -562,8 +559,10 @@ AddEventHandler('linden_inventory:useItem', function(item)
 					return
 				end
 			end
+			UseItem(xPlayer, slot)
+		else
+			UseItem(xPlayer, item)
 		end
-		UseItem(xPlayer, slot)
 	end
 end)
 
