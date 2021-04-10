@@ -167,7 +167,7 @@ end
 	end
 
 	self.setMaxWeight = function(newWeight)
-		exports['linden_inventory']:setMaxWeight(self, newWeight)
+		return exports['linden_inventory']:getMaxWeight(self, newWeight)
 	end
 ```
 * Remove any functions related to loadouts or weapons
