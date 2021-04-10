@@ -37,6 +37,8 @@ Citizen.CreateThread(function()
 	if Status[1] == 'error' then message(Status[2], 2) return end
 	while (Status[1] == 'loaded') do Citizen.Wait(125) if Status[1] == 'ready' then break end end
 	message('Inventory setup is complete', 2)
+	Citizen.Wait(500)
+	TriggerClientEvent('linden_inventory:forceStart', -1)
 end)
 
 exports.ghmattimysql:ready(function()
@@ -72,6 +74,7 @@ ESX.RegisterServerCallback('linden_inventory:setup', function(source, cb)
 		if loop == 10 then return end
 		Citizen.Wait(100)
 	end
+	Citizen.Wait(100)
 	local data = {drops = Drops, name = Inventories[src].name, playerID = src }
 	Opened[src] = nil
 	cb(data)
@@ -89,14 +92,15 @@ AddEventHandler('onResourceStart', function(resourceName)
 		end
 		if #xPlayers > 0 then
 			exports.ghmattimysql:execute(query:sub(0, -3), function(results)
-				for k, v in ipairs(results) do
-					local xPlayer = ESX.GetPlayerFromIdentifier(v.identifier)
-					TriggerEvent('linden_inventory:setPlayerInventory', xPlayer, json.decode(v.inventory))
+				if results then
+					for k, v in ipairs(results) do
+						local xPlayer = ESX.GetPlayerFromIdentifier(v.identifier)
+						TriggerEvent('linden_inventory:setPlayerInventory', xPlayer, json.decode(v.inventory))
+					end
+					if #xPlayers > 1 then message('Created inventories for '..#(results)..' active players', 2) else message('Created inventory for 1 active player', 2) end
+					Citizen.Wait(10)
+					Status[1] = 'ready'
 				end
-				TriggerClientEvent('linden_inventory:forceStart', -1)
-				if #xPlayers > 1 then message('Created inventories for '..#(results)..' active players', 2) else message('Created inventory for 1 active player', 2) end
-				Citizen.Wait(10)
-				Status[1] = 'ready'
 			end)
 		end
 	end
