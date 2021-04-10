@@ -4,10 +4,10 @@ author: Linden
 
 
 navbar-links:
-		Installation: 'index'
-		Usage: 'usage'
-		Snippets: 'snippets'
+Installation: 'index'
+Usage: 'usage'
+Snippets: 'snippets'
 
  
 social-network-links:
-	discord: 'https://discord.gg/qq9HQjsQeu'
+discord: 'https://discord.gg/qq9HQjsQeu'
