@@ -1,4 +1,4 @@
-| [Installation](index) | [Usage](usage) | [Snippets](snippets) |
+| [Installation](index) | [Usage](usage) | [Snippets](snippets) | [Other Resources](resources)
 
 ## xPlayer functions
 * Compatibility is important, that's why we've modified the framework with the inventory exports
