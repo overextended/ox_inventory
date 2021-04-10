@@ -127,16 +127,17 @@ AddPlayerInventory = function(xPlayer, item, count, metadata, slot)
 		local toSlot, existing
 		if slot == nil then
 			for i=1, Config.PlayerSlots do
-				if toSlot == nil then if Inventories[xPlayer.source].inventory[i] == nil then toSlot = i existing = false if not xItem.stackable then break end end end
-				if Inventories[xPlayer.source].inventory[i] and Inventories[xPlayer.source].inventory[i].name == item then toSlot = i existing = true break end
+				if xItem.stackable == 1 and Inventories[xPlayer.source].inventory[i] and Inventories[xPlayer.source].inventory[i].name == item then print('a') toSlot = i existing = true break
+				elseif Inventories[xPlayer.source].inventory[i] == nil then print('b') toSlot = i existing = false break end
 			end
 			slot = toSlot
 		end
+		print(slot)
 		if item:find('WEAPON_') then
-			local stackable = false
+			xItem.stackable = false
 			if Config.Throwable[item] then
 				metadata = {throwable=1}
-				stacks = true
+				xItem.stackable = true
 			elseif Config.Melee[item] or Config.Miscellaneous[item] then
 				count = 1
 				metadata = {}
@@ -150,7 +151,7 @@ AddPlayerInventory = function(xPlayer, item, count, metadata, slot)
 				metadata.serial = GenerateSerial(metadata.serial)
 				if metadata.registered == true then metadata.registered = xPlayer.getName() end
 			end
-			Inventories[xPlayer.source].inventory[slot] = {name = item, label = xItem.label, weight = xItem.weight, slot = slot, count = count, description = xItem.description, metadata = metadata, stackable = stacks, closeonuse = true, ammoType = xItem.ammoType}
+			Inventories[xPlayer.source].inventory[slot] = {name = item, label = xItem.label, weight = xItem.weight, slot = slot, count = count, description = xItem.description, metadata = metadata, stackable = xItem.stackable, closeonuse = true, ammoType = xItem.ammoType}
 			Inventories[xPlayer.source].weight = Inventories[xPlayer.source].weight + (xItem.weight * count)
 			return ItemNotify(xPlayer, item, count, 'Added')
 		elseif item:find('identification') then
@@ -160,7 +161,7 @@ AddPlayerInventory = function(xPlayer, item, count, metadata, slot)
 			metadata.description = GetPlayerIdentification(xPlayer)
 			local added = count
 			if existing then count = Inventories[xPlayer.source].inventory[slot].count + count end
-			Inventories[xPlayer.source].inventory[slot] = {name = item, label = xItem.label, weight = xItem.weight, slot = slot, count = count, description = xItem.description, metadata = metadata, stackable = true, closeonuse = true}
+			Inventories[xPlayer.source].inventory[slot] = {name = item, label = xItem.label, weight = xItem.weight, slot = slot, count = count, description = xItem.description, metadata = metadata, stackable = xItem.stackable, closeonuse = true}
 			Inventories[xPlayer.source].weight = Inventories[xPlayer.source].weight + (xItem.weight * count)
 			return ItemNotify(xPlayer, item, added, 'Added')
 		else
