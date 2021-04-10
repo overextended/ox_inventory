@@ -72,6 +72,8 @@ end)
 
 ## server/classes/player.lua
 * Remove `loadout` from CreateExtendedPlayer
+* Remove `inventory` from CreateExtendedPlayer
+* Change `self.inventory = inventory` to `self.inventory = {}`
 * Remove `self.loadout = loadout`
 * Remove `self.maxWeight = Config.MaxWeight`
 * Locate `self.getAccount`, below it add
