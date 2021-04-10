@@ -217,11 +217,6 @@ AddEventHandler('esx:playerLoaded', function()
 	StartInventory()
 end)
 
-RegisterNetEvent('linden_inventory:forceStart')
-AddEventHandler('linden_inventory:forceStart', function()
-	StartInventory()
-end)
-
 AddEventHandler('esx:onPlayerSpawn', function(spawn)
 	isDead = false
 end)
