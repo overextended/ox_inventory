@@ -1,4 +1,4 @@
-| [Installation](index) | [Usage](usage) | [Snippets](snippets) |
+| [Installation](index) | [Usage](usage) | [Snippets](snippets) | [Other Resources](resources)
 
 <h1 align='center'>Requirements</h1>
 
