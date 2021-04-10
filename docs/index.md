@@ -5,7 +5,7 @@
 * [ghmattimysql](https://github.com/GHMatti/ghmattimysql/releases)
 * [mythic_progbar](https://github.com/thelindat/mythic_progbar)
 * [mythic_notify](https://github.com/thelindat/mythic_notify)
-<br><br></p>
+<br><br>
 
 <h1 align='center'>Modifying third-party resources</h1>
 
@@ -73,12 +73,14 @@ self.setAccount = function(account)
 	end
 end
 ```
+
 * Locate `self.getInventory` and replace the function with
 ```lua
 self.getInventory = function()
 	return exports['linden_inventory']:getPlayerInventory(self)
 end
 ```
+
 * Locate `self.setAccountMoney` and replace the functions as below
 ```lua
 self.setAccountMoney = function(accountName, money)
