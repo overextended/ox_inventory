@@ -352,7 +352,7 @@ AddEventHandler('linden_inventory:weapon', function(item)
 end)
 
 local weaponTimer = 0
-AddEventHandler('linden_inventory:usedWeapon',function(weapon)
+AddEventHandler('linden_inventory:usedWeapon',function()
 	weaponTimer = (100 * 3)
 end)
 
@@ -470,7 +470,7 @@ Citizen.CreateThread(function()
 							wait = false
 						end)
 					end
-				elseif currentWeapon.metadata.ammoType then
+				elseif currentWeapon.ammoType then
 					currentWeapon.metadata.ammo = currentAmmo
 					if currentAmmo == 0 then
 						weaponTimer = 0
