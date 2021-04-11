@@ -105,7 +105,7 @@ end)
 * Change `self.inventory = inventory` to `self.inventory = {}`
 * Remove `self.loadout = loadout`
 * Remove `self.maxWeight = Config.MaxWeight`
-* Locate `self.getAccount`, below it add
+* Add this new function (I have it after `self.getAccount = function()`)
 ```lua
 self.setAccount = function(account)
 	for k,v in ipairs(self.accounts) do
