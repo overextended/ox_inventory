@@ -334,15 +334,8 @@ UseItem = function(xPlayer, item, notESX)
 	if notESX or Config.ItemList[item.name] then
 		if next(Config.ItemList[item.name]) == nil then return end
 		TriggerClientEvent('linden_inventory:useItem', xPlayer.source, item)
-		--[[local xItem = getInventoryItem(xPlayer, item.name, item.metadata)
-		print(item.metadata) print(xItem.count)
-
-
-]]
-
-	elseif ESX.UsableItemsCallbacks[item.name] ~= nil then
-		TriggerEvent('esx:useItem', xPlayer.source, item.name)
-	elseif type(item) ~= 'table' then
-		TriggerEvent('esx:useItem', xPlayer.source, item)
+	else
+		if type(item) == 'table' then item = item.name end
+	 	if ESX.UsableItemsCallbacks[item] then TriggerEvent('esx:useItem', xPlayer.source, item) end
 	end
 end
