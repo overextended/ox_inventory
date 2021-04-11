@@ -854,7 +854,6 @@ AddEventHandler('linden_inventory:useItem',function(item)
 				else TriggerEvent('esx_status:remove', 'drunk', data.drunk) end
 			end
 			if data.consume then TriggerServerEvent('linden_inventory:removeItem', xItem.name, data.consume, xItem.metadata) end
-			TriggerEvent('linden_inventory:busy', false)
 			------------------------------------------------------------------------------------------------
 
 				if data.component then
