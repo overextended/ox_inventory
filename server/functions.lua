@@ -311,18 +311,15 @@ GetItems = function(id)
 end
 
 CheckOpenable = function(xPlayer, id, coords)
-	local returnData = false
 	if coords then
 		local srcCoords = GetEntityCoords(GetPlayerPed(xPlayer.source))
-		if #(coords - srcCoords) > 2 then print(id..' is too far') return false end
+		if #(coords - srcCoords) > 2 then return false end
 	end
 	if Opened[id] == nil then
 		Opened[id] = xPlayer.source
-		print(id..' can be opened')
 		return true
 	end
-	print(id..' is locked')
-	return returnData
+	return false
 end
 
 GetPlayerIdentification = function(xPlayer)
