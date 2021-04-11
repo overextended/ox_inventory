@@ -22,3 +22,6 @@ Config.VehicleInventoryKey = 'K'
 
 -- Reload empty weapons automatically
 Config.AutoReload = false
+
+-- Randomise the price of items in each shop at resource start
+Config.RandomPrices = false
