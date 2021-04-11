@@ -244,17 +244,20 @@ CreateNewDrop = function(xPlayer, data)
 	TriggerClientEvent('linden_inventory:createDrop', -1, Drops[invid], xPlayer.source)
 end
 
---[[local randomPrice = function(price)
+local randomPrice = function(price)
 	local random = math.random(95,107)
 	return math.floor((random / 100) * price + 0.5)
-end]]
+end
 
 local SetupShops = function()
 	for k,v in pairs(Config.Shops) do
-		--[[for i=1, #inventory do
-			inventory[i].price = randomPrice(inventory[i].price)
-		end]]
 		v.store = v.type or Config.General
+		if Config.RandomPrices then
+			local inventory = v.store.inventory
+			for i=1, #inventory do
+				inventory[i].price = randomPrice(inventory[i].price)
+			end
+		end
 	end
 end
 SetupShops()
