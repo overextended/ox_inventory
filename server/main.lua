@@ -479,8 +479,8 @@ AddEventHandler('linden_inventory:saveInventoryData', function(data)
 					ItemNotify(xPlayer, data.fromItem.name, data.fromItem.count, 'Added', invid)
 					if invtype == 'target' then
 						ItemNotify(xTarget, data.toItem.name, data.toItem.count, 'Added', invid)
-						ItemNotify(xTarget, data.fromItem.name, data.fromItem.count, 'Removed', invid)]]
-					end
+						ItemNotify(xTarget, data.fromItem.name, data.fromItem.count, 'Removed', invid)
+					end]]
 				elseif data.type == 'freeslot' then
 					if not ValidateItem(data.type, xPlayer, Inventories[invid2].inventory[data.emptyslot], Inventories[invid].inventory[data.toSlot], data.item, data.item) then return end
 					local count = Inventories[invid2].inventory[data.emptyslot].count
@@ -488,16 +488,16 @@ AddEventHandler('linden_inventory:saveInventoryData', function(data)
 					Inventories[invid].inventory[data.toSlot] = {name = data.item.name, label = data.item.label, weight = data.item.weight, slot = data.toSlot, count = data.item.count, description = data.item.description, metadata = data.item.metadata, stackable = data.item.stackable, closeonuse = Items[data.item.name].closeonuse}
 --[[					ItemNotify(xPlayer, data.item.name, count, 'Removed', invid)
 					if invtype == 'target' then
-						ItemNotify(xTarget, data.item.name, count, 'Added', invid)]]
-					end
+						ItemNotify(xTarget, data.item.name, count, 'Added', invid)
+					end]]
 				elseif data.type == 'split' then
 					if not ValidateItem(data.type, xPlayer, Inventories[invid2].inventory[data.fromSlot], Inventories[invid].inventory[data.toSlot], data.oldslotItem, data.newslotItem) then return end
 					Inventories[invid2].inventory[data.fromSlot] = {name = data.oldslotItem.name, label = data.oldslotItem.label, weight = data.oldslotItem.weight, slot = data.fromSlot, count = data.oldslotItem.count, description = data.oldslotItem.description, metadata = data.oldslotItem.metadata, stackable = data.oldslotItem.stackable, closeonuse = Items[data.oldslotItem.name].closeonuse}
 					Inventories[invid].inventory[data.toSlot] = {name = data.newslotItem.name, label = data.newslotItem.label, weight = data.newslotItem.weight, slot = data.toSlot, count = data.newslotItem.count, description = data.newslotItem.description, metadata = data.newslotItem.metadata, stackable = data.newslotItem.stackable, closeonuse = Items[data.newslotItem.name].closeonuse}
 --[[					ItemNotify(xPlayer, data.newslotItem.name, data.newslotItem.count, 'Removed', invid)
 					if invtype == 'target' then
-						ItemNotify(xTarget, data.newslotItem.name, data.newslotItem.count, 'Added', invid)]]
-					end
+						ItemNotify(xTarget, data.newslotItem.name, data.newslotItem.count, 'Added', invid)
+					end]]
 				end
 				if invid ~= playerinv then Inventories[invid].changed = true end
 				if invid2 ~= playerinv then Inventories[invid2].changed = true end
