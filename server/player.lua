@@ -19,7 +19,7 @@ exports('getInventoryItem', getInventoryItem)
 addInventoryItem = function(xPlayer, name, count, metadata, slot)
 	if Items[name] and count > 0 then
 		count = ESX.Math.Round(count)
-		AddPlayerInventory(xPlayer, name, count, slot, metadata)
+		AddPlayerInventory(xPlayer, name, count, metadata, slot)
 	end
 end
 exports('addInventoryItem', addInventoryItem)
@@ -116,10 +116,11 @@ end
 exports('getPlayerInventory', getPlayerInventory)
 
 
-getPlayerSlot = function(xPlayer, slot)
+getPlayerSlot = function(xPlayer, slot, metadata)
 	if slot > Config.PlayerSlots then return nil end
 	local getSlot = Inventories[xPlayer.source].inventory[slot]
 	if getSlot and getSlot.name ~= item then slot = nil end
+	if slot and not is_table_equal(getSlot.metadata, metadata) then slot = nil end
 	return slot
 end
 exports('getPlayerSlot', getPlayerSlot)
