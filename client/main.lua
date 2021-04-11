@@ -575,7 +575,7 @@ Citizen.CreateThread(function()
 							if distance <= 8 then
 								sleep = 5
 								DrawMarker(2, v.coords.x,v.coords.y,v.coords.z, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.3, 0.2, 0.15, 150, 30, 30, 222, false, false, false, true, false, false, false)
-								if distance <= 1 and (not closestDrop or distance < closestDrop.distance) then
+								if (not closestDrop or distance < closestDrop.distance) and distance <= 1.0 then
 									closestDrop = {name = v.name, coords = v.coords}
 								end
 							end
