@@ -479,7 +479,6 @@ AddEventHandler('linden_inventory:saveInventoryData', function(data)
 						ItemNotify(xPlayer, data.fromItem.name, data.fromItem.count, 'Removed', invid)
 					end
 				elseif data.type == 'freeslot' then
-					if not data.invid then print(data.frominv) print(data.toinv) end
 					if not ValidateItem(data.type, xPlayer, Inventories[invid2].inventory[data.emptyslot], Inventories[invid].inventory[data.toSlot], data.item, data.item) then return end
 					local count = Inventories[invid2].inventory[data.emptyslot].count
 					Inventories[invid2].inventory[data.emptyslot] = nil
@@ -508,20 +507,19 @@ end)
 RegisterNetEvent('linden_inventory:saveInventory')
 AddEventHandler('linden_inventory:saveInventory', function(data)
 	local xPlayer = ESX.GetPlayerFromId(source)
-	if xPlayer then
-		if data.invid and data.type ~= 'shop' then
-			if data.type ~= 'TargetPlayer' and data.type ~= 'drop' and Inventories[data.invid] and Inventories[data.invid].changed then 
-				SaveItems(data.type, data.invid)
-				Inventories[data.invid].changed = false
-			elseif data.type == 'TargetPlayer' then
-				data.invid = string.gsub(data.invid, 'Player ', '')
-				updateWeight(ESX.GetPlayerFromId(data.invid))
-			end
-			print('closing '..data.invid)
+	if xPlayer and data.type ~= 'shop' and data.type ~= 'drop' then
+		if data.type == 'TargetPlayer' then
+			local invid = Opened[xPlayer.source].invid
+			updateWeight(ESX.GetPlayerFromId(invid))
+			Opened[invid] = nil
+		elseif Inventories[data.invid] and Inventories[data.invid].changed then
+			SaveItems(data.type, data.invid)
+			Inventories[data.invid].changed = false
 			Opened[data.invid] = nil
 		end
 		Opened[xPlayer.source] = nil
 		updateWeight(xPlayer)
+		if data.invid then Opened[data.invid] = nil end
 	end
 end)
 
