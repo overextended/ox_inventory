@@ -214,5 +214,6 @@ end)
 ```
 
 #### Confirm you have removed all functions trying to get loadout data
+#### Add `ensure linden_inventory` to your config, I suggest loading it *last* to prevent errors
 
 <h4 align='center'>Getting errors? You need to check your edits and confirm you removed it all properly<br>Restarting your framework should show lines causing errors (in server or client console)</h4>
