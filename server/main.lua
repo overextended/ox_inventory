@@ -516,8 +516,8 @@ AddEventHandler('linden_inventory:saveInventory', function(data)
 		elseif Inventories[data.invid] and Inventories[data.invid].changed then
 			SaveItems(data.type, data.invid)
 			Inventories[data.invid].changed = false
-			Opened[data.invid] = nil
 		end
+		if data.invid then Opened[data.invid] = nil end
 		Opened[xPlayer.source] = nil
 		updateWeight(xPlayer)
 		if data.invid then Opened[data.invid] = nil end
