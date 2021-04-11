@@ -14,7 +14,7 @@
 
 <h2 align='center'>Server Config</h2>
 
-```lua
+```js
 set mysql_connection_string "mysql://user:password@localhost/database?connectTimeout=20000&acquireTimeout=20000&waitForConnections=true&keepAlive=15"
 set onesync_enabled
 
