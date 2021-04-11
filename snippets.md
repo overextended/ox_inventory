@@ -24,7 +24,8 @@ end)
 
 ## Police body search, without having to /steal
 * It's just /steal in a menu basically, has all the same requirements (dead, handsup, cuffed, etc)
-`exports['linden_inventory']:OpenTargetInventory()`
+* Find `OpenBodySearchMenu(closestPlayer)` and replace it with `exports['linden_inventory']:OpenTargetInventory()`
+* Find and remove the `OpenBodySearchMenu` function
 
 ## Create a stash with esx_property
 * Find and remove the following two blocks of code
