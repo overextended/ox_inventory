@@ -827,7 +827,7 @@ AddEventHandler('linden_inventory:useItem',function(item)
 
 			------------------------------------------------------------------------------------------------
 			if data.useTime and data.useTime >= 0 then
-				TriggerEvent('linden_inventory:busy', true)
+				isBusy = true
 				exports['mythic_progbar']:Progress({
 					name = 'useitem',
 					duration = data.useTime,
@@ -837,8 +837,8 @@ AddEventHandler('linden_inventory:useItem',function(item)
 					controlDisables = { disableMovement = data.disableMove, disableCarMovement = false, disableMouse = false, disableCombat = true },
 					animation = { animDict = data.animDict, anim = data.anim, flags = data.flags },
 					prop = { model = data.model, coords = data.coords, rotation = data.rotation }
-				}, function() TriggerEvent('linden_inventory:busy', false) end)
-			else TriggerEvent('linden_inventory:busy', false) end
+				}, function() isBusy = false end)
+			else isBusy = false end
 			while isBusy do Citizen.Wait(10) end
 
 			if data.hunger then
