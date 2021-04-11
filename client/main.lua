@@ -34,12 +34,6 @@ local inform = function(msg)
 end
 
 local StartInventory = function()
-	if next(Blips) then
-		for k, v in pairs(Blips) do
-			RemoveBlip(v)
-		end
-		Blips = {}
-	end
 	playerID, playerPed, invOpen, isDead, isCuffed, isBusy, isShooting, usingWeapon, weight, currentDrop = nil, nil, false, false, false, false, false, false, Config.PlayerWeight, nil
 	ESX.TriggerServerCallback('linden_inventory:setup',function(data)
 		Citizen.Wait(500)
@@ -50,17 +44,15 @@ local StartInventory = function()
 		Drops = data.drops
 		ClearWeapons()
 		inform("Inventory is ready to use")
+		if next(Blips) then
+			for k, v in pairs(Blips) do
+				RemoveBlip(v)
+			end
+			Blips = {}
+		end
 		for k, v in pairs(Config.Shops) do
 			if (not Config.Shops[k].job or Config.Shops[k].job == ESX.PlayerData.job.name) then
-				local name, data = 'Shop', {}
-				if v.type then
-					name = v.name
-					if v.type == 'weapon' then data = Config.Ammunation.blip
-					elseif v.type == 'tool' then data = Config.YouTool.blip
-					elseif v.type == 'liquor' then data = Config.Liquor.blip end
-				else
-					data = Config.General.blip
-				end
+				local name, data = 'Shop', v.type.blip
 				Blips[k] = AddBlipForCoord(v.coords.x, v.coords.y, v.coords.z)
 				SetBlipSprite(Blips[k], data.id)
 				SetBlipDisplay(Blips[k], 4)
@@ -148,12 +140,12 @@ local OpenStash = function(data)
 end
 exports('OpenStash', OpenStash)
 
-OpenGloveBox = function(gloveboxid, class)
+local OpenGloveBox = function(gloveboxid, class)
 	local storage = Config.GloveboxSlots[class]
 	if storage then TriggerServerEvent('linden_inventory:openInventory', {type = 'glovebox',id  = 'glovebox-'..gloveboxid, slots = storage}) end
 end
 
-OpenTrunk = function(trunkid, class)
+local OpenTrunk = function(trunkid, class)
 	local storage = Config.TrunkSlots[class]
 	if storage then TriggerServerEvent('linden_inventory:openInventory', {type = 'trunk',id  = 'trunk-'..trunkid, slots = storage}) end
 end
@@ -220,6 +212,10 @@ end)
 
 AddEventHandler('esx:onPlayerSpawn', function(spawn)
 	isDead = false
+end)
+
+AddEventHandler('esx:setJob', function(job)
+	ESX.PlayerData.job = job
 end)
 
 RegisterNetEvent('esx_ambulancejob:setDeathStatus')
