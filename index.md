@@ -11,8 +11,7 @@
 
 * If I say to remove something, feel free to keep it in a comment block `--[[ ]]`
 
-<h2 align='center'>Server Config</h1>
-
+<h2 align='center'>Server Config</h2>
 
 ```lua
 set mysql_connection_string "mysql://user:password@localhost/database?connectTimeout=20000&acquireTimeout=20000&waitForConnections=true&keepAlive=15"
