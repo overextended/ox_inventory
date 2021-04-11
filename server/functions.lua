@@ -141,12 +141,13 @@ AddPlayerInventory = function(xPlayer, item, count, metadata, slot)
 				count = 1
 				if type(metadata) ~= 'table' then metadata = {} end
 				if not metadata.durability then metadata.durability = 100 end
-				if Items[item].ammoType then metadata.ammo = 0 end
+				if xItem.ammoType then metadata.ammo = 0 end
 				if not metadata.components then metadata.components = {} end
 				metadata.serial = GenerateSerial(metadata.serial)
 				if metadata.registered == true then metadata.registered = xPlayer.getName() end
 			end
-			Inventories[xPlayer.source].inventory[slot] = {name = item, label = xItem.label, weight = xItem.weight, slot = slot, count = count, description = xItem.description, metadata = metadata, stackable = xItem.stackable, closeonuse = true, ammoType = xItem.ammoType}
+			Inventories[xPlayer.source].inventory[slot] = {name = item, label = xItem.label, weight = xItem.weight, slot = slot, count = count, description = xItem.description, metadata = metadata, stackable = xItem.stackable, closeonuse = true}
+			if xItem.ammoType thenInventories[xPlayer.source].inventory[slot].ammoType = xItem.ammoType end
 			Inventories[xPlayer.source].weight = Inventories[xPlayer.source].weight + (xItem.weight * count)
 			return ItemNotify(xPlayer, item, count, 'Added')
 		elseif item:find('identification') then
