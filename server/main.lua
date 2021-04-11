@@ -189,6 +189,9 @@ AddEventHandler('linden_inventory:openInventory', function(data, player)
 				if CheckOpenable(xPlayer, Drops[invid].name, Drops[invid].coords) then
 					Opened[xPlayer.source] = {invid = invid, type = 'drop'}
 					TriggerClientEvent('linden_inventory:openInventory', xPlayer.source, Inventories[xPlayer.source], Drops[invid])
+				else
+					Opened[xPlayer.source] = {invid = xPlayer.source, type = 'Playerinv'}
+					TriggerClientEvent('linden_inventory:openInventory',  xPlayer.source, Inventories[xPlayer.source])
 				end
 			else
 				Opened[xPlayer.source] = {invid = xPlayer.source, type = 'Playerinv'}
