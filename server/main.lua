@@ -513,7 +513,7 @@ AddEventHandler('linden_inventory:saveInventory', function(data)
 			local invid = Opened[xPlayer.source].invid
 			updateWeight(ESX.GetPlayerFromId(invid))
 			Opened[invid] = nil
-		elseif data.type ~= 'shop' and data.type ~= 'drop' Inventories[data.invid] and Inventories[data.invid].changed then
+		elseif data.type ~= 'shop' and data.type ~= 'drop' and Inventories[data.invid] and Inventories[data.invid].changed then
 			SaveItems(data.type, data.invid)
 			Inventories[data.invid].changed = false
 		end
