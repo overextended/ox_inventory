@@ -90,12 +90,8 @@ ValidateItem = function(type, xPlayer, fromSlot, toSlot, fromItem, toItem)
 		-- currently have a bug where moving items around while also adding/removing items can result in client-sided item duplication
 		-- item validation should not be used to ban until all bugs are dealt with
 		-- for now, close inventory and refresh items
-		TriggerClientEvent('mythic_notify:client:SendAlert', src, { type = 'error', text = '(Desync) Inventory was refreshed' })
-		if invopened[xPlayer.source] then
-			TriggerClientEvent("linden_inventory:closeInventory", xPlayer.source)
-		else
-			TriggerClientEvent("linden_inventory:closeInventory", xPlayer.source)
-		end
+		TriggerClientEvent('mythic_notify:client:SendAlert', xPlayer.source, { type = 'error', text = '(Desync) Inventory was refreshed' })
+		TriggerClientEvent("linden_inventory:closeInventory", xPlayer.source)
 		return false
 	else return true end
 end 
