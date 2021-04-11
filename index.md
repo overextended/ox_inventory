@@ -3,6 +3,7 @@
 <h1 align='center'>Requirements</h1>
 
 * OneSync must be enabled on your server (Legacy or Infinity)
+* You can use OneSync for up to 32 slots without being a FiveM patron
 * ESX Framework ([v1 Final](https://github.com/esx-framework/es_extended/tree/v1-final) or [ExtendedMode](https://github.com/extendedmode/extendedmode/tree/dev))
 * Alternatively, you can get my version of [ExtendedMode](https://github.com/thelindat/extendedmode) with the necessary changes
 * [ghmattimysql](https://github.com/GHMatti/ghmattimysql/releases)
