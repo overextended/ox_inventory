@@ -473,11 +473,14 @@ Citizen.CreateThread(function()
 				elseif currentWeapon.ammoType then
 					currentWeapon.metadata.ammo = currentAmmo
 					if currentAmmo == 0 then
-						weaponTimer = 0
+						if Config.AutoReload then
+							weaponTimer = 0
+							TriggerServerEvent('linden_inventory:reloadWeapon', currentWeapon)
+						end
 						ClearPedTasks(playerPed)
 						SetCurrentPedWeapon(playerPed, currentWeapon.hash, false)
 						SetPedCurrentWeaponVisible(playerPed, true, false, false, false)
-						TriggerServerEvent('linden_inventory:reloadWeapon', currentWeapon)
+						
 					else TriggerEvent('linden_inventory:usedWeapon', currentWeapon) end
 				end
 			else
