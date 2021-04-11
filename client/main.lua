@@ -274,7 +274,7 @@ AddEventHandler('linden_inventory:createDrop', function(data, owner)
 	Drops[data.name] = data
 	Drops[data.name].coords = vector3(data.coords.x, data.coords.y,data.coords.z - 0.2)
 	Citizen.Wait(0)
-	if owner == playerID and invOpen then TriggerServerEvent('linden_inventory:openInventory', {type = 'drop', drop = Drops[data.name] }) end
+	if owner == playerID then TriggerServerEvent('linden_inventory:openInventory', {type = 'drop', drop = data.name }) end
 end)
 
 RegisterNetEvent('linden_inventory:removeDrop')
@@ -282,7 +282,7 @@ AddEventHandler('linden_inventory:removeDrop', function(id, owner)
 	Drops[id] = nil
 	if currentDrop == id then currentDrop = nil end
 	Citizen.Wait(0)
-	if owner == playerID and invOpen then TriggerServerEvent('linden_inventory:openInventory', {type = 'drop', drop = {} }) end
+	if owner == playerID then TriggerServerEvent('linden_inventory:openInventory', {type = 'drop', drop = {} }) end
 end)
 
 local HolsterWeapon = function(item)
