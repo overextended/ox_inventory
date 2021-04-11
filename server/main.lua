@@ -508,16 +508,15 @@ end)
 RegisterNetEvent('linden_inventory:saveInventory')
 AddEventHandler('linden_inventory:saveInventory', function(data)
 	local xPlayer = ESX.GetPlayerFromId(source)
-	if xPlayer and data.type ~= 'shop' and data.type ~= 'drop' then
+	if xPlayer then
 		if data.type == 'TargetPlayer' then
 			local invid = Opened[xPlayer.source].invid
 			updateWeight(ESX.GetPlayerFromId(invid))
 			Opened[invid] = nil
-		elseif Inventories[data.invid] and Inventories[data.invid].changed then
+		elseif data.type ~= 'shop' and data.type ~= 'drop' Inventories[data.invid] and Inventories[data.invid].changed then
 			SaveItems(data.type, data.invid)
 			Inventories[data.invid].changed = false
 		end
-		if data.invid then Opened[data.invid] = nil end
 		Opened[xPlayer.source] = nil
 		updateWeight(xPlayer)
 		if data.invid then Opened[data.invid] = nil end
