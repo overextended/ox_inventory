@@ -75,8 +75,8 @@ Config.Medicine = {
 
 
 Config.Shops = {
-	{ type = Config.Ammunation, coords = vector3(-662.180, -934.961, 21.829), name = 'Ammunation' },
-	{ type = Config.Ammunation, coords = vector3(810.25, -2157.60, 29.62), name = 'Ammunation' },
+	{ type = Config.Ammunation, coords = vector3(-662.180, -934.961, 21.829), name = 'Ammunation', --[[currency = 'money']] }, -- can set currency like so
+	{ type = Config.Ammunation, coords = vector3(810.25, -2157.60, 29.62), name = 'Ammunation', --[[currency = 'burger']] },
 	{ type = Config.Ammunation, coords = vector3(1693.44, 3760.16, 34.71), name = 'Ammunation' },
 	{ type = Config.Ammunation, coords = vector3(-330.24, 6083.88, 31.45), name = 'Ammunation' },
 	{ type = Config.Ammunation, coords = vector3(252.63, -50.00, 69.94), name = 'Ammunation' },
