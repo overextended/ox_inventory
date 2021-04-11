@@ -740,6 +740,20 @@ ESX.RegisterServerCallback('linden_inventory:buyLicense', function(source, cb)
 	end
 end)
 
+ESX.RegisterServerCallback('linden_inventory:usingItem', function(source, cb, item, metadata, slot)
+	local xPlayer = ESX.GetPlayerFromId(source)
+	local xItem = getInventoryItem(xPlayer, item, metadata, slot)
+	local cItem = Config.ItemList[xItem.name]
+	if not cItem.consume or xItem.count >= cItem.consume then
+		cb(xItem)
+		ESX.SetTimeout(cItem.useTime, function()
+			RemovePlayerInventory(xPlayer, item, cItem.consume, metadata, slot)
+		end)
+	else
+		TriggerClientEvent('mythic_notify:client:SendAlert', xPlayer.source, { type = 'error', text = "You need more than "..xItem.count.." "..xItem.label })
+	end
+end)
+
 -- Override the default ESX commands
 ESX.RegisterCommand({'giveitem', 'additem'}, 'superadmin', function(xPlayer, args, showError)
 	args.playerId.addInventoryItem(ValidateString(args.item), args.count, args.type)
