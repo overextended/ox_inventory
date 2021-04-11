@@ -80,6 +80,8 @@
 			$(".inventory-main-leftside").find(".item-slot").remove();
 			$('.inventory-main-rightside').removeData("invId")
 			totalkg = 0
+			rightinvtype = null
+			rightinventory = null
 		}
 	}
 	element.__defineGetter__("id", function() {
@@ -355,7 +357,7 @@
 				fromData = ui.draggable.data("ItemData");
 				fromInventory = ui.draggable.parent();
 				inv = fromInventory.data('invTier')
-					$.post("https://linden_inventory/UseItem", JSON.stringify({
+					$.post("https://linden_inventory/useItem", JSON.stringify({
 						item: fromData,
 						inv : inv
 					}));
@@ -413,7 +415,6 @@
 			type : rightinvtype,
 			invid : rightinventory
 		}));
-		
 		Display(false)
 		return
 	}
