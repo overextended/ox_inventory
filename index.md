@@ -10,6 +10,32 @@
 * [mythic_notify](https://github.com/thelindat/mythic_notify)
 
 * If I say to remove something, feel free to keep it in a comment block `--[[ ]]`
+
+<h2 align='center'>Server Config</h1>
+
+```lua
+set mysql_connection_string "mysql://user:password@localhost/database?connectTimeout=20000&acquireTimeout=20000&waitForConnections=true&keepAlive=15"
+set onesync_enabled
+
+ensure mapmanager
+ensure chat
+ensure spawnmanager
+ensure sessionmanager
+ensure hardcap
+
+ensure mysql-async
+ensure ghmattimysql
+ensure cron
+ensure async
+
+ensure extendedmode
+** etc
+** etc
+** etc
+** etc
+ensure linden_inventory		# have it load after resources that register items, or just last
+```
+
 <br><br>
 
 <h1 align='center'>Modifying third-party resources</h1>
@@ -25,6 +51,7 @@ exports("ready", function (callback)
 	end)
 end)
 ```
+* Delete `config.json` to fallback to using the MySQL connection string in server.cfg
 
 Moving items around while the inventory is refreshing can cause the client to desync; while I do plan to resolve the cause I recommend locking the inventory during certain situations.
 * [esx_jobs] When the Work() function is running for a player, trigger `TriggerEvent('linden_inventory:busy', true)`; toggle it off once their task is complete
@@ -215,6 +242,5 @@ end)
 ```
 
 #### Confirm you have removed all functions trying to get loadout data
-#### Add `ensure linden_inventory` to your config, I suggest loading it *last* to prevent errors
 
-<h4 align='center'>Getting errors? You need to check your edits and confirm you removed it all properly<br>Restarting your framework should show lines causing errors (in server or client console)</h4>
+<h4 align='center'>Getting errors? You need to check your edits and confirm you removed it all properly<br>Restarting the framework or inventory should show lines causing errors (in server or client console)</h4>
