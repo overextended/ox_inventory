@@ -238,7 +238,7 @@ AddEventHandler('linden_inventory:openTargetInventory', function(targetId)
 	if source == TargetId then tTarget = nil end
 	if xTarget and xPlayer then
 		if Opened[xTarget.source] then return end
-		if CheckOpenable(xPlayer, 'Player'..targetId, GetEntityCoords(GetPlayerPed(targetId))) then
+		if CheckOpenable(xPlayer, xTarget.source, GetEntityCoords(GetPlayerPed(targetId))) then
 			local TargetPlayer = Inventories[xTarget.source]
 			local data = {
 				id = xTarget.source,
@@ -249,9 +249,9 @@ AddEventHandler('linden_inventory:openTargetInventory', function(targetId)
 				weight = TargetPlayer.weight,
 				inventory = TargetPlayer.inventory
 			}
+			TriggerClientEvent('linden_inventory:openInventory',  xPlayer.source, Inventories[xPlayer.source], data)
 			Opened[xPlayer.source] = {invid = xTarget.source, type = data.type}
 			Opened[xTarget.source] = {invid = xPlayer.source, type = data.type}
-			TriggerClientEvent('linden_inventory:openInventory',  xPlayer.source, Inventories[xPlayer.source], data)
 		end
 	end
 end)
@@ -347,7 +347,7 @@ AddEventHandler('linden_inventory:saveInventoryData', function(data)
 			elseif data.frominv == 'TargetPlayer' then
 				local targetId = string.gsub(data.invid, 'Player ', '')
 				local xTarget = ESX.GetPlayerFromId(playerId)
-				invid = 'Player '..xTarget.source
+				invid = xTarget.source
 			else
 				invid = data.invid
 			end
@@ -394,7 +394,7 @@ AddEventHandler('linden_inventory:saveInventoryData', function(data)
 				elseif data.frominv == 'TargetPlayer' then
 					local targetId = string.gsub(data.invid, 'Player ', '')
 					local xTarget = ESX.GetPlayerFromId(playerId)
-					invid = 'Player '..xTarget.source
+					invid = xTarget.source
 					invid2 = playerinv
 				else
 					invid = data.invid
@@ -407,9 +407,9 @@ AddEventHandler('linden_inventory:saveInventoryData', function(data)
 					invid2 = data.invid2
 				elseif data.frominv == 'TargetPlayer' then
 					local targetId = string.gsub(data.invid2, 'Player ', '')
-					local xTarget = ESX.GetPlayerFromId(playerId)
+					local xTarget = ESX.GetPlayerFromId(targetId)
 					invid = playerinv
-					invid2 = 'Player '..xTarget.source
+					invid2 = xTarget.source
 				else
 					invid = playerinv
 					invid2 = data.invid2
@@ -470,6 +470,8 @@ AddEventHandler('linden_inventory:saveInventoryData', function(data)
 					ItemNotify(xPlayer, data.toItem.name, data.toItem.count, 'Removed', invid)
 					ItemNotify(xPlayer, data.fromItem.name, data.fromItem.count, 'Added', invid)
 				elseif data.type == 'freeslot' then
+					-- requires fixing, only player who dropped can get items from it (others get nil invid or something)
+					print(invid)
 					if not ValidateItem(data.type, xPlayer, Inventories[invid2].inventory[data.emptyslot], Inventories[invid].inventory[data.toSlot], data.item, data.item) then return end
 					local count = Inventories[invid2].inventory[data.emptyslot].count
 					Inventories[invid2].inventory[data.emptyslot] = nil
@@ -493,11 +495,15 @@ RegisterNetEvent('linden_inventory:saveInventory')
 AddEventHandler('linden_inventory:saveInventory', function(data)
 	local xPlayer = ESX.GetPlayerFromId(source)
 	if xPlayer then
-		if data.invid then
-			if data.type and not data.type:find('Player') and Inventories[data.invid] and Inventories[data.invid].changed then 
+		if data.invid and data.type ~= 'shop' then
+			if data.type ~= 'TargetPlayer' and data.type ~= 'drop' and Inventories[data.invid] and Inventories[data.invid].changed then 
 				SaveItems(data.type, data.invid)
 				Inventories[data.invid].changed = false
+			elseif data.type == 'TargetPlayer' then
+				data.invid = string.gsub(data.invid, 'Player ', '')
+				updateWeight(ESX.GetPlayerFromId(data.invid))
 			end
+			print('closing '..data.invid)
 			Opened[data.invid] = nil
 		end
 		Opened[xPlayer.source] = nil
@@ -702,7 +708,6 @@ ESX.RegisterServerCallback('linden_inventory:getOtherPlayerData',function(source
 end)
 
 ESX.RegisterServerCallback('linden_inventory:getInventory',function(source, cb, target)
-	local xPlayer = ESX.GetPlayerFromId(target)
 	if Inventories[target] then
 		cb(Inventories[target].inventory)
 	end
@@ -710,10 +715,8 @@ end)
 
 ESX.RegisterServerCallback('linden_inventory:buyLicense', function(source, cb)
 	local xPlayer = ESX.GetPlayerFromId(source)
-
 	if xPlayer.getMoney() >= Config.WeaponsLicensePrice then
 		xPlayer.removeMoney(Config.WeaponsLicensePrice)
-
 		TriggerEvent('esx_license:addLicense', xPlayer.source, 'weapon', function()
 			cb(true)
 		end)
