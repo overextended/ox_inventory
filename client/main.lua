@@ -215,8 +215,7 @@ end
 
 RegisterNetEvent('esx:playerLoaded')
 AddEventHandler('esx:playerLoaded', function()
-	while ESX.GetPlayerData().job == nil do Citizen.Wait(100) end
-	StartInventory()
+	playerName = nil
 end)
 
 AddEventHandler('esx:onPlayerSpawn', function(spawn)
