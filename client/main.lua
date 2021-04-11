@@ -3,8 +3,8 @@ TriggerEvent('esx:getSharedObject', function(obj) ESX = obj end)
 
 local Blips = {}
 local Drops = {}
-local currentDrop = {}
-local currentWeapon = nil
+local currentDrop
+local currentWeapon
 
 
 local ClearWeapons = function()
@@ -40,7 +40,7 @@ local StartInventory = function()
 		end
 		Blips = {}
 	end
-	playerID, playerPed, invOpen, isDead, isCuffed, isBusy, isShooting, usingWeapon, weight, currentDrop = nil, nil, false, false, false, false, false, false, Config.PlayerWeight, {}
+	playerID, playerPed, invOpen, isDead, isCuffed, isBusy, isShooting, usingWeapon, weight, currentDrop = nil, nil, false, false, false, false, false, false, Config.PlayerWeight, nil
 	ESX.TriggerServerCallback('linden_inventory:setup',function(data)
 		Citizen.Wait(500)
 		ESX.PlayerData = ESX.GetPlayerData()
@@ -281,9 +281,9 @@ end)
 RegisterNetEvent('linden_inventory:removeDrop')
 AddEventHandler('linden_inventory:removeDrop', function(id, owner)
 	Drops[id] = nil
-	if currentDrop.name == id then currentDrop = {} end
+	if currentDrop == id then currentDrop = nil end
 	Citizen.Wait(0)
-	if owner == playerID then TriggerServerEvent('linden_inventory:openInventory', {type = 'drop', drop = {} }) end
+	if owner == playerID and invOpen then TriggerServerEvent('linden_inventory:openInventory', {type = 'drop', drop = {} }) end
 end)
 
 local HolsterWeapon = function(item)
@@ -577,18 +577,15 @@ Citizen.CreateThread(function()
 								sleep = 5
 								DrawMarker(2, v.coords.x,v.coords.y,v.coords.z, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.3, 0.2, 0.15, 150, 30, 30, 222, false, false, false, true, false, false, false)
 								if distance <= 1 and (not closestDrop or distance < closestDrop.distance) then
-									closestDrop = {}
-									closestDrop.name = v.name
-									closestDrop.coords = v.coords
-									closestDrop.distance = distance
+									closestDrop = {name = v.name, coords = v.coords}
 								end
 							end
 						end
 					end
 					if closestDrop then
 						local distance = #(playerCoords - closestDrop.coords)
-						if distance <= 1 then currentDrop = closestDrop else currentDrop = {} end
-					else currentDrop = {} end
+						if distance <= 1 then currentDrop = closestDrop.name else currentDrop = nil end
+					else currentDrop = nil end
 				end
 				if Config.WeaponsLicense then
 					local coords, text, license = vector3(12.42198, -1105.82, 29.7854), "Weapons License", 'weapon'
