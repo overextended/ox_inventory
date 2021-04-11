@@ -110,8 +110,18 @@ exports('canSwapItem', canSwapItem)
 
 
 getPlayerInventory = function(xPlayer)
-	local inventory = Inventories[xPlayer.source] or {}
-	return getInventory(inventory)
+	local inventory = {}
+	for k, v in pairs(Inventories[xPlayer.source].inventory) do
+		if v.count > 0 then
+			inventory[#inventory+1] = {
+				name = v.name,
+				count = v.count,
+				metadata = v.metadata,
+				slot = k
+			}
+		end
+	end
+	return inventory
 end
 exports('getPlayerInventory', getPlayerInventory)
 
