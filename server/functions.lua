@@ -119,11 +119,12 @@ end
 AddPlayerInventory = function(xPlayer, item, count, metadata, slot)
 	local xItem = Items[item]
 	if xPlayer and xItem and count > 0 then
-		if slot then slot = getPlayerSlot(xPlayer, slot) end
+		if metadata == 'setname' then metadata = {description = xPlayer.getName()} else metadata = setMetadata(metadata) end
+		if slot then slot = getPlayerSlot(xPlayer, slot, metadata) end
 		local toSlot, existing
 		if slot == nil then
 			for i=1, Config.PlayerSlots do
-				if xItem.stackable == 1 and Inventories[xPlayer.source].inventory[i] and Inventories[xPlayer.source].inventory[i].name == item then toSlot = i existing = true break
+				if xItem.stackable == 1 and Inventories[xPlayer.source].inventory[i] and Inventories[xPlayer.source].inventory[i].name == item and is_table_equal(Inventories[xPlayer.source].inventory[i].metadata, metadata) then toSlot = i existing = true break
 				elseif Inventories[xPlayer.source].inventory[i] == nil then toSlot = i existing = false break end
 			end
 			slot = toSlot
@@ -161,7 +162,6 @@ AddPlayerInventory = function(xPlayer, item, count, metadata, slot)
 			Inventories[xPlayer.source].weight = Inventories[xPlayer.source].weight + (xItem.weight * count)
 			return ItemNotify(xPlayer, item, added, 'Added')
 		else
-			if metadata == 'setname' then metadata = {description = xPlayer.getName()} else metadata = setMetadata(metadata) end
 			local added = count
 			if existing then count = Inventories[xPlayer.source].inventory[slot].count + count end
 			Inventories[xPlayer.source].inventory[slot] = {name = item, label = xItem.label, weight = xItem.weight, slot = slot, count = count, description = xItem.description, metadata = metadata, stackable = xItem.stackable, closeonuse = xItem.closeonuse}
@@ -330,10 +330,16 @@ ValidateString = function(item)
 	if xItem then return xItem.name end
 end
 
-UseItem = function(xPlayer, item)
-	if Config.ItemList[item.name] then
+UseItem = function(xPlayer, item, notESX)
+	if notESX or Config.ItemList[item.name] then
 		if next(Config.ItemList[item.name]) == nil then return end
 		TriggerClientEvent('linden_inventory:useItem', xPlayer.source, item)
+		--[[local xItem = getInventoryItem(xPlayer, item.name, item.metadata)
+		print(item.metadata) print(xItem.count)
+
+
+]]
+
 	elseif ESX.UsableItemsCallbacks[item.name] ~= nil then
 		TriggerEvent('esx:useItem', xPlayer.source, item.name)
 	elseif type(item) ~= 'table' then
