@@ -3,7 +3,8 @@
 <h1 align='center'>Requirements</h1>
 
 * OneSync must be enabled on your server (Legacy or Infinity)
-* ESX Framework ([v1 Final](https://github.com/esx-framework/es_extended/tree/v1-final) or [ExtendedMode](https://github.com/extendedmode/extendedmode/tree/dev)) [todo: include modified working framework]
+* ESX Framework ([v1 Final](https://github.com/esx-framework/es_extended/tree/v1-final) or [ExtendedMode](https://github.com/extendedmode/extendedmode/tree/dev))
+* Alternatively, you can get my version of [ExtendedMode](https://github.com/thelindat/extendedmode) with the necessary changes
 * [ghmattimysql](https://github.com/GHMatti/ghmattimysql/releases)
 * [mythic_progbar](https://github.com/thelindat/mythic_progbar)
 * [mythic_notify](https://github.com/thelindat/mythic_notify)
