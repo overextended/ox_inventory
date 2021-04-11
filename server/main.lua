@@ -580,7 +580,7 @@ AddEventHandler('linden_inventory:useItem', function(item)
 					return
 				end
 			end
-			UseItem(xPlayer, slot)
+			UseItem(xPlayer, slot, true)
 		else
 			UseItem(xPlayer, item)
 		end
