@@ -147,7 +147,7 @@ AddPlayerInventory = function(xPlayer, item, count, metadata, slot)
 				if metadata.registered == true then metadata.registered = xPlayer.getName() end
 			end
 			Inventories[xPlayer.source].inventory[slot] = {name = item, label = xItem.label, weight = xItem.weight, slot = slot, count = count, description = xItem.description, metadata = metadata, stackable = xItem.stackable, closeonuse = true}
-			if xItem.ammoType thenInventories[xPlayer.source].inventory[slot].ammoType = xItem.ammoType end
+			if xItem.ammoType then Inventories[xPlayer.source].inventory[slot].ammoType = xItem.ammoType end
 			Inventories[xPlayer.source].weight = Inventories[xPlayer.source].weight + (xItem.weight * count)
 			return ItemNotify(xPlayer, item, count, 'Added')
 		elseif item:find('identification') then
