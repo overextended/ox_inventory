@@ -272,13 +272,16 @@ AddEventHandler('linden_inventory:buyItem', function(info)
 		return
 	end
 
-	--[[if checkShop.license then
-		local hasLicense = CheckLicense(xPlayer.identifier, checkShop.license)
+	if checkShop.license then
+		local hasLicense = exports.ghmattimysql:scalarSync('SELECT * FROM user_licenses WHERE type = @type AND owner = @owner', {
+			['@type'] = checkShop.license,
+			['@owner'] = xPlayer.identifier
+		})
 		if not hasLicense then
-			TriggerClientEvent('mythic_notify:client:SendAlert', xPlayer.source, { type = 'error', text = 'You do not have a license' })
+			TriggerClientEvent('mythic_notify:client:SendAlert', xPlayer.source, { type = 'error', text = 'You are not licensed to purchase this item' })
 			return
 		end
-	end]]
+	end
 
 	if count > 0 then
 		if data.name:find('WEAPON_') then count = 1 end
