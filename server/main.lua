@@ -184,7 +184,7 @@ AddEventHandler('linden_inventory:openInventory', function(data, player)
 		if player then xPlayer = player else xPlayer = ESX.GetPlayerFromId(source) end
 		if data.type ~= 'drop' and Opened[xPlayer.source] then return end
 		if data.type == 'drop' then
-			local invid = data.drop.name
+			local invid = data.drop
 			if Drops[invid] ~= nil then
 				if CheckOpenable(xPlayer, Drops[invid].name, Drops[invid].coords) then
 					Opened[xPlayer.source] = {invid = invid, type = 'drop'}
@@ -344,7 +344,7 @@ AddEventHandler('linden_inventory:saveInventoryData', function(data)
 				invid = playerinv
 			elseif data.frominv == 'TargetPlayer' then
 				local targetId = string.gsub(data.invid, 'Player ', '')
-				local xTarget = ESX.GetPlayerFromId(playerId)
+				local xTarget = ESX.GetPlayerFromId(targetId)
 				invid = xTarget.source
 			else
 				invid = data.invid
@@ -391,7 +391,7 @@ AddEventHandler('linden_inventory:saveInventoryData', function(data)
 					invid2 = playerinv
 				elseif data.frominv == 'TargetPlayer' then
 					local targetId = string.gsub(data.invid, 'Player ', '')
-					local xTarget = ESX.GetPlayerFromId(playerId)
+					local xTarget = ESX.GetPlayerFromId(targetId)
 					invid = xTarget.source
 					invid2 = playerinv
 				else
@@ -413,7 +413,8 @@ AddEventHandler('linden_inventory:saveInventoryData', function(data)
 					invid2 = data.invid2
 				end
 			end
-			if data.frominv == 'drop' or data.toinv =='drop' then
+			-- sometimes drops have incorrect invtype? 
+			if data.frominv == nil or data.frominv == 'drop' or data.toinv == 'drop' then
 				local dropid
 				if data.frominv == 'Playerinv' then
 					dropid = invid
@@ -468,8 +469,7 @@ AddEventHandler('linden_inventory:saveInventoryData', function(data)
 					ItemNotify(xPlayer, data.toItem.name, data.toItem.count, 'Removed', invid)
 					ItemNotify(xPlayer, data.fromItem.name, data.fromItem.count, 'Added', invid)
 				elseif data.type == 'freeslot' then
-					-- requires fixing, only player who dropped can get items from it (others get nil invid or something)
-					print(invid)
+					if not data.invid then print(data.frominv) print(data.toinv) end
 					if not ValidateItem(data.type, xPlayer, Inventories[invid2].inventory[data.emptyslot], Inventories[invid].inventory[data.toSlot], data.item, data.item) then return end
 					local count = Inventories[invid2].inventory[data.emptyslot].count
 					Inventories[invid2].inventory[data.emptyslot] = nil
