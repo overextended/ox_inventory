@@ -180,7 +180,8 @@ RemovePlayerInventory = function(xPlayer, item, count, metadata, slot)
 			Inventories[xPlayer.source].weight = Inventories[xPlayer.source].weight - (xItem.weight * count)
 			ItemNotify(xPlayer, item, count, 'Removed')
 		elseif slot and Inventories[xPlayer.source].inventory[slot].count > count then
-			Inventories[xPlayer.source].inventory[slot] = {name = item, label = xItem.label, weight = xItem.weight, slot = slot, count = count, description = xItem.description, metadata = metadata, stackable = xItem.stackable, closeonuse = xItem.closeonuse}
+			local newCount = Inventories[xPlayer.source].inventory[slot].count - count
+			Inventories[xPlayer.source].inventory[slot] = {name = item, label = xItem.label, weight = xItem.weight, slot = slot, count = newCount, description = xItem.description, metadata = metadata, stackable = xItem.stackable, closeonuse = xItem.closeonuse}
 			Inventories[xPlayer.source].weight = Inventories[xPlayer.source].weight - (xItem.weight * count)
 			ItemNotify(xPlayer, item, count, 'Removed')
 		else
