@@ -318,8 +318,9 @@ CheckOpenable = function(xPlayer, id, coords)
 	end
 	if Opened[id] == nil then
 		Opened[id] = xPlayer.source
-		returnData = true
+		return true
 	end
+	print(id..' is locked')
 	return returnData
 end
 
