@@ -557,7 +557,7 @@ Citizen.CreateThread(function()
 						if distance <= 2 then DrawText3D(Config.Stashes[id].coords, text) end
 					else
 						for k, v in pairs(Config.Stashes) do
-							if v.coords then
+							if v.coords and (not v.job or v.job == ESX.PlayerData.job.name) then
 								local distance = #(playerCoords - v.coords)
 								if distance <= 4 then
 									sleep = 10
