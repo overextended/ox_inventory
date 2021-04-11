@@ -332,6 +332,10 @@ AddEventHandler('linden_inventory:weapon', function(item)
 			item.hash = wepHash
 			DrawWeapon(item)
 			if currentWeapon.metadata.throwable then item.metadata.ammo = 1 end
+			if not item.ammoType then
+				local ammoType = GetAmmoType(item.name)
+				if ammoType then item.ammoType = ammoType end
+			end
 			currentWeapon = item
 			SetCurrentPedWeapon(playerPed, currentWeapon.hash)
 			SetPedCurrentWeaponVisible(playerPed, true, false, false, false)
@@ -872,7 +876,6 @@ AddEventHandler('linden_inventory:useItem',function(item)
 					local newHealth = math.min(maxHealth, math.floor(health + maxHealth / 16))
 					SetEntityHealth(playerPed, newHealth)
 				end
-
 
 			------------------------------------------------------------------------------------------------
 		end
