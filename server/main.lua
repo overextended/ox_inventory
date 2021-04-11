@@ -235,9 +235,7 @@ RegisterNetEvent('linden_inventory:openTargetInventory')
 AddEventHandler('linden_inventory:openTargetInventory', function(targetId)
 	local xPlayer = ESX.GetPlayerFromId(source)
 	local xTarget = ESX.GetPlayerFromId(targetId)
-	if source == TargetId then tTarget = nil end
-	if xTarget and xPlayer then
-		if Opened[xTarget.source] then return end
+	if source ~= targetId and xTarget and xPlayer then
 		if CheckOpenable(xPlayer, xTarget.source, GetEntityCoords(GetPlayerPed(targetId))) then
 			local TargetPlayer = Inventories[xTarget.source]
 			local data = {
