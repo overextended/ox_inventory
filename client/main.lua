@@ -42,7 +42,7 @@ local StartInventory = function()
 	end
 	playerID, playerPed, invOpen, isDead, isCuffed, isBusy, isShooting, usingWeapon, weight, currentDrop = nil, nil, false, false, false, false, false, false, Config.PlayerWeight, {}
 	ESX.TriggerServerCallback('linden_inventory:setup',function(data)
-		while ESX.GetPlayerData().job == nil do Citizen.Wait(100) end
+		Citizen.Wait(500)
 		ESX.PlayerData = ESX.GetPlayerData()
 		playerPed = PlayerPedId()
 		playerID = data.playerID
@@ -76,6 +76,7 @@ local StartInventory = function()
 end
 
 local CanOpenInventory = function()
+	if not playerName and ESX.GetPlayerData().job ~= nil then playerName = 'pusskins' StartInventory() end
 	if playerName and not isBusy and not isShooting and not isDead and not isCuffed and not IsPauseMenuActive() then
 		--if IsPedDeadOrDying(playerPed, 1) then return false end
 		return true
@@ -214,6 +215,7 @@ end
 
 RegisterNetEvent('esx:playerLoaded')
 AddEventHandler('esx:playerLoaded', function()
+	while ESX.GetPlayerData().job == nil do Citizen.Wait(100) end
 	StartInventory()
 end)
 
@@ -273,7 +275,7 @@ AddEventHandler('linden_inventory:createDrop', function(data, owner)
 	Drops[data.name] = data
 	Drops[data.name].coords = vector3(data.coords.x, data.coords.y,data.coords.z - 0.2)
 	Citizen.Wait(0)
-	if owner == playerID then TriggerServerEvent('linden_inventory:openInventory', {type = 'drop', drop = Drops[data.name] }) end
+	if owner == playerID and invOpen then TriggerServerEvent('linden_inventory:openInventory', {type = 'drop', drop = Drops[data.name] }) end
 end)
 
 RegisterNetEvent('linden_inventory:removeDrop')
@@ -469,7 +471,7 @@ Citizen.CreateThread(function()
 							wait = false
 						end)
 					end
-				elseif currentWeapon.metadata.ammo then
+				elseif currentWeapon.metadata.ammoType then
 					currentWeapon.metadata.ammo = currentAmmo
 					if currentAmmo == 0 then
 						weaponTimer = 0
@@ -624,10 +626,11 @@ Citizen.CreateThread(function()
 					TriggerEvent('linden_inventory:closeInventory')
 				elseif currentInventory then
 					if string.find(currentInventory.name, 'Player') then
-						local str = string.sub(currentInventory.name, 7)
-						local id = GetPlayerFromServerId(tonumber(str))
-						local dist = #(playerCoords - playerCoords)
-						if not id or dist > 1.5 or not CanOpenTarget(playerPed) then
+						local id = GetPlayerFromServerId(currentInventory.id)
+						local ped = GetPlayerPed(id)
+						local pedCoords = GetEntityCoords(ped)
+						local dist = #(playerCoords - pedCoords)
+						if not id or dist > 1.8 or not CanOpenTarget(ped) then
 							TriggerEvent('linden_inventory:closeInventory')
 							error("No longer able to access this inventory")
 						end
@@ -646,7 +649,6 @@ Citizen.CreateThread(function()
 end)
 
 RegisterCommand('inv', function()
-	if not playerID and ESX.GetPlayerData().job ~= nil then StartInventory() end
 	if isBusy or invOpen then error("You can't open your inventory right now") return end
 	if CanOpenInventory() then
 		TriggerEvent('randPickupAnim')
@@ -779,9 +781,9 @@ RegisterNUICallback('exit',function(data)
 	if lastVehicle then
 		CloseVehicle(lastVehicle)
 	end
+	TriggerServerEvent('linden_inventory:saveInventory', data)
 	currentInventory = nil
 	SetNuiFocusAdvanced(false, false)
-	TriggerServerEvent('linden_inventory:saveInventory', data)
 	Citizen.Wait(200)
 	invOpen = false
 end)
