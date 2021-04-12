@@ -727,12 +727,6 @@ ESX.RegisterServerCallback('linden_inventory:getOtherPlayerData',function(source
 	end
 end)
 
-ESX.RegisterServerCallback('linden_inventory:getInventory',function(source, cb, target)
-	if Inventories[target] then
-		cb(Inventories[target].inventory)
-	end
-end)
-
 ESX.RegisterServerCallback('linden_inventory:buyLicense', function(source, cb)
 	local xPlayer = ESX.GetPlayerFromId(source)
 	if xPlayer.getMoney() >= Config.WeaponsLicensePrice then
