@@ -1,5 +1,4 @@
 theme: jekyll-theme-cayman
-title: Documentation
-description: installing and using linden_inventory
+description: documentation for linden_inventory
 author: Linden
 show_downloads: true
