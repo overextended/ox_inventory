@@ -490,7 +490,7 @@ Citizen.CreateThread(function()
 					Citizen.CreateThread(function()
 						wait = true
 						Citizen.Wait(800)
-						TriggerServerEvent('linden_inventory:updateWeapon', currentWeapon)
+						TriggerServerEvent('linden_inventory:updateWeapon', currentWeapon, 'throw')
 						SetCurrentPedWeapon(playerPed, `WEAPON_UNARMED`, true)
 						currentWeapon = nil
 						wait = false
@@ -499,7 +499,7 @@ Citizen.CreateThread(function()
 					usingWeapon = true
 					Citizen.CreateThread(function()
 						wait = true
-						TriggerServerEvent('linden_inventory:updateWeapon', currentWeapon)
+						TriggerServerEvent('linden_inventory:updateWeapon', currentWeapon, 'melee')
 						TriggerEvent('linden_inventory:usedWeapon', currentWeapon)
 						Citizen.Wait(400)
 						wait = false
