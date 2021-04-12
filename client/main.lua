@@ -876,6 +876,6 @@ AddEventHandler('linden_inventory:useItem',function(item)
 
 				--------------------------------------------------------------------------
 			end
-		end, item.name, item.metadata, item.slot)
+		end, item.name, item.slot, item.metadata)
 	end
 end)
