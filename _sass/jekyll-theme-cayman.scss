@@ -171,19 +171,16 @@ a {
     padding: 2rem 6rem;
     margin: 0 auto;
     font-size: 1rem;
-    line-height: 1.2rem;
   }
 
   @include medium {
     padding: 2rem 4rem;
     font-size: 0.9rem;
-    line-height: 1.1rem;
   }
 
   @include small {
     padding: 2rem 1rem;
     font-size: 0.8rem;
-    line-height: 1rem;
   }
   
   kbd {
