@@ -171,7 +171,7 @@ AddPlayerInventory = function(xPlayer, item, count, metadata, slot)
 	end
 end
 
-RemovePlayerInventory = function(xPlayer, item, count, metadata, slot)
+RemovePlayerInventory = function(xPlayer, item, count, slot, metadata)
 	local xItem = Items[item]
 	if xPlayer and xItem and count > 0 then
 		metadata = setMetadata(metadata)
@@ -185,11 +185,11 @@ RemovePlayerInventory = function(xPlayer, item, count, metadata, slot)
 			Inventories[xPlayer.source].weight = Inventories[xPlayer.source].weight - (xItem.weight * count)
 			ItemNotify(xPlayer, item, count, 'Removed')
 		else
-			local itemSlots = getInventoryItemSlots(xPlayer, item, metadata)
+			local itemSlots, totalCount = getInventoryItemSlots(xPlayer, item, metadata)
 			if itemSlots then
-				if count > itemSlots.total then count = itemSlots.total end
+				if count > totalCount then count = totalCount end
 				local removed, total = 0, count
-				for k, v in pairs(itemSlots.slot) do -- k = slot, v = count
+				for k, v in pairs(itemSlots) do -- k = slot, v = count
 					if removed < total then
 						if v == count then
 							removed = total
