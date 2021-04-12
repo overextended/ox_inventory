@@ -16,7 +16,7 @@
 
 ```js
 set mysql_connection_string "mysql://user:password@localhost/database?connectTimeout=20000&acquireTimeout=20000&waitForConnections=true&keepAlive=15"
-set onesync_enabled
+set onesync_enabled 		# set onesync legacy should also work
 
 ensure mapmanager
 ensure chat
