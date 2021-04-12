@@ -139,16 +139,16 @@ exports('getPlayerSlot', getPlayerSlot)
 getInventoryItemSlots = function(xPlayer, name, metadata)
 	local xItem = Items[name]
 	if not xItem then print(('^1[error]^7 %s does not exist'):format(name)) return end
-	xItem.count = 0
+	local totalCount, slots = 0, {}
 	for k, v in pairs(Inventories[xPlayer.source].inventory) do
 		if v.name == name then
 			if not v.metadata then v.metadata = {} end
 			if is_table_equal(v.metadata, metadata) then
-				xItem.total = xItem.count + v.count
-				xItem.slot = { [v.slot] = v.count }
+				totalCount = totalCount + v.count
+				slots[k] = v.count
 			end
 		end
 	end
-	return xItem
+	return slots, totalCount
 end
 exports('getInventoryItemSlots', getInventoryItemSlots)
