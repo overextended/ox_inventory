@@ -1,4 +1,6 @@
+---
 title: Installation
+---
 
 | [Installation](index) | [Usage](usage) | [Snippets](snippets) | [Other Resources](resources) | [Media](media)
 
