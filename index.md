@@ -246,4 +246,6 @@ end)
 
 #### Confirm you have removed all functions trying to get loadout data
 
-<h4 align='center'>Getting errors? You need to check your edits and confirm you removed it all properly<br>Restarting the framework or inventory should show lines causing errors (in server or client console)</h4>
+<h4 align='center'>Confirm you have removed all functions trying to get loadout data<br>
+Getting errors? You need to check your edits and confirm you removed it all properly<br></h4>
+<h3 align='center'>Restarting the framework or inventory should show lines causing errors (in server or client console)</h3>
