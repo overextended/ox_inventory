@@ -215,6 +215,7 @@ AddEventHandler('esx:onPlayerSpawn', function(spawn)
 	isDead = false
 end)
 
+RegisterNetEvent('esx:setJob')
 AddEventHandler('esx:setJob', function(job)
 	ESX.PlayerData.job = job
 end)
