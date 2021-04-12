@@ -66,7 +66,7 @@ function OpenDrugShop()
 	ESX.UI.Menu.CloseAll()
 	local elements = {}
 
-	ESX.TriggerServerCallback('hsn-inventory:getPlayerInventory',function(playerInventory)
+	ESX.TriggerServerCallback('linden_inventory:getPlayerData',function(playerInventory)
 
 		for k, v in pairs(playerInventory.inventory) do
 			local price = Config.DrugDealerItems[v.name]
