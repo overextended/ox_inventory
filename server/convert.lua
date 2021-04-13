@@ -37,27 +37,29 @@ end)
 
 RetrieveUsers = function()
 	running = true
-	print('^8	=================================================================^0')
-	print('^3	CONVERSION PROCESS HAS STARTED^0')
-	print('^3	WAIT UNTIL THE PROCESS IS COMPLETE^0')
-	print('^8	=================================================================^0')
 	local result = exports.ghmattimysql:executeSync('SELECT identifier, inventory, loadout FROM users', {})
 	if result then
 		for k, v in pairs(result) do
 			if (v.inventory ~= nil and v.inventory ~= '' and v.inventory ~= '[]') or (v.loadout ~= nil and v.loadout ~= '' and v.loadout ~= '[]') then
-				local count = #identifier+1
-				identifier[count] = v.identifier
-				inventory[count] = json.decode(v.inventory)
-				loadout[count] = json.decode(v.loadout)
+				if v.inventory:find('"slot":') == nil then
+					local count = #identifier+1
+					identifier[count] = v.identifier
+					inventory[count] = json.decode(v.inventory)
+					loadout[count] = json.decode(v.loadout)
+				end
 			end
 		end
 		totalCount = #identifier
 		if totalCount == 0 then 
 			print('^8	=================================================================^0')
-			print('^3	THERE ARE NO PLAYERS WITH INVENTORIES^0')
+			print('^3	THERE ARE NO PLAYERS WITH INVENTORIES TO CONVERT^0')
 			print('^8	=================================================================^0')
 			return
 		end
+		print('^8	=================================================================^0')
+		print('^3	FOUND '..totalCount..' PLAYERS WITH OLD INVENTORY DATA^0')
+		print('^3	STARTING CONVERSION - WAIT UNTIL THE PROCESS IS COMPLETE^0')
+		print('^8	=================================================================^0')
 		BeginConversion()
 	else
 		print('^8	=================================================================^0')
