@@ -48,6 +48,17 @@ or
   end, 'water')
 ```
 
+#### Check an items metadata
+* Example server command, print the serial of the item in slot one
+```lua
+RegisterCommand('getmeta', function(source, args, rawCommand)
+	local xPlayer = ESX.GetPlayerFromId(source)
+	local slot = exports['linden_inventory']:getPlayerSlot(xPlayer, 1)
+	print(slot.metadata.serial)
+end, true)
+```
+* Still working on a good solution for checking client side
+
 #### Open a Stash (such as job storage)
 ```lua
   local data = {coords = vector3(301.4374, -599.2748, 43.2821), slots = 71, name = 'Hospital Cloakroom', job = 'ambulance'}
