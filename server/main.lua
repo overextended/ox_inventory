@@ -19,22 +19,20 @@ local message = function(msg, colour)
 	print(('^%s[%s]^7 %s'):format(colour, type, msg))
 end
 
-
-if GetConvar('onesync_enableInfinity', false) ~= 'true' and GetConvar('onesync_enabled', false) ~= 'true' then
-	failed('Unable to initialise, OneSync is not enabled on this server')
-end
-
 TriggerEvent('esx:getSharedObject', function(obj) ESX = obj end)
 
 Citizen.CreateThread(function()
 	if ESX == nil then failed('Unable to retrieve ESX object') end
+	local OneSync = GetConvar('onesync_enabled', false) == 'true'
+	local Infinity = GetConvar('onesync_enableInfinity', false) == 'true'
+	if not OneSync and not Infinity then failed('Unable to initialise, OneSync is not enabled on this server') end
 	while true do
 		Citizen.Wait(125)
 		if Status[1] ~= 'starting' then
 			break
 		end
 	end
-	if Status[1] == 'error' then message(Status[2], 2) return end
+	if Status[1] == 'error' then message(Status[2], 1) return end
 	while (Status[1] == 'loaded') do Citizen.Wait(125) if Status[1] == 'ready' then break end end
 	message('Inventory setup is complete', 2)
 end)
