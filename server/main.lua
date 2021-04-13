@@ -25,7 +25,9 @@ Citizen.CreateThread(function()
 	if ESX == nil then failed('Unable to retrieve ESX object') end
 	local OneSync = GetConvar('onesync_enabled', false) == 'true'
 	local Infinity = GetConvar('onesync_enableInfinity', false) == 'true'
-	if not OneSync and not Infinity then failed('Unable to initialise, OneSync is not enabled on this server') end
+	if not OneSync and not Infinity then failed('Unable to initialise, OneSync is not enabled on this server')
+	elseif OneSync then message('Server is running OneSync Legacy', 2)
+	elseif Infinity then message('Server is running OneSync Infinity', 2) end
 	while true do
 		Citizen.Wait(125)
 		if Status[1] ~= 'starting' then
