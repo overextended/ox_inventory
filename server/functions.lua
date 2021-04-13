@@ -123,12 +123,12 @@ AddPlayerInventory = function(xPlayer, item, count, metadata, slot)
 	local xItem = Items[item]
 	if xPlayer and xItem and count > 0 then
 		if metadata == 'setname' then metadata = {description = xPlayer.getName()} else metadata = setMetadata(metadata) end
-		if slot then slot = getPlayerSlot(xPlayer, slot, metadata) end
+		if slot then slot = getPlayerSlot(xPlayer, slot, item, metadata).slot end
 		local toSlot, existing
 		if slot == nil then
 			for i=1, Config.PlayerSlots do
 				if xItem.stackable == 1 and Inventories[xPlayer.source].inventory[i] and Inventories[xPlayer.source].inventory[i].name == item and is_table_equal(Inventories[xPlayer.source].inventory[i].metadata, metadata) then toSlot = i existing = true break
-				elseif Inventories[xPlayer.source].inventory[i] == nil then toSlot = i existing = false break end
+				elseif not toSlot and Inventories[xPlayer.source].inventory[i] == nil then toSlot = i existing = false end
 			end
 			slot = toSlot
 		end
