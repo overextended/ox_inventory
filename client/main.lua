@@ -256,8 +256,7 @@ AddEventHandler('linden_inventory:openInventory',function(data, rightinventory)
 end)
 
 RegisterNetEvent('linden_inventory:refreshInventory')
-AddEventHandler('linden_inventory:refreshInventory', function(data, item, text)
-	if text then SendNUIMessage({ message = 'notify', item = item, text = text }) end
+AddEventHandler('linden_inventory:refreshInventory', function(data)
 	SendNUIMessage({
 		message = 'refresh',
 		inventory = data.inventory,
@@ -265,6 +264,12 @@ AddEventHandler('linden_inventory:refreshInventory', function(data, item, text)
 		name = playerName..' ['.. playerID ..']',
 		maxweight = data.maxWeight
 	})
+end)
+
+RegisterNetEvent('linden_inventory:itemNotify')
+AddEventHandler('linden_inventory:itemNotify', function(item, text, weapon)
+	SendNUIMessage({ message = 'notify', item = item, text = text })
+	if weapon then TriggerEvent('linden_inventory:checkWeapon', weapon) end
 end)
 
 RegisterNetEvent('linden_inventory:createDrop')
@@ -363,8 +368,8 @@ AddEventHandler('linden_inventory:currentWeapon', function(weapon)
 end)
 
 RegisterNetEvent('linden_inventory:checkWeapon')
-AddEventHandler('linden_inventory:checkWeapon', function(item)
-	if currentWeapon and currentWeapon.metadata.serial == item.metadata.serial then
+AddEventHandler('linden_inventory:checkWeapon', function(data)
+	if currentWeapon and currentWeapon.metadata.serial == data then
 		DisarmPlayer()
 	end
 end)
@@ -866,6 +871,12 @@ AddEventHandler('linden_inventory:useItem',function(item)
 					else TriggerEvent('esx_status:remove', 'drunk', data.drunk) end
 				end
 				-- Effects after item use ------------------------------------------------
+
+				if data.component then
+					GiveWeaponComponentToPed(playerPed, currentWeapon.name, component.hash)
+					table.insert(currentWeapon.metadata.components, component.name)
+					TriggerServerEvent('linden_inventory:updateWeapon', currentWeapon, component.name)
+				end
 
 				if xItem.name == 'bandage' then
 					local maxHealth = 200
