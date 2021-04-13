@@ -104,7 +104,7 @@ ItemNotify = function(xPlayer, item, count, slot, type, invid)
 		if Config.Logs then
 			-- todo
 		end
-		if item:find('money') then SyncAccounts(xPlayer, item) end
+		if item:find('money') then SyncAccounts(xPlayer, item, type, count) end
 	else notification = 'Used' end
 	if slot and type == 'Removed' and item:find('WEAPON_') then
 		slot = Inventories[xPlayer.source].inventory[slot].metadata.serial
@@ -112,9 +112,10 @@ ItemNotify = function(xPlayer, item, count, slot, type, invid)
 	TriggerClientEvent('linden_inventory:itemNotify', xPlayer.source, xItem, notification, slot)
 end
 
-SyncAccounts = function(xPlayer, name)
+SyncAccounts = function(xPlayer, name, type, count)
 	local account = xPlayer.getAccount(name)
 	account.money = getInventoryItem(xPlayer, name).count
+	if type and type == 'Removed' then account.money = account.money - count elseif type then account.money = account.money + count end
 	xPlayer.setAccount(account)
 	xPlayer.triggerEvent('esx:setAccountMoney', account)
 end
