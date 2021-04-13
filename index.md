@@ -15,6 +15,7 @@ title: Installation
 * [mythic_notify](https://github.com/thelindat/mythic_notify)
 
 * If I say to remove something, feel free to keep it in a comment block `--[[ ]]`
+* Removing a function means removing the entire block of code - don't just delete the function define
 
 <h2 align='center'>Server Config</h2>
 
@@ -111,7 +112,7 @@ end)
 * Change `self.inventory = inventory` to `self.inventory = {}`
 * Remove `self.loadout = loadout`
 * Remove `self.maxWeight = Config.MaxWeight`
-* Add this new function (I have it after `self.getAccount = function()`)
+* Add these new functions
 ```lua
 self.setAccount = function(account)
 	for k,v in ipairs(self.accounts) do
@@ -119,6 +120,10 @@ self.setAccount = function(account)
 			self.accounts[k] = account
 		end
 	end
+end
+
+self.getPlayerSlot = function(slot)
+	return exports['linden_inventory']:getPlayerSlot(self, slot)
 end
 ```
 
