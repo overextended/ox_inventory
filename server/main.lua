@@ -76,7 +76,7 @@ ESX.RegisterServerCallback('linden_inventory:setup', function(source, cb)
 		Citizen.Wait(100)
 	end
 	Citizen.Wait(100)
-	local data = {drops = Drops, name = Inventories[src].name, playerID = src }
+	local data = {drops = Drops, name = Inventories[src].name }
 	Opened[src] = nil
 	cb(data)
 end)
