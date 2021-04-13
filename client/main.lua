@@ -39,7 +39,7 @@ local StartInventory = function()
 		Citizen.Wait(500)
 		ESX.PlayerData = ESX.GetPlayerData()
 		playerPed = PlayerPedId()
-		playerID = data.playerID
+		playerID = GetPlayerServerId(PlayerId())
 		playerName = data.name
 		Drops = data.drops
 		ClearWeapons()
@@ -607,13 +607,13 @@ Citizen.CreateThread(function()
 								if IsControlJustPressed(1,38) then
 									ESX.TriggerServerCallback('esx_license:checkLicense', function(hasWeaponLicense)
 										if hasWeaponLicense then
-											error("You already have a weapon's license")
+											error("You already have a Weapons License")
 										else
 											ESX.TriggerServerCallback('linden_inventory:buyLicense', function(bought)
 												if bought then
-													inform("You have purchased a weapon's license")
+													inform("You have purchased a Weapons License")
 												else
-													error("You can not afford a weapon's license")
+													error("You can not afford a Weapons License")
 												end
 											end, license)
 										end
