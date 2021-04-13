@@ -67,9 +67,9 @@ Moving items around while the inventory is refreshing can cause the client to de
 
 <h1 align='center'>Modifying your framework</h1>
 
-#### Updating from hsn-inventory
+## Updating from hsn-inventory
 * Though the changes being applied are mostly the same, there are some minor differences (aside from the obvious name change)
-* `ESX.SavePlayer` is no longer being modified and should be reverted to default
+* `ESX.SavePlayer` is no longer being modified to retrieve the player inventory - revert it to default (but remove loadout)
 * `self.getAccounts` and `self.getAccount` are no longer being modified and should be reverted to default
 * That should be everything, but let me know if I missed anything leftover
 
