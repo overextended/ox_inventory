@@ -114,24 +114,24 @@ end)
 * Remove `self.maxWeight = Config.MaxWeight`
 * Add these two new functions  
 ```lua
-self.setAccount = function(account)
-	for k,v in ipairs(self.accounts) do
-		if v.name == account.name then
-			self.accounts[k] = account
+	self.setAccount = function(account)
+		for k,v in ipairs(self.accounts) do
+			if v.name == account.name then
+				self.accounts[k] = account
+			end
 		end
 	end
-end
 
-self.getPlayerSlot = function(slot)
-	return exports['linden_inventory']:getPlayerSlot(self, slot)
-end
+	self.getPlayerSlot = function(slot)
+		return exports['linden_inventory']:getPlayerSlot(self, slot)
+	end
 ```
 
 * Locate `self.getInventory` and replace the function with
 ```lua
-self.getInventory = function()
-	return exports['linden_inventory']:getPlayerInventory(self)
-end
+	self.getInventory = function()
+		return exports['linden_inventory']:getPlayerInventory(self)
+	end
 ```
 
 * Locate `self.setAccountMoney` and replace the functions as below
