@@ -617,8 +617,8 @@ Citizen.CreateThread(function()
 												end
 											end, license)
 										end
-										Citizen.Wait(sleep)
 									end, playerID, license)
+									Citizen.Wait(500)
 								end
 							end   
 							DrawText3D(coords, text)
