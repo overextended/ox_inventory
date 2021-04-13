@@ -394,21 +394,20 @@ AddEventHandler('linden_inventory:saveInventoryData', function(data)
 				TriggerClientEvent('linden_inventory:refreshInventory', xPlayer.source, Inventories[xPlayer.source])
 				return
 			end
-			local xTarget
 			if data.frominv == 'Playerinv' then
 				if data.toinv == 'TargetPlayer' then
 					local targetId = string.gsub(data.invid, 'Player ', '')
-					invid = targetId
-					xTarget = GetPlayerFromId(targetId)
+					xTarget = ESX.GetPlayerFromId(targetId)
+					invid = xTarget.source
 				else
 					invid = data.invid
 				end
 				invid2 = xPlayer.source
 			elseif data.toinv == 'Playerinv' then
 				if data.frominv == 'TargetPlayer' then
-					local targetId = string.gsub(data.invid, 'Player ', '')
-					invid2 = targetId
-					xTarget = GetPlayerFromId(targetId)
+					local targetId = string.gsub(data.invid2, 'Player ', '')
+					xTarget = ESX.GetPlayerFromId(targetId)
+					invid2 = xTarget.source
 				else
 					invid2 = data.invid2
 				end
