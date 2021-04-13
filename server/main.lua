@@ -152,6 +152,7 @@ AddEventHandler('linden_inventory:setPlayerInventory', function(xPlayer, data)
 					ammo.weight = Items[ammo.type].weight
 					weight = xItem.weight + (ammo.weight * ammo.count)
 				else weight = xItem.weight end
+				if not v.metadata then v.metadata = {} end
 				Inventories[invid].inventory[v.slot] = {name = v.name, label = xItem.label, weight = weight, slot = v.slot, count = v.count, description = xItem.description, metadata = v.metadata, stackable = xItem.stackable}
 				if xItem.ammoType then Inventories[invid].inventory[v.slot].ammoType = xItem.ammoType end
 			end
