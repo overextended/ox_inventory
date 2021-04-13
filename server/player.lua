@@ -6,7 +6,7 @@ getInventoryItem = function(xPlayer, name, metadata)
 	for k, v in pairs(Inventories[xPlayer.source].inventory) do
 		if v.name == name then
 			if not v.metadata then v.metadata = {} end
-			if is_table_equal(v.metadata, metadata) then
+			if is_table_equal(v.metadata, xItem.metadata) then
 				xItem.count = xItem.count + v.count
 			end
 		end
