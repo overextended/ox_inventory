@@ -357,7 +357,7 @@ AddEventHandler('linden_inventory:saveInventoryData', function(data)
 			else
 				invid = data.invid
 			end
-			if data.frominv == 'drop' or data.toinv =='drop' then
+			if data.frominv == nil or data.frominv == 'drop' or data.toinv == 'drop' then
 				if data.type == 'swap' then
 					if ValidateItem(data.type, xPlayer, Drops[invid].inventory[data.fromSlot], Drops[invid].inventory[data.toSlot], data.fromItem, data.toItem) == true then
 						Drops[invid].inventory[data.toSlot] = {name = data.toItem.name, label = data.toItem.label, weight = data.toItem.weight, slot = data.toSlot, count = data.toItem.count, description = data.toItem.description, metadata = data.toItem.metadata, stackable = data.toItem.stackable, closeonuse = Items[data.toItem.name].closeonuse}
@@ -556,19 +556,28 @@ AddEventHandler('linden_inventory:saveInventory', function(data)
 	end
 end)
 
+
+RegisterNetEvent('playerDropped')
 AddEventHandler('playerDropped', function()
 	local src = source
-	if Opened[src] then
-		local data = Opened[src]
-		if Inventories[data.invid].changed then
+	local data = Opened[src]
+	if data then
+		if data.type == 'TargetPlayer' then
+			updateWeight(ESX.GetPlayerFromId(data.invid))
+			Opened[data.invid] = nil
+			print(src..' disconnected while accessing player inventory '..data.invid)
+		elseif data.type ~= 'shop' and data.type ~= 'drop' and Inventories[data.invid] and Inventories[data.invid].changed then
 			SaveItems(data.type, data.invid)
 			Inventories[data.invid].changed = false
-			print('player left with inventory open and saved')
+			print(src..' disconnected while accessing '..data.type..' '..data.invid)
+		else
+			print(src..' disconnected while accessing '..data.type..' '..data.invid)
 		end
-		Opened[data.invid] = nil
+		Opened[src] = nil
+		if data.invid then Opened[data.invid] = nil end
 	end
-	Opened[src] = nil
 end)
+
 
 RegisterNetEvent('linden_inventory:devtool')
 AddEventHandler('linden_inventory:devtool', function()
