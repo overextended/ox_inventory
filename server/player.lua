@@ -127,12 +127,12 @@ end
 exports('getPlayerInventory', getPlayerInventory)
 
 
-getPlayerSlot = function(xPlayer, slot, metadata)
+getPlayerSlot = function(xPlayer, slot, item, metadata)
 	if slot > Config.PlayerSlots then return nil end
 	local getSlot = Inventories[xPlayer.source].inventory[slot]
-	if getSlot and getSlot.name ~= item then slot = nil end
-	if slot and not is_table_equal(getSlot.metadata, metadata) then slot = nil end
-	return slot
+	if item and getSlot and getSlot.name ~= item then slot = nil end
+	if slot and metadata and not is_table_equal(getSlot.metadata, metadata) then slot = nil end
+	if getSlot then return getSlot end return {}
 end
 exports('getPlayerSlot', getPlayerSlot)
 
