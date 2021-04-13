@@ -90,13 +90,12 @@ ValidateItem = function(type, xPlayer, fromSlot, toSlot, fromItem, toItem)
 		-- currently have a bug where moving items around while also adding/removing items can result in client-sided item duplication
 		-- item validation should not be used to ban until all bugs are dealt with
 		-- for now, close inventory and refresh items
-		TriggerClientEvent('mythic_notify:client:SendAlert', xPlayer.source, { type = 'error', text = '(Desync) Inventory was refreshed' })
 		TriggerClientEvent("linden_inventory:closeInventory", xPlayer.source)
 		return false
 	else return true end
 end 
 
-ItemNotify = function(xPlayer, item, count, type, invid)
+ItemNotify = function(xPlayer, item, count, slot, type, invid)
 	local xItem = Items[item]
 	local notification
 	if count > 0 then
@@ -106,7 +105,10 @@ ItemNotify = function(xPlayer, item, count, type, invid)
 		end
 		if item:find('money') then SyncAccounts(xPlayer, item) end
 	else notification = 'Used' end
-	TriggerClientEvent('linden_inventory:refreshInventory', xPlayer.source, Inventories[xPlayer.source], xItem, notification )
+	if slot and type == 'Removed' and item:find('WEAPON_') then
+		slot = Inventories[xPlayer.source].inventory[slot].metadata.serial
+	else slot = nil end
+	TriggerClientEvent('linden_inventory:itemNotify', xPlayer.source, xItem, notification, slot)
 end
 
 SyncAccounts = function(xPlayer, name)
@@ -150,7 +152,7 @@ AddPlayerInventory = function(xPlayer, item, count, metadata, slot)
 			Inventories[xPlayer.source].inventory[slot] = {name = item, label = xItem.label, weight = xItem.weight, slot = slot, count = count, description = xItem.description, metadata = metadata, stackable = xItem.stackable, closeonuse = true}
 			if xItem.ammoType then Inventories[xPlayer.source].inventory[slot].ammoType = xItem.ammoType end
 			Inventories[xPlayer.source].weight = Inventories[xPlayer.source].weight + (xItem.weight * count)
-			return ItemNotify(xPlayer, item, count, 'Added')
+			return ItemNotify(xPlayer, item, count, false, 'Added')
 		elseif item:find('identification') then
 			count = 1
 			metadata = {}
@@ -160,13 +162,13 @@ AddPlayerInventory = function(xPlayer, item, count, metadata, slot)
 			if existing then count = Inventories[xPlayer.source].inventory[slot].count + count end
 			Inventories[xPlayer.source].inventory[slot] = {name = item, label = xItem.label, weight = xItem.weight, slot = slot, count = count, description = xItem.description, metadata = metadata, stackable = xItem.stackable, closeonuse = true}
 			Inventories[xPlayer.source].weight = Inventories[xPlayer.source].weight + (xItem.weight * count)
-			return ItemNotify(xPlayer, item, added, 'Added')
+			return ItemNotify(xPlayer, item, added, false, 'Added')
 		else
 			local added = count
 			if existing then count = Inventories[xPlayer.source].inventory[slot].count + count end
 			Inventories[xPlayer.source].inventory[slot] = {name = item, label = xItem.label, weight = xItem.weight, slot = slot, count = count, description = xItem.description, metadata = metadata, stackable = xItem.stackable, closeonuse = xItem.closeonuse}
 			Inventories[xPlayer.source].weight = Inventories[xPlayer.source].weight + (xItem.weight * count)
-			return ItemNotify(xPlayer, item, added, 'Added')
+			return ItemNotify(xPlayer, item, added, false, 'Added')
 		end
 	end
 end
@@ -178,12 +180,12 @@ RemovePlayerInventory = function(xPlayer, item, count, slot, metadata)
 		if slot and Inventories[xPlayer.source].inventory[slot].count == count then
 			Inventories[xPlayer.source].inventory[slot] = nil
 			Inventories[xPlayer.source].weight = Inventories[xPlayer.source].weight - (xItem.weight * count)
-			ItemNotify(xPlayer, item, count, 'Removed')
+			ItemNotify(xPlayer, item, count, slot, 'Removed')
 		elseif slot and Inventories[xPlayer.source].inventory[slot].count > count then
 			local newCount = Inventories[xPlayer.source].inventory[slot].count - count
 			Inventories[xPlayer.source].inventory[slot] = {name = item, label = xItem.label, weight = xItem.weight, slot = slot, count = newCount, description = xItem.description, metadata = metadata, stackable = xItem.stackable, closeonuse = xItem.closeonuse}
 			Inventories[xPlayer.source].weight = Inventories[xPlayer.source].weight - (xItem.weight * count)
-			ItemNotify(xPlayer, item, count, 'Removed')
+			ItemNotify(xPlayer, item, count, slot, 'Removed')
 		else
 			local itemSlots, totalCount = getInventoryItemSlots(xPlayer, item, metadata)
 			if itemSlots then
@@ -206,7 +208,7 @@ RemovePlayerInventory = function(xPlayer, item, count, slot, metadata)
 					end
 				end
 				Inventories[xPlayer.source].weight = Inventories[xPlayer.source].weight + (xItem.weight * removed)
-				ItemNotify(xPlayer, item, removed, 'Removed')
+				ItemNotify(xPlayer, item, removed, false, 'Removed')
 			end
 		end
 	end
@@ -225,21 +227,21 @@ CreateNewDrop = function(xPlayer, data)
 	}
 	if data.type == 'swap' then
 		if not ValidateItem(data.type, xPlayer, Inventories[invid2].inventory[data.fromSlot], Drops[invid].inventory[data.toSlot], data.fromItem, data.toItem) then return end
+		ItemNotify(xPlayer, data.toItem.name, data.toItem.count, data.toItem.slot, 'Removed', invid)
+		ItemNotify(xPlayer, data.fromItem.name, data.fromItem.count, false, 'Added', invid)
 		Drops[invid].inventory[data.toSlot] = {name = data.toItem.name, label = data.toItem.label, weight = data.toItem.weight, slot = data.toSlot, count = data.toItem.count, description = data.toItem.description, metadata = data.toItem.metadata, stackable = data.toItem.stackable, closeonuse = Items[data.toItem.name].closeonuse}
 		Inventories[invid2].inventory[data.fromSlot] = {name = data.fromItem.name, label = data.fromItem.label, weight = data.fromItem.weight, slot = data.fromSlot, count = data.fromItem.count, description = data.fromItem.description, metadata = data.fromItem.metadata, stackable = data.fromItem.stackable, closeonuse = Items[data.fromItem.name].closeonuse}
-		ItemNotify(xPlayer, data.toItem.name, data.toItem.count, 'Removed', invid)
-		ItemNotify(xPlayer, data.fromItem.name, data.fromItem.count, 'Added', invid)
 	elseif data.type == 'freeslot' then
 		if not ValidateItem(data.type, xPlayer, Inventories[invid2].inventory[data.emptyslot], Drops[invid].inventory[data.toSlot], data.item, data.item) then return end
 		local count = Inventories[invid2].inventory[data.emptyslot].count
+		ItemNotify(xPlayer, data.item.name, count, data.item.slot, 'Removed', invid)
 		Inventories[invid2].inventory[data.emptyslot] = nil
 		Drops[invid].inventory[data.toSlot] = {name = data.item.name, label = data.item.label, weight = data.item.weight, slot = data.toSlot, count = data.item.count, description = data.item.description, metadata = data.item.metadata, stackable = data.item.stackable, closeonuse = Items[data.item.name].closeonuse}
-		ItemNotify(xPlayer, data.item.name, count, 'Removed', invid)
 	elseif data.type == 'split' then
 		if not ValidateItem(data.type, xPlayer, Inventories[invid2].inventory[data.fromSlot], Drops[invid].inventory[data.toSlot], data.oldslotItem, data.newslotItem) then return end
+		ItemNotify(xPlayer, data.newslotItem.name, data.newslotItem.count, data.newslotItem.slot, 'Removed', invid)
 		Inventories[invid2].inventory[data.fromSlot] = {name = data.oldslotItem.name, label = data.oldslotItem.label, weight = data.oldslotItem.weight, slot = data.fromSlot, count = data.oldslotItem.count, description = data.oldslotItem.description, metadata = data.oldslotItem.metadata, stackable = data.oldslotItem.stackable, closeonuse = Items[data.oldslotItem.name].closeonuse}
 		Drops[invid].inventory[data.toSlot] = {name = data.newslotItem.name, label = data.newslotItem.label, weight = data.newslotItem.weight, slot = data.toSlot, count = data.newslotItem.count, description = data.newslotItem.description, metadata = data.newslotItem.metadata, stackable = data.newslotItem.stackable, closeonuse = Items[data.newslotItem.name].closeonuse}
-		ItemNotify(xPlayer, data.newslotItem.name, data.newslotItem.count, 'Removed', invid)
 	end
 	TriggerClientEvent('linden_inventory:createDrop', -1, Drops[invid], xPlayer.source)
 end
