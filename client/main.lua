@@ -283,7 +283,7 @@ end)
 RegisterNetEvent('linden_inventory:removeDrop')
 AddEventHandler('linden_inventory:removeDrop', function(id, owner)
 	Drops[id] = nil
-	if currentDrop == id then currentDrop = nil end
+	if currentDrop and currentDrop.name == id then currentDrop = nil end
 	Citizen.Wait(0)
 	if owner == playerID then TriggerServerEvent('linden_inventory:openInventory', {type = 'drop', drop = {} }) end
 end)
@@ -585,16 +585,15 @@ Citizen.CreateThread(function()
 							if distance <= 8 then
 								sleep = 5
 								DrawMarker(2, v.coords.x,v.coords.y,v.coords.z, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.3, 0.2, 0.15, 150, 30, 30, 222, false, false, false, true, false, false, false)
-								if not closestDrop or (closestDrop and distance < closestDrop.distance and distance <= 1.0) then
-									closestDrop = {name = v.name, coords = v.coords}
+								if distance <= 2 and (closestDrop == nil or (currentDrop and closestDrop and distance < currentDrop.distance)) then
+									closestDrop = {name = v.name, distance = distance}
 								end
 							end
 						end
 					end
 					if closestDrop then
-						local distance = #(playerCoords - closestDrop.coords)
-						if distance <= 1 then currentDrop = closestDrop.name else currentDrop = nil end
-					else currentDrop = nil end
+						if closestDrop.distance <= 1 then currentDrop = {name=closestDrop.name, distance=closestDrop.distance} else currentDrop = nil end
+					end
 				end
 				if Config.WeaponsLicense then
 					local coords, text, license = vector3(12.42198, -1105.82, 29.7854), "Weapons License", 'weapon'
@@ -658,7 +657,8 @@ RegisterCommand('inv', function()
 	if isBusy or invOpen then error("You can't open your inventory right now") return end
 	if CanOpenInventory() then
 		TriggerEvent('randPickupAnim')
-		TriggerServerEvent('linden_inventory:openInventory', {type = 'drop', drop = currentDrop })
+		if currentDrop then drop = currentDrop.name end
+		TriggerServerEvent('linden_inventory:openInventory', {type = 'drop', drop = drop })
 	end
 end)
 
