@@ -89,8 +89,9 @@ ValidateItem = function(type, xPlayer, fromSlot, toSlot, fromItem, toItem)
 		print( ('[%s] %s failed item validation (type: %s, fromSlot: %s, toSlot: %s, fromItem: %s, toItem: %s, reason: %s)'):format(xPlayer.source, GetPlayerName(xPlayer.source), type, fromSlot, toSlot, fromItem, toItem, reason) )
 		-- currently have a bug where moving items around while also adding/removing items can result in client-sided item duplication
 		-- item validation should not be used to ban until all bugs are dealt with
-		-- for now, close inventory and refresh items
+		-- for now, close inventory and refresh it
 		TriggerClientEvent("linden_inventory:closeInventory", xPlayer.source)
+		TriggerClientEvent('linden_inventory:refreshInventory', xPlayer.source, Inventories[xPlayer.source])
 		return false
 	else return true end
 end 
@@ -152,7 +153,7 @@ AddPlayerInventory = function(xPlayer, item, count, metadata, slot)
 			Inventories[xPlayer.source].inventory[slot] = {name = item, label = xItem.label, weight = xItem.weight, slot = slot, count = count, description = xItem.description, metadata = metadata, stackable = xItem.stackable, closeonuse = true}
 			if xItem.ammoType then Inventories[xPlayer.source].inventory[slot].ammoType = xItem.ammoType end
 			Inventories[xPlayer.source].weight = Inventories[xPlayer.source].weight + (xItem.weight * count)
-			return ItemNotify(xPlayer, item, count, false, 'Added')
+			ItemNotify(xPlayer, item, count, false, 'Added')
 		elseif item:find('identification') then
 			count = 1
 			metadata = {}
@@ -162,14 +163,15 @@ AddPlayerInventory = function(xPlayer, item, count, metadata, slot)
 			if existing then count = Inventories[xPlayer.source].inventory[slot].count + count end
 			Inventories[xPlayer.source].inventory[slot] = {name = item, label = xItem.label, weight = xItem.weight, slot = slot, count = count, description = xItem.description, metadata = metadata, stackable = xItem.stackable, closeonuse = true}
 			Inventories[xPlayer.source].weight = Inventories[xPlayer.source].weight + (xItem.weight * count)
-			return ItemNotify(xPlayer, item, added, false, 'Added')
+			ItemNotify(xPlayer, item, added, false, 'Added')
 		else
 			local added = count
 			if existing then count = Inventories[xPlayer.source].inventory[slot].count + count end
 			Inventories[xPlayer.source].inventory[slot] = {name = item, label = xItem.label, weight = xItem.weight, slot = slot, count = count, description = xItem.description, metadata = metadata, stackable = xItem.stackable, closeonuse = xItem.closeonuse}
 			Inventories[xPlayer.source].weight = Inventories[xPlayer.source].weight + (xItem.weight * count)
-			return ItemNotify(xPlayer, item, added, false, 'Added')
+			ItemNotify(xPlayer, item, added, false, 'Added')
 		end
+		TriggerClientEvent('linden_inventory:refreshInventory', xPlayer.source, Inventories[xPlayer.source])
 	end
 end
 
@@ -209,6 +211,7 @@ RemovePlayerInventory = function(xPlayer, item, count, slot, metadata)
 				end
 				Inventories[xPlayer.source].weight = Inventories[xPlayer.source].weight + (xItem.weight * removed)
 				ItemNotify(xPlayer, item, removed, false, 'Removed')
+				TriggerClientEvent('linden_inventory:refreshInventory', xPlayer.source, Inventories[xPlayer.source])
 			end
 		end
 	end
