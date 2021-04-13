@@ -1,8 +1,8 @@
 getInventoryItem = function(xPlayer, name, metadata)
 	local xItem = Items[name]
 	if not xItem then print(('^1[error]^7 %s does not exist'):format(name)) return end
-	metadata = setMetadata(metadata)
 	xItem.count = 0
+	xItem.metadata = setMetadata(metadata)
 	for k, v in pairs(Inventories[xPlayer.source].inventory) do
 		if v.name == name then
 			if not v.metadata then v.metadata = {} end
@@ -109,15 +109,16 @@ end
 exports('canSwapItem', canSwapItem)
 
 
-getPlayerInventory = function(xPlayer)
+getPlayerInventory = function(xPlayer, minimal)
 	local inventory = {}
 	for k, v in pairs(Inventories[xPlayer.source].inventory) do
 		if v.count > 0 then
+			if minimal and next(v.metadata) == nil then v.metadata = nil print('no metadata bro') end
 			inventory[#inventory+1] = {
 				name = v.name,
 				count = v.count,
-				metadata = v.metadata,
-				slot = k
+				slot = k,
+				metadata = v.metadata
 			}
 		end
 	end
