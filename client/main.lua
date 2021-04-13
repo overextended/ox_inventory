@@ -33,12 +33,13 @@ local inform = function(msg)
 	TriggerEvent('mythic_notify:client:SendAlert', {type = 'inform', text = msg, length = 2500})
 end
 
-local StartInventory = function()
+StartInventory = function()
 	playerID, playerPed, invOpen, isDead, isCuffed, isBusy, isShooting, usingWeapon, weight, currentDrop = nil, nil, false, false, false, false, false, false, Config.PlayerWeight, nil
 	ESX.TriggerServerCallback('linden_inventory:setup',function(data)
 		Citizen.Wait(500)
 		ESX.PlayerData = ESX.GetPlayerData()
 		playerPed = PlayerPedId()
+		playerCoords = GetEntityCoords(playerPed)
 		playerID = GetPlayerServerId(PlayerId())
 		playerName = data.name
 		Drops = data.drops
@@ -852,7 +853,7 @@ AddEventHandler('linden_inventory:useItem',function(item)
 						prop = { model = data.model, coords = data.coords, rotation = data.rotation }
 					}, function() isBusy = false end)
 				else isBusy = false end
-				while isBusy do Citizen.Wait(10) end
+				Citizen.Wait(data.useTime)
 		
 				if data.hunger then
 					if data.hunger > 0 then TriggerEvent('esx_status:add', 'hunger', data.hunger)
@@ -886,6 +887,7 @@ AddEventHandler('linden_inventory:useItem',function(item)
 				end
 
 				--------------------------------------------------------------------------
+				isBusy = false
 			end
 		end, item.name, item.slot, item.metadata)
 	end
