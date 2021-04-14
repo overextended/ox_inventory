@@ -490,9 +490,6 @@
 		//inv = from
 		//inv2 == to
 		if (inv2 !== 'Playerinv') {availableweight = rightfreeweight} else {availableweight = playerfreeweight}
-
-		console.log(availableweight)
-
 		if (inv == inv2 || (availableweight !== 0 && (fromItem.weight * count) <= availableweight)) {
 			if (toItem !== undefined ) { // stack
 				if (count <= fromItem.count || count <= toItem.count) {
