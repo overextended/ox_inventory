@@ -371,7 +371,7 @@ AddEventHandler('linden_inventory:buyItem', function(info)
 						RemovePlayerInventory(xPlayer, item.name, data.price)
 					end
 					AddPlayerInventory(xPlayer, data.name, count, false, data.metadata)
-					if Config.Logs then exports.linden_logs:log(xPlayer.source, false, ('bought %sx %s from %s for %s'):format(ESX.Math.GroupDigits(count), data.label, Config.Shops[location].name, cost), 'money') end
+					if Config.Logs then exports.linden_logs:log(xPlayer, false, ('bought %sx %s from %s for %s'):format(ESX.Math.GroupDigits(count), data.label, Config.Shops[location].name, cost), 'money') end
 				else
 					local missing
 					if currency == 'bank' or item.name == 'money' then
