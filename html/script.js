@@ -341,9 +341,6 @@ function DragAndDrop() {
 			if (fromData !== undefined && count !== undefined) {
 				if (count == "" || count == 0) {
 					count = fromData.count
-				} else if (count.startsWith(0)) {
-					count = fromData.count
-					$("#item-count").val(0)
 				}
 				SwapItems(fromInventory, toInventory, curslot, toSlot)
 			}
