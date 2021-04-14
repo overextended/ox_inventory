@@ -157,22 +157,25 @@ AddEventHandler('linden_inventory:setPlayerInventory', function(xPlayer, data)
 			end
 		end
 	end
+	Citizen.Wait(100)
 	updateWeight(xPlayer)
 end)
 
 AddEventHandler('linden_inventory:clearPlayerInventory', function(xPlayer)
 	if type(xPlayer) ~= 'table' then xPlayer = ESX.GetPlayerFromId(xPlayer) end
-	Inventories[xPlayer.source].inventory = {}
-	Inventories[xPlayer.source].weight = 0
-	local accounts = {'money', 'black_money'}
-	for i=1, #accounts do
-		local account = xPlayer.getAccount(accounts[i])
-		account.money = 0
-		xPlayer.setAccount(account)
-		xPlayer.triggerEvent('esx:setAccountMoney', account)
-	end
-	if Opened[xPlayer.source] then TriggerClientEvent('linden_inventory:closeInventory', Opened[xPlayer.source].invid)
-	TriggerClientEvent('linden_inventory:refreshInventory', xPlayer.source, Inventories[xPlayer.source])
+	if xPlayer then
+		Inventories[xPlayer.source].inventory = {}
+		Inventories[xPlayer.source].weight = 0
+		local accounts = {'money', 'black_money'}
+		for i=1, #accounts do
+			local account = xPlayer.getAccount(accounts[i])
+			account.money = 0
+			xPlayer.setAccount(account)
+			xPlayer.triggerEvent('esx:setAccountMoney', account)
+		end
+		if Opened[xPlayer.source] then TriggerClientEvent('linden_inventory:closeInventory', Opened[xPlayer.source].invid)
+		TriggerClientEvent('linden_inventory:refreshInventory', xPlayer.source, Inventories[xPlayer.source])
+		end
 	end
 end)
 
@@ -594,28 +597,14 @@ AddEventHandler('linden_inventory:saveInventory', function(data)
 	end
 end)
 
+AddEventHandler('esx:playerLogout', function(playerid)
+	PlayerDropped(playerid)
+end)
 
 RegisterNetEvent('playerDropped')
 AddEventHandler('playerDropped', function()
-	local src = source
-	local data = Opened[src]
-	if data then
-		if data.type == 'TargetPlayer' then
-			updateWeight(ESX.GetPlayerFromId(data.invid))
-			Opened[data.invid] = nil
-			print(src..' disconnected while accessing player inventory '..data.invid)
-		elseif data.type ~= 'shop' and data.type ~= 'drop' and Inventories[data.invid] and Inventories[data.invid].changed then
-			SaveItems(data.type, data.invid)
-			Inventories[data.invid].changed = false
-			print(src..' disconnected while accessing '..data.type..' '..data.invid)
-		else
-			print(src..' disconnected while accessing '..data.type..' '..data.invid)
-		end
-		Opened[src] = nil
-		if data.invid then Opened[data.invid] = nil end
-	end
+	PlayerDropped(source)
 end)
-
 
 RegisterNetEvent('linden_inventory:devtool')
 AddEventHandler('linden_inventory:devtool', function()
@@ -686,9 +675,7 @@ AddEventHandler('linden_inventory:reloadWeapon', function(weapon)
 	local ammo = Items[weapon.ammoType]
 	ammo.count = getInventoryItem(xPlayer, ammo.name).count
 	if ammo.count then Inventories[xPlayer.source].inventory[weapon.slot].metadata.ammo = 0
-		if ammo.count > 0 then TriggerClientEvent('linden_inventory:addAmmo', xPlayer.source, ammo) else
-			TriggerEvent('linden_inventory:updateWeapon', weapon, nil, xPlayer)
-		end
+		if ammo.count > 0 then TriggerClientEvent('linden_inventory:addAmmo', xPlayer.source, ammo) end
 	end
 end)
 
@@ -725,7 +712,6 @@ AddEventHandler('linden_inventory:decreaseDurability', function(slot, item, ammo
 		if Inventories[xPlayer.source].inventory[slot] ~= nil then
 			if Inventories[xPlayer.source].inventory[slot].metadata.durability ~= nil then
 				if Inventories[xPlayer.source].inventory[slot].metadata.durability <= 0 then
-					TriggerClientEvent('linden_inventory:checkweapon', xPlayer.source, Inventories[xPlayer.source].inventory[slot])
 					TriggerClientEvent('mythic_notify:client:SendAlert', xPlayer.source, { type = 'error', text = 'This weapon is broken' })
 					if Inventories[xPlayer.source].inventory[slot].name:find('WEAPON_FIREEXTINGUISHER') then
 						RemovePlayerInventory(xPlayer, Inventories[xPlayer.source].inventory[slot].name, 1, slot)
@@ -733,15 +719,23 @@ AddEventHandler('linden_inventory:decreaseDurability', function(slot, item, ammo
 					return
 				end
 				if Config.DurabilityDecrease[Inventories[xPlayer.source].inventory[slot].name] == nil then
-					decreaseamount = 0.5 * (ammo / 15)
+					decreaseamount = ammo / 10
 				elseif Config.DurabilityDecrease[Inventories[xPlayer.source].inventory[slot].name] then
-					decreaseamount = Config.DurabilityDecrease[Inventories[xPlayer.source].inventory[slot].name] * (ammo / 15)
+					decreaseamount = Config.DurabilityDecrease[Inventories[xPlayer.source].inventory[slot].name] * (ammo / 8)
 				else
-					decreaseamount = amount * (ammo / 15)
+					decreaseamount = amount * (ammo / 8)
 				end
 				Inventories[xPlayer.source].inventory[slot].metadata.durability = Inventories[xPlayer.source].inventory[slot].metadata.durability - ESX.Round(decreaseamount, 2)
-				TriggerClientEvent('linden_inventory:refreshInventory', xPlayer.source, Inventories[xPlayer.source])
-				TriggerClientEvent('linden_inventory:updateWeapon', xPlayer.source, Inventories[xPlayer.source].inventory[slot].metadata)
+				if Inventories[xPlayer.source].inventory[slot].metadata.durability <= 0 then
+					Inventories[xPlayer.source].inventory[slot].metadata.durability = 0
+					Inventories[xPlayer.source].inventory[slot].metadata.ammo = 0
+					TriggerClientEvent('mythic_notify:client:SendAlert', xPlayer.source, { type = 'error', text = 'This weapon is broken' })
+					TriggerClientEvent('linden_inventory:updateWeapon', xPlayer.source, Inventories[xPlayer.source].inventory[slot].metadata)
+					AddPlayerInventory(xPlayer, Inventories[xPlayer.source].inventory[slot].ammoType, ammo)
+				else
+					TriggerClientEvent('linden_inventory:refreshInventory', xPlayer.source, Inventories[xPlayer.source])
+					TriggerClientEvent('linden_inventory:updateWeapon', xPlayer.source, Inventories[xPlayer.source].inventory[slot].metadata)
+				end
 			end
 		end
 	end
@@ -765,13 +759,12 @@ end)
 
 
 RegisterNetEvent('linden_inventory:updateWeapon')
-AddEventHandler('linden_inventory:updateWeapon', function(item, type, player)
-	local xPlayer
-	if not source or source == 0 then xPlayer = player else xPlayer = ESX.GetPlayerFromId(source) end
+AddEventHandler('linden_inventory:updateWeapon', function(item, type)
+	local xPlayer = ESX.GetPlayerFromId(source)
 	if Inventories[xPlayer.source].inventory[item.slot] ~= nil then
 		if Inventories[xPlayer.source].inventory[item.slot].metadata.ammo ~= nil then
 			Inventories[xPlayer.source].inventory[item.slot].metadata = item.metadata
-			if type == nil and item.ammoType then
+			if not type and item.ammoType then
 				local ammo = Items[item.ammoType]
 				ammo.count = Inventories[xPlayer.source].inventory[item.slot].metadata.ammo
 				ammo.addweight = (ammo.count * ammo.weight)
