@@ -226,7 +226,7 @@ CreateNewDrop = function(xPlayer, data)
 	Drops[invid] = {
 		name = invid,
 		inventory = {},
-		slots = 51,
+		slots = Config.PlayerSlots,
 		coords = playerCoords
 	}
 	if data.type == 'swap' then
