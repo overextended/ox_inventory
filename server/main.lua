@@ -656,7 +656,7 @@ RegisterNetEvent('linden_inventory:giveItem')
 AddEventHandler('linden_inventory:giveItem', function(data, target)
 	local xPlayer = ESX.GetPlayerFromId(source)
 	local xTarget = ESX.GetPlayerFromId(target)
-	local xItem = xPlayer.getInventoryItem(data.item.name)
+	local xItem = xPlayer.getInventoryItem(data.item.name, data.item.metadata)
 	if data.amount > xItem.count then
 		TriggerClientEvent('mythic_notify:client:SendAlert', xPlayer.source, { type = 'error', text = 'You do not have enough '..data.item.label })
 	else
