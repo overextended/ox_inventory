@@ -75,7 +75,7 @@ TriggerBanEvent = function(xPlayer, reason)
 	TriggerClientEvent('linden_inventory:closeInventory', xPlayer.source)
 	-- do your ban stuff and whatever logging you want to use
 	-- only trigger bans when it is guaranteed to be cheating and not desync
-	if Config.Logs then exports.linden_logs:log(xPlayer.source, false, reason, 'bans') end
+	if Config.Logs then exports.linden_logs:log(xPlayer, false, reason, 'ban') end
 end
 
 ValidateItem = function(type, xPlayer, fromSlot, toSlot, fromItem, toItem)
