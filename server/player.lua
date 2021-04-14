@@ -19,13 +19,13 @@ exports('getInventoryItem', getInventoryItem)
 addInventoryItem = function(xPlayer, name, count, metadata, slot)
 	if Items[name] and count > 0 then
 		count = ESX.Math.Round(count)
-		AddPlayerInventory(xPlayer, name, count, metadata, slot)
+		AddPlayerInventory(xPlayer, name, count, slot, metadata)
 	end
 end
 exports('addInventoryItem', addInventoryItem)
 
 
-removeInventoryItem = function(xPlayer, name, count, metadata)
+removeInventoryItem = function(xPlayer, name, count, metadata, slot)
 	local item = getInventoryItem(xPlayer, name)
 	if item and count > 0 then
 		count = ESX.Math.Round(count)
@@ -42,10 +42,10 @@ setInventoryItem = function(xPlayer, name, count, metadata)
 		count = ESX.Math.Round(count)
 		if count > item.count then
 			count = count - item.count
-			AddPlayerInventory(xPlayer, item.name, count, metadata, slot)
+			AddPlayerInventory(xPlayer, item.name, count, false, metadata)
 		else
 			count = item.count - count
-			RemovePlayerInventory(xPlayer, item.name, count, metadata, slot)
+			RemovePlayerInventory(xPlayer, item.name, count, false, metadata)
 		end
 	end
 end
@@ -54,6 +54,8 @@ exports('setInventoryItem', setInventoryItem)
 
 updateWeight = function(xPlayer)
 	Inventories[xPlayer.source].weight = getWeight(xPlayer)
+	SyncAccounts(xPlayer, 'money')
+	SyncAccounts(xPlayer, 'black_money')
 end
 
 
@@ -82,23 +84,28 @@ end
 exports('setMaxWeight', setMaxWeight)
 
 
-canCarryItem = function(xPlayer, name, count)
+canCarryItem = function(xPlayer, name, count, metadata)
 	local xItem = Items[name]
 	if xItem then
-		if xItem.weight == 0 then return true end
-		if count == nil then count = 1 end
-		local curWeight, itemWeight = Inventories[xPlayer.source].weight, xItem.weight
-		local newWeight = curWeight + (itemWeight * count)
-		return newWeight <= Inventories[xPlayer.source].maxWeight
+		local freeSlot = false
+		local itemSlots, totalCount, emptySlots = getInventoryItemSlots(xPlayer, name, metadata)
+		if #itemSlots > 0 or emptySlots > 0 then
+			if xItem.weight == 0 then return true end
+			if count == nil then count = 1 end
+			local curWeight, itemWeight = Inventories[xPlayer.source].weight, xItem.weight
+			local newWeight = curWeight + (itemWeight * count)
+			return newWeight <= Inventories[xPlayer.source].maxWeight
+		end
 	end
 	return false
 end
 exports('canCarryItem', canCarryItem)
 
 
-canSwapItem = function(firstItem, firstItemCount, testItem, testItemCount)
+canSwapItem = function(xPlayer, firstItem, firstItemCount, testItem, testItemCount)
 	local curWeight = Inventories[xPlayer.source].weight
 	local firstItemObject = getInventoryItem(xPlayer, firstItem)
+	local testItemObject = getInventoryItem(xPlayer, testItem)
 	if firstItemObject.count >= firstItemCount then
 		local weightWithoutFirstItem = curWeight - (firstItemObject.weight * firstItemCount)
 		local weightWithTestItem = weightWithoutFirstItem + (testItemObject.weight * testItemCount)
@@ -140,8 +147,9 @@ exports('getPlayerSlot', getPlayerSlot)
 getInventoryItemSlots = function(xPlayer, name, metadata)
 	local xItem = Items[name]
 	if not xItem then print(('^1[error]^7 %s does not exist'):format(name)) return end
-	local totalCount, slots = 0, {}
+	local totalCount, slots, emptySlots = 0, {}, Config.PlayerSlots
 	for k, v in pairs(Inventories[xPlayer.source].inventory) do
+		emptySlots = emptySlots - 1
 		if v.name == name then
 			if not v.metadata then v.metadata = {} end
 			if is_table_equal(v.metadata, metadata) then
@@ -150,6 +158,6 @@ getInventoryItemSlots = function(xPlayer, name, metadata)
 			end
 		end
 	end
-	return slots, totalCount
+	return slots, totalCount, emptySlots
 end
 exports('getInventoryItemSlots', getInventoryItemSlots)

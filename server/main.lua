@@ -158,9 +158,6 @@ AddEventHandler('linden_inventory:setPlayerInventory', function(xPlayer, data)
 		end
 	end
 	updateWeight(xPlayer)
-	Citizen.Wait(100)
-	SyncAccounts(xPlayer, 'money')
-	SyncAccounts(xPlayer, 'black_money')
 end)
 
 AddEventHandler('linden_inventory:clearPlayerInventory', function(xPlayer)
@@ -178,6 +175,50 @@ AddEventHandler('linden_inventory:clearPlayerInventory', function(xPlayer)
 	TriggerClientEvent('linden_inventory:refreshInventory', xPlayer.source, Inventories[xPlayer.source])
 	end
 end)
+
+--Example commands - confiscate/return player inventory
+--[[RegisterCommand('conf', function(source, args, rawCommand)
+	TriggerEvent('linden_inventory:confiscatePlayerInventory', source)
+end, true)
+
+RegisterCommand('return', function(source, args, rawCommand)
+	TriggerEvent('linden_inventory:recoverPlayerInventory', source)
+end, true)]]
+
+AddEventHandler('linden_inventory:confiscatePlayerInventory', function(xPlayer)
+	if type(xPlayer) ~= 'table' then xPlayer = ESX.GetPlayerFromId(xPlayer) end
+	if xPlayer.identifier then
+		local inventory = json.encode(getPlayerInventory(xPlayer))
+		exports.ghmattimysql:execute('REPLACE INTO linden_inventory (name, data) VALUES (@name, @data)', {
+			['@name'] = xPlayer.identifier,
+			['@data'] = inventory
+		}, function (rowsChanged)
+			TriggerEvent('linden_inventory:clearPlayerInventory', xPlayer)
+			TriggerClientEvent('mythic_notify:client:SendAlert', xPlayer.source, { type = 'error', text = 'Your items have been confiscated' })
+		end)
+	end
+end)
+
+AddEventHandler('linden_inventory:recoverPlayerInventory', function(xPlayer)
+	if type(xPlayer) ~= 'table' then xPlayer = ESX.GetPlayerFromId(xPlayer) end
+	if xPlayer.identifier then
+		local result = exports.ghmattimysql:scalarSync('SELECT data FROM linden_inventory WHERE name = @name', { ['@name'] = xPlayer.identifier })
+		if result ~= nil then
+			exports.ghmattimysql:execute('DELETE FROM linden_inventory WHERE name = @name', { ['@name'] = xPlayer.identifier })
+			local Inventory = json.decode(result)
+			for k,v in pairs(Inventory) do
+				if v.metadata == nil then v.metadata = {} end
+				Inventories[xPlayer.source].inventory[v.slot] = {name = v.name ,label = Items[v.name].label, weight = Items[v.name].weight, slot = v.slot, count = v.count, description = Items[v.name].description, metadata = v.metadata, stackable = Items[v.name].stackable}
+			end
+			updateWeight(xPlayer)	
+			if Opened[xPlayer.source] then TriggerClientEvent('linden_inventory:closeInventory', Opened[xPlayer.source].invid)
+				TriggerClientEvent('linden_inventory:refreshInventory', xPlayer.source, Inventories[xPlayer.source])
+			end
+			TriggerClientEvent('mythic_notify:client:SendAlert', xPlayer.source, { type = 'error', text = 'Your items have been returned' })
+		end
+	end
+end)
+
 
 RegisterNetEvent('linden_inventory:openInventory')
 AddEventHandler('linden_inventory:openInventory', function(data, player)
@@ -209,7 +250,7 @@ AddEventHandler('linden_inventory:openInventory', function(data, player)
 				coords = shop.coords,
 				job = shop.job,
 				inventory = SetupShopItems(id),
-				slots = #shop.store.inventory + 1,
+				slots = #shop.store.inventory,
 				currency = shop.currency
 			}
 			if (not Shops[id].job or Shops[id].job == xPlayer.job.name) then
@@ -253,8 +294,8 @@ AddEventHandler('linden_inventory:openTargetInventory', function(targetId)
 				inventory = TargetPlayer.inventory
 			}
 			TriggerClientEvent('linden_inventory:openInventory',  xPlayer.source, Inventories[xPlayer.source], data)
-			Opened[xPlayer.source] = {invid = data.id, type = data.type}
-			Opened[data.id] = {invid = xPlayer.source, type = data.type}
+			Opened[xPlayer.source] = {invid = xTarget.source, type = data.type}
+			Opened[xTarget.source] = {invid = xPlayer.source, type = data.type}
 		end
 	end
 end)
@@ -262,30 +303,29 @@ end)
 RegisterNetEvent('linden_inventory:buyItem')
 AddEventHandler('linden_inventory:buyItem', function(info)
 	local xPlayer = ESX.GetPlayerFromId(source)
-	local data = info.data
-	local location = info.location
-	local money, currency, item = nil, nil, {}
-	if info.count ~= nil then info.count = tonumber(info.count) else info.count = 0 end
-	local count = ESX.Round(info.count)
-	local checkShop = Config.Shops[location].store.inventory[data.slot]
+	if info.count > 0 then
+		local data = info.data
+		local location = info.location
+		local money, currency, item = nil, nil, {}
+		local count = info.count
+		local checkShop = Config.Shops[location].store.inventory[data.slot]
 
-	if checkShop.grade and checkShop.grade > xPlayer.job.grade then
-		TriggerClientEvent('mythic_notify:client:SendAlert', xPlayer.source, { type = 'error', text = 'You are not authorised to purchase this item' })
-		return
-	end
-
-	if Config.WeaponsLicense and checkShop.license then
-		local hasLicense = exports.ghmattimysql:scalarSync('SELECT * FROM user_licenses WHERE type = @type AND owner = @owner', {
-			['@type'] = checkShop.license,
-			['@owner'] = xPlayer.identifier
-		})
-		if not hasLicense then
-			TriggerClientEvent('mythic_notify:client:SendAlert', xPlayer.source, { type = 'error', text = 'You are not licensed to purchase this item' })
+		if checkShop.grade and checkShop.grade > xPlayer.job.grade then
+			TriggerClientEvent('mythic_notify:client:SendAlert', xPlayer.source, { type = 'error', text = 'You are not authorised to purchase this item' })
 			return
 		end
-	end
+	
+		if Config.WeaponsLicense and checkShop.license then
+			local hasLicense = exports.ghmattimysql:scalarSync('SELECT * FROM user_licenses WHERE type = @type AND owner = @owner', {
+				['@type'] = checkShop.license,
+				['@owner'] = xPlayer.identifier
+			})
+			if not hasLicense then
+				TriggerClientEvent('mythic_notify:client:SendAlert', xPlayer.source, { type = 'error', text = 'You are not licensed to purchase this item' })
+				return
+			end
+		end
 
-	if count > 0 then
 		if data.name:find('WEAPON_') then count = 1 end
 
 		local shopCurrency = Config.Shops[location].currency
@@ -320,8 +360,8 @@ AddEventHandler('linden_inventory:buyItem', function(info)
 					else
 						RemovePlayerInventory(xPlayer, item.name, data.price)
 					end
-					AddPlayerInventory(xPlayer, data.name, count, data.metadata, nil)
-					if Config.Logs then exports.linden_logs:log(xPlayer.source, ('%s (%s) bought %sx %s from %s for %s'):format(xPlayer.name, xPlayer.identifier, ESX.Math.GroupDigits(count), data.label, Config.Shops[location].name, cost), 'test') end
+					AddPlayerInventory(xPlayer, data.name, count, false, data.metadata)
+					if Config.Logs then exports.linden_logs:log(xPlayer, false, ('bought %sx %s from %s for %s'):format(ESX.Math.GroupDigits(count), data.label, Config.Shops[location].name, cost), 'money') end
 				else
 					local missing
 					if currency == 'bank' or item.name == 'money' then
@@ -337,8 +377,6 @@ AddEventHandler('linden_inventory:buyItem', function(info)
 		else
 			TriggerClientEvent('mythic_notify:client:SendAlert', xPlayer.source, { type = 'error', text = 'You can not carry this item' })
 		end
-	else
-		TriggerClientEvent('mythic_notify:client:SendAlert', xPlayer.source, { type = 'error', text = 'You must select an amount to buy' })
 	end
 end)
 
@@ -398,7 +436,7 @@ AddEventHandler('linden_inventory:saveInventoryData', function(data)
 		elseif data.frominv ~= data.toinv then
 			if data.toinv == 'drop' and not Drops[data.invid] then
 				CreateNewDrop(xPlayer, data)
-				TriggerClientEvent('linden_inventory:refreshInventory', xPlayer.source, Inventories[xPlayer.source])
+				--TriggerClientEvent('linden_inventory:refreshInventory', xPlayer.source, Inventories[xPlayer.source])
 				return
 			end
 			if data.frominv == 'Playerinv' then
@@ -533,7 +571,7 @@ AddEventHandler('linden_inventory:saveInventoryData', function(data)
 				end
 			end
 		end
-		TriggerClientEvent('linden_inventory:refreshInventory', xPlayer.source, Inventories[xPlayer.source])
+		--TriggerClientEvent('linden_inventory:refreshInventory', xPlayer.source, Inventories[xPlayer.source])
 	end
 end)
 
@@ -584,9 +622,8 @@ AddEventHandler('linden_inventory:devtool', function()
 	if not IsPlayerAceAllowed(source, 'command.refresh') then
 		print( ('^1[warning]^3 [%s] %s was kicked for opening nui_devtools^7'):format(source, GetPlayerName(source)) )
 		if Config.Logs then xPlayer = ESX.GetPlayerFromId(source)
-			exports.linden_logs:log(xPlayer.source, ('%s (%s) was kicked for opening nui_devtools'):format(xPlayer.name, xPlayer.identifier), 'test')
+			exports.linden_logs:log(xPlayer, 'kicked for opening nui_devtools', 'kick')
 		end
-		-- Trigger a ban or kick for the player
 		DropPlayer(source, 'foxtrot-uniform-charlie-kilo')
 	end
 end)
@@ -615,7 +652,7 @@ AddEventHandler('linden_inventory:useItem', function(item)
 				if invItem.count > consume then
 					slot = item
 				else
-					print('not enough')
+					TriggerClientEvent('mythic_notify:client:SendAlert', xPlayer.source, { type = 'error', text = 'You do not have enough '..item.label })
 					return
 				end
 			end
@@ -627,22 +664,20 @@ AddEventHandler('linden_inventory:useItem', function(item)
 end)
 
 RegisterNetEvent('linden_inventory:giveItem')
-AddEventHandler('linden_inventory:giveItem', function(data, closestPlayer)
-	local fromXPlayer = ESX.GetPlayerFromId(source)
-	local toXPlayer = ESX.GetPlayerFromId(closestPlayer)
-	if toXPlayer.getWeight() + (data.item.weight * data.amount) < toXPlayer.getMaxWeight() then
-		print(fromXPlayer.getInventory(true)[ValidateString(data.item.name)])
-		if data.item.count >= data.amount then
-			fromXPlayer.removeInventoryItem(ValidateString(data.item.name), data.amount, data.item.type)
-			toXPlayer.addInventoryItem(ValidateString(data.item.name), data.amount, data.item.type)
-		else
-			fromXPlayer.showNotification("You dont have that many!")
-		end
+AddEventHandler('linden_inventory:giveItem', function(data, target)
+	local xPlayer = ESX.GetPlayerFromId(source)
+	local xTarget = ESX.GetPlayerFromId(target)
+	local xItem = xPlayer.getInventoryItem(data.item.name)
+	if data.amount > xItem.count then
+		TriggerClientEvent('mythic_notify:client:SendAlert', xPlayer.source, { type = 'error', text = 'You do not have enough '..data.item.label })
 	else
-		fromXPlayer.showNotification("The player does not have enough inventory space")
+		if canCarryItem(xTarget, data.item.name, data.amount, data.item.metadata) then
+			removeInventoryItem(xPlayer, data.item.name, data.amount, data.item.metadata, data.item.slot)
+			addInventoryItem(xTarget, data.item.name, data.amount, data.item.metadata)
+		else
+			TriggerClientEvent('mythic_notify:client:SendAlert', xPlayer.source, { type = 'error', text = 'Target can not carry '..data.amount..'x '..data.item.label })
+		end
 	end
-
-	
 end)
 
 RegisterNetEvent('linden_inventory:reloadWeapon')
@@ -732,7 +767,7 @@ end)
 RegisterNetEvent('linden_inventory:updateWeapon')
 AddEventHandler('linden_inventory:updateWeapon', function(item, type, player)
 	local xPlayer
-	if player then xPlayer = player else xPlayer = ESX.GetPlayerFromId(source) end
+	if not source or source == 0 then xPlayer = player else xPlayer = ESX.GetPlayerFromId(source) end
 	if Inventories[xPlayer.source].inventory[item.slot] ~= nil then
 		if Inventories[xPlayer.source].inventory[item.slot].metadata.ammo ~= nil then
 			Inventories[xPlayer.source].inventory[item.slot].metadata = item.metadata
@@ -746,7 +781,7 @@ AddEventHandler('linden_inventory:updateWeapon', function(item, type, player)
 			TriggerClientEvent('linden_inventory:updateWeapon', xPlayer.source, Inventories[xPlayer.source].inventory[item.slot].metadata)
 		else
 			if type == 'throw' then
-				RemovePlayerInventory(xPlayer, item.name, 1, item.metadata, item.slot)
+				RemovePlayerInventory(xPlayer, item.name, 1, item.slot, item.metadata)
 			elseif type == 'melee' then
 				TriggerEvent('linden_inventory:decreaseDurability', item.slot, item.name, 1, xPlayer)
 			end
@@ -757,7 +792,7 @@ end)
 RegisterNetEvent('linden_inventory:removeItem')
 AddEventHandler('linden_inventory:removeItem', function(item, count, metadata, slot)
 	local xPlayer = ESX.GetPlayerFromId(source)
-	RemovePlayerInventory(xPlayer, item, count, metadata, slot)
+	RemovePlayerInventory(xPlayer, item, count, slot, metadata)
 end)
 
 ESX.RegisterServerCallback('linden_inventory:getItem', function(source, cb, item, metadata)
@@ -808,7 +843,7 @@ ESX.RegisterServerCallback('linden_inventory:usingItem', function(source, cb, it
 			RemovePlayerInventory(xPlayer, item, cItem.consume, slot, metadata)
 		end)
 	else
-		TriggerClientEvent('mythic_notify:client:SendAlert', xPlayer.source, { type = 'error', text = "You need more than "..xItem.count.." "..xItem.label })
+		TriggerClientEvent('mythic_notify:client:SendAlert', xPlayer.source, { type = 'error', text = 'You do not have enough '..xItem.label })
 	end
 end)
 

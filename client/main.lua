@@ -36,13 +36,13 @@ end
 StartInventory = function()
 	playerID, playerPed, invOpen, isDead, isCuffed, isBusy, isShooting, usingWeapon, weight, currentDrop = nil, nil, false, false, false, false, false, false, Config.PlayerWeight, nil
 	ESX.TriggerServerCallback('linden_inventory:setup',function(data)
-		Citizen.Wait(500)
 		ESX.PlayerData = ESX.GetPlayerData()
 		playerPed = PlayerPedId()
 		playerCoords = GetEntityCoords(playerPed)
 		playerID = GetPlayerServerId(PlayerId())
 		playerName = data.name
 		Drops = data.drops
+		inventoryLabel = playerName..' ['..playerID..'] '--[[..ESX.PlayerData.job.grade_label]],
 		ClearWeapons()
 		inform("Inventory is ready to use")
 		if next(Blips) then
@@ -247,7 +247,7 @@ AddEventHandler('linden_inventory:openInventory',function(data, rightinventory)
 		message = 'openinventory',
 		inventory = data.inventory,
 		slots = data.slots,
-		name = playerName..' ['.. playerID ..']',
+		name = inventoryLabel,
 		maxweight = data.maxWeight,
 		rightinventory = rightinventory
 	})
@@ -262,7 +262,7 @@ AddEventHandler('linden_inventory:refreshInventory', function(data)
 		message = 'refresh',
 		inventory = data.inventory,
 		slots = data.slots,
-		name = playerName..' ['.. playerID ..']',
+		name = inventoryLabel,
 		maxweight = data.maxWeight
 	})
 end)
@@ -451,7 +451,7 @@ Citizen.CreateThread(function()
 				end
 			end
 		end
-		if weaponTimer == 3 then
+		if weaponTimer == 3 and currentWeapon then
 			TriggerServerEvent('linden_inventory:updateWeapon', currentWeapon)
 			weaponTimer = 0
 		elseif weaponTimer > 3 then weaponTimer = weaponTimer - 3 end
@@ -779,8 +779,10 @@ RegisterNUICallback('giveItem', function(data, cb)
 	local closestPlayer, closestPlayerDistance = ESX.Game.GetClosestPlayer()
 	if closestPlayer == -1 or closestPlayerDistance > 2.0 then 
 		error('There is nobody nearby')
-	elseif data.inv == 'Playerinv' and data.amount > 0 then
-		TriggerServerEvent('linden_inventory:giveItem', data, GetPlayerServerId(closestPlayer))
+	elseif data.inv == 'Playerinv' then
+		if data.amount >= 1 then
+			TriggerServerEvent('linden_inventory:giveItem', data, GetPlayerServerId(closestPlayer))
+		else error('You must enter an amount to give') end
 	end
 end)
 
@@ -789,7 +791,9 @@ RegisterNUICallback('saveinventorydata',function(data)
 end)
 
 RegisterNUICallback('BuyFromShop', function(data)
-    TriggerServerEvent('linden_inventory:buyItem', data)
+	if data.count >= 1 then
+		TriggerServerEvent('linden_inventory:buyItem', data)
+	else error('You must select an amount to buy') end
 end)
 
 RegisterNUICallback('exit',function(data)
