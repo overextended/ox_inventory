@@ -631,8 +631,13 @@ AddEventHandler('linden_inventory:giveItem', function(data, closestPlayer)
 	local fromXPlayer = ESX.GetPlayerFromId(source)
 	local toXPlayer = ESX.GetPlayerFromId(closestPlayer)
 	if toXPlayer.getWeight() + (data.item.weight * data.amount) < toXPlayer.getMaxWeight() then
-		fromXPlayer.removeInventoryItem(ValidateString(data.item.name), data.amount, data.item.type)
-		toXPlayer.addInventoryItem(ValidateString(data.item.name), data.amount, data.item.type)
+		print(fromXPlayer.getInventory(true)[ValidateString(data.item.name)])
+		if data.item.count >= data.amount then
+			fromXPlayer.removeInventoryItem(ValidateString(data.item.name), data.amount, data.item.type)
+			toXPlayer.addInventoryItem(ValidateString(data.item.name), data.amount, data.item.type)
+		else
+			fromXPlayer.showNotification("You dont have that many!")
+		end
 	else
 		fromXPlayer.showNotification("The player does not have enough inventory space")
 	end
