@@ -3,14 +3,15 @@
 	var dropLabel = 'Drop'
 	var dropName = 'drop'
 	var totalkg = 0
-	var rightweight = 0
+	var righttotalkg = 0
 	var count = 0
-	var dropSlots = 51
+	var dropSlots = 50
 	var timer = null
 	var HSN = []
 	var rightinvtype = null
 	var rightinventory = null
 	var maxweight = 30000
+	var rightmaxweight = 30000
 	var playerfreeweight = 0
 	var rightfreeweight = 0
 	var availableweight = 0
@@ -79,9 +80,9 @@
 			$(".ItemBoxes").remove();
 			$(".inventory-main-leftside").find(".item-slot").remove();
 			$('.inventory-main-rightside').removeData("invId")
+			$(".rightside-weight").html('')
+			righttotalkg = 0
 			totalkg = 0
-			rightinvtype = null
-			rightinventory = null
 		}
 	}
 	element.__defineGetter__("id", function() {
@@ -155,7 +156,7 @@
 
 	HSN.RefreshInventory = function(data) {
 		totalkg = 0
-		for(i = 1; i < (data.slots); i++) {
+		for(i = 1; i <= (data.slots); i++) {
 			$(".inventory-main-leftside").find("[inventory-slot=" + i + "]").remove();
 			$(".inventory-main-leftside").append('<div class="ItemBoxes" inventory-slot=' + i +'></div> ')
 		}
@@ -196,7 +197,7 @@
 	HSN.SetupInventory = function(data) {
 		maxweight = data.maxweight
 		$('.playername').html(data.name)
-		for(i = 1; i < (data.slots); i++) {
+		for(i = 1; i <= (data.slots); i++) {
 			$(".inventory-main-leftside").find("[inventory-slot=" + i + "]").remove();
 			$(".inventory-main-leftside").append('<div class="ItemBoxes" inventory-slot=' + i +'></div> ')
 			//$(".inventory-main-rightside").data("Owner", data.rightinventory.type);
@@ -230,18 +231,22 @@
 			$('.inventory-main-rightside').data("invId", data.rightinventory.name)
 			rightinventory = data.rightinventory.name
 			rightinvtype = data.rightinventory.type
-			if (rightinvtype == 'TargetPlayer') { data.rightinventory.maxweight = maxweight/1000 } else {
-				data.rightinventory.maxweight = (data.rightinventory.slots*9).toFixed(0)
+			righttotalkg = 0
+			
+			if (rightinvtype == 'TargetPlayer') {
+				rightmaxweight = data.rightinventory.maxWeight
+				righttotalkg = data.rightinventory.weight
+			} else {
+				rightmaxweight = (data.rightinventory.slots*9000).toFixed(0)
 			}
 			$('.rightside-name').html(data.rightinventory.name)
-				for(i = 1; i < (data.rightinventory.slots); i++) {
+				for(i = 1; i <= (data.rightinventory.slots); i++) {
 					$(".inventory-main-rightside").find("[inventory-slot=" + i + "]").remove();
 					$(".inventory-main-rightside").append('<div class="ItemBoxes" inventory-slot=' + i +'></div> ')
 				}
 				if (data.rightinventory.type == 'shop') {
 					rightinventory = data.rightinventory.name
 					var currency = data.rightinventory.currency
-					$(".rightside-weight").html("") // hide weight 
 					$.each(data.rightinventory.inventory, function (i, item) {
 						if (item != null) {
 							if ((item.name).split("_")[0] == "WEAPON" && item.metadata.durability !== undefined) {
@@ -267,11 +272,9 @@
 					})
 
 				} else {
-					rightweight = 0
-					$(".rightside-weight").html('')
 				$.each(data.rightinventory.inventory, function (i, item) {
 					if (item != null) {
-						rightweight = rightweight +(item.weight * item.count);
+						righttotalkg = righttotalkg +(item.weight * item.count);
 						if ((item.name).split("_")[0] == "WEAPON" && item.metadata.durability !== undefined) {
 							
 							$(".inventory-main-rightside").find("[inventory-slot=" + item.slot + "]").html('<div class="item-slot-img"><img src="images/' + item.name + '.png'+'" alt="' + item.name + '" /></div><div class="item-slot-count"><p>' + numberFormat(item.count, item.name) + ' ' + weightFormat(item.weight/1000 * item.count) + '</p></div><div class="item-slot-label"><p><div class="item-slot-durability-bar"></div><div class="item-slot-label"><p>' + item.label + '</p></div></p></div>');
@@ -286,19 +289,19 @@
 						}
 					}
 				})
-				$(".rightside-weight").append('<span id="rightside-curweight">' + weightFormat(rightweight/1000, false, true) + '</span>')
-				$(".rightside-weight").append('/<span id="rightside-maxweight">' + weightFormat(data.rightinventory.maxweight, false) + '</span>')
+				$(".rightside-weight").html(weightFormat(righttotalkg/1000, false, true) + '/'+ weightFormat(rightmaxweight/1000, false))
 			}
 		} else {
 			$('.rightside-name').html("Drop")
 			$('.inventory-main-rightside').data("invTier", "drop")
 			rightinvtype = 'drop'
-			$(".rightside-weight").html('')
-			$(".rightside-weight").append('<span id="rightside-curweight">' + weightFormat(rightweight/1000, false, true) + '</span>')
-			for(i = 1; i < (dropSlots); i++) {
+			rightmaxweight = (dropSlots*9000).toFixed(0)
+			righttotalkg = 0
+			for(i = 1; i <= (dropSlots); i++) {
 				$(".inventory-main-rightside").find("[inventory-slot=" + i + "]").remove();
 				$(".inventory-main-rightside").append('<div class="ItemBoxes" inventory-slot=' + i +'></div> ')
 			}
+			$(".rightside-weight").html('')
 		}
 	}
 
@@ -366,26 +369,27 @@
 					}
 			}
 		});
-
-		$(".give").droppable({
-			hoverClass: 'button-hover',
-			drop: function(event, ui) {
-				setTimeout(function(){
-					IsDragging = false;
-				}, 300)
-				fromData = ui.draggable.data("ItemData");
-				fromInventory = ui.draggable.parent();
-				amnt = parseInt($("#item-count").val());
-				inv = fromInventory.data('invTier')
-					$.post("https://linden_inventory/giveItem", JSON.stringify({
-						item: fromData,
-						inv : inv,
-						amount : amnt
-					}));
-			}
-		});
 	}
 
+	$(".give").droppable({
+		hoverClass: 'button-hover',
+		drop: function(event, ui) {
+			setTimeout(function(){
+				IsDragging = false;
+			}, 300)
+			fromData = ui.draggable.data("ItemData");
+			fromInventory = ui.draggable.parent();
+			amnt = parseInt($("#item-count").val());
+			inv = fromInventory.data('invTier')
+			if (inv == 'Playerinv') {
+				$.post("https://linden_inventory/giveItem", JSON.stringify({
+					item: fromData,
+					inv : inv,
+					amount : amnt
+				}));
+			}
+		}
+	});
 
 	$(document).on("click", ".ItemBoxes", function(e){
 		if ($(this).data("location") !== undefined && $("#item-count").val() >= 0) {
@@ -433,6 +437,7 @@
 			type : rightinvtype,
 			invid : rightinventory
 		}));
+		
 		Display(false)
 		return
 	}
@@ -480,14 +485,14 @@
 		var toSlot = Number(toSlot)
 		var success = false
 		playerfreeweight = maxweight - totalkg
-		rightfreeweight = 90000
-		if (document.body.contains(document.getElementById('rightside-maxweight'))) {
-			rightfreeweight = (document.getElementById('rightside-maxweight').innerHTML).slice(0, -2)*1000 - (document.getElementById('rightside-curweight').innerHTML).slice(0, -2)*1000
-		}
+		rightfreeweight = rightmaxweight - righttotalkg
 		availableweight = 0
 		//inv = from
 		//inv2 == to
 		if (inv2 !== 'Playerinv') {availableweight = rightfreeweight} else {availableweight = playerfreeweight}
+
+		console.log(availableweight)
+
 		if (inv == inv2 || (availableweight !== 0 && (fromItem.weight * count) <= availableweight)) {
 			if (toItem !== undefined ) { // stack
 				if (count <= fromItem.count || count <= toItem.count) {
@@ -700,15 +705,15 @@
 			if (success) {
 				if (inv2 !== 'Playerinv') {
 					if (inv2 !== inv) {
-						rightweight = rightweight + (fromItem.weight * count)
-						$("#rightside-curweight").html(weightFormat(rightweight/1000, false, true) )
+						righttotalkg = righttotalkg + (fromItem.weight * count)
+						$(".rightside-weight").html(weightFormat(righttotalkg/1000, false, true) + '/'+ weightFormat(rightmaxweight/1000, false))
 						totalkg = totalkg - (fromItem.weight * count)
 						$(".leftside-weight").html(weightFormat(totalkg/1000, false, true) + '/'+ weightFormat(maxweight/1000, false))
 					}
 				} else {
 					if (inv2 !== inv) {
-						rightweight = rightweight - (fromItem.weight * count)
-						$("#rightside-curweight").html(weightFormat(rightweight/1000, false, true) )
+						righttotalkg = righttotalkg - (fromItem.weight * count)
+						$(".rightside-weight").html(weightFormat(righttotalkg/1000, false, true) + '/'+ weightFormat(rightmaxweight/1000, false))
 						totalkg = totalkg + (fromItem.weight * count)
 						$(".leftside-weight").html(weightFormat(totalkg/1000, false, true) + '/'+ weightFormat(maxweight/1000, false))
 					}
