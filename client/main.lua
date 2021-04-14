@@ -451,7 +451,7 @@ Citizen.CreateThread(function()
 				end
 			end
 		end
-		if weaponTimer == 3 then
+		if weaponTimer == 3 and currentWeapon then
 			TriggerServerEvent('linden_inventory:updateWeapon', currentWeapon)
 			weaponTimer = 0
 		elseif weaponTimer > 3 then weaponTimer = weaponTimer - 3 end
