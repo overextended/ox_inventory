@@ -75,6 +75,7 @@ TriggerBanEvent = function(xPlayer, reason)
 	TriggerClientEvent('linden_inventory:closeInventory', xPlayer.source)
 	-- do your ban stuff and whatever logging you want to use
 	-- only trigger bans when it is guaranteed to be cheating and not desync
+	if Config.Logs then exports.linden_logs:log(xPlayer.source, false, reason, 'bans') end
 end
 
 ValidateItem = function(type, xPlayer, fromSlot, toSlot, fromItem, toItem)
@@ -87,9 +88,7 @@ ValidateItem = function(type, xPlayer, fromSlot, toSlot, fromItem, toItem)
 
 	if reason then
 		print( ('[%s] %s failed item validation (type: %s, fromSlot: %s, toSlot: %s, fromItem: %s, toItem: %s, reason: %s)'):format(xPlayer.source, GetPlayerName(xPlayer.source), type, fromSlot, toSlot, fromItem, toItem, reason) )
-		-- currently have a bug where moving items around while also adding/removing items can result in client-sided item duplication
-		-- item validation should not be used to ban until all bugs are dealt with
-		-- for now, close inventory and refresh it
+		-- failed validation can be caused by desync, so don't autoban for it
 		TriggerClientEvent("linden_inventory:closeInventory", xPlayer.source)
 		TriggerClientEvent('linden_inventory:refreshInventory', xPlayer.source, Inventories[xPlayer.source])
 		return false
