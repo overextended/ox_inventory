@@ -248,7 +248,7 @@ AddEventHandler('linden_inventory:openInventory', function(data, player)
 				coords = shop.coords,
 				job = shop.job,
 				inventory = SetupShopItems(id),
-				slots = #shop.store.inventory + 1,
+				slots = #shop.store.inventory,
 				currency = shop.currency
 			}
 			if (not Shops[id].job or Shops[id].job == xPlayer.job.name) then
