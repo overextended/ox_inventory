@@ -777,10 +777,10 @@ end)
 
 RegisterNUICallback('giveItem', function(data, cb)
 	local closestPlayer, closestPlayerDistance = ESX.Game.GetClosestPlayer()
-	if closestPlayer == -1 or closestPlayerDistance > 3.0 then 
-		ESX.ShowNotification("No player found nearby!")
-	else
-		if data.inv == 'Playerinv' then TriggerServerEvent('linden_inventory:giveItem', data, GetPlayerServerId(closestPlayer)) end
+	if closestPlayer == -1 or closestPlayerDistance > 2.0 then 
+		error('There is nobody nearby')
+	elseif data.inv == 'Playerinv' and data.amount > 0 then
+		TriggerServerEvent('linden_inventory:giveItem', data, GetPlayerServerId(closestPlayer))
 	end
 end)
 
