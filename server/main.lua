@@ -741,7 +741,7 @@ AddEventHandler('linden_inventory:decreaseDurability', function(slot, item, ammo
 				if Inventories[xPlayer.source].inventory[slot].metadata.durability <= 0 then
 					TriggerClientEvent('mythic_notify:client:SendAlert', xPlayer.source, { type = 'error', text = 'This weapon is broken' })
 					TriggerClientEvent('linden_inventory:updateWeapon', xPlayer.source, Inventories[xPlayer.source].inventory[slot].metadata)
-					AddPlayerInventory(xPlayer, Inventories[xPlayer.source].inventory[slot].ammoType, ammo, slot)
+					AddPlayerInventory(xPlayer, Inventories[xPlayer.source].inventory[slot].ammoType, ammo)
 				end
 			end
 		end
