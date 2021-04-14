@@ -115,7 +115,7 @@ end
 SyncAccounts = function(xPlayer, name, type, count)
 	local account = xPlayer.getAccount(name)
 	account.money = getInventoryItem(xPlayer, name).count
-	if type and type == 'Removed' then account.money = account.money - count elseif type then account.money = account.money + count end
+	if type and type == 'Removed' then account.money = account.money - count elseif type then account.money = account.money end
 	xPlayer.setAccount(account)
 	xPlayer.triggerEvent('esx:setAccountMoney', account)
 end
@@ -124,9 +124,9 @@ AddPlayerInventory = function(xPlayer, item, count, slot, metadata)
 	local xItem = Items[item]
 	if xPlayer and xItem and count > 0 then
 		if metadata == 'setname' then metadata = {description = xPlayer.getName()} else metadata = setMetadata(metadata) end
-		if slot then slot = getPlayerSlot(xPlayer, slot, item, metadata).slot end
 		local toSlot, existing
-		if not slot then
+		if slot then slot = getPlayerSlot(xPlayer, slot, item, metadata).slot
+		else
 			for i=1, Config.PlayerSlots do
 				if xItem.stackable == 1 and Inventories[xPlayer.source].inventory[i] and Inventories[xPlayer.source].inventory[i].name == item and is_table_equal(Inventories[xPlayer.source].inventory[i].metadata, metadata) then toSlot = i existing = true break
 				elseif not toSlot and Inventories[xPlayer.source].inventory[i] == nil then toSlot = i existing = false end
@@ -167,6 +167,7 @@ AddPlayerInventory = function(xPlayer, item, count, slot, metadata)
 			ItemNotify(xPlayer, item, added, false, 'Added')
 		elseif slot then
 			local added = count
+			if existing then count = Inventories[xPlayer.source].inventory[slot].count + count end
 			Inventories[xPlayer.source].inventory[slot] = {name = item, label = xItem.label, weight = xItem.weight, slot = slot, count = count, description = xItem.description, metadata = metadata, stackable = xItem.stackable, closeonuse = xItem.closeonuse}
 			if xItem.weight > 0 then updateWeight(xPlayer) end
 			ItemNotify(xPlayer, item, added, false, 'Added')
