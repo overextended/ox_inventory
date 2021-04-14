@@ -36,13 +36,13 @@ end
 StartInventory = function()
 	playerID, playerPed, invOpen, isDead, isCuffed, isBusy, isShooting, usingWeapon, weight, currentDrop = nil, nil, false, false, false, false, false, false, Config.PlayerWeight, nil
 	ESX.TriggerServerCallback('linden_inventory:setup',function(data)
-		Citizen.Wait(500)
 		ESX.PlayerData = ESX.GetPlayerData()
 		playerPed = PlayerPedId()
 		playerCoords = GetEntityCoords(playerPed)
 		playerID = GetPlayerServerId(PlayerId())
 		playerName = data.name
 		Drops = data.drops
+		inventoryLabel = playerName..' ['..playerID..'] '--[[..ESX.PlayerData.job.grade_label]],
 		ClearWeapons()
 		inform("Inventory is ready to use")
 		if next(Blips) then
@@ -247,7 +247,7 @@ AddEventHandler('linden_inventory:openInventory',function(data, rightinventory)
 		message = 'openinventory',
 		inventory = data.inventory,
 		slots = data.slots,
-		name = playerName..' ['.. playerID ..']',
+		name = inventoryLabel,
 		maxweight = data.maxWeight,
 		rightinventory = rightinventory
 	})
@@ -262,7 +262,7 @@ AddEventHandler('linden_inventory:refreshInventory', function(data)
 		message = 'refresh',
 		inventory = data.inventory,
 		slots = data.slots,
-		name = playerName..' ['.. playerID ..']',
+		name = inventoryLabel,
 		maxweight = data.maxWeight
 	})
 end)
