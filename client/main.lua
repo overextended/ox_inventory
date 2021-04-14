@@ -400,7 +400,10 @@ end)
 
 RegisterNetEvent('linden_inventory:updateWeapon')
 AddEventHandler('linden_inventory:updateWeapon',function(data)
-	if currentWeapon then currentWeapon.metadata = data end
+	if currentWeapon then
+		currentWeapon.metadata = data
+		if currentWeapon.metadata.durability <= 0 then DisarmPlayer() end
+	end
 end)
 
 AddEventHandler('linden_inventory:busy',function(busy)
