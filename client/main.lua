@@ -5,7 +5,7 @@ local Blips = {}
 local Drops = {}
 local currentDrop
 local currentWeapon
-
+local  myjob = " "
 
 local ClearWeapons = function()
 	SetCurrentPedWeapon(playerPed, `WEAPON_UNARMED`, true)
@@ -120,6 +120,11 @@ local loadAnimDict = function(dict)
 		Citizen.Wait(5)
 	end
 end
+
+RegisterNetEvent('linden-inventory:checktrabajo')
+AddEventHandler('linden-inventory:checktrabajo', function(statusjob)
+myjob = statusjob
+end)
 
 RegisterNetEvent('randPickupAnim')
 AddEventHandler('randPickupAnim', function()
@@ -247,7 +252,7 @@ AddEventHandler('linden_inventory:openInventory',function(data, rightinventory)
 		message = 'openinventory',
 		inventory = data.inventory,
 		slots = data.slots,
-		name = playerName..' ['.. playerID ..']',
+		name = playerName..' ['.. playerID ..']'.." │ "..myjob,
 		maxweight = data.maxWeight,
 		rightinventory = rightinventory
 	})
@@ -262,7 +267,7 @@ AddEventHandler('linden_inventory:refreshInventory', function(data)
 		message = 'refresh',
 		inventory = data.inventory,
 		slots = data.slots,
-		name = playerName..' ['.. playerID ..']',
+		name = playerName..' ['.. playerID ..']'.." │ "..myjob,
 		maxweight = data.maxWeight
 	})
 end)
@@ -655,6 +660,7 @@ Citizen.CreateThread(function()
 end)
 
 RegisterCommand('inv', function()
+	TriggerServerEvent("linden-inventory:checktrabajo")
 	if isBusy or invOpen then error("You can't open your inventory right now") return end
 	if CanOpenInventory() then
 		TriggerEvent('randPickupAnim')
@@ -664,6 +670,7 @@ RegisterCommand('inv', function()
 end)
 
 RegisterCommand('vehinv', function()
+	TriggerServerEvent("linden-inventory:checktrabajo")
 	if not playerID then return end
 	if isBusy or invOpen then error("You can't open your inventory right now") return end 
 	if not CanOpenInventory() then return end
