@@ -184,11 +184,13 @@ RemovePlayerInventory = function(xPlayer, item, count, slot, metadata)
 			Inventories[xPlayer.source].inventory[slot] = nil
 			if xItem.weight > 0 then updateWeight(xPlayer) end
 			ItemNotify(xPlayer, item, count, slot, 'Removed')
+			TriggerClientEvent('linden_inventory:refreshInventory', xPlayer.source, Inventories[xPlayer.source])
 		elseif slot and Inventories[xPlayer.source].inventory[slot].count > count then
 			local newCount = Inventories[xPlayer.source].inventory[slot].count - count
 			Inventories[xPlayer.source].inventory[slot] = {name = item, label = xItem.label, weight = xItem.weight, slot = slot, count = newCount, description = xItem.description, metadata = metadata, stackable = xItem.stackable, closeonuse = xItem.closeonuse}
 			if xItem.weight > 0 then updateWeight(xPlayer) end
 			ItemNotify(xPlayer, item, count, slot, 'Removed')
+			TriggerClientEvent('linden_inventory:refreshInventory', xPlayer.source, Inventories[xPlayer.source])
 		else
 			local itemSlots, totalCount = getInventoryItemSlots(xPlayer, item, metadata)
 			if itemSlots then
