@@ -54,6 +54,8 @@ exports('setInventoryItem', setInventoryItem)
 
 updateWeight = function(xPlayer)
 	Inventories[xPlayer.source].weight = getWeight(xPlayer)
+	SyncAccounts(xPlayer, 'money')
+	SyncAccounts(xPlayer, 'black_money')
 end
 
 
