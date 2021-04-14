@@ -731,11 +731,11 @@ AddEventHandler('linden_inventory:decreaseDurability', function(slot, item, ammo
 					return
 				end
 				if Config.DurabilityDecrease[Inventories[xPlayer.source].inventory[slot].name] == nil then
-					decreaseamount = 0.5 * (ammo / 15)
+					decreaseamount = ammo / 8
 				elseif Config.DurabilityDecrease[Inventories[xPlayer.source].inventory[slot].name] then
-					decreaseamount = Config.DurabilityDecrease[Inventories[xPlayer.source].inventory[slot].name] * (ammo / 15)
+					decreaseamount = Config.DurabilityDecrease[Inventories[xPlayer.source].inventory[slot].name] * (ammo / 6)
 				else
-					decreaseamount = amount * (ammo / 15)
+					decreaseamount = amount * (ammo / 6)
 				end
 				Inventories[xPlayer.source].inventory[slot].metadata.durability = Inventories[xPlayer.source].inventory[slot].metadata.durability - ESX.Round(decreaseamount, 2)
 				TriggerClientEvent('linden_inventory:refreshInventory', xPlayer.source, Inventories[xPlayer.source])
