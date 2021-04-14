@@ -179,6 +179,45 @@ AddEventHandler('linden_inventory:clearPlayerInventory', function(xPlayer)
 	end
 end)
 
+--[[ Example commands - confiscate/return player inventory
+RegisterCommand('conf', function(source, args, rawCommand)
+	TriggerEvent('linden_inventory:confiscatePlayerInventory', source)
+end, true)
+
+RegisterCommand('return', function(source, args, rawCommand)
+	TriggerEvent('linden_inventory:recoverPlayerInventory', source)
+end, true)]]
+
+AddEventHandler('linden_inventory:confiscatePlayerInventory', function(xPlayer)
+	if type(xPlayer) ~= 'table' then xPlayer = ESX.GetPlayerFromId(xPlayer) end
+	local inventory = json.encode(getPlayerInventory(xPlayer))
+	exports.ghmattimysql:execute('REPLACE INTO linden_inventory (name, data) VALUES (@name, @data)', {
+		['@name'] = xPlayer.identifier,
+		['@data'] = inventory
+	}, function (rowsChanged)
+		TriggerEvent('linden_inventory:clearPlayerInventory', xPlayer)
+		TriggerClientEvent('mythic_notify:client:SendAlert', xPlayer.source, { type = 'error', text = 'Your items have been confiscated' })
+	end)
+end)
+
+AddEventHandler('linden_inventory:recoverPlayerInventory', function(xPlayer)
+	if type(xPlayer) ~= 'table' then xPlayer = ESX.GetPlayerFromId(xPlayer) end
+	Inventories[xPlayer.source].inventory = GetItems(xPlayer.identifier)
+	updateWeight(xPlayer)
+	local accounts = {'money', 'black_money'}
+	for i=1, #accounts do
+		local account = xPlayer.getAccount(accounts[i])
+		account.money = xPlayer.getInventoryItem(accounts[i]).count
+		xPlayer.setAccount(account)
+		xPlayer.triggerEvent('esx:setAccountMoney', account)
+	end
+	if Opened[xPlayer.source] then TriggerClientEvent('linden_inventory:closeInventory', Opened[xPlayer.source].invid)
+		TriggerClientEvent('linden_inventory:refreshInventory', xPlayer.source, Inventories[xPlayer.source])
+	end
+	TriggerClientEvent('mythic_notify:client:SendAlert', xPlayer.source, { type = 'error', text = 'Your items have been returned' })
+end)
+
+
 RegisterNetEvent('linden_inventory:openInventory')
 AddEventHandler('linden_inventory:openInventory', function(data, player)
 	if data then
