@@ -449,7 +449,7 @@ AddEventHandler('linden_inventory:saveInventoryData', function(data)
 		elseif data.frominv ~= data.toinv then
 			if data.toinv == 'drop' and not Drops[data.invid] then
 				CreateNewDrop(xPlayer, data)
-				TriggerClientEvent('linden_inventory:refreshInventory', xPlayer.source, Inventories[xPlayer.source])
+				--TriggerClientEvent('linden_inventory:refreshInventory', xPlayer.source, Inventories[xPlayer.source])
 				return
 			end
 			if data.frominv == 'Playerinv' then
@@ -584,7 +584,7 @@ AddEventHandler('linden_inventory:saveInventoryData', function(data)
 				end
 			end
 		end
-		TriggerClientEvent('linden_inventory:refreshInventory', xPlayer.source, Inventories[xPlayer.source])
+		--TriggerClientEvent('linden_inventory:refreshInventory', xPlayer.source, Inventories[xPlayer.source])
 	end
 end)
 
@@ -781,7 +781,7 @@ end)
 RegisterNetEvent('linden_inventory:updateWeapon')
 AddEventHandler('linden_inventory:updateWeapon', function(item, type, player)
 	local xPlayer
-	if player then xPlayer = player else xPlayer = ESX.GetPlayerFromId(source) end
+	if not source or source == 0 then xPlayer = player else xPlayer = ESX.GetPlayerFromId(source) end
 	if Inventories[xPlayer.source].inventory[item.slot] ~= nil then
 		if Inventories[xPlayer.source].inventory[item.slot].metadata.ammo ~= nil then
 			Inventories[xPlayer.source].inventory[item.slot].metadata = item.metadata
