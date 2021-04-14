@@ -158,9 +158,6 @@ AddEventHandler('linden_inventory:setPlayerInventory', function(xPlayer, data)
 		end
 	end
 	updateWeight(xPlayer)
-	Citizen.Wait(100)
-	SyncAccounts(xPlayer, 'money')
-	SyncAccounts(xPlayer, 'black_money')
 end)
 
 AddEventHandler('linden_inventory:clearPlayerInventory', function(xPlayer)
@@ -213,14 +210,7 @@ AddEventHandler('linden_inventory:recoverPlayerInventory', function(xPlayer)
 				if v.metadata == nil then v.metadata = {} end
 				Inventories[xPlayer.source].inventory[v.slot] = {name = v.name ,label = Items[v.name].label, weight = Items[v.name].weight, slot = v.slot, count = v.count, description = Items[v.name].description, metadata = v.metadata, stackable = Items[v.name].stackable}
 			end
-			updateWeight(xPlayer)
-			local accounts = {'money', 'black_money'}
-			for i=1, #accounts do
-				local account = xPlayer.getAccount(accounts[i])
-				account.money = xPlayer.getInventoryItem(accounts[i]).count
-				xPlayer.setAccount(account)
-				xPlayer.triggerEvent('esx:setAccountMoney', account)
-			end
+			updateWeight(xPlayer)	
 			if Opened[xPlayer.source] then TriggerClientEvent('linden_inventory:closeInventory', Opened[xPlayer.source].invid)
 				TriggerClientEvent('linden_inventory:refreshInventory', xPlayer.source, Inventories[xPlayer.source])
 			end
