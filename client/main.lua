@@ -3,7 +3,7 @@ local Drops = {}
 local currentDrop
 local currentWeapon
 
-local ClearWeapons = function()
+ClearWeapons = function()
 	SetCurrentPedWeapon(playerPed, `WEAPON_UNARMED`, true)
 	for k, v in pairs(Config.AmmoType) do
 		SetPedAmmo(playerPed, k, 0)
@@ -12,7 +12,7 @@ local ClearWeapons = function()
 	SetPedCanSwitchWeapon(playerPed, false)
 end
 
-local DisarmPlayer = function(weapon)
+DisarmPlayer = function(weapon)
 	currentWeapon.metadata.ammo = GetAmmoInPedWeapon(playerPed, currentWeapon.hash)
 	SetPedAmmo(playerPed, currentWeapon.hash, 0)
 	SetCurrentPedWeapon(playerPed, `WEAPON_UNARMED`, true)
@@ -21,16 +21,29 @@ local DisarmPlayer = function(weapon)
 	TriggerEvent('linden_inventory:currentWeapon', nil)
 end
 
-local error = function(msg)
+error = function(msg)
 	TriggerEvent('mythic_notify:client:SendAlert', {type = 'error', text = msg, length = 2500})
 end
 
-local inform = function(msg)
+inform = function(msg)
 	TriggerEvent('mythic_notify:client:SendAlert', {type = 'inform', text = msg, length = 2500})
 end
 
-local StartInventory = function()
-	playerID, playerPed, invOpen, isDead, isCuffed, isBusy, isShooting, usingWeapon, weight, currentDrop = nil, nil, false, false, false, false, false, false, Config.PlayerWeight, nil
+Start = function()
+	Citizen.CreateThread(function()
+		while true do
+			if PlayerLoaded then
+				StartInventory()
+				break
+			end
+			Citizen.Wait(1000)
+		end
+	end)
+end
+Start()
+
+StartInventory = function()
+	playerID, playerPed, invOpen, isDead, isCuffed, isBusy, usingWeapon, weight, currentDrop = nil, nil, false, false, false, false, false, Config.PlayerWeight, nil
 	ESX.TriggerServerCallback('linden_inventory:setup',function(data)
 		ESX.PlayerData = ESX.GetPlayerData()
 		playerPed = PlayerPedId()
@@ -41,6 +54,8 @@ local StartInventory = function()
 		inventoryLabel = playerName..' ['..playerID..'] '--[[..ESX.PlayerData.job.grade_label]]
 		PlayerLoaded = true
 		ClearWeapons()
+		inform("Inventory is ready to use")
+		TriggerLoops()
 		if next(Blips) then
 			for k, v in pairs(Blips) do
 				RemoveBlip(v)
@@ -62,32 +77,17 @@ local StartInventory = function()
 				EndTextCommandSetBlipName(Blips[k])
 			end
 		end
-		inform("Inventory is ready to use")
-		TriggerLoops()
 	end)
 end
 
-Start = function()
-	Citizen.CreateThread(function()
-		while true do
-			if PlayerLoaded then
-				StartInventory()
-				break
-			end
-			Citizen.Wait(1000)
-		end
-	end)
-end
-if not PlayerLoaded then Start() end
-
-local CanOpenInventory = function()
-	if PlayerLoaded and not isBusy and not isShooting and not isDead and not isCuffed and not IsPauseMenuActive() then
+CanOpenInventory = function()
+	if PlayerLoaded and not isBusy and not usingWeapon and not isDead and not isCuffed and not IsPauseMenuActive() then
 		--if IsPedDeadOrDying(playerPed, 1) then return false end
 		return true
 	else return false end
 end
 
-local CanOpenTarget = function(searchPlayerPed)
+CanOpenTarget = function(searchPlayerPed)
 	if IsPedDeadOrDying(searchPlayerPed, 1)
 	or IsEntityPlayingAnim(searchPlayerPed, 'random@mugging3', 'handsup_standing_base', 3)
 	or IsEntityPlayingAnim(searchPlayerPed, 'missminuteman_1ig_2', 'handsup_base', 3)
@@ -97,7 +97,7 @@ local CanOpenTarget = function(searchPlayerPed)
 	else return false end
 end
 
-local OpenTargetInventory = function()
+OpenTargetInventory = function()
 	local closestPlayer, closestDistance = ESX.Game.GetClosestPlayer()
 	if closestPlayer ~= -1 and closestDistance <= 1.2 then
 		local searchPlayerPed = GetPlayerPed(closestPlayer)
@@ -112,7 +112,7 @@ local OpenTargetInventory = function()
 end
 exports('OpenTargetInventory', OpenTargetInventory)
 
-local DrawText3D = function(coords, text)
+DrawText3D = function(coords, text)
 	SetDrawOrigin(coords)
 	SetTextScale(0.35, 0.35)
 	SetTextFont(4)
@@ -124,7 +124,7 @@ local DrawText3D = function(coords, text)
 	ClearDrawOrigin()
 end
 
-local loadAnimDict = function(dict)
+loadAnimDict = function(dict)
 	while not HasAnimDictLoaded(dict) do
 		RequestAnimDict(dict)
 		Citizen.Wait(5)
@@ -139,30 +139,30 @@ AddEventHandler('randPickupAnim', function()
 	ClearPedSecondaryTask(playerPed)
 end)
 
-local OpenShop = function(id)
+OpenShop = function(id)
 	if not invOpen and CanOpenInventory() and not CanOpenTarget(playerPed) then
 		TriggerServerEvent('linden_inventory:openInventory', {type = 'shop', id = id })
 	end
 end
 
-local OpenStash = function(data)
+OpenStash = function(data)
 	if not invOpen and CanOpenInventory() and not CanOpenTarget(playerPed) then
 		TriggerServerEvent('linden_inventory:openInventory', {type = 'stash', id = data.name, slots = data.slots, coords = data.coords, job = data.job  })
 	end
 end
 exports('OpenStash', OpenStash)
 
-local OpenGloveBox = function(gloveboxid, class)
+OpenGloveBox = function(gloveboxid, class)
 	local storage = Config.GloveboxSlots[class]
 	if storage then TriggerServerEvent('linden_inventory:openInventory', {type = 'glovebox',id  = 'glovebox-'..gloveboxid, slots = storage}) end
 end
 
-local OpenTrunk = function(trunkid, class)
+OpenTrunk = function(trunkid, class)
 	local storage = Config.TrunkSlots[class]
 	if storage then TriggerServerEvent('linden_inventory:openInventory', {type = 'trunk',id  = 'trunk-'..trunkid, slots = storage}) end
 end
 
-local CloseVehicle = function(veh)
+CloseVehicle = function(veh)
 	local animDict = 'anim@heists@fleeca_bank@scope_out@return_case'
 	local anim = 'trevor_action'
 	RequestAnimDict(animDict)
@@ -180,7 +180,7 @@ local CloseVehicle = function(veh)
 end
 
 local nui_focus = {false, false}
-local SetNuiFocusAdvanced = function(hasFocus, hasCursor, allowMovement)
+SetNuiFocusAdvanced = function(hasFocus, hasCursor, allowMovement)
 	SetNuiFocus(hasFocus, hasCursor)
 	SetNuiFocusKeepInput(hasFocus)
 	nui_focus = {hasFocus, hasCursor}
@@ -268,7 +268,7 @@ AddEventHandler('linden_inventory:removeDrop', function(id, owner)
 	if owner == playerID then TriggerServerEvent('linden_inventory:openInventory', {type = 'drop', drop = {} }) end
 end)
 
-local HolsterWeapon = function(item)
+HolsterWeapon = function(item)
 	ClearPedSecondaryTask(playerPed)
 	loadAnimDict('reaction@intimidation@1h')
 	TaskPlayAnimAdvanced(playerPed, 'reaction@intimidation@1h', 'outro', GetEntityCoords(playerPed, true), 0, 0, GetEntityHeading(playerPed), 8.0, 3.0, -1, 50, 0, 0, 0)
@@ -279,7 +279,7 @@ local HolsterWeapon = function(item)
 	SendNUIMessage({ message = 'notify', item = item, text = 'Holstered' })
 end
 
-local DrawWeapon = function(item)
+DrawWeapon = function(item)
 	ClearPedSecondaryTask(playerPed)
 	if ESX.PlayerData.job.name == 'police' then
 		loadAnimDict('reaction@intimidation@cop@unarmed')
