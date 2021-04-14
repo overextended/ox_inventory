@@ -780,7 +780,7 @@ RegisterNUICallback('giveItem', function(data, cb)
 	if closestPlayer == -1 or closestPlayerDistance > 2.0 then 
 		error('There is nobody nearby')
 	elseif data.inv == 'Playerinv' then
-		if data.amount > 0 then
+		if data.amount >= 1 then
 			TriggerServerEvent('linden_inventory:giveItem', data, GetPlayerServerId(closestPlayer))
 		else error('You must enter an amount to give') end
 	end
@@ -791,7 +791,7 @@ RegisterNUICallback('saveinventorydata',function(data)
 end)
 
 RegisterNUICallback('BuyFromShop', function(data)
-	if data.count > 1 then
+	if data.count >= 1 then
 		TriggerServerEvent('linden_inventory:buyItem', data)
 	else error('You must select an amount to buy') end
 end)
