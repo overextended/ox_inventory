@@ -595,28 +595,14 @@ AddEventHandler('linden_inventory:saveInventory', function(data)
 	end
 end)
 
+AddEventHandler('esx:playerLogout', function(playerid)
+	PlayerDropped(playerid)
+end)
 
 RegisterNetEvent('playerDropped')
 AddEventHandler('playerDropped', function()
-	local src = source
-	local data = Opened[src]
-	if data then
-		if data.type == 'TargetPlayer' then
-			updateWeight(ESX.GetPlayerFromId(data.invid))
-			Opened[data.invid] = nil
-			print(src..' disconnected while accessing player inventory '..data.invid)
-		elseif data.type ~= 'shop' and data.type ~= 'drop' and Inventories[data.invid] and Inventories[data.invid].changed then
-			SaveItems(data.type, data.invid)
-			Inventories[data.invid].changed = false
-			print(src..' disconnected while accessing '..data.type..' '..data.invid)
-		else
-			print(src..' disconnected while accessing '..data.type..' '..data.invid)
-		end
-		Opened[src] = nil
-		if data.invid then Opened[data.invid] = nil end
-	end
+	PlayerDropped(source)
 end)
-
 
 RegisterNetEvent('linden_inventory:devtool')
 AddEventHandler('linden_inventory:devtool', function()
@@ -744,6 +730,9 @@ AddEventHandler('linden_inventory:decreaseDurability', function(slot, item, ammo
 					TriggerClientEvent('mythic_notify:client:SendAlert', xPlayer.source, { type = 'error', text = 'This weapon is broken' })
 					TriggerClientEvent('linden_inventory:updateWeapon', xPlayer.source, Inventories[xPlayer.source].inventory[slot].metadata)
 					AddPlayerInventory(xPlayer, Inventories[xPlayer.source].inventory[slot].ammoType, ammo)
+				else
+					TriggerClientEvent('linden_inventory:refreshInventory', xPlayer.source, Inventories[xPlayer.source])
+					TriggerClientEvent('linden_inventory:updateWeapon', xPlayer.source, Inventories[xPlayer.source].inventory[slot].metadata)
 				end
 			end
 		end
