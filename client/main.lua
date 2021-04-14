@@ -791,7 +791,9 @@ RegisterNUICallback('saveinventorydata',function(data)
 end)
 
 RegisterNUICallback('BuyFromShop', function(data)
-    TriggerServerEvent('linden_inventory:buyItem', data)
+	if data.count > 1 then
+		TriggerServerEvent('linden_inventory:buyItem', data)
+	else error('You must select an amount to buy') end
 end)
 
 RegisterNUICallback('exit',function(data)
