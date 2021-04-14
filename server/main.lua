@@ -744,7 +744,7 @@ AddEventHandler('linden_inventory:updateWeapon', function(item, type, player)
 			TriggerClientEvent('linden_inventory:updateWeapon', xPlayer.source, Inventories[xPlayer.source].inventory[item.slot].metadata)
 		else
 			if type == 'throw' then
-				RemovePlayerInventory(xPlayer, item.name, 1, item.metadata, item.slot)
+				RemovePlayerInventory(xPlayer, item.name, 1, item.slot, item.metadata)
 			elseif type == 'melee' then
 				TriggerEvent('linden_inventory:decreaseDurability', item.slot, item.name, 1, xPlayer)
 			end
@@ -755,7 +755,7 @@ end)
 RegisterNetEvent('linden_inventory:removeItem')
 AddEventHandler('linden_inventory:removeItem', function(item, count, metadata, slot)
 	local xPlayer = ESX.GetPlayerFromId(source)
-	RemovePlayerInventory(xPlayer, item, count, metadata, slot)
+	RemovePlayerInventory(xPlayer, item, count, slot, metadata)
 end)
 
 ESX.RegisterServerCallback('linden_inventory:getItem', function(source, cb, item, metadata)
