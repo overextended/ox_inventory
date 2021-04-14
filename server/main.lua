@@ -313,30 +313,29 @@ end)
 RegisterNetEvent('linden_inventory:buyItem')
 AddEventHandler('linden_inventory:buyItem', function(info)
 	local xPlayer = ESX.GetPlayerFromId(source)
-	local data = info.data
-	local location = info.location
-	local money, currency, item = nil, nil, {}
-	if info.count ~= nil then info.count = tonumber(info.count) else info.count = 0 end
-	local count = ESX.Round(info.count)
-	local checkShop = Config.Shops[location].store.inventory[data.slot]
+	if info.count > 0 then
+		local data = info.data
+		local location = info.location
+		local money, currency, item = nil, nil, {}
+		local count = info.count
+		local checkShop = Config.Shops[location].store.inventory[data.slot]
 
-	if checkShop.grade and checkShop.grade > xPlayer.job.grade then
-		TriggerClientEvent('mythic_notify:client:SendAlert', xPlayer.source, { type = 'error', text = 'You are not authorised to purchase this item' })
-		return
-	end
-
-	if Config.WeaponsLicense and checkShop.license then
-		local hasLicense = exports.ghmattimysql:scalarSync('SELECT * FROM user_licenses WHERE type = @type AND owner = @owner', {
-			['@type'] = checkShop.license,
-			['@owner'] = xPlayer.identifier
-		})
-		if not hasLicense then
-			TriggerClientEvent('mythic_notify:client:SendAlert', xPlayer.source, { type = 'error', text = 'You are not licensed to purchase this item' })
+		if checkShop.grade and checkShop.grade > xPlayer.job.grade then
+			TriggerClientEvent('mythic_notify:client:SendAlert', xPlayer.source, { type = 'error', text = 'You are not authorised to purchase this item' })
 			return
 		end
-	end
+	
+		if Config.WeaponsLicense and checkShop.license then
+			local hasLicense = exports.ghmattimysql:scalarSync('SELECT * FROM user_licenses WHERE type = @type AND owner = @owner', {
+				['@type'] = checkShop.license,
+				['@owner'] = xPlayer.identifier
+			})
+			if not hasLicense then
+				TriggerClientEvent('mythic_notify:client:SendAlert', xPlayer.source, { type = 'error', text = 'You are not licensed to purchase this item' })
+				return
+			end
+		end
 
-	if count > 0 then
 		if data.name:find('WEAPON_') then count = 1 end
 
 		local shopCurrency = Config.Shops[location].currency
@@ -372,7 +371,7 @@ AddEventHandler('linden_inventory:buyItem', function(info)
 						RemovePlayerInventory(xPlayer, item.name, data.price)
 					end
 					AddPlayerInventory(xPlayer, data.name, count, false, data.metadata)
-					if Config.Logs then exports.linden_logs:log(xPlayer.source, ('%s (%s) bought %sx %s from %s for %s'):format(xPlayer.name, xPlayer.identifier, ESX.Math.GroupDigits(count), data.label, Config.Shops[location].name, cost), 'test') end
+					if Config.Logs then exports.linden_logs:log(xPlayer.source, false, ('bought %sx %s from %s for %s'):format(ESX.Math.GroupDigits(count), data.label, Config.Shops[location].name, cost), 'money') end
 				else
 					local missing
 					if currency == 'bank' or item.name == 'money' then
@@ -388,8 +387,6 @@ AddEventHandler('linden_inventory:buyItem', function(info)
 		else
 			TriggerClientEvent('mythic_notify:client:SendAlert', xPlayer.source, { type = 'error', text = 'You can not carry this item' })
 		end
-	else
-		TriggerClientEvent('mythic_notify:client:SendAlert', xPlayer.source, { type = 'error', text = 'You must select an amount to buy' })
 	end
 end)
 
@@ -635,9 +632,8 @@ AddEventHandler('linden_inventory:devtool', function()
 	if not IsPlayerAceAllowed(source, 'command.refresh') then
 		print( ('^1[warning]^3 [%s] %s was kicked for opening nui_devtools^7'):format(source, GetPlayerName(source)) )
 		if Config.Logs then xPlayer = ESX.GetPlayerFromId(source)
-			exports.linden_logs:log(xPlayer.source, ('%s (%s) was kicked for opening nui_devtools'):format(xPlayer.name, xPlayer.identifier), 'test')
+			exports.linden_logs:log(xPlayer, ('kicked for opening nui_devtools'):format(xPlayer.name, xPlayer.identifier), 'kick')
 		end
-		-- Trigger a ban or kick for the player
 		DropPlayer(source, 'foxtrot-uniform-charlie-kilo')
 	end
 end)
