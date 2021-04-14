@@ -304,8 +304,8 @@ AddEventHandler('linden_inventory:openTargetInventory', function(targetId)
 				inventory = TargetPlayer.inventory
 			}
 			TriggerClientEvent('linden_inventory:openInventory',  xPlayer.source, Inventories[xPlayer.source], data)
-			Opened[xPlayer.source] = {invid = data.id, type = data.type}
-			Opened[data.id] = {invid = xPlayer.source, type = data.type}
+			Opened[xPlayer.source] = {invid = xTarget.source, type = data.type}
+			Opened[xTarget.source] = {invid = xPlayer.source, type = data.type}
 		end
 	end
 end)
