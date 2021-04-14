@@ -779,8 +779,10 @@ RegisterNUICallback('giveItem', function(data, cb)
 	local closestPlayer, closestPlayerDistance = ESX.Game.GetClosestPlayer()
 	if closestPlayer == -1 or closestPlayerDistance > 2.0 then 
 		error('There is nobody nearby')
-	elseif data.inv == 'Playerinv' and data.amount > 0 then
-		TriggerServerEvent('linden_inventory:giveItem', data, GetPlayerServerId(closestPlayer))
+	elseif data.inv == 'Playerinv' then
+		if data.amount > 0 then
+			TriggerServerEvent('linden_inventory:giveItem', data, GetPlayerServerId(closestPlayer))
+		else error('You must enter an amount to give') end
 	end
 end)
 
