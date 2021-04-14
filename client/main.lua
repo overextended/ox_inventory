@@ -775,6 +775,15 @@ RegisterNUICallback('useItem', function(data, cb)
 	if data.inv == 'Playerinv' then TriggerServerEvent('linden_inventory:useItem', data.item) end
 end)
 
+RegisterNUICallback('giveItem', function(data, cb)
+	local closestPlayer, closestPlayerDistance = ESX.Game.GetClosestPlayer()
+	if closestPlayer == -1 or closestPlayerDistance > 3.0 then 
+		ESX.ShowNotification("No player found nearby!")
+	else
+		if data.inv == 'Playerinv' then TriggerServerEvent('linden_inventory:giveItem', data, GetPlayerServerId(closestPlayer)) end
+	end
+end)
+
 RegisterNUICallback('saveinventorydata',function(data)
 	TriggerServerEvent('linden_inventory:saveInventoryData', data)
 end)

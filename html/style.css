@@ -439,11 +439,32 @@
     font-size: 90%;
 }
 
+.give {
+    position: relative;
+    display: block;
+    margin: 20 auto;
+    height: 40px;
+    width: 150px;
+    top: 35%;
+    border: none;
+    background-color:rgba(12, 12, 12, 0.35);
+    box-shadow: 0 0 0 1px rgba(38, 38, 38, 0.3) inset;
+    color: white;
+    text-align: center;
+    border-radius: 2px;
+    transition: 0.2s ease-in-out all;
+    line-height: 40px;
+    font-family: 'Signika';
+    font-size: 90%;
+}
+
 .use:hover {
     background-color: rgba(218, 0, 0, 0.2);
 }
 
-
+.give:hover {
+    background-color: rgba(218, 0, 0, 0.2);
+}
 
 .close {
     position: relative;
