@@ -626,6 +626,25 @@ AddEventHandler('linden_inventory:useItem', function(item)
 	end
 end)
 
+RegisterNetEvent('linden_inventory:giveItem')
+AddEventHandler('linden_inventory:giveItem', function(data, closestPlayer)
+	local fromXPlayer = ESX.GetPlayerFromId(source)
+	local toXPlayer = ESX.GetPlayerFromId(closestPlayer)
+	if toXPlayer.getWeight() + (data.item.weight * data.amount) < toXPlayer.getMaxWeight() then
+		print(fromXPlayer.getInventory(true)[ValidateString(data.item.name)])
+		if data.item.count >= data.amount then
+			fromXPlayer.removeInventoryItem(ValidateString(data.item.name), data.amount, data.item.type)
+			toXPlayer.addInventoryItem(ValidateString(data.item.name), data.amount, data.item.type)
+		else
+			fromXPlayer.showNotification("You dont have that many!")
+		end
+	else
+		fromXPlayer.showNotification("The player does not have enough inventory space")
+	end
+
+	
+end)
+
 RegisterNetEvent('linden_inventory:reloadWeapon')
 AddEventHandler('linden_inventory:reloadWeapon', function(weapon)
 	local xPlayer = ESX.GetPlayerFromId(source)

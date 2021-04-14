@@ -366,6 +366,24 @@
 					}
 			}
 		});
+
+		$(".give").droppable({
+			hoverClass: 'button-hover',
+			drop: function(event, ui) {
+				setTimeout(function(){
+					IsDragging = false;
+				}, 300)
+				fromData = ui.draggable.data("ItemData");
+				fromInventory = ui.draggable.parent();
+				amnt = parseInt($("#item-count").val());
+				inv = fromInventory.data('invTier')
+					$.post("https://linden_inventory/giveItem", JSON.stringify({
+						item: fromData,
+						inv : inv,
+						amount : amnt
+					}));
+			}
+		});
 	}
 
 
