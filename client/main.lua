@@ -1,11 +1,7 @@
-ESX = nil
-TriggerEvent('esx:getSharedObject', function(obj) ESX = obj end)
-
 local Blips = {}
 local Drops = {}
 local currentDrop
 local currentWeapon
-
 
 local ClearWeapons = function()
 	SetCurrentPedWeapon(playerPed, `WEAPON_UNARMED`, true)
@@ -33,7 +29,7 @@ local inform = function(msg)
 	TriggerEvent('mythic_notify:client:SendAlert', {type = 'inform', text = msg, length = 2500})
 end
 
-StartInventory = function()
+local StartInventory = function()
 	playerID, playerPed, invOpen, isDead, isCuffed, isBusy, isShooting, usingWeapon, weight, currentDrop = nil, nil, false, false, false, false, false, false, Config.PlayerWeight, nil
 	ESX.TriggerServerCallback('linden_inventory:setup',function(data)
 		ESX.PlayerData = ESX.GetPlayerData()
@@ -42,9 +38,9 @@ StartInventory = function()
 		playerID = GetPlayerServerId(PlayerId())
 		playerName = data.name
 		Drops = data.drops
-		inventoryLabel = playerName..' ['..playerID..'] '--[[..ESX.PlayerData.job.grade_label]],
+		inventoryLabel = playerName..' ['..playerID..'] '--[[..ESX.PlayerData.job.grade_label]]
+		PlayerLoaded = true
 		ClearWeapons()
-		inform("Inventory is ready to use")
 		if next(Blips) then
 			for k, v in pairs(Blips) do
 				RemoveBlip(v)
@@ -66,12 +62,26 @@ StartInventory = function()
 				EndTextCommandSetBlipName(Blips[k])
 			end
 		end
+		inform("Inventory is ready to use")
+		TriggerLoops()
 	end)
 end
 
+Start = function()
+	Citizen.CreateThread(function()
+		while true do
+			if PlayerLoaded then
+				StartInventory()
+				break
+			end
+			Citizen.Wait(1000)
+		end
+	end)
+end
+if not PlayerLoaded then Start() end
+
 local CanOpenInventory = function()
-	if not playerName and ESX.GetPlayerData().job ~= nil then playerName = 'pusskins' StartInventory() end
-	if playerName and not isBusy and not isShooting and not isDead and not isCuffed and not IsPauseMenuActive() then
+	if PlayerLoaded and not isBusy and not isShooting and not isDead and not isCuffed and not IsPauseMenuActive() then
 		--if IsPedDeadOrDying(playerPed, 1) then return false end
 		return true
 	else return false end
@@ -207,40 +217,9 @@ local SetNuiFocusAdvanced = function(hasFocus, hasCursor, allowMovement)
 	end
 end
 
-RegisterNetEvent('esx:playerLoaded')
-AddEventHandler('esx:playerLoaded', function()
-	playerName = nil
-end)
-
-AddEventHandler('esx:onPlayerSpawn', function(spawn)
-	isDead = false
-end)
-
-RegisterNetEvent('esx:setJob')
-AddEventHandler('esx:setJob', function(job)
-	ESX.PlayerData.job = job
-end)
-
-RegisterNetEvent('esx_ambulancejob:setDeathStatus')
-AddEventHandler('esx_ambulancejob:setDeathStatus', function(status)
-	isDead = status
-	if isDead then TriggerEvent('linden_inventory:closeInventory') end
-end)
-
-RegisterNetEvent('esx_policejob:handcuff')
-AddEventHandler('esx_policejob:handcuff', function()
-	isCuffed = not isCuffed
-	if isCuffed then TriggerEvent('linden_inventory:closeInventory') end
-end)
-
-RegisterNetEvent('esx_policejob:unrestrain')
-AddEventHandler('esx_policejob:unrestrain', function()
-	isCuffed = false
-end)
-
 RegisterNetEvent('linden_inventory:openInventory')
 AddEventHandler('linden_inventory:openInventory',function(data, rightinventory)
-	if not playerID then return end
+	if not PlayerLoaded then return end
 	movement = false
 	invOpen = true
 	SendNUIMessage({
@@ -425,109 +404,109 @@ AddEventHandler('onResourceStop', function(resourceName)
 	end
 end)
 
-Citizen.CreateThread(function()
-	local Keys = {157, 158, 160, 164, 165}
-	local Disable = {37, 157, 158, 160, 164, 165, 289}
-	local wait = false
-	while true do
-		sleep = 3
-		for i=1, #Disable, 1 do
-			DisableControlAction(0, Disable[i], true)
-		end
-		for i = 19, 20 do
-			HideHudComponentThisFrame(i)
-		end
-		if isBusy then
-			DisableControlAction(0, 24, true)
-			DisableControlAction(0, 25, true)
-			DisableControlAction(0, 142, true)
-			DisableControlAction(0, 257, true)
-		elseif not invOpen and not wait and CanOpenInventory() then
-			for i=1, #Keys, 1 do
-				if IsDisabledControlJustReleased(0, Keys[i]) then
-					Citizen.CreateThread(function()
-						wait = true
-						TriggerServerEvent('linden_inventory:useSlotItem', i)
-						Citizen.Wait(100)
-						wait = false
-					end)
-				end
+TriggerLoops = function()
+	Citizen.CreateThread(function()
+		local Keys = {157, 158, 160, 164, 165}
+		local Disable = {37, 157, 158, 160, 164, 165, 289}
+		local wait = false
+		while PlayerLoaded do
+			sleep = 3
+			for i=1, #Disable, 1 do
+				DisableControlAction(0, Disable[i], true)
 			end
-		end
-		if weaponTimer == 3 and currentWeapon then
-			TriggerServerEvent('linden_inventory:updateWeapon', currentWeapon)
-			weaponTimer = 0
-		elseif weaponTimer > 3 then weaponTimer = weaponTimer - 3 end
-		if not invOpen and currentWeapon then
-			if IsPedArmed(playerPed, 6) then
-				DisableControlAction(1, 140, true)
-				DisableControlAction(1, 141, true)
-				DisableControlAction(1, 142, true)
+			for i = 19, 20 do
+				HideHudComponentThisFrame(i)
 			end
-			usingWeapon = IsPedShooting(playerPed)
-			if usingWeapon then
-				local currentAmmo = GetAmmoInPedWeapon(playerPed, currentWeapon.hash)
-				if currentWeapon.name == 'WEAPON_FIREEXTINGUISHER' or currentWeapon.name == 'WEAPON_PETROLCAN' and not wait then
-					currentWeapon.metadata.durability = currentWeapon.metadata.durability - 0.1
-					if currentWeapon.metadata.durability <= 0 then
+			if isBusy then
+				DisableControlAction(0, 24, true)
+				DisableControlAction(0, 25, true)
+				DisableControlAction(0, 142, true)
+				DisableControlAction(0, 257, true)
+			elseif not invOpen and not wait and CanOpenInventory() then
+				for i=1, #Keys, 1 do
+					if IsDisabledControlJustReleased(0, Keys[i]) then
 						Citizen.CreateThread(function()
 							wait = true
+							TriggerServerEvent('linden_inventory:useSlotItem', i)
+							Citizen.Wait(100)
+							wait = false
+						end)
+					end
+				end
+			end
+			if weaponTimer == 3 and currentWeapon then
+				TriggerServerEvent('linden_inventory:updateWeapon', currentWeapon)
+				weaponTimer = 0
+			elseif weaponTimer > 3 then weaponTimer = weaponTimer - 3 end
+			if not invOpen and currentWeapon then
+				if IsPedArmed(playerPed, 6) then
+					DisableControlAction(1, 140, true)
+					DisableControlAction(1, 141, true)
+					DisableControlAction(1, 142, true)
+				end
+				usingWeapon = IsPedShooting(playerPed)
+				if usingWeapon then
+					local currentAmmo = GetAmmoInPedWeapon(playerPed, currentWeapon.hash)
+					if currentWeapon.name == 'WEAPON_FIREEXTINGUISHER' or currentWeapon.name == 'WEAPON_PETROLCAN' and not wait then
+						currentWeapon.metadata.durability = currentWeapon.metadata.durability - 0.1
+						if currentWeapon.metadata.durability <= 0 then
+							Citizen.CreateThread(function()
+								wait = true
+								ClearPedTasks(playerPed)
+								SetCurrentPedWeapon(playerPed, currentWeapon.hash, true)
+								TriggerServerEvent('linden_inventory:updateWeapon', currentWeapon)
+								Citizen.Wait(200)
+								SetCurrentPedWeapon(playerPed, `WEAPON_UNARMED`, true)
+								currentWeapon = nil
+								wait = false
+							end)
+						end
+					elseif currentWeapon.ammoType then
+						currentWeapon.metadata.ammo = currentAmmo
+						if currentAmmo == 0 then
+							if Config.AutoReload then
+								weaponTimer = 0
+								TriggerServerEvent('linden_inventory:reloadWeapon', currentWeapon)
+							end
 							ClearPedTasks(playerPed)
-							SetCurrentPedWeapon(playerPed, currentWeapon.hash, true)
-							TriggerServerEvent('linden_inventory:updateWeapon', currentWeapon)
-							Citizen.Wait(200)
+							SetCurrentPedWeapon(playerPed, currentWeapon.hash, false)
+							SetPedCurrentWeaponVisible(playerPed, true, false, false, false)
+							
+						else TriggerEvent('linden_inventory:usedWeapon', currentWeapon) end
+					end
+				else
+					if currentWeapon.metadata.throwable and not wait and IsControlJustReleased(0, 24) then
+						usingWeapon = true
+						Citizen.CreateThread(function()
+							wait = true
+							Citizen.Wait(800)
+							TriggerServerEvent('linden_inventory:updateWeapon', currentWeapon, 'throw')
 							SetCurrentPedWeapon(playerPed, `WEAPON_UNARMED`, true)
 							currentWeapon = nil
 							wait = false
 						end)
-					end
-				elseif currentWeapon.ammoType then
-					currentWeapon.metadata.ammo = currentAmmo
-					if currentAmmo == 0 then
-						if Config.AutoReload then
-							weaponTimer = 0
-							TriggerServerEvent('linden_inventory:reloadWeapon', currentWeapon)
-						end
-						ClearPedTasks(playerPed)
-						SetCurrentPedWeapon(playerPed, currentWeapon.hash, false)
-						SetPedCurrentWeaponVisible(playerPed, true, false, false, false)
-						
-					else TriggerEvent('linden_inventory:usedWeapon', currentWeapon) end
-				end
-			else
-				if currentWeapon.metadata.throwable and not wait and IsControlJustReleased(0, 24) then
-					usingWeapon = true
-					Citizen.CreateThread(function()
-						wait = true
-						Citizen.Wait(800)
-						TriggerServerEvent('linden_inventory:updateWeapon', currentWeapon, 'throw')
-						SetCurrentPedWeapon(playerPed, `WEAPON_UNARMED`, true)
-						currentWeapon = nil
-						wait = false
-					end)
-				elseif Config.Melee[currentWeapon.name] and not wait and IsPedInMeleeCombat(playerPed) and IsControlPressed(0, 24) then
-					usingWeapon = true
-					Citizen.CreateThread(function()
-						wait = true
-						TriggerServerEvent('linden_inventory:updateWeapon', currentWeapon, 'melee')
-						TriggerEvent('linden_inventory:usedWeapon', currentWeapon)
-						Citizen.Wait(400)
-						wait = false
-					end)
-				else usingWeapon = false end
-			end	
-		end		
-		Citizen.Wait(sleep)
-	end
-end)
+					elseif Config.Melee[currentWeapon.name] and not wait and IsPedInMeleeCombat(playerPed) and IsControlPressed(0, 24) then
+						usingWeapon = true
+						Citizen.CreateThread(function()
+							wait = true
+							TriggerServerEvent('linden_inventory:updateWeapon', currentWeapon, 'melee')
+							TriggerEvent('linden_inventory:usedWeapon', currentWeapon)
+							Citizen.Wait(400)
+							wait = false
+						end)
+					else usingWeapon = false end
+				end	
+			end		
+			Citizen.Wait(sleep)
+		end
+	end)
 
-Citizen.CreateThread(function()
-	local id
-	local type
-	local text = ''
-	while true do
-		local sleep = 250
-		if playerID then
+	Citizen.CreateThread(function()
+		local id
+		local type
+		local text = ''
+		while PlayerLoaded do
+			local sleep = 250
 			playerPed = PlayerPedId()
 			playerCoords = GetEntityCoords(playerPed)
 			if not invOpen then
@@ -652,10 +631,10 @@ Citizen.CreateThread(function()
 					end
 				end
 			end
+			Citizen.Wait(sleep)
 		end
-		Citizen.Wait(sleep)
-	end
-end)
+	end)
+end
 
 RegisterCommand('inv', function()
 	if isBusy or invOpen then error("You can't open your inventory right now") return end
@@ -667,7 +646,7 @@ RegisterCommand('inv', function()
 end)
 
 RegisterCommand('vehinv', function()
-	if not playerID then return end
+	if not PlayerLoaded then return end
 	if isBusy or invOpen then error("You can't open your inventory right now") return end 
 	if not CanOpenInventory() then return end
 	if not isDead and not isCuffed and not IsPedInAnyVehicle(playerPed, false) then -- trunk
