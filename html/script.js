@@ -147,9 +147,9 @@ HSN.InventoryGetDurability = function(quality) {
 	if (quality == undefined) {
 		quality = 100
 	}
-	var color = colorMixer([33,200,33], [210,33,33], (quality/100));
+	var color = colorMixer([35,190,35], [190,35,35], (quality/100));
 	var width = quality
-	if (quality = 0) {width = 100}
+	if (quality <= 0) {width = 100}
 	return [color=color, width=width]
 }
 
