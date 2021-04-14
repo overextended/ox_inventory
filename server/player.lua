@@ -100,9 +100,10 @@ end
 exports('canCarryItem', canCarryItem)
 
 
-canSwapItem = function(firstItem, firstItemCount, testItem, testItemCount)
+canSwapItem = function(xPlayer, firstItem, firstItemCount, testItem, testItemCount)
 	local curWeight = Inventories[xPlayer.source].weight
 	local firstItemObject = getInventoryItem(xPlayer, firstItem)
+	local testItemObject = getInventoryItem(xPlayer, testItem)
 	if firstItemObject.count >= firstItemCount then
 		local weightWithoutFirstItem = curWeight - (firstItemObject.weight * firstItemCount)
 		local weightWithTestItem = weightWithoutFirstItem + (testItemObject.weight * testItemCount)
