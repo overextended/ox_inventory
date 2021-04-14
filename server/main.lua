@@ -179,8 +179,8 @@ AddEventHandler('linden_inventory:clearPlayerInventory', function(xPlayer)
 	end
 end)
 
---[[ Example commands - confiscate/return player inventory
-RegisterCommand('conf', function(source, args, rawCommand)
+--Example commands - confiscate/return player inventory
+--[[RegisterCommand('conf', function(source, args, rawCommand)
 	TriggerEvent('linden_inventory:confiscatePlayerInventory', source)
 end, true)
 
@@ -190,31 +190,43 @@ end, true)]]
 
 AddEventHandler('linden_inventory:confiscatePlayerInventory', function(xPlayer)
 	if type(xPlayer) ~= 'table' then xPlayer = ESX.GetPlayerFromId(xPlayer) end
-	local inventory = json.encode(getPlayerInventory(xPlayer))
-	exports.ghmattimysql:execute('REPLACE INTO linden_inventory (name, data) VALUES (@name, @data)', {
-		['@name'] = xPlayer.identifier,
-		['@data'] = inventory
-	}, function (rowsChanged)
-		TriggerEvent('linden_inventory:clearPlayerInventory', xPlayer)
-		TriggerClientEvent('mythic_notify:client:SendAlert', xPlayer.source, { type = 'error', text = 'Your items have been confiscated' })
-	end)
+	if xPlayer.identifier then
+		local inventory = json.encode(getPlayerInventory(xPlayer))
+		exports.ghmattimysql:execute('REPLACE INTO linden_inventory (name, data) VALUES (@name, @data)', {
+			['@name'] = xPlayer.identifier,
+			['@data'] = inventory
+		}, function (rowsChanged)
+			TriggerEvent('linden_inventory:clearPlayerInventory', xPlayer)
+			TriggerClientEvent('mythic_notify:client:SendAlert', xPlayer.source, { type = 'error', text = 'Your items have been confiscated' })
+		end)
+	end
 end)
 
 AddEventHandler('linden_inventory:recoverPlayerInventory', function(xPlayer)
 	if type(xPlayer) ~= 'table' then xPlayer = ESX.GetPlayerFromId(xPlayer) end
-	Inventories[xPlayer.source].inventory = GetItems(xPlayer.identifier)
-	updateWeight(xPlayer)
-	local accounts = {'money', 'black_money'}
-	for i=1, #accounts do
-		local account = xPlayer.getAccount(accounts[i])
-		account.money = xPlayer.getInventoryItem(accounts[i]).count
-		xPlayer.setAccount(account)
-		xPlayer.triggerEvent('esx:setAccountMoney', account)
+	if xPlayer.identifier then
+		local result = exports.ghmattimysql:scalarSync('SELECT data FROM linden_inventory WHERE name = @name', { ['@name'] = xPlayer.identifier })
+		if result ~= nil then
+			exports.ghmattimysql:execute('DELETE FROM linden_inventory WHERE name = @name', { ['@name'] = xPlayer.identifier })
+			local Inventory = json.decode(result)
+			for k,v in pairs(Inventory) do
+				if v.metadata == nil then v.metadata = {} end
+				Inventories[xPlayer.source].inventory[v.slot] = {name = v.name ,label = Items[v.name].label, weight = Items[v.name].weight, slot = v.slot, count = v.count, description = Items[v.name].description, metadata = v.metadata, stackable = Items[v.name].stackable}
+			end
+			updateWeight(xPlayer)
+			local accounts = {'money', 'black_money'}
+			for i=1, #accounts do
+				local account = xPlayer.getAccount(accounts[i])
+				account.money = xPlayer.getInventoryItem(accounts[i]).count
+				xPlayer.setAccount(account)
+				xPlayer.triggerEvent('esx:setAccountMoney', account)
+			end
+			if Opened[xPlayer.source] then TriggerClientEvent('linden_inventory:closeInventory', Opened[xPlayer.source].invid)
+				TriggerClientEvent('linden_inventory:refreshInventory', xPlayer.source, Inventories[xPlayer.source])
+			end
+			TriggerClientEvent('mythic_notify:client:SendAlert', xPlayer.source, { type = 'error', text = 'Your items have been returned' })
+		end
 	end
-	if Opened[xPlayer.source] then TriggerClientEvent('linden_inventory:closeInventory', Opened[xPlayer.source].invid)
-		TriggerClientEvent('linden_inventory:refreshInventory', xPlayer.source, Inventories[xPlayer.source])
-	end
-	TriggerClientEvent('mythic_notify:client:SendAlert', xPlayer.source, { type = 'error', text = 'Your items have been returned' })
 end)
 
 
