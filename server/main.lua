@@ -132,7 +132,7 @@ AddEventHandler('linden-inventory:checktrabajo', function(statusjob)
 	local src = source
 	local xPlayer = ESX.GetPlayerFromId(src)
 	statusjob = xPlayer.getJob().label
-	TriggerClientEvent("LRP-inventory:checktrabajo",src,statusjob)
+	TriggerClientEvent("linden-inventory:checktrabajo",src,statusjob)
 
 end)
 
