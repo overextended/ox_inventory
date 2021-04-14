@@ -2,11 +2,11 @@ getInventoryItem = function(xPlayer, name, metadata)
 	local xItem = Items[name]
 	if not xItem then print(('^1[error]^7 %s does not exist'):format(name)) return end
 	xItem.count = 0
-	xItem.metadata = setMetadata(metadata)
+	metadata = setMetadata(metadata)
 	for k, v in pairs(Inventories[xPlayer.source].inventory) do
 		if v.name == name then
 			if not v.metadata then v.metadata = {} end
-			if is_table_equal(v.metadata, xItem.metadata) then
+			if is_table_equal(v.metadata, metadata) then
 				xItem.count = xItem.count + v.count
 			end
 		end
@@ -26,7 +26,7 @@ exports('addInventoryItem', addInventoryItem)
 
 
 removeInventoryItem = function(xPlayer, name, count, metadata, slot)
-	local item = getInventoryItem(xPlayer, name)
+	local item = getInventoryItem(xPlayer, name, metadata)
 	if item and count > 0 then
 		count = ESX.Math.Round(count)
 		if count > item.count then count = item.count end
@@ -37,7 +37,7 @@ exports('removeInventoryItem', removeInventoryItem)
 
 
 setInventoryItem = function(xPlayer, name, count, metadata)
-	local item = getInventoryItem(xPlayer, name)
+	local item = getInventoryItem(xPlayer, name, metadata)
 	if item and count >= 0 then
 		count = ESX.Math.Round(count)
 		if count > item.count then
