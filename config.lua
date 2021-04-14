@@ -1,7 +1,11 @@
 Config = {}
 
--- Should be a multiple of 5 + 1
-Config.PlayerSlots = 51
+-- Compare the version of this resource to the latest (default: every 60 minutes)
+Config.CheckVersion = true
+Config.CheckVersionDelay = 60
+
+-- Number of inventory slots
+Config.PlayerSlots = 50
 
 -- 30kg is a lot to carry
 Config.PlayerWeight = 30000
