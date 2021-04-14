@@ -19,16 +19,20 @@ local identifier = {}
 local inventory = {}
 local loadout = {}
 
+local Print = function(l1, l2)
+	print('^8	=================================================================^0')
+	print('^3	'..l1..'^0')
+	if l2 then print('^3	'..l2..'^0') end
+	print('^8	=================================================================^0')
+end
+
 RegisterCommand('convertinventory', function(source, args)
 	if source == 0 then
 		if not running then
 			if start then
 				RetrieveUsers()
 			else
-				print('^8	=================================================================^0')
-				print('^3	ENSURE NO PLAYERS ARE ONLINE AND YOUR DATABASE HAS BEEN BACKED UP^0')
-				print('^3	ENTER THE COMMAND AGAIN TO BEGIN CONVERSION^0')
-				print('^8	=================================================================^0')
+				Print('ENSURE NO PLAYERS ARE ONLINE AND YOUR DATABASE HAS BEEN BACKED UP', 'ENTER THE COMMAND AGAIN TO BEGIN CONVERSION')
 				start = true
 			end
 		end
@@ -51,20 +55,13 @@ RetrieveUsers = function()
 		end
 		totalCount = #identifier
 		if totalCount == 0 then 
-			print('^8	=================================================================^0')
-			print('^3	THERE ARE NO PLAYERS WITH INVENTORIES TO CONVERT^0')
-			print('^8	=================================================================^0')
+			Print('THERE ARE NO PLAYERS WITH INVENTORIES TO CONVERT')
 			return
 		end
-		print('^8	=================================================================^0')
-		print('^3	FOUND '..totalCount..' PLAYERS WITH OLD INVENTORY DATA^0')
-		print('^3	STARTING CONVERSION - WAIT UNTIL THE PROCESS IS COMPLETE^0')
-		print('^8	=================================================================^0')
+		Print('FOUND '..totalCount..' PLAYERS WITH OLD INVENTORY DATA', 'STARTING CONVERSION - WAIT UNTIL THE PROCESS IS COMPLETE')
 		BeginConversion()
 	else
-		print('^8	=================================================================^0')
-		print('^3	NO RESULTS FOUND, DATABASE MUST INCLUDE IDENTIFIER AND INVENTORY^0')
-		print('^8	=================================================================^0')
+		Print('NO RESULTS FOUND, DATABASE MUST INCLUDE IDENTIFIER AND INVENTORY^0')
 		return
 	end
 end
