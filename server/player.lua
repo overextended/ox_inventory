@@ -42,10 +42,10 @@ setInventoryItem = function(xPlayer, name, count, metadata)
 		count = ESX.Math.Round(count)
 		if count > item.count then
 			count = count - item.count
-			AddPlayerInventory(xPlayer, item.name, count, metadata, false)
+			AddPlayerInventory(xPlayer, item.name, count, false, metadata)
 		else
 			count = item.count - count
-			RemovePlayerInventory(xPlayer, item.name, count, metadata, false)
+			RemovePlayerInventory(xPlayer, item.name, count, false, metadata)
 		end
 	end
 end
