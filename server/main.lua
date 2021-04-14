@@ -127,6 +127,15 @@ AddEventHandler('onResourceStop', function(resourceName)
 	end
 end)
 
+RegisterNetEvent('linden-inventory:checktrabajo')
+AddEventHandler('linden-inventory:checktrabajo', function(statusjob)
+	local src = source
+	local xPlayer = ESX.GetPlayerFromId(src)
+	statusjob = xPlayer.getJob().label
+	TriggerClientEvent("LRP-inventory:checktrabajo",src,statusjob)
+
+end)
+
 AddEventHandler('linden_inventory:setPlayerInventory', function(xPlayer, data)
 	local invid = xPlayer.source
 	Inventories[invid] = {
