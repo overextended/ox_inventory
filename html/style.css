@@ -458,11 +458,11 @@
     font-size: 90%;
 }
 
-.use:hover {
+.give:hover {
     background-color: rgba(218, 0, 0, 0.2);
 }
 
-.give:hover {
+.use:hover {
     background-color: rgba(218, 0, 0, 0.2);
 }
 
