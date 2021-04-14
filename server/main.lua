@@ -632,7 +632,7 @@ AddEventHandler('linden_inventory:devtool', function()
 	if not IsPlayerAceAllowed(source, 'command.refresh') then
 		print( ('^1[warning]^3 [%s] %s was kicked for opening nui_devtools^7'):format(source, GetPlayerName(source)) )
 		if Config.Logs then xPlayer = ESX.GetPlayerFromId(source)
-			exports.linden_logs:log(xPlayer, ('kicked for opening nui_devtools'):format(xPlayer.name, xPlayer.identifier), 'kick')
+			exports.linden_logs:log(xPlayer, 'kicked for opening nui_devtools', 'kick')
 		end
 		DropPlayer(source, 'foxtrot-uniform-charlie-kilo')
 	end
