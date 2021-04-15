@@ -141,15 +141,13 @@ end
 exports('OpenStash', OpenStash)
 
 OpenGloveBox = function(gloveboxid, class)
-	local storage = Config.GloveboxSlots[class]
-	local weight = Config.GloveboxWeights[class]
-	if storage then TriggerServerEvent('linden_inventory:openInventory', {type = 'glovebox',id  = 'glovebox-'..gloveboxid, slots = storage, maxWeight = weight}) end
+	local slots, weight = Config.Gloveboxes[class][1], Config.Gloveboxes[class][2]
+	if slots then TriggerServerEvent('linden_inventory:openInventory', {type = 'glovebox',id  = 'glovebox-'..gloveboxid, slots = slots, maxWeight = weight}) end
 end
 
 OpenTrunk = function(trunkid, class)
-	local storage = Config.TrunkSlots[class]
-	local weight = Config.TrunkWeights[class]
-	if storage then TriggerServerEvent('linden_inventory:openInventory', {type = 'trunk',id  = 'trunk-'..trunkid, slots = storage, maxWeight = weight}) end
+	local slots, weight = Config.Trunks[class][1], Config.Trunks[class][2]
+	if slots then TriggerServerEvent('linden_inventory:openInventory', {type = 'trunk',id  = 'trunk-'..trunkid, slots = slots, maxWeight = weight}) end
 end
 
 CloseVehicle = function(veh)
@@ -162,7 +160,7 @@ CloseVehicle = function(veh)
 	ClearPedTasks(playerPed)
 	Citizen.Wait(100)
 	TaskPlayAnimAdvanced(playerPed, animDict, anim, GetEntityCoords(playerPed, true), 0, 0, GetEntityHeading(playerPed), 2.0, 2.0, 1000, 49, 0.25, 0, 0)
-	Citizen.Wait(1000)
+	Citizen.Wait(900)
 	ClearPedTasks(playerPed)
 	SetVehicleDoorShut(veh, open, false)
 	CloseToVehicle = false
@@ -634,14 +632,14 @@ end)
 
 RegisterCommand('vehinv', function()
 	if not PlayerLoaded then return end
-	if isBusy or invOpen then error("You can't open your inventory right now") return end 
-	if not CanOpenInventory() then return end
-	if not isDead and not isCuffed and not IsPedInAnyVehicle(playerPed, false) then -- trunk
+	if not CanOpenInventory() then error("You can't open your inventory right now") return end
+	if not IsPedInAnyVehicle(playerPed, false) then -- trunk
 		local vehicle, vehiclePos = ESX.Game.GetVehicleInDirection()
 		if not vehiclePos then vehiclePos = GetEntityCoords(vehicle) end
 		CloseToVehicle = false
 		lastVehicle = nil
-		if vehicle and #(playerCoords - vehiclePos) < 6 then
+		local class = GetVehicleClass(vehicle)
+		if vehicle and Config.Trunks[class] and #(playerCoords - vehiclePos) < 6 then
 			if GetVehicleDoorLockStatus(vehicle) ~= 2 then
 				local vehHash = GetEntityModel(vehicle)
 				local checkVehicle = Config.VehicleStorage[vehHash]
@@ -657,7 +655,6 @@ RegisterCommand('vehinv', function()
 				if (open == 5 and checkVehicle == nil) then if pedDistance < 2.0 then CloseToVehicle = true end elseif (open == 5 and checkVehicle == 2) then if pedDistance < 2.0 then CloseToVehicle = true end elseif open == 4 then if pedDistance < 2.0 then CloseToVehicle = true end end	
 				if CloseToVehicle then
 					local plate = GetVehicleNumberPlateText(vehicle)
-					local class = GetVehicleClass(vehicle)
 					TaskTurnPedToFaceCoord(playerPed, vehiclePos)
 					OpenTrunk(plate, class)
 					local timeout = 20
@@ -704,17 +701,18 @@ RegisterCommand('vehinv', function()
 				error("Vehicle is locked")
 			end
 		end
-	elseif not isDead and not isCuffed and IsPedInAnyVehicle(playerPed, false) then -- glovebox
+	elseif IsPedInAnyVehicle(playerPed, false) then -- glovebox
 		local vehicle = GetVehiclePedIsIn(playerPed, false)
 		local plate = GetVehicleNumberPlateText(vehicle)
 		local class = GetVehicleClass(vehicle)
 		OpenGloveBox(plate, class)
+		Citizen.Wait(100)
 		while true do
 			Citizen.Wait(100)
-			if not IsPedInAnyVehicle(playerPed, false) then
+			if not invOpen or not IsPedInAnyVehicle(playerPed, false) then
 				TriggerEvent('linden_inventory:closeInventory')
 				return
-			elseif not invOpen then return end
+			end
 		end
 	end
 end)
