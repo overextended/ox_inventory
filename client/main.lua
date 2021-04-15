@@ -142,12 +142,14 @@ exports('OpenStash', OpenStash)
 
 OpenGloveBox = function(gloveboxid, class)
 	local storage = Config.GloveboxSlots[class]
-	if storage then TriggerServerEvent('linden_inventory:openInventory', {type = 'glovebox',id  = 'glovebox-'..gloveboxid, slots = storage}) end
+	local weight = Config.GloveboxWeights[class]
+	if storage then TriggerServerEvent('linden_inventory:openInventory', {type = 'glovebox',id  = 'glovebox-'..gloveboxid, slots = storage, maxWeight = weight}) end
 end
 
 OpenTrunk = function(trunkid, class)
 	local storage = Config.TrunkSlots[class]
-	if storage then TriggerServerEvent('linden_inventory:openInventory', {type = 'trunk',id  = 'trunk-'..trunkid, slots = storage}) end
+	local weight = Config.TrunkWeights[class]
+	if storage then TriggerServerEvent('linden_inventory:openInventory', {type = 'trunk',id  = 'trunk-'..trunkid, slots = storage, maxWeight = weight}) end
 end
 
 CloseVehicle = function(veh)

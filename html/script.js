@@ -236,7 +236,7 @@ HSN.SetupInventory = function(data) {
 			rightmaxweight = data.rightinventory.maxWeight
 			righttotalkg = data.rightinventory.weight
 		} else {
-			rightmaxweight = (data.rightinventory.slots*9000).toFixed(0)
+			rightmaxweight = data.rightinventory.maxWeight // Edited to make vehicales not so OP!
 		}
 		$('.rightside-name').html(data.rightinventory.name)
 			for(i = 1; i <= (data.rightinventory.slots); i++) {

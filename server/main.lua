@@ -270,6 +270,7 @@ AddEventHandler('linden_inventory:openInventory', function(data, player)
 				type = data.type,
 				slots = data.slots,
 				coords = data.coords,
+				maxWeight = data.maxWeight
 				inventory = GetItems(id)
 			}
 			if CheckOpenable(xPlayer, id, data.coords) then
