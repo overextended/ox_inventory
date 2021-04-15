@@ -31,9 +31,8 @@ ensure es_extended
 ensure linden_inventory		# have it load after resources that register items, or just last
 ```
 
-<br><br>
 
-<h1 align='center'>Modifying your framework</h1>
+<h2 align='center'>Modifying your framework</h2>
 
 ## server/main.lua
 * Remove `loadout = {},` from the userData table
