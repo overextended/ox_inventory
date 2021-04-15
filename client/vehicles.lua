@@ -53,6 +53,29 @@ Config.GloveboxSlots = {
 	[20] = 11, -- commercial (trucks)
 }
 
+Config.GloveboxWeights = {
+	[0] = 11 * 8000, -- compact
+	[1] = 11 * 8000, -- sedan
+	[2] = 11 * 8000, -- suv
+	[3] = 11 * 8000, -- coupe
+	[4] = 11 * 8000, -- muscle
+	[5] = 11 * 8000, -- sports classic
+	[6] = 11 * 8000, -- sports
+	[7] = 11 * 8000, -- super
+	[8] = 5 * 8000, -- motorcycle
+	[9] = 11 * 8000, -- offroad
+	[10] = 11 * 8000, -- industrial
+	[11] = 11 * 8000, -- utility
+	[12] = 11 * 8000, -- van
+	[14] = 31 * 8000, -- boat
+	[15] = 31 * 8000, -- helicopter
+	[16] = 51 * 8000, -- plane
+	[17] = 11 * 8000, -- service
+	[18] = 11 * 8000, -- emergency
+	[19] = 11 * 8000, -- military
+	[20] = 11 * 8000, -- commercial (trucks)
+}
+
 Config.TrunkSlots = {
 	[0] = 21, -- compact
 	[1] = 41, -- sedan
@@ -74,4 +97,27 @@ Config.TrunkSlots = {
 	[18] = 41, -- emergency
 	[19] = 41, -- military
 	[20] = 61, -- commercial
+}
+
+Config.TrunkWeights = {
+	[0] = 21 * 8000, -- compact
+	[1] = 41 * 8000, -- sedan
+	[2] = 51 * 8000, -- suv
+	[3] = 31 * 8000, -- coupe
+	[4] = 41 * 8000, -- muscle
+	[5] = 31 * 8000, -- sports classic
+	[6] = 31 * 8000, -- sports
+	[7] = 21 * 8000, -- super
+	[8] = 5 * 8000, -- motorcycle
+	[9] = 51 * 8000, -- offroad
+	[10] = 51 * 8000, -- industrial
+	[11] = 41 * 8000, -- utility
+	[12] = 61 * 8000, -- van
+	--[14] = 21 * 8000, -- boat		no trunk
+	--[15] = 21 * 8000, -- helicopter	no trunk
+	--[16] = 21 * 8000, -- plane		no trunk
+	[17] = 41 * 8000, -- service
+	[18] = 41 * 8000, -- emergency
+	[19] = 41 * 8000, -- military
+	[20] = 61 * 8000, -- commercial
 }
