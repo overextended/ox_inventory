@@ -91,6 +91,7 @@ end
 * Add `TriggerEvent('linden_inventory:setPlayerInventory', xPlayer, userData.inventory)` after xPlayer is created  
 ![image](https://user-images.githubusercontent.com/65407488/114259210-b5c97d80-9a0f-11eb-979d-553839a6ea8d.png)
 * Remove `loadout = xPlayer.getLoadout()` from xPlayer.triggerEvent('esx:playerLoaded')
+* Remove `maxWeight = xPlayer.getMaxWeight(),` from xPlayer.triggerEvent('esx:playerLoaded')
 * Remove `xPlayer.triggerEvent('esx:createMissingPickups', ESX.Pickups)`
 * Search for `RegisterNetEvent('esx:useItem')` and replace it with
 ```lua
