@@ -398,5 +398,5 @@ end
 * Search for `ESX.ShowInventory` and remove the function (it's about 250 lines)
 
 
-<h4 align='center'>Getting errors? You need to check your edits and confirm you removed it all properly<br></h4>
+<br><h4 align='center'>Getting errors? You need to check your edits and confirm you removed it all properly</h4>
 <h3 align='center'>Restarting the framework or inventory should show lines causing errors (in server or client console)</h3>
