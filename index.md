@@ -18,10 +18,10 @@ title: Installation
 <h2 align='center'>Updating from hsn-inventory</h2>
 Revert any changes from the previous version of the inventory (you can start fresh or use my included framework edits)
 <br><br>
-<h2 align='center'>Modifying your framework<br>
-| <a href='exm'>ExtendedMode</a> | <a href='esx'>ESX v1 Final<a> |</h2>
+<h2 align='center'>Modifying your framework</h2>
+<h2 align='center'>| <a href='exm'>ExtendedMode</a> | <a href='esx'>ESX v1 Final<a> |</h2>
 <br><br>
-<h2 align='center'>Modifying third-party resources</h2>  
+<h2 align='center'>Modifying third-party resources</h2>
 
 * Delete `config.json` to fallback to using the MySQL connection string in server.cfg
 * Add the following code to ghmattimysql-server.lua
