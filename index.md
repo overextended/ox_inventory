@@ -18,8 +18,8 @@ title: Installation
 <h2 align='center'>Updating from hsn-inventory</h2>
 Revert any changes from the previous version of the inventory (you can start fresh or use my included framework edits)
 <br><br>
-<h2 align='center'>Modifying your framework</h2>
-<h3 align='center'>| <a href='exm'>ExtendedMode</a> | <a href='esx'>ESX v1 Final<a> |</h3>
+<h2 align='center'>Modifying your framework<br>
+| <a href='exm'>ExtendedMode</a> | <a href='esx'>ESX v1 Final<a> |</h2>
 <br><br>
 <h2 align='center'>Modifying third-party resources</h2>  
 
@@ -37,3 +37,19 @@ end)
 ```
 
 Look at [Snippets](snippets) or [Other Resources](resources) for modifying other resources
+
+
+<h2 align='center'>F.A.Qs</h2>
+
+> Why doesn't my money go down after buying an item?
+By default, the shops are set to take money from a players bank. If they don't have enough in the bank, it will check their money.
+You can modify shops to accept a specific currency by defining `currency = 'money'` (only accept money).
+You can define any item (dirty money, water, a literal rock) - so black markets or exchanging items is possible.
+
+> How can I set up a property stash or police body search?
+Click the Snippets link above for examples using `esx_property` and `esx_policejob`.
+
+> Why does x resource show my inventory as empty?
+If a resource such as `esx_drugs` displays your inventory to sell or convert items, you need to modify the event.
+Using `ESX.PlayerData.inventory` isn't going to display anything, you need to use a callback to get the inventory from the server.
+Again, click the Snippets link above for an example.
