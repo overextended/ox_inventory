@@ -270,7 +270,7 @@ AddEventHandler('linden_inventory:openInventory', function(data, player)
 				type = data.type,
 				slots = data.slots,
 				coords = data.coords,
-				maxWeight = data.maxWeight
+				maxWeight = data.maxWeight,
 				inventory = GetItems(id)
 			}
 			if CheckOpenable(xPlayer, id, data.coords) then
@@ -575,7 +575,6 @@ AddEventHandler('linden_inventory:saveInventoryData', function(data)
 				end
 			end
 		end
-		--TriggerClientEvent('linden_inventory:refreshInventory', xPlayer.source, Inventories[xPlayer.source])
 	end
 end)
 
