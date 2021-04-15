@@ -19,7 +19,7 @@ title: Installation
 Revert any changes from the previous version of the inventory (you can start fresh or use my included framework edits)
 <br><br>
 <h2 align='center'>Modifying your framework</h2>
-<h3 align='center'>| <a href='exm'>ExtendedMode</a> | <a href='esx'>ESX v1 Final<a> |
+<h3 align='center'>| <a href='exm'>ExtendedMode</a> | <a href='esx'>ESX v1 Final<a> |</h3>
 <br><br>
 <h2 align='center'>Modifying third-party resources</h2>  
 
