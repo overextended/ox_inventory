@@ -20,7 +20,7 @@ title: Installation
 Revert any changes from the previous version of the inventory (you can start fresh or use my included framework edits)
 
 
-<h1 align='center'>Modifying third-party resources</h1>
+<h2 align='center'>Modifying third-party resources</h1>
 
 * Add the following code to ghmattimysql-server.lua
 ```lua
@@ -39,6 +39,6 @@ Moving items around while the inventory is refreshing can cause the client to de
 * [esx_jobs] When the Work() function is running for a player, trigger `TriggerEvent('linden_inventory:busy', true)`; toggle it off once their task is complete
 * When an item is added or removed from the player inventory while they are moving it (typically going to use a progressbar, I recommend the above)
 
-<h2 align='center'>Framework Modifications Guides</h2>
-	
-| [ExtendedMode](todo) | [ESX v1 Final](https://thelindat.github.io/linden_inventory/esx) |
+
+<h2 align='center'>Framework Modifications Guides<h2>
+<h3 align='center'>| <a href='todo'>ExtendedMode</a> | <a href='esx'>ESX v1 Final<a> |</h3>
