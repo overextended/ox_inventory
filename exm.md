@@ -278,12 +278,13 @@ self.getWeapon
 ## client/main.lua
 * Replace `isLoadoutLoaded` on line 1 with `isSpawned`
 * Remove all other instances of `isLoadoutLoaded`
+* Search for `function AddPickup` and remove the entire function
 * Find `TriggerEvent('esx:restoreLoadout')` and replace it with
 ```lua
 isSpawned = true
 StartUpdating()
 ```
-* Remove the following events and functions
+* Remove the following events
 ```lua
 skinchanger:modelLoaded
 esx:restoreLoadout
@@ -298,7 +299,6 @@ esx:removeWeaponComponent
 esx:createPickup
 esx:createMissingPickups
 esx:removePickup
-function AddPickup
 ```
 * Remove the following
 ```lua
