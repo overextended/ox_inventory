@@ -230,13 +230,13 @@ HSN.SetupInventory = function(data) {
 		$('.inventory-main-rightside').data("invId", data.rightinventory.name)
 		rightinventory = data.rightinventory.name
 		rightinvtype = data.rightinventory.type
-		righttotalkg = 0
 		
 		if (rightinvtype == 'TargetPlayer') {
 			rightmaxweight = data.rightinventory.maxWeight
 			righttotalkg = data.rightinventory.weight
 		} else {
-			rightmaxweight = data.rightinventory.maxWeight // Edited to make vehicales not so OP!
+			rightmaxweight = data.rightinventory.maxWeight || (data.rightinventory.slots*8000).toFixed(0)
+			righttotalkg = 0
 		}
 		$('.rightside-name').html(data.rightinventory.name)
 			for(i = 1; i <= (data.rightinventory.slots); i++) {
