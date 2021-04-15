@@ -2,6 +2,7 @@ local Blips = {}
 local Drops = {}
 local currentDrop
 local currentWeapon
+local weaponTimer = 0
 
 ClearWeapons = function()
 	SetCurrentPedWeapon(playerPed, `WEAPON_UNARMED`, true)
@@ -28,19 +29,6 @@ end
 inform = function(msg)
 	TriggerEvent('mythic_notify:client:SendAlert', {type = 'inform', text = msg, length = 2500})
 end
-
-Start = function()
-	Citizen.CreateThread(function()
-		while true do
-			if PlayerLoaded then
-				StartInventory()
-				break
-			end
-			Citizen.Wait(1000)
-		end
-	end)
-end
-Start()
 
 StartInventory = function()
 	playerID, playerPed, invOpen, isDead, isCuffed, isBusy, usingWeapon, weight, currentDrop = nil, nil, false, false, false, false, false, Config.PlayerWeight, nil
@@ -80,8 +68,10 @@ StartInventory = function()
 	end)
 end
 
+if PlayerLoaded then StartInventory() end
+
 CanOpenInventory = function()
-	if PlayerLoaded and not isBusy and not usingWeapon and not isDead and not isCuffed and not IsPauseMenuActive() then
+	if PlayerLoaded and not isBusy and weaponTimer < 250 and not isDead and not isCuffed and not IsPauseMenuActive() then
 		--if IsPedDeadOrDying(playerPed, 1) then return false end
 		return true
 	else return false end
@@ -106,8 +96,6 @@ OpenTargetInventory = function()
 		else
 			error("You can not open this inventory")
 		end
-	else
-		error("You can not open this inventory")
 	end
 end
 exports('OpenTargetInventory', OpenTargetInventory)
@@ -338,7 +326,6 @@ AddEventHandler('linden_inventory:weapon', function(item)
 	end
 end)
 
-local weaponTimer = 0
 AddEventHandler('linden_inventory:usedWeapon',function()
 	weaponTimer = (100 * 3)
 end)
@@ -502,9 +489,7 @@ TriggerLoops = function()
 	end)
 
 	Citizen.CreateThread(function()
-		local id
-		local type
-		local text = ''
+		local text, type, id = ''
 		while PlayerLoaded do
 			local sleep = 250
 			playerPed = PlayerPedId()
