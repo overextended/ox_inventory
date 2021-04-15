@@ -361,9 +361,9 @@ AddEventHandler('linden_inventory:buyItem', function(info)
 					if currency == 'bank' then
 						xPlayer.removeAccountMoney('bank', data.price)
 					else
-						RemovePlayerInventory(xPlayer, item.name, data.price)
+						removeInventoryItem(xPlayer, item.name, data.price)
 					end
-					AddPlayerInventory(xPlayer, data.name, count, false, data.metadata)
+					addInventoryItem(xPlayer, data.name, count, data.metadata, false)
 					if Config.Logs then exports.linden_logs:log(xPlayer, false, ('bought %sx %s from %s for %s'):format(ESX.Math.GroupDigits(count), data.label, Config.Shops[location].name, cost), 'money') end
 				else
 					local missing
@@ -714,7 +714,7 @@ AddEventHandler('linden_inventory:decreaseDurability', function(slot, item, ammo
 				if Inventories[xPlayer.source].inventory[slot].metadata.durability <= 0 then
 					TriggerClientEvent('mythic_notify:client:SendAlert', xPlayer.source, { type = 'error', text = 'This weapon is broken' })
 					if Inventories[xPlayer.source].inventory[slot].name:find('WEAPON_FIREEXTINGUISHER') then
-						RemovePlayerInventory(xPlayer, Inventories[xPlayer.source].inventory[slot].name, 1, slot)
+						removeInventoryItem(xPlayer, Inventories[xPlayer.source].inventory[slot].name, 1, false, slot)
 					end
 					return
 				end
@@ -731,7 +731,7 @@ AddEventHandler('linden_inventory:decreaseDurability', function(slot, item, ammo
 					Inventories[xPlayer.source].inventory[slot].metadata.ammo = 0
 					TriggerClientEvent('mythic_notify:client:SendAlert', xPlayer.source, { type = 'error', text = 'This weapon is broken' })
 					TriggerClientEvent('linden_inventory:updateWeapon', xPlayer.source, Inventories[xPlayer.source].inventory[slot].metadata)
-					AddPlayerInventory(xPlayer, Inventories[xPlayer.source].inventory[slot].ammoType, ammo)
+					addInventoryItem(xPlayer, Inventories[xPlayer.source].inventory[slot].ammoType, ammo)
 				else
 					TriggerClientEvent('linden_inventory:refreshInventory', xPlayer.source, Inventories[xPlayer.source])
 					TriggerClientEvent('linden_inventory:updateWeapon', xPlayer.source, Inventories[xPlayer.source].inventory[slot].metadata)
@@ -751,7 +751,7 @@ AddEventHandler('linden_inventory:addweaponAmmo', function(item, removeAmmo, new
 			local addweight = (count * ammo.weight)
 			Inventories[xPlayer.source].inventory[item.slot].metadata.ammo = count
 			Inventories[xPlayer.source].inventory[item.slot].weight = Items[item.name].weight + addweight
-			RemovePlayerInventory(xPlayer, ammo.name, removeAmmo)
+			removeInventoryItem(xPlayer, ammo.name, removeAmmo)
 		end
 		TriggerEvent('linden_inventory:decreaseDurability', item.slot, item.name, removeAmmo, xPlayer)
 	end
@@ -774,7 +774,7 @@ AddEventHandler('linden_inventory:updateWeapon', function(item, type)
 			TriggerClientEvent('linden_inventory:updateWeapon', xPlayer.source, Inventories[xPlayer.source].inventory[item.slot].metadata)
 		else
 			if type == 'throw' then
-				RemovePlayerInventory(xPlayer, item.name, 1, item.slot, item.metadata)
+				removeInventoryItem(xPlayer, item.name, 1, item.metadata, item.slot)
 			elseif type == 'melee' then
 				TriggerEvent('linden_inventory:decreaseDurability', item.slot, item.name, 1, xPlayer)
 			end
@@ -785,7 +785,7 @@ end)
 RegisterNetEvent('linden_inventory:removeItem')
 AddEventHandler('linden_inventory:removeItem', function(item, count, metadata, slot)
 	local xPlayer = ESX.GetPlayerFromId(source)
-	RemovePlayerInventory(xPlayer, item, count, slot, metadata)
+	removeInventoryItem(xPlayer, item, count, metadata, slot)
 end)
 
 ESX.RegisterServerCallback('linden_inventory:getItem', function(source, cb, item, metadata)
@@ -833,7 +833,7 @@ ESX.RegisterServerCallback('linden_inventory:usingItem', function(source, cb, it
 	if not cItem.consume or xItem.count >= cItem.consume then
 		cb(xItem)
 		ESX.SetTimeout(cItem.useTime, function()
-			RemovePlayerInventory(xPlayer, item, cItem.consume, slot, metadata)
+			removeInventoryItem(xPlayer, item, cItem.consume, metadata, slot)
 		end)
 	else
 		TriggerClientEvent('mythic_notify:client:SendAlert', xPlayer.source, { type = 'error', text = 'You do not have enough '..xItem.label })
