@@ -5,7 +5,7 @@ title: Installation
 | [Installation](index) | [Usage](usage) | [Snippets](snippets) | [Other Resources](resources) | [Media](media)
 
 
-
+<h1 align='center'>Requirements</h1> 
 
 
 * OneSync must be enabled on your server (Legacy or Infinity)
@@ -21,7 +21,8 @@ title: Installation
 Revert any changes from the previous version of the inventory (you can start fresh or use my included framework edits)
 <br><br>
 <h2 align='center'>Modifying your framework</h2>
-<h2 align='center'><a href='exm'>ExtendedMode</a> | <a href='esx'>ESX v1 Final<a></h2>
+<a href='exm'>ExtendedMode</a>
+<a href='esx'>ESX v1 Final<a>
 <br><br>
 <h2 align='center'>Modifying third-party resources</h2>
 
