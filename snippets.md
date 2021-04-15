@@ -64,7 +64,7 @@ end
 * There are better ways to do this, but for the simplest method search go to `esx_ambulancejob/server/main.lua`
 * Locate `RegisterNetEvent('esx_ambulancejob:setDeathStatus')` and add the following
 ```lua
-	TriggerEvent('esx_ambulancejob:setDeathStatus', xPlayer.source, isDead)
+	TriggerClientEvent('esx_ambulancejob:setDeathStatus', xPlayer.source, isDead)
 ```
 
 ## Display inventory items in a menu (ie. [esx_drugs](https://github.com/DoPeMan17/esx_drugs/blob/master/client/main.lua))
