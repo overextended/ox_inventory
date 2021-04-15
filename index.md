@@ -5,7 +5,7 @@ title: Installation
 | [Installation](index) | [Usage](usage) | [Snippets](snippets) | [Other Resources](resources) | [Media](media)
 
 
-<h1 align='center'>Requirements</h1> 
+
 
 
 * OneSync must be enabled on your server (Legacy or Infinity)
