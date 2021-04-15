@@ -20,7 +20,7 @@ title: Installation
 Revert any changes from the previous version of the inventory (you can start fresh or use my included framework edits)
 
 
-<h2 align='center'>Modifying third-party resources</h1>
+<h2 align='center'>Modifying third-party resources</h2>
 
 * Add the following code to ghmattimysql-server.lua
 ```lua
