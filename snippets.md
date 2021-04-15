@@ -51,6 +51,15 @@ end)
 		end
 ```
 
+## Modify for loaf_housing
+* This is a single unified storage. If you want it for each piece of furniture, figure it out
+* Find the `OpenStorage` function and replace with
+```lua
+OpenStorage = function(houseid, k, v)
+    exports['linden_inventory']:OpenStash({ name = ('house %s'):format(houseid), slots = 101})
+end
+```
+
 ## Set player death status
 * There are better ways to do this, but for the simplest method search go to `esx_ambulancejob/server/main.lua`
 * Locate `RegisterNetEvent('esx_ambulancejob:setDeathStatus')` and add the following
