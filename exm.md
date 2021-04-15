@@ -283,7 +283,6 @@ self.getWeapon
 isSpawned = true
 StartUpdating()
 ```
-
 * Remove the following events and functions
 ```lua
 skinchanger:modelLoaded
@@ -339,7 +338,6 @@ CreateThread(function()
 end)
 ```
 * Search for `-- Pickups` and remove the entire function (around 100 lines)
-
 ```lua
 function StartUpdating()
 	CreateThread(function()
