@@ -45,14 +45,19 @@ Look at [Snippets](snippets) or [Other Resources](resources) for modifying other
 <h2 align='center'>F.A.Qs</h2>
 
 > Why doesn't my money go down after buying an item?  
+
 By default, the shops are set to take money from a players bank. If they don't have enough in the bank, it will check their money.
 You can modify shops to accept a specific currency by defining `currency = 'money'` (only accept money).
 You can define any item (dirty money, water, a literal rock) - so black markets or exchanging items is possible.
 
+
 > How can I set up a property stash or police body search?  
+
 Click the Snippets link above for examples using `esx_property` and `esx_policejob`.
 
+
 > Why does x resource show my inventory as empty?  
+
 If a resource such as `esx_drugs` displays your inventory to sell or convert items, you need to modify the event.
 Using `ESX.PlayerData.inventory` isn't going to display anything, you need to use a callback to get the inventory from the server.
 Again, click the Snippets link above for an example.
