@@ -284,6 +284,7 @@ self.getWeapon
 isSpawned = true
 StartUpdating()
 ```
+
 * Remove the following events  
 ```lua
 skinchanger:modelLoaded
@@ -300,7 +301,8 @@ esx:createPickup
 esx:createMissingPickups
 esx:removePickup
 ```
-* Remove the following  
+
+* Search for `Keep track of ammo usage` and remove the following
 ```lua
 --- Keep track of ammo usage
 CreateThread(function()
@@ -324,7 +326,10 @@ CreateThread(function()
 		end
 	end
 end)
+```
 
+* Search for `IsControlJustReleased(0, 289)` and remove the following
+```lua
 CreateThread(function()
 	while true do
 		Wait(0)
