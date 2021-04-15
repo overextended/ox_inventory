@@ -40,5 +40,5 @@ Moving items around while the inventory is refreshing can cause the client to de
 * When an item is added or removed from the player inventory while they are moving it (typically going to use a progressbar, I recommend the above)
 
 
-<h2 align='center'>Framework Modifications Guides<h2>
+<h2 align='center'>Framework Modifications Guides</h2>
 <h3 align='center'>| <a href='todo'>ExtendedMode</a> | <a href='esx'>ESX v1 Final<a> |</h3>
