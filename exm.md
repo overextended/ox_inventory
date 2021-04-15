@@ -23,7 +23,7 @@ ensure ghmattimysql
 ensure cron
 ensure async
 
-ensure extendedmode       # extendedmode provides es_extended, you don't need to replace any dependencies or events
+ensure extendedmode       	# extendedmode provides es_extended, you don't need to replace any dependencies or events
 ** etc
 ** etc
 ** etc
@@ -284,7 +284,7 @@ self.getWeapon
 isSpawned = true
 StartUpdating()
 ```
-* Remove the following events
+* Remove the following events  
 ```lua
 skinchanger:modelLoaded
 esx:restoreLoadout
@@ -300,7 +300,7 @@ esx:createPickup
 esx:createMissingPickups
 esx:removePickup
 ```
-* Remove the following
+* Remove the following  
 ```lua
 --- Keep track of ammo usage
 CreateThread(function()
