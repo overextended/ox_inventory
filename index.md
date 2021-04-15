@@ -41,4 +41,4 @@ Moving items around while the inventory is refreshing can cause the client to de
 
 
 <h2 align='center'>Framework Modifications Guides</h2>
-<h3 align='center'>| <a href='todo'>ExtendedMode</a> | <a href='esx'>ESX v1 Final<a> |</h3>
+<h3 align='center'>| <a href='todo'>ExtendedMode</a> | <a href='esx'>ESX v1 Final<a> |
