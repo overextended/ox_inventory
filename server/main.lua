@@ -427,7 +427,6 @@ AddEventHandler('linden_inventory:saveInventoryData', function(data)
 		elseif data.frominv ~= data.toinv then
 			if data.toinv == 'drop' and not Drops[data.invid] then
 				CreateNewDrop(xPlayer, data)
-				--TriggerClientEvent('linden_inventory:refreshInventory', xPlayer.source, Inventories[xPlayer.source])
 				return
 			end
 			if data.frominv == 'Playerinv' then
@@ -999,9 +998,10 @@ RegisterCommand('return', function(source, args, rawCommand)
 	TriggerEvent('linden_inventory:recoverPlayerInventory', source)
 end, true)
 
-RegisterCommand('maxWeight', function(source, args, rawCommand)
-	if Inventories[args[1]] then
-		Inventories[args[1]].maxWeight = newWeight
+RegisterCommand('maxweight', function(source, args, rawCommand)
+	local xPlayer = ESX.GetPlayerFromId(args[1])
+	if xPlayer then
+		setMaxWeight(xPlayer, args[2])
 	end
 end, true)
 
