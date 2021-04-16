@@ -1,3 +1,10 @@
+GetPlayerIdentification = function(xPlayer)
+	local sex, identifier = xPlayer.get('sex')
+	if sex == 'm' then sex = 'Male' elseif sex == 'f' then sex = 'Female' end
+	if Config.ShowIdentifierID then identifier = ' ('..xPlayer.getIdentifier()..')' else identifier = '' end
+	return ('Sex: %s | DOB: %s%s'):format( sex, xPlayer.get('dateofbirth'), identifier )
+end
+
 PlayerDropped = function(src)
 	local data = Opened[src]
 	if data then
@@ -249,10 +256,6 @@ CheckOpenable = function(xPlayer, id, coords)
 		return true
 	end
 	return false
-end
-
-GetPlayerIdentification = function(xPlayer)
-	return ('Sex: %s | DOB: %s (%s)'):format( xPlayer.get('sex'), xPlayer.get('dateofbirth'), xPlayer.getIdentifier() )
 end
 
 ValidateString = function(item)
