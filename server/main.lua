@@ -1000,8 +1000,8 @@ RegisterCommand('return', function(source, args, rawCommand)
 end, true)
 
 RegisterCommand('maxWeight', function(source, args, rawCommand)
-	if Inventories[args[1] then
-		Inventories[args[1].maxWeight = newWeight
+	if Inventories[args[1]] then
+		Inventories[args[1]].maxWeight = newWeight
 	end
 end, true)
 
