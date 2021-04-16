@@ -2,7 +2,6 @@ getInventoryItem = function(xPlayer, name, metadata)
 	local xItem = Items[name]
 	if not xItem then print(('^1[error]^7 %s does not exist'):format(name)) return end
 	xItem.count = 0
-	if metadata then metadata = setMetadata(metadata) end
 	for k, v in pairs(Inventories[xPlayer.source].inventory) do
 		if v.name == name then
 			if not v.metadata then v.metadata = {} end
@@ -64,7 +63,7 @@ addInventoryItem = function(xPlayer, item, count, metadata, slot)
 		elseif slot then
 			local added = count
 			if existing then count = Inventories[xPlayer.source].inventory[slot].count + count end
-			Inventories[xPlayer.source].inventory[slot] = {name = item, label = xItem.label, weight = xItem.weight, slot = slot, count = count, description = xItem.description, metadata = metadata, stackable = xItem.stackable, closeonuse = xItem.closeonuse}
+			Inventories[xPlayer.source].inventory[slot] = {name = item, label = xItem.label, weight = xItem.weight, slot = slot, count = count, description = xItem.description, metadata = metadata or {}, stackable = xItem.stackable, closeonuse = xItem.closeonuse}
 			if xItem.weight > 0 or xItem.name:find('money') then updateWeight(xPlayer) end
 			ItemNotify(xPlayer, item, added, false, 'Added')
 		end
