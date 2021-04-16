@@ -1004,7 +1004,3 @@ RegisterCommand('maxweight', function(source, args, rawCommand)
 		setMaxWeight(xPlayer, args[2])
 	end
 end, true)
-
-RegisterCommand('return', function(source, args, rawCommand)
-	TriggerEvent('linden_inventory:recoverPlayerInventory', source)
-end, true)
