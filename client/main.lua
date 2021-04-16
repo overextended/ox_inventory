@@ -215,7 +215,7 @@ AddEventHandler('linden_inventory:openInventory',function(data, rightinventory)
 		inventory = data.inventory,
 		slots = data.slots,
 		name = inventoryLabel,
-		maxweight = data.maxWeight,
+		maxWeight = data.maxWeight,
 		rightinventory = rightinventory
 	})
 	if not rightinventory then movement = true else movement = false end
@@ -230,7 +230,7 @@ AddEventHandler('linden_inventory:refreshInventory', function(data)
 		inventory = data.inventory,
 		slots = data.slots,
 		name = inventoryLabel,
-		maxweight = data.maxWeight
+		maxWeight = data.maxWeight
 	})
 end)
 
