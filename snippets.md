@@ -25,6 +25,7 @@ AddEventHandler('esx_skin:save', function(skin)
 	})
 end)
 ````
+* Modify config.lua to change the amount of max weight to add for a backpack (in grams)
 
 ## Police body search, without having to /steal
 * It's just /steal in a menu basically, has all the same requirements (dead, handsup, cuffed, etc)
