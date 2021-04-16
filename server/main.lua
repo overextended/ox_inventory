@@ -106,11 +106,6 @@ AddEventHandler('onResourceStart', function(resourceName)
 	end
 end)
 
-RegisterCommand('closeallinv', function(source, args, rawCommand)
-	if source > 0 then return end
-	TriggerClientEvent("linden_inventory:closeInventory", -1)
-end, true)
-
 AddEventHandler('onResourceStop', function(resourceName)
 	if (GetCurrentResourceName() == resourceName) then
 		if ESX == nil or Status[1] ~= 'ready' then return end
@@ -178,15 +173,6 @@ AddEventHandler('linden_inventory:clearPlayerInventory', function(xPlayer)
 		end
 	end
 end)
-
---Example commands - confiscate/return player inventory
---[[RegisterCommand('conf', function(source, args, rawCommand)
-	TriggerEvent('linden_inventory:confiscatePlayerInventory', source)
-end, true)
-
-RegisterCommand('return', function(source, args, rawCommand)
-	TriggerEvent('linden_inventory:recoverPlayerInventory', source)
-end, true)]]
 
 AddEventHandler('linden_inventory:confiscatePlayerInventory', function(xPlayer)
 	if type(xPlayer) ~= 'table' then xPlayer = ESX.GetPlayerFromId(xPlayer) end
@@ -265,6 +251,7 @@ AddEventHandler('linden_inventory:openInventory', function(data, player)
 			end
 		elseif data.type == 'glovebox' or data.type == 'trunk' or data.type == 'stash' then
 			local id = data.id
+			if not data.maxWeight then data.maxWeight = data.slots*8000 end
 			Inventories[id] = {
 				name = id,
 				type = data.type,
@@ -994,3 +981,30 @@ ESX.RegisterCommand('clearevidence', 'user', function(xPlayer, args, showError)
 end, true, {help = 'clear police evidence', validate = true, arguments = {
 	{name = 'evidence', help = 'number', type = 'number'}
 }})
+
+
+-- Close all inventories before restarting to be safe
+RegisterCommand('closeallinv', function(source, args, rawCommand)
+	if source > 0 then return end
+	TriggerClientEvent("linden_inventory:closeInventory", -1)
+end, true)
+
+
+--Example commands
+RegisterCommand('conf', function(source, args, rawCommand)
+	TriggerEvent('linden_inventory:confiscatePlayerInventory', source)
+end, true)
+
+RegisterCommand('return', function(source, args, rawCommand)
+	TriggerEvent('linden_inventory:recoverPlayerInventory', source)
+end, true)
+
+RegisterCommand('maxWeight', function(source, args, rawCommand)
+	if Inventories[args[1] then
+		Inventories[args[1].maxWeight = newWeight
+	end
+end, true)
+
+RegisterCommand('return', function(source, args, rawCommand)
+	TriggerEvent('linden_inventory:recoverPlayerInventory', source)
+end, true)
