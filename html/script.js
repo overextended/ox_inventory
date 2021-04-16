@@ -70,19 +70,19 @@ var numberFormat = function(num, item) {
 
 Display = function(bool) {
 	if (bool) {
-		$(".inventory-main").fadeIn(300);
+		$(".inventory-main").fadeIn(200);
 		$('.inventory-main').show()
 	} else {
-		$(".inventory-main").fadeOut(300);
-		$('.inventory-main').hide()
-		$(".item-slot").css("border", "1px solid rgba(255, 255, 255, 0.1)");
-		$(".item-slot").remove();
-		$(".ItemBoxes").remove();
-		$(".inventory-main-leftside").find(".item-slot").remove();
-		$('.inventory-main-rightside').removeData("invId")
-		$(".rightside-weight").html('')
-		righttotalkg = 0
-		totalkg = 0
+		setTimeout(function() {
+			var $inventory = $(".inventory-main");
+			$.when($inventory.fadeOut(200)).done(function() {
+				$(".item-slot").remove();
+				$(".ItemBoxes").remove();
+				$('.inventory-main').hide()
+				righttotalkg = 0
+				totalkg = 0
+			});
+		});
 	}
 }
 element.__defineGetter__("id", function() {
