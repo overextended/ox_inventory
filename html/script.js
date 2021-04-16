@@ -390,12 +390,12 @@ $(".give").droppable({
 });
 
 $(document).on("click", ".ItemBoxes", function(e){
-	if ($(this).data("location") !== undefined && $("#item-count").val() >= 0) {
+	if ($(this).data("location") !== undefined) {
 		e.preventDefault();
 		var Item = $(this).data("ItemData")
 		var location = $(this).data("location")
 		count = parseInt($("#item-count").val()) || 0
-		if (Item != undefined && count >= 0 && location != undefined) {
+		if (Item != undefined && count >= 0) {
 			$.post("https://linden_inventory/BuyFromShop", JSON.stringify({
 				data: Item,
 				location: location,
