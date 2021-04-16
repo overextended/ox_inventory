@@ -29,3 +29,6 @@ Config.AutoReload = false
 
 -- Randomise the price of items in each shop at resource start
 Config.RandomPrices = false
+
+-- Show player identifier (often steamhex) on their id card
+Config.ShowIdentifierID = true
