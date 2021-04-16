@@ -393,7 +393,7 @@ AddEventHandler('linden_inventory:saveInventoryData', function(data)
 			if data.frominv == 'Playerinv' then
 				invid = playerinv
 			elseif data.frominv == 'TargetPlayer' then
-				targetId = string.gsub(data.invid, 'Player ', '')
+				targetId = tonumber(string.gsub(data.invid, 'Player ', ''))
 				xTarget = ESX.GetPlayerFromId(targetId)
 				invid = xTarget.source
 			else
@@ -445,7 +445,7 @@ AddEventHandler('linden_inventory:saveInventoryData', function(data)
 			end
 			if data.frominv == 'Playerinv' then
 				if data.toinv == 'TargetPlayer' then
-					targetId = string.gsub(data.invid, 'Player ', '')
+					targetId = tonumber(string.gsub(data.invid, 'Player ', ''))
 					xTarget = ESX.GetPlayerFromId(targetId)
 					invid = xTarget.source
 				else
@@ -454,7 +454,7 @@ AddEventHandler('linden_inventory:saveInventoryData', function(data)
 				invid2 = xPlayer.source
 			elseif data.toinv == 'Playerinv' then
 				if data.frominv == 'TargetPlayer' then
-					targetId = string.gsub(data.invid2, 'Player ', '')
+					targetId = tonumber(string.gsub(data.invid2, 'Player ', ''))
 					xTarget = ESX.GetPlayerFromId(targetId)
 					invid2 = xTarget.source
 				else
