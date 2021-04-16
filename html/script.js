@@ -10,8 +10,8 @@ var timer = null
 var HSN = []
 var rightinvtype = null
 var rightinventory = null
-var maxweight = 30000
-var rightmaxweight = 30000
+var maxWeight = 30000
+var rightmaxWeight = 30000
 var playerfreeweight = 0
 var rightfreeweight = 0
 var availableweight = 0
@@ -194,7 +194,7 @@ HSN.RemoveItemFromSlot = function(inventory,slot) {
 
 
 HSN.SetupInventory = function(data) {
-	maxweight = data.maxweight
+	maxWeight = data.maxWeight
 	$('.playername').html(data.name)
 	for(i = 1; i <= (data.slots); i++) {
 		$(".inventory-main-leftside").find("[inventory-slot=" + i + "]").remove();
@@ -224,7 +224,7 @@ HSN.SetupInventory = function(data) {
 	})
 
 
-	$(".leftside-weight").html(weightFormat(totalkg/1000, false, true) + '/'+ weightFormat(maxweight/1000, false))
+	$(".leftside-weight").html(weightFormat(totalkg/1000, false, true) + '/'+ weightFormat(maxWeight/1000, false))
 	if (data.rightinventory !== undefined) {
 		$('.inventory-main-rightside').data("invTier", data.rightinventory.type)
 		$('.inventory-main-rightside').data("invId", data.rightinventory.name)
@@ -232,10 +232,10 @@ HSN.SetupInventory = function(data) {
 		rightinvtype = data.rightinventory.type
 		
 		if (rightinvtype == 'TargetPlayer') {
-			rightmaxweight = data.rightinventory.maxWeight
+			rightmaxWeight = data.rightinventory.maxWeight
 			righttotalkg = data.rightinventory.weight
 		} else {
-			rightmaxweight = data.rightinventory.maxWeight || (data.rightinventory.slots*8000).toFixed(0)
+			rightmaxWeight = data.rightinventory.maxWeight || (data.rightinventory.slots*8000).toFixed(0)
 			righttotalkg = 0
 		}
 		$('.rightside-name').html(data.rightinventory.name)
@@ -288,13 +288,13 @@ HSN.SetupInventory = function(data) {
 					}
 				}
 			})
-			$(".rightside-weight").html(weightFormat(righttotalkg/1000, false, true) + '/'+ weightFormat(rightmaxweight/1000, false))
+			$(".rightside-weight").html(weightFormat(righttotalkg/1000, false, true) + '/'+ weightFormat(rightmaxWeight/1000, false))
 		}
 	} else {
 		$('.rightside-name').html("Drop")
 		$('.inventory-main-rightside').data("invTier", "drop")
 		rightinvtype = 'drop'
-		rightmaxweight = (dropSlots*9000).toFixed(0)
+		rightmaxWeight = (dropSlots*9000).toFixed(0)
 		righttotalkg = 0
 		for(i = 1; i <= (dropSlots); i++) {
 			$(".inventory-main-rightside").find("[inventory-slot=" + i + "]").remove();
@@ -482,8 +482,8 @@ SwapItems = function(fromInventory, toInventory, fromSlot, toSlot) {
 	var fromSlot = Number(fromSlot)
 	var toSlot = Number(toSlot)
 	var success = false
-	playerfreeweight = maxweight - totalkg
-	rightfreeweight = rightmaxweight - righttotalkg
+	playerfreeweight = maxWeight - totalkg
+	rightfreeweight = rightmaxWeight - righttotalkg
 	availableweight = 0
 	//inv = from
 	//inv2 == to
@@ -701,16 +701,16 @@ SwapItems = function(fromInventory, toInventory, fromSlot, toSlot) {
 			if (inv2 !== 'Playerinv') {
 				if (inv2 !== inv) {
 					righttotalkg = righttotalkg + (fromItem.weight * count)
-					$(".rightside-weight").html(weightFormat(righttotalkg/1000, false, true) + '/'+ weightFormat(rightmaxweight/1000, false))
+					$(".rightside-weight").html(weightFormat(righttotalkg/1000, false, true) + '/'+ weightFormat(rightmaxWeight/1000, false))
 					totalkg = totalkg - (fromItem.weight * count)
-					$(".leftside-weight").html(weightFormat(totalkg/1000, false, true) + '/'+ weightFormat(maxweight/1000, false))
+					$(".leftside-weight").html(weightFormat(totalkg/1000, false, true) + '/'+ weightFormat(maxWeight/1000, false))
 				}
 			} else {
 				if (inv2 !== inv) {
 					righttotalkg = righttotalkg - (fromItem.weight * count)
-					$(".rightside-weight").html(weightFormat(righttotalkg/1000, false, true) + '/'+ weightFormat(rightmaxweight/1000, false))
+					$(".rightside-weight").html(weightFormat(righttotalkg/1000, false, true) + '/'+ weightFormat(rightmaxWeight/1000, false))
 					totalkg = totalkg + (fromItem.weight * count)
-					$(".leftside-weight").html(weightFormat(totalkg/1000, false, true) + '/'+ weightFormat(maxweight/1000, false))
+					$(".leftside-weight").html(weightFormat(totalkg/1000, false, true) + '/'+ weightFormat(maxWeight/1000, false))
 				}
 			}
 		} else {
