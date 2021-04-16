@@ -460,7 +460,7 @@ AddEventHandler('linden_inventory:saveInventoryData', function(data)
 							Drops[dropid].inventory[data.toSlot] = {name = data.toItem.name, label = data.toItem.label, weight = data.toItem.weight, slot = data.toSlot, count = data.toItem.count, description = data.toItem.description, metadata = data.toItem.metadata, stackable = data.toItem.stackable, closeonuse = Items[data.toItem.name].closeonuse}
 							Inventories[invid2].inventory[data.fromSlot] = {name = data.fromItem.name, label = data.fromItem.label, weight = data.fromItem.weight, slot = data.fromSlot, count = data.fromItem.count, description = data.fromItem.description, metadata = data.fromItem.metadata, stackable = data.fromItem.stackable, closeonuse = Items[data.fromItem.name].closeonuse}
 							if Config.Logs then
-								exports.linden_logs:log(xPlayer, false, 'has swapped '..data.fromItem.count..'x '..data.fromItem.name..' for '..data.toItem.count..'x '..data.toItem.name.. '(drop-..'..dropid, 'items')
+								exports.linden_logs:log(xPlayer, false, 'has swapped '..data.fromItem.count..'x '..data.fromItem.name..' for '..data.toItem.count..'x '..data.toItem.name..'in drop-'..dropid, 'items')
 							end
 						end
 					elseif data.type == 'freeslot' then
@@ -470,7 +470,7 @@ AddEventHandler('linden_inventory:saveInventoryData', function(data)
 							Inventories[invid2].inventory[data.emptyslot] = nil
 							Drops[dropid].inventory[data.toSlot] = {name = data.item.name, label = data.item.label, weight = data.item.weight, slot = data.toSlot, count = data.item.count, description = data.item.description, metadata = data.item.metadata, stackable = data.item.stackable, closeonuse = Items[data.item.name].closeonuse}
 							if Config.Logs then
-								exports.linden_logs:log(xPlayer, false, 'has dropped '..data.item.count..'x '..data.item.name..' (drop-..'..dropid, 'items')
+								exports.linden_logs:log(xPlayer, false, 'has dropped '..data.item.count..'x '..data.item.name..' from drop-'..dropid, 'items')
 							end
 						end
 					elseif data.type == 'split' then
@@ -479,7 +479,7 @@ AddEventHandler('linden_inventory:saveInventoryData', function(data)
 							Inventories[invid2].inventory[data.fromSlot] = {name = data.oldslotItem.name, label = data.oldslotItem.label, weight = data.oldslotItem.weight, slot = data.fromSlot, count = data.oldslotItem.count, description = data.oldslotItem.description, metadata = data.oldslotItem.metadata, stackable = data.oldslotItem.stackable, closeonuse = Items[data.oldslotItem.name].closeonuse}
 							Drops[dropid].inventory[data.toSlot] = {name = data.newslotItem.name, label = data.newslotItem.label, weight = data.newslotItem.weight, slot = data.toSlot, count = data.newslotItem.count, description = data.newslotItem.description, metadata = data.newslotItem.metadata, stackable = data.newslotItem.stackable, closeonuse = Items[data.newslotItem.name].closeonuse}
 							if Config.Logs then
-								exports.linden_logs:log(xPlayer, false, 'has dropped '..data.newslotItem.count..'x '..data.newslotItem.name..'  (drop-..'..dropid, 'items')
+								exports.linden_logs:log(xPlayer, false, 'has dropped '..data.newslotItem.count..'x '..data.newslotItem.name..' from drop-'..dropid, 'items')
 							end
 						end
 					end
@@ -492,7 +492,7 @@ AddEventHandler('linden_inventory:saveInventoryData', function(data)
 							Inventories[invid].inventory[data.toSlot] = {name = data.toItem.name, label = data.toItem.label, weight = data.toItem.weight, slot = data.toSlot, count = data.toItem.count, description = data.toItem.description, metadata = data.toItem.metadata, stackable = data.toItem.stackable, closeonuse = Items[data.toItem.name].closeonuse}
 							Drops[dropid].inventory[data.fromSlot] = {name = data.fromItem.name, label = data.fromItem.label, weight = data.fromItem.weight, slot = data.fromSlot, count = data.fromItem.count, description = data.fromItem.description, metadata = data.fromItem.metadata, stackable = data.fromItem.stackable, closeonuse = Items[data.fromItem.name].closeonuse}
 							if Config.Logs then
-								exports.linden_logs:log(xPlayer, false, 'has swapped '..data.fromItem.count..'x '..data.fromItem.name..' for '..data.toItem.count..'x '..data.toItem.name.. '(drop-..'..dropid, 'items')
+								exports.linden_logs:log(xPlayer, false, 'has swapped '..data.fromItem.count..'x '..data.fromItem.name..' for '..data.toItem.count..'x '..data.toItem.name.. 'in drop-'..dropid, 'items')
 							end
 						end
 					elseif data.type == 'freeslot' then
@@ -502,7 +502,7 @@ AddEventHandler('linden_inventory:saveInventoryData', function(data)
 							Drops[dropid].inventory[data.emptyslot] = nil
 							Inventories[invid].inventory[data.toSlot] = {name = data.item.name, label = data.item.label, weight = data.item.weight, slot = data.toSlot, count = data.item.count, description = data.item.description, metadata = data.item.metadata, stackable = data.item.stackable, closeonuse = Items[data.item.name].closeonuse}
 							if Config.Logs then
-								exports.linden_logs:log(xPlayer, false, 'has picked up '..data.item.count..'x '..data.item.name..' (drop-..'..dropid, 'items')
+								exports.linden_logs:log(xPlayer, false, 'has picked up '..data.item.count..'x '..data.item.name..' from drop-'..dropid, 'items')
 							end
 						end
 					elseif data.type == 'split' then
@@ -511,7 +511,7 @@ AddEventHandler('linden_inventory:saveInventoryData', function(data)
 							Drops[dropid].inventory[data.fromSlot] = {name = data.oldslotItem.name, label = data.oldslotItem.label, weight = data.oldslotItem.weight, slot = data.fromSlot, count = data.oldslotItem.count, description = data.oldslotItem.description, metadata = data.oldslotItem.metadata, stackable = data.oldslotItem.stackable, closeonuse = Items[data.oldslotItem.name].closeonuse}
 							Inventories[invid].inventory[data.toSlot] = {name = data.newslotItem.name, label = data.newslotItem.label, weight = data.newslotItem.weight, slot = data.toSlot, count = data.newslotItem.count, description = data.newslotItem.description, metadata = data.newslotItem.metadata, stackable = data.newslotItem.stackable, closeonuse = Items[data.newslotItem.name].closeonuse}
 							if Config.Logs then
-								exports.linden_logs:log(xPlayer, false, 'has picked up '..data.newslotItem.count..'x '..data.newslotItem.name..'  (drop-..'..dropid, 'items')
+								exports.linden_logs:log(xPlayer, false, 'has picked up '..data.newslotItem.count..'x '..data.newslotItem.name..' from drop-'..dropid, 'items')
 							end
 						end
 					end
@@ -572,7 +572,7 @@ AddEventHandler('linden_inventory:saveInventoryData', function(data)
 								end
 							else
 								if Config.Logs then
-									exports.linden_logs:log(xPlayer, false, 'has taken '..data.item.count..'x '..data.item.name..' (drop-..'..invid2, 'items')
+									exports.linden_logs:log(xPlayer, false, 'has taken '..data.item.count..'x '..data.item.name..' from drop-'..invid2, 'items')
 								end
 							end
 						elseif invid2 == xPlayer.source then
@@ -584,7 +584,7 @@ AddEventHandler('linden_inventory:saveInventoryData', function(data)
 								end
 							else
 								if Config.Logs then
-									exports.linden_logs:log(xPlayer, false, 'has dropped '..data.item.count..'x '..data.item.name..' (drop-..'..invid, 'items')
+									exports.linden_logs:log(xPlayer, false, 'has dropped '..data.item.count..'x '..data.item.name..' from drop-'..invid, 'items')
 								end
 							end
 						end
