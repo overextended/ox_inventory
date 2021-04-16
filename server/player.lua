@@ -49,7 +49,7 @@ addInventoryItem = function(xPlayer, item, count, metadata, slot)
 			Inventories[xPlayer.source].inventory[slot] = {name = item, label = xItem.label, weight = xItem.weight, slot = slot, count = count, description = xItem.description, metadata = metadata, stackable = xItem.stackable, closeonuse = true}
 			if xItem.ammoType then Inventories[xPlayer.source].inventory[slot].ammoType = xItem.ammoType end
 			if xItem.weight > 0 or xItem.name:find('money') then updateWeight(xPlayer) end
-			ItemNotify(xPlayer, item, count, false, 'Added')
+			ItemNotify(xPlayer, Inventories[xPlayer.source].inventory[slot], count, slot, 'Added')
 		elseif item:find('identification') then
 			count = 1
 			metadata = {}
@@ -59,13 +59,13 @@ addInventoryItem = function(xPlayer, item, count, metadata, slot)
 			if existing then count = Inventories[xPlayer.source].inventory[slot].count + count end
 			Inventories[xPlayer.source].inventory[slot] = {name = item, label = xItem.label, weight = xItem.weight, slot = slot, count = count, description = xItem.description, metadata = metadata, stackable = xItem.stackable, closeonuse = true}
 			if xItem.weight > 0 or xItem.name:find('money') then updateWeight(xPlayer) end
-			ItemNotify(xPlayer, item, added, false, 'Added')
+			ItemNotify(xPlayer, Inventories[xPlayer.source].inventory[slot], added, slot, 'Added')
 		elseif slot then
 			local added = count
 			if existing then count = Inventories[xPlayer.source].inventory[slot].count + count end
 			Inventories[xPlayer.source].inventory[slot] = {name = item, label = xItem.label, weight = xItem.weight, slot = slot, count = count, description = xItem.description, metadata = metadata or {}, stackable = xItem.stackable, closeonuse = xItem.closeonuse}
 			if xItem.weight > 0 or xItem.name:find('money') then updateWeight(xPlayer) end
-			ItemNotify(xPlayer, item, added, false, 'Added')
+			ItemNotify(xPlayer, Inventories[xPlayer.source].inventory[slot], added, slot, 'Added')
 		end
 		if slot then TriggerClientEvent('linden_inventory:refreshInventory', xPlayer.source, Inventories[xPlayer.source]) end
 	end
@@ -78,15 +78,15 @@ removeInventoryItem = function(xPlayer, item, count, metadata, slot)
 	if xPlayer and xItem and count > 0 then
 		if metadata then metadata = setMetadata(metadata) end
 		if slot and Inventories[xPlayer.source].inventory[slot].count == count and Inventories[xPlayer.source].inventory[slot].name == xItem.name then
+			ItemNotify(xPlayer, Inventories[xPlayer.source].inventory[slot], count, slot, 'Removed')
 			Inventories[xPlayer.source].inventory[slot] = nil
 			if xItem.weight > 0 or xItem.name:find('money') then updateWeight(xPlayer) end
-			ItemNotify(xPlayer, item, count, slot, 'Removed')
 			TriggerClientEvent('linden_inventory:refreshInventory', xPlayer.source, Inventories[xPlayer.source])
 		elseif slot and Inventories[xPlayer.source].inventory[slot].count > count and Inventories[xPlayer.source].inventory[slot].name == xItem.name then
 			local newCount = Inventories[xPlayer.source].inventory[slot].count - count
+			ItemNotify(xPlayer, Inventories[xPlayer.source].inventory[slot], count, slot, 'Removed')
 			Inventories[xPlayer.source].inventory[slot] = {name = item, label = xItem.label, weight = xItem.weight, slot = slot, count = newCount, description = xItem.description, metadata = metadata, stackable = xItem.stackable, closeonuse = xItem.closeonuse}
 			if xItem.weight > 0 or xItem.name:find('money') then updateWeight(xPlayer) end
-			ItemNotify(xPlayer, item, count, slot, 'Removed')
 			TriggerClientEvent('linden_inventory:refreshInventory', xPlayer.source, Inventories[xPlayer.source])
 		else
 			local itemSlots, totalCount = getInventoryItemSlots(xPlayer, item, metadata)
@@ -110,7 +110,7 @@ removeInventoryItem = function(xPlayer, item, count, metadata, slot)
 					end
 				end
 				if xItem.weight > 0 or xItem.name:find('money') then updateWeight(xPlayer) end
-				ItemNotify(xPlayer, item, removed, false, 'Removed')
+				ItemNotify(xPlayer, xItem, removed, itemSlots, 'Removed')
 				TriggerClientEvent('linden_inventory:refreshInventory', xPlayer.source, Inventories[xPlayer.source])
 			end
 		end
