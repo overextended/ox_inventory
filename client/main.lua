@@ -31,8 +31,9 @@ inform = function(msg)
 end
 
 StartInventory = function()
-	playerID, playerPed, invOpen, isDead, isCuffed, isBusy, usingWeapon, weight, currentDrop = nil, nil, false, false, false, false, false, Config.PlayerWeight, nil
+	playerID, playerPed, invOpen, isDead, isCuffed, isBusy, usingWeapon, currentDrop = nil, nil, false, false, false, false, false, nil
 	ESX.TriggerServerCallback('linden_inventory:setup',function(data)
+		ESX.SetPlayerData('inventory', data.inventory)
 		ESX.PlayerData = ESX.GetPlayerData()
 		playerPed = PlayerPedId()
 		playerCoords = GetEntityCoords(playerPed)
@@ -218,6 +219,7 @@ AddEventHandler('linden_inventory:openInventory',function(data, rightinventory)
 		maxWeight = data.maxWeight,
 		rightinventory = rightinventory
 	})
+	ESX.PlayerData.inventory = data.inventory
 	if not rightinventory then movement = true else movement = false end
 	SetNuiFocusAdvanced(true, true, movement)
 	currentInventory = rightinventory
@@ -232,12 +234,33 @@ AddEventHandler('linden_inventory:refreshInventory', function(data)
 		name = inventoryLabel,
 		maxWeight = data.maxWeight
 	})
+	ESX.PlayerData.inventory = data.inventory
+	ESX.SetPlayerData('inventory', data.inventory)
 end)
 
 RegisterNetEvent('linden_inventory:itemNotify')
-AddEventHandler('linden_inventory:itemNotify', function(item, text, weapon)
-	SendNUIMessage({ message = 'notify', item = item, text = text })
-	if weapon then TriggerEvent('linden_inventory:checkWeapon', weapon) end
+AddEventHandler('linden_inventory:itemNotify', function(item, count, slot, notify)
+	if count > 0 then notification = ('%s %sx'):format(notify, count)
+	else notification = 'Used' end
+	if type(slot) == 'table' then
+		for k,v in pairs(slot) do
+			ESX.PlayerData.inventory[k] = item
+			if notify == 'Removed' and ESX.PlayerData.inventory[k].count then
+				local count = ESX.PlayerData.inventory[k].count - v
+				ESX.PlayerData.inventory[k].count = count
+				if item.name:find('WEAPON_') then TriggerEvent('linden_inventory:checkWeapon', item) end
+			end
+		end
+	else
+		ESX.PlayerData.inventory[slot] = item
+		if notify == 'Removed' then
+			local count = ESX.PlayerData.inventory[slot].count - count
+			ESX.PlayerData.inventory[slot].count = count
+			if item.name:find('WEAPON_') then TriggerEvent('linden_inventory:checkWeapon', item) end
+		end
+	end
+	ESX.SetPlayerData('inventory', ESX.PlayerData.inventory)
+	SendNUIMessage({ message = 'notify', item = item, text = notification })
 end)
 
 RegisterNetEvent('linden_inventory:createDrop')
@@ -335,8 +358,8 @@ AddEventHandler('linden_inventory:currentWeapon', function(weapon)
 end)
 
 RegisterNetEvent('linden_inventory:checkWeapon')
-AddEventHandler('linden_inventory:checkWeapon', function(data)
-	if currentWeapon and currentWeapon.metadata.serial == data then
+AddEventHandler('linden_inventory:checkWeapon', function(item)
+	if currentWeapon and currentWeapon.metadata.serial == item.metadata.serial then
 		DisarmPlayer()
 	end
 end)
