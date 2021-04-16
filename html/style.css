@@ -16,7 +16,7 @@
     opacity: 0.9;
     top: 50%;
     left: 50%;
-    display: block;
+    display: none;
     transform: translate(-50%, -50%);
 }
 
