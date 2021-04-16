@@ -7,7 +7,7 @@ Config.CheckVersionDelay = 60
 -- Number of inventory slots
 Config.PlayerSlots = 50
 
--- 30kg is a lot to carry
+-- Regular carry weight, can be increased by backpacks through esx_skin
 Config.PlayerWeight = 30000
 
 -- Blur the screen while in an inventory
@@ -17,8 +17,8 @@ Config.EnableBlur = true
 Config.WeaponsLicense = true
 Config.WeaponsLicensePrice = 5000
 
--- Requires setup; I'll release something in the future
-Config.Logs = false
+-- Set the name of your logging resource, or false to disable
+Config.Logs = false --'linden_logs'
 
 -- Default keymapping for the inventory; players can assign their own
 Config.InventoryKey = 'F2'
