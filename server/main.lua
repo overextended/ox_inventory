@@ -75,6 +75,7 @@ ESX.RegisterServerCallback('linden_inventory:setup', function(source, cb)
 		Citizen.Wait(100)
 	end
 	Citizen.Wait(100)
+	Inventories[src].name = xPlayer.get('firstname')..' '..xPlayer.get('firstname')
 	local data = {drops = Drops, name = Inventories[src].name }
 	Opened[src] = nil
 	cb(data)
@@ -159,7 +160,6 @@ AddEventHandler('linden_inventory:setPlayerInventory', function(xPlayer, data)
 	end
 	Citizen.Wait(100)
 	updateWeight(xPlayer)
-	Inventories[invid].name = xPlayer.get('firstname')..' '..xPlayer.get('firstname')
 end)
 
 AddEventHandler('linden_inventory:clearPlayerInventory', function(xPlayer)
