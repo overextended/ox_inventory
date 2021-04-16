@@ -46,7 +46,7 @@ end)
 ```
 * Search for `if CurrentAction then` and below insert
 ```lua
-	if IsDisabledControlJustPressed(0, 289) and CurrentAction == 'room_menu' then
+	if IsControlJustPressed(0, 289) and CurrentAction == 'room_menu' then
 			exports['linden_inventory']:OpenStash({ name = ('%s-%s'):format(CurrentActionData.property.name, CurrentActionData.owner), slots = 71})
 		end
 ```
