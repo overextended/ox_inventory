@@ -159,6 +159,7 @@ AddEventHandler('linden_inventory:setPlayerInventory', function(xPlayer, data)
 	end
 	Citizen.Wait(100)
 	updateWeight(xPlayer)
+	Inventories[invid].name = xPlayer.get('firstname')..' '..xPlayer.get('firstname')
 end)
 
 AddEventHandler('linden_inventory:clearPlayerInventory', function(xPlayer)
