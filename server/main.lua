@@ -571,7 +571,7 @@ AddEventHandler('linden_inventory:saveInventoryData', function(data)
 								end
 							else
 								if Config.Logs then
-									exports.linden_logs:log(xPlayer, false, 'has taken '..data.item.count..'x '..data.item.name..' from drop-'..invid2, 'items')
+									exports.linden_logs:log(xPlayer, false, 'has taken '..data.item.count..'x '..data.item.name..' from '..invid2, 'items')
 								end
 							end
 						elseif invid2 == xPlayer.source then
@@ -583,7 +583,7 @@ AddEventHandler('linden_inventory:saveInventoryData', function(data)
 								end
 							else
 								if Config.Logs then
-									exports.linden_logs:log(xPlayer, false, 'has dropped '..data.item.count..'x '..data.item.name..' from drop-'..invid, 'items')
+									exports.linden_logs:log(xPlayer, false, 'has dropped '..data.item.count..'x '..data.item.name..' from '..invid, 'items')
 								end
 							end
 						end
