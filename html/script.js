@@ -315,7 +315,7 @@ function DragAndDrop() {
 		start: function(event, ui) {
 			IsDragging = true;
 			$(this).find("img").css("filter", "brightness(50%)");
-			count = parseInt($("#item-count").val());
+			count = $("#item-count").val();
 		},
 		stop: function() {
 			setTimeout(function(){
@@ -337,9 +337,11 @@ function DragAndDrop() {
 			toInventory = $(this).parent()
 			toSlot = $(this).attr("inventory-slot");
 			fromData = fromInventory.find("[inventory-slot=" + curslot + "]").data("ItemData");
-			if (fromData !== undefined && count !== undefined) {
-				if (count == "" || count == 0) {
+			count = parseInt($("#item-count").val()) || 0
+			if (fromData !== undefined) {
+				if (count == 0 || count > fromData.count) {
 					count = fromData.count
+					$("#item-count").val(0)
 				}
 				SwapItems(fromInventory, toInventory, curslot, toSlot)
 			}
@@ -375,29 +377,30 @@ $(".give").droppable({
 		}, 300)
 		fromData = ui.draggable.data("ItemData");
 		fromInventory = ui.draggable.parent();
-		count = parseInt($("#item-count").val());
-		inv = fromInventory.data('invTier')
-		if (inv == 'Playerinv' && count > 0 ) {
-			$.post("https://linden_inventory/giveItem", JSON.stringify({
-				item: fromData,
-				inv: inv,
-				amount: count
-			}));
+		count = parseInt($("#item-count").val()) || 0
+		if (fromData !== undefined) {
+			if (inv == 'Playerinv' && count > 0) {
+				$.post("https://linden_inventory/giveItem", JSON.stringify({
+					item: fromData,
+					inv: inv,
+					amount: count
+				}));
+			}
 		}
 	}
 });
 
 $(document).on("click", ".ItemBoxes", function(e){
-	if ($(this).data("location") !== undefined && parseInt($("#item-count").val()) >= 0) {
+	if ($(this).data("location") !== undefined && $("#item-count").val() >= 0) {
 		e.preventDefault();
 		var Item = $(this).data("ItemData")
 		var location = $(this).data("location")
-		var htmlCount = parseInt($("#item-count").val())
-		if ((Item != undefined) && (location != undefined)) {
+		count = parseInt($("#item-count").val()) || 0
+		if (Item != undefined && count >= 0 && location != undefined) {
 			$.post("https://linden_inventory/BuyFromShop", JSON.stringify({
 				data: Item,
 				location: location,
-				count: htmlCount
+				count: count
 			}));
 		}
 	}
