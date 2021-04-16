@@ -654,6 +654,7 @@ AddEventHandler('linden_inventory:saveInventory', function(data)
 		updateWeight(xPlayer)
 		if data.invid then Opened[data.invid] = nil end
 	end
+	TriggerClientEvent('linden_inventory:refreshInventory', xPlayer.source, Inventories[xPlayer.source])
 end)
 
 AddEventHandler('esx:playerLogout', function(playerid)
