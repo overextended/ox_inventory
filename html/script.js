@@ -307,11 +307,11 @@ HSN.SetupInventory = function(data) {
 function DragAndDrop() {
 	$(".drag-item").draggable({
 		helper: 'clone',
-		appendTo: "body",
-		scroll: true,
+		appendTo: ".inventory-main",
 		revertDuration: 0,
 		revert: "invalid",
 		cancel: ".itemdragclose",
+		containment: "body",
 		start: function(event, ui) {
 			IsDragging = true;
 			$(this).find("img").css("filter", "brightness(50%)");
@@ -333,7 +333,6 @@ function DragAndDrop() {
 			}, 300)
 			curslot = ui.draggable.attr("inventory-slot");
 			fromInventory = ui.draggable.parent();
-			var inv = fromInventory.data('invTier')
 			toInventory = $(this).parent()
 			toSlot = $(this).attr("inventory-slot");
 			fromData = fromInventory.find("[inventory-slot=" + curslot + "]").data("ItemData");
