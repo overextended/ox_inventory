@@ -5,7 +5,7 @@ CREATE TABLE IF NOT EXISTS `linden_inventory` (
     `data` LONGTEXT NULL DEFAULT NULL COLLATE 'utf8mb4_general_ci',
     PRIMARY KEY (`id`),
     UNIQUE INDEX (`name`, `owner`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 
 CREATE TABLE IF NOT EXISTS `items` (
