@@ -59,12 +59,17 @@ end, true)
 ```
 * Still working on a good solution for checking client side
 
-#### Open a Stash (such as job storage)
+#### Open a stash
+* If you want anybody to be able to use a stash, do not define job
+* Stashes should have unique names so they do not share
+* You can define an owner for a stash, attaching their player identifier
+* You can have owned stashes with the same name as long as the identifier doesn't match
 ```lua
-	exports['linden_inventory']:OpenStash({ name = ('%s-%s'):format(CurrentActionData.property.name, CurrentActionData.owner), slots = 70})
+	exports['linden_inventory']:OpenStash({ name = 'Hospital Locker', slots = 70, job= 'ambulance'})
+	exports['linden_inventory']:OpenStash({ name = 'Bank Deposit Box', slots = 20, owner = ESX.GetPlayerData().identifier()})
+	exports['linden_inventory']:OpenStash({ name = 'Personal Locker', slots = 20, job = 'police', owner = ESX.GetPlayerData().identifier()})
 ```
-* Stashes require unique names - if you use it something like esx_property you can use `OwnedHouse.houseId` (more info in snippets)
-* If you want anybody to be able to use a stash, do not define job.
+* Example for adding a stash to `esx_property`
 
 <br>
 
