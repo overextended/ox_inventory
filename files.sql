@@ -1,7 +1,6 @@
 CREATE TABLE IF NOT EXISTS `linden_inventory` (
 	`name` VARCHAR(100) NULL DEFAULT NULL COLLATE 'utf8mb4_general_ci', 
-	`data` LONGTEXT NULL DEFAULT NULL COLLATE 'utf8mb4_general_ci',
-	UNIQUE KEY (`name`)
+	`data` LONGTEXT NULL DEFAULT NULL COLLATE 'utf8mb4_general_ci'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 
@@ -12,6 +11,12 @@ CREATE TABLE IF NOT EXISTS `items` (
   `can_remove` tinyint(4) NOT NULL DEFAULT 1
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
+
+ALTER TABLE `linden_inventory`
+	ADD IF NOT EXISTS `owner` VARCHAR(60) NULL DEFAULT NULL COLLATE 'utf8mb4_general_ci',
+	ADD UNIQUE INDEX IF NOT EXISTS `name` (`name`, `owner`)
+	
+	
 REPLACE INTO `licenses` (`type`, `label`) VALUES
 	('weapon', "Weapons license")
 ;
