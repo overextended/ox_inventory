@@ -200,8 +200,8 @@ SetupShopItems = function(shop)
 	return inventory
 end
 
-SaveItems = function(type,id)
-	if id and (type == 'stash' or type == 'trunk' or type == 'glovebox') then
+SaveItems = function(type,id,owner)
+	if id and owner == nil and (type == 'stash' or type == 'trunk' or type == 'glovebox') then
 		local inventory = json.encode(getInventory(Inventories[id]))
 		local result = exports.ghmattimysql:scalarSync('SELECT data FROM linden_inventory WHERE name = @name', {
 			['@name'] = id
@@ -219,14 +219,42 @@ SaveItems = function(type,id)
 				['@data'] = inventory
 			})
 		end
+	elseif id and owner then
+		local inventory = json.encode(getInventory(Inventories[id]))
+		local result = exports.ghmattimysql:executeSync('SELECT * FROM linden_inventory WHERE name = @name AND owner = @owner LIMIT 1', {
+			['@name'] = id,
+			['@owner'] = owner
+		})
+		if result then
+			if result[1].data ~= inventory then
+				exports.ghmattimysql:execute('UPDATE linden_inventory SET data = @data WHERE id = @id', {
+					['@id'] = result[1].id,
+					['@data'] = inventory,
+				})
+			end
+		elseif inventory ~= '[]' then
+			exports.ghmattimysql:execute('INSERT INTO linden_inventory (name, data, owner) VALUES (@name, @data, @owner)', {
+				['@name'] = id,
+				['@data'] = inventory,
+				['@owner'] = owner
+			})
+		end
 	end
 end
 
-GetItems = function(id)
+GetItems = function(id, owner)
 	local returnData = {}
-	local result = exports.ghmattimysql:scalarSync('SELECT data FROM linden_inventory WHERE name = @name', {
-		['@name'] = id
-	})
+	local result
+	if not owner then
+		result = exports.ghmattimysql:scalarSync('SELECT data FROM linden_inventory WHERE name = @name', {
+			['@name'] = id
+		})
+	else
+		result = exports.ghmattimysql:scalarSync('SELECT data FROM linden_inventory WHERE name = @name AND owner = @owner', {
+			['@name'] = id,
+			['@owner'] = owner
+		})
+	end
 	if result ~= nil then
 		local Inventory = json.decode(result)
 		for k,v in pairs(Inventory) do
