@@ -281,7 +281,8 @@ AddEventHandler('linden_inventory:openInventory', function(data, player)
 				coords = data.coords,
 				maxWeight = data.maxWeight,
 			}
-			if data.owner then Inventories[id].owner = data.owner end
+			if data.owner == true then Inventories[id].owner = xPlayer.identifier elseif data.owner then Inventories[id].owner = data.owner end
+			end
 			Inventories[id].inventory = GetItems(id, data.owner)
 			if CheckOpenable(xPlayer, id, data.coords) then
 				Opened[xPlayer.source] = {invid = id, type = data.type}
