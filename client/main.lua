@@ -168,6 +168,15 @@ CloseVehicle = function(veh)
 	lastVehicle = nil
 end
 
+WeightActions = function(current, max)
+	local difference = max - current
+	if current > (max-5000) then
+		--
+	else
+		--
+	end
+end
+
 local nui_focus = {false, false}
 SetNuiFocusAdvanced = function(hasFocus, hasCursor, allowMovement)
 	SetNuiFocus(hasFocus, hasCursor)
@@ -217,6 +226,7 @@ AddEventHandler('linden_inventory:openInventory',function(data, rightinventory)
 		slots = data.slots,
 		name = inventoryLabel,
 		maxWeight = data.maxWeight,
+		weight = data.weight,
 		rightinventory = rightinventory
 	})
 	ESX.PlayerData.inventory = data.inventory
@@ -232,7 +242,8 @@ AddEventHandler('linden_inventory:refreshInventory', function(data)
 		inventory = data.inventory,
 		slots = data.slots,
 		name = inventoryLabel,
-		maxWeight = data.maxWeight
+		maxWeight = data.maxWeight,
+		weight = data.weight
 	})
 	ESX.PlayerData.inventory = data.inventory
 	ESX.SetPlayerData('inventory', data.inventory)
@@ -261,6 +272,11 @@ AddEventHandler('linden_inventory:itemNotify', function(item, count, slot, notif
 	end
 	ESX.SetPlayerData('inventory', ESX.PlayerData.inventory)
 	SendNUIMessage({ message = 'notify', item = item, text = notification })
+end)
+
+RegisterNetEvent('linden_inventory:updateStorage')
+AddEventHandler('linden_inventory:updateStorage', function(data)
+	if Config.WeightActions then WeightActions(data[1], data[2]) end
 end)
 
 RegisterNetEvent('linden_inventory:createDrop')
@@ -420,7 +436,7 @@ TriggerLoops = function()
 		local Disable = {37, 157, 158, 160, 164, 165, 289}
 		local wait = false
 		while PlayerLoaded do
-			sleep = 3
+			sleep = 5
 			for i=1, #Disable, 1 do
 				DisableControlAction(0, Disable[i], true)
 			end
@@ -739,6 +755,19 @@ RegisterCommand('vehinv', function()
 		end
 	end
 end)
+
+-- not yet done
+--[[RegisterCommand('hotbar', function()
+	local data = {}
+	for i=1, 5 do
+		if ESX.PlayerData.inventory[i] then data[i] = ESX.PlayerData.inventory[i] end
+	end
+	SendNUIMessage({
+		message = 'hotbar',
+		items = data
+	})
+end)
+RegisterKeyMapping('hotbar', 'Open vehicle inventory', 'keyboard', 'tab')]]
 		
 RegisterKeyMapping('inv', 'Open player inventory', 'keyboard', Config.InventoryKey)
 RegisterKeyMapping('vehinv', 'Open vehicle inventory', 'keyboard', Config.VehicleInventoryKey)
