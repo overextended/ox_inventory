@@ -203,22 +203,23 @@ end
 SaveItems = function(type,id,owner)
 	if id and owner == nil and (type == 'stash' or type == 'trunk' or type == 'glovebox') then
 		local inventory = json.encode(getInventory(Inventories[id]))
-		local result = exports.ghmattimysql:scalarSync('SELECT data FROM linden_inventory WHERE name = @name', {
+		exports.ghmattimysql:scalar('SELECT data FROM linden_inventory WHERE name = @name', {
 			['@name'] = id
-		})
-		if result then
-			if result ~= inventory then
-				exports.ghmattimysql:execute('UPDATE linden_inventory SET data = @data WHERE name = @name', {
-					['@data'] = inventory,
-					['@name'] = id
+		}, function(result)
+			if result then
+				if result ~= inventory then
+					exports.ghmattimysql:execute('UPDATE linden_inventory SET data = @data WHERE name = @name', {
+						['@data'] = inventory,
+						['@name'] = id
+					})
+				end
+			elseif inventory ~= '[]' then
+				exports.ghmattimysql:execute('INSERT INTO linden_inventory (name, data) VALUES (@name, @data)', {
+					['@name'] = id,
+					['@data'] = inventory
 				})
 			end
-		elseif inventory ~= '[]' then
-			exports.ghmattimysql:execute('INSERT INTO linden_inventory (name, data) VALUES (@name, @data)', {
-				['@name'] = id,
-				['@data'] = inventory
-			})
-		end
+		end)
 	elseif id and owner then
 		local inventory = json.encode(getInventory(Inventories[id]))
 		local result = exports.ghmattimysql:executeSync('SELECT * FROM linden_inventory WHERE name = @name AND owner = @owner LIMIT 1', {
