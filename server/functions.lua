@@ -20,6 +20,7 @@ PlayerDropped = function(src)
 			print(src..' disconnected while accessing '..data.type..' '..data.invid)
 		end
 		Opened[src] = nil
+		Inventories[src] = nil
 		if data.invid then Opened[data.invid] = nil end
 	end
 end
