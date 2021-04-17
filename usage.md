@@ -61,10 +61,10 @@ end, true)
 
 #### Open a Stash (such as job storage)
 ```lua
-  local data = {coords = vector3(301.4374, -599.2748, 43.2821), slots = 71, name = 'Hospital Cloakroom', job = 'ambulance'}
-  exports.['linden_inventory']:OpenStash(data)
+	exports['linden_inventory']:OpenStash({ name = ('%s-%s'):format(CurrentActionData.property.name, CurrentActionData.owner), slots = 70})
 ```
 * Stashes require unique names - if you use it something like esx_property you can use `OwnedHouse.houseId` (more info in snippets)
+* If you want anybody to be able to use a stash, do not define job.
 
 <br>
 
