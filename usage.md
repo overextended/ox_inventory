@@ -69,7 +69,7 @@ end, true)
 	exports['linden_inventory']:OpenStash({ name = 'Bank Deposit Box', slots = 20, owner = ESX.GetPlayerData().identifier()})
 	exports['linden_inventory']:OpenStash({ name = 'Personal Locker', slots = 20, job = 'police', owner = ESX.GetPlayerData().identifier()})
 ```
-* Example for adding a stash to `esx_property`
+* Example for adding a stash to `esx_property` in Snippets
 
 <br>
 
