@@ -1,7 +1,6 @@
 ESX = nil
 Items = {}
 Players = {}
-PlayerInventory = {}
 Drops = {}
 Inventories = {}
 Shops = {}
@@ -76,39 +75,38 @@ ESX.RegisterServerCallback('linden_inventory:setup', function(source, cb)
 	while true do
 		if Status[1] == 'ready' then break end
 		loop = loop + 1
-		if loop == 10 then return end
+		if loop == 50 then return end
 		Citizen.Wait(100)
 	end
-	Citizen.Wait(100)
-	local player = Inventories[src]
-	local data = {drops = Drops, name = player.name, inventory = player.inventory, storage = {player.weight, player.maxWeight, player.slots} }
-	Opened[src] = nil
-	cb(data)
+	local xPlayer = ESX.GetPlayerFromId(src)
+	if xPlayer.get('linventory') ~= true then
+		local result = exports.ghmattimysql:scalarSync('SELECT inventory FROM users WHERE identifier = @identifier', {
+			['@identifier'] = xPlayer.identifier
+		})
+		if result ~= nil then
+			TriggerEvent('linden_inventory:setPlayerInventory', xPlayer, json.decode(result))
+			while xPlayer.get('linventory') ~= true do Citizen.Wait(100) end
+		else
+			DropPlayer(xPlayer.source, 'there was an issue loading your inventory')
+		end
+		Inventories[xPlayer.source].name = xPlayer.getName()
+		local data = {drops = Drops, name = Inventories[xPlayer.source].name, inventory = Inventories[xPlayer.source].inventory }
+		cb(data)
+		Citizen.Wait(100)
+		updateWeight(xPlayer, true)	
+	end
 end)
 
 AddEventHandler('onResourceStart', function(resourceName)
 	if (GetCurrentResourceName() == resourceName) then
 		if ESX == nil then return end
 		local xPlayers = ESX.GetPlayers()
-		while true do Citizen.Wait(100) if Status[1] == 'loaded' then break end end
-		local query = 'SELECT identifier, inventory FROM users WHERE'
 		for i=1, #xPlayers, 1 do
-			local identifier = ESX.GetPlayerFromId(xPlayers[i]).identifier
-			query = query..' identifier = "'..identifier..'" OR'
+			local xPlayer = ESX.GetPlayerFromId(xPlayers[i])
+			xPlayer.set('linventory', false)
 		end
-		if #xPlayers > 0 then
-			exports.ghmattimysql:execute(query:sub(0, -3), function(results)
-				if results then
-					for k, v in ipairs(results) do
-						local xPlayer = ESX.GetPlayerFromIdentifier(v.identifier)
-						TriggerEvent('linden_inventory:setPlayerInventory', xPlayer, json.decode(v.inventory))
-					end
-					if #xPlayers > 1 then message('Created inventories for '..#(results)..' active players', 2) else message('Created inventory for 1 active player', 2) end
-					Citizen.Wait(10)
-					Status[1] = 'ready'
-				end
-			end)
-		end
+		while true do Citizen.Wait(100) if Status[1] == 'loaded' then break end end
+		Status[1] = 'ready'
 	elseif resourceName == logsResource then
 		message('Logs have been enabled', 2)
 		logsResource, Config.Logs = nil, logsResource
@@ -139,7 +137,6 @@ AddEventHandler('linden_inventory:setPlayerInventory', function(xPlayer, data)
 	local invid = xPlayer.source
 	Inventories[invid] = {
 		id = xPlayer.source,
-		name = xPlayer.getName(),
 		identifier = xPlayer.getIdentifier(),
 		type = 'Playerinv',
 		slots = Config.PlayerSlots,
@@ -165,8 +162,7 @@ AddEventHandler('linden_inventory:setPlayerInventory', function(xPlayer, data)
 			end
 		end
 	end
-	Citizen.Wait(100)
-	updateWeight(xPlayer)
+	xPlayer.set('linventory', true)
 end)
 
 AddEventHandler('linden_inventory:clearPlayerInventory', function(xPlayer)
@@ -231,10 +227,8 @@ AddEventHandler('linden_inventory:openInventory', function(data, player)
 		if data.type == 'drop' then
 			local invid = data.drop
 			if Drops[invid] ~= nil and CheckOpenable(xPlayer, Drops[invid].name, Drops[invid].coords) then
-				if CheckOpenable(xPlayer, Drops[invid].name, Drops[invid].coords) then
-					Opened[xPlayer.source] = {invid = invid, type = 'drop'}
-					TriggerClientEvent('linden_inventory:openInventory', xPlayer.source, Inventories[xPlayer.source], Drops[invid])
-				end
+				Opened[xPlayer.source] = {invid = invid, type = 'drop'}
+				TriggerClientEvent('linden_inventory:openInventory', xPlayer.source, Inventories[xPlayer.source], Drops[invid])
 			else
 				Opened[xPlayer.source] = {invid = xPlayer.source, type = 'Playerinv'}
 				TriggerClientEvent('linden_inventory:openInventory',  xPlayer.source, Inventories[xPlayer.source])
