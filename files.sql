@@ -1,4 +1,6 @@
 CREATE TABLE IF NOT EXISTS `linden_inventory` (
+	`id` TINYINT(11) NOT NULL AUTO_INCREMENT,
+	`owner` VARCHAR(60) NULL DEFAULT NULL COLLATE 'utf8mb4_general_ci',
 	`name` VARCHAR(100) NULL DEFAULT NULL COLLATE 'utf8mb4_general_ci', 
 	`data` LONGTEXT NULL DEFAULT NULL COLLATE 'utf8mb4_general_ci'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
@@ -13,8 +15,11 @@ CREATE TABLE IF NOT EXISTS `items` (
 
 
 ALTER TABLE `linden_inventory`
+	ADD IF NOT EXISTS `id` TINYINT(11) NOT NULL AUTO_INCREMENT,
 	ADD IF NOT EXISTS `owner` VARCHAR(60) NULL DEFAULT NULL COLLATE 'utf8mb4_general_ci',
-	ADD UNIQUE INDEX IF NOT EXISTS `name` (`name`, `owner`)
+	ADD PRIMARY KEY IF NOT EXISTS (`id`),
+	ADD UNIQUE INDEX IF NOT EXISTS (`name`, `owner`)
+;
 	
 	
 REPLACE INTO `licenses` (`type`, `label`) VALUES
