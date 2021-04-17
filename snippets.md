@@ -48,9 +48,10 @@ end)
 * Search for `if CurrentAction then` and below insert
 ```lua
 	if IsControlJustPressed(0, 289) and CurrentAction == 'room_menu' then
-			exports['linden_inventory']:OpenStash({ name = ('%s-%s'):format(CurrentActionData.property.name, CurrentActionData.owner), slots = 70})
-		end
+		exports['linden_inventory']:OpenStash({ name = ('%s-%s'):format(CurrentActionData.property.name, CurrentActionData.owner), slots = 70})
+	end
 ```
+* Pressing `F2` while standing on the marker will open the property stash on the right.
 
 ## Modify for loaf_housing
 * This is a single unified storage. If you want it for each piece of furniture, figure it out
