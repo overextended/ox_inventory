@@ -484,6 +484,9 @@ $(document).on('click', '.close', function(e){
 });
 
 is_table_equal = function(obj1, obj2) {
+	if (obj1 == null && obj2 == null){
+		return true
+	}
 	const obj1Len = Object.keys(obj1).length;
 	const obj2Len = Object.keys(obj2).length;
 	if (obj1Len === obj2Len) {
