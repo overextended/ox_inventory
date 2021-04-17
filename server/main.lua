@@ -99,7 +99,7 @@ ESX.RegisterServerCallback('linden_inventory:setup', function(source, cb)
 	local xPlayer = ESX.GetPlayerFromId(src)
 	if xPlayer.get('linventory') ~= true then
 		local result = exports.ghmattimysql:scalarSync('SELECT inventory FROM users WHERE identifier = @identifier', {
-			['@identifier'] = xPlayer.identifier
+			['@identifier'] = xPlayer.getIdentifier()
 		})
 		if result ~= nil then
 			TriggerEvent('linden_inventory:setPlayerInventory', xPlayer, json.decode(result))
@@ -137,7 +137,7 @@ AddEventHandler('onResourceStop', function(resourceName)
 		local xPlayers = ESX.GetPlayers()
 		for i=1, #xPlayers, 1 do
 			local xPlayer = ESX.GetPlayerFromId(xPlayers[i])
-			local identifier = xPlayer.identifier
+			local identifier = xPlayer.getIdentifier()
 			local inventory = json.encode(getInventory(Inventories[xPlayer.source]))
 			exports.ghmattimysql:execute('UPDATE `users` SET `inventory` = @inventory WHERE identifier = @identifier', {
 				['@inventory'] = inventory,
@@ -203,10 +203,10 @@ end)
 
 AddEventHandler('linden_inventory:confiscatePlayerInventory', function(xPlayer)
 	if type(xPlayer) ~= 'table' then xPlayer = ESX.GetPlayerFromId(xPlayer) end
-	if xPlayer.identifier then
+	if xPlayer.get('linventory') then
 		local inventory = json.encode(getPlayerInventory(xPlayer))
 		exports.ghmattimysql:execute('REPLACE INTO linden_inventory (name, data) VALUES (@name, @data)', {
-			['@name'] = xPlayer.identifier,
+			['@name'] = xPlayer.getIdentifier(),
 			['@data'] = inventory
 		}, function (rowsChanged)
 			TriggerEvent('linden_inventory:clearPlayerInventory', xPlayer)
@@ -217,10 +217,10 @@ end)
 
 AddEventHandler('linden_inventory:recoverPlayerInventory', function(xPlayer)
 	if type(xPlayer) ~= 'table' then xPlayer = ESX.GetPlayerFromId(xPlayer) end
-	if xPlayer.identifier then
-		local result = exports.ghmattimysql:scalarSync('SELECT data FROM linden_inventory WHERE name = @name', { ['@name'] = xPlayer.identifier })
+	if xPlayer.get('linventory') then
+		local result = exports.ghmattimysql:scalarSync('SELECT data FROM linden_inventory WHERE name = @name', { ['@name'] = xPlayer.getIdentifier() })
 		if result ~= nil then
-			exports.ghmattimysql:execute('DELETE FROM linden_inventory WHERE name = @name', { ['@name'] = xPlayer.identifier })
+			exports.ghmattimysql:execute('DELETE FROM linden_inventory WHERE name = @name', { ['@name'] = xPlayer.getIdentifier() })
 			local Inventory = json.decode(result)
 			for k,v in pairs(Inventory) do
 				if v.metadata == nil then v.metadata = {} end
