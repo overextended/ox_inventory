@@ -62,6 +62,24 @@ exports.ghmattimysql:ready(function()
 			end
 			message('Created '..#(result)..' items', 2)
 			Status[1] = 'loaded'
+			local count = 0
+			for k,v in pairs(Config.ItemList) do
+				if not Items[k] then
+					--print (' ('..k..', '..k..', 115, 1, 1, 1, NULL), ')
+					count = count + 1
+					for k, v in pairs(result) do
+						Items[k] = {
+							name = k,
+							label = k,
+							weight = 0,
+							stackable = 1,
+							description = 'Item not added to database',
+							closeonuse = 1
+						}
+					end
+				end
+			end
+			if count > 0 then message('Created '..count..' dummy items', 2) end
 		else
 			failed('Unable to retrieve items from the database')
 		end
@@ -262,8 +280,9 @@ AddEventHandler('linden_inventory:openInventory', function(data, player)
 				slots = data.slots,
 				coords = data.coords,
 				maxWeight = data.maxWeight,
-				inventory = GetItems(id)
 			}
+			if data.owner then Inventories[id].owner = data.owner end
+			Inventories[id].inventory = GetItems(id, data.owner)
 			if CheckOpenable(xPlayer, id, data.coords) then
 				Opened[xPlayer.source] = {invid = id, type = data.type}
 				TriggerClientEvent('linden_inventory:openInventory', xPlayer.source, Inventories[xPlayer.source], Inventories[id])
@@ -642,7 +661,7 @@ AddEventHandler('linden_inventory:saveInventory', function(data)
 			updateWeight(ESX.GetPlayerFromId(invid))
 			Opened[invid] = nil
 		elseif data.type ~= 'shop' and data.type ~= 'drop' and Inventories[data.invid] and Inventories[data.invid].changed then
-			SaveItems(data.type, data.invid)
+			SaveItems(data.type, data.invid, Inventories[data.invid].owner)
 			Inventories[data.invid].changed = false
 		end
 		Opened[xPlayer.source] = nil
@@ -962,7 +981,7 @@ end, true, {help = 'set account money', validate = true, arguments = {
 }})
 
 OpenStash = function(xPlayer, data)
-	TriggerEvent('linden_inventory:openInventory', {type = 'stash', id = data.name, slots = data.slots, coords = data.coords, job = data.job  }, xPlayer)
+	TriggerEvent('linden_inventory:openInventory', {type = 'stash', owner = data.owner, id = data.name, slots = data.slots, coords = data.coords, job = data.job  }, xPlayer)
 end
 exports('OpenStash', OpenStash)
 
