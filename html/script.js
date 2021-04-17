@@ -80,6 +80,7 @@ Display = function(bool) {
 				$(".item-slot").remove();
 				$(".ItemBoxes").remove();
 				$('.inventory-main').hide()
+				$('.inventory-main-rightside').removeData("invId")
 				righttotalkg = 0
 				totalkg = 0
 			});
