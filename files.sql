@@ -1,9 +1,11 @@
 CREATE TABLE IF NOT EXISTS `linden_inventory` (
-	`id` TINYINT(11) NOT NULL AUTO_INCREMENT,
-	`owner` VARCHAR(60) NULL DEFAULT NULL COLLATE 'utf8mb4_general_ci',
-	`name` VARCHAR(100) NULL DEFAULT NULL COLLATE 'utf8mb4_general_ci', 
-	`data` LONGTEXT NULL DEFAULT NULL COLLATE 'utf8mb4_general_ci'
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+    `id` TINYINT(11) NOT NULL AUTO_INCREMENT,
+    `owner` VARCHAR(60) NULL DEFAULT NULL COLLATE 'utf8mb4_general_ci',
+    `name` VARCHAR(100) NULL DEFAULT NULL COLLATE 'utf8mb4_general_ci', 
+    `data` LONGTEXT NULL DEFAULT NULL COLLATE 'utf8mb4_general_ci',
+    PRIMARY KEY (`id`),
+    UNIQUE INDEX (`name`, `owner`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci
 
 
 CREATE TABLE IF NOT EXISTS `items` (
