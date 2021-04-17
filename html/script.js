@@ -362,28 +362,28 @@ function DragAndDrop() {
 				SwapItems(fromInventory, toInventory, curslot, toSlot)
 			}
 		},
-
-	});
-
-	$(".use").droppable({
-		hoverClass: 'button-hover',
-		drop: function(event, ui) {
-			setTimeout(function(){
-				IsDragging = false;
-			}, 300)
-			fromData = ui.draggable.data("ItemData");
-			fromInventory = ui.draggable.parent();
-			inv = fromInventory.data('invTier')
-				$.post("https://linden_inventory/useItem", JSON.stringify({
-					item: fromData,
-					inv: inv
-				}));
-				if (fromData.closeonuse) {
-					HSN.CloseInventory()
-				}
-		}
+	
 	});
 }
+
+$(".use").droppable({
+	hoverClass: 'button-hover',
+	drop: function(event, ui) {
+		setTimeout(function(){
+			IsDragging = false;
+		}, 300)
+		fromData = ui.draggable.data("ItemData");
+		fromInventory = ui.draggable.parent();
+		inv = fromInventory.data('invTier')
+		$.post("https://linden_inventory/useItem", JSON.stringify({
+			item: fromData,
+			inv: inv
+		}));
+		if (fromData.closeonuse) {
+			HSN.CloseInventory()
+		}
+	}
+});
 
 $(".give").droppable({
 	hoverClass: 'button-hover',
@@ -394,8 +394,9 @@ $(".give").droppable({
 		fromData = ui.draggable.data("ItemData");
 		fromInventory = ui.draggable.parent();
 		count = parseInt($("#item-count").val()) || 0
+		inv = fromInventory.data('invTier')
 		if (fromData !== undefined) {
-			if (inv == 'Playerinv' && count > 0) {
+			if (inv == 'Playerinv' && count >= 0) {
 				$.post("https://linden_inventory/giveItem", JSON.stringify({
 					item: fromData,
 					inv: inv,
