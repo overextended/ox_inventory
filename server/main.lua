@@ -907,9 +907,11 @@ ESX.RegisterServerCallback('linden_inventory:usingItem', function(source, cb, it
 	local cItem = Config.ItemList[xItem.name]
 	if not cItem.consume or xItem.count >= cItem.consume then
 		cb(xItem)
-		ESX.SetTimeout(cItem.useTime, function()
-			removeInventoryItem(xPlayer, item, cItem.consume, metadata, slot)
-		end)
+		if cItem.useTime then
+			ESX.SetTimeout(cItem.useTime, function()
+				removeInventoryItem(xPlayer, item, cItem.consume, metadata, slot)
+			end)
+		else removeInventoryItem(xPlayer, item, cItem.consume, metadata, slot) end
 	else
 		TriggerClientEvent('mythic_notify:client:SendAlert', xPlayer.source, { type = 'error', text = 'You do not have enough '..xItem.label })
 	end
