@@ -147,7 +147,7 @@ OpenGloveBox = function(gloveboxid, class)
 end
 
 OpenTrunk = function(trunkid, class)
-	local slots, weight = Config.Trunks[class][1], Config.Trunks[class][2]
+	local slots, weight = Config.Trunks[class][2], Config.Trunks[class][3]
 	if slots then TriggerServerEvent('linden_inventory:openInventory', {type = 'trunk',id  = 'trunk-'..trunkid, slots = slots, maxWeight = weight}) end
 end
 
@@ -665,7 +665,8 @@ RegisterCommand('vehinv', function()
 		if vehicle and Config.Trunks[class] and #(playerCoords - vehiclePos) < 6 then
 			if GetVehicleDoorLockStatus(vehicle) ~= 2 then
 				local vehHash = GetEntityModel(vehicle)
-				local checkVehicle = Config.VehicleStorage[vehHash]
+				local checkVehicle = Config.Trunks[vehHash]
+				if checkVehicle == nil then checkVehicle = Config.Trunks[class][1] else checkVehicle = Config.Trunks[vehHash][1] end
 				if checkVehicle == 1 then open, vehBone = 4, GetEntityBoneIndexByName(vehicle, 'bonnet')
 				elseif checkVehicle == nil then open, vehBone = 5, GetEntityBoneIndexByName(vehicle, 'boot') elseif checkVehicle == 2 then open, vehBone = 5, GetEntityBoneIndexByName(vehicle, 'boot') else --[[no vehicle nearby]] return end
 				
@@ -679,7 +680,7 @@ RegisterCommand('vehinv', function()
 				if CloseToVehicle then
 					local plate = GetVehicleNumberPlateText(vehicle)
 					TaskTurnPedToFaceCoord(playerPed, vehiclePos)
-					OpenTrunk(plate, class)
+					if Config.Trunks[vehHash] then OpenTrunk(plate, vehHash) else OpenTrunk(plate, class) end
 					local timeout = 20
 					while true do
 						if currentInventory and currentInventory.type == 'trunk' then break end
@@ -728,7 +729,8 @@ RegisterCommand('vehinv', function()
 		local vehicle = GetVehiclePedIsIn(playerPed, false)
 		local plate = GetVehicleNumberPlateText(vehicle)
 		local class = GetVehicleClass(vehicle)
-		OpenGloveBox(plate, class)
+		local vehHash = GetEntityModel(vehicle)
+		if Config.Gloveboxes[vehHash] then OpenGloveBox(plate, vehHash) else OpenGloveBox(plate, class) end
 		Citizen.Wait(100)
 		while true do
 			Citizen.Wait(100)
