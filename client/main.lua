@@ -756,8 +756,7 @@ RegisterCommand('vehinv', function()
 	end
 end)
 
--- not yet done
---[[RegisterCommand('hotbar', function()
+RegisterCommand('hotbar', function()
 	local data = {}
 	for i=1, 5 do
 		if ESX.PlayerData.inventory[i] then data[i] = ESX.PlayerData.inventory[i] end
@@ -767,7 +766,7 @@ end)
 		items = data
 	})
 end)
-RegisterKeyMapping('hotbar', 'Open vehicle inventory', 'keyboard', 'tab')]]
+RegisterKeyMapping('hotbar', 'Open vehicle inventory', 'keyboard', 'tab')
 		
 RegisterKeyMapping('inv', 'Open player inventory', 'keyboard', Config.InventoryKey)
 RegisterKeyMapping('vehinv', 'Open vehicle inventory', 'keyboard', Config.VehicleInventoryKey)
