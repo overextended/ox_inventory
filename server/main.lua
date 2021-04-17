@@ -89,12 +89,12 @@ ESX.RegisterServerCallback('linden_inventory:setup', function(source, cb)
 		else
 			DropPlayer(xPlayer.source, 'there was an issue loading your inventory')
 		end
-		Inventories[xPlayer.source].name = xPlayer.getName()
-		local data = {drops = Drops, name = Inventories[xPlayer.source].name, inventory = Inventories[xPlayer.source].inventory }
-		cb(data)
-		Citizen.Wait(100)
-		updateWeight(xPlayer, true)	
 	end
+	Inventories[xPlayer.source].name = xPlayer.getName()
+	local data = {drops = Drops, name = Inventories[xPlayer.source].name, inventory = Inventories[xPlayer.source].inventory }
+	cb(data)
+	Citizen.Wait(100)
+	updateWeight(xPlayer, true)	
 end)
 
 AddEventHandler('onResourceStart', function(resourceName)
