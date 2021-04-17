@@ -225,7 +225,7 @@ SaveItems = function(type,id,owner)
 			['@name'] = id,
 			['@owner'] = owner
 		})
-		if result then
+		if result[1] then
 			if result[1].data ~= inventory then
 				exports.ghmattimysql:execute('UPDATE linden_inventory SET data = @data WHERE id = @id', {
 					['@id'] = result[1].id,
