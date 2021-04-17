@@ -377,6 +377,7 @@ $(".give").droppable({
 		fromData = ui.draggable.data("ItemData");
 		fromInventory = ui.draggable.parent();
 		count = parseInt($("#item-count").val()) || 0
+		inv = fromInventory.data('invTier');
 		if (fromData !== undefined) {
 			if (inv == 'Playerinv' && count > 0) {
 				$.post("https://linden_inventory/giveItem", JSON.stringify({
