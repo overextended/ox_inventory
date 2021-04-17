@@ -1,4 +1,9 @@
+checkPlayer = function(xPlayer)
+	if xPlayer.get('linventory') ~= true then count = 0 while true do count = count + 1 if count == 15 then return false end Citizen.Wait(100) end else return true end
+end
+
 getInventoryItem = function(xPlayer, name, metadata)
+	if checkPlayer(xPlayer) ~= true then return end
 	local xItem = Items[name]
 	if not xItem then print(('^1[error]^7 %s does not exist'):format(name)) return end
 	xItem.count = 0
@@ -16,6 +21,7 @@ exports('getInventoryItem', getInventoryItem)
 
 
 addInventoryItem = function(xPlayer, item, count, metadata, slot)
+	if checkPlayer(xPlayer) ~= true then return end
 	local xItem = Items[item]
 	if xPlayer and xItem and count > 0 then
 		if metadata == 'setname' then metadata = {description = xPlayer.getName()} else metadata = setMetadata(metadata) end
@@ -74,6 +80,7 @@ exports('addInventoryItem', addInventoryItem)
 
 
 removeInventoryItem = function(xPlayer, item, count, metadata, slot)
+	if checkPlayer(xPlayer) ~= true then return end
 	local xItem = Items[item]
 	if xPlayer and xItem and count > 0 then
 		if metadata then metadata = setMetadata(metadata) end
@@ -120,6 +127,7 @@ exports('removeInventoryItem', removeInventoryItem)
 
 
 setInventoryItem = function(xPlayer, name, count, metadata)
+	if checkPlayer(xPlayer) ~= true then return end
 	local item = getInventoryItem(xPlayer, name, metadata)
 	if item and count >= 0 then
 		count = ESX.Math.Round(count)
@@ -135,9 +143,9 @@ end
 exports('setInventoryItem', setInventoryItem)
 
 
-updateWeight = function(xPlayer)
+updateWeight = function(xPlayer, force)
 	local newWeight = getWeight(xPlayer)
-	if newWeight ~= Inventories[xPlayer.source].weight then
+	if force or newWeight ~= Inventories[xPlayer.source].weight then
 		Inventories[xPlayer.source].weight = newWeight
 		TriggerClientEvent('linden_inventory:updateStorage', xPlayer.source, {newWeight, Inventories[xPlayer.source].maxWeight, Inventories[xPlayer.source].slots})
 	end
@@ -172,6 +180,7 @@ exports('setMaxWeight', setMaxWeight)
 
 
 canCarryItem = function(xPlayer, name, count, metadata)
+	if checkPlayer(xPlayer) ~= true then return end
 	local xItem = Items[name]
 	if xItem then
 		local freeSlot = false
@@ -190,6 +199,7 @@ exports('canCarryItem', canCarryItem)
 
 
 canSwapItem = function(xPlayer, firstItem, firstItemCount, testItem, testItemCount)
+	if checkPlayer(xPlayer) ~= true then return end
 	local curWeight = Inventories[xPlayer.source].weight
 	local firstItemObject = getInventoryItem(xPlayer, firstItem)
 	local testItemObject = getInventoryItem(xPlayer, testItem)
@@ -204,24 +214,27 @@ exports('canSwapItem', canSwapItem)
 
 
 getPlayerInventory = function(xPlayer, minimal)
-	local inventory = {}
-	for k, v in pairs(Inventories[xPlayer.source].inventory) do
-		if v.count > 0 then
-			if minimal and v.metadata and next(v.metadata) == nil then v.metadata = nil end
-			inventory[#inventory+1] = {
-				name = v.name,
-				count = v.count,
-				slot = k,
-				metadata = v.metadata
-			}
+	if Inventories[xPlayer.source] then
+		local inventory = {}
+		for k, v in pairs(Inventories[xPlayer.source].inventory) do
+			if v.count > 0 then
+				if minimal and v.metadata and next(v.metadata) == nil then v.metadata = nil end
+				inventory[#inventory+1] = {
+					name = v.name,
+					count = v.count,
+					slot = k,
+					metadata = v.metadata
+				}
+			end
 		end
+		return inventory
 	end
-	return inventory
 end
 exports('getPlayerInventory', getPlayerInventory)
 
 
 getPlayerSlot = function(xPlayer, slot, item, metadata)
+	while xPlayer.get('linventory') ~= true do Citizen.Wait(100) print(xPlayer.get('linventory')) end
 	if slot > Config.PlayerSlots then return nil end
 	local getSlot = Inventories[xPlayer.source].inventory[slot]
 	if item and getSlot and getSlot.name ~= item then slot = nil end
@@ -232,6 +245,7 @@ exports('getPlayerSlot', getPlayerSlot)
 
 
 getInventoryItemSlots = function(xPlayer, name, metadata)
+	while xPlayer.get('linventory') ~= true do Citizen.Wait(100) print(xPlayer.get('linventory')) end
 	local xItem = Items[name]
 	if not xItem then print(('^1[error]^7 %s does not exist'):format(name)) return end
 	local totalCount, slots, emptySlots = 0, {}, Config.PlayerSlots
