@@ -113,18 +113,20 @@ window.addEventListener('message', function(event) {
 HSN.Hotbar = function(items) {
 	if (showhotbar == null) {
 		showhotbar = true
-		var $hotbars = $(".hotbars-container")
-		for(i = 1; i <= 5; i++) {
+		var $hotbar = $(".hotbar-container")
+		$hotbar.fadeIn(200);
+		for(i = 0; i < 5; i++) {
+			var $hotslot = $(".hotslot-container.template").clone();
+			$hotslot.removeClass('template');
 			var item = items[i]
-			if (item) {
-				$hotbars.append('<div id="itembox-label"><p>'+item.label+'</p></div><div class="itembox-img"><img src="images/' + item.name + '.png'+'" alt="' + item.name + '" /></div>');
+			if (item != null) {
+				$hotslot.html('<div id="itembox-label"><p>'+item.label+'</p></div><div class="hotslot-img"><img src="images/' + item.name + '.png'+'" alt="' + item.name + '" /></div>');
 			}
+			$hotslot.appendTo($(".hotbar-container"));
 		}
-		$hotbars.show()
-		$hotbars.fadeIn(250);
 		setTimeout(function() {
-			$.when($hotbars.fadeOut(300)).done(function() {
-				$hotbars.hide()
+			$.when($hotbar.fadeOut(300)).done(function() {
+				$hotbar.html('')
 				showhotbar = null
 			});
 		}, 3000);
