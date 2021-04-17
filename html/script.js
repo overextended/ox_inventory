@@ -7,6 +7,7 @@ var righttotalkg = 0
 var count = 0
 var dropSlots = 50
 var timer = null
+var showhotbar = null
 var HSN = []
 var rightinvtype = null
 var rightinventory = null
@@ -99,19 +100,35 @@ window.addEventListener('message', function(event) {
 		DragAndDrop()
 	} else if (event.data.message == 'close') {
 		HSN.CloseInventory()
-
 	} else if (event.data.message == 'refresh') {
 		HSN.RefreshInventory(event.data)
 		DragAndDrop()
-	} else if (event.data.message == 'hsn-hotbar') {
-		//HSN.Hotbar(event.data.items) 
+	} else if (event.data.message == 'hotbar') {
+		HSN.Hotbar(event.data.items) 
 	}else if (event.data.message == "notify") {
 		HSN.NotifyItems(event.data.item,event.data.text)
 	}
 })
 
-HSN.Hotbar = function(hotbar) {
-	
+HSN.Hotbar = function(items) {
+	if (showhotbar == null) {
+		showhotbar = true
+		var $hotbars = $(".hotbars-container")
+		for(i = 1; i <= 5; i++) {
+			var item = items[i]
+			if (item) {
+				$hotbars.append('<div id="itembox-label"><p>'+item.label+'</p></div><div class="itembox-img"><img src="images/' + item.name + '.png'+'" alt="' + item.name + '" /></div>');
+			}
+		}
+		$hotbars.show()
+		$hotbars.fadeIn(250);
+		setTimeout(function() {
+			$.when($hotbars.fadeOut(300)).done(function() {
+				$hotbars.hide()
+				showhotbar = null
+			});
+		}, 3000);
+	}
 }
 
 HSN.NotifyItems = function(item, text) {
