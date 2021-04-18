@@ -205,7 +205,6 @@ SetNuiFocusAdvanced = function(hasFocus, hasCursor, allowMovement)
 				if not nui_focus[1] then
 					ticks = ticks + 1
 					if (IsDisabledControlJustReleased(0, 200, true) or ticks > 20) then
-						invOpen = false
 						currentInventory = nil
 						if Config.EnableBlur then TriggerScreenblurFadeOut(0) end
 						break
@@ -672,7 +671,7 @@ end)
 
 RegisterCommand('vehinv', function()
 	if not PlayerLoaded then return end
-	if not CanOpenInventory() then error("You can't open your inventory right now") return end
+	if not CanOpenInventory() or isBusy or invOpen then error("You can't open your inventory right now") return end
 	if not IsPedInAnyVehicle(playerPed, false) then -- trunk
 		local vehicle, vehiclePos = ESX.Game.GetVehicleInDirection()
 		if not vehiclePos then vehiclePos = GetEntityCoords(vehicle) end
@@ -825,7 +824,7 @@ RegisterNUICallback('exit',function(data)
 	TriggerServerEvent('linden_inventory:saveInventory', data)
 	currentInventory = nil
 	SetNuiFocusAdvanced(false, false)
-	Citizen.Wait(200)
+	Citizen.Wait(100)
 	invOpen = false
 end)
 
