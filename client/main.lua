@@ -217,7 +217,7 @@ end
 
 RegisterNetEvent('linden_inventory:openInventory')
 AddEventHandler('linden_inventory:openInventory',function(data, rightinventory)
-	if CanOpenInventory() and not invOpen then
+	if CanOpenInventory() then
 		movement = false
 		invOpen = true
 		SendNUIMessage({
