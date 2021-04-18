@@ -217,22 +217,23 @@ end
 
 RegisterNetEvent('linden_inventory:openInventory')
 AddEventHandler('linden_inventory:openInventory',function(data, rightinventory)
-	if not PlayerLoaded then return end
-	movement = false
-	invOpen = true
-	SendNUIMessage({
-		message = 'openinventory',
-		inventory = data.inventory,
-		slots = data.slots,
-		name = inventoryLabel,
-		maxWeight = data.maxWeight,
-		weight = data.weight,
-		rightinventory = rightinventory
-	})
-	ESX.PlayerData.inventory = data.inventory
-	if not rightinventory then movement = true else movement = false end
-	SetNuiFocusAdvanced(true, true, movement)
-	currentInventory = rightinventory
+	if CanOpenInventory() and not invOpen then
+		movement = false
+		invOpen = true
+		SendNUIMessage({
+			message = 'openinventory',
+			inventory = data.inventory,
+			slots = data.slots,
+			name = inventoryLabel,
+			maxWeight = data.maxWeight,
+			weight = data.weight,
+			rightinventory = rightinventory
+		})
+		ESX.PlayerData.inventory = data.inventory
+		if not rightinventory then movement = true else movement = false end
+		SetNuiFocusAdvanced(true, true, movement)
+		currentInventory = rightinventory
+	end
 end)
 
 RegisterNetEvent('linden_inventory:refreshInventory')
@@ -671,7 +672,7 @@ end)
 
 RegisterCommand('vehinv', function()
 	if not PlayerLoaded then return end
-	if not CanOpenInventory() or isBusy or invOpen then error("You can't open your inventory right now") return end
+	if not CanOpenInventory() or invOpen then error("You can't open your inventory right now") return end
 	if not IsPedInAnyVehicle(playerPed, false) then -- trunk
 		local vehicle, vehiclePos = ESX.Game.GetVehicleInDirection()
 		if not vehiclePos then vehiclePos = GetEntityCoords(vehicle) end
