@@ -82,12 +82,13 @@ end, true)
 
 #### Creating new items
 All your old items using `ESX.RegisterUsableItem` still work, however I would personally register items through the inventory
-* Adding an item to `shared/items.lua` using other items as a template will register the item as usable
+* Adding an item to `shared/items.lua` (use the existing for examples) will register the item as usable
 * Setting consume to `0` means it's unlimited usage, otherwise it sets the number to remove (default is 1, do not define)
 * Set how long it takes to use an item, animations to trigger, and props to attach (through mythic_progbar)
 * Set items to add or remove hunger, thirst, stress, or drunk
 * Trigger events before or after the item is used with `dofirst` and `event`
 * You can define existing events from other resources, or add new ones to `client/items.lua`
+
 ```lua
 	['bandage'] = {
 		animDict = 'missheistdockssetup1clipboard@idle_a',
@@ -108,3 +109,4 @@ All your old items using `ESX.RegisterUsableItem` still work, however I would pe
 		consume = 0,
 		dofirst = 'esx_lockpick:onUse'
 	},
+```
