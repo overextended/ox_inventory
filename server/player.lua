@@ -3,7 +3,7 @@ checkPlayer = function(xPlayer)
 end
 
 getInventoryItem = function(xPlayer, name, metadata)
-	if checkPlayer(xPlayer) ~= true then return end
+	if not name or checkPlayer(xPlayer) ~= true then return end
 	local xItem = Items[name]
 	if not xItem then print(('^1[error]^7 %s does not exist'):format(name)) return end
 	xItem.count = 0
@@ -234,7 +234,7 @@ exports('getPlayerInventory', getPlayerInventory)
 
 
 getPlayerSlot = function(xPlayer, slot, item, metadata)
-	while xPlayer.get('linventory') ~= true do Citizen.Wait(100) print(xPlayer.get('linventory')) end
+	if checkPlayer(xPlayer) ~= true then return end
 	if slot > Config.PlayerSlots then return nil end
 	local getSlot = Inventories[xPlayer.source].inventory[slot]
 	if item and getSlot and getSlot.name ~= item then slot = nil end
@@ -245,7 +245,7 @@ exports('getPlayerSlot', getPlayerSlot)
 
 
 getInventoryItemSlots = function(xPlayer, name, metadata)
-	while xPlayer.get('linventory') ~= true do Citizen.Wait(100) print(xPlayer.get('linventory')) end
+	if checkPlayer(xPlayer) ~= true then return end
 	local xItem = Items[name]
 	if not xItem then print(('^1[error]^7 %s does not exist'):format(name)) return end
 	local totalCount, slots, emptySlots = 0, {}, Config.PlayerSlots
