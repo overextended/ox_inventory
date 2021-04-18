@@ -3,19 +3,22 @@ checkPlayer = function(xPlayer)
 end
 
 getInventoryItem = function(xPlayer, name, metadata)
-	if not name or checkPlayer(xPlayer) ~= true then return end
-	local xItem = Items[name]
-	if not xItem then print(('^1[error]^7 %s does not exist'):format(name)) return end
-	xItem.count = 0
-	for k, v in pairs(Inventories[xPlayer.source].inventory) do
-		if v.name == name then
-			if not v.metadata then v.metadata = {} end
-			if not metadata or is_table_equal(v.metadata, metadata) then
-				xItem.count = xItem.count + v.count
+	if checkPlayer(xPlayer) ~= true then return end
+	if name then
+		local xItem = Items[name]
+		if not xItem then print(('^1[error]^7 %s does not exist'):format(name)) return end
+		xItem.count = 0
+		for k, v in pairs(Inventories[xPlayer.source].inventory) do
+			if v.name == name then
+				if not v.metadata then v.metadata = {} end
+				if not metadata or is_table_equal(v.metadata, metadata) then
+					xItem.count = xItem.count + v.count
+				end
 			end
 		end
+		return xItem
 	end
-	return xItem
+	return
 end
 exports('getInventoryItem', getInventoryItem)
 
