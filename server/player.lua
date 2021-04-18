@@ -1,5 +1,5 @@
 checkPlayer = function(xPlayer)
-	if xPlayer.get('linventory') ~= true then count = 0 while true do count = count + 1 if count == 15 then return false end Citizen.Wait(100) end else return true end
+	if xPlayer.get('linventory') ~= true then Citizen.Wait(1500) count = 0 while true do if count > 3 then return false end Citizen.Wait(1000) end count = count + 1 else return true end
 end
 
 getInventoryItem = function(xPlayer, name, metadata)
