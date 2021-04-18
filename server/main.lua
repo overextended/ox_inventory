@@ -164,6 +164,7 @@ AddEventHandler('linden_inventory:setPlayerInventory', function(xPlayer, data)
 	}
 	if data and next(data) then
 		for k, v in pairs(data) do
+			if type(v) == 'number' then break end
 			local xItem = Items[v.name]
 			if xItem then
 				local weight
