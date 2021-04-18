@@ -12,9 +12,9 @@ set mysql_connection_string "mysql://user:password@localhost/database?connectTim
 #set onesync_enabled
 #set onesync_enableInfinity
 
-ensure mapmanager
+#ensure mapmanager		# can have issues with esx
 ensure chat
-ensure spawnmanager
+#ensure spawnmanager		# can have issues with esx
 ensure sessionmanager
 ensure hardcap
 
