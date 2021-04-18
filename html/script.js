@@ -1,4 +1,4 @@
-var disabled = false
+var invOpen = false
 var drag = false
 var dropLabel = 'Drop'
 var dropName = 'drop'
@@ -71,8 +71,14 @@ var numberFormat = function(num, item) {
 
 Display = function(bool) {
 	if (bool) {
-		$(".inventory-main").fadeIn(200);
-		$('.inventory-main').show()
+		setTimeout(function() {
+			var $inventory = $(".inventory-main");
+			$inventory.show()
+			$.when($inventory.fadeIn(200)).done(function() {
+				$(".inventory-main").fadeIn(200);
+				invOpen = true
+			});
+		});
 	} else {
 		setTimeout(function() {
 			var $inventory = $(".inventory-main");
@@ -83,6 +89,7 @@ Display = function(bool) {
 				$('.inventory-main-rightside').removeData("invId")
 				righttotalkg = 0
 				totalkg = 0
+				invOpen = false
 			});
 		});
 	}
@@ -452,35 +459,26 @@ $(document).on("mouseenter", ".ItemBoxes", function(e){
 });
 
 HSN.CloseInventory = function() {
-	$.post('https://linden_inventory/exit', JSON.stringify({
-		type: rightinvtype,
-		invid: rightinventory
-	}));
-	
-	Display(false)
+	if (invOpen == true) {
+		$.post('https://linden_inventory/exit', JSON.stringify({
+			type: rightinvtype,
+			invid: rightinventory
+		}));
+		
+		Display(false)
+	}
 	return
 }
 
 
 document.onkeyup = function (data) {
 	if (data.which == 27) {
-		$.post('https://linden_inventory/exit', JSON.stringify({
-			type: rightinvtype,
-			invid: rightinventory
-		}));
-		Display(false)
-		return
+		HSN.CloseInventory()
 	}
 };
 
 $(document).on('click', '.close', function(e){
-	$.post('https://linden_inventory/exit', JSON.stringify({
-		type: rightinvtype,
-		invid: rightinventory
-	}));
-	
-	Display(false)
-	return
+	HSN.CloseInventory()
 });
 
 is_table_equal = function(obj1, obj2) {
