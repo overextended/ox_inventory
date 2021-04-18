@@ -82,6 +82,7 @@ CanOpenTarget = function(searchPlayerPed)
 	if IsPedDeadOrDying(searchPlayerPed, 1)
 	or IsEntityPlayingAnim(searchPlayerPed, 'random@mugging3', 'handsup_standing_base', 3)
 	or IsEntityPlayingAnim(searchPlayerPed, 'missminuteman_1ig_2', 'handsup_base', 3)
+	or IsEntityPlayingAnim(searchPlayerPed, 'missminuteman_1ig_2', 'handsup_enter', 3)
 	or IsEntityPlayingAnim(searchPlayerPed, 'dead', 'dead_a', 3)
 	or IsEntityPlayingAnim(searchPlayerPed, 'mp_arresting', 'idle', 3)
 	then return true
