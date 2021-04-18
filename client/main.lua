@@ -696,6 +696,7 @@ RegisterCommand('vehinv', function()
 				if CloseToVehicle then
 					local plate = GetVehicleNumberPlateText(vehicle)
 					TaskTurnPedToFaceCoord(playerPed, vehiclePos)
+					lastVehicle = vehicle
 					OpenTrunk(plate, class)
 					local timeout = 20
 					while true do
@@ -734,7 +735,7 @@ RegisterCommand('vehinv', function()
 							break
 						end
 					end
-					TriggerEvent('linden_inventory:closeInventory')
+					if lastVehicle then TriggerEvent('linden_inventory:closeInventory') end
 					return
 				end
 			else
@@ -749,9 +750,10 @@ RegisterCommand('vehinv', function()
 		Citizen.Wait(100)
 		while true do
 			Citizen.Wait(100)
-			if not invOpen or not IsPedInAnyVehicle(playerPed, false) then
+			if not invOpen then break
+			elseif not IsPedInAnyVehicle(playerPed, false) then
 				TriggerEvent('linden_inventory:closeInventory')
-				return
+				break
 			end
 		end
 	end
@@ -833,7 +835,6 @@ RegisterNetEvent('linden_inventory:useItem')
 AddEventHandler('linden_inventory:useItem',function(item)
 	if CanOpenInventory() and not useItemCooldown then
 		useItemCooldown = true
-		isBusy = true
 		ESX.SetTimeout(500, function()
 			useItemCooldown = false
 		end)
@@ -862,6 +863,7 @@ AddEventHandler('linden_inventory:useItem',function(item)
 			if xItem then
 				if data.dofirst then TriggerEvent(data.dofirst) end
 				if data.useTime and data.useTime >= 0 then
+					isBusy = true
 					if not data.animDict or not data.anim then
 						data.animDict = 'pickup_object'
 						data.anim = 'putdown_low'
