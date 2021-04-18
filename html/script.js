@@ -11,8 +11,8 @@ var showhotbar = null
 var HSN = []
 var rightinvtype = null
 var rightinventory = null
-var maxWeight = 30000
-var rightmaxWeight = 30000
+var maxWeight = 0
+var rightmaxWeight = 0
 var playerfreeweight = 0
 var rightfreeweight = 0
 var availableweight = 0
@@ -257,14 +257,8 @@ HSN.SetupInventory = function(data) {
 		$('.inventory-main-rightside').data("invId", data.rightinventory.name)
 		rightinventory = data.rightinventory.name
 		rightinvtype = data.rightinventory.type
-		
-		if (rightinvtype == 'TargetPlayer') {
-			rightmaxWeight = data.rightinventory.maxWeight
-			righttotalkg = data.rightinventory.weight
-		} else {
-			rightmaxWeight = data.rightinventory.maxWeight || (data.rightinventory.slots*8000).toFixed(0)
-			righttotalkg = 0
-		}
+		rightmaxWeight = data.rightinventory.maxWeight || (data.rightinventory.slots*8000).toFixed(0)
+		righttotalkg = 0
 		$('.rightside-name').html(data.rightinventory.name)
 			for(i = 1; i <= (data.rightinventory.slots); i++) {
 				$(".inventory-main-rightside").find("[inventory-slot=" + i + "]").remove();
