@@ -83,7 +83,28 @@ end, true)
 #### Creating new items
 All your old items using `ESX.RegisterUsableItem` still work, however I would personally register items through the inventory
 * Adding an item to `shared/items.lua` using other items as a template will register the item as usable
-* Setting consume to `0` means it's unlimited usage, otherwise it sets the number to remove (usually 1)
+* Setting consume to `0` means it's unlimited usage, otherwise it sets the number to remove (default is 1, do not define)
 * Set how long it takes to use an item, animations to trigger, and props to attach (through mythic_progbar)
 * Set items to add or remove hunger, thirst, stress, or drunk
-* Add other item events before or after the progress bar plays by modifying `linden_inventory:useItem` in `client/main.lua`
+* Trigger events before or after the item is used with `dofirst` and `event`
+* You can define existing events from other resources, or add new ones to `client/items.lua`
+```lua
+	['bandage'] = {
+		animDict = 'missheistdockssetup1clipboard@idle_a',
+		anim = 'idle_a',
+		flags = 49,
+		model = 'prop_rolled_sock_02',
+		coords = { x = -0.14, y = 0.02, z = -0.08 },
+		rotation = { x = -50.0, y = -50.0, z = 0.0 },
+		useTime = 2500,
+		event = 'linden_inventory:bandage'
+	},
+	
+	['lockpick'] = {
+		disableMove = true,
+		animDict = 'anim@amb@clubhouse@tutorial@bkr_tut_ig3@',
+		anim = 'machinic_loop_mechandplayer',
+		useTime = 2000,
+		consume = 0,
+		dofirst = 'esx_lockpick:onUse'
+	},
