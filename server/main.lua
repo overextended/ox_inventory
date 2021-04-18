@@ -404,7 +404,7 @@ AddEventHandler('linden_inventory:saveInventoryData', function(data)
 				invid = playerinv
 			elseif data.frominv == 'TargetPlayer' then
 				targetId = string.gsub(data.invid, 'Player ', '')
-				xTarget = ESX.GetPlayerFromId(targetId)
+				xTarget = ESX.GetPlayerFromId(tonumber(targetId))
 				invid = xTarget.source
 			else
 				invid = data.invid
@@ -455,7 +455,7 @@ AddEventHandler('linden_inventory:saveInventoryData', function(data)
 			if data.frominv == 'Playerinv' then
 				if data.toinv == 'TargetPlayer' then
 					targetId = string.gsub(data.invid, 'Player ', '')
-					xTarget = ESX.GetPlayerFromId(targetId)
+					xTarget = ESX.GetPlayerFromId(tonumber(targetId))
 					invid = xTarget.source
 				else
 					invid = data.invid
@@ -464,7 +464,7 @@ AddEventHandler('linden_inventory:saveInventoryData', function(data)
 			elseif data.toinv == 'Playerinv' then
 				if data.frominv == 'TargetPlayer' then
 					targetId = string.gsub(data.invid2, 'Player ', '')
-					xTarget = ESX.GetPlayerFromId(targetId)
+					xTarget = ESX.GetPlayerFromId(tonumber(targetId))
 					invid2 = xTarget.source
 				else
 					invid2 = data.invid2
@@ -909,9 +909,9 @@ ESX.RegisterServerCallback('linden_inventory:usingItem', function(source, cb, it
 		cb(xItem)
 		if cItem.useTime then
 			ESX.SetTimeout(cItem.useTime, function()
-				removeInventoryItem(xPlayer, item, cItem.consume, metadata, slot)
+				removeInventoryItem(xPlayer, item, cItem.consume or 1, metadata, slot)
 			end)
-		else removeInventoryItem(xPlayer, item, cItem.consume, metadata, slot) end
+		else removeInventoryItem(xPlayer, item, cItem.consume or 1, metadata, slot) end
 	else
 		TriggerClientEvent('mythic_notify:client:SendAlert', xPlayer.source, { type = 'error', text = 'You do not have enough '..xItem.label })
 	end
