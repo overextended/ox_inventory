@@ -825,7 +825,6 @@ RegisterNUICallback('exit',function(data)
 	TriggerServerEvent('linden_inventory:saveInventory', data)
 	currentInventory = nil
 	SetNuiFocusAdvanced(false, false)
-	Citizen.Wait(100)
 	invOpen = false
 end)
 
