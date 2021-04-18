@@ -291,6 +291,7 @@ UseItem = function(xPlayer, item, notESX)
 		TriggerClientEvent('linden_inventory:useItem', xPlayer.source, item)
 	else
 		if type(item) == 'table' then item = item.name end
-	 	if ESX.UsableItemsCallbacks[item] then TriggerEvent('esx:useItem', xPlayer.source, item) end
+		TriggerClientEvent('linden_inventory:closeInventory', xPlayer.source)
+	 	if ESX.UsableItemsCallbacks[item] then ESX.UsableItemsCallbacks[item](xPlayer.source) end
 	end
 end
