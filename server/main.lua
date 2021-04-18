@@ -271,7 +271,7 @@ AddEventHandler('linden_inventory:openInventory', function(data, player)
 					TriggerClientEvent('linden_inventory:openInventory', xPlayer.source, Inventories[xPlayer.source], Shops[id])
 				end
 			end
-		elseif data.type == 'glovebox' or data.type == 'trunk' or data.type == 'stash' then
+		elseif data.type == 'glovebox' or data.type == 'trunk' or (data.type == 'stash' and not data.owner) then
 			local id = data.id
 			if not data.maxWeight then data.maxWeight = data.slots*8000 end
 			Inventories[id] = {
@@ -280,8 +280,25 @@ AddEventHandler('linden_inventory:openInventory', function(data, player)
 				slots = data.slots,
 				coords = data.coords,
 				maxWeight = data.maxWeight,
+				inventory = GetItems(id)
 			}
-			if data.owner == true then Inventories[id].owner = xPlayer.identifier elseif data.owner then Inventories[id].owner = data.owner end
+			if CheckOpenable(xPlayer, id, data.coords) then
+				Opened[xPlayer.source] = {invid = id, type = data.type}
+				TriggerClientEvent('linden_inventory:openInventory', xPlayer.source, Inventories[xPlayer.source], Inventories[id])
+			end
+		elseif data.owner then
+			if data.owner == true then data.owner = xPlayer.identifier end
+			local id = data.id..'-'..data.owner
+			if not data.maxWeight then data.maxWeight = data.slots*8000 end
+			Inventories[id] = {
+				name = id,
+				owner = data.owner,
+				type = data.type,
+				slots = data.slots,
+				coords = data.coords,
+				maxWeight = data.maxWeight,
+				inventory = GetItems(id)
+			}
 			Inventories[id].inventory = GetItems(id, data.owner)
 			if CheckOpenable(xPlayer, id, data.coords) then
 				Opened[xPlayer.source] = {invid = id, type = data.type}
