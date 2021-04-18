@@ -860,13 +860,7 @@ AddEventHandler('linden_inventory:useItem',function(item)
 
 		ESX.TriggerServerCallback('linden_inventory:usingItem', function(xItem)
 			if xItem then
-				-- Effects before item use -----------------------------------------------
-
-				if xItem.name == 'lockpick' then
-					TriggerEvent('esx_lockpick:onUse')
-				end
-
-				--------------------------------------------------------------------------
+				if data.dofirst then TriggerEvent(data.dofirst) end
 				if data.useTime and data.useTime >= 0 then
 					if not data.animDict or not data.anim then
 						data.animDict = 'pickup_object'
@@ -903,7 +897,6 @@ AddEventHandler('linden_inventory:useItem',function(item)
 					if data.drunk > 0 then TriggerEvent('esx_status:add', 'drunk', data.drunk)
 					else TriggerEvent('esx_status:remove', 'drunk', data.drunk) end
 				end
-				-- Effects after item use ------------------------------------------------
 
 				if data.component then
 					GiveWeaponComponentToPed(playerPed, currentWeapon.name, component.hash)
@@ -911,14 +904,8 @@ AddEventHandler('linden_inventory:useItem',function(item)
 					TriggerServerEvent('linden_inventory:updateWeapon', currentWeapon, component.name)
 				end
 
-				if xItem.name == 'bandage' then
-					local maxHealth = 200
-					local health = GetEntityHealth(playerPed)
-					local newHealth = math.min(maxHealth, math.floor(health + maxHealth / 16))
-					SetEntityHealth(playerPed, newHealth)
-				end
+				if data.event then TriggerEvent(data.event) end
 
-				--------------------------------------------------------------------------
 				isBusy = false
 			end
 		end, item.name, item.slot, item.metadata)
