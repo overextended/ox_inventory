@@ -11,13 +11,13 @@ PlayerDropped = function(src)
 		if data.type == 'TargetPlayer' then
 			updateWeight(ESX.GetPlayerFromId(data.invid))
 			Opened[data.invid] = nil
-			print(src..' disconnected while accessing player inventory '..data.invid)
+			print(GetPlayerName(src)..' disconnected while accessing player inventory '..data.invid)
 		elseif data.type ~= 'shop' and data.type ~= 'drop' and Inventories[data.invid] and Inventories[data.invid].changed then
 			SaveItems(data.type, data.invid)
 			Inventories[data.invid].changed = false
-			print(src..' disconnected while accessing '..data.type..' '..data.invid)
+			print(GetPlayerName(src)..' disconnected while accessing '..data.type..' '..data.invid)
 		else
-			print(src..' disconnected while accessing '..data.type..' '..data.invid)
+			print(GetPlayerName(src)..' disconnected while accessing '..data.type..' '..data.invid)
 		end
 		Opened[src] = nil
 		Inventories[src] = nil
