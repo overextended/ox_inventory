@@ -56,7 +56,7 @@ GenerateText = function(numLetters)
 end
 
 GenerateSerial = function(text)
-	if not text then text = GenerateText(3) end
+	if not text then text = GenerateText(3) elseif string.len(text) > 3 then return text end
 	local random = math.random(100000,999999)
 	local random2 = math.random(100000,999999)
 	local serial = ('%s%s%s'):format(random, text, random2)
