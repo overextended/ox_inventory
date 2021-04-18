@@ -663,7 +663,7 @@ AddEventHandler('linden_inventory:saveInventory', function(data)
 		elseif data.type ~= 'shop' and data.type ~= 'drop' and Inventories[data.invid] and Inventories[data.invid].changed then
 			SaveItems(data.type, data.invid, Inventories[data.invid].owner)
 			Inventories[data.invid].changed = false
-		else Opened[data.invid] = nil end
+		elseif data.invid then Opened[data.invid] = nil end
 		Opened[xPlayer.source] = nil
 		updateWeight(xPlayer)
 		TriggerClientEvent('linden_inventory:refreshInventory', xPlayer.source, Inventories[xPlayer.source])
