@@ -2,6 +2,14 @@ AddEventHandler('linden_inventory:burger', function()
 	inform('You ate a delicious burger')
 end)
 
+AddEventHandler('linden_inventory:water', function()
+	inform('You drank some refreshing water')
+end)
+
+AddEventHandler('linden_inventory:cola', function()
+	inform('You drank some delicious eCola')
+end)
+
 AddEventHandler('linden_inventory:mustard', function()
 	inform('You.. drank mustard')
 end)
