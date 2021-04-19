@@ -269,7 +269,6 @@ SaveItems = function(type,id,owner)
 			})
 		end
 	end
-	Opened[id] = nil
 end
 
 GetItems = function(id, type, owner)
