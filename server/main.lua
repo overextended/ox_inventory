@@ -4,6 +4,7 @@ Usables = {}
 Players = {}
 Drops = {}
 Inventories = {}
+Datastore = {}
 Shops = {}
 Opened = {}
 Status = {'starting', ''}
@@ -289,7 +290,7 @@ AddEventHandler('linden_inventory:openInventory', function(data, player)
 				slots = data.slots,
 				coords = data.coords,
 				maxWeight = data.maxWeight,
-				inventory = GetItems(id)
+				inventory = GetItems(id, data.type)
 			}
 			if CheckOpenable(xPlayer, id, data.coords) then
 				Opened[xPlayer.source] = {invid = id, type = data.type}
@@ -306,9 +307,8 @@ AddEventHandler('linden_inventory:openInventory', function(data, player)
 				slots = data.slots,
 				coords = data.coords,
 				maxWeight = data.maxWeight,
-				inventory = GetItems(id)
+				inventory = GetItems(id, data.type, data.owner)
 			}
-			Inventories[id].inventory = GetItems(id, data.owner)
 			if CheckOpenable(xPlayer, id, data.coords) then
 				Opened[xPlayer.source] = {invid = id, type = data.type}
 				TriggerClientEvent('linden_inventory:openInventory', xPlayer.source, Inventories[xPlayer.source], Inventories[id])
@@ -687,9 +687,10 @@ AddEventHandler('linden_inventory:saveInventory', function(data)
 			local invid = Opened[src].invid
 			updateWeight(ESX.GetPlayerFromId(invid))
 			Opened[invid] = nil
-		elseif data.type ~= 'shop' and data.type ~= 'drop' and Inventories[data.invid] and Inventories[data.invid].changed then
-			SaveItems(data.type, data.invid, Inventories[data.invid].owner)
-			Inventories[data.invid].changed = false
+		elseif data.type ~= 'shop' and data.type ~= 'drop' and Inventories[data.invid] then
+			if Inventories[data.invid].changed then	SaveItems(data.type, data.invid, Inventories[data.invid].owner) end
+			Inventories[data.invid] = nil
+			Opened[data.invid] = nil
 		elseif data.invid then Opened[data.invid] = nil end
 		if xPlayer then
 			Opened[src] = nil
