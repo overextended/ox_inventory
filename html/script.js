@@ -87,6 +87,7 @@ Display = function(bool) {
 				$(".ItemBoxes").remove();
 				$('.inventory-main').hide()
 				$('.inventory-main-rightside').removeData("invId")
+				$('.inventory-main-rightside').removeData("invTier")
 				righttotalkg = 0
 				totalkg = 0
 				invOpen = false
