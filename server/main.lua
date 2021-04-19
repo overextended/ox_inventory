@@ -672,29 +672,44 @@ end)
 
 RegisterNetEvent('linden_inventory:saveInventory')
 AddEventHandler('linden_inventory:saveInventory', function(data)
-	local xPlayer = ESX.GetPlayerFromId(source)
-	if xPlayer then
+	local src = source
+	if Inventories[src] then
+		local xPlayer = ESX.GetPlayerFromId(src)
 		if data.type == 'TargetPlayer' then
-			local invid = Opened[xPlayer.source].invid
+			local invid = Opened[src].invid
 			updateWeight(ESX.GetPlayerFromId(invid))
 			Opened[invid] = nil
 		elseif data.type ~= 'shop' and data.type ~= 'drop' and Inventories[data.invid] and Inventories[data.invid].changed then
 			SaveItems(data.type, data.invid, Inventories[data.invid].owner)
 			Inventories[data.invid].changed = false
 		elseif data.invid then Opened[data.invid] = nil end
-		Opened[xPlayer.source] = nil
-		updateWeight(xPlayer)
-		TriggerClientEvent('linden_inventory:refreshInventory', xPlayer.source, Inventories[xPlayer.source])
+		if xPlayer then
+			Opened[src] = nil
+			updateWeight(xPlayer)
+			TriggerClientEvent('linden_inventory:refreshInventory', src, Inventories[src])
+		end
 	end
 end)
 
-AddEventHandler('esx:playerLogout', function(playerid)
-	PlayerDropped(playerid)
-end)
-
-RegisterNetEvent('playerDropped')
-AddEventHandler('playerDropped', function()
-	PlayerDropped(source)
+AddEventHandler('esx:playerDropped', function(playerid)
+	local data = Opened[playerid]
+	if Inventories[playerid] and data then
+		if data.type == 'TargetPlayer' then
+			local invid = Opened[playerid].invid
+			updateWeight(ESX.GetPlayerFromId(invid))
+			Opened[invid] = nil
+		elseif data.type ~= 'shop' and data.type ~= 'drop' and Inventories[data.invid] and Inventories[data.invid].changed then
+			SaveItems(data.type, data.invid, Inventories[data.invid].owner)
+			Inventories[data.invid].changed = false
+		elseif data.invid then Opened[data.invid] = nil end
+		if Inventories[playerid] then
+			local xPlayer = ESX.GetPlayerFromId(playerid)
+			if xPlayer then
+				if Inventories[playerid].name ~= xPlayer.getName() then Inventories[playerid] = nil end
+			else Inventories[playerid] = nil end 
+		end
+		Opened[playerid] = nil
+	end
 end)
 
 RegisterNetEvent('linden_inventory:devtool')
