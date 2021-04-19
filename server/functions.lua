@@ -5,26 +5,6 @@ GetPlayerIdentification = function(xPlayer)
 	return ('Sex: %s | DOB: %s%s'):format( sex, xPlayer.get('dateofbirth'), identifier )
 end
 
-PlayerDropped = function(src)
-	local data = Opened[src]
-	if data then
-		if data.type == 'TargetPlayer' then
-			updateWeight(ESX.GetPlayerFromId(data.invid))
-			Opened[data.invid] = nil
-			print(GetPlayerName(src)..' disconnected while accessing player inventory '..data.invid)
-		elseif data.type ~= 'shop' and data.type ~= 'drop' and Inventories[data.invid] and Inventories[data.invid].changed then
-			SaveItems(data.type, data.invid)
-			Inventories[data.invid].changed = false
-			print(GetPlayerName(src)..' disconnected while accessing '..data.type..' '..data.invid)
-		else
-			print(GetPlayerName(src)..' disconnected while accessing '..data.type..' '..data.invid)
-		end
-		Opened[src] = nil
-		Inventories[src] = nil
-		if data.invid then Opened[data.invid] = nil end
-	end
-end
-
 is_table_equal = function(t1,t2,ignore_mt)
 	local ty1 = type(t1)
 	local ty2 = type(t2)
@@ -292,6 +272,6 @@ UseItem = function(xPlayer, item, notESX)
 	else
 		if type(item) == 'table' then item = item.name end
 		TriggerClientEvent('linden_inventory:closeInventory', xPlayer.source)
-	 	if ESX.UsableItemsCallbacks[item] then ESX.UseItem(xPlayer.source, item) end
+		if ESX.UsableItemsCallbacks[item] then ESX.UseItem(xPlayer.source, item) end
 	end
 end
