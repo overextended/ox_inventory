@@ -180,24 +180,73 @@ SetupShopItems = function(shop)
 	return inventory
 end
 
+---	Temporary command - delete all vehicles from `linden_inventory` table where name exists twice and owner is null
+RegisterCommand('cleanvehicles', function(source, args, rawCommand)
+	if source > 0 then return end
+	
+	local result = exports.ghmattimysql:executeSync('SELECT name, owner FROM linden_inventory group by name having count(*) >= 2', {})
+	if result then
+		for k,v in pairs(result) do
+			exports.ghmattimysql:scalarSync('DELETE FROM linden_inventory WHERE owner IS NULL AND name = @name', {['@name'] = v.name})
+		end
+	end
+
+end, true)
+---
 SaveItems = function(type,id,owner)
 	if id and owner == nil and (type == 'stash' or type == 'trunk' or type == 'glovebox') then
-		local inventory = json.encode(getInventory(Inventories[id]))
-		local result = exports.ghmattimysql:scalarSync('SELECT data FROM linden_inventory WHERE name = @name', {
-			['@name'] = id
-		})
-		if result then
-			if result ~= inventory then
-				exports.ghmattimysql:execute('UPDATE linden_inventory SET data = @data WHERE name = @name', {
-					['@data'] = inventory,
-					['@name'] = id
+		if type ~= 'stash' then
+			local plate = string.match(id, "-(.*)")
+			local owner
+			if Datastore[plate] then owner = false else
+				local result = exports.ghmattimysql:scalarSync('SELECT owner FROM owned_vehicles WHERE plate = @plate', {
+					['@plate'] = plate
+				})
+				if result then owner = true end
+			end
+			if not owner then
+				if not Datastore[plate] then Datastore[plate] = {trunk = {}, glovebox = {}} end
+				Datastore[plate][type] = Inventories[id].inventory
+				return
+			else
+				local inventory = json.encode(getInventory(Inventories[id]))
+				local result = exports.ghmattimysql:executeSync('SELECT * FROM linden_inventory WHERE name = @name AND owner = @owner LIMIT 1', {
+					['@name'] = id,
+					['@owner'] = owner
+				})
+				if result[1] then
+					if result[1].data ~= inventory then
+						exports.ghmattimysql:execute('UPDATE linden_inventory SET data = @data WHERE id = @id', {
+							['@id'] = result[1].id,
+							['@data'] = inventory,
+						})
+					end
+				elseif inventory ~= '[]' then
+					exports.ghmattimysql:execute('INSERT INTO linden_inventory (name, data, owner) VALUES (@name, @data, @owner)', {
+						['@name'] = id,
+						['@data'] = inventory,
+						['@owner'] = owner
+					})
+				end
+			end
+		else	-- Unowned stash
+			local inventory = json.encode(getInventory(Inventories[id]))
+			local result = exports.ghmattimysql:scalarSync('SELECT data FROM linden_inventory WHERE name = @name', {
+				['@name'] = id
+			})
+			if result then
+				if result ~= inventory then
+					exports.ghmattimysql:execute('UPDATE linden_inventory SET data = @data WHERE name = @name', {
+						['@data'] = inventory,
+						['@name'] = id
+					})
+				end
+			elseif inventory ~= '[]' then
+				exports.ghmattimysql:execute('INSERT INTO linden_inventory (name, data) VALUES (@name, @data)', {
+					['@name'] = id,
+					['@data'] = inventory
 				})
 			end
-		elseif inventory ~= '[]' then
-			exports.ghmattimysql:execute('INSERT INTO linden_inventory (name, data) VALUES (@name, @data)', {
-				['@name'] = id,
-				['@data'] = inventory
-			})
 		end
 	elseif id and owner then
 		local inventory = json.encode(getInventory(Inventories[id]))
@@ -223,10 +272,32 @@ SaveItems = function(type,id,owner)
 	Opened[id] = nil
 end
 
-GetItems = function(id, owner)
+GetItems = function(id, type, owner)
 	local returnData = {}
 	local result
 	if not owner then
+		if type == 'trunk' or type == 'glovebox' then
+			local plate = string.match(id, "-(.*)")
+			local result = exports.ghmattimysql:scalarSync('SELECT plate, owner FROM owned_vehicles WHERE plate = @plate', {
+				['@plate'] = plate
+			})
+			if result == nil then
+				if not Datastore[plate] then
+					Datastore[plate] = {trunk = {}, glovebox = {}}
+					--- Temporary! Clean up vehicles with no owners
+					local result = exports.ghmattimysql:scalarSync('SELECT id FROM linden_inventory WHERE name = @name', {
+						['@name'] = id
+					})
+					if result then
+						exports.ghmattimysql:scalarSync('DELETE FROM linden_inventory WHERE id = @id', {
+							['@id'] = result
+						})
+					end
+					----------------------------------------------
+				end
+				return Datastore[plate][type]
+			end
+		end
 		result = exports.ghmattimysql:scalarSync('SELECT data FROM linden_inventory WHERE name = @name', {
 			['@name'] = id
 		})
