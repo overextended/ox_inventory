@@ -13,8 +13,11 @@ title: Installation
 * [ghmattimysql](https://github.com/GHMatti/ghmattimysql/releases)
 * [mythic_progbar](https://github.com/thelindat/mythic_progbar)
 * [mythic_notify](https://github.com/thelindat/mythic_notify)
-* ESX Framework ([ExtendedMode](https://github.com/extendedmode/extendedmode/tree/dev) or [v1 Final](https://github.com/esx-framework/es_extended/tree/v1-final))
-* Or download my modified [ExtendedMode](https://github.com/thelindat/extendedmode) or [v1 Final](https://github.com/thelindat/es_extended)
+* ESX Framework ([v1 Final](https://github.com/esx-framework/es_extended/tree/v1-final) or [ExtendedMode](https://github.com/extendedmode/extendedmode))
+
+#### If you want to try ExtendedMode
+* I have a [modified release](https://github.com/thelindat/extendedmode) with several bug fixes, added features, and required changes already made
+* You can also try an experimental [branch](https://github.com/thelindat/extendedmode/tree/kashacters) for use with [kashacters](https://github.com/thelindat/esx_kashacter)
 
 
 <h2 align='center'>Updating from hsn-inventory</h2>
