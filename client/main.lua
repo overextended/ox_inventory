@@ -769,7 +769,7 @@ RegisterCommand('hotbar', function()
 		items = data
 	})
 end)
-RegisterKeyMapping('hotbar', 'Open vehicle inventory', 'keyboard', 'tab')
+RegisterKeyMapping('hotbar', 'Display inventory hotbar', 'keyboard', 'tab')
 		
 RegisterKeyMapping('inv', 'Open player inventory', 'keyboard', Config.InventoryKey)
 RegisterKeyMapping('vehinv', 'Open vehicle inventory', 'keyboard', Config.VehicleInventoryKey)
