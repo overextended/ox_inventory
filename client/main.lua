@@ -70,6 +70,7 @@ StartInventory = function()
 		end
 	end)
 end
+if ESX.IsPlayerLoaded() then StartInventory() end
 
 CanOpenInventory = function()
 	if PlayerLoaded and not isBusy and weaponTimer < 250 and not isDead and not isCuffed and not IsPauseMenuActive() then
