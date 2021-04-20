@@ -61,9 +61,11 @@ addInventoryItem = function(xPlayer, item, count, metadata, slot)
 			ItemNotify(xPlayer, Inventories[xPlayer.source].inventory[slot], count, slot, 'Added')
 		elseif item:find('identification') then
 			count = 1
-			metadata = {}
-			metadata.type = xPlayer.getName()
-			metadata.description = GetPlayerIdentification(xPlayer)
+			if not metadata then
+				metadata = {}
+				metadata.type = xPlayer.getName()
+				metadata.description = GetPlayerIdentification(xPlayer)
+			end
 			local added = count
 			if existing then count = Inventories[xPlayer.source].inventory[slot].count + count end
 			Inventories[xPlayer.source].inventory[slot] = {name = item, label = xItem.label, weight = xItem.weight, slot = slot, count = count, description = xItem.description, metadata = metadata, stackable = xItem.stackable, closeonuse = true}
