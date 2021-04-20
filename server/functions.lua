@@ -180,7 +180,7 @@ SetupShopItems = function(shop)
 	return inventory
 end
 
----	Temporary command - delete all vehicles from `linden_inventory` table where name exists twice and owner is null
+---	delete all vehicles from `linden_inventory` table where name exists more than once and owner is null (temporary)
 RegisterCommand('cleanvehicles', function(source, args, rawCommand)
 	if source > 0 then return end
 	
@@ -202,7 +202,7 @@ SaveItems = function(type,id,owner)
 				local result = exports.ghmattimysql:scalarSync('SELECT owner FROM owned_vehicles WHERE plate = @plate', {
 					['@plate'] = plate
 				})
-				if result then owner = true end
+				if result then owner = result end
 			end
 			if not owner then
 				if not Datastore[plate] then Datastore[plate] = {trunk = {}, glovebox = {}} end
@@ -210,15 +210,15 @@ SaveItems = function(type,id,owner)
 				return
 			else
 				local inventory = json.encode(getInventory(Inventories[id]))
-				local result = exports.ghmattimysql:executeSync('SELECT * FROM linden_inventory WHERE name = @name AND owner = @owner LIMIT 1', {
-					['@name'] = id,
-					['@owner'] = owner
+				local result = exports.ghmattimysql:executeSync('SELECT * FROM linden_inventory WHERE name = @name LIMIT 1', {
+					['@name'] = id
 				})
 				if result[1] then
 					if result[1].data ~= inventory then
-						exports.ghmattimysql:execute('UPDATE linden_inventory SET data = @data WHERE id = @id', {
+						exports.ghmattimysql:execute('UPDATE linden_inventory SET data = @data, owner = @owner WHERE id = @id', {
 							['@id'] = result[1].id,
-							['@data'] = inventory,
+							['@owner'] = owner,
+							['@data'] = inventory
 						})
 					end
 				elseif inventory ~= '[]' then
