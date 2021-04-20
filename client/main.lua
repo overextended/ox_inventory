@@ -71,8 +71,6 @@ StartInventory = function()
 	end)
 end
 
-if PlayerLoaded then StartInventory() end
-
 CanOpenInventory = function()
 	if PlayerLoaded and not isBusy and weaponTimer < 250 and not isDead and not isCuffed and not IsPauseMenuActive() then
 		--if IsPedDeadOrDying(playerPed, 1) then return false end
