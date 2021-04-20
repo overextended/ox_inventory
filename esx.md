@@ -100,18 +100,7 @@ esx:removeInventoryItem
 esx:onPickup
 ```
 * Search for and remove any instance of `loadout      = xPlayer.getLoadout(),`
-* Search for `esx:useItem` and replace
-```lua
-RegisterNetEvent('esx:useItem')
-AddEventHandler('esx:useItem', function(source, itemName)
-	local xPlayer = ESX.GetPlayerFromId(source)
-	local item = xPlayer.getInventoryItem(itemName)
-	if item.count > 0 then
-		if item.closeonuse then TriggerClientEvent('linden_inventory:closeInventory', source) end
-		ESX.UseItem(source, itemName)
-	end
-end)
-```
+* Search for `esx:useItem` and remove the event
 
 
 ## server/functions.lua
