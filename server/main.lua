@@ -711,12 +711,7 @@ AddEventHandler('esx:playerDropped', function(playerid)
 			SaveItems(data.type, data.invid, Inventories[data.invid].owner)
 			Inventories[data.invid].changed = false
 		elseif data.invid then Opened[data.invid] = nil end
-		if Inventories[playerid] then
-			local xPlayer = ESX.GetPlayerFromId(playerid)
-			if xPlayer then
-				if Inventories[playerid].name ~= xPlayer.getName() then Inventories[playerid] = nil end
-			else Inventories[playerid] = nil end 
-		end
+		if Inventories[playerid] then Inventories[playerid] = nil end
 		Opened[playerid] = nil
 	end
 end)
