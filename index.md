@@ -23,10 +23,6 @@ title: Installation
 <h2 align='center'>Updating from hsn-inventory</h2>
 Revert any changes from the previous version of the inventory (you can start fresh or use my included framework edits)
 <br><br>
-<h2 align='center'>Modifying your framework</h2>
-<a href='exm'>ExtendedMode</a><br>
-<a href='esx'>ESX v1 Final<a>
-<br><br>
 <h2 align='center'>Modifying third-party resources</h2>
 
 * Delete `config.json` to fallback to using the MySQL connection string in server.cfg
@@ -43,6 +39,11 @@ end)
 ```
 
 Look at [Snippets](snippets) or [Other Resources](resources) for modifying other resources
+<br><br>
+<h2 align='center'>Modifying your framework</h2>
+<a href='exm'>ExtendedMode</a><br>
+<a href='esx'>ESX v1 Final<a>
+<br><br>
 
 
 <h2 align='center'>F.A.Qs</h2>
