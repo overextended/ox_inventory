@@ -32,7 +32,7 @@ addInventoryItem = function(xPlayer, item, count, metadata, slot)
 		if slot then slot = getPlayerSlot(xPlayer, slot, item, metadata).slot
 		else
 			for i=1, Config.PlayerSlots do
-				if xItem.stackable == 1 and Inventories[xPlayer.source].inventory[i] and Inventories[xPlayer.source].inventory[i].name == item and is_table_equal(Inventories[xPlayer.source].inventory[i].metadata, metadata) then toSlot = i existing = true break
+				if xItem.stackable and Inventories[xPlayer.source].inventory[i] and Inventories[xPlayer.source].inventory[i].name == item and is_table_equal(Inventories[xPlayer.source].inventory[i].metadata, metadata) then toSlot = i existing = true break
 				elseif not toSlot and Inventories[xPlayer.source].inventory[i] == nil then toSlot = i existing = false end
 			end
 			slot = toSlot
@@ -61,7 +61,7 @@ addInventoryItem = function(xPlayer, item, count, metadata, slot)
 			ItemNotify(xPlayer, Inventories[xPlayer.source].inventory[slot], count, slot, 'Added')
 		elseif item:find('identification') then
 			count = 1
-			if not metadata then
+			if next(metadata) == nil then
 				metadata = {}
 				metadata.type = xPlayer.getName()
 				metadata.description = GetPlayerIdentification(xPlayer)
