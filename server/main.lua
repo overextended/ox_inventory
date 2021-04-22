@@ -711,9 +711,10 @@ AddEventHandler('esx:playerDropped', function(playerid)
 			SaveItems(data.type, data.invid, Inventories[data.invid].owner)
 			Inventories[data.invid].changed = false
 		elseif data.invid then Opened[data.invid] = nil end
-		if Inventories[playerid] then Inventories[playerid] = nil end
 		Opened[playerid] = nil
 	end
+	Citizen.Wait(2000)
+	if not ESX.GetPlayerFromId(playerid) and Inventories[playerid] then Inventories[playerid] = nil end
 end)
 
 RegisterNetEvent('linden_inventory:devtool')
