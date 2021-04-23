@@ -713,8 +713,13 @@ AddEventHandler('esx:playerDropped', function(playerid)
 		elseif data.invid then Opened[data.invid] = nil end
 		Opened[playerid] = nil
 	end
-	Citizen.Wait(2000)
-	if not ESX.GetPlayerFromId(playerid) and Inventories[playerid] then Inventories[playerid] = nil end
+end)
+
+AddEventHandler('playerDropped', function(reason)
+	local playerid = source
+	ESX.SetTimeout(2000, function()	
+		Inventories[playerid] then Inventories[playerid] = nil
+	end)
 end)
 
 RegisterNetEvent('linden_inventory:devtool')
