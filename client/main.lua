@@ -454,9 +454,7 @@ TriggerLoops = function()
 			elseif not invOpen and not wait and CanOpenInventory() then
 				for i=1, #Keys, 1 do
 					if not isBusy and IsDisabledControlJustReleased(0, Keys[i]) and ESX.PlayerData.inventory[i] then
-						if Usables[ESX.PlayerData.inventory[i].name] then
-							TriggerServerEvent('linden_inventory:useSlotItem', i)
-						end
+							TriggerEvent('linden_inventory:useItem', ESX.PlayerData.inventory[i])
 					end
 				end
 			end
@@ -793,7 +791,7 @@ RegisterNUICallback('notification', function(data)
 end)
 
 RegisterNUICallback('useItem', function(data, cb)
-	if data.inv == 'Playerinv' and Usables[data.item.name] then TriggerServerEvent('linden_inventory:useItem', data.item) end
+	if data.inv == 'Playerinv' then TriggerEvent('linden_inventory:useItem', data.item) end
 end)
 
 RegisterNUICallback('giveItem', function(data, cb)
@@ -834,13 +832,9 @@ RegisterNetEvent('linden_inventory:useItem')
 AddEventHandler('linden_inventory:useItem',function(item)
 	if CanOpenInventory() and not useItemCooldown then
 		useItemCooldown = true
-		ESX.SetTimeout(500, function()
-			useItemCooldown = false
-		end)
 		local data = Config.ItemList[item.name]
-		if not data or not next(data) then return end
-
-		if data.component then
+		local esxItem = Usables[item.name]
+		if data and data.component then
 			if not currentWeapon then isBusy = false return end
 			local result, esxWeapon = ESX.GetWeapon(currentWeapon.name)
 				
@@ -857,18 +851,18 @@ AddEventHandler('linden_inventory:useItem',function(item)
 				error("This weapon already has a "..item.label) isBusy = false return
 			end
 		end
-
+			
+		if esxItem then isBusy = true TriggerEvent('linden_inventory:closeInventory') end
 		ESX.TriggerServerCallback('linden_inventory:usingItem', function(xItem)
-			if xItem then
+			if xItem and data then
 				if data.dofirst then TriggerEvent(data.dofirst) end
 				if data.useTime and data.useTime >= 0 then
-					isBusy = true
 					if not data.animDict or not data.anim then
 						data.animDict = 'pickup_object'
 						data.anim = 'putdown_low'
 					end
 					if not data.flags then data.flags = 48 end
-					
+						
 					exports['mythic_progbar']:Progress({
 						name = 'useitem',
 						duration = data.useTime,
@@ -878,10 +872,10 @@ AddEventHandler('linden_inventory:useItem',function(item)
 						controlDisables = { disableMovement = data.disableMove, disableCarMovement = false, disableMouse = false, disableCombat = true },
 						animation = { animDict = data.animDict, anim = data.anim, flags = data.flags },
 						prop = { model = data.model, coords = data.coords, rotation = data.rotation }
-					}, function() isBusy = false end)
-				else isBusy = false end
+					})
+				end
 				Citizen.Wait(data.useTime)
-		
+			
 				if data.hunger then
 					if data.hunger > 0 then TriggerEvent('esx_status:add', 'hunger', data.hunger)
 					else TriggerEvent('esx_status:remove', 'hunger', data.hunger) end
@@ -906,9 +900,9 @@ AddEventHandler('linden_inventory:useItem',function(item)
 				end
 
 				if data.event then TriggerEvent(data.event) end
-
-				isBusy = false
 			end
-		end, item.name, item.slot, item.metadata)
+			useItemCooldown = false
+			isBusy = false
+		end, item.name, item.slot, item.metadata, esxItem)
 	end
 end)
