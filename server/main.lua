@@ -717,9 +717,11 @@ end)
 
 AddEventHandler('playerDropped', function(reason)
 	local playerid = source
-	ESX.SetTimeout(2000, function()	
-		if Inventories[playerid] then Inventories[playerid] = nil
-	end)
+	if Inventories[playerid] then
+		ESX.SetTimeout(2000, function()	
+			Inventories[playerid] = nil
+		end)
+	end
 end)
 
 RegisterNetEvent('linden_inventory:devtool')
