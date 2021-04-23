@@ -135,6 +135,7 @@ CreateNewDrop = function(xPlayer, data)
 			if Config.Logs then
 				exports.linden_logs:log(xPlayer, false, 'has dropped '..data.item.count..'x '..data.item.name..' in drop-'..invid, 'items')
 			end
+			Opened[xPlayer.source] = nil
 			TriggerClientEvent('linden_inventory:createDrop', -1, Drops[invid], xPlayer.source)
 		end
 	elseif data.type == 'split' then
@@ -145,6 +146,7 @@ CreateNewDrop = function(xPlayer, data)
 			if Config.Logs then
 				exports.linden_logs:log(xPlayer, false, 'has dropped '..data.newslotItem.count..'x '..data.newslotItem.name,' in drop-'..invid, 'items')
 			end
+			Opened[xPlayer.source] = nil
 			TriggerClientEvent('linden_inventory:createDrop', -1, Drops[invid], xPlayer.source)
 		end
 	end
