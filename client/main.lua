@@ -545,7 +545,7 @@ TriggerLoops = function()
 								OpenShop(id)
 							end
 						elseif distance > 4 then id, type = nil, nil
-						else text = Config.Shops[id].name end
+						else text = Config.Shops[id].name or Config.Shops[id].type.name end
 						if distance <= 2 then DrawText3D(Config.Shops[id].coords, text) end
 					else
 						for k, v in pairs(Config.Shops) do
