@@ -60,14 +60,7 @@ exports.ghmattimysql:ready(function()
 					description = v.description,
 					closeonuse = v.closeonuse
 				}
-				if Config.ItemList[v.name] or ESX.UsableItemsCallbacks[v.name] ~= nil then Usables[v.name] = true end
-				if v.name:find('WEAPON') then
-					Usables[v.name] = true
-					local AmmoType = GetAmmoType(v.name)
-					if AmmoType then Items[v.name].ammoType = AmmoType end
-				elseif v.name:find('ammo-') then
-					Usables[v.name] = true
-				end
+				if ESX.UsableItemsCallbacks[v.name] ~= nil then Usables[v.name] = true end
 			end
 			message('Created '..#(result)..' items', 2)
 			Status[1] = 'loaded'
@@ -735,41 +728,6 @@ AddEventHandler('linden_inventory:devtool', function()
 	end
 end)
 
-RegisterNetEvent('linden_inventory:useItem')
-AddEventHandler('linden_inventory:useItem', function(item)
-	local xPlayer = ESX.GetPlayerFromId(source)
-	if item.name:find('WEAPON_') then
-		if item.metadata.durability ~= nil then
-			if item.metadata.durability > 0 then 
-				TriggerClientEvent('linden_inventory:weapon', xPlayer.source, item)
-			else
-				TriggerClientEvent('mythic_notify:client:SendAlert', xPlayer.source, { type = 'error', text = 'This weapon is broken' })
-			end
-		elseif Config.Throwable[item] then
-			TriggerClientEvent('linden_inventory:weapon', xPlayer.source, item)
-		end
-	elseif item.name:find('ammo-') then
-		TriggerClientEvent('linden_inventory:addAmmo', xPlayer.source, Inventories[xPlayer.source].inventory[item.slot])
-	else
-		local slot = Inventories[xPlayer.source].inventory[item.slot]
-		local invItem = getInventoryItem(xPlayer, item.name)
-		if Config.ItemList[item.name] then
-			local consume = Config.ItemList[item.name].consume or 1
-			if slot == nil or slot.name ~= item.name then
-				if invItem.count > consume then
-					slot = item
-				else
-					TriggerClientEvent('mythic_notify:client:SendAlert', xPlayer.source, { type = 'error', text = 'You do not have enough '..item.label })
-					return
-				end
-			end
-			UseItem(xPlayer, slot, true)
-		else
-			UseItem(xPlayer, item)
-		end
-	end
-end)
-
 RegisterNetEvent('linden_inventory:giveItem')
 AddEventHandler('linden_inventory:giveItem', function(data, target)
 	local xPlayer = ESX.GetPlayerFromId(source)
@@ -797,31 +755,6 @@ AddEventHandler('linden_inventory:reloadWeapon', function(weapon)
 		if ammo.count > 0 then TriggerClientEvent('linden_inventory:addAmmo', xPlayer.source, ammo) end
 	end
 end)
-
-RegisterNetEvent('linden_inventory:useSlotItem')
-AddEventHandler('linden_inventory:useSlotItem', function(slot)
-	local xPlayer = ESX.GetPlayerFromId(source)
-	if Inventories[xPlayer.source].inventory[slot] ~= nil and Inventories[xPlayer.source].inventory[slot].name ~= nil then
-		if Inventories[xPlayer.source].inventory[slot].name:find('WEAPON_') then
-			if Inventories[xPlayer.source].inventory[slot].metadata.durability ~= nil then
-				if Inventories[xPlayer.source].inventory[slot].metadata.durability > 0 then
-					TriggerClientEvent('linden_inventory:weapon', xPlayer.source, Inventories[xPlayer.source].inventory[slot])
-				else
-					TriggerClientEvent('mythic_notify:client:SendAlert', xPlayer.source, { type = 'error', text = 'This weapon is broken' })
-				end
-			elseif Config.Throwable[Inventories[xPlayer.source].inventory[slot].name] then
-				TriggerClientEvent('linden_inventory:weapon', xPlayer.source, Inventories[xPlayer.source].inventory[slot])
-			end
-		else
-			if Inventories[xPlayer.source].inventory[slot].name:find('ammo-') then
-				TriggerClientEvent('linden_inventory:addAmmo', xPlayer.source, Inventories[xPlayer.source].inventory[slot])
-				return
-			end
-			UseItem(xPlayer, Inventories[xPlayer.source].inventory[slot])
-		end
-	end
-end)
-
 
 RegisterNetEvent('linden_inventory:decreaseDurability')
 AddEventHandler('linden_inventory:decreaseDurability', function(slot, item, ammo, xPlayer)
@@ -949,19 +882,37 @@ ESX.RegisterServerCallback('linden_inventory:buyLicense', function(source, cb)
 	end
 end)
 
-ESX.RegisterServerCallback('linden_inventory:usingItem', function(source, cb, item, slot, metadata)
+ESX.RegisterServerCallback('linden_inventory:usingItem', function(source, cb, item, slot, metadata, isESX)
 	local xPlayer = ESX.GetPlayerFromId(source)
 	local xItem = getInventoryItem(xPlayer, item, metadata, slot)
-	local cItem = Config.ItemList[xItem.name]
-	if not cItem.consume or xItem.count >= cItem.consume then
-		cb(xItem)
-		if cItem.useTime then
-			ESX.SetTimeout(cItem.useTime, function()
-				removeInventoryItem(xPlayer, item, cItem.consume or 1, metadata, slot)
-			end)
-		else removeInventoryItem(xPlayer, item, cItem.consume or 1, metadata, slot) end
-	else
-		TriggerClientEvent('mythic_notify:client:SendAlert', xPlayer.source, { type = 'error', text = 'You do not have enough '..xItem.label })
+	if isESX and xItem.count > 0 then
+		ESX.UseItem(xPlayer.source, xItem.name)
+		cb(false)
+	elseif xItem.count > 0 then
+		if xItem.name:find('WEAPON_') then
+			if metadata.durability > 0 then TriggerClientEvent('linden_inventory:weapon', xPlayer.source, Inventories[xPlayer.source].inventory[slot])
+			else TriggerClientEvent('mythic_notify:client:SendAlert', xPlayer.source, { type = 'error', text = 'This weapon is broken' }) end
+			cb(false)
+		elseif Config.Throwable[xItem.name] then
+			TriggerClientEvent('linden_inventory:weapon', xPlayer.source, Inventories[xPlayer.source].inventory[slot])
+			cb(false)
+		elseif xItem.name:find('ammo-') then
+			TriggerClientEvent('linden_inventory:addAmmo', xPlayer.source, Inventories[xPlayer.source].inventory[slot])
+			cb(false)
+		else
+			local cItem = Config.ItemList[xItem.name]
+			if not cItem.consume or xItem.count >= cItem.consume then
+				cb(xItem)
+				if cItem.useTime then
+					ESX.SetTimeout(cItem.useTime, function()
+						removeInventoryItem(xPlayer, item, cItem.consume or 1, metadata, slot)
+					end)
+				else removeInventoryItem(xPlayer, item, cItem.consume or 1, metadata, slot) end
+			else
+				TriggerClientEvent('mythic_notify:client:SendAlert', xPlayer.source, { type = 'error', text = 'You do not have enough '..xItem.label })
+				cb(false)
+			end
+		end
 	end
 end)
 
