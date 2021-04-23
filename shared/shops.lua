@@ -1,4 +1,5 @@
 Config.General = {
+	name = 'Shop',
 	blip = {
 		id = 52,
 		colour = 69,
@@ -13,11 +14,11 @@ Config.General = {
 }
 
 Config.Liquor = {
+	name = 'Liquor Store',
 	blip = {
 		id = 93,
 		colour = 69,
-		scale = 0.6,
-		name = 'Liquor Store'
+		scale = 0.6
 	}, inventory = {
 		{ name = 'water', price = 10 },
 		{ name = 'cola', price = 10 },
@@ -25,22 +26,22 @@ Config.Liquor = {
 }
 
 Config.YouTool = {
+	name = 'YouTool',
 	blip = {
 		id = 402,
 		colour = 69,
-		scale = 0.6,
-		name = 'YouTool'
+		scale = 0.6
 	}, inventory = {
 		{ name = 'lockpick', price = 10 },
 	}
 }
 
 Config.Ammunation = {
+	name = 'Ammunation',
 	blip = {
 		id = 110,
 		colour = 69,
-		scale = 0.6,
-		name = 'Ammunation'
+		scale = 0.6
 	}, inventory = {
 		{ name = 'ammo-9', price = 5, },
 		{ name = 'WEAPON_KNIFE', price = 200 },
@@ -50,11 +51,11 @@ Config.Ammunation = {
 }
 
 Config.PoliceArmoury = {
+	name = 'Police Armoury',
 	blip = {
 		id = 110,
 		colour = 84,
-		scale = 0.6,
-		name = 'Police Armoury'
+		scale = 0.6
 	}, inventory = {
 		{ name = 'ammo-9', price = 5, },
 		{ name = 'ammo-rifle', price = 5, },
@@ -67,11 +68,11 @@ Config.PoliceArmoury = {
 }
 
 Config.Medicine = {
+	name = 'Medicine Cabinet',
 	blip = {
 		id = 403,
 		colour = 69,
-		scale = 0.6,
-		name = 'Medicine Cabinet'
+		scale = 0.6
 	}, inventory = {
 		{ name = 'medikit', price = 26 },
 		{ name = 'WEAPON_STUNGUN', price = 500, metadata = { registered = true, serial = 'EMS' } },
