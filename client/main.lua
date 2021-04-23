@@ -54,17 +54,16 @@ StartInventory = function()
 			Blips = {}
 		end
 		for k, v in pairs(Config.Shops) do
-			if (not Config.Shops[k].job or Config.Shops[k].job == ESX.PlayerData.job.name) then
-				local name, data = 'Shop'
-				if v.type and v.type.blip then data = v.type.blip else data = Config.General.blip end
+			if v.type and v.type.blip and (not v.job or v.job == ESX.PlayerData.job.name) then
+				local data = v.type or Config.General
 				Blips[k] = AddBlipForCoord(v.coords.x, v.coords.y, v.coords.z)
-				SetBlipSprite(Blips[k], data.id)
+				SetBlipSprite(Blips[k], data.blip.id)
 				SetBlipDisplay(Blips[k], 4)
-				SetBlipScale(Blips[k], data.scale)
-				SetBlipColour(Blips[k], data.colour)
+				SetBlipScale(Blips[k], data.blip.scale)
+				SetBlipColour(Blips[k], data.blip.colour)
 				SetBlipAsShortRange(Blips[k], true)
 				BeginTextCommandSetBlipName('STRING')
-				AddTextComponentString(name)
+				AddTextComponentString(data.name)
 				EndTextCommandSetBlipName(Blips[k])
 			end
 		end
@@ -540,7 +539,8 @@ TriggerLoops = function()
 						sleep = 5
 						DrawMarker(2, Config.Shops[id].coords.x,Config.Shops[id].coords.y,Config.Shops[id].coords.z, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.3, 0.2, 0.15, 30, 150, 30, 222, false, false, false, true, false, false, false)			
 						local distance = #(playerCoords - Config.Shops[id].coords)
-						if distance <= 1 then text='[~g~E~s~] '..Config.Shops[id].name
+						local name = Config.Shops[id].name or Config.Shops[id].type.name
+						if distance <= 1 then text='[~g~E~s~] '..name
 							if IsControlJustPressed(0, 38) then
 								OpenShop(id)
 							end
