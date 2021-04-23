@@ -179,7 +179,7 @@ WeightActions = function(current, max)
 end
 
 local nui_focus = {false, false}
-SetNuiFocusAdvanced = function(hasFocus, hasCursor, allowMovement)
+SetNuiFocusAdvanced = function(hasFocus, hasCursor)
 	SetNuiFocus(hasFocus, hasCursor)
 	SetNuiFocusKeepInput(hasFocus)
 	nui_focus = {hasFocus, hasCursor}
@@ -198,7 +198,7 @@ SetNuiFocusAdvanced = function(hasFocus, hasCursor, allowMovement)
 				end
 				EnableControlAction(0, 249, true) -- N for PTT
 				EnableControlAction(0, 20, true) -- Z for proximity
-				if allowMovement and not currentInventory then
+				if movement and not currentInventory then
 					EnableControlAction(0, 30, true) -- movement
 					EnableControlAction(0, 31, true) -- movement
 				end
@@ -231,7 +231,7 @@ AddEventHandler('linden_inventory:openInventory',function(data, rightinventory)
 		})
 		ESX.PlayerData.inventory = data.inventory
 		if not rightinventory then movement = true else movement = false end
-		SetNuiFocusAdvanced(true, true, movement)
+		SetNuiFocusAdvanced(true, true)
 		currentInventory = rightinventory
 	end
 end)
@@ -285,7 +285,7 @@ AddEventHandler('linden_inventory:createDrop', function(data, owner)
 	Drops[data.name] = data
 	Drops[data.name].coords = vector3(data.coords.x, data.coords.y,data.coords.z - 0.2)
 	Citizen.Wait(0)
-	if owner == playerID then TriggerServerEvent('linden_inventory:openInventory', {type = 'drop', drop = data.name }) end
+	if owner == playerID and #(playerCoords - data.coords) <= 1 then TriggerServerEvent('linden_inventory:openInventory', {type = 'drop', drop = data.name }) end
 end)
 
 RegisterNetEvent('linden_inventory:removeDrop')
@@ -293,7 +293,7 @@ AddEventHandler('linden_inventory:removeDrop', function(id, owner)
 	Drops[id] = nil
 	if currentDrop and currentDrop.name == id then currentDrop = nil end
 	Citizen.Wait(0)
-	if owner == playerID then TriggerServerEvent('linden_inventory:openInventory', {type = 'drop', drop = {} }) end
+	if owner == playerID then TriggerServerEvent('linden_inventory:openInventory', {type = 'drop', drop = {} }) movement = true end
 end)
 
 HolsterWeapon = function(item)
