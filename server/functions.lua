@@ -334,14 +334,3 @@ ValidateString = function(item)
 	local xItem = Items[item]
 	if xItem then return xItem.name end
 end
-
-UseItem = function(xPlayer, item, notESX)
-	if notESX or Config.ItemList[item.name] then
-		if next(Config.ItemList[item.name]) == nil then return end
-		TriggerClientEvent('linden_inventory:useItem', xPlayer.source, item)
-	else
-		if type(item) == 'table' then item = item.name end
-		TriggerClientEvent('linden_inventory:closeInventory', xPlayer.source)
-		ESX.UseItem(xPlayer.source, item)
-	end
-end
