@@ -385,7 +385,7 @@ RegisterNetEvent('linden_inventory:addAmmo')
 AddEventHandler('linden_inventory:addAmmo', function(ammo)
 	if currentWeapon and not isBusy then
 		if currentWeapon.ammoType == ammo.name then
-			local maxAmmo = GetWeaponClipSize(currentWeapon.hash)
+			local maxAmmo = GetMaxAmmoInClip(playerPed, currentWeapon.hash, 1)
 			local curAmmo = GetAmmoInPedWeapon(playerPed, currentWeapon.hash)
 			if curAmmo > maxAmmo then SetPedAmmo(playerPed, currentWeapon.hash, maxAmmo) elseif curAmmo == maxAmmo then return
 			else
