@@ -267,7 +267,7 @@ AddEventHandler('linden_inventory:openInventory', function(data, player)
 			Shops[id] = {
 				id = id,
 				type = 'shop',
-				name = shop.name,
+				name = shop.name or shop.type.name,
 				coords = shop.coords,
 				job = shop.job,
 				inventory = SetupShopItems(id),
