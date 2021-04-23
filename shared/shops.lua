@@ -16,7 +16,8 @@ Config.Liquor = {
 	blip = {
 		id = 93,
 		colour = 69,
-		scale = 0.6
+		scale = 0.6,
+		name = 'Liquor Store'
 	}, inventory = {
 		{ name = 'water', price = 10 },
 		{ name = 'cola', price = 10 },
@@ -27,7 +28,8 @@ Config.YouTool = {
 	blip = {
 		id = 402,
 		colour = 69,
-		scale = 0.6
+		scale = 0.6,
+		name = 'YouTool'
 	}, inventory = {
 		{ name = 'lockpick', price = 10 },
 	}
@@ -37,7 +39,8 @@ Config.Ammunation = {
 	blip = {
 		id = 110,
 		colour = 69,
-		scale = 0.6
+		scale = 0.6,
+		name = 'Ammunation'
 	}, inventory = {
 		{ name = 'ammo-9', price = 5, },
 		{ name = 'WEAPON_KNIFE', price = 200 },
@@ -50,7 +53,8 @@ Config.PoliceArmoury = {
 	blip = {
 		id = 110,
 		colour = 84,
-		scale = 0.6
+		scale = 0.6,
+		name = 'Police Armoury'
 	}, inventory = {
 		{ name = 'ammo-9', price = 5, },
 		{ name = 'ammo-rifle', price = 5, },
@@ -66,7 +70,8 @@ Config.Medicine = {
 	blip = {
 		id = 403,
 		colour = 69,
-		scale = 0.6
+		scale = 0.6,
+		name = 'Medicine Cabinet'
 	}, inventory = {
 		{ name = 'medikit', price = 26 },
 		{ name = 'WEAPON_STUNGUN', price = 500, metadata = { registered = true, serial = 'EMS' } },
@@ -75,15 +80,15 @@ Config.Medicine = {
 
 
 Config.Shops = {
-	{ type = Config.Ammunation, coords = vector3(-662.180, -934.961, 21.829), name = 'Ammunation', --[[currency = 'money']] }, -- can set currency like so
-	{ type = Config.Ammunation, coords = vector3(810.25, -2157.60, 29.62), name = 'Ammunation', --[[currency = 'burger']] },
-	{ type = Config.Ammunation, coords = vector3(1693.44, 3760.16, 34.71), name = 'Ammunation' },
-	{ type = Config.Ammunation, coords = vector3(-330.24, 6083.88, 31.45), name = 'Ammunation' },
-	{ type = Config.Ammunation, coords = vector3(252.63, -50.00, 69.94), name = 'Ammunation' },
-	{ type = Config.Ammunation, coords = vector3(22.56, -1109.89, 29.80), name = 'Ammunation' },
-	{ type = Config.Ammunation, coords = vector3(2567.69, 294.38, 108.73), name = 'Ammunation' },
-	{ type = Config.Ammunation, coords = vector3(-1117.58, 2698.61, 18.55), name = 'Ammunation' },
-	{ type = Config.Ammunation, coords = vector3(842.44, -1033.42, 28.19), name = 'Ammunation' },
+	{ type = Config.Ammunation, coords = vector3(-662.180, -934.961, 21.829)--[[, currency = 'money']] }, -- can set currency like so
+	{ type = Config.Ammunation, coords = vector3(810.25, -2157.60, 29.62)--[[, currency = 'burger']] },
+	{ type = Config.Ammunation, coords = vector3(1693.44, 3760.16, 34.71) },
+	{ type = Config.Ammunation, coords = vector3(-330.24, 6083.88, 31.45) },
+	{ type = Config.Ammunation, coords = vector3(252.63, -50.00, 69.94) },
+	{ type = Config.Ammunation, coords = vector3(22.56, -1109.89, 29.80) },
+	{ type = Config.Ammunation, coords = vector3(2567.69, 294.38, 108.73) },
+	{ type = Config.Ammunation, coords = vector3(-1117.58, 2698.61, 18.55) },
+	{ type = Config.Ammunation, coords = vector3(842.44, -1033.42, 28.19) },
 
 	{ type = Config.Liquor, coords = vector3(1135.808, -982.281, 46.415), name = 'Rob\'s Liquor' },
 	{ type = Config.Liquor, coords = vector3(-1222.915, -906.983,  12.326), name = 'Rob\'s Liquor' },
@@ -93,8 +98,8 @@ Config.Shops = {
 	{ type = Config.Liquor, coords = vector3(1392.562, 3604.684, 34.980), name = 'Rob\'s Liquor' },
 	{ type = Config.Liquor, coords = vector3(-1393.409, -606.624, 30.319), name = 'Rob\'s Liquor' },
 
-	{ type = Config.YouTool, coords = vector3(2748.0, 3473.0, 55.67), name = 'YouTool' },
-	{ type = Config.YouTool, coords = vector3(342.99, -1298.26, 32.51), name = 'YouTool' },
+	{ type = Config.YouTool, coords = vector3(2748.0, 3473.0, 55.67) },
+	{ type = Config.YouTool, coords = vector3(342.99, -1298.26, 32.51) },
 
 	{ coords = vector3(-531.14, -1221.33, 18.48), name = 'Xero Gas'},
 	{ coords = vector3(2557.458,  382.282, 108.622), name = '24/7'},
@@ -114,6 +119,6 @@ Config.Shops = {
 	{ coords = vector3(-2544.092, 2316.184, 33.2), name = 'RON'},
 
 	
-	{ type = Config.PoliceArmoury, job = 'police', coords = vector3(487.235, -997.108, 30.69), name = 'Police Armoury'},
-	{ type = Config.Medicine, job = 'ambulance', coords = vector3(306.3687, -601.5139, 43.28406), name = 'Medicine Cabinet'},
+	{ type = Config.PoliceArmoury, job = 'police', coords = vector3(487.235, -997.108, 30.69) },
+	{ type = Config.Medicine, job = 'ambulance', coords = vector3(306.3687, -601.5139, 43.28406) },
 }
