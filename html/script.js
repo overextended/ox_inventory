@@ -327,6 +327,10 @@ HSN.SetupInventory = function(data) {
 }
 
 function DragAndDrop() {
+	$("img").on("error", function() {
+		$(this).hide();
+	});
+	
 	$(".drag-item").draggable({
 		helper: 'clone',
 		appendTo: ".inventory-main",
