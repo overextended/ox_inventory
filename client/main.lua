@@ -284,16 +284,14 @@ RegisterNetEvent('linden_inventory:createDrop')
 AddEventHandler('linden_inventory:createDrop', function(data, owner)
 	Drops[data.name] = data
 	Drops[data.name].coords = vector3(data.coords.x, data.coords.y,data.coords.z - 0.2)
-	Citizen.Wait(0)
-	if owner == playerID and #(playerCoords - data.coords) <= 1 then TriggerServerEvent('linden_inventory:openInventory', {type = 'drop', drop = data.name }) end
+	if owner == playerID and invOpen and #(playerCoords - data.coords) <= 1 then TriggerServerEvent('linden_inventory:openInventory', {type = 'drop', drop = data.name }) end
 end)
 
 RegisterNetEvent('linden_inventory:removeDrop')
 AddEventHandler('linden_inventory:removeDrop', function(id, owner)
 	Drops[id] = nil
 	if currentDrop and currentDrop.name == id then currentDrop = nil end
-	Citizen.Wait(0)
-	if owner == playerID then TriggerServerEvent('linden_inventory:openInventory', {type = 'drop', drop = {} }) movement = true end
+	if owner == playerID and invOpen then TriggerServerEvent('linden_inventory:openInventory', {type = 'drop', drop = {} }) movement = true end
 end)
 
 HolsterWeapon = function(item)
@@ -424,6 +422,13 @@ AddEventHandler('linden_inventory:closeInventory',function()
 	SendNUIMessage({
 		message = 'close',
 	})
+	TriggerScreenblurFadeOut(0)
+	if lastVehicle then
+		CloseVehicle(lastVehicle)
+	end
+	SetNuiFocusAdvanced(false, false)
+	currentInventory = nil
+	invOpen = false
 end)
 
 AddEventHandler('onResourceStop', function(resourceName)
