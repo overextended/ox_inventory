@@ -900,7 +900,7 @@ ESX.RegisterServerCallback('linden_inventory:usingItem', function(source, cb, it
 		elseif xItem.name:find('ammo-') then
 			TriggerClientEvent('linden_inventory:addAmmo', xPlayer.source, Inventories[xPlayer.source].inventory[slot])
 			cb(false)
-		elseif cItem then
+		elseif Config.ItemList[xItem.name] then
 			local cItem = Config.ItemList[xItem.name]
 			if not cItem.consume or xItem.count >= cItem.consume then
 				cb(xItem)
