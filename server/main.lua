@@ -900,18 +900,20 @@ ESX.RegisterServerCallback('linden_inventory:usingItem', function(source, cb, it
 		elseif xItem.name:find('ammo-') then
 			TriggerClientEvent('linden_inventory:addAmmo', xPlayer.source, Inventories[xPlayer.source].inventory[slot])
 			cb(false)
-		elseif Config.ItemList[xItem.name] then
+		else
 			local cItem = Config.ItemList[xItem.name]
-			if not cItem.consume or xItem.count >= cItem.consume then
-				cb(xItem)
-				if cItem.useTime then
-					ESX.SetTimeout(cItem.useTime, function()
-						removeInventoryItem(xPlayer, item, cItem.consume or 1, metadata, slot)
-					end)
-				else removeInventoryItem(xPlayer, item, cItem.consume or 1, metadata, slot) end
-			else
-				TriggerClientEvent('mythic_notify:client:SendAlert', xPlayer.source, { type = 'error', text = 'You do not have enough '..xItem.label })
-				cb(false)
+			if cItem then
+				if not cItem.consume or xItem.count >= cItem.consume then
+					cb(xItem)
+					if cItem.useTime then
+						ESX.SetTimeout(cItem.useTime, function()
+							removeInventoryItem(xPlayer, item, cItem.consume or 1, metadata, slot)
+						end)
+					else removeInventoryItem(xPlayer, item, cItem.consume or 1, metadata, slot) end
+				else
+					TriggerClientEvent('mythic_notify:client:SendAlert', xPlayer.source, { type = 'error', text = 'You do not have enough '..xItem.label })
+					cb(false)
+				end
 			end
 		end
 	end
