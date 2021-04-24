@@ -891,7 +891,7 @@ ESX.RegisterServerCallback('linden_inventory:usingItem', function(source, cb, it
 		cb(false)
 	elseif xItem.count > 0 then
 		if xItem.name:find('WEAPON_') then
-			if metadata.durability > 0 then TriggerClientEvent('linden_inventory:weapon', xPlayer.source, Inventories[xPlayer.source].inventory[slot])
+			if metadata.durability and metadata.durability > 0 then TriggerClientEvent('linden_inventory:weapon', xPlayer.source, Inventories[xPlayer.source].inventory[slot])
 			else TriggerClientEvent('mythic_notify:client:SendAlert', xPlayer.source, { type = 'error', text = 'This weapon is broken' }) end
 			cb(false)
 		elseif Config.Throwable[xItem.name] then
@@ -900,7 +900,7 @@ ESX.RegisterServerCallback('linden_inventory:usingItem', function(source, cb, it
 		elseif xItem.name:find('ammo-') then
 			TriggerClientEvent('linden_inventory:addAmmo', xPlayer.source, Inventories[xPlayer.source].inventory[slot])
 			cb(false)
-		else
+		elseif cItem then
 			local cItem = Config.ItemList[xItem.name]
 			if not cItem.consume or xItem.count >= cItem.consume then
 				cb(xItem)
@@ -1028,6 +1028,6 @@ end, true)
 RegisterCommand('maxweight', function(source, args, rawCommand)
 	local xPlayer = ESX.GetPlayerFromId(args[1])
 	if xPlayer then
-		setMaxWeight(xPlayer, args[2])
+		setMaxWeight(xPlayer, tonumber(args[2]))
 	end
 end, true)
