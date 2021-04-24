@@ -406,7 +406,7 @@ end)
 
 RegisterNetEvent('linden_inventory:updateWeapon')
 AddEventHandler('linden_inventory:updateWeapon',function(data)
-	if currentWeapon then
+	if currentWeapon and (not currentWeapon.serial or currentWeapon.serial == data.serial) then
 		currentWeapon.metadata = data
 		if currentWeapon.metadata.durability <= 0 then DisarmPlayer() end
 	end
@@ -459,7 +459,7 @@ TriggerLoops = function()
 			elseif not invOpen and not wait and CanOpenInventory() then
 				for i=1, #Keys, 1 do
 					if not isBusy and IsDisabledControlJustReleased(0, Keys[i]) and ESX.PlayerData.inventory[i] then
-							TriggerEvent('linden_inventory:useItem', ESX.PlayerData.inventory[i])
+						TriggerEvent('linden_inventory:useItem', ESX.PlayerData.inventory[i])
 					end
 				end
 			end
