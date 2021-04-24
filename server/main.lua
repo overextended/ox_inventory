@@ -834,6 +834,10 @@ AddEventHandler('linden_inventory:updateWeapon', function(item, type)
 				removeInventoryItem(xPlayer, item.name, 1, item.metadata, item.slot)
 			elseif type == 'melee' then
 				TriggerEvent('linden_inventory:decreaseDurability', item.slot, item.name, 1, xPlayer)
+			else
+				Inventories[xPlayer.source].inventory[item.slot].metadata.durability = item.metadata.durability
+				if Opened[xPlayer.source] then TriggerClientEvent('linden_inventory:refreshInventory', xPlayer.source, Inventories[xPlayer.source]) end
+				TriggerClientEvent('linden_inventory:updateWeapon', xPlayer.source, Inventories[xPlayer.source].inventory[item.slot].metadata)
 			end
 		end
 	end
