@@ -60,7 +60,7 @@ exports.ghmattimysql:ready(function()
 					description = v.description,
 					closeonuse = v.closeonuse
 				}
-				if ESX.UsableItemsCallbacks[v.name] ~= nil then Usables[v.name] = true end
+				if ESX.UsableItemsCallbacks[v.name] ~= nil and not Config.ItemList[v.name] then Usables[v.name] = true end
 				if v.name:find('WEAPON') then local AmmoType = GetAmmoType(v.name) if AmmoType then Items[v.name].ammoType = AmmoType end end
 			end
 			message('Created '..#(result)..' items', 2)
