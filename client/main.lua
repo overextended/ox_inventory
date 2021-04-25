@@ -54,8 +54,9 @@ StartInventory = function()
 			Blips = {}
 		end
 		for k, v in pairs(Config.Shops) do
+			if not v.type then v.type = Config.General end
 			if v.type and v.type.blip and (not v.job or v.job == ESX.PlayerData.job.name) then
-				local data = v.type or Config.General
+				local data = v.type
 				Blips[k] = AddBlipForCoord(v.coords.x, v.coords.y, v.coords.z)
 				SetBlipSprite(Blips[k], data.blip.id)
 				SetBlipDisplay(Blips[k], 4)
