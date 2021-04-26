@@ -362,6 +362,7 @@ AddEventHandler('linden_inventory:weapon', function(item)
 		end
 		ClearPedSecondaryTask(playerPed)
 		TriggerEvent('linden_inventory:busy', false)
+		useItemCooldown = false
 	end
 end)
 
@@ -397,7 +398,7 @@ AddEventHandler('linden_inventory:addAmmo', function(ammo)
 				SetPedAmmo(playerPed, currentWeapon.hash, newAmmo)
 				MakePedReload(playerPed)
 				TriggerServerEvent('linden_inventory:addweaponAmmo', currentWeapon, curAmmo, newAmmo)
-				isBusy = false
+				isBusy, useItemCooldown = false, false
 			end
 		else
 			error("You can't load the "..currentWeapon.label.." with "..ammo.label.." ammo")
