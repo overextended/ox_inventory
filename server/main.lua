@@ -588,13 +588,13 @@ AddEventHandler('linden_inventory:saveInventoryData', function(data)
 								ItemNotify(xTarget, data.toItem, data.toItem.count, data.toSlot, 'Added')
 								ItemNotify(xTarget, data.fromItem, data.fromItem.count, data.fromSlot, 'Removed')
 								if Config.Logs then
-									exports.linden_logs:log(xPlayer, xTarget, 'has given '..data.item.count..'x '..data.item.name..' to', 'items')
-									exports.linden_logs:log(xPlayer, xTarget, 'has taken '..data.item.count..'x '..data.item.name..' from', 'items')
+									exports.linden_logs:log(xPlayer, xTarget, 'has given '..data.fromItem.count..'x '..data.fromItem.name..' to', 'items')
+									exports.linden_logs:log(xPlayer, xTarget, 'has taken '..data.toItem.count..'x '..data.toItem.name..' from', 'items')
 								end
 							else
 								if Config.Logs then
-									exports.linden_logs:log(xPlayer, false, 'has stored '..data.item.count..'x '..data.item.name..' in '..invid, 'items')
-									exports.linden_logs:log(xPlayer, false, 'has taken '..data.item.count..'x '..data.item.name..' from '..invid, 'items')
+									exports.linden_logs:log(xPlayer, false, 'has stored '..data.fromItem.count..'x '..data.fromItem.name..' in '..invid, 'items')
+									exports.linden_logs:log(xPlayer, false, 'has taken '..data.toItem.count..'x '..data.toItem.name..' from '..invid, 'items')
 								end
 							end
 						end
