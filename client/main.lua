@@ -837,7 +837,6 @@ local useItemCooldown = false
 RegisterNetEvent('linden_inventory:useItem')
 AddEventHandler('linden_inventory:useItem',function(item)
 	if CanOpenInventory() and not useItemCooldown then
-		useItemCooldown = true
 		local data = Config.ItemList[item.name]
 		local esxItem = Usables[item.name]
 		if data and data.component then
@@ -857,6 +856,7 @@ AddEventHandler('linden_inventory:useItem',function(item)
 				error("This weapon already has a "..item.label) isBusy = false return
 			end
 		end
+		useItemCooldown = true
 			
 		if esxItem then isBusy = true TriggerEvent('linden_inventory:closeInventory') end
 		ESX.TriggerServerCallback('linden_inventory:usingItem', function(xItem)
