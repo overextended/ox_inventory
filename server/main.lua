@@ -894,8 +894,8 @@ ESX.RegisterServerCallback('linden_inventory:usingItem', function(source, cb, it
 		ESX.UseItem(xPlayer.source, xItem.name)
 		cb(false)
 	elseif xItem.count > 0 then
-		if xItem.name:find('WEAPON_') then
-			if metadata.durability and metadata.durability > 0 then TriggerClientEvent('linden_inventory:weapon', xPlayer.source, Inventories[xPlayer.source].inventory[slot])
+		if xItem.name:find('WEAPON_') and metadata.durability then
+			if metadata.durability > 0 then TriggerClientEvent('linden_inventory:weapon', xPlayer.source, Inventories[xPlayer.source].inventory[slot])
 			else TriggerClientEvent('mythic_notify:client:SendAlert', xPlayer.source, { type = 'error', text = 'This weapon is broken' }) end
 			cb(false)
 		elseif Config.Throwable[xItem.name] then
