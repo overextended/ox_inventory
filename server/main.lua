@@ -622,11 +622,11 @@ AddEventHandler('linden_inventory:saveInventoryData', function(data)
 							if targetId then
 								ItemNotify(xTarget, data.item, count, data.toSlot, 'Added')
 								if Config.Logs then
-									exports.linden_logs:log(xPlayer, false, 'has taken '..data.item.count..'x '..data.item.name..' from', 'items')
+									exports.linden_logs:log(xPlayer, false, 'has given '..data.item.count..'x '..data.item.name..' to', 'items')
 								end
 							else
 								if Config.Logs then
-									exports.linden_logs:log(xPlayer, false, 'has taken '..data.item.count..'x '..data.item.name..' from '..invid, 'items')
+									exports.linden_logs:log(xPlayer, false, 'has stored '..data.item.count..'x '..data.item.name..' in '..invid, 'items')
 								end
 							end
 						end
