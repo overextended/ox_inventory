@@ -376,7 +376,7 @@ end)
 
 RegisterNetEvent('linden_inventory:checkWeapon')
 AddEventHandler('linden_inventory:checkWeapon', function(item)
-	if currentWeapon and currentWeapon.metadata.serial == item.metadata.serial then
+	if currentWeapon and ((not currentWeapon.metadata.serial and currentWeapon.name == item.name) or currentWeapon.metadata.serial == item.metadata.serial) then
 		DisarmPlayer()
 	end
 end)
