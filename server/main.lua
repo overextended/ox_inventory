@@ -387,6 +387,7 @@ AddEventHandler('linden_inventory:buyItem', function(info)
 		if canCarryItem(xPlayer, data.name, count) then
 			if data.price then
 				if money >= data.price then
+					local shopName = Config.Shops[location].name or Config.Shops[location].type.name
 					local cost
 					if currency == 'bank' or currency:find('money') then cost = '$'..ESX.Math.GroupDigits(data.price)..' '..currency else cost = ESX.Math.GroupDigits(data.price)..'x '..currency end
 					if currency == 'bank' then
@@ -395,7 +396,7 @@ AddEventHandler('linden_inventory:buyItem', function(info)
 						removeInventoryItem(xPlayer, item.name, data.price)
 					end
 					addInventoryItem(xPlayer, data.name, count, data.metadata, false)
-					if Config.Logs then exports.linden_logs:log(xPlayer, false, ('bought %sx %s from %s for %s'):format(ESX.Math.GroupDigits(count), data.label, Config.Shops[location].name, cost), 'items') end
+					if Config.Logs then exports.linden_logs:log(xPlayer, false, ('bought %sx %s from %s for %s'):format(ESX.Math.GroupDigits(count), data.label, shopName, cost), 'items') end
 				else
 					local missing
 					if currency == 'bank' or item.name == 'money' then
