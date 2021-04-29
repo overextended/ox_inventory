@@ -48,8 +48,8 @@ RetrieveUsers = function()
 				if v.inventory:find('"slot":') == nil then
 					local count = #identifier+1
 					identifier[count] = v.identifier
-					inventory[count] = json.decode(v.inventory)
-					loadout[count] = json.decode(v.loadout)
+					if v.inventory then inventory[count] = json.decode(v.inventory) end
+					if v.loadout then loadout[count] = json.decode(v.loadout) end
 				end
 			end
 		end
@@ -83,7 +83,7 @@ BeginConversion = function()
 					if Config.Throwable[k] then
 						v.metadata = {throwable=1}
 					elseif Config.Melee[k] or Config.Miscellaneous[k] then
-						if not vmetadata.durability then vmetadata.durability = 100 end
+						if not v.metadata.durability then v.metadata.durability = 100 end
 					else
 						if not v.metadata.durability then v.metadata.durability = 100 end
 						if Items[k].ammoType then v.metadata.ammo = 0 end
