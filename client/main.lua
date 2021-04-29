@@ -841,7 +841,7 @@ AddEventHandler('linden_inventory:useItem',function(item)
 		local data = Config.ItemList[item.name]
 		local esxItem = Usables[item.name]
 		if data and data.component then
-			if not currentWeapon then isBusy = false return end
+			if not currentWeapon then return end
 			local result, esxWeapon = ESX.GetWeapon(currentWeapon.name)
 				
 			for k,v in ipairs(esxWeapon.components) do
@@ -852,15 +852,16 @@ AddEventHandler('linden_inventory:useItem',function(item)
 					end
 				end
 			end
-			if not component then error("This weapon is incompatible with "..item.label) isBusy = false return end
+			if not component then error("This weapon is incompatible with "..item.label) return end
 			if HasPedGotWeaponComponent(playerPed, currentWeapon.hash, component.hash) then
-				error("This weapon already has a "..item.label) isBusy = false return
+				error("This weapon already has a "..item.label) return
 			end
 		end
-		useItemCooldown = true
 			
-		if esxItem then isBusy = true TriggerEvent('linden_inventory:closeInventory') end
+		if esxItem then TriggerEvent('linden_inventory:closeInventory') end
 		ESX.TriggerServerCallback('linden_inventory:usingItem', function(xItem)
+			useItemCooldown = true
+			isBusy = true
 			if xItem and data then
 				if data.dofirst then TriggerEvent(data.dofirst) end
 				if data.useTime and data.useTime >= 0 then
