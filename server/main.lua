@@ -107,8 +107,6 @@ ESX.RegisterServerCallback('linden_inventory:setup', function(source, cb)
 		if result ~= nil then
 			TriggerEvent('linden_inventory:setPlayerInventory', xPlayer, json.decode(result))
 			while xPlayer.get('linventory') ~= true do Citizen.Wait(100) end
-		else
-			DropPlayer(xPlayer.source, 'there was an issue loading your inventory')
 		end
 	end
 	Inventories[xPlayer.source].name = xPlayer.getName()
@@ -713,7 +711,7 @@ end)
 AddEventHandler('playerDropped', function(reason)
 	local playerid = source
 	if Inventories[playerid] then
-		ESX.SetTimeout(2000, function()	
+		ESX.SetTimeout(30000, function()	
 			Inventories[playerid] = nil
 		end)
 	end
