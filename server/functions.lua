@@ -106,6 +106,9 @@ end
 ItemNotify = function(xPlayer, item, count, slot, type)
 	local player = Inventories[xPlayer.source]
 	if Items[item.name] then TriggerClientEvent('linden_inventory:itemNotify', xPlayer.source, item, count, slot, type) end
+	if item.name == 'radio' and xPlayer.getInventoryItem('radio').count == 0 then
+        TriggerClientEvent('sup_radio:close-radio', xPlayer.source)
+	end
 end
 
 SyncAccounts = function(xPlayer, name)
@@ -311,8 +314,10 @@ GetItems = function(id, type, owner)
 	if result ~= nil then
 		local Inventory = json.decode(result)
 		for k,v in pairs(Inventory) do
-			if v.metadata == nil then v.metadata = {} end
-			returnData[v.slot] = {name = v.name ,label = Items[v.name].label, weight = Items[v.name].weight, slot = v.slot, count = v.count, description = Items[v.name].description, metadata = v.metadata, stackable = Items[v.name].stackable}
+			if Items[v.name] then
+				if v.metadata == nil then v.metadata = {} end
+				returnData[v.slot] = {name = v.name , label = Items[v.name].label, weight = Items[v.name].weight, slot = v.slot, count = v.count, description = Items[v.name].description, metadata = v.metadata, stackable = Items[v.name].stackable}
+			end
 		end
 	end
 	return returnData
