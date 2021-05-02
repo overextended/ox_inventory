@@ -666,6 +666,19 @@ TriggerLoops = function()
 	end)
 end
 
+local canReload = true
+RegisterCommand('reload', function()
+	if canReload and not isBusy and currentWeapon and currentWeapon.ammoType and CanOpenInventory() then
+		local maxAmmo = GetMaxAmmoInClip(playerPed, currentWeapon.hash, 1)
+		local curAmmo = GetAmmoInPedWeapon(playerPed, currentWeapon.hash)
+		if curAmmo < maxAmmo then TriggerServerEvent('linden_inventory:reloadWeapon', currentWeapon) end
+		canReload = false
+		Citizen.Wait(200)
+		canReload = true
+	end
+end)
+RegisterKeyMapping('reload', 'Reload weapon', 'keyboard', 'r')
+
 RegisterCommand('inv', function()
 	if isBusy or invOpen then error("You can't open your inventory right now") return end
 	if CanOpenInventory() then
