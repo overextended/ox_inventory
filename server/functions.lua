@@ -106,9 +106,6 @@ end
 ItemNotify = function(xPlayer, item, count, slot, type)
 	local player = Inventories[xPlayer.source]
 	if Items[item.name] then TriggerClientEvent('linden_inventory:itemNotify', xPlayer.source, item, count, slot, type) end
-	if item.name == 'radio' and xPlayer.getInventoryItem('radio').count == 0 then
-        TriggerClientEvent('sup_radio:close-radio', xPlayer.source)
-	end
 end
 
 SyncAccounts = function(xPlayer, name)
