@@ -27,7 +27,8 @@ addInventoryItem = function(xPlayer, item, count, metadata, slot)
 	if checkPlayer(xPlayer) ~= true then return end
 	local xItem = Items[item]
 	if xPlayer and xItem and count > 0 then
-		if metadata == 'setname' then metadata = {description = xPlayer.getName()} else metadata = setMetadata(metadata) end
+		local isWeapon = item:find('WEAPON_')
+		if metadata == 'setname' then metadata = {description = xPlayer.getName()} elseif not isWeapon then metadata = setMetadata(metadata) end
 		local toSlot, existing
 		if slot then slot = getPlayerSlot(xPlayer, slot, item, metadata).slot
 		else
@@ -37,7 +38,7 @@ addInventoryItem = function(xPlayer, item, count, metadata, slot)
 			end
 			slot = toSlot
 		end
-		if item:find('WEAPON_') then
+		if isWeapon then
 			xItem.stackable = false
 			if Config.Throwable[item] then
 				metadata = {throwable=1}
@@ -52,7 +53,7 @@ addInventoryItem = function(xPlayer, item, count, metadata, slot)
 				if not metadata.durability then metadata.durability = 100 end
 				if xItem.ammoType then metadata.ammo = 0 end
 				if not metadata.components then metadata.components = {} end
-				if metadata.registered == true then
+				if metadata.registered ~= false then
 					metadata.registered = xPlayer.getName()
 					metadata.serial = GenerateSerial(metadata.serial)
 				end
