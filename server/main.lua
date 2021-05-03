@@ -61,7 +61,11 @@ exports.ghmattimysql:ready(function()
 					closeonuse = v.closeonuse
 				}
 				if ESX.UsableItemsCallbacks[v.name] ~= nil and not Config.ItemList[v.name] then Usables[v.name] = true end
-				if v.name:find('WEAPON') then local AmmoType = GetAmmoType(v.name) if AmmoType then Items[v.name].ammoType = AmmoType end end
+				if v.name:find('WEAPON') then
+					local AmmoType = GetAmmoType(v.name)
+					if AmmoType then Items[v.name].ammoType = AmmoType
+					end
+				end
 			end
 			message('Created '..#(result)..' items', 2)
 			Status[1] = 'loaded'
@@ -690,7 +694,7 @@ AddEventHandler('linden_inventory:saveInventory', function(data)
 			updateWeight(xPlayer)
 			TriggerClientEvent('linden_inventory:refreshInventory', src, Inventories[src])
 		end
-		Opened[invid] = nil
+		if invid then Opened[invid] = nil end
 		Opened[src] = nil
 	end
 end)
