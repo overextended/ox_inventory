@@ -7,7 +7,7 @@ title: ESX v1 Final
 <h2 align='center'>Server Config</h2>
 
 ```js
-set mysql_connection_string "mysql://user:password@localhost/database?connectTimeout=20000&acquireTimeout=20000&waitForConnections=true&keepAlive=15"
+set mysql_connection_string "mysql://user:password@localhost/database?connectTimeout=30000&acquireTimeout=30000&waitForConnections=true&keepAlive=15"
 # Choose one, or set it in txAdmin (run FXServer directly to enable)
 #set onesync_enabled
 #set onesync_enableInfinity
