@@ -331,6 +331,7 @@ RegisterNetEvent('linden_inventory:weapon')
 AddEventHandler('linden_inventory:weapon', function(item)
 	if not isBusy then
 		TriggerEvent('linden_inventory:busy', true)
+		useItemCooldown = true
 		local newWeapon = item.metadata.serial
 		local found, wepHash = GetCurrentPedWeapon(playerPed, true)
 		if wepHash == -1569615261 then currentWeapon = nil end
@@ -389,7 +390,7 @@ AddEventHandler('linden_inventory:addAmmo', function(ammo)
 			local curAmmo = GetAmmoInPedWeapon(playerPed, currentWeapon.hash)
 			if curAmmo > maxAmmo then SetPedAmmo(playerPed, currentWeapon.hash, maxAmmo) elseif curAmmo == maxAmmo then return
 			else
-				isBusy = true
+				isBusy, useItemCooldown = true, true
 				local newAmmo = 0
 				if curAmmo < maxAmmo then missingAmmo = maxAmmo - curAmmo end
 				if missingAmmo > ammo.count then newAmmo = ammo.count + curAmmo
@@ -398,6 +399,7 @@ AddEventHandler('linden_inventory:addAmmo', function(ammo)
 				SetPedAmmo(playerPed, currentWeapon.hash, newAmmo)
 				MakePedReload(playerPed)
 				TriggerServerEvent('linden_inventory:addweaponAmmo', currentWeapon, curAmmo, newAmmo)
+				Citizen.Wait(100)
 				isBusy, useItemCooldown = false, false
 			end
 		else
@@ -862,77 +864,79 @@ AddEventHandler('linden_inventory:useItem',function(item)
 	if CanOpenInventory() and not useItemCooldown then
 		local data = Config.ItemList[item.name]
 		local esxItem = Usables[item.name]
-		if data and data.component then
-			if not currentWeapon then return end
-			local result, esxWeapon = ESX.GetWeapon(currentWeapon.name)
+		if data or esxItem or Config.Ammos[item.name] or item.name:find('WEAPON_') then
+			if data and data.component then
+				if not currentWeapon then return end
+				local result, esxWeapon = ESX.GetWeapon(currentWeapon.name)
+					
+				for k,v in ipairs(esxWeapon.components) do
+					for k2, v2 in pairs(data.component) do
+						if v.hash == v2 then
+							component = {name = v.name, hash = v2}
+							break
+						end
+					end
+				end
+				if not component then error("This weapon is incompatible with "..item.label) return end
+				if HasPedGotWeaponComponent(playerPed, currentWeapon.hash, component.hash) then
+					error("This weapon already has a "..item.label) return
+				end
+			end
 				
-			for k,v in ipairs(esxWeapon.components) do
-				for k2, v2 in pairs(data.component) do
-					if v.hash == v2 then
-						component = {name = v.name, hash = v2}
-						break
+			if esxItem then TriggerEvent('linden_inventory:closeInventory') end
+			ESX.TriggerServerCallback('linden_inventory:usingItem', function(xItem)
+				if xItem and data then
+					useItemCooldown = true
+					isBusy = true
+					if data.dofirst then TriggerEvent(data.dofirst) end
+					if data.useTime and data.useTime >= 0 then
+						if not data.animDict or not data.anim then
+							data.animDict = 'pickup_object'
+							data.anim = 'putdown_low'
+						end
+						if not data.flags then data.flags = 48 end
+							
+						exports['mythic_progbar']:Progress({
+							name = 'useitem',
+							duration = data.useTime,
+							label = 'Using '..xItem.label,
+							useWhileDead = false,
+							canCancel = false,
+							controlDisables = { disableMovement = data.disableMove, disableCarMovement = false, disableMouse = false, disableCombat = true },
+							animation = { animDict = data.animDict, anim = data.anim, flags = data.flags },
+							prop = { model = data.model, coords = data.coords, rotation = data.rotation }
+						})
+						Citizen.Wait(data.useTime)
 					end
+				
+					if data.hunger then
+						if data.hunger > 0 then TriggerEvent('esx_status:add', 'hunger', data.hunger)
+						else TriggerEvent('esx_status:remove', 'hunger', data.hunger) end
+					end
+					if data.thirst then
+						if data.thirst > 0 then TriggerEvent('esx_status:add', 'thirst', data.thirst)
+						else TriggerEvent('esx_status:remove', 'thirst', data.thirst) end
+					end
+					if data.stress then
+						if data.stress > 0 then TriggerEvent('esx_status:add', 'stress', data.stress)
+						else TriggerEvent('esx_status:remove', 'stress', data.stress) end
+					end
+					if data.drunk then
+						if data.drunk > 0 then TriggerEvent('esx_status:add', 'drunk', data.drunk)
+						else TriggerEvent('esx_status:remove', 'drunk', data.drunk) end
+					end
+
+					if data.component then
+						GiveWeaponComponentToPed(playerPed, currentWeapon.name, component.hash)
+						table.insert(currentWeapon.metadata.components, component.name)
+						TriggerServerEvent('linden_inventory:updateWeapon', currentWeapon, component.name)
+					end
+
+					if data.event then TriggerEvent(data.event) end
+					useItemCooldown = false
+					isBusy = false
 				end
-			end
-			if not component then error("This weapon is incompatible with "..item.label) return end
-			if HasPedGotWeaponComponent(playerPed, currentWeapon.hash, component.hash) then
-				error("This weapon already has a "..item.label) return
-			end
+			end, item.name, item.slot, item.metadata, esxItem)
 		end
-			
-		if esxItem then TriggerEvent('linden_inventory:closeInventory') end
-		ESX.TriggerServerCallback('linden_inventory:usingItem', function(xItem)
-			useItemCooldown = true
-			isBusy = true
-			if xItem and data then
-				if data.dofirst then TriggerEvent(data.dofirst) end
-				if data.useTime and data.useTime >= 0 then
-					if not data.animDict or not data.anim then
-						data.animDict = 'pickup_object'
-						data.anim = 'putdown_low'
-					end
-					if not data.flags then data.flags = 48 end
-						
-					exports['mythic_progbar']:Progress({
-						name = 'useitem',
-						duration = data.useTime,
-						label = 'Using '..xItem.label,
-						useWhileDead = false,
-						canCancel = false,
-						controlDisables = { disableMovement = data.disableMove, disableCarMovement = false, disableMouse = false, disableCombat = true },
-						animation = { animDict = data.animDict, anim = data.anim, flags = data.flags },
-						prop = { model = data.model, coords = data.coords, rotation = data.rotation }
-					})
-					Citizen.Wait(data.useTime)
-				end
-			
-				if data.hunger then
-					if data.hunger > 0 then TriggerEvent('esx_status:add', 'hunger', data.hunger)
-					else TriggerEvent('esx_status:remove', 'hunger', data.hunger) end
-				end
-				if data.thirst then
-					if data.thirst > 0 then TriggerEvent('esx_status:add', 'thirst', data.thirst)
-					else TriggerEvent('esx_status:remove', 'thirst', data.thirst) end
-				end
-				if data.stress then
-					if data.stress > 0 then TriggerEvent('esx_status:add', 'stress', data.stress)
-					else TriggerEvent('esx_status:remove', 'stress', data.stress) end
-				end
-				if data.drunk then
-					if data.drunk > 0 then TriggerEvent('esx_status:add', 'drunk', data.drunk)
-					else TriggerEvent('esx_status:remove', 'drunk', data.drunk) end
-				end
-
-				if data.component then
-					GiveWeaponComponentToPed(playerPed, currentWeapon.name, component.hash)
-					table.insert(currentWeapon.metadata.components, component.name)
-					TriggerServerEvent('linden_inventory:updateWeapon', currentWeapon, component.name)
-				end
-
-				if data.event then TriggerEvent(data.event) end
-			end
-			useItemCooldown = false
-			isBusy = false
-		end, item.name, item.slot, item.metadata, esxItem)
 	end
 end)
