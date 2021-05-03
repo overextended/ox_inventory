@@ -903,8 +903,8 @@ AddEventHandler('linden_inventory:useItem',function(item)
 						animation = { animDict = data.animDict, anim = data.anim, flags = data.flags },
 						prop = { model = data.model, coords = data.coords, rotation = data.rotation }
 					})
+					Citizen.Wait(data.useTime)
 				end
-				Citizen.Wait(data.useTime)
 			
 				if data.hunger then
 					if data.hunger > 0 then TriggerEvent('esx_status:add', 'hunger', data.hunger)
