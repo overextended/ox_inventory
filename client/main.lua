@@ -798,6 +798,15 @@ RegisterCommand('steal', function()
 	end
 end)
 
+RegisterCommand('weapondetails', function()
+	if currentWeapon and ESX.PlayerData.job.name == 'police' then
+		local msg
+		if currentWeapon.metadata.registered then msg = currentWeapon.label..' ('..currentWeapon.metadata.serial..') is registered to '..currentWeapon.metadata.registered
+		else msg = currentWeapon.label..' is not registered to anyone' end
+		TriggerEvent('mythic_notify:client:SendAlert', {type = 'inform', text = msg, length = 8000})
+	end
+end)
+
 RegisterCommand('-nui', function()
 	TriggerEvent('linden_inventory:closeInventory')
 end)
