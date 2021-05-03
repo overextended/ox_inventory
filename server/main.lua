@@ -256,52 +256,52 @@ AddEventHandler('linden_inventory:openInventory', function(data, player)
 		elseif data.type == 'shop' then
 			local id = data.id
 			local shop = Config.Shops[id]
-			Shops[id] = {
-				id = id,
-				type = 'shop',
-				name = shop.name or shop.type.name,
-				coords = shop.coords,
-				job = shop.job,
-				inventory = SetupShopItems(id),
-				slots = #shop.store.inventory,
-				currency = shop.currency
-			}
 			if (not Shops[id].job or Shops[id].job == xPlayer.job.name) then
 				local srcCoords = GetEntityCoords(GetPlayerPed(xPlayer.source))
 				if #(shop.coords - srcCoords) <= 2 then
+					Shops[id] = {
+						id = id,
+						type = 'shop',
+						name = shop.name or shop.type.name,
+						coords = shop.coords,
+						job = shop.job,
+						inventory = SetupShopItems(id),
+						slots = #shop.store.inventory,
+						currency = shop.currency
+					}
 					Opened[xPlayer.source] = {invid = xPlayer.source, type = 'Playerinv'}
 					TriggerClientEvent('linden_inventory:openInventory', xPlayer.source, Inventories[xPlayer.source], Shops[id])
 				end
 			end
 		elseif data.type == 'glovebox' or data.type == 'trunk' or (data.type == 'stash' and not data.owner) then
 			local id = data.id
-			if not data.maxWeight then data.maxWeight = data.slots*8000 end
-			Inventories[id] = {
-				name = id,
-				type = data.type,
-				slots = data.slots,
-				coords = data.coords,
-				maxWeight = data.maxWeight,
-				inventory = GetItems(id, data.type)
-			}
 			if CheckOpenable(xPlayer, id, data.coords) then
+				if not data.maxWeight then data.maxWeight = data.slots*8000 end
+				Inventories[id] = {
+					name = id,
+					type = data.type,
+					slots = data.slots,
+					coords = data.coords,
+					maxWeight = data.maxWeight,
+					inventory = GetItems(id, data.type)
+				}
 				Opened[xPlayer.source] = {invid = id, type = data.type}
 				TriggerClientEvent('linden_inventory:openInventory', xPlayer.source, Inventories[xPlayer.source], Inventories[id])
 			end
 		elseif data.owner then
 			if data.owner == true then data.owner = xPlayer.identifier end
 			local id = data.id..'-'..data.owner
-			if not data.maxWeight then data.maxWeight = data.slots*8000 end
-			Inventories[id] = {
-				name = id,
-				owner = data.owner,
-				type = data.type,
-				slots = data.slots,
-				coords = data.coords,
-				maxWeight = data.maxWeight,
-				inventory = GetItems(id, data.type, data.owner)
-			}
 			if CheckOpenable(xPlayer, id, data.coords) then
+				if not data.maxWeight then data.maxWeight = data.slots*8000 end
+				Inventories[id] = {
+					name = id,
+					owner = data.owner,
+					type = data.type,
+					slots = data.slots,
+					coords = data.coords,
+					maxWeight = data.maxWeight,
+					inventory = GetItems(id, data.type, data.owner)
+				}
 				Opened[xPlayer.source] = {invid = id, type = data.type}
 				TriggerClientEvent('linden_inventory:openInventory', xPlayer.source, Inventories[xPlayer.source], Inventories[id])
 			end
@@ -674,22 +674,24 @@ end)
 RegisterNetEvent('linden_inventory:saveInventory')
 AddEventHandler('linden_inventory:saveInventory', function(data)
 	local src = source
+	local invid
+	local xPlayer = ESX.GetPlayerFromId(src)
 	if Inventories[src] then
-		local xPlayer = ESX.GetPlayerFromId(src)
 		if data.type == 'TargetPlayer' then
-			local invid = Opened[src].invid
+			invid = Opened[src].invid
 			updateWeight(ESX.GetPlayerFromId(invid))
-			Opened[invid] = nil
 		elseif data.type ~= 'shop' and data.type ~= 'drop' and Inventories[data.invid] then
+			invid = data.invid
 			if Inventories[data.invid].changed then	SaveItems(data.type, data.invid, Inventories[data.invid].owner) end
 			Inventories[data.invid] = nil
-			Opened[data.invid] = nil
-		elseif data.invid then Opened[data.invid] = nil end
+		end
+		Citizen.Wait(50)
 		if xPlayer then
-			Opened[src] = nil
 			updateWeight(xPlayer)
 			TriggerClientEvent('linden_inventory:refreshInventory', src, Inventories[src])
 		end
+		Opened[invid] = nil
+		Opened[src] = nil
 	end
 end)
 
