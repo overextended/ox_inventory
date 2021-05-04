@@ -478,7 +478,7 @@ TriggerLoops = function()
 					DisableControlAction(1, 142, true)
 				end
 				usingWeapon = IsPedShooting(playerPed)
-				if usingWeapon then
+				if currentWeapon and usingWeapon then
 					local currentAmmo = GetAmmoInPedWeapon(playerPed, currentWeapon.hash)
 					if currentWeapon.name == 'WEAPON_FIREEXTINGUISHER' or currentWeapon.name == 'WEAPON_PETROLCAN' and not wait then
 						currentWeapon.metadata.durability = currentWeapon.metadata.durability - 0.1
@@ -664,6 +664,20 @@ TriggerLoops = function()
 				end
 			end
 			Citizen.Wait(sleep)
+		end
+	end)
+
+	Citizen.CreateThread(function()
+		while PlayerLoaded do
+			local hasWeapon, wepHash = GetCurrentPedWeapon(playerPed, 1)
+			if hasWeapon then
+				if not currentWeapon then
+					TriggerServerEvent('linden_inventory:weaponMismatch', wepHash)
+				elseif wepHash ~= currentWeapon.hash then
+					TriggerServerEvent('linden_inventory:weaponMismatch', wepHash)
+				end
+			end
+			Citizen.Wait(1000)
 		end
 	end)
 end
