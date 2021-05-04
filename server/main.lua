@@ -688,7 +688,7 @@ AddEventHandler('linden_inventory:saveInventory', function(data)
 			invid = data.invid
 			if Inventories[data.invid].changed then	SaveItems(data.type, data.invid, Inventories[data.invid].owner) end
 			Inventories[data.invid] = nil
-		end
+		else invid = data.invid end
 		Citizen.Wait(50)
 		if xPlayer then
 			updateWeight(xPlayer)
@@ -731,6 +731,16 @@ AddEventHandler('linden_inventory:devtool', function()
 			exports.linden_logs:log(xPlayer, false, 'kicked for opening nui_devtools', 'kick')
 		end
 		DropPlayer(source, 'foxtrot-uniform-charlie-kilo')
+	end
+end)
+
+RegisterNetEvent('linden_inventory:weaponMismatch')
+AddEventHandler('linden_inventory:weaponMismatch', function(hash)
+	local xPlayer = ESX.GetPlayerFromId(source)
+	local weapon = ESX.GetWeaponFromHash(hash).name
+	if not Items[weapon] then TriggerBanEvent(xPlayer, 'using a '..weapon..' but item is invalid')
+	elseif xPlayer.getInventoryItem(weapon).count < 1 then
+		TriggerBanEvent(xPlayer, 'using a '..weapon..' but does not have any')
 	end
 end)
 
