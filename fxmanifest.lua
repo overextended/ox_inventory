@@ -3,7 +3,7 @@ game 'gta5'
 author 'Linden'
 description 'https://github.com/thelindat/linden_inventory'
 versioncheck 'https://raw.githubusercontent.com/thelindat/linden_inventory/main/fxmanifest.lua'
-version '1.2.6'
+version '1.2.7'
 
 dependency 'es_extended'
 dependency 'ghmattimysql'
