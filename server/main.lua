@@ -260,7 +260,7 @@ AddEventHandler('linden_inventory:openInventory', function(data, player)
 		elseif data.type == 'shop' then
 			local id = data.id
 			local shop = Config.Shops[id]
-			if (not Shops[id].job or Shops[id].job == xPlayer.job.name) then
+			if (not shop.job or shop.job == xPlayer.job.name) then
 				local srcCoords = GetEntityCoords(GetPlayerPed(xPlayer.source))
 				if #(shop.coords - srcCoords) <= 2 then
 					Shops[id] = {
