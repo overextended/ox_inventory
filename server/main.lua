@@ -494,7 +494,7 @@ AddEventHandler('linden_inventory:saveInventoryData', function(data)
 				end
 				invid = xPlayer.source
 			end
-			if data.frominv == nil or data.toinv == nil or data.frominv == 'drop' or data.toinv == 'drop' then
+			if data.frominv == 'drop' or data.toinv == 'drop' then
 				local dropid
 				if data.frominv == 'Playerinv' then
 					dropid = invid
@@ -688,7 +688,7 @@ AddEventHandler('linden_inventory:saveInventory', function(data)
 			invid = data.invid
 			if Inventories[data.invid].changed then	SaveItems(data.type, data.invid, Inventories[data.invid].owner) end
 			Inventories[data.invid] = nil
-		else invid = data.invid end
+		elseif data.type == 'drop' then invid = data.invid end
 		Citizen.Wait(50)
 		if xPlayer then
 			updateWeight(xPlayer)
