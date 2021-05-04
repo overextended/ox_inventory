@@ -124,7 +124,8 @@ CreateNewDrop = function(xPlayer, data)
 		name = invid,
 		inventory = {},
 		slots = Config.PlayerSlots,
-		coords = playerCoords
+		coords = playerCoords,
+		type = 'drop'
 	}
 	if data.type == 'freeslot' then
 		if ValidateItem(data.type, xPlayer, Inventories[invid2].inventory[data.emptyslot], Drops[invid].inventory[data.toSlot], data.item, data.item) == true then
