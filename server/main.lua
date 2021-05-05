@@ -1,7 +1,6 @@
 ESX = nil
 Items = {}
 Usables = {}
-Players = {}
 Drops = {}
 Inventories = {}
 Datastore = {}
@@ -739,8 +738,9 @@ AddEventHandler('linden_inventory:weaponMismatch', function(hash)
 	local xPlayer = ESX.GetPlayerFromId(source)
 	local weapon = ESX.GetWeaponFromHash(hash).name
 	if not Items[weapon] then TriggerBanEvent(xPlayer, 'using a '..weapon..' but item is invalid')
-	elseif xPlayer.getInventoryItem(weapon).count < 1 then
-		TriggerBanEvent(xPlayer, 'using a '..weapon..' but does not have any')
+	else
+		local count = getInventoryItem(xPlayer, weapon)
+		if count < 1 then TriggerBanEvent(xPlayer, 'using a '..weapon..' but does not have any') end
 	end
 end)
 
