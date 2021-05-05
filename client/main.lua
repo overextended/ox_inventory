@@ -676,8 +676,10 @@ TriggerLoops = function()
 					if esxWeapon then TriggerServerEvent('linden_inventory:weaponMismatch', wepHash) end
 				elseif wepHash ~= currentWeapon.hash then
 					local esxWeapon = ESX.GetWeaponFromHash(wepHash)
-					if esxWeapon then TriggerServerEvent('linden_inventory:weaponMismatch', wepHash) end
+					if esxWeapon then DisarmPlayer() end
 				end
+			else
+				if currentWeapon then TriggerEvent('linden_inventory:currentWeapon', nil) end
 			end
 			Citizen.Wait(1000)
 		end
