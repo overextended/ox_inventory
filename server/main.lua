@@ -1028,21 +1028,24 @@ end, true, {help = 'clear police evidence', validate = true, arguments = {
 	{name = 'evidence', help = 'number', type = 'number'}
 }})
 
+-- Confiscate inventory Command/Event
+ESX.RegisterCommand('confinv', 'superadmin', function(xPlayer, args, showError)
+	TriggerEvent('linden_inventory:confiscatePlayerInventory', args.playerId)
+end, true, {help = 'Confiscate an Inventory', validate = true, arguments = {
+	{name = 'playerId', help = 'player id', type = 'player'},
+}})
+
+-- Return Confiscated inventory Command/Event
+ESX.RegisterCommand('returninv', 'superadmin', function(xPlayer, args, showError)
+	TriggerEvent('linden_inventory:recoverPlayerInventory', args.playerId)
+end, true, {help = 'Return a Confiscated an Inventory', validate = true, arguments = {
+	{name = 'playerId', help = 'player id', type = 'player'},
+}})
 
 -- Close all inventories before restarting to be safe
 RegisterCommand('closeallinv', function(source, args, rawCommand)
 	if source > 0 then return end
 	TriggerClientEvent("linden_inventory:closeInventory", -1)
-end, true)
-
-
---Example commands
-RegisterCommand('conf', function(source, args, rawCommand)
-	TriggerEvent('linden_inventory:confiscatePlayerInventory', source)
-end, true)
-
-RegisterCommand('return', function(source, args, rawCommand)
-	TriggerEvent('linden_inventory:recoverPlayerInventory', source)
 end, true)
 
 RegisterCommand('maxweight', function(source, args, rawCommand)
