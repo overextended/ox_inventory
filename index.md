@@ -19,6 +19,11 @@ title: Installation
 * I have a [modified release](https://github.com/thelindat/extendedmode) with several bug fixes, added features, and required changes already made
 * You can also try an experimental [branch](https://github.com/thelindat/extendedmode/tree/kashacters) for use with [kashacters](https://github.com/thelindat/esx_kashacter)
 
+#### Pre-configured ESX
+* You can ignore the framework edits and download this file shared on my discord, if you prefer  
+[Download](https://cdn.discordapp.com/attachments/816673612621938759/839681778079367208/es_extended.zip)
+
+
 
 <h2 align='center'>Updating from hsn-inventory</h2>
 Revert any changes from the previous version of the inventory (you can start fresh or use my included framework edits)
