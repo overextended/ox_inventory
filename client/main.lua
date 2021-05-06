@@ -19,6 +19,12 @@ DisarmPlayer = function(weapon)
 	SetPedAmmo(playerPed, currentWeapon.hash, 0)
 	SetCurrentPedWeapon(playerPed, `WEAPON_UNARMED`, true)
 	RemoveWeaponFromPed(playerPed, currentWeapon.hash)
+	if item.metadata.components then
+		for k,v in pairs(item.metadata.components) do
+			local componentHash = ESX.GetWeaponComponent(item.name, v).hash
+			if componentHash then RemoveWeaponComponentFromPed(playerPed, currentWeapon.hash, componentHash) end
+		end
+	end
 	TriggerServerEvent('linden_inventory:updateWeapon', currentWeapon)
 	TriggerEvent('linden_inventory:currentWeapon', nil)
 end
@@ -651,6 +657,8 @@ TriggerLoops = function()
 						if not id or dist > 1.8 or not CanOpenTarget(ped) then
 							TriggerEvent('linden_inventory:closeInventory')
 							error("No longer able to access this inventory")
+						else
+							TaskTurnPedToFaceCoord(playerPed, pedCoords)
 						end
 					elseif not lastVehicle and currentInventory.coords then
 						local dist = #(playerCoords - currentInventory.coords)
