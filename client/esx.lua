@@ -9,13 +9,13 @@ end)
 
 RegisterNetEvent('esx:onPlayerLogout')	-- Trigger this event when a player logs out to character selection
 AddEventHandler('esx:onPlayerLogout', function()
-	TriggerEvent('linden_inventory:closeInventory')
+	DisarmPlayer() TriggerEvent('linden_inventory:closeInventory')
 	PlayerLoaded = false
 end)
 
 AddEventHandler('esx:onPlayerDeath', function(data)
 	isDead = true
-	TriggerEvent('linden_inventory:closeInventory')
+	DisarmPlayer() TriggerEvent('linden_inventory:closeInventory')
 end)
 
 AddEventHandler('playerSpawned', function(spawn)
@@ -29,7 +29,7 @@ end)
 RegisterNetEvent('esx_policejob:handcuff')
 AddEventHandler('esx_policejob:handcuff', function()
 	isCuffed = not isCuffed
-	if isCuffed then TriggerEvent('linden_inventory:closeInventory') end
+	if isCuffed then DisarmPlayer() TriggerEvent('linden_inventory:closeInventory') end
 end)
 
 RegisterNetEvent('esx_policejob:unrestrain')
@@ -46,5 +46,5 @@ end)
 RegisterNetEvent('esx_ambulancejob:setDeathStatus')
 AddEventHandler('esx_ambulancejob:setDeathStatus', function(status)
 	isDead = status
-	if isDead then TriggerEvent('linden_inventory:closeInventory') end
+	if isDead then DisarmPlayer() TriggerEvent('linden_inventory:closeInventory') end
 end)
