@@ -106,9 +106,9 @@ end
 ItemNotify = function(xPlayer, item, count, slot, type)
 	local xItem = Items[item.name]
 	if xPlayer and xItem then
-		if item.name:find('WEAPON_') then Inventories[xPlayer.source].inventory[slot].ammoType, item.ammoType = xItem.ammoType, xItem.ammoType
-		elseif item.name == 'radio' and xPlayer.getInventoryItem('radio').count == 0 then
-			TriggerClientEvent('sup_radio:close-radio', xPlayer.source)
+		if item.name:find('WEAPON_') and xItem.ammoType then
+			Inventories[xPlayer.source].inventory[slot].ammoType = xItem.ammoType
+			item.ammoType = xItem.ammoType
 		end
 		TriggerClientEvent('linden_inventory:itemNotify', xPlayer.source, item, count, slot, type)
 	end
