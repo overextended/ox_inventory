@@ -734,13 +734,15 @@ AddEventHandler('linden_inventory:devtool', function()
 end)
 
 RegisterNetEvent('linden_inventory:weaponMismatch')
-AddEventHandler('linden_inventory:weaponMismatch', function(hash)
+AddEventHandler('linden_inventory:weaponMismatch', function(weapon)
 	local xPlayer = ESX.GetPlayerFromId(source)
-	local weapon = ESX.GetWeaponFromHash(hash).name
-	if not Items[weapon] then TriggerBanEvent(xPlayer, 'using a '..weapon..' but item is invalid')
-	else
-		local count = getInventoryItem(xPlayer, weapon)
-		if count < 1 then TriggerBanEvent(xPlayer, 'using a '..weapon..' but does not have any') end
+	if xPlayer then
+		if Items[weapon] then
+			local count = getInventoryItem(xPlayer, weapon).count
+			if count < 1 then TriggerBanEvent(xPlayer, 'using "'..weapon..'" but item count is '..count) end
+		else
+			TriggerBanEvent(xPlayer, 'using "'..weapon..'" but item is invalid')
+		end
 	end
 end)
 
