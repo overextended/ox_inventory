@@ -341,12 +341,12 @@ AddEventHandler('linden_inventory:weapon', function(item)
 		else
 			item.hash = wepHash
 			DrawWeapon(item)
-			TriggerEvent('linden_inventory:currentWeapon', item)
-			if currentWeapon.metadata.throwable then item.metadata.ammo = 1 end
+			if item.metadata.throwable then item.metadata.ammo = 1 end
 			if not item.ammoType then
 				local ammoType = GetAmmoType(item.name)
 				if ammoType then item.ammoType = ammoType end
 			end
+			TriggerEvent('linden_inventory:currentWeapon', item)
 			SetCurrentPedWeapon(playerPed, currentWeapon.hash)
 			SetPedCurrentWeaponVisible(playerPed, true, false, false, false)
 			if item.metadata.weapontint then SetPedWeaponTintIndex(playerPed, item.name, item.metadata.weapontint) end
