@@ -27,6 +27,7 @@ addInventoryItem = function(xPlayer, item, count, metadata, slot)
 	if checkPlayer(xPlayer) ~= true then return end
 	local xItem = Items[item]
 	if xPlayer and xItem and count > 0 then
+	if xPlayer.canCarryItem(item) then	
 		local isWeapon = item:find('WEAPON_')
 		if metadata == 'setname' then metadata = {description = xPlayer.getName()} elseif not isWeapon then metadata = setMetadata(metadata) end
 		local toSlot, existing
@@ -82,6 +83,9 @@ addInventoryItem = function(xPlayer, item, count, metadata, slot)
 			ItemNotify(xPlayer, Inventories[xPlayer.source].inventory[slot], added, slot, 'Added')
 		end
 		if slot then TriggerClientEvent('linden_inventory:refreshInventory', xPlayer.source, Inventories[xPlayer.source]) end
+			else
+		TriggerClientEvent('esx:showNotification', xPlayer.source, 'Over weight. ')	
+		end
 	end
 end
 exports('addInventoryItem', addInventoryItem)
