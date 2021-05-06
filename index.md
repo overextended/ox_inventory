@@ -21,7 +21,7 @@ title: Installation
 
 #### Pre-configured ESX
 * You can ignore the framework edits and download this file shared on my discord, if you prefer  
-[Download](https://cdn.discordapp.com/attachments/816673612621938759/839681778079367208/es_extended.zip)
+[Download](https://cdn.discordapp.com/attachments/816673612621938759/839690298493108234/es_extended.zip)
 
 
 
