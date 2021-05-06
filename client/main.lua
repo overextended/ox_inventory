@@ -15,18 +15,20 @@ ClearWeapons = function()
 end
 
 DisarmPlayer = function(weapon)
-	currentWeapon.metadata.ammo = GetAmmoInPedWeapon(playerPed, currentWeapon.hash)
-	SetPedAmmo(playerPed, currentWeapon.hash, 0)
-	SetCurrentPedWeapon(playerPed, `WEAPON_UNARMED`, true)
-	RemoveWeaponFromPed(playerPed, currentWeapon.hash)
-	if currentWeapon.metadata.components then
-		for k,v in pairs(currentWeapon.metadata.components) do
-			local componentHash = ESX.GetWeaponComponent(currentWeapon.name, v).hash
-			if componentHash then RemoveWeaponComponentFromPed(playerPed, currentWeapon.hash, componentHash) end
+	if currentWeapon then
+		currentWeapon.metadata.ammo = GetAmmoInPedWeapon(playerPed, currentWeapon.hash)
+		SetPedAmmo(playerPed, currentWeapon.hash, 0)
+		SetCurrentPedWeapon(playerPed, `WEAPON_UNARMED`, true)
+		RemoveWeaponFromPed(playerPed, currentWeapon.hash)
+		if currentWeapon.metadata.components then
+			for k,v in pairs(currentWeapon.metadata.components) do
+				local componentHash = ESX.GetWeaponComponent(currentWeapon.name, v).hash
+				if componentHash then RemoveWeaponComponentFromPed(playerPed, currentWeapon.hash, componentHash) end
+			end
 		end
+		TriggerServerEvent('linden_inventory:updateWeapon', currentWeapon)
+		TriggerEvent('linden_inventory:currentWeapon', nil)
 	end
-	TriggerServerEvent('linden_inventory:updateWeapon', currentWeapon)
-	TriggerEvent('linden_inventory:currentWeapon', nil)
 end
 
 error = function(msg)
