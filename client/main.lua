@@ -659,6 +659,15 @@ TriggerLoops = function()
 							error("No longer able to access this inventory")
 						else
 							TaskTurnPedToFaceCoord(playerPed, pedCoords)
+							local animDict = 'mp_ped_interaction'
+							local anim = 'handshake_guy_b'
+							RequestAnimDict(animDict)
+							while not HasAnimDictLoaded(animDict) do
+								Citizen.Wait(100)
+							end
+							ClearPedTasks(playerPed)
+							Citizen.Wait(100)
+							TaskPlayAnimAdvanced(playerPed, animDict, anim, GetEntityCoords(playerPed, true), 0, 0, GetEntityHeading(playerPed), 1.0, 1.0, 250, 49, 0.2, 0, 0)
 						end
 					elseif not lastVehicle and currentInventory.coords then
 						local dist = #(playerCoords - currentInventory.coords)
