@@ -8,6 +8,15 @@ Shops = {}
 Opened = {}
 Status = {'starting', ''}
 
+AddEventHandler('playerConnecting', function(name, setCallback, deferrals)
+	deferrals.defer()
+	Citizen.Wait(1000)
+	if Status[1] ~= 'ready' then
+		deferrals.done('Inventory system has not yet loaded')
+	else
+		deferrals.done()
+	end
+end)
 
 local failed = function(msg)
 	Status[1], Status[2] = 'error', msg
