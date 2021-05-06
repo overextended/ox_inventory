@@ -19,9 +19,9 @@ DisarmPlayer = function(weapon)
 	SetPedAmmo(playerPed, currentWeapon.hash, 0)
 	SetCurrentPedWeapon(playerPed, `WEAPON_UNARMED`, true)
 	RemoveWeaponFromPed(playerPed, currentWeapon.hash)
-	if item.metadata.components then
-		for k,v in pairs(item.metadata.components) do
-			local componentHash = ESX.GetWeaponComponent(item.name, v).hash
+	if currentWeapon.metadata.components then
+		for k,v in pairs(currentWeapon.metadata.components) do
+			local componentHash = ESX.GetWeaponComponent(currentWeapon.name, v).hash
 			if componentHash then RemoveWeaponComponentFromPed(playerPed, currentWeapon.hash, componentHash) end
 		end
 	end
