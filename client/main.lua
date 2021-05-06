@@ -138,15 +138,10 @@ end)
 
 RegisterNetEvent('targetPlayerAnim')
 AddEventHandler('targetPlayerAnim', function()
-	local animDict = 'mp_ped_interaction'
-	local anim = 'handshake_guy_b'
-	if not IsEntityPlayingAnim(playerPed, animDict, anim, 3) then
-		RequestAnimDict(animDict)
-		while not HasAnimDictLoaded(animDict) do
-			Citizen.Wait(10)
-		end
-		TaskPlayAnimAdvanced(playerPed, animDict, anim, GetEntityCoords(playerPed, true), 0, 0, GetEntityHeading(playerPed), 1.0, 1.0, 250, 49, 0.2, 0, 0)
-	end
+	loadAnimDict('mp_ped_interaction')
+	TaskPlayAnimAdvanced(playerPed, 'mp_ped_interaction', 'handshake_guy_b', GetEntityCoords(playerPed, true), 0, 0, GetEntityHeading(playerPed), 1.0, 1.0, 250, 49, 0.2, 0, 0)
+	Wait(400)
+	ClearPedSecondaryTask(playerPed)
 end)
 
 OpenShop = function(id)
