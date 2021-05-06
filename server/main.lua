@@ -82,16 +82,14 @@ exports.ghmattimysql:ready(function()
 				if not Items[k] then
 					--print (' ('..k..', '..k..', 115, 1, 1, 1, NULL), ')
 					count = count + 1
-					for k, v in pairs(result) do
-						Items[k] = {
-							name = k,
-							label = k,
-							weight = 0,
-							stackable = 1,
-							description = 'Item not added to database',
-							closeonuse = 1
-						}
-					end
+					Items[k] = {
+						name = k,
+						label = k,
+						weight = 0,
+						stackable = 1,
+						description = 'Item not added to database',
+						closeonuse = 1
+					}
 				end
 			end
 			if count > 0 then message('Created '..count..' dummy items', 2) end
