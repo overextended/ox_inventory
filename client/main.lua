@@ -667,19 +667,21 @@ TriggerLoops = function()
 
 	Citizen.CreateThread(function()
 		while PlayerLoaded do
-			local hasWeapon, wepHash = GetCurrentPedWeapon(playerPed, 1)
-			if hasWeapon then
-				if not currentWeapon then
-					local esxWeapon = ESX.GetWeaponFromHash(wepHash)
-					if esxWeapon then TriggerServerEvent('linden_inventory:weaponMismatch', wepHash) end
-				elseif wepHash ~= currentWeapon.hash then
-					local esxWeapon = ESX.GetWeaponFromHash(wepHash)
-					if esxWeapon then DisarmPlayer() end
+			if not useItemCooldown then
+				local hasWeapon, wepHash = GetCurrentPedWeapon(playerPed, 1)
+				if hasWeapon then
+					if not currentWeapon then
+						local esxWeapon = ESX.GetWeaponFromHash(wepHash)
+						if esxWeapon then TriggerServerEvent('linden_inventory:weaponMismatch', esxWeapon.name) end
+					elseif wepHash ~= currentWeapon.hash then
+						local esxWeapon = ESX.GetWeaponFromHash(wepHash)
+						if esxWeapon then DisarmPlayer() end
+					end
+				elseif currentWeapon and currentWeapon.hash then
+					TriggerEvent('linden_inventory:currentWeapon', nil)
 				end
-			elseif currentWeapon and not useItemCooldown and currentWeapon.hash then
-				TriggerEvent('linden_inventory:currentWeapon', nil)
 			end
-			Citizen.Wait(1000)
+			Citizen.Wait(2000)
 		end
 	end)
 end
