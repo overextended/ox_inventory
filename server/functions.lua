@@ -83,6 +83,7 @@ TriggerBanEvent = function(xPlayer, reason)
 	-- do your ban stuff and whatever logging you want to use
 	-- only trigger bans when it is guaranteed to be cheating and not desync
 	if Config.Logs then exports.linden_logs:log(xPlayer, false, reason, 'ban') end
+	--TriggerEvent("EasyAdmin:banPlayer", xPlayer.source, reason, false, GetPlayerName(xPlayer.source))
 end
 
 ValidateItem = function(type, xPlayer, fromSlot, toSlot, fromItem, toItem)
@@ -104,8 +105,15 @@ ValidateItem = function(type, xPlayer, fromSlot, toSlot, fromItem, toItem)
 end 
 
 ItemNotify = function(xPlayer, item, count, slot, type)
-	local player = Inventories[xPlayer.source]
-	if Items[item.name] then TriggerClientEvent('linden_inventory:itemNotify', xPlayer.source, item, count, slot, type) end
+	local xItem = Items[item.name]
+	if xItem then
+		if item.name:find('WEAPON_') then
+			Inventories[xPlayer.source].inventory[slot].ammoType, item.ammoType = xItem.ammoType, xItem.ammoType
+			TriggerClientEvent('linden_inventory:itemNotify', xPlayer.source, item, count, slot, type)
+		--elseif item.name == 'radio' and xPlayer.getInventoryItem('radio').count == 0 then
+		--	TriggerClientEvent('sup_radio:close-radio', xPlayer.source)
+		end
+	end
 end
 
 SyncAccounts = function(xPlayer, name)
