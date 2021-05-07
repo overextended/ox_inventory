@@ -472,11 +472,14 @@ TriggerLoops = function()
 			for i = 19, 20 do
 				HideHudComponentThisFrame(i)
 			end
-			if isBusy then
+			if isBusy or useItemCooldown then
 				DisableControlAction(0, 24, true)
 				DisableControlAction(0, 25, true)
 				DisableControlAction(0, 142, true)
 				DisableControlAction(0, 257, true)
+				DisableControlAction(1, 140, true)
+				DisableControlAction(1, 141, true)
+				DisableControlAction(1, 142, true)
 			elseif not invOpen and not wait and CanOpenInventory() then
 				for i=1, #Keys, 1 do
 					if not isBusy and IsDisabledControlJustReleased(0, Keys[i]) and ESX.PlayerData.inventory[i] then
