@@ -1,12 +1,3 @@
--- Use this if upgrading
-ALTER TABLE `linden_inventory`
-	DROP INDEX IF EXISTS `name`,
-	ADD IF NOT EXISTS `id` INT NOT NULL AUTO_INCREMENT,
-	ADD IF NOT EXISTS `owner` VARCHAR(60) NULL DEFAULT NULL COLLATE 'utf8mb4_general_ci',
-	ADD PRIMARY KEY IF NOT EXISTS (`id`),
-	ADD UNIQUE INDEX IF NOT EXISTS (`name`, `owner`);
----------------------------------------------------------------
-
 CREATE TABLE IF NOT EXISTS `linden_inventory` (
     `id` TINYINT(11) NOT NULL AUTO_INCREMENT,
     `owner` VARCHAR(60) NULL DEFAULT NULL COLLATE 'utf8mb4_general_ci',
