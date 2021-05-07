@@ -13,22 +13,11 @@ title: Installation
 * [ghmattimysql](https://github.com/GHMatti/ghmattimysql/releases)
 * [mythic_progbar](https://github.com/thelindat/mythic_progbar)
 * [mythic_notify](https://github.com/thelindat/mythic_notify)
-* ESX Framework ([v1 Final](https://github.com/esx-framework/es_extended/tree/v1-final) or [ExtendedMode](https://github.com/extendedmode/extendedmode))
-
-#### If you want to try ExtendedMode
-* I have a [modified release](https://github.com/thelindat/extendedmode) with several bug fixes, added features, and required changes already made
-* You can also try an experimental [branch](https://github.com/thelindat/extendedmode/tree/kashacters) for use with [kashacters](https://github.com/thelindat/esx_kashacter)
-
-#### Pre-configured ESX
-* You can ignore the framework edits and download this file shared on my discord, if you prefer  
-[Download](https://cdn.discordapp.com/attachments/816673612621938759/839690298493108234/es_extended.zip)
+* ESX Framework (more information below)
 
 
-
-<h2 align='center'>Updating from hsn-inventory</h2>
-Revert any changes from the previous version of the inventory (you can start fresh or use my included framework edits)
-<br><br>
-<h2 align='center'>Modifying third-party resources</h2>
+<br>
+<h2 align='center'>GHMattiMySQL</h2>
 
 * Delete `config.json` to fallback to using the MySQL connection string in server.cfg
 * Add the following code to ghmattimysql-server.lua
@@ -42,14 +31,32 @@ exports("ready", function (callback)
 	end)
 end)
 ```
+Look at [Snippets](snippets) or [Other Resources](resources) for modifying other resources.  
 
-Look at [Snippets](snippets) or [Other Resources](resources) for modifying other resources
+<br>
+<h2 align='center'>Framework</h2>
+
+ESX v1 is now being updated again under the Legacy branch. My plan is to keep an up-to-date fork of ESX Legacy with all the necessary changes for inventory compatibility, as well as a few unofficial tweaks to the framework (I'll keep a list of changes).  
+
+I will keep the guides for updating v1 Final and ExtendedMode, but I strongly suggest updating.  
+
+[Download ESX Legacy (modified)](https://github.com/thelindat/es_extended)
+
+[Download ESX Final (modified)](https://cdn.discordapp.com/attachments/816673612621938759/839690298493108234/es_extended.zip) (not recommended)
+
+[Download EXM (modified)](https://github.com/thelindat/extendedmode) (not recommended)
+
+
 <br><br>
 <h2 align='center'>Modifying your framework</h2>
-<a href='exm'>ExtendedMode</a><br>
-<a href='esx'>ESX v1 Final<a>
-<br><br>
 
+* If you are using one of the frameworks linked above, you do not need to follow these guides.
+
+[ESX v1 Final](esx)  
+[ExtendedMode](exm)  
+
+
+<br>
 
 <h2 align='center'>F.A.Qs</h2>
 
