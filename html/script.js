@@ -735,10 +735,10 @@ SwapItems = function(fromInventory, toInventory, fromSlot, toSlot) {
 				}
 			}
 		} else {
-			HSN.InventoryMessage('You can not perform this action', 2)
+			HSN.InventoryMessage('cannot_perform', 2)
 		}
 	} else {
-		if (inv2 == 'Playerinv') { HSN.InventoryMessage('You can not carry that much', 2) } else { HSN.InventoryMessage('Target inventory can not hold that much', 2) }
+		if (inv2 == 'Playerinv') { HSN.InventoryMessage('cannot_carry', 2) } else { HSN.InventoryMessage('cannot_carry_other', 2) }
 	}
 	DragAndDrop()
 }
