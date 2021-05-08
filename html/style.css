@@ -232,7 +232,7 @@
     margin: 0.5px;
     width: 110px;
     height: 130px;
-    
+    z-index: 1;
     background-color: rgba(0, 0, 0, 0.2);
     border: 1px solid rgba(255, 255, 255, 0.05);
 }
@@ -244,6 +244,7 @@
     position: absolute;
     left: 50%;
 	bottom: 2%;
+    z-index: 1;
     transform: translate(-50%, 0%);
     overflow: hidden;
 }
@@ -255,7 +256,7 @@
     margin: 1px;
     width: 110px;
     height: 110px;
-    
+    z-index: 1;
     background-color: rgba(0, 0, 0, 0.2);
     border: 1px solid rgba(255, 255, 255, 0.05);
 }
@@ -280,7 +281,7 @@
     max-width: 100%;
     max-height: 100%;
     bottom: -10px;
-
+    z-index: -1;
 }
 
 .hotslot-img img {
@@ -292,6 +293,7 @@
     max-width: 100%;
     max-height: 100%;
 	top: 5px;
+    z-index: -1 !important;
 }
 
 #itembox-action > p {
