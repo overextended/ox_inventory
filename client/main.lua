@@ -265,6 +265,8 @@ AddEventHandler('linden_inventory:refreshInventory', function(data)
 	})
 	ESX.PlayerData.inventory = data.inventory
 	ESX.SetPlayerData('inventory', data.inventory)
+	ESX.SetPlayerData('maxWeight', data.maxWeight)
+	ESX.SetPlayerData('weight', data.weight)
 end)
 
 RegisterNetEvent('linden_inventory:itemNotify')
