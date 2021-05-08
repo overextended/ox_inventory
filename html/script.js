@@ -5,7 +5,6 @@ var dropName = 'drop'
 var totalkg = 0
 var righttotalkg = 0
 var count = 0
-var dropSlots = 50
 var timer = null
 var showhotbar = null
 var HSN = []
@@ -315,6 +314,8 @@ HSN.SetupInventory = function(data) {
 	} else {
 		$('.rightside-name').html("Drop")
 		$('.inventory-main-rightside').data("invTier", "drop")
+		var dropSlots
+		if (data.rightinventory) {dropSlots = data.rightinventory.slots} else {dropSlots = data.slots}
 		rightinvtype = 'drop'
 		rightmaxWeight = (dropSlots*9000).toFixed(0)
 		righttotalkg = 0
