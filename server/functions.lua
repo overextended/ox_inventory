@@ -82,7 +82,7 @@ TriggerBanEvent = function(xPlayer, reason)
 	TriggerClientEvent('linden_inventory:closeInventory', xPlayer.source)
 	-- do your ban stuff and whatever logging you want to use
 	-- only trigger bans when it is guaranteed to be cheating and not desync
-	--if Config.Logs then exports.linden_logs:log(xPlayer, false, reason, 'ban') end
+	if Config.Logs then exports.linden_logs:log(xPlayer, false, reason, 'ban') end
 end
 
 ValidateItem = function(type, xPlayer, fromSlot, toSlot, fromItem, toItem)
@@ -132,7 +132,7 @@ CreateNewDrop = function(xPlayer, data)
 	if data.type == 'freeslot' then
 		if ValidateItem(data.type, xPlayer, Inventories[invid2].inventory[data.emptyslot], Drops[invid].inventory[data.toSlot], data.item, data.item) == true then
 			local count = Inventories[invid2].inventory[data.emptyslot].count
-			ItemNotify(xPlayer, data.item, count, data.emptyslot, 'Removed')
+			ItemNotify(xPlayer, data.item, count, data.emptyslot, _U('removed'))
 			Inventories[invid2].inventory[data.emptyslot] = nil
 			Drops[invid].inventory[data.toSlot] = {name = data.item.name, label = data.item.label, weight = data.item.weight, slot = data.toSlot, count = data.item.count, description = data.item.description, metadata = data.item.metadata, stackable = data.item.stackable, closeonuse = Items[data.item.name].closeonuse}
 			if Config.Logs then
@@ -143,7 +143,7 @@ CreateNewDrop = function(xPlayer, data)
 		end
 	elseif data.type == 'split' then
 		if ValidateItem(data.type, xPlayer, Inventories[invid2].inventory[data.fromSlot], Drops[invid].inventory[data.toSlot], data.oldslotItem, data.newslotItem) == true then
-			ItemNotify(xPlayer, data.newslotItem, data.newslotItem.count, data.fromSlot, 'Removed')
+			ItemNotify(xPlayer, data.newslotItem, data.newslotItem.count, data.fromSlot, _U('removed'))
 			Inventories[invid2].inventory[data.fromSlot] = {name = data.oldslotItem.name, label = data.oldslotItem.label, weight = data.oldslotItem.weight, slot = data.fromSlot, count = data.oldslotItem.count, description = data.oldslotItem.description, metadata = data.oldslotItem.metadata, stackable = data.oldslotItem.stackable, closeonuse = Items[data.oldslotItem.name].closeonuse}
 			Drops[invid].inventory[data.toSlot] = {name = data.newslotItem.name, label = data.newslotItem.label, weight = data.newslotItem.weight, slot = data.toSlot, count = data.newslotItem.count, description = data.newslotItem.description, metadata = data.newslotItem.metadata, stackable = data.newslotItem.stackable, closeonuse = Items[data.newslotItem.name].closeonuse}
 			if Config.Logs then
