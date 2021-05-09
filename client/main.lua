@@ -854,9 +854,8 @@ RegisterNUICallback('devtool', function()
 end)
 
 RegisterNUICallback('notification', function(data)
-	if tonumber(data.type) == 2 then type = 'error' else type = 'inform' end
-	local msg = _U(data.message)
-	TriggerEvent('mythic_notify:client:SendAlert', {type = type, text = msg, length = 2500})
+	if data.type == 2 then data.type = 'error' else data.type = 'inform' end
+	TriggerEvent('mythic_notify:client:SendAlert', {type = data.type, text = _U(data.message), length = 2500})
 end)
 
 RegisterNUICallback('useItem', function(data, cb)
