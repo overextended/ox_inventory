@@ -94,7 +94,7 @@ OpenTargetInventory = function()
 	local closestPlayer, closestDistance = ESX.Game.GetClosestPlayer()
 	if closestPlayer ~= -1 and closestDistance <= 1.2 then
 		local searchPlayerPed = GetPlayerPed(closestPlayer)
-		if CanOpenTarget(searchPlayerPed) then
+		if ESX.PlayerData.job.name == 'police' or CanOpenTarget(searchPlayerPed) then
 			TriggerServerEvent('linden_inventory:openTargetInventory', GetPlayerServerId(closestPlayer))
 		else
 			TriggerEvent('mythic_notify:client:SendAlert', {type = 'error', text = _U('inventory_cannot_open_other'), length = 2500})
@@ -133,8 +133,8 @@ end)
 RegisterNetEvent('targetPlayerAnim')
 AddEventHandler('targetPlayerAnim', function()
 	loadAnimDict('mp_ped_interaction')
-	TaskPlayAnimAdvanced(playerPed, 'mp_ped_interaction', 'handshake_guy_b', GetEntityCoords(playerPed, true), 0, 0, GetEntityHeading(playerPed), 1.0, 1.0, 250, 49, 0.2, 0, 0)
-	Wait(400)
+	TaskPlayAnim(playerPed,'mp_ped_interaction', 'handshake_guy_b',1.0, 1.0, 1.0, 49, 0.0, 0, 0, 0)
+	Wait(250)
 	ClearPedSecondaryTask(playerPed)
 end)
 
