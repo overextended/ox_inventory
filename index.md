@@ -36,9 +36,19 @@ Look at [Snippets](snippets) or [Other Resources](resources) for modifying other
 <br>
 <h2 align='center'>Framework</h2>
 
-ESX v1 is now being updated again under the Legacy branch. My plan is to keep an up-to-date fork of ESX Legacy with all the necessary changes for inventory compatibility, as well as a few unofficial tweaks to the framework (I'll keep a list of changes).  
+ESX v1 is now being updated again under the Legacy branch. My plan is to keep an up-to-date fork of ESX Legacy with all the necessary changes for inventory compatibility, as well as a few unofficial tweaks to the framework (I'll keep a list of changes). I will try to push certain changes to the main repo, but some features are unwanted by the core team.  
 
 I will keep the guides for updating v1 Final and ExtendedMode, but I strongly suggest updating.  
+
+
+#### If you are migrating from ExtendedMode
+Identifiers are used diffently in EXM (and 1.1), no longer keeping the identifier prefix stored with the actual value `(i.e. steam:0000000000000 vs 0000000000000)`  
+
+
+#### Identifiers
+Only `license` is officially supported by ESX and many resources will reflect this. If you use my fork you can change the primary identifier to use steam, license, discord, or whatever; however other resources still need to be adjusted to use your preferred identifier. I am currently looking for a method that will satisfy the core team.
+
+
 
 [Download ESX Legacy (modified)](https://github.com/thelindat/es_extended)
 
