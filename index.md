@@ -10,15 +10,18 @@ title: Installation
 
 * OneSync must be enabled on your server (Legacy or Infinity)
 * You can use OneSync for up to 32 slots without being a FiveM patron
-* [ghmattimysql](https://github.com/GHMatti/ghmattimysql/releases)
-* [mythic_progbar](https://github.com/thelindat/mythic_progbar)
-* [mythic_notify](https://github.com/thelindat/mythic_notify)
 * ESX Framework (more information below)
+* * I recommend using the following string in `server.cfg`
+```
+set mysql_connection_string "mysql://user:password@localhost/database?connectTimeout=30000&acquireTimeout=30000&waitForConnections=true&keepAlive=15"
+```
+| [ghmattimysql](https://github.com/GHMatti/ghmattimysql/releases) | [mythic_progbar](https://github.com/thelindat/mythic_progbar) | [mythic_notify](https://github.com/thelindat/mythic_notify)
 
 
 <br>
-<h2 align='center'>GHMattiMySQL</h2>
+<h2 align='center'>Resource Modifications</h2>
 
+#### ghmattimysql
 * Delete `config.json` to fallback to using the MySQL connection string in server.cfg
 * Add the following code to ghmattimysql-server.lua
 ```lua
