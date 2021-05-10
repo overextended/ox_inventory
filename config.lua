@@ -8,9 +8,6 @@ Config.CheckVersionDelay = 60
 -- Number of inventory slots
 Config.PlayerSlots = 50
 
--- Regular carry weight, can be increased by backpacks through esx_skin
-Config.PlayerWeight = 30000
-
 -- Blur the screen while in an inventory
 Config.EnableBlur = true
 
