@@ -75,8 +75,11 @@ You can now use a new function to retrieve a players identifier `ESX.GetIdentifi
 
 * If you are using one of the frameworks linked above, you do not need to follow these guides.
 
-[ESX v1 Final](esx)  
-[ExtendedMode](exm)  
+
+| [ESX Legacy](legacy) | [ESX Final](esx) | [ExtendedMode](exm)
+
+
+
 
 
 <br>
