@@ -21,7 +21,6 @@ ensure hardcap
 ensure mysql-async
 ensure ghmattimysql
 ensure cron
-ensure async
 
 ensure es_extended
 ** etc
