@@ -175,7 +175,7 @@ exports('getWeight', getWeight)
 
 
 getMaxWeight = function(xPlayer)
-	if not Inventories[xPlayer.source] then return Config.PlayerWeight
+	if not Inventories[xPlayer.source] then return ESX.GetConfig().MaxWeight
 	else return Inventories[xPlayer.source].maxWeight end
 end
 exports('getMaxWeight', getMaxWeight)
