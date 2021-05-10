@@ -34,6 +34,10 @@ ensure linden_inventory		# have it load after resources that register items, or 
 
 <h2 align='center'>Modifying your framework</h2>
 
+## config.lua
+* Set your desired player weight in grams, where 24000 is equal to 24kg (about 53lbs)
+
+
 ## server/main.lua
 * Remove `loadout = {},` from the userData table
 * Search for `MySQL.Async.fetchAll` and replace
