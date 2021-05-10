@@ -41,12 +41,31 @@ ESX v1 is now being updated again under the Legacy branch. My plan is to keep an
 I will keep the guides for updating v1 Final and ExtendedMode, but I strongly suggest updating.  
 
 
-#### If you are migrating from ExtendedMode
-Identifiers are used diffently in EXM (and 1.1), no longer keeping the identifier prefix stored with the actual value `(i.e. steam:0000000000000 vs 0000000000000)`  
+#### If you are migrating from ExtendedMode (or upgrading from ESX 1.1)
+Since ESX 1.2, the identifier prefix is not stored `(i.e. steam:0000000000000 vs 0000000000000)`  
+The best option would be running a query to update all identifier/owner columns and update the format, or change the identifier check in your resources
 
 
 #### Identifiers
-Only `license` is officially supported by ESX and many resources will reflect this. If you use my fork you can change the primary identifier to use steam, license, discord, or whatever; however other resources still need to be adjusted to use your preferred identifier. I am currently looking for a method that will satisfy the core team.
+Only `license` is officially supported by ESX and many resources will reflect this. Example:
+```lua
+	for k,v in ipairs(GetPlayerIdentifiers(playerId)) do
+		if string.match(v, 'license:') then
+			identifier = string.sub(v, 9)
+			break
+		end
+	end
+```
+You can now use a new function to retrieve a players identifier `ESX.GetIdentifier(playerId)`  
+* If you don't want to use `license` or require the prefix to be kept for compatibility, modify the function in `es_extended/server/functions.lua`
+```lua
+	if string.match(v, 'steam') then
+		local identifier = v		-- string.gsub(v, 'steam:', '') use this to strip the prefix
+		return identifier
+	end
+```
+
+
 
 
 
