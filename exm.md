@@ -21,7 +21,6 @@ ensure hardcap
 ensure mysql-async
 ensure ghmattimysql
 ensure cron
-ensure async
 
 ensure extendedmode       	# extendedmode provides es_extended, you don't need to replace any dependencies or events
 ** etc
