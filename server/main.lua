@@ -169,7 +169,7 @@ AddEventHandler('linden_inventory:setPlayerInventory', function(xPlayer, data)
 		identifier = xPlayer.getIdentifier(),
 		type = 'Playerinv',
 		slots = Config.PlayerSlots,
-		maxWeight = Config.PlayerWeight,
+		maxWeight = ESX.GetConfig().MaxWeight,
 		weight = 0,
 		inventory = {}
 	}
