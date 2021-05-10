@@ -41,12 +41,16 @@ ESX v1 is now being updated again under the Legacy branch. My plan is to keep an
 I will keep the guides for updating v1 Final and ExtendedMode, but I strongly suggest updating.  
 
 
+[Download ESX Legacy (modified)](https://github.com/thelindat/es_extended)
+
+[Download ESX Final (modified)](https://cdn.discordapp.com/attachments/816673612621938759/839690298493108234/es_extended.zip) (not recommended)
+
+[Download EXM (modified)](https://github.com/thelindat/extendedmode) (not recommended)
+
+
 #### If you are migrating from ExtendedMode (or upgrading from ESX 1.1)
 Since ESX 1.2, the identifier prefix is not stored `(i.e. steam:0000000000000 vs 0000000000000)`  
 The best option would be running a query to update all identifier/owner columns and update the format, or change the identifier check in your resources
-
-
-#### Identifiers
 Only `license` is officially supported by ESX and many resources will reflect this. Example:
 ```lua
 	for k,v in ipairs(GetPlayerIdentifiers(playerId)) do
@@ -64,16 +68,6 @@ You can now use a new function to retrieve a players identifier `ESX.GetIdentifi
 		return identifier
 	end
 ```
-
-
-
-
-
-[Download ESX Legacy (modified)](https://github.com/thelindat/es_extended)
-
-[Download ESX Final (modified)](https://cdn.discordapp.com/attachments/816673612621938759/839690298493108234/es_extended.zip) (not recommended)
-
-[Download EXM (modified)](https://github.com/thelindat/extendedmode) (not recommended)
 
 
 <br><br>
