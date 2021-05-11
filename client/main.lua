@@ -145,8 +145,9 @@ OpenShop = function(id)
 end
 
 OpenStash = function(data)
-	if not invOpen and CanOpenInventory() and not CanOpenTarget(playerPed) then
-		TriggerServerEvent('linden_inventory:openInventory', {type = 'stash', id = data.name, owner = data.owner, slots = data.slots, coords = data.coords, job = data.job  })
+	if data and not invOpen and CanOpenInventory() and not CanOpenTarget(playerPed) then
+		--if not data.slots then data.slots = (Config.PlayerSlots * 1.5) end
+		TriggerServerEvent('linden_inventory:openInventory', {type = 'stash', id = data.name, label = data.label, owner = data.owner, slots = data.slots, coords = data.coords, job = data.job  })
 	end
 end
 exports('OpenStash', OpenStash)
@@ -236,7 +237,8 @@ AddEventHandler('linden_inventory:openInventory',function(data, rightinventory)
 			name = inventoryLabel,
 			maxWeight = data.maxWeight,
 			weight = data.weight,
-			rightinventory = rightinventory
+			rightinventory = rightinventory,
+			job = ESX.PlayerData.job
 		})
 		ESX.PlayerData.inventory = data.inventory
 		if not rightinventory then movement = true else movement = false end
@@ -722,7 +724,9 @@ RegisterCommand('inv', function()
 	if CanOpenInventory() then
 		TriggerEvent('randPickupAnim')
 		if currentDrop then drop = currentDrop.name end
-		TriggerServerEvent('linden_inventory:openInventory', {type = 'drop', drop = drop })
+		local property = false
+		TriggerEvent('linden_inventory:getProperty', function(data) property = data end)
+		if property then OpenStash(property) else TriggerServerEvent('linden_inventory:openInventory', {type = 'drop', drop = drop }) end
 	end
 end)
 
@@ -751,6 +755,7 @@ RegisterCommand('vehinv', function()
 				if (open == 5 and checkVehicle == nil) then if pedDistance < 2.0 then CloseToVehicle = true end elseif (open == 5 and checkVehicle == 2) then if pedDistance < 2.0 then CloseToVehicle = true end elseif open == 4 then if pedDistance < 2.0 then CloseToVehicle = true end end	
 				if CloseToVehicle then
 					local plate = GetVehicleNumberPlateText(vehicle)
+					if Config.TrimPlate then plate = ESX.Math.Trim(plate) end
 					TaskTurnPedToFaceCoord(playerPed, vehiclePos)
 					lastVehicle = vehicle
 					OpenTrunk(plate, class)
@@ -801,6 +806,7 @@ RegisterCommand('vehinv', function()
 	elseif IsPedInAnyVehicle(playerPed, false) then -- glovebox
 		local vehicle = GetVehiclePedIsIn(playerPed, false)
 		local plate = GetVehicleNumberPlateText(vehicle)
+		if Config.TrimPlate then plate = ESX.Math.Trim(plate) end
 		local class = GetVehicleClass(vehicle)
 		OpenGloveBox(plate, class)
 		Citizen.Wait(100)
