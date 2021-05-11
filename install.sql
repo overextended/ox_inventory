@@ -1,5 +1,5 @@
 CREATE TABLE IF NOT EXISTS `linden_inventory` (
-    `id` TINYINT(11) NOT NULL AUTO_INCREMENT,
+    `id` INT NOT NULL AUTO_INCREMENT,
     `owner` VARCHAR(60) NULL DEFAULT NULL COLLATE 'utf8mb4_general_ci',
     `name` VARCHAR(100) NULL DEFAULT NULL COLLATE 'utf8mb4_general_ci', 
     `data` LONGTEXT NULL DEFAULT NULL COLLATE 'utf8mb4_general_ci',
