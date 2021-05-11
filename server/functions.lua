@@ -282,6 +282,7 @@ GetItems = function(id, type, owner)
 	if not owner then
 		if type == 'trunk' or type == 'glovebox' then
 			local plate = string.match(id, "-(.*)")
+			if Config.TrimPlate then plate = ESX.Math.Trim(plate) end
 			local result = exports.ghmattimysql:scalarSync('SELECT plate, owner FROM owned_vehicles WHERE plate = @plate', {
 				['@plate'] = plate
 			})
