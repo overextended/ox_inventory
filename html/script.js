@@ -10,12 +10,14 @@ var showhotbar = null
 var HSN = []
 var rightinvtype = null
 var rightinventory = null
+var rightgrade = 0
 var maxWeight = 0
 var rightmaxWeight = 0
 var playerfreeweight = 0
 var rightfreeweight = 0
 var availableweight = 0
 var element = new Image;
+var job = []
 
 var weightFormat = function(num, parenthesis, showZero) {
 	if (parenthesis == false) {
@@ -222,6 +224,7 @@ HSN.RemoveItemFromSlot = function(inventory,slot) {
 
 HSN.SetupInventory = function(data) {
 	maxWeight = data.maxWeight
+	job = data.job
 	$('.playername').html(data.name)
 	for(i = 1; i <= (data.slots); i++) {
 		$(".inventory-main-leftside").find("[inventory-slot=" + i + "]").remove();
@@ -254,8 +257,10 @@ HSN.SetupInventory = function(data) {
 	$(".leftside-weight").html(weightFormat(totalkg/1000, false, true) + '/'+ weightFormat(maxWeight/1000, false))
 	if (data.rightinventory !== undefined) {
 		if (data.rightinventory.id == undefined) {data.rightinventory.id = data.rightinventory.name}
+		if (data.rightinventory.name == undefined) {data.rightinventory.name = data.rightinventory.id}
 		rightinventory = data.rightinventory.id
-		console.log(rightinventory)
+		rightgrade = 0
+		if (data.rightinventory.grade) { rightgrade = data.rightinventory.grade }
 		$('.inventory-main-rightside').data("invTier", data.rightinventory.type)
 		$('.inventory-main-rightside').data("invId", rightinventory)
 		rightinvtype = data.rightinventory.type
@@ -332,18 +337,23 @@ function DragAndDrop() {
 	$("img").on("error", function() {
 		$(this).hide();
 	});
-	
+		
 	$(".drag-item").draggable({
 		helper: 'clone',
 		appendTo: ".inventory-main",
 		revertDuration: 0,
-		revert: "invalid",
 		cancel: ".itemdragclose",
 		containment: "parent",
 		start: function(event, ui) {
-			IsDragging = true;
-			$(this).find("img").css("filter", "brightness(50%)");
-			count = $("#item-count").val();
+			var inv = $(this).parent().data('invTier')
+			if (inv !== 'Playerinv' && rightgrade > job.grade) {
+				HSN.InventoryMessage('stash_lowgrade', 2)
+				return false
+			} else {
+				IsDragging = true;
+				$(this).find("img").css("filter", "brightness(50%)");
+				count = $("#item-count").val();
+			}
 		},
 		stop: function() {
 			setTimeout(function(){
