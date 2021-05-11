@@ -254,8 +254,8 @@ HSN.SetupInventory = function(data) {
 	$(".leftside-weight").html(weightFormat(totalkg/1000, false, true) + '/'+ weightFormat(maxWeight/1000, false))
 	if (data.rightinventory !== undefined) {
 		$('.inventory-main-rightside').data("invTier", data.rightinventory.type)
-		$('.inventory-main-rightside').data("invId", data.rightinventory.name)
-		rightinventory = data.rightinventory.name
+		$('.inventory-main-rightside').data("invId", data.rightinventory.id)
+		rightinventory = data.rightinventory.id
 		rightinvtype = data.rightinventory.type
 		rightmaxWeight = data.rightinventory.maxWeight || (data.rightinventory.slots*8000).toFixed(0)
 		righttotalkg = 0
@@ -265,7 +265,7 @@ HSN.SetupInventory = function(data) {
 				$(".inventory-main-rightside").append('<div class="ItemBoxes" inventory-slot=' + i +'></div> ')
 			}
 			if (data.rightinventory.type == 'shop') {
-				rightinventory = data.rightinventory.name
+				rightinventory = data.rightinventory.id
 				var currency = data.rightinventory.currency
 				$.each(data.rightinventory.inventory, function (i, item) {
 					if (item != null) {
