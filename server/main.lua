@@ -288,13 +288,14 @@ AddEventHandler('linden_inventory:openInventory', function(data, player)
 			if CheckOpenable(xPlayer, id, data.coords) then
 				if not data.maxWeight then data.maxWeight = data.slots*8000 end
 				Inventories[id] = {
-					name = id,
+					id = id,
 					type = data.type,
 					slots = data.slots,
 					coords = data.coords,
 					maxWeight = data.maxWeight,
 					inventory = GetItems(id, data.type)
 				}
+				if data.label then Inventories[id].name = data.label end
 				Opened[xPlayer.source] = {invid = id, type = data.type}
 				TriggerClientEvent('linden_inventory:openInventory', xPlayer.source, Inventories[xPlayer.source], Inventories[id])
 			end
@@ -304,7 +305,7 @@ AddEventHandler('linden_inventory:openInventory', function(data, player)
 			if CheckOpenable(xPlayer, id, data.coords) then
 				if not data.maxWeight then data.maxWeight = data.slots*8000 end
 				Inventories[id] = {
-					name = id,
+					id = id,
 					owner = data.owner,
 					type = data.type,
 					slots = data.slots,
@@ -312,6 +313,7 @@ AddEventHandler('linden_inventory:openInventory', function(data, player)
 					maxWeight = data.maxWeight,
 					inventory = GetItems(id, data.type, data.owner)
 				}
+				if data.label then Inventories[id].name = data.label end
 				Opened[xPlayer.source] = {invid = id, type = data.type}
 				TriggerClientEvent('linden_inventory:openInventory', xPlayer.source, Inventories[xPlayer.source], Inventories[id])
 			end
