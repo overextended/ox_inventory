@@ -723,10 +723,13 @@ RegisterCommand('inv', function()
 	if isBusy or invOpen then TriggerEvent('mythic_notify:client:SendAlert', {type = 'error', text = _U('inventory_cannot_open'), length = 2500}) return end
 	if CanOpenInventory() then
 		TriggerEvent('randPickupAnim')
-		if currentDrop then drop = currentDrop.name end
-		local property = false
-		TriggerEvent('linden_inventory:getProperty', function(data) property = data end)
-		if property then OpenStash(property) else TriggerServerEvent('linden_inventory:openInventory', {type = 'drop', drop = drop }) end
+		if currentDrop then drop = currentDrop.name
+		else
+			local property = false
+			TriggerEvent('linden_inventory:getProperty', function(data) property = data end)
+			if property then OpenStash(property) return end
+		end
+		TriggerServerEvent('linden_inventory:openInventory', {type = 'drop', drop = drop })
 	end
 end)
 
