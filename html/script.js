@@ -256,8 +256,6 @@ HSN.SetupInventory = function(data) {
 
 	$(".leftside-weight").html(weightFormat(totalkg/1000, false, true) + '/'+ weightFormat(maxWeight/1000, false))
 	if (data.rightinventory !== undefined) {
-		if (data.rightinventory.id == undefined) {data.rightinventory.id = data.rightinventory.name}
-		if (data.rightinventory.name == undefined) {data.rightinventory.name = data.rightinventory.id}
 		rightinventory = data.rightinventory.id
 		rightgrade = 0
 		if (data.rightinventory.grade) { rightgrade = data.rightinventory.grade }
