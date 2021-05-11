@@ -230,6 +230,10 @@ AddEventHandler('linden_inventory:openInventory',function(data, rightinventory)
 	if CanOpenInventory() then
 		movement = false
 		invOpen = true
+		if rightinventory then
+			if not rightinventory.id then rightinventory.id = rightinventory.name end
+			if not rightinventory.name then rightinventory.name = rightinventory.id end
+		end
 		SendNUIMessage({
 			message = 'openinventory',
 			inventory = data.inventory,
