@@ -4,35 +4,14 @@ title: Snippets
 
 | [Installation](index) | [Usage](usage) | [Snippets](snippets) | [Other Resources](resources) | [Media](media)
 
-## Weight fix for esx_skin
-* Either returns errors or sets the player weight incorrectly, due to getting ESX's weight
-```lua
-RegisterServerEvent('esx_skin:save')
-AddEventHandler('esx_skin:save', function(skin)
-	local xPlayer = ESX.GetPlayerFromId(source)
-	local defaultMaxWeight = 30000      -- put the default weight for players here, 30000 by default in linden_inventory
-	local backpackModifier = Config.BackpackWeight[skin.bags_1]
 
-	if backpackModifier then
-		xPlayer.setMaxWeight(defaultMaxWeight + backpackModifier)
-	else
-		xPlayer.setMaxWeight(defaultMaxWeight)
-	end
-
-	MySQL.Async.execute('UPDATE users SET skin = @skin WHERE identifier = @identifier', {
-		['@skin'] = json.encode(skin),
-		['@identifier'] = xPlayer.identifier
-	})
-end)
-````
-* Modify config.lua to change the amount of max weight to add for a backpack (in grams)
-
-## Police body search, without having to /steal
-* It's just /steal in a menu basically, has all the same requirements (dead, handsup, cuffed, etc)
+## Police body search
+* It's just /steal in a menu basically
 * Find `OpenBodySearchMenu(closestPlayer)` and replace it with `exports['linden_inventory']:OpenTargetInventory()`
 * Find and remove the `OpenBodySearchMenu` function
 
-## Create a stash with esx_property
+
+## Support for esx_property
 * Find and remove the following two blocks of code
 ```lua
 	table.insert(elements, {label = _U('remove_object'),  value = 'room_inventory'})
@@ -43,17 +22,18 @@ end)
 		OpenRoomInventoryMenu(property, owner)
 	elseif data.current.value == 'player_inventory' then
 		OpenPlayerInventoryMenu(property, owner)
-	end
 ```
-* Search for `if CurrentAction then` and below insert
+* Add this new event to the bottom
 ```lua
-	if IsControlJustPressed(0, 289) and CurrentAction == 'room_menu' then
-		exports['linden_inventory']:OpenStash({ name = CurrentActionData.property.name, owner = CurrentActionData.owner, slots = 70})
-	end
+	AddEventHandler('linden_inventory:getProperty', function(cb)
+		if CurrentAction == 'room_menu' then
+			cb({name = CurrentActionData.property.name, label = CurrentActionData.property.label, owner = CurrentActionData.owner, slots = 70})
+		end
+	end)
 ```
-* Pressing `F2` while standing on the marker will open the property stash on the right.
+* If you were using the previous method it should still work, though I recommend adding the label
 
-## Modify for loaf_housing
+## Support for loaf_housing
 * This is a single unified storage. If you want it for each piece of furniture, figure it out
 * Find the `OpenStorage` function and replace with
 ```lua
@@ -70,6 +50,7 @@ end
 ```
 
 ## Display inventory items in a menu (ie. [esx_drugs](https://github.com/DoPeMan17/esx_drugs/blob/master/client/main.lua))
+* This information is oudated - menus looping through `ESX.GetPlayerData().inventory` should still work (though may have minor issues)
 * Inventory displays in menus (like esx-menu) typically use `for k, v in pairs(ESX.GetPlayerData().inventory) do`
 * Put the functions into a server callback and loop the retrieved inventory instead
 ```lua
