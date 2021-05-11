@@ -12,7 +12,7 @@ title: Snippets
 
 
 ## Support for esx_property
-* Find and remove the following two blocks of code
+* Find and remove the following two blocks of code from `client/main.lua`
 ```lua
 	table.insert(elements, {label = _U('remove_object'),  value = 'room_inventory'})
 	table.insert(elements, {label = _U('deposit_object'), value = 'player_inventory'})
@@ -23,7 +23,7 @@ title: Snippets
 	elseif data.current.value == 'player_inventory' then
 		OpenPlayerInventoryMenu(property, owner)
 ```
-* Add this new event to the bottom
+* Add this new event to the bottom of the file
 ```lua
 	AddEventHandler('linden_inventory:getProperty', function(cb)
 		if CurrentAction == 'room_menu' then
