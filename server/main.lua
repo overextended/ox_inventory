@@ -293,7 +293,8 @@ AddEventHandler('linden_inventory:openInventory', function(data, player)
 					slots = data.slots,
 					coords = data.coords,
 					maxWeight = data.maxWeight,
-					inventory = GetItems(id, data.type)
+					inventory = GetItems(id, data.type),
+					grade = data.grade,
 				}
 				if data.label then Inventories[id].name = data.label end
 				Opened[xPlayer.source] = {invid = id, type = data.type}
@@ -1015,13 +1016,13 @@ end, true, {help = 'set account money', validate = true, arguments = {
 }})
 
 OpenStash = function(xPlayer, data)
-	TriggerEvent('linden_inventory:openInventory', {type = 'stash', owner = data.owner, id = data.name, slots = data.slots, coords = data.coords, job = data.job  }, xPlayer)
+	TriggerEvent('linden_inventory:openInventory', {type = 'stash', owner = data.owner, id = data.name, label = data.label, slots = data.slots, coords = data.coords, job = data.job, grade = data.grade }, xPlayer)
 end
 exports('OpenStash', OpenStash)
 
 ESX.RegisterCommand('evidence', 'user', function(xPlayer, args, showError)
 	if xPlayer.job.name == 'police' then
-		local stash = {name = 'evidence-'..args.evidence, slots = Config.PlayerSlots, job = 'police', coords = Config.PoliceEvidence}
+		local stash = {name = 'evidence-'..args.evidence, label = 'Police Evidence (#'..args.evidence..')', slots = Config.PlayerSlots, job = 'police', coords = Config.PoliceEvidence, grade = 2}
 		OpenStash(xPlayer, stash)
 	end
 end, true, {help = 'open police evidence', validate = true, arguments = {
