@@ -146,7 +146,7 @@ end
 
 OpenStash = function(data)
 	if data and not invOpen and CanOpenInventory() and not CanOpenTarget(playerPed) then
-		--if not data.slots then data.slots = (Config.PlayerSlots * 1.5) end
+		if not data.slots then data.slots = (Config.PlayerSlots * 1.5) end
 		TriggerServerEvent('linden_inventory:openInventory', {type = 'stash', id = data.name, label = data.label, owner = data.owner, slots = data.slots, coords = data.coords, job = data.job  })
 	end
 end
@@ -284,7 +284,7 @@ AddEventHandler('linden_inventory:itemNotify', function(item, count, slot, notif
 			if item.name:find('WEAPON_') then TriggerEvent('linden_inventory:checkWeapon', item) end
 		end
 	end
-	if currentInventory and string.find(currentInventory.name, 'Player') then
+	if currentInventory and string.find(currentInventory.id, 'Player') then
 		TriggerEvent('targetPlayerAnim')
 	end
 	ESX.SetPlayerData('inventory', ESX.PlayerData.inventory)
@@ -661,7 +661,7 @@ TriggerLoops = function()
 				if not CanOpenInventory() then
 					TriggerEvent('linden_inventory:closeInventory')
 				elseif currentInventory then
-					if string.find(currentInventory.name, 'Player') then
+					if string.find(currentInventory.id, 'Player') then
 						local id = GetPlayerFromServerId(currentInventory.id)
 						local ped = GetPlayerPed(id)
 						local pedCoords = GetEntityCoords(ped)
