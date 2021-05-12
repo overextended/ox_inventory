@@ -49,46 +49,17 @@ end
 	TriggerClientEvent('esx_ambulancejob:setDeathStatus', xPlayer.source, isDead)
 ```
 
-## Display inventory items in a menu (ie. [esx_drugs](https://github.com/DoPeMan17/esx_drugs/blob/master/client/main.lua))
-* This information is oudated - menus looping through `ESX.GetPlayerData().inventory` should still work (though may have minor issues)
-* Inventory displays in menus (like esx-menu) typically use `for k, v in pairs(ESX.GetPlayerData().inventory) do`
-* Put the functions into a server callback and loop the retrieved inventory instead
+## Display inventory items
+* The default method for looping through the inventory will still function, however it will not stack items of the same name
+* The below function will count up items with the same name, though it doesn't check metadata
 ```lua
-function OpenDrugShop()
-	ESX.UI.Menu.CloseAll()
-	local elements = {}
-
-	ESX.TriggerServerCallback('linden_inventory:getPlayerData',function(playerInventory)
-
-		for k, v in pairs(playerInventory.inventory) do
-			local price = Config.DrugDealerItems[v.name]
-	
-			if price and v.count > 0 then
-				table.insert(elements, {
-					label = ('%s - %s'):format(v.label, _U('dealer_item', ESX.Math.GroupDigits(price))),
-					name = v.name,
-					price = price,
-	
-					-- menu properties
-					type = 'slider',
-					value = v.count,
-					min = 1,
-					max = v.count
-				})
-			end
-		end
-		menuOpen = true
-	end, GetPlayerServerId(PlayerId()))
-	while not menuOpen do Citizen.Wait(50) end
-	ESX.UI.Menu.Open('default', GetCurrentResourceName(), 'drug_shop', {
-		title    = _U('dealer_title'),
-		align    = 'top-left',
-		elements = elements
-	}, function(data, menu)
-		TriggerServerEvent('esx_illegal:sellDrug', data.current.name, data.current.value)
-	end, function(data, menu)
-		menu.close()
-		menuOpen = false
-	end)
-end
+	local inv = {}
+	for k, v in pairs(ESX.GetPlayerData().inventory) do
+		if inv[v.name] then
+			inv[v.name].count = inv[v.name].count + v.count
+		else inv[v.name] = v end
+	end
+	for k, v in pairs(inv) do
+		print(k, v.count)
+	end
 ```
