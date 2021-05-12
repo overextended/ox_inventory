@@ -11,7 +11,7 @@ title: Installation
 * OneSync must be enabled on your server (Legacy or Infinity)
 * You can use OneSync for up to 32 slots without being a FiveM patron
 * ESX Framework (more information below)
-* * I recommend using the following string in `server.cfg`
+* I recommend using the following string in `server.cfg`
 ```
 set mysql_connection_string "mysql://user:password@localhost/database?connectTimeout=30000&acquireTimeout=30000&waitForConnections=true&keepAlive=15"
 ```
