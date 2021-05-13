@@ -147,7 +147,7 @@ end
 OpenStash = function(data)
 	if data and not invOpen and CanOpenInventory() and not CanOpenTarget(playerPed) then
 		if not data.slots then data.slots = (Config.PlayerSlots * 1.5) end
-		TriggerServerEvent('linden_inventory:openInventory', {type = 'stash', id = data.name, label = data.label, owner = data.owner, slots = data.slots, coords = data.coords, job = data.job  })
+		TriggerServerEvent('linden_inventory:openInventory', {type = 'stash', id = data.name, label = data.label, owner = data.owner, slots = data.slots, coords = data.coords, job = data.job, grade = data.grade  })
 	end
 end
 exports('OpenStash', OpenStash)
