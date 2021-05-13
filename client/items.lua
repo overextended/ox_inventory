@@ -22,6 +22,6 @@ AddEventHandler('linden_inventory:bandage', function()
 end)
 
 AddEventHandler('linden_inventory:armour', function()
-	SetPlayerMaxArmour(PlayerId(), 100)
+	SetPlayerMaxArmour(playerID, 100)
 	SetPedArmour(playerPed, 100)
 end)
