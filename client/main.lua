@@ -301,7 +301,12 @@ RegisterNetEvent('linden_inventory:createDrop')
 AddEventHandler('linden_inventory:createDrop', function(data, owner)
 	Drops[data.name] = data
 	Drops[data.name].coords = vector3(data.coords.x, data.coords.y,data.coords.z - 0.2)
-	if owner == playerID and invOpen and #(playerCoords - data.coords) <= 1 then TriggerServerEvent('linden_inventory:openInventory', {type = 'drop', drop = data.name }) end
+	if owner == playerID and invOpen and #(playerCoords - data.coords) <= 1 then
+		if not IsPedInAnyVehicle(playerPed, false) then TriggerServerEvent('linden_inventory:openInventory', {type = 'drop', drop = data.name })
+		else
+			TriggerServerEvent('linden_inventory:openInventory', {type = 'drop', drop = nil })
+		end
+	end
 end)
 
 RegisterNetEvent('linden_inventory:removeDrop')
@@ -730,6 +735,7 @@ RegisterCommand('inv', function()
 			TriggerEvent('linden_inventory:getProperty', function(data) property = data end)
 			if property then OpenStash(property) return end
 		end
+		if IsPedInAnyVehicle(playerPed, false) then drop = nil end
 		TriggerServerEvent('linden_inventory:openInventory', {type = 'drop', drop = drop })
 	end
 end)
