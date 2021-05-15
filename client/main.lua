@@ -77,7 +77,8 @@ CanOpenInventory = function()
 end
 
 CanOpenTarget = function(searchPlayerPed)
-	if IsPedDeadOrDying(searchPlayerPed, 1)
+	if ESX.PlayerData.job.name == 'police'
+	or IsPedDeadOrDying(searchPlayerPed, 1)
 	or IsEntityPlayingAnim(searchPlayerPed, 'random@mugging3', 'handsup_standing_base', 3)
 	or IsEntityPlayingAnim(searchPlayerPed, 'missminuteman_1ig_2', 'handsup_base', 3)
 	or IsEntityPlayingAnim(searchPlayerPed, 'missminuteman_1ig_2', 'handsup_enter', 3)
@@ -91,7 +92,7 @@ OpenTargetInventory = function()
 	local closestPlayer, closestDistance = ESX.Game.GetClosestPlayer()
 	if closestPlayer ~= -1 and closestDistance <= 1.2 then
 		local searchPlayerPed = GetPlayerPed(closestPlayer)
-		if ESX.PlayerData.job.name == 'police' or CanOpenTarget(searchPlayerPed) then
+		if CanOpenTarget(searchPlayerPed) then
 			TriggerServerEvent('linden_inventory:openTargetInventory', GetPlayerServerId(closestPlayer))
 		else
 			TriggerEvent('mythic_notify:client:SendAlert', {type = 'error', text = _U('inventory_cannot_open_other'), length = 2500})
@@ -348,7 +349,7 @@ end
 
 RegisterNetEvent('linden_inventory:weapon')
 AddEventHandler('linden_inventory:weapon', function(item)
-	if not isBusy then
+	if not isBusy and item then
 		TriggerEvent('linden_inventory:busy', true)
 		useItemCooldown = true
 		local newWeapon = item.metadata.serial
@@ -474,6 +475,7 @@ TriggerLoops = function()
 			for i = 19, 20 do
 				HideHudComponentThisFrame(i)
 			end
+			DisableControlAction(0, 37, true)
 			DisableControlAction(0, 289, true)
 			if isBusy or useItemCooldown then
 				DisableControlAction(0, 24, true)
@@ -485,7 +487,7 @@ TriggerLoops = function()
 				DisableControlAction(0, 142, true)
 			elseif not invOpen and not wait and CanOpenInventory() then
 				for i=1, #Keys, 1 do
-					if not isBusy and IsControlJustReleased(0, Keys[i]) and ESX.PlayerData.inventory[i] then
+					if IsControlJustReleased(0, Keys[i]) and ESX.PlayerData.inventory[i] then
 						TriggerEvent('linden_inventory:useItem', ESX.PlayerData.inventory[i])
 					end
 				end
@@ -560,7 +562,7 @@ TriggerLoops = function()
 		while PlayerLoaded do
 			local sleep = 250
 			playerPed = PlayerPedId()
-			SetPedCanSwitchWeapon(playerPed, false)
+			if IsPedInAnyVehicle(playerPed, false) then SetPedCanSwitchWeapon(playerPed, true) else SetPedCanSwitchWeapon(playerPed, false) end
 			playerCoords = GetEntityCoords(playerPed)
 			if not invOpen then
 				if not id or type == 'shop' then
@@ -667,7 +669,7 @@ TriggerLoops = function()
 				if not CanOpenInventory() then
 					TriggerEvent('linden_inventory:closeInventory')
 				elseif currentInventory then
-					if string.find(currentInventory.id, 'Player') then
+					if currentInventory.type == 'TargetPlayer' then
 						local id = GetPlayerFromServerId(currentInventory.id)
 						local ped = GetPlayerPed(id)
 						local pedCoords = GetEntityCoords(ped)
@@ -688,26 +690,6 @@ TriggerLoops = function()
 				end
 			end
 			Citizen.Wait(sleep)
-		end
-	end)
-
-	Citizen.CreateThread(function()
-		while PlayerLoaded do
-			if not useItemCooldown then
-				local hasWeapon, wepHash = GetCurrentPedWeapon(playerPed, 1)
-				if hasWeapon then
-					if not currentWeapon then
-						local esxWeapon = ESX.GetWeaponFromHash(wepHash)
-						if esxWeapon then ClearWeapons() TriggerServerEvent('linden_inventory:weaponMismatch', esxWeapon.name) end
-					elseif wepHash ~= currentWeapon.hash then
-						local esxWeapon = ESX.GetWeaponFromHash(wepHash)
-						if esxWeapon then DisarmPlayer() end
-					end
-				elseif currentWeapon and currentWeapon.hash then
-					TriggerEvent('linden_inventory:currentWeapon', nil)
-				end
-			end
-			Citizen.Wait(2000)
 		end
 	end)
 end
