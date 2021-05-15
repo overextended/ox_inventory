@@ -60,18 +60,22 @@ Citizen.CreateThread(function()
 					local hash, curWeapon = GetSelectedPedWeapon(ped)
 					if hash ~= `WEAPON_UNARMED` then
 						curWeapon = ESX.GetWeaponFromHash(hash)
-						local xPlayer = ESX.GetPlayerFromId(data.id)
-						if xPlayer then
-							if Items[curWeapon.name] then
-								local item = getInventoryItem(xPlayer, curWeapon.name)
-								if item.count == 0 then
-									TriggerClientEvent('linden_inventory:clearWeapons', data.id)
-									print( ('^1[warning]^3 [%s] %s may be cheating (using '..curWeapon.name..' but does not have any)^7'):format(data.id, GetPlayerName(data.id)) )
-									--TriggerBanEvent(xPlayer, 'using "'..curWeapon.name..'" but does not have any') end
+						if curWeapon then
+							local xPlayer = ESX.GetPlayerFromId(data.id)
+							if xPlayer then
+								if Items[curWeapon.name] then
+									local item = getInventoryItem(xPlayer, curWeapon.name)
+									if item.count == 0 then
+										TriggerClientEvent('linden_inventory:clearWeapons', data.id)
+										print( ('^1[warning]^3 ['..data.id..'] '..GetPlayerName(data.id)..' may be cheating (using '..curWeapon.name..' but does not have any)^7'):format(data.id, GetPlayerName(data.id)) )
+										--TriggerBanEvent(xPlayer, 'using "'..curWeapon.name..'" but does not have any') end
+									end
+								else
+									TriggerBanEvent(xPlayer, 'using an invalid weapon ("'..curWeapon.name..'")')
 								end
-							else
-								TriggerBanEvent(xPlayer, 'using an invalid weapon ("'..curWeapon.name..'")')
 							end
+						else
+							print('^1[warning]^3 ['..data.id..'] '..GetPlayerName(data.id)..' may be cheating (unknown weapon '..hash..')^7')
 						end
 					end
 				end
