@@ -52,6 +52,37 @@ Citizen.CreateThread(function()
 	end
 end)
 
+Citizen.CreateThread(function()
+	while true do
+		Citizen.Wait(20000)
+		for invId, data in pairs(Inventories) do
+			if type(invId) == 'number' and not IsPlayerAceAllowed(data.id, 'command.save') then
+				local ped = GetPlayerPed(data.id)
+				if ped then
+					local hash, curWeapon = GetSelectedPedWeapon(ped)
+					if hash ~= `WEAPON_UNARMED` then
+						curWeapon = ESX.GetWeaponFromHash(hash)
+						local xPlayer = ESX.GetPlayerFromId(data.id)
+						if xPlayer then
+							if Items[curWeapon.name] then
+								local item = getInventoryItem(xPlayer, curWeapon.name)
+								if item.count == 0 then
+									TriggerClientEvent('linden_inventory:clearWeapons', data.id)
+									print( ('^1[warning]^3 [%s] %s may be cheating (using '..curWeapon.name..' but does not have any)^7'):format(data.id, GetPlayerName(data.id)) )
+									--TriggerBanEvent(xPlayer, 'using "'..curWeapon.name..'" but does not have any') end
+								end
+							else
+								TriggerBanEvent(xPlayer, 'using an invalid weapon ("'..curWeapon.name..'")')
+							end
+						end
+					end
+				end
+			end
+			Citizen.Wait(200)
+		end
+	end
+end)
+
 exports.ghmattimysql:ready(function()
 	while GetResourceState('linden_inventory') ~= 'started' do
 		Citizen.Wait(0)
@@ -741,19 +772,6 @@ AddEventHandler('linden_inventory:devtool', function()
 			exports.linden_logs:log(xPlayer, false, 'kicked for opening nui_devtools', 'kick')
 		end
 		DropPlayer(source, 'foxtrot-uniform-charlie-kilo')
-	end
-end)
-
-RegisterNetEvent('linden_inventory:weaponMismatch')
-AddEventHandler('linden_inventory:weaponMismatch', function(weapon)
-	local xPlayer = ESX.GetPlayerFromId(source)
-	if xPlayer then
-		if Items[weapon] then
-			local count = getInventoryItem(xPlayer, weapon).count
-			if count < 1 then TriggerBanEvent(xPlayer, 'using "'..weapon..'" but item count is '..count) end
-		else
-			TriggerBanEvent(xPlayer, 'using "'..weapon..'" but item is invalid')
-		end
 	end
 end)
 
