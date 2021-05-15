@@ -1,4 +1,4 @@
-ESX = nil
+ESX = exports['es_extended']:getSharedObject()
 Items = {}
 Usables = {}
 Drops = {}
@@ -27,8 +27,6 @@ local message = function(msg, colour)
 	if colour == 1 then type = 'error' elseif colour == 2 then type = 'success' else colour, type = 3, 'warning' end
 	print(('^%s[%s]^7 %s'):format(colour, type, msg))
 end
-
-TriggerEvent('esx:getSharedObject', function(obj) ESX = obj end)
 
 Citizen.CreateThread(function()
 	if ESX == nil then failed('Unable to retrieve ESX object') end
@@ -84,9 +82,8 @@ Citizen.CreateThread(function()
 end)
 
 exports.ghmattimysql:ready(function()
-	while GetResourceState('linden_inventory') ~= 'started' do
-		Citizen.Wait(0)
-	end
+	Citizen.Wait(500)
+	ESX.UsableItemsCallbacks = exports['es_extended']:getSharedObject().UsableItemsCallbacks
 	if Status[1] ~= 'error' then
 		local result = exports.ghmattimysql:executeSync('SELECT * FROM items', {})
 		if result then
