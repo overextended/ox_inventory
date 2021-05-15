@@ -119,6 +119,7 @@ ESX.RegisterServerCallback('linden_inventory:setup', function(source, cb)
 			while xPlayer.get('linventory') ~= true do Citizen.Wait(100) end
 		end
 	end
+	while xPlayer.getName() == GetPlayerName(xPlayer.source) do Citizen.Wait(100) end
 	Inventories[xPlayer.source].name = xPlayer.getName()
 	local data = {drops = Drops, name = Inventories[xPlayer.source].name, inventory = Inventories[xPlayer.source].inventory, usables = Usables }
 	cb(data)
