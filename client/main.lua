@@ -6,19 +6,16 @@ local currentWeapon
 local weaponTimer = 0
 
 ClearWeapons = function()
-	SetCurrentPedWeapon(playerPed, `WEAPON_UNARMED`, true)
 	for k, v in pairs(Config.AmmoType) do
 		SetPedAmmo(playerPed, k, 0)
 	end
 	RemoveAllPedWeapons(playerPed, true)
-	SetPedCanSwitchWeapon(playerPed, false)
 end
 
 DisarmPlayer = function(weapon)
 	if currentWeapon then
 		currentWeapon.metadata.ammo = GetAmmoInPedWeapon(playerPed, currentWeapon.hash)
 		SetPedAmmo(playerPed, currentWeapon.hash, 0)
-		SetCurrentPedWeapon(playerPed, `WEAPON_UNARMED`, true)
 		RemoveWeaponFromPed(playerPed, currentWeapon.hash)
 		if currentWeapon.metadata.components then
 			for k,v in pairs(currentWeapon.metadata.components) do
@@ -337,7 +334,6 @@ DrawWeapon = function(item)
 	end
 	if currentWeapon then
 		SetPedAmmo(playerPed, currentWeapon.hash, 0)
-		SetCurrentPedWeapon(playerPed, `WEAPON_UNARMED`, true)
 		RemoveWeaponFromPed(playerPed, currentWeapon.hash)
 	end
 	GiveWeaponToPed(playerPed, item.hash, 0, true, false)
@@ -397,6 +393,11 @@ AddEventHandler('linden_inventory:checkWeapon', function(item)
 	if currentWeapon and ((not currentWeapon.metadata.serial and currentWeapon.name == item.name) or currentWeapon.metadata.serial == item.metadata.serial) then
 		DisarmPlayer()
 	end
+end)
+
+RegisterNetEvent('linden_inventory:clearWeapons')
+AddEventHandler('linden_inventory:clearWeapons', function()
+	ClearWeapons()
 end)
 
 RegisterNetEvent('linden_inventory:addAmmo')
@@ -462,27 +463,24 @@ end)
 TriggerLoops = function()
 	Citizen.CreateThread(function()
 		local Keys = {157, 158, 160, 164, 165}
-		local Disable = {37, 157, 158, 160, 164, 165, 289}
 		local wait = false
 		while PlayerLoaded do
 			sleep = 5
-			for i=1, #Disable, 1 do
-				DisableControlAction(0, Disable[i], true)
-			end
 			for i = 19, 20 do
 				HideHudComponentThisFrame(i)
 			end
+			DisableControlAction(0, 289, true)
 			if isBusy or useItemCooldown then
 				DisableControlAction(0, 24, true)
 				DisableControlAction(0, 25, true)
 				DisableControlAction(0, 142, true)
 				DisableControlAction(0, 257, true)
-				DisableControlAction(1, 140, true)
-				DisableControlAction(1, 141, true)
-				DisableControlAction(1, 142, true)
+				DisableControlAction(0, 140, true)
+				DisableControlAction(0, 141, true)
+				DisableControlAction(0, 142, true)
 			elseif not invOpen and not wait and CanOpenInventory() then
 				for i=1, #Keys, 1 do
-					if not isBusy and IsDisabledControlJustReleased(0, Keys[i]) and ESX.PlayerData.inventory[i] then
+					if not isBusy and IsControlJustReleased(0, Keys[i]) and ESX.PlayerData.inventory[i] then
 						TriggerEvent('linden_inventory:useItem', ESX.PlayerData.inventory[i])
 					end
 				end
@@ -509,8 +507,7 @@ TriggerLoops = function()
 								SetCurrentPedWeapon(playerPed, currentWeapon.hash, true)
 								TriggerServerEvent('linden_inventory:updateWeapon', currentWeapon)
 								Citizen.Wait(200)
-								SetCurrentPedWeapon(playerPed, `WEAPON_UNARMED`, true)
-								currentWeapon = nil
+								DisarmPlayer()
 								wait = false
 							end)
 						end
@@ -534,8 +531,7 @@ TriggerLoops = function()
 							wait = true
 							Citizen.Wait(800)
 							TriggerServerEvent('linden_inventory:updateWeapon', currentWeapon, 'throw')
-							SetCurrentPedWeapon(playerPed, `WEAPON_UNARMED`, true)
-							currentWeapon = nil
+							DisarmPlayer()
 							wait = false
 						end)
 					elseif Config.Melee[currentWeapon.name] and not wait and IsPedInMeleeCombat(playerPed) and IsControlPressed(0, 24) then
@@ -559,6 +555,7 @@ TriggerLoops = function()
 		while PlayerLoaded do
 			local sleep = 250
 			playerPed = PlayerPedId()
+			SetPedCanSwitchWeapon(playerPed, false)
 			playerCoords = GetEntityCoords(playerPed)
 			if not invOpen then
 				if not id or type == 'shop' then
