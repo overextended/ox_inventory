@@ -24,8 +24,8 @@ DisarmPlayer = function(weapon)
 			end
 		end
 		TriggerServerEvent('linden_inventory:updateWeapon', currentWeapon)
-		TriggerEvent('linden_inventory:currentWeapon', nil)
 	end
+	TriggerEvent('linden_inventory:currentWeapon', nil)
 end
 
 StartInventory = function()
@@ -469,14 +469,16 @@ end)
 TriggerLoops = function()
 	Citizen.CreateThread(function()
 		local Keys = {157, 158, 160, 164, 165}
+		local Disable = {37, 157, 158, 160, 164, 165, 289}
 		local wait = false
 		while PlayerLoaded do
 			sleep = 5
 			for i = 19, 20 do
 				HideHudComponentThisFrame(i)
 			end
-			DisableControlAction(0, 37, true)
-			DisableControlAction(0, 289, true)
+			for i=1, #Disable, 1 do
+				DisableControlAction(0, Disable[i], true)
+			end
 			if isBusy or useItemCooldown then
 				DisableControlAction(0, 24, true)
 				DisableControlAction(0, 25, true)
@@ -487,7 +489,7 @@ TriggerLoops = function()
 				DisableControlAction(0, 142, true)
 			elseif not invOpen and not wait and CanOpenInventory() then
 				for i=1, #Keys, 1 do
-					if IsControlJustReleased(0, Keys[i]) and ESX.PlayerData.inventory[i] then
+					if IsDisabledControlJustReleased(0, Keys[i]) and ESX.PlayerData.inventory[i] then
 						TriggerEvent('linden_inventory:useItem', ESX.PlayerData.inventory[i])
 					end
 				end
