@@ -77,8 +77,7 @@ CanOpenInventory = function()
 end
 
 CanOpenTarget = function(searchPlayerPed)
-	if ESX.PlayerData.job.name == 'police'
-	or IsPedDeadOrDying(searchPlayerPed, 1)
+	if IsPedDeadOrDying(searchPlayerPed, 1)
 	or IsEntityPlayingAnim(searchPlayerPed, 'random@mugging3', 'handsup_standing_base', 3)
 	or IsEntityPlayingAnim(searchPlayerPed, 'missminuteman_1ig_2', 'handsup_base', 3)
 	or IsEntityPlayingAnim(searchPlayerPed, 'missminuteman_1ig_2', 'handsup_enter', 3)
@@ -92,7 +91,7 @@ OpenTargetInventory = function()
 	local closestPlayer, closestDistance = ESX.Game.GetClosestPlayer()
 	if closestPlayer ~= -1 and closestDistance <= 1.2 then
 		local searchPlayerPed = GetPlayerPed(closestPlayer)
-		if CanOpenTarget(searchPlayerPed) then
+		if CanOpenTarget(searchPlayerPed) or ESX.PlayerData.job.name == 'police' then
 			TriggerServerEvent('linden_inventory:openTargetInventory', GetPlayerServerId(closestPlayer))
 		else
 			TriggerEvent('mythic_notify:client:SendAlert', {type = 'error', text = _U('inventory_cannot_open_other'), length = 2500})
@@ -677,6 +676,7 @@ TriggerLoops = function()
 						local pedCoords = GetEntityCoords(ped)
 						local dist = #(playerCoords - pedCoords)
 						if not id or dist > 1.8 or not CanOpenTarget(ped) then
+							if ESX.PlayerData.job.name == 'police' then return end
 							TriggerEvent('linden_inventory:closeInventory')
 							TriggerEvent('mythic_notify:client:SendAlert', {type = 'error', text = _U('inventory_lost_access'), length = 2500})
 						else
