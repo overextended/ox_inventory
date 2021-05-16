@@ -2,10 +2,12 @@
 	Delete this file if you do not require it! If you have converted your database you can delete this file
 	Remember to backup your database in the event of errors
 
-	This will only convert items where inventories are stored as a table in `users`
-	If you are using a `user_inventory` table this won't do anything
+	! This will only convert items where inventories are stored as a table in `users`
+	! If you are using a `user_inventory` table this won't do anything
+	! AKA this is for ESX 1.2+
 
 	ExtendedMode has a migratedb function of its own that you could try before using this
+	This allows upgrading from ESX 1.1 to 1.2+ format
 	https://github.com/extendedmode/extendedmode/blob/master/server/dbmigrate.lua
 	
 	This conversion method is based on the above file
@@ -37,7 +39,7 @@ RegisterCommand('convertinventory', function(source, args)
 			end
 		end
 	end
-end)
+end, true)
 
 RetrieveUsers = function()
 	running = true
