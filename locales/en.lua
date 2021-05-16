@@ -1,4 +1,6 @@
 Locales['en'] = {
+	['male'] = "male",
+	['female'] = "female",
 	['used'] = "Used",
 	['removed'] = "Removed",
 	['added'] = "Added",
