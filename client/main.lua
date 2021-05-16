@@ -70,8 +70,7 @@ end
 if ESX.IsPlayerLoaded() then StartInventory() end
 
 CanOpenInventory = function()
-	if PlayerLoaded and not isBusy and weaponTimer < 250 and not isDead and not isCuffed and not IsPauseMenuActive() then
-		--if IsPedDeadOrDying(playerPed, 1) then return false end
+	if PlayerLoaded and not isBusy and weaponTimer < 250 and not isDead and not isCuffed and not IsPauseMenuActive() and not IsPedDeadOrDying(playerPed, 1) then
 		return true
 	else return false end
 end
@@ -710,120 +709,128 @@ end)
 RegisterKeyMapping('reload', 'Reload weapon', 'keyboard', 'r')
 
 RegisterCommand('inv', function()
-	if isBusy or invOpen then TriggerEvent('mythic_notify:client:SendAlert', {type = 'error', text = _U('inventory_cannot_open'), length = 2500}) return end
-	if CanOpenInventory() then
-		TriggerEvent('randPickupAnim')
-		if currentDrop then drop = currentDrop.name
-		else
-			local property = false
-			TriggerEvent('linden_inventory:getProperty', function(data) property = data end)
-			if property then OpenStash(property) return end
+	if isBusy then TriggerEvent('mythic_notify:client:SendAlert', {type = 'error', text = _U('inventory_cannot_open'), length = 2500})
+	elseif invOpen then TriggerEvent('linden_inventory:closeInventory')
+	else
+		if CanOpenInventory() then
+			TriggerEvent('randPickupAnim')
+			if currentDrop then drop = currentDrop.name
+			else
+				local property = false
+				TriggerEvent('linden_inventory:getProperty', function(data) property = data end)
+				if property then OpenStash(property) return end
+			end
+			if IsPedInAnyVehicle(playerPed, false) then drop = nil end
+			TriggerServerEvent('linden_inventory:openInventory', {type = 'drop', drop = drop })
 		end
-		if IsPedInAnyVehicle(playerPed, false) then drop = nil end
-		TriggerServerEvent('linden_inventory:openInventory', {type = 'drop', drop = drop })
 	end
 end)
 
 RegisterCommand('vehinv', function()
-	if not PlayerLoaded then return end
-	if not CanOpenInventory() or invOpen then TriggerEvent('mythic_notify:client:SendAlert', {type = 'error', text = _U('inventory_cannot_open'), length = 2500}) return end
-	if not IsPedInAnyVehicle(playerPed, false) then -- trunk
-		local vehicle, vehiclePos = ESX.Game.GetVehicleInDirection()
-		if not vehiclePos then vehiclePos = GetEntityCoords(vehicle) end
-		CloseToVehicle = false
-		lastVehicle = nil
-		local class = GetVehicleClass(vehicle)
-		if vehicle and Config.Trunks[class] and #(playerCoords - vehiclePos) < 6 then
-			if GetVehicleDoorLockStatus(vehicle) ~= 2 then
-				local vehHash = GetEntityModel(vehicle)
-				local checkVehicle = Config.VehicleStorage[vehHash]
-				if checkVehicle == 1 then open, vehBone = 4, GetEntityBoneIndexByName(vehicle, 'bonnet')
-				elseif checkVehicle == nil then open, vehBone = 5, GetEntityBoneIndexByName(vehicle, 'boot') elseif checkVehicle == 2 then open, vehBone = 5, GetEntityBoneIndexByName(vehicle, 'boot') else --[[no vehicle nearby]] return end
-				
-				if vehBone == -1 then
-					vehBone = GetEntityBoneIndexByName(vehicle, 'wheel_rr')
-				end
-				
-				vehiclePos = GetWorldPositionOfEntityBone(vehicle, vehBone)
-				local pedDistance = #(playerCoords - vehiclePos)
-				if (open == 5 and checkVehicle == nil) then if pedDistance < 2.0 then CloseToVehicle = true end elseif (open == 5 and checkVehicle == 2) then if pedDistance < 2.0 then CloseToVehicle = true end elseif open == 4 then if pedDistance < 2.0 then CloseToVehicle = true end end	
-				if CloseToVehicle then
-					local plate = GetVehicleNumberPlateText(vehicle)
-					if Config.TrimPlate then plate = ESX.Math.Trim(plate) end
-					TaskTurnPedToFaceCoord(playerPed, vehiclePos)
-					lastVehicle = vehicle
-					OpenTrunk(plate, class)
-					local timeout = 20
-					while true do
-						if currentInventory and currentInventory.type == 'trunk' then break end
-						if timeout == 0 then
-							CloseToVehicle = false
-							lastVehicle = nil
-							return
+	if isBusy then TriggerEvent('mythic_notify:client:SendAlert', {type = 'error', text = _U('inventory_cannot_open'), length = 2500})
+	elseif invOpen then TriggerEvent('linden_inventory:closeInventory')
+	else
+		if not CanOpenInventory() then TriggerEvent('mythic_notify:client:SendAlert', {type = 'error', text = _U('inventory_cannot_open'), length = 2500}) return end
+		if not IsPedInAnyVehicle(playerPed, false) then -- trunk
+			local vehicle, vehiclePos = ESX.Game.GetVehicleInDirection()
+			if not vehiclePos then vehiclePos = GetEntityCoords(vehicle) end
+			CloseToVehicle = false
+			lastVehicle = nil
+			local class = GetVehicleClass(vehicle)
+			if vehicle and Config.Trunks[class] and #(playerCoords - vehiclePos) < 6 then
+				if GetVehicleDoorLockStatus(vehicle) ~= 2 then
+					local vehHash = GetEntityModel(vehicle)
+					local checkVehicle = Config.VehicleStorage[vehHash]
+					if checkVehicle == 1 then open, vehBone = 4, GetEntityBoneIndexByName(vehicle, 'bonnet')
+					elseif checkVehicle == nil then open, vehBone = 5, GetEntityBoneIndexByName(vehicle, 'boot') elseif checkVehicle == 2 then open, vehBone = 5, GetEntityBoneIndexByName(vehicle, 'boot') else --[[no vehicle nearby]] return end
+					
+					if vehBone == -1 then
+						vehBone = GetEntityBoneIndexByName(vehicle, 'wheel_rr')
+					end
+					
+					vehiclePos = GetWorldPositionOfEntityBone(vehicle, vehBone)
+					local pedDistance = #(playerCoords - vehiclePos)
+					if (open == 5 and checkVehicle == nil) then if pedDistance < 2.0 then CloseToVehicle = true end elseif (open == 5 and checkVehicle == 2) then if pedDistance < 2.0 then CloseToVehicle = true end elseif open == 4 then if pedDistance < 2.0 then CloseToVehicle = true end end	
+					if CloseToVehicle then
+						local plate = GetVehicleNumberPlateText(vehicle)
+						if Config.TrimPlate then plate = ESX.Math.Trim(plate) end
+						TaskTurnPedToFaceCoord(playerPed, vehiclePos)
+						lastVehicle = vehicle
+						OpenTrunk(plate, class)
+						local timeout = 20
+						while true do
+							if currentInventory and currentInventory.type == 'trunk' then break end
+							if timeout == 0 then
+								CloseToVehicle = false
+								lastVehicle = nil
+								return
+							end
+							Citizen.Wait(50) timeout = timeout - 1
 						end
-						Citizen.Wait(50) timeout = timeout - 1
-					end
-					SetVehicleDoorOpen(vehicle, open, false, false)
-					local animDict = 'anim@heists@prison_heiststation@cop_reactions'
-					local anim = 'cop_b_idle'
-					RequestAnimDict(animDict)
-					while not HasAnimDictLoaded(animDict) do
+						SetVehicleDoorOpen(vehicle, open, false, false)
+						local animDict = 'anim@heists@prison_heiststation@cop_reactions'
+						local anim = 'cop_b_idle'
+						RequestAnimDict(animDict)
+						while not HasAnimDictLoaded(animDict) do
+							Citizen.Wait(100)
+						end
+						Citizen.Wait(200)
+						TaskPlayAnim(playerPed, animDict, anim, 3.0, 3.0, -1, 49, 0, 0, 0, 0)
 						Citizen.Wait(100)
-					end
-					Citizen.Wait(200)
-					TaskPlayAnim(playerPed, animDict, anim, 3.0, 3.0, -1, 49, 0, 0, 0, 0)
-					Citizen.Wait(100)
-					lastVehicle = vehicle
-					while true do
-						Citizen.Wait(50)
-						if CloseToVehicle and invOpen then
-							coords = GetEntityCoords(playerPed)
-							local vehiclePos = GetWorldPositionOfEntityBone(vehicle, vehBone)
-							local pedDistance = #(coords - vehiclePos)
-							local isClose = false
-							if pedDistance < 2.0 then isClose = true end
-							if not DoesEntityExist(vehicle) or not isClose then
+						lastVehicle = vehicle
+						while true do
+							Citizen.Wait(50)
+							if CloseToVehicle and invOpen then
+								coords = GetEntityCoords(playerPed)
+								local vehiclePos = GetWorldPositionOfEntityBone(vehicle, vehBone)
+								local pedDistance = #(coords - vehiclePos)
+								local isClose = false
+								if pedDistance < 2.0 then isClose = true end
+								if not DoesEntityExist(vehicle) or not isClose then
+									break
+								end
+								TaskTurnPedToFaceCoord(playerPed, vehiclePos)
+							else
 								break
 							end
-							TaskTurnPedToFaceCoord(playerPed, vehiclePos)
-						else
-							break
 						end
+						if lastVehicle then TriggerEvent('linden_inventory:closeInventory') end
+						return
 					end
-					if lastVehicle then TriggerEvent('linden_inventory:closeInventory') end
-					return
+				else
+					TriggerEvent('mythic_notify:client:SendAlert', {type = 'error', text = _U('vehicle_locked'), length = 2500})
 				end
-			else
-				TriggerEvent('mythic_notify:client:SendAlert', {type = 'error', text = _U('vehicle_locked'), length = 2500})
 			end
-		end
-	elseif IsPedInAnyVehicle(playerPed, false) then -- glovebox
-		local vehicle = GetVehiclePedIsIn(playerPed, false)
-		local plate = GetVehicleNumberPlateText(vehicle)
-		if Config.TrimPlate then plate = ESX.Math.Trim(plate) end
-		local class = GetVehicleClass(vehicle)
-		OpenGloveBox(plate, class)
-		Citizen.Wait(100)
-		while true do
+		elseif IsPedInAnyVehicle(playerPed, false) then -- glovebox
+			local vehicle = GetVehiclePedIsIn(playerPed, false)
+			local plate = GetVehicleNumberPlateText(vehicle)
+			if Config.TrimPlate then plate = ESX.Math.Trim(plate) end
+			local class = GetVehicleClass(vehicle)
+			OpenGloveBox(plate, class)
 			Citizen.Wait(100)
-			if not invOpen then break
-			elseif not IsPedInAnyVehicle(playerPed, false) then
-				TriggerEvent('linden_inventory:closeInventory')
-				break
+			while true do
+				Citizen.Wait(100)
+				if not invOpen then break
+				elseif not IsPedInAnyVehicle(playerPed, false) then
+					TriggerEvent('linden_inventory:closeInventory')
+					break
+				end
 			end
 		end
 	end
 end)
 
 RegisterCommand('hotbar', function()
-	local data = {}
-	for i=1, 5 do
-		if ESX.PlayerData.inventory[i] then data[i] = ESX.PlayerData.inventory[i] end
+	if PlayerLoaded then
+		local data = {}
+		for i=1, 5 do
+			if ESX.PlayerData.inventory[i] then data[i] = ESX.PlayerData.inventory[i] end
+		end
+		SendNUIMessage({
+			message = 'hotbar',
+			items = data
+		})
 	end
-	SendNUIMessage({
-		message = 'hotbar',
-		items = data
-	})
 end)
 RegisterKeyMapping('hotbar', 'Display inventory hotbar', 'keyboard', 'tab')
 		
@@ -953,6 +960,7 @@ AddEventHandler('linden_inventory:useItem',function(item)
 						if data.stress > 0 then TriggerEvent('esx_status:add', 'stress', data.stress)
 						else TriggerEvent('esx_status:remove', 'stress', data.stress) end
 					end
+					
 					if data.drunk then
 						if data.drunk > 0 then TriggerEvent('esx_status:add', 'drunk', data.drunk)
 						else TriggerEvent('esx_status:remove', 'drunk', data.drunk) end
