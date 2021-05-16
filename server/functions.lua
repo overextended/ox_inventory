@@ -1,6 +1,6 @@
 GetPlayerIdentification = function(xPlayer)
 	local sex, identifier = xPlayer.get('sex')
-	if sex == 'm' then sex = 'Male' elseif sex == 'f' then sex = 'Female' end
+	if sex == 'm' then sex = _U('male') elseif sex == 'f' then sex = _U('female') end
 	if Config.ShowIdentifierID then identifier = ' ('..xPlayer.getIdentifier()..')' else identifier = '' end
 	return ('Sex: %s | DOB: %s%s'):format( sex, xPlayer.get('dateofbirth'), identifier )
 end
