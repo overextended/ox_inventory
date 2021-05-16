@@ -51,6 +51,7 @@ Citizen.CreateThread(function()
 end)
 
 Citizen.CreateThread(function()
+	local ignore = {[0] = '?', [966099553] = 'shovel'}
 	while true do
 		Citizen.Wait(20000)
 		for invId, data in pairs(Inventories) do
@@ -58,7 +59,7 @@ Citizen.CreateThread(function()
 				local ped = GetPlayerPed(data.id)
 				if ped then
 					local hash, curWeapon = GetSelectedPedWeapon(ped)
-					if hash ~= `WEAPON_UNARMED` and hash ~= 0 then
+					if hash ~= `WEAPON_UNARMED` and not ignore[hash] then
 						curWeapon = ESX.GetWeaponFromHash(hash)
 						if curWeapon then
 							local xPlayer = ESX.GetPlayerFromId(data.id)
