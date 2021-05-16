@@ -58,7 +58,7 @@ Citizen.CreateThread(function()
 				local ped = GetPlayerPed(data.id)
 				if ped then
 					local hash, curWeapon = GetSelectedPedWeapon(ped)
-					if hash ~= `WEAPON_UNARMED` then
+					if hash ~= `WEAPON_UNARMED` and hash ~= 0 then
 						curWeapon = ESX.GetWeaponFromHash(hash)
 						if curWeapon then
 							local xPlayer = ESX.GetPlayerFromId(data.id)
@@ -362,18 +362,20 @@ AddEventHandler('linden_inventory:openTargetInventory', function(targetId)
 	if source ~= targetId and xTarget and xPlayer then
 		if CheckOpenable(xPlayer, xTarget.source, GetEntityCoords(GetPlayerPed(targetId))) then
 			local TargetPlayer = Inventories[xTarget.source]
-			local data = {
-				id = xTarget.source,
-				name = 'Player '..xTarget.source,
-				type = 'TargetPlayer',
-				slots = TargetPlayer.slots,
-				maxWeight = TargetPlayer.maxWeight,
-				weight = TargetPlayer.weight,
-				inventory = TargetPlayer.inventory
-			}
-			TriggerClientEvent('linden_inventory:openInventory',  xPlayer.source, Inventories[xPlayer.source], data)
-			Opened[xPlayer.source] = {invid = xTarget.source, type = data.type}
-			Opened[xTarget.source] = {invid = xPlayer.source, type = data.type}
+			if TargetPlayer then
+				local data = {
+					id = xTarget.source,
+					name = 'Player '..xTarget.source,
+					type = 'TargetPlayer',
+					slots = TargetPlayer.slots,
+					maxWeight = TargetPlayer.maxWeight,
+					weight = TargetPlayer.weight,
+					inventory = TargetPlayer.inventory
+				}
+				TriggerClientEvent('linden_inventory:openInventory',  xPlayer.source, Inventories[xPlayer.source], data)
+				Opened[xPlayer.source] = {invid = xTarget.source, type = data.type}
+				Opened[xTarget.source] = {invid = xPlayer.source, type = data.type}
+			end
 		end
 	end
 end)
@@ -1078,6 +1080,7 @@ end, true, {help = 'Return a Confiscated an Inventory', validate = true, argumen
 RegisterCommand('closeallinv', function(source, args, rawCommand)
 	if source > 0 then return end
 	TriggerClientEvent("linden_inventory:closeInventory", -1)
+	Opened = {}
 end, true)
 
 RegisterCommand('maxweight', function(source, args, rawCommand)
