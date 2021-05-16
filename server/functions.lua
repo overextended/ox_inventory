@@ -106,6 +106,9 @@ end
 ItemNotify = function(xPlayer, item, count, slot, type)
 	local xItem = Items[item.name]
 	if xPlayer and xItem then
+		if item.name == 'radio' and xPlayer.getInventoryItem('radio').count == 0 then
+			--TriggerClientEvent('turnoffradio', xPlayer.source)
+		end
 		TriggerClientEvent('linden_inventory:itemNotify', xPlayer.source, item, count, slot, type)
 	end
 end
