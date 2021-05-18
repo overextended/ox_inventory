@@ -96,88 +96,36 @@ Config.Miscellaneous = {
 	['WEAPON_HAZARDCAN']=1
 }
 
+-- INSERT INTO `items` (`name`, `label`, `weight`, `rare`, `can_remove`, `stackable`, `closeonuse`, `description`) VALUES
+-- 	('ammo-flare', 'Flare', 38, 0, 1, 1, 0, NULL),
+-- 	('ammo-musket', 'Musket ammo', 30, 0, 1, 1, 0, NULL),
+-- 	('ammo_lmg', 'LMG Ammo', 10, 0, 1, 1, 0, NULL),
+-- 	('ammo_pistol', 'Pistol Ammo', 8, 0, 1, 1, 0, NULL),
+-- 	('ammo_rifle', 'Rifle Ammo', 10, 0, 1, 1, 0, NULL),
+-- 	('ammo_shotgun', 'Shotgun Ammo', 10, 0, 1, 1, 0, NULL),
+-- 	('ammo_smg', 'SMG Ammo', 10, 0, 1, 1, 0, NULL),
+-- 	('ammo_sniper', 'Sniper Ammo', 10, 0, 1, 1, 0, NULL);
 Config.Ammos = {
-	['ammo-38'] = { -- .38 long colt
+	['ammo_pistol'] = {
+		`WEAPON_HEAVYPISTOL`,
+		`WEAPON_SNSPISTOL`,
+		`WEAPON_SNSPISTOL_MK2`,
+		`WEAPON_APPISTOL`,
+		`WEAPON_COMBATPISTOL`,
+		`WEAPON_MACHINEPISTOL`,
+		`WEAPON_VINTAGEPISTOL`,
+		`WEAPON_CERAMICPISTOL`,
+		`WEAPON_MARKSMANPISTOL`,
+		`WEAPON_PISTOL50`,
+		`WEAPON_PISTOL`,
+		`WEAPON_PISTOL_MK2`,
+		`WEAPON_REVOLVER`,
+		`WEAPON_REVOLVER_MK2`,
+		`WEAPON_NAVYREVOLVER`,
 		`WEAPON_DOUBLEACTION`
 	},
 
-	['ammo-44'] = { -- .44 magnum
-		`WEAPON_REVOLVER`,
-		`WEAPON_REVOLVER_MK2`,
-		`WEAPON_NAVYREVOLVER`
-	},
-
-	['ammo-45'] = { -- 45 acp
-		`WEAPON_GUSENBERG`,
-		`WEAPON_HEAVYPISTOL`,
-		`WEAPON_MICROSMG`,
-		`WEAPON_SNSPISTOL`,
-		`WEAPON_SNSPISTOL_MK2`
-	},
-
-	['ammo-9'] = { -- 9mm variants (parabellum, makarov, etc)
-		`WEAPON_APPISTOL`,
-		`WEAPON_COMBATPDW`,
-		`WEAPON_COMBATPISTOL`,
-		`WEAPON_MACHINEPISTOL`,
-		`WEAPON_MINISMG`,
-		`WEAPON_PISTOL`,
-		`WEAPON_PISTOL_MK2`,
-		`WEAPON_SMG`,
-		`WEAPON_SMG_MK2`,
-		`WEAPON_VINTAGEPISTOL`,
-		`WEAPON_CERAMICPISTOL`
-	},
-
-	['ammo-flare'] = {
-		`WEAPON_FLAREGUN`
-	},
-
-	['ammo-musket'] = {
-		`WEAPON_MUSKET`
-	},
-
-	['ammo-rifle'] = { -- 5.56
-		`WEAPON_ADVANCEDRIFLE`,
-		`WEAPON_ASSAULTSMG`,
-		`WEAPON_BULLPUPRIFLE`,
-		`WEAPON_BULLPUPRIFLE_MK2`,
-		`WEAPON_CARBINERIFLE`,
-		`WEAPON_CARBINERIFLE_MK2`,
-		`WEAPON_COMBATMG`,
-		`WEAPON_SPECIALCARBINE`,
-		`WEAPON_SPECIALCARBINE_MK2`,
-		`WEAPON_MILITARYRIFLE`
-	},
-
-	['ammo-rifle2'] = { -- 7.62 soviet
-		`WEAPON_ASSAULTRIFLE`,
-		`WEAPON_ASSAULTRIFLE_MK2`,
-		`WEAPON_COMBATMG_MK2`,
-		`WEAPON_COMPACTRIFLE`,
-		`WEAPON_MG`,
-	},
-
-	['ammo-22'] = { -- .22 long rifle
-		`WEAPON_MARKSMANPISTOL`
-	},
-
-	['ammo-50'] = { -- .50 action express
-		`WEAPON_PISTOL50`
-	},
-
-	['ammo-sniper'] = { -- 7.62 NATO
-		`WEAPON_MARKSMANRIFLE`,
-		`WEAPON_MARKSMANRIFLE_MK2`,
-		`WEAPON_SNIPERRIFLE`
-	},
-
-	['ammo-heavysniper'] = { -- .50 BMG
-		`WEAPON_HEAVYSNIPER`,
-		`WEAPON_HEAVYSNIPER_MK2`
-	},
-
-	['ammo-shotgun'] = { -- 12 gauge
+	['ammo_shotgun'] = {
 		`WEAPON_ASSAULTSHOTGUN`,
 		`WEAPON_BULLPUPSHOTGUN`,
 		`WEAPON_DBSHOTGUN`,
@@ -187,6 +135,52 @@ Config.Ammos = {
 		`WEAPON_SAWNOFFSHOTGUN`,
 		`WEAPON_SWEEPERSHOTGUN`,
 		`WEAPON_COMBATSHOTGUN`
+	},
+
+	['ammo_smg'] = {
+		`WEAPON_GUSENBERG`,
+		`WEAPON_MICROSMG`,
+		`WEAPON_COMBATPDW`,
+		`WEAPON_MINISMG`,
+		`WEAPON_SMG`,
+		`WEAPON_SMG_MK2`,
+		`WEAPON_ASSAULTSMG`
+	},
+
+	['ammo_rifle'] = {
+		`WEAPON_ADVANCEDRIFLE`,
+		`WEAPON_BULLPUPRIFLE`,
+		`WEAPON_BULLPUPRIFLE_MK2`,
+		`WEAPON_CARBINERIFLE`,
+		`WEAPON_CARBINERIFLE_MK2`,
+		`WEAPON_SPECIALCARBINE`,
+		`WEAPON_SPECIALCARBINE_MK2`,
+		`WEAPON_MILITARYRIFLE`,
+		`WEAPON_ASSAULTRIFLE`,
+		`WEAPON_ASSAULTRIFLE_MK2`,
+		`WEAPON_COMPACTRIFLE`
+	},
+
+	['ammo_lmg'] = {
+		`WEAPON_COMBATMG`,
+		`WEAPON_COMBATMG_MK2`,
+		`WEAPON_MG`
+	},
+
+	['ammo_sniper'] = {
+		`WEAPON_MARKSMANRIFLE`,
+		`WEAPON_MARKSMANRIFLE_MK2`,
+		`WEAPON_SNIPERRIFLE`,
+		`WEAPON_HEAVYSNIPER`,
+		`WEAPON_HEAVYSNIPER_MK2`
+	},
+
+	['ammo-flare'] = {
+		`WEAPON_FLAREGUN`
+	},
+
+	['ammo-musket'] = {
+		`WEAPON_MUSKET`
 	},
 }
 
