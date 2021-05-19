@@ -2,14 +2,14 @@ Config = {}
 Config.Locale = 'en'
 
 -- Compare the version of this resource to the latest (default: every 60 minutes)
-Config.CheckVersion = true
+Config.CheckVersion = false
 Config.CheckVersionDelay = 60
 
 -- Number of inventory slots
-Config.PlayerSlots = 50
+Config.PlayerSlots = 20
 
 -- If vehicle plates are stored with a trailing space, set to false (i.e. `XXX-000 `)
-Config.TrimPlate = false  -- Recommended: true (default is false to match previous functionality)
+Config.TrimPlate = true  -- Recommended: true (default is false to match previous functionality)
 
 -- Blur the screen while in an inventory
 Config.EnableBlur = true
@@ -22,8 +22,8 @@ Config.WeaponsLicensePrice = 5000
 Config.Logs = false --'linden_logs'
 
 -- Default keymapping for the inventory; players can assign their own
-Config.InventoryKey = 'F2'
-Config.VehicleInventoryKey = 'K'
+Config.InventoryKey = 'TAB'
+Config.VehicleInventoryKey = 'F2'
 
 -- Reload empty weapons automatically
 Config.AutoReload = false
