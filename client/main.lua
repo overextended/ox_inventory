@@ -265,7 +265,7 @@ end)
 
 RegisterNetEvent('linden_inventory:itemNotify')
 AddEventHandler('linden_inventory:itemNotify', function(item, count, slot, notify)
-	if count > 0 then notification = ('%s %sx'):format(notify, count)
+	if count > 0 then notification = _U(notify)..' '..count..'x'
 	else notification = _U('used') end
 	if type(slot) == 'table' then
 		for k,v in pairs(slot) do
