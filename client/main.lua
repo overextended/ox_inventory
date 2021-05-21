@@ -270,7 +270,7 @@ AddEventHandler('linden_inventory:itemNotify', function(item, count, slot, notif
 	if type(slot) == 'table' then
 		for k,v in pairs(slot) do
 			ESX.PlayerData.inventory[k] = item
-			if notify == _U('removed') and ESX.PlayerData.inventory[k].count then
+			if notify == 'removed' and ESX.PlayerData.inventory[k].count then
 				local count = ESX.PlayerData.inventory[k].count - v
 				ESX.PlayerData.inventory[k].count = count
 				if item.name:find('WEAPON_') then TriggerEvent('linden_inventory:checkWeapon', item) end
@@ -278,7 +278,7 @@ AddEventHandler('linden_inventory:itemNotify', function(item, count, slot, notif
 		end
 	else
 		ESX.PlayerData.inventory[slot] = item
-		if notify == _U('removed') then
+		if notify == 'removed' then
 			local count = ESX.PlayerData.inventory[slot].count - count
 			ESX.PlayerData.inventory[slot].count = count
 			if item.name:find('WEAPON_') then TriggerEvent('linden_inventory:checkWeapon', item) end
