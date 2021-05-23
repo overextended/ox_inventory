@@ -189,7 +189,7 @@ SetupShopItems = function(shop)
 end
 
 SaveItems = function(type,id,owner)
-	if id and owner == nil and (type == 'stash' or type == 'trunk' or type == 'glovebox') then
+	if id and owner == nil and (type == 'stash' or type == 'trunk' or type == 'glovebox' or type == 'dumpster') then
 		if type == 'trunk' or type == 'glovebox' then
 			local plate = string.match(id, "-(.*)")
 			local owner
