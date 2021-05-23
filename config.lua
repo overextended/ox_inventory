@@ -12,7 +12,7 @@ Config.DBCleanup = '6 MONTH'
 Config.PlayerSlots = 50
 
 -- If vehicle plates are stored with a trailing space, set to false (i.e. `XXX-000 `)
-Config.TrimPlate = false  -- Recommended: true (default is false to match previous functionality)
+Config.TrimPlate = true
 
 -- Blur the screen while in an inventory
 Config.EnableBlur = true
@@ -34,5 +34,5 @@ Config.AutoReload = false
 -- Randomise the price of items in each shop at resource start
 Config.RandomPrices = false
 
--- Show player identifier (often steamhex) on their id card
-Config.ShowIdentifierID = true
+-- Show player identifier (typically Rockstar License) on identification
+Config.ShowIdentifierID = false
