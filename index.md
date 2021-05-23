@@ -2,7 +2,7 @@
 title: Introduction
 ---
 
-<h2 align='center'> Requirements </h1>
+<h2 align='center'> Requirements </h2>
 
 
 * ESX Legacy [[Download]](https://github.com/esx-framework/es_extended/tree/legacy)
@@ -13,7 +13,7 @@ title: Introduction
 * The ability to follow instructions and learn
 
 
-<h2 align='center'> Setup </h1>
+<h2 align='center'> Setup </h2>
 
 
 * Use the following connection string in your `server.cfg`
