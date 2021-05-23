@@ -7,20 +7,20 @@ local weaponTimer = 0
 
 ClearWeapons = function()
 	for k, v in pairs(Config.AmmoType) do
-		SetPedAmmo(playerPed, k, 0)
+		SetPedAmmo(ESX.PlayerData.ped, k, 0)
 	end
-	RemoveAllPedWeapons(playerPed, true)
+	RemoveAllPedWeapons(ESX.PlayerData.ped, true)
 end
 
 DisarmPlayer = function(weapon)
 	if currentWeapon then
-		currentWeapon.metadata.ammo = GetAmmoInPedWeapon(playerPed, currentWeapon.hash)
-		SetPedAmmo(playerPed, currentWeapon.hash, 0)
-		RemoveWeaponFromPed(playerPed, currentWeapon.hash)
+		currentWeapon.metadata.ammo = GetAmmoInPedWeapon(ESX.PlayerData.ped, currentWeapon.hash)
+		SetPedAmmo(ESX.PlayerData.ped, currentWeapon.hash, 0)
+		RemoveWeaponFromPed(ESX.PlayerData.ped, currentWeapon.hash)
 		if currentWeapon.metadata.components then
 			for k,v in pairs(currentWeapon.metadata.components) do
 				local componentHash = ESX.GetWeaponComponent(currentWeapon.name, v).hash
-				if componentHash then RemoveWeaponComponentFromPed(playerPed, currentWeapon.hash, componentHash) end
+				if componentHash then RemoveWeaponComponentFromPed(ESX.PlayerData.ped, currentWeapon.hash, componentHash) end
 			end
 		end
 		TriggerServerEvent('linden_inventory:updateWeapon', currentWeapon)
@@ -29,12 +29,11 @@ DisarmPlayer = function(weapon)
 end
 
 StartInventory = function()
-	playerID, playerPed, invOpen, isDead, isCuffed, isBusy, usingWeapon, currentDrop = nil, nil, false, false, false, false, false, nil
+	playerID, invOpen, ESX.PlayerData.dead, isCuffed, isBusy, usingWeapon, currentDrop = nil, false, false, false, false, false, nil
 	ESX.TriggerServerCallback('linden_inventory:setup',function(data)
 		ESX.SetPlayerData('inventory', data.inventory)
 		ESX.PlayerData = ESX.GetPlayerData()
-		playerPed = PlayerPedId()
-		playerCoords = GetEntityCoords(playerPed)
+		playerCoords = GetEntityCoords(ESX.PlayerData.ped)
 		playerID = GetPlayerServerId(PlayerId())
 		playerName = data.name
 		Drops = data.drops
@@ -70,7 +69,7 @@ end
 if ESX.IsPlayerLoaded() then StartInventory() end
 
 CanOpenInventory = function()
-	if PlayerLoaded and not isBusy and weaponTimer < 250 and not isDead and not isCuffed and not IsPauseMenuActive() and not IsPedDeadOrDying(playerPed, 1) then
+	if PlayerLoaded and not isBusy and weaponTimer < 250 and not ESX.PlayerData.dead and not isCuffed and not IsPauseMenuActive() and not IsPedDeadOrDying(ESX.PlayerData.ped, 1) then
 		return true
 	else return false end
 end
@@ -107,7 +106,7 @@ DrawText3D = function(coords, text)
 	SetTextCentre(1)
 	AddTextComponentString(text)
 	DrawText(0.0, 0.0)
-	DrawRect(0.0, 0.0125, 0.015 + text:gsub('~.-~', ''):len() / 370, 0.03, 45, 45, 45, 150)
+	DrawRect(0.0, 0.0125, 0.015 + text:gsub('~.-~', ''):len() / 370, 0.03, 25, 25, 25, 180)
 	ClearDrawOrigin()
 end
 
@@ -121,41 +120,42 @@ end
 RegisterNetEvent('randPickupAnim')
 AddEventHandler('randPickupAnim', function()
 	loadAnimDict('pickup_object')
-	TaskPlayAnim(playerPed,'pickup_object', 'putdown_low',5.0, 1.5, 1.0, 48, 0.0, 0, 0, 0)
+	TaskPlayAnim(ESX.PlayerData.ped,'pickup_object', 'putdown_low',5.0, 1.5, 1.0, 48, 0.0, 0, 0, 0)
 	Wait(1000)
-	ClearPedSecondaryTask(playerPed)
+	ClearPedSecondaryTask(ESX.PlayerData.ped)
 end)
 
 RegisterNetEvent('targetPlayerAnim')
 AddEventHandler('targetPlayerAnim', function()
 	loadAnimDict('mp_ped_interaction')
-	TaskPlayAnim(playerPed,'mp_ped_interaction', 'handshake_guy_b',1.0, 1.0, 1.0, 49, 0.0, 0, 0, 0)
+	TaskPlayAnim(ESX.PlayerData.ped,'mp_ped_interaction', 'handshake_guy_b',1.0, 1.0, 1.0, 49, 0.0, 0, 0, 0)
 	Wait(250)
-	ClearPedSecondaryTask(playerPed)
+	ClearPedSecondaryTask(ESX.PlayerData.ped)
 end)
 
 OpenShop = function(id)
-	if not invOpen and CanOpenInventory() and not CanOpenTarget(playerPed) then
-		TriggerServerEvent('linden_inventory:openInventory', {type = 'shop', id = id })
+	if not invOpen and CanOpenInventory() and not CanOpenTarget(ESX.PlayerData.ped) then
+		TriggerServerEvent('linden_inventory:openInventory', 'shop', id)
 	end
 end
 
 OpenStash = function(data)
-	if data and not invOpen and CanOpenInventory() and not CanOpenTarget(playerPed) then
+	if data and not invOpen and CanOpenInventory() and not CanOpenTarget(ESX.PlayerData.ped) then
 		if not data.slots then data.slots = (Config.PlayerSlots * 1.5) end
-		TriggerServerEvent('linden_inventory:openInventory', {type = 'stash', id = data.name, label = data.label, owner = data.owner, slots = data.slots, coords = data.coords, job = data.job, grade = data.grade  })
+		data.id = data.name
+		TriggerServerEvent('linden_inventory:openInventory', 'stash', data)
 	end
 end
 exports('OpenStash', OpenStash)
 
-OpenGloveBox = function(gloveboxid, class)
-	local slots, weight = Config.Gloveboxes[class][1], Config.Gloveboxes[class][2]
-	if slots then TriggerServerEvent('linden_inventory:openInventory', {type = 'glovebox',id  = 'glovebox-'..gloveboxid, slots = slots, maxWeight = weight}) end
+OpenGloveBox = function(plate, class)
+	local data = {id = 'glovebox-'..plate, slots = Config.Gloveboxes[class][1], maxWeight = Config.Gloveboxes[class][2]}
+	if data.slots then TriggerServerEvent('linden_inventory:openInventory', 'glovebox', data) end
 end
 
-OpenTrunk = function(trunkid, class)
-	local slots, weight = Config.Trunks[class][1], Config.Trunks[class][2]
-	if slots then TriggerServerEvent('linden_inventory:openInventory', {type = 'trunk',id  = 'trunk-'..trunkid, slots = slots, maxWeight = weight}) end
+OpenTrunk = function(plate, class)
+	local data = {id = 'trunk-'..plate, slots = Config.Trunks[class][1], maxWeight = Config.Trunks[class][2]}
+	if data.slots then TriggerServerEvent('linden_inventory:openInventory', 'trunk', data) end
 end
 
 CloseVehicle = function(veh)
@@ -165,11 +165,11 @@ CloseVehicle = function(veh)
 	while not HasAnimDictLoaded(animDict) do
 		Citizen.Wait(100)
 	end
-	ClearPedTasks(playerPed)
+	ClearPedTasks(ESX.PlayerData.ped)
 	Citizen.Wait(100)
-	TaskPlayAnimAdvanced(playerPed, animDict, anim, GetEntityCoords(playerPed, true), 0, 0, GetEntityHeading(playerPed), 2.0, 2.0, 1000, 49, 0.25, 0, 0)
+	TaskPlayAnimAdvanced(ESX.PlayerData.ped, animDict, anim, GetEntityCoords(ESX.PlayerData.ped, true), 0, 0, GetEntityHeading(ESX.PlayerData.ped), 2.0, 2.0, 1000, 49, 0.25, 0, 0)
 	Citizen.Wait(900)
-	ClearPedTasks(playerPed)
+	ClearPedTasks(ESX.PlayerData.ped)
 	SetVehicleDoorShut(veh, open, false)
 	CloseToVehicle = false
 	lastVehicle = nil
@@ -301,7 +301,7 @@ AddEventHandler('linden_inventory:createDrop', function(data, owner)
 	Drops[data.name] = data
 	Drops[data.name].coords = vector3(data.coords.x, data.coords.y,data.coords.z - 0.2)
 	if owner == playerID and invOpen and #(playerCoords - data.coords) <= 1 then
-		if not IsPedInAnyVehicle(playerPed, false) then TriggerServerEvent('linden_inventory:openInventory', {type = 'drop', drop = data.name })
+		if not IsPedInAnyVehicle(ESX.PlayerData.ped, false) then TriggerServerEvent('linden_inventory:openInventory', {type = 'drop', drop = data.name })
 		else
 			TriggerServerEvent('linden_inventory:openInventory', {type = 'drop', drop = nil })
 		end
@@ -316,31 +316,31 @@ AddEventHandler('linden_inventory:removeDrop', function(id, owner)
 end)
 
 HolsterWeapon = function(item)
-	ClearPedSecondaryTask(playerPed)
+	ClearPedSecondaryTask(ESX.PlayerData.ped)
 	loadAnimDict('reaction@intimidation@1h')
-	TaskPlayAnimAdvanced(playerPed, 'reaction@intimidation@1h', 'outro', GetEntityCoords(playerPed, true), 0, 0, GetEntityHeading(playerPed), 8.0, 3.0, -1, 50, 0, 0, 0)
+	TaskPlayAnimAdvanced(ESX.PlayerData.ped, 'reaction@intimidation@1h', 'outro', GetEntityCoords(ESX.PlayerData.ped, true), 0, 0, GetEntityHeading(ESX.PlayerData.ped), 8.0, 3.0, -1, 50, 0, 0, 0)
 	Citizen.Wait(1600)
 	DisarmPlayer()
-	ClearPedSecondaryTask(playerPed)
-	SetPedUsingActionMode(playerPed, -1, -1, 1)
+	ClearPedSecondaryTask(ESX.PlayerData.ped)
+	SetPedUsingActionMode(ESX.PlayerData.ped, -1, -1, 1)
 	SendNUIMessage({ message = 'notify', item = item, text = _U('holstered') })
 end
 
 DrawWeapon = function(item)
-	ClearPedSecondaryTask(playerPed)
+	ClearPedSecondaryTask(ESX.PlayerData.ped)
 	if ESX.PlayerData.job.name == 'police' then
 		loadAnimDict('reaction@intimidation@cop@unarmed')
-		TaskPlayAnimAdvanced(playerPed, 'reaction@intimidation@cop@unarmed', 'intro', GetEntityCoords(playerPed, true), 0, 0, GetEntityHeading(playerPed), 8.0, 3.0, -1, 50, 1, 0, 0)
+		TaskPlayAnimAdvanced(ESX.PlayerData.ped, 'reaction@intimidation@cop@unarmed', 'intro', GetEntityCoords(ESX.PlayerData.ped, true), 0, 0, GetEntityHeading(ESX.PlayerData.ped), 8.0, 3.0, -1, 50, 1, 0, 0)
 	else
 		loadAnimDict('reaction@intimidation@1h')
-		TaskPlayAnimAdvanced(playerPed, 'reaction@intimidation@1h', 'intro', GetEntityCoords(playerPed, true), 0, 0, GetEntityHeading(playerPed), 8.0, 3.0, -1, 50, 0, 0, 0)
+		TaskPlayAnimAdvanced(ESX.PlayerData.ped, 'reaction@intimidation@1h', 'intro', GetEntityCoords(ESX.PlayerData.ped, true), 0, 0, GetEntityHeading(ESX.PlayerData.ped), 8.0, 3.0, -1, 50, 0, 0, 0)
 		Citizen.Wait(800)
 	end
 	if currentWeapon then
-		SetPedAmmo(playerPed, currentWeapon.hash, 0)
-		RemoveWeaponFromPed(playerPed, currentWeapon.hash)
+		SetPedAmmo(ESX.PlayerData.ped, currentWeapon.hash, 0)
+		RemoveWeaponFromPed(ESX.PlayerData.ped, currentWeapon.hash)
 	end
-	GiveWeaponToPed(playerPed, item.hash, 0, true, false)
+	GiveWeaponToPed(ESX.PlayerData.ped, item.hash, 0, true, false)
 	Citizen.Wait(800)
 	SendNUIMessage({ message = 'notify', item = item, text = _U('equipped') })
 end
@@ -351,7 +351,7 @@ AddEventHandler('linden_inventory:weapon', function(item)
 		TriggerEvent('linden_inventory:busy', true)
 		useItemCooldown = true
 		local newWeapon = item.metadata.serial
-		local found, wepHash = GetCurrentPedWeapon(playerPed, true)
+		local found, wepHash = GetCurrentPedWeapon(ESX.PlayerData.ped, true)
 		if wepHash == -1569615261 then currentWeapon = nil end
 		wepHash = GetHashKey(item.name)
 		if currentWeapon and currentWeapon.metadata.serial == newWeapon then
@@ -366,19 +366,19 @@ AddEventHandler('linden_inventory:weapon', function(item)
 				if ammoType then item.ammoType = ammoType end
 			end
 			TriggerEvent('linden_inventory:currentWeapon', item)
-			SetCurrentPedWeapon(playerPed, currentWeapon.hash)
-			SetPedCurrentWeaponVisible(playerPed, true, false, false, false)
-			if item.metadata.weapontint then SetPedWeaponTintIndex(playerPed, item.name, item.metadata.weapontint) end
+			SetCurrentPedWeapon(ESX.PlayerData.ped, currentWeapon.hash)
+			SetPedCurrentWeaponVisible(ESX.PlayerData.ped, true, false, false, false)
+			if item.metadata.weapontint then SetPedWeaponTintIndex(ESX.PlayerData.ped, item.name, item.metadata.weapontint) end
 			if item.metadata.components then
 				for k,v in pairs(item.metadata.components) do
 					local componentHash = ESX.GetWeaponComponent(item.name, v).hash
-					if componentHash then GiveWeaponComponentToPed(playerPed, currentWeapon.hash, componentHash) end
+					if componentHash then GiveWeaponComponentToPed(ESX.PlayerData.ped, currentWeapon.hash, componentHash) end
 				end
 			end
-			SetAmmoInClip(playerPed, currentWeapon.hash, item.metadata.ammo)
-			if currentWeapon.name == 'WEAPON_FIREEXTINGUISHER' or currentWeapon.name == 'WEAPON_PETROLCAN' then SetAmmoInClip(playerPed, currentWeapon.hash, 10000) end
+			SetAmmoInClip(ESX.PlayerData.ped, currentWeapon.hash, item.metadata.ammo)
+			if currentWeapon.name == 'WEAPON_FIREEXTINGUISHER' or currentWeapon.name == 'WEAPON_PETROLCAN' then SetAmmoInClip(ESX.PlayerData.ped, currentWeapon.hash, 10000) end
 		end
-		ClearPedSecondaryTask(playerPed)
+		ClearPedSecondaryTask(ESX.PlayerData.ped)
 		TriggerEvent('linden_inventory:busy', false)
 		useItemCooldown = false
 	end
@@ -408,9 +408,9 @@ RegisterNetEvent('linden_inventory:addAmmo')
 AddEventHandler('linden_inventory:addAmmo', function(ammo)
 	if currentWeapon and not isBusy then
 		if currentWeapon.ammoType == ammo.name then
-			local maxAmmo = GetMaxAmmoInClip(playerPed, currentWeapon.hash, 1)
-			local curAmmo = GetAmmoInPedWeapon(playerPed, currentWeapon.hash)
-			if curAmmo > maxAmmo then SetPedAmmo(playerPed, currentWeapon.hash, maxAmmo) elseif curAmmo == maxAmmo then return
+			local maxAmmo = GetMaxAmmoInClip(ESX.PlayerData.ped, currentWeapon.hash, 1)
+			local curAmmo = GetAmmoInPedWeapon(ESX.PlayerData.ped, currentWeapon.hash)
+			if curAmmo > maxAmmo then SetPedAmmo(ESX.PlayerData.ped, currentWeapon.hash, maxAmmo) elseif curAmmo == maxAmmo then return
 			else
 				isBusy, useItemCooldown = true, true
 				local newAmmo = 0
@@ -418,8 +418,8 @@ AddEventHandler('linden_inventory:addAmmo', function(ammo)
 				if missingAmmo > ammo.count then newAmmo = ammo.count + curAmmo
 				else newAmmo = maxAmmo end
 				if newAmmo < 0 then newAmmo = 0 end
-				SetPedAmmo(playerPed, currentWeapon.hash, newAmmo)
-				MakePedReload(playerPed)
+				SetPedAmmo(ESX.PlayerData.ped, currentWeapon.hash, newAmmo)
+				MakePedReload(ESX.PlayerData.ped)
 				TriggerServerEvent('linden_inventory:addweaponAmmo', currentWeapon, curAmmo, newAmmo)
 				Citizen.Wait(100)
 				isBusy, useItemCooldown = false, false
@@ -497,21 +497,21 @@ TriggerLoops = function()
 				weaponTimer = 0
 			elseif weaponTimer > 3 then weaponTimer = weaponTimer - 3 end
 			if not invOpen and currentWeapon then
-				if IsPedArmed(playerPed, 6) then
+				if IsPedArmed(ESX.PlayerData.ped, 6) then
 					DisableControlAction(1, 140, true)
 					DisableControlAction(1, 141, true)
 					DisableControlAction(1, 142, true)
 				end
-				usingWeapon = IsPedShooting(playerPed)
+				usingWeapon = IsPedShooting(ESX.PlayerData.ped)
 				if currentWeapon and usingWeapon then
-					local currentAmmo = GetAmmoInPedWeapon(playerPed, currentWeapon.hash)
+					local currentAmmo = GetAmmoInPedWeapon(ESX.PlayerData.ped, currentWeapon.hash)
 					if currentWeapon.name == 'WEAPON_FIREEXTINGUISHER' or currentWeapon.name == 'WEAPON_PETROLCAN' and not wait then
 						currentWeapon.metadata.durability = currentWeapon.metadata.durability - 0.1
 						if currentWeapon.metadata.durability <= 0 then
 							Citizen.CreateThread(function()
 								wait = true
-								ClearPedTasks(playerPed)
-								SetCurrentPedWeapon(playerPed, currentWeapon.hash, true)
+								ClearPedTasks(ESX.PlayerData.ped)
+								SetCurrentPedWeapon(ESX.PlayerData.ped, currentWeapon.hash, true)
 								TriggerServerEvent('linden_inventory:updateWeapon', currentWeapon)
 								Citizen.Wait(200)
 								DisarmPlayer()
@@ -521,13 +521,13 @@ TriggerLoops = function()
 					elseif currentWeapon.ammoType then
 						currentWeapon.metadata.ammo = currentAmmo
 						if currentAmmo == 0 then
-							if Config.AutoReload then
+							if Config.AutoReload and not IsPedFalling(ESX.PlayerData.ped) and not IsPedRagdoll(ESX.PlayerData.ped) then
 								weaponTimer = 0
 								TriggerServerEvent('linden_inventory:reloadWeapon', currentWeapon)
 							end
-							ClearPedTasks(playerPed)
-							SetCurrentPedWeapon(playerPed, currentWeapon.hash, false)
-							SetPedCurrentWeaponVisible(playerPed, true, false, false, false)
+							ClearPedTasks(ESX.PlayerData.ped)
+							SetCurrentPedWeapon(ESX.PlayerData.ped, currentWeapon.hash, false)
+							SetPedCurrentWeaponVisible(ESX.PlayerData.ped, true, false, false, false)
 							
 						else TriggerEvent('linden_inventory:usedWeapon', currentWeapon) end
 					end
@@ -541,7 +541,7 @@ TriggerLoops = function()
 							DisarmPlayer()
 							wait = false
 						end)
-					elseif Config.Melee[currentWeapon.name] and not wait and IsPedInMeleeCombat(playerPed) and IsControlPressed(0, 24) then
+					elseif Config.Melee[currentWeapon.name] and not wait and IsPedInMeleeCombat(ESX.PlayerData.ped) and IsControlPressed(0, 24) then
 						usingWeapon = true
 						Citizen.CreateThread(function()
 							wait = true
@@ -561,9 +561,8 @@ TriggerLoops = function()
 		local text, type, id = ''
 		while PlayerLoaded do
 			local sleep = 250
-			playerPed = PlayerPedId()
-			if IsPedInAnyVehicle(playerPed, false) then SetPedCanSwitchWeapon(playerPed, true) else SetPedCanSwitchWeapon(playerPed, false) end
-			playerCoords = GetEntityCoords(playerPed)
+			if IsPedInAnyVehicle(ESX.PlayerData.ped, false) then SetPedCanSwitchWeapon(ESX.PlayerData.ped, true) else SetPedCanSwitchWeapon(ESX.PlayerData.ped, false) end
+			playerCoords = GetEntityCoords(ESX.PlayerData.ped)
 			if not invOpen then
 				if not id or type == 'shop' then
 					if id then
@@ -679,11 +678,11 @@ TriggerLoops = function()
 							TriggerEvent('linden_inventory:closeInventory')
 							TriggerEvent('mythic_notify:client:SendAlert', {type = 'error', text = _U('inventory_lost_access'), length = 2500})
 						else
-							TaskTurnPedToFaceCoord(playerPed, pedCoords)
+							TaskTurnPedToFaceCoord(ESX.PlayerData.ped, pedCoords)
 						end
 					elseif not lastVehicle and currentInventory.coords then
 						local dist = #(playerCoords - currentInventory.coords)
-						if dist > 2 or CanOpenTarget(playerPed) then
+						if dist > 2 or CanOpenTarget(ESX.PlayerData.ped) then
 							TriggerEvent('linden_inventory:closeInventory')
 							TriggerEvent('mythic_notify:client:SendAlert', {type = 'error', text = _U('inventory_lost_access'), length = 2500})
 						end
@@ -698,8 +697,8 @@ end
 local canReload = true
 RegisterCommand('reload', function()
 	if canReload and not isBusy and currentWeapon and currentWeapon.ammoType and CanOpenInventory() then
-		local maxAmmo = GetMaxAmmoInClip(playerPed, currentWeapon.hash, 1)
-		local curAmmo = GetAmmoInPedWeapon(playerPed, currentWeapon.hash)
+		local maxAmmo = GetMaxAmmoInClip(ESX.PlayerData.ped, currentWeapon.hash, 1)
+		local curAmmo = GetAmmoInPedWeapon(ESX.PlayerData.ped, currentWeapon.hash)
 		if curAmmo < maxAmmo then TriggerServerEvent('linden_inventory:reloadWeapon', currentWeapon) end
 		canReload = false
 		Citizen.Wait(200)
@@ -720,8 +719,8 @@ RegisterCommand('inv', function()
 				TriggerEvent('linden_inventory:getProperty', function(data) property = data end)
 				if property then OpenStash(property) return end
 			end
-			if IsPedInAnyVehicle(playerPed, false) then drop = nil end
-			TriggerServerEvent('linden_inventory:openInventory', {type = 'drop', drop = drop })
+			if IsPedInAnyVehicle(ESX.PlayerData.ped, false) then drop = nil end
+			TriggerServerEvent('linden_inventory:openInventory', 'drop', drop)
 		end
 	end
 end)
@@ -731,7 +730,7 @@ RegisterCommand('vehinv', function()
 	elseif invOpen then TriggerEvent('linden_inventory:closeInventory')
 	else
 		if not CanOpenInventory() then TriggerEvent('mythic_notify:client:SendAlert', {type = 'error', text = _U('inventory_cannot_open'), length = 2500}) return end
-		if not IsPedInAnyVehicle(playerPed, false) then -- trunk
+		if not IsPedInAnyVehicle(ESX.PlayerData.ped, false) then -- trunk
 			local vehicle, vehiclePos = ESX.Game.GetVehicleInDirection()
 			if not vehiclePos then vehiclePos = GetEntityCoords(vehicle) end
 			CloseToVehicle = false
@@ -754,7 +753,7 @@ RegisterCommand('vehinv', function()
 					if CloseToVehicle then
 						local plate = GetVehicleNumberPlateText(vehicle)
 						if Config.TrimPlate then plate = ESX.Math.Trim(plate) end
-						TaskTurnPedToFaceCoord(playerPed, vehiclePos)
+						TaskTurnPedToFaceCoord(ESX.PlayerData.ped, vehiclePos)
 						lastVehicle = vehicle
 						OpenTrunk(plate, class)
 						local timeout = 20
@@ -775,13 +774,13 @@ RegisterCommand('vehinv', function()
 							Citizen.Wait(100)
 						end
 						Citizen.Wait(200)
-						TaskPlayAnim(playerPed, animDict, anim, 3.0, 3.0, -1, 49, 0, 0, 0, 0)
+						TaskPlayAnim(ESX.PlayerData.ped, animDict, anim, 3.0, 3.0, -1, 49, 0, 0, 0, 0)
 						Citizen.Wait(100)
 						lastVehicle = vehicle
 						while true do
 							Citizen.Wait(50)
 							if CloseToVehicle and invOpen then
-								coords = GetEntityCoords(playerPed)
+								coords = GetEntityCoords(ESX.PlayerData.ped)
 								local vehiclePos = GetWorldPositionOfEntityBone(vehicle, vehBone)
 								local pedDistance = #(coords - vehiclePos)
 								local isClose = false
@@ -789,7 +788,7 @@ RegisterCommand('vehinv', function()
 								if not DoesEntityExist(vehicle) or not isClose then
 									break
 								end
-								TaskTurnPedToFaceCoord(playerPed, vehiclePos)
+								TaskTurnPedToFaceCoord(ESX.PlayerData.ped, vehiclePos)
 							else
 								break
 							end
@@ -801,8 +800,8 @@ RegisterCommand('vehinv', function()
 					TriggerEvent('mythic_notify:client:SendAlert', {type = 'error', text = _U('vehicle_locked'), length = 2500})
 				end
 			end
-		elseif IsPedInAnyVehicle(playerPed, false) then -- glovebox
-			local vehicle = GetVehiclePedIsIn(playerPed, false)
+		elseif IsPedInAnyVehicle(ESX.PlayerData.ped, false) then -- glovebox
+			local vehicle = GetVehiclePedIsIn(ESX.PlayerData.ped, false)
 			local plate = GetVehicleNumberPlateText(vehicle)
 			if Config.TrimPlate then plate = ESX.Math.Trim(plate) end
 			local class = GetVehicleClass(vehicle)
@@ -811,7 +810,7 @@ RegisterCommand('vehinv', function()
 			while true do
 				Citizen.Wait(100)
 				if not invOpen then break
-				elseif not IsPedInAnyVehicle(playerPed, false) then
+				elseif not IsPedInAnyVehicle(ESX.PlayerData.ped, false) then
 					TriggerEvent('linden_inventory:closeInventory')
 					break
 				end
@@ -838,7 +837,7 @@ RegisterKeyMapping('inv', 'Open player inventory', 'keyboard', Config.InventoryK
 RegisterKeyMapping('vehinv', 'Open vehicle inventory', 'keyboard', Config.VehicleInventoryKey)
 
 RegisterCommand('steal', function()
-	if not IsPedInAnyVehicle(playerPed, true) and not invOpen and CanOpenInventory() then	 
+	if not IsPedInAnyVehicle(ESX.PlayerData.ped, true) and not invOpen and CanOpenInventory() then	 
 		OpenTargetInventory()
 	end
 end)
@@ -923,60 +922,78 @@ AddEventHandler('linden_inventory:useItem',function(item)
 					end
 				end
 				if not component then TriggerEvent('mythic_notify:client:SendAlert', {type = 'error', text = _U('component_invalid', item.label), length = 2500}) return end
-				if HasPedGotWeaponComponent(playerPed, currentWeapon.hash, component.hash) then
+				if HasPedGotWeaponComponent(ESX.PlayerData.ped, currentWeapon.hash, component.hash) then
 					TriggerEvent('mythic_notify:client:SendAlert', {type = 'error', text = _U('component_has', item.label), length = 2500}) return
 				end
 			end
 				
-			if esxItem then TriggerEvent('linden_inventory:closeInventory') end
-			ESX.TriggerServerCallback('linden_inventory:usingItem', function(xItem)
-				if xItem and data then
-					useItemCooldown = true
-					isBusy = true
-					if data.dofirst then TriggerEvent(data.dofirst) end
-					if data.useTime and data.useTime >= 0 then
-						exports['mythic_progbar']:Progress({
-							name = 'useitem',
-							duration = data.useTime,
-							label = 'Using '..xItem.label,
-							useWhileDead = false,
-							canCancel = false,
-							controlDisables = { disableMovement = data.disableMove, disableCarMovement = false, disableMouse = false, disableCombat = true },
-							animation = { animDict = data.animDict or 'pickup_object', anim = data.anim or 'putdown_low', flags = data.flags or 48, bone = data.bone },
-							prop = { model = data.model, coords = data.coords, rotation = data.rotation }
-						})
-						Citizen.Wait(data.useTime)
-					end
-				
-					if data.hunger then
-						if data.hunger > 0 then TriggerEvent('esx_status:add', 'hunger', data.hunger)
-						else TriggerEvent('esx_status:remove', 'hunger', data.hunger) end
-					end
-					if data.thirst then
-						if data.thirst > 0 then TriggerEvent('esx_status:add', 'thirst', data.thirst)
-						else TriggerEvent('esx_status:remove', 'thirst', data.thirst) end
-					end
-					if data.stress then
-						if data.stress > 0 then TriggerEvent('esx_status:add', 'stress', data.stress)
-						else TriggerEvent('esx_status:remove', 'stress', data.stress) end
-					end
-					
-					if data.drunk then
-						if data.drunk > 0 then TriggerEvent('esx_status:add', 'drunk', data.drunk)
-						else TriggerEvent('esx_status:remove', 'drunk', data.drunk) end
-					end
-
-					if data.component then
-						GiveWeaponComponentToPed(playerPed, currentWeapon.name, component.hash)
-						table.insert(currentWeapon.metadata.components, component.name)
-						TriggerServerEvent('linden_inventory:updateWeapon', currentWeapon, component.name)
-					end
-
-					if data.event then TriggerEvent(data.event) end
-					useItemCooldown = false
-					isBusy = false
+			if esxItem then
+				TriggerEvent('linden_inventory:closeInventory') UseItem(item, true)
+			elseif data then
+				if data.event then
+					TriggerEvent(data.event, item, function(cb)
+						if cb then
+							UseItem(item, false, data)
+						else
+							TriggerEvent('mythic_notify:client:SendAlert', {type = 'error', text = _U('cannot_use', item.label), length = 2500}) return
+						end
+					end)
+				else
+					UseItem(item, false, data)
 				end
-			end, item.name, item.slot, item.metadata, esxItem)
+			end
 		end
 	end
 end)
+
+UseItem = function(item, esxItem, data)
+	ESX.TriggerServerCallback('linden_inventory:usingItem', function(xItem)
+		if xItem and data then
+			useItemCooldown = true
+			isBusy = true
+
+			if data.useTime and data.useTime >= 0 then
+				exports['mythic_progbar']:Progress({
+					name = 'useitem',
+					duration = data.useTime,
+					label = 'Using '..xItem.label,
+					useWhileDead = false,
+					canCancel = false,
+					controlDisables = { disableMovement = data.disableMove, disableCarMovement = false, disableMouse = false, disableCombat = true },
+					animation = { animDict = data.animDict or 'pickup_object', anim = data.anim or 'putdown_low', flags = data.flags or 48, bone = data.bone },
+					prop = { model = data.model, coords = data.coords, rotation = data.rotation }
+				})
+				Citizen.Wait(data.useTime)
+			end
+		
+			if data.hunger then
+				if data.hunger > 0 then TriggerEvent('esx_status:add', 'hunger', data.hunger)
+				else TriggerEvent('esx_status:remove', 'hunger', data.hunger) end
+			end
+			if data.thirst then
+				if data.thirst > 0 then TriggerEvent('esx_status:add', 'thirst', data.thirst)
+				else TriggerEvent('esx_status:remove', 'thirst', data.thirst) end
+			end
+			if data.stress then
+				if data.stress > 0 then TriggerEvent('esx_status:add', 'stress', data.stress)
+				else TriggerEvent('esx_status:remove', 'stress', data.stress) end
+			end
+			
+			if data.drunk then
+				if data.drunk > 0 then TriggerEvent('esx_status:add', 'drunk', data.drunk)
+				else TriggerEvent('esx_status:remove', 'drunk', data.drunk) end
+			end
+
+			if data.component then
+				GiveWeaponComponentToPed(ESX.PlayerData.ped, currentWeapon.name, component.hash)
+				table.insert(currentWeapon.metadata.components, component.name)
+				TriggerServerEvent('linden_inventory:updateWeapon', currentWeapon, component.name)
+			end
+
+		end
+
+		if not data.consume or data.consume > 1 then TriggerServerEvent('linden_inventory:removeItem', item) end	
+		useItemCooldown = false
+		isBusy = false
+	end, item.name, item.slot, item.metadata, esxItem)
+end
