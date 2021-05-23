@@ -301,9 +301,9 @@ AddEventHandler('linden_inventory:createDrop', function(data, owner)
 	Drops[data.name] = data
 	Drops[data.name].coords = vector3(data.coords.x, data.coords.y,data.coords.z - 0.2)
 	if owner == playerID and invOpen and #(playerCoords - data.coords) <= 1 then
-		if not IsPedInAnyVehicle(ESX.PlayerData.ped, false) then TriggerServerEvent('linden_inventory:openInventory', {type = 'drop', drop = data.name })
+		if not IsPedInAnyVehicle(ESX.PlayerData.ped, false) then TriggerServerEvent('linden_inventory:openInventory', 'drop', data.name )
 		else
-			TriggerServerEvent('linden_inventory:openInventory', {type = 'drop', drop = nil })
+			TriggerServerEvent('linden_inventory:openInventory')
 		end
 	end
 end)
@@ -312,7 +312,11 @@ RegisterNetEvent('linden_inventory:removeDrop')
 AddEventHandler('linden_inventory:removeDrop', function(id, owner)
 	Drops[id] = nil
 	if currentDrop and currentDrop.name == id then currentDrop = nil end
-	if owner == playerID and invOpen then TriggerServerEvent('linden_inventory:openInventory', {type = 'drop', drop = {} }) movement = true end
+	if owner == playerID and invOpen then
+		drop = nil
+		TriggerServerEvent('linden_inventory:openInventory')
+		movement = true
+	end
 end)
 
 HolsterWeapon = function(item)
@@ -992,7 +996,8 @@ UseItem = function(item, esxItem, data)
 			end
 
 			if not data.consume or data.consume > 1 then TriggerServerEvent('linden_inventory:removeItem', item) end
-		end	
+		end
+	
 		useItemCooldown = false
 		isBusy = false
 	end, item.name, item.slot, item.metadata, esxItem)

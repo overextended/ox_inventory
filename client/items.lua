@@ -1,10 +1,10 @@
-AddEventHandler('linden_inventory:burger', function(item, cb)
+AddEventHandler('linden_inventory:burger', function(item, wait, cb)
 	cb(true)
 	Citizen.Wait(wait)
 	TriggerEvent('mythic_notify:client:SendAlert', {type = 'inform', text = 'You ate a delicious burger', length = 2500})
 end)
 
-AddEventHandler('linden_inventory:water', function(item, cb)
+AddEventHandler('linden_inventory:water', function(item, wait, cb)
 	cb(true)
 	Citizen.Wait(wait)
 	TriggerEvent('mythic_notify:client:SendAlert', {type = 'inform', text = 'You drank some refreshing water', length = 2500})
