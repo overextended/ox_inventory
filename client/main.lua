@@ -912,7 +912,7 @@ AddEventHandler('linden_inventory:useItem',function(item)
 	if CanOpenInventory() and not useItemCooldown then
 		local data = Config.ItemList[item.name]
 		local esxItem = Usables[item.name]
-		if data or esxItem or Config.Ammos[item.name] or item.name:find('WEAPON_') then
+		if data or esxItem then
 			if data and data.component then
 				if not currentWeapon then return end
 				local result, esxWeapon = ESX.GetWeapon(currentWeapon.name)
@@ -946,6 +946,10 @@ AddEventHandler('linden_inventory:useItem',function(item)
 				else
 					UseItem(item, false, data)
 				end
+			end
+		else
+			if Config.Ammos[item.name] or item.name:find('WEAPON_') then
+				UseItem(item, false)
 			end
 		end
 	end

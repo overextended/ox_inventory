@@ -3,10 +3,12 @@ game 'gta5'
 author 'Linden'
 description 'https://github.com/thelindat/linden_inventory'
 versioncheck 'https://raw.githubusercontent.com/thelindat/linden_inventory/main/fxmanifest.lua'
-version '1.5.0'
+version '1.5.1'
 
-dependency 'es_extended'
-dependency 'ghmattimysql'
+dependencies {
+	'es_extended',
+	'ghmattimysql'
+}
 
 shared_scripts {
 	'@es_extended/imports.lua',
