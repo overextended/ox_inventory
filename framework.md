@@ -3,45 +3,6 @@ title: ESX Legacy Installation
 ---
 
 
-<h2 align='center'> Server Config </h2>
-
-```js
-set mysql_connection_string "mysql://user:password@localhost/database?connectTimeout=30000&acquireTimeout=30000&waitForConnections=true&keepAlive=30&charset=utf8mb4"
-set onesync legacy		# do not use infinity unless you know what you're doing
-#set sv_enforceGameBuild 2060	# enable Los Santos Summer Special build
-
-add_ace resource.es_extended command.add_ace allow
-add_ace resource.es_extended command.add_principal allow
-add_ace resource.es_extended command.remove_principal allow
-add_ace resource.es_extended command.stop allow
-
-ensure mapmanager
-ensure chat
-ensure spawnmanager
-ensure sessionmanager
-ensure hardcap
-
-ensure mysql-async
-ensure ghmattimysql
-ensure cron
-ensure es_extended
-
-ensure esx_menu_default
-ensure esx_menu_list
-ensure esx_menu_dialog
-
-ensure skinchanger
-ensure esx_skin
-ensure esx_identity
-#
-#
-#
-#
-#
-ensure linden_inventory		# load after resources that register items, or just last
-```
-
-
 <h2 align='center'> Notice </h2>
 The following adjustments must be made for compatibility and security reasons.
 
