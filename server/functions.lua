@@ -188,19 +188,6 @@ SetupShopItems = function(shop)
 	return inventory
 end
 
----	delete all vehicles from `linden_inventory` table where name exists more than once and owner is null (temporary)
-RegisterCommand('cleanvehicles', function(source, args, rawCommand)
-	if source > 0 then return end
-	
-	local result = exports.ghmattimysql:executeSync('SELECT name, owner FROM linden_inventory group by name having count(*) >= 2', {})
-	if result then
-		for k,v in pairs(result) do
-			exports.ghmattimysql:scalarSync('DELETE FROM linden_inventory WHERE owner IS NULL AND name = @name', {['@name'] = v.name})
-		end
-	end
-
-end, true)
----
 SaveItems = function(type,id,owner)
 	if id and owner == nil and (type == 'stash' or type == 'trunk' or type == 'glovebox') then
 		if type ~= 'stash' then
