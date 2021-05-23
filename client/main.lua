@@ -931,7 +931,7 @@ AddEventHandler('linden_inventory:useItem',function(item)
 				TriggerEvent('linden_inventory:closeInventory') UseItem(item, true)
 			elseif data then
 				if data.event then
-					TriggerEvent(data.event, item, function(cb)
+					TriggerEvent(data.event, item, data.useTime, function(cb)
 						if cb then
 							UseItem(item, false, data)
 						else
