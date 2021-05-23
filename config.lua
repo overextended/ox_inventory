@@ -39,6 +39,7 @@ Config.ShowIdentifierID = false
 
 -- Enable random loot in dumpsters, gloveboxes, trunks
 Config.RandomLoot = true
+-- Percentage chance of loot generating in their respective container types
 Config.TrunkLootChance = 100
 Config.GloveboxLootChance = 100
 Config.DumpsterLootChance = 100

@@ -523,7 +523,7 @@ SwapItems = function(fromInventory, toInventory, fromSlot, toSlot) {
 	availableweight = 0
 	//inv = from
 	//inv2 == to
-	if (item.metadata.image == undefined) { item.metadata.image = item.name;};
+	if (fromItem.metadata.image == undefined) { fromItem.metadata.image = fromItem.name;};
 	if (inv2 !== 'Playerinv') {availableweight = rightfreeweight} else {availableweight = playerfreeweight}
 	if (inv == inv2 || (availableweight !== 0 && (fromItem.weight * count) <= availableweight)) {
 		if (toItem !== undefined ) { // stack
