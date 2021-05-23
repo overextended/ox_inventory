@@ -178,7 +178,7 @@ Config.ItemList = {
 		anim = 'machinic_loop_mechandplayer',
 		useTime = 2000,
 		consume = 0,
-		dofirst = 'esx_lockpick:onUse'
+		event = 'esx_lockpick:onUse'
 	},
 
 }
