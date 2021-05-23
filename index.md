@@ -13,14 +13,10 @@ title: Introduction
 * The ability to follow instructions and learn  
 
 
-<h2 align='center'> Setup </h2>
+<h2 align='center'> Modification </h2>
 
 
 * Use the following connection string in your `server.cfg`
-```lua
-set mysql_connection_string "mysql://user:password@localhost/database?connectTimeout=30000&acquireTimeout=30000&waitForConnections=true&keepAlive=30&charset=utf8mb4"
-```
-
 ### ghmattimysql
 * Delete `config.json` to fallback to using the MySQL connection string in server.cfg
 * Add the following code to ghmattimysql-server.lua
