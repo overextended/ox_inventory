@@ -190,7 +190,7 @@ end
 
 SaveItems = function(type,id,owner)
 	if id and owner == nil and (type == 'stash' or type == 'trunk' or type == 'glovebox') then
-		if type ~= 'stash' then
+		if type == 'trunk' or type == 'glovebox' then
 			local plate = string.match(id, "-(.*)")
 			local owner
 			if Datastore[plate] then owner = false else
