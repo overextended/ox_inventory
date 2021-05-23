@@ -991,9 +991,8 @@ UseItem = function(item, esxItem, data)
 				TriggerServerEvent('linden_inventory:updateWeapon', currentWeapon, component.name)
 			end
 
-		end
-
-		if not data.consume or data.consume > 1 then TriggerServerEvent('linden_inventory:removeItem', item) end	
+			if not data.consume or data.consume > 1 then TriggerServerEvent('linden_inventory:removeItem', item) end
+		end	
 		useItemCooldown = false
 		isBusy = false
 	end, item.name, item.slot, item.metadata, esxItem)
