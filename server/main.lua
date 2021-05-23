@@ -89,6 +89,7 @@ exports.ghmattimysql:ready(function()
 	-- Clean the database
 	exports.ghmattimysql:execute('DELETE FROM `linden_inventory` WHERE `lastupdated` < (NOW() - INTERVAL '..Config.DBCleanup..') OR `data` = "[]"')
 	---------------------
+	if ESX.GetExtendedPlayers then Config.LindenStuff = true end
 	Citizen.Wait(500)
 	ESX.UsableItemsCallbacks = exports['es_extended']:getSharedObject().UsableItemsCallbacks
 	if Status[1] ~= 'error' then
@@ -180,16 +181,30 @@ end)
 AddEventHandler('onResourceStop', function(resourceName)
 	if (GetCurrentResourceName() == resourceName) then
 		if ESX == nil or Status[1] ~= 'ready' then return end
-		local xPlayers = ESX.GetPlayers()
-		for i=1, #xPlayers, 1 do
-			local xPlayer = ESX.GetPlayerFromId(xPlayers[i])
-			local identifier = xPlayer.getIdentifier()
-			local inventory = json.encode(getInventory(Inventories[xPlayer.source]))
-			exports.ghmattimysql:execute('UPDATE `users` SET `inventory` = @inventory WHERE identifier = @identifier', {
-				['@inventory'] = inventory,
-				['@identifier'] = identifier
-			})
+		if Config.LindenStuff then -- New method but we can't force it yet
+			local xPlayers = ESX.GetExtendedPlayers()
+			for i=1, #xPlayers do
+				local xPlayer = xPlayers[i]
+				local inventory = json.encode(getInventory(Inventories[xPlayer.source]))
+				exports.ghmattimysql:execute('UPDATE `users` SET `inventory` = @inventory WHERE identifier = @identifier', {
+					['@inventory'] = inventory,
+					['@identifier'] = xPlayer.identifier
+				})
+			end
+		else
+			-- Keep this for compatibility (for now)
+			local xPlayers = ESX.GetPlayers()
+			for i=1, #xPlayers, 1 do
+				local xPlayer = ESX.GetPlayerFromId(xPlayers[i])
+				local identifier = xPlayer.getIdentifier()
+				local inventory = json.encode(getInventory(Inventories[xPlayer.source]))
+				exports.ghmattimysql:execute('UPDATE `users` SET `inventory` = @inventory WHERE identifier = @identifier', {
+					['@inventory'] = inventory,
+					['@identifier'] = identifier
+				})
+			end
 		end
+
 	elseif resourceName == Config.Logs then
 		logsResource = Config.Logs
 		message('Logs have been disabled, ^3`'..logsResource..'`^7 is not running', 3)
@@ -399,7 +414,7 @@ AddEventHandler('linden_inventory:buyItem', function(info)
 		end
 	
 		if Config.WeaponsLicense and checkShop.license then
-			local hasLicense = exports.ghmattimysql:scalarSync('SELECT * FROM user_licenses WHERE type = @type AND owner = @owner', {
+			local hasLicense = exports.ghmattimysql:scalarSync('SELECT 1 FROM user_licenses WHERE type = @type AND owner = @owner', {
 				['@type'] = checkShop.license,
 				['@owner'] = xPlayer.identifier
 			})
