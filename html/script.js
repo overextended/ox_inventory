@@ -132,6 +132,7 @@ HSN.Hotbar = function(items) {
 			$hotslot.removeClass('template');
 			var item = items[i]
 			if (item != null) {
+				if (item.metadata == undefined) { item.metadata = {};};
 				if (item.metadata.image == undefined) { item.metadata.image = item.name; };
 				$hotslot.html('<div id="itembox-label"><p>'+item.label+'</p></div><div class="hotslot-img"><img src="images/' + item.metadata.image + '.png'+'" alt="' + item.name + '" /></div>');
 			}
@@ -152,6 +153,7 @@ HSN.NotifyItems = function(item, text) {
 	}
 	var $itembox = $(".itembox-container.template").clone();
 	$itembox.removeClass('template');
+	if (item.metadata == undefined) { item.metadata = {};};
 	if (item.metadata.image == undefined) { item.metadata.image = item.name; };
 	$itembox.html('<div id="itembox-action"><p>' + text + '</p></div><div id="itembox-label"><p>'+item.label+'</p></div><div class="itembox-img"><img src="images/' + item.metadata.image + '.png'+'" alt="' + item.name + '" /></div>');
 	$(".itemboxes-container").prepend($itembox);
@@ -194,6 +196,7 @@ HSN.RefreshInventory = function(data) {
 	}
 	$.each(data.inventory, function (i, item) {
 		if (item != null) {
+			if (item.metadata == undefined) { item.metadata = {};};
 			if (item.metadata.image == undefined) { item.metadata.image = item.name; };
 			totalkg = totalkg +(item.weight * item.count);
 			if ((item.name).split("_")[0] == "WEAPON" && item.metadata.durability !== undefined) {
@@ -243,6 +246,7 @@ HSN.SetupInventory = function(data) {
 	totalkg = 0
 	$.each(data.inventory, function (i, item) {
 		if ((item != null)) {
+			if (item.metadata == undefined) { item.metadata = {};};
 			if (item.metadata.image == undefined) { item.metadata.image = item.name; };
 			totalkg = totalkg +(item.weight * item.count);
 			if ((item.name).split("_")[0] == "WEAPON" && item.metadata.durability !== undefined) {					
@@ -304,6 +308,7 @@ HSN.SetupInventory = function(data) {
 			} else {
 			$.each(data.rightinventory.inventory, function (i, item) {
 				if (item != null) {
+					if (item.metadata == undefined) { item.metadata = {};};
 					if (item.metadata.image == undefined) { item.metadata.image = item.name; };
 					righttotalkg = righttotalkg +(item.weight * item.count);
 					if ((item.name).split("_")[0] == "WEAPON" && item.metadata.durability !== undefined) {
@@ -523,10 +528,12 @@ SwapItems = function(fromInventory, toInventory, fromSlot, toSlot) {
 	availableweight = 0
 	//inv = from
 	//inv2 == to
+	if (fromItem.metadata == undefined) { fromItem.metadata = {};};
 	if (fromItem.metadata.image == undefined) { fromItem.metadata.image = fromItem.name;};
 	if (inv2 !== 'Playerinv') {availableweight = rightfreeweight} else {availableweight = playerfreeweight}
 	if (inv == inv2 || (availableweight !== 0 && (fromItem.weight * count) <= availableweight)) {
 		if (toItem !== undefined ) { // stack
+			if (toItem.metadata == undefined) { toItem.metadata = {};};
 			if (toItem.metadata.image == undefined) { toItem.metadata.image = toItem.name; };
 			if (count <= fromItem.count || count <= toItem.count) {
 				if(((fromItem.name).split("_")[0] == "WEAPON" && fromItem.metadata.durability !== undefined) && ((toItem.name).split("_")[0] == "WEAPON" && toItem.metadata.durability !== undefined)) {
