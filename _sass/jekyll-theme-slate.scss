@@ -46,11 +46,16 @@ Theme Styles
 body {
   box-sizing: border-box;
   color:#373737;
-  background: #212121;
   font-size: 16px;
   font-family: 'Myriad Pro', Calibri, Helvetica, Arial, sans-serif;
   line-height: 1.5;
   -webkit-font-smoothing: antialiased;
+  background: #2d2d2d;
+  background: -moz-linear-gradient(top, #1d1d1d, #2d2d2d);
+  background: -webkit-linear-gradient(top, #1d1d1d, #2d2d2d);
+  background: -ms-linear-gradient(top, #1d1d1d, #2d2d2d);
+  background: -o-linear-gradient(top, #1d1d1d, #2d2d2d);
+  background: linear-gradient(top, #1d1d1d, #2d2d2d);
 }
 
 h1, h2, h3, h4, h5, h6 {
@@ -261,7 +266,7 @@ Full-Width Styles
 
 .inner {
   position: relative;
-  max-width: 640px;
+  max-width: 68%;
   padding: 20px 10px;
   margin: 0 auto;
 }
@@ -281,17 +286,8 @@ Full-Width Styles
   border-bottom-right-radius: 2px;
 }
 
-#header_wrap {
-  background: #212121;
-  background: -moz-linear-gradient(top, #373737, #212121);
-  background: -webkit-linear-gradient(top, #373737, #212121);
-  background: -ms-linear-gradient(top, #373737, #212121);
-  background: -o-linear-gradient(top, #373737, #212121);
-  background: linear-gradient(to top, #373737, #212121);
-}
-
 #header_wrap .inner {
-  padding: 50px 10px 30px 10px;
+  padding: 15px 10px 15px 10px;
 }
 
 #project_title {
@@ -351,8 +347,10 @@ Full-Width Styles
 
 #main_content_wrap {
   background: #f2f2f2;
-  border-top: 1px solid #111;
-  border-bottom: 1px solid #111;
+  position: relative;
+  margin-left: 15%;
+  width: 70%;
+  box-shadow: 0 1px 1px 1px rgba(20,20,20,0.2) inset;
 }
 
 #main_content {
@@ -361,6 +359,7 @@ Full-Width Styles
 
 #footer_wrap {
   background: #212121;
+  border-top: 1px solid #1d1d1d
 }
 
 
