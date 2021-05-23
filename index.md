@@ -10,10 +10,10 @@ title: Introduction
 * Mythic Notify [[Download]](https://github.com/thelindat/mythic_notify)
 * Mythic Progbar [[Download]](https://github.com/thelindat/mythic_progbar)
 * OneSync must be enabled (up to 32 slots is free)
-* The ability to follow instructions and learn
+* The ability to follow instructions and learn  
 
 
-</br> <h2 align='center'> Setup </h2>
+<h2 align='center'> Setup </h2>
 
 
 * Use the following connection string in your `server.cfg`
@@ -36,7 +36,7 @@ end)
 ```
 
 
-</br></br> <h2 align='center'> Framework </h2>
+<h2 align='center'> Framework </h2>
 
 
 ESX 1.1 (running essentials) has _never_ been compatible, and if you were planning on running it then I don't recommend you bother trying to use this inventory (or running a server, for that matter).  
@@ -46,7 +46,7 @@ The guide for modifying your framework to support my inventory is currently a wo
 You may, optionally, download [my fork of ESX Legacy](https://github.com/thelindat/es_extended/) which has all the changes to use this inventory in place, on top of a few extra features.  
 
 
-</br></br> <h2 align='center'> Upgrading </h2>
+<h2 align='center'> Upgrading </h2>
 
 
 If you are upgrading from a prior version of ESX or EXM you may be using steam as your primary identifier.  
