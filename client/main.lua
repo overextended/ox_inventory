@@ -931,6 +931,7 @@ AddEventHandler('linden_inventory:useItem',function(item)
 				TriggerEvent('linden_inventory:closeInventory') UseItem(item, true)
 			elseif data then
 				if data.event then
+					if not data.useTime then data.useTime = 0 end
 					TriggerEvent(data.event, item, data.useTime, function(cb)
 						if cb then
 							UseItem(item, false, data)
@@ -952,7 +953,7 @@ UseItem = function(item, esxItem, data)
 			useItemCooldown = true
 			isBusy = true
 
-			if data.useTime and data.useTime >= 0 then
+			if data.useTime and data.useTime > 0 then
 				exports['mythic_progbar']:Progress({
 					name = 'useitem',
 					duration = data.useTime,
