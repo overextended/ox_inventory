@@ -4,6 +4,7 @@ title: Introduction
 
 <h2 align='center'> Requirements </h1>
 
+
 * ESX Legacy [[Download]](https://github.com/esx-framework/es_extended/tree/legacy)
 * GHMattiMySQL [[Download]](https://github.com/GHMatti/ghmattimysql/releases)
 * Mythic Notify [[Download]](https://github.com/thelindat/mythic_notify)
@@ -13,6 +14,7 @@ title: Introduction
 
 
 <h2 align='center'> Setup </h1>
+
 
 * Use the following connection string in your `server.cfg`
 ```lua
@@ -35,11 +37,14 @@ end)
 
 <h2 align='center'> Upgrading </h2>
 
+
 If you are upgrading from a prior version of ESX or EXM you may be using steam as your primary identifier.  
 This is not recommended by ESX or CFX but if it is absolutely necessary you can modify your framework to support it.  
 Look through ESX's server files for references to `license` and change them where appropriate.
 
+
 <h2 align='center'> Framework </h2>
+
 
 ESX 1.1 (running essentials) has _never_ been compatible, and if you were planning on running it then I don't recommend you bother trying to use this inventory (or running a server, for that matter).  
 As of version 1.5.0 you are required to use ESX Legacy to use this resource.  
