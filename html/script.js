@@ -90,6 +90,8 @@ Display = function(bool) {
 				$('.inventory-main-rightside').removeData("invId")
 				$('.inventory-main-rightside').removeData("invTier")
 				righttotalkg = 0
+				rightinventory = null
+				rightinvtype = null
 				totalkg = 0
 				invOpen = false
 			});
@@ -343,8 +345,7 @@ function DragAndDrop() {
 		cancel: ".itemdragclose",
 		containment: "parent",
 		start: function(event, ui) {
-			var inv = $(this).parent().data('invTier')
-			if (inv !== 'Playerinv' && rightgrade > job.grade) {
+			if (rightinvtype !== 'Playerinv' && rightgrade > job.grade) {
 				HSN.InventoryMessage('stash_lowgrade', 2)
 				return false
 			} else {
