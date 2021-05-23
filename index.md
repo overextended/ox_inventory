@@ -36,10 +36,13 @@ end)
 
 
 ESX 1.1 (running essentials) has _never_ been compatible, and if you were planning on running it then I don't recommend you bother trying to use this inventory (or running a server, for that matter).  
-As of version 1.5.0 you are required to use ESX Legacy to use this resource.  
+As of version 1.5.0 you are required to use ESX Legacy to use this resource.
 
-The guide for modifying your framework to support my inventory is currently a work in progress.  
-You may, optionally, download [my fork of ESX Legacy](https://github.com/thelindat/es_extended/) which has all the changes to use this inventory in place, on top of a few extra features.  
+
+You may, optionally, download [my fork of ESX Legacy](https://github.com/thelindat/es_extended/) which has all the changes to use this inventory in place, on top of a few extra features.
+
+
+For a guide on upgrading your framework, go to [this page](framework).
 
 
 <h2 align='center'> Upgrading </h2>
