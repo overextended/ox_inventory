@@ -5,6 +5,9 @@ Config.Locale = 'en'
 Config.CheckVersion = true
 Config.CheckVersionDelay = 60
 
+-- Time until unused inventory data is wiped
+Config.DBCleanup = '6 MONTH'
+
 -- Number of inventory slots
 Config.PlayerSlots = 50
 
