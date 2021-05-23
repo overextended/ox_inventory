@@ -300,23 +300,22 @@ AddEventHandler('linden_inventory:openInventory', function(type, data, player)
 			end
 		elseif data then
 			if type == 'shop' then
-				local id = data.id
-				local shop = Config.Shops[id]
+				local shop = Config.Shops[data]
 				if (not shop.job or shop.job == xPlayer.job.name) then
 					local srcCoords = GetEntityCoords(GetPlayerPed(xPlayer.source))
 					if #(shop.coords - srcCoords) <= 2 then
-						Shops[id] = {
-							id = id,
+						Shops[data] = {
+							id = data,
 							type = 'shop',
 							name = shop.name or shop.type.name,
 							coords = shop.coords,
 							job = shop.job,
-							inventory = SetupShopItems(id),
+							inventory = SetupShopItems(data),
 							slots = #shop.store.inventory,
 							currency = shop.currency
 						}
 						Opened[xPlayer.source] = {invid = xPlayer.source, type = 'Playerinv'}
-						TriggerClientEvent('linden_inventory:openInventory', xPlayer.source, Inventories[xPlayer.source], Shops[id])
+						TriggerClientEvent('linden_inventory:openInventory', xPlayer.source, Inventories[xPlayer.source], Shops[data])
 					end
 				end
 			elseif type == 'glovebox' or type == 'trunk' or (type == 'stash' and not data.owner) then
