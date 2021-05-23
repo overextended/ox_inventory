@@ -35,13 +35,6 @@ exports("ready", function (callback)
 end)
 ```
 
-<h2 align='center'> Upgrading </h2>
-
-
-If you are upgrading from a prior version of ESX or EXM you may be using steam as your primary identifier.  
-This is not recommended by ESX or CFX but if it is absolutely necessary you can modify your framework to support it.  
-Look through ESX's server files for references to `license` and change them where appropriate.
-
 
 <h2 align='center'> Framework </h2>
 
@@ -51,3 +44,11 @@ As of version 1.5.0 you are required to use ESX Legacy to use this resource.
 
 The guide for modifying your framework to support my inventory is currently a work in progress.  
 You may, optionally, download [my fork of ESX Legacy](https://github.com/thelindat/es_extended/) which has all the changes to use this inventory in place, on top of a few extra features.  
+
+
+<h2 align='center'> Upgrading </h2>
+
+
+If you are upgrading from a prior version of ESX or EXM you may be using steam as your primary identifier.  
+This is not recommended by ESX or CFX but if it is absolutely necessary you can modify your framework to support it.  
+Look through ESX's server files for references to `license` and change them where appropriate.
