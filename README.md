@@ -1,9 +1,9 @@
-<h1 align='center'><a href='https://thelindat.github.io/linden_inventory/'>Installation Guide</a></h1>
-<p align='center'><a href='https://streamable.com/bggvpg'>Showcase</a> | <a href='https://discord.gg/hmcmv3P7YW'>Discord</a><br>
-  <a href='https://thelindat.github.io/linden_inventory/media'>Media</a></p>
+<h1 align='center'><a href='https://thelindat.github.io/linden_inventory/'>Documentation</a></h1><p align='center'>Click the link above for information on setup, installation, and improving compatibility with other resources.
+<p align='center'><a href='https://streamable.com/bggvpg'>Showcase</a> | <a href='https://discord.gg/hmcmv3P7YW'>Discord</a> | <a href='https://thelindat.github.io/linden_inventory/media'>Media</a></p><br><br><br><br><br><br><br>
 
 
 ## What's changed?
+##### This information concerns the initial release of linden_inventory
 Despite all the changes I've implemented to hsn-inventory, there's a lot that I hadn't changed since I didn't want to break things I wasn't familiar with. There was a lot of functions or events performing the same (or very similar) tasks, sometimes only being used once if at all; my biggest issue though was with the inventory data saving. I've moved the project so that a still incomplete but mostly working version of hsn-inventory can remain as it is, but without any future support by myself.
 
 * Cleaned up or optimised many functions and events
