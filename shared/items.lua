@@ -135,7 +135,12 @@ Config.ItemList = {
 		coords = { x = 0.03, y = 0.0, z = 0.02 },
 		rotation = { x = 0.0, y = -13.5, z = -1.5 },
 		useTime = 2500,
-		event = 'linden_inventory:water'
+		event = 'linden_inventory:water',
+		trunkChance = 6, -- Percent
+		gloveboxChance = 8, -- Percent
+		dumpsterChance = 4, -- Percent
+		lootMin = 1,
+		lootMax = 2
 	},
 
 	['cola'] = {
@@ -146,7 +151,11 @@ Config.ItemList = {
 		coords = { x = 0.01, y = 0.0, z = 0.06 },
 		rotation = { x = 5.0, y = -1.5, z = -180.5 },
 		useTime = 2500,
-		event = 'linden_inventory:cola'
+		event = 'linden_inventory:cola',
+		trunkChance = 5, -- Percent
+		gloveboxChance = 7, -- Percent
+		lootMin = 1,
+		lootMax = 2
 	},
 
 	['mustard'] = {
@@ -169,7 +178,12 @@ Config.ItemList = {
 		coords = { x = -0.14, y = 0.02, z = -0.08 },
 		rotation = { x = -50.0, y = -50.0, z = 0.0 },
 		useTime = 2500,
-		event = 'linden_inventory:bandage'
+		event = 'linden_inventory:bandage',
+		trunkChance = 6, -- Percent
+		gloveboxChance = 8, -- Percent
+		dumpsterChance = 2, -- Percent
+		lootMin = 1,
+		lootMax = 3
 	},
 
 	['lockpick'] = {
@@ -178,7 +192,28 @@ Config.ItemList = {
 		anim = 'machinic_loop_mechandplayer',
 		useTime = 2000,
 		consume = 0,
-		event = 'esx_lockpick:onUse'
+		event = 'esx_lockpick:onUse',
+		trunkChance = 2, -- Percent
+		gloveboxChance = 3, -- Percent
+		dumpsterChance = 2, -- Percent
+		lootMin = 1,
+		lootMax = 2
+	},
+
+	['phone'] = {
+		consume = 0,
+		event = 'gcPhone:forceOpenPhone',
+		trunkChance = 3,
+		gloveboxChance = 6,
+		lootMin = 1,
+		lootMax = 1
+	},	
+	['garbage'] = {
+		trunkChance = 2,
+		gloveboxChance = 4,
+		dumpsterChance = 80,
+		lootMin = 1,
+		lootMax = 6,
 	},
 
 }
