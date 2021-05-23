@@ -1,10 +1,8 @@
 CREATE TABLE IF NOT EXISTS `linden_inventory` (
-    `id` INT NOT NULL AUTO_INCREMENT,
     `owner` VARCHAR(60) NULL DEFAULT NULL COLLATE 'utf8mb4_general_ci',
     `name` VARCHAR(100) NULL DEFAULT NULL COLLATE 'utf8mb4_general_ci', 
     `data` LONGTEXT NULL DEFAULT NULL COLLATE 'utf8mb4_general_ci',
     `lastupdated` TIMESTAMP NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
-    PRIMARY KEY (`id`),
     UNIQUE INDEX (`name`, `owner`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
