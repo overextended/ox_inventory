@@ -266,14 +266,8 @@ GetItems = function(id, type, owner)
 					end
 				end
 			elseif type == 'dumpster' then
-				result = exports.ghmattimysql:scalarSync('SELECT `data` FROM `linden_inventory` WHERE name = @name', {
-					['@name'] = id
-				})
-				if result == nil then
-					if Config.RandomLoot then return GenerateDatastore(id, type) else
-						result = '[]'
-					end
-				end
+				if Config.RandomLoot then Datastore[id] = GenerateDatastore(plate, type) else Datastore[id] = {} end
+				return Datastore[id]
 			else
 				result = exports.ghmattimysql:scalarSync('SELECT `data` FROM `linden_inventory` WHERE name = @name', {
 					['@name'] = id
