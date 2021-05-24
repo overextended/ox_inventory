@@ -1,7 +1,7 @@
 GetPlayerIdentification = function(xPlayer)
 	local sex, identifier = xPlayer.get('sex')
 	if sex == 'm' then sex = _U('male') elseif sex == 'f' then sex = _U('female') end
-	return ('Sex: %s | DOB: %s%s'):format( sex, xPlayer.get('dateofbirth'), identifier )
+	return ('Sex: %s | DOB: %s'):format( sex, xPlayer.get('dateofbirth') )
 end
 
 is_table_equal = function(t1,t2,ignore_mt)
@@ -200,27 +200,27 @@ SaveItems = function(type,id,owner)
 			end
 		else
 			if type == 'trunk' or type == 'glovebox' then
-				local plate = string.match(id, "-(.*)")
-				if Datastore[plate] then
-					Datastore[plate][type] = Inventories[id].inventory
+				if Datastore[id] then
+					Datastore[id] = Inventories[id].inventory
 				else
-					exports.ghmattimysql:scalar('SELECT `owner` from `owned_vehicles` WHERE `plate` = @plate', {
+					local plate = string.match(id, "-(.*)")
+					if Config.TrimPlate then plate = ESX.Math.Trim(plate) end
+					local result = exports.ghmattimysql:scalarSync('SELECT `owner` from `owned_vehicles` WHERE `plate` = @plate', {
 						['@plate'] = plate
-					}, function(owner)
-						if owner then
-							local inventory = json.encode(getInventory(Inventories[id]))
-							if inventory then
-								exports.ghmattimysql:execute('INSERT INTO `linden_inventory` (name, data, owner) VALUES (@name, @data, @owner) ON DUPLICATE KEY UPDATE data = @data, owner = @owner', {
-									['@name'] = id,
-									['@data'] = inventory,
-									['@owner'] = owner
-								})
-							end
-						else
-							if not Datastore[plate] then Datastore[plate] = {trunk = {}, glovebox = {}} end
-							Datastore[plate][type] = Inventories[id].inventory
+					})
+					if result then
+						local inventory = json.encode(getInventory(Inventories[id]))
+						if inventory then
+							exports.ghmattimysql:executeSync('INSERT INTO `linden_inventory` (name, data, owner) VALUES (@name, @data, @owner) ON DUPLICATE KEY UPDATE data = @data, owner = @owner', {
+								['@name'] = id,
+								['@data'] = inventory,
+								['@owner'] = result
+							})
 						end
-					end)
+					else
+						if not Datastore[plate] then Datastore[plate] = {trunk = {}, glovebox = {}} end
+						Datastore[plate][type] = Inventories[id].inventory
+					end
 				end
 			else
 				exports.ghmattimysql:execute('INSERT INTO `linden_inventory` (name, data) VALUES (@name, @data) ON DUPLICATE KEY UPDATE data = @data', {
@@ -232,41 +232,37 @@ SaveItems = function(type,id,owner)
 	end
 end
 
-GetItems = function(id, type, owner)
-	if id and type then
-		local returnData, result = {}
+GetItems = function(id, inv, owner)
+	local returnData, result = {}
+	if id and inv then
 		if owner then
 			result = exports.ghmattimysql:scalarSync('SELECT `data` FROM `linden_inventory` WHERE `name` = @name AND owner = @owner', {
 				['@name'] = id,
 				['@owner'] = owner
 			})
 		else
-			if type == 'trunk' or type == 'glovebox' then
-				local plate = string.match(id, "-(.*)")
-				if Config.TrimPlate then plate = ESX.Math.Trim(plate) end
-				local data = Datastore[plate]
-				if data and data[type] then
-					return data[type]
+			if inv == 'trunk' or inv == 'glovebox' then
+				local data = Datastore[id]
+				if data then
+					return data
 				else
+					local plate = string.match(id, "-(.*)")
+					if Config.TrimPlate then plate = ESX.Math.Trim(plate) end
 					local owned = exports.ghmattimysql:scalarSync('SELECT `plate` FROM `owned_vehicles` WHERE plate = @plate', {
 						['@plate'] = plate
 					})
-					if owned then
-						result = exports.ghmattimysql:scalarSync('SELECT `data` FROM `linden_inventory` WHERE name = @name', {
+					if owned == nil then
+						if Config.RandomLoot then Datastore[id] = GenerateDatastore(inv) else Datastore[id] = {} end
+						for k,v in pairs(Datastore[id]) do print(k,v )end
+						return Datastore[id]
+					else
+						result = exports.ghmattimysql:scalarSync('SELECT data FROM linden_inventory WHERE name = @name', {
 							['@name'] = id
 						})
-					else
-						if Config.RandomLoot then
-							if not Datastore[plate] then Datastore[plate] = {} end
-							Datastore[plate][type] = GenerateDatastore(plate, type)
-							return Datastore[plate][type]
-						else
-							Datastore[plate] = {trunk = {}, glovebox = {}}
-						end
 					end
 				end
-			elseif type == 'dumpster' then
-				if Config.RandomLoot then Datastore[id] = GenerateDatastore(plate, type) else Datastore[id] = {} end
+			elseif inv == 'dumpster' then
+				if Config.RandomLoot then Datastore[id] = GenerateDatastore(inv) else Datastore[id] = {} end
 				return Datastore[id]
 			else
 				result = exports.ghmattimysql:scalarSync('SELECT `data` FROM `linden_inventory` WHERE name = @name', {
