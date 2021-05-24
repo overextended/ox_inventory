@@ -292,7 +292,7 @@ AddEventHandler('linden_inventory:openInventory', function(type, data, player)
 		Opened[xPlayer.source] = {invid = xPlayer.source, type = 'Playerinv'}
 		TriggerClientEvent('linden_inventory:openInventory',  xPlayer.source, Inventories[xPlayer.source])
 	else
-		if Opened[xPlayer.source] then return end
+		if type ~= 'bag' and Opened[xPlayer.source] then return end
 		if type == 'drop' then
 			local invid = data
 			if Drops[invid] ~= nil and CheckOpenable(xPlayer, Drops[invid].name, Drops[invid].coords) then
@@ -319,23 +319,6 @@ AddEventHandler('linden_inventory:openInventory', function(type, data, player)
 						TriggerClientEvent('linden_inventory:openInventory', xPlayer.source, Inventories[xPlayer.source], Shops[data])
 					end
 				end
-			elseif type == 'glovebox' or type == 'trunk' or (type == 'stash' and not data.owner) or type == 'dumpster' then
-				local id = data.id
-				if CheckOpenable(xPlayer, id, data.coords) then
-					if not data.maxWeight then data.maxWeight = data.slots*8000 end
-					Inventories[id] = {
-						id = id,
-						type = type,
-						slots = data.slots,
-						coords = data.coords,
-						maxWeight = data.maxWeight,
-						inventory = GetItems(id, type),
-						grade = data.grade,
-					}
-					if data.label then Inventories[id].name = data.label end
-					Opened[xPlayer.source] = {invid = id, type = type}
-					TriggerClientEvent('linden_inventory:openInventory', xPlayer.source, Inventories[xPlayer.source], Inventories[id])
-				end
 			elseif data.owner then
 				if data.owner == true then data.owner = xPlayer.identifier end
 				local id = data.id..'-'..data.owner
@@ -349,6 +332,28 @@ AddEventHandler('linden_inventory:openInventory', function(type, data, player)
 						coords = data.coords,
 						maxWeight = data.maxWeight,
 						inventory = GetItems(id, type, data.owner)
+					}
+					if data.label then Inventories[id].name = data.label end
+					Opened[xPlayer.source] = {invid = id, type = type}
+					TriggerClientEvent('linden_inventory:openInventory', xPlayer.source, Inventories[xPlayer.source], Inventories[id])
+				end
+			else
+				local id = data.id
+				if type == 'bag' then Opened[xPlayer.source] = nil end
+				if CheckOpenable(xPlayer, id, data.coords) then
+					if not data.maxWeight then
+						local maxWeight = {glovebox = 4000, trunk = 6000, bag = 1000}
+						data.maxWeight = data.slots*(maxWeight[type] or 8000)
+					end
+					Inventories[id] = {
+						id = id,
+						type = type,
+						slots = data.slots,
+						coords = data.coords,
+						maxWeight = data.maxWeight,
+						inventory = GetItems(id, type),
+						job = data.job,
+						grade = data.grade,
 					}
 					if data.label then Inventories[id].name = data.label end
 					Opened[xPlayer.source] = {invid = id, type = type}
@@ -1043,15 +1048,11 @@ end, true, {help = 'set account money', validate = true, arguments = {
 	{name = 'amount', help = 'amount to set', type = 'number'}
 }})
 
-OpenStash = function(xPlayer, data)
-	TriggerEvent('linden_inventory:openInventory', {type = 'stash', owner = data.owner, id = data.name, label = data.label, slots = data.slots, coords = data.coords, job = data.job, grade = data.grade }, xPlayer)
+OpenStash = function(xPlayer, data, custom)
+	local type = custom or 'stash'
+	TriggerEvent('linden_inventory:openInventory', {type = type, owner = data.owner, id = data.name, label = data.label, slots = data.slots, coords = data.coords, job = data.job, grade = data.grade }, xPlayer)
 end
 exports('OpenStash', OpenStash)
-
-OpenDumpster = function(xPlayer, data)
-	TriggerEvent('linden_inventory:openInventory', {type = 'dumpster', id = data.name, slots = data.slots, coords = data.coords }, xPlayer)
-end
-exports('OpenDumpster', OpenDumpster)
 
 ESX.RegisterCommand('evidence', 'user', function(xPlayer, args, showError)
 	if xPlayer.job.name == 'police' then
