@@ -3,7 +3,7 @@
 body {
     font-family: 'Signika';
     user-select: none;
-	display: none;
+	display: flex;
 	align-items: center;
 	justify-content: center;
 	color: white;
@@ -12,7 +12,7 @@ body {
 }
 
 .inventory-main {
-	display: block;
+	display: none;
     position: fixed;
     margin: auto;
     opacity: 0.9;
@@ -197,12 +197,17 @@ body {
 
 #itembox-action {
     position: absolute;
-    background-color: white;
-    padding: 4px;
-    width: 93%;
+    padding: 4px 0 4px 0;
+    width: 100%;
     text-align: center;
     left: 0;
-    right: 35px;
+	font-size: 13px;
+    background-color: white;
+	outline: 1px solid rgba(38,38,38,0.1);
+	outline-offset: -1px;
+	color: #111;
+    text-shadow: none !important;
+	font-weight: 700;
 }
 
 .itembox-img img {
@@ -230,27 +235,8 @@ body {
     z-index: -1 !important;
 }
 
-#itembox-action > p {
-    font-size: 14px;
-}
-
 #itembox-label {
-    position: absolute;
-    bottom: 0;
-    width: 100%;
-    background-color: rgba(var(--main-label-color), 0.35);
-    min-height: 18px;
-    height: fit-content;
-}
-
-#itembox-label > p {
-    color: white;
-    font-size: 14px;
-    line-height: 18px;
-    text-align: center;
-    text-transform: lowercase;
-    font-variant: small-caps;
-    text-shadow: 1px 1px 0px black;
+    padding: 5px 0 5px 0 !important;
 }
 
 .item-slot-img {
@@ -269,7 +255,7 @@ body {
     max-height: 80%;
 }
 
-.item-slot-label {
+.item-slot-label, #itembox-label {
     position: absolute;
     bottom: 0;
     width: 100%;
@@ -285,10 +271,10 @@ body {
 }
 
 .item-slot-durability-bar {
-    position: relative;
+    position: absolute;
     height: 4px;
     width: 100%;
-    top: -9px;
+    top: -4px;
     background-color: #1d1d1de8;
 	outline: 1px solid rgba(38,38,38,0.2);
 	outline-offset: -1px;
@@ -322,7 +308,6 @@ body {
 .iteminfo-label {
     font-size: 15px;
     font-weight:600;
-
 }
 
 .line {
