@@ -20,6 +20,7 @@ AddEventHandler('esx:restoreLoadout', function()
 	if ESX.PlayerData.ped ~= playerPed then ESX.SetPlayerData('ped', playerPed) end
 end)
 ```
+
 * Locate the following events and remove all of them (for security)
 ```lua
 RegisterNetEvent('esx:addInventoryItem')
@@ -33,6 +34,7 @@ RegisterNetEvent('esx:removeWeaponComponent')
 RegisterNetEvent('esx:createPickup')
 RegisterNetEvent('esx:removePickup')
 ```
+
 * Locate and remove the following function and remove it (for performance)
 ```lua
 	-- keep track of ammo
@@ -59,6 +61,7 @@ RegisterNetEvent('esx:removePickup')
 		end
 	end)
 ```
+
 * Locate and remove the following command (deprecated)
 ```lua
 if Config.EnableDefaultInventory then
@@ -71,6 +74,7 @@ if Config.EnableDefaultInventory then
 	RegisterKeyMapping('showinv', _U('keymap_showinventory'), 'keyboard', 'F2')
 end
 ```
+
 * Locate and remove the following thread (for performance)
 ```lua
 Citizen.CreateThread(function()
@@ -133,10 +137,12 @@ ExecuteCommand('add_principal group.superadmin group.admin')
 ExecuteCommand('add_ace group.superadmin command allow')
 ExecuteCommand('add_ace group.superadmin command.quit deny')
 ```
+
 * Remove the following commands (deprecated)
 ```lua
 giveitem, giveweapon, giveweaponcomponent, clearinventory
 ```
+
 * Remove the following line
 ```lua
 if args.group == "superadmin" then args.group = "admin" end
@@ -152,7 +158,6 @@ MySQL.Async.execute('UPDATE users SET accounts = @accounts, job = @job, job_grad
 			['@job'] = xPlayer.job.name,
 			['@job_grade'] = xPlayer.job.grade,
 			['@group'] = xPlayer.getGroup(),
-			['@loadout'] = json.encode(xPlayer.getLoadout(true)),
 			['@position'] = json.encode(xPlayer.getCoords()),
 			['@identifier'] = xPlayer.getIdentifier(),
 			['@inventory'] = json.encode(xPlayer.getInventory(true))
@@ -167,6 +172,7 @@ if result[1].inventory and result[1].inventory ~= '' then
 			userData.inventory = json.decode(result[1].inventory)
 end
 ```
+
 * Locate `-- Group` and replace the statement with
 ```lua
 -- Group
@@ -176,6 +182,7 @@ else
   userData.group = 'user'
 end
 ```
+
 * Locate and removing the following
 ```lua
 
@@ -201,10 +208,12 @@ end
 				end
 			end
 ```
+
 * Locate `CreateExtendedPlayer` and replace the function with 
 ```lua
 local xPlayer = CreateExtendedPlayer(playerId, identifier, userData.group, userData.accounts, userData.job, userData.playerName, userData.coords)
 ```
+
 * Locate `xPlayer.getLoadout()` and replace it with `{}` whenever it occurs
 * Locate and remove the following events or triggers
 ```lua
