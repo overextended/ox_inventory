@@ -164,10 +164,19 @@ end)
 AddEventHandler('onResourceStart', function(resourceName)
 	if (GetCurrentResourceName() == resourceName) then
 		if ESX == nil then return end
-		local xPlayers = ESX.GetPlayers()
-		for i=1, #xPlayers, 1 do
-			local xPlayer = ESX.GetPlayerFromId(xPlayers[i])
-			xPlayer.set('linventory', false)
+		if ESX.GetExtendedPlayers then Config.Experimental = true end
+		if Config.Experimental then	-- Using new type of xPlayer loop; it retrieves the playerdata all at once instead of one-by-one
+			local xPlayers = ESX.GetExtendedPlayers()
+			for k,v in pairs(xPlayers) do
+				local xPlayer = v
+				xPlayer.set('linventory', false)
+			end
+		else
+			local xPlayers = ESX.GetPlayers()
+			for i=1, #xPlayers, 1 do
+				local xPlayer = ESX.GetPlayerFromId(xPlayers[i])
+				xPlayer.set('linventory', false)
+			end
 		end
 		while true do Citizen.Wait(100) if Status[1] == 'loaded' then break end end
 		Status[1] = 'ready'
