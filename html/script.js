@@ -10,6 +10,7 @@ var showhotbar = null
 var HSN = []
 var rightinvtype = null
 var rightinventory = null
+var rightinvslot = null
 var rightgrade = 0
 var maxWeight = 0
 var rightmaxWeight = 0
@@ -90,6 +91,7 @@ Display = function(bool) {
 				$(".ItemBoxes").remove();
 				$(".iteminfo").fadeOut('');
 				righttotalkg = 0
+				rightinvslot = null
 				rightinventory = null
 				rightinvtype = null
 				totalkg = 0
@@ -267,6 +269,7 @@ HSN.SetupInventory = function(data) {
 	$(".leftside-weight").html(weightFormat(totalkg/1000, false, true) + '/'+ weightFormat(maxWeight/1000, false))
 	if (data.rightinventory !== undefined) {
 		rightinventory = data.rightinventory.id
+		rightinvslot = data.rightinventory.slot
 		rightgrade = 0
 		if (data.rightinventory.grade) { rightgrade = data.rightinventory.grade }
 		$('.inventory-main-rightside').data("invTier", data.rightinventory.type)
@@ -360,6 +363,9 @@ function DragAndDrop() {
 			if (rightinvtype !== 'Playerinv' && rightgrade > job.grade) {
 				HSN.InventoryMessage('stash_lowgrade', 2)
 				return false
+			} else if (rightinvslot == $(this).attr("inventory-slot")) {
+				HSN.InventoryMessage('cannot_perform', 2)
+				return false
 			} else {
 				IsDragging = true;
 				$(this).find("img").css("filter", "brightness(50%)");
@@ -386,8 +392,16 @@ function DragAndDrop() {
 			toSlot = $(this).attr("inventory-slot");
 			fromData = fromInventory.find("[inventory-slot=" + curslot + "]").data("ItemData");
 			count = parseInt($("#item-count").val()) || 0
+			invId = toInventory.data('invId')
 			if (fromData !== undefined) {
-				if (count == 0 || count > fromData.count) {
+				if (rightinvtype == 'bag' && fromData.metadata.bag !== undefined && invId !== undefined && invId !== "Playerinv") {
+					HSN.InventoryMessage('cannot_perform', 2)
+					return false
+				} else if (rightinvslot !== null && rightinvslot !== undefined && fromData.metadata.slot == rightinvslot) {
+					console.log(rightinvslot)
+					HSN.InventoryMessage('cannot_perform', 2)
+					return false
+				} else if (count == 0 || count > fromData.count) {
 					count = fromData.count
 					$("#item-count").val(0)
 				}
@@ -484,7 +498,9 @@ HSN.CloseInventory = function() {
 	if (invOpen == true) {
 		$.post('https://linden_inventory/exit', JSON.stringify({
 			type: rightinvtype,
-			invid: rightinventory
+			invid: rightinventory,
+			weight: totalkg,
+			slot: rightinvslot
 		}));
 		
 		Display(false)
@@ -749,17 +765,30 @@ SwapItems = function(fromInventory, toInventory, fromSlot, toSlot) {
 				if (inv2 !== inv) {
 					righttotalkg = righttotalkg + (fromItem.weight * count)
 					$(".rightside-weight").html(weightFormat(righttotalkg/1000, false, true) + '/'+ weightFormat(rightmaxWeight/1000, false))
-					totalkg = totalkg - (fromItem.weight * count)
-					$(".leftside-weight").html(weightFormat(totalkg/1000, false, true) + '/'+ weightFormat(maxWeight/1000, false))
+					if (rightinvtype !== 'bag') {
+						totalkg = totalkg - (fromItem.weight * count)
+						$(".leftside-weight").html(weightFormat(totalkg/1000, false, true) + '/'+ weightFormat(maxWeight/1000, false))
+					} else {
+						item = fromInventory.find("[inventory-slot=" + rightinvslot + "]").data("ItemData");
+						item.weight = item.weight + (fromItem.weight * count)
+						$(".inventory-main-leftside").find("[inventory-slot=" + item.slot + "]").html('<div class="item-slot-img"><img src="images/' + item.metadata.image + '.png'+'" alt="' + item.name + '" /></div><div class="item-slot-count"><p>' + numberFormat(item.count, item.name) + ' ' + weightFormat(item.weight/1000 * item.count) + '</p></div><div class="item-slot-label">' + item.label + '</div></div>');
+					}
 				}
 			} else {
 				if (inv2 !== inv) {
 					righttotalkg = righttotalkg - (fromItem.weight * count)
 					$(".rightside-weight").html(weightFormat(righttotalkg/1000, false, true) + '/'+ weightFormat(rightmaxWeight/1000, false))
-					totalkg = totalkg + (fromItem.weight * count)
-					$(".leftside-weight").html(weightFormat(totalkg/1000, false, true) + '/'+ weightFormat(maxWeight/1000, false))
+					if (rightinvtype !== 'bag') {
+						totalkg = totalkg + (fromItem.weight * count)
+						$(".leftside-weight").html(weightFormat(totalkg/1000, false, true) + '/'+ weightFormat(maxWeight/1000, false))
+					} else {
+						item = toInventory.find("[inventory-slot=" + rightinvslot + "]").data("ItemData");
+						item.weight = item.weight - (fromItem.weight * count)
+						$(".inventory-main-leftside").find("[inventory-slot=" + item.slot + "]").html('<div class="item-slot-img"><img src="images/' + item.metadata.image + '.png'+'" alt="' + item.name + '" /></div><div class="item-slot-count"><p>' + numberFormat(item.count, item.name) + ' ' + weightFormat(item.weight/1000 * item.count) + '</p></div><div class="item-slot-label">' + item.label + '</div></div>');
+					}
 				}
 			}
+
 		} else {
 			HSN.InventoryMessage('cannot_perform', 2)
 		}
