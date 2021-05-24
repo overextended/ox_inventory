@@ -148,6 +148,13 @@ OpenStash = function(data)
 end
 exports('OpenStash', OpenStash)
 
+OpenBag = function(data)
+	if data and not invOpen and CanOpenInventory() and not CanOpenTarget(ESX.PlayerData.ped) then
+		TriggerServerEvent('linden_inventory:openInventory', 'bag', data)
+	end
+end
+exports('OpenBag', OpenBag)
+
 OpenDumpster = function(data)
 	if data and not invOpen and CanOpenInventory() and not CanOpenTarget(ESX.PlayerData.ped) then
 		if not data.slots then data.slots = (Config.PlayerSlots * 1.5) end
@@ -467,6 +474,7 @@ AddEventHandler('linden_inventory:closeInventory',function()
 	end
 	SetNuiFocusAdvanced(false, false)
 	currentInventory = nil
+	Citizen.Wait(200)
 	invOpen = false
 end)
 
@@ -628,6 +636,33 @@ TriggerLoops = function()
 						end
 					end
 				end
+				--[[if not id or type == 'dumpster' then
+					if id then
+						sleep = 5
+						local distance = #(playerCoords - GetEntityCoords(id))
+						if distance <= 2 then
+							SetEntityAsMissionEntity(id, true, true)
+							NetworkRegisterEntityAsNetworked(id)
+							SetNetworkIdExistsOnAllMachines(id)
+							print(NetworkGetNetworkIdFromEntity(id))
+							if IsControlJustPressed(0, 38) then
+								OpenDumpster({ id = 'Dumpster-'..id, label = 'Dumpster', slots = 20})
+							end
+						elseif distance > 4 then id, type = nil, nil
+						end
+					else
+						for i=1, #Config.Dumpsters do 
+							local dumpster = GetClosestObjectOfType(playerCoords.x, playerCoords.y, playerCoords.z, 2.0, Config.Dumpsters[i], false, false, false)
+							local dumpPos = GetEntityCoords(dumpster)
+							local distance = #(playerCoords - dumpPos)
+							if distance <= 4 then
+								sleep = 10
+								id = dumpster
+								type = 'dumpster'
+							end
+						end
+					end
+				end]]
 				if Drops and not invOpen then
 					local closestDrop
 					for k, v in pairs(Drops) do
@@ -911,6 +946,7 @@ RegisterNUICallback('exit',function(data)
 	TriggerServerEvent('linden_inventory:saveInventory', data)
 	currentInventory = nil
 	SetNuiFocusAdvanced(false, false)
+	Citizen.Wait(200)
 	invOpen = false
 end)
 
@@ -918,6 +954,10 @@ end)
 local useItemCooldown = false
 RegisterNetEvent('linden_inventory:useItem')
 AddEventHandler('linden_inventory:useItem',function(item)
+	if item.metadata.bag and not currentInventory then
+		TriggerServerEvent('linden_inventory:openInventory', 'bag', { id = item.metadata.bag, label = item.label..' ('..item.metadata.bag..')', slots = item.metadata.slot or 5})
+		return
+	end
 	if CanOpenInventory() and not useItemCooldown then
 		local data = Config.ItemList[item.name]
 		local esxItem = Usables[item.name]
