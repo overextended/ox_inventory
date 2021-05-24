@@ -134,13 +134,13 @@ AddEventHandler('targetPlayerAnim', function()
 end)
 
 OpenShop = function(id)
-	if not invOpen and CanOpenInventory() and not CanOpenTarget(ESX.PlayerData.ped) then
+	if not currentInventory and CanOpenInventory() and not CanOpenTarget(ESX.PlayerData.ped) then
 		TriggerServerEvent('linden_inventory:openInventory', 'shop', id)
 	end
 end
 
 OpenStash = function(data)
-	if data and not invOpen and CanOpenInventory() and not CanOpenTarget(ESX.PlayerData.ped) then
+	if data and not currentInventory and CanOpenInventory() and not CanOpenTarget(ESX.PlayerData.ped) then
 		if not data.slots then data.slots = (Config.PlayerSlots * 1.5) end
 		data.id = data.name
 		TriggerServerEvent('linden_inventory:openInventory', 'stash', data)
@@ -149,14 +149,14 @@ end
 exports('OpenStash', OpenStash)
 
 OpenBag = function(data)
-	if data and not invOpen and CanOpenInventory() and not CanOpenTarget(ESX.PlayerData.ped) then
+	if data and not currentInventory and CanOpenInventory() and not CanOpenTarget(ESX.PlayerData.ped) then
 		TriggerServerEvent('linden_inventory:openInventory', 'bag', data)
 	end
 end
 exports('OpenBag', OpenBag)
 
 OpenDumpster = function(data)
-	if data and not invOpen and CanOpenInventory() and not CanOpenTarget(ESX.PlayerData.ped) then
+	if data and not currentInventory and CanOpenInventory() and not CanOpenTarget(ESX.PlayerData.ped) then
 		if not data.slots then data.slots = (Config.PlayerSlots * 1.5) end
 		data.id = data.name
 		TriggerServerEvent('linden_inventory:openInventory', 'dumpster', data)
@@ -885,7 +885,7 @@ RegisterKeyMapping('inv', 'Open player inventory', 'keyboard', Config.InventoryK
 RegisterKeyMapping('vehinv', 'Open vehicle inventory', 'keyboard', Config.VehicleInventoryKey)
 
 RegisterCommand('steal', function()
-	if not IsPedInAnyVehicle(ESX.PlayerData.ped, true) and not invOpen and CanOpenInventory() then	 
+	if not IsPedInAnyVehicle(ESX.PlayerData.ped, true) and not currentInventory and CanOpenInventory() then	 
 		OpenTargetInventory()
 	end
 end)
