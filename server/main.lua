@@ -52,7 +52,7 @@ end)
 Citizen.CreateThread(function()
 	local ignore = {[0] = '?', [966099553] = 'shovel'}
 	while true do
-		Citizen.Wait(20000)
+		Citizen.Wait(30000)
 		for invId, data in pairs(Inventories) do
 			if type(invId) == 'number' and not IsPlayerAceAllowed(data.id, 'command.save') then
 				local ped = GetPlayerPed(data.id)
@@ -232,6 +232,7 @@ AddEventHandler('linden_inventory:setPlayerInventory', function(xPlayer, data)
 					weight = xItem.weight + (ammo.weight * ammo.count)
 				else weight = xItem.weight end
 				if not v.metadata then v.metadata = {} end
+				if v.metadata.weight then weight = weight + v.metadata.weight end
 				Inventories[invid].inventory[v.slot] = {name = v.name, label = xItem.label, weight = weight, slot = v.slot, count = v.count, description = xItem.description, metadata = v.metadata, stackable = xItem.stackable}
 				if xItem.ammoType then Inventories[invid].inventory[v.slot].ammoType = xItem.ammoType end
 			end
@@ -363,6 +364,7 @@ AddEventHandler('linden_inventory:openInventory', function(type, data, player)
 						inventory = GetItems(id, type),
 						job = data.job,
 						grade = data.grade,
+						slot = data.slot
 					}
 					if data.label then Inventories[id].name = data.label end
 					Opened[xPlayer.source] = {invid = id, type = type}
@@ -745,7 +747,7 @@ AddEventHandler('linden_inventory:saveInventory', function(data)
 	if Inventories[src] then
 		if data.type == 'TargetPlayer' then
 			invid = Opened[src].invid
-			updateWeight(ESX.GetPlayerFromId(invid))
+			updateWeight(ESX.GetPlayerFromId(invid), false, data.weight, data.slot)
 		elseif data.type ~= 'shop' and data.type ~= 'drop' and Inventories[data.invid] then
 			invid = data.invid
 			if Inventories[data.invid].changed then	SaveItems(data.type, data.invid, Inventories[data.invid].owner) end
@@ -753,7 +755,7 @@ AddEventHandler('linden_inventory:saveInventory', function(data)
 		elseif data.type == 'drop' then invid = data.invid end
 		Citizen.Wait(50)
 		if xPlayer then
-			updateWeight(xPlayer)
+			updateWeight(xPlayer, false, data.weight, data.slot)
 			TriggerClientEvent('linden_inventory:refreshInventory', src, Inventories[src])
 		end
 		if invid then Opened[invid] = nil end
