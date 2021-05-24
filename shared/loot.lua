@@ -23,7 +23,7 @@ if Config.RandomLoot and IsDuplicityVersion() then
 		['bandage'] = {trunk = 6, glovebox = 8, dumpster = 2, min = 1, max = 3},
 		['lockpick'] = {trunk = 2, glovebox = 3, dumpster = 2, min = 1, max = 2},
 		['phone'] = {trunk = 1, glovebox = 3, min = 1, max = 1},
-		['garbage'] = {trunk = 3, glovebox = 80, dumpster = 8, min = 1, max = 6}
+		['garbage'] = {trunk = 3, glovebox = 2, dumpster = 80, min = 1, max = 6}
 	}
 
 	GenerateTrash = function(metadata)
