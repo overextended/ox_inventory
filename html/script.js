@@ -283,6 +283,8 @@ HSN.SetupInventory = function(data) {
 				var currency = data.rightinventory.currency
 				$.each(data.rightinventory.inventory, function (i, item) {
 					if (item != null) {
+						if (item.metadata == undefined) { item.metadata = {};};
+						if (item.metadata.image == undefined) { item.metadata.image = item.name; };
 						if ((item.name).split("_")[0] == "WEAPON" && item.metadata.durability !== undefined) {
 							if (currency == 'money' || currency == 'black_money' || currency == 'bank' || currency == undefined) {
 								$(".inventory-main-rightside").find("[inventory-slot=" + item.slot + "]").html('<div class="item-slot-img"><img src="images/' + item.metadata.image + '.png'+'" alt="' + item.name + '" /></div><div class="item-slot-count"><p>' + numberFormat(item.price, 'money') + '</p></div><div class="item-slot-label"><p><div class="item-slot-durability-bar"></div><div class="item-slot-label"><p>' + item.label + '</p></div></p></div>');
