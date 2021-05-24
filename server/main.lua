@@ -1063,7 +1063,7 @@ end
 exports('OpenStash', OpenStash)
 
 OpenDumpster = function(xPlayer, data)
-	TriggerEvent('linden_inventory:openInventory', {type = 'dumpster', owner = data.owner, id = data.name, label = data.label, slots = data.slots, coords = data.coords, job = data.job, grade = data.grade }, xPlayer)
+	TriggerEvent('linden_inventory:openInventory', {type = 'dumpster', id = data.name, slots = data.slots, coords = data.coords }, xPlayer)
 end
 exports('OpenDumpster', OpenDumpster)
 
