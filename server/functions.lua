@@ -223,9 +223,11 @@ SaveItems = function(type,id,owner)
 					end
 				end
 			else
-				exports.ghmattimysql:execute('INSERT INTO `linden_inventory` (name, data) VALUES (@name, @data) ON DUPLICATE KEY UPDATE data = @data', {
+				local inventory = json.encode(getInventory(Inventories[id]))
+				exports.ghmattimysql:execute('INSERT INTO linden_inventory (name, data, owner) VALUES (@name, @data, @owner) ON DUPLICATE KEY UPDATE data = @data, owner = @owner', {
 					['@name'] = id,
-					['@data'] = inventory
+					['@data'] = inventory,
+					['@owner'] = ''
 				})
 			end
 		end
@@ -253,7 +255,6 @@ GetItems = function(id, inv, owner)
 					})
 					if owned == nil then
 						if Config.RandomLoot then Datastore[id] = GenerateDatastore(inv) else Datastore[id] = {} end
-						for k,v in pairs(Datastore[id]) do print(k,v )end
 						return Datastore[id]
 					else
 						result = exports.ghmattimysql:scalarSync('SELECT data FROM linden_inventory WHERE name = @name', {
