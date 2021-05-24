@@ -62,19 +62,19 @@ addInventoryItem = function(xPlayer, item, count, metadata, slot)
 			if xItem.ammoType then Inventories[xPlayer.source].inventory[slot].ammoType = xItem.ammoType end
 			if xItem.weight > 0 or xItem.name:find('money') then updateWeight(xPlayer) end
 			ItemNotify(xPlayer, Inventories[xPlayer.source].inventory[slot], count, slot, 'added')
-		elseif item:find('identification') then
-			count = 1
-			if next(metadata) == nil then
-				metadata = {}
-				metadata.type = xPlayer.getName()
-				metadata.description = GetPlayerIdentification(xPlayer)
+		else
+			if item:find('identification') then
+				count = 1
+				if next(metadata) == nil then
+					metadata = {}
+					metadata.type = xPlayer.getName()
+					metadata.description = GetPlayerIdentification(xPlayer)
+				end
+			elseif metadata.type == 'bag' then
+				metadata.type = nil
+				metadata.bag = GenerateText(3)..os.time(os.date("!*t"))
 			end
-			local added = count
-			if existing then count = Inventories[xPlayer.source].inventory[slot].count + count end
-			Inventories[xPlayer.source].inventory[slot] = {name = item, label = xItem.label, weight = xItem.weight, slot = slot, count = count, description = xItem.description, metadata = metadata, stackable = xItem.stackable, closeonuse = true}
-			if xItem.weight > 0 or xItem.name:find('money') then updateWeight(xPlayer) end
-			ItemNotify(xPlayer, Inventories[xPlayer.source].inventory[slot], added, slot, 'added')
-		elseif slot then
+
 			local added = count
 			if existing then count = Inventories[xPlayer.source].inventory[slot].count + count end
 			Inventories[xPlayer.source].inventory[slot] = {name = item, label = xItem.label, weight = xItem.weight, slot = slot, count = count, description = xItem.description, metadata = metadata or {}, stackable = xItem.stackable, closeonuse = xItem.closeonuse}
