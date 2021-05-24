@@ -254,7 +254,7 @@ AddEventHandler('linden_inventory:openInventory',function(data, rightinventory)
 			maxWeight = data.maxWeight,
 			weight = data.weight,
 			rightinventory = rightinventory,
-			job = ESX.PlayerData.job
+			job = ESX.PlayerData.job,
 		})
 		ESX.PlayerData.inventory = data.inventory
 		if not rightinventory then movement = true else movement = false end
@@ -955,7 +955,7 @@ local useItemCooldown = false
 RegisterNetEvent('linden_inventory:useItem')
 AddEventHandler('linden_inventory:useItem',function(item)
 	if item.metadata.bag and not currentInventory then
-		TriggerServerEvent('linden_inventory:openInventory', 'bag', { id = item.metadata.bag, label = item.label..' ('..item.metadata.bag..')', slots = item.metadata.slot or 5})
+		TriggerServerEvent('linden_inventory:openInventory', 'bag', { id = item.metadata.bag, label = item.label..' ('..item.metadata.bag..')', slot = item.slot, slots = item.metadata.slot or 5})
 		return
 	end
 	if CanOpenInventory() and not useItemCooldown then
