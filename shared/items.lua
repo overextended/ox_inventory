@@ -186,6 +186,8 @@ Config.ItemList = {
 		event = 'gcPhone:forceOpenPhone',
 	},	
 
-	['garbage'] = {}
+	['garbage'] = {},
+
+	['paperbag'] = {},
 
 }
