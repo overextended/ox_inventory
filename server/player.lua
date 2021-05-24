@@ -70,8 +70,9 @@ addInventoryItem = function(xPlayer, item, count, metadata, slot)
 					metadata.type = xPlayer.getName()
 					metadata.description = GetPlayerIdentification(xPlayer)
 				end
-			elseif metadata.type == 'bag' then
-				metadata.type = nil
+			elseif item:find('paperbag') then
+				count = 1
+				metadata = {}
 				metadata.bag = GenerateText(3)..os.time(os.date("!*t"))
 			end
 
@@ -151,11 +152,16 @@ end
 exports('setInventoryItem', setInventoryItem)
 
 
-updateWeight = function(xPlayer, force)
+updateWeight = function(xPlayer, force, metaweight, slot)
 	local newWeight = getWeight(xPlayer)
 	if force or newWeight ~= Inventories[xPlayer.source].weight then
 		Inventories[xPlayer.source].weight = newWeight
 		TriggerClientEvent('linden_inventory:updateStorage', xPlayer.source, {newWeight, Inventories[xPlayer.source].maxWeight, Inventories[xPlayer.source].slots})
+	end
+	if slot then
+		local metadata = metaweight - newWeight
+		Inventories[xPlayer.source].inventory[slot].weight = Inventories[xPlayer.source].inventory[slot].weight + metadata
+		Inventories[xPlayer.source].inventory[slot].metadata.weight = metadata
 	end
 	SyncAccounts(xPlayer, 'money')
 	SyncAccounts(xPlayer, 'black_money')
