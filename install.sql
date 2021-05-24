@@ -1,9 +1,8 @@
 CREATE TABLE IF NOT EXISTS `linden_inventory` (
-    `id` INT NOT NULL AUTO_INCREMENT,
     `owner` VARCHAR(60) NULL DEFAULT NULL COLLATE 'utf8mb4_general_ci',
     `name` VARCHAR(100) NULL DEFAULT NULL COLLATE 'utf8mb4_general_ci', 
     `data` LONGTEXT NULL DEFAULT NULL COLLATE 'utf8mb4_general_ci',
-    PRIMARY KEY (`id`),
+    `lastupdated` TIMESTAMP NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
     UNIQUE INDEX (`name`, `owner`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
@@ -33,6 +32,7 @@ INSERT INTO `items` (`name`, `label`, `weight`, `can_remove`, `stackable`, `clos
 	('water', 'Water', 500, 1, 1, 1, NULL),
 	('burger', 'Burger', 220, 1, 1, 1, NULL),
 	('cola', 'eCola', 350, 1, 1, 1, NULL),
+	('garbage', 'Garbage', 50, 1, 0, 1, NULL),
 	('money', 'Money', 0, 1, 1, 1, NULL),
 	('identification', 'Identification', 0, 1, 1, 1, NULL),
 	('black_money', 'Dirty Money', 0, 1, 1, 1, NULL),

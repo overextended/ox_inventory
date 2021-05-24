@@ -1,4 +1,3 @@
-ESX = exports['es_extended']:getSharedObject()
 Items = {}
 Usables = {}
 Drops = {}
@@ -87,6 +86,9 @@ Citizen.CreateThread(function()
 end)
 
 exports.ghmattimysql:ready(function()
+	-- Clean the database
+	exports.ghmattimysql:execute('DELETE FROM `linden_inventory` WHERE `lastupdated` < (NOW() - INTERVAL '..Config.DBCleanup..') OR `data` = "[]"')
+	---------------------
 	Citizen.Wait(500)
 	ESX.UsableItemsCallbacks = exports['es_extended']:getSharedObject().UsableItemsCallbacks
 	if Status[1] ~= 'error' then
@@ -120,7 +122,7 @@ exports.ghmattimysql:ready(function()
 						label = k,
 						weight = 0,
 						stackable = 1,
-						description = 'Item not added to database',
+						description = nil,
 						closeonuse = 1
 					}
 				end
@@ -188,6 +190,7 @@ AddEventHandler('onResourceStop', function(resourceName)
 				['@identifier'] = identifier
 			})
 		end
+
 	elseif resourceName == Config.Logs then
 		logsResource = Config.Logs
 		message('Logs have been disabled, ^3`'..logsResource..'`^7 is not running', 3)
@@ -282,74 +285,75 @@ end)
 
 
 RegisterNetEvent('linden_inventory:openInventory')
-AddEventHandler('linden_inventory:openInventory', function(data, player)
-	if data then
-		local xPlayer
-		if player then xPlayer = player else xPlayer = ESX.GetPlayerFromId(source) end
-		if data.type ~= 'drop' and Opened[xPlayer.source] then return end
-		if data.type == 'drop' then
-			local invid = data.drop
+AddEventHandler('linden_inventory:openInventory', function(type, data, player)
+	local xPlayer
+	if player then xPlayer = player else xPlayer = ESX.GetPlayerFromId(source) end
+	if not data then
+		Opened[xPlayer.source] = {invid = xPlayer.source, type = 'Playerinv'}
+		TriggerClientEvent('linden_inventory:openInventory',  xPlayer.source, Inventories[xPlayer.source])
+	else
+		if Opened[xPlayer.source] then return end
+		if type == 'drop' then
+			local invid = data
 			if Drops[invid] ~= nil and CheckOpenable(xPlayer, Drops[invid].name, Drops[invid].coords) then
 				Opened[xPlayer.source] = {invid = invid, type = 'drop'}
 				TriggerClientEvent('linden_inventory:openInventory', xPlayer.source, Inventories[xPlayer.source], Drops[invid])
-			else
-				Opened[xPlayer.source] = {invid = xPlayer.source, type = 'Playerinv'}
-				TriggerClientEvent('linden_inventory:openInventory',  xPlayer.source, Inventories[xPlayer.source])
 			end
-		elseif data.type == 'shop' then
-			local id = data.id
-			local shop = Config.Shops[id]
-			if (not shop.job or shop.job == xPlayer.job.name) then
-				local srcCoords = GetEntityCoords(GetPlayerPed(xPlayer.source))
-				if #(shop.coords - srcCoords) <= 2 then
-					Shops[id] = {
-						id = id,
-						type = 'shop',
-						name = shop.name or shop.type.name,
-						coords = shop.coords,
-						job = shop.job,
-						inventory = SetupShopItems(id),
-						slots = #shop.store.inventory,
-						currency = shop.currency
-					}
-					Opened[xPlayer.source] = {invid = xPlayer.source, type = 'Playerinv'}
-					TriggerClientEvent('linden_inventory:openInventory', xPlayer.source, Inventories[xPlayer.source], Shops[id])
+		elseif data then
+			if type == 'shop' then
+				local shop = Config.Shops[data]
+				if (not shop.job or shop.job == xPlayer.job.name) then
+					local srcCoords = GetEntityCoords(GetPlayerPed(xPlayer.source))
+					if #(shop.coords - srcCoords) <= 2 then
+						Shops[data] = {
+							id = data,
+							type = 'shop',
+							name = shop.name or shop.type.name,
+							coords = shop.coords,
+							job = shop.job,
+							inventory = SetupShopItems(data),
+							slots = #shop.store.inventory,
+							currency = shop.currency
+						}
+						Opened[xPlayer.source] = {invid = xPlayer.source, type = 'Playerinv'}
+						TriggerClientEvent('linden_inventory:openInventory', xPlayer.source, Inventories[xPlayer.source], Shops[data])
+					end
 				end
-			end
-		elseif data.type == 'glovebox' or data.type == 'trunk' or (data.type == 'stash' and not data.owner) then
-			local id = data.id
-			if CheckOpenable(xPlayer, id, data.coords) then
-				if not data.maxWeight then data.maxWeight = data.slots*8000 end
-				Inventories[id] = {
-					id = id,
-					type = data.type,
-					slots = data.slots,
-					coords = data.coords,
-					maxWeight = data.maxWeight,
-					inventory = GetItems(id, data.type),
-					grade = data.grade,
-				}
-				if data.label then Inventories[id].name = data.label end
-				Opened[xPlayer.source] = {invid = id, type = data.type}
-				TriggerClientEvent('linden_inventory:openInventory', xPlayer.source, Inventories[xPlayer.source], Inventories[id])
-			end
-		elseif data.owner then
-			if data.owner == true then data.owner = xPlayer.identifier end
-			local id = data.id..'-'..data.owner
-			if CheckOpenable(xPlayer, id, data.coords) then
-				if not data.maxWeight then data.maxWeight = data.slots*8000 end
-				Inventories[id] = {
-					id = id,
-					owner = data.owner,
-					type = data.type,
-					slots = data.slots,
-					coords = data.coords,
-					maxWeight = data.maxWeight,
-					inventory = GetItems(id, data.type, data.owner)
-				}
-				if data.label then Inventories[id].name = data.label end
-				Opened[xPlayer.source] = {invid = id, type = data.type}
-				TriggerClientEvent('linden_inventory:openInventory', xPlayer.source, Inventories[xPlayer.source], Inventories[id])
+			elseif type == 'glovebox' or type == 'trunk' or (type == 'stash' and not data.owner) or type == 'dumpster' then
+				local id = data.id
+				if CheckOpenable(xPlayer, id, data.coords) then
+					if not data.maxWeight then data.maxWeight = data.slots*8000 end
+					Inventories[id] = {
+						id = id,
+						type = type,
+						slots = data.slots,
+						coords = data.coords,
+						maxWeight = data.maxWeight,
+						inventory = GetItems(id, type),
+						grade = data.grade,
+					}
+					if data.label then Inventories[id].name = data.label end
+					Opened[xPlayer.source] = {invid = id, type = type}
+					TriggerClientEvent('linden_inventory:openInventory', xPlayer.source, Inventories[xPlayer.source], Inventories[id])
+				end
+			elseif data.owner then
+				if data.owner == true then data.owner = xPlayer.identifier end
+				local id = data.id..'-'..data.owner
+				if CheckOpenable(xPlayer, id, data.coords) then
+					if not data.maxWeight then data.maxWeight = data.slots*8000 end
+					Inventories[id] = {
+						id = id,
+						owner = data.owner,
+						type = type,
+						slots = data.slots,
+						coords = data.coords,
+						maxWeight = data.maxWeight,
+						inventory = GetItems(id, type, data.owner)
+					}
+					if data.label then Inventories[id].name = data.label end
+					Opened[xPlayer.source] = {invid = id, type = type}
+					TriggerClientEvent('linden_inventory:openInventory', xPlayer.source, Inventories[xPlayer.source], Inventories[id])
+				end
 			end
 		end
 	end
@@ -396,7 +400,7 @@ AddEventHandler('linden_inventory:buyItem', function(info)
 		end
 	
 		if Config.WeaponsLicense and checkShop.license then
-			local hasLicense = exports.ghmattimysql:scalarSync('SELECT * FROM user_licenses WHERE type = @type AND owner = @owner', {
+			local hasLicense = exports.ghmattimysql:scalarSync('SELECT 1 FROM user_licenses WHERE type = @type AND owner = @owner', {
 				['@type'] = checkShop.license,
 				['@owner'] = xPlayer.identifier
 			})
@@ -958,11 +962,6 @@ ESX.RegisterServerCallback('linden_inventory:usingItem', function(source, cb, it
 			if cItem then
 				if not cItem.consume or xItem.count >= cItem.consume then
 					cb(xItem)
-					if cItem.useTime then
-						ESX.SetTimeout(cItem.useTime, function()
-							removeInventoryItem(xPlayer, item, cItem.consume or 1, metadata, slot)
-						end)
-					else removeInventoryItem(xPlayer, item, cItem.consume or 1, metadata, slot) end
 				else
 					TriggerClientEvent('mythic_notify:client:SendAlert', xPlayer.source, { type = 'error', text = _U('item_not_enough', xItem.label) })
 					cb(false)
@@ -970,6 +969,13 @@ ESX.RegisterServerCallback('linden_inventory:usingItem', function(source, cb, it
 			end
 		end
 	end
+end)
+
+RegisterNetEvent('linden_inventory:removeItem')
+AddEventHandler('linden_inventory:removeItem', function(item)
+	local xPlayer = ESX.GetPlayerFromId(source)
+	local cItem = Config.ItemList[item.name]
+	removeInventoryItem(xPlayer, item.name, cItem.consume or 1, item.metadata, item.slot)
 end)
 
 -- Override the default ESX commands
@@ -1041,6 +1047,11 @@ OpenStash = function(xPlayer, data)
 	TriggerEvent('linden_inventory:openInventory', {type = 'stash', owner = data.owner, id = data.name, label = data.label, slots = data.slots, coords = data.coords, job = data.job, grade = data.grade }, xPlayer)
 end
 exports('OpenStash', OpenStash)
+
+OpenDumpster = function(xPlayer, data)
+	TriggerEvent('linden_inventory:openInventory', {type = 'dumpster', id = data.name, slots = data.slots, coords = data.coords }, xPlayer)
+end
+exports('OpenDumpster', OpenDumpster)
 
 ESX.RegisterCommand('evidence', 'user', function(xPlayer, args, showError)
 	if xPlayer.job.name == 'police' then

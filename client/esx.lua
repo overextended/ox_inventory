@@ -1,5 +1,3 @@
-ESX = exports['es_extended']:getSharedObject()
-
 RegisterNetEvent('esx:playerLoaded')
 AddEventHandler('esx:playerLoaded', function(xPlayer)
 	PlayerLoaded = true
@@ -12,18 +10,11 @@ AddEventHandler('esx:onPlayerLogout', function()
 	PlayerLoaded = false
 end)
 
-AddEventHandler('esx:onPlayerDeath', function(data)
-	isDead = true
-	DisarmPlayer() TriggerEvent('linden_inventory:closeInventory')
-end)
-
-AddEventHandler('playerSpawned', function(spawn)
-	isDead = false
-end)
-
-AddEventHandler('esx:onPlayerSpawn', function(spawn)
-	isDead = false
-end)
+OnPlayerData = function(key, val)
+	if key == 'dead' and val == true then
+		DisarmPlayer() TriggerEvent('linden_inventory:closeInventory')
+	end
+end
 
 RegisterNetEvent('esx_policejob:handcuff')
 AddEventHandler('esx_policejob:handcuff', function()
@@ -35,15 +26,4 @@ RegisterNetEvent('esx_policejob:unrestrain')
 AddEventHandler('esx_policejob:unrestrain', function()
 	isCuffed = false
 	TriggerEvent('linden_inventory:closeInventory')
-end)
-
-RegisterNetEvent('esx:setJob')
-AddEventHandler('esx:setJob', function(job)
-	ESX.PlayerData.job = job
-end)
-
-RegisterNetEvent('esx_ambulancejob:setDeathStatus')
-AddEventHandler('esx_ambulancejob:setDeathStatus', function(status)
-	isDead = status
-	if isDead then DisarmPlayer() TriggerEvent('linden_inventory:closeInventory') end
 end)
