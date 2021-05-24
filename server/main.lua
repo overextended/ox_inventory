@@ -89,7 +89,6 @@ exports.ghmattimysql:ready(function()
 	-- Clean the database
 	exports.ghmattimysql:execute('DELETE FROM `linden_inventory` WHERE `lastupdated` < (NOW() - INTERVAL '..Config.DBCleanup..') OR `data` = "[]"')
 	---------------------
-	if ESX.GetExtendedPlayers then Config.LindenStuff = true end
 	Citizen.Wait(500)
 	ESX.UsableItemsCallbacks = exports['es_extended']:getSharedObject().UsableItemsCallbacks
 	if Status[1] ~= 'error' then
@@ -123,7 +122,7 @@ exports.ghmattimysql:ready(function()
 						label = k,
 						weight = 0,
 						stackable = 1,
-						description = 'Item not added to database',
+						description = nil,
 						closeonuse = 1
 					}
 				end
@@ -181,28 +180,15 @@ end)
 AddEventHandler('onResourceStop', function(resourceName)
 	if (GetCurrentResourceName() == resourceName) then
 		if ESX == nil or Status[1] ~= 'ready' then return end
-		if Config.LindenStuff then -- New method but we can't force it yet
-			local xPlayers = ESX.GetExtendedPlayers()
-			for i=1, #xPlayers do
-				local xPlayer = xPlayers[i]
-				local inventory = json.encode(getInventory(Inventories[xPlayer.source]))
-				exports.ghmattimysql:execute('UPDATE `users` SET `inventory` = @inventory WHERE identifier = @identifier', {
-					['@inventory'] = inventory,
-					['@identifier'] = xPlayer.identifier
-				})
-			end
-		else
-			-- Keep this for compatibility (for now)
-			local xPlayers = ESX.GetPlayers()
-			for i=1, #xPlayers, 1 do
-				local xPlayer = ESX.GetPlayerFromId(xPlayers[i])
-				local identifier = xPlayer.getIdentifier()
-				local inventory = json.encode(getInventory(Inventories[xPlayer.source]))
-				exports.ghmattimysql:execute('UPDATE `users` SET `inventory` = @inventory WHERE identifier = @identifier', {
-					['@inventory'] = inventory,
-					['@identifier'] = identifier
-				})
-			end
+		local xPlayers = ESX.GetPlayers()
+		for i=1, #xPlayers, 1 do
+			local xPlayer = ESX.GetPlayerFromId(xPlayers[i])
+			local identifier = xPlayer.getIdentifier()
+			local inventory = json.encode(getInventory(Inventories[xPlayer.source]))
+			exports.ghmattimysql:execute('UPDATE `users` SET `inventory` = @inventory WHERE identifier = @identifier', {
+				['@inventory'] = inventory,
+				['@identifier'] = identifier
+			})
 		end
 
 	elseif resourceName == Config.Logs then
