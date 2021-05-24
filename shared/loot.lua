@@ -1,7 +1,8 @@
 -- Enable random loot in dumpsters, gloveboxes, trunks
 Config.RandomLoot = true
+Config.Dumpsters = {218085040, 666561306, -58485588, -206690185, 1511880420, 682791951}
 
-if Config.RandomLoot then
+if Config.RandomLoot and IsDuplicityVersion() then
 	Config.LootChance = { trunk = 100, glovebox = 100, dumpster = 100 }
 
 	Config.Trash = {
