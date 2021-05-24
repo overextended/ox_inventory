@@ -4,8 +4,7 @@ title: ESX Legacy Installation
 
 
 <h2 align='center'> Notice </h2>
-The following adjustments must be made for compatibility and security reasons.
-
+The following adjustments must be made for compatibility and security reasons.  
 These changes are intended to make it easier for those using modified files already.
 
 If you are already starting from the basics, I strongly suggest [downloading my fork](https://github.com/thelindat/es_extended) and ignoring the rest of this page.
