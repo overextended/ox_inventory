@@ -333,7 +333,7 @@ AddEventHandler('linden_inventory:openInventory', function(type, data, player)
 						TriggerClientEvent('linden_inventory:openInventory', xPlayer.source, Inventories[xPlayer.source], Shops[data])
 					end
 				end
-			elseif type == 'glovebox' or type == 'trunk' or (type == 'stash' and not data.owner) then
+			elseif type == 'glovebox' or type == 'trunk' or (type == 'stash' and not data.owner) or type == 'dumpster' then
 				local id = data.id
 				if CheckOpenable(xPlayer, id, data.coords) then
 					if not data.maxWeight then data.maxWeight = data.slots*8000 end
@@ -1061,6 +1061,11 @@ OpenStash = function(xPlayer, data)
 	TriggerEvent('linden_inventory:openInventory', {type = 'stash', owner = data.owner, id = data.name, label = data.label, slots = data.slots, coords = data.coords, job = data.job, grade = data.grade }, xPlayer)
 end
 exports('OpenStash', OpenStash)
+
+OpenDumpster = function(xPlayer, data)
+	TriggerEvent('linden_inventory:openInventory', {type = 'dumpster', owner = data.owner, id = data.name, label = data.label, slots = data.slots, coords = data.coords, job = data.job, grade = data.grade }, xPlayer)
+end
+exports('OpenDumpster', OpenDumpster)
 
 ESX.RegisterCommand('evidence', 'user', function(xPlayer, args, showError)
 	if xPlayer.job.name == 'police' then

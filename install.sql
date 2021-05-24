@@ -32,6 +32,7 @@ INSERT INTO `items` (`name`, `label`, `weight`, `can_remove`, `stackable`, `clos
 	('water', 'Water', 500, 1, 1, 1, NULL),
 	('burger', 'Burger', 220, 1, 1, 1, NULL),
 	('cola', 'eCola', 350, 1, 1, 1, NULL),
+	('garbage', 'Garbage', 50, 1, 0, 1, NULL),
 	('money', 'Money', 0, 1, 1, 1, NULL),
 	('identification', 'Identification', 0, 1, 1, 1, NULL),
 	('black_money', 'Dirty Money', 0, 1, 1, 1, NULL),

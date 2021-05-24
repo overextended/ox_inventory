@@ -148,6 +148,15 @@ OpenStash = function(data)
 end
 exports('OpenStash', OpenStash)
 
+OpenDumpster = function(data)
+	if data and not invOpen and CanOpenInventory() and not CanOpenTarget(ESX.PlayerData.ped) then
+		if not data.slots then data.slots = (Config.PlayerSlots * 1.5) end
+		data.id = data.name
+		TriggerServerEvent('linden_inventory:openInventory', 'dumpster', data)
+	end
+end
+exports('OpenDumpster', OpenDumpster)
+
 OpenGloveBox = function(plate, class)
 	local data = {id = 'glovebox-'..plate, slots = Config.Gloveboxes[class][1], maxWeight = Config.Gloveboxes[class][2]}
 	if data.slots then TriggerServerEvent('linden_inventory:openInventory', 'glovebox', data) end

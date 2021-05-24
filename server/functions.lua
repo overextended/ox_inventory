@@ -189,7 +189,7 @@ SetupShopItems = function(shop)
 end
 
 SaveItems = function(type,id,owner)
-	if id and owner == nil and (type == 'stash' or type == 'trunk' or type == 'glovebox') then
+	if id and owner == nil and (type == 'stash' or type == 'trunk' or type == 'glovebox' or type == 'dumpster') then
 		if type == 'trunk' or type == 'glovebox' then
 			local plate = string.match(id, "-(.*)")
 			local owner
@@ -233,6 +233,16 @@ SaveItems = function(type,id,owner)
 		end
 	end
 end
+-- Function to generate trash metadata from config.
+GenerateTrash = function(metadata)
+	local metadata = metadata
+	local weight = 50
+	local trashType = math.random(1,#Config.Trash)
+	metadata.description = Config.Trash[trashType].description
+	weight = Config.Trash[trashType].weight
+	metadata.image = Config.Trash[trashType].image
+	return metadata, weight
+end 
 
 GetItems = function(id, type, owner)
 	local returnData = {}
@@ -247,9 +257,104 @@ GetItems = function(id, type, owner)
 			if result == nil then
 				if not Datastore[plate] then
 					Datastore[plate] = {trunk = {}, glovebox = {}}
+					-- If the trunk or glovebox is empty, let's generate some random shit to go in there
+					if Config.RandomLoot then 
+						if math.random(1,100) <= Config.TrunkLootChance then 
+							for k,v in pairs(Items) do 
+								if Config.ItemList[v.name] ~= nil and Config.ItemList[v.name].trunkChance ~= nil then 
+									if math.random(1,100) <= Config.ItemList[v.name].trunkChance then 
+										local lootMin, lootMax
+										if Config.ItemList[v.name].lootMin == nil then lootMin = 1 else lootMin = Config.ItemList[v.name].lootMin end
+										if Config.ItemList[v.name].lootMax == nil then lootMax = 1 else lootMax = Config.ItemList[v.name].lootMax end
+										local count = math.random(lootMin,lootMax)
+										if v.stackable then 
+											local slot = #Datastore[plate].trunk + 1
+											if v.metadata == nil then v.metadata = {} end
+											if v.metadata.image == nil then v.metadata.image = v.name end
+											Datastore[plate].trunk[slot] = {name = v.name , label = Items[v.name].label, weight = Items[v.name].weight, slot = slot, count = count, description = Items[v.name].description, metadata = v.metadata, stackable = Items[v.name].stackable}
+										else 
+											for i=1, count, 1 do 
+												local slot = #Datastore[plate].trunk + 1
+												local metadata = {}
+												local weight = Items[v.name].weight
+												if v.name == 'garbage' then metadata, weight = GenerateTrash(metadata) end 
+												if metadata.image == nil then metadata.image = v.name end
+												Datastore[plate].trunk[slot] = {name = v.name , label = Items[v.name].label, weight = weight, slot = slot, count = 1, description = Items[v.name].description, metadata = metadata, stackable = Items[v.name].stackable}
+											end 
+										end
+									end
+								end
+							end 
+						end
+						if math.random(1,100) <= Config.GloveboxLootChance then 
+							for k,v in pairs(Items) do 
+								if Config.ItemList[v.name] ~= nil and Config.ItemList[v.name].gloveboxChance ~= nil then 
+									if math.random(1,100) <= Config.ItemList[v.name].gloveboxChance then 
+										local lootMin, lootMax
+										if Config.ItemList[v.name].lootMin == nil then lootMin = 1 else lootMin = Config.ItemList[v.name].lootMin end
+										if Config.ItemList[v.name].lootMax == nil then lootMax = 1 else lootMax = Config.ItemList[v.name].lootMax end
+										local count = math.random(lootMin,lootMax)
+										if v.stackable then 
+											local slot = #Datastore[plate].glovebox + 1
+											if v.metadata == nil then v.metadata = {} end
+											if v.metadata.image == nil then v.metadata.image = v.name end
+											Datastore[plate].glovebox[slot] = {name = v.name , label = Items[v.name].label, weight = Items[v.name].weight, slot = slot, count = count, description = Items[v.name].description, metadata = v.metadata, stackable = Items[v.name].stackable}
+										else 
+											for i=1, count, 1 do 
+												local slot = #Datastore[plate].glovebox + 1
+												local metadata = {}
+												local weight = Items[v.name].weight
+												if v.name == 'garbage' then metadata, weight = GenerateTrash(metadata) end 
+												if metadata.image == nil then metadata.image = v.name end
+												Datastore[plate].glovebox[slot] = {name = v.name , label = Items[v.name].label, weight = weight, slot = slot, count = 1, description = Items[v.name].description, metadata = metadata, stackable = Items[v.name].stackable}
+											end 
+										end
+									end
+								end
+							end 
+						end
+					end
 				end
 				return Datastore[plate][type]
 			end
+		end
+		if type == 'dumpster' then
+			result = exports.ghmattimysql:scalarSync('SELECT data FROM qrp_inventory WHERE name = @name', {
+				['@name'] = id
+			})
+			if not Datastore[id] then 
+				Datastore[id] = {}
+				if math.random(1,100) <= Config.DumpsterLootChance then 
+					local loot = {} 
+					for k,v in pairs(Items) do 
+						if Config.ItemList[v.name] ~= nil and Config.ItemList[v.name].dumpsterChance ~= nil then 
+							if math.random(1,100) <= Config.ItemList[v.name].dumpsterChance then 
+								local lootMin, lootMax
+								if Config.ItemList[v.name].lootMin == nil then lootMin = 1 else lootMin = Config.ItemList[v.name].lootMin end
+								if Config.ItemList[v.name].lootMax == nil then lootMax = 1 else lootMax = Config.ItemList[v.name].lootMax end
+								local count = math.random(lootMin,lootMax)
+								if v.stackable then 
+									local slot = #loot + 1
+									if v.metadata == nil then v.metadata = {} end
+									if v.metadata.image == nil then v.metadata.image = v.name end
+									loot[slot] = {name = v.name , label = Items[v.name].label, weight = Items[v.name].weight, slot = slot, count = count, description = Items[v.name].description, metadata = v.metadata, stackable = Items[v.name].stackable}
+								else 
+									for i=1, count, 1 do 
+										local slot = #loot + 1
+										local metadata = {}
+										local weight = Items[v.name].weight
+										if v.name == 'garbage' then metadata, weight = GenerateTrash(metadata) end 
+										if metadata.image == nil then metadata.image = v.name end
+										loot[slot] = {name = v.name , label = Items[v.name].label, weight = weight, slot = slot, count = 1, description = Items[v.name].description, metadata = metadata, stackable = Items[v.name].stackable}
+									end
+								end 
+							end
+						end
+					end
+					Datastore[id] = loot
+				end
+			end
+			return Datastore[id]
 		end
 		result = exports.ghmattimysql:scalarSync('SELECT data FROM linden_inventory WHERE name = @name', {
 			['@name'] = id
