@@ -8,25 +8,31 @@
 	</head>
 	<body>
         <div class="inventory-main">
-            <div class= "inventory-main-leftside">
-
-            </div>
-            <div class="inventory-main-rightside">
-
-            </div>
-            <div class="playername"></div>
-            <div class="rightside-name"></div>
-            <div id="leftside-weight-div"><div class="leftside-weight">0</div></div>
-            <div id="rightside-weight-div"><div class="rightside-weight">0</div></div>
-            <input type="number" id="item-count" class="inv-option-item" min=0 value="0" oninput="validity.valid||(value='');"></input>
-            <div class="use">Use</div>
-			<div class="give">Give</div>
-            <button class="close">Close</button>
-            <div class="iteminfo">
-                <div class="iteminfo-label"></div>
-                <div class="iteminfo-description"></div>
-            </div>
+			<table style='width: 100%;'>
+				<tr>
+					<td><table style='width: 100%;'><tr><td class='playername' style='text-align:left;'></td><td class='leftside-weight' style='text-align:right;'></td></tr></table></td>
+					<td style='width: 18%;'></td>
+					<td><table style='width: 100%;'><tr><td class='rightside-name' style='text-align:left;'></td><td class='rightside-weight' style='text-align:right;'></td></tr></table></td>
+				</tr>
+				<tr>
+					<td><div class= "inventory-main-leftside"></div></td>
+					<td>
+						<input type="number" id="item-count" class="inv-option-item" min=0 value="0" oninput="validity.valid||(value='');"></input><br>
+						<button class="use">Use</button>
+						<button class="give">Give</button>
+						<button class="close">Close</button>
+					</td>
+					<td><div class= "inventory-main-rightside"></div></td>
+				</tr>
+			</table>
         </div>
+
+
+		<div class="iteminfo">
+			<div class="iteminfo-label"></div>
+			<div class="iteminfo-description"></div>
+		</div>
+
         <div class="hotbar-container template">
         </div>
         <div class="itemboxes-container">
