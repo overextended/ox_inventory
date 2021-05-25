@@ -192,7 +192,7 @@ SaveItems = function(type,id,owner)
 		if owner then
 			local inventory = json.encode(getInventory(Inventories[id]))
 			if inventory then
-				exports.ghmattimysql:execute('INSERT INTO linden_inventory (name, data, owner) VALUES (@name, @data, @owner) ON DUPLICATE KEY UPDATE data = @data, owner = @owner', {
+				exports.ghmattimysql:executeSync('INSERT INTO linden_inventory (name, data, owner) VALUES (@name, @data, @owner) ON DUPLICATE KEY UPDATE data = @data, owner = @owner', {
 					['@name'] = id,
 					['@data'] = inventory,
 					['@owner'] = owner
@@ -224,7 +224,7 @@ SaveItems = function(type,id,owner)
 				end
 			else
 				local inventory = json.encode(getInventory(Inventories[id]))
-				exports.ghmattimysql:execute('INSERT INTO linden_inventory (name, data, owner) VALUES (@name, @data, @owner) ON DUPLICATE KEY UPDATE data = @data, owner = @owner', {
+				exports.ghmattimysql:executeSync('INSERT INTO linden_inventory (name, data, owner) VALUES (@name, @data, @owner) ON DUPLICATE KEY UPDATE data = @data, owner = @owner', {
 					['@name'] = id,
 					['@data'] = inventory,
 					['@owner'] = ''
