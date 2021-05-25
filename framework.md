@@ -213,6 +213,11 @@ end
 local xPlayer = CreateExtendedPlayer(playerId, identifier, userData.group, userData.accounts, userData.job, userData.playerName, userData.coords)
 ```
 
+* Locate `TriggerEvent('esx:playerLoaded', playerId, xPlayer, isNew)` and immediately below it add
+```lua
+TriggerEvent('linden_inventory:setPlayerInventory', xPlayer, userData.inventory)
+```
+
 * Locate `xPlayer.getLoadout()` and replace it with `{}` whenever it occurs
 * Locate and remove the following events or triggers
 ```lua
