@@ -168,8 +168,7 @@ AddEventHandler('onResourceStart', function(resourceName)
 		if Config.Experimental then	-- Using new type of xPlayer loop; it retrieves the playerdata all at once instead of one-by-one
 			local xPlayers = ESX.GetExtendedPlayers()
 			for k,v in pairs(xPlayers) do
-				local xPlayer = v
-				xPlayer.set('linventory', false)
+				v.set('linventory', false)
 			end
 		else
 			local xPlayers = ESX.GetPlayers()
@@ -189,17 +188,28 @@ end)
 AddEventHandler('onResourceStop', function(resourceName)
 	if (GetCurrentResourceName() == resourceName) then
 		if ESX == nil or Status[1] ~= 'ready' then return end
-		local xPlayers = ESX.GetPlayers()
-		for i=1, #xPlayers, 1 do
-			local xPlayer = ESX.GetPlayerFromId(xPlayers[i])
-			local identifier = xPlayer.getIdentifier()
-			local inventory = json.encode(getInventory(Inventories[xPlayer.source]))
-			exports.ghmattimysql:execute('UPDATE `users` SET `inventory` = @inventory WHERE identifier = @identifier', {
-				['@inventory'] = inventory,
-				['@identifier'] = identifier
-			})
+		if Config.Experimental then	-- Using new type of xPlayer loop; it retrieves the playerdata all at once instead of one-by-one
+			local xPlayers = ESX.GetExtendedPlayers()
+			for k,v in pairs(xPlayers) do
+				local identifier = v.getIdentifier()
+				local inventory = json.encode(getInventory(Inventories[v.source]))
+				exports.ghmattimysql:execute('UPDATE `users` SET `inventory` = @inventory WHERE identifier = @identifier', {
+					['@inventory'] = inventory,
+					['@identifier'] = identifier
+				})
+			end
+		else
+			local xPlayers = ESX.GetPlayers()
+			for i=1, #xPlayers, 1 do
+				local xPlayer = ESX.GetPlayerFromId(xPlayers[i])
+				local identifier = xPlayer.getIdentifier()
+				local inventory = json.encode(getInventory(Inventories[xPlayer.source]))
+				exports.ghmattimysql:execute('UPDATE `users` SET `inventory` = @inventory WHERE identifier = @identifier', {
+					['@inventory'] = inventory,
+					['@identifier'] = identifier
+				})
+			end
 		end
-
 	elseif resourceName == Config.Logs then
 		logsResource = Config.Logs
 		message('Logs have been disabled, ^3`'..logsResource..'`^7 is not running', 3)
