@@ -774,8 +774,9 @@ RegisterCommand('inv', function()
 end)
 
 RegisterCommand('vehinv', function()
+	if invOpen then return end
 	if isBusy then TriggerEvent('mythic_notify:client:SendAlert', {type = 'error', text = _U('inventory_cannot_open'), length = 2500})
-	elseif invOpen then TriggerEvent('linden_inventory:closeInventory')
+	elseif currentInventory then TriggerEvent('linden_inventory:closeInventory')
 	else
 		if not CanOpenInventory() then TriggerEvent('mythic_notify:client:SendAlert', {type = 'error', text = _U('inventory_cannot_open'), length = 2500}) return end
 		if not IsPedInAnyVehicle(ESX.PlayerData.ped, false) then -- trunk
@@ -885,6 +886,7 @@ RegisterKeyMapping('inv', 'Open player inventory', 'keyboard', Config.InventoryK
 RegisterKeyMapping('vehinv', 'Open vehicle inventory', 'keyboard', Config.VehicleInventoryKey)
 
 RegisterCommand('steal', function()
+	if invOpen then return end
 	if not IsPedInAnyVehicle(ESX.PlayerData.ped, true) and not currentInventory and CanOpenInventory() then	 
 		OpenTargetInventory()
 	end
