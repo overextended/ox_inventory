@@ -79,7 +79,7 @@ As of version 1.5.0 you are required to use ESX Legacy to use this resource.
 You may, optionally, download [my fork of ESX Legacy](https://github.com/thelindat/es_extended/) which has all the changes to use this inventory in place, on top of a few extra features.
 
 
-For a guide on upgrading your framework, go to [this page](framework).
+For a guide on modifying your framework, go to [this page](framework).
 
 
 <h2 align='center'> Upgrading </h2>
