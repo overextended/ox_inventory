@@ -315,7 +315,7 @@ HSN.SetupInventory = function(data) {
 				if (item != null) {
 					if (item.metadata == undefined) { item.metadata = {};};
 					if (item.metadata.image == undefined) { item.metadata.image = item.name; };
-					righttotalkg = righttotalkg +(item.weight * item.count);
+					righttotalkg = righttotalkg + (item.weight * item.count);
 					if ((item.name).split("_")[0] == "WEAPON" && item.metadata.durability !== undefined) {
 						
 						$(".inventory-main-rightside").find("[inventory-slot=" + item.slot + "]").html('<div class="item-slot-img"><img src="images/' + item.metadata.image + '.png'+'" alt="' + item.name + '" /></div><div class="item-slot-count"><p>' + numberFormat(item.count, item.name) + ' ' + weightFormat(item.weight/1000 * item.count) + '</p></div><div class="item-slot-label"><div class="item-slot-durability-bar"></div>' + item.label + '</div>');
@@ -496,7 +496,7 @@ HSN.CloseInventory = function() {
 		$.post('https://linden_inventory/exit', JSON.stringify({
 			type: rightinvtype,
 			invid: rightinventory,
-			weight: totalkg,
+			weight: righttotalkg,
 			slot: rightinvslot
 		}));
 		
