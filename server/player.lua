@@ -159,9 +159,8 @@ updateWeight = function(xPlayer, force, metaweight, slot)
 		TriggerClientEvent('linden_inventory:updateStorage', xPlayer.source, {newWeight, Inventories[xPlayer.source].maxWeight, Inventories[xPlayer.source].slots})
 	end
 	if slot then
-		local metadata = metaweight - newWeight
-		Inventories[xPlayer.source].inventory[slot].weight = Inventories[xPlayer.source].inventory[slot].weight + metadata
-		Inventories[xPlayer.source].inventory[slot].metadata.weight = metadata
+		Inventories[xPlayer.source].inventory[slot].weight = Items[Inventories[xPlayer.source].inventory[slot].name].weight + metaweight
+		Inventories[xPlayer.source].inventory[slot].metadata.weight = metaweight
 	end
 	SyncAccounts(xPlayer, 'money')
 	SyncAccounts(xPlayer, 'black_money')
