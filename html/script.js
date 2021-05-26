@@ -360,10 +360,11 @@ function DragAndDrop() {
 		cancel: ".itemdragclose",
 		containment: "parent",
 		start: function(event, ui) {
+			fromInv = $(this).parent().data('invTier')
 			if (rightinvtype !== 'Playerinv' && rightgrade > job.grade) {
 				HSN.InventoryMessage('stash_lowgrade', 2)
 				return false
-			} else if (rightinvslot == $(this).attr("inventory-slot")) {
+			} else if (fromInv == 'Playerinv' && rightinvslot == $(this).attr("inventory-slot")) {
 				HSN.InventoryMessage('cannot_perform', 2)
 				return false
 			} else {
@@ -389,16 +390,12 @@ function DragAndDrop() {
 			curslot = ui.draggable.attr("inventory-slot");
 			fromInventory = ui.draggable.parent();
 			toInventory = $(this).parent()
+			toInv = toInventory.data('invTier')
 			toSlot = $(this).attr("inventory-slot");
 			fromData = fromInventory.find("[inventory-slot=" + curslot + "]").data("ItemData");
 			count = parseInt($("#item-count").val()) || 0
-			invId = toInventory.data('invId')
 			if (fromData !== undefined) {
-				if (rightinvtype == 'bag' && fromData.metadata.bag !== undefined && invId !== undefined && invId !== "Playerinv") {
-					HSN.InventoryMessage('cannot_perform', 2)
-					return false
-				} else if (rightinvslot !== null && rightinvslot !== undefined && fromData.metadata.slot == rightinvslot) {
-					console.log(rightinvslot)
+				if (toInv == 'Playerinv' && rightinvslot !== null && rightinvslot !== undefined && toSlot == rightinvslot) {
 					HSN.InventoryMessage('cannot_perform', 2)
 					return false
 				} else if (count == 0 || count > fromData.count) {
