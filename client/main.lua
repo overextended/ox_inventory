@@ -155,14 +155,13 @@ OpenBag = function(data)
 end
 exports('OpenBag', OpenBag)
 
-OpenDumpster = function(data)
+--[[OpenDumpster = function(data)
 	if data and not currentInventory and CanOpenInventory() and not CanOpenTarget(ESX.PlayerData.ped) then
 		if not data.slots then data.slots = (Config.PlayerSlots * 1.5) end
-		data.id = data.name
 		TriggerServerEvent('linden_inventory:openInventory', 'dumpster', data)
 	end
 end
-exports('OpenDumpster', OpenDumpster)
+exports('OpenDumpster', OpenDumpster)]]
 
 OpenGloveBox = function(plate, class)
 	local data = {id = 'glovebox-'..plate, slots = Config.Gloveboxes[class][1], maxWeight = Config.Gloveboxes[class][2]}
@@ -638,17 +637,18 @@ TriggerLoops = function()
 				end
 				--[[if not id or type == 'dumpster' then
 					if id then
+						SetEntityDrawOutline(id, true)
 						sleep = 5
 						local distance = #(playerCoords - GetEntityCoords(id))
 						if distance <= 2 then
-							SetEntityAsMissionEntity(id, true, true)
 							NetworkRegisterEntityAsNetworked(id)
-							SetNetworkIdExistsOnAllMachines(id)
-							print(NetworkGetNetworkIdFromEntity(id))
+							local netid = NetworkGetNetworkIdFromEntity(id)
+							SetNetworkIdExistsOnAllMachines(netid)
+							NetworkSetNetworkIdDynamic(netid, false)
 							if IsControlJustPressed(0, 38) then
-								OpenDumpster({ id = 'Dumpster-'..id, label = 'Dumpster', slots = 20})
+								OpenDumpster({ id = netid, label = 'Dumpster', slots = 20})
 							end
-						elseif distance > 4 then id, type = nil, nil
+						elseif distance > 4 then SetEntityDrawOutline(id, false) id, type = nil, nil
 						end
 					else
 						for i=1, #Config.Dumpsters do 
@@ -994,8 +994,6 @@ AddEventHandler('linden_inventory:useItem',function(item)
 							TriggerEvent('mythic_notify:client:SendAlert', {type = 'error', text = _U('cannot_use', item.label), length = 2500}) return
 						end
 					end)
-				else
-					UseItem(item, false, data)
 				end
 			end
 		else
