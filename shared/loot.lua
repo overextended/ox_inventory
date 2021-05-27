@@ -36,7 +36,7 @@ if Config.RandomLoot and IsDuplicityVersion() then
 		return metadata, weight
 	end
 
-	GenerateDatastore = function(id, type)
+	GenerateDatastore = function(type)
 		local returnData = {}
 		if type == 'trunk' or type == 'glovebox' or type == 'dumpster' then
 			local chance = Config.LootChance[type]

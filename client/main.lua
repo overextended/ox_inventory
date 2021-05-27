@@ -134,13 +134,13 @@ AddEventHandler('targetPlayerAnim', function()
 end)
 
 OpenShop = function(id)
-	if not invOpen and CanOpenInventory() and not CanOpenTarget(ESX.PlayerData.ped) then
+	if not currentInventory and CanOpenInventory() and not CanOpenTarget(ESX.PlayerData.ped) then
 		TriggerServerEvent('linden_inventory:openInventory', 'shop', id)
 	end
 end
 
 OpenStash = function(data)
-	if data and not invOpen and CanOpenInventory() and not CanOpenTarget(ESX.PlayerData.ped) then
+	if data and not currentInventory and CanOpenInventory() and not CanOpenTarget(ESX.PlayerData.ped) then
 		if not data.slots then data.slots = (Config.PlayerSlots * 1.5) end
 		data.id = data.name
 		TriggerServerEvent('linden_inventory:openInventory', 'stash', data)
@@ -148,14 +148,20 @@ OpenStash = function(data)
 end
 exports('OpenStash', OpenStash)
 
-OpenDumpster = function(data)
-	if data and not invOpen and CanOpenInventory() and not CanOpenTarget(ESX.PlayerData.ped) then
+OpenBag = function(data)
+	if data and not currentInventory and CanOpenInventory() and not CanOpenTarget(ESX.PlayerData.ped) then
+		TriggerServerEvent('linden_inventory:openInventory', 'bag', data)
+	end
+end
+exports('OpenBag', OpenBag)
+
+--[[OpenDumpster = function(data)
+	if data and not currentInventory and CanOpenInventory() and not CanOpenTarget(ESX.PlayerData.ped) then
 		if not data.slots then data.slots = (Config.PlayerSlots * 1.5) end
-		data.id = data.name
 		TriggerServerEvent('linden_inventory:openInventory', 'dumpster', data)
 	end
 end
-exports('OpenDumpster', OpenDumpster)
+exports('OpenDumpster', OpenDumpster)]]
 
 OpenGloveBox = function(plate, class)
 	local data = {id = 'glovebox-'..plate, slots = Config.Gloveboxes[class][1], maxWeight = Config.Gloveboxes[class][2]}
@@ -247,7 +253,7 @@ AddEventHandler('linden_inventory:openInventory',function(data, rightinventory)
 			maxWeight = data.maxWeight,
 			weight = data.weight,
 			rightinventory = rightinventory,
-			job = ESX.PlayerData.job
+			job = ESX.PlayerData.job,
 		})
 		ESX.PlayerData.inventory = data.inventory
 		if not rightinventory then movement = true else movement = false end
@@ -467,6 +473,7 @@ AddEventHandler('linden_inventory:closeInventory',function()
 	end
 	SetNuiFocusAdvanced(false, false)
 	currentInventory = nil
+	Citizen.Wait(200)
 	invOpen = false
 end)
 
@@ -628,6 +635,34 @@ TriggerLoops = function()
 						end
 					end
 				end
+				--[[if not id or type == 'dumpster' then
+					if id then
+						SetEntityDrawOutline(id, true)
+						sleep = 5
+						local distance = #(playerCoords - GetEntityCoords(id))
+						if distance <= 2 then
+							NetworkRegisterEntityAsNetworked(id)
+							local netid = NetworkGetNetworkIdFromEntity(id)
+							SetNetworkIdExistsOnAllMachines(netid)
+							NetworkSetNetworkIdDynamic(netid, false)
+							if IsControlJustPressed(0, 38) then
+								OpenDumpster({ id = netid, label = 'Dumpster', slots = 20})
+							end
+						elseif distance > 4 then SetEntityDrawOutline(id, false) id, type = nil, nil
+						end
+					else
+						for i=1, #Config.Dumpsters do 
+							local dumpster = GetClosestObjectOfType(playerCoords.x, playerCoords.y, playerCoords.z, 2.0, Config.Dumpsters[i], false, false, false)
+							local dumpPos = GetEntityCoords(dumpster)
+							local distance = #(playerCoords - dumpPos)
+							if distance <= 4 then
+								sleep = 10
+								id = dumpster
+								type = 'dumpster'
+							end
+						end
+					end
+				end]]
 				if Drops and not invOpen then
 					local closestDrop
 					for k, v in pairs(Drops) do
@@ -739,8 +774,9 @@ RegisterCommand('inv', function()
 end)
 
 RegisterCommand('vehinv', function()
+	if invOpen then return end
 	if isBusy then TriggerEvent('mythic_notify:client:SendAlert', {type = 'error', text = _U('inventory_cannot_open'), length = 2500})
-	elseif invOpen then TriggerEvent('linden_inventory:closeInventory')
+	elseif currentInventory then TriggerEvent('linden_inventory:closeInventory')
 	else
 		if not CanOpenInventory() then TriggerEvent('mythic_notify:client:SendAlert', {type = 'error', text = _U('inventory_cannot_open'), length = 2500}) return end
 		if not IsPedInAnyVehicle(ESX.PlayerData.ped, false) then -- trunk
@@ -850,7 +886,8 @@ RegisterKeyMapping('inv', 'Open player inventory', 'keyboard', Config.InventoryK
 RegisterKeyMapping('vehinv', 'Open vehicle inventory', 'keyboard', Config.VehicleInventoryKey)
 
 RegisterCommand('steal', function()
-	if not IsPedInAnyVehicle(ESX.PlayerData.ped, true) and not invOpen and CanOpenInventory() then	 
+	if invOpen then return end
+	if not IsPedInAnyVehicle(ESX.PlayerData.ped, true) and not currentInventory and CanOpenInventory() then	 
 		OpenTargetInventory()
 	end
 end)
@@ -911,6 +948,7 @@ RegisterNUICallback('exit',function(data)
 	TriggerServerEvent('linden_inventory:saveInventory', data)
 	currentInventory = nil
 	SetNuiFocusAdvanced(false, false)
+	Citizen.Wait(200)
 	invOpen = false
 end)
 
@@ -918,6 +956,10 @@ end)
 local useItemCooldown = false
 RegisterNetEvent('linden_inventory:useItem')
 AddEventHandler('linden_inventory:useItem',function(item)
+	if item.metadata.bag and not currentInventory then
+		TriggerServerEvent('linden_inventory:openInventory', 'bag', { id = item.metadata.bag, label = item.label..' ('..item.metadata.bag..')', slot = item.slot, slots = item.metadata.slot or 5})
+		return
+	end
 	if CanOpenInventory() and not useItemCooldown then
 		local data = Config.ItemList[item.name]
 		local esxItem = Usables[item.name]
@@ -952,8 +994,6 @@ AddEventHandler('linden_inventory:useItem',function(item)
 							TriggerEvent('mythic_notify:client:SendAlert', {type = 'error', text = _U('cannot_use', item.label), length = 2500}) return
 						end
 					end)
-				else
-					UseItem(item, false, data)
 				end
 			end
 		else

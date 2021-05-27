@@ -1,121 +1,40 @@
 @import url('https://fonts.googleapis.com/css2?family=Signika:wght@300;400;500;600;700&display=swap');
-* {
+
+body {
     font-family: 'Signika';
-    margin: 0;
-    padding: 0;
     user-select: none;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	color: white;
+    text-shadow: 1px 1px 0px black;
+	overflow:hidden;
 }
 
 .inventory-main {
-    width: 1250px;
-    height: 500px;
-    padding: 20px;
-    /*background-color: rgba(0, 0, 0, 0.2);*/
+	display: none;
     position: fixed;
     margin: auto;
     opacity: 0.9;
-    top: 50%;
-    left: 50%;
-    display: none;
-    transform: translate(-50%, -50%);
+	overflow: hidden;
 }
 
-.inventory-main-leftside {
-    position: absolute;
+.inventory-main-leftside, .inventory-main-rightside {
     width: 515px;
     height: 406px;
-    left: 20px;
-    top: 80px;
-   /* background-color: yellow;*/
-    display: inline-block;
-    overflow-x: hidden;
+	overflow: hidden;
     overflow-y: scroll;
-}
-
-.inventory-main-leftside > .ItemBoxes > .item-slot-key p {
-    position: absolute;
-    background: #ffffff;
-    color: #000000;
-    padding: .3pt;
-    padding-left: .5pt;
-    padding-right: .5pt;
-    text-align: left;
-    font-size: 14px;
-    line-height: 18px;
-    font-family: 'Signika';
-}
-
-
-.inventory-main-rightside {
-    position: absolute;
-    width: 515px;
-    right: 20px;
-    height: 406px;
-    top: 80px;
-    /*background-color: royalblue; */
-    display: inline-block;
-     overflow-x: hidden;
-    overflow-y: scroll; 
-}
-
-.playername {
-    position: absolute;
-    color: white;
-    /*width: auto; */
-    font-weight: bold;
-    font-family: 'Signika';
-    font-size: 15px;
-    padding-top: 3%;
-    text-shadow: 1px 1px 0px black;
-}
-
-.rightside-name {
-    position: absolute;
-    color: white;
-    font-family: 'Signika';
-    padding-top: 3%;
-    padding-left: 58%;
-    font-weight: bold;
-    font-size: 15px; 
-    text-shadow: 1px 1px 0px black;
-}
-
-#leftside-weight-div {
-    top: 60;
-    right: 760;
-    position: fixed;
-}
-
-.leftside-weight {
-    color: white;
-    font-weight: bold;
-    font-size: 15px;
-    font-family: 'Signika';
-    text-shadow: 1px 1px 0px black;
-}
-
-#rightside-weight-div {
-    top: 60;
-    right: 27;
-    position: fixed;
-}
-
-.rightside-weight {
-    color: white;
-    font-weight: bold;
-    font-size: 15px;
-    font-family: 'Signika';
-    text-shadow: 1px 1px 0px black;
 }
 
 .ItemBoxes {
     position: relative;
     width: 100px;
     height: 100px;
-    background-color: rgba(0, 0, 0, 0.3);
+    background-color: rgba(0, 0, 0, 0.2);
     float: left;
     margin: 1px;
-    box-shadow: 0 0 0 1px rgba(38, 38, 38, 0.3) inset;
+	outline: 1px solid rgba(38,38,38,0.3);
+	outline-offset: -1px;
 } 
 
 .inventory-main-leftside > .ItemBoxes:nth-child(1):after {
@@ -133,7 +52,10 @@
     line-height: 14px;
     vertical-align: middle;
     background-color: white;
-    box-shadow: 0 0 0 1px black inset;
+	color: black;
+    text-shadow: none;
+	outline: 1px solid rgba(0,0,0,0.9);
+	outline-offset: -1px;
 }
 
 .inventory-main-leftside > .ItemBoxes:nth-child(2):after {
@@ -151,7 +73,10 @@
     line-height: 14px;
     vertical-align: middle;
     background-color: white;
-    box-shadow: 0 0 0 1px black inset;
+	color: black;
+    text-shadow: none;
+	outline: 1px solid rgba(0,0,0,0.9);
+	outline-offset: -1px;
 }
 
 .inventory-main-leftside > .ItemBoxes:nth-child(3):after {
@@ -169,7 +94,10 @@
     line-height: 14px;
     vertical-align: middle;
     background-color: white;
-    box-shadow: 0 0 0 1px black inset;
+	color: black;
+    text-shadow: none;
+	outline: 1px solid rgba(0,0,0,0.9);
+	outline-offset: -1px;
 }
 
 .inventory-main-leftside > .ItemBoxes:nth-child(4):after {
@@ -187,7 +115,10 @@
     line-height: 14px;
     vertical-align: middle;
     background-color: white;
-    box-shadow: 0 0 0 1px black inset;
+	color: black;
+    text-shadow: none;
+	outline: 1px solid rgba(0,0,0,0.9);
+	outline-offset: -1px;
 }
 
 .inventory-main-leftside > .ItemBoxes:nth-child(5):after {
@@ -205,10 +136,11 @@
     line-height: 14px;
     vertical-align: middle;
     background-color: white;
-    box-shadow: 0 0 0 1px black inset;
+	color: black;
+    text-shadow: none;
+	outline: 1px solid rgba(0,0,0,0.9);
+	outline-offset: -1px;
 }
-
-
 
 .itemboxes-container {
     height: 130px;
@@ -234,7 +166,8 @@
     height: 130px;
     z-index: 1;
     background-color: rgba(0, 0, 0, 0.2);
-    border: 1px solid rgba(255, 255, 255, 0.05);
+	outline: 1px solid rgba(38,38,38,0.1);
+	outline-offset: -1px;
 }
 
 .hotbar-container {
@@ -258,17 +191,23 @@
     height: 110px;
     z-index: 1;
     background-color: rgba(0, 0, 0, 0.2);
-    border: 1px solid rgba(255, 255, 255, 0.05);
+	outline: 1px solid rgba(38,38,38,0.1);
+	outline-offset: -1px;
 }
 
 #itembox-action {
     position: absolute;
-    background-color: white;
-    padding: 4px;
-    width: 93%;
+    padding: 4px 0 4px 0;
+    width: 100%;
     text-align: center;
     left: 0;
-    right: 35px;
+	font-size: 13px;
+    background-color: white;
+	outline: 1px solid rgba(38,38,38,0.1);
+	outline-offset: -1px;
+	color: #111;
+    text-shadow: none !important;
+	font-weight: 700;
 }
 
 .itembox-img img {
@@ -296,29 +235,8 @@
     z-index: -1 !important;
 }
 
-#itembox-action > p {
-    font-size: 14px;
-    font-family: 'Signika';
-}
-
 #itembox-label {
-    position: absolute;
-    bottom: 0;
-    width: 100%;
-    background-color: rgba(var(--main-label-color), 0.35);
-    min-height: 18px;
-    height: fit-content;
-}
-
-#itembox-label > p {
-    color: white;
-    font-size: 14px;
-    line-height: 18px;
-    text-align: center;
-    text-transform: lowercase;
-    font-family: 'Signika';
-    font-variant: small-caps;
-    text-shadow: 1px 1px 0px black;
+    padding: 5px 0 5px 0 !important;
 }
 
 .item-slot-img {
@@ -337,70 +255,56 @@
     max-height: 80%;
 }
 
-.item-slot-label {
+.item-slot-label, #itembox-label {
     position: absolute;
     bottom: 0;
     width: 100%;
-    background-color: rgba(12, 12, 12, 0.25);
-    height: auto;
-    color: rgb(247, 247, 247);
+    background-color: rgba(12, 12, 12, 0.3);
+    height: fit-content;
+	padding: 2px 0 2px 0;
     font-size: 10px;
-    line-height: 18px;
     text-align: center;
     text-transform: uppercase;
-    font-family: 'Signika';
     font-variant: small-caps;
-    text-shadow: 1px 1px 0px black;
+	outline: 1px solid rgba(38,38,38,0.3);
+	outline-offset: -1px;
 }
 
 .item-slot-durability-bar {
     position: absolute;
-    height: 5px;
+    height: 4px;
     width: 100%;
-    bottom: 17px;
-    line-height: 1.6pt;
-    text-align: center;
+    top: -4px;
     background-color: #1d1d1de8;
-    box-shadow: inset 0 0 1px 1px rgba(0, 0, 0, 0.2);
-}
-
-
-.item-slot-count {
-    position: absolute;
-    top:2px;
-    right: 2px;
-    text-shadow: 1px 1px 0px black;
+	outline: 1px solid rgba(38,38,38,0.2);
+	outline-offset: -1px;
 }
 
 .iteminfo {
-    /* position: relative;
-    width: 300px;
-    height: 200px;
-    background-color: steelblue;
-    top: 85%;
-    left: 38%; */
-    font-family: 'Signika';
     display: none;
     position: absolute;
+	padding: 0 10px 0 10px;
     font-weight: 500;
-    font-size: 14px;
-    top: 100%;
+    font-size: 13px;
+    top: 75%;
     margin: 0 auto;
     left: 0;
     right: 0;
-    width: 28%;
-    text-shadow: 1px 1px 0px black;
+    width: 20%;
+    min-width: 300px;
     background-color: rgba(0,0,0,0.267);
     user-select: all !important;
-    padding: 5px;
     color: white;
+}
+
+p {
+	line-height: 0.3rem;
 }
 
 
 .iteminfo-label {
     font-size: 15px;
     font-weight:600;
-
 }
 
 .line {
@@ -415,7 +319,10 @@
 .item-slot-count p {
     color: #ffffff;
     text-align: right;
-    font-size: 11px;
+	right: 2px;
+	top: -3px;
+	font-size: 11px;
+	position: absolute;
 }
 
 .inv-option-item > p {
@@ -436,17 +343,13 @@
     height: 40px;
     width: 150px;
     top: 30%;
-    border: none;
     background-color:rgba(12, 12, 12, 0.35);
-    box-shadow: 0 0 0 1px rgba(38, 38, 38, 0.3) inset;
+	outline: 1px solid rgba(38,38,38,0.3);
+	outline-offset: -1px;
     color: white;
     text-align: center;
-    transition: background-color .1s linear;
-}
-
-.inv-option-item:hover {
-    background-color: rgba(218, 0, 0, 0.2);
-    /* rgba(20, 20, 20, 0.5) */
+    transition: 0.2s ease-in-out all;
+	border: 0;
 }
 
 .use {
@@ -455,17 +358,15 @@
     margin: 0 auto;
     height: 40px;
     width: 150px;
-    top: 35%;
-    border: none;
     background-color:rgba(12, 12, 12, 0.35);
-    box-shadow: 0 0 0 1px rgba(38, 38, 38, 0.3) inset;
+	outline: 1px solid rgba(38,38,38,0.3);
+	outline-offset: -1px;
     color: white;
     text-align: center;
-    border-radius: 2px;
     transition: 0.2s ease-in-out all;
     line-height: 40px;
-    font-family: 'Signika';
     font-size: 90%;
+	border: 0;
 }
 
 .give {
@@ -475,23 +376,18 @@
     height: 40px;
     width: 150px;
     top: 35%;
-    border: none;
     background-color:rgba(12, 12, 12, 0.35);
-    box-shadow: 0 0 0 1px rgba(38, 38, 38, 0.3) inset;
+	outline: 1px solid rgba(38,38,38,0.3);
+	outline-offset: -1px;
     color: white;
     text-align: center;
-    border-radius: 2px;
     transition: 0.2s ease-in-out all;
     line-height: 40px;
-    font-family: 'Signika';
     font-size: 90%;
+	border: 0;
 }
 
-.give:hover {
-    background-color: rgba(218, 0, 0, 0.2);
-}
-
-.use:hover {
+.give:hover, .use:hover, .close:hover, .inv-option-item:hover {
     background-color: rgba(218, 0, 0, 0.2);
 }
 
@@ -502,19 +398,13 @@
     height: 40px;
     width: 150px;
     top: 40%;
-    border: none;
     color: white;
     background-color:rgba(12, 12, 12, 0.35);
-    box-shadow: 0 0 0 1px rgba(38, 38, 38, 0.3) inset;
+	outline: 1px solid rgba(38,38,38,0.3);
+	outline-offset: -1px;
+	transition: 0.2s ease-in-out all;
+	border: 0;
 }
-
-.close:hover {
-    /* border-radius: 2px;
-    border: 1px solid #ffffff;
-    transition: 0.2s ease-in-out all; */
-    background-color: rgba(218, 0, 0, 0.2);
-}
-
 
 
 /* scrollbar Hsn*/
