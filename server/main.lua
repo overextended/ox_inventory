@@ -1071,7 +1071,7 @@ end, true, {help = 'set account money', validate = true, arguments = {
 
 OpenStash = function(xPlayer, data, custom)
 	local type = custom or 'stash'
-	TriggerEvent('linden_inventory:openInventory', {type = type, owner = data.owner, id = data.name, label = data.label, slots = data.slots, coords = data.coords, job = data.job, grade = data.grade }, xPlayer)
+	TriggerEvent('linden_inventory:openInventory', type, {owner = data.owner, id = data.name or data.id, label = data.label, slots = data.slots, coords = data.coords, job = data.job, grade = data.grade }, xPlayer)
 end
 exports('OpenStash', OpenStash)
 
