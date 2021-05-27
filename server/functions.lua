@@ -187,10 +187,14 @@ SetupShopItems = function(shop)
 	return inventory
 end
 
-SaveItems = function(type,id,owner)
+SaveItems = function(type, id, owner, inventory)
 	if type and id then
-		if owner then
-			local inventory = json.encode(getInventory(Inventories[id]))
+		if type == 'player' then
+			exports.ghmattimysql:executeSync('UPDATE `users` SET `inventory` = @inventory WHERE identifier = @identifier', {
+				['@inventory'] = json.encode(inventory),
+				['@identifier'] = id
+			})
+		elseif owner then
 			if inventory then
 				exports.ghmattimysql:executeSync('INSERT INTO linden_inventory (name, data, owner) VALUES (@name, @data, @owner) ON DUPLICATE KEY UPDATE data = @data, owner = @owner', {
 					['@name'] = id,
@@ -205,11 +209,10 @@ SaveItems = function(type,id,owner)
 				else
 					local plate = string.match(id, "-(.*)")
 					if Config.TrimPlate then plate = ESX.Math.Trim(plate) end
-					local result = exports.ghmattimysql:scalarSync('SELECT `owner` from `owned_vehicles` WHERE `plate` = @plate', {
+					local result = exports.ghmattimysql:scalar('SELECT `owner` from `owned_vehicles` WHERE `plate` = @plate', {
 						['@plate'] = plate
 					})
 					if result then
-						local inventory = json.encode(getInventory(Inventories[id]))
 						if inventory then
 							exports.ghmattimysql:executeSync('INSERT INTO `linden_inventory` (name, data, owner) VALUES (@name, @data, @owner) ON DUPLICATE KEY UPDATE data = @data, owner = @owner', {
 								['@name'] = id,
@@ -223,7 +226,6 @@ SaveItems = function(type,id,owner)
 					end
 				end
 			else
-				local inventory = json.encode(getInventory(Inventories[id]))
 				exports.ghmattimysql:executeSync('INSERT INTO linden_inventory (name, data, owner) VALUES (@name, @data, @owner) ON DUPLICATE KEY UPDATE data = @data, owner = @owner', {
 					['@name'] = id,
 					['@data'] = inventory,
@@ -231,6 +233,7 @@ SaveItems = function(type,id,owner)
 				})
 			end
 		end
+		Inventories[id] = nil
 	end
 end
 
@@ -263,8 +266,11 @@ GetItems = function(id, inv, owner)
 					end
 				end
 			elseif inv == 'dumpster' then
-				if Config.RandomLoot then Datastore[id] = GenerateDatastore(inv) else Datastore[id] = {} end
-				return Datastore[id]
+				-- currently does not work due to changing ids
+				if Datastore[id] then return Datastore[id] else
+					if Config.RandomLoot then Datastore[id] = GenerateDatastore(inv) else Datastore[id] = {} end
+					return Datastore[id]
+				end
 			else
 				result = exports.ghmattimysql:scalarSync('SELECT `data` FROM `linden_inventory` WHERE name = @name', {
 					['@name'] = id
@@ -290,11 +296,12 @@ CheckOpenable = function(xPlayer, id, coords)
 		local srcCoords = GetEntityCoords(GetPlayerPed(xPlayer.source))
 		if #(coords - srcCoords) > 2 then return false end
 	end
-	if Opened[id] == nil then
-		Opened[id] = xPlayer.source
+	if Inventories[id].open == false then
+		Inventories[id].open = xPlayer.source
 		return true
+	else
+		return false
 	end
-	return false
 end
 
 ValidateString = function(item)
