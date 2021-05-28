@@ -31,7 +31,6 @@ ui_page 'html/index.html'
 files {
 	'html/index.html',
 	'html/script.js',
-	'html/images/*.png',
 	'html/reset.css',
 	'html/style.css'
 }
