@@ -125,7 +125,7 @@ CreateNewDrop = function(xPlayer, data)
 	local invid = RandomDropId()
 	local invid2 = xPlayer.source
 	Drops[invid] = {
-		name = invid,
+		id = invid,
 		inventory = {},
 		slots = Config.PlayerSlots,
 		coords = playerCoords,
@@ -189,14 +189,9 @@ end
 
 SaveItems = function(type, id, owner, inventory)
 	if type and id then
-		if type == 'player' then
-			exports.ghmattimysql:executeSync('UPDATE `users` SET `inventory` = @inventory WHERE identifier = @identifier', {
-				['@inventory'] = json.encode(inventory),
-				['@identifier'] = id
-			})
-		elseif owner then
+		if owner then
 			if inventory then
-				exports.ghmattimysql:executeSync('INSERT INTO linden_inventory (name, data, owner) VALUES (@name, @data, @owner) ON DUPLICATE KEY UPDATE data = @data, owner = @owner', {
+				exports.ghmattimysql:execute('INSERT INTO linden_inventory (name, data, owner) VALUES (@name, @data, @owner) ON DUPLICATE KEY UPDATE data = @data', {
 					['@name'] = id,
 					['@data'] = inventory,
 					['@owner'] = owner
@@ -209,12 +204,12 @@ SaveItems = function(type, id, owner, inventory)
 				else
 					local plate = string.match(id, "-(.*)")
 					if Config.TrimPlate then plate = ESX.Math.Trim(plate) end
-					local result = exports.ghmattimysql:scalar('SELECT `owner` from `owned_vehicles` WHERE `plate` = @plate', {
+					local result = exports.ghmattimysql:scalarSync('SELECT `owner` from `owned_vehicles` WHERE `plate` = @plate', {
 						['@plate'] = plate
 					})
 					if result then
 						if inventory then
-							exports.ghmattimysql:executeSync('INSERT INTO `linden_inventory` (name, data, owner) VALUES (@name, @data, @owner) ON DUPLICATE KEY UPDATE data = @data, owner = @owner', {
+							exports.ghmattimysql:execute('INSERT INTO `linden_inventory` (name, data, owner) VALUES (@name, @data, @owner) ON DUPLICATE KEY UPDATE data = @data', {
 								['@name'] = id,
 								['@data'] = inventory,
 								['@owner'] = result
@@ -226,7 +221,7 @@ SaveItems = function(type, id, owner, inventory)
 					end
 				end
 			else
-				exports.ghmattimysql:executeSync('INSERT INTO linden_inventory (name, data, owner) VALUES (@name, @data, @owner) ON DUPLICATE KEY UPDATE data = @data, owner = @owner', {
+				exports.ghmattimysql:execute('INSERT INTO linden_inventory (name, data, owner) VALUES (@name, @data, @owner) ON DUPLICATE KEY UPDATE data = @data', {
 					['@name'] = id,
 					['@data'] = inventory,
 					['@owner'] = ''
