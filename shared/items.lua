@@ -116,6 +116,10 @@ Config.ItemList = {
 	['at_skin_sniper_patriotic'] = { component = {`COMPONENT_HEAVYSNIPER_MK2_CAMO_IND_01`, `COMPONENT_MARKSMANRIFLE_MK2_CAMO_IND_01`}, useTime = 2500 },
 	['at_skin_sniper_gold'] = { component = {`COMPONENT_MARKSMANRIFLE_VARMOD_LUXE`}, useTime = 2500 },
 
+	['garbage'] = {},
+
+	['paperbag'] = {},
+
 	['burger'] = {
 		hunger = 200000,
 		animDict = 'mp_player_inteat@burger',
@@ -184,10 +188,17 @@ Config.ItemList = {
 	['phone'] = {
 		consume = 0,
 		event = 'gcPhone:forceOpenPhone',
-	},	
+	},
 
-	['garbage'] = {},
-
-	['paperbag'] = {},
+	['panties'] = {
+		stress = -5000,
+		animDict = 'mp_player_intdrink',
+		anim = 'loop_bottle',
+		model = 'prop_cs_panties_02',
+		coords = { x = 0.03, y = 0.0, z = 0.02 },
+		rotation = { x = 0.0, y = -13.5, z = -1.5 },
+		useTime = 2500,
+		consume = 0
+	},
 
 }
