@@ -135,7 +135,8 @@ HSN.Hotbar = function(items) {
 			let item = items[i]
 			if (item != null) {
 				if (item.metadata == undefined) { item.metadata = {} }
-				if (item.metadata.image == undefined) { image = item.name } else { image = item.metadata.image }
+				let image = item.name
+					if (item.metadata.image != undefined) { image = item.metadata.image }
 				$hotslot.html('<div id="itembox-label">'+item.label+'</div><div class="hotslot-img"><img src="images/' + image + '.png'+'" alt="' + item.name + '" /></div>');
 			}
 			$hotslot.appendTo($(".hotbar-container"));
@@ -156,7 +157,8 @@ HSN.NotifyItems = function(item, text) {
 	let $itembox = $(".itembox-container.template").clone();
 	$itembox.removeClass('template');
 	if (item.metadata == undefined) { item.metadata = {} }
-	if (item.metadata.image == undefined) { image = item.name } else { image = item.metadata.image }
+	let image = item.name
+					if (item.metadata.image != undefined) { image = item.metadata.image }
 	$itembox.html('<div id="itembox-action">' + text + '</div><div id="itembox-label">'+item.label+'</div><div class="itembox-img"><img src="images/' + image + '.png'+'" alt="' + item.name + '" /></div>');
 	$(".itemboxes-container").prepend($itembox);
 	$itembox.fadeIn(250);
@@ -199,7 +201,8 @@ HSN.RefreshInventory = function(data) {
 	$.each(data.inventory, function (i, item) {
 		if (item != null) {
 			if (item.metadata == undefined) { item.metadata = {} }
-			if (item.metadata.image == undefined) { image = item.name } else { image = item.metadata.image }
+			let image = item.name
+					if (item.metadata.image != undefined) { image = item.metadata.image }
 			totalkg = totalkg +(item.weight * item.count);
 			if ((item.name).split("_")[0] == "WEAPON" && item.metadata.durability !== undefined) {
 				$(".inventory-main-leftside").find("[inventory-slot=" + item.slot + "]").html('<div class="item-slot-img"><img src="images/' + image + '.png'+'" alt="' + item.name + '" /></div><div class="item-slot-count"><p>' + numberFormat(item.count, item.name) + ' ' + weightFormat(item.weight/1000 * item.count) + '</p></div><div class="item-slot-label"><div class="item-slot-durability-bar"></div>' + item.label + '</div>');
@@ -249,7 +252,8 @@ HSN.SetupInventory = function(data) {
 	$.each(data.inventory, function (i, item) {
 		if ((item != null)) {
 			if (item.metadata == undefined) { item.metadata = {} }
-			if (item.metadata.image == undefined) { image = item.name } else { image = item.metadata.image }
+			let image = item.name
+					if (item.metadata.image != undefined) { image = item.metadata.image }
 			totalkg = totalkg +(item.weight * item.count);
 			if ((item.name).split("_")[0] == "WEAPON" && item.metadata.durability !== undefined) {					
 				$(".inventory-main-leftside").find("[inventory-slot=" + item.slot + "]").html('<div class="item-slot-img"><img src="images/' + image + '.png'+'" alt="' + item.name + '" /></div><div class="item-slot-count"><p>' + numberFormat(item.count, item.name) + ' ' + weightFormat(item.weight/1000 * item.count) + '</p></div><div class="item-slot-label"><div class="item-slot-durability-bar"></div>' + item.label + '</div>');
@@ -287,7 +291,8 @@ HSN.SetupInventory = function(data) {
 				$.each(data.rightinventory.inventory, function (i, item) {
 					if (item != null) {
 						if (item.metadata == undefined) { item.metadata = {} }
-						if (item.metadata.image == undefined) { image = item.name } else { image = item.metadata.image }
+						let image = item.name
+					if (item.metadata.image != undefined) { image = item.metadata.image }
 						if ((item.name).split("_")[0] == "WEAPON" && item.metadata.durability !== undefined) {
 							if (currency == 'money' || currency == 'black_money' || currency == 'bank' || currency == undefined) {
 								$(".inventory-main-rightside").find("[inventory-slot=" + item.slot + "]").html('<div class="item-slot-img"><img src="images/' + image + '.png'+'" alt="' + item.name + '" /></div><div class="item-slot-count"><p>' + numberFormat(item.price, 'money') + '</p></div><div class="item-slot-label"><div class="item-slot-durability-bar"></div>' + item.label + '</div>');
@@ -314,7 +319,9 @@ HSN.SetupInventory = function(data) {
 			$.each(data.rightinventory.inventory, function (i, item) {
 				if (item != null) {
 					if (item.metadata == undefined) { item.metadata = {} }
-					if (item.metadata.image == undefined) { image = item.name } else { image = item.metadata.image }
+					let image = item.name
+					if (item.metadata.image != undefined) { image = item.metadata.image }
+					if (item.metadata.weight != undefined) { item.weight = item.weight + item.metadata.weight }
 					righttotalkg = righttotalkg + (item.weight * item.count);
 					if ((item.name).split("_")[0] == "WEAPON" && item.metadata.durability !== undefined) {
 						
@@ -543,13 +550,14 @@ SwapItems = function(fromInventory, toInventory, fromSlot, toSlot) {
 	availableweight = 0
 	//inv = from
 	//inv2 == to
+	let fromimage = fromItem.name
 	if (fromItem.metadata == undefined) { fromItem.metadata = {} }
 	if (fromItem.metadata.image == undefined) { fromimage = fromItem.name;};
 	if (inv2 !== 'Playerinv') {availableweight = rightfreeweight} else {availableweight = playerfreeweight}
 	if (inv == inv2 || (availableweight !== 0 && (fromItem.weight * count) <= availableweight)) {
 		if (toItem !== undefined ) { // stack
 			if (toItem.metadata == undefined) { toItem.metadata = {} }
-			if (toItem.metadata.image == undefined) { toimage = toItem.name }
+			if (toItem.metadata.image == undefined) { toimage = toItem.name } else { toimage = toItem.metadata.image }
 			if (count <= fromItem.count || count <= toItem.count) {
 				if(((fromItem.name).split("_")[0] == "WEAPON" && fromItem.metadata.durability !== undefined) && ((toItem.name).split("_")[0] == "WEAPON" && toItem.metadata.durability !== undefined)) {
 					// fromItem durability
@@ -771,6 +779,8 @@ SwapItems = function(fromInventory, toInventory, fromSlot, toSlot) {
 					} else {
 						item = fromInventory.find("[inventory-slot=" + rightinvslot + "]").data("ItemData");
 						item.weight = item.weight + (fromItem.weight * count)
+						let image = item.name
+						if (item.metadata.image != undefined) { image = item.metadata.image }
 						$(".inventory-main-leftside").find("[inventory-slot=" + item.slot + "]").html('<div class="item-slot-img"><img src="images/' + image + '.png'+'" alt="' + item.name + '" /></div><div class="item-slot-count"><p>' + numberFormat(item.count, item.name) + ' ' + weightFormat(item.weight/1000 * item.count) + '</p></div><div class="item-slot-label">' + item.label + '</div></div>');
 					}
 				}
@@ -784,6 +794,8 @@ SwapItems = function(fromInventory, toInventory, fromSlot, toSlot) {
 					} else {
 						item = toInventory.find("[inventory-slot=" + rightinvslot + "]").data("ItemData");
 						item.weight = item.weight - (fromItem.weight * count)
+						let image = item.name
+						if (item.metadata.image != undefined) { image = item.metadata.image }
 						$(".inventory-main-leftside").find("[inventory-slot=" + item.slot + "]").html('<div class="item-slot-img"><img src="images/' + image + '.png'+'" alt="' + item.name + '" /></div><div class="item-slot-count"><p>' + numberFormat(item.count, item.name) + ' ' + weightFormat(item.weight/1000 * item.count) + '</p></div><div class="item-slot-label">' + item.label + '</div></div>');
 					}
 				}
