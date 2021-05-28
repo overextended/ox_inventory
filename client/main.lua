@@ -486,30 +486,19 @@ end)
 
 TriggerLoops = function()
 	Citizen.CreateThread(function()
-		local Keys = {157, 158, 160, 164, 165}
 		local Disable = {37, 157, 158, 160, 164, 165, 289}
+		local Disable2 = {24, 25, 142, 257, 140, 141, 142}
 		local wait = false
 		while PlayerLoaded do
 			sleep = 5
-			for i = 19, 20 do
-				HideHudComponentThisFrame(i)
-			end
+			HideHudComponentThisFrame(19)
+			HideHudComponentThisFrame(20)
 			for i=1, #Disable, 1 do
 				DisableControlAction(0, Disable[i], true)
 			end
 			if isBusy or useItemCooldown then
-				DisableControlAction(0, 24, true)
-				DisableControlAction(0, 25, true)
-				DisableControlAction(0, 142, true)
-				DisableControlAction(0, 257, true)
-				DisableControlAction(0, 140, true)
-				DisableControlAction(0, 141, true)
-				DisableControlAction(0, 142, true)
-			elseif not invOpen and not wait and CanOpenInventory() then
-				for i=1, #Keys, 1 do
-					if IsDisabledControlJustReleased(0, Keys[i]) and ESX.PlayerData.inventory[i] then
-						TriggerEvent('linden_inventory:useItem', ESX.PlayerData.inventory[i])
-					end
+				for i=1, #Disable2, 1 do
+					DisableControlAction(0, Disable2[i], true)
 				end
 			end
 			if weaponTimer == 3 and currentWeapon then
@@ -576,6 +565,25 @@ TriggerLoops = function()
 			Citizen.Wait(sleep)
 		end
 	end)
+	
+	Hotkey = function(slot)
+		if PlayerLoaded and not invOpen and not wait and ESX.PlayerData.inventory[slot] then
+			TriggerEvent('linden_inventory:useItem', ESX.PlayerData.inventory[slot])
+		end
+	end
+
+	RegisterCommand('hotkey1', function() Hotkey(1) end)
+	RegisterCommand('hotkey2', function() Hotkey(2) end)
+	RegisterCommand('hotkey3', function() Hotkey(3) end)
+	RegisterCommand('hotkey4', function() Hotkey(4) end)
+	RegisterCommand('hotkey5', function() Hotkey(5) end)
+
+	RegisterKeyMapping('hotkey1', 'Use hotbar item 1', 'keyboard', '1')
+	RegisterKeyMapping('hotkey2', 'Use hotbar item 2', 'keyboard', '2')
+	RegisterKeyMapping('hotkey3', 'Use hotbar item 3', 'keyboard', '3')
+	RegisterKeyMapping('hotkey4', 'Use hotbar item 4', 'keyboard', '4')
+	RegisterKeyMapping('hotkey5', 'Use hotbar item 5', 'keyboard', '5')
+
 
 	Citizen.CreateThread(function()
 		local text, type, id = ''
@@ -713,9 +721,7 @@ TriggerLoops = function()
 				end
 			else
 				sleep = 100
-				if not CanOpenInventory() then
-					TriggerEvent('linden_inventory:closeInventory')
-				elseif currentInventory then
+				if currentInventory then
 					if currentInventory.type == 'TargetPlayer' then
 						local id = GetPlayerFromServerId(currentInventory.id)
 						local ped = GetPlayerPed(id)
@@ -737,6 +743,7 @@ TriggerLoops = function()
 					end
 				end
 			end
+			if invOpen and not CanOpenInventory() then TriggerEvent('linden_inventory:closeInventory') end
 			Citizen.Wait(sleep)
 		end
 	end)
