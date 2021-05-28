@@ -287,10 +287,10 @@ AddEventHandler('linden_inventory:openInventory', function(type, data, player)
 	else
 		if type ~= 'bag' and Opened[xPlayer.source] then return end
 		if type == 'drop' then
-			local invid = data
-			if Drops[invid] ~= nil and CheckOpenable(xPlayer, Drops[invid].name, Drops[invid].coords) then
-				Opened[xPlayer.source] = {invid = invid, type = 'drop'}
-				TriggerClientEvent('linden_inventory:openInventory', xPlayer.source, Inventories[xPlayer.source], Drops[invid])
+			if Drops[data] ~= nil and Opened[data] == nil and #(Drops[data].coords - GetEntityCoords(GetPlayerPed(xPlayer.source))) <= 2 then
+				Opened[xPlayer.source] = {invid = data, type = 'drop'}
+				Opened[data] = xPlayer.source
+				TriggerClientEvent('linden_inventory:openInventory', xPlayer.source, Inventories[xPlayer.source], Drops[data])
 			end
 		elseif data then
 			if type == 'shop' then
@@ -315,7 +315,7 @@ AddEventHandler('linden_inventory:openInventory', function(type, data, player)
 			elseif data.owner then
 				if data.owner == true then data.owner = xPlayer.identifier end
 				local id = data.id..'-'..data.owner
-				if not Inventories[id] or CheckOpenable(xPlayer, id, data.coords) then
+				if not Inventories[id] then
 					if not data.maxWeight then data.maxWeight = data.slots*8000 end
 					Inventories[id] = CreateInventory(
 						id,								-- id
@@ -327,15 +327,17 @@ AddEventHandler('linden_inventory:openInventory', function(type, data, player)
 						data.owner,						-- owner
 						GetItems(id, type, data.owner)	-- inventory
 					)
-					Inventories[id].set('open', xPlayer.source)
 					if data.coords then Inventories[id].set('coords', data.coords) end
+				end
+				if CheckOpenable(xPlayer, id, data.coords) then
+					Inventories[id].set('open', xPlayer.source)
 					Opened[xPlayer.source] = {invid = id, type = type}
 					TriggerClientEvent('linden_inventory:openInventory', xPlayer.source, Inventories[xPlayer.source], Inventories[id])
 				end
 			else
 				local id = data.id
 				if type == 'bag' then Opened[xPlayer.source] = nil end
-				if not Inventories[id] or CheckOpenable(xPlayer, id, data.coords) then
+				if not Inventories[id] then
 					if not data.maxWeight then
 						local maxWeight = {glovebox = 4000, trunk = 6000, bag = 1000}
 						data.maxWeight = data.slots*(maxWeight[type] or 8000)
@@ -350,11 +352,13 @@ AddEventHandler('linden_inventory:openInventory', function(type, data, player)
 						data.owner,						-- owner
 						GetItems(id, type, data.owner)	-- inventory
 					)
-					Inventories[id].set('open', true)
 					if data.coords then Inventories[id].set('coords', data.coords) end
 					if data.job then Inventories[id].set('job', data.job) end
 					if data.grade then Inventories[id].set('grade', data.grade) end
 					if data.slot then Inventories[id].set('slot', data.slot) end
+				end
+				if CheckOpenable(xPlayer, id, data.coords) then
+					Inventories[id].set('open', true)
 					Opened[xPlayer.source] = {invid = id, type = type}
 					TriggerClientEvent('linden_inventory:openInventory', xPlayer.source, Inventories[xPlayer.source], Inventories[id])
 				end
@@ -738,7 +742,7 @@ AddEventHandler('linden_inventory:saveInventory', function(data)
 			updateWeight(ESX.GetPlayerFromId(invid), false, data.weight, data.slot)
 		elseif data.type ~= 'shop' and data.type ~= 'drop' and Inventories[data.invid] then
 			invid = data.invid
-			if Inventories[data.invid].changed then	Inventories[data.invid].save() else Inventories[invid].set('open', false) end
+			Inventories[invid].set('open', false)
 		elseif data.type == 'drop' then invid = data.invid end
 		Citizen.Wait(50)
 		if xPlayer then
@@ -758,7 +762,7 @@ AddEventHandler('esx:playerDropped', function(playerid)
 			updateWeight(ESX.GetPlayerFromId(invid))
 			Opened[invid] = nil
 		elseif data.type ~= 'shop' and data.type ~= 'drop' and Inventories[data.invid] then
-			if Inventories[data.invid].changed then	Inventories[data.invid].save() else Inventories[invid].set('open', false) end
+			Inventories[data.invid].set('open', false)
 		elseif data.invid then Opened[data.invid] = nil end
 		Opened[playerid] = nil
 	end
