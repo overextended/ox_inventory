@@ -1,26 +1,42 @@
 CreateInventory = function(id, name, type, slots, weight, maxWeight, owner, inventory)
 	local self = {}
 
-	self.id = id
-	self.name = name
-	self.type = type
-	self.slots = slots
-	self.weight = weight
-	self.maxWeight = maxWeight
-	self.owner = owner
-	self.inventory = inventory or {}
-	self.open = false
+	self.id = id							-- unique id or identifier
+	self.name = name						-- name or label to display
+	self.type = type						-- player, stash, bag, etc.
+	self.slots = slots						-- slot count
+	self.weight = weight					-- current weight
+	self.maxWeight = maxWeight				-- maximum weight
+	self.owner = owner						-- identifier of the owner, if one exists
+	self.inventory = inventory or {}		-- stored items
+	self.open = false						-- playerid of whoever is using the inventory
 
-	if self.type == 'player' then
+	if self.type == 'player' then			-- reference the xPlayer without having to specifically call for it
 		self.player = function() return ESX.GetPlayerFromId(self.id) end
-	end
-
-	self.set = function(k, v)
-		self[k] = v
+	else
+		self.changed = false				-- have the inventory contents have changed or moved
+		self.timeout = false				-- is the inventory waiting to save
 	end
 
 	self.get = function(k, v)
 		return self[k]
+	end
+
+	self.set = function(k, v)
+		self[k] = v
+		if k == 'open' and v == false and self.changed == true and self.timeout == false then
+			self.timer()				-- when inventory closes set a timer
+		end
+	end
+
+	self.timer = function()
+		self.set('timeout', true)
+		SetTimeout(30000, function()	-- save the inventory after 30 seconds
+			if self.open == false then	-- unless it is open when the save should trigger
+				self.save()
+			end
+			self.set('timeout', false)
+		end)
 	end
 
 	self.save = function()
@@ -42,7 +58,7 @@ CreateInventory = function(id, name, type, slots, weight, maxWeight, owner, inve
 				['@identifier'] = self.identifier
 			})
 		else
-			SaveItems(self.type, self.id, self.owner, json.encode(self.inventory))
+			SaveItems(self.type, self.id, self.owner, json.encode(inventory))
 		end
 	end
 
