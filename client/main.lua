@@ -142,7 +142,7 @@ end
 OpenStash = function(data)
 	if data and not currentInventory and CanOpenInventory() and not CanOpenTarget(ESX.PlayerData.ped) then
 		if not data.slots then data.slots = (Config.PlayerSlots * 1.5) end
-		data.id = data.name
+		if data.name then data.id = data.name end
 		TriggerServerEvent('linden_inventory:openInventory', 'stash', data)
 	end
 end
@@ -313,10 +313,10 @@ end)
 
 RegisterNetEvent('linden_inventory:createDrop')
 AddEventHandler('linden_inventory:createDrop', function(data, owner)
-	Drops[data.name] = data
-	Drops[data.name].coords = vector3(data.coords.x, data.coords.y,data.coords.z - 0.2)
+	Drops[data.id] = data
+	Drops[data.id].coords = vector3(data.coords.x, data.coords.y,data.coords.z - 0.2)
 	if owner == playerID and invOpen and #(playerCoords - data.coords) <= 1 then
-		if not IsPedInAnyVehicle(ESX.PlayerData.ped, false) then TriggerServerEvent('linden_inventory:openInventory', 'drop', data.name )
+		if not IsPedInAnyVehicle(ESX.PlayerData.ped, false) then TriggerServerEvent('linden_inventory:openInventory', 'drop', data.id )
 		else
 			TriggerServerEvent('linden_inventory:openInventory')
 		end
@@ -326,7 +326,7 @@ end)
 RegisterNetEvent('linden_inventory:removeDrop')
 AddEventHandler('linden_inventory:removeDrop', function(id, owner)
 	Drops[id] = nil
-	if currentDrop and currentDrop.name == id then currentDrop = nil end
+	if currentDrop and currentDrop.id == id then currentDrop = nil end
 	if owner == playerID and invOpen then
 		drop = nil
 		TriggerServerEvent('linden_inventory:openInventory')
@@ -672,13 +672,13 @@ TriggerLoops = function()
 								sleep = 5
 								DrawMarker(2, v.coords.x,v.coords.y,v.coords.z, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.3, 0.2, 0.15, 150, 30, 30, 222, false, false, false, true, false, false, false)
 								if distance <= 2 and (closestDrop == nil or (currentDrop and closestDrop and distance < currentDrop.distance)) then
-									closestDrop = {name = v.name, distance = distance}
+									closestDrop = {id = v.id, distance = distance}
 								end
 							end
 						end
 					end
 					if closestDrop then
-						if closestDrop.distance <= 1 then currentDrop = {name=closestDrop.name, distance=closestDrop.distance} else currentDrop = nil end
+						if closestDrop.distance <= 1 then currentDrop = {id=closestDrop.id, distance=closestDrop.distance} else currentDrop = nil end
 					end
 				end
 				if Config.WeaponsLicense then
@@ -761,7 +761,7 @@ RegisterCommand('inv', function()
 	else
 		if CanOpenInventory() then
 			TriggerEvent('randPickupAnim')
-			if currentDrop then drop = currentDrop.name
+			if currentDrop then drop = currentDrop.id
 			else
 				local property = false
 				TriggerEvent('linden_inventory:getProperty', function(data) property = data end)
@@ -984,17 +984,15 @@ AddEventHandler('linden_inventory:useItem',function(item)
 				
 			if esxItem then
 				TriggerEvent('linden_inventory:closeInventory') UseItem(item, true)
-			elseif data then
-				if data.event then
-					if not data.useTime then data.useTime = 0 end
-					TriggerEvent(data.event, item, data.useTime, function(cb)
-						if cb then
-							UseItem(item, false, data)
-						else
-							TriggerEvent('mythic_notify:client:SendAlert', {type = 'error', text = _U('cannot_use', item.label), length = 2500}) return
-						end
-					end)
-				end
+			elseif data and next(data) then
+				if not data.useTime then data.useTime = 0 end
+				TriggerEvent(data.event, item, data.useTime, function(cb)
+					if cb then
+						UseItem(item, false, data)
+					else
+						TriggerEvent('mythic_notify:client:SendAlert', {type = 'error', text = _U('cannot_use', item.label), length = 2500}) return
+					end
+				end)
 			end
 		else
 			if Config.Ammos[item.name] or item.name:find('WEAPON_') then
