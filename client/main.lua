@@ -404,7 +404,7 @@ AddEventHandler('linden_inventory:weapon', function(item)
 end)
 
 AddEventHandler('linden_inventory:usedWeapon',function()
-	weaponTimer = (100 * 3)
+	weaponTimer = (100 * 5)
 end)
 
 AddEventHandler('linden_inventory:currentWeapon', function(weapon)
@@ -501,10 +501,10 @@ TriggerLoops = function()
 					DisableControlAction(0, Disable2[i], true)
 				end
 			end
-			if weaponTimer == 3 and currentWeapon then
+			if weaponTimer == 5 and currentWeapon then
 				TriggerServerEvent('linden_inventory:updateWeapon', currentWeapon)
 				weaponTimer = 0
-			elseif weaponTimer > 3 then weaponTimer = weaponTimer - 3 end
+			elseif weaponTimer > 5 then weaponTimer = weaponTimer - 5 end
 			if not invOpen and currentWeapon then
 				if IsPedArmed(ESX.PlayerData.ped, 6) then
 					DisableControlAction(1, 140, true)
