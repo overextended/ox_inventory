@@ -2,8 +2,6 @@
 title: Usage
 ---
 
-| [Installation](index) | [Usage](usage) | [Snippets](snippets) | [Other Resources](resources) | [Media](media)
-
 ## xPlayer functions
 * Compatibility is important, that's why we've modified the framework with the inventory exports
 * All functions will work as they did previously, with some extra benefits such as metadata
@@ -11,17 +9,17 @@ title: Usage
 
 #### Give player an item
 ```lua
-  local metadata = {type='pee',description='it smells a little funky'}
-  xPlayer.addInventoryItem(water, 1, metadata)
-  /giveitem [id] [item] [count] [metadata]
+  xPlayer.addInventoryItem(water, 1, {type='pee', description='it smells a little funky'})
+  
+  /giveitem [id] [item] [count] [metadata.type (single word)]
 ```
 * This would give water with the type and description in the item information
 
 #### Remove an item
 ```lua
-  local metadata = {type='pee',description='it smells a little funky'}
-  xPlayer.removeInventoryItem(water, 1, metadata)
-  /remove [id] [item] [count] [metadata]
+  xPlayer.removeInventoryItem(water, 1, {type='pee', description='it smells a little funky'})
+  
+  /remove [id] [item] [count] [metadata.type (single word)]
 ```
 * This would only remove an item with matching metadata
 * Leaving the metadata blank will remove any item with that name
@@ -65,9 +63,9 @@ end, true)
 * You can define an owner for a stash, attaching their player identifier
 * You can have owned stashes with the same name as long as the identifier doesn't match
 ```lua
-	exports['linden_inventory']:OpenStash({ name = 'Hospital Locker', slots = 70, job= 'ambulance'})
-	exports['linden_inventory']:OpenStash({ name = 'Bank Deposit Box', slots = 20, owner = ESX.GetPlayerData().identifier()})
-	exports['linden_inventory']:OpenStash({ name = 'Personal Locker', slots = 20, job = 'police', owner = ESX.GetPlayerData().identifier()})
+	exports['linden_inventory']:OpenStash({ id = 'Hospital Locker', slots = 70, job= 'ambulance'})
+	exports['linden_inventory']:OpenStash({ id = 'Bank Deposit Box', slots = 20, owner = ESX.GetPlayerData().identifier()})
+	exports['linden_inventory']:OpenStash({ id = 'Personal Locker', slots = 20, job = 'police', owner = ESX.GetPlayerData().identifier()})
 ```
 * Example for adding a stash to `esx_property` in Snippets
 
@@ -86,27 +84,39 @@ All your old items using `ESX.RegisterUsableItem` still work, however I would pe
 * Setting consume to `0` means it's unlimited usage, otherwise it sets the number to remove (default is 1, do not define)
 * Set how long it takes to use an item, animations to trigger, and props to attach (through mythic_progbar)
 * Set items to add or remove hunger, thirst, stress, or drunk
-* Trigger events before or after the item is used with `dofirst` and `event`
+* Trigger events callbacks when the item is used with `event`
 * You can define existing events from other resources, or add new ones to `client/items.lua`
 
 ```lua
-	['bandage'] = {
-		animDict = 'missheistdockssetup1clipboard@idle_a',
-		anim = 'idle_a',
-		flags = 49,
-		model = 'prop_rolled_sock_02',
-		coords = { x = -0.14, y = 0.02, z = -0.08 },
-		rotation = { x = -50.0, y = -50.0, z = 0.0 },
-		useTime = 2500,
-		event = 'linden_inventory:bandage'
-	},
-	
-	['lockpick'] = {
-		disableMove = true,
-		animDict = 'anim@amb@clubhouse@tutorial@bkr_tut_ig3@',
-		anim = 'machinic_loop_mechandplayer',
-		useTime = 2000,
-		consume = 0,
-		dofirst = 'esx_lockpick:onUse'
-	},
+['burger'] = {
+	hunger = 200000,
+	animDict = 'mp_player_inteat@burger',
+	anim = 'mp_player_int_eat_burger_fp',
+	model = 'prop_cs_burger_01',
+	coords = { x = 0.02, y = 0.022, z = -0.02 },
+	rotation = { x = 0.0, y = 5.0, z = 0.0 },
+	useTime = 2500,
+	event = 'linden_inventory:burger'
+},
 ```
+
+```lua
+AddEventHandler('linden_inventory:burger', function(item, wait, cb)
+	cb(true)
+	Citizen.Wait(wait)
+	TriggerEvent('mythic_notify:client:SendAlert', {type = 'inform', text = 'You ate a delicious burger', length = 2500})
+end)
+```
+
+* The event triggered when using a burger receives the following information
+	- item.name (as it appears in the database)
+	- item.label (the display text)
+	- item.weight
+	- item.stackable
+	- item.description
+	- item.closeonuse
+	- item.metadata (blank)
+	- useTime (2500ms, in this case)
+* Using `cb(true)` will trigger the progress bar, item effects, and remove the item
+* Using `cb(false)` will cancel the function and the item will not be used
+* Always add a Wait before triggering the item use results
