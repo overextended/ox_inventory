@@ -361,16 +361,17 @@ Full-Width Styles
 .contents {
   position: fixed;
   margin: 0 auto;
-  top: 40px;
-  left: 0;
+  right: 85.1%;
+  background: #f2f2f2;
+  margin-left: 1%;
 }
 
 
 #contents {
-  background: #f2f2f2;
   position: relative;
   margin-left: 1%;
   box-shadow: 0 1px 1px 1px rgba(20,20,20,0.2) inset;
+  padding: 3px;
   width: fit-content;
 }
 
