@@ -2,7 +2,7 @@
 title: ESX v1 Final
 ---
 
-| [Installation](index) | [Usage](usage) | [Snippets](snippets) | [Other Resources](resources) | [Media](media)
+> This is an outdated guide and will only work for the inventory prior to version 1.5x
 
 <h2 align='center'>Server Config</h2>
 
