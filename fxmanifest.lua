@@ -2,8 +2,8 @@ fx_version 'cerulean'
 game 'gta5'
 author 'Linden'
 description 'https://github.com/thelindat/linden_inventory'
-versioncheck 'https://raw.githubusercontent.com/thelindat/linden_inventory/main/fxmanifest.lua'
-version '1.5.4'
+versioncheck 'https://raw.githubusercontent.com/thelindat/linden_inventory/dev/fxmanifest.lua'
+version '1.6.0-pre2'
 
 dependencies {
 	'es_extended',

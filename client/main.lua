@@ -142,7 +142,7 @@ end
 OpenStash = function(data)
 	if data and not currentInventory and CanOpenInventory() and not CanOpenTarget(ESX.PlayerData.ped) then
 		if not data.slots then data.slots = (Config.PlayerSlots * 1.5) end
-		data.id = data.name
+		if data.name then data.id = data.name end
 		TriggerServerEvent('linden_inventory:openInventory', 'stash', data)
 	end
 end
@@ -313,10 +313,10 @@ end)
 
 RegisterNetEvent('linden_inventory:createDrop')
 AddEventHandler('linden_inventory:createDrop', function(data, owner)
-	Drops[data.name] = data
-	Drops[data.name].coords = vector3(data.coords.x, data.coords.y,data.coords.z - 0.2)
+	Drops[data.id] = data
+	Drops[data.id].coords = vector3(data.coords.x, data.coords.y,data.coords.z - 0.2)
 	if owner == playerID and invOpen and #(playerCoords - data.coords) <= 1 then
-		if not IsPedInAnyVehicle(ESX.PlayerData.ped, false) then TriggerServerEvent('linden_inventory:openInventory', 'drop', data.name )
+		if not IsPedInAnyVehicle(ESX.PlayerData.ped, false) then TriggerServerEvent('linden_inventory:openInventory', 'drop', data.id )
 		else
 			TriggerServerEvent('linden_inventory:openInventory')
 		end
@@ -326,7 +326,7 @@ end)
 RegisterNetEvent('linden_inventory:removeDrop')
 AddEventHandler('linden_inventory:removeDrop', function(id, owner)
 	Drops[id] = nil
-	if currentDrop and currentDrop.name == id then currentDrop = nil end
+	if currentDrop and currentDrop.id == id then currentDrop = nil end
 	if owner == playerID and invOpen then
 		drop = nil
 		TriggerServerEvent('linden_inventory:openInventory')
@@ -404,7 +404,7 @@ AddEventHandler('linden_inventory:weapon', function(item)
 end)
 
 AddEventHandler('linden_inventory:usedWeapon',function()
-	weaponTimer = (100 * 3)
+	weaponTimer = (100 * 5)
 end)
 
 AddEventHandler('linden_inventory:currentWeapon', function(weapon)
@@ -486,36 +486,25 @@ end)
 
 TriggerLoops = function()
 	Citizen.CreateThread(function()
-		local Keys = {157, 158, 160, 164, 165}
 		local Disable = {37, 157, 158, 160, 164, 165, 289}
+		local Disable2 = {24, 25, 142, 257, 140, 141, 142}
 		local wait = false
 		while PlayerLoaded do
 			sleep = 5
-			for i = 19, 20 do
-				HideHudComponentThisFrame(i)
-			end
+			HideHudComponentThisFrame(19)
+			HideHudComponentThisFrame(20)
 			for i=1, #Disable, 1 do
 				DisableControlAction(0, Disable[i], true)
 			end
 			if isBusy or useItemCooldown then
-				DisableControlAction(0, 24, true)
-				DisableControlAction(0, 25, true)
-				DisableControlAction(0, 142, true)
-				DisableControlAction(0, 257, true)
-				DisableControlAction(0, 140, true)
-				DisableControlAction(0, 141, true)
-				DisableControlAction(0, 142, true)
-			elseif not invOpen and not wait and CanOpenInventory() then
-				for i=1, #Keys, 1 do
-					if IsDisabledControlJustReleased(0, Keys[i]) and ESX.PlayerData.inventory[i] then
-						TriggerEvent('linden_inventory:useItem', ESX.PlayerData.inventory[i])
-					end
+				for i=1, #Disable2, 1 do
+					DisableControlAction(0, Disable2[i], true)
 				end
 			end
-			if weaponTimer == 3 and currentWeapon then
+			if weaponTimer == 5 and currentWeapon then
 				TriggerServerEvent('linden_inventory:updateWeapon', currentWeapon)
 				weaponTimer = 0
-			elseif weaponTimer > 3 then weaponTimer = weaponTimer - 3 end
+			elseif weaponTimer > 5 then weaponTimer = weaponTimer - 5 end
 			if not invOpen and currentWeapon then
 				if IsPedArmed(ESX.PlayerData.ped, 6) then
 					DisableControlAction(1, 140, true)
@@ -576,6 +565,25 @@ TriggerLoops = function()
 			Citizen.Wait(sleep)
 		end
 	end)
+	
+	Hotkey = function(slot)
+		if PlayerLoaded and not invOpen and not wait and ESX.PlayerData.inventory[slot] then
+			TriggerEvent('linden_inventory:useItem', ESX.PlayerData.inventory[slot])
+		end
+	end
+
+	RegisterCommand('hotkey1', function() Hotkey(1) end)
+	RegisterCommand('hotkey2', function() Hotkey(2) end)
+	RegisterCommand('hotkey3', function() Hotkey(3) end)
+	RegisterCommand('hotkey4', function() Hotkey(4) end)
+	RegisterCommand('hotkey5', function() Hotkey(5) end)
+
+	RegisterKeyMapping('hotkey1', 'Use hotbar item 1', 'keyboard', '1')
+	RegisterKeyMapping('hotkey2', 'Use hotbar item 2', 'keyboard', '2')
+	RegisterKeyMapping('hotkey3', 'Use hotbar item 3', 'keyboard', '3')
+	RegisterKeyMapping('hotkey4', 'Use hotbar item 4', 'keyboard', '4')
+	RegisterKeyMapping('hotkey5', 'Use hotbar item 5', 'keyboard', '5')
+
 
 	Citizen.CreateThread(function()
 		local text, type, id = ''
@@ -672,13 +680,13 @@ TriggerLoops = function()
 								sleep = 5
 								DrawMarker(2, v.coords.x,v.coords.y,v.coords.z, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.3, 0.2, 0.15, 150, 30, 30, 222, false, false, false, true, false, false, false)
 								if distance <= 2 and (closestDrop == nil or (currentDrop and closestDrop and distance < currentDrop.distance)) then
-									closestDrop = {name = v.name, distance = distance}
+									closestDrop = {id = v.id, distance = distance}
 								end
 							end
 						end
 					end
 					if closestDrop then
-						if closestDrop.distance <= 1 then currentDrop = {name=closestDrop.name, distance=closestDrop.distance} else currentDrop = nil end
+						if closestDrop.distance <= 1 then currentDrop = {id=closestDrop.id, distance=closestDrop.distance} else currentDrop = nil end
 					end
 				end
 				if Config.WeaponsLicense then
@@ -713,9 +721,7 @@ TriggerLoops = function()
 				end
 			else
 				sleep = 100
-				if not CanOpenInventory() then
-					TriggerEvent('linden_inventory:closeInventory')
-				elseif currentInventory then
+				if currentInventory then
 					if currentInventory.type == 'TargetPlayer' then
 						local id = GetPlayerFromServerId(currentInventory.id)
 						local ped = GetPlayerPed(id)
@@ -737,6 +743,7 @@ TriggerLoops = function()
 					end
 				end
 			end
+			if invOpen and not CanOpenInventory() then TriggerEvent('linden_inventory:closeInventory') end
 			Citizen.Wait(sleep)
 		end
 	end)
@@ -761,7 +768,7 @@ RegisterCommand('inv', function()
 	else
 		if CanOpenInventory() then
 			TriggerEvent('randPickupAnim')
-			if currentDrop then drop = currentDrop.name
+			if currentDrop then drop = currentDrop.id
 			else
 				local property = false
 				TriggerEvent('linden_inventory:getProperty', function(data) property = data end)
@@ -984,17 +991,15 @@ AddEventHandler('linden_inventory:useItem',function(item)
 				
 			if esxItem then
 				TriggerEvent('linden_inventory:closeInventory') UseItem(item, true)
-			elseif data then
-				if data.event then
-					if not data.useTime then data.useTime = 0 end
-					TriggerEvent(data.event, item, data.useTime, function(cb)
-						if cb then
-							UseItem(item, false, data)
-						else
-							TriggerEvent('mythic_notify:client:SendAlert', {type = 'error', text = _U('cannot_use', item.label), length = 2500}) return
-						end
-					end)
-				end
+			elseif data and next(data) then
+				if not data.useTime then data.useTime = 0 end
+				TriggerEvent(data.event, item, data.useTime, function(cb)
+					if cb then
+						UseItem(item, false, data)
+					else
+						TriggerEvent('mythic_notify:client:SendAlert', {type = 'error', text = _U('cannot_use', item.label), length = 2500}) return
+					end
+				end)
 			end
 		else
 			if Config.Ammos[item.name] or item.name:find('WEAPON_') then

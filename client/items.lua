@@ -40,10 +40,3 @@ AddEventHandler('linden_inventory:armour', function(item, wait, cb)
 	SetPlayerMaxArmour(playerID, 100)
 	SetPedArmour(ESX.PlayerData.ped, 100)
 end)
-
---[[		On hold, giving me an aneurysm to get the weight system working properly
-AddEventHandler('linden_inventory:paperbag', function(item, wait, cb)
-	if item.name == 'paperbag' then
-		OpenStash({ item = {slot=item.slot, name=item.name}, slots = 3, maxWeight = 1000, name = item.metadata.type, label = 'Paper bag ('..item.metadata.type..')' })
-	end
-end)]]
