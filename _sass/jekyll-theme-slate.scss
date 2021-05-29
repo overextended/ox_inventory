@@ -357,6 +357,23 @@ Full-Width Styles
   padding-top: 40px;
 }
 
+
+.contents {
+  position: fixed;
+  max-width: 8%;
+  padding: 10px 5px;
+  margin: 0 auto;
+}
+
+
+#contents {
+  background: #f2f2f2;
+  position: relative;
+  margin-left: 15%;
+  width: 7%;
+  box-shadow: 0 1px 1px 1px rgba(20,20,20,0.2) inset;
+}
+
 #footer_wrap {
   background: #212121;
   border-top: 1px solid #1d1d1d
