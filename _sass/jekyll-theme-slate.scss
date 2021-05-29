@@ -360,19 +360,15 @@ Full-Width Styles
 
 .contents {
   position: fixed;
-  margin: 0 auto;
-  right: 85.1%;
+  right: 85%;
   background: #f2f2f2;
-  margin-left: 1%;
+  box-shadow: 0 1px 1px 1px rgba(20,20,20,0.2) inset;
 }
 
 
 #contents {
   position: relative;
-  margin-left: 1%;
-  box-shadow: 0 1px 1px 1px rgba(20,20,20,0.2) inset;
-  padding: 3px;
-  width: fit-content;
+  min-width: 100px;
 }
 
 #footer_wrap {
