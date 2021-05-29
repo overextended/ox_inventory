@@ -2,8 +2,6 @@
 title: Media
 ---
 
-| [Installation](index) | [Usage](usage) | [Snippets](snippets) | [Other Resources](resources) | [Media](media)
-
 ### Set weapons to require a specific license to purchase (includes 'weapon license' by default)
 ![image](https://user-images.githubusercontent.com/65407488/114338589-b7717d80-9b96-11eb-8086-ec3f9adbc967.png)
 ![image](https://user-images.githubusercontent.com/65407488/114338679-e7208580-9b96-11eb-8813-d66fb1a4aba9.png)
