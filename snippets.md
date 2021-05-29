@@ -2,8 +2,6 @@
 title: Snippets
 ---
 
-| [Installation](index) | [Usage](usage) | [Snippets](snippets) | [Other Resources](resources) | [Media](media)
-
 
 ## Police body search
 * It's just /steal in a menu basically
@@ -42,24 +40,18 @@ OpenStorage = function(houseid, k, v)
 end
 ```
 
-## Set player death status
-* There are better ways to do this, but for the simplest method search go to `esx_ambulancejob/server/main.lua`
-* Locate `RegisterNetEvent('esx_ambulancejob:setDeathStatus')` and add the following
-```lua
-	TriggerClientEvent('esx_ambulancejob:setDeathStatus', xPlayer.source, isDead)
-```
-
-## Display inventory items
+## Count inventory items
 * The default method for looping through the inventory will still function, however it will not stack items of the same name
 * The below function will count up items with the same name, though it doesn't check metadata
 ```lua
-	local inv = {}
-	for k, v in pairs(ESX.GetPlayerData().inventory) do
-		if inv[v.name] then
-			inv[v.name].count = inv[v.name].count + v.count
-		else inv[v.name] = v end
-	end
-	for k, v in pairs(inv) do
-		print(k, v.count)
-	end
+local inv = {}
+for k, v in pairs(ESX.GetPlayerData().inventory) do
+	if inv[v.name] then
+		inv[v.name].count = inv[v.name].count + v.count
+	else inv[v.name] = v end
+end
+for k, v in pairs(inv) do
+	print(k, v.count)
+end
 ```
+* You can add a check if the item being checked exists in another table if you are counting specific items
