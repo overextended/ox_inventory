@@ -363,12 +363,14 @@ Full-Width Styles
   right: 85%;
   background: #f2f2f2;
   box-shadow: 0 1px 1px 1px rgba(20,20,20,0.2) inset;
+  border-collapse: revert;
+  padding: 3px;
 }
 
 
 #contents {
   position: relative;
-  min-width: 100px;
+  padding: 1px;
 }
 
 #footer_wrap {
