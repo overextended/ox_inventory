@@ -207,6 +207,7 @@ SetNuiFocusAdvanced = function(hasFocus, hasCursor)
 	TriggerEvent('nui:focus', hasFocus, hasCursor)
 
 	if nui_focus[1] then
+		Citizen.Wait(200)
 		if Config.EnableBlur then TriggerScreenblurFadeIn(0) end
 		Citizen.CreateThread(function()
 			local ticks = 0
@@ -472,7 +473,7 @@ AddEventHandler('linden_inventory:closeInventory',function()
 		CloseVehicle(lastVehicle)
 	end
 	SetNuiFocusAdvanced(false, false)
-	currentInventory = nil
+	currentInventory, currentDrop = nil, nil
 	Citizen.Wait(200)
 	invOpen = false
 end)
@@ -948,15 +949,8 @@ RegisterNUICallback('BuyFromShop', function(data)
 end)
 
 RegisterNUICallback('exit',function(data)
-	TriggerScreenblurFadeOut(0)
-	if lastVehicle then
-		CloseVehicle(lastVehicle)
-	end
 	TriggerServerEvent('linden_inventory:saveInventory', data)
-	currentInventory = nil
-	SetNuiFocusAdvanced(false, false)
-	Citizen.Wait(200)
-	invOpen = false
+	TriggerEvent('linden_inventory:closeInventory')
 end)
 
 
