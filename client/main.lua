@@ -1057,3 +1057,27 @@ UseItem = function(item, esxItem, data)
 		isBusy = false
 	end, item.name, item.slot, item.metadata, esxItem)
 end
+
+Citizen.CreateThread(function()
+    local shopKeeps = {
+        `mp_m_shopkeep_01`
+    }
+
+    exports['labrp_Eye']:AddTargetModel(shopKeeps, {
+        options = {
+            {
+                event = 'openShopInventory',
+                icon = 'fas fa-shopping-cart',
+                label = '24/7 Store',
+                something_else = 52
+            },
+        },
+        job = {'all'},
+        distance = 3.0
+    })
+end)
+
+RegisterNetEvent('openShopInventory')
+AddEventHandler('openShopInventory',function(data)
+    TriggerServerEvent('linden_inventory:openInventory', 'Convenience Store', data.something_else)
+end)
