@@ -233,7 +233,7 @@ HSN.SetupInventory = function(data) {
 			if ((item != null)) {
 				if (item.metadata == undefined) { item.metadata = {} }
 				let image = item.name
-				if (item.metadata.image != undefined) { image = item.metadata.image }
+				if (item.metadata.image != undefined) { image = item.metadata.image}
 				totalkg = totalkg +(item.weight * item.count);
 				if ((item.name).split("_")[0] == "WEAPON" && item.metadata.durability !== undefined) {					
 					$(".inventory-main-leftside").find("[inventory-slot=" + item.slot + "]").html('<div class="item-slot-img"><img src="images/' + image + '.png'+'" alt="' + item.name + '" /></div><div class="item-slot-count"><p>' + numberFormat(item.count, item.name) + ' ' + weightFormat(item.weight/1000 * item.count) + '</p></div><div class="item-slot-label"><div class="item-slot-durability-bar"></div>' + item.label + '</div>');
@@ -780,17 +780,20 @@ SwapItems = function(fromInventory, toInventory, fromSlot, toSlot) {
 	DragAndDrop()
 }
 
+var canScroll = true
 
-document.getElementById("left-inv").addEventListener("wheel", function(event) {
-	if (event.deltaY > 0) {
-		let scroll = 102 + this.scrollTop;
-		this.scroll({
-			top: scroll,
-		})
-	} else {
-		let scroll = 102 - this.scrollTop;
-		this.scroll({
-			top: -scroll,
+function Scroll(event) {
+	event.preventDefault()
+	if (canScroll) {
+		canScroll = false
+		if (event.deltaY > 0) { scroll = 102 } else { scroll = -102 }
+		$.when(this.scrollBy({
+			top: scroll
+		})).done(function() {
+			canScroll = true
 		})
 	}
-})
+}
+
+document.getElementById("left-inv").addEventListener("wheel", Scroll)
+document.getElementById("right-inv").addEventListener("wheel", Scroll)
