@@ -362,7 +362,7 @@ function DragAndDrop() {
 					HSN.InventoryMessage('cannot_perform', 2)
 					return false
 				} else {
-					IsDragging = true;
+					IsDragging = $(event.target).data("ItemData").count;
 					$(this).find("img").css("filter", "brightness(50%)");
 					count = $("#item-count").val();
 				}
@@ -372,7 +372,6 @@ function DragAndDrop() {
 		},
 		stop: function() {
 			setTimeout(function(){
-				$(this).addClass('ui-draggable-dragging')
 				IsDragging = false;
 			}, 300)
 			$(this).find("img").css("filter", "brightness(100%)");
@@ -786,7 +785,7 @@ function Scroll(event) {
 	event.preventDefault()
 	if (canScroll) {
 		canScroll = false
-		if (event.deltaY > 0) { scroll = 102 } else { scroll = -102 }
+		if (event.originalEvent.deltaY > 0) { scroll = 102 } else { scroll = -102 }
 		$.when(this.scrollBy({
 			top: scroll
 		})).done(function() {
@@ -795,5 +794,27 @@ function Scroll(event) {
 	}
 }
 
-document.getElementById("left-inv").addEventListener("wheel", Scroll)
-document.getElementById("right-inv").addEventListener("wheel", Scroll)
+$("#left-inv").on("wheel", Scroll)
+$("#right-inv").on("wheel", Scroll)
+
+function Counter(event) {
+	let count = parseInt($("#item-count").val()) || 0
+	if (event.originalEvent.deltaY < 0) {
+		if (count >= IsDragging) { return }
+		$("#item-count").val(count + 1)
+	}
+	else if (count > 0) {
+		$("#item-count").val(count - 1) 
+	}
+}
+
+$("#item-count").on("wheel", function(event) {
+	let count = parseInt($("#item-count").val()) || 0
+	if (event.originalEvent.deltaY < 0) {
+		if (count >= IsDragging) { return }
+		$("#item-count").val(count + 1)
+	}
+	else if (count > 0) {
+		$("#item-count").val(count - 1) 
+	}
+})
