@@ -358,7 +358,7 @@ function DragAndDrop() {
 		containment: "parent",
 		start: function(event, ui) {
 			fromInv = $(this).parent().data('invTier')
-			if (rightinvtype !== 'Playerinv' && rightgrade > job.grade) {
+			if (fromInv !== 'Playerinv' && rightgrade > job.grade) {
 				HSN.InventoryMessage('stash_lowgrade', 2)
 				return false
 			} else if (fromInv == 'Playerinv' && rightinvslot == $(this).attr("inventory-slot")) {
