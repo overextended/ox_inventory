@@ -207,7 +207,7 @@ SetNuiFocusAdvanced = function(hasFocus, hasCursor)
 	TriggerEvent('nui:focus', hasFocus, hasCursor)
 
 	if nui_focus[1] then
-		Citizen.Wait(200)
+		Citizen.Wait(100)
 		if Config.EnableBlur then TriggerScreenblurFadeIn(0) end
 		Citizen.CreateThread(function()
 			local ticks = 0
