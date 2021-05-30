@@ -1,6 +1,5 @@
 <html>
 	<head>
-		<link rel="stylesheet" href="reset.css" type="text/css">
         <link rel="stylesheet" href="style.css" type="text/css">
         <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js"></script>
@@ -15,14 +14,14 @@
 					<td><table style='width: 100%;'><tr><td class='rightside-name' style='text-align:left;'></td><td class='rightside-weight' style='text-align:right;'></td></tr></table></td>
 				</tr>
 				<tr>
-					<td><div class= "inventory-main-leftside"></div></td>
+					<td><div id = "left-inv" class= "inventory-main-leftside"></div></td>
 					<td>
 						<input type="number" id="item-count" class="inv-option-item" min=0 value="0" oninput="validity.valid||(value='');"></input><br>
 						<button class="use">Use</button>
 						<button class="give">Give</button>
 						<button class="close">Close</button>
 					</td>
-					<td><div class= "inventory-main-rightside"></div></td>
+					<td><div id = "right-inv" class= "inventory-main-rightside"></div></td>
 				</tr>
 			</table>
         </div>
