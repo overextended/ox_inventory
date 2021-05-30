@@ -282,14 +282,18 @@ AddEventHandler('linden_inventory:openInventory', function(type, data, player)
 	local xPlayer
 	if player then xPlayer = player else xPlayer = ESX.GetPlayerFromId(source) end
 	if not data then
-		Opened[xPlayer.source] = {invid = xPlayer.source, type = 'Playerinv'}
-		TriggerClientEvent('linden_inventory:openInventory',  xPlayer.source, Inventories[xPlayer.source])
+		if not Opened[xPlayer.source] then
+			Opened[xPlayer.source] = {invid = xPlayer.source, type = 'Playerinv'}
+			Inventories[xPlayer.source].set('open', xPlayer.source)
+			TriggerClientEvent('linden_inventory:openInventory',  xPlayer.source, Inventories[xPlayer.source])
+		end
 	else
 		if type ~= 'bag' and Opened[xPlayer.source] then return end
 		if type == 'drop' then
 			if Drops[data] ~= nil and Opened[data] == nil and #(Drops[data].coords - GetEntityCoords(GetPlayerPed(xPlayer.source))) <= 2 then
 				Opened[xPlayer.source] = {invid = data, type = 'drop'}
 				Opened[data] = xPlayer.source
+				Inventories[xPlayer.source].set('open', xPlayer.source)
 				TriggerClientEvent('linden_inventory:openInventory', xPlayer.source, Inventories[xPlayer.source], Drops[data])
 			end
 		elseif data then
@@ -309,6 +313,7 @@ AddEventHandler('linden_inventory:openInventory', function(type, data, player)
 							currency = shop.currency
 						}
 						Opened[xPlayer.source] = {invid = xPlayer.source, type = 'Playerinv'}
+						Inventories[xPlayer.source].set('open', xPlayer.source)
 						TriggerClientEvent('linden_inventory:openInventory', xPlayer.source, Inventories[xPlayer.source], Shops[data])
 					end
 				end
@@ -332,6 +337,7 @@ AddEventHandler('linden_inventory:openInventory', function(type, data, player)
 				if CheckOpenable(xPlayer, id, data.coords) then
 					Inventories[id].set('open', xPlayer.source)
 					Opened[xPlayer.source] = {invid = id, type = type}
+					Inventories[xPlayer.source].set('open', xPlayer.source)
 					TriggerClientEvent('linden_inventory:openInventory', xPlayer.source, Inventories[xPlayer.source], Inventories[id])
 				end
 			else
@@ -358,8 +364,9 @@ AddEventHandler('linden_inventory:openInventory', function(type, data, player)
 					if data.slot then Inventories[id].set('slot', data.slot) end
 				end
 				if CheckOpenable(xPlayer, id, data.coords) then
-					Inventories[id].set('open', true)
+					Inventories[id].set('open', xPlayer.source)
 					Opened[xPlayer.source] = {invid = id, type = type}
+					Inventories[xPlayer.source].set('open', xPlayer.source)
 					TriggerClientEvent('linden_inventory:openInventory', xPlayer.source, Inventories[xPlayer.source], Inventories[id])
 				end
 			end
@@ -371,23 +378,14 @@ RegisterNetEvent('linden_inventory:openTargetInventory')
 AddEventHandler('linden_inventory:openTargetInventory', function(targetId)
 	local xPlayer = ESX.GetPlayerFromId(source)
 	local xTarget = ESX.GetPlayerFromId(targetId)
-	if source ~= targetId and xTarget and xPlayer then
-		if CheckOpenable(xPlayer, xTarget.source, GetEntityCoords(GetPlayerPed(targetId))) then
-			local TargetPlayer = Inventories[xTarget.source]
-			if TargetPlayer then
-				local data = {
-					id = xTarget.source,
-					name = 'Player '..xTarget.source,
-					type = 'TargetPlayer',
-					slots = TargetPlayer.slots,
-					maxWeight = TargetPlayer.maxWeight,
-					weight = TargetPlayer.weight,
-					inventory = TargetPlayer.inventory
-				}
-				TriggerClientEvent('linden_inventory:openInventory',  xPlayer.source, Inventories[xPlayer.source], data)
-				Opened[xPlayer.source] = {invid = xTarget.source, type = data.type}
-				Opened[xTarget.source] = {invid = xPlayer.source, type = data.type}
-			end
+	if source ~= targetId and xTarget and xPlayer and Inventories[xTarget.source].get('open') == false then
+		local targetCoords = GetEntityCoords(GetPlayerPed(xTarget.source))
+		local playerCoords = GetEntityCoords(GetPlayerPed(xPlayer.source))
+		if #(playerCoords - targetCoords) <= 3 then
+			Inventories[xTarget.source].set('open', xPlayer.source)
+			Opened[xPlayer.source] = {invid = xTarget.source, type = 'TargetPlayer'}
+			Opened[xTarget.source] = {invid = xPlayer.source, type = 'TargetPlayer'}
+			TriggerClientEvent('linden_inventory:openInventory', xPlayer.source, Inventories[xPlayer.source], Inventories[xTarget.source])
 		end
 	end
 end)
@@ -739,21 +737,22 @@ AddEventHandler('linden_inventory:saveInventory', function(data)
 	if data.type == 'drop' and data.invid then
 		invid = data.invid
 		Opened[invid] = nil
-	elseif Inventories[src] then
-		if data.type == 'TargetPlayer' then
-			invid = Opened[src].invid
-			updateWeight(ESX.GetPlayerFromId(invid), false, data.weight, data.slot)
-		elseif data.type ~= 'shop' and data.type ~= 'drop' and Inventories[data.invid] then
-			invid = data.invid
-			Inventories[invid].set('open', false)
-		elseif data.type == 'drop' then invid = data.invid end
-		Citizen.Wait(50)
+	elseif data.type == 'player' then
+		print('closing '..data.invid)
+		invid = data.invid
+		updateWeight(ESX.GetPlayerFromId(invid), false, data.weight, data.slot)
+		Opened[invid] = nil
+		Inventories[invid].set('open', false)
+	elseif data.type ~= 'shop' and Inventories[data.invid] then
+		invid = data.invid
+		Inventories[invid].set('open', false)
 	end
 	if xPlayer then
 		updateWeight(xPlayer, false, data.weight, data.slot)
 		TriggerClientEvent('linden_inventory:refreshInventory', src, Inventories[src])
 	end
 	Opened[src] = nil
+	Inventories[xPlayer.source].set('open', false)
 end)
 
 AddEventHandler('esx:playerDropped', function(playerid)
