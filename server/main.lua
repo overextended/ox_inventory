@@ -736,7 +736,10 @@ AddEventHandler('linden_inventory:saveInventory', function(data)
 	local src = source
 	local invid
 	local xPlayer = ESX.GetPlayerFromId(src)
-	if Inventories[src] then
+	if data.type == 'drop' and data.invid then
+		invid = data.invid
+		Opened[invid] = nil
+	elseif Inventories[src] then
 		if data.type == 'TargetPlayer' then
 			invid = Opened[src].invid
 			updateWeight(ESX.GetPlayerFromId(invid), false, data.weight, data.slot)
@@ -745,13 +748,12 @@ AddEventHandler('linden_inventory:saveInventory', function(data)
 			Inventories[invid].set('open', false)
 		elseif data.type == 'drop' then invid = data.invid end
 		Citizen.Wait(50)
-		if xPlayer then
-			updateWeight(xPlayer, false, data.weight, data.slot)
-			TriggerClientEvent('linden_inventory:refreshInventory', src, Inventories[src])
-		end
-		if invid then Opened[invid] = nil end
-		Opened[src] = nil
 	end
+	if xPlayer then
+		updateWeight(xPlayer, false, data.weight, data.slot)
+		TriggerClientEvent('linden_inventory:refreshInventory', src, Inventories[src])
+	end
+	Opened[src] = nil
 end)
 
 AddEventHandler('esx:playerDropped', function(playerid)
@@ -1102,8 +1104,3 @@ RegisterCommand('maxweight', function(source, args, rawCommand)
 		setMaxWeight(xPlayer, tonumber(args[2]))
 	end
 end, true)
-
-RegisterCommand('test', function(source, args, rawCommand)
-	local xPlayer = ESX.GetPlayerFromId(source)
-	xPlayer.addInventoryItem('gatorade', 1, {description='Somebody fashioned it into a makeshift bong'})
-end)
