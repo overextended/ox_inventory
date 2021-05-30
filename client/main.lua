@@ -330,7 +330,7 @@ AddEventHandler('linden_inventory:removeDrop', function(id, owner)
 	Drops[id] = nil
 	if currentDrop and currentDrop.id == id then currentDrop = nil end
 	if owner == playerID and invOpen then
-		TriggerServerEvent('linden_inventory:openInventory')
+		SendNUIMessage({ message = 'closeright' })
 		movement = true
 	end
 end)
@@ -771,14 +771,15 @@ RegisterCommand('inv', function()
 	else
 		if CanOpenInventory() then
 			TriggerEvent('randPickupAnim')
-			if currentDrop then currentDrop = currentDrop.id
-			else
-				local property = false
-				TriggerEvent('linden_inventory:getProperty', function(data) property = data end)
-				if property then OpenStash(property) return end
-			end
+			local property = false
+			TriggerEvent('linden_inventory:getProperty', function(data) property = data end)
+			if property then OpenStash(property) return end
 			if IsPedInAnyVehicle(ESX.PlayerData.ped, false) then currentDrop = nil end
-			TriggerServerEvent('linden_inventory:openInventory', 'drop', currentDrop)
+			if currentDrop then
+				TriggerServerEvent('linden_inventory:openInventory', 'drop', currentDrop.id)
+			else
+				TriggerServerEvent('linden_inventory:openInventory')
+			end
 		end
 	end
 end)
