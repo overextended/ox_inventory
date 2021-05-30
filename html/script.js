@@ -1,4 +1,3 @@
-let invOpen = false
 let drag = false
 let dropLabel = 'Drop'
 let dropName = 'drop'
@@ -73,31 +72,18 @@ let numberFormat = function(num, item) {
 
 Display = function(bool) {
 	if (bool) {
-		setTimeout(function() {
-			let $inventory = $(".inventory-main");
-			$inventory.css({"display":'block'});
-			$.when($inventory.fadeIn(200)).done(function() {
-				invOpen = true
-			});
-		});
+		$(".inventory-main").fadeIn(200)
 	} else {
-		setTimeout(function() {
-			let $inventory = $(".inventory-main");
-			$.when($inventory.fadeOut(200)).done(function() {
-				$(".item-slot").remove();
-				$(".ItemBoxes").remove();
-				$(".iteminfo").fadeOut('');
-				$('.inventory-main-rightside').removeData()
-				$('.inventory-main-rightside').html('')
-				righttotalkg = 0
-				rightinvslot = null
-				rightinventory = null
-				rightinvtype = null
-				totalkg = 0
-				invOpen = false
-				$inventory.css({"display":'none'});
-			});
-		});
+		$(".inventory-main").fadeOut(200);
+		$(".iteminfo").fadeOut(300);
+		righttotalkg = 0
+		rightinvslot = null
+		rightinventory = null
+		rightinvtype = null
+		totalkg = 0
+		$('.inventory-main-rightside').removeData()
+		$(".item-slot").remove();
+		$(".ItemBoxes").remove();
 	}
 }
 element.__defineGetter__("id", function() {
@@ -107,8 +93,11 @@ element.__defineGetter__("id", function() {
 });
 console.log(element);
 console.log("Successfully Loaded :)")
+
 window.addEventListener('message', function(event) {
 	if (event.data.message == 'openinventory') {
+		$(".item-slot").remove();
+		$(".ItemBoxes").remove();
 		HSN.SetupInventory(event.data)
 	} else if (event.data.message == 'close') {
 		HSN.CloseInventory()
@@ -192,8 +181,9 @@ HSN.InventoryGetDurability = function(quality) {
 
 HSN.RefreshInventory = function(data) {
 	totalkg = 0
+	$(".item-slot").remove();
+	$(".ItemBoxes").remove();
 	for(i = 1; i <= (data.slots); i++) {
-		$(".inventory-main-leftside").find("[inventory-slot=" + i + "]").remove();
 		$(".inventory-main-leftside").append('<div class="ItemBoxes" inventory-slot=' + i +'></div> ')
 	}
 	$.each(data.inventory, function (i, item) {
@@ -238,7 +228,6 @@ HSN.SetupInventory = function(data) {
 	job = data.job
 	$('.playername').html(data.name)
 	for(i = 1; i <= (data.slots); i++) {
-		$(".inventory-main-leftside").find("[inventory-slot=" + i + "]").remove();
 		$(".inventory-main-leftside").append('<div class="ItemBoxes" inventory-slot=' + i +'></div> ')
 		//$(".inventory-main-rightside").data("Owner", data.rightinventory.type);
 	}
@@ -281,7 +270,6 @@ HSN.SetupInventory = function(data) {
 		righttotalkg = 0
 		$('.rightside-name').html(data.rightinventory.name)
 			for(i = 1; i <= (data.rightinventory.slots); i++) {
-				$(".inventory-main-rightside").find("[inventory-slot=" + i + "]").remove();
 				$(".inventory-main-rightside").append('<div class="ItemBoxes" inventory-slot=' + i +'></div> ')
 			}
 			if (data.rightinventory.type == 'shop') {
@@ -349,7 +337,6 @@ HSN.SetupInventory = function(data) {
 		rightmaxWeight = (dropSlots*9000).toFixed(0)
 		righttotalkg = 0
 		for(i = 1; i <= (dropSlots); i++) {
-			$(".inventory-main-rightside").find("[inventory-slot=" + i + "]").remove();
 			$(".inventory-main-rightside").append('<div class="ItemBoxes" inventory-slot=' + i +'></div> ')
 		}
 		$(".rightside-weight").html('')
@@ -502,16 +489,13 @@ $(document).on("mouseenter", ".ItemBoxes", function(e){
 });
 
 HSN.CloseInventory = function() {
-	if (invOpen == true) {
-		$.post('https://linden_inventory/exit', JSON.stringify({
-			type: rightinvtype,
-			invid: rightinventory,
-			weight: righttotalkg,
-			slot: rightinvslot
-		}));
-		
-		Display(false)
-	}
+	$.post('https://linden_inventory/exit', JSON.stringify({
+		type: rightinvtype,
+		invid: rightinventory,
+		weight: righttotalkg,
+		slot: rightinvslot
+	}));
+	Display(false)
 	return
 }
 
