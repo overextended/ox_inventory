@@ -207,7 +207,6 @@ SetNuiFocusAdvanced = function(hasFocus, hasCursor)
 	TriggerEvent('nui:focus', hasFocus, hasCursor)
 
 	if nui_focus[1] then
-		Citizen.Wait(100)
 		if Config.EnableBlur then TriggerScreenblurFadeIn(0) end
 		Citizen.CreateThread(function()
 			local ticks = 0
@@ -239,7 +238,7 @@ end
 
 RegisterNetEvent('linden_inventory:openInventory')
 AddEventHandler('linden_inventory:openInventory',function(data, rightinventory)
-	if CanOpenInventory() then
+	if CanOpenInventory() and not invOpen then
 		movement = false
 		invOpen = true
 		if rightinventory then
@@ -317,7 +316,9 @@ AddEventHandler('linden_inventory:createDrop', function(data, owner)
 	Drops[data.id] = data
 	Drops[data.id].coords = vector3(data.coords.x, data.coords.y,data.coords.z - 0.2)
 	if owner == playerID and invOpen and #(playerCoords - data.coords) <= 1 then
-		if not IsPedInAnyVehicle(ESX.PlayerData.ped, false) then TriggerServerEvent('linden_inventory:openInventory', 'drop', data.id )
+		if not IsPedInAnyVehicle(ESX.PlayerData.ped, false) then
+			invOpen = false
+			TriggerServerEvent('linden_inventory:openInventory', 'drop', data.id )
 		else
 			TriggerServerEvent('linden_inventory:openInventory')
 		end
@@ -329,7 +330,6 @@ AddEventHandler('linden_inventory:removeDrop', function(id, owner)
 	Drops[id] = nil
 	if currentDrop and currentDrop.id == id then currentDrop = nil end
 	if owner == playerID and invOpen then
-		drop = nil
 		TriggerServerEvent('linden_inventory:openInventory')
 		movement = true
 	end
@@ -465,17 +465,17 @@ end)
 
 RegisterNetEvent('linden_inventory:closeInventory')
 AddEventHandler('linden_inventory:closeInventory',function()
-	SendNUIMessage({
-		message = 'close',
-	})
-	TriggerScreenblurFadeOut(0)
-	if lastVehicle then
-		CloseVehicle(lastVehicle)
+	if invOpen then
+		SendNUIMessage({
+			message = 'close',
+		})
+		TriggerScreenblurFadeOut(0)
+		if lastVehicle then
+			CloseVehicle(lastVehicle)
+		end
+		SetNuiFocusAdvanced(false, false)
+		invOpen, currentInventory, currentDrop = false, nil, nil
 	end
-	SetNuiFocusAdvanced(false, false)
-	currentInventory, currentDrop = nil, nil
-	Citizen.Wait(200)
-	invOpen = false
 end)
 
 AddEventHandler('onResourceStop', function(resourceName)
@@ -769,14 +769,14 @@ RegisterCommand('inv', function()
 	else
 		if CanOpenInventory() then
 			TriggerEvent('randPickupAnim')
-			if currentDrop then drop = currentDrop.id
+			if currentDrop then currentDrop = currentDrop.id
 			else
 				local property = false
 				TriggerEvent('linden_inventory:getProperty', function(data) property = data end)
 				if property then OpenStash(property) return end
 			end
-			if IsPedInAnyVehicle(ESX.PlayerData.ped, false) then drop = nil end
-			TriggerServerEvent('linden_inventory:openInventory', 'drop', drop)
+			if IsPedInAnyVehicle(ESX.PlayerData.ped, false) then currentDrop = nil end
+			TriggerServerEvent('linden_inventory:openInventory', 'drop', currentDrop)
 		end
 	end
 end)
@@ -958,6 +958,7 @@ local useItemCooldown = false
 RegisterNetEvent('linden_inventory:useItem')
 AddEventHandler('linden_inventory:useItem',function(item)
 	if item.metadata.bag and not currentInventory then
+		invOpen = false
 		TriggerServerEvent('linden_inventory:openInventory', 'bag', { id = item.metadata.bag, label = item.label..' ('..item.metadata.bag..')', slot = item.slot, slots = item.metadata.slot or 5})
 		return
 	end
