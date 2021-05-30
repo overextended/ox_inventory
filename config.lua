@@ -6,13 +6,13 @@ Config.CheckVersion = true
 Config.CheckVersionDelay = 60
 
 -- Time until unused inventory data is wiped
-Config.DBCleanup = '6 MONTH'
+Config.DBCleanup = '12 MONTH'
 
 -- Number of inventory slots
 Config.PlayerSlots = 50
 
 -- If vehicle plates are stored with a trailing space, set to false (i.e. `XXX-000 `)
-Config.TrimPlate = true
+Config.TrimPlate = false
 
 -- Blur the screen while in an inventory
 Config.EnableBlur = true
