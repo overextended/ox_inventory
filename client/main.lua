@@ -87,7 +87,7 @@ end
 
 OpenTargetInventory = function()
 	local closestPlayer, closestDistance = ESX.Game.GetClosestPlayer()
-	if closestPlayer ~= -1 and closestDistance <= 1.2 then
+	if closestPlayer ~= -1 and closestDistance <= 1.5 then
 		local searchPlayerPed = GetPlayerPed(closestPlayer)
 		if CanOpenTarget(searchPlayerPed) or ESX.PlayerData.job.name == 'police' then
 			TriggerServerEvent('linden_inventory:openTargetInventory', GetPlayerServerId(closestPlayer))
@@ -464,11 +464,13 @@ AddEventHandler('linden_inventory:busy',function(busy)
 end)
 
 RegisterNetEvent('linden_inventory:closeInventory')
-AddEventHandler('linden_inventory:closeInventory',function()
+AddEventHandler('linden_inventory:closeInventory', function(sendNUI)
 	if invOpen then
-		SendNUIMessage({
-			message = 'close',
-		})
+		if sendNUI ~= false then
+			SendNUIMessage({
+				message = 'close',
+			})
+		end
 		TriggerScreenblurFadeOut(0)
 		if lastVehicle then
 			CloseVehicle(lastVehicle)
@@ -950,7 +952,7 @@ end)
 
 RegisterNUICallback('exit',function(data)
 	TriggerServerEvent('linden_inventory:saveInventory', data)
-	TriggerEvent('linden_inventory:closeInventory')
+	TriggerEvent('linden_inventory:closeInventory', false)
 end)
 
 
