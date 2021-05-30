@@ -77,7 +77,6 @@ Display = function(bool) {
 			let $inventory = $(".inventory-main");
 			$inventory.css({"display":'block'});
 			$.when($inventory.fadeIn(200)).done(function() {
-				$inventory.fadeIn(200);
 				invOpen = true
 			});
 		});
@@ -88,6 +87,8 @@ Display = function(bool) {
 				$(".item-slot").remove();
 				$(".ItemBoxes").remove();
 				$(".iteminfo").fadeOut('');
+				$('.inventory-main-rightside').removeData()
+				$('.inventory-main-rightside').html('')
 				righttotalkg = 0
 				rightinvslot = null
 				rightinventory = null
@@ -233,8 +234,6 @@ HSN.RemoveItemFromSlot = function(inventory,slot) {
 
 
 HSN.SetupInventory = function(data) {
-	$('.inventory-main-rightside').data('')
-	$('.inventory-main-rightside').html('')
 	maxWeight = data.maxWeight
 	job = data.job
 	$('.playername').html(data.name)
