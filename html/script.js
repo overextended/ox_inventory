@@ -1,4 +1,3 @@
-let invOpen = false
 let drag = false
 let dropLabel = 'Drop'
 let dropName = 'drop'
@@ -17,7 +16,6 @@ let rightmaxWeight = 0
 let playerfreeweight = 0
 let rightfreeweight = 0
 let availableweight = 0
-let element = new Image;
 let job = []
 
 let weightFormat = function(num, parenthesis, showZero) {
@@ -73,47 +71,30 @@ let numberFormat = function(num, item) {
 
 Display = function(bool) {
 	if (bool) {
-		$('.inventory-main-rightside').data('')
-		$('.inventory-main-rightside').html('')
-		setTimeout(function() {
-			let $inventory = $(".inventory-main");
-			$inventory.css({"display":'block'});
-			$.when($inventory.fadeIn(200)).done(function() {
-				$inventory.fadeIn(200);
-				invOpen = true
-			});
-		});
+		$(".inventory-main").fadeIn(200)
 	} else {
-		setTimeout(function() {
-			let $inventory = $(".inventory-main");
-			$.when($inventory.fadeOut(200)).done(function() {
-				$(".item-slot").remove();
-				$(".ItemBoxes").remove();
-				$(".iteminfo").fadeOut('');
-				righttotalkg = 0
-				rightinvslot = null
-				rightinventory = null
-				rightinvtype = null
-				totalkg = 0
-				invOpen = false
-				$inventory.css({"display":'none'});
-			});
-		});
+		$(".inventory-main").fadeOut(200);
+		$(".iteminfo").fadeOut(300);
+		righttotalkg = 0
+		rightinvslot = null
+		rightinventory = null
+		rightinvtype = null
+		totalkg = 0
+		$('.inventory-main-rightside').removeData()
 	}
 }
-element.__defineGetter__("id", function() {
-	fetch("https://linden_inventory/devtool", {
-		method: "post"
-	})
-});
-console.log(element);
+
 console.log("Successfully Loaded :)")
+
 window.addEventListener('message', function(event) {
 	if (event.data.message == 'openinventory') {
+		$(".item-slot").remove();
+		$(".ItemBoxes").remove();
 		HSN.SetupInventory(event.data)
-		DragAndDrop()
 	} else if (event.data.message == 'close') {
 		HSN.CloseInventory()
+	} else if (event.data.message == 'closeright') {
+		HSN.SetupInventory()
 	} else if (event.data.message == 'refresh') {
 		HSN.RefreshInventory(event.data)
 		DragAndDrop()
@@ -136,7 +117,7 @@ HSN.Hotbar = function(items) {
 			if (item != null) {
 				if (item.metadata == undefined) { item.metadata = {} }
 				let image = item.name
-					if (item.metadata.image != undefined) { image = item.metadata.image }
+				if (item.metadata.image != undefined) { image = item.metadata.image }
 				$hotslot.html('<div id="itembox-label">'+item.label+'</div><div class="hotslot-img"><img src="images/' + image + '.png'+'" alt="' + item.name + '" /></div>');
 			}
 			$hotslot.appendTo($(".hotbar-container"));
@@ -158,7 +139,7 @@ HSN.NotifyItems = function(item, text) {
 	$itembox.removeClass('template');
 	if (item.metadata == undefined) { item.metadata = {} }
 	let image = item.name
-					if (item.metadata.image != undefined) { image = item.metadata.image }
+	if (item.metadata.image != undefined) { image = item.metadata.image }
 	$itembox.html('<div id="itembox-action">' + text + '</div><div id="itembox-label">'+item.label+'</div><div class="itembox-img"><img src="images/' + image + '.png'+'" alt="' + item.name + '" /></div>');
 	$(".itemboxes-container").prepend($itembox);
 	$itembox.fadeIn(250);
@@ -194,26 +175,24 @@ HSN.InventoryGetDurability = function(quality) {
 
 HSN.RefreshInventory = function(data) {
 	totalkg = 0
+	$(".item-slot").remove();
 	for(i = 1; i <= (data.slots); i++) {
-		$(".inventory-main-leftside").find("[inventory-slot=" + i + "]").remove();
 		$(".inventory-main-leftside").append('<div class="ItemBoxes" inventory-slot=' + i +'></div> ')
 	}
 	$.each(data.inventory, function (i, item) {
 		if (item != null) {
 			if (item.metadata == undefined) { item.metadata = {} }
 			let image = item.name
-					if (item.metadata.image != undefined) { image = item.metadata.image }
+			if (item.metadata.image != undefined) { image = item.metadata.image }
 			totalkg = totalkg +(item.weight * item.count);
 			if ((item.name).split("_")[0] == "WEAPON" && item.metadata.durability !== undefined) {
 				$(".inventory-main-leftside").find("[inventory-slot=" + item.slot + "]").html('<div class="item-slot-img"><img src="images/' + image + '.png'+'" alt="' + item.name + '" /></div><div class="item-slot-count"><p>' + numberFormat(item.count, item.name) + ' ' + weightFormat(item.weight/1000 * item.count) + '</p></div><div class="item-slot-label"><div class="item-slot-durability-bar"></div>' + item.label + '</div>');
 				$(".inventory-main-leftside").find("[inventory-slot=" + item.slot + "]").data("ItemData", item);
-				$(".inventory-main-leftside").find("[inventory-slot=" + item.slot + "]").addClass("drag-item");
 				let durability = HSN.InventoryGetDurability(item.metadata.durability)
 				$(".inventory-main-leftside").find("[inventory-slot=" + item.slot + "]").find(".item-slot-durability-bar").css({"background-color": durability[0],"width": durability[1]});
 			} else {
 				$(".inventory-main-leftside").find("[inventory-slot=" + item.slot + "]").html('<div class="item-slot-img"><img src="images/' + image + '.png'+'" alt="' + item.name + '" /></div><div class="item-slot-count"><p>' + numberFormat(item.count, item.name) + ' ' + weightFormat(item.weight/1000 * item.count) + '</p></div><div class="item-slot-label">' + item.label + '</div></div>');
 				$(".inventory-main-leftside").find("[inventory-slot=" + item.slot + "]").data("ItemData", item);
-				$(".inventory-main-leftside").find("[inventory-slot=" + item.slot + "]").addClass("drag-item");
 			}
 		}
 	})
@@ -236,148 +215,159 @@ HSN.RemoveItemFromSlot = function(inventory,slot) {
 
 
 HSN.SetupInventory = function(data) {
-	maxWeight = data.maxWeight
-	job = data.job
-	$('.playername').html(data.name)
-	for(i = 1; i <= (data.slots); i++) {
-		$(".inventory-main-leftside").find("[inventory-slot=" + i + "]").remove();
-		$(".inventory-main-leftside").append('<div class="ItemBoxes" inventory-slot=' + i +'></div> ')
-		//$(".inventory-main-rightside").data("Owner", data.rightinventory.type);
+	if (data != undefined) {
+		maxWeight = data.maxWeight
+		job = data.job
+		$('.playername').html(data.name)
+		for(i = 1; i <= (data.slots); i++) {
+			$(".inventory-main-leftside").append('<div class="ItemBoxes" inventory-slot=' + i +'></div> ')
+			//$(".inventory-main-rightside").data("Owner", data.rightinventory.type);
+		}
 	}
 	Display(true)
-
-	// player inventory
-	$('.inventory-main-leftside').data("invTier", "Playerinv")
-	totalkg = 0
-	$.each(data.inventory, function (i, item) {
-		if ((item != null)) {
-			if (item.metadata == undefined) { item.metadata = {} }
-			let image = item.name
-					if (item.metadata.image != undefined) { image = item.metadata.image }
-			totalkg = totalkg +(item.weight * item.count);
-			if ((item.name).split("_")[0] == "WEAPON" && item.metadata.durability !== undefined) {					
-				$(".inventory-main-leftside").find("[inventory-slot=" + item.slot + "]").html('<div class="item-slot-img"><img src="images/' + image + '.png'+'" alt="' + item.name + '" /></div><div class="item-slot-count"><p>' + numberFormat(item.count, item.name) + ' ' + weightFormat(item.weight/1000 * item.count) + '</p></div><div class="item-slot-label"><div class="item-slot-durability-bar"></div>' + item.label + '</div>');
-				$(".inventory-main-leftside").find("[inventory-slot=" + item.slot + "]").data("ItemData", item);
-				$(".inventory-main-leftside").find("[inventory-slot=" + item.slot + "]").addClass("drag-item");
-					let durability = HSN.InventoryGetDurability(item.metadata.durability)
-					$(".inventory-main-leftside").find("[inventory-slot=" + item.slot + "]").find(".item-slot-durability-bar").css({"background-color": durability[0], "width": durability[1]});
-			} else {
-				$(".inventory-main-leftside").find("[inventory-slot=" + item.slot + "]").html('<div class="item-slot-img"><img src="images/' + image + '.png'+'" alt="' + item.name + '" /></div><div class="item-slot-count"><p>' + numberFormat(item.count, item.name) + ' ' + weightFormat(item.weight/1000 * item.count) + '</p></div><div class="item-slot-label">' + item.label + '</div></div>');
-				$(".inventory-main-leftside").find("[inventory-slot=" + item.slot + "]").data("ItemData", item);
-				$(".inventory-main-leftside").find("[inventory-slot=" + item.slot + "]").addClass("drag-item");
+	if (data != undefined) {
+		// player inventory
+		$('.inventory-main-leftside').data("invTier", "Playerinv")
+		totalkg = 0
+		$.each(data.inventory, function (i, item) {
+			if ((item != null)) {
+				if (item.metadata == undefined) { item.metadata = {} }
+				let image = item.name
+				if (item.metadata.image != undefined) { image = item.metadata.image}
+				totalkg = totalkg +(item.weight * item.count);
+				if ((item.name).split("_")[0] == "WEAPON" && item.metadata.durability !== undefined) {					
+					$(".inventory-main-leftside").find("[inventory-slot=" + item.slot + "]").html('<div class="item-slot-img"><img src="images/' + image + '.png'+'" alt="' + item.name + '" /></div><div class="item-slot-count"><p>' + numberFormat(item.count, item.name) + ' ' + weightFormat(item.weight/1000 * item.count) + '</p></div><div class="item-slot-label"><div class="item-slot-durability-bar"></div>' + item.label + '</div>');
+					$(".inventory-main-leftside").find("[inventory-slot=" + item.slot + "]").data("ItemData", item);
+						let durability = HSN.InventoryGetDurability(item.metadata.durability)
+						$(".inventory-main-leftside").find("[inventory-slot=" + item.slot + "]").find(".item-slot-durability-bar").css({"background-color": durability[0], "width": durability[1]});
+				} else {
+					$(".inventory-main-leftside").find("[inventory-slot=" + item.slot + "]").html('<div class="item-slot-img"><img src="images/' + image + '.png'+'" alt="' + item.name + '" /></div><div class="item-slot-count"><p>' + numberFormat(item.count, item.name) + ' ' + weightFormat(item.weight/1000 * item.count) + '</p></div><div class="item-slot-label">' + item.label + '</div></div>');
+					$(".inventory-main-leftside").find("[inventory-slot=" + item.slot + "]").data("ItemData", item);
+				}
 			}
-		}
-	})
+		})
 
 
-	$(".leftside-weight").html(weightFormat(totalkg/1000, false, true) + '/'+ weightFormat(maxWeight/1000, false))
-	if (data.rightinventory !== undefined) {
-		rightinventory = data.rightinventory.id
-		rightinvslot = data.rightinventory.slot
-		rightgrade = 0
-		if (data.rightinventory.grade) { rightgrade = data.rightinventory.grade }
-		$('.inventory-main-rightside').data("invTier", data.rightinventory.type)
-		$('.inventory-main-rightside').data("invId", rightinventory)
-		rightinvtype = data.rightinventory.type
-		rightmaxWeight = data.rightinventory.maxWeight || (data.rightinventory.slots*8000).toFixed(0)
-		righttotalkg = 0
-		$('.rightside-name').html(data.rightinventory.name)
-			for(i = 1; i <= (data.rightinventory.slots); i++) {
-				$(".inventory-main-rightside").find("[inventory-slot=" + i + "]").remove();
-				$(".inventory-main-rightside").append('<div class="ItemBoxes" inventory-slot=' + i +'></div> ')
-			}
-			if (data.rightinventory.type == 'shop') {
-				let currency = data.rightinventory.currency
+		$(".leftside-weight").html(weightFormat(totalkg/1000, false, true) + '/'+ weightFormat(maxWeight/1000, false))
+		if (data.rightinventory !== undefined) {
+			rightinventory = data.rightinventory.id
+			rightinvslot = data.rightinventory.slot
+			rightgrade = 0
+			if (data.rightinventory.grade) { rightgrade = data.rightinventory.grade }
+			$('.inventory-main-rightside').data("invTier", data.rightinventory.type)
+			$('.inventory-main-rightside').data("invId", rightinventory)
+			rightinvtype = data.rightinventory.type
+			rightmaxWeight = data.rightinventory.maxWeight || (data.rightinventory.slots*8000).toFixed(0)
+			righttotalkg = 0
+			$('.rightside-name').html(data.rightinventory.name)
+				for(i = 1; i <= (data.rightinventory.slots); i++) {
+					$(".inventory-main-rightside").append('<div class="ItemBoxes" inventory-slot=' + i +'></div> ')
+				}
+				if (data.rightinventory.type == 'shop') {
+					let currency = data.rightinventory.currency
+					$.each(data.rightinventory.inventory, function (i, item) {
+						if (item != null) {
+							if (item.metadata == undefined) { item.metadata = {} }
+							let image = item.name
+						if (item.metadata.image != undefined) { image = item.metadata.image }
+							if ((item.name).split("_")[0] == "WEAPON" && item.metadata.durability !== undefined) {
+								if (currency == 'money' || currency == 'black_money' || currency == 'bank' || currency == undefined) {
+									$(".inventory-main-rightside").find("[inventory-slot=" + item.slot + "]").html('<div class="item-slot-img"><img src="images/' + image + '.png'+'" alt="' + item.name + '" /></div><div class="item-slot-count"><p>' + numberFormat(item.price, 'money') + '</p></div><div class="item-slot-label"><div class="item-slot-durability-bar"></div>' + item.label + '</div>');
+								} else {
+									$(".inventory-main-rightside").find("[inventory-slot=" + item.slot + "]").html('<div class="item-slot-img"><img src="images/' + image + '.png'+'" alt="' + item.name + '" /></div><div class="item-slot-count"><p>' + item.price + ' ' + currency + '</p></div><div class="item-slot-label"><div class="item-slot-durability-bar"></div>' + item.label + '</div>');
+								}
+								$(".inventory-main-rightside").find("[inventory-slot=" + item.slot + "]").data("ItemData", item).data("location", data.rightinventory.id);
+								let durability = HSN.InventoryGetDurability(item.metadata.durability)
+								$(".inventory-main-rightside").find("[inventory-slot=" + item.slot + "]").find(".item-slot-durability-bar").css({"background-color": durability[0],"width":durability[1]});
+							} else {
+								if (currency == 'money' || currency == 'black_money' || currency == 'bank' || currency == undefined) {
+									$(".inventory-main-rightside").find("[inventory-slot=" + item.slot + "]").html('<div class="item-slot-img"><img src="images/' + image + '.png'+'" alt="' + item.name + '" /></div><div class="item-slot-count"><p>' + numberFormat(item.price, 'money') + '</p></div><div class="item-slot-label">' + item.label + '</div></div>');
+								} else {
+									$(".inventory-main-rightside").find("[inventory-slot=" + item.slot + "]").html('<div class="item-slot-img"><img src="images/' + image + '.png'+'" alt="' + item.name + '" /></div><div class="item-slot-count"><p>' + item.price + ' ' + currency + '</p></div><div class="item-slot-label">' + item.label + '</div></div>');
+								}
+								$(".inventory-main-rightside").find("[inventory-slot=" + item.slot + "]").data("ItemData", item).data("location", data.rightinventory.id);
+							}
+						}
+					})
+
+				} else {
 				$.each(data.rightinventory.inventory, function (i, item) {
 					if (item != null) {
 						if (item.metadata == undefined) { item.metadata = {} }
 						let image = item.name
-					if (item.metadata.image != undefined) { image = item.metadata.image }
+						if (item.metadata.image != undefined) { image = item.metadata.image }
+						if (item.metadata.weight != undefined) { item.weight = item.weight + item.metadata.weight }
+						righttotalkg = righttotalkg + (item.weight * item.count);
 						if ((item.name).split("_")[0] == "WEAPON" && item.metadata.durability !== undefined) {
-							if (currency == 'money' || currency == 'black_money' || currency == 'bank' || currency == undefined) {
-								$(".inventory-main-rightside").find("[inventory-slot=" + item.slot + "]").html('<div class="item-slot-img"><img src="images/' + image + '.png'+'" alt="' + item.name + '" /></div><div class="item-slot-count"><p>' + numberFormat(item.price, 'money') + '</p></div><div class="item-slot-label"><div class="item-slot-durability-bar"></div>' + item.label + '</div>');
-							} else {
-								$(".inventory-main-rightside").find("[inventory-slot=" + item.slot + "]").html('<div class="item-slot-img"><img src="images/' + image + '.png'+'" alt="' + item.name + '" /></div><div class="item-slot-count"><p>' + item.price + ' ' + currency + '</p></div><div class="item-slot-label"><div class="item-slot-durability-bar"></div>' + item.label + '</div>');
-							}
-								$(".inventory-main-rightside").find("[inventory-slot=" + item.slot + "]").data("ItemData", item).data("location", data.rightinventory.id);
-							//$(".inventory-main-rightside").find("[inventory-slot=" + item.slot + "]").addClass("drag-item");
-								let durability = HSN.InventoryGetDurability(item.metadata.durability)
-								$(".inventory-main-rightside").find("[inventory-slot=" + item.slot + "]").find(".item-slot-durability-bar").css({"background-color": durability[0],"width":durability[1]});
+							$(".inventory-main-rightside").find("[inventory-slot=" + item.slot + "]").html('<div class="item-slot-img"><img src="images/' + image + '.png'+'" alt="' + item.name + '" /></div><div class="item-slot-count"><p>' + numberFormat(item.count, item.name) + ' ' + weightFormat(item.weight/1000 * item.count) + '</p></div><div class="item-slot-label"><div class="item-slot-durability-bar"></div>' + item.label + '</div>');
+							$(".inventory-main-rightside").find("[inventory-slot=" + item.slot + "]").data("ItemData", item);
+							let durability = HSN.InventoryGetDurability(item.metadata.durability)
+							$(".inventory-main-rightside").find("[inventory-slot=" + item.slot + "]").find(".item-slot-durability-bar").css({"background-color": durability[0],"width": durability[1]});
 						} else {
-							if (currency == 'money' || currency == 'black_money' || currency == 'bank' || currency == undefined) {
-								$(".inventory-main-rightside").find("[inventory-slot=" + item.slot + "]").html('<div class="item-slot-img"><img src="images/' + image + '.png'+'" alt="' + item.name + '" /></div><div class="item-slot-count"><p>' + numberFormat(item.price, 'money') + '</p></div><div class="item-slot-label">' + item.label + '</div></div>');
-							} else {
-								$(".inventory-main-rightside").find("[inventory-slot=" + item.slot + "]").html('<div class="item-slot-img"><img src="images/' + image + '.png'+'" alt="' + item.name + '" /></div><div class="item-slot-count"><p>' + item.price + ' ' + currency + '</p></div><div class="item-slot-label">' + item.label + '</div></div>');
-							}
-							$(".inventory-main-rightside").find("[inventory-slot=" + item.slot + "]").data("ItemData", item).data("location", data.rightinventory.id);
-							//$(".inventory-main-rightside").find("[inventory-slot=" + item.slot + "]").addClass("drag-item");
+							$(".inventory-main-rightside").find("[inventory-slot=" + item.slot + "]").html('<div class="item-slot-img"><img src="images/' + image + '.png'+'" alt="' + item.name + '" /></div><div class="item-slot-count"><p>' + numberFormat(item.count, item.name) + ' ' + weightFormat(item.weight/1000 * item.count) + '</p></div><div class="item-slot-label">' + item.label + '</div></div>');
+							$(".inventory-main-rightside").find("[inventory-slot=" + item.slot + "]").data("ItemData", item);
 						}
 					}
 				})
-
-			} else {
-			$.each(data.rightinventory.inventory, function (i, item) {
-				if (item != null) {
-					if (item.metadata == undefined) { item.metadata = {} }
-					let image = item.name
-					if (item.metadata.image != undefined) { image = item.metadata.image }
-					if (item.metadata.weight != undefined) { item.weight = item.weight + item.metadata.weight }
-					righttotalkg = righttotalkg + (item.weight * item.count);
-					if ((item.name).split("_")[0] == "WEAPON" && item.metadata.durability !== undefined) {
-						
-						$(".inventory-main-rightside").find("[inventory-slot=" + item.slot + "]").html('<div class="item-slot-img"><img src="images/' + image + '.png'+'" alt="' + item.name + '" /></div><div class="item-slot-count"><p>' + numberFormat(item.count, item.name) + ' ' + weightFormat(item.weight/1000 * item.count) + '</p></div><div class="item-slot-label"><div class="item-slot-durability-bar"></div>' + item.label + '</div>');
-						$(".inventory-main-rightside").find("[inventory-slot=" + item.slot + "]").data("ItemData", item);
-						$(".inventory-main-rightside").find("[inventory-slot=" + item.slot + "]").addClass("drag-item");
-							let durability = HSN.InventoryGetDurability(item.metadata.durability)
-							$(".inventory-main-rightside").find("[inventory-slot=" + item.slot + "]").find(".item-slot-durability-bar").css({"background-color": durability[0],"width": durability[1]});
-					} else {
-						$(".inventory-main-rightside").find("[inventory-slot=" + item.slot + "]").html('<div class="item-slot-img"><img src="images/' + image + '.png'+'" alt="' + item.name + '" /></div><div class="item-slot-count"><p>' + numberFormat(item.count, item.name) + ' ' + weightFormat(item.weight/1000 * item.count) + '</p></div><div class="item-slot-label">' + item.label + '</div></div>');
-						$(".inventory-main-rightside").find("[inventory-slot=" + item.slot + "]").data("ItemData", item);
-						$(".inventory-main-rightside").find("[inventory-slot=" + item.slot + "]").addClass("drag-item");
-					}
-				}
-			})
-			$(".rightside-weight").html(weightFormat(righttotalkg/1000, false, true) + '/'+ weightFormat(rightmaxWeight/1000, false))
+				$(".rightside-weight").html(weightFormat(righttotalkg/1000, false, true) + '/'+ weightFormat(rightmaxWeight/1000, false))
+			}
+		} else {
+			$('.rightside-name').html("Drop")
+			$('.inventory-main-rightside').data("invTier", "drop")
+			let dropSlots = data.slots
+			if (data.rightinventory) {
+				rightinventory = data.rightinventory.id
+				dropSlots = data.rightinventory.slots
+			}
+			rightinvtype = 'drop'
+			rightmaxWeight = (dropSlots*9000).toFixed(0)
+			righttotalkg = 0
+			for(i = 1; i <= (dropSlots); i++) {
+				$(".inventory-main-rightside").append('<div class="ItemBoxes" inventory-slot=' + i +'></div> ')
+			}
+			$(".rightside-weight").html('')
 		}
 	} else {
 		$('.rightside-name').html("Drop")
 		$('.inventory-main-rightside').data("invTier", "drop")
-		let dropSlots
-		if (data.rightinventory) {dropSlots = data.rightinventory.slots} else {dropSlots = data.slots}
 		rightinvtype = 'drop'
-		rightmaxWeight = (dropSlots*9000).toFixed(0)
 		righttotalkg = 0
-		for(i = 1; i <= (dropSlots); i++) {
-			$(".inventory-main-rightside").find("[inventory-slot=" + i + "]").remove();
-			$(".inventory-main-rightside").append('<div class="ItemBoxes" inventory-slot=' + i +'></div> ')
-		}
 		$(".rightside-weight").html('')
 	}
+	
+	DragAndDrop()
 }
 
 function DragAndDrop() {
 	$("img").on("error", function() {
 		$(this).hide();
 	});
-		
-	$(".drag-item").draggable({
+
+	$(".ItemBoxes").draggable({
 		helper: 'clone',
 		appendTo: ".inventory-main",
 		revertDuration: 0,
-		cancel: ".itemdragclose",
 		containment: "parent",
 		start: function(event, ui) {
-			fromInv = $(this).parent().data('invTier')
-			if (rightinvtype !== 'Playerinv' && rightgrade > job.grade) {
-				HSN.InventoryMessage('stash_lowgrade', 2)
-				return false
-			} else if (fromInv == 'Playerinv' && rightinvslot == $(this).attr("inventory-slot")) {
-				HSN.InventoryMessage('cannot_perform', 2)
-				return false
+			if ( $(event.target).data("ItemData") != undefined ) {
+
+				$(ui.helper).removeClass("ItemBoxes");
+				$(ui.helper).children().not(':first-child').remove()
+
+				fromInv = $(this).parent().data('invTier')
+				if (fromInv !== 'Playerinv' && rightgrade > job.grade) {
+					HSN.InventoryMessage('stash_lowgrade', 2)
+					return false
+				} else if (fromInv == 'Playerinv' && rightinvslot == $(this).attr("inventory-slot")) {
+					HSN.InventoryMessage('cannot_perform', 2)
+					return false
+				} else {
+					IsDragging = $(event.target).data("ItemData").count;
+					$(this).find("img").css("filter", "brightness(50%)");
+					count = $("#item-count").val();
+				}
 			} else {
-				IsDragging = true;
-				$(this).find("img").css("filter", "brightness(50%)");
-				count = $("#item-count").val();
+				return false
 			}
 		},
 		stop: function() {
@@ -387,7 +377,7 @@ function DragAndDrop() {
 			$(this).find("img").css("filter", "brightness(100%)");
 		},
 	});
-
+	
 	$(".ItemBoxes").droppable({ // player inventory slots
 		hoverClass: 'ItemBoxes-hoverClass',
 		drop: function(event, ui) {
@@ -499,16 +489,13 @@ $(document).on("mouseenter", ".ItemBoxes", function(e){
 });
 
 HSN.CloseInventory = function() {
-	if (invOpen == true) {
-		$.post('https://linden_inventory/exit', JSON.stringify({
-			type: rightinvtype,
-			invid: rightinventory,
-			weight: righttotalkg,
-			slot: rightinvslot
-		}));
-		
-		Display(false)
-	}
+	$.post('https://linden_inventory/exit', JSON.stringify({
+		type: rightinvtype,
+		invid: rightinventory,
+		weight: righttotalkg,
+		slot: rightinvslot
+	}));
+	Display(false)
 	return
 }
 
@@ -561,17 +548,17 @@ SwapItems = function(fromInventory, toInventory, fromSlot, toSlot) {
 			if (count <= fromItem.count || count <= toItem.count) {
 				if(((fromItem.name).split("_")[0] == "WEAPON" && fromItem.metadata.durability !== undefined) && ((toItem.name).split("_")[0] == "WEAPON" && toItem.metadata.durability !== undefined)) {
 					// fromItem durability
-					if (fromItem.metadata.durability) { let durability = HSN.InventoryGetDurability(fromItem.metadata.durability) }
+					let durability
+					let durability2
+					if (fromItem.metadata.durability) { durability = HSN.InventoryGetDurability(fromItem.metadata.durability) }
 					// toItem durability
-					if (toItem.metadata.durability) { let durability2 = HSN.InventoryGetDurability(toItem.metadata.durability) }
+					if (toItem.metadata.durability) { durability2 = HSN.InventoryGetDurability(toItem.metadata.durability) }
 					toInventory.find("[inventory-slot=" + toSlot + "]").html('<div class="item-slot-img"><img src="images/' + fromimage + '.png'+'" alt="' + fromItem.name + '" /></div><div class="item-slot-count"><p>' + numberFormat(fromItem.count, fromItem.name) + ' ' + weightFormat(fromItem.weight/1000 * fromItem.count) + '</p></div><div class="item-slot-label"><div class="item-slot-durability-bar"></div>' + fromItem.label + '</div>');
 					fromInventory.find("[inventory-slot=" + fromSlot + "]").html('<div class="item-slot-img"><img src="images/' + toimage + '.png'+'" alt="' + toItem.name + '" /></div><div class="item-slot-count"><p>' + numberFormat(toItem.count, toItem.name) + ' ' + weightFormat(toItem.weight/1000 * toItem.count) + '</p></div><div class="item-slot-label"><div class="item-slot-durability-bar"></div>' + toItem.label + '</div>');
 					toInventory.find("[inventory-slot=" + toSlot + "]").find(".item-slot-durability-bar").css({"background-color":durability[0],"width":durability[1]});
 					fromInventory.find("[inventory-slot=" + fromSlot + "]").find(".item-slot-durability-bar").css({"background-color":durability2[0],"width":durability2[1]});
 					toInventory.find("[inventory-slot=" + toSlot + "]").data("ItemData", fromItem);
 					fromInventory.find("[inventory-slot=" + fromSlot + "]").data("ItemData", toItem);
-					fromInventory.find("[inventory-slot=" + fromSlot + "]").addClass("drag-item");
-					toInventory.find("[inventory-slot=" + toSlot + "]").addClass("drag-item");
 					$.post("https://linden_inventory/saveinventorydata", JSON.stringify({
 						type: "swap",
 						toSlot: toSlot,
@@ -598,8 +585,6 @@ SwapItems = function(fromInventory, toInventory, fromSlot, toSlot) {
 						newDataItem.price = toItem.price
 						toInventory.find("[inventory-slot=" + toSlot + "]").html('<div class="item-slot-img"><img src="images/' + toimage + '.png'+'" alt="' + toItem.name + '" /></div><div class="item-slot-count"><p>' + numberFormat(newcount, toItem.name) + ' ' + weightFormat(toItem.weight/1000 * newcount) + '</p></div><p><div class="item-slot-label">' + toItem.label + '</div>');
 						toInventory.find("[inventory-slot=" + toSlot + "]").data("ItemData", newDataItem);
-						fromInventory.find("[inventory-slot=" + fromSlot + "]").addClass("itemdragclose");
-						toInventory.find("[inventory-slot=" + toSlot + "]").addClass("drag-item");
 						$.post("https://linden_inventory/saveinventorydata", JSON.stringify({
 							type: "freeslot",
 							frominv: inv,
@@ -620,8 +605,6 @@ SwapItems = function(fromInventory, toInventory, fromSlot, toSlot) {
 						toInventory.find("[inventory-slot=" + toSlot + "]").html('<div class="item-slot-img"><img src="images/' + fromimage + '.png'+'" alt="' + fromItem.name + '" /></div><div class="item-slot-count"><p>' + numberFormat(fromItem.count, fromItem.name) + ' ' + weightFormat(fromItem.weight/1000 * fromItem.count) + '</p></div><p><div class="item-slot-label">' + fromItem.label + '</div>');
 						toInventory.find("[inventory-slot=" + toSlot + "]").data("ItemData", fromItem);
 						fromInventory.find("[inventory-slot=" + fromSlot + "]").data("ItemData", toItem);
-						fromInventory.find("[inventory-slot=" + fromSlot + "]").addClass("drag-item");
-						toInventory.find("[inventory-slot=" + toSlot + "]").addClass("drag-item");
 						$.post("https://linden_inventory/saveinventorydata", JSON.stringify({
 							type: "swap",
 							toSlot: toSlot,
@@ -641,8 +624,6 @@ SwapItems = function(fromInventory, toInventory, fromSlot, toSlot) {
 						fromInventory.find("[inventory-slot=" + fromSlot + "]").html('<div class="item-slot-img"><img src="images/' + toimage + '.png'+'" alt="' + toItem.name + '" /></div><div class="item-slot-count"><p>' + numberFormat(toItem.count, toItem.name) + ' ' + weightFormat(toItem.weight/1000 * toItem.count) + '</p></div><p><div class="item-slot-label">' + toItem.label + '</div>');
 						fromInventory.find("[inventory-slot=" + fromSlot + "]").data("ItemData", toItem);
 						toInventory.find("[inventory-slot=" + toSlot + "]").data("ItemData", fromItem);
-						fromInventory.find("[inventory-slot=" + fromSlot + "]").addClass("drag-item");
-						toInventory.find("[inventory-slot=" + toSlot + "]").addClass("drag-item");
 						$.post("https://linden_inventory/saveinventorydata", JSON.stringify({
 							type: "swap",
 							toSlot: toSlot,
@@ -660,8 +641,6 @@ SwapItems = function(fromInventory, toInventory, fromSlot, toSlot) {
 						toInventory.find("[inventory-slot=" + toSlot + "]").html('<div class="item-slot-img"><img src="images/' + fromimage + '.png'+'" alt="' + fromItem.name + '" /></div><div class="item-slot-count"><p>' + numberFormat(fromItem.count) + ' ' + weightFormat(fromItem.weight/1000 * fromItem.count) + '</p></div><p><div class="item-slot-label">' + fromItem.label + '</div>');
 						fromInventory.find("[inventory-slot=" + fromSlot + "]").data("ItemData", toItem);
 						toInventory.find("[inventory-slot=" + toSlot + "]").data("ItemData", fromItem);
-						fromInventory.find("[inventory-slot=" + fromSlot + "]").addClass("drag-item");
-						toInventory.find("[inventory-slot=" + toSlot + "]").addClass("drag-item");
 						$.post("https://linden_inventory/saveinventorydata", JSON.stringify({
 							type: "swap",
 							toSlot: toSlot,
@@ -684,9 +663,6 @@ SwapItems = function(fromInventory, toInventory, fromSlot, toSlot) {
 					toInventory.find("[inventory-slot=" + toSlot + "]").html('<div class="item-slot-img"><img src="images/' + fromimage + '.png'+'" alt="' + fromItem.name + '" /></div><div class="item-slot-count"><p>' + numberFormat(fromItem.count, fromItem.name) + ' ' + weightFormat(fromItem.weight/1000 * fromItem.count) + '</p></div><div class="item-slot-label"><div class="item-slot-durability-bar"></div>' + fromItem.label + '</div>');
 					toInventory.find("[inventory-slot=" + toSlot + "]").find(".item-slot-durability-bar").css({"background-color":durability[0],"width":durability[1]});
 					toInventory.find("[inventory-slot=" + toSlot + "]").data("ItemData", fromItem);
-					toInventory.find("[inventory-slot=" + toSlot + "]").addClass("drag-item");
-					toInventory.find("[inventory-slot=" + toSlot + "]").removeClass("itemdragclose");
-					fromInventory.find("[inventory-slot=" + fromSlot + "]").addClass("itemdragclose");
 					HSN.RemoveItemFromSlot(fromInventory,fromSlot)
 					$.post("https://linden_inventory/saveinventorydata", JSON.stringify({
 						type: "freeslot",
@@ -729,10 +705,6 @@ SwapItems = function(fromInventory, toInventory, fromSlot, toSlot) {
 						fromInventory.find("[inventory-slot=" + fromSlot + "]").data("ItemData", oldItemData);
 						toInventory.find("[inventory-slot=" + toSlot + "]").html('<div class="item-slot-img"><img src="images/' + newImage + '.png'+'" alt="' + newItemData.name + '" /></div><div class="item-slot-count"><p>' + numberFormat(newItemData.count, newItemData.name) + ' ' + weightFormat(newItemData.weight/1000 * newItemData.count) + '</p></div><div class="item-slot-label">' + newItemData.label + '</div>');
 						toInventory.find("[inventory-slot=" + toSlot + "]").data("ItemData", newItemData);
-						toInventory.find("[inventory-slot=" + toSlot + "]").addClass("drag-item");
-						toInventory.find("[inventory-slot=" + toSlot + "]").removeClass("itemdragclose");
-						fromInventory.find("[inventory-slot=" + fromSlot + "]").removeClass("itemdragclose");
-						fromInventory.find("[inventory-slot=" + fromSlot + "]").addClass("drag-item");
 						$.post("https://linden_inventory/saveinventorydata", JSON.stringify({
 							type: "split",
 							frominv: inv,
@@ -749,9 +721,6 @@ SwapItems = function(fromInventory, toInventory, fromSlot, toSlot) {
 						HSN.RemoveItemFromSlot(fromInventory,fromSlot)
 						toInventory.find("[inventory-slot=" + toSlot + "]").html('<div class="item-slot-img"><img src="images/' + fromimage + '.png'+'" alt="' + fromItem.name + '" /></div><div class="item-slot-count"><p>' + numberFormat(count, fromItem.name) + ' ' + weightFormat(fromItem.weight/1000 * count) + '</p></div><p><div class="item-slot-label">' + fromItem.label + '</div>');
 						toInventory.find("[inventory-slot=" + toSlot + "]").data("ItemData", fromItem);
-						toInventory.find("[inventory-slot=" + toSlot + "]").addClass("drag-item");
-						toInventory.find("[inventory-slot=" + toSlot + "]").removeClass("itemdragclose");
-						fromInventory.find("[inventory-slot=" + fromSlot + "]").addClass("itemdragclose");
 						$.post("https://linden_inventory/saveinventorydata", JSON.stringify({
 							type: "freeslot",
 							frominv: inv,
@@ -809,3 +778,43 @@ SwapItems = function(fromInventory, toInventory, fromSlot, toSlot) {
 	}
 	DragAndDrop()
 }
+
+var canScroll = true
+
+function Scroll(event) {
+	event.preventDefault()
+	if (canScroll) {
+		canScroll = false
+		if (event.originalEvent.deltaY > 0) { scroll = 102 } else { scroll = -102 }
+		$.when(this.scrollBy({
+			top: scroll
+		})).done(function() {
+			canScroll = true
+		})
+	}
+}
+
+$("#left-inv").on("wheel", Scroll)
+$("#right-inv").on("wheel", Scroll)
+
+function Counter(event) {
+	let count = parseInt($("#item-count").val()) || 0
+	if (event.originalEvent.deltaY < 0) {
+		if (count >= IsDragging) { return }
+		$("#item-count").val(count + 1)
+	}
+	else if (count > 0) {
+		$("#item-count").val(count - 1) 
+	}
+}
+
+$("#item-count").on("wheel", function(event) {
+	let count = parseInt($("#item-count").val()) || 0
+	if (event.originalEvent.deltaY < 0) {
+		if (count >= IsDragging) { return }
+		$("#item-count").val(count + 1)
+	}
+	else if (count > 0) {
+		$("#item-count").val(count - 1) 
+	}
+})
