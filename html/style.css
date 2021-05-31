@@ -1,39 +1,38 @@
 @import url('https://fonts.googleapis.com/css2?family=Signika:wght@300;400;500;600;700&display=swap');
 
 body {
-    font-family: 'Signika';
-    user-select: none;
+	font-family: 'Signika';
+	user-select: none;
 	display: flex;
 	align-items: center;
 	justify-content: center;
 	color: white;
-    text-shadow: 1px 1px 0px black;
+	text-shadow: 1px 1px 0px black;
 	overflow:hidden;
 }
 
 .inventory-main {
 	display: none;
-    position: fixed;
-    margin: auto;
-    opacity: 0.9;
+	position: fixed;
+	margin: auto;
+	opacity: 0.9;
 	overflow: hidden;
 }
 
 .inventory-main-leftside, .inventory-main-rightside {
-    width: 515px;
-    height: 406px;
-	overflow: hidden;
-    overflow-y: scroll;
+	width: 515px;
+	height: 408px;
+	overflow: auto;
 }
 
 .ItemBoxes {
-    position: relative;
-    width: 100px;
-    height: 100px;
-    background-color: rgba(0, 0, 0, 0.2);
-    float: left;
-    margin: 1px;
-	outline: 1px solid rgba(38,38,38,0.3);
+	position: relative;
+	width: 100px;
+	height: 100px;
+	background-color: rgba(0, 0, 0, 0.2);
+	float: left;
+	margin: 2px 1px 0 1px;
+	outline: 1px solid rgba(33,33,33,0.4);
 	outline-offset: -1px;
 } 
 
@@ -44,263 +43,263 @@ body {
 }
 
 .inventory-main-leftside > .ItemBoxes:nth-child(1):after {
-    top: 0;
-    left: 0;
-    margin: 0 auto;
-    position: absolute;
-    content: '1';
-    height: 15px !important;
-    width: 15px !important;
-    font-size: 11px;
-    font-weight: bold;
-    font-family: "Basic";
-    text-align: center;
-    line-height: 14px;
-    vertical-align: middle;
-    background-color: white;
+	top: 0;
+	left: 0;
+	margin: 0 auto;
+	position: absolute;
+	content: '1';
+	height: 15px !important;
+	width: 15px !important;
+	font-size: 11px;
+	font-weight: bold;
+	font-family: "Basic";
+	text-align: center;
+	line-height: 14px;
+	vertical-align: middle;
+	background-color: white;
 	color: black;
-    text-shadow: none;
+	text-shadow: none;
 	outline: 1px solid rgba(0,0,0,0.9);
 	outline-offset: -1px;
 }
 
 .inventory-main-leftside > .ItemBoxes:nth-child(2):after {
-    top: 0;
-    left: 0;
-    margin: 0 auto;
-    position: absolute;
-    content: '2';
-    height: 15px !important;
-    width: 15px !important;
-    font-size: 11px;
-    font-weight: bold;
-    font-family: "Basic";
-    text-align: center;
-    line-height: 14px;
-    vertical-align: middle;
-    background-color: white;
+	top: 0;
+	left: 0;
+	margin: 0 auto;
+	position: absolute;
+	content: '2';
+	height: 15px !important;
+	width: 15px !important;
+	font-size: 11px;
+	font-weight: bold;
+	font-family: "Basic";
+	text-align: center;
+	line-height: 14px;
+	vertical-align: middle;
+	background-color: white;
 	color: black;
-    text-shadow: none;
+	text-shadow: none;
 	outline: 1px solid rgba(0,0,0,0.9);
 	outline-offset: -1px;
 }
 
 .inventory-main-leftside > .ItemBoxes:nth-child(3):after {
-    top: 0;
-    left: 0;
-    margin: 0 auto;
-    position: absolute;
-    content: '3';
-    height: 15px !important;
-    width: 15px !important;
-    font-size: 11px;
-    font-weight: bold;
-    font-family: "Basic";
-    text-align: center;
-    line-height: 14px;
-    vertical-align: middle;
-    background-color: white;
+	top: 0;
+	left: 0;
+	margin: 0 auto;
+	position: absolute;
+	content: '3';
+	height: 15px !important;
+	width: 15px !important;
+	font-size: 11px;
+	font-weight: bold;
+	font-family: "Basic";
+	text-align: center;
+	line-height: 14px;
+	vertical-align: middle;
+	background-color: white;
 	color: black;
-    text-shadow: none;
+	text-shadow: none;
 	outline: 1px solid rgba(0,0,0,0.9);
 	outline-offset: -1px;
 }
 
 .inventory-main-leftside > .ItemBoxes:nth-child(4):after {
-    top: 0;
-    left: 0;
-    margin: 0 auto;
-    position: absolute;
-    content: '4';
-    height: 15px !important;
-    width: 15px !important;
-    font-size: 11px;
-    font-weight: bold;
-    font-family: "Basic";
-    text-align: center;
-    line-height: 14px;
-    vertical-align: middle;
-    background-color: white;
+	top: 0;
+	left: 0;
+	margin: 0 auto;
+	position: absolute;
+	content: '4';
+	height: 15px !important;
+	width: 15px !important;
+	font-size: 11px;
+	font-weight: bold;
+	font-family: "Basic";
+	text-align: center;
+	line-height: 14px;
+	vertical-align: middle;
+	background-color: white;
 	color: black;
-    text-shadow: none;
+	text-shadow: none;
 	outline: 1px solid rgba(0,0,0,0.9);
 	outline-offset: -1px;
 }
 
 .inventory-main-leftside > .ItemBoxes:nth-child(5):after {
-    top: 0;
-    left: 0;
-    margin: 0 auto;
-    position: absolute;
-    content: '5';
-    height: 15px !important;
-    width: 15px !important;
-    font-size: 11px;
-    font-weight: bold;
-    font-family: "Basic";
-    text-align: center;
-    line-height: 14px;
-    vertical-align: middle;
-    background-color: white;
+	top: 0;
+	left: 0;
+	margin: 0 auto;
+	position: absolute;
+	content: '5';
+	height: 15px !important;
+	width: 15px !important;
+	font-size: 11px;
+	font-weight: bold;
+	font-family: "Basic";
+	text-align: center;
+	line-height: 14px;
+	vertical-align: middle;
+	background-color: white;
 	color: black;
-    text-shadow: none;
+	text-shadow: none;
 	outline: 1px solid rgba(0,0,0,0.9);
 	outline-offset: -1px;
 }
 
 .itemboxes-container {
-    height: 130px;
-    min-width: 110px;
-    max-width: 550px;
-    width: fit-content;
-    position: absolute;
-    left: 47%;
-    bottom: 15%;
-    overflow: hidden;
+	height: 130px;
+	min-width: 110px;
+	max-width: 550px;
+	width: fit-content;
+	position: absolute;
+	left: 47%;
+	bottom: 15%;
+	overflow: hidden;
 }
 
 .template {
-    display: none;
+	display: none;
 }
 
 .itembox-container {
-    display: none;
-    position: relative;
-    float: left;
-    margin: 0.5px;
-    width: 110px;
-    height: 130px;
-    z-index: 1;
-    background-color: rgba(0, 0, 0, 0.2);
+	display: none;
+	position: relative;
+	float: left;
+	margin: 0.5px;
+	width: 110px;
+	height: 130px;
+	z-index: 1;
+	background-color: rgba(0, 0, 0, 0.2);
 	outline: 1px solid rgba(38,38,38,0.1);
 	outline-offset: -1px;
 }
 
 .hotbar-container {
-    height: 110px;
-    min-width: 110px;
-    width: fit-content;
-    position: absolute;
-    left: 50%;
+	height: 110px;
+	min-width: 110px;
+	width: fit-content;
+	position: absolute;
+	left: 50%;
 	bottom: 2%;
-    z-index: 1;
-    transform: translate(-50%, 0%);
-    overflow: hidden;
+	z-index: 1;
+	transform: translate(-50%, 0%);
+	overflow: hidden;
 }
 
 .hotslot-container {
-    position: relative;
-    float: left;
-    margin: 0.5px;
-    margin: 1px;
-    width: 110px;
-    height: 110px;
-    z-index: 1;
-    background-color: rgba(0, 0, 0, 0.2);
+	position: relative;
+	float: left;
+	margin: 0.5px;
+	margin: 1px;
+	width: 110px;
+	height: 110px;
+	z-index: 1;
+	background-color: rgba(0, 0, 0, 0.2);
 	outline: 1px solid rgba(38,38,38,0.1);
 	outline-offset: -1px;
 }
 
 #itembox-action {
-    position: absolute;
-    padding: 4px 0 4px 0;
-    width: 100%;
-    text-align: center;
-    left: 0;
+	position: absolute;
+	padding: 4px 0 4px 0;
+	width: 100%;
+	text-align: center;
+	left: 0;
 	font-size: 13px;
-    background-color: white;
+	background-color: white;
 	outline: 1px solid rgba(38,38,38,0.1);
 	outline-offset: -1px;
 	color: #111;
-    text-shadow: none !important;
+	text-shadow: none !important;
 	font-weight: 700;
 }
 
 .itembox-img img {
-    display:block;
-    position: relative;
-    margin: 0 auto;
-    margin-top: 10%;
-    width: auto;
-    height: auto;
-    max-width: 100%;
-    max-height: 100%;
-    bottom: -10px;
-    z-index: -1;
+	display:block;
+	position: relative;
+	margin: 0 auto;
+	margin-top: 10%;
+	width: auto;
+	height: auto;
+	max-width: 100%;
+	max-height: 100%;
+	bottom: -10px;
+	z-index: -1;
 }
 
 .hotslot-img img {
-    display:block;
-    position: relative;
-    margin: 0 auto;
-    width: auto;
-    height: auto;
-    max-width: 100%;
-    max-height: 100%;
+	display:block;
+	position: relative;
+	margin: 0 auto;
+	width: auto;
+	height: auto;
+	max-width: 100%;
+	max-height: 100%;
 	top: 5px;
-    z-index: -1 !important;
+	z-index: -1 !important;
 }
 
 #itembox-label {
-    padding: 5px 0 5px 0 !important;
+	padding: 5px 0 5px 0 !important;
 }
 
 .item-slot-img {
-    max-width: 100%;
-    max-height: 100%;
+	max-width: 100%;
+	max-height: 100%;
 }
 
 .item-slot-img img {
-    display:block;
-    position: relative;
-    margin: 0 auto;
-    margin-top: 10%;
-    width: auto;
-    height: auto;
-    max-width: 80%;
-    max-height: 80%;
+	display:block;
+	position: relative;
+	margin: 0 auto;
+	margin-top: 10%;
+	width: auto;
+	height: auto;
+	max-width: 80%;
+	max-height: 80%;
 }
 
 .item-slot-label, #itembox-label {
-    position: absolute;
-    bottom: 0;
-    width: 100%;
-    background-color: rgba(12, 12, 12, 0.3);
-    height: fit-content;
+	position: absolute;
+	bottom: 0;
+	width: 100%;
+	background-color: rgba(12, 12, 12, 0.3);
+	height: fit-content;
 	padding: 2px 0 2px 0;
-    font-size: 10px;
-    text-align: center;
-    text-transform: uppercase;
-    font-variant: small-caps;
-	outline: 1px solid rgba(38,38,38,0.3);
+	font-size: 10px;
+	text-align: center;
+	text-transform: uppercase;
+	font-variant: small-caps;
+	outline: 1px solid rgba(33,33,33,0.4);
 	outline-offset: -1px;
 }
 
 .item-slot-durability-bar {
-    position: absolute;
-    height: 4px;
-    width: 100%;
-    top: -4px;
-    background-color: #1d1d1de8;
+	position: absolute;
+	height: 4px;
+	width: 100%;
+	top: -4px;
+	background-color: #1d1d1de8;
 	outline: 1px solid rgba(38,38,38,0.2);
 	outline-offset: -1px;
 }
 
 .iteminfo {
-    display: none;
-    position: absolute;
+	display: none;
+	position: absolute;
 	padding: 0 10px 0 10px;
-    font-weight: 500;
-    font-size: 13px;
-    top: 75%;
-    margin: 0 auto;
-    left: 0;
-    right: 0;
-    width: 20%;
-    min-width: 300px;
-    background-color: rgba(0,0,0,0.267);
-    user-select: all !important;
-    color: white;
+	font-weight: 500;
+	font-size: 13px;
+	top: 75%;
+	margin: 0 auto;
+	left: 0;
+	right: 0;
+	width: 20%;
+	min-width: 300px;
+	background-color: rgba(0,0,0,0.267);
+	user-select: all !important;
+	color: white;
 }
 
 p {
@@ -309,22 +308,22 @@ p {
 
 
 .iteminfo-label {
-    font-size: 15px;
-    font-weight:600;
+	font-size: 15px;
+	font-weight:600;
 }
 
 .line {
-    border: 0;
-    border-top: 1px solid rgba(255,255,255,0.25);
-    border-radius:2px;
-    margin-top:5px;
-    margin-bottom:5px;
+	border: 0;
+	border-top: 1px solid rgba(255,255,255,0.25);
+	border-radius:2px;
+	margin-top:5px;
+	margin-bottom:5px;
 }
 
 
 .item-slot-count p {
-    color: #ffffff;
-    text-align: right;
+	color: #ffffff;
+	text-align: right;
 	right: 2px;
 	top: -3px;
 	font-size: 11px;
@@ -332,64 +331,62 @@ p {
 }
 
 .inv-option-item > p {
-    color: white;
-    text-align: center;
-    line-height: 48px;
-    text-transform: uppercase;
-    font-size: 1.1pt;
-    font-family: Verdana;
+	color: white;
+	text-align: center;
+	line-height: 48px;
+	text-transform: uppercase;
+	font-size: 1.1pt;
+	font-family: Verdana;
 }
 
 
 
 .inv-option-item { 
-    position: relative;
-    display: block;
-    margin: 0 auto;
-    height: 40px;
-    width: 150px;
-    top: 30%;
-    background-color:rgba(12, 12, 12, 0.35);
-	outline: 1px solid rgba(38,38,38,0.3);
+	position: relative;
+	display: block;
+	margin: 0 auto;
+	height: 40px;
+	width: 150px;
+	top: 30%;
+	background-color:rgba(12, 12, 12, 0.35);
+	outline: 1px solid rgba(33,33,33,0.4);
 	outline-offset: -1px;
-    color: white;
-    text-align: center;
-    transition: 0.2s ease-in-out all;
+	color: white;
+	text-align: center;
+	transition: 0.2s ease-in-out all;
 	border: 0;
 }
 
 .use {
-    position: relative;
-    display: block;
-    margin: 0 auto;
-    height: 40px;
-    width: 150px;
-    background-color:rgba(12, 12, 12, 0.35);
-	outline: 1px solid rgba(38,38,38,0.3);
+	position: relative;
+	display: block;
+	margin: 0 auto;
+	height: 40px;
+	width: 150px;
+	background-color:rgba(12, 12, 12, 0.35);
+	outline: 1px solid rgba(33,33,33,0.4);
 	outline-offset: -1px;
-    color: white;
-    text-align: center;
-    transition: 0.2s ease-in-out all;
-    line-height: 40px;
-    font-size: 90%;
+	color: white;
+	text-align: center;
+	transition: 0.2s ease-in-out all;
+	line-height: 40px;
 	border: 0;
 }
 
 .give {
-    position: relative;
-    display: block;
-    margin: 20 auto;
-    height: 40px;
-    width: 150px;
-    top: 35%;
-    background-color:rgba(12, 12, 12, 0.35);
-	outline: 1px solid rgba(38,38,38,0.3);
+	position: relative;
+	display: block;
+	margin: 20 auto;
+	height: 40px;
+	width: 150px;
+	top: 35%;
+	background-color:rgba(12, 12, 12, 0.35);
+	outline: 1px solid rgba(33,33,33,0.4);
 	outline-offset: -1px;
-    color: white;
-    text-align: center;
-    transition: 0.2s ease-in-out all;
-    line-height: 40px;
-    font-size: 90%;
+	color: white;
+	text-align: center;
+	transition: 0.2s ease-in-out all;
+	line-height: 40px;
 	border: 0;
 }
 
@@ -399,15 +396,15 @@ p {
 }
 
 .close {
-    position: relative;
-    display: block;
-    margin: 0 auto;
-    height: 40px;
-    width: 150px;
-    top: 40%;
-    color: white;
-    background-color:rgba(12, 12, 12, 0.35);
-	outline: 1px solid rgba(38,38,38,0.3);
+	position: relative;
+	display: block;
+	margin: 0 auto;
+	height: 40px;
+	width: 150px;
+	top: 40%;
+	color: white;
+	background-color:rgba(12, 12, 12, 0.35);
+	outline: 1px solid rgba(33,33,33,0.4);
 	outline-offset: -1px;
 	transition: 0.2s ease-in-out all;
 	border: 0;
@@ -431,11 +428,6 @@ input[type=number]::-webkit-outer-spin-button {
 	background-color: rgba(0, 0, 0, 0.705);
 }
 
-.ui-draggable-dragging .item-name,
-.ui-draggable-dragging .item-count {
-    display: none;
-}
-
-.ui-draggable-dragging .keybind {
-    display: none;
+.ui-draggable-dragging {
+	pointer-events: none
 }
