@@ -991,13 +991,17 @@ AddEventHandler('linden_inventory:useItem',function(item)
 				TriggerEvent('linden_inventory:closeInventory') UseItem(item, true)
 			elseif data and next(data) then
 				if not data.useTime then data.useTime = 0 end
-				TriggerEvent(data.event, item, data.useTime, function(cb)
-					if cb then
-						UseItem(item, false, data)
-					else
-						TriggerEvent('mythic_notify:client:SendAlert', {type = 'error', text = _U('cannot_use', item.label), length = 2500}) return
-					end
-				end)
+				if data.event then
+					TriggerEvent(data.event, item, data.useTime, function(cb)
+						if cb then
+							UseItem(item, false, data)
+						else
+							TriggerEvent('mythic_notify:client:SendAlert', {type = 'error', text = _U('cannot_use', item.label), length = 2500}) return
+						end
+					end)
+				else
+					UseItem(item, false, data)
+				end
 			end
 		else
 			if Config.Ammos[item.name] or item.name:find('WEAPON_') then
