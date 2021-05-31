@@ -429,5 +429,10 @@ input[type=number]::-webkit-outer-spin-button {
 }
 
 .ui-draggable-dragging {
-	pointer-events: none
+	pointer-events: none;
+	width: 100px;
+	height: 100px;
+	position: relative;
+	float: left;
+	margin: 2px 1px 0 1px;
 }

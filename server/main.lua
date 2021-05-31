@@ -383,8 +383,8 @@ AddEventHandler('linden_inventory:openTargetInventory', function(targetId)
 		local playerCoords = GetEntityCoords(GetPlayerPed(xPlayer.source))
 		if #(playerCoords - targetCoords) <= 3 then
 			Inventories[xTarget.source].set('open', xPlayer.source)
-			Opened[xPlayer.source] = {invid = xTarget.source, type = 'TargetPlayer'}
-			Opened[xTarget.source] = {invid = xPlayer.source, type = 'TargetPlayer'}
+			Opened[xPlayer.source] = {invid = xTarget.source, type = 'player'}
+			Opened[xTarget.source] = {invid = xPlayer.source, type = 'player'}
 			TriggerClientEvent('linden_inventory:openInventory', xPlayer.source, Inventories[xPlayer.source], Inventories[xTarget.source])
 		end
 	end
@@ -479,10 +479,6 @@ AddEventHandler('linden_inventory:saveInventoryData', function(data)
 		if data.frominv == data.toinv then
 			if data.frominv == 'Playerinv' then
 				invid = playerinv
-			elseif data.frominv == 'TargetPlayer' then
-				targetId = string.gsub(data.invid, 'Player ', '')
-				xTarget = ESX.GetPlayerFromId(tonumber(targetId))
-				invid = xTarget.source
 			else
 				invid = data.invid
 			end
@@ -530,22 +526,10 @@ AddEventHandler('linden_inventory:saveInventoryData', function(data)
 				return
 			end
 			if data.frominv == 'Playerinv' then
-				if data.toinv == 'TargetPlayer' then
-					targetId = string.gsub(data.invid, 'Player ', '')
-					xTarget = ESX.GetPlayerFromId(tonumber(targetId))
-					invid = xTarget.source
-				else
-					invid = data.invid
-				end
+				invid = data.invid
 				invid2 = xPlayer.source
 			elseif data.toinv == 'Playerinv' then
-				if data.frominv == 'TargetPlayer' then
-					targetId = string.gsub(data.invid2, 'Player ', '')
-					xTarget = ESX.GetPlayerFromId(tonumber(targetId))
-					invid2 = xTarget.source
-				else
-					invid2 = data.invid2
-				end
+				invid2 = data.invid2
 				invid = xPlayer.source
 			end
 			if data.frominv == 'drop' or data.toinv == 'drop' then
@@ -738,7 +722,6 @@ AddEventHandler('linden_inventory:saveInventory', function(data)
 		invid = data.invid
 		Opened[invid] = nil
 	elseif data.type == 'player' then
-		print('closing '..data.invid)
 		invid = data.invid
 		updateWeight(ESX.GetPlayerFromId(invid), false, data.weight, data.slot)
 		Opened[invid] = nil
@@ -758,7 +741,7 @@ end)
 AddEventHandler('esx:playerDropped', function(playerid)
 	local data = Opened[playerid]
 	if Inventories[playerid] and data then
-		if data.type == 'TargetPlayer' then
+		if data.type == 'player' then
 			local invid = Opened[playerid].invid
 			updateWeight(ESX.GetPlayerFromId(invid))
 			Opened[invid] = nil

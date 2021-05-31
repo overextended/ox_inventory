@@ -74,25 +74,33 @@ CanOpenInventory = function()
 	else return false end
 end
 
-CanOpenTarget = function(searchPlayerPed)
-	if IsPedDeadOrDying(searchPlayerPed, 1)
-	or IsEntityPlayingAnim(searchPlayerPed, 'random@mugging3', 'handsup_standing_base', 3)
-	or IsEntityPlayingAnim(searchPlayerPed, 'missminuteman_1ig_2', 'handsup_base', 3)
-	or IsEntityPlayingAnim(searchPlayerPed, 'missminuteman_1ig_2', 'handsup_enter', 3)
-	or IsEntityPlayingAnim(searchPlayerPed, 'dead', 'dead_a', 3)
-	or IsEntityPlayingAnim(searchPlayerPed, 'mp_arresting', 'idle', 3)
+CanOpenTarget = function(ped)
+	if GetEntityHealth(ped) == 0
+	or IsEntityPlayingAnim(ped, 'random@mugging3', 'handsup_standing_base', 3)
+	or IsEntityPlayingAnim(ped, 'missminuteman_1ig_2', 'handsup_base', 3)
+	or IsEntityPlayingAnim(ped, 'missminuteman_1ig_2', 'handsup_enter', 3)
+	or IsEntityPlayingAnim(ped, 'dead', 'dead_a', 3)
+	or IsEntityPlayingAnim(ped, 'mp_arresting', 'idle', 3)
 	then return true
 	else return false end
 end
 
-OpenTargetInventory = function()
-	local closestPlayer, closestDistance = ESX.Game.GetClosestPlayer()
-	if closestPlayer ~= -1 and closestDistance <= 1.5 then
-		local searchPlayerPed = GetPlayerPed(closestPlayer)
-		if CanOpenTarget(searchPlayerPed) or ESX.PlayerData.job.name == 'police' then
-			TriggerServerEvent('linden_inventory:openTargetInventory', GetPlayerServerId(closestPlayer))
+OpenTargetInventory = function(target)
+	if invOpen then return end
+	if not IsPedInAnyVehicle(ESX.PlayerData.ped, true) and not currentInventory and CanOpenInventory() then
+		local targetPlayer, targetDistance
+		if target then
+			targetPlayer = target
+			targetDistance = #(playerCoords - GetEntityCoords(GetPlayerPed(targetPlayer)))
 		else
-			TriggerEvent('mythic_notify:client:SendAlert', {type = 'error', text = _U('inventory_cannot_open_other'), length = 2500})
+			targetPlayer, targetDistance = ESX.Game.GetClosestPlayer()
+		end
+		if targetPlayer ~= -1 and targetDistance <= 1.5 then
+			if CanOpenTarget(GetPlayerPed(targetPlayer)) or ESX.PlayerData.job.name == 'police' then
+				TriggerServerEvent('linden_inventory:openTargetInventory', GetPlayerServerId(targetPlayer))
+			else
+				TriggerEvent('mythic_notify:client:SendAlert', {type = 'error', text = _U('inventory_cannot_open_other'), length = 2500})
+			end
 		end
 	end
 end
@@ -299,7 +307,7 @@ AddEventHandler('linden_inventory:itemNotify', function(item, count, slot, notif
 			if item.name:find('WEAPON_') then TriggerEvent('linden_inventory:checkWeapon', item) end
 		end
 	end
-	if currentInventory and string.find(currentInventory.id, 'Player') then
+	if currentInventory and currentInventory.type == 'player' then
 		TriggerEvent('targetPlayerAnim')
 	end
 	ESX.SetPlayerData('inventory', ESX.PlayerData.inventory)
@@ -725,15 +733,16 @@ TriggerLoops = function()
 			else
 				sleep = 100
 				if currentInventory then
-					if currentInventory.type == 'TargetPlayer' then
+					if currentInventory.type == 'player' then
 						local id = GetPlayerFromServerId(currentInventory.id)
 						local ped = GetPlayerPed(id)
 						local pedCoords = GetEntityCoords(ped)
 						local dist = #(playerCoords - pedCoords)
-						if not id or dist > 1.8 or not CanOpenTarget(ped) then
-							if ESX.PlayerData.job.name == 'police' then return end
-							TriggerEvent('linden_inventory:closeInventory')
-							TriggerEvent('mythic_notify:client:SendAlert', {type = 'error', text = _U('inventory_lost_access'), length = 2500})
+						if not id or dist > 1.8 then
+							if (ESX.PlayerData.job.name == 'police' and dist > 1.8) or not CanOpenTarget(ped) then
+								TriggerEvent('linden_inventory:closeInventory')
+								TriggerEvent('mythic_notify:client:SendAlert', {type = 'error', text = _U('inventory_lost_access'), length = 2500})
+							end
 						else
 							TaskTurnPedToFaceCoord(ESX.PlayerData.ped, pedCoords)
 						end
@@ -896,12 +905,7 @@ RegisterKeyMapping('hotbar', 'Display inventory hotbar', 'keyboard', 'tab')
 RegisterKeyMapping('inv', 'Open player inventory', 'keyboard', Config.InventoryKey)
 RegisterKeyMapping('vehinv', 'Open vehicle inventory', 'keyboard', Config.VehicleInventoryKey)
 
-RegisterCommand('steal', function()
-	if invOpen then return end
-	if not IsPedInAnyVehicle(ESX.PlayerData.ped, true) and not currentInventory and CanOpenInventory() then	 
-		OpenTargetInventory()
-	end
-end)
+RegisterCommand('steal', function() OpenTargetInventory() end)
 
 RegisterCommand('weapondetails', function()
 	if currentWeapon and ESX.PlayerData.job.name == 'police' then
@@ -991,13 +995,17 @@ AddEventHandler('linden_inventory:useItem',function(item)
 				TriggerEvent('linden_inventory:closeInventory') UseItem(item, true)
 			elseif data and next(data) then
 				if not data.useTime then data.useTime = 0 end
-				TriggerEvent(data.event, item, data.useTime, function(cb)
-					if cb then
-						UseItem(item, false, data)
-					else
-						TriggerEvent('mythic_notify:client:SendAlert', {type = 'error', text = _U('cannot_use', item.label), length = 2500}) return
-					end
-				end)
+				if data.event then
+					TriggerEvent(data.event, item, data.useTime, function(cb)
+						if cb then
+							UseItem(item, false, data)
+						else
+							TriggerEvent('mythic_notify:client:SendAlert', {type = 'error', text = _U('cannot_use', item.label), length = 2500}) return
+						end
+					end)
+				else
+					UseItem(item, false, data)
+				end
 			end
 		else
 			if Config.Ammos[item.name] or item.name:find('WEAPON_') then
