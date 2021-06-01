@@ -225,6 +225,7 @@ HSN.SetupInventory = function(data) {
 		}
 	}
 	Display(true)
+
 	if (data != undefined) {
 		// player inventory
 		$('.inventory-main-leftside').data("invTier", "Playerinv")
@@ -233,13 +234,13 @@ HSN.SetupInventory = function(data) {
 			if ((item != null)) {
 				if (item.metadata == undefined) { item.metadata = {} }
 				let image = item.name
-				if (item.metadata.image != undefined) { image = item.metadata.image}
+				if (item.metadata.image != undefined) { image = item.metadata.image }
 				totalkg = totalkg+(item.weight * item.count);
 				if ((item.name).split("_")[0] == "WEAPON" && item.metadata.durability !== undefined) {					
 					$(".inventory-main-leftside").find("[inventory-slot="+item.slot+"]").html('<div class="item-slot-img"><img src="images/'+image+'.png'+'" alt="'+item.name+'" /></div><div class="item-slot-count"><p>'+numberFormat(item.count, item.name)+' '+weightFormat(item.weight/1000 * item.count)+'</p></div><div class="item-slot-label"><div class="item-slot-durability-bar"></div>'+item.label+'</div>');
 					$(".inventory-main-leftside").find("[inventory-slot="+item.slot+"]").data("ItemData", item);
-						let durability = HSN.InventoryGetDurability(item.metadata.durability)
-						$(".inventory-main-leftside").find("[inventory-slot="+item.slot+"]").find(".item-slot-durability-bar").css({"background-color": durability[0], "width": durability[1]});
+					let durability = HSN.InventoryGetDurability(item.metadata.durability)
+					$(".inventory-main-leftside").find("[inventory-slot="+item.slot+"]").find(".item-slot-durability-bar").css({"background-color": durability[0], "width": durability[1]});
 				} else {
 					$(".inventory-main-leftside").find("[inventory-slot="+item.slot+"]").html('<div class="item-slot-img"><img src="images/'+image+'.png'+'" alt="'+item.name+'" /></div><div class="item-slot-count"><p>'+numberFormat(item.count, item.name)+' '+weightFormat(item.weight/1000 * item.count)+'</p></div><div class="item-slot-label">'+item.label+'</div></div>');
 					$(".inventory-main-leftside").find("[inventory-slot="+item.slot+"]").data("ItemData", item);
@@ -259,38 +260,37 @@ HSN.SetupInventory = function(data) {
 			rightinvtype = data.rightinventory.type
 			rightmaxWeight = data.rightinventory.maxWeight || (data.rightinventory.slots*8000).toFixed(0)
 			righttotalkg = 0
-			if (rightinvtype = 'player') { $('.rightside-name').html('Player '+data.rightinventory.id) } else { $('.rightside-name').html(data.rightinventory.name) }
-				for(i = 1; i <= (data.rightinventory.slots); i++) {
-					$(".inventory-main-rightside").append('<div class="ItemBoxes" inventory-slot='+i+'></div> ')
-				}
-				if (data.rightinventory.type == 'shop') {
-					let currency = data.rightinventory.currency
-					$.each(data.rightinventory.inventory, function (i, item) {
-						if (item != null) {
-							if (item.metadata == undefined) { item.metadata = {} }
-							let image = item.name
+			if (rightinvtype == 'player') { $('.rightside-name').html('Player '+data.rightinventory.id) } else { $('.rightside-name').html(data.rightinventory.name) }
+			for(i = 1; i <= (data.rightinventory.slots); i++) {
+				$(".inventory-main-rightside").append('<div class="ItemBoxes" inventory-slot='+i+'></div> ')
+			}
+			if (data.rightinventory.type == 'shop') {
+				let currency = data.rightinventory.currency
+				$.each(data.rightinventory.inventory, function (i, item) {
+					if (item != null) {
+						if (item.metadata == undefined) { item.metadata = {} }
+						let image = item.name
 						if (item.metadata.image != undefined) { image = item.metadata.image }
-							if ((item.name).split("_")[0] == "WEAPON" && item.metadata.durability !== undefined) {
-								if (currency == 'money' || currency == 'black_money' || currency == 'bank' || currency == undefined) {
-									$(".inventory-main-rightside").find("[inventory-slot="+item.slot+"]").html('<div class="item-slot-img"><img src="images/'+image+'.png'+'" alt="'+item.name+'" /></div><div class="item-slot-count"><p>'+numberFormat(item.price, 'money')+'</p></div><div class="item-slot-label"><div class="item-slot-durability-bar"></div>'+item.label+'</div>');
-								} else {
-									$(".inventory-main-rightside").find("[inventory-slot="+item.slot+"]").html('<div class="item-slot-img"><img src="images/'+image+'.png'+'" alt="'+item.name+'" /></div><div class="item-slot-count"><p>'+item.price+' '+currency+'</p></div><div class="item-slot-label"><div class="item-slot-durability-bar"></div>'+item.label+'</div>');
-								}
-								$(".inventory-main-rightside").find("[inventory-slot="+item.slot+"]").data("ItemData", item).data("location", data.rightinventory.id);
-								let durability = HSN.InventoryGetDurability(item.metadata.durability)
-								$(".inventory-main-rightside").find("[inventory-slot="+item.slot+"]").find(".item-slot-durability-bar").css({"background-color": durability[0],"width":durability[1]});
+						if ((item.name).split("_")[0] == "WEAPON" && item.metadata.durability !== undefined) {
+							if (currency == 'money' || currency == 'black_money' || currency == 'bank' || currency == undefined) {
+								$(".inventory-main-rightside").find("[inventory-slot="+item.slot+"]").html('<div class="item-slot-img"><img src="images/'+image+'.png'+'" alt="'+item.name+'" /></div><div class="item-slot-count"><p>'+numberFormat(item.price, 'money')+'</p></div><div class="item-slot-label"><div class="item-slot-durability-bar"></div>'+item.label+'</div>');
 							} else {
-								if (currency == 'money' || currency == 'black_money' || currency == 'bank' || currency == undefined) {
-									$(".inventory-main-rightside").find("[inventory-slot="+item.slot+"]").html('<div class="item-slot-img"><img src="images/'+image+'.png'+'" alt="'+item.name+'" /></div><div class="item-slot-count"><p>'+numberFormat(item.price, 'money')+'</p></div><div class="item-slot-label">'+item.label+'</div></div>');
-								} else {
-									$(".inventory-main-rightside").find("[inventory-slot="+item.slot+"]").html('<div class="item-slot-img"><img src="images/'+image+'.png'+'" alt="'+item.name+'" /></div><div class="item-slot-count"><p>'+item.price+' '+currency+'</p></div><div class="item-slot-label">'+item.label+'</div></div>');
-								}
-								$(".inventory-main-rightside").find("[inventory-slot="+item.slot+"]").data("ItemData", item).data("location", data.rightinventory.id);
+								$(".inventory-main-rightside").find("[inventory-slot="+item.slot+"]").html('<div class="item-slot-img"><img src="images/'+image+'.png'+'" alt="'+item.name+'" /></div><div class="item-slot-count"><p>'+item.price+' '+currency+'</p></div><div class="item-slot-label"><div class="item-slot-durability-bar"></div>'+item.label+'</div>');
 							}
+							$(".inventory-main-rightside").find("[inventory-slot="+item.slot+"]").data("ItemData", item).data("location", data.rightinventory.id);
+							let durability = HSN.InventoryGetDurability(item.metadata.durability)
+							$(".inventory-main-rightside").find("[inventory-slot="+item.slot+"]").find(".item-slot-durability-bar").css({"background-color": durability[0],"width":durability[1]});
+						} else {
+							if (currency == 'money' || currency == 'black_money' || currency == 'bank' || currency == undefined) {
+								$(".inventory-main-rightside").find("[inventory-slot="+item.slot+"]").html('<div class="item-slot-img"><img src="images/'+image+'.png'+'" alt="'+item.name+'" /></div><div class="item-slot-count"><p>'+numberFormat(item.price, 'money')+'</p></div><div class="item-slot-label">'+item.label+'</div></div>');
+							} else {
+								$(".inventory-main-rightside").find("[inventory-slot="+item.slot+"]").html('<div class="item-slot-img"><img src="images/'+image+'.png'+'" alt="'+item.name+'" /></div><div class="item-slot-count"><p>'+item.price+' '+currency+'</p></div><div class="item-slot-label">'+item.label+'</div></div>');
+							}
+							$(".inventory-main-rightside").find("[inventory-slot="+item.slot+"]").data("ItemData", item).data("location", data.rightinventory.id);
 						}
-					})
-
-				} else {
+					}
+				})
+			} else {
 				$.each(data.rightinventory.inventory, function (i, item) {
 					if (item != null) {
 						if (item.metadata == undefined) { item.metadata = {} }
