@@ -147,15 +147,15 @@ Config.Ammos = {
 		`WEAPON_COMBATMG`,
 		`WEAPON_SPECIALCARBINE`,
 		`WEAPON_SPECIALCARBINE_MK2`,
-		`WEAPON_MILITARYRIFLE`
-	},
-
-	['ammo-rifle2'] = { -- 7.62 soviet
+		`WEAPON_MILITARYRIFLE`,
 		`WEAPON_ASSAULTRIFLE`,
 		`WEAPON_ASSAULTRIFLE_MK2`,
 		`WEAPON_COMBATMG_MK2`,
 		`WEAPON_COMPACTRIFLE`,
-		`WEAPON_MG`,
+		`WEAPON_MG`
+	},
+
+	['ammo-rifle2'] = { -- 7.62 soviet
 	},
 
 	['ammo-22'] = { -- .22 long rifle

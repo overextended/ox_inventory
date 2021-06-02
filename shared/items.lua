@@ -202,7 +202,7 @@ Config.ItemList = {
 	},
 
 	['hotwheelpack'] = {
-		event = 'inventory:hotwheelpack',
+		event = 'linden_inventory:hotwheelpack',
 	},
 
 }
