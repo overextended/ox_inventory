@@ -155,7 +155,7 @@ Config.Shops = {
 	{ coords = vector3(1698.388, 4924.404, 42.063), name = 'LTD'},
 	{ coords = vector3(25.723, -1346.966, 29.497), name = '24/7'},
 	{ coords = vector3(373.875, 325.896, 103.566), name = '24/7'},
-	{ coords = vector3(-2544.092, 2316.184, 33.2), name = 'RON'},
+	{ coords = vector3(-2544.092, 2316.184, 33.2), name = 'RON'}, 
 
 	
 	{ type = Config.PoliceArmoury, job = 'police', coords = vector3(481.5, -995.8, 30.6) },

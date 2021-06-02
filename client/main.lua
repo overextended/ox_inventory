@@ -42,6 +42,7 @@ StartInventory = function()
 		PlayerLoaded = true
 		ClearWeapons()
 		TriggerEvent('mythic_notify:client:SendAlert', {type = 'inform', text = _U('inventory_setup'), length = 2500})
+		TriggerEvent('cd_drawtextui:HideUI')
 		TriggerLoops()
 		if next(Blips) then
 			for k, v in pairs(Blips) do
@@ -606,16 +607,16 @@ TriggerLoops = function()
 				if not id or type == 'shop' then
 					if id then
 						sleep = 5
-						DrawMarker(2, Config.Shops[id].coords.x,Config.Shops[id].coords.y,Config.Shops[id].coords.z, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.3, 0.2, 0.15, 30, 150, 30, 222, false, false, false, true, false, false, false)			
+						--DrawMarker(2, Config.Shops[id].coords.x,Config.Shops[id].coords.y,Config.Shops[id].coords.z, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.3, 0.2, 0.15, 30, 150, 30, 222, false, false, false, true, false, false, false)			
 						local distance = #(playerCoords - Config.Shops[id].coords)
 						local name = Config.Shops[id].name or Config.Shops[id].type.name
-						if distance <= 1 then text='[~g~E~s~] '..name
+						if distance <= 1 then --text='[~g~E~s~] '..name
 							if IsControlJustPressed(0, 38) then
-								OpenShop(id)
+								exports['mythic_notify']:SendAlert('error', 'Use your eye to open the shop by looking at the NPC!')
 							end
 						elseif distance > 4 then id, type = nil, nil
 						else text = Config.Shops[id].name or Config.Shops[id].type.name end
-						if distance <= 2 then DrawText3D(Config.Shops[id].coords, text) end
+						if distance <= 2 then --[[DrawText3D(Config.Shops[id].coords, text)]] end
 					else
 						for k, v in pairs(Config.Shops) do
 							if v.coords and (not v.job or v.job == ESX.PlayerData.job.name) then
