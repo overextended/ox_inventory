@@ -74,7 +74,6 @@ Display = function(bool) {
 		$(".inventory-main").fadeIn(200)
 	} else {
 		$(".inventory-main").fadeOut(200);
-		$(".iteminfo").fadeOut(300);
 		righttotalkg = 0
 		rightinvslot = null
 		rightinventory = null
@@ -464,10 +463,10 @@ $(document).on("click", ".ItemBoxes", function(e){
 })
 
 
-$(document).on("mouseenter", ".ItemBoxes", function(e){
+$(".inventory-main").on("mouseenter mouseleave", ".ItemBoxes", function(e){
 	e.preventDefault();
 	let Item = $(this).data("ItemData")
-	if (Item != undefined) {
+	if (e.type == 'mouseenter' && Item != undefined) {
 		$(".iteminfo").fadeIn(100);
 		$(".iteminfo-label").html('<p>'+Item.label+' <span style="float:right;">'+gram.format(Item.weight)+'</span></p><hr class="line">')
 		$(".iteminfo-description").html('')
