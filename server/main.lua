@@ -82,7 +82,8 @@ Citizen.CreateThread(function()
 	end
 end)
 
-exports.ghmattimysql:ready(function()
+Citizen.CreateThread(function()
+    while GetResourceState('ghmattimysql') ~= 'started' do Citizen.Wait(0) end
 	-- Clean the database
 	exports.ghmattimysql:execute('DELETE FROM `linden_inventory` WHERE `lastupdated` < (NOW() - INTERVAL '..Config.DBCleanup..') OR `data` = "[]"')
 	---------------------
@@ -123,8 +124,10 @@ exports.ghmattimysql:ready(function()
 						closeonuse = 1
 					}
 				end
+				Config.ItemList[k] = v.consume or 1
 			end
 			if count > 0 then message('Created '..count..' dummy items', 2) end
+			
 		else
 			failed('Unable to retrieve items from the database')
 		end
@@ -948,9 +951,9 @@ ESX.RegisterServerCallback('linden_inventory:usingItem', function(source, cb, it
 			TriggerClientEvent('linden_inventory:addAmmo', xPlayer.source, Inventories[xPlayer.source].inventory[slot])
 			cb(false)
 		else
-			local cItem = Config.ItemList[xItem.name]
-			if cItem then
-				if not cItem.consume or xItem.count >= cItem.consume then
+			local consume = Config.ItemList[xItem.name]
+			if consume then
+				if xItem.count >= consume then
 					cb(xItem)
 				else
 					TriggerClientEvent('mythic_notify:client:SendAlert', xPlayer.source, { type = 'error', text = _U('item_not_enough', xItem.label) })
@@ -964,8 +967,8 @@ end)
 RegisterNetEvent('linden_inventory:removeItem')
 AddEventHandler('linden_inventory:removeItem', function(item)
 	local xPlayer = ESX.GetPlayerFromId(source)
-	local cItem = Config.ItemList[item.name]
-	removeInventoryItem(xPlayer, item.name, cItem.consume or 1, item.metadata, item.slot)
+	local consume = Config.ItemList[item.name]
+	removeInventoryItem(xPlayer, item.name, consume, item.metadata, item.slot)
 end)
 
 -- Override the default ESX commands
