@@ -28,61 +28,20 @@ local message = function(msg, colour)
 end
 
 Citizen.CreateThread(function()
-	if ESX == nil then failed('Unable to retrieve ESX object') end
+	if ESX == nil then failed('You are not running a compatible version of ESX - refer to the documentation') end
 	local OneSync = GetConvar('onesync_enabled', false) == 'true'
 	local Infinity = GetConvar('onesync_enableInfinity', false) == 'true'
-	if not OneSync and not Infinity then failed('Unable to initialise, OneSync is not enabled on this server')
+	if not OneSync and not Infinity then failed('OneSync is not enabled on this server - refer to the documentation')
 	elseif Infinity then message('Server is running OneSync Infinity', 2) elseif OneSync then message('Server is running OneSync Legacy', 2) end
-	while true do
-		Citizen.Wait(125)
-		if Status[1] ~= 'starting' then
-			break
-		end
-	end
-	if Status[1] == 'error' then message(Status[2], 1) return end
-	while (Status[1] == 'loaded') do Citizen.Wait(125) if Status[1] == 'ready' then break end end
-	message('Inventory setup is complete', 2)
-	if Config.Logs and GetResourceState(Config.Logs) ~= 'started' then
-		logsResource = Config.Logs
-		message('Logs have been disabled, ^3`'..logsResource..'`^7 is not running', 3)
-		Config.Logs = false
-	end
-end)
 
-Citizen.CreateThread(function()
-	local ignore = {[0] = '?', [966099553] = 'shovel'}
-	while true do		
-		Citizen.Wait(30000)
-		for invId, data in pairs(Inventories) do
-			if type(invId) == 'number' and not IsPlayerAceAllowed(data.id, 'command.save') then
-				local ped = GetPlayerPed(data.id)
-				if ped then
-					local hash, curWeapon = GetSelectedPedWeapon(ped)
-					if hash ~= `WEAPON_UNARMED` and not ignore[hash] then
-						curWeapon = ESX.GetWeaponFromHash(hash)
-						if curWeapon then
-							if Items[curWeapon.name] then
-								local item = getInventoryItem(xPlayer, curWeapon.name)
-								if item.count == 0 then
-									TriggerClientEvent('linden_inventory:clearWeapons', data.id)
-									print( ('^1[warning]^3 ['..data.id..'] '..GetPlayerName(data.id)..' may be cheating (using '..curWeapon.name..' but does not have any)^7'):format(data.id, GetPlayerName(data.id)) )
-								end
-							else
-								local xPlayer = ESX.GetPlayerFromId(data.id)
-								TriggerBanEvent(xPlayer, 'using an invalid weapon ("'..curWeapon.name..'")')
-							end
-						else
-							print('^1[warning]^3 ['..data.id..'] '..GetPlayerName(data.id)..' may be cheating (unknown weapon '..hash..')^7')
-						end
-					end
-				end
-			end
-			Citizen.Wait(200)
-		end
+	if Status[1] == 'error' then
+		Citizen.Wait(3000)
+		message(Status[2], 1)
+		print('https://thelindat.github.io/linden_inventory')
+		return
 	end
-end)
-
-exports.ghmattimysql:ready(function()
+	
+	while GetResourceState('ghmattimysql') ~= 'started' do Citizen.Wait(0) end
 	-- Clean the database
 	exports.ghmattimysql:execute('DELETE FROM `linden_inventory` WHERE `lastupdated` < (NOW() - INTERVAL '..Config.DBCleanup..') OR `data` = "[]"')
 	---------------------
@@ -123,12 +82,55 @@ exports.ghmattimysql:ready(function()
 						closeonuse = 1
 					}
 				end
+				Config.ItemList[k] = v.consume or 1
 			end
 			if count > 0 then message('Created '..count..' dummy items', 2) end
+			
 		else
 			failed('Unable to retrieve items from the database')
 		end
 		if #ESX.GetPlayers() == 0 then Status[1] = 'ready' end
+	end
+	
+	while (Status[1] == 'loaded') do Citizen.Wait(125) if Status[1] == 'ready' then break end end
+	message('Inventory setup is complete', 2)
+	if Config.Logs and GetResourceState(Config.Logs) ~= 'started' then
+		logsResource = Config.Logs
+		message('Logs have been disabled, ^3`'..logsResource..'`^7 is not running', 3)
+		Config.Logs = false
+	end
+end)
+
+Citizen.CreateThread(function()
+	local ignore = {[0] = '?', [966099553] = 'shovel'}
+	while true do		
+		Citizen.Wait(30000)
+		for invId, data in pairs(Inventories) do
+			if type(invId) == 'number' and not IsPlayerAceAllowed(data.id, 'command.save') then
+				local ped = GetPlayerPed(data.id)
+				if ped then
+					local hash, curWeapon = GetSelectedPedWeapon(ped)
+					if hash ~= `WEAPON_UNARMED` and not ignore[hash] then
+						curWeapon = ESX.GetWeaponFromHash(hash)
+						if curWeapon then
+							if Items[curWeapon.name] then
+								local item = getInventoryItem(xPlayer, curWeapon.name)
+								if item.count == 0 then
+									TriggerClientEvent('linden_inventory:clearWeapons', data.id)
+									print( ('^1[warning]^3 ['..data.id..'] '..GetPlayerName(data.id)..' may be cheating (using '..curWeapon.name..' but does not have any)^7'):format(data.id, GetPlayerName(data.id)) )
+								end
+							else
+								local xPlayer = ESX.GetPlayerFromId(data.id)
+								TriggerBanEvent(xPlayer, 'using an invalid weapon ("'..curWeapon.name..'")')
+							end
+						else
+							print('^1[warning]^3 ['..data.id..'] '..GetPlayerName(data.id)..' may be cheating (unknown weapon '..hash..')^7')
+						end
+					end
+				end
+			end
+			Citizen.Wait(200)
+		end
 	end
 end)
 
@@ -948,9 +950,9 @@ ESX.RegisterServerCallback('linden_inventory:usingItem', function(source, cb, it
 			TriggerClientEvent('linden_inventory:addAmmo', xPlayer.source, Inventories[xPlayer.source].inventory[slot])
 			cb(false)
 		else
-			local cItem = Config.ItemList[xItem.name]
-			if cItem then
-				if not cItem.consume or xItem.count >= cItem.consume then
+			local consume = Config.ItemList[xItem.name]
+			if consume then
+				if xItem.count >= consume then
 					cb(xItem)
 				else
 					TriggerClientEvent('mythic_notify:client:SendAlert', xPlayer.source, { type = 'error', text = _U('item_not_enough', xItem.label) })
@@ -964,8 +966,8 @@ end)
 RegisterNetEvent('linden_inventory:removeItem')
 AddEventHandler('linden_inventory:removeItem', function(item)
 	local xPlayer = ESX.GetPlayerFromId(source)
-	local cItem = Config.ItemList[item.name]
-	removeInventoryItem(xPlayer, item.name, cItem.consume or 1, item.metadata, item.slot)
+	local consume = Config.ItemList[item.name]
+	removeInventoryItem(xPlayer, item.name, consume, item.metadata, item.slot)
 end)
 
 -- Override the default ESX commands
