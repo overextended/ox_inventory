@@ -201,4 +201,8 @@ Config.ItemList = {
 		consume = 0
 	},
 
+	['hotwheelpack'] = {
+		event = 'inventory:hotwheelpack',
+	},
+
 }
