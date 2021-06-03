@@ -995,8 +995,8 @@ AddEventHandler('linden_inventory:useItem',function(item)
 				TriggerEvent('linden_inventory:closeInventory') UseItem(item, true)
 			elseif data and next(data) then
 				if not data.useTime then data.useTime = 0 end
-				if data.event then
-					TriggerEvent(data.event, item, data.useTime, function(cb)
+				if data.eventCheck then
+					TriggerEvent(data.eventCheck, item, function(cb)
 						if cb then
 							UseItem(item, false, data)
 						else
@@ -1022,44 +1022,50 @@ UseItem = function(item, esxItem, data)
 			isBusy = true
 
 			if data.useTime and data.useTime > 0 then
+
 				exports['mythic_progbar']:Progress({
-					name = 'useitem',
+					name = "useitem",
 					duration = data.useTime,
-					label = 'Using '..xItem.label,
+					label = data.itemLabel or 'Using '..xItem.label,
 					useWhileDead = false,
-					canCancel = false,
+					canCancel = data.canCancel,
 					controlDisables = { disableMovement = data.disableMove, disableCarMovement = false, disableMouse = false, disableCombat = true },
 					animation = { animDict = data.animDict or 'pickup_object', anim = data.anim or 'putdown_low', flags = data.flags or 48, bone = data.bone },
 					prop = { model = data.model, coords = data.coords, rotation = data.rotation }
-				})
-				Citizen.Wait(data.useTime)
-			end
-		
-			if data.hunger then
-				if data.hunger > 0 then TriggerEvent('esx_status:add', 'hunger', data.hunger)
-				else TriggerEvent('esx_status:remove', 'hunger', data.hunger) end
-			end
-			if data.thirst then
-				if data.thirst > 0 then TriggerEvent('esx_status:add', 'thirst', data.thirst)
-				else TriggerEvent('esx_status:remove', 'thirst', data.thirst) end
-			end
-			if data.stress then
-				if data.stress > 0 then TriggerEvent('esx_status:add', 'stress', data.stress)
-				else TriggerEvent('esx_status:remove', 'stress', data.stress) end
-			end
+				}, function(cancelled)
+					if not cancelled then
+						if data.hunger then
+							if data.hunger > 0 then TriggerEvent('esx_status:add', 'hunger', data.hunger)
+							else TriggerEvent('esx_status:remove', 'hunger', data.hunger) end
+						end
+						if data.thirst then
+							if data.thirst > 0 then TriggerEvent('esx_status:add', 'thirst', data.thirst)
+							else TriggerEvent('esx_status:remove', 'thirst', data.thirst) end
+						end
+						if data.stress then
+							if data.stress > 0 then TriggerEvent('esx_status:add', 'stress', data.stress)
+							else TriggerEvent('esx_status:remove', 'stress', data.stress) end
+						end
+						
+						if data.drunk then
+							if data.drunk > 0 then TriggerEvent('esx_status:add', 'drunk', data.drunk)
+							else TriggerEvent('esx_status:remove', 'drunk', data.drunk) end
+						end
 			
-			if data.drunk then
-				if data.drunk > 0 then TriggerEvent('esx_status:add', 'drunk', data.drunk)
-				else TriggerEvent('esx_status:remove', 'drunk', data.drunk) end
-			end
+						if data.component then
+							GiveWeaponComponentToPed(ESX.PlayerData.ped, currentWeapon.name, component.hash)
+							table.insert(currentWeapon.metadata.components, component.name)
+							TriggerServerEvent('linden_inventory:updateWeapon', currentWeapon, component.name)
+						end
 
-			if data.component then
-				GiveWeaponComponentToPed(ESX.PlayerData.ped, currentWeapon.name, component.hash)
-				table.insert(currentWeapon.metadata.components, component.name)
-				TriggerServerEvent('linden_inventory:updateWeapon', currentWeapon, component.name)
-			end
+						if data.event then TriggerEvent(data.event, item) end
 
-			if not data.consume or data.consume > 1 then TriggerServerEvent('linden_inventory:removeItem', item) end
+						if not data.consume or data.consume > 1 then TriggerServerEvent('linden_inventory:removeItem', item) end
+					else
+						print('cancelled')
+					end
+				end)
+			end
 		end
 	
 		useItemCooldown = false

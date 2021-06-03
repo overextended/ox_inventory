@@ -173,6 +173,9 @@ Config.ItemList = {
 		coords = { x = -0.14, y = 0.02, z = -0.08 },
 		rotation = { x = -50.0, y = -50.0, z = 0.0 },
 		useTime = 2500,
+		canCancel = true,
+		itemLabel = 'This is a Bandage dickhead',
+		eventCheck = 'linden_inventory:bandageCheck',
 		event = 'linden_inventory:bandage',
 	},
 
