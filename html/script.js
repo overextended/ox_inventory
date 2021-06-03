@@ -74,6 +74,7 @@ Display = function(bool) {
 		$(".inventory-main").fadeIn(200)
 	} else {
 		$(".inventory-main").fadeOut(200);
+		$(".iteminfo").fadeOut(200);
 		righttotalkg = 0
 		rightinvslot = null
 		rightinventory = null
