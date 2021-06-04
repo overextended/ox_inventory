@@ -962,6 +962,13 @@ end)
 local useItemCooldown = false
 RegisterNetEvent('linden_inventory:useItem')
 AddEventHandler('linden_inventory:useItem',function(item)
+
+	-- Check if player's in a vehicle and if they are, but aren't allowed to use the item in a vehicle... display a msg and return early to prevent execution of the event
+	if IsPedInAnyVehicle(PlayerPedId(), true) and Config.ItemList[item.name].canUseInVehicle ~=nil and Config.ItemList[item.name].canUseInVehicle == false then
+		TriggerEvent('mythic_notify:client:SendAlert', {type = 'error', text = _U('cannot_use_item_in_vehicle'), length = 2500})
+		return
+	end
+
 	if item.metadata.bag and not currentInventory then
 		invOpen = false
 		TriggerServerEvent('linden_inventory:openInventory', 'bag', { id = item.metadata.bag, label = item.label..' ('..item.metadata.bag..')', slot = item.slot, slots = item.metadata.slot or 5})
