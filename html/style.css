@@ -1,12 +1,15 @@
 @import url('https://fonts.googleapis.com/css2?family=Signika:wght@300;400;500;600;700&display=swap');
 
-body {
+html {
 	font-family: 'Signika';
 	user-select: none;
+	color: white;
+}
+
+body {
 	display: flex;
 	align-items: center;
 	justify-content: center;
-	color: white;
 	text-shadow: 1px 1px 0px black;
 	overflow:hidden;
 }
@@ -297,9 +300,8 @@ body {
 }
 
 p {
-	line-height: 0.3rem;
+	line-height: 2px;
 }
-
 
 .iteminfo-label {
 	font-size: 15px;
@@ -313,7 +315,6 @@ p {
 	margin-top:5px;
 	margin-bottom:5px;
 }
-
 
 .item-slot-count p {
 	color: #ffffff;
@@ -332,8 +333,6 @@ p {
 	font-size: 1.1pt;
 	font-family: Verdana;
 }
-
-
 
 .inv-option-item { 
 	position: relative;
@@ -402,7 +401,6 @@ p {
 	transition: 0.2s ease-in-out all;
 	border: 0;
 }
-
 
 /* scrollbar Hsn*/
 input[type=number]::-webkit-inner-spin-button, 
