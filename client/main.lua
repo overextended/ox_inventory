@@ -271,7 +271,7 @@ AddEventHandler('linden_inventory:openInventory',function(data, rightinventory)
 end)
 
 RegisterNetEvent('linden_inventory:refreshInventory')
-AddEventHandler('linden_inventory:refreshInventory', function(data)
+AddEventHandler('linden_inventory:refreshInventory', function(data, clear)
 	SendNUIMessage({
 		message = 'refresh',
 		inventory = data.inventory,
@@ -284,6 +284,9 @@ AddEventHandler('linden_inventory:refreshInventory', function(data)
 	ESX.SetPlayerData('inventory', data.inventory)
 	ESX.SetPlayerData('maxWeight', data.maxWeight)
 	ESX.SetPlayerData('weight', data.weight)
+	if clear then ClearWeapons()
+		TriggerEvent('linden_inventory:closeInventory')
+	end
 end)
 
 RegisterNetEvent('linden_inventory:itemNotify')
