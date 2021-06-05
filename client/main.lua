@@ -1008,7 +1008,7 @@ AddEventHandler('linden_inventory:useItem',function(item)
 				end
 			end
 		else
-			if Config.Ammos[item.name] or item.name:find('WEAPON_') then
+			if Config.Ammos[item.name] or item.name:find('WEAPON_') or item.name:find('GADGET_') then
 				UseItem(item, false)
 			end
 		end
