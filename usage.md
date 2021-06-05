@@ -122,7 +122,7 @@ end)
 * Always add a Wait before triggering the item use results
 
 
-#### Create custom drops
+#### Custom drops
 * The following example allows the creation of a drop from skinning an animal
 * The drop is created on the animals x,y coordinates and the players z (dead animals result in underground drops)
 * Confirm the entity exists, is not the player, and is near the player (prevent exploits)
