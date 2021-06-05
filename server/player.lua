@@ -28,6 +28,7 @@ addInventoryItem = function(xPlayer, item, count, metadata, slot)
 	local xItem = Items[item]
 	if xPlayer and xItem and count > 0 then
 		local isWeapon = item:find('WEAPON_')
+		local isParachute = item:find('GADGET_')
 		if metadata == 'setname' then metadata = {description = xPlayer.getName()} elseif not isWeapon then metadata = setMetadata(metadata) end
 		local toSlot, existing
 		if slot then slot = getPlayerSlot(xPlayer, slot, item, metadata).slot
@@ -38,7 +39,7 @@ addInventoryItem = function(xPlayer, item, count, metadata, slot)
 			end
 			slot = toSlot
 		end
-		if isWeapon then
+		if isWeapon or isParachute then
 			xItem.stackable = false
 			if Config.Throwable[item] then
 				metadata = {throwable=1}
