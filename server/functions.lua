@@ -301,7 +301,7 @@ end
 
 ValidateString = function(item)
 	item = string.lower(item)
-	if item:find('weapon_') then item = string.upper(item) end
+	if item:find('weapon_') or item:find('gadget_') then item = string.upper(item) end
 	local xItem = Items[item]
 	if xItem then return xItem.name end
 end
