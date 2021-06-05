@@ -120,42 +120,62 @@ SyncAccounts = function(xPlayer, name)
 end
 
 CreateNewDrop = function(xPlayer, data)
-	local playerPed = GetPlayerPed(xPlayer.source)
-	local playerCoords = GetEntityCoords(playerPed)
-	local invid = RandomDropId()
-	local invid2 = xPlayer.source
-	Drops[invid] = {
-		id = invid,
-		inventory = {},
-		slots = Config.PlayerSlots,
-		coords = playerCoords,
-		type = 'drop'
-	}
-	if data.type == 'freeslot' then
-		if ValidateItem(data.type, xPlayer, Inventories[invid2].inventory[data.emptyslot], Drops[invid].inventory[data.toSlot], data.item, data.item) == true then
-			local count = Inventories[invid2].inventory[data.emptyslot].count
-			ItemNotify(xPlayer, data.item, count, data.emptyslot, 'removed')
-			Inventories[invid2].inventory[data.emptyslot] = nil
-			Drops[invid].inventory[data.toSlot] = {name = data.item.name, label = data.item.label, weight = data.item.weight, slot = data.toSlot, count = data.item.count, description = data.item.description, metadata = data.item.metadata, stackable = data.item.stackable, closeonuse = Items[data.item.name].closeonuse}
-			if Config.Logs then
-				exports.linden_logs:log(xPlayer, false, 'has dropped '..data.item.count..'x '..data.item.name..' in drop-'..invid, 'items')
+	if data.type ~= 'create' then
+		local playerPed = GetPlayerPed(xPlayer.source)
+		local playerCoords = GetEntityCoords(playerPed)
+		local invid = RandomDropId()
+		local invid2 = xPlayer.source
+		Drops[invid] = {
+			id = invid,
+			inventory = {},
+			slots = Config.PlayerSlots,
+			coords = playerCoords,
+			type = 'drop'
+		}
+		if data.type == 'freeslot' then
+			if ValidateItem(data.type, xPlayer, Inventories[invid2].inventory[data.emptyslot], Drops[invid].inventory[data.toSlot], data.item, data.item) == true then
+				local count = Inventories[invid2].inventory[data.emptyslot].count
+				ItemNotify(xPlayer, data.item, count, data.emptyslot, 'removed')
+				Inventories[invid2].inventory[data.emptyslot] = nil
+				Drops[invid].inventory[data.toSlot] = {name = data.item.name, label = data.item.label, weight = data.item.weight, slot = data.toSlot, count = data.item.count, description = data.item.description, metadata = data.item.metadata, stackable = data.item.stackable, closeonuse = Items[data.item.name].closeonuse}
+				if Config.Logs then
+					exports.linden_logs:log(xPlayer, false, 'has dropped '..data.item.count..'x '..data.item.name..' in drop-'..invid, 'items')
+				end
+				Opened[xPlayer.source] = nil
+				TriggerClientEvent('linden_inventory:createDrop', -1, Drops[invid], xPlayer.source)
 			end
-			Opened[xPlayer.source] = nil
-			TriggerClientEvent('linden_inventory:createDrop', -1, Drops[invid], xPlayer.source)
-		end
-	elseif data.type == 'split' then
-		if ValidateItem(data.type, xPlayer, Inventories[invid2].inventory[data.fromSlot], Drops[invid].inventory[data.toSlot], data.oldslotItem, data.newslotItem) == true then
-			ItemNotify(xPlayer, data.newslotItem, data.newslotItem.count, data.fromSlot, 'removed')
-			Inventories[invid2].inventory[data.fromSlot] = {name = data.oldslotItem.name, label = data.oldslotItem.label, weight = data.oldslotItem.weight, slot = data.fromSlot, count = data.oldslotItem.count, description = data.oldslotItem.description, metadata = data.oldslotItem.metadata, stackable = data.oldslotItem.stackable, closeonuse = Items[data.oldslotItem.name].closeonuse}
-			Drops[invid].inventory[data.toSlot] = {name = data.newslotItem.name, label = data.newslotItem.label, weight = data.newslotItem.weight, slot = data.toSlot, count = data.newslotItem.count, description = data.newslotItem.description, metadata = data.newslotItem.metadata, stackable = data.newslotItem.stackable, closeonuse = Items[data.newslotItem.name].closeonuse}
-			if Config.Logs then
-				exports.linden_logs:log(xPlayer, false, 'has dropped '..data.newslotItem.count..'x '..data.newslotItem.name,' in drop-'..invid, 'items')
+		elseif data.type == 'split' then
+			if ValidateItem(data.type, xPlayer, Inventories[invid2].inventory[data.fromSlot], Drops[invid].inventory[data.toSlot], data.oldslotItem, data.newslotItem) == true then
+				ItemNotify(xPlayer, data.newslotItem, data.newslotItem.count, data.fromSlot, 'removed')
+				Inventories[invid2].inventory[data.fromSlot] = {name = data.oldslotItem.name, label = data.oldslotItem.label, weight = data.oldslotItem.weight, slot = data.fromSlot, count = data.oldslotItem.count, description = data.oldslotItem.description, metadata = data.oldslotItem.metadata, stackable = data.oldslotItem.stackable, closeonuse = Items[data.oldslotItem.name].closeonuse}
+				Drops[invid].inventory[data.toSlot] = {name = data.newslotItem.name, label = data.newslotItem.label, weight = data.newslotItem.weight, slot = data.toSlot, count = data.newslotItem.count, description = data.newslotItem.description, metadata = data.newslotItem.metadata, stackable = data.newslotItem.stackable, closeonuse = Items[data.newslotItem.name].closeonuse}
+				if Config.Logs then
+					exports.linden_logs:log(xPlayer, false, 'has dropped '..data.newslotItem.count..'x '..data.newslotItem.name,' in drop-'..invid, 'items')
+				end
+				Opened[xPlayer.source] = nil
+				TriggerClientEvent('linden_inventory:createDrop', -1, Drops[invid], xPlayer.source)
 			end
-			Opened[xPlayer.source] = nil
-			TriggerClientEvent('linden_inventory:createDrop', -1, Drops[invid], xPlayer.source)
 		end
+	else -- Use this to allow the server to create drops
+		local invid = data.label..'-'..RandomDropId()
+		Drops[invid] = {
+			id = invid,
+			inventory = {},
+			slots = #data.inventory+4,
+			coords = data.coords,
+			type = 'drop'
+		}
+		for k,v in pairs(data.inventory) do
+			local xItem = Items[v.name]
+			if xItem then
+				if v.metadata == nil then v.metadata = {} end
+				Drops[invid].inventory[k] = {name = v.name , label = xItem.label, weight = xItem.weight, slot = v.slot, count = v.count, description = xItem.description, metadata = v.metadata, stackable = xItem.stackable,  closeonuse = xItem.closeonuse}
+			end
+		end
+        TriggerClientEvent('linden_inventory:createDrop', -1, Drops[invid])
 	end
 end
+exports('CreateNewDrop', CreateNewDrop)
 
 local randomPrice = function(price)
 	local random = math.random(95,107)
@@ -220,6 +240,8 @@ SaveItems = function(type, id, owner, inventory)
 						Datastore[plate][type] = Inventories[id].inventory
 					end
 				end
+			elseif type == 'dumpster' then
+				Datastore[id] = Inventories[id].inventory
 			else
 				exports.ghmattimysql:execute('INSERT INTO linden_inventory (name, data, owner) VALUES (@name, @data, @owner) ON DUPLICATE KEY UPDATE data = @data', {
 					['@name'] = id,
@@ -261,7 +283,6 @@ GetItems = function(id, inv, owner)
 					end
 				end
 			elseif inv == 'dumpster' then
-				-- currently does not work due to changing ids
 				if Datastore[id] then return Datastore[id] else
 					if Config.RandomLoot then Datastore[id] = GenerateDatastore(inv) else Datastore[id] = {} end
 					return Datastore[id]
@@ -278,7 +299,7 @@ GetItems = function(id, inv, owner)
 			for k,v in pairs(Inventory) do
 				if Items[v.name] then
 					if v.metadata == nil then v.metadata = {} end
-					returnData[v.slot] = {name = v.name , label = Items[v.name].label, weight = Items[v.name].weight, slot = v.slot, count = v.count, description = Items[v.name].description, metadata = v.metadata, stackable = Items[v.name].stackable}
+					returnData[v.slot] = {name = v.name , label = Items[v.name].label, weight = Items[v.name].weight, slot = v.slot, count = v.count, description = Items[v.name].description, metadata = v.metadata, stackable = Items[v.name].stackable, closeonuse = Items[v.name].closeonuse}
 				end
 			end
 		end
