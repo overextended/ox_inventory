@@ -7,7 +7,8 @@ title: Usage
 * All functions will work as they did previously, with some extra benefits such as metadata
 * Assigning metadata will work with a single word or a table (commands will not work for tables)
 
-#### [:link:](give-item) Give player an item
+<h4><a src='#give-item'><img src='link.png'/></a> Give player an item</h4>
+
 ```lua
   xPlayer.addInventoryItem(water, 1, {type='pee', description='it smells a little funky'})
   
@@ -15,7 +16,8 @@ title: Usage
 ```
 * This would give water with the type and description in the item information
 
-#### [:link:](remove-item) Remove an item
+<h4><a src='#remove-item'><img src='link.png'/></a> Remove player item</h4>
+
 ```lua
   xPlayer.removeInventoryItem(water, 1, {type='pee', description='it smells a little funky'})
   
@@ -24,14 +26,16 @@ title: Usage
 * This would only remove an item with matching metadata
 * Leaving the metadata blank will remove any item with that name
 
-#### [:link:](get-item) Get item data
+<h4><a src='#get-item'><img src='link.png'/></a> Get player item</h4>
+
 ```lua
   local metadata = {type='pee',description='it smells a little funky'}
   xPlayer.getInventoryItem(water, metadata)
 ```
 * If you have 10 water but only one with metadata, the returning count is one
 
-#### [:link:](item-data) Retrieve item data from server
+<h4><a src='#item-callback'><img src='link.png'/></a> Retrieve item data</h4>
+
 ```lua
   ESX.TriggerServerCallback('linden_inventory:getItem',function(xItem)
     water = xItem
@@ -46,7 +50,8 @@ or
   end, 'water')
 ```
 
-#### [:link:](item-metadata) Check an items metadata
+<h4><a src='#item-data'><img src='link.png'/></a> View item data</h4>
+
 * Example server command, print the serial of the item in slot one
 ```lua
 RegisterCommand('getmeta', function(source, args, rawCommand)
@@ -57,7 +62,8 @@ end, true)
 ```
 * Still working on a good solution for checking client side
 
-#### [:link:](stash) Open a stash
+<h4><a src='#stash'><img src='link.png'/></a> Open a custom stash</h4>
+
 * If you want anybody to be able to use a stash, do not define job
 * Stashes should have unique names so they do not share
 * You can define an owner for a stash, attaching their player identifier
@@ -78,7 +84,8 @@ end, true)
 * You could register a client event to show an item's metadata such as `metadata.registered` (which will tell you who bought a gun)
 
 
-#### [:link:](new-item) Creating new items
+<h4><a src='#new-item'><img src='link.png'/></a> Create new items</h4>
+
 All your old items using `ESX.RegisterUsableItem` still work, however I would personally register items through the inventory
 * Adding an item to `shared/items.lua` (use the existing for examples) will register the item as usable
 * Setting consume to `0` means it's unlimited usage, otherwise it sets the number to remove (default is 1, do not define)
@@ -122,7 +129,8 @@ end)
 * Always add a Wait before triggering the item use results
 
 
-#### [:link:](drops) Custom drops
+<h4><a src='#drops'><img src='link.png'/></a> Create drops</h4>
+
 * The following example allows the creation of a drop from skinning an animal
 * The drop is created on the animals x,y coordinates and the players z (dead animals result in underground drops)
 * Confirm the entity exists, is not the player, and is near the player (prevent exploits)
