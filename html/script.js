@@ -73,13 +73,16 @@ Display = function(bool) {
 	if (bool) {
 		$(".inventory-main").fadeIn(200)
 	} else {
-		$(".inventory-main").fadeOut(200);
+		$(".iteminfo").fadeOut(200);
 		righttotalkg = 0
 		rightinvslot = null
 		rightinventory = null
 		rightinvtype = null
 		totalkg = 0
 		$('.inventory-main-rightside').removeData()
+		$.when($(".inventory-main").fadeOut(200)).done(function() {
+			$(".iteminfo").hide();
+		});
 	}
 }
 
