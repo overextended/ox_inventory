@@ -59,12 +59,13 @@ exports('SearchItems', SearchItems)
 
 --[[	Example usage
 RegisterCommand('test', function(source, args, rawCommand)
+	local inventory = ESX.GetPlayerData().inventory
 	local data = exports['linden_inventory']:SearchItems({'weapon_pistol', 'water'}, args[2])
 	local getType = type(data)
 	if getType == 'string' then
 		print('You have '..data.count..'x '..args[1]..' in '..#data.slots.. ' slots')
 		for k,v in pairs(data.slots) do
-			local slotItem = ESX.PlayerData.inventory[v]
+			local slotItem = inventory[v]
 			print(slotItem.label, slotItem.slot, slotItem.count)
 			for a,b in next, slotItem.metadata do
 				print(a, b)
@@ -73,7 +74,7 @@ RegisterCommand('test', function(source, args, rawCommand)
 	elseif getType == 'table' then
 		for i=1, #data do
 			for k,v in pairs(data[i].slots) do
-				local slotItem = ESX.PlayerData.inventory[v]
+				local slotItem = inventory[v]
 				print(slotItem.label, slotItem.slot, slotItem.count)
 				for a,b in next, slotItem.metadata do
 					print(a, b)
