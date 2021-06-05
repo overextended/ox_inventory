@@ -164,13 +164,13 @@ OpenBag = function(data)
 end
 exports('OpenBag', OpenBag)
 
---[[OpenDumpster = function(data)
+OpenDumpster = function(data)
 	if data and not currentInventory and CanOpenInventory() and not CanOpenTarget(ESX.PlayerData.ped) then
 		if not data.slots then data.slots = (Config.PlayerSlots * 1.5) end
 		TriggerServerEvent('linden_inventory:openInventory', 'dumpster', data)
 	end
 end
-exports('OpenDumpster', OpenDumpster)]]
+exports('OpenDumpster', OpenDumpster)
 
 OpenGloveBox = function(plate, class)
 	local data = {id = 'glovebox-'..plate, slots = Config.Gloveboxes[class][1], maxWeight = Config.Gloveboxes[class][2]}
@@ -272,7 +272,7 @@ AddEventHandler('linden_inventory:openInventory',function(data, rightinventory)
 end)
 
 RegisterNetEvent('linden_inventory:refreshInventory')
-AddEventHandler('linden_inventory:refreshInventory', function(data)
+AddEventHandler('linden_inventory:refreshInventory', function(data, clear)
 	SendNUIMessage({
 		message = 'refresh',
 		inventory = data.inventory,
@@ -285,6 +285,9 @@ AddEventHandler('linden_inventory:refreshInventory', function(data)
 	ESX.SetPlayerData('inventory', data.inventory)
 	ESX.SetPlayerData('maxWeight', data.maxWeight)
 	ESX.SetPlayerData('weight', data.weight)
+	if clear then ClearWeapons()
+		TriggerEvent('linden_inventory:closeInventory')
+	end
 end)
 
 RegisterNetEvent('linden_inventory:itemNotify')
@@ -655,9 +658,8 @@ TriggerLoops = function()
 						end
 					end
 				end
-				--[[if not id or type == 'dumpster' then
+				if not id or type == 'dumpster' then
 					if id then
-						SetEntityDrawOutline(id, true)
 						sleep = 5
 						local distance = #(playerCoords - GetEntityCoords(id))
 						if distance <= 2 then
@@ -668,21 +670,21 @@ TriggerLoops = function()
 							if IsControlJustPressed(0, 38) then
 								OpenDumpster({ id = netid, label = 'Dumpster', slots = 20})
 							end
-						elseif distance > 4 then SetEntityDrawOutline(id, false) id, type = nil, nil
+						elseif distance > 4 then id, type = nil, nil
 						end
 					else
 						for i=1, #Config.Dumpsters do 
 							local dumpster = GetClosestObjectOfType(playerCoords.x, playerCoords.y, playerCoords.z, 2.0, Config.Dumpsters[i], false, false, false)
 							local dumpPos = GetEntityCoords(dumpster)
 							local distance = #(playerCoords - dumpPos)
-							if distance <= 4 then
+							if distance <= 4 and dumpster ~= 0 then
 								sleep = 10
 								id = dumpster
 								type = 'dumpster'
 							end
 						end
 					end
-				end]]
+				end
 				if Drops and not invOpen then
 					local closestDrop
 					for k, v in pairs(Drops) do
@@ -1038,20 +1040,21 @@ UseItem = function(item, esxItem, data)
 		
 			if data.hunger then
 				if data.hunger > 0 then TriggerEvent('esx_status:add', 'hunger', data.hunger)
-				else TriggerEvent('esx_status:remove', 'hunger', data.hunger) end
+				else TriggerEvent('esx_status:remove', 'hunger', -data.hunger) end
 			end
 			if data.thirst then
 				if data.thirst > 0 then TriggerEvent('esx_status:add', 'thirst', data.thirst)
-				else TriggerEvent('esx_status:remove', 'thirst', data.thirst) end
+				else TriggerEvent('esx_status:remove', 'thirst', -data.thirst) end
 			end
 			if data.stress then
+				print(-data.stress)
 				if data.stress > 0 then TriggerEvent('esx_status:add', 'stress', data.stress)
-				else TriggerEvent('esx_status:remove', 'stress', data.stress) end
+				else TriggerEvent('esx_status:remove', 'stress', -data.stress) end
 			end
 			
 			if data.drunk then
 				if data.drunk > 0 then TriggerEvent('esx_status:add', 'drunk', data.drunk)
-				else TriggerEvent('esx_status:remove', 'drunk', data.drunk) end
+				else TriggerEvent('esx_status:remove', 'drunk', -data.drunk) end
 			end
 
 			if data.component then

@@ -239,7 +239,7 @@ AddEventHandler('linden_inventory:clearPlayerInventory', function(xPlayer)
 			xPlayer.triggerEvent('esx:setAccountMoney', account)
 		end
 		if Opened[xPlayer.source] then TriggerClientEvent('linden_inventory:closeInventory', Opened[xPlayer.source].invid)
-		TriggerClientEvent('linden_inventory:refreshInventory', xPlayer.source, Inventories[xPlayer.source])
+		TriggerClientEvent('linden_inventory:refreshInventory', xPlayer.source, Inventories[xPlayer.source], true)
 		end
 	end
 end)
@@ -345,11 +345,13 @@ AddEventHandler('linden_inventory:openInventory', function(type, data, player)
 			else
 				local id = data.id
 				if type == 'bag' then Opened[xPlayer.source] = nil end
+				if type == 'dumpster' then id = NetworkGetEntityFromNetworkId(id) end
 				if not Inventories[id] then
 					if not data.maxWeight then
 						local maxWeight = {glovebox = 4000, trunk = 6000, bag = 1000}
 						data.maxWeight = data.slots*(maxWeight[type] or 8000)
 					end
+					SetEntityDistanceCullingRadius(id, 5000.0)
 					Inventories[id] = CreateInventory(
 						id,								-- id
 						data.label,						-- name
@@ -1035,7 +1037,7 @@ end, true, {help = 'set account money', validate = true, arguments = {
 	{name = 'amount', help = 'amount to set', type = 'number'}
 }})
 
-OpenStash = function(xPlayer, data, custom)
+local OpenStash = function(xPlayer, data, custom)
 	local type = custom or 'stash'
 	TriggerEvent('linden_inventory:openInventory', type, {owner = data.owner, id = data.name or data.id, label = data.label, slots = data.slots, coords = data.coords, job = data.job, grade = data.grade }, xPlayer)
 end
