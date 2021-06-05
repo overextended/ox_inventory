@@ -120,3 +120,29 @@ end)
 * Using `cb(true)` will trigger the progress bar, item effects, and remove the item
 * Using `cb(false)` will cancel the function and the item will not be used
 * Always add a Wait before triggering the item use results
+
+
+#### Create custom drops
+* The following example allows the creation of a drop from skinning an animal
+* The drop is created on the animals x,y coordinates and the players z (dead animals result in underground drops)
+* Confirm the entity exists, is not the player, and is near the player (prevent exploits)
+```lua
+	local playerPed = GetPlayerPed(xPlayer.source)
+	local playerCoords = GetEntityCoords(playerPed)
+	local entity = NetworkGetEntityFromNetworkId(animalid)
+	if entity and entity ~= playerPed then
+		local coords = GetEntityCoords(entity)
+		if #(playerCoords - coords) <= 10 then
+			local data = {
+				type = 'create',
+				label = 'Carcass',
+				coords = vector3(coords.x, coords.y, playerCoords.z),
+				inventory = {
+					[1] = {slot=1, name='meat', count=meatAmount, metadata={grade=grade, animal=Config.Animals[hash].ModNam, type=Config.Animals[hash].label..' meat', description='A cut of '..grade..' grade meat from a '..Config.Animals[hash].label}}
+				}
+			}
+			exports['linden_inventory']:CreateNewDrop(xPlayer, data)
+			TriggerClientEvent('mythic_notify:client:SendAlert', xPlayer.source, {type = 'inform', text = 'You have slaughtered an animal yielding a total of ' ..meatAmount.. 'pieces of meat.'})
+		end
+	end
+ ```
