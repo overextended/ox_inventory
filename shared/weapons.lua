@@ -1277,6 +1277,11 @@ Ammo = {
 Citizen.CreateThread(function()
 	if Items then
 		Citizen.Wait(10)
+		for k, v in pairs(Items) do
+			v.name = k
+			Items[k] = v
+		end
+
 		for k, v in pairs(Weapons) do
 			v.name = k
 			v.hash = `k`
