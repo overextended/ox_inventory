@@ -6,8 +6,7 @@ Weapons = {
 		stack = false,
 		close = false,
 		durability = 0.6,
-		ammoname = 'ammo-rifle',
-		hash = `self`
+		ammoname = 'ammo-rifle'
 	},
 
 	['WEAPON_APPISTOL'] = {
@@ -16,8 +15,7 @@ Weapons = {
 		stack = false,
 		close = false,
 		durability = 0.4,
-		ammoname = 'ammo-9',
-		hash = `self`
+		ammoname = 'ammo-9'
 	},
 
 	['WEAPON_ASSAULTRIFLE'] = {
@@ -26,8 +24,7 @@ Weapons = {
 		stack = false,
 		close = false,
 		durability = 0.8,
-		ammoname = 'ammo-rifle2',
-		hash = `self`
+		ammoname = 'ammo-rifle2'
 	},
 
 	['WEAPON_ASSAULTRIFLE_MK2'] = {
@@ -36,8 +33,7 @@ Weapons = {
 		stack = false,
 		close = false,
 		durability = 0.6,
-		ammoname = 'ammo-rifle2',
-		hash = `self`
+		ammoname = 'ammo-rifle2'
 	},
 
 	['WEAPON_ASSAULTSHOTGUN'] = {
@@ -45,8 +41,7 @@ Weapons = {
 		weight = 3100,
 		stack = false,
 		close = false,
-		ammoname = 'ammo-shotgun',
-		hash = `self`
+		ammoname = 'ammo-shotgun'
 	},
 
 	['WEAPON_ASSAULTSMG'] = {
@@ -55,8 +50,7 @@ Weapons = {
 		stack = false,
 		close = false,
 		durability = 0.6,
-		ammoname = 'ammo-rifle',
-		hash = `self`
+		ammoname = 'ammo-rifle'
 	},
 
 	['WEAPON_BALL'] = {
@@ -97,8 +91,7 @@ Weapons = {
 		stack = false,
 		close = false,
 		durability = 0.9,
-		ammoname = 'ammo-rifle',
-		hash = `self`
+		ammoname = 'ammo-rifle'
 	},
 
 	['WEAPON_BULLPUPRIFLE_MK2'] = {
@@ -107,8 +100,7 @@ Weapons = {
 		stack = false,
 		close = false,
 		durability = 0.7,
-		ammoname = 'ammo-rifle',
-		hash = `self`
+		ammoname = 'ammo-rifle'
 	},
 
 	['WEAPON_BULLPUPSHOTGUN'] = {
@@ -116,8 +108,7 @@ Weapons = {
 		weight = 3100,
 		stack = false,
 		close = false,
-		ammoname = 'ammo-shotgun',
-		hash = `self`
+		ammoname = 'ammo-shotgun'
 	},
 
 	['WEAPON_BZGAS'] = {
@@ -134,8 +125,7 @@ Weapons = {
 		stack = false,
 		close = false,
 		durability = 0.8,
-		ammoname = 'ammo-rifle',
-		hash = `self`
+		ammoname = 'ammo-rifle'
 	},
 
 	['WEAPON_CARBINERIFLE_MK2'] = {
@@ -144,8 +134,7 @@ Weapons = {
 		stack = false,
 		close = false,
 		durability = 0.7,
-		ammoname = 'ammo-rifle',
-		hash = `self`
+		ammoname = 'ammo-rifle'
 	},
 
 	['WEAPON_CERAMICPISTOL'] = {
@@ -153,8 +142,7 @@ Weapons = {
 		weight = 700,
 		stack = false,
 		close = false,
-		ammoname = 'ammo-9',
-		hash = `self`
+		ammoname = 'ammo-9'
 	},
 
 	['WEAPON_COMBATMG'] = {
@@ -162,8 +150,7 @@ Weapons = {
 		weight = 10000,
 		stack = false,
 		close = false,
-		ammoname = 'ammo-rifle',
-		hash = `self`
+		ammoname = 'ammo-rifle'
 	},
 
 	['WEAPON_COMBATMG_MK2'] = {
@@ -171,8 +158,7 @@ Weapons = {
 		weight = 10500,
 		stack = false,
 		close = false,
-		ammoname = 'ammo-rifle2',
-		hash = `self`
+		ammoname = 'ammo-rifle2'
 	},
 
 	['WEAPON_COMBATPDW'] = {
@@ -181,8 +167,7 @@ Weapons = {
 		stack = false,
 		close = false,
 		durability = 3.0,
-		ammoname = 'ammo-9',
-		hash = `self`
+		ammoname = 'ammo-9'
 	},
 
 	['WEAPON_COMBATPISTOL'] = {
@@ -191,8 +176,7 @@ Weapons = {
 		stack = false,
 		close = false,
 		durability = 0.5,
-		ammoname = 'ammo-9',
-		hash = `self`
+		ammoname = 'ammo-9'
 	},
 
 	['WEAPON_COMBATSHOTGUN'] = {
@@ -200,8 +184,7 @@ Weapons = {
 		weight = 4400,
 		stack = false,
 		close = false,
-		ammoname = 'ammo-shotgun',
-		hash = `self`
+		ammoname = 'ammo-shotgun'
 	},
 
 	['WEAPON_COMPACTRIFLE'] = {
@@ -210,8 +193,7 @@ Weapons = {
 		stack = false,
 		close = false,
 		durability = 0.7,
-		ammoname = 'ammo-rifle2',
-		hash = `self`
+		ammoname = 'ammo-rifle2'
 	},
 
 	['WEAPON_CROWBAR'] = {
@@ -235,8 +217,7 @@ Weapons = {
 		weight = 3175,
 		stack = false,
 		close = false,
-		ammoname = 'ammo-shotgun',
-		hash = `self`
+		ammoname = 'ammo-shotgun'
 	},
 
 	['WEAPON_DOUBLEACTION'] = {
@@ -245,8 +226,7 @@ Weapons = {
 		stack = false,
 		close = false,
 		durability = 0.8,
-		ammoname = 'ammo-38',
-		hash = `self`
+		ammoname = 'ammo-38'
 	},
 
 	['WEAPON_FIREEXTINGUISHER'] = {
@@ -277,8 +257,7 @@ Weapons = {
 		stack = false,
 		close = false,
 		durability = 1.0,
-		ammoname = 'ammo-flare',
-		hash = `self`
+		ammoname = 'ammo-flare'
 	},
 
 	['WEAPON_FLASHLIGHT'] = {
@@ -311,8 +290,7 @@ Weapons = {
 		stack = false,
 		close = false,
 		durability = 0.8,
-		ammoname = 'ammo-45',
-		hash = `self`
+		ammoname = 'ammo-45'
 	},
 
 	['WEAPON_HAMMER'] = {
@@ -344,8 +322,7 @@ Weapons = {
 		stack = false,
 		close = false,
 		durability = 0.6,
-		ammoname = 'ammo-45',
-		hash = `self`
+		ammoname = 'ammo-45'
 	},
 
 	['WEAPON_HEAVYSHOTGUN'] = {
@@ -353,8 +330,7 @@ Weapons = {
 		weight = 3600,
 		stack = false,
 		close = false,
-		ammoname = 'ammo-shotgun',
-		hash = `self`
+		ammoname = 'ammo-shotgun'
 	},
 
 	['WEAPON_HEAVYSNIPER'] = {
@@ -362,8 +338,7 @@ Weapons = {
 		weight = 14000,
 		stack = false,
 		close = false,
-		ammoname = 'ammo-heavysniper',
-		hash = `self`
+		ammoname = 'ammo-heavysniper'
 	},
 
 	['WEAPON_HEAVYSNIPER_MK2'] = {
@@ -371,8 +346,7 @@ Weapons = {
 		weight = 10432,
 		stack = false,
 		close = false,
-		ammoname = 'ammo-heavysniper',
-		hash = `self`
+		ammoname = 'ammo-heavysniper'
 	},
 
 	['WEAPON_KNIFE'] = {
@@ -405,8 +379,7 @@ Weapons = {
 		stack = false,
 		close = false,
 		durability = 0.7,
-		ammoname = 'ammo-9',
-		hash = `self`
+		ammoname = 'ammo-9'
 	},
 
 	['WEAPON_MARKSMANPISTOL'] = {
@@ -415,8 +388,7 @@ Weapons = {
 		stack = false,
 		close = false,
 		durability = 4.0,
-		ammoname = 'ammo-22',
-		hash = `self`
+		ammoname = 'ammo-22'
 	},
 
 	['WEAPON_MARKSMANRIFLE'] = {
@@ -424,8 +396,7 @@ Weapons = {
 		weight = 7500,
 		stack = false,
 		close = false,
-		ammoname = 'ammo-sniper',
-		hash = `self`
+		ammoname = 'ammo-sniper'
 	},
 
 	['WEAPON_MARKSMANRIFLE_MK2'] = {
@@ -433,8 +404,7 @@ Weapons = {
 		weight = 4000,
 		stack = false,
 		close = false,
-		ammoname = 'ammo-sniper',
-		hash = `self`
+		ammoname = 'ammo-sniper'
 	},
 
 	['WEAPON_MG'] = {
@@ -442,8 +412,7 @@ Weapons = {
 		weight = 9000,
 		stack = false,
 		close = false,
-		ammoname = 'ammo-rifle2',
-		hash = `self`
+		ammoname = 'ammo-rifle2'
 	},
 
 	['WEAPON_MICROSMG'] = {
@@ -452,8 +421,7 @@ Weapons = {
 		stack = false,
 		close = false,
 		durability = 0.6,
-		ammoname = 'ammo-45',
-		hash = `self`
+		ammoname = 'ammo-45'
 	},
 
 	['WEAPON_MILITARYRIFLE'] = {
@@ -461,8 +429,7 @@ Weapons = {
 		weight = 3600,
 		stack = false,
 		close = false,
-		ammoname = 'ammo-rifle',
-		hash = `self`
+		ammoname = 'ammo-rifle'
 	},
 
 	['WEAPON_MINISMG'] = {
@@ -471,8 +438,7 @@ Weapons = {
 		stack = false,
 		close = false,
 		durability = 0.6,
-		ammoname = 'ammo-9',
-		hash = `self`
+		ammoname = 'ammo-9'
 	},
 
 	['WEAPON_MOLOTOV'] = {
@@ -489,8 +455,7 @@ Weapons = {
 		stack = false,
 		close = false,
 		durability = 1.0,
-		ammoname = 'ammo-musket',
-		hash = `self`
+		ammoname = 'ammo-musket'
 	},
 
 	['WEAPON_NAVYREVOLVER'] = {
@@ -498,8 +463,7 @@ Weapons = {
 		weight = 2000,
 		stack = false,
 		close = false,
-		ammoname = 'ammo-44',
-		hash = `self`
+		ammoname = 'ammo-44'
 	},
 
 	['WEAPON_NIGHTSTICK'] = {
@@ -531,8 +495,7 @@ Weapons = {
 		stack = false,
 		close = false,
 		durability = 0.6,
-		ammoname = 'ammo-9',
-		hash = `self`
+		ammoname = 'ammo-9'
 	},
 
 	['WEAPON_PISTOL50'] = {
@@ -541,8 +504,7 @@ Weapons = {
 		stack = false,
 		close = false,
 		durability = 0.8,
-		ammoname = 'ammo-50',
-		hash = `self`
+		ammoname = 'ammo-50'
 	},
 
 	['WEAPON_PISTOL_MK2'] = {
@@ -551,8 +513,7 @@ Weapons = {
 		stack = false,
 		close = false,
 		durability = 0.5,
-		ammoname = 'ammo-9',
-		hash = `self`
+		ammoname = 'ammo-9'
 	},
 
 	['WEAPON_POOLCUE'] = {
@@ -576,8 +537,7 @@ Weapons = {
 		stack = false,
 		close = false,
 		durability = 0.8,
-		ammoname = 'ammo-shotgun',
-		hash = `self`
+		ammoname = 'ammo-shotgun'
 	},
 
 	['WEAPON_PUMPSHOTGUN_MK2'] = {
@@ -586,8 +546,7 @@ Weapons = {
 		stack = false,
 		close = false,
 		durability = 0.7,
-		ammoname = 'ammo-shotgun',
-		hash = `self`
+		ammoname = 'ammo-shotgun'
 	},
 
 	['WEAPON_REVOLVER'] = {
@@ -596,8 +555,7 @@ Weapons = {
 		stack = false,
 		close = false,
 		durability = 0.8,
-		ammoname = 'ammo-44',
-		hash = `self`
+		ammoname = 'ammo-44'
 	},
 
 	['WEAPON_REVOLVER_MK2'] = {
@@ -606,8 +564,7 @@ Weapons = {
 		stack = false,
 		close = false,
 		durability = 0.7,
-		ammoname = 'ammo-44',
-		hash = `self`
+		ammoname = 'ammo-44'
 	},
 
 	['WEAPON_SAWNOFFSHOTGUN'] = {
@@ -616,8 +573,7 @@ Weapons = {
 		stack = false,
 		close = false,
 		durability = 0.9,
-		ammoname = 'ammo-shotgun',
-		hash = `self`
+		ammoname = 'ammo-shotgun'
 	},
 
 	['WEAPON_SMG'] = {
@@ -626,8 +582,7 @@ Weapons = {
 		stack = false,
 		close = false,
 		durability = 0.8,
-		ammoname = 'ammo-9',
-		hash = `self`
+		ammoname = 'ammo-9'
 	},
 
 	['WEAPON_SMG_MK2'] = {
@@ -636,8 +591,7 @@ Weapons = {
 		stack = false,
 		close = false,
 		durability = 0.7,
-		ammoname = 'ammo-9',
-		hash = `self`
+		ammoname = 'ammo-9'
 	},
 
 	['WEAPON_SMOKEGRENADE'] = {
@@ -653,8 +607,7 @@ Weapons = {
 		weight = 6500,
 		stack = false,
 		close = false,
-		ammoname = 'ammo-sniper',
-		hash = `self`
+		ammoname = 'ammo-sniper'
 	},
 
 	['WEAPON_SNOWBALL'] = {
@@ -671,8 +624,7 @@ Weapons = {
 		stack = false,
 		close = false,
 		durability = 0.7,
-		ammoname = 'ammo-45',
-		hash = `self`
+		ammoname = 'ammo-45'
 	},
 
 	['WEAPON_SNSPISTOL_MK2'] = {
@@ -681,8 +633,7 @@ Weapons = {
 		stack = false,
 		close = false,
 		durability = 0.6,
-		ammoname = 'ammo-45',
-		hash = `self`
+		ammoname = 'ammo-45'
 	},
 
 	['WEAPON_SPECIALCARBINE'] = {
@@ -691,8 +642,7 @@ Weapons = {
 		stack = false,
 		close = false,
 		durability = 0.8,
-		ammoname = 'ammo-rifle',
-		hash = `self`
+		ammoname = 'ammo-rifle'
 	},
 
 	['WEAPON_SPECIALCARBINE_MK2'] = {
@@ -701,8 +651,7 @@ Weapons = {
 		stack = false,
 		close = false,
 		durability = 0.7,
-		ammoname = 'ammo-rifle',
-		hash = `self`
+		ammoname = 'ammo-rifle'
 	},
 
 	['WEAPON_STICKYBOMB'] = {
@@ -734,8 +683,7 @@ Weapons = {
 		weight = 4400,
 		stack = false,
 		close = false,
-		ammoname = 'ammo-shotgun',
-		hash = `self`
+		ammoname = 'ammo-shotgun'
 	},
 
 	['WEAPON_SWITCHBLADE'] = {
@@ -752,8 +700,7 @@ Weapons = {
 		stack = false,
 		close = false,
 		durability = 0.7,
-		ammoname = 'ammo-9',
-		hash = `self`
+		ammoname = 'ammo-9'
 	},
 
 	['WEAPON_WRENCH'] = {
@@ -1332,9 +1279,9 @@ Citizen.CreateThread(function()
 		Citizen.Wait(10)
 		for k, v in pairs(Weapons) do
 			v.name = k
+			v.hash = `k`
 			Items[k] = v
 		end
-		Weapons = nil
 
 		for k, v in pairs(Components) do
 			v.name = k
