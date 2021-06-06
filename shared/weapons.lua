@@ -1233,6 +1233,7 @@ Components = {
 	},
 }
 
+
 Ammo = {
 	['ammo-22'] = {
 		label = '.22 Long Rifle',
@@ -1327,19 +1328,24 @@ Ammo = {
 }
 
 Citizen.CreateThread(function()
-	Citizen.Wait(10)
-	for k, v in pairs(Weapons) do
-		v.name = k
-		Items[k] = v
-	end
+	if Items then
+		Citizen.Wait(10)
+		for k, v in pairs(Weapons) do
+			v.name = k
+			Items[k] = v
+		end
+		Weapons = nil
 
-	for k, v in pairs(Components) do
-		v.name = k
-		Items[k] = v
-	end
+		for k, v in pairs(Components) do
+			v.name = k
+			Items[k] = v
+		end
+		Components = nil
 
-	for k, v in pairs(Ammo) do
-		v.name = k
-		Items[k] = v
+		for k, v in pairs(Ammo) do
+			v.name = k
+			Items[k] = v
+		end
+		Ammo = nil
 	end
 end)
