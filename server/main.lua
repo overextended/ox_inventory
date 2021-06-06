@@ -47,6 +47,7 @@ Citizen.CreateThread(function()
 		end
 		message('Due to changes to the way items are being handled you may need to update events! Please refer to the release post for 1.7.0', 3)
 		message('All weapons, ammo, components, and items registered with the inventory have been removed from the database', 3)
+		message('Restart your server to ensure items load correctly', 3)
 		return
 	end
 	
@@ -80,7 +81,7 @@ Citizen.CreateThread(function()
 					}
 					if ESX.UsableItemsCallbacks[v.name] ~= nil then Usables[v.name] = true end
 				else
-					exports.ghmattimysql:execute('DELETE FROM `items` WHERE name = @name LIMIT 1', { ['@name'] = v.name })
+					exports.ghmattimysql:execute('DELETE FROM `items` WHERE name = @name LIMIT 1', { ['@name'] = k })
 				end
 			end
 			message('Loaded '..count..' additional items from the database', 2)
@@ -1120,7 +1121,7 @@ if Config.ItemList then
 						local consume = ''
 						if item.consume and item.consume ~= 1 then consume = '			consume = '..item.consume..',\n' defined = true end
 						local usetime = ''
-						if item.usetime then usetime = '			usetime = '..item.usetime..',\n' defined = true end
+						if item.useTime then usetime = '			usetime = '..item.useTime..',\n' defined = true end
 						local event = ''
 						if item.event then event = '			event = true,\n' defined = true end
 						local client = '}\n'
