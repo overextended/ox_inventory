@@ -39,18 +39,18 @@ Citizen.CreateThread(function()
 		print('https://thelindat.github.io/linden_inventory')
 		return
 	end
-	
-	while GetResourceState('ghmattimysql') ~= 'started' do Citizen.Wait(0) end
 
 	if Config.ItemList then
 		while Config.ItemList do
-			if Config.ItemList then message('Your inventory items are not using the new format! Type ^1dumpitems^0 into the console', 1) end
-			Citizen.Wait(5000)
+			message('Your inventory items are not using the new format! Type ^1dumpitems^0 into the console', 1)
+			Citizen.Wait(10000)
 		end
 		message('Due to changes to the way items are being handled you may need to update events! Please refer to the release post for 1.7.0', 3)
+		message('All weapons, ammo, components, and items registered with the inventory have been removed from the database', 3)
+		return
 	end
-
-	-- Clean the database
+	
+	while GetResourceState('ghmattimysql') ~= 'started' do Citizen.Wait(0) end
 	exports.ghmattimysql:execute('DELETE FROM `linden_inventory` WHERE `lastupdated` < (NOW() - INTERVAL '..Config.DBCleanup..') OR `data` = "[]"')
 	---------------------
 	Citizen.Wait(500)
@@ -63,14 +63,15 @@ Citizen.CreateThread(function()
 		end
 		message('Loaded '..count..' items', 2)
 		Citizen.Wait(500)
-		ESX.Items = exports['es_extended']:getSharedObject().UsableItemsCallbacks
+		ESX.Items = exports['es_extended']:getSharedObject().Items
 		if ESX.Items then
 			ESX.UsableItemsCallbacks = exports['es_extended']:getSharedObject().UsableItemsCallbacks
 			count = 0
-			for k, v in pairs(result) do
-				if not Items[v.name] then
+			for k, v in pairs(ESX.Items) do
+				if not Items[k] then
 					count = count + 1
-					Items[v.name] = {
+					Items[k] = {
+						name = k,
 						label = v.label,
 						weight = v.weight,
 						stack = v.stack,
@@ -1081,12 +1082,13 @@ end, true)
 if Config.ItemList then
 	RegisterCommand('dumpitems', function(source, args, rawCommand)
 		if source == 0 then
+			message('Taking a huge dump on your `items` table - please wait', 3)
 			local itemDump = {}
 			--local weaponDump = {}
 			local result = exports.ghmattimysql:executeSync('SELECT * FROM items', {})
 			for k, v in pairs(result) do
 				Citizen.Wait(10)
-				if Items[v.name] or v.name:find('money') or v.name:find('identification') or v.name:find('GADGET_') or v.name:find('ammo-') then
+				if Config.ItemList[v.name] or v.name:find('money') or v.name:find('identification') or v.name:find('GADGET_') then
 					local item = Config.ItemList[v.name] or {}
 					if not v.name:find('at_') then
 						local description = v.description and '\ndescription = '..v.description..',' or '\n'
@@ -1137,7 +1139,7 @@ table.insert(itemDump, [[
 ]])
 					end
 					exports.ghmattimysql:execute('DELETE FROM `items` WHERE name = @name LIMIT 1', { ['@name'] = v.name })
-				elseif v.name:find('WEAPON') then
+				elseif v.name:find('WEAPON') or v.name:find('ammo-') then
 --	Internal use for generating weapondata.lua
 -- 					local throwable, stack = Config.Throwable[v.name]
 -- 					if throwable then
@@ -1162,16 +1164,12 @@ table.insert(itemDump, [[
 
 -- ]])
 				exports.ghmattimysql:execute('DELETE FROM `items` WHERE name = @name LIMIT 1', { ['@name'] = v.name })
-				else
-					if v.name:find('at_') then
-						exports.ghmattimysql:execute('DELETE FROM `items` WHERE name = @name LIMIT 1', { ['@name'] = v.name })
-					end
 				end
 			end
 			message('Converted '..#itemDump..' items to the new data format', 2)
 			SaveResourceFile(GetCurrentResourceName(), "shared/items.lua", "Items = {\n\n"..table.concat(itemDump).."}\n", -1)
 			-- Internal use SaveResourceFile(GetCurrentResourceName(), "shared/weapondata.lua", "Weapons = {\n\n"..table.concat(weaponDump).."}\n", -1)
-			Items = false
+			Config.ItemList = false
 		end
 	end, true)
 end
