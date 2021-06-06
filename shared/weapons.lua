@@ -162,7 +162,7 @@ Config.Ammos = {
 		`WEAPON_MARKSMANPISTOL`
 	},
 
-	['ammo-50'] = { -- .50 action express
+	['paintball'] = { -- .50 action express
 		`WEAPON_PISTOL50`
 	},
 

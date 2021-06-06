@@ -205,4 +205,55 @@ Config.ItemList = {
 		event = 'linden_inventory:hotwheelpack',
 	},
 
+	['greenlaptop'] = {
+		event = 'greenlaptop',
+	},
+
+	['joint'] = {
+		event = 'jointuse',
+	},
+
+	['thermite'] = {
+		anim = 'loop_search',
+		useTime = 50000,
+		consume = 0,
+		event = 'TruckRob',
+	},
+
+	['ifak'] = {
+	animDict = 'missheistdockssetup1clipboard@idle_a',
+	anim = 'idle_a',
+	flags = 49,
+	model = 'prop_rolled_sock_02',
+	coords = { x = -0.14, y = 0.02, z = -0.08 },
+	rotation = { x = -50.0, y = -50.0, z = 0.0 },
+	useTime = 1500,
+	event = 'linden_inventory:ifak',
+	},
+
+	['armour'] = {
+		animDict = 'missheistdockssetup1clipboard@idle_a',
+		anim = 'idle_a',
+		flags = 49,
+		model = 'prop_rolled_sock_02',
+		coords = { x = -0.14, y = 0.02, z = -0.08 },
+		rotation = { x = -50.0, y = -50.0, z = 0.0 },
+		useTime = 3000,
+		event = 'linden_inventory:armour',
+		},
+
+	['pdarmour'] = {
+		animDict = 'missheistdockssetup1clipboard@idle_a',
+		anim = 'idle_a',
+		flags = 49,
+		model = 'prop_rolled_sock_02',
+		coords = { x = -0.14, y = 0.02, z = -0.08 },
+		rotation = { x = -50.0, y = -50.0, z = 0.0 },
+		event = 'linden_inventory:pdarmour',
+		},
+
+		['bands'] = {},
+
+		['advancedlockpick'] = {},
+
 }

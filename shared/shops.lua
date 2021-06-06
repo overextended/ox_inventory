@@ -13,17 +13,7 @@ Config.General = {
 	}
 }
 
-Config.Liquor = {
-	name = 'Liquor Store',
-	blip = {
-		id = 93,
-		colour = 69,
-		scale = 0.6
-	}, inventory = {
-		{ name = 'water', price = 10 },
-		{ name = 'cola', price = 10 },
-	}
-}
+
 
 Config.YouTool = {
 	name = 'YouTool',
@@ -32,7 +22,8 @@ Config.YouTool = {
 		colour = 69,
 		scale = 0.6
 	}, inventory = {
-		{ name = 'lockpick', price = 10 },
+		{ name = 'lockpick', price = 50 },
+		{ name = 'armour', price = 200, },
 	}
 }
 
@@ -44,12 +35,13 @@ Config.Ammunation = {
 		colour = 69,
 		scale = 0.6
 	}, inventory = {
-		{ name = 'ammo-9', price = 5, },
-		{ name = 'WEAPON_KNIFE', price = 200 },
-		{ name = 'WEAPON_BAT', price = 100 },
 		{ name = 'WEAPON_PISTOL', price = 1000, metadata = { registered = true }, license = 'weapon' },
-		{ name = 'WEAPON_SNIPERRIFLE', price = 3000 },
+		{ name = 'WEAPON_PISTOL_MK2', price = 1000, metadata = { registered = true }, license = 'weapon' },
+		{ name = 'WEAPON_SNIPERRIFLE', price = 3000, metadata = { registered = true }, license = 'weapon' },
+		{ name = 'ammo-9', price = 5, },
 		{ name = 'ammo-sniper', price = 50 },
+		{ name = 'WEAPON_BAT', price = 100 },
+		{ name = 'WEAPON_KNIFE', price = 200 },
 	}
 }
 
@@ -60,13 +52,15 @@ Config.PoliceArmoury = {
 		colour = 84,
 		scale = 0.6
 	}, inventory = {
-		{ name = 'ammo-9', price = 5, },
-		{ name = 'ammo-rifle', price = 5, },
+		{ name = 'ammo-9', price = 10, },
+		{ name = 'ammo-rifle', price = 10, },
 		{ name = 'WEAPON_FLASHLIGHT', price = 200 },
 		{ name = 'WEAPON_NIGHTSTICK', price = 100 },
-		{ name = 'WEAPON_PISTOL', price = 500, metadata = { registered = true, serial = 'POL' }, license = 'weapon' },
+		{ name = 'WEAPON_COMBATPISTOL', price = 500, metadata = { registered = true, serial = 'POL' }, license = 'weapon' },
 		{ name = 'WEAPON_CARBINERIFLE', price = 1000, metadata = { registered = true, serial = 'POL' }, license = 'weapon', grade = 3 },
 		{ name = 'WEAPON_STUNGUN', price = 500, metadata = { registered = true, serial = 'POL'} },
+		{ name = 'pdarmour', price = 150, },
+		{ name = 'ifak', price = 150, },
 	}
 }
 
@@ -126,13 +120,6 @@ Config.Shops = {
 	{ type = Config.Ammunation, coords = vector3(-1117.58, 2698.61, 18.55) },
 	{ type = Config.Ammunation, coords = vector3(842.44, -1033.42, 28.19) },
 
-	{ type = Config.Liquor, coords = vector3(1135.808, -982.281, 46.415), name = 'Rob\'s Liquor' },
-	{ type = Config.Liquor, coords = vector3(-1222.915, -906.983,  12.326), name = 'Rob\'s Liquor' },
-	{ type = Config.Liquor, coords = vector3(-1487.553, -379.107,  40.163), name = 'Rob\'s Liquor' },
-	{ type = Config.Liquor, coords = vector3(-2968.243, 390.910, 15.043), name = 'Rob\'s Liquor' },
-	{ type = Config.Liquor, coords = vector3(1166.024, 2708.930, 38.157), name = 'Rob\'s Liquor' },
-	{ type = Config.Liquor, coords = vector3(1392.562, 3604.684, 34.980), name = 'Rob\'s Liquor' },
-	{ type = Config.Liquor, coords = vector3(-1393.409, -606.624, 30.319), name = 'Rob\'s Liquor' },
 
 	{ type = Config.YouTool, coords = vector3(2748.97, 3472.31, 55.68) },
 	{ type = Config.YouTool, coords = vector3(45.04, -1748.36, 29.55) },
@@ -158,7 +145,7 @@ Config.Shops = {
 	{ coords = vector3(-2544.092, 2316.184, 33.2), name = 'RON'}, 
 
 	
-	{ type = Config.PoliceArmoury, job = 'police', coords = vector3(481.5, -995.8, 30.6) },
+	{ type = Config.PoliceArmoury, job = 'police', coords = vector3(479.222, -996.778, 30.67834) },
 	{ type = Config.Medicine, job = 'ambulance', coords = vector3(306.3687, -601.5139, 43.28406) },
 
 	{ type = Config.BlackMarketArms, coords = vector3(309.09, -913.75, 56.46), currency = 'black_money' },
