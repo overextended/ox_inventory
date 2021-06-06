@@ -874,7 +874,7 @@ AddEventHandler('linden_inventory:updateWeapon', function(item, type)
 				Inventories[xPlayer.source].inventory[item.slot].weight = Items[item.name].weight + ammo.addweight
 				TriggerEvent('linden_inventory:decreaseDurability', item.slot, item.name, ammoDiff, xPlayer)
 			end
-			if Opened[xPlayer.source] or not ammo then TriggerClientEvent('linden_inventory:refreshInventory', xPlayer.source, Inventories[xPlayer.source], Inventories[xPlayer.source].inventory[item.slot].metadata) end
+			if Opened[xPlayer.source] or not ammo then TriggerClientEvent('linden_inventory:refreshInventory', xPlayer.source, Inventories[xPlayer.source]) end
 			TriggerClientEvent('linden_inventory:updateWeapon', xPlayer.source, Inventories[xPlayer.source].inventory[item.slot].metadata)
 		else
 			if type == 'throw' then
