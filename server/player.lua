@@ -35,16 +35,16 @@ addInventoryItem = function(xPlayer, item, count, metadata, slot)
 		if slot then slot = getPlayerSlot(xPlayer, slot, item, metadata).slot
 		else
 			for i=1, Config.PlayerSlots do
-				if xItem.stacks and Inventories[xPlayer.source].inventory[i] and Inventories[xPlayer.source].inventory[i].name == item and is_table_equal(Inventories[xPlayer.source].inventory[i].metadata, metadata) then toSlot = i existing = true break
+				if xItem.stack and Inventories[xPlayer.source].inventory[i] and Inventories[xPlayer.source].inventory[i].name == item and is_table_equal(Inventories[xPlayer.source].inventory[i].metadata, metadata) then toSlot = i existing = true break
 				elseif not toSlot and Inventories[xPlayer.source].inventory[i] == nil then toSlot = i existing = false end
 			end
 			slot = toSlot
 		end
 		if isWeapon then
 			if not xItem.ammoname then
-				count = 1
+				print(xItem.throwable)
 				metadata = {}
-				if not xItem.throwable then metadata.durability = 100 end
+				if not xItem.throwable then count = 1 metadata.durability = 100 end
 			else
 				count = 1
 				if type(metadata) ~= 'table' then metadata = {} end
@@ -56,7 +56,7 @@ addInventoryItem = function(xPlayer, item, count, metadata, slot)
 					metadata.serial = GenerateSerial(metadata.serial)
 				end
 			end
-			Inventories[xPlayer.source].inventory[slot] = {name = item, label = xItem.label, weight = xItem.weight, slot = slot, count = count, description = xItem.description, metadata = metadata, stackable = xItem.stacks, closeonuse = true}
+			Inventories[xPlayer.source].inventory[slot] = {name = item, label = xItem.label, weight = xItem.weight, slot = slot, count = count, description = xItem.description, metadata = metadata, stack = xItem.stack, close = true}
 			if xItem.ammoname then Inventories[xPlayer.source].inventory[slot].ammoname = xItem.ammoname end
 			if xItem.weight > 0 or xItem.name:find('money') then updateWeight(xPlayer) end
 			ItemNotify(xPlayer, Inventories[xPlayer.source].inventory[slot], count, slot, 'added')
@@ -76,7 +76,7 @@ addInventoryItem = function(xPlayer, item, count, metadata, slot)
 
 			local added = count
 			if existing then count = Inventories[xPlayer.source].inventory[slot].count + count end
-			Inventories[xPlayer.source].inventory[slot] = {name = item, label = xItem.label, weight = xItem.weight, slot = slot, count = count, description = xItem.description, metadata = metadata or {}, stackable = xItem.stacks, closeonuse = xItem.closeonuse}
+			Inventories[xPlayer.source].inventory[slot] = {name = item, label = xItem.label, weight = xItem.weight, slot = slot, count = count, description = xItem.description, metadata = metadata or {}, stack = xItem.stack, close = xItem.close}
 			if xItem.weight > 0 or xItem.name:find('money') then updateWeight(xPlayer) end
 			ItemNotify(xPlayer, Inventories[xPlayer.source].inventory[slot], added, slot, 'added')
 		end
@@ -99,7 +99,7 @@ removeInventoryItem = function(xPlayer, item, count, metadata, slot)
 		elseif slot and Inventories[xPlayer.source].inventory[slot].count > count and Inventories[xPlayer.source].inventory[slot].name == xItem.name then
 			local newCount = Inventories[xPlayer.source].inventory[slot].count - count
 			ItemNotify(xPlayer, Inventories[xPlayer.source].inventory[slot], count, slot, 'removed')
-			Inventories[xPlayer.source].inventory[slot] = {name = item, label = xItem.label, weight = xItem.weight, slot = slot, count = newCount, description = xItem.description, metadata = Inventories[xPlayer.source].inventory[slot].metadata, stackable = xItem.stacks, closeonuse = xItem.closeonuse}
+			Inventories[xPlayer.source].inventory[slot] = {name = item, label = xItem.label, weight = xItem.weight, slot = slot, count = newCount, description = xItem.description, metadata = Inventories[xPlayer.source].inventory[slot].metadata, stack = xItem.stack, close = xItem.close}
 			if xItem.weight > 0 or xItem.name:find('money') then updateWeight(xPlayer) end
 			TriggerClientEvent('linden_inventory:refreshInventory', xPlayer.source, Inventories[xPlayer.source])
 		else
@@ -115,7 +115,7 @@ removeInventoryItem = function(xPlayer, item, count, metadata, slot)
 						elseif v > count then
 							removed = total
 							count = v - count
-							Inventories[xPlayer.source].inventory[k] = {name = item, label = xItem.label, weight = xItem.weight, slot = k, count = count, description = xItem.description, metadata = Inventories[xPlayer.source].inventory[k].metadata, stackable = xItem.stacks, closeonuse = xItem.closeonuse}
+							Inventories[xPlayer.source].inventory[k] = {name = item, label = xItem.label, weight = xItem.weight, slot = k, count = count, description = xItem.description, metadata = Inventories[xPlayer.source].inventory[k].metadata, stack = xItem.stack, close = xItem.close}
 						else -- v < count
 							removed = v
 							count = count - v

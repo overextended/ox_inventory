@@ -24,6 +24,7 @@ CreateInventory = function(id, name, type, slots, weight, maxWeight, owner, inve
 
 	self.set = function(k, v)
 		self[k] = v
+		--if self.type ~= 'player' then print(('[%s %s] %s = %s'):format(self.type, self.id, k, tonumber(v))) end
 		if k == 'open' and v == false and self.changed == true and self.timeout == false then
 			self.timer()				-- when inventory closes set a timer
 		end
@@ -31,8 +32,8 @@ CreateInventory = function(id, name, type, slots, weight, maxWeight, owner, inve
 
 	self.timer = function()
 		self.set('timeout', true)
-		SetTimeout(30000, function()	-- save the inventory after 30 seconds
-			if self.open == false then	-- unless it is open when the save should trigger
+		SetTimeout(15000, function()		-- save the inventory after 15 seconds
+			if self.open == false then		-- unless it is open when the save should trigger
 				self.save()
 			end
 			self.set('timeout', false)
