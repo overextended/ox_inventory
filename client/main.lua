@@ -994,8 +994,8 @@ AddEventHandler('linden_inventory:useItem',function(item)
 			elseif data and next(data) then
 				if not data.usetime then data.usetime = 0 end
 				if data.event then
-					local event = type(data.event) ~= 'string' and data.event or data.event
-					TriggerEvent('linden_inventory:'..item.name, item, data.usetime, function(cb)
+					local event = type(data.event) ~= 'string' and 'linden_inventory:'..item.name or data.event
+					TriggerEvent(event, item, data.usetime, function(cb)
 						if cb then
 							UseItem(item, false, data)
 						else
