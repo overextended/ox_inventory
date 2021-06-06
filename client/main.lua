@@ -1007,8 +1007,7 @@ AddEventHandler('linden_inventory:useItem',function(item)
 				end
 			end
 		else
-			local data = Items[item.name]
-			if data.ammoname or data.throwable or item.name:find('ammo-') then
+			if Weapons[item.name] or item.name:find('ammo-') then
 				UseItem(item, false)
 			end
 		end
