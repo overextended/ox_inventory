@@ -63,7 +63,7 @@ Citizen.CreateThread(function()
 		end
 		message('Loaded '..count..' items', 2)
 		Citizen.Wait(500)
-		local ESX.Items = exports['es_extended']:getSharedObject().UsableItemsCallbacks
+		ESX.Items = exports['es_extended']:getSharedObject().UsableItemsCallbacks
 		if ESX.Items then
 			ESX.UsableItemsCallbacks = exports['es_extended']:getSharedObject().UsableItemsCallbacks
 			count = 0
@@ -84,8 +84,6 @@ Citizen.CreateThread(function()
 			end
 			message('Loaded '..count..' additional items from the database', 2)
 			Status[1] = 'loaded'
-		else
-			failed('Unable to retrieve items from the database')
 		end
 		if #ESX.GetPlayers() == 0 then Status[1] = 'ready' end
 	end	
