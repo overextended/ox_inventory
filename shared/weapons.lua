@@ -1233,14 +1233,112 @@ Components = {
 	},
 }
 
+Ammo = {
+	['ammo-22'] = {
+		label = '.22 Long Rifle',
+		weight = 3,
+		stack = true,
+		close = false,
+	},
+
+	['ammo-38'] = {
+		label = '.38 Long Colt',
+		weight = 10,
+		stack = true,
+		close = false,
+	},
+
+	['ammo-44'] = {
+		label = '.44 Magnum',
+		weight = 16,
+		stack = true,
+		close = false,
+	},
+
+	['ammo-45'] = {
+		label = '.45 ACP',
+		weight = 9,
+		stack = true,
+		close = false,
+	},
+
+	['ammo-50'] = {
+		label = '.50 AE',
+		weight = 19,
+		stack = true,
+		close = false,
+	},
+
+	['ammo-9'] = {
+		label = '9mm',
+		weight = 8,
+		stack = true,
+		close = false,
+	},
+
+	['ammo-flare'] = {
+		label = 'Flare',
+		weight = 38,
+		stack = true,
+		close = false,
+	},
+
+	['ammo-heavysniper'] = {
+		label = '.50 BMG',
+		weight = 45,
+		stack = true,
+		close = false,
+	},
+
+	['ammo-musket'] = {
+		label = 'Musket ammo',
+		weight = 30,
+		stack = true,
+		close = false,
+	},
+
+	['ammo-rifle'] = {
+		label = '5.56',
+		weight = 4,
+		stack = true,
+		close = false,
+	},
+
+	['ammo-rifle2'] = {
+		label = '7.62',
+		weight = 8,
+		stack = true,
+		close = false,
+	},
+
+	['ammo-shotgun'] = {
+		label = '12 Gauge',
+		weight = 38,
+		stack = true,
+		close = false,
+	},
+
+	['ammo-sniper'] = {
+		label = '7.62 NATO',
+		weight = 11,
+		stack = true,
+		close = false,
+	}
+}
+
 Citizen.CreateThread(function()
-	Citizen.Wait(5)
+	Citizen.Wait(10)
 	for k, v in pairs(Weapons) do
 		v.name = k
 		Items[k] = v
 	end
 
 	for k, v in pairs(Components) do
+		v.name = k
+		Items[k] = v
+	end
+
+	for k, v in pairs(Ammo) do
 		v.name = k
 		Items[k] = v
 	end
