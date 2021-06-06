@@ -62,10 +62,11 @@ Citizen.CreateThread(function()
 			count = count + 1
 		end
 		message('Loaded '..count..' items', 2)
-		local result = exports.ghmattimysql:executeSync('SELECT * FROM items', {})
-		if result then
-			count = 0
+		Citizen.Wait(500)
+		local ESX.Items = exports['es_extended']:getSharedObject().UsableItemsCallbacks
+		if ESX.Items then
 			ESX.UsableItemsCallbacks = exports['es_extended']:getSharedObject().UsableItemsCallbacks
+			count = 0
 			for k, v in pairs(result) do
 				if not Items[v.name] then
 					count = count + 1
@@ -1079,7 +1080,7 @@ end, true)
 
 
 -- Item dumping; it's a damn mess, but it's my mess
-if Items then
+if Config.ItemList then
 	RegisterCommand('dumpitems', function(source, args, rawCommand)
 		if source == 0 then
 			local itemDump = {}
@@ -1088,7 +1089,7 @@ if Items then
 			for k, v in pairs(result) do
 				Citizen.Wait(10)
 				if Items[v.name] or v.name:find('money') or v.name:find('identification') or v.name:find('GADGET_') or v.name:find('ammo-') then
-					local item = Items[v.name] or {}
+					local item = Config.ItemList[v.name] or {}
 					if not v.name:find('at_') then
 						local description = v.description and '\ndescription = '..v.description..',' or '\n'
 						local status, defined = ''
