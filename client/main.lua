@@ -1006,10 +1006,8 @@ AddEventHandler('linden_inventory:useItem',function(item)
 					UseItem(item, false, data)
 				end
 			end
-		else
-			if Weapons[item.name] or item.name:find('ammo-') then
-				UseItem(item, false)
-			end
+		elseif Weapons[item.name] or item.name:find('ammo-') then
+			UseItem(item, false)
 		end
 	end
 end)
