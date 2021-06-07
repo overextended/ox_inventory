@@ -970,6 +970,7 @@ AddEventHandler('linden_inventory:useItem',function(item)
 	if CanOpenInventory() and not useItemCooldown then
 		local data = Items[item.name].client
 		local esxItem = Usables[item.name]
+		useItemCooldown = true
 		if data or esxItem then
 			if data and data.component then
 				if not currentWeapon then return end
@@ -1008,16 +1009,17 @@ AddEventHandler('linden_inventory:useItem',function(item)
 			end
 		elseif Weapons[item.name] or item.name:find('ammo-') then
 			UseItem(item, false)
-		end
+		else Citizen.Wait(100) useItemCooldown = false end
 	end
 end)
 
 UseItem = function(item, esxItem, data)
 	ESX.TriggerServerCallback('linden_inventory:usingItem', function(xItem)
 		if xItem and data then
-			useItemCooldown = true
 			isBusy = true
-			if data.usetime and data.usetime > 0 then
+			local wait = data.usetime or 500
+			print('using '..item.name)
+			if wait > 0 then
 				local disable = {
 					move = data.disable and data.disable.move or false,
 					car = data.disable and data.disable.car or false,
@@ -1041,8 +1043,9 @@ UseItem = function(item, esxItem, data)
 					animation = { animDict = anim.dict, anim = anim.clip, flags = anim.flag, bone = anim.bone },
 					prop = prop
 				})
-				Citizen.Wait(data.usetime)
 			end
+			Citizen.Wait(wait)
+			if not data.consume or data.consume > 1 then TriggerServerEvent('linden_inventory:removeItem', item) end
 
 			if data.status then
 				for k, v in pairs(data.status) do
@@ -1056,9 +1059,8 @@ UseItem = function(item, esxItem, data)
 				TriggerServerEvent('linden_inventory:updateWeapon', currentWeapon, component.name)
 			end
 
-			if not data.consume or data.consume > 1 then TriggerServerEvent('linden_inventory:removeItem', item) end
 		end
-	
+		Citizen.Wait(500)
 		useItemCooldown = false
 		isBusy = false
 	end, item.name, item.slot, item.metadata, esxItem)
