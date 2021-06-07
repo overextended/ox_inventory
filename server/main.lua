@@ -336,11 +336,11 @@ AddEventHandler('linden_inventory:openInventory', function(type, data, player)
 				if type == 'bag' then Opened[xPlayer.source] = nil end
 				if type == 'dumpster' then id = NetworkGetEntityFromNetworkId(id) end
 				if not Inventories[id] then
+					if type == 'dumpster' then SetEntityDistanceCullingRadius(id, 5000.0) end
 					if not data.maxWeight then
 						local maxWeight = {glovebox = 4000, trunk = 6000, bag = 1000}
 						data.maxWeight = data.slots*(maxWeight[type] or 8000)
 					end
-					SetEntityDistanceCullingRadius(id, 5000.0)
 					Inventories[id] = CreateInventory(
 						id,								-- id
 						data.label,						-- name
