@@ -1107,13 +1107,13 @@ if Config.ItemList then
 							local bone = item.bone and ', bone = '..item.bone  or ''
 							local flag = item.flags and ', flag = '..item.flags or ''
 							local extra = bone .. flag
-							anim = "			anim = { dict = '"..item.animDict.."', clip = '"..item.anim .. extra .."' },\n" defined = true
+							anim = "			anim = { dict = '"..item.animDict.."', clip = '"..item.anim .. extra .." },\n" defined = true
 						end
 						local prop = ''
 						if item.model then
-							local coords = "{ x = "..item.coords.x..", y = "..item.coords.x..", y = "..item.coords.z.."}"
-							local rotation = "{ x = "..item.rotation.x..", y = "..item.rotation.x..", y = "..item.rotation.z.."}"
-							prop = "			prop = { model = '"..item.model.."', pos = "..coords..", rot = "..rotation.." },\n"
+							local coords = "{ x = "..item.coords.x..", y = "..item.coords.x..", y = "..item.coords.z.." }"
+							local rotation = "{ x = "..item.rotation.x..", y = "..item.rotation.x..", y = "..item.rotation.z.." }"
+							prop = "			prop = { model = '"..item.model.."', pos = "..coords..", rot = "..rotation.."  },\n"
 							defined = true
 						end
 						local disable = ''
