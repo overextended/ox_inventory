@@ -1043,24 +1043,11 @@ UseItem = function(item, esxItem, data)
 				})
 				Citizen.Wait(data.usetime)
 			end
-		
-			if data.hunger then
-				if data.hunger > 0 then TriggerEvent('esx_status:add', 'hunger', data.hunger)
-				else TriggerEvent('esx_status:remove', 'hunger', -data.hunger) end
-			end
-			if data.thirst then
-				if data.thirst > 0 then TriggerEvent('esx_status:add', 'thirst', data.thirst)
-				else TriggerEvent('esx_status:remove', 'thirst', -data.thirst) end
-			end
-			if data.stress then
-				print(-data.stress)
-				if data.stress > 0 then TriggerEvent('esx_status:add', 'stress', data.stress)
-				else TriggerEvent('esx_status:remove', 'stress', -data.stress) end
-			end
-			
-			if data.drunk then
-				if data.drunk > 0 then TriggerEvent('esx_status:add', 'drunk', data.drunk)
-				else TriggerEvent('esx_status:remove', 'drunk', -data.drunk) end
+
+			if data.status then
+				for k, v in pairs(data.status) do
+					if v > 0 then TriggerEvent('esx_status:add', k, v) else TriggerEvent('esx_status:remove', k, -v) end
+				end
 			end
 
 			if data.component then
