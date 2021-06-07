@@ -6,9 +6,9 @@ Items = {
 		stack = true,
 		close = true,
 		client = {
-			anim = { dict = 'missheistdockssetup1clipboard@idle_a', clip = 'idle_a', flags = 49 },
+			anim = { dict = 'missheistdockssetup1clipboard@idle_a', clip = 'idle_a', flag = 49 },
 			prop = { model = 'prop_rolled_sock_02', pos = { x = -0.13999999999998, y = -0.13999999999998, y = -0.080000000000012}, rot = { x = -50.0, y = -50.0, y = 0.0} },
-			disable = { move = false, car = true, mouse = false, combat = true },
+			disable = { move = true, car = true, combat = true }
 			usetime = 2500,
 			event = true,
 		}
@@ -49,31 +49,17 @@ Items = {
 		}
 	},
 
-	['mustard'] = {
-		label = 'Mustard',
-		weight = 500,
-		stack = true,
-		close = true,
-		client = {
-			status = { hunger = 25000, thirst = 25000 },
-			anim = { dict = 'mp_player_intdrink', clip = 'loop_bottle' },
-			prop = { model = 'prop_food_mustard', pos = { x = 0.01, y = 0.0, z = -0.07 }, rot = { x = 1.0, y = -1.0, z = -1.5 } },
-			usetime = 2500,
-			event = true,
-		}
-	},
-
 	['GADGET_PARACHUTE'] = {
 		label = 'Parachute',
 		weight = 8000,
-		stack = true,
+		stack = false,
 		close = false,
 	},
 
 	['garbage'] = {
 		label = 'Garbage',
 		weight = 50,
-		stack = false,
+		stack = true,
 		close = true,
 	},
 
@@ -91,16 +77,43 @@ Items = {
 		close = true,
 	},
 
+	['panties'] = {
+		label = 'Knickers',
+		weight = 10,
+		stack = true,
+		close = true,
+		client = {
+			status = { thirst = -100000, stress = -25000 },
+			anim = { dict = 'mp_player_intdrink', clip = 'loop_bottle' },
+			prop = { model = 'prop_ld_flow_bottle', pos = { x = 0.03, y = 0.0, z = 0.02 }, rot = { x = 0.0, y = -13.5, z = -1.5 } },
+			usetime = 2500,
+			consume = 0
+		}
+	},
+
 	['lockpick'] = {
 		label = 'Lockpick',
-		weight = 190,
+		weight = 160,
 		stack = true,
 		close = true,
 		client = {
 			anim = { dict = 'anim@amb@clubhouse@tutorial@bkr_tut_ig3@', clip = 'machinic_loop_mechandplayer' },
+			disable = { move = false },
 			consume = 0,
-			usetime = 2000,
+			usetime = 2500,
 			event = true,
+		}
+	},
+
+	['phone'] = {
+		label = 'Phone',
+		weight = 190,
+		stack = false,
+		close = true,
+		client = {
+			consume = 0,
+			usetime = 0,
+			event = 'gcPhone:forceOpenPhone'
 		}
 	},
 
@@ -111,13 +124,17 @@ Items = {
 		close = true,
 	},
 
-	['phone'] = {
-		label = 'Phone',
-		weight = 150,
-		stack = false,
+	['mustard'] = {
+		label = 'Mustard',
+		weight = 500,
+		stack = true,
 		close = true,
 		client = {
-			event = 'gcPhone:forceOpenPhone'
+			status = { hunger = 25000, thirst = 25000 },
+			anim = { dict = 'mp_player_intdrink', clip = 'loop_bottle' },
+			prop = { model = 'prop_food_mustard', pos = { x = 0.01, y = 0.0, z = -0.07 }, rot = { x = 1.0, y = -1.0, z = -1.5 } },
+			usetime = 2500,
+			event = true,
 		}
 	},
 
@@ -135,26 +152,4 @@ Items = {
 		}
 	},
 
-	['panties'] = {
-		label = 'Panties',
-		weight = 10,
-		stack = true,
-		close = true,
-		client = {
-			status = { stress = -25000 },
-			anim = { dict = 'mp_player_intdrink', clip = 'loop_bottle' },
-			prop = { model = 'prop_cs_panties_02', pos = { x = 0.03, y = 0.0, z = 0.02 }, rot = { x = 0.0, y = -13.5, z = -1.5 } },
-			usetime = 2500,
-			event = true,
-		}
-	},
-
 }
-
-Citizen.CreateThread(function()
-	Citizen.Wait(0)
-	for k, v in pairs(Items) do
-		v.name = k
-		Items[k] = v
-	end
-end)
