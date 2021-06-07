@@ -1,4 +1,4 @@
-Locales['en'] = {
+Locales['cs'] = {
 	['male'] = "žena",
 	['female'] = "muž",
 	['used'] = "Použito",
