@@ -1098,12 +1098,17 @@ if Config.ItemList then
 		if source == 0 then
 			message('Taking a huge dump on your `items` table - please wait', 3)
 			local itemDump = {}
-			--local weaponDump = {}
+			local query
+			local 
 			local result = exports.ghmattimysql:executeSync('SELECT * FROM items', {})
 			for k, v in pairs(result) do
-				Citizen.Wait(10)
 				if Config.ItemList[v.name] or v.name:find('money') or v.name:find('identification') or v.name:find('GADGET_') then
 					local item = Config.ItemList[v.name] or {}
+
+					if not query then
+						query = "DELETE FROM items WHERE name='"..v.name.."'"
+					else query = query.. " OR name='"..v.name.."'" end
+
 					if not v.name:find('at_') then
 						local description = v.description and '\ndescription = '..v.description..',' or '\n'
 						local status, defined = ''
@@ -1120,7 +1125,7 @@ if Config.ItemList then
 							local bone = item.bone and ', bone = '..item.bone  or ''
 							local flag = item.flags and ', flag = '..item.flags or ''
 							local extra = bone .. flag
-							anim = "			anim = { dict = '"..item.animDict.."', clip = '"..item.anim .. extra .." },\n" defined = true
+							anim = "			anim = { dict = '"..item.animDict.."', clip = '"..item.anim.."'" .. extra .." },\n" defined = true
 						end
 						local prop = ''
 						if item.model then
@@ -1152,37 +1157,17 @@ table.insert(itemDump, [[
 
 ]])
 					end
-					exports.ghmattimysql:execute('DELETE FROM `items` WHERE name = @name LIMIT 1', { ['@name'] = v.name })
 				elseif v.name:find('WEAPON') or v.name:find('ammo-') then
---	Internal use for generating weapondata.lua
--- 					local throwable, stack = Config.Throwable[v.name]
--- 					if throwable then
--- 						Config.DurabilityDecrease[v.name] = nil
--- 						throwable = '\n		throwable = true,'
--- 						stack = 'true'
--- 					else
--- 						stack, throwable = 'false', ''
--- 					end
--- 					local description = v.description and '\n		description = '..v.description..',' or ''
--- 					local durability = Config.DurabilityDecrease[v.name] and '\n		durability = '..ESX.Math.Round(Config.DurabilityDecrease[v.name], 1)..',' or ''
--- 					local ammo = GetAmmoType(v.name) and "\n		ammo = '"..GetAmmoType(v.name).."'," or ''
-
--- table.insert(weaponDump, [[
--- 	[']]..v.name..[['] = {
--- 		label = ']]..v.label..[[',
--- 		weight = ]]..tonumber(v.weight)..[[,
--- 		stack = ]]..stack..[[,
--- 		close = false,]].. throwable .. description .. durability .. ammo ..[[
-
--- 	},
-
--- ]])
-				exports.ghmattimysql:execute('DELETE FROM `items` WHERE name = @name LIMIT 1', { ['@name'] = v.name })
+					if not query then
+						query = "DELETE FROM items WHERE name='"..v.name.."'"
+					else query = query.. " OR name='"..v.name.."'" end
 				end
 			end
+			Citizen.Wait(100)
+			print(query)
+			exports.ghmattimysql:execute(query)
 			message('Converted '..#itemDump..' items to the new data format', 2)
 			SaveResourceFile(GetCurrentResourceName(), "shared/items.lua", "Items = {\n\n"..table.concat(itemDump).."}\n", -1)
-			-- Internal use SaveResourceFile(GetCurrentResourceName(), "shared/weapondata.lua", "Weapons = {\n\n"..table.concat(weaponDump).."}\n", -1)
 			Config.ItemList = false
 		end
 	end, true)
