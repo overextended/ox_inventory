@@ -98,6 +98,7 @@ OpenTargetInventory = function(target)
 		if targetPlayer ~= -1 and targetDistance <= 1.5 then
 			if CanOpenTarget(GetPlayerPed(targetPlayer)) or ESX.PlayerData.job.name == 'police' then
 				TriggerServerEvent('linden_inventory:openTargetInventory', GetPlayerServerId(targetPlayer))
+				SetCurrentPedWeapon(targetPlayer,GetHashKey("WEAPON_UNARMED"),true)
 			else
 				TriggerEvent('mythic_notify:client:SendAlert', {type = 'error', text = _U('inventory_cannot_open_other'), length = 2500})
 			end
