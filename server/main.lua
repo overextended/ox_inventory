@@ -410,6 +410,7 @@ AddEventHandler('linden_inventory:giveStash', function(data)
 				)
 				if data.coords then Inventories[id].set('coords', data.coords) end
 			end
+			if Inventories[id].open then TriggerClientEvent('linden_inventory:closeInventory', Inventories[id].open) end
 
 			local xItem, slot, existing = Items[data.item]
 			for i=1, data.slots do
@@ -425,7 +426,6 @@ AddEventHandler('linden_inventory:giveStash', function(data)
 
 			removeInventoryItem(xPlayer, data.item, data.count, data.metadata)
 
-			if Inventories[id].open then TriggerClientEvent('linden_inventory:refreshInventory', Inventories[id].open, Inventories[id]) end
 		end
 	end
 end)
