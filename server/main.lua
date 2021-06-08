@@ -444,8 +444,18 @@ AddEventHandler('linden_inventory:buyItem', function(info)
 					else
 						removeInventoryItem(xPlayer, item.name, data.price)
 					end
-					addInventoryItem(xPlayer, data.name, count, data.metadata, false)
-					if Config.Logs then exports.linden_logs:log(xPlayer, false, ('bought %sx %s from %s for %s'):format(ESX.Math.GroupDigits(count), data.label, shopName, cost), 'items') end
+					-- if an onpurchase server event is defined for this item, trigger it and provide information about the Player, the Item an the Shop it's being purchased from
+					if Items[data.name].server ~= nil and Items[data.name].server.onpurchase ~= nil then
+						TriggerEvent(Items[data.name].server.onpurchase, xPlayer, Items[data.name], data, Config.Shops[location], function(result, metadata)
+							if result then
+								if metadata == nil then metadata = data.metadata end
+								addInventoryItem(xPlayer, data.name, count, metadata, false)
+								if Config.Logs then exports.linden_logs:log(xPlayer, false, ('bought %sx %s from %s for %s'):format(ESX.Math.GroupDigits(count), data.label, shopName, cost), 'items') end		
+							end
+						end)
+					else
+						addInventoryItem(xPlayer, data.name, count, data.metadata, false)
+					end
 				else
 					local missing
 					if currency == 'bank' or item.name == 'money' then
