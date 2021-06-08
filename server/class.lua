@@ -32,7 +32,7 @@ CreateInventory = function(id, name, type, slots, weight, maxWeight, owner, inve
 
 	self.timer = function()
 		self.set('timeout', true)
-		SetTimeout(15000, function()		-- save the inventory after 15 seconds
+		SetTimeout(30000, function()		-- save the inventory after 30 seconds
 			if self.open == false then		-- unless it is open when the save should trigger
 				self.save()
 			end
@@ -60,6 +60,7 @@ CreateInventory = function(id, name, type, slots, weight, maxWeight, owner, inve
 			})
 		else
 			SaveItems(self.type, self.id, self.owner, json.encode(inventory))
+			if self.type ~= 'stash' then Inventories[self.id] = nil end
 		end
 	end
 
