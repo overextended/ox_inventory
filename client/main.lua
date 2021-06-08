@@ -972,21 +972,26 @@ AddEventHandler('linden_inventory:useItem',function(item)
 		local esxItem = Usables[item.name]
 		useItemCooldown = true
 		if data or esxItem then
-			if data and data.component then
-				if not currentWeapon then return end
-				local result, esxWeapon = ESX.GetWeapon(currentWeapon.name)
-					
-				for k,v in ipairs(esxWeapon.components) do
-					for k2, v2 in pairs(data.component) do
-						if v.hash == v2 then
-							component = {name = v.name, hash = v2}
-							break
+			if data then
+				if data.useinvehicle == false and IsPedInAnyVehicle(ESX.PlayerData.ped, true) then
+					useItemCooldown = false
+					TriggerEvent('mythic_notify:client:SendAlert', {type = 'error', text = _U('cannot_use', item.label), length = 2500}) return
+				elseif data.component then
+					if not currentWeapon then return end
+					local result, esxWeapon = ESX.GetWeapon(currentWeapon.name)
+						
+					for k,v in ipairs(esxWeapon.components) do
+						for k2, v2 in pairs(data.component) do
+							if v.hash == v2 then
+								component = {name = v.name, hash = v2}
+								break
+							end
 						end
 					end
-				end
-				if not component then TriggerEvent('mythic_notify:client:SendAlert', {type = 'error', text = _U('component_invalid', item.label), length = 2500}) return end
-				if HasPedGotWeaponComponent(ESX.PlayerData.ped, currentWeapon.hash, component.hash) then
-					TriggerEvent('mythic_notify:client:SendAlert', {type = 'error', text = _U('component_has', item.label), length = 2500}) return
+					if not component then TriggerEvent('mythic_notify:client:SendAlert', {type = 'error', text = _U('component_invalid', item.label), length = 2500}) return end
+					if HasPedGotWeaponComponent(ESX.PlayerData.ped, currentWeapon.hash, component.hash) then
+						TriggerEvent('mythic_notify:client:SendAlert', {type = 'error', text = _U('component_has', item.label), length = 2500}) return
+					end
 				end
 			end
 				
