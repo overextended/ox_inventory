@@ -909,6 +909,13 @@ RegisterKeyMapping('vehinv', 'Open vehicle inventory', 'keyboard', Config.Vehicl
 
 RegisterCommand('steal', function() OpenTargetInventory() end)
 
+
+RegisterCommand('adminopen', function() 
+	if xPlayer.getGroup() == 'admin' then	
+		OpenTargetInventory()
+	end 
+end)
+
 RegisterCommand('weapondetails', function()
 	if currentWeapon and ESX.PlayerData.job.name == 'police' then
 		local msg
