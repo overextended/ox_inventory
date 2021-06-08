@@ -384,8 +384,8 @@ RegisterNetEvent('linden_inventory:giveStash')
 AddEventHandler('linden_inventory:giveStash', function(data)
 	local xPlayer = ESX.GetPlayerFromId(source)
 	if xPlayer and data.item then
-		local item = getInventoryItem(xPlayer, data.item.name, data.item.metadata)
-		if item.count >= data.item.count then
+		local item = getInventoryItem(xPlayer, data.item, data.metadata or {})
+		if item.count >= data.count then
 			local id = data.name
 			
 			if data.coords then
@@ -407,7 +407,7 @@ AddEventHandler('linden_inventory:giveStash', function(data)
 					data.owner,						-- owner
 					GetItems(id, 'stash', data.owner)	-- inventory
 				)
-				Inventories[id].set('coords', data.coords)
+				if data.coords then Inventories[id].set('coords', data.coords) end
 			end
 
 			local xItem, slot, existing = Items[data.item.name]
@@ -422,7 +422,7 @@ AddEventHandler('linden_inventory:giveStash', function(data)
 				Inventories[id].inventory[slot] = Inventories[xPlayer.source].inventory[data.item.slot]
 			end
 
-			removeInventoryItem(xPlayer, data.item.name, data.item.count, data.item.metadata, data.item.slot)
+			removeInventoryItem(xPlayer, data.item, data.count, data.metadata or {})
 
 			if Inventories[id].open then TriggerClientEvent('linden_inventory:refreshInventory', Inventories[id].open, Inventories[id]) end
 		end
