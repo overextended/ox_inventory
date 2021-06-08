@@ -162,7 +162,7 @@ GiveStash = function(data)
 	end
 end
 exports('GiveStash', GiveStash)
---GiveStash({name = Config.Stashes[id].name, slots = Config.Stashes[id].slots, coords = Config.Stashes[id].coords, item = ESX.PlayerData.inventory[1]})
+--GiveStash({name = Config.Stashes[id].name, slots = Config.Stashes[id].slots, coords = Config.Stashes[id].coords, item = 'money', count = 20})
 
 OpenBag = function(data)
 	if data and not currentInventory and CanOpenInventory() and not CanOpenTarget(ESX.PlayerData.ped) then
@@ -1006,7 +1006,7 @@ AddEventHandler('linden_inventory:useItem',function(item)
 			if esxItem then
 				TriggerEvent('linden_inventory:closeInventory') UseItem(item, true)
 			elseif data and next(data) then
-				if not data.usetime then data.usetime = 0 end
+				if not data.usetime then data.usetime = 500 end
 				if data.event then
 					local event = type(data.event) ~= 'string' and 'linden_inventory:'..item.name or data.event
 					TriggerEvent(event, item, data.usetime, function(cb)
@@ -1030,8 +1030,6 @@ UseItem = function(item, esxItem, data)
 	ESX.TriggerServerCallback('linden_inventory:usingItem', function(xItem)
 		if xItem and data then
 			isBusy = true
-			local wait = data.usetime or 500
-			print('using '..item.name)
 			if wait > 0 then
 				local disable = {
 					move = data.disable and data.disable.move or false,
@@ -1057,7 +1055,7 @@ UseItem = function(item, esxItem, data)
 					prop = prop
 				})
 			end
-			Citizen.Wait(wait)
+			Citizen.Wait(data.usetime)
 			if not data.consume or data.consume > 1 then TriggerServerEvent('linden_inventory:removeItem', item) end
 
 			if data.status then
