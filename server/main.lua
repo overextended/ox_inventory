@@ -1099,7 +1099,6 @@ if Config.ItemList then
 			message('Taking a huge dump on your `items` table - please wait', 3)
 			local itemDump = {}
 			local query
-			local 
 			local result = exports.ghmattimysql:executeSync('SELECT * FROM items', {})
 			for k, v in pairs(result) do
 				if Config.ItemList[v.name] or v.name:find('money') or v.name:find('identification') or v.name:find('GADGET_') then
