@@ -1030,7 +1030,7 @@ UseItem = function(item, esxItem, data)
 	ESX.TriggerServerCallback('linden_inventory:usingItem', function(xItem)
 		if xItem and data then
 			isBusy = true
-			if wait > 0 then
+			if data.usetime > 0 then
 				local disable = {
 					move = data.disable and data.disable.move or false,
 					car = data.disable and data.disable.car or false,
