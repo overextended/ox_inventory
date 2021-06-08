@@ -380,6 +380,55 @@ AddEventHandler('linden_inventory:openTargetInventory', function(targetId)
 	end
 end)
 
+RegisterNetEvent('linden_inventory:giveStash')
+AddEventHandler('linden_inventory:giveStash', function(data)
+	local xPlayer = ESX.GetPlayerFromId(source)
+	if xPlayer and data.item then
+		local item = getInventoryItem(xPlayer, data.item.name, data.item.metadata)
+		if item.count >= data.item.count then
+			local id = data.name
+			
+			if data.coords then
+				local srcCoords = GetEntityCoords(GetPlayerPed(xPlayer.source))
+				if #(data.coords - srcCoords) > 4 then return false end
+			end
+
+			if not Inventories[id] then
+				if not data.maxWeight then
+					data.maxWeight = data.slots*8000
+				end
+				Inventories[id] = CreateInventory(
+					id,								-- id
+					data.label,						-- name
+					type,							-- type
+					data.slots,						-- slots
+					0,								-- weight
+					data.maxWeight,					-- maxWeight
+					data.owner,						-- owner
+					GetItems(id, 'stash', data.owner)	-- inventory
+				)
+				Inventories[id].set('coords', data.coords)
+			end
+
+			local xItem, slot, existing = Items[data.item.name]
+			for i=1, data.slots do
+				if xItem.stack and Inventories[id].inventory[i] and Inventories[id].inventory[i].name == data.item.name and is_table_equal(Inventories[id].inventory[i].metadata, data.item.metadata) then slot = i existing = true break
+				elseif not slot and Inventories[id].inventory[i] == nil then slot = i existing = false end
+			end
+
+			if existing then
+				Inventories[id].inventory[slot].count = Inventories[id].inventory[slot].count + data.item.count
+			else
+				Inventories[id].inventory[slot] = Inventories[xPlayer.source].inventory[data.item.slot]
+			end
+
+			removeInventoryItem(xPlayer, data.item.name, data.item.count, data.item.metadata, data.item.slot)
+
+			if Inventories[id].open then TriggerClientEvent('linden_inventory:refreshInventory', Inventories[id].open, Inventories[id]) end
+		end
+	end
+end)
+
 RegisterNetEvent('linden_inventory:buyItem')
 AddEventHandler('linden_inventory:buyItem', function(info)
 	local xPlayer = ESX.GetPlayerFromId(source)
