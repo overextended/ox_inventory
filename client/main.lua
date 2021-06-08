@@ -156,6 +156,14 @@ OpenStash = function(data)
 end
 exports('OpenStash', OpenStash)
 
+GiveStash = function(data)
+	if data then
+		TriggerServerEvent('linden_inventory:giveStash', data)
+	end
+end
+exports('GiveStash', GiveStash)
+--GiveStash({name = Config.Stashes[id].name, slots = Config.Stashes[id].slots, coords = Config.Stashes[id].coords, item = ESX.PlayerData.inventory[1]})
+
 OpenBag = function(data)
 	if data and not currentInventory and CanOpenInventory() and not CanOpenTarget(ESX.PlayerData.ped) then
 		TriggerServerEvent('linden_inventory:openInventory', 'bag', data)
