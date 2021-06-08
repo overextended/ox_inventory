@@ -63,7 +63,6 @@ Citizen.CreateThread(function()
 			count = count + 1
 		end
 		message('Loaded '..count..' items', 2)
-		Citizen.Wait(500)
 		count = 0
 		local result = exports.ghmattimysql:executeSync('SELECT * FROM items', {})
 		ESX.UsableItemsCallbacks = exports['es_extended']:getSharedObject().UsableItemsCallbacks
