@@ -441,18 +441,24 @@ AddEventHandler('linden_inventory:buyItem', function(info)
 					else
 						removeInventoryItem(xPlayer, item.name, data.price)
 					end
-					-- if an onpurchase server event is defined for this item, trigger it and provide information about the Player, the Item an the Shop it's being purchased from
-					if Items[data.name].server ~= nil and Items[data.name].server.onpurchase ~= nil then
-						TriggerEvent(Items[data.name].server.onpurchase, xPlayer, Items[data.name], data, Config.Shops[location], function(result, metadata)
+					local xItem = Items[data.name]
+					if xItem.server and xItem.server.onpurchase then
+						local wait = true
+						TriggerEvent(xItem.server.onpurchase, xPlayer, xItem, data, Config.Shops[location], function(result, metadata)
 							if result then
-								if metadata == nil then metadata = data.metadata end
-								addInventoryItem(xPlayer, data.name, count, metadata, false)
-								if Config.Logs then exports.linden_logs:log(xPlayer, false, ('bought %sx %s from %s for %s'):format(ESX.Math.GroupDigits(count), data.label, shopName, cost), 'items') end		
+								if metadata then data.metadata = metadata end
+								wait = false
 							end
 						end)
-					else
-						addInventoryItem(xPlayer, data.name, count, data.metadata, false)
+						local timeout = 100
+						while wait do
+							Citizen.Wait(10)
+							timeout = timeout - 1
+							if timeout == 0 then return end
+						end
 					end
+					addInventoryItem(xPlayer, data.name, count, data.metadata, false)
+					if Config.Logs then exports.linden_logs:log(xPlayer, false, ('bought %sx %s from %s for %s'):format(ESX.Math.GroupDigits(count), data.label, shopName, cost), 'items') end
 				else
 					local missing
 					if currency == 'bank' or item.name == 'money' then
