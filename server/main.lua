@@ -384,7 +384,8 @@ RegisterNetEvent('linden_inventory:giveStash')
 AddEventHandler('linden_inventory:giveStash', function(data)
 	local xPlayer = ESX.GetPlayerFromId(source)
 	if xPlayer and data.item then
-		local item = getInventoryItem(xPlayer, data.item, data.metadata or {})
+		if not data.metadata then data.metadata = {} end
+		local item = getInventoryItem(xPlayer, data.item, data.metadata)
 		if item.count >= data.count then
 			local id = data.name
 			
@@ -410,19 +411,19 @@ AddEventHandler('linden_inventory:giveStash', function(data)
 				if data.coords then Inventories[id].set('coords', data.coords) end
 			end
 
-			local xItem, slot, existing = Items[data.item.name]
+			local xItem, slot, existing = Items[data.item]
 			for i=1, data.slots do
-				if xItem.stack and Inventories[id].inventory[i] and Inventories[id].inventory[i].name == data.item.name and is_table_equal(Inventories[id].inventory[i].metadata, data.item.metadata) then slot = i existing = true break
+				if xItem.stack and Inventories[id].inventory[i] and Inventories[id].inventory[i].name == data.item and is_table_equal(Inventories[id].inventory[i].metadata, data.metadata) then slot = i existing = true break
 				elseif not slot and Inventories[id].inventory[i] == nil then slot = i existing = false end
 			end
 
 			if existing then
-				Inventories[id].inventory[slot].count = Inventories[id].inventory[slot].count + data.item.count
+				Inventories[id].inventory[slot].count = Inventories[id].inventory[slot].count + data.count
 			else
-				Inventories[id].inventory[slot] = Inventories[xPlayer.source].inventory[data.item.slot]
+				Inventories[id].inventory[slot] = {name = xItem.name, label = xItem.label, weight = xItem.weight, slot = slot, count = data.count, description = xItem.description, metadata = data.metadata, stack = xItem.stack, close = xItem.close}
 			end
 
-			removeInventoryItem(xPlayer, data.item, data.count, data.metadata or {})
+			removeInventoryItem(xPlayer, data.item, data.count, data.metadata)
 
 			if Inventories[id].open then TriggerClientEvent('linden_inventory:refreshInventory', Inventories[id].open, Inventories[id]) end
 		end
