@@ -64,29 +64,27 @@ Citizen.CreateThread(function()
 		end
 		message('Loaded '..count..' items', 2)
 		Citizen.Wait(500)
-		ESX.Items = exports['es_extended']:getSharedObject().Items
-		if ESX.Items then
-			ESX.UsableItemsCallbacks = exports['es_extended']:getSharedObject().UsableItemsCallbacks
-			count = 0
-			for k, v in pairs(ESX.Items) do
-				if not Items[k] then
-					count = count + 1
-					Items[k] = {
-						name = k,
-						label = v.label,
-						weight = v.weight,
-						stack = v.stack,
-						close = v.closeonuse,
-						description = v.description
-					}
-					if ESX.UsableItemsCallbacks[v.name] ~= nil then Usables[v.name] = true end
-				else
-					exports.ghmattimysql:execute('DELETE FROM `items` WHERE name = @name LIMIT 1', { ['@name'] = k })
-				end
+		count = 0
+		local result = exports.ghmattimysql:executeSync('SELECT * FROM items', {})
+		ESX.UsableItemsCallbacks = exports['es_extended']:getSharedObject().UsableItemsCallbacks
+		for k,v in ipairs(result) do
+			if Items[v.name] then
+				exports.ghmattimysql:execute('DELETE FROM `items` WHERE name = @name LIMIT 1', { ['@name'] = v.name })
+			else
+				count = count + 1
+				Items[v.name] = {
+					name = v.name,
+					label = v.label,
+					weight = v.weight,
+					stack = v.stack,
+					close = v.closeonuse,
+					description = v.description
+				}
+				if ESX.UsableItemsCallbacks[v.name] ~= nil then Usables[v.name] = true end
 			end
-			message('Loaded '..count..' additional items from the database', 2)
-			Status[1] = 'loaded'
 		end
+		message('Loaded '..count..' additional items from the database', 2)
+		Status[1] = 'loaded'
 		if #ESX.GetPlayers() == 0 then Status[1] = 'ready' end
 	end	
 	while (Status[1] == 'loaded') do Citizen.Wait(125) if Status[1] == 'ready' then break end end
