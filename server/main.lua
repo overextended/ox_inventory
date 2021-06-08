@@ -1,4 +1,3 @@
-Items = {}
 Usables = {}
 Drops = {}
 Inventories = {}
@@ -40,58 +39,53 @@ Citizen.CreateThread(function()
 		print('https://thelindat.github.io/linden_inventory')
 		return
 	end
+
+	if Config.ItemList then
+		while Config.ItemList do
+			message('Your inventory items are not using the new format! Type ^1dumpitems^0 into the console', 1)
+			Citizen.Wait(10000)
+		end
+		message('Due to changes to the way items are being handled you may need to update events! Please refer to the release post for 1.7.0', 3)
+		message('All weapons, ammo, components, and items registered with the inventory have been removed from the database', 3)
+		message('Restart your server to ensure items load correctly', 3)
+		return
+	end
 	
 	while GetResourceState('ghmattimysql') ~= 'started' do Citizen.Wait(0) end
-	-- Clean the database
 	exports.ghmattimysql:execute('DELETE FROM `linden_inventory` WHERE `lastupdated` < (NOW() - INTERVAL '..Config.DBCleanup..') OR `data` = "[]"')
 	---------------------
 	Citizen.Wait(500)
-	ESX.UsableItemsCallbacks = exports['es_extended']:getSharedObject().UsableItemsCallbacks
 	if Status[1] ~= 'error' then
+		local count = 0
+		for k,v in pairs(Items) do
+			Items[k].consume = v.consume or 1
+			Items[k].client = nil
+			count = count + 1
+		end
+		message('Loaded '..count..' items', 2)
+		count = 0
 		local result = exports.ghmattimysql:executeSync('SELECT * FROM items', {})
-		if result then
-			for k, v in pairs(result) do
+		ESX.UsableItemsCallbacks = exports['es_extended']:getSharedObject().UsableItemsCallbacks
+		for k,v in ipairs(result) do
+			if Items[v.name] then
+				exports.ghmattimysql:execute('DELETE FROM `items` WHERE name = @name LIMIT 1', { ['@name'] = v.name })
+			else
+				count = count + 1
 				Items[v.name] = {
 					name = v.name,
 					label = v.label,
 					weight = v.weight,
-					stackable = v.stackable,
-					description = v.description,
-					closeonuse = v.closeonuse
+					stack = v.stack,
+					close = v.closeonuse,
+					description = v.description
 				}
-				if ESX.UsableItemsCallbacks[v.name] ~= nil and not Config.ItemList[v.name] then Usables[v.name] = true end
-				if v.name:find('WEAPON') then
-					local AmmoType = GetAmmoType(v.name)
-					if AmmoType then Items[v.name].ammoType = AmmoType
-					end
-				end
+				if ESX.UsableItemsCallbacks[v.name] ~= nil then Usables[v.name] = true end
 			end
-			message('Created '..#(result)..' items', 2)
-			Status[1] = 'loaded'
-			local count = 0
-			for k,v in pairs(Config.ItemList) do
-				if not Items[k] then
-					--print (' ('..k..', '..k..', 115, 1, 1, 1, NULL), ')
-					count = count + 1
-					Items[k] = {
-						name = k,
-						label = k,
-						weight = 0,
-						stackable = 1,
-						description = nil,
-						closeonuse = 1
-					}
-				end
-				Config.ItemList[k] = v.consume or 1
-			end
-			if count > 0 then message('Created '..count..' dummy items', 2) end
-			
-		else
-			failed('Unable to retrieve items from the database')
 		end
+		message('Loaded '..count..' additional items from the database', 2)
+		Status[1] = 'loaded'
 		if #ESX.GetPlayers() == 0 then Status[1] = 'ready' end
-	end
-	
+	end	
 	while (Status[1] == 'loaded') do Citizen.Wait(125) if Status[1] == 'ready' then break end end
 	message('Inventory setup is complete', 2)
 	if Config.Logs and GetResourceState(Config.Logs) ~= 'started' then
@@ -163,18 +157,9 @@ end)
 AddEventHandler('onResourceStart', function(resourceName)
 	if (GetCurrentResourceName() == resourceName) then
 		if ESX == nil then return end
-		if ESX.GetExtendedPlayers then Config.Experimental = true end
-		if Config.Experimental then	-- Using new type of xPlayer loop; it retrieves the playerdata all at once instead of one-by-one
-			local xPlayers = ESX.GetExtendedPlayers()
-			for k,v in pairs(xPlayers) do
-				v.set('linventory', false)
-			end
-		else
-			local xPlayers = ESX.GetPlayers()
-			for i=1, #xPlayers, 1 do
-				local xPlayer = ESX.GetPlayerFromId(xPlayers[i])
-				xPlayer.set('linventory', false)
-			end
+		local xPlayers = ESX.GetExtendedPlayers()
+		for k,v in pairs(xPlayers) do
+			v.set('linventory', false)
 		end
 		while true do Citizen.Wait(100) if Status[1] == 'loaded' then break end end
 		Status[1] = 'ready'
@@ -198,6 +183,7 @@ AddEventHandler('onResourceStop', function(resourceName)
 end)
 
 AddEventHandler('linden_inventory:setPlayerInventory', function(xPlayer, data)
+	while Status[1] ~= 'ready' do Citizen.Wait(200) end
 	local inventory, weight = {}, 0
 
 	if data and next(data) then
@@ -206,21 +192,21 @@ AddEventHandler('linden_inventory:setPlayerInventory', function(xPlayer, data)
 			local xItem = Items[v.name]
 			if xItem then
 				local weight
-				if xItem.ammoType then
+				if xItem.ammoname then
 					local ammo = {}
-					ammo.type = xItem.ammoType
+					ammo.type = xItem.ammoname
 					ammo.count = v.metadata.ammo
 					ammo.weight = Items[ammo.type].weight
 					weight = xItem.weight + (ammo.weight * ammo.count)
 				else weight = xItem.weight end
 				if not v.metadata then v.metadata = {} end
 				if v.metadata.weight then weight = weight + v.metadata.weight end
-				inventory[v.slot] = {name = v.name, label = xItem.label, weight = weight, slot = v.slot, count = v.count, description = xItem.description, metadata = v.metadata, stackable = xItem.stackable}
-				if xItem.ammoType then inventory[v.slot].ammoType = xItem.ammoType end
+				inventory[v.slot] = {name = v.name, label = xItem.label, weight = weight, slot = v.slot, count = v.count, description = xItem.description, metadata = v.metadata, stack = xItem.stack}
+				if xItem.ammoname then inventory[v.slot].ammoname = xItem.ammoname end
 			end
 		end
 	end
-	inventory = CreateInventory(xPlayer.source, xPlayer.getName(), 'player', Config.PlayerSlots, weight, ESX.GetConfig().MaxWeight, xPlayer.source, inventory)
+	inventory = CreateInventory(xPlayer.source, xPlayer.getName(), 'player', Config.PlayerSlots, weight, DefaultWeight, xPlayer.source, inventory)
 	inventory.set('identifier', xPlayer.identifier)
 	Inventories[xPlayer.source] = inventory
 	xPlayer.set('linventory', true)
@@ -267,7 +253,7 @@ AddEventHandler('linden_inventory:recoverPlayerInventory', function(xPlayer)
 			local Inventory = json.decode(result)
 			for k,v in pairs(Inventory) do
 				if v.metadata == nil then v.metadata = {} end
-				Inventories[xPlayer.source].inventory[v.slot] = {name = v.name ,label = Items[v.name].label, weight = Items[v.name].weight, slot = v.slot, count = v.count, description = Items[v.name].description, metadata = v.metadata, stackable = Items[v.name].stackable}
+				Inventories[xPlayer.source].inventory[v.slot] = {name = v.name ,label = Items[v.name].label, weight = Items[v.name].weight, slot = v.slot, count = v.count, description = Items[v.name].description, metadata = v.metadata, stack = Items[v.name].stack}
 			end
 			updateWeight(xPlayer)	
 			if Opened[xPlayer.source] then TriggerClientEvent('linden_inventory:closeInventory', Opened[xPlayer.source].invid)
@@ -394,6 +380,56 @@ AddEventHandler('linden_inventory:openTargetInventory', function(targetId)
 	end
 end)
 
+RegisterNetEvent('linden_inventory:giveStash')
+AddEventHandler('linden_inventory:giveStash', function(data)
+	local xPlayer = ESX.GetPlayerFromId(source)
+	if xPlayer and data.item then
+		if not data.metadata then data.metadata = {} end
+		local item = getInventoryItem(xPlayer, data.item, data.metadata)
+		if item.count >= data.count then
+			local id = data.name
+			
+			if data.coords then
+				local srcCoords = GetEntityCoords(GetPlayerPed(xPlayer.source))
+				if #(data.coords - srcCoords) > 4 then return false end
+			end
+
+			if not Inventories[id] then
+				if not data.maxWeight then
+					data.maxWeight = data.slots*8000
+				end
+				Inventories[id] = CreateInventory(
+					id,								-- id
+					data.label,						-- name
+					type,							-- type
+					data.slots,						-- slots
+					0,								-- weight
+					data.maxWeight,					-- maxWeight
+					data.owner,						-- owner
+					GetItems(id, 'stash', data.owner)	-- inventory
+				)
+				if data.coords then Inventories[id].set('coords', data.coords) end
+			end
+			if Inventories[id].open then TriggerClientEvent('linden_inventory:closeInventory', Inventories[id].open) end
+
+			local xItem, slot, existing = Items[data.item]
+			for i=1, data.slots do
+				if xItem.stack and Inventories[id].inventory[i] and Inventories[id].inventory[i].name == data.item and is_table_equal(Inventories[id].inventory[i].metadata, data.metadata) then slot = i existing = true break
+				elseif not slot and Inventories[id].inventory[i] == nil then slot = i existing = false end
+			end
+
+			if existing then
+				Inventories[id].inventory[slot].count = Inventories[id].inventory[slot].count + data.count
+			else
+				Inventories[id].inventory[slot] = {name = xItem.name, label = xItem.label, weight = xItem.weight, slot = slot, count = data.count, description = xItem.description, metadata = data.metadata, stack = xItem.stack, close = xItem.close}
+			end
+
+			removeInventoryItem(xPlayer, data.item, data.count, data.metadata)
+
+		end
+	end
+end)
+
 RegisterNetEvent('linden_inventory:buyItem')
 AddEventHandler('linden_inventory:buyItem', function(info)
 	local xPlayer = ESX.GetPlayerFromId(source)
@@ -430,12 +466,12 @@ AddEventHandler('linden_inventory:buyItem', function(info)
 			if not shopCurrency and money < data.price then
 				item.name = 'money'
 				currency = 'Money'
-				money = xPlayer.getInventoryItem(item.name).count
+				money = getInventoryItem(xPlayer, item.name).count
 			end
 		else
 			item = Items[shopCurrency]
 			currency = item.label
-			money = xPlayer.getInventoryItem(item.name).count
+			money = getInventoryItem(xPlayer, item.name).count
 		end
 
 		if checkShop.name ~= data.name then
@@ -454,6 +490,22 @@ AddEventHandler('linden_inventory:buyItem', function(info)
 						xPlayer.removeAccountMoney('bank', data.price)
 					else
 						removeInventoryItem(xPlayer, item.name, data.price)
+					end
+					local xItem = Items[data.name]
+					if xItem.server and xItem.server.onpurchase then
+						local wait = true
+						TriggerEvent(xItem.server.onpurchase, xPlayer, xItem, data, Config.Shops[location], function(result, metadata)
+							if result then
+								if metadata then data.metadata = metadata end
+								wait = false
+							end
+						end)
+						local timeout = 100
+						while wait do
+							Citizen.Wait(10)
+							timeout = timeout - 1
+							if timeout == 0 then return end
+						end
 					end
 					addInventoryItem(xPlayer, data.name, count, data.metadata, false)
 					if Config.Logs then exports.linden_logs:log(xPlayer, false, ('bought %sx %s from %s for %s'):format(ESX.Math.GroupDigits(count), data.label, shopName, cost), 'items') end
@@ -489,37 +541,37 @@ AddEventHandler('linden_inventory:saveInventoryData', function(data)
 			if data.frominv == 'drop' or data.toinv == 'drop' then
 				if data.type == 'swap' then
 					if ValidateItem(data.type, xPlayer, Drops[invid].inventory[data.fromSlot], Drops[invid].inventory[data.toSlot], data.fromItem, data.toItem) == true then
-						Drops[invid].inventory[data.toSlot] = {name = data.toItem.name, label = data.toItem.label, weight = data.toItem.weight, slot = data.toSlot, count = data.toItem.count, description = data.toItem.description, metadata = data.toItem.metadata, stackable = data.toItem.stackable, closeonuse = Items[data.toItem.name].closeonuse}
-						Drops[invid].inventory[data.fromSlot] = {name = data.fromItem.name, label = data.fromItem.label, weight = data.fromItem.weight, slot = data.fromSlot, count = data.fromItem.count, description = data.fromItem.description, metadata = data.fromItem.metadata, stackable = data.fromItem.stackable, closeonuse = Items[data.fromItem.name].closeonuse}
+						Drops[invid].inventory[data.toSlot] = {name = data.toItem.name, label = data.toItem.label, weight = data.toItem.weight, slot = data.toSlot, count = data.toItem.count, description = data.toItem.description, metadata = data.toItem.metadata, stack = data.toItem.stack, closeonuse = Items[data.toItem.name].closeonuse}
+						Drops[invid].inventory[data.fromSlot] = {name = data.fromItem.name, label = data.fromItem.label, weight = data.fromItem.weight, slot = data.fromSlot, count = data.fromItem.count, description = data.fromItem.description, metadata = data.fromItem.metadata, stack = data.fromItem.stack, closeonuse = Items[data.fromItem.name].closeonuse}
 					end
 				elseif data.type == 'freeslot' then
 					if ValidateItem(data.type, xPlayer, Drops[invid].inventory[data.emptyslot], Drops[invid].inventory[data.toSlot], data.item, data.item) == true then
 						Drops[invid].inventory[data.emptyslot] = nil
-						Drops[invid].inventory[data.toSlot] = {name = data.item.name, label = data.item.label, weight = data.item.weight, slot = data.toSlot, count = data.item.count, description = data.item.description, metadata = data.item.metadata, stackable = data.item.stackable, closeonuse = Items[data.item.name].closeonuse}
+						Drops[invid].inventory[data.toSlot] = {name = data.item.name, label = data.item.label, weight = data.item.weight, slot = data.toSlot, count = data.item.count, description = data.item.description, metadata = data.item.metadata, stack = data.item.stack, closeonuse = Items[data.item.name].closeonuse}
 					end
 				elseif data.type == 'split' then
 					if ValidateItem(data.type, xPlayer, Drops[invid].inventory[data.fromSlot], Drops[invid].inventory[data.toSlot], data.oldslotItem, data.newslotItem) == true then
-						Drops[invid].inventory[data.fromSlot] = {name = data.oldslotItem.name, label = data.oldslotItem.label, weight = data.oldslotItem.weight, slot = data.fromSlot, count = data.oldslotItem.count, description = data.oldslotItem.description, metadata = data.oldslotItem.metadata, stackable = data.oldslotItem.stackable, closeonuse = Items[data.oldslotItem.name].closeonuse}
-						Drops[invid].inventory[data.toSlot] = {name = data.newslotItem.name, label = data.newslotItem.label, weight = data.newslotItem.weight, slot = data.toSlot, count = data.newslotItem.count, description = data.newslotItem.description, metadata = data.newslotItem.metadata, stackable = data.newslotItem.stackable, closeonuse = Items[data.newslotItem.name].closeonuse}
+						Drops[invid].inventory[data.fromSlot] = {name = data.oldslotItem.name, label = data.oldslotItem.label, weight = data.oldslotItem.weight, slot = data.fromSlot, count = data.oldslotItem.count, description = data.oldslotItem.description, metadata = data.oldslotItem.metadata, stack = data.oldslotItem.stack, closeonuse = Items[data.oldslotItem.name].closeonuse}
+						Drops[invid].inventory[data.toSlot] = {name = data.newslotItem.name, label = data.newslotItem.label, weight = data.newslotItem.weight, slot = data.toSlot, count = data.newslotItem.count, description = data.newslotItem.description, metadata = data.newslotItem.metadata, stack = data.newslotItem.stack, closeonuse = Items[data.newslotItem.name].closeonuse}
 					end
 				end
 			else		
 				if data.type == 'swap' then
 					if ValidateItem(data.type, xPlayer, Inventories[invid].inventory[data.fromSlot], Inventories[invid].inventory[data.toSlot], data.fromItem, data.toItem) == true then
-						Inventories[invid].inventory[data.toSlot] = {name = data.toItem.name, label = data.toItem.label, weight = data.toItem.weight, slot = data.toSlot, count = data.toItem.count, description = data.toItem.description, metadata = data.toItem.metadata, stackable = data.toItem.stackable, closeonuse = Items[data.toItem.name].closeonuse}
-						Inventories[invid].inventory[data.fromSlot] = {name = data.fromItem.name, label = data.fromItem.label, weight = data.fromItem.weight, slot = data.fromSlot, count = data.fromItem.count, description = data.fromItem.description, metadata = data.fromItem.metadata, stackable = data.fromItem.stackable, closeonuse = Items[data.fromItem.name].closeonuse}
+						Inventories[invid].inventory[data.toSlot] = {name = data.toItem.name, label = data.toItem.label, weight = data.toItem.weight, slot = data.toSlot, count = data.toItem.count, description = data.toItem.description, metadata = data.toItem.metadata, stack = data.toItem.stack, closeonuse = Items[data.toItem.name].closeonuse}
+						Inventories[invid].inventory[data.fromSlot] = {name = data.fromItem.name, label = data.fromItem.label, weight = data.fromItem.weight, slot = data.fromSlot, count = data.fromItem.count, description = data.fromItem.description, metadata = data.fromItem.metadata, stack = data.fromItem.stack, closeonuse = Items[data.fromItem.name].closeonuse}
 						if invid ~= xPlayer.source and invid ~= xTarget.source then Inventories[invid].set('changed', true) end
 					end
 				elseif data.type == 'freeslot' then
 					if ValidateItem(data.type, xPlayer, Inventories[invid].inventory[data.emptyslot], Inventories[invid].inventory[data.toSlot], data.item, data.item) == true then
 						Inventories[invid].inventory[data.emptyslot] = nil
-						Inventories[invid].inventory[data.toSlot] = {name = data.item.name, label = data.item.label, weight = data.item.weight, slot = data.toSlot, count = data.item.count, description = data.item.description, metadata = data.item.metadata, stackable = data.item.stackable, closeonuse = Items[data.item.name].closeonuse}
+						Inventories[invid].inventory[data.toSlot] = {name = data.item.name, label = data.item.label, weight = data.item.weight, slot = data.toSlot, count = data.item.count, description = data.item.description, metadata = data.item.metadata, stack = data.item.stack, closeonuse = Items[data.item.name].closeonuse}
 						if invid ~= xPlayer.source and invid ~= xTarget.source then Inventories[invid].set('changed', true) end
 					end
 				elseif data.type == 'split' then
 					if ValidateItem(data.type, xPlayer, Inventories[invid].inventory[data.fromSlot], Inventories[invid].inventory[data.toSlot], data.oldslotItem, data.newslotItem) == true then
-						Inventories[invid].inventory[data.fromSlot] = {name = data.oldslotItem.name, label = data.oldslotItem.label, weight = data.oldslotItem.weight, slot = data.fromSlot, count = data.oldslotItem.count, description = data.oldslotItem.description, metadata = data.oldslotItem.metadata, stackable = data.oldslotItem.stackable, closeonuse = Items[data.oldslotItem.name].closeonuse}
-						Inventories[invid].inventory[data.toSlot] = {name = data.newslotItem.name, label = data.newslotItem.label, weight = data.newslotItem.weight, slot = data.toSlot, count = data.newslotItem.count, description = data.newslotItem.description, metadata = data.newslotItem.metadata, stackable = data.newslotItem.stackable, closeonuse = Items[data.newslotItem.name].closeonuse}
+						Inventories[invid].inventory[data.fromSlot] = {name = data.oldslotItem.name, label = data.oldslotItem.label, weight = data.oldslotItem.weight, slot = data.fromSlot, count = data.oldslotItem.count, description = data.oldslotItem.description, metadata = data.oldslotItem.metadata, stack = data.oldslotItem.stack, closeonuse = Items[data.oldslotItem.name].closeonuse}
+						Inventories[invid].inventory[data.toSlot] = {name = data.newslotItem.name, label = data.newslotItem.label, weight = data.newslotItem.weight, slot = data.toSlot, count = data.newslotItem.count, description = data.newslotItem.description, metadata = data.newslotItem.metadata, stack = data.newslotItem.stack, closeonuse = Items[data.newslotItem.name].closeonuse}
 						if invid ~= xPlayer.source and invid ~= xTarget.source then Inventories[invid].set('changed', true) end
 					end
 				end
@@ -544,8 +596,8 @@ AddEventHandler('linden_inventory:saveInventoryData', function(data)
 						if ValidateItem(data.type, xPlayer, Inventories[invid2].inventory[data.fromSlot], Drops[dropid].inventory[data.toSlot], data.fromItem, data.toItem) == true then
 							ItemNotify(xPlayer, data.toItem, data.toItem.count, data.fromSlot, 'removed')
 							ItemNotify(xPlayer, data.fromItem, data.fromItem.count, data.toSlot, 'added')
-							Drops[dropid].inventory[data.toSlot] = {name = data.toItem.name, label = data.toItem.label, weight = data.toItem.weight, slot = data.toSlot, count = data.toItem.count, description = data.toItem.description, metadata = data.toItem.metadata, stackable = data.toItem.stackable, closeonuse = Items[data.toItem.name].closeonuse}
-							Inventories[invid2].inventory[data.fromSlot] = {name = data.fromItem.name, label = data.fromItem.label, weight = data.fromItem.weight, slot = data.fromSlot, count = data.fromItem.count, description = data.fromItem.description, metadata = data.fromItem.metadata, stackable = data.fromItem.stackable, closeonuse = Items[data.fromItem.name].closeonuse}
+							Drops[dropid].inventory[data.toSlot] = {name = data.toItem.name, label = data.toItem.label, weight = data.toItem.weight, slot = data.toSlot, count = data.toItem.count, description = data.toItem.description, metadata = data.toItem.metadata, stack = data.toItem.stack, closeonuse = Items[data.toItem.name].closeonuse}
+							Inventories[invid2].inventory[data.fromSlot] = {name = data.fromItem.name, label = data.fromItem.label, weight = data.fromItem.weight, slot = data.fromSlot, count = data.fromItem.count, description = data.fromItem.description, metadata = data.fromItem.metadata, stack = data.fromItem.stack, closeonuse = Items[data.fromItem.name].closeonuse}
 							if Config.Logs then
 								exports.linden_logs:log(xPlayer, false, 'has swapped '..data.toItem.count..'x '..data.toItem.name..' for '..data.fromItem.count..'x '..data.fromItem.name..' in drop-'..dropid, 'items')
 							end
@@ -555,7 +607,7 @@ AddEventHandler('linden_inventory:saveInventoryData', function(data)
 							local count = Inventories[invid2].inventory[data.emptyslot].count
 							ItemNotify(xPlayer, data.item, count, data.emptyslot, 'removed')
 							Inventories[invid2].inventory[data.emptyslot] = nil
-							Drops[dropid].inventory[data.toSlot] = {name = data.item.name, label = data.item.label, weight = data.item.weight, slot = data.toSlot, count = data.item.count, description = data.item.description, metadata = data.item.metadata, stackable = data.item.stackable, closeonuse = Items[data.item.name].closeonuse}
+							Drops[dropid].inventory[data.toSlot] = {name = data.item.name, label = data.item.label, weight = data.item.weight, slot = data.toSlot, count = data.item.count, description = data.item.description, metadata = data.item.metadata, stack = data.item.stack, closeonuse = Items[data.item.name].closeonuse}
 							if Config.Logs then
 								exports.linden_logs:log(xPlayer, false, 'has stored '..count..'x '..data.item.name..' in drop-'..dropid, 'items')
 							end
@@ -563,8 +615,8 @@ AddEventHandler('linden_inventory:saveInventoryData', function(data)
 					elseif data.type == 'split' then
 						if ValidateItem(data.type, xPlayer, Inventories[invid2].inventory[data.fromSlot], Drops[dropid].inventory[data.toSlot], data.oldslotItem, data.newslotItem) == true then
 							ItemNotify(xPlayer, data.newslotItem, data.newslotItem.count, data.fromSlot, 'removed')
-							Inventories[invid2].inventory[data.fromSlot] = {name = data.oldslotItem.name, label = data.oldslotItem.label, weight = data.oldslotItem.weight, slot = data.fromSlot, count = data.oldslotItem.count, description = data.oldslotItem.description, metadata = data.oldslotItem.metadata, stackable = data.oldslotItem.stackable, closeonuse = Items[data.oldslotItem.name].closeonuse}
-							Drops[dropid].inventory[data.toSlot] = {name = data.newslotItem.name, label = data.newslotItem.label, weight = data.newslotItem.weight, slot = data.toSlot, count = data.newslotItem.count, description = data.newslotItem.description, metadata = data.newslotItem.metadata, stackable = data.newslotItem.stackable, closeonuse = Items[data.newslotItem.name].closeonuse}
+							Inventories[invid2].inventory[data.fromSlot] = {name = data.oldslotItem.name, label = data.oldslotItem.label, weight = data.oldslotItem.weight, slot = data.fromSlot, count = data.oldslotItem.count, description = data.oldslotItem.description, metadata = data.oldslotItem.metadata, stack = data.oldslotItem.stack, closeonuse = Items[data.oldslotItem.name].closeonuse}
+							Drops[dropid].inventory[data.toSlot] = {name = data.newslotItem.name, label = data.newslotItem.label, weight = data.newslotItem.weight, slot = data.toSlot, count = data.newslotItem.count, description = data.newslotItem.description, metadata = data.newslotItem.metadata, stack = data.newslotItem.stack, closeonuse = Items[data.newslotItem.name].closeonuse}
 							if Config.Logs then
 								exports.linden_logs:log(xPlayer, false, 'has stored '..data.newslotItem.count..'x '..data.newslotItem.name..' in drop-'..dropid, 'items')
 							end
@@ -576,8 +628,8 @@ AddEventHandler('linden_inventory:saveInventoryData', function(data)
 						if ValidateItem(data.type, xPlayer, Drops[dropid].inventory[data.fromSlot], Inventories[invid].inventory[data.toSlot], data.fromItem, data.toItem) == true then
 							ItemNotify(xPlayer, data.toItem, data.toItem.count, data.toSlot, 'added')
 							ItemNotify(xPlayer, data.fromItem, data.fromItem.count, data.fromSlot, 'removed')
-							Inventories[invid].inventory[data.toSlot] = {name = data.toItem.name, label = data.toItem.label, weight = data.toItem.weight, slot = data.toSlot, count = data.toItem.count, description = data.toItem.description, metadata = data.toItem.metadata, stackable = data.toItem.stackable, closeonuse = Items[data.toItem.name].closeonuse}
-							Drops[dropid].inventory[data.fromSlot] = {name = data.fromItem.name, label = data.fromItem.label, weight = data.fromItem.weight, slot = data.fromSlot, count = data.fromItem.count, description = data.fromItem.description, metadata = data.fromItem.metadata, stackable = data.fromItem.stackable, closeonuse = Items[data.fromItem.name].closeonuse}
+							Inventories[invid].inventory[data.toSlot] = {name = data.toItem.name, label = data.toItem.label, weight = data.toItem.weight, slot = data.toSlot, count = data.toItem.count, description = data.toItem.description, metadata = data.toItem.metadata, stack = data.toItem.stack, closeonuse = Items[data.toItem.name].closeonuse}
+							Drops[dropid].inventory[data.fromSlot] = {name = data.fromItem.name, label = data.fromItem.label, weight = data.fromItem.weight, slot = data.fromSlot, count = data.fromItem.count, description = data.fromItem.description, metadata = data.fromItem.metadata, stack = data.fromItem.stack, closeonuse = Items[data.fromItem.name].closeonuse}
 							if Config.Logs then
 								exports.linden_logs:log(xPlayer, false, 'has swapped '..data.fromItem.count..'x '..data.fromItem.name..' for '..data.toItem.count..'x '..data.toItem.name.. 'in drop-'..dropid, 'items')
 							end
@@ -587,7 +639,7 @@ AddEventHandler('linden_inventory:saveInventoryData', function(data)
 							local count = Drops[dropid].inventory[data.emptyslot].count
 							ItemNotify(xPlayer, data.item, count, data.toSlot, 'added')
 							Drops[dropid].inventory[data.emptyslot] = nil
-							Inventories[invid].inventory[data.toSlot] = {name = data.item.name, label = data.item.label, weight = data.item.weight, slot = data.toSlot, count = data.item.count, description = data.item.description, metadata = data.item.metadata, stackable = data.item.stackable, closeonuse = Items[data.item.name].closeonuse}
+							Inventories[invid].inventory[data.toSlot] = {name = data.item.name, label = data.item.label, weight = data.item.weight, slot = data.toSlot, count = data.item.count, description = data.item.description, metadata = data.item.metadata, stack = data.item.stack, closeonuse = Items[data.item.name].closeonuse}
 							if Config.Logs then
 								exports.linden_logs:log(xPlayer, false, 'has taken '..count..'x '..data.item.name..' from drop-'..dropid, 'items')
 							end
@@ -595,8 +647,8 @@ AddEventHandler('linden_inventory:saveInventoryData', function(data)
 					elseif data.type == 'split' then
 						if ValidateItem(data.type, xPlayer, Drops[dropid].inventory[data.fromSlot], Inventories[invid].inventory[data.toSlot], data.oldslotItem, data.newslotItem) == true then
 							ItemNotify(xPlayer, data.newslotItem, data.toSlot, false, 'added')
-							Drops[dropid].inventory[data.fromSlot] = {name = data.oldslotItem.name, label = data.oldslotItem.label, weight = data.oldslotItem.weight, slot = data.fromSlot, count = data.oldslotItem.count, description = data.oldslotItem.description, metadata = data.oldslotItem.metadata, stackable = data.oldslotItem.stackable, closeonuse = Items[data.oldslotItem.name].closeonuse}
-							Inventories[invid].inventory[data.toSlot] = {name = data.newslotItem.name, label = data.newslotItem.label, weight = data.newslotItem.weight, slot = data.toSlot, count = data.newslotItem.count, description = data.newslotItem.description, metadata = data.newslotItem.metadata, stackable = data.newslotItem.stackable, closeonuse = Items[data.newslotItem.name].closeonuse}
+							Drops[dropid].inventory[data.fromSlot] = {name = data.oldslotItem.name, label = data.oldslotItem.label, weight = data.oldslotItem.weight, slot = data.fromSlot, count = data.oldslotItem.count, description = data.oldslotItem.description, metadata = data.oldslotItem.metadata, stack = data.oldslotItem.stack, closeonuse = Items[data.oldslotItem.name].closeonuse}
+							Inventories[invid].inventory[data.toSlot] = {name = data.newslotItem.name, label = data.newslotItem.label, weight = data.newslotItem.weight, slot = data.toSlot, count = data.newslotItem.count, description = data.newslotItem.description, metadata = data.newslotItem.metadata, stack = data.newslotItem.stack, closeonuse = Items[data.newslotItem.name].closeonuse}
 							if Config.Logs then
 								exports.linden_logs:log(xPlayer, false, 'has taken '..data.newslotItem.count..'x '..data.newslotItem.name..' from drop-'..dropid, 'items')
 							end
@@ -643,8 +695,8 @@ AddEventHandler('linden_inventory:saveInventoryData', function(data)
 								end
 							end
 						end
-						Inventories[invid].inventory[data.toSlot] = {name = data.toItem.name, label = data.toItem.label, weight = data.toItem.weight, slot = data.toSlot, count = data.toItem.count, description = data.toItem.description, metadata = data.toItem.metadata, stackable = data.toItem.stackable, closeonuse = Items[data.toItem.name].closeonuse}
-						Inventories[invid2].inventory[data.fromSlot] = {name = data.fromItem.name, label = data.fromItem.label, weight = data.fromItem.weight, slot = data.fromSlot, count = data.fromItem.count, description = data.fromItem.description, metadata = data.fromItem.metadata, stackable = data.fromItem.stackable, closeonuse = Items[data.fromItem.name].closeonuse}
+						Inventories[invid].inventory[data.toSlot] = {name = data.toItem.name, label = data.toItem.label, weight = data.toItem.weight, slot = data.toSlot, count = data.toItem.count, description = data.toItem.description, metadata = data.toItem.metadata, stack = data.toItem.stack, closeonuse = Items[data.toItem.name].closeonuse}
+						Inventories[invid2].inventory[data.fromSlot] = {name = data.fromItem.name, label = data.fromItem.label, weight = data.fromItem.weight, slot = data.fromSlot, count = data.fromItem.count, description = data.fromItem.description, metadata = data.fromItem.metadata, stack = data.fromItem.stack, closeonuse = Items[data.fromItem.name].closeonuse}
 						if invid ~= xPlayer.source and invid ~= xTarget.source then Inventories[invid].set('changed', true) end if invid2 ~= xPlayer.source and invid2 ~= xTarget.source then Inventories[invid2].set('changed', true) end
 					end
 				elseif data.type == 'freeslot' then
@@ -676,7 +728,7 @@ AddEventHandler('linden_inventory:saveInventoryData', function(data)
 							end
 						end
 						Inventories[invid2].inventory[data.emptyslot] = nil
-						Inventories[invid].inventory[data.toSlot] = {name = data.item.name, label = data.item.label, weight = data.item.weight, slot = data.toSlot, count = data.item.count, description = data.item.description, metadata = data.item.metadata, stackable = data.item.stackable, closeonuse = Items[data.item.name].closeonuse}
+						Inventories[invid].inventory[data.toSlot] = {name = data.item.name, label = data.item.label, weight = data.item.weight, slot = data.toSlot, count = data.item.count, description = data.item.description, metadata = data.item.metadata, stack = data.item.stack, closeonuse = Items[data.item.name].closeonuse}
 						if invid ~= xPlayer.source and invid ~= xTarget.source then Inventories[invid].set('changed', true) end if invid2 ~= xPlayer.source and invid2 ~= xTarget.source then Inventories[invid2].set('changed', true) end
 					end
 				elseif data.type == 'split' then
@@ -706,8 +758,8 @@ AddEventHandler('linden_inventory:saveInventoryData', function(data)
 								end	
 							end
 						end
-						Inventories[invid2].inventory[data.fromSlot] = {name = data.oldslotItem.name, label = data.oldslotItem.label, weight = data.oldslotItem.weight, slot = data.fromSlot, count = data.oldslotItem.count, description = data.oldslotItem.description, metadata = data.oldslotItem.metadata, stackable = data.oldslotItem.stackable, closeonuse = Items[data.oldslotItem.name].closeonuse}
-						Inventories[invid].inventory[data.toSlot] = {name = data.newslotItem.name, label = data.newslotItem.label, weight = data.newslotItem.weight, slot = data.toSlot, count = data.newslotItem.count, description = data.newslotItem.description, metadata = data.newslotItem.metadata, stackable = data.newslotItem.stackable, closeonuse = Items[data.newslotItem.name].closeonuse}
+						Inventories[invid2].inventory[data.fromSlot] = {name = data.oldslotItem.name, label = data.oldslotItem.label, weight = data.oldslotItem.weight, slot = data.fromSlot, count = data.oldslotItem.count, description = data.oldslotItem.description, metadata = data.oldslotItem.metadata, stack = data.oldslotItem.stack, closeonuse = Items[data.oldslotItem.name].closeonuse}
+						Inventories[invid].inventory[data.toSlot] = {name = data.newslotItem.name, label = data.newslotItem.label, weight = data.newslotItem.weight, slot = data.toSlot, count = data.newslotItem.count, description = data.newslotItem.description, metadata = data.newslotItem.metadata, stack = data.newslotItem.stack, closeonuse = Items[data.newslotItem.name].closeonuse}
 					end
 					if invid ~= xPlayer.source and invid ~= xTarget.source then Inventories[invid].set('changed', true) end if invid2 ~= xPlayer.source and invid2 ~= xTarget.source then Inventories[invid2].set('changed', true) end
 				end
@@ -780,7 +832,7 @@ RegisterNetEvent('linden_inventory:giveItem')
 AddEventHandler('linden_inventory:giveItem', function(data, target)
 	local xPlayer = ESX.GetPlayerFromId(source)
 	local xTarget = ESX.GetPlayerFromId(target)
-	local xItem = xPlayer.getInventoryItem(data.item.name, data.item.metadata)
+	local xItem = getInventoryItem(xPlayer, data.item.name, data.item.metadata)
 	if data.amount > xItem.count then
 		TriggerClientEvent('mythic_notify:client:SendAlert', xPlayer.source, { type = 'error', text = _U('item_not_enough', data.item.label) })
 	else
@@ -797,7 +849,7 @@ end)
 RegisterNetEvent('linden_inventory:reloadWeapon')
 AddEventHandler('linden_inventory:reloadWeapon', function(weapon)
 	local xPlayer = ESX.GetPlayerFromId(source)
-	local ammo = Items[weapon.ammoType]
+	local ammo = Items[weapon.ammoname]
 	ammo.count = getInventoryItem(xPlayer, ammo.name).count
 	if ammo.count then Inventories[xPlayer.source].inventory[weapon.slot].metadata.ammo = 0
 		if ammo.count > 0 then TriggerClientEvent('linden_inventory:addAmmo', xPlayer.source, ammo) end
@@ -810,6 +862,7 @@ AddEventHandler('linden_inventory:decreaseDurability', function(slot, item, ammo
 	local decreaseamount = 0
 	if type(slot) == 'number' then
 		if Inventories[xPlayer.source].inventory[slot] ~= nil then
+			local xItem = Items[Inventories[xPlayer.source].inventory[slot].name]
 			if Inventories[xPlayer.source].inventory[slot].metadata.durability ~= nil then
 				if Inventories[xPlayer.source].inventory[slot].metadata.durability <= 0 then
 					TriggerClientEvent('mythic_notify:client:SendAlert', xPlayer.source, { type = 'error', text = _U('weapon_broken') })
@@ -818,12 +871,10 @@ AddEventHandler('linden_inventory:decreaseDurability', function(slot, item, ammo
 					end
 					return
 				end
-				if Config.DurabilityDecrease[Inventories[xPlayer.source].inventory[slot].name] == nil then
+				if xItem.durability == nil then
 					decreaseamount = ammo / 10
-				elseif Config.DurabilityDecrease[Inventories[xPlayer.source].inventory[slot].name] then
-					decreaseamount = Config.DurabilityDecrease[Inventories[xPlayer.source].inventory[slot].name] * (ammo / 8)
 				else
-					decreaseamount = amount * (ammo / 8)
+					decreaseamount = xItem.durability * (ammo / 8)
 				end
 				Inventories[xPlayer.source].inventory[slot].metadata.durability = Inventories[xPlayer.source].inventory[slot].metadata.durability - ESX.Round(decreaseamount, 2)
 				if Inventories[xPlayer.source].inventory[slot].metadata.durability <= 0 then
@@ -831,7 +882,7 @@ AddEventHandler('linden_inventory:decreaseDurability', function(slot, item, ammo
 					Inventories[xPlayer.source].inventory[slot].metadata.ammo = 0
 					TriggerClientEvent('mythic_notify:client:SendAlert', xPlayer.source, { type = 'error', text = _U('weapon_broken') })
 					TriggerClientEvent('linden_inventory:updateWeapon', xPlayer.source, Inventories[xPlayer.source].inventory[slot].metadata)
-					addInventoryItem(xPlayer, Inventories[xPlayer.source].inventory[slot].ammoType, ammo)
+					addInventoryItem(xPlayer, Inventories[xPlayer.source].inventory[slot].ammoname, ammo)
 				else
 					TriggerClientEvent('linden_inventory:refreshInventory', xPlayer.source, Inventories[xPlayer.source])
 					TriggerClientEvent('linden_inventory:updateWeapon', xPlayer.source, Inventories[xPlayer.source].inventory[slot].metadata)
@@ -846,7 +897,7 @@ AddEventHandler('linden_inventory:addweaponAmmo', function(item, curAmmo, newAmm
 	local xPlayer = ESX.GetPlayerFromId(source)
 	if Inventories[xPlayer.source].inventory[item.slot] ~= nil then
 		if Inventories[xPlayer.source].inventory[item.slot].metadata.ammo ~= nil then
-			local ammo = Items[item.ammoType]
+			local ammo = Items[item.ammoname]
 			local count = newAmmo
 			local addweight = (count * ammo.weight)
 			local removeAmmo = newAmmo - curAmmo
@@ -865,8 +916,8 @@ AddEventHandler('linden_inventory:updateWeapon', function(item, type)
 		if Inventories[xPlayer.source].inventory[item.slot].metadata.ammo ~= nil then
 			local lastAmmo = Inventories[xPlayer.source].inventory[item.slot].metadata.ammo
 			Inventories[xPlayer.source].inventory[item.slot].metadata = item.metadata
-			if not type and item.ammoType then
-				local ammo = Items[item.ammoType]
+			if not type and item.ammoname then
+				local ammo = Items[item.ammoname]
 				local newAmmo = item.metadata.ammo
 				local ammoDiff = lastAmmo - newAmmo
 				ammo.count = Inventories[xPlayer.source].inventory[item.slot].metadata.ammo
@@ -941,18 +992,16 @@ ESX.RegisterServerCallback('linden_inventory:usingItem', function(source, cb, it
 		ESX.UseItem(xPlayer.source, xItem.name)
 		cb(false)
 	elseif xItem.count > 0 then
-		if xItem.name:find('WEAPON_') and metadata.durability then
-			if metadata.durability > 0 then TriggerClientEvent('linden_inventory:weapon', xPlayer.source, Inventories[xPlayer.source].inventory[slot])
+		if xItem.name:find('WEAPON_') then
+			if xItem.throwable then TriggerClientEvent('linden_inventory:weapon', xPlayer.source, Inventories[xPlayer.source].inventory[slot])
+			elseif metadata.durability > 0 then TriggerClientEvent('linden_inventory:weapon', xPlayer.source, Inventories[xPlayer.source].inventory[slot])
 			else TriggerClientEvent('mythic_notify:client:SendAlert', xPlayer.source, { type = 'error', text = _U('weapon_broken') }) end
-			cb(false)
-		elseif Config.Throwable[xItem.name] then
-			TriggerClientEvent('linden_inventory:weapon', xPlayer.source, Inventories[xPlayer.source].inventory[slot])
 			cb(false)
 		elseif xItem.name:find('ammo-') then
 			TriggerClientEvent('linden_inventory:addAmmo', xPlayer.source, Inventories[xPlayer.source].inventory[slot])
 			cb(false)
 		else
-			local consume = Config.ItemList[xItem.name]
+			local consume = Items[xItem.name].consume
 			if consume then
 				if xItem.count >= consume then
 					cb(xItem)
@@ -968,7 +1017,7 @@ end)
 RegisterNetEvent('linden_inventory:removeItem')
 AddEventHandler('linden_inventory:removeItem', function(item)
 	local xPlayer = ESX.GetPlayerFromId(source)
-	local consume = Config.ItemList[item.name]
+	local consume = Items[item.name].consume
 	removeInventoryItem(xPlayer, item.name, consume, item.metadata, item.slot)
 end)
 
@@ -1080,7 +1129,7 @@ end, true, {help = 'Return a Confiscated an Inventory', validate = true, argumen
 -- Close all inventories before restarting to be safe
 RegisterCommand('closeallinv', function(source, args, rawCommand)
 	if source > 0 then return end
-	TriggerClientEvent("linden_inventory:closeInventory", -1)
+		TriggerClientEvent("linden_inventory:closeInventory", -1)
 	Opened = {}
 end, true)
 
@@ -1090,3 +1139,85 @@ RegisterCommand('maxweight', function(source, args, rawCommand)
 		setMaxWeight(xPlayer, tonumber(args[2]))
 	end
 end, true)
+
+
+
+-- Item dumping; it's a damn mess, but it's my mess
+if Config.ItemList then
+	RegisterCommand('dumpitems', function(source, args, rawCommand)
+		if source == 0 then
+			message('Taking a huge dump on your `items` table - please wait', 3)
+			local itemDump = {}
+			local query
+			local result = exports.ghmattimysql:executeSync('SELECT * FROM items', {})
+			for k, v in pairs(result) do
+				if Config.ItemList[v.name] or v.name:find('money') or v.name:find('identification') or v.name:find('GADGET_') then
+					local item = Config.ItemList[v.name] or {}
+
+					if not query then
+						query = "DELETE FROM items WHERE name='"..v.name.."'"
+					else query = query.. " OR name='"..v.name.."'" end
+
+					if not v.name:find('at_') then
+						local description = v.description and '\ndescription = '..v.description..',' or '\n'
+						local status, defined = ''
+						if item.hunger or item.thirst or item.drunk or item.stress then
+							status = '			status = {'
+							if item.hunger then status = status..' hunger = '..item.hunger..',' end
+							if item.thirst then status = status..' thirst = '..item.thirst..',' end
+							if item.stress then status = status..' stress = '..item.stress..',' end
+							if item.drunk then status = status..' drunk = '..item.drunk..',' end
+							status = status:sub(1, -2)..' },\n' defined = true
+						end
+						local anim = ''
+						if item.anim then
+							local bone = item.bone and ', bone = '..item.bone  or ''
+							local flag = item.flags and ', flag = '..item.flags or ''
+							local extra = bone .. flag
+							anim = "			anim = { dict = '"..item.animDict.."', clip = '"..item.anim.."'" .. extra .." },\n" defined = true
+						end
+						local prop = ''
+						if item.model then
+							local coords = "{ x = "..item.coords.x..", y = "..item.coords.x..", y = "..item.coords.z.." }"
+							local rotation = "{ x = "..item.rotation.x..", y = "..item.rotation.x..", y = "..item.rotation.z.." }"
+							prop = "			prop = { model = '"..item.model.."', pos = "..coords..", rot = "..rotation.."  },\n"
+							defined = true
+						end
+						local disable = ''
+						if item.disableMove then disable = '			disable = { move = false },\n' end 
+						local consume = ''
+						if item.consume and item.consume ~= 1 then consume = '			consume = '..item.consume..',\n' defined = true end
+						local usetime = ''
+						if item.useTime then usetime = '			usetime = '..item.useTime..',\n' defined = true end
+						local event = ''
+						if item.event then event = '			event = true,\n' defined = true end
+						local client = '}\n'
+						if defined then client = '\n'..status .. anim .. prop .. disable .. consume .. usetime .. event..'		}\n' end
+
+table.insert(itemDump, [[
+	[']]..v.name..[['] = {
+		label = ']]..v.label..[[',
+		weight = ]]..tonumber(v.weight)..[[,
+		stack = ]]..tostring(not not v.stack)..[[,
+		close = ]]..tostring(not not v.closeonuse)..[[,]]..description .. [[
+		server = {},
+		client = {]]..client..[[
+	},
+
+]])
+					end
+				elseif v.name:find('WEAPON') or v.name:find('ammo-') then
+					if not query then
+						query = "DELETE FROM items WHERE name='"..v.name.."'"
+					else query = query.. " OR name='"..v.name.."'" end
+				end
+			end
+			Citizen.Wait(100)
+			print(query)
+			exports.ghmattimysql:execute(query)
+			message('Converted '..#itemDump..' items to the new data format', 2)
+			SaveResourceFile(GetCurrentResourceName(), "shared/items.lua", "Items = {\n\n"..table.concat(itemDump).."}\n", -1)
+			Config.ItemList = false
+		end
+	end, true)
+end

@@ -6,8 +6,8 @@ local currentWeapon
 local weaponTimer = 0
 
 ClearWeapons = function()
-	for k, v in pairs(Config.AmmoType) do
-		SetPedAmmo(ESX.PlayerData.ped, k, 0)
+	for k, v in pairs(Weapons) do
+		SetPedAmmo(ESX.PlayerData.ped, v.hash, 0)
 	end
 	RemoveAllPedWeapons(ESX.PlayerData.ped, true)
 end
@@ -155,6 +155,14 @@ OpenStash = function(data)
 	end
 end
 exports('OpenStash', OpenStash)
+
+GiveStash = function(data)
+	if data then
+		TriggerServerEvent('linden_inventory:giveStash', data)
+	end
+end
+exports('GiveStash', GiveStash)
+--GiveStash({name = Config.Stashes[id].name, slots = Config.Stashes[id].slots, coords = Config.Stashes[id].coords, item = 'money', count = 20})
 
 OpenBag = function(data)
 	if data and not currentInventory and CanOpenInventory() and not CanOpenTarget(ESX.PlayerData.ped) then
@@ -391,11 +399,7 @@ AddEventHandler('linden_inventory:weapon', function(item)
 		else
 			item.hash = wepHash
 			DrawWeapon(item)
-			if item.metadata.throwable then item.metadata.ammo = 1 end
-			if not item.ammoType then
-				local ammoType = GetAmmoType(item.name)
-				if ammoType then item.ammoType = ammoType end
-			end
+			if Items[item.name].throwable then item.throwable, item.metadata.ammo = 1, true end
 			TriggerEvent('linden_inventory:currentWeapon', item)
 			SetCurrentPedWeapon(ESX.PlayerData.ped, currentWeapon.hash)
 			SetPedCurrentWeaponVisible(ESX.PlayerData.ped, true, false, false, false)
@@ -438,7 +442,7 @@ end)
 RegisterNetEvent('linden_inventory:addAmmo')
 AddEventHandler('linden_inventory:addAmmo', function(ammo)
 	if currentWeapon and not isBusy then
-		if currentWeapon.ammoType == ammo.name then
+		if currentWeapon.ammoname == ammo.name then
 			local maxAmmo = GetMaxAmmoInClip(ESX.PlayerData.ped, currentWeapon.hash, 1)
 			local curAmmo = GetAmmoInPedWeapon(ESX.PlayerData.ped, currentWeapon.hash)
 			if curAmmo > maxAmmo then SetPedAmmo(ESX.PlayerData.ped, currentWeapon.hash, maxAmmo) elseif curAmmo == maxAmmo then return
@@ -541,7 +545,7 @@ TriggerLoops = function()
 								wait = false
 							end)
 						end
-					elseif currentWeapon.ammoType then
+					elseif currentWeapon.ammoname then
 						currentWeapon.metadata.ammo = currentAmmo
 						if currentAmmo == 0 then
 							if Config.AutoReload and not IsPedFalling(ESX.PlayerData.ped) and not IsPedRagdoll(ESX.PlayerData.ped) then
@@ -555,16 +559,16 @@ TriggerLoops = function()
 						else TriggerEvent('linden_inventory:usedWeapon', currentWeapon) end
 					end
 				else
-					if currentWeapon.metadata.throwable and not wait and IsControlJustReleased(0, 24) then
+					if currentWeapon.throwable and not wait and IsControlJustReleased(0, 24) then
 						usingWeapon = true
 						Citizen.CreateThread(function()
 							wait = true
-							Citizen.Wait(800)
+							Citizen.Wait(700)
 							TriggerServerEvent('linden_inventory:updateWeapon', currentWeapon, 'throw')
 							DisarmPlayer()
 							wait = false
 						end)
-					elseif Config.Melee[currentWeapon.name] and not wait and IsPedInMeleeCombat(ESX.PlayerData.ped) and IsControlPressed(0, 24) then
+					elseif currentWeapon.durability and not wait and IsPedInMeleeCombat(ESX.PlayerData.ped) and IsControlPressed(0, 24) then
 						usingWeapon = true
 						Citizen.CreateThread(function()
 							wait = true
@@ -765,7 +769,7 @@ end
 
 local canReload = true
 RegisterCommand('reload', function()
-	if canReload and not isBusy and currentWeapon and currentWeapon.ammoType and CanOpenInventory() then
+	if canReload and not isBusy and currentWeapon and currentWeapon.ammoname and CanOpenInventory() then
 		local maxAmmo = GetMaxAmmoInClip(ESX.PlayerData.ped, currentWeapon.hash, 1)
 		local curAmmo = GetAmmoInPedWeapon(ESX.PlayerData.ped, currentWeapon.hash)
 		if curAmmo < maxAmmo then TriggerServerEvent('linden_inventory:reloadWeapon', currentWeapon) end
@@ -972,33 +976,40 @@ AddEventHandler('linden_inventory:useItem',function(item)
 		return
 	end
 	if CanOpenInventory() and not useItemCooldown then
-		local data = Config.ItemList[item.name]
+		local data = Items[item.name].client
 		local esxItem = Usables[item.name]
+		useItemCooldown = true
 		if data or esxItem then
-			if data and data.component then
-				if not currentWeapon then return end
-				local result, esxWeapon = ESX.GetWeapon(currentWeapon.name)
-					
-				for k,v in ipairs(esxWeapon.components) do
-					for k2, v2 in pairs(data.component) do
-						if v.hash == v2 then
-							component = {name = v.name, hash = v2}
-							break
+			if data then
+				if data.useinvehicle == false and IsPedInAnyVehicle(ESX.PlayerData.ped, true) then
+					useItemCooldown = false
+					TriggerEvent('mythic_notify:client:SendAlert', {type = 'error', text = _U('cannot_use', item.label), length = 2500}) return
+				elseif data.component then
+					if not currentWeapon then return end
+					local result, esxWeapon = ESX.GetWeapon(currentWeapon.name)
+						
+					for k,v in ipairs(esxWeapon.components) do
+						for k2, v2 in pairs(data.component) do
+							if v.hash == v2 then
+								component = {name = v.name, hash = v2}
+								break
+							end
 						end
 					end
-				end
-				if not component then TriggerEvent('mythic_notify:client:SendAlert', {type = 'error', text = _U('component_invalid', item.label), length = 2500}) return end
-				if HasPedGotWeaponComponent(ESX.PlayerData.ped, currentWeapon.hash, component.hash) then
-					TriggerEvent('mythic_notify:client:SendAlert', {type = 'error', text = _U('component_has', item.label), length = 2500}) return
+					if not component then TriggerEvent('mythic_notify:client:SendAlert', {type = 'error', text = _U('component_invalid', item.label), length = 2500}) return end
+					if HasPedGotWeaponComponent(ESX.PlayerData.ped, currentWeapon.hash, component.hash) then
+						TriggerEvent('mythic_notify:client:SendAlert', {type = 'error', text = _U('component_has', item.label), length = 2500}) return
+					end
 				end
 			end
 				
 			if esxItem then
 				TriggerEvent('linden_inventory:closeInventory') UseItem(item, true)
 			elseif data and next(data) then
-				if not data.useTime then data.useTime = 0 end
+				if not data.usetime then data.usetime = 500 end
 				if data.event then
-					TriggerEvent(data.event, item, data.useTime, function(cb)
+					local event = type(data.event) ~= 'string' and 'linden_inventory:'..item.name or data.event
+					TriggerEvent(event, item, data.usetime, function(cb)
 						if cb then
 							UseItem(item, false, data)
 						else
@@ -1009,51 +1020,48 @@ AddEventHandler('linden_inventory:useItem',function(item)
 					UseItem(item, false, data)
 				end
 			end
-		else
-			if Config.Ammos[item.name] or item.name:find('WEAPON_') then
-				UseItem(item, false)
-			end
-		end
+		elseif Weapons[item.name] or item.name:find('ammo-') then
+			UseItem(item, false)
+		else Citizen.Wait(100) useItemCooldown = false end
 	end
 end)
 
 UseItem = function(item, esxItem, data)
 	ESX.TriggerServerCallback('linden_inventory:usingItem', function(xItem)
 		if xItem and data then
-			useItemCooldown = true
 			isBusy = true
-
-			if data.useTime and data.useTime > 0 then
+			if wait > 0 then
+				local disable = {
+					move = data.disable and data.disable.move or false,
+					car = data.disable and data.disable.car or false,
+					mouse = data.disable and data.disable.mouse or false,
+					combat = data.disable and data.disable.combat or false,
+				}
+				local anim = {
+					dict = data.anim and data.anim.dict or 'pickup_object',
+					clip = data.anim and data.anim.clip or 'putdown_low',
+					flag = data.anim and data.anim.flag or 48,
+					bone = data.anim and data.anim.bone or nil,
+				}
+				local prop = data.prop or {}
 				exports['mythic_progbar']:Progress({
 					name = 'useitem',
-					duration = data.useTime,
+					duration = data.usetime,
 					label = 'Using '..xItem.label,
 					useWhileDead = false,
 					canCancel = false,
-					controlDisables = { disableMovement = data.disableMove, disableCarMovement = false, disableMouse = false, disableCombat = true },
-					animation = { animDict = data.animDict or 'pickup_object', anim = data.anim or 'putdown_low', flags = data.flags or 48, bone = data.bone },
-					prop = { model = data.model, coords = data.coords, rotation = data.rotation }
+					controlDisables = { disableMovement = disable.move, disableCarMovement = disable.car, disableMouse = disable.mouse, disableCombat = disable.combat },
+					animation = { animDict = anim.dict, anim = anim.clip, flags = anim.flag, bone = anim.bone },
+					prop = prop
 				})
-				Citizen.Wait(data.useTime)
 			end
-		
-			if data.hunger then
-				if data.hunger > 0 then TriggerEvent('esx_status:add', 'hunger', data.hunger)
-				else TriggerEvent('esx_status:remove', 'hunger', -data.hunger) end
-			end
-			if data.thirst then
-				if data.thirst > 0 then TriggerEvent('esx_status:add', 'thirst', data.thirst)
-				else TriggerEvent('esx_status:remove', 'thirst', -data.thirst) end
-			end
-			if data.stress then
-				print(-data.stress)
-				if data.stress > 0 then TriggerEvent('esx_status:add', 'stress', data.stress)
-				else TriggerEvent('esx_status:remove', 'stress', -data.stress) end
-			end
-			
-			if data.drunk then
-				if data.drunk > 0 then TriggerEvent('esx_status:add', 'drunk', data.drunk)
-				else TriggerEvent('esx_status:remove', 'drunk', -data.drunk) end
+			Citizen.Wait(data.usetime)
+			if not data.consume or data.consume > 1 then TriggerServerEvent('linden_inventory:removeItem', item) end
+
+			if data.status then
+				for k, v in pairs(data.status) do
+					if v > 0 then TriggerEvent('esx_status:add', k, v) else TriggerEvent('esx_status:remove', k, -v) end
+				end
 			end
 
 			if data.component then
@@ -1062,9 +1070,8 @@ UseItem = function(item, esxItem, data)
 				TriggerServerEvent('linden_inventory:updateWeapon', currentWeapon, component.name)
 			end
 
-			if not data.consume or data.consume > 1 then TriggerServerEvent('linden_inventory:removeItem', item) end
 		end
-	
+		Citizen.Wait(500)
 		useItemCooldown = false
 		isBusy = false
 	end, item.name, item.slot, item.metadata, esxItem)

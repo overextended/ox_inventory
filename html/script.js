@@ -544,7 +544,7 @@ SwapItems = function(fromInventory, toInventory, fromSlot, toSlot) {
 	if (fromItem.metadata.image == undefined) { fromimage = fromItem.name;};
 	if (inv2 !== 'Playerinv') {availableweight = rightfreeweight} else {availableweight = playerfreeweight}
 	if (inv == inv2 || (availableweight !== 0 && (fromItem.weight * count) <= availableweight)) {
-		if (toItem !== undefined ) { // stack
+		if (toItem !== undefined ) {
 			if (toItem.metadata == undefined) { toItem.metadata = {} }
 			if (toItem.metadata.image == undefined) { toimage = toItem.name } else { toimage = toItem.metadata.image }
 			if (count <= fromItem.count || count <= toItem.count) {
@@ -573,32 +573,32 @@ SwapItems = function(fromInventory, toInventory, fromSlot, toSlot) {
 						invid2 :toinvId2
 					}));
 					success = true
-				} else if (count == fromItem.count && fromItem.name == toItem.name && toItem.stackable && is_table_equal(toItem.metadata, fromItem.metadata)) { // stack
-						let toCount = Number(toItem.count)
-						let newcount = (Number(count)+toCount)
-						let newDataItem = {}
-						newDataItem.name = toItem.name
-						newDataItem.label = toItem.label
-						newDataItem.count = Number(newcount)
-						newDataItem.metadata = toItem.metadata
-						newDataItem.stackable = toItem.metadata
-						newDataItem.description = toItem.description
-						newDataItem.weight = toItem.weight
-						newDataItem.price = toItem.price
-						toInventory.find("[inventory-slot="+toSlot+"]").html('<div class="item-slot-img"><img src="images/'+toimage+'.png'+'" alt="'+toItem.name+'" /></div><div class="item-slot-count"><p>'+numberFormat(newcount, toItem.name)+' '+weightFormat(toItem.weight/1000 * newcount)+'</p></div><p><div class="item-slot-label">'+toItem.label+'</div>');
-						toInventory.find("[inventory-slot="+toSlot+"]").data("ItemData", newDataItem);
-						$.post("https://linden_inventory/saveinventorydata", JSON.stringify({
-							type: "freeslot",
-							frominv: inv,
-							toinv: inv2,
-							emptyslot: fromSlot,
-							toSlot: toSlot,
-							item: newDataItem,
-							invid: toinvId,
-							invid2 :toinvId2
-						}));
-						success = true
-						HSN.RemoveItemFromSlot(fromInventory, fromSlot)
+				} else if (count == fromItem.count && fromItem.name == toItem.name && toItem.stack && is_table_equal(toItem.metadata, fromItem.metadata)) { // stack
+					let toCount = Number(toItem.count)
+					let newcount = (Number(count)+toCount)
+					let newDataItem = {}
+					newDataItem.name = toItem.name
+					newDataItem.label = toItem.label
+					newDataItem.count = Number(newcount)
+					newDataItem.metadata = toItem.metadata
+					newDataItem.stack = toItem.stack
+					newDataItem.description = toItem.description
+					newDataItem.weight = toItem.weight
+					newDataItem.price = toItem.price
+					toInventory.find("[inventory-slot="+toSlot+"]").html('<div class="item-slot-img"><img src="images/'+toimage+'.png'+'" alt="'+toItem.name+'" /></div><div class="item-slot-count"><p>'+numberFormat(newcount, toItem.name)+' '+weightFormat(toItem.weight/1000 * newcount)+'</p></div><p><div class="item-slot-label">'+toItem.label+'</div>');
+					toInventory.find("[inventory-slot="+toSlot+"]").data("ItemData", newDataItem);
+					$.post("https://linden_inventory/saveinventorydata", JSON.stringify({
+						type: "freeslot",
+						frominv: inv,
+						toinv: inv2,
+						emptyslot: fromSlot,
+						toSlot: toSlot,
+						item: newDataItem,
+						invid: toinvId,
+						invid2 :toinvId2
+					}));
+					success = true
+					HSN.RemoveItemFromSlot(fromInventory, fromSlot)
 				} else if (fromItem.name !== toItem.name && inv2 == inv) { // swap
 					if ((toItem.name).split("_")[0] == "WEAPON" && toItem.metadata.durability !== undefined) {
 						let durability = HSN.InventoryGetDurability(toItem.metadata.durability)
@@ -685,7 +685,7 @@ SwapItems = function(fromInventory, toInventory, fromSlot, toSlot) {
 						oldItemData.count = Number(oldslotCount)
 						oldItemData.name = fromItem.name
 						oldItemData.label = fromItem.label
-						oldItemData.stackable = fromItem.stackable
+						oldItemData.stack = fromItem.stack
 						oldItemData.description = fromItem.description
 						oldItemData.metadata = fromItem.metadata
 						oldItemData.weight = fromItem.weight
@@ -694,7 +694,7 @@ SwapItems = function(fromInventory, toInventory, fromSlot, toSlot) {
 						newItemData.count = Number(count)
 						newItemData.label = fromItem.label
 						newItemData.name = fromItem.name
-						newItemData.stackable = fromItem.stackable
+						newItemData.stack = fromItem.stack
 						newItemData.description = fromItem.description
 						newItemData.metadata = fromItem.metadata
 						newItemData.weight = fromItem.weight

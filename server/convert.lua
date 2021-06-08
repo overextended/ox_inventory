@@ -81,14 +81,11 @@ BeginConversion = function()
 				if xItem then
 					loop = loop + 1
 					v = {slot=loop, name=k, count=1}
-					v.metadata = {}
-					if Config.Throwable[k] then
-						v.metadata = {throwable=1}
-					elseif Config.Melee[k] or Config.Miscellaneous[k] then
+					if not Items[k].ammoname then
 						if not v.metadata.durability then v.metadata.durability = 100 end
 					else
 						if not v.metadata.durability then v.metadata.durability = 100 end
-						if Items[k].ammoType then v.metadata.ammo = 0 end
+						if Items[k].ammoname then v.metadata.ammo = 0 end
 						if not v.metadata.components then v.metadata.components = {} end
 						v.metadata.serial = GenerateSerial()
 					end
