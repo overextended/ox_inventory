@@ -114,7 +114,7 @@ DrawText3D = function(coords, text)
 	SetTextCentre(1)
 	AddTextComponentString(text)
 	DrawText(0.0, 0.0)
-	DrawRect(0.0, 0.0125, 0.015 + text:gsub('~.-~', ''):len() / 370, 0.03, 25, 25, 25, 180)
+	DrawRect(0.0, 0.0125, 0.02 + text:gsub('~.-~', ''):len() / 360, 0.03, 25, 25, 25, 140)
 	ClearDrawOrigin()
 end
 
@@ -400,6 +400,8 @@ AddEventHandler('linden_inventory:weapon', function(item)
 			item.hash = wepHash
 			DrawWeapon(item)
 			if Items[item.name].throwable then item.throwable, item.metadata.ammo = 1, true end
+			local ammoname = Items[item.name].ammoname
+			if ammoname then item.ammoname = ammoname end
 			TriggerEvent('linden_inventory:currentWeapon', item)
 			SetCurrentPedWeapon(ESX.PlayerData.ped, currentWeapon.hash)
 			SetPedCurrentWeaponVisible(ESX.PlayerData.ped, true, false, false, false)
@@ -498,7 +500,7 @@ end)
 AddEventHandler('onResourceStop', function(resourceName)
 	if invOpen and GetCurrentResourceName() == resourceName then
 		TriggerScreenblurFadeOut(0)
-		SetNuiFocusAdvanced(false, false)
+		if nui_focus[1] == true then SetNuiFocusAdvanced(false, false) end
 	end
 end)
 
