@@ -155,7 +155,7 @@ end)
 
 
 AddEventHandler('onResourceStart', function(resourceName)
-	if (GetCurrentResourceName() == resourceName) then
+	if (Config.Resource == resourceName) then
 		if ESX == nil then return end
 		local xPlayers = ESX.GetExtendedPlayers()
 		for k,v in pairs(xPlayers) do
@@ -170,7 +170,7 @@ AddEventHandler('onResourceStart', function(resourceName)
 end)
 
 AddEventHandler('onResourceStop', function(resourceName)
-	if (GetCurrentResourceName() == resourceName) then
+	if (Config.Resource == resourceName) then
 		if ESX == nil or Status[1] ~= 'ready' then return end
 		for k,v in pairs(Inventories) do
 			v.save()
@@ -1215,7 +1215,7 @@ table.insert(itemDump, [[
 			print(query)
 			exports.ghmattimysql:execute(query)
 			message('Converted '..#itemDump..' items to the new data format', 2)
-			SaveResourceFile(GetCurrentResourceName(), "shared/items.lua", "Items = {\n\n"..table.concat(itemDump).."}\n", -1)
+			SaveResourceFile(Config.Resource, "shared/items.lua", "Items = {\n\n"..table.concat(itemDump).."}\n", -1)
 			Config.ItemList = false
 		end
 	end, true)
