@@ -34,6 +34,6 @@ Locales['cs'] = {
 	['item_unlicensed'] = "Nemáš průkaz na koupii této věci",
 	['item_not_enough'] = "Nemáš dostatek %s",
 	['cannot_afford'] = "Nemůžeš si to dovolit (chybí ti %s)",
-	['stash_lowgrade'] = "Nemíš opravnění na sebrání této věci",
+	['stash_lowgrade'] = "Nemáš opravnění na sebrání této věci",
 	['cannot_use'] = "Nelze použít %s"
 }
