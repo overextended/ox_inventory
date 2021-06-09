@@ -612,7 +612,7 @@ TriggerLoops = function()
 					else
 						closestShop = nil
 						for k, v in pairs(Config.Shops) do
-							if v.coords and (not v.job or v.job == ESX.PlayerData.job.name) then
+							if not id and v.coords and (not v.job or v.job == ESX.PlayerData.job.name) then
 								local distance = #(playerCoords - v.coords)
 								if distance <= 4 then
 									sleep = 10
@@ -637,7 +637,7 @@ TriggerLoops = function()
 						if distance <= 2 then DrawText3D(Config.Stashes[id].coords, text) end
 					else
 						for k, v in pairs(Config.Stashes) do
-							if v.coords and (not v.job or v.job == ESX.PlayerData.job.name) then
+							if not id and v.coords and (not v.job or v.job == ESX.PlayerData.job.name) then
 								local distance = #(playerCoords - v.coords)
 								if distance <= 4 then
 									sleep = 10
@@ -648,33 +648,7 @@ TriggerLoops = function()
 						end
 					end
 				end
-				if not id or type == 'dumpster' then
-					if id then
-						sleep = 5
-						local distance = #(playerCoords - GetEntityCoords(id))
-						if distance <= 2 then
-							NetworkRegisterEntityAsNetworked(id)
-							local netid = NetworkGetNetworkIdFromEntity(id)
-							SetNetworkIdExistsOnAllMachines(netid)
-							NetworkSetNetworkIdDynamic(netid, false)
-							if IsControlJustPressed(0, 38) then
-								OpenDumpster({ id = netid, label = 'Dumpster', slots = 20})
-							end
-						elseif distance > 4 then id, type = nil, nil
-						end
-					else
-						for i=1, #Config.Dumpsters do 
-							local dumpster = GetClosestObjectOfType(playerCoords.x, playerCoords.y, playerCoords.z, 2.0, Config.Dumpsters[i], false, false, false)
-							local dumpPos = GetEntityCoords(dumpster)
-							local distance = #(playerCoords - dumpPos)
-							if distance <= 4 and dumpster ~= 0 then
-								sleep = 10
-								id = dumpster
-								type = 'dumpster'
-							end
-						end
-					end
-				end
+				
 				if Drops and not invOpen then
 					local closestDrop
 					for k, v in pairs(Drops) do
@@ -752,6 +726,40 @@ TriggerLoops = function()
 			Citizen.Wait(sleep)
 		end
 	end)
+
+	Citizen.CreateThread(function()
+		while PlayerLoaded do
+			local sleep = 1000
+				if id then
+					sleep = 5
+					local distance = #(playerCoords - GetEntityCoords(id))
+					if distance <= 2 then
+						NetworkRegisterEntityAsNetworked(id)
+						local netid = NetworkGetNetworkIdFromEntity(id)
+						SetNetworkIdExistsOnAllMachines(netid)
+						NetworkSetNetworkIdDynamic(netid, false)
+						if IsControlJustPressed(0, 38) then
+							OpenDumpster({ id = netid, label = 'Dumpster', slots = 20})
+						end
+					elseif distance > 4 then id = nil
+					end
+				else
+					for i=1, #Config.Dumpsters do 
+						if not id then
+							local dumpster = GetClosestObjectOfType(playerCoords.x, playerCoords.y, playerCoords.z, 2.0, Config.Dumpsters[i], false, false, false)
+							local dumpPos = GetEntityCoords(dumpster)
+							local distance = #(playerCoords - dumpPos)
+							if distance <= 4 and dumpster ~= 0 then
+								sleep = 100
+								id = dumpster
+							end
+						end
+					end
+				end
+			Citizen.Wait(sleep)
+		end
+	end)
+
 end
 
 local canReload = true
