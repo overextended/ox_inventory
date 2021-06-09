@@ -143,9 +143,11 @@ end)
 
 OpenShop = function(id)
 	if not currentInventory and CanOpenInventory() and not CanOpenTarget(ESX.PlayerData.ped) then
+		if closestShop and GetInvokingResource() ~= Config.Resource then id = closestShop end
 		TriggerServerEvent('linden_inventory:openInventory', 'shop', id)
 	end
 end
+exports('OpenShop', OpenShop)
 
 OpenStash = function(data)
 	if data and not currentInventory and CanOpenInventory() and not CanOpenTarget(ESX.PlayerData.ped) then
@@ -498,7 +500,7 @@ AddEventHandler('linden_inventory:closeInventory', function(sendNUI)
 end)
 
 AddEventHandler('onResourceStop', function(resourceName)
-	if invOpen and GetCurrentResourceName() == resourceName then
+	if invOpen and Config.Resource == resourceName then
 		TriggerScreenblurFadeOut(0)
 		if nui_focus[1] == true then SetNuiFocusAdvanced(false, false) end
 	end
@@ -585,25 +587,6 @@ TriggerLoops = function()
 			Citizen.Wait(sleep)
 		end
 	end)
-	
-	Hotkey = function(slot)
-		if PlayerLoaded and not invOpen and not wait and ESX.PlayerData.inventory[slot] then
-			TriggerEvent('linden_inventory:useItem', ESX.PlayerData.inventory[slot])
-		end
-	end
-
-	RegisterCommand('hotkey1', function() Hotkey(1) end)
-	RegisterCommand('hotkey2', function() Hotkey(2) end)
-	RegisterCommand('hotkey3', function() Hotkey(3) end)
-	RegisterCommand('hotkey4', function() Hotkey(4) end)
-	RegisterCommand('hotkey5', function() Hotkey(5) end)
-
-	RegisterKeyMapping('hotkey1', 'Use hotbar item 1', 'keyboard', '1')
-	RegisterKeyMapping('hotkey2', 'Use hotbar item 2', 'keyboard', '2')
-	RegisterKeyMapping('hotkey3', 'Use hotbar item 3', 'keyboard', '3')
-	RegisterKeyMapping('hotkey4', 'Use hotbar item 4', 'keyboard', '4')
-	RegisterKeyMapping('hotkey5', 'Use hotbar item 5', 'keyboard', '5')
-
 
 	Citizen.CreateThread(function()
 		local text, type, id = ''
@@ -615,6 +598,7 @@ TriggerLoops = function()
 				if not id or type == 'shop' then
 					if id then
 						sleep = 5
+						closestShop = id
 						DrawMarker(2, Config.Shops[id].coords.x,Config.Shops[id].coords.y,Config.Shops[id].coords.z, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.3, 0.2, 0.15, 30, 150, 30, 222, false, false, false, true, false, false, false)			
 						local distance = #(playerCoords - Config.Shops[id].coords)
 						local name = Config.Shops[id].name or Config.Shops[id].type.name
@@ -626,6 +610,7 @@ TriggerLoops = function()
 						else text = Config.Shops[id].name or Config.Shops[id].type.name end
 						if distance <= 2 then DrawText3D(Config.Shops[id].coords, text) end
 					else
+						closestShop = nil
 						for k, v in pairs(Config.Shops) do
 							if v.coords and (not v.job or v.job == ESX.PlayerData.job.name) then
 								local distance = #(playerCoords - v.coords)
@@ -1027,6 +1012,24 @@ AddEventHandler('linden_inventory:useItem',function(item)
 		else Citizen.Wait(100) useItemCooldown = false end
 	end
 end)
+
+Hotkey = function(slot)
+	if PlayerLoaded and not invOpen and not wait and ESX.PlayerData.inventory[slot] then
+		TriggerEvent('linden_inventory:useItem', ESX.PlayerData.inventory[slot])
+	end
+end
+
+RegisterCommand('hotkey1', function() Hotkey(1) end)
+RegisterCommand('hotkey2', function() Hotkey(2) end)
+RegisterCommand('hotkey3', function() Hotkey(3) end)
+RegisterCommand('hotkey4', function() Hotkey(4) end)
+RegisterCommand('hotkey5', function() Hotkey(5) end)
+
+RegisterKeyMapping('hotkey1', 'Use hotbar item 1', 'keyboard', '1')
+RegisterKeyMapping('hotkey2', 'Use hotbar item 2', 'keyboard', '2')
+RegisterKeyMapping('hotkey3', 'Use hotbar item 3', 'keyboard', '3')
+RegisterKeyMapping('hotkey4', 'Use hotbar item 4', 'keyboard', '4')
+RegisterKeyMapping('hotkey5', 'Use hotbar item 5', 'keyboard', '5')
 
 UseItem = function(item, esxItem, data)
 	ESX.TriggerServerCallback('linden_inventory:usingItem', function(xItem)
