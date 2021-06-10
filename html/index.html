@@ -1,5 +1,6 @@
 <html>
 	<head>
+		<link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
         <link rel="stylesheet" href="style.css" type="text/css">
         <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js"></script>
@@ -9,9 +10,9 @@
         <div class="inventory-main">
 			<table style='width: 100%;'>
 				<tr>
-					<td><table style='width: 100%;'><tr><td class='playername' style='text-align:left;'></td><td class='leftside-weight' style='text-align:right;'></td></tr></table></td>
+					<td><table style='width: 100%;'><tr><td class='playername' style='text-align:left;'></td><td class='leftside-weight' style='text-align:right;'><div id="progressbarLeft"><div class="progressLeftLabel"></div></div></td></tr></table></td>
 					<td style='width: 18%;'></td>
-					<td><table style='width: 100%;'><tr><td class='rightside-name' style='text-align:left;'></td><td class='rightside-weight' style='text-align:right;'></td></tr></table></td>
+					<td><table style='width: 100%;'><tr><td class='rightside-name' style='text-align:left;'></td><td class='rightside-weight' style='text-align:right;'><div id="progressbarRight"><div class="progressRightLabel"></div></div></td></tr></table></td>
 				</tr>
 				<tr>
 					<td><div id = "left-inv" class= "inventory-main-leftside"></div></td>

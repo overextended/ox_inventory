@@ -251,7 +251,21 @@ HSN.SetupInventory = function(data) {
 		})
 
 
-		$(".leftside-weight").html(weightFormat(totalkg/1000, false, true)+'/'+weightFormat(maxWeight/1000, false))
+		$(".progressLeftLabel").html(weightFormat(totalkg/1000, false, true)+'/'+weightFormat(maxWeight/1000, false))
+		$( function() {
+			$( "#progressbarLeft" ).progressbar({
+			  value: (totalkg/maxWeight)*100
+			});
+
+			let progressbar = $( "#progressbarLeft" );
+			let progressbarValue = progressbar.find( ".ui-progressbar-value" );
+
+			if ((totalkg/maxWeight)*100 > 90) { progressbarValue.css({"background": '#d82020'})}
+			else if ((totalkg/maxWeight)*100 > 75) { progressbarValue.css({"background": '#e09540'})}
+			else if ((totalkg/maxWeight)*100 > 50) { progressbarValue.css({"background": '#d6e040'})}
+			else { progressbarValue.css({"background": '#30a121'})};
+
+		  } );
 		if (data.rightinventory !== undefined) {
 			rightinventory = data.rightinventory.id
 			rightinvslot = data.rightinventory.slot
@@ -311,7 +325,22 @@ HSN.SetupInventory = function(data) {
 						}
 					}
 				})
-				$(".rightside-weight").html(weightFormat(righttotalkg/1000, false, true)+'/'+weightFormat(rightmaxWeight/1000, false))
+				//$(".rightside-weight").html(weightFormat(righttotalkg/1000, false, true)+'/'+weightFormat(rightmaxWeight/1000, false))
+				$(".rightside-weight").show();
+				$(".progressRightLabel").html(weightFormat(righttotalkg/1000, false, true)+'/'+weightFormat(rightmaxWeight/1000, false))
+				$( function() {
+					$( "#progressbarRight" ).progressbar({
+					  value: (righttotalkg/rightmaxWeight)*100
+					});
+		
+					let progressbar = $( "#progressbarRight" );
+					let progressbarValue = progressbar.find( ".ui-progressbar-value" );
+		
+					if ((righttotalkg/rightmaxWeight)*100 > 90) { progressbarValue.css({"background": '#d82020'})}
+					else if ((righttotalkg/rightmaxWeight)*100 > 75) { progressbarValue.css({"background": '#e09540'})}
+					else if ((righttotalkg/rightmaxWeight)*100 > 50) { progressbarValue.css({"background": '#d6e040'})}
+					else { progressbarValue.css({"background": '#30a121'})};
+				  } );
 			}
 		} else {
 			$('.rightside-name').html("Drop")
@@ -327,14 +356,16 @@ HSN.SetupInventory = function(data) {
 			for(i = 1; i <= (dropSlots); i++) {
 				$(".inventory-main-rightside").append('<div class="ItemBoxes" inventory-slot='+i+'></div> ')
 			}
-			$(".rightside-weight").html('')
+			//$(".rightside-weight").html('')
+			$(".rightside-weight").hide();
 		}
 	} else {
 		$('.rightside-name').html("Drop")
 		$('.inventory-main-rightside').data("invTier", "drop")
 		rightinvtype = 'drop'
 		righttotalkg = 0
-		$(".rightside-weight").html('')
+		//$(".rightside-weight").html('')
+		$(".rightside-weight").hide();
 	}
 	
 	DragAndDrop()
@@ -743,10 +774,38 @@ SwapItems = function(fromInventory, toInventory, fromSlot, toSlot) {
 			if (inv2 !== 'Playerinv') {
 				if (inv2 !== inv) {
 					righttotalkg = righttotalkg+(fromItem.weight * count)
-					$(".rightside-weight").html(weightFormat(righttotalkg/1000, false, true)+'/'+weightFormat(rightmaxWeight/1000, false))
+					//$(".rightside-weight").html(weightFormat(righttotalkg/1000, false, true)+'/'+weightFormat(rightmaxWeight/1000, false))
+					$(".rightside-weight").show();
+					$(".progressRightLabel").html(weightFormat(righttotalkg/1000, false, true)+'/'+weightFormat(rightmaxWeight/1000, false))
+					$( function() {
+						$( "#progressbarRight" ).progressbar({
+						  value: (righttotalkg/rightmaxWeight)*100
+						});
+			
+						let progressbar = $( "#progressbarRight" );
+						let progressbarValue = progressbar.find( ".ui-progressbar-value" );
+			
+						if ((righttotalkg/rightmaxWeight)*100 > 90) { progressbarValue.css({"background": '#d82020'})}
+						else if ((righttotalkg/rightmaxWeight)*100 > 75) { progressbarValue.css({"background": '#e09540'})}
+						else if ((righttotalkg/rightmaxWeight)*100 > 50) { progressbarValue.css({"background": '#d6e040'})}
+						else { progressbarValue.css({"background": '#30a121'})};
+					  } );
 					if (rightinvtype !== 'bag') {
 						totalkg = totalkg - (fromItem.weight * count)
-						$(".leftside-weight").html(weightFormat(totalkg/1000, false, true)+'/'+weightFormat(maxWeight/1000, false))
+						$(".progressLeftLabel").html(weightFormat(totalkg/1000, false, true)+'/'+weightFormat(maxWeight/1000, false))
+						$( function() {
+							$( "#progressbarLeft" ).progressbar({
+							  value: (totalkg/maxWeight)*100
+							});
+				
+							let progressbar = $( "#progressbarLeft" );
+							let progressbarValue = progressbar.find( ".ui-progressbar-value" );
+				
+							if ((totalkg/maxWeight)*100 > 90) { progressbarValue.css({"background": '#d82020'})}
+							else if ((totalkg/maxWeight)*100 > 75) { progressbarValue.css({"background": '#e09540'})}
+							else if ((totalkg/maxWeight)*100 > 50) { progressbarValue.css({"background": '#d6e040'})}
+							else { progressbarValue.css({"background": '#30a121'})};
+						  } );
 					} else {
 						item = fromInventory.find("[inventory-slot="+rightinvslot+"]").data("ItemData");
 						item.weight = item.weight+(fromItem.weight * count)
@@ -758,10 +817,38 @@ SwapItems = function(fromInventory, toInventory, fromSlot, toSlot) {
 			} else {
 				if (inv2 !== inv) {
 					righttotalkg = righttotalkg - (fromItem.weight * count)
-					$(".rightside-weight").html(weightFormat(righttotalkg/1000, false, true)+'/'+weightFormat(rightmaxWeight/1000, false))
+					//$(".rightside-weight").html(weightFormat(righttotalkg/1000, false, true)+'/'+weightFormat(rightmaxWeight/1000, false))
+					$(".rightside-weight").show();
+					$(".progressRightLabel").html(weightFormat(righttotalkg/1000, false, true)+'/'+weightFormat(rightmaxWeight/1000, false))
+					$( function() {
+						$( "#progressbarRight" ).progressbar({
+						  value: (righttotalkg/rightmaxWeight)*100
+						});
+			
+						let progressbar = $( "#progressbarRight" );
+						let progressbarValue = progressbar.find( ".ui-progressbar-value" );
+			
+						if ((righttotalkg/rightmaxWeight)*100 > 90) { progressbarValue.css({"background": '#d82020'})}
+						else if ((righttotalkg/rightmaxWeight)*100 > 75) { progressbarValue.css({"background": '#e09540'})}
+						else if ((righttotalkg/rightmaxWeight)*100 > 50) { progressbarValue.css({"background": '#d6e040'})}
+						else { progressbarValue.css({"background": '#30a121'})};
+					  } );
 					if (rightinvtype !== 'bag') {
 						totalkg = totalkg+(fromItem.weight * count)
-						$(".leftside-weight").html(weightFormat(totalkg/1000, false, true)+'/'+weightFormat(maxWeight/1000, false))
+						$(".progressLeftLabel").html(weightFormat(totalkg/1000, false, true)+'/'+weightFormat(maxWeight/1000, false))
+						$( function() {
+							$( "#progressbarLeft" ).progressbar({
+							  value: (totalkg/maxWeight)*100
+							});
+				
+							let progressbar = $( "#progressbarLeft" );
+							let progressbarValue = progressbar.find( ".ui-progressbar-value" );
+				
+							if ((totalkg/maxWeight)*100 > 90) { progressbarValue.css({"background": '#d82020'})}
+							else if ((totalkg/maxWeight)*100 > 75) { progressbarValue.css({"background": '#e09540'})}
+							else if ((totalkg/maxWeight)*100 > 50) { progressbarValue.css({"background": '#d6e040'})}
+							else { progressbarValue.css({"background": '#30a121'})};
+						  } );
 					} else {
 						item = toInventory.find("[inventory-slot="+rightinvslot+"]").data("ItemData");
 						item.weight = item.weight - (fromItem.weight * count)

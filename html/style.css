@@ -427,3 +427,47 @@ input[type=number]::-webkit-outer-spin-button {
 	float: left;
 	margin: 2px 1px 0 1px;
 }
+
+.leftside-weight {
+	width: 75%;
+}
+.rightside-weight {
+	width: 75%;
+}
+
+.ui-progressbar {
+    position: relative;
+	border: 0px solid;
+	background: rgba(0,0,0,0.8);
+  }
+
+.ui-progressbar-value 
+{
+	background: #30a121;
+    margin: -1px;
+    height: 100;
+	border: 0px solid;
+}
+
+.ui-widget.ui-widget-content {
+    border: 0px solid #c5c5c5;
+}
+
+.progressLeftLabel {
+	position: absolute;
+	right: 5%;
+	top: 2px;
+	color: #fff;
+	font-weight: bold;
+	padding: 5px;
+	border-radius: 5px;
+}
+.progressRightLabel {
+	position: absolute;
+	right: 5%;
+	top: 2px;
+	color: #fff;
+	font-weight: bold;
+	padding: 5px;
+	border-radius: 5px;
+}
