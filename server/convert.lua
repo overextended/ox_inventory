@@ -73,7 +73,7 @@ local newInventory = {}
 BeginConversion = function()
 	for i=1, #identifier do
 		local newInv = {}
-		Citizen.Wait(200)
+		Citizen.Wait(50)
 		local loop = 0
 		if loadout[i] then
 			for k, v in pairs(loadout[i]) do

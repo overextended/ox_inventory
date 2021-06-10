@@ -250,7 +250,6 @@ SaveItems = function(type, id, owner, inventory)
 				})
 			end
 		end
-		Inventories[id] = nil
 	end
 end
 

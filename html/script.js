@@ -701,8 +701,8 @@ SwapItems = function(fromInventory, toInventory, fromSlot, toSlot) {
 						newItemData.slot = toSlot
 						newItemData.price = fromItem.price
 						oldItemData.metadata.image || oldItemData.name
-						if (newItemData.metadata.image == undefined) { newImage = newItemData.name } else { image = newItemData.metadata.image }
-						if (oldItemData.metadata.image == undefined) { oldImage = oldItemData.name } else { image = oldItemData.metadata.image }
+						if (newItemData.metadata.image == undefined) { newImage = newItemData.name } else { newImage = newItemData.metadata.image }
+						if (oldItemData.metadata.image == undefined) { oldImage = oldItemData.name } else { oldImage = oldItemData.metadata.image }
 						fromInventory.find("[inventory-slot="+fromSlot+"]").html('<div class="item-slot-img"><img src="images/'+oldImage+'.png'+'" alt="'+oldItemData.name+'" /></div><div class="item-slot-count"><p>'+numberFormat(oldItemData.count, oldItemData.name)+' '+weightFormat(oldItemData.weight/1000 * oldItemData.count)+'</p></div><div class="item-slot-label">'+oldItemData.label+'</div>');
 						fromInventory.find("[inventory-slot="+fromSlot+"]").data("ItemData", oldItemData);
 						toInventory.find("[inventory-slot="+toSlot+"]").html('<div class="item-slot-img"><img src="images/'+newImage+'.png'+'" alt="'+newItemData.name+'" /></div><div class="item-slot-count"><p>'+numberFormat(newItemData.count, newItemData.name)+' '+weightFormat(newItemData.weight/1000 * newItemData.count)+'</p></div><div class="item-slot-label">'+newItemData.label+'</div>');
