@@ -38,10 +38,17 @@ RegisterNetEvent('esx:removePickup')
 ```lua
 	-- keep track of ammo
 	Citizen.CreateThread(function()
+		local currentWeapon = {timer=0}
 		while ESX.PlayerLoaded do
-			Citizen.Wait(1000)
+			local sleep = 5
 
-			local letSleep = true
+			if currentWeapon.timer == sleep then
+				local ammoCount = GetAmmoInPedWeapon(ESX.PlayerData.ped, currentWeapon.hash)
+				TriggerServerEvent('esx:updateWeaponAmmo', currentWeapon.name, ammoCount)
+				currentWeapon.timer = 0
+			elseif currentWeapon.timer > sleep then
+				currentWeapon.timer = currentWeapon.timer - sleep
+			end
 
 			if IsPedArmed(ESX.PlayerData.ped, 4) then
 				if IsPedShooting(ESX.PlayerData.ped) then
@@ -49,14 +56,15 @@ RegisterNetEvent('esx:removePickup')
 					local weapon = ESX.GetWeaponFromHash(weaponHash)
 
 					if weapon then
-						local ammoCount = GetAmmoInPedWeapon(ESX.PlayerData.ped, weaponHash)
-						TriggerServerEvent('esx:updateWeaponAmmo', weapon.name, ammoCount)
+						currentWeapon.name = weapon.name
+						currentWeapon.hash = weaponHash	
+						currentWeapon.timer = 100 * sleep		
 					end
 				end
+			else
+				sleep = 200
 			end
-			if letSleep then
-				Citizen.Wait(500)
-			end
+			Citizen.Wait(sleep)
 		end
 	end)
 ```
@@ -130,11 +138,7 @@ end)
 
 * Add the following code to the top of the file (for compatibility and ease)
 ```lua
-ExecuteCommand('add_principal group.moderator group.user')
-ExecuteCommand('add_principal group.admin group.moderator')
 ExecuteCommand('add_principal group.superadmin group.admin')
-ExecuteCommand('add_ace group.superadmin command allow')
-ExecuteCommand('add_ace group.superadmin command.quit deny')
 ```
 
 * Remove the following commands (deprecated)
