@@ -353,9 +353,8 @@ HolsterWeapon = function(item)
 	loadAnimDict('reaction@intimidation@1h')
 	TaskPlayAnimAdvanced(ESX.PlayerData.ped, 'reaction@intimidation@1h', 'outro', GetEntityCoords(ESX.PlayerData.ped, true), 0, 0, GetEntityHeading(ESX.PlayerData.ped), 8.0, 3.0, -1, 50, 0, 0, 0)
 	Citizen.Wait(1600)
-	DisarmPlayer()
+	ClearWeapons()
 	ClearPedSecondaryTask(ESX.PlayerData.ped)
-	SetPedUsingActionMode(ESX.PlayerData.ped, -1, -1, 1)
 	SendNUIMessage({ message = 'notify', item = item, text = _U('holstered') })
 end
 
@@ -381,6 +380,7 @@ end
 RegisterNetEvent('linden_inventory:weapon')
 AddEventHandler('linden_inventory:weapon', function(item)
 	if not isBusy and item then
+		SetPedUsingActionMode(ESX.PlayerData.ped, false, -1, 0)
 		TriggerEvent('linden_inventory:busy', true)
 		useItemCooldown = true
 		local newWeapon = item.metadata.serial
