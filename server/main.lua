@@ -944,12 +944,6 @@ AddEventHandler('linden_inventory:updateWeapon', function(item, type)
 	end
 end)
 
-RegisterNetEvent('linden_inventory:removeItem')
-AddEventHandler('linden_inventory:removeItem', function(item, count, metadata, slot)
-	local xPlayer = ESX.GetPlayerFromId(source)
-	removeInventoryItem(xPlayer, item, count, metadata, slot)
-end)
-
 ESX.RegisterServerCallback('linden_inventory:getItem', function(source, cb, item, metadata)
 	local xPlayer = ESX.GetPlayerFromId(source)
 	local xItem = getInventoryItem(xPlayer, item, metadata)
@@ -1018,9 +1012,10 @@ ESX.RegisterServerCallback('linden_inventory:usingItem', function(source, cb, it
 end)
 
 RegisterNetEvent('linden_inventory:removeItem')
-AddEventHandler('linden_inventory:removeItem', function(item)
+AddEventHandler('linden_inventory:removeItem', function(item, count)
 	local xPlayer = ESX.GetPlayerFromId(source)
 	local consume = Items[item.name].consume
+	if consume == 0 then consume = count end
 	removeInventoryItem(xPlayer, item.name, consume, item.metadata, item.slot)
 end)
 
