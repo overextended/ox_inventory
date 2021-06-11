@@ -3,7 +3,7 @@ game 'gta5'
 author 'Linden'
 description 'https://github.com/thelindat/linden_inventory'
 versioncheck 'https://raw.githubusercontent.com/thelindat/linden_inventory/main/fxmanifest.lua'
-version '1.6.4'
+version '1.7.0'
 
 dependencies {
 	'es_extended',
