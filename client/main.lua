@@ -1,9 +1,4 @@
-local Blips = {}
-local Drops = {}
-local Usables = {}
-local currentDrop
-local currentWeapon
-local weaponTimer = 0
+local Items, Blips, Drops, Usables, weaponTimer, currentDrop, currentWeapon = GlobalState.Items, {}, {}, {}, 0
 cancelled = false
 
 ClearWeapons = function()
@@ -965,11 +960,9 @@ AddEventHandler('linden_inventory:useItem',function(item)
 	if CanOpenInventory() and not useItemCooldown then
 		local data = Items[item.name] and Items[item.name].client
 		local esxItem = Usables[item.name]
-		useItemCooldown = true
 		if data or esxItem then
 			if data then
 				if data.useinvehicle == false and IsPedInAnyVehicle(ESX.PlayerData.ped, true) then
-					useItemCooldown = false
 					TriggerEvent('mythic_notify:client:SendAlert', {type = 'error', text = _U('cannot_use', item.label), length = 2500}) return
 				elseif data.component then
 					if not currentWeapon then return end
@@ -1003,7 +996,6 @@ AddEventHandler('linden_inventory:useItem',function(item)
 							UseItem(item, false, data)
 						else
 							response = true
-							useItemCooldown = false
 							TriggerEvent('mythic_notify:client:SendAlert', {type = 'error', text = _U('cannot_use', item.label), length = 2500}) return
 						end
 					end)
@@ -1013,7 +1005,7 @@ AddEventHandler('linden_inventory:useItem',function(item)
 			end
 		elseif Weapons[item.name] or item.name:find('ammo-') then
 			UseItem(item, false)
-		else Citizen.Wait(100) useItemCooldown = false end
+		else Citizen.Wait(100) end
 	end
 end)
 
@@ -1044,6 +1036,7 @@ end)
 RegisterKeyMapping('cancelitem', 'Cancel item use', 'keyboard', 'x')
 
 UseItem = function(item, esxItem, data)
+	useItemCooldown = true
 	ESX.TriggerServerCallback('linden_inventory:usingItem', function(xItem)
 		if xItem and data then
 			isBusy = true
