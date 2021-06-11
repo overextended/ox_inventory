@@ -1,4 +1,4 @@
-local Items, Blips, Drops, Usables, weaponTimer, currentDrop, currentWeapon = GlobalState.Items, {}, {}, {}, 0
+local Blips, Drops, Usables, weaponTimer, currentDrop, currentWeapon = {}, {}, {}, 0
 cancelled = false
 
 ClearWeapons = function()
