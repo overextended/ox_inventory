@@ -990,12 +990,9 @@ AddEventHandler('linden_inventory:useItem',function(item)
 				if data.event then
 					local event = type(data.event) ~= 'string' and 'linden_inventory:'..item.name or data.event
 					TriggerEvent(event, item, data.usetime, function(cb)
-						local response = false
 						if cb then
-							response = true
 							UseItem(item, false, data)
 						else
-							response = true
 							TriggerEvent('mythic_notify:client:SendAlert', {type = 'error', text = _U('cannot_use', item.label), length = 2500}) return
 						end
 					end)
