@@ -22,10 +22,19 @@ body {
 	overflow: hidden;
 }
 
-.inventory-main-leftside, .inventory-main-rightside {
-	width: 515px;
+.inventory-main-leftside {
+	width: 514px;
 	height: 408px;
 	overflow: auto;
+	direction: ltr;
+}
+
+.inventory-main-rightside {
+	width: 514px;
+	height: 408px;
+	overflow: auto;
+	direction: rtl;
+	margin-left: -4px;
 }
 
 .ItemBoxes {
@@ -34,6 +43,7 @@ body {
 	height: 100px;
 	background-color: rgba(0, 0, 0, 0.2);
 	float: left;
+	top: -2px;
 	margin: 2px 1px 0 1px;
 	outline: 1px solid rgba(33,33,33,0.4);
 	outline-offset: -1px;
@@ -187,7 +197,6 @@ body {
 .hotslot-container {
 	position: relative;
 	float: left;
-	margin: 0.5px;
 	margin: 1px;
 	width: 110px;
 	height: 110px;
@@ -409,14 +418,12 @@ input[type=number]::-webkit-outer-spin-button {
   margin: 0; 
 }
 
-::-webkit-scrollbar
-{
+::-webkit-scrollbar {
 	width: 4px;
 }
 
-::-webkit-scrollbar-thumb
-{
-	background-color: rgba(0, 0, 0, 0.705);
+::-webkit-scrollbar-thumb {
+	background-color: rgba(0, 0, 0, 0.4);
 }
 
 .ui-draggable-dragging {
@@ -428,46 +435,22 @@ input[type=number]::-webkit-outer-spin-button {
 	margin: 2px 1px 0 1px;
 }
 
-.leftside-weight {
-	width: 75%;
-}
-.rightside-weight {
-	width: 75%;
-}
-
 .ui-progressbar {
-    position: relative;
-	border: 0px solid;
-	background: rgba(0,0,0,0.8);
-  }
+	background: rgba(0,0,0,0.5);
+	width: 508px;
+	margin-left: 1px;
+	height: 4px;
+	border-radius: 0;
+	border: 1px solid rgba(0,0,0,0.5);
+}
 
 .ui-progressbar-value 
 {
 	background: #30a121;
-    margin: -1px;
-    height: 100;
-	border: 0px solid;
+	border: 0px;
+	border-radius: 0;
 }
 
 .ui-widget.ui-widget-content {
     border: 0px solid #c5c5c5;
-}
-
-.progressLeftLabel {
-	position: absolute;
-	right: 5%;
-	top: 2px;
-	color: #fff;
-	font-weight: bold;
-	padding: 5px;
-	border-radius: 5px;
-}
-.progressRightLabel {
-	position: absolute;
-	right: 5%;
-	top: 2px;
-	color: #fff;
-	font-weight: bold;
-	padding: 5px;
-	border-radius: 5px;
 }
