@@ -963,7 +963,7 @@ AddEventHandler('linden_inventory:useItem',function(item)
 		return
 	end
 	if CanOpenInventory() and not useItemCooldown then
-		local data = Items[item.name].client
+		local data = Items[item.name] and Items[item.name].client
 		local esxItem = Usables[item.name]
 		useItemCooldown = true
 		if data or esxItem then
