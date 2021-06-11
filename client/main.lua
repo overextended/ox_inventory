@@ -4,6 +4,7 @@ local Usables = {}
 local currentDrop
 local currentWeapon
 local weaponTimer = 0
+cancelled = false
 
 ClearWeapons = function()
 	for k, v in pairs(Weapons) do
@@ -798,7 +799,7 @@ RegisterCommand('vehinv', function()
 			lastVehicle = nil
 			local class = GetVehicleClass(vehicle)
 			if vehicle and Config.Trunks[class] and #(playerCoords - vehiclePos) < 6 then
-				if GetVehicleDoorLockStatus(vehicle) ~= 2 then
+				if GetVehicleDoorLockStatus(vehicle) == 1 then
 					local vehHash = GetEntityModel(vehicle)
 					local checkVehicle = Config.VehicleStorage[vehHash]
 					if checkVehicle == 1 then open, vehBone = 4, GetEntityBoneIndexByName(vehicle, 'bonnet')
@@ -996,9 +997,13 @@ AddEventHandler('linden_inventory:useItem',function(item)
 				if data.event then
 					local event = type(data.event) ~= 'string' and 'linden_inventory:'..item.name or data.event
 					TriggerEvent(event, item, data.usetime, function(cb)
+						local response = false
 						if cb then
+							response = true
 							UseItem(item, false, data)
 						else
+							response = true
+							useItemCooldown = false
 							TriggerEvent('mythic_notify:client:SendAlert', {type = 'error', text = _U('cannot_use', item.label), length = 2500}) return
 						end
 					end)
@@ -1030,11 +1035,20 @@ RegisterKeyMapping('hotkey3', 'Use hotbar item 3', 'keyboard', '3')
 RegisterKeyMapping('hotkey4', 'Use hotbar item 4', 'keyboard', '4')
 RegisterKeyMapping('hotkey5', 'Use hotbar item 5', 'keyboard', '5')
 
+local canCancel = false
+RegisterCommand('cancelitem', function()
+	if useItemCooldown then
+		TriggerEvent("mythic_progbar:client:cancel")
+	end
+end)
+RegisterKeyMapping('cancelitem', 'Cancel item use', 'keyboard', 'x')
+
 UseItem = function(item, esxItem, data)
 	ESX.TriggerServerCallback('linden_inventory:usingItem', function(xItem)
 		if xItem and data then
 			isBusy = true
 			if data.usetime > 0 then
+				if data.cancel then canCancel = true end
 				local disable = {
 					move = data.disable and data.disable.move or false,
 					car = data.disable and data.disable.car or false,
@@ -1057,26 +1071,30 @@ UseItem = function(item, esxItem, data)
 					controlDisables = { disableMovement = disable.move, disableCarMovement = disable.car, disableMouse = disable.mouse, disableCombat = disable.combat },
 					animation = { animDict = anim.dict, anim = anim.clip, flags = anim.flag, bone = anim.bone },
 					prop = prop
-				})
+				}, function(status)
+					if status then
+						cancelled = true
+					end
+				end)
 			end
 			Citizen.Wait(data.usetime)
-			if not data.consume or data.consume > 1 then TriggerServerEvent('linden_inventory:removeItem', item) end
+			if not cancelled then
+				if not data.consume or data.consume > 1 then TriggerServerEvent('linden_inventory:removeItem', item) end
 
-			if data.status then
-				for k, v in pairs(data.status) do
-					if v > 0 then TriggerEvent('esx_status:add', k, v) else TriggerEvent('esx_status:remove', k, -v) end
+				if data.status then
+					for k, v in pairs(data.status) do
+						if v > 0 then TriggerEvent('esx_status:add', k, v) else TriggerEvent('esx_status:remove', k, -v) end
+					end
+				end
+
+				if data.component then
+					GiveWeaponComponentToPed(ESX.PlayerData.ped, currentWeapon.name, component.hash)
+					table.insert(currentWeapon.metadata.components, component.name)
+					TriggerServerEvent('linden_inventory:updateWeapon', currentWeapon, component.name)
 				end
 			end
-
-			if data.component then
-				GiveWeaponComponentToPed(ESX.PlayerData.ped, currentWeapon.name, component.hash)
-				table.insert(currentWeapon.metadata.components, component.name)
-				TriggerServerEvent('linden_inventory:updateWeapon', currentWeapon, component.name)
-			end
-
 		end
 		Citizen.Wait(500)
-		useItemCooldown = false
-		isBusy = false
+		useItemCooldown, isBusy, canCancel, cancelled = false, false, false, false
 	end, item.name, item.slot, item.metadata, esxItem)
 end
