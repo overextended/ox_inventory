@@ -2,6 +2,8 @@
 title: Usage
 ---
 
+#### This will not always be up to date. If you want the best understanding of how to use the inventory you should read through the files.
+
 ## xPlayer functions
 * Compatibility is important, that's why we've modified the framework with the inventory exports
 * All functions will work as they did previously, with some extra benefits such as metadata
@@ -46,7 +48,7 @@ or
   end, 'water')
 ```
 
-#### [#](item-metadata) Check an items metadata
+#### [#](item-data) Check item data
 * Example server command, print the serial of the item in slot one
 ```lua
 RegisterCommand('getmeta', function(source, args, rawCommand)
@@ -55,7 +57,10 @@ RegisterCommand('getmeta', function(source, args, rawCommand)
 	print(slot.metadata.serial)
 end, true)
 ```
-* Still working on a good solution for checking client side
+* On the client you can simply refer to the inventory slot
+```lua
+	print(ESX.PlayerData.inventory[3].metadata.serial
+```
 
 #### [#](stash) Open a stash
 * If you want anybody to be able to use a stash, do not define job
@@ -88,38 +93,37 @@ All your old items using `ESX.RegisterUsableItem` still work, however I would pe
 * You can define existing events from other resources, or add new ones to `client/items.lua`
 
 ```lua
-['burger'] = {
-	hunger = 200000,
-	animDict = 'mp_player_inteat@burger',
-	anim = 'mp_player_int_eat_burger_fp',
-	model = 'prop_cs_burger_01',
-	coords = { x = 0.02, y = 0.022, z = -0.02 },
-	rotation = { x = 0.0, y = 5.0, z = 0.0 },
-	useTime = 2500,
-	event = 'linden_inventory:burger'
-},
+	['burger'] = {
+		label = 'Burger',
+		weight = 220,
+		stack = true,
+		close = true,
+		client = {
+			status = { hunger = 200000 },
+			anim = { dict = 'mp_player_inteat@burger', clip = 'mp_player_int_eat_burger_fp' },
+			prop = { model = 'prop_cs_burger_01', pos = { x = 0.02, y = 0.02, y = -0.02}, rot = { x = 0.0, y = 0.0, y = 0.0} },
+			usetime = 2500,
+			event = true,
+		}
+	},
 ```
 
 ```lua
 AddEventHandler('linden_inventory:burger', function(item, wait, cb)
 	cb(true)
-	Citizen.Wait(wait)
-	TriggerEvent('mythic_notify:client:SendAlert', {type = 'inform', text = 'You ate a delicious burger', length = 2500})
+	SetTimeout(wait, function()
+		if not cancelled then
+			TriggerEvent('mythic_notify:client:SendAlert', {type = 'inform', text = 'You ate a delicious burger', length = 2500})
+		end
+	end)
 end)
 ```
 
-* The event triggered when using a burger receives the following information
-	- item.name (as it appears in the database)
-	- item.label (the display text)
-	- item.weight
-	- item.stackable
-	- item.description
-	- item.closeonuse
-	- item.metadata (blank)
-	- useTime (2500ms, in this case)
+* The event triggered when using a burger receives all basic item information from `shared/items.lua`
+* It will also receive the information from that specific instance of the item (count, metadata, etc)
 * Using `cb(true)` will trigger the progress bar, item effects, and remove the item
-* Using `cb(false)` will cancel the function and the item will not be used
-* Always add a Wait before triggering the item use results
+* Using `cb(false)` will not use the item and return an error message
+* Item use effects should always be contained within `SetTimeout` when it is not instant
 
 
 #### [#](drops) Custom drops
