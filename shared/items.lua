@@ -98,10 +98,11 @@ Items = {
 		close = true,
 		client = {
 			anim = { dict = 'anim@amb@clubhouse@tutorial@bkr_tut_ig3@', clip = 'machinic_loop_mechandplayer' },
-			disable = { move = false },
+			disable = { move = true, car = true, combat = true },
 			consume = 0,
-			usetime = 2500,
+			usetime = 5000,
 			event = true,
+			cancel = true
 		}
 	},
 
