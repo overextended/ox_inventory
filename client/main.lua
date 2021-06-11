@@ -282,15 +282,17 @@ end)
 
 RegisterNetEvent('linden_inventory:refreshInventory')
 AddEventHandler('linden_inventory:refreshInventory', function(data, clear)
-	SendNUIMessage({
-		message = 'refresh',
-		inventory = data.inventory,
-		slots = data.slots,
-		name = inventoryLabel,
-		maxWeight = data.maxWeight,
-		weight = data.weight
-	})
 	ESX.PlayerData.inventory = data.inventory
+	if invOpen then
+		SendNUIMessage({
+			message = 'refresh',
+			inventory = data.inventory,
+			slots = data.slots,
+			name = inventoryLabel,
+			maxWeight = data.maxWeight,
+			weight = data.weight
+		})
+	end
 	ESX.SetPlayerData('inventory', data.inventory)
 	ESX.SetPlayerData('maxWeight', data.maxWeight)
 	ESX.SetPlayerData('weight', data.weight)
@@ -303,22 +305,11 @@ RegisterNetEvent('linden_inventory:itemNotify')
 AddEventHandler('linden_inventory:itemNotify', function(item, count, slot, notify)
 	if count > 0 then notification = _U(notify)..' '..count..'x'
 	else notification = _U('used') end
-	if type(slot) == 'table' then
-		for k,v in pairs(slot) do
-			ESX.PlayerData.inventory[k] = item
-			if notify == 'removed' and ESX.PlayerData.inventory[k].count then
-				local count = ESX.PlayerData.inventory[k].count - v
-				ESX.PlayerData.inventory[k].count = count
-				if item.name:find('WEAPON_') then TriggerEvent('linden_inventory:checkWeapon', item) end
-			end
-		end
-	else
-		ESX.PlayerData.inventory[slot] = item
-		if notify == 'removed' then
-			local count = ESX.PlayerData.inventory[slot].count - count
-			ESX.PlayerData.inventory[slot].count = count
-			if item.name:find('WEAPON_') then TriggerEvent('linden_inventory:checkWeapon', item) end
-		end
+	ESX.PlayerData.inventory[slot] = item
+	if notify == 'removed' then
+		local count = ESX.PlayerData.inventory[slot].count - count
+		ESX.PlayerData.inventory[slot].count = count
+		if item.name:find('WEAPON_') then TriggerEvent('linden_inventory:checkWeapon', item) end
 	end
 	if currentInventory and currentInventory.type == 'player' then
 		TriggerEvent('targetPlayerAnim')
