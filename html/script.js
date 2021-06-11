@@ -347,7 +347,7 @@ HSN.SetupInventory = function(data) {
 		righttotalkg = 0
 	}
 	$(".progressRightLabel").show();
-				if (righttotalkg > 0) {$(".progressRightLabel").html(weightFormat(righttotalkg/1000, false, true)+'/'+weightFormat(rightmaxWeight/1000, false))} else {$(".progressRightLabel").hide();}
+				if (righttotalkg > 0 || rightinvtype !== 'drop') {$(".progressRightLabel").html(weightFormat(righttotalkg/1000, false, true)+'/'+weightFormat(rightmaxWeight/1000, false))} else {$(".progressRightLabel").hide();}
 				$( function() {
 					$( "#progressbarRight" ).progressbar({
 						value: 100,
