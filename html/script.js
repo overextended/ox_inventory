@@ -153,16 +153,16 @@ HSN.NotifyItems = function(item, text) {
 }
 
 function colorChannelMixer(colorChannelA, colorChannelB, amountToMix){
-    let channelA = colorChannelA*amountToMix;
-    let channelB = colorChannelB*(1-amountToMix);
-    return parseInt(channelA+channelB);
+		let channelA = colorChannelA*amountToMix;
+		let channelB = colorChannelB*(1-amountToMix);
+		return parseInt(channelA+channelB);
 }
 
 function colorMixer(rgbA, rgbB, amountToMix){
-    let r = colorChannelMixer(rgbA[0],rgbB[0],amountToMix);
-    let g = colorChannelMixer(rgbA[1],rgbB[1],amountToMix);
-    let b = colorChannelMixer(rgbA[2],rgbB[2],amountToMix);
-    return "rgb("+r+","+g+","+b+")";
+		let r = colorChannelMixer(rgbA[0],rgbB[0],amountToMix);
+		let g = colorChannelMixer(rgbA[1],rgbB[1],amountToMix);
+		let b = colorChannelMixer(rgbA[2],rgbB[2],amountToMix);
+		return "rgb("+r+","+g+","+b+")";
 }
 
 HSN.InventoryGetDurability = function(quality) {
@@ -251,7 +251,18 @@ HSN.SetupInventory = function(data) {
 		})
 
 
-		$(".leftside-weight").html(weightFormat(totalkg/1000, false, true)+'/'+weightFormat(maxWeight/1000, false))
+		$(".progressLeftLabel").html(weightFormat(totalkg/1000, false, true)+'/'+weightFormat(maxWeight/1000, false))
+		$( function() {
+			$( "#progressbarLeft" ).progressbar({
+				value: 100,
+				max: 100
+			})
+			let progressbar = $( "#progressbarLeft" )
+			let progressbarValue = progressbar.find( ".ui-progressbar-value" )
+			let value = totalkg/maxWeight
+			let color = colorMixer([190,35,35], [35,190,35], value)
+			progressbarValue.css({"background": color, "width": (value*100) +"%"})
+		});
 		if (data.rightinventory !== undefined) {
 			rightinventory = data.rightinventory.id
 			rightinvslot = data.rightinventory.slot
@@ -311,10 +322,10 @@ HSN.SetupInventory = function(data) {
 						}
 					}
 				})
-				$(".rightside-weight").html(weightFormat(righttotalkg/1000, false, true)+'/'+weightFormat(rightmaxWeight/1000, false))
 			}
 		} else {
 			$('.rightside-name').html("Drop")
+			$(".progressRightLabel").hide();
 			$('.inventory-main-rightside').data("invTier", "drop")
 			let dropSlots = data.slots
 			if (data.rightinventory) {
@@ -327,15 +338,27 @@ HSN.SetupInventory = function(data) {
 			for(i = 1; i <= (dropSlots); i++) {
 				$(".inventory-main-rightside").append('<div class="ItemBoxes" inventory-slot='+i+'></div> ')
 			}
-			$(".rightside-weight").html('')
 		}
 	} else {
 		$('.rightside-name').html("Drop")
+		$(".progressRightLabel").hide();
 		$('.inventory-main-rightside').data("invTier", "drop")
 		rightinvtype = 'drop'
 		righttotalkg = 0
-		$(".rightside-weight").html('')
 	}
+	$(".progressRightLabel").show();
+				if (righttotalkg > 0) {$(".progressRightLabel").html(weightFormat(righttotalkg/1000, false, true)+'/'+weightFormat(rightmaxWeight/1000, false))} else {$(".progressRightLabel").hide();}
+				$( function() {
+					$( "#progressbarRight" ).progressbar({
+						value: 100,
+						max: 100
+					})
+					let progressbar = $( "#progressbarRight" )
+					let progressbarValue = progressbar.find( ".ui-progressbar-value" )
+					let value = righttotalkg/rightmaxWeight
+					let color = colorMixer([190,35,35], [35,190,35], value)
+					progressbarValue.css({"background": color, "width": (value*100) +"%"})
+				});
 	
 	DragAndDrop()
 }
@@ -465,8 +488,7 @@ $(document).on("click", ".ItemBoxes", function(e){
 	}
 })
 
-
-$(".inventory-main").on("mouseenter mouseleave", ".ItemBoxes", function(e){
+$(".inventory-main").on("mouseenter", ".ItemBoxes", function(e){
 	e.preventDefault();
 	let Item = $(this).data("ItemData")
 	if (e.type == 'mouseenter' && Item != undefined) {
@@ -743,10 +765,27 @@ SwapItems = function(fromInventory, toInventory, fromSlot, toSlot) {
 			if (inv2 !== 'Playerinv') {
 				if (inv2 !== inv) {
 					righttotalkg = righttotalkg+(fromItem.weight * count)
-					$(".rightside-weight").html(weightFormat(righttotalkg/1000, false, true)+'/'+weightFormat(rightmaxWeight/1000, false))
+					if (rightinvtype == 'drop') { if (righttotalkg == 0) { $(".progressRightLabel").hide() } else { $(".progressRightLabel").show() }}
+					$(".progressRightLabel").html(weightFormat(righttotalkg/1000, false, true)+'/'+weightFormat(rightmaxWeight/1000, false))
+					$( function() {
+						$( "#progressbarRight" ).progressbar()
+						let progressbar = $( "#progressbarRight" )
+						let progressbarValue = progressbar.find( ".ui-progressbar-value" )
+						let value = righttotalkg/rightmaxWeight
+						let color = colorMixer([190,35,35], [35,190,35], value)
+						progressbarValue.css({"background": color, "width": (value*100) +"%"})
+					});
 					if (rightinvtype !== 'bag') {
 						totalkg = totalkg - (fromItem.weight * count)
-						$(".leftside-weight").html(weightFormat(totalkg/1000, false, true)+'/'+weightFormat(maxWeight/1000, false))
+						$(".progressLeftLabel").html(weightFormat(totalkg/1000, false, true)+'/'+weightFormat(maxWeight/1000, false))
+						$( function() {
+							$( "#progressbarLeft" ).progressbar()
+							let progressbar = $( "#progressbarLeft" )
+							let progressbarValue = progressbar.find( ".ui-progressbar-value" )
+							let value = totalkg/maxWeight
+							let color = colorMixer([190,35,35], [35,190,35], value)
+							progressbarValue.css({"background": color, "width": (value*100) +"%"})
+						});
 					} else {
 						item = fromInventory.find("[inventory-slot="+rightinvslot+"]").data("ItemData");
 						item.weight = item.weight+(fromItem.weight * count)
@@ -758,10 +797,27 @@ SwapItems = function(fromInventory, toInventory, fromSlot, toSlot) {
 			} else {
 				if (inv2 !== inv) {
 					righttotalkg = righttotalkg - (fromItem.weight * count)
-					$(".rightside-weight").html(weightFormat(righttotalkg/1000, false, true)+'/'+weightFormat(rightmaxWeight/1000, false))
+					if (rightinvtype == 'drop') { if (righttotalkg == 0) { $(".progressRightLabel").hide() } else { $(".progressRightLabel").show() }}
+					$(".progressRightLabel").html(weightFormat(righttotalkg/1000, false, true)+'/'+weightFormat(rightmaxWeight/1000, false))
+					$( function() {
+						$( "#progressbarRight" ).progressbar()
+						let progressbar = $( "#progressbarRight" )
+						let progressbarValue = progressbar.find( ".ui-progressbar-value" )
+						let value = righttotalkg/rightmaxWeight
+						let color = colorMixer([190,35,35], [35,190,35], value)
+						progressbarValue.css({"background": color, "width": (value*100) +"%"})
+					});
 					if (rightinvtype !== 'bag') {
 						totalkg = totalkg+(fromItem.weight * count)
-						$(".leftside-weight").html(weightFormat(totalkg/1000, false, true)+'/'+weightFormat(maxWeight/1000, false))
+						$(".progressLeftLabel").html(weightFormat(totalkg/1000, false, true)+'/'+weightFormat(maxWeight/1000, false))
+						$( function() {
+							$( "#progressbarLeft" ).progressbar()
+							let progressbar = $( "#progressbarLeft" )
+							let progressbarValue = progressbar.find( ".ui-progressbar-value" )
+							let value = totalkg/maxWeight
+							let color = colorMixer([190,35,35], [35,190,35], value)
+							progressbarValue.css({"background": color, "width": (value*100) +"%"})
+						});
 					} else {
 						item = toInventory.find("[inventory-slot="+rightinvslot+"]").data("ItemData");
 						item.weight = item.weight - (fromItem.weight * count)
