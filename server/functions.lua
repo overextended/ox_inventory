@@ -1,3 +1,11 @@
+GetItems = function()
+	if Status[1] == 'ready' then
+		return Items
+	else return {} end
+end
+exports('Items', GetItems)
+-- Items = exports.linden_inventory:Items()
+
 GetPlayerIdentification = function(xPlayer)
 	local sex, identifier = xPlayer.get('sex')
 	if sex == 'm' then sex = _U('male') elseif sex == 'f' then sex = _U('female') end
