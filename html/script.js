@@ -179,6 +179,7 @@ HSN.RefreshInventory = function(data) {
 	totalkg = 0
 	$(".item-slot").remove();
 	for(i = 1; i <= (data.slots); i++) {
+		$(".inventory-main-leftside").find("[inventory-slot=" + i + "]").remove();
 		$(".inventory-main-leftside").append('<div class="ItemBoxes" inventory-slot='+i+'></div> ')
 	}
 	$.each(data.inventory, function (i, item) {
