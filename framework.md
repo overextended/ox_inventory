@@ -8,6 +8,7 @@ The following adjustments must be made for compatibility and security reasons.
 These changes are intended to make it easier for those using modified files already.
 
 If you are already starting from the basics, I strongly suggest [downloading my fork](https://github.com/thelindat/es_extended) and ignoring the rest of this page.
+If you insist on following through with manual setup, ensure you are using the **latest** version of ESX Legacy.
 
 
 <h2 align='center'> client/main.lua </h2>
@@ -154,16 +155,38 @@ if args.group == "superadmin" then args.group = "admin" end
 
 <h2 align='center'> server/functions.lua </h2>
 
-* Locate `ESX.SavePlayer` and modify the SQL query
+* Locate `ESX.SavePlayer` and use the following functions
 ```lua
-MySQL.Async.execute('UPDATE users SET accounts = @accounts, job = @job, job_grade = @job_grade, `group` = @group, position = @position, inventory = @inventory WHERE identifier = @identifier', {
-			['@accounts'] = json.encode(xPlayer.getAccounts(true)),
-			['@job'] = xPlayer.job.name,
-			['@job_grade'] = xPlayer.job.grade,
-			['@group'] = xPlayer.getGroup(),
-			['@position'] = json.encode(xPlayer.getCoords()),
-			['@identifier'] = xPlayer.getIdentifier(),
-			['@inventory'] = json.encode(xPlayer.getInventory(true))
+local savePlayers = -1
+Citizen.CreateThread(function()
+	savePlayers = MySQL.Sync.store("UPDATE users SET `accounts` = ?, `job` = ?, `job_grade` = ?, `group` = ?, `position`= ?, `inventory` = ? WHERE `identifier` = ?")
+end)
+
+ESX.SavePlayer = function(xPlayer, cb)
+	local asyncTasks = {}
+
+	table.insert(asyncTasks, function(cb2)
+		MySQL.Async.execute(savePlayers, {
+				json.encode(xPlayer.getAccounts(true)),
+				xPlayer.job.name,
+				xPlayer.job.grade,
+				xPlayer.getGroup(),
+				json.encode(xPlayer.getCoords()),
+				json.encode(xPlayer.getInventory(true)),
+				xPlayer.getIdentifier()
+		}, function(rowsChanged)
+			cb2()
+		end)
+	end)
+
+	Async.parallel(asyncTasks, function(results)
+		print(('[^2INFO^7] Saved player ^5"%s^7"'):format(xPlayer.getName()))
+
+		if cb then
+			cb()
+		end
+	end)
+end
 ```
 
 
