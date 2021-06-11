@@ -265,7 +265,7 @@ end)
 
 
 RegisterNetEvent('linden_inventory:openInventory')
-AddEventHandler('linden_inventory:openInventory', function(type, data, player)
+AddEventHandler('linden_inventory:openInventory', function(invType, data, player)
 	local xPlayer
 	if player then xPlayer = player else xPlayer = ESX.GetPlayerFromId(source) end
 	if not data then
@@ -275,8 +275,8 @@ AddEventHandler('linden_inventory:openInventory', function(type, data, player)
 			TriggerClientEvent('linden_inventory:openInventory',  xPlayer.source, Inventories[xPlayer.source])
 		end
 	else
-		if type ~= 'bag' and Opened[xPlayer.source] then return end
-		if type == 'drop' then
+		if invType ~= 'bag' and Opened[xPlayer.source] then return end
+		if invType == 'drop' then
 			if Drops[data] ~= nil and Opened[data] == nil and #(Drops[data].coords - GetEntityCoords(GetPlayerPed(xPlayer.source))) <= 2 then
 				Opened[xPlayer.source] = {invid = data, type = 'drop'}
 				Opened[data] = xPlayer.source
@@ -284,11 +284,15 @@ AddEventHandler('linden_inventory:openInventory', function(type, data, player)
 				TriggerClientEvent('linden_inventory:openInventory', xPlayer.source, Inventories[xPlayer.source], Drops[data])
 			end
 		elseif data then
-			if type == 'shop' then
+			if invType == 'shop' then
 				local shop = Config.Shops[data]
 				if (not shop.job or shop.job == xPlayer.job.name) then
 					local srcCoords = GetEntityCoords(GetPlayerPed(xPlayer.source))
 					if #(shop.coords - srcCoords) <= 2 then
+						if shop.currency and type(shop.currency) == 'string' and shop.currency ~= 'money' and shop.currency ~= 'black_money' then
+							local item = Items[shop.currency]
+							shop.currency = {name=item.name, label=item.label}
+						end
 						Shops[data] = {
 							id = data,
 							type = 'shop',
@@ -329,23 +333,23 @@ AddEventHandler('linden_inventory:openInventory', function(type, data, player)
 				end
 			else
 				local id = data.id
-				if type == 'bag' then Opened[xPlayer.source] = nil end
-				if type == 'dumpster' then id = NetworkGetEntityFromNetworkId(id) end
+				if invType == 'bag' then Opened[xPlayer.source] = nil end
+				if invType == 'dumpster' then id = NetworkGetEntityFromNetworkId(id) end
 				if not Inventories[id] then
-					if type == 'dumpster' then SetEntityDistanceCullingRadius(id, 5000.0) end
+					if invType == 'dumpster' then SetEntityDistanceCullingRadius(id, 5000.0) end
 					if not data.maxWeight then
 						local maxWeight = {glovebox = 4000, trunk = 6000, bag = 1000}
-						data.maxWeight = data.slots*(maxWeight[type] or 8000)
+						data.maxWeight = data.slots*(maxWeight[invType] or 8000)
 					end
 					Inventories[id] = CreateInventory(
 						id,								-- id
 						data.label,						-- name
-						type,							-- type
+						invType,						-- type
 						data.slots,						-- slots
 						0,								-- weight
 						data.maxWeight,					-- maxWeight
 						data.owner,						-- owner
-						GetItems(id, type, data.owner)	-- inventory
+						GetItems(id, invType, data.owner)	-- inventory
 					)
 					if data.coords then Inventories[id].set('coords', data.coords) end
 					if data.job then Inventories[id].set('job', data.job) end
@@ -468,9 +472,9 @@ AddEventHandler('linden_inventory:buyItem', function(info)
 				money = getInventoryItem(xPlayer, item.name).count
 			end
 		else
-			item = Items[shopCurrency]
+			item = Items[shopCurrency.name]
 			currency = item.label
-			money = getInventoryItem(xPlayer, item.name).count
+			money = getInventoryItem(xPlayer, shopCurrency.name).count
 		end
 
 		if checkShop.name ~= data.name then
