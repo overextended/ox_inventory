@@ -288,7 +288,7 @@ HSN.SetupInventory = function(data) {
 							if (currency == 'money' || currency == 'black_money' || currency == 'bank' || currency == undefined) {
 								$(".inventory-main-rightside").find("[inventory-slot="+item.slot+"]").html('<div class="item-slot-img"><img src="images/'+image+'.png'+'" alt="'+item.name+'" /></div><div class="item-slot-count"><p>'+numberFormat(item.price, 'money')+'</p></div><div class="item-slot-label"><div class="item-slot-durability-bar"></div>'+item.label+'</div>');
 							} else {
-								$(".inventory-main-rightside").find("[inventory-slot="+item.slot+"]").html('<div class="item-slot-img"><img src="images/'+image+'.png'+'" alt="'+item.name+'" /></div><div class="item-slot-count"><p>'+item.price+' '+currency+'</p></div><div class="item-slot-label"><div class="item-slot-durability-bar"></div>'+item.label+'</div>');
+								$(".inventory-main-rightside").find("[inventory-slot="+item.slot+"]").html('<div class="item-slot-img"><img src="images/'+image+'.png'+'" alt="'+item.name+'" /></div><div class="item-slot-count"><p>'+item.price+' '+currency.label+'</p></div><div class="item-slot-label"><div class="item-slot-durability-bar"></div>'+item.label+'</div>');
 							}
 							$(".inventory-main-rightside").find("[inventory-slot="+item.slot+"]").data("ItemData", item).data("location", data.rightinventory.id);
 							let durability = HSN.InventoryGetDurability(item.metadata.durability)
@@ -297,7 +297,7 @@ HSN.SetupInventory = function(data) {
 							if (currency == 'money' || currency == 'black_money' || currency == 'bank' || currency == undefined) {
 								$(".inventory-main-rightside").find("[inventory-slot="+item.slot+"]").html('<div class="item-slot-img"><img src="images/'+image+'.png'+'" alt="'+item.name+'" /></div><div class="item-slot-count"><p>'+numberFormat(item.price, 'money')+'</p></div><div class="item-slot-label">'+item.label+'</div></div>');
 							} else {
-								$(".inventory-main-rightside").find("[inventory-slot="+item.slot+"]").html('<div class="item-slot-img"><img src="images/'+image+'.png'+'" alt="'+item.name+'" /></div><div class="item-slot-count"><p>'+item.price+' '+currency+'</p></div><div class="item-slot-label">'+item.label+'</div></div>');
+								$(".inventory-main-rightside").find("[inventory-slot="+item.slot+"]").html('<div class="item-slot-img"><img src="images/'+image+'.png'+'" alt="'+item.name+'" /></div><div class="item-slot-count"><p>'+item.price+' '+currency.label+'</p></div><div class="item-slot-label">'+item.label+'</div></div>');
 							}
 							$(".inventory-main-rightside").find("[inventory-slot="+item.slot+"]").data("ItemData", item).data("location", data.rightinventory.id);
 						}
