@@ -310,7 +310,7 @@ HSN.SetupInventory = function(data) {
 						if (item.metadata == undefined) { item.metadata = {} }
 						let image = item.name
 						if (item.metadata.image != undefined) { image = item.metadata.image }
-						if (item.metadata.weight != undefined) { item.weight = item.weight+item.metadata.weight }
+						if (item.metadata.bag == undefined && item.metadata.weight != undefined) { item.weight = item.weight+item.metadata.weight }
 						righttotalkg = righttotalkg+(item.weight * item.count);
 						if ((item.name).split("_")[0] == "WEAPON" && item.metadata.durability !== undefined) {
 							$(".inventory-main-rightside").find("[inventory-slot="+item.slot+"]").html('<div class="item-slot-img"><img src="images/'+image+'.png'+'" alt="'+item.name+'" /></div><div class="item-slot-count"><p>'+numberFormat(item.count, item.name)+' '+weightFormat(item.weight/1000 * item.count)+'</p></div><div class="item-slot-label"><div class="item-slot-durability-bar"></div>'+item.label+'</div>');
