@@ -66,9 +66,14 @@ Citizen.CreateThread(function()
 		count = 0
 		local result = exports.ghmattimysql:executeSync('SELECT * FROM items', {})
 		ESX.UsableItemsCallbacks = exports['es_extended']:getSharedObject().UsableItemsCallbacks
+		local query = false
 		for k,v in ipairs(result) do
 			if Items[v.name] then
-				exports.ghmattimysql:execute('DELETE FROM `items` WHERE name = @name LIMIT 1', { ['@name'] = v.name })
+				if not query then
+					query = "DELETE FROM `items` WHERE name='"..v.name.."'"
+				else
+					query = query.. " OR name='"..v.name.."'"
+				end
 			else
 				count = count + 1
 				Items[v.name] = {
@@ -82,6 +87,7 @@ Citizen.CreateThread(function()
 				if ESX.UsableItemsCallbacks[v.name] ~= nil then Usables[v.name] = true end
 			end
 		end
+		if query then exports.ghmattimysql:execute(query) end
 		message('Loaded '..count..' additional items from the database', 2)
 		Status[1] = 'loaded'
 		if #ESX.GetPlayers() == 0 then Status[1] = 'ready' end
@@ -1144,7 +1150,7 @@ end, true)
 if Config.ItemList then
 	RegisterCommand('dumpitems', function(source, args, rawCommand)
 		if source == 0 then
-			message('Taking a huge dump on your `items` table - please wait', 3)
+			message('Clearing inventory items from the `items` table and building a new config - please wait', 3)
 			local itemDump = {}
 			local query
 			local result = exports.ghmattimysql:executeSync('SELECT * FROM items', {})
@@ -1211,7 +1217,6 @@ table.insert(itemDump, [[
 				end
 			end
 			Citizen.Wait(100)
-			print(query)
 			exports.ghmattimysql:execute(query)
 			message('Converted '..#itemDump..' items to the new data format', 2)
 			SaveResourceFile(Config.Resource, "shared/items.lua", "Items = {\n\n"..table.concat(itemDump).."}\n", -1)
