@@ -42,7 +42,6 @@ addInventoryItem = function(xPlayer, item, count, metadata, slot)
 		end
 		if isWeapon then
 			if not xItem.ammoname then
-				print(xItem.throwable)
 				metadata = {}
 				if not xItem.throwable then count = 1 metadata.durability = 100 end
 			else
