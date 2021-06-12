@@ -477,6 +477,10 @@ AddEventHandler('linden_inventory:buyItem', function(info)
 				currency = 'Money'
 				money = getInventoryItem(xPlayer, item.name).count
 			end
+		elseif shopCurrency == 'money' or shopCurrency == 'black_money' then
+			item.name = 'money'
+			currency = Items[item.name].label
+			money = getInventoryItem(xPlayer, item.name).count
 		else
 			item = Items[shopCurrency.name]
 			currency = item.label
