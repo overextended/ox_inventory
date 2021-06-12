@@ -368,7 +368,6 @@ end
 RegisterNetEvent('linden_inventory:weapon')
 AddEventHandler('linden_inventory:weapon', function(item)
 	if not isBusy and item then
-		SetPedUsingActionMode(ESX.PlayerData.ped, false, -1, 0)
 		TriggerEvent('linden_inventory:busy', true)
 		useItemCooldown = true
 		local newWeapon = item.metadata.serial
@@ -493,7 +492,6 @@ TriggerLoops = function()
 		local Disable2 = {23, 24, 25, 142, 257, 140, 141, 142}
 		local wait = false
 		while PlayerLoaded do
-			sleep = 5
 			HideHudComponentThisFrame(19)
 			HideHudComponentThisFrame(20)
 			for i=1, #Disable, 1 do
@@ -565,7 +563,7 @@ TriggerLoops = function()
 					else usingWeapon = false end
 				end	
 			end		
-			Citizen.Wait(sleep)
+			Citizen.Wait(5)
 		end
 	end)
 
@@ -573,6 +571,7 @@ TriggerLoops = function()
 		local text, type, id = ''
 		while PlayerLoaded do
 			local sleep = 250
+			SetPedUsingActionMode(ESX.PlayerData.ped, false, -1, 0)
 			if IsPedInAnyVehicle(ESX.PlayerData.ped, false) then SetPedCanSwitchWeapon(ESX.PlayerData.ped, true) else SetPedCanSwitchWeapon(ESX.PlayerData.ped, false) end
 			playerCoords = GetEntityCoords(ESX.PlayerData.ped)
 			if not invOpen then
