@@ -80,7 +80,7 @@ Citizen.CreateThread(function()
 					name = v.name,
 					label = v.label,
 					weight = v.weight,
-					stack = v.stack,
+					stack = v.stackackle,
 					close = v.closeonuse,
 					description = v.description
 				}
