@@ -303,23 +303,6 @@ AddEventHandler('linden_inventory:itemNotify', function(item, count, slot, notif
 	if count > 0 then notification = _U(notify)..' '..count..'x'
 	else notification = _U('used') end
 	if notify == 'removed' and item.name:find('WEAPON_') then TriggerEvent('linden_inventory:checkWeapon', item) end
-	if type(slot) == 'table' then
-		for k,v in pairs(slot) do
-			ESX.PlayerData.inventory[k] = item
-			if notify == 'removed' then
-				ESX.PlayerData.inventory[k].count = ESX.PlayerData.inventory[k].count - v
-			end
-		end
-	else
-		ESX.PlayerData.inventory[slot] = item
-		if notify == 'removed' then
-			ESX.PlayerData.inventory[slot].count = ESX.PlayerData.inventory[slot].count - count
-		end
-	end
-	if currentInventory and currentInventory.type == 'player' then
-		TriggerEvent('targetPlayerAnim')
-	end
-	ESX.SetPlayerData('inventory', ESX.PlayerData.inventory)
 	SendNUIMessage({ message = 'notify', item = item, text = notification })
 end)
 
