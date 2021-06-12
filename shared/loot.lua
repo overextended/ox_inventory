@@ -48,17 +48,17 @@ if Config.RandomLoot and IsDuplicityVersion() then
 						if math.random(1,100) <= chance then 
 							local lootMin, lootMax = Config.Loot[k].min, Config.Loot[k].max
 							local count = math.random(lootMin,lootMax)
-							if k ~= 'garbage' and item.stackable then
+							if k ~= 'garbage' and item.stack then
 								local slot = #returnData + 1
 								if item.metadata == nil then item.metadata = {} end
-								returnData[slot] = {name = item.name , label = Items[item.name].label, weight = Items[item.name].weight, slot = slot, count = count, description = Items[item.name].description, metadata = item.metadata, stackable = Items[item.name].stackable}
+								returnData[slot] = {name = item.name , label = Items[item.name].label, weight = Items[item.name].weight, slot = slot, count = count, description = Items[item.name].description, metadata = item.metadata, stack = Items[item.name].stack}
 							else
 								for i=1, count, 1 do 
 									local slot = #returnData + 1
 									local metadata = {}
 									local weight = Items[item.name].weight
 									if item.name == 'garbage' then metadata, weight = GenerateTrash(metadata) end
-									returnData[slot] = {name = item.name , label = Items[item.name].label, weight = weight, slot = slot, count = 1, description = Items[item.name].description, metadata = metadata, stackable = Items[item.name].stackable}
+									returnData[slot] = {name = item.name , label = Items[item.name].label, weight = weight, slot = slot, count = 1, description = Items[item.name].description, metadata = metadata, stack = Items[item.name].stack}
 								end 
 							end
 						end
