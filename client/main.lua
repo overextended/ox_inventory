@@ -6,6 +6,7 @@ ClearWeapons = function()
 		SetPedAmmo(ESX.PlayerData.ped, v.hash, 0)
 	end
 	RemoveAllPedWeapons(ESX.PlayerData.ped, true)
+	TriggerEvent('linden_inventory:currentWeapon', nil)
 end
 
 DisarmPlayer = function(weapon)
@@ -415,6 +416,7 @@ AddEventHandler('linden_inventory:usedWeapon',function()
 end)
 
 AddEventHandler('linden_inventory:currentWeapon', function(weapon)
+	DisablePlayerFiring(ESX.PlayerData.ped, weapon and false or true)
 	currentWeapon = weapon
 end)
 
@@ -496,7 +498,7 @@ end)
 TriggerLoops = function()
 	Citizen.CreateThread(function()
 		local Disable = {37, 157, 158, 160, 164, 165, 289}
-		local Disable2 = {24, 25, 142, 257, 140, 141, 142}
+		local Disable2 = {23, 24, 25, 142, 257, 140, 141, 142}
 		local wait = false
 		while PlayerLoaded do
 			sleep = 5
