@@ -550,6 +550,7 @@ AddEventHandler('linden_inventory:saveInventoryData', function(data)
 				invid = playerinv
 			else
 				invid = data.invid
+				if data.toinv == 'player' then xTarget, targetId = ESX.GetPlayerFromId(data.invid), data.invid end
 			end
 			if data.frominv == 'drop' or data.toinv == 'drop' then
 				if data.type == 'swap' then
@@ -595,9 +596,11 @@ AddEventHandler('linden_inventory:saveInventoryData', function(data)
 				return
 			end
 			if data.frominv == 'Playerinv' then
+				if data.toinv == 'player' then xTarget, targetId = ESX.GetPlayerFromId(data.invid), data.invid end
 				invid = data.invid
 				invid2 = xPlayer.source
 			elseif data.toinv == 'Playerinv' then
+				if data.frominv == 'player' then xTarget, targetId = ESX.GetPlayerFromId(data.invid2), data.invid2 end
 				invid2 = data.invid2
 				invid = xPlayer.source
 			end
