@@ -862,11 +862,13 @@ end)
 RegisterNetEvent('linden_inventory:reloadWeapon')
 AddEventHandler('linden_inventory:reloadWeapon', function(weapon)
 	local xPlayer = ESX.GetPlayerFromId(source)
-	local ammo = Items[Items[weapon.name].ammoname]
-	ammo.count = getInventoryItem(xPlayer, ammo.name).count
-	if ammo.count then Inventories[xPlayer.source].inventory[weapon.slot].metadata.ammo = 0
-		if ammo.count > 0 then TriggerClientEvent('linden_inventory:addAmmo', xPlayer.source, ammo) end
-	end
+	if Inventories[xPlayer.source].inventory[weapon.slot] then
+		local ammo = Items[Items[weapon.name].ammoname]
+		ammo.count = getInventoryItem(xPlayer, ammo.name).count
+		if ammo.count then Inventories[xPlayer.source].inventory[weapon.slot].metadata.ammo = 0
+			if ammo.count > 0 then TriggerClientEvent('linden_inventory:addAmmo', xPlayer.source, ammo) end
+		end
+	else TriggerClientEvent('qrp_inventory:clearWeapons', xPlayer.source) end
 end)
 
 RegisterNetEvent('linden_inventory:decreaseDurability')
