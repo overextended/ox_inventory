@@ -41,10 +41,11 @@ Citizen.CreateThread(function()
 	end
 
 	if Config.ItemList then
-		while Config.ItemList do
-			message('Your inventory items are not using the new format! Type ^1dumpitems^0 into the console', 1)
-			Citizen.Wait(10000)
-		end
+		Citizen.Wait(3000) print('')
+		message('Items are now expected to be stored in ^5`shared/items.lua`^0, with the database optional', 3)
+		message('You must enter ^1`dumpitems`^0 to remove inventory items from the database', 3)
+		message('Type ^1`dumpitems all`^0 if you would like to convert the database entirely\n', 3)
+		while Config.ItemList do Citizen.Wait(1000) end print('')
 		message('Due to changes to the way items are being handled you may need to update events! Please refer to the release post for 1.7.0', 3)
 		message('All weapons, ammo, components, and items registered with the inventory have been removed from the database', 3)
 		message('Restart your server to ensure items load correctly', 3)
@@ -1164,7 +1165,11 @@ if Config.ItemList then
 			local query
 			local result = exports.ghmattimysql:executeSync('SELECT * FROM items', {})
 			for k, v in pairs(result) do
-				if Config.ItemList[v.name] or v.name:find('money') or v.name:find('identification') or v.name:find('GADGET_') then
+				if v.name:find('WEAPON') or v.name:find('ammo-') then
+					if not query then
+						query = "DELETE FROM items WHERE name='"..v.name.."'"
+					else query = query.. " OR name='"..v.name.."'" end
+				elseif args[1] == 'all' or Config.ItemList[tostring(v.name)] or v.name:find('money') or v.name:find('identification') or v.name:find('GADGET_') then
 					local item = Config.ItemList[v.name] or {}
 
 					if not query then
@@ -1207,29 +1212,29 @@ if Config.ItemList then
 						local client = '}\n'
 						if defined then client = '\n'..status .. anim .. prop .. disable .. consume .. usetime .. event..'		}\n' end
 
-table.insert(itemDump, [[
-	[']]..v.name..[['] = {
-		label = ']]..v.label..[[',
-		weight = ]]..tonumber(v.weight)..[[,
-		stack = ]]..tostring(not not v.stack)..[[,
-		close = ]]..tostring(not not v.closeonuse)..[[,]]..description .. [[
-		server = {},
-		client = {]]..client..[[
-	},
+	table.insert(itemDump, [[
+		[']]..v.name..[['] = {
+			label = ']]..v.label..[[',
+			weight = ]]..tonumber(v.weight)..[[,
+			stack = ]]..tostring(not not v.stackable)..[[,
+			close = ]]..tostring(not not v.closeonuse)..[[,]]..description .. [[
+			server = {},
+			client = {]]..client..[[
+		},
 
-]])
+	]])
 					end
-				elseif v.name:find('WEAPON') or v.name:find('ammo-') then
-					if not query then
-						query = "DELETE FROM items WHERE name='"..v.name.."'"
-					else query = query.. " OR name='"..v.name.."'" end
 				end
 			end
 			Citizen.Wait(100)
-			exports.ghmattimysql:execute(query)
-			message('Converted '..#itemDump..' items to the new data format', 2)
-			SaveResourceFile(Config.Resource, "shared/items.lua", "Items = {\n\n"..table.concat(itemDump).."}\n", -1)
-			Config.ItemList = false
+			if next(itemDump) then
+				message('Converted '..#itemDump..' items to the new data format', 2)
+				SaveResourceFile(Config.Resource, "shared/items.lua", "Items = {\n\n"..table.concat(itemDump).."}\n", -1)
+				Config.ItemList = false
+				exports.ghmattimysql:execute(query)
+			else
+				message('Failed to convert any items', 1)
+			end
 		end
 	end, true)
 end
