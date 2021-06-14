@@ -88,3 +88,18 @@ AddEventHandler('linden_inventory:armour', function(item, wait, cb)
 		end
 	end)
 end)
+
+parachute = false
+AddEventHandler('linden_inventory:parachute', function(item, wait, cb)
+	if not parachute then 
+		cb(true)
+		SetTimeout(wait, function()
+			if not cancelled then
+				local chute = `GADGET_PARACHUTE`
+				GiveWeaponToPed(ESX.PlayerData.ped, chute, 0, true, false)
+				SetPedGadget(ESX.PlayerData.ped, chute, true)
+				parachute = CreateParachuteBagObject(ESX.PlayerData.ped, true, true)
+			end
+		end)
+	else cb(false) end
+end)
