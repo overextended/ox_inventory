@@ -36,54 +36,39 @@ exports('TableContains', table_contains)
 
 local SearchItems = function(item, metadata)
 	if item then
-		local getType = type(item)
-		if getType == 'string' then
-			item = string.lower(item)
+		if type(item) == 'string' then item = {item} end
+		if type(metadata) == 'string' then metadata = {type=metadata} end
+		local returnData = {}
+		for i=1, #item do
+			local item = string.lower(item[i])
 			if item:find('weapon_') then item = string.upper(item) end
-			local returnData = {count=0, slots={}}
-			if type(metadata) == 'string' then metadata = {type=metadata} end
+			returnData[item] = {}
 			for k, v in pairs(ESX.PlayerData.inventory) do
 				if v.name == item then
 					if not v.metadata then v.metadata = {} end
 					if not metadata or table_contains(v.metadata, metadata) then
-						returnData.count = returnData.count + v.count
-						returnData.slots[#returnData.slots+1] = v.slot
+						table.insert(returnData[item], ESX.PlayerData.inventory[v.slot])
 					end
 				end
 			end
-			if returnData.count > 0 then return returnData end
-		elseif getType == 'table' then
-			local returnData = {}
-			for i=1, #item do
-				item[i] = string.lower(item[i])
-				if item[i]:find('weapon_') then item[i] = string.upper(item[i]) end
-				returnData[i] = {count=0, slots={}}
-				if type(metadata) == 'string' then metadata = {type=metadata} end
-				for k, v in pairs(ESX.PlayerData.inventory) do
-					if v.name == item[i] then
-						if not v.metadata then v.metadata = {} end
-						if not metadata or table_contains(v.metadata, metadata) then
-							returnData[i].count = returnData[i].count + v.count
-							returnData[i].slots[#returnData[i].slots+1] = v.slot
-						end
-					end
-				end
-			end
-			if next(returnData) then return returnData end
 		end
+		if next(returnData) then return returnData end
 	end
 	return false
 end
 exports('SearchItems', SearchItems)
 
 
--- RegisterCommand('meta', function(source, args, rawCommand)
--- 	local inventory = ESX.GetPlayerData().inventory
--- 	local item = exports['linden_inventory']:SearchItems({'meat', 'skin'}, {grade=1})
--- 	if item then
--- 		for k, v in pairs(item) do
--- 			local data = inventory[v.slots[1]]
--- 			print('You have '..data.count..' '..data.name.. ' contained in slot '..data.slot..' with metadata '..json.encode(data.metadata))
--- 		end
--- 	end
--- end)
+--	RegisterCommand('meta', function(source, args, rawCommand)
+--		local inventory = exports['linden_inventory']:SearchItems({'meat', 'skin'}, {grade=1})
+--		if inventory then
+--			for name, data in pairs(inventory) do
+--				local count = 0
+--				for _, v in pairs(data) do
+--					print(v.slot..' contains '..v.count..' '..name..' '..json.encode(v.metadata))
+--					count = count + v.count
+--				end
+--				print('You have '..count.. ' '..name)
+--			end
+--		end
+--	end)
