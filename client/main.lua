@@ -622,7 +622,7 @@ TriggerLoops = function()
 			if IsPedInAnyVehicle(ESX.PlayerData.ped, false) then SetPedCanSwitchWeapon(ESX.PlayerData.ped, true) else SetPedCanSwitchWeapon(ESX.PlayerData.ped, false) end
 			playerCoords = GetEntityCoords(ESX.PlayerData.ped)
 			if not invOpen then
-				if not id or type == 'shop' then
+				if not id or (type == 'shop' and not Config.bt_target) then
 					if id then
 						sleep = 5
 						closestShop = id
