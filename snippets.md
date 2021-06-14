@@ -31,27 +31,18 @@ title: Snippets
 ```
 * If you were using the previous method it should still work, though I recommend adding the label
 
-## Support for loaf_housing
-* This is a single unified storage. If you want it for each piece of furniture, figure it out
+## Support for loaf_housing (per furniture)
 * Find the `OpenStorage` function and replace with
 ```lua
 OpenStorage = function(houseid, k, v)
-    exports['linden_inventory']:OpenStash({ name = ('house %s'):format(houseid), slots = 101})
+    exports['linden_inventory']:OpenStash({owner = currentHouseOwner, id = 'house'..houseid..'-'..k, label = v.label, slots = 20 })
 end
 ```
-
-## Count inventory items
-* The default method for looping through the inventory will still function, however it will not stack items of the same name
-* The below function will count up items with the same name, though it doesn't check metadata
+* Find the `EnterHouse` function, and below `if type(success) == "table" then` add
 ```lua
-local inv = {}
-for k, v in pairs(ESX.GetPlayerData().inventory) do
-	if inv[v.name] then
-		inv[v.name].count = inv[v.name].count + v.count
-	else inv[v.name] = v end
-end
-for k, v in pairs(inv) do
-	print(k, v.count)
-end
+currentHouseOwner = success.owner
 ```
-* You can add a check if the item being checked exists in another table if you are counting specific items
+* Search for `spawned_houses[houseid] = {` and within the table add (to both instances)
+```lua
+owner = owner
+```
