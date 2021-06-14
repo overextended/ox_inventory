@@ -484,6 +484,7 @@ AddEventHandler('linden_inventory:closeInventory', function(sendNUI)
 end)
 
 AddEventHandler('onResourceStop', function(resourceName)
+	if parachute then ESX.Game.DeleteObject(parachute) end
 	if invOpen and Config.Resource == resourceName then
 		TriggerScreenblurFadeOut(0)
 		if nui_focus[1] == true then SetNuiFocusAdvanced(false, false) end
@@ -706,6 +707,7 @@ TriggerLoops = function()
 					end
 				end
 			end
+			if sleep > 50 and GetPedParachuteState(ESX.PlayerData.ped) ~= -1 then ESX.Game.DeleteObject(parachute) parachute = false end
 			if invOpen and not CanOpenInventory() then TriggerEvent('linden_inventory:closeInventory') end
 			Citizen.Wait(sleep)
 		end
