@@ -49,11 +49,17 @@ Items = {
 		}
 	},
 
-	['GADGET_PARACHUTE'] = {
+	['parachute'] = {
 		label = 'Parachute',
 		weight = 8000,
 		stack = false,
-		close = false,
+		close = true,
+		server = {},
+		client = {
+			anim = { dict = 'clothingshirt', clip = 'try_shirt_positive_d' },
+			event = true,
+			usetime = 1500
+		}
 	},
 
 	['garbage'] = {
