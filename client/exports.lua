@@ -15,6 +15,25 @@ is_table_equal = function(t1,t2)
 end
 exports('MatchTables', is_table_equal)
 
+table_contains = function(table, value)
+	if type(value) == 'string' then
+		if table.type == value then return true end
+	else
+		local match = {}
+		local values = 0
+		for k1, v1 in pairs(value) do
+			values = values + 1
+			for k2, v2 in pairs(table) do
+				if v1 == v2 then
+					match[#match+1] = true
+				end
+			end
+		end
+		if #match == values then return true else return false end
+	end
+end
+exports('TableContains', table_contains)
+
 local SearchItems = function(item, metadata)
 	if item then
 		local getType = type(item)
@@ -26,7 +45,7 @@ local SearchItems = function(item, metadata)
 			for k, v in pairs(ESX.PlayerData.inventory) do
 				if v.name == item then
 					if not v.metadata then v.metadata = {} end
-					if not metadata or is_table_equal(v.metadata, metadata) then
+					if not metadata or table_contains(v.metadata, metadata) then
 						returnData.count = returnData.count + v.count
 						returnData.slots[#returnData.slots+1] = v.slot
 					end
@@ -43,7 +62,7 @@ local SearchItems = function(item, metadata)
 				for k, v in pairs(ESX.PlayerData.inventory) do
 					if v.name == item[i] then
 						if not v.metadata then v.metadata = {} end
-						if not metadata or is_table_equal(v.metadata, metadata) then
+						if not metadata or table_contains(v.metadata, metadata) then
 							returnData[i].count = returnData[i].count + v.count
 							returnData[i].slots[#returnData[i].slots+1] = v.slot
 						end
@@ -57,30 +76,14 @@ local SearchItems = function(item, metadata)
 end
 exports('SearchItems', SearchItems)
 
---[[	Example usage
-RegisterCommand('test', function(source, args, rawCommand)
-	local inventory = ESX.GetPlayerData().inventory
-	local data = exports['linden_inventory']:SearchItems({'weapon_pistol', 'water'}, args[2])
-	local getType = type(data)
-	if getType == 'string' then
-		print('You have '..data.count..'x '..args[1]..' in '..#data.slots.. ' slots')
-		for k,v in pairs(data.slots) do
-			local slotItem = inventory[v]
-			print(slotItem.label, slotItem.slot, slotItem.count)
-			for a,b in next, slotItem.metadata do
-				print(a, b)
-			end
-		end
-	elseif getType == 'table' then
-		for i=1, #data do
-			for k,v in pairs(data[i].slots) do
-				local slotItem = inventory[v]
-				print(slotItem.label, slotItem.slot, slotItem.count)
-				for a,b in next, slotItem.metadata do
-					print(a, b)
-				end
-			end
-		end
-	end
-end)
---]]
+
+-- RegisterCommand('meta', function(source, args, rawCommand)
+-- 	local inventory = ESX.GetPlayerData().inventory
+-- 	local item = exports['linden_inventory']:SearchItems({'meat', 'skin'}, {grade=1})
+-- 	if item then
+-- 		for k, v in pairs(item) do
+-- 			local data = inventory[v.slots[1]]
+-- 			print('You have '..data.count..' '..data.name.. ' contained in slot '..data.slot..' with metadata '..json.encode(data.metadata))
+-- 		end
+-- 	end
+-- end)
