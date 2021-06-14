@@ -228,12 +228,13 @@ getPlayerInventory = function(xPlayer, minimal)
 		local inventory = {}
 		for k, v in pairs(Inventories[xPlayer.source].inventory) do
 			if v.count > 0 then
-				if minimal and v.metadata and next(v.metadata) == nil then v.metadata = nil end
+				local metadata = v.metadata
+				if minimal and v.metadata and next(v.metadata) == nil then metadata = nil end
 				inventory[#inventory+1] = {
 					name = v.name,
 					count = v.count,
 					slot = k,
-					metadata = v.metadata
+					metadata = metadata
 				}
 			end
 		end
