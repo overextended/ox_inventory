@@ -10,6 +10,10 @@ ClearWeapons = function()
 		SetPedAmmo(ESX.PlayerData.ped, v.hash, 0)
 	end
 	RemoveAllPedWeapons(ESX.PlayerData.ped, true)
+	if parachute then
+		GiveWeaponToPed(ESX.PlayerData.ped, chute, 0, true, false)
+		SetPedGadget(ESX.PlayerData.ped, chute, true)
+	end
 	TriggerEvent('linden_inventory:currentWeapon', nil)
 end
 
@@ -707,7 +711,7 @@ TriggerLoops = function()
 					end
 				end
 			end
-			if sleep > 50 and GetPedParachuteState(ESX.PlayerData.ped) ~= -1 then ESX.Game.DeleteObject(parachute) parachute = false end
+			if parachute and sleep > 50 and GetPedParachuteState(ESX.PlayerData.ped) ~= -1 then ESX.Game.DeleteObject(parachute) parachute = false end
 			if invOpen and not CanOpenInventory() then TriggerEvent('linden_inventory:closeInventory') end
 			Citizen.Wait(sleep)
 		end
