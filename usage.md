@@ -7,65 +7,50 @@ title: Usage
 #### [#](search-items) Client-side check for items
 * This concerns the usage of the SearchItems exports from `client/exports.lua`
 * You can define as many items as you want to search for to get all the results.
-* Rather than defining a string, you can search for an entire table `{type='VH3 328', description='Keys for a vehicle'}`
-* The search is for items **containing** a metadata value, not table matching
-* Example 1: Search for the total count and slots for a single item (regardless of metadata)
+* When searching for metadata, using a string will search for `metadata.type`
+* To search for specific metadata use a table such as `{grade=1, type='Deer meat'}`
+* Only partial metadata matches are required, so extra metadata will not return false
+##### Example 1: Search for grade 1 meat and skin (any animal)
 ```lua
-RegisterCommand('oneitem', function(source, args, rawCommand)
-	local inventory = ESX.GetPlayerData().inventory
-	local item = exports['linden_inventory']:SearchItems('water')
-	if item then
-		local data = inventory[item.slots[1]]
-		if #item.slots > 1 then
-			print('You have '..item.count..' '..data.name..' contained in slots '..json.encode(item.slots))
-		else
-			print('You have '..item.count..' '..data.name..' contained in slot '..json.encode(item.slots))
-		end
-	end
-end)
-```
-* Example 2: Search for the total count and slots for multiple items (regardless of metadata)
-```lua
-RegisterCommand('twoitem', function(source, args, rawCommand)
-	local inventory = ESX.GetPlayerData().inventory
-	local item = exports['linden_inventory']:SearchItems({'water', 'burger'})
-	if item then
-		for i=1, #item do
-			for k, v in pairs(item) do
-				local data = inventory[v.slots[i]]
-				print('You have '..data.count..' '..data.name.. ' contained in slot '..data.slot..' with metadata '..json.encode(data.metadata))
+	local inventory = exports['linden_inventory']:SearchItems({'meat', 'skin'}, {grade=1})
+	if inventory then
+		for name, data in pairs(inventory) do
+			local count = 0
+			for _, v in pairs(data) do
+				print(v.slot..' contains '..v.count..' '..name..' '..json.encode(v.metadata))
+				count = count + v.count
 			end
+			print('You have '..count.. ' '..name)
 		end
 	end
-end)
 ```
-* Example 3: Search for the total count and slots of a single item with a specific metadata.type
+##### Example 2: Search for meat and skin from a deer (any grade)
 ```lua
-RegisterCommand('onemeta', function(source, args, rawCommand)
-	local inventory = ESX.GetPlayerData().inventory
-	local item = exports['linden_inventory']:SearchItems('water', 'meta')
-	if item then
-		local data = inventory[item.slots[1]]
-		if #item.slots > 1 then
-			print('You have '..item.count..' '..data.name..' contained in slots '..json.encode(item.slots)..' with metadata '..json.encode(data.metadata))
-		else
-			print('You have '..item.count..' '..data.name..' contained in slot '..json.encode(item.slots)..' with metadata '..json.encode(data.metadata))
+	local inventory = exports['linden_inventory']:SearchItems({'meat', 'skin'}, {animal='a_c_deer'})
+	if inventory then
+		for name, data in pairs(inventory) do
+			local count = 0
+			for _, v in pairs(data) do
+				print(v.slot..' contains '..v.count..' '..name..' '..json.encode(v.metadata))
+				count = count + v.count
+			end
+			print('You have '..count.. ' '..name)
 		end
 	end
-end)
 ```
-* Example 4: Search for the total count and slots of multiple items with a specific metadata.type
+##### Example 3: Search for any type of meat
 ```lua
-RegisterCommand('twometa', function(source, args, rawCommand)
-	local inventory = ESX.GetPlayerData().inventory
-	local item = exports['linden_inventory']:SearchItems({'water', 'burger'}, 'meta')
-	if item then
-		for k, v in pairs(item) do
-			local data = inventory[v.slots[1]]
-			print('You have '..data.count..' '..data.name.. ' contained in slot '..data.slot..' with metadata '..json.encode(data.metadata))
+	local inventory = exports['linden_inventory']:SearchItems({'meat'})
+	if inventory then
+		for name, data in pairs(inventory) do
+			local count = 0
+			for _, v in pairs(data) do
+				print(v.slot..' contains '..v.count..' '..name..' '..json.encode(v.metadata))
+				count = count + v.count
+			end
+			print('You have '..count.. ' '..name)
 		end
 	end
-end)
 ```
 
 ## xPlayer functions
