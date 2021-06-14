@@ -4,6 +4,70 @@ title: Usage
 
 #### This will not always be up to date. If you want the best understanding of how to use the inventory you should read through the files.
 
+#### [#](search-items) Client-side check for items
+* This concerns the usage of the SearchItems exports from `client/exports.lua`
+* You can define as many items as you want to search for to get all the results.
+* Rather than defining a string, you can search for an entire table `{type='VH3 328', description='Keys for a vehicle'}`
+* The search is for items **containing** a metadata value, not table matching
+* Example 1: Search for the total count and slots for a single item (regardless of metadata)
+```lua
+RegisterCommand('oneitem', function(source, args, rawCommand)
+	local inventory = ESX.GetPlayerData().inventory
+	local item = exports['linden_inventory']:SearchItems('water')
+	if item then
+		local data = inventory[item.slots[1]]
+		if #item.slots > 1 then
+			print('You have '..item.count..' '..data.name..' contained in slots '..json.encode(item.slots))
+		else
+			print('You have '..item.count..' '..data.name..' contained in slot '..json.encode(item.slots))
+		end
+	end
+end)
+```
+* Example 2: Search for the total count and slots for multiple items (regardless of metadata)
+```lua
+RegisterCommand('twoitem', function(source, args, rawCommand)
+	local inventory = ESX.GetPlayerData().inventory
+	local item = exports['linden_inventory']:SearchItems({'water', 'burger'})
+	if item then
+		for i=1, #item do
+			for k, v in pairs(item) do
+				local data = inventory[v.slots[i]]
+				print('You have '..data.count..' '..data.name.. ' contained in slot '..data.slot..' with metadata '..json.encode(data.metadata))
+			end
+		end
+	end
+end)
+```
+* Example 3: Search for the total count and slots of a single item with a specific metadata.type
+```lua
+RegisterCommand('onemeta', function(source, args, rawCommand)
+	local inventory = ESX.GetPlayerData().inventory
+	local item = exports['linden_inventory']:SearchItems('water', 'meta')
+	if item then
+		local data = inventory[item.slots[1]]
+		if #item.slots > 1 then
+			print('You have '..item.count..' '..data.name..' contained in slots '..json.encode(item.slots)..' with metadata '..json.encode(data.metadata))
+		else
+			print('You have '..item.count..' '..data.name..' contained in slot '..json.encode(item.slots)..' with metadata '..json.encode(data.metadata))
+		end
+	end
+end)
+```
+* Example 4: Search for the total count and slots of multiple items with a specific metadata.type
+```lua
+RegisterCommand('twometa', function(source, args, rawCommand)
+	local inventory = ESX.GetPlayerData().inventory
+	local item = exports['linden_inventory']:SearchItems({'water', 'burger'}, 'meta')
+	if item then
+		for k, v in pairs(item) do
+			local data = inventory[v.slots[1]]
+			print('You have '..data.count..' '..data.name.. ' contained in slot '..data.slot..' with metadata '..json.encode(data.metadata))
+		end
+	end
+end)
+```
+
 ## xPlayer functions
 * Compatibility is important, that's why we've modified the framework with the inventory exports
 * All functions will work as they did previously, with some extra benefits such as metadata
