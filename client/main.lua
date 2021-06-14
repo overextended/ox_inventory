@@ -1,6 +1,10 @@
 local Blips, Drops, Usables, weaponTimer, currentDrop, currentWeapon = {}, {}, {}, 0
 cancelled = false
 
+exports('ItemCancelled', function()
+	return cancelled
+end)
+
 ClearWeapons = function()
 	for k, v in pairs(Weapons) do
 		SetPedAmmo(ESX.PlayerData.ped, v.hash, 0)
