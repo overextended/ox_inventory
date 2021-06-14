@@ -11,6 +11,7 @@ ClearWeapons = function()
 	end
 	RemoveAllPedWeapons(ESX.PlayerData.ped, true)
 	if parachute then
+		local chute = `GADGET_PARACHUTE`
 		GiveWeaponToPed(ESX.PlayerData.ped, chute, 0, true, false)
 		SetPedGadget(ESX.PlayerData.ped, chute, true)
 	end
