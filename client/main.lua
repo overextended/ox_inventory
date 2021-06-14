@@ -1,7 +1,7 @@
 local Blips, Drops, Usables, weaponTimer, currentDrop, currentWeapon = {}, {}, {}, 0
 cancelled = false
 
-exports('itemCancelled', function()
+exports('ItemCancelled', function()
 	return cancelled
 end)
 
