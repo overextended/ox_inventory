@@ -6,6 +6,7 @@ end)
 
 RegisterNetEvent('esx:onPlayerLogout')	-- Trigger this event when a player logs out to character selection
 AddEventHandler('esx:onPlayerLogout', function()
+	if parachute then ESX.Game.DeleteObject(parachute) parachute = false end
 	DisarmPlayer() TriggerEvent('linden_inventory:closeInventory')
 	PlayerLoaded = false
 end)

@@ -1,5 +1,10 @@
 <h1 align='center'><a href='https://thelindat.github.io/linden_inventory/'>Documentation</a></h1><p align='center'>Click the link above for information on setup, installation, and improving compatibility with other resources.
-<p align='center'><a href='https://streamable.com/bggvpg'>Showcase</a> | <a href='https://discord.gg/hmcmv3P7YW'>Discord</a> | <a href='https://thelindat.github.io/linden_inventory/media'>Media</a></p><br><br><br><br><br><br><br>
+<p align='center'><a href='https://streamable.com/bggvpg'>Showcase</a> | <a href='https://discord.gg/hmcmv3P7YW'>Discord</a> | <a href='https://thelindat.github.io/linden_inventory/media'>Media</a></p>
+
+##### Note: If you need to reference the items list in another file, use `exports.linden_inventory:Items()` instead of querying the database
+
+
+<br><br><br>
 
 
 ## What's changed?

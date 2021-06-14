@@ -1,12 +1,15 @@
 @import url('https://fonts.googleapis.com/css2?family=Signika:wght@300;400;500;600;700&display=swap');
 
-body {
+html {
 	font-family: 'Signika';
 	user-select: none;
+	color: white;
+}
+
+body {
 	display: flex;
 	align-items: center;
 	justify-content: center;
-	color: white;
 	text-shadow: 1px 1px 0px black;
 	overflow:hidden;
 }
@@ -19,10 +22,19 @@ body {
 	overflow: hidden;
 }
 
-.inventory-main-leftside, .inventory-main-rightside {
-	width: 515px;
+.inventory-main-leftside {
+	width: 514px;
 	height: 408px;
 	overflow: auto;
+	direction: ltr;
+}
+
+.inventory-main-rightside {
+	width: 514px;
+	height: 408px;
+	overflow: auto;
+	direction: rtl;
+	margin-left: -4px;
 }
 
 .ItemBoxes {
@@ -31,6 +43,7 @@ body {
 	height: 100px;
 	background-color: rgba(0, 0, 0, 0.2);
 	float: left;
+	top: -2px;
 	margin: 2px 1px 0 1px;
 	outline: 1px solid rgba(33,33,33,0.4);
 	outline-offset: -1px;
@@ -184,7 +197,6 @@ body {
 .hotslot-container {
 	position: relative;
 	float: left;
-	margin: 0.5px;
 	margin: 1px;
 	width: 110px;
 	height: 110px;
@@ -297,9 +309,8 @@ body {
 }
 
 p {
-	line-height: 0.3rem;
+	line-height: 2px;
 }
-
 
 .iteminfo-label {
 	font-size: 15px;
@@ -313,7 +324,6 @@ p {
 	margin-top:5px;
 	margin-bottom:5px;
 }
-
 
 .item-slot-count p {
 	color: #ffffff;
@@ -332,8 +342,6 @@ p {
 	font-size: 1.1pt;
 	font-family: Verdana;
 }
-
-
 
 .inv-option-item { 
 	position: relative;
@@ -403,7 +411,6 @@ p {
 	border: 0;
 }
 
-
 /* scrollbar Hsn*/
 input[type=number]::-webkit-inner-spin-button, 
 input[type=number]::-webkit-outer-spin-button { 
@@ -411,16 +418,39 @@ input[type=number]::-webkit-outer-spin-button {
   margin: 0; 
 }
 
-::-webkit-scrollbar
-{
+::-webkit-scrollbar {
 	width: 4px;
 }
 
-::-webkit-scrollbar-thumb
-{
-	background-color: rgba(0, 0, 0, 0.705);
+::-webkit-scrollbar-thumb {
+	background-color: rgba(0, 0, 0, 0.4);
 }
 
 .ui-draggable-dragging {
-	pointer-events: none
+	pointer-events: none;
+	width: 100px;
+	height: 100px;
+	position: relative;
+	float: left;
+	margin: 2px 1px 0 1px;
+}
+
+.ui-progressbar {
+	background: rgba(0,0,0,0.5);
+	width: 508px;
+	margin-left: 1px;
+	height: 4px;
+	border-radius: 0;
+	border: 1px solid rgba(0,0,0,0.5);
+}
+
+.ui-progressbar-value 
+{
+	background: #30a121;
+	border: 0px;
+	border-radius: 0;
+}
+
+.ui-widget.ui-widget-content {
+    border: 0px solid #c5c5c5;
 }

@@ -1,3 +1,5 @@
+DefaultWeight = ESX.GetConfig().MaxWeight
+
 checkPlayer = function(xPlayer)
 	if xPlayer.get('linventory') ~= true then Citizen.Wait(1500) count = 0 while true do if count > 3 then return false end Citizen.Wait(1000) end count = count + 1 else return true end
 end
@@ -33,33 +35,28 @@ addInventoryItem = function(xPlayer, item, count, metadata, slot)
 		if slot then slot = getPlayerSlot(xPlayer, slot, item, metadata).slot
 		else
 			for i=1, Config.PlayerSlots do
-				if xItem.stackable and Inventories[xPlayer.source].inventory[i] and Inventories[xPlayer.source].inventory[i].name == item and is_table_equal(Inventories[xPlayer.source].inventory[i].metadata, metadata) then toSlot = i existing = true break
+				if xItem.stack and Inventories[xPlayer.source].inventory[i] and Inventories[xPlayer.source].inventory[i].name == item and is_table_equal(Inventories[xPlayer.source].inventory[i].metadata, metadata) then toSlot = i existing = true break
 				elseif not toSlot and Inventories[xPlayer.source].inventory[i] == nil then toSlot = i existing = false end
 			end
 			slot = toSlot
 		end
 		if isWeapon then
-			xItem.stackable = false
-			if Config.Throwable[item] then
-				metadata = {throwable=1}
-				xItem.stackable = true
-			elseif Config.Melee[item] or Config.Miscellaneous[item] then
-				count = 1
+			if not xItem.ammoname then
 				metadata = {}
-				if not metadata.durability then metadata.durability = 100 end
+				if not xItem.throwable then count = 1 metadata.durability = 100 end
 			else
 				count = 1
 				if type(metadata) ~= 'table' then metadata = {} end
 				if not metadata.durability then metadata.durability = 100 end
-				if xItem.ammoType then metadata.ammo = 0 end
+				if xItem.ammoname then metadata.ammo = 0 end
 				if not metadata.components then metadata.components = {} end
 				if metadata.registered ~= false then
 					metadata.registered = xPlayer.getName()
 					metadata.serial = GenerateSerial(metadata.serial)
 				end
 			end
-			Inventories[xPlayer.source].inventory[slot] = {name = item, label = xItem.label, weight = xItem.weight, slot = slot, count = count, description = xItem.description, metadata = metadata, stackable = xItem.stackable, closeonuse = true}
-			if xItem.ammoType then Inventories[xPlayer.source].inventory[slot].ammoType = xItem.ammoType end
+			Inventories[xPlayer.source].inventory[slot] = {name = item, label = xItem.label, weight = xItem.weight, slot = slot, count = count, description = xItem.description, metadata = metadata, stack = xItem.stack, close = true}
+			if xItem.ammoname then Inventories[xPlayer.source].inventory[slot].ammoname = xItem.ammoname end
 			if xItem.weight > 0 or xItem.name:find('money') then updateWeight(xPlayer) end
 			ItemNotify(xPlayer, Inventories[xPlayer.source].inventory[slot], count, slot, 'added')
 		else
@@ -78,7 +75,7 @@ addInventoryItem = function(xPlayer, item, count, metadata, slot)
 
 			local added = count
 			if existing then count = Inventories[xPlayer.source].inventory[slot].count + count end
-			Inventories[xPlayer.source].inventory[slot] = {name = item, label = xItem.label, weight = xItem.weight, slot = slot, count = count, description = xItem.description, metadata = metadata or {}, stackable = xItem.stackable, closeonuse = xItem.closeonuse}
+			Inventories[xPlayer.source].inventory[slot] = {name = item, label = xItem.label, weight = xItem.weight, slot = slot, count = count, description = xItem.description, metadata = metadata or {}, stack = xItem.stack, close = xItem.close}
 			if xItem.weight > 0 or xItem.name:find('money') then updateWeight(xPlayer) end
 			ItemNotify(xPlayer, Inventories[xPlayer.source].inventory[slot], added, slot, 'added')
 		end
@@ -101,7 +98,7 @@ removeInventoryItem = function(xPlayer, item, count, metadata, slot)
 		elseif slot and Inventories[xPlayer.source].inventory[slot].count > count and Inventories[xPlayer.source].inventory[slot].name == xItem.name then
 			local newCount = Inventories[xPlayer.source].inventory[slot].count - count
 			ItemNotify(xPlayer, Inventories[xPlayer.source].inventory[slot], count, slot, 'removed')
-			Inventories[xPlayer.source].inventory[slot] = {name = item, label = xItem.label, weight = xItem.weight, slot = slot, count = newCount, description = xItem.description, metadata = Inventories[xPlayer.source].inventory[slot].metadata, stackable = xItem.stackable, closeonuse = xItem.closeonuse}
+			Inventories[xPlayer.source].inventory[slot] = {name = item, label = xItem.label, weight = xItem.weight, slot = slot, count = newCount, description = xItem.description, metadata = Inventories[xPlayer.source].inventory[slot].metadata, stack = xItem.stack, close = xItem.close}
 			if xItem.weight > 0 or xItem.name:find('money') then updateWeight(xPlayer) end
 			TriggerClientEvent('linden_inventory:refreshInventory', xPlayer.source, Inventories[xPlayer.source])
 		else
@@ -117,7 +114,7 @@ removeInventoryItem = function(xPlayer, item, count, metadata, slot)
 						elseif v > count then
 							removed = total
 							count = v - count
-							Inventories[xPlayer.source].inventory[k] = {name = item, label = xItem.label, weight = xItem.weight, slot = k, count = count, description = xItem.description, metadata = Inventories[xPlayer.source].inventory[k].metadata, stackable = xItem.stackable, closeonuse = xItem.closeonuse}
+							Inventories[xPlayer.source].inventory[k] = {name = item, label = xItem.label, weight = xItem.weight, slot = k, count = count, description = xItem.description, metadata = Inventories[xPlayer.source].inventory[k].metadata, stack = xItem.stack, close = xItem.close}
 						else -- v < count
 							removed = v
 							count = count - v
@@ -158,7 +155,7 @@ updateWeight = function(xPlayer, force, metaweight, slot)
 		Inventories[xPlayer.source].weight = newWeight
 		TriggerClientEvent('linden_inventory:updateStorage', xPlayer.source, {newWeight, Inventories[xPlayer.source].maxWeight, Inventories[xPlayer.source].slots})
 	end
-	if slot then
+	if slot and Inventories[xPlayer.source].inventory[slot] then
 		Inventories[xPlayer.source].inventory[slot].weight = Items[Inventories[xPlayer.source].inventory[slot].name].weight + metaweight
 		Inventories[xPlayer.source].inventory[slot].metadata.weight = metaweight
 	end
@@ -180,7 +177,7 @@ exports('getWeight', getWeight)
 
 
 getMaxWeight = function(xPlayer)
-	if not Inventories[xPlayer.source] then return ESX.GetConfig().MaxWeight
+	if not Inventories[xPlayer.source] then return DefaultWeight
 	else return Inventories[xPlayer.source].maxWeight end
 end
 exports('getMaxWeight', getMaxWeight)
@@ -231,12 +228,13 @@ getPlayerInventory = function(xPlayer, minimal)
 		local inventory = {}
 		for k, v in pairs(Inventories[xPlayer.source].inventory) do
 			if v.count > 0 then
-				if minimal and v.metadata and next(v.metadata) == nil then v.metadata = nil end
+				local metadata = v.metadata
+				if minimal and v.metadata and next(v.metadata) == nil then metadata = nil end
 				inventory[#inventory+1] = {
 					name = v.name,
 					count = v.count,
 					slot = k,
-					metadata = v.metadata
+					metadata = metadata
 				}
 			end
 		end
