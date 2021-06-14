@@ -98,6 +98,7 @@ AddEventHandler('linden_inventory:parachute', function(item, wait, cb)
 				local chute = `GADGET_PARACHUTE`
 				GiveWeaponToPed(ESX.PlayerData.ped, chute, 0, true, false)
 				SetPedGadget(ESX.PlayerData.ped, chute, true)
+				ESX.Streaming.RequestModel(1269906701)
 				parachute = CreateParachuteBagObject(ESX.PlayerData.ped, true, true)
 			end
 		end)
