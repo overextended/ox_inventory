@@ -769,7 +769,7 @@ TriggerLoops = function()
 						if IsControlJustPressed(0, 38) then
 							OpenDumpster({ id = netid, label = 'Dumpster', slots = 20})
 						end
-					elseif distance > 4 then id = nil
+					elseif distance > 1.5 then id = nil
 					end
 				else
 					for i=1, #Config.Dumpsters do 
@@ -777,7 +777,7 @@ TriggerLoops = function()
 							local dumpster = GetClosestObjectOfType(playerCoords.x, playerCoords.y, playerCoords.z, 2.0, Config.Dumpsters[i], false, false, false)
 							local dumpPos = GetEntityCoords(dumpster)
 							local distance = #(playerCoords - dumpPos)
-							if distance <= 4 and dumpster ~= 0 then
+							if distance <= 1.5 and dumpster ~= 0 then
 								sleep = 100
 								id = dumpster
 							end
