@@ -535,7 +535,7 @@ end)
 
 TriggerLoops = function()
 	Citizen.CreateThread(function()
-		local Disable = {37, 157, 158, 160, 164, 165, 289}
+		local Disable = {37, 157, 158, 160, 164, 165, 289, 80}
 		local Disable2 = {23, 24, 25, 142, 257, 140, 141, 142}
 		local wait = false
 		while PlayerLoaded do

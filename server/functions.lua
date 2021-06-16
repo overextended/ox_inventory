@@ -1,7 +1,6 @@
 GetItems = function()
-	if Status[1] == 'ready' then
-		return Items
-	else return {} end
+	while Status ~= 'ready' do Citizen.Wait(500) end
+	return Items
 end
 exports('Items', GetItems)
 -- Items = exports.linden_inventory:Items()
@@ -35,10 +34,10 @@ end
 GenerateText = function(numLetters)
 	local blacklist = {'POL', 'EMS'}
 	::begin::
-    local totTxt = ""
-    for i = 1,numLetters do
-        totTxt = totTxt..string.char(math.random(65,90))
-    end
+	local totTxt = ""
+	for i = 1,numLetters do
+		totTxt = totTxt..string.char(math.random(65,90))
+	end
 	if blacklist[totTxt] then goto begin else return totTxt end
 end
 
@@ -89,7 +88,6 @@ TriggerBanEvent = function(xPlayer, reason)
 	TriggerClientEvent('linden_inventory:closeInventory', xPlayer.source)
 	-- do your ban stuff and whatever logging you want to use
 	-- only trigger bans when it is guaranteed to be cheating and not desync
-	if Config.Logs then exports.linden_logs:log(xPlayer, false, reason, 'ban') end
 end
 
 ValidateItem = function(type, xPlayer, fromSlot, toSlot, fromItem, toItem)
@@ -146,9 +144,7 @@ CreateNewDrop = function(xPlayer, data)
 				ItemNotify(xPlayer, data.item, count, data.emptyslot, 'removed')
 				Inventories[invid2].inventory[data.emptyslot] = nil
 				Drops[invid].inventory[data.toSlot] = {name = data.item.name, label = data.item.label, weight = data.item.weight, slot = data.toSlot, count = data.item.count, description = data.item.description, metadata = data.item.metadata, stack = data.item.stack, close = Items[data.item.name].close}
-				if Config.Logs then
-					exports.linden_logs:log(xPlayer, false, 'has dropped '..data.item.count..'x '..data.item.name..' in drop-'..invid, 'items')
-				end
+				if Config.Logs then CreateLog(xPlayer.source, false, 'has dropped '..data.item.count..'x '..data.item.name..' in drop-'..invid, 'drop') end
 				Opened[xPlayer.source] = nil
 				TriggerClientEvent('linden_inventory:createDrop', -1, Drops[invid], xPlayer.source)
 			end
@@ -157,9 +153,7 @@ CreateNewDrop = function(xPlayer, data)
 				ItemNotify(xPlayer, data.newslotItem, data.newslotItem.count, data.fromSlot, 'removed')
 				Inventories[invid2].inventory[data.fromSlot] = {name = data.oldslotItem.name, label = data.oldslotItem.label, weight = data.oldslotItem.weight, slot = data.fromSlot, count = data.oldslotItem.count, description = data.oldslotItem.description, metadata = data.oldslotItem.metadata, stack = data.oldslotItem.stack, close = Items[data.oldslotItem.name].close}
 				Drops[invid].inventory[data.toSlot] = {name = data.newslotItem.name, label = data.newslotItem.label, weight = data.newslotItem.weight, slot = data.toSlot, count = data.newslotItem.count, description = data.newslotItem.description, metadata = data.newslotItem.metadata, stack = data.newslotItem.stack, close = Items[data.newslotItem.name].close}
-				if Config.Logs then
-					exports.linden_logs:log(xPlayer, false, 'has dropped '..data.newslotItem.count..'x '..data.newslotItem.name,' in drop-'..invid, 'items')
-				end
+				if Config.Logs then CreateLog(xPlayer.source, false, 'has dropped '..data.newslotItem.count..'x '..data.newslotItem.name,' in drop-'..invid, 'drop') end
 				Opened[xPlayer.source] = nil
 				TriggerClientEvent('linden_inventory:createDrop', -1, Drops[invid], xPlayer.source)
 			end
@@ -180,7 +174,8 @@ CreateNewDrop = function(xPlayer, data)
 				Drops[invid].inventory[k] = {name = v.name , label = xItem.label, weight = xItem.weight, slot = v.slot, count = v.count, description = xItem.description, metadata = v.metadata, stack = xItem.stack,  close = xItem.close}
 			end
 		end
-        TriggerClientEvent('linden_inventory:createDrop', -1, Drops[invid])
+		if Config.Logs then CreateLog(xPlayer, false, 'has dropped '..data.newslotItem.count..'x '..data.newslotItem.name,' in drop-'..invid, 'drop') end
+		TriggerClientEvent('linden_inventory:createDrop', -1, Drops[invid])
 	end
 end
 exports('CreateNewDrop', CreateNewDrop)
@@ -219,7 +214,7 @@ SaveItems = function(type, id, owner, inventory)
 	if type and id then
 		if owner then
 			if inventory then
-				exports.ghmattimysql:execute('INSERT INTO linden_inventory (name, data, owner) VALUES (@name, @data, @owner) ON DUPLICATE KEY UPDATE data = @data', {
+				exports.ghmattimysql:execute('INSERT INTO `linden_inventory` (name, data, owner) VALUES (@name, @data, @owner) ON DUPLICATE KEY UPDATE data = @data', {
 					['@name'] = id,
 					['@data'] = inventory,
 					['@owner'] = owner
@@ -251,7 +246,7 @@ SaveItems = function(type, id, owner, inventory)
 			elseif type == 'dumpster' then
 				Datastore[id] = Inventories[id].inventory
 			else
-				exports.ghmattimysql:execute('INSERT INTO linden_inventory (name, data, owner) VALUES (@name, @data, @owner) ON DUPLICATE KEY UPDATE data = @data', {
+				exports.ghmattimysql:execute('INSERT INTO `linden_inventory` (name, data, owner) VALUES (@name, @data, @owner) ON DUPLICATE KEY UPDATE data = @data', {
 					['@name'] = id,
 					['@data'] = inventory,
 					['@owner'] = ''
@@ -284,7 +279,7 @@ GetItems = function(id, inv, owner)
 						if Config.RandomLoot then Datastore[id] = GenerateDatastore(inv) else Datastore[id] = {} end
 						return Datastore[id]
 					else
-						result = exports.ghmattimysql:scalarSync('SELECT data FROM linden_inventory WHERE name = @name', {
+						result = exports.ghmattimysql:scalarSync('SELECT data FROM `linden_inventory` WHERE name = @name', {
 							['@name'] = id
 						})
 					end
