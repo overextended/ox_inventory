@@ -1083,12 +1083,15 @@ end, true, {help = 'Return a Confiscated an Inventory', validate = true, argumen
 	{name = 'playerId', help = 'player id', type = 'player'},
 }})
 
--- Close all inventories before restarting to be safe
-RegisterCommand('closeallinv', function(source, args, rawCommand)
-	if source > 0 then return end
-		TriggerClientEvent("linden_inventory:closeInventory", -1)
+-- Always run this command before restarting the inventory
+ESX.RegisterCommand('saveinv', 'superadmin', function(xPlayer, args, showError)
+	TriggerClientEvent("linden_inventory:closeInventory", -1)
+	for k,v in pairs(Inventories) do
+		v.save()
+		v.set('timeout', false)
+	end
 	Opened = {}
-end, true)
+end, true, {help = 'Save all inventory data', validate = true, arguments = {}})
 
 RegisterCommand('maxweight', function(source, args, rawCommand)
 	local xPlayer = ESX.GetPlayerFromId(args[1])
