@@ -164,15 +164,6 @@ AddEventHandler('onResourceStart', function(resourceName)
 	end
 end)
 
-AddEventHandler('onResourceStop', function(resourceName)
-	if (Config.Resource == resourceName) then
-		if ESX == nil or Status ~= 'ready' then return end
-		for k,v in pairs(Inventories) do
-			v.save()
-		end
-	end
-end)
-
 AddEventHandler('linden_inventory:setPlayerInventory', function(xPlayer, data)
 	while Status ~= 'ready' do Citizen.Wait(200) end
 	local inventory, weight = {}, 0
