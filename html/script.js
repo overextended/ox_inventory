@@ -445,7 +445,7 @@ $(".use").droppable({
 			item: fromData,
 			inv: inv
 		}));
-		if (fromData.closeonuse) {
+		if (fromData.close) {
 			HSN.CloseInventory()
 		}
 	}
