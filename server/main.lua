@@ -322,18 +322,18 @@ AddEventHandler('linden_inventory:openInventory', function(invType, data, player
 					Inventories[id] = CreateInventory(
 						id,								-- id
 						data.label,						-- name
-						type,							-- type
+						invType,							-- type
 						data.slots,						-- slots
 						0,								-- weight
 						data.maxWeight,					-- maxWeight
 						data.owner,						-- owner
-						GetItems(id, type, data.owner)	-- inventory
+						GetItems(id, invType, data.owner)	-- inventory
 					)
 					if data.coords then Inventories[id].set('coords', data.coords) end
 				end
 				if CheckOpenable(xPlayer, id, data.coords) then
 					Inventories[id].set('open', xPlayer.source)
-					Opened[xPlayer.source] = {invid = id, type = type}
+					Opened[xPlayer.source] = {invid = id, type = invType}
 					Inventories[xPlayer.source].set('open', xPlayer.source)
 					TriggerClientEvent('linden_inventory:openInventory', xPlayer.source, Inventories[xPlayer.source], Inventories[id])
 				end
@@ -364,7 +364,7 @@ AddEventHandler('linden_inventory:openInventory', function(invType, data, player
 				end
 				if CheckOpenable(xPlayer, id, data.coords) then
 					Inventories[id].set('open', xPlayer.source)
-					Opened[xPlayer.source] = {invid = id, type = type}
+					Opened[xPlayer.source] = {invid = id, type = invType}
 					Inventories[xPlayer.source].set('open', xPlayer.source)
 					TriggerClientEvent('linden_inventory:openInventory', xPlayer.source, Inventories[xPlayer.source], Inventories[id])
 				end
