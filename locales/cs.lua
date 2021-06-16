@@ -1,6 +1,6 @@
 Locales['cs'] = {
-	['male'] = "žena",
-	['female'] = "muž",
+	['male'] = "muž",
+	['female'] = "žena",
 	['used'] = "Použito",
 	['removed'] = "Odstraněno",
 	['added'] = "Přidáno",
