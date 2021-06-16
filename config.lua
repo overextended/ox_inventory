@@ -35,3 +35,6 @@ Config.AutoReload = false
 
 -- Randomise the price of items in each shop at resource start
 Config.RandomPrices = false
+
+-- If you use bt-target and want to make use of bt-target on the shops enable this.
+Config.bt_target = true
