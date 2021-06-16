@@ -1,7 +1,6 @@
 GetItems = function()
-	if Status[1] == 'ready' then
-		return Items
-	else return {} end
+	while Status ~= 'ready' do Citizen.Wait(500) end
+	return Items
 end
 exports('Items', GetItems)
 -- Items = exports.linden_inventory:Items()
