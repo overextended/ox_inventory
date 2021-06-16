@@ -23,8 +23,8 @@ Config.EnableBlur = true
 Config.WeaponsLicense = true
 Config.WeaponsLicensePrice = 5000
 
--- Set the name of your logging resource, or false to disable
-Config.Logs = false --'linden_logs'
+-- Set to true to enable integrated logging
+Config.Logs = false
 
 -- Default keymapping for the inventory; players can assign their own
 Config.InventoryKey = 'F2'
