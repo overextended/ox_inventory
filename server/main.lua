@@ -9,7 +9,7 @@ Status = {'starting', ''}
 AddEventHandler('playerConnecting', function(name, setCallback, deferrals)
 	deferrals.defer()
 	Citizen.Wait(1000)
-	if Status[1] ~= 'ready' then
+	if Status ~= 'ready' then
 		deferrals.done('Inventory system has not yet loaded')
 	else
 		deferrals.done()
@@ -91,9 +91,9 @@ Citizen.CreateThread(function()
 		if query then exports.ghmattimysql:execute(query) end
 		message('Loaded '..count..' additional items from the database', 2)
 		Status[1] = 'loaded'
-		if #ESX.GetPlayers() == 0 then Status[1] = 'ready' end
+		if #ESX.GetPlayers() == 0 then Status = 'ready' end
 	end	
-	while (Status[1] == 'loaded') do Citizen.Wait(125) if Status[1] == 'ready' then break end end
+	while (Status[1] == 'loaded') do Citizen.Wait(125) if Status == 'ready' then break end end
 	message('Inventory setup is complete', 2)
 	if Config.Logs and GetResourceState(Config.Logs) ~= 'started' then
 		logsResource = Config.Logs
@@ -139,19 +139,19 @@ ESX.RegisterServerCallback('linden_inventory:setup', function(source, cb)
 	local src = source
 	local loop = 0
 	while true do
-		if Status[1] == 'ready' then break end
+		if Status == 'ready' then break end
 		loop = loop + 1
 		if loop == 50 then return end
 		Citizen.Wait(100)
 	end
 	local xPlayer = ESX.GetPlayerFromId(src)
-	if xPlayer.get('linventory') ~= true then
+	if not Inventories[xPlayer.source] then
 		local result = exports.ghmattimysql:scalarSync('SELECT inventory FROM users WHERE identifier = @identifier', {
 			['@identifier'] = xPlayer.getIdentifier()
 		})
-		if result ~= nil then
+		if result then
 			TriggerEvent('linden_inventory:setPlayerInventory', xPlayer, json.decode(result))
-			while xPlayer.get('linventory') ~= true do Citizen.Wait(100) end
+			while not Inventories[xPlayer.source] do Citizen.Wait(100) end
 		end
 	end
 	local data = {drops = Drops, name = Inventories[xPlayer.source].name, inventory = Inventories[xPlayer.source].inventory, usables = Usables }
@@ -164,12 +164,8 @@ end)
 AddEventHandler('onResourceStart', function(resourceName)
 	if (Config.Resource == resourceName) then
 		if ESX == nil then return end
-		local xPlayers = ESX.GetExtendedPlayers()
-		for k,v in pairs(xPlayers) do
-			v.set('linventory', false)
-		end
 		while true do Citizen.Wait(100) if Status[1] == 'loaded' then break end end
-		Status[1] = 'ready'
+		Status = 'ready'
 	elseif resourceName == logsResource then
 		message('Logs have been enabled', 2)
 		logsResource, Config.Logs = nil, logsResource
@@ -178,7 +174,7 @@ end)
 
 AddEventHandler('onResourceStop', function(resourceName)
 	if (Config.Resource == resourceName) then
-		if ESX == nil or Status[1] ~= 'ready' then return end
+		if ESX == nil or Status ~= 'ready' then return end
 		for k,v in pairs(Inventories) do
 			v.save()
 		end
@@ -190,7 +186,7 @@ AddEventHandler('onResourceStop', function(resourceName)
 end)
 
 AddEventHandler('linden_inventory:setPlayerInventory', function(xPlayer, data)
-	while Status[1] ~= 'ready' do Citizen.Wait(200) end
+	while Status ~= 'ready' do Citizen.Wait(200) end
 	local inventory, weight = {}, 0
 
 	if data and next(data) then
@@ -212,10 +208,9 @@ AddEventHandler('linden_inventory:setPlayerInventory', function(xPlayer, data)
 			end
 		end
 	end
-	inventory = CreateInventory(xPlayer.source, xPlayer.getName(), 'player', Config.PlayerSlots, weight, DefaultWeight, xPlayer.source, inventory)
+	inventory = CreateInventory(xPlayer.source, xPlayer.name, 'player', Config.PlayerSlots, weight, DefaultWeight, xPlayer.source, inventory)
 	inventory.set('identifier', xPlayer.identifier)
 	Inventories[xPlayer.source] = inventory
-	xPlayer.set('linventory', true)
 end)
 
 AddEventHandler('linden_inventory:clearPlayerInventory', function(xPlayer)
@@ -237,9 +232,9 @@ end)
 
 AddEventHandler('linden_inventory:confiscatePlayerInventory', function(xPlayer)
 	if type(xPlayer) ~= 'table' then xPlayer = ESX.GetPlayerFromId(xPlayer) end
-	if xPlayer.get('linventory') then
+	if Inventories[xPlayer.source] then
 		local inventory = json.encode(getPlayerInventory(xPlayer))
-		exports.ghmattimysql:execute('REPLACE INTO linden_inventory (name, data) VALUES (@name, @data)', {
+		exports.ghmattimysql:execute('REPLACE INTO `linden_inventory` (name, data) VALUES (@name, @data)', {
 			['@name'] = xPlayer.getIdentifier(),
 			['@data'] = inventory
 		}, function (rowsChanged)
@@ -251,10 +246,10 @@ end)
 
 AddEventHandler('linden_inventory:recoverPlayerInventory', function(xPlayer)
 	if type(xPlayer) ~= 'table' then xPlayer = ESX.GetPlayerFromId(xPlayer) end
-	if xPlayer.get('linventory') then
-		local result = exports.ghmattimysql:scalarSync('SELECT data FROM linden_inventory WHERE name = @name', { ['@name'] = xPlayer.getIdentifier() })
+	if Inventories[xPlayer.source] then
+		local result = exports.ghmattimysql:scalarSync('SELECT data FROM `linden_inventory` WHERE name = @name', { ['@name'] = xPlayer.getIdentifier() })
 		if result ~= nil then
-			exports.ghmattimysql:execute('DELETE FROM linden_inventory WHERE name = @name', { ['@name'] = xPlayer.getIdentifier() })
+			exports.ghmattimysql:execute('DELETE FROM `linden_inventory` WHERE name = @name', { ['@name'] = xPlayer.getIdentifier() })
 			local Inventory = json.decode(result)
 			for k,v in pairs(Inventory) do
 				if v.metadata == nil then v.metadata = {} end
@@ -322,7 +317,7 @@ AddEventHandler('linden_inventory:openInventory', function(invType, data, player
 					Inventories[id] = CreateInventory(
 						id,								-- id
 						data.label,						-- name
-						invType,							-- type
+						invType,						-- type
 						data.slots,						-- slots
 						0,								-- weight
 						data.maxWeight,					-- maxWeight
@@ -871,7 +866,7 @@ AddEventHandler('linden_inventory:reloadWeapon', function(weapon)
 		if ammo.count then Inventories[xPlayer.source].inventory[weapon.slot].metadata.ammo = 0
 			if ammo.count > 0 then TriggerClientEvent('linden_inventory:addAmmo', xPlayer.source, ammo) end
 		end
-	else TriggerClientEvent('qrp_inventory:clearWeapons', xPlayer.source) end
+	else TriggerClientEvent('linden_inventory:clearWeapons', xPlayer.source) end
 end)
 
 RegisterNetEvent('linden_inventory:decreaseDurability')
@@ -1117,7 +1112,7 @@ end, true, {help = 'open police evidence', validate = true, arguments = {
 ESX.RegisterCommand('clearevidence', 'user', function(xPlayer, args, showError)
 	if xPlayer.job.name == 'police' and xPlayer.job.grade_name == 'boss' then
 		local id = 'evidence-'..args.evidence
-		exports.ghmattimysql:execute('DELETE FROM linden_inventory WHERE name = @name', {
+		exports.ghmattimysql:execute('DELETE FROM `linden_inventory` WHERE name = @name', {
 			['@name'] = id
 		})
 	end
