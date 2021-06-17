@@ -149,10 +149,14 @@ ESX.RegisterServerCallback('linden_inventory:setup', function(source, cb)
 			while not Inventories[xPlayer.source] do Citizen.Wait(100) end
 		end
 	end
-	local data = {drops = Drops, name = Inventories[xPlayer.source].name, inventory = Inventories[xPlayer.source].inventory, usables = Usables }
+	local data = {
+		drops = Drops,
+		usables = Usables,
+		name = Inventories[xPlayer.source].name,
+		inventory = Inventories[xPlayer.source].inventory,
+		weight = Inventories[xPlayer.source].weight,
+	}
 	cb(data)
-	Citizen.Wait(100)
-	updateWeight(xPlayer, true)	
 end)
 
 
@@ -166,8 +170,7 @@ end)
 
 AddEventHandler('linden_inventory:setPlayerInventory', function(xPlayer, data)
 	while Status ~= 'ready' do Citizen.Wait(200) end
-	local inventory, weight = {}, 0
-
+	local data, totalWeight = {}, 0
 	if data and next(data) then
 		for k, v in pairs(data) do
 			if type(v) == 'number' then break end
@@ -183,11 +186,12 @@ AddEventHandler('linden_inventory:setPlayerInventory', function(xPlayer, data)
 				else weight = xItem.weight end
 				if not v.metadata then v.metadata = {} end
 				if v.metadata.weight then weight = weight + v.metadata.weight end
-				inventory[v.slot] = {name = v.name, label = xItem.label, weight = weight, slot = v.slot, count = v.count, description = xItem.description, metadata = v.metadata, stack = xItem.stack}
+				totalWeight = totalWeight + weight
+				data[v.slot] = {name = v.name, label = xItem.label, weight = weight, slot = v.slot, count = v.count, description = xItem.description, metadata = v.metadata, stack = xItem.stack}
 			end
 		end
 	end
-	inventory = CreateInventory(xPlayer.source, xPlayer.name, 'player', Config.PlayerSlots, weight, DefaultWeight, xPlayer.source, inventory)
+	inventory = CreateInventory(xPlayer.source, xPlayer.name, 'player', Config.PlayerSlots, totalWeight, DefaultWeight, xPlayer.source, data)
 	inventory.set('identifier', xPlayer.identifier)
 	Inventories[xPlayer.source] = inventory
 end)

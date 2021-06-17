@@ -34,7 +34,7 @@ table_contains = function(table, value)
 end
 exports('TableContains', table_contains)
 
-local SearchItems = function(item, metadata)
+SearchItems = function(item, metadata)
 	if item then
 		if type(item) == 'string' then item = {item} end
 		if type(metadata) == 'string' then metadata = {type=metadata} end
@@ -58,17 +58,23 @@ local SearchItems = function(item, metadata)
 end
 exports('SearchItems', SearchItems)
 
-
 --	RegisterCommand('meta', function(source, args, rawCommand)
 --		local inventory = exports['linden_inventory']:SearchItems({'meat', 'skin'}, {grade=1})
 --		if inventory then
 --			for name, data in pairs(inventory) do
 --				local count = 0
 --				for _, v in pairs(data) do
---					print(v.slot..' contains '..v.count..' '..name..' '..json.encode(v.metadata))
---					count = count + v.count
+--					if v.slot then
+--						print(v.slot..' contains '..v.count..' '..name..' '..json.encode(v.metadata))
+--						count = count + v.count
+--					end
 --				end
 --				print('You have '..count.. ' '..name)
 --			end
 --		end
 --	end)
+
+
+exports('ItemCancelled', function()
+	return cancelled
+end)

@@ -1,10 +1,6 @@
 local Blips, Drops, Usables, weaponTimer, currentDrop, currentWeapon = {}, {}, {}, 0
 cancelled = false
 
-exports('ItemCancelled', function()
-	return cancelled
-end)
-
 ClearWeapons = function()
 	for k, v in pairs(Weapons) do
 		SetPedAmmo(ESX.PlayerData.ped, v.hash, 0)
@@ -36,9 +32,10 @@ end
 
 StartInventory = function()
 	playerID, invOpen, ESX.PlayerData.dead, isCuffed, isBusy, usingWeapon, currentDrop = nil, false, false, false, false, false, nil
-	ESX.TriggerServerCallback('linden_inventory:setup',function(data)
-		ESX.SetPlayerData('inventory', data.inventory)
+	ESX.TriggerServerCallback('linden_inventory:setup', function(data)
 		ESX.PlayerData = ESX.GetPlayerData()
+		ESX.SetPlayerData('inventory', data.inventory)
+		ESX.SetPlayerData('weight', data.weight)
 		playerCoords = GetEntityCoords(ESX.PlayerData.ped)
 		playerID = GetPlayerServerId(PlayerId())
 		playerName = data.name
@@ -92,8 +89,7 @@ CanOpenTarget = function(ped)
 end
 
 OpenTargetInventory = function(target)
-	if invOpen then return end
-	if not IsPedInAnyVehicle(ESX.PlayerData.ped, true) and not currentInventory and CanOpenInventory() then
+	if not invOpen and not IsPedInAnyVehicle(ESX.PlayerData.ped, true) and not currentInventory and CanOpenInventory() then
 		local targetPlayer, targetDistance
 		if target then
 			targetPlayer = target
@@ -318,6 +314,7 @@ end)
 
 RegisterNetEvent('linden_inventory:updateStorage')
 AddEventHandler('linden_inventory:updateStorage', function(data)
+	ESX.SetPlayerData('weight', data[1])
 	if Config.WeightActions then WeightActions(data[1], data[2]) end
 end)
 
