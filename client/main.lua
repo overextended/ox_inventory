@@ -147,17 +147,17 @@ Citizen.CreateThread(function()
 	for i = 1, #Config.Shops, 1 do
 		if (Config.Shops[i].type ~= nil and Config.bt_target) then
 			local jobAccess = {"all"}
-			if (Config.Shops[i].job ~= nil) then jobAccess = { Config.Shops[i].job } end
-			local length, width = 0.5, 0.5
-			if (Config.Shops[i].length ~= nil) then length = Config.Shops[i].bt_length end
-			if (Config.Shops[i].width ~= nil) then width = Config.Shops[i].bt_width end
+			if (Config.Shops[i].job) then jobAccess = { Config.Shops[i].job } end
+			local length, width = Config.Shops[i].bt_length or 0.5, Config.Shops[i].bt_width or 0.5
+			local minZ, maxZ = 29.8, 32.0
+			local minZ, maxZ = Config.Shops[i].bt_minZ or 29.8, Config.Shops[i].maxZ or 32.0
 
 			exports['bt-target']:AddBoxZone(Config.Shops[i].type['name'], Config.Shops[i].coords, length, width, {
 				name=Config.Shops[i].type['name'],
 				heading=90,
 				debugPoly=false,
-				minZ=29.8,
-				maxZ=32.0
+				minZ=minZ,
+				maxZ=maxZ
 			}, {
 				options = {
 					{
@@ -175,7 +175,7 @@ Citizen.CreateThread(function()
 end)
 RegisterNetEvent('OpenShopTarget')
 AddEventHandler('OpenShopTarget',function(data)
-    OpenShop(data.shopid)
+	OpenShop(data.shopid)
 end)
 
 OpenShop = function(id)
