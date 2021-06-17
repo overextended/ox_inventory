@@ -143,6 +143,41 @@ AddEventHandler('targetPlayerAnim', function()
 	ClearPedSecondaryTask(ESX.PlayerData.ped)
 end)
 
+Citizen.CreateThread(function()
+	for i = 1, #Config.Shops, 1 do
+		if (Config.Shops[i].type ~= nil and Config.bt_target) then
+			local jobAccess = {"all"}
+			if (Config.Shops[i].job ~= nil) then jobAccess = { Config.Shops[i].job } end
+			local length, width = 0.5, 0.5
+			if (Config.Shops[i].length ~= nil) then length = Config.Shops[i].bt_length end
+			if (Config.Shops[i].width ~= nil) then width = Config.Shops[i].bt_width end
+
+			exports['bt-target']:AddBoxZone(Config.Shops[i].type['name'], Config.Shops[i].coords, length, width, {
+				name=Config.Shops[i].type['name'],
+				heading=90,
+				debugPoly=false,
+				minZ=29.8,
+				maxZ=32.0
+			}, {
+				options = {
+					{
+						event = "OpenShopTarget",
+						icon = "fas fa-shopping-basket",
+						label = "Open " .. Config.Shops[i].type['name'],
+						shopid = i,
+					},
+				},
+				job = jobAccess,
+				distance = 6.0
+			})
+		end
+   end
+end)
+RegisterNetEvent('OpenShopTarget')
+AddEventHandler('OpenShopTarget',function(data)
+    OpenShop(data.shopid)
+end)
+
 OpenShop = function(id)
 	if not currentInventory and CanOpenInventory() and not CanOpenTarget(ESX.PlayerData.ped) then
 		if closestShop and GetInvokingResource() ~= Config.Resource then id = closestShop end
@@ -582,7 +617,7 @@ TriggerLoops = function()
 			if IsPedInAnyVehicle(ESX.PlayerData.ped, false) then SetPedCanSwitchWeapon(ESX.PlayerData.ped, true) else SetPedCanSwitchWeapon(ESX.PlayerData.ped, false) end
 			playerCoords = GetEntityCoords(ESX.PlayerData.ped)
 			if not invOpen then
-				if not id or type == 'shop' then
+				if not id or (type == 'shop' and not Config.bt_target) then
 					if id then
 						sleep = 5
 						closestShop = id
