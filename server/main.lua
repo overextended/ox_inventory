@@ -90,11 +90,9 @@ Citizen.CreateThread(function()
 		end
 		if query then exports.ghmattimysql:execute(query) end
 		message('Loaded '..count..' additional items from the database', 2)
-		Status[1] = 'loaded'
-		if #ESX.GetPlayers() == 0 then Status = 'ready' end
+		Status = 'ready'
+		message('Inventory setup is complete', 2)
 	end	
-	while (Status[1] == 'loaded') do Citizen.Wait(125) if Status == 'ready' then break end end
-	message('Inventory setup is complete', 2)
 end)
 
 Citizen.CreateThread(function()
@@ -159,18 +157,9 @@ ESX.RegisterServerCallback('linden_inventory:setup', function(source, cb)
 	cb(data)
 end)
 
-
-AddEventHandler('onResourceStart', function(resourceName)
-	if (Config.Resource == resourceName) then
-		if ESX == nil then return end
-		while true do Citizen.Wait(100) if Status[1] == 'loaded' then break end end
-		Status = 'ready'
-	end
-end)
-
 AddEventHandler('linden_inventory:setPlayerInventory', function(xPlayer, data)
 	while Status ~= 'ready' do Citizen.Wait(200) end
-	local data, totalWeight = {}, 0
+	local inventory, totalWeight = {}, 0
 	if data and next(data) then
 		for k, v in pairs(data) do
 			if type(v) == 'number' then break end
@@ -187,11 +176,11 @@ AddEventHandler('linden_inventory:setPlayerInventory', function(xPlayer, data)
 				if not v.metadata then v.metadata = {} end
 				if v.metadata.weight then weight = weight + v.metadata.weight end
 				totalWeight = totalWeight + weight
-				data[v.slot] = {name = v.name, label = xItem.label, weight = weight, slot = v.slot, count = v.count, description = xItem.description, metadata = v.metadata, stack = xItem.stack}
+				inventory[v.slot] = {name = v.name, label = xItem.label, weight = weight, slot = v.slot, count = v.count, description = xItem.description, metadata = v.metadata, stack = xItem.stack}
 			end
 		end
 	end
-	inventory = CreateInventory(xPlayer.source, xPlayer.name, 'player', Config.PlayerSlots, totalWeight, DefaultWeight, xPlayer.source, data)
+	inventory = CreateInventory(xPlayer.source, xPlayer.name, 'player', Config.PlayerSlots, totalWeight, DefaultWeight, xPlayer.source, inventory)
 	inventory.set('identifier', xPlayer.identifier)
 	Inventories[xPlayer.source] = inventory
 end)
