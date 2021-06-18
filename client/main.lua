@@ -414,8 +414,8 @@ AddEventHandler('linden_inventory:weapon', function(item)
 		local newWeapon = item.metadata.serial
 		local found, wepHash = GetCurrentPedWeapon(ESX.PlayerData.ped, true)
 		if wepHash == -1569615261 then currentWeapon = nil end
-		wepHash = GetHashKey(item.name)
-		if currentWeapon and currentWeapon.metadata.serial == newWeapon then
+		wepHash = item.hash or GetHashKey(item.name)
+		if currentWeapon and (currentWeapon.metadata.serial == newWeapon or currentWeapon.name == item.name) then
 			HolsterWeapon(item)
 			TriggerEvent('linden_inventory:currentWeapon', nil)
 		else
