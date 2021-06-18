@@ -39,7 +39,6 @@ Citizen.CreateThread(function()
 		print('https://thelindat.github.io/linden_inventory')
 		return
 	end
-
 	if Config.ItemList then
 		Citizen.Wait(3000) print('')
 		message('Items are now expected to be stored in ^5`shared/items.lua`^0, with the database optional', 3)
@@ -55,16 +54,9 @@ Citizen.CreateThread(function()
 	while GetResourceState('ghmattimysql') ~= 'started' do Citizen.Wait(0) end
 	exports.ghmattimysql:execute('DELETE FROM `linden_inventory` WHERE `lastupdated` < (NOW() - INTERVAL '..Config.DBCleanup..') OR `data` = "[]"')
 	---------------------
-	Citizen.Wait(500)
+	Citizen.Wait(200)
 	if Status[1] ~= 'error' then
 		local count = 0
-		for k,v in pairs(Items) do
-			Items[k].consume = v.consume or 1
-			Items[k].client = nil
-			count = count + 1
-		end
-		message('Loaded '..count..' items', 2)
-		count = 0
 		local result = exports.ghmattimysql:executeSync('SELECT * FROM items', {})
 		ESX.UsableItemsCallbacks = exports['es_extended']:getSharedObject().UsableItemsCallbacks
 		local query = false
@@ -90,6 +82,8 @@ Citizen.CreateThread(function()
 		end
 		if query then exports.ghmattimysql:execute(query) end
 		message('Loaded '..count..' additional items from the database', 2)
+		Citizen.Wait(200)
+		TriggerEvent('linden_inventory:loaded', Items)
 		Status = 'ready'
 		message('Inventory setup is complete', 2)
 	end	
