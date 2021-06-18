@@ -860,10 +860,10 @@ AddEventHandler('linden_inventory:updateWeapon', function(item, type)
 	local xPlayer = ESX.GetPlayerFromId(source)
 	if xPlayer and Inventories[xPlayer.source].inventory[item.slot] ~= nil then
 		if Inventories[xPlayer.source].inventory[item.slot].metadata.ammo ~= nil then
-			local lastAmmo = Inventories[xPlayer.source].inventory[item.slot].metadata.ammo
 			Inventories[xPlayer.source].inventory[item.slot].metadata = item.metadata
-			local ammo = Items[Items[item.name].ammoname]
-			if not type and ammo.name then
+			if not type then
+				local ammo = Items[Items[item.name].ammoname]
+				local lastAmmo = Inventories[xPlayer.source].inventory[item.slot].metadata.ammo
 				local newAmmo = item.metadata.ammo
 				local ammoDiff = lastAmmo - newAmmo
 				ammo.count = Inventories[xPlayer.source].inventory[item.slot].metadata.ammo
