@@ -174,7 +174,6 @@ CreateNewDrop = function(xPlayer, data)
 				Drops[invid].inventory[k] = {name = v.name , label = xItem.label, weight = xItem.weight, slot = v.slot, count = v.count, description = xItem.description, metadata = v.metadata, stack = xItem.stack,  close = xItem.close}
 			end
 		end
-		if Config.Logs then CreateLog(xPlayer, false, 'has dropped '..data.newslotItem.count..'x '..data.newslotItem.name,' in drop-'..invid, 'drop') end
 		TriggerClientEvent('linden_inventory:createDrop', -1, Drops[invid])
 	end
 end
