@@ -173,6 +173,7 @@ Citizen.CreateThread(function()
 		end
    end
 end)
+
 RegisterNetEvent('OpenShopTarget')
 AddEventHandler('OpenShopTarget',function(data)
 	OpenShop(data.shopid)
@@ -617,7 +618,7 @@ TriggerLoops = function()
 			if IsPedInAnyVehicle(ESX.PlayerData.ped, false) then SetPedCanSwitchWeapon(ESX.PlayerData.ped, true) else SetPedCanSwitchWeapon(ESX.PlayerData.ped, false) end
 			playerCoords = GetEntityCoords(ESX.PlayerData.ped)
 			if not invOpen then
-				if not id or (type == 'shop' and not Config.bt_target) then
+				if not Config.bt_target and not id or type == 'shop' then
 					if id then
 						sleep = 5
 						closestShop = id
