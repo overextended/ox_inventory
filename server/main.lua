@@ -1129,20 +1129,20 @@ if Config.ItemList then
 						local disable = ''
 						if item.disableMove then disable = '			disable = { move = false },\n' end 
 						local consume = ''
-						if item.consume and item.consume ~= 1 then consume = '			consume = '..item.consume..',\n' defined = true end
+						if item.consume and item.consume ~= 1 then consume = '			consume = '..item.consume..',\n' end
 						local usetime = ''
 						if item.useTime then usetime = '			usetime = '..item.useTime..',\n' defined = true end
 						local event = ''
 						if item.event then event = '			event = true,\n' defined = true end
 						local client = '}\n'
-						if defined then client = '\n'..status .. anim .. prop .. disable .. consume .. usetime .. event..'		}\n' end
+						if defined then client = '\n'..status .. anim .. prop .. disable .. usetime .. event..'		}\n' end
 
 	table.insert(itemDump, [[
 		[']]..v.name..[['] = {
 			label = ']]..v.label..[[',
 			weight = ]]..tonumber(v.weight)..[[,
 			stack = ]]..tostring(not not v.stackable)..[[,
-			close = ]]..tostring(not not v.closeonuse)..[[,]]..description .. [[
+			close = ]]..tostring(not not v.closeonuse)..[[,]]..consume..description .. [[
 			server = {},
 			client = {]]..client..[[
 		},
