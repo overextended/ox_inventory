@@ -1280,7 +1280,8 @@ Citizen.CreateThread(function()
 		for k, v in pairs(Items) do
 			v.name = k
 			Items[k] = v
-			Items[k].consume = v.client.consume or v.consume or 1
+			if v.client and v.client.consume then Items[k].consume = v.client.consume
+			else Items[k].consume = v.consume or 1 end
 			if Server then
 				Items[k].client = nil
 				count = count + 1
