@@ -129,7 +129,7 @@ Weapons = {
 	},
 
 	['WEAPON_CARBINERIFLE_MK2'] = {
-		label = 'Carbiner Rifle MK2',
+		label = 'Carbine Rifle MK2',
 		weight = 3000,
 		stack = false,
 		close = false,
@@ -725,8 +725,6 @@ Components = {
 			usetime = 2500
 		}
 	},
-
-	-- nvg scope 420
 
 	['at_suppressor_light'] = {
 		label = 'Suppressor',
