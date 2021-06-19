@@ -64,25 +64,6 @@ setMetadata = function(metadata)
 	return data
 end
 
-getInventory = function(inventory)
-	local returnData = {}
-	if inventory.inventory then
-		local items = 0
-		for k, v in pairs(inventory.inventory) do
-			if v.count > 0 then
-				items = items + 1
-				returnData[items] = {
-					name = v.name,
-					count = v.count,
-					metadata = v.metadata,
-					slot = k
-				}
-			end
-		end
-	end
-	return returnData
-end
-
 TriggerBanEvent = function(xPlayer, reason)
 	print( ('^1[warning]^3 [%s] %s has attempted to cheat (%s)^7'):format(xPlayer.source, GetPlayerName(xPlayer.source), reason) )
 	TriggerClientEvent('linden_inventory:closeInventory', xPlayer.source)
