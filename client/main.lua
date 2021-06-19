@@ -1020,6 +1020,7 @@ AddEventHandler('linden_inventory:useItem',function(item)
 			if esxItem then
 				TriggerEvent('linden_inventory:closeInventory') UseItem(item, true)
 			elseif data and next(data) then
+				if item.close then TriggerEvent('linden_inventory:closeInventory') end
 				if not data.usetime then data.usetime = 500 end
 				if data.event then
 					local event = type(data.event) ~= 'string' and 'linden_inventory:'..item.name or data.event
@@ -1103,7 +1104,8 @@ UseItem = function(item, esxItem, data)
 			end
 			Citizen.Wait(data.usetime)
 			if not cancelled then
-				if not data.consume or data.consume > 1 then TriggerServerEvent('linden_inventory:removeItem', item) end
+				local consume = Items[item.name].consume or 1
+				if consume > 0 then TriggerServerEvent('linden_inventory:removeItem', item) end
 
 				if data.status then
 					for k, v in pairs(data.status) do
