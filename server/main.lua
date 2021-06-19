@@ -1,4 +1,3 @@
-Usables = {}
 Drops = {}
 Inventories = {}
 Datastore = {}
@@ -54,11 +53,10 @@ Citizen.CreateThread(function()
 	while GetResourceState('ghmattimysql') ~= 'started' do Citizen.Wait(0) end
 	exports.ghmattimysql:execute('DELETE FROM `linden_inventory` WHERE `lastupdated` < (NOW() - INTERVAL '..Config.DBCleanup..') OR `data` = "[]"')
 	---------------------
-	Citizen.Wait(200)
+	Citizen.Wait(150)
 	if Status[1] ~= 'error' then
 		local count = 0
 		local result = exports.ghmattimysql:executeSync('SELECT * FROM items', {})
-		ESX.UsableItemsCallbacks = exports['es_extended']:getSharedObject().UsableItemsCallbacks
 		local query = false
 		for k,v in ipairs(result) do
 			if Items[v.name] then
@@ -77,14 +75,17 @@ Citizen.CreateThread(function()
 					close = v.closeonuse,
 					description = v.description
 				}
-				if ESX.UsableItemsCallbacks[v.name] ~= nil then Usables[v.name] = true end
 			end
 		end
 		if query then exports.ghmattimysql:execute(query) end
 		message('Loaded '..count..' additional items from the database', 2)
-		Citizen.Wait(200)
 		TriggerEvent('linden_inventory:loaded', Items)
 		Status = 'ready'
+		Citizen.Wait(1000)
+		ESX.UsableItemsCallbacks = exports['es_extended']:getSharedObject().UsableItemsCallbacks
+		for k,v in pairs(ESX.UsableItemsCallbacks) do
+			ESX.UsableItemsCallbacks[k] = true
+		end
 		message('Inventory setup is complete', 2)
 	end	
 end)
@@ -143,7 +144,7 @@ ESX.RegisterServerCallback('linden_inventory:setup', function(source, cb)
 	end
 	local data = {
 		drops = Drops,
-		usables = Usables,
+		usables = ESX.UsableItemsCallbacks,
 		name = Inventories[xPlayer.source].name,
 		inventory = Inventories[xPlayer.source].inventory,
 		weight = Inventories[xPlayer.source].weight,
