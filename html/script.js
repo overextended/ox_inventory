@@ -387,8 +387,22 @@ function DragAndDrop() {
 				} else if (fromInv == 'Playerinv' && rightinvslot == $(this).attr("inventory-slot")) {
 					HSN.InventoryMessage('cannot_perform', 2)
 					return false
+				} else if (fromInv == 'shop') {
+					if ($(this).data("location") !== undefined) {
+						let Item = $(this).data("ItemData")
+						let location = $(this).data("location")
+						count = parseInt($("#item-count").val()) || 0
+						if (Item != undefined && count >= 0) {
+							$.post("https://linden_inventory/BuyFromShop", JSON.stringify({
+								data: Item,
+								location: location,
+								count: count
+							}));
+						}
+					}
+					return false
 				} else {
-					IsDragging = $(event.target).data("ItemData").count;
+					drag = $(event.target).data("ItemData").count;
 					$(this).find("img").css("filter", "brightness(50%)");
 					count = $("#item-count").val();
 				}
@@ -398,7 +412,7 @@ function DragAndDrop() {
 		},
 		stop: function() {
 			setTimeout(function(){
-				IsDragging = false;
+				drag = false;
 			}, 300)
 			$(this).find("img").css("filter", "brightness(100%)");
 		},
@@ -408,7 +422,7 @@ function DragAndDrop() {
 		hoverClass: 'ItemBoxes-hoverClass',
 		drop: function(event, ui) {
 			setTimeout(function(){
-				IsDragging = false;
+				drag = false;
 			}, 300)
 			curslot = ui.draggable.attr("inventory-slot");
 			fromInventory = ui.draggable.parent();
@@ -436,7 +450,7 @@ $(".use").droppable({
 	hoverClass: 'button-hover',
 	drop: function(event, ui) {
 		setTimeout(function(){
-			IsDragging = false;
+			drag = false;
 		}, 300)
 		fromData = ui.draggable.data("ItemData");
 		fromInventory = ui.draggable.parent();
@@ -455,7 +469,7 @@ $(".give").droppable({
 	hoverClass: 'button-hover',
 	drop: function(event, ui) {
 		setTimeout(function(){
-			IsDragging = false;
+			drag = false;
 		}, 300)
 		fromData = ui.draggable.data("ItemData");
 		fromInventory = ui.draggable.parent();
@@ -859,7 +873,7 @@ $("#right-inv").on("wheel", Scroll)
 function Counter(event) {
 	let count = parseInt($("#item-count").val()) || 0
 	if (event.originalEvent.deltaY < 0) {
-		if (count >= IsDragging) { return }
+		if (count >= drag) { return }
 		$("#item-count").val(count+1)
 	}
 	else if (count > 0) {
@@ -870,7 +884,7 @@ function Counter(event) {
 $("#item-count").on("wheel", function(event) {
 	let count = parseInt($("#item-count").val()) || 0
 	if (event.originalEvent.deltaY < 0) {
-		if (count >= IsDragging) { return }
+		if (drag && count >= drag) { return }
 		$("#item-count").val(count+1)
 	}
 	else if (count > 0) {
