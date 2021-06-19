@@ -49,7 +49,6 @@ addInventoryItem = function(xPlayer, item, count, metadata, slot)
 		end
 		if isWeapon then
 			if not xItem.ammoname then
-				print(xItem.throwable)
 				metadata = {}
 				if not xItem.throwable then count = 1 metadata.durability = 100 end
 			else
@@ -233,20 +232,23 @@ exports('canSwapItem', canSwapItem)
 
 getPlayerInventory = function(xPlayer, minimal)
 	if Inventories[xPlayer.source] then
-		local inventory = {}
-		for k, v in pairs(Inventories[xPlayer.source].inventory) do
-			if v.count > 0 then
-				local metadata = v.metadata
-				if minimal and v.metadata and next(v.metadata) == nil then metadata = nil end
-				inventory[#inventory+1] = {
-					name = v.name,
-					count = v.count,
-					slot = k,
-					metadata = metadata
-				}
+		if minimal then
+			local inventory = {}
+			for k, v in pairs(Inventories[xPlayer.source].inventory) do
+				if v.count > 0 then
+					local metadata = v.metadata
+					if v.metadata and next(v.metadata) == nil then metadata = nil end
+					inventory[#inventory+1] = {
+						name = v.name,
+						count = v.count,
+						slot = k,
+						metadata = metadata
+					}
+				end
 			end
+			return inventory
 		end
-		return inventory
+		return Inventories[xPlayer.source].inventory
 	end
 end
 exports('getPlayerInventory', getPlayerInventory)

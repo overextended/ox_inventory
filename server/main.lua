@@ -199,7 +199,7 @@ end)
 AddEventHandler('linden_inventory:confiscatePlayerInventory', function(xPlayer)
 	if type(xPlayer) ~= 'table' then xPlayer = ESX.GetPlayerFromId(xPlayer) end
 	if Inventories[xPlayer.source] then
-		local inventory = json.encode(getPlayerInventory(xPlayer))
+		local inventory = json.encode(getPlayerInventory(xPlayer, true))
 		exports.ghmattimysql:execute('REPLACE INTO `linden_inventory` (name, data) VALUES (@name, @data)', {
 			['@name'] = xPlayer.getIdentifier(),
 			['@data'] = inventory
