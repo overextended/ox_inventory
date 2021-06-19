@@ -1280,11 +1280,11 @@ Citizen.CreateThread(function()
 		for k, v in pairs(Items) do
 			v.name = k
 			Items[k] = v
+			Items[k].consume = v.client.consume or v.consume or 1
 			if Server then
-				Items[k].consume = v.consume or 1
 				Items[k].client = nil
 				count = count + 1
-			else Items[k].server = nil end
+			else Items[k].server, Items[k].client.consume = nil, nil end
 		end
 
 		for k, v in pairs(Weapons) do
@@ -1299,8 +1299,8 @@ Citizen.CreateThread(function()
 		for k, v in pairs(Components) do
 			v.name = k
 			Items[k] = v
+			Items[k].consume = 1
 			if Server then
-				Items[k].consume = v.consume or 1
 				Items[k].client = nil
 				count = count + 1
 			end
@@ -1310,8 +1310,8 @@ Citizen.CreateThread(function()
 		for k, v in pairs(Ammo) do
 			v.name = k
 			Items[k] = v
+			Items[k].consume = 1
 			if Server then
-				Items[k].consume = v.consume or 1
 				Items[k].client = nil
 				count = count + 1
 			end
