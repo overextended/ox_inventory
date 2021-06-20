@@ -10,7 +10,8 @@ title: Introduction
 * Mythic Notify [[Download]](https://github.com/thelindat/mythic_notify)
 * Mythic Progbar [[Download]](https://github.com/thelindat/mythic_progbar)
 * OneSync must be enabled (up to 32 slots is free)
-* The ability to follow instructions and learn  
+* The ability to follow instructions and learn
+* Delete `ghmattimysql/config.json` to fallback to using the MySQL connection string in server.cfg
 
 
 <h2 align='center'> Framework </h2>
@@ -60,21 +61,4 @@ ensure esx_identity
 #
 #
 ensure linden_inventory		# load after resources that register items, or just last
-```
-
-
-<h2 align='center'> Modification </h2>
-
-### ghmattimysql
-* Delete `config.json` to fallback to using the MySQL connection string in server.cfg
-* Add the following code to ghmattimysql-server.lua
-```lua
-exports("ready", function (callback)
-	Citizen.CreateThread(function ()
-		while GetResourceState('ghmattimysql') ~= 'started' do
-			Citizen.Wait(0)
-		end
-		callback()
-	end)
-end)
 ```
