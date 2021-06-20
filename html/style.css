@@ -160,7 +160,8 @@ body {
 	max-width: 550px;
 	width: fit-content;
 	position: absolute;
-	left: 47%;
+	left: 50%;
+	transform: translateX(-50%);
 	bottom: 15%;
 	overflow: hidden;
 }
