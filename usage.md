@@ -4,7 +4,7 @@ title: Usage
 
 #### This will not always be up to date. If you want the best understanding of how to use the inventory you should read through the files.
 
-#### [#](search-items) Client-side check for items
+#### [#](usage/search-items) Client-side check for items
 * This concerns the usage of the SearchItems exports from `client/exports.lua`
 * You can define as many items as you want to search for to get all the results.
 * When searching for metadata, using a string will search for `metadata.type`
@@ -58,7 +58,7 @@ title: Usage
 * All functions will work as they did previously, with some extra benefits such as metadata
 * Assigning metadata will work with a single word or a table (commands will not work for tables)
 
-#### [#](give-item) Give player an item
+#### [#](usage/give-item) Give player an item
 ```lua
   xPlayer.addInventoryItem(water, 1, {type='pee', description='it smells a little funky'})
   
@@ -66,7 +66,7 @@ title: Usage
 ```
 * This would give water with the type and description in the item information
 
-#### [#](remove-item) Remove an item
+#### [#](usage/remove-item) Remove an item
 ```lua
   xPlayer.removeInventoryItem(water, 1, {type='pee', description='it smells a little funky'})
   
@@ -75,14 +75,14 @@ title: Usage
 * This would only remove an item with matching metadata
 * Leaving the metadata blank will remove any item with that name
 
-#### [#](get-item) Get item data
+#### [#](usage/get-item) Get item data
 ```lua
   local metadata = {type='pee',description='it smells a little funky'}
   xPlayer.getInventoryItem(water, metadata)
 ```
 * If you have 10 water but only one with metadata, the returning count is one
 
-#### [#](item-data) Retrieve item data from server
+#### [#](usage/item-data) Retrieve item data from server
 ```lua
   ESX.TriggerServerCallback('linden_inventory:getItem',function(xItem)
     water = xItem
@@ -97,7 +97,7 @@ or
   end, 'water')
 ```
 
-#### [#](item-data) Check item data
+#### [#](usage/item-data) Check item data
 * Example server command, print the serial of the item in slot one
 ```lua
 RegisterCommand('getmeta', function(source, args, rawCommand)
@@ -111,7 +111,7 @@ end, true)
 	print(ESX.PlayerData.inventory[3].metadata.serial
 ```
 
-#### [#](stash) Open a stash
+#### [#](usage/stash) Open a stash
 * If you want anybody to be able to use a stash, do not define job
 * Stashes should have unique names so they do not share
 * You can define an owner for a stash, attaching their player identifier
@@ -132,7 +132,7 @@ end, true)
 * You could register a client event to show an item's metadata such as `metadata.registered` (which will tell you who bought a gun)
 
 
-#### [#](new-item) Creating new items
+#### [#](usage/new-item) Creating new items
 All your old items using `ESX.RegisterUsableItem` still work, however I would personally register items through the inventory
 * Adding an item to `shared/items.lua` (use the existing for examples) will register the item as usable
 * Setting consume to `0` means it's unlimited usage, otherwise it sets the number to remove (default is 1, do not define)
@@ -175,7 +175,7 @@ end)
 * Item use effects should always be contained within `SetTimeout` when it is not instant
 
 
-#### [#](drops) Custom drops
+#### [#](usage/drops) Custom drops
 * The following example allows the creation of a drop from skinning an animal
 * The drop is created on the animals x,y coordinates and the players z (dead animals result in underground drops)
 * Confirm the entity exists, is not the player, and is near the player (prevent exploits)
