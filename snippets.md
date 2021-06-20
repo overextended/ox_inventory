@@ -9,6 +9,18 @@ title: Snippets
 * Find and remove the `OpenBodySearchMenu` function
 
 
+## Clearing player inventory
+* Trigger the following event when you want to wipe their inventory (such as when dying)
+```lua
+	TriggerEvent('linden_inventory:clearPlayerInventory', playerId)
+```
+* You can use the following events to temporarily remove their inventory (such as when getting sent to jail, then released)
+```lua
+	TriggerEvent('linden_inventory:confiscatePlayerInventory', playerId)
+	TriggerEvent('linden_inventory:recoverPlayerInventory', playerId)
+```
+
+
 ## Support for esx_property
 * Find and remove the following two blocks of code from `client/main.lua`
 ```lua
@@ -30,6 +42,7 @@ title: Snippets
 	end)
 ```
 * If you were using the previous method it should still work, though I recommend adding the label
+
 
 ## Support for loaf_housing (per furniture)
 * Find the `OpenStorage` function and replace with
