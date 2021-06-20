@@ -2,56 +2,6 @@
 title: Usage
 ---
 
-#### This will not always be up to date. If you want the best understanding of how to use the inventory you should read through the files.
-
-#### [#](usage/search-items) Client-side check for items
-* This concerns the usage of the SearchItems exports from `client/exports.lua`
-* You can define as many items as you want to search for to get all the results.
-* When searching for metadata, using a string will search for `metadata.type`
-* To search for specific metadata use a table such as `{grade=1, type='Deer meat'}`
-* Only partial metadata matches are required, so extra metadata will not return false
-##### Example 1: Search for grade 1 meat and skin (any animal)
-```lua
-	local inventory = exports['linden_inventory']:SearchItems({'meat', 'skin'}, {grade=1})
-	if inventory then
-		for name, data in pairs(inventory) do
-			local count = 0
-			for _, v in pairs(data) do
-				print(v.slot..' contains '..v.count..' '..name..' '..json.encode(v.metadata))
-				count = count + v.count
-			end
-			print('You have '..count.. ' '..name)
-		end
-	end
-```
-##### Example 2: Search for meat and skin from a deer (any grade)
-```lua
-	local inventory = exports['linden_inventory']:SearchItems({'meat', 'skin'}, {animal='a_c_deer'})
-	if inventory then
-		for name, data in pairs(inventory) do
-			local count = 0
-			for _, v in pairs(data) do
-				print(v.slot..' contains '..v.count..' '..name..' '..json.encode(v.metadata))
-				count = count + v.count
-			end
-			print('You have '..count.. ' '..name)
-		end
-	end
-```
-##### Example 3: Search for any type of meat
-```lua
-	local inventory = exports['linden_inventory']:SearchItems({'meat'})
-	if inventory then
-		for name, data in pairs(inventory) do
-			local count = 0
-			for _, v in pairs(data) do
-				print(v.slot..' contains '..v.count..' '..name..' '..json.encode(v.metadata))
-				count = count + v.count
-			end
-			print('You have '..count.. ' '..name)
-		end
-	end
-```
 
 ## xPlayer functions
 * Compatibility is important, that's why we've modified the framework with the inventory exports
