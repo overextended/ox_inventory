@@ -1279,14 +1279,16 @@ Citizen.CreateThread(function()
 		local count = 0
 		for k, v in pairs(Items) do
 			v.name = k
-			if v.client.consume then
-				v.consume = v.client.consume
-				v.client.consume = nil
-			else v.consume = v.consume or 1 end
+			if not v.consume then
+				if v.client.consume then
+					v.consume = v.client.consume
+					v.client.consume = nil
+				else v.consume = 1 end
+			end
 			if Server then
 				v.client = nil
 				count = count + 1
-			else  end
+			end
 		end
 
 		for k, v in pairs(Weapons) do
