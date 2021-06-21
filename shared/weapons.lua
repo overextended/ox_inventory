@@ -1280,7 +1280,7 @@ Citizen.CreateThread(function()
 		for k, v in pairs(Items) do
 			v.name = k
 			if not v.consume then
-				if v.client.consume then
+				if v.client and v.client.consume then
 					v.consume = v.client.consume
 					v.client.consume = nil
 				else v.consume = 1 end
