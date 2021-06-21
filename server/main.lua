@@ -761,7 +761,7 @@ end)
 AddEventHandler('playerDropped', function(reason)
 	local playerid = source
 	if Inventories[playerid] then
-		ESX.SetTimeout(30000, function()	
+		SetTimeout(30000, function()	
 			Inventories[playerid] = nil
 		end)
 	end
