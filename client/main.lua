@@ -549,6 +549,7 @@ TriggerLoops = function()
 			if weaponTimer == 5 and currentWeapon then
 				TriggerServerEvent('linden_inventory:updateWeapon', currentWeapon)
 				weaponTimer = 0
+				SetPedUsingActionMode(ESX.PlayerData.ped, false, -1, "DEFAULT_ACTION")
 			elseif weaponTimer > 5 then weaponTimer = weaponTimer - 5 end
 			if not invOpen and currentWeapon then
 				if IsPedArmed(ESX.PlayerData.ped, 6) then
@@ -611,7 +612,6 @@ TriggerLoops = function()
 		local text, type, id = ''
 		while PlayerLoaded do
 			local sleep = 250
-			SetPedUsingActionMode(ESX.PlayerData.ped, false, -1, 0)
 			if IsPedInAnyVehicle(ESX.PlayerData.ped, false) then SetPedCanSwitchWeapon(ESX.PlayerData.ped, true) else SetPedCanSwitchWeapon(ESX.PlayerData.ped, false) end
 			playerCoords = GetEntityCoords(ESX.PlayerData.ped)
 			if not invOpen then
