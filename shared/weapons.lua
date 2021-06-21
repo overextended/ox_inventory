@@ -1275,49 +1275,49 @@ Ammo = {
 Citizen.CreateThread(function()
 	local Server = IsDuplicityVersion()
 	if Items then
-		Citizen.Wait(100)
+		Citizen.Wait(10)
 		local count = 0
 		for k, v in pairs(Items) do
 			v.name = k
-			Items[k] = v
-			if v.client and v.client.consume then Items[k].consume = v.client.consume
-			else Items[k].consume = v.consume or 1 end
+			if not v.consume then
+				if v.client and v.client.consume then
+					v.consume = v.client.consume
+					v.client.consume = nil
+				else v.consume = 1 end
+			end
 			if Server then
-				Items[k].client = nil
+				v.client = nil
 				count = count + 1
-			else Items[k].server, Items[k].client.consume = nil, nil end
+			end
 		end
 
 		for k, v in pairs(Weapons) do
 			v.name = k
 			v.hash = `k`
+			if Server then count = count + 1 end
 			Items[k] = v
-			if Server then
-				count = count + 1
-			end
 		end
 
 		for k, v in pairs(Components) do
 			v.name = k
-			Items[k] = v
-			Items[k].consume = 1
+			v.consume = 1
 			if Server then
-				Items[k].client = nil
+				v.client = nil
 				count = count + 1
 			end
+			Items[k] = v
 		end
-		Components = nil
 
 		for k, v in pairs(Ammo) do
 			v.name = k
-			Items[k] = v
-			Items[k].consume = 1
+			v.consume = 1
 			if Server then
-				Items[k].client = nil
+				v.client = nil
 				count = count + 1
 			end
+			Items[k] = v
 		end
-		Ammo = nil
+		Components, Ammo = nil
 		if Server then print(('^2[success]^7 Loaded %s items'):format(count)) end
 	end
 end)
