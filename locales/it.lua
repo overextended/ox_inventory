@@ -1,4 +1,4 @@
-Locales['en'] = {
+Locales['it'] = {
 	['male'] = "maschio",
 	['female'] = "femmina",
 	['used'] = "Usato",
