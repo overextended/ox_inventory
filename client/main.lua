@@ -410,7 +410,7 @@ end
 
 RegisterNetEvent('linden_inventory:weapon')
 AddEventHandler('linden_inventory:weapon', function(item)
-	if not isBusy and item then
+	if not isBusy and item and not IsPedFalling(ESX.PlayerData.ped) and not IsPedRagdoll(ESX.PlayerData.ped) then
 		TriggerEvent('linden_inventory:busy', true)
 		useItemCooldown = true
 		local newWeapon = item.metadata.serial
@@ -985,13 +985,13 @@ end)
 
 local useItemCooldown = false
 RegisterNetEvent('linden_inventory:useItem')
-AddEventHandler('linden_inventory:useItem',function(item)
+AddEventHandler('linden_inventory:useItem', function(item)
 	if item.metadata.bag and not currentInventory then
 		invOpen = false
 		TriggerServerEvent('linden_inventory:openInventory', 'bag', { id = item.metadata.bag, label = item.label..' ('..item.metadata.bag..')', slot = item.slot, slots = item.metadata.slot or 5})
 		return
 	end
-	if CanOpenInventory() and not useItemCooldown then
+	if CanOpenInventory() and not useItemCooldown and not IsPedRagdoll(ESX.PlayerData.ped) then
 		local data = Items[item.name] and Items[item.name].client
 		local esxItem = Usables[item.name]
 		if data or esxItem then
