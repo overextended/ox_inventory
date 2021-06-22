@@ -151,14 +151,14 @@ Citizen.CreateThread(function()
 			if (Config.Shops[i].job) then jobAccess = { Config.Shops[i].job } end
 			local length, width = Config.Shops[i].bt_length or 0.5, Config.Shops[i].bt_width or 0.5
 			local minZ, maxZ = 29.8, 32.0
-			local minZ, maxZ = Config.Shops[i].bt_minZ or 29.8, Config.Shops[i].maxZ or 32.0
+			local minZ, maxZ = Config.Shops[i].bt_minZ or 29.8, Config.Shops[i].bt_maxZ or 32.0
 
 			exports['bt-target']:AddBoxZone(Config.Shops[i].type['name'], Config.Shops[i].coords, length, width, {
 				name=Config.Shops[i].type['name'],
 				heading=90,
 				debugPoly=false,
-				minZ=minZ,
-				maxZ=maxZ
+				minZ=bt_minZ,
+				maxZ=bt_maxZ
 			}, {
 				options = {
 					{
