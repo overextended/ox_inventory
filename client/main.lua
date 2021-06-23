@@ -145,31 +145,39 @@ AddEventHandler('targetPlayerAnim', function()
 end)
 
 Citizen.CreateThread(function()
+	-- Leah#0001 block of code
 	for i = 1, #Config.Shops, 1 do
-		if (Config.Shops[i].type ~= nil and Config.bt_target) then
+		if (Config.bt_target) then
+            local typeName = i
+            if (Config.Shops[i].type == nil) then
+                typeName = Config.Shops[i].name or math.random(1, 10000)
+            else
+                typeName = Config.Shops[i].type['name']
+            end
 			local jobAccess = {"all"}
 			if (Config.Shops[i].job) then jobAccess = { Config.Shops[i].job } end
 			local length, width = Config.Shops[i].bt_length or 0.5, Config.Shops[i].bt_width or 0.5
-			local minZ, maxZ = 29.8, 32.0
-			local minZ, maxZ = Config.Shops[i].bt_minZ or 29.8, Config.Shops[i].maxZ or 32.0
+			local minZ, maxZ = Config.Shops[i].bt_minZ or 10.0, Config.Shops[i].bt_maxZ or 100.0
+			local heading = Config.Shops[i].bt_heading or 0.0
+            local distance = Config.Shops[i].bt_distance or 6.0
 
-			exports['bt-target']:AddBoxZone(Config.Shops[i].type['name'], Config.Shops[i].coords, length, width, {
-				name=Config.Shops[i].type['name'],
-				heading=90,
-				debugPoly=false,
-				minZ=minZ,
-				maxZ=maxZ
-			}, {
+			exports['bt-target']:AddBoxZone(i .. typeName, Config.Shops[i].coords, length, width, {
+                name=i .. typeName,
+                heading=heading,
+                debugPoly=false,
+                minZ=minZ,
+                maxZ=maxZ
+            }, {
 				options = {
 					{
 						event = "OpenShopTarget",
 						icon = "fas fa-shopping-basket",
-						label = "Open " .. Config.Shops[i].type['name'],
+						label = "Open " .. typeName,
 						shopid = i,
 					},
 				},
 				job = jobAccess,
-				distance = 6.0
+				distance = distance
 			})
 		end
    end
