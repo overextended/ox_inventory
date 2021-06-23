@@ -43,7 +43,6 @@ StartInventory = function()
 		Usables = data.usables
 		inventoryLabel = playerName..' ['..playerID..'] '--[[..ESX.PlayerData.job.grade_label]]
 		PlayerLoaded = true
-		SetWeaponsNoAutoreload(true)
 		ClearWeapons()
 		TriggerEvent('mythic_notify:client:SendAlert', {type = 'inform', text = _U('inventory_setup'), length = 2500})
 		TriggerLoops()
@@ -580,6 +579,10 @@ TriggerLoops = function()
 								weaponTimer = 0
 								TriggerServerEvent('linden_inventory:reloadWeapon', currentWeapon)
 							end
+							ClearPedTasks(ESX.PlayerData.ped)
+							SetCurrentPedWeapon(ESX.PlayerData.ped, currentWeapon.hash, false)
+							SetPedCurrentWeaponVisible(ESX.PlayerData.ped, true, false, false, false)
+							
 						else TriggerEvent('linden_inventory:usedWeapon', currentWeapon) end
 					end
 				else
