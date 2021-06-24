@@ -43,7 +43,6 @@ StartInventory = function()
 		Usables = data.usables
 		inventoryLabel = playerName..' ['..playerID..'] '--[[..ESX.PlayerData.job.grade_label]]
 		PlayerLoaded = true
-		SetWeaponsNoAutoreload(true)
 		ClearWeapons()
 		TriggerEvent('mythic_notify:client:SendAlert', {type = 'inform', text = _U('inventory_setup'), length = 2500})
 		TriggerLoops()
@@ -159,7 +158,7 @@ Citizen.CreateThread(function()
 			local length, width = Config.Shops[i].bt_length or 0.5, Config.Shops[i].bt_width or 0.5
 			local minZ, maxZ = Config.Shops[i].bt_minZ or 10.0, Config.Shops[i].bt_maxZ or 100.0
 			local heading = Config.Shops[i].bt_heading or 0.0
-            local distance = Config.Shops[i].bt_distance or 6.0
+			local distance = Config.Shops[i].bt_distance or 6.0
 
 			exports['bt-target']:AddBoxZone(i .. typeName, Config.Shops[i].coords, length, width, {
                 name=i .. typeName,
@@ -588,6 +587,10 @@ TriggerLoops = function()
 								weaponTimer = 0
 								TriggerServerEvent('linden_inventory:reloadWeapon', currentWeapon)
 							end
+							ClearPedTasks(ESX.PlayerData.ped)
+							SetCurrentPedWeapon(ESX.PlayerData.ped, currentWeapon.hash, false)
+							SetPedCurrentWeaponVisible(ESX.PlayerData.ped, true, false, false, false)
+							
 						else TriggerEvent('linden_inventory:usedWeapon', currentWeapon) end
 					end
 				else
