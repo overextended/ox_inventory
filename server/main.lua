@@ -439,8 +439,12 @@ AddEventHandler('linden_inventory:buyItem', function(info)
 				currency = 'Money'
 				money = getInventoryItem(xPlayer, item.name).count
 			end
-		elseif shopCurrency == 'money' or shopCurrency == 'black_money' then
+		elseif shopCurrency == 'money' then
 			item.name = 'money'
+			currency = Items[item.name].label
+			money = getInventoryItem(xPlayer, item.name).count
+		elseif shopCurrency == 'black_money' then
+			item.name = 'black_money'
 			currency = Items[item.name].label
 			money = getInventoryItem(xPlayer, item.name).count
 		else
@@ -448,7 +452,7 @@ AddEventHandler('linden_inventory:buyItem', function(info)
 			currency = item.label
 			money = getInventoryItem(xPlayer, shopCurrency.name).count
 		end
-
+			
 		if checkShop.name ~= data.name then
 			TriggerBanEvent(xPlayer, 'tried to buy '..data.name..' but slot contains '..checkShop.name)
 		elseif (checkShop.price * count) ~= data.price then
