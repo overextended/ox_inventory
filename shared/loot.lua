@@ -28,13 +28,13 @@ if Config.RandomLoot and IsDuplicityVersion() then
 
 	GenerateTrash = function(metadata)
 		local metadata = metadata
-		local weight = 50
 		local trashType = math.random(1,#Config.Trash)
 		metadata.description = Config.Trash[trashType].description
-		weight = Config.Trash[trashType].weight
 		metadata.image = Config.Trash[trashType].image
-		return metadata, weight
+		metadata.weight = Config.Trash[trashType].weight
+		return metadata
 	end
+	exports('GenerateTrash', GenerateTrash)
 
 	GenerateDatastore = function(type)
 		local returnData = {}
@@ -57,8 +57,8 @@ if Config.RandomLoot and IsDuplicityVersion() then
 									local slot = #returnData + 1
 									local metadata = {}
 									local weight = Items[item.name].weight
-									if item.name == 'garbage' then metadata, weight = GenerateTrash(metadata) end
-									returnData[slot] = {name = item.name , label = Items[item.name].label, weight = weight, slot = slot, count = 1, description = Items[item.name].description, metadata = metadata, stack = Items[item.name].stack}
+									if item.name == 'garbage' then metadata = GenerateTrash(metadata) end
+									returnData[slot] = {name = item.name , label = Items[item.name].label, weight = metadata.weight, slot = slot, count = 1, description = Items[item.name].description, metadata = metadata, stack = Items[item.name].stack}
 								end 
 							end
 						end
