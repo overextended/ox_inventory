@@ -80,13 +80,13 @@ Citizen.CreateThread(function()
 		if query then exports.ghmattimysql:execute(query) end
 		message('Loaded '..count..' additional items from the database', 2)
 		TriggerEvent('linden_inventory:loaded', Items)
-		Status = 'ready'
 		Citizen.Wait(1000)
 		ESX.UsableItemsCallbacks = exports['es_extended']:getSharedObject().UsableItemsCallbacks
 		for k,v in pairs(ESX.UsableItemsCallbacks) do
 			ESX.UsableItemsCallbacks[k] = true
 		end
 		message('Inventory setup is complete', 2)
+		Status = 'ready'
 	end	
 end)
 
@@ -129,13 +129,13 @@ ESX.RegisterServerCallback('linden_inventory:setup', function(source, cb)
 	while true do
 		if Status == 'ready' then break end
 		loop = loop + 1
-		if loop == 50 then return end
-		Citizen.Wait(100)
+		if loop == 4 then return end
+		Citizen.Wait(500)
 	end
 	local xPlayer = ESX.GetPlayerFromId(src)
 	if not Inventories[xPlayer.source] then
 		local result = exports.ghmattimysql:scalarSync('SELECT inventory FROM users WHERE identifier = @identifier', {
-			['@identifier'] = xPlayer.getIdentifier()
+			['@identifier'] = xPlayer.identifier
 		})
 		if result then
 			TriggerEvent('linden_inventory:setPlayerInventory', xPlayer, json.decode(result))
@@ -819,9 +819,9 @@ AddEventHandler('linden_inventory:decreaseDurability', function(slot, item, ammo
 					return
 				end
 				if xItem.durability == nil then
-					decreaseamount = ammo / 10
+					decreaseamount = ammo / 8
 				else
-					decreaseamount = xItem.durability * (ammo / 8)
+					decreaseamount = xItem.durability * (ammo / 7)
 				end
 				Inventories[xPlayer.source].inventory[slot].metadata.durability = Inventories[xPlayer.source].inventory[slot].metadata.durability - ESX.Round(decreaseamount, 2)
 				if Inventories[xPlayer.source].inventory[slot].metadata.durability <= 0 then

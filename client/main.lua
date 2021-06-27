@@ -1,3 +1,4 @@
+ESX.PlayerLoaded = false
 local Blips, Drops, Usables, weaponTimer, playerCoords = {}, {}, {}, 0
 local currentDumpster, raycast, currentWeapon, currentDrop = {}, {}
 cancelled = false
@@ -490,7 +491,7 @@ AddEventHandler('linden_inventory:weapon', function(item)
 end)
 
 AddEventHandler('linden_inventory:usedWeapon',function()
-	weaponTimer = (100 * 5)
+	weaponTimer = 1500
 end)
 
 AddEventHandler('linden_inventory:currentWeapon', function(weapon)
@@ -1180,4 +1181,4 @@ RegisterKeyMapping('hotkey3', 'Use hotbar item 3', 'keyboard', '3')
 RegisterKeyMapping('hotkey4', 'Use hotbar item 4', 'keyboard', '4')
 RegisterKeyMapping('hotkey5', 'Use hotbar item 5', 'keyboard', '5')
 
-if ESX.PlayerLoaded then StartInventory() end
+if ESX.IsPlayerLoaded() then SetTimeout(500, StartInventory) end
