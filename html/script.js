@@ -86,8 +86,6 @@ Display = function(bool) {
 	}
 }
 
-console.log("Successfully Loaded :)")
-
 window.addEventListener('message', function(event) {
 	if (event.data.message == 'openinventory') {
 		$(".item-slot").remove();
@@ -482,6 +480,7 @@ $(".give").droppable({
 					inv: inv,
 					amount: count
 				}));
+				HSN.CloseInventory()
 			}
 		}
 	}
@@ -576,14 +575,14 @@ SwapItems = function(fromInventory, toInventory, fromSlot, toSlot) {
 	availableweight = 0
 	//inv = from
 	//inv2 == to
-	let fromimage = fromItem.name
 	if (fromItem.metadata == undefined) { fromItem.metadata = {} }
-	if (fromItem.metadata.image == undefined) { fromimage = fromItem.name;};
+	let fromimage = fromItem.name
+	if (fromItem.metadata.image != undefined) { fromimage = fromItem.metadata.image }
 	if (inv2 !== 'Playerinv') {availableweight = rightfreeweight} else {availableweight = playerfreeweight}
 	if (inv == inv2 || (availableweight !== 0 && (fromItem.weight * count) <= availableweight)) {
 		if (toItem !== undefined ) {
-			if (toItem.metadata == undefined) { toItem.metadata = {} }
-			if (toItem.metadata.image == undefined) { toimage = toItem.name } else { toimage = toItem.metadata.image }
+			let toimage = toItem.name
+			if (toItem.metadata.image != undefined) { toimage = toItem.metadata.image }
 			if (count <= fromItem.count || count <= toItem.count) {
 				if(((fromItem.name).split("_")[0] == "WEAPON" && fromItem.metadata.durability !== undefined) && ((toItem.name).split("_")[0] == "WEAPON" && toItem.metadata.durability !== undefined)) {
 					// fromItem durability
@@ -738,8 +737,8 @@ SwapItems = function(fromInventory, toInventory, fromSlot, toSlot) {
 						newItemData.slot = toSlot
 						newItemData.price = fromItem.price
 						oldItemData.metadata.image || oldItemData.name
-						if (newItemData.metadata.image == undefined) { newImage = newItemData.name } else { newImage = newItemData.metadata.image }
-						if (oldItemData.metadata.image == undefined) { oldImage = oldItemData.name } else { oldImage = oldItemData.metadata.image }
+						oldImage = fromimage
+						newImage = fromimage
 						fromInventory.find("[inventory-slot="+fromSlot+"]").html('<div class="item-slot-img"><img src="images/'+oldImage+'.png'+'" alt="'+oldItemData.name+'" /></div><div class="item-slot-count"><p>'+numberFormat(oldItemData.count, oldItemData.name)+' '+weightFormat(oldItemData.weight/1000 * oldItemData.count)+'</p></div><div class="item-slot-label">'+oldItemData.label+'</div>');
 						fromInventory.find("[inventory-slot="+fromSlot+"]").data("ItemData", oldItemData);
 						toInventory.find("[inventory-slot="+toSlot+"]").html('<div class="item-slot-img"><img src="images/'+newImage+'.png'+'" alt="'+newItemData.name+'" /></div><div class="item-slot-count"><p>'+numberFormat(newItemData.count, newItemData.name)+' '+weightFormat(newItemData.weight/1000 * newItemData.count)+'</p></div><div class="item-slot-label">'+newItemData.label+'</div>');
