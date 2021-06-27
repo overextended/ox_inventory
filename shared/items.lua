@@ -64,7 +64,7 @@ Items = {
 
 	['garbage'] = {
 		label = 'Garbage',
-		weight = 50,
+		weight = 0,
 		stack = true,
 		close = true,
 	},
