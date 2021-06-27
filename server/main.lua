@@ -220,7 +220,9 @@ AddEventHandler('linden_inventory:recoverPlayerInventory', function(xPlayer)
 			local Inventory = json.decode(result)
 			for k,v in pairs(Inventory) do
 				if v.metadata == nil then v.metadata = {} end
-				Inventories[xPlayer.source].inventory[v.slot] = {name = v.name ,label = Items[v.name].label, weight = Items[v.name].weight, slot = v.slot, count = v.count, description = Items[v.name].description, metadata = v.metadata, stack = Items[v.name].stack}
+				local weight = Items[v.name].weight
+				if v.metadata.weight then weight = weight + v.metadata.weight end
+				Inventories[xPlayer.source].inventory[v.slot] = {name = v.name ,label = Items[v.name].label, weight = weight, slot = v.slot, count = v.count, description = Items[v.name].description, metadata = v.metadata, stack = Items[v.name].stack}
 			end
 			updateWeight(xPlayer)	
 			if Opened[xPlayer.source] then TriggerClientEvent('linden_inventory:closeInventory', Opened[xPlayer.source].invid)
@@ -859,7 +861,6 @@ AddEventHandler('linden_inventory:updateWeapon', function(item, type)
 	local xPlayer = ESX.GetPlayerFromId(source)
 	if xPlayer and Inventories[xPlayer.source].inventory[item.slot] ~= nil then
 		if Inventories[xPlayer.source].inventory[item.slot].metadata.ammo ~= nil then
-			Inventories[xPlayer.source].inventory[item.slot].metadata = item.metadata
 			if not type then
 				local ammo = Items[Items[item.name].ammoname]
 				local lastAmmo = Inventories[xPlayer.source].inventory[item.slot].metadata.ammo
@@ -869,7 +870,7 @@ AddEventHandler('linden_inventory:updateWeapon', function(item, type)
 				ammo.addweight = (ammo.count * ammo.weight)
 				Inventories[xPlayer.source].inventory[item.slot].weight = Items[item.name].weight + ammo.addweight
 				TriggerEvent('linden_inventory:decreaseDurability', item.slot, item.name, ammoDiff, xPlayer)
-			end
+			else Inventories[xPlayer.source].inventory[item.slot].metadata = item.metadata end
 			if Opened[xPlayer.source] or not ammo then TriggerClientEvent('linden_inventory:refreshInventory', xPlayer.source, Inventories[xPlayer.source]) end
 			TriggerClientEvent('linden_inventory:updateWeapon', xPlayer.source, Inventories[xPlayer.source].inventory[item.slot].metadata)
 		else
@@ -1131,9 +1132,9 @@ if Config.ItemList then
 							defined = true
 						end
 						local disable = ''
-						if item.disableMove then disable = '			disable = { move = false },\n' end 
+						if item.disableMove then disable = '			disable = { move = false },\n' defined = true end 
 						local consume = ''
-						if item.consume and item.consume ~= 1 then consume = '			consume = '..item.consume..',\n' end
+						if item.consume and item.consume ~= 1 then consume = '			consume = '..item.consume..',\n' defined = true end
 						local usetime = ''
 						if item.useTime then usetime = '			usetime = '..item.useTime..',\n' defined = true end
 						local event = ''
