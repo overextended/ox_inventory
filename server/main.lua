@@ -129,7 +129,7 @@ ESX.RegisterServerCallback('linden_inventory:setup', function(source, cb)
 	while true do
 		if Status == 'ready' then break end
 		loop = loop + 1
-		if loop == 4 then return end
+		if loop == 8 then return end
 		Citizen.Wait(500)
 	end
 	local xPlayer = ESX.GetPlayerFromId(src)
@@ -865,7 +865,6 @@ AddEventHandler('linden_inventory:updateWeapon', function(item, type)
 				local ammo = Items[Items[item.name].ammoname]
 				ammo.count = Inventories[xPlayer.source].inventory[item.slot].metadata.ammo
 				local ammoDiff = ammo.count - item.metadata.ammo
-				print(ammo.count, item.metadata.ammo, ammo.count - ammoDiff)
 				ammo.addweight = (ammo.count * ammo.weight)
 				Inventories[xPlayer.source].inventory[item.slot].metadata.ammo = ammo.count - ammoDiff
 				Inventories[xPlayer.source].inventory[item.slot].weight = Items[item.name].weight + ammo.addweight

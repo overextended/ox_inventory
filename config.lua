@@ -23,7 +23,7 @@ Config.EnableBlur = true
 Config.WeaponsLicense = true
 Config.WeaponsLicensePrice = 5000
 
--- Set to true to enable integrated logging
+-- Set to true to enable integrated logging (extra configuration in server/logs)
 Config.Logs = false
 
 -- Default keymapping for the inventory; players can assign their own
@@ -36,5 +36,5 @@ Config.AutoReload = false
 -- Randomise the price of items in each shop at resource start
 Config.RandomPrices = false
 
--- Make use of bt-target for shops (requires fork at https://github.com/OfficialNoms/bt-target and setup)
+-- If you use bt-target and want to make use of bt-target on the shops enable this (requires fork at https://github.com/OfficialNoms/bt-target)
 Config.bt_target = false

@@ -79,50 +79,64 @@ OnPlayerData = function(key, val)
 	end
 end
 
+RegisterNetEvent('esx_policejob:handcuff')
+AddEventHandler('esx_policejob:handcuff', function()
+	isCuffed = not isCuffed
+	if isCuffed then DisarmPlayer() TriggerEvent('linden_inventory:closeInventory') end
+end)
+
+RegisterNetEvent('esx_policejob:unrestrain')
+AddEventHandler('esx_policejob:unrestrain', function()
+	isCuffed = false
+	TriggerEvent('linden_inventory:closeInventory')
+end)
+
 StartInventory = function()
-	playerID, invOpen, ESX.PlayerData.dead, isCuffed, isBusy, usingWeapon, currentDrop = nil, false, false, false, false, false, nil
-	ESX.TriggerServerCallback('linden_inventory:setup', function(data)
-		ESX.PlayerData = ESX.GetPlayerData()
-		ESX.SetPlayerData('inventory', data.inventory)
-		ESX.SetPlayerData('weight', data.weight)
-		playerCoords = GetEntityCoords(ESX.PlayerData.ped)
-		playerID = GetPlayerServerId(PlayerId())
-		playerName = data.name
-		Drops = data.drops
-		Usables = data.usables
-		inventoryLabel = playerName..' ['..playerID..'] '--[[..ESX.PlayerData.job.grade_label]]
-		ClearWeapons()
-		local msg = _U('inventory_setup')
-		print(msg)
-		TriggerEvent('mythic_notify:client:SendAlert', {type = 'inform', text = msg, length = 2500})
-		ESX.PlayerLoaded = true
-		TriggerLoops()
-		if next(Blips) then
-			for k, v in pairs(Blips) do
-				RemoveBlip(v)
+	playerID, invOpen, ESX.PlayerData.dead, isBusy, usingWeapon, currentDrop = nil, false, false, false, false, nil
+	ClearWeapons()
+	SetTimeout(500, function()
+		ESX.TriggerServerCallback('linden_inventory:setup', function(data)
+			ESX.SetPlayerData('inventory', data.inventory)
+			ESX.SetPlayerData('weight', data.weight)
+			playerCoords = GetEntityCoords(ESX.PlayerData.ped)
+			playerID = GetPlayerServerId(PlayerId())
+			playerName = data.name
+			Drops = data.drops
+			Usables = data.usables
+			inventoryLabel = playerName..' ['..playerID..'] '--[[..ESX.PlayerData.job.grade_label]]
+			ClearWeapons()
+			local msg = _U('inventory_setup')
+			print(msg)
+			TriggerEvent('mythic_notify:client:SendAlert', {type = 'inform', text = msg, length = 2500})
+			ESX.PlayerLoaded = true
+			TriggerLoops()
+			if next(Blips) then
+				for k, v in pairs(Blips) do
+					RemoveBlip(v)
+				end
+				Blips = {}
 			end
-			Blips = {}
-		end
-		for k, v in pairs(Config.Shops) do
-			if not v.type then v.type = Config.General end
-			if v.type and v.type.blip and (not v.job or v.job == ESX.PlayerData.job.name) then
-				local data = v.type
-				Blips[k] = AddBlipForCoord(v.coords.x, v.coords.y, v.coords.z)
-				SetBlipSprite(Blips[k], data.blip.id)
-				SetBlipDisplay(Blips[k], 4)
-				SetBlipScale(Blips[k], data.blip.scale)
-				SetBlipColour(Blips[k], data.blip.colour)
-				SetBlipAsShortRange(Blips[k], true)
-				BeginTextCommandSetBlipName('STRING')
-				AddTextComponentString(data.name)
-				EndTextCommandSetBlipName(Blips[k])
+			for k, v in pairs(Config.Shops) do
+				if not v.type then v.type = Config.General end
+				if v.type and v.type.blip and (not v.job or v.job == ESX.PlayerData.job.name) then
+					local data = v.type
+					Blips[k] = AddBlipForCoord(v.coords.x, v.coords.y, v.coords.z)
+					SetBlipSprite(Blips[k], data.blip.id)
+					SetBlipDisplay(Blips[k], 4)
+					SetBlipScale(Blips[k], data.blip.scale)
+					SetBlipColour(Blips[k], data.blip.colour)
+					SetBlipAsShortRange(Blips[k], true)
+					BeginTextCommandSetBlipName('STRING')
+					AddTextComponentString(data.name)
+					EndTextCommandSetBlipName(Blips[k])
+				end
 			end
-		end
+		end)
 	end)
 end
 
 CanOpenInventory = function()
-	if ESX.PlayerLoaded and not isBusy and weaponTimer < 250 and not ESX.PlayerData.dead and not isCuffed and not IsPauseMenuActive() and not IsPedDeadOrDying(ESX.PlayerData.ped, 1) then
+	if ESX.PlayerLoaded and not isBusy and weaponTimer < 50 and not ESX.PlayerData.dead and not isCuffed and not IsPauseMenuActive() and not IsPedDeadOrDying(ESX.PlayerData.ped, 1) then
 		return true
 	else return false end
 end
@@ -491,7 +505,7 @@ AddEventHandler('linden_inventory:weapon', function(item)
 end)
 
 AddEventHandler('linden_inventory:usedWeapon',function()
-	weaponTimer = 1500
+	weaponTimer = 350
 end)
 
 AddEventHandler('linden_inventory:currentWeapon', function(weapon)
@@ -1170,15 +1184,14 @@ UseItem = function(item, esxItem, data)
 	end, item.name, item.slot, item.metadata, esxItem)
 end
 
-RegisterKeyMapping('reload', 'Reload weapon', 'keyboard', 'r')
-RegisterKeyMapping('hotbar', 'Display inventory hotbar', 'keyboard', 'tab')
-		
-RegisterKeyMapping('inv', 'Open player inventory', 'keyboard', Config.InventoryKey)
-RegisterKeyMapping('vehinv', 'Open vehicle inventory', 'keyboard', Config.VehicleInventoryKey)
-RegisterKeyMapping('hotkey1', 'Use hotbar item 1', 'keyboard', '1')
-RegisterKeyMapping('hotkey2', 'Use hotbar item 2', 'keyboard', '2')
-RegisterKeyMapping('hotkey3', 'Use hotbar item 3', 'keyboard', '3')
-RegisterKeyMapping('hotkey4', 'Use hotbar item 4', 'keyboard', '4')
-RegisterKeyMapping('hotkey5', 'Use hotbar item 5', 'keyboard', '5')
+if ESX.IsPlayerLoaded() then StartInventory() end
 
-if ESX.IsPlayerLoaded() then SetTimeout(500, StartInventory) end
+RegisterKeyMapping('inv', 'Open player inventory~', 'keyboard', Config.InventoryKey)
+RegisterKeyMapping('vehinv', 'Open vehicle inventory~', 'keyboard', Config.VehicleInventoryKey)
+RegisterKeyMapping('hotbar', 'Display inventory hotbar~', 'keyboard', 'tab')
+RegisterKeyMapping('hotkey1', 'Use hotbar item 1~', 'keyboard', '1')
+RegisterKeyMapping('hotkey2', 'Use hotbar item 2~', 'keyboard', '2')
+RegisterKeyMapping('hotkey3', 'Use hotbar item 3~', 'keyboard', '3')
+RegisterKeyMapping('hotkey4', 'Use hotbar item 4~', 'keyboard', '4')
+RegisterKeyMapping('hotkey5', 'Use hotbar item 5~', 'keyboard', '5')
+RegisterKeyMapping('reload', 'Reload weapon~', 'keyboard', 'r')
