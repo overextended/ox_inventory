@@ -863,11 +863,11 @@ AddEventHandler('linden_inventory:updateWeapon', function(item, type)
 		if Inventories[xPlayer.source].inventory[item.slot].metadata.ammo ~= nil then
 			if not type then
 				local ammo = Items[Items[item.name].ammoname]
-				local lastAmmo = Inventories[xPlayer.source].inventory[item.slot].metadata.ammo
-				local newAmmo = item.metadata.ammo
-				local ammoDiff = lastAmmo - newAmmo
 				ammo.count = Inventories[xPlayer.source].inventory[item.slot].metadata.ammo
+				local ammoDiff = ammo.count - item.metadata.ammo
+				print(ammo.count, item.metadata.ammo, ammo.count - ammoDiff)
 				ammo.addweight = (ammo.count * ammo.weight)
+				Inventories[xPlayer.source].inventory[item.slot].metadata.ammo = ammo.count - ammoDiff
 				Inventories[xPlayer.source].inventory[item.slot].weight = Items[item.name].weight + ammo.addweight
 				TriggerEvent('linden_inventory:decreaseDurability', item.slot, item.name, ammoDiff, xPlayer)
 			else Inventories[xPlayer.source].inventory[item.slot].metadata = item.metadata end
