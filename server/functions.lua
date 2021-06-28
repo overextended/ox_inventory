@@ -206,7 +206,7 @@ SaveItems = function(type, id, owner, inventory)
 					Datastore[id] = Inventories[id].inventory
 				else
 					local plate = string.match(id, "-(.*)")
-					if Config.TrimPlate then plate = ESX.Math.Trim(plate) end
+					if Config.TrimPlate then plate = func.trim(plate) end
 					local result = exports.ghmattimysql:scalarSync('SELECT `owner` from `owned_vehicles` WHERE `plate` = @plate', {
 						['@plate'] = plate
 					})
@@ -251,7 +251,7 @@ GetItems = function(id, inv, owner)
 					return data
 				else
 					local plate = string.match(id, "-(.*)")
-					if Config.TrimPlate then plate = ESX.Math.Trim(plate) end
+					if Config.TrimPlate then plate = func.trim(plate) end
 					local owned = exports.ghmattimysql:scalarSync('SELECT `plate` FROM `owned_vehicles` WHERE plate = @plate', {
 						['@plate'] = plate
 					})

@@ -847,7 +847,7 @@ TriggerLoops = function()
 				if not next(currentDumpster) then
 					raycast.id, raycast.type, raycast.hash = object, type, hash
 				end
-			end
+			else raycast = {} end
 			Citizen.Wait(sleep)
 		end
 	end)
@@ -897,7 +897,7 @@ RegisterCommand('vehinv', function()
 			CloseToVehicle = false
 			lastVehicle = nil
 			local class = GetVehicleClass(vehicle)
-			if vehicle and Config.Trunks[class] and #(playerCoords - vehiclePos) < 6 then
+			if vehicle and Config.Trunks[class] and #(playerCoords - vehiclePos) < 6 and NetworkGetEntityIsNetworked(raycast.id) then
 				local locked = GetVehicleDoorLockStatus(vehicle)
 				if locked == 0 or locked == 1 then
 					local vehHash = GetEntityModel(vehicle)
@@ -914,7 +914,7 @@ RegisterCommand('vehinv', function()
 					if (open == 5 and checkVehicle == nil) then if pedDistance < 2.0 then CloseToVehicle = true end elseif (open == 5 and checkVehicle == 2) then if pedDistance < 2.0 then CloseToVehicle = true end elseif open == 4 then if pedDistance < 2.0 then CloseToVehicle = true end end	
 					if CloseToVehicle then
 						local plate = GetVehicleNumberPlateText(vehicle)
-						if Config.TrimPlate then plate = ESX.Math.Trim(plate) end
+						if Config.TrimPlate then plate = func.trim(plate) end
 						TaskTurnPedToFaceCoord(ESX.PlayerData.ped, vehiclePos)
 						lastVehicle = vehicle
 						OpenTrunk(plate, class)
@@ -964,17 +964,19 @@ RegisterCommand('vehinv', function()
 			end
 		elseif IsPedInAnyVehicle(ESX.PlayerData.ped, false) then -- glovebox
 			local vehicle = GetVehiclePedIsIn(ESX.PlayerData.ped, false)
-			local plate = GetVehicleNumberPlateText(vehicle)
-			if Config.TrimPlate then plate = ESX.Math.Trim(plate) end
-			local class = GetVehicleClass(vehicle)
-			OpenGloveBox(plate, class)
-			Citizen.Wait(100)
-			while true do
+			if NetworkGetEntityIsNetworked(vehicle) then
+				local plate = GetVehicleNumberPlateText(vehicle)
+				if Config.TrimPlate then plate = func.trim(plate) end
+				local class = GetVehicleClass(vehicle)
+				OpenGloveBox(plate, class)
 				Citizen.Wait(100)
-				if not invOpen then break
-				elseif not IsPedInAnyVehicle(ESX.PlayerData.ped, false) then
-					TriggerEvent('linden_inventory:closeInventory')
-					break
+				while true do
+					Citizen.Wait(100)
+					if not invOpen then break
+					elseif not IsPedInAnyVehicle(ESX.PlayerData.ped, false) then
+						TriggerEvent('linden_inventory:closeInventory')
+						break
+					end
 				end
 			end
 		end
