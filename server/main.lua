@@ -387,7 +387,7 @@ AddEventHandler('linden_inventory:giveStash', function(data)
 
 			local xItem, slot, existing = Items[data.item]
 			for i=1, data.slots do
-				if xItem.stack and Inventories[id].inventory[i] and Inventories[id].inventory[i].name == data.item and is_table_equal(Inventories[id].inventory[i].metadata, data.metadata) then slot = i existing = true break
+				if xItem.stack and Inventories[id].inventory[i] and Inventories[id].inventory[i].name == data.item and func.matchtables(Inventories[id].inventory[i].metadata, data.metadata) then slot = i existing = true break
 				elseif not slot and Inventories[id].inventory[i] == nil then slot = i existing = false end
 			end
 
@@ -489,7 +489,7 @@ AddEventHandler('linden_inventory:buyItem', function(info)
 						end
 					end
 					addInventoryItem(xPlayer, data.name, count, data.metadata, false)
-					if Config.Logs then CreateLog(xPlayer.source, false, ('bought %sx %s from %s for %s'):format(ESX.Math.GroupDigits(count), data.label, shopName, cost), 'shop') end
+					--if Config.Logs then CreateLog(xPlayer.source, false, ('bought %sx %s from %s for %s'):format(ESX.Math.GroupDigits(count), data.label, shopName, cost), 'shop') end
 				else
 					local missing
 					if currency == 'bank' or item.name == 'money' then

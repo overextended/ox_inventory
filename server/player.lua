@@ -20,7 +20,7 @@ getInventoryItem = function(xPlayer, name, metadata)
 		for k, v in pairs(Inventories[xPlayer.source].inventory) do
 			if v.name == name then
 				if not v.metadata then v.metadata = {} end
-				if not metadata or is_table_equal(v.metadata, metadata) then
+				if not metadata or func.matchtables(v.metadata, metadata) then
 					xItem.count = xItem.count + v.count
 				end
 			end
@@ -42,7 +42,7 @@ addInventoryItem = function(xPlayer, item, count, metadata, slot)
 		if slot then slot = getPlayerSlot(xPlayer, slot, item, metadata).slot
 		else
 			for i=1, Config.PlayerSlots do
-				if xItem.stack and Inventories[xPlayer.source].inventory[i] and Inventories[xPlayer.source].inventory[i].name == item and is_table_equal(Inventories[xPlayer.source].inventory[i].metadata, metadata) then toSlot = i existing = true break
+				if xItem.stack and Inventories[xPlayer.source].inventory[i] and Inventories[xPlayer.source].inventory[i].name == item and func.matchtables(Inventories[xPlayer.source].inventory[i].metadata, metadata) then toSlot = i existing = true break
 				elseif not toSlot and Inventories[xPlayer.source].inventory[i] == nil then toSlot = i existing = false end
 			end
 			slot = toSlot
@@ -259,7 +259,7 @@ getPlayerSlot = function(xPlayer, slot, item, metadata)
 	if slot > Config.PlayerSlots then return nil end
 	local getSlot = Inventories[xPlayer.source].inventory[slot]
 	if item and getSlot and getSlot.name ~= item then slot = nil end
-	if slot and metadata and not is_table_equal(getSlot.metadata, metadata) then slot = nil end
+	if slot and metadata and not func.matchtables(getSlot.metadata, metadata) then slot = nil end
 	if getSlot then return getSlot end return {}
 end
 exports('getPlayerSlot', getPlayerSlot)
@@ -274,7 +274,7 @@ getInventoryItemSlots = function(xPlayer, name, metadata)
 		emptySlots = emptySlots - 1
 		if v.name == name then
 			if metadata and not v.metadata then v.metadata = {} end
-			if not metadata or is_table_equal(v.metadata, metadata) then
+			if not metadata or func.matchtables(v.metadata, metadata) then
 				totalCount = totalCount + v.count
 				slots[k] = v.count
 			end
