@@ -56,9 +56,9 @@ if Config.RandomLoot and IsDuplicityVersion() then
 								for i=1, count, 1 do 
 									local slot = #returnData + 1
 									local metadata = {}
-									local weight = Items[item.name].weight
 									if item.name == 'garbage' then metadata = GenerateTrash(metadata) end
-									returnData[slot] = {name = item.name , label = Items[item.name].label, weight = metadata.weight, slot = slot, count = 1, description = Items[item.name].description, metadata = metadata, stack = Items[item.name].stack}
+									print(item.name, item.weight, Items[item.name].weight, metadata.weight)
+									returnData[slot] = {name = item.name , label = Items[item.name].label, weight = Items[item.name].weight, slot = slot, count = 1, description = Items[item.name].description, metadata = metadata, stack = Items[item.name].stack}
 								end 
 							end
 						end
