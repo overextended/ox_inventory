@@ -105,7 +105,7 @@ CreateNewDrop = function(xPlayer, data)
 				ItemNotify(xPlayer, data.item, count, data.emptyslot, 'removed')
 				Inventories[invid2].inventory[data.emptyslot] = nil
 				Drops[invid].inventory[data.toSlot] = {name = data.item.name, label = data.item.label, weight = data.item.weight, slot = data.toSlot, count = data.item.count, description = data.item.description, metadata = data.item.metadata, stack = data.item.stack, close = Items[data.item.name].close}
-				if Config.Logs then CreateLog(xPlayer.source, false, 'has dropped '..data.item.count..'x '..data.item.name..' in drop-'..invid, 'drop') end
+				if Config.Logs then CreateLog(xPlayer.source, false, 'has dropped '..data.item.count..'x '..data.item.name..' in '..invid, 'drop') end
 				Opened[xPlayer.source] = nil
 				TriggerClientEvent('linden_inventory:createDrop', -1, Drops[invid], xPlayer.source)
 			end
@@ -114,7 +114,7 @@ CreateNewDrop = function(xPlayer, data)
 				ItemNotify(xPlayer, data.newslotItem, data.newslotItem.count, data.fromSlot, 'removed')
 				Inventories[invid2].inventory[data.fromSlot] = {name = data.oldslotItem.name, label = data.oldslotItem.label, weight = data.oldslotItem.weight, slot = data.fromSlot, count = data.oldslotItem.count, description = data.oldslotItem.description, metadata = data.oldslotItem.metadata, stack = data.oldslotItem.stack, close = Items[data.oldslotItem.name].close}
 				Drops[invid].inventory[data.toSlot] = {name = data.newslotItem.name, label = data.newslotItem.label, weight = data.newslotItem.weight, slot = data.toSlot, count = data.newslotItem.count, description = data.newslotItem.description, metadata = data.newslotItem.metadata, stack = data.newslotItem.stack, close = Items[data.newslotItem.name].close}
-				if Config.Logs then CreateLog(xPlayer.source, false, 'has dropped '..data.newslotItem.count..'x '..data.newslotItem.name,' in drop-'..invid, 'drop') end
+				if Config.Logs then CreateLog(xPlayer.source, false, 'has dropped '..data.newslotItem.count..'x '..data.newslotItem.name,' in '..invid, 'drop') end
 				Opened[xPlayer.source] = nil
 				TriggerClientEvent('linden_inventory:createDrop', -1, Drops[invid], xPlayer.source)
 			end

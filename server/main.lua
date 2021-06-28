@@ -641,13 +641,13 @@ AddEventHandler('linden_inventory:saveInventoryData', function(data)
 								ItemNotify(xTarget, data.toItem, data.toItem.count, data.toSlot, 'removed', data.type)
 								ItemNotify(xTarget, data.fromItem, data.fromItem.count, data.fromSlot, 'added', data.type)
 								if Config.Logs then
-									CreateLog(xPlayer.source, xTarget.source, 'has given '..data.fromItem.count..'x '..data.fromItem.name..' to', data.type)
-									CreateLog(xPlayer.source, xTarget.source, 'has taken '..data.toItem.count..'x '..data.toItem.name..' from', data.type)
+									CreateLog(xPlayer.source, xTarget.source, 'has given '..data.fromItem.count..'x '..data.fromItem.name..' to', data.toinv)
+									CreateLog(xPlayer.source, xTarget.source, 'has taken '..data.toItem.count..'x '..data.toItem.name..' from', data.frominv)
 								end
 							else
 								if Config.Logs then
-									CreateLog(xPlayer.source, false, 'has stored '..data.fromItem.count..'x '..data.fromItem.name..' in '..invid2, data.type)
-									CreateLog(xPlayer.source, false, 'has taken '..data.toItem.count..'x '..data.toItem.name..' from '..invid2, data.type)
+									CreateLog(xPlayer.source, false, 'has stored '..data.fromItem.count..'x '..data.fromItem.name..' in '..invid2, data.toinv)
+									CreateLog(xPlayer.source, false, 'has taken '..data.toItem.count..'x '..data.toItem.name..' from '..invid2, data.frominv)
 								end
 							end
 						elseif invid2 == xPlayer.source then
@@ -657,13 +657,13 @@ AddEventHandler('linden_inventory:saveInventoryData', function(data)
 								ItemNotify(xTarget, data.toItem, data.toItem.count, data.toSlot, 'added', data.type)
 								ItemNotify(xTarget, data.fromItem, data.fromItem.count, data.fromSlot, 'removed', data.type)
 								if Config.Logs then
-									CreateLog(xPlayer.source, xTarget.source, 'has given '..data.fromItem.count..'x '..data.fromItem.name..' to', data.type)
-									CreateLog(xPlayer.source, xTarget.source, 'has taken '..data.toItem.count..'x '..data.toItem.name..' from', data.type)
+									CreateLog(xPlayer.source, xTarget.source, 'has given '..data.fromItem.count..'x '..data.fromItem.name..' to', data.toinv)
+									CreateLog(xPlayer.source, xTarget.source, 'has taken '..data.toItem.count..'x '..data.toItem.name..' from', data.frominv)
 								end
 							else
 								if Config.Logs then
-									CreateLog(xPlayer.source, false, 'has stored '..data.fromItem.count..'x '..data.fromItem.name..' in '..invid, data.type)
-									CreateLog(xPlayer.source, false, 'has taken '..data.toItem.count..'x '..data.toItem.name..' from '..invid, data.type)
+									CreateLog(xPlayer.source, false, 'has stored '..data.fromItem.count..'x '..data.fromItem.name..' in '..invid, data.toinv)
+									CreateLog(xPlayer.source, false, 'has taken '..data.toItem.count..'x '..data.toItem.name..' from '..invid, data.frominv)
 								end
 							end
 						end
@@ -678,17 +678,17 @@ AddEventHandler('linden_inventory:saveInventoryData', function(data)
 							ItemNotify(xPlayer, data.item, count, data.toSlot, 'added')
 							if targetId then
 								ItemNotify(xTarget, data.item, count, data.emptyslot, 'removed')
-								if Config.Logs then CreateLog(xPlayer.source, xTarget.source, 'has taken '..count..'x '..data.item.name..' from', data.type) end
+								if Config.Logs then CreateLog(xPlayer.source, xTarget.source, 'has taken '..count..'x '..data.item.name..' from', data.frominv) end
 							else
-								if Config.Logs then CreateLog(xPlayer.source, false, 'has taken '..count..'x '..data.item.name..' from '..invid2, data.type) end
+								if Config.Logs then CreateLog(xPlayer.source, false, 'has taken '..count..'x '..data.item.name..' from '..invid2, data.frominv) end
 							end
 						elseif invid2 == xPlayer.source then
 							ItemNotify(xPlayer, data.item, count, data.emptyslot, 'removed')
 							if targetId then
 								ItemNotify(xTarget, data.item, count, data.toSlot, 'added')
-								if Config.Logs then CreateLog(xPlayer.source, false, 'has given '..count..'x '..data.item.name..' to', data.type) end
+								if Config.Logs then CreateLog(xPlayer.source, false, 'has given '..count..'x '..data.item.name..' to', data.toinv) end
 							else
-								if Config.Logs then CreateLog(xPlayer.source, false, 'has stored '..count..'x '..data.item.name..' in '..invid, data.type) end
+								if Config.Logs then CreateLog(xPlayer.source, false, 'has stored '..count..'x '..data.item.name..' in '..invid, data.toinv) end
 							end
 						end
 						Inventories[invid2].inventory[data.emptyslot] = nil
@@ -701,17 +701,17 @@ AddEventHandler('linden_inventory:saveInventoryData', function(data)
 							ItemNotify(xPlayer, data.newslotItem, data.newslotItem.count, data.toSlot, 'added')
 							if targetId then
 								ItemNotify(xTarget, data.newslotItem, data.newslotItem.count, data.fromSlot, 'removed')
-								if Config.Logs then CreateLog(xPlayer.source, xTarget.source, 'has taken '..data.newslotItem.count..'x '..data.newslotItem.name..' from', data.type) end	
+								if Config.Logs then CreateLog(xPlayer.source, xTarget.source, 'has taken '..data.newslotItem.count..'x '..data.newslotItem.name..' from', data.frominv) end	
 							else
-								if Config.Logs then CreateLog(xPlayer.source, false, 'has taken '..data.newslotItem.count..'x '..data.newslotItem.name..' from '..invid2, data.type) end	
+								if Config.Logs then CreateLog(xPlayer.source, false, 'has taken '..data.newslotItem.count..'x '..data.newslotItem.name..' from '..invid2, data.frominv) end	
 							end
 						elseif invid2 == xPlayer.source then
 							ItemNotify(xPlayer, data.newslotItem, data.newslotItem.count, data.fromSlot, 'removed')
 							if targetId then
 								ItemNotify(xTarget, data.newslotItem, data.toSlot, false, 'added')
-								if Config.Logs then CreateLog(xPlayer.source, xTarget.source, 'has given '..data.newslotItem.count..'x '..data.newslotItem.name..' to', data.type) end	
+								if Config.Logs then CreateLog(xPlayer.source, xTarget.source, 'has given '..data.newslotItem.count..'x '..data.newslotItem.name..' to', data.toinv) end	
 							else
-								if Config.Logs then CreateLog(xPlayer.source, false, 'has stored '..data.newslotItem.count..'x '..data.newslotItem.name..' in '..invid, data.type) end	
+								if Config.Logs then CreateLog(xPlayer.source, false, 'has stored '..data.newslotItem.count..'x '..data.newslotItem.name..' in '..invid, data.toinv) end	
 							end
 						end
 						Inventories[invid2].inventory[data.fromSlot] = {name = data.oldslotItem.name, label = data.oldslotItem.label, weight = data.oldslotItem.weight, slot = data.fromSlot, count = data.oldslotItem.count, description = data.oldslotItem.description, metadata = data.oldslotItem.metadata, stack = data.oldslotItem.stack, close = Items[data.oldslotItem.name].close}
