@@ -30,15 +30,17 @@ end
 
 local Logs = {}
 
-Discord = {
-	--bag		 = "https://discord.com/api/webhooks/",
-	--drop	 = "https://discord.com/api/webhooks/",
-	--dumpster = "https://discord.com/api/webhooks/",
-	--glovebox = "https://discord.com/api/webhooks/",
-	--player	 = "https://discord.com/api/webhooks/",
-	--shop	 = "https://discord.com/api/webhooks/", -- not recommended since many people just spam buy 1 item at a time
-	--stash	 = "https://discord.com/api/webhooks/",
-	--trunk	 = "https://discord.com/api/webhooks/",
+local Discord = {
+	bag		 = "https://discord.com/api/webhooks/",
+	drop	 = "https://discord.com/api/webhooks/",
+	dumpster = "https://discord.com/api/webhooks/",
+	glovebox = "https://discord.com/api/webhooks/",
+	player	 = "https://discord.com/api/webhooks/",
+	stash	 = "https://discord.com/api/webhooks/",
+	trunk	 = "https://discord.com/api/webhooks/",
+
+	-- Set types of shops to be logged in the buyitem event
+	shop	 = "https://discord.com/api/webhooks/",
 }
 
 local Webhook = function(type, output, identifier)

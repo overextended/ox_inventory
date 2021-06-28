@@ -489,7 +489,9 @@ AddEventHandler('linden_inventory:buyItem', function(info)
 						end
 					end
 					addInventoryItem(xPlayer, data.name, count, data.metadata, false)
-					--if Config.Logs then CreateLog(xPlayer.source, false, ('bought %sx %s from %s for %s'):format(ESX.Math.GroupDigits(count), data.label, shopName, cost), 'shop') end
+					if Config.Shops[location].job then
+						if Config.Logs then CreateLog(xPlayer.source, false, ('bought %sx %s from %s for %s'):format(ESX.Math.GroupDigits(count), data.label, shopName, cost), 'shop') end
+					end
 				else
 					local missing
 					if currency == 'bank' or item.name == 'money' then
