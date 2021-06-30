@@ -791,7 +791,7 @@ TriggerLoops = function()
 						if not id or dist > 1.8 then
 							if (ESX.PlayerData.job.name == 'police' and dist > 1.8) or not CanOpenTarget(ped) then
 								TriggerEvent('linden_inventory:closeInventory')
-								TriggerEvent('notify:client:SendAlert', {type = 'error', text = _U('inventory_lost_access'), length = 2500})
+								TriggerEvent('mythic_notify:client:SendAlert', {type = 'error', text = _U('inventory_lost_access'), length = 2500})
 							end
 						else
 							TaskTurnPedToFaceCoord(ESX.PlayerData.ped, playerCoords)
@@ -800,7 +800,7 @@ TriggerLoops = function()
 						local dist = #(playerCoords - currentInventory.coords)
 						if dist > 2 or CanOpenTarget(ESX.PlayerData.ped) then
 							TriggerEvent('linden_inventory:closeInventory')
-							TriggerEvent('notify:client:SendAlert', {type = 'error', text = _U('inventory_lost_access'), length = 2500})
+							TriggerEvent('mythic_notify:client:SendAlert', {type = 'error', text = _U('inventory_lost_access'), length = 2500})
 						end
 					end
 				end
@@ -887,13 +887,15 @@ RegisterCommand('inv', function()
 	end
 end)
 
-RegisterCommand('vehinv', function()
+RegisterCommand('inv2', function()
 	if invOpen then return end
 	if isBusy then TriggerEvent('mythic_notify:client:SendAlert', {type = 'error', text = _U('inventory_cannot_open'), length = 2500})
 	elseif currentInventory then TriggerEvent('linden_inventory:closeInventory')
 	else
 		if not CanOpenInventory() then TriggerEvent('mythic_notify:client:SendAlert', {type = 'error', text = _U('inventory_cannot_open'), length = 2500}) return end
-		if not IsPedInAnyVehicle(ESX.PlayerData.ped, false) then -- trunk
+		if next(currentDumpster) then
+			TriggerServerEvent('linden_inventory:openInventory', 'dumpster', OpenDumpster({ id = currentDumpster.id, label = 'Dumpster', slots = currentDumpster.slots or 10}))
+		elseif not IsPedInAnyVehicle(ESX.PlayerData.ped, false) then -- trunk
 			local vehicle, vehiclePos = raycast.id, GetEntityCoords(raycast.id)
 			CloseToVehicle = false
 			lastVehicle = nil
@@ -1189,8 +1191,8 @@ end
 
 if ESX.IsPlayerLoaded() then StartInventory() end
 
-RegisterKeyMapping('inv', 'Open player inventory~', 'keyboard', Config.InventoryKey)
-RegisterKeyMapping('vehinv', 'Open vehicle inventory~', 'keyboard', Config.VehicleInventoryKey)
+RegisterKeyMapping('inv', 'Open player inventory~', 'keyboard', 'f2')
+RegisterKeyMapping('inv2', 'Open secondary inventory~', 'keyboard', 'k')
 RegisterKeyMapping('hotbar', 'Display inventory hotbar~', 'keyboard', 'tab')
 RegisterKeyMapping('hotkey1', 'Use hotbar item 1~', 'keyboard', '1')
 RegisterKeyMapping('hotkey2', 'Use hotbar item 2~', 'keyboard', '2')
