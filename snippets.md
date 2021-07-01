@@ -121,20 +121,3 @@ title: Snippets
 	end)
 ```
 * If you were using the previous method it should still work, though I recommend adding the label
-
-
-#### Support for loaf_housing (per furniture)
-* Find the `OpenStorage` function and replace with
-```lua
-OpenStorage = function(houseid, k, v)
-    exports['linden_inventory']:OpenStash({owner = currentHouseOwner, id = 'house'..houseid..'-'..k, label = v.label, slots = 20 })
-end
-```
-* Find the `EnterHouse` function, and below `if type(success) == "table" then` add
-```lua
-currentHouseOwner = success.owner
-```
-* Search for `spawned_houses[houseid] = {` and within the table add (to both instances)
-```lua
-owner = owner
-```
