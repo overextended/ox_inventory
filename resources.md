@@ -24,7 +24,7 @@ title: Resources
 [Download](https://github.com/OfficialNoms/qrp_idcards)
 
 
-### QRP Hunting
+### QRP Hunting (outdated at the moment but should work)
 - Fork of [Rio's hunting](https://github.com/Rio358/hunting)
 - Supports item metadata and drop creation
 - Players can skin any dead animal instead of having to kill it
