@@ -39,5 +39,6 @@ I do not typically recommend buying resources, however high quality unobfuscated
 ### Loaf Housing
 - Very popular and was updated to remove obfuscation fairly recently
 - Includes built-in support for the inventory through the config
-- (Coming soon) Slots set on a prop-by-prop basis (based on [SHIN's snippet](https://discord.com/channels/813030955598086174/816673612621938759/857387803435073557)
+- (Coming soon) Slots set on a prop-by-prop basis (based on [SHIN's snippet](https://discord.com/channels/813030955598086174/816673612621938759/857387803435073557))
+
 [Release Thread](https://forum.cfx.re/t/release-paid-esx-loaf-advanced-housing/2168798)
