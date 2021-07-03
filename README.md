@@ -34,7 +34,7 @@ Despite all the changes I've implemented to hsn-inventory, there's a lot that I 
 <table><tr><td>
 Linden Inventory for ESX Legacy  
 
-Copyright (C) 2021  Linden  
+Copyright (C) 2021  Linden, Hasan  
 
 
 This program is free software: you can redistribute it and/or modify
