@@ -7,7 +7,7 @@ local Raycast = function()
 	local plyOffset = GetOffsetFromEntityInWorldCoords(ESX.PlayerData.ped, 0.0, 3.0, -0.15)
 	local ret, hit, coords, surfacenormal, entity = GetShapeTestResult(StartShapeTestRay(playerCoords.x, playerCoords.y, playerCoords.z, plyOffset.x, plyOffset.y, plyOffset.z, -1, ESX.PlayerData.ped, 0))
 	local type = GetEntityType(entity)
-	if hit and type ~= 0 then return hit, coords, entity, type else	return nil end
+	if hit and type ~= 0 then return hit, coords, entity, type else	return false end
 end
 
 local DrawText3D = function(coords, text)
@@ -835,9 +835,9 @@ TriggerLoops = function()
 						currentDumpster.hash = hash
 						local pos = GetEntityCoords(object)
 						entity = object
-						while entity > 0 do
-							if object ~= entity or #(playerCoords - pos) > 1.5 then break end
+						while true do
 							local result, coords, object = Raycast()
+							if object ~= entity or #(playerCoords - pos) > 1.5 then break end
 							Citizen.Wait(100)
 							pos = GetEntityCoords(object)
 						end
@@ -878,8 +878,6 @@ RegisterCommand('inv', function()
 			if IsPedInAnyVehicle(ESX.PlayerData.ped, false) then currentDrop = nil end
 			if currentDrop then
 				TriggerServerEvent('linden_inventory:openInventory', 'drop', currentDrop.id)
-			elseif next(currentDumpster) then
-				TriggerServerEvent('linden_inventory:openInventory', 'dumpster', OpenDumpster({ id = currentDumpster.id, label = 'Dumpster', slots = currentDumpster.slots or 10}))
 			else
 				TriggerServerEvent('linden_inventory:openInventory')
 			end
