@@ -79,13 +79,6 @@ ItemNotify = function(xPlayer, item, count, slot, type)
 	end
 end
 
-SyncAccounts = function(xPlayer, name)
-	local account = xPlayer.getAccount(name)
-	account.money = getInventoryItem(xPlayer, name).count
-	xPlayer.setAccount(account)
-	xPlayer.triggerEvent('esx:setAccountMoney', account)
-end
-
 CreateNewDrop = function(xPlayer, data)
 	if data.type ~= 'create' then
 		local playerPed = GetPlayerPed(xPlayer.source)
@@ -131,8 +124,17 @@ CreateNewDrop = function(xPlayer, data)
 		for k,v in pairs(data.inventory) do
 			local xItem = Items[v.name]
 			if xItem then
-				if v.metadata == nil then v.metadata = {} end
-				Drops[invid].inventory[k] = {name = v.name , label = xItem.label, weight = xItem.weight, slot = v.slot, count = v.count, description = xItem.description, metadata = v.metadata, stack = xItem.stack,  close = xItem.close}
+				local weight
+				if xItem.ammoname then
+					local ammo = {}
+					ammo.type = xItem.ammoname
+					ammo.count = v.metadata.ammo
+					ammo.weight = Items[ammo.type].weight
+					weight = xItem.weight + (ammo.weight * ammo.count)
+				else weight = xItem.weight end
+				if not v.metadata then v.metadata = {} end
+				if v.metadata.weight then weight = weight + v.metadata.weight end
+				Drops[invid].inventory[k] = {name = v.name , label = xItem.label, weight = weight, slot = v.slot, count = v.count, description = xItem.description, metadata = v.metadata, stack = xItem.stack,  close = xItem.close}
 			end
 		end
 		TriggerClientEvent('linden_inventory:createDrop', -1, Drops[invid])
@@ -216,7 +218,7 @@ SaveItems = function(type, id, owner, inventory)
 	end
 end
 
-GetItems = function(id, inv, owner)
+GetInventory = function(id, inv, owner)
 	local returnData, result = {}
 	if id and inv then
 		if owner then
@@ -259,9 +261,19 @@ GetItems = function(id, inv, owner)
 		if result ~= nil then
 			local Inventory = json.decode(result)
 			for k,v in pairs(Inventory) do
-				if Items[v.name] then
-					if v.metadata == nil then v.metadata = {} end
-					returnData[v.slot] = {name = v.name , label = Items[v.name].label, weight = Items[v.name].weight, slot = v.slot, count = v.count, description = Items[v.name].description, metadata = v.metadata, stack = Items[v.name].stack, close = Items[v.name].close}
+				local xItem = Items[v.name]
+				if xItem then
+					local weight
+					if xItem.ammoname then
+						local ammo = {}
+						ammo.type = xItem.ammoname
+						ammo.count = v.metadata.ammo
+						ammo.weight = Items[ammo.type].weight
+						weight = xItem.weight + (ammo.weight * ammo.count)
+					else weight = xItem.weight end
+					if not v.metadata then v.metadata = {} end
+					if v.metadata.weight then weight = weight + v.metadata.weight end
+					returnData[v.slot] = {name = v.name , label = xItem.label, weight = weight, slot = v.slot, count = v.count, description = xItem.description, metadata = v.metadata, stack = xItem.stack, close = xItem.close}
 				end
 			end
 		end
