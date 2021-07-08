@@ -1,3 +1,4 @@
+ESX.Players = {} -- Clear this table when restarting the inventory
 Drops = {}
 Inventories = {}
 Datastore = {}
@@ -152,7 +153,7 @@ ESX.RegisterServerCallback('linden_inventory:setup', function(source, cb)
 	cb(data)
 end)
 
-AddEventHandler('linden_inventory:setPlayerInventory', function(xPlayer, data)
+AddEventHandler('linden_inventory:setPlayerInventory', function(xPlayer, data, cb)
 	while Status ~= 'ready' do Citizen.Wait(200) end
 	local inventory, totalWeight = {}, 0
 	if data and next(data) then
@@ -178,6 +179,10 @@ AddEventHandler('linden_inventory:setPlayerInventory', function(xPlayer, data)
 	inventory = CreateInventory(xPlayer.source, xPlayer.name, 'player', Config.PlayerSlots, totalWeight, DefaultWeight, xPlayer.source, inventory)
 	inventory.set('identifier', xPlayer.identifier)
 	Inventories[xPlayer.source] = inventory
+	local money = getInventoryItem(xPlayer, 'money').count
+	local dirty = getInventoryItem(xPlayer, 'black_money').count
+	xPlayer.syncInventory(money, dirty, Inventories[xPlayer.source].inventory, totalWeight, DefaultWeight)
+	if type(cb) ~= "number" then cb(true) end
 end)
 
 AddEventHandler('linden_inventory:clearPlayerInventory', function(xPlayer)
@@ -224,7 +229,7 @@ AddEventHandler('linden_inventory:recoverPlayerInventory', function(xPlayer)
 				if v.metadata.weight then weight = weight + v.metadata.weight end
 				Inventories[xPlayer.source].inventory[v.slot] = {name = v.name ,label = Items[v.name].label, weight = weight, slot = v.slot, count = v.count, description = Items[v.name].description, metadata = v.metadata, stack = Items[v.name].stack}
 			end
-			updateWeight(xPlayer)	
+			syncInventory(xPlayer)	
 			if Opened[xPlayer.source] then TriggerClientEvent('linden_inventory:closeInventory', Opened[xPlayer.source].invid)
 				TriggerClientEvent('linden_inventory:refreshInventory', xPlayer.source, Inventories[xPlayer.source])
 			end
@@ -291,7 +296,7 @@ AddEventHandler('linden_inventory:openInventory', function(invType, data, player
 						0,								-- weight
 						data.maxWeight,					-- maxWeight
 						data.owner,						-- owner
-						GetItems(id, invType, data.owner)	-- inventory
+						GetInventory(id, invType, data.owner)	-- inventory
 					)
 					if data.coords then Inventories[id].set('coords', data.coords) end
 				end
@@ -319,7 +324,7 @@ AddEventHandler('linden_inventory:openInventory', function(invType, data, player
 						0,								-- weight
 						data.maxWeight,					-- maxWeight
 						data.owner,						-- owner
-						GetItems(id, invType, data.owner)	-- inventory
+						GetInventory(id, invType, data.owner)	-- inventory
 					)
 					if data.coords then Inventories[id].set('coords', data.coords) end
 					if data.job then Inventories[id].set('job', data.job) end
@@ -379,7 +384,7 @@ AddEventHandler('linden_inventory:giveStash', function(data)
 					0,								-- weight
 					data.maxWeight,					-- maxWeight
 					data.owner,						-- owner
-					GetItems(id, 'stash', data.owner)	-- inventory
+					GetInventory(id, 'stash', data.owner)	-- inventory
 				)
 				if data.coords then Inventories[id].set('coords', data.coords) end
 			end
@@ -394,7 +399,9 @@ AddEventHandler('linden_inventory:giveStash', function(data)
 			if existing then
 				Inventories[id].inventory[slot].count = Inventories[id].inventory[slot].count + data.count
 			else
-				Inventories[id].inventory[slot] = {name = xItem.name, label = xItem.label, weight = xItem.weight, slot = slot, count = data.count, description = xItem.description, metadata = data.metadata, stack = xItem.stack, close = xItem.close}
+				local weight = xItem.weight
+				if data.metadata.weight then weight = weight + data.metadata.weight end
+				Inventories[id].inventory[slot] = {name = xItem.name, label = xItem.label, weight = weight, slot = slot, count = data.count, description = xItem.description, metadata = data.metadata, stack = xItem.stack, close = xItem.close}
 			end
 
 			removeInventoryItem(xPlayer, data.item, data.count, data.metadata)
@@ -737,7 +744,7 @@ AddEventHandler('linden_inventory:saveInventory', function(data)
 		Opened[invid] = nil
 	elseif data.type == 'player' then
 		invid = data.invid
-		updateWeight(ESX.GetPlayerFromId(invid), false, data.weight, data.slot)
+		syncInventory(ESX.GetPlayerFromId(invid), false, data.weight, data.slot)
 		Opened[invid] = nil
 		Inventories[invid].set('open', false)
 	elseif data.type ~= 'shop' and Inventories[data.invid] then
@@ -745,7 +752,7 @@ AddEventHandler('linden_inventory:saveInventory', function(data)
 		Inventories[invid].set('open', false)
 	end
 	if xPlayer then
-		updateWeight(xPlayer, false, data.weight, data.slot)
+		syncInventory(xPlayer, false, data.weight, data.slot)
 		TriggerClientEvent('linden_inventory:refreshInventory', src, Inventories[src])
 	end
 	Opened[src] = nil
@@ -757,7 +764,7 @@ AddEventHandler('esx:playerDropped', function(playerid)
 	if Inventories[playerid] and data then
 		if data.type == 'player' then
 			local invid = Opened[playerid].invid
-			updateWeight(ESX.GetPlayerFromId(invid))
+			syncInventory(ESX.GetPlayerFromId(invid))
 			Opened[invid] = nil
 		elseif data.type ~= 'shop' and data.type ~= 'drop' and Inventories[data.invid] then
 			Inventories[data.invid].set('open', false)
@@ -769,7 +776,7 @@ end)
 AddEventHandler('playerDropped', function(reason)
 	local playerid = source
 	if Inventories[playerid] then
-		SetTimeout(30000, function()	
+		SetTimeout(1000, function()	
 			Inventories[playerid] = nil
 		end)
 	end
