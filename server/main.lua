@@ -786,7 +786,7 @@ AddEventHandler('linden_inventory:giveItem', function(data, target)
 		if canCarryItem(xTarget, data.item.name, data.amount, data.item.metadata) then
 			removeInventoryItem(xPlayer, data.item.name, data.amount, data.item.metadata, data.item.slot)
 			addInventoryItem(xTarget, data.item.name, data.amount, data.item.metadata)
-			if Config.Logs then CreateLog(xPlayer.source, xTarget.source, 'has given '..data.item.count..'x '..data.item.name..' to', 'player') end
+			if Config.Logs then CreateLog(xPlayer.source, xTarget.source, 'has given '..data.amount..'x '..data.item.name..' to', 'player') end
 		else
 			TriggerClientEvent('mythic_notify:client:SendAlert', xPlayer.source, { type = 'error', text = _U('cannot_carry_other') })
 		end
