@@ -322,7 +322,7 @@ HSN.SetupInventory = function(data) {
 				})
 			}
 		} else {
-			$('.rightside-name').html("Drop")
+			$('.rightside-name').html(dropLabel)
 			$(".progressRightLabel").hide();
 			$('.inventory-main-rightside').data("invTier", "drop")
 			let dropSlots = data.slots
