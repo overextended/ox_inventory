@@ -543,6 +543,7 @@ AddEventHandler('linden_inventory:addAmmo', function(ammo)
 				if newAmmo < 0 then newAmmo = 0 end
 				SetPedAmmo(ESX.PlayerData.ped, currentWeapon.hash, newAmmo)
 				MakePedReload(ESX.PlayerData.ped)
+				currentWeapon.metadata.ammo = newAmmo
 				TriggerServerEvent('linden_inventory:addweaponAmmo', currentWeapon, curAmmo, newAmmo)
 				Citizen.Wait(100)
 				isBusy, useItemCooldown = false, false
@@ -1118,11 +1119,7 @@ Hotkey = function(slot)
 	end
 end
 
-RegisterCommand('hotkey1', function() Hotkey(1) end)
-RegisterCommand('hotkey2', function() Hotkey(2) end)
-RegisterCommand('hotkey3', function() Hotkey(3) end)
-RegisterCommand('hotkey4', function() Hotkey(4) end)
-RegisterCommand('hotkey5', function() Hotkey(5) end)
+for i=1, 5 do RegisterCommand('hotkey'..i, function() HotKey(i) end)
 
 local canCancel = false
 RegisterCommand('cancelitem', function()
