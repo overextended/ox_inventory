@@ -884,7 +884,6 @@ RegisterCommand('inv2', function()
 	elseif currentInventory then TriggerEvent('linden_inventory:closeInventory')
 	else
 		if not CanOpenInventory() then TriggerEvent('mythic_notify:client:SendAlert', {type = 'error', text = _U('inventory_cannot_open'), length = 2500}) return end
-		if next(currentDumpster) then
 		if currentDumpster and currentDumpster.id then
 			if not IsEntityAMissionEntity(currentDumpster.id) then
 				SetEntityAsMissionEntity(currentDumpster.id)
