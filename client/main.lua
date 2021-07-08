@@ -1119,7 +1119,7 @@ Hotkey = function(slot)
 	end
 end
 
-for i=1, 5 do RegisterCommand('hotkey'..i, function() HotKey(i) end)
+for i=1, 5 do RegisterCommand('hotkey'..i, function() Hotkey(i) end) end
 
 local canCancel = false
 RegisterCommand('cancelitem', function()
