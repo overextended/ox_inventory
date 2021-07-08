@@ -190,13 +190,7 @@ AddEventHandler('linden_inventory:clearPlayerInventory', function(xPlayer)
 	if xPlayer then
 		Inventories[xPlayer.source].inventory = {}
 		Inventories[xPlayer.source].weight = 0
-		local accounts = {'money', 'black_money'}
-		for i=1, #accounts do
-			local account = xPlayer.getAccount(accounts[i])
-			account.money = 0
-			xPlayer.setAccount(account)
-			xPlayer.triggerEvent('esx:setAccountMoney', account)
-		end
+		syncInventory(xPlayer)
 		if Opened[xPlayer.source] then TriggerClientEvent('linden_inventory:closeInventory', Opened[xPlayer.source].invid) end
 	TriggerClientEvent('linden_inventory:refreshInventory', xPlayer.source, Inventories[xPlayer.source], true)
 	end
