@@ -2,7 +2,7 @@ exports('ItemCancelled', function()
 	return cancelled
 end)
 
-InventorySearch = function(func, item, metadata)
+InventorySearch = function(search, item, metadata)
 	if item then
 		if type(item) == 'string' then item = {item} end
 		if type(metadata) == 'string' then metadata = {type=metadata} end
@@ -10,14 +10,14 @@ InventorySearch = function(func, item, metadata)
 		for i=1, #item do
 			local item = string.lower(item[i])
 			if item:find('weapon_') then item = string.upper(item) end
-			if func == 1 then returnData[item] = {}
-			elseif func == 2 then returnData[item] = 0 end
+			if search == 1 then returnData[item] = {}
+			elseif search == 2 then returnData[item] = 0 end
 			for k, v in pairs(ESX.PlayerData.inventory) do
 				if v.name == item then
 					if not v.metadata then v.metadata = {} end
 					if not metadata or func.tablecontains(v.metadata, metadata) then
-						if func == 1 then table.insert(returnData[item], ESX.PlayerData.inventory[v.slot])
-						elseif func == 2 then
+						if search == 1 then table.insert(returnData[item], ESX.PlayerData.inventory[v.slot])
+						elseif search == 2 then
 							returnData[item] = returnData[item] + v.count
 						end
 					end
