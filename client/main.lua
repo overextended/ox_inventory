@@ -4,7 +4,7 @@ local currentDumpster, raycast, currentWeapon, currentDrop = {}, {}
 cancelled = false
 
 local Raycast = function()
-	local plyOffset = GetOffsetFromEntityInWorldCoords(ESX.PlayerData.ped, 0.0, 3.0, -0.15)
+	local plyOffset = GetOffsetFromEntityInWorldCoords(ESX.PlayerData.ped, 0.0, 3.0, -0.05)
 	local ret, hit, coords, surfacenormal, entity = GetShapeTestResult(StartShapeTestRay(playerCoords.x, playerCoords.y, playerCoords.z, plyOffset.x, plyOffset.y, plyOffset.z, -1, ESX.PlayerData.ped, 0))
 	local type = GetEntityType(entity)
 	if hit and type ~= 0 then return hit, coords, entity, type else	return false end
@@ -472,6 +472,7 @@ end
 RegisterNetEvent('linden_inventory:weapon')
 AddEventHandler('linden_inventory:weapon', function(item)
 	if not isBusy and item and not IsPedFalling(ESX.PlayerData.ped) and not IsPedRagdoll(ESX.PlayerData.ped) then
+		if currentWeapon then TriggerServerEvent('linden_inventory:updateWeapon', currentWeapon) end
 		TriggerEvent('linden_inventory:busy', true)
 		useItemCooldown = true
 		local newWeapon = item.metadata.serial
@@ -542,6 +543,7 @@ AddEventHandler('linden_inventory:addAmmo', function(ammo)
 				if newAmmo < 0 then newAmmo = 0 end
 				SetPedAmmo(ESX.PlayerData.ped, currentWeapon.hash, newAmmo)
 				MakePedReload(ESX.PlayerData.ped)
+				currentWeapon.metadata.ammo = newAmmo
 				TriggerServerEvent('linden_inventory:addweaponAmmo', currentWeapon, curAmmo, newAmmo)
 				Citizen.Wait(100)
 				isBusy, useItemCooldown = false, false
@@ -827,18 +829,10 @@ TriggerLoops = function()
 				local hash = GetEntityModel(object)
 				for k, v in pairs(Config.Dumpsters) do
 					if hash == v then
-						if not IsEntityAMissionEntity(object) then
-							SetEntityAsMissionEntity(object)
-							NetworkRegisterEntityAsNetworked(object)
-							local netId = NetworkGetNetworkIdFromEntity(object)
-							SetNetworkIdExistsOnAllMachines(netId, true)
-							SetNetworkIdCanMigrate(netId, true)
-							NetworkSetNetworkIdDynamic(false)
-						end
-						currentDumpster.id = NetworkGetNetworkIdFromEntity(object)
-						currentDumpster.hash = hash
-						local pos = GetEntityCoords(object)
 						entity = object
+						currentDumpster.id = entity
+						currentDumpster.hash = hash
+						local pos = GetEntityCoords(entity)
 						while true do
 							local result, coords, object = Raycast()
 							if object ~= entity or #(playerCoords - pos) > 1.5 then break end
@@ -895,8 +889,16 @@ RegisterCommand('inv2', function()
 	elseif currentInventory then TriggerEvent('linden_inventory:closeInventory')
 	else
 		if not CanOpenInventory() then TriggerEvent('mythic_notify:client:SendAlert', {type = 'error', text = _U('inventory_cannot_open'), length = 2500}) return end
-		if next(currentDumpster) then
-			TriggerServerEvent('linden_inventory:openInventory', 'dumpster', OpenDumpster({ id = currentDumpster.id, label = 'Dumpster', slots = currentDumpster.slots or 10}))
+		if currentDumpster and currentDumpster.id then
+			if not IsEntityAMissionEntity(currentDumpster.id) then
+				SetEntityAsMissionEntity(currentDumpster.id)
+				NetworkRegisterEntityAsNetworked(currentDumpster.id)
+				local netId = NetworkGetNetworkIdFromEntity(currentDumpster.id)
+				SetNetworkIdExistsOnAllMachines(netId, true)
+				SetNetworkIdCanMigrate(netId, true)
+				NetworkSetNetworkIdDynamic(false)
+			end
+			OpenDumpster({ id = NetworkGetNetworkIdFromEntity(currentDumpster.id), label = 'Dumpster', slots = 15})
 		elseif not IsPedInAnyVehicle(ESX.PlayerData.ped, false) then -- trunk
 			local vehicle, vehiclePos = raycast.id, GetEntityCoords(raycast.id)
 			CloseToVehicle = false
@@ -1121,11 +1123,7 @@ Hotkey = function(slot)
 	end
 end
 
-RegisterCommand('hotkey1', function() Hotkey(1) end)
-RegisterCommand('hotkey2', function() Hotkey(2) end)
-RegisterCommand('hotkey3', function() Hotkey(3) end)
-RegisterCommand('hotkey4', function() Hotkey(4) end)
-RegisterCommand('hotkey5', function() Hotkey(5) end)
+for i=1, 5 do RegisterCommand('hotkey'..i, function() Hotkey(i) end) end
 
 local canCancel = false
 RegisterCommand('cancelitem', function()
@@ -1193,9 +1191,9 @@ end
 
 if ESX.IsPlayerLoaded() then StartInventory() end
 
-RegisterKeyMapping('inv', 'Open player inventory~', 'keyboard', 'f2')
-RegisterKeyMapping('inv2', 'Open secondary inventory~', 'keyboard', 'k')
-RegisterKeyMapping('hotbar', 'Display inventory hotbar~', 'keyboard', 'tab')
+RegisterKeyMapping('inv', 'Open player inventory~', 'keyboard', Keybind.Primary)
+RegisterKeyMapping('inv2', 'Open secondary inventory~', 'keyboard', Keybind.Secondary)
+RegisterKeyMapping('hotbar', 'Display inventory hotbar~', 'keyboard', Keybind.Hotbar)
 RegisterKeyMapping('hotkey1', 'Use hotbar item 1~', 'keyboard', '1')
 RegisterKeyMapping('hotkey2', 'Use hotbar item 2~', 'keyboard', '2')
 RegisterKeyMapping('hotkey3', 'Use hotbar item 3~', 'keyboard', '3')

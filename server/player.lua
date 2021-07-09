@@ -64,7 +64,7 @@ addInventoryItem = function(xPlayer, item, count, metadata, slot)
 			end
 			Inventories[xPlayer.source].inventory[slot] = {name = item, label = xItem.label, weight = xItem.weight, slot = slot, count = count, description = xItem.description, metadata = metadata, stack = xItem.stack, close = true}
 			if xItem.ammoname then Inventories[xPlayer.source].inventory[slot].ammoname = xItem.ammoname end
-			if xItem.weight > 0 or xItem.name:find('money') then updateWeight(xPlayer) end
+			syncInventory(xPlayer)
 			ItemNotify(xPlayer, Inventories[xPlayer.source].inventory[slot], count, slot, 'added')
 		else
 			if item:find('identification') then
@@ -83,7 +83,7 @@ addInventoryItem = function(xPlayer, item, count, metadata, slot)
 			local added = count
 			if existing then count = Inventories[xPlayer.source].inventory[slot].count + count end
 			Inventories[xPlayer.source].inventory[slot] = {name = item, label = xItem.label, weight = xItem.weight, slot = slot, count = count, description = xItem.description, metadata = metadata or {}, stack = xItem.stack, close = xItem.close}
-			if xItem.weight > 0 or xItem.name:find('money') then updateWeight(xPlayer) end
+			syncInventory(xPlayer)
 			ItemNotify(xPlayer, Inventories[xPlayer.source].inventory[slot], added, slot, 'added')
 		end
 		if slot then TriggerClientEvent('linden_inventory:refreshInventory', xPlayer.source, Inventories[xPlayer.source]) end
@@ -100,13 +100,13 @@ removeInventoryItem = function(xPlayer, item, count, metadata, slot)
 		if slot and Inventories[xPlayer.source].inventory[slot].count == count and Inventories[xPlayer.source].inventory[slot].name == xItem.name then
 			ItemNotify(xPlayer, Inventories[xPlayer.source].inventory[slot], count, slot, 'removed')
 			Inventories[xPlayer.source].inventory[slot] = nil
-			if xItem.weight > 0 or xItem.name:find('money') then updateWeight(xPlayer) end
+			syncInventory(xPlayer)
 			TriggerClientEvent('linden_inventory:refreshInventory', xPlayer.source, Inventories[xPlayer.source])
 		elseif slot and Inventories[xPlayer.source].inventory[slot].count > count and Inventories[xPlayer.source].inventory[slot].name == xItem.name then
 			local newCount = Inventories[xPlayer.source].inventory[slot].count - count
 			ItemNotify(xPlayer, Inventories[xPlayer.source].inventory[slot], count, slot, 'removed')
 			Inventories[xPlayer.source].inventory[slot] = {name = item, label = xItem.label, weight = xItem.weight, slot = slot, count = newCount, description = xItem.description, metadata = Inventories[xPlayer.source].inventory[slot].metadata, stack = xItem.stack, close = xItem.close}
-			if xItem.weight > 0 or xItem.name:find('money') then updateWeight(xPlayer) end
+			syncInventory(xPlayer)
 			TriggerClientEvent('linden_inventory:refreshInventory', xPlayer.source, Inventories[xPlayer.source])
 		else
 			local itemSlots, totalCount = getInventoryItemSlots(xPlayer, item, metadata)
@@ -129,7 +129,7 @@ removeInventoryItem = function(xPlayer, item, count, metadata, slot)
 						end
 					end
 				end
-				if xItem.weight > 0 or xItem.name:find('money') then updateWeight(xPlayer) end
+				syncInventory(xPlayer)
 				ItemNotify(xPlayer, xItem, removed, itemSlots, 'removed')
 				TriggerClientEvent('linden_inventory:refreshInventory', xPlayer.source, Inventories[xPlayer.source])
 			end
@@ -156,7 +156,7 @@ end
 exports('setInventoryItem', setInventoryItem)
 
 
-updateWeight = function(xPlayer, force, metaweight, slot)
+syncInventory = function(xPlayer, force, metaweight, slot)
 	local newWeight = getWeight(xPlayer)
 	if force or newWeight ~= Inventories[xPlayer.source].weight then
 		Inventories[xPlayer.source].weight = newWeight
@@ -166,8 +166,18 @@ updateWeight = function(xPlayer, force, metaweight, slot)
 		Inventories[xPlayer.source].inventory[slot].weight = Items[Inventories[xPlayer.source].inventory[slot].name].weight + metaweight
 		Inventories[xPlayer.source].inventory[slot].metadata.weight = metaweight
 	end
-	SyncAccounts(xPlayer, 'money')
-	SyncAccounts(xPlayer, 'black_money')
+	local money = getInventoryItem(xPlayer, 'money').count
+	local dirty = getInventoryItem(xPlayer, 'black_money').count
+	xPlayer.syncInventory(money, dirty, Inventories[xPlayer.source].inventory, Inventories[xPlayer.source].weight, Inventories[xPlayer.source].maxWeight)
+end
+
+
+
+SyncAccounts = function(xPlayer, name)
+	local account = xPlayer.getAccount(name)
+	account.money = getInventoryItem(xPlayer, name).count
+	xPlayer.setAccount(account)
+	xPlayer.triggerEvent('esx:setAccountMoney', account)
 end
 
 
