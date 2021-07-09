@@ -266,7 +266,7 @@ if Config.bt_target then -- Leah#0001
 							event = "OpenStashTarget",
 							icon = "fas fa-toggle-on",
 							label = "Open " .. typeName,
-							stashinfo = {id = typeConfig[i].name, slots = typeConfig[i].slots, job = typeConfig[i].job},
+							stashinfo = {id = typeConfig[i].name, slots = typeConfig[i].slots, job = typeConfig[i].job, owner = typeConfig[i].owner},
 						},
 					},
 					job = jobAccess,
