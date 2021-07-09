@@ -196,24 +196,65 @@ AddEventHandler('targetPlayerAnim', function()
 	ClearPedSecondaryTask(ESX.PlayerData.ped)
 end)
 
-if Config.bt_target then	-- Leah#0001
+if Config.bt_target then -- Leah#0001
 	Citizen.CreateThread(function()
-		for i = 1, #Config.Shops, 1 do
-			if (Config.bt_target) then
+		local typeConfig = Config.Shops
+		-- Example Shop:
+		-- { type = Config.PoliceArmoury, job = 'police', coords = vector3(487.235, -997.108, 30.69), bt_length = 0.5, bt_width = 3.0, bt_heading = 60.0, bt_distance = 6 },
+		for i = 1, #typeConfig, 1 do
+			local typeName = i
+			if (typeConfig[i].type == nil) then
+				typeName = typeConfig[i].name or math.random(1, 10000)
+			else
+				typeName = typeConfig[i].type['name']
+			end
+			local jobAccess = {"all"}
+			if (typeConfig[i].job) then jobAccess = { typeConfig[i].job } end
+			local length, width = typeConfig[i].bt_length or 0.5, typeConfig[i].bt_width or 0.5
+			local minZ, maxZ = typeConfig[i].bt_minZ or 10.0, typeConfig[i].bt_maxZ or 100.0
+			local heading = typeConfig[i].bt_heading or 0.0
+			local distance = typeConfig[i].bt_distance or 6.0
+
+			exports['bt-target']:AddBoxZone(i .. typeName, typeConfig[i].coords, length, width, {
+				name=i .. typeName,
+				heading=heading,
+				debugPoly=false,
+				minZ=minZ,
+				maxZ=maxZ
+			}, {
+				options = {
+					{
+						event = "OpenShopTarget",
+						icon = "fas fa-shopping-basket",
+						label = "Open " .. typeName,
+						shopid = i,
+					},
+				},
+				job = jobAccess,
+				distance = distance
+			})
+		end
+
+		typeConfig = Config.Stashes
+		-- Example Stash:
+		-- { coords = vector3(462.7252, -999.5868, 30.67834), slots = 70, name = 'Test', bt_length = 0.5, bt_width = 3.0, bt_heading = 60.0, bt_distance = 6 },
+		-- To disable specific stashes add: bt_enabled = false to them.
+		for i = 1, #typeConfig, 1 do
+			if (typeConfig[i].bt_enabled == nil or typeConfig[i].bt_enabled) then
 				local typeName = i
-				if (Config.Shops[i].type == nil) then
-					typeName = Config.Shops[i].name or math.random(1, 10000)
+				if (typeConfig[i].type == nil) then
+					typeName = typeConfig[i].name or math.random(1, 10000)
 				else
-					typeName = Config.Shops[i].type['name']
+					typeName = typeConfig[i].type['name']
 				end
 				local jobAccess = {"all"}
-				if (Config.Shops[i].job) then jobAccess = { Config.Shops[i].job } end
-				local length, width = Config.Shops[i].bt_length or 0.5, Config.Shops[i].bt_width or 0.5
-				local minZ, maxZ = Config.Shops[i].bt_minZ or 10.0, Config.Shops[i].bt_maxZ or 100.0
-				local heading = Config.Shops[i].bt_heading or 0.0
-				local distance = Config.Shops[i].bt_distance or 6.0
+				if (typeConfig[i].job) then jobAccess = { typeConfig[i].job } end
+				local length, width = typeConfig[i].bt_length or 0.5, typeConfig[i].bt_width or 0.5
+				local minZ, maxZ = typeConfig[i].bt_minZ or 10.0, typeConfig[i].bt_maxZ or 100.0
+				local heading = typeConfig[i].bt_heading or 0.0
+				local distance = typeConfig[i].bt_distance or 6.0
 
-				exports['bt-target']:AddBoxZone(i .. typeName, Config.Shops[i].coords, length, width, {
+				exports['bt-target']:AddBoxZone(i .. typeName, typeConfig[i].coords, length, width, {
 					name=i .. typeName,
 					heading=heading,
 					debugPoly=false,
@@ -222,10 +263,10 @@ if Config.bt_target then	-- Leah#0001
 				}, {
 					options = {
 						{
-							event = "OpenShopTarget",
-							icon = "fas fa-shopping-basket",
+							event = "OpenStashTarget",
+							icon = "fas fa-toggle-on",
 							label = "Open " .. typeName,
-							shopid = i,
+							stashinfo = {id = typeConfig[i].name, slots = typeConfig[i].slots, job = typeConfig[i].job},
 						},
 					},
 					job = jobAccess,
@@ -235,10 +276,13 @@ if Config.bt_target then	-- Leah#0001
 		end
 	end)
 end
-
 RegisterNetEvent('OpenShopTarget')
 AddEventHandler('OpenShopTarget',function(data)
 	OpenShop(data.shopid)
+end)
+RegisterNetEvent('OpenStashTarget')
+AddEventHandler('OpenStashTarget',function(data)
+	OpenStash(data.stashinfo)
 end)
 
 OpenShop = function(id)
