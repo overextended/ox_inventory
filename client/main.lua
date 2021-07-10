@@ -245,8 +245,6 @@ if Config.bt_target then -- Leah#0001
 				else
 					typeName = typeConfig[i].type['name']
 				end
-				local jobAccess = {"all"}
-				if (typeConfig[i].job) then jobAccess = { typeConfig[i].job } end
 				local length, width = typeConfig[i].bt_length or 0.5, typeConfig[i].bt_width or 0.5
 				local minZ, maxZ = typeConfig[i].bt_minZ or 10.0, typeConfig[i].bt_maxZ or 100.0
 				local heading = typeConfig[i].bt_heading or 0.0
@@ -265,9 +263,10 @@ if Config.bt_target then -- Leah#0001
 							icon = "fas fa-toggle-on",
 							label = "Open " .. typeName,
 							stashinfo = {id = typeConfig[i].name, slots = typeConfig[i].slots, job = typeConfig[i].job, owner = typeConfig[i].owner},
+							job = typeConfig[i].job,
 						},
 					},
-					job = jobAccess,
+					
 					distance = distance
 				})
 			end
