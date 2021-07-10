@@ -9,7 +9,7 @@ title: Introduction
 * GHMattiMySQL [[Download]](https://github.com/GHMatti/ghmattimysql/releases)
 * Mythic Notify [[Download]](https://github.com/thelindat/mythic_notify)
 * Mythic Progbar [[Download]](https://github.com/thelindat/mythic_progbar)
-* OneSync must be enabled (up to 32 slots is free)
+* OneSync must be enabled (Legacy or Infinity)
 * The ability to follow instructions and learn
 * Delete `ghmattimysql/config.json` to fallback to using the MySQL connection string in server.cfg
 
@@ -18,21 +18,11 @@ title: Introduction
 
 
 ESX 1.1 (running essentials) has _never_ been compatible, and if you were planning on running it then I don't recommend you bother trying to use this inventory (or running a server, for that matter).  
-As of version 1.5.0 you are required to use **ESX Legacy** to use this resource.
+As of version 1.5.0 you are required to use **ESX Legacy** to use this resource, however the inventory **will not work by default**.
 
-You can either download and modify the [official release](https://github.com/esx-framework/es_extended), or download [my version](https://github.com/thelindat/es_extended) for optimal support. 
+I recommend downloading [my fork](https://github.com/thelindat/es_extended) for ease of use, otherwise you can manually modify the [official release](https://github.com/esx-framework/esx-legacy) instead.
 
-For a guide on modifying your framework, go to [this page](framework).
-
-* You must be using the latest [MySQL-Async](https://github.com/brouznouf/fivem-mysql-async/releases/tag/3.3.2) when using ESX Legacy, unless converting it to use ghmattimysql
-
-* Ensure you are not running any conflicting resources
-  - **essentialmode**
-  - default_spawnpoint
-  - basic-gamemode
-  - fivem-map-skater
-  - fivem-map-hipster
-
+If you are modifying your framework, reference [this page](framework) for instructions.
 
 
 <h2 align='center'> Server Config </h2>
