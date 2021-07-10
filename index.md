@@ -28,7 +28,7 @@ If you are modifying your framework, reference [this page](framework) for instru
 <h2 align='center'> Server Config </h2>
 
 ```lua
-set mysql_connection_string "mysql://user:password@localhost/database?connectTimeout=30000&acquireTimeout=30000&waitForConnections=true&keepAlive=30&charset=utf8mb4"
+set mysql_connection_string "mysql://user:password@localhost/database?waitForConnections=true&charset=utf8mb4"
 set onesync legacy		# do not use infinity unless you know what you're doing
 set sv_enforceGameBuild 2060	# enable Los Santos Summer Special build, or use 2189 for Cayo Perico
 
@@ -37,7 +37,6 @@ add_ace resource.es_extended command.add_principal allow
 add_ace resource.es_extended command.remove_principal allow
 add_ace resource.es_extended command.stop allow
 
-ensure mapmanager
 ensure chat
 ensure spawnmanager
 ensure sessionmanager
