@@ -64,7 +64,6 @@ addInventoryItem = function(xPlayer, item, count, metadata, slot)
 			end
 			Inventories[xPlayer.source].inventory[slot] = {name = item, label = xItem.label, weight = xItem.weight, slot = slot, count = count, description = xItem.description, metadata = metadata, stack = xItem.stack, close = true}
 			if xItem.ammoname then Inventories[xPlayer.source].inventory[slot].ammoname = xItem.ammoname end
-			syncInventory(xPlayer)
 			ItemNotify(xPlayer, Inventories[xPlayer.source].inventory[slot], count, slot, 'added')
 		else
 			if item:find('identification') then
@@ -83,9 +82,9 @@ addInventoryItem = function(xPlayer, item, count, metadata, slot)
 			local added = count
 			if existing then count = Inventories[xPlayer.source].inventory[slot].count + count end
 			Inventories[xPlayer.source].inventory[slot] = {name = item, label = xItem.label, weight = xItem.weight, slot = slot, count = count, description = xItem.description, metadata = metadata or {}, stack = xItem.stack, close = xItem.close}
-			syncInventory(xPlayer)
 			ItemNotify(xPlayer, Inventories[xPlayer.source].inventory[slot], added, slot, 'added')
 		end
+		syncInventory(xPlayer)
 		if slot then TriggerClientEvent('linden_inventory:refreshInventory', xPlayer.source, Inventories[xPlayer.source]) end
 	end
 end
@@ -100,13 +99,11 @@ removeInventoryItem = function(xPlayer, item, count, metadata, slot)
 		if slot and Inventories[xPlayer.source].inventory[slot].count == count and Inventories[xPlayer.source].inventory[slot].name == xItem.name then
 			ItemNotify(xPlayer, Inventories[xPlayer.source].inventory[slot], count, slot, 'removed')
 			Inventories[xPlayer.source].inventory[slot] = nil
-			syncInventory(xPlayer)
 			TriggerClientEvent('linden_inventory:refreshInventory', xPlayer.source, Inventories[xPlayer.source])
 		elseif slot and Inventories[xPlayer.source].inventory[slot].count > count and Inventories[xPlayer.source].inventory[slot].name == xItem.name then
 			local newCount = Inventories[xPlayer.source].inventory[slot].count - count
 			ItemNotify(xPlayer, Inventories[xPlayer.source].inventory[slot], count, slot, 'removed')
 			Inventories[xPlayer.source].inventory[slot] = {name = item, label = xItem.label, weight = xItem.weight, slot = slot, count = newCount, description = xItem.description, metadata = Inventories[xPlayer.source].inventory[slot].metadata, stack = xItem.stack, close = xItem.close}
-			syncInventory(xPlayer)
 			TriggerClientEvent('linden_inventory:refreshInventory', xPlayer.source, Inventories[xPlayer.source])
 		else
 			local itemSlots, totalCount = getInventoryItemSlots(xPlayer, item, metadata)
@@ -129,11 +126,11 @@ removeInventoryItem = function(xPlayer, item, count, metadata, slot)
 						end
 					end
 				end
-				syncInventory(xPlayer)
 				ItemNotify(xPlayer, xItem, removed, itemSlots, 'removed')
 				TriggerClientEvent('linden_inventory:refreshInventory', xPlayer.source, Inventories[xPlayer.source])
 			end
 		end
+		syncInventory(xPlayer)
 	end
 end
 exports('removeInventoryItem', removeInventoryItem)
