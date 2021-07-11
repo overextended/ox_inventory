@@ -62,7 +62,6 @@ end
 
 RegisterNetEvent('esx:playerLoaded')
 AddEventHandler('esx:playerLoaded', function(xPlayer)
-	ESX.PlayerLoaded = true
 	StartInventory()
 end)
 
@@ -132,8 +131,22 @@ StartInventory = function()
 					EndTextCommandSetBlipName(Blips[k])
 				end
 			end
+			RegisterKeyMapping('inv', 'Open player inventory~', 'keyboard', Keybind.Primary)
+			RegisterKeyMapping('inv2', 'Open secondary inventory~', 'keyboard', Keybind.Secondary)
+			RegisterKeyMapping('hotbar', 'Display inventory hotbar~', 'keyboard', Keybind.Hotbar)
+			RegisterKeyMapping('reload', 'Reload weapon~', 'keyboard', 'r')
+			for i=1, 5 do
+				RegisterCommand('hotkey'..i, function() Hotkey(i) end)
+				RegisterKeyMapping('hotkey'..i, 'Use hotbar item '..i..'~', 'keyboard', 'i')
+			end
 		end)
 	end)
+end
+
+Hotkey = function(slot)
+	if ESX.PlayerLoaded and not invOpen and ESX.PlayerData.inventory[slot] then
+		TriggerEvent('linden_inventory:useItem', ESX.PlayerData.inventory[slot])
+	end
 end
 
 CanOpenInventory = function()
@@ -579,9 +592,8 @@ AddEventHandler('linden_inventory:addAmmo', function(ammo)
 				isBusy, useItemCooldown = true, true
 				local newAmmo = 0
 				if curAmmo < maxAmmo then missingAmmo = maxAmmo - curAmmo end
-				if missingAmmo > ammo.count then newAmmo = ammo.count + curAmmo
-				else newAmmo = maxAmmo end
-				if newAmmo < 0 then newAmmo = 0 end
+				if missingAmmo > ammo.count then newAmmo = ammo.count + curAmmo else newAmmo = maxAmmo end
+				if newAmmo < 0 then newAmmo = 0 end	
 				SetPedAmmo(ESX.PlayerData.ped, currentWeapon.hash, newAmmo)
 				MakePedReload(ESX.PlayerData.ped)
 				currentWeapon.metadata.ammo = newAmmo
@@ -591,6 +603,20 @@ AddEventHandler('linden_inventory:addAmmo', function(ammo)
 			end
 		else
 			TriggerEvent('mythic_notify:client:SendAlert', {type = 'error', text = _U('wrong_ammo', currentWeapon.label, ammo.label), length = 2500})
+		end
+	end
+end)
+
+RegisterNetEvent('linden_inventory:update')
+AddEventHandler('linden_inventory:update',function(data)
+	local inventory = ESX.PlayerData.inventory
+	inventory[data[1]] = data[2]
+	if data[3] then inventory[data[3]] = data[4] end
+	if currentWeapon and data[2] then
+		local slot
+		if data[2].serial == currentWeapon.serial then slot = data[1] elseif data[4].serial == currentWeapon.serial then slot = data[3] end
+		if slot then currentWeapon.slot = slot
+			TriggerEvent('linden_inventory:currentWeapon', currentWeapon)
 		end
 	end
 end)
@@ -698,7 +724,7 @@ TriggerLoops = function()
 							DisarmPlayer()
 							wait = false
 						end)
-					elseif currentWeapon.durability and not wait and IsPedInMeleeCombat(ESX.PlayerData.ped) and IsControlPressed(0, 24) then
+					elseif currentWeapon.durability and not wait and IsPedArmed(ESX.PlayerData.ped, 1) and IsControlPressed(0, 24) then
 						usingWeapon = true
 						Citizen.CreateThread(function()
 							wait = true
@@ -1158,14 +1184,6 @@ AddEventHandler('linden_inventory:useItem', function(item)
 	end
 end)
 
-Hotkey = function(slot)
-	if ESX.PlayerLoaded and not invOpen and not wait and ESX.PlayerData.inventory[slot] then
-		TriggerEvent('linden_inventory:useItem', ESX.PlayerData.inventory[slot])
-	end
-end
-
-for i=1, 5 do RegisterCommand('hotkey'..i, function() Hotkey(i) end) end
-
 local canCancel = false
 RegisterCommand('cancelitem', function()
 	if useItemCooldown then
@@ -1231,13 +1249,3 @@ UseItem = function(item, esxItem, data)
 end
 
 if ESX.IsPlayerLoaded() then StartInventory() end
-
-RegisterKeyMapping('inv', 'Open player inventory~', 'keyboard', Keybind.Primary)
-RegisterKeyMapping('inv2', 'Open secondary inventory~', 'keyboard', Keybind.Secondary)
-RegisterKeyMapping('hotbar', 'Display inventory hotbar~', 'keyboard', Keybind.Hotbar)
-RegisterKeyMapping('hotkey1', 'Use hotbar item 1~', 'keyboard', '1')
-RegisterKeyMapping('hotkey2', 'Use hotbar item 2~', 'keyboard', '2')
-RegisterKeyMapping('hotkey3', 'Use hotbar item 3~', 'keyboard', '3')
-RegisterKeyMapping('hotkey4', 'Use hotbar item 4~', 'keyboard', '4')
-RegisterKeyMapping('hotkey5', 'Use hotbar item 5~', 'keyboard', '5')
-RegisterKeyMapping('reload', 'Reload weapon~', 'keyboard', 'r')
