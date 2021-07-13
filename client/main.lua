@@ -834,14 +834,15 @@ TriggerLoops = function()
 					if currentInventory.type == 'player' then
 						local id = GetPlayerFromServerId(currentInventory.id)
 						local ped = GetPlayerPed(id)
-						local dist = #(playerCoords - playerCoords)
+						local pedCoords = GetEntityCoords(ped)
+						local dist = #(playerCoords - pedCoords)
 						if not id or dist > 1.8 then
 							if (ESX.PlayerData.job.name == 'police' and dist > 1.8) or not CanOpenTarget(ped) then
 								TriggerEvent('linden_inventory:closeInventory')
 								TriggerEvent('mythic_notify:client:SendAlert', {type = 'error', text = _U('inventory_lost_access'), length = 2500})
 							end
 						else
-							TaskTurnPedToFaceCoord(ESX.PlayerData.ped, playerCoords)
+							TaskTurnPedToFaceCoord(ESX.PlayerData.ped, pedCoords)
 						end
 					elseif not lastVehicle and currentInventory.coords then
 						local dist = #(playerCoords - currentInventory.coords)
