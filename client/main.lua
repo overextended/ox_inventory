@@ -118,7 +118,7 @@ StartInventory = function()
 			end
 			for k, v in pairs(Config.Shops) do
 				if not v.type then v.type = Config.General end
-				if v.type and v.type.blip and (not v.job or v.job == ESX.PlayerData.job.name) and (not v.grade or v.grade <= ESX.PlayerData.job.grade) then
+				if v.type and v.type.blip and (not v.job or v.job == ESX.PlayerData.job.name) then
 					local data = v.type
 					Blips[k] = AddBlipForCoord(v.coords.x, v.coords.y, v.coords.z)
 					SetBlipSprite(Blips[k], data.blip.id)
@@ -744,7 +744,6 @@ TriggerLoops = function()
 		local text, type, id = ''
 		while ESX.PlayerLoaded do
 			local sleep = 250
-			if IsPedInAnyVehicle(ESX.PlayerData.ped, false) then SetPedCanSwitchWeapon(ESX.PlayerData.ped, true) else SetPedCanSwitchWeapon(ESX.PlayerData.ped, false) end
 			if not invOpen then
 				playerCoords = GetEntityCoords(ESX.PlayerData.ped)
 				if not Config.bt_target and not id or type == 'shop' then
@@ -753,13 +752,12 @@ TriggerLoops = function()
 						closestShop = id
 						DrawMarker(2, Config.Shops[id].coords.x,Config.Shops[id].coords.y,Config.Shops[id].coords.z, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.3, 0.2, 0.15, 30, 150, 30, 222, false, false, false, true, false, false, false)			
 						local distance = #(playerCoords - Config.Shops[id].coords)
-						local RenderDist =  Config.Shops[id].RenderDist or 4
 						local name = Config.Shops[id].name or Config.Shops[id].type.name
 						if distance <= 1 then text='[~g~E~s~] '..name
 							if IsControlJustPressed(0, 38) then
 								OpenShop(id)
 							end
-						elseif distance > RenderDist then id, type = nil, nil
+						elseif distance > Config.Shops[id].distance or 4 then id, type = nil, nil
 						else text = Config.Shops[id].name or Config.Shops[id].type.name end
 						if distance <= 2 then DrawText3D(Config.Shops[id].coords, text) end
 					else
@@ -767,8 +765,7 @@ TriggerLoops = function()
 						for k, v in pairs(Config.Shops) do
 							if not id and v.coords and (not v.job or v.job == ESX.PlayerData.job.name) and (not v.grade or v.grade <= ESX.PlayerData.job.grade) then
 								local distance = #(playerCoords - v.coords)
-								local RenderDist =  v.RenderDist or 4
-								if distance <= RenderDist then
+								if distance <= v.distance or 4 then
 									sleep = 10
 									id = k
 									type = 'shop'
@@ -782,20 +779,18 @@ TriggerLoops = function()
 						sleep = 5
 						DrawMarker(2, Config.Stashes[id].coords.x,Config.Stashes[id].coords.y,Config.Stashes[id].coords.z, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.3, 0.2, 0.15, 30, 30, 150, 222, false, false, false, true, false, false, false)			
 						local distance = #(playerCoords - Config.Stashes[id].coords)
-						local RenderDist =  Config.Stashes[id].RenderDist or 4
 						if distance <= 1 then text='[~g~E~s~] '..Config.Stashes[id].name
 							if IsControlJustPressed(0, 38) then
 								OpenStash(Config.Stashes[id])
 							end
-						elseif distance > RenderDist then id, type = nil, nil
+						elseif distance > Config.Stashes[id].distance or 4 then id, type = nil, nil
 						else text = Config.Stashes[id].name end
 						if distance <= 2 then DrawText3D(Config.Stashes[id].coords, text) end
 					else
 						for k, v in pairs(Config.Stashes) do
 							if not id and v.coords and (not v.job or v.job == ESX.PlayerData.job.name) and (not v.grade or v.grade <= ESX.PlayerData.job.grade) then
 								local distance = #(playerCoords - v.coords)
-								local RenderDist =  v.RenderDist or 4
-								if distance <= RenderDist then
+								if distance <= v.distance or 4 then
 									sleep = 10
 									id = k
 									type = 'stash'

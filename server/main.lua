@@ -257,7 +257,7 @@ AddEventHandler('linden_inventory:openInventory', function(invType, data, player
 				local shop = Config.Shops[data]
 				if (not shop.job or shop.job == xPlayer.job.name) and (not shop.grade or shop.grade <= xPlayer.job.grade) then
 					local srcCoords = GetEntityCoords(GetPlayerPed(xPlayer.source))
-					if #(shop.coords - srcCoords) <= 2 then
+					if #(shop.coords - srcCoords) <= 10 then
 						if shop.currency and type(shop.currency) == 'string' and shop.currency ~= 'money' and shop.currency ~= 'black_money' then
 							local item = Items[shop.currency]
 							shop.currency = {name=item.name, label=item.label}
@@ -363,7 +363,7 @@ AddEventHandler('linden_inventory:giveStash', function(data)
 			
 			if data.coords then
 				local srcCoords = GetEntityCoords(GetPlayerPed(xPlayer.source))
-				if #(data.coords - srcCoords) > 4 then return false end
+				if #(data.coords - srcCoords) > 10 then return false end
 			end
 
 			if not Inventories[id] then
