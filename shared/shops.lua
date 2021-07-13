@@ -152,7 +152,7 @@ Config.Shops = {
 	{ coords = vector3(-2544.092, 2316.184, 33.2), name = 'RON'},
 
 	
-	{ type = Config.PoliceArmoury, job = 'police', coords = vector3(487.235, -997.108, 30.69), bt_length = 0.5, bt_width = 3.0, bt_heading = 60.0, bt_distance = 6 },
+	{ type = Config.PoliceArmoury, job = 'police', grade = 2,  coords = vector3(487.235, -997.108, 30.69), RenderDist = 2, bt_length = 0.5, bt_width = 3.0, bt_heading = 60.0, bt_distance = 6},
 	{ type = Config.Medicine, job = 'ambulance', coords = vector3(306.3687, -601.5139, 43.28406) --[[ bt_length = 0.5, bt_width = 3.0, bt_minZ = 29.8, bt_maxZ = 32.0, bt_heading = 60.0, bt_distance = 6]] },
 
 	{ type = Config.BlackMarketArms, coords = vector3(309.09, -913.75, 56.46), currency = 'black_money' },

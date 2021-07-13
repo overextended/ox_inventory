@@ -255,7 +255,7 @@ AddEventHandler('linden_inventory:openInventory', function(invType, data, player
 		elseif data then
 			if invType == 'shop' then
 				local shop = Config.Shops[data]
-				if (not shop.job or shop.job == xPlayer.job.name) then
+				if (not shop.job or shop.job == xPlayer.job.name) and (not shop.grade or shop.grade <= xPlayer.job.grade) then
 					local srcCoords = GetEntityCoords(GetPlayerPed(xPlayer.source))
 					if #(shop.coords - srcCoords) <= 2 then
 						if shop.currency and type(shop.currency) == 'string' and shop.currency ~= 'money' and shop.currency ~= 'black_money' then
