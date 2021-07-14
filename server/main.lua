@@ -135,13 +135,16 @@ ESX.RegisterServerCallback('linden_inventory:setup', function(source, cb)
 	end
 	local xPlayer = ESX.GetPlayerFromId(src)
 	if not Inventories[xPlayer.source] then
-		local result = exports.ghmattimysql:scalarSync('SELECT inventory FROM users WHERE identifier = @identifier', {
-			['@identifier'] = xPlayer.identifier
-		})
-		if result then
-			TriggerEvent('linden_inventory:setPlayerInventory', xPlayer, json.decode(result))
-			while not Inventories[xPlayer.source] do Citizen.Wait(100) end
+		local inventory = xPlayer.getInventory(true)
+		if not inventory then
+			local result = exports.ghmattimysql:scalarSync('SELECT inventory FROM users WHERE identifier = @identifier', {
+				['@identifier'] = xPlayer.identifier
+			})
+			inventory = json.decode(result)
 		end
+		TriggerEvent('linden_inventory:setPlayerInventory', xPlayer, inventory, function(val) inventory = val end)
+		local count = 0
+		while inventory ~= true and count ~= 10 do Citizen.Wait(250) count = count + 1 end
 	end
 	local data = {
 		drops = Drops,
@@ -182,8 +185,8 @@ AddEventHandler('linden_inventory:setPlayerInventory', function(xPlayer, data, c
 	local money = getInventoryItem(xPlayer, 'money').count
 	local dirty = getInventoryItem(xPlayer, 'black_money').count
 	xPlayer.syncInventory(money, dirty, Inventories[xPlayer.source].inventory, totalWeight, DefaultWeight)
-	if type(cb) ~= "number" then cb(true) end
-end)
+	cb(true)
+end)	
 
 AddEventHandler('linden_inventory:clearPlayerInventory', function(xPlayer)
 	if type(xPlayer) ~= 'table' then xPlayer = ESX.GetPlayerFromId(xPlayer) end
