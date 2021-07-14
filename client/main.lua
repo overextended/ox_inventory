@@ -137,7 +137,7 @@ StartInventory = function()
 			RegisterKeyMapping('reload', 'Reload weapon~', 'keyboard', 'r')
 			for i=1, 5 do
 				RegisterCommand('hotkey'..i, function() Hotkey(i) end)
-				RegisterKeyMapping('hotkey'..i, 'Use hotbar item '..i..'~', 'keyboard', 'i')
+				RegisterKeyMapping('hotkey'..i, 'Use hotbar item '..i..'~', 'keyboard', i)
 			end
 		end)
 	end)
