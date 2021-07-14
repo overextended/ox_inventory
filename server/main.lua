@@ -446,7 +446,7 @@ AddEventHandler('linden_inventory:buyItem', function(info)
 				money = getInventoryItem(xPlayer, item.name).count
 			end
 		elseif shopCurrency == 'money' or shopCurrency == 'black_money' then
-			item.name = 'money'
+			item.name = shopCurrency
 			currency = Items[item.name].label
 			money = getInventoryItem(xPlayer, item.name).count
 		else
@@ -582,7 +582,7 @@ AddEventHandler('linden_inventory:saveInventoryData', function(data)
 							ItemNotify(xPlayer, data.fromItem, data.fromItem.count, data.toSlot, 'added')
 							Drops[dropid].inventory[data.toSlot] = {name = data.toItem.name, label = data.toItem.label, weight = data.toItem.weight, slot = data.toSlot, count = data.toItem.count, description = data.toItem.description, metadata = data.toItem.metadata, stack = data.toItem.stack, close = Items[data.toItem.name].close}
 							Inventories[invid2].inventory[data.fromSlot] = {name = data.fromItem.name, label = data.fromItem.label, weight = data.fromItem.weight, slot = data.fromSlot, count = data.fromItem.count, description = data.fromItem.description, metadata = data.fromItem.metadata, stack = data.fromItem.stack, close = Items[data.fromItem.name].close}
-							if Config.Logs then CreateLog(xPlayer.source, false, 'has swapped '..data.toItem.count..'x '..data.toItem.name..' for '..data.fromItem.count..'x '..data.fromItem.name..' in'..dropid, 'drop') end
+							if Config.Logs then CreateLog(xPlayer.source, false, 'has swapped '..data.toItem.count..'x '..data.toItem.name..' for '..data.fromItem.count..'x '..data.fromItem.name..' in '..dropid, 'drop') end
 							TriggerClientEvent('linden_inventory:update', xPlayer.source, {data.fromSlot, Inventories[invid2].inventory[data.fromSlot]})
 						end
 					elseif data.type == 'freeslot' then
@@ -591,7 +591,7 @@ AddEventHandler('linden_inventory:saveInventoryData', function(data)
 							ItemNotify(xPlayer, data.item, count, data.emptyslot, 'removed')
 							Inventories[invid2].inventory[data.emptyslot] = nil
 							Drops[dropid].inventory[data.toSlot] = {name = data.item.name, label = data.item.label, weight = data.item.weight, slot = data.toSlot, count = data.item.count, description = data.item.description, metadata = data.item.metadata, stack = data.item.stack, close = Items[data.item.name].close}
-							if Config.Logs then CreateLog(xPlayer.source, false, 'has stored '..count..'x '..data.item.name..' in'..dropid, 'drop') end
+							if Config.Logs then CreateLog(xPlayer.source, false, 'has stored '..count..'x '..data.item.name..' in '..dropid, 'drop') end
 							TriggerClientEvent('linden_inventory:update', xPlayer.source, {data.emptyslot, nil})
 						end
 					elseif data.type == 'split' then
@@ -599,7 +599,7 @@ AddEventHandler('linden_inventory:saveInventoryData', function(data)
 							ItemNotify(xPlayer, data.newslotItem, data.newslotItem.count, data.fromSlot, 'removed')
 							Inventories[invid2].inventory[data.fromSlot] = {name = data.oldslotItem.name, label = data.oldslotItem.label, weight = data.oldslotItem.weight, slot = data.fromSlot, count = data.oldslotItem.count, description = data.oldslotItem.description, metadata = data.oldslotItem.metadata, stack = data.oldslotItem.stack, close = Items[data.oldslotItem.name].close}
 							Drops[dropid].inventory[data.toSlot] = {name = data.newslotItem.name, label = data.newslotItem.label, weight = data.newslotItem.weight, slot = data.toSlot, count = data.newslotItem.count, description = data.newslotItem.description, metadata = data.newslotItem.metadata, stack = data.newslotItem.stack, close = Items[data.newslotItem.name].close}
-							if Config.Logs then CreateLog(xPlayer.source, false, 'has stored '..data.newslotItem.count..'x '..data.newslotItem.name..' in'..dropid, 'drop') end
+							if Config.Logs then CreateLog(xPlayer.source, false, 'has stored '..data.newslotItem.count..'x '..data.newslotItem.name..' in '..dropid, 'drop') end
 							TriggerClientEvent('linden_inventory:update', xPlayer.source, {data.fromSlot, Inventories[invid2].inventory[data.fromSlot]})
 						end
 					end
@@ -611,7 +611,7 @@ AddEventHandler('linden_inventory:saveInventoryData', function(data)
 							ItemNotify(xPlayer, data.fromItem, data.fromItem.count, data.fromSlot, 'removed')
 							Inventories[invid].inventory[data.toSlot] = {name = data.toItem.name, label = data.toItem.label, weight = data.toItem.weight, slot = data.toSlot, count = data.toItem.count, description = data.toItem.description, metadata = data.toItem.metadata, stack = data.toItem.stack, close = Items[data.toItem.name].close}
 							Drops[dropid].inventory[data.fromSlot] = {name = data.fromItem.name, label = data.fromItem.label, weight = data.fromItem.weight, slot = data.fromSlot, count = data.fromItem.count, description = data.fromItem.description, metadata = data.fromItem.metadata, stack = data.fromItem.stack, close = Items[data.fromItem.name].close}
-							if Config.Logs then CreateLog(xPlayer.source, false, 'has swapped '..data.fromItem.count..'x '..data.fromItem.name..' for '..data.toItem.count..'x '..data.toItem.name.. 'in'..dropid, 'drop') end
+							if Config.Logs then CreateLog(xPlayer.source, false, 'has swapped '..data.fromItem.count..'x '..data.fromItem.name..' for '..data.toItem.count..'x '..data.toItem.name.. 'in '..dropid, 'drop') end
 							TriggerClientEvent('linden_inventory:update', xPlayer.source, {data.toSlot, Inventories[invid].inventory[data.toSlot]})
 						end
 					elseif data.type == 'freeslot' then
@@ -620,7 +620,7 @@ AddEventHandler('linden_inventory:saveInventoryData', function(data)
 							ItemNotify(xPlayer, data.item, count, data.toSlot, 'added')
 							Drops[dropid].inventory[data.emptyslot] = nil
 							Inventories[invid].inventory[data.toSlot] = {name = data.item.name, label = data.item.label, weight = data.item.weight, slot = data.toSlot, count = data.item.count, description = data.item.description, metadata = data.item.metadata, stack = data.item.stack, close = Items[data.item.name].close}
-							if Config.Logs then CreateLog(xPlayer.source, false, 'has taken '..count..'x '..data.item.name..' from'..dropid, 'drop') end
+							if Config.Logs then CreateLog(xPlayer.source, false, 'has taken '..count..'x '..data.item.name..' from '..dropid, 'drop') end
 							TriggerClientEvent('linden_inventory:update', xPlayer.source, {data.toSlot, Inventories[invid].inventory[data.toSlot]})
 						end
 					elseif data.type == 'split' then
@@ -628,7 +628,7 @@ AddEventHandler('linden_inventory:saveInventoryData', function(data)
 							ItemNotify(xPlayer, data.newslotItem, data.toSlot, false, 'added')
 							Drops[dropid].inventory[data.fromSlot] = {name = data.oldslotItem.name, label = data.oldslotItem.label, weight = data.oldslotItem.weight, slot = data.fromSlot, count = data.oldslotItem.count, description = data.oldslotItem.description, metadata = data.oldslotItem.metadata, stack = data.oldslotItem.stack, close = Items[data.oldslotItem.name].close}
 							Inventories[invid].inventory[data.toSlot] = {name = data.newslotItem.name, label = data.newslotItem.label, weight = data.newslotItem.weight, slot = data.toSlot, count = data.newslotItem.count, description = data.newslotItem.description, metadata = data.newslotItem.metadata, stack = data.newslotItem.stack, close = Items[data.newslotItem.name].close}
-							if Config.Logs then CreateLog(xPlayer.source, false, 'has taken '..data.newslotItem.count..'x '..data.newslotItem.name..' from'..dropid, 'drop') end
+							if Config.Logs then CreateLog(xPlayer.source, false, 'has taken '..data.newslotItem.count..'x '..data.newslotItem.name..' from '..dropid, 'drop') end
 							TriggerClientEvent('linden_inventory:update', xPlayer.source, {data.toSlot, Inventories[invid].inventory[data.toSlot]})
 						end
 					end

@@ -765,7 +765,7 @@ TriggerLoops = function()
 						for k, v in pairs(Config.Shops) do
 							if not id and v.coords and (not v.job or v.job == ESX.PlayerData.job.name) and (not v.grade or v.grade <= ESX.PlayerData.job.grade) then
 								local distance = #(playerCoords - v.coords)
-								if distance <= v.distance or 4 then
+								if distance <= v.distance or distance <= 4 then
 									sleep = 10
 									id = k
 									type = 'shop'
@@ -790,7 +790,7 @@ TriggerLoops = function()
 						for k, v in pairs(Config.Stashes) do
 							if not id and v.coords and (not v.job or v.job == ESX.PlayerData.job.name) and (not v.grade or v.grade <= ESX.PlayerData.job.grade) then
 								local distance = #(playerCoords - v.coords)
-								if distance <= v.distance or 4 then
+								if distance <= v.distance or distance <= 4 then
 									sleep = 10
 									id = k
 									type = 'stash'
