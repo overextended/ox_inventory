@@ -96,6 +96,7 @@ StartInventory = function()
 	SetTimeout(500, function()
 		ESX.TriggerServerCallback('linden_inventory:setup', function(data)
 			ESX.PlayerData = ESX.GetPlayerData()
+			ESX.PlayerData.inventory = data.inventory
 			ESX.SetPlayerData('inventory', data.inventory)
 			ESX.SetPlayerData('weight', data.weight)
 			playerCoords = GetEntityCoords(ESX.PlayerData.ped)
