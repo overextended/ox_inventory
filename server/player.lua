@@ -12,6 +12,10 @@ end
 
 
 getInventoryItem = function(xPlayer, name, metadata)
+	if not xPlayer then
+		print(('^1[error]^7 It\'s impossible to use xPlayer.getInventoryItem when the xPlayer doesn\'t exist, so fix your shit'):format(name))
+		return
+	end
 	if CheckPlayer(xPlayer.source) ~= true then return end
 	if name then
 		local xItem = Items[name]
@@ -166,15 +170,6 @@ syncInventory = function(xPlayer, force, metaweight, slot)
 	local money = getInventoryItem(xPlayer, 'money').count
 	local dirty = getInventoryItem(xPlayer, 'black_money').count
 	xPlayer.syncInventory(money, dirty, Inventories[xPlayer.source].inventory, Inventories[xPlayer.source].weight, Inventories[xPlayer.source].maxWeight)
-end
-
-
-
-SyncAccounts = function(xPlayer, name)
-	local account = xPlayer.getAccount(name)
-	account.money = getInventoryItem(xPlayer, name).count
-	xPlayer.setAccount(account)
-	xPlayer.triggerEvent('esx:setAccountMoney', account)
 end
 
 
