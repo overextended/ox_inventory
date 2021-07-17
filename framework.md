@@ -3,269 +3,45 @@ title: ESX Legacy Installation
 ---
 
 
-<h2 align='center'> Notice </h2>
-The following adjustments must be made for compatibility and security reasons.  
-These changes are intended to make it easier for those using modified files already.
-
-If you are already starting from the basics, I strongly suggest [downloading my fork](https://github.com/thelindat/es_extended) and ignoring the rest of this page.
-If you insist on following through with manual setup, ensure you are using the **latest** version of ESX Legacy.
+<h4 align='center'>You should only be manually updating your ESX if you have a modified version already, in which case it's assumed you have a brain.<br><br>
+This guide will only link to the lines you will need to modify, assuming you are using ESX Legacy from the official repository.<br><br>
+Furthermore, I am only linking the <b>bare minimum</b> for inventory support.<br><br></h4>
 
 
-<h2 align='center'> client/main.lua </h2>
+	
+- client/functions.lua
+	- [L294-L302](https://github.com/thelindat/es_extended/compare/cc5d425ba119748b4c283e2909006a24939dfb9b...814c7596bc29a1fff4f686450f2545f3a16f8975?diff=unified#diff-fb88ff8ef626f8b3556af9308eba9d1acc16eff1e4643b62e04197e07afed7e0L294-L302)
+	- [L746-L993](https://github.com/thelindat/es_extended/compare/cc5d425ba119748b4c283e2909006a24939dfb9b...814c7596bc29a1fff4f686450f2545f3a16f8975?diff=unified#diff-fb88ff8ef626f8b3556af9308eba9d1acc16eff1e4643b62e04197e07afed7e0L746-L993)
+- client/main.lua
+	- [L83-L85](https://github.com/thelindat/es_extended/compare/cc5d425ba119748b4c283e2909006a24939dfb9b...814c7596bc29a1fff4f686450f2545f3a16f8975?diff=unified#diff-6f0b2f6b34829d0f65728f2508a4f5e2ef0d39d59b554b3ec8613c8feaacf74dL83-L85)
+	- [L98-L129](https://github.com/thelindat/es_extended/compare/cc5d425ba119748b4c283e2909006a24939dfb9b...814c7596bc29a1fff4f686450f2545f3a16f8975?diff=unified#diff-6f0b2f6b34829d0f65728f2508a4f5e2ef0d39d59b554b3ec8613c8feaacf74dL98-L129)
+	- [L149-L220](https://github.com/thelindat/es_extended/compare/cc5d425ba119748b4c283e2909006a24939dfb9b...814c7596bc29a1fff4f686450f2545f3a16f8975?diff=unified#diff-6f0b2f6b34829d0f65728f2508a4f5e2ef0d39d59b554b3ec8613c8feaacf74dL149-L220)
+	- [L253-L291](https://github.com/thelindat/es_extended/compare/cc5d425ba119748b4c283e2909006a24939dfb9b...814c7596bc29a1fff4f686450f2545f3a16f8975?diff=unified#diff-6f0b2f6b34829d0f65728f2508a4f5e2ef0d39d59b554b3ec8613c8feaacf74dL253-L291)
+	- [L302-L309](https://github.com/thelindat/es_extended/compare/cc5d425ba119748b4c283e2909006a24939dfb9b...814c7596bc29a1fff4f686450f2545f3a16f8975?diff=unified#diff-6f0b2f6b34829d0f65728f2508a4f5e2ef0d39d59b554b3ec8613c8feaacf74dL302-L309)
+	- [L371-L401](https://github.com/thelindat/es_extended/compare/cc5d425ba119748b4c283e2909006a24939dfb9b...814c7596bc29a1fff4f686450f2545f3a16f8975?diff=unified#diff-6f0b2f6b34829d0f65728f2508a4f5e2ef0d39d59b554b3ec8613c8feaacf74dL371-L401)
+	- [L443-L488](https://github.com/thelindat/es_extended/compare/cc5d425ba119748b4c283e2909006a24939dfb9b...814c7596bc29a1fff4f686450f2545f3a16f8975?diff=unified#diff-6f0b2f6b34829d0f65728f2508a4f5e2ef0d39d59b554b3ec8613c8feaacf74dL443-L488)
+- imports.lua
+	- [Replace](https://github.com/thelindat/es_extended/blob/linden/imports.lua)
+- server/classes/player.lua
+	- [Replace](https://github.com/thelindat/es_extended/blob/linden/server/classes/player.lua)
+- server/commands.lua
+	- [L35-L126](https://github.com/thelindat/es_extended/compare/cc5d425ba119748b4c283e2909006a24939dfb9b...814c7596bc29a1fff4f686450f2545f3a16f8975?diff=unified#diff-a5b0e1d03fa7124c18dc99fc93d4c0748e84a8bacfd97c9efdea45f0bba2d34dL35-L126) (ignore 101-108)
+- server/common.lua
+	- [L168-R229](https://github.com/thelindat/es_extended/compare/cc5d425ba119748b4c283e2909006a24939dfb9b...814c7596bc29a1fff4f686450f2545f3a16f8975?diff=unified#diff-7de0b3abd8e0d4812e3c98126b9f6902f2ead62bc09a9c9d3601bb3cfc849b75L168-R229)
+	- [L310-L329](https://github.com/thelindat/es_extended/compare/cc5d425ba119748b4c283e2909006a24939dfb9b...814c7596bc29a1fff4f686450f2545f3a16f8975?diff=unified#diff-7de0b3abd8e0d4812e3c98126b9f6902f2ead62bc09a9c9d3601bb3cfc849b75L310-L329)
+- server/main.lua
+	- [Replace](https://github.com/thelindat/es_extended/compare/cc5d425ba119748b4c283e2909006a24939dfb9b...814c7596bc29a1fff4f686450f2545f3a16f8975?diff=unified#diff-d4503a9550899ea7880582e02d5404019dbce696d1b27a7c63f18b99eddeb088L6-R6)
+	- [Replace](https://github.com/thelindat/es_extended/compare/cc5d425ba119748b4c283e2909006a24939dfb9b...814c7596bc29a1fff4f686450f2545f3a16f8975?diff=unified#diff-d4503a9550899ea7880582e02d5404019dbce696d1b27a7c63f18b99eddeb088L181-L212)
+	- [L224-L245](https://github.com/thelindat/es_extended/compare/cc5d425ba119748b4c283e2909006a24939dfb9b...814c7596bc29a1fff4f686450f2545f3a16f8975?diff=unified#diff-d4503a9550899ea7880582e02d5404019dbce696d1b27a7c63f18b99eddeb088L224-L245)
+	- [Replace](https://github.com/thelindat/es_extended/compare/cc5d425ba119748b4c283e2909006a24939dfb9b...814c7596bc29a1fff4f686450f2545f3a16f8975?diff=unified#diff-d4503a9550899ea7880582e02d5404019dbce696d1b27a7c63f18b99eddeb088L276-R224)
+	- [Replace](https://github.com/thelindat/es_extended/compare/cc5d425ba119748b4c283e2909006a24939dfb9b...814c7596bc29a1fff4f686450f2545f3a16f8975?diff=unified#diff-d4503a9550899ea7880582e02d5404019dbce696d1b27a7c63f18b99eddeb088L295-R247)
+	- [L351-L548](https://github.com/thelindat/es_extended/compare/cc5d425ba119748b4c283e2909006a24939dfb9b...814c7596bc29a1fff4f686450f2545f3a16f8975?diff=unified#diff-d4503a9550899ea7880582e02d5404019dbce696d1b27a7c63f18b99eddeb088L351-L548)
 
-* Locate `AddEventHandler('esx:restoreLoadout', function()` and replace the event (for compatibility) with
+### Add to server/common.lua
 ```lua
-AddEventHandler('esx:restoreLoadout', function()
-	local playerPed = PlayerPedId()
-	if ESX.PlayerData.ped ~= playerPed then ESX.SetPlayerData('ped', playerPed) end
+AddEventHandler('linden_inventory:loaded', function(data)
+	ESX.Items = data
 end)
 ```
 
-* Locate the following events and remove all of them (for security)
-```lua
-RegisterNetEvent('esx:addInventoryItem')
-RegisterNetEvent('esx:removeInventoryItem')
-RegisterNetEvent('esx:addWeapon')
-RegisterNetEvent('esx:addWeaponComponent')
-RegisterNetEvent('esx:setWeaponAmmo')
-RegisterNetEvent('esx:setWeaponTint')
-RegisterNetEvent('esx:removeWeapon')
-RegisterNetEvent('esx:removeWeaponComponent')
-RegisterNetEvent('esx:createPickup')
-RegisterNetEvent('esx:removePickup')
-```
-
-* Locate and remove the following function and remove it (for performance)
-```lua
-	-- keep track of ammo
-	Citizen.CreateThread(function()
-		local currentWeapon = {timer=0}
-		while ESX.PlayerLoaded do
-			local sleep = 5
-
-			if currentWeapon.timer == sleep then
-				local ammoCount = GetAmmoInPedWeapon(ESX.PlayerData.ped, currentWeapon.hash)
-				TriggerServerEvent('esx:updateWeaponAmmo', currentWeapon.name, ammoCount)
-				currentWeapon.timer = 0
-			elseif currentWeapon.timer > sleep then
-				currentWeapon.timer = currentWeapon.timer - sleep
-			end
-
-			if IsPedArmed(ESX.PlayerData.ped, 4) then
-				if IsPedShooting(ESX.PlayerData.ped) then
-					local _,weaponHash = GetCurrentPedWeapon(ESX.PlayerData.ped, true)
-					local weapon = ESX.GetWeaponFromHash(weaponHash)
-
-					if weapon then
-						currentWeapon.name = weapon.name
-						currentWeapon.hash = weaponHash	
-						currentWeapon.timer = 100 * sleep		
-					end
-				end
-			else
-				sleep = 200
-			end
-			Citizen.Wait(sleep)
-		end
-	end)
-```
-
-* Locate and remove the following command (deprecated)
-```lua
-if Config.EnableDefaultInventory then
-	RegisterCommand('showinv', function()
-		if not isDead and not ESX.UI.Menu.IsOpen('default', 'es_extended', 'inventory') then
-			ESX.ShowInventory()
-		end
-	end)
-
-	RegisterKeyMapping('showinv', _U('keymap_showinventory'), 'keyboard', 'F2')
-end
-```
-
-* Locate and remove the following thread (for performance)
-```lua
-Citizen.CreateThread(function()
-	while true do
-		Citizen.Wait(0)
-		local playerCoords, letSleep = GetEntityCoords(ESX.PlayerData.ped), true
-		local closestPlayer, closestDistance = ESX.Game.GetClosestPlayer(playerCoords)
-
-		for pickupId,pickup in pairs(pickups) do
-			local distance = #(playerCoords - pickup.coords)
-
-			if distance < 5 then
-				local label = pickup.label
-				letSleep = false
-
-				if distance < 1 then
-					if IsControlJustReleased(0, 38) then
-						if IsPedOnFoot(ESX.PlayerData.ped) and (closestDistance == -1 or closestDistance > 3) and not pickup.inRange then
-							pickup.inRange = true
-
-							local dict, anim = 'weapons@first_person@aim_rng@generic@projectile@sticky_bomb@', 'plant_floor'
-							ESX.Streaming.RequestAnimDict(dict)
-							TaskPlayAnim(ESX.PlayerData.ped, dict, anim, 8.0, 1.0, 1000, 16, 0.0, false, false, false)
-							Citizen.Wait(1000)
-
-							TriggerServerEvent('esx:onPickup', pickupId)
-							PlaySoundFrontend(-1, 'PICK_UP', 'HUD_FRONTEND_DEFAULT_SOUNDSET', false)
-						end
-					end
-
-					label = ('%s~n~%s'):format(label, _U('threw_pickup_prompt'))
-				end
-
-				ESX.Game.Utils.DrawText3D({
-					x = pickup.coords.x,
-					y = pickup.coords.y,
-					z = pickup.coords.z + 0.25
-				}, label, 1.2, 1)
-			elseif pickup.inRange then
-				pickup.inRange = false
-			end
-		end
-
-		if letSleep then
-			Citizen.Wait(500)
-		end
-	end
-end)
-```
-
-
-
-<h2 align='center'> server/commands.lua </h2>
-
-* Add the following code to the top of the file (for compatibility and ease)
-```lua
-ExecuteCommand('add_principal group.superadmin group.admin')
-```
-
-* Remove the following commands (deprecated)
-```lua
-giveitem, giveweapon, giveweaponcomponent, clearinventory
-```
-
-* Remove the following line
-```lua
-if args.group == "superadmin" then args.group = "admin" end
-```
-
-
-<h2 align='center'> server/functions.lua </h2>
-
-* Locate `ESX.SavePlayer` and use the following functions
-```lua
-local savePlayers = -1
-Citizen.CreateThread(function()
-	savePlayers = MySQL.Sync.store("UPDATE users SET `accounts` = ?, `job` = ?, `job_grade` = ?, `group` = ?, `position`= ?, `inventory` = ? WHERE `identifier` = ?")
-end)
-
-ESX.SavePlayer = function(xPlayer, cb)
-	local asyncTasks = {}
-
-	table.insert(asyncTasks, function(cb2)
-		MySQL.Async.execute(savePlayers, {
-				json.encode(xPlayer.getAccounts(true)),
-				xPlayer.job.name,
-				xPlayer.job.grade,
-				xPlayer.getGroup(),
-				json.encode(xPlayer.getCoords()),
-				json.encode(xPlayer.getInventory(true)),
-				xPlayer.getIdentifier()
-		}, function(rowsChanged)
-			cb2()
-		end)
-	end)
-
-	Async.parallel(asyncTasks, function(results)
-		print(('[^2INFO^7] Saved player ^5"%s^7"'):format(xPlayer.getName()))
-
-		if cb then
-			cb()
-		end
-	end)
-end
-```
-
-
-<h2 align='center'> server/main.lua </h2>
-
-* Locate `-- Inventory` on line `176` and replace (until line `208`) with
-```lua
-if result[1].inventory and result[1].inventory ~= '' then
-			userData.inventory = json.decode(result[1].inventory)
-end
-```
-
-* Locate `-- Group` and replace the statement with
-```lua
--- Group
-if result[1].group then
-  userData.group = result[1].group
-else
-  userData.group = 'user'
-end
-```
-
-* Locate and removing the following
-```lua
-
-			-- Loadout
-			if result[1].loadout and result[1].loadout ~= '' then
-				local loadout = json.decode(result[1].loadout)
-
-				for name,weapon in pairs(loadout) do
-					local label = ESX.GetWeaponLabel(name)
-
-					if label then
-						if not weapon.components then weapon.components = {} end
-						if not weapon.tintIndex then weapon.tintIndex = 0 end
-
-						table.insert(userData.loadout, {
-							name = name,
-							ammo = weapon.ammo,
-							label = label,
-							components = weapon.components,
-							tintIndex = weapon.tintIndex
-						})
-					end
-				end
-			end
-```
-
-* Locate `CreateExtendedPlayer` and replace the function with 
-```lua
-local xPlayer = CreateExtendedPlayer(playerId, identifier, userData.group, userData.accounts, userData.job, userData.playerName, userData.coords)
-```
-
-* Locate `TriggerEvent('esx:playerLoaded', playerId, xPlayer, isNew)` and immediately below it add
-```lua
-TriggerEvent('linden_inventory:setPlayerInventory', xPlayer, userData.inventory)
-```
-
-* Locate `xPlayer.getLoadout()` and replace it with `{}` whenever it occurs
-* Locate and remove the following events or triggers
-```lua
-xPlayer.triggerEvent('esx:createMissingPickups', ESX.Pickups)
-RegisterNetEvent('esx:updateWeaponAmmo')
-RegisterNetEvent('esx:giveInventoryItem')
-RegisterNetEvent('esx:removeInventoryItem')
-RegisterNetEvent('esx:useItem')
-RegisterNetEvent('esx:onPickup')
-```
-
-
-<h2 align='center'> server/classes/player.lua </h2>
-
-* Replace the entirety of the file with my modified version
-[Link](https://github.com/thelindat/es_extended/blob/linden/server/classes/player.lua)
-
-
-
-
-
-
-<h4 align='center'><br>Getting errors? You need to check your edits and confirm you removed it all properly</h4>
-<h3 align='center'>Restarting the framework or inventory should show lines causing errors (in server or client console)</h3>
+<h4 align='center'>If this confused you, just <b><a href='https://github.com/thelindat/es_extended'>download the fork</a></b>.</h4>
