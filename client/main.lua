@@ -861,11 +861,12 @@ TriggerLoops = function()
 						local ped = GetPlayerPed(id)
 						local pedCoords = GetEntityCoords(ped)
 						local dist = #(playerCoords - pedCoords)
-						if not id or dist > 1.8 then
-							if (ESX.PlayerData.job.name == 'police' and dist > 1.8) or not CanOpenTarget(ped) then
-								TriggerEvent('linden_inventory:closeInventory')
-								TriggerEvent('mythic_notify:client:SendAlert', {type = 'error', text = _U('inventory_lost_access'), length = 2500})
-							end
+						if ESX.PlayerData.job.name == 'police' or dist > 1.8 or not id then
+							TriggerEvent('linden_inventory:closeInventory')
+							TriggerEvent('mythic_notify:client:SendAlert', {type = 'error', text = _U('inventory_lost_access'), length = 2500})
+						elseif not CanOpenTarget(ped) or dist > 1.8 or not id then
+							TriggerEvent('linden_inventory:closeInventory')
+							TriggerEvent('mythic_notify:client:SendAlert', {type = 'error', text = _U('inventory_lost_access'), length = 2500})
 						else
 							TaskTurnPedToFaceCoord(ESX.PlayerData.ped, pedCoords)
 						end
