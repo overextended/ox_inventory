@@ -1076,6 +1076,14 @@ end, true, {help = 'clear police evidence', validate = true, arguments = {
 	{name = 'evidence', help = 'number', type = 'number'}
 }})
 
+ESX.RegisterCommand({'inventory'}, 'admin', function(xPlayer, args, showError)
+	Inventories[args.playerId.source].set('open', xPlayer.source)
+	Inventories[args.playerId.source].set('type', 'admin')
+	TriggerClientEvent('linden_inventory:openInventory', xPlayer.source, Inventories[xPlayer.source], Inventories[args.playerId.source])
+end, true, {help = 'open a player\'s inventory', validate = false, arguments = {
+	{name = 'playerId', help = 'player id', type = 'player'},
+}})
+
 -- Confiscate inventory Command/Event
 ESX.RegisterCommand('confinv', 'superadmin', function(xPlayer, args, showError)
 	TriggerEvent('linden_inventory:confiscatePlayerInventory', args.playerId)
