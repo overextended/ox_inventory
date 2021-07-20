@@ -986,7 +986,7 @@ AddEventHandler('linden_inventory:removeItem', function(item, count)
 end)
 
 -- Override the default ESX commands
-ESX.RegisterCommand({'giveitem', 'additem'}, 'superadmin', function(xPlayer, args, showError)
+ESX.RegisterCommand({'giveitem', 'additem'}, 'admin', function(xPlayer, args, showError)
 	args.playerId.addInventoryItem(ValidateString(args.item), args.count, args.type)
 end, true, {help = 'give an item to a player', validate = false, arguments = {
 	{name = 'playerId', help = 'player id', type = 'player'},
@@ -995,7 +995,7 @@ end, true, {help = 'give an item to a player', validate = false, arguments = {
 	{name = 'type', help = 'item metadata type', type='any'}
 }})
 
-ESX.RegisterCommand('removeitem', 'superadmin', function(xPlayer, args, showError)
+ESX.RegisterCommand('removeitem', 'admin', function(xPlayer, args, showError)
 	args.playerId.removeInventoryItem(ValidateString(args.item), args.count, args.type)
 end, true, {help = 'remove an item from a player', validate = false, arguments = {
 	{name = 'playerId', help = 'player id', type = 'player'},
@@ -1004,13 +1004,13 @@ end, true, {help = 'remove an item from a player', validate = false, arguments =
 	{name = 'type', help = 'item metadata type', type='any'}
 }})
 
-ESX.RegisterCommand({'removeinventory', 'clearinventory'}, 'superadmin', function(xPlayer, args, showError)
+ESX.RegisterCommand({'removeinventory', 'clearinventory'}, 'admin', function(xPlayer, args, showError)
 	TriggerEvent('linden_inventory:clearPlayerInventory', args.playerId)
 end, true, {help = 'clear a player\'s inventory', validate = true, arguments = {
 	{name = 'playerId', help = 'player id', type = 'player'}
 }})
 
-ESX.RegisterCommand({'giveaccountmoney', 'givemoney'}, 'superadmin', function(xPlayer, args, showError)
+ESX.RegisterCommand({'giveaccountmoney', 'givemoney'}, 'admin', function(xPlayer, args, showError)
 	local getAccount = args.playerId.getAccount(args.account)
 	if getAccount then
 		args.playerId.addAccountMoney(args.account, args.amount)
@@ -1023,7 +1023,7 @@ end, true, {help = 'give account money', validate = true, arguments = {
 	{name = 'amount', help = 'amount to add', type = 'number'}
 }})
 
-ESX.RegisterCommand({'removeaccountmoney', 'removemoney'}, 'superadmin', function(xPlayer, args, showError)
+ESX.RegisterCommand({'removeaccountmoney', 'removemoney'}, 'admin', function(xPlayer, args, showError)
 	local getAccount = args.playerId.getAccount(args.account)
 	if getAccount.money - args.amount < 0 then args.amount = getAccount.money end
 	if getAccount then
@@ -1037,7 +1037,7 @@ end, true, {help = 'remove account money', validate = true, arguments = {
 	{name = 'amount', help = 'amount to remove', type = 'number'}
 }})
 
-ESX.RegisterCommand({'setaccountmoney', 'setmoney'}, 'superadmin', function(xPlayer, args, showError)
+ESX.RegisterCommand({'setaccountmoney', 'setmoney'}, 'admin', function(xPlayer, args, showError)
 	local getAccount = args.playerId.getAccount(args.account)
 	if getAccount then
 		args.playerId.setAccountMoney(args.account, args.amount)
@@ -1085,21 +1085,21 @@ end, true, {help = 'open a player\'s inventory', validate = false, arguments = {
 }})
 
 -- Confiscate inventory Command/Event
-ESX.RegisterCommand('confinv', 'superadmin', function(xPlayer, args, showError)
+ESX.RegisterCommand('confinv', 'admin', function(xPlayer, args, showError)
 	TriggerEvent('linden_inventory:confiscatePlayerInventory', args.playerId)
 end, true, {help = 'Confiscate an Inventory', validate = true, arguments = {
 	{name = 'playerId', help = 'player id', type = 'player'},
 }})
 
 -- Return Confiscated inventory Command/Event
-ESX.RegisterCommand('returninv', 'superadmin', function(xPlayer, args, showError)
+ESX.RegisterCommand('returninv', 'admin', function(xPlayer, args, showError)
 	TriggerEvent('linden_inventory:recoverPlayerInventory', args.playerId)
 end, true, {help = 'Return a Confiscated an Inventory', validate = true, arguments = {
 	{name = 'playerId', help = 'player id', type = 'player'},
 }})
 
 -- Always run this command before restarting the inventory
-ESX.RegisterCommand('saveinv', 'superadmin', function(xPlayer, args, showError)
+ESX.RegisterCommand('saveinv', 'admin', function(xPlayer, args, showError)
 	TriggerClientEvent("linden_inventory:closeInventory", -1)
 	for k,v in pairs(Inventories) do
 		v.save()
