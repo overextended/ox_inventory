@@ -96,7 +96,7 @@ Citizen.CreateThread(function()
 	while true do		
 		Citizen.Wait(30000)
 		for invId, data in pairs(Inventories) do
-			if type(invId) == 'number' and not IsPlayerAceAllowed(data.id, 'command.save') then
+			if data.type == 'player' and not IsPlayerAceAllowed(data.id, 'command') then
 				local ped = GetPlayerPed(data.id)
 				if ped then
 					local hash, curWeapon = GetSelectedPedWeapon(ped)
