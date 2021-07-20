@@ -1,6 +1,5 @@
 ESX.PlayerLoaded = false
-local Blips, Drops, Usables, weaponTimer, playerCoords = {}, {}, {}, 0
-local currentDumpster, raycast, currentWeapon, currentDrop = {}, {}
+local Blips, Drops, Usables, weaponTimer, playerCoords, currentWeapon, currentDrop = {}, {}, {}, 0
 cancelled = false
 
 local Raycast = function()
@@ -210,7 +209,7 @@ AddEventHandler('targetPlayerAnim', function()
 	ClearPedSecondaryTask(ESX.PlayerData.ped)
 end)
 
-if Config.bt_target then -- Leah#0001
+if Config.qtarget then -- Leah#0001
 	Citizen.CreateThread(function()
 		local typeConfig = Config.Shops
 		-- Example Shop:
@@ -225,9 +224,9 @@ if Config.bt_target then -- Leah#0001
 			local length, width = typeConfig[i].bt_length or 0.5, typeConfig[i].bt_width or 0.5
 			local minZ, maxZ = typeConfig[i].bt_minZ or 10.0, typeConfig[i].bt_maxZ or 100.0
 			local heading = typeConfig[i].bt_heading or 0.0
-			local distance = typeConfig[i].bt_distance or 6.0
+			local distance = typeConfig[i].bt_distance or 2.0
 
-			exports['bt-target']:AddBoxZone(i .. typeName, typeConfig[i].coords, length, width, {
+			exports['qtarget']:AddBoxZone(i .. typeName, typeConfig[i].coords, length, width, {
 				name=i .. typeName,
 				heading=heading,
 				debugPoly=false,
@@ -249,7 +248,7 @@ if Config.bt_target then -- Leah#0001
 
 		typeConfig = Config.Stashes
 		-- Example Stash:
-		-- { coords = vector3(462.7252, -999.5868, 30.67834), slots = 70, name = 'Test', bt_length = 0.5, bt_width = 3.0, bt_heading = 60.0, bt_distance = 6 },
+		-- { coords = vector3(462.7252, -999.9868, 30.67834), slots = 70, name = 'Test', bt_length = 0.5, bt_width = 3.0, bt_heading = 0.0, bt_distance = 6 },
 		-- To disable specific stashes add: bt_enabled = false to them.
 		for i = 1, #typeConfig, 1 do
 			if (typeConfig[i].bt_enabled == nil or typeConfig[i].bt_enabled) then
@@ -262,9 +261,9 @@ if Config.bt_target then -- Leah#0001
 				local length, width = typeConfig[i].bt_length or 0.5, typeConfig[i].bt_width or 0.5
 				local minZ, maxZ = typeConfig[i].bt_minZ or 10.0, typeConfig[i].bt_maxZ or 100.0
 				local heading = typeConfig[i].bt_heading or 0.0
-				local distance = typeConfig[i].bt_distance or 6.0
+				local distance = typeConfig[i].bt_distance or 2.0
 
-				exports['bt-target']:AddBoxZone(i .. typeName, typeConfig[i].coords, length, width, {
+				exports['qtarget']:AddBoxZone(i .. typeName, typeConfig[i].coords, length, width, {
 					name=i .. typeName,
 					heading=heading,
 					debugPoly=false,
@@ -287,11 +286,11 @@ if Config.bt_target then -- Leah#0001
 		end
 	end)
 end
-RegisterNetEvent('OpenShopTarget')
+
 AddEventHandler('OpenShopTarget',function(data)
 	OpenShop(data.shopid)
 end)
-RegisterNetEvent('OpenStashTarget')
+
 AddEventHandler('OpenStashTarget',function(data)
 	OpenStash(data.stashinfo)
 end)
@@ -885,40 +884,6 @@ TriggerLoops = function()
 			Citizen.Wait(sleep)
 		end
 	end)
-
-	Citizen.CreateThread(function()
-		local entity = 0
-		while ESX.PlayerLoaded do
-			local sleep = 800
-			local result, coords, object, type = Raycast()
-			if result then -- found an object within 3 units
-				local distance = #(playerCoords - coords)
-				if distance > 2.0 then sleep = 600
-				elseif distance > 1.2 then sleep = 400 end
-				local hash = GetEntityModel(object)
-				for k, v in pairs(Config.Dumpsters) do
-					if hash == v then
-						entity = object
-						currentDumpster.id = entity
-						currentDumpster.hash = hash
-						local pos = GetEntityCoords(entity)
-						while true do
-							local result, coords, object = Raycast()
-							if object ~= entity or #(playerCoords - pos) > 1.5 then break end
-							Citizen.Wait(100)
-							pos = GetEntityCoords(object)
-						end
-						entity, currentDumpster = 0, {}
-						break
-					end
-				end
-				if not next(currentDumpster) then
-					raycast.id, raycast.type, raycast.hash = object, type, hash
-				end
-			else raycast = {} end
-			Citizen.Wait(sleep)
-		end
-	end)
 end
 
 local canReload = true
@@ -958,22 +923,33 @@ RegisterCommand('inv2', function()
 	elseif currentInventory then TriggerEvent('linden_inventory:closeInventory')
 	else
 		if not CanOpenInventory() then TriggerEvent('mythic_notify:client:SendAlert', {type = 'error', text = _U('inventory_cannot_open'), length = 2500}) return end
-		if currentDumpster and currentDumpster.id then
-			if not IsEntityAMissionEntity(currentDumpster.id) then
-				SetEntityAsMissionEntity(currentDumpster.id)
-				NetworkRegisterEntityAsNetworked(currentDumpster.id)
-				local netId = NetworkGetNetworkIdFromEntity(currentDumpster.id)
-				SetNetworkIdExistsOnAllMachines(netId, true)
-				SetNetworkIdCanMigrate(netId, true)
-				NetworkSetNetworkIdDynamic(false)
+		if not IsPedInAnyVehicle(ESX.PlayerData.ped, false) then -- trunk
+			local vehicle, vehiclePos
+			local result, coords, object, type = Raycast()
+			if not result then return end
+			if not Config.qtarget then
+				if type == 2 then vehicle, vehiclePos = object, GetEntityCoords(object)
+				elseif type == 3 and func.checktable(Config.Dumpsters, GetEntityModel(object) then
+					if not IsEntityAMissionEntity(object) then 
+						SetEntityAsMissionEntity(object) 
+						NetworkRegisterEntityAsNetworked(object) 
+						local netId = NetworkGetNetworkIdFromEntity(object) 
+						SetNetworkIdExistsOnAllMachines(netId, true) 
+						SetNetworkIdCanMigrate(netId, true) 
+						NetworkSetNetworkIdDynamic(false)
+					end
+					OpenDumpster({ id = NetworkGetNetworkIdFromEntity(object), label = 'Dumpster', slots = 15})	
+				end
+			else
+				local result, coords, object, type = Raycast()
+				if result and type == 2 then
+					vehicle, vehiclePos = object, GetEntityCoords(object)
+				else return end
 			end
-			OpenDumpster({ id = NetworkGetNetworkIdFromEntity(currentDumpster.id), label = 'Dumpster', slots = 15})
-		elseif not IsPedInAnyVehicle(ESX.PlayerData.ped, false) then -- trunk
-			local vehicle, vehiclePos = raycast.id, GetEntityCoords(raycast.id)
 			CloseToVehicle = false
 			lastVehicle = nil
 			local class = GetVehicleClass(vehicle)
-			if vehicle and Config.Trunks[class] and #(playerCoords - vehiclePos) < 6 and NetworkGetEntityIsNetworked(raycast.id) then
+			if vehicle and Config.Trunks[class] and #(playerCoords - vehiclePos) < 6 and NetworkGetEntityIsNetworked(vehicle) then
 				local locked = GetVehicleDoorLockStatus(vehicle)
 				if locked == 0 or locked == 1 then
 					local vehHash = GetEntityModel(vehicle)
