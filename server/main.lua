@@ -281,6 +281,7 @@ AddEventHandler('linden_inventory:openInventory', function(invType, data, player
 				end
 			elseif data.owner then
 				if data.owner == true then data.owner = xPlayer.identifier end
+				if not data.label then data.label = data.id end
 				local id = data.id..'-'..data.owner
 				if not Inventories[id] then
 					if not data.maxWeight then data.maxWeight = data.slots*8000 end
