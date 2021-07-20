@@ -1321,3 +1321,11 @@ Citizen.CreateThread(function()
 		if Server then print(('^2[success]^7 Loaded %s items'):format(count)) end
 	end
 end)
+
+ESX.GetWeaponFromHash = function(weaponHash)
+	for k, v in pairs(Weapons) do
+		if v.hash == weaponHash then
+			return v.name
+		end
+	end
+end
