@@ -363,7 +363,7 @@ HSN.SetupInventory = function(data) {
 			rightinvtype = 'drop'
 			rightmaxWeight = (dropSlots*9000).toFixed(0)
 			righttotalkg = 0
-			rightinvslot = 1
+			rightinvslots = 1
 			for(i = 1; i <= (dropSlots); i++) {
 				$(".inventory-main-rightside").append('<div class="ItemBoxes" inventory-slot='+i+'></div> ')
 			}
@@ -374,7 +374,7 @@ HSN.SetupInventory = function(data) {
 		$('.inventory-main-rightside').data("invTier", "drop")
 		rightinvtype = 'drop'
 		righttotalkg = 0
-		rightinvslot = 1
+		rightinvslots = 1
 	}
 	$(".progressRightLabel").show();
 	if (righttotalkg > 0 || rightinvtype !== 'drop') {$(".progressRightLabel").html(weightFormat(righttotalkg/1000, false, true)+'/'+weightFormat(rightmaxWeight/1000, false))} else {$(".progressRightLabel").hide();}
