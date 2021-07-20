@@ -83,4 +83,30 @@ if Config.RandomLoot and IsDuplicityVersion() then
 		end
 		return returnData
 	end
+elseif Config.qtarget then
+	exports['qtarget']:AddTargetModel(Config.Dumpsters, {
+		options = {
+			{
+				event = "linden_inventory:openDumpster",
+				icon = "fas fa-dumpster",
+				label = "Search Dumpster",
+			},
+		},
+		distance = 2
+	})
+	AddEventHandler('linden_inventory:openDumpster', function()
+		local result, coords, object, type = Raycast()
+		if result and func.checktable(Config.Dumpsters, GetEntityModel(object)) then
+			if not IsEntityAMissionEntity(object) then 
+				SetEntityAsMissionEntity(object) 
+				NetworkRegisterEntityAsNetworked(object) 
+				local netId = NetworkGetNetworkIdFromEntity(object) 
+				SetNetworkIdExistsOnAllMachines(netId, true) 
+				SetNetworkIdCanMigrate(netId, true) 
+				NetworkSetNetworkIdDynamic(false) 
+			end 
+			OpenDumpster({ id = NetworkGetNetworkIdFromEntity(object), label = 'Dumpster', slots = 15}) 
+		end
+	end)
+	
 end
