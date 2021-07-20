@@ -531,7 +531,7 @@ $(document).on("click", ".ItemBoxes", function(e){
 				count: count
 			}));
 		}
-	} else if (keys['Control']) {
+	} else if (keys['Control'] && rightinvtype != 'admin' && rightinvtype != 'shop') {
 		e.preventDefault();
 		let curslot = $(this).attr("inventory-slot");
 		let fromInventory = $(this).parent()
