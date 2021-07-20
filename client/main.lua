@@ -1248,7 +1248,7 @@ UseItem = function(item, esxItem, data)
 		end
 		Citizen.Wait(500)
 		useItemCooldown, canCancel, cancelled = false, false, false
-	end, item.name, item.slot, item.metadata, esxItem)
+	end, item.name, item.slot, esxItem)
 end
 
 if ESX.IsPlayerLoaded() then StartInventory() end

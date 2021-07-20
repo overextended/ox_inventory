@@ -948,20 +948,21 @@ ESX.RegisterServerCallback('linden_inventory:buyLicense', function(source, cb)
 	end
 end)
 
-ESX.RegisterServerCallback('linden_inventory:usingItem', function(source, cb, item, slot, metadata, isESX)
+ESX.RegisterServerCallback('linden_inventory:usingItem', function(source, cb, item, slot, isESX)
 	local xPlayer = ESX.GetPlayerFromId(source)
-	local xItem = getInventoryItem(xPlayer, item, metadata, slot)
+	local xItem = getInventoryItem(xPlayer, item, false, slot)
 	if isESX and xItem.count > 0 then
 		ESX.UseItem(xPlayer.source, xItem.name)
 		cb(false)
 	elseif xItem.count > 0 then
+		xItem = Inventories[xPlayer.source].inventory[slot]
 		if xItem.name:find('WEAPON_') then
-			if xItem.throwable then TriggerClientEvent('linden_inventory:weapon', xPlayer.source, Inventories[xPlayer.source].inventory[slot])
-			elseif metadata.durability > 0 then TriggerClientEvent('linden_inventory:weapon', xPlayer.source, Inventories[xPlayer.source].inventory[slot])
+			if xItem.throwable then TriggerClientEvent('linden_inventory:weapon', xPlayer.source, xItem)
+			elseif xItem.metadata.durability > 0 then TriggerClientEvent('linden_inventory:weapon', xPlayer.source, xItem)
 			else TriggerClientEvent('mythic_notify:client:SendAlert', xPlayer.source, { type = 'error', text = _U('weapon_broken') }) end
 			cb(false)
 		elseif xItem.name:find('ammo-') then
-			TriggerClientEvent('linden_inventory:addAmmo', xPlayer.source, Inventories[xPlayer.source].inventory[slot])
+			TriggerClientEvent('linden_inventory:addAmmo', xPlayer.source, xItem)
 			cb(false)
 		else
 			local consume = Items[xItem.name].consume
