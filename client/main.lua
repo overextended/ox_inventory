@@ -1,5 +1,34 @@
-local Blips, Drops, Usables, weaponTimer, currentDrop, currentWeapon = {}, {}, {}, 0
+ESX.PlayerLoaded = false
+local Blips, Drops, Usables, weaponTimer, playerCoords, currentWeapon, currentDrop = {}, {}, {}, 0
 cancelled = false
+
+local Raycast = function()
+	local plyOffset = GetOffsetFromEntityInWorldCoords(ESX.PlayerData.ped, 0.0, 3.0, -0.05)
+	local ret, hit, coords, surfacenormal, entity = GetShapeTestResult(StartShapeTestRay(playerCoords.x, playerCoords.y, playerCoords.z, plyOffset.x, plyOffset.y, plyOffset.z, -1, ESX.PlayerData.ped, 0))
+	local type = GetEntityType(entity)
+	if hit and type ~= 0 then return hit, coords, entity, type else	return false end
+end
+
+local DrawText3D = function(coords, text)
+	SetDrawOrigin(coords)
+	SetTextScale(0.35, 0.35)
+	SetTextFont(4)
+	SetTextEntry('STRING')
+	SetTextCentre(1)
+	AddTextComponentString(text)
+	DrawText(0.0, 0.0)
+	DrawRect(0.0, 0.0125, 0.02 + text:gsub('~.-~', ''):len() / 360, 0.03, 25, 25, 25, 140)
+	ClearDrawOrigin()
+end
+
+local DrawHelp3D = function(coords, text)
+	text:gsub('~.-~', '')
+	AddTextEntry(GetCurrentResourceName(), text)
+	BeginTextCommandDisplayHelp(GetCurrentResourceName())
+	EndTextCommandDisplayHelp(2, false, false, -1)
+	SetFloatingHelpTextWorldPosition(1, coords)
+	SetFloatingHelpTextStyle(1, 1, 2, -1, 3, 0)
+end
 
 ClearWeapons = function()
 	for k, v in pairs(Weapons) do
@@ -30,50 +59,98 @@ DisarmPlayer = function(weapon)
 	TriggerEvent('linden_inventory:currentWeapon', nil)
 end
 
+RegisterNetEvent('esx:playerLoaded')
+AddEventHandler('esx:playerLoaded', function(xPlayer)
+	StartInventory()
+end)
+
+RegisterNetEvent('esx:onPlayerLogout')
+AddEventHandler('esx:onPlayerLogout', function()
+	if parachute then ESX.Game.DeleteObject(parachute) parachute = false end
+	DisarmPlayer() TriggerEvent('linden_inventory:closeInventory')
+	ESX.PlayerLoaded = false
+end)
+
+OnPlayerData = function(key, val)
+	if key == 'dead' and val == true then
+		DisarmPlayer() TriggerEvent('linden_inventory:closeInventory')
+	end
+end
+
+RegisterNetEvent('esx_policejob:handcuff')
+AddEventHandler('esx_policejob:handcuff', function()
+	isCuffed = not isCuffed
+	if isCuffed then DisarmPlayer() TriggerEvent('linden_inventory:closeInventory') end
+end)
+
+RegisterNetEvent('esx_policejob:unrestrain')
+AddEventHandler('esx_policejob:unrestrain', function()
+	isCuffed = false
+	TriggerEvent('linden_inventory:closeInventory')
+end)
+
 StartInventory = function()
-	playerID, invOpen, ESX.PlayerData.dead, isCuffed, isBusy, usingWeapon, currentDrop = nil, false, false, false, false, false, nil
-	ESX.TriggerServerCallback('linden_inventory:setup', function(data)
-		ESX.PlayerData = ESX.GetPlayerData()
-		ESX.SetPlayerData('inventory', data.inventory)
-		ESX.SetPlayerData('weight', data.weight)
-		playerCoords = GetEntityCoords(ESX.PlayerData.ped)
-		playerID = GetPlayerServerId(PlayerId())
-		playerName = data.name
-		Drops = data.drops
-		Usables = data.usables
-		inventoryLabel = playerName..' ['..playerID..'] '--[[..ESX.PlayerData.job.grade_label]]
-		PlayerLoaded = true
-		SetWeaponsNoAutoreload(true)
-		ClearWeapons()
-		TriggerEvent('mythic_notify:client:SendAlert', {type = 'inform', text = _U('inventory_setup'), length = 2500})
-		TriggerLoops()
-		if next(Blips) then
-			for k, v in pairs(Blips) do
-				RemoveBlip(v)
+	playerID, invOpen, ESX.PlayerData.dead, isBusy, usingWeapon, currentDrop = nil, false, false, false, false, nil
+	ClearWeapons()
+	SetTimeout(500, function()
+		ESX.TriggerServerCallback('linden_inventory:setup', function(data)
+			ESX.PlayerData = ESX.GetPlayerData()
+			ESX.PlayerData.inventory = data.inventory
+			ESX.SetPlayerData('inventory', data.inventory)
+			ESX.SetPlayerData('weight', data.weight)
+			playerCoords = GetEntityCoords(ESX.PlayerData.ped)
+			playerID = GetPlayerServerId(PlayerId())
+			playerName = data.name
+			Drops = data.drops
+			Usables = data.usables
+			inventoryLabel = playerName..' ['..playerID..'] '--[[..ESX.PlayerData.job.grade_label]]
+			ClearWeapons()
+			local msg = _U('inventory_setup')
+			print(msg)
+			TriggerEvent('mythic_notify:client:SendAlert', {type = 'inform', text = msg, length = 2500})
+			ESX.PlayerLoaded = true
+			TriggerLoops()
+			if next(Blips) then
+				for k, v in pairs(Blips) do
+					RemoveBlip(v)
+				end
+				Blips = {}
 			end
-			Blips = {}
-		end
-		for k, v in pairs(Config.Shops) do
-			if not v.type then v.type = Config.General end
-			if v.type and v.type.blip and (not v.job or v.job == ESX.PlayerData.job.name) then
-				local data = v.type
-				Blips[k] = AddBlipForCoord(v.coords.x, v.coords.y, v.coords.z)
-				SetBlipSprite(Blips[k], data.blip.id)
-				SetBlipDisplay(Blips[k], 4)
-				SetBlipScale(Blips[k], data.blip.scale)
-				SetBlipColour(Blips[k], data.blip.colour)
-				SetBlipAsShortRange(Blips[k], true)
-				BeginTextCommandSetBlipName('STRING')
-				AddTextComponentString(data.name)
-				EndTextCommandSetBlipName(Blips[k])
+			for k, v in pairs(Config.Shops) do
+				if not v.type then v.type = Config.General end
+				if v.type and v.type.blip and (not v.job or v.job == ESX.PlayerData.job.name) then
+					local data = v.type
+					Blips[k] = AddBlipForCoord(v.coords.x, v.coords.y, v.coords.z)
+					SetBlipSprite(Blips[k], data.blip.id)
+					SetBlipDisplay(Blips[k], 4)
+					SetBlipScale(Blips[k], data.blip.scale)
+					SetBlipColour(Blips[k], data.blip.colour)
+					SetBlipAsShortRange(Blips[k], true)
+					BeginTextCommandSetBlipName('STRING')
+					AddTextComponentString(data.name)
+					EndTextCommandSetBlipName(Blips[k])
+				end
 			end
-		end
+			RegisterKeyMapping('inv', 'Open player inventory~', 'keyboard', Keybind.Primary)
+			RegisterKeyMapping('inv2', 'Open secondary inventory~', 'keyboard', Keybind.Secondary)
+			RegisterKeyMapping('hotbar', 'Display inventory hotbar~', 'keyboard', Keybind.Hotbar)
+			RegisterKeyMapping('reload', 'Reload weapon~', 'keyboard', 'r')
+			for i=1, 5 do
+				RegisterCommand('hotkey'..i, function() Hotkey(i) end)
+				RegisterKeyMapping('hotkey'..i, 'Use hotbar item '..i..'~', 'keyboard', i)
+			end
+		end)
 	end)
 end
-if ESX.IsPlayerLoaded() then StartInventory() end
+
+Hotkey = function(slot)
+	if ESX.PlayerLoaded and not invOpen and ESX.PlayerData.inventory[slot] then
+		TriggerEvent('linden_inventory:useItem', ESX.PlayerData.inventory[slot])
+	end
+end
 
 CanOpenInventory = function()
-	if PlayerLoaded and not isBusy and weaponTimer < 250 and not ESX.PlayerData.dead and not isCuffed and not IsPauseMenuActive() and not IsPedDeadOrDying(ESX.PlayerData.ped, 1) then
+	if ESX.PlayerLoaded and not isBusy and weaponTimer < 50 and not ESX.PlayerData.dead and not isCuffed and not IsPauseMenuActive() and not IsPedDeadOrDying(ESX.PlayerData.ped, 1) then
 		return true
 	else return false end
 end
@@ -109,18 +186,6 @@ OpenTargetInventory = function(target)
 end
 exports('OpenTargetInventory', OpenTargetInventory)
 
-DrawText3D = function(coords, text)
-	SetDrawOrigin(coords)
-	SetTextScale(0.35, 0.35)
-	SetTextFont(4)
-	SetTextEntry('STRING')
-	SetTextCentre(1)
-	AddTextComponentString(text)
-	DrawText(0.0, 0.0)
-	DrawRect(0.0, 0.0125, 0.02 + text:gsub('~.-~', ''):len() / 360, 0.03, 25, 25, 25, 140)
-	ClearDrawOrigin()
-end
-
 loadAnimDict = function(dict)
 	while not HasAnimDictLoaded(dict) do
 		RequestAnimDict(dict)
@@ -144,18 +209,26 @@ AddEventHandler('targetPlayerAnim', function()
 	ClearPedSecondaryTask(ESX.PlayerData.ped)
 end)
 
-Citizen.CreateThread(function()
-	for i = 1, #Config.Shops, 1 do
-		if (Config.Shops[i].type ~= nil and Config.bt_target) then
-			local jobAccess = {"all"}
-			if (Config.Shops[i].job) then jobAccess = { Config.Shops[i].job } end
-			local length, width = Config.Shops[i].bt_length or 0.5, Config.Shops[i].bt_width or 0.5
-			local minZ, maxZ = 29.8, 32.0
-			local minZ, maxZ = Config.Shops[i].bt_minZ or 29.8, Config.Shops[i].maxZ or 32.0
+if Config.qtarget then -- Leah#0001
+	Citizen.CreateThread(function()
+		local typeConfig = Config.Shops
+		-- Example Shop:
+		-- { type = Config.PoliceArmoury, job = 'police', coords = vector3(487.235, -997.108, 30.69), bt_length = 0.5, bt_width = 3.0, bt_heading = 60.0, bt_distance = 6 },
+		for i = 1, #typeConfig, 1 do
+			local typeName = i
+			if (typeConfig[i].type == nil) then
+				typeName = typeConfig[i].name or math.random(1, 10000)
+			else
+				typeName = typeConfig[i].type['name']
+			end
+			local length, width = typeConfig[i].bt_length or 0.5, typeConfig[i].bt_width or 0.5
+			local minZ, maxZ = typeConfig[i].bt_minZ or 10.0, typeConfig[i].bt_maxZ or 100.0
+			local heading = typeConfig[i].bt_heading or 0.0
+			local distance = typeConfig[i].bt_distance or 2.0
 
-			exports['bt-target']:AddBoxZone(Config.Shops[i].type['name'], Config.Shops[i].coords, length, width, {
-				name=Config.Shops[i].type['name'],
-				heading=90,
+			exports['qtarget']:AddBoxZone(i .. typeName, typeConfig[i].coords, length, width, {
+				name=i .. typeName,
+				heading=heading,
 				debugPoly=false,
 				minZ=minZ,
 				maxZ=maxZ
@@ -164,20 +237,62 @@ Citizen.CreateThread(function()
 					{
 						event = "OpenShopTarget",
 						icon = "fas fa-shopping-basket",
-						label = "Open " .. Config.Shops[i].type['name'],
+						label = "Open " .. typeName,
 						shopid = i,
+						job = typeConfig[i].job,
 					},
 				},
-				job = jobAccess,
-				distance = 6.0
+				distance = distance
 			})
 		end
-   end
-end)
 
-RegisterNetEvent('OpenShopTarget')
+		typeConfig = Config.Stashes
+		-- Example Stash:
+		-- { coords = vector3(462.7252, -999.9868, 30.67834), slots = 70, name = 'Test', bt_length = 0.5, bt_width = 3.0, bt_heading = 0.0, bt_distance = 6 },
+		-- To disable specific stashes add: bt_enabled = false to them.
+		for i = 1, #typeConfig, 1 do
+			if (typeConfig[i].bt_enabled == nil or typeConfig[i].bt_enabled) then
+				local typeName = i
+				if (typeConfig[i].type == nil) then
+					typeName = typeConfig[i].name or math.random(1, 10000)
+				else
+					typeName = typeConfig[i].type['name']
+				end
+				local length, width = typeConfig[i].bt_length or 0.5, typeConfig[i].bt_width or 0.5
+				local minZ, maxZ = typeConfig[i].bt_minZ or 10.0, typeConfig[i].bt_maxZ or 100.0
+				local heading = typeConfig[i].bt_heading or 0.0
+				local distance = typeConfig[i].bt_distance or 2.0
+
+				exports['qtarget']:AddBoxZone(i .. typeName, typeConfig[i].coords, length, width, {
+					name=i .. typeName,
+					heading=heading,
+					debugPoly=false,
+					minZ=minZ,
+					maxZ=maxZ
+				}, {
+					options = {
+						{
+							event = "OpenStashTarget",
+							icon = "fas fa-toggle-on",
+							label = "Open " .. typeName,
+							stashinfo = {id = typeConfig[i].name, slots = typeConfig[i].slots, job = typeConfig[i].job, owner = typeConfig[i].owner},
+							job = typeConfig[i].job,
+						},
+					},
+					
+					distance = distance
+				})
+			end
+		end
+	end)
+end
+
 AddEventHandler('OpenShopTarget',function(data)
 	OpenShop(data.shopid)
+end)
+
+AddEventHandler('OpenStashTarget',function(data)
+	OpenStash(data.stashinfo)
 end)
 
 OpenShop = function(id)
@@ -411,13 +526,14 @@ end
 RegisterNetEvent('linden_inventory:weapon')
 AddEventHandler('linden_inventory:weapon', function(item)
 	if not isBusy and item and not IsPedFalling(ESX.PlayerData.ped) and not IsPedRagdoll(ESX.PlayerData.ped) then
+		if currentWeapon then TriggerServerEvent('linden_inventory:updateWeapon', currentWeapon) end
 		TriggerEvent('linden_inventory:busy', true)
 		useItemCooldown = true
 		local newWeapon = item.metadata.serial
 		local found, wepHash = GetCurrentPedWeapon(ESX.PlayerData.ped, true)
-		if wepHash == -1569615261 then currentWeapon = nil end
+		if not found or wepHash == -1569615261 then currentWeapon = nil end
 		wepHash = item.hash or GetHashKey(item.name)
-		if currentWeapon and (currentWeapon.metadata.serial == newWeapon or currentWeapon.name == item.name) then
+		if currentWeapon and (currentWeapon.metadata.serial == newWeapon and currentWeapon.name == item.name) then
 			HolsterWeapon(item)
 			TriggerEvent('linden_inventory:currentWeapon', nil)
 		else
@@ -436,8 +552,7 @@ AddEventHandler('linden_inventory:weapon', function(item)
 					if componentHash then GiveWeaponComponentToPed(ESX.PlayerData.ped, currentWeapon.hash, componentHash) end
 				end
 			end
-			SetAmmoInClip(ESX.PlayerData.ped, currentWeapon.hash, item.metadata.ammo)
-			if currentWeapon.name == 'WEAPON_FIREEXTINGUISHER' or currentWeapon.name == 'WEAPON_PETROLCAN' then SetAmmoInClip(ESX.PlayerData.ped, currentWeapon.hash, 10000) end
+			SetAmmoInClip(ESX.PlayerData.ped, currentWeapon.hash, item.metadata.ammo or 10000)
 		end
 		ClearPedSecondaryTask(ESX.PlayerData.ped)
 		TriggerEvent('linden_inventory:busy', false)
@@ -446,7 +561,7 @@ AddEventHandler('linden_inventory:weapon', function(item)
 end)
 
 AddEventHandler('linden_inventory:usedWeapon',function()
-	weaponTimer = (100 * 5)
+	weaponTimer = 350
 end)
 
 AddEventHandler('linden_inventory:currentWeapon', function(weapon)
@@ -477,17 +592,31 @@ AddEventHandler('linden_inventory:addAmmo', function(ammo)
 				isBusy, useItemCooldown = true, true
 				local newAmmo = 0
 				if curAmmo < maxAmmo then missingAmmo = maxAmmo - curAmmo end
-				if missingAmmo > ammo.count then newAmmo = ammo.count + curAmmo
-				else newAmmo = maxAmmo end
-				if newAmmo < 0 then newAmmo = 0 end
+				if missingAmmo > ammo.count then newAmmo = ammo.count + curAmmo else newAmmo = maxAmmo end
+				if newAmmo < 0 then newAmmo = 0 end	
 				SetPedAmmo(ESX.PlayerData.ped, currentWeapon.hash, newAmmo)
 				MakePedReload(ESX.PlayerData.ped)
+				currentWeapon.metadata.ammo = newAmmo
 				TriggerServerEvent('linden_inventory:addweaponAmmo', currentWeapon, curAmmo, newAmmo)
 				Citizen.Wait(100)
 				isBusy, useItemCooldown = false, false
 			end
 		else
 			TriggerEvent('mythic_notify:client:SendAlert', {type = 'error', text = _U('wrong_ammo', currentWeapon.label, ammo.label), length = 2500})
+		end
+	end
+end)
+
+RegisterNetEvent('linden_inventory:update')
+AddEventHandler('linden_inventory:update',function(data)
+	local inventory = ESX.PlayerData.inventory
+	inventory[data[1]] = data[2]
+	if data[3] then inventory[data[3]] = data[4] end
+	if currentWeapon and data[2] then
+		local slot
+		if data[2].serial == currentWeapon.serial then slot = data[1] elseif data[4].serial == currentWeapon.serial then slot = data[3] end
+		if slot then currentWeapon.slot = slot
+			TriggerEvent('linden_inventory:currentWeapon', currentWeapon)
 		end
 	end
 end)
@@ -535,7 +664,7 @@ TriggerLoops = function()
 		local Disable = {37, 157, 158, 160, 164, 165, 289, 80}
 		local Disable2 = {23, 24, 25, 142, 257, 140, 141, 142}
 		local wait = false
-		while PlayerLoaded do
+		while ESX.PlayerLoaded do
 			HideHudComponentThisFrame(19)
 			HideHudComponentThisFrame(20)
 			for i=1, #Disable, 1 do
@@ -580,6 +709,9 @@ TriggerLoops = function()
 								weaponTimer = 0
 								TriggerServerEvent('linden_inventory:reloadWeapon', currentWeapon)
 							end
+							ClearPedTasks(ESX.PlayerData.ped)
+							SetCurrentPedWeapon(ESX.PlayerData.ped, currentWeapon.hash, false)
+							SetPedCurrentWeaponVisible(ESX.PlayerData.ped, true, false, false, false)
 						else TriggerEvent('linden_inventory:usedWeapon', currentWeapon) end
 					end
 				else
@@ -592,7 +724,7 @@ TriggerLoops = function()
 							DisarmPlayer()
 							wait = false
 						end)
-					elseif currentWeapon.durability and not wait and IsPedInMeleeCombat(ESX.PlayerData.ped) and IsControlPressed(0, 24) then
+					elseif currentWeapon.durability and not wait and IsPedArmed(ESX.PlayerData.ped, 1) and IsControlPressed(0, 24) then
 						usingWeapon = true
 						Citizen.CreateThread(function()
 							wait = true
@@ -610,31 +742,32 @@ TriggerLoops = function()
 
 	Citizen.CreateThread(function()
 		local text, type, id = ''
-		while PlayerLoaded do
+		while ESX.PlayerLoaded do
 			local sleep = 250
-			if IsPedInAnyVehicle(ESX.PlayerData.ped, false) then SetPedCanSwitchWeapon(ESX.PlayerData.ped, true) else SetPedCanSwitchWeapon(ESX.PlayerData.ped, false) end
-			playerCoords = GetEntityCoords(ESX.PlayerData.ped)
 			if not invOpen then
+				playerCoords = GetEntityCoords(ESX.PlayerData.ped)
 				if not Config.bt_target and not id or type == 'shop' then
 					if id then
 						sleep = 5
 						closestShop = id
 						DrawMarker(2, Config.Shops[id].coords.x,Config.Shops[id].coords.y,Config.Shops[id].coords.z, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.3, 0.2, 0.15, 30, 150, 30, 222, false, false, false, true, false, false, false)			
 						local distance = #(playerCoords - Config.Shops[id].coords)
+						local range = Config.Shops[id].distance or 4
 						local name = Config.Shops[id].name or Config.Shops[id].type.name
 						if distance <= 1 then text='[~g~E~s~] '..name
 							if IsControlJustPressed(0, 38) then
 								OpenShop(id)
 							end
-						elseif distance > 4 then id, type = nil, nil
+						elseif distance > range then id, type = nil, nil
 						else text = Config.Shops[id].name or Config.Shops[id].type.name end
 						if distance <= 2 then DrawText3D(Config.Shops[id].coords, text) end
 					else
 						closestShop = nil
 						for k, v in pairs(Config.Shops) do
-							if not id and v.coords and (not v.job or v.job == ESX.PlayerData.job.name) then
+							if not id and v.coords and (not v.job or v.job == ESX.PlayerData.job.name) and (not v.grade or v.grade <= ESX.PlayerData.job.grade) then
 								local distance = #(playerCoords - v.coords)
-								if distance <= 4 then
+								local range = v.distance or 4
+								if distance <= range then
 									sleep = 10
 									id = k
 									type = 'shop'
@@ -648,18 +781,20 @@ TriggerLoops = function()
 						sleep = 5
 						DrawMarker(2, Config.Stashes[id].coords.x,Config.Stashes[id].coords.y,Config.Stashes[id].coords.z, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.3, 0.2, 0.15, 30, 30, 150, 222, false, false, false, true, false, false, false)			
 						local distance = #(playerCoords - Config.Stashes[id].coords)
+						local range = Config.Stashes[id].distance or 4
 						if distance <= 1 then text='[~g~E~s~] '..Config.Stashes[id].name
 							if IsControlJustPressed(0, 38) then
 								OpenStash(Config.Stashes[id])
 							end
-						elseif distance > 4 then id, type = nil, nil
+						elseif distance > range then id, type = nil, nil
 						else text = Config.Stashes[id].name end
 						if distance <= 2 then DrawText3D(Config.Stashes[id].coords, text) end
 					else
 						for k, v in pairs(Config.Stashes) do
-							if not id and v.coords and (not v.job or v.job == ESX.PlayerData.job.name) then
+							if not id and v.coords and (not v.job or v.job == ESX.PlayerData.job.name) and (not v.grade or v.grade <= ESX.PlayerData.job.grade) then
 								local distance = #(playerCoords - v.coords)
-								if distance <= 4 then
+								local range = v.distance or 4
+								if distance <= range then
 									sleep = 10
 									id = k
 									type = 'stash'
@@ -718,6 +853,7 @@ TriggerLoops = function()
 					end
 				end
 			else
+				playerCoords = GetEntityCoords(ESX.PlayerData.ped)
 				sleep = 100
 				if currentInventory then
 					if currentInventory.type == 'player' then
@@ -726,10 +862,11 @@ TriggerLoops = function()
 						local pedCoords = GetEntityCoords(ped)
 						local dist = #(playerCoords - pedCoords)
 						if not id or dist > 1.8 then
-							if (ESX.PlayerData.job.name == 'police' and dist > 1.8) or not CanOpenTarget(ped) then
-								TriggerEvent('linden_inventory:closeInventory')
-								TriggerEvent('mythic_notify:client:SendAlert', {type = 'error', text = _U('inventory_lost_access'), length = 2500})
-							end
+							TriggerEvent('linden_inventory:closeInventory')
+							TriggerEvent('mythic_notify:client:SendAlert', {type = 'error', text = _U('inventory_lost_access'), length = 2500})
+						elseif not ESX.PlayerData.job.name == 'police' and not CanOpenTarget(ped) then
+							TriggerEvent('linden_inventory:closeInventory')
+							TriggerEvent('mythic_notify:client:SendAlert', {type = 'error', text = _U('inventory_lost_access'), length = 2500})
 						else
 							TaskTurnPedToFaceCoord(ESX.PlayerData.ped, pedCoords)
 						end
@@ -747,40 +884,6 @@ TriggerLoops = function()
 			Citizen.Wait(sleep)
 		end
 	end)
-
-	Citizen.CreateThread(function()
-		while PlayerLoaded do
-			local sleep = 1000
-				if id then
-					sleep = 5
-					local distance = #(playerCoords - GetEntityCoords(id))
-					if distance <= 2 then
-						NetworkRegisterEntityAsNetworked(id)
-						local netid = NetworkGetNetworkIdFromEntity(id)
-						SetNetworkIdExistsOnAllMachines(netid)
-						NetworkSetNetworkIdDynamic(netid, false)
-						if IsControlJustPressed(0, 38) then
-							OpenDumpster({ id = netid, label = 'Dumpster', slots = 20})
-						end
-					elseif distance > 1.5 then id = nil
-					end
-				else
-					for i=1, #Config.Dumpsters do 
-						if not id then
-							local dumpster = GetClosestObjectOfType(playerCoords.x, playerCoords.y, playerCoords.z, 2.0, Config.Dumpsters[i], false, false, false)
-							local dumpPos = GetEntityCoords(dumpster)
-							local distance = #(playerCoords - dumpPos)
-							if distance <= 1.5 and dumpster ~= 0 then
-								sleep = 100
-								id = dumpster
-							end
-						end
-					end
-				end
-			Citizen.Wait(sleep)
-		end
-	end)
-
 end
 
 local canReload = true
@@ -794,7 +897,6 @@ RegisterCommand('reload', function()
 		canReload = true
 	end
 end)
-RegisterKeyMapping('reload', 'Reload weapon', 'keyboard', 'r')
 
 RegisterCommand('inv', function()
 	if isBusy then TriggerEvent('mythic_notify:client:SendAlert', {type = 'error', text = _U('inventory_cannot_open'), length = 2500})
@@ -815,20 +917,41 @@ RegisterCommand('inv', function()
 	end
 end)
 
-RegisterCommand('vehinv', function()
+RegisterCommand('inv2', function()
 	if invOpen then return end
 	if isBusy then TriggerEvent('mythic_notify:client:SendAlert', {type = 'error', text = _U('inventory_cannot_open'), length = 2500})
 	elseif currentInventory then TriggerEvent('linden_inventory:closeInventory')
 	else
 		if not CanOpenInventory() then TriggerEvent('mythic_notify:client:SendAlert', {type = 'error', text = _U('inventory_cannot_open'), length = 2500}) return end
 		if not IsPedInAnyVehicle(ESX.PlayerData.ped, false) then -- trunk
-			local vehicle, vehiclePos = ESX.Game.GetVehicleInDirection()
-			if not vehiclePos then vehiclePos = GetEntityCoords(vehicle) end
+			local vehicle, vehiclePos
+			local result, coords, object, type = Raycast()
+			if not result then return end
+			if not Config.qtarget then
+				if type == 2 then vehicle, vehiclePos = object, GetEntityCoords(object)
+				elseif type == 3 and func.checktable(Config.Dumpsters, GetEntityModel(object)) then
+					if not IsEntityAMissionEntity(object) then 
+						SetEntityAsMissionEntity(object) 
+						NetworkRegisterEntityAsNetworked(object) 
+						local netId = NetworkGetNetworkIdFromEntity(object) 
+						SetNetworkIdExistsOnAllMachines(netId, true) 
+						SetNetworkIdCanMigrate(netId, true) 
+						NetworkSetNetworkIdDynamic(false)
+					end
+					OpenDumpster({ id = NetworkGetNetworkIdFromEntity(object), label = 'Dumpster', slots = 15})	
+				end
+			else
+				local result, coords, object, type = Raycast()
+				if result and type == 2 then
+					vehicle, vehiclePos = object, GetEntityCoords(object)
+				else return end
+			end
 			CloseToVehicle = false
 			lastVehicle = nil
 			local class = GetVehicleClass(vehicle)
-			if vehicle and Config.Trunks[class] and #(playerCoords - vehiclePos) < 6 then
-				if GetVehicleDoorLockStatus(vehicle) == 1 then
+			if vehicle and Config.Trunks[class] and #(playerCoords - vehiclePos) < 6 and NetworkGetEntityIsNetworked(vehicle) then
+				local locked = GetVehicleDoorLockStatus(vehicle)
+				if locked == 0 or locked == 1 then
 					local vehHash = GetEntityModel(vehicle)
 					local checkVehicle = Config.VehicleStorage[vehHash]
 					if checkVehicle == 1 then open, vehBone = 4, GetEntityBoneIndexByName(vehicle, 'bonnet')
@@ -843,7 +966,7 @@ RegisterCommand('vehinv', function()
 					if (open == 5 and checkVehicle == nil) then if pedDistance < 2.0 then CloseToVehicle = true end elseif (open == 5 and checkVehicle == 2) then if pedDistance < 2.0 then CloseToVehicle = true end elseif open == 4 then if pedDistance < 2.0 then CloseToVehicle = true end end	
 					if CloseToVehicle then
 						local plate = GetVehicleNumberPlateText(vehicle)
-						if Config.TrimPlate then plate = ESX.Math.Trim(plate) end
+						if Config.TrimPlate then plate = func.trim(plate) end
 						TaskTurnPedToFaceCoord(ESX.PlayerData.ped, vehiclePos)
 						lastVehicle = vehicle
 						OpenTrunk(plate, class)
@@ -893,17 +1016,19 @@ RegisterCommand('vehinv', function()
 			end
 		elseif IsPedInAnyVehicle(ESX.PlayerData.ped, false) then -- glovebox
 			local vehicle = GetVehiclePedIsIn(ESX.PlayerData.ped, false)
-			local plate = GetVehicleNumberPlateText(vehicle)
-			if Config.TrimPlate then plate = ESX.Math.Trim(plate) end
-			local class = GetVehicleClass(vehicle)
-			OpenGloveBox(plate, class)
-			Citizen.Wait(100)
-			while true do
+			if NetworkGetEntityIsNetworked(vehicle) then
+				local plate = GetVehicleNumberPlateText(vehicle)
+				if Config.TrimPlate then plate = func.trim(plate) end
+				local class = GetVehicleClass(vehicle)
+				OpenGloveBox(plate, class)
 				Citizen.Wait(100)
-				if not invOpen then break
-				elseif not IsPedInAnyVehicle(ESX.PlayerData.ped, false) then
-					TriggerEvent('linden_inventory:closeInventory')
-					break
+				while true do
+					Citizen.Wait(100)
+					if not invOpen then break
+					elseif not IsPedInAnyVehicle(ESX.PlayerData.ped, false) then
+						TriggerEvent('linden_inventory:closeInventory')
+						break
+					end
 				end
 			end
 		end
@@ -911,7 +1036,7 @@ RegisterCommand('vehinv', function()
 end)
 
 RegisterCommand('hotbar', function()
-	if PlayerLoaded then
+	if ESX.PlayerLoaded then
 		local data = {}
 		for i=1, 5 do
 			if ESX.PlayerData.inventory[i] then data[i] = ESX.PlayerData.inventory[i] end
@@ -922,10 +1047,6 @@ RegisterCommand('hotbar', function()
 		})
 	end
 end)
-RegisterKeyMapping('hotbar', 'Display inventory hotbar', 'keyboard', 'tab')
-		
-RegisterKeyMapping('inv', 'Open player inventory', 'keyboard', Config.InventoryKey)
-RegisterKeyMapping('vehinv', 'Open vehicle inventory', 'keyboard', Config.VehicleInventoryKey)
 
 RegisterCommand('steal', function() OpenTargetInventory() end)
 
@@ -1041,37 +1162,17 @@ AddEventHandler('linden_inventory:useItem', function(item)
 	end
 end)
 
-Hotkey = function(slot)
-	if PlayerLoaded and not invOpen and not wait and ESX.PlayerData.inventory[slot] then
-		TriggerEvent('linden_inventory:useItem', ESX.PlayerData.inventory[slot])
-	end
-end
-
-RegisterCommand('hotkey1', function() Hotkey(1) end)
-RegisterCommand('hotkey2', function() Hotkey(2) end)
-RegisterCommand('hotkey3', function() Hotkey(3) end)
-RegisterCommand('hotkey4', function() Hotkey(4) end)
-RegisterCommand('hotkey5', function() Hotkey(5) end)
-
-RegisterKeyMapping('hotkey1', 'Use hotbar item 1', 'keyboard', '1')
-RegisterKeyMapping('hotkey2', 'Use hotbar item 2', 'keyboard', '2')
-RegisterKeyMapping('hotkey3', 'Use hotbar item 3', 'keyboard', '3')
-RegisterKeyMapping('hotkey4', 'Use hotbar item 4', 'keyboard', '4')
-RegisterKeyMapping('hotkey5', 'Use hotbar item 5', 'keyboard', '5')
-
 local canCancel = false
 RegisterCommand('cancelitem', function()
 	if useItemCooldown then
 		TriggerEvent("mythic_progbar:client:cancel")
 	end
 end)
-RegisterKeyMapping('cancelitem', 'Cancel item use', 'keyboard', 'x')
 
 UseItem = function(item, esxItem, data)
 	useItemCooldown = true
 	ESX.TriggerServerCallback('linden_inventory:usingItem', function(xItem)
 		if xItem and data then
-			isBusy = true
 			if data.usetime > 0 then
 				if data.cancel then canCancel = true end
 				local disable = {
@@ -1121,6 +1222,8 @@ UseItem = function(item, esxItem, data)
 			end
 		end
 		Citizen.Wait(500)
-		useItemCooldown, isBusy, canCancel, cancelled = false, false, false, false
-	end, item.name, item.slot, item.metadata, esxItem)
+		useItemCooldown, canCancel, cancelled = false, false, false
+	end, item.name, item.slot, esxItem)
 end
+
+if ESX.IsPlayerLoaded() then StartInventory() end

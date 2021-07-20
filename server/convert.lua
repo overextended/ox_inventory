@@ -20,6 +20,7 @@ local currentCount = 0
 local identifier = {}
 local inventory = {}
 local loadout = {}
+local accounts = {}
 
 local Print = function(l1, l2)
 	print('^8	=================================================================^0')
@@ -43,15 +44,16 @@ end, true)
 
 RetrieveUsers = function()
 	running = true
-	local result = exports.ghmattimysql:executeSync('SELECT identifier, inventory, loadout FROM users', {})
+	local result = exports.ghmattimysql:executeSync('SELECT identifier, inventory, loadout, accounts FROM users', {})
 	if result then
 		for k, v in pairs(result) do
-			if (v.inventory ~= nil and v.inventory ~= '' and v.inventory ~= '[]') or (v.loadout ~= nil and v.loadout ~= '' and v.loadout ~= '[]') then
+			if (v.inventory ~= nil and v.inventory ~= '' and v.inventory ~= '[]') or (v.loadout ~= nil and v.loadout ~= '' and v.loadout ~= '[]') or (v.accounts ~= nil and v.accounts ~= '' and v.accounts ~= '[]') then
 				if v.inventory:find('"slot":') == nil then
 					local count = #identifier+1
 					identifier[count] = v.identifier
 					if v.inventory then inventory[count] = json.decode(v.inventory) end
 					if v.loadout then loadout[count] = json.decode(v.loadout) end
+					if v.accounts then accounts[count] = json.decode(v.accounts) end
 				end
 			end
 		end
@@ -73,8 +75,17 @@ local newInventory = {}
 BeginConversion = function()
 	for i=1, #identifier do
 		local newInv = {}
-		Citizen.Wait(50)
 		local loop = 0
+		if accounts[i] then
+			for k, v in pairs(accounts[i]) do
+				local xItem = Items[k]
+				if xItem and v > 0 then
+					loop = loop + 1
+					v = {slot=loop, name=k, count=v}
+					newInv[loop] = v
+				end
+			end
+		end
 		if loadout[i] then
 			for k, v in pairs(loadout[i]) do
 				local xItem = Items[k]
@@ -89,8 +100,8 @@ BeginConversion = function()
 						if not v.metadata.components then v.metadata.components = {} end
 						v.metadata.serial = GenerateSerial()
 					end
+					newInv[loop] = v
 				end
-				newInv[loop] = v
 			end
 		end
 		if inventory[i] then
@@ -98,18 +109,19 @@ BeginConversion = function()
 				local xItem = Items[k]
 				if xItem and v > 0 then
 					loop = loop + 1
-					v = {slot=loop, name=k, count=v, metadata={}}
+					v = {slot=loop, name=k, count=v}
 					newInv[loop] = v
 				end
 			end
 		end
 		newInventory[i] = json.encode(newInv)
-		exports.ghmattimysql:execute('UPDATE users SET inventory = @inventory WHERE identifier = @identifier', {
+		local result = exports.ghmattimysql:executeSync('UPDATE users SET inventory = @inventory WHERE identifier = @identifier', {
 			['@inventory'] = newInventory[i],
 			['@identifier'] = identifier[i]
-		}, function(result)
+		})
+		if result then
 			currentCount = currentCount + 1
 			print('^2 Updated '..currentCount..' of '..totalCount..' players^0')
-		end)
+		end
 	end
 end

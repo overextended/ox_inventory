@@ -24,9 +24,11 @@ CreateInventory = function(id, name, type, slots, weight, maxWeight, owner, inve
 
 	self.set = function(k, v)
 		self[k] = v
-		--if self.type ~= 'player' then print(('[%s %s] %s = %s'):format(self.type, self.id, k, tonumber(v))) end
-		if k == 'open' and v == false and self.changed == true and self.timeout == false then
-			self.timer()				-- when inventory closes set a timer
+		if k == 'open' and v == false then
+			if self.type == 'admin' then self.type = 'player' end
+			if self.changed == true and self.timeout == false then
+				self.timer()				-- when inventory closes set a timer
+			end
 		end
 	end
 

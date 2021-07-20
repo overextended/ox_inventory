@@ -28,13 +28,13 @@ if Config.RandomLoot and IsDuplicityVersion() then
 
 	GenerateTrash = function(metadata)
 		local metadata = metadata
-		local weight = 50
 		local trashType = math.random(1,#Config.Trash)
 		metadata.description = Config.Trash[trashType].description
-		weight = Config.Trash[trashType].weight
 		metadata.image = Config.Trash[trashType].image
-		return metadata, weight
+		metadata.weight = Config.Trash[trashType].weight
+		return metadata
 	end
+	exports('GenerateTrash', GenerateTrash)
 
 	GenerateDatastore = function(type)
 		local returnData = {}
@@ -50,14 +50,29 @@ if Config.RandomLoot and IsDuplicityVersion() then
 							local count = math.random(lootMin,lootMax)
 							if k ~= 'garbage' and item.stack then
 								local slot = #returnData + 1
-								if item.metadata == nil then item.metadata = {} end
-								returnData[slot] = {name = item.name , label = Items[item.name].label, weight = Items[item.name].weight, slot = slot, count = count, description = Items[item.name].description, metadata = item.metadata, stack = Items[item.name].stack}
+								local metadata, weight = {}
+								if item.ammoname then
+									local ammo = {}
+									ammo.type = item.ammoname
+									ammo.count = metadata.ammo
+									ammo.weight = Items[ammo.type].weight
+									weight = item.weight + (ammo.weight * ammo.count)
+								else weight = item.weight end
+								if metadata.weight then weight = weight + metadata.weight end
+								returnData[slot] = {name = item.name , label = Items[item.name].label, weight = weight, slot = slot, count = count, description = Items[item.name].description, metadata = item.metadata, stack = Items[item.name].stack}
 							else
 								for i=1, count, 1 do 
 									local slot = #returnData + 1
-									local metadata = {}
-									local weight = Items[item.name].weight
-									if item.name == 'garbage' then metadata, weight = GenerateTrash(metadata) end
+									local metadata, weight = {}
+									if item.name == 'garbage' then metadata = GenerateTrash(metadata) end
+									if item.ammoname then
+										local ammo = {}
+										ammo.type = item.ammoname
+										ammo.count = metadata.ammo
+										ammo.weight = Items[ammo.type].weight
+										weight = item.weight + (ammo.weight * ammo.count)
+									else weight = item.weight end
+									if metadata.weight then weight = weight + metadata.weight end
 									returnData[slot] = {name = item.name , label = Items[item.name].label, weight = weight, slot = slot, count = 1, description = Items[item.name].description, metadata = metadata, stack = Items[item.name].stack}
 								end 
 							end

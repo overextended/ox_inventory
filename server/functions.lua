@@ -11,26 +11,6 @@ GetPlayerIdentification = function(xPlayer)
 	return ('Sex: %s | DOB: %s'):format( sex, xPlayer.get('dateofbirth') )
 end
 
-is_table_equal = function(t1,t2,ignore_mt)
-	local ty1 = type(t1)
-	local ty2 = type(t2)
-	if ty1 ~= ty2 then return false end
-	-- non-table types can be directly compared
-	if ty1 ~= 'table' and ty2 ~= 'table' then return t1 == t2 end
-	-- as well as tables which have the metamethod __eq
-	local mt = getmetatable(t1)
-	if not ignore_mt and mt and mt.__eq then return t1 == t2 end
-	for k1,v1 in pairs(t1) do
-	   local v2 = t2[k1]
-	   if v2 == nil or not is_table_equal(v1,v2) then return false end
-	end
-	for k2,v2 in pairs(t2) do
-	   local v1 = t1[k2]
-	   if v1 == nil or not is_table_equal(v1,v2) then return false end
-	end
-	return true
-end
-
 GenerateText = function(numLetters)
 	local blacklist = {'POL', 'EMS'}
 	::begin::
@@ -74,13 +54,27 @@ end
 ValidateItem = function(type, xPlayer, fromSlot, toSlot, fromItem, toItem)
 	local reason
 	if not fromSlot then reason = 'source slot is empty' else
-		if type ~= 'swap' and fromSlot.name ~= fromItem.name then reason = 'source slot contains different item' end
-		if type == 'split' and tonumber(fromSlot.count) - tonumber(toItem.count) < 1 then reason = 'source item count has increased' end
-		if tonumber(toItem.count) > (fromItem.count + toItem.count) then reason = 'new item count is higher than source item count' end
+		if toSlot then
+			if type == 'freeslot' and fromItem.count == fromSlot.count and toItem.count == toSlot.count then	
+				reason = 'item count mismatch'
+			elseif type == 'split' and (fromSlot.count - fromItem.count) + (toSlot.count - toItem.count) ~= 0 then
+				reason = 'item count mismatch'
+			end
+			if fromSlot.name ~= toItem.name or toSlot.name ~= fromItem.name then
+				reason = 'item name mismatch'
+			end
+		else
+			if fromSlot.count - fromItem.count > fromSlot.count then
+				reason = 'item count mismatch'
+			end
+			if fromSlot.name ~= toItem.name then
+				reason = 'item name mismatch'
+			end
+		end
 	end
 
 	if reason then
-		print( ('[%s] %s failed item validation (type: %s, fromSlot: %s, toSlot: %s, fromItem: %s, toItem: %s, reason: %s)'):format(xPlayer.source, GetPlayerName(xPlayer.source), type, fromSlot, toSlot, fromItem, toItem, reason) )
+		print( ('[%s] %s failed item validation (type: %s, reason: %s)\nfromSlot: %s\ntoSlot: %s\nfromItem: %s\ntoItem: %s'):format(xPlayer.source, GetPlayerName(xPlayer.source), type, reason, json.encode(fromSlot), json.encode(toSlot), json.encode(fromItem), json.encode(toItem)) )
 		-- failed validation can be caused by desync, so don't autoban for it
 		TriggerClientEvent('mythic_notify:client:SendAlert', xPlayer.source, { type = 'error', text = '(Desync) '..reason })
 		TriggerClientEvent("linden_inventory:closeInventory", xPlayer.source)
@@ -97,13 +91,6 @@ ItemNotify = function(xPlayer, item, count, slot, type)
 		end
 		TriggerClientEvent('linden_inventory:itemNotify', xPlayer.source, item, count, slot, type)
 	end
-end
-
-SyncAccounts = function(xPlayer, name)
-	local account = xPlayer.getAccount(name)
-	account.money = getInventoryItem(xPlayer, name).count
-	xPlayer.setAccount(account)
-	xPlayer.triggerEvent('esx:setAccountMoney', account)
 end
 
 CreateNewDrop = function(xPlayer, data)
@@ -125,7 +112,7 @@ CreateNewDrop = function(xPlayer, data)
 				ItemNotify(xPlayer, data.item, count, data.emptyslot, 'removed')
 				Inventories[invid2].inventory[data.emptyslot] = nil
 				Drops[invid].inventory[data.toSlot] = {name = data.item.name, label = data.item.label, weight = data.item.weight, slot = data.toSlot, count = data.item.count, description = data.item.description, metadata = data.item.metadata, stack = data.item.stack, close = Items[data.item.name].close}
-				if Config.Logs then CreateLog(xPlayer.source, false, 'has dropped '..data.item.count..'x '..data.item.name..' in drop-'..invid, 'drop') end
+				if Config.Logs then CreateLog(xPlayer.source, false, 'has dropped '..data.item.count..'x '..data.item.name..' in '..invid, 'drop') end
 				Opened[xPlayer.source] = nil
 				TriggerClientEvent('linden_inventory:createDrop', -1, Drops[invid], xPlayer.source)
 			end
@@ -134,7 +121,7 @@ CreateNewDrop = function(xPlayer, data)
 				ItemNotify(xPlayer, data.newslotItem, data.newslotItem.count, data.fromSlot, 'removed')
 				Inventories[invid2].inventory[data.fromSlot] = {name = data.oldslotItem.name, label = data.oldslotItem.label, weight = data.oldslotItem.weight, slot = data.fromSlot, count = data.oldslotItem.count, description = data.oldslotItem.description, metadata = data.oldslotItem.metadata, stack = data.oldslotItem.stack, close = Items[data.oldslotItem.name].close}
 				Drops[invid].inventory[data.toSlot] = {name = data.newslotItem.name, label = data.newslotItem.label, weight = data.newslotItem.weight, slot = data.toSlot, count = data.newslotItem.count, description = data.newslotItem.description, metadata = data.newslotItem.metadata, stack = data.newslotItem.stack, close = Items[data.newslotItem.name].close}
-				if Config.Logs then CreateLog(xPlayer.source, false, 'has dropped '..data.newslotItem.count..'x '..data.newslotItem.name,' in drop-'..invid, 'drop') end
+				if Config.Logs then CreateLog(xPlayer.source, false, 'has dropped '..data.newslotItem.count..'x '..data.newslotItem.name,' in '..invid, 'drop') end
 				Opened[xPlayer.source] = nil
 				TriggerClientEvent('linden_inventory:createDrop', -1, Drops[invid], xPlayer.source)
 			end
@@ -151,8 +138,17 @@ CreateNewDrop = function(xPlayer, data)
 		for k,v in pairs(data.inventory) do
 			local xItem = Items[v.name]
 			if xItem then
-				if v.metadata == nil then v.metadata = {} end
-				Drops[invid].inventory[k] = {name = v.name , label = xItem.label, weight = xItem.weight, slot = v.slot, count = v.count, description = xItem.description, metadata = v.metadata, stack = xItem.stack,  close = xItem.close}
+				local weight
+				if xItem.ammoname then
+					local ammo = {}
+					ammo.type = xItem.ammoname
+					ammo.count = v.metadata.ammo
+					ammo.weight = Items[ammo.type].weight
+					weight = xItem.weight + (ammo.weight * ammo.count)
+				else weight = xItem.weight end
+				if not v.metadata then v.metadata = {} end
+				if v.metadata.weight then weight = weight + v.metadata.weight end
+				Drops[invid].inventory[k] = {name = v.name , label = xItem.label, weight = weight, slot = v.slot, count = v.count, description = xItem.description, metadata = v.metadata, stack = xItem.stack,  close = xItem.close}
 			end
 		end
 		TriggerClientEvent('linden_inventory:createDrop', -1, Drops[invid])
@@ -206,7 +202,7 @@ SaveItems = function(type, id, owner, inventory)
 					Datastore[id] = Inventories[id].inventory
 				else
 					local plate = string.match(id, "-(.*)")
-					if Config.TrimPlate then plate = ESX.Math.Trim(plate) end
+					if Config.TrimPlate then plate = func.trim(plate) end
 					local result = exports.ghmattimysql:scalarSync('SELECT `owner` from `owned_vehicles` WHERE `plate` = @plate', {
 						['@plate'] = plate
 					})
@@ -236,7 +232,7 @@ SaveItems = function(type, id, owner, inventory)
 	end
 end
 
-GetItems = function(id, inv, owner)
+GetInventory = function(id, inv, owner)
 	local returnData, result = {}
 	if id and inv then
 		if owner then
@@ -251,7 +247,7 @@ GetItems = function(id, inv, owner)
 					return data
 				else
 					local plate = string.match(id, "-(.*)")
-					if Config.TrimPlate then plate = ESX.Math.Trim(plate) end
+					if Config.TrimPlate then plate = func.trim(plate) end
 					local owned = exports.ghmattimysql:scalarSync('SELECT `plate` FROM `owned_vehicles` WHERE plate = @plate', {
 						['@plate'] = plate
 					})
@@ -279,9 +275,19 @@ GetItems = function(id, inv, owner)
 		if result ~= nil then
 			local Inventory = json.decode(result)
 			for k,v in pairs(Inventory) do
-				if Items[v.name] then
-					if v.metadata == nil then v.metadata = {} end
-					returnData[v.slot] = {name = v.name , label = Items[v.name].label, weight = Items[v.name].weight, slot = v.slot, count = v.count, description = Items[v.name].description, metadata = v.metadata, stack = Items[v.name].stack, close = Items[v.name].close}
+				local xItem = Items[v.name]
+				if xItem then
+					local weight
+					if xItem.ammoname then
+						local ammo = {}
+						ammo.type = xItem.ammoname
+						ammo.count = v.metadata.ammo
+						ammo.weight = Items[ammo.type].weight
+						weight = xItem.weight + (ammo.weight * ammo.count)
+					else weight = xItem.weight end
+					if not v.metadata then v.metadata = {} end
+					if v.metadata.weight then weight = weight + v.metadata.weight end
+					returnData[v.slot] = {name = v.name , label = xItem.label, weight = weight, slot = v.slot, count = v.count, description = xItem.description, metadata = v.metadata, stack = xItem.stack, close = xItem.close}
 				end
 			end
 		end

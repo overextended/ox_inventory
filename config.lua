@@ -1,3 +1,9 @@
+Keybind = {
+	Primary = 'F2',
+	Secondary = 'K',
+	Hotbar = 'TAB'
+}
+
 Config = {}
 Config.Locale = 'en'
 
@@ -13,7 +19,7 @@ Config.DBCleanup = '6 MONTH'
 -- Number of inventory slots
 Config.PlayerSlots = 50
 
--- If vehicle plates are stored with a trailing space, set to false (i.e. `XXX-000 `)
+-- If vehicle plates are stored with a trailing space, set to false (i.e. `XXX 000 `)
 Config.TrimPlate = true
 
 -- Blur the screen while in an inventory
@@ -23,12 +29,8 @@ Config.EnableBlur = true
 Config.WeaponsLicense = true
 Config.WeaponsLicensePrice = 5000
 
--- Set to true to enable integrated logging
+-- Set to true to enable integrated logging (extra configuration in server/logs)
 Config.Logs = false
-
--- Default keymapping for the inventory; players can assign their own
-Config.InventoryKey = 'F2'
-Config.VehicleInventoryKey = 'K'
 
 -- Reload empty weapons automatically
 Config.AutoReload = false
@@ -36,5 +38,5 @@ Config.AutoReload = false
 -- Randomise the price of items in each shop at resource start
 Config.RandomPrices = false
 
--- Make use of bt-target for shops (requires fork at https://github.com/OfficialNoms/bt-target and setup)
-Config.bt_target = false
+-- Adds compatibility for qtarget (https://github.com/QuantusRP/qtarget)
+Config.qtarget = true

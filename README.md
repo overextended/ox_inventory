@@ -1,7 +1,14 @@
 <h1 align='center'><a href='https://thelindat.github.io/linden_inventory/'>Documentation</a></h1><p align='center'>Click the link above for information on setup, installation, and improving compatibility with other resources.
 <p align='center'><a href='https://streamable.com/bggvpg'>Showcase</a> | <a href='https://discord.gg/hmcmv3P7YW'>Discord</a> | <a href='https://thelindat.github.io/linden_inventory/media'>Media</a></p>
 
-##### Note: If you need to reference the items list in another file, use `exports.linden_inventory:Items()` instead of querying the database
+##### If you require the items list in another resource, rather than querying the database
+```lua
+--MySQL.ready(function()
+--	local items = MySQL.Sync.fetchAll('SELECT * FROM items')
+
+MySQL.ready(function()
+	local items = exports.linden_inventory:Items()
+```
 
 
 <br><br><br>
@@ -30,8 +37,29 @@ Despite all the changes I've implemented to hsn-inventory, there's a lot that I 
 * Better tracking of an inventory's state (if it's open)
 * And more... (it's hard to remember every change made over 48 hours)
 
-<br><br><br><h2 align='center'>Disclaimer</h2>
-<p align='center'><a rel="license" href="http://creativecommons.org/licenses/by-nc-sa/4.0/"><img alt="Creative Commons License" style="border-width:0" src="https://i.creativecommons.org/l/by-nc-sa/4.0/88x31.png" /></a><br />This work is licensed under a <a rel="license" href="http://creativecommons.org/licenses/by-nc-sa/4.0/">Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International License</a></p><br>
+<br><br><br><h3 align='center'>Legal Notices</h2>
+<table><tr><td>
+Linden Inventory for ESX Legacy  
+
+Copyright (C) 2021  Linden, Hasan  
 
 
-<p align='center'>Released February 2021 by <a href='https://github.com/hsnnnnn'>Hasan</a> at <a href='https://github.com/hsnnnnn/hsn-inventory/tree/9feef47269dbf8271f9e6b477188da88c15758e3'>hsn-inventory</a>, however the <a href='https://i.imgur.com/IZStQrx.png'>project was cancelled</a>.
+This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.  
+
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.  
+
+
+You should have received a copy of the GNU General Public License
+along with this program.  
+If not, see <https://www.gnu.org/licenses/>
+</td></tr>
+<tr><td>
+This resource is a derivative of <a href='https://github.com/hsnnnnn/hsn-inventory/tree/9feef47269dbf8271f9e6b477188da88c15758e3'>hsn-inventory</a>, released February 2021.
+</td></td></table>
