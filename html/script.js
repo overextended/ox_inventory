@@ -538,12 +538,9 @@ $(".inventory-main").on("mouseenter", ".ItemBoxes", function(e){
 });
 
 HSN.CloseInventory = function() {
-	$.post('https://linden_inventory/exit', JSON.stringify({
-		type: rightinvtype,
-		invid: rightinventory,
-		weight: righttotalkg,
-		slot: rightinvslot
-	}));
+	let data = {type: rightinvtype, invid: rightinventory}
+	if (rightinvtype == 'bag') {data.weight = righttotalkg, data.slot = rightinvslot}
+	$.post('https://linden_inventory/exit', JSON.stringify(data));
 	Display(false)
 	return
 }

@@ -163,7 +163,7 @@ syncInventory = function(xPlayer, force, metaweight, slot)
 		Inventories[xPlayer.source].weight = newWeight
 		TriggerClientEvent('linden_inventory:updateStorage', xPlayer.source, {newWeight, Inventories[xPlayer.source].maxWeight, Inventories[xPlayer.source].slots})
 	end
-	if slot and Inventories[xPlayer.source].inventory[slot] then
+	if slot and Inventories[xPlayer.source].inventory[slot] and metaweight then
 		Inventories[xPlayer.source].inventory[slot].weight = Items[Inventories[xPlayer.source].inventory[slot].name].weight + metaweight
 		Inventories[xPlayer.source].inventory[slot].metadata.weight = metaweight
 	end
