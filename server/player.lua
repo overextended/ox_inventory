@@ -1,8 +1,12 @@
 DefaultWeight = ESX.GetConfig().MaxWeight
 
-CheckPlayer = function(playerId)
+CheckPlayer = function(xPlayer)
+	if not xPlayer or not xPlayer.source then
+		print(('^1[error]^7 Specified xPlayer does not exist so stop trying to perform functions on them'):format(name))
+		return false
+	end
 	local count = 0
-	while not Inventories[playerId] do
+	while not Inventories[xPlayer.source] do
 		Citizen.Wait(500)
 		count = count + 1
 		if count == 10 then return false end
@@ -12,11 +16,7 @@ end
 
 
 getInventoryItem = function(xPlayer, name, metadata)
-	if not xPlayer then
-		print(('^1[error]^7 It\'s impossible to use xPlayer.getInventoryItem when the xPlayer doesn\'t exist, so fix your shit'):format(name))
-		return
-	end
-	if CheckPlayer(xPlayer.source) ~= true then return end
+	if CheckPlayer(xPlayer) ~= true then return end
 	if name then
 		local xItem = Items[name]
 		if not xItem then print(('^1[error]^7 %s does not exist'):format(name)) return end
@@ -37,7 +37,7 @@ exports('getInventoryItem', getInventoryItem)
 
 
 addInventoryItem = function(xPlayer, item, count, metadata, slot)
-	if CheckPlayer(xPlayer.source) ~= true then return end
+	if CheckPlayer(xPlayer) ~= true then return end
 	local xItem = Items[item]
 	if xPlayer and xItem and count > 0 then
 		local isWeapon = item:find('WEAPON_')
@@ -96,7 +96,7 @@ exports('addInventoryItem', addInventoryItem)
 
 
 removeInventoryItem = function(xPlayer, item, count, metadata, slot)
-	if CheckPlayer(xPlayer.source) ~= true then return end
+	if CheckPlayer(xPlayer) ~= true then return end
 	local xItem = Items[item]
 	if xPlayer and xItem and count > 0 then
 		if metadata then metadata = setMetadata(metadata) end
@@ -141,7 +141,7 @@ exports('removeInventoryItem', removeInventoryItem)
 
 
 setInventoryItem = function(xPlayer, name, count, metadata)
-	if CheckPlayer(xPlayer.source) ~= true then return end
+	if CheckPlayer(xPlayer) ~= true then return end
 	local item = getInventoryItem(xPlayer, name, metadata)
 	if item and count >= 0 then
 		count = ESX.Math.Round(count)
@@ -199,7 +199,7 @@ exports('setMaxWeight', setMaxWeight)
 
 
 canCarryItem = function(xPlayer, name, count, metadata)
-	if CheckPlayer(xPlayer.source) ~= true then return end
+	if CheckPlayer(xPlayer) ~= true then return end
 	local xItem = Items[name]
 	if xItem then
 		local freeSlot = false
@@ -218,7 +218,7 @@ exports('canCarryItem', canCarryItem)
 
 
 canSwapItem = function(xPlayer, firstItem, firstItemCount, testItem, testItemCount)
-	if CheckPlayer(xPlayer.source) ~= true then return end
+	if CheckPlayer(xPlayer) ~= true then return end
 	local curWeight = Inventories[xPlayer.source].weight
 	local firstItemObject = getInventoryItem(xPlayer, firstItem)
 	local testItemObject = getInventoryItem(xPlayer, testItem)
@@ -257,7 +257,7 @@ exports('getPlayerInventory', getPlayerInventory)
 
 
 getPlayerSlot = function(xPlayer, slot, item, metadata)
-	if CheckPlayer(xPlayer.source) ~= true then return end
+	if CheckPlayer(xPlayer) ~= true then return end
 	if slot > Config.PlayerSlots then return nil end
 	local getSlot = Inventories[xPlayer.source].inventory[slot]
 	if item and getSlot and getSlot.name ~= item then slot = nil end
@@ -268,7 +268,7 @@ exports('getPlayerSlot', getPlayerSlot)
 
 
 getInventoryItemSlots = function(xPlayer, name, metadata)
-	if CheckPlayer(xPlayer.source) ~= true then return end
+	if CheckPlayer(xPlayer) ~= true then return end
 	local xItem = Items[name]
 	if not xItem then print(('^1[error]^7 %s does not exist'):format(name)) return end
 	local totalCount, slots, emptySlots = 0, {}, Config.PlayerSlots
