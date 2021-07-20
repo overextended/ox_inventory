@@ -111,7 +111,7 @@ Citizen.CreateThread(function()
 										break
 									end
 								end
-								if item.count == 0 then
+								if count == 0 then
 									TriggerClientEvent('linden_inventory:clearWeapons', data.id)
 									print( ('^1[warning]^3 ['..data.id..'] '..GetPlayerName(data.id)..' may be cheating (using '..curWeapon.name..' but does not have any)^7'):format(data.id, GetPlayerName(data.id)) )
 								end
