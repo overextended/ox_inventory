@@ -746,7 +746,7 @@ TriggerLoops = function()
 			local sleep = 250
 			if not invOpen then
 				playerCoords = GetEntityCoords(ESX.PlayerData.ped)
-				if not Config.bt_target and not id or type == 'shop' then
+				if not Config.qtarget and not id or type == 'shop' then
 					if id then
 						sleep = 5
 						closestShop = id
