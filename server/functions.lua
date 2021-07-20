@@ -54,13 +54,27 @@ end
 ValidateItem = function(type, xPlayer, fromSlot, toSlot, fromItem, toItem)
 	local reason
 	if not fromSlot then reason = 'source slot is empty' else
-		if type ~= 'swap' and fromSlot.name ~= fromItem.name then reason = 'source slot contains different item' end
-		if type == 'split' and tonumber(fromSlot.count) - tonumber(toItem.count) < 1 then reason = 'source item count has increased' end
-		if tonumber(toItem.count) > (fromItem.count + toItem.count) then reason = 'new item count is higher than source item count' end
+		if toSlot then
+			if type == 'freeslot' and fromItem.count == fromSlot.count and toItem.count == toSlot.count then	
+				reason = 'item count mismatch'
+			elseif type == 'split' and (fromSlot.count - fromItem.count) + (toSlot.count - toItem.count) ~= 0 then
+				reason = 'item count mismatch'
+			end
+			if fromSlot.name ~= toItem.name or toSlot.name ~= fromItem.name then
+				reason = 'item name mismatch'
+			end
+		else
+			if fromSlot.count - fromItem.count > fromSlot.count then
+				reason = 'item count mismatch'
+			end
+			if fromSlot.name ~= toItem.name then
+				reason = 'item name mismatch'
+			end
+		end
 	end
 
 	if reason then
-		print( ('[%s] %s failed item validation (type: %s, fromSlot: %s, toSlot: %s, fromItem: %s, toItem: %s, reason: %s)'):format(xPlayer.source, GetPlayerName(xPlayer.source), type, fromSlot, toSlot, fromItem, toItem, reason) )
+		print( ('[%s] %s failed item validation (type: %s, reason: %s)\nfromSlot: %s\ntoSlot: %s\nfromItem: %s\ntoItem: %s'):format(xPlayer.source, GetPlayerName(xPlayer.source), type, reason, json.encode(fromSlot), json.encode(toSlot), json.encode(fromItem), json.encode(toItem)) )
 		-- failed validation can be caused by desync, so don't autoban for it
 		TriggerClientEvent('mythic_notify:client:SendAlert', xPlayer.source, { type = 'error', text = '(Desync) '..reason })
 		TriggerClientEvent("linden_inventory:closeInventory", xPlayer.source)
