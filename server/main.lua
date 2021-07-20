@@ -104,7 +104,13 @@ Citizen.CreateThread(function()
 						curWeapon = ESX.GetWeaponFromHash(hash)
 						if curWeapon then
 							if Items[curWeapon.name] then
-								local item = getInventoryItem(xPlayer, curWeapon.name)
+								local count = 0
+								for k, v in pairs(Inventories[data.id].inventory) do
+									if v.name == curWeapon.name then
+										count = 1
+										break
+									end
+								end
 								if item.count == 0 then
 									TriggerClientEvent('linden_inventory:clearWeapons', data.id)
 									print( ('^1[warning]^3 ['..data.id..'] '..GetPlayerName(data.id)..' may be cheating (using '..curWeapon.name..' but does not have any)^7'):format(data.id, GetPlayerName(data.id)) )
