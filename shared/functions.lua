@@ -4,6 +4,13 @@ func.trim = function(string)
 	return string:match("^%s*(.-)%s*$")
 end
 
+func.checktable = function(table, value)
+	for k, v in pairs(table) do
+		if v == value then return true end
+	end
+	return false
+end
+
 func.matchtables = function(t1,t2)
 	local ty1 = type(t1)
 	local ty2 = type(t2)
