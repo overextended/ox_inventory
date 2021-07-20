@@ -929,7 +929,7 @@ RegisterCommand('inv2', function()
 			if not result then return end
 			if not Config.qtarget then
 				if type == 2 then vehicle, vehiclePos = object, GetEntityCoords(object)
-				elseif type == 3 and func.checktable(Config.Dumpsters, GetEntityModel(object) then
+				elseif type == 3 and func.checktable(Config.Dumpsters, GetEntityModel(object)) then
 					if not IsEntityAMissionEntity(object) then 
 						SetEntityAsMissionEntity(object) 
 						NetworkRegisterEntityAsNetworked(object) 
