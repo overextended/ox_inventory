@@ -39,4 +39,4 @@ Config.AutoReload = false
 Config.RandomPrices = false
 
 -- Adds compatibility for qtarget (https://github.com/QuantusRP/qtarget)
-Config.qtarget = true
+Config.qtarget = false
