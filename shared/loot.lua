@@ -94,18 +94,17 @@ elseif Config.qtarget then
 		},
 		distance = 2
 	})
-	AddEventHandler('linden_inventory:openDumpster', function()
-		local result, coords, object, type = Raycast()
-		if result and func.checktable(Config.Dumpsters, GetEntityModel(object)) then
-			if not IsEntityAMissionEntity(object) then 
-				SetEntityAsMissionEntity(object) 
-				NetworkRegisterEntityAsNetworked(object) 
-				local netId = NetworkGetNetworkIdFromEntity(object) 
+	AddEventHandler('linden_inventory:openDumpster', function(data)
+		if func.checktable(Config.Dumpsters, GetEntityModel(data.entity)) then
+			if not IsEntityAMissionEntity(data.entity) then 
+				SetEntityAsMissionEntity(data.entity) 
+				NetworkRegisterEntityAsNetworked(data.entity) 
+				local netId = NetworkGetNetworkIdFromEntity(data.entity) 
 				SetNetworkIdExistsOnAllMachines(netId, true) 
 				SetNetworkIdCanMigrate(netId, true) 
 				NetworkSetNetworkIdDynamic(false) 
 			end 
-			OpenDumpster({ id = NetworkGetNetworkIdFromEntity(object), label = 'Dumpster', slots = 15}) 
+			OpenDumpster({ id = NetworkGetNetworkIdFromEntity(data.entity), label = 'Dumpster', slots = 15}) 
 		end
 	end)
 	
