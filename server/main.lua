@@ -961,14 +961,14 @@ ESX.RegisterServerCallback('linden_inventory:usingItem', function(source, cb, it
 		ESX.UseItem(xPlayer.source, xItem.name)
 		cb(false)
 	elseif xItem.count > 0 then
-		xItem = Inventories[xPlayer.source].inventory[slot]
+		local slot = Inventories[xPlayer.source].inventory[slot]
 		if xItem.name:find('WEAPON_') then
-			if xItem.throwable then TriggerClientEvent('linden_inventory:weapon', xPlayer.source, xItem)
-			elseif xItem.metadata.durability > 0 then TriggerClientEvent('linden_inventory:weapon', xPlayer.source, xItem)
+			if xItem.throwable then TriggerClientEvent('linden_inventory:weapon', xPlayer.source, slot)
+			elseif slot.metadata.durability > 0 then TriggerClientEvent('linden_inventory:weapon', xPlayer.source, slot)
 			else TriggerClientEvent('mythic_notify:client:SendAlert', xPlayer.source, { type = 'error', text = _U('weapon_broken') }) end
 			cb(false)
 		elseif xItem.name:find('ammo-') then
-			TriggerClientEvent('linden_inventory:addAmmo', xPlayer.source, xItem)
+			TriggerClientEvent('linden_inventory:addAmmo', xPlayer.source, slot)
 			cb(false)
 		else
 			local consume = Items[xItem.name].consume
