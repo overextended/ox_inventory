@@ -75,6 +75,9 @@ end)
 OnPlayerData = function(key, val)
 	if key == 'dead' and val == true then
 		DisarmPlayer() TriggerEvent('linden_inventory:closeInventory')
+	elseif key == 'ped' then
+		SetPedConfigFlag(ESX.PlayerData.ped, 48, 1)
+		SetPedCanSwitchWeapon(ESX.PlayerData.ped, 0)
 	end
 end
 
@@ -93,6 +96,10 @@ end)
 StartInventory = function()
 	playerID, invOpen, ESX.PlayerData.dead, isBusy, usingWeapon, currentDrop = nil, false, false, false, false, nil
 	ClearWeapons()
+	SetPedConfigFlag(ESX.PlayerData.ped, 48, 1)
+	SetPedCanSwitchWeapon(ESX.PlayerData.ped, 0)
+	SetWeaponsNoAutoswap(1)
+	SetWeaponsNoAutoreload(1)
 	SetTimeout(500, function()
 		ESX.TriggerServerCallback('linden_inventory:setup', function(data)
 			ESX.PlayerData = ESX.GetPlayerData()
