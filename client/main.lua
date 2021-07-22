@@ -940,12 +940,9 @@ RegisterCommand('inv2', function()
 					end
 					OpenDumpster({ id = NetworkGetNetworkIdFromEntity(object), label = 'Dumpster', slots = 15})	
 				end
-			else
-				local result, coords, object, type = Raycast()
-				if result and type == 2 then
-					vehicle, vehiclePos = object, GetEntityCoords(object)
-				else return end
-			end
+			elseif result and type == 2 then
+				vehicle, vehiclePos = object, GetEntityCoords(object)
+			else return end
 			CloseToVehicle = false
 			lastVehicle = nil
 			local class = GetVehicleClass(vehicle)
