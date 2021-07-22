@@ -671,8 +671,8 @@ AddEventHandler('onResourceStop', function(resourceName)
 end)
 
 TriggerLoops = function()
+	local wait = false
 	SetInterval(1, 5, function()
-		local wait = false
 		HideHudComponentThisFrame(19)
 		HideHudComponentThisFrame(20)
 		DisablePlayerVehicleRewards(playerID)
@@ -743,8 +743,8 @@ TriggerLoops = function()
 		end	
 	end)
 
+	local text, type, id = ''
 	SetInterval(2, 250, function()
-		local text, type, id = ''
 		local sleep = 250
 		if not invOpen then
 			playerCoords = GetEntityCoords(ESX.PlayerData.ped)
