@@ -58,6 +58,7 @@ DisarmPlayer = function(weapon)
 	end
 	TriggerEvent('linden_inventory:currentWeapon', nil)
 end
+exports('DisarmPlayer', DisarmPlayer)
 
 RegisterNetEvent('esx:playerLoaded')
 AddEventHandler('esx:playerLoaded', function(xPlayer)
