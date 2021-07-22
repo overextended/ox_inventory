@@ -70,6 +70,8 @@ AddEventHandler('esx:onPlayerLogout', function()
 	if parachute then ESX.Game.DeleteObject(parachute) parachute = false end
 	DisarmPlayer() TriggerEvent('linden_inventory:closeInventory')
 	ESX.PlayerLoaded = false
+	ClearInterval(1)
+	ClearInterval(2)
 end)
 
 OnPlayerData = function(key, val)
@@ -545,6 +547,7 @@ AddEventHandler('linden_inventory:weapon', function(item)
 			HolsterWeapon(item)
 			TriggerEvent('linden_inventory:currentWeapon', nil)
 		else
+			currentWeapon = nil
 			item.hash = wepHash
 			DrawWeapon(item)
 			if Items[item.name].throwable then item.throwable, item.metadata.ammo = 1, true end
@@ -668,229 +671,220 @@ AddEventHandler('onResourceStop', function(resourceName)
 end)
 
 TriggerLoops = function()
-	Citizen.CreateThread(function()
-		local Disable = {37, 157, 158, 160, 164, 165, 289, 80}
-		local Disable2 = {23, 24, 25, 142, 257, 140, 141, 142}
+	SetInterval(1, 5, function()
 		local wait = false
-		while ESX.PlayerLoaded do
-			HideHudComponentThisFrame(19)
-			HideHudComponentThisFrame(20)
-			for i=1, #Disable, 1 do
-				DisableControlAction(0, Disable[i], true)
+		HideHudComponentThisFrame(19)
+		HideHudComponentThisFrame(20)
+		DisablePlayerVehicleRewards(playerID)
+		if isBusy or useItemCooldown then
+			DisablePlayerFiring(playerID, true)
+			DisableControlAction(0, 23, true)
+			DisableControlAction(0, 25, true)
+		end
+		if weaponTimer == 5 and currentWeapon then
+			TriggerServerEvent('linden_inventory:updateWeapon', currentWeapon)
+			weaponTimer = 0
+			SetPedUsingActionMode(ESX.PlayerData.ped, false, -1, "DEFAULT_ACTION")
+		elseif weaponTimer > 5 then weaponTimer = weaponTimer - 5 end
+		if currentWeapon and not invOpen then
+			if IsPedArmed(ESX.PlayerData.ped, 6) then
+				DisableControlAction(1, 140, true)
+				DisableControlAction(1, 141, true)
+				DisableControlAction(1, 142, true)
 			end
-			if isBusy or useItemCooldown then
-				for i=1, #Disable2, 1 do
-					DisableControlAction(0, Disable2[i], true)
-				end
-			end
-			if weaponTimer == 5 and currentWeapon then
-				TriggerServerEvent('linden_inventory:updateWeapon', currentWeapon)
-				weaponTimer = 0
-				SetPedUsingActionMode(ESX.PlayerData.ped, false, -1, "DEFAULT_ACTION")
-			elseif weaponTimer > 5 then weaponTimer = weaponTimer - 5 end
-			if not invOpen and currentWeapon then
-				if IsPedArmed(ESX.PlayerData.ped, 6) then
-					DisableControlAction(1, 140, true)
-					DisableControlAction(1, 141, true)
-					DisableControlAction(1, 142, true)
-				end
-				usingWeapon = IsPedShooting(ESX.PlayerData.ped)
-				if currentWeapon and usingWeapon then
-					local currentAmmo = GetAmmoInPedWeapon(ESX.PlayerData.ped, currentWeapon.hash)
-					if currentWeapon.name == 'WEAPON_FIREEXTINGUISHER' or currentWeapon.name == 'WEAPON_PETROLCAN' and not wait then
-						currentWeapon.metadata.durability = currentWeapon.metadata.durability - 0.1
-						if currentWeapon.metadata.durability <= 0 then
-							Citizen.CreateThread(function()
-								wait = true
-								ClearPedTasks(ESX.PlayerData.ped)
-								SetCurrentPedWeapon(ESX.PlayerData.ped, currentWeapon.hash, true)
-								TriggerServerEvent('linden_inventory:updateWeapon', currentWeapon)
-								Citizen.Wait(200)
-								DisarmPlayer()
-								wait = false
-							end)
-						end
-					elseif currentWeapon.ammoname then
-						currentWeapon.metadata.ammo = currentAmmo
-						if currentAmmo == 0 then
-							if Config.AutoReload and not IsPedFalling(ESX.PlayerData.ped) and not IsPedRagdoll(ESX.PlayerData.ped) then
-								weaponTimer = 0
-								TriggerServerEvent('linden_inventory:reloadWeapon', currentWeapon)
-							end
-							ClearPedTasks(ESX.PlayerData.ped)
-							SetCurrentPedWeapon(ESX.PlayerData.ped, currentWeapon.hash, false)
-							SetPedCurrentWeaponVisible(ESX.PlayerData.ped, true, false, false, false)
-						else TriggerEvent('linden_inventory:usedWeapon', currentWeapon) end
-					end
-				else
-					if currentWeapon.throwable and not wait and IsControlJustReleased(0, 24) then
-						usingWeapon = true
+			usingWeapon = IsPedShooting(ESX.PlayerData.ped)
+			if currentWeapon and usingWeapon then
+				local currentAmmo = GetAmmoInPedWeapon(ESX.PlayerData.ped, currentWeapon.hash)
+				if currentWeapon.name == 'WEAPON_FIREEXTINGUISHER' or currentWeapon.name == 'WEAPON_PETROLCAN' and not wait then
+					currentWeapon.metadata.durability = currentWeapon.metadata.durability - 0.1
+					if currentWeapon.metadata.durability <= 0 then
 						Citizen.CreateThread(function()
 							wait = true
-							Citizen.Wait(700)
-							TriggerServerEvent('linden_inventory:updateWeapon', currentWeapon, 'throw')
+							ClearPedTasks(ESX.PlayerData.ped)
+							SetCurrentPedWeapon(ESX.PlayerData.ped, currentWeapon.hash, true)
+							TriggerServerEvent('linden_inventory:updateWeapon', currentWeapon)
+							Citizen.Wait(200)
 							DisarmPlayer()
 							wait = false
 						end)
-					elseif currentWeapon.durability and not wait and IsPedArmed(ESX.PlayerData.ped, 1) and IsControlPressed(0, 24) then
-						usingWeapon = true
-						Citizen.CreateThread(function()
-							wait = true
-							TriggerServerEvent('linden_inventory:updateWeapon', currentWeapon, 'melee')
-							TriggerEvent('linden_inventory:usedWeapon', currentWeapon)
-							Citizen.Wait(400)
-							wait = false
-						end)
-					else usingWeapon = false end
-				end	
-			end		
-			Citizen.Wait(5)
-		end
-	end)
-
-	Citizen.CreateThread(function()
-		local text, type, id = ''
-		while ESX.PlayerLoaded do
-			local sleep = 250
-			if not invOpen then
-				playerCoords = GetEntityCoords(ESX.PlayerData.ped)
-				if not Config.qtarget and not id or type == 'shop' then
-					if id then
-						sleep = 5
-						closestShop = id
-						DrawMarker(2, Config.Shops[id].coords.x,Config.Shops[id].coords.y,Config.Shops[id].coords.z, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.3, 0.2, 0.15, 30, 150, 30, 222, false, false, false, true, false, false, false)			
-						local distance = #(playerCoords - Config.Shops[id].coords)
-						local range = Config.Shops[id].distance or 4
-						local name = Config.Shops[id].name or Config.Shops[id].type.name
-						if distance <= 1 then text='[~g~E~s~] '..name
-							if IsControlJustPressed(0, 38) then
-								OpenShop(id)
-							end
-						elseif distance > range then id, type = nil, nil
-						else text = Config.Shops[id].name or Config.Shops[id].type.name end
-						if distance <= 2 then DrawText3D(Config.Shops[id].coords, text) end
-					else
-						closestShop = nil
-						for k, v in pairs(Config.Shops) do
-							if not id and v.coords and (not v.job or v.job == ESX.PlayerData.job.name) and (not v.grade or v.grade <= ESX.PlayerData.job.grade) then
-								local distance = #(playerCoords - v.coords)
-								local range = v.distance or 4
-								if distance <= range then
-									sleep = 10
-									id = k
-									type = 'shop'
-								end
-							end
+					else TriggerEvent('linden_inventory:usedWeapon', currentWeapon) end
+				elseif currentWeapon.ammoname then
+					currentWeapon.metadata.ammo = currentAmmo
+					if currentAmmo == 0 then
+						if Config.AutoReload and not IsPedFalling(ESX.PlayerData.ped) and not IsPedRagdoll(ESX.PlayerData.ped) then
+							weaponTimer = 0
+							TriggerServerEvent('linden_inventory:reloadWeapon', currentWeapon)
 						end
-					end
-				end
-				if not id or type == 'stash' then
-					if id then
-						sleep = 5
-						DrawMarker(2, Config.Stashes[id].coords.x,Config.Stashes[id].coords.y,Config.Stashes[id].coords.z, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.3, 0.2, 0.15, 30, 30, 150, 222, false, false, false, true, false, false, false)			
-						local distance = #(playerCoords - Config.Stashes[id].coords)
-						local range = Config.Stashes[id].distance or 4
-						if distance <= 1 then text='[~g~E~s~] '..Config.Stashes[id].name
-							if IsControlJustPressed(0, 38) then
-								OpenStash(Config.Stashes[id])
-							end
-						elseif distance > range then id, type = nil, nil
-						else text = Config.Stashes[id].name end
-						if distance <= 2 then DrawText3D(Config.Stashes[id].coords, text) end
-					else
-						for k, v in pairs(Config.Stashes) do
-							if not id and v.coords and (not v.job or v.job == ESX.PlayerData.job.name) and (not v.grade or v.grade <= ESX.PlayerData.job.grade) then
-								local distance = #(playerCoords - v.coords)
-								local range = v.distance or 4
-								if distance <= range then
-									sleep = 10
-									id = k
-									type = 'stash'
-								end
-							end
-						end
-					end
-				end
-				
-				if Drops and not invOpen then
-					local closestDrop
-					for k, v in pairs(Drops) do
-						if v.coords then
-							local distance = #(playerCoords - v.coords)
-							if distance <= 8 then
-								sleep = 5
-								DrawMarker(2, v.coords.x,v.coords.y,v.coords.z, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.3, 0.2, 0.15, 150, 30, 30, 222, false, false, false, true, false, false, false)
-								if distance <= 2 and (closestDrop == nil or (currentDrop and closestDrop and distance < currentDrop.distance)) then
-									closestDrop = {id = v.id, distance = distance}
-								end
-							end
-						end
-					end
-					if closestDrop then
-						if closestDrop.distance <= 1 then currentDrop = {id=closestDrop.id, distance=closestDrop.distance} else currentDrop = nil end
-					end
-				end
-				if Config.WeaponsLicense then
-					local coords, text, license = vector3(12.42198, -1105.82, 29.7854), _U('weapon_license'), 'weapon'
-					local distance = #(playerCoords - coords)
-					if distance <= 5 then
-						sleep = 5
-						DrawMarker(2, coords, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.3, 0.15, 0.2, 30, 150, 30, 100, false, false, false, true, false, false, false)
-						if not invOpen then
-							if distance <= 1.5 then
-								text = _U('purchase_license')
-								if IsControlJustPressed(1,38) then
-									ESX.TriggerServerCallback('esx_license:checkLicense', function(hasWeaponLicense)
-										if hasWeaponLicense then
-											TriggerEvent('mythic_notify:client:SendAlert', {type = 'error', text = _U('has_weapon_license'), length = 2500})
-										else
-											ESX.TriggerServerCallback('linden_inventory:buyLicense', function(bought)
-												if bought then
-													TriggerEvent('mythic_notify:client:SendAlert', {type = 'inform', text = _U('bought_weapon_license'), length = 2500})
-												else
-													TriggerEvent('mythic_notify:client:SendAlert', {type = 'inform', text = _U('poor_weapon_license'), length = 2500})
-												end
-											end, license)
-										end
-									end, playerID, license)
-									Citizen.Wait(500)
-								end
-							end   
-							DrawText3D(coords, text)
-						end
-					end
+						ClearPedTasks(ESX.PlayerData.ped)
+						SetCurrentPedWeapon(ESX.PlayerData.ped, currentWeapon.hash, false)
+						SetPedCurrentWeaponVisible(ESX.PlayerData.ped, true, false, false, false)
+					else TriggerEvent('linden_inventory:usedWeapon', currentWeapon) end
 				end
 			else
-				playerCoords = GetEntityCoords(ESX.PlayerData.ped)
-				sleep = 100
-				if currentInventory then
-					if currentInventory.type == 'player' then
-						local id = GetPlayerFromServerId(currentInventory.id)
-						local ped = GetPlayerPed(id)
-						local pedCoords = GetEntityCoords(ped)
-						local dist = #(playerCoords - pedCoords)
-						if not id or dist > 1.8 then
-							TriggerEvent('linden_inventory:closeInventory')
-							TriggerEvent('mythic_notify:client:SendAlert', {type = 'error', text = _U('inventory_lost_access'), length = 2500})
-						elseif not ESX.PlayerData.job.name == 'police' and not CanOpenTarget(ped) then
-							TriggerEvent('linden_inventory:closeInventory')
-							TriggerEvent('mythic_notify:client:SendAlert', {type = 'error', text = _U('inventory_lost_access'), length = 2500})
-						else
-							TaskTurnPedToFaceCoord(ESX.PlayerData.ped, pedCoords)
+				if currentWeapon.throwable and not wait and IsControlJustReleased(0, 24) then
+					usingWeapon = true
+					Citizen.CreateThread(function()
+						wait = true
+						Citizen.Wait(700)
+						TriggerServerEvent('linden_inventory:updateWeapon', currentWeapon, 'throw')
+						DisarmPlayer()
+						wait = false
+					end)
+				elseif currentWeapon.durability and not wait and IsPedArmed(ESX.PlayerData.ped, 1) and IsControlPressed(0, 24) then
+					usingWeapon = true
+					Citizen.CreateThread(function()
+						wait = true
+						TriggerEvent('linden_inventory:usedWeapon', currentWeapon)
+						Citizen.Wait(300)
+						wait = false
+					end)
+				else usingWeapon = false end
+			end	
+		end	
+	end)
+
+	SetInterval(2, 250, function()
+		local text, type, id = ''
+		local sleep = 250
+		if not invOpen then
+			playerCoords = GetEntityCoords(ESX.PlayerData.ped)
+			if not Config.qtarget and not id or type == 'shop' then
+				if id then
+					sleep = 5
+					closestShop = id
+					DrawMarker(2, Config.Shops[id].coords.x,Config.Shops[id].coords.y,Config.Shops[id].coords.z, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.3, 0.2, 0.15, 30, 150, 30, 222, false, false, false, true, false, false, false)			
+					local distance = #(playerCoords - Config.Shops[id].coords)
+					local range = Config.Shops[id].distance or 4
+					local name = Config.Shops[id].name or Config.Shops[id].type.name
+					if distance <= 1 then text='[~g~E~s~] '..name
+						if IsControlJustPressed(0, 38) then
+							OpenShop(id)
 						end
-					elseif not lastVehicle and currentInventory.coords then
-						local dist = #(playerCoords - currentInventory.coords)
-						if dist > 2 or CanOpenTarget(ESX.PlayerData.ped) then
-							TriggerEvent('linden_inventory:closeInventory')
-							TriggerEvent('mythic_notify:client:SendAlert', {type = 'error', text = _U('inventory_lost_access'), length = 2500})
+					elseif distance > range then id, type = nil, nil
+					else text = Config.Shops[id].name or Config.Shops[id].type.name end
+					if distance <= 2 then DrawText3D(Config.Shops[id].coords, text) end
+				else
+					closestShop = nil
+					for k, v in pairs(Config.Shops) do
+						if not id and v.coords and (not v.job or v.job == ESX.PlayerData.job.name) and (not v.grade or v.grade <= ESX.PlayerData.job.grade) then
+							local distance = #(playerCoords - v.coords)
+							local range = v.distance or 4
+							if distance <= range then
+								sleep = 10
+								id = k
+								type = 'shop'
+							end
 						end
 					end
 				end
 			end
-			if parachute and sleep > 50 and GetPedParachuteState(ESX.PlayerData.ped) ~= -1 then ESX.Game.DeleteObject(parachute) parachute = false end
-			if invOpen and not CanOpenInventory() then TriggerEvent('linden_inventory:closeInventory') end
-			Citizen.Wait(sleep)
+			if not id or type == 'stash' then
+				if id then
+					sleep = 5
+					DrawMarker(2, Config.Stashes[id].coords.x,Config.Stashes[id].coords.y,Config.Stashes[id].coords.z, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.3, 0.2, 0.15, 30, 30, 150, 222, false, false, false, true, false, false, false)			
+					local distance = #(playerCoords - Config.Stashes[id].coords)
+					local range = Config.Stashes[id].distance or 4
+					if distance <= 1 then text='[~g~E~s~] '..Config.Stashes[id].name
+						if IsControlJustPressed(0, 38) then
+							OpenStash(Config.Stashes[id])
+						end
+					elseif distance > range then id, type = nil, nil
+					else text = Config.Stashes[id].name end
+					if distance <= 2 then DrawText3D(Config.Stashes[id].coords, text) end
+				else
+					for k, v in pairs(Config.Stashes) do
+						if not id and v.coords and (not v.job or v.job == ESX.PlayerData.job.name) and (not v.grade or v.grade <= ESX.PlayerData.job.grade) then
+							local distance = #(playerCoords - v.coords)
+							local range = v.distance or 4
+							if distance <= range then
+								sleep = 10
+								id = k
+								type = 'stash'
+							end
+						end
+					end
+				end
+			end
+			
+			if Drops and not invOpen then
+				local closestDrop
+				for k, v in pairs(Drops) do
+					if v.coords then
+						local distance = #(playerCoords - v.coords)
+						if distance <= 8 then
+							sleep = 5
+							DrawMarker(2, v.coords.x,v.coords.y,v.coords.z, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.3, 0.2, 0.15, 150, 30, 30, 222, false, false, false, true, false, false, false)
+							if distance <= 2 and (closestDrop == nil or (currentDrop and closestDrop and distance < currentDrop.distance)) then
+								closestDrop = {id = v.id, distance = distance}
+							end
+						end
+					end
+				end
+				if closestDrop then
+					if closestDrop.distance <= 1 then currentDrop = {id=closestDrop.id, distance=closestDrop.distance} else currentDrop = nil end
+				end
+			end
+
+			if Config.WeaponsLicense then
+				local coords, text, license = vector3(12.42198, -1105.82, 29.7854), _U('weapon_license'), 'weapon'
+				local distance = #(playerCoords - coords)
+				if distance <= 5 then
+					sleep = 5
+					DrawMarker(2, coords, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.3, 0.15, 0.2, 30, 150, 30, 100, false, false, false, true, false, false, false)
+					if not invOpen then
+						if distance <= 1.5 then
+							text = _U('purchase_license')
+							if IsControlJustPressed(1,38) then
+								ESX.TriggerServerCallback('esx_license:checkLicense', function(hasWeaponLicense)
+									if hasWeaponLicense then
+										TriggerEvent('mythic_notify:client:SendAlert', {type = 'error', text = _U('has_weapon_license'), length = 2500})
+									else
+										ESX.TriggerServerCallback('linden_inventory:buyLicense', function(bought)
+											if bought then
+												TriggerEvent('mythic_notify:client:SendAlert', {type = 'inform', text = _U('bought_weapon_license'), length = 2500})
+											else
+												TriggerEvent('mythic_notify:client:SendAlert', {type = 'inform', text = _U('poor_weapon_license'), length = 2500})
+											end
+										end, license)
+									end
+								end, playerID, license)
+								Citizen.Wait(500)
+							end
+						end   
+						DrawText3D(coords, text)
+					end
+				end
+			end
+		else
+			playerCoords = GetEntityCoords(ESX.PlayerData.ped)
+			sleep = 100
+			if currentInventory then
+				if currentInventory.type == 'player' then
+					local id = GetPlayerFromServerId(currentInventory.id)
+					local ped = GetPlayerPed(id)
+					local pedCoords = GetEntityCoords(ped)
+					local dist = #(playerCoords - pedCoords)
+					if not id or dist > 1.8 then
+						TriggerEvent('linden_inventory:closeInventory')
+						TriggerEvent('mythic_notify:client:SendAlert', {type = 'error', text = _U('inventory_lost_access'), length = 2500})
+					elseif not ESX.PlayerData.job.name == 'police' and not CanOpenTarget(ped) then
+						TriggerEvent('linden_inventory:closeInventory')
+						TriggerEvent('mythic_notify:client:SendAlert', {type = 'error', text = _U('inventory_lost_access'), length = 2500})
+					else
+						TaskTurnPedToFaceCoord(ESX.PlayerData.ped, pedCoords)
+					end
+				elseif not lastVehicle and currentInventory.coords then
+					local dist = #(playerCoords - currentInventory.coords)
+					if dist > 2 or CanOpenTarget(ESX.PlayerData.ped) then
+						TriggerEvent('linden_inventory:closeInventory')
+						TriggerEvent('mythic_notify:client:SendAlert', {type = 'error', text = _U('inventory_lost_access'), length = 2500})
+					end
+				end
+			end
 		end
+		if parachute and sleep > 50 and GetPedParachuteState(ESX.PlayerData.ped) ~= -1 then ESX.Game.DeleteObject(parachute) parachute = false end
+		if invOpen and not CanOpenInventory() then TriggerEvent('linden_inventory:closeInventory') end
+		SetInterval(2, sleep)
 	end)
 end
 
