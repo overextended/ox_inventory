@@ -855,7 +855,6 @@ SwapItems = function(fromInventory, toInventory, fromSlot, toSlot) {
 					} else if (fromItem.count == count) {
 						HSN.RemoveItemFromSlot(fromInventory,fromSlot)
 						toInventory.find("[inventory-slot="+toSlot+"]").html('<div class="item-slot-img"><img src="images/'+fromimage+'.png'+'" alt="'+fromItem.name+'" /></div><div class="item-slot-count"><p>'+numberFormat(count, fromItem.name)+' '+weightFormat(fromItem.weight/1000 * count)+'</p></div><p><div class="item-slot-label">'+fromItem.label+'</div>');
-						toInventory.find("[inventory-slot="+toSlot+"]").data("ItemData", fromItem);
 						$.post("https://linden_inventory/saveinventorydata", JSON.stringify({
 							type: "freeslot",
 							frominv: inv,
@@ -867,6 +866,8 @@ SwapItems = function(fromInventory, toInventory, fromSlot, toSlot) {
 							invid2 :toinvId2
 							
 						}));
+						fromItem.slot = toSlot
+						toInventory.find("[inventory-slot="+toSlot+"]").data("ItemData", fromItem);
 						success = true
 					}
 				}
