@@ -75,12 +75,11 @@ AddEventHandler('esx:onPlayerLogout', function()
 end)
 
 OnPlayerData = function(key, val)
-	if key == 'dead' and val == true then
-		DisarmPlayer() TriggerEvent('linden_inventory:closeInventory')
-	elseif key == 'ped' then
-		SetPedConfigFlag(ESX.PlayerData.ped, 48, 1)
-		SetPedCanSwitchWeapon(ESX.PlayerData.ped, 0)
+	if key == 'dead' and val then DisarmPlayer()
+		TriggerEvent('linden_inventory:closeInventory')
 	end
+	SetPedConfigFlag(ESX.PlayerData.ped, 48, 1)
+	SetPedCanSwitchWeapon(ESX.PlayerData.ped, 0)
 end
 
 RegisterNetEvent('esx_policejob:handcuff')
