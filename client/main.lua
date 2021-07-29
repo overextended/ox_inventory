@@ -1107,7 +1107,7 @@ RegisterNetEvent('linden_inventory:useItem')
 AddEventHandler('linden_inventory:useItem', function(item)
 	if item.metadata.bag and not currentInventory then
 		invOpen = false
-		TriggerServerEvent('linden_inventory:openInventory', 'bag', { id = item.metadata.bag, label = item.label..' ('..item.metadata.bag..')', slot = item.slot, slots = item.metadata.slot or 5})
+		TriggerServerEvent('linden_inventory:openInventory', 'bag', { id = item.metadata.bag, label = item.label..' ('..item.metadata.bag..')', slot = item.slot, slots = item.metadata.slots or 5})
 		return
 	end
 	if CanOpenInventory() and not useItemCooldown and not IsPedRagdoll(ESX.PlayerData.ped) then
