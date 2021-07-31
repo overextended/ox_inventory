@@ -63,6 +63,7 @@ exports('DisarmPlayer', DisarmPlayer)
 RegisterNetEvent('esx:playerLoaded')
 AddEventHandler('esx:playerLoaded', function(xPlayer)
 	StartInventory()
+	ESX.PlayerData = xPlayer
 end)
 
 RegisterNetEvent('esx:onPlayerLogout')
@@ -78,8 +79,8 @@ OnPlayerData = function(key, val)
 	if key == 'dead' and val then DisarmPlayer()
 		TriggerEvent('linden_inventory:closeInventory')
 	end
-	SetPedConfigFlag(ESX.PlayerData.ped, 48, 1)
 	SetPedCanSwitchWeapon(ESX.PlayerData.ped, 0)
+	SetPedEnableWeaponBlocking(ESX.PlayerData.ped, 1)
 end
 
 RegisterNetEvent('esx_policejob:handcuff')
@@ -97,13 +98,12 @@ end)
 StartInventory = function()
 	playerID, invOpen, ESX.PlayerData.dead, isBusy, usingWeapon, currentDrop = nil, false, false, false, false, nil
 	ClearWeapons()
-	SetPedConfigFlag(ESX.PlayerData.ped, 48, 1)
 	SetPedCanSwitchWeapon(ESX.PlayerData.ped, 0)
+	SetPedEnableWeaponBlocking(ESX.PlayerData.ped, 1)
 	SetWeaponsNoAutoswap(1)
 	SetWeaponsNoAutoreload(1)
 	SetTimeout(500, function()
 		ESX.TriggerServerCallback('linden_inventory:setup', function(data)
-			ESX.PlayerData = ESX.GetPlayerData()
 			ESX.PlayerData.inventory = data.inventory
 			ESX.SetPlayerData('inventory', data.inventory)
 			ESX.SetPlayerData('weight', data.weight)
