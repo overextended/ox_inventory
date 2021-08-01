@@ -59,8 +59,7 @@ local Webhook = function(type, output, identifier)
 		}
 		local user = _(type)..' Logs'
 		PerformHttpRequest(url, function(err, text, headers)
-			print(err, text, headers) end,
-			'POST', json.encode({ username = user, embeds = embed}), { ['Content-Type'] = 'application/json' }
+			end, 'POST', json.encode({ username = user, embeds = embed}), { ['Content-Type'] = 'application/json' }
 		)
 	end
 end
