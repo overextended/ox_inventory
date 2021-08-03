@@ -421,16 +421,22 @@ AddEventHandler('linden_inventory:openInventory',function(data, rightinventory)
 		if rightinventory then
 			if not rightinventory.id then rightinventory.id = rightinventory.name end
 			if not rightinventory.name then rightinventory.name = rightinventory.id end
+			rightinventory.items = rightinventory.inventory
+			rightinventory.inventory = nil
+			rightinventory.id = nil
 		end
 		SendNUIMessage({
-			message = 'openinventory',
-			inventory = data.inventory,
-			slots = data.slots,
-			name = inventoryLabel,
-			maxWeight = data.maxWeight,
-			weight = data.weight,
-			rightinventory = rightinventory,
-			job = ESX.PlayerData.job,
+			action = 'openinventory',
+			data = {
+				player = {
+					name = inventoryLabel,
+					slots = data.slots,
+					weight = data.weight,
+					maxWeight = data.maxWeight,
+					items = data.inventory
+				},
+				right = rightinventory
+			}
 		})
 		ESX.PlayerData.inventory = data.inventory
 		if not rightinventory then movement = true else movement = false end
@@ -1097,9 +1103,11 @@ RegisterNUICallback('BuyFromShop', function(data)
 	else TriggerEvent('mythic_notify:client:SendAlert', {type = 'error', text = _U('buy_amount'), length = 2500})end
 end)
 
-RegisterNUICallback('exit',function(data)
-	TriggerServerEvent('linden_inventory:saveInventory', data)
+RegisterNUICallback('exit',function(data, cb)
+	TriggerServerEvent('linden_inventory:saveInventory', ESX.PlayerData.inventory)
 	TriggerEvent('linden_inventory:closeInventory', false)
+
+	cb({})
 end)
 
 

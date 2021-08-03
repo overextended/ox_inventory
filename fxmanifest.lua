@@ -26,11 +26,9 @@ server_scripts {
 	'server/*.lua'
 }
 
-ui_page 'html/index.html'
+ui_page 'html/build/index.html'
 
 files {
-	'html/index.html',
-	'html/script.js',
-	'html/images/*.png',
-	'html/style.css',
+	'html/build/index.html',
+	'html/build/**/*'
 }
