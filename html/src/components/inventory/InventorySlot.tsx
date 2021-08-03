@@ -39,6 +39,7 @@ const InventorySlot: React.FC<SlotProps> = (props) => {
             toSlot: props.item.slot,
             fromInventory: data.inventory,
             toInventory: props.inventory,
+            split: shiftPressed
           })
         );
       },
@@ -76,9 +77,6 @@ const InventorySlot: React.FC<SlotProps> = (props) => {
                 fromInventory: props.inventory,
               })
             );
-        }}
-        onDoubleClick={(event) => {
-          alert("fast-use item");
         }}
       >
         {props.item.name ? (

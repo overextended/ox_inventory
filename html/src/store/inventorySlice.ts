@@ -109,28 +109,36 @@ export const inventorySlice = createSlice({
         toSlot: number;
         fromInventory: Pick<InventoryProps, "id" | "type">;
         toInventory: Pick<InventoryProps, "id" | "type">;
+        split: boolean;
       }>
     ) => {
-      let { fromSlot, toSlot, fromInventory, toInventory } = action.payload;
+      let { fromSlot, toSlot, fromInventory, toInventory, split } =
+        action.payload;
 
-      if (fromInventory.type) {
-        let item = state.data.rightInventory.items[fromSlot - 1];
-        item.slot = toSlot;
+      const sourceInventory = fromInventory.type
+        ? state.data.rightInventory
+        : state.data.playerInventory;
+      const targetInventory = toInventory.type
+        ? state.data.rightInventory
+        : state.data.playerInventory;
 
-        fromInventory.id === toInventory.id
-          ? (state.data.rightInventory.items[toSlot - 1] = item)
-          : (state.data.playerInventory.items[toSlot - 1] = item);
+      const canSplit = split && sourceInventory.items[fromSlot - 1].count! > 1;
 
-        state.data.rightInventory.items[fromSlot - 1] = { slot: fromSlot };
+      targetInventory.items[toSlot - 1] = {
+        ...sourceInventory.items[fromSlot - 1],
+        slot: toSlot,
+        count: canSplit
+          ? Math.floor(sourceInventory.items[fromSlot - 1].count! / 2)
+          : sourceInventory.items[fromSlot - 1].count,
+      };
+
+      if (canSplit) {
+        sourceInventory.items[fromSlot - 1].count! -=
+          targetInventory.items[toSlot - 1].count!;
       } else {
-        let item = state.data.playerInventory.items[fromSlot - 1];
-        item.slot = toSlot;
-
-        fromInventory.id === toInventory.id
-          ? (state.data.playerInventory.items[toSlot - 1] = item)
-          : (state.data.rightInventory.items[toSlot - 1] = item);
-
-        state.data.playerInventory.items[fromSlot - 1] = { slot: fromSlot };
+        sourceInventory.items[fromSlot - 1] = {
+          slot: fromSlot,
+        };
       }
     },
     fastMove: (
