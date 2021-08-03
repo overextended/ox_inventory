@@ -134,7 +134,6 @@ export const inventorySlice = createSlice({
         sourceInventory.items[fromSlot - 1] = {
           slot: fromSlot,
         };
-        alert('stacking');
       } else {
         const canSplit = split && sourceSlot.count! > 1;
         targetInventory.items[toSlot - 1] = {
