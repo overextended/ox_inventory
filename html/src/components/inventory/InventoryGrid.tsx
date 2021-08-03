@@ -1,17 +1,12 @@
 import React from "react";
 import { InventoryProps, ItemProps } from "../../typings";
+import Fade from "../utils/Fade";
 import WeightBar from "../utils/WeightBar";
 import InventorySlot from "./InventorySlot";
 
-interface InventoryGridProps {
-  inventory: InventoryProps;
-}
+const InventoryGrid: React.FC<{ inventory: InventoryProps }> = (props) => {
+  const [currentItem, setCurrentItem] = React.useState<ItemProps>();
 
-const generateKey = (pre: string) => {
-  return `${pre}_${new Date().getTime()}_${Math.random()}`;
-};
-
-const InventoryGrid: React.FC<InventoryGridProps> = (props) => {
   return (
     <div className="column-wrapper">
       <div
@@ -19,7 +14,7 @@ const InventoryGrid: React.FC<InventoryGridProps> = (props) => {
         style={{ justifyContent: "space-between", marginBottom: "5px" }}
       >
         <div>
-          {props.inventory.id} - {props.inventory.type && props.inventory.type}
+          {props.inventory.id} - {props.inventory.type}
         </div>
         {props.inventory.weight && (
           <div>
@@ -37,30 +32,34 @@ const InventoryGrid: React.FC<InventoryGridProps> = (props) => {
           />
         </div>
       )}
-      <div
-        className={
-          props.inventory.type ? "inventory-grid-right" : "inventory-grid"
-        }
-      >
+      <div className="inventory-grid">
         {Array.from(
           { ...props.inventory.items, length: props.inventory.slots },
           (item, index) => item || { slot: index + 1 }
         ).map((item) => (
           <InventorySlot
-            key={
-              props.inventory.type
-                ? generateKey(
-                    `${props.inventory.type}-${props.inventory.id}-${item.slot}`
-                  )
-                : generateKey(`${props.inventory.id}-${item.slot}`)
-            }
+            key={`${props.inventory.type}-${props.inventory.id}-${item.slot}-${item.name}`}
             item={item}
             inventory={{
               id: props.inventory.id,
               type: props.inventory.type,
             }}
+            setCurrentItem={setCurrentItem}
           />
         ))}
+      </div>
+
+      <div
+        className="row-wrapper"
+        style={{ marginTop: "2vh", marginRight: "4px", height: "5vh" }}
+      >
+        <Fade
+          visible={currentItem !== undefined}
+          duration={0.25}
+          className="item-info"
+        >
+          <p>{currentItem?.label}</p>
+        </Fade>
       </div>
     </div>
   );

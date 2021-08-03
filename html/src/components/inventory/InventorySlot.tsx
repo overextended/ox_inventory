@@ -1,36 +1,28 @@
 import React from "react";
 import { DragTypes, InventoryProps, ItemProps } from "../../typings";
-import { useDrag, useDrop } from "react-dnd";
+import { useDrag, useDragLayer, useDrop } from "react-dnd";
 import { useAppDispatch, useAppSelector } from "../../store";
-import {
-  swapItems,
-} from "../../store/inventorySlice";
+import { swapItems } from "../../store/inventorySlice";
 import WeightBar from "../utils/WeightBar";
 import useKeyPress from "../../hooks/useKeyPress";
 
 interface SlotProps {
   inventory: Pick<InventoryProps, "id" | "type">;
   item: ItemProps;
+  setCurrentItem: React.Dispatch<React.SetStateAction<ItemProps | undefined>>;
 }
 
 const InventorySlot: React.FC<SlotProps> = (props) => {
   const dispatch = useAppDispatch();
-  //const config = useAppSelector(selectConfig);
 
   const [{ isDragging }, drag] = useDrag(
     () => ({
-      item: () => {
-        //dispatch(beginDrag());
-        return props;
-      },
+      item: props,
       type: DragTypes.SLOT,
       collect: (monitor) => ({
         isDragging: monitor.isDragging(),
       }),
       canDrag: () => props.item.name !== undefined,
-      end: () => {
-        //dispatch(endDrag());
-      },
     }),
     [props.item]
   );
@@ -47,7 +39,6 @@ const InventorySlot: React.FC<SlotProps> = (props) => {
             toInventory: props.inventory,
           })
         );
-        //alert(config.shiftPressed);
       },
       collect: (monitor) => ({
         isOver: monitor.isOver(),
@@ -57,28 +48,24 @@ const InventorySlot: React.FC<SlotProps> = (props) => {
     [props.item]
   );
 
-  const attachRef = (element: HTMLDivElement) => {
-    drag(element);
-    drop(element);
-  };
-
   return (
     <>
       <div
-        ref={attachRef}
+        ref={(el) => {
+          drag(el);
+          drop(el);
+        }}
         className="item-container"
         style={{
           opacity: isDragging ? 0.4 : 1.0,
           border: isOver ? "5px solid white" : 0,
         }}
-        //onMouseEnter={() =>
-          //!config.isDragging &&
-          //props.item.name &&
-          //dispatch(itemHovered(props.item))
-        //}
-        //onMouseLeave={() =>
-          //!config.isDragging && props.item.name && dispatch(itemHovered())
-        //}
+        onMouseEnter={() =>
+          !isDragging && props.item.name && props.setCurrentItem(props.item)
+        }
+        onMouseLeave={() =>
+          !isOver && props.item.name && props.setCurrentItem(undefined)
+        }
         onClick={(event) => {
           event.ctrlKey && alert("fast move");
         }}

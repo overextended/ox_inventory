@@ -3,22 +3,28 @@ import type { RootState } from ".";
 import { InventoryProps } from "../typings";
 
 const initialState: {
-  playerInventory: InventoryProps;
-  rightInventory: InventoryProps;
+  data: {
+    playerInventory: InventoryProps;
+    rightInventory: InventoryProps;
+  };
+  itemAmount: number;
 } = {
-  playerInventory: {
-    id: "dunak",
-    slots: 5,
-    weight: 0,
-    maxWeight: 500,
-    items: [],
+  data: {
+    playerInventory: {
+      id: "dunak",
+      slots: 5,
+      weight: 0,
+      maxWeight: 500,
+      items: [],
+    },
+    rightInventory: {
+      id: "8560",
+      type: "drop",
+      slots: 5,
+      items: [],
+    },
   },
-  rightInventory: {
-    id: "8560",
-    type: "drop",
-    slots: 5,
-    items: [],
-  },
+  itemAmount: 0,
 };
 
 export const inventorySlice = createSlice({
@@ -32,8 +38,8 @@ export const inventorySlice = createSlice({
         rightInventory: InventoryProps;
       }>
     ) => {
-      state.playerInventory = action.payload.playerInventory;
-      state.rightInventory = action.payload.rightInventory;
+      state.data.playerInventory = action.payload.playerInventory;
+      state.data.rightInventory = action.payload.rightInventory;
     },
     swapItems: (
       state,
@@ -44,7 +50,7 @@ export const inventorySlice = createSlice({
         toInventory: Pick<InventoryProps, "id" | "type">;
       }>
     ) => {
-      let { fromSlot, toSlot, fromInventory, toInventory } = action.payload;
+      /*let { fromSlot, toSlot, fromInventory, toInventory } = action.payload;
 
       if (fromInventory.type) {
         let item = state.rightInventory.items[fromSlot - 1];
@@ -64,12 +70,16 @@ export const inventorySlice = createSlice({
           : (state.rightInventory.items[toSlot - 1] = item);
 
         state.playerInventory.items[fromSlot - 1] = { slot: fromSlot };
-      }
+      }*/
+    },
+    setItemAmount: (state, action: PayloadAction<number>) => {
+      state.itemAmount = action.payload
     },
   },
 });
 
-export const { setupInventory, swapItems } = inventorySlice.actions;
-export const selectInventory = (state: RootState) => state.inventory;
+export const { setupInventory, swapItems, setItemAmount } = inventorySlice.actions;
+export const selectInventoryData = (state: RootState) => state.inventory.data;
+export const selectItemAmount = (state: RootState) => state.inventory.itemAmount;
 
 export default inventorySlice.reducer;

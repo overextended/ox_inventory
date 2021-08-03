@@ -1,8 +1,13 @@
 import React from "react";
 import { useDrop } from "react-dnd";
+import { useAppDispatch, useAppSelector } from "../../store";
+import { selectItemAmount, setItemAmount } from "../../store/inventorySlice";
 import { DragTypes, ItemProps } from "../../typings";
 
-const InventoryControl: React.FC = (props) => {
+const InventoryControl: React.FC = () => {
+  const itemAmount = useAppSelector(selectItemAmount);
+  const dispatch = useAppDispatch();
+
   const [{}, use] = useDrop(() => ({
     accept: DragTypes.SLOT,
     drop: (item: ItemProps) =>
@@ -14,8 +19,14 @@ const InventoryControl: React.FC = (props) => {
       console.log("gived item: " + item.name + " " + item.count + "x"),
   }));
   return (
-    <div style={{ textAlign: "center" }}>
-      <input type="number" className="button input" min={0} defaultValue={0} />
+    <div className="column-wrapper">
+      <input
+        type="number"
+        className="button input"
+        min={0}
+        defaultValue={itemAmount}
+        onChange={(e) => dispatch(setItemAmount(e.target.valueAsNumber))}
+      />
       <button ref={use} className="button">
         Use
       </button>

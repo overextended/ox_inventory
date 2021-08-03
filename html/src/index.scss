@@ -121,7 +121,6 @@ body {
 }
 
 .button {
-  width: 60%;
   background-color: rgba(12, 12, 12, 0.35);
   border: 1px solid rgba(33, 33, 33, 0.4);
   outline-offset: -1px;
@@ -180,12 +179,10 @@ input[type="number"] {
 }
 
 .item-info {
-  position: absolute;
   padding: 0 10px 0 10px;
   font-weight: 500;
   font-size: 13px;
-  bottom: 20vh;
-  width: 35vh;
   background-color: rgba(0, 0, 0, 0.267);
   color: white;
+  width: 100%;
 }

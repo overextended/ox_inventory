@@ -3,7 +3,7 @@ import { DragLayerMonitor, useDragLayer, XYCoord } from "react-dnd";
 import { ItemProps } from "../../typings";
 
 interface DragLayerProps {
-  item: { item: ItemProps };
+  data: { item: ItemProps };
   currentOffset: XYCoord | null;
   isDragging: boolean;
 }
@@ -18,8 +18,6 @@ const subtract = (a: XYCoord, b: XYCoord): XYCoord => {
 const calculateParentOffset = (monitor: DragLayerMonitor): XYCoord => {
   const client = monitor.getInitialClientOffset();
   const source = monitor.getInitialSourceClientOffset();
-  // TODO: why is client containing `undefined` values _sometimes_?
-  // more precisely, just after MultiBackend switched from HTML5 to Touch _for the first time_?
   if (
     client === null ||
     source === null ||
@@ -40,8 +38,6 @@ export const calculatePointerPosition = (
     return null;
   }
 
-  // If we don't have a reference to a valid child, use the default offset:
-  // current cursor - initial parent/drag source offset
   if (!childRef.current || !childRef.current.getBoundingClientRect) {
     return subtract(offset, calculateParentOffset(monitor));
   }
@@ -53,9 +49,9 @@ export const calculatePointerPosition = (
 
 const DragPreview: React.FC = () => {
   const element = useRef<HTMLDivElement>(null);
-  const { item, isDragging, currentOffset } = useDragLayer<DragLayerProps>(
+  const { data, isDragging, currentOffset } = useDragLayer<DragLayerProps>(
     (monitor) => ({
-      item: monitor.getItem(),
+      data: monitor.getItem(),
       currentOffset: calculatePointerPosition(monitor, element),
       isDragging: monitor.isDragging(),
     })
@@ -77,7 +73,7 @@ const DragPreview: React.FC = () => {
           }}
         >
           <img
-            src={process.env.PUBLIC_URL + `/images/${item.item.name}.png`}
+            src={process.env.PUBLIC_URL + `/images/${data.item.name}.png`}
             style={{
               imageRendering: "-webkit-optimize-contrast",
               maxWidth: "80%",

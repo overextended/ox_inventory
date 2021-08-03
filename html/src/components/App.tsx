@@ -18,7 +18,8 @@ import Fade from "./utils/Fade";
 import { debugData } from "../utils/debugData";
 import { InventoryProps } from "../typings";
 import { useAppDispatch, useAppSelector } from "../store";
-import { selectInventory, setupInventory } from "../store/inventorySlice";
+import { selectInventoryData, setupInventory } from "../store/inventorySlice";
+import DragPreview from "./utils/DragPreview";
 
 debugData([
   {
@@ -26,7 +27,7 @@ debugData([
     data: {
       playerInventory: {
         id: "id",
-        slots: 10,
+        slots: 50,
         weight: 500,
         maxWeight: 1000,
         items: [
@@ -41,18 +42,25 @@ debugData([
       rightInventory: {
         id: "id",
         type: "drop",
-        slots: 5,
-        items: [],
+        slots: 50,
+        items: [
+          {
+            slot: 1,
+            name: "water",
+            label: "Water",
+            weight: 50,
+          },
+        ],
       },
     },
   },
 ]);
 
 const App: React.FC = () => {
-  const [inventoryVisible, setInventoryVisible] = React.useState(true);
+  const [inventoryVisible, setInventoryVisible] = React.useState(false);
   useNuiEvent<boolean>("setInventoryVisible", setInventoryVisible);
 
-  const inventory = useAppSelector(selectInventory);
+  const inventory = useAppSelector(selectInventoryData);
   const dispatch = useAppDispatch();
 
   useNuiEvent<{
@@ -60,18 +68,18 @@ const App: React.FC = () => {
     rightInventory: InventoryProps;
   }>("setupInventory", (data) => {
     dispatch(setupInventory(data));
+    setInventoryVisible(true);
   });
 
   return (
     <>
-      <Fade visible={inventoryVisible}>
-        <div className={`center-wrapper`}>
-          <InventoryGrid inventory={inventory.playerInventory} />
-          <InventoryControl />
-          <InventoryGrid inventory={inventory.rightInventory} />
-        </div>
+      <DragPreview />
+      <Fade visible={inventoryVisible} className="center-wrapper">
+        <InventoryGrid inventory={inventory.playerInventory} />
+        <InventoryControl />
+        <InventoryGrid inventory={inventory.rightInventory} />
       </Fade>
-      {/*<DragPreview />
+      {/*
       <ItemInfo />
       <Fade visible={notificationVisible}>
         <div className="item-container">
