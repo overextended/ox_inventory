@@ -1,17 +1,14 @@
 import React from "react";
 import { useAppSelector } from "../../store";
+//import { selectConfig } from "../../store/inventorySlice";
 
-const ItemInfo: React.FC = () => {
-  const item = useAppSelector((state) => state.inventory.itemHovered);
+const ItemInfo= () => {
+  /*const config = useAppSelector(selectConfig);
   return (
-    <div className="center-wrapper">
-      {item && (
-        <div className="item-info">
-          <p>{item.label}</p>
-        </div>
-      )}
+    <div className="item-info"  style={{visibility: config.itemHovered ? 'visible' : 'hidden'}}>
+      <p>{config.itemHovered?.label}</p>
     </div>
-  );
+  );*/
 };
 
 export default ItemInfo;

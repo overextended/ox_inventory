@@ -3,20 +3,10 @@ import { DragTypes, InventoryProps, ItemProps } from "../../typings";
 import { useDrag, useDrop } from "react-dnd";
 import { useAppDispatch, useAppSelector } from "../../store";
 import {
-  itemHovered,
-  selectConfig,
   swapItems,
 } from "../../store/inventorySlice";
-import {
-  Menu,
-  Item,
-  Separator,
-  Submenu,
-  useContextMenu,
-  theme,
-  animation,
-} from "react-contexify";
 import WeightBar from "../utils/WeightBar";
+import useKeyPress from "../../hooks/useKeyPress";
 
 interface SlotProps {
   inventory: Pick<InventoryProps, "id" | "type">;
@@ -24,23 +14,25 @@ interface SlotProps {
 }
 
 const InventorySlot: React.FC<SlotProps> = (props) => {
-  const config = useAppSelector(selectConfig);
   const dispatch = useAppDispatch();
+  //const config = useAppSelector(selectConfig);
 
-  const { show } = useContextMenu({
-    id: `${props.inventory.id}-${props.item.slot}`,
-  });
-
-  const [{ opacity }, drag] = useDrag(
+  const [{ isDragging }, drag] = useDrag(
     () => ({
-      item: props,
+      item: () => {
+        //dispatch(beginDrag());
+        return props;
+      },
       type: DragTypes.SLOT,
       collect: (monitor) => ({
-        opacity: monitor.isDragging() ? 0.4 : 1,
+        isDragging: monitor.isDragging(),
       }),
-      canDrag: config.canDrag && props.item.name !== undefined,
+      canDrag: () => props.item.name !== undefined,
+      end: () => {
+        //dispatch(endDrag());
+      },
     }),
-    [props.item, config]
+    [props.item]
   );
 
   const [{ isOver }, drop] = useDrop(
@@ -55,13 +47,12 @@ const InventorySlot: React.FC<SlotProps> = (props) => {
             toInventory: props.inventory,
           })
         );
+        //alert(config.shiftPressed);
       },
       collect: (monitor) => ({
         isOver: monitor.isOver(),
       }),
-      canDrop: (data, monitor) => {
-        return props.item.name === undefined;
-      },
+      canDrop: () => props.item.name === undefined,
     }),
     [props.item]
   );
@@ -76,10 +67,21 @@ const InventorySlot: React.FC<SlotProps> = (props) => {
       <div
         ref={attachRef}
         className="item-container"
-        style={{ opacity, border: isOver ? "5px solid white" : 0 }}
-        onContextMenu={props.item.name ? show : () => {}}
-        //onMouseEnter={() =>props.item.name && dispatch(itemHovered(props.item))}
-        //onMouseLeave={() => dispatch(itemHovered())}
+        style={{
+          opacity: isDragging ? 0.4 : 1.0,
+          border: isOver ? "5px solid white" : 0,
+        }}
+        //onMouseEnter={() =>
+          //!config.isDragging &&
+          //props.item.name &&
+          //dispatch(itemHovered(props.item))
+        //}
+        //onMouseLeave={() =>
+          //!config.isDragging && props.item.name && dispatch(itemHovered())
+        //}
+        onClick={(event) => {
+          event.ctrlKey && alert("fast move");
+        }}
       >
         {props.item.name && (
           <>
@@ -98,19 +100,6 @@ const InventorySlot: React.FC<SlotProps> = (props) => {
           </>
         )}
       </div>
-      <Menu
-        id={`${props.inventory.id}-${props.item.slot}`}
-        theme={theme.dark}
-        animation={animation.slide}
-      >
-        <Item>Use</Item>
-        <Item>Give</Item>
-        <Item>Drop</Item>
-        <Separator />
-        <Submenu label="Components">
-          <Item>Suppressor</Item>
-        </Submenu>
-      </Menu>
     </>
   );
 };

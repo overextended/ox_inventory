@@ -1,31 +1,88 @@
 import React from "react";
-import DragPreview from "./utils/DragPreview";
+/*import DragPreview from "./utils/DragPreview";
 import InventoryGrid from "./inventory/InventoryGrid";
 import InventoryControl from "./inventory/InventoryControl";
 import Hotbar from "./inventory/Hotbar";
 import ItemInfo from "./inventory/ItemInfo";
-import { selectInventory } from "../store/inventorySlice";
-import { useAppSelector } from "../store";
-import Notifications from "./utils/Notifications";
+import { pressShift, selectInventory } from "../store/inventorySlice";
+import { useAppDispatch, useAppSelector } from "../store";
+import { useNuiEvent } from "../hooks/useNuiEvent";
+import { debugData } from "../utils/debugData";
+import Fade from "./utils/Fade";
+import { ItemProps } from "../typings";
+import { useExitListener } from "../hooks/useExitListener";*/
+import useNuiEvent from "../hooks/useNuiEvent";
+import InventoryGrid from "./inventory/InventoryGrid";
+import InventoryControl from "./inventory/InventoryControl";
+import Fade from "./utils/Fade";
+import { debugData } from "../utils/debugData";
+import { InventoryProps } from "../typings";
+import { useAppDispatch, useAppSelector } from "../store";
+import { selectInventory, setupInventory } from "../store/inventorySlice";
+
+debugData([
+  {
+    action: "setupInventory",
+    data: {
+      playerInventory: {
+        id: "id",
+        slots: 10,
+        weight: 500,
+        maxWeight: 1000,
+        items: [
+          {
+            slot: 1,
+            name: "water",
+            label: "Water",
+            weight: 50,
+          },
+        ],
+      },
+      rightInventory: {
+        id: "id",
+        type: "drop",
+        slots: 5,
+        items: [],
+      },
+    },
+  },
+]);
 
 const App: React.FC = () => {
-  const [visible, setVisible] = React.useState(true);
+  const [inventoryVisible, setInventoryVisible] = React.useState(true);
+  useNuiEvent<boolean>("setInventoryVisible", setInventoryVisible);
 
   const inventory = useAppSelector(selectInventory);
+  const dispatch = useAppDispatch();
+
+  useNuiEvent<{
+    playerInventory: InventoryProps;
+    rightInventory: InventoryProps;
+  }>("setupInventory", (data) => {
+    dispatch(setupInventory(data));
+  });
+
   return (
     <>
-      <Notifications />
-      <DragPreview />
-      <div
-        className="center-wrapper"
-        style={{ visibility: visible ? "visible" : "hidden", paddingBottom: '10vh' }}
-      >
-        <InventoryGrid inventory={inventory.player} />
-        <InventoryControl />
-        <InventoryGrid inventory={inventory.right} />
-      </div>
+      <Fade visible={inventoryVisible}>
+        <div className={`center-wrapper`}>
+          <InventoryGrid inventory={inventory.playerInventory} />
+          <InventoryControl />
+          <InventoryGrid inventory={inventory.rightInventory} />
+        </div>
+      </Fade>
+      {/*<DragPreview />
       <ItemInfo />
-      <Hotbar />
+      <Fade visible={notificationVisible}>
+        <div className="item-container">
+          <div className="item-count">5g 10x</div>
+          <img src={process.env.PUBLIC_URL + `/images/water.png`} />
+          <div className="item-label">test</div>
+        </div>
+      </Fade>
+      <Fade visible={hotbarVisible}>
+        <Hotbar />
+      </Fade>*/}
     </>
   );
 };

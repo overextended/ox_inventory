@@ -47,3 +47,5 @@ export const useNuiEvent = <T = any>(
     return () => window.removeEventListener("message", eventListener);
   }, [action]);
 };
+
+export default useNuiEvent;

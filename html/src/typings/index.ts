@@ -17,7 +17,9 @@ export interface InventoryProps {
 }
 
 export interface ConfigProps {
-  canDrag: boolean;
+  itemHovered?: ItemProps;
+  isDragging?: boolean;
+  shiftPressed: boolean;
 }
 
 export const DragTypes = {
