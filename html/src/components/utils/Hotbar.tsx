@@ -1,6 +1,4 @@
 import React from "react";
-import { useAppSelector } from "../../store";
-import { selectInventory } from "../../store/inventorySlice";
 
 const Hotbar: React.FC = () => {
 

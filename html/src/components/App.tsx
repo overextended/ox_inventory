@@ -26,7 +26,7 @@ debugData([
     action: "setupInventory",
     data: {
       playerInventory: {
-        id: "id",
+        id: "player",
         slots: 50,
         weight: 500,
         maxWeight: 1000,
@@ -36,11 +36,21 @@ debugData([
             name: "water",
             label: "Water",
             weight: 50,
+            count: 1,
+            stackable: true,
+          },
+          {
+            slot: 2,
+            name: "burger",
+            label: "Burger",
+            weight: 50,
+            count: 5,
+            stackable: false
           },
         ],
       },
       rightInventory: {
-        id: "id",
+        id: "drop",
         type: "drop",
         slots: 50,
         items: [
@@ -49,6 +59,8 @@ debugData([
             name: "water",
             label: "Water",
             weight: 50,
+            count: 1,
+            stackable: true,
           },
         ],
       },

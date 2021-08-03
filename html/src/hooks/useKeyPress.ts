@@ -1,30 +1,36 @@
-import { useEffect, useState } from "react";
+import React from "react";
 
-const useKeyPress = (targetKey: string) => {
-  const [keyPressed, setKeyPressed] = useState(false);
+export const useKeyPress = (targetKey: KeyboardEvent["key"]) => {
+  const [keyPressed, setKeyPressed] = React.useState(false);
 
-  const downHandler = (event: KeyboardEvent) => {
-    if (event.key === targetKey) {
-      setKeyPressed(true);
-    }
-  };
+  const downHandler = React.useCallback(
+    ({ key }: KeyboardEvent) => {
+      if (key === targetKey) {
+        setKeyPressed(true);
+      }
+    },
+    [targetKey]
+  );
 
-  const upHandler = (event: KeyboardEvent) => {
-    if (event.key === targetKey) {
-      setKeyPressed(false);
-    }
-  };
+  const upHandler = React.useCallback(
+    ({ key }: KeyboardEvent) => {
+      if (key === targetKey) {
+        setKeyPressed(false);
+      }
+    },
+    [targetKey]
+  );
 
-  // Add event listeners
-  useEffect(() => {
+  React.useEffect(() => {
     window.addEventListener("keydown", downHandler);
     window.addEventListener("keyup", upHandler);
-    // Remove event listeners on cleanup
+
     return () => {
       window.removeEventListener("keydown", downHandler);
       window.removeEventListener("keyup", upHandler);
     };
-  }, []); // Empty array ensures that effect is only run on mount and unmount
+  }, [downHandler, upHandler]);
+
   return keyPressed;
 };
 

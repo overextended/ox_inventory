@@ -5,6 +5,7 @@ export interface ItemProps {
   count?: number;
   weight?: number;
   metadata?: any;
+  stackable?: boolean;
 }
 
 export interface InventoryProps {

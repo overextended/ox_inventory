@@ -2,7 +2,7 @@ import React from "react";
 import { DragTypes, InventoryProps, ItemProps } from "../../typings";
 import { useDrag, useDragLayer, useDrop } from "react-dnd";
 import { useAppDispatch, useAppSelector } from "../../store";
-import { swapItems } from "../../store/inventorySlice";
+import { fastMove, swapItems } from "../../store/inventorySlice";
 import WeightBar from "../utils/WeightBar";
 import useKeyPress from "../../hooks/useKeyPress";
 
@@ -13,6 +13,8 @@ interface SlotProps {
 }
 
 const InventorySlot: React.FC<SlotProps> = (props) => {
+  const shiftPressed = useKeyPress("Shift");
+
   const dispatch = useAppDispatch();
 
   const [{ isDragging }, drag] = useDrag(
@@ -24,7 +26,7 @@ const InventorySlot: React.FC<SlotProps> = (props) => {
       }),
       canDrag: () => props.item.name !== undefined,
     }),
-    [props.item]
+    [props.item, props.inventory, shiftPressed]
   );
 
   const [{ isOver }, drop] = useDrop(
@@ -45,7 +47,7 @@ const InventorySlot: React.FC<SlotProps> = (props) => {
       }),
       canDrop: () => props.item.name === undefined,
     }),
-    [props.item]
+    [props.item, props.inventory, shiftPressed]
   );
 
   return (
@@ -67,10 +69,19 @@ const InventorySlot: React.FC<SlotProps> = (props) => {
           !isOver && props.item.name && props.setCurrentItem(undefined)
         }
         onClick={(event) => {
-          event.ctrlKey && alert("fast move");
+          event.ctrlKey &&
+            dispatch(
+              fastMove({
+                fromSlot: props.item.slot,
+                fromInventory: props.inventory,
+              })
+            );
+        }}
+        onDoubleClick={(event) => {
+          alert("fast-use item");
         }}
       >
-        {props.item.name && (
+        {props.item.name ? (
           <>
             <div className="item-count">
               {props.item.weight}g {props.item.count}x
@@ -82,9 +93,11 @@ const InventorySlot: React.FC<SlotProps> = (props) => {
               <WeightBar percent={20} revert />
             </div>
             <div className="item-label">
-              {props.item.label} [{props.item.slot}]
+              {props.item.label} [{props.item.slot}] {shiftPressed && "SHIFT"}
             </div>
           </>
+        ) : (
+          <h1>{props.item.slot}</h1>
         )}
       </div>
     </>

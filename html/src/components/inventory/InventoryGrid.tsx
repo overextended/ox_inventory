@@ -33,10 +33,7 @@ const InventoryGrid: React.FC<{ inventory: InventoryProps }> = (props) => {
         </div>
       )}
       <div className="inventory-grid">
-        {Array.from(
-          { ...props.inventory.items, length: props.inventory.slots },
-          (item, index) => item || { slot: index + 1 }
-        ).map((item) => (
+        {props.inventory.items.map((item) => (
           <InventorySlot
             key={`${props.inventory.type}-${props.inventory.id}-${item.slot}-${item.name}`}
             item={item}
