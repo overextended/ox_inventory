@@ -213,7 +213,7 @@ AddEventHandler('linden_inventory:confiscatePlayerInventory', function(xPlayer)
 			['@data'] = inventory
 		}, function (rowsChanged)
 			TriggerEvent('linden_inventory:clearPlayerInventory', xPlayer)
-			TriggerClientEvent('mythic_notify:client:SendAlert', xPlayer.source, { type = 'error', text = _U('items_confiscated') })
+			TriggerClientEvent('ox_inventory:Notify', xPlayer.source, { type = 'error', text = _U('items_confiscated') })
 		end)
 	end
 end)
@@ -235,7 +235,7 @@ AddEventHandler('linden_inventory:recoverPlayerInventory', function(xPlayer)
 			if Opened[xPlayer.source] then TriggerClientEvent('linden_inventory:closeInventory', Opened[xPlayer.source].invid)
 				TriggerClientEvent('linden_inventory:refreshInventory', xPlayer.source, Inventories[xPlayer.source])
 			end
-			TriggerClientEvent('mythic_notify:client:SendAlert', xPlayer.source, { type = 'error', text = _U('items_returned') })
+			TriggerClientEvent('ox_inventory:Notify', xPlayer.source, { type = 'error', text = _U('items_returned') })
 		end
 	end
 end)
@@ -424,7 +424,7 @@ AddEventHandler('linden_inventory:buyItem', function(info)
 		local checkShop = Config.Shops[location].store.inventory[data.slot]
 
 		if checkShop.grade and checkShop.grade > xPlayer.job.grade then
-			TriggerClientEvent('mythic_notify:client:SendAlert', xPlayer.source, { type = 'error', text = _U('item_unauthorised') })
+			TriggerClientEvent('ox_inventory:Notify', xPlayer.source, { type = 'error', text = _U('item_unauthorised') })
 			return
 		end
 	
@@ -434,7 +434,7 @@ AddEventHandler('linden_inventory:buyItem', function(info)
 				['@owner'] = xPlayer.identifier
 			})
 			if not hasLicense then
-				TriggerClientEvent('mythic_notify:client:SendAlert', xPlayer.source, { type = 'error', text = _U('item_unlicensed') })
+				TriggerClientEvent('ox_inventory:Notify', xPlayer.source, { type = 'error', text = _U('item_unlicensed') })
 				return
 			end
 		end
@@ -502,11 +502,11 @@ AddEventHandler('linden_inventory:buyItem', function(info)
 					local missing = ''
 					if currency == 'bank' or item.name:find('money') then missing = '$' end
 					missing = missing..ESX.Math.GroupDigits(ESX.Round(data.price - money))..' '..currency
-					TriggerClientEvent('mythic_notify:client:SendAlert', xPlayer.source, { type = 'error', text = _U('cannot_afford', missing) })
+					TriggerClientEvent('ox_inventory:Notify', xPlayer.source, { type = 'error', text = _U('cannot_afford', missing) })
 				end
 			end
 		else
-			TriggerClientEvent('mythic_notify:client:SendAlert', xPlayer.source, { type = 'error', text = _U('cannot_carry') })
+			TriggerClientEvent('ox_inventory:Notify', xPlayer.source, { type = 'error', text = _U('cannot_carry') })
 		end
 	end
 end)
@@ -811,14 +811,14 @@ AddEventHandler('linden_inventory:giveItem', function(data, target)
 	local xTarget = ESX.GetPlayerFromId(target)
 	local xItem = getInventoryItem(xPlayer, data.item.name, data.item.metadata)
 	if data.amount > xItem.count then
-		TriggerClientEvent('mythic_notify:client:SendAlert', xPlayer.source, { type = 'error', text = _U('item_not_enough', data.item.label) })
+		TriggerClientEvent('ox_inventory:Notify', xPlayer.source, { type = 'error', text = _U('item_not_enough', data.item.label) })
 	else
 		if canCarryItem(xTarget, data.item.name, data.amount, data.item.metadata) then
 			removeInventoryItem(xPlayer, data.item.name, data.amount, data.item.metadata, data.item.slot)
 			addInventoryItem(xTarget, data.item.name, data.amount, data.item.metadata)
 			if Config.Logs then CreateLog(xPlayer.source, xTarget.source, 'has given '..data.amount..'x '..data.item.name..' to', 'player') end
 		else
-			TriggerClientEvent('mythic_notify:client:SendAlert', xPlayer.source, { type = 'error', text = _U('cannot_carry_other') })
+			TriggerClientEvent('ox_inventory:Notify', xPlayer.source, { type = 'error', text = _U('cannot_carry_other') })
 		end
 	end
 end)
@@ -842,7 +842,7 @@ AddEventHandler('linden_inventory:decreaseDurability', function(slot, item, ammo
 			local xItem = Items[Inventories[xPlayer.source].inventory[slot].name]
 			if Inventories[xPlayer.source].inventory[slot].metadata.durability ~= nil then
 				if Inventories[xPlayer.source].inventory[slot].metadata.durability <= 0 then
-					TriggerClientEvent('mythic_notify:client:SendAlert', xPlayer.source, { type = 'error', text = _U('weapon_broken') })
+					TriggerClientEvent('ox_inventory:Notify', xPlayer.source, { type = 'error', text = _U('weapon_broken') })
 					if Inventories[xPlayer.source].inventory[slot].name:find('WEAPON_FIREEXTINGUISHER') then
 						removeInventoryItem(xPlayer, Inventories[xPlayer.source].inventory[slot].name, 1, false, slot)
 					end
@@ -857,7 +857,7 @@ AddEventHandler('linden_inventory:decreaseDurability', function(slot, item, ammo
 				if Inventories[xPlayer.source].inventory[slot].metadata.durability <= 0 then
 					Inventories[xPlayer.source].inventory[slot].metadata.durability = 0
 					Inventories[xPlayer.source].inventory[slot].metadata.ammo = 0
-					TriggerClientEvent('mythic_notify:client:SendAlert', xPlayer.source, { type = 'error', text = _U('weapon_broken') })
+					TriggerClientEvent('ox_inventory:Notify', xPlayer.source, { type = 'error', text = _U('weapon_broken') })
 					TriggerClientEvent('linden_inventory:updateWeapon', xPlayer.source, Inventories[xPlayer.source].inventory[slot].metadata)
 					addInventoryItem(xPlayer, xItem.ammoname, ammo)
 				else
@@ -965,7 +965,7 @@ ESX.RegisterServerCallback('linden_inventory:usingItem', function(source, cb, it
 		if xItem.name:find('WEAPON_') then
 			if xItem.throwable then TriggerClientEvent('linden_inventory:weapon', xPlayer.source, slot)
 			elseif slot.metadata.durability > 0 then TriggerClientEvent('linden_inventory:weapon', xPlayer.source, slot)
-			else TriggerClientEvent('mythic_notify:client:SendAlert', xPlayer.source, { type = 'error', text = _U('weapon_broken') }) end
+			else TriggerClientEvent('ox_inventory:Notify', xPlayer.source, { type = 'error', text = _U('weapon_broken') }) end
 			cb(false)
 		elseif xItem.name:find('ammo-') then
 			TriggerClientEvent('linden_inventory:addAmmo', xPlayer.source, slot)
@@ -976,7 +976,7 @@ ESX.RegisterServerCallback('linden_inventory:usingItem', function(source, cb, it
 				if xItem.count >= consume then
 					cb(xItem)
 				else
-					TriggerClientEvent('mythic_notify:client:SendAlert', xPlayer.source, { type = 'error', text = _U('item_not_enough', xItem.label) })
+					TriggerClientEvent('ox_inventory:Notify', xPlayer.source, { type = 'error', text = _U('item_not_enough', xItem.label) })
 					cb(false)
 				end
 			end

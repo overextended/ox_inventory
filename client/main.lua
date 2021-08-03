@@ -30,6 +30,13 @@ local DrawHelp3D = function(coords, text)
 	SetFloatingHelpTextStyle(1, 1, 2, -1, 3, 0)
 end
 
+function Notify(data)
+	SendNUIMessage({
+		action = 'showNotif',
+		data = data
+	})
+end
+
 ClearWeapons = function()
 	for k, v in pairs(Weapons) do
 		SetPedAmmo(ESX.PlayerData.ped, v.hash, 0)
@@ -59,6 +66,11 @@ DisarmPlayer = function(weapon)
 	TriggerEvent('linden_inventory:currentWeapon', nil)
 end
 exports('DisarmPlayer', DisarmPlayer)
+
+RegisterNetEvent('ox_inventory:Notify')
+AddEventHandler('ox_inventory:Notify', function(data)
+	Notify(data)
+end)
 
 RegisterNetEvent('esx:playerLoaded')
 AddEventHandler('esx:playerLoaded', function(xPlayer)
@@ -112,7 +124,7 @@ StartInventory = function()
 			ClearWeapons()
 			local msg = _U('inventory_setup')
 			print(msg)
-			TriggerEvent('mythic_notify:client:SendAlert', {type = 'inform', text = msg, length = 2500})
+			Notify({text = msg, duration = 2500})
 			ESX.PlayerLoaded = true
 			TriggerLoops()
 			if next(Blips) then
@@ -184,7 +196,7 @@ OpenTargetInventory = function(target)
 			if CanOpenTarget(GetPlayerPed(targetPlayer)) or ESX.PlayerData.job.name == 'police' then
 				TriggerServerEvent('linden_inventory:openTargetInventory', GetPlayerServerId(targetPlayer))
 			else
-				TriggerEvent('mythic_notify:client:SendAlert', {type = 'error', text = _U('inventory_cannot_open_other'), length = 2500})
+				Notify({type = 'error', text = _U('inventory_cannot_open_other'), duration = 2500})
 			end
 		end
 	end
@@ -613,7 +625,7 @@ AddEventHandler('linden_inventory:addAmmo', function(ammo)
 				isBusy, useItemCooldown = false, false
 			end
 		else
-			TriggerEvent('mythic_notify:client:SendAlert', {type = 'error', text = _U('wrong_ammo', currentWeapon.label, ammo.label), length = 2500})
+			Notify({type = 'error', text = _U('wrong_ammo', currentWeapon.label, ammo.label), duration = 2500})
 		end
 	end
 end)
@@ -843,13 +855,13 @@ TriggerLoops = function()
 							if IsControlJustPressed(1,38) then
 								ESX.TriggerServerCallback('esx_license:checkLicense', function(hasWeaponLicense)
 									if hasWeaponLicense then
-										TriggerEvent('mythic_notify:client:SendAlert', {type = 'error', text = _U('has_weapon_license'), length = 2500})
+										Notify({type = 'error', text = _U('has_weapon_license'), duration = 2500})
 									else
 										ESX.TriggerServerCallback('linden_inventory:buyLicense', function(bought)
 											if bought then
-												TriggerEvent('mythic_notify:client:SendAlert', {type = 'inform', text = _U('bought_weapon_license'), length = 2500})
+												Notify({text = _U('bought_weapon_license'), duration = 2500})
 											else
-												TriggerEvent('mythic_notify:client:SendAlert', {type = 'inform', text = _U('poor_weapon_license'), length = 2500})
+												Notify({text = _U('poor_weapon_license'), duration = 2500})
 											end
 										end, license)
 									end
@@ -872,10 +884,10 @@ TriggerLoops = function()
 					local dist = #(playerCoords - pedCoords)
 					if not id or dist > 1.8 then
 						TriggerEvent('linden_inventory:closeInventory')
-						TriggerEvent('mythic_notify:client:SendAlert', {type = 'error', text = _U('inventory_lost_access'), length = 2500})
+						Notify({type = 'error', text = _U('inventory_lost_access'), duration = 2500})
 					elseif not ESX.PlayerData.job.name == 'police' and not CanOpenTarget(ped) then
 						TriggerEvent('linden_inventory:closeInventory')
-						TriggerEvent('mythic_notify:client:SendAlert', {type = 'error', text = _U('inventory_lost_access'), length = 2500})
+						TriggerEvent({type = 'error', text = _U('inventory_lost_access'), length = 2500})
 					else
 						TaskTurnPedToFaceCoord(ESX.PlayerData.ped, pedCoords)
 					end
@@ -883,7 +895,7 @@ TriggerLoops = function()
 					local dist = #(playerCoords - currentInventory.coords)
 					if dist > 2 or CanOpenTarget(ESX.PlayerData.ped) then
 						TriggerEvent('linden_inventory:closeInventory')
-						TriggerEvent('mythic_notify:client:SendAlert', {type = 'error', text = _U('inventory_lost_access'), length = 2500})
+						TriggerEvent({type = 'error', text = _U('inventory_lost_access'), duration = 2500})
 					end
 				end
 			end
@@ -907,7 +919,7 @@ RegisterCommand('reload', function()
 end)
 
 RegisterCommand('inv', function()
-	if isBusy then TriggerEvent('mythic_notify:client:SendAlert', {type = 'error', text = _U('inventory_cannot_open'), length = 2500})
+	if isBusy then Notify({type = 'error', text = _U('inventory_cannot_open'), duration = 2500})
 	elseif invOpen then TriggerEvent('linden_inventory:closeInventory')
 	else
 		if CanOpenInventory() then
@@ -927,10 +939,10 @@ end)
 
 RegisterCommand('inv2', function()
 	if invOpen then return end
-	if isBusy then TriggerEvent('mythic_notify:client:SendAlert', {type = 'error', text = _U('inventory_cannot_open'), length = 2500})
+	if isBusy then Notify({type = 'error', text = _U('inventory_cannot_open'), duration = 2500})
 	elseif currentInventory then TriggerEvent('linden_inventory:closeInventory')
 	else
-		if not CanOpenInventory() then TriggerEvent('mythic_notify:client:SendAlert', {type = 'error', text = _U('inventory_cannot_open'), length = 2500}) return end
+		if not CanOpenInventory() then Notify({type = 'error', text = _U('inventory_cannot_open'), duration = 2500}) return end
 		if not IsPedInAnyVehicle(ESX.PlayerData.ped, false) then -- trunk
 			local vehicle, vehiclePos
 			local result, coords, object, type = Raycast()
@@ -1016,7 +1028,7 @@ RegisterCommand('inv2', function()
 						return
 					end
 				else
-					TriggerEvent('mythic_notify:client:SendAlert', {type = 'error', text = _U('vehicle_locked'), length = 2500})
+					Notify({type = 'error', text = _U('vehicle_locked'), duration = 2500})
 				end
 			end
 		elseif IsPedInAnyVehicle(ESX.PlayerData.ped, false) then -- glovebox
@@ -1060,7 +1072,7 @@ RegisterCommand('weapondetails', function()
 		local msg
 		if currentWeapon.metadata.registered then msg = _U('weapon_registered', currentWeapon.label, currentWeapon.metadata.serial, currentWeapon.metadata.registered)
 		else msg = _U('weapon_unregistered', currentWeapon.label) end
-		TriggerEvent('mythic_notify:client:SendAlert', {type = 'inform', text = msg, length = 8000})
+		Notify({type = 'inform', text = msg, duration = 8000})
 	end
 end)
 
@@ -1074,7 +1086,7 @@ end)
 
 RegisterNUICallback('notification', function(data)
 	if data.type == 2 then data.type = 'error' else data.type = 'inform' end
-	TriggerEvent('mythic_notify:client:SendAlert', {type = data.type, text = _U(data.message), length = 2500})
+	Notify({type = data.type, text = _U(data.message), duration = 2500})
 end)
 
 RegisterNUICallback('useItem', function(data, cb)
@@ -1084,12 +1096,12 @@ end)
 RegisterNUICallback('giveItem', function(data, cb)
 	local closestPlayer, closestPlayerDistance = ESX.Game.GetClosestPlayer()
 	if closestPlayer == -1 or closestPlayerDistance > 2.0 then 
-		TriggerEvent('mythic_notify:client:SendAlert', {type = 'error', text = _U('nobody_nearby'), length = 2500})
+		Notify({type = 'error', text = _U('nobody_nearby'), duration = 2500})
 	elseif data.inv == 'Playerinv' then
 		if data.amount >= 1 then
 			TriggerServerEvent('linden_inventory:giveItem', data, GetPlayerServerId(closestPlayer))
 			TriggerEvent('randPickupAnim')
-		else TriggerEvent('mythic_notify:client:SendAlert', {type = 'error', text = _U('give_amount'), length = 2500}) end
+		else Notify({type = 'error', text = _U('give_amount'), duration = 2500}) end
 	end
 end)
 
@@ -1100,7 +1112,7 @@ end)
 RegisterNUICallback('BuyFromShop', function(data)
 	if data.count >= 1 then
 		TriggerServerEvent('linden_inventory:buyItem', data)
-	else TriggerEvent('mythic_notify:client:SendAlert', {type = 'error', text = _U('buy_amount'), length = 2500})end
+	else Notify({type = 'error', text = _U('buy_amount'), duration = 2500})end
 end)
 
 RegisterNUICallback('exit',function(data, cb)
@@ -1125,7 +1137,7 @@ AddEventHandler('linden_inventory:useItem', function(item)
 		if data or esxItem then
 			if data then
 				if data.useinvehicle == false and IsPedInAnyVehicle(ESX.PlayerData.ped, true) then
-					TriggerEvent('mythic_notify:client:SendAlert', {type = 'error', text = _U('cannot_use', item.label), length = 2500}) return
+					Notify({type = 'error', text = _U('cannot_use', item.label), duration = 2500}) return
 				elseif data.component then
 					if not currentWeapon then return end
 					local result, esxWeapon = ESX.GetWeapon(currentWeapon.name)
@@ -1138,9 +1150,9 @@ AddEventHandler('linden_inventory:useItem', function(item)
 							end
 						end
 					end
-					if not component then TriggerEvent('mythic_notify:client:SendAlert', {type = 'error', text = _U('component_invalid', item.label), length = 2500}) return end
+					if not component then Notify({type = 'error', text = _U('component_invalid', item.label), duration = 2500}) return end
 					if HasPedGotWeaponComponent(ESX.PlayerData.ped, currentWeapon.hash, component.hash) then
-						TriggerEvent('mythic_notify:client:SendAlert', {type = 'error', text = _U('component_has', item.label), length = 2500}) return
+						Notify({type = 'error', text = _U('component_has', item.label), length = 2500}) return
 					end
 				end
 			end
@@ -1156,7 +1168,7 @@ AddEventHandler('linden_inventory:useItem', function(item)
 						if cb then
 							UseItem(item, false, data)
 						else
-							TriggerEvent('mythic_notify:client:SendAlert', {type = 'error', text = _U('cannot_use', item.label), length = 2500}) return
+							Notify({type = 'error', text = _U('cannot_use', item.label), duration = 2500}) return
 						end
 					end)
 				else

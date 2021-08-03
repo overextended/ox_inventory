@@ -6,6 +6,7 @@ import Hotbar from "./inventory/Hotbar";
 import ItemInfo from "./inventory/ItemInfo";
 import { selectInventory } from "../store/inventorySlice";
 import { useAppSelector } from "../store";
+import Notifications from "./utils/Notifications";
 
 const App: React.FC = () => {
   const [visible, setVisible] = React.useState(true);
@@ -13,6 +14,7 @@ const App: React.FC = () => {
   const inventory = useAppSelector(selectInventory);
   return (
     <>
+      <Notifications />
       <DragPreview />
       <div
         className="center-wrapper"

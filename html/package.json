@@ -18,6 +18,7 @@
     "react-dnd": "^14.0.2",
     "react-dnd-touch-backend": "^14.0.0",
     "react-dom": "^17.0.2",
+    "react-hot-toast": "^2.1.0",
     "react-redux": "^7.2.4",
     "react-scripts": "4.0.3",
     "redux": "^4.1.0",

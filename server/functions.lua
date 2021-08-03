@@ -76,7 +76,7 @@ ValidateItem = function(type, xPlayer, fromSlot, toSlot, fromItem, toItem)
 	if reason then
 		print( ('[%s] %s failed item validation (type: %s, reason: %s)\nfromSlot: %s\ntoSlot: %s\nfromItem: %s\ntoItem: %s'):format(xPlayer.source, GetPlayerName(xPlayer.source), type, reason, json.encode(fromSlot), json.encode(toSlot), json.encode(fromItem), json.encode(toItem)) )
 		-- failed validation can be caused by desync, so don't autoban for it
-		TriggerClientEvent('mythic_notify:client:SendAlert', xPlayer.source, { type = 'error', text = '(Desync) '..reason })
+		TriggerClientEvent('ox_inventory:Notify', xPlayer.source, { type = 'error', text = '(Desync) '..reason })
 		TriggerClientEvent("linden_inventory:closeInventory", xPlayer.source)
 		TriggerClientEvent('linden_inventory:refreshInventory', xPlayer.source, Inventories[xPlayer.source])
 		return false
