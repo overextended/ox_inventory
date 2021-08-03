@@ -74,10 +74,10 @@ const InventorySlot: React.FC<SlotProps> = (props) => {
           border: isOver ? "5px solid white" : 0,
         }}
         onMouseEnter={() =>
-          !isDragging && props.item.name && props.setCurrentItem(props.item)
+          props.item.name && props.setCurrentItem(props.item)
         }
         onMouseLeave={() =>
-          !isOver && props.item.name && props.setCurrentItem(undefined)
+          props.item.name && props.setCurrentItem(undefined)
         }
         onClick={(event) => {
           event.ctrlKey &&
