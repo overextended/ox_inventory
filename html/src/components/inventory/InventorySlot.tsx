@@ -39,14 +39,18 @@ const InventorySlot: React.FC<SlotProps> = (props) => {
             toSlot: props.item.slot,
             fromInventory: data.inventory,
             toInventory: props.inventory,
-            split: shiftPressed
+            split: shiftPressed,
           })
         );
       },
       collect: (monitor) => ({
         isOver: monitor.isOver(),
       }),
-      canDrop: () => props.item.name === undefined,
+      canDrop: (data) =>
+        !props.item.name ||
+        (props.item.name === data.item.name &&
+          (props.item.slot !== data.item.slot ||
+            props.inventory.id !== data.inventory.id)),
     }),
     [props.item, props.inventory, shiftPressed]
   );
