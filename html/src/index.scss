@@ -213,12 +213,20 @@ input[type="number"] {
     }
 
     @keyframes progressBar {
-      0% {
+      from {
         width: 0;
       }
-      100% {
+      to {
         width: 100%;
       }
     }
+  }
+
+  &-cancel {
+    @extend .progressBar-value;
+    transition: all 1s ease-in-out;
+    animation-play-state: paused;
+    width: 100% !important;
+    background-color: red;
   }
 }

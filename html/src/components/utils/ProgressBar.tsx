@@ -12,25 +12,34 @@ debugData([
   },
 ]);
 
+//TODO: maybe refactor depends on lua side
+
 const ProgressBar: React.FC = () => {
   const [duration, setDuration] = useState(0);
   const [isVisible, setVisible] = useState(false);
+  const [isCancelled, setCancelled] = useState(false);
   const [text, setText] = useState("");
 
-  useNuiEvent("startProgress", (data) => {
+  useNuiEvent<{ text: string; duration: number }>("startProgress", (data) => {
     setText(data.text);
     setDuration(data.duration);
     setVisible(true);
   });
 
+  useNuiEvent("cancelProgress", () => {
+    setCancelled(true);
+  });
+
   return (
     <>
+      <button onClick={() => setCancelled(true)}>TEST</button>
       {isVisible && (
         <div className="progressBar">
           <div
-            className="progressBar-value"
+            className={isCancelled ? "progressBar-cancel" : "progressBar-value"}
             style={{ animationDuration: `${duration}ms` }}
             onAnimationEnd={() => setVisible(false)}
+            onTransitionEnd={() => setTimeout(() => setVisible(false), 1000)}
           >
             <span>{text}</span>
           </div>
