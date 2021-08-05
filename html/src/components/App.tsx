@@ -1,16 +1,4 @@
 import React from "react";
-/*import DragPreview from "./utils/DragPreview";
-import InventoryGrid from "./inventory/InventoryGrid";
-import InventoryControl from "./inventory/InventoryControl";
-import Hotbar from "./inventory/Hotbar";
-import ItemInfo from "./inventory/ItemInfo";
-import { pressShift, selectInventory } from "../store/inventorySlice";
-import { useAppDispatch, useAppSelector } from "../store";
-import { useNuiEvent } from "../hooks/useNuiEvent";
-import { debugData } from "../utils/debugData";
-import Fade from "./utils/Fade";
-import { ItemProps } from "../typings";
-import { useExitListener } from "../hooks/useExitListener";*/
 import useNuiEvent from "../hooks/useNuiEvent";
 import InventoryGrid from "./inventory/InventoryGrid";
 import InventoryControl from "./inventory/InventoryControl";
@@ -20,6 +8,8 @@ import { InventoryProps } from "../typings";
 import { useAppDispatch, useAppSelector } from "../store";
 import { selectInventoryData, setupInventory } from "../store/inventorySlice";
 import DragPreview from "./utils/DragPreview";
+import Notifications from "./utils/Notifications";
+import ProgressBar from './utils/ProgressBar'
 
 debugData([
   {
@@ -85,6 +75,8 @@ const App: React.FC = () => {
 
   return (
     <>
+    <ProgressBar />
+      <Notifications />
       <DragPreview />
       <Fade visible={inventoryVisible} className="center-wrapper">
         <InventoryGrid inventory={inventory.playerInventory} />

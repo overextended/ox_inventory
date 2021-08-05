@@ -186,3 +186,33 @@ input[type="number"] {
   color: white;
   width: 100%;
 }
+
+.progbar-container {
+  width: 20%;
+  height: 5%;
+  position: absolute;
+  bottom: 10vh;
+  left: 50%;
+  transform: translate(-50%, 0);
+  background-color: rgba(0, 0, 0, 0.6);
+  border-radius: 5px;
+}
+
+.progress {
+  height: 100%;
+  border-radius: 5px;
+  background-color: rgb(52, 152, 219);
+}
+
+.progbar-text {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-size: 2.2vh
+}
+
+@keyframes progbar { 
+  0% {width: 0%}
+  100% {width: 100%}
+}
