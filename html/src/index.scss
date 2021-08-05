@@ -224,7 +224,6 @@ input[type="number"] {
 
   &-cancel {
     @extend .progressBar-value;
-    transition: all 1s ease-in-out;
     animation-play-state: paused;
     width: 100% !important;
     background-color: red;

@@ -28,18 +28,17 @@ const ProgressBar: React.FC = () => {
 
   useNuiEvent("cancelProgress", () => {
     setCancelled(true);
+    setTimeout(() => setVisible(false), 1000);
   });
 
   return (
     <>
-      <button onClick={() => setCancelled(true)}>TEST</button>
       {isVisible && (
         <div className="progressBar">
           <div
             className={isCancelled ? "progressBar-cancel" : "progressBar-value"}
             style={{ animationDuration: `${duration}ms` }}
             onAnimationEnd={() => setVisible(false)}
-            onTransitionEnd={() => setTimeout(() => setVisible(false), 1000)}
           >
             <span>{text}</span>
           </div>
