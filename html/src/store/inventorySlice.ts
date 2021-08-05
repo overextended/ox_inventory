@@ -1,14 +1,12 @@
-import { createSlice, PayloadAction } from "@reduxjs/toolkit";
+import { createSlice, current, PayloadAction } from "@reduxjs/toolkit";
+import { Item } from "react-contexify";
 import type { RootState } from ".";
 import { InventoryProps, ItemProps } from "../typings";
 
-const findEmptyIndex = (items: ItemProps[]) =>
-  items.findIndex((value) => !value.name);
+const findAvailableSlot = (item: ItemProps, items: ItemProps[]) => {
+  if (!item.stackable) return items.find((value) => !value.name);
 
-const findStackableIndex = (item: ItemProps, items: ItemProps[]) => {
-  if (!item.stackable) return findEmptyIndex(items);
-
-  const stackableIndex = items.findIndex(
+  const stackableIndex = items.find(
     (value) =>
       value.stackable &&
       value.name &&
@@ -17,32 +15,50 @@ const findStackableIndex = (item: ItemProps, items: ItemProps[]) => {
       value.metadata === item.metadata
   );
 
-  return stackableIndex !== -1 ? stackableIndex : findEmptyIndex(items);
+  return stackableIndex || items.find((value) => !value.name);
 };
 
-export const fastMoveTo = (
-  item: ItemProps,
+const moveItems = (
+  sourceSlot: ItemProps,
+  targetSlot: ItemProps,
   sourceInventory: InventoryProps,
-  targetInventory: InventoryProps
+  targetInventory: InventoryProps,
+  splitCount: number | true
 ) => {
-  const newIndex = item.stackable
-    ? findStackableIndex(item, targetInventory.items)
-    : findEmptyIndex(targetInventory.items);
-
-  if (newIndex === -1) {
-    alert("newIndex === -1");
+  if (sourceSlot.count === undefined || sourceSlot.count < 1) {
+    console.error("Source slot item count cannot be undefined");
     return;
   }
 
-  if (item.stackable && targetInventory.items[newIndex].count && item.count) {
-    targetInventory.items[newIndex].count! += item.count;
+  if (splitCount === true && sourceSlot.count > 1) {
+    splitCount = Math.floor(sourceSlot.count / 2);
+  } else if (splitCount === 0 || splitCount > sourceSlot.count) {
+    splitCount = sourceSlot.count;
   } else {
-    targetInventory.items[newIndex] = { ...item, slot: newIndex + 1 };
+    splitCount = +splitCount;
   }
 
-  sourceInventory.items[item.slot - 1] = {
-    slot: item.slot,
-  };
+  targetInventory.items[targetSlot.slot - 1] =
+    targetSlot.stackable && targetSlot.count
+      ? {
+          ...targetSlot,
+          count: targetSlot.count + splitCount,
+        }
+      : {
+          ...sourceSlot,
+          count: splitCount,
+          slot: targetSlot.slot,
+        };
+
+  sourceInventory.items[sourceSlot.slot - 1] =
+    sourceSlot.count - splitCount > 0
+      ? {
+          ...sourceSlot,
+          count: sourceSlot.count - splitCount,
+        }
+      : {
+          slot: sourceSlot.slot,
+        };
 };
 
 const initialState: {
@@ -109,10 +125,10 @@ export const inventorySlice = createSlice({
         toSlot: number;
         fromInventory: Pick<InventoryProps, "id" | "type">;
         toInventory: Pick<InventoryProps, "id" | "type">;
-        split: boolean;
+        splitHalf: boolean;
       }>
     ) => {
-      let { fromSlot, toSlot, fromInventory, toInventory, split } =
+      const { fromSlot, toSlot, fromInventory, toInventory, splitHalf } =
         action.payload;
 
       const sourceInventory = fromInventory.type
@@ -122,46 +138,23 @@ export const inventorySlice = createSlice({
         ? state.data.rightInventory
         : state.data.playerInventory;
 
-      const sourceSlot = sourceInventory.items[fromSlot - 1];
-      const targetSlot = targetInventory.items[toSlot - 1];
-
-      if (
-        sourceSlot.stackable &&
-        sourceSlot.name === targetSlot.name &&
-        sourceSlot.metadata === targetSlot.metadata
-      ) {
-        targetSlot.count! += sourceSlot.count!;
-        sourceInventory.items[fromSlot - 1] = {
-          slot: fromSlot,
-        };
-      } else {
-        const canSplit = split && sourceSlot.count! > 1;
-        targetInventory.items[toSlot - 1] = {
-          ...sourceInventory.items[fromSlot - 1],
-          slot: toSlot,
-          count: canSplit
-            ? Math.floor(sourceInventory.items[fromSlot - 1].count! / 2)
-            : sourceInventory.items[fromSlot - 1].count,
-        };
-
-        if (canSplit) {
-          sourceInventory.items[fromSlot - 1].count! -=
-            targetInventory.items[toSlot - 1].count!;
-        } else {
-          sourceInventory.items[fromSlot - 1] = {
-            slot: fromSlot,
-          };
-        }
-      }
+      moveItems(
+        sourceInventory.items[fromSlot - 1],
+        targetInventory.items[toSlot - 1],
+        sourceInventory,
+        targetInventory,
+        splitHalf || state.itemAmount
+      );
     },
     fastMove: (
       state,
       action: PayloadAction<{
         fromSlot: number;
         fromInventory: Pick<InventoryProps, "id" | "type">;
+        splitHalf: boolean;
       }>
     ) => {
-      const { fromSlot, fromInventory } = action.payload;
+      const { fromSlot, fromInventory, splitHalf } = action.payload;
 
       const sourceInventory = fromInventory.type
         ? state.data.rightInventory
@@ -170,9 +163,23 @@ export const inventorySlice = createSlice({
         ? state.data.playerInventory
         : state.data.rightInventory;
 
-      const item = sourceInventory.items[fromSlot - 1];
+      const targetSlot = findAvailableSlot(
+        sourceInventory.items[fromSlot - 1],
+        targetInventory.items
+      );
 
-      fastMoveTo(item, sourceInventory, targetInventory);
+      if (targetSlot === undefined) {
+        console.error("Target slot cannot be undefined");
+        return;
+      }
+
+      moveItems(
+        sourceInventory.items[fromSlot - 1],
+        targetSlot,
+        sourceInventory,
+        targetInventory,
+        splitHalf || state.itemAmount
+      );
     },
     setItemAmount: (state, action: PayloadAction<number>) => {
       state.itemAmount = action.payload;

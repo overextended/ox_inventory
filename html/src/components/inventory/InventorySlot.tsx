@@ -1,7 +1,7 @@
 import React from "react";
 import { DragTypes, InventoryProps, ItemProps } from "../../typings";
-import { useDrag, useDragLayer, useDrop } from "react-dnd";
-import { useAppDispatch, useAppSelector } from "../../store";
+import { useDrag, useDrop } from "react-dnd";
+import { useAppDispatch } from "../../store";
 import { fastMove, swapItems } from "../../store/inventorySlice";
 import WeightBar from "../utils/WeightBar";
 import useKeyPress from "../../hooks/useKeyPress";
@@ -24,7 +24,7 @@ const InventorySlot: React.FC<SlotProps> = (props) => {
       collect: (monitor) => ({
         isDragging: monitor.isDragging(),
       }),
-      canDrag: () => props.item.name !== undefined,
+      canDrag: () => !!props.item.name,
     }),
     [props.item, props.inventory, shiftPressed]
   );
@@ -39,7 +39,7 @@ const InventorySlot: React.FC<SlotProps> = (props) => {
             toSlot: props.item.slot,
             fromInventory: data.inventory,
             toInventory: props.inventory,
-            split: shiftPressed,
+            splitHalf: shiftPressed,
           })
         );
       },
@@ -47,10 +47,18 @@ const InventorySlot: React.FC<SlotProps> = (props) => {
         isOver: monitor.isOver(),
       }),
       canDrop: (data) => {
-        if(props.item.name === undefined) return true;
+        if (props.item.name === undefined) return true;
 
-        if(props.item.name === data.item.name && props.item.stackable && data.item.stackable) {
-          if(props.item.slot !== data.item.slot || props.inventory.id !== data.inventory.id) {
+        if (
+          props.item.stackable &&
+          data.item.stackable &&
+          props.item.name === data.item.name &&
+          props.item.metadata === data.item.metadata
+        ) {
+          if (
+            props.item.slot !== data.item.slot ||
+            props.inventory.id !== data.inventory.id
+          ) {
             return true;
           }
         }
@@ -73,20 +81,18 @@ const InventorySlot: React.FC<SlotProps> = (props) => {
           opacity: isDragging ? 0.4 : 1.0,
           border: isOver ? "5px solid white" : 0,
         }}
-        onMouseEnter={() =>
-          props.item.name && props.setCurrentItem(props.item)
-        }
-        onMouseLeave={() =>
-          props.item.name && props.setCurrentItem(undefined)
-        }
+        onMouseEnter={() => props.item.name && props.setCurrentItem(props.item)}
+        onMouseLeave={() => props.item.name && props.setCurrentItem(undefined)}
         onClick={(event) => {
-          event.ctrlKey &&
-            dispatch(
-              fastMove({
-                fromSlot: props.item.slot,
-                fromInventory: props.inventory,
-              })
-            );
+          if (!event.ctrlKey || !props.item.name) return;
+          dispatch(
+            fastMove({
+              fromSlot: props.item.slot,
+              fromInventory: props.inventory,
+              splitHalf: event.shiftKey,
+            })
+          );
+          props.setCurrentItem(undefined);
         }}
       >
         {props.item.name ? (
