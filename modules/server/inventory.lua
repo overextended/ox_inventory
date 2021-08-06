@@ -215,16 +215,7 @@ M.Load = function(id, inv, owner)
 		for k, v in pairs(Inventory) do
 			local item = Items[v.name]
 			if item then
-				local weight
-				if item.ammoname then
-					local ammo = {
-						type = item.ammoname,
-						count = v.metadata.ammo,
-						weight = Items[item.ammoname].weight
-					}
-					weight = item.weight + (ammo.weight * ammo.count)
-				else weight = item.weight end
-				if not v.metadata then v.metadata = {} elseif v.metadata.weight then weight += v.metadata.weight end
+				local weight = M.SlotWeight(item, v)
 				returnData[v.slot] = {name = item.name, label = item.label, weight = weight, slot = v.slot, count = v.count, description = item.description, metadata = v.metadata, stack = item.stack, close = item.close}
 			end
 		end
@@ -249,6 +240,21 @@ M.GetItem = function(inv, item, metadata)
 		return item
 	end
 	return
+end
+
+M.SlotWeight = function(item, slot)
+	local weight = item.weight * slot.count
+	if not slot.metadata then slot.metadata = {} end
+	if item.ammoname then
+		local ammo = {
+			type = item.ammoname,
+			count = slot.metadata.ammo,
+			weight = item.weight
+		}
+		weight += ammo.weight * ammo.count
+	end
+	if slot.metadata.weight then weight += slot.metadata.weight end
+	return weight
 end
 
 M.SwapSlots = function(inventory, slot)
