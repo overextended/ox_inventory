@@ -2,9 +2,10 @@ import React from "react";
 import { DragTypes, InventoryProps, ItemProps } from "../../typings";
 import { useDrag, useDrop } from "react-dnd";
 import { useAppDispatch } from "../../store";
-import { fastMove, swapItems } from "../../store/inventorySlice";
+import { actions } from "../../store/inventorySlice";
 import WeightBar from "../utils/WeightBar";
 import useKeyPress from "../../hooks/useKeyPress";
+import buyItem from "../../store/buyItem";
 
 interface SlotProps {
   inventory: Pick<InventoryProps, "id" | "type">;
@@ -26,22 +27,32 @@ const InventorySlot: React.FC<SlotProps> = (props) => {
       }),
       canDrag: () => !!props.item.name,
     }),
-    [props.item, props.inventory, shiftPressed]
+    [props.item, shiftPressed]
   );
 
   const [{ isOver }, drop] = useDrop(
     () => ({
       accept: DragTypes.SLOT,
       drop: (data: SlotProps) => {
-        dispatch(
-          swapItems({
-            fromSlot: data.item.slot,
-            toSlot: props.item.slot,
-            fromInventory: data.inventory,
-            toInventory: props.inventory,
-            splitHalf: shiftPressed,
-          })
-        );
+        data.inventory.type === "shop"
+          ? dispatch(
+              buyItem({
+                fromSlot: data.item.slot,
+                toSlot: props.item.slot,
+                fromInventory: data.inventory.id,
+                toInventory: props.inventory.id,
+                amount: 0,
+              })
+            )
+          : dispatch(
+              actions.moveItems({
+                fromSlot: data.item.slot,
+                toSlot: props.item.slot,
+                fromInventory: data.inventory,
+                toInventory: props.inventory,
+                splitHalf: shiftPressed,
+              })
+            );
       },
       collect: (monitor) => ({
         isOver: monitor.isOver(),
@@ -84,15 +95,19 @@ const InventorySlot: React.FC<SlotProps> = (props) => {
         onMouseEnter={() => props.item.name && props.setCurrentItem(props.item)}
         onMouseLeave={() => props.item.name && props.setCurrentItem(undefined)}
         onClick={(event) => {
-          if (!event.ctrlKey || !props.item.name) return;
-          dispatch(
-            fastMove({
-              fromSlot: props.item.slot,
-              fromInventory: props.inventory,
-              splitHalf: event.shiftKey,
-            })
-          );
-          props.setCurrentItem(undefined);
+          if (!props.item.name) return;
+          if (event.ctrlKey) {
+            dispatch(
+              actions.moveItems({
+                fromSlot: props.item.slot,
+                fromInventory: props.inventory,
+                splitHalf: event.shiftKey,
+              })
+            );
+            props.setCurrentItem(undefined);
+          } else if (event.altKey) {
+            alert("fast use");
+          }
         }}
       >
         {props.item.name ? (

@@ -6,10 +6,14 @@ import Fade from "./utils/Fade";
 import { debugData } from "../utils/debugData";
 import { InventoryProps } from "../typings";
 import { useAppDispatch, useAppSelector } from "../store";
-import { selectInventoryData, setupInventory } from "../store/inventorySlice";
+import {
+  actions,
+  selectPlayerInventory,
+  selectRightInventory,
+} from "../store/inventorySlice";
 import DragPreview from "./utils/DragPreview";
-import Notifications from "./utils/Notifications";
-import ProgressBar from './utils/ProgressBar'
+import Notifications, { Notify } from "./utils/Notifications";
+import ProgressBar from "./utils/ProgressBar";
 
 debugData([
   {
@@ -35,13 +39,13 @@ debugData([
             label: "Burger",
             weight: 50,
             count: 5,
-            stackable: false
+            stackable: true,
           },
         ],
       },
       rightInventory: {
         id: "drop",
-        type: "drop",
+        type: "shop",
         slots: 50,
         items: [
           {
@@ -62,39 +66,28 @@ const App: React.FC = () => {
   const [inventoryVisible, setInventoryVisible] = React.useState(false);
   useNuiEvent<boolean>("setInventoryVisible", setInventoryVisible);
 
-  const inventory = useAppSelector(selectInventoryData);
+  const playerInventory = useAppSelector(selectPlayerInventory);
+  const rightInventory = useAppSelector(selectRightInventory);
   const dispatch = useAppDispatch();
 
   useNuiEvent<{
     playerInventory: InventoryProps;
     rightInventory: InventoryProps;
   }>("setupInventory", (data) => {
-    dispatch(setupInventory(data));
+    dispatch(actions.setupInventory(data));
     setInventoryVisible(true);
   });
 
   return (
     <>
-    <ProgressBar />
+      <Fade visible={inventoryVisible} className="center-wrapper">
+        <InventoryGrid inventory={playerInventory} />
+        <InventoryControl />
+        <InventoryGrid inventory={rightInventory} />
+      </Fade>
+      <ProgressBar />
       <Notifications />
       <DragPreview />
-      <Fade visible={inventoryVisible} className="center-wrapper">
-        <InventoryGrid inventory={inventory.playerInventory} />
-        <InventoryControl />
-        <InventoryGrid inventory={inventory.rightInventory} />
-      </Fade>
-      {/*
-      <ItemInfo />
-      <Fade visible={notificationVisible}>
-        <div className="item-container">
-          <div className="item-count">5g 10x</div>
-          <img src={process.env.PUBLIC_URL + `/images/water.png`} />
-          <div className="item-label">test</div>
-        </div>
-      </Fade>
-      <Fade visible={hotbarVisible}>
-        <Hotbar />
-      </Fade>*/}
     </>
   );
 };

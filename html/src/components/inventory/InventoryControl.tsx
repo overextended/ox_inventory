@@ -1,7 +1,7 @@
 import React from "react";
 import { useDrop } from "react-dnd";
 import { useAppDispatch, useAppSelector } from "../../store";
-import { selectItemAmount, setItemAmount } from "../../store/inventorySlice";
+import { selectItemAmount, actions } from "../../store/inventorySlice";
 import { DragTypes, ItemProps } from "../../typings";
 
 const InventoryControl: React.FC = () => {
@@ -25,7 +25,7 @@ const InventoryControl: React.FC = () => {
         className="button input"
         min={0}
         defaultValue={itemAmount}
-        onChange={(e) => dispatch(setItemAmount(e.target.valueAsNumber))}
+        onChange={(e) => dispatch(actions.setItemAmount(e.target.valueAsNumber))}
       />
       <button ref={use} className="button">
         Use
