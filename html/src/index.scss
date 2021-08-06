@@ -188,8 +188,8 @@ input[type="number"] {
 }
 
 .progressBar {
-  width: 30vh;
-  height: 5vh;
+  width: 32vh;
+  height: 4.2vh;
   position: absolute;
   bottom: 10vh;
   left: 50%;
@@ -226,6 +226,6 @@ input[type="number"] {
     @extend .progressBar-value;
     animation-play-state: paused;
     width: 100% !important;
-    background-color: red;
+    background-color: rgb(198, 40, 40);
   }
 }

@@ -1,6 +1,7 @@
 import { useState } from "react";
 import useNuiEvent from "../../hooks/useNuiEvent";
 import { debugData } from "../../utils/debugData";
+import { fetchNui } from "../../utils/fetchNui";
 
 debugData([
   {
@@ -24,11 +25,12 @@ const ProgressBar: React.FC = () => {
     setText(data.text);
     setDuration(data.duration);
     setVisible(true);
+    setCancelled(false)
   });
 
   useNuiEvent("cancelProgress", () => {
     setCancelled(true);
-    setTimeout(() => setVisible(false), 1000);
+    setTimeout(() => setVisible(false), 1750);
   });
 
   return (
@@ -38,7 +40,7 @@ const ProgressBar: React.FC = () => {
           <div
             className={isCancelled ? "progressBar-cancel" : "progressBar-value"}
             style={{ animationDuration: `${duration}ms` }}
-            onAnimationEnd={() => setVisible(false)}
+            onAnimationEnd={() => {setVisible(false); fetchNui('ox_inventory:ProgressComplete')}}
           >
             <span>{text}</span>
           </div>
