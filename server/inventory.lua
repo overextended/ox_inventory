@@ -76,7 +76,7 @@ local SyncInventory = function(xPlayer, inv, items, message)
 	-- notify client (items, message, newweight)
 end
 
-local SetSlot = function(player, inv, item, count, metadata, slot)
+local SetSlot = function(inv, item, count, metadata, slot)
 	inv = Inventories[type(inv) == 'table' and inv.id or inv]
 	local currentSlot, message = inv.items[slot] or false
 	local newCount = currentSlot and currentSlot.count + count or count
@@ -97,6 +97,23 @@ local Weight = function(inv)
 	end
 	inv.weight = math.floor(weight + 0.5)
 	return inv.weight
+end
+
+local GenerateText = function(num)
+	local string = ''
+	repeat
+		for i=1, num do
+			string = string..string.char(math.random(65, 90))
+		end
+		Wait(5)
+	until string ~= 'POL' and string ~= 'EMS'
+	return string
+end
+
+local GenerateSerial = function(text)
+	if not text then GenerateText(3)
+	elseif text:len() > 3 then return text end
+	return ('%s%s%s'):format(math.random(100000,999999), text, math.random(100000,999999))
 end
 
 M.Create = function(...)
@@ -123,7 +140,7 @@ M.Create = function(...)
 		self.timeout = false end
 		
 		Inventories[self.id] = self
-	else Function.Error('Inventory.Create received invalid number of arguments') end
+	else OX.Error('Inventory.Create received invalid number of arguments') end
 	return
 end
 
@@ -136,7 +153,7 @@ M.Save = function(inv)
 			})
 		elseif Vehicle[inv.type] then
 			local plate = inv.id:match("-(.*)")
-			if Config.TrimPlate then plate = Function.Trim(plate) end
+			if Config.TrimPlate then plate = OX.Trim(plate) end
 			exports.ghmattimysql:scalar('SELECT 1 from owned_vehicles WHERE plate = ?', {
 				plate
 			}, function(result)
@@ -169,7 +186,7 @@ M.Load = function(id, inv, owner)
 	if id and inv then
 		if isVehicle then
 			local plate = id:match("-(.*)")
-			if Config.TrimPlate then plate = Function.Trim(plate) end
+			if Config.TrimPlate then plate = OX.Trim(plate) end
 			local vehicle = exports.ghmattimysql:executeSync('SELECT owner, plate, trunk, glovebox FROM owned_vehicles WHERE plate = ?', {
 				plate
 			})
@@ -293,10 +310,10 @@ M.AddItem = function(inv, item, count, metadata, slot)
 				if not metadata.components then metadata.components = {} end
 				if metadata.registered ~= false then
 					metadata.registered = xPlayer.name
-					metadata.serial = Function.GenerateSerial(metadata.serial)
+					metadata.serial = GenerateSerial(metadata.serial)
 				end
 			end
-			SetSlot(xPlayer, inv, item, count, metadata, slot)
+			SetSlot(inv, item, count, metadata, slot)
 		else
 			if item.name:find('identification') then
 				count = 1
@@ -308,9 +325,9 @@ M.AddItem = function(inv, item, count, metadata, slot)
 			elseif item.name:find('paperbag') then
 				count = 1
 				metadata = {}
-				metadata.container = Function.GenerateText(3)..os.time(os.date('!*t'))
+				metadata.container = GenerateText(3)..os.time(os.date('!*t'))
 			end
-			SetSlot(xPlayer, inv, item, count, metadata, slot)
+			SetSlot(inv, item, count, metadata, slot)
 		end
 		inv.weight += (item.weight + (metadata.weight or 0)) * count
 		if xPlayer then SyncInventory(xPlayer, inv, {[slot] = inv.items[slot]}, ('Added %sx %s'):format(count, item.label)) end
@@ -341,7 +358,7 @@ M.RemoveItem = function(inv, item, count, metadata, slot)
 		metadata = SetMetadata(metadata)
 		local slotItem = inv.items[slot] or false
 		if slot and slotItem and item.name == slotItem.name and Function.MatchTables(slotItem.metadata, metadata) then
-			SetSlot(xPlayer, inv, item, -count, metadata, slot)
+			SetSlot(inv, item, -count, metadata, slot)
 		else
 			local itemSlots, totalCount = GetItemSlots(inv, item, metadata)
 			if itemSlots and totalCount > 0 then
@@ -351,17 +368,17 @@ M.RemoveItem = function(inv, item, count, metadata, slot)
 					if removed < total then
 						if v == count then
 							removed = total
-							SetSlot(xPlayer, inv, item, -count, metadata, k)
+							SetSlot(inv, item, -count, metadata, k)
 							slot[k] = {[k] = inv.items[k]}
 						elseif v > count then
 							removed = total
 							count -= v
-							SetSlot(xPlayer, inv, item, -count, metadata, k)
+							SetSlot(inv, item, -count, metadata, k)
 							slot[k] = {[k] = inv.items[k]}
 						else
 							removed += v
 							count -= v
-							SetSlot(xPlayer, inv, item, -count, metadata, k)
+							SetSlot(inv, item, -count, metadata, k)
 							slot[k] = {[k] = inv.items[k]}
 						end
 					else break end
