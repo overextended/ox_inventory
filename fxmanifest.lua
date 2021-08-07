@@ -1,12 +1,12 @@
 fx_version 'cerulean'
 game 'gta5'
-author 'Linden'
+lua54 'yes'
+author 'Linden, Dunak'
 description 'https://github.com/thelindat/linden_inventory'
 versioncheck 'https://raw.githubusercontent.com/thelindat/linden_inventory/main/fxmanifest.lua'
-version '1.9.2'
+version '2.0.0'
 
 dependencies {
-	'es_extended',
 	'ghmattimysql'
 }
 
@@ -14,16 +14,17 @@ shared_scripts {
 	'@es_extended/imports.lua',
 	'@es_extended/locale.lua',
 	'config.lua',
-	'shared/*.lua',
-	'locales/*.lua'
+	'locales/*.lua',
+	'modules/*.lua',
+	'shared/*.lua'
 }
 
 client_scripts {
-	'client/*.lua'
+	'client.lua'
 }
 
 server_scripts {
-	'server/*.lua'
+	'server.lua'
 }
 
 ui_page 'html/build/index.html'
