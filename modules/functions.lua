@@ -7,6 +7,14 @@ M.CheckTable = function(table, value)
 	return false
 end
 
+M.GetWeapon = function(weaponHash)
+	for k, v in pairs(Weapons) do
+		if v.hash == weaponHash then
+			return v
+		end
+	end
+end
+
 M.MatchTables = function(t1,t2)
 	local ty1 = type(t1)
 	local ty2 = type(t2)
