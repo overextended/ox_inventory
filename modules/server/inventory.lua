@@ -1,6 +1,6 @@
 local M = {}
 local Inventories = {}
-local Function = module('functions')
+local Function = module('functions', true)
 local metatable = setmetatable(M, {
 	__call = function(self, ...)
 		if #({...}) == 1 then
