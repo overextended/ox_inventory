@@ -1,10 +1,5 @@
 local Modules = {}
 
-ox = {
-	server = IsDuplicityVersion(),
-	trim = function(string) return string:match("^%s*(.-)%s*$") end
-}
-
 if ox.server then
 	ox.error = function(...) print(string.strjoin(' ', '^1[error]^7', ...)) end
 	ox.info = function(...) print(string.strjoin(' ', '^2[info]^7', ...)) end
@@ -28,7 +23,7 @@ module = function(file, shared)
 	if not Modules[file] then
 		local path = shared and file or ox.server and 'server/'..file or 'client/'..file
 		path = 'modules/'..path..'.lua'
-		local func, err = load(LoadResourceFile(Config.Resource, path), path, 't')
+		local func, err = load(LoadResourceFile(ox.name, path), path, 't')
 		assert(func, err == nil or '\n^1'..err..'^7')
 		Modules[file] = func()
 	end

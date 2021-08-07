@@ -1,4 +1,4 @@
-local path, timestamp, date, time = GetResourcePath(Config.Resource)
+local path, timestamp, date, time = GetResourcePath(ox.name)
 path = path:gsub('//', '/')..'/'
 
 local logsType = 'discord' -- okay if your server is small

@@ -1299,7 +1299,6 @@ local Ammo = {
 		stack = true,
 	}
 }
-local Server = IsDuplicityVersion()
 if Items then
 	local count = 0
 	for k, v in pairs(Items) do
@@ -1310,7 +1309,7 @@ if Items then
 				v.client.consume = nil
 			else v.consume = 1 end
 		end
-		if Server then
+		if ox.server then
 			v.client = nil
 			count = count + 1
 		end
@@ -1321,14 +1320,14 @@ if Items then
 		v.hash = joaat(k)
 		v.stack = false
 		v.close = false
-		if Server then count = count + 1 end
+		if ox.server then count = count + 1 end
 		Items[k] = v
 	end
 
 	for k, v in pairs(Components) do
 		v.name = k
 		v.consume = 1
-		if Server then
+		if ox.server then
 			v.client = nil
 			count = count + 1
 		end
@@ -1340,7 +1339,7 @@ if Items then
 		v.consume = 1
 		v.stack = true
 		v.close = false
-		if Server then
+		if ox.server then
 			v.client = nil
 			count = count + 1
 		end

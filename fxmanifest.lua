@@ -2,11 +2,12 @@ fx_version 'cerulean'
 game 'gta5'
 lua54 'yes'
 author 'Linden, Dunak'
-description 'https://github.com/thelindat/linden_inventory'
-versioncheck 'https://raw.githubusercontent.com/thelindat/linden_inventory/main/fxmanifest.lua'
+description 'https://github.com/overextended/ox_inventory'
+versioncheck 'https://raw.githubusercontent.com/overextended/ox_inventory/main/fxmanifest.lua'
 version '2.0.0'
 
 dependencies {
+	'es_extended',
 	'ghmattimysql'
 }
 

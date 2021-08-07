@@ -1,8 +1,8 @@
 Config = {}
-Config.Resource = GetCurrentResourceName()
+ox = {server = IsDuplicityVersion(), name = GetCurrentResourceName()}
 Config.Locale = 'en'
 
-if IsDuplicityVersion() then
+if ox.server then
 	Config.DefaultWeight = ESX.GetConfig().MaxWeight
 
 	-- Number of slots in the player inventory
