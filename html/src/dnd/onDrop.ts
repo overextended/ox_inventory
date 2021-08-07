@@ -1,7 +1,6 @@
 import { findAvailableSlot } from "../reducers/helpers";
 import { swapItems } from "../reducers/swapItems";
 import { store } from "../store";
-import { actions } from "../store/inventorySlice";
 import { DragProps } from "../typings";
 
 export const onDrop = (source: DragProps, target?: DragProps) => {

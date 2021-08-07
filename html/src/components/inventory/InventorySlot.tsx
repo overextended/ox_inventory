@@ -1,10 +1,11 @@
 import React from "react";
 import { DragProps, DragTypes, InventoryProps, ItemProps } from "../../typings";
 import { useDrag, useDrop } from "react-dnd";
-import { useAppDispatch } from "../../store";
+import { useAppDispatch, useAppSelector } from "../../store";
 import WeightBar from "../utils/WeightBar";
 import { canDrag, canDrop } from "../../dnd/conditions";
 import { onDrop } from "../../dnd/onDrop";
+import { selectIsBusy } from "../../store/inventorySlice";
 
 interface SlotProps {
   inventory: InventoryProps;
@@ -13,14 +14,14 @@ interface SlotProps {
 }
 
 const InventorySlot: React.FC<SlotProps> = (props) => {
-  const dispatch = useAppDispatch();
-
   const dragProps: DragProps = {
     item: props.item,
     inventory: {
       type: props.inventory.type,
     },
   };
+
+  const isBusy = useAppSelector(selectIsBusy);
 
   const [{ isDragging }, drag] = useDrag<
     DragProps,
@@ -33,9 +34,9 @@ const InventorySlot: React.FC<SlotProps> = (props) => {
       collect: (monitor) => ({
         isDragging: monitor.isDragging(),
       }),
-      canDrag: () => canDrag(dragProps),
+      canDrag: () => !isBusy && canDrag(dragProps),
     }),
-    [dragProps]
+    [dragProps, isBusy]
   );
 
   const [{ isOver }, drop] = useDrop<DragProps, void, { isOver: boolean }>(
@@ -86,7 +87,7 @@ const InventorySlot: React.FC<SlotProps> = (props) => {
               <WeightBar percent={20} revert />
             </div>
             <div className="item-label">
-              {props.item.label} [{props.item.slot}]
+              {props.item.label} [{props.item.slot}] {isBusy && "BUSY"}
             </div>
           </>
         ) : (

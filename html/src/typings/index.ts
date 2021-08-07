@@ -6,6 +6,7 @@ export interface ItemProps {
   weight?: number;
   metadata?: any;
   stackable?: boolean;
+  usable?: boolean;
 }
 
 export interface InventoryProps {

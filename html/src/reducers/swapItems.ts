@@ -1,12 +1,10 @@
-import { CaseReducer, createAsyncThunk, PayloadAction } from "@reduxjs/toolkit";
+import { createAsyncThunk } from "@reduxjs/toolkit";
 import { InventoryProps, ItemProps } from "../typings";
 import { RootState } from "../store";
-import { findAvailableSlot } from "./helpers";
-import { actions, InventoryState } from "../store/inventorySlice";
-import { ActionCreators } from "redux-undo";
+import { fetchNui } from "../utils/fetchNui";
 
 export const swapItems = createAsyncThunk<
-  void,
+  boolean,
   {
     fromSlot: ItemProps["slot"];
     fromType: InventoryProps["type"];
@@ -17,12 +15,4 @@ export const swapItems = createAsyncThunk<
   {
     state: RootState;
   }
->("inventory/swapItems", async (data, { getState, dispatch }) => {
-  const response = await new Promise((resolve) => {
-    setTimeout(() => resolve(false), 2500);
-  });
-
-  if (response === false) {
-    dispatch(actions.undoHistory());
-  }
-});
+>("inventory/swapItems", async (data) => fetchNui<boolean>("swapItems", data));

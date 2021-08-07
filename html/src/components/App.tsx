@@ -7,9 +7,10 @@ import { debugData } from "../utils/debugData";
 import { InventoryProps } from "../typings";
 import { useAppDispatch, useAppSelector } from "../store";
 import {
-  actions,
+  loadInventory,
   selectPlayerInventory,
   selectRightInventory,
+  setShiftPressed,
 } from "../store/inventorySlice";
 import DragPreview from "./utils/DragPreview";
 import Notifications from "./utils/Notifications";
@@ -75,14 +76,14 @@ const App: React.FC = () => {
     playerInventory: InventoryProps;
     rightInventory: InventoryProps;
   }>("setupInventory", (data) => {
-    dispatch(actions.setupInventory(data));
+    dispatch(loadInventory(data));
     setInventoryVisible(true);
   });
 
   const shiftPressed = useKeyPress("Shift");
 
   React.useEffect(() => {
-    dispatch(actions.setShiftPressed(shiftPressed));
+    dispatch(setShiftPressed(shiftPressed));
   }, [shiftPressed]);
 
   return (

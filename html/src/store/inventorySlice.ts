@@ -1,24 +1,30 @@
-import { createSlice, current, PayloadAction } from "@reduxjs/toolkit";
+import {
+  createSlice,
+  current,
+  isFulfilled,
+  isPending,
+  isRejected,
+  original,
+  PayloadAction,
+} from "@reduxjs/toolkit";
 import type { RootState } from ".";
 import { InventoryProps } from "../typings";
 import { setupInventory } from "../reducers/setupInventory";
 import { swapItems } from "../reducers/swapItems";
-import { findAvailableSlot } from "../reducers/helpers";
 
 export type InventoryState = {
-  history: {
-    playerInventory: InventoryProps;
-    rightInventory: InventoryProps;
-  }[];
   playerInventory: InventoryProps;
   rightInventory: InventoryProps;
   itemAmount: number;
   shiftPressed: boolean;
   isBusy: boolean;
+  history?: {
+    playerInventory: InventoryProps;
+    rightInventory: InventoryProps;
+  };
 };
 
 const initialState: InventoryState = {
-  history: [],
   playerInventory: {
     id: "dunak",
     slots: 5,
@@ -39,7 +45,7 @@ const initialState: InventoryState = {
         label: "Burger",
         weight: 50,
         count: 5,
-        stackable: true,
+        stackable: false,
       },
       {
         slot: 3,
@@ -61,10 +67,9 @@ export const inventorySlice = createSlice({
   name: "inventory",
   initialState,
   reducers: {
-    setupInventory,
+    loadInventory: setupInventory,
     setItemAmount: (state, action: PayloadAction<number>) => {
       if (action.payload < 0) {
-        console.error("Amount cannot be less than 0");
         return;
       }
       state.itemAmount = action.payload;
@@ -72,29 +77,17 @@ export const inventorySlice = createSlice({
     setShiftPressed: (state, action: PayloadAction<boolean>) => {
       state.shiftPressed = action.payload;
     },
-    saveHistory: (state) => {
-      state.history.push({
-        playerInventory: state.playerInventory,
-        rightInventory: state.rightInventory,
-      });
-    },
-    undoHistory: (state) => {
-      const history = state.history.pop();
-
-      if (history) {
-        state.playerInventory = history.playerInventory;
-        state.rightInventory = history.rightInventory;
-      }
-    },
   },
   extraReducers: (builder) => {
     builder.addCase(swapItems.pending, (state, action) => {
       const { fromSlot, fromType, toSlot, toType, count } = action.meta.arg;
 
-      state.history.push({
+      state.isBusy = true;
+
+      state.history = {
         playerInventory: current(state.playerInventory),
         rightInventory: current(state.rightInventory),
-      });
+      };
 
       const sourceInventory = fromType
         ? state.rightInventory
@@ -128,15 +121,25 @@ export const inventorySlice = createSlice({
               slot: sourceSlot.slot,
             };
     });
+    builder.addCase(swapItems.fulfilled, (state, action) => {
+      if (!action.payload && state.history) {
+        state.playerInventory = state.history?.playerInventory;
+        state.rightInventory = state.history?.rightInventory;
+      }
+
+      state.isBusy = false;
+    });
   },
 });
 
-export const actions = inventorySlice.actions;
+export const { setItemAmount, setShiftPressed, loadInventory } =
+  inventorySlice.actions;
 export const selectPlayerInventory = (state: RootState) =>
   state.inventory.playerInventory;
 export const selectRightInventory = (state: RootState) =>
   state.inventory.rightInventory;
 export const selectItemAmount = (state: RootState) =>
   state.inventory.itemAmount;
+export const selectIsBusy = (state: RootState) => state.inventory.isBusy;
 
 export default inventorySlice.reducer;
