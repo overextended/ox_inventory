@@ -15,8 +15,8 @@ CreateThread(function()
 	for i=1, #result do
 		local i = result[i]
 		if Items[i.name] then
-			if not query then query = ox.concat("DELETE FROM items WHERE name = '"..i.name.."'")
-			else query = ox.concat(query, "OR name='"..i.name.."'") end
+			if not query then query = "DELETE FROM items WHERE name = '"..i.name.."'"
+			else query = string.strjoin(' ', query, "OR name='"..i.name.."'") end
 		else
 			Items[i.name] = {
 				name = i.name,
