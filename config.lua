@@ -1,42 +1,40 @@
-Keybind = {
-	Primary = 'F2',
-	Secondary = 'K',
-	Hotbar = 'TAB'
-}
-
 Config = {}
+Config.Resource = GetCurrentResourceName()
 Config.Locale = 'en'
 
-Config.Resource = GetCurrentResourceName()
+if IsDuplicityVersion() then
+	Config.DefaultWeight = ESX.GetConfig().MaxWeight
 
--- Compare the version of this resource to the latest (default: every 60 minutes)
-Config.CheckVersion = true
-Config.CheckVersionDelay = 60
+	-- Number of slots in the player inventory
+	Config.PlayerSlots = 50
+	
+	-- Check the latest available version
+	Config.CheckVersion = false
 
--- Time until unused inventory data is wiped
-Config.DBCleanup = '6 MONTH'
+	-- When should unused inventories be wiped
+	Config.DBCleanup = '6 MONTH'
+	
+	-- Enable integrated logging
+	Config.Logs = false
 
--- Number of inventory slots
-Config.PlayerSlots = 50
+else
+	-- Set the keybinds for primary, secondary, and hotbar
+	Config.Keys = {'F2', 'K', 'TAB'}
+
+	-- Blur the screen while the inventory is open
+	Config.EnableBlur = true
+
+	-- Reload empty weapons automatically
+	Config.AutoReload = false
+
+	-- Adds compatibility for qtarget (https://github.com/QuantusRP/qtarget)
+	Config.qtarget = false
+
+end
 
 -- If vehicle plates are stored with a trailing space, set to false (i.e. `XXX 000 `)
 Config.TrimPlate = true
 
--- Blur the screen while in an inventory
-Config.EnableBlur = true
-
--- Requires esx_licenses
+-- Restrict the purchase of firearms with a license
 Config.WeaponsLicense = true
 Config.WeaponsLicensePrice = 5000
-
--- Set to true to enable integrated logging (extra configuration in server/logs)
-Config.Logs = false
-
--- Reload empty weapons automatically
-Config.AutoReload = false
-
--- Randomise the price of items in each shop at resource start
-Config.RandomPrices = false
-
--- Adds compatibility for qtarget (https://github.com/QuantusRP/qtarget)
-Config.qtarget = false
