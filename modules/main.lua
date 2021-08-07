@@ -18,6 +18,19 @@ if ox.server then
 	ox.error = function(...) print(ox.concat('^1[error]^7', ...)) end
 	ox.info = function(...) print(ox.concat('^2[info]^7', ...)) end
 	ox.warning = function(...) print(ox.concat('^3[warning]^7', ...)) end
+else
+	ox.playAnim = function(wait, ...)
+		local args = {...}
+		repeat RequestAnimDict(args[1])
+			Wait(5)
+		until HasAnimDictLoaded(args[1])
+		CreateThread(function()
+			TaskPlayAnim(ESX.PlayerData.ped, table.unpack(args))
+			Wait(wait)
+			ClearPedSecondaryTask(ESX.PlayerData.ped)
+			RemoveAnimDict(args[1])
+		end)
+	end
 end
 
 module = function(file, shared)
