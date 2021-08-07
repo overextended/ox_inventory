@@ -47,7 +47,6 @@ OnPlayerData = function(key, val)
 	SetPedEnableWeaponBlocking(playerPed, 1)
 end
 
-
 local Hotkey = function(slot)
 	if ESX.PlayerLoaded and not invOpen and ESX.PlayerData.inventory[slot] then
 		TriggerEvent('ox_inventory:useItem', ESX.PlayerData.inventory[slot])
@@ -59,7 +58,7 @@ local CanOpenInventory = function()
 end
 
 local CanOpenTarget = function(ped)
-	return GetEntityHealth(ped) == 0
+	return IsPedFatallyInjured(ped)
 	or IsEntityPlayingAnim(ped, 'random@mugging3', 'handsup_standing_base', 3)
 	or IsEntityPlayingAnim(ped, 'missminuteman_1ig_2', 'handsup_base', 3)
 	or IsEntityPlayingAnim(ped, 'missminuteman_1ig_2', 'handsup_enter', 3)
@@ -76,6 +75,51 @@ end
 
 local Notify = function(data) SendNUIMessage({ action = 'showNotif', data = data }) end
 RegisterNetEvent('ox_inventory:Notify', Notify)
+
+local CloseInventory = function(options)
+	if invOpen then
+		if options ~= false then SendNUIMessage({ message = 'close', }) end
+		TriggerScreenblurFadeOut(0)
+		if options.trunk then
+			local animDict = 'anim@heists@fleeca_bank@scope_out@return_case'
+			local anim = 'trevor_action'
+			RequestAnimDict(animDict)
+			while not HasAnimDictLoaded(animDict) do
+				Citizen.Wait(100)
+			end
+			ClearPedTasks(playerPed)
+			Citizen.Wait(100)
+			TaskPlayAnimAdvanced(playerPed, animDict, anim, GetEntityCoords(playerPed, true), 0, 0, GetEntityHeading(playerPed), 2.0, 2.0, 1000, 49, 0.25, 0, 0)
+			Citizen.Wait(900)
+			ClearPedTasks(playerPed)
+			SetVehicleDoorShut(entity, open, false)
+		end
+		SetNuiFocusAdvanced(false, false)
+		invOpen, currentInventory, currentDrop = false, nil, nil
+	end
+end)
+RegisterNetEvent('linden_inventory:closeInventory', CloseInventory)
+
+local OpenInventory = function(inv, data)
+	if not invOpen then
+		if not isBusy or not CanOpenInventory() then
+			if CanOpenInventory() then
+				ESX.TriggerServerCallback('ox_inventory:openInventory', function(result) 
+					if result then
+						invOpen = true
+						if result.rightinventory then currentInventory = result.rightinventory end
+						ox.playAnim(1000, 'pickup_object', 'putdown_low', 5.0, 1.5, 1.0, 48, 0.0, 0, 0, 0)
+						SendNUIMessage({
+							message = 'openinventory', inventory = ESX.PlayerData.inventory,
+							slots = result.slots, name = playerName..' ['..playerId..']',
+							weight = result.weight, maxWeight = result.maxWeight,
+							job = ESX.PlayerData.job, rightinventory = result.rightinventory
+						})
+					end
+				end, inv, data)
+		else Notify({type = 'error', text = _U('inventory_cannot_open'), duration = 2500}) end
+	else TriggerEvent('ox_inventory:closeInventory') end
+end
 
 RegisterNetEvent('ox_inventory:setPlayerInventory', function(data)
 	playerId, invOpen, usingWeapon, currentWeapon, currentDrop = GetPlayerServerId(PlayerId()), false, false, nil, nil
@@ -141,42 +185,13 @@ RegisterNetEvent('esx_policejob:unrestrain', function()
 	TriggerEvent('ox_inventory:closeInventory')
 end)
 
-RegisterNetEvent('linden_inventory:closeInventory', function(ui, entity)
-	if invOpen then
-		if ui ~= false then SendNUIMessage({ message = 'close', })
-		end
-		TriggerScreenblurFadeOut(0)
-		if ui == 'trunk' then
-			local animDict = 'anim@heists@fleeca_bank@scope_out@return_case'
-			local anim = 'trevor_action'
-			RequestAnimDict(animDict)
-			while not HasAnimDictLoaded(animDict) do
-				Citizen.Wait(100)
-			end
-			ClearPedTasks(playerPed)
-			Citizen.Wait(100)
-			TaskPlayAnimAdvanced(playerPed, animDict, anim, GetEntityCoords(playerPed, true), 0, 0, GetEntityHeading(playerPed), 2.0, 2.0, 1000, 49, 0.25, 0, 0)
-			Citizen.Wait(900)
-			ClearPedTasks(playerPed)
-			SetVehicleDoorShut(entity, open, false)
-		end
-		SetNuiFocusAdvanced(false, false)
-		invOpen, currentInventory, currentDrop = false, nil, nil
-	end
-end)
-
 RegisterCommand('inv', function()
-	if isBusy then Notify({type = 'error', text = _U('inventory_cannot_open'), duration = 2500})
-	elseif invOpen then TriggerEvent('ox_inventory:closeInventory')
-	elseif CanOpenInventory() then
-		ox.playAnim(1000, 'pickup_object', 'putdown_low', 5.0, 1.5, 1.0, 48, 0.0, 0, 0, 0)
-	end
 	local property = false
 	TriggerEvent('ox_inventory:getProperty', function(data) property = data end)
-	if property then return OpenStash(property) end
+	if property then return OpenInventory('stash', property) end
 	if IsPedInAnyVehicle(playerPed, false) then currentDrop = nil end
-	if currentDrop then TriggerServerEvent('ox_inventory:openInventory', drop, currrentDrop.id)
-	else TriggerServerEvent('ox_inventory:openInventory') end
+	if currentDrop then OpenInventory('drop', currentDrop.id)
+	else OpenInventory() end
 end)
 
 RegisterCommand('inv2', function()

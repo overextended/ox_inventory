@@ -113,3 +113,7 @@ AddEventHandler('ox_inventory:setPlayerInventory', function(xPlayer, data)
 	xPlayer.syncInventory(totalWeight, Config.DefaultWeight, inventory, money)
 	TriggerClientEvent('ox_inventory:setPlayerInventory', xPlayer.source, {Drops, xPlayer.name, Config.PlayerSlots, totalWeight, Config.DefaultWeight, inventory, ESX.UsableItemsCallbacks})
 end)
+
+ESX.RegisterServerCallback('ox_inventory:openInventory', function(inv, data)
+	
+end)
