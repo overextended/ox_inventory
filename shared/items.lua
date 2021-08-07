@@ -1347,13 +1347,4 @@ if Items then
 		Items[k] = v
 	end
 	Components, Ammo = nil
-	if Server then print(('^2[success]^7 Loaded %s items'):format(count)) end
-end
-
-Weapons.GetName = function(weaponHash)
-	for k, v in pairs(Weapons) do
-		if v.hash == weaponHash then
-			return v
-		end
-	end
 end
