@@ -140,7 +140,7 @@ M.Create = function(...)
 		self.timeout = false end
 		
 		Inventories[self.id] = self
-	else OX.Error('Inventory.Create received invalid number of arguments') end
+	else ox.error('Inventory.Create received invalid number of arguments') end
 	return
 end
 
@@ -153,7 +153,7 @@ M.Save = function(inv)
 			})
 		elseif Vehicle[inv.type] then
 			local plate = inv.id:match("-(.*)")
-			if Config.TrimPlate then plate = OX.Trim(plate) end
+			if Config.TrimPlate then plate = ox.trim(plate) end
 			exports.ghmattimysql:scalar('SELECT 1 from owned_vehicles WHERE plate = ?', {
 				plate
 			}, function(result)
@@ -186,7 +186,7 @@ M.Load = function(id, inv, owner)
 	if id and inv then
 		if isVehicle then
 			local plate = id:match("-(.*)")
-			if Config.TrimPlate then plate = OX.Trim(plate) end
+			if Config.TrimPlate then plate = ox.trim(plate) end
 			local vehicle = exports.ghmattimysql:executeSync('SELECT owner, plate, trunk, glovebox FROM owned_vehicles WHERE plate = ?', {
 				plate
 			})
