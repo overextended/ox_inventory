@@ -12,8 +12,9 @@ import {
   selectRightInventory,
 } from "../store/inventorySlice";
 import DragPreview from "./utils/DragPreview";
-import Notifications, { Notify } from "./utils/Notifications";
+import Notifications from "./utils/Notifications";
 import ProgressBar from "./utils/ProgressBar";
+import useKeyPress from "../hooks/useKeyPress";
 
 debugData([
   {
@@ -63,7 +64,7 @@ debugData([
 ]);
 
 const App: React.FC = () => {
-  const [inventoryVisible, setInventoryVisible] = React.useState(false);
+  const [inventoryVisible, setInventoryVisible] = React.useState(true);
   useNuiEvent<boolean>("setInventoryVisible", setInventoryVisible);
 
   const playerInventory = useAppSelector(selectPlayerInventory);
@@ -77,6 +78,12 @@ const App: React.FC = () => {
     dispatch(actions.setupInventory(data));
     setInventoryVisible(true);
   });
+
+  const shiftPressed = useKeyPress("Shift");
+
+  React.useEffect(() => {
+    dispatch(actions.setShiftPressed(shiftPressed));
+  }, [shiftPressed]);
 
   return (
     <>

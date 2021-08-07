@@ -24,5 +24,10 @@ export interface ConfigProps {
 }
 
 export const DragTypes = {
-  SLOT: 'slot',
+  SLOT: "slot",
+};
+
+export interface DragProps {
+  item: ItemProps;
+  inventory: Pick<InventoryProps, "type">;
 }

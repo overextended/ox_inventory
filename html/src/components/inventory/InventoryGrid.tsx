@@ -37,10 +37,7 @@ const InventoryGrid: React.FC<{ inventory: InventoryProps }> = (props) => {
           <InventorySlot
             key={`${props.inventory.type}-${props.inventory.id}-${item.slot}-${item.name}`}
             item={item}
-            inventory={{
-              id: props.inventory.id,
-              type: props.inventory.type,
-            }}
+            inventory={props.inventory}
             setCurrentItem={setCurrentItem}
           />
         ))}

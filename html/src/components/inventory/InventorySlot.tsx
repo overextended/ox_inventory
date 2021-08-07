@@ -1,83 +1,53 @@
 import React from "react";
-import { DragTypes, InventoryProps, ItemProps } from "../../typings";
+import { DragProps, DragTypes, InventoryProps, ItemProps } from "../../typings";
 import { useDrag, useDrop } from "react-dnd";
 import { useAppDispatch } from "../../store";
-import { actions } from "../../store/inventorySlice";
 import WeightBar from "../utils/WeightBar";
-import useKeyPress from "../../hooks/useKeyPress";
-import buyItem from "../../store/buyItem";
+import { canDrag, canDrop } from "../../dnd/conditions";
+import { onDrop } from "../../dnd/onDrop";
 
 interface SlotProps {
-  inventory: Pick<InventoryProps, "id" | "type">;
+  inventory: InventoryProps;
   item: ItemProps;
   setCurrentItem: React.Dispatch<React.SetStateAction<ItemProps | undefined>>;
 }
 
 const InventorySlot: React.FC<SlotProps> = (props) => {
-  const shiftPressed = useKeyPress("Shift");
-
   const dispatch = useAppDispatch();
 
-  const [{ isDragging }, drag] = useDrag(
+  const dragProps: DragProps = {
+    item: props.item,
+    inventory: {
+      type: props.inventory.type,
+    },
+  };
+
+  const [{ isDragging }, drag] = useDrag<
+    DragProps,
+    unknown,
+    { isDragging: boolean }
+  >(
     () => ({
-      item: props,
+      item: dragProps,
       type: DragTypes.SLOT,
       collect: (monitor) => ({
         isDragging: monitor.isDragging(),
       }),
-      canDrag: () => !!props.item.name,
+      canDrag: () => canDrag(dragProps),
     }),
-    [props.item, shiftPressed]
+    [dragProps]
   );
 
-  const [{ isOver }, drop] = useDrop(
+  const [{ isOver }, drop] = useDrop<DragProps, void, { isOver: boolean }>(
     () => ({
       accept: DragTypes.SLOT,
-      drop: (data: SlotProps) => {
-        data.inventory.type === "shop"
-          ? dispatch(
-              buyItem({
-                fromSlot: data.item.slot,
-                toSlot: props.item.slot,
-                fromInventory: data.inventory.id,
-                toInventory: props.inventory.id,
-                amount: 0,
-              })
-            )
-          : dispatch(
-              actions.moveItems({
-                fromSlot: data.item.slot,
-                toSlot: props.item.slot,
-                fromInventory: data.inventory,
-                toInventory: props.inventory,
-                splitHalf: shiftPressed,
-              })
-            );
-      },
+      drop: (source) => onDrop(source, dragProps),
       collect: (monitor) => ({
         isOver: monitor.isOver(),
       }),
-      canDrop: (data) => {
-        if (props.item.name === undefined) return true;
-
-        if (
-          props.item.stackable &&
-          data.item.stackable &&
-          props.item.name === data.item.name &&
-          props.item.metadata === data.item.metadata
-        ) {
-          if (
-            props.item.slot !== data.item.slot ||
-            props.inventory.id !== data.inventory.id
-          ) {
-            return true;
-          }
-        }
-
-        return false;
-      },
+      canDrop: (source) => canDrop(source, dragProps),
     }),
-    [props.item, props.inventory, shiftPressed]
+    [dragProps]
   );
 
   return (
@@ -97,13 +67,7 @@ const InventorySlot: React.FC<SlotProps> = (props) => {
         onClick={(event) => {
           if (!props.item.name) return;
           if (event.ctrlKey) {
-            dispatch(
-              actions.moveItems({
-                fromSlot: props.item.slot,
-                fromInventory: props.inventory,
-                splitHalf: event.shiftKey,
-              })
-            );
+            onDrop(dragProps);
             props.setCurrentItem(undefined);
           } else if (event.altKey) {
             alert("fast use");
@@ -122,7 +86,7 @@ const InventorySlot: React.FC<SlotProps> = (props) => {
               <WeightBar percent={20} revert />
             </div>
             <div className="item-label">
-              {props.item.label} [{props.item.slot}] {shiftPressed && "SHIFT"}
+              {props.item.label} [{props.item.slot}]
             </div>
           </>
         ) : (

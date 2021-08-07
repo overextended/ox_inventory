@@ -1,6 +1,7 @@
 import { configureStore, ThunkAction, Action } from "@reduxjs/toolkit";
 import { TypedUseSelectorHook, useDispatch, useSelector } from "react-redux";
-import inventoryReducer from "./inventorySlice";
+import inventoryReducer, { actions } from "./inventorySlice";
+import undoable, { includeAction } from "redux-undo";
 
 export const store = configureStore({
   reducer: {
@@ -17,5 +18,5 @@ export type AppThunk<ReturnType = void> = ThunkAction<
   Action<string>
 >;
 
-export const useAppDispatch = () => useDispatch<AppDispatch>()
-export const useAppSelector: TypedUseSelectorHook<RootState> = useSelector
+export const useAppDispatch = () => useDispatch<AppDispatch>();
+export const useAppSelector: TypedUseSelectorHook<RootState> = useSelector;
