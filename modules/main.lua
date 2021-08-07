@@ -2,22 +2,13 @@ local Modules = {}
 
 ox = {
 	server = IsDuplicityVersion(),
-	trim = function(string) return string:match("^%s*(.-)%s*$") end,
-	concat = function(...)
-		if type(...) == 'string' then
-			local args, ret = {...}, {}
-			for i=1, #args do
-				ret[i] = args[i]
-			end
-			return table.concat(ret, ' ')
-		end
-	end
+	trim = function(string) return string:match("^%s*(.-)%s*$") end
 }
 
 if ox.server then
-	ox.error = function(...) print(ox.concat('^1[error]^7', ...)) end
-	ox.info = function(...) print(ox.concat('^2[info]^7', ...)) end
-	ox.warning = function(...) print(ox.concat('^3[warning]^7', ...)) end
+	ox.error = function(...) print(string.strjoin(' ', '^1[error]^7', ...)) end
+	ox.info = function(...) print(string.strjoin(' ', '^2[info]^7', ...)) end
+	ox.warning = function(...) print(string.strjoin(' ', '^3[warning]^7', ...)) end
 else
 	ox.playAnim = function(wait, ...)
 		local args = {...}
@@ -43,3 +34,12 @@ module = function(file, shared)
 	end
 	return Modules[file]
 end
+
+RegisterCommand('clock', function()
+	local time = os.clock()
+	local str
+	for i=1, 10000 do
+		print(string.strjoin(' ', 'aaaaaaaaaaaaaaa','bbbbbbbbbbbbb','cccccccccccc','dddddddddd'))
+	end
+	print(os.clock() - time)
+end)
