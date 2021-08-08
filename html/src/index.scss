@@ -14,12 +14,14 @@ body {
   margin: 0;
   color: white;
   text-shadow: 1px 1px 0px black;
+  width: 100%;
 }
 
 .center-wrapper {
   display: flex;
   align-items: center;
   justify-content: center;
+  align-content: center;
   height: 100vh;
   width: 100vw;
   padding: 3px;
@@ -28,6 +30,7 @@ body {
 .column-wrapper {
   display: flex;
   flex-direction: column;
+  padding: 1%;
 }
 
 .row-wrapper {
@@ -40,9 +43,9 @@ body {
   overflow-y: scroll;
   direction: ltr;
   display: grid;
-  height: 508px;
-  grid-template-columns: repeat(5, 100px);
-  grid-auto-rows: 100px;
+  height: 52vh;
+  grid-template-columns: repeat(5, 10.2vh);
+  grid-auto-rows: 10.2vh;
   gap: 2px;
 
   &-right {
@@ -90,7 +93,7 @@ body {
     width: 100%;
     background-color: rgba(80, 50, 80, 0.8);
     padding: 0.8pt;
-    font-size: 8pt;
+    font-size: 1.1vh;
     text-align: center;
     text-transform: uppercase;
     outline: 1px solid rgba(33, 33, 33, 0.4);
@@ -100,14 +103,14 @@ body {
   }
 
   .item-count {
-    font-size: 11px;
+    font-size: 1.2vh;
     align-self: flex-end;
     padding: 0 2px 0 2px;
   }
 
   .item-durability {
     position: absolute;
-    bottom: 15px;
+    bottom: 1.5vh;
     width: 100%;
   }
 
@@ -125,7 +128,7 @@ body {
   border: 1px solid rgba(33, 33, 33, 0.4);
   outline-offset: -1px;
   color: #fff;
-  line-height: 4vh;
+  height: 4.6vh;
   text-align: center;
 
   &:not(:last-child) {
@@ -140,7 +143,7 @@ body {
 input[type="number"] {
   @extend .button;
 
-  line-height: 48px;
+  line-height: 5vh;
   padding: 0;
   margin-bottom: 3vh !important;
 
@@ -179,12 +182,19 @@ input[type="number"] {
 }
 
 .item-info {
-  padding: 0 10px 0 10px;
+  padding: 0 1vh 0 1vh;
   font-weight: 500;
-  font-size: 13px;
+  font-size: 1.2vh;
   background-color: rgba(0, 0, 0, 0.267);
   color: white;
   width: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+
+  p {
+    font-size: 1.8vh;
+  }
 }
 
 .progressBar {
