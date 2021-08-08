@@ -79,16 +79,15 @@ end)
 
 RegisterNetEvent('ox_inventory:requestPlayerInventory', function()
 	local xPlayer, inventory = ESX.GetPlayerFromId(source), {}
-	if not Inventory(source) then
-		local inventory = xPlayer.getInventory(true)
-		if not inventory or not next(inventory) then
-			Wait(math.random(0, 1000)) -- slow down queries if resource restarts
-			local result = exports.ghmattimysql:scalarSync('SELECT inventory FROM users WHERE identifier = ?', {
-				xPlayer.identifier
-			})
-			if result then inventory = json.decode(result) end
-		end
+	inventory = xPlayer.getInventory(true)
+	if not inventory or not next(inventory) then
+		Wait(math.random(0, 1000)) -- slow down queries if resource restarts
+		local result = exports.ghmattimysql:scalarSync('SELECT inventory FROM users WHERE identifier = ?', {
+			xPlayer.identifier
+		})
+		if result then inventory = json.decode(result) end
 	end
+	print(ESX.DumpTable(inventory))
 	repeat Wait(500) until ox.ready
 	TriggerEvent('ox_inventory:setPlayerInventory', xPlayer, inventory)
 end)
