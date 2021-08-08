@@ -16,6 +16,7 @@ import DragPreview from "./utils/DragPreview";
 import Notifications from "./utils/Notifications";
 import ProgressBar from "./utils/ProgressBar";
 import useKeyPress from "../hooks/useKeyPress";
+import { useExitListener } from "../hooks/useExitListener";
 
 debugData([
   {
@@ -87,6 +88,8 @@ const App: React.FC = () => {
   React.useEffect(() => {
     dispatch(setShiftPressed(shiftPressed));
   }, [shiftPressed]);
+
+  useExitListener(setInventoryVisible);
 
   return (
     <>

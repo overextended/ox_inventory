@@ -5,6 +5,7 @@ import { selectItemAmount, setItemAmount } from "../../store/inventorySlice";
 import { DragProps, DragTypes } from "../../typings";
 import { onUse } from "../../dnd/onUse";
 import { onGive } from "../../dnd/onGive";
+import { fetchNui } from "../../utils/fetchNui";
 
 const InventoryControl: React.FC = () => {
   const itemAmount = useAppSelector(selectItemAmount);
@@ -43,7 +44,9 @@ const InventoryControl: React.FC = () => {
       <button ref={give} className="button">
         Give
       </button>
-      <button className="button">Close</button>
+      <button className="button" onClick={() => fetchNui("exit")}>
+        Close
+      </button>
     </div>
   );
 };
