@@ -79,8 +79,6 @@ OnPlayerData = function(key, val)
 	if key == 'dead' and val then DisarmPlayer()
 		TriggerEvent('linden_inventory:closeInventory')
 	end
-	SetPedCanSwitchWeapon(ESX.PlayerData.ped, 0)
-	SetPedEnableWeaponBlocking(ESX.PlayerData.ped, 1)
 end
 
 RegisterNetEvent('esx_policejob:handcuff')
@@ -98,8 +96,6 @@ end)
 StartInventory = function()
 	playerID, invOpen, ESX.PlayerData.dead, isBusy, usingWeapon, currentDrop = nil, false, false, false, false, nil
 	ClearWeapons()
-	SetPedCanSwitchWeapon(ESX.PlayerData.ped, 0)
-	SetPedEnableWeaponBlocking(ESX.PlayerData.ped, 1)
 	SetWeaponsNoAutoswap(1)
 	SetWeaponsNoAutoreload(1)
 	SetTimeout(500, function()
@@ -575,7 +571,6 @@ AddEventHandler('linden_inventory:usedWeapon',function()
 end)
 
 AddEventHandler('linden_inventory:currentWeapon', function(weapon)
-	DisablePlayerFiring(ESX.PlayerData.ped, weapon and false or true)
 	currentWeapon = weapon
 end)
 
@@ -675,6 +670,12 @@ TriggerLoops = function()
 		HideHudComponentThisFrame(19)
 		HideHudComponentThisFrame(20)
 		DisablePlayerVehicleRewards(playerID)
+		DisableControlAction(0, 37, true)
+		DisableControlAction(0, 157, true)
+		DisableControlAction(0, 158, true)
+		DisableControlAction(0, 160, true)
+		DisableControlAction(0, 164, true)
+		DisableControlAction(0, 165, true)
 		if isBusy or useItemCooldown then
 			DisablePlayerFiring(playerID, true)
 			DisableControlAction(0, 23, true)
@@ -889,7 +890,7 @@ end
 
 local canReload = true
 RegisterCommand('reload', function()
-	if canReload and not isBusy and currentWeapon and currentWeapon.ammoname and CanOpenInventory() then
+	if canReload and not isBusy and currentWeapon and currentWeapon.ammoname and CanOpenInventory() and not IsPedRagdoll(ESX.PlayerData.ped) and not IsPedFalling(ESX.PlayerData.ped) then
 		local maxAmmo = GetMaxAmmoInClip(ESX.PlayerData.ped, currentWeapon.hash, 1)
 		local curAmmo = GetAmmoInPedWeapon(ESX.PlayerData.ped, currentWeapon.hash)
 		if curAmmo < maxAmmo then TriggerServerEvent('linden_inventory:reloadWeapon', currentWeapon) end
@@ -1155,6 +1156,8 @@ AddEventHandler('linden_inventory:useItem', function(item)
 				end
 			end
 		elseif Weapons[item.name] or item.name:find('ammo-') then
+			UseItem(item, false)
+		elseif item.name:find('ammo-') and canReload and currentWeapon and currentWeapon.ammoname not IsPedFalling(ESX.PlayerData.ped) then
 			UseItem(item, false)
 		else Citizen.Wait(100) end
 	end
