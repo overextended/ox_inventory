@@ -97,28 +97,27 @@ local CloseInventory = function(options)
 		SetNuiFocusAdvanced(false, false)
 		invOpen, currentInventory, currentDrop = false, nil, nil
 	end
-end)
+end
 RegisterNetEvent('linden_inventory:closeInventory', CloseInventory)
 
 local OpenInventory = function(inv, data)
 	if not invOpen then
 		if not isBusy or not CanOpenInventory() then
-			if CanOpenInventory() then
-				ESX.TriggerServerCallback('ox_inventory:openInventory', function(result) 
-					if result then
-						invOpen = true
-						if result.rightinventory then currentInventory = result.rightinventory end
-						ox.playAnim(1000, 'pickup_object', 'putdown_low', 5.0, 1.5, 1.0, 48, 0.0, 0, 0, 0)
-						SendNUIMessage({
-							message = 'openinventory', inventory = ESX.PlayerData.inventory,
-							slots = result.slots, name = playerName..' ['..playerId..']',
-							weight = result.weight, maxWeight = result.maxWeight,
-							job = ESX.PlayerData.job, rightinventory = result.rightinventory
-						})
-					end
-				end, inv, data)
+			local result = ox.TriggerServerCallback('ox_inventory:openInventory', inv, data)
+			if result then print(result)
+				invOpen = true
+				if result.rightinventory then currentInventory = result.rightinventory end
+				ox.playAnim(1000, 'pickup_object', 'putdown_low', 5.0, 1.5, 1.0, 48, 0.0, 0, 0, 0)
+				SendNUIMessage({
+					message = 'openinventory', inventory = ESX.PlayerData.inventory,
+					slots = result.slots, name = playerName..' ['..playerId..']',
+					weight = result.weight, maxWeight = result.maxWeight,
+					job = ESX.PlayerData.job, rightinventory = result.rightinventory
+				})
+			end
 		else Notify({type = 'error', text = _U('inventory_cannot_open'), duration = 2500}) end
 	else TriggerEvent('ox_inventory:closeInventory') end
+	invOpen = false
 end
 
 RegisterNetEvent('ox_inventory:setPlayerInventory', function(data)
