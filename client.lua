@@ -104,12 +104,30 @@ local OpenInventory = function(inv, data)
 	if not invOpen then
 		if not isBusy or not CanOpenInventory() then
 			local time = GetGameTimer()
-			ox.TriggerServerCallback('ox_inventory:openInventory', function(o, t)
-				invOpen = true
-				print(o,t)
-				Wait(1000)
+			invOpen = true
+			ox.TriggerServerCallback('ox_inventory:openInventory', function(left, right)
+				SendNUIMessage({
+					action = 'setupInventory',
+					data = {
+						playerInventory = {
+							id = playerName,
+							slots = left.slots,
+							weight = left.weight,
+							maxWeight = left.maxWeight,
+							items = ESX.PlayerData.inventory
+						},
+						rightInventory = {
+							id = right.id,
+							type = right.type,
+							slots = right.slots,
+							weight = right.slots,
+							maxWeight = right.maxWeight,
+							items = right.items
+						},
+						job = ESX.PlayerData.job
+					}
+				})
 			end, inv, data)
-			print('happens last')
 		else Notify({type = 'error', text = _U('inventory_cannot_open'), duration = 2500}) end
 	else TriggerEvent('ox_inventory:closeInventory') end
 	invOpen = false
