@@ -115,6 +115,6 @@ AddEventHandler('ox_inventory:setPlayerInventory', function(xPlayer, data)
 end)
 
 ox.RegisterServerCallback('ox_inventory:openInventory', function(source, cb, inv, data) 
-	if not inv then inv = 'player' end 
-	cb(inv == nil and 'player' or inv, data) 
+	cb('hey', 'there')
+	--cb(inv, data) 
 end)

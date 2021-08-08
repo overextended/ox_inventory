@@ -24,15 +24,16 @@ if ox.server then
 		end
 	end
 else
-	ox.TriggerServerCallback = function(name, ...)
-		local name = ('cb:%s'):format(name)
-		TriggerServerEvent('ox:triggerServerCallback', name, ...)
+	ox.TriggerServerCallback = function(event, cb, ...)
+		local event = ('cb:%s'):format(event)
+		TriggerServerEvent('ox:triggerServerCallback', event, ...)
 		local p = promise.new()
-		RegisterNetEvent(name, function(...)
-			p:resolve(...)
+		event = RegisterNetEvent(event, function(...)
+			cb(...)
+			p:resolve()
+			RemoveEventHandler(event)
 		end)
-		local result = Citizen.Await(p)
-		return result
+		Citizen.Await(p)
 	end
 
 	ox.playAnim = function(wait, ...)
