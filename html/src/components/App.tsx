@@ -4,13 +4,14 @@ import InventoryGrid from "./inventory/InventoryGrid";
 import InventoryControl from "./inventory/InventoryControl";
 import Fade from "./utils/Fade";
 import { debugData } from "../utils/debugData";
-import { InventoryProps } from "../typings";
+import { InventoryProps, ItemProps } from "../typings";
 import { useAppDispatch, useAppSelector } from "../store";
 import {
   loadInventory,
   selectPlayerInventory,
   selectRightInventory,
   setShiftPressed,
+  updateSlots,
 } from "../store/inventorySlice";
 import DragPreview from "./utils/DragPreview";
 import Notifications from "./utils/Notifications";
@@ -80,6 +81,13 @@ const App: React.FC = () => {
     dispatch(loadInventory(data));
     setInventoryVisible(true);
   });
+
+  useNuiEvent<
+    {
+      item: ItemProps;
+      inventory: InventoryProps["type"];
+    }[]
+  >("refreshSlots", (data) => dispatch(updateSlots(data)));
 
   useNuiEvent("closeInventory", () => setInventoryVisible(false));
 
