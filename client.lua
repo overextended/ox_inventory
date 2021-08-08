@@ -105,8 +105,8 @@ local OpenInventory = function(inv, data)
 	if not invOpen then
 		if not isBusy or not CanOpenInventory() then
 			local time = GetGameTimer()
-			invOpen = true
 			ox.TriggerServerCallback('ox_inventory:openInventory', function(left, right)
+				invOpen = true
 				SendNUIMessage({
 					action = 'setupInventory',
 					data = {

@@ -5,7 +5,7 @@ const Fade: React.FC<{ visible: boolean; duration?: number, className?: string }
     <div
       style={{
         opacity: props.visible ? 1 : 0,
-        transition: `opacity ${props.duration || 1}s ease-in-out`,
+        transition: `opacity ${props.duration || 0.2}s ease-out`,
       }}
       className={props.className}
     >
