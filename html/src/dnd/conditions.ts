@@ -8,9 +8,9 @@ export const canDrop = (source: DragProps, target: DragProps): boolean => {
   if (target.item.name === undefined) return true;
 
   if (
-    source.item.stackable &&
+    source.item.stack &&
     source.item.name === target.item.name &&
-    source.item.metadata == target.item.metadata &&
+    source.item.metadata === target.item.metadata &&
     (source.item.slot !== target.item.slot ||
       source.inventory.type !== target.inventory.type)
   ) {

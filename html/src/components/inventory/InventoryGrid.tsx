@@ -14,9 +14,10 @@ const InventoryGrid: React.FC<{ inventory: InventoryProps }> = (props) => {
         style={{ justifyContent: "space-between", marginBottom: "5px" }}
       >
         <div>
-          {props.inventory.id} - {props.inventory.type}
+          {props.inventory.label && `${props.inventory.label} -`}{" "}
+          {props.inventory.id}
         </div>
-        {props.inventory.weight && (
+        {props.inventory.weight && props.inventory.maxWeight && (
           <div>
             {props.inventory.weight}/{props.inventory.maxWeight}kg
           </div>

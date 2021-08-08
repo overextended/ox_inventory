@@ -26,36 +26,16 @@ export type InventoryState = {
 
 const initialState: InventoryState = {
   playerInventory: {
-    id: "dunak",
-    slots: 5,
+    id: "",
+    slots: 0,
     weight: 0,
-    maxWeight: 500,
-    items: [
-      {
-        slot: 1,
-        name: "water",
-        label: "Water",
-        weight: 50,
-        count: 1,
-        stackable: true,
-      },
-      {
-        slot: 2,
-        name: "burger",
-        label: "Burger",
-        weight: 50,
-        count: 5,
-        stackable: false,
-      },
-      {
-        slot: 3,
-      },
-    ],
+    maxWeight: 0,
+    items: [],
   },
   rightInventory: {
-    id: "8560",
-    type: "drop",
-    slots: 5,
+    id: "",
+    type: "",
+    slots: 0,
     items: [],
   },
   itemAmount: 0,
@@ -100,7 +80,7 @@ export const inventorySlice = createSlice({
       const targetSlot = targetInventory.items[toSlot - 1];
 
       targetInventory.items[toSlot - 1] =
-        targetSlot.stackable && targetSlot.count
+        targetSlot.stack && targetSlot.count
           ? {
               ...targetSlot,
               count: targetSlot.count + count,

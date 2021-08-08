@@ -65,7 +65,7 @@ debugData([
 ]);
 
 const App: React.FC = () => {
-  const [inventoryVisible, setInventoryVisible] = React.useState(true);
+  const [inventoryVisible, setInventoryVisible] = React.useState(false);
   useNuiEvent<boolean>("setInventoryVisible", setInventoryVisible);
 
   const playerInventory = useAppSelector(selectPlayerInventory);
@@ -79,6 +79,8 @@ const App: React.FC = () => {
     dispatch(loadInventory(data));
     setInventoryVisible(true);
   });
+
+  useNuiEvent("closeInventory", () => setInventoryVisible(false));
 
   const shiftPressed = useKeyPress("Shift");
 

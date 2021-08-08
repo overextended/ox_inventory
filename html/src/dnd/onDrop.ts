@@ -32,7 +32,7 @@ export const onDrop = (source: DragProps, target?: DragProps) => {
 
   if (
     targetSlot === undefined ||
-    (targetSlot.stackable && targetSlot.count === undefined)
+    (targetSlot.stack && targetSlot.count === undefined)
   ) {
     console.error("Target slot cannot be undefined");
     return;
