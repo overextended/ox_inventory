@@ -26,10 +26,11 @@ const InventoryGrid: React.FC<{ inventory: InventoryProps }> = (props) => {
       {props.inventory.weight && props.inventory.maxWeight && (
         <div
           className="row-wrapper"
-          style={{ marginBottom: "3px", marginRight: "4px" }}
+          style={{ marginBottom: "3px"}}
         >
           <WeightBar
             percent={(props.inventory.weight / props.inventory.maxWeight) * 100}
+            className="inv-weight"
           />
         </div>
       )}

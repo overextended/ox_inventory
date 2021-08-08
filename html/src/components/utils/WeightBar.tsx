@@ -5,12 +5,13 @@ const COLORS = {
   GOOD: "#30a121",
 };
 
-const WeightBar: React.FC<{ percent: number; revert?: boolean }> = ({
+const WeightBar: React.FC<{ percent: number; revert?: boolean; className?: string}> = ({
   percent,
   revert,
+  className
 }) => {
   return (
-    <div className="weight-bar">
+    <div className={`weight-bar ` + `${className}`}>
       <div
         className="weight-bar-value"
         style={{
