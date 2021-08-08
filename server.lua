@@ -114,6 +114,7 @@ AddEventHandler('ox_inventory:setPlayerInventory', function(xPlayer, data)
 	TriggerClientEvent('ox_inventory:setPlayerInventory', xPlayer.source, {Drops, xPlayer.name, Config.PlayerSlots, totalWeight, Config.DefaultWeight, inventory, ESX.UsableItemsCallbacks})
 end)
 
-ESX.RegisterServerCallback('ox_inventory:openInventory', function(inv, data)
-	
+ox.RegisterServerCallback('ox_inventory:openInventory', function(source, cb, inv, data) 
+	if not inv then inv = 'player' end 
+	cb(inv == nil and 'player' or inv, data) 
 end)
