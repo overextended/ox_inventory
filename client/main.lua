@@ -1157,7 +1157,7 @@ AddEventHandler('linden_inventory:useItem', function(item)
 			end
 		elseif Weapons[item.name] or item.name:find('ammo-') then
 			UseItem(item, false)
-		elseif item.name:find('ammo-') and canReload and currentWeapon and currentWeapon.ammoname not IsPedFalling(ESX.PlayerData.ped) then
+		elseif item.name:find('ammo-') and canReload and currentWeapon and currentWeapon.ammoname and not IsPedFalling(ESX.PlayerData.ped) then
 			UseItem(item, false)
 		else Citizen.Wait(100) end
 	end
