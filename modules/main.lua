@@ -4,7 +4,37 @@ if ox.server then
 	ox.error = function(...) print(string.strjoin(' ', '^1[error]^7', ...)) end
 	ox.info = function(...) print(string.strjoin(' ', '^2[info]^7', ...)) end
 	ox.warning = function(...) print(string.strjoin(' ', '^3[warning]^7', ...)) end
+
+	ox.ServerCallbacks = {}
+	RegisterServerEvent('ox:triggerServerCallback', function(name, ...)
+		local playerId = source
+	
+		ox.TriggerServerCallback(name, playerId, function(...)
+			TriggerClientEvent(name, playerId, ...)
+		end, ...)
+	end)
+
+	ox.RegisterServerCallback = function(name, cb)
+		ox.ServerCallbacks[('cb:%s'):format(name)] = cb
+	end
+	
+	ox.TriggerServerCallback = function(name, source, cb, ...)
+		if ox.ServerCallbacks[name] then
+			ox.ServerCallbacks[name](source, cb, ...)
+		end
+	end
 else
+	ox.TriggerServerCallback = function(name, ...)
+		local name = ('cb:%s'):format(name)
+		TriggerServerEvent('ox:triggerServerCallback', name, ...)
+		local p = promise.new()
+		RegisterNetEvent(name, function(...)
+			p:resolve(...)
+		end)
+		local result = Citizen.Await(p)
+		return result
+	end
+
 	ox.playAnim = function(wait, ...)
 		local args = {...}
 		repeat RequestAnimDict(args[1])
