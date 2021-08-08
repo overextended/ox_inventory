@@ -87,7 +87,6 @@ RegisterNetEvent('ox_inventory:requestPlayerInventory', function()
 		})
 		if result then inventory = json.decode(result) end
 	end
-	print(ESX.DumpTable(inventory))
 	repeat Wait(500) until ox.ready
 	TriggerEvent('ox_inventory:setPlayerInventory', xPlayer, inventory)
 end)
@@ -118,5 +117,5 @@ ox.RegisterServerCallback('ox_inventory:openInventory', function(source, cb, inv
 	if data then
 		right = Inventory.Create(data.id, data.label or data.id, inv, 20, 0, 2000, data.owner, {})
 	end
-	cb(left, right or {id='Drop', type='drop', slots=Config.PlayerSlots, weight=0, maxWeight=Config.DefaultWeight, items={}})
+	cb(left, right or {id='Drop', type=nil, slots=Config.PlayerSlots, weight=0, maxWeight=Config.DefaultWeight, items={}})
 end)

@@ -120,7 +120,7 @@ local OpenInventory = function(inv, data)
 							id = right.id,
 							type = right.type,
 							slots = right.slots,
-							weight = right.slots,
+							weight = right.weight,
 							maxWeight = right.maxWeight,
 							items = right.items
 						},
@@ -130,7 +130,6 @@ local OpenInventory = function(inv, data)
 			end, inv, data)
 		else Notify({type = 'error', text = _U('inventory_cannot_open'), duration = 2500}) end
 	else TriggerEvent('ox_inventory:closeInventory') end
-	invOpen = false
 end
 
 RegisterNetEvent('ox_inventory:setPlayerInventory', function(data)
@@ -169,9 +168,35 @@ RegisterNetEvent('ox_inventory:setPlayerInventory', function(data)
 		RegisterCommand('hotkey'..i, function() Hotkey(i) end)
 		RegisterKeyMapping('hotkey'..i, 'Use hotbar item '..i..'~', 'keyboard', i)
 	end
-	SetInterval(1, 100, function()
-		playerCoords = GetEntityCoords(playerPed)
+	playerCoords = GetEntityCoords(playerPed)
+	local nuiFocus = false
+	SetInterval(1, 5, function()
+		if nuiFocus == false and invOpen then
+			nuiFocus = true
+			SetNuiFocus(true, true)
+			SetNuiFocusKeepInput(true)
+			TriggerScreenblurFadeIn(0)
+		elseif nuiFocus == true and not invOpen then
+			SetNuiFocus(false, false)
+			SetNuiFocusKeepInput(false)
+			TriggerScreenblurFadeOut(0)
+		elseif nuiFocus and not currentInventory then
+			DisableAllControlActions(0)
+			EnableControlAction(0, 30, true)
+			EnableControlAction(0, 31, true)
+		end
 	end)
+end)
+
+AddEventHandler('onResourceStop', function(resourceName)
+	if ox.name == resourceName then
+		if parachute then ESX.Game.DeleteObject(parachute) end
+		if invOpen then
+			SetNuiFocus(false, false)
+			SetNuiFocusKeepInput(false)
+			TriggerScreenblurFadeOut(0)
+		end
+	end
 end)
 
 RegisterNetEvent('esx:playerLoaded', function(xPlayer)
