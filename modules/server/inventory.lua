@@ -73,10 +73,10 @@ local SyncInventory = function(xPlayer, inv, items, message)
 		end
 	end
 	xPlayer.syncInventory(inv.weight, inv.maxWeight, items, money)
-	-- notify client (items, message, newweight)
+	TriggerClientEvent(xPlayer.source, items, message)
 end
 
-local SetSlot = function(inv, item, count, metadata, slot)
+M.SetSlot = function(inv, item, count, metadata, slot)
 	inv = Inventories[type(inv) == 'table' and inv.id or inv]
 	local currentSlot, message = inv.items[slot] or false
 	local newCount = currentSlot and currentSlot.count + count or count
@@ -85,6 +85,7 @@ local SetSlot = function(inv, item, count, metadata, slot)
 		inv.items[slot] = nil
 	else
 		inv.items[slot] = {name = item.name, label = item.label, weight = item.weight, slot = slot, count = newCount, description = item.description, metadata = metadata, stack = item.stack, close = item.close}
+		inv.items[slot].weight = M.SlotWeight(item, inv.items[slot])
 	end
 end
 
@@ -145,6 +146,7 @@ M.Create = function(...)
 end
 
 M.Save = function(inv)
+	print('saving', inv.id)
 	inv = Inventories[type(inv) == 'table' and inv.id or inv]
 	if inv.owner then
 		if inv.type == 'player' then
@@ -215,8 +217,7 @@ M.Load = function(id, inv, owner)
 		for k, v in pairs(Inventory) do
 			local item = Items[v.name]
 			if item then
-				local weight = M.SlotWeight(item, v)
-				returnData[v.slot] = {name = item.name, label = item.label, weight = weight, slot = v.slot, count = v.count, description = item.description, metadata = v.metadata, stack = item.stack, close = item.close}
+				returnData[v.slot] = {name = item.name, label = item.label, weight = M.SlotWeight(item, v), slot = v.slot, count = v.count, description = item.description, metadata = v.metadata, stack = item.stack, close = item.close}
 			end
 		end
 	end
@@ -319,7 +320,7 @@ M.AddItem = function(inv, item, count, metadata, slot)
 					metadata.serial = GenerateSerial(metadata.serial)
 				end
 			end
-			SetSlot(inv, item, count, metadata, slot)
+			M.SetSlot(inv, item, count, metadata, slot)
 		else
 			if item.name:find('identification') then
 				count = 1
@@ -333,7 +334,7 @@ M.AddItem = function(inv, item, count, metadata, slot)
 				metadata = {}
 				metadata.container = GenerateText(3)..os.time(os.date('!*t'))
 			end
-			SetSlot(inv, item, count, metadata, slot)
+			M.SetSlot(inv, item, count, metadata, slot)
 		end
 		inv.weight += (item.weight + (metadata.weight or 0)) * count
 		if xPlayer then SyncInventory(xPlayer, inv, {[slot] = inv.items[slot]}, ('Added %sx %s'):format(count, item.label)) end
@@ -364,7 +365,7 @@ M.RemoveItem = function(inv, item, count, metadata, slot)
 		metadata = SetMetadata(metadata)
 		local slotItem = inv.items[slot] or false
 		if slot and slotItem and item.name == slotItem.name and Function.MatchTables(slotItem.metadata, metadata) then
-			SetSlot(inv, item, -count, metadata, slot)
+			M.SetSlot(inv, item, -count, metadata, slot)
 		else
 			local itemSlots, totalCount = GetItemSlots(inv, item, metadata)
 			if itemSlots and totalCount > 0 then
@@ -374,17 +375,17 @@ M.RemoveItem = function(inv, item, count, metadata, slot)
 					if removed < total then
 						if v == count then
 							removed = total
-							SetSlot(inv, item, -count, metadata, k)
+							M.SetSlot(inv, item, -count, metadata, k)
 							slot[k] = {[k] = inv.items[k]}
 						elseif v > count then
 							removed = total
 							count -= v
-							SetSlot(inv, item, -count, metadata, k)
+							M.SetSlot(inv, item, -count, metadata, k)
 							slot[k] = {[k] = inv.items[k]}
 						else
 							removed += v
 							count -= v
-							SetSlot(inv, item, -count, metadata, k)
+							M.SetSlot(inv, item, -count, metadata, k)
 							slot[k] = {[k] = inv.items[k]}
 						end
 					else break end

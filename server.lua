@@ -103,7 +103,6 @@ AddEventHandler('ox_inventory:setPlayerInventory', function(xPlayer, data)
 				totalWeight += weight
 				inventory[i.slot] = {name = i.name, label = item.label, weight = weight, slot = i.slot, count = i.count, description = item.description, metadata = i.metadata, stack = item.stack, close = item.close}
 				if money[i.name] then money[i.name] += i.count end
-				print(i.name, i.count)
 			end
 		end
 	end
@@ -115,7 +114,35 @@ end)
 ox.RegisterServerCallback('ox_inventory:openInventory', function(source, cb, inv, data) 
 	local left, right = Inventory(source)
 	if data then
-		right = Inventory.Create(data.id, data.label or data.id, inv, 20, 0, 2000, data.owner, {})
+		-- Inventory.Create(data.id, data.label or data.id, inv, 20, 0, 2000, data.owner, {})
+	else
+		Inventory.Create('test', 'Drop 6969', 'drop', Config.PlayerSlots, 0, Config.DefaultWeight, false)
+		right = Inventory('test')
+		right.open = source
+		left.open = right.id
 	end
-	cb(left, right or {id='Drop', type=nil, slots=Config.PlayerSlots, weight=0, maxWeight=Config.DefaultWeight, items={}})
+	cb(left, right)
+end)
+
+ox.RegisterServerCallback('ox_inventory:swapItems', function(source, cb, data)
+	local inventory = Inventory(source)
+	if data.fromType ~= data.toType then
+		local toInventory = data.toType and Inventory(inventory.open) or data.fromType and inventory
+		local fromInventory = toInventory.id ~= source and inventory or Inventory(inventory.open)
+		print('moved item from', fromInventory.id, 'to', toInventory.id)
+		cb(1)
+	else
+		inventory = data.fromType and Inventory(inventory.open) or inventory
+		local fromItem = inventory.items[data.fromSlot]
+		local toItem = inventory.items[data.toSlot]
+
+		if toItem == nil then
+			Inventory.SetSlot(inventory, fromItem, data.count, fromItem.metadata, data.toSlot)
+			inventory.items[data.fromSlot] = nil
+		end
+		
+		if inventory.player then inventory:player().syncInventory(inventory.weight, inventory.maxWeight, inventory.items, {}) end
+
+		cb(1)
+	end
 end)

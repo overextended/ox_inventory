@@ -79,8 +79,9 @@ RegisterNetEvent('ox_inventory:Notify', Notify)
 local CloseInventory = function(options)
 	if invOpen then
 		invOpen, currentInventory, currentDrop = false, nil, nil
-		if options ~= false then SendNUIMessage({ action = 'closeInventory' })
-		else
+		if type(options) ~= 'string' then
+			SendNUIMessage({ action = 'closeInventory' })
+		elseif options then
 			SendNUIMessage({ action = 'closeInventory' })
 			if options.trunk then
 				local animDict = 'anim@heists@fleeca_bank@scope_out@return_case'
@@ -107,6 +108,7 @@ local OpenInventory = function(inv, data)
 			local time = GetGameTimer()
 			ox.TriggerServerCallback('ox_inventory:openInventory', function(left, right)
 				invOpen = true
+				currentInventory = rightInventory or nil
 				SendNUIMessage({
 					action = 'setupInventory',
 					data = {
@@ -182,10 +184,22 @@ RegisterNetEvent('ox_inventory:setPlayerInventory', function(data)
 			SetNuiFocus(false, false)
 			SetNuiFocusKeepInput(false)
 			TriggerScreenblurFadeOut(0)
-		elseif nuiFocus and not currentInventory then
+		elseif nuiFocus then
 			DisableAllControlActions(0)
-			EnableControlAction(0, 30, true)
-			EnableControlAction(0, 31, true)
+			if not currentInventory then
+				EnableControlAction(0, 30, true)
+				EnableControlAction(0, 31, true)
+			end
+		else
+			HideHudComponentThisFrame(19)
+			HideHudComponentThisFrame(20)
+			DisablePlayerVehicleRewards(playerID)
+			DisableControlAction(0, 37, true)
+			DisableControlAction(0, 157, true)
+			DisableControlAction(0, 158, true)
+			DisableControlAction(0, 160, true)
+			DisableControlAction(0, 164, true)
+			DisableControlAction(0, 165, true)
 		end
 	end)
 end)
@@ -334,11 +348,16 @@ RegisterNUICallback('useItem', function(data, cb)
 	if data.inv == 'Playerinv' then TriggerEvent('ox_inventory:useItem', data.item) end
 end)
 
-RegisterNUICallback('exit',function(data, cb)
+RegisterNUICallback('exit', function(data, cb)
 	TriggerServerEvent('ox_inventory:saveInventory', ESX.PlayerData.inventory)
-	TriggerEvent('ox_inventory:closeInventory', false)
+	TriggerEvent('ox_inventory:closeInventory')
 	cb({})
 end)
 
+RegisterNUICallback('swapItems', function(data, cb)
+	ox.TriggerServerCallback('ox_inventory:swapItems', function(r)
+		cb(r) 
+	end, data)
+end)
 
 if ESX.PlayerLoaded then TriggerServerEvent('ox_inventory:requestPlayerInventory') end

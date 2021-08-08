@@ -22,9 +22,9 @@ export const useExitListener = (visibleSetter: FrameVisibleSetter) => {
       }
     }
 
-    window.addEventListener("keydown", keyHandler)
+    window.addEventListener("keyup", keyHandler)
 
-    return () => window.removeEventListener("keydown", keyHandler)
+    return () => window.removeEventListener("keyup", keyHandler)
   }, []);
 
 
