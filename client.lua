@@ -78,27 +78,28 @@ RegisterNetEvent('ox_inventory:Notify', Notify)
 
 local CloseInventory = function(options)
 	if invOpen then
-		if options ~= false then SendNUIMessage({ message = 'close', }) end
-		TriggerScreenblurFadeOut(0)
-		if options.trunk then
-			local animDict = 'anim@heists@fleeca_bank@scope_out@return_case'
-			local anim = 'trevor_action'
-			RequestAnimDict(animDict)
-			while not HasAnimDictLoaded(animDict) do
-				Citizen.Wait(100)
-			end
-			ClearPedTasks(playerPed)
-			Citizen.Wait(100)
-			TaskPlayAnimAdvanced(playerPed, animDict, anim, GetEntityCoords(playerPed, true), 0, 0, GetEntityHeading(playerPed), 2.0, 2.0, 1000, 49, 0.25, 0, 0)
-			Citizen.Wait(900)
-			ClearPedTasks(playerPed)
-			SetVehicleDoorShut(entity, open, false)
-		end
-		SetNuiFocusAdvanced(false, false)
 		invOpen, currentInventory, currentDrop = false, nil, nil
+		if options ~= false then SendNUIMessage({ action = 'closeInventory' })
+		else
+			SendNUIMessage({ action = 'closeInventory' })
+			if options.trunk then
+				local animDict = 'anim@heists@fleeca_bank@scope_out@return_case'
+				local anim = 'trevor_action'
+				RequestAnimDict(animDict)
+				while not HasAnimDictLoaded(animDict) do
+					Citizen.Wait(100)
+				end
+				ClearPedTasks(playerPed)
+				Citizen.Wait(100)
+				TaskPlayAnimAdvanced(playerPed, animDict, anim, GetEntityCoords(playerPed, true), 0, 0, GetEntityHeading(playerPed), 2.0, 2.0, 1000, 49, 0.25, 0, 0)
+				Citizen.Wait(900)
+				ClearPedTasks(playerPed)
+				SetVehicleDoorShut(entity, open, false)
+			end
+		end
 	end
 end
-RegisterNetEvent('linden_inventory:closeInventory', CloseInventory)
+RegisterNetEvent('ox_inventory:closeInventory', CloseInventory)
 
 local OpenInventory = function(inv, data)
 	if not invOpen then
@@ -177,6 +178,7 @@ RegisterNetEvent('ox_inventory:setPlayerInventory', function(data)
 			SetNuiFocusKeepInput(true)
 			TriggerScreenblurFadeIn(0)
 		elseif nuiFocus == true and not invOpen then
+			nuiFocus = false
 			SetNuiFocus(false, false)
 			SetNuiFocusKeepInput(false)
 			TriggerScreenblurFadeOut(0)
