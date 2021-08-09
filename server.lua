@@ -130,19 +130,45 @@ ox.RegisterServerCallback('ox_inventory:swapItems', function(source, cb, data)
 		local toInventory = data.toType and Inventory(inventory.open) or data.fromType and inventory
 		local fromInventory = toInventory.id ~= source and inventory or Inventory(inventory.open)
 		print('moved item from', fromInventory.id, 'to', toInventory.id)
-		cb(1)
 	else
 		inventory = data.fromType and Inventory(inventory.open) or inventory
 		local fromItem = inventory.items[data.fromSlot]
 		local toItem = inventory.items[data.toSlot]
 
-		if toItem == nil then
-			Inventory.SetSlot(inventory, fromItem, data.count, fromItem.metadata, data.toSlot)
-			inventory.items[data.fromSlot] = nil
-		end
-		
-		if inventory.player then inventory:player().syncInventory(inventory.weight, inventory.maxWeight, inventory.items, {}) end
+		print(data.fromSlot, data.count, data.toSlot)
 
-		cb(1)
 	end
+
+	cb(1)
 end)
+
+
+
+
+local ValidateString = function(item)
+	item = string.lower(item)
+	if item:find('weapon_') then item = string.upper(item) end
+	local valid = Items[item]
+	if valid then return valid.name else return ox.error('Invalid item name! '..item..' does not exist') end
+end
+
+
+ESX.RegisterCommand({'giveitem', 'additem'}, 'admin', function(xPlayer, args, showError)
+	args.item = ValidateString(args.item)
+	if args.item then Inventory.AddItem(args.player.source, args.item, args.count, args.type or {}) end
+end, true, {help = 'give an item to a player', validate = false, arguments = {
+	{name = 'player', help = 'player id', type = 'player'},
+	{name = 'item', help = 'item name', type = 'string'},
+	{name = 'count', help = 'item count', type = 'number'},
+	{name = 'type', help = 'item metadata type', type='any'}
+}})
+
+ESX.RegisterCommand('removeitem', 'admin', function(xPlayer, args, showError)
+	args.item = ValidateString(args.item)
+	if args.item then Inventory.RemoveItem(args.player.source, args.item, args.count, args.type or {}) end
+end, true, {help = 'remove an item from a player', validate = false, arguments = {
+	{name = 'player', help = 'player id', type = 'player'},
+	{name = 'item', help = 'item name', type = 'string'},
+	{name = 'count', help = 'item count', type = 'number'},
+	{name = 'type', help = 'item metadata type', type='any'}
+}})
