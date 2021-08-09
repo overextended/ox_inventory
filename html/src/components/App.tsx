@@ -26,7 +26,7 @@ debugData([
       playerInventory: {
         id: "player",
         slots: 50,
-        weight: 500,
+        weight: 300,
         maxWeight: 1000,
         items: [
           {

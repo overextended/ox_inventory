@@ -20,7 +20,8 @@ const InventoryGrid: React.FC<{ inventory: InventoryProps }> = (props) => {
           </div>
         )}
       </div>
-      <div className="weight-bar">
+      <WeightBar percent={props.inventory.weight && props.inventory.maxWeight ? props.inventory.weight / props.inventory.maxWeight : 0}/>
+      {/* <div className="weight-bar">
         <div
           style={{
             width:
@@ -32,7 +33,7 @@ const InventoryGrid: React.FC<{ inventory: InventoryProps }> = (props) => {
             backgroundColor: "rgb(48, 161, 33)",
           }}
         ></div>
-      </div>
+      </div> */}
       <div className="inventory-grid">
         {props.inventory.items.map((item) => (
           <InventorySlot

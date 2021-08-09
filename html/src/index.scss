@@ -67,7 +67,6 @@ body {
   gap: $gridGap;
   overflow-y: scroll;
   margin-top: 0.5vh;
-  margin-bottom: 1vh;
 }
 
 @for $i from 1 through 5 {
@@ -79,6 +78,7 @@ body {
     width: 1.5vh;
     font-size: 1.2vh;
     border-top-left-radius: $borderRadius;
+    border-bottom-right-radius: $borderRadius;
     //border: solid 0.1vh rgba(0, 0, 0, 0.8);
     font-weight: bold;
     font-family: "Basic";
@@ -187,6 +187,7 @@ input[type="number"] {
 
 .item-info {
   padding: 1vh;
+  margin-top: 0.5vh;
   font-weight: 500;
   font-size: 1.8vh;
   background-color: rgba(0, 0, 0, 0.267);
