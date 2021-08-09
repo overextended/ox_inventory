@@ -45,13 +45,14 @@ const InventoryGrid: React.FC<{ inventory: InventoryProps }> = (props) => {
         ))}
       </div>
 
-      <div style={{ height: "10vh" }}>
+      <div>
         <Fade
           visible={currentItem !== undefined}
           duration={0.25}
           className="item-info"
         >
           <p>{currentItem?.label}</p>
+          <hr></hr>
           <p>{currentItem?.description}</p>
         </Fade>
       </div>

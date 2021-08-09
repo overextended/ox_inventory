@@ -11,8 +11,9 @@ $borderRadius: 0.5vh;
 
 $gridCols: 5;
 $gridRows: 5;
-$gridSize: 10.5vh;
-$gridGap: 0.2vh;
+$gridSize: 10vh;
+$gridGap: 2px;
+$containerSize: calc(#{$gridRows} * #{$gridSize} + #{$gridRows} * #{$gridGap});
 
 $imageSize: $gridSize - 2.5vh;
 
@@ -25,7 +26,6 @@ $imageSize: $gridSize - 2.5vh;
   overflow: hidden;
   user-select: none;
   margin: 0;
-  padding: 0;
   color: #fff;
   text-shadow: 0.1vh 0.1vh 0 black;
 }
@@ -66,7 +66,7 @@ body {
 
 .inventory-grid {
   display: grid;
-  height: calc(#{$gridRows} * #{$gridSize} + #{$gridRows} * #{$gridGap});
+  height: $containerSize;
   grid-template-columns: repeat($gridCols, $gridSize);
   grid-auto-rows: $gridSize;
   gap: $gridGap;
@@ -154,14 +154,12 @@ body {
 
 .button {
   background-color: rgba(12, 12, 12, 0.35);
-  border: 0.1vh solid rgba(33, 33, 33, 0.4);
+  border: thin solid rgba(33, 33, 33, 0.4);
   border-radius: $borderRadius;
-  height: 4.5vh;
+  padding: 0.9vh;
   text-align: center;
-
-  &:not(:last-child) {
-    margin-bottom: 1vh;
-  }
+  width: 17vh;
+  margin: 0.8vh;
 
   &:hover {
     background-color: $mainColor;
@@ -189,11 +187,13 @@ input[type="number"] {
 
 .weight-bar {
   background: rgba(0, 0, 0, 0.5);
-  height: 1.25vh;
+  height: 1vh;
   border-radius: $borderRadius;
 
   div {
     height: 100%;
+    border-radius: $borderRadius;
+    border: solid rgba(0, 0, 0, 0.1) thin;
   }
 }
 
@@ -209,11 +209,14 @@ input[type="number"] {
 }
 
 .item-info {
+  margin-top: 1vh;
   padding: 1vh;
   font-weight: 500;
   font-size: 1.8vh;
   background-color: rgba(0, 0, 0, 0.267);
   border-radius: $borderRadius;
+  width: $containerSize;
+  position: absolute;
 }
 
 .progressBar {
@@ -224,7 +227,7 @@ input[type="number"] {
   left: 50%;
   transform: translate(-50%, 0);
   background-color: rgba(0, 0, 0, 0.6);
-  border-radius: 5px;
+  border-radius: $borderRadius;
 
   &-value {
     width: 0;

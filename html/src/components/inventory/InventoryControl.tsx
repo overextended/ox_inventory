@@ -30,7 +30,7 @@ const InventoryControl: React.FC = () => {
   };
 
   return (
-    <div className="column-wrapper" style={{marginLeft: '2vh', marginRight: '2vh'}}>
+    <div className="column-wrapper" style={{margin: '2vh'}}>
       <input
         type="number"
         className="button input"

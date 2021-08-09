@@ -35,6 +35,7 @@ const WeightBar: React.FC<{ percent: number; revert?: boolean; className?: strin
       <div
         className="weight-bar-value"
         style={{
+          visibility: percent ? 'visible' : 'hidden',
           width: `${percent}%`,
           backgroundColor: revert
             ? percent < 50
