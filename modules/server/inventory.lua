@@ -65,7 +65,7 @@ local Minimal = function(inv)
 	return inventory
 end
 
-local SyncInventory = function(xPlayer, inv, items, message)
+local SyncInventory = function(xPlayer, inv, items)
 	local money = {money=0, black_money=0}
 	for k, v in pairs(inv.items) do
 		if money[v.name] then
@@ -73,7 +73,6 @@ local SyncInventory = function(xPlayer, inv, items, message)
 		end
 	end
 	xPlayer.syncInventory(inv.weight, inv.maxWeight, items, money)
-	TriggerClientEvent(xPlayer.source, items, message)
 end
 
 M.SetSlot = function(inv, item, count, metadata, slot)
@@ -337,7 +336,10 @@ M.AddItem = function(inv, item, count, metadata, slot)
 			M.SetSlot(inv, item, count, metadata, slot)
 		end
 		inv.weight += (item.weight + (metadata.weight or 0)) * count
-		if xPlayer then SyncInventory(xPlayer, inv, {[slot] = inv.items[slot]}, ('Added %sx %s'):format(count, item.label)) end
+		if xPlayer then
+			SyncInventory(xPlayer, inv, {[slot] = inv.items[slot]})
+			TriggerClientEvent('ox_inventory:updateInventory', xPlayer.source, {{item = inv.items[slot], inventory = inv.type ~= 'player' and inv.type or nil}}, inv.weight, inv.maxWeight, ('Added %sx %s'):format(count, item.label))
+		end
 	end
 end
 
@@ -374,24 +376,35 @@ M.RemoveItem = function(inv, item, count, metadata, slot)
 				for k, v in pairs(itemSlots) do
 					if removed < total then
 						if v == count then
-							removed = total
 							M.SetSlot(inv, item, -count, metadata, k)
-							slot[k] = {[k] = inv.items[k]}
+							slot[k] = inv.items[k] or {}
+							removed = v
 						elseif v > count then
+							M.SetSlot(inv, item, -count, metadata, k)
+							slot[k] = inv.items[k] or {}
 							removed = total
-							count -= v
-							M.SetSlot(inv, item, -count, metadata, k)
-							slot[k] = {[k] = inv.items[k]}
+							count -= removed
 						else
-							removed += v
-							count -= v
 							M.SetSlot(inv, item, -count, metadata, k)
-							slot[k] = {[k] = inv.items[k]}
+							slot[k] = inv.items[k] or {}
+							removed += v
+							count -= removed
 						end
 					else break end
 				end
 				inv.weight -= (item.weight + (metadata.weight or 0)) * removed
-				if xPlayer then SyncInventory(xPlayer, inv, slot, ('Removed %sx %s'):format(removed, item.label)) end
+				if xPlayer then
+					SyncInventory(xPlayer, inv, slot)
+					local array = {}
+					for k, v in pairs(slot) do
+						if not v.slot then
+							array[k] = {item = {slot=k}, inventory = inv.type}
+						else
+							array[k] = {item = inv.items[k], inventory = inv.type}
+						end
+					end
+					TriggerClientEvent('ox_inventory:updateInventory', xPlayer.source, array, inv.weight, inv.maxWeight, ('Removed %sx %s'):format(removed, item.label))
+				end
 			end
 		end
 	end
