@@ -62,23 +62,17 @@ const DragPreview: React.FC = () => {
       {isDragging && currentOffset && (
         <div
           ref={element}
+          className="drag"
           style={{
-            position: "fixed",
-            pointerEvents: "none",
-            top: 0,
-            left: 0,
             transform: `translate(${currentOffset.x}px, ${currentOffset.y}px)`,
             WebkitTransform: `translate(${currentOffset.x}px, ${currentOffset.y}px)`,
-            zIndex: 1,
+            backgroundImage: data.item.name
+            ? `url(${
+                process.env.PUBLIC_URL + `/images/${data.item.name}.png`
+              })`
+            : "none",
           }}
         >
-          <img
-            src={process.env.PUBLIC_URL + `/images/${data.item.name}.png`}
-            style={{
-              imageRendering: "-webkit-optimize-contrast",
-              maxWidth: "80%",
-            }}
-          />
         </div>
       )}
     </>

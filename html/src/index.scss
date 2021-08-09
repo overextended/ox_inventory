@@ -1,5 +1,9 @@
-@import url("https://fonts.googleapis.com/css2?family=Signika:wght@300;400;500;600;700&display=swap");
-@import url("https://fonts.googleapis.com/css2?family=Basic:wght@300;400;500;600;700&display=swap");
+
+$mainFont: Signika;
+$secondFont: Inconsolata;
+
+@import url("https://fonts.googleapis.com/css2?family="+$mainFont+":wght@400;500;600;700&display=swap");
+@import url("https://fonts.googleapis.com/css2?family="+$secondFont+":wght@800&display=swap");
 
 $mainColor: rgb(44, 62, 80);
 
@@ -10,10 +14,10 @@ $gridRows: 5;
 $gridSize: 10.5vh;
 $gridGap: 0.2vh;
 
-$imageSize: $gridSize - 2vh;
+$imageSize: $gridSize - 2.5vh;
 
 * {
-  font-family: "Signika";
+  font-family: $mainFont;
   font-size: 1.5vh;
   box-sizing: border-box;
   white-space: nowrap;
@@ -34,6 +38,7 @@ img {
 
 body {
   background: gray;
+  background-image: url('./game.png');
 }
 
 .center-wrapper {
@@ -67,6 +72,22 @@ body {
   gap: $gridGap;
   overflow-y: scroll;
   margin-top: 0.5vh;
+  margin-bottom: 1vh;
+}
+
+.drag {
+  width: $imageSize;
+  height: $imageSize;
+  z-index: 1;
+  position: fixed;
+  pointer-events: none;
+  top: 0;
+  left: 0;
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: $imageSize;
+  border-radius: $borderRadius;
+  image-rendering: -webkit-optimize-contrast;
 }
 
 @for $i from 1 through 5 {
@@ -76,12 +97,13 @@ body {
   .hotbar-grid > .item-container:nth-child(#{$i}) > .item-count:before {
     content: "#{$i}";
     width: 1.5vh;
-    font-size: 1.2vh;
+    height: 1.7vh;
+    line-height: 1.7vh;
+    font-size: 1.3vh;
     border-top-left-radius: $borderRadius;
     border-bottom-right-radius: $borderRadius;
-    //border: solid 0.1vh rgba(0, 0, 0, 0.8);
     font-weight: bold;
-    font-family: "Basic";
+    font-family: $secondFont;
     text-align: center;
     background-color: white;
     color: black;
@@ -123,6 +145,7 @@ body {
   .item-label {
     background-color: $mainColor;
     padding: 0.1vh;
+    padding-top: 0.2vh;
     font-size: 1vh;
     text-align: center;
     text-transform: uppercase;
@@ -187,7 +210,6 @@ input[type="number"] {
 
 .item-info {
   padding: 1vh;
-  margin-top: 0.5vh;
   font-weight: 500;
   font-size: 1.8vh;
   background-color: rgba(0, 0, 0, 0.267);
