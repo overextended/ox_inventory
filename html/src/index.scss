@@ -18,7 +18,7 @@ body {
   color: white;
   text-shadow: 1px 1px 0px black;
   width: 100%;
-  background-image: url('./game.png');
+  //background-image: url('./game.png');
 }
 
 .center-wrapper {
@@ -47,7 +47,7 @@ body {
   overflow-y: scroll;
   direction: ltr;
   display: grid;
-  height: 51vh;
+  height: 51.8vh;
   grid-template-columns: repeat(5, 10.2vh);
   grid-auto-rows: 10.2vh;
   gap: 2px;
@@ -77,7 +77,7 @@ body {
     text-align: center;
     line-height: 14px;
     vertical-align: middle;
-    background-color: white;
+    background-color: #ffffff;
     color: black;
     text-shadow: none !important;
     // outline: 1px solid rgba(0, 0, 0, 0.9);
@@ -92,10 +92,7 @@ body {
   justify-content: space-between;
   align-items: center;
   background-color: rgba(0, 0, 0, 0.4);
-  // outline: 1px solid rgba(33, 33, 33, 0.4);
-  // outline-offset: -1px;
   position: relative;
-  padding-bottom: 15px;
 
   .item-label {
     width: 100%;
@@ -103,7 +100,7 @@ body {
     border-bottom-right-radius: $bRadius;
     background-color: $mainColor;
     padding: 0.8pt;
-    font-size: 1.1vh;
+    font-size: 1vh;
     text-align: center;
     text-transform: uppercase;
     // outline: 1px solid rgba(33, 33, 33, 0.4);

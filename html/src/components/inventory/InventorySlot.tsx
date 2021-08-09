@@ -61,7 +61,7 @@ const InventorySlot: React.FC<SlotProps> = (props) => {
         className="item-container"
         style={{
           opacity: isDragging ? 0.4 : 1.0,
-          border: isOver ? "5px solid white" : 0,
+          border: isOver ? "1px dashed #ffffff99" : "1px inset #10101002",
         }}
         onMouseEnter={() => props.item.name && props.setCurrentItem(props.item)}
         onMouseLeave={() => props.item.name && props.setCurrentItem(undefined)}
