@@ -32,7 +32,7 @@ debugData([
           {
             slot: 1,
             name: "water",
-            label: "Water",
+            label: "Water WAater JOJO WAter",
             weight: 50,
             count: 1,
             stackable: true,

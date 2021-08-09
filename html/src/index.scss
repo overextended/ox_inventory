@@ -1,40 +1,51 @@
 @import url("https://fonts.googleapis.com/css2?family=Signika:wght@300;400;500;600;700&display=swap");
 @import url("https://fonts.googleapis.com/css2?family=Basic:wght@300;400;500;600;700&display=swap");
 
-$bRadius: 5px;
 $mainColor: rgb(44, 62, 80);
+
+$borderRadius: 0.5vh;
+
+$gridCols: 5;
+$gridRows: 5;
+$gridSize: 10.5vh;
+$gridGap: 0.2vh;
+
+$imageSize: $gridSize - 2vh;
 
 * {
   font-family: "Signika";
-  font-size: 11pt;
+  font-size: 1.5vh;
   box-sizing: border-box;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  overflow: hidden;
+  user-select: none;
+  margin: 0;
+  padding: 0;
+  color: #fff;
+  text-shadow: 0.1vh 0.1vh 0 black;
+}
+
+img {
+  image-rendering: -webkit-optimize-contrast;
+  width: $imageSize;
+  height: $imageSize;
 }
 
 body {
-  user-select: none;
-  overflow: hidden;
-  background: transparent;
-  margin: 0;
-  color: white;
-  text-shadow: 1px 1px 0px black;
-  width: 100%;
-  //background-image: url('./game.png');
+  background: gray;
 }
 
 .center-wrapper {
   display: flex;
   align-items: center;
   justify-content: center;
-  align-content: center;
   height: 100vh;
-  width: 100vw;
-  padding: 3px;
 }
 
 .column-wrapper {
   display: flex;
   flex-direction: column;
-  padding: 1%;
 }
 
 .row-wrapper {
@@ -43,100 +54,77 @@ body {
 }
 
 .inventory-grid {
-  overflow: hidden;
-  overflow-y: scroll;
-  direction: ltr;
   display: grid;
-  height: 51.8vh;
-  grid-template-columns: repeat(5, 10.2vh);
-  grid-auto-rows: 10.2vh;
-  gap: 2px;
-
-  &-right {
-    @extend .inventory-grid;
-  }
+  height: calc(#{$gridRows} * #{$gridSize} + #{$gridRows} * #{$gridGap});
+  grid-template-columns: repeat($gridCols, $gridSize);
+  grid-auto-rows: $gridSize;
+  gap: $gridGap;
+  overflow-y: scroll;
 }
 
 @for $i from 1 through 5 {
   .inventory-grid:not(.inventory-grid-right)
-    > .item-container:nth-child(#{$i}):before,
-  .hotbar-grid > .item-container:nth-child(#{$i}):before {
-    top: 0;
-    left: 0;
-    margin: 0 auto;
-    position: absolute;
+    > .item-container:nth-child(#{$i})
+    > .item-count:before,
+  .hotbar-grid > .item-container:nth-child(#{$i}) > .item-count:before {
     content: "#{$i}";
-    height: 15px !important;
-    width: 15px !important;
-    font-size: 11px;
-    border-top-left-radius: $bRadius;
-    border-bottom-right-radius: $bRadius;
-    border: solid 1px rgba(0, 0, 0, 0.9);
+    width: 1.5vh;
+    font-size: 1.2vh;
+    border-top-left-radius: $borderRadius;
+    border: solid 0.1vh rgba(0, 0, 0, 0.8);
     font-weight: bold;
     font-family: "Basic";
     text-align: center;
-    line-height: 14px;
-    vertical-align: middle;
-    background-color: #ffffff;
+    background-color: white;
     color: black;
-    text-shadow: none !important;
-    // outline: 1px solid rgba(0, 0, 0, 0.9);
-    outline-offset: -1px;
+    text-shadow: none;
   }
 }
 
 .item-container {
   display: flex;
-  border-radius: $bRadius;
   flex-direction: column;
   justify-content: space-between;
-  align-items: center;
   background-color: rgba(0, 0, 0, 0.4);
-  position: relative;
-
-  .item-label {
-    width: 100%;
-    border-bottom-left-radius: $bRadius;
-    border-bottom-right-radius: $bRadius;
-    background-color: $mainColor;
-    padding: 0.8pt;
-    font-size: 1vh;
-    text-align: center;
-    text-transform: uppercase;
-    // outline: 1px solid rgba(33, 33, 33, 0.4);
-    // outline-offset: -1px;
-    position: absolute;
-    bottom: 0px;
-  }
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: $imageSize;
+  border-radius: $borderRadius;
+  image-rendering: -webkit-optimize-contrast;
 
   .item-count {
-    font-size: 1.2vh;
-    align-self: flex-end;
-    padding: 0 2px 0 2px;
+    display: flex;
+
+    span {
+      margin-left: auto;
+      font-size: 1.2vh;
+    }
   }
 
   .item-durability {
-    position: absolute;
-    bottom: 1.5vh;
-    width: 100%;
+    margin-top: auto;
+    background: rgba(0, 0, 0, 0.5);
+    height: 0.5vh;
+
+    div {
+      height: 100%;
+    }
   }
 
-  img {
-    image-rendering: -webkit-optimize-contrast;
-    max-width: 80%;
-    display: inline-block;
-    position: absolute;
-    bottom: 10%;
+  .item-label {
+    background-color: $mainColor;
+    padding: 0.1vh;
+    font-size: 1vh;
+    text-align: center;
+    text-transform: uppercase;
   }
 }
 
 .button {
   background-color: rgba(12, 12, 12, 0.35);
-  border: 1px solid rgba(33, 33, 33, 0.4);
-  outline-offset: -1px;
-  border-radius: $bRadius;
-  color: #fff;
-  height: 4.6vh;
+  border: 0.1vh solid rgba(33, 33, 33, 0.4);
+  border-radius: $borderRadius;
+  height: 4.5vh;
   text-align: center;
 
   &:not(:last-child) {
@@ -151,47 +139,34 @@ body {
 
 input[type="number"] {
   @extend .button;
-
-  line-height: 5vh;
-  padding: 0;
   margin-bottom: 3vh !important;
 
   &::-webkit-inner-spin-button,
   &::-webkit-outer-spin-button {
     -webkit-appearance: none;
-    margin: 0;
+  }
+
+  &:focus {
+    outline: none;
   }
 }
 
 ::-webkit-scrollbar {
-  width: 3pt;
   display: none;
-
-}
-
-::-webkit-scrollbar-thumb {
-  background-color: rgba(0, 0, 0, 0.4);
-  border-radius: $bRadius;
 }
 
 .weight-bar {
+  margin-bottom: 0.25vh;
   background: rgba(0, 0, 0, 0.5);
-  width: 100%;
-  height: 7px;
+  height: 1.25vh;
+  border-radius: $borderRadius;
 
-  &-value {
+  div {
     height: 100%;
   }
 }
 
-.inv-weight {
-  height: 1.2vh;
-  border-radius: $bRadius;
-
-  .weight-bar-value {
-    border-radius: $bRadius;
-  }
-}
+//TODO: refactor below
 
 .hotbar-grid {
   display: grid;
@@ -211,7 +186,7 @@ input[type="number"] {
   width: 100%;
   display: flex;
   flex-direction: column;
-  border-radius: $bRadius;
+  border-radius: $borderRadius;
   justify-content: center;
 
   p {

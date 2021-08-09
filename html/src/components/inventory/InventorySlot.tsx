@@ -61,6 +61,11 @@ const InventorySlot: React.FC<SlotProps> = (props) => {
         className="item-container"
         style={{
           opacity: isDragging ? 0.4 : 1.0,
+          backgroundImage: props.item.name
+            ? `url(${
+                process.env.PUBLIC_URL + `/images/${props.item.name}.png`
+              })`
+            : "none",
           border: isOver ? "1px dashed #ffffff99" : "1px inset #10101002",
         }}
         onMouseEnter={() => props.item.name && props.setCurrentItem(props.item)}
@@ -75,23 +80,18 @@ const InventorySlot: React.FC<SlotProps> = (props) => {
           }
         }}
       >
-        {props.item.name ? (
+        {props.item.name && (
           <>
             <div className="item-count">
-              {props.item.weight}g {props.item.count}x
+              <span>{props.item.weight}g {props.item.count}x</span>
             </div>
-            <img
-              src={process.env.PUBLIC_URL + `/images/${props.item.name}.png`}
-            />
             <div className="item-durability">
-              <WeightBar percent={20} revert />
+              <div style={{backgroundColor: 'rgba(48, 161, 33, 0.8)', width: '80%'}}></div>
             </div>
             <div className="item-label">
               {props.item.label} [{props.item.slot}] {isBusy && "BUSY"}
             </div>
           </>
-        ) : (
-          <h1>{props.item.slot}</h1>
         )}
       </div>
     </>
