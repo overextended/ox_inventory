@@ -53,6 +53,12 @@ body {
   flex-direction: row;
 }
 
+.inventory-label {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 0.5vh;
+}
+
 .inventory-grid {
   display: grid;
   height: calc(#{$gridRows} * #{$gridSize} + #{$gridRows} * #{$gridGap});
@@ -60,6 +66,8 @@ body {
   grid-auto-rows: $gridSize;
   gap: $gridGap;
   overflow-y: scroll;
+  margin-top: 0.5vh;
+  margin-bottom: 1vh;
 }
 
 @for $i from 1 through 5 {
@@ -71,7 +79,7 @@ body {
     width: 1.5vh;
     font-size: 1.2vh;
     border-top-left-radius: $borderRadius;
-    border: solid 0.1vh rgba(0, 0, 0, 0.8);
+    //border: solid 0.1vh rgba(0, 0, 0, 0.8);
     font-weight: bold;
     font-family: "Basic";
     text-align: center;
@@ -98,6 +106,7 @@ body {
     span {
       margin-left: auto;
       font-size: 1.2vh;
+      padding: 0.2vh;
     }
   }
 
@@ -156,7 +165,6 @@ input[type="number"] {
 }
 
 .weight-bar {
-  margin-bottom: 0.25vh;
   background: rgba(0, 0, 0, 0.5);
   height: 1.25vh;
   border-radius: $borderRadius;
@@ -178,20 +186,11 @@ input[type="number"] {
 }
 
 .item-info {
-  padding: 0 1vh 0 1vh;
+  padding: 1vh;
   font-weight: 500;
-  font-size: 1.2vh;
+  font-size: 1.8vh;
   background-color: rgba(0, 0, 0, 0.267);
-  color: white;
-  width: 100%;
-  display: flex;
-  flex-direction: column;
   border-radius: $borderRadius;
-  justify-content: center;
-
-  p {
-    font-size: 1.8vh;
-  }
 }
 
 .progressBar {

@@ -9,14 +9,11 @@ const InventoryGrid: React.FC<{ inventory: InventoryProps }> = (props) => {
 
   return (
     <div className="column-wrapper">
-      <div
-        className="row-wrapper"
-        style={{ justifyContent: "space-between", marginBottom: "5px" }}
-      >
-        <div>
+      <div className="inventory-label">
+        <p>
           {props.inventory.label && `${props.inventory.label} -`}{" "}
           {props.inventory.id}
-        </div>
+        </p>
         {props.inventory.weight && props.inventory.maxWeight && (
           <div>
             {props.inventory.weight}/{props.inventory.maxWeight}kg
@@ -28,7 +25,9 @@ const InventoryGrid: React.FC<{ inventory: InventoryProps }> = (props) => {
           style={{
             width:
               props.inventory.weight && props.inventory.maxWeight
-                ? Math.round(props.inventory.weight / props.inventory.maxWeight)
+                ? Math.round(
+                    props.inventory.weight / props.inventory.maxWeight
+                  ) + "%"
                 : "0",
             backgroundColor: "rgb(48, 161, 33)",
           }}
@@ -45,16 +44,14 @@ const InventoryGrid: React.FC<{ inventory: InventoryProps }> = (props) => {
         ))}
       </div>
 
-      <div
-        className="row-wrapper"
-        style={{ marginTop: "2vh", marginRight: "4px", height: "5vh" }}
-      >
+      <div style={{ height: "10vh" }}>
         <Fade
           visible={currentItem !== undefined}
           duration={0.25}
           className="item-info"
         >
           <p>{currentItem?.label}</p>
+          <p>{currentItem?.description}</p>
         </Fade>
       </div>
     </div>

@@ -66,7 +66,7 @@ const InventorySlot: React.FC<SlotProps> = (props) => {
                 process.env.PUBLIC_URL + `/images/${props.item.name}.png`
               })`
             : "none",
-          border: isOver ? "1px dashed #ffffff99" : "1px inset #10101002",
+          border: isOver ? "0.1vh dashed #ffffff99" : "0.1vh inset #10101002",
         }}
         onMouseEnter={() => props.item.name && props.setCurrentItem(props.item)}
         onMouseLeave={() => props.item.name && props.setCurrentItem(undefined)}

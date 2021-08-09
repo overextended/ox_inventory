@@ -33,6 +33,7 @@ debugData([
             slot: 1,
             name: "water",
             label: "Water WAater JOJO WAter",
+            description: 'voda z vodovodu',
             weight: 50,
             count: 1,
             stackable: true,
