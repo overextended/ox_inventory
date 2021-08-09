@@ -25,10 +25,11 @@ const WeightBar: React.FC<{ percent: number; revert?: boolean; className?: strin
 
   percent = percent * 100
 
-  let COLORS = {
-    LOW: colorMixer([231, 76, 60], [243, 156, 18], (percent/100)),
-    GOOD: colorMixer([243, 156, 18], [46, 204, 113], (percent/50)) // divided by percent threshold 
-  };
+  const COLORS = { // Colors used - https://materialui.co/flatuicolors
+    primaryColor: [231, 76, 60],  // Red (Pomegranate)
+    secondColor: [39, 174, 96], // Green (Nephritis)
+    accentColor: [211, 84, 0] // Orange (Oragne)
+  }
 
   return (
     <div className={`weight-bar ` + `${className}`}>
@@ -39,11 +40,11 @@ const WeightBar: React.FC<{ percent: number; revert?: boolean; className?: strin
           width: `${percent}%`,
           backgroundColor: revert
             ? percent < 50
-              ? COLORS.LOW
-              : COLORS.GOOD
+              ? colorMixer(COLORS.accentColor, COLORS.primaryColor, (percent/100))
+              : colorMixer(COLORS.secondColor, COLORS.accentColor, (percent/100))
             : percent > 50
-            ? COLORS.LOW
-            : COLORS.GOOD,
+            ? colorMixer(COLORS.primaryColor, COLORS.accentColor, (percent/100))
+            : colorMixer(COLORS.accentColor, COLORS.secondColor, (percent/50)),
         }}
       ></div>
     </div>
