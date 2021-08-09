@@ -135,6 +135,16 @@ local OpenInventory = function(inv, data)
 	else TriggerEvent('ox_inventory:closeInventory') end
 end
 
+local UpdateInventory = function(items, weight, maxWeight, message)
+	SendNUIMessage({
+		action = 'refreshSlots',
+		data = items,
+	})
+	print(json.encode(items))
+	Notify({text = message, duration = 2500})
+end
+RegisterNetEvent('ox_inventory:updateInventory', UpdateInventory)
+
 RegisterNetEvent('ox_inventory:setPlayerInventory', function(data)
 	playerId, invOpen, usingWeapon, currentWeapon, currentDrop = GetPlayerServerId(PlayerId()), false, false, nil, nil
 	ClearWeapons()
@@ -355,7 +365,14 @@ RegisterNUICallback('exit', function(data, cb)
 end)
 
 RegisterNUICallback('swapItems', function(data, cb)
-	ox.TriggerServerCallback('ox_inventory:swapItems', function(r)
+	ox.TriggerServerCallback('ox_inventory:swapItems', function(r, data)
+		if data then
+			for k, v in pairs(data.items) do
+				ESX.PlayerData.inventory[k] = v
+			end
+			ESX.SetPlayerData('inventory', ESX.PlayerData.inventory)
+			if data.weight then ESX.SetPlayerData('weight', data.weight) end
+		end
 		cb(r) 
 	end, data)
 end)
