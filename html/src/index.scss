@@ -21,8 +21,6 @@ $imageSize: $gridSize - 2.5vh;
   font-family: $mainFont;
   font-size: 1.5vh;
   box-sizing: border-box;
-  white-space: nowrap;
-  text-overflow: ellipsis;
   overflow: hidden;
   user-select: none;
   margin: 0;
@@ -149,6 +147,8 @@ body {
     font-size: 1vh;
     text-align: center;
     text-transform: uppercase;
+    white-space: nowrap;
+    text-overflow: ellipsis;
   }
 }
 
@@ -164,6 +164,20 @@ body {
   &:hover {
     background-color: $mainColor;
     opacity: 0.8;
+  }
+}
+
+.misc-btns {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  button {
+    @extend .button;
+    width: 30%;
+    font-size: 2.5vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
   }
 }
 
@@ -260,4 +274,40 @@ input[type="number"] {
     width: 100% !important;
     background-color: rgb(198, 40, 40);
   }
+}
+
+.info-fade {
+  z-index: 99;
+}
+
+.info-main {
+  position: absolute;
+  width: 30vw;
+  height: 40vh;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  background-color: $mainColor;
+  border-radius: $borderRadius;
+  z-index: 99;
+
+  h2 {
+    font-size: 3vh;
+    text-align: center;
+    padding-bottom: 2vh;
+    padding-top: 2vh;
+  }
+
+  p {
+    font-size: 1.8vh;
+    padding: 2vh;
+  }
+
+  .info-exit-icon {
+    font-size: 3vh;
+    position: absolute;
+    right: 1vh;
+    top: 1vh;
+  }
+
 }

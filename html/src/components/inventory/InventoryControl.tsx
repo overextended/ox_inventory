@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { useDrop } from "react-dnd";
 import { useAppDispatch, useAppSelector } from "../../store";
 import { selectItemAmount, setItemAmount } from "../../store/inventorySlice";
@@ -6,10 +6,16 @@ import { DragProps, DragTypes } from "../../typings";
 import { onUse } from "../../dnd/onUse";
 import { onGive } from "../../dnd/onGive";
 import { fetchNui } from "../../utils/fetchNui";
+import { faInfoCircle, faTimesCircle } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import Fade from "../utils/Fade";
+import { Notify } from "../utils/Notifications";
 
 const InventoryControl: React.FC = () => {
   const itemAmount = useAppSelector(selectItemAmount);
   const dispatch = useAppDispatch();
+
+  const [infoVisible, setInfoVisible] = useState(false)
 
   const [, use] = useDrop<DragProps, void, any>(() => ({
     accept: DragTypes.SLOT,
@@ -29,25 +35,46 @@ const InventoryControl: React.FC = () => {
     dispatch(setItemAmount(event.target.valueAsNumber));
   };
 
+  const InfoScreen = () => {
+    return (
+      <div className="info-main" style={{visibility: infoVisible ? 'visible' : 'hidden'}}>
+        <FontAwesomeIcon icon={faTimesCircle} onClick={() => setInfoVisible(false)} className="info-exit-icon"/>
+        <h2>Useful Controls</h2>
+        <p>[CTRL + LMB] - Fast move stack of items into another inventory</p>
+        <p>[SHIFT + Drag] - Split item quantity into half</p>
+        <p>[CTRL + SHIFT + LMB] - Fast move half a stack of items into another inventory</p>
+        <p onClick={() => Notify({text: "Made with <3 by the overextended team"})}>[ALT + LMB] - Fast use item</p>
+      </div>
+    )
+  }
+
   return (
-    <div className="column-wrapper" style={{margin: '2vh'}}>
-      <input
-        type="number"
-        className="button input"
-        min={0}
-        defaultValue={itemAmount}
-        onChange={inputHandler}
-      />
-      <button ref={use} className="button">
-        Use
-      </button>
-      <button ref={give} className="button">
-        Give
-      </button>
-      <button className="button" onClick={() => fetchNui("exit")}>
-        Close
-      </button>
-    </div>
+    <>
+      <Fade visible={infoVisible} duration={0.25} className="info-fade">
+        <InfoScreen />
+      </Fade>
+      <div className="column-wrapper" style={{marginLeft: '2vh', marginRight: '2vh'}}>
+        <input
+          type="number"
+          className="button input"
+          min={0}
+          defaultValue={itemAmount}
+          onChange={inputHandler}
+        />
+        <button ref={use} className="button">
+          Use
+        </button>
+        <button ref={give} className="button">
+          Give
+        </button>
+        <button className="button" onClick={() => fetchNui("exit")}>
+          Close
+        </button>
+        <div className="misc-btns">
+          <button onClick={() => setInfoVisible(true)}><FontAwesomeIcon icon={faInfoCircle} /></button>
+        </div>
+      </div>
+    </>
   );
 };
 
