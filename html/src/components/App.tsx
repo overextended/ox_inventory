@@ -18,6 +18,7 @@ import Notifications from "./utils/Notifications";
 import ProgressBar from "./utils/ProgressBar";
 import useKeyPress from "../hooks/useKeyPress";
 import { useExitListener } from "../hooks/useExitListener";
+import { ITEMS } from "../config/items";
 
 debugData([
   {
@@ -25,7 +26,7 @@ debugData([
     data: {
       playerInventory: {
         id: "player",
-        type: 'player',
+        type: "player",
         slots: 50,
         weight: 300,
         maxWeight: 1000,
@@ -100,6 +101,13 @@ const App: React.FC = () => {
   }, [shiftPressed, dispatch]);
 
   useExitListener(setInventoryVisible);
+
+  useNuiEvent<typeof ITEMS>("items", (items) => {
+    for (const [name, itemData] of Object.entries(items)) {
+      ITEMS[name] = itemData;
+    }
+    console.log('Loaded items');
+  });
 
   return (
     <>
