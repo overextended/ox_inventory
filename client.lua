@@ -1,10 +1,44 @@
-local Blips, Drops, Usables, cancelled, weaponTimer = {}, {}, {}, false, 0
-local playerId, playerPed, invOpen, usingWeapon, playerCoords, currentWeapon, currentDrop
-local plyState = LocalPlayer.state
 
 local Function = module('functions', true)
 
-Disarm = function()
+local Blips, Drops, Usables, cancelled, invOpen, weaponTimer = {}, {}, {}, false, false, 0
+local playerId, playerPed, invOpen, usingWeapon, playerCoords, currentWeapon, currentDrop
+local plyState = LocalPlayer.state
+
+SetInterval(1, 5, function()
+	if invOpen then
+		DisableAllControlActions(0)
+		if not currentInventory then
+			EnableControlAction(0, 30, true)
+			EnableControlAction(0, 31, true)
+		end
+	elseif isDoingAction then
+		if disableControls.disableMouse then
+			DisableControlAction(0, 1, true) -- LookLeftRight
+			DisableControlAction(0, 2, true) -- LookUpDown
+			DisableControlAction(0, 106, true) -- VehicleMouseControlOverride
+		end
+		if disableControls.disableMovement then
+			DisableControlAction(0, 30, true) -- disable left/right
+			DisableControlAction(0, 31, true) -- disable forward/back
+			DisableControlAction(0, 36, true) -- INPUT_DUCK
+			DisableControlAction(0, 21, true) -- disable sprint
+		end
+		if disableControls.disableCarMovement then
+			DisableControlAction(0, 63, true) -- veh turn left
+			DisableControlAction(0, 64, true) -- veh turn right
+			DisableControlAction(0, 71, true) -- veh forward
+			DisableControlAction(0, 72, true) -- veh backwards
+			DisableControlAction(0, 75, true) -- disable exit vehicle
+		end
+		if disableControls.disableCombat then
+			DisablePlayerFiring(PlayerId(), true) -- Disable weapon firing
+			DisableControlAction(0, 25, true) -- disable aim
+		end
+	end
+end)
+
+local Disarm = function()
 	SetWeaponsNoAutoswap(1)
 	SetWeaponsNoAutoreload(1)
 	SetPedCanSwitchWeapon(playerPed, 0)
@@ -39,14 +73,6 @@ local ClearWeapons = function()
 end
 RegisterNetEvent('ox_inventory:clearWeapons', ClearWeapons)
 
-OnPlayerData = function(key, val)
-	if key == 'dead' and val then Disarm()
-		TriggerEvent('ox_inventory:closeInventory')
-	elseif key == 'ped' then playerPed = val end
-	SetPedCanSwitchWeapon(playerPed, 0)
-	SetPedEnableWeaponBlocking(playerPed, 1)
-end
-
 local Hotkey = function(slot)
 	if ESX.PlayerLoaded and not invOpen and ESX.PlayerData.inventory[slot] then
 		TriggerEvent('ox_inventory:useItem', ESX.PlayerData.inventory[slot])
@@ -79,6 +105,9 @@ RegisterNetEvent('ox_inventory:Notify', Notify)
 local CloseInventory = function(options)
 	if invOpen then
 		invOpen, currentInventory, currentDrop = false, nil, nil
+		SetNuiFocus(false, false)
+		SetNuiFocusKeepInput(false)
+		TriggerScreenblurFadeOut(0)
 		if type(options) ~= 'string' then
 			SendNUIMessage({ action = 'closeInventory' })
 		elseif options then
@@ -107,7 +136,11 @@ local OpenInventory = function(inv, data)
 		if not isBusy or not CanOpenInventory() then
 			local time = GetGameTimer()
 			ox.TriggerServerCallback('ox_inventory:openInventory', function(left, right)
+				ox.playAnim(1000, 'pickup_object', 'putdown_low', 5.0, 1.5, 1.0, 48, 0.0, 0, 0, 0)
 				invOpen = true
+				SetNuiFocus(true, true)
+				SetNuiFocusKeepInput(true)
+				TriggerScreenblurFadeIn(0)
 				currentInventory = rightInventory or nil
 				SendNUIMessage({
 					action = 'setupInventory',
@@ -145,8 +178,18 @@ local UpdateInventory = function(items, weight, maxWeight, message)
 end
 RegisterNetEvent('ox_inventory:updateInventory', UpdateInventory)
 
+OnPlayerData = function(key, val)
+	if key == 'dead' and val then Disarm()
+		TriggerEvent('ox_inventory:closeInventory')
+	elseif key == 'ped' then playerPed = val end
+	SetWeaponsNoAutoswap(1)
+	SetWeaponsNoAutoreload(1)
+	SetPedCanSwitchWeapon(playerPed, 0)
+	SetPedEnableWeaponBlocking(playerPed, 1)
+end
+
 RegisterNetEvent('ox_inventory:setPlayerInventory', function(data)
-	playerId, invOpen, usingWeapon, currentWeapon, currentDrop = GetPlayerServerId(PlayerId()), false, false, nil, nil
+	playerId, playerPed, invOpen, usingWeapon, currentWeapon, currentDrop = GetPlayerServerId(PlayerId()), ESX.PlayerData.ped, false, false, nil, nil
 	ClearWeapons()
 	Drops, playerName, ESX.PlayerData.inventory, ESX.Items = data[1], data[2], data[6], data[7]
 	ESX.SetPlayerData('inventory', ESX.PlayerData.inventory)
@@ -182,36 +225,6 @@ RegisterNetEvent('ox_inventory:setPlayerInventory', function(data)
 		RegisterKeyMapping('hotkey'..i, 'Use hotbar item '..i..'~', 'keyboard', i)
 	end
 	playerCoords = GetEntityCoords(playerPed)
-	local nuiFocus = false
-	SetInterval(1, 5, function()
-		if nuiFocus == false and invOpen then
-			nuiFocus = true
-			SetNuiFocus(true, true)
-			SetNuiFocusKeepInput(true)
-			TriggerScreenblurFadeIn(0)
-		elseif nuiFocus == true and not invOpen then
-			nuiFocus = false
-			SetNuiFocus(false, false)
-			SetNuiFocusKeepInput(false)
-			TriggerScreenblurFadeOut(0)
-		elseif nuiFocus then
-			DisableAllControlActions(0)
-			if not currentInventory then
-				EnableControlAction(0, 30, true)
-				EnableControlAction(0, 31, true)
-			end
-		else
-			HideHudComponentThisFrame(19)
-			HideHudComponentThisFrame(20)
-			DisablePlayerVehicleRewards(playerID)
-			DisableControlAction(0, 37, true)
-			DisableControlAction(0, 157, true)
-			DisableControlAction(0, 158, true)
-			DisableControlAction(0, 160, true)
-			DisableControlAction(0, 164, true)
-			DisableControlAction(0, 165, true)
-		end
-	end)
 end)
 
 AddEventHandler('onResourceStop', function(resourceName)
@@ -233,8 +246,6 @@ RegisterNetEvent('esx:onPlayerLogout', function()
 	if parachute then ESX.Game.DeleteObject(parachute) parachute = false end
 	TriggerEvent('ox_inventory:closeInventory')
 	ESX.PlayerLoaded = false
-	ClearInterval(1)
-	ClearInterval(2)
 	Disarm()
 end)
 
@@ -320,7 +331,7 @@ RegisterCommand('inv2', function()
 							OpenTrunk(plate, class)
 							local timeout = 20
 							repeat Wait(50)
-								timeout -= 1
+								timeout = timeout - 1
 							until (currentInventory and currentInventory.type == 'trunk') or timeout == 0
 							if timeout == 0 then
 								closeToVehicle, lastVehicle = false, nil
