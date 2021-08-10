@@ -15,6 +15,24 @@ M.GetWeapon = function(weaponHash)
 	end
 end
 
+M.Copy = function(t, deep)
+	local copy = {}
+	if type(table) == 'table' then
+		for k,v in pairs(t) do
+			if type(v) == 'table' then
+				if deep then
+					copy[M.Copy(t, true)] = M.Copy(t, true)
+					setmetatable(copy, M.Copy(getmetatable(t)))
+				else copy[k] = M.CloneTable(v) end
+			else
+				if type(v) == 'function' then v = nil end
+				copy[k] = v
+			end
+		end
+	else copy = t end
+	return copy
+end
+
 M.MatchTables = function(t1,t2)
 	local ty1 = type(t1)
 	local ty2 = type(t2)

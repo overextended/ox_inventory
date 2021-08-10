@@ -1,6 +1,5 @@
 fx_version 'cerulean'
 game 'gta5'
-lua54 'yes'
 author 'Linden, Dunak'
 description 'https://github.com/overextended/ox_inventory'
 versioncheck 'https://raw.githubusercontent.com/overextended/ox_inventory/main/fxmanifest.lua'
@@ -16,8 +15,8 @@ shared_scripts {
 	'@es_extended/locale.lua',
 	'config.lua',
 	'locales/*.lua',
-	'modules/*.lua',
-	'shared/*.lua'
+	'modules/main.lua',
+	'shared/*.lua',
 }
 
 client_scripts {
@@ -32,5 +31,7 @@ ui_page 'html/build/index.html'
 
 files {
 	'html/build/index.html',
-	'html/build/**/*'
+	'html/build/**/*',
+	'modules/shared/*.lua',
+	'modules/client/*.lua'
 }

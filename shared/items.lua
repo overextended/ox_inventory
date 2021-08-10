@@ -1317,7 +1317,7 @@ end
 
 for k, v in pairs(Weapons) do
 	v.name = k
-	v.hash = joaat(k)
+	v.hash = GetHashKey(k)
 	v.stack = false
 	v.close = false
 	if ox.server then count = count + 1 end

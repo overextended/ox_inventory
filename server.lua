@@ -1,5 +1,3 @@
-local Drops, Shops = {}, {}
-
 local Inventory = module('inventory')
 local Function = module('functions', true)
 
@@ -16,7 +14,7 @@ CreateThread(function()
 		local i = result[i]
 		if Items[i.name] then
 			if not query then query = "DELETE FROM items WHERE name = '"..i.name.."'"
-			else query = string.strjoin(' ', query, "OR name='"..i.name.."'") end
+			else query = ox.concat(' ', query, "OR name='"..i.name.."'") end
 		else
 			Items[i.name] = {
 				name = i.name,
@@ -38,7 +36,7 @@ CreateThread(function()
 	ESX.UsableItemsCallbacks = exports.es_extended:UsableItems()
 	local count = 0 for k, v in pairs(Items) do
 		if v.consume and ESX.UsableItemsCallbacks[v.name] then ESX.UsableItemsCallbacks[v.name] = nil end
-		count += 1
+		count = count + 1
 	end
 	ox.info('Inventory has fully loaded with '..count..' items')
 	collectgarbage('collect') -- clean up from initialisation
@@ -100,9 +98,9 @@ AddEventHandler('ox_inventory:setPlayerInventory', function(xPlayer, data)
 			local item = Items[i.name]
 			if item then
 				local weight = Inventory.SlotWeight(item, i)
-				totalWeight += weight
+				totalWeight = totalWeight + weight
 				inventory[i.slot] = {name = i.name, label = item.label, weight = weight, slot = i.slot, count = i.count, description = item.description, metadata = i.metadata, stack = item.stack, close = item.close}
-				if money[i.name] then money[i.name] += i.count end
+				if money[i.name] then money[i.name] = money[i.name] + i.count end
 			end
 		end
 	end

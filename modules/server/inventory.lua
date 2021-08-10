@@ -11,7 +11,7 @@ local metatable = setmetatable(M, {
 	end
 })
 
-local Vehicle = {.trunk, .glovebox}
+local Vehicle = {trunk=true, glovebox=true}
 
 local SetMetadata = function(metadata)
 	local metadata = metadata == nil and {} or type(metadata) == 'string' and {type=metadata} or metadata
@@ -53,7 +53,7 @@ local Minimal = function(inv)
 	local inventory, count = {}, 0
 	for k, v in pairs(inv.id) do
 		if v.name and v.count > 0 then
-			count += 1
+			count = count + 1
 			inventory[count] = {
 				name = v.name,
 				count = v.count,
@@ -69,7 +69,7 @@ local SyncInventory = function(xPlayer, inv, items)
 	local money = {money=0, black_money=0}
 	for k, v in pairs(inv.items) do
 		if money[v.name] then
-			money[v.name] += v.count
+			money[v.name] = money[v.name] + v.count
 		end
 	end
 	xPlayer.syncInventory(inv.weight, inv.maxWeight, items, money)
@@ -92,8 +92,8 @@ local Weight = function(inv)
 	inv = Inventories[type(inv) == 'table' and inv.id or inv].items
 	local weight = 0
 	for k, v in pairs(inv) do
-		weight += (v.weight * v.count)
-		if v.metadata then weight += v.metadata.weight or 0 end
+		weight = weight + (v.weight * v.count)
+		if v.metadata then weight = weight + v.metadata.weight or 0 end
 	end
 	inv.weight = math.floor(weight + 0.5)
 	return inv.weight
@@ -231,7 +231,7 @@ M.GetItem = function(inv, item, metadata)
 			metadata = not metadata and false or type(metadata) == 'string' and {type=metadata} or metadata
 			for k, v in pairs(inv) do
 				if not metadata or Function.TableContains(v.metadata or {}, metadata) then
-					count += v.count
+					count = count + v.count
 				end
 			end
 		end
@@ -251,9 +251,9 @@ M.SlotWeight = function(item, slot)
 			count = slot.metadata.ammo,
 			weight = item.weight
 		}
-		weight += ammo.weight * ammo.count
+		weight = weight + ammo.weight * ammo.count
 	end
-	if slot.metadata.weight then weight += slot.metadata.weight end
+	if slot.metadata.weight then weight = weight + slot.metadata.weight end
 	return weight
 end
 
@@ -269,10 +269,10 @@ M.SetItem = function(inv, item, count, metadata)
 	if item and count >= 0 then
 		local itemCount = M.GetItem(inv, item.name, metadata).count
 		if count > itemCount then
-			count -= itemCount
+			count = count - itemCount
 			M.AddItem(inv, item.name, count, metadata)
 		else
-			itemCount -= count
+			itemcount = count - count
 			M.RemoveItem(inv, item.name, count, metadata)
 		end
 	end
@@ -335,7 +335,7 @@ M.AddItem = function(inv, item, count, metadata, slot)
 			end
 			M.SetSlot(inv, item, count, metadata, slot)
 		end
-		inv.weight += (item.weight + (metadata.weight or 0)) * count
+		inv.weight = inv.weight + (item.weight + (metadata.weight or 0)) * count
 		if xPlayer then
 			SyncInventory(xPlayer, inv, {[slot] = inv.items[slot]})
 			TriggerClientEvent('ox_inventory:updateInventory', xPlayer.source, {{item = inv.items[slot], inventory = inv.type ~= 'player' and inv.type or nil}}, inv.weight, inv.maxWeight, ('Added %sx %s'):format(count, item.label))
@@ -347,11 +347,11 @@ local GetItemSlots = function(inv, item, metadata)
 	inv = Inventories[type(inv) == 'table' and inv.id or inv]
 	local totalCount, slots, emptySlots = 0, {}, inv.slots
 	for k, v in pairs(inv.items) do
-		emptySlots -= 1
+		emptySlots = emptySlots - 1
 		if v.name == item.name then
 			if not v.metadata then v.metadata = {} end
 			if not metadata or Function.MatchTables(v.metadata, metadata) then
-				totalCount += v.count
+				totalcount = count + v.count
 				slots[k] = v.count
 			end
 		end
@@ -383,16 +383,16 @@ M.RemoveItem = function(inv, item, count, metadata, slot)
 							M.SetSlot(inv, item, -count, metadata, k)
 							slot[k] = inv.items[k] or {}
 							removed = total
-							count -= removed
+							count = count - removed
 						else
 							M.SetSlot(inv, item, -count, metadata, k)
 							slot[k] = inv.items[k] or {}
-							removed += v
-							count -= removed
+							removed = removed + v
+							count = count - removed
 						end
 					else break end
 				end
-				inv.weight -= (item.weight + (metadata.weight or 0)) * removed
+				inv.weight = inv.weight - (item.weight + (metadata.weight or 0)) * removed
 				if xPlayer then
 					SyncInventory(xPlayer, inv, slot)
 					local array = {}
