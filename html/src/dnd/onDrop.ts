@@ -1,22 +1,15 @@
-import { findAvailableSlot } from "../reducers/helpers";
-import { swapItems } from "../reducers/swapItems";
+import { findAvailableSlot, filterInventoryState } from "../reducers/helpers";
+import { swapItems } from "../thunks/swapItems";
 import { store } from "../store";
 import { DragProps } from "../typings";
 
 export const onDrop = (source: DragProps, target?: DragProps) => {
-  const state = store.getState().inventory;
-
-  const sourceInventory = source.inventory.type
-    ? state.rightInventory
-    : state.playerInventory;
-  const targetInventory =
-    target === undefined
-      ? source.inventory.type
-        ? state.playerInventory
-        : state.rightInventory
-      : target.inventory.type
-      ? state.rightInventory
-      : state.playerInventory;
+  const { inventory: state } = store.getState();
+  const [sourceInventory, targetInventory] = filterInventoryState(
+    state,
+    source.inventory,
+    target?.inventory
+  );
 
   const sourceSlot = sourceInventory.items[source.item.slot - 1];
 

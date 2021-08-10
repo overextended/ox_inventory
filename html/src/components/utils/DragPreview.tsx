@@ -1,6 +1,6 @@
 import React, { RefObject, useRef } from "react";
 import { DragLayerMonitor, useDragLayer, XYCoord } from "react-dnd";
-import { DragProps, ItemProps } from "../../typings";
+import { DragProps } from "../../typings";
 
 interface DragLayerProps {
   data: DragProps;
@@ -67,13 +67,12 @@ const DragPreview: React.FC = () => {
             transform: `translate(${currentOffset.x}px, ${currentOffset.y}px)`,
             WebkitTransform: `translate(${currentOffset.x}px, ${currentOffset.y}px)`,
             backgroundImage: data.item.name
-            ? `url(${
-                process.env.PUBLIC_URL + `/images/${data.item.name}.png`
-              })`
-            : "none",
+              ? `url(${
+                  process.env.PUBLIC_URL + `/images/${data.item.name}.png`
+                })`
+              : "none",
           }}
-        >
-        </div>
+        ></div>
       )}
     </>
   );

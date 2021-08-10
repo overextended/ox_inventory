@@ -1,4 +1,4 @@
-import { ItemProps } from "../typings";
+import { InventoryProps, InventoryState, ItemProps } from "../typings";
 
 export const findAvailableSlot = (item: ItemProps, items: ItemProps[]) => {
   if (!item.stack) return items.find((value) => !value.name);
@@ -13,4 +13,21 @@ export const findAvailableSlot = (item: ItemProps, items: ItemProps[]) => {
   );
 
   return stackableIndex || items.find((value) => !value.name);
+};
+
+export const filterInventoryState = (
+  state: InventoryState,
+  sourceType: InventoryProps["type"],
+  targetType?: InventoryProps["type"]
+): InventoryProps[] => {
+  return [
+    sourceType === 'player' ? state.playerInventory : state.rightInventory,
+    targetType
+      ? targetType === 'player'
+        ? state.playerInventory
+        : state.rightInventory
+      : sourceType === 'player'
+      ? state.rightInventory
+      : state.playerInventory,
+  ];
 };

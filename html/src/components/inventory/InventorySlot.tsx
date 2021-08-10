@@ -1,7 +1,7 @@
 import React from "react";
 import { DragProps, DragTypes, InventoryProps, ItemProps } from "../../typings";
 import { useDrag, useDrop } from "react-dnd";
-import { useAppDispatch, useAppSelector } from "../../store";
+import { useAppSelector } from "../../store";
 import WeightBar from "../utils/WeightBar";
 import { canDrag, canDrop } from "../../dnd/conditions";
 import { onDrop } from "../../dnd/onDrop";
@@ -16,9 +16,7 @@ interface SlotProps {
 const InventorySlot: React.FC<SlotProps> = (props) => {
   const dragProps: DragProps = {
     item: props.item,
-    inventory: {
-      type: props.inventory.type,
-    },
+    inventory: props.inventory.type
   };
 
   const isBusy = useAppSelector(selectIsBusy);

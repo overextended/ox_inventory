@@ -7,11 +7,11 @@ import { debugData } from "../utils/debugData";
 import { InventoryProps, ItemProps } from "../typings";
 import { useAppDispatch, useAppSelector } from "../store";
 import {
-  loadInventory,
+  setupInventory,
   selectPlayerInventory,
   selectRightInventory,
   setShiftPressed,
-  updateSlots,
+  refreshSlots,
 } from "../store/inventorySlice";
 import DragPreview from "./utils/DragPreview";
 import Notifications from "./utils/Notifications";
@@ -25,6 +25,7 @@ debugData([
     data: {
       playerInventory: {
         id: "player",
+        type: 'player',
         slots: 50,
         weight: 300,
         maxWeight: 1000,
@@ -33,10 +34,10 @@ debugData([
             slot: 1,
             name: "water",
             label: "Water WAater JOJO WAter",
-            description: 'voda z vodovodu',
+            description: "voda z vodovodu",
             weight: 50,
             count: 1,
-            stackable: true,
+            stack: true,
           },
           {
             slot: 2,
@@ -44,13 +45,13 @@ debugData([
             label: "Burger",
             weight: 50,
             count: 5,
-            stackable: true,
+            stack: true,
           },
         ],
       },
       rightInventory: {
         id: "drop",
-        type: "shop",
+        type: "drop",
         slots: 50,
         items: [
           {
@@ -59,7 +60,7 @@ debugData([
             label: "Water",
             weight: 50,
             count: 1,
-            stackable: true,
+            stack: true,
           },
         ],
       },
@@ -79,7 +80,7 @@ const App: React.FC = () => {
     playerInventory: InventoryProps;
     rightInventory: InventoryProps;
   }>("setupInventory", (data) => {
-    dispatch(loadInventory(data));
+    dispatch(setupInventory(data));
     setInventoryVisible(true);
   });
 
@@ -88,7 +89,7 @@ const App: React.FC = () => {
       item: ItemProps;
       inventory: InventoryProps["type"];
     }[]
-  >("refreshSlots", (data) => dispatch(updateSlots(data)));
+  >("refreshSlots", (data) => dispatch(refreshSlots(data)));
 
   useNuiEvent("closeInventory", () => setInventoryVisible(false));
 
@@ -96,7 +97,7 @@ const App: React.FC = () => {
 
   React.useEffect(() => {
     dispatch(setShiftPressed(shiftPressed));
-  }, [shiftPressed]);
+  }, [shiftPressed, dispatch]);
 
   useExitListener(setInventoryVisible);
 

@@ -1,3 +1,14 @@
+export type InventoryState = {
+  playerInventory: InventoryProps;
+  rightInventory: InventoryProps;
+  itemAmount: number;
+  shiftPressed: boolean;
+  isBusy: boolean;
+  history?: {
+    playerInventory: InventoryProps;
+    rightInventory: InventoryProps;
+  };
+};
 export interface ItemProps {
   slot: number;
   name?: string;
@@ -10,15 +21,14 @@ export interface ItemProps {
   usable?: boolean;
   close?: boolean;
 }
-
 export interface InventoryProps {
   id: string;
-  label?: string;
+  type: string;
   slots: number;
   items: ItemProps[];
-  weight?: number;
-  maxWeight?: number;
-  type?: string;
+  weight: number;
+  maxWeight: number;
+  label?: string;
 }
 
 export const DragTypes = {
@@ -27,5 +37,5 @@ export const DragTypes = {
 
 export interface DragProps {
   item: ItemProps;
-  inventory: Pick<InventoryProps, "type">;
+  inventory: InventoryProps["type"];
 }

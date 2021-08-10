@@ -4,7 +4,7 @@ import { RootState } from "../store";
 import { fetchNui } from "../utils/fetchNui";
 
 export const swapItems = createAsyncThunk<
-  boolean,
+  void,
   {
     fromSlot: ItemProps["slot"];
     fromType: InventoryProps["type"];
@@ -15,4 +15,10 @@ export const swapItems = createAsyncThunk<
   {
     state: RootState;
   }
->("inventory/swapItems", async (data) => fetchNui<boolean>("swapItems", data));
+>("inventory/swapItems", async (data, { rejectWithValue }) => {
+  /*const response = await fetchNui<boolean>("swapItems", data);
+
+  if (response === false) {
+    rejectWithValue(response);
+  }*/
+});

@@ -3,11 +3,6 @@ import { useNuiEvent } from "../../hooks/useNuiEvent";
 import { debugData } from "../../utils/debugData";
 
 import toast, { Toaster, ToastPosition } from "react-hot-toast";
-import {
-  Renderable,
-  ValueFunction,
-  Toast,
-} from "react-hot-toast/dist/core/types";
 
 // API - https://github.com/timolins/react-hot-toast
 

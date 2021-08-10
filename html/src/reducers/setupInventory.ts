@@ -1,8 +1,7 @@
 import { CaseReducer, PayloadAction } from "@reduxjs/toolkit";
-import { InventoryProps } from "../typings";
-import { InventoryState } from "../store/inventorySlice";
+import { InventoryProps, InventoryState } from "../typings";
 
-export const setupInventory: CaseReducer<
+export const setupInventoryReducer: CaseReducer<
   InventoryState,
   PayloadAction<{
     playerInventory: InventoryProps;

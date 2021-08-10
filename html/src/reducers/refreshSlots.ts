@@ -1,8 +1,7 @@
 import { CaseReducer, PayloadAction } from "@reduxjs/toolkit";
-import { InventoryProps, ItemProps } from "../typings";
-import { InventoryState } from "../store/inventorySlice";
+import { InventoryProps, InventoryState, ItemProps } from "../typings";
 
-export const refreshSlots: CaseReducer<
+export const refreshSlotsReducer: CaseReducer<
   InventoryState,
   PayloadAction<
     {
