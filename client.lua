@@ -174,7 +174,6 @@ local UpdateInventory = function(items, weight, maxWeight, message)
 		action = 'refreshSlots',
 		data = items,
 	})
-	print(json.encode(items))
 	Notify({text = message, duration = 2500})
 end
 RegisterNetEvent('ox_inventory:updateInventory', UpdateInventory)

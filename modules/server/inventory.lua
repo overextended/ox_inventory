@@ -68,8 +68,10 @@ end
 M.SyncInventory = function(xPlayer, inv, items)
 	local money = {money=0, black_money=0}
 	for k, v in pairs(inv.items) do
-		if money[v.name] then
-			money[v.name] = money[v.name] + v.count
+		if not v.count or v.count < 1 then v = nil else
+			if money[v.name] then
+				money[v.name] = money[v.name] + v.count
+			end
 		end
 	end
 	xPlayer.syncInventory(inv.weight, inv.maxWeight, items, money)
@@ -337,7 +339,7 @@ M.AddItem = function(inv, item, count, metadata, slot)
 		end
 		inv.weight = inv.weight + (item.weight + (metadata.weight or 0)) * count
 		if xPlayer then
-			SyncInventory(xPlayer, inv, {[slot] = inv.items[slot]})
+			M.SyncInventory(xPlayer, inv, {[slot] = inv.items[slot]})
 			TriggerClientEvent('ox_inventory:updateInventory', xPlayer.source, {{item = inv.items[slot], inventory = inv.type ~= 'player' and inv.type or nil}}, inv.weight, inv.maxWeight, ('Added %sx %s'):format(count, item.label))
 		end
 	end
@@ -351,7 +353,7 @@ local GetItemSlots = function(inv, item, metadata)
 		if v.name == item.name then
 			if not v.metadata then v.metadata = {} end
 			if not metadata or Function.MatchTables(v.metadata, metadata) then
-				totalcount = count + v.count
+				totalCount = totalCount + v.count
 				slots[k] = v.count
 			end
 		end
@@ -394,7 +396,7 @@ M.RemoveItem = function(inv, item, count, metadata, slot)
 				end
 				inv.weight = inv.weight - (item.weight + (metadata.weight or 0)) * removed
 				if xPlayer then
-					SyncInventory(xPlayer, inv, slot)
+					M.SyncInventory(xPlayer, inv, slot)
 					local array = {}
 					for k, v in pairs(slot) do
 						if not v.slot then

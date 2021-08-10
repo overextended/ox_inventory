@@ -104,15 +104,12 @@ Items[']]..i.name..[['] = {
 end)
 
 RegisterNetEvent('ox_inventory:requestPlayerInventory', function()
-	local xPlayer, inventory = ESX.GetPlayerFromId(source), {}
-	inventory = xPlayer.getInventory(true)
-	if not inventory or not next(inventory) then
-		Wait(math.random(0, 1000)) -- slow down queries if resource restarts
-		local result = exports.ghmattimysql:scalarSync('SELECT inventory FROM users WHERE identifier = ?', {
-			xPlayer.identifier
-		})
-		if result then inventory = json.decode(result) end
-	end
+	local xPlayer, inventory = ESX.GetPlayerFromId(source)
+	Wait(math.random(0, 1000)) -- slow down queries if resource restarts
+	local result = exports.ghmattimysql:scalarSync('SELECT inventory FROM users WHERE identifier = ?', {
+		xPlayer.identifier
+	})
+	if result then inventory = json.decode(result) end
 	repeat Wait(500) until ox.ready
 	TriggerEvent('ox_inventory:setPlayerInventory', xPlayer, inventory)
 end)
@@ -158,16 +155,20 @@ ox.RegisterServerCallback('ox_inventory:swapItems', function(source, cb, data)
 		print('moved item from', fromInventory.id, 'to', toInventory.id)
 	else
 		inventory = data.fromType ~= 'player' and Inventory(inventory.open) or playerInventory
-		if not inventory.items[data.toSlot] then
-			local oldItem = Function.Copy(inventory.items[data.fromSlot])
-			local newItem = Function.Copy(inventory.items[data.toSlot])
-			oldItem.slot = data.toSlot
-			inventory.items[data.toSlot] = oldItem
-			inventory.items[data.fromSlot] = newItem
-			ret = {weight=inventory.weight, items={[data.fromSlot] = newItem or {}, [data.toSlot] = oldItem or {}}}
+		
+		local oldItem = Function.Copy(inventory.items[data.fromSlot])
+		local newItem = Function.Copy(inventory.items[data.toSlot])
+		oldItem.slot = data.toSlot
+		if newItem then newItem.slot = data.toSlot end
+		inventory.items[data.toSlot] = oldItem
+		inventory.items[data.fromSlot] = newItem
+		ret = {weight=inventory.weight, items={[data.fromSlot] = newItem or {}, [data.toSlot] = oldItem or {}}}
+		
+		if data.fromType == 'player' then
+			ret = {weight=inventory.weight, items={[data.fromSlot] = inventory.items[data.fromSlot] or {}, [data.toSlot] = inventory.items[data.toSlot] or {}}}
+			Inventory.SyncInventory(ESX.GetPlayerFromId(source), inventory, inventory.items)
 		end
 	end
-	Inventory.SyncInventory(ESX.GetPlayerFromId(source), playerInventory, ret.items)
 	cb(1, ret)
 end)
 
