@@ -381,7 +381,7 @@ RegisterNUICallback('swapItems', function(data, cb)
 		json.encode(data)
 		if data then
 			for k, v in pairs(data.items) do
-				ESX.PlayerData.inventory[k] = next(v) and v or nil
+				ESX.PlayerData.inventory[k] = v and v or nil
 			end
 			ESX.SetPlayerData('inventory', ESX.PlayerData.inventory)
 			if data.weight then ESX.SetPlayerData('weight', data.weight) end

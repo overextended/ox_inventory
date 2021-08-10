@@ -79,7 +79,7 @@ end
 
 M.SetSlot = function(inv, item, count, metadata, slot)
 	inv = Inventories[type(inv) == 'table' and inv.id or inv]
-	local currentSlot, message = inv.items[slot] or false
+	local currentSlot = inv.items[slot]
 	local newCount = currentSlot and currentSlot.count + count or count
 	if currentSlot and newCount < 1 then
 		count = currentSlot.count
@@ -260,10 +260,12 @@ M.SlotWeight = function(item, slot)
 end
 
 M.SwapSlots = function(inventory, slot)
-	local fromSlot = inventory[1].items[slot[1]] and table.clone(inventory[1].items[slot[1]]) or nil
-	local toSlot = inventory[2].items[slot[2]] and table.clone(inventory[2].items[slot[2]]) or nil
-	inventory[1].items[slot[1]] = toSlot
-	inventory[2].items[slot[2]] = fromSlot
+	local fromSlot = inventory[1].items[slot[1]] and Function.Copy(inventory[1].items[slot[1]]) or nil
+	local toSlot = inventory[2].items[slot[2]] and Function.Copy(inventory[2].items[slot[2]]) or nil
+	if fromSlot then fromSlot.slot = slot[2] end
+	if toSlot then toSlot.slot = slot[1] end
+	inventory[1].items[slot[1]], inventory[2].items[slot[2]] = toSlot, fromSlot
+	return toSlot, fromSlot
 end
 
 M.SetItem = function(inv, item, count, metadata)

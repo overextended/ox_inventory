@@ -156,17 +156,12 @@ ox.RegisterServerCallback('ox_inventory:swapItems', function(source, cb, data)
 	else
 		inventory = data.fromType ~= 'player' and Inventory(inventory.open) or playerInventory
 		
-		local oldItem = Function.Copy(inventory.items[data.fromSlot])
-		local newItem = Function.Copy(inventory.items[data.toSlot])
-		oldItem.slot = data.toSlot
-		if newItem then newItem.slot = data.toSlot end
-		inventory.items[data.toSlot] = oldItem
-		inventory.items[data.fromSlot] = newItem
-		ret = {weight=inventory.weight, items={[data.fromSlot] = newItem or {}, [data.toSlot] = oldItem or {}}}
+		local toSlot, fromSlot = Inventory.SwapSlots({inventory, inventory}, {data.fromSlot, data.toSlot})		
 		
 		if data.fromType == 'player' then
-			ret = {weight=inventory.weight, items={[data.fromSlot] = inventory.items[data.fromSlot] or {}, [data.toSlot] = inventory.items[data.toSlot] or {}}}
-			Inventory.SyncInventory(ESX.GetPlayerFromId(source), inventory, inventory.items)
+			local items = {[data.fromSlot] = toSlot or false, [data.toSlot] = fromSlot}
+			ret = {weight=inventory.weight, items=items}
+			Inventory.SyncInventory(ESX.GetPlayerFromId(source), inventory, items)
 		end
 	end
 	cb(1, ret)
