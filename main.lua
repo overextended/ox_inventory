@@ -10,6 +10,18 @@ ox.concat = function(d, ...)
 	end
 end
 
+module = function(file, shared)
+	if not Modules[file] then
+		local path = ox.concat('', 'modules/', shared and 'shared/'..file or ox.server and 'server/'..file or 'client/'..file, '.lua')
+		local func, err = load(LoadResourceFile(ox.name, path), path, 't')
+		assert(func, err == nil or '\n^1'..err..'^7')
+		Modules[file] = func()
+	end
+	return Modules[file]
+end
+
+Items, Weapons = table.unpack(module('weapons', true))
+
 if ox.server then
 	ox.error = function(...) print(ox.concat(' ', '^1[error]^7', ...)) end
 	ox.info = function(...) print(ox.concat(' ', '^2[info]^7', ...)) end
@@ -56,60 +68,3 @@ else
 		end)
 	end
 end
-
-module = function(file, shared)
-	if not Modules[file] then
-		local path = ox.concat('', 'modules/', shared and 'shared/'..file or ox.server and 'server/'..file or 'client/'..file, '.lua')
-		local func, err = load(LoadResourceFile(ox.name, path), path, 't')
-		assert(func, err == nil or '\n^1'..err..'^7')
-		Modules[file] = func()
-	end
-	return Modules[file]
-end
-
-local count = 0
-for k, v in pairs(Items) do
-	v.name = k
-	if not v.consume then
-		if v.client and v.client.consume then
-			v.consume = v.client.consume
-			v.client.consume = nil
-		else v.consume = 1 end
-	end
-	if ox.server then
-		v.client = nil
-		count = count + 1
-	end
-end
-
-for k, v in pairs(Weapons) do
-	v.name = k
-	v.hash = GetHashKey(k)
-	v.stack = false
-	v.close = false
-	if ox.server then count = count + 1 end
-	Items[k] = v
-end
-
-for k, v in pairs(Components) do
-	v.name = k
-	v.consume = 1
-	if ox.server then
-		v.client = nil
-		count = count + 1
-	end
-	Items[k] = v
-end
-
-for k, v in pairs(Ammo) do
-	v.name = k
-	v.consume = 1
-	v.stack = true
-	v.close = false
-	if ox.server then
-		v.client = nil
-		count = count + 1
-	end
-	Items[k] = v
-end
-Components, Ammo = nil
