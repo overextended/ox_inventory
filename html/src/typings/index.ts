@@ -31,6 +31,10 @@ export interface InventoryProps {
   label?: string;
 }
 
+export interface InventoryPayload extends Omit<InventoryProps, 'items'> {
+  items: {[key: number] : ItemProps}
+}
+
 export const DragTypes = {
   SLOT: "slot",
 };
