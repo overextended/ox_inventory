@@ -4,7 +4,7 @@ import InventoryGrid from "./inventory/InventoryGrid";
 import InventoryControl from "./inventory/InventoryControl";
 import Fade from "./utils/Fade";
 import { debugData } from "../utils/debugData";
-import { InventoryPayload, InventoryProps, ItemProps } from "../typings";
+import { InventoryProps, ItemProps } from "../typings";
 import { useAppDispatch, useAppSelector } from "../store";
 import {
   setupInventory,
@@ -78,8 +78,8 @@ const App: React.FC = () => {
   const dispatch = useAppDispatch();
 
   useNuiEvent<{
-    playerInventory: InventoryPayload;
-    rightInventory: InventoryPayload;
+    playerInventory: InventoryProps;
+    rightInventory: InventoryProps;
   }>("setupInventory", (data) => {
     dispatch(setupInventory(data));
     setInventoryVisible(true);
@@ -106,7 +106,7 @@ const App: React.FC = () => {
     for (const [name, itemData] of Object.entries(items)) {
       ITEMS[name] = itemData;
     }
-    console.log('Loaded items');
+    console.log(ITEMS);
   });
 
   return (
