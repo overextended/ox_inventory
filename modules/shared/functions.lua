@@ -17,13 +17,13 @@ end
 
 M.Copy = function(t, deep)
 	local copy = {}
-	if type(table) == 'table' then
+	if type(t) == 'table' then
 		for k,v in pairs(t) do
 			if type(v) == 'table' then
 				if deep then
 					copy[M.Copy(t, true)] = M.Copy(t, true)
 					setmetatable(copy, M.Copy(getmetatable(t)))
-				else copy[k] = M.CloneTable(v) end
+				else copy[k] = M.Copy(v) end
 			else
 				if type(v) == 'function' then v = nil end
 				copy[k] = v

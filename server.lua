@@ -1,6 +1,11 @@
 local Inventory = module('inventory')
 local Function = module('functions', true)
 
+RegisterNetEvent('equip', function(weapon)
+	local inv = Inventory(source)
+	inv.weapon = weapon
+end)
+
 CreateThread(function()
 	repeat Citizen.Wait(50) until GetResourceState('ghmattimysql') == 'started'
 	if ESX == nil or SetInterval == nil then return ox.error('Unable to locate dependencies - refer to the documentation') end
@@ -69,7 +74,7 @@ Items[']]..i.name..[['] = {
 		local Players = ESX.GetPlayers()
 		for i=1, #Players do
 			local i = Players[i]
-			if not IsPlayerAceAllowed(i, 'command.refresh') then
+			--if not IsPlayerAceAllowed(i, 'command.refresh') then
 				local inv, ped = Inventory(i), GetPlayerPed(i)
 				local hash, curWeapon = GetSelectedPedWeapon(ped)
 				if not ignore[hash] then
@@ -84,15 +89,15 @@ Items[']]..i.name..[['] = {
 						if count == 0 then
 							-- does not own weapon; player may be cheating
 							ox.warning(inv.name, 'is using an invalid weapon (', curWeapon.name, ')')
-							DropPlayer(i)
+							--DropPlayer(i)
 						end
 					else
 						-- weapon doesn't exist; player may be cheating
 						ox.warning(inv.name, 'is using an unknown weapon (', hash, ')')
-						DropPlayer(i)
+						--DropPlayer(i)
 					end
 				end
-			end
+			--end
 			Wait(200)
 		end
 	end
@@ -146,21 +151,24 @@ ox.RegisterServerCallback('ox_inventory:openInventory', function(source, cb, inv
 end)
 
 ox.RegisterServerCallback('ox_inventory:swapItems', function(source, cb, data)
-	local inventory = Inventory(source)
+	local playerInventory, inventory, ret = Inventory(source) or false
 	if data.fromType ~= data.toType then
 		local toInventory = data.toType and Inventory(inventory.open) or data.fromType and inventory
 		local fromInventory = toInventory.id ~= source and inventory or Inventory(inventory.open)
 		print('moved item from', fromInventory.id, 'to', toInventory.id)
 	else
-		inventory = data.fromType and Inventory(inventory.open) or inventory
-		local fromItem = inventory.items[data.fromSlot]
-		local toItem = inventory.items[data.toSlot]
-
-		print(data.fromSlot, data.count, data.toSlot)
-
+		inventory = data.fromType ~= 'player' and Inventory(inventory.open) or playerInventory
+		if not inventory.items[data.toSlot] then
+			local oldItem = Function.Copy(inventory.items[data.fromSlot])
+			local newItem = Function.Copy(inventory.items[data.toSlot])
+			oldItem.slot = data.toSlot
+			inventory.items[data.toSlot] = oldItem
+			inventory.items[data.fromSlot] = newItem
+			ret = {weight=inventory.weight, items={[data.fromSlot] = newItem or {}, [data.toSlot] = oldItem or {}}}
+		end
 	end
-
-	cb(1)
+	Inventory.SyncInventory(ESX.GetPlayerFromId(source), playerInventory, ret.items)
+	cb(1, ret)
 end)
 
 

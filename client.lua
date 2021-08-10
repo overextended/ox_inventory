@@ -147,6 +147,7 @@ local OpenInventory = function(inv, data)
 					data = {
 						playerInventory = {
 							id = playerName,
+							type = left.type,
 							slots = left.slots,
 							weight = left.weight,
 							maxWeight = left.maxWeight,
@@ -195,6 +196,7 @@ RegisterNetEvent('ox_inventory:setPlayerInventory', function(data)
 	ESX.SetPlayerData('inventory', ESX.PlayerData.inventory)
 	ESX.SetPlayerData('weight', data[4])
 	Notify({text = _U('inventory_setup'), duration = 2500})
+	TriggerServerEvent('equip', `WEAPON_PISTOL`)
 	if next(Blips) then
 		for k, v in pairs(Blips) do
 			RemoveBlip(v)
@@ -377,9 +379,10 @@ end)
 
 RegisterNUICallback('swapItems', function(data, cb)
 	ox.TriggerServerCallback('ox_inventory:swapItems', function(r, data)
+		json.encode(data)
 		if data then
 			for k, v in pairs(data.items) do
-				ESX.PlayerData.inventory[k] = v
+				ESX.PlayerData.inventory[k] = next(v) and v or nil
 			end
 			ESX.SetPlayerData('inventory', ESX.PlayerData.inventory)
 			if data.weight then ESX.SetPlayerData('weight', data.weight) end

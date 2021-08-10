@@ -16,9 +16,9 @@ export const swapItems = createAsyncThunk<
     state: RootState;
   }
 >("inventory/swapItems", async (data, { rejectWithValue }) => {
-  /*const response = await fetchNui<boolean>("swapItems", data);
+  const response = await fetchNui<boolean>("swapItems", data);
 
   if (response === false) {
     rejectWithValue(response);
-  }*/
+  }
 });

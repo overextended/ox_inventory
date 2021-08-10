@@ -65,7 +65,7 @@ local Minimal = function(inv)
 	return inventory
 end
 
-local SyncInventory = function(xPlayer, inv, items)
+M.SyncInventory = function(xPlayer, inv, items)
 	local money = {money=0, black_money=0}
 	for k, v in pairs(inv.items) do
 		if money[v.name] then
