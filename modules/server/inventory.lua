@@ -5,7 +5,7 @@ local metatable = setmetatable(M, {
 	__call = function(self, ...)
 		if #({...}) == 1 then
 			local inventory = Inventories[...]
-			if inventory then return inventory end
+			if inventory then return inventory else return false end
 		end
 		return self
 	end
