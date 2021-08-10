@@ -14,7 +14,9 @@ export const setupInventoryReducer: CaseReducer<
       slot: k + 1,
     })),
   };
-  for (let item of Object.values(action.payload.playerInventory.items)) {
+  for (let item of Object.values(action.payload.playerInventory.items).filter(
+    (value) => value
+  )) {
     state.playerInventory.items[item.slot - 1] = item;
   }
   state.rightInventory = {
@@ -23,7 +25,9 @@ export const setupInventoryReducer: CaseReducer<
       slot: k + 1,
     })),
   };
-  for (let item of Object.values(action.payload.rightInventory.items)) {
+  for (let item of Object.values(action.payload.rightInventory.items).filter(
+    (value) => value
+  )) {
     state.rightInventory.items[item.slot - 1] = item;
   }
 };
