@@ -1,9 +1,8 @@
-
 $mainFont: Signika;
 $secondFont: Inconsolata;
 
-@import url("https://fonts.googleapis.com/css2?family="+$mainFont+":wght@400;500;600;700&display=swap");
-@import url("https://fonts.googleapis.com/css2?family="+$secondFont+":wght@800&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=" + $mainFont + ":wght@400;500;600;700&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=" + $secondFont + ":wght@800&display=swap");
 
 $mainColor: rgb(44, 62, 80);
 
@@ -36,7 +35,7 @@ img {
 
 body {
   background: gray;
-  background-image: url('./game.png');
+  background-image: url("./game.png");
 }
 
 .center-wrapper {
@@ -84,7 +83,6 @@ body {
   background-repeat: no-repeat;
   background-position: center;
   background-size: $imageSize;
-  border-radius: $borderRadius;
   image-rendering: -webkit-optimize-contrast;
 }
 
@@ -154,7 +152,7 @@ body {
 
 .button {
   background-color: rgba(12, 12, 12, 0.35);
-  border: thin solid rgba(33, 33, 33, 0.4);
+  border: 0.1vh solid rgba(33, 33, 33, 0.4);
   border-radius: $borderRadius;
   padding: 0.9vh;
   text-align: center;
@@ -202,23 +200,14 @@ input[type="number"] {
 .weight-bar {
   background: rgba(0, 0, 0, 0.5);
   height: 1vh;
+  border-radius: $borderRadius;
 
   div {
     height: 100%;
-    border: solid rgba(0, 0, 0, 0.1) thin;
+    border: solid rgba(0, 0, 0, 0.1) 0.1vh;
+    border-radius: inherit;
   }
 }
-
-.inv-weight {
-  background: rgba(0, 0, 0, 0.5);
-  height: 1vh;
-  border-radius: $borderRadius;
-  div {
-    border-radius: $borderRadius;
-  }
-}
-
-//TODO: refactor below
 
 .hotbar-grid {
   display: grid;
@@ -316,5 +305,4 @@ input[type="number"] {
     right: 1vh;
     top: 1vh;
   }
-
 }

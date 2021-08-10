@@ -71,7 +71,7 @@ const InventorySlot: React.FC<SlotProps> = (props) => {
         onMouseEnter={() => props.item.name && props.setCurrentItem(props.item)}
         onMouseLeave={() => props.item.name && props.setCurrentItem(undefined)}
         onClick={(event) => {
-          if (!props.item.name) return;
+          if (!props.item.name || isBusy) return;
           if (event.ctrlKey) {
             onDrop(dragProps);
             props.setCurrentItem(undefined);
@@ -83,11 +83,11 @@ const InventorySlot: React.FC<SlotProps> = (props) => {
         {props.item.name && (
           <>
             <div className="item-count">
-              <span>{props.item.weight}g {props.item.count}x</span>
+              <span>
+                {props.item.weight}g {props.item.count}x
+              </span>
             </div>
-            <div className="item-durability">
-              <WeightBar percent={0.49} revert={true} />
-            </div>
+            <WeightBar percent={25} durability />
             <div className="item-label">
               {props.item.label} [{props.item.slot}] {isBusy && "BUSY"}
             </div>

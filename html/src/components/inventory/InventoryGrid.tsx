@@ -20,25 +20,13 @@ const InventoryGrid: React.FC<{ inventory: InventoryProps }> = (props) => {
           </div>
         )}
       </div>
-      <WeightBar 
-      percent={
-        props.inventory.weight && props.inventory.maxWeight 
-        ? props.inventory.weight / props.inventory.maxWeight 
-        : 0}
-      className="inv-weight"/>
-      {/* <div className="weight-bar">
-        <div
-          style={{
-            width:
-              props.inventory.weight && props.inventory.maxWeight
-                ? Math.round(
-                    props.inventory.weight / props.inventory.maxWeight
-                  ) + "%"
-                : "0",
-            backgroundColor: "rgb(48, 161, 33)",
-          }}
-        ></div>
-      </div> */}
+      <WeightBar
+        percent={
+          props.inventory.weight && props.inventory.maxWeight
+            ? (props.inventory.weight / props.inventory.maxWeight) * 100
+            : 0
+        }
+      />
       <div className="inventory-grid">
         {props.inventory.items.map((item) => (
           <InventorySlot
