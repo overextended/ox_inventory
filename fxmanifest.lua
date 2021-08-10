@@ -15,8 +15,8 @@ shared_scripts {
 	'@es_extended/locale.lua',
 	'config.lua',
 	'locales/*.lua',
-	'modules/main.lua',
 	'shared/*.lua',
+	'main.lua',
 }
 
 client_scripts {

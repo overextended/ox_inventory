@@ -9,25 +9,48 @@ CreateThread(function()
 	if not OneSync and not Infinity then return ox.error('OneSync is not enabled on this server - refer to the documentation')
 	elseif Infinity then ox.info('Server is running OneSync Infinity') else ox.info('Server is running OneSync Legacy') end
 	exports.ghmattimysql:executeSync('DELETE FROM `linden_inventory` WHERE `lastupdated` < (NOW() - INTERVAL '..Config.DBCleanup..') OR `data` = "[]"')
-	local result, query = exports.ghmattimysql:executeSync('SELECT * FROM items', {})
-	for i=1, #result do
-		local i = result[i]
-		if Items[i.name] then
-			if not query then query = "DELETE FROM items WHERE name = '"..i.name.."'"
-			else query = ox.concat(' ', query, "OR name='"..i.name.."'") end
-		else
-			Items[i.name] = {
-				name = i.name,
-				label = i.label,
-				weight = i.weight,
-				stack = i.stackable,
-				close = i.closeonuse,
-				description = i.description
-			}
-		end
+	local items, query = exports.ghmattimysql:executeSync('SELECT * FROM items', {})
+	for i=1, #items do
+		local i = items[i]
+		if not query then query = "DELETE FROM items WHERE name = '"..i.name.."'"
+		else query = ox.concat(' ', query, "OR name='"..i.name.."'") end
+		Items[i.name] = {
+			name = i.name,
+			label = i.label,
+			weight = i.weight or 0,
+			stack = i.stackable or true,
+			close = i.closeonuse or true,
+			description = i.description or ''
+		}
 	end
-	if query then exports.ghmattimysql:execute(query, {}, function(result) if result and result.affectedRows > 0 then
-		ox.info('Removed', result.affectedRows, 'items from the database') end end)
+	if query then
+		local sql = io.open(GetResourcePath(ox.name):gsub('//', '/')..'/setup/dump.sql', 'a+')
+		local file = io.open(GetResourcePath(ox.name):gsub('//', '/')..'/shared/items.lua', 'a+')
+		local dump, dump2 = {}, {}
+		for i=1, #items do
+			local i = items[i]
+			table.insert(dump, "('"..i.name.."', ".."'"..i.name.."', "..i.weight.."),\n")
+			table.insert(dump2, [[
+
+Items[']]..i.name..[['] = {
+	label = ']]..i.label..[[',
+	weight = ]]..tonumber(i.weight)..[[,
+	stack = ]]..tostring(i.stackable)..[[,
+	close = ]]..tostring(i.closeonuse)..[[,
+	description = ']]..tostring(i.description)..[['
+}
+]])
+		end
+		sql:write(table.concat(dump))
+		file:write(table.concat(dump2))
+		sql:close()
+		file:close()
+		exports.ghmattimysql:execute(query, {
+		}, function(result)
+			if result and result.affectedRows > 0 then
+				ox.info('Removed', result.affectedRows, 'items from the database')
+			end
+		end)
 	end
 	TriggerEvent('ox_inventory:itemList', Items)
 	Wait(1500)
