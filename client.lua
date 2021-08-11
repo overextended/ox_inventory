@@ -195,11 +195,23 @@ end
 RegisterNetEvent('ox_inventory:setPlayerInventory', function(data)
 	playerId, playerPed, invOpen, usingWeapon, currentWeapon, currentDrop = GetPlayerServerId(PlayerId()), ESX.PlayerData.ped, false, false, nil, nil
 	ClearWeapons()
-	Drops, playerName, ESX.PlayerData.inventory, ESX.Items = data[1], data[2], data[6], data[7]
+	Drops, playerName, ESX.PlayerData.inventory = data[1], data[2], data[6]
 	ESX.SetPlayerData('inventory', ESX.PlayerData.inventory)
 	ESX.SetPlayerData('weight', data[4])
-	Notify({text = _U('inventory_setup'), duration = 2500})
-	TriggerServerEvent('equip', `WEAPON_PISTOL`)
+    local ItemData = {}
+    for k, v in pairs(Items) do
+        ItemData[v.name] = {
+            label = v.label,
+            usable = v.client and v.client.event,
+            stack = v.stack,
+            close = v.close
+        }
+    end
+	for k, v in pairs(data[7]) do
+		if ItemData[k] then ItemData[k].usable = 'esx' end
+	end
+    SendNUIMessage({ action = 'items', data = ItemData })
+	--TriggerServerEvent('equip', `WEAPON_PISTOL`)
 	if next(Blips) then
 		for k, v in pairs(Blips) do
 			RemoveBlip(v)
@@ -229,6 +241,7 @@ RegisterNetEvent('ox_inventory:setPlayerInventory', function(data)
 		RegisterCommand('hotkey'..i, function() Hotkey(i) end)
 		RegisterKeyMapping('hotkey'..i, 'Use hotbar item '..i..'~', 'keyboard', i)
 	end
+	Notify({text = _U('inventory_setup'), duration = 2500})
 	playerCoords = GetEntityCoords(playerPed)
 end)
 
