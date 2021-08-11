@@ -150,9 +150,9 @@ end)
 ox.RegisterServerCallback('ox_inventory:swapItems', function(source, cb, data)
 	local playerInventory, inventory, ret = Inventory(source) or false
 	if data.fromType ~= data.toType then
-		local toInventory = data.toType and Inventory(inventory.open) or data.fromType and inventory
+		--[[local toInventory = data.toType and Inventory(inventory.open) or data.fromType and inventory
 		local fromInventory = toInventory.id ~= source and inventory or Inventory(inventory.open)
-		print('moved item from', fromInventory.id, 'to', toInventory.id)
+		print('moved item from', fromInventory.id, 'to', toInventory.id)]]
 	else
 		inventory = data.fromType ~= 'player' and Inventory(inventory.open) or playerInventory
 		

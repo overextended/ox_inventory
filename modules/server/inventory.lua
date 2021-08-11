@@ -342,7 +342,7 @@ M.AddItem = function(inv, item, count, metadata, slot)
 		inv.weight = inv.weight + (item.weight + (metadata.weight or 0)) * count
 		if xPlayer then
 			M.SyncInventory(xPlayer, inv, {[slot] = inv.items[slot]})
-			TriggerClientEvent('ox_inventory:updateInventory', xPlayer.source, {{item = inv.items[slot], inventory = inv.type ~= 'player' and inv.type or nil}}, inv.weight, inv.maxWeight, ('Added %sx %s'):format(count, item.label))
+			TriggerClientEvent('ox_inventory:updateInventory', xPlayer.source, {{item = inv.items[slot], inventory = inv.type}}, inv.weight, inv.maxWeight, ('Added %sx %s'):format(count, item.label))
 		end
 	end
 end
@@ -381,16 +381,16 @@ M.RemoveItem = function(inv, item, count, metadata, slot)
 					if removed < total then
 						if v == count then
 							M.SetSlot(inv, item, -count, metadata, k)
-							slot[k] = inv.items[k] or {}
+							slot[k] = inv.items[k] or false
 							removed = v
 						elseif v > count then
 							M.SetSlot(inv, item, -count, metadata, k)
-							slot[k] = inv.items[k] or {}
+							slot[k] = inv.items[k] or false
 							removed = total
 							count = count - removed
 						else
 							M.SetSlot(inv, item, -count, metadata, k)
-							slot[k] = inv.items[k] or {}
+							slot[k] = inv.items[k] or false
 							removed = removed + v
 							count = count - removed
 						end
@@ -401,7 +401,7 @@ M.RemoveItem = function(inv, item, count, metadata, slot)
 					M.SyncInventory(xPlayer, inv, slot)
 					local array = {}
 					for k, v in pairs(slot) do
-						if not v.slot then
+						if not v then
 							array[k] = {item = {slot=k}, inventory = inv.type}
 						else
 							array[k] = {item = inv.items[k], inventory = inv.type}

@@ -8,6 +8,7 @@ local plyState = LocalPlayer.state
 SetInterval(1, 5, function()
 	if invOpen then
 		DisableAllControlActions(0)
+		HideHudAndRadarThisFrame()
 		if not currentInventory then
 			EnableControlAction(0, 30, true)
 			EnableControlAction(0, 31, true)
@@ -175,6 +176,9 @@ local UpdateInventory = function(items, weight, maxWeight, message)
 		data = items,
 	})
 	Notify({text = message, duration = 2500})
+	for k, v in pairs(items) do
+		ESX.PlayerData.inventory[k] = v and v.item or nil
+	end
 end
 RegisterNetEvent('ox_inventory:updateInventory', UpdateInventory)
 
