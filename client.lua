@@ -1,7 +1,7 @@
 
 local Function = module('functions', true)
 
-local Blips, Drops, Usables, cancelled, invOpen, weaponTimer = {}, {}, {}, false, false, 0
+local Blips, Drops, cancelled, invOpen, weaponTimer = {}, {}, false, false, 0
 local playerId, playerPed, invOpen, usingWeapon, playerCoords, currentWeapon, currentDrop
 local plyState = LocalPlayer.state
 
@@ -202,13 +202,14 @@ RegisterNetEvent('ox_inventory:setPlayerInventory', function(data)
     for k, v in pairs(Items) do
         ItemData[v.name] = {
             label = v.label,
-            usable = v.client and v.client.event,
+            usable = (v.client and v.client.event or (v.client and v.client.usetime) or v.name:find('WEAPON_') or v.name:find('ammo-') or v.name:find('at_')) and true or false,
             stack = v.stack,
             close = v.close
         }
+		print(v.name, ItemData[v.name].usable)
     end
 	for k, v in pairs(data[7]) do
-		if ItemData[k] then ItemData[k].usable = 'esx' end
+		if ItemData[k] then ItemData[k].usable = true end
 	end
     SendNUIMessage({ action = 'items', data = ItemData })
 	--TriggerServerEvent('equip', `WEAPON_PISTOL`)
