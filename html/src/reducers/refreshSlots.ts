@@ -11,17 +11,12 @@ export const refreshSlotsReducer: CaseReducer<
   >
 > = (state, action) => {
   state.isBusy = true;
-  action.payload
-    .filter((value) => value !== null)
-    .forEach((data, index) => {
-      const inventory =
-        data.inventory === undefined
-          ? state.playerInventory
-          : state.rightInventory;
-
-      inventory.items[data.item.slot - 1] = data.item || {
-        slot: index + 1,
-      };
-    });
+  Object.values(action.payload).forEach((data) => {
+    const inventory =
+      data.inventory === "player"
+        ? state.playerInventory
+        : state.rightInventory;
+    inventory.items[data.item.slot - 1] = data.item;
+  });
   state.isBusy = false;
 };
