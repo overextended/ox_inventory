@@ -9,7 +9,7 @@ import {
 import type { RootState } from ".";
 import { State } from "../typings";
 import { swapItems } from "../actions/swapItems";
-import setupInventoryReducer from '../actions/setupInventory';
+import setupInventoryReducer from "../actions/setupInventory";
 import { findInventory } from "../helpers";
 
 const initialState: State = {
@@ -62,6 +62,19 @@ export const inventorySlice = createSlice({
         targetType
       );
 
+      if (targetSlot.name && sourceSlot.name !== targetSlot.name) {
+        sourceInventory.items[sourceSlot.slot - 1] = {
+          ...targetSlot,
+          slot: sourceSlot.slot,
+        };
+        targetInventory.items[targetSlot.slot - 1] = {
+          ...sourceSlot,
+          slot: targetSlot.slot,
+        };
+
+        return;
+      }
+
       sourceInventory.items[sourceSlot.slot - 1] =
         sourceSlot.count - count > 0
           ? {
@@ -104,7 +117,8 @@ export const inventorySlice = createSlice({
   },
 });
 
-export const { setItemAmount, setShiftPressed, setupInventory } = inventorySlice.actions;
+export const { setItemAmount, setShiftPressed, setupInventory } =
+  inventorySlice.actions;
 export const selectPlayerInventory = (state: RootState) =>
   state.inventory.playerInventory;
 export const selectRightInventory = (state: RootState) =>
