@@ -137,10 +137,9 @@ end)
 ox.RegisterServerCallback('ox_inventory:openInventory', function(source, cb, inv, data) 
 	local left, right = Inventory(source)
 	if data then
-		-- Inventory.Create(data.id, data.label or data.id, inv, 20, 0, 2000, data.owner, {})
+		Inventory.Create(data.id, data.label or data.id, inv, 20, 0, 2000, data.owner, {})
 	else
-		Inventory.Create('test', 'Drop 6969', 'drop', Config.PlayerSlots, 0, Config.DefaultWeight, false)
-		right = Inventory('test')
+		right = Inventory('test') or Inventory.Create('test', 'Drop 6969', 'drop', Config.PlayerSlots, 0, Config.DefaultWeight, false, {})
 		right.open = source
 		left.open = right.id
 	end
@@ -150,18 +149,30 @@ end)
 ox.RegisterServerCallback('ox_inventory:swapItems', function(source, cb, data)
 	local playerInventory, inventory, ret = Inventory(source) or false
 	if data.fromType ~= data.toType then
-		--[[local toInventory = data.toType and Inventory(inventory.open) or data.fromType and inventory
-		local fromInventory = toInventory.id ~= source and inventory or Inventory(inventory.open)
-		print('moved item from', fromInventory.id, 'to', toInventory.id)]]
-	else
-		inventory = data.fromType ~= 'player' and Inventory(inventory.open) or playerInventory
+		local toInventory = data.toType == 'player' and playerInventory or Inventory(playerInventory.open)
+		local fromInventory = data.fromType == 'player' and playerInventory or Inventory(playerInventory.open)
+
+		local toSlot, fromSlot = Inventory.SwapSlots({fromInventory, toInventory}, {data.fromSlot, data.toSlot})
+
+		if data.fromType == 'player' then
+			local items = {[data.fromSlot] = toSlot or false}
+			ret = {weight=playerInventory.weight, items=items}
+			Inventory.SyncInventory(ESX.GetPlayerFromId(source), playerInventory, items)
+		else
+			local items = {[data.toSlot] = fromSlot or false}
+			ret = {weight=playerInventory.weight, items=items}
+			Inventory.SyncInventory(ESX.GetPlayerFromId(source), playerInventory, items)
+		end
 		
-		local toSlot, fromSlot = Inventory.SwapSlots({inventory, inventory}, {data.fromSlot, data.toSlot})		
+	else
+		inventory = data.fromType ~= 'player' and Inventory(playerInventory.open) or playerInventory
+		
+		local toSlot, fromSlot = Inventory.SwapSlots({inventory, inventory}, {data.fromSlot, data.toSlot})
 		
 		if data.fromType == 'player' then
 			local items = {[data.fromSlot] = toSlot or false, [data.toSlot] = fromSlot}
-			ret = {weight=inventory.weight, items=items}
-			Inventory.SyncInventory(ESX.GetPlayerFromId(source), inventory, items)
+			ret = {weight=playerInventory.weight, items=items}
+			Inventory.SyncInventory(ESX.GetPlayerFromId(source), playerInventory, items)
 		end
 	end
 	cb(1, ret)
