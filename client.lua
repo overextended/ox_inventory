@@ -206,7 +206,6 @@ RegisterNetEvent('ox_inventory:setPlayerInventory', function(data)
             stack = v.stack,
             close = v.close
         }
-		print(v.name, ItemData[v.name].usable)
     end
 	for k, v in pairs(data[7]) do
 		if ItemData[k] then ItemData[k].usable = true end

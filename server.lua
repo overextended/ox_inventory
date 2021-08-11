@@ -147,34 +147,20 @@ ox.RegisterServerCallback('ox_inventory:openInventory', function(source, cb, inv
 end)
 
 ox.RegisterServerCallback('ox_inventory:swapItems', function(source, cb, data)
-	local playerInventory, inventory, ret = Inventory(source) or false
-	if data.fromType ~= data.toType then
-		local toInventory = data.toType == 'player' and playerInventory or Inventory(playerInventory.open)
-		local fromInventory = data.fromType == 'player' and playerInventory or Inventory(playerInventory.open)
+	local playerInventory, items, ret = Inventory(source) or false, {}
+	local toInventory = data.toType == 'player' and playerInventory or Inventory(playerInventory.open)
+	local fromInventory = data.fromType == 'player' and playerInventory or Inventory(playerInventory.open)
 
-		local toSlot, fromSlot = Inventory.SwapSlots({fromInventory, toInventory}, {data.fromSlot, data.toSlot})
+	local toSlot, fromSlot = Inventory.SwapSlots({fromInventory, toInventory}, {data.fromSlot, data.toSlot})
 
-		if data.fromType == 'player' then
-			local items = {[data.fromSlot] = toSlot or false}
-			ret = {weight=playerInventory.weight, items=items}
-			Inventory.SyncInventory(ESX.GetPlayerFromId(source), playerInventory, items)
-		else
-			local items = {[data.toSlot] = fromSlot or false}
-			ret = {weight=playerInventory.weight, items=items}
-			Inventory.SyncInventory(ESX.GetPlayerFromId(source), playerInventory, items)
-		end
+	if data.fromType == 'player' then items[data.fromSlot] = fromSlot or false
+	elseif data.toType == 'player' then items[data.toSlot] = toSlot or false end
 		
-	else
-		inventory = data.fromType ~= 'player' and Inventory(playerInventory.open) or playerInventory
-		
-		local toSlot, fromSlot = Inventory.SwapSlots({inventory, inventory}, {data.fromSlot, data.toSlot})
-		
-		if data.fromType == 'player' then
-			local items = {[data.fromSlot] = toSlot or false, [data.toSlot] = fromSlot}
-			ret = {weight=playerInventory.weight, items=items}
-			Inventory.SyncInventory(ESX.GetPlayerFromId(source), playerInventory, items)
-		end
+	if next(items) then
+		ret = {weight=playerInventory.weight, items=items}
+		Inventory.SyncInventory(ESX.GetPlayerFromId(source), playerInventory, items)
 	end
+
 	cb(1, ret)
 end)
 
