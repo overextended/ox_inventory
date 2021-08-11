@@ -176,8 +176,9 @@ local UpdateInventory = function(items, weight, maxWeight, message)
 		data = items,
 	})
 	Notify({text = message, duration = 2500})
-	for k, v in pairs(items) do
-		ESX.PlayerData.inventory[k] = v and v.item or nil
+	for i=1, #items do
+		local i = items[i].item
+		ESX.PlayerData.inventory[i.slot] = i and i.name or nil
 	end
 end
 RegisterNetEvent('ox_inventory:updateInventory', UpdateInventory)
@@ -395,7 +396,6 @@ end)
 
 RegisterNUICallback('swapItems', function(data, cb)
 	ox.TriggerServerCallback('ox_inventory:swapItems', function(r, data)
-		json.encode(data)
 		if data then
 			for k, v in pairs(data.items) do
 				ESX.PlayerData.inventory[k] = v and v or nil

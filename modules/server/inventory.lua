@@ -118,6 +118,21 @@ local GenerateSerial = function(text)
 	return ('%s%s%s'):format(math.random(100000,999999), text, math.random(100000,999999))
 end
 
+M.SlotWeight = function(item, slot)
+	local weight = item.weight * slot.count
+	if not slot.metadata then slot.metadata = {} end
+	if item.ammoname then
+		local ammo = {
+			type = item.ammoname,
+			count = slot.metadata.ammo,
+			weight = item.weight
+		}
+		weight = weight + ammo.weight * ammo.count
+	end
+	if slot.metadata.weight then weight = weight + slot.metadata.weight end
+	return weight
+end
+
 M.Create = function(...)
 	local t = {...}
 	if #t > 6 then
@@ -244,28 +259,13 @@ M.GetItem = function(inv, item, metadata)
 	return
 end
 
-M.SlotWeight = function(item, slot)
-	local weight = item.weight * slot.count
-	if not slot.metadata then slot.metadata = {} end
-	if item.ammoname then
-		local ammo = {
-			type = item.ammoname,
-			count = slot.metadata.ammo,
-			weight = item.weight
-		}
-		weight = weight + ammo.weight * ammo.count
-	end
-	if slot.metadata.weight then weight = weight + slot.metadata.weight end
-	return weight
-end
-
-M.SwapSlots = function(inventory, slot)
+local SwapSlots = function(inventory, slot)
 	local fromSlot = inventory[1].items[slot[1]] and Function.Copy(inventory[1].items[slot[1]]) or nil
 	local toSlot = inventory[2].items[slot[2]] and Function.Copy(inventory[2].items[slot[2]]) or nil
 	if fromSlot then fromSlot.slot = slot[2] end
 	if toSlot then toSlot.slot = slot[1] end
 	inventory[1].items[slot[1]], inventory[2].items[slot[2]] = toSlot, fromSlot
-	return toSlot, fromSlot
+	return fromSlot, toSlot
 end
 
 M.SetItem = function(inv, item, count, metadata)
@@ -381,18 +381,18 @@ M.RemoveItem = function(inv, item, count, metadata, slot)
 					if removed < total then
 						if v == count then
 							M.SetSlot(inv, item, -count, metadata, k)
-							slot[k] = inv.items[k] or false
-							removed = v
-						elseif v > count then
-							M.SetSlot(inv, item, -count, metadata, k)
-							slot[k] = inv.items[k] or false
+							slot[#slot+1] = inv.items[k] or k
 							removed = total
-							count = count - removed
+						elseif v > count then
+							removed = total
+							count = v - count
+							M.SetSlot(inv, item, -count, metadata, k)
+							slot[#slot+1] = inv.items[k] or k
 						else
 							M.SetSlot(inv, item, -count, metadata, k)
-							slot[k] = inv.items[k] or false
+							slot[#slot+1] = inv.items[k] or k
 							removed = removed + v
-							count = count - removed
+							count = count - v
 						end
 					else break end
 				end
@@ -401,8 +401,8 @@ M.RemoveItem = function(inv, item, count, metadata, slot)
 					M.SyncInventory(xPlayer, inv, slot)
 					local array = {}
 					for k, v in pairs(slot) do
-						if not v then
-							array[k] = {item = {slot=k}, inventory = inv.type}
+						if type(v) == 'number' then
+							array[k] = {item = {slot=v}, inventory = inv.type}
 						else
 							array[k] = {item = inv.items[k], inventory = inv.type}
 						end
