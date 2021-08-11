@@ -7,13 +7,12 @@ RegisterNetEvent('equip', function(weapon)
 end)
 
 CreateThread(function()
-	repeat Citizen.Wait(50) until GetResourceState('ghmattimysql') == 'started'
+	repeat Citizen.Wait(100) until GetResourceState('ghmattimysql') == 'started'
 	if ESX == nil or SetInterval == nil then return ox.error('Unable to locate dependencies - refer to the documentation') end
 	local OneSync = GetConvar('onesync_enabled', false) == 'true'
 	local Infinity = GetConvar('onesync_enableInfinity', false) == 'true'
 	if not OneSync and not Infinity then return ox.error('OneSync is not enabled on this server - refer to the documentation')
 	elseif Infinity then ox.info('Server is running OneSync Infinity') else ox.info('Server is running OneSync Legacy') end
-	exports.ghmattimysql:executeSync('DELETE FROM `linden_inventory` WHERE `lastupdated` < (NOW() - INTERVAL '..Config.DBCleanup..') OR `data` = "[]"')
 	local items, query = exports.ghmattimysql:executeSync('SELECT * FROM items', {})
 	for i=1, #items do
 		local i = items[i]
@@ -67,6 +66,7 @@ Items[']]..i.name..[['] = {
 		count = count + 1
 	end
 	ox.info('Inventory has fully loaded with '..count..' items')
+	exports.ghmattimysql:executeSync('DELETE FROM `linden_inventory` WHERE `lastupdated` < (NOW() - INTERVAL '..Config.DBCleanup..') OR `data` = "[]"')
 	collectgarbage('collect') -- clean up from initialisation
 	local ignore = {[0] = '?', [`WEAPON_UNARMED`] = 'unarmed', [966099553] = 'shovel'}
 	while true do
@@ -139,7 +139,8 @@ ox.RegisterServerCallback('ox_inventory:openInventory', function(source, cb, inv
 	if data then
 		Inventory.Create(data.id, data.label or data.id, inv, 20, 0, 2000, data.owner, {})
 	else
-		right = Inventory('test') or Inventory.Create('test', 'Drop 6969', 'drop', Config.PlayerSlots, 0, Config.DefaultWeight, false, {})
+		if not Inventory('test') then Inventory.Create('test', 'Drop 6969', 'drop', Config.PlayerSlots, 0, Config.DefaultWeight, false, {}) end
+		right = Inventory('test')
 		right.open = source
 		left.open = right.id
 	end
@@ -147,25 +148,42 @@ ox.RegisterServerCallback('ox_inventory:openInventory', function(source, cb, inv
 end)
 
 ox.RegisterServerCallback('ox_inventory:swapItems', function(source, cb, data)
-	local playerInventory, items, ret = Inventory(source) or false, {}
-	local toInventory = data.toType == 'player' and playerInventory or Inventory(playerInventory.open)
-	local fromInventory = data.fromType == 'player' and playerInventory or Inventory(playerInventory.open)
-
-	local toSlot, fromSlot = Inventory.SwapSlots({fromInventory, toInventory}, {data.fromSlot, data.toSlot})
-
-	if data.fromType == 'player' then items[data.fromSlot] = fromSlot or false
-	elseif data.toType == 'player' then items[data.toSlot] = toSlot or false end
+	if data.count then
+		local playerInventory, items, ret = Inventory(source) or false, {}
+		local toInventory = data.toType == 'player' and playerInventory or Inventory(playerInventory.open)
+		local fromInventory = data.fromType == 'player' and playerInventory or Inventory(playerInventory.open)
 		
-	if next(items) then
-		ret = {weight=playerInventory.weight, items=items}
-		Inventory.SyncInventory(ESX.GetPlayerFromId(source), playerInventory, items)
+		local fromSlot, toSlot = fromInventory.items[data.fromSlot], toInventory.items[data.toSlot]
+		if fromSlot then
+			if data.count > fromSlot.count then data.count = fromSlot.count end
+
+			if not toSlot then
+				if data.count <= fromSlot.count then
+					fromSlot.count = fromSlot.count - data.count
+					toSlot = Function.Copy(fromSlot)
+					toSlot.count = data.count
+					toSlot.slot = data.toSlot
+				end
+			end
+			if fromSlot.count < 1 then fromSlot = nil end
+			
+
+			--fromSlot, toSlot = Inventory.SwapSlots({fromInventory, toInventory}, {data.fromSlot, data.toSlot})
+
+			fromInventory.items[data.fromSlot] = fromSlot
+			toInventory.items[data.toSlot] = toSlot
+			
+			if data.fromType == 'player' then items[data.fromSlot] = fromSlot or false end
+			if data.toType == 'player' then items[data.toSlot] = toSlot or false end
+			if next(items) then
+				ret = {weight=playerInventory.weight, items=items}
+				Inventory.SyncInventory(ESX.GetPlayerFromId(source), playerInventory, items)
+			end
+			return cb(1, ret)
+		end
 	end
-
-	cb(1, ret)
+	cb(0)
 end)
-
-
-
 
 local ValidateString = function(item)
 	item = string.lower(item)
