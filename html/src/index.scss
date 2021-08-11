@@ -1,16 +1,16 @@
-$mainFont: Signika;
-$secondFont: Inconsolata;
+@import url("https://fonts.googleapis.com/css2?family=Signika:wght@300;400;600;700&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Oxygen:wght@300;400;700&display=swap");
 
-@import url("https://fonts.googleapis.com/css2?family=" + $mainFont + ":wght@400;500;600;700&display=swap");
-@import url("https://fonts.googleapis.com/css2?family=" + $secondFont + ":wght@800&display=swap");
+$mainFont: Signika;
+$secondFont: Oxygen;
 
 $mainColor: rgb(44, 62, 80);
 
-$borderRadius: 0.5vh;
+$borderRadius: 0.4vh;
 
 $gridCols: 5;
 $gridRows: 5;
-$gridSize: 10vh;
+$gridSize: 9.8vh;
 $gridGap: 2px;
 $containerSize: calc(#{$gridRows} * #{$gridSize} + #{$gridRows} * #{$gridGap});
 
@@ -19,12 +19,13 @@ $imageSize: $gridSize - 2.5vh;
 * {
   font-family: $mainFont;
   font-size: 1.5vh;
-  box-sizing: border-box;
+  font-weight: 400;
+  box-sizing: content-box;
   overflow: hidden;
   user-select: none;
   margin: 0;
   color: #fff;
-  text-shadow: 0.1vh 0.1vh 0 black;
+  text-shadow: 0.1vh 0.1vh 0 rgba(0,0,0,0.7);
 }
 
 img {
@@ -90,11 +91,11 @@ img {
     width: 1.5vh;
     height: 1.7vh;
     line-height: 1.7vh;
-    font-size: 1.3vh;
+    font-size: 1vh;
     border-top-left-radius: $borderRadius;
     border-bottom-right-radius: $borderRadius;
-    font-weight: bold;
     font-family: $secondFont;
+    font-weight: 700;
     text-align: center;
     background-color: white;
     color: black;
@@ -117,8 +118,10 @@ img {
     display: flex;
 
     span {
+      font-family: $secondFont;
       margin-left: auto;
-      font-size: 1.2vh;
+      font-size: 1vh;
+      font-weight:300;
       padding: 0.2vh;
     }
   }
@@ -135,8 +138,7 @@ img {
 
   .item-label {
     background-color: $mainColor;
-    padding: 0.1vh;
-    padding-top: 0.2vh;
+    padding: 0.15vh;
     font-size: 1vh;
     text-align: center;
     text-transform: uppercase;
@@ -147,11 +149,11 @@ img {
 
 .button {
   background-color: rgba(12, 12, 12, 0.35);
-  border: 0.1vh solid rgba(33, 33, 33, 0.4);
+  border: 0.1vh solid rgba(0, 0, 0, 0.1);
   border-radius: $borderRadius;
   padding: 0.9vh;
   text-align: center;
-  width: 17vh;
+  width: 16vh;
   margin: 0.8vh;
 
   &:hover {
@@ -216,8 +218,8 @@ input[type="number"] {
 .item-info {
   margin-top: 1vh;
   padding: 1vh;
-  font-weight: 500;
-  font-size: 1.8vh;
+  font-weight: 400;
+  font-size: 1.6vh;
   background-color: rgba(0, 0, 0, 0.267);
   border-radius: $borderRadius;
   width: $containerSize;

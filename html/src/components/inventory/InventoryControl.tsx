@@ -74,7 +74,7 @@ const InventoryControl: React.FC = () => {
       </Fade>
       <div
         className="column-wrapper"
-        style={{ marginLeft: "2vh", marginRight: "2vh" }}
+        style={{ margin: "1vh" }}
       >
         <input
           type="number"
