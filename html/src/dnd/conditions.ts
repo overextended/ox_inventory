@@ -1,9 +1,10 @@
-import { DragProps } from "../typings";
+import { getItemWithData } from "../helpers";
+import { DragSlot, DropSlot } from "../typings";
 
-export const canDrag = (source: DragProps): boolean => !!source.item.name;
+//export const canDrag = (source: DropSlot): boolean => isItem(source.item);
 
-export const canDrop = (source: DragProps, target: DragProps): boolean => {
-  if (target.item.name === undefined) return true;
+export const canDrop = (source: DragSlot, target: DropSlot): boolean => {
+  if (!getItemWithData(target.item)) return true;
 
   if (
     source.item.stack &&

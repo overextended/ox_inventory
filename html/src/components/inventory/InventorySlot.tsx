@@ -1,52 +1,65 @@
 import React from "react";
-import { DragProps, DragTypes, InventoryProps, ItemProps } from "../../typings";
+import { DragSlot, Inventory, Slot } from "../../typings";
 import { useDrag, useDrop } from "react-dnd";
 import { useAppSelector } from "../../store";
 import WeightBar from "../utils/WeightBar";
-import { canDrag, canDrop } from "../../dnd/conditions";
-import { onDrop } from "../../dnd/onDrop";
-import { selectIsBusy } from "../../store/inventorySlice";
+import { canDrop } from "../../dnd/conditions";
+import { onMove } from "../../dnd/onMove";
+import { selectIsBusy } from "../../store/inventory";
+import { getItemWithData } from "../../helpers";
 
 interface SlotProps {
-  inventory: InventoryProps;
-  item: ItemProps;
-  setCurrentItem: React.Dispatch<React.SetStateAction<ItemProps | undefined>>;
+  inventory: Inventory;
+  item: Slot;
+  setCurrentItem: React.Dispatch<React.SetStateAction<Slot | undefined>>;
 }
 
 const InventorySlot: React.FC<SlotProps> = (props) => {
-  const dragProps: DragProps = {
-    item: props.item,
-    inventory: props.inventory.type
-  };
-
   const isBusy = useAppSelector(selectIsBusy);
 
+  const itemWithData = React.useMemo(
+    () => getItemWithData(props.item),
+    [props.item]
+  );
+
   const [{ isDragging }, drag] = useDrag<
-    DragProps,
+    DragSlot,
     unknown,
     { isDragging: boolean }
   >(
     () => ({
-      item: dragProps,
-      type: DragTypes.SLOT,
+      type: "SLOT",
       collect: (monitor) => ({
         isDragging: monitor.isDragging(),
       }),
-      canDrag: () => !isBusy && canDrag(dragProps),
+      item: () =>
+        itemWithData
+          ? {
+              item: itemWithData,
+              inventory: props.inventory.type,
+            }
+          : null,
+      canDrag: !isBusy && itemWithData !== undefined,
     }),
-    [dragProps, isBusy]
+    [isBusy, itemWithData, props.inventory.type]
   );
 
-  const [{ isOver }, drop] = useDrop<DragProps, void, { isOver: boolean }>(
+  const [{ isOver }, drop] = useDrop<DragSlot, void, { isOver: boolean }>(
     () => ({
-      accept: DragTypes.SLOT,
-      drop: (source) => onDrop(source, dragProps),
+      accept: "SLOT",
       collect: (monitor) => ({
         isOver: monitor.isOver(),
       }),
-      canDrop: (source) => canDrop(source, dragProps),
+      drop: (source) =>
+        onMove(source, {
+          item: props.item,
+          inventory: props.inventory.type,
+        }),
+      canDrop: (source) =>
+        !isBusy &&
+        canDrop(source, { item: props.item, inventory: props.inventory.type }),
     }),
-    [dragProps]
+    [isBusy, props.item, props.inventory.type]
   );
 
   return (
@@ -64,21 +77,23 @@ const InventorySlot: React.FC<SlotProps> = (props) => {
                 process.env.PUBLIC_URL + `/images/${props.item.name}.png`
               })`
             : "none",
-          border: isOver ? "0.1vh dashed rgba(255,255,255,0.5)" : "0.1vh inset rgba(0,0,0,0)",
+          border: isOver
+            ? "0.1vh dashed rgba(255,255,255,0.5)"
+            : "0.1vh inset rgba(0,0,0,0)",
         }}
-        onMouseEnter={() => props.item.name && props.setCurrentItem(props.item)}
-        onMouseLeave={() => props.item.name && props.setCurrentItem(undefined)}
+        onMouseEnter={() => itemWithData && props.setCurrentItem(props.item)}
+        onMouseLeave={() => itemWithData && props.setCurrentItem(undefined)}
         onClick={(event) => {
-          if (!props.item.name || isBusy) return;
+          if (!itemWithData || isBusy) return;
           if (event.ctrlKey) {
-            onDrop(dragProps);
+            onMove({ item: itemWithData, inventory: props.inventory.type });
             props.setCurrentItem(undefined);
-          } else if (event.altKey) {
+          } else if (event.altKey && itemWithData.usable) {
             alert("fast use");
           }
         }}
       >
-        {props.item.name && (
+        {itemWithData && (
           <>
             <div className="item-count">
               <span>
@@ -87,7 +102,7 @@ const InventorySlot: React.FC<SlotProps> = (props) => {
             </div>
             <WeightBar percent={25} durability />
             <div className="item-label">
-              {props.item.label} [{props.item.slot}] {isBusy && "BUSY"}
+              {itemWithData.label} [{props.item.slot}] {isBusy && "BUSY"}
             </div>
           </>
         )}

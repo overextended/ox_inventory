@@ -1,6 +1,6 @@
 import { configureStore, ThunkAction, Action } from "@reduxjs/toolkit";
 import { TypedUseSelectorHook, useDispatch, useSelector } from "react-redux";
-import inventoryReducer from "./inventorySlice";
+import inventoryReducer from "./inventory";
 
 export const store = configureStore({
   reducer: {

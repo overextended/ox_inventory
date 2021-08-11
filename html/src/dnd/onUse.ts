@@ -1,6 +1,6 @@
 import toast from "react-hot-toast";
-import { ItemProps } from "../typings";
+import { Slot } from "../typings";
 
-export const onUse = (item: ItemProps) => {
+export const onUse = (item: Slot) => {
   toast.success(`Use ${item.name}`);
 };

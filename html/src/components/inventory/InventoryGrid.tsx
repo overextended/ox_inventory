@@ -1,11 +1,11 @@
 import React from "react";
-import { InventoryProps, ItemProps } from "../../typings";
+import { Inventory, Slot } from "../../typings";
 import Fade from "../utils/Fade";
 import WeightBar from "../utils/WeightBar";
 import InventorySlot from "./InventorySlot";
 
-const InventoryGrid: React.FC<{ inventory: InventoryProps }> = (props) => {
-  const [currentItem, setCurrentItem] = React.useState<ItemProps>();
+const InventoryGrid: React.FC<{ inventory: Inventory }> = (props) => {
+  const [currentItem, setCurrentItem] = React.useState<Slot>();
 
   return (
     <div className="column-wrapper">
@@ -44,9 +44,8 @@ const InventoryGrid: React.FC<{ inventory: InventoryProps }> = (props) => {
           duration={0.25}
           className="item-info"
         >
-          <p>{currentItem?.label}</p>
+          <p>{currentItem?.name}</p>
           <hr style={{borderBottom:"0.1vh"}}></hr>
-          <p>{currentItem?.description}</p>
         </Fade>
       </div>
     </div>

@@ -1,8 +1,8 @@
 import React, { useState } from "react";
 import { useDrop } from "react-dnd";
 import { useAppDispatch, useAppSelector } from "../../store";
-import { selectItemAmount, setItemAmount } from "../../store/inventorySlice";
-import { DragProps, DragTypes } from "../../typings";
+import { selectItemAmount, setItemAmount } from "../../store/inventory";
+import { DragSlot } from "../../typings";
 import { onUse } from "../../dnd/onUse";
 import { onGive } from "../../dnd/onGive";
 import { fetchNui } from "../../utils/fetchNui";
@@ -32,14 +32,15 @@ const InfoScreen: React.FC<{
         [CTRL + SHIFT + LMB] - Fast move half a stack of items into another
         inventory
       </p>
-      <p>
-        [ALT + LMB] - Fast use item
-      </p>
+      <p>[ALT + LMB] - Fast use item</p>
       <span
-      className="info-ox"
-      onClick={() =>
-        Notify({ text: "Made with 🧡 by the overextended 🐂 team" })
-      }>🐂</span>
+        className="info-ox"
+        onClick={() =>
+          Notify({ text: "Made with 🧡 by the overextended 🐂 team" })
+        }
+      >
+        🐂
+      </span>
     </div>
   );
 };
@@ -50,15 +51,15 @@ const InventoryControl: React.FC = () => {
 
   const [infoVisible, setInfoVisible] = useState(false);
 
-  const [, use] = useDrop<DragProps, void, any>(() => ({
-    accept: DragTypes.SLOT,
+  const [, use] = useDrop<DragSlot, void, any>(() => ({
+    accept: "SLOT",
     drop: (source) => onUse(source.item),
-    canDrop: (source) => !!source.item.usable,
+    canDrop: (source) => source.item.usable,
   }));
 
-  const [, give] = useDrop<DragProps, void, any>(
+  const [, give] = useDrop<DragSlot, void, any>(
     () => ({
-      accept: DragTypes.SLOT,
+      accept: "SLOT",
       drop: (source) => onGive(source.item, itemAmount),
     }),
     [itemAmount]
@@ -73,10 +74,7 @@ const InventoryControl: React.FC = () => {
       <Fade visible={infoVisible} duration={0.25} className="info-fade">
         <InfoScreen infoVisible={infoVisible} setInfoVisible={setInfoVisible} />
       </Fade>
-      <div
-        className="column-wrapper"
-        style={{ margin: "1vh" }}
-      >
+      <div className="column-wrapper" style={{ margin: "1vh" }}>
         <input
           type="number"
           className="button input"

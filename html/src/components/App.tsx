@@ -4,21 +4,20 @@ import InventoryGrid from "./inventory/InventoryGrid";
 import InventoryControl from "./inventory/InventoryControl";
 import Fade from "./utils/Fade";
 import { debugData } from "../utils/debugData";
-import { InventoryProps, ItemProps } from "../typings";
+import { Inventory } from "../typings";
 import { useAppDispatch, useAppSelector } from "../store";
 import {
-  setupInventory,
   selectPlayerInventory,
   selectRightInventory,
   setShiftPressed,
-  refreshSlots,
-} from "../store/inventorySlice";
+  setupInventory
+} from "../store/inventory";
 import DragPreview from "./utils/DragPreview";
 import Notifications from "./utils/Notifications";
 import ProgressBar from "./utils/ProgressBar";
 import useKeyPress from "../hooks/useKeyPress";
 import { useExitListener } from "../hooks/useExitListener";
-import { ITEMS } from "../config/items";
+import { Items } from "../store/items";
 
 debugData([
   {
@@ -34,19 +33,14 @@ debugData([
           {
             slot: 1,
             name: "water",
-            label: "Water WAater JOJO WAter",
-            description: "voda z vodovodu",
             weight: 50,
             count: 1,
-            stack: true,
           },
           {
             slot: 2,
             name: "burger",
-            label: "Burger",
             weight: 50,
             count: 5,
-            stack: true,
           },
         ],
       },
@@ -58,10 +52,8 @@ debugData([
           {
             slot: 1,
             name: "water",
-            label: "Water",
             weight: 50,
             count: 1,
-            stack: true,
           },
         ],
       },
@@ -78,19 +70,19 @@ const App: React.FC = () => {
   const dispatch = useAppDispatch();
 
   useNuiEvent<{
-    playerInventory: InventoryProps;
-    rightInventory: InventoryProps;
+    playerInventory: Inventory;
+    rightInventory: Inventory;
   }>("setupInventory", (data) => {
     dispatch(setupInventory(data));
     setInventoryVisible(true);
   });
 
-  useNuiEvent<
+  /*useNuiEvent<
     {
       item: ItemProps;
       inventory: InventoryProps["type"];
     }[]
-  >("refreshSlots", (data) => dispatch(refreshSlots(data)));
+  >("refreshSlots", (data) => dispatch(refreshSlots(data)));*/
 
   useNuiEvent("closeInventory", () => setInventoryVisible(false));
 
@@ -102,11 +94,10 @@ const App: React.FC = () => {
 
   useExitListener(setInventoryVisible);
 
-  useNuiEvent<typeof ITEMS>("items", (items) => {
+  useNuiEvent<typeof Items>("items", (items) => {
     for (const [name, itemData] of Object.entries(items)) {
-      ITEMS[name] = itemData;
+      Items[name] = itemData;
     }
-    console.log(ITEMS);
   });
 
   return (

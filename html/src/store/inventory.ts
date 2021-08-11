@@ -7,13 +7,12 @@ import {
   PayloadAction,
 } from "@reduxjs/toolkit";
 import type { RootState } from ".";
-import { InventoryState } from "../typings";
-import { setupInventoryReducer } from "../reducers/setupInventory";
-import { swapItems } from "../thunks/swapItems";
-import { refreshSlotsReducer } from "../reducers/refreshSlots";
-import { filterInventoryState } from "../reducers/helpers";
+import { State } from "../typings";
+import { swapItems } from "../actions/swapItems";
+import setupInventoryReducer from '../actions/setupInventory';
+import { findInventory } from "../helpers";
 
-const initialState: InventoryState = {
+const initialState: State = {
   playerInventory: {
     id: "",
     type: "",
@@ -40,7 +39,6 @@ export const inventorySlice = createSlice({
   initialState,
   reducers: {
     setupInventory: setupInventoryReducer,
-    refreshSlots: refreshSlotsReducer,
     setItemAmount: (state, action: PayloadAction<number>) => {
       state.itemAmount = action.payload;
     },
@@ -50,20 +48,32 @@ export const inventorySlice = createSlice({
   },
   extraReducers: (builder) => {
     builder.addCase(swapItems.pending, (state, action) => {
-      const { fromSlot, fromType, toSlot, toType, count } = action.meta.arg;
+      const { sourceSlot, sourceType, targetSlot, targetType, count } =
+        action.meta.arg;
 
       state.history = {
         playerInventory: current(state.playerInventory),
         rightInventory: current(state.rightInventory),
       };
 
-      const [sourceInventory, targetInventory] = filterInventoryState(state, fromType, toType);
+      const { sourceInventory, targetInventory } = findInventory(
+        state,
+        sourceType,
+        targetType
+      );
 
-      const sourceSlot = sourceInventory.items[fromSlot - 1];
-      const targetSlot = targetInventory.items[toSlot - 1];
+      sourceInventory.items[sourceSlot.slot - 1] =
+        sourceSlot.count - count > 0
+          ? {
+              ...sourceSlot,
+              count: sourceSlot.count - count,
+            }
+          : {
+              slot: sourceSlot.slot,
+            };
 
-      targetInventory.items[toSlot - 1] =
-        targetSlot.stack && targetSlot.count
+      targetInventory.items[targetSlot.slot - 1] =
+        sourceSlot.stack && targetSlot.count
           ? {
               ...targetSlot,
               count: targetSlot.count + count,
@@ -73,16 +83,6 @@ export const inventorySlice = createSlice({
               count: count,
               slot: targetSlot.slot,
             };
-
-      sourceInventory.items[fromSlot - 1] =
-        sourceSlot.count! - count > 0
-          ? {
-              ...sourceSlot,
-              count: sourceSlot.count! - count,
-            }
-          : {
-              slot: sourceSlot.slot,
-            };
     });
     builder.addMatcher(isPending, (state) => {
       state.isBusy = true;
@@ -91,17 +91,20 @@ export const inventorySlice = createSlice({
       state.isBusy = false;
     });
     builder.addMatcher(isRejected, (state) => {
-      if (state.history) {
-        state.playerInventory = state.history?.playerInventory;
-        state.rightInventory = state.history?.rightInventory;
+      if (
+        state.history &&
+        state.history.playerInventory &&
+        state.history.rightInventory
+      ) {
+        state.playerInventory = state.history.playerInventory;
+        state.rightInventory = state.history.rightInventory;
       }
       state.isBusy = false;
     });
   },
 });
 
-export const { setItemAmount, setShiftPressed, setupInventory, refreshSlots } =
-  inventorySlice.actions;
+export const { setItemAmount, setShiftPressed, setupInventory } = inventorySlice.actions;
 export const selectPlayerInventory = (state: RootState) =>
   state.inventory.playerInventory;
 export const selectRightInventory = (state: RootState) =>

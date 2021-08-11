@@ -1,11 +1,11 @@
 import { CaseReducer, PayloadAction } from "@reduxjs/toolkit";
-import { InventoryProps, InventoryState } from "../typings";
+import { Inventory, State } from "../typings";
 
-export const setupInventoryReducer: CaseReducer<
-  InventoryState,
+const setupInventory: CaseReducer<
+  State,
   PayloadAction<{
-    playerInventory: InventoryProps;
-    rightInventory: InventoryProps;
+    playerInventory: Inventory;
+    rightInventory: Inventory;
   }>
 > = (state, action) => {
   state.playerInventory = {
@@ -29,3 +29,5 @@ export const setupInventoryReducer: CaseReducer<
     ),
   };
 };
+
+export default setupInventory;

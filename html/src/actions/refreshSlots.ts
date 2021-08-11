@@ -1,12 +1,12 @@
 import { CaseReducer, PayloadAction } from "@reduxjs/toolkit";
-import { InventoryProps, InventoryState, ItemProps } from "../typings";
+import { Inventory, State, Slot } from "../typings";
 
 export const refreshSlotsReducer: CaseReducer<
-  InventoryState,
+  State,
   PayloadAction<
     {
-      item: ItemProps;
-      inventory: InventoryProps["type"];
+      item: Slot;
+      inventory: Inventory["type"];
     }[]
   >
 > = (state, action) => {

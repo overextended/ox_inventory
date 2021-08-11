@@ -1,41 +1,55 @@
-export type InventoryState = {
-  playerInventory: InventoryProps;
-  rightInventory: InventoryProps;
+export type State = {
+  playerInventory: Inventory;
+  rightInventory: Inventory;
   itemAmount: number;
   shiftPressed: boolean;
   isBusy: boolean;
   history?: {
-    playerInventory: InventoryProps;
-    rightInventory: InventoryProps;
+    playerInventory: Inventory;
+    rightInventory: Inventory;
   };
 };
-export interface ItemProps {
+
+export type Slot = {
   slot: number;
   name?: string;
-  label?: string;
-  description?: string;
   count?: number;
   weight?: number;
-  metadata?: any;
-  stack?: boolean;
-  usable?: boolean;
-  close?: boolean;
-}
-export interface InventoryProps {
+  metadata?: {
+    [key: string]: string;
+  };
+};
+
+export type ItemData = {
+  label: string;
+  stack: boolean;
+  usable: boolean;
+  close: boolean;
+};
+
+export type SlotWithItem = Required<Slot> &
+  ItemData & {
+    metadata?: {
+      [key: string]: string;
+    };
+  };
+
+export type Inventory = {
   id: string;
   type: string;
   slots: number;
-  items: ItemProps[];
+  items: Slot[];
   weight: number;
   maxWeight: number;
   label?: string;
-}
-
-export const DragTypes = {
-  SLOT: "slot",
 };
 
-export interface DragProps {
-  item: ItemProps;
-  inventory: InventoryProps["type"];
-}
+export type DragSlot = {
+  item: SlotWithItem;
+  inventory: Inventory["type"];
+};
+
+export type DropSlot = {
+  item: Slot;
+  inventory: Inventory["type"];
+};
