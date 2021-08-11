@@ -32,13 +32,14 @@ const InfoScreen: React.FC<{
         [CTRL + SHIFT + LMB] - Fast move half a stack of items into another
         inventory
       </p>
-      <p
-        onClick={() =>
-          Notify({ text: "Made with <3 by the overextended team" })
-        }
-      >
+      <p>
         [ALT + LMB] - Fast use item
       </p>
+      <span
+      className="info-ox"
+      onClick={() =>
+        Notify({ text: "Made with 🧡 by the overextended 🐂 team" })
+      }>🐂</span>
     </div>
   );
 };

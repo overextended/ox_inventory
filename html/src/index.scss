@@ -163,12 +163,17 @@ img {
 }
 
 .misc-btns {
+  position: absolute;
+  bottom: 1vh;
+  right: 1vh;
   display: flex;
   flex-direction: row;
   justify-content: space-between;
+  border-radius: 50%;
+
   button {
     @extend .button;
-    width: 30%;
+    width: 3vh;
     font-size: 2.5vh;
     display: flex;
     justify-content: center;
@@ -301,5 +306,11 @@ input[type="number"] {
     position: absolute;
     right: 1vh;
     top: 1vh;
+  }
+
+  .info-ox {
+    position: absolute;
+    right: 1vh;
+    bottom: 1vh;
   }
 }
