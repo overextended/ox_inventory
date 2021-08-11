@@ -6,7 +6,7 @@ import { DragProps, DragTypes } from "../../typings";
 import { onUse } from "../../dnd/onUse";
 import { onGive } from "../../dnd/onGive";
 import { fetchNui } from "../../utils/fetchNui";
-import { faInfoCircle, faTimesCircle } from "@fortawesome/free-solid-svg-icons";
+import { faInfoCircle, faTimes } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import Fade from "../utils/Fade";
 import { Notify } from "../utils/Notifications";
@@ -21,7 +21,7 @@ const InfoScreen: React.FC<{
       style={{ visibility: infoVisible ? "visible" : "hidden" }}
     >
       <FontAwesomeIcon
-        icon={faTimesCircle}
+        icon={faTimes}
         onClick={() => setInfoVisible(false)}
         className="info-exit-icon"
       />
