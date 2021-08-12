@@ -88,7 +88,7 @@ const InventorySlot: React.FC<SlotProps> = (props) => {
             </div>
             <WeightBar percent={25} durability />
             <div className="item-label">
-              {props.item.name} [{props.item.slot}] {isBusy && "BUSY"}
+              {props.item.label} [{props.item.slot}] {isBusy && "BUSY"}
             </div>
           </>
         )}

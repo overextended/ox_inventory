@@ -44,7 +44,7 @@ const InventoryGrid: React.FC<{ inventory: Inventory }> = (props) => {
           duration={0.25}
           className="item-info"
         >
-          <p>{currentItem?.name}</p>
+          <p>{currentItem?.label}</p>
           <hr style={{borderBottom:"0.1vh"}}></hr>
         </Fade>
       </div>
