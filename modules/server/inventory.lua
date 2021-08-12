@@ -67,11 +67,12 @@ end
 
 M.SyncInventory = function(xPlayer, inv, items)
 	local money = {money=0, black_money=0}
+	local array = #items > 0 or false
+	print(array)
 	for k, v in pairs(inv.items) do
-		if not v.count or v.count < 1 then v = nil else
-			if money[v.name] then
-				money[v.name] = money[v.name] + v.count
-			end
+		if array or not v.count or v.count < 1 then v = false
+		elseif money[v.name] then
+			money[v.name] = money[v.name] + v.count
 		end
 	end
 	xPlayer.syncInventory(inv.weight, inv.maxWeight, items, money)
@@ -259,7 +260,7 @@ M.GetItem = function(inv, item, metadata)
 	return
 end
 
-local SwapSlots = function(inventory, slot)
+M.SwapSlots = function(inventory, slot)
 	local fromSlot = inventory[1].items[slot[1]] and Function.Copy(inventory[1].items[slot[1]]) or nil
 	local toSlot = inventory[2].items[slot[2]] and Function.Copy(inventory[2].items[slot[2]]) or nil
 	if fromSlot then fromSlot.slot = slot[2] end
@@ -376,31 +377,31 @@ M.RemoveItem = function(inv, item, count, metadata, slot)
 			local itemSlots, totalCount = GetItemSlots(inv, item, metadata)
 			if itemSlots and totalCount > 0 then
 				if count > totalCount then count = totalCount end
-				local removed, total, slot = 0, count, {}
+				local removed, total, slots = 0, count, {}
 				for k, v in pairs(itemSlots) do
 					if removed < total then
 						if v == count then
-							M.SetSlot(inv, item, -count, metadata, k)
-							slot[#slot+1] = inv.items[k] or k
 							removed = total
+							inv.items[k] = nil
+							slots[#slots+1] = inv.items[k] or k
 						elseif v > count then
+							M.SetSlot(inv, item, -count, metadata, k)
+							slots[#slots+1] = inv.items[k] or k
 							removed = total
 							count = v - count
-							M.SetSlot(inv, item, -count, metadata, k)
-							slot[#slot+1] = inv.items[k] or k
 						else
-							M.SetSlot(inv, item, -count, metadata, k)
-							slot[#slot+1] = inv.items[k] or k
 							removed = removed + v
 							count = count - v
+							inv.items[k] = nil
+							slots[#slots+1] = k
 						end
 					else break end
 				end
 				inv.weight = inv.weight - (item.weight + (metadata.weight or 0)) * removed
 				if xPlayer then
-					M.SyncInventory(xPlayer, inv, slot)
+					M.SyncInventory(xPlayer, inv, slots)
 					local array = {}
-					for k, v in pairs(slot) do
+					for k, v in pairs(slots) do
 						if type(v) == 'number' then
 							array[k] = {item = {slot=v}, inventory = inv.type}
 						else
