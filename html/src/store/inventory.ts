@@ -11,7 +11,7 @@ import { State } from "../typings";
 import setupInventoryReducer from "../actions/setupInventory";
 import swapSlotsReducer from "../actions/swapSlots";
 import moveSlotsReducer from "../actions/moveSlots";
-import { findInventory } from "../helpers";
+import refreshSlotsReducer from "../actions/refreshSlots";
 
 const initialState: State = {
   playerInventory: {
@@ -42,6 +42,7 @@ export const inventorySlice = createSlice({
     setupInventory: setupInventoryReducer,
     swapSlots: swapSlotsReducer,
     moveSlots: moveSlotsReducer,
+    refreshSlots: refreshSlotsReducer,
     setItemAmount: (state, action: PayloadAction<number>) => {
       state.itemAmount = action.payload;
     },
@@ -81,6 +82,7 @@ export const {
   setupInventory,
   swapSlots,
   moveSlots,
+  refreshSlots
 } = inventorySlice.actions;
 export const selectPlayerInventory = (state: RootState) =>
   state.inventory.playerInventory;

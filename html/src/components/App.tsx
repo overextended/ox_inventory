@@ -4,13 +4,14 @@ import InventoryGrid from "./inventory/InventoryGrid";
 import InventoryControl from "./inventory/InventoryControl";
 import Fade from "./utils/Fade";
 import { debugData } from "../utils/debugData";
-import { Inventory } from "../typings";
+import { Inventory, Slot } from "../typings";
 import { useAppDispatch, useAppSelector } from "../store";
 import {
   selectPlayerInventory,
   selectRightInventory,
   setShiftPressed,
-  setupInventory
+  setupInventory,
+  refreshSlots,
 } from "../store/inventory";
 import DragPreview from "./utils/DragPreview";
 import Notifications from "./utils/Notifications";
@@ -70,19 +71,23 @@ const App: React.FC = () => {
   const dispatch = useAppDispatch();
 
   useNuiEvent<{
-    playerInventory: Inventory;
-    rightInventory: Inventory;
+    playerInventory?: Inventory;
+    rightInventory?: Inventory;
   }>("setupInventory", (data) => {
     dispatch(setupInventory(data));
-    setInventoryVisible(true);
+    !inventoryVisible && setInventoryVisible(true);
   });
 
-  /*useNuiEvent<
-    {
-      item: ItemProps;
-      inventory: InventoryProps["type"];
-    }[]
-  >("refreshSlots", (data) => dispatch(refreshSlots(data)));*/
+  useNuiEvent<{
+    items: {
+      item: Slot;
+      inventory: Inventory["type"];
+    }[];
+    weights: {
+      left: number;
+      right: number | undefined;
+    };
+  }>("refreshSlots", (data) => dispatch(refreshSlots(data)));
 
   useNuiEvent("closeInventory", () => setInventoryVisible(false));
 
