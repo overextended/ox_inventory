@@ -20,6 +20,10 @@ module = function(file, shared)
 	return Modules[file]
 end
 
+data = function(file, name)
+	return load(LoadResourceFile(ox.name, 'data/'..file..'.lua')..'return Data', file, 't')()
+end
+
 Items, Weapons = table.unpack(module('weapons', true))
 
 if ox.server then
