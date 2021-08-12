@@ -1,4 +1,4 @@
-Items = {
+local Data = {
 	['bandage'] = {
 		label = 'Bandage',
 		weight = 115,
