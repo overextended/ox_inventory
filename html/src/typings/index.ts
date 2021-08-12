@@ -20,6 +20,12 @@ export type Slot = {
   };
 };
 
+export type SlotWithItem = Required<Omit<Slot, 'metadata'>> & {
+  metadata?: {
+    [key: string]: string;
+  };
+};
+
 export type ItemData = {
   label: string;
   stack: boolean;
@@ -27,12 +33,7 @@ export type ItemData = {
   close: boolean;
 };
 
-export type SlotWithItem = Required<Slot> &
-  ItemData & {
-    metadata?: {
-      [key: string]: string;
-    };
-  };
+export type SlotWithItemData = SlotWithItem & ItemData;
 
 export type Inventory = {
   id: string;
@@ -45,11 +46,6 @@ export type Inventory = {
 };
 
 export type DragSlot = {
-  item: SlotWithItem;
-  inventory: Inventory["type"];
-};
-
-export type DropSlot = {
-  item: Slot;
+  item: Pick<Slot, "slot" | "name">;
   inventory: Inventory["type"];
 };

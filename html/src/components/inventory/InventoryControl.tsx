@@ -54,7 +54,6 @@ const InventoryControl: React.FC = () => {
   const [, use] = useDrop<DragSlot, void, any>(() => ({
     accept: "SLOT",
     drop: (source) => onUse(source.item),
-    canDrop: (source) => source.item.usable,
   }));
 
   const [, give] = useDrop<DragSlot, void, any>(

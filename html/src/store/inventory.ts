@@ -8,8 +8,9 @@ import {
 } from "@reduxjs/toolkit";
 import type { RootState } from ".";
 import { State } from "../typings";
-import { swapItems } from "../actions/swapItems";
 import setupInventoryReducer from "../actions/setupInventory";
+import swapSlotsReducer from "../actions/swapSlots";
+import moveSlotsReducer from "../actions/moveSlots";
 import { findInventory } from "../helpers";
 
 const initialState: State = {
@@ -39,6 +40,8 @@ export const inventorySlice = createSlice({
   initialState,
   reducers: {
     setupInventory: setupInventoryReducer,
+    swapSlots: swapSlotsReducer,
+    moveSlots: moveSlotsReducer,
     setItemAmount: (state, action: PayloadAction<number>) => {
       state.itemAmount = action.payload;
     },
@@ -47,58 +50,13 @@ export const inventorySlice = createSlice({
     },
   },
   extraReducers: (builder) => {
-    builder.addCase(swapItems.pending, (state, action) => {
-      const { sourceSlot, sourceType, targetSlot, targetType, count } =
-        action.meta.arg;
+    builder.addMatcher(isPending, (state) => {
+      state.isBusy = true;
 
       state.history = {
         playerInventory: current(state.playerInventory),
         rightInventory: current(state.rightInventory),
       };
-
-      const { sourceInventory, targetInventory } = findInventory(
-        state,
-        sourceType,
-        targetType
-      );
-
-      if (targetSlot.name && sourceSlot.name !== targetSlot.name) {
-        sourceInventory.items[sourceSlot.slot - 1] = {
-          ...targetSlot,
-          slot: sourceSlot.slot,
-        };
-        targetInventory.items[targetSlot.slot - 1] = {
-          ...sourceSlot,
-          slot: targetSlot.slot,
-        };
-
-        return;
-      }
-
-      sourceInventory.items[sourceSlot.slot - 1] =
-        sourceSlot.count - count > 0
-          ? {
-              ...sourceSlot,
-              count: sourceSlot.count - count,
-            }
-          : {
-              slot: sourceSlot.slot,
-            };
-
-      targetInventory.items[targetSlot.slot - 1] =
-        sourceSlot.stack && targetSlot.count
-          ? {
-              ...targetSlot,
-              count: targetSlot.count + count,
-            }
-          : {
-              ...sourceSlot,
-              count: count,
-              slot: targetSlot.slot,
-            };
-    });
-    builder.addMatcher(isPending, (state) => {
-      state.isBusy = true;
     });
     builder.addMatcher(isFulfilled, (state) => {
       state.isBusy = false;
@@ -117,8 +75,13 @@ export const inventorySlice = createSlice({
   },
 });
 
-export const { setItemAmount, setShiftPressed, setupInventory } =
-  inventorySlice.actions;
+export const {
+  setItemAmount,
+  setShiftPressed,
+  setupInventory,
+  swapSlots,
+  moveSlots,
+} = inventorySlice.actions;
 export const selectPlayerInventory = (state: RootState) =>
   state.inventory.playerInventory;
 export const selectRightInventory = (state: RootState) =>

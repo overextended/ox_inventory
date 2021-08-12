@@ -1,20 +1,37 @@
-import { findAvailableSlot, findInventory } from "../helpers";
-import { swapItems } from "../actions/swapItems";
+import { validateSlotItem, findAvailableSlot, findInventory } from "../helpers";
+import { validateItems } from "../actions/validateItems";
 import { store } from "../store";
-import { DragSlot, DropSlot } from "../typings";
+import { DragSlot, SlotWithItemData } from "../typings";
+import { Items } from "../store/items";
+import { moveSlots, swapSlots } from "../store/inventory";
 
-export const onMove = (source: DragSlot, target?: DropSlot) => {
+export const onMove = (source: DragSlot, target?: DragSlot) => {
   const { inventory: state } = store.getState();
 
-  const { sourceInventory, targetInventory } = findInventory(
+  const [sourceInventory, targetInventory] = findInventory(
     state,
     source.inventory,
     target?.inventory
   );
 
-  const sourceSlot = source.item;
-  const targetSlot =
-    target?.item || findAvailableSlot(sourceSlot, targetInventory.items);
+  const sourceSlot = sourceInventory.items[source.item.slot - 1];
+
+  if (!validateSlotItem(sourceSlot)) {
+    return;
+  }
+
+  if (Items[sourceSlot.name] === undefined) {
+    return;
+  }
+
+  const sourceItem = {
+    ...sourceSlot,
+    ...Items[sourceSlot.name],
+  } as SlotWithItemData;
+
+  const targetSlot = target
+    ? targetInventory.items[target.item.slot - 1]
+    : findAvailableSlot(sourceItem, targetInventory.items);
 
   if (targetSlot === undefined) {
     return;
@@ -28,12 +45,49 @@ export const onMove = (source: DragSlot, target?: DropSlot) => {
       : state.itemAmount;
 
   store.dispatch(
-    swapItems({
-      sourceSlot: sourceSlot,
-      sourceType: sourceInventory.type,
-      targetSlot: targetSlot,
-      targetType: targetInventory.type,
-      count,
+    validateItems({
+      fromSlot: sourceSlot.slot,
+      fromType: sourceInventory.type,
+      toSlot: targetSlot.slot,
+      toType: targetInventory.type,
+      count: count,
     })
   );
+
+  if (validateSlotItem(targetSlot)) {
+    if (
+      sourceItem.stack &&
+      sourceItem.name === targetSlot.name &&
+      sourceItem.metadata === targetSlot.metadata
+    ) {
+      store.dispatch(
+        moveSlots({
+          fromSlot: sourceItem,
+          fromType: sourceInventory.type,
+          toSlot: targetSlot,
+          toType: targetInventory.type,
+          count,
+        })
+      );
+    } else {
+      store.dispatch(
+        swapSlots({
+          fromSlot: sourceSlot,
+          fromType: sourceInventory.type,
+          toSlot: targetSlot,
+          toType: targetInventory.type,
+        })
+      );
+    }
+  } else {
+    store.dispatch(
+      moveSlots({
+        fromSlot: sourceItem,
+        fromType: sourceInventory.type,
+        toSlot: targetSlot,
+        toType: targetInventory.type,
+        count,
+      })
+    );
+  }
 };
