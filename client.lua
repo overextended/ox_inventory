@@ -2,7 +2,7 @@ local Function = module('functions', true)
 local Items, Weapons = table.unpack(module('items', true))
 
 local Blips, Drops, cancelled, invOpen, weaponTimer = {}, {}, false, false, 0
-local playerId, playerPed, invOpen, usingWeapon, playerCoords, currentWeapon, currentDrop
+local playerId, playerPed, playerCoords, invOpen, usingWeapon, currentWeapon, currentDrop
 local plyState = LocalPlayer.state
 
 SetInterval(1, 5, function()
@@ -157,7 +157,7 @@ end
 RegisterNetEvent('ox_inventory:closeInventory', CloseInventory)
 
 local OpenInventory = function(inv, data)
-	if not invOpen then
+	if not invOpen or inv == 'drop' then
 		if not isBusy or not CanOpenInventory() then
 			ox.TriggerServerCallback('ox_inventory:openInventory', function(left, right)
 				ox.playAnim(1000, 'pickup_object', 'putdown_low', 5.0, 1.5, 1.0, 48, 0.0, 0, 0, 0)
@@ -212,8 +212,8 @@ RegisterNetEvent('ox_inventory:createDrop', function(data, owner)
 	local coords = vector3(data[2].x, data[2].y, data[2].z-0.2)
 	Drops = Drops or {}
 	Drops[data[1]] = coords
-	if owner == playerID and invOpen and #(playerCoords - data.coords) <= 1 then
-		if not IsPedInAnyVehicle(playerPed, false) then invOpen = false
+	if owner == playerId and invOpen and #(playerCoords - coords) <= 1 then
+		if not IsPedInAnyVehicle(playerPed, false) then
 			OpenInventory('drop', {id=data[1]})
 		end
 	end
@@ -313,7 +313,7 @@ RegisterCommand('inv', function()
 	TriggerEvent('ox_inventory:getProperty', function(data) property = data end)
 	if property then return OpenInventory('stash', property) end
 	if IsPedInAnyVehicle(playerPed, false) then currentDrop = nil end
-	if currentDrop then OpenInventory('drop', currentDrop)
+	if currentDrop and not invOpen then OpenInventory('drop', currentDrop)
 	else OpenInventory() end
 end)
 

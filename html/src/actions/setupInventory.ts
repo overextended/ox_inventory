@@ -15,7 +15,7 @@ const setupInventory: CaseReducer<
         Array(action.payload.playerInventory.slots),
         (_, index) =>
           Object.values(action.payload.playerInventory!.items).find(
-            (item) => item && item.slot === index + 1
+            (item) => item?.slot === index + 1
           ) || { slot: index + 1 }
       ),
     };
@@ -27,7 +27,7 @@ const setupInventory: CaseReducer<
         Array(action.payload.rightInventory.slots),
         (_, index) =>
           Object.values(action.payload.rightInventory!.items).find(
-            (item) => item && item.slot === index + 1
+            (item) => item?.slot === index + 1
           ) || { slot: index + 1 }
       ),
     };

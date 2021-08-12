@@ -112,14 +112,16 @@ local Weight = function(inv)
 end
 
 local GenerateText = function(num)
-	local string = ''
+	local str
 	repeat
+		str = {}
 		for i=1, num do
-			string = string..string.char(math.random(65, 90))
+			str[i] = string.char(math.random(65, 90))
 		end
+		str = ox.concat('', table.unpack(str))
 		Wait(5)
-	until string ~= 'POL' and string ~= 'EMS'
-	return string
+	until str ~= 'POL' and str ~= 'EMS'
+	return str
 end
 
 local GenerateSerial = function(text)

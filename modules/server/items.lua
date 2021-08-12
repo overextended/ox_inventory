@@ -14,14 +14,10 @@ CreateThread(function()
 		local i = items[i]
 		if not query then query = "DELETE FROM items WHERE name = '"..i.name.."'"
 		else query = ox.concat(' ', query, "OR name='"..i.name.."'") end
-		M.List[i.name] = {
-			name = i.name,
-			label = i.label,
-			weight = i.weight or 0,
-			stack = i.stackable or true,
-			close = i.closeonuse or true,
-			description = i.description or ''
-		}
+		i.close = i.closeonuse or true
+		i.stack = i.stackable or true
+		i.description = i.description or ''
+		M.List[i.name] = i
 	end
 	if query then
 		local sql = io.open(GetResourcePath(ox.name):gsub('//', '/')..'/setup/dump.sql', 'a+')
