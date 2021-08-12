@@ -166,14 +166,17 @@ local OpenInventory = function(inv, data)
 				SetNuiFocusKeepInput(true)
 				TriggerScreenblurFadeIn(0)
 				currentInventory = right or {id='', type='newdrop', slots=left.slots, weight=0, maxWeight=100000, items={}}
-				left.id = playerName
-				--left.items = ESX.PlayerData.inventory
+				left.items = ESX.PlayerData.inventory
 				SendNUIMessage({
 					action = 'setupInventory',
 					data = {
 						playerInventory = left,
 						rightInventory = currentInventory,
-						job = ESX.PlayerData.job
+						job = {
+							grade = ESX.PlayerData.job.grade,
+							grade_label = ESX.PlayerData.job.grade_label,
+							name = ESX.PlayerData.job.name
+						}
 					}
 				})
 			end, inv, data)
@@ -224,9 +227,9 @@ end)
 RegisterNetEvent('ox_inventory:setPlayerInventory', function(data)
 	playerId, playerPed, invOpen, usingWeapon, currentWeapon, currentDrop = GetPlayerServerId(PlayerId()), ESX.PlayerData.ped, false, false, nil, nil
 	ClearWeapons()
-	Drops, playerName, ESX.PlayerData.inventory = data[1], data[2], data[6]
+	Drops, ESX.PlayerData.inventory = data[1], data[2]
 	ESX.SetPlayerData('inventory', ESX.PlayerData.inventory)
-	ESX.SetPlayerData('weight', data[4])
+	ESX.SetPlayerData('weight', data[3])
     local ItemData = {}
     for k, v in pairs(Items) do
         ItemData[v.name] = {
@@ -236,7 +239,7 @@ RegisterNetEvent('ox_inventory:setPlayerInventory', function(data)
             close = v.close
         }
     end
-	for k, v in pairs(data[7]) do
+	for k, v in pairs(data[4]) do
 		if ItemData[k] then ItemData[k].usable = true end
 	end
     SendNUIMessage({ action = 'items', data = ItemData })
@@ -247,7 +250,7 @@ RegisterNetEvent('ox_inventory:setPlayerInventory', function(data)
 		end
 		Blips = {}
 	end
-	for k, v in pairs(Config.Shops) do
+--[[	for k, v in pairs(Config.Shops) do
 		if not v.type then v.type = Config.General end
 		if v.type and v.type.blip and (not v.job or v.job == ESX.PlayerData.job.name) then
 			local data = v.type
@@ -261,7 +264,7 @@ RegisterNetEvent('ox_inventory:setPlayerInventory', function(data)
 			AddTextComponentString(data.name)
 			EndTextCommandSetBlipName(Blips[k])
 		end
-	end
+	end]]
 	RegisterKeyMapping('inv', 'Open player inventory~', 'keyboard', Config.Keys[1])
 	RegisterKeyMapping('inv2', 'Open secondary inventory~', 'keyboard', Config.Keys[2])
 	RegisterKeyMapping('hotbar', 'Display inventory hotbar~', 'keyboard', Config.Keys[3])
