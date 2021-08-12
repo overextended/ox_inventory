@@ -137,49 +137,53 @@ end)
 ox.RegisterServerCallback('ox_inventory:openInventory', function(source, cb, inv, data) 
 	local left, right = Inventory(source)
 	if data then
-		Inventory.Create(data.id, data.label or data.id, inv, 20, 0, 2000, data.owner, {})
+		--Inventory.Create(data.id, data.label or data.id, inv, 20, 0, 2000, data.owner, {})
 	else
-		if not Inventory('test') then Inventory.Create('test', 'Drop 6969', 'drop', Config.PlayerSlots, 0, Config.DefaultWeight, false, {}) end
+		--[[if not Inventory('test') then Inventory.Create('test', 'Drop 6969', 'drop', Config.PlayerSlots, 0, Config.DefaultWeight, false, {}) end
 		right = Inventory('test')
 		right.open = source
-		left.open = right.id
+		left.open = right.id]]
 	end
-	cb(left, right)
+	cb(left)
 end)
 
 ox.RegisterServerCallback('ox_inventory:swapItems', function(source, cb, data)
-	if data.count then
+	if data.count > 0 then
 		local playerInventory, items, ret = Inventory(source) or false, {}
-		local toInventory = data.toType == 'player' and playerInventory or Inventory(playerInventory.open)
-		local fromInventory = data.fromType == 'player' and playerInventory or Inventory(playerInventory.open)
-		
-		local fromSlot, toSlot = fromInventory.items[data.fromSlot], toInventory.items[data.toSlot]
-		if fromSlot then
-			if data.count > fromSlot.count then data.count = fromSlot.count end
-
-			if not toSlot then
-				if data.count <= fromSlot.count then
+		if data.toType == 'newdrop' then
+			cb(0)
+			return print('new drop')
+		else
+			local toInventory = data.toType == 'player' and playerInventory or Inventory(playerInventory.open)
+			local fromInventory = data.fromType == 'player' and playerInventory or Inventory(playerInventory.open)
+			local fromSlot, toSlot = fromInventory.items[data.fromSlot], toInventory.items[data.toSlot]
+			if fromSlot then
+				if data.count > fromSlot.count then data.count = fromSlot.count end
+				
+				if toSlot and toSlot.name == fromSlot.name then
+					fromSlot.count = fromSlot.count - data.count
+					toSlot.count = toSlot.count + data.count
+				elseif toSlot and ((toSlot.name ~= fromSlot.name) or (not Function.MatchTables(toSlot.metadata, fromSlot.metadata))) then
+					toSlot, fromSlot = Inventory.SwapSlots({fromInventory, toInventory}, {data.fromSlot, data.toSlot})
+				elseif data.count <= fromSlot.count then
 					fromSlot.count = fromSlot.count - data.count
 					toSlot = Function.Copy(fromSlot)
 					toSlot.count = data.count
 					toSlot.slot = data.toSlot
+				else
+					return print('swapItems', data.fromType, data.fromSlot, 'to', data.toType, data.toSlot)
 				end
-			end
-			if fromSlot.count < 1 then fromSlot = nil end
-			
 
-			--fromSlot, toSlot = Inventory.SwapSlots({fromInventory, toInventory}, {data.fromSlot, data.toSlot})
-
-			fromInventory.items[data.fromSlot] = fromSlot
-			toInventory.items[data.toSlot] = toSlot
-			
-			if data.fromType == 'player' then items[data.fromSlot] = fromSlot or false end
-			if data.toType == 'player' then items[data.toSlot] = toSlot or false end
-			if next(items) then
-				ret = {weight=playerInventory.weight, items=items}
-				Inventory.SyncInventory(ESX.GetPlayerFromId(source), playerInventory, items)
+				if fromSlot.count < 1 then fromSlot = nil end
+				if data.fromType == 'player' then items[data.fromSlot] = fromSlot or false end
+				if data.toType == 'player' then items[data.toSlot] = toSlot or false end
+				if next(items) then
+					ret = {weight=playerInventory.weight, items=items}
+					Inventory.SyncInventory(ESX.GetPlayerFromId(source), playerInventory, items)
+				end
+				fromInventory.items[data.fromSlot], toInventory.items[data.toSlot] = fromSlot, toSlot
+				return cb(1, ret)
 			end
-			return cb(1, ret)
 		end
 	end
 	cb(0)

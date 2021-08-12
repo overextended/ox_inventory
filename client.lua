@@ -142,26 +142,14 @@ local OpenInventory = function(inv, data)
 				SetNuiFocus(true, true)
 				SetNuiFocusKeepInput(true)
 				TriggerScreenblurFadeIn(0)
-				currentInventory = rightInventory or nil
+				currentInventory = right or {id='test', type='newdrop', slots=left.slots, weight=0, maxWeight=100000, items={}}
+				left.id = playerName
+				--left.items = ESX.PlayerData.inventory
 				SendNUIMessage({
 					action = 'setupInventory',
 					data = {
-						playerInventory = {
-							id = playerName,
-							type = left.type,
-							slots = left.slots,
-							weight = left.weight,
-							maxWeight = left.maxWeight,
-							items = ESX.PlayerData.inventory
-						},
-						rightInventory = {
-							id = right.id,
-							type = right.type,
-							slots = right.slots,
-							weight = right.weight,
-							maxWeight = right.maxWeight,
-							items = right.items
-						},
+						playerInventory = left,
+						rightInventory = currentInventory,
 						job = ESX.PlayerData.job
 					}
 				})
@@ -178,7 +166,7 @@ local UpdateInventory = function(items, weight, maxWeight, message)
 	Notify({text = message, duration = 2500})
 	for i=1, #items do
 		local i = items[i].item
-		ESX.PlayerData.inventory[i.slot] = i and i.name or nil
+		ESX.PlayerData.inventory[i.slot] = i.name and i or nil
 	end
 end
 RegisterNetEvent('ox_inventory:updateInventory', UpdateInventory)
