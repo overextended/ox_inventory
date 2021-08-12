@@ -1,4 +1,4 @@
-local Items = Items
+local Items = data('items')
 
 local count = 0
 for k, v in pairs(Items) do

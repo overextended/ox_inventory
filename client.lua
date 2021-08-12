@@ -1,5 +1,5 @@
-
 local Function = module('functions', true)
+local Items, Weapons = table.unpack(module('items', true))
 
 local Blips, Drops, cancelled, invOpen, weaponTimer = {}, {}, false, false, 0
 local playerId, playerPed, invOpen, usingWeapon, playerCoords, currentWeapon, currentDrop
@@ -181,10 +181,11 @@ local OpenInventory = function(inv, data)
 	else TriggerEvent('ox_inventory:closeInventory') end
 end
 
-local UpdateInventory = function(items, weight, maxWeight, message)
+local UpdateInventory = function(items, weight, message)
 	SendNUIMessage({
 		action = 'refreshSlots',
 		data = items,
+		weight = weight
 	})
 	Notify({text = message, duration = 2500})
 	for i=1, #items do

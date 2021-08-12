@@ -24,8 +24,6 @@ data = function(file, name)
 	return load(LoadResourceFile(ox.name, 'data/'..file..'.lua')..'return Data', file, 't')()
 end
 
-Items, Weapons = table.unpack(module('weapons', true))
-
 if ox.server then
 	ox.error = function(...) print(ox.concat(' ', '^1[error]^7', ...)) end
 	ox.info = function(...) print(ox.concat(' ', '^2[info]^7', ...)) end
