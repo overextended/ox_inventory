@@ -184,17 +184,17 @@ local OpenInventory = function(inv, data)
 	else TriggerEvent('ox_inventory:closeInventory') end
 end
 
-local UpdateInventory = function(items, weight, message)
+local UpdateInventory = function(items, weights, message)
 	SendNUIMessage({
 		action = 'refreshSlots',
-		data = items,
-		weight = weight
+		data = {items=items, weights=weights},
 	})
 	Notify({text = message, duration = 2500})
 	for i=1, #items do
 		local i = items[i].item
 		ESX.PlayerData.inventory[i.slot] = i.name and i or nil
 	end
+	ESX.SetPlayerData('weight', weights.left)
 end
 RegisterNetEvent('ox_inventory:updateInventory', UpdateInventory)
 

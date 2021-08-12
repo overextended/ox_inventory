@@ -77,14 +77,12 @@ end
 
 M.SyncInventory = function(xPlayer, inv, items)
 	local money = {money=0, black_money=0}
-	local array = #items > 0 or false
 	for k, v in pairs(inv.items) do
-		if array or not v.count or v.count < 1 then v = false
-		elseif money[v.name] then
+		if money[v.name] then
 			money[v.name] = money[v.name] + v.count
 		end
 	end
-	xPlayer.syncInventory(inv.weight, inv.maxWeight, items, money)
+	xPlayer.syncInventory(inv.weight, inv.maxWeight, inv.items, money)
 end
 
 M.SetSlot = function(inv, item, count, metadata, slot)
