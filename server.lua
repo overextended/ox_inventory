@@ -1,5 +1,5 @@
 local Inventory = module('inventory')
-local Function = module('functions', true)
+local Function = module('utils', true)
 local Items = module('items')
 
 RegisterNetEvent('equip', function(weapon)
@@ -33,7 +33,7 @@ AddEventHandler('ox_inventory:setPlayerInventory', function(xPlayer, data)
 		for i=1, #data do
 			local i = data[i]
 			if type(i) == 'number' then break end
-			local item = Items.List[i.name]
+			local item = Items(i.name)
 			if item then
 				local weight = Inventory.SlotWeight(item, i)
 				totalWeight = totalWeight + weight
@@ -53,7 +53,7 @@ AddEventHandler('ox_inventory:createDrop', function(source, slot, toSlot)
 		drop = math.random(100000, 999999)
 		Wait(5)
 	until not Inventory(drop)
-	Inventory.Create(drop, 'Drop '..drop, 'drop', Config.PlayerSlots, 0, Config.DefaultWeight, false, {[slot] = Function.Copy(toSlot)})
+	Inventory.Create(drop, 'Drop '..drop, 'drop', Config.PlayerSlots, 0, Config.DefaultWeight, false, {[slot] = Utils.Copy(toSlot)})
 	local coords = GetEntityCoords(GetPlayerPed(source))
 	Inventory(drop):set('coords', coords)
 	TriggerClientEvent('ox_inventory:createDrop', -1, {drop, coords}, source)
@@ -82,7 +82,7 @@ ox.RegisterServerCallback('ox_inventory:swapItems', function(source, cb, data)
 		local playerInventory, items, ret = Inventory(source) or false, {}
 		if data.toType == 'newdrop' then
 			local fromSlot = playerInventory.items[data.fromSlot]
-			local toSlot = Function.Copy(fromSlot)
+			local toSlot = Utils.Copy(fromSlot)
 			toSlot.slot = data.toSlot
 			TriggerEvent('ox_inventory:createDrop', source, data.toSlot, toSlot)
 			local items = {[data.fromSlot] = false}
@@ -98,11 +98,11 @@ ox.RegisterServerCallback('ox_inventory:swapItems', function(source, cb, data)
 				if toSlot and toSlot.name == fromSlot.name then
 					fromSlot.count = fromSlot.count - data.count
 					toSlot.count = toSlot.count + data.count
-				elseif toSlot and ((toSlot.name ~= fromSlot.name) or (not Function.MatchTables(toSlot.metadata, fromSlot.metadata))) then
+				elseif toSlot and ((toSlot.name ~= fromSlot.name) or (not Utils.MatchTables(toSlot.metadata, fromSlot.metadata))) then
 					toSlot, fromSlot = Inventory.SwapSlots({fromInventory, toInventory}, {data.fromSlot, data.toSlot})
 				elseif data.count <= fromSlot.count then
 					fromSlot.count = fromSlot.count - data.count
-					toSlot = Function.Copy(fromSlot)
+					toSlot = Utils.Copy(fromSlot)
 					toSlot.count = data.count
 					toSlot.slot = data.toSlot
 				else

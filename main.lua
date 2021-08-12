@@ -11,13 +11,14 @@ ox.concat = function(d, ...)
 end
 
 module = function(file, shared)
-	if not Modules[file] then
-		local path = ox.concat('', 'modules/', shared and 'shared/'..file or ox.server and 'server/'..file or 'client/'..file, '.lua')
+	local name = shared and '_'..file or file
+	if not Modules[name] then
+		local path = 'modules/'..file..'/'..(shared and 'shared.lua' or ox.server and 'server.lua' or 'client.lua')
 		local func, err = load(LoadResourceFile(ox.name, path), path, 't')
 		assert(func, err == nil or '\n^1'..err..'^7')
-		Modules[file] = func()
+		Modules[name] = func()
 	end
-	return Modules[file]
+	return Modules[name]
 end
 
 data = function(file, name)

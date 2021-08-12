@@ -1,5 +1,5 @@
-local Function = module('functions', true)
-local Items, Weapons = table.unpack(module('items', true))
+local Function = module('utils', true)
+local Items = module('items', true)
 
 local Blips, Drops, cancelled, invOpen, weaponTimer = {}, {}, false, false, 0
 local playerId, playerPed, playerCoords, invOpen, usingWeapon, currentWeapon, currentDrop
@@ -345,7 +345,7 @@ RegisterCommand('inv2', function()
 				local vehicle, position
 				if not Config.qtarget then
 					if type == 2 then vehicle, position = entity, GetEntityCoords(entity)
-					elseif type == 3 and Function.CheckTable(Config.Dumpsters, GetEntityModel(entity)) then
+					elseif type == 3 and Utils.CheckTable(Config.Dumpsters, GetEntityModel(entity)) then
 						if not IsEntityAMissionEntity(object) then 
 							SetEntityAsMissionEntity(object) 
 							NetworkRegisterEntityAsNetworked(object) 

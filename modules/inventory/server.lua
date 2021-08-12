@@ -1,6 +1,6 @@
 local M = {}
 local Inventories = {}
-local Function = module('functions', true)
+local Function = module('utils', true)
 local Items = module('items')
 local metatable = setmetatable(M, {
 	__call = function(self, ...)
@@ -242,7 +242,7 @@ M.Load = function(id, inv, owner)
 		if isVehicle then Inventory = json.decode(result[1].data)
 		else Inventory = json.decode(result) end
 		for k, v in pairs(Inventory) do
-			local item = Items.List[v.name]
+			local item = Items(v.name)
 			if item then
 				returnData[v.slot] = {name = item.name, label = item.label, weight = M.SlotWeight(item, v), slot = v.slot, count = v.count, description = item.description, metadata = v.metadata, stack = item.stack, close = item.close}
 			end
@@ -252,13 +252,13 @@ M.Load = function(id, inv, owner)
 end
 
 M.GetItem = function(inv, item, metadata)
-	local item = Items.List[item]
+	local item = Items(item)
 	if item then item = table.clone(item)
 		local inv, count = Inventories[type(inv) == 'table' and inv.id or inv].items, 0
 		if inventory then
 			metadata = not metadata and false or type(metadata) == 'string' and {type=metadata} or metadata
 			for k, v in pairs(inv) do
-				if not metadata or Function.TableContains(v.metadata or {}, metadata) then
+				if not metadata or Utils.TableContains(v.metadata or {}, metadata) then
 					count = count + v.count
 				end
 			end
@@ -271,8 +271,8 @@ M.GetItem = function(inv, item, metadata)
 end
 
 M.SwapSlots = function(inventory, slot)
-	local fromSlot = inventory[1].items[slot[1]] and Function.Copy(inventory[1].items[slot[1]]) or nil
-	local toSlot = inventory[2].items[slot[2]] and Function.Copy(inventory[2].items[slot[2]]) or nil
+	local fromSlot = inventory[1].items[slot[1]] and Utils.Copy(inventory[1].items[slot[1]]) or nil
+	local toSlot = inventory[2].items[slot[2]] and Utils.Copy(inventory[2].items[slot[2]]) or nil
 	if fromSlot then fromSlot.slot = slot[2] end
 	if toSlot then toSlot.slot = slot[1] end
 	inventory[1].items[slot[1]], inventory[2].items[slot[2]] = toSlot, fromSlot
@@ -280,7 +280,7 @@ M.SwapSlots = function(inventory, slot)
 end
 
 M.SetItem = function(inv, item, count, metadata)
-	local item, inv = Items.List[item], Inventories[type(inv) == 'table' and inv.id or inv]
+	local item, inv = Items(item), Inventories[type(inv) == 'table' and inv.id or inv]
 	if item and count >= 0 then
 		local itemCount = M.GetItem(inv, item.name, metadata).count
 		if count > itemCount then
@@ -294,7 +294,7 @@ M.SetItem = function(inv, item, count, metadata)
 end
 
 M.AddItem = function(inv, item, count, metadata, slot)
-	local item, inv = Items.List[item], Inventories[type(inv) == 'table' and inv.id or inv]
+	local item, inv = Items(item), Inventories[type(inv) == 'table' and inv.id or inv]
 	count = math.floor(count + 0.5)
 	if item and inv and count > 0 then
 		local xPlayer = inv.type == 'player' and inv:player() or false
@@ -303,7 +303,7 @@ M.AddItem = function(inv, item, count, metadata, slot)
 		local existing = false
 		if slot then
 			local slotItem = inv.items[slot]
-			if not slotItem or item.stack and slotItem and slotItem.name == item.name and Function.MatchTables(slotItem.metadata, metadata) then
+			if not slotItem or item.stack and slotItem and slotItem.name == item.name and Utils.MatchTables(slotItem.metadata, metadata) then
 				existing = nil
 			end
 		end
@@ -311,7 +311,7 @@ M.AddItem = function(inv, item, count, metadata, slot)
 			local inv, toSlot = inv.items
 			for i=1, Config.PlayerSlots do
 				local slotItem = inv[i]
-				if item.stack and slotItem ~= nil and slotItem.name == item.name and Function.MatchTables(slotItem.metadata, metadata) then
+				if item.stack and slotItem ~= nil and slotItem.name == item.name and Utils.MatchTables(slotItem.metadata, metadata) then
 					toSlot, existing = i, true break
 				elseif not toSlot and slotItem == nil then
 					toSlot = i
@@ -365,7 +365,7 @@ local GetItemSlots = function(inv, item, metadata)
 		emptySlots = emptySlots - 1
 		if v.name == item.name then
 			if not v.metadata then v.metadata = {} end
-			if not metadata or Function.MatchTables(v.metadata, metadata) then
+			if not metadata or Utils.MatchTables(v.metadata, metadata) then
 				totalCount = totalCount + v.count
 				slots[k] = v.count
 			end
@@ -375,7 +375,7 @@ local GetItemSlots = function(inv, item, metadata)
 end
 
 M.RemoveItem = function(inv, item, count, metadata, slot)
-	local item, inv = Items.List[item], Inventories[type(inv) == 'table' and inv.id or inv]
+	local item, inv = Items(item), Inventories[type(inv) == 'table' and inv.id or inv]
 	count = math.floor(count + 0.5)
 	if item and inv and count > 0 then
 		local xPlayer = inv.type == 'player' and inv:player() or false
@@ -426,7 +426,7 @@ M.RemoveItem = function(inv, item, count, metadata, slot)
 end
 
 M.CanCarryItem = function(inv, item, count, metadata)
-	local item, inv = Items.List[item], Inventories[type(inv) == 'table' and inv.id or inv]
+	local item, inv = Items(item), Inventories[type(inv) == 'table' and inv.id or inv]
 	if item and inv then
 		local freeSlot = false
 		local itemSlots, totalCount, emptySlots = GetItemSlots(inv, item, SetMetadata(metadata))
@@ -451,7 +451,7 @@ M.CanSwapItem = function(inv, firstItem, firstItemCount, testItem, testItemCount
 end
 
 ESX.RegisterCommand({'giveitem', 'additem'}, 'admin', function(xPlayer, args, showError)
-	args.item = Items.Valid(args.item)
+	args.item = Items(args.item)
 	if args.item then M.AddItem(args.player.source, args.item.name, args.count, args.type or {}) end
 end, true, {help = 'give an item to a player', validate = false, arguments = {
 	{name = 'player', help = 'player id', type = 'player'},
@@ -461,7 +461,7 @@ end, true, {help = 'give an item to a player', validate = false, arguments = {
 }})
 
 ESX.RegisterCommand('removeitem', 'admin', function(xPlayer, args, showError)
-	args.item = Items.Valid(args.item)
+	args.item = Items(args.item)
 	if args.item then M.RemoveItem(args.player.source, args.item.name, args.count, args.type or {}) end
 end, true, {help = 'remove an item from a player', validate = false, arguments = {
 	{name = 'player', help = 'player id', type = 'player'},
