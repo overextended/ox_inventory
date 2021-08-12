@@ -1,5 +1,16 @@
 local M = {}
-M.List, M.Weapons = table.unpack(module('items', true))
+local Items = module('items', true)
+local metatable = setmetatable(M, {
+	__call = function(self, item)
+		if item then
+			item = string.lower(item)
+			if item:find('weapon_') then item = string.upper(item) end
+			item = Items[item] or false
+			return item
+		end
+		return self
+	end
+})
 
 CreateThread(function()
 	Wait(200)
@@ -17,7 +28,7 @@ CreateThread(function()
 		i.close = i.closeonuse or true
 		i.stack = i.stackable or true
 		i.description = i.description or ''
-		M.List[i.name] = i
+		Items[i.name] = i
 	end
 	if query then
 		local sql = io.open(GetResourcePath(ox.name):gsub('//', '/')..'/setup/dump.sql', 'a+')
@@ -49,11 +60,11 @@ Data[']]..i.name..[['] = {
 		end)
 	end
 	TriggerEvent('ox_inventory:itemList', Items)
-	Wait(1500)
+	Wait(2000)
 	ox.ready = true
 	ox.items = count
 	ESX.UsableItemsCallbacks = exports.es_extended:UsableItems()
-	local count = 0 for k, v in pairs(M.List) do
+	local count = 0 for k, v in pairs(Items) do
 		if v.consume and ESX.UsableItemsCallbacks[v.name] then ESX.UsableItemsCallbacks[v.name] = nil end
 		count = count + 1
 	end
@@ -70,7 +81,7 @@ Data[']]..i.name..[['] = {
 				local inv, ped = Inventory(i), GetPlayerPed(i)
 				local hash, curWeapon = GetSelectedPedWeapon(ped)
 				if not ignore[hash] then
-					curWeapon = Function.GetWeapon(hash)
+					curWeapon = Utils.GetWeapon(hash)
 					if curWeapon then
 						local count = 0
 						for k, v in pairs(inv.items) do
@@ -94,12 +105,5 @@ Data[']]..i.name..[['] = {
 		end
 	end]]
 end)
-
-M.Valid = function(item)
-	item = string.lower(item)
-	if item:find('weapon_') then item = string.upper(item) end
-	local valid = M.List[item]
-	if valid then return valid else return ox.error('Invalid item name! '..item..' does not exist') end
-end
 
 return M

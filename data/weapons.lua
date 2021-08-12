@@ -1,21 +1,5 @@
-local Items = data('items')
-
-local count = 0
-for k, v in pairs(Items) do
-	v.name = k
-	if not v.consume then
-		if v.client and v.client.consume then
-			v.consume = v.client.consume
-			v.client.consume = nil
-		else v.consume = 1 end
-	end
-	if ox.server then
-		v.client = nil
-		count = count + 1
-	end
-end
-
-local Weapons = {
+local Data = {}
+Data.Weapons = {
 
 	['WEAPON_ADVANCEDRIFLE'] = {
 		label = 'Advanced Rifle',
@@ -614,7 +598,7 @@ local Weapons = {
 
 }
 
-local Components = {
+Data.Components = {
 	['at_flashlight'] = {
 		label = 'Tactical Flashlight',
 		weight = 120,
@@ -1077,7 +1061,8 @@ local Components = {
 		}
 	},
 }
-local Ammo = {
+
+Data.Ammo = {
 	['ammo-22'] = {
 		label = '.22 Long Rifle',
 		weight = 3,
@@ -1156,35 +1141,3 @@ local Ammo = {
 		stack = true,
 	}
 }
-
-for k, v in pairs(Weapons) do
-	v.name = k
-	v.hash = GetHashKey(k)
-	v.stack = false
-	v.close = false
-	if ox.server then count = count + 1 end
-	Items[k] = v
-end
-
-for k, v in pairs(Components) do
-	v.name = k
-	v.consume = 1
-	if ox.server then
-		v.client = nil
-		count = count + 1
-	end
-	Items[k] = v
-end
-
-for k, v in pairs(Ammo) do
-	v.name = k
-	v.consume = 1
-	v.stack = true
-	v.close = false
-	if ox.server then
-		v.client = nil
-		count = count + 1
-	end
-	Items[k] = v
-end
-return {Items, Weapons}
