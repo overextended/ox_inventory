@@ -134,9 +134,23 @@ AddEventHandler('ox_inventory:setPlayerInventory', function(xPlayer, data)
 	TriggerClientEvent('ox_inventory:setPlayerInventory', xPlayer.source, {Drops, xPlayer.name, Config.PlayerSlots, totalWeight, Config.DefaultWeight, inventory, ESX.UsableItemsCallbacks})
 end)
 
+RegisterNetEvent('ox_inventory:closeInventory', function()
+	local inventory, secondary = Inventory(source)
+	if inventory.open then secondary = Inventory(inventory.open) end
+	if secondary then
+		secondary:set('open', false)
+	end
+	inventory:set('open', false)
+end)
+
 ox.RegisterServerCallback('ox_inventory:openInventory', function(source, cb, inv, data) 
 	local left, right = Inventory(source)
 	if data then
+		right = Inventory(data.id)
+		if right then
+			right.open = source
+			left.open = data.id
+		end
 		--Inventory.Create(data.id, data.label or data.id, inv, 20, 0, 2000, data.owner, {})
 	else
 		--[[if not Inventory('test') then Inventory.Create('test', 'Drop 6969', 'drop', Config.PlayerSlots, 0, Config.DefaultWeight, false, {}) end
@@ -144,15 +158,21 @@ ox.RegisterServerCallback('ox_inventory:openInventory', function(source, cb, inv
 		right.open = source
 		left.open = right.id]]
 	end
-	cb(left)
+	cb(left, right)
 end)
 
 ox.RegisterServerCallback('ox_inventory:swapItems', function(source, cb, data)
-	if data.count > 0 then
+	if data.count > 0 and data.fromSlot ~= data.toSlot then
 		local playerInventory, items, ret = Inventory(source) or false, {}
 		if data.toType == 'newdrop' then
-			cb(0)
-			return print('new drop')
+			local fromSlot = playerInventory.items[data.fromSlot]
+			local toSlot = Function.Copy(fromSlot)
+			toSlot.slot = data.toSlot
+			TriggerEvent('ox_inventory:createDrop', source, data.toSlot, toSlot)
+			local items = {[data.fromSlot] = false}
+			playerInventory.items[data.fromSlot] = nil
+			Inventory.SyncInventory(playerInventory:player(), playerInventory, items)
+			return cb(1, {weight=playerInventory.weight, items=items})
 		else
 			local toInventory = data.toType == 'player' and playerInventory or Inventory(playerInventory.open)
 			local fromInventory = data.fromType == 'player' and playerInventory or Inventory(playerInventory.open)
@@ -179,7 +199,7 @@ ox.RegisterServerCallback('ox_inventory:swapItems', function(source, cb, data)
 				if data.toType == 'player' then items[data.toSlot] = toSlot or false end
 				if next(items) then
 					ret = {weight=playerInventory.weight, items=items}
-					Inventory.SyncInventory(ESX.GetPlayerFromId(source), playerInventory, items)
+					Inventory.SyncInventory(playerInventory:player(), playerInventory, items)
 				end
 				fromInventory.items[data.fromSlot], toInventory.items[data.toSlot] = fromSlot, toSlot
 				return cb(1, ret)

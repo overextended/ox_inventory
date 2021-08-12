@@ -21,12 +21,19 @@ end
 local Set = function(inv, k, v)
 	inv = Inventories[type(inv) == 'table' and inv.id or inv]
 	if type(v) == 'number' then math.floor(v + 0.5) end
-	inv[k] = v
 	if k == 'open' and v == false then
-		if not inv.datastore and inv.changed and inv.timeout == false then
-			inv.timer()
+		if inv.type == 'drop' then
+			if not next(inv.items) then
+				TriggerClientEvent('ox_inventory:removeDrop', -1, inv.id)
+				Inventories[inv.id] = nil
+			end
+		else
+			if inv.type ~= 'player' and inv.timeout == false then
+				inv.timer()
+			end
 		end
 	end
+	inv[k] = v
 end
 
 local Get = function(inv, k)
@@ -36,11 +43,13 @@ end
 local Timer = function(inv)
 	inv = Inventories[type(inv) == 'table' and inv.id or inv]
 	inv.set('timeout', true)
-	SetTimeout(10000, function()
+	SetTimeout(30000, function()
 		if inv.open == false then
-			inv.save()
+			if inv.datastore then
+				if not next(inv.items) then Inventories[inv.id] = nil end
+			elseif inv.changed then M.Save(inv) else Inventories[inv.id] = nil end
 		end
-		inv.set('timeout', false)
+		if Inventories[inv.id] then inv.set('timeout', false) end
 	end)
 end
 
@@ -68,7 +77,6 @@ end
 M.SyncInventory = function(xPlayer, inv, items)
 	local money = {money=0, black_money=0}
 	local array = #items > 0 or false
-	print(array)
 	for k, v in pairs(inv.items) do
 		if array or not v.count or v.count < 1 then v = false
 		elseif money[v.name] then
@@ -139,7 +147,7 @@ M.Create = function(...)
 	if #t > 6 then
 		local self = {
 			id = t[1],
-			name = t[2],
+			name = t[2] or id,
 			type = t[3],
 			slots = t[4],
 			weight = t[5],
@@ -158,7 +166,7 @@ M.Create = function(...)
 		self.timeout = false end
 		
 		Inventories[self.id] = self
-	else ox.error('Inventory.Create received invalid number of arguments') end
+	end
 	return
 end
 
@@ -197,6 +205,7 @@ M.Save = function(inv)
 			['@owner'] = ''
 		})
 	end
+	Inventories[inv.id] = nil
 end
 
 M.Load = function(id, inv, owner)
@@ -440,14 +449,18 @@ M.CanSwapItem = function(inv, firstItem, firstItemCount, testItem, testItemCount
 	return false
 end
 
-M.CreateNewDrop = function()
-	local dropid
+AddEventHandler('ox_inventory:createDrop', function(source, slot, toSlot)
+	local drop
 	repeat
-		dropid = math.random(100000, 999999)
+		drop = math.random(100000, 999999)
 		Wait(5)
-	until not Drops[dropid]
-	return dropid
-
-end
+	until not M(drop)
+	M.Create(drop, 'Drop '..drop, 'drop', Config.PlayerSlots, 0, Config.DefaultWeight, false, {[slot] = Function.Copy(toSlot)})
+	local toInventory = Inventories[drop]
+	local playerPed = GetPlayerPed(source)
+	local playerCoords = GetEntityCoords(playerPed)
+	toInventory.coords = playerCoords
+	TriggerClientEvent('ox_inventory:createDrop', -1, {drop, playerCoords}, source)
+end)
 
 return M

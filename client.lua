@@ -39,6 +39,29 @@ SetInterval(1, 5, function()
 	end
 end)
 
+local text, type, id = ''
+SetInterval(2, 250, function()
+	local sleep = 250
+	if not invOpen then
+		playerCoords = GetEntityCoords(playerPed)
+		if Drops then
+			local closestDrop
+			for k, v in pairs(Drops) do
+				local distance = #(playerCoords - v)
+				if distance <= 8 then
+					sleep = 5
+					DrawMarker(2, v.x,v.y,v.z, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.3, 0.2, 0.15, 150, 30, 30, 222, false, false, false, true, false, false, false)
+					if distance <= 2 and (closestDrop == nil or (currentDrop and closestDrop and distance < currentDrop.distance)) then
+						closestDrop = {id = k, distance = distance}
+					end
+				end
+			end
+			currentDrop = (closestDrop and closestDrop.distance <= 1) and {id=closestDrop.id} or nil
+		end
+	end
+	SetInterval(2, sleep)
+end)
+
 local Disarm = function()
 	SetWeaponsNoAutoswap(1)
 	SetWeaponsNoAutoreload(1)
@@ -105,13 +128,14 @@ RegisterNetEvent('ox_inventory:Notify', Notify)
 
 local CloseInventory = function(options)
 	if invOpen then
+		if currentInventory then TriggerServerEvent('ox_inventory:closeInventory') end
 		invOpen, currentInventory, currentDrop = false, nil, nil
 		SetNuiFocus(false, false)
 		SetNuiFocusKeepInput(false)
 		TriggerScreenblurFadeOut(0)
-		if type(options) ~= 'string' then
+		if not options then
 			SendNUIMessage({ action = 'closeInventory' })
-		elseif options then
+		else
 			SendNUIMessage({ action = 'closeInventory' })
 			if options.trunk then
 				local animDict = 'anim@heists@fleeca_bank@scope_out@return_case'
@@ -135,14 +159,13 @@ RegisterNetEvent('ox_inventory:closeInventory', CloseInventory)
 local OpenInventory = function(inv, data)
 	if not invOpen then
 		if not isBusy or not CanOpenInventory() then
-			local time = GetGameTimer()
 			ox.TriggerServerCallback('ox_inventory:openInventory', function(left, right)
 				ox.playAnim(1000, 'pickup_object', 'putdown_low', 5.0, 1.5, 1.0, 48, 0.0, 0, 0, 0)
 				invOpen = true
 				SetNuiFocus(true, true)
 				SetNuiFocusKeepInput(true)
 				TriggerScreenblurFadeIn(0)
-				currentInventory = right or {id='test', type='newdrop', slots=left.slots, weight=0, maxWeight=100000, items={}}
+				currentInventory = right or {id='', type='newdrop', slots=left.slots, weight=0, maxWeight=100000, items={}}
 				left.id = playerName
 				--left.items = ESX.PlayerData.inventory
 				SendNUIMessage({
@@ -180,6 +203,22 @@ OnPlayerData = function(key, val)
 	SetPedCanSwitchWeapon(playerPed, 0)
 	SetPedEnableWeaponBlocking(playerPed, 1)
 end
+
+RegisterNetEvent('ox_inventory:createDrop', function(data, owner)
+	local coords = vector3(data[2].x, data[2].y, data[2].z-0.2)
+	Drops = Drops or {}
+	Drops[data[1]] = coords
+	if owner == playerID and invOpen and #(playerCoords - data.coords) <= 1 then
+		if not IsPedInAnyVehicle(playerPed, false) then invOpen = false
+			OpenInventory('drop', {id=data[1]})
+		end
+	end
+end)
+
+RegisterNetEvent('ox_inventory:removeDrop', function(id)
+	Drops[id] = nil
+	if currentDrop and currentDrop.id == id then currentDrop = nil end
+end)
 
 RegisterNetEvent('ox_inventory:setPlayerInventory', function(data)
 	playerId, playerPed, invOpen, usingWeapon, currentWeapon, currentDrop = GetPlayerServerId(PlayerId()), ESX.PlayerData.ped, false, false, nil, nil
@@ -231,7 +270,6 @@ RegisterNetEvent('ox_inventory:setPlayerInventory', function(data)
 		RegisterKeyMapping('hotkey'..i, 'Use hotbar item '..i..'~', 'keyboard', i)
 	end
 	Notify({text = _U('inventory_setup'), duration = 2500})
-	playerCoords = GetEntityCoords(playerPed)
 end)
 
 AddEventHandler('onResourceStop', function(resourceName)
@@ -271,7 +309,7 @@ RegisterCommand('inv', function()
 	TriggerEvent('ox_inventory:getProperty', function(data) property = data end)
 	if property then return OpenInventory('stash', property) end
 	if IsPedInAnyVehicle(playerPed, false) then currentDrop = nil end
-	if currentDrop then OpenInventory('drop', currentDrop.id)
+	if currentDrop then OpenInventory('drop', currentDrop)
 	else OpenInventory() end
 end)
 
@@ -377,7 +415,6 @@ RegisterNUICallback('useItem', function(data, cb)
 end)
 
 RegisterNUICallback('exit', function(data, cb)
-	TriggerServerEvent('ox_inventory:saveInventory', ESX.PlayerData.inventory)
 	TriggerEvent('ox_inventory:closeInventory')
 	cb({})
 end)
