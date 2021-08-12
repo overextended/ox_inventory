@@ -16,7 +16,7 @@ const InventoryGrid: React.FC<{ inventory: Inventory }> = (props) => {
         </p>
         {props.inventory.weight && props.inventory.maxWeight && (
           <div>
-            {props.inventory.weight}/{props.inventory.maxWeight}kg
+            {props.inventory.weight/1000 }/{props.inventory.maxWeight/1000}kg
           </div>
         )}
       </div>
