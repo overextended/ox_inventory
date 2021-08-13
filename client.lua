@@ -1,5 +1,5 @@
-local Function = module('utils', true)
-local Items = module('items', true)
+local Items, Weapons = table.unpack(module('items', true))
+local Vehicle = data('vehicles')
 
 local Blips, Drops, cancelled, invOpen, weaponTimer = {}, {}, false, false, 0
 local playerId, playerPed, playerCoords, invOpen, usingWeapon, currentWeapon, currentDrop
@@ -86,7 +86,7 @@ RegisterNetEvent('ox_inventory:disarm', Disarm)
 local ClearWeapons = function()
 	Disarm()
 	for k, v in pairs(Weapons) do
-		SetPedAmmo(playerPed, v.hash, 0)
+		SetPedAmmo(playerPed, k, 0)
 	end
 	RemoveAllPedWeapons(playerPed, true)
 	if parachute then
@@ -128,30 +128,29 @@ RegisterNetEvent('ox_inventory:Notify', Notify)
 
 local CloseInventory = function(options)
 	if invOpen then
-		if currentInventory then TriggerServerEvent('ox_inventory:closeInventory') end
-		invOpen, currentInventory, currentDrop = false, nil, nil
+		invOpen = false
 		SetNuiFocus(false, false)
 		SetNuiFocusKeepInput(false)
 		TriggerScreenblurFadeOut(0)
-		if not options then
-			SendNUIMessage({ action = 'closeInventory' })
+		SendNUIMessage({ action = 'closeInventory' })
+		if currentInventory and currentInventory.type == 'trunk' then
+			local animDict = 'anim@heists@fleeca_bank@scope_out@return_case'
+			local anim = 'trevor_action'
+			RequestAnimDict(animDict)
+			while not HasAnimDictLoaded(animDict) do
+				Citizen.Wait(100)
+			end
+			ClearPedTasks(playerPed)
+			Citizen.Wait(100)
+			TaskPlayAnimAdvanced(playerPed, animDict, anim, GetEntityCoords(playerPed, true), 0, 0, GetEntityHeading(playerPed), 2.0, 2.0, 1000, 49, 0.25, 0, 0)
+			Citizen.Wait(900)
+			ClearPedTasks(playerPed)
+			SetVehicleDoorShut(currentInventory.entity, currentInventory.door, false)
 		else
 			SendNUIMessage({ action = 'closeInventory' })
-			if options.trunk then
-				local animDict = 'anim@heists@fleeca_bank@scope_out@return_case'
-				local anim = 'trevor_action'
-				RequestAnimDict(animDict)
-				while not HasAnimDictLoaded(animDict) do
-					Citizen.Wait(100)
-				end
-				ClearPedTasks(playerPed)
-				Citizen.Wait(100)
-				TaskPlayAnimAdvanced(playerPed, animDict, anim, GetEntityCoords(playerPed, true), 0, 0, GetEntityHeading(playerPed), 2.0, 2.0, 1000, 49, 0.25, 0, 0)
-				Citizen.Wait(900)
-				ClearPedTasks(playerPed)
-				SetVehicleDoorShut(entity, open, false)
-			end
 		end
+		if currentInventory then TriggerServerEvent('ox_inventory:closeInventory') end
+		currentInventory, currentDrop = nil, nil
 	end
 end
 RegisterNetEvent('ox_inventory:closeInventory', CloseInventory)
@@ -160,7 +159,7 @@ local OpenInventory = function(inv, data)
 	if not invOpen or inv == 'drop' then
 		if not isBusy or not CanOpenInventory() then
 			ox.TriggerServerCallback('ox_inventory:openInventory', function(left, right)
-				ox.playAnim(1000, 'pickup_object', 'putdown_low', 5.0, 1.5, 1.0, 48, 0.0, 0, 0, 0)
+				if not IsPedInAnyVehicle(playerPed, false) then ox.playAnim(1000, 'pickup_object', 'putdown_low', 5.0, 1.5, 1.0, 48, 0.0, 0, 0, 0) end
 				invOpen = true
 				SetNuiFocus(true, true)
 				SetNuiFocusKeepInput(true)
@@ -326,9 +325,8 @@ RegisterCommand('inv2', function()
 			if IsPedInAnyVehicle(playerPed, false) then
 				local vehicle = GetVehiclePedIsIn(playerPed, false)
 				if NetworkGetEntityIsNetworked(vehicle) then
-					local plate = Config.TrimPlate and string.strtrim(GetVehicleNumberPlateText(vehicle)) or GetVehicleNumberPlateText(vehicle)
-					local class = GetVehicleClass(vehicle)
-					OpenGloveBox(plate, class)
+					local plate = Config.TrimPlate and ox.trim(GetVehicleNumberPlateText(vehicle)) or GetVehicleNumberPlateText(vehicle)
+					OpenInventory('glovebox', {id=plate, class=GetVehicleClass(vehicle)})
 					Wait(100)
 					while true do
 						Wait(100)
@@ -361,11 +359,11 @@ RegisterCommand('inv2', function()
 				else return end
 				local closeToVehicle, lastVehicle = false, nil
 				local class = GetVehicleClass(vehicle)
-				if vehicle and Config.Trunks[class] and #(playerCoords - position) < 6 and NetworkGetEntityIsNetworked(vehicle) then
+				if vehicle and Vehicle.trunk[class] and #(playerCoords - position) < 6 and NetworkGetEntityIsNetworked(vehicle) then
 					local locked = GetVehicleDoorLockStatus(vehicle)
 					if locked == 0 or locked == 1 then
 						local vehHash = GetEntityModel(vehicle)
-						local checkVehicle = Config.VehicleStorage[vehHash]
+						local checkVehicle = Vehicle.storage[vehHash]
 						local open, vehBone
 						if checkVehicle == 1 then open, vehBone = 4, GetEntityBoneIndexByName(vehicle, 'bonnet')
 						elseif checkVehicle == nil then open, vehBone = 5, GetEntityBoneIndexByName(vehicle, 'boot') elseif checkVehicle == 2 then open, vehBone = 5, GetEntityBoneIndexByName(vehicle, 'boot') else --[[no vehicle nearby]] return end
@@ -374,10 +372,10 @@ RegisterCommand('inv2', function()
 						local distance = #(playerCoords - position)
 						local closeToVehicle = distance < 2 and (open == 5 and (checkVehicle == nil and true or 2) or open == 4)
 						if closeToVehicle then
-							local plate = Config.TrimPlate and string.strtrim(GetVehicleNumberPlateText(vehicle)) or GetVehicleNumberPlateText(vehicle)
+							local plate = Config.TrimPlate and ox.trim(GetVehicleNumberPlateText(vehicle)) or GetVehicleNumberPlateText(vehicle)
 							TaskTurnPedToFaceCoord(playerPed, position)
 							lastVehicle = vehicle
-							OpenTrunk(plate, class)
+							OpenInventory('trunk', {id=plate, class=class})
 							local timeout = 20
 							repeat Wait(50)
 								timeout = timeout - 1
@@ -389,6 +387,8 @@ RegisterCommand('inv2', function()
 							SetVehicleDoorOpen(vehicle, open, false, false)
 							Wait(200)
 							ox.playAnim(100, 'anim@heists@prison_heiststation@cop_reactions', 'cop_b_idle', 3.0, 3.0, -1, 49, 0, 0, 0, 0)
+							currentInventory.entity = lastVehicle
+							currentInventory.door = open
 							while true do
 								Wait(50)
 								if closeToVehicle and invOpen then
@@ -398,9 +398,8 @@ RegisterCommand('inv2', function()
 										break
 									else TaskTurnPedToFaceCoord(playerPed, position) end
 								else break end
-								if lastVehicle then TriggerEvent('ox_inventory:closeInventory', 'trunk', lastVehicle) end
-								return
 							end
+							if lastVehicle then TriggerEvent('ox_inventory:closeInventory') end
 						end
 					else Notify({type = 'error', text = _U('vehicle_locked'), duration = 2500}) end
 				end

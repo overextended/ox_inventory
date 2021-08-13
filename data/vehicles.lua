@@ -1,39 +1,38 @@
-if not ox.server then
-	-- 0	vehicle has no storage
-	-- 1	vehicle storage in the hood
-	Config.VehicleStorage = {
-		[`jester`]=1, 
-		[`adder`]=1, 
-		[`osiris`]=0, 
-		[`pfister811`]=0, 
-		[`penetrator`]=0, 
-		[`autarch`]=0, 
-		[`bullet`]=0, 
-		[`cheetah`]=0, 
-		[`cyclone`]=0, 
-		[`voltic`]=0, 
-		[`reaper`]=1, 
-		[`entityxf`]=0, 
-		[`t20`]=0, 
-		[`taipan`]=0, 
-		[`tezeract`]=0, 
-		[`torero`]=1, 
-		[`turismor`]=0, 
-		[`fmj`]=0, 
-		[`infernus `]=0, 
-		[`italigtb`]=1, 
-		[`italigtb2`]=1, 
-		[`nero2`]=0, 
-		[`vacca`]=1, 
-		[`vagner`]=0, 
-		[`visione`]=0, 
-		[`prototipo`]=0, 
-		[`zentorno`]=0
-	}
-end
+local Data = {}
+-- 0	vehicle has no storage
+-- 1	vehicle storage in the hood
+Data.storage = {
+	[`jester`]=1, 
+	[`adder`]=1, 
+	[`osiris`]=0, 
+	[`pfister811`]=0, 
+	[`penetrator`]=0, 
+	[`autarch`]=0, 
+	[`bullet`]=0, 
+	[`cheetah`]=0, 
+	[`cyclone`]=0, 
+	[`voltic`]=0, 
+	[`reaper`]=1, 
+	[`entityxf`]=0, 
+	[`t20`]=0, 
+	[`taipan`]=0, 
+	[`tezeract`]=0, 
+	[`torero`]=1, 
+	[`turismor`]=0, 
+	[`fmj`]=0, 
+	[`infernus `]=0, 
+	[`italigtb`]=1, 
+	[`italigtb2`]=1, 
+	[`nero2`]=0, 
+	[`vacca`]=1, 
+	[`vagner`]=0, 
+	[`visione`]=0, 
+	[`prototipo`]=0, 
+	[`zentorno`]=0
+}
 
 -- slots, maxWeight; default weight is 8000 per slot
-Config.Gloveboxes = {	
+Data.glovebox = {	
 	[0] = {11, 88000}, -- compact
 	[1] = {11, 88000}, -- sedan
 	[2] = {11, 88000}, -- suv
@@ -56,7 +55,7 @@ Config.Gloveboxes = {
 	[20] = {11, 88000} -- commercial (trucks)
 }
 
-Config.Trunks = {
+Data.trunk = {
 	[0] = {21, 168000}, -- compact
 	[1] = {41, 328000}, -- sedan
 	[2] = {51, 408000}, -- suv

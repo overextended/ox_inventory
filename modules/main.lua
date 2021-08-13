@@ -10,6 +10,10 @@ ox.concat = function(d, ...)
 	end
 end
 
+ox.trim = function(string)
+	return string:match("^%s*(.-)%s*$")
+end
+
 module = function(file, shared)
 	local name = shared and '_'..file or file
 	if not Modules[name] then
@@ -21,7 +25,7 @@ module = function(file, shared)
 	return Modules[name]
 end
 
-data = function(file, name)
+data = function(file)
 	return load(LoadResourceFile(ox.name, 'data/'..file..'.lua')..'return Data', file, 't')()
 end
 
@@ -31,9 +35,10 @@ if ox.server then
 	ox.warning = function(...) print(ox.concat(' ', '^3[warning]^7', ...)) end
 
 	ox.ServerCallbacks = {}
-	RegisterServerEvent('ox:triggerServerCallback', function(name, ...)
-		ox.TriggerServerCallback(name, source, function(...)
-			TriggerClientEvent(name, source, ...)
+	RegisterNetEvent('ox:triggerServerCallback', function(name, ...)
+		local playerId = source
+		ox.TriggerServerCallback(name, playerId, function(...)
+			TriggerClientEvent(name, playerId, ...)
 		end, ...)
 	end)
 

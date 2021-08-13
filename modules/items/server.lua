@@ -1,5 +1,5 @@
 local M = {}
-local Items = module('items', true)
+local Items, Weapons = table.unpack(module('items', true))
 local metatable = setmetatable(M, {
 	__call = function(self, item)
 		if item then

@@ -14,7 +14,8 @@ shared_scripts {
 	'@es_extended/imports.lua',
 	'@es_extended/locale.lua',
 	'config.lua',
-	'main.lua',
+	'modules/*.lua',
+	'data/locales/en.lua'
 }
 
 client_scripts {
@@ -30,7 +31,7 @@ ui_page 'html/build/index.html'
 files {
 	'html/build/index.html',
 	'html/build/**/*',
-	'modules/*/shared.lua',
-	'modules/*/client.lua',
+	'modules/**/shared.lua',
+	'modules/**/client.lua',
 	'data/*.lua'
 }

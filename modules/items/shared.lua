@@ -1,5 +1,6 @@
 local Items = data('items')
 local Data = data('weapons')
+local Weapons = {}
 
 local count = 0
 for k, v in pairs(Items) do
@@ -22,6 +23,7 @@ for k, v in pairs(Data.Weapons) do
 	v.stack = false
 	v.close = false
 	Items[k] = v
+	Weapons[v.hash] = k
 end
 
 for k, v in pairs(Data.Components) do
@@ -43,4 +45,4 @@ for k, v in pairs(Data.Ammo) do
 	end
 	Items[k] = v
 end
-return Items
+return {Items, Weapons}

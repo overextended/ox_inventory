@@ -1,4 +1,5 @@
-Config.General = {
+local Data = {}
+Data.General = {
 	name = 'Shop',
 	blip = {
 		id = 52,
@@ -13,7 +14,7 @@ Config.General = {
 	}
 }
 
-Config.Liquor = {
+Data.Liquor = {
 	name = 'Liquor Store',
 	blip = {
 		id = 93,
@@ -25,7 +26,7 @@ Config.Liquor = {
 	}
 }
 
-Config.YouTool = {
+Data.YouTool = {
 	name = 'YouTool',
 	blip = {
 		id = 402,
@@ -36,7 +37,7 @@ Config.YouTool = {
 	}
 }
 
-Config.Ammunation = {
+Data.Ammunation = {
 	name = 'Ammunation',
 	blip = {
 		id = 110,
@@ -50,7 +51,7 @@ Config.Ammunation = {
 	}
 }
 
-Config.PoliceArmoury = {
+Data.PoliceArmoury = {
 	name = 'Police Armoury',
 	blip = {
 		id = 110,
@@ -67,7 +68,7 @@ Config.PoliceArmoury = {
 	}
 }
 
-Config.Medicine = {
+Data.Medicine = {
 	name = 'Medicine Cabinet',
 	blip = {
 		id = 403,
@@ -79,7 +80,7 @@ Config.Medicine = {
 	}
 }
 
-Config.BlackMarketArms = {
+Data.BlackMarketArms = {
 	name = 'Black Market (Arms)',
 	inventory = {
 		{
@@ -112,27 +113,27 @@ Config.BlackMarketArms = {
 }
 
 
-Config.Shops = {
-	{ type = Config.Ammunation, coords = vector3(-662.180, -934.961, 21.829)--[[, currency = 'money']] }, -- can set currency like so
-	{ type = Config.Ammunation, coords = vector3(810.25, -2157.60, 29.62)--[[, currency = 'burger']] },
-	{ type = Config.Ammunation, coords = vector3(1693.44, 3760.16, 34.71) },
-	{ type = Config.Ammunation, coords = vector3(-330.24, 6083.88, 31.45) },
-	{ type = Config.Ammunation, coords = vector3(252.63, -50.00, 69.94) },
-	{ type = Config.Ammunation, coords = vector3(22.56, -1109.89, 29.80) },
-	{ type = Config.Ammunation, coords = vector3(2567.69, 294.38, 108.73) },
-	{ type = Config.Ammunation, coords = vector3(-1117.58, 2698.61, 18.55) },
-	{ type = Config.Ammunation, coords = vector3(842.44, -1033.42, 28.19) },
+Data.Shops = {
+	{ type = Data.Ammunation, coords = vector3(-662.180, -934.961, 21.829)--[[, currency = 'money']] }, -- can set currency like so
+	{ type = Data.Ammunation, coords = vector3(810.25, -2157.60, 29.62)--[[, currency = 'burger']] },
+	{ type = Data.Ammunation, coords = vector3(1693.44, 3760.16, 34.71) },
+	{ type = Data.Ammunation, coords = vector3(-330.24, 6083.88, 31.45) },
+	{ type = Data.Ammunation, coords = vector3(252.63, -50.00, 69.94) },
+	{ type = Data.Ammunation, coords = vector3(22.56, -1109.89, 29.80) },
+	{ type = Data.Ammunation, coords = vector3(2567.69, 294.38, 108.73) },
+	{ type = Data.Ammunation, coords = vector3(-1117.58, 2698.61, 18.55) },
+	{ type = Data.Ammunation, coords = vector3(842.44, -1033.42, 28.19) },
 
-	{ type = Config.Liquor, coords = vector3(1135.808, -982.281, 46.415), name = 'Rob\'s Liquor' },
-	{ type = Config.Liquor, coords = vector3(-1222.915, -906.983,  12.326), name = 'Rob\'s Liquor' },
-	{ type = Config.Liquor, coords = vector3(-1487.553, -379.107,  40.163), name = 'Rob\'s Liquor' },
-	{ type = Config.Liquor, coords = vector3(-2968.243, 390.910, 15.043), name = 'Rob\'s Liquor' },
-	{ type = Config.Liquor, coords = vector3(1166.024, 2708.930, 38.157), name = 'Rob\'s Liquor' },
-	{ type = Config.Liquor, coords = vector3(1392.562, 3604.684, 34.980), name = 'Rob\'s Liquor' },
-	{ type = Config.Liquor, coords = vector3(-1393.409, -606.624, 30.319), name = 'Rob\'s Liquor' },
+	{ type = Data.Liquor, coords = vector3(1135.808, -982.281, 46.415), name = 'Rob\'s Liquor' },
+	{ type = Data.Liquor, coords = vector3(-1222.915, -906.983,  12.326), name = 'Rob\'s Liquor' },
+	{ type = Data.Liquor, coords = vector3(-1487.553, -379.107,  40.163), name = 'Rob\'s Liquor' },
+	{ type = Data.Liquor, coords = vector3(-2968.243, 390.910, 15.043), name = 'Rob\'s Liquor' },
+	{ type = Data.Liquor, coords = vector3(1166.024, 2708.930, 38.157), name = 'Rob\'s Liquor' },
+	{ type = Data.Liquor, coords = vector3(1392.562, 3604.684, 34.980), name = 'Rob\'s Liquor' },
+	{ type = Data.Liquor, coords = vector3(-1393.409, -606.624, 30.319), name = 'Rob\'s Liquor' },
 
-	{ type = Config.YouTool, coords = vector3(2748.0, 3473.0, 55.67) },
-	{ type = Config.YouTool, coords = vector3(342.99, -1298.26, 32.51) },
+	{ type = Data.YouTool, coords = vector3(2748.0, 3473.0, 55.67) },
+	{ type = Data.YouTool, coords = vector3(342.99, -1298.26, 32.51) },
 
 	{ coords = vector3(-531.14, -1221.33, 18.48), name = 'Xero Gas'},
 	{ coords = vector3(2557.458,  382.282, 108.622), name = '24/7'},
@@ -152,8 +153,8 @@ Config.Shops = {
 	{ coords = vector3(-2544.092, 2316.184, 33.2), name = 'RON'},
 
 	
-	{ type = Config.PoliceArmoury, job = 'police', grade = 1,  coords = vector3(487.235, -997.108, 30.69) --[[, bt_length = 0.5, bt_width = 3.0, bt_heading = 60.0, bt_distance = 6]]},
-	{ type = Config.Medicine, job = 'ambulance', coords = vector3(306.3687, -601.5139, 43.28406) --[[, bt_length = 0.5, bt_width = 3.0, bt_minZ = 29.8, bt_maxZ = 32.0, bt_heading = 60.0, bt_distance = 6]] },
+	{ type = Data.PoliceArmoury, job = 'police', grade = 1,  coords = vector3(487.235, -997.108, 30.69) --[[, bt_length = 0.5, bt_width = 3.0, bt_heading = 60.0, bt_distance = 6]]},
+	{ type = Data.Medicine, job = 'ambulance', coords = vector3(306.3687, -601.5139, 43.28406) --[[, bt_length = 0.5, bt_width = 3.0, bt_minZ = 29.8, bt_maxZ = 32.0, bt_heading = 60.0, bt_distance = 6]] },
 
-	{ type = Config.BlackMarketArms, coords = vector3(309.09, -913.75, 56.46), currency = 'black_money' },
+	{ type = Data.BlackMarketArms, coords = vector3(309.09, -913.75, 56.46), currency = 'black_money' },
 }

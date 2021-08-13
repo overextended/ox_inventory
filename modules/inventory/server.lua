@@ -1,6 +1,6 @@
 local M = {}
 local Inventories = {}
-local Function = module('utils', true)
+local Utils = module('utils', true)
 local Items = module('items')
 local metatable = setmetatable(M, {
 	__call = function(self, ...)
@@ -30,7 +30,7 @@ local Set = function(inv, k, v)
 			end
 		else
 			if inv.type ~= 'player' and inv.timeout == false then
-				inv.timer()
+				inv:timer()
 			end
 		end
 	end
@@ -43,14 +43,14 @@ end
 
 local Timer = function(inv)
 	inv = Inventories[type(inv) == 'table' and inv.id or inv]
-	inv.set('timeout', true)
-	SetTimeout(30000, function()
+	inv:set('timeout', true)
+	SetTimeout(3000, function()
 		if inv.open == false then
 			if inv.datastore then
 				if not next(inv.items) then Inventories[inv.id] = nil end
 			elseif inv.changed then M.Save(inv) else Inventories[inv.id] = nil end
 		end
-		if Inventories[inv.id] then inv.set('timeout', false) end
+		if Inventories[inv.id] then inv:set('timeout', false) end
 	end)
 end
 
@@ -61,7 +61,7 @@ end
 local Minimal = function(inv)
 	inv = Inventories[type(inv) == 'table' and inv.id or inv]
 	local inventory, count = {}, 0
-	for k, v in pairs(inv.id) do
+	for k, v in pairs(inv.items) do
 		if v.name and v.count > 0 then
 			count = count + 1
 			inventory[count] = {
@@ -154,7 +154,7 @@ M.Create = function(...)
 			weight = t[5],
 			maxWeight = t[6],
 			owner = t[7],
-			items = t[8] or {},
+			items = t[8] or M.Load(t[1], t[3], t[7]),
 			open = false,
 			set = Set,
 			get = Get,
@@ -165,45 +165,37 @@ M.Create = function(...)
 		if self.type == 'player' then self.player = GetPlayer
 		else self.changed = false
 		self.timeout = false end
-		
+
 		Inventories[self.id] = self
 	end
 	return
 end
 
 M.Save = function(inv)
-	print('saving', inv.id)
 	inv = Inventories[type(inv) == 'table' and inv.id or inv]
+	print(inv.owner, inv.id, inv.type)
 	if inv.owner then
+		local inventory = json.encode(Minimal(inv))
 		if inv.type == 'player' then
 			exports.ghmattimysql:execute('UPDATE users SET inventory = ? WHERE identifier = ?', {
-				json.encode(Minimal(inv)), inv.owner
+				inventory, inv.owner
 			})
 		elseif Vehicle[inv.type] then
-			local plate = inv.id:match("-(.*)")
-			if Config.TrimPlate then plate = string.strtrim(plate) end
-			exports.ghmattimysql:scalar('SELECT 1 from owned_vehicles WHERE plate = ?', {
-				plate
-			}, function(result)
-				if result then
-					exports.ghmattimysql:execute('INSERT INTO owned_vehicles (@type) VALUES (@inventory) ON DUPLICATE KEY UPDATE @type = @inventory', {
-						['@type'] = inv.type,
-						['@inventory'] = json.encode(Minimal(inv))
-					})
-				end
-			end)
+			if Config.TrimPlate then inv.id = ox.trim(inv.id) end
+			exports.ghmattimysql:execute('UPDATE owned_vehicles SET '..inv.type..' = ? WHERE plate = ?', {
+				inventory, inv.id
+			})
 		else
 			exports.ghmattimysql:execute('INSERT INTO linden_inventory (name, data, owner) VALUES (@name, @data, @owner) ON DUPLICATE KEY UPDATE data = @data', {
 				['@name'] = inv.id,
-				['@data'] = json.encode(Minimal(inv)),
-				['@owner'] = ''
+				['@data'] = inventory,
+				['@owner'] = inv.owner
 			})
 		end
 	else
-		exports.ghmattimysql:execute('INSERT INTO linden_inventory (name, data, owner) VALUES (@name, @data, @owner) ON DUPLICATE KEY UPDATE data = @data', {
+		exports.ghmattimysql:execute('INSERT INTO linden_inventory (name, data) VALUES (@name, @data) ON DUPLICATE KEY UPDATE data = @data', {
 			['@name'] = inv.id,
-			['@data'] = json.encode(Minimal(inv)),
-			['@owner'] = ''
+			['@data'] = inventory
 		})
 	end
 	Inventories[inv.id] = nil
@@ -214,12 +206,11 @@ M.Load = function(id, inv, owner)
 	local isVehicle = Vehicle[inv]
 	if id and inv then
 		if isVehicle then
-			local plate = id:match("-(.*)")
-			if Config.TrimPlate then plate = string.strtrim(plate) end
-			local vehicle = exports.ghmattimysql:executeSync('SELECT owner, plate, trunk, glovebox FROM owned_vehicles WHERE plate = ?', {
-				plate
+			if Config.TrimPlate then id = ox.trim(id) end
+			local vehicle = exports.ghmattimysql:executeSync('SELECT owner, '..inv..' FROM owned_vehicles WHERE plate = ?', {
+				id
 			})
-			if vehicle[1] then
+			if vehicle[1][inv] then
 				result = vehicle
 			else
 				if Config.RandomLoot then result = GenerateDatastore(id, inv) else result = {} end
@@ -237,10 +228,8 @@ M.Load = function(id, inv, owner)
 		end
 	end
 
-	if result then
-		local Inventory
-		if isVehicle then Inventory = json.decode(result[1].data)
-		else Inventory = json.decode(result) end
+	if next(result) then
+		local Inventory = json.decode(isVehicle and result[1][inv] or result[1])
 		for k, v in pairs(Inventory) do
 			local item = Items(v.name)
 			if item then
@@ -469,5 +458,7 @@ end, true, {help = 'remove an item from a player', validate = false, arguments =
 	{name = 'count', help = 'item count', type = 'number'},
 	{name = 'type', help = 'item metadata type', type='any'}
 }})
+
+TriggerEvent('ox_inventory:loadInventory', M)
 
 return M

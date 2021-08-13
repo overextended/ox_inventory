@@ -1,5 +1,5 @@
 local Inventory = module('inventory')
-local Function = module('utils', true)
+local Utils = module('utils', true)
 local Items = module('items')
 
 RegisterNetEvent('equip', function(weapon)
@@ -21,9 +21,7 @@ end)
 RegisterNetEvent('ox_inventory:closeInventory', function()
 	local inventory, secondary = Inventory(source)
 	if inventory.open then secondary = Inventory(inventory.open) end
-	if secondary then
-		secondary:set('open', false)
-	end
+	if secondary then secondary:set('open', false) end
 	inventory:set('open', false)
 end)
 
@@ -59,20 +57,24 @@ AddEventHandler('ox_inventory:createDrop', function(source, slot, toSlot)
 	TriggerClientEvent('ox_inventory:createDrop', -1, {drop, coords}, source)
 end)
 
+local Stash = data('stashes')
+local Vehicle = data('vehicles')
 ox.RegisterServerCallback('ox_inventory:openInventory', function(source, cb, inv, data) 
 	local left, right = Inventory(source)
 	if data then
 		right = Inventory(data.id)
-		if right then
+		if not right then
+			if data.class then
+				local vehicle = Vehicle[inv][data.class]
+				if data.owner == true then data.owner = left:player().identifier else data.owner = left:player().identifier end
+				Inventory.Create(data.id, data.id, inv, vehicle[1], 0, vehicle[2], data.owner)
+				right = Inventory(data.id)
+			end
+		end
+		if not right.open then
 			right.open = source
 			left.open = data.id
 		end
-		--Inventory.Create(data.id, data.label or data.id, inv, 20, 0, 2000, data.owner, {})
-	else
-		--[[if not Inventory('test') then Inventory.Create('test', 'Drop 6969', 'drop', Config.PlayerSlots, 0, Config.DefaultWeight, false, {}) end
-		right = Inventory('test')
-		right.open = source
-		left.open = right.id]]
 	end
 	cb({id=left.name, type=left.type, slots=left.slots, weight=left.weight, maxWeight=left.maxWeight}, right)
 end)
@@ -115,6 +117,8 @@ ox.RegisterServerCallback('ox_inventory:swapItems', function(source, cb, data)
 					ret = {weight=playerInventory.weight, items=items}
 					Inventory.SyncInventory(playerInventory:player(), playerInventory, items)
 				end
+				if fromInventory.changed ~= nil then fromInventory:set('changed', true) end
+				if toInventory.changed ~= nil then toInventory:set('changed', true) end
 				fromInventory.items[data.fromSlot], toInventory.items[data.toSlot] = fromSlot, toSlot
 				return cb(1, ret)
 			end
