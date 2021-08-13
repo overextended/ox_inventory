@@ -7,7 +7,7 @@ import {
   SlotWithItemData,
 } from "../typings";
 
-export const validateSlotItem = (item: Slot): item is SlotWithItem =>
+export const isSlotWithItem = (item: Slot): item is SlotWithItem =>
   item.name !== undefined &&
   item.count !== undefined &&
   item.count > 0 &&

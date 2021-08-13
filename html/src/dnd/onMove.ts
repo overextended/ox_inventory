@@ -1,4 +1,4 @@
-import { validateSlotItem, findAvailableSlot, findInventory } from "../helpers";
+import { isSlotWithItem, findAvailableSlot, findInventory } from "../helpers";
 import { validateItems } from "../actions/validateItems";
 import { store } from "../store";
 import { DragSlot, SlotWithItemData } from "../typings";
@@ -16,7 +16,7 @@ export const onMove = (source: DragSlot, target?: DragSlot) => {
 
   const sourceSlot = sourceInventory.items[source.item.slot - 1];
 
-  if (!validateSlotItem(sourceSlot)) {
+  if (!isSlotWithItem(sourceSlot)) {
     return;
   }
 
@@ -54,7 +54,7 @@ export const onMove = (source: DragSlot, target?: DragSlot) => {
     })
   );
 
-  if (validateSlotItem(targetSlot)) {
+  if (isSlotWithItem(targetSlot)) {
     if (
       sourceItem.stack &&
       sourceItem.name === targetSlot.name &&

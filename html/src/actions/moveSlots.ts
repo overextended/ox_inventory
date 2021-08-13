@@ -1,5 +1,5 @@
 import { CaseReducer, PayloadAction } from "@reduxjs/toolkit";
-import { validateSlotItem } from "../helpers";
+import { isSlotWithItem } from "../helpers";
 import { Inventory, State, SlotWithItemData, Slot } from "../typings";
 
 const moveSlots: CaseReducer<
