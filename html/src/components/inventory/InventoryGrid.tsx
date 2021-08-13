@@ -1,4 +1,5 @@
 import React from "react";
+import { Items } from "../../store/items";
 import { Inventory, Slot } from "../../typings";
 import Fade from "../utils/Fade";
 import WeightBar from "../utils/WeightBar";
@@ -16,7 +17,7 @@ const InventoryGrid: React.FC<{ inventory: Inventory }> = (props) => {
         </p>
         {props.inventory.weight && props.inventory.maxWeight && (
           <div>
-            {props.inventory.weight/1000 }/{props.inventory.maxWeight/1000}kg
+            {props.inventory.weight / 1000}/{props.inventory.maxWeight / 1000}kg
           </div>
         )}
       </div>
@@ -44,8 +45,12 @@ const InventoryGrid: React.FC<{ inventory: Inventory }> = (props) => {
           duration={0.25}
           className="item-info"
         >
-          <p>{currentItem?.label}</p>
-          <hr style={{borderBottom:"0.1vh"}}></hr>
+          {currentItem?.name && (
+            <>
+              <p>{Items[currentItem.name]?.label || "NO LABEL"}</p>
+              <hr style={{ borderBottom: "0.1vh" }}></hr>
+            </>
+          )}
         </Fade>
       </div>
     </div>

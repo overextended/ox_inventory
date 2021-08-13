@@ -5,6 +5,7 @@ import { useAppSelector } from "../../store";
 import WeightBar from "../utils/WeightBar";
 import { onMove } from "../../dnd/onMove";
 import { selectIsBusy } from "../../store/inventory";
+import { Items } from "../../store/items";
 
 interface SlotProps {
   inventory: Inventory;
@@ -88,7 +89,8 @@ const InventorySlot: React.FC<SlotProps> = (props) => {
             </div>
             <WeightBar percent={25} durability />
             <div className="item-label">
-              {props.item.label} [{props.item.slot}] {isBusy && "BUSY"}
+              {Items[props.item.name]?.label || "NO LABEL"} [{props.item.slot}]{" "}
+              {isBusy && "BUSY"}
             </div>
           </>
         )}
