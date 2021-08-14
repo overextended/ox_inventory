@@ -226,6 +226,7 @@ RegisterNetEvent('ox_inventory:setPlayerInventory', function(data)
 				local distance = #(playerCoords - v)
 				local marker = nearbyMarkers['drop'..k]
 				if distance < 1.5 then
+					if not marker then nearbyMarkers['drop'..k] = {v, 150, 30, 30} end
 					if currentMarker and distance < currentMarker[1] or closestMarker and distance < closestMarker[1] or not closestMarker then
 						closestMarker = {distance, k, 'drop'}
 					end
@@ -235,19 +236,21 @@ RegisterNetEvent('ox_inventory:setPlayerInventory', function(data)
 				local distance = #(playerCoords - v.coords)
 				local marker = nearbyMarkers['shop'..k]
 				if distance < 1.5 then
+					if not marker then nearbyMarkers['shop'..k] = {v.coords, 30, 150, 30} end
 					if currentMarker and distance < currentMarker[1] or closestMarker and distance < closestMarker[1] or not closestMarker then
 						closestMarker = {distance, k, 'shop'}
 					end
-				elseif not marker and distance < 8 then nearbyMarkers['shop'..k] = {v.coords, 30, 150, 30} elseif marker and distance > 8 then nearbyMarkers['drop'..k] = nil end
+				elseif not marker and distance < 8 then nearbyMarkers['shop'..k] = {v.coords, 30, 150, 30} elseif marker and distance > 8 then nearbyMarkers['shop'..k] = nil end
 			end
 			for k, v in pairs(Stashes) do
 				local distance = #(playerCoords - v.coords)
 				local marker = nearbyMarkers['stash'..k]
 				if distance < 1.5 then
+					if not marker then nearbyMarkers['stash'..k] = {v.coords, 30, 30, 150} end
 					if currentMarker and distance < currentMarker[1] or closestMarker and distance < closestMarker[1] or not closestMarker then
 						closestMarker = {distance, k, 'stash'}
 					end
-				elseif not marker and distance < 8 then nearbyMarkers['stash'..k] = {v.coords, 30, 30, 150} elseif marker and distance > 8 then nearbyMarkers['drop'..k] = nil end
+				elseif not marker and distance < 8 then nearbyMarkers['stash'..k] = {v.coords, 30, 30, 150} elseif marker and distance > 8 then nearbyMarkers['stash'..k] = nil end
 			end
 			currentMarker = (closestMarker and closestMarker[1] < 2) and closestMarker or nil
 		end
