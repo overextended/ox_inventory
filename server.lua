@@ -1,6 +1,4 @@
-local Inventory = module('inventory')
-local Utils = module('utils', true)
-local Items = module('items')
+local Utils, Inventory, Items = module('utils', true), module('inventory'), module('items')
 
 RegisterNetEvent('equip', function(weapon)
 	local inv = Inventory(source)
@@ -57,31 +55,47 @@ AddEventHandler('ox_inventory:createDrop', function(source, slot, toSlot)
 	TriggerClientEvent('ox_inventory:createDrop', -1, {drop, coords}, source)
 end)
 
-local Stash = data('stashes')
-local Vehicle = data('vehicles')
+local Stash, Vehicle = module('inventory', true), data('vehicles')
 ox.RegisterServerCallback('ox_inventory:openInventory', function(source, cb, inv, data) 
 	local left, right = Inventory(source)
 	if data then
-		right = Inventory(data.id)
-		if not right then
-			if data.class then
-				local vehicle = Vehicle[inv][data.class]
-				if data.owner == true then data.owner = left:player().identifier else data.owner = left:player().identifier end
-				Inventory.Create(data.id, data.id, inv, vehicle[1], 0, vehicle[2], data.owner)
-				right = Inventory(data.id)
+		if inv == 'stash' then
+			local stash = Stash[data.id]
+			if stash.owner == nil then
+				right = Inventory(stash.name)
+				if not right then
+					Inventory.Create(stash.name, stash.name, inv, stash.slots, 0, stash.weight, false)
+					right = Inventory(stash.name)
+				end
+			else
+				local owner = stash.owner == true and left.owner or stash.owner
+				right = Inventory(stash.name..owner)
+				if not right then
+					Inventory.Create(stash.name..owner, stash.name, inv, stash.slots, 0, stash.weight, owner)
+					right = Inventory(stash.name..owner)
+				end
+			end
+		else
+			right = Inventory(data.id)
+			if not right then
+				if data.class then
+					local vehicle = Vehicle[inv][data.class]
+					Inventory.Create(data.id, data.id:sub(6), inv, vehicle[1], 0, vehicle[2], false)
+					right = Inventory(data.id)
+				end
 			end
 		end
 		if not right.open then
 			right.open = source
-			left.open = data.id
+			left.open = right.id
 		end
 	end
-	cb({id=left.name, type=left.type, slots=left.slots, weight=left.weight, maxWeight=left.maxWeight}, right)
+	cb({id=left.label, type=left.type, slots=left.slots, weight=left.weight, maxWeight=left.maxWeight}, right)
 end)
 
 ox.RegisterServerCallback('ox_inventory:swapItems', function(source, cb, data)
 	if data.count > 0 and data.fromSlot ~= data.toSlot then
-		local playerInventory, items, ret = Inventory(source) or false, {}
+		local playerInventory, items, ret = Inventory(source), {}
 		if data.toType == 'newdrop' then
 			local fromSlot = playerInventory.items[data.fromSlot]
 			local toSlot = Utils.Copy(fromSlot)
@@ -90,7 +104,7 @@ ox.RegisterServerCallback('ox_inventory:swapItems', function(source, cb, data)
 			local items = {[data.fromSlot] = false}
 			playerInventory.items[data.fromSlot] = nil
 			Inventory.SyncInventory(playerInventory:player(), playerInventory, items)
-			return cb(1, {weight=playerInventory.weight, items=items})
+			return cb(true, {weight=playerInventory.weight, items=items})
 		else
 			local toInventory = data.toType == 'player' and playerInventory or Inventory(playerInventory.open)
 			local fromInventory = data.fromType == 'player' and playerInventory or Inventory(playerInventory.open)
@@ -120,9 +134,9 @@ ox.RegisterServerCallback('ox_inventory:swapItems', function(source, cb, data)
 				if fromInventory.changed ~= nil then fromInventory:set('changed', true) end
 				if toInventory.changed ~= nil then toInventory:set('changed', true) end
 				fromInventory.items[data.fromSlot], toInventory.items[data.toSlot] = fromSlot, toSlot
-				return cb(1, ret)
+				return cb(true, ret)
 			end
 		end
 	end
-	cb(0)
+	cb(false)
 end)

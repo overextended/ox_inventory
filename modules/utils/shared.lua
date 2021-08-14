@@ -7,14 +7,6 @@ M.CheckTable = function(table, value)
 	return false
 end
 
-M.GetWeapon = function(weaponHash)
-	for k, v in pairs(Weapons) do
-		if v.hash == weaponHash then
-			return v
-		end
-	end
-end
-
 M.Copy = function(t, deep)
 	local copy = {}
 	if type(t) == 'table' then

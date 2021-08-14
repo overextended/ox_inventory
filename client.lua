@@ -1,66 +1,11 @@
 local Items, Weapons = table.unpack(module('items', true))
+local Stashes = module('inventory', true)
 local Vehicle = data('vehicles')
+local Shops = {}
 
-local Blips, Drops, cancelled, invOpen, weaponTimer = {}, {}, false, false, 0
-local playerId, playerPed, playerCoords, invOpen, usingWeapon, currentWeapon, currentDrop
+local Blips, Drops, nearbyMarkers, cancelled, invOpen, weaponTimer = {}, {}, {}, false, false, 0
+local playerId, playerPed, playerCoords, invOpen, usingWeapon, currentWeapon, currentMarker
 local plyState = LocalPlayer.state
-
-SetInterval(1, 5, function()
-	if invOpen then
-		DisableAllControlActions(0)
-		HideHudAndRadarThisFrame()
-		if not currentInventory then
-			EnableControlAction(0, 30, true)
-			EnableControlAction(0, 31, true)
-		end
-	elseif isDoingAction then
-		if disableControls.disableMouse then
-			DisableControlAction(0, 1, true) -- LookLeftRight
-			DisableControlAction(0, 2, true) -- LookUpDown
-			DisableControlAction(0, 106, true) -- VehicleMouseControlOverride
-		end
-		if disableControls.disableMovement then
-			DisableControlAction(0, 30, true) -- disable left/right
-			DisableControlAction(0, 31, true) -- disable forward/back
-			DisableControlAction(0, 36, true) -- INPUT_DUCK
-			DisableControlAction(0, 21, true) -- disable sprint
-		end
-		if disableControls.disableCarMovement then
-			DisableControlAction(0, 63, true) -- veh turn left
-			DisableControlAction(0, 64, true) -- veh turn right
-			DisableControlAction(0, 71, true) -- veh forward
-			DisableControlAction(0, 72, true) -- veh backwards
-			DisableControlAction(0, 75, true) -- disable exit vehicle
-		end
-		if disableControls.disableCombat then
-			DisablePlayerFiring(PlayerId(), true) -- Disable weapon firing
-			DisableControlAction(0, 25, true) -- disable aim
-		end
-	end
-end)
-
-local text, type, id = ''
-SetInterval(2, 250, function()
-	local sleep = 250
-	if not invOpen then
-		playerCoords = GetEntityCoords(playerPed)
-		if Drops then
-			local closestDrop
-			for k, v in pairs(Drops) do
-				local distance = #(playerCoords - v)
-				if distance <= 8 then
-					sleep = 5
-					DrawMarker(2, v.x,v.y,v.z, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.3, 0.2, 0.15, 150, 30, 30, 222, false, false, false, true, false, false, false)
-					if distance <= 2 and (closestDrop == nil or (currentDrop and closestDrop and distance < currentDrop.distance)) then
-						closestDrop = {id = k, distance = distance}
-					end
-				end
-			end
-			currentDrop = (closestDrop and closestDrop.distance <= 1) and {id=closestDrop.id} or nil
-		end
-	end
-	SetInterval(2, sleep)
-end)
 
 local Disarm = function()
 	SetWeaponsNoAutoswap(1)
@@ -126,9 +71,8 @@ end
 local Notify = function(data) SendNUIMessage({ action = 'showNotif', data = data }) end
 RegisterNetEvent('ox_inventory:Notify', Notify)
 
-local CloseInventory = function(options)
+RegisterNetEvent('ox_inventory:closeInventory', function(options)
 	if invOpen then
-		invOpen = false
 		SetNuiFocus(false, false)
 		SetNuiFocusKeepInput(false)
 		TriggerScreenblurFadeOut(0)
@@ -149,11 +93,11 @@ local CloseInventory = function(options)
 		else
 			SendNUIMessage({ action = 'closeInventory' })
 		end
+		Wait(500)
 		if currentInventory then TriggerServerEvent('ox_inventory:closeInventory') end
-		currentInventory, currentDrop = nil, nil
+		invOpen, currentInventory = false, nil
 	end
-end
-RegisterNetEvent('ox_inventory:closeInventory', CloseInventory)
+end)
 
 local OpenInventory = function(inv, data)
 	if not invOpen or inv == 'drop' then
@@ -169,7 +113,7 @@ local OpenInventory = function(inv, data)
 				SendNUIMessage({
 					action = 'setupInventory',
 					data = {
-						playerInventory = left,
+						leftInventory = left,
 						rightInventory = currentInventory,
 						job = {
 							grade = ESX.PlayerData.job.grade,
@@ -183,19 +127,18 @@ local OpenInventory = function(inv, data)
 	else TriggerEvent('ox_inventory:closeInventory') end
 end
 
-local UpdateInventory = function(items, weights, message)
+RegisterNetEvent('ox_inventory:updateInventory', function(items, weights, name, count, removed)
 	SendNUIMessage({
 		action = 'refreshSlots',
 		data = {items=items, weights=weights},
 	})
-	Notify({text = message, duration = 2500})
+	Notify({text = (removed and 'Removed' or 'Added')..' '..count..'x '..name, duration = 2500})
 	for i=1, #items do
 		local i = items[i].item
 		ESX.PlayerData.inventory[i.slot] = i.name and i or nil
 	end
 	ESX.SetPlayerData('weight', weights.left)
-end
-RegisterNetEvent('ox_inventory:updateInventory', UpdateInventory)
+end)
 
 OnPlayerData = function(key, val)
 	if key == 'dead' and val then Disarm()
@@ -220,13 +163,13 @@ end)
 
 RegisterNetEvent('ox_inventory:removeDrop', function(id)
 	Drops[id] = nil
-	if currentDrop and currentDrop.id == id then currentDrop = nil end
+	nearbyMarkers['drop'..id] = nil
 end)
 
 RegisterNetEvent('ox_inventory:setPlayerInventory', function(data)
 	playerId, playerPed, invOpen, usingWeapon, currentWeapon, currentDrop = GetPlayerServerId(PlayerId()), ESX.PlayerData.ped, false, false, nil, nil
 	ClearWeapons()
-	Drops, ESX.PlayerData.inventory = data[1], data[2]
+	Drops, ESX.PlayerData.inventory = data[1] or {}, data[2]
 	ESX.SetPlayerData('inventory', ESX.PlayerData.inventory)
 	ESX.SetPlayerData('weight', data[3])
     local ItemData = {}
@@ -273,6 +216,80 @@ RegisterNetEvent('ox_inventory:setPlayerInventory', function(data)
 		RegisterKeyMapping('hotkey'..i, 'Use hotbar item '..i..'~', 'keyboard', i)
 	end
 	Notify({text = _U('inventory_setup'), duration = 2500})
+
+	SetInterval(1, 250, function()
+		playerCoords = GetEntityCoords(playerPed)
+		if not invOpen then
+			local closestMarker
+			for k, v in pairs(Drops) do
+				local distance = #(playerCoords - v)
+				local marker = nearbyMarkers['drop'..k]
+				if distance < 1.5 then
+					if currentMarker and distance < currentMarker[1] or closestMarker and distance < closestMarker[1] or not closestMarker then
+						closestMarker = {distance, k, 'drop'}
+					end
+				elseif not marker and distance < 8 then nearbyMarkers['drop'..k] = {v, 150, 30, 30} elseif marker and distance > 8 then nearbyMarkers['drop'..k] = nil end
+			end
+			for k, v in pairs(Shops) do
+				local distance = #(playerCoords - v.coords)
+				local marker = nearbyMarkers['shop'..k]
+				if distance < 1.5 then
+					if currentMarker and distance < currentMarker[1] or closestMarker and distance < closestMarker[1] or not closestMarker then
+						closestMarker = {distance, k, 'shop'}
+					end
+				elseif not marker and distance < 8 then nearbyMarkers['shop'..k] = {v.coords, 30, 150, 30} elseif marker and distance > 8 then nearbyMarkers['drop'..k] = nil end
+			end
+			for k, v in pairs(Stashes) do
+				local distance = #(playerCoords - v.coords)
+				local marker = nearbyMarkers['stash'..k]
+				if distance < 1.5 then
+					if currentMarker and distance < currentMarker[1] or closestMarker and distance < closestMarker[1] or not closestMarker then
+						closestMarker = {distance, k, 'stash'}
+					end
+				elseif not marker and distance < 8 then nearbyMarkers['stash'..k] = {v.coords, 30, 30, 150} elseif marker and distance > 8 then nearbyMarkers['drop'..k] = nil end
+			end
+			currentMarker = (closestMarker and closestMarker[1] < 2) and closestMarker or nil
+		end
+	end)
+	
+	SetInterval(2, 0, function()
+		if invOpen then
+			DisableAllControlActions(0)
+			HideHudAndRadarThisFrame()
+			if not currentInventory then
+				EnableControlAction(0, 30, true)
+				EnableControlAction(0, 31, true)
+			end
+		else
+			if isDoingAction then
+				if disableControls.disableMouse then
+					DisableControlAction(0, 1, true) -- LookLeftRight
+					DisableControlAction(0, 2, true) -- LookUpDown
+					DisableControlAction(0, 106, true) -- VehicleMouseControlOverride
+				end
+				if disableControls.disableMovement then
+					DisableControlAction(0, 30, true) -- disable left/right
+					DisableControlAction(0, 31, true) -- disable forward/back
+					DisableControlAction(0, 36, true) -- INPUT_DUCK
+					DisableControlAction(0, 21, true) -- disable sprint
+				end
+				if disableControls.disableCarMovement then
+					DisableControlAction(0, 63, true) -- veh turn left
+					DisableControlAction(0, 64, true) -- veh turn right
+					DisableControlAction(0, 71, true) -- veh forward
+					DisableControlAction(0, 72, true) -- veh backwards
+					DisableControlAction(0, 75, true) -- disable exit vehicle
+				end
+				if disableControls.disableCombat then
+					DisablePlayerFiring(PlayerId(), true) -- Disable weapon firing
+					DisableControlAction(0, 25, true) -- disable aim
+				end
+			end
+			for k, v in pairs(nearbyMarkers) do
+				DrawMarker(2, v[1].x,v[1].y,v[1].z, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.3, 0.2, 0.15, v[2], v[3], v[4], 222, false, false, false, true, false, false, false)
+			end
+		end
+	end)
 end)
 
 AddEventHandler('onResourceStop', function(resourceName)
@@ -294,6 +311,8 @@ RegisterNetEvent('esx:onPlayerLogout', function()
 	if parachute then ESX.Game.DeleteObject(parachute) parachute = false end
 	TriggerEvent('ox_inventory:closeInventory')
 	ESX.PlayerLoaded = false
+	ClearInterval(1)
+	ClearInterval(2)
 	Disarm()
 end)
 
@@ -312,7 +331,7 @@ RegisterCommand('inv', function()
 	TriggerEvent('ox_inventory:getProperty', function(data) property = data end)
 	if property then return OpenInventory('stash', property) end
 	if IsPedInAnyVehicle(playerPed, false) then currentDrop = nil end
-	if currentDrop and not invOpen then OpenInventory('drop', currentDrop)
+	if currentMarker and not invOpen then OpenInventory(currentMarker[3], {id=currentMarker[2]})
 	else OpenInventory() end
 end)
 
@@ -326,7 +345,7 @@ RegisterCommand('inv2', function()
 				local vehicle = GetVehiclePedIsIn(playerPed, false)
 				if NetworkGetEntityIsNetworked(vehicle) then
 					local plate = Config.TrimPlate and ox.trim(GetVehicleNumberPlateText(vehicle)) or GetVehicleNumberPlateText(vehicle)
-					OpenInventory('glovebox', {id=plate, class=GetVehicleClass(vehicle)})
+					OpenInventory('glovebox', {id='glove'..plate, label=plate, class=GetVehicleClass(vehicle)})
 					Wait(100)
 					while true do
 						Wait(100)
@@ -375,7 +394,7 @@ RegisterCommand('inv2', function()
 							local plate = Config.TrimPlate and ox.trim(GetVehicleNumberPlateText(vehicle)) or GetVehicleNumberPlateText(vehicle)
 							TaskTurnPedToFaceCoord(playerPed, position)
 							lastVehicle = vehicle
-							OpenInventory('trunk', {id=plate, class=class})
+							OpenInventory('trunk', {id='trunk'..plate, label=plate, class=class})
 							local timeout = 20
 							repeat Wait(50)
 								timeout = timeout - 1

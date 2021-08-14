@@ -1,7 +1,6 @@
 local M = {}
 local Inventories = {}
-local Utils = module('utils', true)
-local Items = module('items')
+local Utils, Stashes, Items = module('utils', true), module('inventory', true), module('items')
 local metatable = setmetatable(M, {
 	__call = function(self, ...)
 		if #({...}) == 1 then
@@ -28,10 +27,8 @@ local Set = function(inv, k, v)
 				TriggerClientEvent('ox_inventory:removeDrop', -1, inv.id)
 				Inventories[inv.id] = nil
 			end
-		else
-			if inv.type ~= 'player' and inv.timeout == false then
-				inv:timer()
-			end
+		elseif inv.type ~= 'player' and inv.timeout == false then
+			inv:timer()
 		end
 	end
 	inv[k] = v
@@ -46,11 +43,9 @@ local Timer = function(inv)
 	inv:set('timeout', true)
 	SetTimeout(3000, function()
 		if inv.open == false then
-			if inv.datastore then
-				if not next(inv.items) then Inventories[inv.id] = nil end
+			if inv.datastore and next(inv.items) == nil then Inventories[inv.id] = nil
 			elseif inv.changed then M.Save(inv) else Inventories[inv.id] = nil end
-		end
-		if Inventories[inv.id] then inv:set('timeout', false) end
+		elseif inv.open then inv:set('timeout', false) end
 	end)
 end
 
@@ -75,7 +70,8 @@ local Minimal = function(inv)
 	return inventory
 end
 
-M.SyncInventory = function(xPlayer, inv, items)
+M.SyncInventory = function(xPlayer, inv)
+	inv = Inventories[type(inv) == 'table' and inv.id or inv]
 	local money = {money=0, black_money=0}
 	for k, v in pairs(inv.items) do
 		if money[v.name] then
@@ -103,7 +99,7 @@ local Weight = function(inv)
 	local weight = 0
 	for k, v in pairs(inv) do
 		weight = weight + (v.weight * v.count)
-		if v.metadata then weight = weight + v.metadata.weight or 0 end
+		if v.metadata.weight then weight = weight + v.metadata.weight or 0 end
 	end
 	inv.weight = math.floor(weight + 0.5)
 	return inv.weight
@@ -148,24 +144,25 @@ M.Create = function(...)
 	if #t > 6 then
 		local self = {
 			id = t[1],
-			name = t[2] or id,
+			label = t[2] or id,
 			type = t[3],
 			slots = t[4],
 			weight = t[5],
 			maxWeight = t[6],
 			owner = t[7],
-			items = t[8] or M.Load(t[1], t[3], t[7]),
+			items = type(t[8]) == 'table' and t[8] or nil,
 			open = false,
 			set = Set,
 			get = Get,
-			timer = Timer,
 			minimal = Minimal
 		}
 
 		if self.type == 'player' then self.player = GetPlayer
-		else self.changed = false
-		self.timeout = false end
+		else self.changed, self.timeout, self.timer = false, false, Timer end
 
+		if not self.items then
+			self.items, self.weight, self.datastore = M.Load(self.id, self.type, self.owner)
+		end
 		Inventories[self.id] = self
 	end
 	return
@@ -173,17 +170,12 @@ end
 
 M.Save = function(inv)
 	inv = Inventories[type(inv) == 'table' and inv.id or inv]
-	print(inv.owner, inv.id, inv.type)
+	print('saving')
+	local inventory = json.encode(Minimal(inv))
 	if inv.owner then
-		local inventory = json.encode(Minimal(inv))
 		if inv.type == 'player' then
 			exports.ghmattimysql:execute('UPDATE users SET inventory = ? WHERE identifier = ?', {
 				inventory, inv.owner
-			})
-		elseif Vehicle[inv.type] then
-			if Config.TrimPlate then inv.id = ox.trim(inv.id) end
-			exports.ghmattimysql:execute('UPDATE owned_vehicles SET '..inv.type..' = ? WHERE plate = ?', {
-				inventory, inv.id
 			})
 		else
 			exports.ghmattimysql:execute('INSERT INTO linden_inventory (name, data, owner) VALUES (@name, @data, @owner) ON DUPLICATE KEY UPDATE data = @data', {
@@ -192,6 +184,12 @@ M.Save = function(inv)
 				['@owner'] = inv.owner
 			})
 		end
+	elseif Vehicle[inv.type] then
+		if Config.TrimPlate then inv.id = ox.trim(inv.id) end
+		inv.id = inv.id:sub(6)
+		exports.ghmattimysql:execute('UPDATE owned_vehicles SET '..inv.type..' = ? WHERE plate = ?', {
+			inventory, inv.id
+		})
 	else
 		exports.ghmattimysql:execute('INSERT INTO linden_inventory (name, data) VALUES (@name, @data) ON DUPLICATE KEY UPDATE data = @data', {
 			['@name'] = inv.id,
@@ -202,42 +200,44 @@ M.Save = function(inv)
 end
 
 M.Load = function(id, inv, owner)
-	local returnData, result = {}
+	local returnData, weight, result, datastore = {}, 0
 	local isVehicle = Vehicle[inv]
 	if id and inv then
 		if isVehicle then
 			if Config.TrimPlate then id = ox.trim(id) end
-			local vehicle = exports.ghmattimysql:executeSync('SELECT owner, '..inv..' FROM owned_vehicles WHERE plate = ?', {
+			id = id:sub(6)
+			result = exports.ghmattimysql:scalarSync('SELECT '..inv..' FROM owned_vehicles WHERE plate = ?', {
 				id
 			})
-			if vehicle[1][inv] then
-				result = vehicle
-			else
+			if result == false then
 				if Config.RandomLoot then result = GenerateDatastore(id, inv) else result = {} end
-			end
+				datastore = true
+			else result = json.decode(result) end
 		elseif owner then
 			result = exports.ghmattimysql:scalarSync('SELECT data FROM linden_inventory WHERE name = ? AND owner = ?', {
 				id, owner
 			})
+			if result then result = json.decode(result) end
 		elseif inv == 'dumpster' then
 			if Config.RandomLoot then result = GenerateDatastore(id, inv) else result = {} end
+			datastore = true
 		else
 			result = exports.ghmattimysql:scalarSync('SELECT data FROM linden_inventory WHERE name = ?', {
 				id
 			})
+			if result then result = json.decode(result) end
 		end
 	end
-
-	if next(result) then
-		local Inventory = json.decode(isVehicle and result[1][inv] or result[1])
-		for k, v in pairs(Inventory) do
+	if result then
+		for k, v in pairs(result) do
 			local item = Items(v.name)
 			if item then
-				returnData[v.slot] = {name = item.name, label = item.label, weight = M.SlotWeight(item, v), slot = v.slot, count = v.count, description = item.description, metadata = v.metadata, stack = item.stack, close = item.close}
+				weight = M.SlotWeight(item, v)
+				returnData[v.slot] = {name = item.name, label = item.label, weight = weight, slot = v.slot, count = v.count, description = item.description, metadata = v.metadata, stack = item.stack, close = item.close}
 			end
 		end
 	end
-	return returnData
+	return returnData, weight, datastore
 end
 
 M.GetItem = function(inv, item, metadata)
@@ -297,9 +297,9 @@ M.AddItem = function(inv, item, count, metadata, slot)
 			end
 		end
 		if existing == false then
-			local inv, toSlot = inv.items
+			local items, toSlot = inv.items
 			for i=1, Config.PlayerSlots do
-				local slotItem = inv[i]
+				local slotItem = items[i]
 				if item.stack and slotItem ~= nil and slotItem.name == item.name and Utils.MatchTables(slotItem.metadata, metadata) then
 					toSlot, existing = i, true break
 				elseif not toSlot and slotItem == nil then
@@ -341,7 +341,7 @@ M.AddItem = function(inv, item, count, metadata, slot)
 		end
 		inv.weight = inv.weight + (item.weight + (metadata.weight or 0)) * count
 		if xPlayer then
-			M.SyncInventory(xPlayer, inv, {[slot] = inv.items[slot]})
+			M.SyncInventory(xPlayer, inv)
 			TriggerClientEvent('ox_inventory:updateInventory', xPlayer.source, {{item = inv.items[slot], inventory = inv.type}}, {left=inv.weight, right=inv.open and Inventories[inv.open].weight}, item.name, count, false)
 		end
 	end
@@ -400,7 +400,7 @@ M.RemoveItem = function(inv, item, count, metadata, slot)
 		end
 		inv.weight = inv.weight - (item.weight + (metadata.weight or 0)) * removed
 		if removed > 0 and xPlayer then
-			M.SyncInventory(xPlayer, inv, slots)
+			M.SyncInventory(xPlayer, inv)
 			local array = {}
 			for k, v in pairs(slots) do
 				if type(v) == 'number' then
@@ -409,7 +409,7 @@ M.RemoveItem = function(inv, item, count, metadata, slot)
 					array[k] = {item = v, inventory = inv.type}
 				end
 			end
-			TriggerClientEvent('ox_inventory:updateInventory', xPlayer.source, array, {left=inv.weight, right=inv.open and Inventories[inv.open].weight}, item.name, true)
+			TriggerClientEvent('ox_inventory:updateInventory', xPlayer.source, array, {left=inv.weight, right=inv.open and Inventories[inv.open].weight}, item.name, removed, true)
 		end
 	end
 end
