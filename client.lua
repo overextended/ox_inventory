@@ -1,5 +1,5 @@
 local Items, Weapons = table.unpack(module('items', true))
-local Stashes = module('inventory', true)
+local Stashes = data('stashes')
 local Vehicle = data('vehicles')
 local Shops = {}
 

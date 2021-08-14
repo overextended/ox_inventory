@@ -55,12 +55,12 @@ AddEventHandler('ox_inventory:createDrop', function(source, slot, toSlot)
 	TriggerClientEvent('ox_inventory:createDrop', -1, {drop, coords}, source)
 end)
 
-local Stash, Vehicle = module('inventory', true), data('vehicles')
+local Stashes, Vehicle = data('stashes'), data('vehicles')
 ox.RegisterServerCallback('ox_inventory:openInventory', function(source, cb, inv, data) 
 	local left, right = Inventory(source)
 	if data then
 		if inv == 'stash' then
-			local stash = Stash[data.id]
+			local stash = Stashes[data.id]
 			if stash.owner == nil then
 				right = Inventory(stash.name)
 				if not right then

@@ -1,6 +1,6 @@
 local M = {}
 local Inventories = {}
-local Utils, Stashes, Items = module('utils', true), module('inventory', true), module('items')
+local Utils, Items = module('utils', true), module('items')
 local metatable = setmetatable(M, {
 	__call = function(self, ...)
 		if #({...}) == 1 then
