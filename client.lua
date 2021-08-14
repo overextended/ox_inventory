@@ -93,6 +93,7 @@ RegisterNetEvent('ox_inventory:closeInventory', function(options)
 		else
 			SendNUIMessage({ action = 'closeInventory' })
 		end
+		invOpen = nil
 		Wait(500)
 		if currentInventory then TriggerServerEvent('ox_inventory:closeInventory') end
 		invOpen, currentInventory = false, nil
@@ -100,7 +101,7 @@ RegisterNetEvent('ox_inventory:closeInventory', function(options)
 end)
 
 local OpenInventory = function(inv, data)
-	if not invOpen or inv == 'drop' then
+	if invOpen == false or inv == 'drop' then
 		if not isBusy or not CanOpenInventory() then
 			ox.TriggerServerCallback('ox_inventory:openInventory', function(left, right)
 				if not IsPedInAnyVehicle(playerPed, false) then ox.playAnim(1000, 'pickup_object', 'putdown_low', 5.0, 1.5, 1.0, 48, 0.0, 0, 0, 0) end
