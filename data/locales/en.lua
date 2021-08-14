@@ -1,6 +1,6 @@
-Locales['en'] = {
-	['male'] = "male",
-	['female'] = "female",
+local Data = {
+	['male'] = "Male",
+	['female'] = "Female",
 	['used'] = "Used",
 	['removed'] = "Removed",
 	['added'] = "Added",

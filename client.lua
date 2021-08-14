@@ -124,7 +124,7 @@ local OpenInventory = function(inv, data)
 					}
 				})
 			end, inv, data)
-		else Notify({type = 'error', text = _U('inventory_cannot_open'), duration = 2500}) end
+		else Notify({type = 'error', text = ox.locale('inventory_cannot_open'), duration = 2500}) end
 	else TriggerEvent('ox_inventory:closeInventory') end
 end
 
@@ -216,7 +216,7 @@ RegisterNetEvent('ox_inventory:setPlayerInventory', function(data)
 		RegisterCommand('hotkey'..i, function() Hotkey(i) end)
 		RegisterKeyMapping('hotkey'..i, 'Use hotbar item '..i..'~', 'keyboard', i)
 	end
-	Notify({text = _U('inventory_setup'), duration = 2500})
+	Notify({text = ox.locale('inventory_setup'), duration = 2500})
 
 	SetInterval(1, 250, function()
 		playerCoords = GetEntityCoords(playerPed)
@@ -341,10 +341,10 @@ end)
 
 RegisterCommand('inv2', function()
 	if not invOpen then
-		if isBusy then return Notify({type = 'error', text = _U('inventory_cannot_open'), duration = 2500})
+		if isBusy then return Notify({type = 'error', text = ox.locale('inventory_cannot_open'), duration = 2500})
 		elseif currentInventory then TriggerEvent('ox_inventory:closeInventory')
 		else
-			if not CanOpenInventory() then return Notify({type = 'error', text = _U('inventory_cannot_open'), duration = 2500}) end
+			if not CanOpenInventory() then return Notify({type = 'error', text = ox.locale('inventory_cannot_open'), duration = 2500}) end
 			if IsPedInAnyVehicle(playerPed, false) then
 				local vehicle = GetVehiclePedIsIn(playerPed, false)
 				if NetworkGetEntityIsNetworked(vehicle) then
@@ -424,7 +424,7 @@ RegisterCommand('inv2', function()
 							end
 							if lastVehicle then TriggerEvent('ox_inventory:closeInventory') end
 						end
-					else Notify({type = 'error', text = _U('vehicle_locked'), duration = 2500}) end
+					else Notify({type = 'error', text = ox.locale('vehicle_locked'), duration = 2500}) end
 				end
 			end
 		end
@@ -433,7 +433,7 @@ end)
 
 RegisterNUICallback('notification', function(data)
 	if data.type == 2 then data.type = 'error' else data.type = 'inform' end
-	Notify({type = data.type, text = _U(data.message), duration = 2500})
+	Notify({type = data.type, text = ox.locale(data.message), duration = 2500})
 end)
 
 RegisterNUICallback('useItem', function(data, cb)

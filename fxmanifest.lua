@@ -12,10 +12,8 @@ dependencies {
 
 shared_scripts {
 	'@es_extended/imports.lua',
-	'@es_extended/locale.lua',
 	'config.lua',
-	'modules/*.lua',
-	'data/locales/en.lua'
+	'modules/*.lua'
 }
 
 client_scripts {
@@ -33,5 +31,6 @@ files {
 	'html/build/**/*',
 	'modules/**/shared.lua',
 	'modules/**/client.lua',
-	'data/*.lua'
+	'data/*.lua',
+	'data/**/*.lua'
 }

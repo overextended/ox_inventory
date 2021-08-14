@@ -1,4 +1,6 @@
-local Modules = {}
+data = function(file)
+	return load(LoadResourceFile(ox.name, 'data/'..file..'.lua')..'return Data', file, 't')()
+end
 
 ox.concat = function(d, ...)
 	if type(...) == 'string' then
@@ -14,6 +16,13 @@ ox.trim = function(string)
 	return string:match("^%s*(.-)%s*$")
 end
 
+
+local Locales = data('locales/'..Config.Locale)
+ox.locale = function(string, ...)
+	return Locales[string]:format(...)
+end
+
+local Modules = {}
 module = function(file, shared)
 	local name = shared and '_'..file or file
 	if not Modules[name] then
@@ -23,10 +32,6 @@ module = function(file, shared)
 		Modules[name] = func()
 	end
 	return Modules[name]
-end
-
-data = function(file)
-	return load(LoadResourceFile(ox.name, 'data/'..file..'.lua')..'return Data', file, 't')()
 end
 
 if ox.server then
