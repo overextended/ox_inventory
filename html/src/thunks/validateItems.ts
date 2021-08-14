@@ -1,8 +1,8 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
 import { fetchNui } from "../utils/fetchNui";
 
-export const validateItems = createAsyncThunk(
-  "inventory/validateItems",
+export const validateMove = createAsyncThunk(
+  "inventory/validateMove",
   async (
     data: {
       fromSlot: number;
@@ -13,10 +13,14 @@ export const validateItems = createAsyncThunk(
     },
     { rejectWithValue }
   ) => {
-    const response = await fetchNui<boolean>("swapItems", data);
+    try {
+      const response = await fetchNui<boolean>("swapItems", data);
 
-    if (response === false) {
-      rejectWithValue(response);
+      if (response === false) {
+        rejectWithValue(response);
+      }
+    } catch (error) {
+      rejectWithValue(false);
     }
   }
 );

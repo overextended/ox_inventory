@@ -5,7 +5,7 @@ import {
   getItemData,
   canStack,
 } from "../helpers";
-import { validateItems } from "../reducers/validateItems";
+import { validateMove } from "../thunks/validateItems";
 import { store } from "../store";
 import { DragSlot } from "../typings";
 import { moveSlots, stackSlots, swapSlots } from "../store/inventory";
@@ -56,7 +56,7 @@ export const onMove = (source: DragSlot, target?: DragSlot) => {
   };
 
   const promise = store.dispatch(
-    validateItems({
+    validateMove({
       ...data,
       fromSlot: sourceSlot.slot,
       toSlot: targetSlot.slot,
