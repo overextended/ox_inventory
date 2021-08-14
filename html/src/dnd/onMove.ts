@@ -1,14 +1,20 @@
-import { isSlotWithItem, findAvailableSlot, findInventory } from "../helpers";
-import { validateItems } from "../actions/validateItems";
+import {
+  isSlotWithItem,
+  findAvailableSlot,
+  getTargetInventory,
+  getItemData,
+  canStack,
+} from "../helpers";
+import { validateItems } from "../reducers/validateItems";
 import { store } from "../store";
-import { DragSlot, SlotWithItemData } from "../typings";
-import { Items } from "../store/items";
-import { moveSlots, swapSlots } from "../store/inventory";
+import { DragSlot } from "../typings";
+import { moveSlots, stackSlots, swapSlots } from "../store/inventory";
+import toast from "react-hot-toast";
 
 export const onMove = (source: DragSlot, target?: DragSlot) => {
   const { inventory: state } = store.getState();
 
-  const [sourceInventory, targetInventory] = findInventory(
+  const { sourceInventory, targetInventory } = getTargetInventory(
     state,
     source.inventory,
     target?.inventory
@@ -17,24 +23,21 @@ export const onMove = (source: DragSlot, target?: DragSlot) => {
   const sourceSlot = sourceInventory.items[source.item.slot - 1];
 
   if (!isSlotWithItem(sourceSlot)) {
-    return;
+    throw new Error("Slot is empty!");
   }
 
-  if (Items[sourceSlot.name] === undefined) {
-    return;
-  }
+  const sourceItem = getItemData(sourceSlot);
 
-  const sourceItem = {
-    ...sourceSlot,
-    ...Items[sourceSlot.name],
-  } as SlotWithItemData;
+  if (sourceItem === undefined) {
+    throw new Error(`${sourceSlot.name} item data undefined!`);
+  }
 
   const targetSlot = target
     ? targetInventory.items[target.item.slot - 1]
     : findAvailableSlot(sourceItem, targetInventory.items);
 
   if (targetSlot === undefined) {
-    return;
+    throw new Error("Target slot undefined!");
   }
 
   const count =
@@ -44,50 +47,41 @@ export const onMove = (source: DragSlot, target?: DragSlot) => {
       ? sourceSlot.count
       : state.itemAmount;
 
-  store.dispatch(
+  const data = {
+    fromSlot: sourceItem,
+    toSlot: targetSlot,
+    fromType: sourceInventory.type,
+    toType: targetInventory.type,
+    count: count,
+  };
+
+  const promise = store.dispatch(
     validateItems({
+      ...data,
       fromSlot: sourceSlot.slot,
-      fromType: sourceInventory.type,
       toSlot: targetSlot.slot,
-      toType: targetInventory.type,
-      count: count,
     })
   );
 
-  if (isSlotWithItem(targetSlot)) {
-    if (
-      sourceItem.stack &&
-      sourceItem.name === targetSlot.name &&
-      sourceItem.metadata === targetSlot.metadata
-    ) {
-      store.dispatch(
-        moveSlots({
-          fromSlot: sourceItem,
-          fromType: sourceInventory.type,
-          toSlot: targetSlot,
-          toType: targetInventory.type,
-          count,
-        })
-      );
-    } else {
-      store.dispatch(
-        swapSlots({
-          fromSlot: sourceSlot,
-          fromType: sourceInventory.type,
-          toSlot: targetSlot,
-          toType: targetInventory.type,
-        })
-      );
-    }
-  } else {
-    store.dispatch(
-      moveSlots({
-        fromSlot: sourceItem,
-        fromType: sourceInventory.type,
-        toSlot: targetSlot,
-        toType: targetInventory.type,
-        count,
-      })
-    );
-  }
+  toast.promise(promise, {
+    loading: "VALIDATING",
+    success: "VALIDATED",
+    error: "ERROR",
+  });
+
+  isSlotWithItem(targetSlot)
+    ? canStack(sourceItem, targetSlot)
+      ? store.dispatch(
+          stackSlots({
+            ...data,
+            toSlot: targetSlot,
+          })
+        )
+      : store.dispatch(
+          swapSlots({
+            ...data,
+            toSlot: targetSlot,
+          })
+        )
+    : store.dispatch(moveSlots(data));
 };

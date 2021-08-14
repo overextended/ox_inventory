@@ -1,22 +1,23 @@
 import { CaseReducer, PayloadAction } from "@reduxjs/toolkit";
-import { Inventory, State, Slot } from "../typings";
-import { findInventory } from "../helpers";
+import { getTargetInventory } from "../helpers";
+import { Inventory, State, SlotWithItem, SlotWithItemData } from "../typings";
 
-const swapSlots: CaseReducer<
+export const swapSlotsReducer: CaseReducer<
   State,
   PayloadAction<{
-    fromSlot: Slot;
+    fromSlot: SlotWithItemData;
     fromType: Inventory["type"];
-    toSlot: Slot;
+    toSlot: SlotWithItem;
     toType: Inventory["type"];
   }>
 > = (state, action) => {
   const { fromSlot, fromType, toSlot, toType } = action.payload;
 
-  const sourceInventory =
-    fromType === "player" ? state.playerInventory : state.rightInventory;
-  const targetInventory =
-    toType === "player" ? state.playerInventory : state.rightInventory;
+  const { sourceInventory, targetInventory } = getTargetInventory(
+    state,
+    fromType,
+    toType
+  );
 
   [
     sourceInventory.items[fromSlot.slot - 1],
@@ -32,5 +33,3 @@ const swapSlots: CaseReducer<
     },
   ];
 };
-
-export default swapSlots;

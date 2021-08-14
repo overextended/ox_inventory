@@ -8,13 +8,16 @@ import {
 } from "@reduxjs/toolkit";
 import type { RootState } from ".";
 import { State } from "../typings";
-import setupInventoryReducer from "../actions/setupInventory";
-import swapSlotsReducer from "../actions/swapSlots";
-import moveSlotsReducer from "../actions/moveSlots";
-import refreshSlotsReducer from "../actions/refreshSlots";
+import {
+  setupInventoryReducer,
+  refreshSlotsReducer,
+  stackSlotsReducer,
+  swapSlotsReducer,
+  moveSlotsReducer,
+} from "../reducers";
 
 const initialState: State = {
-  playerInventory: {
+  leftInventory: {
     id: "",
     type: "",
     slots: 0,
@@ -39,8 +42,9 @@ export const inventorySlice = createSlice({
   name: "inventory",
   initialState,
   reducers: {
-    setupInventory: setupInventoryReducer,
+    stackSlots: stackSlotsReducer,
     swapSlots: swapSlotsReducer,
+    setupInventory: setupInventoryReducer,
     moveSlots: moveSlotsReducer,
     refreshSlots: refreshSlotsReducer,
     setItemAmount: (state, action: PayloadAction<number>) => {
@@ -55,7 +59,7 @@ export const inventorySlice = createSlice({
       state.isBusy = true;
 
       state.history = {
-        playerInventory: current(state.playerInventory),
+        leftInventory: current(state.leftInventory),
         rightInventory: current(state.rightInventory),
       };
     });
@@ -65,10 +69,10 @@ export const inventorySlice = createSlice({
     builder.addMatcher(isRejected, (state) => {
       if (
         state.history &&
-        state.history.playerInventory &&
+        state.history.leftInventory &&
         state.history.rightInventory
       ) {
-        state.playerInventory = state.history.playerInventory;
+        state.leftInventory = state.history.leftInventory;
         state.rightInventory = state.history.rightInventory;
       }
       state.isBusy = false;
@@ -82,10 +86,11 @@ export const {
   setupInventory,
   swapSlots,
   moveSlots,
-  refreshSlots
+  stackSlots,
+  refreshSlots,
 } = inventorySlice.actions;
-export const selectPlayerInventory = (state: RootState) =>
-  state.inventory.playerInventory;
+export const selectLeftInventory = (state: RootState) =>
+  state.inventory.leftInventory;
 export const selectRightInventory = (state: RootState) =>
   state.inventory.rightInventory;
 export const selectItemAmount = (state: RootState) =>

@@ -55,7 +55,7 @@ const InventorySlot: React.FC<SlotProps> = (props) => {
     <>
       <div
         ref={(el) => {
-          drag(el);
+          props.item.name && drag(el);
           drop(el);
         }}
         className="item-container"
@@ -89,8 +89,7 @@ const InventorySlot: React.FC<SlotProps> = (props) => {
             </div>
             <WeightBar percent={25} durability />
             <div className="item-label">
-              {Items[props.item.name]?.label || "NO LABEL"} [{props.item.slot}]{" "}
-              {isBusy && "BUSY"}
+              {Items[props.item.name]?.label || "NO LABEL"} [{props.item.slot}]
             </div>
           </>
         )}

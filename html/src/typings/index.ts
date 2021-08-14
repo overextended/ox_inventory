@@ -1,11 +1,11 @@
 export type State = {
-  playerInventory: Inventory;
+  leftInventory: Inventory;
   rightInventory: Inventory;
   itemAmount: number;
   shiftPressed: boolean;
   isBusy: boolean;
   history?: {
-    playerInventory: Inventory;
+    leftInventory: Inventory;
     rightInventory: Inventory;
   };
 };
