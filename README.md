@@ -1,14 +1,9 @@
-<h1 align='center'><a href='https://thelindat.github.io/linden_inventory/'>Documentation</a></h1><p align='center'>Click the link above for information on setup, installation, and improving compatibility with other resources.
+<h2 align='center'><a href='https://thelindat.github.io/linden_inventory/'>Click here to view the install guide and documentation</a></h2>
 <p align='center'><a href='https://streamable.com/bggvpg'>Showcase</a> | <a href='https://discord.gg/hmcmv3P7YW'>Discord</a> | <a href='https://thelindat.github.io/linden_inventory/media'>Media</a></p>
 
-##### If you require the items list in another resource, rather than querying the database
-```lua
---MySQL.ready(function()
---	local items = MySQL.Sync.fetchAll('SELECT * FROM items')
 
-MySQL.ready(function()
-	local items = exports.linden_inventory:Items()
-```
+<h3 align='center'> This resource is undergoing a complete rewrite - there will be no more patches<br>
+I strongly advice waiting for the update before setting up this inventory</h3>
 
 
 <br><br><br>
