@@ -164,8 +164,8 @@ M.Create = function(...)
 			self.items, self.weight, self.datastore = M.Load(self.id, self.type, self.owner)
 		end
 		Inventories[self.id] = self
+		return Inventories[self.id]
 	end
-	return
 end
 
 M.Save = function(inv)

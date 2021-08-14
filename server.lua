@@ -64,15 +64,13 @@ ox.RegisterServerCallback('ox_inventory:openInventory', function(source, cb, inv
 			if stash.owner == nil then
 				right = Inventory(stash.name)
 				if not right then
-					Inventory.Create(stash.name, stash.name, inv, stash.slots, 0, stash.weight, false)
-					right = Inventory(stash.name)
+					right = Inventory.Create(stash.name, stash.name, inv, stash.slots, 0, stash.weight, false)
 				end
 			else
 				local owner = stash.owner == true and left.owner or stash.owner
 				right = Inventory(stash.name..owner)
 				if not right then
-					Inventory.Create(stash.name..owner, stash.name, inv, stash.slots, 0, stash.weight, owner)
-					right = Inventory(stash.name..owner)
+					right = Inventory.Create(stash.name..owner, stash.name, inv, stash.slots, 0, stash.weight, owner)
 				end
 			end
 		else
@@ -80,8 +78,7 @@ ox.RegisterServerCallback('ox_inventory:openInventory', function(source, cb, inv
 			if not right then
 				if data.class then
 					local vehicle = Vehicle[inv][data.class]
-					Inventory.Create(data.id, data.id:sub(6), inv, vehicle[1], 0, vehicle[2], false)
-					right = Inventory(data.id)
+					right = Inventory.Create(data.id, data.id:sub(6), inv, vehicle[1], 0, vehicle[2], false)
 				end
 			end
 		end

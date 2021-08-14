@@ -309,6 +309,7 @@ end)
 
 RegisterNetEvent('esx:playerLoaded', function(xPlayer)
 	ESX.PlayerData = xPlayer
+	ESX.PlayerLoaded = true
 end)
 
 RegisterNetEvent('esx:onPlayerLogout', function()
