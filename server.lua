@@ -105,33 +105,35 @@ ox.RegisterServerCallback('ox_inventory:swapItems', function(source, cb, data)
 		else
 			local toInventory = data.toType == 'player' and playerInventory or Inventory(playerInventory.open)
 			local fromInventory = data.fromType == 'player' and playerInventory or Inventory(playerInventory.open)
-			local fromSlot, toSlot = fromInventory.items[data.fromSlot], toInventory.items[data.toSlot]
-			if fromSlot then
-				if data.count > fromSlot.count then data.count = fromSlot.count end
-				if toSlot and toSlot.name == fromSlot.name then
-					fromSlot.count = fromSlot.count - data.count
-					toSlot.count = toSlot.count + data.count
-				elseif toSlot and ((toSlot.name ~= fromSlot.name) or (not Utils.MatchTables(toSlot.metadata, fromSlot.metadata))) then
-					toSlot, fromSlot = Inventory.SwapSlots({fromInventory, toInventory}, {data.fromSlot, data.toSlot})
-				elseif data.count <= fromSlot.count then
-					fromSlot.count = fromSlot.count - data.count
-					toSlot = Utils.Copy(fromSlot)
-					toSlot.count = data.count
-					toSlot.slot = data.toSlot
-				else
-					return print('swapItems', data.fromType, data.fromSlot, 'to', data.toType, data.toSlot)
+			if toInventory and fromInventory then
+				local fromSlot, toSlot = fromInventory.items[data.fromSlot], toInventory.items[data.toSlot]
+				if fromSlot then
+					if data.count > fromSlot.count then data.count = fromSlot.count end
+					if toSlot and toSlot.name == fromSlot.name then
+						fromSlot.count = fromSlot.count - data.count
+						toSlot.count = toSlot.count + data.count
+					elseif toSlot and ((toSlot.name ~= fromSlot.name) or (not Utils.MatchTables(toSlot.metadata, fromSlot.metadata))) then
+						toSlot, fromSlot = Inventory.SwapSlots({fromInventory, toInventory}, {data.fromSlot, data.toSlot})
+					elseif data.count <= fromSlot.count then
+						fromSlot.count = fromSlot.count - data.count
+						toSlot = Utils.Copy(fromSlot)
+						toSlot.count = data.count
+						toSlot.slot = data.toSlot
+					else
+						return print('swapItems', data.fromType, data.fromSlot, 'to', data.toType, data.toSlot)
+					end
+					if fromSlot.count < 1 then fromSlot = nil end
+					if data.fromType == 'player' then items[data.fromSlot] = fromSlot or false end
+					if data.toType == 'player' then items[data.toSlot] = toSlot or false end
+					if next(items) then
+						ret = {weight=playerInventory.weight, items=items}
+						Inventory.SyncInventory(playerInventory:player(), playerInventory, items)
+					end
+					if fromInventory.changed ~= nil then fromInventory:set('changed', true) end
+					if toInventory.changed ~= nil then toInventory:set('changed', true) end
+					fromInventory.items[data.fromSlot], toInventory.items[data.toSlot] = fromSlot, toSlot
+					return cb(true, ret)
 				end
-				if fromSlot.count < 1 then fromSlot = nil end
-				if data.fromType == 'player' then items[data.fromSlot] = fromSlot or false end
-				if data.toType == 'player' then items[data.toSlot] = toSlot or false end
-				if next(items) then
-					ret = {weight=playerInventory.weight, items=items}
-					Inventory.SyncInventory(playerInventory:player(), playerInventory, items)
-				end
-				if fromInventory.changed ~= nil then fromInventory:set('changed', true) end
-				if toInventory.changed ~= nil then toInventory:set('changed', true) end
-				fromInventory.items[data.fromSlot], toInventory.items[data.toSlot] = fromSlot, toSlot
-				return cb(true, ret)
 			end
 		end
 	end
