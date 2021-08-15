@@ -1,16 +1,21 @@
-<h2 align='center'><a href='https://thelindat.github.io/linden_inventory/'>Click here to view the install guide and documentation</a></h2>
-<p align='center'><a href='https://streamable.com/bggvpg'>Showcase</a> | <a href='https://discord.gg/hmcmv3P7YW'>Discord</a> | <a href='https://thelindat.github.io/linden_inventory/media'>Media</a></p>
+<h1 align='center'><a href='https://thelindat.github.io/ox_inventory/'>Documentation</a></h1><p align='center'>Click the link above for information on setup, installation, and improving compatibility with other resources.
+<p align='center'><a href='https://streamable.com/bggvpg'>Showcase</a> | <a href='https://discord.gg/hmcmv3P7YW'>Discord</a> | <a href='https://thelindat.github.io/ox_inventory/media'>Media</a></p>
 
+##### If you require the items list in another resource, rather than querying the database
+```lua
+--MySQL.ready(function()
+--	local items = MySQL.Sync.fetchAll('SELECT * FROM items')
 
-<h3 align='center'> This resource is undergoing a complete rewrite - there will be no more patches<br>
-I strongly advice waiting for the update before setting up this inventory</h3>
+MySQL.ready(function()
+	local items = exports.ox_inventory:Items()
+```
 
 
 <br><br><br>
 
 
 ## What's changed?
-##### This information concerns the initial release of linden_inventory
+##### This information concerns the initial release of ox_inventory
 Despite all the changes I've implemented to hsn-inventory, there's a lot that I hadn't changed since I didn't want to break things I wasn't familiar with. There was a lot of functions or events performing the same (or very similar) tasks, sometimes only being used once if at all; my biggest issue though was with the inventory data saving. I've moved the project so that a still incomplete but mostly working version of hsn-inventory can remain as it is, but without any future support by myself.
 
 * Cleaned up or optimised many functions and events
@@ -36,7 +41,7 @@ Despite all the changes I've implemented to hsn-inventory, there's a lot that I 
 <table><tr><td>
 Linden Inventory for ESX Legacy  
 
-Copyright (C) 2021  Linden, Hasan  
+Copyright (C) 2021  Linden, Dunak, Hasan
 
 
 This program is free software: you can redistribute it and/or modify

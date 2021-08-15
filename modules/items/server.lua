@@ -69,7 +69,7 @@ Data[']]..i.name..[['] = {
 		count = count + 1
 	end
 	ox.info('Inventory has fully loaded with '..count..' items')
-	exports.ghmattimysql:executeSync('DELETE FROM `linden_inventory` WHERE `lastupdated` < (NOW() - INTERVAL '..Config.DBCleanup..') OR `data` = "[]"')
+	exports.ghmattimysql:executeSync('DELETE FROM `ox_inventory` WHERE `lastupdated` < (NOW() - INTERVAL '..Config.DBCleanup..') OR `data` = "[]"')
 	collectgarbage('collect') -- clean up from initialisation
 	--[[local ignore = {[0] = '?', [`WEAPON_UNARMED`] = 'unarmed', [966099553] = 'shovel'}
 	while true do

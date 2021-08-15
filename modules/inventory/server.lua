@@ -178,7 +178,7 @@ M.Save = function(inv)
 				inventory, inv.owner
 			})
 		else
-			exports.ghmattimysql:execute('INSERT INTO linden_inventory (name, data, owner) VALUES (@name, @data, @owner) ON DUPLICATE KEY UPDATE data = @data', {
+			exports.ghmattimysql:execute('INSERT INTO ox_inventory (name, data, owner) VALUES (@name, @data, @owner) ON DUPLICATE KEY UPDATE data = @data', {
 				['@name'] = inv.id,
 				['@data'] = inventory,
 				['@owner'] = inv.owner
@@ -191,7 +191,7 @@ M.Save = function(inv)
 			inventory, inv.id
 		})
 	else
-		exports.ghmattimysql:execute('INSERT INTO linden_inventory (name, data) VALUES (@name, @data) ON DUPLICATE KEY UPDATE data = @data', {
+		exports.ghmattimysql:execute('INSERT INTO ox_inventory (name, data) VALUES (@name, @data) ON DUPLICATE KEY UPDATE data = @data', {
 			['@name'] = inv.id,
 			['@data'] = inventory
 		})
@@ -214,7 +214,7 @@ M.Load = function(id, inv, owner)
 				datastore = true
 			else result = json.decode(result) end
 		elseif owner then
-			result = exports.ghmattimysql:scalarSync('SELECT data FROM linden_inventory WHERE name = ? AND owner = ?', {
+			result = exports.ghmattimysql:scalarSync('SELECT data FROM ox_inventory WHERE name = ? AND owner = ?', {
 				id, owner
 			})
 			if result then result = json.decode(result) end
@@ -222,7 +222,7 @@ M.Load = function(id, inv, owner)
 			if Config.RandomLoot then result = GenerateDatastore(id, inv) else result = {} end
 			datastore = true
 		else
-			result = exports.ghmattimysql:scalarSync('SELECT data FROM linden_inventory WHERE name = ?', {
+			result = exports.ghmattimysql:scalarSync('SELECT data FROM ox_inventory WHERE name = ?', {
 				id
 			})
 			if result then result = json.decode(result) end
