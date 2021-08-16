@@ -113,7 +113,7 @@ Data.BlackMarketArms = {
 }
 
 
-Data.Shops = {
+Data.Stores = {
 	{ type = Data.Ammunation, coords = vector3(-662.180, -934.961, 21.829)--[[, currency = 'money']] }, -- can set currency like so
 	{ type = Data.Ammunation, coords = vector3(810.25, -2157.60, 29.62)--[[, currency = 'burger']] },
 	{ type = Data.Ammunation, coords = vector3(1693.44, 3760.16, 34.71) },

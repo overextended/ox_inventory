@@ -1,7 +1,7 @@
 local Items, Weapons = table.unpack(module('items', true))
 local Stashes = data('stashes')
 local Vehicle = data('vehicles')
-local Shops = {}
+local Shops = data('shops')
 
 local Blips, Drops, nearbyMarkers, cancelled, invOpen, weaponTimer = {}, {}, {}, false, false, 0
 local playerId, playerPed, playerCoords, invOpen, usingWeapon, currentWeapon, currentMarker
@@ -89,6 +89,7 @@ RegisterNetEvent('ox_inventory:closeInventory', function(options)
 			TaskPlayAnimAdvanced(playerPed, animDict, anim, GetEntityCoords(playerPed, true), 0, 0, GetEntityHeading(playerPed), 2.0, 2.0, 1000, 49, 0.25, 0, 0)
 			Citizen.Wait(900)
 			ClearPedTasks(playerPed)
+			RemoveAnimDict(animDict)
 			SetVehicleDoorShut(currentInventory.entity, currentInventory.door, false)
 		else
 			SendNUIMessage({ action = 'closeInventory' })
@@ -193,8 +194,8 @@ RegisterNetEvent('ox_inventory:setPlayerInventory', function(data)
 		end
 		Blips = {}
 	end
---[[	for k, v in pairs(Config.Shops) do
-		if not v.type then v.type = Config.General end
+	for k, v in pairs(Shops.Stores) do
+		if not v.type then v.type = Shops.General end
 		if v.type and v.type.blip and (not v.job or v.job == ESX.PlayerData.job.name) then
 			local data = v.type
 			Blips[k] = AddBlipForCoord(v.coords.x, v.coords.y, v.coords.z)
@@ -207,7 +208,7 @@ RegisterNetEvent('ox_inventory:setPlayerInventory', function(data)
 			AddTextComponentString(data.name)
 			EndTextCommandSetBlipName(Blips[k])
 		end
-	end]]
+	end
 	RegisterKeyMapping('inv', 'Open player inventory~', 'keyboard', Config.Keys[1])
 	RegisterKeyMapping('inv2', 'Open secondary inventory~', 'keyboard', Config.Keys[2])
 	RegisterKeyMapping('hotbar', 'Display inventory hotbar~', 'keyboard', Config.Keys[3])
@@ -232,7 +233,7 @@ RegisterNetEvent('ox_inventory:setPlayerInventory', function(data)
 					end
 				elseif not marker and distance < 8 then nearbyMarkers['drop'..k] = {v, 150, 30, 30} elseif marker and distance > 8 then nearbyMarkers['drop'..k] = nil end
 			end
-			for k, v in pairs(Shops) do
+			for k, v in pairs(Shops.Stores) do
 				local distance = #(playerCoords - v.coords)
 				local marker = nearbyMarkers['shop'..k]
 				if distance < 1.5 then

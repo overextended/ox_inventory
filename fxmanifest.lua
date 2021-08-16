@@ -6,8 +6,7 @@ versioncheck 'https://raw.githubusercontent.com/overextended/ox_inventory/main/f
 version '2.0.0'
 
 dependencies {
-	'es_extended',
-	'ghmattimysql'
+	'es_extended'
 }
 
 shared_scripts {

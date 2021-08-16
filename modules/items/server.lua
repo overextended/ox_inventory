@@ -13,14 +13,12 @@ local metatable = setmetatable(M, {
 })
 
 CreateThread(function()
-	Wait(200)
-	repeat Citizen.Wait(100) until GetResourceState('ghmattimysql') == 'started'
 	if ESX == nil or SetInterval == nil then return ox.error('Unable to locate dependencies - refer to the documentation') end
 	local OneSync = GetConvar('onesync_enabled', false) == 'true'
 	local Infinity = GetConvar('onesync_enableInfinity', false) == 'true'
 	if not OneSync and not Infinity then return ox.error('OneSync is not enabled on this server - refer to the documentation')
 	elseif Infinity then ox.info('Server is running OneSync Infinity') else ox.info('Server is running OneSync Legacy') end
-	local items, query = exports.ghmattimysql:executeSync('SELECT * FROM items', {})
+	local items, query = exports.oxmysql:executeSync('SELECT * FROM items', {})
 	for i=1, #items do
 		local i = items[i]
 		if not query then query = "DELETE FROM items WHERE name = '"..i.name.."'"
@@ -52,10 +50,10 @@ Data[']]..i.name..[['] = {
 		file:write(table.concat(dump2))
 		sql:close()
 		file:close()
-		exports.ghmattimysql:execute(query, {
+		exports.oxmysql:execute(query, {
 		}, function(result)
-			if result and result.affectedRows > 0 then
-				ox.info('Removed', result.affectedRows, 'items from the database')
+			if result > 0 then
+				ox.info('Removed', result, 'items from the database')
 			end
 		end)
 	end
@@ -69,7 +67,7 @@ Data[']]..i.name..[['] = {
 		count = count + 1
 	end
 	ox.info('Inventory has fully loaded with '..count..' items')
-	exports.ghmattimysql:executeSync('DELETE FROM `ox_inventory` WHERE `lastupdated` < (NOW() - INTERVAL '..Config.DBCleanup..') OR `data` = "[]"')
+	exports.oxmysql:executeSync('DELETE FROM `ox_inventory` WHERE `lastupdated` < (NOW() - INTERVAL '..Config.DBCleanup..') OR `data` = "[]"')
 	collectgarbage('collect') -- clean up from initialisation
 	--[[local ignore = {[0] = '?', [`WEAPON_UNARMED`] = 'unarmed', [966099553] = 'shovel'}
 	while true do

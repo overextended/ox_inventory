@@ -2,10 +2,9 @@ local M = {}
 local Inventories = {}
 local Utils, Items = module('utils', true), module('items')
 local metatable = setmetatable(M, {
-	__call = function(self, ...)
-		if #({...}) == 1 then
-			local inventory = Inventories[...]
-			if inventory then return inventory else return false end
+	__call = function(self, arg)
+		if arg then
+			if Inventories[arg] then return Inventories[arg] else return false end
 		end
 		return self
 	end
@@ -174,24 +173,25 @@ M.Save = function(inv)
 	local inventory = json.encode(Minimal(inv))
 	if inv.owner then
 		if inv.type == 'player' then
-			exports.ghmattimysql:execute('UPDATE users SET inventory = ? WHERE identifier = ?', {
+			exports.oxmysql:executeSync('UPDATE users SET inventory = ? WHERE identifier = ?', {
 				inventory, inv.owner
 			})
+			return
 		else
-			exports.ghmattimysql:execute('INSERT INTO ox_inventory (name, data, owner) VALUES (@name, @data, @owner) ON DUPLICATE KEY UPDATE data = @data', {
+			exports.oxmysql:executeSync('INSERT INTO ox_inventory (name, data, owner) VALUES (@name, @data, @owner) ON DUPLICATE KEY UPDATE data = @data', {
 				['@name'] = inv.id,
 				['@data'] = inventory,
 				['@owner'] = inv.owner
 			})
 		end
 	elseif Vehicle[inv.type] then
-		if Config.TrimPlate then inv.id = ox.trim(inv.id) end
-		inv.id = inv.id:sub(6)
-		exports.ghmattimysql:execute('UPDATE owned_vehicles SET '..inv.type..' = ? WHERE plate = ?', {
-			inventory, inv.id
+		local plate = inv.id:sub(6)
+		if Config.TrimPlate then plate = ox.trim(plate) end
+		exports.oxmysql:executeSync('UPDATE owned_vehicles SET '..inv.type..' = ? WHERE plate = "'..plate..'"', {
+			inventory
 		})
 	else
-		exports.ghmattimysql:execute('INSERT INTO ox_inventory (name, data) VALUES (@name, @data) ON DUPLICATE KEY UPDATE data = @data', {
+		exports.oxmysql:executeSync('INSERT INTO ox_inventory (name, data) VALUES (@name, @data) ON DUPLICATE KEY UPDATE data = @data', {
 			['@name'] = inv.id,
 			['@data'] = inventory
 		})
@@ -204,31 +204,32 @@ M.Load = function(id, inv, owner)
 	local isVehicle = Vehicle[inv]
 	if id and inv then
 		if isVehicle then
-			if Config.TrimPlate then id = ox.trim(id) end
-			id = id:sub(6)
-			result = exports.ghmattimysql:scalarSync('SELECT '..inv..' FROM owned_vehicles WHERE plate = ?', {
-				id
+			local plate = id:sub(6)
+			if Config.TrimPlate then plate = ox.trim(plate) end
+			result = exports.oxmysql:executeSync('SELECT '..inv..' FROM owned_vehicles WHERE plate = ?', {
+				plate
 			})
 			if result == false then
 				if Config.RandomLoot then result = GenerateDatastore(id, inv) else result = {} end
 				datastore = true
-			else result = json.decode(result) end
+			else result = json.decode(result[1][inv]) end
 		elseif owner then
-			result = exports.ghmattimysql:scalarSync('SELECT data FROM ox_inventory WHERE name = ? AND owner = ?', {
+			result = exports.oxmysql:executeSync('SELECT data FROM ox_inventory WHERE name = ? AND owner = ?', {
 				id, owner
 			})
-			if result then result = json.decode(result) end
+			if result then result = json.decode(result[1].data) end
 		elseif inv == 'dumpster' then
 			if Config.RandomLoot then result = GenerateDatastore(id, inv) else result = {} end
 			datastore = true
 		else
-			result = exports.ghmattimysql:scalarSync('SELECT data FROM ox_inventory WHERE name = ?', {
+			result = exports.oxmysql:executeSync('SELECT data FROM ox_inventory WHERE name = ?', {
 				id
 			})
-			if result then result = json.decode(result) end
+			if result then result = json.decode(result[1].data) end
 		end
 	end
-	if result then
+	if next(result) then
+		print(ESX.DumpTable(result))
 		for k, v in pairs(result) do
 			local item = Items(v.name)
 			if item then
