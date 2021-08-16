@@ -60,7 +60,7 @@ Data[']]..i.name..[['] = {
 			end
 		end)
 	end
-	Wait(2000)
+	--Wait(2000)
 	TriggerEvent('ox_inventory:itemList', Items)
 	local time = os.clock()
 	exports.oxmysql:execute('DELETE FROM `ox_inventory` WHERE `lastupdated` < (NOW() - INTERVAL '..Config.DBCleanup..') OR `data` = "[]"',

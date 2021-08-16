@@ -40,15 +40,15 @@ end
 local Timer = function(inv)
 	inv = Inventories[type(inv) == 'table' and inv.id or inv]
 	inv:set('timeout', true)
-	SetTimeout(3000, function()
-		if inv.open == false then
+	--SetTimeout(3000, function()
+		--if inv.open == false then
 			if inv.datastore then
 				if next(inv.items) == nil then Inventories[inv.id] = nil end
 			elseif inv.changed then
 				M.Save(inv)
 			else Inventories[inv.id] = nil end
-		elseif inv.open then inv:set('timeout', false) end
-	end)
+		--elseif inv.open then inv:set('timeout', false) end
+	--end)
 end
 
 local GetPlayer = function(inv)
