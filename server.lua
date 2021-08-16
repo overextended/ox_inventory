@@ -7,6 +7,7 @@ end)
 
 RegisterNetEvent('ox_inventory:requestPlayerInventory', function()
 	local xPlayer, inventory = ESX.GetPlayerFromId(source)
+	while not ox.ready do Wait(math.random(100, 200)) end
 	local time = os.clock()
 	local result = exports.oxmysql:executeSync('SELECT inventory FROM users WHERE identifier = ?', {
 		xPlayer.identifier
@@ -24,7 +25,6 @@ RegisterNetEvent('ox_inventory:closeInventory', function()
 end)
 
 AddEventHandler('ox_inventory:setPlayerInventory', function(xPlayer, data)
-	while not ox.ready do Wait(math.random(500, 1000)) end
 	local money, inventory, totalWeight = {money=0, black_money=0}, {}, 0
 	if data and next(data) then
 		for i=1, #data do
