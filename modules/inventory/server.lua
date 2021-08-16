@@ -42,8 +42,11 @@ local Timer = function(inv)
 	inv:set('timeout', true)
 	SetTimeout(3000, function()
 		if inv.open == false then
-			if inv.datastore and next(inv.items) == nil then Inventories[inv.id] = nil
-			elseif inv.changed then M.Save(inv) else Inventories[inv.id] = nil end
+			if inv.datastore then
+				if next(inv.items) == nil then Inventories[inv.id] = nil end
+			elseif inv.changed then
+				M.Save(inv)
+			else Inventories[inv.id] = nil end
 		elseif inv.open then inv:set('timeout', false) end
 	end)
 end
@@ -169,39 +172,40 @@ end
 
 M.Save = function(inv)
 	inv = Inventories[type(inv) == 'table' and inv.id or inv]
-	print('saving')
 	local inventory = json.encode(Minimal(inv))
-	if inv.owner then
-		if inv.type == 'player' then
-			exports.oxmysql:executeSync('UPDATE users SET inventory = ? WHERE identifier = ?', {
-				inventory, inv.owner
-			})
-			return
-		else
+	local time = os.clock()
+	if inv.type == 'player' then
+		exports.oxmysql:executeSync('UPDATE users SET inventory = ? WHERE identifier = ?', {
+			inventory, inv.owner
+		})
+	else
+		if inv.owner then
 			exports.oxmysql:executeSync('INSERT INTO ox_inventory (name, data, owner) VALUES (@name, @data, @owner) ON DUPLICATE KEY UPDATE data = @data', {
 				['@name'] = inv.id,
 				['@data'] = inventory,
 				['@owner'] = inv.owner
 			})
+		elseif Vehicle[inv.type] then
+			local plate = inv.id:sub(6)
+			if Config.TrimPlate then plate = ox.trim(plate) end
+			exports.oxmysql:executeSync('UPDATE owned_vehicles SET '..inv.type..' = ? WHERE plate = "'..plate..'"', {
+				inventory
+			})
+		else
+			exports.oxmysql:executeSync('INSERT INTO ox_inventory (name, data) VALUES (@name, @data) ON DUPLICATE KEY UPDATE data = @data', {
+				['@name'] = inv.id,
+				['@data'] = inventory
+			})
 		end
-	elseif Vehicle[inv.type] then
-		local plate = inv.id:sub(6)
-		if Config.TrimPlate then plate = ox.trim(plate) end
-		exports.oxmysql:executeSync('UPDATE owned_vehicles SET '..inv.type..' = ? WHERE plate = "'..plate..'"', {
-			inventory
-		})
-	else
-		exports.oxmysql:executeSync('INSERT INTO ox_inventory (name, data) VALUES (@name, @data) ON DUPLICATE KEY UPDATE data = @data', {
-			['@name'] = inv.id,
-			['@data'] = inventory
-		})
+		print('saving', os.clock() - time)
+		Inventories[inv.id] = nil
 	end
-	Inventories[inv.id] = nil
 end
 
 M.Load = function(id, inv, owner)
 	local returnData, weight, result, datastore = {}, 0
 	local isVehicle = Vehicle[inv]
+	local time = os.clock()
 	if id and inv then
 		if isVehicle then
 			local plate = id:sub(6)
@@ -209,7 +213,7 @@ M.Load = function(id, inv, owner)
 			result = exports.oxmysql:executeSync('SELECT '..inv..' FROM owned_vehicles WHERE plate = ?', {
 				plate
 			})
-			if result == false then
+			if next(result) == nil then
 				if Config.RandomLoot then result = GenerateDatastore(id, inv) else result = {} end
 				datastore = true
 			else result = json.decode(result[1][inv]) end
@@ -228,8 +232,8 @@ M.Load = function(id, inv, owner)
 			if result then result = json.decode(result[1].data) end
 		end
 	end
-	if next(result) then
-		print(ESX.DumpTable(result))
+	print('loading', os.clock()-time)
+	if result then
 		for k, v in pairs(result) do
 			local item = Items(v.name)
 			if item then

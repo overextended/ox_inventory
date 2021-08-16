@@ -18,19 +18,22 @@ CreateThread(function()
 	local Infinity = GetConvar('onesync_enableInfinity', false) == 'true'
 	if not OneSync and not Infinity then return ox.error('OneSync is not enabled on this server - refer to the documentation')
 	elseif Infinity then ox.info('Server is running OneSync Infinity') else ox.info('Server is running OneSync Legacy') end
-	local items, query = exports.oxmysql:executeSync('SELECT * FROM items', {})
+	local time = os.clock()
+	local items, query = exports.oxmysql:executeSync('SELECT * FROM items', {}), {}
+	print('get items', os.clock() - time)
 	for i=1, #items do
-		local i = items[i]
-		if not query then query = "DELETE FROM items WHERE name = '"..i.name.."'"
-		else query = ox.concat(' ', query, "OR name='"..i.name.."'") end
-		i.close = i.closeonuse or true
-		i.stack = i.stackable or true
-		i.description = i.description or ''
-		Items[i.name] = i
+		local v = items[i]
+		if i == 1 then query[i] = "DELETE FROM items WHERE name = '"..v.name.."'"
+		else query[i] = "OR name='"..v.name.."'" end
+		v.close = v.closeonuse or true
+		v.stack = v.stackable or true
+		v.description = v.description or ''
+		Items[v.name] = v
 	end
-	if query then
+	if next(query) then
+		query = table.concat(query, ' ')
 		local sql = io.open(GetResourcePath(ox.name):gsub('//', '/')..'/setup/dump.sql', 'a+')
-		local file = io.open(GetResourcePath(ox.name):gsub('//', '/')..'/shared/items.lua', 'a+')
+		local file = io.open(GetResourcePath(ox.name):gsub('//', '/')..'/data/items.lua', 'a+')
 		local dump, dump2 = {}, {}
 		for i=1, #items do
 			local i = items[i]
@@ -52,23 +55,27 @@ Data[']]..i.name..[['] = {
 		file:close()
 		exports.oxmysql:execute(query, {
 		}, function(result)
-			if result > 0 then
-				ox.info('Removed', result, 'items from the database')
+			if result.affectedRows > 0 then
+				ox.info('Removed', result.affectedRows, 'items from the database')
 			end
 		end)
 	end
-	TriggerEvent('ox_inventory:itemList', Items)
 	Wait(2000)
-	ox.ready = true
-	ox.items = count
-	ESX.UsableItemsCallbacks = exports.es_extended:UsableItems()
-	local count = 0 for k, v in pairs(Items) do
-		if v.consume and ESX.UsableItemsCallbacks[v.name] then ESX.UsableItemsCallbacks[v.name] = nil end
-		count = count + 1
-	end
-	ox.info('Inventory has fully loaded with '..count..' items')
-	exports.oxmysql:executeSync('DELETE FROM `ox_inventory` WHERE `lastupdated` < (NOW() - INTERVAL '..Config.DBCleanup..') OR `data` = "[]"')
-	collectgarbage('collect') -- clean up from initialisation
+	TriggerEvent('ox_inventory:itemList', Items)
+	local time = os.clock()
+	exports.oxmysql:execute('DELETE FROM `ox_inventory` WHERE `lastupdated` < (NOW() - INTERVAL '..Config.DBCleanup..') OR `data` = "[]"',
+	{}, function()
+		print('delete old', os.clock() - time)
+		ESX.UsableItemsCallbacks = exports.es_extended:UsableItems()
+		local count = 0
+		for k, v in pairs(Items) do
+			if v.consume and ESX.UsableItemsCallbacks[v.name] then ESX.UsableItemsCallbacks[v.name] = nil end
+			count = count + 1
+		end
+		ox.info('Inventory has loaded '..count..' items')
+		ox.ready = true
+		collectgarbage('collect') -- clean up from initialisation
+	end)
 	--[[local ignore = {[0] = '?', [`WEAPON_UNARMED`] = 'unarmed', [966099553] = 'shovel'}
 	while true do
 		Wait(45000)
