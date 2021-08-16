@@ -28,6 +28,7 @@ CreateThread(function()
 		v.close = v.closeonuse or true
 		v.stack = v.stackable or true
 		v.description = v.description or ''
+		v.weight = v.weight or 0
 		Items[v.name] = v
 	end
 	if next(query) then
