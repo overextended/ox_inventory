@@ -7,14 +7,12 @@ end)
 
 RegisterNetEvent('ox_inventory:requestPlayerInventory', function()
 	local xPlayer, inventory = ESX.GetPlayerFromId(source)
-	while not ox.ready do Wait(math.random(100, 200)) end
-	local time = os.clock()
-	local result = exports.oxmysql:executeSync('SELECT inventory FROM users WHERE identifier = ?', {
-		xPlayer.identifier
-	})
-	print('requestinv', os.clock() - time)
-	if result then inventory = json.decode(result[1].inventory) end
-	TriggerEvent('ox_inventory:setPlayerInventory', xPlayer, inventory)
+	while not ox.ready do Wait(15) end
+	local result = exports.oxmysql:scalar('SELECT inventory FROM users WHERE identifier = ?',
+	{ xPlayer.identifier }, function(result)
+		if result then inventory = json.decode(result) end
+		TriggerEvent('ox_inventory:setPlayerInventory', xPlayer, inventory)
+	end)
 end)
 
 RegisterNetEvent('ox_inventory:closeInventory', function()

@@ -7,10 +7,12 @@ CREATE TABLE `ox_inventory` (
 	UNIQUE KEY `owner` (`owner`,`name`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
+-- Setup new columns for vehicle stashes, and actually index owner
 ALTER TABLE `owned_vehicles`
 	ADD COLUMN `trunk` LONGTEXT NULL,
 	ADD COLUMN `glovebox` LONGTEXT NULL,
 	ADD INDEX `owner` (`owner`);
 
+-- Now I'm just being too kind
 ALTER TABLE `vehicles`
 	ADD INDEX `category` (`category`);

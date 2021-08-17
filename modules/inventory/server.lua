@@ -173,7 +173,6 @@ end
 M.Save = function(inv)
 	inv = Inventories[type(inv) == 'table' and inv.id or inv]
 	local inventory = json.encode(Minimal(inv))
-	local time = os.clock()
 	if inv.type == 'player' then
 		exports.oxmysql:executeSync('UPDATE users SET inventory = ? WHERE identifier = ?', {
 			inventory, inv.owner
@@ -197,7 +196,6 @@ M.Save = function(inv)
 				['@data'] = inventory
 			})
 		end
-		print('saving', os.clock() - time)
 		Inventories[inv.id] = nil
 	end
 end
@@ -205,34 +203,33 @@ end
 M.Load = function(id, inv, owner)
 	local returnData, weight, result, datastore = {}, 0
 	local isVehicle = Vehicle[inv]
-	local time = os.clock()
 	if id and inv then
 		if isVehicle then
 			local plate = id:sub(6)
 			if Config.TrimPlate then plate = ox.trim(plate) end
-			result = exports.oxmysql:executeSync('SELECT '..inv..' FROM owned_vehicles WHERE plate = ?', {
+			result = exports.oxmysql:fetchSync('SELECT plate, '..inv..' FROM owned_vehicles WHERE plate = ?', {
 				plate
 			})
-			if next(result) == nil then
-				if Config.RandomLoot then result = GenerateDatastore(id, inv) else result = {} end
+			if result then result = json.decode(result[1][inv])
+			else
+				if Config.RandomLoot then result = GenerateDatastore(id, inv) end
 				datastore = true
-			else result = json.decode(result[1][inv]) end
+			end
 		elseif owner then
-			result = exports.oxmysql:executeSync('SELECT data FROM ox_inventory WHERE name = ? AND owner = ?', {
+			result = exports.oxmysql:scalarSync('SELECT data FROM ox_inventory WHERE name = ? AND owner = ?', {
 				id, owner
 			})
-			if result then result = json.decode(result[1].data) end
+			if result then result = json.decode(result) end
 		elseif inv == 'dumpster' then
-			if Config.RandomLoot then result = GenerateDatastore(id, inv) else result = {} end
+			if Config.RandomLoot then result = GenerateDatastore(id, inv) end
 			datastore = true
 		else
-			result = exports.oxmysql:executeSync('SELECT data FROM ox_inventory WHERE name = ?', {
+			result = exports.oxmysql:scalarSync('SELECT data FROM ox_inventory WHERE name = ?', {
 				id
 			})
-			if result then result = json.decode(result[1].data) end
+			if result then result = json.decode(result) end
 		end
 	end
-	print('loading', os.clock()-time)
 	if result then
 		for k, v in pairs(result) do
 			local item = Items(v.name)

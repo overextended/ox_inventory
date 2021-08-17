@@ -18,9 +18,7 @@ CreateThread(function()
 	local Infinity = GetConvar('onesync_enableInfinity', false) == 'true'
 	if not OneSync and not Infinity then return ox.error('OneSync is not enabled on this server - refer to the documentation')
 	elseif Infinity then ox.info('Server is running OneSync Infinity') else ox.info('Server is running OneSync Legacy') end
-	local time = os.clock()
-	local items, query = exports.oxmysql:executeSync('SELECT * FROM items', {}), {}
-	print('get items', os.clock() - time)
+	local items, query = exports.oxmysql:fetchSync('SELECT * FROM items', {}), {}
 	for i=1, #items do
 		local v = items[i]
 		if i == 1 then query[i] = "DELETE FROM items WHERE name = '"..v.name.."'"
@@ -56,27 +54,23 @@ Data[']]..i.name..[['] = {
 		file:close()
 		exports.oxmysql:execute(query, {
 		}, function(result)
-			if result.affectedRows > 0 then
-				ox.info('Removed', result.affectedRows, 'items from the database')
+			if result > 0 then
+				ox.info('Removed', result, 'items from the database')
 			end
 		end)
 	end
 	Wait(2000)
 	TriggerEvent('ox_inventory:itemList', Items)
-	local time = os.clock()
-	exports.oxmysql:execute('DELETE FROM `ox_inventory` WHERE `lastupdated` < (NOW() - INTERVAL '..Config.DBCleanup..') OR `data` = "[]"',
-	{}, function()
-		print('delete old', os.clock() - time)
-		ESX.UsableItemsCallbacks = exports.es_extended:UsableItems()
-		local count = 0
-		for k, v in pairs(Items) do
-			if v.consume and ESX.UsableItemsCallbacks[v.name] then ESX.UsableItemsCallbacks[v.name] = nil end
-			count = count + 1
-		end
-		ox.info('Inventory has loaded '..count..' items')
-		ox.ready = true
-		collectgarbage('collect') -- clean up from initialisation
-	end)
+	if Config.DBCleanup then exports.oxmysql:executeSync('DELETE FROM `ox_inventory` WHERE `lastupdated` < (NOW() - INTERVAL '..Config.DBCleanup..') OR `data` = "[]"') end
+	ESX.UsableItemsCallbacks = exports.es_extended:UsableItems()
+	local count = 0
+	for k, v in pairs(Items) do
+		if v.consume and ESX.UsableItemsCallbacks[v.name] then ESX.UsableItemsCallbacks[v.name] = nil end
+		count = count + 1
+	end
+	ox.info('Inventory has loaded '..count..' items')
+	collectgarbage('collect') -- clean up from initialisation
+	ox.ready = true
 	--[[local ignore = {[0] = '?', [`WEAPON_UNARMED`] = 'unarmed', [966099553] = 'shovel'}
 	while true do
 		Wait(45000)
