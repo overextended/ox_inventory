@@ -7,7 +7,6 @@ Data.General = {
 		scale = 0.6
 	}, inventory = {
 		{ name = 'burger', price = 10 },
-		{ name = 'sandwich', price = 10 },
 		{ name = 'water', price = 10 },
 		{ name = 'cola', price = 10 },
 		{ name = 'bandage', price = 10 },

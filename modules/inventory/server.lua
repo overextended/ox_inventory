@@ -179,10 +179,10 @@ M.Save = function(inv)
 		})
 	else
 		if inv.owner then
-			exports.oxmysql:executeSync('INSERT INTO ox_inventory (name, data, owner) VALUES (@name, @data, @owner) ON DUPLICATE KEY UPDATE data = @data', {
-				['@name'] = inv.id,
-				['@data'] = inventory,
-				['@owner'] = inv.owner
+			exports.oxmysql:executeSync('INSERT INTO ox_inventory (name, data, owner) VALUES (:name, :data, :owner) ON DUPLICATE KEY UPDATE data = :data', {
+				['name'] = inv.id,
+				['data'] = inventory,
+				['owner'] = inv.owner
 			})
 		elseif Vehicle[inv.type] then
 			local plate = inv.id:sub(6)
@@ -191,9 +191,9 @@ M.Save = function(inv)
 				inventory
 			})
 		else
-			exports.oxmysql:executeSync('INSERT INTO ox_inventory (name, data) VALUES (@name, @data) ON DUPLICATE KEY UPDATE data = @data', {
-				['@name'] = inv.id,
-				['@data'] = inventory
+			exports.oxmysql:executeSync('INSERT INTO ox_inventory (name, data) VALUES (:name, :data) ON DUPLICATE KEY UPDATE data = :data', {
+				['name'] = inv.id,
+				['data'] = inventory
 			})
 		end
 		Inventories[inv.id] = nil
@@ -207,10 +207,10 @@ M.Load = function(id, inv, owner)
 		if isVehicle then
 			local plate = id:sub(6)
 			if Config.TrimPlate then plate = ox.trim(plate) end
-			result = exports.oxmysql:fetchSync('SELECT plate, '..inv..' FROM owned_vehicles WHERE plate = ?', {
+			result = exports.oxmysql:singleSync('SELECT '..inv..' FROM owned_vehicles WHERE plate = ?', {
 				plate
 			})
-			if result then result = json.decode(result[1][inv])
+			if result then result = json.decode(result[inv])
 			else
 				if Config.RandomLoot then result = GenerateDatastore(id, inv) end
 				datastore = true
@@ -344,7 +344,7 @@ M.AddItem = function(inv, item, count, metadata, slot)
 		inv.weight = inv.weight + (item.weight + (metadata.weight or 0)) * count
 		if xPlayer then
 			M.SyncInventory(xPlayer, inv)
-			TriggerClientEvent('ox_inventory:updateInventory', xPlayer.source, {{item = inv.items[slot], inventory = inv.type}}, {left=inv.weight, right=inv.open and Inventories[inv.open].weight}, item.name, count, false)
+			TriggerClientEvent('ox_inventory:updateInventory', xPlayer.source, {{item = inv.items[slot], inventory = inv.type}}, {left=inv.weight, right=(inv.open and not inv.open:find('shop')) and Inventories[inv.open].weight}, item.name, count, false)
 		end
 	end
 end
@@ -411,7 +411,7 @@ M.RemoveItem = function(inv, item, count, metadata, slot)
 					array[k] = {item = v, inventory = inv.type}
 				end
 			end
-			TriggerClientEvent('ox_inventory:updateInventory', xPlayer.source, array, {left=inv.weight, right=inv.open and Inventories[inv.open].weight}, item.name, removed, true)
+			TriggerClientEvent('ox_inventory:updateInventory', xPlayer.source, array, {left=inv.weight, right=(inv.open and not inv.open:find('shop')) and Inventories[inv.open].weight}, item.name, removed, true)
 		end
 	end
 end

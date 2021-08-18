@@ -1,4 +1,4 @@
-local Utils, Inventory, Items = module('utils', true), module('inventory'), module('items')
+local Utils, Shops, Inventory, Items = module('utils', true), module('shops'), module('inventory'), module('items')
 
 RegisterNetEvent('equip', function(weapon)
 	local inv = Inventory(source)
@@ -137,4 +137,15 @@ ox.RegisterServerCallback('ox_inventory:swapItems', function(source, cb, data)
 		end
 	end
 	cb(false)
+end)
+
+ox.RegisterServerCallback('ox_inventory:openShop', function(source, cb, inv, data) 
+	local left, shop = Inventory(source)
+	if data then
+		shop = Shops[data.id]
+		shop.type = inv
+		left.open = shop.id
+		print(ESX.DumpTable(shop))
+	end
+	cb({id=left.label, type=left.type, slots=left.slots, weight=left.weight, maxWeight=left.maxWeight}, shop)
 end)

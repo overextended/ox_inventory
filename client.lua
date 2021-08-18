@@ -1,7 +1,7 @@
 local Items, Weapons = table.unpack(module('items', true))
+local Shops = module('shops')
 local Stashes = data('stashes')
 local Vehicle = data('vehicles')
-local Shops = data('shops')
 
 local Blips, Drops, nearbyMarkers, cancelled, invOpen, weaponTimer = {}, {}, {}, false, false, 0
 local playerId, playerPed, playerCoords, invOpen, usingWeapon, currentWeapon, currentMarker
@@ -102,31 +102,35 @@ RegisterNetEvent('ox_inventory:closeInventory', function(options)
 end)
 
 local OpenInventory = function(inv, data)
-	if invOpen == false or inv == 'drop' then
+	local left, right
+	if inv == 'shop' and invOpen == false then
+		left, right = ox.TriggerServerCallback('ox_inventory:openShop', inv, data)
+	elseif invOpen == false or inv == 'drop' then
 		if not isBusy or not CanOpenInventory() then
-			ox.TriggerServerCallback('ox_inventory:openInventory', function(left, right)
-				if not IsPedInAnyVehicle(playerPed, false) then ox.playAnim(1000, 'pickup_object', 'putdown_low', 5.0, 1.5, 1.0, 48, 0.0, 0, 0, 0) end
-				invOpen = true
-				SetNuiFocus(true, true)
-				SetNuiFocusKeepInput(true)
-				TriggerScreenblurFadeIn(0)
-				currentInventory = right or {id='', type='newdrop', slots=left.slots, weight=0, maxWeight=100000, items={}}
-				left.items = ESX.PlayerData.inventory
-				SendNUIMessage({
-					action = 'setupInventory',
-					data = {
-						leftInventory = left,
-						rightInventory = currentInventory,
-						job = {
-							grade = ESX.PlayerData.job.grade,
-							grade_label = ESX.PlayerData.job.grade_label,
-							name = ESX.PlayerData.job.name
-						}
-					}
-				})
-			end, inv, data)
+			left, right = ox.TriggerServerCallback('ox_inventory:openInventory', inv, data)
 		else Notify({type = 'error', text = ox.locale('inventory_cannot_open'), duration = 2500}) end
-	else TriggerEvent('ox_inventory:closeInventory') end
+	else return TriggerEvent('ox_inventory:closeInventory') end
+	if left then
+		if not IsPedInAnyVehicle(playerPed, false) then ox.playAnim(1000, 'pickup_object', 'putdown_low', 5.0, 1.5, 1.0, 48, 0.0, 0, 0, 0) end
+		invOpen = true
+		SetNuiFocus(true, true)
+		SetNuiFocusKeepInput(true)
+		TriggerScreenblurFadeIn(0)
+		currentInventory = right or {id='', type='newdrop', slots=left.slots, weight=0, maxWeight=100000, items={}}
+		left.items = ESX.PlayerData.inventory
+		SendNUIMessage({
+			action = 'setupInventory',
+			data = {
+				leftInventory = left,
+				rightInventory = currentInventory,
+				job = {
+					grade = ESX.PlayerData.job.grade,
+					grade_label = ESX.PlayerData.job.grade_label,
+					name = ESX.PlayerData.job.name
+				}
+			}
+		})
+	end
 end
 
 RegisterNetEvent('ox_inventory:updateInventory', function(items, weights, name, count, removed)
@@ -194,18 +198,16 @@ RegisterNetEvent('ox_inventory:setPlayerInventory', function(data)
 		end
 		Blips = {}
 	end
-	for k, v in pairs(Shops.Stores) do
-		if not v.type then v.type = Shops.General end
-		if v.type and v.type.blip and (not v.job or v.job == ESX.PlayerData.job.name) then
-			local data = v.type
+	for k, v in pairs(Shops) do
+		if v.blip and (not v.job or v.job == ESX.PlayerData.job.name) then
 			Blips[k] = AddBlipForCoord(v.coords.x, v.coords.y, v.coords.z)
-			SetBlipSprite(Blips[k], data.blip.id)
+			SetBlipSprite(Blips[k], v.blip.id)
 			SetBlipDisplay(Blips[k], 4)
-			SetBlipScale(Blips[k], data.blip.scale)
-			SetBlipColour(Blips[k], data.blip.colour)
+			SetBlipScale(Blips[k], v.blip.scale)
+			SetBlipColour(Blips[k], v.blip.colour)
 			SetBlipAsShortRange(Blips[k], true)
 			BeginTextCommandSetBlipName('STRING')
-			AddTextComponentString(data.name)
+			AddTextComponentString(v.name)
 			EndTextCommandSetBlipName(Blips[k])
 		end
 	end
@@ -226,17 +228,17 @@ RegisterNetEvent('ox_inventory:setPlayerInventory', function(data)
 			for k, v in pairs(Drops) do
 				local distance = #(playerCoords - v)
 				local marker = nearbyMarkers['drop'..k]
-				if distance < 1.5 then
+				if distance < 1.2 then
 					if not marker then nearbyMarkers['drop'..k] = {v, 150, 30, 30} end
 					if currentMarker and distance < currentMarker[1] or closestMarker and distance < closestMarker[1] or not closestMarker then
 						closestMarker = {distance, k, 'drop'}
 					end
 				elseif not marker and distance < 8 then nearbyMarkers['drop'..k] = {v, 150, 30, 30} elseif marker and distance > 8 then nearbyMarkers['drop'..k] = nil end
 			end
-			for k, v in pairs(Shops.Stores) do
+			for k, v in pairs(Shops) do
 				local distance = #(playerCoords - v.coords)
 				local marker = nearbyMarkers['shop'..k]
-				if distance < 1.5 then
+				if distance < 1 then
 					if not marker then nearbyMarkers['shop'..k] = {v.coords, 30, 150, 30} end
 					if currentMarker and distance < currentMarker[1] or closestMarker and distance < closestMarker[1] or not closestMarker then
 						closestMarker = {distance, k, 'shop'}
@@ -246,7 +248,7 @@ RegisterNetEvent('ox_inventory:setPlayerInventory', function(data)
 			for k, v in pairs(Stashes) do
 				local distance = #(playerCoords - v.coords)
 				local marker = nearbyMarkers['stash'..k]
-				if distance < 1.5 then
+				if distance < 1 then
 					if not marker then nearbyMarkers['stash'..k] = {v.coords, 30, 30, 150} end
 					if currentMarker and distance < currentMarker[1] or closestMarker and distance < closestMarker[1] or not closestMarker then
 						closestMarker = {distance, k, 'stash'}
@@ -448,16 +450,27 @@ RegisterNUICallback('exit', function(data, cb)
 end)
 
 RegisterNUICallback('swapItems', function(data, cb)
-	ox.TriggerServerCallback('ox_inventory:swapItems', function(r, data)
-		if data then
-			for k, v in pairs(data.items) do
-				ESX.PlayerData.inventory[k] = v and v or nil
-			end
-			ESX.SetPlayerData('inventory', ESX.PlayerData.inventory)
-			if data.weight then ESX.SetPlayerData('weight', data.weight) end
+	local response, data = ox.TriggerServerCallback('ox_inventory:swapItems', data)
+	if data then
+		for k, v in pairs(data.items) do
+			ESX.PlayerData.inventory[k] = v and v or nil
 		end
-		cb(r) 
-	end, data)
+		ESX.SetPlayerData('inventory', ESX.PlayerData.inventory)
+		if data.weight then ESX.SetPlayerData('weight', data.weight) end
+	end
+	cb(response)
+end)
+
+RegisterNUICallback('buyItem', function(data, cb)
+	local response, data = ox.TriggerServerCallback('ox_inventory:buyItem', data)
+	if data then
+		for k, v in pairs(data.items) do
+			ESX.PlayerData.inventory[k] = v and v or nil
+		end
+		ESX.SetPlayerData('inventory', ESX.PlayerData.inventory)
+		if data.weight then ESX.SetPlayerData('weight', data.weight) end
+	end
+	cb(response)
 end)
 
 if ESX.PlayerLoaded then TriggerServerEvent('ox_inventory:requestPlayerInventory') end
