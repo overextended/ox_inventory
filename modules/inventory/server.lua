@@ -463,4 +463,11 @@ end, true, {help = 'remove an item from a player', validate = false, arguments =
 
 TriggerEvent('ox_inventory:loadInventory', M)
 
+exports('Inventory', function(arg)
+	if arg then
+		if Inventories[arg] then return Inventories[arg] else return false end
+	end
+	return M
+end)
+
 return M

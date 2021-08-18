@@ -62,7 +62,7 @@ Data[']]..i.name..[['] = {
 	Wait(2000)
 	TriggerEvent('ox_inventory:itemList', Items)
 	if Config.DBCleanup then exports.oxmysql:executeSync('DELETE FROM `ox_inventory` WHERE `lastupdated` < (NOW() - INTERVAL '..Config.DBCleanup..') OR `data` = "[]"') end
-	ESX.UsableItemsCallbacks = exports.es_extended:UsableItems()
+	ESX.UsableItemsCallbacks = ESX.GetUsableItems()
 	local count = 0
 	for k, v in pairs(Items) do
 		if v.consume and ESX.UsableItemsCallbacks[v.name] then ESX.UsableItemsCallbacks[v.name] = nil end
@@ -104,6 +104,16 @@ Data[']]..i.name..[['] = {
 			Wait(200)
 		end
 	end]]
+end)
+
+exports('Items', function(item)
+	if item then
+		item = string.lower(item)
+		if item:find('weapon_') then item = string.upper(item) end
+		item = Items[item] or false
+		return item
+	end
+	return M
 end)
 
 return M
