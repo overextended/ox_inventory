@@ -1,24 +1,24 @@
-import { Items } from "../store/items";
 import {
   Inventory,
   State,
   Slot,
   SlotWithItem,
-  SlotWithItemData,
+  InventoryType,
 } from "../typings";
-
-export const getItemData = (item: SlotWithItem): SlotWithItemData | undefined =>
-  Items[item.name] && ({ ...item, ...Items[item.name] } as SlotWithItemData);
 
 export const isSlotWithItem = (item: Slot): item is SlotWithItem =>
   item.name !== undefined &&
   item.count !== undefined &&
   item.count > 0 &&
   item.weight !== undefined &&
-  item.weight > 0;
+  item.weight >= 0;
 
-export const findAvailableSlot = (item: SlotWithItemData, items: Slot[]) => {
-  if (!item.stack) return items.find((target) => target.name === undefined);
+export const findAvailableSlot = (
+  item: SlotWithItem,
+  stack: boolean,
+  items: Slot[]
+) => {
+  if (!stack) return items.find((target) => target.name === undefined);
 
   const stackableSlot = items.find(
     (target) => target.name === item.name && target.metadata === item.metadata
@@ -33,20 +33,14 @@ export const getTargetInventory = (
   targetType?: Inventory["type"]
 ): { sourceInventory: Inventory; targetInventory: Inventory } => ({
   sourceInventory:
-    sourceType === "player" ? state.leftInventory : state.rightInventory,
+    sourceType === InventoryType.PLAYER
+      ? state.leftInventory
+      : state.rightInventory,
   targetInventory: targetType
-    ? targetType === "player"
+    ? targetType === InventoryType.PLAYER
       ? state.leftInventory
       : state.rightInventory
-    : sourceType === "player"
+    : sourceType === InventoryType.PLAYER
     ? state.rightInventory
     : state.leftInventory,
 });
-
-export const canStack = (
-  sourceSlot: SlotWithItemData,
-  targetSlot: SlotWithItem
-) =>
-  sourceSlot.stack &&
-  sourceSlot.name === targetSlot.name &&
-  sourceSlot.metadata === targetSlot.metadata;

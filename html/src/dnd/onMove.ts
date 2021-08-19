@@ -2,16 +2,16 @@ import {
   isSlotWithItem,
   findAvailableSlot,
   getTargetInventory,
-  getItemData,
-  canStack,
 } from "../helpers";
 import { validateMove } from "../thunks/validateItems";
 import { store } from "../store";
-import { DragSlot } from "../typings";
+import { DragSource, DropTarget, InventoryType } from "../typings";
 import { moveSlots, stackSlots, swapSlots } from "../store/inventory";
 import toast from "react-hot-toast";
+import { Items } from "../store/items";
+import { buyItem } from "../thunks/buyItem";
 
-export const onMove = (source: DragSlot, target?: DragSlot) => {
+export const onMove = (source: DragSource, target?: DropTarget) => {
   const { inventory: state } = store.getState();
 
   const { sourceInventory, targetInventory } = getTargetInventory(
@@ -26,15 +26,15 @@ export const onMove = (source: DragSlot, target?: DragSlot) => {
     throw new Error("Slot is empty!");
   }
 
-  const sourceItem = getItemData(sourceSlot);
+  const itemData = Items[sourceSlot.name];
 
-  if (sourceItem === undefined) {
+  if (itemData === undefined) {
     throw new Error(`${sourceSlot.name} item data undefined!`);
   }
 
   const targetSlot = target
     ? targetInventory.items[target.item.slot - 1]
-    : findAvailableSlot(sourceItem, targetInventory.items);
+    : findAvailableSlot(sourceSlot, itemData.stack, targetInventory.items);
 
   if (targetSlot === undefined) {
     throw new Error("Target slot undefined!");
@@ -48,20 +48,29 @@ export const onMove = (source: DragSlot, target?: DragSlot) => {
       : state.itemAmount;
 
   const data = {
-    fromSlot: sourceItem,
+    fromSlot: sourceSlot,
     toSlot: targetSlot,
     fromType: sourceInventory.type,
     toType: targetInventory.type,
     count: count,
   };
 
-  const promise = store.dispatch(
-    validateMove({
-      ...data,
-      fromSlot: sourceSlot.slot,
-      toSlot: targetSlot.slot,
-    })
-  );
+  const promise =
+    sourceInventory.type === InventoryType.SHOP
+      ? store.dispatch(
+          buyItem({
+            ...data,
+            fromSlot: sourceSlot.slot,
+            toSlot: targetSlot.slot,
+          })
+        )
+      : store.dispatch(
+          validateMove({
+            ...data,
+            fromSlot: sourceSlot.slot,
+            toSlot: targetSlot.slot,
+          })
+        );
 
   toast.promise(promise, {
     loading: "VALIDATING",
@@ -70,7 +79,7 @@ export const onMove = (source: DragSlot, target?: DragSlot) => {
   });
 
   isSlotWithItem(targetSlot)
-    ? canStack(sourceItem, targetSlot)
+    ? itemData.stack
       ? store.dispatch(
           stackSlots({
             ...data,

@@ -1,7 +1,7 @@
-import { ItemData } from "../typings";
+import { ItemData } from "../typings/item";
 
 export const Items: {
-  [key: string]: ItemData;
+  [key: string]: ItemData | undefined;
 } = {
   water: {
     close: false,

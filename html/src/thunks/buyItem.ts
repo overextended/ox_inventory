@@ -5,13 +5,20 @@ export const buyItem = createAsyncThunk(
   "inventory/buyItem",
   async (
     data: {
-      slot: number;
+      fromSlot: number;
+      fromType: string;
+      toSlot: number;
+      toType: string;
       count: number;
     },
     { rejectWithValue }
   ) => {
     try {
-      await fetchNui<boolean>("buyItem", data);
+      const response = await fetchNui<boolean>("buyItem", data);
+
+      if (response === false) {
+        rejectWithValue(response);
+      }
     } catch (error) {
       rejectWithValue(false);
     }

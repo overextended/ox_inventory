@@ -1,5 +1,5 @@
 import { CaseReducer, PayloadAction } from "@reduxjs/toolkit";
-import { Inventory, State, Slot } from "../typings";
+import { Inventory, State, Slot, InventoryType } from "../typings";
 
 export const refreshSlotsReducer: CaseReducer<
   State,
@@ -18,7 +18,9 @@ export const refreshSlotsReducer: CaseReducer<
 
   Object.values(items).forEach((data) => {
     const inventory =
-      data.inventory === "player" ? state.leftInventory : state.rightInventory;
+      data.inventory === InventoryType.PLAYER
+        ? state.leftInventory
+        : state.rightInventory;
     inventory.items[data.item.slot - 1] = data.item;
   });
 

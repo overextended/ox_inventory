@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { useDrop } from "react-dnd";
 import { useAppDispatch, useAppSelector } from "../../store";
 import { selectItemAmount, setItemAmount } from "../../store/inventory";
-import { DragSlot } from "../../typings";
+import { DragSource } from "../../typings";
 import { onUse } from "../../dnd/onUse";
 import { onGive } from "../../dnd/onGive";
 import { fetchNui } from "../../utils/fetchNui";
@@ -51,12 +51,12 @@ const InventoryControl: React.FC = () => {
 
   const [infoVisible, setInfoVisible] = useState(false);
 
-  const [, use] = useDrop<DragSlot, void, any>(() => ({
+  const [, use] = useDrop<DragSource, void, any>(() => ({
     accept: "SLOT",
     drop: (source) => onUse(source.item),
   }));
 
-  const [, give] = useDrop<DragSlot, void, any>(
+  const [, give] = useDrop<DragSource, void, any>(
     () => ({
       accept: "SLOT",
       drop: (source) => onGive(source.item, itemAmount),

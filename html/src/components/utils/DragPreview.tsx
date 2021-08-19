@@ -1,9 +1,9 @@
 import React, { RefObject, useRef } from "react";
 import { DragLayerMonitor, useDragLayer, XYCoord } from "react-dnd";
-import { DragSlot } from "../../typings";
+import { DragSource } from "../../typings";
 
 interface DragLayerProps {
-  data: DragSlot;
+  data: DragSource;
   currentOffset: XYCoord | null;
   isDragging: boolean;
 }

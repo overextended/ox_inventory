@@ -1,39 +1,39 @@
 import React from "react";
 import { Items } from "../../store/items";
-import { Inventory, Slot } from "../../typings";
+import { Inventory, SlotWithItem } from "../../typings";
 import Fade from "../utils/Fade";
 import WeightBar from "../utils/WeightBar";
 import InventorySlot from "./InventorySlot";
 
-const InventoryGrid: React.FC<{ inventory: Inventory }> = (props) => {
-  const [currentItem, setCurrentItem] = React.useState<Slot>();
+const InventoryGrid: React.FC<{ inventory: Inventory }> = ({ inventory }) => {
+  const [currentItem, setCurrentItem] = React.useState<SlotWithItem>();
 
   return (
     <div className="column-wrapper">
       <div className="inventory-label">
         <p>
-          {props.inventory.label && `${props.inventory.label} -`}{" "}
-          {props.inventory.id}
+          {inventory.label && `${inventory.label} -`}
+          {inventory.id}
         </p>
-        {props.inventory.weight && props.inventory.maxWeight && (
+        {inventory.weight && inventory.maxWeight && (
           <div>
-            {props.inventory.weight / 1000}/{props.inventory.maxWeight / 1000}kg
+            {inventory.weight / 1000}/{inventory.maxWeight / 1000}kg
           </div>
         )}
       </div>
       <WeightBar
         percent={
-          props.inventory.weight && props.inventory.maxWeight
-            ? (props.inventory.weight / props.inventory.maxWeight) * 100
+          inventory.weight && inventory.maxWeight
+            ? (inventory.weight / inventory.maxWeight) * 100
             : 0
         }
       />
       <div className="inventory-grid">
-        {props.inventory.items.map((item) => (
+        {inventory.items.map((item) => (
           <InventorySlot
-            key={`${props.inventory.type}-${props.inventory.id}-${item.slot}-${item.name}`}
+            key={`${inventory.type}-${inventory.id}-${item.slot}`}
             item={item}
-            inventory={props.inventory}
+            inventory={inventory}
             setCurrentItem={setCurrentItem}
           />
         ))}
@@ -45,7 +45,7 @@ const InventoryGrid: React.FC<{ inventory: Inventory }> = (props) => {
           duration={0.25}
           className="item-info"
         >
-          {currentItem?.name && (
+          {currentItem && (
             <>
               <p>{Items[currentItem.name]?.label || "NO LABEL"}</p>
               <hr style={{ borderBottom: "0.1vh" }}></hr>

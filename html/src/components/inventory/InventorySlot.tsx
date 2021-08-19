@@ -1,5 +1,11 @@
 import React from "react";
-import { DragSlot, Inventory, Slot } from "../../typings";
+import {
+  DragSource,
+  Inventory,
+  isSlotWithItem,
+  Slot,
+  SlotWithItem,
+} from "../../typings";
 import { useDrag, useDrop } from "react-dnd";
 import { useAppSelector } from "../../store";
 import WeightBar from "../utils/WeightBar";
@@ -10,86 +16,104 @@ import { Items } from "../../store/items";
 interface SlotProps {
   inventory: Inventory;
   item: Slot;
-  setCurrentItem: React.Dispatch<React.SetStateAction<Slot | undefined>>;
+  setCurrentItem: React.Dispatch<
+    React.SetStateAction<SlotWithItem | undefined>
+  >;
 }
 
-const InventorySlot: React.FC<SlotProps> = (props) => {
+const InventorySlot: React.FC<SlotProps> = ({
+  inventory,
+  item,
+  setCurrentItem,
+}) => {
   const isBusy = useAppSelector(selectIsBusy);
 
-  const dragSlot: DragSlot = {
-    item: {
-      slot: props.item.slot,
-      name: props.item.name,
-    },
-    inventory: props.inventory.type,
-  };
-
-  const [{ isDragging }, drag] = useDrag(
+  const [{ isDragging }, drag] = useDrag<
+    DragSource,
+    void,
+    { isDragging: boolean }
+  >(
     () => ({
       type: "SLOT",
       collect: (monitor) => ({
         isDragging: monitor.isDragging(),
       }),
-      item: dragSlot,
-      canDrag: !isBusy && props.item.name !== undefined,
+      item: () =>
+        isSlotWithItem(item)
+          ? {
+              inventory: inventory.type,
+              item: {
+                name: item.name,
+                slot: item.slot,
+              },
+            }
+          : null,
+      canDrag: !isBusy,
     }),
-    [isBusy, dragSlot]
+    [isBusy, inventory, item]
   );
 
-  const [{ isOver }, drop] = useDrop<DragSlot, void, { isOver: boolean }>(
+  const [{ isOver }, drop] = useDrop<DragSource, void, { isOver: boolean }>(
     () => ({
       accept: "SLOT",
       collect: (monitor) => ({
         isOver: monitor.isOver(),
       }),
-      drop: (source) => onMove(source, dragSlot),
+      drop: (source) =>
+        onMove(source, {
+          inventory: inventory.type,
+          item: {
+            slot: item.slot,
+          },
+        }),
       canDrop: (source) =>
         !isBusy &&
-        (source.item.slot !== props.item.slot ||
-          source.inventory !== props.inventory.type),
+        (source.item.slot !== item.slot || source.inventory !== inventory.type),
     }),
-    [isBusy, dragSlot]
+    [isBusy, inventory, item]
+  );
+
+  const connectRef = (element: HTMLDivElement) => drag(drop(element));
+
+  const onMouseEnter = React.useCallback(
+    () => isSlotWithItem(item) && setCurrentItem(item),
+    [item, setCurrentItem]
+  );
+
+  const onMouseLeave = React.useCallback(
+    () => isSlotWithItem(item) && setCurrentItem(undefined),
+    [item, setCurrentItem]
   );
 
   return (
     <>
       <div
-        ref={(el) => {
-          props.item.name && drag(el);
-          drop(el);
-        }}
+        ref={connectRef}
         className="item-container"
         style={{
           opacity: isDragging ? 0.4 : 1.0,
-          backgroundImage: props.item.name
-            ? `url(${
-                process.env.PUBLIC_URL + `/images/${props.item.name}.png`
-              })`
-            : "none",
+          backgroundImage:
+            `url(${process.env.PUBLIC_URL + `/images/${item.name}.png`})` ||
+            "none",
           border: isOver
             ? "0.1vh dashed rgba(255,255,255,0.5)"
             : "0.1vh inset rgba(0,0,0,0)",
         }}
-        onMouseEnter={() => props.item.name && props.setCurrentItem(props.item)}
-        onMouseLeave={() => props.item.name && props.setCurrentItem(undefined)}
-        onClick={(event) => {
-          if (!props.item.name || isBusy) return;
-          if (event.ctrlKey) {
-            onMove(dragSlot);
-            props.setCurrentItem(undefined);
-          }
-        }}
+        onMouseEnter={onMouseEnter}
+        onMouseLeave={onMouseLeave}
       >
-        {props.item.name && (
+        {isSlotWithItem(item) && (
           <>
             <div className="item-count">
               <span>
-                {props.item.weight}g {props.item.count}x
+                {item.weight}g {item.count}x
               </span>
             </div>
-            <WeightBar percent={25} durability />
+            {item.metadata?.durability && (
+              <WeightBar percent={item.metadata.durability} durability />
+            )}
             <div className="item-label">
-              {Items[props.item.name]?.label || "NO LABEL"} [{props.item.slot}]
+              [{item.slot}] {Items[item.name]?.label || "NO LABEL"}
             </div>
           </>
         )}
