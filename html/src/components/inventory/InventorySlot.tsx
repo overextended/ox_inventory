@@ -101,7 +101,10 @@ const InventorySlot: React.FC<SlotProps> = ({
           <>
             <div className="item-count">
               <span>
-                {item.weight}g {item.count}x
+                {item.weight >= 1000
+                  ? `${item.weight / 1000}kg`
+                  : `${item.weight}g`}{" "}
+                {item.count}x
               </span>
             </div>
             {item.metadata?.durability && (

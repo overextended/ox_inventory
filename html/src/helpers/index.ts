@@ -8,8 +8,8 @@ import {
 
 export const isSlotWithItem = (slot: Slot): slot is SlotWithItem =>
   slot.name !== undefined &&
-  //slot.count !== undefined &&
-  slot.weight !== undefined;
+  slot.weight !== undefined &&
+  (slot.price === undefined && slot.count !== undefined);
 
 export const findAvailableSlot = (
   item: SlotWithItem,

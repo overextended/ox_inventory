@@ -8,6 +8,16 @@ import InventorySlot from "./InventorySlot";
 const InventoryGrid: React.FC<{ inventory: Inventory }> = ({ inventory }) => {
   const [currentItem, setCurrentItem] = React.useState<SlotWithItem>();
 
+  const weight = React.useMemo(
+    () =>
+      inventory.items.reduce<number>(
+        (totalWeight, slot) =>
+          slot.weight ? totalWeight + slot.weight : totalWeight,
+        0
+      ),
+    [inventory.items]
+  );
+
   return (
     <div className="column-wrapper">
       <div className="inventory-label">
@@ -15,9 +25,9 @@ const InventoryGrid: React.FC<{ inventory: Inventory }> = ({ inventory }) => {
           {inventory.label && `${inventory.label} -`}
           {inventory.id}
         </p>
-        {inventory.weight && inventory.maxWeight && (
+        {weight && inventory.maxWeight && (
           <div>
-            {inventory.weight / 1000}/{inventory.maxWeight / 1000}kg
+            {weight / 1000}/{inventory.maxWeight / 1000}kg
           </div>
         )}
       </div>

@@ -10,6 +10,7 @@ import { moveSlots, stackSlots, swapSlots } from "../store/inventory";
 import toast from "react-hot-toast";
 import { Items } from "../store/items";
 import { buyItem } from "../thunks/buyItem";
+import { isEnvBrowser } from "../utils/misc";
 
 export const onMove = (source: DragSource, target?: DropTarget) => {
   const { inventory: state } = store.getState();
@@ -55,28 +56,30 @@ export const onMove = (source: DragSource, target?: DropTarget) => {
     count: count,
   };
 
-  const promise =
-    sourceInventory.type === InventoryType.SHOP
-      ? store.dispatch(
-          buyItem({
-            ...data,
-            fromSlot: sourceSlot.slot,
-            toSlot: targetSlot.slot,
-          })
-        )
-      : store.dispatch(
-          validateMove({
-            ...data,
-            fromSlot: sourceSlot.slot,
-            toSlot: targetSlot.slot,
-          })
-        );
+  if (!isEnvBrowser()) {
+    const promise =
+      sourceInventory.type === InventoryType.SHOP
+        ? store.dispatch(
+            buyItem({
+              ...data,
+              fromSlot: sourceSlot.slot,
+              toSlot: targetSlot.slot,
+            })
+          )
+        : store.dispatch(
+            validateMove({
+              ...data,
+              fromSlot: sourceSlot.slot,
+              toSlot: targetSlot.slot,
+            })
+          );
 
-  toast.promise(promise, {
-    loading: "VALIDATING",
-    success: "VALIDATED",
-    error: "ERROR",
-  });
+    toast.promise(promise, {
+      loading: "VALIDATING",
+      success: "VALIDATED",
+      error: "ERROR",
+    });
+  }
 
   isSlotWithItem(targetSlot)
     ? itemData.stack &&

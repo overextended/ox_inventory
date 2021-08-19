@@ -20,9 +20,12 @@ export const moveSlotsReducer: CaseReducer<
     toType
   );
 
+  const pieceWeight = fromSlot.weight / fromSlot.count;
+
   targetInventory.items[toSlot.slot - 1] = {
     ...sourceInventory.items[fromSlot.slot - 1],
     count: count,
+    weight: pieceWeight * count,
     slot: toSlot.slot,
   };
 
@@ -31,6 +34,7 @@ export const moveSlotsReducer: CaseReducer<
       ? {
           ...sourceInventory.items[fromSlot.slot - 1],
           count: fromSlot.count - count,
+          weight: pieceWeight * (fromSlot.count - count),
         }
       : {
           slot: fromSlot.slot,

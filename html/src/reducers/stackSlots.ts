@@ -20,13 +20,20 @@ export const stackSlotsReducer: CaseReducer<
     toType
   );
 
-  targetInventory.items[toSlot.slot - 1].count! += count;
+  const pieceWeight = fromSlot.weight / fromSlot.count;
+
+  targetInventory.items[toSlot.slot - 1] = {
+    ...targetInventory.items[toSlot.slot - 1],
+    count: toSlot.count + count,
+    weight: pieceWeight * (toSlot.count + count),
+  };
 
   sourceInventory.items[fromSlot.slot - 1] =
     fromSlot.count - count > 0
       ? {
           ...sourceInventory.items[fromSlot.slot - 1],
           count: fromSlot.count - count,
+          weight: pieceWeight * (fromSlot.count - count),
         }
       : {
           slot: fromSlot.slot,
