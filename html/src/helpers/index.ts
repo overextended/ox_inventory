@@ -6,12 +6,10 @@ import {
   InventoryType,
 } from "../typings";
 
-export const isSlotWithItem = (item: Slot): item is SlotWithItem =>
-  item.name !== undefined &&
-  item.count !== undefined &&
-  item.count > 0 &&
-  item.weight !== undefined &&
-  item.weight >= 0;
+export const isSlotWithItem = (slot: Slot): slot is SlotWithItem =>
+  slot.name !== undefined &&
+  //slot.count !== undefined &&
+  slot.weight !== undefined;
 
 export const findAvailableSlot = (
   item: SlotWithItem,

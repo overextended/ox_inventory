@@ -79,7 +79,9 @@ export const onMove = (source: DragSource, target?: DropTarget) => {
   });
 
   isSlotWithItem(targetSlot)
-    ? itemData.stack
+    ? itemData.stack &&
+      sourceSlot.name === targetSlot.name &&
+      sourceSlot.metadata === targetSlot.metadata
       ? store.dispatch(
           stackSlots({
             ...data,

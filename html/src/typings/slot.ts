@@ -14,8 +14,3 @@ export type SlotWithItem = Slot & {
   count: number;
   weight: number;
 };
-
-export const isSlotWithItem = (slot: Slot): slot is SlotWithItem =>
-  slot.name !== undefined &&
-  slot.count !== undefined &&
-  slot.weight !== undefined;

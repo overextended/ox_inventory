@@ -1,17 +1,12 @@
 import React from "react";
-import {
-  DragSource,
-  Inventory,
-  isSlotWithItem,
-  Slot,
-  SlotWithItem,
-} from "../../typings";
+import { DragSource, Inventory, Slot, SlotWithItem } from "../../typings";
 import { useDrag, useDrop } from "react-dnd";
 import { useAppSelector } from "../../store";
 import WeightBar from "../utils/WeightBar";
 import { onMove } from "../../dnd/onMove";
 import { selectIsBusy } from "../../store/inventory";
 import { Items } from "../../store/items";
+import { isSlotWithItem } from "../../helpers";
 
 interface SlotProps {
   inventory: Inventory;
