@@ -100,6 +100,7 @@ ox.RegisterServerCallback('ox_inventory:swapItems', function(source, cb, data)
 			local items = {[data.fromSlot] = false}
 			playerInventory.items[data.fromSlot] = nil
 			Inventory.SyncInventory(playerInventory:player(), playerInventory, items)
+			playerInventory.weight = playerInventory.weight - toSlot.weight
 			return cb(true, {weight=playerInventory.weight, items=items})
 		else
 			local toInventory = data.toType == 'player' and playerInventory or Inventory(playerInventory.open)
@@ -111,13 +112,29 @@ ox.RegisterServerCallback('ox_inventory:swapItems', function(source, cb, data)
 					if toSlot and toSlot.name == fromSlot.name then
 						fromSlot.count = fromSlot.count - data.count
 						toSlot.count = toSlot.count + data.count
+						fromSlot.weight = Inventory.SlotWeight(Items(fromSlot.name), fromSlot)
+						toSlot.weight = Inventory.SlotWeight(Items(toSlot.name), toSlot)
+						if fromInventory.id ~= toInventory.id then
+							fromInventory.weight = fromInventory.weight - toSlot.weight
+							toInventory.weight = toInventory.weight + toSlot.weight
+						end
 					elseif toSlot and ((toSlot.name ~= fromSlot.name) or (not Utils.MatchTables(toSlot.metadata, fromSlot.metadata))) then
 						toSlot, fromSlot = Inventory.SwapSlots({fromInventory, toInventory}, {data.fromSlot, data.toSlot})
+						if fromInventory.id ~= toInventory.id then
+							fromInventory.weight = fromInventory.weight - toSlot.weight
+							toInventory.weight = toInventory.weight + toSlot.weight
+						end
 					elseif data.count <= fromSlot.count then
 						fromSlot.count = fromSlot.count - data.count
 						toSlot = Utils.Copy(fromSlot)
 						toSlot.count = data.count
 						toSlot.slot = data.toSlot
+						fromSlot.weight = Inventory.SlotWeight(Items(fromSlot.name), fromSlot)
+						toSlot.weight = Inventory.SlotWeight(Items(toSlot.name), toSlot)
+						if fromInventory.id ~= toInventory.id then
+							fromInventory.weight = fromInventory.weight - toSlot.weight
+							toInventory.weight = toInventory.weight + toSlot.weight
+						end
 					else
 						return print('swapItems', data.fromType, data.fromSlot, 'to', data.toType, data.toSlot)
 					end
