@@ -25,18 +25,14 @@ const InventoryGrid: React.FC<{ inventory: Inventory }> = ({ inventory }) => {
           {inventory.label && `${inventory.label} -`}
           {inventory.id}
         </p>
-        {weight && inventory.maxWeight && (
+        {inventory.maxWeight && (
           <div>
             {weight / 1000}/{inventory.maxWeight / 1000}kg
           </div>
         )}
       </div>
       <WeightBar
-        percent={
-          inventory.weight && inventory.maxWeight
-            ? (inventory.weight / inventory.maxWeight) * 100
-            : 0
-        }
+        percent={inventory.maxWeight ? (weight / inventory.maxWeight) * 100 : 0}
       />
       <div className="inventory-grid">
         {inventory.items.map((item) => (
