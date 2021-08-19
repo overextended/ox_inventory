@@ -168,8 +168,9 @@ RegisterNetEvent('ox_inventory:createDrop', function(data, owner)
 end)
 
 RegisterNetEvent('ox_inventory:removeDrop', function(id)
-	Drops[id] = nil
+	if currentMarker[3] == id then currentMarker = nil end
 	nearbyMarkers['drop'..id] = nil
+	Drops[id] = nil
 end)
 
 RegisterNetEvent('ox_inventory:setPlayerInventory', function(data)
