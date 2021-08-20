@@ -226,7 +226,7 @@ input[type="number"] {
   font-size: 1.6vh;
   background-color: rgba(0, 0, 0, 0.267);
   border-radius: $borderRadius;
-  width: $containerSize;
+  width: calc(#{$containerSize} - 2.2vh);
   position: absolute;
 }
 

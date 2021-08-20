@@ -47,6 +47,7 @@ const WeightBar: React.FC<{ percent: number; durability?: boolean }> = ({
           visibility: percent > 0 ? "visible" : "hidden",
           width: `${percent}%`,
           backgroundColor: color,
+          transition: `background ${0.3}s ease, width ${0.3}s ease`,
         }}
       ></div>
     </div>
