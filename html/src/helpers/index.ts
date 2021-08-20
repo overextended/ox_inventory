@@ -12,7 +12,7 @@ export const isSlotWithItem = (
   slot: Slot,
   strict: boolean = false
 ): slot is SlotWithItem =>
-  slot.name !== undefined ||
+  (slot.name !== undefined && slot.weight !== undefined) ||
   (strict &&
     slot.name !== undefined &&
     slot.count !== undefined &&
