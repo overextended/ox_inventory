@@ -82,12 +82,12 @@ RegisterNetEvent('ox_inventory:closeInventory', function(options)
 			local anim = 'trevor_action'
 			RequestAnimDict(animDict)
 			while not HasAnimDictLoaded(animDict) do
-				Citizen.Wait(100)
+				Wait(100)
 			end
 			ClearPedTasks(playerPed)
-			Citizen.Wait(100)
+			Wait(100)
 			TaskPlayAnimAdvanced(playerPed, animDict, anim, GetEntityCoords(playerPed, true), 0, 0, GetEntityHeading(playerPed), 2.0, 2.0, 1000, 49, 0.25, 0, 0)
-			Citizen.Wait(900)
+			Wait(900)
 			ClearPedTasks(playerPed)
 			RemoveAnimDict(animDict)
 			SetVehicleDoorShut(currentInventory.entity, currentInventory.door, false)

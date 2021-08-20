@@ -21,8 +21,8 @@ end)
 
 AddEventHandler('txAdmin:events:scheduledRestart', function(eventData)
 	if eventData.secondsRemaining == 60 then
-		Citizen.CreateThread(function()
-			Citizen.Wait(50000)
+		CreateThread(function()
+			Wait(50000)
 			for id, inv in pairs(Inventory('all')) do
 				if inv.type ~= 'player' and not inv.open then
 					if inv.type ~= 'drop' and inv.datastore == nil and inv.changed then
@@ -174,13 +174,13 @@ ox.RegisterServerCallback('ox_inventory:swapItems', function(source, cb, data)
 					if fromSlot.count < 1 then fromSlot = nil end
 					if data.fromType == 'player' then items[data.fromSlot] = fromSlot or false end
 					if data.toType == 'player' then items[data.toSlot] = toSlot or false end
+					fromInventory.items[data.fromSlot], toInventory.items[data.toSlot] = fromSlot, toSlot
 					if next(items) then
 						ret = {weight=playerInventory.weight, items=items}
 						Inventory.SyncInventory(playerInventory:player(), playerInventory, items)
 					end
 					if fromInventory.changed ~= nil then fromInventory:set('changed', true) end
 					if toInventory.changed ~= nil then toInventory:set('changed', true) end
-					fromInventory.items[data.fromSlot], toInventory.items[data.toSlot] = fromSlot, toSlot
 					return cb(true, ret)
 				end
 			end
