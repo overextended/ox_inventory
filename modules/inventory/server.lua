@@ -4,7 +4,8 @@ local Utils, Items = module('utils', true), module('items')
 local metatable = setmetatable(M, {
 	__call = function(self, arg)
 		if arg then
-			if Inventories[arg] then return Inventories[arg] else return false end
+			if arg == 'all' then return Inventories
+			elseif Inventories[arg] then return Inventories[arg] else return false end
 		end
 		return self
 	end
@@ -21,34 +22,18 @@ local Set = function(inv, k, v)
 	inv = Inventories[type(inv) == 'table' and inv.id or inv]
 	if type(v) == 'number' then math.floor(v + 0.5) end
 	if k == 'open' and v == false then
-		if inv.type == 'drop' then
-			if not next(inv.items) then
+		if inv.type ~= 'player' then
+			if inv.type == 'drop' and not next(inv.items) then
 				TriggerClientEvent('ox_inventory:removeDrop', -1, inv.id)
-				Inventories[inv.id] = nil
-			end
-		elseif inv.type ~= 'player' and inv.timeout == false then
-			inv:timer()
+				inv = nil
+			else inv.time = os.time(os.date('!*t')) end
 		end
 	end
-	inv[k] = v
+	if inv then inv[k] = v end
 end
 
 local Get = function(inv, k)
 	return Inventories[type(inv) == 'table' and inv.id or inv][k]
-end
-
-local Timer = function(inv)
-	inv = Inventories[type(inv) == 'table' and inv.id or inv]
-	inv:set('timeout', true)
-	SetTimeout(3000, function()
-		if inv.open == false then
-			if inv.datastore then
-				if next(inv.items) == nil then Inventories[inv.id] = nil end
-			elseif inv.changed then
-				M.Save(inv)
-			else Inventories[inv.id] = nil end
-		elseif inv.open then inv:set('timeout', false) end
-	end)
 end
 
 local GetPlayer = function(inv)
@@ -160,7 +145,7 @@ M.Create = function(...)
 		}
 
 		if self.type == 'player' then self.player = GetPlayer
-		else self.changed, self.timeout, self.timer = false, false, Timer end
+		else self.changed, self.time = false, os.time(os.date('!*t')) end
 
 		if not self.items then
 			self.items, self.weight, self.datastore = M.Load(self.id, self.type, self.owner)
@@ -168,6 +153,13 @@ M.Create = function(...)
 		Inventories[self.id] = self
 		return Inventories[self.id]
 	end
+end
+
+M.Remove = function(id, type)
+	if type == 'drop' then
+		TriggerClientEvent('ox_inventory:removeDrop', -1, id)
+	end
+	Inventories[id] = nil
 end
 
 M.Save = function(inv)
@@ -196,7 +188,7 @@ M.Save = function(inv)
 				['data'] = inventory
 			})
 		end
-		Inventories[inv.id] = nil
+		inv.changed = false
 	end
 end
 
