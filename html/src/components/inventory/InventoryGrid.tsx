@@ -10,12 +10,14 @@ const InventoryGrid: React.FC<{ inventory: Inventory }> = ({ inventory }) => {
 
   const weight = React.useMemo(
     () =>
-      inventory.items.reduce<number>(
-        (totalWeight, slot) =>
-          slot.weight ? totalWeight + slot.weight : totalWeight,
-        0
-      ),
-    [inventory.items]
+      inventory.maxWeight !== undefined
+        ? inventory.items.reduce<number>(
+            (totalWeight, slot) =>
+              slot.weight ? totalWeight + slot.weight : totalWeight,
+            0
+          )
+        : 0,
+    [inventory.maxWeight, inventory.items]
   );
 
   return (
