@@ -2,10 +2,16 @@ import {
   isSlotWithItem,
   findAvailableSlot,
   getTargetInventory,
+  canStack,
 } from "../helpers";
 import { validateMove } from "../thunks/validateItems";
 import { store } from "../store";
-import { DragSource, DropTarget, InventoryType } from "../typings";
+import {
+  DragSource,
+  DropTarget,
+  InventoryType,
+  SlotWithItem,
+} from "../typings";
 import { moveSlots, stackSlots, swapSlots } from "../store/inventory";
 import toast from "react-hot-toast";
 import { Items } from "../store/items";
@@ -21,21 +27,19 @@ export const onMove = (source: DragSource, target?: DropTarget) => {
     target?.inventory
   );
 
-  const sourceSlot = sourceInventory.items[source.item.slot - 1];
+  const sourceSlot = sourceInventory.items[
+    source.item.slot - 1
+  ] as SlotWithItem;
 
-  if (!isSlotWithItem(sourceSlot)) {
-    throw new Error("Slot is empty!");
-  }
+  const sourceData = Items[sourceSlot.name];
 
-  const itemData = Items[sourceSlot.name];
-
-  if (itemData === undefined) {
+  if (sourceData === undefined) {
     throw new Error(`${sourceSlot.name} item data undefined!`);
   }
 
   const targetSlot = target
     ? targetInventory.items[target.item.slot - 1]
-    : findAvailableSlot(sourceSlot, itemData.stack, targetInventory.items);
+    : findAvailableSlot(sourceSlot, sourceData, targetInventory.items);
 
   if (targetSlot === undefined) {
     throw new Error("Target slot undefined!");
@@ -81,10 +85,8 @@ export const onMove = (source: DragSource, target?: DropTarget) => {
     });
   }
 
-  isSlotWithItem(targetSlot)
-    ? itemData.stack &&
-      sourceSlot.name === targetSlot.name &&
-      sourceSlot.metadata === targetSlot.metadata
+  isSlotWithItem(targetSlot, true)
+    ? sourceData.stack && canStack(sourceSlot, targetSlot)
       ? store.dispatch(
           stackSlots({
             ...data,

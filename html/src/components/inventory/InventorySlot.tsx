@@ -1,5 +1,11 @@
 import React from "react";
-import { DragSource, Inventory, Slot, SlotWithItem } from "../../typings";
+import {
+  DragSource,
+  Inventory,
+  InventoryType,
+  Slot,
+  SlotWithItem,
+} from "../../typings";
 import { useDrag, useDrop } from "react-dnd";
 import { useAppSelector } from "../../store";
 import WeightBar from "../utils/WeightBar";
@@ -34,7 +40,7 @@ const InventorySlot: React.FC<SlotProps> = ({
         isDragging: monitor.isDragging(),
       }),
       item: () =>
-        isSlotWithItem(item)
+        isSlotWithItem(item, inventory.type !== InventoryType.SHOP)
           ? {
               inventory: inventory.type,
               item: {

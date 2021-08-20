@@ -10,7 +10,6 @@ export type Inventory = {
   type: string;
   slots: number;
   items: Slot[];
-  weight?: number;
   maxWeight?: number;
   label?: string;
 };

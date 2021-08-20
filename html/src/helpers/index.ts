@@ -1,22 +1,33 @@
+import { Items } from "../store/items";
 import {
   Inventory,
   State,
   Slot,
   SlotWithItem,
   InventoryType,
+  ItemData,
 } from "../typings";
 
-export const isSlotWithItem = (slot: Slot): slot is SlotWithItem =>
-  slot.name !== undefined &&
-  slot.weight !== undefined &&
-  (slot.price === undefined && slot.count !== undefined);
+export const isSlotWithItem = (
+  slot: Slot,
+  strict: boolean = false
+): slot is SlotWithItem =>
+  slot.name !== undefined ||
+  (strict &&
+    slot.name !== undefined &&
+    slot.count !== undefined &&
+    slot.weight !== undefined);
+
+export const canStack = (sourceSlot: SlotWithItem, targetSlot: SlotWithItem) =>
+  sourceSlot.name === targetSlot.name &&
+  sourceSlot.metadata === targetSlot.metadata;
 
 export const findAvailableSlot = (
   item: SlotWithItem,
-  stack: boolean,
+  data: ItemData,
   items: Slot[]
 ) => {
-  if (!stack) return items.find((target) => target.name === undefined);
+  if (!data.stack) return items.find((target) => target.name === undefined);
 
   const stackableSlot = items.find(
     (target) => target.name === item.name && target.metadata === item.metadata
