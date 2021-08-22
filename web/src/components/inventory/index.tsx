@@ -13,7 +13,7 @@ import {
 import { useExitListener } from "../../hooks/useExitListener";
 
 const Inventory: React.FC = () => {
-  const [inventoryVisible, setInventoryVisible] = React.useState(true);
+  const [inventoryVisible, setInventoryVisible] = React.useState(false);
 
   useNuiEvent<boolean>("setInventoryVisible", setInventoryVisible);
   useNuiEvent<false>("closeInventory", setInventoryVisible);

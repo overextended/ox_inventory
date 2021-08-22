@@ -16,18 +16,18 @@ shared_scripts {
 }
 
 client_scripts {
-	'client.lua'
+	'cl*.lua'
 }
 
 server_scripts {
 	'server.lua'
 }
 
-ui_page 'html/build/index.html'
+ui_page 'web/build/index.html'
 
 files {
-	'html/build/index.html',
-	'html/build/**/*',
+	'web/build/index.html',
+	'web/build/**/*',
 	'modules/**/shared.lua',
 	'modules/**/client.lua',
 	'data/*.lua',

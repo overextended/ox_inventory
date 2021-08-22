@@ -1,7 +1,7 @@
 {
   "name": "ox_inventory",
   "version": "1.0.0",
-  "homepage": "html/build",
+  "homepage": "web/build",
   "private": true,
   "dependencies": {
     "@fortawesome/fontawesome-svg-core": "^1.2.36",
