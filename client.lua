@@ -270,34 +270,97 @@ RegisterNetEvent('ox_inventory:setPlayerInventory', function(data)
 			end
 		else
 			if isDoingAction then
-				if disableControls.disableMouse then
+				if Progress.disableMouse then
 					DisableControlAction(0, 1, true) -- LookLeftRight
 					DisableControlAction(0, 2, true) -- LookUpDown
 					DisableControlAction(0, 106, true) -- VehicleMouseControlOverride
 				end
-				if disableControls.disableMovement then
+				if Progress.disableMovement then
 					DisableControlAction(0, 30, true) -- disable left/right
 					DisableControlAction(0, 31, true) -- disable forward/back
 					DisableControlAction(0, 36, true) -- INPUT_DUCK
 					DisableControlAction(0, 21, true) -- disable sprint
 				end
-				if disableControls.disableCarMovement then
+				if Progress.disableCarMovement then
 					DisableControlAction(0, 63, true) -- veh turn left
 					DisableControlAction(0, 64, true) -- veh turn right
 					DisableControlAction(0, 71, true) -- veh forward
 					DisableControlAction(0, 72, true) -- veh backwards
 					DisableControlAction(0, 75, true) -- disable exit vehicle
 				end
-				if disableControls.disableCombat then
-					DisablePlayerFiring(PlayerId(), true) -- Disable weapon firing
+				if Progress.disableCombat then
+					DisablePlayerFiring(playerId, true) -- Disable weapon firing
 					DisableControlAction(0, 25, true) -- disable aim
 				end
 			end
 			for k, v in pairs(nearbyMarkers) do
 				DrawMarker(2, v[1].x,v[1].y,v[1].z, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.3, 0.2, 0.15, v[2], v[3], v[4], 222, false, false, false, true, false, false, false)
 			end
+			DisablePlayerVehicleRewards(playerId)
+			if isBusy or itemCooldown then
+				DisablePlayerFiring(playerID, true)
+				DisableControlAction(0, 23, true)
+				DisableControlAction(0, 25, true)
+			end
+			if currentWeapon then
+				if currentWeapon.ammo then
+					if IsPedShooting(ESX.PlayerData.ped) then
+						local time = GetNetworkTime()
+						if currentWeapon.timer < time then
+							TriggerServerEvent('ox_inventory:updateWeapon', 'ammo', currentWeapon.ammo)
+							currentWeapon.timer = 0
+						end
+						if wait == nil and currentWeapon.name == 'WEAPON_FIREEXTINGUISHER' or currentWeapon.name == 'WEAPON_PETROLCAN' then
+							currentWeapon.metadata.durability = currentWeapon.metadata.durability - 0.1
+							if currentWeapon.metadata.durability <= 0 then
+								wait = true
+								ClearPedTasks(ESX.PlayerData.ped)
+								SetCurrentPedWeapon(ESX.PlayerData.ped, currentWeapon.hash, true)
+								TriggerServerEvent('ox_inventory:updateWeapon', 'deplete')
+								SetInterval('wait', 200, function()
+									Disarm()
+									wait = nil
+								end)
+							end
+						elseif currentWeapon.ammoname then
+							local currentAmmo = GetAmmoInPedWeapon(ESX.PlayerData.ped, currentWeapon.hash)
+							currentWeapon.ammo = currentAmmo
+							if currentAmmo == 0 then
+								ClearPedTasks(ESX.PlayerData.ped)
+								SetCurrentPedWeapon(ESX.PlayerData.ped, currentWeapon.hash, false)
+								SetPedCurrentWeaponVisible(ESX.PlayerData.ped, true, false, false, false)
+							end
+						end
+						currentWeapon.timer = time + 350
+					end
+				elseif wait == nil then
+					if currentWeapon.throwable and IsControlJustReleased(0, 24) then
+						wait = true
+						ClearPedTasks(ESX.PlayerData.ped)
+						SetCurrentPedWeapon(ESX.PlayerData.ped, currentWeapon.hash, true)
+						SetInterval('wait', 700, function()
+							TriggerServerEvent('ox_inventory:updateWeapon', 'ammo', 0)
+							Disarm()
+							wait = nil
+						end)
+					elseif currentWeapon.durability then
+						local time = GetNetworkTime()
+						if currentWeapon.timer < time and IsPedArmed(ESX.PlayerData.ped, 1) and IsControlPressed(0, 24) then
+							ClearPedTasks(ESX.PlayerData.ped)
+							SetCurrentPedWeapon(ESX.PlayerData.ped, currentWeapon.hash, true)
+							TriggerServerEvent('ox_inventory:updateWeapon', 'melee')
+							currentWeapon.timer = time + 350
+						end
+					end
+				end
+			end
 		end
 	end)
+	
+	TriggerEvent('ox_inventory:item', 'burger', function(result)
+		print(result)
+	end, slot, metadata)
+
 end)
 
 AddEventHandler('onResourceStop', function(resourceName)
@@ -309,6 +372,37 @@ AddEventHandler('onResourceStop', function(resourceName)
 			TriggerScreenblurFadeOut(0)
 		end
 	end
+end)
+
+AddEventHandler('ox_inventory:item', function(item, cb, slot, metadata)
+	local data, result = Items[item]
+	if data then result = ox.TriggerServerCallback('ox_inventory:useItem', item, slot, metadata) end
+	if result then
+		if data.client and data.client.usetime then
+			data = data.client
+			SetBusy(true)
+			Progress.Start({
+				duration = data.usetime,
+				label = 'Using '..item,
+				useWhileDead = data.useWhileDead or false,
+				canCancel = data.cancel or false,
+				disableControls = data.disable and {
+					disableMovement = data.disable.move or false,
+					disableCarMovement = data.disable.car or false,
+					disableMouse  = data.disable.mouse or false,
+					disableCombat = data.disable.combat or false,
+				},
+				anim = data.anim.dict and { dict = data.anim.dict, clip = data.anim.clip, flag = data.anim.flag or 49 } or {scenario = data.scenario},
+				prop = data.prop,
+				propTwo = data.propTwo
+			}, function(cancel)
+				if cancel then cb(false)
+				else cb(result) end
+				Wait(300)
+				SetBusy(false)
+			end)
+		else cb(result) end
+	else cb(false) end
 end)
 
 RegisterNetEvent('esx:playerLoaded', function(xPlayer)
