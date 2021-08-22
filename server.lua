@@ -92,9 +92,7 @@ ox.RegisterServerCallback('ox_inventory:openInventory', function(source, cb, inv
 			if stash.owner == nil then
 				right = Inventory(stash.name)
 				if not right then
-					for i=1, 100 do
-						right = Inventory.Create(stash.name..i, stash.name, inv, stash.slots, 0, stash.weight, false)
-					end
+					right = Inventory.Create(stash.name..i, stash.name, inv, stash.slots, 0, stash.weight, false)
 				end
 			else
 				local owner = stash.owner == true and left.owner or stash.owner
@@ -114,7 +112,7 @@ ox.RegisterServerCallback('ox_inventory:openInventory', function(source, cb, inv
 		end
 		if not right.open then
 			right:set('open', source)
-			left.open = right.id
+			left:set('open', right.id)
 		end
 	end
 	cb({id=left.label, type=left.type, slots=left.slots, weight=left.weight, maxWeight=left.maxWeight}, right)
@@ -194,7 +192,7 @@ ox.RegisterServerCallback('ox_inventory:openShop', function(source, cb, inv, dat
 	if data then
 		shop = Shops[data.id]
 		shop.type = inv
-		left.open = shop.id
+		left:set('open', shop.id)
 		print(ESX.DumpTable(shop))
 	end
 	cb({id=left.label, type=left.type, slots=left.slots, weight=left.weight, maxWeight=left.maxWeight}, shop)

@@ -9,7 +9,6 @@ local Data = {
 			prop = { model = 'prop_rolled_sock_02', pos = { x = -0.14, y = -0.14, y = -0.08}, rot = { x = -50.0, y = -50.0, y = 0.0} },
 			disable = { move = true, car = true, combat = true },
 			usetime = 2500,
-			event = true,
 		}
 	},
 
@@ -30,7 +29,6 @@ local Data = {
 			anim = { dict = 'mp_player_inteat@burger', clip = 'mp_player_int_eat_burger_fp' },
 			prop = { model = 'prop_cs_burger_01', pos = { x = 0.02, y = 0.02, y = -0.02}, rot = { x = 0.0, y = 0.0, y = 0.0} },
 			usetime = 2500,
-			event = true,
 		}
 	},
 
@@ -44,7 +42,6 @@ local Data = {
 			anim = { dict = 'mp_player_intdrink', clip = 'loop_bottle' },
 			prop = { model = 'prop_ecola_can', pos = { x = 0.01, y = 0.01, y = 0.06}, rot = { x = 5.0, y = 5.0, y = -180.5} },
 			usetime = 2500,
-			event = true,
 		}
 	},
 
@@ -56,7 +53,6 @@ local Data = {
 		server = {},
 		client = {
 			anim = { dict = 'clothingshirt', clip = 'try_shirt_positive_d' },
-			event = true,
 			usetime = 1500
 		}
 	},
@@ -87,12 +83,12 @@ local Data = {
 		weight = 10,
 		stack = true,
 		close = true,
+		consume = 0,
 		client = {
 			status = { thirst = -100000, stress = -25000 },
 			anim = { dict = 'mp_player_intdrink', clip = 'loop_bottle' },
 			prop = { model = 'prop_cs_panties_02', pos = { x = 0.03, y = 0.0, z = 0.02 }, rot = { x = 0.0, y = -13.5, z = -1.5 } },
 			usetime = 2500,
-			consume = 0
 		}
 	},
 
@@ -101,12 +97,11 @@ local Data = {
 		weight = 160,
 		stack = true,
 		close = true,
+		consume = 0,
 		client = {
 			anim = { dict = 'anim@amb@clubhouse@tutorial@bkr_tut_ig3@', clip = 'machinic_loop_mechandplayer' },
 			disable = { move = true, car = true, combat = true },
-			consume = 0,
 			usetime = 5000,
-			event = true,
 			cancel = true
 		}
 	},
@@ -116,8 +111,8 @@ local Data = {
 		weight = 190,
 		stack = false,
 		close = true,
+		consume = 0,
 		client = {
-			consume = 0,
 			usetime = 0,
 			event = 'gcPhone:forceOpenPhone'
 		}
@@ -140,7 +135,6 @@ local Data = {
 			anim = { dict = 'mp_player_intdrink', clip = 'loop_bottle' },
 			prop = { model = 'prop_food_mustard', pos = { x = 0.01, y = 0.0, z = -0.07 }, rot = { x = 1.0, y = -1.0, z = -1.5 } },
 			usetime = 2500,
-			event = true,
 		}
 	},
 
@@ -154,7 +148,7 @@ local Data = {
 			anim = { dict = 'mp_player_intdrink', clip = 'loop_bottle' },
 			prop = { model = 'prop_ld_flow_bottle', pos = { x = 0.03, y = 0.03, y = 0.02}, rot = { x = 0.0, y = 0.0, y = -1.5} },
 			usetime = 2500,
-			event = true,
+			cancel = true
 		}
 	},
 }

@@ -44,17 +44,25 @@ local ClearWeapons = function()
 		SetPedAmmo(ESX.PlayerData.ped, k, 0)
 	end
 	RemoveAllPedWeapons(ESX.PlayerData.ped, true)
-	if parachute then
-		local chute = `GADGET_PARACHUTE`
+	if ox.parachute then
+		local chute = `GADGET_ox.parachute`
 		GiveWeaponToPed(ESX.PlayerData.ped, chute, 0, true, false)
 		SetPedGadget(ESX.PlayerData.ped, chute, true)
 	end
 end
 RegisterNetEvent('ox_inventory:clearWeapons', ClearWeapons)
 
-local Hotkey = function(slot)
-	if ESX.PlayerLoaded and not invOpen and ESX.PlayerData.inventory[slot] then
-		TriggerEvent('ox_inventory:useItem', ESX.PlayerData.inventory[slot])
+local UseSlot = function(slot)
+	if ESX.PlayerLoaded then
+		local item = ESX.PlayerData.inventory[slot]
+		if item then
+			local data = Items[item.name]
+			if data.client.event then
+				TriggerEvent(data.client.event, data, {name = item.name, slot = item.slot, metadata = item.metadata})
+			else
+				data:effect({name = item.name, slot = item.slot, metadata = item.metadata})
+			end
+		end
 	end
 end
 
@@ -195,7 +203,7 @@ RegisterNetEvent('ox_inventory:setPlayerInventory', function(data)
     for k, v in pairs(Items) do
         ItemData[v.name] = {
             label = v.label,
-            usable = (v.client and v.client.event or (v.client and v.client.usetime) or v.name:find('WEAPON_') or v.name:find('ammo-') or v.name:find('at_')) and true or false,
+            usable = (v.client and next(v.client) or v.name:find('WEAPON_') or v.name:find('ammo-') or v.name:find('at_')) and true or false,
             stack = v.stack,
             close = v.close
         }
@@ -232,7 +240,7 @@ RegisterNetEvent('ox_inventory:setPlayerInventory', function(data)
 	TriggerEvent('chat:removeSuggestion', '/hotbar')
 	TriggerEvent('chat:removeSuggestion', '/reload')
 	for i=1, 5 do
-		RegisterCommand('hotkey'..i, function() Hotkey(i) end)
+		RegisterCommand('hotkey'..i, function() if not invOpen then UseSlot(i) end end)
 		RegisterKeyMapping('hotkey'..i, 'Use hotbar item '..i..'~', 'keyboard', i)
 		TriggerEvent('chat:removeSuggestion', '/hotkey'..i)
 	end
@@ -295,7 +303,7 @@ RegisterNetEvent('ox_inventory:setPlayerInventory', function(data)
 				end
 			end
 		end
-		if parachute and GetPedParachuteState(ESX.PlayerData.ped) ~= -1 then ESX.Game.DeleteObject(parachute) parachute = false end
+		if ox.parachute and GetPedParachuteState(ESX.PlayerData.ped) ~= -1 then ESX.Game.DeleteObject(ox.parachute) ox.parachute = false end
 		if invOpen and not CanOpenInventory() then TriggerEvent('ox_inventory:closeInventory') end
 	end)
 	
@@ -396,16 +404,11 @@ RegisterNetEvent('ox_inventory:setPlayerInventory', function(data)
 			end
 		end
 	end)
-	
-	TriggerEvent('ox_inventory:item', 'burger', function(result)
-		print(result)
-	end, slot, metadata)
-
 end)
 
 AddEventHandler('onResourceStop', function(resourceName)
 	if ox.name == resourceName then
-		if parachute then ESX.Game.DeleteObject(parachute) end
+		if ox.parachute then ESX.Game.DeleteObject(ox.parachute) end
 		if invOpen then
 			SetNuiFocus(false, false)
 			SetNuiFocusKeepInput(false)
@@ -414,35 +417,47 @@ AddEventHandler('onResourceStop', function(resourceName)
 	end
 end)
 
-AddEventHandler('ox_inventory:item', function(item, cb, slot, metadata)
-	local data, result = Items[item]
-	if data then result = ox.TriggerServerCallback('ox_inventory:useItem', item, slot, metadata) end
-	if result then
-		if data.client and data.client.usetime then
-			data = data.client
-			SetBusy(true)
-			Progress.Start({
-				duration = data.usetime,
-				label = 'Using '..item,
-				useWhileDead = data.useWhileDead or false,
-				canCancel = data.cancel or false,
-				disableControls = data.disable and {
-					disableMovement = data.disable.move or false,
-					disableCarMovement = data.disable.car or false,
-					disableMouse  = data.disable.mouse or false,
-					disableCombat = data.disable.combat or false,
-				},
-				anim = data.anim.dict and { dict = data.anim.dict, clip = data.anim.clip, flag = data.anim.flag or 49 } or {scenario = data.scenario},
-				prop = data.prop,
-				propTwo = data.propTwo
-			}, function(cancel)
-				if cancel then cb(false)
-				else cb(result) end
-				Wait(300)
-				SetBusy(false)
-			end)
-		else cb(result) end
-	else cb(false) end
+AddEventHandler('ox_inventory:item', function(data, cb)
+	if not isBusy and not Progress.Active then
+		SetBusy(true)
+		local result = ox.TriggerServerCallback('ox_inventory:useItem', data.item, data.slot, data.metadata)
+		if result then
+			if data.client then
+				local used
+				if data.client.usetime then
+					data = data.client
+					Progress.Start({
+						duration = data.usetime,
+						label = 'Using '..data.item,
+						useWhileDead = data.useWhileDead or false,
+						canCancel = data.cancel or false,
+						disableControls = data.disable and {
+							disableMovement = data.disable.move or false,
+							disableCarMovement = data.disable.car or false,
+							disableMouse  = data.disable.mouse or false,
+							disableCombat = data.disable.combat or false,
+						},
+						anim = data.anim.dict and { dict = data.anim.dict, clip = data.anim.clip, flag = data.anim.flag or 49 } or {scenario = data.scenario},
+						prop = data.prop,
+						propTwo = data.propTwo
+					}, function(cancel)
+						if cancel then used = false else used = true end
+					end)
+				else used = true end
+				while used == nil do Wait(data.usetime/2) end
+				if used then
+					if result.consume ~= 0 then TriggerServerEvent('ox_inventory:removeItem', data.item) end
+					if data.status then
+						for k, v in pairs(data.status) do
+							if v > 0 then TriggerEvent('esx_status:add', k, v) else TriggerEvent('esx_status:remove', k, -v) end
+						end
+					end
+					cb({name=result.name, label=result.label, count=result.count, slot=result.slot, metadata=result.metadata})
+				else cb(false) end
+			end
+		else cb(false) end
+		SetBusy(false)
+	end
 end)
 
 RegisterNetEvent('esx:playerLoaded', function(xPlayer)
@@ -451,7 +466,7 @@ RegisterNetEvent('esx:playerLoaded', function(xPlayer)
 end)
 
 RegisterNetEvent('esx:onPlayerLogout', function()
-	if parachute then ESX.Game.DeleteObject(parachute) parachute = false end
+	if ox.parachute then ESX.Game.DeleteObject(ox.parachute) ox.parachute = false end
 	TriggerEvent('ox_inventory:closeInventory')
 	ESX.PlayerLoaded = false
 	ClearInterval(1)
@@ -586,13 +601,12 @@ RegisterNUICallback('notification', function(data)
 	Notify({type = data.type, text = ox.locale(data.message), duration = 2500})
 end)
 
-RegisterNUICallback('useItem', function(data, cb)
-	if data.inv == 'Playerinv' then TriggerEvent('ox_inventory:useItem', data.item) end
+RegisterNUICallback('useItem', function(data)
+	UseSlot(data.slot)
 end)
 
-RegisterNUICallback('exit', function(data, cb)
+RegisterNUICallback('exit', function(data)
 	TriggerEvent('ox_inventory:closeInventory')
-	cb({})
 end)
 
 RegisterNUICallback('swapItems', function(data, cb)
