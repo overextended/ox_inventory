@@ -16,7 +16,6 @@ ox.trim = function(string)
 	return string:match("^%s*(.-)%s*$")
 end
 
-
 local Locales = data('locales/'..Config.Locale)
 ox.locale = function(string, ...)
 	return Locales[string]:format(...)

@@ -1,13 +1,22 @@
 local M = {}
 local Items, Weapons = table.unpack(module('items', true))
+
+local getItem = function(item)
+	item = string.lower(item)
+	local weapon, ammo
+	if item:find('weapon_') then
+		item = string.upper(item)
+		weapon = true
+	elseif item:find('ammo-') then
+		ammo = true
+	end
+	item = Items[item] or false
+	return item, weapon and 1 or ammo and 2
+end
+
 local metatable = setmetatable(M, {
 	__call = function(self, item)
-		if item then
-			item = string.lower(item)
-			if item:find('weapon_') then item = string.upper(item) end
-			item = Items[item] or false
-			return item
-		end
+		if item then return getItem(item) end
 		return self
 	end
 })
@@ -107,12 +116,7 @@ Data[']]..i.name..[['] = {
 end)
 
 exports('Items', function(item)
-	if item then
-		item = string.lower(item)
-		if item:find('weapon_') then item = string.upper(item) end
-		item = Items[item] or false
-		return item
-	end
+	if item then return getItem(item) end
 	return M
 end)
 
