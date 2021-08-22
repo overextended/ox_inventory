@@ -235,18 +235,16 @@ M.Load = function(id, inv, owner)
 end
 
 M.GetItem = function(inv, item, metadata)
-	local item = Items(item)
-	if item then item = table.clone(item)
+	if item then item = Utils.Copy(item)
 		local inv, count = Inventories[type(inv) == 'table' and inv.id or inv].items, 0
-		if inventory then
+		if inv then
 			metadata = not metadata and false or type(metadata) == 'string' and {type=metadata} or metadata
 			for k, v in pairs(inv) do
-				if not metadata or Utils.TableContains(v.metadata or {}, metadata) then
+				if v and v.name == item.name and (not metadata or Utils.TableContains(v.metadata or {}, metadata)) then
 					count = count + v.count
 				end
 			end
 		end
-		if metadata then item.metadata = metadata end
 		item.count = count
 		return item
 	end
