@@ -317,18 +317,7 @@ M.AddItem = function(inv, item, count, metadata, slot)
 			end
 			M.SetSlot(inv, item, count, metadata, slot)
 		else
-			if item.name:find('identification') then
-				count = 1
-				if next(metadata) == nil then
-					metadata = {}
-					metadata.type = xPlayer.name
-					metadata.description = ('Sex: %s\nDate of birth: %s'):format((xPlayer.variables.sex or xPlayer.sex) and ox.locale('male') or ox.locale('female'), xPlayer.variables.dateofbirth or xPlayer.dateofbirth)
-				end
-			elseif item.name:find('paperbag') then
-				count = 1
-				metadata = {}
-				metadata.container = GenerateText(3)..os.time(os.date('!*t'))
-			end
+			item, metadata, count = Items.Metadata(xPlayer, item, metadata, count)
 			M.SetSlot(inv, item, count, metadata, slot)
 		end
 		inv.weight = inv.weight + (item.weight + (metadata.weight or 0)) * count
