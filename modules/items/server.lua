@@ -117,20 +117,15 @@ end)
 
 local GenerateText = function(num)
 	local str
-	repeat
-		str = {}
-		for i=1, num do
-			str[i] = string.char(math.random(65, 90))
-		end
-		str = ox.concat('', table.unpack(str))
-		Wait(5)
+	repeat str = {}
+		for i=1, num do str[i] = string.char(math.random(65, 90)) end
+		str = table.concat(str)
 	until str ~= 'POL' and str ~= 'EMS'
 	return str
 end
 
 local GenerateSerial = function(text)
-	if not text then GenerateText(3)
-	elseif text:len() > 3 then return text end
+	if not text then GenerateText(3) elseif text:len() > 3 then return text end
 	return ('%s%s%s'):format(math.random(100000,999999), text, math.random(100000,999999))
 end
 

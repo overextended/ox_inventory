@@ -14,7 +14,8 @@ exports('SetBusy', SetBusy)
 
 local SetWeapon = function(weapon)
 	currentWeapon = weapon
-	TriggerEvent('ox_inventory:currentWeapon', weapon)
+	TriggerEvent('ox_inventory:currentWeapon', weapon and {name=weapon.name, slot=weapon.slot, label=weapon.label, metadata=weapon.metadata} or nil)
+	TriggerServerEvent('ox_inventory:currentWeapon', weapon and weapon.slot or nil)
 end
 
 local Disarm = function()
@@ -32,7 +33,7 @@ local Disarm = function()
 			end
 		end
 		RemoveWeaponFromPed(ESX.PlayerData.ped, currentWeapon.hash)
-		TriggerServerEvent('ox_inventory:updateWeapon', ammo)
+		TriggerServerEvent('ox_inventory:updateWeapon', 'disarm', ammo)
 		SetWeapon()
 	end
 end
@@ -85,6 +86,23 @@ local OpenInventory = function(inv, data)
 	end
 end
 
+local UseWeapon = function(item)
+	if currentWeapon and item.metadata.serial == currentWeapon.metadata.serial then
+		Disarm()
+	else
+		local data = Items[item.name]
+		if data.throwable then item.throwable, item.metadata.ammo = true, 1 end
+		item.hash = data.hash
+		item.timer = 0
+
+		GiveWeaponToPed(ESX.PlayerData.ped, item.hash, 0, true, false)
+		SetCurrentPedWeapon(ESX.PlayerData.ped, item.hash)
+		SetPedCurrentWeaponVisible(ESX.PlayerData.ped, true, false, false, false)
+		SetAmmoInClip(ESX.PlayerData.ped, item.hash, item.metadata.ammo or 100)
+		SetWeapon(item)
+	end
+end
+
 local UseSlot = function(slot)
 	if ESX.PlayerLoaded then
 		local item = ESX.PlayerData.inventory[slot]
@@ -92,10 +110,12 @@ local UseSlot = function(slot)
 			local data = Items[item.name]
 			if item.metadata.container then
 				OpenInventory('container', item.slot)
-			elseif data.client.event then
+			elseif data.client and data.client.event then
 				TriggerEvent(data.client.event, data, {name = item.name, slot = item.slot, metadata = item.metadata})
-			else
+			elseif data.effect then
 				data:effect({name = item.name, slot = item.slot, metadata = item.metadata})
+			else
+				TriggerEvent('ox_inventory:item', item, UseWeapon)
 			end
 		end
 	end
@@ -353,11 +373,11 @@ RegisterNetEvent('ox_inventory:setPlayerInventory', function(data)
 				DisableControlAction(0, 25, true)
 			end
 			if currentWeapon then
-				if currentWeapon.ammo then
+				if currentWeapon.metadata.ammo then
 					if IsPedShooting(ESX.PlayerData.ped) then
 						local time = GetNetworkTime()
 						if currentWeapon.timer < time then
-							TriggerServerEvent('ox_inventory:updateWeapon', 'ammo', currentWeapon.ammo)
+							TriggerServerEvent('ox_inventory:updateWeapon', 'ammo', currentWeapon.metadata.ammo)
 							currentWeapon.timer = 0
 						end
 						if wait == nil and currentWeapon.name == 'WEAPON_FIREEXTINGUISHER' or currentWeapon.name == 'WEAPON_PETROLCAN' then
@@ -372,9 +392,9 @@ RegisterNetEvent('ox_inventory:setPlayerInventory', function(data)
 									wait = nil
 								end)
 							end
-						elseif currentWeapon.ammoname then
+						elseif currentWeapon.metadata.ammoname then
 							local currentAmmo = GetAmmoInPedWeapon(ESX.PlayerData.ped, currentWeapon.hash)
-							currentWeapon.ammo = currentAmmo
+							currentWeapon.metadata.ammo = currentAmmo
 							if currentAmmo == 0 then
 								ClearPedTasks(ESX.PlayerData.ped)
 								SetCurrentPedWeapon(ESX.PlayerData.ped, currentWeapon.hash, false)
@@ -456,7 +476,7 @@ AddEventHandler('ox_inventory:item', function(data, cb)
 					end
 					cb({name=result.name, label=result.label, count=result.count, slot=result.slot, metadata=result.metadata})
 				else cb(false) end
-			end
+			else cb(result) end
 		else cb(false) end
 		SetBusy(false)
 	end
@@ -589,7 +609,7 @@ end)
 
 local reloadTime = GetNetworkTime()
 RegisterCommand('reload', function()
-	if not isBusy and currentWeapon and currentWeapon.ammoname and CanOpenInventory() and not IsPedRagdoll(ESX.PlayerData.ped) and not IsPedFalling(ESX.PlayerData.ped) then
+	if not isBusy and currentWeapon and currentWeapon.metadata.ammoname and CanOpenInventory() and not IsPedRagdoll(ESX.PlayerData.ped) and not IsPedFalling(ESX.PlayerData.ped) then
 		local time = GetNetworkTime()
 		if (reloadTime < time) and GetAmmoInPedWeapon(ESX.PlayerData.ped, currentWeapon.hash) < GetMaxAmmoInClip(ESX.PlayerData.ped, currentWeapon.hash, 1) then
 			reloadTime = time + 500

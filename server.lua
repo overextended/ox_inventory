@@ -1,10 +1,5 @@
 local Utils, Shops, Inventory, Items = module('utils', true), module('shops'), module('inventory'), module('items')
 
-RegisterNetEvent('equip', function(weapon)
-	local inv = Inventory(source)
-	inv.weapon = weapon
-end)
-
 SetInterval(1, 600000, function()
 	local time = os.time(os.date('!*t'))
 	for id, inv in pairs(Inventory('all')) do
@@ -246,14 +241,25 @@ ox.RegisterServerCallback('ox_inventory:openShop', function(source, cb, inv, dat
 	cb({id=left.label, type=left.type, slots=left.slots, weight=left.weight, maxWeight=left.maxWeight}, shop)
 end)
 
+RegisterNetEvent('ox_inventory:currentWeapon', function(slot)
+	local inv = Inventory(source)
+	if slot then
+		inv.weapon = inv.items[slot]
+	else inv.weapon = nil end
+end)
+
+RegisterNetEvent('ox_inventory:updateWeapon', function(action)
+	print(action)
+end)
+
 ox.RegisterServerCallback('ox_inventory:useItem', function(source, cb, item, slot, metadata)
 	local item, type = Items(item)
 	local data = item and (slot and Inventory(source).items[slot] or Inventory.GetItem(source, item, metadata))
 	if item and data and data.count > 0 and data.name == item.name then
 		if type == 1 then -- weapon
-
+			cb(data)
 		elseif type == 2 then -- ammo
-
+			cb(data)
 		elseif ESX.UsableItemsCallbacks[item.name] then
 			ESX.UseItem(source, item.name)
 			cb(false)
