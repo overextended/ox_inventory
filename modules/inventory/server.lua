@@ -13,11 +13,6 @@ local metatable = setmetatable(M, {
 
 local Vehicle = {trunk=true, glovebox=true}
 
-local SetMetadata = function(metadata)
-	local metadata = metadata == nil and {} or type(metadata) == 'string' and {type=metadata} or metadata
-	return metadata
-end
-
 local Set = function(inv, k, v)
 	inv = Inventories[type(inv) == 'table' and inv.id or inv]
 	if type(v) == 'number' then math.floor(v + 0.5) end
@@ -235,12 +230,13 @@ M.Load = function(id, inv, owner)
 end
 
 M.GetItem = function(inv, item, metadata)
+	item = type(item) == 'table' and item or Items(item)
 	if item then item = Utils.Copy(item)
 		local inv, count = Inventories[type(inv) == 'table' and inv.id or inv].items, 0
 		if inv then
 			metadata = not metadata and false or type(metadata) == 'string' and {type=metadata} or metadata
 			for k, v in pairs(inv) do
-				if v and v.name == item.name and (not metadata or Utils.TableContains(v.metadata or {}, metadata)) then
+				if v and v.name == item.name and (not metadata or Utils.TableContains(v.metadata, metadata)) then
 					count = count + v.count
 				end
 			end
@@ -279,8 +275,6 @@ M.AddItem = function(inv, item, count, metadata, slot)
 	count = math.floor(count + 0.5)
 	if item and inv and count > 0 then
 		local xPlayer = inv.type == 'player' and inv:player() or false
-		local isWeapon = item.name:find('WEAPON_')
-		if isWeapon == nil then metadata = SetMetadata(metadata) elseif metadata == 'setname' then metadata = {description = xPlayer.name} end
 		local existing = false
 		if slot then
 			local slotItem = inv.items[slot]
@@ -300,26 +294,8 @@ M.AddItem = function(inv, item, count, metadata, slot)
 			end
 			slot = toSlot
 		end
-		if isWeapon then
-			if not item.ammoname then
-				metadata = {}
-				if not item.throwable then count, metadata.durability = 1, 100 end
-			else
-				count = 1
-				if type(metadata) ~= 'table' then metadata = {} end
-				if not metadata.durability then metadata.durability = 100 end
-				if item.ammoname then metadata.ammo = 0 end
-				if not metadata.components then metadata.components = {} end
-				if metadata.registered ~= false then
-					metadata.registered = xPlayer.name
-					metadata.serial = GenerateSerial(metadata.serial)
-				end
-			end
-			M.SetSlot(inv, item, count, metadata, slot)
-		else
-			item, metadata, count = Items.Metadata(xPlayer, item, metadata, count)
-			M.SetSlot(inv, item, count, metadata, slot)
-		end
+		metadata, count = Items.Metadata(xPlayer, item, metadata or {}, count)
+		M.SetSlot(inv, item, count, metadata, slot)
 		inv.weight = inv.weight + (item.weight + (metadata.weight or 0)) * count
 		if xPlayer then
 			M.SyncInventory(xPlayer, inv)
@@ -349,7 +325,7 @@ M.RemoveItem = function(inv, item, count, metadata, slot)
 	count = math.floor(count + 0.5)
 	if item and inv and count > 0 then
 		local xPlayer = inv.type == 'player' and inv:player() or false
-		metadata = SetMetadata(metadata)
+		metadata = metadata == nil and {} or type(metadata) == 'string' and {type=metadata} or metadata
 		local slotItem = inv.items[slot] or false
 		local itemSlots, totalCount = GetItemSlots(inv, item, metadata)
 		if count > totalCount then count = totalCount end
@@ -399,7 +375,7 @@ M.CanCarryItem = function(inv, item, count, metadata)
 	local item, inv = Items(item), Inventories[type(inv) == 'table' and inv.id or inv]
 	if item and inv then
 		local freeSlot = false
-		local itemSlots, totalCount, emptySlots = GetItemSlots(inv, item, SetMetadata(metadata))
+		local itemSlots, totalCount, emptySlots = GetItemSlots(inv, item, metadata == nil and {} or type(metadata) == 'string' and {type=metadata} or metadata)
 		if #itemSlots > 0 or emptySlots > 0 then
 			if item.weight == 0 then return true end
 			if count == nil then count = 1 end

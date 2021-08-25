@@ -116,7 +116,24 @@ Data[']]..i.name..[['] = {
 end)
 
 M.Metadata = function(xPlayer, item, metadata, count)
-	if item.name:find('identification') then
+	local isWeapon = item.name:find('WEAPON_')
+	if isWeapon == nil then metadata = metadata == nil and {} or type(metadata) == 'string' and {type=metadata} or metadata end
+	if isWeapon then
+		if not item.ammoname then
+			metadata = {}
+			if not item.throwable then count, metadata.durability = 1, 100 end
+		else
+			count = 1
+			if type(metadata) ~= 'table' then metadata = {} end
+			if not metadata.durability then metadata.durability = 100 end
+			if item.ammoname then metadata.ammo = 0 end
+			if not metadata.components then metadata.components = {} end
+			if metadata.registered ~= false then
+				metadata.registered = xPlayer.name
+				metadata.serial = GenerateSerial(metadata.serial)
+			end
+		end
+	elseif item.name:find('identification') then
 		count = 1
 		if next(metadata) == nil then
 			metadata = {}
@@ -127,8 +144,10 @@ M.Metadata = function(xPlayer, item, metadata, count)
 		count = 1
 		metadata = {}
 		metadata.container = GenerateText(3)..os.time(os.date('!*t'))
+	elseif item.name:find('burger') then
+		metadata.durability = os.time(os.date('!*t'))+36
 	end
-	return item, metadata, count
+	return metadata, count
 end
 
 exports('Items', function(item)

@@ -26,6 +26,7 @@ M.Copy = function(t, deep)
 end
 
 M.MatchTables = function(t1,t2)
+	t1, t2 = t1 or {}, t2 or {}
 	local ty1 = type(t1)
 	local ty2 = type(t2)
 	if ty1 ~= ty2 then return false end
@@ -43,6 +44,7 @@ end
 exports('MatchTables', M.MatchTables)
 
 M.TableContains = function(table, value)
+	table = table or {}
 	if type(value) == 'string' then
 		if table.type == value then return true end
 	else

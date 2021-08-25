@@ -18,7 +18,8 @@ end
 
 local Locales = data('locales/'..Config.Locale)
 ox.locale = function(string, ...)
-	return Locales[string]:format(...)
+	if Locales[string] then return Locales[string]:format(...) end
+	return string
 end
 
 local Modules = {}
