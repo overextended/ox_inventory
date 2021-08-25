@@ -115,6 +115,25 @@ Data[']]..i.name..[['] = {
 	end]]
 end)
 
+local GenerateText = function(num)
+	local str
+	repeat
+		str = {}
+		for i=1, num do
+			str[i] = string.char(math.random(65, 90))
+		end
+		str = ox.concat('', table.unpack(str))
+		Wait(5)
+	until str ~= 'POL' and str ~= 'EMS'
+	return str
+end
+
+local GenerateSerial = function(text)
+	if not text then GenerateText(3)
+	elseif text:len() > 3 then return text end
+	return ('%s%s%s'):format(math.random(100000,999999), text, math.random(100000,999999))
+end
+
 M.Metadata = function(xPlayer, item, metadata, count)
 	local isWeapon = item.name:find('WEAPON_')
 	if isWeapon == nil then metadata = metadata == nil and {} or type(metadata) == 'string' and {type=metadata} or metadata end
@@ -144,6 +163,7 @@ M.Metadata = function(xPlayer, item, metadata, count)
 		count = 1
 		metadata = {}
 		metadata.container = GenerateText(3)..os.time(os.date('!*t'))
+		metadata.size = {5, 1000}
 	elseif item.name:find('burger') then
 		metadata.durability = os.time(os.date('!*t'))+36
 	end
