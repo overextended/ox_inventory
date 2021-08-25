@@ -52,12 +52,47 @@ local ClearWeapons = function()
 end
 RegisterNetEvent('ox_inventory:clearWeapons', ClearWeapons)
 
+local OpenInventory = function(inv, data)
+	local left, right
+	if not isBusy or CanOpenInventory() then
+		if inv == 'shop' and invOpen == false then
+			left, right = ox.TriggerServerCallback('ox_inventory:openShop', inv, data)
+		elseif invOpen == false or inv == 'drop' or inv == 'container' then
+			left, right = ox.TriggerServerCallback('ox_inventory:openInventory', inv, data)
+		else return TriggerEvent('ox_inventory:closeInventory') end
+	else Notify({type = 'error', text = ox.locale('inventory_cannot_open'), duration = 2500}) end
+	if left then
+		if not IsPedInAnyVehicle(ESX.PlayerData.ped, false) then ox.playAnim(1000, 'pickup_object', 'putdown_low', 5.0, 1.5, 1.0, 48, 0.0, 0, 0, 0) end
+		invOpen = true
+		SetInterval(1, 100)
+		SetNuiFocus(true, true)
+		SetNuiFocusKeepInput(true)
+		TriggerScreenblurFadeIn(0)
+		currentInventory = right or {id='', type='newdrop', slots=left.slots, weight=0, maxWeight=100000, items={}}
+		left.items = ESX.PlayerData.inventory
+		SendNUIMessage({
+			action = 'setupInventory',
+			data = {
+				leftInventory = left,
+				rightInventory = currentInventory,
+				job = {
+					grade = ESX.PlayerData.job.grade,
+					grade_label = ESX.PlayerData.job.grade_label,
+					name = ESX.PlayerData.job.name
+				}
+			}
+		})
+	end
+end
+
 local UseSlot = function(slot)
 	if ESX.PlayerLoaded then
 		local item = ESX.PlayerData.inventory[slot]
 		if item then
 			local data = Items[item.name]
-			if data.client.event then
+			if item.metadata.container then
+				OpenInventory('container', item.slot)
+			elseif data.client.event then
 				TriggerEvent(data.client.event, data, {name = item.name, slot = item.slot, metadata = item.metadata})
 			else
 				data:effect({name = item.name, slot = item.slot, metadata = item.metadata})
@@ -119,39 +154,6 @@ RegisterNetEvent('ox_inventory:closeInventory', function(options)
 		invOpen, currentInventory = false, nil
 	end
 end)
-
-local OpenInventory = function(inv, data)
-	local left, right
-	if not isBusy or CanOpenInventory() then
-		if inv == 'shop' and invOpen == false then
-			left, right = ox.TriggerServerCallback('ox_inventory:openShop', inv, data)
-		elseif invOpen == false or inv == 'drop' then
-			left, right = ox.TriggerServerCallback('ox_inventory:openInventory', inv, data)
-		else return TriggerEvent('ox_inventory:closeInventory') end
-	else Notify({type = 'error', text = ox.locale('inventory_cannot_open'), duration = 2500}) end
-	if left then
-		if not IsPedInAnyVehicle(ESX.PlayerData.ped, false) then ox.playAnim(1000, 'pickup_object', 'putdown_low', 5.0, 1.5, 1.0, 48, 0.0, 0, 0, 0) end
-		invOpen = true
-		SetInterval(1, 100)
-		SetNuiFocus(true, true)
-		SetNuiFocusKeepInput(true)
-		TriggerScreenblurFadeIn(0)
-		currentInventory = right or {id='', type='newdrop', slots=left.slots, weight=0, maxWeight=100000, items={}}
-		left.items = ESX.PlayerData.inventory
-		SendNUIMessage({
-			action = 'setupInventory',
-			data = {
-				leftInventory = left,
-				rightInventory = currentInventory,
-				job = {
-					grade = ESX.PlayerData.job.grade,
-					grade_label = ESX.PlayerData.job.grade_label,
-					name = ESX.PlayerData.job.name
-				}
-			}
-		})
-	end
-end
 
 RegisterNetEvent('ox_inventory:updateInventory', function(items, weights, name, count, removed)
 	SendNUIMessage({

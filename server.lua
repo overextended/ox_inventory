@@ -92,7 +92,7 @@ ox.RegisterServerCallback('ox_inventory:openInventory', function(source, cb, inv
 			if stash.owner == nil then
 				right = Inventory(stash.name)
 				if not right then
-					right = Inventory.Create(stash.name..i, stash.name, inv, stash.slots, 0, stash.weight, false)
+					right = Inventory.Create(stash.name, stash.name, inv, stash.slots, 0, stash.weight, false)
 				end
 			else
 				local owner = stash.owner == true and left.owner or stash.owner
@@ -100,6 +100,12 @@ ox.RegisterServerCallback('ox_inventory:openInventory', function(source, cb, inv
 				if not right then
 					right = Inventory.Create(stash.name..owner, stash.name, inv, stash.slots, 0, stash.weight, owner)
 				end
+			end
+		elseif inv == 'container' then
+			local data = left.items[data]
+			right = Inventory(data.metadata.container)
+			if not right then
+				right = Inventory.Create(data.metadata.container, data.label, inv, data.metadata.size[1], 0, data.metadata.size[2], false)
 			end
 		else
 			right = Inventory(data.id)
