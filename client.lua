@@ -420,7 +420,7 @@ end)
 AddEventHandler('ox_inventory:item', function(data, cb)
 	if not isBusy and not Progress.Active then
 		SetBusy(true)
-		local result = ox.TriggerServerCallback('ox_inventory:useItem', data.item, data.slot, data.metadata)
+		local result = ox.TriggerServerCallback('ox_inventory:useItem', data.name, data.slot, data.metadata)
 		if result then
 			if data.client then
 				local used
@@ -428,7 +428,7 @@ AddEventHandler('ox_inventory:item', function(data, cb)
 					data = data.client
 					Progress.Start({
 						duration = data.usetime,
-						label = 'Using '..data.item,
+						label = 'Using '..result.label,
 						useWhileDead = data.useWhileDead or false,
 						canCancel = data.cancel or false,
 						disableControls = data.disable and {
@@ -446,7 +446,7 @@ AddEventHandler('ox_inventory:item', function(data, cb)
 				else used = true end
 				while used == nil do Wait(data.usetime/2) end
 				if used then
-					if result.consume ~= 0 then TriggerServerEvent('ox_inventory:removeItem', data.item) end
+					if result.consume ~= 0 then TriggerServerEvent('ox_inventory:removeItem', result.name) end
 					if data.status then
 						for k, v in pairs(data.status) do
 							if v > 0 then TriggerEvent('esx_status:add', k, v) else TriggerEvent('esx_status:remove', k, -v) end
@@ -623,7 +623,7 @@ RegisterNUICallback('swapItems', function(data, cb)
 end)
 
 RegisterNUICallback('buyItem', function(data, cb)
-	local response, data = ox.TriggerServerCallback('ox_inventory:buyItem', data)
+	local response, data, message = ox.TriggerServerCallback('ox_inventory:buyItem', data)
 	if data then
 		for k, v in pairs(data.items) do
 			ESX.PlayerData.inventory[k] = v and v or nil
@@ -631,6 +631,7 @@ RegisterNUICallback('buyItem', function(data, cb)
 		ESX.SetPlayerData('inventory', ESX.PlayerData.inventory)
 		if data.weight then ESX.SetPlayerData('weight', data.weight) end
 	end
+	if message then Notify(message) end
 	cb(response)
 end)
 

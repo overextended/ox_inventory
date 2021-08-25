@@ -119,7 +119,7 @@ ox.RegisterServerCallback('ox_inventory:openInventory', function(source, cb, inv
 end)
 
 ox.RegisterServerCallback('ox_inventory:swapItems', function(source, cb, data)
-	if data.count > 0 and data.fromSlot ~= data.toSlot then
+	if data.count > 0 and data.toType ~= 'shop' and data.fromSlot ~= data.toSlot then
 		local playerInventory, items, ret = Inventory(source), {}
 		if data.toType == 'newdrop' then
 			local fromSlot = playerInventory.items[data.fromSlot]
@@ -140,17 +140,17 @@ ox.RegisterServerCallback('ox_inventory:swapItems', function(source, cb, data)
 				local fromSlot, toSlot = fromInventory.items[data.fromSlot], toInventory.items[data.toSlot]
 				if fromSlot then
 					if data.count > fromSlot.count then data.count = fromSlot.count end
-					if toSlot and toSlot.name == fromSlot.name then
-						fromSlot.count = fromSlot.count - data.count
-						toSlot.count = toSlot.count + data.count
-						fromSlot.weight = Inventory.SlotWeight(Items(fromSlot.name), fromSlot)
-						toSlot.weight = Inventory.SlotWeight(Items(toSlot.name), toSlot)
+					if toSlot and ((toSlot.name ~= fromSlot.name) or (not Utils.MatchTables(toSlot.metadata, fromSlot.metadata))) then
+						toSlot, fromSlot = Inventory.SwapSlots({fromInventory, toInventory}, {data.fromSlot, data.toSlot})
 						if fromInventory.id ~= toInventory.id then
 							fromInventory.weight = fromInventory.weight - toSlot.weight
 							toInventory.weight = toInventory.weight + toSlot.weight
 						end
-					elseif toSlot and ((toSlot.name ~= fromSlot.name) or (not Utils.MatchTables(toSlot.metadata, fromSlot.metadata))) then
-						toSlot, fromSlot = Inventory.SwapSlots({fromInventory, toInventory}, {data.fromSlot, data.toSlot})
+					elseif toSlot and toSlot.name == fromSlot.name and Utils.MatchTables(toSlot.metadata, fromSlot.metadata) then
+						fromSlot.count = fromSlot.count - data.count
+						toSlot.count = toSlot.count + data.count
+						fromSlot.weight = Inventory.SlotWeight(Items(fromSlot.name), fromSlot)
+						toSlot.weight = Inventory.SlotWeight(Items(toSlot.name), toSlot)
 						if fromInventory.id ~= toInventory.id then
 							fromInventory.weight = fromInventory.weight - toSlot.weight
 							toInventory.weight = toInventory.weight + toSlot.weight
@@ -167,7 +167,8 @@ ox.RegisterServerCallback('ox_inventory:swapItems', function(source, cb, data)
 							toInventory.weight = toInventory.weight + toSlot.weight
 						end
 					else
-						return print('swapItems', data.fromType, data.fromSlot, 'to', data.toType, data.toSlot)
+						print('swapItems', data.fromType, data.fromSlot, 'to', data.toType, data.toSlot)
+						return cb(false)
 					end
 					if fromSlot.count < 1 then fromSlot = nil end
 					if data.fromType == 'player' then items[data.fromSlot] = fromSlot or false end
@@ -187,13 +188,54 @@ ox.RegisterServerCallback('ox_inventory:swapItems', function(source, cb, data)
 	cb(false)
 end)
 
+ox.RegisterServerCallback('ox_inventory:buyItem', function(source, cb, data)
+	if data.toType == 'player' and data.fromSlot ~= data.toSlot then
+		if data.count == nil then data.count = 1 end
+		local player, items, ret = Inventory(source), {}
+		local xPlayer = player:player()
+		local shop = Shops[tonumber(player.open:sub(5))]
+		local fromSlot, toSlot = shop.items[data.fromSlot], player.items[data.toSlot]
+		if fromSlot then
+			if fromSlot.count == 0 then return cb(false, nil, {type = 'error', text = ox.locale('shop_nostock')}) end
+			if fromSlot.count and data.count > fromSlot.count then data.count = fromSlot.count end
+			local metadata, count = Items.Metadata(xPlayer, Items(fromSlot.name), fromSlot.metadata or {}, data.count)
+			local price = count * fromSlot.price
+			if Inventory.GetItem(source, 'money').count >= price and toSlot and Utils.MatchTables(toSlot.metadata, metadata) or toSlot == nil then
+				if toSlot and toSlot.name == fromSlot.name then
+					if fromSlot.count then fromSlot.count = fromSlot.count - count end
+					toSlot.count = toSlot.count + count
+					toSlot.weight = Inventory.SlotWeight(Items(toSlot.name), toSlot)
+					player.weight = player.weight + toSlot.weight
+				elseif fromSlot.count == nil or count <= fromSlot.count then
+					if fromSlot.count then fromSlot.count = fromSlot.count - count end
+					toSlot = Utils.Copy(fromSlot)
+					toSlot.count = count
+					toSlot.slot = data.toSlot
+					toSlot.weight = Inventory.SlotWeight(Items(toSlot.name), toSlot)
+					player.weight = player.weight + toSlot.weight
+				else
+					print('buyItem', data.fromType, data.fromSlot, 'to', data.toType, data.toSlot)
+					return cb(false)
+				end
+				toSlot.metadata = metadata
+				items[data.toSlot] = toSlot
+				shop.items[data.fromSlot], player.items[data.toSlot] = fromSlot, toSlot
+				ret = {weight=player.weight, items=items}
+				Inventory.RemoveItem(source, 'money', price)
+				Inventory.SyncInventory(xPlayer, player, items)
+				return cb(true, ret, {type = 'success', text = 'Purchased '..count..'x '..toSlot.name..' for $'..price})
+			end
+		end
+	end
+	cb(false)
+end)
+
 ox.RegisterServerCallback('ox_inventory:openShop', function(source, cb, inv, data) 
 	local left, shop = Inventory(source)
 	if data then
 		shop = Shops[data.id]
 		shop.type = inv
 		left:set('open', shop.id)
-		print(ESX.DumpTable(shop))
 	end
 	cb({id=left.label, type=left.type, slots=left.slots, weight=left.weight, maxWeight=left.maxWeight}, shop)
 end)
