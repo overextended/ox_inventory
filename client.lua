@@ -18,6 +18,19 @@ local SetWeapon = function(weapon)
 	TriggerServerEvent('ox_inventory:currentWeapon', weapon and weapon.slot or nil)
 end
 
+local CanOpenInventory = function()
+	return ESX.PlayerLoaded and not isBusy and not ESX.PlayerData.dead and not isCuffed and not IsPauseMenuActive() and not IsPedFatallyInjured(ESX.PlayerData.ped, 1) and (not currentWeapon or currentWeapon.timer == 0)
+end
+
+local CanOpenTarget = function(ped)
+	return IsPedFatallyInjured(ped)
+	or IsEntityPlayingAnim(ped, 'random@mugging3', 'handsup_standing_base', 3)
+	or IsEntityPlayingAnim(ped, 'missminuteman_1ig_2', 'handsup_base', 3)
+	or IsEntityPlayingAnim(ped, 'missminuteman_1ig_2', 'handsup_enter', 3)
+	or IsEntityPlayingAnim(ped, 'dead', 'dead_a', 3)
+	or IsEntityPlayingAnim(ped, 'mp_arresting', 'idle', 3)
+end
+
 local Disarm = function()
 	SetWeaponsNoAutoswap(1)
 	SetWeaponsNoAutoreload(1)
@@ -119,19 +132,6 @@ local UseSlot = function(slot)
 			end
 		end
 	end
-end
-
-local CanOpenInventory = function()
-	return ESX.PlayerLoaded and not isBusy and not ESX.PlayerData.dead and not isCuffed and not IsPauseMenuActive() and not IsPedFatallyInjured(ESX.PlayerData.ped, 1) and (not currentWeapon or currentWeapon.timer == 0)
-end
-
-local CanOpenTarget = function(ped)
-	return IsPedFatallyInjured(ped)
-	or IsEntityPlayingAnim(ped, 'random@mugging3', 'handsup_standing_base', 3)
-	or IsEntityPlayingAnim(ped, 'missminuteman_1ig_2', 'handsup_base', 3)
-	or IsEntityPlayingAnim(ped, 'missminuteman_1ig_2', 'handsup_enter', 3)
-	or IsEntityPlayingAnim(ped, 'dead', 'dead_a', 3)
-	or IsEntityPlayingAnim(ped, 'mp_arresting', 'idle', 3)
 end
 
 local Raycast = function()
