@@ -67,19 +67,9 @@ export const onBuy = (source: DragSource, target: DropTarget) => {
     );
 
     toast.promise(promise, {
-      loading: 'VALIDATING',
+      loading: 'VALIDATING SHOP',
       success: 'VALIDATED',
       error: 'ERROR',
     });
   }
-
-  isSlotWithItem(targetSlot, true) && sourceData.stack && canStack(sourceSlot, targetSlot)
-    ? store.dispatch(
-        stackSlots({
-          ...data,
-          fromSlot: sourceSlot,
-          toSlot: targetSlot,
-        }),
-      )
-    : store.dispatch(moveSlots(data));
 };
