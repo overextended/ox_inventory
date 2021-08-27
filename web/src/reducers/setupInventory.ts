@@ -1,5 +1,5 @@
-import { CaseReducer, PayloadAction } from "@reduxjs/toolkit";
-import { Inventory, State } from "../typings";
+import { CaseReducer, PayloadAction } from '@reduxjs/toolkit';
+import { Inventory, State } from '../typings';
 
 export const setupInventoryReducer: CaseReducer<
   State,
@@ -16,9 +16,9 @@ export const setupInventoryReducer: CaseReducer<
       items: Array.from(
         Array(leftInventory.slots),
         (_, index) =>
-          Object.values(leftInventory.items).find(
-            (item) => item?.slot === index + 1
-          ) || { slot: index + 1 }
+          Object.values(leftInventory.items).find((item) => item?.slot === index + 1) || {
+            slot: index + 1,
+          },
       ),
     };
 
@@ -28,9 +28,9 @@ export const setupInventoryReducer: CaseReducer<
       items: Array.from(
         Array(rightInventory.slots),
         (_, index) =>
-          Object.values(rightInventory.items).find(
-            (item) => item?.slot === index + 1
-          ) || { slot: index + 1 }
+          Object.values(rightInventory.items).find((item) => item?.slot === index + 1) || {
+            slot: index + 1,
+          },
       ),
     };
 };

@@ -5,28 +5,28 @@ import {
   isPending,
   isRejected,
   PayloadAction,
-} from "@reduxjs/toolkit";
-import type { RootState } from ".";
-import { State } from "../typings";
+} from '@reduxjs/toolkit';
+import type { RootState } from '.';
+import { State } from '../typings';
 import {
   setupInventoryReducer,
   refreshSlotsReducer,
   stackSlotsReducer,
   swapSlotsReducer,
   moveSlotsReducer,
-} from "../reducers";
+} from '../reducers';
 
 const initialState: State = {
   leftInventory: {
-    id: "",
-    type: "",
+    id: '',
+    type: '',
     slots: 0,
     maxWeight: 0,
     items: [],
   },
   rightInventory: {
-    id: "",
-    type: "",
+    id: '',
+    type: '',
     slots: 0,
     maxWeight: 0,
     items: [],
@@ -37,7 +37,7 @@ const initialState: State = {
 };
 
 export const inventorySlice = createSlice({
-  name: "inventory",
+  name: 'inventory',
   initialState,
   reducers: {
     stackSlots: stackSlotsReducer,
@@ -65,11 +65,7 @@ export const inventorySlice = createSlice({
       state.isBusy = false;
     });
     builder.addMatcher(isRejected, (state) => {
-      if (
-        state.history &&
-        state.history.leftInventory &&
-        state.history.rightInventory
-      ) {
+      if (state.history && state.history.leftInventory && state.history.rightInventory) {
         state.leftInventory = state.history.leftInventory;
         state.rightInventory = state.history.rightInventory;
       }
@@ -87,12 +83,9 @@ export const {
   stackSlots,
   refreshSlots,
 } = inventorySlice.actions;
-export const selectLeftInventory = (state: RootState) =>
-  state.inventory.leftInventory;
-export const selectRightInventory = (state: RootState) =>
-  state.inventory.rightInventory;
-export const selectItemAmount = (state: RootState) =>
-  state.inventory.itemAmount;
+export const selectLeftInventory = (state: RootState) => state.inventory.leftInventory;
+export const selectRightInventory = (state: RootState) => state.inventory.rightInventory;
+export const selectItemAmount = (state: RootState) => state.inventory.itemAmount;
 export const selectIsBusy = (state: RootState) => state.inventory.isBusy;
 
 export default inventorySlice.reducer;

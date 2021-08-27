@@ -1,7 +1,6 @@
 import React from "react";
 
 const Hotbar: React.FC = () => {
-
   return (
     <div className="center-wrapper">
       <div className="hotbar-grid">

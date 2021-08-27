@@ -6,7 +6,6 @@ export type Slot = {
   metadata?: {
     [key: string]: any;
   };
-  price?: number;
 };
 
 export type SlotWithItem = Slot & {

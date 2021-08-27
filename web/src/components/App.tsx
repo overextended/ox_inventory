@@ -19,13 +19,13 @@ debugData([
         type: "player",
         slots: 10,
         maxWeight: 5000,
-        items: [{ slot: 1, name: "water", count: 3, weight: 1500 }],
+        items: [],
       },
       rightInventory: {
         id: "shop",
         type: "shop",
         slots: 10,
-        items: [{ slot: 1, name: "water", weight: 500, price: 100 }],
+        items: [{ slot: 1, name: "water",  weight: 500}],
       },
     },
   },
@@ -33,8 +33,8 @@ debugData([
 
 const App: React.FC = () => {
   useNuiEvent<typeof Items>("items", (items) => {
-    for (const [name, itemData] of Object.entries(items)) {
-      Items[name] = itemData;
+    for (const [name, data] of Object.entries(items)) {
+      Items[name] = data;
     }
   });
 

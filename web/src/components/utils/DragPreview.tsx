@@ -59,18 +59,15 @@ const DragPreview: React.FC = () => {
 
   return (
     <>
-      {isDragging && currentOffset && (
+      {isDragging && currentOffset && data.item && (
         <div
           ref={element}
           className="drag"
           style={{
             transform: `translate(${currentOffset.x}px, ${currentOffset.y}px)`,
-            WebkitTransform: `translate(${currentOffset.x}px, ${currentOffset.y}px)`,
-            backgroundImage: data.item.name
-              ? `url(${
-                  process.env.PUBLIC_URL + `/images/${data.item.name}.png`
-                })`
-              : "none",
+            backgroundImage: `url(${
+              process.env.PUBLIC_URL + `/images/${data.item.name}.png`
+            })`,
           }}
         ></div>
       )}

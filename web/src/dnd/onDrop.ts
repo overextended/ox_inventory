@@ -1,35 +1,23 @@
-import {
-  isSlotWithItem,
-  findAvailableSlot,
-  getTargetInventory,
-  canStack,
-} from "../helpers";
-import { validateMove } from "../thunks/validateItems";
-import { store } from "../store";
-import {
-  DragSource,
-  DropTarget,
-  InventoryType,
-  SlotWithItem,
-} from "../typings";
-import { moveSlots, stackSlots, swapSlots } from "../store/inventory";
-import toast from "react-hot-toast";
-import { Items } from "../store/items";
-import { buyItem } from "../thunks/buyItem";
-import { isEnvBrowser } from "../utils/misc";
+import { isSlotWithItem, findAvailableSlot, getTargetInventory, canStack } from '../helpers';
+import { validateMove } from '../thunks/validateItems';
+import { store } from '../store';
+import { DragSource, DropTarget, InventoryType, SlotWithItem } from '../typings';
+import { moveSlots, stackSlots, swapSlots } from '../store/inventory';
+import toast from 'react-hot-toast';
+import { Items } from '../store/items';
+import { buyItem } from '../thunks/buyItem';
+import { isEnvBrowser } from '../utils/misc';
 
-export const onMove = (source: DragSource, target?: DropTarget) => {
+export const onDrop = (source: DragSource, target?: DropTarget) => {
   const { inventory: state } = store.getState();
 
   const { sourceInventory, targetInventory } = getTargetInventory(
     state,
     source.inventory,
-    target?.inventory
+    target?.inventory,
   );
 
-  const sourceSlot = sourceInventory.items[
-    source.item.slot - 1
-  ] as SlotWithItem;
+  const sourceSlot = sourceInventory.items[source.item.slot - 1] as SlotWithItem;
 
   const sourceData = Items[sourceSlot.name];
 
@@ -42,7 +30,7 @@ export const onMove = (source: DragSource, target?: DropTarget) => {
     : findAvailableSlot(sourceSlot, sourceData, targetInventory.items);
 
   if (targetSlot === undefined) {
-    throw new Error("Target slot undefined!");
+    throw new Error('Target slot undefined!');
   }
 
   const count =
@@ -61,27 +49,18 @@ export const onMove = (source: DragSource, target?: DropTarget) => {
   };
 
   if (!isEnvBrowser()) {
-    const promise =
-      sourceInventory.type === InventoryType.SHOP
-        ? store.dispatch(
-            buyItem({
-              ...data,
-              fromSlot: sourceSlot.slot,
-              toSlot: targetSlot.slot,
-            })
-          )
-        : store.dispatch(
-            validateMove({
-              ...data,
-              fromSlot: sourceSlot.slot,
-              toSlot: targetSlot.slot,
-            })
-          );
+    const promise = store.dispatch(
+      validateMove({
+        ...data,
+        fromSlot: sourceSlot.slot,
+        toSlot: targetSlot.slot,
+      }),
+    );
 
     toast.promise(promise, {
-      loading: "VALIDATING",
-      success: "VALIDATED",
-      error: "ERROR",
+      loading: 'VALIDATING',
+      success: 'VALIDATED',
+      error: 'ERROR',
     });
   }
 
@@ -91,13 +70,13 @@ export const onMove = (source: DragSource, target?: DropTarget) => {
           stackSlots({
             ...data,
             toSlot: targetSlot,
-          })
+          }),
         )
       : store.dispatch(
           swapSlots({
             ...data,
             toSlot: targetSlot,
-          })
+          }),
         )
     : store.dispatch(moveSlots(data));
 };

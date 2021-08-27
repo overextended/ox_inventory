@@ -1,17 +1,17 @@
-import { ItemData } from "../typings/item";
+import { ItemData } from '../typings/item';
 
 export const Items: {
   [key: string]: ItemData | undefined;
 } = {
   water: {
     close: false,
-    label: "VODA",
+    label: 'VODA',
     stack: true,
     usable: true,
   },
   burger: {
     close: false,
-    label: "BURGR",
+    label: 'BURGR',
     stack: false,
     usable: false,
   },

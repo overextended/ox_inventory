@@ -1,6 +1,6 @@
-import React from "react";
+import React from 'react';
 
-export const useKeyPress = (targetKey: KeyboardEvent["key"]) => {
+export const useKeyPress = (targetKey: KeyboardEvent['key']) => {
   const [keyPressed, setKeyPressed] = React.useState(false);
 
   const downHandler = React.useCallback(
@@ -9,7 +9,7 @@ export const useKeyPress = (targetKey: KeyboardEvent["key"]) => {
         setKeyPressed(true);
       }
     },
-    [targetKey]
+    [targetKey],
   );
 
   const upHandler = React.useCallback(
@@ -18,16 +18,16 @@ export const useKeyPress = (targetKey: KeyboardEvent["key"]) => {
         setKeyPressed(false);
       }
     },
-    [targetKey]
+    [targetKey],
   );
 
   React.useEffect(() => {
-    window.addEventListener("keydown", downHandler);
-    window.addEventListener("keyup", upHandler);
+    window.addEventListener('keydown', downHandler);
+    window.addEventListener('keyup', upHandler);
 
     return () => {
-      window.removeEventListener("keydown", downHandler);
-      window.removeEventListener("keyup", upHandler);
+      window.removeEventListener('keydown', downHandler);
+      window.removeEventListener('keyup', upHandler);
     };
   }, [downHandler, upHandler]);
 
