@@ -34,47 +34,47 @@ local CanOpenTarget = function(ped)
 	or IsEntityPlayingAnim(ped, 'mp_arresting', 'idle', 3)
 end
 
-local loadAnimDict = function(dict)
-	RequestAnimDict(dict)
-	while not HasAnimDictLoaded(dict) do
-		Citizen.Wait(10)
-	end
-end
-
 local HolsterWeapon = function()
 	ClearPedSecondaryTask(ESX.PlayerData.ped)
-	loadAnimDict('reaction@intimidation@1h')
-	TaskPlayAnimAdvanced(ESX.PlayerData.ped, 'reaction@intimidation@1h', 'outro', GetEntityCoords(ESX.PlayerData.ped, true), 0, 0, GetEntityHeading(ESX.PlayerData.ped), 8.0, 3.0, -1, 50, 0, 0, 0)
-	Citizen.Wait(1400)
+	if ESX.PlayerData.job.name == 'police' then
+		ox.playAnimAdvanced(450, true, 'reaction@intimidation@cop@unarmed', 'outro', GetEntityCoords(ESX.PlayerData.ped, true), 0, 0, GetEntityHeading(ESX.PlayerData.ped), 8.0, 3.0, -1, 50, 1, 0, 0)
+		Citizen.Wait(450)
+	else		
+		ox.playAnimAdvanced(1400, true, 'reaction@intimidation@1h', 'outro', GetEntityCoords(ESX.PlayerData.ped, true), 0, 0, GetEntityHeading(ESX.PlayerData.ped), 8.0, 3.0, -1, 50, 0, 0, 0)
+		Citizen.Wait(1400)
+	end
 	RemoveWeaponFromPed(ESX.PlayerData.ped, currentWeapon.hash)
-	Citizen.Wait(200)
-	ClearPedSecondaryTask(ESX.PlayerData.ped)
-	RemoveAnimDict('reaction@intimidation@1h')
 end
 
 local DrawWeapon = function(item)
 	ClearPedSecondaryTask(ESX.PlayerData.ped)
-	if ESX.PlayerData.job.name == 'police' then
-		loadAnimDict('reaction@intimidation@cop@unarmed')
-		TaskPlayAnimAdvanced(ESX.PlayerData.ped, 'reaction@intimidation@cop@unarmed', 'intro', GetEntityCoords(ESX.PlayerData.ped, true), 0, 0, GetEntityHeading(ESX.PlayerData.ped), 8.0, 3.0, -1, 50, 1, 0, 0)
-		RemoveAnimDict('reaction@intimidation@cop@unarmed')
-	else
-		loadAnimDict('reaction@intimidation@1h')
-		TaskPlayAnimAdvanced(ESX.PlayerData.ped, 'reaction@intimidation@1h', 'intro', GetEntityCoords(ESX.PlayerData.ped, true), 0, 0, GetEntityHeading(ESX.PlayerData.ped), 8.0, 3.0, -1, 50, 0, 0, 0)
-		Citizen.Wait(1200)
-		RemoveAnimDict('reaction@intimidation@1h')
-	end
 	if currentWeapon then
 		SetPedAmmo(ESX.PlayerData.ped, currentWeapon.hash, 0)
 		RemoveWeaponFromPed(ESX.PlayerData.ped, currentWeapon.hash)
 	end
-	GiveWeaponToPed(ESX.PlayerData.ped, item.hash, 0, true, false)
-	SetCurrentPedWeapon(ESX.PlayerData.ped, item.hash)
-	SetPedCurrentWeaponVisible(ESX.PlayerData.ped, true, false, false, false)
-	SetAmmoInClip(ESX.PlayerData.ped, item.hash, item.metadata.ammo or 100)
-	SetWeapon(item)
-	Citizen.Wait(1200)
-	ClearPedSecondaryTask(ESX.PlayerData.ped)
+	if ESX.PlayerData.job.name == 'police' then
+		ox.playAnimAdvanced(800, false, 'reaction@intimidation@cop@unarmed', 'intro', GetEntityCoords(ESX.PlayerData.ped, true), 0, 0, GetEntityHeading(ESX.PlayerData.ped), 8.0, 3.0, -1, 50, 1, 0, 0)
+
+		Citizen.Wait(400)
+		GiveWeaponToPed(ESX.PlayerData.ped, item.hash, 0, true, false)
+		SetCurrentPedWeapon(ESX.PlayerData.ped, item.hash)
+		SetPedCurrentWeaponVisible(ESX.PlayerData.ped, true, false, false, false)
+		SetAmmoInClip(ESX.PlayerData.ped, item.hash, item.metadata.ammo or 100)
+		SetWeapon(item)
+		Citizen.Wait(400)
+		ClearPedSecondaryTask(ESX.PlayerData.ped)
+	else
+		ox.playAnimAdvanced(2400, false, 'reaction@intimidation@1h', 'intro', GetEntityCoords(ESX.PlayerData.ped, true), 0, 0, GetEntityHeading(ESX.PlayerData.ped), 8.0, 3.0, -1, 50, 0, 0, 0)
+
+		Citizen.Wait(1200)
+		GiveWeaponToPed(ESX.PlayerData.ped, item.hash, 0, true, false)
+		SetCurrentPedWeapon(ESX.PlayerData.ped, item.hash)
+		SetPedCurrentWeaponVisible(ESX.PlayerData.ped, true, false, false, false)
+		SetAmmoInClip(ESX.PlayerData.ped, item.hash, item.metadata.ammo or 100)
+		SetWeapon(item)
+		Citizen.Wait(1200)
+		ClearPedSecondaryTask(ESX.PlayerData.ped)
+	end
 end
 
 local Disarm = function()
