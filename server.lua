@@ -257,19 +257,18 @@ ox.RegisterServerCallback('ox_inventory:useItem', function(source, cb, item, slo
 	local data = item and (slot and Inventory(source).items[slot] or Inventory.GetItem(source, item, metadata))
 	if item and data and data.count > 0 and data.name == item.name then
 		if type == 1 then -- weapon
-			cb(data)
+			return cb(data)
 		elseif type == 2 then -- ammo
-			cb(data)
+			return cb(data)
 		elseif ESX.UsableItemsCallbacks[item.name] then
 			ESX.UseItem(source, item.name)
-			cb(false)
 		else
 			if item.consume and data.count >= item.consume then
-				cb(data)
+				return cb(data)
 			else
 				TriggerClientEvent('ox_inventory:Notify', source, {type = 'error', text = ox.locale('item_not_enough'), duration = 2500})
-				cb(false)
 			end
 		end
-	else cb(false) end
+	end
+	cb(false)
 end)

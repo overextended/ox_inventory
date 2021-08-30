@@ -4,7 +4,7 @@ local Stashes, Vehicles = data('stashes'), data('vehicles')
 
 local Blips, Drops, nearbyMarkers, cancelled, invOpen = {}, {}, {}, false, false
 local playerId, playerCoords, invOpen, currentWeapon, currentMarker
-local plyState, itemCooldown, isBusy = LocalPlayer.state
+local plyState, isBusy = LocalPlayer.state
 
 local SetBusy = function(state)
 	isBusy = state
@@ -17,6 +17,9 @@ local SetWeapon = function(weapon)
 	TriggerEvent('ox_inventory:currentWeapon', weapon and {name=weapon.name, slot=weapon.slot, label=weapon.label, metadata=weapon.metadata} or nil)
 	TriggerServerEvent('ox_inventory:currentWeapon', weapon and weapon.slot or nil)
 end
+
+local Notify = function(data) SendNUIMessage({ action = 'showNotif', data = data }) end
+RegisterNetEvent('ox_inventory:Notify', Notify)
 
 local CanOpenInventory = function()
 	return ESX.PlayerLoaded and not isBusy and not ESX.PlayerData.dead and not isCuffed and not IsPauseMenuActive() and not IsPedFatallyInjured(ESX.PlayerData.ped, 1) and (not currentWeapon or currentWeapon.timer == 0)
@@ -99,36 +102,48 @@ local OpenInventory = function(inv, data)
 	end
 end
 
-local UseWeapon = function(item)
-	if currentWeapon and item.metadata.serial == currentWeapon.metadata.serial then
-		Disarm()
-	else
-		local data = Items[item.name]
-		if data.throwable then item.throwable, item.metadata.ammo = true, 1 end
-		item.hash = data.hash
-		item.timer = 0
-
-		GiveWeaponToPed(ESX.PlayerData.ped, item.hash, 0, true, false)
-		SetCurrentPedWeapon(ESX.PlayerData.ped, item.hash)
-		SetPedCurrentWeaponVisible(ESX.PlayerData.ped, true, false, false, false)
-		SetAmmoInClip(ESX.PlayerData.ped, item.hash, item.metadata.ammo or 100)
-		SetWeapon(item)
-	end
-end
-
 local UseSlot = function(slot)
-	if ESX.PlayerLoaded then
+	if ESX.PlayerLoaded and not isBusy and not Progress.Active then
 		local item = ESX.PlayerData.inventory[slot]
-		if item then
-			local data = Items[item.name]
+		local data = item and Items[item.name]
+		if item and data.usable then
 			if item.metadata.container then
 				OpenInventory('container', item.slot)
 			elseif data.client and data.client.event then
 				TriggerEvent(data.client.event, data, {name = item.name, slot = item.slot, metadata = item.metadata})
 			elseif data.effect then
 				data:effect({name = item.name, slot = item.slot, metadata = item.metadata})
-			else
-				TriggerEvent('ox_inventory:item', item, UseWeapon)
+			elseif item.name:find('WEAPON_') then
+				TriggerEvent('ox_inventory:item', data, function(data)
+					if data then
+						if currentWeapon and item.metadata.serial == currentWeapon.metadata.serial then
+							Disarm()
+						else
+							local data = Items[item.name]
+							if data.throwable then item.throwable, item.metadata.ammo = true, 1 end
+							item.hash = data.hash
+							item.timer = 0
+					
+							GiveWeaponToPed(ESX.PlayerData.ped, item.hash, 0, true, false)
+							SetCurrentPedWeapon(ESX.PlayerData.ped, item.hash)
+							SetPedCurrentWeaponVisible(ESX.PlayerData.ped, true, false, false, false)
+							SetAmmoInClip(ESX.PlayerData.ped, item.hash, item.metadata.ammo or 100)
+							SetWeapon(item)
+						end
+					end
+				end)
+			elseif item.name:find('ammo-') then
+				TriggerEvent('ox_inventory:item', data, function(data)
+					if data then
+						print('reload weapon')
+					end
+				end)
+			elseif item.name:sub(0, 3) == 'at_' then
+				TriggerEvent('ox_inventory:item', data, function(data)
+					if data then
+						print('weapon attachment')
+					end
+				end)
 			end
 		end
 	end
@@ -140,9 +155,6 @@ local Raycast = function()
 	local type = GetEntityType(entity)
 	if hit and type ~= 0 then return hit, coords, entity, type else	return false end
 end
-
-local Notify = function(data) SendNUIMessage({ action = 'showNotif', data = data }) end
-RegisterNetEvent('ox_inventory:Notify', Notify)
 
 RegisterNetEvent('ox_inventory:closeInventory', function(options)
 	if invOpen then
@@ -164,9 +176,7 @@ RegisterNetEvent('ox_inventory:closeInventory', function(options)
 			ClearPedTasks(ESX.PlayerData.ped)
 			RemoveAnimDict(animDict)
 			SetVehicleDoorShut(currentInventory.entity, currentInventory.door, false)
-		else
-			SendNUIMessage({ action = 'closeInventory' })
-		end
+		else SendNUIMessage({ action = 'closeInventory' }) end
 		invOpen = nil
 		SetInterval(1, 250)
 		Wait(500)
@@ -176,10 +186,11 @@ RegisterNetEvent('ox_inventory:closeInventory', function(options)
 end)
 
 RegisterNetEvent('ox_inventory:updateInventory', function(items, weights, name, count, removed)
-	SendNUIMessage({
-		action = 'refreshSlots',
-		data = {items=items, weights=weights},
-	})
+	if invOpen then SendNUIMessage({
+			action = 'refreshSlots',
+			data = {items=items, weights=weights},
+		})
+	end
 	Notify({text = (removed and 'Removed' or 'Added')..' '..count..'x '..name, duration = 2500})
 	for i=1, #items do
 		local i = items[i].item
@@ -223,16 +234,14 @@ RegisterNetEvent('ox_inventory:setPlayerInventory', function(data)
 	ESX.SetPlayerData('weight', data[3])
     local ItemData = {}
     for k, v in pairs(Items) do
+		v.usable = (v.client and next(v.client) or data[4][v.name] or v.name:find('WEAPON_') or v.name:find('ammo-') or v.name:find('at_')) and true or false
         ItemData[v.name] = {
             label = v.label,
-            usable = (v.client and next(v.client) or v.name:find('WEAPON_') or v.name:find('ammo-') or v.name:find('at_')) and true or false,
+            usable = v.usable,
             stack = v.stack,
             close = v.close
         }
     end
-	for k, v in pairs(data[4]) do
-		if ItemData[k] then ItemData[k].usable = true end
-	end
     SendNUIMessage({ action = 'items', data = ItemData })
 	if next(Blips) then
 		for k, v in pairs(Blips) do
@@ -339,26 +348,26 @@ RegisterNetEvent('ox_inventory:setPlayerInventory', function(data)
 				EnableControlAction(0, 31, true)
 			end
 		else
-			if isDoingAction then
-				if Progress.disableMouse then
+			if Progress.Active then
+				if Progress.Disable.mouse then
 					DisableControlAction(0, 1, true) -- LookLeftRight
 					DisableControlAction(0, 2, true) -- LookUpDown
 					DisableControlAction(0, 106, true) -- VehicleMouseControlOverride
 				end
-				if Progress.disableMovement then
+				if Progress.Disable.move then
 					DisableControlAction(0, 30, true) -- disable left/right
 					DisableControlAction(0, 31, true) -- disable forward/back
 					DisableControlAction(0, 36, true) -- INPUT_DUCK
 					DisableControlAction(0, 21, true) -- disable sprint
 				end
-				if Progress.disableCarMovement then
+				if Progress.Disable.car then
 					DisableControlAction(0, 63, true) -- veh turn left
 					DisableControlAction(0, 64, true) -- veh turn right
 					DisableControlAction(0, 71, true) -- veh forward
 					DisableControlAction(0, 72, true) -- veh backwards
 					DisableControlAction(0, 75, true) -- disable exit vehicle
 				end
-				if Progress.disableCombat then
+				if Progress.Disable.combat then
 					DisablePlayerFiring(playerId, true) -- Disable weapon firing
 					DisableControlAction(0, 25, true) -- disable aim
 				end
@@ -367,7 +376,7 @@ RegisterNetEvent('ox_inventory:setPlayerInventory', function(data)
 				DrawMarker(2, v[1].x,v[1].y,v[1].z, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.3, 0.2, 0.15, v[2], v[3], v[4], 222, false, false, false, true, false, false, false)
 			end
 			DisablePlayerVehicleRewards(playerId)
-			if isBusy or itemCooldown then
+			if isBusy then
 				DisablePlayerFiring(playerID, true)
 				DisableControlAction(0, 23, true)
 				DisableControlAction(0, 25, true)
@@ -453,13 +462,8 @@ AddEventHandler('ox_inventory:item', function(data, cb)
 						label = 'Using '..result.label,
 						useWhileDead = data.useWhileDead or false,
 						canCancel = data.cancel or false,
-						disableControls = data.disable and {
-							disableMovement = data.disable.move or false,
-							disableCarMovement = data.disable.car or false,
-							disableMouse  = data.disable.mouse or false,
-							disableCombat = data.disable.combat or false,
-						},
-						anim = data.anim.dict and { dict = data.anim.dict, clip = data.anim.clip, flag = data.anim.flag or 49 } or {scenario = data.scenario},
+						Disable = data.disable or {},
+						anim = data.anim and ({ dict = data.anim.dict, clip = data.anim.clip, flag = data.anim.flag or 49 } or {scenario = data.scenario}),
 						prop = data.prop,
 						propTwo = data.propTwo
 					}, function(cancel)

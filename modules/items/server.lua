@@ -74,7 +74,7 @@ Data[']]..i.name..[['] = {
 	ESX.UsableItemsCallbacks = ESX.GetUsableItems()
 	local count = 0
 	for k, v in pairs(Items) do
-		if v.consume and ESX.UsableItemsCallbacks[v.name] then ESX.UsableItemsCallbacks[v.name] = nil end
+		if v.consume and v.consume > 0 and ESX.UsableItemsCallbacks[v.name] then ESX.UsableItemsCallbacks[v.name] = nil end
 		count = count + 1
 	end
 	ox.info('Inventory has loaded '..count..' items')

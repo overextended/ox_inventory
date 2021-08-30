@@ -1,5 +1,5 @@
 local M = {}
-M.disableControls = {}
+M.Disable = {}
 M.Active = false
 
 local canCancel, wasCancelled, anim, scenario, prop, propTwo, progressCallback = false, false, false, false, false, false
@@ -7,7 +7,7 @@ local canCancel, wasCancelled, anim, scenario, prop, propTwo, progressCallback =
 local PlayerReset = function()
     if anim or scenario then
         ClearPedTasks(ESX.PlayerData.ped)
-		M.disableControls = {}
+		M.Disable = {}
     end
     if prop and NetToObj(prop) ~= 0 and NetToObj(prop) ~= nil then
         DetachEntity(NetToObj(prop), 1, 1)
@@ -151,7 +151,7 @@ M.Start = function(options, completed)
 
 				SetModelAsNoLongerNeeded(model)
 			end
-			M.disableControls = options.disableControls
+			M.Disable = options.Disable
 		end
 	end
 end
