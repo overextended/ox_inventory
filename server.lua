@@ -1,4 +1,4 @@
-local Utils, Shops, Inventory, Items = module('utils', true), module('shops'), module('inventory'), module('items')
+local Utils, Shops, Inventory, Items = module('utils'), module('shops'), module('inventory'), module('items')
 
 SetInterval(1, 600000, function()
 	local time = os.time(os.date('!*t'))

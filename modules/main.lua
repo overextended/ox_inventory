@@ -33,7 +33,7 @@ if Modules == nil then
 			local path = 'modules/'..file..'/'..(shared and 'shared.lua' or ox.server and 'server.lua' or 'client.lua')
 			local func, err = load(LoadResourceFile(ox.name, path), path, 't')
 			assert(func, err == nil or '\n^1'..err..'^7')
-			Modules[name] = func()
+			if shared then return func() else Modules[name] = func() end
 		end
 		return Modules[name]
 	end

@@ -1,6 +1,6 @@
 local M = {}
 local Shops = data('shops')
-local Utils, Items = module('utils', true), module('items')
+local Utils, Items = module('utils'), module('items')
 
 local Stores = {}
 

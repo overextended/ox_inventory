@@ -2,13 +2,11 @@ local M = {}
 local Items, Weapons = table.unpack(module('items', true))
 
 local getItem = function(item)
-	item = string.lower(item)
-	local type
+	local item, type = string.lower(item)
 	if item:find('weapon_') then type, item = 1, string.upper(item)
 	elseif item:find('ammo-') then type = 2
 	elseif item:sub(0, 3) == 'at_' then type = 3 end
-	item = Items[item] or false
-	return item, type
+	return Items[item] or false, type
 end
 
 local metatable = setmetatable(M, {
