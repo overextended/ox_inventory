@@ -1,5 +1,5 @@
 -- Update existing linden_inventory table to new name and indexes
-ALTER TABLE `ox_inventory`
+ALTER TABLE `linden_inventory`
 	RENAME TO `ox_inventory`,
 	CHANGE COLUMN `owner` `owner` VARCHAR(60) NULL COLLATE 'utf8mb4_unicode_ci' FIRST,
 	CHANGE COLUMN `name` `name` VARCHAR(100) NOT NULL COLLATE 'utf8mb4_unicode_ci' AFTER `owner`,
