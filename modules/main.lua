@@ -1,8 +1,10 @@
 local Modules = LoadResourceFile(ox.name, 'setup/convert.lua')
+
+data = function(file)
+	return load(LoadResourceFile(ox.name, 'data/'..file..'.lua')..'return Data', file, 't')()
+end
+
 if Modules == nil then
-	data = function(file)
-		return load(LoadResourceFile(ox.name, 'data/'..file..'.lua')..'return Data', file, 't')()
-	end
 
 	ox.concat = function(d, ...)
 		if type(...) == 'string' then
