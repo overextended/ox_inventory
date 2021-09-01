@@ -72,7 +72,6 @@ M.Start = function(options, completed)
 				end
 
 				if options.anim.scenario and not options.anim.dict then
-					print(options.anim.scenario)
 					TaskStartScenarioInPlace(ESX.PlayerData.ped, options.anim.scenario, 0, true)
 					scenario = true
 				end

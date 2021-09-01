@@ -1,6 +1,6 @@
 local Stashes, Vehicles = data('stashes'), data('vehicles')
 local Items, Weapons = table.unpack(module('items'))
-local Progress, Shops = module('progress'), module('shops')
+local Utils, Progress, Shops = module('utils'), module('progress'), module('shops')
 
 local Blips, Drops, nearbyMarkers, cancelled, invOpen = {}, {}, {}, false, false
 local playerId, playerCoords, invOpen, currentWeapon, currentMarker
