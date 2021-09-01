@@ -20,6 +20,7 @@ client_scripts {
 }
 
 server_scripts {
+	'setup/convert.lua',
 	'server.lua'
 }
 

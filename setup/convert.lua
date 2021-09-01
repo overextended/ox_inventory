@@ -13,17 +13,6 @@ local Print = function(arg)
 	print(('^3=================================================================\n^0%s\n^3=================================================================^0'):format(arg))
 end
 
-Print([[Unable to start ox_inventory due to existence of setup file
-
-If you are using a fresh database, delete
-^3setup/convert.lua^0
-
-If you are using this resource for the first time, use
-^3/convertinventory^0
-
-If you are upgrading from linden_inventory, use
-^3/convertinventory linden^0]])
-
 local Upgrade = function()
 	exports.oxmysql:fetch('SELECT name FROM linden_inventory', {}, function(result)
 		if result ~= nil then
