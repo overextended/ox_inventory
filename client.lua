@@ -23,7 +23,6 @@ local Notify = function(data) SendNUIMessage({ action = 'showNotif', data = data
 RegisterNetEvent('ox_inventory:Notify', Notify)
 
 local CanOpenInventory = function()
-	print('inv', isBusy)
 	return ESX.PlayerLoaded and invOpen ~= nil and not isBusy and not ESX.PlayerData.dead and not isCuffed and not IsPauseMenuActive() and not IsPedFatallyInjured(ESX.PlayerData.ped, 1) and (not currentWeapon or currentWeapon.timer == 0)
 end
 
@@ -60,31 +59,6 @@ local Disarm = function()
 	end
 end
 RegisterNetEvent('ox_inventory:disarm', Disarm)
-
-local ReloadWeapon = function()
-	if not isBusy and currentWeapon ~= nil and currentWeapon.ammo and CanOpenInventory() and not IsPedRagdoll(ESX.PlayerData.ped) and not IsPedFalling(ESX.PlayerData.ped) then
-		print('poggers')
-		local ammo = Utils.InventorySearch(2, currentWeapon.ammo)[currentWeapon.ammo]
-		if ammo > 0 then
-			local maxAmmo = GetWeaponClipSize(currentWeapon.hash)
-			local currentAmmo = GetAmmoInPedWeapon(ESX.PlayerData.ped, currentWeapon.hash)
-
-			if currentAmmo ~= maxAmmo and currentAmmo < maxAmmo then
-				local missingAmmo = 0
-				local newAmmo = 0
-
-				missingAmmo = maxAmmo - currentAmmo
-				if missingAmmo > ammo then newAmmo = currentAmmo + ammo else newAmmo = maxAmmo end
-				if newAmmo < 0 then newAmmo = 0 end 
-				SetPedAmmo(ESX.PlayerData.ped, currentWeapon.hash, newAmmo)
-				MakePedReload(ESX.PlayerData.ped)
-				currentWeapon.metadata.ammo = newAmmo
-			end
-		end
-	end
-end
-
-RegisterCommand('reload', ReloadWeapon)
 
 local ClearWeapons = function()
 	Disarm()
@@ -170,18 +144,33 @@ local UseSlot = function(slot)
 						end
 					end
 				end)
-			elseif item.name:find('ammo-') then
-				TriggerEvent('ox_inventory:item', data, function(data)
-					if data then
-						ReloadWeapon()
+			elseif currentWeapon then
+				if item.name:find('ammo-') then
+					local maxAmmo = GetWeaponClipSize(currentWeapon.hash)
+					local currentAmmo = GetAmmoInPedWeapon(ESX.PlayerData.ped, currentWeapon.hash)
+					if currentAmmo ~= maxAmmo and currentAmmo < maxAmmo then
+						TriggerEvent('ox_inventory:item', data, function(data)
+							if data then
+								if data.name == currentWeapon.ammo then
+									local missingAmmo = 0
+									local newAmmo = 0
+									missingAmmo = maxAmmo - currentAmmo
+									if missingAmmo > data.count then newAmmo = currentAmmo + data.count else newAmmo = maxAmmo end
+									if newAmmo < 0 then newAmmo = 0 end 
+									SetPedAmmo(ESX.PlayerData.ped, currentWeapon.hash, newAmmo)
+									MakePedReload(ESX.PlayerData.ped)
+									currentWeapon.metadata.ammo = newAmmo
+								end
+							end
+						end)
 					end
-				end)
-			elseif item.name:sub(0, 3) == 'at_' then
-				TriggerEvent('ox_inventory:item', data, function(data)
-					if data then
-						print('weapon attachment')
-					end
-				end)
+				elseif item.name:sub(0, 3) == 'at_' then
+					TriggerEvent('ox_inventory:item', data, function(data)
+						if data then
+							print('weapon attachment')
+						end
+					end)
+				end
 			end
 		end
 	end
@@ -421,13 +410,14 @@ RegisterNetEvent('ox_inventory:setPlayerInventory', function(data)
 				DisableControlAction(0, 25, true)
 			end
 			if currentWeapon then
+				DisableControlAction(0, 263, true)
+				local time = GetNetworkTime()
+				if currentWeapon.timer ~= 0 and currentWeapon.timer < time then
+					TriggerServerEvent('ox_inventory:updateWeapon', 'ammo', currentWeapon.metadata.ammo)
+					currentWeapon.timer = 0
+				end
 				if currentWeapon.metadata.ammo then
 					if IsPedShooting(ESX.PlayerData.ped) then
-						local time = GetNetworkTime()
-						if currentWeapon.timer < time then
-							TriggerServerEvent('ox_inventory:updateWeapon', 'ammo', currentWeapon.metadata.ammo)
-							currentWeapon.timer = 0
-						end
 						if wait == nil and currentWeapon.name == 'WEAPON_FIREEXTINGUISHER' or currentWeapon.name == 'WEAPON_PETROLCAN' then
 							currentWeapon.metadata.durability = currentWeapon.metadata.durability - 0.1
 							if currentWeapon.metadata.durability <= 0 then
@@ -488,7 +478,7 @@ AddEventHandler('onResourceStop', function(resourceName)
 end)
 
 AddEventHandler('ox_inventory:item', function(data, cb)
-	if not isBusy and not Progress.Active then
+	if not isBusy and not Progress.Active and not IsPedRagdoll(ESX.PlayerData.ped) and not IsPedFalling(ESX.PlayerData.ped) then
 		SetBusy(true)
 		local result = ox.TriggerServerCallback('ox_inventory:useItem', data.name, data.slot, data.metadata)
 		if result then
@@ -652,6 +642,12 @@ RegisterCommand('inv2', function()
 	end
 end)
 
+RegisterCommand('reload', function()
+	if currentWeapon and currentWeapon.ammo then
+		local ammo = Utils.InventorySearch(1, currentWeapon.ammo)[currentWeapon.ammo]
+		if ammo then UseSlot(ammo[1].slot) end
+	end
+end)
 
 RegisterNUICallback('notification', function(data)
 	if data.type == 2 then data.type = 'error' else data.type = 'inform' end
