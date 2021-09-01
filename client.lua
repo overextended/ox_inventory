@@ -491,11 +491,13 @@ AddEventHandler('ox_inventory:item', function(data, cb)
 							if v > 0 then TriggerEvent('esx_status:add', k, v) else TriggerEvent('esx_status:remove', k, -v) end
 						end
 					end
-					cb({name=result.name, label=result.label, count=result.count, slot=result.slot, metadata=result.metadata})
-				else cb(false) end
-			else cb(result) end
-		else cb(false) end
+				end
+			end
+			SetBusy(false)
+			return cb({name=result.name, label=result.label, count=result.count, slot=result.slot, metadata=result.metadata})
+		end
 		SetBusy(false)
+		cb(false)
 	end
 end)
 

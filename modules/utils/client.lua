@@ -19,7 +19,6 @@ M.PlayAnimAdvanced = function(wait, clear, ...)
 		repeat Wait(10) until HasAnimDictLoaded(args[1])
 		TaskPlayAnimAdvanced(ESX.PlayerData.ped, table.unpack(args))
 		Wait(wait)
-		print(clear)
 		if clear then ClearPedSecondaryTask(ESX.PlayerData.ped) end
 		RemoveAnimDict(args[1])
 	end)
