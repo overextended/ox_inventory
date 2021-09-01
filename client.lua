@@ -215,7 +215,7 @@ end)
 RegisterNetEvent('ox_inventory:updateInventory', function(items, weights, name, count, removed)
 	if invOpen then SendNUIMessage({
 			action = 'refreshSlots',
-			data = {items=items, weights=weights},
+			data = items,
 		})
 	end
 	Notify({text = (removed and 'Removed' or 'Added')..' '..count..'x '..name, duration = 2500})
@@ -680,6 +680,11 @@ RegisterNUICallback('buyItem', function(data, cb)
 	if data then
 		for k, v in pairs(data.items) do
 			ESX.PlayerData.inventory[k] = v and v or nil
+
+			SendNUIMessage({
+				action = 'refreshSlots',
+				data = {item = v},
+			})
 		end
 		ESX.SetPlayerData('inventory', ESX.PlayerData.inventory)
 		if data.weight then ESX.SetPlayerData('weight', data.weight) end
