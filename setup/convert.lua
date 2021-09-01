@@ -15,7 +15,7 @@ end
 
 Print([[Unable to start ox_inventory due to existence of setup file
 
-^0If you are using a fresh database, delete
+If you are using a fresh database, delete
 ^3setup/convert.lua^0
 
 If you are using this resource for the first time, use
