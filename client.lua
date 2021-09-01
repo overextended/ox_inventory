@@ -12,10 +12,11 @@ local SetBusy = function(state)
 end
 exports('SetBusy', SetBusy)
 
-local SetWeapon = function(weapon)
-	currentWeapon = weapon and {name=weapon.name, slot=weapon.slot, label=weapon.label, metadata=weapon.metadata, hash=weapon.hash, ammo=weapon.ammo} or nil
+local SetWeapon = function(weapon, hash, ammo)
+	currentWeapon = weapon and {name=weapon.name, slot=weapon.slot, label=weapon.label, metadata=weapon.metadata, hash=hash, ammo=ammo} or nil
 	TriggerEvent('ox_inventory:currentWeapon', currentWeapon)
 	TriggerServerEvent('ox_inventory:currentWeapon', weapon and weapon.slot or nil)
+	currentWeapon.timer = weapon and 0 or nil
 end
 
 local Notify = function(data) SendNUIMessage({ action = 'showNotif', data = data }) end
@@ -49,13 +50,9 @@ local Disarm = function()
 			end
 		end
 		ClearPedSecondaryTask(ESX.PlayerData.ped)
-		if ESX.PlayerData.job.name == 'police' and GetWeapontypeGroup(currentWeapon.hash) == 416676503 then
-			ox.playAnimAdvanced(450, true, 'reaction@intimidation@cop@unarmed', 'outro', GetEntityCoords(ESX.PlayerData.ped, true), 0, 0, GetEntityHeading(ESX.PlayerData.ped), 8.0, 3.0, -1, 50, 1, 0, 0)
-			Citizen.Wait(450)
-		else		
-			ox.playAnimAdvanced(1400, true, 'reaction@intimidation@1h', 'outro', GetEntityCoords(ESX.PlayerData.ped, true), 0, 0, GetEntityHeading(ESX.PlayerData.ped), 8.0, 3.0, -1, 50, 0, 0, 0)
-			Citizen.Wait(1400)
-		end
+		local sleep = (ESX.PlayerData.job.name == 'police' and GetWeapontypeGroup(currentWeapon.hash) == 416676503) and 450 or 1400
+		Utils.PlayAnimAdvanced(sleep, true, sleep == 450 and 'reaction@intimidation@cop@unarmed' or 'reaction@intimidation@1h', 'outro', GetEntityCoords(ESX.PlayerData.ped, true), 0, 0, GetEntityHeading(ESX.PlayerData.ped), 8.0, 3.0, -1, 50, 0, 0, 0)
+		Citizen.Wait(sleep)
 		RemoveWeaponFromPed(ESX.PlayerData.ped, currentWeapon.hash)
 		TriggerServerEvent('ox_inventory:updateWeapon', 'disarm', ammo)
 		SetWeapon()
@@ -86,7 +83,7 @@ local OpenInventory = function(inv, data)
 			left, right = ox.TriggerServerCallback('ox_inventory:openInventory', inv, data)
 		end
 		if left then
-			if not IsPedInAnyVehicle(ESX.PlayerData.ped, false) then ox.playAnim(1000, 'pickup_object', 'putdown_low', 5.0, 1.5, 1.0, 48, 0.0, 0, 0, 0) end
+			if not IsPedInAnyVehicle(ESX.PlayerData.ped, false) then Utils.PlayAnim(1000, 'pickup_object', 'putdown_low', 5.0, 1.5, 1.0, 48, 0.0, 0, 0, 0) end
 			invOpen = true
 			SetInterval(1, 100)
 			SetNuiFocus(true, true)
@@ -129,35 +126,21 @@ local UseSlot = function(slot)
 						else
 							local data = Items[item.name]
 							if data.throwable then item.throwable, item.metadata.ammo = true, 1 end
-							item.hash = data.hash
-							item.timer = 0
-							item.ammo = data.ammoname
 							ClearPedSecondaryTask(ESX.PlayerData.ped)
 							if currentWeapon then
 								SetPedAmmo(ESX.PlayerData.ped, currentWeapon.hash, 0)
 								RemoveWeaponFromPed(ESX.PlayerData.ped, currentWeapon.hash)
 							end
-							if ESX.PlayerData.job.name == 'police' and GetWeapontypeGroup(item.hash) == 416676503 then
-								ox.playAnimAdvanced(800, false, 'reaction@intimidation@cop@unarmed', 'intro', GetEntityCoords(ESX.PlayerData.ped, true), 0, 0, GetEntityHeading(ESX.PlayerData.ped), 8.0, 3.0, -1, 50, 1, 0, 0)
-								Citizen.Wait(400)
-								GiveWeaponToPed(ESX.PlayerData.ped, item.hash, 0, true, false)
-								SetCurrentPedWeapon(ESX.PlayerData.ped, item.hash)
-								SetPedCurrentWeaponVisible(ESX.PlayerData.ped, true, false, false, false)
-								SetAmmoInClip(ESX.PlayerData.ped, item.hash, item.metadata.ammo or 100)
-								SetWeapon(item)
-								Citizen.Wait(400)
-								ClearPedSecondaryTask(ESX.PlayerData.ped)
-							else
-								ox.playAnimAdvanced(2400, false, 'reaction@intimidation@1h', 'intro', GetEntityCoords(ESX.PlayerData.ped, true), 0, 0, GetEntityHeading(ESX.PlayerData.ped), 8.0, 3.0, -1, 50, 0, 0, 0)
-								Citizen.Wait(1200)
-								GiveWeaponToPed(ESX.PlayerData.ped, item.hash, 0, true, false)
-								SetCurrentPedWeapon(ESX.PlayerData.ped, item.hash)
-								SetPedCurrentWeaponVisible(ESX.PlayerData.ped, true, false, false, false)
-								SetAmmoInClip(ESX.PlayerData.ped, item.hash, item.metadata.ammo or 100)
-								SetWeapon(item)
-								Citizen.Wait(1200)
-								ClearPedSecondaryTask(ESX.PlayerData.ped)
-							end
+							local sleep = (ESX.PlayerData.job.name == 'police' and GetWeapontypeGroup(data.hash) == 416676503) and 400 or 1200
+							Utils.PlayAnimAdvanced(sleep*2, false, sleep == 400 and 'reaction@intimidation@cop@unarmed' or 'reaction@intimidation@1h', 'intro', GetEntityCoords(ESX.PlayerData.ped, true), 0, 0, GetEntityHeading(ESX.PlayerData.ped), 8.0, 3.0, -1, 50, 1, 0, 0)
+							Citizen.Wait(sleep)
+							GiveWeaponToPed(ESX.PlayerData.ped, data.hash, 0, true, false)
+							SetCurrentPedWeapon(ESX.PlayerData.ped, data.hash)
+							SetPedCurrentWeaponVisible(ESX.PlayerData.ped, true, false, false, false)
+							SetAmmoInClip(ESX.PlayerData.ped, data.hash, item.metadata.ammo or 100)
+							SetWeapon(item, data.hash, data.ammoname)
+							Citizen.Wait(sleep)
+							ClearPedSecondaryTask(ESX.PlayerData.ped)
 						end
 					end
 				end)
@@ -619,7 +602,7 @@ RegisterCommand('inv2', function()
 							end
 							SetVehicleDoorOpen(vehicle, open, false, false)
 							Wait(200)
-							ox.playAnim(100, 'anim@heists@prison_heiststation@cop_reactions', 'cop_b_idle', 3.0, 3.0, -1, 49, 0, 0, 0, 0)
+							Utils.PlayAnim(100, 'anim@heists@prison_heiststation@cop_reactions', 'cop_b_idle', 3.0, 3.0, -1, 49, 0, 0, 0, 0)
 							currentInventory.entity = lastVehicle
 							currentInventory.door = open
 							while true do
