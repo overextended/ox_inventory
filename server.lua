@@ -250,6 +250,7 @@ end)
 
 RegisterNetEvent('ox_inventory:updateWeapon', function(action)
 	print(action)
+	print(ESX.DumpTable(Inventory(source).weapon))
 end)
 
 ox.RegisterServerCallback('ox_inventory:useItem', function(source, cb, item, slot, metadata)
@@ -259,6 +260,8 @@ ox.RegisterServerCallback('ox_inventory:useItem', function(source, cb, item, slo
 		if type == 1 then -- weapon
 			return cb(data)
 		elseif type == 2 then -- ammo
+			return cb(data)
+		elseif type == 3 then -- attachment
 			return cb(data)
 		elseif ESX.UsableItemsCallbacks[item.name] then
 			ESX.UseItem(source, item.name)
@@ -271,4 +274,8 @@ ox.RegisterServerCallback('ox_inventory:useItem', function(source, cb, item, slo
 		end
 	end
 	cb(false)
+end)
+
+RegisterNetEvent('ox_inventory:removeItem', function(item, count, metadata, slot)
+	Inventory.RemoveItem(source, item, count, metadata, slot)
 end)

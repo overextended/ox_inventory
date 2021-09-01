@@ -14,6 +14,8 @@ shared_scripts {
 	'modules/*.lua'
 }
 
+--server_script 'setup/convert.lua'
+
 ui_page 'web/build/index.html'
 
 files {

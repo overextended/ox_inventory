@@ -500,17 +500,17 @@ AddEventHandler('ox_inventory:item', function(data, cb)
 					end)
 				else used = true end
 				while used == nil do Wait(data.usetime/2) end
-				if used then
-					if result.consume ~= 0 then TriggerServerEvent('ox_inventory:removeItem', result.name) end
-					if data.status then
-						for k, v in pairs(data.status) do
-							if v > 0 then TriggerEvent('esx_status:add', k, v) else TriggerEvent('esx_status:remove', k, -v) end
-						end
+			end
+			if used then
+				if result.consume ~= 0 then TriggerServerEvent('ox_inventory:removeItem', result.name, result.consume, result.metadata, data.slot) end
+				if data.status then
+					for k, v in pairs(data.status) do
+						if v > 0 then TriggerEvent('esx_status:add', k, v) else TriggerEvent('esx_status:remove', k, -v) end
 					end
 				end
+				SetBusy(false)
+				return cb({name=result.name, label=result.label, count=result.count, slot=result.slot, metadata=result.metadata})
 			end
-			SetBusy(false)
-			return cb({name=result.name, label=result.label, count=result.count, slot=result.slot, metadata=result.metadata})
 		end
 		SetBusy(false)
 		cb(false)
