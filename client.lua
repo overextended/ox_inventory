@@ -1,6 +1,6 @@
+local Stashes, Vehicles = data('stashes'), data('vehicles')
 local Items, Weapons = table.unpack(module('items'))
 local Progress, Shops = module('progress'), module('shops')
-local Stashes, Vehicles = data('stashes'), data('vehicles')
 
 local Blips, Drops, nearbyMarkers, cancelled, invOpen = {}, {}, {}, false, false
 local playerId, playerCoords, invOpen, currentWeapon, currentMarker
@@ -13,8 +13,8 @@ end
 exports('SetBusy', SetBusy)
 
 local SetWeapon = function(weapon)
-	currentWeapon = weapon
-	TriggerEvent('ox_inventory:currentWeapon', weapon and {name=weapon.name, slot=weapon.slot, label=weapon.label, metadata=weapon.metadata} or nil)
+	currentWeapon = weapon and {name=weapon.name, slot=weapon.slot, label=weapon.label, metadata=weapon.metadata, hash=weapon.hash, ammo=weapon.ammo} or nil
+	TriggerEvent('ox_inventory:currentWeapon', currentWeapon)
 	TriggerServerEvent('ox_inventory:currentWeapon', weapon and weapon.slot or nil)
 end
 
@@ -131,6 +131,7 @@ local UseSlot = function(slot)
 							if data.throwable then item.throwable, item.metadata.ammo = true, 1 end
 							item.hash = data.hash
 							item.timer = 0
+							item.ammo = data.ammoname
 							ClearPedSecondaryTask(ESX.PlayerData.ped)
 							if currentWeapon then
 								SetPedAmmo(ESX.PlayerData.ped, currentWeapon.hash, 0)
@@ -304,6 +305,7 @@ RegisterNetEvent('ox_inventory:setPlayerInventory', function(data)
 		TriggerEvent('chat:removeSuggestion', '/hotkey'..i)
 	end
 	Notify({text = ox.locale('inventory_setup'), duration = 2500})
+	collectgarbage('collect')
 
 	SetInterval(1, 250, function()
 		playerCoords = GetEntityCoords(ESX.PlayerData.ped)
