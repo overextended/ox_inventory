@@ -120,7 +120,7 @@ local GenerateText = function(num)
 end
 
 local GenerateSerial = function(text)
-	if not text then GenerateText(3) elseif text:len() > 3 then return text end
+	text = text == nil and GenerateText(3) or text:len() > 3 and text
 	return ('%s%s%s'):format(math.random(100000,999999), text, math.random(100000,999999))
 end
 
