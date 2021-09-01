@@ -1,3 +1,8 @@
+ox = {server = IsDuplicityVersion(), name = GetCurrentResourceName()}
+local func, err = load(LoadResourceFile(ox.name, 'config.lua')..'return Config', 'config.lua', 't')
+assert(func, err == nil or '\n^1'..err..'^7')
+local Config = func()
+
 ox.concat = function(d, ...)
 	if type(...) == 'string' then
 		local args, ret = {...}, {}
@@ -14,12 +19,6 @@ end
 
 data = function(file)
 	return load(LoadResourceFile(ox.name, 'data/'..file..'.lua')..'return Data', file, 't')()
-end
-
-local Locales = data('locales/'..Config.Locale)
-ox.locale = function(string, ...)
-	if Locales[string] then return Locales[string]:format(...) end
-	return string
 end
 
 local Modules = {}
@@ -68,3 +67,13 @@ else
 		return table.unpack(Citizen.Await(p))
 	end
 end
+
+local Locales = data('locales/'..Config.Locale)
+ox.locale = function(string, ...)
+	if Locales[string] then return Locales[string]:format(...) end
+	return string
+end
+
+local func, err = load(LoadResourceFile(ox.name, ox.server and 'server.lua' or 'client.lua'), ox.server and 'server.lua' or 'client.lua', 't')
+assert(func, err == nil or '\n^1'..err..'^7')
+func()

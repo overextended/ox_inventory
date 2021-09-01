@@ -1,5 +1,4 @@
 Config = {}
-ox = {server = IsDuplicityVersion(), name = GetCurrentResourceName()}
 Config.Locale = 'en'
 
 if ox.server then

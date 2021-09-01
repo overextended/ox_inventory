@@ -11,17 +11,7 @@ dependencies {
 
 shared_scripts {
 	'@es_extended/imports.lua',
-	'config.lua',
 	'modules/*.lua'
-}
-
-client_scripts {
-	'cl*.lua'
-}
-
-server_scripts {
-	'setup/convert.lua',
-	'server.lua'
 }
 
 ui_page 'web/build/index.html'
@@ -29,8 +19,10 @@ ui_page 'web/build/index.html'
 files {
 	'web/build/index.html',
 	'web/build/**/*',
+	'conf*.lua',
 	'modules/**/shared.lua',
 	'modules/**/client.lua',
 	'data/*.lua',
-	'data/**/*.lua'
+	'data/**/*.lua',
+	'cl*.lua'
 }
