@@ -120,7 +120,7 @@ ox.RegisterServerCallback('ox_inventory:openInventory', function(source, cb, inv
 end)
 
 ox.RegisterServerCallback('ox_inventory:swapItems', function(source, cb, data)
-	if data.count > 0 and data.toType ~= 'shop' and data.fromSlot ~= data.toSlot then
+	if data.count > 0 and data.toType ~= 'shop' then
 		local playerInventory, items, ret = Inventory(source), {}
 		if data.toType == 'newdrop' then
 			local fromSlot = playerInventory.items[data.fromSlot]
@@ -137,7 +137,7 @@ ox.RegisterServerCallback('ox_inventory:swapItems', function(source, cb, data)
 		else
 			local toInventory = data.toType == 'player' and playerInventory or Inventory(playerInventory.open)
 			local fromInventory = data.fromType == 'player' and playerInventory or Inventory(playerInventory.open)
-			if toInventory and fromInventory then
+			if toInventory and fromInventory and (fromInventory.id ~= toInventory.id or data.fromSlot ~= data.toSlot) then
 				local fromSlot, toSlot = fromInventory.items[data.fromSlot], toInventory.items[data.toSlot]
 				if fromSlot then
 					if data.count > fromSlot.count then data.count = fromSlot.count end
