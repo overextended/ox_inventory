@@ -85,7 +85,7 @@ local GenerateSerial = function(text)
 end
 
 local Convert = function()
-	local users = exports.oxmysql:fetchSync('SELECT identifier, inventory, accounts FROM users') --loadout
+	local users = exports.oxmysql:fetchSync('SELECT identifier, inventory, loadout, accounts FROM users')
 	local user, total, count = {}, #users, 0
 	Print(('Converting %s user inventories to new data format'):format(total))
 	for i=1, #users do
