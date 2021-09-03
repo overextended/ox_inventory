@@ -644,7 +644,7 @@ end)
 
 RegisterCommand('reload', function()
 	if currentWeapon and currentWeapon.ammo then
-		local ammo = Utils.InventorySearch(1, currentWeapon.ammo)[currentWeapon.ammo]
+		local ammo = Utils.InventorySearch(1, currentWeapon.ammo)
 		if ammo then UseSlot(ammo[1].slot) end
 	end
 end)

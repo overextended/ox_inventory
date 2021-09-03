@@ -26,10 +26,11 @@ end
 
 M.InventorySearch = function(search, item, metadata)
 	if item then
-		if type(item) == 'string' then item = {item} end
+		item = type(item) == 'string' and {item} or item
+		local items = #item
 		if type(metadata) == 'string' then metadata = {type=metadata} end
 		local returnData = {}
-		for i=1, #item do
+		for i=1, items do
 			local item = string.lower(item[i])
 			if item:find('weapon_') then item = string.upper(item) end
 			if search == 1 then returnData[item] = {}
@@ -37,11 +38,12 @@ M.InventorySearch = function(search, item, metadata)
 			for k, v in pairs(ESX.PlayerData.inventory) do
 				if v.name == item then
 					if not v.metadata then v.metadata = {} end
-					if not metadata or func.tablecontains(v.metadata, metadata) then
+					if not metadata or M.TableContains(v.metadata, metadata) then
 						if search == 1 then table.insert(returnData[item], ESX.PlayerData.inventory[v.slot])
 						elseif search == 2 then
 							returnData[item] = returnData[item] + v.count
 						end
+						if items == 1 then return returnData[item] end
 					end
 				end
 			end
@@ -50,12 +52,6 @@ M.InventorySearch = function(search, item, metadata)
 	end
 	return false
 end
-exports('SearchItems', function(item, metadata)
-	return M.InventorySearch(1, item, metadata)
-end)
-
-exports('CountItems', function(item, metadata)
-	return M.InventorySearch(2, item, metadata)
-end)
+exports('InventorySearch', M.InventorySearch)
 
 return M
