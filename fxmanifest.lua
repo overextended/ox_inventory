@@ -6,6 +6,8 @@ versioncheck 'https://raw.githubusercontent.com/overextended/ox_inventory/main/f
 version '2.0.0'
 
 dependencies {
+	'/server:4394',
+	'/onesync',
 	'es_extended'
 }
 
