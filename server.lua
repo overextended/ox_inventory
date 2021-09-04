@@ -1,6 +1,6 @@
 local Utils, Shops, Inventory, Items = module('utils'), module('shops'), module('inventory'), module('items')
 
-SetInterval(1, 600000, function()
+local SaveInventories = function()
 	local time = os.time(os.date('!*t'))
 	for id, inv in pairs(Inventory('all')) do
 		if inv.type ~= 'player' and not inv.open then
@@ -12,24 +12,15 @@ SetInterval(1, 600000, function()
 			end
 		end
 	end
-end)
+end
+
+SetInterval(1, 600000, SaveInventories)
 
 AddEventHandler('txAdmin:events:scheduledRestart', function(eventData)
-	if eventData.secondsRemaining == 60 then
-		CreateThread(function()
-			Wait(50000)
-			for id, inv in pairs(Inventory('all')) do
-				if inv.type ~= 'player' and not inv.open then
-					if inv.type ~= 'drop' and inv.datastore == nil and inv.changed then
-						Inventory.Save(inv)
-					end
-				end
-			end
-		end)
-	end
+	if eventData.secondsRemaining == 60 then SetTimeout(50000, SaveInventories) end
 end)
 
-RegisterNetEvent('ox_inventory:requestPlayerInventory', function()
+RegisterServerEvent('ox_inventory:requestPlayerInventory', function()
 	local xPlayer, inventory = ESX.GetPlayerFromId(source)
 	while not ox.ready do Wait(15) end
 	local result = exports.oxmysql:scalar('SELECT inventory FROM users WHERE identifier = ?',
@@ -39,7 +30,7 @@ RegisterNetEvent('ox_inventory:requestPlayerInventory', function()
 	end)
 end)
 
-RegisterNetEvent('ox_inventory:closeInventory', function()
+RegisterServerEvent('ox_inventory:closeInventory', function()
 	local inventory, secondary = Inventory(source)
 	if inventory.open then secondary = Inventory(inventory.open) end
 	if secondary then secondary:set('open', false) end
@@ -128,7 +119,7 @@ ox.RegisterServerCallback('ox_inventory:swapItems', function(source, cb, data)
 			toSlot.slot = data.toSlot
 			local items = {[data.fromSlot] = false}
 			playerInventory.items[data.fromSlot] = nil
-			Inventory.SyncInventory(playerInventory:player(), playerInventory, items)
+			Inventory.SyncInventory(ESX.GetPlayerFromId(playerInventory.id), playerInventory, items)
 			playerInventory.weight = playerInventory.weight - toSlot.weight
 			TriggerEvent('ox_inventory:createDrop', source, data.toSlot, toSlot, function(drop, coords)
 				TriggerClientEvent('ox_inventory:createDrop', -1, {drop, coords}, source)
@@ -177,7 +168,7 @@ ox.RegisterServerCallback('ox_inventory:swapItems', function(source, cb, data)
 					fromInventory.items[data.fromSlot], toInventory.items[data.toSlot] = fromSlot, toSlot
 					if next(items) then
 						ret = {weight=playerInventory.weight, items=items}
-						Inventory.SyncInventory(playerInventory:player(), playerInventory, items)
+						Inventory.SyncInventory(ESX.GetPlayerFromId(playerInventory.id), playerInventory, items)
 					end
 					if fromInventory.changed ~= nil then fromInventory:set('changed', true) end
 					if toInventory.changed ~= nil then toInventory:set('changed', true) end
@@ -193,7 +184,7 @@ ox.RegisterServerCallback('ox_inventory:buyItem', function(source, cb, data)
 	if data.toType == 'player' and data.fromSlot ~= data.toSlot then
 		if data.count == nil then data.count = 1 end
 		local player, items, ret = Inventory(source), {}
-		local xPlayer = player:player()
+		local xPlayer = ESX.GetPlayerFromId(source)
 		local shop = Shops[tonumber(player.open:sub(5))]
 		local fromSlot, toSlot = shop.items[data.fromSlot], player.items[data.toSlot]
 		if fromSlot then
@@ -241,14 +232,14 @@ ox.RegisterServerCallback('ox_inventory:openShop', function(source, cb, inv, dat
 	cb({id=left.label, type=left.type, slots=left.slots, weight=left.weight, maxWeight=left.maxWeight}, shop)
 end)
 
-RegisterNetEvent('ox_inventory:currentWeapon', function(slot)
+RegisterServerEvent('ox_inventory:currentWeapon', function(slot)
 	local inv = Inventory(source)
 	if slot then
 		inv.weapon = inv.items[slot]
 	else inv.weapon = nil end
 end)
 
-RegisterNetEvent('ox_inventory:updateWeapon', function(action)
+RegisterServerEvent('ox_inventory:updateWeapon', function(action)
 	print(action)
 	print(ESX.DumpTable(Inventory(source).weapon))
 end)
@@ -274,8 +265,4 @@ ox.RegisterServerCallback('ox_inventory:useItem', function(source, cb, item, slo
 		end
 	end
 	cb(false)
-end)
-
-RegisterNetEvent('ox_inventory:removeItem', function(item, count, metadata, slot)
-	Inventory.RemoveItem(source, item, count, metadata, slot)
 end)
