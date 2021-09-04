@@ -155,21 +155,22 @@ M.Start = function(options, completed)
 	end
 end
 
-AddEventHandler('ox_inventory:CancelProgress', Cancelled)
-AddEventHandler('ox_inventory:StartProgress', StartProgress)
+exports('Progress', M.Start)
+exports('CancelProgress', Cancelled)
+exports('ProgressActive', function() return M.Active end)
 
 RegisterNUICallback('ox_inventory:ProgressComplete', function(_, cb)
     Completed()
-    cb({})
+    cb()
 end)
 
-RegisterCommand('itemcancel', function()
+RegisterCommand('cancelprogress', function()
     if M.Active and canCancel then
         Cancelled()
     end
 end)
 
-RegisterKeyMapping('itemcancel', 'Stop using an item', 'keyboard', 'x') 
-TriggerEvent('chat:removeSuggestion', '/itemcancel')
+RegisterKeyMapping('cancelprogress', 'Cancel current progress bar', 'keyboard', 'x') 
+TriggerEvent('chat:removeSuggestion', '/cancelprogress')
 
 return M
