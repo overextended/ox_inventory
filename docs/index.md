@@ -2,20 +2,38 @@
 title: Getting Started
 ---
 
-# ox_inventory
-
 ## Requirements
+#### oxmysql
+A new lightweight database wrapper utilising node-mysql2.
 
-You need these before installing the inventory:
+Unlike ghmattimysql/mysql-async, we utilise [https://github.com/sidorares/node-mysql2]node-mysql2 and have a solution for delayed function callbacks. You can expect responses to resolve ~50ms sooner, and no additional overhead when using the Sync export wrappers.
 
-- [oxmysql](https://github.com/overextended/oxmysql)
+	- Note: Config is currently hardcoded! Modify your connection settings inside oxmysql.js
 
-## Editing the framework
+[Download](https://github.com/overextended/oxmysql) | [Documentation](https://overextended.github.io/oxmysql)
 
-The only framework that the inventory is compatible with is **ESX Legacy**. Other versions of ESX are **not** supported.
+#### Framework
+While the inventory is technically designed for use with **ESX Legacy**, it will not work without modifications.
+- For your convenience, we provide a standard fork of ESX to maintain compatibility and add support when using Ox Inventory.
+	- [Standard fork](https://github.com/overextended/es_extended)
 
-Since the inventory isn't compatible with the framework out of the box, you are going to need to make some changes to it.
+If you are using a non-standard release of ESX (based on ESX Legacy), you will need to reference the [github diff](https://github.com/overextended/es_extended/commit/c232ff157e219c111e7b484af2375a2859ac331d) for necessary changes.
 
-For ease of use we would recommend using [our fork]() of ESX.
+- We also provide a modified ESX that contains some breaking changes - this is _not_ recommended for beginners.
+	- [Experimental](https://github.com/overextended/es_extended/tree/ox)
 
-Otherwise you can find the required changes to the framework [here]().
+
+#### Load order
+```
+ensure es_extended
+ensure oxmysql
+ensure ox_inventory
+```
+
+## Common issues
+#### Unable to access inventory after death
+You have not triggered the correct event after respawning, so your PlayerData recognises you as dead (often due to an outdated esx_ambulancejob).
+Modify the function or event used to respawn/revive your character to also trigger the following event.
+```lua
+TriggerEvent('esx:onPlayerSpawn')
+```

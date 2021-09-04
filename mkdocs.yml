@@ -17,7 +17,6 @@ strict: true
 
 nav:
   - Getting Started: "index.md"
-  - Common Issues: "commonissues.md"
   - Functions:
       - "functions/index.md"
       - Client:
