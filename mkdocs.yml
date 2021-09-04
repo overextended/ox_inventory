@@ -3,8 +3,8 @@ site_description: Documentation
 site_author: Overextended
 
 # Repository
-repo_name: 🐂 Inventory
-repo_url: https://github.com/overextended/linden_inventory
+repo_name: Ox Inventory
+repo_url: https://github.com/overextended/ox_inventory
 edit_uri: ""
 
 # Copyright
@@ -52,12 +52,14 @@ theme:
   features:
     - tabs
     - navigation.instant
+    - navigation.tabs
+    - toc.integrate
   palette:
     scheme: slate
     primary: indigo
     accent: indigo
   font:
-    text: Oxygen
+    text: Roboto
     code: Fira Code
   icon:
     logo: material/school
