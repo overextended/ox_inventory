@@ -69,6 +69,17 @@ AddEventHandler('ox_inventory:createDrop', function(source, slot, toSlot, cb)
 	cb(drop, coords)
 end)
 
+AddEventHandler('ox_inventory:customDrop', function(prefix, coords, items)
+	local drop
+	repeat
+		drop = math.random(100000, 999999)
+		Wait(5)
+	until not Inventory(drop)
+	Inventory.Create(drop, prefix..' '..drop, 'drop', Config.PlayerSlots, 0, Config.DefaultWeight, false, items)
+	Inventory(drop):set('coords', coords)
+	TriggerClientEvent('ox_inventory:createDrop', -1, {drop, coords}, source)
+end)
+
 local Stashes, Vehicle = data('stashes'), data('vehicles')
 ox.RegisterServerCallback('ox_inventory:openInventory', function(source, cb, inv, data) 
 	local left, right = Inventory(source)
