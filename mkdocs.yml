@@ -1,0 +1,124 @@
+site_name: 🐂 Inventory
+site_description: Documentation
+site_author: Overextended
+
+# Repository
+repo_name: 🐂 Inventory
+repo_url: https://github.com/overextended/linden_inventory
+edit_uri: ""
+
+# Copyright
+copyright: Copyright &copy; 2021 Overextended
+
+# Configuration
+docs_dir: docs
+site_dir: site
+strict: true
+
+nav:
+  - Getting Started: "index.md"
+  - Common Issues: "commonissues.md"
+  - Functions:
+      - "functions/index.md"
+      - Client:
+          - "functions/client/progress.md"
+          - "functions/client/playanim.md"
+          - "functions/client/playanimadvanced.md"
+          - "functions/client/inventorysearch.md"
+      - Shared:
+          - "functions/shared/checktable.md"
+          - "functions/shared/copytable.md"
+          - "functions/shared/matchtables.md"
+          - "functions/shared/tablecontains.md"
+  - Items:
+      - items/index.md
+      - items/client.md
+      - items/server.md
+
+# Theme
+theme:
+  name: material
+
+  # 404 Page
+  static_templates:
+    - 404.html
+
+  # Don't include MKDoc's JavaScript
+  include_search_page: false
+  search_index_only: true
+
+  # Default values, taken from mkdocs_theme.yml
+  language: en
+  features:
+    - tabs
+    - navigation.instant
+  palette:
+    scheme: slate
+    primary: indigo
+    accent: indigo
+  font:
+    text: Oxygen
+    code: Fira Code
+  icon:
+    logo: material/school
+    repo: fontawesome/brands/github
+  favicon: assets/images/favicon.png
+
+# Plugins
+plugins:
+  - search
+  - awesome-pages
+
+# Social
+extra:
+  social:
+    - icon: fontawesome/brands/github
+      link: https://github.com/overextended/linden_inventory
+    - icon: fontawesome/brands/discord
+      link: https://discord.gg/hmcmv3P7YW
+
+# Extensions
+markdown_extensions:
+  - markdown.extensions.admonition
+  - markdown.extensions.attr_list
+  - markdown.extensions.codehilite:
+      guess_lang: false
+      linenums: true
+  - markdown.extensions.def_list
+  - markdown.extensions.footnotes
+  - markdown.extensions.meta
+  - markdown.extensions.toc:
+      permalink: true
+  - pymdownx.betterem:
+      smart_enable: all
+  - pymdownx.caret
+  - pymdownx.critic
+  - pymdownx.details
+  - pymdownx.emoji:
+      emoji_index: !!python/name:materialx.emoji.twemoji
+      emoji_generator: !!python/name:materialx.emoji.to_svg
+  - pymdownx.inlinehilite
+  - pymdownx.keys
+  - pymdownx.magiclink:
+      provider: "github"
+      repo_url_shortener: true
+      repo_url_shorthand: true
+      social_url_shorthand: true
+      labels:
+        {
+          "commit": "Commit",
+          "compare": "Compare",
+          "issue": "Issue",
+          "pr": "Pull Request",
+          "mention": "User",
+          "repo": "Repository",
+        }
+  - pymdownx.mark
+  - pymdownx.smartsymbols
+  - pymdownx.snippets:
+      check_paths: true
+  - pymdownx.superfences
+  - pymdownx.tabbed
+  - pymdownx.tasklist:
+      custom_checkbox: true
+  - pymdownx.tilde
