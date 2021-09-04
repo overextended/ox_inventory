@@ -1,36 +1,32 @@
 fx_version 'cerulean'
 game 'gta5'
-author 'Linden'
-description 'https://github.com/thelindat/linden_inventory'
-versioncheck 'https://raw.githubusercontent.com/thelindat/linden_inventory/main/fxmanifest.lua'
-version '1.9.2'
+author 'Overextended'
+description 'https://github.com/overextended/ox_inventory'
+versioncheck 'https://raw.githubusercontent.com/overextended/ox_inventory/main/fxmanifest.lua'
+version '2.0.0'
 
 dependencies {
-	'es_extended',
-	'ghmattimysql'
+	'/server:4394',
+	'/onesync',
+	'es_extended'
 }
 
 shared_scripts {
 	'@es_extended/imports.lua',
-	'@es_extended/locale.lua',
-	'config.lua',
-	'shared/*.lua',
-	'locales/*.lua'
+	'modules/*.lua'
 }
 
-client_scripts {
-	'client/*.lua'
-}
+--server_script 'setup/convert.lua'
 
-server_scripts {
-	'server/*.lua'
-}
-
-ui_page 'html/index.html'
+ui_page 'web/build/index.html'
 
 files {
-	'html/index.html',
-	'html/script.js',
-	'html/images/*.png',
-	'html/style.css',
+	'web/build/index.html',
+	'web/build/**/*',
+	'conf*.lua',
+	'modules/**/shared.lua',
+	'modules/**/client.lua',
+	'data/*.lua',
+	'data/**/*.lua',
+	'cl*.lua'
 }
