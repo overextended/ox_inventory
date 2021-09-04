@@ -255,7 +255,7 @@ M.AddItem = function(inv, item, count, metadata, slot)
 	local item, inv = Items(item), Inventories[type(inv) == 'table' and inv.id or inv]
 	count = math.floor(count + 0.5)
 	if item and inv and count > 0 then
-		local xPlayer = inv.type == 'player' and inv:player() or false
+		local xPlayer = inv.type == 'player' and ESX.GetPlayerFromId(inv.id) or false
 		local existing = false
 		if slot then
 			local slotItem = inv.items[slot]
@@ -305,7 +305,7 @@ M.RemoveItem = function(inv, item, count, metadata, slot)
 	local item, inv = Items(item), Inventories[type(inv) == 'table' and inv.id or inv]
 	count = math.floor(count + 0.5)
 	if item and inv and count > 0 then
-		local xPlayer = inv.type == 'player' and inv:player() or false
+		local xPlayer = inv.type == 'player' and ESX.GetPlayerFromId(inv.id) or false
 		metadata = metadata == nil and {} or type(metadata) == 'string' and {type=metadata} or metadata
 		local slotItem = inv.items[slot] or false
 		local itemSlots, totalCount = GetItemSlots(inv, item, metadata)
@@ -377,6 +377,72 @@ M.CanSwapItem = function(inv, firstItem, firstItemCount, testItem, testItemCount
 	return false
 end
 
+TriggerEvent('ox_inventory:loadInventory', M)
+
+exports('Inventory', function(arg)
+	if arg then
+		if Inventories[arg] then return Inventories[arg] else return false end
+	end
+	return M
+end)
+
+RegisterServerEvent('ox_inventory:removeItem', function(item, count, metadata, slot)
+	M.RemoveItem(source, item, count, metadata, slot)
+end)
+
+AddEventHandler('ox_inventory:confiscatePlayerInventory', function(xPlayer)
+	xPlayer = type(xPlayer) == 'table' and xPlayer or ESX.GetPlayerFromId(xPlayer)
+	local inv = xPlayer and Inventories[xPlayer.source]
+	if inv then
+		local inventory = json.encode(Minimal(inv))
+		exports.oxmysql:execute('INSERT INTO ox_inventory (name, data, owner) VALUES (:name, :data, :owner) ON DUPLICATE KEY UPDATE data = :data', {
+			['name'] = inv.owner,
+			['data'] = inventory,
+			['owner'] = inv.owner
+		}, function (result)
+			if result > 0 then
+				inv.items = {}
+				inv.weight = 0
+				TriggerClientEvent('ox_inventory:inventoryConfiscated', inv.id)
+				M.SyncInventory(xPlayer, inv)
+			end
+		end)
+	end
+end)
+
+AddEventHandler('ox_inventory:returnPlayerInventory', function(xPlayer)
+	xPlayer = type(xPlayer) == 'table' and xPlayer or ESX.GetPlayerFromId(xPlayer)
+	local inv = xPlayer and Inventories[xPlayer.source]
+	if inv then
+		exports.oxmysql:scalar('SELECT data FROM ox_inventory WHERE name = ?', {
+			inv.owner
+		}, function(data)
+			if data then
+				exports.oxmysql:execute('DELETE FROM ox_inventory WHERE name = ?', { inv.owner })
+				data = json.decode(data)
+				local money, inventory, totalWeight = {money=0, black_money=0}, {}, 0
+				if data and next(data) then
+					for i=1, #data do
+						local i = data[i]
+						if type(i) == 'number' then break end
+						local item = Items(i.name)
+						if item then
+							local weight = M.SlotWeight(item, i)
+							totalWeight = totalWeight + weight
+							inventory[i.slot] = {name = i.name, label = item.label, weight = weight, slot = i.slot, count = i.count, description = item.description, metadata = i.metadata, stack = item.stack, close = item.close}
+							if money[i.name] then money[i.name] = money[i.name] + i.count end
+						end
+					end
+				end
+				inv.weight = totalWeight
+				inv.items = inventory
+				xPlayer.syncInventory(totalWeight, inv.maxWeight, inventory, money)
+				TriggerClientEvent('ox_inventory:inventoryReturned', xPlayer.source, {inventory, totalWeight})
+			end
+		end)
+	end
+end)
+
 ESX.RegisterCommand({'giveitem', 'additem'}, 'admin', function(xPlayer, args, showError)
 	args.item = Items(args.item)
 	if args.item then M.AddItem(args.player.source, args.item.name, args.count, args.type or {}) end
@@ -397,13 +463,49 @@ end, true, {help = 'remove an item from a player', validate = false, arguments =
 	{name = 'type', help = 'item metadata type', type='any'}
 }})
 
-TriggerEvent('ox_inventory:loadInventory', M)
+ESX.RegisterCommand('setitem', 'admin', function(xPlayer, args, showError)
+	args.item = Items(args.item)
+	if args.item then M.SetItem(args.player.source, args.item.name, args.count, args.type or {}) end
+end, true, {help = 'give an item to a player', validate = false, arguments = {
+	{name = 'player', help = 'player id', type = 'player'},
+	{name = 'item', help = 'item name', type = 'string'},
+	{name = 'count', help = 'item count', type = 'number'},
+	{name = 'type', help = 'item metadata type', type='any'}
+}})
 
-exports('Inventory', function(arg)
-	if arg then
-		if Inventories[arg] then return Inventories[arg] else return false end
+ESX.RegisterCommand('clearevidence', 'user', function(xPlayer, args, showError)
+	if xPlayer.job.name == 'police' and xPlayer.job.grade_name == 'boss' then
+		local id = 'evidence-'..args.evidence
+		exports.oxmysql:executeSync('DELETE FROM ox_inventory WHERE name = ?', {id})
 	end
-	return M
-end)
+end, true, {help = 'clear police evidence', validate = true, arguments = {
+	{name = 'evidence', help = 'locker number', type = 'number'}
+}})
+
+ESX.RegisterCommand('confinv', 'admin', function(xPlayer, args, showError)
+	TriggerEvent('ox_inventory:confiscatePlayerInventory', args.playerId)
+end, true, {help = 'Confiscates items from a player', validate = true, arguments = {
+	{name = 'playerId', help = 'player id', type = 'player'},
+}})
+
+ESX.RegisterCommand('returninv', 'admin', function(xPlayer, args, showError)
+	TriggerEvent('ox_inventory:returnPlayerInventory', args.playerId)
+end, true, {help = 'Returns confiscated items to a player', validate = true, arguments = {
+	{name = 'playerId', help = 'player id', type = 'player'},
+}})
+
+ESX.RegisterCommand('saveinv', 'admin', function(xPlayer, args, showError)
+	local time = os.time(os.date('!*t'))
+	for id, inv in pairs(M('all')) do
+		if inv.type ~= 'player' then
+			if inv.type ~= 'drop' and inv.datastore == nil then
+				M.Save(inv)
+			end
+			if time - inv.time >= 3000 then
+				M.Remove(id, inv.type)
+			end
+		end
+	end
+end, true, {help = 'Save all inventories', validate = true, arguments = {}})
 
 return M

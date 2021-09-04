@@ -183,6 +183,16 @@ local Raycast = function()
 	if hit and type ~= 0 then return hit, coords, entity, type else	return false end
 end
 
+OnPlayerData = function(key, val)
+	if key == 'dead' and val then Disarm()
+		TriggerEvent('ox_inventory:closeInventory')
+	end
+	SetWeaponsNoAutoswap(1)
+	SetWeaponsNoAutoreload(1)
+	SetPedCanSwitchWeapon(ESX.PlayerData.ped, 0)
+	SetPedEnableWeaponBlocking(ESX.PlayerData.ped, 1)
+end
+
 RegisterNetEvent('ox_inventory:closeInventory', function(options)
 	if invOpen then
 		SetNuiFocus(false, false)
@@ -226,15 +236,20 @@ RegisterNetEvent('ox_inventory:updateInventory', function(items, weights, name, 
 	ESX.SetPlayerData('weight', weights.left)
 end)
 
-OnPlayerData = function(key, val)
-	if key == 'dead' and val then Disarm()
-		TriggerEvent('ox_inventory:closeInventory')
-	end
-	SetWeaponsNoAutoswap(1)
-	SetWeaponsNoAutoreload(1)
-	SetPedCanSwitchWeapon(ESX.PlayerData.ped, 0)
-	SetPedEnableWeaponBlocking(ESX.PlayerData.ped, 1)
-end
+RegisterNetEvent('ox_inventory:inventoryReturned', function(data)
+	Notify({text = ox.locale('items_returned'), duration = 2500})
+	TriggerEvent('ox_inventory:closeInventory')
+	ESX.PlayerData.inventory = data[1]
+	ESX.SetPlayerData('inventory', data[1])
+	ESX.SetPlayerData('weight', data[3])
+end)
+
+RegisterNetEvent('ox_inventory:inventoryConfiscated', function()
+	Notify({text = ox.locale('items_confiscated'), duration = 2500})
+	TriggerEvent('ox_inventory:closeInventory')
+	ESX.PlayerData.inventory = {}
+	ESX.SetPlayerData('weight', 0)
+end)
 
 RegisterNetEvent('ox_inventory:createDrop', function(data, owner)
 	local coords = vector3(data[2].x, data[2].y, data[2].z-0.2)
