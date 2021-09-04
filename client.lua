@@ -21,6 +21,7 @@ end
 
 local Notify = function(data) SendNUIMessage({ action = 'showNotif', data = data }) end
 RegisterNetEvent('ox_inventory:Notify', Notify)
+exports('Notify', Notify)
 
 local CanOpenInventory = function()
 	return ESX.PlayerLoaded and invOpen ~= nil and not isBusy and not ESX.PlayerData.dead and not isCuffed and not IsPauseMenuActive() and not IsPedFatallyInjured(ESX.PlayerData.ped, 1) and (not currentWeapon or currentWeapon.timer == 0)
@@ -664,17 +665,14 @@ RegisterCommand('reload', function()
 	end
 end)
 
-RegisterNUICallback('notification', function(data)
-	if data.type == 2 then data.type = 'error' else data.type = 'inform' end
-	Notify({type = data.type, text = ox.locale(data.message), duration = 2500})
-end)
-
 RegisterNUICallback('useItem', function(data)
 	UseSlot(data.slot)
+    cb()
 end)
 
 RegisterNUICallback('exit', function(data)
 	TriggerEvent('ox_inventory:closeInventory')
+    cb()
 end)
 
 RegisterNUICallback('swapItems', function(data, cb)

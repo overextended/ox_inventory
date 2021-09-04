@@ -1,3 +1,5 @@
+
+local Stashes, Vehicle = data('stashes'), data('vehicles')
 local Utils, Shops, Inventory, Items = module('utils'), module('shops'), module('inventory'), module('items')
 
 local SaveInventories = function()
@@ -80,7 +82,6 @@ AddEventHandler('ox_inventory:customDrop', function(prefix, coords, items)
 	TriggerClientEvent('ox_inventory:createDrop', -1, {drop, coords}, source)
 end)
 
-local Stashes, Vehicle = data('stashes'), data('vehicles')
 ox.RegisterServerCallback('ox_inventory:openInventory', function(source, cb, inv, data) 
 	local left, right = Inventory(source)
 	if data then
