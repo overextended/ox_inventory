@@ -38,9 +38,6 @@ strict: true
 theme:
   name: material
 
-  extra_css:
-    - stylesheets/extra.css
-
   # 404 Page
   static_templates:
     - 404.html
@@ -64,7 +61,7 @@ theme:
     accent: indigo
   font:
     text: Roboto
-    code: Fira Code
+    code: Roboto Code
   icon:
     logo: material/school
     repo: fontawesome/brands/github
@@ -75,13 +72,16 @@ plugins:
   - search
   - awesome-pages
 
+extra_css:
+  - stylesheets/extra.css
+
 # Social
 extra:
   social:
     - icon: fontawesome/brands/github
-      link: https://github.com/overextended/linden_inventory
+      link: https://github.com/overextended/ox_inventory
     - icon: fontawesome/brands/discord
-      link: https://discord.gg/hmcmv3P7YW
+      link: https://discord.io/overextended
 
 # Extensions
 markdown_extensions:
