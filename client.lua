@@ -665,12 +665,19 @@ RegisterCommand('reload', function()
 	end
 end)
 
-RegisterNUICallback('useItem', function(data)
+--fuck luke
+RegisterCommand('hotbar', function()
+	SendNUIMessage({
+		action = 'toggleHotbar'
+	})
+end)
+
+RegisterNUICallback('useItem', function(data, cb)
 	UseSlot(data.slot)
     cb()
 end)
 
-RegisterNUICallback('exit', function(data)
+RegisterNUICallback('exit', function(data, cb)
 	TriggerEvent('ox_inventory:closeInventory')
     cb()
 end)
