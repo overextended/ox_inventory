@@ -43,12 +43,11 @@ M.InventorySearch = function(search, item, metadata)
 						elseif search == 2 then
 							returnData[item] = returnData[item] + v.count
 						end
-						if items == 1 then return returnData[item] end
 					end
 				end
 			end
 		end
-		if next(returnData) then return returnData end
+		if next(returnData) then return items == 1 and returnData[item] or returnData end
 	end
 	return false
 end
