@@ -52,6 +52,7 @@ theme:
     - tabs
     - navigation.instant
     - navigation.tabs
+    - navigation.tabs.sticky
     - toc.integrate
   palette:
     scheme: slate
