@@ -1,0 +1,22 @@
+.md-content {
+	--md-typeset-a-color: rgb(83, 108, 238);
+}
+
+.md-typeset {
+	color-adjust: exact;
+	font-size: .71rem;
+	line-height: 1.3;
+}
+
+[data-md-color-scheme="slate"] {
+	--md-hue: 215;
+	--md-default-bg-color: rgb(40, 43, 57);
+}
+
+[data-md-color-primary="indigo"] {
+    --md-primary-fg-color: rgb(55, 70, 149);
+    --md-primary-fg-color--light: rgb(93, 108, 192);
+    --md-primary-fg-color--dark: rgb(48, 63, 161);
+    --md-primary-bg-color: rgb(255, 255, 255);
+    --md-primary-bg-color--light: rgba(255, 255, 255, 0.7);
+}

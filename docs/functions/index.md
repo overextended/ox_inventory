@@ -1,11 +1,12 @@
 ---
 title: Index
 ---
+Ox Inventory is organised into separate files which are individually loaded and stored in a single environment through modules.  
+While there are exceptions, most functions are included in modules and can only be accessed by including a reference to the module locally.
 
-Functions are loaded with modules, they can only be used inside the inventory resource itself, the functions that you can use outside of the inventory resource are **exported**.
 
-If a function is in the docs, but isn't defined that it's exported, then you **can't** use it outside the inventory.
+This section will provide details on several functions that are utilised in several modules or available to use in other resources as exports.  
+More specialised functions will be detailed as part of documentation for a specific module.
 
-Before using any modules make sure that the module you are trying to use the function from is loaded into the file.
-
-[View module files](https://github.com/overextended/linden_inventory/tree/main/modules/)
+!!! attention
+	If the documentation for a function does not include an export then it is only intended for internal use.

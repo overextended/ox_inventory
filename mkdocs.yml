@@ -38,6 +38,9 @@ nav:
 theme:
   name: material
 
+  extra_css:
+    - stylesheets/extra.css
+
   # 404 Page
   static_templates:
     - 404.html
@@ -54,6 +57,7 @@ theme:
     - navigation.tabs
     - navigation.tabs.sticky
     - toc.integrate
+    - navigation.top
   palette:
     scheme: slate
     primary: indigo
@@ -81,6 +85,8 @@ extra:
 
 # Extensions
 markdown_extensions:
+  - toc:
+      toc_depth: 3
   - markdown.extensions.admonition
   - markdown.extensions.attr_list
   - markdown.extensions.codehilite:

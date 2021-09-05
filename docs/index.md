@@ -1,8 +1,7 @@
 ---
 title: Getting Started
 ---
-
-## Requirements
+##Requirements
 ###OxMySQL
 A new lightweight database wrapper utilising [node-mysql2](https://github.com/sidorares/node-mysql2), unlike the abandoned ghmattimysql and mysql-async resources.
 
@@ -16,17 +15,19 @@ A new lightweight database wrapper utilising [node-mysql2](https://github.com/si
 
 [Download :fontawesome-solid-download:](https://github.com/overextended/oxmysql){ .md-button .md-button--primary }	[Documentation :fontawesome-solid-book:](https://overextended.github.io/oxmysql){ .md-button .md-button--primary }
 
+<br><br>
+
 ###Framework
-While the inventory is technically designed for use with **ESX Legacy**, it will not work without modifications.
+The inventory has been designed to work for a _modified_ version of **ESX Legacy** and will not work with anything else.  
+For convenience, we provide a fork with all necessary changes.
 
-- For your convenience, we provide a standard fork of ESX to maintain compatibility and add support when using Ox Inventory.
-	- [Standard fork](https://github.com/overextended/es_extended)
+- Standard: Minimal changes to maintain near-complete compatibility with other resources
+- Ox: Experimental branch to add new features and modify existing features, regardless of breaking compatibility
 
-- We also provide a modified ESX that contains some breaking changes - this is _not_ recommended for beginners.
-	- [Experimental](https://github.com/overextended/es_extended/tree/ox)
+[Standard :fontawesome-solid-archive:](https://github.com/overextended/es_extended){ .md-button .md-button--primary }	[Experimental :fontawesome-solid-exclamation-triangle:](https://github.com/overextended/es_extended/tree/ox){ .md-button .md-button--primary }
 
-!!! tip
-	If you prefer to modify your copy of ESX Legacy you will need to reference the changes in the [github diff](https://github.com/overextended/es_extended/commit/c232ff157e219c111e7b484af2375a2859ac331d)
+!!! tip "Modifying your framework"
+	If you _insist_ on manually applying changes to your framework, you will need to manually reference changes in the [github diff](https://github.com/overextended/es_extended/commit/c232ff157e219c111e7b484af2375a2859ac331d). No guide is provided.
 
 !!! info "Load order"
 	```
@@ -36,10 +37,12 @@ While the inventory is technically designed for use with **ESX Legacy**, it will
 	```
 
 
-## Common issues
+##Common issues
 ??? help "Unable to access inventory after death"
-	You have not triggered the correct event after respawning, so your PlayerData recognises you as dead (often due to an outdated esx_ambulancejob).
-	Modify the function or event used to respawn/revive your character to also trigger the following event.
+	You are not triggering the correct event after respawning, so the variable to store if you are dead is set as true. This is usually due to using outdated resources for ESX 1.1.
+
+	You can either update your resource, or trigger the following event where appropriate.
+
 	```lua
 	TriggerEvent('esx:onPlayerSpawn')
 	```
