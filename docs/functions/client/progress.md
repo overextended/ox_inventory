@@ -6,6 +6,10 @@ title: Progress.Start
 Progress.Start(options, completed)
 ```
 
+```lua
+exports.ox_inventory:Progress(options, completed)
+```
+
 This function will run the built in progress bar.
 
 | Argument  | Data Type | Optional | Explanation                                             |

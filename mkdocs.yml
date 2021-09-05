@@ -15,24 +15,24 @@ docs_dir: docs
 site_dir: site
 strict: true
 
-nav:
-  - Getting Started: "index.md"
-  - Functions:
-      - "functions/index.md"
-      - Client:
-          - "functions/client/progress.md"
-          - "functions/client/playanim.md"
-          - "functions/client/playanimadvanced.md"
-          - "functions/client/inventorysearch.md"
-      - Shared:
-          - "functions/shared/checktable.md"
-          - "functions/shared/copytable.md"
-          - "functions/shared/matchtables.md"
-          - "functions/shared/tablecontains.md"
-  - Items:
-      - items/index.md
-      - items/client.md
-      - items/server.md
+# nav:
+#   - Getting Started: "index.md"
+#   - Functions:
+#       - "functions/index.md"
+#       - Client:
+#           - "functions/client/progress.md"
+#           - "functions/client/playanim.md"
+#           - "functions/client/playanimadvanced.md"
+#           - "functions/client/inventorysearch.md"
+#       - Shared:
+#           - "functions/shared/checktable.md"
+#           - "functions/shared/copytable.md"
+#           - "functions/shared/matchtables.md"
+#           - "functions/shared/tablecontains.md"
+#   - Items:
+#       - items/index.md
+#       - items/client.md
+#       - items/server.md
 
 # Theme
 theme:
