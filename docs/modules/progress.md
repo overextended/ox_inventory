@@ -65,7 +65,7 @@
         },
     }, function(cancel)
         if not cancel then
-            print('You drank some water - that'll quench ya!')
+            print("You drank some water - that'll quench ya!")
         end
     end)
     ```
