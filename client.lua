@@ -479,7 +479,7 @@ RegisterNetEvent('ox_inventory:setPlayerInventory', function(data)
 				end
 			end
 		end
-	end)
+	end)	
 end)
 
 AddEventHandler('onResourceStop', function(resourceName)
