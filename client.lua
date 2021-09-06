@@ -53,7 +53,7 @@ local Disarm = function()
 		ClearPedSecondaryTask(ESX.PlayerData.ped)
 		local sleep = (ESX.PlayerData.job.name == 'police' and GetWeapontypeGroup(currentWeapon.hash) == 416676503) and 450 or 1400
 		Utils.PlayAnimAdvanced(sleep, true, sleep == 450 and 'reaction@intimidation@cop@unarmed' or 'reaction@intimidation@1h', 'outro', GetEntityCoords(ESX.PlayerData.ped, true), 0, 0, GetEntityHeading(ESX.PlayerData.ped), 8.0, 3.0, -1, 50, 0, 0, 0)
-		Citizen.Wait(sleep)
+		Wait(sleep)
 		RemoveWeaponFromPed(ESX.PlayerData.ped, currentWeapon.hash)
 		TriggerServerEvent('ox_inventory:updateWeapon', 'disarm', ammo)
 		SetWeapon()
@@ -134,13 +134,13 @@ local UseSlot = function(slot)
 							end
 							local sleep = (ESX.PlayerData.job.name == 'police' and GetWeapontypeGroup(data.hash) == 416676503) and 400 or 1200
 							Utils.PlayAnimAdvanced(sleep*2, false, sleep == 400 and 'reaction@intimidation@cop@unarmed' or 'reaction@intimidation@1h', 'intro', GetEntityCoords(ESX.PlayerData.ped, true), 0, 0, GetEntityHeading(ESX.PlayerData.ped), 8.0, 3.0, -1, 50, 1, 0, 0)
-							Citizen.Wait(sleep)
+							Wait(sleep)
 							GiveWeaponToPed(ESX.PlayerData.ped, data.hash, 0, true, false)
 							SetCurrentPedWeapon(ESX.PlayerData.ped, data.hash)
 							SetPedCurrentWeaponVisible(ESX.PlayerData.ped, true, false, false, false)
 							SetAmmoInClip(ESX.PlayerData.ped, data.hash, item.metadata.ammo or 100)
 							SetWeapon(item, data.hash, data.ammoname)
-							Citizen.Wait(sleep)
+							Wait(sleep)
 							ClearPedSecondaryTask(ESX.PlayerData.ped)
 						end
 					end

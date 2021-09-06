@@ -27,45 +27,47 @@ CreateThread(function()
 	if not OneSync and not Infinity then return ox.error('OneSync is not enabled on this server - refer to the documentation')
 	elseif Infinity then ox.info('Server is running OneSync Infinity') else ox.info('Server is running OneSync Legacy') end
 	local items, query = exports.oxmysql:fetchSync('SELECT * FROM items', {}), {}
-	for i=1, #items do
-		local v = items[i]
-		if i == 1 then query[i] = "DELETE FROM items WHERE name = '"..v.name.."'"
-		else query[i] = "OR name='"..v.name.."'" end
-		v.close = v.closeonuse or true
-		v.stack = v.stackable or true
-		v.description = v.description or ''
-		v.weight = v.weight or 0
-		Items[v.name] = v
-	end
-	if next(query) then
-		query = table.concat(query, ' ')
-		local sql = io.open(GetResourcePath(ox.name):gsub('//', '/')..'/setup/dump.sql', 'a+')
-		local file = io.open(GetResourcePath(ox.name):gsub('//', '/')..'/data/items.lua', 'a+')
-		local dump, dump2 = {}, {}
+	if items then
 		for i=1, #items do
-			local i = items[i]
-			table.insert(dump, "('"..i.name.."', ".."'"..i.name.."', "..i.weight.."),\n")
-			table.insert(dump2, [[
-
-Data[']]..i.name..[['] = {
-	label = ']]..i.label..[[',
-	weight = ]]..tonumber(i.weight)..[[,
-	stack = ]]..tostring(i.stackable)..[[,
-	close = ]]..tostring(i.closeonuse)..[[,
-	description = ']]..tostring(i.description)..[['
-}
-]])
+			local v = items[i]
+			if i == 1 then query[i] = "DELETE FROM items WHERE name = '"..v.name.."'"
+			else query[i] = "OR name='"..v.name.."'" end
+			v.close = v.closeonuse or true
+			v.stack = v.stackable or true
+			v.description = v.description or ''
+			v.weight = v.weight or 0
+			Items[v.name] = v
 		end
-		sql:write(table.concat(dump))
-		file:write(table.concat(dump2))
-		sql:close()
-		file:close()
-		exports.oxmysql:execute(query, {
-		}, function(result)
-			if result > 0 then
-				ox.info('Removed', result, 'items from the database')
+		if next(query) then
+			query = table.concat(query, ' ')
+			local sql = io.open(GetResourcePath(ox.name):gsub('//', '/')..'/setup/dump.sql', 'a+')
+			local file = io.open(GetResourcePath(ox.name):gsub('//', '/')..'/data/items.lua', 'a+')
+			local dump, dump2 = {}, {}
+			for i=1, #items do
+				local i = items[i]
+				table.insert(dump, "('"..i.name.."', ".."'"..i.name.."', "..i.weight.."),\n")
+				table.insert(dump2, [[
+
+	Data[']]..i.name..[['] = {
+		label = ']]..i.label..[[',
+		weight = ]]..tonumber(i.weight)..[[,
+		stack = ]]..tostring(i.stackable)..[[,
+		close = ]]..tostring(i.closeonuse)..[[,
+		description = ']]..tostring(i.description)..[['
+	}
+	]])
 			end
-		end)
+			sql:write(table.concat(dump))
+			file:write(table.concat(dump2))
+			sql:close()
+			file:close()
+			exports.oxmysql:execute(query, {
+			}, function(result)
+				if result > 0 then
+					ox.info('Removed', result, 'items from the database')
+				end
+			end)
+		end
 	end
 	Wait(2000)
 	TriggerEvent('ox_inventory:itemList', Items)
