@@ -22,13 +22,13 @@ Returns a table containing data for the searched items, the result varying based
 !!! example
 	=== "Single item data"
 		```lua
-		local lockpick = Utils.InventorySearch(1, 'lockpick')
+		local water = Utils.InventorySearch(1, 'water')
 		local count = 0
-		for _, v in pairs(lockpick) do
-			print(v.slot..' contains '..v.count..' lockpicks '..json.encode(v.metadata))
+		for _, v in pairs(water) do
+			print(v.slot..' contains '..v.count..' water '..json.encode(v.metadata))
 			count = count + v.count
 		end
-		print('You have '..count..' lockpicks)
+		print('You have '..count..' water')
 		```
 	=== "Multiple items data"
 		```lua
@@ -48,8 +48,8 @@ Returns a table containing data for the searched items, the result varying based
 		```
 	=== "Single item count"
 		```lua
-		local count = Utils.InventorySearch(2, 'lockpick')
-		print('You have '..count.. ' lockpicks')
+		local count = Utils.InventorySearch(2, 'water')
+		print('You have '..count.. ' water')
 		```
 	=== "Multiple items count"
 		```lua
