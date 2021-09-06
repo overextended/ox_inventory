@@ -1,16 +1,7 @@
-!!! info
-	```lua
-    exports.ox_inventory:CancelProgress()
-	```
-	Cancels the current progress bar, if it can be cancelled.
-	This function is bound to the `X` key with RegisterKeyMapping.
-
-!!! info
-	```lua
-    exports.ox_inventory:ProgressActive()
-	```
-	Returns the current state of the progress bar (active, inactive).
-
+---
+title: Progress.Start
+---
+Starts the progress bar and prevents some actions such as opening the inventory, reloading, etc.
 !!! info
 	```lua
 	Progress.Start(options, completed)
@@ -18,8 +9,7 @@
 	```lua
     exports.ox_inventory:Progress(options, completed)
 	```
-	Starts the progress bar and prevents some actions such as opening the inventory, reloading, etc.
-    
+
 	| Argument  | Type     | Optional | Explanation |
 	| --------- | ------   | -------- | ----------- |
 	| options   | table    | no       | Change the progress bar behaviour |

@@ -32,12 +32,14 @@ For convenience, we provide a fork with all necessary changes.
 
 ####Standard
 Minimal changes to maintain near-complete compatibility with other resources. This matches the behaviour of Linden ESX.
+
 - Loadouts do not exist, so errors will occur in third-party resources attempting to manipulate them
 - Inventories are slot-based and items can exist in multiple slots, which can throw off item counting
 - Resources attempting to iterate through inventories in order will not work if a slot is empty
 
 ####Ox
 Experimental branch to add new features and modify existing features, regardless of breaking compatibility.
+
 - Jobs are loaded from a data file instead of the database
 - Grades start from 1 instead of 0, and are stored as integers rather than strings
 
@@ -71,21 +73,12 @@ ensure ox_inventory
 	- Start the server and type `convertinventory linden` into the server console
 	- Comment out the conversion file
 
-Keep the following tips in mind while developing your server
+Keep the following in mind while developing your server
 
 - ESX loadouts do not exist - resources that use them need to remove references or be modified to look for the item
 - Built-in stashes should replace inventories used by resources such as esx_policejob, esx_taxijob, etc.
 - Built-in shops should replace esx_shops and the esx_policejob armory, etc.
 - You shouldn't be using esx_trunkinventory, esx_inventoryhud, or any other resources that provide conflicting functionality
 
-**You should restart your server after the first startup to ensure everything has been correctly setup.**
-
-##Common issues
-??? help "Unable to access inventory after death"
-	You are not triggering the correct event after respawning, so the variable to store if you are dead is set as true. This is usually due to using outdated resources for ESX 1.1.
-
-	You can either update your resource, or trigger the following event where appropriate.
-
-	```lua
-	TriggerEvent('esx:onPlayerSpawn')
-	```
+!!! attention
+	You should restart your server after the first startup to ensure everything has been correctly setup

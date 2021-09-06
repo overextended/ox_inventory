@@ -1,23 +1,22 @@
 ---
 title: Utils.TableContains
 ---
+Returns true if the first table contains all the elements from the second table.
 
-```lua
-Utils.TableContains(table, value)
-```
+!!! info
+	```lua
+	Utils.TableContains(table1, table2)
+	```
 
-```lua
-exports.ox_inventory:TableContains(table, value)
-```
+	```lua
+	exports.ox_inventory:TableContains(table1, table2)
+	```
 
-Returns true or false if the table contains a given value.
-
-**Examples**
-
-```lua
-for k, v in pairs(ESX.GetPlayerData().Inventory) do
-	if v and v.name == 'meat' and Utils.TableContains(v.metadata, {grade=1}) then
-		count = count + v.count
+!!! example
+	```lua
+	for k, v in pairs(ESX.GetPlayerData().Inventory) do
+		if v.name == 'meat' and Utils.TableContains(v.metadata, {grade=1}) then
+			count = count + v.count
+		end
 	end
-end
-```
+	```

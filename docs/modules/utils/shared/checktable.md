@@ -1,14 +1,14 @@
 ---
 title: Utils.CheckTable
 ---
+Interate through a table and checks if it contains a value.
 
-Checks if a value exists with a table
+!!! info
+	```lua
+	Utils.CheckTable(table, value)
+	```
 
-```lua
-Utils.CheckTable(table, value)
-```
-
-| Argument | Data Type | Optional |
-| -------- | --------- | -------- |
-| table    | table     | no       |
-| value    | any       | no       |
+	| Argument | Data Type | Optional |
+	| -------- | --------- | -------- |
+	| table    | table     | no       |
+	| value    | any       | no       |

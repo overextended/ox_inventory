@@ -86,7 +86,7 @@ extra:
 # Extensions
 markdown_extensions:
   - toc:
-      toc_depth: 3
+      toc_depth: 2
   - markdown.extensions.admonition
   - markdown.extensions.attr_list
   - markdown.extensions.codehilite:

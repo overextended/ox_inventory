@@ -10,12 +10,13 @@ Returns a table containing data for the searched items, the result varying based
 	```lua
 	exports.ox_inventory:InventorySearch(searchtype, items, metadata)
 	```
-	
-	| Argument   | Type         | Optional | Explanation |
-	| ---------- | ------------ | -------- | ----------- |
-	| searchtype | integer      | no       | 1: Returns slots and data		2: Returns total count of item |
-	| items      | string/table | no       | The name of an item - or array of item names - to search for |
-	| metadata   | string/table | yes      | Required metadata values that must exist on an item to return data |
+
+	| Argument   | Type    | Optional | Explanation |
+	| ---------- | ------- | -------- | ----------- |
+	| searchtype | integer | no       | 1: Returns slots and data, 2: Returns total count of item |
+	| items      | table   | no       | Array of item names to search for |
+	| metadata   | table   | yes      | Metadata pairs that must exist on the found item |
+	Items and metadata will accept a string, though it limits you to searching for metadata.type
 
 
 !!! example
