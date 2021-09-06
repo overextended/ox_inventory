@@ -1,6 +1,15 @@
 local M = module('items', true)
 local Progress = module('progress')
 
+local GetItem = function(item)
+	if item then
+		item = string.lower(item)
+		if item:find('weapon_') then item = string.upper(item) end
+		return Items[item]
+	end
+	return
+end
+
 local Item = function(name, cb, pre)
 	if M[1][name] then M[1][name].effect = cb end
 end
@@ -76,4 +85,5 @@ Item('parachute', function(data, slot)
 	end
 end)
 
+exports('Items', GetItem)
 return M

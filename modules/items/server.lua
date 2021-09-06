@@ -1,17 +1,21 @@
 local M = {}
 local Items, Weapons = table.unpack(module('items', true))
 
-local getItem = function(item)
-	local item, type = string.lower(item)
-	if item:find('weapon_') then type, item = 1, string.upper(item)
-	elseif item:find('ammo-') then type = 2
-	elseif item:sub(0, 3) == 'at_' then type = 3 end
-	return Items[item] or false, type
+local GetItem = function(item)
+	local type
+	if item then
+		item = string.lower(item)
+		if item:find('weapon_') then type, item = 1, string.upper(item)
+		elseif item:find('ammo-') then type = 2
+		elseif item:sub(0, 3) == 'at_' then type = 3 end
+		return Items[item] or false, type
+	end
+	return M
 end
 
 local metatable = setmetatable(M, {
 	__call = function(self, item)
-		if item then return getItem(item) end
+		if item then return GetItem(item) end
 		return self
 	end
 })
@@ -160,9 +164,5 @@ M.Metadata = function(xPlayer, item, metadata, count)
 	return metadata, count
 end
 
-exports('Items', function(item)
-	if item then return getItem(item) end
-	return M
-end)
-
+exports('Items', GetItem)
 return M
