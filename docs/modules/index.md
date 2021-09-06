@@ -1,5 +1,5 @@
 ---
-title: Index
+title: Overview
 ---
 Ox Inventory is organised into separate files which are loaded and stored in a single environment as modules.  
 Most functions are included as part of a module and can only be accessed by storing a local reference to the module.

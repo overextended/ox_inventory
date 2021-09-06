@@ -3,13 +3,13 @@
     exports.ox_inventory:CancelProgress()
 	```
 	Cancels the current progress bar, if it can be cancelled.
-	This function is bound to the `x` key with RegisterKeyMapping
+	This function is bound to the `X` key with RegisterKeyMapping.
 
 !!! info
 	```lua
     exports.ox_inventory:ProgressActive()
 	```
-	Returns the current state of the progress bar (active, inactive)
+	Returns the current state of the progress bar (active, inactive).
 
 !!! info
 	```lua
