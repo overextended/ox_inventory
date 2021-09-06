@@ -1,7 +1,7 @@
 ---
 title: Creating usable items
 ---
-The recommended method for registering items as usable is modifying `modules/items/client.lua` with a function.  
+The recommended method for registering items as usable is adding a function to ++modules/items/client.lua++.
 It is still possible to use items through ESX.RegisterUsableItem, though it is less flexible.
 
 !!! info
@@ -9,30 +9,33 @@ It is still possible to use items through ESX.RegisterUsableItem, though it is l
     Item(name, callback)
 	```
 
-
-!!! summary preserve_tabs "Arguments"
 	| Argument | Data Type | Optional | Explanation |
 	| -------- | --------- | -------- | ----------- |
 	| name     | string    | no       | The name of the item to apply the function to |
 	| callback | function  | no       | Creates a function to be triggered when an item is used |
 
-
 !!! example
-	```lua
-	-- Receives general data about bandages, and the slot being used
-	Item('bandage', function(data, slot)
-		local maxHealth = 200
-		local health = GetEntityHealth(ESX.PlayerData.ped)
-		-- Checks if the item meets usage requirements
-		if health < maxHealth then
-			-- Triggers an event to check if the item can be used and exists on the server
+	=== "Sample"
+		```lua
+		Item(name, function(data, slot)
+			-- Trigger on use
 			TriggerEvent('ox_inventory:item', data, function(data)
-				-- When the callback function is triggered, receive server data and trigger the use effects
-				if data then
-					SetEntityHealth(ESX.PlayerData.ped, math.min(maxHealth, math.floor(health + maxHealth / 16)))
-					TriggerEvent('ox_inventory:Notify', {text = 'You feel better already'})
-				end
+				-- Trigger after use
 			end)
-		end
-	end)
-	```
+		end)
+		```
+	=== "Example"
+		```lua
+		Item('bandage', function(data, slot)
+			local maxHealth = 200
+			local health = GetEntityHealth(ESX.PlayerData.ped)
+			if health < maxHealth then
+				TriggerEvent('ox_inventory:item', data, function(data)
+					if data then
+						SetEntityHealth(ESX.PlayerData.ped, math.min(maxHealth, math.floor(health + maxHealth / 16)))
+						TriggerEvent('ox_inventory:Notify', {text = 'You feel better already'})
+					end
+				end)
+			end
+		end)
+		```

@@ -19,14 +19,13 @@
     exports.ox_inventory:Progress(options, completed)
 	```
 	Starts the progress bar and prevents some actions such as opening the inventory, reloading, etc.
-
-!!! summary preserve_tabs "Arguments"
+    
 	| Argument  | Type     | Optional | Explanation |
 	| --------- | ------   | -------- | ----------- |
 	| options   | table    | no       | Change the progress bar behaviour |
     | completed | function | no       | Callback function after completing the progress timer |
 
-!!! summary preserve_tabs "Options"
+!!! summary "Options"
 	| Argument     | Type    | Optional | Explanation |
 	| ------------ | ------- | -------- | ----------- |
 	| duration     | integer | no       | Time it takes for the bar to callback in milliseconds |

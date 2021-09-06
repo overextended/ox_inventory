@@ -10,8 +10,7 @@ Returns a table containing data for the searched items, the result varying based
 	```lua
 	exports.ox_inventory:InventorySearch(searchtype, items, metadata)
 	```
-
-!!! summary preserve_tabs "Arguments"
+	
 	| Argument   | Type         | Optional | Explanation |
 	| ---------- | ------------ | -------- | ----------- |
 	| searchtype | integer      | no       | 1: Returns slots and data		2: Returns total count of item |

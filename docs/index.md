@@ -2,6 +2,8 @@
 title: Getting Started
 ---
 !!! danger
+	**Not ready for production servers - this resource is still being developed**
+
 	This resource is being designed with ease of use and advanced functionality as a core principal, however that doesn't mean it is intended for _config kings_.  
 	If you do not possess a basic understanding of coding - nor the ability to read documentation - then turn back now and go use a drag-n-drop resource instead.
 
@@ -28,8 +30,16 @@ A new lightweight database wrapper utilising [node-mysql2](https://github.com/si
 The inventory has been designed to work for a _modified_ version of **ESX Legacy** and will not work with anything else.  
 For convenience, we provide a fork with all necessary changes.
 
-- Standard: Minimal changes to maintain near-complete compatibility with other resources
-- Ox: Experimental branch to add new features and modify existing features, regardless of breaking compatibility
+####Standard
+Minimal changes to maintain near-complete compatibility with other resources. This matches the behaviour of Linden ESX.
+- Loadouts do not exist, so errors will occur in third-party resources attempting to manipulate them
+- Inventories are slot-based and items can exist in multiple slots, which can throw off item counting
+- Resources attempting to iterate through inventories in order will not work if a slot is empty
+
+####Ox
+Experimental branch to add new features and modify existing features, regardless of breaking compatibility.
+- Jobs are loaded from a data file instead of the database
+- Grades start from 1 instead of 0, and are stored as integers rather than strings
 
 !!! tip "Modifying your framework"
 	If you _insist_ on manually applying changes to your framework, you will need to manually reference changes in the [github diff](https://github.com/overextended/es_extended/commit/c232ff157e219c111e7b484af2375a2859ac331d). No guide is provided.

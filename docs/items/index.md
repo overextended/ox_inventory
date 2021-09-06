@@ -4,29 +4,6 @@ title: Overview
 All static item data is loaded from files in the `data` folder rather than the database.  
 The item table defines a basic template to reference when working with an instance of that item name, and can contain custom data.
 
-!!! summary "Standard options"
-	=== "Shared"
-		| Argument    | Optional | Default | Explanation |
-		| ----------- | -------- | ------- | ----------- |
-		| label       | no       | -       | The display text for an item |
-		| weight      | yes      | 0       | The weight of an item in grams |
-		| stack       | yes      | true    | Does the item stack with others of the same type |
-		| close       | yes      | true    | Does the item close the inventory if used |
-		| description | yes      | -       | Text to display in the item tooltip |
-		| consume     | yes      | 1       | Number of an item needed to use it, and removed after use |
-		| client      | yes      | -       | Options accessible only to the client |
-		| server      | yes      | -       | Options accessible only to the server |
-	=== "Client"
-		| Argument | Explanation |
-		| -------- | ----------- |
-		| event    | Trigger a client event after use |
-		| status   | Adjust esx_status values after use |
-		| anim     | Animation during progress bar |
-		| prop     | Attached entity during progress bar |
-		| disable  | Disable actions during progress bar |
-		| usetime  | Time for progress bar to complete |
-		| cancel   | Able to cancel progress bar |
-
 !!! example
 	=== "Standard Burger"
 		A normal burger item, as it appears in data/items.lua
@@ -72,3 +49,26 @@ The item table defines a basic template to reference when working with an instan
 		}
 		```
 		Combined with several new functions and events you could easily create a crafting system.
+
+!!! summary "Standard options"
+	=== "Shared"
+		| Argument    | Optional | Default | Explanation |
+		| ----------- | -------- | ------- | ----------- |
+		| label       | no       | -       | The display text for an item |
+		| weight      | yes      | 0       | The weight of an item in grams |
+		| stack       | yes      | true    | Does the item stack with others of the same type |
+		| close       | yes      | true    | Does the item close the inventory if used |
+		| description | yes      | -       | Text to display in the item tooltip |
+		| consume     | yes      | 1       | Number of an item needed to use it, and removed after use |
+		| client      | yes      | -       | Options accessible only to the client |
+		| server      | yes      | -       | Options accessible only to the server |
+	=== "Client"
+		| Argument | Explanation |
+		| -------- | ----------- |
+		| event    | Trigger a client event after use |
+		| status   | Adjust esx_status values after use |
+		| anim     | Animation during progress bar |
+		| prop     | Attached entity during progress bar |
+		| disable  | Disable actions during progress bar |
+		| usetime  | Time for progress bar to complete |
+		| cancel   | Able to cancel progress bar |

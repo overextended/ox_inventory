@@ -7,8 +7,7 @@ Requests and plays an animation on the player asynchronously.
 	```lua
 	Utils.PlayAnim(wait, ...)
 	```
-
-!!! summary preserve_tabs "Arguments"
+	
 	| Argument | Type         | Optional | Explanation |
 	| -------- | ------------ | -------- | ----------- |
 	| wait     | integer      | no       | Time to wait until clearing task and animdict |
