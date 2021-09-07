@@ -609,11 +609,11 @@ RegisterCommand('inv2', function()
 				else return end
 				local closeToVehicle, lastVehicle = false, nil
 				local class = GetVehicleClass(vehicle)
-				if vehicle and Vehicle.trunk[class] and #(playerCoords - position) < 6 and NetworkGetEntityIsNetworked(vehicle) then
+				if vehicle and Vehicles.trunk[class] and #(playerCoords - position) < 6 and NetworkGetEntityIsNetworked(vehicle) then
 					local locked = GetVehicleDoorLockStatus(vehicle)
 					if locked == 0 or locked == 1 then
 						local vehHash = GetEntityModel(vehicle)
-						local checkVehicle = Vehicle.storage[vehHash]
+						local checkVehicle = Vehicles.storage[vehHash]
 						local open, vehBone
 						if checkVehicle == 1 then open, vehBone = 4, GetEntityBoneIndexByName(vehicle, 'bonnet')
 						elseif checkVehicle == nil then open, vehBone = 5, GetEntityBoneIndexByName(vehicle, 'boot') elseif checkVehicle == 2 then open, vehBone = 5, GetEntityBoneIndexByName(vehicle, 'boot') else --[[no vehicle nearby]] return end
