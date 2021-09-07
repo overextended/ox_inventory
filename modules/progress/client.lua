@@ -63,7 +63,7 @@ M.Start = function(options, completed)
 					RequestAnimDict(options.anim.dict)
 
 					while not HasAnimDictLoaded(options.anim.dict) do
-						Citizen.Wait(5)
+						Wait(5)
 					end
 
 					if options.anim.flag == nil then options.anim.flag = 1 end
@@ -86,7 +86,7 @@ M.Start = function(options, completed)
 
 				local modelHash = GetHashKey(model)
 				while not HasModelLoaded(modelHash) do
-					Citizen.Wait(5)
+					Wait(5)
 				end
 
 				local pCoords = GetOffsetFromEntityInWorldCoords(ESX.PlayerData.ped, 0.0, 0.0, 0.0)
@@ -123,7 +123,7 @@ M.Start = function(options, completed)
 
 				local modelHash = GetHashKey(model)
 				while not HasModelLoaded(modelHash) do
-					Citizen.Wait(0)
+					Wait(0)
 				end
 
 				local pCoords = GetOffsetFromEntityInWorldCoords(ESX.PlayerData.ped, 0.0, 0.0, 0.0)
@@ -155,21 +155,22 @@ M.Start = function(options, completed)
 	end
 end
 
-AddEventHandler('ox_inventory:CancelProgress', Cancelled)
-AddEventHandler('ox_inventory:StartProgress', StartProgress)
+exports('Progress', M.Start)
+exports('CancelProgress', Cancelled)
+exports('ProgressActive', function() return M.Active end)
 
 RegisterNUICallback('ox_inventory:ProgressComplete', function(_, cb)
     Completed()
-    cb({})
+    cb()
 end)
 
-RegisterCommand('itemcancel', function()
+RegisterCommand('cancelprogress', function()
     if M.Active and canCancel then
         Cancelled()
     end
 end)
 
-RegisterKeyMapping('itemcancel', 'Stop using an item', 'keyboard', 'x') 
-TriggerEvent('chat:removeSuggestion', '/itemcancel')
+RegisterKeyMapping('cancelprogress', 'Cancel current progress bar', 'keyboard', 'x') 
+TriggerEvent('chat:removeSuggestion', '/cancelprogress')
 
 return M

@@ -1,10 +1,12 @@
+
+local Stashes, Vehicle = data('stashes'), data('vehicles')
 local Utils, Shops, Inventory, Items = module('utils'), module('shops'), module('inventory'), module('items')
 
 local SaveInventories = function()
 	local time = os.time(os.date('!*t'))
 	for id, inv in pairs(Inventory('all')) do
 		if inv.type ~= 'player' and not inv.open then
-			if inv.type ~= 'drop' and inv.datastore == nil and inv.changed then
+			if inv.datastore == nil and inv.changed then
 				Inventory.Save(inv)
 			end
 			if time - inv.time >= 3000 then
@@ -47,6 +49,11 @@ AddEventHandler('ox_inventory:setPlayerInventory', function(xPlayer, data)
 			if item then
 				local weight = Inventory.SlotWeight(item, i)
 				totalWeight = totalWeight + weight
+				if i.metadata and i.metadata.bag then
+					i.metadata.container = i.metadata.bag
+					i.metadata.size = {5, 1000}
+					i.metadata.bag = nil
+				end
 				inventory[i.slot] = {name = i.name, label = item.label, weight = weight, slot = i.slot, count = i.count, description = item.description, metadata = i.metadata, stack = item.stack, close = item.close}
 				if money[i.name] then money[i.name] = money[i.name] + i.count end
 			end
@@ -57,30 +64,6 @@ AddEventHandler('ox_inventory:setPlayerInventory', function(xPlayer, data)
 	TriggerClientEvent('ox_inventory:setPlayerInventory', xPlayer.source, {Drops, inventory, totalWeight, ESX.UsableItemsCallbacks})
 end)
 
-AddEventHandler('ox_inventory:createDrop', function(source, slot, toSlot, cb)
-	local drop
-	repeat
-		drop = math.random(100000, 999999)
-		Wait(5)
-	until not Inventory(drop)
-	Inventory.Create(drop, 'Drop '..drop, 'drop', Config.PlayerSlots, 0, Config.DefaultWeight, false, {[slot] = Utils.Copy(toSlot)})
-	local coords = GetEntityCoords(GetPlayerPed(source))
-	Inventory(drop):set('coords', coords)
-	cb(drop, coords)
-end)
-
-AddEventHandler('ox_inventory:customDrop', function(prefix, coords, items)
-	local drop
-	repeat
-		drop = math.random(100000, 999999)
-		Wait(5)
-	until not Inventory(drop)
-	Inventory.Create(drop, prefix..' '..drop, 'drop', Config.PlayerSlots, 0, Config.DefaultWeight, false, items)
-	Inventory(drop):set('coords', coords)
-	TriggerClientEvent('ox_inventory:createDrop', -1, {drop, coords}, source)
-end)
-
-local Stashes, Vehicle = data('stashes'), data('vehicles')
 ox.RegisterServerCallback('ox_inventory:openInventory', function(source, cb, inv, data) 
 	local left, right = Inventory(source)
 	if data then
@@ -243,23 +226,54 @@ ox.RegisterServerCallback('ox_inventory:openShop', function(source, cb, inv, dat
 	cb({id=left.label, type=left.type, slots=left.slots, weight=left.weight, maxWeight=left.maxWeight}, shop)
 end)
 
-RegisterServerEvent('ox_inventory:currentWeapon', function(slot)
-	local inv = Inventory(source)
-	if slot then
-		inv.weapon = inv.items[slot]
-	else inv.weapon = nil end
+ox.RegisterServerCallback('ox_inventory:getItemCount', function(source, cb, item, metadata, target)
+	local inventory = target and Inventory(target) or Inventory(source)
+	if inventory then
+		local count = Inventory.GetItem(inventory, item, metadata)
+		if count then return cb(count) end
+	end
+	cb()
 end)
 
-RegisterServerEvent('ox_inventory:updateWeapon', function(action)
-	print(action)
-	print(ESX.DumpTable(Inventory(source).weapon))
+ox.RegisterServerCallback('ox_inventory:getInventory', function(source, cb, id)
+	local inventory = Inventory(id)
+	if inventory then
+		return cb({
+			id = inventory.id,
+			label = inventory.label,
+			type = inventory.type,
+			slots = inventory.slots,
+			weight = inventory.weight,
+			maxWeight = inventory.weight,
+			owned = inventory.owner and true or false,
+			items = inventory.items
+		})
+	end
+	cb()
+end)
+
+RegisterServerEvent('ox_inventory:updateWeapon', function(action, value)
+	local inventory = Inventory(source)
+	local weapon = inventory.items[inventory.weapon]
+	print(action, value)
+	if action == 'disarm' then
+		local ammo = weapon.metadata.ammo
+		if value < ammo then weapon.metadata.ammo = value end
+		inventory.weapon = nil
+	elseif action == 'load' then
+		weapon.metadata.ammo = value
+	end
+	TriggerClientEvent('ox_inventory:updateInventory', source, {{item = weapon}}, {left=inventory.weight}, weapon.name, 0, true)
 end)
 
 ox.RegisterServerCallback('ox_inventory:useItem', function(source, cb, item, slot, metadata)
+	local inventory = Inventory(source)
 	local item, type = Items(item)
-	local data = item and (slot and Inventory(source).items[slot] or Inventory.GetItem(source, item, metadata))
+	local data = item and (slot and inventory.items[slot] or Inventory.GetItem(source, item, metadata))
 	if item and data and data.count > 0 and data.name == item.name then
+		data = {name=data.name, label=data.label, count=data.count, slot=data.slot, metadata=data.metadata, consume=data.consume}
 		if type == 1 then -- weapon
+			inventory.weapon = data.slot
 			return cb(data)
 		elseif type == 2 then -- ammo
 			return cb(data)

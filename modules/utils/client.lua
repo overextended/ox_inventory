@@ -12,23 +12,23 @@ M.PlayAnim = function(wait, ...)
 	end)
 end
 
-M.PlayAnimAdvanced = function(wait, clear, ...)
+M.PlayAnimAdvanced = function(wait, ...)
 	local args = {...}
 	RequestAnimDict(args[1])
 	CreateThread(function()
 		repeat Wait(10) until HasAnimDictLoaded(args[1])
 		TaskPlayAnimAdvanced(ESX.PlayerData.ped, table.unpack(args))
 		Wait(wait)
-		if clear then ClearPedSecondaryTask(ESX.PlayerData.ped) end
+		if wait > 0 then ClearPedSecondaryTask(ESX.PlayerData.ped) end
 		RemoveAnimDict(args[1])
 	end)
 end
 
 M.InventorySearch = function(search, item, metadata)
 	if item then
-		item = type(item) == 'string' and {item} or item
-		local items = #item
+		if type(item) == 'string' then item = {item} end
 		if type(metadata) == 'string' then metadata = {type=metadata} end
+		local items = #item
 		local returnData = {}
 		for i=1, items do
 			local item = string.lower(item[i])
@@ -43,12 +43,11 @@ M.InventorySearch = function(search, item, metadata)
 						elseif search == 2 then
 							returnData[item] = returnData[item] + v.count
 						end
-						if items == 1 then return returnData[item] end
 					end
 				end
 			end
 		end
-		if next(returnData) then return returnData end
+		if next(returnData) then return items == 1 and returnData[item[1]] or returnData end
 	end
 	return false
 end

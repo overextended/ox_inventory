@@ -5,28 +5,65 @@ Data.Weapons = {
 		label = 'Advanced Rifle',
 		weight = 3180,
 		durability = 0.6,
-		ammoname = 'ammo-rifle'
+		ammoname = 'ammo-rifle',
+		attachments = {
+			clip = {'at_clip_extended_rifle'},
+			sight = {'at_scope_medium'},
+			flashlight = true,
+			muzzle = {'at_suppressor_light'},
+			skin = {
+				-- TODO
+			}
+		}
 	},
 
 	['WEAPON_APPISTOL'] = {
 		label = 'AP Pistol',
 		weight = 1220,
 		durability = 0.4,
-		ammoname = 'ammo-9'
+		ammoname = 'ammo-9',
+		attachments = {
+			clip = {'at_clip_extended_pistol'},
+			flashlight = true,
+			muzzle = {'at_suppressor_light'},
+			skin = {
+				-- TODO
+			}
+		}
 	},
 
 	['WEAPON_ASSAULTRIFLE'] = {
 		label = 'Assault Rifle',
 		weight = 3470,
 		durability = 0.8,
-		ammoname = 'ammo-rifle2'
+		ammoname = 'ammo-rifle2',
+		attachments = {
+			clip = {'at_clip_extended_rifle', 'at_clip_drum_rifle'},
+			sight = {'at_scope_medium'},
+			grip = true,
+			flashlight = true,
+			muzzle = {'at_suppressor_light'},
+			skin = {
+				-- TODO
+			}
+		}
 	},
 
 	['WEAPON_ASSAULTRIFLE_MK2'] = {
 		label = 'Assault Rifle MK2',
 		weight = 3300,
 		durability = 0.6,
-		ammoname = 'ammo-rifle2'
+		ammoname = 'ammo-rifle2',
+		attachments = {
+			clip = {'at_clip_extended_rifle'},
+			sight = {'at_scope_small', 'at_scope_medium'},
+			grip = true,
+			flashlight = true,
+			muzzle = {'at_suppressor_light', 'at_muzzle_flat', 'at_muzzle_flat', 'at_muzzle_tactical', 'at_muzzle_fat', 'at_muzzle_precision', 'at_muzzle_heavy', 'at_muzzle_slanted', 'at_muzzle_split'},
+			skin = {
+				-- TODO
+			}
+		}
 	},
 
 	['WEAPON_ASSAULTSHOTGUN'] = {
@@ -420,7 +457,15 @@ Data.Weapons = {
 		label = 'Pistol',
 		weight = 970,
 		durability = 0.6,
-		ammoname = 'ammo-9'
+		ammoname = 'ammo-9',
+		attachments = {
+			clip = {'at_clip_extended_pistol'},
+			flashlight = true,
+			muzzle = {'at_suppressor_light'},
+			skin = {
+				-- TODO
+			}
+		}
 	},
 
 	['WEAPON_PISTOL50'] = {
@@ -770,7 +815,7 @@ Data.Components = {
 		stack = true,
 		close = true,
 		client = {
-			component = {`COMPONENT_AT_SCOPE_MACRO`, `COMPONENT_AT_SCOPE_MACRO_02`, `COMPONENT_AT_SCOPE_MACRO_02_MK2`, `COMPONENT_AT_SCOPE_MACRO`, `COMPONENT_AT_SCOPE_SMALL`, `COMPONENT_AT_SCOPE_SMALL_02`, `COMPONENT_AT_SCOPE_SMALL_MK2`, `COMPONENT_AT_SCOPE_MACRO_MK2`},
+			component = {`COMPONENT_AT_SIGHTS`, `COMPONENT_AT_SCOPE_MACRO`, `COMPONENT_AT_SCOPE_MACRO_02`, `COMPONENT_AT_SCOPE_MACRO_02_MK2`, `COMPONENT_AT_SCOPE_MACRO`, `COMPONENT_AT_SCOPE_SMALL`, `COMPONENT_AT_SCOPE_SMALL_02`, `COMPONENT_AT_SCOPE_SMALL_MK2`, `COMPONENT_AT_SCOPE_MACRO_MK2`},
 			usetime = 2500
 		}
 	},
