@@ -256,14 +256,22 @@ RegisterServerEvent('ox_inventory:updateWeapon', function(action, value)
 	local inventory = Inventory(source)
 	local weapon = inventory.items[inventory.weapon]
 	print(action, value)
-	if action == 'disarm' then
-		local ammo = weapon.metadata.ammo
-		if value < ammo then weapon.metadata.ammo = value end
-		inventory.weapon = nil
-	elseif action == 'load' then
-		weapon.metadata.ammo = value
+	if weapon.metadata then
+		if action == 'load' then
+			weapon.metadata.ammo = value
+		elseif action == 'throw' then
+			Inventory.RemoveItem(inventory, weapon.name, 1, weapon.metadata, weapon.slot)
+		elseif weapon.metadata.ammo then
+			if value < weapon.metadata.ammo then
+				weapon.metadata.ammo = value
+				weapon.metadata.durability = weapon.metadata.durability - Items(weapon.name).durability
+			end
+		elseif weapon.metadata.durability then
+			weapon.metadata.durability = weapon.metadata.durability - (Items(weapon.name).durability or 1)
+		end
+		if weapon and action == 'disarm' then inventory.weapon = nil end
+		if action ~= 'throw' then TriggerClientEvent('ox_inventory:updateInventory', source, {{item = weapon}}, {left=inventory.weight}) end
 	end
-	TriggerClientEvent('ox_inventory:updateInventory', source, {{item = weapon}}, {left=inventory.weight}, weapon.name, 0, true)
 end)
 
 ox.RegisterServerCallback('ox_inventory:useItem', function(source, cb, item, slot, metadata)
