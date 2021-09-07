@@ -31,10 +31,6 @@ local Get = function(inv, k)
 	return Inventories[type(inv) == 'table' and inv.id or inv][k]
 end
 
-local GetPlayer = function(inv)
-	return ESX.GetPlayerFromId(inv.id)
-end
-
 local Minimal = function(inv)
 	inv = Inventories[type(inv) == 'table' and inv.id or inv]
 	local inventory, count = {}, 0
@@ -117,15 +113,16 @@ M.Create = function(...)
 			open = false,
 			set = Set,
 			get = Get,
-			minimal = Minimal
+			minimal = Minimal,
+			time = os.time(os.date('!*t'))
 		}
 
-		if self.type == 'player' then self.player = GetPlayer
-		else self.changed, self.time = false, os.time(os.date('!*t')) end
+		if self.type == 'drop' then self.datastore = true else self.changed = false end
 
 		if not self.items then
 			self.items, self.weight, self.datastore = M.Load(self.id, self.type, self.owner)
 		end
+
 		Inventories[self.id] = self
 		return Inventories[self.id]
 	end
@@ -168,29 +165,44 @@ M.Save = function(inv)
 	end
 end
 
-M.Load = function(id, inv, owner)
+M.GenerateItems = function(id, invType, items)
+	local returnData, totalWeight = {}, 0
+	if next(items) == nil then
+		-- todo: random loot generation
+	end
+	local xPlayer = type(id) == 'integer' and ESX.GetPlayerFromId(id) or false
+	for i=1, #items do
+		local v = items[i]
+		local item = Items(v[1])
+		local metadata, count = Items.Metadata(xPlayer, item, v[3] or {}, v[2])
+		local weight = M.SlotWeight(item, {count=count, metadata=metadata})
+		totalWeight = totalWeight + weight
+		returnData[i] = {name = item.name, label = item.label, weight = weight, slot = i, count = count, description = item.description, metadata = metadata, stack = item.stack, close = item.close}
+	end
+	return returnData, totalWeight, true
+end
+
+M.Load = function(id, invType, owner)
 	local returnData, weight, result, datastore = {}, 0
-	local isVehicle = Vehicle[inv]
-	if id and inv then
+	local isVehicle = Vehicle[invType]
+	if id and invType then
 		if isVehicle then
 			local plate = id:sub(6)
 			if Config.TrimPlate then plate = ox.trim(plate) end
-			result = exports.oxmysql:singleSync('SELECT '..inv..' FROM owned_vehicles WHERE plate = ?', {
+			result = exports.oxmysql:singleSync('SELECT '..invType..' FROM owned_vehicles WHERE plate = ?', {
 				plate
 			})
-			if result then result = json.decode(result[inv])
+			if result then result = json.decode(result[invType])
 			else
-				if Config.RandomLoot then result = GenerateDatastore(id, inv) end
-				datastore = true
+				if Config.RandomLoot then return GenerateItems(id, invType) end
 			end
 		elseif owner then
 			result = exports.oxmysql:scalarSync('SELECT data FROM ox_inventory WHERE name = ? AND owner = ?', {
 				id, owner
 			})
 			if result then result = json.decode(result) end
-		elseif inv == 'dumpster' then
-			if Config.RandomLoot then result = GenerateDatastore(id, inv) end
-			datastore = true
+		elseif invType == 'dumpster' then
+			if Config.RandomLoot then return GenerateItems(id, invType) end
 		else
 			result = exports.oxmysql:scalarSync('SELECT data FROM ox_inventory WHERE name = ?', {
 				id

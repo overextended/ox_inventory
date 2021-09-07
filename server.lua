@@ -6,7 +6,7 @@ local SaveInventories = function()
 	local time = os.time(os.date('!*t'))
 	for id, inv in pairs(Inventory('all')) do
 		if inv.type ~= 'player' and not inv.open then
-			if inv.type ~= 'drop' and inv.datastore == nil and inv.changed then
+			if inv.datastore == nil and inv.changed then
 				Inventory.Save(inv)
 			end
 			if time - inv.time >= 3000 then
@@ -76,13 +76,13 @@ AddEventHandler('ox_inventory:createDrop', function(source, slot, toSlot, cb)
 	cb(drop, coords)
 end)
 
-AddEventHandler('ox_inventory:customDrop', function(prefix, coords, items)
+AddEventHandler('ox_inventory:customDrop', function(prefix, items, coords, slots, maxWeight)
 	local drop
 	repeat
 		drop = math.random(100000, 999999)
 		Wait(5)
 	until not Inventory(drop)
-	Inventory.Create(drop, prefix..' '..drop, 'drop', Config.PlayerSlots, 0, Config.DefaultWeight, false, items)
+	Inventory.Create(drop, prefix..' '..drop, 'drop', Config.PlayerSlots, 0, Config.DefaultWeight, false, Inventory.GenerateItems(drop, 'drop', items))
 	Inventory(drop):set('coords', coords)
 	TriggerClientEvent('ox_inventory:createDrop', -1, {drop, coords}, source)
 end)
