@@ -252,10 +252,6 @@ ox.RegisterServerCallback('ox_inventory:getInventory', function(source, cb, id)
 	cb()
 end)
 
-RegisterServerEvent('ox_inventory:currentWeapon', function(slot)
-	if slot then Inventory(source).weapon = slot end
-end)
-
 RegisterServerEvent('ox_inventory:updateWeapon', function(action, value)
 	local inventory = Inventory(source)
 	local weapon = inventory.items[inventory.weapon]

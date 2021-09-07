@@ -423,6 +423,7 @@ RegisterNetEvent('ox_inventory:setPlayerInventory', function(data)
 				DisablePlayerFiring(playerID, true)
 				DisableControlAction(0, 23, true)
 				DisableControlAction(0, 25, true)
+				DisableControlAction(0, 263, true)
 			end
 			if currentWeapon then
 				DisableControlAction(0, 263, true)
@@ -433,7 +434,7 @@ RegisterNetEvent('ox_inventory:setPlayerInventory', function(data)
 				end
 				if currentWeapon.metadata.ammo then
 					if IsPedShooting(ESX.PlayerData.ped) then
-						if wait == nil and currentWeapon.name == 'WEAPON_FIREEXTINGUISHER' or currentWeapon.name == 'WEAPON_PETROLCAN' then
+						if wait == nil and (currentWeapon.name == 'WEAPON_FIREEXTINGUISHER' or currentWeapon.name == 'WEAPON_PETROLCAN') then
 							currentWeapon.metadata.durability = currentWeapon.metadata.durability - 0.1
 							if currentWeapon.metadata.durability <= 0 then
 								wait = true
@@ -445,7 +446,7 @@ RegisterNetEvent('ox_inventory:setPlayerInventory', function(data)
 									wait = nil
 								end)
 							end
-						elseif currentWeapon.metadata.ammoname then
+						elseif currentWeapon.ammo then
 							local currentAmmo = GetAmmoInPedWeapon(ESX.PlayerData.ped, currentWeapon.hash)
 							currentWeapon.metadata.ammo = currentAmmo
 							if currentAmmo == 0 then
@@ -454,7 +455,7 @@ RegisterNetEvent('ox_inventory:setPlayerInventory', function(data)
 								SetPedCurrentWeaponVisible(ESX.PlayerData.ped, true, false, false, false)
 							end
 						end
-						currentWeapon.timer = time + 350
+						currentWeapon.timer = time + 400
 					end
 				elseif wait == nil then
 					if currentWeapon.throwable and IsControlJustReleased(0, 24) then
@@ -472,7 +473,7 @@ RegisterNetEvent('ox_inventory:setPlayerInventory', function(data)
 							ClearPedTasks(ESX.PlayerData.ped)
 							SetCurrentPedWeapon(ESX.PlayerData.ped, currentWeapon.hash, true)
 							TriggerServerEvent('ox_inventory:updateWeapon', 'melee')
-							currentWeapon.timer = time + 350
+							currentWeapon.timer = time + 400
 						end
 					end
 				end
@@ -521,7 +522,7 @@ AddEventHandler('ox_inventory:item', function(data, cb)
 						if v > 0 then TriggerEvent('esx_status:add', k, v) else TriggerEvent('esx_status:remove', k, -v) end
 					end
 				end
-				if currentWeapon and result.metadata.serial == currentWeapon.metadata.serial then Disarm() else cb(result) end
+				if currentWeapon and result.metadata and result.metadata.serial == currentWeapon.metadata.serial then Disarm() else cb(result) end
 				return SetBusy(false)
 			end
 		end
