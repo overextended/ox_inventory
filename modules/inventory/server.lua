@@ -404,6 +404,31 @@ RegisterServerEvent('ox_inventory:removeItem', function(item, count, metadata, s
 	M.RemoveItem(source, item, count, metadata, slot)
 end)
 
+local GenerateDropId = function()
+	local drop
+	repeat
+		drop = math.random(100000, 999999)
+		Wait(5)
+	until not Inventories[drop]
+	return drop
+end
+
+AddEventHandler('ox_inventory:createDrop', function(source, slot, toSlot, cb)
+	local drop = GenerateDropId()
+	M.Create(drop, 'Drop '..drop, 'drop', Config.PlayerSlots, 0, Config.DefaultWeight, false, {[slot] = Utils.Copy(toSlot)})
+	local coords = GetEntityCoords(GetPlayerPed(source))
+	M(drop):set('coords', coords)
+	cb(drop, coords)
+end)
+
+AddEventHandler('ox_inventory:customDrop', function(prefix, items, coords, slots, maxWeight)
+	local drop = GenerateDropId()
+	local items, weight = M.GenerateItems(drop, 'drop', items)
+	M.Create(drop, prefix..' '..drop, 'drop', slots or Config.PlayerSlots, weight, maxWeight or Config.DefaultWeight, false, items)
+	M(drop):set('coords', coords)
+	TriggerClientEvent('ox_inventory:createDrop', -1, {drop, coords}, source)
+end)
+
 AddEventHandler('ox_inventory:confiscatePlayerInventory', function(xPlayer)
 	xPlayer = type(xPlayer) == 'table' and xPlayer or ESX.GetPlayerFromId(xPlayer)
 	local inv = xPlayer and Inventories[xPlayer.source]

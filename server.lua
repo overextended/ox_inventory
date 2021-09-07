@@ -64,29 +64,6 @@ AddEventHandler('ox_inventory:setPlayerInventory', function(xPlayer, data)
 	TriggerClientEvent('ox_inventory:setPlayerInventory', xPlayer.source, {Drops, inventory, totalWeight, ESX.UsableItemsCallbacks})
 end)
 
-AddEventHandler('ox_inventory:createDrop', function(source, slot, toSlot, cb)
-	local drop
-	repeat
-		drop = math.random(100000, 999999)
-		Wait(5)
-	until not Inventory(drop)
-	Inventory.Create(drop, 'Drop '..drop, 'drop', Config.PlayerSlots, 0, Config.DefaultWeight, false, {[slot] = Utils.Copy(toSlot)})
-	local coords = GetEntityCoords(GetPlayerPed(source))
-	Inventory(drop):set('coords', coords)
-	cb(drop, coords)
-end)
-
-AddEventHandler('ox_inventory:customDrop', function(prefix, items, coords, slots, maxWeight)
-	local drop
-	repeat
-		drop = math.random(100000, 999999)
-		Wait(5)
-	until not Inventory(drop)
-	Inventory.Create(drop, prefix..' '..drop, 'drop', Config.PlayerSlots, 0, Config.DefaultWeight, false, Inventory.GenerateItems(drop, 'drop', items))
-	Inventory(drop):set('coords', coords)
-	TriggerClientEvent('ox_inventory:createDrop', -1, {drop, coords}, source)
-end)
-
 ox.RegisterServerCallback('ox_inventory:openInventory', function(source, cb, inv, data) 
 	local left, right = Inventory(source)
 	if data then
