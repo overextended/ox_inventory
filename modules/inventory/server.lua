@@ -210,9 +210,9 @@ M.Load = function(id, inv, owner)
 	return returnData, weight, datastore
 end
 
-M.GetItem = function(inv, item, metadata)
+M.GetItem = function(inv, item, metadata, count)
 	item = type(item) == 'table' and item or Items(item)
-	if item then item = Utils.Copy(item)
+	if item then item = count and item or Utils.Copy(item)
 		local inv, count = Inventories[type(inv) == 'table' and inv.id or inv].items, 0
 		if inv then
 			metadata = not metadata and false or type(metadata) == 'string' and {type=metadata} or metadata
@@ -222,8 +222,10 @@ M.GetItem = function(inv, item, metadata)
 				end
 			end
 		end
-		item.count = count
-		return item
+		if count then return count else
+			item.count = count
+			return item
+		end
 	end
 	return
 end
@@ -240,7 +242,7 @@ end
 M.SetItem = function(inv, item, count, metadata)
 	local item, inv = Items(item), Inventories[type(inv) == 'table' and inv.id or inv]
 	if item and count >= 0 then
-		local itemCount = M.GetItem(inv, item.name, metadata).count
+		local itemCount = M.GetItem(inv, item.name, metadata, true)
 		if count > itemCount then
 			count = count - itemCount
 			M.AddItem(inv, item.name, count, metadata)
