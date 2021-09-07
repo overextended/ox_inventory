@@ -16,7 +16,7 @@ local SetWeapon = function(weapon, hash, ammo)
 	currentWeapon = weapon and {name=weapon.name, slot=weapon.slot, label=weapon.label, metadata=weapon.metadata, hash=hash, ammo=ammo} or nil
 	TriggerEvent('ox_inventory:currentWeapon', currentWeapon)
 	TriggerServerEvent('ox_inventory:currentWeapon', weapon and weapon.slot or nil)
-	currentWeapon.timer = weapon and 0 or nil
+	if currentWeapon then currentWeapon.timer = 0 end
 end
 
 local Notify = function(data) SendNUIMessage({ action = 'showNotif', data = data }) end
@@ -52,7 +52,7 @@ local Disarm = function()
 		end
 		ClearPedSecondaryTask(ESX.PlayerData.ped)
 		local sleep = (ESX.PlayerData.job.name == 'police' and GetWeapontypeGroup(currentWeapon.hash) == 416676503) and 450 or 1400
-		Utils.PlayAnimAdvanced(sleep, true, sleep == 450 and 'reaction@intimidation@cop@unarmed' or 'reaction@intimidation@1h', 'outro', GetEntityCoords(ESX.PlayerData.ped, true), 0, 0, GetEntityHeading(ESX.PlayerData.ped), 8.0, 3.0, -1, 50, 0, 0, 0)
+		Utils.PlayAnimAdvanced(sleep, sleep == 450 and 'reaction@intimidation@cop@unarmed' or 'reaction@intimidation@1h', 'outro', GetEntityCoords(ESX.PlayerData.ped, true), 0, 0, GetEntityHeading(ESX.PlayerData.ped), 8.0, 3.0, -1, 50, 0, 0, 0)
 		Wait(sleep)
 		RemoveWeaponFromPed(ESX.PlayerData.ped, currentWeapon.hash)
 		TriggerServerEvent('ox_inventory:updateWeapon', 'disarm', ammo)
@@ -119,12 +119,11 @@ local UseSlot = function(slot)
 				TriggerEvent(data.client.event, data, {name = item.name, slot = item.slot, metadata = item.metadata})
 			elseif data.effect then
 				data:effect({name = item.name, slot = item.slot, metadata = item.metadata})
-			elseif item.name:find('WEAPON_') then
-				TriggerEvent('ox_inventory:item', data, function(data)
-					if data then
-						if currentWeapon and item.metadata.serial == currentWeapon.metadata.serial then
-							Disarm()
-						else
+			else
+				data.slot = slot
+				if item.name:find('WEAPON_') then
+					TriggerEvent('ox_inventory:item', data, function(data)
+						if data then
 							local data = Items[item.name]
 							if data.throwable then item.throwable, item.metadata.ammo = true, 1 end
 							ClearPedSecondaryTask(ESX.PlayerData.ped)
@@ -133,7 +132,7 @@ local UseSlot = function(slot)
 								RemoveWeaponFromPed(ESX.PlayerData.ped, currentWeapon.hash)
 							end
 							local sleep = (ESX.PlayerData.job.name == 'police' and GetWeapontypeGroup(data.hash) == 416676503) and 400 or 1200
-							Utils.PlayAnimAdvanced(sleep*2, false, sleep == 400 and 'reaction@intimidation@cop@unarmed' or 'reaction@intimidation@1h', 'intro', GetEntityCoords(ESX.PlayerData.ped, true), 0, 0, GetEntityHeading(ESX.PlayerData.ped), 8.0, 3.0, -1, 50, 1, 0, 0)
+							Utils.PlayAnimAdvanced(sleep*2, sleep == 400 and 'reaction@intimidation@cop@unarmed' or 'reaction@intimidation@1h', 'intro', GetEntityCoords(ESX.PlayerData.ped, true), 0, 0, GetEntityHeading(ESX.PlayerData.ped), 8.0, 3.0, -1, 50, 1, 0, 0)
 							Wait(sleep)
 							GiveWeaponToPed(ESX.PlayerData.ped, data.hash, 0, true, false)
 							SetCurrentPedWeapon(ESX.PlayerData.ped, data.hash)
@@ -143,34 +142,34 @@ local UseSlot = function(slot)
 							Wait(sleep)
 							ClearPedSecondaryTask(ESX.PlayerData.ped)
 						end
-					end
-				end)
-			elseif currentWeapon then
-				if item.name:find('ammo-') then
-					local maxAmmo = GetWeaponClipSize(currentWeapon.hash)
-					local currentAmmo = GetAmmoInPedWeapon(ESX.PlayerData.ped, currentWeapon.hash)
-					if currentAmmo ~= maxAmmo and currentAmmo < maxAmmo then
+					end)
+				elseif currentWeapon then
+					if item.name:find('ammo-') then
+						local maxAmmo = GetWeaponClipSize(currentWeapon.hash)
+						local currentAmmo = GetAmmoInPedWeapon(ESX.PlayerData.ped, currentWeapon.hash)
+						if currentAmmo ~= maxAmmo and currentAmmo < maxAmmo then
+							TriggerEvent('ox_inventory:item', data, function(data)
+								if data then
+									if data.name == currentWeapon.ammo then
+										local missingAmmo = 0
+										local newAmmo = 0
+										missingAmmo = maxAmmo - currentAmmo
+										if missingAmmo > data.count then newAmmo = currentAmmo + data.count else newAmmo = maxAmmo end
+										if newAmmo < 0 then newAmmo = 0 end 
+										SetPedAmmo(ESX.PlayerData.ped, currentWeapon.hash, newAmmo)
+										MakePedReload(ESX.PlayerData.ped)
+										currentWeapon.metadata.ammo = newAmmo
+									end
+								end
+							end)
+						end
+					elseif item.name:sub(0, 3) == 'at_' then
 						TriggerEvent('ox_inventory:item', data, function(data)
 							if data then
-								if data.name == currentWeapon.ammo then
-									local missingAmmo = 0
-									local newAmmo = 0
-									missingAmmo = maxAmmo - currentAmmo
-									if missingAmmo > data.count then newAmmo = currentAmmo + data.count else newAmmo = maxAmmo end
-									if newAmmo < 0 then newAmmo = 0 end 
-									SetPedAmmo(ESX.PlayerData.ped, currentWeapon.hash, newAmmo)
-									MakePedReload(ESX.PlayerData.ped)
-									currentWeapon.metadata.ammo = newAmmo
-								end
+								print('weapon attachment')
 							end
 						end)
 					end
-				elseif item.name:sub(0, 3) == 'at_' then
-					TriggerEvent('ox_inventory:item', data, function(data)
-						if data then
-							print('weapon attachment')
-						end
-					end)
 				end
 			end
 		end
@@ -498,39 +497,37 @@ AddEventHandler('ox_inventory:item', function(data, cb)
 		SetBusy(true)
 		local result = ox.TriggerServerCallback('ox_inventory:useItem', data.name, data.slot, data.metadata)
 		if result then
-			if data.client then
-				local used
-				if data.client.usetime then
-					data = data.client
-					Progress.Start({
-						duration = data.usetime,
-						label = 'Using '..result.label,
-						useWhileDead = data.useWhileDead or false,
-						canCancel = data.cancel or false,
-						Disable = data.disable or {},
-						anim = data.anim and ({ dict = data.anim.dict, clip = data.anim.clip, flag = data.anim.flag or 49 } or {scenario = data.scenario}),
-						prop = data.prop,
-						propTwo = data.propTwo
-					}, function(cancel)
-						if cancel then used = false else used = true end
-					end)
-				else used = true end
-				while used == nil do Wait(data.usetime/2) end
-			end
+			local used
+			if data.client and data.client.usetime then
+				data = data.client
+				Progress.Start({
+					duration = data.usetime,
+					label = 'Using '..result.label,
+					useWhileDead = data.useWhileDead or false,
+					canCancel = data.cancel or false,
+					Disable = data.disable or {},
+					anim = data.anim and ({ dict = data.anim.dict, clip = data.anim.clip, flag = data.anim.flag or 49 } or {scenario = data.scenario}),
+					prop = data.prop,
+					propTwo = data.propTwo
+				}, function(cancel)
+					if cancel then used = false else used = true end
+				end)
+			else used = true end
+			while used == nil do Wait(data.usetime/2) end
 			if used then
-				if result.consume ~= 0 then TriggerServerEvent('ox_inventory:removeItem', result.name, result.consume, result.metadata, data.slot) end
+				if result.consume and result.consume ~= 0 then TriggerServerEvent('ox_inventory:removeItem', result.name, result.consume, result.metadata, data.slot) end
 				if data.status then
 					for k, v in pairs(data.status) do
 						if v > 0 then TriggerEvent('esx_status:add', k, v) else TriggerEvent('esx_status:remove', k, -v) end
 					end
 				end
-				SetBusy(false)
-				return cb({name=result.name, label=result.label, count=result.count, slot=result.slot, metadata=result.metadata})
+				if currentWeapon and result.metadata.serial == currentWeapon.metadata.serial then Disarm() else cb(result) end
+				return SetBusy(false)
 			end
 		end
 		SetBusy(false)
-		cb(false)
 	end
+	cb(false)
 end)
 
 RegisterNetEvent('esx:playerLoaded', function(xPlayer)

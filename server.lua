@@ -268,6 +268,7 @@ ox.RegisterServerCallback('ox_inventory:useItem', function(source, cb, item, slo
 	local item, type = Items(item)
 	local data = item and (slot and Inventory(source).items[slot] or Inventory.GetItem(source, item, metadata))
 	if item and data and data.count > 0 and data.name == item.name then
+		data = {name=data.name, label=data.label, count=data.count, slot=data.slot, metadata=data.metadata, consume=data.consume}
 		if type == 1 then -- weapon
 			return cb(data)
 		elseif type == 2 then -- ammo
