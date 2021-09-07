@@ -326,9 +326,9 @@ M.RemoveItem = function(inv, item, count, metadata, slot)
 		if count > totalCount then count = totalCount end
 		local removed, total, slots = 0, count, {}
 		if slot and itemSlots[slot] then
-			local newCount = M.SetSlot(inv, item, -count, metadata, slot)
-			removed = count-newCount
-			slots[#slots+1] = inv.items[k] or k
+			removed = count
+			M.SetSlot(inv, item, -count, metadata, slot)
+			slots[#slots+1] = inv.items[slot] or slot
 		elseif itemSlots and totalCount > 0 then
 			for k, v in pairs(itemSlots) do
 				if removed < total then

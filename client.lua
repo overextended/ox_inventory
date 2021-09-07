@@ -13,9 +13,10 @@ end
 exports('SetBusy', SetBusy)
 
 local SetWeapon = function(weapon, hash, ammo)
-	currentWeapon = weapon and {name=weapon.name, slot=weapon.slot, label=weapon.label, metadata=weapon.metadata, hash=hash, ammo=ammo} or nil
+	currentWeapon = weapon and {name=weapon.name, slot=weapon.slot, label=weapon.label, metadata=weapon.metadata, hash=hash, ammo=ammo, throwable=weapon.throwable} or nil
 	TriggerEvent('ox_inventory:currentWeapon', currentWeapon)
 	if currentWeapon then currentWeapon.timer = 0 end
+	SetDisableAmbientMeleeMove(playerId, true)
 end
 
 local Notify = function(data) SendNUIMessage({ action = 'showNotif', data = data }) end
@@ -124,7 +125,7 @@ local UseSlot = function(slot)
 					TriggerEvent('ox_inventory:item', data, function(data)
 						if data then
 							local data = Items[item.name]
-							if data.throwable then item.throwable, item.metadata.ammo = true, 1 end
+							if data.throwable then item.throwable = true end
 							ClearPedSecondaryTask(ESX.PlayerData.ped)
 							if currentWeapon then
 								SetPedAmmo(ESX.PlayerData.ped, currentWeapon.hash, 0)
@@ -136,7 +137,7 @@ local UseSlot = function(slot)
 							GiveWeaponToPed(ESX.PlayerData.ped, data.hash, 0, true, false)
 							SetCurrentPedWeapon(ESX.PlayerData.ped, data.hash)
 							SetPedCurrentWeaponVisible(ESX.PlayerData.ped, true, false, false, false)
-							SetAmmoInClip(ESX.PlayerData.ped, data.hash, item.metadata.ammo or 100)
+							SetAmmoInClip(ESX.PlayerData.ped, data.hash, item.metadata.ammo or 1)
 							SetWeapon(item, data.hash, data.ammoname)
 							Wait(sleep)
 							ClearPedSecondaryTask(ESX.PlayerData.ped)
@@ -228,7 +229,7 @@ RegisterNetEvent('ox_inventory:updateInventory', function(items, weights, name, 
 			data = items,
 		})
 	end
-	Notify({text = count == 0 and (removed and 'Holstered ' or 'Used ')..name or (removed and 'Removed' or 'Added')..' '..count..'x '..name, duration = 2500})
+	if count then Notify({text = (removed and 'Removed' or 'Added')..' '..count..'x '..name, duration = 2500}) end
 	for i=1, #items do
 		local i = items[i].item
 		ESX.PlayerData.inventory[i.slot] = i.name and i or nil
@@ -427,55 +428,51 @@ RegisterNetEvent('ox_inventory:setPlayerInventory', function(data)
 			end
 			if currentWeapon then
 				DisableControlAction(0, 263, true)
-				local time = GetNetworkTime()
-				if currentWeapon.timer ~= 0 and currentWeapon.timer < time then
+				if currentWeapon.timer == 0 then
+					if currentWeapon.metadata.ammo then
+						if IsPedShooting(ESX.PlayerData.ped) then
+							if (currentWeapon.name == 'WEAPON_FIREEXTINGUISHER' or currentWeapon.name == 'WEAPON_PETROLCAN') then
+								currentWeapon.metadata.durability = currentWeapon.metadata.durability - 0.1
+								if currentWeapon.metadata.durability <= 0 then
+									wait = true
+									ClearPedTasks(ESX.PlayerData.ped)
+									SetCurrentPedWeapon(ESX.PlayerData.ped, currentWeapon.hash, true)
+									TriggerServerEvent('ox_inventory:updateWeapon')
+									CreateThread(function()
+										Wait(200)
+										Disarm()
+										wait = nil
+									end)
+								end
+							elseif currentWeapon.ammo then
+								local currentAmmo = GetAmmoInPedWeapon(ESX.PlayerData.ped, currentWeapon.hash)
+								currentWeapon.metadata.ammo = currentAmmo
+								if currentAmmo == 0 then
+									ClearPedTasks(ESX.PlayerData.ped)
+									SetCurrentPedWeapon(ESX.PlayerData.ped, currentWeapon.hash, false)
+									SetPedCurrentWeaponVisible(ESX.PlayerData.ped, true, false, false, false)
+								end
+							end
+							currentWeapon.timer = GetGameTimer() + 400
+						end
+					elseif IsControlJustReleased(0, 24) then
+						if currentWeapon.throwable then
+							SetBusy(true)
+							CreateThread(function()
+								Wait(700)
+								ClearPedSecondaryTask(ESX.PlayerData.ped)
+								RemoveWeaponFromPed(ESX.PlayerData.ped, currentWeapon.hash)
+								TriggerServerEvent('ox_inventory:updateWeapon', 'throw')
+								SetWeapon()
+								SetBusy(false)
+							end)
+						elseif IsPedPerformingMeleeAction(ESX.PlayerData.ped) then
+							currentWeapon.timer = GetGameTimer() + 400
+						end
+					end
+				elseif currentWeapon.timer < GetGameTimer() then
 					TriggerServerEvent('ox_inventory:updateWeapon', 'ammo', currentWeapon.metadata.ammo)
 					currentWeapon.timer = 0
-				end
-				if currentWeapon.metadata.ammo then
-					if IsPedShooting(ESX.PlayerData.ped) then
-						if wait == nil and (currentWeapon.name == 'WEAPON_FIREEXTINGUISHER' or currentWeapon.name == 'WEAPON_PETROLCAN') then
-							currentWeapon.metadata.durability = currentWeapon.metadata.durability - 0.1
-							if currentWeapon.metadata.durability <= 0 then
-								wait = true
-								ClearPedTasks(ESX.PlayerData.ped)
-								SetCurrentPedWeapon(ESX.PlayerData.ped, currentWeapon.hash, true)
-								TriggerServerEvent('ox_inventory:updateWeapon', 'deplete')
-								SetInterval('wait', 200, function()
-									Disarm()
-									wait = nil
-								end)
-							end
-						elseif currentWeapon.ammo then
-							local currentAmmo = GetAmmoInPedWeapon(ESX.PlayerData.ped, currentWeapon.hash)
-							currentWeapon.metadata.ammo = currentAmmo
-							if currentAmmo == 0 then
-								ClearPedTasks(ESX.PlayerData.ped)
-								SetCurrentPedWeapon(ESX.PlayerData.ped, currentWeapon.hash, false)
-								SetPedCurrentWeaponVisible(ESX.PlayerData.ped, true, false, false, false)
-							end
-						end
-						currentWeapon.timer = time + 400
-					end
-				elseif wait == nil then
-					if currentWeapon.throwable and IsControlJustReleased(0, 24) then
-						wait = true
-						ClearPedTasks(ESX.PlayerData.ped)
-						SetCurrentPedWeapon(ESX.PlayerData.ped, currentWeapon.hash, true)
-						SetInterval('wait', 700, function()
-							TriggerServerEvent('ox_inventory:updateWeapon', 'ammo', 0)
-							Disarm()
-							wait = nil
-						end)
-					elseif currentWeapon.durability then
-						local time = GetNetworkTime()
-						if currentWeapon.timer < time and IsPedArmed(ESX.PlayerData.ped, 1) and IsControlPressed(0, 24) then
-							ClearPedTasks(ESX.PlayerData.ped)
-							SetCurrentPedWeapon(ESX.PlayerData.ped, currentWeapon.hash, true)
-							TriggerServerEvent('ox_inventory:updateWeapon', 'melee')
-							currentWeapon.timer = time + 400
-						end
-					end
 				end
 			end
 		end
