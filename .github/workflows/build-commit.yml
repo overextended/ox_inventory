@@ -1,10 +1,9 @@
 name: build-commit
 
 on:
-  pull_request:
+  push:
     branches:
       - main
-    types: [closed]
 
 jobs:
   build-commit:
@@ -30,12 +29,14 @@ jobs:
       - name: Build source
         run: yarn build
         working-directory: web
-
+        
       - name: Push build
-        uses: stefanzweifel/git-auto-commit-action@v4
-        with:
-          commit_message: Add built files
-          add_options: '-f'
+        run: |
+          git config user.name github-actions
+          git config user.email github-actions@github.com
+          git add -f web/build
+          git commit -m "Add built files"
+          git push
           
     env:
         CI: false
