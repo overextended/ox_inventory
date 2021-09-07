@@ -49,6 +49,11 @@ AddEventHandler('ox_inventory:setPlayerInventory', function(xPlayer, data)
 			if item then
 				local weight = Inventory.SlotWeight(item, i)
 				totalWeight = totalWeight + weight
+				if i.metadata and i.metadata.bag then
+					i.metadata.container = i.metadata.bag
+					i.metadata.size = {5, 1000}
+					i.metadata.bag = nil
+				end
 				inventory[i.slot] = {name = i.name, label = item.label, weight = weight, slot = i.slot, count = i.count, description = item.description, metadata = i.metadata, stack = item.stack, close = item.close}
 				if money[i.name] then money[i.name] = money[i.name] + i.count end
 			end
