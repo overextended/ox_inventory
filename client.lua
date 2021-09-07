@@ -15,7 +15,6 @@ exports('SetBusy', SetBusy)
 local SetWeapon = function(weapon, hash, ammo)
 	currentWeapon = weapon and {name=weapon.name, slot=weapon.slot, label=weapon.label, metadata=weapon.metadata, hash=hash, ammo=ammo} or nil
 	TriggerEvent('ox_inventory:currentWeapon', currentWeapon)
-	TriggerServerEvent('ox_inventory:currentWeapon', weapon and weapon.slot or nil)
 	if currentWeapon then currentWeapon.timer = 0 end
 end
 
@@ -159,6 +158,7 @@ local UseSlot = function(slot)
 										SetPedAmmo(ESX.PlayerData.ped, currentWeapon.hash, newAmmo)
 										MakePedReload(ESX.PlayerData.ped)
 										currentWeapon.metadata.ammo = newAmmo
+										TriggerServerEvent('ox_inventory:updateWeapon', 'load', currentWeapon.metadata.ammo)
 									end
 								end
 							end)
@@ -228,7 +228,7 @@ RegisterNetEvent('ox_inventory:updateInventory', function(items, weights, name, 
 			data = items,
 		})
 	end
-	Notify({text = (removed and 'Removed' or 'Added')..' '..count..'x '..name, duration = 2500})
+	Notify({text = count == 0 and (removed and 'Holstered ' or 'Used ')..name or (removed and 'Removed' or 'Added')..' '..count..'x '..name, duration = 2500})
 	for i=1, #items do
 		local i = items[i].item
 		ESX.PlayerData.inventory[i.slot] = i.name and i or nil

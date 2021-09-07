@@ -253,23 +253,31 @@ ox.RegisterServerCallback('ox_inventory:getInventory', function(source, cb, id)
 end)
 
 RegisterServerEvent('ox_inventory:currentWeapon', function(slot)
-	local inv = Inventory(source)
-	if slot then
-		inv.weapon = inv.items[slot]
-	else inv.weapon = nil end
+	if slot then Inventory(source).weapon = slot end
 end)
 
-RegisterServerEvent('ox_inventory:updateWeapon', function(action)
-	print(action)
-	print(ESX.DumpTable(Inventory(source).weapon))
+RegisterServerEvent('ox_inventory:updateWeapon', function(action, value)
+	local inventory = Inventory(source)
+	local weapon = inventory.items[inventory.weapon]
+	print(action, value)
+	if action == 'disarm' then
+		local ammo = weapon.metadata.ammo
+		if value < ammo then weapon.metadata.ammo = value end
+		inventory.weapon = nil
+	elseif action == 'load' then
+		weapon.metadata.ammo = value
+	end
+	TriggerClientEvent('ox_inventory:updateInventory', source, {{item = weapon}}, {left=inventory.weight}, weapon.name, 0, true)
 end)
 
 ox.RegisterServerCallback('ox_inventory:useItem', function(source, cb, item, slot, metadata)
+	local inventory = Inventory(source)
 	local item, type = Items(item)
-	local data = item and (slot and Inventory(source).items[slot] or Inventory.GetItem(source, item, metadata))
+	local data = item and (slot and inventory.items[slot] or Inventory.GetItem(source, item, metadata))
 	if item and data and data.count > 0 and data.name == item.name then
 		data = {name=data.name, label=data.label, count=data.count, slot=data.slot, metadata=data.metadata, consume=data.consume}
 		if type == 1 then -- weapon
+			inventory.weapon = data.slot
 			return cb(data)
 		elseif type == 2 then -- ammo
 			return cb(data)
