@@ -222,7 +222,7 @@ M.Load = function(id, invType, owner)
 	return returnData, weight, datastore
 end
 
-M.GetItem = function(inv, item, metadata, count)
+M.GetItem = function(inv, item, metadata, returnsCount)
 	item = type(item) == 'table' and item or Items(item)
 	if item then item = count and item or Utils.Copy(item)
 		local inv, count = Inventories[type(inv) == 'table' and inv.id or inv].items, 0
@@ -234,7 +234,7 @@ M.GetItem = function(inv, item, metadata, count)
 				end
 			end
 		end
-		if count then return count else
+		if returnsCount then return count else
 			item.count = count
 			return item
 		end
