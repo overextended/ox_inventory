@@ -8,7 +8,6 @@ on:
 jobs:
   build-commit:
     name: "Build files and merge commit"
-    if: github.event.pull_request.merged == true
     runs-on: ubuntu-latest
 
     steps:
