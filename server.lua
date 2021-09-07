@@ -249,6 +249,32 @@ ox.RegisterServerCallback('ox_inventory:openShop', function(source, cb, inv, dat
 	cb({id=left.label, type=left.type, slots=left.slots, weight=left.weight, maxWeight=left.maxWeight}, shop)
 end)
 
+ox.RegisterServerCallback('ox_inventory:getItemCount', function(source, cb, item, metadata, target)
+	local inventory = target and Inventory(target) or Inventory(source)
+	if inventory then
+		local count = Inventory.GetItem(inventory, item, metadata)
+		if count then return cb(count) end
+	end
+	cb()
+end)
+
+ox.RegisterServerCallback('ox_inventory:getInventory', function(source, cb, id)
+	local inventory = Inventory(id)
+	if inventory then
+		return cb({
+			id = inventory.id,
+			label = inventory.label,
+			type = inventory.type,
+			slots = inventory.slots,
+			weight = inventory.weight,
+			maxWeight = inventory.weight,
+			owned = inventory.owner and true or false,
+			items = inventory.items
+		})
+	end
+	cb()
+end)
+
 RegisterServerEvent('ox_inventory:currentWeapon', function(slot)
 	local inv = Inventory(source)
 	if slot then
