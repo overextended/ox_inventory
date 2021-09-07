@@ -1,0 +1,42 @@
+name: build-commit
+
+on:
+  pull_request:
+    branches:
+      - main
+    types: [closed]
+
+jobs:
+  build-commit:
+    name: "Build files and merge commit"
+    if: github.event.pull_request.merged == true
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout source code
+        uses: actions/checkout@v2
+
+      - name: Setup Node and Yarn Cache
+        uses: actions/setup-node@v2
+        with:
+          node-version: "14"
+          cache: "yarn"
+          cache-dependency-path: web/yarn.lock
+
+      - name: Install yarn deps
+        run: yarn --frozen-lockfile
+        working-directory: web
+        
+      - name: Build source
+        run: yarn build
+        working-directory: web
+
+      - name: Push build
+        uses: stefanzweifel/git-auto-commit-action@v4
+        with:
+          commit_message: Add built files
+          add_options: '-f'
+          
+    env:
+        CI: false
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
