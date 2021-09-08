@@ -44,12 +44,6 @@ local Disarm = function(newSlot)
 	if currentWeapon then
 		local ammo = GetAmmoInPedWeapon(ESX.PlayerData.ped, currentWeapon.hash)
 		SetPedAmmo(ESX.PlayerData.ped, currentWeapon.hash, 0)
-		if currentWeapon.metadata.components then
-			for k, v in pairs(currentWeapon.metadata.components) do
-				local hash = ESX.GetWeaponComponent(currrentWeapon.name, v).hash
-				if hash then RemoveWeaponComponentFromPed(ESX.PlayerData.ped, currentWeapon.hash, hash) end
-			end
-		end
 		ClearPedSecondaryTask(ESX.PlayerData.ped)
 		local sleep = (ESX.PlayerData.job.name == 'police' and GetWeapontypeGroup(currentWeapon.hash) == 416676503) and 450 or 1400
 		Utils.PlayAnimAdvanced(sleep, sleep == 450 and 'reaction@intimidation@cop@unarmed' or 'reaction@intimidation@1h', 'outro', GetEntityCoords(ESX.PlayerData.ped, true), 0, 0, GetEntityHeading(ESX.PlayerData.ped), 8.0, 3.0, -1, 50, 0, 0, 0)
@@ -133,10 +127,22 @@ local UseSlot = function(slot)
 							local sleep = (ESX.PlayerData.job.name == 'police' and GetWeapontypeGroup(data.hash) == 416676503) and 400 or 1200
 							Utils.PlayAnimAdvanced(sleep*2, sleep == 400 and 'reaction@intimidation@cop@unarmed' or 'reaction@intimidation@1h', 'intro', GetEntityCoords(ESX.PlayerData.ped, true), 0, 0, GetEntityHeading(ESX.PlayerData.ped), 8.0, 3.0, -1, 50, 1, 0, 0)
 							Wait(sleep)
-							GiveWeaponToPed(ESX.PlayerData.ped, data.hash, 0, true, false)
-							SetCurrentPedWeapon(ESX.PlayerData.ped, data.hash)
+							GiveWeaponToPed(ESX.PlayerData.ped, data.hash, 0, false, true)
+							if item.metadata.components then
+								for i=1, #item.metadata.components do
+								 	local components = Items[item.metadata.components[i]].client.component
+									for v=1, #components do
+										local component = components[v]
+										if DoesWeaponTakeWeaponComponent(data.hash, component) then
+											if not HasPedGotWeaponComponent(ESX.PlayerData.ped, data.hash, component) then 
+												GiveWeaponComponentToPed(ESX.PlayerData.ped, data.hash, component)
+											end
+										end
+									end
+								end
+							end
 							SetPedCurrentWeaponVisible(ESX.PlayerData.ped, true, false, false, false)
-							SetAmmoInClip(ESX.PlayerData.ped, data.hash, item.metadata.ammo or 1)
+							SetAmmoInClip(ESX.PlayerData.ped, data.hash, item.metadata.ammo or 100)
 							SetWeapon(item, data.hash, data.ammoname)
 							Wait(sleep)
 							ClearPedSecondaryTask(ESX.PlayerData.ped)
@@ -164,24 +170,24 @@ local UseSlot = function(slot)
 							end)
 						end
 					elseif item.name:find('at_') then
-						TriggerEvent('ox_inventory:item', data, function(data)
-							if data then
-								local attachmentData = Items[data.name]
-
-								for k, component in pairs(attachmentData.client.component) do
-									if DoesWeaponTakeWeaponComponent(currentWeapon.hash, component) then
-										if HasPedGotWeaponComponent(ESX.PlayerData.ped, currentWeapon.hash, component) then 
-											Notify({text = "This weapon already has this component!"})
-											return
-										else
+						local components = data.client.component
+						for i=1, #components do
+							local component = components[i]
+							if DoesWeaponTakeWeaponComponent(currentWeapon.hash, component) then
+								if HasPedGotWeaponComponent(ESX.PlayerData.ped, currentWeapon.hash, component) then 
+									Notify({text = "This weapon already has this component!"})
+								else
+									TriggerEvent('ox_inventory:item', data, function(data)
+										if data then
 											GiveWeaponComponentToPed(ESX.PlayerData.ped, currentWeapon.hash, component)
-											break
+											table.insert(ESX.PlayerData.inventory[currentWeapon.slot].metadata.components, component)
 										end
-									end
-									if k == #attachmentData.client.component then Notify({text = "You can't fit this component to this weapon!"}) end
+									end)
 								end
+								return
 							end
-						end)
+						end
+						Notify({type = 'error', text = "You can't fit this component to this weapon!"})
 					end
 				end
 			end
@@ -509,7 +515,7 @@ AddEventHandler('ox_inventory:item', function(data, cb)
 	if isBusy == false and not Progress.Active and not IsPedRagdoll(ESX.PlayerData.ped) and not IsPedFalling(ESX.PlayerData.ped) then
 		SetBusy(true)
 		local result = ox.TriggerServerCallback('ox_inventory:useItem', data.name, data.slot, data.metadata)
-		if result then
+		if result and isBusy then
 			local used
 			if data.client and data.client.usetime then
 				data = data.client
@@ -528,7 +534,7 @@ AddEventHandler('ox_inventory:item', function(data, cb)
 			else used = true end
 			while used == nil do Wait(data.usetime/2) end
 			if used then
-				if result.consume and result.consume ~= 0 then TriggerServerEvent('ox_inventory:removeItem', result.name, result.consume, result.metadata, data.slot) end
+				if result.consume and result.consume ~= 0 then TriggerServerEvent('ox_inventory:removeItem', result.name, result.consume, result.metadata, result.slot) end
 				if data.status then
 					for k, v in pairs(data.status) do
 						if v > 0 then TriggerEvent('esx_status:add', k, v) else TriggerEvent('esx_status:remove', k, -v) end

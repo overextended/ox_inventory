@@ -401,6 +401,11 @@ exports('Inventory', function(arg)
 end)
 
 RegisterServerEvent('ox_inventory:removeItem', function(item, count, metadata, slot)
+	local inventory = Inventories[source]
+	if inventory.items[slot].name == item and inventory.items[slot].name:find('at_') and inventory.weapon then
+		local weapon = inventory.items[inventory.weapon]
+		table.insert(weapon.metadata.components, item)
+	end
 	M.RemoveItem(source, item, count, metadata, slot)
 end)
 
