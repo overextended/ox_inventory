@@ -12,7 +12,7 @@ This category provides information on exports, commands, and events that are not
 	=== "Self"
 		```lua
 		local count = ox.TriggerServerCallback('ox_inventory:getItemCount', 'water')
-		if count then print('You currently have '..count..' water')
+		if count then print('You currently have '..count..' water') end
 		```
 	=== "Target"
 		```lua
