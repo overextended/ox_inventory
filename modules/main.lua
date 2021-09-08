@@ -39,7 +39,7 @@ if ox.server then
 	ox.warning = function(...) print(ox.concat(' ', '^3[warning]^7', ...)) end
 
 	ox.ServerCallbacks = {}
-	RegisterNetEvent('ox:triggerServerCallback', function(name, ...)
+	RegisterServerEvent('ox:TriggerServerCallback', function(name, ...)
 		local playerId = source
 		ox.TriggerServerCallback(name, playerId, function(...)
 			TriggerClientEvent(name, playerId, ...)
@@ -56,15 +56,24 @@ if ox.server then
 		end
 	end
 else
-	ox.TriggerServerCallback = function(event, ...)
+	ox.AwaitServerCallback = function(event, ...)
 		local event = ('cb:%s'):format(event)
-		TriggerServerEvent('ox:triggerServerCallback', event, ...)
+		TriggerServerEvent('ox:TriggerServerCallback', event, ...)
 		local p = promise.new()
 		event = RegisterNetEvent(event, function(...)
 			p:resolve({...})
 			RemoveEventHandler(event)
 		end)
 		return table.unpack(Citizen.Await(p))
+	end
+
+	ox.TriggerServerCallback = function(event, cb, ...)
+		local event = ('cb:%s'):format(event)
+		TriggerServerEvent('ox:TriggerServerCallback', event, ...)
+		event = RegisterNetEvent(event, function(...)
+			cb(...)
+			RemoveEventHandler(event)
+		end)
 	end
 end
 

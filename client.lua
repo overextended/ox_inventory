@@ -73,9 +73,9 @@ local OpenInventory = function(inv, data)
 	if CanOpenInventory() then
 		local left, right
 		if inv == 'shop' and invOpen == false then
-			left, right = ox.TriggerServerCallback('ox_inventory:openShop', inv, data)
+			left, right = ox.AwaitServerCallback('ox_inventory:openShop', inv, data)
 		elseif invOpen == false or inv == 'drop' or inv == 'container' then
-			left, right = ox.TriggerServerCallback('ox_inventory:openInventory', inv, data)
+			left, right = ox.AwaitServerCallback('ox_inventory:openInventory', inv, data)
 		end
 		if left then
 			if not IsPedInAnyVehicle(ESX.PlayerData.ped, false) then Utils.PlayAnim(1000, 'pickup_object', 'putdown_low', 5.0, 1.5, 1.0, 48, 0.0, 0, 0, 0) end
@@ -457,12 +457,13 @@ RegisterNetEvent('ox_inventory:setPlayerInventory', function(data)
 			end
 			if currentMarker and IsControlJustReleased(0, 38, true) then
 				if currentMarker[3] == 'license' then
-					local result = ox.TriggerServerCallback('ox_inventory:buyLicense', currentMarker[2])
-					if result[1] == false then
-						Notify({type = 'error', text = ox.locale(result[2]), duration = 2500})
-					else
-						Notify({text = ox.locale(result[1]), duration = 2500})
-					end
+					ox.TriggerServerCallback('ox_inventory:buyLicense', function(result)
+						if result[1] == false then
+							Notify({type = 'error', text = ox.locale(result[2]), duration = 2500})
+						else
+							Notify({text = ox.locale(result[1]), duration = 2500})
+						end
+					end, currentMarker[2])
 				end
 			end
 			if currentWeapon then
@@ -514,7 +515,7 @@ end)
 AddEventHandler('ox_inventory:item', function(data, cb)
 	if isBusy == false and not Progress.Active and not IsPedRagdoll(ESX.PlayerData.ped) and not IsPedFalling(ESX.PlayerData.ped) then
 		SetBusy(true)
-		local result = ox.TriggerServerCallback('ox_inventory:useItem', data.name, data.slot, data.metadata)
+		local result = ox.AwaitServerCallback('ox_inventory:useItem', data.name, data.slot, data.metadata)
 		if result and isBusy then
 			local used
 			if data.client and data.client.usetime then
@@ -699,7 +700,7 @@ end)
 
 RegisterNUICallback('swapItems', function(data, cb)
 	--todo: check inventory slot for weapon and disarm if equipped and moved
-	local response, data = ox.TriggerServerCallback('ox_inventory:swapItems', data)
+	local response, data = ox.AwaitServerCallback('ox_inventory:swapItems', data)
 	if data then
 		for k, v in pairs(data.items) do
 			ESX.PlayerData.inventory[k] = v and v or nil
@@ -711,7 +712,7 @@ RegisterNUICallback('swapItems', function(data, cb)
 end)
 
 RegisterNUICallback('buyItem', function(data, cb)
-	local response, data, message = ox.TriggerServerCallback('ox_inventory:buyItem', data)
+	local response, data, message = ox.AwaitServerCallback('ox_inventory:buyItem', data)
 	if data then
 		for k, v in pairs(data.items) do
 			ESX.PlayerData.inventory[k] = v and v or nil
