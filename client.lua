@@ -1,5 +1,5 @@
 local Stashes, Vehicles = data('stashes'), data('vehicles')
-local Items, Weapons, Components = table.unpack(module('items'))
+local Items, Weapons = table.unpack(module('items'))
 local Utils, Progress, Shops = module('utils'), module('progress'), module('shops')
 
 local Blips, Drops, nearbyMarkers, cancelled, invOpen = {}, {}, {}, false, false
