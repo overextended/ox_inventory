@@ -144,7 +144,7 @@ local UseSlot = function(slot)
 					end)
 				elseif currentWeapon then
 					if item.name:find('ammo-') then
-						local maxAmmo = GetWeaponClipSize(currentWeapon.hash)
+						local maxAmmo = GetMaxAmmoInClip(ESX.PlayerData.ped, currentWeapon.hash, true)
 						local currentAmmo = GetAmmoInPedWeapon(ESX.PlayerData.ped, currentWeapon.hash)
 						if currentAmmo ~= maxAmmo and currentAmmo < maxAmmo then
 							TriggerEvent('ox_inventory:item', data, function(data)
