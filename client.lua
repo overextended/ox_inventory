@@ -12,8 +12,8 @@ local SetBusy = function(state)
 end
 exports('SetBusy', SetBusy)
 
-local SetWeapon = function(weapon, hash, ammo, attachments)
-	currentWeapon = weapon and {name=weapon.name, slot=weapon.slot, label=weapon.label, metadata=weapon.metadata, attachments=attachments, hash=hash, ammo=ammo, throwable=weapon.throwable} or nil
+local SetWeapon = function(weapon, hash, ammo)
+	currentWeapon = weapon and {name=weapon.name, slot=weapon.slot, label=weapon.label, metadata=weapon.metadata, hash=hash, ammo=ammo, throwable=weapon.throwable} or nil
 	TriggerEvent('ox_inventory:currentWeapon', currentWeapon)
 	if currentWeapon then currentWeapon.timer = 0 end
 	SetDisableAmbientMeleeMove(playerId, true)
@@ -137,7 +137,7 @@ local UseSlot = function(slot)
 							SetCurrentPedWeapon(ESX.PlayerData.ped, data.hash)
 							SetPedCurrentWeaponVisible(ESX.PlayerData.ped, true, false, false, false)
 							SetAmmoInClip(ESX.PlayerData.ped, data.hash, item.metadata.ammo or 1)
-							SetWeapon(item, data.hash, data.ammoname, data.attachments)
+							SetWeapon(item, data.hash, data.ammoname)
 							Wait(sleep)
 							ClearPedSecondaryTask(ESX.PlayerData.ped)
 						end
