@@ -69,6 +69,7 @@ local Data = {
 		weight = 1,
 		stack = false,
 		close = false,
+		consume = 0
 	},
 
 	['identification'] = {

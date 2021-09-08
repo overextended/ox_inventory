@@ -124,7 +124,7 @@ ox.RegisterServerCallback('ox_inventory:swapItems', function(source, cb, data)
 			local fromInventory = data.fromType == 'player' and playerInventory or Inventory(playerInventory.open)
 			if toInventory and fromInventory and (fromInventory.id ~= toInventory.id or data.fromSlot ~= data.toSlot) then
 				local fromSlot, toSlot = fromInventory.items[data.fromSlot], toInventory.items[data.toSlot]
-				if fromSlot then
+				if fromSlot and fromSlot.metadata.container ~= toInventory.id then
 					if data.count > fromSlot.count then data.count = fromSlot.count end
 					if toSlot and ((toSlot.name ~= fromSlot.name) or (not Utils.MatchTables(toSlot.metadata, fromSlot.metadata))) then
 						toSlot, fromSlot = Inventory.SwapSlots({fromInventory, toInventory}, {data.fromSlot, data.toSlot})
@@ -216,6 +216,25 @@ ox.RegisterServerCallback('ox_inventory:buyItem', function(source, cb, data)
 	cb(false)
 end)
 
+ox.RegisterServerCallback('ox_inventory:buyLicense', function(source, cb, license)
+	local price = Config.Licenses[license]
+	if price then
+		local inventory = Inventory(source)
+		exports.oxmysql:scalar('SELECT 1 FROM user_licenses WHERE type = ? AND owner = ?', { license, inventory.owner }, function(result)
+			if result then
+				cb({false, 'has_weapon_license'})
+			elseif Inventory.GetItem(inventory, 'money', false, true) < price then
+				cb({false, 'poor_weapon_license'})
+			else
+				Inventory.RemoveItem(inventory, 'money', price)
+				TriggerEvent('esx_license:addLicense', source, 'weapon', function()
+					cb({'bought_weapon_license'})
+				end)
+			end
+		end)
+	else cb() end
+end)
+
 ox.RegisterServerCallback('ox_inventory:openShop', function(source, cb, inv, data) 
 	local left, shop = Inventory(source)
 	if data then
@@ -228,11 +247,7 @@ end)
 
 ox.RegisterServerCallback('ox_inventory:getItemCount', function(source, cb, item, metadata, target)
 	local inventory = target and Inventory(target) or Inventory(source)
-	if inventory then
-		local count = Inventory.GetItem(inventory, item, metadata)
-		if count then return cb(count) end
-	end
-	cb()
+	cb((inventory and Inventory.GetItem(inventory, item, metadata, true)) or 0)
 end)
 
 ox.RegisterServerCallback('ox_inventory:getInventory', function(source, cb, id)
@@ -252,10 +267,9 @@ ox.RegisterServerCallback('ox_inventory:getInventory', function(source, cb, id)
 	cb()
 end)
 
-RegisterServerEvent('ox_inventory:updateWeapon', function(action, value)
+RegisterServerEvent('ox_inventory:updateWeapon', function(action, value, slot)
 	local inventory = Inventory(source)
 	local weapon = inventory.items[inventory.weapon]
-	print(action, value)
 	if weapon.metadata then
 		if action == 'load' then
 			weapon.metadata.ammo = value
@@ -269,7 +283,7 @@ RegisterServerEvent('ox_inventory:updateWeapon', function(action, value)
 		elseif weapon.metadata.durability then
 			weapon.metadata.durability = weapon.metadata.durability - (Items(weapon.name).durability or 1)
 		end
-		if weapon and action == 'disarm' then inventory.weapon = nil end
+		if weapon and slot then inventory.weapon = slot end
 		if action ~= 'throw' then TriggerClientEvent('ox_inventory:updateInventory', source, {{item = weapon}}, {left=inventory.weight}) end
 	end
 end)
@@ -279,7 +293,7 @@ ox.RegisterServerCallback('ox_inventory:useItem', function(source, cb, item, slo
 	local item, type = Items(item)
 	local data = item and (slot and inventory.items[slot] or Inventory.GetItem(source, item, metadata))
 	if item and data and data.count > 0 and data.name == item.name then
-		data = {name=data.name, label=data.label, count=data.count, slot=data.slot, metadata=data.metadata, consume=data.consume}
+		data = {name=data.name, label=data.label, count=data.count, slot=slot or data.slot, metadata=data.metadata, consume=item.consume}
 		if type == 1 then -- weapon
 			inventory.weapon = data.slot
 			return cb(data)

@@ -35,5 +35,6 @@ end
 Config.TrimPlate = true
 
 -- Restrict the purchase of firearms with a license
-Config.WeaponsLicense = true
-Config.WeaponsLicensePrice = 5000
+Config.Licenses = {
+	['weapon'] = 5000
+}

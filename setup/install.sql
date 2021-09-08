@@ -13,6 +13,9 @@ ALTER TABLE `owned_vehicles`
 	ADD COLUMN `glovebox` LONGTEXT NULL,
 	ADD INDEX `owner` (`owner`);
 
+ALTER TABLE `user_licenses`
+	ADD INDEX `owner` (`owner`);
+
 -- Now I'm just being too kind
 ALTER TABLE `vehicles`
 	ADD INDEX `category` (`category`);
