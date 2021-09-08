@@ -22,7 +22,7 @@ A new lightweight database wrapper utilising [node-mysql2](https://github.com/si
 !!! note
 	When starting for the first time dependencies will be downloaded by [yarn](https://github.com/citizenfx/cfx-server-data/tree/master/resources/%5Bsystem%5D/%5Bbuilders%5D/yarn). You may need to restart your server upon completion.
 
-[Download :fontawesome-solid-download:](https://github.com/overextended/oxmysql/archive/refs/heads/main.zip){ .md-button .md-button--primary }	[Documentation :fontawesome-solid-book:](https://overextended.github.io/oxmysql){ .md-button .md-button--primary }
+[Download :fontawesome-solid-download:](https://github.com/overextended/oxmysql/releases/download/untagged-61dba900a3ac4b4efbd9/oxmysql.zip){ .md-button .md-button--primary }	[Documentation :fontawesome-solid-book:](https://overextended.github.io/oxmysql){ .md-button .md-button--primary }
 
 <br>
 
