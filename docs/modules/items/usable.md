@@ -1,5 +1,5 @@
 ---
-title: Creating usable items
+title: Register usable items
 ---
 The recommended method for registering items as usable is adding a function to {++modules/items/client.lua++}.  
 It is still possible to use items through ESX.RegisterUsableItem, though it is less flexible.

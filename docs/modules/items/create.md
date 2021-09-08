@@ -1,5 +1,5 @@
 ---
-title: Registering usable items
+title: Create items
 ---
 All static item data is loaded from files in the `data` folder rather than the database.  
 The item table defines a basic template to reference when working with an instance of that item name, and can contain custom data.

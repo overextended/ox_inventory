@@ -17,7 +17,7 @@ A new lightweight database wrapper utilising [node-mysql2](https://github.com/si
 - Lua sync wrappers utilise promises to remove additional overhead
 
 !!! attention
-	Modify your server config with a URI-style connection string
+	Modify your server config with a URI-style connection string. You can also set a warning for slow queries.
 	```
 	set mysql_connection_string "mysql://user:password@host/database?charset=utf8mb4"
 	set mysql_slow_query_warning 100

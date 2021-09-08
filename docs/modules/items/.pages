@@ -1,4 +1,4 @@
-arrange:
-  - index.md
-  - client.md
+nav:
+  - create.md
+  - usable.md
   - server.md
