@@ -252,10 +252,9 @@ ox.RegisterServerCallback('ox_inventory:getInventory', function(source, cb, id)
 	cb()
 end)
 
-RegisterServerEvent('ox_inventory:updateWeapon', function(action, value)
+RegisterServerEvent('ox_inventory:updateWeapon', function(action, value, slot)
 	local inventory = Inventory(source)
 	local weapon = inventory.items[inventory.weapon]
-	print(action, value)
 	if weapon.metadata then
 		if action == 'load' then
 			weapon.metadata.ammo = value
@@ -269,7 +268,7 @@ RegisterServerEvent('ox_inventory:updateWeapon', function(action, value)
 		elseif weapon.metadata.durability then
 			weapon.metadata.durability = weapon.metadata.durability - (Items(weapon.name).durability or 1)
 		end
-		if weapon and action == 'disarm' then inventory.weapon = nil end
+		if weapon and slot then inventory.weapon = slot end
 		if action ~= 'throw' then TriggerClientEvent('ox_inventory:updateInventory', source, {{item = weapon}}, {left=inventory.weight}) end
 	end
 end)
