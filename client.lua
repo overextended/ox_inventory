@@ -127,11 +127,10 @@ local UseSlot = function(slot)
 							local data = Items[item.name]
 							if data.throwable then item.throwable = true end
 							ClearPedSecondaryTask(ESX.PlayerData.ped)
-							if currentWeapon then
-								SetPedAmmo(ESX.PlayerData.ped, currentWeapon.hash, 0)
-								RemoveWeaponFromPed(ESX.PlayerData.ped, currentWeapon.hash)
-							end
 							local sleep = (ESX.PlayerData.job.name == 'police' and GetWeapontypeGroup(data.hash) == 416676503) and 400 or 1200
+							if currentWeapon then
+								Disarm()
+							end
 							Utils.PlayAnimAdvanced(sleep*2, sleep == 400 and 'reaction@intimidation@cop@unarmed' or 'reaction@intimidation@1h', 'intro', GetEntityCoords(ESX.PlayerData.ped, true), 0, 0, GetEntityHeading(ESX.PlayerData.ped), 8.0, 3.0, -1, 50, 1, 0, 0)
 							Wait(sleep)
 							GiveWeaponToPed(ESX.PlayerData.ped, data.hash, 0, true, false)
@@ -519,7 +518,7 @@ AddEventHandler('ox_inventory:item', function(data, cb)
 						if v > 0 then TriggerEvent('esx_status:add', k, v) else TriggerEvent('esx_status:remove', k, -v) end
 					end
 				end
-				if currentWeapon and result.metadata and result.metadata.serial == currentWeapon.metadata.serial then Disarm() else cb(result) end
+				if currentWeapon and currentWeapon.metadata.serial ~= nil and result.metadata and result.metadata.serial == currentWeapon.metadata.serial then Disarm() else cb(result) end
 				return SetBusy(false)
 			end
 		end
@@ -660,7 +659,6 @@ RegisterCommand('reload', function()
 	end
 end)
 
---fuck luke
 RegisterCommand('hotbar', function()
 	SendNUIMessage({
 		action = 'toggleHotbar'
