@@ -276,7 +276,7 @@ RegisterNetEvent('ox_inventory:setPlayerInventory', function(data)
 	ESX.SetPlayerData('weight', data[3])
     local ItemData = {}
     for k, v in pairs(Items) do
-		v.usable = (v.client and next(v.client) or data[4][v.name] or v.name:find('WEAPON_') or v.name:find('ammo-') or v.name:find('at_')) and true or false
+		v.usable = (v.client and next(v.client) or v.consume == 0 or data[4][v.name] or v.name:find('WEAPON_') or v.name:find('ammo-') or v.name:find('at_')) and true or false
         ItemData[v.name] = {
             label = v.label,
             usable = v.usable,
