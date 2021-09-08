@@ -216,6 +216,25 @@ ox.RegisterServerCallback('ox_inventory:buyItem', function(source, cb, data)
 	cb(false)
 end)
 
+ox.RegisterServerCallback('ox_inventory:buyLicense', function(source, cb, license)
+	local price = Config.Licenses[license]
+	if price then
+		local inventory = Inventory(source)
+		exports.oxmysql:scalar('SELECT 1 FROM user_licenses WHERE type = ? AND owner = ?', { license, inventory.owner }, function(result)
+			if result then
+				cb({false, 'has_weapon_license'})
+			elseif Inventory.GetItem(inventory, 'money', false, true) < price then
+				cb({false, 'poor_weapon_license'})
+			else
+				Inventory.RemoveItem(inventory, 'money', price)
+				TriggerEvent('esx_license:addLicense', source, 'weapon', function()
+					cb({'bought_weapon_license'})
+				end)
+			end
+		end)
+	else cb() end
+end)
+
 ox.RegisterServerCallback('ox_inventory:openShop', function(source, cb, inv, data) 
 	local left, shop = Inventory(source)
 	if data then
@@ -228,11 +247,7 @@ end)
 
 ox.RegisterServerCallback('ox_inventory:getItemCount', function(source, cb, item, metadata, target)
 	local inventory = target and Inventory(target) or Inventory(source)
-	if inventory then
-		local count = Inventory.GetItem(inventory, item, metadata)
-		if count then return cb(count) end
-	end
-	cb()
+	cb((inventory and Inventory.GetItem(inventory, item, metadata, true)) or 0)
 end)
 
 ox.RegisterServerCallback('ox_inventory:getInventory', function(source, cb, id)

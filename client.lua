@@ -367,6 +367,17 @@ RegisterNetEvent('ox_inventory:setPlayerInventory', function(data)
 					end
 				elseif not marker and distance < 8 then nearbyMarkers['stash'..k] = {v.coords, 30, 30, 150} elseif marker and distance > 8 then nearbyMarkers['stash'..k] = nil end
 			end
+			local weaponLicense = vector3(12.42198, -1105.82, 29.7854)
+			local distance = #(playerCoords - weaponLicense)
+			if distance < 8 then
+				local marker = nearbyMarkers['license']
+				if distance < 1 then
+					if not marker then nearbyMarkers['license'] = {weaponLicense, 30, 150, 30} end
+					if currentMarker and distance < currentMarker[1] or closestMarker and distance < closestMarker[1] or not closestMarker then
+						closestMarker = {distance, 'weapon', 'license'}
+					end
+				end
+			end
 			currentMarker = (closestMarker and closestMarker[1] < 2) and closestMarker or nil
 		else
 			playerCoords = GetEntityCoords(ESX.PlayerData.ped)
@@ -437,6 +448,16 @@ RegisterNetEvent('ox_inventory:setPlayerInventory', function(data)
 				DisableControlAction(0, 23, true)
 				DisableControlAction(0, 25, true)
 				DisableControlAction(0, 263, true)
+			end
+			if currentMarker and IsControlJustReleased(0, 38, true) then
+				if currentMarker[3] == 'license' then
+					local result = ox.TriggerServerCallback('ox_inventory:buyLicense', currentMarker[2])
+					if result[1] == false then
+						Notify({type = 'error', text = ox.locale(result[2]), duration = 2500})
+					else
+						Notify({text = ox.locale(result[1]), duration = 2500})
+					end
+				end
 			end
 			if currentWeapon then
 				DisableControlAction(0, 263, true)
@@ -551,7 +572,7 @@ RegisterCommand('inv', function()
 	TriggerEvent('ox_inventory:getProperty', function(data) property = data end)
 	if property then return OpenInventory('stash', property) end
 	if IsPedInAnyVehicle(ESX.PlayerData.ped, false) then currentDrop = nil end
-	if currentMarker and not invOpen then OpenInventory(currentMarker[3], {id=currentMarker[2]})
+	if currentMarker and currentMarker[3] ~= 'license' and not invOpen then OpenInventory(currentMarker[3], {id=currentMarker[2]})
 	else OpenInventory() end
 end)
 
