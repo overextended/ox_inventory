@@ -167,39 +167,18 @@ local UseSlot = function(slot)
 						TriggerEvent('ox_inventory:item', data, function(data)
 							if data then
 								local attachmentData = Items[data.name]
-								
-								-- print('Attachments: ', ESX.DumpTable(currentWeapon.attachments))
-								-- print('Data: ', ESX.DumpTable(data))
-								-- print('Attachment data: ', ESX.DumpTable(attachmentData))
 
-								if data.name == 'at_flashlight' or data.name == 'at_grip' and 
-								currentWeapon.attachments.flashlight or currentWeapon.attachments.grip then
-									for _, component in pairs(attachmentData.client.component) do
-										if DoesWeaponTakeWeaponComponent(currentWeapon.hash, component) then
+								for k, component in pairs(attachmentData.client.component) do
+									if DoesWeaponTakeWeaponComponent(currentWeapon.hash, component) then
+										if HasPedGotWeaponComponent(ESX.PlayerData.ped, currentWeapon.hash, component) then 
+											Notify({text = "This weapon already has this component!"})
+											return
+										else
 											GiveWeaponComponentToPed(ESX.PlayerData.ped, currentWeapon.hash, component)
 											break
 										end
 									end
-								else
-									local canAttach = false
-									-- Need to check attachments tables and see if data.name exists there
-									for _, attachmentType in pairs(currentWeapon.attachments) do
-										if type(attachmentType) == 'table' then
-											for _, componentName in pairs(attachmentType) do
-												if data.name == componentName then
-													canAttach = true
-													for _, component in pairs(attachmentData.client.component) do
-														if DoesWeaponTakeWeaponComponent(currentWeapon.hash, component) then
-															GiveWeaponComponentToPed(ESX.PlayerData.ped, currentWeapon.hash, component)
-															break
-														end
-													end
-													break
-												end
-											end
-										end
-										if canAttach then break end
-									end
+									if k == #attachmentData.client.component then Notify({text = "You can't fit this component to this weapon!"}) end
 								end
 							end
 						end)
