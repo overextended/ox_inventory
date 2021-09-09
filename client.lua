@@ -177,7 +177,7 @@ local UseSlot = function(slot)
 							local component = components[i]
 							if DoesWeaponTakeWeaponComponent(currentWeapon.hash, component) then
 								if HasPedGotWeaponComponent(ESX.PlayerData.ped, currentWeapon.hash, component) then 
-									Notify({text = "This weapon already has this component!"})
+									Notify({type = 'error', text = ox.locale('component_has', data.label)})
 								else
 									TriggerEvent('ox_inventory:item', data, function(data)
 										if data then
@@ -189,7 +189,7 @@ local UseSlot = function(slot)
 								return
 							end
 						end
-						Notify({type = 'error', text = "You can't fit this component to this weapon!"})
+						Notify({type = 'error', text = ox.locale('component_invalid', data.label) })
 					end
 				end
 			end
