@@ -13,13 +13,13 @@ for k, v in pairs(Items) do
 	end
 	if ox.server then
 		v.client = nil
-		count = count + 1
+		count += 1
 	end
 end
 
 for k, v in pairs(Data.Weapons) do
 	v.name = k
-	v.hash = GetHashKey(k)
+	v.hash = joaat(k)
 	v.stack = false
 	v.close = false
 	Items[k] = v

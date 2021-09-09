@@ -1,6 +1,6 @@
 local M = {}
-local Shops = data('shops')
-local Utils, Items = module('utils'), module('items')
+local Shops <const> = data('shops')
+local Utils <const>, Items <const> = module('utils'), module('items')
 
 local Stores = {}
 
@@ -9,7 +9,7 @@ for i=1, #Shops.Stores do
 	if not v.type then v.type = Shops.General end
 	v.label = v.type.name
 	local inventory = {}
-	local copy = Utils.Copy(v.type.inventory)
+	local copy = table.clone(v.type.inventory)
 	for k=1, #copy do
 		local Item = Items(copy[k].name)
 		if Item then

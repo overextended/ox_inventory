@@ -1,6 +1,6 @@
-local Stashes, Vehicles = data('stashes'), data('vehicles')
-local Items, Weapons = table.unpack(module('items'))
-local Utils, Progress, Shops = module('utils'), module('progress'), module('shops')
+local Stashes <const>, Vehicles <const> = data('stashes'), data('vehicles')
+local Items <const>, Weapons <const> = table.unpack(module('items'))
+local Utils <const>, Progress <const>, Shops <const> = module('utils'), module('progress'), module('shops')
 
 local Blips, Drops, nearbyMarkers, cancelled, invOpen = {}, {}, {}, false, false
 local playerId, playerCoords, invOpen, currentWeapon, currentMarker
@@ -46,7 +46,8 @@ local Disarm = function(newSlot)
 		SetPedAmmo(ESX.PlayerData.ped, currentWeapon.hash, 0)
 		ClearPedSecondaryTask(ESX.PlayerData.ped)
 		local sleep = (ESX.PlayerData.job.name == 'police' and GetWeapontypeGroup(currentWeapon.hash) == 416676503) and 450 or 1400
-		Utils.PlayAnimAdvanced(sleep, sleep == 450 and 'reaction@intimidation@cop@unarmed' or 'reaction@intimidation@1h', 'outro', GetEntityCoords(ESX.PlayerData.ped, true), 0, 0, GetEntityHeading(ESX.PlayerData.ped), 8.0, 3.0, -1, 50, 0, 0, 0)
+		local coords = GetEntityCoords(ESX.PlayerData.ped, true)
+		Utils.PlayAnimAdvanced(sleep, sleep == 450 and 'reaction@intimidation@cop@unarmed' or 'reaction@intimidation@1h', 'outro', coords.x, coords.y, coords.z, 0, 0, GetEntityHeading(ESX.PlayerData.ped), 8.0, 3.0, -1, 50, 0, 0, 0)
 		Wait(sleep)
 		RemoveWeaponFromPed(ESX.PlayerData.ped, currentWeapon.hash)
 		TriggerServerEvent('ox_inventory:updateWeapon', 'disarm', ammo, newSlot)
@@ -125,7 +126,8 @@ local UseSlot = function(slot)
 								Disarm(data.slot)
 							end
 							local sleep = (ESX.PlayerData.job.name == 'police' and GetWeapontypeGroup(data.hash) == 416676503) and 400 or 1200
-							Utils.PlayAnimAdvanced(sleep*2, sleep == 400 and 'reaction@intimidation@cop@unarmed' or 'reaction@intimidation@1h', 'intro', GetEntityCoords(ESX.PlayerData.ped, true), 0, 0, GetEntityHeading(ESX.PlayerData.ped), 8.0, 3.0, -1, 50, 1, 0, 0)
+							local coords = GetEntityCoords(ESX.PlayerData.ped, true)
+							Utils.PlayAnimAdvanced(sleep*2, sleep == 400 and 'reaction@intimidation@cop@unarmed' or 'reaction@intimidation@1h', 'intro', coords.x, coords.y, coords.z, 0, 0, GetEntityHeading(ESX.PlayerData.ped), 8.0, 3.0, -1, 50, 1, 0, 0)
 							Wait(sleep)
 							GiveWeaponToPed(ESX.PlayerData.ped, data.hash, 0, false, true)
 							if item.metadata.components then
@@ -227,7 +229,8 @@ RegisterNetEvent('ox_inventory:closeInventory', function(options)
 			end
 			ClearPedTasks(ESX.PlayerData.ped)
 			Wait(100)
-			TaskPlayAnimAdvanced(ESX.PlayerData.ped, animDict, anim, GetEntityCoords(ESX.PlayerData.ped, true), 0, 0, GetEntityHeading(ESX.PlayerData.ped), 2.0, 2.0, 1000, 49, 0.25, 0, 0)
+			local coords = GetEntityCoords(ESX.PlayerData.ped, true)
+			TaskPlayAnimAdvanced(ESX.PlayerData.ped, animDict, anim, coords.x, coords.y, coords.z, 0, 0, GetEntityHeading(ESX.PlayerData.ped), 2.0, 2.0, 1000, 49, 0.25, 0, 0)
 			Wait(900)
 			ClearPedTasks(ESX.PlayerData.ped)
 			RemoveAnimDict(animDict)
@@ -271,7 +274,7 @@ RegisterNetEvent('ox_inventory:inventoryConfiscated', function()
 end)
 
 RegisterNetEvent('ox_inventory:createDrop', function(data, owner)
-	local coords = vector3(data[2].x, data[2].y, data[2].z-0.2)
+	local coords = vec3(data[2].x, data[2].y, data[2].z-0.2)
 	Drops = Drops or {}
 	Drops[data[1]] = coords
 	if owner == playerId and invOpen and #(playerCoords - coords) <= 1 then
@@ -340,8 +343,8 @@ RegisterNetEvent('ox_inventory:setPlayerInventory', function(data)
 	collectgarbage('collect')
 
 	SetInterval(1, 250, function()
-		playerCoords = GetEntityCoords(ESX.PlayerData.ped)
 		if not invOpen then
+			playerCoords = GetEntityCoords(ESX.PlayerData.ped)
 			local closestMarker
 			for k, v in pairs(Drops) do
 				local distance = #(playerCoords - v)
@@ -373,7 +376,7 @@ RegisterNetEvent('ox_inventory:setPlayerInventory', function(data)
 					end
 				elseif not marker and distance < 8 then nearbyMarkers['stash'..k] = {v.coords, 30, 30, 150} elseif marker and distance > 8 then nearbyMarkers['stash'..k] = nil end
 			end
-			local weaponLicense = vector3(12.42198, -1105.82, 29.7854)
+			local weaponLicense = vec3(12.42198, -1105.82, 29.7854)
 			local distance = #(playerCoords - weaponLicense)
 			if distance < 8 then
 				local marker = nearbyMarkers['license']
@@ -592,7 +595,7 @@ RegisterCommand('inv2', function()
 			if IsPedInAnyVehicle(ESX.PlayerData.ped, false) then
 				local vehicle = GetVehiclePedIsIn(ESX.PlayerData.ped, false)
 				if NetworkGetEntityIsNetworked(vehicle) then
-					local plate = Config.TrimPlate and ox.trim(GetVehicleNumberPlateText(vehicle)) or GetVehicleNumberPlateText(vehicle)
+					local plate = Config.TrimPlate and string.strtrim(GetVehicleNumberPlateText(vehicle)) or GetVehicleNumberPlateText(vehicle)
 					OpenInventory('glovebox', {id='glove'..plate, label=plate, class=GetVehicleClass(vehicle)})
 					Wait(100)
 					while true do
@@ -639,13 +642,13 @@ RegisterCommand('inv2', function()
 						local distance = #(playerCoords - position)
 						local closeToVehicle = distance < 2 and (open == 5 and (checkVehicle == nil and true or 2) or open == 4)
 						if closeToVehicle then
-							local plate = Config.TrimPlate and ox.trim(GetVehicleNumberPlateText(vehicle)) or GetVehicleNumberPlateText(vehicle)
-							TaskTurnPedToFaceCoord(ESX.PlayerData.ped, position)
+							local plate = Config.TrimPlate and string.strtrim(GetVehicleNumberPlateText(vehicle)) or GetVehicleNumberPlateText(vehicle)
+							TaskTurnPedToFaceCoord(ESX.PlayerData.ped, position.x, position.y, position.z)
 							lastVehicle = vehicle
 							OpenInventory('trunk', {id='trunk'..plate, label=plate, class=class})
 							local timeout = 20
 							repeat Wait(50)
-								timeout = timeout - 1
+								timeout -= 1
 							until (currentInventory and currentInventory.type == 'trunk') or timeout == 0
 							if timeout == 0 then
 								closeToVehicle, lastVehicle = false, nil
@@ -663,7 +666,7 @@ RegisterCommand('inv2', function()
 									local playerCoords = GetEntityCoords(ESX.PlayerData.ped)
 									if #(playerCoords - position) >= 2 or not DoesEntityExist(vehicle) then
 										break
-									else TaskTurnPedToFaceCoord(ESX.PlayerData.ped, position) end
+									else TaskTurnPedToFaceCoord(ESX.PlayerData.ped, position.x, position.y, position.z) end
 								else break end
 							end
 							if lastVehicle then TriggerEvent('ox_inventory:closeInventory') end

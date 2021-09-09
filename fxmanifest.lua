@@ -4,6 +4,8 @@ author 'Overextended'
 description 'https://github.com/overextended/ox_inventory'
 versioncheck 'https://raw.githubusercontent.com/overextended/ox_inventory/main/fxmanifest.lua'
 version '2.0.0'
+lua54 'yes'
+use_fxv2_oal 'yes'
 
 dependencies {
 	'es_extended'

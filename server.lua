@@ -1,6 +1,6 @@
 
-local Stashes, Vehicle = data('stashes'), data('vehicles')
-local Utils, Shops, Inventory, Items = module('utils'), module('shops'), module('inventory'), module('items')
+local Stashes <const>, Vehicle <const> = data('stashes'), data('vehicles')
+local Utils <const>, Shops <const>, Inventory <const>, Items <const> = module('utils'), module('shops'), module('inventory'), module('items')
 
 local SaveInventories = function()
 	local time = os.time(os.date('!*t'))
@@ -109,7 +109,7 @@ ox.RegisterServerCallback('ox_inventory:swapItems', function(source, cb, data)
 		local playerInventory, items, ret = Inventory(source), {}
 		if data.toType == 'newdrop' then
 			local fromSlot = playerInventory.items[data.fromSlot]
-			local toSlot = Utils.Copy(fromSlot)
+			local toSlot = table.clone(fromSlot)
 			toSlot.slot = data.toSlot
 			local items = {[data.fromSlot] = false}
 			playerInventory.items[data.fromSlot] = nil
@@ -143,7 +143,7 @@ ox.RegisterServerCallback('ox_inventory:swapItems', function(source, cb, data)
 						end
 					elseif data.count <= fromSlot.count then
 						fromSlot.count = fromSlot.count - data.count
-						toSlot = Utils.Copy(fromSlot)
+						toSlot = table.clone(fromSlot)
 						toSlot.count = data.count
 						toSlot.slot = data.toSlot
 						fromSlot.weight = Inventory.SlotWeight(Items(fromSlot.name), fromSlot)
@@ -194,7 +194,7 @@ ox.RegisterServerCallback('ox_inventory:buyItem', function(source, cb, data)
 					player.weight = player.weight + toSlot.weight
 				elseif fromSlot.count == nil or count <= fromSlot.count then
 					if fromSlot.count then fromSlot.count = fromSlot.count - count end
-					toSlot = Utils.Copy(fromSlot)
+					toSlot = table.clone(fromSlot)
 					toSlot.count = count
 					toSlot.slot = data.toSlot
 					toSlot.weight = Inventory.SlotWeight(Items(toSlot.name), toSlot)

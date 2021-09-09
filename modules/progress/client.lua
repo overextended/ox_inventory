@@ -1,4 +1,4 @@
-local M = {}
+local M  = {}
 M.Disable = {}
 M.Active = false
 
@@ -84,7 +84,7 @@ M.Start = function(options, completed)
 
 				RequestModel(model)
 
-				local modelHash = GetHashKey(model)
+				local modelHash = joaat(model)
 				while not HasModelLoaded(modelHash) do
 					Wait(5)
 				end
@@ -121,7 +121,7 @@ M.Start = function(options, completed)
 
 				RequestModel(model)
 
-				local modelHash = GetHashKey(model)
+				local modelHash = joaat(model)
 				while not HasModelLoaded(modelHash) do
 					Wait(0)
 				end

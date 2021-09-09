@@ -3,20 +3,6 @@ local func, err = load(LoadResourceFile(ox.name, 'config.lua')..'return Config',
 assert(func, err == nil or '\n^1'..err..'^7')
 local Config = func()
 
-ox.concat = function(d, ...)
-	if type(...) == 'string' then
-		local args, ret = {...}, {}
-		for i=1, #args do
-			ret[i] = args[i]
-		end
-		return table.concat(ret, d)
-	end
-end
-
-ox.trim = function(string)
-	return string:match("^%s*(.-)%s*$")
-end
-
 data = function(file)
 	return load(LoadResourceFile(ox.name, 'data/'..file..'.lua')..'return Data', file, 't')()
 end
@@ -34,9 +20,9 @@ module = function(file, shared)
 end
 
 if ox.server then
-	ox.error = function(...) print(ox.concat(' ', '^1[error]^7', ...)) end
-	ox.info = function(...) print(ox.concat(' ', '^2[info]^7', ...)) end
-	ox.warning = function(...) print(ox.concat(' ', '^3[warning]^7', ...)) end
+	ox.error = function(...) print(string.strjoin(' ', '^1[error]^7', ...)) end
+	ox.info = function(...) print(string.strjoin(' ', '^2[info]^7', ...)) end
+	ox.warning = function(...) print(string.strjoin(' ', '^3[warning]^7', ...)) end
 
 	ox.ServerCallbacks = {}
 	RegisterServerEvent('ox:TriggerServerCallback', function(name, ...)
