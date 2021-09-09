@@ -1,3 +1,5 @@
 nav:
   - index.md
   - issues.md
+  - modules
+  - client
