@@ -231,7 +231,7 @@ local CreateShopLocations = function()
 end
 
 local CreateLocationBlip = function(shopDetails, location)
-	if (shopDetails.blip and (not shopDetails.jobinfo or shopDetails.jobinfo.job == ESX.PlayerData.job.name)) then
+	if (shopDetails.blip and (not shopDetails or shopDetails.job == ESX.PlayerData.job.name)) then
 		local blipId = #Blips
 		Blips[blipId] = AddBlipForCoord(location.x, location.y)
 		SetBlipSprite(Blips[blipId], shopDetails.blip.id)
@@ -266,7 +266,7 @@ local Markers = function(tb, type, rgb, playerCoords, name)
 			if closestMarker == nil or currentMarker and distance < currentMarker[1] or closestMarker and distance < closestMarker[1] then
 				return {distance, k, type, name}
 			end
-		elseif not marker and distance < 8 then nearbyMarkers[id] = {x = v.x, y = v.y, z = v.z, r = rgb.x, g = rgb.y, b = rgb.z} elseif marker and distance > 8 then nearbyMarkers[id] = nil end
+		elseif not marker and distance < 8 then nearbyMarkers[id] = {x = v.x, y = v.y, z = v.z, r = rgb[1], g = rgb[2], b = rgb[3]} elseif marker and distance > 8 then nearbyMarkers[id] = nil end
 	end
 end
 
