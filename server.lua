@@ -1,6 +1,6 @@
 
 local Stashes <const>, Vehicle <const> = data('stashes'), data('vehicles')
-local Utils <const>, Shops <const>, Inventory <const>, Items <const> = module('utils'), module('shops'), module('inventory'), module('items')
+local Utils <const>, Shops <const>, Inventory <const>, Items <const> = module('utils'), data('shops'), module('inventory'), module('items')
 
 local SaveInventories = function()
 	local time = os.time(os.date('!*t'))
@@ -238,8 +238,9 @@ end)
 ox.RegisterServerCallback('ox_inventory:openShop', function(source, cb, inv, data) 
 	local left, shop = Inventory(source)
 	if data then
-		shop = Shops[data.id]
+		shop = Shops[data]
 		shop.type = inv
+		shop.id = data
 		left:set('open', shop.id)
 	end
 	cb({id=left.label, type=left.type, slots=left.slots, weight=left.weight, maxWeight=left.maxWeight}, shop)

@@ -188,26 +188,60 @@ local Raycast = function()
 end
 
 local Blips = {}
-local CreateShopBlips = function()
+local CreateShopLocations = function()
 	for i=1, #Blips do
 		RemoveBlip(i)
 	end
 	Blips = {}
 	for shopName, shopDetails in pairs(Shops) do
-		if (shopDetails.blip and (not shopDetails.jobinfo or shopDetails.jobinfo.job == ESX.PlayerData.job.name) and #shopDetails.locations > 0) then
-			for k, v in pairs(shopDetails.locations) do
-				local blipId = #Blips
-				Blips[blipId] = AddBlipForCoord(v.x, v.y)
-				SetBlipSprite(Blips[blipId], shopDetails.blip.id)
-				SetBlipDisplay(Blips[blipId], 4)
-				SetBlipScale(Blips[blipId], shopDetails.blip.scale)
-				SetBlipColour(Blips[blipId], shopDetails.blip.colour)
-				SetBlipAsShortRange(Blips[blipId], true)
-				BeginTextCommandSetBlipName('STRING')
-				AddTextComponentString(shopDetails.name)
-				EndTextCommandSetBlipName(Blips[blipId])
+		if (Config.qtarget == true) then
+			for id, target in pairs(shopDetails.targets) do
+				CreateLocationBlip(shopDetails, target.loc)
+
+				local length = target.length or 0.5
+				local width = target.width or 0.5
+				local heading = target.heading or 0.0
+				local distance = target.distance or 3.0
+				exports['qtarget']:AddBoxZone(type..'-'..name, target.loc, length, width, {
+					name=id..'-'..name,
+					heading=heading,
+					debugPoly=false,
+					minZ=target.minZ,
+					maxZ=target.maxZ
+				}, {
+					options = {
+						{
+							icon = "fas fa-shopping-basket",
+							label = "Open " .. shopDetails.name,
+							job = shopDetails.job,
+							action = function(entity)
+								OpenInventory('shop', shopName)
+							end,
+						},
+					},
+					distance = distance
+				})
+			end
+		else
+			for _, location in pairs(shopDetails.locations) do
+				CreateLocationBlip(shopDetails, location)
 			end
 		end
+	end
+end
+
+local CreateLocationBlip = function(shopDetails, location)
+	if (shopDetails.blip and (not shopDetails or shopDetails.job == ESX.PlayerData.job.name)) then
+		local blipId = #Blips
+		Blips[blipId] = AddBlipForCoord(location.x, location.y)
+		SetBlipSprite(Blips[blipId], shopDetails.blip.id)
+		SetBlipDisplay(Blips[blipId], 4)
+		SetBlipScale(Blips[blipId], shopDetails.blip.scale)
+		SetBlipColour(Blips[blipId], shopDetails.blip.colour)
+		SetBlipAsShortRange(Blips[blipId], true)
+		BeginTextCommandSetBlipName('STRING')
+		AddTextComponentString(shopDetails.name)
+		EndTextCommandSetBlipName(Blips[blipId])
 	end
 end
 
@@ -228,11 +262,11 @@ local Markers = function(tb, type, rgb, playerCoords, name)
 		local id = name and type..k..name or type..k
 		local marker = nearbyMarkers[id]
 		if distance < 1.2 then
-			if not marker then nearbyMarkers[id] = {x = v.x, y = v.y, z = v.z, r = rgb.x, g = rgb.y, b = rgb.z} end
+			if not marker then nearbyMarkers[id] = {x = v.x, y = v.y, z = v.z, r = rgb[1], g = rgb[2], b = rgb[3]} end
 			if closestMarker == nil or currentMarker and distance < currentMarker[1] or closestMarker and distance < closestMarker[1] then
 				return {distance, k, type, name}
 			end
-		elseif not marker and distance < 8 then nearbyMarkers[id] = {x = v.x, y = v.y, z = v.z, r = rgb.x, g = rgb.y, b = rgb.z} elseif marker and distance > 8 then nearbyMarkers[id] = nil end
+		elseif not marker and distance < 8 then nearbyMarkers[id] = {x = v.x, y = v.y, z = v.z, r = rgb[1], g = rgb[2], b = rgb[3]} elseif marker and distance > 8 then nearbyMarkers[id] = nil end
 	end
 end
 
@@ -249,11 +283,16 @@ end
 SetInterval(1, 250, function()
 	if not invOpen then
 		playerCoords = GetEntityCoords(ESX.PlayerData.ped)
-		local closestMarker = Markers(Drops, 'drop', vec3(150, 30, 30), playerCoords)
-		closestMarker = Markers(Stashes, 'stash', vec3(30, 30, 150), playerCoords)
-		for k, v in pairs(Shops) do
-			closestMarker = Markers(v.locations, 'shop', vec3(30, 150, 30), playerCoords, k)
+		local closestMarker = {}
+		closestMarker = Markers(Drops, 'drop', {150, 30, 30}, playerCoords)
+		if (not Config.qtarget) then
+			closestMarker = Markers(Stashes, 'stash', {30, 30, 150}, playerCoords)
+			for k, v in pairs(Shops) do
+				local closestMarkerFunc = Markers(v.locations, 'shop', {30, 150, 30}, playerCoords, k)
+				if (closestMarkerFunc) then closestMarker = closestMarkerFunc end
+			end
 		end
+		
 		local weaponLicense = vec3(12.42198, -1105.82, 29.7854)
 		local distance = #(playerCoords - weaponLicense)
 		if distance < 8 then
@@ -265,7 +304,7 @@ SetInterval(1, 250, function()
 				end
 			end
 		end
-		currentMarker = (closestMarker and closestMarker[1] < 2) and closestMarker or nil
+		if (closestMarker[1] < 2) then currentMarker = closestMarker end
 	else
 		playerCoords = GetEntityCoords(ESX.PlayerData.ped)
 		if currentInventory then
@@ -473,7 +512,7 @@ RegisterNetEvent('ox_inventory:setPlayerInventory', function(data)
         }
     end
     SendNUIMessage({ action = 'items', data = ItemData })
-	CreateShopBlips()
+	CreateShopLocations()
 	Notify({text = ox.locale('inventory_setup'), duration = 2500})
 	collectgarbage('collect')	
 end)
@@ -556,7 +595,7 @@ RegisterCommand('inv', function()
 	TriggerEvent('ox_inventory:getProperty', function(data) property = data end)
 	if property then return OpenInventory('stash', property) end
 	if IsPedInAnyVehicle(ESX.PlayerData.ped, false) then currentDrop = nil end
-	if currentMarker and currentMarker[3] ~= 'license' and not invOpen then OpenInventory(currentMarker[3], {id=currentMarker[2]})
+	if currentMarker and currentMarker[3] ~= 'license' and not invOpen then OpenInventory(currentMarker[3], currentMarker[4])
 	else OpenInventory() end
 end)
 
