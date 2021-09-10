@@ -2,7 +2,7 @@ local Data = {}
 Data.General = {
 	name = 'Shop',
 	blip = {
-		id = 52, colour = 69, scale = 0.6
+		id = 52, colour = 69, scale = 0.8
 	}, inventory = {
 		{ name = 'burger', price = 10 },
 		{ name = 'water', price = 10 },
@@ -18,7 +18,7 @@ Data.General = {
 Data.Liquor = {
 	name = 'Liquor Store',
 	blip = {
-		id = 93, colour = 69, scale = 0.6
+		id = 93, colour = 69, scale = 0.8
 	}, inventory = {
 		{ name = 'water', price = 10 },
 		{ name = 'cola', price = 10 }
@@ -38,7 +38,7 @@ Data.Liquor = {
 Data.YouTool = {
 	name = 'YouTool',
 	blip = {
-		id = 402, colour = 69, scale = 0.6
+		id = 402, colour = 69, scale = 0.8
 	}, inventory = {
 		{ name = 'lockpick', price = 10 }
 	}, locations = {
@@ -52,7 +52,7 @@ Data.YouTool = {
 Data.Ammunation = {
 	name = 'Ammunation',
 	blip = {
-		id = 110, colour = 69, scale = 0.6
+		id = 110, colour = 69, scale = 0.8
 	}, inventory = {
 		{ name = 'ammo-9', price = 5, },
 		{ name = 'WEAPON_KNIFE', price = 200 },
@@ -77,7 +77,7 @@ Data.PoliceArmoury = {
 	name = 'Police Armoury',
 	job = { ['police'] = 1 },
 	blip = { 
-		id = 110, colour = 84, scale = 0.6
+		id = 110, colour = 84, scale = 0.8
 	}, inventory = {
 		{ name = 'ammo-9', price = 5, },
 		{ name = 'ammo-rifle', price = 5, },
@@ -87,9 +87,9 @@ Data.PoliceArmoury = {
 		{ name = 'WEAPON_CARBINERIFLE', price = 1000, metadata = { registered = true, serial = 'POL' }, license = 'weapon', grade = 3 },
 		{ name = 'WEAPON_STUNGUN', price = 500, metadata = { registered = true, serial = 'POL'} }
 	}, locations = {
-		vector3(487.235, -997.108, 30.69)
+		vector3(451.51, -979.44, 30.68)
 	}, targets = {
-		{ loc = vector3(487.235, -997.108, 30.69), length = 0.5, width = 3.0, heading = 60.0, minZ = 29.0, maxZ = 31.0, distance = 6 }
+		{ loc = vector3(453.21, -980.03, 30.68), length = 0.5, width = 3.0, heading = 270.0, minZ = 30.5, maxZ = 32.0, distance = 6 }
 	}
 }
 
@@ -97,7 +97,7 @@ Data.Medicine = {
 	name = 'Medicine Cabinet',
 	job = 'ambulance',
 	blip = {
-		id = 403, colour = 69, scale = 0.6
+		id = 403, colour = 69, scale = 0.8
 	}, inventory = {
 		{ name = 'medikit', price = 26 },
 		{ name = 'bandage', price = 5 }
