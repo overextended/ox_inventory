@@ -194,13 +194,37 @@ local CreateShopLocations = function()
 	end
 	Blips = {}
 	for shopName, shopDetails in pairs(Shops) do
-		if (not Config.qtarget and #shopDetails.locations > 0) then
+		if (Config.qtarget == true) then
+			for id, target in pairs(shopDetails.targets) do
+				CreateLocationBlip(shopDetails, target.loc)
+
+				local length = target.length or 0.5
+				local width = target.width or 0.5
+				local heading = target.heading or 0.0
+				local distance = target.distance or 3.0
+				exports['qtarget']:AddBoxZone(type..'-'..name, target.loc, length, width, {
+					name=id..'-'..name,
+					heading=heading,
+					debugPoly=false,
+					minZ=target.minZ,
+					maxZ=target.maxZ
+				}, {
+					options = {
+						{
+							icon = "fas fa-shopping-basket",
+							label = "Open " .. shopDetails.name,
+							job = shopDetails.job,
+							action = function(entity)
+								OpenInventory('shop', shopName)
+							end,
+						},
+					},
+					distance = distance
+				})
+			end
+		else
 			for _, location in pairs(shopDetails.locations) do
 				CreateLocationBlip(shopDetails, location)
-			end
-		elseif (Config.qtarget and #shopDetails.targets > 0) then
-			for _, target in pairs(shopDetails.targets) do
-				CreateLocationBlip(shopDetails, target.loc)
 			end
 		end
 	end

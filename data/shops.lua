@@ -75,7 +75,7 @@ Data.Ammunation = {
 
 Data.PoliceArmoury = {
 	name = 'Police Armoury',
-	jobinfo = { job = { ['police'] = 1 } },
+	job = { ['police'] = 1 },
 	blip = { 
 		id = 110, colour = 84, scale = 0.6
 	}, inventory = {
@@ -89,13 +89,13 @@ Data.PoliceArmoury = {
 	}, locations = {
 		vector3(487.235, -997.108, 30.69)
 	}, targets = {
-		{ loc = vector3(487.235, -997.108, 30.69), length = 0.5, width = 3.0, heading = 60.0, distance = 6 }
+		{ loc = vector3(487.235, -997.108, 30.69), length = 0.5, width = 3.0, heading = 60.0, minZ = 29.0, maxZ = 31.0, distance = 6 }
 	}
 }
 
 Data.Medicine = {
 	name = 'Medicine Cabinet',
-	jobinfo = { job = 'ambulance' },
+	job = 'ambulance',
 	blip = {
 		id = 403, colour = 69, scale = 0.6
 	}, inventory = {
