@@ -187,9 +187,19 @@ local Raycast = function()
 	if hit and type ~= 0 then return hit, coords, entity, type else	return false end
 end
 
+local GetJobGrade = function(jobConfig)
+	local job = jobConfig[ESX.PlayerData.job.name] or jobConfig
+	if (job == nil) then return nil end
+	job = tonumber(job)
+	if (job == nil) then job = 1 end
+	return job
+end
+
 local Blips = {}
 local CreateLocationBlip = function(shopDetails, location)
-	if shopDetails.blip and (not shopDetails.job or shopDetails.job == ESX.PlayerData.job.name) then
+	local jobGrade = GetJobGrade(shopDetails.job)
+
+	if (shopDetails.blip and ESX.PlayerData.job.grade >= jobGrade) then
 		local blipId = #Blips
 		Blips[blipId] = AddBlipForCoord(location.x, location.y)
 		SetBlipSprite(Blips[blipId], shopDetails.blip.id)
@@ -217,14 +227,21 @@ local CreateShopLocations = function()
 				local width = target.width or 0.5
 				local heading = target.heading or 0.0
 				local distance = target.distance or 3.0
-				exports['qtarget']:AddBoxZone('shop-'..shopName..'-'..id, target.loc, length, width, {
-					name=id..'-'..shopName, heading=heading, debugPoly=false, minZ=target.minZ, maxZ=target.maxZ
-				}, { options = {
+				exports['qtarget']:AddBoxZone('shop-'..shopName, target.loc, length, width, {
+					name=id..'-'..shopName,
+					heading=heading,
+					debugPoly=false,
+					minZ=target.minZ,
+					maxZ=target.maxZ
+				}, {
+					options = {
 						{
 							icon = "fas fa-shopping-basket",
 							label = "Open " .. shopDetails.name,
 							job = shopDetails.job,
-							action = function(entity) OpenInventory('shop', shopName) end,
+							action = function(entity)
+								OpenInventory('shop', {id = id, type = shopName})
+							end,
 						},
 					},
 					distance = distance
@@ -279,8 +296,10 @@ SetInterval(1, 250, function()
 		closestMarker = nil
 		Markers(Drops, 'drop', vec3(150, 30, 30), playerCoords)
 		Markers(Stashes, 'stash', vec3(30, 30, 150), playerCoords)
-		for k, v in pairs(Shops) do
-			Markers(v.locations, 'shop', vec3(30, 150, 30), playerCoords, k)
+		if (not Config.qtarget) then
+			for k, v in pairs(Shops) do
+				Markers(v.locations, 'shop', vec3(30, 150, 30), playerCoords, k)
+			end
 		end
 		local weaponLicense = vec3(12.42198, -1105.82, 29.7854)
 		local distance = #(playerCoords - weaponLicense)
