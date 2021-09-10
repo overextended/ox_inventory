@@ -6,7 +6,7 @@ local Stores = {}
 
 for shopName, shopDetails in pairs(Shops) do
 	local inventory = {}
-	local copy = Utils.Copy(shopDetails.inventory)
+	local copy = table.clone(shopDetails.inventory)
 	for i=1, #copy do
 		local Item = Items(copy[i].name)
 		if (Item) then
@@ -31,7 +31,7 @@ end
 -- 	if not v.type then v.type = Shops.General end
 -- 	v.label = v.type.name
 -- 	local inventory = {}
--- 	local copy = Utils.Copy(v.type.inventory)
+-- 	local copy = table.clone(v.type.inventory)
 -- 	for k=1, #copy do
 -- 		local Item = Items(copy[k].name)
 -- 		if Item then

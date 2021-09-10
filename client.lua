@@ -1,9 +1,7 @@
 local Stashes <const>, Vehicles <const> = data('stashes'), data('vehicles')
 local Items <const>, Weapons <const> = table.unpack(module('items'))
 local Utils <const>, Progress <const>, Shops <const> = module('utils'), module('progress'), module('shops')
-
-local Blips, Drops, nearbyMarkers, cancelled, invOpen = {}, {}, {}, false, false
-local playerId, playerCoords, invOpen, currentWeapon, currentMarker
+local invOpen, playerId, currentWeapon
 local plyState, isBusy = LocalPlayer.state, false
 
 local SetBusy = function(state)
@@ -11,30 +9,6 @@ local SetBusy = function(state)
 	plyState:set('isBusy', state, false)
 end
 exports('SetBusy', SetBusy)
-
-local SetWeapon = function(weapon, hash, ammo)
-	currentWeapon = weapon and {name=weapon.name, slot=weapon.slot, label=weapon.label, metadata=weapon.metadata, hash=hash, ammo=ammo, throwable=weapon.throwable} or nil
-	TriggerEvent('ox_inventory:currentWeapon', currentWeapon)
-	if currentWeapon then currentWeapon.timer = 0 end
-	SetDisableAmbientMeleeMove(playerId, true)
-end
-
-local Notify = function(data) SendNUIMessage({ action = 'showNotif', data = data }) end
-RegisterNetEvent('ox_inventory:Notify', Notify)
-exports('Notify', Notify)
-
-local CanOpenInventory = function()
-	return ESX.PlayerLoaded and invOpen ~= nil and isBusy == false and not ESX.PlayerData.dead and not isCuffed and not IsPauseMenuActive() and not IsPedFatallyInjured(ESX.PlayerData.ped, 1) and (not currentWeapon or currentWeapon.timer == 0)
-end
-
-local CanOpenTarget = function(ped)
-	return IsPedFatallyInjured(ped)
-	or IsEntityPlayingAnim(ped, 'random@mugging3', 'handsup_standing_base', 3)
-	or IsEntityPlayingAnim(ped, 'missminuteman_1ig_2', 'handsup_base', 3)
-	or IsEntityPlayingAnim(ped, 'missminuteman_1ig_2', 'handsup_enter', 3)
-	or IsEntityPlayingAnim(ped, 'dead', 'dead_a', 3)
-	or IsEntityPlayingAnim(ped, 'mp_arresting', 'idle', 3)
-end
 
 local Disarm = function(newSlot)
 	SetWeaponsNoAutoswap(1)
@@ -69,6 +43,14 @@ local ClearWeapons = function()
 	end
 end
 RegisterNetEvent('ox_inventory:clearWeapons', ClearWeapons)
+
+local Notify = function(data) SendNUIMessage({ action = 'showNotif', data = data }) end
+RegisterNetEvent('ox_inventory:Notify', Notify)
+exports('Notify', Notify)
+
+local CanOpenInventory = function()
+	return ESX.PlayerLoaded and invOpen ~= nil and isBusy == false and not ESX.PlayerData.dead and not isCuffed and not IsPauseMenuActive() and not IsPedFatallyInjured(ESX.PlayerData.ped, 1) and (not currentWeapon or currentWeapon.timer == 0)
+end
 
 local OpenInventory = function(inv, data)
 	if CanOpenInventory() then
@@ -197,11 +179,61 @@ local UseSlot = function(slot)
 	end
 end
 
+local playerCoords
 local Raycast = function()
 	local plyOffset = GetOffsetFromEntityInWorldCoords(ESX.PlayerData.ped, 0.0, 3.0, -0.05)
 	local ret, hit, coords, surfacenormal, entity = GetShapeTestResult(StartShapeTestRay(playerCoords.x, playerCoords.y, playerCoords.z, plyOffset.x, plyOffset.y, plyOffset.z, -1, ESX.PlayerData.ped, 0))
 	local type = GetEntityType(entity)
 	if hit and type ~= 0 then return hit, coords, entity, type else	return false end
+end
+
+local Blips = {}
+local CreateShopBlips = function()
+	for i=1, #Blips do
+		RemoveBlip(i)
+	end
+	Blips = {}
+	for shopName, shopDetails in pairs(Shops) do
+		if (shopDetails.blip and (not shopDetails.jobinfo or shopDetails.jobinfo.job == ESX.PlayerData.job.name) and #shopDetails.locations > 0) then
+			for k, v in pairs(shopDetails.locations) do
+				local blipId = #Blips
+				Blips[blipId] = AddBlipForCoord(v.x, v.y)
+				SetBlipSprite(Blips[blipId], shopDetails.blip.id)
+				SetBlipDisplay(Blips[blipId], 4)
+				SetBlipScale(Blips[blipId], shopDetails.blip.scale)
+				SetBlipColour(Blips[blipId], shopDetails.blip.colour)
+				SetBlipAsShortRange(Blips[blipId], true)
+				BeginTextCommandSetBlipName('STRING')
+				AddTextComponentString(shopDetails.name)
+				EndTextCommandSetBlipName(Blips[blipId])
+			end
+		end
+	end
+end
+
+local CanOpenTarget = function(ped)
+	return IsPedFatallyInjured(ped)
+	or IsEntityPlayingAnim(ped, 'random@mugging3', 'handsup_standing_base', 3)
+	or IsEntityPlayingAnim(ped, 'missminuteman_1ig_2', 'handsup_base', 3)
+	or IsEntityPlayingAnim(ped, 'missminuteman_1ig_2', 'handsup_enter', 3)
+	or IsEntityPlayingAnim(ped, 'dead', 'dead_a', 3)
+	or IsEntityPlayingAnim(ped, 'mp_arresting', 'idle', 3)
+end
+
+local Drops, nearbyMarkers, currentMarker = {}, {}, {}
+local Markers = function(tb, type, rgb, playerCoords, name)
+	for k, v in pairs(tb) do
+		v = v.coords or v
+		local distance = #(playerCoords - v)
+		local id = name and type..k..name or type..k
+		local marker = nearbyMarkers[id]
+		if distance < 1.2 then
+			if not marker then nearbyMarkers[id] = {x = v.x, y = v.y, z = v.z, r = rgb.x, g = rgb.y, b = rgb.z} end
+			if closestMarker == nil or currentMarker and distance < currentMarker[1] or closestMarker and distance < closestMarker[1] then
+				return {distance, k, type, name}
+			end
+		elseif not marker and distance < 8 then nearbyMarkers[id] = {x = v.x, y = v.y, z = v.z, r = rgb.x, g = rgb.y, b = rgb.z} elseif marker and distance > 8 then nearbyMarkers[id] = nil end
+	end
 end
 
 OnPlayerData = function(key, val)
@@ -213,6 +245,140 @@ OnPlayerData = function(key, val)
 	SetPedCanSwitchWeapon(ESX.PlayerData.ped, 0)
 	SetPedEnableWeaponBlocking(ESX.PlayerData.ped, 1)
 end
+
+SetInterval(1, 250, function()
+	if not invOpen then
+		playerCoords = GetEntityCoords(ESX.PlayerData.ped)
+		local closestMarker = Markers(Drops, 'drop', vec3(150, 30, 30), playerCoords)
+		closestMarker = Markers(Stashes, 'stash', vec3(30, 30, 150), playerCoords)
+		for k, v in pairs(Shops) do
+			closestMarker = Markers(v.locations, 'shop', vec3(30, 150, 30), playerCoords, k)
+		end
+		local weaponLicense = vec3(12.42198, -1105.82, 29.7854)
+		local distance = #(playerCoords - weaponLicense)
+		if distance < 8 then
+			local marker = nearbyMarkers['license']
+			if distance < 1 then
+				if not marker then nearbyMarkers['license'] = {weaponLicense, 30, 150, 30} end
+				if currentMarker and distance < currentMarker[1] or closestMarker and distance < closestMarker[1] or not closestMarker then
+					closestMarker = {distance, 'weapon', 'license'}
+				end
+			end
+		end
+		currentMarker = (closestMarker and closestMarker[1] < 2) and closestMarker or nil
+	else
+		playerCoords = GetEntityCoords(ESX.PlayerData.ped)
+		if currentInventory then
+			if currentInventory.type == 'player' then
+				local id = GetPlayerFromServerId(currentInventory.id)
+				local ped = GetESX.PlayerData.ped(id)
+				local pedCoords = GetEntityCoords(ped)
+				if not id or #(playerCoords - pedCoords) > 1.8 then
+					TriggerEvent('ox_inventory:closeInventory')
+					Notify({type = 'error', text = ox.locale('inventory_lost_access'), duration = 2500})
+				elseif ESX.PlayerData.job.name ~= 'police' and not CanOpenTarget(ped) then
+					TriggerEvent('ox_inventory:closeInventory')
+					Notify({type = 'error', text = ox.locale('inventory_lost_access'), duration = 2500})
+				else
+					TaskTurnToFaceCoords(ESX.PlayerData.ped, pedCoords)
+				end
+			elseif not lastVehicle and currentInventory.coords and (#(playerCoords - currentInventory.coords) > 2 or CanOpenTarget(ESX.PlayerData.ped)) then
+				TriggerEvent('ox_inventory:closeInventory')
+				Notify({type = 'error', text = ox.locale('inventory_lost_access'), duration = 2500})
+			end
+		end
+	end
+	if ox.parachute and GetPedParachuteState(ESX.PlayerData.ped) ~= -1 then ESX.Game.DeleteObject(ox.parachute) ox.parachute = false end
+	if invOpen and not CanOpenInventory() then TriggerEvent('ox_inventory:closeInventory') end
+end)
+
+SetInterval(2, 0, function()
+	if invOpen then
+		DisableAllControlActions(0)
+		HideHudAndRadarThisFrame()
+		if currentInventory.type == 'newdrop' then
+			EnableControlAction(0, 30, true)
+			EnableControlAction(0, 31, true)
+		end
+	else
+		if Progress.Active then
+			if Progress.Disable.mouse then
+				DisableControlAction(0, 1, true) -- LookLeftRight
+				DisableControlAction(0, 2, true) -- LookUpDown
+				DisableControlAction(0, 106, true) -- VehicleMouseControlOverride
+			end
+			if Progress.Disable.move then
+				DisableControlAction(0, 30, true) -- disable left/right
+				DisableControlAction(0, 31, true) -- disable forward/back
+				DisableControlAction(0, 36, true) -- INPUT_DUCK
+				DisableControlAction(0, 21, true) -- disable sprint
+			end
+			if Progress.Disable.car then
+				DisableControlAction(0, 63, true) -- veh turn left
+				DisableControlAction(0, 64, true) -- veh turn right
+				DisableControlAction(0, 71, true) -- veh forward
+				DisableControlAction(0, 72, true) -- veh backwards
+				DisableControlAction(0, 75, true) -- disable exit vehicle
+			end
+			if Progress.Disable.combat then
+				DisablePlayerFiring(playerId, true) -- Disable weapon firing
+				DisableControlAction(0, 25, true) -- disable aim
+			end
+		end
+		for k, v in pairs(nearbyMarkers) do
+			DrawMarker(2, v.x,v.y,v.z, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.3, 0.2, 0.15, v.r, v.g, v.b, 222, false, false, false, true, false, false, false)
+		end
+		DisablePlayerVehicleRewards(playerId)
+		if isBusy then
+			DisablePlayerFiring(playerID, true)
+			DisableControlAction(0, 23, true)
+			DisableControlAction(0, 25, true)
+			DisableControlAction(0, 263, true)
+		end
+		if currentMarker and IsControlJustReleased(0, 38, true) then
+			if currentMarker[3] == 'license' then
+				ox.TriggerServerCallback('ox_inventory:buyLicense', function(result)
+					if result[1] == false then
+						Notify({type = 'error', text = ox.locale(result[2]), duration = 2500})
+					else
+						Notify({text = ox.locale(result[1]), duration = 2500})
+					end
+				end, currentMarker[2])
+			end
+		end
+		if currentWeapon then
+			DisableControlAction(0, 263, true)
+			if isBusy == false and currentWeapon.timer ~= 0 and currentWeapon.timer < GetGameTimer() then
+				TriggerServerEvent('ox_inventory:updateWeapon', 'ammo', currentWeapon.metadata.ammo)
+				currentWeapon.timer = 0
+			elseif currentWeapon.metadata.ammo then
+				if IsPedShooting(ESX.PlayerData.ped) then
+					local currentAmmo = GetAmmoInPedWeapon(ESX.PlayerData.ped, currentWeapon.hash)
+					currentWeapon.metadata.ammo = (currentWeapon.metadata.ammo < currentAmmo) and 0 or currentAmmo
+					if currentAmmo == 0 then
+						ClearPedTasks(ESX.PlayerData.ped)
+						SetCurrentPedWeapon(ESX.PlayerData.ped, currentWeapon.hash, false)
+						SetPedCurrentWeaponVisible(ESX.PlayerData.ped, true, false, false, false)
+					end
+					currentWeapon.timer = GetGameTimer() + 400
+				end
+			elseif IsControlJustReleased(0, 24) then
+				if currentWeapon.throwable then
+					SetBusy(true)
+					SetTimeout(700, function()
+						ClearPedSecondaryTask(ESX.PlayerData.ped)
+						RemoveWeaponFromPed(ESX.PlayerData.ped, currentWeapon.hash)
+						TriggerServerEvent('ox_inventory:updateWeapon', 'throw')
+						SetWeapon()
+						SetBusy(false)
+					end)
+				elseif IsPedPerformingMeleeAction(ESX.PlayerData.ped) then
+					currentWeapon.timer = GetGameTimer() + 400
+				end
+			end
+		end
+	end
+end)
 
 RegisterNetEvent('ox_inventory:closeInventory', function(options)
 	if invOpen then
@@ -276,7 +442,7 @@ end)
 RegisterNetEvent('ox_inventory:createDrop', function(data, owner)
 	local coords = vec3(data[2].x, data[2].y, data[2].z-0.2)
 	Drops = Drops or {}
-	Drops[data[1]] = coords
+	Drops[data[1]] = {coords=coords}
 	if owner == playerId and invOpen and #(playerCoords - coords) <= 1 then
 		if not IsPedInAnyVehicle(ESX.PlayerData.ped, false) then
 			OpenInventory('drop', {id=data[1]})
@@ -307,198 +473,9 @@ RegisterNetEvent('ox_inventory:setPlayerInventory', function(data)
         }
     end
     SendNUIMessage({ action = 'items', data = ItemData })
-	
-	--[[--
-		Blip Management
-	--]]--
-	if next(Blips) then
-		for k, v in pairs(Blips) do
-			RemoveBlip(v)
-		end
-		Blips = {}
-	end
 	CreateShopBlips()
-	--[[--
-		Create Controls
-	--]]--
-	RegisterKeyMapping('inv', 'Open player inventory~', 'keyboard', Config.Keys[1])
-	RegisterKeyMapping('inv2', 'Open secondary inventory~', 'keyboard', Config.Keys[2])
-	RegisterKeyMapping('hotbar', 'Display inventory hotbar~', 'keyboard', Config.Keys[3])
-	RegisterKeyMapping('reload', 'Reload weapon~', 'keyboard', 'r')
-	TriggerEvent('chat:removeSuggestion', '/inv')
-	TriggerEvent('chat:removeSuggestion', '/inv2')
-	TriggerEvent('chat:removeSuggestion', '/hotbar')
-	TriggerEvent('chat:removeSuggestion', '/reload')
-	for i=1, 5 do
-		RegisterCommand('hotkey'..i, function() if not invOpen then UseSlot(i) end end)
-		RegisterKeyMapping('hotkey'..i, 'Use hotbar item '..i..'~', 'keyboard', i)
-		TriggerEvent('chat:removeSuggestion', '/hotkey'..i)
-	end
-	--]]--
-
 	Notify({text = ox.locale('inventory_setup'), duration = 2500})
-	collectgarbage('collect')
-
-	SetInterval(1, 250, function()
-		if not invOpen then
-			playerCoords = GetEntityCoords(ESX.PlayerData.ped)
-			local closestMarker
-			for k, v in pairs(Drops) do
-				local distance = #(playerCoords - v)
-				local marker = nearbyMarkers['drop'..k]
-				if distance < 1.2 then
-					if not marker then nearbyMarkers['drop'..k] = {v, 150, 30, 30} end
-					if currentMarker and distance < currentMarker[1] or closestMarker and distance < closestMarker[1] or not closestMarker then
-						closestMarker = {distance, k, 'drop'}
-					end
-				elseif not marker and distance < 8 then nearbyMarkers['drop'..k] = {v, 150, 30, 30} elseif marker and distance > 8 then nearbyMarkers['drop'..k] = nil end
-			end
-			for k, v in pairs(Shops) do
-				local distance = #(playerCoords - v.coords)
-				local marker = nearbyMarkers['shop'..k]
-				if distance < 1 then
-					if not marker then nearbyMarkers['shop'..k] = {v.coords, 30, 150, 30} end
-					if currentMarker and distance < currentMarker[1] or closestMarker and distance < closestMarker[1] or not closestMarker then
-						closestMarker = {distance, k, 'shop'}
-					end
-				elseif not marker and distance < 8 then nearbyMarkers['shop'..k] = {v.coords, 30, 150, 30} elseif marker and distance > 8 then nearbyMarkers['shop'..k] = nil end
-			end
-			for k, v in pairs(Stashes) do
-				local distance = #(playerCoords - v.coords)
-				local marker = nearbyMarkers['stash'..k]
-				if distance < 1 then
-					if not marker then nearbyMarkers['stash'..k] = {v.coords, 30, 30, 150} end
-					if currentMarker and distance < currentMarker[1] or closestMarker and distance < closestMarker[1] or not closestMarker then
-						closestMarker = {distance, k, 'stash'}
-					end
-				elseif not marker and distance < 8 then nearbyMarkers['stash'..k] = {v.coords, 30, 30, 150} elseif marker and distance > 8 then nearbyMarkers['stash'..k] = nil end
-			end
-			local weaponLicense = vec3(12.42198, -1105.82, 29.7854)
-			local distance = #(playerCoords - weaponLicense)
-			if distance < 8 then
-				local marker = nearbyMarkers['license']
-				if distance < 1 then
-					if not marker then nearbyMarkers['license'] = {weaponLicense, 30, 150, 30} end
-					if currentMarker and distance < currentMarker[1] or closestMarker and distance < closestMarker[1] or not closestMarker then
-						closestMarker = {distance, 'weapon', 'license'}
-					end
-				end
-			end
-			currentMarker = (closestMarker and closestMarker[1] < 2) and closestMarker or nil
-		else
-			playerCoords = GetEntityCoords(ESX.PlayerData.ped)
-			if currentInventory then
-				if currentInventory.type == 'player' then
-					local id = GetPlayerFromServerId(currentInventory.id)
-					local ped = GetESX.PlayerData.ped(id)
-					local pedCoords = GetEntityCoords(ped)
-					if not id or #(playerCoords - pedCoords) > 1.8 then
-						TriggerEvent('ox_inventory:closeInventory')
-						Notify({type = 'error', text = ox.locale('inventory_lost_access'), duration = 2500})
-					elseif ESX.PlayerData.job.name ~= 'police' and not CanOpenTarget(ped) then
-						TriggerEvent('ox_inventory:closeInventory')
-						Notify({type = 'error', text = ox.locale('inventory_lost_access'), duration = 2500})
-					else
-						TaskTurnToFaceCoords(ESX.PlayerData.ped, pedCoords)
-					end
-				elseif not lastVehicle and currentInventory.coords and (#(playerCoords - currentInventory.coords) > 2 or CanOpenTarget(ESX.PlayerData.ped)) then
-					TriggerEvent('ox_inventory:closeInventory')
-					Notify({type = 'error', text = ox.locale('inventory_lost_access'), duration = 2500})
-				end
-			end
-		end
-		if ox.parachute and GetPedParachuteState(ESX.PlayerData.ped) ~= -1 then ESX.Game.DeleteObject(ox.parachute) ox.parachute = false end
-		if invOpen and not CanOpenInventory() then TriggerEvent('ox_inventory:closeInventory') end
-	end)
-	
-	local wait = nil
-	SetInterval(2, 0, function()
-		if invOpen then
-			DisableAllControlActions(0)
-			HideHudAndRadarThisFrame()
-			if currentInventory.type == 'newdrop' then
-				EnableControlAction(0, 30, true)
-				EnableControlAction(0, 31, true)
-			end
-		else
-			if Progress.Active then
-				if Progress.Disable.mouse then
-					DisableControlAction(0, 1, true) -- LookLeftRight
-					DisableControlAction(0, 2, true) -- LookUpDown
-					DisableControlAction(0, 106, true) -- VehicleMouseControlOverride
-				end
-				if Progress.Disable.move then
-					DisableControlAction(0, 30, true) -- disable left/right
-					DisableControlAction(0, 31, true) -- disable forward/back
-					DisableControlAction(0, 36, true) -- INPUT_DUCK
-					DisableControlAction(0, 21, true) -- disable sprint
-				end
-				if Progress.Disable.car then
-					DisableControlAction(0, 63, true) -- veh turn left
-					DisableControlAction(0, 64, true) -- veh turn right
-					DisableControlAction(0, 71, true) -- veh forward
-					DisableControlAction(0, 72, true) -- veh backwards
-					DisableControlAction(0, 75, true) -- disable exit vehicle
-				end
-				if Progress.Disable.combat then
-					DisablePlayerFiring(playerId, true) -- Disable weapon firing
-					DisableControlAction(0, 25, true) -- disable aim
-				end
-			end
-			for k, v in pairs(nearbyMarkers) do
-				DrawMarker(2, v[1].x,v[1].y,v[1].z, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.3, 0.2, 0.15, v[2], v[3], v[4], 222, false, false, false, true, false, false, false)
-			end
-			DisablePlayerVehicleRewards(playerId)
-			if isBusy then
-				DisablePlayerFiring(playerID, true)
-				DisableControlAction(0, 23, true)
-				DisableControlAction(0, 25, true)
-				DisableControlAction(0, 263, true)
-			end
-			if currentMarker and IsControlJustReleased(0, 38, true) then
-				if currentMarker[3] == 'license' then
-					ox.TriggerServerCallback('ox_inventory:buyLicense', function(result)
-						if result[1] == false then
-							Notify({type = 'error', text = ox.locale(result[2]), duration = 2500})
-						else
-							Notify({text = ox.locale(result[1]), duration = 2500})
-						end
-					end, currentMarker[2])
-				end
-			end
-			if currentWeapon then
-				DisableControlAction(0, 263, true)
-				if isBusy == false and currentWeapon.timer ~= 0 and currentWeapon.timer < GetGameTimer() then
-					TriggerServerEvent('ox_inventory:updateWeapon', 'ammo', currentWeapon.metadata.ammo)
-					currentWeapon.timer = 0
-				elseif currentWeapon.metadata.ammo then
-					if IsPedShooting(ESX.PlayerData.ped) then
-						local currentAmmo = GetAmmoInPedWeapon(ESX.PlayerData.ped, currentWeapon.hash)
-						currentWeapon.metadata.ammo = (currentWeapon.metadata.ammo < currentAmmo) and 0 or currentAmmo
-						if currentAmmo == 0 then
-							ClearPedTasks(ESX.PlayerData.ped)
-							SetCurrentPedWeapon(ESX.PlayerData.ped, currentWeapon.hash, false)
-							SetPedCurrentWeaponVisible(ESX.PlayerData.ped, true, false, false, false)
-						end
-						currentWeapon.timer = GetGameTimer() + 400
-					end
-				elseif IsControlJustReleased(0, 24) then
-					if currentWeapon.throwable then
-						SetBusy(true)
-						SetTimeout(700, function()
-							ClearPedSecondaryTask(ESX.PlayerData.ped)
-							RemoveWeaponFromPed(ESX.PlayerData.ped, currentWeapon.hash)
-							TriggerServerEvent('ox_inventory:updateWeapon', 'throw')
-							SetWeapon()
-							SetBusy(false)
-						end)
-					elseif IsPedPerformingMeleeAction(ESX.PlayerData.ped) then
-						currentWeapon.timer = GetGameTimer() + 400
-					end
-				end
-			end
-		end
-	end)	
+	collectgarbage('collect')	
 end)
 
 AddEventHandler('onResourceStop', function(resourceName)
@@ -731,104 +708,16 @@ end)
 
 if ESX.PlayerLoaded then TriggerServerEvent('ox_inventory:requestPlayerInventory') end
 
---[[--
-	Functions 'n Shiz
---]]--
-function CreateShopBlips()
-	for shopName, shopDetails in pairs(Shops) do
-		if (shopDetails.blip and (not shopDetails.jobinfo or shopDetails.jobinfo.job == ESX.PlayerData.job.name) and #shopDetails.locations > 0) then
-			for k, v in pairs(shopDetails.locations) do
-				local blipId = shopName .. '-' .. k
-				Blips[blipId] = AddBlipForCoord(v)
-				SetBlipSprite(Blips[blipId], shopDetails.blip.id)
-				SetBlipDisplay(Blips[blipId], 4)
-				SetBlipScale(Blips[blipId], shopDetails.blip.scale)
-				SetBlipColour(Blips[blipId], shopDetails.blip.colour)
-				SetBlipAsShortRange(Blips[blipId], true)
-				BeginTextCommandSetBlipName('STRING')
-				AddTextComponentString(shopDetails.name)
-				EndTextCommandSetBlipName(Blips[blipId])
-			end
-		end
-	end
-end
-
-function DistanceToBlips()
-	SetInterval(1, 250, function()
-		playerCoords = GetEntityCoords(ESX.PlayerData.ped)
-		if not invOpen then
-			local closestMarker
-			for k, v in pairs(Drops) do
-				local distance = #(playerCoords - v)
-				local marker = nearbyMarkers['drop'..k]
-				if distance < 1.2 then
-					if not marker then nearbyMarkers['drop'..k] = {v, 150, 30, 30} end
-					if currentMarker and distance < currentMarker[1] or closestMarker and distance < closestMarker[1] or not closestMarker then
-						closestMarker = {distance, k, 'drop'}
-					end
-				elseif not marker and distance < 8 then nearbyMarkers['drop'..k] = {v, 150, 30, 30} elseif marker and distance > 8 then nearbyMarkers['drop'..k] = nil end
-			end
-			for k, v in pairs(Shops) do
-				if (v.locations ~= nil and #v.locations > 0) then
-					for l, z in pairs(v.locations) do
-						local distance = #(playerCoords - z)
-						local markerName = 'shop' .. k .. '-' .. l
-						local marker = nearbyMarkers[markerName]
-						if (distance < 1) then
-							if (not marker) then nearbyMarkers[markerName] = {z, 30, 150, 30} 
-							if (currentMarker and distance < currentMarker[1] or closestMarker and distance < closestMarker[1] or not closestMarker) then
-								closestMarker = {distance, k .. '-' .. l, 'shop'}
-							end
-						end
-						elseif (not marker and distance < 8) then nearbyMarkers[markerName] = {z, 30, 150, 30} elseif (marker and distance > 8) then nearbyMarkers[markerName] = nil end
-					end
-				end
-			end
-			for k, v in pairs(Stashes) do
-				local distance = #(playerCoords - v.coords)
-				local marker = nearbyMarkers['stash'..k]
-				if distance < 1 then
-					if not marker then nearbyMarkers['stash'..k] = {v.coords, 30, 30, 150} end
-					if currentMarker and distance < currentMarker[1] or closestMarker and distance < closestMarker[1] or not closestMarker then
-						closestMarker = {distance, k, 'stash'}
-					end
-				elseif not marker and distance < 8 then nearbyMarkers['stash'..k] = {v.coords, 30, 30, 150} elseif marker and distance > 8 then nearbyMarkers['stash'..k] = nil end
-			end
-			local weaponLicense = vector3(12.42198, -1105.82, 29.7854)
-			local distance = #(playerCoords - weaponLicense)
-			if distance < 8 then
-				local marker = nearbyMarkers['license']
-				if distance < 1 then
-					if not marker then nearbyMarkers['license'] = {weaponLicense, 30, 150, 30} end
-					if currentMarker and distance < currentMarker[1] or closestMarker and distance < closestMarker[1] or not closestMarker then
-						closestMarker = {distance, 'weapon', 'license'}
-					end
-				end
-			end
-			currentMarker = (closestMarker and closestMarker[1] < 2) and closestMarker or nil
-		else
-			playerCoords = GetEntityCoords(ESX.PlayerData.ped)
-			if currentInventory then
-				if currentInventory.type == 'player' then
-					local id = GetPlayerFromServerId(currentInventory.id)
-					local ped = GetESX.PlayerData.ped(id)
-					local pedCoords = GetEntityCoords(ped)
-					if not id or #(playerCoords - pedCoords) > 1.8 then
-						TriggerEvent('ox_inventory:closeInventory')
-						Notify({type = 'error', text = ox.locale('inventory_lost_access'), duration = 2500})
-					elseif ESX.PlayerData.job.name ~= 'police' and not CanOpenTarget(ped) then
-						TriggerEvent('ox_inventory:closeInventory')
-						Notify({type = 'error', text = ox.locale('inventory_lost_access'), duration = 2500})
-					else
-						TaskTurnToFaceCoords(ESX.PlayerData.ped, pedCoords)
-					end
-				elseif not lastVehicle and currentInventory.coords and (#(playerCoords - currentInventory.coords) > 2 or CanOpenTarget(ESX.PlayerData.ped)) then
-					TriggerEvent('ox_inventory:closeInventory')
-					Notify({type = 'error', text = ox.locale('inventory_lost_access'), duration = 2500})
-				end
-			end
-		end
-		if ox.parachute and GetPedParachuteState(ESX.PlayerData.ped) ~= -1 then ESX.Game.DeleteObject(ox.parachute) ox.parachute = false end
-		if invOpen and not CanOpenInventory() then TriggerEvent('ox_inventory:closeInventory') end
-	end)
+RegisterKeyMapping('inv', 'Open player inventory~', 'keyboard', Config.Keys[1])
+RegisterKeyMapping('inv2', 'Open secondary inventory~', 'keyboard', Config.Keys[2])
+RegisterKeyMapping('hotbar', 'Display inventory hotbar~', 'keyboard', Config.Keys[3])
+RegisterKeyMapping('reload', 'Reload weapon~', 'keyboard', 'r')
+TriggerEvent('chat:removeSuggestion', '/inv')
+TriggerEvent('chat:removeSuggestion', '/inv2')
+TriggerEvent('chat:removeSuggestion', '/hotbar')
+TriggerEvent('chat:removeSuggestion', '/reload')
+for i=1, 5 do
+	RegisterCommand('hotkey'..i, function() if not invOpen then UseSlot(i) end end)
+	RegisterKeyMapping('hotkey'..i, 'Use hotbar item '..i..'~', 'keyboard', i)
+	TriggerEvent('chat:removeSuggestion', '/hotkey'..i)
 end
