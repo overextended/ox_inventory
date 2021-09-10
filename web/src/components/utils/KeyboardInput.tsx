@@ -12,7 +12,7 @@ debugData([
 ]);
 
 const KeyboardInput: React.FC = () => {
-  const [isVisible, setVisible] = useState(true);
+  const [isVisible, setVisible] = useState(false);
   const [header, setHeader] = useState('');
   const [inputRows, setInputRows] = useState([]);
   const [input, setInput] = useState([]);
