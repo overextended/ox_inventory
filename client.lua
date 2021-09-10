@@ -53,7 +53,6 @@ local CanOpenInventory = function()
 end
 
 local OpenInventory = function(inv, data)
-	print(ESX.DumpTable(data))
 	if CanOpenInventory() then
 		local left, right
 		if inv == 'shop' and invOpen == false then
@@ -189,11 +188,26 @@ local Raycast = function()
 end
 
 local Blips = {}
-local CreateShopLocations = function()
-	for i=1, #Blips do
-		RemoveBlip(i)
+local CreateLocationBlip = function(shopDetails, location)
+	if shopDetails.blip and (not shopDetails.job or shopDetails.job == ESX.PlayerData.job.name) then
+		local blipId = #Blips
+		Blips[blipId] = AddBlipForCoord(location.x, location.y)
+		SetBlipSprite(Blips[blipId], shopDetails.blip.id)
+		SetBlipDisplay(Blips[blipId], 4)
+		SetBlipScale(Blips[blipId], shopDetails.blip.scale)
+		SetBlipColour(Blips[blipId], shopDetails.blip.colour)
+		SetBlipAsShortRange(Blips[blipId], true)
+		BeginTextCommandSetBlipName('STRING')
+		AddTextComponentString(shopDetails.name)
+		EndTextCommandSetBlipName(Blips[blipId])
 	end
-	Blips = {}
+end
+
+local CreateShopLocations = function()
+	if next(Blips) then
+		for i=1, #Blips do RemoveBlip(i) end
+		table.wipe(Blips)
+	end
 	for shopName, shopDetails in pairs(Shops) do
 		if (Config.qtarget == true) then
 			for id, target in pairs(shopDetails.targets) do
@@ -231,21 +245,6 @@ local CreateShopLocations = function()
 	end
 end
 
-local CreateLocationBlip = function(shopDetails, location)
-	if (shopDetails.blip and (not shopDetails or shopDetails.job == ESX.PlayerData.job.name)) then
-		local blipId = #Blips
-		Blips[blipId] = AddBlipForCoord(location.x, location.y)
-		SetBlipSprite(Blips[blipId], shopDetails.blip.id)
-		SetBlipDisplay(Blips[blipId], 4)
-		SetBlipScale(Blips[blipId], shopDetails.blip.scale)
-		SetBlipColour(Blips[blipId], shopDetails.blip.colour)
-		SetBlipAsShortRange(Blips[blipId], true)
-		BeginTextCommandSetBlipName('STRING')
-		AddTextComponentString(shopDetails.name)
-		EndTextCommandSetBlipName(Blips[blipId])
-	end
-end
-
 local CanOpenTarget = function(ped)
 	return IsPedFatallyInjured(ped)
 	or IsEntityPlayingAnim(ped, 'random@mugging3', 'handsup_standing_base', 3)
@@ -263,11 +262,11 @@ local Markers = function(tb, type, rgb, playerCoords, name)
 		local id = name and type..name..k or type..k
 		local marker = nearbyMarkers[id]
 		if distance < 1.2 then
-			if not marker then nearbyMarkers[id] = {x = v.x, y = v.y, z = v.z, r = rgb[1], g = rgb[2], b = rgb[3]} end
+			if not marker then nearbyMarkers[id] = {x = v.x, y = v.y, z = v.z, r = rgb.x, g = rgb.y, b = rgb.z} end
 			if closestMarker == nil or currentMarker and distance < currentMarker[1] or closestMarker and distance < closestMarker[1] then
 				closestMarker = {distance, k, type, name}
 			end
-		elseif not marker and distance < 8 then nearbyMarkers[id] = {x = v.x, y = v.y, z = v.z, r = rgb[1], g = rgb[2], b = rgb[3]} elseif marker and distance > 8 then nearbyMarkers[id] = nil end
+		elseif not marker and distance < 8 then nearbyMarkers[id] = {x = v.x, y = v.y, z = v.z, r = rgb.x, g = rgb.y, b = rgb.z} elseif marker and distance > 8 then nearbyMarkers[id] = nil end
 	end
 end
 
@@ -284,12 +283,12 @@ end
 SetInterval(1, 250, function()
 	if not invOpen then
 		playerCoords = GetEntityCoords(ESX.PlayerData.ped)
+		closestMarker = nil
 		Markers(Drops, 'drop', vec3(150, 30, 30), playerCoords)
 		Markers(Stashes, 'stash', vec3(30, 30, 150), playerCoords)
 		for k, v in pairs(Shops) do
 			Markers(v.locations, 'shop', vec3(30, 150, 30), playerCoords, k)
 		end
-		
 		local weaponLicense = vec3(12.42198, -1105.82, 29.7854)
 		local distance = #(playerCoords - weaponLicense)
 		if distance < 8 then
@@ -301,7 +300,7 @@ SetInterval(1, 250, function()
 				end
 			end
 		end
-		if (closestMarker[1] < 2) then currentMarker = closestMarker end
+		currentMarker = closestMarker
 	else
 		playerCoords = GetEntityCoords(ESX.PlayerData.ped)
 		if currentInventory then
@@ -592,7 +591,7 @@ RegisterCommand('inv', function()
 	TriggerEvent('ox_inventory:getProperty', function(data) property = data end)
 	if property then return OpenInventory('stash', property) end
 	if IsPedInAnyVehicle(ESX.PlayerData.ped, false) then currentDrop = nil end
-	if currentMarker and currentMarker[3] ~= 'license' and not invOpen then OpenInventory(currentMarker[3], currentMarker[4])
+	if currentMarker and currentMarker[3] ~= 'license' and not invOpen then OpenInventory(currentMarker[3], {id=currentMarker[2], type=currentMarker[4]})
 	else OpenInventory() end
 end)
 

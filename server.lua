@@ -1,6 +1,6 @@
 
 local Stashes <const>, Vehicle <const> = data('stashes'), data('vehicles')
-local Utils <const>, Shops <const>, Inventory <const>, Items <const> = module('utils'), data('shops'), module('inventory'), module('items')
+local Utils <const>, Shops <const>, Inventory <const>, Items <const> = module('utils'), module('shops'), module('inventory'), module('items')
 
 local SaveInventories = function()
 	local time = os.time(os.date('!*t'))
@@ -179,7 +179,8 @@ ox.RegisterServerCallback('ox_inventory:buyItem', function(source, cb, data)
 		if data.count == nil then data.count = 1 end
 		local player, items, ret = Inventory(source), {}
 		local xPlayer = ESX.GetPlayerFromId(source)
-		local shop = Shops[tonumber(player.open:sub(5))]
+		local split = player.open:match('^.*() ')
+		local shop = Shops[player.open:sub(0, split-1)][tonumber(player.open:sub(split+1))]
 		local fromSlot, toSlot = shop.items[data.fromSlot], player.items[data.toSlot]
 		if fromSlot then
 			if fromSlot.count == 0 then return cb(false, nil, {type = 'error', text = ox.locale('shop_nostock')}) end
@@ -238,9 +239,8 @@ end)
 ox.RegisterServerCallback('ox_inventory:openShop', function(source, cb, inv, data) 
 	local left, shop = Inventory(source)
 	if data then
-		shop = Shops[data]
+		shop = Shops[data.type][data.id]
 		shop.type = inv
-		shop.id = data
 		left:set('open', shop.id)
 	end
 	cb({id=left.label, type=left.type, slots=left.slots, weight=left.weight, maxWeight=left.maxWeight}, shop)
