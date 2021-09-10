@@ -304,25 +304,20 @@ RegisterNetEvent('ox_inventory:setPlayerInventory', function(data)
         }
     end
     SendNUIMessage({ action = 'items', data = ItemData })
+	
+	--[[--
+		Blip Management
+	--]]--
 	if next(Blips) then
 		for k, v in pairs(Blips) do
 			RemoveBlip(v)
 		end
 		Blips = {}
 	end
-	for k, v in pairs(Shops) do
-		if v.blip and (not v.job or v.job == ESX.PlayerData.job.name) then
-			Blips[k] = AddBlipForCoord(v.coords.x, v.coords.y, v.coords.z)
-			SetBlipSprite(Blips[k], v.blip.id)
-			SetBlipDisplay(Blips[k], 4)
-			SetBlipScale(Blips[k], v.blip.scale)
-			SetBlipColour(Blips[k], v.blip.colour)
-			SetBlipAsShortRange(Blips[k], true)
-			BeginTextCommandSetBlipName('STRING')
-			AddTextComponentString(v.name)
-			EndTextCommandSetBlipName(Blips[k])
-		end
-	end
+	CreateShopBlips()
+	--[[--
+		Create Controls
+	--]]--
 	RegisterKeyMapping('inv', 'Open player inventory~', 'keyboard', Config.Keys[1])
 	RegisterKeyMapping('inv2', 'Open secondary inventory~', 'keyboard', Config.Keys[2])
 	RegisterKeyMapping('hotbar', 'Display inventory hotbar~', 'keyboard', Config.Keys[3])
@@ -336,81 +331,17 @@ RegisterNetEvent('ox_inventory:setPlayerInventory', function(data)
 		RegisterKeyMapping('hotkey'..i, 'Use hotbar item '..i..'~', 'keyboard', i)
 		TriggerEvent('chat:removeSuggestion', '/hotkey'..i)
 	end
+	--]]--
+
 	Notify({text = ox.locale('inventory_setup'), duration = 2500})
 	collectgarbage('collect')
 
-	SetInterval(1, 250, function()
-		playerCoords = GetEntityCoords(ESX.PlayerData.ped)
-		if not invOpen then
-			local closestMarker
-			for k, v in pairs(Drops) do
-				local distance = #(playerCoords - v)
-				local marker = nearbyMarkers['drop'..k]
-				if distance < 1.2 then
-					if not marker then nearbyMarkers['drop'..k] = {v, 150, 30, 30} end
-					if currentMarker and distance < currentMarker[1] or closestMarker and distance < closestMarker[1] or not closestMarker then
-						closestMarker = {distance, k, 'drop'}
-					end
-				elseif not marker and distance < 8 then nearbyMarkers['drop'..k] = {v, 150, 30, 30} elseif marker and distance > 8 then nearbyMarkers['drop'..k] = nil end
-			end
-			for k, v in pairs(Shops) do
-				local distance = #(playerCoords - v.coords)
-				local marker = nearbyMarkers['shop'..k]
-				if distance < 1 then
-					if not marker then nearbyMarkers['shop'..k] = {v.coords, 30, 150, 30} end
-					if currentMarker and distance < currentMarker[1] or closestMarker and distance < closestMarker[1] or not closestMarker then
-						closestMarker = {distance, k, 'shop'}
-					end
-				elseif not marker and distance < 8 then nearbyMarkers['shop'..k] = {v.coords, 30, 150, 30} elseif marker and distance > 8 then nearbyMarkers['shop'..k] = nil end
-			end
-			for k, v in pairs(Stashes) do
-				local distance = #(playerCoords - v.coords)
-				local marker = nearbyMarkers['stash'..k]
-				if distance < 1 then
-					if not marker then nearbyMarkers['stash'..k] = {v.coords, 30, 30, 150} end
-					if currentMarker and distance < currentMarker[1] or closestMarker and distance < closestMarker[1] or not closestMarker then
-						closestMarker = {distance, k, 'stash'}
-					end
-				elseif not marker and distance < 8 then nearbyMarkers['stash'..k] = {v.coords, 30, 30, 150} elseif marker and distance > 8 then nearbyMarkers['stash'..k] = nil end
-			end
-			local weaponLicense = vector3(12.42198, -1105.82, 29.7854)
-			local distance = #(playerCoords - weaponLicense)
-			if distance < 8 then
-				local marker = nearbyMarkers['license']
-				if distance < 1 then
-					if not marker then nearbyMarkers['license'] = {weaponLicense, 30, 150, 30} end
-					if currentMarker and distance < currentMarker[1] or closestMarker and distance < closestMarker[1] or not closestMarker then
-						closestMarker = {distance, 'weapon', 'license'}
-					end
-				end
-			end
-			currentMarker = (closestMarker and closestMarker[1] < 2) and closestMarker or nil
-		else
-			playerCoords = GetEntityCoords(ESX.PlayerData.ped)
-			if currentInventory then
-				if currentInventory.type == 'player' then
-					local id = GetPlayerFromServerId(currentInventory.id)
-					local ped = GetESX.PlayerData.ped(id)
-					local pedCoords = GetEntityCoords(ped)
-					if not id or #(playerCoords - pedCoords) > 1.8 then
-						TriggerEvent('ox_inventory:closeInventory')
-						Notify({type = 'error', text = ox.locale('inventory_lost_access'), duration = 2500})
-					elseif ESX.PlayerData.job.name ~= 'police' and not CanOpenTarget(ped) then
-						TriggerEvent('ox_inventory:closeInventory')
-						Notify({type = 'error', text = ox.locale('inventory_lost_access'), duration = 2500})
-					else
-						TaskTurnToFaceCoords(ESX.PlayerData.ped, pedCoords)
-					end
-				elseif not lastVehicle and currentInventory.coords and (#(playerCoords - currentInventory.coords) > 2 or CanOpenTarget(ESX.PlayerData.ped)) then
-					TriggerEvent('ox_inventory:closeInventory')
-					Notify({type = 'error', text = ox.locale('inventory_lost_access'), duration = 2500})
-				end
-			end
-		end
-		if ox.parachute and GetPedParachuteState(ESX.PlayerData.ped) ~= -1 then ESX.Game.DeleteObject(ox.parachute) ox.parachute = false end
-		if invOpen and not CanOpenInventory() then TriggerEvent('ox_inventory:closeInventory') end
-	end)
-	
+	--[[--
+		Player Blip Distance
+	--]]--
+	DistanceToBlips()
+	--]]--
+
 	local wait = nil
 	SetInterval(2, 0, function()
 		if invOpen then
@@ -730,3 +661,107 @@ RegisterNUICallback('buyItem', function(data, cb)
 end)
 
 if ESX.PlayerLoaded then TriggerServerEvent('ox_inventory:requestPlayerInventory') end
+
+--[[--
+	Functions 'n Shiz
+--]]--
+function CreateShopBlips()
+	for shopName, shopDetails in pairs(Shops) do
+		local jobinfo = shopDetails.jobinfo
+
+		if (shopDetails.blip and (not jobinfo or jobinfo.job == ESX.PlayerData.job.name) and #shopDetails.locations > 0) then
+			for k, v in pairs(shopDetails.locations) do
+				local blipId = shopName .. '-' .. k
+				Blips[blipId] = AddBlipForCoord(v)
+				SetBlipSprite(Blips[blipId], shopDetails.blip.id)
+				SetBlipDisplay(Blips[blipId], 4)
+				SetBlipScale(Blips[blipId], shopDetails.blip.scale)
+				SetBlipColour(Blips[blipId], shopDetails.blip.colour)
+				SetBlipAsShortRange(Blips[blipId], true)
+				BeginTextCommandSetBlipName('STRING')
+				AddTextComponentString(shopDetails.name)
+				EndTextCommandSetBlipName(Blips[blipId])
+			end
+		end
+	end
+end
+
+function DistanceToBlips()
+	SetInterval(1, 250, function()
+		playerCoords = GetEntityCoords(ESX.PlayerData.ped)
+		if not invOpen then
+			local closestMarker
+			for k, v in pairs(Drops) do
+				local distance = #(playerCoords - v)
+				local marker = nearbyMarkers['drop'..k]
+				if distance < 1.2 then
+					if not marker then nearbyMarkers['drop'..k] = {v, 150, 30, 30} end
+					if currentMarker and distance < currentMarker[1] or closestMarker and distance < closestMarker[1] or not closestMarker then
+						closestMarker = {distance, k, 'drop'}
+					end
+				elseif not marker and distance < 8 then nearbyMarkers['drop'..k] = {v, 150, 30, 30} elseif marker and distance > 8 then nearbyMarkers['drop'..k] = nil end
+			end
+			for k, v in pairs(Shops) do
+				if (v.locations ~= nil and #v.locations > 0) then
+					for l, z in pairs(v.locations) do
+						local distance = #(playerCoords - z)
+						local markerName = 'shop' .. k .. '-' .. l
+						local marker = nearbyMarkers[markerName]
+						if (distance < 1) then
+							if (not marker) then nearbyMarkers[markerName] = {z, 30, 150, 30} 
+							if (currentMarker and distance < currentMarker[1] or closestMarker and distance < closestMarker[1] or not closestMarker) then
+								closestMarker = {distance, k .. '-' .. l, 'shop'}
+							end
+						end
+						elseif (not marker and distance < 8) then nearbyMarkers[markerName] = {z, 30, 150, 30} elseif (marker and distance > 8) then nearbyMarkers[markerName] = nil end
+					end
+				end
+			end
+			for k, v in pairs(Stashes) do
+				local distance = #(playerCoords - v.coords)
+				local marker = nearbyMarkers['stash'..k]
+				if distance < 1 then
+					if not marker then nearbyMarkers['stash'..k] = {v.coords, 30, 30, 150} end
+					if currentMarker and distance < currentMarker[1] or closestMarker and distance < closestMarker[1] or not closestMarker then
+						closestMarker = {distance, k, 'stash'}
+					end
+				elseif not marker and distance < 8 then nearbyMarkers['stash'..k] = {v.coords, 30, 30, 150} elseif marker and distance > 8 then nearbyMarkers['stash'..k] = nil end
+			end
+			local weaponLicense = vector3(12.42198, -1105.82, 29.7854)
+			local distance = #(playerCoords - weaponLicense)
+			if distance < 8 then
+				local marker = nearbyMarkers['license']
+				if distance < 1 then
+					if not marker then nearbyMarkers['license'] = {weaponLicense, 30, 150, 30} end
+					if currentMarker and distance < currentMarker[1] or closestMarker and distance < closestMarker[1] or not closestMarker then
+						closestMarker = {distance, 'weapon', 'license'}
+					end
+				end
+			end
+			currentMarker = (closestMarker and closestMarker[1] < 2) and closestMarker or nil
+		else
+			playerCoords = GetEntityCoords(ESX.PlayerData.ped)
+			if currentInventory then
+				if currentInventory.type == 'player' then
+					local id = GetPlayerFromServerId(currentInventory.id)
+					local ped = GetESX.PlayerData.ped(id)
+					local pedCoords = GetEntityCoords(ped)
+					if not id or #(playerCoords - pedCoords) > 1.8 then
+						TriggerEvent('ox_inventory:closeInventory')
+						Notify({type = 'error', text = ox.locale('inventory_lost_access'), duration = 2500})
+					elseif ESX.PlayerData.job.name ~= 'police' and not CanOpenTarget(ped) then
+						TriggerEvent('ox_inventory:closeInventory')
+						Notify({type = 'error', text = ox.locale('inventory_lost_access'), duration = 2500})
+					else
+						TaskTurnToFaceCoords(ESX.PlayerData.ped, pedCoords)
+					end
+				elseif not lastVehicle and currentInventory.coords and (#(playerCoords - currentInventory.coords) > 2 or CanOpenTarget(ESX.PlayerData.ped)) then
+					TriggerEvent('ox_inventory:closeInventory')
+					Notify({type = 'error', text = ox.locale('inventory_lost_access'), duration = 2500})
+				end
+			end
+		end
+		if ox.parachute and GetPedParachuteState(ESX.PlayerData.ped) ~= -1 then ESX.Game.DeleteObject(ox.parachute) ox.parachute = false end
+		if invOpen and not CanOpenInventory() then TriggerEvent('ox_inventory:closeInventory') end
+	end)
+end
