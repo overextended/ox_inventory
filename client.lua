@@ -250,8 +250,8 @@ SetInterval(1, 250, function()
 	if not invOpen then
 		playerCoords = GetEntityCoords(ESX.PlayerData.ped)
 		local closestMarker = {}
-		closestMarker = Markers(Drops, 'drop', vec3(150, 30, 30), playerCoords)
-		closestMarker = Markers(Stashes, 'stash', vec3(30, 30, 150), playerCoords)
+		closestMarker = Markers(Drops, 'drop', {150, 30, 30}, playerCoords)
+		closestMarker = Markers(Stashes, 'stash', {30, 30, 150}, playerCoords)
 		for k, v in pairs(Shops) do
 			local closestMarkerFunc = Markers(v.locations, 'shop', {30, 150, 30}, playerCoords, k)
 			if (closestMarkerFunc) then closestMarker = closestMarkerFunc end
@@ -267,7 +267,7 @@ SetInterval(1, 250, function()
 				end
 			end
 		end
-		currentMarker = closestMarker
+		if (closestMarker[1] < 2) then currentMarker = closestMarker end
 	else
 		playerCoords = GetEntityCoords(ESX.PlayerData.ped)
 		if currentInventory then
