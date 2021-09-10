@@ -188,6 +188,7 @@ local Raycast = function()
 end
 
 local GetJobGrade = function(jobConfig)
+	if (jobConfig == nil) then return nil end
 	local job = jobConfig[ESX.PlayerData.job.name] or jobConfig
 	if (job == nil) then return nil end
 	job = tonumber(job)
@@ -199,7 +200,7 @@ local Blips = {}
 local CreateLocationBlip = function(shopDetails, location)
 	local jobGrade = GetJobGrade(shopDetails.job)
 
-	if (shopDetails.blip and ESX.PlayerData.job.grade >= jobGrade) then
+	if (shopDetails.blip and (shopDetails.job == nil or (jobGrade ~= nil and ESX.PlayerData.job.grade >= jobGrade))) then
 		local blipId = #Blips
 		Blips[blipId] = AddBlipForCoord(location.x, location.y)
 		SetBlipSprite(Blips[blipId], shopDetails.blip.id)
