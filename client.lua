@@ -667,9 +667,7 @@ if ESX.PlayerLoaded then TriggerServerEvent('ox_inventory:requestPlayerInventory
 --]]--
 function CreateShopBlips()
 	for shopName, shopDetails in pairs(Shops) do
-		local jobinfo = shopDetails.jobinfo
-
-		if (shopDetails.blip and (not jobinfo or jobinfo.job == ESX.PlayerData.job.name) and #shopDetails.locations > 0) then
+		if (shopDetails.blip and (not shopDetails.jobinfo or shopDetails.jobinfo.job == ESX.PlayerData.job.name) and #shopDetails.locations > 0) then
 			for k, v in pairs(shopDetails.locations) do
 				local blipId = shopName .. '-' .. k
 				Blips[blipId] = AddBlipForCoord(v)
