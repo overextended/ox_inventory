@@ -18,7 +18,9 @@ ox.trim = function(string)
 end
 
 data = function(file)
-	return load(LoadResourceFile(ox.name, 'data/'..file..'.lua')..'return Data', file, 't')()
+    local func, err = load(LoadResourceFile(ox.name, 'data/'..file..'.lua')..'return Data', file, 't')
+    assert(func, err == nil or '\n^1'..err..'^7')
+    return func()
 end
 
 local Modules = {}
