@@ -228,7 +228,7 @@ local Markers = function(tb, type, rgb, playerCoords, name)
 		local id = name and type..k..name or type..k
 		local marker = nearbyMarkers[id]
 		if distance < 1.2 then
-			if not marker then nearbyMarkers[id] = {x = v.x, y = v.y, z = v.z, r = rgb.x, g = rgb.y, b = rgb.z} end
+			if not marker then nearbyMarkers[id] = {x = v.x, y = v.y, z = v.z, r = rgb[1], g = rgb[2], b = rgb[3]} end
 			if closestMarker == nil or currentMarker and distance < currentMarker[1] or closestMarker and distance < closestMarker[1] then
 				return {distance, k, type, name}
 			end
@@ -249,10 +249,12 @@ end
 SetInterval(1, 250, function()
 	if not invOpen then
 		playerCoords = GetEntityCoords(ESX.PlayerData.ped)
-		local closestMarker = Markers(Drops, 'drop', vec3(150, 30, 30), playerCoords)
+		local closestMarker = {}
+		closestMarker = Markers(Drops, 'drop', vec3(150, 30, 30), playerCoords)
 		closestMarker = Markers(Stashes, 'stash', vec3(30, 30, 150), playerCoords)
 		for k, v in pairs(Shops) do
-			closestMarker = Markers(v.locations, 'shop', vec3(30, 150, 30), playerCoords, k)
+			local closestMarkerFunc = Markers(v.locations, 'shop', {30, 150, 30}, playerCoords, k)
+			if (closestMarkerFunc) then closestMarker = closestMarkerFunc end
 		end
 		local weaponLicense = vec3(12.42198, -1105.82, 29.7854)
 		local distance = #(playerCoords - weaponLicense)
@@ -265,7 +267,7 @@ SetInterval(1, 250, function()
 				end
 			end
 		end
-		currentMarker = (closestMarker and closestMarker[1] < 2) and closestMarker or nil
+		currentMarker = closestMarker
 	else
 		playerCoords = GetEntityCoords(ESX.PlayerData.ped)
 		if currentInventory then
@@ -556,7 +558,7 @@ RegisterCommand('inv', function()
 	TriggerEvent('ox_inventory:getProperty', function(data) property = data end)
 	if property then return OpenInventory('stash', property) end
 	if IsPedInAnyVehicle(ESX.PlayerData.ped, false) then currentDrop = nil end
-	if currentMarker and currentMarker[3] ~= 'license' and not invOpen then OpenInventory(currentMarker[3], {id=currentMarker[2]})
+	if currentMarker and currentMarker[3] ~= 'license' and not invOpen then OpenInventory(currentMarker[3], currentMarker[4])
 	else OpenInventory() end
 end)
 
