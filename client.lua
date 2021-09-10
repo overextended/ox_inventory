@@ -188,26 +188,36 @@ local Raycast = function()
 end
 
 local Blips = {}
-local CreateShopBlips = function()
+local CreateShopLocations = function()
 	for i=1, #Blips do
 		RemoveBlip(i)
 	end
 	Blips = {}
 	for shopName, shopDetails in pairs(Shops) do
-		if (shopDetails.blip and (not shopDetails.jobinfo or shopDetails.jobinfo.job == ESX.PlayerData.job.name) and #shopDetails.locations > 0) then
-			for k, v in pairs(shopDetails.locations) do
-				local blipId = #Blips
-				Blips[blipId] = AddBlipForCoord(v.x, v.y)
-				SetBlipSprite(Blips[blipId], shopDetails.blip.id)
-				SetBlipDisplay(Blips[blipId], 4)
-				SetBlipScale(Blips[blipId], shopDetails.blip.scale)
-				SetBlipColour(Blips[blipId], shopDetails.blip.colour)
-				SetBlipAsShortRange(Blips[blipId], true)
-				BeginTextCommandSetBlipName('STRING')
-				AddTextComponentString(shopDetails.name)
-				EndTextCommandSetBlipName(Blips[blipId])
+		if (not Config.qtarget and #shopDetails.locations > 0) then
+			for _, location in pairs(shopDetails.locations) do
+				CreateLocationBlip(shopDetails, location)
+			end
+		elseif (Config.qtarget and #shopDetails.targets > 0) then
+			for _, target in pairs(shopDetails.targets) do
+				CreateLocationBlip(shopDetails, target.loc)
 			end
 		end
+	end
+end
+
+local CreateLocationBlip = function(shopDetails, location)
+	if (shopDetails.blip and (not shopDetails.jobinfo or shopDetails.jobinfo.job == ESX.PlayerData.job.name)) then
+		local blipId = #Blips
+		Blips[blipId] = AddBlipForCoord(location.x, location.y)
+		SetBlipSprite(Blips[blipId], shopDetails.blip.id)
+		SetBlipDisplay(Blips[blipId], 4)
+		SetBlipScale(Blips[blipId], shopDetails.blip.scale)
+		SetBlipColour(Blips[blipId], shopDetails.blip.colour)
+		SetBlipAsShortRange(Blips[blipId], true)
+		BeginTextCommandSetBlipName('STRING')
+		AddTextComponentString(shopDetails.name)
+		EndTextCommandSetBlipName(Blips[blipId])
 	end
 end
 
@@ -251,11 +261,14 @@ SetInterval(1, 250, function()
 		playerCoords = GetEntityCoords(ESX.PlayerData.ped)
 		local closestMarker = {}
 		closestMarker = Markers(Drops, 'drop', {150, 30, 30}, playerCoords)
-		closestMarker = Markers(Stashes, 'stash', {30, 30, 150}, playerCoords)
-		for k, v in pairs(Shops) do
-			local closestMarkerFunc = Markers(v.locations, 'shop', {30, 150, 30}, playerCoords, k)
-			if (closestMarkerFunc) then closestMarker = closestMarkerFunc end
+		if (not Config.qtarget) then
+			closestMarker = Markers(Stashes, 'stash', {30, 30, 150}, playerCoords)
+			for k, v in pairs(Shops) do
+				local closestMarkerFunc = Markers(v.locations, 'shop', {30, 150, 30}, playerCoords, k)
+				if (closestMarkerFunc) then closestMarker = closestMarkerFunc end
+			end
 		end
+		
 		local weaponLicense = vec3(12.42198, -1105.82, 29.7854)
 		local distance = #(playerCoords - weaponLicense)
 		if distance < 8 then
@@ -475,7 +488,7 @@ RegisterNetEvent('ox_inventory:setPlayerInventory', function(data)
         }
     end
     SendNUIMessage({ action = 'items', data = ItemData })
-	CreateShopBlips()
+	CreateShopLocations()
 	Notify({text = ox.locale('inventory_setup'), duration = 2500})
 	collectgarbage('collect')	
 end)
