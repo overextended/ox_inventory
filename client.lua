@@ -53,6 +53,7 @@ local CanOpenInventory = function()
 end
 
 local OpenInventory = function(inv, data)
+	print(ESX.DumpTable(data))
 	if CanOpenInventory() then
 		local left, right
 		if inv == 'shop' and invOpen == false then
@@ -254,17 +255,17 @@ local CanOpenTarget = function(ped)
 	or IsEntityPlayingAnim(ped, 'mp_arresting', 'idle', 3)
 end
 
-local Drops, nearbyMarkers, currentMarker = {}, {}, {}
+local Drops, nearbyMarkers, currentMarker, closestMarker = {}, {}, {}
 local Markers = function(tb, type, rgb, playerCoords, name)
 	for k, v in pairs(tb) do
 		v = v.coords or v
 		local distance = #(playerCoords - v)
-		local id = name and type..k..name or type..k
+		local id = name and type..name..k or type..k
 		local marker = nearbyMarkers[id]
 		if distance < 1.2 then
 			if not marker then nearbyMarkers[id] = {x = v.x, y = v.y, z = v.z, r = rgb[1], g = rgb[2], b = rgb[3]} end
 			if closestMarker == nil or currentMarker and distance < currentMarker[1] or closestMarker and distance < closestMarker[1] then
-				return {distance, k, type, name}
+				closestMarker = {distance, k, type, name}
 			end
 		elseif not marker and distance < 8 then nearbyMarkers[id] = {x = v.x, y = v.y, z = v.z, r = rgb[1], g = rgb[2], b = rgb[3]} elseif marker and distance > 8 then nearbyMarkers[id] = nil end
 	end
@@ -283,14 +284,10 @@ end
 SetInterval(1, 250, function()
 	if not invOpen then
 		playerCoords = GetEntityCoords(ESX.PlayerData.ped)
-		local closestMarker = {}
-		closestMarker = Markers(Drops, 'drop', {150, 30, 30}, playerCoords)
-		if (not Config.qtarget) then
-			closestMarker = Markers(Stashes, 'stash', {30, 30, 150}, playerCoords)
-			for k, v in pairs(Shops) do
-				local closestMarkerFunc = Markers(v.locations, 'shop', {30, 150, 30}, playerCoords, k)
-				if (closestMarkerFunc) then closestMarker = closestMarkerFunc end
-			end
+		Markers(Drops, 'drop', vec3(150, 30, 30), playerCoords)
+		Markers(Stashes, 'stash', vec3(30, 30, 150), playerCoords)
+		for k, v in pairs(Shops) do
+			Markers(v.locations, 'shop', vec3(30, 150, 30), playerCoords, k)
 		end
 		
 		local weaponLicense = vec3(12.42198, -1105.82, 29.7854)

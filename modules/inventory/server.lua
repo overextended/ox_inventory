@@ -391,15 +391,6 @@ M.CanSwapItem = function(inv, firstItem, firstItemCount, testItem, testItemCount
 	return false
 end
 
-TriggerEvent('ox_inventory:loadInventory', M)
-
-exports('Inventory', function(arg)
-	if arg then
-		if Inventories[arg] then return Inventories[arg] else return false end
-	end
-	return M
-end)
-
 RegisterServerEvent('ox_inventory:removeItem', function(item, count, metadata, slot)
 	local inventory = Inventories[source]
 	if inventory.items[slot].name == item and inventory.items[slot].name:find('at_') and inventory.weapon then
@@ -551,5 +542,14 @@ ESX.RegisterCommand('saveinv', 'admin', function(xPlayer, args, showError)
 		end
 	end
 end, true, {help = 'Save all inventories', validate = true, arguments = {}})
+
+TriggerEvent('ox_inventory:loadInventory', M)
+
+exports('Inventory', function(arg)
+	if arg then
+		if Inventories[arg] then return Inventories[arg] else return false end
+	end
+	return M
+end)
 
 return M
