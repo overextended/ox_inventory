@@ -237,14 +237,9 @@ local CreateShopLocations = function()
 				local width = target.width or 0.5
 				local heading = target.heading or 0.0
 				local distance = target.distance or 3.0
-				exports['qtarget']:AddBoxZone('shop-'..shopName, target.loc, length, width, {
-					name=id..'-'..shopName,
-					heading=heading,
-					debugPoly=false,
-					minZ=target.minZ,
-					maxZ=target.maxZ
-				}, {
-					options = {
+				exports['qtarget']:AddBoxZone('shop-'..shopName..'-'..id, target.loc, length, width, {
+					name=id..'-'..shopName, heading=heading, debugPoly=false, minZ=target.minZ, maxZ=target.maxZ
+				}, { options = {
 						{
 							icon = "fas fa-shopping-basket",
 							label = "Open " .. shopDetails.name,
