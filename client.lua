@@ -213,7 +213,7 @@ local CreateLocationBlip = function(shopDetails, location)
 		local blipId = #Blips
 		Blips[blipId] = AddBlipForCoord(location.x, location.y)
 		SetBlipSprite(Blips[blipId], shopDetails.blip.id)
-		SetBlipDisplay(Blips[blipId], 4)
+		SetBlipDisplay(Blips[blipId], 6)
 		SetBlipScale(Blips[blipId], shopDetails.blip.scale)
 		SetBlipColour(Blips[blipId], shopDetails.blip.colour)
 		SetBlipAsShortRange(Blips[blipId], true)
