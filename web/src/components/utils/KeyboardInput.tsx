@@ -7,7 +7,10 @@ import Fade from './Fade';
 debugData([
   {
     action: 'openDialog',
-    data: { header: 'Evidence Locker', rows: ['Locker number', 'Another locker number'] },
+    data: {
+      header: 'Evidence Locker',
+      rows: ['Locker number', 'Another locker number'],
+    },
   },
 ]);
 
@@ -15,13 +18,12 @@ const KeyboardInput: React.FC = () => {
   const [isVisible, setVisible] = useState(false);
   const [header, setHeader] = useState('');
   const [inputRows, setInputRows] = useState([]);
-  const [input, setInput] = useState([]);
+  const [input, setInput] = useState<string[]>([]);
 
   useNuiEvent('openDialog', (data) => {
     setVisible(true);
     setHeader(data.header);
     setInputRows(data.rows);
-    console.log(data);
   });
 
   useExitListener(() => {
@@ -30,11 +32,14 @@ const KeyboardInput: React.FC = () => {
 
   const handleSubmit = () => {
     setVisible(false);
+    console.log(input);
   };
 
   const handleChange = (e: any, index: number) => {
-    console.log(e.target.value);
-    console.log(index);
+    setInput((prevInput) => {
+      prevInput[index] = e.target.value;
+      return prevInput;
+    });
   };
 
   return (
@@ -42,10 +47,10 @@ const KeyboardInput: React.FC = () => {
       <p className="keyboard-header">{header}</p>
       {inputRows.length > 0 &&
         inputRows.map((row, index) => (
-          <div className="keyboard-component" key={row + '' + index}>
+          <form onSubmit={handleSubmit} className="keyboard-component" key={`${row + index}`}>
             <p>{row}</p>
-            <input type="text" onChange={(e) => handleChange(e, index)} />
-          </div>
+            <input type="text" defaultValue="" onChange={(e) => handleChange(e, index)} />
+          </form>
         ))}
       <div className="keyboard-buttons-div">
         <button onClick={handleSubmit}>Submit</button>
