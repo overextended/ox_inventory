@@ -239,7 +239,7 @@ end)
 ox.RegisterServerCallback('ox_inventory:openShop', function(source, cb, inv, data) 
 	local left, shop = Inventory(source)
 	if data then
-		shop = Shops[data.id][data.type]
+		shop = Shops[data.type][data.id]
 		shop.type = inv
 		left:set('open', shop.id)
 	end

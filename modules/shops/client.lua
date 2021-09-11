@@ -1,2 +1,1 @@
-local M = data('shops')
-return M
+return data('shops')
