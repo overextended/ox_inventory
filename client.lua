@@ -238,11 +238,7 @@ local CreateShopLocations = function()
 				local heading = target.heading or 0.0
 				local distance = target.distance or 3.0
 				exports['qtarget']:AddBoxZone('shop-'..shopName, target.loc, length, width, {
-					name=id..'-'..shopName,
-					heading=heading,
-					debugPoly=false,
-					minZ=target.minZ,
-					maxZ=target.maxZ
+					name=id..'-'..shopName, heading=heading, debugPoly=false, minZ=target.minZ, maxZ=target.maxZ
 				}, {
 					options = {
 						{
