@@ -323,6 +323,7 @@ input[type='number'] {
 
 .keyboard-container {
   height: fit-content;
+  z-index: 999;
   width: 35vh;
   background-color: $mainColor;
   position: absolute;

@@ -1,6 +1,6 @@
 local Stashes <const>, Vehicles <const> = data('stashes'), data('vehicles')
 local Items <const>, Weapons <const> = table.unpack(module('items'))
-local Utils <const>, Progress <const>, Shops <const> = module('utils'), module('progress'), module('shops')
+local Utils <const>, Progress <const>, Shops <const>, Keyboard <const> = module('utils'), module('progress'), module('shops'), module('input')
 local invOpen, playerId, currentWeapon
 local plyState, isBusy = LocalPlayer.state, false
 
