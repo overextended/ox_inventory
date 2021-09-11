@@ -36,7 +36,8 @@ const KeyboardInput: React.FC = () => {
     fetchNui('ox_inventory:inputData');
   });
 
-  const handleSubmit = () => {
+  const handleSubmit = (e: any) => {
+    e.preventDefault();
     setVisible(false);
 
     let data: string[] | any;
@@ -57,10 +58,14 @@ const KeyboardInput: React.FC = () => {
       <p className="keyboard-header">{header}</p>
       {inputRows.length > 0 &&
         inputRows.map((row, index) => (
-          <div className="keyboard-component" key={`${row + index}`}>
+          <form
+            onSubmit={(e) => handleSubmit(e)}
+            className="keyboard-component"
+            key={`${row + index}`}
+          >
             <p>{row}</p>
             <input type="text" defaultValue="" onChange={(e) => handleChange(e, index)} />
-          </div>
+          </form>
         ))}
       <div className="keyboard-buttons-div">
         <button onClick={handleSubmit}>Submit</button>
