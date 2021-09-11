@@ -10,6 +10,13 @@ local SetBusy = function(state)
 end
 exports('SetBusy', SetBusy)
 
+local SetWeapon = function(weapon, hash, ammo)
+	currentWeapon = weapon and {name=weapon.name, slot=weapon.slot, label=weapon.label, metadata=weapon.metadata, hash=hash, ammo=ammo, throwable=weapon.throwable} or nil
+	TriggerEvent('ox_inventory:currentWeapon', currentWeapon)
+	if currentWeapon then currentWeapon.timer = 0 end
+	SetDisableAmbientMeleeMove(playerId, true)
+end
+
 local Disarm = function(newSlot)
 	SetWeaponsNoAutoswap(1)
 	SetWeaponsNoAutoreload(1)
@@ -90,6 +97,7 @@ local UseSlot = function(slot)
 		local item = ESX.PlayerData.inventory[slot]
 		local data = item and Items[item.name]
 		if item and data.usable then
+			data.slot = slot
 			if item.metadata.container then
 				OpenInventory('container', item.slot)
 			elseif data.client and data.client.event then
@@ -97,7 +105,6 @@ local UseSlot = function(slot)
 			elseif data.effect then
 				data:effect({name = item.name, slot = item.slot, metadata = item.metadata})
 			else
-				data.slot = slot
 				if item.name:find('WEAPON_') then
 					TriggerEvent('ox_inventory:item', data, function(data)
 						if data then
@@ -149,6 +156,8 @@ local UseSlot = function(slot)
 										MakePedReload(ESX.PlayerData.ped)
 										currentWeapon.metadata.ammo = newAmmo
 										TriggerServerEvent('ox_inventory:updateWeapon', 'load', currentWeapon.metadata.ammo)
+										-- todo: clean up and use a single server event
+										TriggerServerEvent('ox_inventory:removeItem', data.name, missingAmmo, data.metadata, data.slot)
 									end
 								end
 							end)
