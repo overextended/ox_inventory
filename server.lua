@@ -295,13 +295,14 @@ ox.RegisterServerCallback('ox_inventory:useItem', function(source, cb, item, slo
 	local item, type = Items(item)
 	local data = item and (slot and inventory.items[slot] or Inventory.GetItem(source, item, metadata))
 	if item and data and data.count > 0 and data.name == item.name then
-		data = {name=data.name, label=data.label, count=data.count, slot=slot or data.slot, metadata=data.metadata, consume=item.consume}
+		data = {name=data.name, label=data.label, count=data.count, slot=slot or data.slot, metadata=data.metadata}
 		if type == 1 then -- weapon
 			inventory.weapon = data.slot
 			return cb(data)
 		elseif type == 2 then -- ammo
 			return cb(data)
 		elseif type == 3 then -- attachment
+			data.consume = item.consume
 			return cb(data)
 		elseif ESX.UsableItemsCallbacks[item.name] then
 			ESX.UseItem(source, item.name)
