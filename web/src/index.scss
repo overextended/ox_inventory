@@ -5,6 +5,7 @@ $mainFont: Signika;
 $secondFont: Oxygen;
 
 $mainColor: rgb(44, 62, 80);
+$secondaryColor: #34495e;
 
 $borderRadius: 0.4vh;
 
@@ -317,5 +318,69 @@ input[type='number'] {
     position: absolute;
     right: 1vh;
     bottom: 1vh;
+  }
+}
+
+.keyboard-container {
+  height: fit-content;
+  width: 35vh;
+  background-color: $mainColor;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  border-radius: $borderRadius;
+
+  .keyboard-header {
+    text-shadow: none;
+    font-size: 2.6vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 2vh;
+    padding-bottom: 1vh;
+    letter-spacing: 0.08vh;
+    border-bottom: 0.3vh solid grey;
+  }
+
+  .keyboard-component {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding: 1.7vh;
+    align-items: center;
+    p {
+      margin-left: 0.4vh;
+      text-shadow: none;
+      font-size: 2vh;
+      align-self: flex-start;
+    }
+    input {
+      border-radius: $borderRadius;
+      text-shadow: none;
+      background-color: $secondaryColor;
+      height: 3vh;
+      width: 30vh;
+      font-size: 1.8vh;
+      padding: 0.4vh;
+      border: none;
+      outline: none;
+    }
+  }
+
+  .keyboard-buttons-div {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 3vh;
+
+    button {
+      border: none;
+      outline: none;
+      font-size: 2vh;
+      padding: 0.7vh;
+      border-radius: $borderRadius;
+      background-color: #4caf50;
+    }
   }
 }

@@ -5,6 +5,7 @@ import { setShiftPressed } from '../store/inventory';
 import DragPreview from './utils/DragPreview';
 import Notifications from './utils/Notifications';
 import ProgressBar from './utils/ProgressBar';
+import KeyboardInput from './utils/KeyboardInput';
 import useKeyPress from '../hooks/useKeyPress';
 import { Items } from '../store/items';
 import Inventory from './inventory';
@@ -54,6 +55,7 @@ const App: React.FC = () => {
 
   return (
     <>
+      <KeyboardInput />
       <DragPreview />
       <Notifications />
       <Inventory />
