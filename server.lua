@@ -239,9 +239,8 @@ end)
 ox.RegisterServerCallback('ox_inventory:openShop', function(source, cb, inv, data) 
 	local left, shop = Inventory(source)
 	if data then
-		shop = Shops[data.type]
+		shop = Shops[data.id][data.type]
 		shop.type = inv
-		shop.id = 1 -- I guess there needs to be an id for some reason?
 		left:set('open', shop.id)
 	end
 	cb({id=left.label, type=left.type, slots=left.slots, weight=left.weight, maxWeight=left.maxWeight}, shop)
