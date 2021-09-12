@@ -91,7 +91,7 @@ local OpenInventory = function(inv, data)
 		else return TriggerEvent('ox_inventory:closeInventory') end
 	else Notify({type = 'error', text = ox.locale('inventory_cannot_open'), duration = 2500}) end
 end
-RegisterNetEvent('OpenInventory', OpenInventory)
+RegisterNetEvent('ox_inventory:openInventory', OpenInventory)
 
 local UseSlot = function(slot)
 	if ESX.PlayerLoaded and isBusy == false and not Progress.Active then

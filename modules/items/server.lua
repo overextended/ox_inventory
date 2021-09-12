@@ -71,7 +71,7 @@ CreateThread(function()
 	end
 	Wait(2000)
 	TriggerEvent('ox_inventory:itemList', Items)
-	if Config.DBCleanup then exports.oxmysql:executeSync('DELETE FROM `ox_inventory` WHERE `lastupdated` < (NOW() - INTERVAL '..Config.DBCleanup..') OR `data` = "[]"') end
+	if Config.DBCleanup then exports.oxmysql:executeSync('DELETE FROM ox_inventory WHERE lastupdated < (NOW() - INTERVAL '..Config.DBCleanup..') OR data = "[]"') end
 	ESX.UsableItemsCallbacks = ESX.GetUsableItems()
 	local count = 0
 	for k, v in pairs(Items) do
