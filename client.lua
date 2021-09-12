@@ -233,14 +233,10 @@ local CreateShopLocations = function()
 		if (Config.qtarget == true) then
 			for id, target in pairs(shopDetails.targets) do
 				CreateLocationBlip(shopDetails, target.loc)
-
-				local length = target.length or 0.5
-				local width = target.width or 0.5
-				local heading = target.heading or 0.0
-				local distance = target.distance or 3.0
-				exports['qtarget']:AddBoxZone('shop-'..shopName, target.loc, length, width, {
-					name=id..'-'..shopName,
-					heading=heading,
+				local name = id..'-'..shopName
+				exports['qtarget']:AddBoxZone(name, target.loc, target.length or 0.5, target.width or 0.5, {
+					name=name,
+					heading=target.heading or 0.0,
 					debugPoly=false,
 					minZ=target.minZ,
 					maxZ=target.maxZ
@@ -250,12 +246,12 @@ local CreateShopLocations = function()
 							icon = "fas fa-shopping-basket",
 							label = "Open " .. shopDetails.name,
 							job = shopDetails.job,
-							action = function(entity)
+							action = function()
 								OpenInventory('shop', {id = id, type = shopName})
 							end,
 						},
 					},
-					distance = distance
+					distance = target.distance or 2.0
 				})
 			end
 		else
