@@ -68,18 +68,18 @@ ox.RegisterServerCallback('ox_inventory:openInventory', function(source, cb, inv
 	local left, right = Inventory(source)
 	if data then
 		if inv == 'stash' then
-			local stash = Stashes[data.id] or data -- set this up properly later; for now send all the necessary parameters from client
-			if stash.owner == nil then
-				right = Inventory(stash.name)
-				if not right then
-					right = Inventory.Create(stash.name, stash.name, inv, stash.slots, 0, stash.weight, false)
-				end
-			else
-				local owner = stash.owner == true and left.owner or stash.owner
-				right = Inventory(stash.name..owner)
-				if not right then
-					right = Inventory.Create(stash.name..owner, stash.name, inv, stash.slots, 0, stash.weight, owner)
-				end
+			local stash = Stashes[data.id]
+			if not stash then
+				stash = data
+				stash.name = stash.name
+				stash.slots = tonumber(stash.slots)
+				stash.weight = tonumber(stash.weight)
+				stash.coords = stash.coords
+			end
+			stash.owner = stash.owner == true and left.owner or stash.owner
+			right = Inventory(stash.owner and stash.name..owner or stash.name)
+			if not right then
+				right = Inventory.Create(stash.owner and stash.name..stash.owner or stash.name, stash.label or stash.name, inv, stash.slots, 0, stash.weight, stash.owner or false)
 			end
 		elseif inv == 'container' then
 			local data = left.items[data]
