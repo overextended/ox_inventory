@@ -33,7 +33,7 @@ const KeyboardInput: React.FC = () => {
 
   useExitListener(() => {
     setVisible(false);
-    fetchNui('ox_inventory:inputData');
+    fetchNui('ox_inventory:inputData', null);
   });
 
   const handleSubmit = (e: any) => {

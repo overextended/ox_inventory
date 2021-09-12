@@ -22,8 +22,8 @@ end
 exports('Keyboard', M.Input)
 
 RegisterNUICallback('ox_inventory:inputData', function(data, cb)
+    if not p then return end
     if not data then p:resolve() else p:resolve(data) end
-    print('focus set')
     SetNuiFocus(false, false)
     p = nil
     cb({})
