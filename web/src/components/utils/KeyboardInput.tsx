@@ -3,7 +3,7 @@ import { useExitListener } from '../../hooks/useExitListener';
 import useNuiEvent from '../../hooks/useNuiEvent';
 import { debugData } from '../../utils/debugData';
 import { fetchNui } from '../../utils/fetchNui';
-import Fade from './Fade';
+import div from './Fade';
 
 debugData([
   {
@@ -54,7 +54,7 @@ const KeyboardInput: React.FC = () => {
   };
 
   return (
-    <Fade visible={isVisible} className="keyboard-container">
+    <div style={{ visibility: isVisible ? 'visible' : 'hidden' }} className="keyboard-container">
       <p className="keyboard-header">{header}</p>
       {inputRows.length > 0 &&
         inputRows.map((row, index) => (
@@ -70,7 +70,7 @@ const KeyboardInput: React.FC = () => {
       <div className="keyboard-buttons-div">
         <button onClick={handleSubmit}>Submit</button>
       </div>
-    </Fade>
+    </div>
   );
 };
 
