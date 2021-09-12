@@ -68,7 +68,7 @@ ox.RegisterServerCallback('ox_inventory:openInventory', function(source, cb, inv
 	local left, right = Inventory(source)
 	if data then
 		if inv == 'stash' then
-			local stash = Stashes[data.id]
+			local stash = Stashes[data.id] or data -- set this up properly later; for now send all the necessary parameters from client
 			if stash.owner == nil then
 				right = Inventory(stash.name)
 				if not right then
