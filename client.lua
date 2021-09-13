@@ -14,7 +14,6 @@ local SetWeapon = function(weapon, hash, ammo)
 	currentWeapon = weapon and {name=weapon.name, slot=weapon.slot, label=weapon.label, metadata=weapon.metadata, hash=hash, ammo=ammo, throwable=weapon.throwable} or nil
 	TriggerEvent('ox_inventory:currentWeapon', currentWeapon)
 	if currentWeapon then currentWeapon.timer = 0 end
-	SetDisableAmbientMeleeMove(playerId, true)
 end
 
 local Disarm = function(newSlot)
@@ -398,10 +397,10 @@ SetInterval(2, 0, function()
 						Notify({text = ox.locale(result[1]), duration = 2500})
 					end
 				end, currentMarker[2])
-			end
+			elseif currentMarker[3] == 'shop' then OpenInventory() end
 		end
 		if currentWeapon then
-			DisableControlAction(0, 263, true)
+			DisableControlAction(0, 140, true)
 			if isBusy == false and currentWeapon.timer ~= 0 and currentWeapon.timer < GetGameTimer() then
 				TriggerServerEvent('ox_inventory:updateWeapon', 'ammo', currentWeapon.metadata.ammo)
 				currentWeapon.timer = 0
@@ -546,6 +545,7 @@ end)
 AddEventHandler('ox_inventory:item', function(data, cb)
 	if isBusy == false and not Progress.Active and not IsPedRagdoll(ESX.PlayerData.ped) and not IsPedFalling(ESX.PlayerData.ped) then
 		SetBusy(true)
+		if invOpen and data.close then TriggerEvent('ox_inventory:closeInventory') end
 		local result = ox.AwaitServerCallback('ox_inventory:useItem', data.name, data.slot, data.metadata)
 		if result and isBusy then
 			local used
