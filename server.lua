@@ -276,7 +276,6 @@ end)
 RegisterServerEvent('ox_inventory:updateWeapon', function(action, value, slot)
 	local inventory = Inventory(source)
 	local weapon = inventory.items[inventory.weapon or slot]
-	if weapon.metadata then
 	if weapon and weapon.metadata then
 		if action == 'load' then
 			weapon.metadata.ammo = value
