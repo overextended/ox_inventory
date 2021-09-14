@@ -1,10 +1,11 @@
-@import url("https://fonts.googleapis.com/css2?family=Signika:wght@300;400;600;700&display=swap");
-@import url("https://fonts.googleapis.com/css2?family=Oxygen:wght@300;400;700&display=swap");
+@import url('https://fonts.googleapis.com/css2?family=Signika:wght@300;400;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Oxygen:wght@300;400;700&display=swap');
 
 $mainFont: Signika;
 $secondFont: Oxygen;
 
 $mainColor: rgb(44, 62, 80);
+$secondaryColor: #34495e;
 
 $borderRadius: 0.4vh;
 
@@ -25,7 +26,7 @@ $imageSize: $gridSize - 2.5vh;
   user-select: none;
   margin: 0;
   color: #fff;
-  text-shadow: 0.1vh 0.1vh 0 rgba(0,0,0,0.7);
+  text-shadow: 0.1vh 0.1vh 0 rgba(0, 0, 0, 0.7);
 }
 
 img {
@@ -38,7 +39,7 @@ img {
   display: flex;
   align-items: center;
   justify-content: center;
-  height: 100vh;  
+  height: 100vh;
 }
 
 .column-wrapper {
@@ -87,7 +88,7 @@ img {
     > .item-container:nth-child(#{$i})
     > .item-count:before,
   .hotbar-grid > .item-container:nth-child(#{$i}) > .item-count:before {
-    content: "#{$i}";
+    content: '#{$i}';
     width: 1.5vh;
     height: 1.7vh;
     line-height: 1.7vh;
@@ -121,7 +122,7 @@ img {
       font-family: $secondFont;
       margin-left: auto;
       font-size: 1vh;
-      font-weight:300;
+      font-weight: 300;
       padding: 0.2vh;
     }
   }
@@ -180,7 +181,7 @@ img {
   }
 }
 
-input[type="number"] {
+input[type='number'] {
   @extend .button;
   margin-bottom: 3vh !important;
 
@@ -252,7 +253,13 @@ input[type="number"] {
       top: 50%;
       left: 50%;
       font-size: 2.2vh;
+      width: 100%;
+      text-align: center;
       transform: translate(-50%, -50%);
+      overflow: hidden;
+      display: inline-block;
+      text-overflow: ellipsis;
+      white-space: nowrap;
     }
 
     @keyframes progressBar {
@@ -311,5 +318,70 @@ input[type="number"] {
     position: absolute;
     right: 1vh;
     bottom: 1vh;
+  }
+}
+
+.keyboard-container {
+  height: fit-content;
+  z-index: 999;
+  width: 35vh;
+  background-color: $mainColor;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  border-radius: $borderRadius;
+
+  .keyboard-header {
+    text-shadow: none;
+    font-size: 2.6vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 2vh;
+    padding-bottom: 1vh;
+    letter-spacing: 0.08vh;
+    border-bottom: 0.3vh solid grey;
+  }
+
+  .keyboard-component {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding: 1.7vh;
+    align-items: center;
+    p {
+      margin-left: 0.4vh;
+      text-shadow: none;
+      font-size: 2vh;
+      align-self: flex-start;
+    }
+    input {
+      border-radius: $borderRadius;
+      text-shadow: none;
+      background-color: $secondaryColor;
+      height: 3vh;
+      width: 30vh;
+      font-size: 1.8vh;
+      padding: 0.4vh;
+      border: none;
+      outline: none;
+    }
+  }
+
+  .keyboard-buttons-div {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 3vh;
+
+    button {
+      border: none;
+      outline: none;
+      font-size: 2vh;
+      padding: 0.7vh;
+      border-radius: $borderRadius;
+      background-color: #4caf50;
+    }
   }
 }

@@ -1,5 +1,5 @@
 local M = module('items', true)
-local Progress = module('progress')
+local Progress <const> = module('progress')
 
 local GetItem = function(item)
 	if item then

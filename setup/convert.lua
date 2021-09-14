@@ -26,12 +26,12 @@ local Upgrade = function()
 				for k, v in pairs(trunk) do
 					vehicles[v.owner] = vehicles[v.owner] or {}
 					vehicles[v.owner][v.name:sub(7, #v.name)] = {trunk=v.data or '[]', glovebox='[]'}
-					total = total + 1
+					total += 1
 				end
 				for k, v in pairs(glovebox) do
 					if not vehicles[v.owner] then
 						vehicles[v.owner] = {}
-						total = total + 1
+						total += 1
 					end
 					vehicles[v.owner][v.name:sub(10, #v.name)] = vehicles[v.owner][v.name:sub(10, #v.name)] or {trunk='[]', glovebox=v.data or '[]'}
 				end
@@ -40,7 +40,7 @@ local Upgrade = function()
 				for owner, v in pairs(vehicles) do
 					for plate, v in pairs(v) do
 						exports.oxmysql:execute('UPDATE owned_vehicles SET trunk = ?, glovebox = ? WHERE plate = ? AND owner = ?', {v.trunk, v.glovebox, plate, owner}, function()
-							count = count + 1
+							count += 1
 							local pct = math.floor((count/total) * 100 + 0.5)
 							if pct == '100' then
 								exports.oxmysql:execute('DELETE FROM ox_inventory WHERE name LIKE ? OR name LIKE ?', {'trunk-%', 'glovebox-%'}, function(result)
@@ -82,7 +82,7 @@ local Convert = function()
 		for k, v in pairs(json.decode(users[i].accounts or '[]')) do
 			if type(v) == 'table' then break end
 			if Items[k] then
-				slot = slot + 1
+				slot += 1
 				inventory[slot] = {slot=slot, name=k, count=v}
 			end
 		end
@@ -90,7 +90,7 @@ local Convert = function()
 			if type(v) == 'table' then break end
 			local item = Items[k]
 			if item then
-				slot = slot + 1
+				slot += 1
 				inventory[slot] = {slot=slot, name=k, count=v, metadata = {durability=100}}
 				if item.ammoname then
 					inventory[slot].metadata.ammo = 0
@@ -102,12 +102,12 @@ local Convert = function()
 		for k, v in pairs(json.decode(users[i].inventory or '[]')) do
 			if type(v) == 'table' then break end
 			if Items[k] then
-				slot = slot + 1
+				slot += 1
 				inventory[slot] = {slot=slot, name=k, count=v}
 			end
 		end
 		exports.oxmysql:execute('UPDATE users SET inventory = ? WHERE identifier = ?', {json.encode(inventory), users[i].identifier}, function()
-			count = count + 1
+			count += 1
 			local pct = math.floor((count/total) * 100 + 0.5)
 			if pct == '100' then
 				Print('Completed task - you can safely delete this file')

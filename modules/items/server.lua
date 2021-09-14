@@ -1,5 +1,5 @@
 local M = {}
-local Items, Weapons = table.unpack(module('items', true))
+local Items <const>, Weapons <const> = table.unpack(module('items', true))
 
 local GetItem = function(item)
 	local type
@@ -71,12 +71,12 @@ CreateThread(function()
 	end
 	Wait(2000)
 	TriggerEvent('ox_inventory:itemList', Items)
-	if Config.DBCleanup then exports.oxmysql:executeSync('DELETE FROM `ox_inventory` WHERE `lastupdated` < (NOW() - INTERVAL '..Config.DBCleanup..') OR `data` = "[]"') end
+	if Config.DBCleanup then exports.oxmysql:executeSync('DELETE FROM ox_inventory WHERE lastupdated < (NOW() - INTERVAL '..Config.DBCleanup..') OR data = "[]"') end
 	ESX.UsableItemsCallbacks = ESX.GetUsableItems()
 	local count = 0
 	for k, v in pairs(Items) do
 		if v.consume and v.consume > 0 and ESX.UsableItemsCallbacks[v.name] then ESX.UsableItemsCallbacks[v.name] = nil end
-		count = count + 1
+		count += 1
 	end
 	ox.info('Inventory has loaded '..count..' items')
 	collectgarbage('collect') -- clean up from initialisation

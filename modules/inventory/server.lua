@@ -1,6 +1,6 @@
 local M = {}
 local Inventories = {}
-local Utils, Items = module('utils'), module('items')
+local Utils <const>, Items <const> = module('utils'), module('items')
 local metatable = setmetatable(M, {
 	__call = function(self, arg)
 		if arg then
@@ -36,7 +36,7 @@ local Minimal = function(inv)
 	local inventory, count = {}, 0
 	for k, v in pairs(inv.items) do
 		if v.name and v.count > 0 then
-			count = count + 1
+			count += 1
 			inventory[count] = {
 				name = v.name,
 				count = v.count,
@@ -151,7 +151,7 @@ M.Save = function(inv)
 			})
 		elseif Vehicle[inv.type] then
 			local plate = inv.id:sub(6)
-			if Config.TrimPlate then plate = ox.trim(plate) end
+			if Config.TrimPlate then plate = string.strtrim(plate) end
 			exports.oxmysql:executeSync('UPDATE owned_vehicles SET '..inv.type..' = ? WHERE plate = "'..plate..'"', {
 				inventory
 			})
@@ -188,7 +188,7 @@ M.Load = function(id, invType, owner)
 	if id and invType then
 		if isVehicle then
 			local plate = id:sub(6)
-			if Config.TrimPlate then plate = ox.trim(plate) end
+			if Config.TrimPlate then plate = string.strtrim(plate) end
 			result = exports.oxmysql:singleSync('SELECT '..invType..' FROM owned_vehicles WHERE plate = ?', {
 				plate
 			})
@@ -224,13 +224,13 @@ end
 
 M.GetItem = function(inv, item, metadata, returnsCount)
 	item = type(item) == 'table' and item or Items(item)
-	if item then item = count and item or Utils.Copy(item)
+	if item then item = count and item or table.clone(item)
 		local inv, count = Inventories[type(inv) == 'table' and inv.id or inv].items, 0
 		if inv then
 			metadata = not metadata and false or type(metadata) == 'string' and {type=metadata} or metadata
 			for k, v in pairs(inv) do
 				if v and v.name == item.name and (not metadata or Utils.TableContains(v.metadata, metadata)) then
-					count = count + v.count
+					count += v.count
 				end
 			end
 		end
@@ -243,8 +243,8 @@ M.GetItem = function(inv, item, metadata, returnsCount)
 end
 
 M.SwapSlots = function(inventory, slot)
-	local fromSlot = inventory[1].items[slot[1]] and Utils.Copy(inventory[1].items[slot[1]]) or nil
-	local toSlot = inventory[2].items[slot[2]] and Utils.Copy(inventory[2].items[slot[2]]) or nil
+	local fromSlot = inventory[1].items[slot[1]] and table.clone(inventory[1].items[slot[1]]) or nil
+	local toSlot = inventory[2].items[slot[2]] and table.clone(inventory[2].items[slot[2]]) or nil
 	if fromSlot then fromSlot.slot = slot[2] end
 	if toSlot then toSlot.slot = slot[1] end
 	inventory[1].items[slot[1]], inventory[2].items[slot[2]] = toSlot, fromSlot
@@ -303,7 +303,7 @@ local GetItemSlots = function(inv, item, metadata)
 	inv = Inventories[type(inv) == 'table' and inv.id or inv]
 	local totalCount, slots, emptySlots = 0, {}, inv.slots
 	for k, v in pairs(inv.items) do
-		emptySlots = emptySlots - 1
+		emptySlots -= 1
 		if v.name == item.name then
 			if not v.metadata then v.metadata = {} end
 			if not metadata or Utils.MatchTables(v.metadata, metadata) then
@@ -391,15 +391,6 @@ M.CanSwapItem = function(inv, firstItem, firstItemCount, testItem, testItemCount
 	return false
 end
 
-TriggerEvent('ox_inventory:loadInventory', M)
-
-exports('Inventory', function(arg)
-	if arg then
-		if Inventories[arg] then return Inventories[arg] else return false end
-	end
-	return M
-end)
-
 RegisterServerEvent('ox_inventory:removeItem', function(item, count, metadata, slot)
 	local inventory = Inventories[source]
 	if inventory.items[slot].name == item and inventory.items[slot].name:find('at_') and inventory.weapon then
@@ -420,7 +411,7 @@ end
 
 AddEventHandler('ox_inventory:createDrop', function(source, slot, toSlot, cb)
 	local drop = GenerateDropId()
-	M.Create(drop, 'Drop '..drop, 'drop', Config.PlayerSlots, 0, Config.DefaultWeight, false, {[slot] = Utils.Copy(toSlot)})
+	M.Create(drop, 'Drop '..drop, 'drop', Config.PlayerSlots, 0, Config.DefaultWeight, false, {[slot] = table.clone(toSlot)})
 	local coords = GetEntityCoords(GetPlayerPed(source))
 	M(drop):set('coords', coords)
 	cb(drop, coords)
@@ -551,5 +542,14 @@ ESX.RegisterCommand('saveinv', 'admin', function(xPlayer, args, showError)
 		end
 	end
 end, true, {help = 'Save all inventories', validate = true, arguments = {}})
+
+TriggerEvent('ox_inventory:loadInventory', M)
+
+exports('Inventory', function(arg)
+	if arg then
+		if Inventories[arg] then return Inventories[arg] else return false end
+	end
+	return M
+end)
 
 return M

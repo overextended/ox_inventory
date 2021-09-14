@@ -4,7 +4,7 @@ M.PlayAnim = function(wait, ...)
 	local args = {...}
 	RequestAnimDict(args[1])
 	CreateThread(function()
-		repeat Wait(10) until HasAnimDictLoaded(args[1])
+		repeat Wait(0) until HasAnimDictLoaded(args[1])
 		TaskPlayAnim(ESX.PlayerData.ped, table.unpack(args))
 		Wait(wait)
 		ClearPedSecondaryTask(ESX.PlayerData.ped)
@@ -16,7 +16,7 @@ M.PlayAnimAdvanced = function(wait, ...)
 	local args = {...}
 	RequestAnimDict(args[1])
 	CreateThread(function()
-		repeat Wait(10) until HasAnimDictLoaded(args[1])
+		repeat Wait(0) until HasAnimDictLoaded(args[1])
 		TaskPlayAnimAdvanced(ESX.PlayerData.ped, table.unpack(args))
 		Wait(wait)
 		if wait > 0 then ClearPedSecondaryTask(ESX.PlayerData.ped) end

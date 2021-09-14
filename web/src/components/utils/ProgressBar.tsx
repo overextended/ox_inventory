@@ -1,13 +1,13 @@
-import { useState } from "react";
-import useNuiEvent from "../../hooks/useNuiEvent";
-import { debugData } from "../../utils/debugData";
-import { fetchNui } from "../../utils/fetchNui";
+import { useState } from 'react';
+import useNuiEvent from '../../hooks/useNuiEvent';
+import { debugData } from '../../utils/debugData';
+import { fetchNui } from '../../utils/fetchNui';
 
 debugData([
   {
-    action: "startProgress",
+    action: 'startProgress',
     data: {
-      text: "Using Water",
+      text: 'Using Lockpick',
       duration: 5000,
     },
   },
@@ -19,16 +19,16 @@ const ProgressBar: React.FC = () => {
   const [duration, setDuration] = useState(0);
   const [isVisible, setVisible] = useState(false);
   const [isCancelled, setCancelled] = useState(false);
-  const [text, setText] = useState("");
+  const [text, setText] = useState('');
 
-  useNuiEvent<{ text: string; duration: number }>("startProgress", (data) => {
+  useNuiEvent<{ text: string; duration: number }>('startProgress', (data) => {
     setText(data.text);
     setDuration(data.duration);
     setVisible(true);
-    setCancelled(false)
+    setCancelled(false);
   });
 
-  useNuiEvent("cancelProgress", () => {
+  useNuiEvent('cancelProgress', () => {
     setCancelled(true);
     setTimeout(() => setVisible(false), 1750);
   });
@@ -38,9 +38,12 @@ const ProgressBar: React.FC = () => {
       {isVisible && (
         <div className="progressBar">
           <div
-            className={isCancelled ? "progressBar-cancel" : "progressBar-value"}
+            className={isCancelled ? 'progressBar-cancel' : 'progressBar-value'}
             style={{ animationDuration: `${duration}ms` }}
-            onAnimationEnd={() => {setVisible(false); fetchNui('ox_inventory:ProgressComplete')}}
+            onAnimationEnd={() => {
+              setVisible(false);
+              fetchNui('ox_inventory:ProgressComplete');
+            }}
           >
             <span>{text}</span>
           </div>
