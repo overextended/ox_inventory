@@ -43,7 +43,7 @@ local ClearWeapons = function()
 	end
 	RemoveAllPedWeapons(ESX.PlayerData.ped, true)
 	if ox.parachute then
-		local chute = `GADGET_ox.parachute`
+		local chute = `GADGET_PARACHUTE`
 		GiveWeaponToPed(ESX.PlayerData.ped, chute, 0, true, false)
 		SetPedGadget(ESX.PlayerData.ped, chute, true)
 	end
@@ -296,6 +296,7 @@ OnPlayerData = function(key, val)
 	SetPedEnableWeaponBlocking(ESX.PlayerData.ped, 1)
 end
 
+local weaponLicense = vec3(12.42198, -1105.82, 29.7854)
 SetInterval(1, 250, function()
 	if not invOpen then
 		playerCoords = GetEntityCoords(ESX.PlayerData.ped)
@@ -307,17 +308,14 @@ SetInterval(1, 250, function()
 				Markers(v.locations, 'shop', vec3(30, 150, 30), playerCoords, k)
 			end
 		end
-		local weaponLicense = vec3(12.42198, -1105.82, 29.7854)
 		local distance = #(playerCoords - weaponLicense)
-		if distance < 8 then
-			local marker = nearbyMarkers['license']
-			if distance < 1 then
-				if not marker then nearbyMarkers['license'] = {weaponLicense, 30, 150, 30} end
-				if currentMarker and distance < currentMarker[1] or closestMarker and distance < closestMarker[1] or not closestMarker then
-					closestMarker = {distance, 'weapon', 'license'}
-				end
+		local marker = nearbyMarkers['license']
+		if distance < 1.2 then
+			if not marker then nearbyMarkers['license'] = {x = weaponLicense.x, y = weaponLicense.y, z = weaponLicense.z, r = 30, g = 150, b = 30} end
+			if closestMarker == nil or currentMarker and distance < currentMarker[1] or closestMarker and distance < closestMarker[1] then
+				closestMarker = {distance, 'weapon', 'license'}
 			end
-		end
+		elseif not marker and distance < 8 then nearbyMarkers['license'] = {x = weaponLicense.x, y = weaponLicense.y, z = weaponLicense.z, r = 30, g = 150, b = 30} elseif marker and distance > 8 then nearbyMarkers['license'] = nil end
 		currentMarker = closestMarker
 	else
 		playerCoords = GetEntityCoords(ESX.PlayerData.ped)
@@ -492,11 +490,12 @@ RegisterNetEvent('ox_inventory:inventoryConfiscated', function()
 	ESX.SetPlayerData('weight', 0)
 end)
 
-RegisterNetEvent('ox_inventory:createDrop', function(data, owner)
+RegisterNetEvent('ox_inventory:createDrop', function(data, owner, slot)
 	local coords = vec3(data[2].x, data[2].y, data[2].z-0.2)
 	Drops = Drops or {}
 	Drops[data[1]] = {coords=coords}
 	if owner == playerId and invOpen and #(playerCoords - coords) <= 1 then
+		if currentWeapon and currentWeapon.slot then Disarm() end
 		if not IsPedInAnyVehicle(ESX.PlayerData.ped, false) then
 			OpenInventory('drop', {id=data[1]})
 		end
@@ -504,7 +503,7 @@ RegisterNetEvent('ox_inventory:createDrop', function(data, owner)
 end)
 
 RegisterNetEvent('ox_inventory:removeDrop', function(id)
-	if currentMarker[3] == id then currentMarker = nil end
+	if currentMarker and currentMarker[3] == id then currentMarker = nil end
 	nearbyMarkers['drop'..id] = nil
 	Drops[id] = nil
 end)
@@ -709,7 +708,7 @@ end)
 RegisterCommand('reload', function()
 	if currentWeapon and currentWeapon.ammo then
 		local ammo = Utils.InventorySearch(1, currentWeapon.ammo)
-		if ammo then UseSlot(ammo[1].slot) end
+		if ammo[1] then UseSlot(ammo[1].slot) end
 	end
 end)
 
@@ -730,7 +729,6 @@ RegisterNUICallback('exit', function(data, cb)
 end)
 
 RegisterNUICallback('swapItems', function(data, cb)
-	--todo: check inventory slot for weapon and disarm if equipped and moved
 	local response, data = ox.AwaitServerCallback('ox_inventory:swapItems', data)
 	if data then
 		for k, v in pairs(data.items) do
