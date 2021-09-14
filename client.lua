@@ -524,7 +524,16 @@ RegisterNetEvent('ox_inventory:setPlayerInventory', function(data)
             close = v.close
         }
     end
-    SendNUIMessage({ action = 'items', data = ItemData })
+    SendNUIMessage({ 
+		action = 'init', 
+		data = {
+			items = ItemData,
+			leftInventory = {
+				slots = #ESX.PlayerData.inventory,
+				items = ESX.PlayerData.inventory
+			}
+		}
+	})
 	CreateShopLocations()
 	Notify({text = ox.locale('inventory_setup'), duration = 2500})
 	collectgarbage('collect')	
@@ -729,13 +738,16 @@ RegisterNUICallback('exit', function(data, cb)
 end)
 
 RegisterNUICallback('swapItems', function(data, cb)
-	local response, data = ox.AwaitServerCallback('ox_inventory:swapItems', data)
+	local response, data, weapon = ox.AwaitServerCallback('ox_inventory:swapItems', data)
 	if data then
 		for k, v in pairs(data.items) do
 			ESX.PlayerData.inventory[k] = v and v or nil
 		end
 		ESX.SetPlayerData('inventory', ESX.PlayerData.inventory)
 		if data.weight then ESX.SetPlayerData('weight', data.weight) end
+	end
+	if currentWeapon then currentWeapon.slot = weapon
+		TriggerEvent('ox_inventory:currentWeapon', currentWeapon)
 	end
 	cb(response)
 end)

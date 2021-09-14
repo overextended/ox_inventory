@@ -25,7 +25,7 @@ end)
 RegisterServerEvent('ox_inventory:requestPlayerInventory', function()
 	local xPlayer, inventory = ESX.GetPlayerFromId(source)
 	while not ox.ready do Wait(15) end
-	local result = exports.oxmysql:scalar('SELECT inventory FROM users WHERE identifier = ?',
+	exports.oxmysql:scalar('SELECT inventory FROM users WHERE identifier = ?',
 	{ xPlayer.identifier }, function(result)
 		if result then inventory = json.decode(result) end
 		TriggerEvent('ox_inventory:setPlayerInventory', xPlayer, inventory)
@@ -116,14 +116,19 @@ ox.RegisterServerCallback('ox_inventory:swapItems', function(source, cb, data)
 			Inventory.SyncInventory(ESX.GetPlayerFromId(playerInventory.id), playerInventory, items)
 			playerInventory.weight = playerInventory.weight - toSlot.weight
 			TriggerEvent('ox_inventory:createDrop', source, data.toSlot, toSlot, function(drop, coords)
-				TriggerClientEvent('ox_inventory:createDrop', -1, {drop, coords}, source)
+				if fromSlot == playerInventory.weapon then playerInventory.weapon = nil end
+				TriggerClientEvent('ox_inventory:createDrop', -1, {drop, coords}, source, fromSlot)
 			end)
 			return cb(true, {weight=playerInventory.weight, items=items})
 		else
 			local toInventory = data.toType == 'player' and playerInventory or Inventory(playerInventory.open)
 			local fromInventory = data.fromType == 'player' and playerInventory or Inventory(playerInventory.open)
 			if toInventory and fromInventory and (fromInventory.id ~= toInventory.id or data.fromSlot ~= data.toSlot) then
+				local movedWeapon = fromInventory.weapon == data.fromSlot
 				local fromSlot, toSlot = fromInventory.items[data.fromSlot], toInventory.items[data.toSlot]
+				if movedWeapon then
+					if data.toType == 'player' then fromInventory.weapon = data.toSlot else TriggerClientEvent('ox_inventory:disarm', source) end
+				end
 				if fromSlot and fromSlot.metadata.container ~= toInventory.id then
 					if data.count > fromSlot.count then data.count = fromSlot.count end
 					if toSlot and ((toSlot.name ~= fromSlot.name) or (not Utils.MatchTables(toSlot.metadata, fromSlot.metadata))) then
@@ -166,7 +171,7 @@ ox.RegisterServerCallback('ox_inventory:swapItems', function(source, cb, data)
 					end
 					if fromInventory.changed ~= nil then fromInventory:set('changed', true) end
 					if toInventory.changed ~= nil then toInventory:set('changed', true) end
-					return cb(true, ret)
+					return cb(true, ret, movedWeapon and fromInventory.weapon)
 				end
 			end
 		end
@@ -270,8 +275,9 @@ end)
 
 RegisterServerEvent('ox_inventory:updateWeapon', function(action, value, slot)
 	local inventory = Inventory(source)
-	local weapon = inventory.items[inventory.weapon]
+	local weapon = inventory.items[inventory.weapon or slot]
 	if weapon.metadata then
+	if weapon and weapon.metadata then
 		if action == 'load' then
 			weapon.metadata.ammo = value
 		elseif action == 'throw' then
@@ -284,7 +290,6 @@ RegisterServerEvent('ox_inventory:updateWeapon', function(action, value, slot)
 		elseif weapon.metadata.durability then
 			weapon.metadata.durability = weapon.metadata.durability - (Items(weapon.name).durability or 1)
 		end
-		if weapon and slot then inventory.weapon = slot end
 		if action ~= 'throw' then TriggerClientEvent('ox_inventory:updateInventory', source, {{item = weapon}}, {left=inventory.weight}) end
 	end
 end)
