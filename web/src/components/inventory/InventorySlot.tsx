@@ -97,7 +97,7 @@ const InventorySlot: React.FC<SlotProps> = ({ inventory, item, setCurrentItem })
         className="item-container"
         style={{
           opacity: isDragging ? 0.4 : 1.0,
-          backgroundImage: `url(${process.env.PUBLIC_URL + `/images/${item.name}.png`})` || 'none',
+          backgroundImage: item.name ? `url(${process.env.PUBLIC_URL + `/images/${item.name}.png`})` : 'none',
           border: isOver ? '0.1vh dashed rgba(255,255,255,0.5)' : '0.1vh inset rgba(0,0,0,0)',
         }}
         onMouseEnter={onMouseEnter}
@@ -123,7 +123,7 @@ const InventorySlot: React.FC<SlotProps> = ({ inventory, item, setCurrentItem })
               <WeightBar percent={item.metadata.durability} durability />
             )}
             <div className="item-label">
-              [{item.slot}] {Items[item.name]?.label || 'NO LABEL'}
+              [{item.slot}] {Items[item.name]?.label || item.name}
             </div>
           </>
         )}
