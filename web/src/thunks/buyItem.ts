@@ -17,10 +17,10 @@ export const buyItem = createAsyncThunk(
       const response = await fetchNui<boolean>('buyItem', data);
 
       if (response === false) {
-        rejectWithValue(response);
+        return rejectWithValue(response);
       }
     } catch (error) {
-      rejectWithValue(false);
+      return rejectWithValue(false);
     }
   },
 );

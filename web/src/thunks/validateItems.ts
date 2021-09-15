@@ -17,10 +17,10 @@ export const validateMove = createAsyncThunk(
       const response = await fetchNui<boolean>('swapItems', data);
 
       if (response === false) {
-        rejectWithValue(response);
+        return rejectWithValue(response);
       }
     } catch (error) {
-      rejectWithValue(false);
+      return rejectWithValue(false);
     }
   },
 );
