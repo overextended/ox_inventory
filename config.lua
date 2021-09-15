@@ -1,12 +1,12 @@
 Config = {}
 Config.Locale = 'en'
 
-if ox.server then
-	Config.DefaultWeight = ESX.GetConfig().MaxWeight
+Config.DefaultWeight = ESX.GetConfig().MaxWeight
 
-	-- Number of slots in the player inventory
-	Config.PlayerSlots = 50
-	
+-- Number of slots in the player inventory
+Config.PlayerSlots = 50
+
+if ox.server then	
 	-- Check the latest available version
 	Config.CheckVersion = false
 
