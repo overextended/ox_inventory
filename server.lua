@@ -41,30 +41,28 @@ end)
 
 AddEventHandler('ox_inventory:setPlayerInventory', function(xPlayer, data)
 	local money, inventory, totalWeight = {money=0, black_money=0}, {}, 0
-	if data and next(data) then
-		for i=1, #data do
-			local i = data[i]
-			if type(i) == 'number' then break end
-			local item = Items(i.name)
-			if item then
-				local weight = Inventory.SlotWeight(item, i)
-				totalWeight = totalWeight + weight
-				if i.metadata and i.metadata.bag then
-					i.metadata.container = i.metadata.bag
-					i.metadata.size = {5, 1000}
-					i.metadata.bag = nil
-				end
-				inventory[i.slot] = {name = i.name, label = item.label, weight = weight, slot = i.slot, count = i.count, description = item.description, metadata = i.metadata, stack = item.stack, close = item.close}
-				if money[i.name] then money[i.name] = money[i.name] + i.count end
+	for i=1, #data do
+		local i = data[i]
+		if type(i) == 'number' then break end
+		local item = Items(i.name)
+		if item then
+			local weight = Inventory.SlotWeight(item, i)
+			totalWeight = totalWeight + weight
+			if i.metadata and i.metadata.bag then
+				i.metadata.container = i.metadata.bag
+				i.metadata.size = {5, 1000}
+				i.metadata.bag = nil
 			end
+			inventory[i.slot] = {name = i.name, label = item.label, weight = weight, slot = i.slot, count = i.count, description = item.description, metadata = i.metadata, stack = item.stack, close = item.close}
+			if money[i.name] then money[i.name] = money[i.name] + i.count end
 		end
 	end
 	Inventory.Create(xPlayer.source, xPlayer.name, 'player', Config.PlayerSlots, totalWeight, Config.DefaultWeight, xPlayer.identifier, inventory)
 	xPlayer.syncInventory(totalWeight, Config.DefaultWeight, inventory, money)
-	TriggerClientEvent('ox_inventory:setPlayerInventory', xPlayer.source, {Drops, inventory, totalWeight, ESX.UsableItemsCallbacks})
+	TriggerClientEvent('ox_inventory:setPlayerInventory', xPlayer.source, {Drops, inventory, totalWeight, ESX.UsableItemsCallbacks, ('%s - %s'):format(xPlayer.name, xPlayer.job.name)})
 end)
 
-ox.RegisterServerCallback('ox_inventory:openInventory', function(source, cb, inv, data) 
+Utils.RegisterServerCallback('ox_inventory:openInventory', function(source, cb, inv, data) 
 	local left, right = Inventory(source)
 	if data then
 		if inv == 'stash' then

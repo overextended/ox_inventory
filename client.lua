@@ -462,11 +462,7 @@ RegisterNetEvent('ox_inventory:closeInventory', function(options)
 end)
 
 RegisterNetEvent('ox_inventory:updateInventory', function(items, weights, name, count, removed)
-	if invOpen then SendNUIMessage({
-			action = 'refreshSlots',
-			data = items,
-		})
-	end
+	SendNUIMessage({ action = 'refreshSlots', data = items })
 	if count then Notify({text = (removed and 'Removed' or 'Added')..' '..count..'x '..name, duration = 2500}) end
 	for i=1, #items do
 		local i = items[i].item
@@ -529,8 +525,11 @@ RegisterNetEvent('ox_inventory:setPlayerInventory', function(data)
 		data = {
 			items = ItemData,
 			leftInventory = {
-				slots = #ESX.PlayerData.inventory,
-				items = ESX.PlayerData.inventory
+				id = playerId,
+				slots = Config.PlayerSlots,
+				items = ESX.PlayerData.inventory,
+				maxWeight = Config.DefaultWeight,
+				label = data[5]
 			}
 		}
 	})
@@ -722,9 +721,7 @@ RegisterCommand('reload', function()
 end)
 
 RegisterCommand('hotbar', function()
-	SendNUIMessage({
-		action = 'toggleHotbar'
-	})
+	SendNUIMessage({ action = 'toggleHotbar' })
 end)
 
 RegisterNUICallback('useItem', function(data, cb)
