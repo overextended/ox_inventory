@@ -1,19 +1,7 @@
 import { useState } from 'react';
 import { useExitListener } from '../../hooks/useExitListener';
 import useNuiEvent from '../../hooks/useNuiEvent';
-import { debugData } from '../../utils/debugData';
 import { fetchNui } from '../../utils/fetchNui';
-import div from './Fade';
-
-debugData([
-  {
-    action: 'openInput',
-    data: {
-      header: 'Evidence Locker',
-      rows: ['Locker number', 'Another locker number'],
-    },
-  },
-]);
 
 const KeyboardInput: React.FC = () => {
   const [isVisible, setVisible] = useState(false);
