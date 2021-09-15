@@ -8,6 +8,8 @@ import { onBuy } from '../../dnd/onBuy';
 import { selectIsBusy } from '../../store/inventory';
 import { Items } from '../../store/items';
 import { isSlotWithItem } from '../../helpers';
+import InventoryContext from './InventoryContext';
+import { useContextMenu } from 'react-contexify';
 
 interface SlotProps {
   inventory: Inventory;
@@ -79,10 +81,19 @@ const InventorySlot: React.FC<SlotProps> = ({ inventory, item, setCurrentItem })
     [item, setCurrentItem],
   );
 
+  const { show } = useContextMenu({ id: 'item-context' });
+
+  const handleContext = (e: any) => {
+    console.log('yep');
+    if (isSlotWithItem(item) && inventory.type == 'player') show(e);
+  };
+
   return (
     <>
+      <InventoryContext />
       <div
         ref={connectRef}
+        onContextMenu={handleContext}
         className="item-container"
         style={{
           opacity: isDragging ? 0.4 : 1.0,
