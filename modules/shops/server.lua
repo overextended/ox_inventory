@@ -1,7 +1,6 @@
-local M = {}
 local Shops <const> = data('shops')
-local Utils <const>, Items <const> = module('utils'), module('items')
-
+local Items <const> = module('items')
+local M = {}
 
 for shopName, shopDetails in pairs(Shops) do
 	M[shopName] = {}

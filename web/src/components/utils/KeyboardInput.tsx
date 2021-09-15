@@ -41,8 +41,7 @@ const KeyboardInput: React.FC = () => {
     setVisible(false);
 
     let data: string[] | any;
-    input.length == 0 ? (data = null) : (data = input);
-
+    input.length === 0 ? (data = null) : (data = input);
     fetchNui('ox_inventory:inputData', data);
   };
 

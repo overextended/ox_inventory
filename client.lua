@@ -62,9 +62,9 @@ local OpenInventory = function(inv, data)
 	if CanOpenInventory() then
 		local left, right
 		if inv == 'shop' and invOpen == false then
-			left, right = ox.AwaitServerCallback('ox_inventory:openShop', inv, data)
+			left, right = Utils.AwaitServerCallback('ox_inventory:openShop', inv, data)
 		elseif invOpen == false or inv == 'drop' or inv == 'container' then
-			left, right = ox.AwaitServerCallback('ox_inventory:openInventory', inv, data)
+			left, right = Utils.AwaitServerCallback('ox_inventory:openInventory', inv, data)
 		end
 		if left then
 			if not IsPedInAnyVehicle(ESX.PlayerData.ped, false) then Utils.PlayAnim(1000, 'pickup_object', 'putdown_low', 5.0, 1.5, 1.0, 48, 0.0, 0, 0, 0) end
@@ -116,7 +116,7 @@ local UseSlot = function(slot)
 							end
 							local sleep = (ESX.PlayerData.job.name == 'police' and GetWeapontypeGroup(data.hash) == 416676503) and 400 or 1200
 							local coords = GetEntityCoords(ESX.PlayerData.ped, true)
-							Utils.PlayAnimAdvanced(sleep*2, sleep == 400 and 'reaction@intimidation@cop@unarmed' or 'reaction@intimidation@1h', 'intro', coords.x, coords.y, coords.z, 0, 0, GetEntityHeading(ESX.PlayerData.ped), 8.0, 3.0, -1, 50, 1, 0, 0)
+							Utils.PlayAnimAdvanced(sleep*2, sleep == 400 and 'reaction@intimidation@cop@unarmed' or 'reaction@intimidation@1h', 'intro', coords.x, coords.y, coords.z, 0, 0, GetEntityHeading(ESX.PlayerData.ped), 8.0, 3.0, -1, 50, 0.1, 0, 0)
 							Wait(sleep)
 							GiveWeaponToPed(ESX.PlayerData.ped, data.hash, 0, false, true)
 							if item.metadata.components then
@@ -196,71 +196,6 @@ local Raycast = function()
 	if hit and type ~= 0 then return hit, coords, entity, type else	return false end
 end
 
-local GetJobGrade = function(jobConfig)
-	if (jobConfig == nil) then return nil end
-	local job = jobConfig[ESX.PlayerData.job.name] or jobConfig
-	if (job == nil) then return nil end
-	job = tonumber(job)
-	if (job == nil) then job = 1 end
-	return job
-end
-
-local Blips = {}
-local CreateLocationBlip = function(shopDetails, location)
-	local jobGrade = GetJobGrade(shopDetails.job)
-
-	if (shopDetails.blip and (shopDetails.job == nil or (jobGrade ~= nil and ESX.PlayerData.job.grade >= jobGrade))) then
-		local blipId = #Blips
-		Blips[blipId] = AddBlipForCoord(location.x, location.y)
-		SetBlipSprite(Blips[blipId], shopDetails.blip.id)
-		SetBlipDisplay(Blips[blipId], 4)
-		SetBlipScale(Blips[blipId], shopDetails.blip.scale)
-		SetBlipColour(Blips[blipId], shopDetails.blip.colour)
-		SetBlipAsShortRange(Blips[blipId], true)
-		BeginTextCommandSetBlipName('STRING')
-		AddTextComponentString(shopDetails.name)
-		EndTextCommandSetBlipName(Blips[blipId])
-	end
-end
-
-local CreateShopLocations = function()
-	if next(Blips) then
-		for i=1, #Blips do RemoveBlip(i) end
-		table.wipe(Blips)
-	end
-	for shopName, shopDetails in pairs(Shops) do
-		if (Config.qtarget == true) then
-			for id, target in pairs(shopDetails.targets) do
-				CreateLocationBlip(shopDetails, target.loc)
-				local name = id..'-'..shopName
-				exports['qtarget']:AddBoxZone(name, target.loc, target.length or 0.5, target.width or 0.5, {
-					name=name,
-					heading=target.heading or 0.0,
-					debugPoly=false,
-					minZ=target.minZ,
-					maxZ=target.maxZ
-				}, {
-					options = {
-						{
-							icon = "fas fa-shopping-basket",
-							label = "Open " .. shopDetails.name,
-							job = shopDetails.job,
-							action = function()
-								OpenInventory('shop', {id = id, type = shopName})
-							end,
-						},
-					},
-					distance = target.distance or 2.0
-				})
-			end
-		else
-			for _, location in pairs(shopDetails.locations) do
-				CreateLocationBlip(shopDetails, location)
-			end
-		end
-	end
-end
-
 local CanOpenTarget = function(ped)
 	return IsPedFatallyInjured(ped)
 	or IsEntityPlayingAnim(ped, 'random@mugging3', 'handsup_standing_base', 3)
@@ -270,7 +205,7 @@ local CanOpenTarget = function(ped)
 	or IsEntityPlayingAnim(ped, 'mp_arresting', 'idle', 3)
 end
 
-local Drops, nearbyMarkers, currentMarker, closestMarker = {}, {}, {}
+local Drops, nearbyMarkers, closestMarker, currentMarker = {}, {}, {}
 local Markers = function(tb, type, rgb, playerCoords, name)
 	for k, v in pairs(tb) do
 		v = v.coords or v
@@ -279,7 +214,7 @@ local Markers = function(tb, type, rgb, playerCoords, name)
 		local marker = nearbyMarkers[id]
 		if distance < 1.2 then
 			if not marker then nearbyMarkers[id] = {x = v.x, y = v.y, z = v.z, r = rgb.x, g = rgb.y, b = rgb.z} end
-			if closestMarker == nil or currentMarker and distance < currentMarker[1] or closestMarker and distance < closestMarker[1] then
+			if closestMarker == nil or currentMarker and distance < currentMarker.x or closestMarker and distance < closestMarker.x then
 				closestMarker = {distance, k, type, name}
 			end
 		elseif not marker and distance < 8 then nearbyMarkers[id] = {x = v.x, y = v.y, z = v.z, r = rgb.x, g = rgb.y, b = rgb.z} elseif marker and distance > 8 then nearbyMarkers[id] = nil end
@@ -289,11 +224,12 @@ end
 OnPlayerData = function(key, val)
 	if key == 'dead' and val then Disarm()
 		TriggerEvent('ox_inventory:closeInventory')
+		Wait(50)
+	elseif key == 'job' then
+		Shops.CreateShopLocations()
 	end
 	SetWeaponsNoAutoswap(1)
 	SetWeaponsNoAutoreload(1)
-	SetPedCanSwitchWeapon(ESX.PlayerData.ped, 0)
-	SetPedEnableWeaponBlocking(ESX.PlayerData.ped, 1)
 end
 
 local weaponLicense = vec3(12.42198, -1105.82, 29.7854)
@@ -304,7 +240,7 @@ SetInterval(1, 250, function()
 		Markers(Drops, 'drop', vec3(150, 30, 30), playerCoords)
 		Markers(Stashes, 'stash', vec3(30, 30, 150), playerCoords)
 		if (not Config.qtarget) then
-			for k, v in pairs(Shops) do
+			for k, v in pairs(Shops.Stores) do
 				Markers(v.locations, 'shop', vec3(30, 150, 30), playerCoords, k)
 			end
 		end
@@ -312,11 +248,13 @@ SetInterval(1, 250, function()
 		local marker = nearbyMarkers['license']
 		if distance < 1.2 then
 			if not marker then nearbyMarkers['license'] = {x = weaponLicense.x, y = weaponLicense.y, z = weaponLicense.z, r = 30, g = 150, b = 30} end
-			if closestMarker == nil or currentMarker and distance < currentMarker[1] or closestMarker and distance < closestMarker[1] then
+			if closestMarker == nil or currentMarker and distance < currentMarker.x or closestMarker and distance < closestMarker.x then
 				closestMarker = {distance, 'weapon', 'license'}
 			end
 		elseif not marker and distance < 8 then nearbyMarkers['license'] = {x = weaponLicense.x, y = weaponLicense.y, z = weaponLicense.z, r = 30, g = 150, b = 30} elseif marker and distance > 8 then nearbyMarkers['license'] = nil end
 		currentMarker = closestMarker
+		SetPedCanSwitchWeapon(ESX.PlayerData.ped, false)
+		SetPedEnableWeaponBlocking(ESX.PlayerData.ped, true)
 	else
 		playerCoords = GetEntityCoords(ESX.PlayerData.ped)
 		if currentInventory then
@@ -388,14 +326,14 @@ SetInterval(2, 0, function()
 		end
 		if currentMarker and IsControlJustReleased(0, 38, true) then
 			if currentMarker[3] == 'license' then
-				ox.TriggerServerCallback('ox_inventory:buyLicense', function(result)
+				Utils.TriggerServerCallback('ox_inventory:buyLicense', function(result)
 					if result[1] == false then
 						Notify({type = 'error', text = ox.locale(result[2]), duration = 2500})
 					else
 						Notify({text = ox.locale(result[1]), duration = 2500})
 					end
-				end, currentMarker[2])
-			elseif currentMarker[3] == 'shop' then OpenInventory() end
+				end, 1000, currentMarker[2])
+			elseif currentMarker[3] == 'shop' then OpenInventory(currentMarker[3], {id=currentMarker[2], type=currentMarker[4]}) end
 		end
 		if currentWeapon then
 			DisableControlAction(0, 140, true)
@@ -432,7 +370,7 @@ SetInterval(2, 0, function()
 end)
 
 RegisterNetEvent('ox_inventory:closeInventory', function(options)
-	if invOpen then
+	if invOpen then invOpen = nil
 		SetNuiFocus(false, false)
 		SetNuiFocusKeepInput(false)
 		TriggerScreenblurFadeOut(0)
@@ -453,7 +391,6 @@ RegisterNetEvent('ox_inventory:closeInventory', function(options)
 			RemoveAnimDict(animDict)
 			SetVehicleDoorShut(currentInventory.entity, currentInventory.door, false)
 		else SendNUIMessage({ action = 'closeInventory' }) end
-		invOpen = nil
 		SetInterval(1, 250)
 		Wait(500)
 		if currentInventory then TriggerServerEvent('ox_inventory:closeInventory') end
@@ -533,7 +470,7 @@ RegisterNetEvent('ox_inventory:setPlayerInventory', function(data)
 			}
 		}
 	})
-	CreateShopLocations()
+	Shops.CreateShopLocations()
 	Notify({text = ox.locale('inventory_setup'), duration = 2500})
 	collectgarbage('collect')	
 end)
@@ -553,7 +490,7 @@ AddEventHandler('ox_inventory:item', function(data, cb)
 	if isBusy == false and not Progress.Active and not IsPedRagdoll(ESX.PlayerData.ped) and not IsPedFalling(ESX.PlayerData.ped) then
 		SetBusy(true)
 		if invOpen and data.close then TriggerEvent('ox_inventory:closeInventory') end
-		local result = ox.AwaitServerCallback('ox_inventory:useItem', data.name, data.slot, data.metadata)
+		local result = Utils.AwaitServerCallback('ox_inventory:useItem', data.name, data.slot, data.metadata)
 		if result and isBusy then
 			local used
 			if data.client and data.client.usetime then
@@ -613,9 +550,6 @@ RegisterNetEvent('esx_policejob:unrestrain', function()
 end)
 
 RegisterCommand('inv', function()
-	local property = false
-	TriggerEvent('ox_inventory:getProperty', function(data) property = data end)
-	if property then return OpenInventory('stash', property) end
 	if IsPedInAnyVehicle(ESX.PlayerData.ped, false) then currentDrop = nil end
 	if currentMarker and currentMarker[3] ~= 'license' and not invOpen then OpenInventory(currentMarker[3], {id=currentMarker[2], type=currentMarker[4]})
 	else OpenInventory() end
@@ -735,7 +669,7 @@ RegisterNUICallback('exit', function(data, cb)
 end)
 
 RegisterNUICallback('swapItems', function(data, cb)
-	local response, data, weapon = ox.AwaitServerCallback('ox_inventory:swapItems', data)
+	local response, data, weapon = Utils.AwaitServerCallback('ox_inventory:swapItems', data)
 	if data then
 		for k, v in pairs(data.items) do
 			ESX.PlayerData.inventory[k] = v and v or nil
@@ -750,18 +684,12 @@ RegisterNUICallback('swapItems', function(data, cb)
 end)
 
 RegisterNUICallback('buyItem', function(data, cb)
-	local response, data, message = ox.AwaitServerCallback('ox_inventory:buyItem', data)
+	local response, data, message = Utils.AwaitServerCallback('ox_inventory:buyItem', data)
 	if data then
-		for k, v in pairs(data.items) do
-			ESX.PlayerData.inventory[k] = v and v or nil
-
-			SendNUIMessage({
-				action = 'refreshSlots',
-				data = {item = v},
-			})
-		end
+		ESX.PlayerData.inventory[data[1]] = data[2]
 		ESX.SetPlayerData('inventory', ESX.PlayerData.inventory)
-		if data.weight then ESX.SetPlayerData('weight', data.weight) end
+		ESX.SetPlayerData('weight', data[3])
+		SendNUIMessage({ action = 'refreshSlots', data = {item = data[2]} })
 	end
 	if message then Notify(message) end
 	cb(response)

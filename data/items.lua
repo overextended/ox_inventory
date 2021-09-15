@@ -1,4 +1,4 @@
-local Data = {
+return {
 	['bandage'] = {
 		label = 'Bandage',
 		weight = 115,

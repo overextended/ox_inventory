@@ -1,4 +1,3 @@
-
 local Stashes <const>, Vehicle <const> = data('stashes'), data('vehicles')
 local Utils <const>, Shops <const>, Inventory <const>, Items <const> = module('utils'), module('shops'), module('inventory'), module('items')
 
@@ -102,7 +101,7 @@ Utils.RegisterServerCallback('ox_inventory:openInventory', function(source, cb, 
 	cb({id=left.label, type=left.type, slots=left.slots, weight=left.weight, maxWeight=left.maxWeight}, right)
 end)
 
-ox.RegisterServerCallback('ox_inventory:swapItems', function(source, cb, data)
+Utils.RegisterServerCallback('ox_inventory:swapItems', function(source, cb, data)
 	if data.count > 0 and data.toType ~= 'shop' then
 		local playerInventory, items, ret = Inventory(source), {}
 		if data.toType == 'newdrop' then
@@ -177,7 +176,7 @@ ox.RegisterServerCallback('ox_inventory:swapItems', function(source, cb, data)
 	cb(false)
 end)
 
-ox.RegisterServerCallback('ox_inventory:buyItem', function(source, cb, data)
+Utils.RegisterServerCallback('ox_inventory:buyItem', function(source, cb, data)
 	if data.toType == 'player' and data.fromSlot ~= data.toSlot then
 		if data.count == nil then data.count = 1 end
 		local player, items, ret = Inventory(source), {}
@@ -208,19 +207,17 @@ ox.RegisterServerCallback('ox_inventory:buyItem', function(source, cb, data)
 					return cb(false)
 				end
 				toSlot.metadata = metadata
-				items[data.toSlot] = toSlot
 				shop.items[data.fromSlot], player.items[data.toSlot] = fromSlot, toSlot
-				ret = {weight=player.weight, items=items}
 				Inventory.RemoveItem(source, 'money', price)
 				Inventory.SyncInventory(xPlayer, player, items)
-				return cb(true, ret, {type = 'success', text = 'Purchased '..count..'x '..toSlot.name..' for $'..price})
+				return cb(true, {data.toSlot, toSlot, weight}, {type = 'success', text = 'Purchased '..count..'x '..toSlot.name..' for $'..price})
 			end
 		end
 	end
 	cb(false)
 end)
 
-ox.RegisterServerCallback('ox_inventory:buyLicense', function(source, cb, license)
+Utils.RegisterServerCallback('ox_inventory:buyLicense', function(source, cb, license)
 	local price = Config.Licenses[license]
 	if price then
 		local inventory = Inventory(source)
@@ -239,7 +236,7 @@ ox.RegisterServerCallback('ox_inventory:buyLicense', function(source, cb, licens
 	else cb() end
 end)
 
-ox.RegisterServerCallback('ox_inventory:openShop', function(source, cb, inv, data) 
+Utils.RegisterServerCallback('ox_inventory:openShop', function(source, cb, inv, data) 
 	local left, shop = Inventory(source)
 	if data then
 		shop = Shops[data.type][data.id]
@@ -249,12 +246,12 @@ ox.RegisterServerCallback('ox_inventory:openShop', function(source, cb, inv, dat
 	cb({id=left.label, type=left.type, slots=left.slots, weight=left.weight, maxWeight=left.maxWeight}, shop)
 end)
 
-ox.RegisterServerCallback('ox_inventory:getItemCount', function(source, cb, item, metadata, target)
+Utils.RegisterServerCallback('ox_inventory:getItemCount', function(source, cb, item, metadata, target)
 	local inventory = target and Inventory(target) or Inventory(source)
 	cb((inventory and Inventory.GetItem(inventory, item, metadata, true)) or 0)
 end)
 
-ox.RegisterServerCallback('ox_inventory:getInventory', function(source, cb, id)
+Utils.RegisterServerCallback('ox_inventory:getInventory', function(source, cb, id)
 	local inventory = Inventory(id)
 	if inventory then
 		return cb({
@@ -274,7 +271,6 @@ end)
 RegisterServerEvent('ox_inventory:updateWeapon', function(action, value, slot)
 	local inventory = Inventory(source)
 	local weapon = inventory.items[inventory.weapon or slot]
-	if weapon.metadata then
 	if weapon and weapon.metadata then
 		if action == 'load' then
 			weapon.metadata.ammo = value
@@ -292,7 +288,7 @@ RegisterServerEvent('ox_inventory:updateWeapon', function(action, value, slot)
 	end
 end)
 
-ox.RegisterServerCallback('ox_inventory:useItem', function(source, cb, item, slot, metadata)
+Utils.RegisterServerCallback('ox_inventory:useItem', function(source, cb, item, slot, metadata)
 	local inventory = Inventory(source)
 	local item, type = Items(item)
 	local data = item and (slot and inventory.items[slot] or Inventory.GetItem(source, item, metadata))

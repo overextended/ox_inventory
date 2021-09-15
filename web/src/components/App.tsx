@@ -1,15 +1,16 @@
 import React from 'react';
 import { useAppDispatch } from '../store';
 import useNuiEvent from '../hooks/useNuiEvent';
-import { setShiftPressed } from '../store/inventory';
+import { setShiftPressed, setupInventory } from '../store/inventory';
 import DragPreview from './utils/DragPreview';
 import Notifications from './utils/Notifications';
 import ProgressBar from './utils/ProgressBar';
 import KeyboardInput from './utils/KeyboardInput';
 import useKeyPress from '../hooks/useKeyPress';
 import { Items } from '../store/items';
-import Inventory from './inventory';
+import InventoryComponent from './inventory';
 import { debugData } from '../utils/debugData';
+import { Inventory } from '../typings';
 
 debugData([
   {
@@ -39,15 +40,20 @@ debugData([
 ]);
 
 const App: React.FC = () => {
-  useNuiEvent<typeof Items>('items', (items) => {
-    for (const [name, data] of Object.entries(items)) {
-      Items[name] = data;
-    }
-  });
-
   const shiftPressed = useKeyPress('Shift');
 
   const dispatch = useAppDispatch();
+
+  useNuiEvent<{ items: typeof Items; leftInventory: Inventory }>(
+    'init',
+    ({ items, leftInventory }) => {
+      for (const [name, data] of Object.entries(items)) {
+        Items[name] = data;
+      }
+      console.log(leftInventory);
+      dispatch(setupInventory({ leftInventory }));
+    },
+  );
 
   React.useEffect(() => {
     dispatch(setShiftPressed(shiftPressed));
@@ -58,7 +64,7 @@ const App: React.FC = () => {
       <KeyboardInput />
       <DragPreview />
       <Notifications />
-      <Inventory />
+      <InventoryComponent />
       <ProgressBar />
     </>
   );

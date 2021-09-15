@@ -1,4 +1,33 @@
+local callbackTimer = {}
 local M = module('utils', true)
+
+M.AwaitServerCallback = function(event, ...)
+	local time = GetGameTimer()
+	if (callbackTimer?[event] or 0) > time then return false end
+	callbackTimer[event] = time + 200
+	local event = ('cb:%s'):format(event)
+	TriggerServerEvent('ox:TriggerServerCallback', event, ...)
+	local p = promise.new()
+	event = RegisterNetEvent(event, function(...)
+		p:resolve({...})
+		RemoveEventHandler(event)
+	end)
+	return table.unpack(Citizen.Await(p))
+end
+
+M.TriggerServerCallback = function(event, cb, timer, ...)
+	if timer then
+		local time = GetGameTimer()
+		if (callbackTimer?[timer] or 0) > time then return false end
+		callbackTimer[timer] = time + timer
+	end
+	local event = ('cb:%s'):format(event)
+	TriggerServerEvent('ox:TriggerServerCallback', event, ...)
+	event = RegisterNetEvent(event, function(...)
+		cb(...)
+		RemoveEventHandler(event)
+	end)
+end
 
 M.PlayAnim = function(wait, ...)
 	local args = {...}
@@ -51,6 +80,6 @@ M.InventorySearch = function(search, item, metadata)
 	end
 	return false
 end
-exports('InventorySearch', M.InventorySearch)
 
+exports('InventorySearch', M.InventorySearch)
 return M

@@ -1,13 +1,13 @@
 local M  = {}
-M.Disable = {}
-M.Active = false
+local Disable = {}
+local Active = false
 
 local canCancel, wasCancelled, anim, scenario, prop, propTwo, progressCallback = false, false, false, false, false, false
 
 local PlayerReset = function()
     if anim or scenario then
         ClearPedTasks(ESX.PlayerData.ped)
-		M.Disable = {}
+		Disable = {}
     end
     if prop and NetToObj(prop) ~= 0 and NetToObj(prop) ~= nil then
         DetachEntity(NetToObj(prop), 1, 1)
@@ -19,18 +19,18 @@ local PlayerReset = function()
         DeleteEntity(NetToObj(propTwo))
     	propTwo = false
     end
-	M.Active = false
+	Active = false
 end
 
 local Completed = function()
-	if M.Active then
+	if Active then
 		progressCallback(false)
 		PlayerReset()
 	end
 end
 
 local Cancelled = function()
-	if M.Active and canCancel then
+	if Active and canCancel then
 		progressCallback(true)
 		PlayerReset()
 		SendNUIMessage({
@@ -39,11 +39,11 @@ local Cancelled = function()
 	end
 end
 
-M.Start = function(options, completed)
-	if not M.Active then
+local Start = function(options, completed)
+	if not Active then
 		progressCallback = completed
 		if not IsEntityDead(ESX.PlayerData.ped) or options.useWhileDead then
-			M.Active = true
+			Active = true
 			anim = false
 			prop = false
 			propTwo = false
@@ -150,14 +150,14 @@ M.Start = function(options, completed)
 
 				SetModelAsNoLongerNeeded(model)
 			end
-			M.Disable = options.Disable
+			Disable = options.Disable
 		end
 	end
 end
 
-exports('Progress', M.Start)
+exports('Progress', Start)
 exports('CancelProgress', Cancelled)
-exports('ProgressActive', function() return M.Active end)
+exports('ProgressActive', function() return Active end)
 
 RegisterNUICallback('ox_inventory:ProgressComplete', function(_, cb)
     Completed()
@@ -165,7 +165,7 @@ RegisterNUICallback('ox_inventory:ProgressComplete', function(_, cb)
 end)
 
 RegisterCommand('cancelprogress', function()
-    if M.Active and canCancel then
+    if Active and canCancel then
         Cancelled()
     end
 end)
@@ -173,4 +173,6 @@ end)
 RegisterKeyMapping('cancelprogress', 'Cancel current progress bar', 'keyboard', 'x') 
 TriggerEvent('chat:removeSuggestion', '/cancelprogress')
 
-return M
+return {
+	Active = Active, Disable = Disable, Start = Start
+}

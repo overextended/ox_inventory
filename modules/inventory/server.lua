@@ -166,7 +166,7 @@ M.Save = function(inv)
 end
 
 M.GenerateItems = function(id, invType, items)
-	local returnData, totalWeight = {}, 0
+	local returnData, totalWeight = table.create(#items, 0), 0
 	if next(items) == nil then
 		-- todo: random loot generation
 	end
@@ -183,8 +183,7 @@ M.GenerateItems = function(id, invType, items)
 end
 
 M.Load = function(id, invType, owner)
-	local returnData, weight, result, datastore = {}, 0
-	local isVehicle = Vehicle[invType]
+	local isVehicle, result = Vehicle[invType]
 	if id and invType then
 		if isVehicle then
 			local plate = id:sub(6)
@@ -210,6 +209,7 @@ M.Load = function(id, invType, owner)
 			if result then result = json.decode(result) end
 		end
 	end
+	local returnData, weight = table.create(0, #result)
 	if result then
 		for k, v in pairs(result) do
 			local item = Items(v.name)
@@ -219,7 +219,7 @@ M.Load = function(id, invType, owner)
 			end
 		end
 	end
-	return returnData, weight, datastore
+	return returnData, weight
 end
 
 M.GetItem = function(inv, item, metadata, returnsCount)
@@ -353,7 +353,7 @@ M.RemoveItem = function(inv, item, count, metadata, slot)
 		inv.weight = inv.weight - (item.weight + (metadata.weight or 0)) * removed
 		if removed > 0 and xPlayer then
 			M.SyncInventory(xPlayer, inv)
-			local array = {}
+			local array = table.create(#slots, 0)
 			for k, v in pairs(slots) do
 				if type(v) == 'number' then
 					array[k] = {item = {slot=v}, inventory = inv.type}
@@ -531,7 +531,7 @@ end, true, {help = 'Returns confiscated items to a player', validate = true, arg
 
 ESX.RegisterCommand('saveinv', 'admin', function(xPlayer, args, showError)
 	local time = os.time(os.date('!*t'))
-	for id, inv in pairs(M('all')) do
+	for id, inv in pairs(Inventories) do
 		if inv.type ~= 'player' then
 			if inv.type ~= 'drop' and inv.datastore == nil then
 				M.Save(inv)
