@@ -50,7 +50,6 @@ const App: React.FC = () => {
       for (const [name, data] of Object.entries(items)) {
         Items[name] = data;
       }
-      console.log(leftInventory);
       dispatch(setupInventory({ leftInventory }));
     },
   );
