@@ -1,12 +1,13 @@
 //import { Items } from "../store/items";
 import { Inventory, State, Slot, SlotWithItem, InventoryType, ItemData } from '../typings';
+import { isEqual } from 'lodash';
 
 export const isSlotWithItem = (slot: Slot, strict: boolean = false): slot is SlotWithItem =>
   (slot.name !== undefined && slot.weight !== undefined) ||
   (strict && slot.name !== undefined && slot.count !== undefined && slot.weight !== undefined);
 
 export const canStack = (sourceSlot: Slot, targetSlot: Slot) =>
-  sourceSlot.name === targetSlot.name && sourceSlot.metadata === targetSlot.metadata;
+  sourceSlot.name === targetSlot.name && isEqual(sourceSlot.metadata, targetSlot.metadata);
 
 export const findAvailableSlot = (item: Slot, data: ItemData, items: Slot[]) => {
   if (!data.stack) return items.find((target) => target.name === undefined);
