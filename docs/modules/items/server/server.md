@@ -27,17 +27,3 @@ The server-side items module loads general item data, provides functions for man
 	| 1         | Weapon      |
 	| 2         | Ammo        |
 	| 3         | Component   |
-
-###New item metadata
-This function is used internally when adding or buying items to define default metadata values.
-!!! info
-	```lua
-	Items.Metadata(xPlayer, item, metadata, count)
-	```
-
-	| Argument   | Explanation |
-	| ---------- | ----------- |
-	| xPlayer    | Player triggering the function |
-	| item       | Name of the item being manipulated |
-	| metadata   | Extra metadata to be added to the item |
-	| count      | Number of items to be added |
