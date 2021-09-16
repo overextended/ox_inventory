@@ -5,7 +5,6 @@ ALTER TABLE `linden_inventory`
 	CHANGE COLUMN `name` `name` VARCHAR(100) NOT NULL COLLATE 'utf8mb4_unicode_ci' AFTER `owner`,
 	CHANGE COLUMN `data` `data` LONGTEXT NULL COLLATE 'utf8mb4_unicode_ci' AFTER `name`,
 	DROP INDEX `name`,
-	ADD UNIQUE INDEX `name` (`name`),
 	ADD UNIQUE INDEX `owner` (`owner`, `name`);
 
 -- Setup new columns for vehicle stashes, and actually index owner

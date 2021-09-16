@@ -3,7 +3,6 @@ CREATE TABLE `ox_inventory` (
 	`name` varchar(100) COLLATE utf8mb4_unicode_ci NOT NULL,
 	`data` longtext COLLATE utf8mb4_unicode_ci DEFAULT NULL,
 	`lastupdated` timestamp NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
-	UNIQUE KEY `name` (`name`),
 	UNIQUE KEY `owner` (`owner`,`name`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
