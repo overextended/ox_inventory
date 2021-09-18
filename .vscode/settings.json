@@ -1,0 +1,19 @@
+{
+	"Lua.diagnostics.disable": [
+		"undefined-field",
+		"undefined-global",
+		"unsupport-symbol"
+	],
+	"Lua.diagnostics.globals": [
+		"ox",
+		"data"
+	],
+	"Lua.runtime.nonstandardSymbol": [
+		"`",
+		"+=",
+		"-=",
+		"/**/",
+		"*=",
+		"/=",
+	]
+}

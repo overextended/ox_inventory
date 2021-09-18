@@ -1,0 +1,48 @@
+name: Pre-Release
+
+on: 
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: 'Version tag'
+        required: true
+
+jobs:
+  create-release:
+    name: Build and Create Tagged Pre release
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Install archive tools
+        run: sudo apt install zip
+
+      - name: Checkout source code
+        uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+          ref: ${{ github.ref }}
+
+      - name: Install dependencies
+        run: yarn
+
+      - name: Run build
+        run: yarn build
+
+      - name: Bundle files
+        run: |
+          mv dist ox_inventory
+          zip -r ox_inventory-${{ github.event.inputs.tag }}.zip ox_inventory
+
+      - name: Create Release
+        uses: "marvinpinto/action-automatic-releases@v1.2.1"
+        id: auto_release
+        with:
+          repo_token: "${{ secrets.GITHUB_TOKEN }}"
+          title: "Experimental - ${{ github.event.inputs.tag }} (FOR TESTING PURPOSE)"
+          prerelease: true
+          automatic_release_tag: "${{ github.event.inputs.tag }}"
+          files: ox_inventory-${{ github.event.inputs.tag }}.zip
+
+        env:
+          CI: false
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
