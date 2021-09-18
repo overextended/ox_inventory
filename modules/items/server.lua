@@ -13,7 +13,7 @@ local GetItem = function(item)
 	return M
 end
 
-local metatable = setmetatable(M, {
+setmetatable(M, {
 	__call = function(self, item)
 		if item then return GetItem(item) end
 		return self
@@ -72,7 +72,7 @@ CreateThread(function()
 	end
 	Wait(2000)
 	TriggerEvent('ox_inventory:itemList', Items)
-	if Config.DBCleanup then exports.oxmysql:executeSync('DELETE FROM ox_inventory WHERE lastupdated < (NOW() - INTERVAL ? OR data = "[]"', {Config.DBCleanup}) end
+	if Config.DBCleanup then exports.oxmysql:executeSync('DELETE FROM ox_inventory WHERE lastupdated < (NOW() - INTERVAL '..Config.DBCleanup..') OR data = "[]"') end
 	ESX.UsableItemsCallbacks = ESX.GetUsableItems()
 	local count = 0
 	for _, v in pairs(Items) do
