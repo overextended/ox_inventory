@@ -1,4 +1,4 @@
-local Items = data('items')
+local Items = module('items')
 
 --[[
 	You should remove this file from fxmanifest.lua if it is not required
@@ -7,7 +7,7 @@ local Items = data('items')
 	This conversion process is designed for ESX v1 Final and ESX Legacy!
 ]]
 
-local started, totalCount, currentCount = false, 0, 0
+local started = false
 
 local Print = function(arg)
 	print(('^3=================================================================\n^0%s\n^3=================================================================^0'):format(arg))
@@ -79,34 +79,37 @@ local Convert = function()
 	Print(('Converting %s user inventories to new data format'):format(total))
 	for i=1, #users do
 		local inventory, slot = {}, 0
-		for k, v in pairs(json.decode(users[i].accounts or '[]')) do
+		local items = users[i].inventory and json.decode(users[i].inventory) or {}
+		local accounts = users[i].accounts and json.decode(users[i].accounts) or {}
+		local loadout = users[i].loadout and json.decode(users[i].loadout) or {}
+		for k, v in pairs(accounts) do
 			if type(v) == 'table' then break end
-			if Items[k] then
+			if Items(k) and v > 0 then
 				slot += 1
 				inventory[slot] = {slot=slot, name=k, count=v}
 			end
 		end
-		for k, v in pairs(json.decode(users[i].loadout or '[]')) do
-			if type(v) == 'table' then break end
-			local item = Items[k]
+		for k in pairs(loadout) do
+			local item = Items(k)
 			if item then
 				slot += 1
-				inventory[slot] = {slot=slot, name=k, count=v, metadata = {durability=100}}
+				inventory[slot] = {slot=slot, name=k, count=1, metadata = {durability=100}}
 				if item.ammoname then
 					inventory[slot].metadata.ammo = 0
 					inventory[slot].metadata.components = {}
 					inventory[slot].metadata.serial = GenerateSerial()
-				end	
+				end
 			end
 		end
-		for k, v in pairs(json.decode(users[i].inventory or '[]')) do
+		for k, v in pairs(items) do
 			if type(v) == 'table' then break end
-			if Items[k] then
+			if Items(k) and v > 0 then
 				slot += 1
 				inventory[slot] = {slot=slot, name=k, count=v}
 			end
 		end
-		exports.oxmysql:execute('UPDATE users SET inventory = ? WHERE identifier = ?', {json.encode(inventory), users[i].identifier}, function()
+		inventory = json.encode(inventory)
+		exports.oxmysql:execute('UPDATE users SET inventory = ? WHERE identifier = ?', {inventory, users[i].identifier}, function()
 			count += 1
 			local pct = math.floor((count/total) * 100 + 0.5)
 			if pct == '100' then

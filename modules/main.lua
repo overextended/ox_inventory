@@ -35,4 +35,3 @@ end
 local func, err = load(LoadResourceFile(ox.name, ox.server and 'server.lua' or 'client.lua'), ox.server and 'server.lua' or 'client.lua', 't')
 assert(func, err == nil or '\n^1'..err..'^7')
 func()
-data, module = nil, nil
