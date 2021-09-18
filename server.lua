@@ -313,7 +313,7 @@ Utils.RegisterServerCallback('ox_inventory:useItem', function(source, cb, item, 
 			if item.consume and data.count >= item.consume then
 				return cb(data)
 			else
-				TriggerClientEvent('ox_inventory:Notify', source, {type = 'error', text = ox.locale('item_not_enough'), duration = 2500})
+				TriggerClientEvent('ox_inventory:Notify', source, {type = 'error', text = ox.locale('item_not_enough', item.name), duration = 2500})
 			end
 		end
 	end
