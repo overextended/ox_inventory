@@ -1,8 +1,7 @@
-local M  = {}
 local Disable = {}
 local Active = false
 
-local canCancel, wasCancelled, anim, scenario, prop, propTwo, progressCallback = false, false, false, false, false, false
+local canCancel, anim, scenario, prop, propTwo, progressCallback = false, false, false, false, false, nil
 
 local PlayerReset = function()
     if anim or scenario then

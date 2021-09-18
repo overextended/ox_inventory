@@ -38,7 +38,7 @@ RegisterNetEvent('ox_inventory:disarm', Disarm)
 
 local ClearWeapons = function()
 	Disarm()
-	for k, v in pairs(Weapons) do
+	for k in pairs(Weapons) do
 		SetPedAmmo(ESX.PlayerData.ped, k, 0)
 	end
 	RemoveAllPedWeapons(ESX.PlayerData.ped, true)
@@ -54,10 +54,12 @@ local Notify = function(data) SendNUIMessage({ action = 'showNotif', data = data
 RegisterNetEvent('ox_inventory:Notify', Notify)
 exports('Notify', Notify)
 
+local isCuffed = nil
 local CanOpenInventory = function()
 	return ESX.PlayerLoaded and invOpen ~= nil and isBusy == false and not ESX.PlayerData.dead and not isCuffed and not IsPauseMenuActive() and not IsPedFatallyInjured(ESX.PlayerData.ped, 1) and (not currentWeapon or currentWeapon.timer == 0)
 end
 
+local currentInventory
 local OpenInventory = function(inv, data)
 	if CanOpenInventory() then
 		local left, right
@@ -191,7 +193,7 @@ end
 local playerCoords
 local Raycast = function()
 	local plyOffset = GetOffsetFromEntityInWorldCoords(ESX.PlayerData.ped, 0.0, 3.0, -0.05)
-	local ret, hit, coords, surfacenormal, entity = GetShapeTestResult(StartShapeTestRay(playerCoords.x, playerCoords.y, playerCoords.z, plyOffset.x, plyOffset.y, plyOffset.z, -1, ESX.PlayerData.ped, 0))
+	local _, hit, coords, _, entity = GetShapeTestResult(StartShapeTestRay(playerCoords.x, playerCoords.y, playerCoords.z, plyOffset.x, plyOffset.y, plyOffset.z, -1, ESX.PlayerData.ped, 0))
 	local type = GetEntityType(entity)
 	if hit and type ~= 0 then return hit, coords, entity, type else	return false end
 end
@@ -205,8 +207,9 @@ local CanOpenTarget = function(ped)
 	or IsEntityPlayingAnim(ped, 'mp_arresting', 'idle', 3)
 end
 
-local Drops, nearbyMarkers, closestMarker, currentMarker = {}, {}, {}
+local Drops, nearbyMarkers, closestMarker, currentMarker = {}, {}, {}, nil
 local Markers = function(tb, type, rgb, playerCoords, name)
+	-- todo: cleanup code and reduce table reassignment? vectors should be better than tables, but requires two vec3s vs single table
 	for k, v in pairs(tb) do
 		v = v.coords or v
 		local distance = #(playerCoords - v)
@@ -244,6 +247,7 @@ SetInterval(1, 250, function()
 				Markers(v.locations, 'shop', vec3(30, 150, 30), playerCoords, k)
 			end
 		end
+		-- todo: cleanup code and reduce table reassignment? vectors should be better than tables, but requires two vec3s vs single table
 		local distance = #(playerCoords - weaponLicense)
 		local marker = nearbyMarkers['license']
 		if distance < 1.2 then
@@ -252,7 +256,18 @@ SetInterval(1, 250, function()
 				closestMarker = {distance, 'weapon', 'license'}
 			end
 		elseif not marker and distance < 8 then nearbyMarkers['license'] = {x = weaponLicense.x, y = weaponLicense.y, z = weaponLicense.z, r = 30, g = 150, b = 30} elseif marker and distance > 8 then nearbyMarkers['license'] = nil end
-		currentMarker = closestMarker
+		distance = #(playerCoords - vec3(-22.4, -1105.5, 26.7))
+		local marker = nearbyMarkers['policeevidence']
+		if distance < 1.2 then
+			if not marker then nearbyMarkers['policeevidence'] = {x = -22.4, y = -1105.5, z = 26.7, r = 30, g = 30, b = 150} end
+			if closestMarker == nil or currentMarker and distance < currentMarker.x or closestMarker and distance < closestMarker.x then
+				closestMarker = {distance, 'policeevidence', 'stash'}
+			end
+		elseif not marker and distance < 8 then nearbyMarkers['policeevidence'] = {x = -22.4, y = -1105.5, z = 26.7, r = 30, g = 30, b = 150} elseif marker and distance > 8 then nearbyMarkers['policeevidence'] = nil end
+		----------------
+		if IsPedInAnyVehicle(ESX.PlayerData.ped, false) == false then
+			currentMarker = closestMarker
+		end
 		SetPedCanSwitchWeapon(ESX.PlayerData.ped, false)
 		SetPedEnableWeaponBlocking(ESX.PlayerData.ped, true)
 	else
@@ -428,7 +443,7 @@ RegisterNetEvent('ox_inventory:createDrop', function(data, owner, slot)
 	Drops = Drops or {}
 	Drops[data[1]] = {coords=coords}
 	if owner == playerId and invOpen and #(playerCoords - coords) <= 1 then
-		if currentWeapon and currentWeapon.slot then Disarm() end
+		if currentWeapon?.slot then Disarm() end
 		if not IsPedInAnyVehicle(ESX.PlayerData.ped, false) then
 			OpenInventory('drop', {id=data[1]})
 		end
@@ -442,7 +457,7 @@ RegisterNetEvent('ox_inventory:removeDrop', function(id)
 end)
 
 RegisterNetEvent('ox_inventory:setPlayerInventory', function(data)
-	playerId, ESX.PlayerData.ped, invOpen, currentWeapon, currentDrop = GetPlayerServerId(PlayerId()), ESX.PlayerData.ped, false, false, nil, nil
+	playerId, ESX.PlayerData.ped, invOpen, currentWeapon = GetPlayerServerId(PlayerId()), ESX.PlayerData.ped, false, false
 	ClearWeapons()
 	Drops, ESX.PlayerData.inventory = data[1] or {}, data[2]
 	ESX.SetPlayerData('inventory', ESX.PlayerData.inventory)
@@ -550,9 +565,11 @@ RegisterNetEvent('esx_policejob:unrestrain', function()
 end)
 
 RegisterCommand('inv', function()
-	if IsPedInAnyVehicle(ESX.PlayerData.ped, false) then currentDrop = nil end
-	if currentMarker and currentMarker[3] ~= 'license' and not invOpen then OpenInventory(currentMarker[3], {id=currentMarker[2], type=currentMarker[4]})
-	else OpenInventory() end
+	if currentMarker and currentMarker[3] ~= 'license' and not invOpen then
+		OpenInventory(currentMarker[3], {id=currentMarker[2], type=currentMarker[4]})
+	else
+		OpenInventory()
+	end
 end)
 
 RegisterCommand('inv2', function()
@@ -648,7 +665,7 @@ RegisterCommand('inv2', function()
 end)
 
 RegisterCommand('reload', function()
-	if currentWeapon and currentWeapon.ammo then
+	if currentWeapon?.ammo then
 		local ammo = Utils.InventorySearch(1, currentWeapon.ammo)
 		if ammo[1] then UseSlot(ammo[1].slot) end
 	end

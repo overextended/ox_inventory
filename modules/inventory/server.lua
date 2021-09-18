@@ -72,17 +72,6 @@ M.SetSlot = function(inv, item, count, metadata, slot)
 	end
 end
 
-local Weight = function(inv)
-	inv = Inventories[type(inv) == 'table' and inv.id or inv].items
-	local weight = 0
-	for k, v in pairs(inv) do
-		weight = weight + (v.weight * v.count)
-		if v.metadata.weight then weight = weight + v.metadata.weight or 0 end
-	end
-	inv.weight = math.floor(weight + 0.5)
-	return inv.weight
-end
-
 M.SlotWeight = function(item, slot)
 	local weight = item.weight * slot.count
 	if not slot.metadata then slot.metadata = {} end
@@ -179,7 +168,7 @@ M.GenerateItems = function(id, invType, items)
 end
 
 M.Load = function(id, invType, owner)
-	local isVehicle, result = Vehicle[invType]
+	local isVehicle, result = Vehicle[invType], nil
 	if id and invType then
 		if isVehicle then
 			local plate = id:sub(6)
@@ -220,11 +209,12 @@ end
 
 M.GetItem = function(inv, item, metadata, returnsCount)
 	item = type(item) == 'table' and item or Items(item)
-	if item then item = count and item or table.clone(item)
-		local inv, count = Inventories[type(inv) == 'table' and inv.id or inv].items, 0
+	if item then item = returnsCount and item or table.clone(item)
+		inv = Inventories[type(inv) == 'table' and inv.id or inv].items
+		local count = 0
 		if inv then
 			metadata = not metadata and false or type(metadata) == 'string' and {type=metadata} or metadata
-			for k, v in pairs(inv) do
+			for _, v in pairs(inv) do
 				if v and v.name == item.name and (not metadata or Utils.TableContains(v.metadata, metadata)) then
 					count += v.count
 				end
@@ -248,21 +238,21 @@ M.SwapSlots = function(inventory, slot)
 end
 
 M.SetItem = function(inv, item, count, metadata)
-	local item, inv = Items(item), Inventories[type(inv) == 'table' and inv.id or inv]
+	item, inv = Items(item), Inventories[type(inv) == 'table' and inv.id or inv]
 	if item and count >= 0 then
 		local itemCount = M.GetItem(inv, item.name, metadata, true)
 		if count > itemCount then
 			count = count - itemCount
 			M.AddItem(inv, item.name, count, metadata)
 		else
-			itemcount = count - count
+			itemCount = count - count
 			M.RemoveItem(inv, item.name, count, metadata)
 		end
 	end
 end
 
 M.AddItem = function(inv, item, count, metadata, slot)
-	local item, inv = Items(item), Inventories[type(inv) == 'table' and inv.id or inv]
+	item, inv = Items(item), Inventories[type(inv) == 'table' and inv.id or inv]
 	count = math.floor(count + 0.5)
 	if item and inv and count > 0 then
 		local xPlayer = inv.type == 'player' and ESX.GetPlayerFromId(inv.id) or false
@@ -274,7 +264,7 @@ M.AddItem = function(inv, item, count, metadata, slot)
 			end
 		end
 		if existing == false then
-			local items, toSlot = inv.items
+			local items, toSlot = inv.items, nil
 			for i=1, Config.PlayerSlots do
 				local slotItem = items[i]
 				if item.stack and slotItem ~= nil and slotItem.name == item.name and Utils.MatchTables(slotItem.metadata, metadata) then

@@ -5,7 +5,7 @@ M.AwaitServerCallback = function(event, ...)
 	local time = GetGameTimer()
 	if (callbackTimer?[event] or 0) > time then return false end
 	callbackTimer[event] = time + 200
-	local event = ('cb:%s'):format(event)
+	event = ('cb:%s'):format(event)
 	TriggerServerEvent('ox:TriggerServerCallback', event, ...)
 	local p = promise.new()
 	event = RegisterNetEvent(event, function(...)
@@ -21,7 +21,7 @@ M.TriggerServerCallback = function(event, cb, timer, ...)
 		if (callbackTimer?[timer] or 0) > time then return false end
 		callbackTimer[timer] = time + timer
 	end
-	local event = ('cb:%s'):format(event)
+	event = ('cb:%s'):format(event)
 	TriggerServerEvent('ox:TriggerServerCallback', event, ...)
 	event = RegisterNetEvent(event, function(...)
 		cb(...)

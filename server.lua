@@ -103,7 +103,7 @@ end)
 
 Utils.RegisterServerCallback('ox_inventory:swapItems', function(source, cb, data)
 	if data.count > 0 and data.toType ~= 'shop' then
-		local playerInventory, items, ret = Inventory(source), {}
+		local playerInventory, items, ret = Inventory(source), {}, nil
 		if data.toType == 'newdrop' then
 			local fromSlot = playerInventory.items[data.fromSlot]
 			local toSlot = table.clone(fromSlot)
@@ -179,7 +179,7 @@ end)
 Utils.RegisterServerCallback('ox_inventory:buyItem', function(source, cb, data)
 	if data.toType == 'player' and data.fromSlot ~= data.toSlot then
 		if data.count == nil then data.count = 1 end
-		local player, items, ret = Inventory(source), {}
+		local player, items = Inventory(source), {}
 		local xPlayer = ESX.GetPlayerFromId(source)
 		local split = player.open:match('^.*() ')
 		local shop = Shops[player.open:sub(0, split-1)][tonumber(player.open:sub(split+1))]
