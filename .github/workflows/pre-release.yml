@@ -1,11 +1,9 @@
 name: Pre-Release
 
-on: 
-  workflow_dispatch:
-    inputs:
-      tag:
-        description: 'Version tag'
-        required: true
+on:
+  push:
+    branches:
+      - main
 
 jobs:
   create-release:
@@ -21,6 +19,12 @@ jobs:
         with:
           fetch-depth: 0
           ref: ${{ github.ref }}
+          
+      - name: Get variables
+        id: get_vars
+        run: |
+          echo "::set-output name=SHORT_SHA::$(git rev-parse --short HEAD)"
+          echo "::set-output name=DATE::$(date +'%D')"
 
       - name: Yarn cache
         uses: actions/setup-node@v2
@@ -36,27 +40,28 @@ jobs:
       - name: Run build
         run: yarn build
         working-directory: web
-
         env:
           CI: false
 
       - name: Bundle files
         run: |
           mkdir -p ./temp/ox_inventory
+          mkdir -p ./temp/ox_inventory/web
           cp ./{server.lua,README.md,LICENSE,fxmanifest.lua,config.lua,client.lua} ./temp/ox_inventory
           cp -r ./{setup,modules,data} ./temp/ox_inventory
-          cp -r ./web/build ./temp/ox_inventory/web
-          cd ./temp && zip -r ox_inventory-${{ github.event.inputs.tag }}.zip ./ox_inventory
+          cp -r ./web/build ./temp/ox_inventory/web/build
+          cd ./temp && zip -r ox_inventory-${{ steps.get_vars.outputs.SHORT_SHA }}.zip ./ox_inventory
 
       - name: Create Release
         uses: "marvinpinto/action-automatic-releases@v1.2.1"
         id: auto_release
         with:
           repo_token: "${{ secrets.GITHUB_TOKEN }}"
-          title: "Experimental - ${{ github.event.inputs.tag }} (FOR TESTING PURPOSE)"
+          title: "Experimental Build (${{ steps.get_vars.outputs.SHORT_SHA }}) | ${{ steps.get_vars.outputs.DATE }}"
           prerelease: true
-          automatic_release_tag: "${{ github.event.inputs.tag }}"
-          files: ./temp/ox_inventory-${{ github.event.inputs.tag }}.zip
+          automatic_release_tag: "experimental"
+          files: ./temp/ox_inventory-${{ steps.get_vars.outputs.SHORT_SHA }}.zip
 
         env:
+          CI: false
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
