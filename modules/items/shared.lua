@@ -5,6 +5,11 @@ local Weapons = {}
 for k, v in pairs(Items) do
 	v.name = k
 	v.weight = v.weight or 0
+	if v.client then
+		if not v.consume and (v.client.consume or v.client.status or v.client.usetime) then
+			v.consume = 1
+		end
+	end
 	if ox.server then
 		v.client = nil
 	else
