@@ -11,7 +11,7 @@ if ox.server then
 	Config.CheckVersion = false
 
 	-- When should unused inventories be wiped
-	Config.DBCleanup = '6 MONTH'
+	Config.DBCleanup = '6' -- Months
 	
 	-- Enable integrated logging
 	Config.Logs = false
