@@ -15,16 +15,18 @@ local Vehicle = {trunk=true, glovebox=true}
 
 local Set = function(inv, k, v)
 	inv = Inventories[type(inv) == 'table' and inv.id or inv]
-	if type(v) == 'number' then math.floor(v + 0.5) end
-	if k == 'open' and v == false then
-		if inv.type ~= 'player' then
-			if inv.type == 'drop' and not next(inv.items) then
-				TriggerClientEvent('ox_inventory:removeDrop', -1, inv.id)
-				inv = nil
-			else inv.time = os.time(os.date('!*t')) end
+	if inv then
+		if type(v) == 'number' then math.floor(v + 0.5) end
+		if k == 'open' and v == false then
+			if inv.type ~= 'player' then
+				if inv.type == 'drop' and not next(inv.items) then
+					TriggerClientEvent('ox_inventory:removeDrop', -1, inv.id)
+					inv = nil
+				else inv.time = os.time(os.date('!*t')) end
+			end
 		end
+		inv[k] = v
 	end
-	if inv then inv[k] = v end
 end
 
 local Get = function(inv, k)
@@ -41,7 +43,7 @@ local Minimal = function(inv)
 				name = v.name,
 				count = v.count,
 				slot = k,
-				metadata = v.metadata
+				metadata = next(v.metadata) and v.metadata or nil
 			}
 		end
 	end
@@ -51,7 +53,7 @@ end
 M.SyncInventory = function(xPlayer, inv)
 	inv = Inventories[type(inv) == 'table' and inv.id or inv]
 	local money = {money=0, black_money=0}
-	for k, v in pairs(inv.items) do
+	for _, v in pairs(inv.items) do
 		if money[v.name] then
 			money[v.name] = money[v.name] + v.count
 		end
@@ -107,10 +109,7 @@ M.Create = function(...)
 		}
 
 		if self.type == 'drop' then self.datastore = true else self.changed = false end
-
-		if not self.items then
-			self.items, self.weight, self.datastore = M.Load(self.id, self.type, self.owner)
-		end
+		if not self.items then self.items, self.weight, self.datastore = M.Load(self.id, self.type, self.owner) end
 
 		Inventories[self.id] = self
 		return Inventories[self.id]
@@ -118,9 +117,7 @@ M.Create = function(...)
 end
 
 M.Remove = function(id, type)
-	if type == 'drop' then
-		TriggerClientEvent('ox_inventory:removeDrop', -1, id)
-	end
+	if type == 'drop' then TriggerClientEvent('ox_inventory:removeDrop', -1, id) end
 	Inventories[id] = nil
 end
 
@@ -136,15 +133,11 @@ M.Save = function(inv)
 			local plate = inv.id:sub(6)
 			if Config.TrimPlate then plate = string.strtrim(plate) end
 			exports.oxmysql:executeSync('UPDATE owned_vehicles SET ?? = ? WHERE plate = ?', {
-				inv.type,
-				inventory,
-				plate
+				inv.type, inventory, plate
 			})
 		else
 			exports.oxmysql:executeSync('INSERT INTO ox_inventory (owner, name, data) VALUES (:owner, :name, :data) ON DUPLICATE KEY UPDATE data = :data', {
-				owner = inv.owner or '',
-				name = inv.id,
-				data = inventory,
+				owner = inv.owner or '', name = inv.id, data = inventory,
 			})
 		end
 		inv.changed = false
@@ -201,7 +194,7 @@ M.Load = function(id, invType, owner)
 			local item = Items(v.name)
 			if item then
 				weight = M.SlotWeight(item, v)
-				returnData[v.slot] = {name = item.name, label = item.label, weight = weight, slot = v.slot, count = v.count, description = item.description, metadata = v.metadata, stack = item.stack, close = item.close}
+				returnData[v.slot] = {name = item.name, label = item.label, weight = weight, slot = v.slot, count = v.count, description = item.description, metadata = v.metadata or {}, stack = item.stack, close = item.close}
 			end
 		end
 	end
@@ -303,7 +296,7 @@ local GetItemSlots = function(inv, item, metadata)
 end
 
 M.RemoveItem = function(inv, item, count, metadata, slot)
-	local item, inv = Items(item), Inventories[type(inv) == 'table' and inv.id or inv]
+	item, inv = Items(item), Inventories[type(inv) == 'table' and inv.id or inv]
 	count = math.floor(count + 0.5)
 	if item and inv and count > 0 then
 		local xPlayer = inv.type == 'player' and ESX.GetPlayerFromId(inv.id) or false
@@ -354,10 +347,9 @@ M.RemoveItem = function(inv, item, count, metadata, slot)
 end
 
 M.CanCarryItem = function(inv, item, count, metadata)
-	local item, inv = Items(item), Inventories[type(inv) == 'table' and inv.id or inv]
+	item, inv = Items(item), Inventories[type(inv) == 'table' and inv.id or inv]
 	if item and inv then
-		local freeSlot = false
-		local itemSlots, totalCount, emptySlots = GetItemSlots(inv, item, metadata == nil and {} or type(metadata) == 'string' and {type=metadata} or metadata)
+		local itemSlots, _, emptySlots = GetItemSlots(inv, item, metadata == nil and {} or type(metadata) == 'string' and {type=metadata} or metadata)
 		if #itemSlots > 0 or emptySlots > 0 then
 			if item.weight == 0 then return true end
 			if count == nil then count = 1 end

@@ -329,7 +329,7 @@ SetInterval(2, 0, function()
 				DisableControlAction(0, 25, true) -- disable aim
 			end
 		end
-		for k, v in pairs(nearbyMarkers) do
+		for _, v in pairs(nearbyMarkers) do
 			DrawMarker(2, v.x,v.y,v.z, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.3, 0.2, 0.15, v.r, v.g, v.b, 222, false, false, false, true, false, false, false)
 		end
 		DisablePlayerVehicleRewards(playerId)

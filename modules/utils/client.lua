@@ -64,7 +64,7 @@ M.InventorySearch = function(search, item, metadata)
 			if item:find('weapon_') then item = string.upper(item) end
 			if search == 1 then returnData[item] = {}
 			elseif search == 2 then returnData[item] = 0 end
-			for k, v in pairs(ESX.PlayerData.inventory) do
+			for _, v in pairs(ESX.PlayerData.inventory) do
 				if v.name == item then
 					if not v.metadata then v.metadata = {} end
 					if not metadata or M.TableContains(v.metadata, metadata) then

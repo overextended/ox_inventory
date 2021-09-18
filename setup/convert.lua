@@ -23,12 +23,12 @@ local Upgrade = function()
 			local total = 0
 			if #trunk > 0 or #glovebox > 0 then
 				local vehicles = {}
-				for k, v in pairs(trunk) do
+				for _, v in pairs(trunk) do
 					vehicles[v.owner] = vehicles[v.owner] or {}
 					vehicles[v.owner][v.name:sub(7, #v.name)] = {trunk=v.data or '[]', glovebox='[]'}
 					total += 1
 				end
-				for k, v in pairs(glovebox) do
+				for _, v in pairs(glovebox) do
 					if not vehicles[v.owner] then
 						vehicles[v.owner] = {}
 						total += 1
@@ -75,7 +75,7 @@ end
 
 local Convert = function()
 	local users = exports.oxmysql:fetchSync('SELECT identifier, inventory, loadout, accounts FROM users')
-	local user, total, count = {}, #users, 0
+	local total, count = #users, 0
 	Print(('Converting %s user inventories to new data format'):format(total))
 	for i=1, #users do
 		local inventory, slot = {}, 0

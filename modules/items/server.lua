@@ -65,17 +65,17 @@ CreateThread(function()
 			exports.oxmysql:execute(query, {
 			}, function(result)
 				if result > 0 then
-					ox.info('Removed', result, 'items from the database')
+					ox.info('Removed '..result..' items from the database')
 				end
 			end)
 		end
 	end
 	Wait(2000)
 	TriggerEvent('ox_inventory:itemList', Items)
-	if Config.DBCleanup then exports.oxmysql:executeSync('DELETE FROM ox_inventory WHERE lastupdated < (NOW() - INTERVAL '..Config.DBCleanup..') OR data = "[]"') end
+	if Config.DBCleanup then exports.oxmysql:executeSync('DELETE FROM ox_inventory WHERE lastupdated < (NOW() - INTERVAL ? OR data = "[]"', {Config.DBCleanup}) end
 	ESX.UsableItemsCallbacks = ESX.GetUsableItems()
 	local count = 0
-	for k, v in pairs(Items) do
+	for _, v in pairs(Items) do
 		if v.consume and v.consume > 0 and ESX.UsableItemsCallbacks[v.name] then ESX.UsableItemsCallbacks[v.name] = nil end
 		count += 1
 	end

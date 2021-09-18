@@ -84,7 +84,7 @@ Utils.RegisterServerCallback('ox_inventory:openInventory', function(source, cb, 
 				right = Inventory.Create(stash.owner and stash.name..stash.owner or stash.name, stash.label or stash.name, inv, stash.slots, 0, stash.weight, stash.owner or false)
 			end
 		elseif inv == 'container' then
-			local data = left.items[data]
+			data = left.items[data]
 			right = Inventory(data.metadata.container)
 			if not right then
 				right = Inventory.Create(data.metadata.container, data.label, inv, data.metadata.size[1], 0, data.metadata.size[2], false)

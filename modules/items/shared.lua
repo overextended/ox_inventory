@@ -2,18 +2,13 @@ local Items = data('items')
 local Data = data('weapons')
 local Weapons = {}
 
-local count = 0
 for k, v in pairs(Items) do
 	v.name = k
-	if not v.consume then
-		if v.client and v.client.consume then
-			v.consume = v.client.consume
-			v.client.consume = nil
-		else v.consume = 1 end
-	end
+	v.weight = v.weight or 0
 	if ox.server then
 		v.client = nil
-		count += 1
+	else
+		v.server = nil
 	end
 end
 
