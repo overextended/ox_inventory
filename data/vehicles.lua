@@ -32,7 +32,7 @@ return {
 	},
 
 	-- slots, maxWeight; default weight is 8000 per slot
-	Glovebox = {	
+	glovebox = {	
 		[0] = {11, 88000}, -- compact
 		[1] = {11, 88000}, -- sedan
 		[2] = {11, 88000}, -- suv
@@ -55,7 +55,7 @@ return {
 		[20] = {11, 88000} -- commercial (trucks)
 	},
 
-	Trunk = {
+	trunk = {
 		[0] = {21, 168000}, -- compact
 		[1] = {41, 328000}, -- sedan
 		[2] = {51, 408000}, -- suv

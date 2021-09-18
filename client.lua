@@ -261,7 +261,7 @@ SetInterval(1, 250, function()
 		if distance < 1.2 then
 			if not marker then nearbyMarkers['policeevidence'] = {x = -22.4, y = -1105.5, z = 26.7, r = 30, g = 30, b = 150} end
 			if closestMarker == nil or currentMarker and distance < currentMarker.x or closestMarker and distance < closestMarker.x then
-				closestMarker = {distance, 'policeevidence', 'stash'}
+				closestMarker = {distance, 1, 'policeevidence'}
 			end
 		elseif not marker and distance < 8 then nearbyMarkers['policeevidence'] = {x = -22.4, y = -1105.5, z = 26.7, r = 30, g = 30, b = 150} elseif marker and distance > 8 then nearbyMarkers['policeevidence'] = nil end
 		----------------
@@ -273,9 +273,9 @@ SetInterval(1, 250, function()
 	else
 		playerCoords = GetEntityCoords(ESX.PlayerData.ped)
 		if currentInventory then
-			if currentInventory.type == 'player' then
+			if currentInventory.type == 'target' then
 				local id = GetPlayerFromServerId(currentInventory.id)
-				local ped = GetESX.PlayerData.ped(id)
+				local ped = GetPlayerPed(id)
 				local pedCoords = GetEntityCoords(ped)
 				if not id or #(playerCoords - pedCoords) > 1.8 then
 					TriggerEvent('ox_inventory:closeInventory')
@@ -348,7 +348,8 @@ SetInterval(2, 0, function()
 						Notify({text = ox.locale(result[1]), duration = 2500})
 					end
 				end, 1000, currentMarker[2])
-			elseif currentMarker[3] == 'shop' then OpenInventory(currentMarker[3], {id=currentMarker[2], type=currentMarker[4]}) end
+			elseif currentMarker[3] == 'shop' then OpenInventory(currentMarker[3], {id=currentMarker[2], type=currentMarker[4]})
+			elseif currentMarker[3] == 'policeevidence' then OpenInventory(currentMarker[3], {id=currentMarker[2]}) end
 		end
 		if currentWeapon then
 			DisableControlAction(0, 140, true)
@@ -565,11 +566,9 @@ RegisterNetEvent('esx_policejob:unrestrain', function()
 end)
 
 RegisterCommand('inv', function()
-	if currentMarker and currentMarker[3] ~= 'license' and not invOpen then
+	if currentMarker and currentMarker[3] ~= 'license' and currentMarker[3] ~= 'policeevidence' then
 		OpenInventory(currentMarker[3], {id=currentMarker[2], type=currentMarker[4]})
-	else
-		OpenInventory()
-	end
+	else OpenInventory() end
 end)
 
 RegisterCommand('inv2', function()

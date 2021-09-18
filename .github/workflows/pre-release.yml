@@ -22,16 +22,31 @@ jobs:
           fetch-depth: 0
           ref: ${{ github.ref }}
 
+      - name: Yarn cache
+        uses: actions/setup-node@v2
+        with:
+          node-version: "16"
+          cache: "yarn"
+          cache-dependency-path: "web/yarn.lock"
+
       - name: Install dependencies
-        run: yarn
+        run: yarn --frozen-lockfile
+        working-directory: web
 
       - name: Run build
         run: yarn build
+        working-directory: web
+
+        env:
+          CI: false
 
       - name: Bundle files
         run: |
-          mv dist ox_inventory
-          zip -r ox_inventory-${{ github.event.inputs.tag }}.zip ox_inventory
+          mkdir -p ./temp/ox_inventory
+          cp ./{server.lua,README.md,LICENSE,fxmanifest.lua,config.lua,client.lua} ./temp/ox_inventory
+          cp -r ./{setup,modules,data} ./temp/ox_inventory
+          cp -r ./web/build ./temp/ox_inventory/web
+          cd ./temp && zip -r ox_inventory-${{ github.event.inputs.tag }}.zip ./ox_inventory
 
       - name: Create Release
         uses: "marvinpinto/action-automatic-releases@v1.2.1"
@@ -41,8 +56,7 @@ jobs:
           title: "Experimental - ${{ github.event.inputs.tag }} (FOR TESTING PURPOSE)"
           prerelease: true
           automatic_release_tag: "${{ github.event.inputs.tag }}"
-          files: ox_inventory-${{ github.event.inputs.tag }}.zip
+          files: ./temp/ox_inventory-${{ github.event.inputs.tag }}.zip
 
         env:
-          CI: false
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

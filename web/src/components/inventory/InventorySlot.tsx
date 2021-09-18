@@ -85,7 +85,7 @@ const InventorySlot: React.FC<SlotProps> = ({ inventory, item, setCurrentItem })
 
   const handleContext = (e: any) => {
     console.log('yep');
-    if (isSlotWithItem(item) && inventory.type == 'player') show(e);
+    if (isSlotWithItem(item) && inventory.type === 'player') show(e);
   };
 
   return (

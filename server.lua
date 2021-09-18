@@ -64,7 +64,12 @@ end)
 Utils.RegisterServerCallback('ox_inventory:openInventory', function(source, cb, inv, data) 
 	local left, right = Inventory(source)
 	if data then
-		if inv == 'stash' then
+		if inv == 'policeevidence' then
+			right = Inventory('police-'..data.id)
+			if not right then
+				right = Inventory.Create('police-'..data.id, 'Police evidence', inv, 100, 0, 100000, false)
+			end
+		elseif inv == 'stash' then
 			local stash = Stashes[data.id]
 			if not stash then
 				stash = data

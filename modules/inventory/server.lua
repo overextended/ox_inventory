@@ -1,7 +1,7 @@
 local M = {}
 local Inventories = {}
 local Utils <const>, Items <const> = module('utils'), module('items')
-local metatable = setmetatable(M, {
+setmetatable(M, {
 	__call = function(self, arg)
 		if arg then
 			if arg == 'all' then return Inventories
@@ -135,15 +135,16 @@ M.Save = function(inv)
 		if Vehicle[inv.type] then
 			local plate = inv.id:sub(6)
 			if Config.TrimPlate then plate = string.strtrim(plate) end
-			exports.oxmysql:executeSync('UPDATE owned_vehicles SET '..inv.type..' = ? WHERE plate = ?', {
+			exports.oxmysql:executeSync('UPDATE owned_vehicles SET ?? = ? WHERE plate = ?', {
+				inv.type,
 				inventory,
 				plate
 			})
 		else
 			exports.oxmysql:executeSync('INSERT INTO ox_inventory (owner, name, data) VALUES (:owner, :name, :data) ON DUPLICATE KEY UPDATE data = :data', {
-				['owner'] = inv.owner or '',
-				['name'] = inv.id,
-				['data'] = inventory,
+				owner = inv.owner or '',
+				name = inv.id,
+				data = inventory,
 			})
 		end
 		inv.changed = false
@@ -168,35 +169,35 @@ M.GenerateItems = function(id, invType, items)
 end
 
 M.Load = function(id, invType, owner)
-	local isVehicle, result = Vehicle[invType], nil
+	local isVehicle, datastore, result = Vehicle[invType], nil, nil
 	if id and invType then
 		if isVehicle then
 			local plate = id:sub(6)
 			if Config.TrimPlate then plate = string.strtrim(plate) end
-			result = exports.oxmysql:singleSync('SELECT '..invType..' FROM owned_vehicles WHERE plate = ?', {
-				plate
+			result = exports.oxmysql:singleSync('SELECT ?? FROM owned_vehicles WHERE plate = ?', {
+				invType, plate
 			})
 			if result then result = json.decode(result[invType])
 			else
-				if Config.RandomLoot then return GenerateItems(id, invType) end
+				if Config.RandomLoot then return GenerateItems(id, invType)else datastore = true end
 			end
 		elseif owner then
-			result = exports.oxmysql:scalarSync('SELECT data FROM ox_inventory WHERE name = ? AND owner = ?', {
+			result = exports.oxmysql:scalarSync('SELECT data FROM ox_inventory WHERE owner = ? AND name = ?', {
 				id, owner
 			})
 			if result then result = json.decode(result) end
 		elseif invType == 'dumpster' then
-			if Config.RandomLoot then return GenerateItems(id, invType) end
+			if Config.RandomLoot then return GenerateItems(id, invType) else datastore = true end
 		else
-			result = exports.oxmysql:scalarSync('SELECT data FROM ox_inventory WHERE name = ?', {
-				id
+			result = exports.oxmysql:scalarSync('SELECT data FROM ox_inventory WHERE owner = ? AND name = ?', {
+				'', id
 			})
 			if result then result = json.decode(result) end
 		end
 	end
-	local returnData, weight = table.create(0, #result)
+	local returnData, weight = {}, 0
 	if result then
-		for k, v in pairs(result) do
+		for _, v in pairs(result) do
 			local item = Items(v.name)
 			if item then
 				weight = M.SlotWeight(item, v)
@@ -204,7 +205,7 @@ M.Load = function(id, invType, owner)
 			end
 		end
 	end
-	return returnData, weight
+	return returnData, weight, datastore
 end
 
 M.GetItem = function(inv, item, metadata, returnsCount)
@@ -399,7 +400,7 @@ AddEventHandler('ox_inventory:createDrop', function(source, slot, toSlot, cb)
 	local drop = GenerateDropId()
 	M.Create(drop, 'Drop '..drop, 'drop', Config.PlayerSlots, 0, Config.DefaultWeight, false, {[slot] = table.clone(toSlot)})
 	local coords = GetEntityCoords(GetPlayerPed(source))
-	M(drop):set('coords', coords)
+	Inventories[drop].coords = coords
 	cb(drop, coords)
 end)
 
@@ -407,7 +408,7 @@ AddEventHandler('ox_inventory:customDrop', function(prefix, items, coords, slots
 	local drop = GenerateDropId()
 	local items, weight = M.GenerateItems(drop, 'drop', items)
 	M.Create(drop, prefix..' '..drop, 'drop', slots or Config.PlayerSlots, weight, maxWeight or Config.DefaultWeight, false, items)
-	M(drop):set('coords', coords)
+	Inventories[drop].coords = coords
 	TriggerClientEvent('ox_inventory:createDrop', -1, {drop, coords}, source)
 end)
 
@@ -417,9 +418,9 @@ AddEventHandler('ox_inventory:confiscatePlayerInventory', function(xPlayer)
 	if inv then
 		local inventory = json.encode(Minimal(inv))
 		exports.oxmysql:execute('INSERT INTO ox_inventory (owner, name, data) VALUES (:owner, :name, :data) ON DUPLICATE KEY UPDATE data = :data', {
-			['owner'] = inv.owner,
-			['name'] = inv.owner,
-			['data'] = inventory,
+			owner = inv.owner,
+			name = inv.owner,
+			data = inventory,
 		}, function (result)
 			if result > 0 then
 				inv.items = {}
