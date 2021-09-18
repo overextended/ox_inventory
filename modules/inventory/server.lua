@@ -457,6 +457,14 @@ AddEventHandler('ox_inventory:returnPlayerInventory', function(xPlayer)
 	end
 end)
 
+AddEventHandler('esx:playerDropped', function(playerId)
+	if Inventories[playerId] then
+		local openInventory = Inventories[playerId].open
+		if Inventories[openInventory]?.open == playerId then Inventories[openInventory].open = false end
+		Inventories[playerId] = nil
+	end
+end)
+
 ESX.RegisterCommand({'giveitem', 'additem'}, 'admin', function(xPlayer, args, showError)
 	args.item = Items(args.item)
 	if args.item then M.AddItem(args.player.source, args.item.name, args.count, args.type or {}) end
