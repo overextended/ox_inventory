@@ -66,6 +66,11 @@ local OpenInventory = function(inv, data)
 		if inv == 'shop' and invOpen == false then
 			left, right = Utils.AwaitServerCallback('ox_inventory:openShop', inv, data)
 		elseif invOpen == false or inv == 'drop' or inv == 'container' then
+			if inv == 'policeevidence' then
+				local input = Keyboard.Input('Police Evidence', {'Locker number'})
+				if input then input = input[1] input = tonumber(input) else return Notify({text = 'Must contain value to open locker!', type = 'error'}) end
+				if type(input) ~= 'number' then return Notify({text = 'Locker must be a number!', type = 'error'}) else data = {id=input} end
+			end
 			left, right = Utils.AwaitServerCallback('ox_inventory:openInventory', inv, data)
 		end
 		if left then
@@ -349,7 +354,7 @@ SetInterval(2, 0, function()
 					end
 				end, 1000, currentMarker[2])
 			elseif currentMarker[3] == 'shop' then OpenInventory(currentMarker[3], {id=currentMarker[2], type=currentMarker[4]})
-			elseif currentMarker[3] == 'policeevidence' then OpenInventory(currentMarker[3], {id=currentMarker[2]}) end
+			elseif currentMarker[3] == 'policeevidence' then OpenInventory(currentMarker[3]) end
 		end
 		if currentWeapon then
 			DisableControlAction(0, 140, true)
