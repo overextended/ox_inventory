@@ -68,7 +68,7 @@ local OpenInventory = function(inv, data)
 		elseif invOpen == false or inv == 'drop' or inv == 'container' then
 			if inv == 'policeevidence' then
 				local input = Keyboard.Input('Police Evidence', {'Locker number'})
-				if input then input = input[1] input = tonumber(input) else return Notify({text = 'Must contain value to open locker!', type = 'error'}) end
+				if input then input = tonumber(input[1]) else return Notify({text = 'Must contain value to open locker!', type = 'error'}) end
 				if type(input) ~= 'number' then return Notify({text = 'Locker must be a number!', type = 'error'}) else data = {id=input} end
 			end
 			left, right = Utils.AwaitServerCallback('ox_inventory:openInventory', inv, data)

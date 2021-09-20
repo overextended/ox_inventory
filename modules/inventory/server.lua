@@ -165,27 +165,22 @@ end
 M.Load = function(id, invType, owner)
 	local isVehicle, datastore, result = Vehicle[invType], nil, nil
 	if id and invType then
+		-- todo: check what's getting sent to the queries. parameters prevents sql injection, but we can still check for suss behaviour and give warnings
 		if isVehicle then
 			local plate = id:sub(6)
 			if Config.TrimPlate then plate = string.strtrim(plate) end
-			result = exports.oxmysql:singleSync('SELECT ?? FROM owned_vehicles WHERE plate = ?', {
-				invType, plate
-			})
+			result = exports.oxmysql:singleSync('SELECT ?? FROM owned_vehicles WHERE plate = ?', { invType, plate })
 			if result then result = json.decode(result[invType])
 			else
-				if Config.RandomLoot then return GenerateItems(id, invType)else datastore = true end
+				if Config.RandomLoot then return GenerateItems(id, invType) else datastore = true end
 			end
 		elseif owner then
-			result = exports.oxmysql:scalarSync('SELECT data FROM ox_inventory WHERE owner = ? AND name = ?', {
-				id, owner
-			})
+			result = exports.oxmysql:scalarSync('SELECT data FROM ox_inventory WHERE owner = ? AND name = ?', { id, owner })
 			if result then result = json.decode(result) end
 		elseif invType == 'dumpster' then
 			if Config.RandomLoot then return GenerateItems(id, invType) else datastore = true end
 		else
-			result = exports.oxmysql:scalarSync('SELECT data FROM ox_inventory WHERE owner = ? AND name = ?', {
-				'', id
-			})
+			result = exports.oxmysql:scalarSync('SELECT data FROM ox_inventory WHERE owner = ? AND name = ?', { '', id })
 			if result then result = json.decode(result) end
 		end
 	end

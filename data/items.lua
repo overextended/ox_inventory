@@ -1,5 +1,5 @@
 return {
-	['bandage'] = {
+	bandage = {
 		label = 'Bandage',
 		weight = 115,
 		stack = true,
@@ -12,14 +12,14 @@ return {
 		}
 	},
 
-	['black_money'] = {
+	black_money = {
 		label = 'Dirty Money',
 		weight = 0,
 		stack = true,
 		close = true,
 	},
 
-	['burger'] = {
+	burger = {
 		label = 'Burger',
 		weight = 220,
 		stack = true,
@@ -32,7 +32,7 @@ return {
 		}
 	},
 
-	['cola'] = {
+	cola = {
 		label = 'eCola',
 		weight = 350,
 		stack = true,
@@ -45,7 +45,7 @@ return {
 		}
 	},
 
-	['parachute'] = {
+	parachute = {
 		label = 'Parachute',
 		weight = 8000,
 		stack = false,
@@ -57,14 +57,14 @@ return {
 		}
 	},
 
-	['garbage'] = {
+	garbage = {
 		label = 'Garbage',
 		weight = 0,
 		stack = true,
 		close = true,
 	},
 
-	['paperbag'] = {
+	paperbag = {
 		label = 'Paper Bag',
 		weight = 1,
 		stack = false,
@@ -72,14 +72,14 @@ return {
 		consume = 0
 	},
 
-	['identification'] = {
+	identification = {
 		label = 'Identification',
 		weight = 0,
 		stack = true,
 		close = true,
 	},
 
-	['panties'] = {
+	panties = {
 		label = 'Knickers',
 		weight = 10,
 		stack = true,
@@ -93,7 +93,7 @@ return {
 		}
 	},
 
-	['lockpick'] = {
+	lockpick = {
 		label = 'Lockpick',
 		weight = 160,
 		stack = true,
@@ -107,7 +107,7 @@ return {
 		}
 	},
 
-	['phone'] = {
+	phone = {
 		label = 'Phone',
 		weight = 190,
 		stack = false,
@@ -119,14 +119,14 @@ return {
 		}
 	},
 
-	['money'] = {
+	money = {
 		label = 'Money',
 		weight = 0,
 		stack = true,
 		close = true,
 	},
 
-	['mustard'] = {
+	mustard = {
 		label = 'Mustard',
 		weight = 500,
 		stack = true,
@@ -139,7 +139,7 @@ return {
 		}
 	},
 
-	['water'] = {
+	water = {
 		label = 'Water',
 		weight = 500,
 		stack = true,

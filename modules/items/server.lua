@@ -42,27 +42,28 @@ CreateThread(function()
 		if next(query) then
 			query = table.concat(query, ' ')
 			local sql = io.open(GetResourcePath(ox.name):gsub('//', '/')..'/setup/dump.sql', 'a+')
-			local file = io.open(GetResourcePath(ox.name):gsub('//', '/')..'/data/items.lua', 'a+')
-			local dump, dump2 = {}, {}
+			local file = {LoadResourceFile(ox.name, 'data/items.lua')}
+			file[1] = file[1]:gsub('}$', '')
+			local dump = {}
 			for i=1, #items do
 				local i = items[i]
 				table.insert(dump, "('"..i.name.."', ".."'"..i.name.."', "..i.weight.."),\n")
-				table.insert(dump2, [[
+				table.insert(file, [[
 
-	Data[']]..i.name..[['] = {
+	]]..i.name..[[ = {
 		label = ']]..i.label..[[',
 		weight = ]]..tonumber(i.weight)..[[,
 		stack = ]]..tostring(i.stackable)..[[,
 		close = ]]..tostring(i.closeonuse)..[[,
 		description = ']]..tostring(i.description)..[['
-	}
-	]])
+	},
+]])
 			end
 			sql:write(table.concat(dump))
-			file:write(table.concat(dump2))
 			sql:close()
-			file:close()
-			exports.oxmysql:execute(query, {
+			file[#file+1] = '}'
+			SaveResourceFile(ox.name, 'data/items.lua', table.concat(file), -1)
+			exports.oxmysql:update(query, {
 			}, function(result)
 				if result > 0 then
 					ox.info('Removed '..result..' items from the database')
