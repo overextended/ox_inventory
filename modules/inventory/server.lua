@@ -126,18 +126,18 @@ M.Save = function(inv)
 	if type(inv) ~= 'table' then inv = Inventories[inv] end
 	local inventory = json.encode(Minimal(inv))
 	if inv.type == 'player' then
-		exports.oxmysql:executeSync('UPDATE users SET inventory = ? WHERE identifier = ?', {
+		exports.oxmysql:updateSync('UPDATE users SET inventory = ? WHERE identifier = ?', {
 			inventory, inv.owner
 		})
 	else
 		if Vehicle[inv.type] then
 			local plate = inv.id:sub(6)
 			if Config.TrimPlate then plate = string.strtrim(plate) end
-			exports.oxmysql:executeSync('UPDATE owned_vehicles SET ?? = ? WHERE plate = ?', {
+			exports.oxmysql:updateSync('UPDATE owned_vehicles SET ?? = ? WHERE plate = ?', {
 				inv.type, inventory, plate
 			})
 		else
-			exports.oxmysql:executeSync('INSERT INTO ox_inventory (owner, name, data) VALUES (:owner, :name, :data) ON DUPLICATE KEY UPDATE data = :data', {
+			exports.oxmysql:updateSync('INSERT INTO ox_inventory (owner, name, data) VALUES (:owner, :name, :data) ON DUPLICATE KEY UPDATE data = :data', {
 				owner = inv.owner or '', name = inv.id, data = inventory,
 			})
 		end
@@ -409,7 +409,7 @@ AddEventHandler('ox_inventory:confiscatePlayerInventory', function(xPlayer)
 	local inv = xPlayer and Inventories[xPlayer.source]
 	if inv then
 		local inventory = json.encode(Minimal(inv))
-		exports.oxmysql:execute('INSERT INTO ox_inventory (owner, name, data) VALUES (:owner, :name, :data) ON DUPLICATE KEY UPDATE data = :data', {
+		exports.oxmysql:update('INSERT INTO ox_inventory (owner, name, data) VALUES (:owner, :name, :data) ON DUPLICATE KEY UPDATE data = :data', {
 			owner = inv.owner,
 			name = inv.owner,
 			data = inventory,

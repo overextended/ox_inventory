@@ -39,11 +39,11 @@ local Upgrade = function()
 				local count = 0
 				for owner, v in pairs(vehicles) do
 					for plate, v in pairs(v) do
-						exports.oxmysql:execute('UPDATE owned_vehicles SET trunk = ?, glovebox = ? WHERE plate = ? AND owner = ?', {v.trunk, v.glovebox, plate, owner}, function()
+						exports.oxmysql:update('UPDATE owned_vehicles SET trunk = ?, glovebox = ? WHERE plate = ? AND owner = ?', {v.trunk, v.glovebox, plate, owner}, function()
 							count += 1
 							local pct = math.floor((count/total) * 100 + 0.5)
 							if pct == '100' then
-								exports.oxmysql:execute('DELETE FROM ox_inventory WHERE name LIKE ? OR name LIKE ?', {'trunk-%', 'glovebox-%'}, function(result)
+								exports.oxmysql:execute('DELETE FROM ox_inventory WHERE name LIKE ? OR name LIKE ?', {'trunk-%', 'glovebox-%'}, function()
 									Print('Completed task - you can safely delete this file')
 								end)
 							elseif string.sub(pct, 2, 2) == '0' then

@@ -2,10 +2,6 @@ name: Pre-Release
 
 on: 
   workflow_dispatch:
-    inputs:
-      tag:
-        description: 'Version tag'
-        required: true
 
 jobs:
   create-release:
