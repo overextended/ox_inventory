@@ -53,6 +53,13 @@ M.PlayAnimAdvanced = function(wait, ...)
 	end)
 end
 
+M.Raycast = function()
+	local plyOffset = GetOffsetFromEntityInWorldCoords(ESX.PlayerData.ped, 0.0, 3.0, -0.05)
+	local _, hit, coords, _, entity = GetShapeTestResult(StartShapeTestRay(playerCoords.x, playerCoords.y, playerCoords.z, plyOffset.x, plyOffset.y, plyOffset.z, -1, ESX.PlayerData.ped, 0))
+	local type = GetEntityType(entity)
+	if hit and type ~= 0 then return hit, coords, entity, type else	return false end
+end
+
 M.InventorySearch = function(search, item, metadata)
 	if item then
 		if type(item) == 'string' then item = {item} end

@@ -30,15 +30,12 @@ M.TableContains = function(t1, t2)
 		if type(t2) == 'string' then
 			if table.type == value then return true end
 		else
-			local match = {}
-			local values = 0
-			for k1, v1 in pairs(t2) do
+			local match, values = {}, 0
+			for _, v1 in pairs(t2) do
 				values += 1
 				local size = #match
-				for k2, v2 in pairs(t1) do
-					if v1 == v2 then
-						match[size+1] = true
-					end
+				for _, v2 in pairs(t1) do
+					if v1 == v2 then match[size+1] = true end
 				end
 			end
 			if #match == values then return true end

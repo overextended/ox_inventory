@@ -38,9 +38,7 @@ RegisterNetEvent('ox_inventory:disarm', Disarm)
 
 local ClearWeapons = function()
 	Disarm()
-	for k in pairs(Weapons) do
-		SetPedAmmo(ESX.PlayerData.ped, k, 0)
-	end
+	for k in pairs(Weapons) do SetPedAmmo(ESX.PlayerData.ped, k, 0) end
 	RemoveAllPedWeapons(ESX.PlayerData.ped, true)
 	if ox.parachute then
 		local chute = `GADGET_PARACHUTE`
@@ -195,24 +193,13 @@ local UseSlot = function(slot)
 	end
 end
 
-local playerCoords
-local Raycast = function()
-	local plyOffset = GetOffsetFromEntityInWorldCoords(ESX.PlayerData.ped, 0.0, 3.0, -0.05)
-	local _, hit, coords, _, entity = GetShapeTestResult(StartShapeTestRay(playerCoords.x, playerCoords.y, playerCoords.z, plyOffset.x, plyOffset.y, plyOffset.z, -1, ESX.PlayerData.ped, 0))
-	local type = GetEntityType(entity)
-	if hit and type ~= 0 then return hit, coords, entity, type else	return false end
-end
-
 local CanOpenTarget = function(ped)
-	return IsPedFatallyInjured(ped)
-	or IsEntityPlayingAnim(ped, 'random@mugging3', 'handsup_standing_base', 3)
-	or IsEntityPlayingAnim(ped, 'missminuteman_1ig_2', 'handsup_base', 3)
-	or IsEntityPlayingAnim(ped, 'missminuteman_1ig_2', 'handsup_enter', 3)
-	or IsEntityPlayingAnim(ped, 'dead', 'dead_a', 3)
-	or IsEntityPlayingAnim(ped, 'mp_arresting', 'idle', 3)
+	return IsPedFatallyInjured(ped) or IsEntityPlayingAnim(ped, 'random@mugging3', 'handsup_standing_base', 3)
+	or IsEntityPlayingAnim(ped, 'missminuteman_1ig_2', 'handsup_base', 3) or IsEntityPlayingAnim(ped, 'missminuteman_1ig_2', 'handsup_enter', 3)
+	or IsEntityPlayingAnim(ped, 'dead', 'dead_a', 3) or IsEntityPlayingAnim(ped, 'mp_arresting', 'idle', 3)
 end
 
-local Drops, nearbyMarkers, closestMarker, currentMarker = {}, {}, {}, nil
+local Drops, nearbyMarkers, closestMarker, currentMarker, playerCoords = {}, {}, {}, nil, nil
 local Markers = function(tb, type, rgb, playerCoords, name)
 	-- todo: cleanup code and reduce table reassignment? vectors should be better than tables, but requires two vec3s vs single table
 	for k, v in pairs(tb) do
@@ -247,7 +234,7 @@ SetInterval(1, 250, function()
 		closestMarker = nil
 		Markers(Drops, 'drop', vec3(150, 30, 30), playerCoords)
 		Markers(Stashes, 'stash', vec3(30, 30, 150), playerCoords)
-		if (not Config.qtarget) then
+		if not Config.qtarget then
 			for k, v in pairs(Shops.Stores) do
 				Markers(v.locations, 'shop', vec3(30, 150, 30), playerCoords, k)
 			end
@@ -270,9 +257,7 @@ SetInterval(1, 250, function()
 			end
 		elseif not marker and distance < 8 then nearbyMarkers['policeevidence'] = {x = -22.4, y = -1105.5, z = 26.7, r = 30, g = 30, b = 150} elseif marker and distance > 8 then nearbyMarkers['policeevidence'] = nil end
 		----------------
-		if IsPedInAnyVehicle(ESX.PlayerData.ped, false) == false then
-			currentMarker = closestMarker
-		end
+		if IsPedInAnyVehicle(ESX.PlayerData.ped, false) == false then currentMarker = closestMarker end
 		SetPedCanSwitchWeapon(ESX.PlayerData.ped, false)
 		SetPedEnableWeaponBlocking(ESX.PlayerData.ped, true)
 	else
@@ -598,7 +583,7 @@ RegisterCommand('inv2', function()
 					end
 				end
 			else
-				local result, coords, entity, type = Raycast()
+				local result, _, entity, type = Utils.Raycast()
 				if not result then return end
 				local vehicle, position
 				if not Config.qtarget then
@@ -617,7 +602,7 @@ RegisterCommand('inv2', function()
 				elseif result and type == 2 then
 					vehicle, position = entity, GetEntityCoords(entity)
 				else return end
-				local closeToVehicle, lastVehicle = false, nil
+				local lastVehicle = nil
 				local class = GetVehicleClass(vehicle)
 				if vehicle and Vehicles.trunk[class] and #(playerCoords - position) < 6 and NetworkGetEntityIsNetworked(vehicle) then
 					local locked = GetVehicleDoorLockStatus(vehicle)
@@ -652,9 +637,8 @@ RegisterCommand('inv2', function()
 							while true do
 								Wait(50)
 								if closeToVehicle and invOpen then
-									local position = GetWorldPositionOfEntityBone(vehicle, vehBone)
-									local playerCoords = GetEntityCoords(ESX.PlayerData.ped)
-									if #(playerCoords - position) >= 2 or not DoesEntityExist(vehicle) then
+									position = GetWorldPositionOfEntityBone(vehicle, vehBone)
+									if #(GetEntityCoords(ESX.PlayerData.ped) - position) >= 2 or not DoesEntityExist(vehicle) then
 										break
 									else TaskTurnPedToFaceCoord(ESX.PlayerData.ped, position.x, position.y, position.z) end
 								else break end
