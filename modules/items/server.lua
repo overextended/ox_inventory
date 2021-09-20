@@ -1,5 +1,5 @@
 local M = {}
-local Items <const>, Weapons <const> = table.unpack(module('items', true))
+local Items <const> = module('items', true)[1]
 
 local GetItem = function(item)
 	local type
@@ -63,8 +63,7 @@ CreateThread(function()
 			sql:close()
 			file[#file+1] = '}'
 			SaveResourceFile(ox.name, 'data/items.lua', table.concat(file), -1)
-			exports.oxmysql:update(query, {
-			}, function(result)
+			exports.oxmysql:update(query, {}, function(result)
 				if result > 0 then
 					ox.info('Removed '..result..' items from the database')
 				end

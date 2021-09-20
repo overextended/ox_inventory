@@ -24,8 +24,7 @@ end)
 RegisterServerEvent('ox_inventory:requestPlayerInventory', function()
 	local xPlayer, inventory = ESX.GetPlayerFromId(source)
 	while not ox.ready do Wait(15) end
-	exports.oxmysql:scalar('SELECT inventory FROM users WHERE identifier = ?',
-	{ xPlayer.identifier }, function(result)
+	exports.oxmysql:scalar('SELECT inventory FROM users WHERE identifier = ?', { xPlayer.identifier }, function(result)
 		if result then inventory = json.decode(result) end
 		TriggerEvent('ox_inventory:setPlayerInventory', xPlayer, inventory)
 	end)

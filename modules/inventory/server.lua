@@ -126,16 +126,12 @@ M.Save = function(inv)
 	if type(inv) ~= 'table' then inv = Inventories[inv] end
 	local inventory = json.encode(Minimal(inv))
 	if inv.type == 'player' then
-		exports.oxmysql:updateSync('UPDATE users SET inventory = ? WHERE identifier = ?', {
-			inventory, inv.owner
-		})
+		exports.oxmysql:updateSync('UPDATE users SET inventory = ? WHERE identifier = ?', { inventory, inv.owner })
 	else
 		if Vehicle[inv.type] then
 			local plate = inv.id:sub(6)
 			if Config.TrimPlate then plate = string.strtrim(plate) end
-			exports.oxmysql:updateSync('UPDATE owned_vehicles SET ?? = ? WHERE plate = ?', {
-				inv.type, inventory, plate
-			})
+			exports.oxmysql:updateSync('UPDATE owned_vehicles SET ?? = ? WHERE plate = ?', { inv.type, inventory, plate })
 		else
 			exports.oxmysql:updateSync('INSERT INTO ox_inventory (owner, name, data) VALUES (:owner, :name, :data) ON DUPLICATE KEY UPDATE data = :data', {
 				owner = inv.owner or '', name = inv.id, data = inventory,
@@ -171,9 +167,8 @@ M.Load = function(id, invType, owner)
 			if Config.TrimPlate then plate = string.strtrim(plate) end
 			result = exports.oxmysql:singleSync('SELECT ?? FROM owned_vehicles WHERE plate = ?', { invType, plate })
 			if result then result = json.decode(result[invType])
-			else
-				if Config.RandomLoot then return GenerateItems(id, invType) else datastore = true end
-			end
+			elseif Config.RandomLoot then return GenerateItems(id, invType)
+			else datastore = true end
 		elseif owner then
 			result = exports.oxmysql:scalarSync('SELECT data FROM ox_inventory WHERE owner = ? AND name = ?', { id, owner })
 			if result then result = json.decode(result) end
@@ -428,9 +423,7 @@ AddEventHandler('ox_inventory:returnPlayerInventory', function(xPlayer)
 	xPlayer = type(xPlayer) == 'table' and xPlayer or ESX.GetPlayerFromId(xPlayer)
 	local inv = xPlayer and Inventories[xPlayer.source]
 	if inv then
-		exports.oxmysql:scalar('SELECT data FROM ox_inventory WHERE name = ?', {
-			inv.owner
-		}, function(data)
+		exports.oxmysql:scalar('SELECT data FROM ox_inventory WHERE name = ?', { inv.owner }, function(data)
 			if data then
 				exports.oxmysql:execute('DELETE FROM ox_inventory WHERE name = ?', { inv.owner })
 				data = json.decode(data)
