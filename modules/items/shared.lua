@@ -5,6 +5,8 @@ local Weapons = {}
 for k, v in pairs(Items) do
 	v.name = k
 	v.weight = v.weight or 0
+	v.close = v.close or true
+	v.stack = v.stack or true
 	if v.client then
 		if not v.consume and (v.client.consume or v.client.status or v.client.usetime) then
 			v.consume = 1
@@ -12,16 +14,17 @@ for k, v in pairs(Items) do
 	end
 	if ox.server then
 		v.client = nil
-	else
-		v.server = nil
-	end
+	else v.server = nil end
 end
 
 for k, v in pairs(Data.Weapons) do
 	v.name = k
 	v.hash = joaat(k)
-	v.stack = false
-	v.close = false
+	v.stack = v.stack or false
+	v.close = v.stack or true
+	if ox.server then
+		v.client = nil
+	else v.server = nil end
 	Items[k] = v
 	Weapons[v.hash] = k
 end
@@ -29,9 +32,11 @@ end
 for k, v in pairs(Data.Components) do
 	v.name = k
 	v.consume = 1
+	v.stack = true
+	v.close = true
 	if ox.server then
 		v.client = nil
-	end
+	else v.server = nil end
 	Items[k] = v
 end
 
@@ -42,7 +47,7 @@ for k, v in pairs(Data.Ammo) do
 	v.close = false
 	if ox.server then
 		v.client = nil
-	end
+	else v.server = nil end
 	Items[k] = v
 end
 return {Items, Weapons}
