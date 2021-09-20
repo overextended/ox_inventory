@@ -132,7 +132,7 @@ Utils.RegisterServerCallback('ox_inventory:swapItems', function(source, cb, data
 				end
 				if fromSlot and fromSlot.metadata.container ~= toInventory.id then
 					if data.count > fromSlot.count then data.count = fromSlot.count end
-					if toSlot and ((toSlot.name ~= fromSlot.name) or (not Utils.MatchTables(toSlot.metadata, fromSlot.metadata))) then
+					if toSlot and ((toSlot.name ~= fromSlot.name) or not toSlot.stack or (not Utils.MatchTables(toSlot.metadata, fromSlot.metadata))) then
 						toSlot, fromSlot = Inventory.SwapSlots({fromInventory, toInventory}, {data.fromSlot, data.toSlot})
 						if fromInventory.id ~= toInventory.id then
 							fromInventory.weight = fromInventory.weight - toSlot.weight
