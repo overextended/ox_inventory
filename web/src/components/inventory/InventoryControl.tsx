@@ -36,7 +36,7 @@ const InfoScreen: React.FC<{
       <span
         className="info-ox"
         onClick={() =>
-          Notify({ text: "Made with 🧡 by the overextended 🐂 team" })
+          Notify({ text: "Made with 🐂 by the Overextended team" })
         }
       >
         🐂

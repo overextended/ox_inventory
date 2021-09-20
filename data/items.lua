@@ -40,7 +40,6 @@ return {
 		label = 'Parachute',
 		weight = 8000,
 		stack = false,
-		server = {},
 		client = {
 			anim = { dict = 'clothingshirt', clip = 'try_shirt_positive_d' },
 			usetime = 1500

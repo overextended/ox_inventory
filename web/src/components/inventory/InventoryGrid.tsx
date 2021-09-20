@@ -55,8 +55,12 @@ const InventoryGrid: React.FC<{ inventory: Inventory }> = ({ inventory }) => {
         >
           {currentItem && (
             <>
-              <p>{Items[currentItem.name]?.label || "NO LABEL"}</p>
+              <p>{Items[currentItem.name]?.label || "NO LABEL"}<span style={{float: "right"}}>{currentItem.weight/currentItem.count}g</span></p>
               <hr style={{ borderBottom: "0.1vh" }}></hr>
+              {currentItem.metadata?.ammo && <p>Ammo: {currentItem.metadata.ammo}</p>}
+              {currentItem.metadata?.serial && <p>Serial number: {currentItem.metadata.serial}</p>}
+              {currentItem.metadata?.components && <p>Components: {currentItem.metadata.components}</p>}
+              {currentItem.metadata?.weapontint && <p>Tint: {currentItem.metadata.weapontint}</p>}
             </>
           )}
         </Fade>
