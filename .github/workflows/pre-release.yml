@@ -57,7 +57,7 @@ jobs:
           repo_token: "${{ secrets.GITHUB_TOKEN }}"
           title: "Experimental Build (${{ steps.get_vars.outputs.SHORT_SHA }}) | ${{ steps.get_vars.outputs.DATE }}"
           prerelease: true
-          automatic_release_tag: "experimental"
+          automatic_release_tag: "v2.0.0-experimental+${{ steps.get_vars.outputs.SHORT_SHA }}"
           files: ./temp/ox_inventory-${{ steps.get_vars.outputs.SHORT_SHA }}.zip
 
         env:
