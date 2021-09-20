@@ -194,7 +194,8 @@ Utils.RegisterServerCallback('ox_inventory:buyItem', function(source, cb, data)
 			if fromSlot.count and data.count > fromSlot.count then data.count = fromSlot.count end
 			local metadata, count = Items.Metadata(xPlayer, Items(fromSlot.name), fromSlot.metadata or {}, data.count)
 			local price = count * fromSlot.price
-			if Inventory.GetItem(source, 'money').count >= price and toSlot and Utils.MatchTables(toSlot.metadata, metadata) or toSlot == nil then
+			local playerMoney = Inventory.GetItem(source, 'money', false, true)
+			if playerMoney >= price and (toSlot and Utils.MatchTables(toSlot.metadata, metadata) or toSlot == nil) then
 				if toSlot and toSlot.name == fromSlot.name then
 					if fromSlot.count then fromSlot.count = fromSlot.count - count end
 					toSlot.count = toSlot.count + count
@@ -217,6 +218,7 @@ Utils.RegisterServerCallback('ox_inventory:buyItem', function(source, cb, data)
 				Inventory.SyncInventory(xPlayer, player, items)
 				return cb(true, {data.toSlot, toSlot, weight}, {type = 'success', text = 'Purchased '..count..'x '..toSlot.name..' for $'..price})
 			end
+			return cb(false, nil, {type = 'error', text = ox.locale('cannot_afford', '$'..price-playerMoney)})
 		end
 	end
 	cb(false)
