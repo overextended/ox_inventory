@@ -141,11 +141,21 @@ M.Save = function(inv)
 	end
 end
 
-M.GenerateItems = function(id, invType, items)
-	local returnData, totalWeight = table.create(#items, 0), 0
-	if next(items) == nil then
-		-- todo: random loot generation
+-- item, minimum, maximum
+local RandomLoot = {{'cola', 0, 2}, {'water', 0, 2}}
+local GenerateItems = function(id, invType, items)
+	if items == nil then
+		items = {}
+		if invType ~= 'dumpster' then
+			local max = #RandomLoot
+			for i=1, math.random(0,5) do
+				local randomItem = RandomLoot[math.random(1, max)]
+				local count = math.random(randomItem[2], randomItem[3])
+				if count > 0 then items[#items+1] = {randomItem[1], count} end
+			end
+		end
 	end
+	local returnData, totalWeight = table.create(#items, 0), 0
 	local xPlayer = type(id) == 'integer' and ESX.GetPlayerFromId(id) or false
 	for i=1, #items do
 		local v = items[i]
@@ -378,7 +388,7 @@ local GenerateDropId = function()
 	local drop
 	repeat
 		drop = math.random(100000, 999999)
-		Wait(5)
+		Wait(0)
 	until not Inventories[drop]
 	return drop
 end
@@ -393,7 +403,7 @@ end)
 
 AddEventHandler('ox_inventory:customDrop', function(prefix, items, coords, slots, maxWeight)
 	local drop = GenerateDropId()
-	local items, weight = M.GenerateItems(drop, 'drop', items)
+	local items, weight = GenerateItems(drop, 'drop', items)
 	local inventory = M.Create(drop, prefix..' '..drop, 'drop', slots or Config.PlayerSlots, weight, maxWeight or Config.DefaultWeight, false, items)
 	inventory.coords = coords
 	TriggerClientEvent('ox_inventory:createDrop', -1, {drop, coords}, source)

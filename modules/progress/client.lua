@@ -32,9 +32,7 @@ local Cancelled = function()
 	if Active and canCancel then
 		progressCallback(true)
 		PlayerReset()
-		SendNUIMessage({
-			action = 'cancelProgress',
-		})
+		SendNUIMessage({ action = 'cancelProgress', })
 	end
 end
 
@@ -61,9 +59,7 @@ local Start = function(options, completed)
 				if options.anim.dict then
 					RequestAnimDict(options.anim.dict)
 
-					while not HasAnimDictLoaded(options.anim.dict) do
-						Wait(5)
-					end
+					while not HasAnimDictLoaded(options.anim.dict) do Wait(0) end
 
 					if options.anim.flag == nil then options.anim.flag = 1 end
 					TaskPlayAnim(ESX.PlayerData.ped, options.anim.dict, options.anim.clip, 3.0, 1.0, -1, options.anim.flag, 0, false, false, false)
@@ -85,7 +81,7 @@ local Start = function(options, completed)
 
 				local modelHash = joaat(model)
 				while not HasModelLoaded(modelHash) do
-					Wait(5)
+					Wait(0)
 				end
 
 				local pCoords = GetOffsetFromEntityInWorldCoords(ESX.PlayerData.ped, 0.0, 0.0, 0.0)

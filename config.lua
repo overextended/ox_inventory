@@ -16,6 +16,8 @@ if ox.server then
 	-- Enable integrated logging
 	Config.Logs = false
 
+	Config.RandomLoot = true
+
 else
 	-- Set the keybinds for primary, secondary, and hotbar
 	Config.Keys = {'F2', 'K', 'TAB'}
