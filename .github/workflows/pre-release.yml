@@ -1,9 +1,11 @@
 name: Pre-Release
 
-on:
-  push:
-    branches:
-      - main
+on: 
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: 'Version tag'
+        required: true
 
 jobs:
   create-release:

@@ -14,7 +14,7 @@ setmetatable(M, {
 local Vehicle = {trunk=true, glovebox=true}
 
 local Set = function(inv, k, v)
-	inv = Inventories[type(inv) == 'table' and inv.id or inv]
+	if type(inv) ~= 'table' then inv = Inventories[inv] end
 	if inv then
 		if type(v) == 'number' then math.floor(v + 0.5) end
 		if k == 'open' and v == false then
@@ -30,11 +30,12 @@ local Set = function(inv, k, v)
 end
 
 local Get = function(inv, k)
-	return Inventories[type(inv) == 'table' and inv.id or inv][k]
+	if type(inv) ~= 'table' then inv = Inventories[inv] end
+	return inv[k]
 end
 
 local Minimal = function(inv)
-	inv = Inventories[type(inv) == 'table' and inv.id or inv]
+	if type(inv) ~= 'table' then inv = Inventories[inv] end
 	local inventory, count = {}, 0
 	for k, v in pairs(inv.items) do
 		if v.name and v.count > 0 then
@@ -51,7 +52,7 @@ local Minimal = function(inv)
 end
 
 M.SyncInventory = function(xPlayer, inv)
-	inv = Inventories[type(inv) == 'table' and inv.id or inv]
+	if type(inv) ~= 'table' then inv = Inventories[inv] end
 	local money = {money=0, black_money=0}
 	for _, v in pairs(inv.items) do
 		if money[v.name] then
@@ -62,7 +63,7 @@ M.SyncInventory = function(xPlayer, inv)
 end
 
 M.SetSlot = function(inv, item, count, metadata, slot)
-	inv = Inventories[type(inv) == 'table' and inv.id or inv]
+	if type(inv) ~= 'table' then inv = Inventories[inv] end
 	local currentSlot = inv.items[slot]
 	local newCount = currentSlot and currentSlot.count + count or count
 	if currentSlot and newCount < 1 then
@@ -122,7 +123,7 @@ M.Remove = function(id, type)
 end
 
 M.Save = function(inv)
-	inv = Inventories[type(inv) == 'table' and inv.id or inv]
+	if type(inv) ~= 'table' then inv = Inventories[inv] end
 	local inventory = json.encode(Minimal(inv))
 	if inv.type == 'player' then
 		exports.oxmysql:executeSync('UPDATE users SET inventory = ? WHERE identifier = ?', {
@@ -203,8 +204,9 @@ end
 
 M.GetItem = function(inv, item, metadata, returnsCount)
 	item = type(item) == 'table' and item or Items(item)
+	if type(item) ~= 'table' then item = Items(item) end
 	if item then item = returnsCount and item or table.clone(item)
-		inv = Inventories[type(inv) == 'table' and inv.id or inv].items
+		if type(inv) ~= 'table' then inv = Inventories[inv] end
 		local count = 0
 		if inv then
 			metadata = not metadata and false or type(metadata) == 'string' and {type=metadata} or metadata
@@ -232,8 +234,9 @@ M.SwapSlots = function(inventory, slot)
 end
 
 M.SetItem = function(inv, item, count, metadata)
-	item, inv = Items(item), Inventories[type(inv) == 'table' and inv.id or inv]
+	if type(item) ~= 'table' then item = Items(item) end
 	if item and count >= 0 then
+		if type(inv) ~= 'table' then inv = Inventories[inv] end
 		local itemCount = M.GetItem(inv, item.name, metadata, true)
 		if count > itemCount then
 			count = count - itemCount
@@ -246,9 +249,10 @@ M.SetItem = function(inv, item, count, metadata)
 end
 
 M.AddItem = function(inv, item, count, metadata, slot)
-	item, inv = Items(item), Inventories[type(inv) == 'table' and inv.id or inv]
+	if type(item) ~= 'table' then item = Items[item] end
 	count = math.floor(count + 0.5)
 	if item and inv and count > 0 then
+		if type(inv) ~= 'table' then inv = Inventories[inv] end
 		local xPlayer = inv.type == 'player' and ESX.GetPlayerFromId(inv.id) or false
 		local existing = false
 		if slot then
@@ -280,7 +284,7 @@ M.AddItem = function(inv, item, count, metadata, slot)
 end
 
 local GetItemSlots = function(inv, item, metadata)
-	inv = Inventories[type(inv) == 'table' and inv.id or inv]
+	if type(inv) ~= 'table' then inv = Inventories[inv] end
 	local totalCount, slots, emptySlots = 0, {}, inv.slots
 	for k, v in pairs(inv.items) do
 		emptySlots -= 1
@@ -296,9 +300,10 @@ local GetItemSlots = function(inv, item, metadata)
 end
 
 M.RemoveItem = function(inv, item, count, metadata, slot)
-	item, inv = Items(item), Inventories[type(inv) == 'table' and inv.id or inv]
+	if type(item) ~= 'table' then item = Items(item) end
 	count = math.floor(count + 0.5)
-	if item and inv and count > 0 then
+	if item and count > 0 then
+		if type(inv) ~= 'table' then inv = Inventories[inv] end
 		local xPlayer = inv.type == 'player' and ESX.GetPlayerFromId(inv.id) or false
 		metadata = metadata == nil and {} or type(metadata) == 'string' and {type=metadata} or metadata
 		local slotItem = inv.items[slot] or false
@@ -347,8 +352,9 @@ M.RemoveItem = function(inv, item, count, metadata, slot)
 end
 
 M.CanCarryItem = function(inv, item, count, metadata)
-	item, inv = Items(item), Inventories[type(inv) == 'table' and inv.id or inv]
-	if item and inv then
+	if type(item) ~= 'table' then item = Items(item) end
+	if item then
+		if type(inv) ~= 'table' then inv = Inventories[inv] end
 		local itemSlots, _, emptySlots = GetItemSlots(inv, item, metadata == nil and {} or type(metadata) == 'string' and {type=metadata} or metadata)
 		if #itemSlots > 0 or emptySlots > 0 then
 			if item.weight == 0 then return true end
@@ -399,8 +405,8 @@ end)
 AddEventHandler('ox_inventory:customDrop', function(prefix, items, coords, slots, maxWeight)
 	local drop = GenerateDropId()
 	local items, weight = M.GenerateItems(drop, 'drop', items)
-	M.Create(drop, prefix..' '..drop, 'drop', slots or Config.PlayerSlots, weight, maxWeight or Config.DefaultWeight, false, items)
-	Inventories[drop].coords = coords
+	local inventory = M.Create(drop, prefix..' '..drop, 'drop', slots or Config.PlayerSlots, weight, maxWeight or Config.DefaultWeight, false, items)
+	inventory.coords = coords
 	TriggerClientEvent('ox_inventory:createDrop', -1, {drop, coords}, source)
 end)
 
