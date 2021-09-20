@@ -210,7 +210,7 @@ M.GetItem = function(inv, item, metadata, returnsCount)
 		local count = 0
 		if inv then
 			metadata = not metadata and false or type(metadata) == 'string' and {type=metadata} or metadata
-			for _, v in pairs(inv) do
+			for _, v in pairs(inv.items) do
 				if v and v.name == item.name and (not metadata or Utils.TableContains(v.metadata, metadata)) then
 					count += v.count
 				end
@@ -249,10 +249,10 @@ M.SetItem = function(inv, item, count, metadata)
 end
 
 M.AddItem = function(inv, item, count, metadata, slot)
-	if type(item) ~= 'table' then item = Items[item] end
+	if type(item) ~= 'table' then item = Items(item) end
+	if type(inv) ~= 'table' then inv = Inventories[inv] end
 	count = math.floor(count + 0.5)
 	if item and inv and count > 0 then
-		if type(inv) ~= 'table' then inv = Inventories[inv] end
 		local xPlayer = inv.type == 'player' and ESX.GetPlayerFromId(inv.id) or false
 		local existing = false
 		if slot then
@@ -278,7 +278,7 @@ M.AddItem = function(inv, item, count, metadata, slot)
 		inv.weight = inv.weight + (item.weight + (metadata.weight or 0)) * count
 		if xPlayer then
 			M.SyncInventory(xPlayer, inv)
-			TriggerClientEvent('ox_inventory:updateInventory', xPlayer.source, {{item = inv.items[slot], inventory = inv.type}}, {left=inv.weight, right=(inv.open and not inv.open:find('shop')) and Inventories[inv.open].weight}, item.name, count, false)
+			TriggerClientEvent('ox_inventory:updateInventory', xPlayer.source, {{item = inv.items[slot], inventory = inv.type}}, {left=inv.weight, right=inv.open and Inventories[inv.open]?.weight}, item.name, count, false)
 		end
 	end
 end
@@ -306,7 +306,6 @@ M.RemoveItem = function(inv, item, count, metadata, slot)
 		if type(inv) ~= 'table' then inv = Inventories[inv] end
 		local xPlayer = inv.type == 'player' and ESX.GetPlayerFromId(inv.id) or false
 		metadata = metadata == nil and {} or type(metadata) == 'string' and {type=metadata} or metadata
-		local slotItem = inv.items[slot] or false
 		local itemSlots, totalCount = GetItemSlots(inv, item, metadata)
 		if count > totalCount then count = totalCount end
 		local removed, total, slots = 0, count, {}
@@ -346,7 +345,7 @@ M.RemoveItem = function(inv, item, count, metadata, slot)
 					array[k] = {item = v, inventory = inv.type}
 				end
 			end
-			TriggerClientEvent('ox_inventory:updateInventory', xPlayer.source, array, {left=inv.weight, right=(inv.open and not inv.open:find('shop')) and Inventories[inv.open].weight}, item.name, removed, true)
+			TriggerClientEvent('ox_inventory:updateInventory', xPlayer.source, array, {left=inv.weight, right=inv.open and Inventories[inv.open]?.weight}, item.name, removed, true)
 		end
 	end
 end
