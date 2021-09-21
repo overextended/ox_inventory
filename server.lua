@@ -2,7 +2,7 @@ local Stashes <const>, Vehicle <const> = data('stashes'), data('vehicles')
 local Utils <const>, Shops <const>, Inventory <const>, Items <const> = module('utils'), module('shops'), module('inventory'), module('items')
 
 local SaveInventories = function()
-	local time = os.time(os.date('!*t'))
+	local time = os.time()
 	for id, inv in pairs(Inventory('all')) do
 		if inv.type ~= 'player' and not inv.open then
 			if inv.datastore == nil and inv.changed then

@@ -159,10 +159,11 @@ M.Metadata = function(xPlayer, item, metadata, count)
 	elseif item.name:find('paperbag') then
 		count = 1
 		metadata = {}
-		metadata.container = GenerateText(3)..os.time(os.date('!*t'))
+		metadata.container = GenerateText(3)..os.time()
 		metadata.size = {5, 1000}
 	elseif item.name:find('burger') then
-		metadata.durability = os.time(os.date('!*t'))+36
+		metadata.durability = os.time()+36
+		print(metadata.durability)
 	end
 	return metadata, count
 end

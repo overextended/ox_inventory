@@ -48,7 +48,7 @@ const InventoryHotbar: React.FC<{ items: Slot[] }> = ({ items }) => {
                   </span>
                 </div>
                 {item.metadata?.durability && (
-                  <WeightBar percent={item.metadata.durability} durability />
+                  <WeightBar percent={item.durability} durability />
                 )}
                 <div className="item-label">
                   [{item.slot}] {Items[item.name]?.label || 'NO LABEL'}

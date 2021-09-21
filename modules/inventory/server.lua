@@ -22,7 +22,7 @@ local Set = function(inv, k, v)
 				if inv.type == 'drop' and not next(inv.items) then
 					TriggerClientEvent('ox_inventory:removeDrop', -1, inv.id)
 					inv = nil
-				else inv.time = os.time(os.date('!*t')) end
+				else inv.time = os.time() end
 			end
 		end
 		inv[k] = v
@@ -106,7 +106,7 @@ M.Create = function(...)
 			set = Set,
 			get = Get,
 			minimal = Minimal,
-			time = os.time(os.date('!*t'))
+			time = os.time()
 		}
 
 		if self.type == 'drop' then self.datastore = true else self.changed = false end
@@ -520,7 +520,7 @@ end, true, {help = 'Returns confiscated items to a player', validate = true, arg
 }})
 
 ESX.RegisterCommand('saveinv', 'admin', function(xPlayer, args, showError)
-	local time = os.time(os.date('!*t'))
+	local time = os.time()
 	for id, inv in pairs(Inventories) do
 		if inv.type ~= 'player' then
 			if inv.type ~= 'drop' and inv.datastore == nil then

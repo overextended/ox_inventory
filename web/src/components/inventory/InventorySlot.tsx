@@ -118,8 +118,8 @@ const InventorySlot: React.FC<SlotProps> = ({ inventory, item, setCurrentItem })
                 {item.count?.toLocaleString('en-us')}x
               </span>
             </div>
-            {item.metadata?.durability && (
-              <WeightBar percent={item.metadata.durability} durability />
+            {item?.durability && (
+              <WeightBar percent={item.durability} durability />
             )}
             <div className="item-label">
               [{item.slot}] {Items[item.name]?.label || item.name}
