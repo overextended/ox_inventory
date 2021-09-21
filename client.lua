@@ -395,7 +395,8 @@ RegisterNetEvent('ox_inventory:closeInventory', function(options)
 			ClearPedTasks(ESX.PlayerData.ped)
 			RemoveAnimDict(animDict)
 			SetVehicleDoorShut(currentInventory.entity, currentInventory.door, false)
-		else SendNUIMessage({ action = 'closeInventory' }) end
+		end
+		SendNUIMessage({ action = 'closeInventory' })
 		SetInterval(1, 250)
 		Wait(500)
 		if currentInventory then TriggerServerEvent('ox_inventory:closeInventory') end
