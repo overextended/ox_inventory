@@ -8,8 +8,7 @@ import { onBuy } from '../../dnd/onBuy';
 import { selectIsBusy } from '../../store/inventory';
 import { Items } from '../../store/items';
 import { isSlotWithItem } from '../../helpers';
-import InventoryContext from './InventoryContext';
-import { useContextMenu } from 'react-contexify';
+import { contextMenu } from 'react-contexify';
 
 interface SlotProps {
   inventory: Inventory;
@@ -81,23 +80,23 @@ const InventorySlot: React.FC<SlotProps> = ({ inventory, item, setCurrentItem })
     [item, setCurrentItem],
   );
 
-  const { show } = useContextMenu({ id: 'item-context' });
-
   const handleContext = (e: any) => {
-    console.log('yep');
-    if (isSlotWithItem(item) && inventory.type === 'player') show(e);
+    isSlotWithItem(item) &&
+      inventory.type === 'player' &&
+      contextMenu.show({ id: 'item-context', event: e });
   };
 
   return (
     <>
-      <InventoryContext />
       <div
         ref={connectRef}
         onContextMenu={handleContext}
         className="item-container"
         style={{
           opacity: isDragging ? 0.4 : 1.0,
-          backgroundImage: item.name ? `url(${process.env.PUBLIC_URL + `/images/${item.name}.png`})` : 'none',
+          backgroundImage: item.name
+            ? `url(${process.env.PUBLIC_URL + `/images/${item.name}.png`})`
+            : 'none',
           border: isOver ? '0.1vh dashed rgba(255,255,255,0.5)' : '0.1vh inset rgba(0,0,0,0)',
         }}
         onMouseEnter={onMouseEnter}

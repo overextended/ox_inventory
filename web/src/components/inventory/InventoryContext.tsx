@@ -1,17 +1,19 @@
-import { Menu, Item, Submenu } from 'react-contexify';
+import { Menu, Item, Submenu, Separator } from 'react-contexify';
 import 'react-contexify/dist/ReactContexify.css';
 
-const InventoryContext: React.FC = ({ item }: any) => {
+const InventoryContext: React.FC<any> = (props: any) => {
   const handleClick = () => {};
 
   return (
     <>
-      <Menu id="item-context">
-        <Item onClick={handleClick}>Hello There</Item>
-        <Item onClick={handleClick}>General Kenobi</Item>
-        <Submenu label="Attachments">
-          <Item onClick={handleClick}>Yep</Item>
-          <Item onClick={handleClick}>Nope</Item>
+      <Menu id="item-context" theme="dark" animation="fade">
+        <Item onClick={handleClick}>Use</Item>
+        <Item onClick={handleClick}>Give</Item>
+        <Item onClick={handleClick}>Drop</Item>
+        <Separator />
+        <Submenu label="Submenu">
+          <Item onClick={handleClick}>Sub Item 1</Item>
+          <Item onClick={handleClick}>Sub Item 2</Item>
         </Submenu>
       </Menu>
     </>
