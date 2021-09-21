@@ -229,6 +229,11 @@ input[type='number'] {
   border-radius: $borderRadius;
   width: calc(#{$containerSize} - 2.2vh);
   position: absolute;
+
+  p {
+    font-size: 1.4vh;
+    font-weight: 300;
+  }
 }
 
 .progressBar {

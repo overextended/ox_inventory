@@ -3,4 +3,5 @@ export type ItemData = {
   stack: boolean;
   usable: boolean;
   close: boolean;
+  description?: string;
 };
