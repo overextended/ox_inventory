@@ -23,7 +23,7 @@ A new lightweight database wrapper utilising [node-mysql2](https://github.com/si
 	set mysql_slow_query_warning 100
 	```
 
-[Download :fontawesome-solid-download:](https://github.com/overextended/oxmysql/releases/download/v1.0/oxmysql.zip){ .md-button .md-button--primary }	[Documentation :fontawesome-solid-book:](https://overextended.github.io/oxmysql){ .md-button .md-button--primary }
+[Download :fontawesome-solid-download:](https://github.com/overextended/oxmysql/releases){ .md-button .md-button--primary }	[Documentation :fontawesome-solid-book:](https://overextended.github.io/oxmysql){ .md-button .md-button--primary }
 
 <br>
 
