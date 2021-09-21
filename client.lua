@@ -380,7 +380,6 @@ RegisterNetEvent('ox_inventory:closeInventory', function(options)
 		SetNuiFocus(false, false)
 		SetNuiFocusKeepInput(false)
 		TriggerScreenblurFadeOut(0)
-		SendNUIMessage({ action = 'closeInventory' })
 		if currentInventory and currentInventory.type == 'trunk' then
 			local animDict = 'anim@heists@fleeca_bank@scope_out@return_case'
 			local anim = 'trevor_action'
@@ -609,7 +608,7 @@ RegisterCommand('inv2', function()
 					local locked = GetVehicleDoorLockStatus(vehicle)
 					if locked == 0 or locked == 1 then
 						local vehHash = GetEntityModel(vehicle)
-						local checkVehicle = Vehicles.storage[vehHash]
+						local checkVehicle = Vehicles.Storage[vehHash]
 						local open, vehBone
 						if checkVehicle == 1 then open, vehBone = 4, GetEntityBoneIndexByName(vehicle, 'bonnet')
 						elseif checkVehicle == nil then open, vehBone = 5, GetEntityBoneIndexByName(vehicle, 'boot') elseif checkVehicle == 2 then open, vehBone = 5, GetEntityBoneIndexByName(vehicle, 'boot') else --[[no vehicle nearby]] return end

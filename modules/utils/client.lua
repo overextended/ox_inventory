@@ -54,6 +54,7 @@ M.PlayAnimAdvanced = function(wait, ...)
 end
 
 M.Raycast = function()
+	local playerCoords = GetEntityCoords(ESX.PlayerData.ped)
 	local plyOffset = GetOffsetFromEntityInWorldCoords(ESX.PlayerData.ped, 0.0, 3.0, -0.05)
 	local _, hit, coords, _, entity = GetShapeTestResult(StartShapeTestRay(playerCoords.x, playerCoords.y, playerCoords.z, plyOffset.x, plyOffset.y, plyOffset.z, -1, ESX.PlayerData.ped, 0))
 	local type = GetEntityType(entity)
