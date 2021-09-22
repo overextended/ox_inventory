@@ -459,6 +459,17 @@ AddEventHandler('ox_inventory:returnPlayerInventory', function(xPlayer)
 	end
 end)
 
+AddEventHandler('ox_inventory:clearPlayerInventory', function(xPlayer)
+	xPlayer = type(xPlayer) == 'table' and xPlayer or ESX.GetPlayerFromId(xPlayer)
+	local inv = xPlayer and Inventories[xPlayer.source]
+	if inv then
+		inv.items = {}
+		inv.weight = 0
+		TriggerClientEvent('ox_inventory:inventoryConfiscated', inv.id)
+		M.SyncInventory(xPlayer, inv)
+	end
+end)
+
 AddEventHandler('esx:playerDropped', function(playerId)
 	if Inventories[playerId] then
 		local openInventory = Inventories[playerId].open
@@ -514,6 +525,12 @@ end, true, {help = 'Confiscates items from a player', validate = true, arguments
 
 ESX.RegisterCommand('returninv', 'admin', function(xPlayer, args, showError)
 	TriggerEvent('ox_inventory:returnPlayerInventory', args.playerId)
+end, true, {help = 'Returns confiscated items to a player', validate = true, arguments = {
+	{name = 'playerId', help = 'player id', type = 'player'},
+}})
+
+ESX.RegisterCommand('clearinv', 'admin', function(xPlayer, args, showError)
+	TriggerEvent('ox_inventory:clearPlayerInventory', args.playerId)
 end, true, {help = 'Returns confiscated items to a player', validate = true, arguments = {
 	{name = 'playerId', help = 'player id', type = 'player'},
 }})
