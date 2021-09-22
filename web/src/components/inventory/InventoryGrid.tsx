@@ -61,10 +61,10 @@ const InventoryGrid: React.FC<{ inventory: Inventory }> = ({ inventory }) => {
                 {Items[currentItem.name]?.description && (
                   <p>{Items[currentItem.name]?.description}</p>
                 )}
-                {currentItem.metadata?.durability && (
-                  <p>Durability: {currentItem.metadata.durability}</p>
+                {currentItem?.durability !== undefined && (
+                  <p>Durability: {currentItem.durability}</p>
                 )}
-                {currentItem.metadata?.ammo && <p>Ammo: {currentItem.metadata.ammo}</p>}
+                {currentItem.metadata?.ammo !== undefined && <p>Ammo: {currentItem.metadata.ammo}</p>}
                 {currentItem.metadata?.serial && (
                   <p>Serial number: {currentItem.metadata.serial}</p>
                 )}

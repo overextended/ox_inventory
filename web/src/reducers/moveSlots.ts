@@ -1,6 +1,6 @@
 import { CaseReducer, PayloadAction } from '@reduxjs/toolkit';
-import { getTargetInventory } from '../helpers';
-import { Inventory, State, SlotWithItem, Slot, InventoryType } from '../typings';
+import { getTargetInventory, itemDurability } from '../helpers';
+import { Inventory, InventoryType, Slot, SlotWithItem, State } from '../typings';
 
 export const moveSlotsReducer: CaseReducer<
   State,
@@ -13,16 +13,17 @@ export const moveSlotsReducer: CaseReducer<
   }>
 > = (state, action) => {
   const { fromSlot, fromType, toSlot, toType, count } = action.payload;
-
   const { sourceInventory, targetInventory } = getTargetInventory(state, fromType, toType);
-
   const pieceWeight = fromSlot.weight / fromSlot.count;
+  const curTime = Math.floor(Date.now() / 1000);
+  const fromItem = sourceInventory.items[fromSlot.slot - 1];
 
   targetInventory.items[toSlot.slot - 1] = {
-    ...sourceInventory.items[fromSlot.slot - 1],
+    ...fromItem,
     count: count,
     weight: pieceWeight * count,
     slot: toSlot.slot,
+    durability: itemDurability(fromItem.metadata, curTime)
   };
 
   if (fromType === InventoryType.SHOP) return;

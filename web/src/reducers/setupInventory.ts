@@ -1,4 +1,5 @@
 import { CaseReducer, PayloadAction } from '@reduxjs/toolkit';
+import { itemDurability } from '../helpers';
 import { Inventory, State } from '../typings';
 
 export const setupInventoryReducer: CaseReducer<
@@ -15,17 +16,11 @@ export const setupInventoryReducer: CaseReducer<
     state.leftInventory = {
       ...leftInventory,
       items: Array.from(Array(leftInventory.slots), (_, index) => {
-        const item = Object.values(leftInventory.items).find(
-          (item) => item?.slot === index + 1,
-        ) || {
+        const item = Object.values(leftInventory.items).find((item) => item?.slot === index + 1) || {
           slot: index + 1,
         };
 
-        if (item.metadata?.durability && item.metadata.durability > 100) {
-          item.durability = item.metadata.durability - curTime;
-          if (item.durability < 0) item.durability = 0
-        }
-
+        item.durability = itemDurability(item.metadata, curTime)
         return item;
       }),
     };
@@ -33,12 +28,13 @@ export const setupInventoryReducer: CaseReducer<
   if (rightInventory)
     state.rightInventory = {
       ...rightInventory,
-      items: Array.from(
-        Array(rightInventory.slots),
-        (_, index) =>
-          Object.values(rightInventory.items).find((item) => item?.slot === index + 1) || {
-            slot: index + 1,
-          },
-      ),
+      items: Array.from(Array(rightInventory.slots), (_, index) => {
+        const item = Object.values(rightInventory.items).find((item) => item?.slot === index + 1) || {
+          slot: index + 1,
+        };
+
+        item.durability = itemDurability(item.metadata, curTime)
+        return item;
+      }),
     };
 };

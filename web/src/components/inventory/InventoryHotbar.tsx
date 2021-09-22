@@ -47,7 +47,7 @@ const InventoryHotbar: React.FC<{ items: Slot[] }> = ({ items }) => {
                     {item.count?.toLocaleString('en-us')}x
                   </span>
                 </div>
-                {item.metadata?.durability && (
+                {item?.durability !== undefined && (
                   <WeightBar percent={item.durability} durability />
                 )}
                 <div className="item-label">
