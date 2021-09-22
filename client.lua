@@ -209,7 +209,7 @@ local Markers = function(tb, type, rgb, playerCoords, name)
 		local marker = nearbyMarkers[id]
 		if distance < 1.2 then
 			if not marker then nearbyMarkers[id] = {x = v.x, y = v.y, z = v.z, r = rgb.x, g = rgb.y, b = rgb.z} end
-			if closestMarker == nil or currentMarker and distance < currentMarker.x or closestMarker and distance < closestMarker.x then
+			if closestMarker == nil or (currentMarker and distance < currentMarker[1]) or (closestMarker and distance < closestMarker[1]) then
 				closestMarker = {distance, k, type, name}
 			end
 		elseif not marker and distance < 8 then nearbyMarkers[id] = {x = v.x, y = v.y, z = v.z, r = rgb.x, g = rgb.y, b = rgb.z} elseif marker and distance > 8 then nearbyMarkers[id] = nil end
@@ -244,7 +244,7 @@ SetInterval(1, 250, function()
 		local marker = nearbyMarkers['license']
 		if distance < 1.2 then
 			if not marker then nearbyMarkers['license'] = {x = weaponLicense.x, y = weaponLicense.y, z = weaponLicense.z, r = 30, g = 150, b = 30} end
-			if closestMarker == nil or currentMarker and distance < currentMarker.x or closestMarker and distance < closestMarker.x then
+			if closestMarker == nil or (currentMarker and distance < currentMarker[1]) or (closestMarker and distance < closestMarker[1]) then
 				closestMarker = {distance, 'weapon', 'license'}
 			end
 		elseif not marker and distance < 8 then nearbyMarkers['license'] = {x = weaponLicense.x, y = weaponLicense.y, z = weaponLicense.z, r = 30, g = 150, b = 30} elseif marker and distance > 8 then nearbyMarkers['license'] = nil end
@@ -252,7 +252,7 @@ SetInterval(1, 250, function()
 		local marker = nearbyMarkers['policeevidence']
 		if distance < 1.2 then
 			if not marker then nearbyMarkers['policeevidence'] = {x = -22.4, y = -1105.5, z = 26.7, r = 30, g = 30, b = 150} end
-			if closestMarker == nil or currentMarker and distance < currentMarker.x or closestMarker and distance < closestMarker.x then
+			if closestMarker == nil or (currentMarker and distance < currentMarker[1]) or (closestMarker and distance < closestMarker[1]) then
 				closestMarker = {distance, 1, 'policeevidence'}
 			end
 		elseif not marker and distance < 8 then nearbyMarkers['policeevidence'] = {x = -22.4, y = -1105.5, z = 26.7, r = 30, g = 30, b = 150} elseif marker and distance > 8 then nearbyMarkers['policeevidence'] = nil end
