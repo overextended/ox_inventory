@@ -17,6 +17,7 @@ return {
 	burger = {
 		label = 'Burger',
 		weight = 220,
+		degrade = 60,
 		client = {
 			status = { hunger = 200000 },
 			anim = { dict = 'mp_player_inteat@burger', clip = 'mp_player_int_eat_burger_fp' },

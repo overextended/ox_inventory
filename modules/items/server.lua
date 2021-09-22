@@ -149,21 +149,24 @@ M.Metadata = function(xPlayer, item, metadata, count)
 				metadata.serial = GenerateSerial(metadata.serial)
 			end
 		end
-	elseif item.name:find('identification') then
-		count = 1
-		if next(metadata) == nil then
+	else
+		if item.name:find('identification') then
+			count = 1
+			if next(metadata) == nil then
+				metadata = {}
+				metadata.type = xPlayer.name
+				metadata.description = ('Sex: %s\nDate of birth: %s'):format((xPlayer.variables.sex or xPlayer.sex) and ox.locale('male') or ox.locale('female'), xPlayer.variables.dateofbirth or xPlayer.dateofbirth)
+			end
+		elseif item.name:find('paperbag') then
+			count = 1
 			metadata = {}
-			metadata.type = xPlayer.name
-			metadata.description = ('Sex: %s\nDate of birth: %s'):format((xPlayer.variables.sex or xPlayer.sex) and ox.locale('male') or ox.locale('female'), xPlayer.variables.dateofbirth or xPlayer.dateofbirth)
+			metadata.container = GenerateText(3)..os.time()
+			metadata.size = {5, 1000}
 		end
-	elseif item.name:find('paperbag') then
-		count = 1
-		metadata = {}
-		metadata.container = GenerateText(3)..os.time()
-		metadata.size = {5, 1000}
-	elseif item.name:find('burger') then
-		metadata.durability = os.time()+36
-		print(metadata.durability)
+		if not metadata?.durability then
+			local durability = Items[item.name].degrade
+			if durability then metadata.durability = os.time()+(durability * 60) end
+		end
 	end
 	return metadata, count
 end

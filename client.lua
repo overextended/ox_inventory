@@ -398,7 +398,7 @@ RegisterNetEvent('ox_inventory:closeInventory', function(options)
 		end
 		SendNUIMessage({ action = 'closeInventory' })
 		SetInterval(1, 250)
-		Wait(500)
+		Wait(200)
 		if currentInventory then TriggerServerEvent('ox_inventory:closeInventory') end
 		invOpen, currentInventory = false, nil
 	end
