@@ -1,0 +1,59 @@
+name: Build Pre-Release
+
+on: 
+  workflow_dispatch:
+
+jobs:
+  pre-release:
+    name: Build and pre release
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Install archive tools
+        run: sudo apt install zip
+
+      - name: Checkout source code
+        uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+          ref: ${{ github.ref }}
+ 
+      - name: Yarn cache
+        uses: actions/setup-node@v2
+        with:
+          node-version: "16"
+          cache: "yarn"
+          cache-dependency-path: "web/yarn.lock"
+
+      - name: Install dependencies
+        run: yarn --frozen-lockfile
+        working-directory: web
+
+      - name: Run build
+        run: yarn build
+        working-directory: web
+        env:
+          CI: false
+
+      - name: Bundle files
+        run: |
+          mkdir -p ./temp/ox_inventory
+          mkdir -p ./temp/ox_inventory/web
+          cp ./{server.lua,README.md,LICENSE,fxmanifest.lua,config.lua,client.lua} ./temp/ox_inventory
+          cp -r ./{setup,modules,data} ./temp/ox_inventory
+          cp -r ./web/build ./temp/ox_inventory/web/build
+          cd ./temp && zip -r ox_inventory-v2.0.0-alpha.${{ github.run_number }}.zip ./ox_inventory
+     
+     
+      - name: Create Release
+        uses: "marvinpinto/action-automatic-releases@v1.2.1"
+        id: auto_release
+        with:
+          repo_token: "${{ secrets.GITHUB_TOKEN }}"
+          prerelease: true
+          automatic_release_tag: "v2.0.0-alpha.${{ github.run_number }}"
+          files: ./temp/ox_inventory-v2.0.0-alpha.${{ github.run_number }}.zip
+
+        env:
+          CI: false
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
