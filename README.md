@@ -1,5 +1,5 @@
 
-<h2 align='center'>This project is still a work-in-progress - do not use in a live environment</h2> 
+<h2 align='center'>This project is still a work-in-progress - only recommended for development servers.</h2> 
 
 <h1 align='center'><a href='https://overextended.github.io/ox_inventory/'>Documentation</a></h1><p align='center'>Click the link above for information on setup, installation, and improving compatibility with other resources.
 <p align='center'><a href='https://discord.io/overextended'>Discord</a></p>
