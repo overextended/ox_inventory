@@ -669,7 +669,7 @@ end)
 
 RegisterNUICallback('useItem', function(data, cb)
 	UseSlot(data.slot)
-    cb()
+    cb({})
 end)
 
 RegisterNUICallback('exit', function(data, cb)

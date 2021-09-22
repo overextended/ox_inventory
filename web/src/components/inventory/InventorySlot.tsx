@@ -37,7 +37,7 @@ const InventorySlot: React.FC<SlotProps> = ({ inventory, item, setCurrentItem })
           : null,
       canDrag: !isBusy,
     }),
-    [isBusy, inventory, item]
+    [isBusy, inventory, item],
   );
 
   const [{ isOver }, drop] = useDrop<DragSource, void, { isOver: boolean }>(
@@ -65,25 +65,31 @@ const InventorySlot: React.FC<SlotProps> = ({ inventory, item, setCurrentItem })
         (source.item.slot !== item.slot || source.inventory !== inventory.type) &&
         inventory.type !== InventoryType.SHOP,
     }),
-    [isBusy, inventory, item]
+    [isBusy, inventory, item],
   );
 
   const connectRef = (element: HTMLDivElement) => drag(drop(element));
 
   const onMouseEnter = React.useCallback(
     () => isSlotWithItem(item) && setCurrentItem(item),
-    [item, setCurrentItem]
+    [item, setCurrentItem],
   );
 
   const onMouseLeave = React.useCallback(
     () => isSlotWithItem(item) && setCurrentItem(undefined),
-    [item, setCurrentItem]
+    [item, setCurrentItem],
   );
 
   const handleContext = (e: any) => {
     isSlotWithItem(item) &&
       inventory.type === 'player' &&
-      contextMenu.show({ id: 'item-context', event: e });
+      contextMenu.show({
+        id: 'item-context',
+        event: e,
+        props: {
+          item: { name: item.name, slot: item.slot },
+        },
+      });
   };
 
   return (
