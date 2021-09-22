@@ -523,7 +523,7 @@ AddEventHandler('ox_inventory:item', function(data, cb)
 						if v > 0 then TriggerEvent('esx_status:add', k, v) else TriggerEvent('esx_status:remove', k, -v) end
 					end
 				end
-				if currentWeapon and currentWeapon.metadata.serial ~= nil and result.metadata and result.metadata.serial == currentWeapon.metadata.serial then Disarm() else cb(result) end
+				if currentWeapon?.slot == result.slot then Disarm() else cb(result) end
 				return SetBusy(false)
 			end
 		end
@@ -683,7 +683,8 @@ RegisterNUICallback('swapItems', function(data, cb)
 		ESX.SetPlayerData('inventory', ESX.PlayerData.inventory)
 		if data.weight then ESX.SetPlayerData('weight', data.weight) end
 	end
-	if currentWeapon then currentWeapon.slot = weapon
+	if weapon and currentWeapon then
+		currentWeapon.slot = weapon
 		TriggerEvent('ox_inventory:currentWeapon', currentWeapon)
 	end
 	cb(response)
