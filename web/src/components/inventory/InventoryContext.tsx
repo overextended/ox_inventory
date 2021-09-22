@@ -1,16 +1,20 @@
 import { Menu, Item, Submenu, Separator } from 'react-contexify';
 import { onUse } from '../../dnd/onUse';
+import { onGive } from '../../dnd/onGive';
+import { useAppSelector } from '../../store';
 import 'react-contexify/dist/ReactContexify.css';
+import { selectItemAmount } from '../../store/inventory';
 
 const InventoryContext: React.FC<any> = () => {
+  const itemAmount = useAppSelector(selectItemAmount);
+
   const handleClick = ({ props, data }: any) => {
     switch (data) {
       case 'use':
-        onUse(props.item);
+        onUse({ name: props.item.name, slot: props.item.slot });
         break;
       case 'give':
-        console.log('give');
-        //
+        onGive({ name: props.item.name, slot: props.item.slot }, itemAmount);
         break;
       case 'drop':
         console.log('drop');

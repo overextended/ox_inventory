@@ -87,7 +87,7 @@ const InventorySlot: React.FC<SlotProps> = ({ inventory, item, setCurrentItem })
         id: 'item-context',
         event: e,
         props: {
-          item: { name: item.name, slot: item.slot },
+          item: item,
         },
       });
   };
