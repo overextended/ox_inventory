@@ -1,6 +1,6 @@
-import React, { RefObject, useRef } from "react";
-import { DragLayerMonitor, useDragLayer, XYCoord } from "react-dnd";
-import { DragSource } from "../../typings";
+import React, { RefObject, useRef } from 'react';
+import { DragLayerMonitor, useDragLayer, XYCoord } from 'react-dnd';
+import { DragSource } from '../../typings';
 
 interface DragLayerProps {
   data: DragSource;
@@ -18,12 +18,7 @@ const subtract = (a: XYCoord, b: XYCoord): XYCoord => {
 const calculateParentOffset = (monitor: DragLayerMonitor): XYCoord => {
   const client = monitor.getInitialClientOffset();
   const source = monitor.getInitialSourceClientOffset();
-  if (
-    client === null ||
-    source === null ||
-    client.x === undefined ||
-    client.y === undefined
-  ) {
+  if (client === null || source === null || client.x === undefined || client.y === undefined) {
     return { x: 0, y: 0 };
   }
   return subtract(client, source);
@@ -49,13 +44,11 @@ export const calculatePointerPosition = (
 
 const DragPreview: React.FC = () => {
   const element = useRef<HTMLDivElement>(null);
-  const { data, isDragging, currentOffset } = useDragLayer<DragLayerProps>(
-    (monitor) => ({
-      data: monitor.getItem(),
-      currentOffset: calculatePointerPosition(monitor, element),
-      isDragging: monitor.isDragging(),
-    })
-  );
+  const { data, isDragging, currentOffset } = useDragLayer<DragLayerProps>((monitor) => ({
+    data: monitor.getItem(),
+    currentOffset: calculatePointerPosition(monitor, element),
+    isDragging: monitor.isDragging(),
+  }));
 
   return (
     <>
@@ -65,9 +58,7 @@ const DragPreview: React.FC = () => {
           className="drag"
           style={{
             transform: `translate(${currentOffset.x}px, ${currentOffset.y}px)`,
-            backgroundImage: `url(${
-              process.env.PUBLIC_URL + `/images/${data.item.name}.png`
-            })`,
+            backgroundImage: `url(${process.env.PUBLIC_URL + `/images/${data.item.name}.png`})`,
           }}
         ></div>
       )}

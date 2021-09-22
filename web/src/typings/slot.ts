@@ -6,12 +6,12 @@ export type Slot = {
   metadata?: {
     [key: string]: any;
   };
-  durability?: number
+  durability?: number;
 };
 
 export type SlotWithItem = Slot & {
   name: string;
   count: number;
   weight: number;
-  durability?: number
+  durability?: number;
 };

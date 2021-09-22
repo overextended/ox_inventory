@@ -9,7 +9,7 @@ export const refreshSlotsReducer: CaseReducer<
   >
 > = (state, action) => {
   if (!Array.isArray(action.payload)) action.payload = [action.payload];
-  const curTime = Math.floor(Date.now() / 1000)
+  const curTime = Math.floor(Date.now() / 1000);
 
   Object.values(action.payload)
     .filter((data) => !!data)
@@ -20,7 +20,7 @@ export const refreshSlotsReducer: CaseReducer<
           : state.leftInventory
         : state.leftInventory;
 
-      data.item.durability = itemDurability(data.item.metadata, curTime)
+      data.item.durability = itemDurability(data.item.metadata, curTime);
       targetInventory.items[data.item.slot - 1] = data.item;
     });
 };

@@ -14,10 +14,10 @@ const InventoryGrid: React.FC<{ inventory: Inventory }> = ({ inventory }) => {
       inventory.maxWeight !== undefined
         ? inventory.items.reduce<number>(
             (totalWeight, slot) => (slot.weight ? totalWeight + slot.weight : totalWeight),
-            0,
+            0
           )
         : 0,
-    [inventory.maxWeight, inventory.items],
+    [inventory.maxWeight, inventory.items]
   );
 
   return (
@@ -64,7 +64,9 @@ const InventoryGrid: React.FC<{ inventory: Inventory }> = ({ inventory }) => {
                 {currentItem?.durability !== undefined && (
                   <p>Durability: {currentItem.durability}</p>
                 )}
-                {currentItem.metadata?.ammo !== undefined && <p>Ammo: {currentItem.metadata.ammo}</p>}
+                {currentItem.metadata?.ammo !== undefined && (
+                  <p>Ammo: {currentItem.metadata.ammo}</p>
+                )}
                 {currentItem.metadata?.serial && (
                   <p>Serial number: {currentItem.metadata.serial}</p>
                 )}

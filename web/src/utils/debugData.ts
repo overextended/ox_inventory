@@ -22,7 +22,7 @@ export const debugData = <P>(events: DebugEvent<P>[], timer = 1000): void => {
               action: event.action,
               data: event.data,
             },
-          }),
+          })
         );
       }, timer);
     }

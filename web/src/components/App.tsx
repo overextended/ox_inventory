@@ -51,7 +51,7 @@ const App: React.FC = () => {
         Items[name] = data;
       }
       dispatch(setupInventory({ leftInventory }));
-    },
+    }
   );
 
   React.useEffect(() => {

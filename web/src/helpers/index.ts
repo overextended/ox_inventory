@@ -13,7 +13,7 @@ export const findAvailableSlot = (item: Slot, data: ItemData, items: Slot[]) => 
   if (!data.stack) return items.find((target) => target.name === undefined);
 
   const stackableSlot = items.find(
-    (target) => target.name === item.name && target.metadata === item.metadata,
+    (target) => target.name === item.name && target.metadata === item.metadata
   );
 
   return stackableSlot || items.find((target) => target.name === undefined);
@@ -22,7 +22,7 @@ export const findAvailableSlot = (item: Slot, data: ItemData, items: Slot[]) => 
 export const getTargetInventory = (
   state: State,
   sourceType: Inventory['type'],
-  targetType?: Inventory['type'],
+  targetType?: Inventory['type']
 ): { sourceInventory: Inventory; targetInventory: Inventory } => ({
   sourceInventory: sourceType === InventoryType.PLAYER ? state.leftInventory : state.rightInventory,
   targetInventory: targetType
@@ -34,13 +34,15 @@ export const getTargetInventory = (
     : state.leftInventory,
 });
 
-export const itemDurability = (metadata: any, curTime: number) => { // sorry dunak
-  let durability = undefined
-  if (metadata?.durability) { metadata.durability > 100
-      ? durability = metadata.durability - curTime
-      : durability = metadata.durability
-    if (durability && durability < 0) durability = 0
-  };
+export const itemDurability = (metadata: any, curTime: number) => {
+  // sorry dunak
+  let durability = undefined;
+  if (metadata?.durability) {
+    metadata.durability > 100
+      ? (durability = metadata.durability - curTime)
+      : (durability = metadata.durability);
+    if (durability && durability < 0) durability = 0;
+  }
 
-  return durability
+  return durability;
 };

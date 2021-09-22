@@ -1,6 +1,6 @@
-import React from "react";
+import React from 'react';
 
-const Fade: React.FC<{ visible: boolean; duration?: number, className?: string }> = (props) => {
+const Fade: React.FC<{ visible: boolean; duration?: number; className?: string }> = (props) => {
   return (
     <div
       style={{

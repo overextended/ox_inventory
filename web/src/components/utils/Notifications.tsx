@@ -1,34 +1,34 @@
-import React from "react";
-import { useNuiEvent } from "../../hooks/useNuiEvent";
-import { debugData } from "../../utils/debugData";
+import React from 'react';
+import { useNuiEvent } from '../../hooks/useNuiEvent';
+import { debugData } from '../../utils/debugData';
 
-import toast, { Toaster, ToastPosition } from "react-hot-toast";
+import toast, { Toaster, ToastPosition } from 'react-hot-toast';
 
 // API - https://github.com/timolins/react-hot-toast
 
 debugData([
   {
-    action: "showNotif",
+    action: 'showNotif',
     data: {
-      text: "Info Notification",
+      text: 'Info Notification',
     },
   },
 ]);
 debugData([
   {
-    action: "showNotif",
+    action: 'showNotif',
     data: {
-      text: "Success Notification",
-      type: "success",
+      text: 'Success Notification',
+      type: 'success',
     },
   },
 ]);
 debugData([
   {
-    action: "showNotif",
+    action: 'showNotif',
     data: {
-      text: "Error Notification",
-      type: "error",
+      text: 'Error Notification',
+      type: 'error',
     },
   },
 ]);
@@ -43,20 +43,20 @@ interface NotificationProps {
 const Notify = (data: NotificationProps) => {
   toast(data.text, {
     duration: data.duration || 4000,
-    position: data.position || "top-center",
+    position: data.position || 'top-center',
     style: {
       backgroundColor:
         data.type === undefined
-          ? "rgb(52, 152, 219)"
-          : data.type === "success"
-          ? "rgb(39, 174, 96)"
-          : "rgb(231, 76, 60)",
+          ? 'rgb(52, 152, 219)'
+          : data.type === 'success'
+          ? 'rgb(39, 174, 96)'
+          : 'rgb(231, 76, 60)',
     },
   });
 };
 
 const Notifications: React.FC = () => {
-  useNuiEvent<NotificationProps>("showNotif", (data) => {
+  useNuiEvent<NotificationProps>('showNotif', (data) => {
     Notify(data);
   });
 
@@ -65,9 +65,9 @@ const Notifications: React.FC = () => {
       toastOptions={{
         // options defined here apply to all toasts
         style: {
-          color: "white",
-          borderRadius: "5px",
-          padding: "4px",
+          color: 'white',
+          borderRadius: '5px',
+          padding: '4px',
         },
       }}
     />

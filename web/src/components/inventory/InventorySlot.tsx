@@ -37,7 +37,7 @@ const InventorySlot: React.FC<SlotProps> = ({ inventory, item, setCurrentItem })
           : null,
       canDrag: !isBusy,
     }),
-    [isBusy, inventory, item],
+    [isBusy, inventory, item]
   );
 
   const [{ isOver }, drop] = useDrop<DragSource, void, { isOver: boolean }>(
@@ -65,19 +65,19 @@ const InventorySlot: React.FC<SlotProps> = ({ inventory, item, setCurrentItem })
         (source.item.slot !== item.slot || source.inventory !== inventory.type) &&
         inventory.type !== InventoryType.SHOP,
     }),
-    [isBusy, inventory, item],
+    [isBusy, inventory, item]
   );
 
   const connectRef = (element: HTMLDivElement) => drag(drop(element));
 
   const onMouseEnter = React.useCallback(
     () => isSlotWithItem(item) && setCurrentItem(item),
-    [item, setCurrentItem],
+    [item, setCurrentItem]
   );
 
   const onMouseLeave = React.useCallback(
     () => isSlotWithItem(item) && setCurrentItem(undefined),
-    [item, setCurrentItem],
+    [item, setCurrentItem]
   );
 
   const handleContext = (e: any) => {
@@ -118,9 +118,7 @@ const InventorySlot: React.FC<SlotProps> = ({ inventory, item, setCurrentItem })
                 {item.count?.toLocaleString('en-us')}x
               </span>
             </div>
-            {item?.durability !== undefined && (
-              <WeightBar percent={item.durability} durability />
-            )}
+            {item?.durability !== undefined && <WeightBar percent={item.durability} durability />}
             <div className="item-label">
               [{item.slot}] {Items[item.name]?.label || item.name}
             </div>

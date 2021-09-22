@@ -11,7 +11,7 @@ export const validateMove = createAsyncThunk(
       toType: string;
       count: number;
     },
-    { rejectWithValue },
+    { rejectWithValue }
   ) => {
     try {
       const response = await fetchNui<boolean>('swapItems', data);
@@ -22,5 +22,5 @@ export const validateMove = createAsyncThunk(
     } catch (error) {
       return rejectWithValue(false);
     }
-  },
+  }
 );

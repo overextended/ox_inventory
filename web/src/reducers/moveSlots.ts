@@ -23,7 +23,7 @@ export const moveSlotsReducer: CaseReducer<
     count: count,
     weight: pieceWeight * count,
     slot: toSlot.slot,
-    durability: itemDurability(fromItem.metadata, curTime)
+    durability: itemDurability(fromItem.metadata, curTime),
   };
 
   if (fromType === InventoryType.SHOP) return;

@@ -9,7 +9,7 @@ export const useKeyPress = (targetKey: KeyboardEvent['key']) => {
         setKeyPressed(true);
       }
     },
-    [targetKey],
+    [targetKey]
   );
 
   const upHandler = React.useCallback(
@@ -18,7 +18,7 @@ export const useKeyPress = (targetKey: KeyboardEvent['key']) => {
         setKeyPressed(false);
       }
     },
-    [targetKey],
+    [targetKey]
   );
 
   React.useEffect(() => {

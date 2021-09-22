@@ -19,12 +19,12 @@ export const swapSlotsReducer: CaseReducer<
     {
       ...targetInventory.items[toSlot.slot - 1],
       slot: fromSlot.slot,
-      durability: itemDurability(toSlot.metadata, curTime)
+      durability: itemDurability(toSlot.metadata, curTime),
     },
     {
       ...sourceInventory.items[fromSlot.slot - 1],
       slot: toSlot.slot,
-      durability: itemDurability(fromSlot.metadata, curTime)
+      durability: itemDurability(fromSlot.metadata, curTime),
     },
   ];
 };
