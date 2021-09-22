@@ -118,7 +118,7 @@ Utils.RegisterServerCallback('ox_inventory:swapItems', function(source, cb, data
 			playerInventory.weight = playerInventory.weight - toSlot.weight
 			TriggerEvent('ox_inventory:createDrop', source, data.toSlot, toSlot, function(drop, coords)
 				if fromSlot == playerInventory.weapon then playerInventory.weapon = nil end
-				TriggerClientEvent('ox_inventory:createDrop', -1, {drop, coords}, source, fromSlot)
+				TriggerClientEvent('ox_inventory:createDrop', -1, {drop, coords}, playerInventory.open and source, fromSlot)
 			end)
 			return cb(true, {weight=playerInventory.weight, items=items})
 		else

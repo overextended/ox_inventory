@@ -20,8 +20,7 @@ local Set = function(inv, k, v)
 		if k == 'open' and v == false then
 			if inv.type ~= 'player' then
 				if inv.type == 'drop' and not next(inv.items) then
-					TriggerClientEvent('ox_inventory:removeDrop', -1, inv.id)
-					inv = nil
+					return M.Remove(inv.id, inv.type)
 				else inv.time = os.time() end
 			end
 		end
@@ -406,7 +405,7 @@ AddEventHandler('ox_inventory:customDrop', function(prefix, items, coords, slots
 	local items, weight = GenerateItems(drop, 'drop', items)
 	local inventory = M.Create(drop, prefix..' '..drop, 'drop', slots or Config.PlayerSlots, weight, maxWeight or Config.DefaultWeight, false, items)
 	inventory.coords = coords
-	TriggerClientEvent('ox_inventory:createDrop', -1, {drop, coords}, source)
+	TriggerClientEvent('ox_inventory:createDrop', -1, {drop, coords}, inventory.open and source)
 end)
 
 AddEventHandler('ox_inventory:confiscatePlayerInventory', function(xPlayer)
