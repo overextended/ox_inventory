@@ -78,9 +78,10 @@ Utils.RegisterServerCallback('ox_inventory:openInventory', function(source, cb, 
 				stash.coords = stash.coords
 			end
 			stash.owner = stash.owner == true and left.owner or stash.owner
-			right = Inventory(stash.owner and stash.name..owner or stash.name)
+			right = Inventory(stash.owner and stash.name..stash.owner or stash.name)
 			if not right then
 				right = Inventory.Create(stash.owner and stash.name..stash.owner or stash.name, stash.label or stash.name, inv, stash.slots, 0, stash.weight, stash.owner or false)
+				right.coords = stash.coords
 			end
 		elseif inv == 'container' then
 			data = left.items[data]
@@ -98,9 +99,11 @@ Utils.RegisterServerCallback('ox_inventory:openInventory', function(source, cb, 
 			end
 		end
 		if not right.open then
-			right:set('open', source)
-			left:set('open', right.id)
-		end
+			if #(right?.coords - GetEntityCoords(GetPlayerPed(source))) < 20 then
+				right:set('open', source)
+				left:set('open', right.id)
+			else return cb(false) end
+		else return cb(false) end
 	end
 	cb({id=left.label, type=left.type, slots=left.slots, weight=left.weight, maxWeight=left.maxWeight}, right)
 end)

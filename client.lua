@@ -92,7 +92,10 @@ local OpenInventory = function(inv, data)
 					}
 				}
 			})
-		else return TriggerEvent('ox_inventory:closeInventory') end
+		else
+			Notify({type = 'error', text = ox.locale('inventory_cannot_open_other'), duration = 2500})
+			return TriggerEvent('ox_inventory:closeInventory')
+		end
 	else Notify({type = 'error', text = ox.locale('inventory_cannot_open'), duration = 2500}) end
 end
 RegisterNetEvent('ox_inventory:openInventory', OpenInventory)
@@ -422,8 +425,8 @@ RegisterNetEvent('ox_inventory:inventoryReturned', function(data)
 	ESX.SetPlayerData('weight', data[3])
 end)
 
-RegisterNetEvent('ox_inventory:inventoryConfiscated', function()
-	Notify({text = ox.locale('items_confiscated'), duration = 2500})
+RegisterNetEvent('ox_inventory:inventoryConfiscated', function(message)
+	if message then Notify({text = ox.locale('items_confiscated'), duration = 2500}) end
 	TriggerEvent('ox_inventory:closeInventory')
 	ESX.PlayerData.inventory = {}
 	ESX.SetPlayerData('weight', 0)
