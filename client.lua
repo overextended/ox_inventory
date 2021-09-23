@@ -66,7 +66,7 @@ local Notify = function(data) SendNUIMessage({ action = 'showNotif', data = data
 RegisterNetEvent('ox_inventory:Notify', Notify)
 exports('Notify', Notify)
 
-local isCuffed = nil
+local isCuffed = false
 local CanOpenInventory = function()
 	return ESX.PlayerLoaded
 	and invOpen ~= nil
@@ -126,7 +126,7 @@ end
 RegisterNetEvent('ox_inventory:openInventory', OpenInventory)
 
 local UseSlot = function(slot)
-	if ESX.PlayerLoaded and isBusy == false and not Progress.Active then
+	if ESX.PlayerLoaded and isBusy == false and Progress.Active == false then
 		local item = ESX.PlayerData.inventory[slot]
 		local data = item and Items[item.name]
 		if item and data.usable then
@@ -383,6 +383,13 @@ SetInterval(2, 0, function()
 						ClearPedTasks(ESX.PlayerData.ped)
 						SetCurrentPedWeapon(ESX.PlayerData.ped, currentWeapon.hash, false)
 						SetPedCurrentWeaponVisible(ESX.PlayerData.ped, true, false, false, false)
+						if Config.AutoReload and Progress.Active == false and IsPedRagdoll(ESX.PlayerData.ped) == false and IsPedFalling(ESX.PlayerData.ped) == false then
+							local ammo = Utils.InventorySearch(1, currentWeapon.ammo)
+							if ammo[1] then
+								currentWeapon.timer = 0
+								UseSlot(ammo[1].slot)
+							end
+						end
 					end
 					currentWeapon.timer = GetGameTimer() + 400
 				end
@@ -523,7 +530,7 @@ AddEventHandler('onResourceStop', function(resourceName)
 end)
 
 AddEventHandler('ox_inventory:item', function(data, cb)
-	if isBusy == false and not Progress.Active and not IsPedRagdoll(ESX.PlayerData.ped) and not IsPedFalling(ESX.PlayerData.ped) then
+	if isBusy == false and Progress.Active == false and IsPedRagdoll(ESX.PlayerData.ped) == false and IsPedFalling(ESX.PlayerData.ped) == false then
 		SetBusy(true)
 		if invOpen and data.close then TriggerEvent('ox_inventory:closeInventory') end
 		local result = Utils.AwaitServerCallback('ox_inventory:useItem', data.name, data.slot, data.metadata)
@@ -613,23 +620,24 @@ RegisterCommand('inv2', function()
 					end
 				end
 			else
-				local result, _, entity, type = Utils.Raycast()
-				if not result then return end
+				local entity, type = Utils.Raycast()
+				if entity == false then return end
 				local vehicle, position
 				if not Config.qtarget then
 					if type == 2 then vehicle, position = entity, GetEntityCoords(entity)
 					elseif type == 3 and Utils.CheckTable(Config.Dumpsters, GetEntityModel(entity)) then
-						if not IsEntityAMissionEntity(object) then 
-							SetEntityAsMissionEntity(object) 
-							NetworkRegisterEntityAsNetworked(object) 
-							local netId = NetworkGetNetworkIdFromEntity(object) 
-							SetNetworkIdExistsOnAllMachines(netId, true) 
-							SetNetworkIdCanMigrate(netId, true) 
-							NetworkSetNetworkIdDynamic(false)
+						local netId = NetworkGetEntityIsNetworked(entity) and NetworkGetNetworkIdFromEntity(entity) or false
+						if netId == false then
+							SetEntityAsMissionEntity(entity)
+							NetworkRegisterEntityAsNetworked(entity)
+							netId = NetworkGetNetworkIdFromEntity(entity)
+							NetworkUseHighPrecisionBlending(netId, false)
+							SetNetworkIdExistsOnAllMachines(netId)
+							SetNetworkIdCanMigrate(netId, true)
 						end
-						OpenDumpster({ id = NetworkGetNetworkIdFromEntity(object), label = 'Dumpster', slots = 15})	
+						return OpenInventory('dumpster', {id='dumpster'..netId, label='Dumpster'})
 					end
-				elseif result and type == 2 then
+				elseif type == 2 then
 					vehicle, position = entity, GetEntityCoords(entity)
 				else return end
 				local lastVehicle = nil

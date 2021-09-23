@@ -56,9 +56,19 @@ end
 M.Raycast = function()
 	local playerCoords = GetEntityCoords(ESX.PlayerData.ped)
 	local plyOffset = GetOffsetFromEntityInWorldCoords(ESX.PlayerData.ped, 0.0, 3.0, -0.05)
-	local _, hit, coords, _, entity = GetShapeTestResult(StartShapeTestRay(playerCoords.x, playerCoords.y, playerCoords.z, plyOffset.x, plyOffset.y, plyOffset.z, -1, ESX.PlayerData.ped, 0))
-	local type = GetEntityType(entity)
-	if hit and type ~= 0 then return hit, coords, entity, type else	return false end
+	local rayHandle = StartShapeTestLosProbe(playerCoords.x, playerCoords.y, playerCoords.z, plyOffset.x, plyOffset.y, plyOffset.z, 30, ESX.PlayerData.ped)
+	while true do
+		Wait(0)
+		local result, _, _, _, entityHit = GetShapeTestResult(rayHandle)
+		if result ~= 1 then
+			local entityType
+			if entityHit then entityType = GetEntityType(entityHit) end
+			if entityHit and entityType ~= 0 then
+				return entityHit, entityType
+			end
+			return false
+		end
+	end
 end
 
 M.InventorySearch = function(search, item, metadata)

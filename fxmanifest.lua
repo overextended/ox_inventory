@@ -13,6 +13,7 @@ dependencies {
 
 shared_scripts {
 	'@es_extended/imports.lua',
+	'config.lua',
 	'modules/*.lua'
 }
 

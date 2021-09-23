@@ -60,7 +60,7 @@ AddEventHandler('ox_inventory:setPlayerInventory', function(xPlayer, data)
 	TriggerClientEvent('ox_inventory:setPlayerInventory', xPlayer.source, {Drops, inventory, totalWeight, ESX.UsableItemsCallbacks, ('%s - %s'):format(xPlayer.name, xPlayer.job.name)})
 end)
 
-Utils.RegisterServerCallback('ox_inventory:openInventory', function(source, cb, inv, data) 
+Utils.RegisterServerCallback('ox_inventory:openInventory', function(source, cb, inv, data)
 	local left, right = Inventory(source)
 	if data then
 		if inv == 'policeevidence' then
@@ -88,6 +88,11 @@ Utils.RegisterServerCallback('ox_inventory:openInventory', function(source, cb, 
 			right = Inventory(data.metadata.container)
 			if not right then
 				right = Inventory.Create(data.metadata.container, data.label, inv, data.metadata.size[1], 0, data.metadata.size[2], false)
+			end
+		elseif inv == 'dumpster' then
+			right = Inventory(data.id)
+			if not right then
+				right = Inventory.Create(data.id, data.label, inv, 15, 0, 100000, false)
 			end
 		else
 			right = Inventory(data.id)

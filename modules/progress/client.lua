@@ -37,7 +37,7 @@ local Cancelled = function()
 end
 
 local Start = function(options, completed)
-	if not Active then
+	if Active == false then
 		progressCallback = completed
 		if not IsEntityDead(ESX.PlayerData.ped) or options.useWhileDead then
 			Active = true

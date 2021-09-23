@@ -1,8 +1,3 @@
-ox = {server = IsDuplicityVersion(), name = GetCurrentResourceName()}
-local func, err = load(LoadResourceFile(ox.name, 'config.lua')..'return Config', 'config.lua', 't')
-assert(func, err == nil or '\n^1'..err..'^7')
-func()
-
 data = function(name)
     local func, err = load(LoadResourceFile(ox.name, 'data/'..name..'.lua'), name, 't')
     assert(func, err == nil or '\n^1'..err..'^7')

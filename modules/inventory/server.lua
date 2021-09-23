@@ -140,18 +140,24 @@ M.Save = function(inv)
 	end
 end
 
--- item, minimum, maximum
-local RandomLoot = {{'cola', 0, 2}, {'water', 0, 2}}
+local RandomLoot = function(table)
+	local max, items = #table, {}
+	for i=1, math.random(1,5) do
+		if math.random(math.floor(Config.LootChance/i), 100) then
+			local randomItem = table[math.random(1, max)]
+			local count = math.random(randomItem[2], randomItem[3])
+			if count > 0 then items[#items+1] = {randomItem[1], count} end
+		end
+	end
+	return items
+end
+
 local GenerateItems = function(id, invType, items)
 	if items == nil then
-		items = {}
-		if invType ~= 'dumpster' then
-			local max = #RandomLoot
-			for i=1, math.random(0,5) do
-				local randomItem = RandomLoot[math.random(1, max)]
-				local count = math.random(randomItem[2], randomItem[3])
-				if count > 0 then items[#items+1] = {randomItem[1], count} end
-			end
+		if invType == 'dumpster' then
+			items = RandomLoot(Config.DumpsterLoot)
+		else
+			items = RandomLoot(Config.Loot)
 		end
 	end
 	local returnData, totalWeight = table.create(#items, 0), 0
