@@ -99,7 +99,7 @@ Utils.RegisterServerCallback('ox_inventory:openInventory', function(source, cb, 
 			end
 		end
 		if not right.open then
-			if #(right?.coords - GetEntityCoords(GetPlayerPed(source))) < 20 then
+			if right.coords == nil or #(right?.coords - GetEntityCoords(GetPlayerPed(source))) < 20 then
 				right:set('open', source)
 				left:set('open', right.id)
 			else return cb(false) end
