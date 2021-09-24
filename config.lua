@@ -15,7 +15,22 @@ Config.Licenses = {
 	['weapon'] = 5000
 }
 
-if ox.server then
+-- Adds compatibility for qtarget (https://github.com/QuantusRP/qtarget)
+Config.Target = true
+
+-------------------------------------------------------------------------------------
+
+if ox.server == false then
+	-- Set the keybinds for primary, secondary, and hotbar
+	Config.Keys = {'F2', 'K', 'TAB'}
+
+	-- Blur the screen while the inventory is open
+	Config.EnableBlur = true
+
+	-- Reload empty weapons automatically
+	Config.AutoReload = false
+
+else
 	-- Check the latest available version
 	Config.CheckVersion = false
 
@@ -49,20 +64,6 @@ if ox.server then
 			{'money', 0, 10},
 			{'burger', 0, 1}
 		}
+
 	end
-else
-	-- Set the keybinds for primary, secondary, and hotbar
-	Config.Keys = {'F2', 'K', 'TAB'}
-
-	-- Blur the screen while the inventory is open
-	Config.EnableBlur = true
-
-	-- Reload empty weapons automatically
-	Config.AutoReload = false
-
-	-- Adds compatibility for qtarget (https://github.com/QuantusRP/qtarget)
-	Config.qtarget = false
-
-	-- Dumpster models
-	Config.Dumpsters = {218085040, 666561306, -58485588, -206690185, 1511880420, 682791951}
 end
