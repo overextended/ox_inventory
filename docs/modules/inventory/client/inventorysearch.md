@@ -1,11 +1,11 @@
 ---
-title: Utils.InventorySearch
+title: Inventory.Search
 ---
 Returns a table containing data for the searched items, the result varying based on the provided searchtype.
 
 !!! info
 	```lua
-	Utils.InventorySearch(searchtype, items, metadata)
+	Inventory.Search(searchtype, items, metadata)
 	```
 	```lua
 	exports.ox_inventory:InventorySearch(searchtype, items, metadata)
