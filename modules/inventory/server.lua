@@ -143,7 +143,7 @@ end
 
 local RandomLoot = function(table)
 	local max, items = #table, {}
-	for i=1, math.random(1,5) do
+	for i=1, math.random(1,3) do
 		if math.random(math.floor(Config.LootChance/i), 100) then
 			local randomItem = table[math.random(1, max)]
 			local count = math.random(randomItem[2], randomItem[3])

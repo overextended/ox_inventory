@@ -1,10 +1,11 @@
+local Stashes <const> = data('stashes')
+local Vehicles <const> = data('vehicles')
 local Items <const>, Weapons <const> = table.unpack(module('items'))
 local Utils <const> = module('utils')
 local Progress <const> = module('progress')
 local Shops <const> = module('shops')
+local Inventory <const> = module('inventory')
 local Keyboard <const> = module('input')
-local Stashes <const> = data('stashes')
-local Vehicles <const> = data('vehicles')
 local invOpen, playerId, currentWeapon
 local plyState, isBusy = LocalPlayer.state, false
 
@@ -83,7 +84,7 @@ local OpenInventory = function(inv, data)
 	if CanOpenInventory() then
 		local left, right
 		if inv == 'shop' and invOpen == false then
-			left, right = Utils.AwaitServerCallback('ox_inventory:openShop', inv, data)
+			left, right = Utils.AwaitServerCallback('ox_inventory:openShop', data)
 		elseif invOpen == false or inv == 'drop' or inv == 'container' then
 			if inv == 'policeevidence' then
 				local input = Keyboard.Input('Police Evidence', {'Locker number'})
@@ -263,7 +264,7 @@ SetInterval(1, 250, function()
 		closestMarker = nil
 		Markers(Drops, 'drop', vec3(150, 30, 30), playerCoords)
 		Markers(Stashes, 'stash', vec3(30, 30, 150), playerCoords)
-		if not Config.qtarget then
+		if not Config.Target then
 			for k, v in pairs(Shops.Stores) do
 				Markers(v.locations, 'shop', vec3(30, 150, 30), playerCoords, k)
 			end
@@ -624,9 +625,9 @@ RegisterCommand('inv2', function()
 				local entity, type = Utils.Raycast()
 				if entity == false then return end
 				local vehicle, position
-				if not Config.qtarget then
+				if not Config.Target then
 					if type == 2 then vehicle, position = entity, GetEntityCoords(entity)
-					elseif type == 3 and Utils.CheckTable(Config.Dumpsters, GetEntityModel(entity)) then
+					elseif type == 3 and Utils.CheckTable(Inventory.Dumpsters, GetEntityModel(entity)) then
 						local netId = NetworkGetEntityIsNetworked(entity) and NetworkGetNetworkIdFromEntity(entity) or false
 						if netId == false then
 							SetEntityAsMissionEntity(entity)
@@ -636,7 +637,7 @@ RegisterCommand('inv2', function()
 							SetNetworkIdExistsOnAllMachines(netId)
 							SetNetworkIdCanMigrate(netId, true)
 						end
-						return OpenInventory('dumpster', {id='dumpster'..netId, label='Dumpster'})
+						return OpenInventory('dumpster', {id='dumpster'..netId})
 					end
 				elseif type == 2 then
 					vehicle, position = entity, GetEntityCoords(entity)

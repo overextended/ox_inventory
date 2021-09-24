@@ -1,5 +1,9 @@
-local Stashes <const>, Vehicle <const> = data('stashes'), data('vehicles')
-local Utils <const>, Shops <const>, Inventory <const>, Items <const> = module('utils'), module('shops'), module('inventory'), module('items')
+local Stashes <const> = data('stashes')
+local Vehicle <const> = data('vehicles')
+local Utils <const> = module('utils')
+local Shops <const> = module('shops')
+local Inventory <const> = module('inventory')
+local Items <const> = module('items')
 
 RegisterServerEvent('ox_inventory:requestPlayerInventory', function()
 	local xPlayer, inventory = ESX.GetPlayerFromId(source)
@@ -72,7 +76,7 @@ Utils.RegisterServerCallback('ox_inventory:openInventory', function(source, cb, 
 		elseif inv == 'dumpster' then
 			right = Inventory(data.id)
 			if not right then
-				right = Inventory.Create(data.id, data.label, inv, 15, 0, 100000, false)
+				right = Inventory.Create(data.id, 'Dumpster', inv, 15, 0, 100000, false)
 			end
 		else
 			right = Inventory(data.id)
@@ -230,11 +234,10 @@ Utils.RegisterServerCallback('ox_inventory:buyLicense', function(source, cb, lic
 	else cb() end
 end)
 
-Utils.RegisterServerCallback('ox_inventory:openShop', function(source, cb, inv, data) 
+Utils.RegisterServerCallback('ox_inventory:openShop', function(source, cb, data)
 	local left, shop = Inventory(source)
 	if data then
 		shop = Shops[data.type][data.id]
-		shop.type = inv
 		left:set('open', shop.id)
 	end
 	cb({id=left.label, type=left.type, slots=left.slots, weight=left.weight, maxWeight=left.maxWeight}, shop)
