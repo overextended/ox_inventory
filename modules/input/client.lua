@@ -1,7 +1,6 @@
-local M = {}
 local p = nil
 
-M.Input = function(header, rows)
+local Input = function(header, rows)
 
     if p then return end
     
@@ -19,7 +18,7 @@ M.Input = function(header, rows)
     return Citizen.Await(p)
 end
 
-exports('Keyboard', M.Input)
+exports('Keyboard', Input)
 
 RegisterNUICallback('ox_inventory:inputData', function(data, cb)
     if not p then return end
@@ -36,4 +35,6 @@ RegisterCommand('test', function()
 end)
 ]]--
 
-return M
+return {
+    Input = Input
+}

@@ -306,7 +306,7 @@ SetInterval(1, 250, function()
 				else
 					TaskTurnToFaceCoords(ESX.PlayerData.ped, pedCoords)
 				end
-			elseif not lastVehicle and currentInventory.coords and (#(playerCoords - currentInventory.coords) > 2 or CanOpenTarget(ESX.PlayerData.ped)) then
+			elseif currentInventory.coords and (#(playerCoords - currentInventory.coords) > 2 or CanOpenTarget(ESX.PlayerData.ped)) then
 				TriggerEvent('ox_inventory:closeInventory')
 				Notify({type = 'error', text = ox.locale('inventory_lost_access'), duration = 2500})
 			end
