@@ -26,13 +26,6 @@ Many of the functions provided in this module are similar to the `xPlayer` funct
 	The following functions are intended for internal use _only_. They are documented here for convenience.  
 	Using or modifying these functions may break intended functionality.
 
-###Local functions
-!!! info
-	```lua
-	GetItemSlots(inv, item, metadata)
-	```
-	Returns the slots and total count of an item, and the number of empty slots in the provided inventory.
-
 ###Module functions
 !!! info
 	```lua
