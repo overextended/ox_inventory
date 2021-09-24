@@ -1,26 +1,6 @@
 local Stashes <const>, Vehicle <const> = data('stashes'), data('vehicles')
 local Utils <const>, Shops <const>, Inventory <const>, Items <const> = module('utils'), module('shops'), module('inventory'), module('items')
 
-local SaveInventories = function()
-	local time = os.time()
-	for id, inv in pairs(Inventory('all')) do
-		if inv.type ~= 'player' and not inv.open then
-			if inv.datastore == nil and inv.changed then
-				Inventory.Save(inv)
-			end
-			if time - inv.time >= 3000 then
-				Inventory.Remove(id, inv.type)
-			end
-		end
-	end
-end
-
-SetInterval(1, 600000, SaveInventories)
-
-AddEventHandler('txAdmin:events:scheduledRestart', function(eventData)
-	if eventData.secondsRemaining == 60 then SetTimeout(50000, SaveInventories) end
-end)
-
 RegisterServerEvent('ox_inventory:requestPlayerInventory', function()
 	local xPlayer, inventory = ESX.GetPlayerFromId(source)
 	while not ox.ready do Wait(15) end

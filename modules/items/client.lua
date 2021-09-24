@@ -9,7 +9,7 @@ local GetItem = function(item)
 	return
 end
 
-local Item = function(name, cb, pre)
+local Item = function(name, cb)
 	if M[1][name] then M[1][name].effect = cb end
 end
 

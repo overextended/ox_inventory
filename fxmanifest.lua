@@ -24,7 +24,6 @@ ui_page 'web/build/index.html'
 files {
 	'web/build/index.html',
 	'web/build/**/*',
-	'conf*.lua',
 	'modules/**/shared.lua',
 	'modules/**/client.lua',
 	'data/*.lua',

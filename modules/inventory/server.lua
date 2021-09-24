@@ -1,11 +1,12 @@
 local M = {}
 local Inventories = {}
-local Utils <const>, Items <const> = module('utils'), module('items')
+local Utils <const> = module('utils')
+local Items <const> = module('items')
+
 setmetatable(M, {
 	__call = function(self, arg)
 		if arg then
-			if arg == 'all' then return Inventories
-			elseif Inventories[arg] then return Inventories[arg] else return false end
+			if Inventories[arg] then return Inventories[arg] else return false end
 		end
 		return self
 	end
@@ -481,6 +482,34 @@ AddEventHandler('esx:playerDropped', function(playerId)
 		local openInventory = Inventories[playerId].open
 		if Inventories[openInventory]?.open == playerId then Inventories[openInventory].open = false end
 		Inventories[playerId] = nil
+	end
+end)
+
+local SaveInventories = function()
+	local time = os.time()
+	for id, inv in pairs(Inventories) do
+		if inv.type ~= 'player' and not inv.open then
+			if inv.datastore == nil and inv.changed then
+				M.Save(inv)
+			end
+			if time - inv.time >= 3000 then
+				M.Remove(id, inv.type)
+			end
+		end
+	end
+end
+
+SetInterval(1, 600000, SaveInventories)
+
+AddEventHandler('txAdmin:events:scheduledRestart', function(eventData)
+	if eventData.secondsRemaining == 60 then
+		SetTimeout(50000, SaveInventories)
+	end
+end)
+
+AddEventHandler('onResourceStop', function(resource)
+	if resource == ox.name then
+		SaveInventories()
 	end
 end)
 

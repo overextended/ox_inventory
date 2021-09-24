@@ -30,7 +30,7 @@ if ox.server then
 
 	if Config.RandomLoot then
 		-- Minimum chance to generate an item
-		Config.LootChance = 100
+		Config.LootChance = 50
 
 		-- item, minimum, maximum
 		Config.Loot = {
