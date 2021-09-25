@@ -16,7 +16,7 @@ Config.Licenses = {
 }
 
 -- Adds compatibility for qtarget (https://github.com/QuantusRP/qtarget)
-Config.Target = true
+Config.Target = false
 
 -------------------------------------------------------------------------------------
 

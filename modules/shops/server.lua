@@ -27,7 +27,7 @@ for shopName, shopDetails in pairs(Shops) do
 				M[shopName][i].items[j] = slot
 			end
 		end
-	end	
+	end
 end
 
 return M

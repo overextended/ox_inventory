@@ -186,7 +186,7 @@ M.Load = function(id, invType, owner)
 			elseif Config.RandomLoot then return GenerateItems(id, invType)
 			else datastore = true end
 		elseif owner then
-			result = exports.oxmysql:scalarSync('SELECT data FROM ox_inventory WHERE owner = ? AND name = ?', { id, owner })
+			result = exports.oxmysql:scalarSync('SELECT data FROM ox_inventory WHERE owner = ? AND name = ?', { owner, id })
 			if result then result = json.decode(result) end
 		elseif invType == 'dumpster' then
 			if Config.RandomLoot then return GenerateItems(id, invType) else datastore = true end
