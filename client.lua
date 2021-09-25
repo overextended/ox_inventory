@@ -229,7 +229,7 @@ local CanOpenTarget = function(ped)
 	or IsEntityPlayingAnim(ped, 'random@mugging3', 'handsup_standing_base', 3)
 end
 
-local Drops, nearbyMarkers, closestMarker, currentMarker, playerCoords = {}, {}, {}, nil, nil
+local Drops, nearbyMarkers, closestMarker, currentMarker, playerCoords = {}, {}, {}, {}, nil
 local Markers = function(tb, type, rgb, playerCoords, name)
 	-- todo: cleanup code and reduce table reassignment? vectors should be better than tables, but requires two vec3s vs single table
 	for k, v in pairs(tb) do
@@ -239,7 +239,7 @@ local Markers = function(tb, type, rgb, playerCoords, name)
 		local marker = nearbyMarkers[id]
 		if distance < 1.2 then
 			if not marker then nearbyMarkers[id] = {x = v.x, y = v.y, z = v.z, r = rgb.x, g = rgb.y, b = rgb.z} end
-			if closestMarker == nil or (currentMarker and distance < currentMarker[1]) or (closestMarker and distance < closestMarker[1]) then
+			if closestMarker[1] == nil or (currentMarker and distance < currentMarker[1]) or (closestMarker and distance < closestMarker[1]) then
 				closestMarker = {distance, k, type, name}
 			end
 		elseif not marker and distance < 8 then nearbyMarkers[id] = {x = v.x, y = v.y, z = v.z, r = rgb.x, g = rgb.y, b = rgb.z} elseif marker and distance > 8 then nearbyMarkers[id] = nil end
@@ -261,7 +261,7 @@ local weaponLicense = vec3(12.42198, -1105.82, 29.7854)
 SetInterval(1, 250, function()
 	if not invOpen then
 		playerCoords = GetEntityCoords(ESX.PlayerData.ped)
-		closestMarker = nil
+		closestMarker = table.wipe(closestMarker)
 		Markers(Drops, 'drop', vec3(150, 30, 30), playerCoords)
 		Markers(Stashes, 'stash', vec3(30, 30, 150), playerCoords)
 		if not Config.Target then
@@ -274,15 +274,15 @@ SetInterval(1, 250, function()
 		local marker = nearbyMarkers['license']
 		if distance < 1.2 then
 			if not marker then nearbyMarkers['license'] = {x = weaponLicense.x, y = weaponLicense.y, z = weaponLicense.z, r = 30, g = 150, b = 30} end
-			if closestMarker == nil or (currentMarker and distance < currentMarker[1]) or (closestMarker and distance < closestMarker[1]) then
+			if closestMarker[1] == nil or (currentMarker and distance < currentMarker[1]) or (closestMarker and distance < closestMarker[1]) then
 				closestMarker = {distance, 'weapon', 'license'}
 			end
 		elseif not marker and distance < 8 then nearbyMarkers['license'] = {x = weaponLicense.x, y = weaponLicense.y, z = weaponLicense.z, r = 30, g = 150, b = 30} elseif marker and distance > 8 then nearbyMarkers['license'] = nil end
 		distance = #(playerCoords - vec3(-22.4, -1105.5, 26.7))
-		local marker = nearbyMarkers['policeevidence']
+		marker = nearbyMarkers['policeevidence']
 		if distance < 1.2 then
 			if not marker then nearbyMarkers['policeevidence'] = {x = -22.4, y = -1105.5, z = 26.7, r = 30, g = 30, b = 150} end
-			if closestMarker == nil or (currentMarker and distance < currentMarker[1]) or (closestMarker and distance < closestMarker[1]) then
+			if closestMarker[1] == nil or (currentMarker and distance < currentMarker[1]) or (closestMarker and distance < closestMarker[1]) then
 				closestMarker = {distance, 1, 'policeevidence'}
 			end
 		elseif not marker and distance < 8 then nearbyMarkers['policeevidence'] = {x = -22.4, y = -1105.5, z = 26.7, r = 30, g = 30, b = 150} elseif marker and distance > 8 then nearbyMarkers['policeevidence'] = nil end
@@ -462,13 +462,13 @@ end)
 RegisterNetEvent('ox_inventory:inventoryConfiscated', function(message)
 	if message then Notify({text = ox.locale('items_confiscated'), duration = 2500}) end
 	TriggerEvent('ox_inventory:closeInventory')
-	ESX.PlayerData.inventory = {}
+	ESX.PlayerData.inventory = table.wipe(ESX.PlayerData.inventory)
 	ESX.SetPlayerData('weight', 0)
 end)
 
 RegisterNetEvent('ox_inventory:createDrop', function(data, owner, slot)
 	local coords = vec3(data[2].x, data[2].y, data[2].z-0.2)
-	Drops = Drops or {}
+	Drops = Drops or table.wipe(Drops)
 	Drops[data[1]] = {coords=coords}
 	if owner == playerId and invOpen and #(playerCoords - coords) <= 1 then
 		if currentWeapon?.slot then Disarm(-1) end
@@ -479,15 +479,15 @@ RegisterNetEvent('ox_inventory:createDrop', function(data, owner, slot)
 end)
 
 RegisterNetEvent('ox_inventory:removeDrop', function(id)
-	if currentMarker and currentMarker[3] == id then currentMarker = nil end
+	if currentMarker?[3] == id then currentMarker = table.wipe(currentMarker) end
+	if Drops then Drops[id] = nil end
 	nearbyMarkers['drop'..id] = nil
-	Drops[id] = nil
 end)
 
 RegisterNetEvent('ox_inventory:setPlayerInventory', function(data)
 	playerId, ESX.PlayerData.ped, invOpen, currentWeapon = GetPlayerServerId(PlayerId()), ESX.PlayerData.ped, false, nil
 	ClearWeapons()
-	Drops, ESX.PlayerData.inventory = data[1] or {}, data[2]
+	Drops, ESX.PlayerData.inventory = data[1], data[2]
 	ESX.SetPlayerData('inventory', ESX.PlayerData.inventory)
 	ESX.SetPlayerData('weight', data[3])
     local ItemData = table.create(0, #Items)
@@ -545,7 +545,7 @@ AddEventHandler('ox_inventory:item', function(data, cb)
 					label = 'Using '..result.label,
 					useWhileDead = data.useWhileDead or false,
 					canCancel = data.cancel or false,
-					Disable = data.disable or {},
+					Disable = data.disable,
 					anim = data.anim and ({ dict = data.anim.dict, clip = data.anim.clip, flag = data.anim.flag or 49 } or {scenario = data.scenario}),
 					prop = data.prop,
 					propTwo = data.propTwo
@@ -595,7 +595,7 @@ RegisterNetEvent('esx_policejob:unrestrain', function()
 end)
 
 RegisterCommand('inv', function()
-	if currentMarker and currentMarker[3] ~= 'license' and currentMarker[3] ~= 'policeevidence' then
+	if currentMarker[1] and currentMarker[3] ~= 'license' and currentMarker[3] ~= 'policeevidence' then
 		OpenInventory(currentMarker[3], {id=currentMarker[2], type=currentMarker[4]})
 	else OpenInventory() end
 end)

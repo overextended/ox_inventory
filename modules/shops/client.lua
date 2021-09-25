@@ -18,7 +18,7 @@ end
 local CreateShopLocations = function()
 	if next(Blips) then
 		for i=1, #Blips do RemoveBlip(i) end
-		table.wipe(Blips)
+		Blips = table.wipe(Blips)
 	end
 	for type, shop in pairs(Stores) do
 		if shop.jobs == nil or (shop.jobs[ESX.PlayerData.job.name] and ESX.PlayerData.job.grade >= shop.jobs[ESX.PlayerData.job.name]) then

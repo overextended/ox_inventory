@@ -36,7 +36,7 @@ end
 
 local Minimal = function(inv)
 	if type(inv) ~= 'table' then inv = Inventories[inv] end
-	local inventory, count = {}, 0
+	local inventory, count = table.create(inv.items, 0), 0
 	for k, v in pairs(inv.items) do
 		if v.name and v.count > 0 then
 			count += 1
@@ -90,18 +90,17 @@ M.SlotWeight = function(item, slot)
 	return weight
 end
 
-M.Create = function(...)
-	local t = {...}
-	if #t > 6 then
+M.Create = function(id, label, invType, slots, weight, maxWeight, owner, items)
+	if maxWeight then
 		local self = {
-			id = t[1],
-			label = t[2] or id,
-			type = t[3],
-			slots = t[4],
-			weight = t[5],
-			maxWeight = t[6],
-			owner = t[7],
-			items = type(t[8]) == 'table' and t[8] or nil,
+			id = id,
+			label = label or id,
+			type = invType,
+			slots = slots,
+			weight = weight,
+			maxWeight = maxWeight,
+			owner = owner,
+			items = type(items) == 'table' and items or nil,
 			open = false,
 			set = Set,
 			get = Get,
@@ -518,7 +517,7 @@ end)
 
 ESX.RegisterCommand({'giveitem', 'additem'}, 'admin', function(xPlayer, args, showError)
 	args.item = Items(args.item)
-	if args.item then M.AddItem(args.player.source, args.item.name, args.count, args.type or {}) end
+	if args.item then M.AddItem(args.player.source, args.item.name, args.count, args.type) end
 end, true, {help = 'give an item to a player', validate = false, arguments = {
 	{name = 'player', help = 'player id', type = 'player'},
 	{name = 'item', help = 'item name', type = 'string'},
@@ -528,7 +527,7 @@ end, true, {help = 'give an item to a player', validate = false, arguments = {
 
 ESX.RegisterCommand('removeitem', 'admin', function(xPlayer, args, showError)
 	args.item = Items(args.item)
-	if args.item then M.RemoveItem(args.player.source, args.item.name, args.count, args.type or {}) end
+	if args.item then M.RemoveItem(args.player.source, args.item.name, args.count, args.type) end
 end, true, {help = 'remove an item from a player', validate = false, arguments = {
 	{name = 'player', help = 'player id', type = 'player'},
 	{name = 'item', help = 'item name', type = 'string'},
@@ -538,7 +537,7 @@ end, true, {help = 'remove an item from a player', validate = false, arguments =
 
 ESX.RegisterCommand('setitem', 'admin', function(xPlayer, args, showError)
 	args.item = Items(args.item)
-	if args.item then M.SetItem(args.player.source, args.item.name, args.count, args.type or {}) end
+	if args.item then M.SetItem(args.player.source, args.item.name, args.count, args.type) end
 end, true, {help = 'give an item to a player', validate = false, arguments = {
 	{name = 'player', help = 'player id', type = 'player'},
 	{name = 'item', help = 'item name', type = 'string'},

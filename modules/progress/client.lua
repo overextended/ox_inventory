@@ -145,7 +145,7 @@ local Start = function(options, completed)
 
 				SetModelAsNoLongerNeeded(model)
 			end
-			Disable = options.Disable
+			Disable = options.Disable or table.wipe(Disable)
 		end
 	end
 end
