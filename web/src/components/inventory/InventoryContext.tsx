@@ -5,7 +5,7 @@ import { useAppSelector } from '../../store';
 import 'react-contexify/dist/ReactContexify.css';
 import { selectItemAmount } from '../../store/inventory';
 
-const InventoryContext: React.FC<any> = () => {
+const InventoryContext: React.FC<any> = (props: any) => {
   const itemAmount = useAppSelector(selectItemAmount);
 
   const handleClick = ({ props, data }: any) => {
@@ -25,7 +25,7 @@ const InventoryContext: React.FC<any> = () => {
 
   return (
     <>
-      <Menu id="item-context" theme="dark" animation="fade">
+      <Menu id={`slot-context${props.id}`} theme="dark" animation="fade">
         <Item onClick={handleClick} data="use">
           Use
         </Item>
@@ -35,11 +35,16 @@ const InventoryContext: React.FC<any> = () => {
         <Item onClick={handleClick} data="drop">
           Drop
         </Item>
-        <Separator />
-        <Submenu label="Submenu">
-          <Item onClick={handleClick}>Sub Item 1</Item>
-          <Item onClick={handleClick}>Sub Item 2</Item>
-        </Submenu>
+        {/* Separator is broken for some reason ????? */}
+        {props.item.name && JSON.stringify(props.item.name).includes('WEAPON_') && (
+          <>
+            <Separator />
+            <Submenu label="Submenu">
+              <Item onClick={handleClick}>Sub Item 1</Item>
+              <Item onClick={handleClick}>Sub Item 2</Item>
+            </Submenu>
+          </>
+        )}
       </Menu>
     </>
   );

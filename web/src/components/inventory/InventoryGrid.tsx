@@ -4,7 +4,6 @@ import { Inventory, SlotWithItem } from '../../typings';
 import Fade from '../utils/Fade';
 import WeightBar from '../utils/WeightBar';
 import InventorySlot from './InventorySlot';
-import InventoryContext from './InventoryContext';
 
 const InventoryGrid: React.FC<{ inventory: Inventory }> = ({ inventory }) => {
   const [currentItem, setCurrentItem] = React.useState<SlotWithItem>();
@@ -14,15 +13,14 @@ const InventoryGrid: React.FC<{ inventory: Inventory }> = ({ inventory }) => {
       inventory.maxWeight !== undefined
         ? inventory.items.reduce<number>(
             (totalWeight, slot) => (slot.weight ? totalWeight + slot.weight : totalWeight),
-            0
+            0,
           )
         : 0,
-    [inventory.maxWeight, inventory.items]
+    [inventory.maxWeight, inventory.items],
   );
 
   return (
     <>
-      <InventoryContext />
       <div className="column-wrapper">
         <div className="inventory-label">
           <p>

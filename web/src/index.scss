@@ -394,6 +394,8 @@ input[type='number'] {
 .react-contexify {
   border-radius: $borderRadius;
   background-color: $mainColor;
+  box-shadow: none;
+  text-shadow: none;
 }
 
 .react-contexify__theme--dark .react-contexify__separator {

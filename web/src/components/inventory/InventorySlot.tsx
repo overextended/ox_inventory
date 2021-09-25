@@ -9,6 +9,7 @@ import { selectIsBusy } from '../../store/inventory';
 import { Items } from '../../store/items';
 import { isSlotWithItem } from '../../helpers';
 import { contextMenu } from 'react-contexify';
+import InventoryContext from './InventoryContext';
 
 interface SlotProps {
   inventory: Inventory;
@@ -84,7 +85,7 @@ const InventorySlot: React.FC<SlotProps> = ({ inventory, item, setCurrentItem })
     isSlotWithItem(item) &&
       inventory.type === 'player' &&
       contextMenu.show({
-        id: 'item-context',
+        id: `slot-context${item.slot}`,
         event: e,
         props: {
           item: item,
@@ -108,6 +109,7 @@ const InventorySlot: React.FC<SlotProps> = ({ inventory, item, setCurrentItem })
         onMouseEnter={onMouseEnter}
         onMouseLeave={onMouseLeave}
       >
+        <InventoryContext id={item.slot} item={item} />
         {isSlotWithItem(item) && (
           <>
             <div className="item-count">
