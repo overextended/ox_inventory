@@ -25,7 +25,6 @@ RegisterNUICallback('ox_inventory:inputData', function(data, cb)
     if not data then p:resolve() else p:resolve(data) end
     SetNuiFocus(false, false)
     p = nil
-    cb({})
 end)
 
 --[[ Example:

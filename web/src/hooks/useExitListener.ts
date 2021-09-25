@@ -1,6 +1,6 @@
 import { useEffect, useRef } from 'react';
 import { noop } from '../utils/misc';
-import { fetchNui } from '../utils/fetchNui';
+import { sendNUI } from '../utils/fetchNui';
 
 type FrameVisibleSetter = (bool: boolean) => void;
 
@@ -18,7 +18,7 @@ export const useExitListener = (visibleSetter: FrameVisibleSetter) => {
     const keyHandler = (e: KeyboardEvent) => {
       if (LISTENED_KEYS.includes(e.code)) {
         setterRef.current(false);
-        fetchNui('exit');
+        sendNUI('exit');
       }
     };
 

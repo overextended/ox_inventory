@@ -28,3 +28,19 @@ export async function fetchNui<T = any>(eventName: string, data?: any): Promise<
 
   return respFormatted;
 }
+
+export function sendNUI(eventName: string, data?: any) {
+  const options = {
+    method: 'post',
+    headers: {
+      'Content-Type': 'application/json; charset=UTF-8',
+    },
+    body: JSON.stringify(data),
+  };
+
+  const resourceName = (window as any).GetParentResourceName
+    ? (window as any).GetParentResourceName()
+    : 'nui-frame-app';
+
+  fetch(`https://${resourceName}/${eventName}`, options);
+}

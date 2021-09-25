@@ -703,14 +703,12 @@ RegisterCommand('hotbar', function()
 	SendNUIMessage({ action = 'toggleHotbar' })
 end)
 
-RegisterNUICallback('useItem', function(data, cb)
+RegisterNUICallback('useItem', function(data)
 	UseSlot(data.slot)
-    cb({})
 end)
 
-RegisterNUICallback('exit', function(data, cb)
+RegisterNUICallback('exit', function(data)
 	TriggerEvent('ox_inventory:closeInventory')
-    cb()
 end)
 
 RegisterNUICallback('swapItems', function(data, cb)
