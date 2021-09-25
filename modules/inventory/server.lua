@@ -399,11 +399,13 @@ local GenerateDropId = function()
 	return drop
 end
 
+M.Drops = {}
 AddEventHandler('ox_inventory:createDrop', function(source, slot, toSlot, cb)
 	local drop = GenerateDropId()
-	M.Create(drop, 'Drop '..drop, 'drop', Config.PlayerSlots, 0, Config.DefaultWeight, false, {[slot] = table.clone(toSlot)})
+	local inventory = M.Create(drop, 'Drop '..drop, 'drop', Config.PlayerSlots, 0, Config.DefaultWeight, false, {[slot] = table.clone(toSlot)})
 	local coords = GetEntityCoords(GetPlayerPed(source))
 	Inventories[drop].coords = coords
+	Drops[drop] = inventory.coords
 	cb(drop, coords)
 end)
 
@@ -412,6 +414,7 @@ AddEventHandler('ox_inventory:customDrop', function(prefix, items, coords, slots
 	local items, weight = GenerateItems(drop, 'drop', items)
 	local inventory = M.Create(drop, prefix..' '..drop, 'drop', slots or Config.PlayerSlots, weight, maxWeight or Config.DefaultWeight, false, items)
 	inventory.coords = coords
+	Drops[drop] = inventory.coords
 	TriggerClientEvent('ox_inventory:createDrop', -1, {drop, coords}, inventory.open and source)
 end)
 

@@ -41,7 +41,7 @@ AddEventHandler('ox_inventory:setPlayerInventory', function(xPlayer, data)
 	end
 	Inventory.Create(xPlayer.source, xPlayer.name, 'player', Config.PlayerSlots, totalWeight, Config.DefaultWeight, xPlayer.identifier, inventory)
 	xPlayer.syncInventory(totalWeight, Config.DefaultWeight, inventory, money)
-	TriggerClientEvent('ox_inventory:setPlayerInventory', xPlayer.source, {Drops, inventory, totalWeight, ESX.UsableItemsCallbacks, ('%s - %s'):format(xPlayer.name, xPlayer.job.name)})
+	TriggerClientEvent('ox_inventory:setPlayerInventory', xPlayer.source, {Inventory.Drops, inventory, totalWeight, ESX.UsableItemsCallbacks, ('%s - %s'):format(xPlayer.name, xPlayer.job.name)})
 end)
 
 Utils.RegisterServerCallback('ox_inventory:openInventory', function(source, cb, inv, data)
