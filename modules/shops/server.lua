@@ -10,7 +10,8 @@ for shopName, shopDetails in pairs(Shops) do
 			id = shopName..' '..i,
 			job = shopDetails.job,
 			items = table.clone(shopDetails.inventory),
-			slots = #shopDetails.inventory
+			slots = #shopDetails.inventory,
+			type = 'shop'
 		}
 		for j=1, M[shopName][i].slots do
 			local slot = M[shopName][i].items[j]
