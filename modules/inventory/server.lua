@@ -36,7 +36,7 @@ end
 
 local Minimal = function(inv)
 	if type(inv) ~= 'table' then inv = Inventories[inv] end
-	local inventory, count = table.create(inv.items, 0), 0
+	local inventory, count = table.create(#inv.items, 0), 0
 	for k, v in pairs(inv.items) do
 		if v.name and v.count > 0 then
 			count += 1
@@ -404,7 +404,7 @@ AddEventHandler('ox_inventory:createDrop', function(source, slot, toSlot, cb)
 	local inventory = M.Create(drop, 'Drop '..drop, 'drop', Config.PlayerSlots, 0, Config.DefaultWeight, false, {[slot] = table.clone(toSlot)})
 	local coords = GetEntityCoords(GetPlayerPed(source))
 	Inventories[drop].coords = coords
-	Drops[drop] = inventory.coords
+	M.Drops[drop] = inventory.coords
 	cb(drop, coords)
 end)
 
@@ -413,7 +413,7 @@ AddEventHandler('ox_inventory:customDrop', function(prefix, items, coords, slots
 	local items, weight = GenerateItems(drop, 'drop', items)
 	local inventory = M.Create(drop, prefix..' '..drop, 'drop', slots or Config.PlayerSlots, weight, maxWeight or Config.DefaultWeight, false, items)
 	inventory.coords = coords
-	Drops[drop] = inventory.coords
+	M.Drops[drop] = inventory.coords
 	TriggerClientEvent('ox_inventory:createDrop', -1, {drop, coords}, inventory.open and source)
 end)
 

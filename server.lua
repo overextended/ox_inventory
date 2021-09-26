@@ -126,30 +126,43 @@ Utils.RegisterServerCallback('ox_inventory:swapItems', function(source, cb, data
 					if data.count > fromSlot.count then data.count = fromSlot.count end
 					if toSlot and ((toSlot.name ~= fromSlot.name) or not toSlot.stack or (not Utils.MatchTables(toSlot.metadata, fromSlot.metadata))) then
 						toSlot, fromSlot = Inventory.SwapSlots({fromInventory, toInventory}, {data.fromSlot, data.toSlot})
-						if fromInventory.id ~= toInventory.id then
-							fromInventory.weight = fromInventory.weight - toSlot.weight
-							toInventory.weight = toInventory.weight + toSlot.weight
-						end
+						local newWeight = toInventory.weight + toSlot.weight
+						if newWeight <= toInventory.maxWeight then
+							if fromInventory.id ~= toInventory.id then
+								fromInventory.weight = fromInventory.weight - toSlot.weight
+								toInventory.weight = newWeight
+							end
+						else return cb(false) end
 					elseif toSlot and toSlot.name == fromSlot.name and Utils.MatchTables(toSlot.metadata, fromSlot.metadata) then
-						fromSlot.count = fromSlot.count - data.count
 						toSlot.count = toSlot.count + data.count
-						fromSlot.weight = Inventory.SlotWeight(Items(fromSlot.name), fromSlot)
-						toSlot.weight = Inventory.SlotWeight(Items(toSlot.name), toSlot)
-						if fromInventory.id ~= toInventory.id then
-							fromInventory.weight = fromInventory.weight - toSlot.weight
-							toInventory.weight = toInventory.weight + toSlot.weight
+						local weight = Inventory.SlotWeight(Items(toSlot.name), toSlot)
+						local newWeight = toInventory.weight + weight
+						if newWeight <= toInventory.maxWeight then
+							toSlot.weight = weight
+							fromSlot.count = fromSlot.count - data.count
+							fromSlot.weight = Inventory.SlotWeight(Items(fromSlot.name), fromSlot)
+							if fromInventory.id ~= toInventory.id then
+								fromInventory.weight = fromInventory.weight - toSlot.weight
+								toInventory.weight = newWeight
+							end
+						else
+							toSlot.count = toSlot.count - data.count
+							return cb(false)
 						end
 					elseif data.count <= fromSlot.count then
-						fromSlot.count = fromSlot.count - data.count
 						toSlot = table.clone(fromSlot)
 						toSlot.count = data.count
 						toSlot.slot = data.toSlot
-						fromSlot.weight = Inventory.SlotWeight(Items(fromSlot.name), fromSlot)
 						toSlot.weight = Inventory.SlotWeight(Items(toSlot.name), toSlot)
-						if fromInventory.id ~= toInventory.id then
-							fromInventory.weight = fromInventory.weight - toSlot.weight
-							toInventory.weight = toInventory.weight + toSlot.weight
-						end
+						local newWeight = toInventory.weight + toSlot.weight
+						if newWeight <= toInventory.maxWeight then
+							fromSlot.count = fromSlot.count - data.count
+							fromSlot.weight = Inventory.SlotWeight(Items(fromSlot.name), fromSlot)
+							if fromInventory.id ~= toInventory.id then
+								fromInventory.weight = fromInventory.weight - toSlot.weight
+								toInventory.weight = toInventory.weight + toSlot.weight
+							end
+						else return cb(false) end
 					else
 						print('swapItems', data.fromType, data.fromSlot, 'to', data.toType, data.toSlot)
 						return cb(false)

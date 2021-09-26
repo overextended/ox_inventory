@@ -707,7 +707,7 @@ RegisterNUICallback('useItem', function(data)
 	UseSlot(data.slot)
 end)
 
-RegisterNUICallback('exit', function(data)
+RegisterNUICallback('exit', function()
 	TriggerEvent('ox_inventory:closeInventory')
 end)
 
