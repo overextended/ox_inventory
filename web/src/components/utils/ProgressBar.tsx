@@ -42,7 +42,7 @@ const ProgressBar: React.FC = () => {
             style={{ animationDuration: `${duration}ms` }}
             onAnimationEnd={() => {
               setVisible(false);
-              sendNUI('ox_inventory:ProgressComplete');
+              sendNUI('progressComplete');
             }}
           >
             <span>{text}</span>

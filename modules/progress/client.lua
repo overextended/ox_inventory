@@ -154,7 +154,7 @@ exports('Progress', Start)
 exports('CancelProgress', Cancelled)
 exports('ProgressActive', function() return Active end)
 
-RegisterNUICallback('ox_inventory:ProgressComplete', function(_)
+RegisterNUICallback('progressComplete', function(_)
     Completed()
 end)
 

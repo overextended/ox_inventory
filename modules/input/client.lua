@@ -20,7 +20,7 @@ end
 
 exports('Keyboard', Input)
 
-RegisterNUICallback('ox_inventory:inputData', function(data, cb)
+RegisterNUICallback('inputData', function(data, cb)
     if not p then return end
     if not data then p:resolve() else p:resolve(data) end
     SetNuiFocus(false, false)

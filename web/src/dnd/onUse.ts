@@ -4,5 +4,5 @@ import { Slot } from '../typings';
 
 export const onUse = (item: Slot) => {
   //toast.success(`Use ${item.name}`);
-  sendNUI('useItem');
+  sendNUI('useItem', item.slot);
 };

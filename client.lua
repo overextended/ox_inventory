@@ -702,8 +702,8 @@ RegisterCommand('hotbar', function()
 	SendNUIMessage({ action = 'toggleHotbar' })
 end)
 
-RegisterNUICallback('useItem', function(data)
-	UseSlot(data.slot)
+RegisterNUICallback('useItem', function(slot)
+	UseSlot(slot)
 end)
 
 RegisterNUICallback('exit', function()

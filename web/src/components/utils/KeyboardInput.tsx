@@ -21,7 +21,7 @@ const KeyboardInput: React.FC = () => {
 
   useExitListener(() => {
     setVisible(false);
-    sendNUI('ox_inventory:inputData');
+    sendNUI('inputData');
   });
 
   const handleSubmit = (e: any) => {
@@ -30,7 +30,7 @@ const KeyboardInput: React.FC = () => {
 
     let data: string[] | any;
     input.length === 0 ? (data = null) : (data = input);
-    fetchNui('ox_inventory:inputData', data);
+    fetchNui('inputData', data);
   };
 
   const handleChange = (e: any, index: number) => {
