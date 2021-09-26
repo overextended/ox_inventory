@@ -45,7 +45,7 @@ Experimental branch to add new features and modify existing features, regardless
 - Grades start from 1 instead of 0, and are stored as integers rather than strings
 
 !!! tip "Modifying your framework"
-	If you _insist_ on manually applying changes to your framework, you will need to manually reference changes in the [github diff](https://github.com/overextended/es_extended/commit/c232ff157e219c111e7b484af2375a2859ac331d). No guide is provided.
+	If you _insist_ on manually applying changes to your framework, you will need to manually reference changes in the [github diff](https://github.com/overextended/es_extended/compare/58042fb6926769aeab35fe26fa98d568971ba0be...main). No guide is provided.
 
 [Standard :fontawesome-solid-archive:](https://github.com/overextended/es_extended){ .md-button .md-button--primary }	[Experimental :fontawesome-solid-exclamation-triangle:](https://github.com/overextended/es_extended/tree/ox){ .md-button .md-button--primary }
 
