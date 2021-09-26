@@ -29,7 +29,7 @@ export async function fetchNui<T = any>(eventName: string, data?: any): Promise<
   return respFormatted;
 }
 
-export function sendNUI(eventName: string, data?: any) {
+export function sendNui(eventName: string, data?: any) {
   const options = {
     method: 'post',
     headers: {

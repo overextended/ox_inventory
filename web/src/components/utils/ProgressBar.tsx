@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import useNuiEvent from '../../hooks/useNuiEvent';
 import { debugData } from '../../utils/debugData';
-import { sendNUI } from '../../utils/fetchNui';
+import { sendNui } from '../../utils/fetchNui';
 
 debugData([
   {
@@ -42,7 +42,7 @@ const ProgressBar: React.FC = () => {
             style={{ animationDuration: `${duration}ms` }}
             onAnimationEnd={() => {
               setVisible(false);
-              sendNUI('progressComplete');
+              sendNui('progressComplete');
             }}
           >
             <span>{text}</span>
