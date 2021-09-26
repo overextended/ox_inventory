@@ -119,8 +119,8 @@ local OpenInventory = function(inv, data)
 				}
 			})
 		else
-			Notify({type = 'error', text = ox.locale('inventory_cannot_open_other'), duration = 2500})
-			return TriggerEvent('ox_inventory:closeInventory')
+			if invOpen == false then Notify({type = 'error', text = ox.locale('inventory_cannot_open_other'), duration = 2500}) end
+			TriggerEvent('ox_inventory:closeInventory')
 		end
 	else Notify({type = 'error', text = ox.locale('inventory_cannot_open'), duration = 2500}) end
 end
@@ -436,7 +436,6 @@ RegisterNetEvent('ox_inventory:closeInventory', function(options)
 		SendNUIMessage({ action = 'closeInventory' })
 		SetInterval(1, 250)
 		Wait(200)
-		if currentInventory then TriggerServerEvent('ox_inventory:closeInventory') end
 		invOpen, currentInventory = false, nil
 	end
 end)
