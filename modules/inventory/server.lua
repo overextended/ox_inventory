@@ -403,7 +403,7 @@ AddEventHandler('ox_inventory:createDrop', function(source, slot, toSlot, cb)
 	local drop = GenerateDropId()
 	local inventory = M.Create(drop, 'Drop '..drop, 'drop', Config.PlayerSlots, 0, Config.DefaultWeight, false, {[slot] = table.clone(toSlot)})
 	local coords = GetEntityCoords(GetPlayerPed(source))
-	Inventories[drop].coords = coords
+	inventory.coords = coords
 	M.Drops[drop] = inventory.coords
 	cb(drop, coords)
 end)

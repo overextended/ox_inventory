@@ -468,10 +468,9 @@ end)
 
 RegisterNetEvent('ox_inventory:createDrop', function(data, owner, slot)
 	local coords = vec3(data[2].x, data[2].y, data[2].z-0.2)
-	Drops = Drops or table.wipe(Drops)
 	Drops[data[1]] = {coords=coords}
-	if owner == playerId and invOpen and #(playerCoords - coords) <= 1 then
-		if currentWeapon?.slot then Disarm(-1) end
+	if owner == playerId and invOpen and #(GetEntityCoords(ESX.PlayerData.ped) - coords) <= 1 then
+		if currentWeapon?.slot == slot then Disarm(-1) end
 		if not IsPedInAnyVehicle(ESX.PlayerData.ped, false) then
 			OpenInventory('drop', {id=data[1]})
 		end

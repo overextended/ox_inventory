@@ -89,11 +89,11 @@ Utils.RegisterServerCallback('ox_inventory:openInventory', function(source, cb, 
 		end
 		if not right.open then
 			if right.coords == nil or #(right?.coords - GetEntityCoords(GetPlayerPed(source))) < 20 then
-				right:set('open', source)
-				left:set('open', right.id)
+				right.open = source
+				left.open = right.id
 			else return cb(false) end
 		else return cb(false) end
-	end
+	else left.open = true end
 	cb({id=left.label, type=left.type, slots=left.slots, weight=left.weight, maxWeight=left.maxWeight}, right)
 end)
 
@@ -110,7 +110,7 @@ Utils.RegisterServerCallback('ox_inventory:swapItems', function(source, cb, data
 			playerInventory.weight = playerInventory.weight - toSlot.weight
 			TriggerEvent('ox_inventory:createDrop', source, data.toSlot, toSlot, function(drop, coords)
 				if fromSlot == playerInventory.weapon then playerInventory.weapon = nil end
-				TriggerClientEvent('ox_inventory:createDrop', -1, {drop, coords}, playerInventory.open and source, fromSlot)
+				TriggerClientEvent('ox_inventory:createDrop', -1, {drop, coords}, playerInventory.open and source, fromSlot.slot)
 			end)
 			return cb(true, {weight=playerInventory.weight, items=items})
 		else
@@ -175,8 +175,8 @@ Utils.RegisterServerCallback('ox_inventory:swapItems', function(source, cb, data
 						ret = {weight=playerInventory.weight, items=items}
 						Inventory.SyncInventory(ESX.GetPlayerFromId(playerInventory.id), playerInventory, items)
 					end
-					if fromInventory.changed ~= nil then fromInventory:set('changed', true) end
-					if toInventory.changed ~= nil then toInventory:set('changed', true) end
+					if fromInventory.changed ~= nil then fromInventory.changed = true end
+					if toInventory.changed ~= nil then toInventory.changed = true end
 					return cb(true, ret, movedWeapon and fromInventory.weapon)
 				end
 			end
@@ -251,7 +251,7 @@ Utils.RegisterServerCallback('ox_inventory:openShop', function(source, cb, data)
 	local left, shop = Inventory(source)
 	if data then
 		shop = Shops[data.type][data.id]
-		left:set('open', shop.id)
+		left.open = shop.id
 	end
 	cb({id=left.label, type=left.type, slots=left.slots, weight=left.weight, maxWeight=left.maxWeight}, shop)
 end)
