@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { useExitListener } from '../../hooks/useExitListener';
 import useNuiEvent from '../../hooks/useNuiEvent';
-import { fetchNui, sendNui } from '../../utils/fetchNui';
+import { fetchNui, sendNui } from '../../utils/nuiMessage';
 
 const KeyboardInput: React.FC = () => {
   const [isVisible, setVisible] = useState(false);

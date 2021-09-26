@@ -543,7 +543,7 @@ AddEventHandler('ox_inventory:item', function(data, cb)
 					label = 'Using '..result.label,
 					useWhileDead = data.useWhileDead or false,
 					canCancel = data.cancel or false,
-					Disable = data.disable,
+					disable = data.disable,
 					anim = data.anim and ({ dict = data.anim.dict, clip = data.anim.clip, flag = data.anim.flag or 49 } or {scenario = data.scenario}),
 					prop = data.prop,
 					propTwo = data.propTwo

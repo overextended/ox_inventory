@@ -145,7 +145,7 @@ local Start = function(options, completed)
 
 				SetModelAsNoLongerNeeded(model)
 			end
-			Disable = options.Disable or table.wipe(Disable)
+			Disable = options.disable or table.wipe(Disable)
 		end
 	end
 end
@@ -154,7 +154,7 @@ exports('Progress', Start)
 exports('CancelProgress', Cancelled)
 exports('ProgressActive', function() return Active end)
 
-RegisterNUICallback('progressComplete', function(_)
+RegisterNUICallback('progressComplete', function()
     Completed()
 end)
 
@@ -164,7 +164,7 @@ RegisterCommand('cancelprogress', function()
     end
 end)
 
-RegisterKeyMapping('cancelprogress', 'Cancel current progress bar', 'keyboard', 'x') 
+RegisterKeyMapping('cancelprogress', 'Cancel current progress bar', 'keyboard', 'x')
 TriggerEvent('chat:removeSuggestion', '/cancelprogress')
 
 return {

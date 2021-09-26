@@ -1,6 +1,6 @@
 import { useEffect, useRef } from 'react';
 import { noop } from '../utils/misc';
-import { sendNui } from '../utils/fetchNui';
+import { sendNui } from '../utils/nuiMessage';
 
 type FrameVisibleSetter = (bool: boolean) => void;
 

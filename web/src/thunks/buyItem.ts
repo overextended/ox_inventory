@@ -1,5 +1,5 @@
 import { createAsyncThunk } from '@reduxjs/toolkit';
-import { fetchNui } from '../utils/fetchNui';
+import { fetchNui } from '../utils/nuiMessage';
 
 export const buyItem = createAsyncThunk(
   'inventory/buyItem',

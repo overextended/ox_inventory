@@ -9,20 +9,19 @@
  * @return returnData - A promise for the data sent back by the NuiCallbacks CB argument
  */
 
+
+const resourceName = (window as any).GetParentResourceName
+? (window as any).GetParentResourceName()
+: 'nui-frame-app';
+
 export async function fetchNui<T = any>(eventName: string, data?: any): Promise<T> {
-  const options = {
+  const resp = await fetch(`https://${resourceName}/${eventName}`, {
     method: 'post',
     headers: {
       'Content-Type': 'application/json; charset=UTF-8',
     },
     body: JSON.stringify(data),
-  };
-
-  const resourceName = (window as any).GetParentResourceName
-    ? (window as any).GetParentResourceName()
-    : 'nui-frame-app';
-
-  const resp = await fetch(`https://${resourceName}/${eventName}`, options);
+  });
 
   const respFormatted = await resp.json();
 
@@ -30,17 +29,11 @@ export async function fetchNui<T = any>(eventName: string, data?: any): Promise<
 }
 
 export function sendNui(eventName: string, data?: any) {
-  const options = {
+  return fetch(`https://${resourceName}/${eventName}`, {
     method: 'post',
     headers: {
       'Content-Type': 'application/json; charset=UTF-8',
     },
     body: JSON.stringify(data),
-  };
-
-  const resourceName = (window as any).GetParentResourceName
-    ? (window as any).GetParentResourceName()
-    : 'nui-frame-app';
-
-  fetch(`https://${resourceName}/${eventName}`, options);
+  });
 }

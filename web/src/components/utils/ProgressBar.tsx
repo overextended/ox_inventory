@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import useNuiEvent from '../../hooks/useNuiEvent';
 import { debugData } from '../../utils/debugData';
-import { sendNui } from '../../utils/fetchNui';
+import { sendNui } from '../../utils/nuiMessage';
 
 debugData([
   {

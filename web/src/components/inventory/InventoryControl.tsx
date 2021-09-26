@@ -5,7 +5,7 @@ import { selectItemAmount, setItemAmount } from '../../store/inventory';
 import { DragSource } from '../../typings';
 import { onUse } from '../../dnd/onUse';
 import { onGive } from '../../dnd/onGive';
-import { sendNui } from '../../utils/fetchNui';
+import { sendNui } from '../../utils/nuiMessage';
 import { faInfoCircle, faTimes } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import Fade from '../utils/Fade';
