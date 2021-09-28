@@ -1,12 +1,18 @@
-local callbackTimer = {}
+local ServerCallbacks = {}
 local M = module('utils', true)
 
-M.AwaitServerCallback = function(event, ...)
+local CallbackTimer = function(event, delay)
 	local time = GetGameTimer()
-	if (callbackTimer?[event] or 0) > time then return false end
-	callbackTimer[event] = time + 200
-	event = ('cb:%s'):format(event)
-	TriggerServerEvent('ox:TriggerServerCallback', event, ...)
+	if (ServerCallbacks?[event] or 0) > time then
+		return false
+	end
+	ServerCallbacks[event] = time + delay
+end
+
+M.AwaitServerCallback = function(event, ...)
+	CallbackTimer(event, 200)
+	event = 'cb:'..event
+	TriggerServerEvent('ox_inventory:ServerCallback', event, ...)
 	local p = promise.new()
 	event = RegisterNetEvent(event, function(...)
 		p:resolve({...})
@@ -16,13 +22,9 @@ M.AwaitServerCallback = function(event, ...)
 end
 
 M.TriggerServerCallback = function(event, cb, timer, ...)
-	if timer then
-		local time = GetGameTimer()
-		if (callbackTimer?[timer] or 0) > time then return false end
-		callbackTimer[timer] = time + timer
-	end
-	event = ('cb:%s'):format(event)
-	TriggerServerEvent('ox:TriggerServerCallback', event, ...)
+	if timer then CallbackTimer(event, timer) end
+	event = 'cb:'..event
+	TriggerServerEvent('ox_inventory:ServerCallback', event, ...)
 	event = RegisterNetEvent(event, function(...)
 		cb(...)
 		RemoveEventHandler(event)
