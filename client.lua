@@ -85,7 +85,7 @@ local OpenInventory = function(inv, data)
 		local left, right
 		if inv == 'shop' and invOpen == false then
 			left, right = Utils.AwaitServerCallback('ox_inventory:openShop', data)
-		elseif invOpen == false or inv == 'drop' or inv == 'container' then
+		elseif invOpen == false or (invOpen == true and currentInventory?.type == 'newdrop' and (inv == 'drop' or inv == 'container')) then
 			if inv == 'policeevidence' then
 				local input = Keyboard.Input('Police Evidence', {'Locker number'})
 				if input then
@@ -436,6 +436,7 @@ RegisterNetEvent('ox_inventory:closeInventory', function(options)
 		SendNUIMessage({ action = 'closeInventory' })
 		SetInterval(1, 250)
 		Wait(200)
+		if currentInventory then TriggerServerEvent('ox_inventory:closeInventory') end
 		invOpen, currentInventory = false, nil
 	end
 end)
