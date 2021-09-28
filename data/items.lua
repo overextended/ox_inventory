@@ -1,5 +1,5 @@
 return {
-	bandage = {
+	['bandage'] = {
 		label = 'Bandage',
 		weight = 115,
 		client = {
@@ -10,11 +10,11 @@ return {
 		}
 	},
 
-	black_money = {
+	['black_money'] = {
 		label = 'Dirty Money',
 	},
 
-	burger = {
+	['burger'] = {
 		label = 'Burger',
 		weight = 220,
 		degrade = 60,
@@ -26,7 +26,7 @@ return {
 		}
 	},
 
-	cola = {
+	['cola'] = {
 		label = 'eCola',
 		weight = 350,
 		client = {
@@ -37,7 +37,7 @@ return {
 		}
 	},
 
-	parachute = {
+	['parachute'] = {
 		label = 'Parachute',
 		weight = 8000,
 		stack = false,
@@ -47,11 +47,11 @@ return {
 		}
 	},
 
-	garbage = {
+	['garbage'] = {
 		label = 'Garbage',
 	},
 
-	paperbag = {
+	['paperbag'] = {
 		label = 'Paper Bag',
 		weight = 1,
 		stack = false,
@@ -59,11 +59,11 @@ return {
 		consume = 0
 	},
 
-	identification = {
+	['identification'] = {
 		label = 'Identification',
 	},
 
-	panties = {
+	['panties'] = {
 		label = 'Knickers',
 		weight = 10,
 		consume = 0,
@@ -75,7 +75,7 @@ return {
 		}
 	},
 
-	lockpick = {
+	['lockpick'] = {
 		label = 'Lockpick',
 		weight = 160,
 		consume = 0,
@@ -87,7 +87,7 @@ return {
 		}
 	},
 
-	phone = {
+	['phone'] = {
 		label = 'Phone',
 		weight = 190,
 		stack = false,
@@ -98,11 +98,11 @@ return {
 		}
 	},
 
-	money = {
+	['money'] = {
 		label = 'Money',
 	},
 
-	mustard = {
+	['mustard'] = {
 		label = 'Mustard',
 		weight = 500,
 		client = {
@@ -113,7 +113,7 @@ return {
 		}
 	},
 
-	water = {
+	['water'] = {
 		label = 'Water',
 		weight = 500,
 		client = {

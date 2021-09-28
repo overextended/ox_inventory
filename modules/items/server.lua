@@ -35,7 +35,7 @@ CreateThread(function()
 			else query[i] = "OR name='"..v.name.."'" end
 			v.close = v.closeonuse or true
 			v.stack = v.stackable or true
-			v.description = v.description or ''
+			v.description = v.description
 			v.weight = v.weight or 0
 			Items[v.name] = v
 		end
@@ -50,12 +50,12 @@ CreateThread(function()
 				table.insert(dump, "('"..i.name.."', ".."'"..i.name.."', "..i.weight.."),\n")
 				table.insert(file, [[
 
-	]]..i.name..[[ = {
+	[']]..i.name..[['] = {
 		label = ']]..i.label..[[',
 		weight = ]]..tonumber(i.weight)..[[,
-		stack = ]]..tostring(i.stackable)..[[,
-		close = ]]..tostring(i.closeonuse)..[[,
-		description = ']]..tostring(i.description)..[['
+		stack = ]]..tostring(i.stack)..[[,
+		close = ]]..tostring(i.close)..[[,
+		description = ']]..i.description and tostring(i.description) or 'nil'..[['
 	},
 ]])
 			end

@@ -53,7 +53,6 @@ Utils.RegisterServerCallback('ox_inventory:buyItem', function(source, cb, data)
 		local shop = M[player.open:sub(0, split-1)][tonumber(player.open:sub(split+1))]
 		local fromSlot, toSlot = shop.items[data.fromSlot], player.items[data.toSlot]
 		if fromSlot then
-			print(ESX.DumpTable(fromSlot))
 			if fromSlot.count == 0 then
 				return cb(false, nil, {type = 'error', text = ox.locale('shop_nostock')})
 			elseif fromSlot.license and not exports.oxmysql:scalarSync('SELECT 1 FROM user_licenses WHERE type = ? AND owner = ?', { fromSlot.license, player.owner }) then
