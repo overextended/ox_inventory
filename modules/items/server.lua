@@ -35,7 +35,7 @@ CreateThread(function()
 			else query[i] = "OR name='"..v.name.."'" end
 			v.close = v.closeonuse or true
 			v.stack = v.stackable or true
-			v.description = v.description
+			v.description = v.description or ''
 			v.weight = v.weight or 0
 			Items[v.name] = v
 		end
@@ -55,7 +55,7 @@ CreateThread(function()
 		weight = ]]..tonumber(i.weight)..[[,
 		stack = ]]..tostring(i.stack)..[[,
 		close = ]]..tostring(i.close)..[[,
-		description = ']]..i.description and tostring(i.description) or 'nil'..[['
+		description = ']]..tostring(i.description)..[['
 	},
 ]])
 			end
