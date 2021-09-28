@@ -3,7 +3,7 @@ local M = module('utils', true)
 
 local CallbackTimer = function(event, delay)
 	local time = GetGameTimer()
-	if (ServerCallbacks?[event] or 0) > time then
+	if (ServerCallbacks[event] or 0) > time then
 		return false
 	end
 	ServerCallbacks[event] = time + delay
@@ -31,27 +31,25 @@ M.TriggerServerCallback = function(event, cb, timer, ...)
 	end)
 end
 
-M.PlayAnim = function(wait, ...)
-	local args = {...}
-	RequestAnimDict(args[1])
+M.PlayAnim = function(wait, dict, name, blendIn, blendOut, duration, flag, rate, lockX, lockY, lockZ)
+	RequestAnimDict(dict)
 	CreateThread(function()
-		repeat Wait(0) until HasAnimDictLoaded(args[1])
-		TaskPlayAnim(ESX.PlayerData.ped, table.unpack(args))
+		repeat Wait(0) until HasAnimDictLoaded(dict)
+		TaskPlayAnim(ESX.PlayerData.ped, dict, name, blendIn, blendOut, duration, flag, rate, lockX, lockY, lockZ)
 		Wait(wait)
 		ClearPedSecondaryTask(ESX.PlayerData.ped)
-		RemoveAnimDict(args[1])
+		RemoveAnimDict(dict)
 	end)
 end
 
-M.PlayAnimAdvanced = function(wait, ...)
-	local args = {...}
-	RequestAnimDict(args[1])
+M.PlayAnimAdvanced = function(wait, dict, name, posX, posY, posZ, rotX, rotY, rotZ, animEnter, animExit, duration, flag, time)
+	RequestAnimDict(dict)
 	CreateThread(function()
-		repeat Wait(0) until HasAnimDictLoaded(args[1])
-		TaskPlayAnimAdvanced(ESX.PlayerData.ped, table.unpack(args))
+		repeat Wait(0) until HasAnimDictLoaded(dict)
+		TaskPlayAnimAdvanced(ESX.PlayerData.ped, dict, name, posX, posY, posZ, rotX, rotY, rotZ, animEnter, animExit, duration, flag, time, 0, 0)
 		Wait(wait)
 		if wait > 0 then ClearPedSecondaryTask(ESX.PlayerData.ped) end
-		RemoveAnimDict(args[1])
+		RemoveAnimDict(dict)
 	end)
 end
 
