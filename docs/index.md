@@ -7,8 +7,8 @@ title: Getting Started
 	This resource is being designed with ease of use and advanced functionality as a core principal, however that doesn't mean it is intended for _config kings_.  
 	If you do not possess a basic understanding of coding - nor the ability to read documentation - then turn back now and go use a drag-n-drop resource instead.
 
-##Requirements
-###OxMySQL
+## Requirements
+## OxMySQL
 A new lightweight database wrapper utilising [node-mysql2](https://github.com/sidorares/node-mysql2), unlike the abandoned ghmattimysql and mysql-async resources.
 
 - Improved performance and compatibility
@@ -27,18 +27,18 @@ A new lightweight database wrapper utilising [node-mysql2](https://github.com/si
 
 <br>
 
-###Framework
+## Framework
 The inventory has been designed to work for a _modified_ version of **ESX Legacy** and will not work with anything else.  
 For convenience, we provide a fork with all necessary changes.
 
-####Standard
+## Standard
 Minimal changes to maintain near-complete compatibility with other resources. This matches the behaviour of Linden ESX.
 
 - Loadouts do not exist, so errors will occur in third-party resources attempting to manipulate them
 - Inventories are slot-based and items can exist in multiple slots, which can throw off item counting
 - Resources attempting to iterate through inventories in order will not work if a slot is empty
 
-####Ox
+## Ox
 Experimental branch to add new features and modify existing features, regardless of breaking compatibility.
 
 - Jobs are loaded from a data file instead of the database
@@ -50,7 +50,7 @@ Experimental branch to add new features and modify existing features, regardless
 [Standard :fontawesome-solid-archive:](https://github.com/overextended/es_extended){ .md-button .md-button--primary }	[Experimental :fontawesome-solid-exclamation-triangle:](https://github.com/overextended/es_extended/tree/ox){ .md-button .md-button--primary }
 
 
-##Installation
+## Installation
 Once you have downloaded and configured the required resources, you will need to update your server config.
 ```
 ensure oxmysql
@@ -83,3 +83,41 @@ Keep the following in mind while developing your server
 
 !!! attention
 	You should restart your server after the first startup to ensure everything has been correctly setup
+
+
+## Recommendations
+Ox Inventory provides a complete suite of tools to replace the built-in items and inventory system from ESX, and is not intended to be used with resources designed around it.
+
+- ESX loadouts do not exist - resources that use them need to remove references or be modified to look for the weapon as an item
+- Stashes from resources such as esx_policejob, esx_ambulancejob, etc. should be entirely replaced
+- Shops from esx_shops or the armoury from esx_policejob should be removed
+- Resources like esx_inventoryhud, esx_trunkinventory, esx_addoninventory, etc. should be removed
+
+### xPlayer functions vs Inventory functions
+All item related functions from xPlayer, such as `xPlayer.getInventoryItem`, have been modified for compatibility purposes; however they are considered deprecated and should not be used.
+
+The reasoning is fairly simple - there's now additional function references and overhead to consider. Fortunately, the new Inventory functions can be used directly and offer a great deal of improvements over the old ones.
+
+You should read through the modules section for further information, but the following should give you a decent idea.
+(Note: Work in progress and may be altered, for now you should stick to xPlayer functions)
+
+!!! example "xPlayer.getInventoryItem and xPlayer.removeInventoryItem"
+	=== "Deprecated"
+		```lua
+		if xPlayer.getInventoryItem('acetone').count > 2 and xPlayer.getInventoryItem('antifreeze').count > 4 and xPlayer.getInventoryItem('sudo').count > 9 then 
+			xPlayer.removeInventoryItem("acetone", 3)
+			xPlayer.removeInventoryItem("antifreeze", 5)
+			xPlayer.removeInventoryItem("sudo", 10)
+		end
+		```
+	=== "New function"
+		```lua
+		local inventory = Inventory.Search(source, 2, {'acetone', 'antifreeze', 'sudo'})
+		if inventory and inventory.acetone > 2 and inventory.antifreeze > 4 and inventory.sudo > 9 then
+			xPlayer.removeInventoryItem("acetone", 3)
+			xPlayer.removeInventoryItem("antifreeze", 5)
+			xPlayer.removeInventoryItem("sudo", 10)
+			-- todo: improved function for bulk removal
+			-- Inventory.RemoveItem(1, {'acetone', 'antifreeze', 'sudo'}, {3, 5, 10})
+		end
+		```

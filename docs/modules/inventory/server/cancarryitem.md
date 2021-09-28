@@ -5,7 +5,7 @@ Checks if the provided inventory is capable of holding new items.
 
 !!! info
 	```lua
-	Inventory.CanCarryItem(inv, item, count, metadata)
+	Inventory.CanCarryItem(inventory, item, count, metadata)
 	```
 	This function enhances the default functionality of `xPlayer.canCarryItem`.
 

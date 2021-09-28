@@ -35,7 +35,7 @@ Many of the functions provided in this module are similar to the `xPlayer` funct
 
 !!! info
 	```lua
-	Inventory.SetSlot(inv, item, count, metadata, slot)
+	Inventory.SetSlot(inventory, item, count, metadata, slot)
 	```
 	Sets the current item, count, and metadata of a slot.
 
@@ -59,6 +59,6 @@ Many of the functions provided in this module are similar to the `xPlayer` funct
 
 !!! info
 	```lua
-	Inventory.Load(id, inv, owner)
+	Inventory.Load(id, inventory, owner)
 	```
 	Loads an inventory from the database.
