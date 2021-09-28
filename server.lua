@@ -88,7 +88,7 @@ Utils.RegisterServerCallback('ox_inventory:openInventory', function(source, cb, 
 			end
 		end
 		if not right.open then
-			if right.coords == nil or #(right?.coords - GetEntityCoords(GetPlayerPed(source))) < 20 then
+			if right.coords == nil or #(right.coords - GetEntityCoords(GetPlayerPed(source))) < 20 then
 				right.open = source
 				left.open = right.id
 			else return cb(false) end
@@ -100,6 +100,7 @@ end)
 Utils.RegisterServerCallback('ox_inventory:swapItems', function(source, cb, data)
 	if data.count > 0 and data.toType ~= 'shop' then
 		local playerInventory, items, ret = Inventory(source), {}, nil
+
 		if data.toType == 'newdrop' then
 			local fromSlot = playerInventory.items[data.fromSlot]
 			local toSlot = table.clone(fromSlot)
@@ -108,20 +109,24 @@ Utils.RegisterServerCallback('ox_inventory:swapItems', function(source, cb, data
 			playerInventory.items[data.fromSlot] = nil
 			Inventory.SyncInventory(ESX.GetPlayerFromId(playerInventory.id), playerInventory, items)
 			playerInventory.weight = playerInventory.weight - toSlot.weight
+
 			TriggerEvent('ox_inventory:createDrop', source, data.toSlot, toSlot, function(drop, coords)
 				if fromSlot == playerInventory.weapon then playerInventory.weapon = nil end
 				TriggerClientEvent('ox_inventory:createDrop', -1, {drop, coords}, playerInventory.open and source, fromSlot.slot)
 			end)
+
 			return cb(true, {weight=playerInventory.weight, items=items})
 		else
 			local toInventory = data.toType == 'player' and playerInventory or Inventory(playerInventory.open)
 			local fromInventory = data.fromType == 'player' and playerInventory or Inventory(playerInventory.open)
+
 			if toInventory and fromInventory and (fromInventory.id ~= toInventory.id or data.fromSlot ~= data.toSlot) then
 				local movedWeapon = fromInventory.weapon == data.fromSlot
 				local fromSlot, toSlot = fromInventory.items[data.fromSlot], toInventory.items[data.toSlot]
 				if movedWeapon then
 					if data.toType == 'player' then fromInventory.weapon = data.toSlot else TriggerClientEvent('ox_inventory:disarm', source) end
 				end
+
 				if fromSlot and fromSlot.metadata.container ~= toInventory.id then
 					if data.count > fromSlot.count then data.count = fromSlot.count end
 					if toSlot and ((toSlot.name ~= fromSlot.name) or not toSlot.stack or (not Utils.MatchTables(toSlot.metadata, fromSlot.metadata))) then
@@ -185,49 +190,6 @@ Utils.RegisterServerCallback('ox_inventory:swapItems', function(source, cb, data
 	cb(false)
 end)
 
-Utils.RegisterServerCallback('ox_inventory:buyItem', function(source, cb, data)
-	if data.toType == 'player' and data.fromSlot ~= data.toSlot then
-		if data.count == nil then data.count = 1 end
-		local player, items = Inventory(source), {}
-		local xPlayer = ESX.GetPlayerFromId(source)
-		local split = player.open:match('^.*() ')
-		local shop = Shops[player.open:sub(0, split-1)][tonumber(player.open:sub(split+1))]
-		local fromSlot, toSlot = shop.items[data.fromSlot], player.items[data.toSlot]
-		if fromSlot then
-			if fromSlot.count == 0 then return cb(false, nil, {type = 'error', text = ox.locale('shop_nostock')}) end
-			if fromSlot.count and data.count > fromSlot.count then data.count = fromSlot.count end
-			local metadata, count = Items.Metadata(xPlayer, Items(fromSlot.name), fromSlot.metadata or {}, data.count)
-			local price = count * fromSlot.price
-			local playerMoney = Inventory.GetItem(source, 'money', false, true)
-			if playerMoney >= price and (toSlot and Utils.MatchTables(toSlot.metadata, metadata) or toSlot == nil) then
-				if toSlot and toSlot.name == fromSlot.name then
-					if fromSlot.count then fromSlot.count = fromSlot.count - count end
-					toSlot.count = toSlot.count + count
-					toSlot.weight = Inventory.SlotWeight(Items(toSlot.name), toSlot)
-					player.weight = player.weight + toSlot.weight
-				elseif fromSlot.count == nil or count <= fromSlot.count then
-					if fromSlot.count then fromSlot.count = fromSlot.count - count end
-					toSlot = table.clone(fromSlot)
-					toSlot.count = count
-					toSlot.slot = data.toSlot
-					toSlot.weight = Inventory.SlotWeight(Items(toSlot.name), toSlot)
-					player.weight = player.weight + toSlot.weight
-				else
-					print('buyItem', data.fromType, data.fromSlot, 'to', data.toType, data.toSlot)
-					return cb(false)
-				end
-				toSlot.metadata = metadata
-				shop.items[data.fromSlot], player.items[data.toSlot] = fromSlot, toSlot
-				Inventory.RemoveItem(source, 'money', price)
-				Inventory.SyncInventory(xPlayer, player, items)
-				return cb(true, {data.toSlot, toSlot, weight}, {type = 'success', text = 'Purchased '..count..'x '..toSlot.name..' for $'..price})
-			end
-			return cb(false, nil, {type = 'error', text = ox.locale('cannot_afford', '$'..price-playerMoney)})
-		end
-	end
-	cb(false)
-end)
-
 Utils.RegisterServerCallback('ox_inventory:buyLicense', function(source, cb, license)
 	local price = Config.Licenses[license]
 	if price then
@@ -245,15 +207,6 @@ Utils.RegisterServerCallback('ox_inventory:buyLicense', function(source, cb, lic
 			end
 		end)
 	else cb() end
-end)
-
-Utils.RegisterServerCallback('ox_inventory:openShop', function(source, cb, data)
-	local left, shop = Inventory(source)
-	if data then
-		shop = Shops[data.type][data.id]
-		left.open = shop.id
-	end
-	cb({id=left.label, type=left.type, slots=left.slots, weight=left.weight, maxWeight=left.maxWeight}, shop)
 end)
 
 Utils.RegisterServerCallback('ox_inventory:getItemCount', function(source, cb, item, metadata, target)
