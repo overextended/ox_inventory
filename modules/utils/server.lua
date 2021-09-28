@@ -8,6 +8,7 @@ end
 
 RegisterServerEvent('ox_inventory:ServerCallback', function(name, ...)
 	if ServerCallbacks[name] then
+		local source = source
 		ServerCallbacks[name](source, function(...)
 			TriggerClientEvent(name, source, ...)
 		end, ...)
