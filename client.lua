@@ -385,7 +385,7 @@ SetInterval(2, 0, function()
 						SetCurrentPedWeapon(ESX.PlayerData.ped, currentWeapon.hash, false)
 						SetPedCurrentWeaponVisible(ESX.PlayerData.ped, true, false, false, false)
 						if Config.AutoReload and Progress.Active == false and IsPedRagdoll(ESX.PlayerData.ped) == false and IsPedFalling(ESX.PlayerData.ped) == false then
-							local ammo = Utils.InventorySearch(1, currentWeapon.ammo)
+							local ammo = Inventory.Search(1, currentWeapon.ammo)
 							if ammo[1] then
 								currentWeapon.timer = 0
 								UseSlot(ammo[1].slot)
@@ -693,7 +693,7 @@ end)
 
 RegisterCommand('reload', function()
 	if currentWeapon?.ammo then
-		local ammo = Utils.InventorySearch(1, currentWeapon.ammo)
+		local ammo = Inventory.Search(1, currentWeapon.ammo)
 		if ammo[1] then UseSlot(ammo[1].slot) end
 	end
 end)
