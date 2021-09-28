@@ -514,7 +514,7 @@ RegisterNetEvent('ox_inventory:setPlayerInventory', function(data)
 	})
 	Shops.CreateShopLocations()
 	Notify({text = ox.locale('inventory_setup'), duration = 2500})
-	collectgarbage('collect')	
+	collectgarbage('collect')
 end)
 
 AddEventHandler('onResourceStop', function(resourceName)

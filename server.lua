@@ -215,20 +215,17 @@ Utils.RegisterServerCallback('ox_inventory:getItemCount', function(source, cb, i
 end)
 
 Utils.RegisterServerCallback('ox_inventory:getInventory', function(source, cb, id)
-	local inventory = Inventory(id)
-	if inventory then
-		return cb({
-			id = inventory.id,
-			label = inventory.label,
-			type = inventory.type,
-			slots = inventory.slots,
-			weight = inventory.weight,
-			maxWeight = inventory.weight,
-			owned = inventory.owner and true or false,
-			items = inventory.items
-		})
-	end
-	cb()
+	local inventory = Inventory(id or source)
+	return inventory and cb({
+		id = inventory.id,
+		label = inventory.label,
+		type = inventory.type,
+		slots = inventory.slots,
+		weight = inventory.weight,
+		maxWeight = inventory.maxWeight,
+		owned = inventory.owner and true or false,
+		items = inventory.items
+	}) or cb()
 end)
 
 RegisterServerEvent('ox_inventory:updateWeapon', function(action, value, slot)
