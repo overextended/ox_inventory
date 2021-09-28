@@ -10,11 +10,6 @@ Config.PlayerSlots = 50
 -- If vehicle plates are stored with a trailing space, set to false (i.e. `XXX 000 `)
 Config.TrimPlate = true
 
--- Restrict the purchase of firearms with a license
-Config.Licenses = {
-	['weapon'] = 5000
-}
-
 -- Adds compatibility for qtarget (https://github.com/QuantusRP/qtarget)
 Config.Target = false
 

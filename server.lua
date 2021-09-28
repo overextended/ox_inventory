@@ -1,5 +1,6 @@
 local Stashes <const> = data('stashes')
 local Vehicle <const> = data('vehicles')
+local Licenses <const> = data('Licenses')
 local Shops <const> = module('shops')
 local Items <const> = module('items')
 local Utils <const> = module('utils')
@@ -189,17 +190,17 @@ Utils.RegisterServerCallback('ox_inventory:swapItems', function(source, cb, data
 	cb(false)
 end)
 
-Utils.RegisterServerCallback('ox_inventory:buyLicense', function(source, cb, license)
-	local price = Config.Licenses[license]
-	if price then
+Utils.RegisterServerCallback('ox_inventory:buyLicense', function(source, cb, id)
+	local license = Licenses[id]
+	if license then
 		local inventory = Inventory(source)
 		exports.oxmysql:scalar('SELECT 1 FROM user_licenses WHERE type = ? AND owner = ?', { license, inventory.owner }, function(result)
 			if result then
 				cb(false, 'has_weapon_license')
-			elseif Inventory.GetItem(inventory, 'money', false, true) < price then
+			elseif Inventory.GetItem(inventory, 'money', false, true) < license.price then
 				cb(false, 'poor_weapon_license')
 			else
-				Inventory.RemoveItem(inventory, 'money', price)
+				Inventory.RemoveItem(inventory, 'money', license.price)
 				TriggerEvent('esx_license:addLicense', source, 'weapon', function()
 					cb('bought_weapon_license')
 				end)

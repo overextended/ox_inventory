@@ -1,5 +1,6 @@
 local Stashes <const> = data('stashes')
 local Vehicles <const> = data('vehicles')
+local Licenses <const> = data('Licenses')
 local Items <const>, Weapons <const> = table.unpack(module('items'))
 local Utils <const> = module('utils')
 local Progress <const> = module('progress')
@@ -147,7 +148,7 @@ local UseSlot = function(slot)
 						if currentWeapon then Disarm(data.slot) end
 						local sleep = (ESX.PlayerData.job.name == 'police' and GetWeapontypeGroup(data.hash) == 416676503) and 400 or 1200
 						local coords = GetEntityCoords(ESX.PlayerData.ped, true)
-						Utils.PlayAnimAdvanced(sleep*2, sleep == 400 and 'reaction@intimidation@cop@unarmed' or 'reaction@intimidation@1h', 'intro', coords.x, coords.y, coords.z, 0, 0, GetEntityHeading(ESX.PlayerData.ped), 8.0, 3.0, -1, 50, 0.1, 0, 0)
+						Utils.PlayAnimAdvanced(sleep*2, sleep == 400 and 'reaction@intimidation@cop@unarmed' or 'reaction@intimidation@1h', 'intro', coords.x, coords.y, coords.z, 0, 0, GetEntityHeading(ESX.PlayerData.ped), 8.0, 3.0, -1, 50, 0.1)
 						Wait(sleep)
 						GiveWeaponToPed(ESX.PlayerData.ped, data.hash, 0, false, true)
 						if item.metadata.components then
@@ -229,20 +230,22 @@ local CanOpenTarget = function(ped)
 	or IsEntityPlayingAnim(ped, 'random@mugging3', 'handsup_standing_base', 3)
 end
 
-local Drops, nearbyMarkers, closestMarker, currentMarker, playerCoords = {}, {}, {}, {}, nil
-local Markers = function(tb, type, rgb, playerCoords, name)
-	-- todo: cleanup code and reduce table reassignment? vectors should be better than tables, but requires two vec3s vs single table
+local Drops, nearbyMarkers, closestMarker, playerCoords = {}, {}, {}, nil
+local Markers = function(tb, type, rgb, name)
 	for k, v in pairs(tb) do
-		v = v.coords or v
-		local distance = #(playerCoords - v)
+		local coords = v.coords or v
+		local distance = #(playerCoords - coords)
 		local id = name and type..name..k or type..k
 		local marker = nearbyMarkers[id]
 		if distance < 1.2 then
-			if not marker then nearbyMarkers[id] = {x = v.x, y = v.y, z = v.z, r = rgb.x, g = rgb.y, b = rgb.z} end
-			if closestMarker[1] == nil or (currentMarker and distance < currentMarker[1]) or (closestMarker and distance < closestMarker[1]) then
-				closestMarker = {distance, k, type, name}
+			if not marker then nearbyMarkers[id] = mat(vec3(coords), vec3(rgb)) end
+			if closestMarker[1] == nil or (closestMarker and distance < closestMarker[1]) then
+				closestMarker[1] = distance
+				closestMarker[2] = k
+				closestMarker[3] = type
+				closestMarker[4] = name or v.name
 			end
-		elseif not marker and distance < 8 then nearbyMarkers[id] = {x = v.x, y = v.y, z = v.z, r = rgb.x, g = rgb.y, b = rgb.z} elseif marker and distance > 8 then nearbyMarkers[id] = nil end
+		elseif not marker and distance < 8 then nearbyMarkers[id] = mat(vec3(coords), vec3(rgb)) elseif marker and distance > 8 then nearbyMarkers[id] = nil end
 	end
 end
 
@@ -257,37 +260,29 @@ OnPlayerData = function(key, val)
 	SetWeaponsNoAutoreload(1)
 end
 
-local weaponLicense = vec3(12.42198, -1105.82, 29.7854)
 SetInterval(1, 250, function()
 	if not invOpen then
 		playerCoords = GetEntityCoords(ESX.PlayerData.ped)
 		closestMarker = table.wipe(closestMarker)
-		Markers(Drops, 'drop', vec3(150, 30, 30), playerCoords)
-		Markers(Stashes, 'stash', vec3(30, 30, 150), playerCoords)
+		Markers(Drops, 'drop', vec3(150, 30, 30))
+		Markers(Stashes, 'stash', vec3(30, 30, 150))
 		if not Config.Target then
 			for k, v in pairs(Shops.Stores) do
-				Markers(v.locations, 'shop', vec3(30, 150, 30), playerCoords, k)
+				Markers(v.locations, 'shop', vec3(30, 150, 30), k)
 			end
 		end
-		-- todo: cleanup code and reduce table reassignment? vectors should be better than tables, but requires two vec3s vs single table
-		local distance = #(playerCoords - weaponLicense)
-		local marker = nearbyMarkers['license']
+		Markers(Licenses, 'license', vec(30, 150, 30))
+		-- todo: finish police evidence system
+		local distance = #(playerCoords - vec3(-22.4, -1105.5, 26.7))
+		local marker = nearbyMarkers['policeevidence']
 		if distance < 1.2 then
-			if not marker then nearbyMarkers['license'] = {x = weaponLicense.x, y = weaponLicense.y, z = weaponLicense.z, r = 30, g = 150, b = 30} end
-			if closestMarker[1] == nil or (currentMarker and distance < currentMarker[1]) or (closestMarker and distance < closestMarker[1]) then
-				closestMarker = {distance, 'weapon', 'license'}
-			end
-		elseif not marker and distance < 8 then nearbyMarkers['license'] = {x = weaponLicense.x, y = weaponLicense.y, z = weaponLicense.z, r = 30, g = 150, b = 30} elseif marker and distance > 8 then nearbyMarkers['license'] = nil end
-		distance = #(playerCoords - vec3(-22.4, -1105.5, 26.7))
-		marker = nearbyMarkers['policeevidence']
-		if distance < 1.2 then
-			if not marker then nearbyMarkers['policeevidence'] = {x = -22.4, y = -1105.5, z = 26.7, r = 30, g = 30, b = 150} end
-			if closestMarker[1] == nil or (currentMarker and distance < currentMarker[1]) or (closestMarker and distance < closestMarker[1]) then
+			if not marker then nearbyMarkers['policeevidence'] = mat(vec3(-22.4, -1105.5, 26.7), vec3(30, 30, 150)) end
+			if closestMarker[1] == nil or (closestMarker and distance < closestMarker[1]) then
 				closestMarker = {distance, 1, 'policeevidence'}
 			end
-		elseif not marker and distance < 8 then nearbyMarkers['policeevidence'] = {x = -22.4, y = -1105.5, z = 26.7, r = 30, g = 30, b = 150} elseif marker and distance > 8 then nearbyMarkers['policeevidence'] = nil end
+		elseif not marker and distance < 8 then nearbyMarkers['policeevidence'] = mat(vec3(-22.4, -1105.5, 26.7), vec3(30, 30, 150)) elseif marker and distance > 8 then nearbyMarkers['policeevidence'] = nil end
 		----------------
-		if IsPedInAnyVehicle(ESX.PlayerData.ped, false) == false then currentMarker = closestMarker end
+		if IsPedInAnyVehicle(ESX.PlayerData.ped, false) then closestMarker = table.wipe(closestMarker) end
 		SetPedCanSwitchWeapon(ESX.PlayerData.ped, false)
 		SetPedEnableWeaponBlocking(ESX.PlayerData.ped, true)
 	else
@@ -350,7 +345,7 @@ SetInterval(2, 0, function()
 			end
 		end
 		for _, v in pairs(nearbyMarkers) do
-			DrawMarker(2, v.x,v.y,v.z, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.3, 0.2, 0.15, v.r, v.g, v.b, 222, false, false, false, true, false, false, false)
+			DrawMarker(2, v[1].x, v[1].y, v[1].z, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.3, 0.2, 0.15, v[2].x, v[2].y, v[2].z, 222, false, false, false, true, false, false, false)
 		end
 		DisablePlayerVehicleRewards(playerId)
 		if isBusy then
@@ -359,17 +354,17 @@ SetInterval(2, 0, function()
 			DisableControlAction(0, 25, true)
 			DisableControlAction(0, 263, true)
 		end
-		if currentMarker and IsControlJustReleased(0, 38, true) then
-			if currentMarker[3] == 'license' then
-				Utils.TriggerServerCallback('ox_inventory:buyLicense', function(result)
-					if result[1] == false then
-						Notify({type = 'error', text = ox.locale(result[2]), duration = 2500})
+		if closestMarker and IsControlJustReleased(0, 38, true) then
+			if closestMarker[2] == 'license' then
+				Utils.TriggerServerCallback('ox_inventory:buyLicense', function(success, message)
+					if success == false then
+						Notify({type = 'error', text = ox.locale(message), duration = 2500})
 					else
-						Notify({text = ox.locale(result[1]), duration = 2500})
+						Notify({text = ox.locale(success), duration = 2500})
 					end
-				end, 1000, currentMarker[2])
-			elseif currentMarker[3] == 'shop' then OpenInventory(currentMarker[3], {id=currentMarker[2], type=currentMarker[4]})
-			elseif currentMarker[3] == 'policeevidence' then OpenInventory(currentMarker[3]) end
+				end, 1000, closestMarker[4])
+			elseif closestMarker[3] == 'shop' then OpenInventory(closestMarker[3], {id=closestMarker[2], type=closestMarker[4]})
+			elseif closestMarker[3] == 'policeevidence' then OpenInventory(closestMarker[3]) end
 		end
 		if currentWeapon then
 			DisableControlAction(0, 140, true)
@@ -478,7 +473,7 @@ RegisterNetEvent('ox_inventory:createDrop', function(data, owner, slot)
 end)
 
 RegisterNetEvent('ox_inventory:removeDrop', function(id)
-	if currentMarker?[3] == id then currentMarker = table.wipe(currentMarker) end
+	if closestMarker?[3] == id then closestMarker = table.wipe(closestMarker) end
 	if Drops then Drops[id] = nil end
 	nearbyMarkers['drop'..id] = nil
 end)
@@ -594,8 +589,8 @@ RegisterNetEvent('esx_policejob:unrestrain', function()
 end)
 
 RegisterCommand('inv', function()
-	if currentMarker[1] and currentMarker[3] ~= 'license' and currentMarker[3] ~= 'policeevidence' then
-		OpenInventory(currentMarker[3], {id=currentMarker[2], type=currentMarker[4]})
+	if closestMarker[1] and closestMarker[3] ~= 'license' and closestMarker[3] ~= 'policeevidence' then
+		OpenInventory(closestMarker[3], {id=closestMarker[2], type=closestMarker[4]})
 	else OpenInventory() end
 end)
 
