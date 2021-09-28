@@ -195,13 +195,13 @@ Utils.RegisterServerCallback('ox_inventory:buyLicense', function(source, cb, lic
 		local inventory = Inventory(source)
 		exports.oxmysql:scalar('SELECT 1 FROM user_licenses WHERE type = ? AND owner = ?', { license, inventory.owner }, function(result)
 			if result then
-				cb({false, 'has_weapon_license'})
+				cb(false, 'has_weapon_license')
 			elseif Inventory.GetItem(inventory, 'money', false, true) < price then
-				cb({false, 'poor_weapon_license'})
+				cb(false, 'poor_weapon_license')
 			else
 				Inventory.RemoveItem(inventory, 'money', price)
 				TriggerEvent('esx_license:addLicense', source, 'weapon', function()
-					cb({'bought_weapon_license'})
+					cb('bought_weapon_license')
 				end)
 			end
 		end)
