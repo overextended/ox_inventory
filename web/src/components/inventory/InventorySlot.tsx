@@ -135,7 +135,11 @@ const InventorySlot: React.FC<SlotProps> = ({ inventory, item, setCurrentItem })
                   <div className="item-price" style={{ color: '#2ECC71' }}>
                     <img
                       className="item-currency"
-                      src={item?.currency ? `${process.env.PUBLIC_URL + `/images/burger.png`}` : ''}
+                      src={
+                        item?.currency
+                          ? `${process.env.PUBLIC_URL + `/images/${item?.currency}.png`}`
+                          : ''
+                      }
                       alt="item picture here"
                     ></img>
                     {item.price}
