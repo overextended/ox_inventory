@@ -229,12 +229,12 @@ M.GetItem = function(inv, item, metadata, returnsCount)
 	return
 end
 
-M.SwapSlots = function(inventory, slot)
-	local fromSlot = inventory[1].items[slot[1]] and table.clone(inventory[1].items[slot[1]]) or nil
-	local toSlot = inventory[2].items[slot[2]] and table.clone(inventory[2].items[slot[2]]) or nil
-	if fromSlot then fromSlot.slot = slot[2] end
-	if toSlot then toSlot.slot = slot[1] end
-	inventory[1].items[slot[1]], inventory[2].items[slot[2]] = toSlot, fromSlot
+M.SwapSlots = function(fromInventory, toInventory, slot1, slot2)
+	local fromSlot = fromSlot.items[slot1] and table.clone(fromSlot.items[slot1]) or nil
+	local toSlot = toInventory.items[slot2] and table.clone(toInventory.items[slot2]) or nil
+	if fromSlot then fromSlot.slot = slot2 end
+	if toSlot then toSlot.slot = slot1 end
+	fromSlot.items[slot1], toInventory.items[slot2] = toSlot, fromSlot
 	return fromSlot, toSlot
 end
 
@@ -283,7 +283,7 @@ M.AddItem = function(inv, item, count, metadata, slot)
 		inv.weight = inv.weight + (item.weight + (metadata.weight or 0)) * count
 		if xPlayer then
 			M.SyncInventory(xPlayer, inv)
-			TriggerClientEvent('ox_inventory:updateInventory', xPlayer.source, {{item = inv.items[slot], inventory = inv.type}}, {left=inv.weight, right=inv.open and Inventories[inv.open]?.weight}, item.name, count, false)
+			TriggerClientEvent('ox_inventory:updateInventory', xPlayer.source, {{item = inv.items[slot], inventory = inv.type}}, {left=inv.weight, right=inv.open and Inventories[inv.open]?.weight}, item.label, count, false)
 		end
 	end
 end
@@ -378,7 +378,7 @@ M.RemoveItem = function(inv, item, count, metadata, slot)
 					array[k] = {item = v, inventory = inv.type}
 				end
 			end
-			TriggerClientEvent('ox_inventory:updateInventory', xPlayer.source, array, {left=inv.weight, right=inv.open and Inventories[inv.open]?.weight}, item.name, removed, true)
+			TriggerClientEvent('ox_inventory:updateInventory', xPlayer.source, array, {left=inv.weight, right=inv.open and Inventories[inv.open]?.weight}, item.label, removed, true)
 		end
 	end
 end
