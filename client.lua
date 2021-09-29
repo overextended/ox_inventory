@@ -353,14 +353,14 @@ SetInterval(2, 0, function()
 			DisableControlAction(0, 263, true)
 		end
 		if closestMarker and IsControlJustReleased(0, 38, true) then
-			if closestMarker[2] == 'license' then
+			if closestMarker[3] == 'license' then
 				Utils.TriggerServerCallback('ox_inventory:buyLicense', function(success, message)
 					if success == false then
 						Notify({type = 'error', text = ox.locale(message), duration = 2500})
 					else
 						Notify({text = ox.locale(success), duration = 2500})
 					end
-				end, 1000, closestMarker[4])
+				end, 1000, closestMarker[2])
 			elseif closestMarker[3] == 'shop' then OpenInventory(closestMarker[3], {id=closestMarker[2], type=closestMarker[4]})
 			elseif closestMarker[3] == 'policeevidence' then OpenInventory(closestMarker[3]) end
 		end

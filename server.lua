@@ -197,7 +197,7 @@ Utils.RegisterServerCallback('ox_inventory:buyLicense', function(source, cb, id)
 	local license = Licenses[id]
 	if license then
 		local inventory = Inventory(source)
-		exports.oxmysql:scalar('SELECT 1 FROM user_licenses WHERE type = ? AND owner = ?', { license, inventory.owner }, function(result)
+		exports.oxmysql:scalar('SELECT 1 FROM user_licenses WHERE type = ? AND owner = ?', { license.name, inventory.owner }, function(result)
 			if result then
 				cb(false, 'has_weapon_license')
 			elseif Inventory.GetItem(inventory, 'money', false, true) < license.price then
