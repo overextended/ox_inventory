@@ -150,7 +150,7 @@ img {
 
   .item-price {
     position: absolute;
-    font-size: 1.3vh;
+    font-size: 1.2vh;
     bottom: 1.4vh;
     right: 0.1vh;
 
@@ -159,6 +159,15 @@ img {
     display: flex;
     justify-content: center;
     align-items: center;
+
+    .item-currency {
+      height: auto;
+      width: 2vh;
+      backface-visibility: hidden;
+      -ms-transform: translateZ(0); /* IE 9 */
+      -webkit-transform: translateZ(0); /* Chrome, Safari, Opera */
+      transform: translateZ(0);
+    }
   }
 }
 
