@@ -188,8 +188,6 @@ local UseSlot = function(slot)
 									MakePedReload(ESX.PlayerData.ped)
 									currentWeapon.metadata.ammo = newAmmo
 									TriggerServerEvent('ox_inventory:updateWeapon', 'load', currentWeapon.metadata.ammo)
-									-- todo: clean up and use a single server event
-									TriggerServerEvent('ox_inventory:removeItem', data.name, missingAmmo, data.metadata, data.slot)
 								end
 							end
 						end)
@@ -526,6 +524,7 @@ end)
 
 AddEventHandler('ox_inventory:item', function(data, cb)
 	if isBusy == false and Progress.Active == false and IsPedRagdoll(ESX.PlayerData.ped) == false and IsPedFalling(ESX.PlayerData.ped) == false then
+		if currentWeapon and currentWeapon?.timer > 100 then return end
 		SetBusy(true)
 		if invOpen and data.close then TriggerEvent('ox_inventory:closeInventory') end
 		local result = Utils.AwaitServerCallback('ox_inventory:useItem', data.name, data.slot, data.metadata)
@@ -556,6 +555,7 @@ AddEventHandler('ox_inventory:item', function(data, cb)
 					end
 				end
 				if currentWeapon?.slot == result.slot then Disarm() else cb(result) end
+				Wait(200)
 				return SetBusy(false)
 			end
 		end

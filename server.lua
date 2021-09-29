@@ -236,6 +236,9 @@ RegisterServerEvent('ox_inventory:updateWeapon', function(action, value, slot)
 	local weapon = inventory.items[inventory.weapon or slot]
 	if weapon and weapon.metadata then
 		if action == 'load' then
+			local ammo = Items(weapon.name).ammoname
+			local diff = value - weapon.metadata.ammo
+			Inventory.RemoveItem(inventory, ammo, diff)
 			weapon.metadata.ammo = value
 		elseif action == 'throw' then
 			Inventory.RemoveItem(inventory, weapon.name, 1, weapon.metadata, weapon.slot)
@@ -261,6 +264,7 @@ Utils.RegisterServerCallback('ox_inventory:useItem', function(source, cb, item, 
 			inventory.weapon = data.slot
 			return cb(data)
 		elseif type == 2 then -- ammo
+			data.consume = nil
 			return cb(data)
 		elseif type == 3 then -- attachment
 			data.consume = item.consume
