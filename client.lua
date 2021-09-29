@@ -478,15 +478,15 @@ RegisterNetEvent('ox_inventory:removeDrop', function(id)
 	nearbyMarkers['drop'..id] = nil
 end)
 
-RegisterNetEvent('ox_inventory:setPlayerInventory', function(data)
+RegisterNetEvent('ox_inventory:setPlayerInventory', function(drops, inventory, weight, esxitem, label)
 	playerId, ESX.PlayerData.ped, invOpen, currentWeapon = GetPlayerServerId(PlayerId()), ESX.PlayerData.ped, false, nil
 	ClearWeapons()
-	Drops, ESX.PlayerData.inventory = data[1], data[2]
+	Drops, ESX.PlayerData.inventory = drops, inventory
 	ESX.SetPlayerData('inventory', ESX.PlayerData.inventory)
-	ESX.SetPlayerData('weight', data[3])
+	ESX.SetPlayerData('weight', weight)
     local ItemData = table.create(0, #Items)
     for _, v in pairs(Items) do
-		v.usable = (v.client and next(v.client) or v.consume == 0 or data[4][v.name] or v.name:find('WEAPON_') or v.name:find('ammo-') or v.name:find('at_')) and true or false
+		v.usable = (v.client and next(v.client) or v.consume == 0 or esxitem[v.name] or v.name:find('WEAPON_') or v.name:find('ammo-') or v.name:find('at_')) and true or false
         ItemData[v.name] = {
             label = v.label,
             usable = v.usable,
@@ -504,7 +504,7 @@ RegisterNetEvent('ox_inventory:setPlayerInventory', function(data)
 				slots = Config.PlayerSlots,
 				items = ESX.PlayerData.inventory,
 				maxWeight = Config.DefaultWeight,
-				label = data[5]
+				label = label
 			}
 		}
 	})

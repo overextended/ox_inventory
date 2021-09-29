@@ -45,7 +45,7 @@ AddEventHandler('ox_inventory:setPlayerInventory', function(xPlayer, data)
 	end
 	Inventory.Create(xPlayer.source, xPlayer.name, 'player', Config.PlayerSlots, totalWeight, Config.DefaultWeight, xPlayer.identifier, inventory)
 	xPlayer.syncInventory(totalWeight, Config.DefaultWeight, inventory, money)
-	TriggerClientEvent('ox_inventory:setPlayerInventory', xPlayer.source, {Inventory.Drops, inventory, totalWeight, ESX.UsableItemsCallbacks, ('%s - %s'):format(xPlayer.name, xPlayer.job.name)})
+	TriggerClientEvent('ox_inventory:setPlayerInventory', xPlayer.source, Inventory.Drops, inventory, totalWeight, ESX.UsableItemsCallbacks, ('%s - %s'):format(xPlayer.name, xPlayer.job.name))
 end)
 
 Utils.RegisterServerCallback('ox_inventory:openInventory', function(source, cb, inv, data)
@@ -133,7 +133,7 @@ Utils.RegisterServerCallback('ox_inventory:swapItems', function(source, cb, data
 				if fromSlot and fromSlot.metadata.container ~= toInventory.id then
 					if data.count > fromSlot.count then data.count = fromSlot.count end
 					if toSlot and ((toSlot.name ~= fromSlot.name) or not toSlot.stack or (not Utils.MatchTables(toSlot.metadata, fromSlot.metadata))) then
-						toSlot, fromSlot = Inventory.SwapSlots({fromInventory, toInventory}, {data.fromSlot, data.toSlot})
+						toSlot, fromSlot = Inventory.SwapSlots(fromInventory, toInventory, data.fromSlot, data.toSlot)
 						local newWeight = toInventory.weight + toSlot.weight
 						if newWeight <= toInventory.maxWeight then
 							if fromInventory.id ~= toInventory.id then
