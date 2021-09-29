@@ -7,12 +7,16 @@ local Utils <const> = module('utils')
 local Inventory <const> = module('inventory')
 
 RegisterServerEvent('ox_inventory:requestPlayerInventory', function()
-	local xPlayer, inventory = ESX.GetPlayerFromId(source)
-	while not ox.ready do Wait(15) end
-	exports.oxmysql:scalar('SELECT inventory FROM users WHERE identifier = ?', { xPlayer.identifier }, function(result)
-		if result then inventory = json.decode(result) end
-		TriggerEvent('ox_inventory:setPlayerInventory', xPlayer, inventory)
-	end)
+	local xPlayer = ESX.GetPlayerFromId(source)
+	while not ox.ready do Wait(0) end
+	if next(xPlayer.inventory) then
+		TriggerEvent('ox_inventory:setPlayerInventory', xPlayer)
+	else
+		exports.oxmysql:scalar('SELECT inventory FROM users WHERE identifier = ?', { xPlayer.identifier }, function(result)
+			if result then inventory = json.decode(result) end
+			TriggerEvent('ox_inventory:setPlayerInventory', xPlayer, result and json.decode(result))
+		end)
+	end
 end)
 
 RegisterServerEvent('ox_inventory:closeInventory', function()
@@ -24,20 +28,19 @@ end)
 
 AddEventHandler('ox_inventory:setPlayerInventory', function(xPlayer, data)
 	local money, inventory, totalWeight = {money=0, black_money=0}, {}, 0
-	for i=1, #data do
-		local i = data[i]
-		if type(i) == 'number' then break end
-		local item = Items(i.name)
+	for _, v in pairs(data or xPlayer.inventory) do
+		if type(v) == 'number' then break end
+		local item = Items(v.name)
 		if item then
-			local weight = Inventory.SlotWeight(item, i)
+			local weight = Inventory.SlotWeight(item, v)
 			totalWeight = totalWeight + weight
-			if i.metadata and i.metadata.bag then
-				i.metadata.container = i.metadata.bag
-				i.metadata.size = {5, 1000}
-				i.metadata.bag = nil
+			if v.metadata and v.metadata.bag then
+				v.metadata.container = v.metadata.bag
+				v.metadata.size = {5, 1000}
+				v.metadata.bag = nil
 			end
-			inventory[i.slot] = {name = i.name, label = item.label, weight = weight, slot = i.slot, count = i.count, description = item.description, metadata = i.metadata, stack = item.stack, close = item.close}
-			if money[i.name] then money[i.name] = money[i.name] + i.count end
+			inventory[v.slot] = {name = v.name, label = item.label, weight = weight, slot = v.slot, count = v.count, description = item.description, metadata = v.metadata, stack = item.stack, close = item.close}
+			if money[v.name] then money[v.name] = money[v.name] + v.count end
 		end
 	end
 	Inventory.Create(xPlayer.source, xPlayer.name, 'player', Config.PlayerSlots, totalWeight, Config.DefaultWeight, xPlayer.identifier, inventory)

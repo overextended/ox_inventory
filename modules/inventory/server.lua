@@ -36,7 +36,7 @@ end
 
 local Minimal = function(inv)
 	if type(inv) ~= 'table' then inv = Inventories[inv] end
-	local inventory, count = table.create(#inv.items, 0), 0
+	local inventory, count = {}, 0
 	for k, v in pairs(inv.items) do
 		if v.name and v.count > 0 then
 			count += 1
@@ -622,5 +622,29 @@ exports('Inventory', function(arg)
 	end
 	return M
 end)
+
+-- local TaskList = {
+-- 	give = function(id, item, count)
+-- 		print(('give %s %s to inventory %s'):format(count, item, id))
+-- 	end,
+
+-- 	remove = function(id, item, count)
+-- 		print(('remove %s %s from inventory %s'):format(count, item, id))
+-- 	end
+-- }
+
+-- exports('dostuff', function(...)
+-- 	local tasks = {...}
+-- 	for i=1, #tasks, 4 do
+-- 		TaskList[tasks[i]](tasks[i+1], tasks[i+2], tasks[i+3])
+-- 	end
+-- 	return 'we done'
+-- end)
+
+-- local wat = exports.ox_inventory:dostuff(
+-- 	'remove', 3, 'bread', 1,
+-- 	'give', 1, 'bread', 1
+-- )
+-- print(wat)
 
 return M
