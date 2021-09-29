@@ -127,9 +127,44 @@ const InventorySlot: React.FC<SlotProps> = ({ inventory, item, setCurrentItem })
               </span>
             </div>
             {item?.durability !== undefined && <WeightBar percent={item.durability} durability />}
-            <div className="item-label">
-              {Items[item.name]?.label || item.name}
-            </div>
+            {inventory.type === 'shop' && item?.price && (
+              <>
+                {item?.currency !== 'money' &&
+                item?.currency !== 'black_money' &&
+                item?.currency ? (
+                  <div className="item-price" style={{ color: '#2ECC71' }}>
+                    <>
+                      <div
+                        className="item-currency"
+                        style={{
+                          backgroundImage: item?.currency
+                            ? `url(${process.env.PUBLIC_URL + `/images/${item?.currency}.png`})`
+                            : 'none',
+                          width: '2vh',
+                          height: '2vh',
+                          backgroundPosition: 'center',
+                          backgroundSize: '2vh',
+                          backgroundRepeat: 'no-repeat',
+                        }}
+                      ></div>
+                      {item.price}
+                    </>
+                  </div>
+                ) : (
+                  <>
+                    <div
+                      className="item-price"
+                      style={{
+                        color: item.currency === 'money' || !item.currency ? '#2ECC71' : '#E74C3C',
+                      }}
+                    >
+                      ${item.price}
+                    </div>
+                  </>
+                )}
+              </>
+            )}
+            <div className="item-label">{Items[item.name]?.label || item.name}</div>
           </>
         )}
       </div>

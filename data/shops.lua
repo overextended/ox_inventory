@@ -20,8 +20,9 @@ return {
 		blip = {
 			id = 93, colour = 69, scale = 0.8
 		}, inventory = {
-			{ name = 'water', price = 10 },
-			{ name = 'cola', price = 10 }
+			{ name = 'water', price = 10, currency = 'burger' },
+			{ name = 'cola', price = 10},
+			{ name = 'burger', price = 15, currency = 'black_money'}
 		}, locations = {
 			vec3(1135.808, -982.281, 46.415),
 			vec3(-1222.915, -906.983, 12.326),

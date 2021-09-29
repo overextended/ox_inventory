@@ -114,6 +114,7 @@ img {
   background-size: $imageSize;
   border-radius: $borderRadius;
   image-rendering: -webkit-optimize-contrast;
+  position: relative;
 
   .item-count {
     display: flex;
@@ -145,6 +146,19 @@ img {
     text-transform: uppercase;
     white-space: nowrap;
     text-overflow: ellipsis;
+  }
+
+  .item-price {
+    position: absolute;
+    font-size: 1.3vh;
+    bottom: 1.4vh;
+    right: 0.1vh;
+
+    height: 2vh;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
   }
 }
 
