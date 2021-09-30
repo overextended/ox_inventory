@@ -79,7 +79,7 @@ Utils.RegisterServerCallback('ox_inventory:buyItem', function(source, cb, data)
 					toSlot = table.clone(fromSlot)
 					toSlot.count = count
 					toSlot.slot = data.toSlot
-					toSlot.weight = Inventory.SlotWeight(toItem, toSlot)
+					toSlot.weight = Inventory.SlotWeight(fromItem, toSlot)
 					player.weight = player.weight + toSlot.weight
 				else
 					print('buyItem', data.fromType, data.fromSlot, 'to', data.toType, data.toSlot)
@@ -89,7 +89,7 @@ Utils.RegisterServerCallback('ox_inventory:buyItem', function(source, cb, data)
 				shop.items[data.fromSlot], player.items[data.toSlot] = fromSlot, toSlot
 				Inventory.RemoveItem(source, currency, price)
 				Inventory.SyncInventory(xPlayer, player, items)
-				return cb(true, {data.toSlot, toSlot, weight}, {type = 'success', text = 'Purchased '..count..'x '..toItem.label..' for $'..price})
+				return cb(true, {data.toSlot, toSlot, weight}, {type = 'success', text = ('Purchased %sx %s for %s%s'):format(count, fromItem.label, (currency == 'money' and '$' or price), (currency == 'money' and price or ' '..currency))})
 			end
 			return cb(false, nil, {type = 'error', text = ox.locale('cannot_afford', '$'..price-playerMoney)})
 		end
