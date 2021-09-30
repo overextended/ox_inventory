@@ -1,31 +1,29 @@
-import { Menu, Item, Submenu, Separator } from 'react-contexify';
+import { Menu, Item, Submenu, Separator, ItemParams } from 'react-contexify';
 import { onUse } from '../../dnd/onUse';
 import { onGive } from '../../dnd/onGive';
-import { useAppSelector } from '../../store';
 import 'react-contexify/dist/ReactContexify.css';
-import { selectItemAmount } from '../../store/inventory';
+import { SlotWithItem } from '../../typings';
+import { onDrop } from '../../dnd/onDrop';
+import { Items } from '../../store/items';
 
-const InventoryContext: React.FC<any> = (props: any) => {
-  const itemAmount = useAppSelector(selectItemAmount);
-
-  const handleClick = ({ props, data }: any) => {
+const InventoryContext: React.FC<{ item: SlotWithItem }> = (props) => {
+  const handleClick = ({ data }: ItemParams<undefined, string>) => {
     switch (data) {
       case 'use':
         onUse({ name: props.item.name, slot: props.item.slot });
         break;
       case 'give':
-        onGive({ name: props.item.name, slot: props.item.slot }, itemAmount);
+        onGive({ name: props.item.name, slot: props.item.slot });
         break;
       case 'drop':
-        console.log('drop');
+        onDrop({ item: props.item, inventory: 'player' });
         break;
-      //
     }
   };
 
   return (
     <>
-      <Menu id={`slot-context${props.id}`} theme="dark" animation="fade">
+      <Menu id={`slot-context-${props.item.slot}-${props.item.name}`} theme="dark" animation="fade">
         <Item onClick={handleClick} data="use">
           Use
         </Item>
@@ -35,16 +33,20 @@ const InventoryContext: React.FC<any> = (props: any) => {
         <Item onClick={handleClick} data="drop">
           Drop
         </Item>
-        {/* Separator is broken for some reason ????? */}
-        {props.item.name && JSON.stringify(props.item.name).includes('WEAPON_') && (
-          <>
-            <Separator />
-            <Submenu label="Submenu">
-              <Item onClick={handleClick}>Sub Item 1</Item>
-              <Item onClick={handleClick}>Sub Item 2</Item>
-            </Submenu>
-          </>
-        )}
+        {props.item.name.startsWith('WEAPON_') &&
+          props.item.metadata &&
+          props.item.metadata?.components?.length > 0 && (
+            <>
+              <Separator />
+              <Submenu label="Remove Attachments">
+                {props.item.metadata.components.map((component: string, index: number) => (
+                  <Item key={index} onClick={handleClick}>
+                    {Items[component]?.label}
+                  </Item>
+                ))}
+              </Submenu>
+            </>
+          )}
       </Menu>
     </>
   );

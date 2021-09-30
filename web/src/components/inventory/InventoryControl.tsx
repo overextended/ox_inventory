@@ -48,13 +48,10 @@ const InventoryControl: React.FC = () => {
     drop: (source) => onUse(source.item),
   }));
 
-  const [, give] = useDrop<DragSource, void, any>(
-    () => ({
-      accept: 'SLOT',
-      drop: (source) => onGive(source.item, itemAmount),
-    }),
-    [itemAmount]
-  );
+  const [, give] = useDrop<DragSource, void, any>(() => ({
+    accept: 'SLOT',
+    drop: (source) => onGive(source.item),
+  }));
 
   const inputHandler = (event: React.ChangeEvent<HTMLInputElement>) => {
     dispatch(setItemAmount(event.target.valueAsNumber));

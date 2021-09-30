@@ -22,7 +22,7 @@ $imageSize: $gridSize - 2.5vh;
   font-size: 1.5vh;
   font-weight: 400;
   box-sizing: content-box;
-  overflow: hidden;
+  // overflow: hidden; FIXES SUBMENU
   user-select: none;
   margin: 0;
   color: #fff;
@@ -430,4 +430,11 @@ input[type='number'] {
 .react-contexify__item:not(.react-contexify__item--disabled):focus
   > .react-contexify__item__content {
   background-color: $secondaryColor;
+}
+
+.react-contexify .react-contexify__submenu {
+  background-color: $mainColor;
+  border-radius: $borderRadius;
+  box-shadow: none;
+  text-shadow: none;
 }
