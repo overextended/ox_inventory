@@ -1,6 +1,6 @@
 local Stashes <const> = data('stashes')
 local Vehicles <const> = data('vehicles')
-local Licenses <const> = data('Licenses')
+local Licenses <const> = data('licenses')
 local Items <const>, Weapons <const> = table.unpack(module('items'))
 local Utils <const> = module('utils')
 local Progress <const> = module('progress')
