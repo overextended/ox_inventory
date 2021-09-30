@@ -8,7 +8,7 @@ import { onBuy } from '../../dnd/onBuy';
 import { selectIsBusy } from '../../store/inventory';
 import { Items } from '../../store/items';
 import { isSlotWithItem } from '../../helpers';
-import { contextMenu } from 'react-contexify';
+import { contextMenu, useContextMenu } from 'react-contexify';
 import InventoryContext from './InventoryContext';
 
 interface SlotProps {
@@ -81,16 +81,10 @@ const InventorySlot: React.FC<SlotProps> = ({ inventory, item, setCurrentItem })
     [item, setCurrentItem],
   );
 
-  const handleContext = (e: any) => {
-    isSlotWithItem(item) &&
-      inventory.type === 'player' &&
-      contextMenu.show({
-        id: `slot-context${item.slot}`,
-        event: e,
-        props: {
-          item: item,
-        },
-      });
+  const { show } = useContextMenu({ id: `slot-context-${item.slot}-${item.name}` });
+
+  const handleContext = (event: React.MouseEvent<HTMLDivElement>) => {
+    isSlotWithItem(item) && inventory.type === 'player' && show(event);
   };
 
   return (
@@ -109,9 +103,9 @@ const InventorySlot: React.FC<SlotProps> = ({ inventory, item, setCurrentItem })
         onMouseEnter={onMouseEnter}
         onMouseLeave={onMouseLeave}
       >
-        <InventoryContext id={item.slot} item={item} />
         {isSlotWithItem(item) && (
           <>
+            <InventoryContext item={item} />
             <div className="item-count">
               <span>
                 {item.weight > 0
