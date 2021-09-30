@@ -1,6 +1,6 @@
 local Stashes <const> = data('stashes')
 local Vehicle <const> = data('vehicles')
-local Licenses <const> = data('Licenses')
+local Licenses <const> = data('licenses')
 local Shops <const> = module('shops')
 local Items <const> = module('items')
 local Utils <const> = module('utils')
