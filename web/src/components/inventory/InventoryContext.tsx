@@ -1,10 +1,9 @@
 import { Menu, Item, Submenu, Separator, ItemParams } from 'react-contexify';
 import { onUse } from '../../dnd/onUse';
 import { onGive } from '../../dnd/onGive';
-import { useAppSelector } from '../../store';
 import 'react-contexify/dist/ReactContexify.css';
-import { selectItemAmount } from '../../store/inventory';
 import { SlotWithItem } from '../../typings';
+import { onDrop } from '../../dnd/onDrop';
 
 const InventoryContext: React.FC<{ item: SlotWithItem }> = (props) => {
   const handleClick = ({ data }: ItemParams<undefined, string>) => {
@@ -16,9 +15,8 @@ const InventoryContext: React.FC<{ item: SlotWithItem }> = (props) => {
         onGive({ name: props.item.name, slot: props.item.slot });
         break;
       case 'drop':
-        console.log('drop');
+        onDrop({ item: props.item, inventory: 'player' });
         break;
-      //
     }
   };
 
