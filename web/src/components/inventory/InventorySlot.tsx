@@ -8,7 +8,7 @@ import { onBuy } from '../../dnd/onBuy';
 import { selectIsBusy } from '../../store/inventory';
 import { Items } from '../../store/items';
 import { isSlotWithItem } from '../../helpers';
-import { contextMenu, useContextMenu } from 'react-contexify';
+import { useContextMenu } from 'react-contexify';
 import InventoryContext from './InventoryContext';
 
 interface SlotProps {

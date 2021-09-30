@@ -4,6 +4,7 @@ import { onGive } from '../../dnd/onGive';
 import 'react-contexify/dist/ReactContexify.css';
 import { SlotWithItem } from '../../typings';
 import { onDrop } from '../../dnd/onDrop';
+import { Items } from '../../store/items';
 
 const InventoryContext: React.FC<{ item: SlotWithItem }> = (props) => {
   const handleClick = ({ data }: ItemParams<undefined, string>) => {
@@ -32,15 +33,20 @@ const InventoryContext: React.FC<{ item: SlotWithItem }> = (props) => {
         <Item onClick={handleClick} data="drop">
           Drop
         </Item>
-        {props.item.name.startsWith('WEAPON_') && (
-          <>
-            <Separator />
-            <Submenu label="Submenu">
-              <Item onClick={handleClick}>Sub Item 1</Item>
-              <Item onClick={handleClick}>Sub Item 2</Item>
-            </Submenu>
-          </>
-        )}
+        {props.item.name.startsWith('WEAPON_') &&
+          props.item.metadata &&
+          props.item.metadata?.components?.length > 0 && (
+            <>
+              <Separator />
+              <Submenu label="Remove Attachments">
+                {props.item.metadata.components.map((component: string, index: number) => (
+                  <Item key={index} onClick={handleClick}>
+                    {Items[component]?.label}
+                  </Item>
+                ))}
+              </Submenu>
+            </>
+          )}
       </Menu>
     </>
   );
