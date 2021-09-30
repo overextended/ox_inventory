@@ -623,9 +623,10 @@ exports('Inventory', function(arg)
 	return M
 end)
 
+-- Testing stuff
 -- local TaskList = {
--- 	give = function(id, item, count)
--- 		print(('give %s %s to inventory %s'):format(count, item, id))
+-- 	add = function(id, item, count)
+-- 		print(('added %s %s to inventory %s'):format(count, item, id))
 -- 	end,
 
 -- 	remove = function(id, item, count)
@@ -633,17 +634,20 @@ end)
 -- 	end
 -- }
 
--- exports('dostuff', function(...)
--- 	local tasks = {...}
--- 	for i=1, #tasks, 4 do
--- 		TaskList[tasks[i]](tasks[i+1], tasks[i+2], tasks[i+3])
+-- exports('Tasks', function(...)
+-- 	local args = {scrub(...)}
+-- 	if #args % 4 == 0 then
+-- 		for i=1, #args, 4 do
+-- 			TaskList[args[i]](args[i+1], args[i+2], args[i+3])
+-- 		end
 -- 	end
--- 	return 'we done'
+-- 	return table.concat(args, ', ')
 -- end)
 
--- local wat = exports.ox_inventory:dostuff(
+-- local wat = exports.ox_inventory:Tasks(
 -- 	'remove', 3, 'bread', 1,
--- 	'give', 1, 'bread', 1
+-- 	'add', 3, 'bread', 1,
+-- 	'remove', 3, 'bread', 1
 -- )
 -- print(wat)
 
