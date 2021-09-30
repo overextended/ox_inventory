@@ -431,3 +431,10 @@ input[type='number'] {
   > .react-contexify__item__content {
   background-color: $secondaryColor;
 }
+
+.react-contexify .react-contexify__submenu {
+  background-color: $mainColor;
+  border-radius: $borderRadius;
+  box-shadow: none;
+  text-shadow: none;
+}
