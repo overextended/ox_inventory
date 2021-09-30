@@ -230,11 +230,11 @@ M.GetItem = function(inv, item, metadata, returnsCount)
 end
 
 M.SwapSlots = function(fromInventory, toInventory, slot1, slot2)
-	local fromSlot = fromSlot.items[slot1] and table.clone(fromSlot.items[slot1]) or nil
+	local fromSlot = fromInventory.items[slot1] and table.clone(fromInventory.items[slot1]) or nil
 	local toSlot = toInventory.items[slot2] and table.clone(toInventory.items[slot2]) or nil
 	if fromSlot then fromSlot.slot = slot2 end
 	if toSlot then toSlot.slot = slot1 end
-	fromSlot.items[slot1], toInventory.items[slot2] = toSlot, fromSlot
+	fromInventory.items[slot1], toInventory.items[slot2] = toSlot, fromSlot
 	return fromSlot, toSlot
 end
 
