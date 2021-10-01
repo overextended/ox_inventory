@@ -144,6 +144,8 @@ img {
     text-transform: uppercase;
     white-space: nowrap;
     text-overflow: ellipsis;
+    border-bottom-left-radius: $borderRadius;
+    border-bottom-right-radius: $borderRadius;
   }
 
   .item-price {
@@ -239,6 +241,7 @@ input[type='number'] {
   gap: 2px;
   position: absolute;
   bottom: 2vh;
+  border-radius: $borderRadius;
 }
 
 .item-info {
