@@ -34,7 +34,7 @@ const InventoryGrid: React.FC<{ inventory: Inventory }> = ({ inventory }) => {
           )}
         </div>
         <WeightBar percent={inventory.maxWeight ? (weight / inventory.maxWeight) * 100 : 0} />
-        <div className="inventory-grid">
+        <div className={`inventory-grid inventory-grid-${inventory.type}`}>
           {inventory.items.map((item) => (
             <InventorySlot
               key={`${inventory.type}-${inventory.id}-${item.slot}`}

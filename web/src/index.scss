@@ -84,9 +84,7 @@ img {
 }
 
 @for $i from 1 through 5 {
-  .inventory-grid:not(.inventory-grid-right)
-    > .item-container:nth-child(#{$i})
-    > .item-count:before,
+  .inventory-grid-player > .item-container:nth-child(#{$i}) > .item-count:before,
   .hotbar-grid > .item-container:nth-child(#{$i}) > .item-count:before {
     content: '#{$i}';
     width: 1.5vh;
