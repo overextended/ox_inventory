@@ -148,6 +148,7 @@ img {
     text-align: center;
     text-transform: uppercase;
     white-space: nowrap;
+    overflow: hidden;
     text-overflow: ellipsis;
     border-bottom-left-radius: $borderRadius;
     border-bottom-right-radius: $borderRadius;
