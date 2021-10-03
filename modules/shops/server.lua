@@ -76,7 +76,7 @@ Utils.RegisterServerCallback('ox_inventory:buyItem', function(source, cb, data)
 					player.weight = player.weight + toSlot.weight
 				elseif fromSlot.count == nil or count <= fromSlot.count then
 					if fromSlot.count then fromSlot.count = fromSlot.count - count end
-					toSlot = table.clone(fromSlot)
+					toSlot = table.clone(fromItem)
 					toSlot.count = count
 					toSlot.slot = data.toSlot
 					toSlot.weight = Inventory.SlotWeight(fromItem, toSlot)
