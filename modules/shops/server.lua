@@ -90,8 +90,10 @@ Utils.RegisterServerCallback('ox_inventory:buyItem', function(source, cb, data)
 				Inventory.RemoveItem(source, currency, price)
 				Inventory.SyncInventory(xPlayer, player, items)
 				return cb(true, {data.toSlot, toSlot, weight}, {type = 'success', text = ('Purchased %sx %s for %s%s'):format(count, fromItem.label, (currency == 'money' and '$' or price), (currency == 'money' and price or ' '..currency))})
+			elseif playerMoney < price then
+				return cb(false, nil, {type = 'error', text = ox.locale('cannot_afford', '$'..price-playerMoney)})
 			end
-			return cb(false, nil, {type = 'error', text = ox.locale('cannot_afford', '$'..price-playerMoney)})
+			return cb(false, nil, {type = 'error', text = {"You're unable to stack these items!"}})
 		end
 	end
 	cb(false)
