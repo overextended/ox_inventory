@@ -45,29 +45,31 @@ CreateThread(function()
 			local file = {LoadResourceFile(ox.name, 'data/items.lua')}
 			file[1] = file[1]:gsub('}$', '')
 			local dump = {}
-			for i=1, #items do
-				local i = items[i]
-				table.insert(dump, "('"..i.name.."', ".."'"..i.name.."', "..i.weight.."),\n")
-				table.insert(file, [[
+local itemFormat = [[
 
-	[']]..i.name..[['] = {
-		label = ']]..i.label..[[',
-		weight = ]]..tonumber(i.weight)..[[,
-		stack = ]]..tostring(i.stack)..[[,
-		close = ]]..tostring(i.close)..[[,
-		description = ']]..tostring(i.description)..[['
+	['%s'] = {
+		label = %s,
+		weight = %s,
+		stack = %s,
+		close = %s,
+		description = %s
 	},
-]])
-			end
-			sql:write(table.concat(dump))
-			sql:close()
-			file[#file+1] = '}'
-			SaveResourceFile(ox.name, 'data/items.lua', table.concat(file), -1)
-			exports.oxmysql:update(query, {}, function(result)
-				if result > 0 then
-					ox.info('Removed '..result..' items from the database')
+]]
+			for _, v in pairs(items) do
+				if not Items[v.name] then
+					dump[#dump+1] = ("('%s', '%s', %s),\n"):format(v.name, v.label, v.weight)
+					dump[#dump+1] = (itemFormat):format(v.name, v.label, v.weight, v.stack, v.close, v.description)
 				end
-			end)
+				sql:write(table.concat(dump))
+				sql:close()
+				file[#file+1] = '}'
+				SaveResourceFile(ox.name, 'data/items.lua', table.concat(file), -1)
+				exports.oxmysql:update(query, {}, function(result)
+					if result > 0 then
+						ox.info('Removed '..result..' items from the database')
+					end
+				end)
+			end
 		end
 	end
 	Wait(2000)
