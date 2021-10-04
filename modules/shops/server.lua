@@ -27,7 +27,8 @@ for shopName, shopDetails in pairs(data('shops')) do
 					price = (math.floor(slot.price * (math.random(8, 12)/10))),
 					metadata = slot.metadata,
 					license = slot.license,
-					currency = slot.currency
+					currency = slot.currency,
+					grade = slot.grade
 				}
 				M[shopName][i].items[j] = slot
 			end
