@@ -25,7 +25,7 @@ export const onDrop = (source: DragSource, target?: DropTarget) => {
     return console.error(`${sourceSlot.name} item data undefined!`);
   }
 
-  if (targetInventory.id === sourceSlot?.metadata?.container) {
+  if (targetInventory.type === 'container' && sourceSlot?.metadata?.container) {
     return console.error(`Unable to store ${sourceSlot.name} inside itself!`)
   }
 
