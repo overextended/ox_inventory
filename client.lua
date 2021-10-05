@@ -8,13 +8,12 @@ local Shops <const> = module('shops')
 local Inventory <const> = module('inventory')
 local Keyboard <const> = module('input')
 local invOpen, playerId, currentWeapon
-local plyState, isBusy = LocalPlayer.state, false
+local isBusy = true
+local plyState = LocalPlayer.state
 
-local SetBusy = function(state)
-	isBusy = state
-	plyState:set('isBusy', state, false)
-end
-exports('SetBusy', SetBusy)
+AddStateBagChangeHandler('isBusy', nil, function(bagName, key, value, reserved, replicated)
+	isBusy = value
+end)
 
 local SetWeapon = function(weapon, hash, ammo)
 	currentWeapon = weapon and {
@@ -123,7 +122,7 @@ local OpenInventory = function(inv, data)
 			if invOpen == false then Notify({type = 'error', text = ox.locale('inventory_cannot_open_other'), duration = 2500}) end
 			TriggerEvent('ox_inventory:closeInventory')
 		end
-	else Notify({type = 'error', text = ox.locale('inventory_cannot_open'), duration = 2500}) end
+	elseif not isBusy then Notify({type = 'error', text = ox.locale('inventory_cannot_open'), duration = 2500}) end
 end
 RegisterNetEvent('ox_inventory:openInventory', OpenInventory)
 
@@ -389,13 +388,13 @@ SetInterval(2, 0, function()
 				end
 			elseif IsControlJustReleased(0, 24) then
 				if currentWeapon.throwable then
-					SetBusy(true)
+					plyState.isBusy = true
 					SetTimeout(700, function()
 						ClearPedSecondaryTask(ESX.PlayerData.ped)
 						RemoveWeaponFromPed(ESX.PlayerData.ped, currentWeapon.hash)
 						TriggerServerEvent('ox_inventory:updateWeapon', 'throw')
 						SetWeapon()
-						SetBusy(false)
+						plyState.isBusy = false
 					end)
 				elseif IsPedPerformingMeleeAction(ESX.PlayerData.ped) then
 					currentWeapon.timer = GetGameTimer() + 400
@@ -508,6 +507,7 @@ RegisterNetEvent('ox_inventory:setPlayerInventory', function(drops, inventory, w
 	})
 	Shops.CreateShopLocations()
 	Notify({text = ox.locale('inventory_setup'), duration = 2500})
+	plyState.isBusy = false
 	collectgarbage('collect')
 end)
 
@@ -525,10 +525,13 @@ end)
 AddEventHandler('ox_inventory:item', function(data, cb)
 	if isBusy == false and Progress.Active == false and IsPedRagdoll(ESX.PlayerData.ped) == false and IsPedFalling(ESX.PlayerData.ped) == false then
 		if currentWeapon and currentWeapon?.timer > 100 then return end
-		SetBusy(true)
+		plyState.isBusy = true
 		if invOpen and data.close then TriggerEvent('ox_inventory:closeInventory') end
 		local result = Utils.AwaitServerCallback('ox_inventory:useItem', data.name, data.slot, data.metadata)
-		if cb == nil then return SetBusy(false) end
+		if cb == nil then
+			plyState.isBusy = false
+			return
+		end
 		if result and isBusy then
 			local used
 			if data.client and data.client.usetime then
@@ -556,10 +559,11 @@ AddEventHandler('ox_inventory:item', function(data, cb)
 				end
 				if currentWeapon?.slot == result.slot then Disarm() else cb(result) end
 				Wait(200)
-				return SetBusy(false)
+				plyState.isBusy = false
+				return
 			end
 		end
-		SetBusy(false)
+		plyState.isBusy = false
 	end
 	cb(false)
 end)
