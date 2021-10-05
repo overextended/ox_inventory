@@ -623,32 +623,4 @@ exports('Inventory', function(arg)
 	return M
 end)
 
--- Testing stuff
--- local TaskList = {
--- 	add = function(id, item, count)
--- 		print(('added %s %s to inventory %s'):format(count, item, id))
--- 	end,
-
--- 	remove = function(id, item, count)
--- 		print(('remove %s %s from inventory %s'):format(count, item, id))
--- 	end
--- }
-
--- exports('Tasks', function(...)
--- 	local args = {scrub(...)}
--- 	if #args % 4 == 0 then
--- 		for i=1, #args, 4 do
--- 			TaskList[args[i]](args[i+1], args[i+2], args[i+3])
--- 		end
--- 	end
--- 	return table.concat(args, ', ')
--- end)
-
--- local wat = exports.ox_inventory:Tasks(
--- 	'remove', 3, 'bread', 1,
--- 	'add', 3, 'bread', 1,
--- 	'remove', 3, 'bread', 1
--- )
--- print(wat)
-
 return M
