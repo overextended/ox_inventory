@@ -22,7 +22,7 @@ const InventoryContext: React.FC<{ item: SlotWithItem }> = (props) => {
         onDrop({ item: props.item, inventory: 'player' });
         break;
       case 'remove':
-        fetchNui('removeAttachment', { component: data?.component, slot: data?.slot });
+        fetchNui('removeComponent', { component: data?.component, slot: data?.slot });
         break;
     }
   };

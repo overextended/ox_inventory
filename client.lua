@@ -697,14 +697,21 @@ RegisterCommand('reload', function()
 	end
 end)
 
-RegisterNUICallback('removeAttachment', function(data, cb)
+RegisterNUICallback('removeComponent', function(data, cb)
 	-- todo: locales
 	if not currentWeapon then return Notify({type = 'error', text = 'You must have a weapon in hand!'}) end
 	if data.slot ~= currentWeapon.slot then return Notify({type = 'error', text = "Wrong weapon in hand!"}) end
 	for _, component in pairs(Items[data.component].client.component) do
 		if HasPedGotWeaponComponent(ESX.PlayerData.ped, currentWeapon.hash, component) then
 			RemoveWeaponComponentFromPed(ESX.PlayerData.ped, currentWeapon.hash, component)
-			break
+			for k, v in pairs(ESX.PlayerData.inventory[currentWeapon.slot].metadata.components) do
+				if v == data.component then
+					print(data.component)
+					table.remove(ESX.PlayerData.inventory[currentWeapon.slot].metadata.components, k)
+					TriggerServerEvent('ox_inventory:updateWeapon', 'component', k)
+					break
+				end
+			end
 		end
 	end
 	cb(1)

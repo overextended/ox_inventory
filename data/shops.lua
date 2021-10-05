@@ -135,7 +135,7 @@ return {
 		}, locations = {
 			vec3(306.3687, -601.5139, 43.28406)
 		}, targets = {
-			
+
 		}
 	},
 
@@ -144,13 +144,13 @@ return {
 		inventory = {
 			{ name = 'WEAPON_DAGGER', price = 5000, metadata = { registered = false	}, },
 			{ name = 'WEAPON_CERAMICPISTOL', price = 50000, metadata = { registered = false }, },
-			{ name = 'at_suppressor_pistol', price = 50000, },
+			{ name = 'at_suppressor_light', price = 50000, },
 			{ name = 'ammo-rifle', price = 1000 },
 			{ name = 'ammo-rifle2', price = 1000 }
 		}, locations = {
 			vec3(309.09, -913.75, 56.46)
 		}, targets = {
-			
+
 		}
 	}
 }
