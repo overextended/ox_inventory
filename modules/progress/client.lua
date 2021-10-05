@@ -154,8 +154,9 @@ exports('Progress', Start)
 exports('CancelProgress', Cancelled)
 exports('ProgressActive', function() return Active end)
 
-RegisterNUICallback('progressComplete', function()
+RegisterNUICallback('progressComplete', function(data, cb)
     Completed()
+	cb(1)
 end)
 
 RegisterCommand('cancelprogress', function()

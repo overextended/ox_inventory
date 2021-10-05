@@ -27,13 +27,3 @@ export async function fetchNui<T = any>(eventName: string, data?: any): Promise<
 
   return respFormatted;
 }
-
-export function sendNui(eventName: string, data?: any) {
-  return fetch(`https://${resourceName}/${eventName}`, {
-    method: 'post',
-    headers: {
-      'Content-Type': 'application/json; charset=UTF-8',
-    },
-    body: JSON.stringify(data),
-  });
-}

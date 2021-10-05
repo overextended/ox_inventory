@@ -693,7 +693,7 @@ RegisterCommand('reload', function()
 	end
 end)
 
-RegisterNUICallback('removeAttachment', function(data)
+RegisterNUICallback('removeAttachment', function(data, cb)
 	-- todo: locales
 	if not currentWeapon then return Notify({type = 'error', text = 'You must have a weapon in hand!'}) end
 	if data.slot ~= currentWeapon.slot then return Notify({type = 'error', text = "Wrong weapon in hand!"}) end
@@ -703,18 +703,21 @@ RegisterNUICallback('removeAttachment', function(data)
 			break
 		end
 	end
+	cb(1)
 end)
 
 RegisterCommand('hotbar', function()
 	SendNUIMessage({ action = 'toggleHotbar' })
 end)
 
-RegisterNUICallback('useItem', function(slot)
+RegisterNUICallback('useItem', function(slot, cb)
 	UseSlot(slot)
+	cb(1)
 end)
 
-RegisterNUICallback('exit', function()
+RegisterNUICallback('exit', function(data, cb)
 	TriggerEvent('ox_inventory:closeInventory')
+	cb(1)
 end)
 
 RegisterNUICallback('swapItems', function(data, cb)

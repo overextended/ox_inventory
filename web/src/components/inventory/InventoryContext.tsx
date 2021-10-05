@@ -5,7 +5,7 @@ import 'react-contexify/dist/ReactContexify.css';
 import { SlotWithItem } from '../../typings';
 import { onDrop } from '../../dnd/onDrop';
 import { Items } from '../../store/items';
-import { sendNui } from '../../utils/nuiMessage';
+import { fetchNui } from '../../utils/nuiMessage';
 
 const InventoryContext: React.FC<{ item: SlotWithItem }> = (props) => {
   const handleClick = ({
@@ -22,7 +22,7 @@ const InventoryContext: React.FC<{ item: SlotWithItem }> = (props) => {
         onDrop({ item: props.item, inventory: 'player' });
         break;
       case 'remove':
-        sendNui('removeAttachment', { component: data?.component, slot: data?.slot });
+        fetchNui('removeAttachment', { component: data?.component, slot: data?.slot });
         break;
     }
   };
