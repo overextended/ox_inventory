@@ -107,86 +107,95 @@ Utils.RegisterServerCallback('ox_inventory:swapItems', function(source, cb, data
 		local playerInventory, items, ret = Inventory(source), {}, nil
 
 		if data.toType == 'newdrop' then
-			local fromSlot = playerInventory.items[data.fromSlot]
-			local toSlot = table.clone(fromSlot)
-			toSlot.slot = data.toSlot
+			local fromData = playerInventory.items[data.fromSlot]
+			local toData = table.clone(fromData)
+			toData.slot = data.toSlot
 			local items = {[data.fromSlot] = false}
 			playerInventory.items[data.fromSlot] = nil
 			Inventory.SyncInventory(ESX.GetPlayerFromId(playerInventory.id), playerInventory, items)
-			playerInventory.weight = playerInventory.weight - toSlot.weight
+			playerInventory.weight = playerInventory.weight - toData.weight
 
-			TriggerEvent('ox_inventory:createDrop', source, data.toSlot, toSlot, function(drop, coords)
-				if fromSlot == playerInventory.weapon then playerInventory.weapon = nil end
-				TriggerClientEvent('ox_inventory:createDrop', -1, {drop, coords}, playerInventory.open and source, fromSlot.slot)
+			TriggerEvent('ox_inventory:createDrop', source, data.toSlot, toData, function(drop, coords)
+				if fromData == playerInventory.weapon then playerInventory.weapon = nil end
+				TriggerClientEvent('ox_inventory:createDrop', -1, {drop, coords}, playerInventory.open and source, fromData.slot)
 			end)
 
 			return cb(true, {weight=playerInventory.weight, items=items})
 		else
-			local toInventory = data.toType == 'player' and playerInventory or Inventory(playerInventory.open)
-			local fromInventory = data.fromType == 'player' and playerInventory or Inventory(playerInventory.open)
+			local toInventory = (data.toType == 'player' and playerInventory) or Inventory(playerInventory.open)
+			local fromInventory = (data.fromType == 'player' and playerInventory) or Inventory(playerInventory.open)
+			local sameInventory = fromInventory.id == toInventory.id or false
 
 			if toInventory and fromInventory and (fromInventory.id ~= toInventory.id or data.fromSlot ~= data.toSlot) then
 				local movedWeapon = fromInventory.weapon == data.fromSlot
-				local fromSlot, toSlot = fromInventory.items[data.fromSlot], toInventory.items[data.toSlot]
+				local fromData = fromInventory.items[data.fromSlot]
+				local toData = toInventory.items[data.toSlot]
 				if movedWeapon then
 					if data.toType == 'player' then fromInventory.weapon = data.toSlot else TriggerClientEvent('ox_inventory:disarm', source) end
 				end
 
-				if fromSlot and fromSlot.metadata.container ~= toInventory.id then
-					if data.count > fromSlot.count then data.count = fromSlot.count end
-					if toSlot and ((toSlot.name ~= fromSlot.name) or not toSlot.stack or (not Utils.MatchTables(toSlot.metadata, fromSlot.metadata))) then
-						toSlot, fromSlot = Inventory.SwapSlots(fromInventory, toInventory, data.fromSlot, data.toSlot)
-						local newWeight = toInventory.weight + toSlot.weight
-						if newWeight <= toInventory.maxWeight then
-							if fromInventory.id ~= toInventory.id then
-								fromInventory.weight = fromInventory.weight - toSlot.weight
-								toInventory.weight = newWeight
-							end
-						else return cb(false) end
-					elseif toSlot and toSlot.name == fromSlot.name and Utils.MatchTables(toSlot.metadata, fromSlot.metadata) then
-						toSlot.count = toSlot.count + data.count
-						local weight = Inventory.SlotWeight(Items(toSlot.name), toSlot)
+				if fromData and (not fromData.metadata.container or fromData.metadata.container and toInventory.type ~= 'container') then
+					if data.count > fromData.count then data.count = fromData.count end
+
+					if toData and ((toData.name ~= fromData.name) or not toData.stack or (not Utils.MatchTables(toData.metadata, fromData.metadata))) then
+						-- Swap items
+						toData, fromData = Inventory.SwapSlots(fromInventory, toInventory, data.fromSlot, data.toSlot)
+						if not sameInventory then
+							local newWeight = toInventory.weight + toData.weight
+							if newWeight <= toInventory.maxWeight then
+								if not sameInventory then
+									fromInventory.weight = fromInventory.weight - toData.weight
+									toInventory.weight = newWeight
+								end
+							else return cb(false) end
+						end
+					elseif toData and toData.name == fromData.name and Utils.MatchTables(toData.metadata, fromData.metadata) then
+						-- Stack items
+						toData.count = toData.count + data.count
+						local weight = Inventory.SlotWeight(Items(toData.name), toData)
 						local newWeight = toInventory.weight + weight
-						if newWeight <= toInventory.maxWeight then
-							toSlot.weight = weight
-							fromSlot.count = fromSlot.count - data.count
-							fromSlot.weight = Inventory.SlotWeight(Items(fromSlot.name), fromSlot)
-							if fromInventory.id ~= toInventory.id then
-								fromInventory.weight = fromInventory.weight - toSlot.weight
+						if sameInventory or newWeight <= toInventory.maxWeight then
+							toData.weight = weight
+							fromData.count = fromData.count - data.count
+							fromData.weight = Inventory.SlotWeight(Items(fromData.name), fromData)
+							if not sameInventory then
+								fromInventory.weight = fromInventory.weight - toData.weight
 								toInventory.weight = newWeight
 							end
 						else
-							toSlot.count = toSlot.count - data.count
+							toData.count = toData.count - data.count
 							return cb(false)
 						end
-					elseif data.count <= fromSlot.count then
-						toSlot = table.clone(fromSlot)
-						toSlot.count = data.count
-						toSlot.slot = data.toSlot
-						toSlot.weight = Inventory.SlotWeight(Items(toSlot.name), toSlot)
-						local newWeight = toInventory.weight + toSlot.weight
-						if newWeight <= toInventory.maxWeight or toInventory.id == fromInventory.id then
-							fromSlot.count = fromSlot.count - data.count
-							fromSlot.weight = Inventory.SlotWeight(Items(fromSlot.name), fromSlot)
-							if fromInventory.id ~= toInventory.id then
-								fromInventory.weight = fromInventory.weight - toSlot.weight
-								toInventory.weight = toInventory.weight + toSlot.weight
+					elseif data.count <= fromData.count then
+						-- Move item to an empty slot
+						toData = table.clone(fromData)
+						toData.count = data.count
+						toData.slot = data.toSlot
+						toData.weight = Inventory.SlotWeight(Items(toData.name), toData)
+						if sameInventory or (toInventory.weight + toData.weight <= toInventory.maxWeight) then
+							fromData.count = fromData.count - data.count
+							fromData.weight = Inventory.SlotWeight(Items(fromData.name), fromData)
+							if not sameInventory then
+								fromInventory.weight = fromInventory.weight - toData.weight
+								toInventory.weight = toInventory.weight + toData.weight
 							end
 						else return cb(false) end
-					else
-						print('swapItems', data.fromType, data.fromSlot, 'to', data.toType, data.toSlot)
-						return cb(false)
 					end
-					if fromSlot.count < 1 then fromSlot = nil end
-					if data.fromType == 'player' then items[data.fromSlot] = fromSlot or false end
-					if data.toType == 'player' then items[data.toSlot] = toSlot or false end
-					fromInventory.items[data.fromSlot], toInventory.items[data.toSlot] = fromSlot, toSlot
+
+					if fromData.count < 1 then fromData = nil end
+					if data.fromType == 'player' then items[data.fromSlot] = fromData or false end
+					if data.toType == 'player' then items[data.toSlot] = toData or false end
+					fromInventory.items[data.fromSlot] = fromData
+					toInventory.items[data.toSlot] = toData
+
 					if next(items) then
 						ret = {weight=playerInventory.weight, items=items}
 						Inventory.SyncInventory(ESX.GetPlayerFromId(playerInventory.id), playerInventory, items)
 					end
+
 					if fromInventory.changed ~= nil then fromInventory.changed = true end
 					if toInventory.changed ~= nil then toInventory.changed = true end
+
 					return cb(true, ret, movedWeapon and fromInventory.weapon)
 				end
 			end
