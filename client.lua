@@ -693,6 +693,18 @@ RegisterCommand('reload', function()
 	end
 end)
 
+RegisterNUICallback('removeAttachment', function(data)
+	-- todo: locales
+	if not currentWeapon then return Notify({type = 'error', text = 'You must have a weapon in hand!'}) end
+	if data.slot ~= currentWeapon.slot then return Notify({type = 'error', text = "Wrong weapon in hand!"}) end
+	for _, component in pairs(Items[data.component].client.component) do
+		if HasPedGotWeaponComponent(ESX.PlayerData.ped, currentWeapon.hash, component) then
+			RemoveWeaponComponentFromPed(ESX.PlayerData.ped, currentWeapon.hash, component)
+			break
+		end
+	end
+end)
+
 RegisterCommand('hotbar', function()
 	SendNUIMessage({ action = 'toggleHotbar' })
 end)

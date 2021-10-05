@@ -8,7 +8,9 @@ import { Items } from '../../store/items';
 import { sendNui } from '../../utils/nuiMessage';
 
 const InventoryContext: React.FC<{ item: SlotWithItem }> = (props) => {
-  const handleClick = ({ data }: ItemParams<undefined, { action: string; component?: string }>) => {
+  const handleClick = ({
+    data,
+  }: ItemParams<undefined, { action: string; component?: string; slot?: number }>) => {
     switch (data && data.action) {
       case 'use':
         onUse({ name: props.item.name, slot: props.item.slot });
@@ -20,8 +22,7 @@ const InventoryContext: React.FC<{ item: SlotWithItem }> = (props) => {
         onDrop({ item: props.item, inventory: 'player' });
         break;
       case 'remove':
-        console.log(data && data.action, data && data.component);
-        sendNui('removeAttachment', data && data.component);
+        sendNui('removeAttachment', { component: data?.component, slot: data?.slot });
         break;
     }
   };
@@ -45,7 +46,11 @@ const InventoryContext: React.FC<{ item: SlotWithItem }> = (props) => {
               <Separator />
               <Submenu label="Remove Attachments">
                 {props.item.metadata.components.map((component: string, index: number) => (
-                  <Item key={index} onClick={handleClick}>
+                  <Item
+                    key={index}
+                    onClick={handleClick}
+                    data={{ action: 'remove', component: component, slot: props.item.slot }}
+                  >
                     {Items[component]?.label}
                   </Item>
                 ))}
