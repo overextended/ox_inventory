@@ -91,11 +91,13 @@ Utils.RegisterServerCallback('ox_inventory:openInventory', function(source, cb, 
 				end
 			end
 		end
-		if right.open == true then return cb(false) end
-		if right.coords == nil or #(right.coords - GetEntityCoords(GetPlayerPed(source))) < 20 then
-			right.open = source
-			left.open = right.id
-		else return cb(false) end
+		if right then
+			if right.open == true then return cb(false) end
+			if right.coords == nil or #(right.coords - GetEntityCoords(GetPlayerPed(source))) < 20 then
+				right.open = source
+				left.open = right.id
+			else return cb(false) end
+		end
 	else left.open = true end
 	cb({id=left.label, type=left.type, slots=left.slots, weight=left.weight, maxWeight=left.maxWeight}, right)
 end)
