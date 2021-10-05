@@ -163,7 +163,7 @@ Utils.RegisterServerCallback('ox_inventory:swapItems', function(source, cb, data
 						toSlot.slot = data.toSlot
 						toSlot.weight = Inventory.SlotWeight(Items(toSlot.name), toSlot)
 						local newWeight = toInventory.weight + toSlot.weight
-						if newWeight <= toInventory.maxWeight then
+						if newWeight <= toInventory.maxWeight or toInventory.id == fromInventory.id then
 							fromSlot.count = fromSlot.count - data.count
 							fromSlot.weight = Inventory.SlotWeight(Items(fromSlot.name), fromSlot)
 							if fromInventory.id ~= toInventory.id then
