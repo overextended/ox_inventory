@@ -120,11 +120,14 @@ const InventorySlot: React.FC<SlotProps> = ({ inventory, item, setCurrentItem })
                 {item.count?.toLocaleString('en-us')}x
               </span>
             </div>
-            {(inventory.type !== 'shop' && item?.durability !== undefined) && <WeightBar percent={item.durability} durability />}
-            {inventory.type === 'shop' && item?.price && (
+            {inventory.type !== 'shop' && item?.durability !== undefined && (
+              <WeightBar percent={item.durability} durability />
+            )}
+            {inventory.type === 'shop' && item?.price !== undefined && (
               <>
                 {item?.currency !== 'money' &&
                 item?.currency !== 'black_money' &&
+                item.price > 0 &&
                 item?.currency ? (
                   <div className="item-price" style={{ color: '#2ECC71' }}>
                     <img
@@ -140,14 +143,17 @@ const InventorySlot: React.FC<SlotProps> = ({ inventory, item, setCurrentItem })
                   </div>
                 ) : (
                   <>
-                    <div
-                      className="item-price"
-                      style={{
-                        color: item.currency === 'money' || !item.currency ? '#2ECC71' : '#E74C3C',
-                      }}
-                    >
-                      ${item.price}
-                    </div>
+                    {item.price > 0 && (
+                      <div
+                        className="item-price"
+                        style={{
+                          color:
+                            item.currency === 'money' || !item.currency ? '#2ECC71' : '#E74C3C',
+                        }}
+                      >
+                        ${item.price}
+                      </div>
+                    )}
                   </>
                 )}
               </>
