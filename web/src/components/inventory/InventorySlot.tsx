@@ -10,6 +10,7 @@ import { Items } from '../../store/items';
 import { isSlotWithItem } from '../../helpers';
 import { useContextMenu } from 'react-contexify';
 import InventoryContext from './InventoryContext';
+import { onUse } from '../../dnd/onUse';
 
 interface SlotProps {
   inventory: Inventory;
@@ -89,6 +90,7 @@ const InventorySlot: React.FC<SlotProps> = ({ inventory, item, setCurrentItem })
 
   const handleClick = (event: React.MouseEvent<HTMLDivElement>) => {
     event.ctrlKey && isSlotWithItem(item) && onDrop({ item: item, inventory: inventory.type });
+    event.altKey && isSlotWithItem(item) && onUse(item);
   };
 
   return (
