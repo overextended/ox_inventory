@@ -23,6 +23,7 @@ const InfoScreen: React.FC<{
         className="info-exit-icon"
       />
       <h2>Useful Controls</h2>
+      <p>[RMB] - Open item context menu</p>
       <p>[CTRL + LMB] - Fast move stack of items into another inventory</p>
       <p>[SHIFT + Drag] - Split item quantity into half</p>
       <p>[CTRL + SHIFT + LMB] - Fast move half a stack of items into another inventory</p>

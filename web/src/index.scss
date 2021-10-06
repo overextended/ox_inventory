@@ -323,7 +323,7 @@ input[type='number'] {
 .info-main {
   position: absolute;
   width: 30vw;
-  height: 40vh;
+  height: fit-content;
   left: 50%;
   top: 50%;
   transform: translate(-50%, -50%);
