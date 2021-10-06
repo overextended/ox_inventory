@@ -254,6 +254,7 @@ RegisterServerEvent('ox_inventory:updateWeapon', function(action, value, slot)
 		elseif action == 'throw' then
 			Inventory.RemoveItem(inventory, weapon.name, 1, weapon.metadata, weapon.slot)
 		elseif action == 'component' then
+			Inventory.AddItem(inventory, weapon.metadata.components[value], 1)
 			table.remove(weapon.metadata.components, value)
 		elseif weapon.metadata.ammo then
 			if value < weapon.metadata.ammo then
