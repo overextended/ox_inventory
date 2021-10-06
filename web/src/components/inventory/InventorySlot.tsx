@@ -87,11 +87,16 @@ const InventorySlot: React.FC<SlotProps> = ({ inventory, item, setCurrentItem })
     isSlotWithItem(item) && inventory.type === 'player' && show(event);
   };
 
+  const handleClick = (event: React.MouseEvent<HTMLDivElement>) => {
+    event.ctrlKey && isSlotWithItem(item) && onDrop({ item: item, inventory: inventory.type });
+  };
+
   return (
     <>
       <div
         ref={connectRef}
         onContextMenu={handleContext}
+        onClick={handleClick}
         className="item-container"
         style={{
           opacity: isDragging ? 0.4 : 1.0,
