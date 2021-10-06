@@ -89,8 +89,11 @@ const InventorySlot: React.FC<SlotProps> = ({ inventory, item, setCurrentItem })
   };
 
   const handleClick = (event: React.MouseEvent<HTMLDivElement>) => {
-    event.ctrlKey && isSlotWithItem(item) && onDrop({ item: item, inventory: inventory.type });
-    event.altKey && isSlotWithItem(item) && onUse(item);
+    event.ctrlKey &&
+      isSlotWithItem(item) &&
+      inventory.type !== 'shop' &&
+      onDrop({ item: item, inventory: inventory.type });
+    event.altKey && inventory.type !== 'shop' && isSlotWithItem(item) && onUse(item);
   };
 
   return (
