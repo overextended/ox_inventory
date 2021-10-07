@@ -323,7 +323,7 @@ local GetItemSlots = function(inv, item, metadata)
 		emptySlots -= 1
 		if v.name == item.name then
 			if not v.metadata then v.metadata = {} end
-			if not metadata or Utils.MatchTables(v.metadata, metadata) then
+			if not metadata or Utils.MatchTables(v.metadata, metadata) or #metadata == 0 then
 				totalCount = totalCount + v.count
 				slots[k] = v.count
 			end
