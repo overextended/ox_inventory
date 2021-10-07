@@ -254,8 +254,13 @@ RegisterServerEvent('ox_inventory:updateWeapon', function(action, value, slot)
 		elseif action == 'throw' then
 			Inventory.RemoveItem(inventory, weapon.name, 1, weapon.metadata, weapon.slot)
 		elseif action == 'component' then
-			Inventory.AddItem(inventory, weapon.metadata.components[value], 1)
-			table.remove(weapon.metadata.components, value)
+			local type = type(value)
+			if type == 'number' then
+				Inventory.AddItem(inventory, weapon.metadata.components[value], 1)
+				table.remove(weapon.metadata.components, value)
+			elseif type == 'string' then
+				table.insert(weapon.metadata.components, component)
+			end
 		elseif weapon.metadata.ammo then
 			if value < weapon.metadata.ammo then
 				weapon.metadata.ammo = value
@@ -281,7 +286,7 @@ Utils.RegisterServerCallback('ox_inventory:useItem', function(source, cb, item, 
 			data.consume = nil
 			return cb(data)
 		elseif type == 3 then -- component
-			data.consume = item.consume
+			data.consume = 1
 			return cb(data)
 		elseif ESX.UsableItemsCallbacks[item.name] then
 			ESX.UseItem(source, item.name)

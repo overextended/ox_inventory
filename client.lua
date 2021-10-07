@@ -203,6 +203,7 @@ local UseSlot = function(slot)
 									if data then
 										GiveWeaponComponentToPed(ESX.PlayerData.ped, currentWeapon.hash, component)
 										table.insert(ESX.PlayerData.inventory[currentWeapon.slot].metadata.components, component)
+										TriggerServerEvent('ox_inventory:updateWeapon', 'component', data.name)
 									end
 								end)
 							end
@@ -701,13 +702,13 @@ RegisterNUICallback('removeComponent', function(data, cb)
 	-- todo: locales
 	if not currentWeapon then return Notify({type = 'error', text = 'You must have a weapon in hand!'}) end
 	if data.slot ~= currentWeapon.slot then return Notify({type = 'error', text = "Wrong weapon in hand!"}) end
+	local itemSlot = ESX.PlayerData.inventory[currentWeapon.slot]
 	for _, component in pairs(Items[data.component].client.component) do
 		if HasPedGotWeaponComponent(ESX.PlayerData.ped, currentWeapon.hash, component) then
 			RemoveWeaponComponentFromPed(ESX.PlayerData.ped, currentWeapon.hash, component)
-			for k, v in pairs(ESX.PlayerData.inventory[currentWeapon.slot].metadata.components) do
+			for k, v in pairs(itemSlot.metadata.components) do
 				if v == data.component then
-					print(data.component)
-					table.remove(ESX.PlayerData.inventory[currentWeapon.slot].metadata.components, k)
+					table.remove(itemSlot.metadata.components, k)
 					TriggerServerEvent('ox_inventory:updateWeapon', 'component', k)
 					break
 				end
