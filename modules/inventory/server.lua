@@ -322,8 +322,10 @@ local GetItemSlots = function(inv, item, metadata)
 	for k, v in pairs(inv.items) do
 		emptySlots -= 1
 		if v.name == item.name then
-			if not v.metadata then v.metadata = {} end
-			if not metadata or Utils.MatchTables(v.metadata, metadata) or #metadata == 0 then
+			if metadata and v.metadata == nil then
+				v.metadata = {}
+			end
+			if not metadata or Utils.MatchTables(v.metadata, metadata) then
 				totalCount = totalCount + v.count
 				slots[k] = v.count
 			end
@@ -338,7 +340,9 @@ M.RemoveItem = function(inv, item, count, metadata, slot)
 	if item and count > 0 then
 		if type(inv) ~= 'table' then inv = Inventories[inv] end
 		local xPlayer = inv.type == 'player' and ESX.GetPlayerFromId(inv.id) or false
-		metadata = metadata == nil and {} or type(metadata) == 'string' and {type=metadata} or metadata
+		if metadata ~= nil then
+			metadata = type(metadata) == 'string' and {type=metadata} or metadata
+		end
 		local itemSlots, totalCount = GetItemSlots(inv, item, metadata)
 		if count > totalCount then count = totalCount end
 		local removed, total, slots = 0, count, {}
