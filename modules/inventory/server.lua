@@ -280,7 +280,7 @@ M.AddItem = function(inv, item, count, metadata, slot)
 		end
 		metadata, count = Items.Metadata(xPlayer, item, metadata or {}, count)
 		M.SetSlot(inv, item, count, metadata, slot)
-		inv.weight = inv.weight + (item.weight + (metadata.weight or 0)) * count
+		inv.weight = inv.weight + (item.weight + (metadata?.weight or 0)) * count
 		if xPlayer then
 			M.SyncInventory(xPlayer, inv)
 			TriggerClientEvent('ox_inventory:updateInventory', xPlayer.source, {{item = inv.items[slot], inventory = inv.type}}, {left=inv.weight, right=inv.open and Inventories[inv.open]?.weight}, item.label, count, false)
@@ -367,7 +367,7 @@ M.RemoveItem = function(inv, item, count, metadata, slot)
 				else break end
 			end
 		end
-		inv.weight = inv.weight - (item.weight + (metadata.weight or 0)) * removed
+		inv.weight = inv.weight - (item.weight + (metadata?.weight or 0)) * removed
 		if removed > 0 and xPlayer then
 			M.SyncInventory(xPlayer, inv)
 			local array = table.create(#slots, 0)
