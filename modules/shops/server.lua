@@ -89,7 +89,7 @@ Utils.RegisterServerCallback('ox_inventory:buyItem', function(source, cb, data)
 				toData.metadata = metadata
 				shop.items[data.fromSlot], player.items[data.toSlot] = fromData, toData
 				Inventory.RemoveItem(source, currency, price)
-				Inventory.SyncInventory(xPlayer, player, items)
+				Inventory.SyncInventory(xPlayer, player)
 
 				return cb(true, {data.toSlot, toData, weight}, {type = 'success', text = ('Purchased %sx %s for %s%s'):format(count, fromItem.label, (currency == 'money' and '$' or price), (currency == 'money' and price or ' '..currency))})
 			elseif playerMoney < price then

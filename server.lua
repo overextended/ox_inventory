@@ -112,7 +112,7 @@ Utils.RegisterServerCallback('ox_inventory:swapItems', function(source, cb, data
 			toData.slot = data.toSlot
 			local items = {[data.fromSlot] = false}
 			playerInventory.items[data.fromSlot] = nil
-			Inventory.SyncInventory(ESX.GetPlayerFromId(playerInventory.id), playerInventory, items)
+			Inventory.SyncInventory(ESX.GetPlayerFromId(playerInventory.id), playerInventory)
 			playerInventory.weight = playerInventory.weight - toData.weight
 
 			TriggerEvent('ox_inventory:createDrop', source, data.toSlot, toData, function(drop, coords)
@@ -190,7 +190,7 @@ Utils.RegisterServerCallback('ox_inventory:swapItems', function(source, cb, data
 
 					if next(items) then
 						ret = {weight=playerInventory.weight, items=items}
-						Inventory.SyncInventory(ESX.GetPlayerFromId(playerInventory.id), playerInventory, items)
+						Inventory.SyncInventory(ESX.GetPlayerFromId(playerInventory.id), playerInventory)
 					end
 
 					if fromInventory.changed ~= nil then fromInventory.changed = true end
@@ -269,6 +269,7 @@ RegisterServerEvent('ox_inventory:updateWeapon', function(action, value, slot)
 		elseif weapon.metadata.durability then
 			weapon.metadata.durability = weapon.metadata.durability - (Items(weapon.name).durability or 1)
 		end
+		Inventory.SyncInventory(ESX.GetPlayerFromId(inventory.id), inventory)
 		if action ~= 'throw' then TriggerClientEvent('ox_inventory:updateInventory', source, {{item = weapon}}, {left=inventory.weight}) end
 	end
 end)
