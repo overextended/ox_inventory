@@ -23,7 +23,7 @@ for shopName, shopDetails in pairs(data('shops')) do
 					name = Item.name,
 					slot = j,
 					weight = Item.weight,
-					count = slot.count or 5,
+					count = slot.count,
 					price = (math.floor(slot.price * (math.random(8, 12)/10))),
 					metadata = slot.metadata,
 					license = slot.license,
@@ -93,7 +93,7 @@ Utils.RegisterServerCallback('ox_inventory:buyItem', function(source, cb, data)
 
 				return cb(true, {data.toSlot, toData, weight}, {type = 'success', text = ('Purchased %sx %s for %s%s'):format(count, fromItem.label, (currency == 'money' and '$' or price), (currency == 'money' and price or ' '..currency))})
 			elseif playerMoney < price then
-				return cb(false, nil, {type = 'error', text = ox.locale('cannot_afford', '$'..price-playerMoney)})
+				return cb(false, nil, {type = 'error', text = ox.locale('cannot_afford', ('%s%s'):format((currency == 'money' and '$' or price), (currency == 'money' and price or ' '..currency)))})
 			end
 			return cb(false, nil, {type = 'error', text = {"You're unable to stack these items!"}})
 		end
