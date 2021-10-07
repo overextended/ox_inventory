@@ -164,7 +164,9 @@ local UseSlot = function(slot)
 							end
 						end
 						SetPedCurrentWeaponVisible(ESX.PlayerData.ped, true, false, false, false)
-						SetAmmoInClip(ESX.PlayerData.ped, data.hash, item.metadata.ammo or 100)
+						AddAmmoToPed(ESX.PlayerData.ped, data.hash, item.metadata.ammo or 100)
+						Wait(0)
+						RefillAmmoInstantly(ESX.PlayerData.ped)
 						SetWeapon(item, data.hash, data.ammoname)
 						Wait(sleep)
 						ClearPedSecondaryTask(ESX.PlayerData.ped)
