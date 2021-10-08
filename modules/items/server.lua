@@ -157,7 +157,7 @@ M.Metadata = function(xPlayer, item, metadata, count)
 			if next(metadata) == nil then
 				metadata = {}
 				metadata.type = xPlayer.name
-				metadata.description = ('Sex: %s\nDate of birth: %s'):format((xPlayer.variables.sex or xPlayer.sex) and ox.locale('male') or ox.locale('female'), xPlayer.variables.dateofbirth or xPlayer.dateofbirth)
+				metadata.description = ox.locale('identification', (xPlayer.variables.sex or xPlayer.sex) and ox.locale('male') or ox.locale('female'), xPlayer.variables.dateofbirth or xPlayer.dateofbirth)
 			end
 		elseif item.name:find('paperbag') then
 			count = 1

@@ -36,5 +36,6 @@ return {
 	['cannot_afford'] = "You can not afford that (missing %s)",
 	['stash_lowgrade'] = "You are not authorised to take this item",
 	['cannot_use'] = "Unable to use %s",
-	['shop_nostock'] = "Item is out of stock"
+	['shop_nostock'] = "Item is out of stock",
+	['identification'] = "Sex: %s\nDate of birth: %s"
 }
