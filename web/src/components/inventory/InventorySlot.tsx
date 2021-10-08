@@ -11,6 +11,7 @@ import { isSlotWithItem } from '../../helpers';
 import { useContextMenu } from 'react-contexify';
 import InventoryContext from './InventoryContext';
 import { onUse } from '../../dnd/onUse';
+import ReactTooltip from 'react-tooltip';
 
 interface SlotProps {
   inventory: Inventory;
@@ -86,6 +87,7 @@ const InventorySlot: React.FC<SlotProps> = ({ inventory, item, setCurrentItem })
 
   const handleContext = (event: React.MouseEvent<HTMLDivElement>) => {
     isSlotWithItem(item) && inventory.type === 'player' && show(event);
+    ReactTooltip.hide();
   };
 
   const handleClick = (event: React.MouseEvent<HTMLDivElement>) => {
