@@ -21,7 +21,7 @@ if Config.Target then
 		options = {
 			{
 				icon = "fas fa-dumpster",
-				label = "Search Dumpster",
+				label = ox.locale('search_dumpster'),
 				action = function(entity)
 					OpenDumpster(entity)
 				end

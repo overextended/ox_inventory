@@ -1,4 +1,5 @@
 return {
+	['currency'] = "$",
 	['male'] = "Male",
 	['female'] = "Female",
 	['used'] = "Used",
@@ -37,5 +38,20 @@ return {
 	['stash_lowgrade'] = "You are not authorised to take this item",
 	['cannot_use'] = "Unable to use %s",
 	['shop_nostock'] = "Item is out of stock",
-	['identification'] = "Sex: %s\nDate of birth: %s"
+	['identification'] = "Sex: %s\nDate of birth: %s",
+	['search_dumpster'] = "Search Dumpster",
+	['open_shop'] = "Open %s",
+	['purchased_for'] = "Purchased %sx %s for %s%s",
+	['unable_stack_items'] = "You're unable to stack these items!",
+	['police_evidence'] = "Police Evidence",
+	['locker_number'] = "Locker number",
+	['locker_no_value'] = "Must contain value to open locker!",
+	['locker_must_number'] = "Locker must be a number!",
+	['weapon_hand_required'] = "'You must have a weapon in hand!",
+	['weapon_hand_wrong'] = "Wrong weapon in hand!",
+	['open_player_inventory'] = "Open player inventory~",
+	['open_secondary_inventory'] = "Open secondary inventory~",
+	['disable_hotbar'] = "Display inventory hotbar~",
+	['reload_weapon'] = "Reload weapon~",
+	['use_hotbar'] = "Use hotbar item %s~",
 }

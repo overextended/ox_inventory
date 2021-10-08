@@ -87,13 +87,13 @@ local OpenInventory = function(inv, data)
 			left, right = Utils.AwaitServerCallback('ox_inventory:openShop', data)
 		elseif invOpen == false or (invOpen == true and currentInventory?.type == 'newdrop' and (inv == 'drop' or inv == 'container')) then
 			if inv == 'policeevidence' then
-				local input = Keyboard.Input('Police Evidence', {'Locker number'})
+				local input = Keyboard.Input(ox.locale('police_evidence'), {ox.locale('locker_number')})
 				if input then
 					input = tonumber(input[1])
 				else
-					return Notify({text = 'Must contain value to open locker!', type = 'error'})
+					return Notify({text = ox.locale('locker_no_value'), type = 'error'})
 				end
-				if type(input) ~= 'number' then return Notify({text = 'Locker must be a number!', type = 'error'}) else data = {id=input} end
+				if type(input) ~= 'number' then return Notify({text = ox.locale('locker_must_number'), type = 'error'}) else data = {id=input} end
 			end
 			left, right = Utils.AwaitServerCallback('ox_inventory:openInventory', inv, data)
 		end
@@ -702,8 +702,8 @@ end)
 
 RegisterNUICallback('removeComponent', function(data, cb)
 	-- todo: locales
-	if not currentWeapon then return Notify({type = 'error', text = 'You must have a weapon in hand!'}) end
-	if data.slot ~= currentWeapon.slot then return Notify({type = 'error', text = "Wrong weapon in hand!"}) end
+	if not currentWeapon then return Notify({type = 'error', text = ox.locale('weapon_hand_required')}) end
+	if data.slot ~= currentWeapon.slot then return Notify({type = 'error', text = ox.locale('weapon_hand_wrong')}) end
 	local itemSlot = ESX.PlayerData.inventory[currentWeapon.slot]
 	for _, component in pairs(Items[data.component].client.component) do
 		if HasPedGotWeaponComponent(ESX.PlayerData.ped, currentWeapon.hash, component) then
@@ -764,16 +764,16 @@ end)
 
 if ESX.PlayerLoaded then TriggerServerEvent('ox_inventory:requestPlayerInventory') end
 
-RegisterKeyMapping('inv', 'Open player inventory~', 'keyboard', Config.Keys[1])
-RegisterKeyMapping('inv2', 'Open secondary inventory~', 'keyboard', Config.Keys[2])
-RegisterKeyMapping('hotbar', 'Display inventory hotbar~', 'keyboard', Config.Keys[3])
-RegisterKeyMapping('reload', 'Reload weapon~', 'keyboard', 'r')
+RegisterKeyMapping('inv', ox.locale('open_player_inventory'), 'keyboard', Config.Keys[1])
+RegisterKeyMapping('inv2', ox.locale('open_secondary_inventory'), 'keyboard', Config.Keys[2])
+RegisterKeyMapping('hotbar', ox.locale('disable_hotbar'), 'keyboard', Config.Keys[3])
+RegisterKeyMapping('reload', ox.locale('reload_weapon'), 'keyboard', 'r')
 TriggerEvent('chat:removeSuggestion', '/inv')
 TriggerEvent('chat:removeSuggestion', '/inv2')
 TriggerEvent('chat:removeSuggestion', '/hotbar')
 TriggerEvent('chat:removeSuggestion', '/reload')
 for i=1, 5 do
 	RegisterCommand('hotkey'..i, function() if not invOpen then UseSlot(i) end end)
-	RegisterKeyMapping('hotkey'..i, 'Use hotbar item '..i..'~', 'keyboard', i)
+	RegisterKeyMapping('hotkey'..i, ox.locale('use_hotbar', i), 'keyboard', i)
 	TriggerEvent('chat:removeSuggestion', '/hotkey'..i)
 end
