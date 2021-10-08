@@ -71,4 +71,20 @@ M.Raycast = function()
 	end
 end
 
+M.GetClosestPlayer = function()
+	local closestPlayer, playerId, playerCoords = vec3(10, 0, 0), PlayerId(), GetEntityCoords(ESX.PlayerData.ped)
+	local coords
+	for k, player in pairs(GetActivePlayers()) do
+		if player ~= playerId then
+			local ped = GetPlayerPed(player)
+			coords = GetEntityCoords(ped)
+			local distance = #(playerCoords - coords)
+			if distance < closestPlayer.x then
+				closestPlayer = vec3(distance, player, ped)
+			end
+		end
+	end
+	return closestPlayer, coords
+end
+
 return M
