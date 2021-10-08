@@ -91,11 +91,11 @@ Utils.RegisterServerCallback('ox_inventory:buyItem', function(source, cb, data)
 				Inventory.RemoveItem(source, currency, price)
 				Inventory.SyncInventory(xPlayer, player)
 
-				return cb(true, {data.toSlot, toData, weight}, {type = 'success', text = ('Purchased %sx %s for %s%s'):format(count, fromItem.label, (currency == 'money' and '$' or price), (currency == 'money' and price or ' '..currency))})
+				return cb(true, {data.toSlot, toData, weight}, {type = 'success', text = ox.locale('purchased_for', count, fromItem.label, (currency == 'money' and ox.locale('currency') or price), (currency == 'money' and price or ' '..currency))})
 			elseif playerMoney < price then
-				return cb(false, nil, {type = 'error', text = ox.locale('cannot_afford', ('%s%s'):format((currency == 'money' and '$' or price), (currency == 'money' and price or ' '..currency)))})
+				return cb(false, nil, {type = 'error', text = ox.locale('cannot_afford', ('%s%s'):format((currency == 'money' and ox.locale('currency') or price), (currency == 'money' and price or ' '..currency)))})
 			end
-			return cb(false, nil, {type = 'error', text = {"You're unable to stack these items!"}})
+			return cb(false, nil, {type = 'error', text = { ox.locale('unable_stack_items')}})
 		end
 	end
 	cb(false)

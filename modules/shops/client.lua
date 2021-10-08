@@ -40,7 +40,7 @@ local CreateShopLocations = function()
 						options = {
 							{
 								icon = "fas fa-shopping-basket",
-								label = "Open " .. shop.name,
+								label = ox.locale('open_shop', shop.name),
 								job = shop.job,
 								action = function()
 									OpenShop({id=id, type=type})
