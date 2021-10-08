@@ -167,7 +167,7 @@ M.Metadata = function(xPlayer, item, metadata, count)
 		end
 		if not metadata?.durability then
 			local durability = Items[item.name].degrade
-			if durability then metadata.durability = os.time()+(durability * 60) end
+			if durability then metadata.durability = os.time()+(durability * 60) metadata.degrade = durability end
 		end
 	end
 	return metadata, count
