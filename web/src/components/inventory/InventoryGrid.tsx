@@ -57,7 +57,7 @@ const InventoryGrid: React.FC<{ inventory: Inventory }> = ({ inventory }) => {
             className="item-info"
             arrowColor="transparent"
             place="right"
-            delayShow={750}
+            delayShow={300}
           >
             <>
               <p style={{ fontSize: '1.5vh' }}>
