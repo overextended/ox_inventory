@@ -29,6 +29,7 @@
     "react-hot-toast": "^2.1.0",
     "react-redux": "^7.2.4",
     "react-scripts": "4.0.3",
+    "react-tooltip": "^4.2.21",
     "redux": "^4.1.0",
     "redux-devtools": "^3.7.0",
     "sass": "^1.42.0",

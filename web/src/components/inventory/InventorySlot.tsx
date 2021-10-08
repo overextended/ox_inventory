@@ -103,6 +103,8 @@ const InventorySlot: React.FC<SlotProps> = ({ inventory, item, setCurrentItem })
         onContextMenu={handleContext}
         onClick={handleClick}
         className="item-container"
+        data-tip
+        data-for="item-tooltip"
         style={{
           opacity: isDragging ? 0.4 : 1.0,
           backgroundImage: item.name

@@ -1,5 +1,6 @@
 @import url('https://fonts.googleapis.com/css2?family=Signika:wght@300;400;600;700&display=swap');
 @import url('https://fonts.googleapis.com/css2?family=Oxygen:wght@300;400;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Poppins&display=swap');
 
 $mainFont: Signika;
 $secondFont: Oxygen;
@@ -252,18 +253,18 @@ input[type='number'] {
 }
 
 .item-info {
-  margin-top: 1vh;
-  padding: 1vh;
-  font-weight: 400;
-  font-size: 1.6vh;
-  background-color: rgba(0, 0, 0, 0.267);
-  border-radius: $borderRadius;
-  width: calc(#{$containerSize} - 2.2vh);
-  position: absolute;
+  padding: 1vh !important;
+  font-size: 1.3vh !important;
+  background-color: $mainColor !important;
+  opacity: 1 !important;
+  border-radius: $borderRadius !important;
+  width: 24vh;
+  border: none !important;
 
   p {
-    font-size: 1.4vh;
-    font-weight: 300;
+    font-size: 1.1vh;
+    text-shadow: none;
+    font-family: 'Poppins';
   }
 }
 
