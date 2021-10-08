@@ -547,14 +547,17 @@ AddEventHandler('onResourceStop', function(resource)
 	end
 end)
 
-RegisterServerEvent('ox_inventory:giveItem', function(slot, target)
+RegisterServerEvent('ox_inventory:giveItem', function(slot, target, count)
+	count = 1
 	local fromInventory = Inventories[source]
 	local toInventory = Inventories[target]
 	if toInventory.type == 'player' then
 		local data = fromInventory.items[slot]
-		local item = Items(data.name)
-		M.RemoveItem(fromInventory, item, 1, data.metadata, slot)
-		M.AddItem(toInventory, item, 1, data.metadata)
+		if data and data.count >= count then
+			local item = Items(data.name)
+			M.RemoveItem(fromInventory, item, count, data.metadata, slot)
+			M.AddItem(toInventory, item, count, data.metadata)
+		end
 	end
 end)
 
