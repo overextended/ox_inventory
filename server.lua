@@ -242,38 +242,6 @@ Utils.RegisterServerCallback('ox_inventory:getInventory', function(source, cb, i
 	}) or cb()
 end)
 
-RegisterServerEvent('ox_inventory:updateWeapon', function(action, value, slot)
-	local inventory = Inventory(source)
-	local weapon = inventory.items[inventory.weapon or slot]
-	if weapon and weapon.metadata then
-		if action == 'load' then
-			local ammo = Items(weapon.name).ammoname
-			local diff = value - weapon.metadata.ammo
-			Inventory.RemoveItem(inventory, ammo, diff)
-			weapon.metadata.ammo = value
-		elseif action == 'throw' then
-			Inventory.RemoveItem(inventory, weapon.name, 1, weapon.metadata, weapon.slot)
-		elseif action == 'component' then
-			local type = type(value)
-			if type == 'number' then
-				Inventory.AddItem(inventory, weapon.metadata.components[value], 1)
-				table.remove(weapon.metadata.components, value)
-			elseif type == 'string' then
-				table.insert(weapon.metadata.components, component)
-			end
-		elseif weapon.metadata.ammo then
-			if value < weapon.metadata.ammo then
-				weapon.metadata.ammo = value
-				weapon.metadata.durability = weapon.metadata.durability - Items(weapon.name).durability
-			end
-		elseif weapon.metadata.durability then
-			weapon.metadata.durability = weapon.metadata.durability - (Items(weapon.name).durability or 1)
-		end
-		Inventory.SyncInventory(ESX.GetPlayerFromId(inventory.id), inventory)
-		if action ~= 'throw' then TriggerClientEvent('ox_inventory:updateInventory', source, {{item = weapon}}, {left=inventory.weight}) end
-	end
-end)
-
 Utils.RegisterServerCallback('ox_inventory:useItem', function(source, cb, item, slot, metadata)
 	local inventory = Inventory(source)
 	local item, type = Items(item)
