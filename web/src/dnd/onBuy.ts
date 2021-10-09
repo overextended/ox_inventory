@@ -1,8 +1,6 @@
-import { isSlotWithItem, findAvailableSlot, getTargetInventory, canStack } from '../helpers';
-import { validateMove } from '../thunks/validateItems';
+import { isSlotWithItem} from '../helpers';
 import { store } from '../store';
-import { DragSource, DropTarget, InventoryType, SlotWithItem } from '../typings';
-import { moveSlots, stackSlots, swapSlots } from '../store/inventory';
+import { DragSource, DropTarget } from '../typings';
 import toast from 'react-hot-toast';
 import { Items } from '../store/items';
 import { buyItem } from '../thunks/buyItem';

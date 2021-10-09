@@ -1,7 +1,6 @@
 import React, { useEffect } from 'react';
 import { Items } from '../../store/items';
 import { Inventory, SlotWithItem } from '../../typings';
-import Fade from '../utils/Fade';
 import WeightBar from '../utils/WeightBar';
 import InventorySlot from './InventorySlot';
 import ReactTooltip from 'react-tooltip';

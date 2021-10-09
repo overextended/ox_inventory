@@ -151,7 +151,7 @@ const InventorySlot: React.FC<SlotProps> = ({ inventory, item, setCurrentItem })
                           ? `${process.env.PUBLIC_URL + `/images/${item?.currency}.png`}`
                           : ''
                       }
-                      alt="item picture here"
+                      alt="item"
                     ></img>
                     {item.price}
                   </div>
