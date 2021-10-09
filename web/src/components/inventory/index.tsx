@@ -5,19 +5,23 @@ import InventoryControl from './InventoryControl';
 import InventoryHotbar from './InventoryHotbar';
 import Fade from '../utils/Fade';
 import { useAppDispatch, useAppSelector } from '../../store';
-import {
+import inventory, {
   selectLeftInventory,
   selectRightInventory,
   setupInventory,
   refreshSlots,
 } from '../../store/inventory';
 import { useExitListener } from '../../hooks/useExitListener';
+import ReactTooltip from 'react-tooltip';
 
 const Inventory: React.FC = () => {
   const [inventoryVisible, setInventoryVisible] = React.useState(false);
 
   useNuiEvent<boolean>('setInventoryVisible', setInventoryVisible);
-  useNuiEvent<false>('closeInventory', setInventoryVisible);
+  useNuiEvent<false>('closeInventory', () => {
+    setInventoryVisible(false);
+    ReactTooltip.hide();
+  });
   useExitListener(setInventoryVisible);
 
   const leftInventory = useAppSelector(selectLeftInventory);
