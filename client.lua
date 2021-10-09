@@ -349,7 +349,7 @@ SetInterval(2, 0, function()
 		end
 		DisablePlayerVehicleRewards(playerId)
 		if isBusy then
-			DisablePlayerFiring(playerID, true)
+			DisablePlayerFiring(playerId, true)
 			DisableControlAction(0, 23, true)
 			DisableControlAction(0, 25, true)
 			DisableControlAction(0, 263, true)
