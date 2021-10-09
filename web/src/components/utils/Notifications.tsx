@@ -64,11 +64,7 @@ const Notifications: React.FC = () => {
     <Toaster
       toastOptions={{
         // options defined here apply to all toasts
-        style: {
-          color: 'white',
-          borderRadius: '5px',
-          padding: '4px',
-        },
+        className: 'notifications',
       }}
     />
   );

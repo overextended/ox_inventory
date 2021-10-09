@@ -268,11 +268,17 @@ input[type='number'] {
   }
 }
 
+.notifications {
+  color: white;
+  border-radius: $borderRadius;
+  padding: 0;
+}
+
 .progressBar {
-  width: 32vh;
-  height: 4.2vh;
+  width: 28vh;
+  height: 3.6vh;
   position: absolute;
-  bottom: 10vh;
+  bottom: 12vh;
   left: 50%;
   transform: translate(-50%, 0);
   background-color: rgba(0, 0, 0, 0.6);
