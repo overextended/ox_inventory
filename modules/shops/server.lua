@@ -72,7 +72,7 @@ Utils.RegisterServerCallback('ox_inventory:buyItem', function(source, cb, data)
 			local price = count * fromData.price
 			local playerMoney = Inventory.GetItem(source, currency, false, true)
 
-			if playerMoney >= price and (toData and Utils.MatchTables(toData.metadata, metadata) or toData == nil) then
+			if playerMoney >= price and (toData and Utils.MatchTables(toData.metadata, metadata) and fromItem == toItem or toData == nil) then
 				if toData and toData.name == fromData.name then
 					if fromData.count then fromData.count = fromData.count - count end
 					toData.count = toData.count + count
