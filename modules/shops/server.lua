@@ -76,7 +76,7 @@ Utils.RegisterServerCallback('ox_inventory:buyItem', function(source, cb, data)
 				if toData and toData.name == fromData.name then
 					if fromData.count then fromData.count = fromData.count - count end
 					toData.count = toData.count + count
-					toData.weight = Inventory.SlotWeight(toItem, toSlot)
+					toData.weight = Inventory.SlotWeight(toItem, toData)
 					player.weight = player.weight + toData.weight
 				elseif fromData.count == nil or count <= fromData.count then
 					if fromData.count then fromData.count = fromData.count - count end
