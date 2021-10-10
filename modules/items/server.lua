@@ -144,11 +144,11 @@ M.Metadata = function(xPlayer, item, metadata, count)
 			count = 1
 			if type(metadata) ~= 'table' then metadata = {} end
 			if not metadata.durability then metadata.durability = 100 end
-			if item.ammoname then metadata.ammo = 0 end
+			if not metadata.ammo and item.ammoname then metadata.ammo = 0 end
 			if not metadata.components then metadata.components = {} end
 			if metadata.registered ~= false then
-				metadata.registered = xPlayer.name
-				metadata.serial = GenerateSerial(metadata.serial)
+				metadata.registered = type(metadata.registered) == 'string' and metadata.registered or xPlayer.name
+				metadata.serial = metadata.serial or GenerateSerial(metadata.serial)
 			end
 		end
 	else
