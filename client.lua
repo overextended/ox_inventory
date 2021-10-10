@@ -729,10 +729,10 @@ RegisterNUICallback('useItem', function(slot, cb)
 	cb(1)
 end)
 
-RegisterNUICallback('giveItem', function(slot, cb)
+RegisterNUICallback('giveItem', function(data, cb)
 	local closestPlayer, coords = Utils.GetClosestPlayer()
 	if closestPlayer.x < 2.5 then
-		TriggerServerEvent('ox_inventory:giveItem', slot, GetPlayerServerId(closestPlayer.y))
+		TriggerServerEvent('ox_inventory:giveItem', data.slot, GetPlayerServerId(closestPlayer.y), data.count)
 	end
 	cb(1)
 end)

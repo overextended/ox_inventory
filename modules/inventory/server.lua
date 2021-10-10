@@ -548,9 +548,9 @@ AddEventHandler('onResourceStop', function(resource)
 end)
 
 RegisterServerEvent('ox_inventory:giveItem', function(slot, target, count)
-	count = 1
 	local fromInventory = Inventories[source]
 	local toInventory = Inventories[target]
+	if count <= 0 then count = 1 end
 	if toInventory.type == 'player' then
 		local data = fromInventory.items[slot]
 		if data and data.count >= count then
