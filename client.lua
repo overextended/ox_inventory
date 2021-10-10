@@ -732,6 +732,7 @@ end)
 RegisterNUICallback('giveItem', function(data, cb)
 	local closestPlayer, coords = Utils.GetClosestPlayer()
 	if closestPlayer.x < 2.5 then
+		Utils.PlayAnim(2000, 'mp_common', 'givetake1_a', 1.0, 1.0, -1, 50, 0.0, 0, 0, 0)
 		TriggerServerEvent('ox_inventory:giveItem', data.slot, GetPlayerServerId(closestPlayer.y), data.count)
 	end
 	cb(1)
