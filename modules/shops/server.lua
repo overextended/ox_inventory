@@ -70,9 +70,9 @@ Utils.RegisterServerCallback('ox_inventory:buyItem', function(source, cb, data)
 			if fromData.count and data.count > fromData.count then data.count = fromData.count end
 			local metadata, count = Items.Metadata(xPlayer, fromItem, fromData.metadata or {}, data.count)
 			local price = count * fromData.price
-			local playerMoney = Inventory.GetItem(source, currency, false, true)
-
-			if playerMoney >= price and (toData and Utils.MatchTables(toData.metadata, metadata) and fromItem == toItem or toData == nil) then
+			if toData == nil or (toItem.name == toItem.name and toItem.stack == toItem.stack and Utils.MatchTables(toData.metadata, metadata)) then
+				local canAfford = Inventory.GetItem(source, currency, false, true) >= price
+				if canAfford then
 				if toData and toData.name == fromData.name then
 					if fromData.count then fromData.count = fromData.count - count end
 					toData.count = toData.count + count
@@ -91,9 +91,10 @@ Utils.RegisterServerCallback('ox_inventory:buyItem', function(source, cb, data)
 				Inventory.RemoveItem(source, currency, price)
 				Inventory.SyncInventory(xPlayer, player)
 
-				return cb(true, {data.toSlot, toData, weight}, {type = 'success', text = ox.locale('purchased_for', count, fromItem.label, (currency == 'money' and ox.locale('currency') or price), (currency == 'money' and price or ' '..currency))})
-			elseif playerMoney < price then
-				return cb(false, nil, {type = 'error', text = ox.locale('cannot_afford', ('%s%s'):format((currency == 'money' and ox.locale('currency') or price), (currency == 'money' and price or ' '..currency)))})
+					return cb(true, {data.toSlot, toData, weight}, {type = 'success', text = ox.locale('purchased_for', count, fromItem.label, (currency == 'money' and ox.locale('$') or price), (currency == 'money' and price or ' '..currency))})
+				else
+					return cb(false, nil, {type = 'error', text = ox.locale('cannot_afford', ('%s%s'):format((currency == 'money' and ox.locale('$') or price), (currency == 'money' and price or ' '..currency)))})
+				end
 			end
 			return cb(false, nil, {type = 'error', text = { ox.locale('unable_stack_items')}})
 		end
