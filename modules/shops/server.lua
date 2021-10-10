@@ -73,23 +73,23 @@ Utils.RegisterServerCallback('ox_inventory:buyItem', function(source, cb, data)
 			if toData == nil or (toItem.name == toItem.name and toItem.stack == toItem.stack and Utils.MatchTables(toData.metadata, metadata)) then
 				local canAfford = Inventory.GetItem(source, currency, false, true) >= price
 				if canAfford then
-				if toData and toData.name == fromData.name then
-					if fromData.count then fromData.count = fromData.count - count end
-					toData.count = toData.count + count
-					toData.weight = Inventory.SlotWeight(toItem, toData)
-					player.weight = player.weight + toData.weight
-				elseif fromData.count == nil or count <= fromData.count then
-					if fromData.count then fromData.count = fromData.count - count end
-					toData = table.clone(fromItem)
-					toData.count = count
-					toData.slot = data.toSlot
-					toData.weight = Inventory.SlotWeight(fromItem, toData)
-					player.weight = player.weight + toData.weight
-				end
-				toData.metadata = metadata
-				shop.items[data.fromSlot], player.items[data.toSlot] = fromData, toData
-				Inventory.RemoveItem(source, currency, price)
-				Inventory.SyncInventory(xPlayer, player)
+					if toData == nil and (fromData.count == nil or count <= fromData.count) then
+						if fromData.count then fromData.count = fromData.count - count end
+						toData = table.clone(fromItem)
+						toData.count = count
+						toData.slot = data.toSlot
+						toData.weight = Inventory.SlotWeight(fromItem, toData)
+						player.weight = player.weight + toData.weight
+					else
+						if fromData.count then fromData.count = fromData.count - count end
+						toData.count = toData.count + count
+						toData.weight = Inventory.SlotWeight(toItem, toData)
+						player.weight = player.weight + toData.weight
+					end
+					toData.metadata = metadata
+					shop.items[data.fromSlot], player.items[data.toSlot] = fromData, toData
+					Inventory.RemoveItem(source, currency, price)
+					Inventory.SyncInventory(xPlayer, player)
 
 					return cb(true, {data.toSlot, toData, weight}, {type = 'success', text = ox.locale('purchased_for', count, fromItem.label, (currency == 'money' and ox.locale('$') or price), (currency == 'money' and price or ' '..currency))})
 				else
