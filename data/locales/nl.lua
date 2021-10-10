@@ -1,5 +1,5 @@
 return {
-	['currency'] = "€",
+	['$'] = "€",
 	['male'] = "Man",
 	['female'] = "Vrouw",
 	['used'] = "Gebruikt",
