@@ -79,7 +79,7 @@ local CanOpenInventory = function()
 	and IsPedFatallyInjured(ESX.PlayerData.ped, 1) == false
 end
 
-local currentInventory
+local defaultInventory, currentInventory = {type='newdrop', slots=Config.PlayerSlots, weight=0, maxWeight=Config.DefaultWeight, items=table.create(0,0)}, nil
 local OpenInventory = function(inv, data)
 	if CanOpenInventory() then
 		local left, right
@@ -104,7 +104,7 @@ local OpenInventory = function(inv, data)
 			SetNuiFocus(true, true)
 			SetNuiFocusKeepInput(true)
 			TriggerScreenblurFadeIn(0)
-			currentInventory = right or {id='', type='newdrop', slots=left.slots, weight=0, maxWeight=30000, items={}}
+			currentInventory = right or defaultInventory
 			left.items = ESX.PlayerData.inventory
 			SendNUIMessage({
 				action = 'setupInventory',
