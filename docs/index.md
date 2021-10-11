@@ -29,25 +29,18 @@ A new lightweight database wrapper utilising [node-mysql2](https://github.com/si
 
 ## Framework
 The inventory has been designed to work for a _modified_ version of **ESX Legacy** and will not work with anything else.  
-For convenience, we provide a fork with all necessary changes.
+For convenience, we provide a fork with all the necessary changes as well as several new features and performance changes.  
 
-## Standard
-Minimal changes to maintain near-complete compatibility with other resources. This matches the behaviour of Linden ESX.
+There should be no changes which break compatibility with other resources with the exception of what is necessary to support the inventory and new item system.
 
 - Loadouts do not exist, so errors will occur in third-party resources attempting to manipulate them
 - Inventories are slot-based and items can exist in multiple slots, which can throw off item counting
 - Resources attempting to iterate through inventories in order will not work if a slot is empty
 
-## Ox
-Experimental branch to add new features and modify existing features, regardless of breaking compatibility.
-
-- Jobs are loaded from a data file instead of the database
-- Grades start from 1 instead of 0, and are stored as integers rather than strings
-
 !!! tip "Modifying your framework"
-	If you _insist_ on manually applying changes to your framework, you will need to manually reference changes in the [github diff](https://github.com/overextended/es_extended/compare/58042fb6926769aeab35fe26fa98d568971ba0be...main). No guide is provided.
+	We do not provide a guide for manually converting your ESX to support Ox Inventory; instead you will need to manually reference changes in the [github diff](https://github.com/overextended/es_extended/compare/58042fb6926769aeab35fe26fa98d568971ba0be...ox).
 
-[Standard :fontawesome-solid-archive:](https://github.com/overextended/es_extended){ .md-button .md-button--primary }	[Experimental :fontawesome-solid-exclamation-triangle:](https://github.com/overextended/es_extended/tree/ox){ .md-button .md-button--primary }
+[Standard :fontawesome-solid-download:](https://github.com/overextended/es_extended){ .md-button .md-button--primary }
 
 
 ## Installation
@@ -99,7 +92,6 @@ All item related functions from xPlayer, such as `xPlayer.getInventoryItem`, hav
 The reasoning is fairly simple - there's now additional function references and overhead to consider. Fortunately, the new Inventory functions can be used directly and offer a great deal of improvements over the old ones.
 
 You should read through the modules section for further information, but the following should give you a decent idea.
-(Note: Work in progress and may be altered, for now you should stick to xPlayer functions)
 
 !!! example "xPlayer.getInventoryItem and xPlayer.removeInventoryItem"
 	=== "Deprecated"
@@ -112,12 +104,13 @@ You should read through the modules section for further information, but the fol
 		```
 	=== "New function"
 		```lua
-		local inventory = Inventory.Search(source, 2, {'acetone', 'antifreeze', 'sudo'})
-		if inventory and inventory.acetone > 2 and inventory.antifreeze > 4 and inventory.sudo > 9 then
-			xPlayer.removeInventoryItem("acetone", 3)
-			xPlayer.removeInventoryItem("antifreeze", 5)
-			xPlayer.removeInventoryItem("sudo", 10)
-			-- todo: improved function for bulk removal
-			-- Inventory.RemoveItem(1, {'acetone', 'antifreeze', 'sudo'}, {3, 5, 10})
+		local Inventory = exports.ox_inventory:Inventory()
+		...
+		...
+		local items = Inventory.Search(source, 2, {'acetone', 'antifreeze', 'sudo'})
+		if items and inventory.acetone > 2 and inventory.antifreeze > 4 and inventory.sudo > 9 then
+			Inventory.RemoveItem(source, 'acetone', 3)
+			Inventory.RemoveItem(source, 'antifreeze', 5)
+			Inventory.RemoveItem(source, 'sudo', 10)
 		end
 		```
