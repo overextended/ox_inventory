@@ -563,7 +563,8 @@ end)
 
 RegisterServerEvent('ox_inventory:updateWeapon', function(action, value, slot)
 	local inventory = Inventories[source]
-	local weapon = inventory.items[inventory.weapon or slot]
+	if not slot then slot = inventory.weapon end
+	local weapon = inventory.items[slot]
 	if weapon and weapon.metadata then
 		if action == 'load' then
 			local ammo = Items(weapon.name).ammoname
@@ -580,10 +581,11 @@ RegisterServerEvent('ox_inventory:updateWeapon', function(action, value, slot)
 			elseif type == 'string' then
 				table.insert(weapon.metadata.components, component)
 			end
-		elseif weapon.metadata.ammo then
+		elseif action == 'ammo' then
 			if value < weapon.metadata.ammo then
+				local durability = Items(weapon.name).durability * math.abs(weapon.metadata.ammo - value)
 				weapon.metadata.ammo = value
-				weapon.metadata.durability = weapon.metadata.durability - Items(weapon.name).durability
+				weapon.metadata.durability = weapon.metadata.durability - durability
 			end
 		elseif weapon.metadata.durability then
 			weapon.metadata.durability = weapon.metadata.durability - (Items(weapon.name).durability or 1)
