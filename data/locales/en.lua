@@ -54,4 +54,5 @@ return {
 	['disable_hotbar'] = "Display inventory hotbar~",
 	['reload_weapon'] = "Reload weapon~",
 	['use_hotbar'] = "Use hotbar item %s~",
+	['no_durability'] = "Item durability depleted!"
 }

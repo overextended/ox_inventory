@@ -246,6 +246,13 @@ Utils.RegisterServerCallback('ox_inventory:useItem', function(source, cb, item, 
 	local inventory = Inventory(source)
 	local item, type = Items(item)
 	local data = item and (slot and inventory.items[slot] or Inventory.GetItem(source, item, metadata))
+	local itemDurability = data.metadata.durability
+	if itemDurability and itemDurability > 100 then itemDurability = (itemDurability - os.time()) / (60 * data.metadata.degrade) * 100 end
+	-- need to remove type ~= 1 when weapon durability is working properly
+	if type ~= 1 and itemDurability <= 0 then 
+		TriggerClientEvent('ox_inventory:Notify', source, {type = 'error', text = ox.locale('no_durability', data.name), duration = 2500})
+		return cb(false)
+	end
 	if item and data and data.count > 0 and data.name == item.name then
 		data = {name=data.name, label=data.label, count=data.count, slot=slot or data.slot, metadata=data.metadata, consume=item.consume}
 		if type == 1 then -- weapon
