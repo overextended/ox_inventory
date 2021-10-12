@@ -45,7 +45,7 @@ local Disarm = function(newSlot)
 			Wait(sleep)
 		end
 		RemoveWeaponFromPed(ESX.PlayerData.ped, currentWeapon.hash)
-		TriggerServerEvent('ox_inventory:updateWeapon', 'ammo', ammo, newSlot)
+		if newSlot ~= false then TriggerServerEvent('ox_inventory:updateWeapon', 'ammo', ammo, newSlot) end
 		SetWeapon()
 	end
 end

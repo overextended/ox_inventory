@@ -592,6 +592,9 @@ RegisterServerEvent('ox_inventory:updateWeapon', function(action, value, slot)
 		end
 		M.SyncInventory(ESX.GetPlayerFromId(inventory.id), inventory)
 		if action ~= 'throw' then TriggerClientEvent('ox_inventory:updateInventory', source, {{item = weapon}}, {left=inventory.weight}) end
+		if weapon.metadata?.durability == 0 then
+			TriggerClientEvent('ox_inventory:disarm', sourcem, false)
+		end
 	end
 end)
 
