@@ -402,8 +402,8 @@ M.CanCarryItem = function(inv, item, count, metadata)
 end
 
 M.CanSwapItem = function(inv, firstItem, firstItemCount, testItem, testItemCount)
-	local firstItemData = GetItem(inv, firstItem)
-	local testItemData = GetItem(inv, testItem)
+	local firstItemData = M.GetItem(inv, firstItem)
+	local testItemData = M.GetItem(inv, testItem)
 	if firstItemData.count >= firstItemCount then
 		local weightWithoutFirst = inv.weight - (firstItemData.weight * firstItemCount)
 		local weightWithTest = weightWithoutFirst + (testItemData.weight * testItemCount)
