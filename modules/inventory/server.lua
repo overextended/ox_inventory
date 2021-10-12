@@ -553,10 +553,14 @@ RegisterServerEvent('ox_inventory:giveItem', function(slot, target, count)
 	if count <= 0 then count = 1 end
 	if toInventory.type == 'player' then
 		local data = fromInventory.items[slot]
-		if data and data.count >= count then
-			local item = Items(data.name)
-			M.RemoveItem(fromInventory, item, count, data.metadata, slot)
-			M.AddItem(toInventory, item, count, data.metadata)
+		local item = Items(data.name)
+		if not toInventory.open and M.CanCarryItem(toInventory, item, count, data.metadata) then
+			if data and data.count >= count then
+				M.RemoveItem(fromInventory, item, count, data.metadata, slot)
+				M.AddItem(toInventory, item, count, data.metadata)
+			end
+		else
+			TriggerClientEvent('ox_inventory:Notify', source, {type = 'error', text = ox.locale('cannot_give', count, data.label), duration = 2500})
 		end
 	end
 end)
