@@ -1,9 +1,6 @@
-
-<h2 align='center'>This project is still a work-in-progress - only recommended for development servers.</h2> 
-
 <h1 align='center'><a href='https://overextended.github.io/ox_inventory/'>Documentation</a></h1><p align='center'>Click the link above for information on setup, installation, and improving compatibility with other resources.
-<p align='center'><a href='https://discord.io/overextended'>Discord</a></p>
 
+<h2 align='center'>This project is still a work-in-progress - only recommended for competent developers.</h2> 
 
 
 <br><br><br><h3 align='center'>Legal Notices</h2>
@@ -32,3 +29,6 @@ If not, see <https://www.gnu.org/licenses/>
 <tr><td>
 This resource is a completely new implementation of linden_inventory, which started as a fork of <a href='https://github.com/hsnnnnn/hsn-inventory/tree/9feef47269dbf8271f9e6b477188da88c15758e3'>hsn-inventory</a>
 </td></td></table>
+
+
+<p align='center'><a href='https://discord.io/overextended'>Discord</a></p>

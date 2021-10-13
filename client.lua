@@ -10,8 +10,9 @@ local Keyboard <const> = module('input')
 local invOpen, playerId, currentWeapon
 local isBusy = true
 local plyState = LocalPlayer.state
+plyState:set('busy', true, true)
 
-AddStateBagChangeHandler('isBusy', nil, function(bagName, key, value, reserved, replicated)
+AddStateBagChangeHandler('busy', nil, function(bagName, key, value, reserved, replicated)
 	isBusy = value
 end)
 
@@ -156,7 +157,7 @@ local UseSlot = function(slot)
 								for v=1, #components do
 									local component = components[v]
 									if DoesWeaponTakeWeaponComponent(data.hash, component) then
-										if not HasPedGotWeaponComponent(ESX.PlayerData.ped, data.hash, component) then 
+										if not HasPedGotWeaponComponent(ESX.PlayerData.ped, data.hash, component) then
 											GiveWeaponComponentToPed(ESX.PlayerData.ped, data.hash, component)
 										end
 									end
@@ -184,7 +185,7 @@ local UseSlot = function(slot)
 									local newAmmo = 0
 									missingAmmo = maxAmmo - currentAmmo
 									if missingAmmo > data.count then newAmmo = currentAmmo + data.count else newAmmo = maxAmmo end
-									if newAmmo < 0 then newAmmo = 0 end 
+									if newAmmo < 0 then newAmmo = 0 end
 									SetPedAmmo(ESX.PlayerData.ped, currentWeapon.hash, newAmmo)
 									MakePedReload(ESX.PlayerData.ped)
 									currentWeapon.metadata.ammo = newAmmo
@@ -198,7 +199,7 @@ local UseSlot = function(slot)
 					for i=1, #components do
 						local component = components[i]
 						if DoesWeaponTakeWeaponComponent(currentWeapon.hash, component) then
-							if HasPedGotWeaponComponent(ESX.PlayerData.ped, currentWeapon.hash, component) then 
+							if HasPedGotWeaponComponent(ESX.PlayerData.ped, currentWeapon.hash, component) then
 								Notify({type = 'error', text = ox.locale('component_has', data.label)})
 							else
 								TriggerEvent('ox_inventory:item', data, function(data)
@@ -348,7 +349,7 @@ RegisterNetEvent('ox_inventory:setPlayerInventory', function(drops, inventory, w
 			description = v.description
         }
     end
-    SendNUIMessage({ 
+    SendNUIMessage({
 		action = 'init',
 		data = {
 			items = ItemData,
@@ -418,7 +419,7 @@ RegisterNetEvent('ox_inventory:setPlayerInventory', function(drops, inventory, w
 		end
 		if ox.parachute and GetPedParachuteState(ESX.PlayerData.ped) ~= -1 then ESX.Game.DeleteObject(ox.parachute) ox.parachute = false end
 	end)
-	
+
 	SetInterval(2, 0, function()
 		if invOpen then
 			DisableAllControlActions(0)
