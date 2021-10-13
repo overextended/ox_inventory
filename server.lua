@@ -8,14 +8,16 @@ local Inventory <const> = module('inventory')
 
 RegisterServerEvent('ox_inventory:requestPlayerInventory', function()
 	local xPlayer = ESX.GetPlayerFromId(source)
-	while not ox.ready do Wait(0) end
-	if next(xPlayer.inventory) then
-		TriggerEvent('ox_inventory:setPlayerInventory', xPlayer)
-	else
-		exports.oxmysql:scalar('SELECT inventory FROM users WHERE identifier = ?', { xPlayer.identifier }, function(result)
-			if result then inventory = json.decode(result) end
-			TriggerEvent('ox_inventory:setPlayerInventory', xPlayer, result and json.decode(result))
-		end)
+	if xPlayer then
+		while not ox.ready do Wait(0) end
+		if next(xPlayer.inventory) then
+			TriggerEvent('ox_inventory:setPlayerInventory', xPlayer)
+		else
+			exports.oxmysql:scalar('SELECT inventory FROM users WHERE identifier = ?', { xPlayer.identifier }, function(result)
+				if result then inventory = json.decode(result) end
+				TriggerEvent('ox_inventory:setPlayerInventory', xPlayer, result and json.decode(result))
+			end)
+		end
 	end
 end)
 
