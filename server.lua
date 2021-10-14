@@ -277,39 +277,41 @@ end)
 
 Utils.RegisterServerCallback('ox_inventory:useItem', function(source, cb, item, slot, metadata)
 	local inventory = Inventory(source)
-	local item, type = Items(item)
-	local data = item and (slot and inventory.items[slot] or Inventory.GetItem(source, item, metadata))
-	local durability = data.metadata.durability
-	if durability then
-		if durability > 100 then
-			if os.time() > durability then
-				inventory.items[slot].metadata.durability = 0
+	if inventory.type == 'player' then
+		local item, type = Items(item)
+		local data = item and (slot and inventory.items[slot] or Inventory.GetItem(source, item, metadata))
+		local durability = data.metadata.durability
+		if durability then
+			if durability > 100 then
+				if os.time() > durability then
+					inventory.items[slot].metadata.durability = 0
+					TriggerClientEvent('ox_inventory:Notify', source, {type = 'error', text = ox.locale('no_durability', data.name), duration = 2500})
+					return cb(false)
+				end
+			elseif durability <= 0 then 
 				TriggerClientEvent('ox_inventory:Notify', source, {type = 'error', text = ox.locale('no_durability', data.name), duration = 2500})
 				return cb(false)
 			end
-		elseif durability <= 0 then 
-			TriggerClientEvent('ox_inventory:Notify', source, {type = 'error', text = ox.locale('no_durability', data.name), duration = 2500})
-			return cb(false)
 		end
-	end
-	if item and data and data.count > 0 and data.name == item.name then
-		data = {name=data.name, label=data.label, count=data.count, slot=slot or data.slot, metadata=data.metadata, consume=item.consume}
-		if type == 1 then -- weapon
-			inventory.weapon = data.slot
-			return cb(data)
-		elseif type == 2 then -- ammo
-			data.consume = nil
-			return cb(data)
-		elseif type == 3 then -- component
-			data.consume = 1
-			return cb(data)
-		elseif ESX.UsableItemsCallbacks[item.name] then
-			ESX.UseItem(source, item.name)
-		else
-			if item.consume and data.count >= item.consume then
+		if item and data and data.count > 0 and data.name == item.name then
+			data = {name=data.name, label=data.label, count=data.count, slot=slot or data.slot, metadata=data.metadata, consume=item.consume}
+			if type == 1 then -- weapon
+				inventory.weapon = data.slot
 				return cb(data)
+			elseif type == 2 then -- ammo
+				data.consume = nil
+				return cb(data)
+			elseif type == 3 then -- component
+				data.consume = 1
+				return cb(data)
+			elseif ESX.UsableItemsCallbacks[item.name] then
+				ESX.UseItem(source, item.name)
 			else
-				TriggerClientEvent('ox_inventory:Notify', source, {type = 'error', text = ox.locale('item_not_enough', item.name), duration = 2500})
+				if item.consume and data.count >= item.consume then
+					return cb(data)
+				else
+					TriggerClientEvent('ox_inventory:Notify', source, {type = 'error', text = ox.locale('item_not_enough', item.name), duration = 2500})
+				end
 			end
 		end
 	end
