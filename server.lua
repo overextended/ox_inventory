@@ -22,10 +22,12 @@ RegisterServerEvent('ox_inventory:requestPlayerInventory', function()
 end)
 
 RegisterServerEvent('ox_inventory:closeInventory', function()
-	local inventory, secondary = Inventory(source)
-	if inventory.open then secondary = Inventory(inventory.open) end
-	if secondary then secondary:set('open', false) end
-	inventory:set('open', false)
+	local inventory = Inventory(source)
+	if inventory?.open then
+		local secondary = Inventory(inventory.open)
+		if secondary then secondary:set('open', false) end
+		inventory:set('open', false)
+	end
 end)
 
 AddEventHandler('ox_inventory:setPlayerInventory', function(xPlayer, data)
