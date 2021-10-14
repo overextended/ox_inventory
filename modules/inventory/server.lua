@@ -20,7 +20,9 @@ local Set = function(inv, k, v)
 		if type(v) == 'number' then math.floor(v + 0.5) end
 		if k == 'open' and v == false then
 			if inv.type ~= 'player' then
-				if inv.type == 'drop' and not next(inv.items) then
+				if inv.type == 'otherplayer' then
+					inv.type = 'player'
+				elseif inv.type == 'drop' and not next(inv.items) then
 					return M.Remove(inv.id, inv.type)
 				else inv.time = os.time() end
 			end

@@ -54,6 +54,7 @@ end)
 
 Utils.RegisterServerCallback('ox_inventory:openInventory', function(source, cb, inv, data)
 	local left, right = Inventory(source)
+	if left.open then return cb(nil) end
 	if data then
 		if inv == 'policeevidence' then
 			right = Inventory('police-'..data.id)
@@ -97,15 +98,21 @@ Utils.RegisterServerCallback('ox_inventory:openInventory', function(source, cb, 
 		end
 		if right then
 			if right.open == true then return cb(false) end
-			if right.coords == nil or #(right.coords - GetEntityCoords(GetPlayerPed(source))) < 20 then
+			local otherplayer = right.type == 'player'
+			if otherplayer then right.coords = GetEntityCoords(GetPlayerPed(right.id)) end
+			if right.coords == nil or #(right.coords - GetEntityCoords(GetPlayerPed(source))) < 10 then
 				right.open = source
 				left.open = right.id
+				if otherplayer then
+					right:set('type', 'otherplayer')
+				end
 			else return cb(false) end
 		end
 	else left.open = true end
 	cb({id=left.label, type=left.type, slots=left.slots, weight=left.weight, maxWeight=left.maxWeight}, right)
 end)
 
+local isPlayer = {.player, .otherplayer}
 Utils.RegisterServerCallback('ox_inventory:swapItems', function(source, cb, data)
 	if data.count > 0 and data.toType ~= 'shop' then
 		local playerInventory, items, ret = Inventory(source), {}, nil
@@ -134,8 +141,17 @@ Utils.RegisterServerCallback('ox_inventory:swapItems', function(source, cb, data
 				local movedWeapon = fromInventory.weapon == data.fromSlot
 				local fromData = fromInventory.items[data.fromSlot]
 				local toData = toInventory.items[data.toSlot]
+
 				if movedWeapon then
-					if data.toType == 'player' then fromInventory.weapon = data.toSlot else TriggerClientEvent('ox_inventory:disarm', source) end
+					if toInventory.type == 'player' then
+						fromInventory.weapon = data.toSlot
+						movedWeapon = true
+					else TriggerClientEvent('ox_inventory:disarm', source) end
+
+					if fromInventory.type == 'otherplayer' then
+						fromInventory.weapon = data.fromSlot
+						movedWeapon = false
+					else TriggerClientEvent('ox_inventory:disarm', fromInventory.source) end
 				end
 
 				if fromData and (not fromData.metadata.container or fromData.metadata.container and toInventory.type ~= 'container') then
@@ -187,19 +203,37 @@ Utils.RegisterServerCallback('ox_inventory:swapItems', function(source, cb, data
 					end
 
 					if fromData.count < 1 then fromData = nil end
-					if data.fromType == 'player' then items[data.fromSlot] = fromData or false end
-					if data.toType == 'player' then items[data.toSlot] = toData or false end
+
+					if fromInventory.type == 'player' then
+						items[data.fromSlot] = fromData or false
+					end
+
+					if toInventory.type == 'player' then
+						items[data.toSlot] = toData or false
+					end
+
 					fromInventory.items[data.fromSlot] = fromData
 					toInventory.items[data.toSlot] = toData
 
 					if next(items) then
 						ret = {weight=playerInventory.weight, items=items}
-						Inventory.SyncInventory(ESX.GetPlayerFromId(playerInventory.id), playerInventory)
+						if isPlayer[fromInventory.type] then
+							Inventory.SyncInventory(ESX.GetPlayerFromId(fromInventory.id), fromInventory)
+						end
+						if not sameInventory and isPlayer[toInventory.type] then
+							Inventory.SyncInventory(ESX.GetPlayerFromId(toInventory.id), toInventory)
+						end
 					end
 
 					if fromInventory.changed ~= nil then fromInventory.changed = true end
 					if toInventory.changed ~= nil then toInventory.changed = true end
 
+					if not sameInventory then
+						local otherplayer = fromInventory.type == 'otherplayer' and fromInventory or toInventory.type == 'otherplayer' and toInventory
+						if otherplayer then
+							TriggerClientEvent('ox_inventory:updateInventory', otherplayer.id, {{item = otherplayer.items[data.toSlot] or {slot=data.toSlot}, inventory = otherplayer.type}, {item = otherplayer.items[data.fromSlot] or {slot=data.fromSlot}, inventory = otherplayer.type}}, {left=otherplayer.weight}--[[, item.label, removed, true]])
+						end
+					end
 					return cb(true, ret, movedWeapon and fromInventory.weapon)
 				end
 			end

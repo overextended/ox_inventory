@@ -704,8 +704,16 @@ RegisterCommand('reload', function()
 	end
 end)
 
+RegisterCommand('steal', function()
+	local closestPlayer, coords = Utils.GetClosestPlayer()
+	if closestPlayer.x < 2 then
+		Utils.PlayAnim(2000, 'mp_common', 'givetake1_a', 1.0, 1.0, -1, 50, 0.0, 0, 0, 0)
+		OpenInventory('player', {id=GetPlayerServerId(closestPlayer.y)})
+	end
+	cb(1)
+end)
+
 RegisterNUICallback('removeComponent', function(data, cb)
-	-- todo: locales
 	if not currentWeapon then return Notify({type = 'error', text = ox.locale('weapon_hand_required')}) end
 	if data.slot ~= currentWeapon.slot then return Notify({type = 'error', text = ox.locale('weapon_hand_wrong')}) end
 	local itemSlot = ESX.PlayerData.inventory[currentWeapon.slot]
