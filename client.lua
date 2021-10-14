@@ -396,18 +396,15 @@ RegisterNetEvent('ox_inventory:setPlayerInventory', function(drops, inventory, w
 			else
 				playerCoords = GetEntityCoords(ESX.PlayerData.ped)
 				if currentInventory then
-					if currentInventory.type == 'target' then
+					if currentInventory.type == 'otherplayer' then
 						local id = GetPlayerFromServerId(currentInventory.id)
 						local ped = GetPlayerPed(id)
 						local pedCoords = GetEntityCoords(ped)
-						if not id or #(playerCoords - pedCoords) > 1.8 then
-							TriggerEvent('ox_inventory:closeInventory')
-							Notify({type = 'error', text = ox.locale('inventory_lost_access'), duration = 2500})
-						elseif ESX.PlayerData.job.name ~= 'police' and not CanOpenTarget(ped) then
+						if not id or #(playerCoords - pedCoords) > 1.8 or not (ESX.PlayerData.job.name == 'police' or CanOpenTarget(ped)) then
 							TriggerEvent('ox_inventory:closeInventory')
 							Notify({type = 'error', text = ox.locale('inventory_lost_access'), duration = 2500})
 						else
-							TaskTurnToFaceCoords(ESX.PlayerData.ped, pedCoords)
+							TaskTurnPedToFaceCoord(ESX.PlayerData.ped, pedCoords.x, pedCoords.y, pedCoords.z, 50)
 						end
 					elseif currentInventory.coords and (#(playerCoords - currentInventory.coords) > 2 or CanOpenTarget(ESX.PlayerData.ped)) then
 						TriggerEvent('ox_inventory:closeInventory')
@@ -706,12 +703,13 @@ RegisterCommand('reload', function()
 end)
 
 RegisterCommand('steal', function()
-	local closestPlayer, coords = Utils.GetClosestPlayer()
-	if closestPlayer.x < 2 then
-		Utils.PlayAnim(2000, 'mp_common', 'givetake1_a', 1.0, 1.0, -1, 50, 0.0, 0, 0, 0)
-		OpenInventory('player', {id=GetPlayerServerId(closestPlayer.y)})
+	if CanOpenInventory() then
+		local closestPlayer, coords = Utils.GetClosestPlayer()
+		if closestPlayer.x < 2 and (ESX.PlayerData.job.name == 'police' or CanOpenTarget(closestPlayer.z)) then
+			Utils.PlayAnim(2000, 'mp_common', 'givetake1_a', 1.0, 1.0, -1, 50, 0.0, 0, 0, 0)
+			OpenInventory('player', {id=GetPlayerServerId(closestPlayer.y)})
+		end
 	end
-	cb(1)
 end)
 
 RegisterNUICallback('removeComponent', function(data, cb)
