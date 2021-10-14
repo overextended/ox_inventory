@@ -10,7 +10,6 @@ local Keyboard <const> = module('input')
 local invOpen, playerId, currentWeapon
 local isBusy = true
 local plyState = LocalPlayer.state
-plyState:set('busy', true, true)
 
 AddStateBagChangeHandler('busy', nil, function(bagName, key, value, reserved, replicated)
 	isBusy = value
@@ -364,7 +363,7 @@ RegisterNetEvent('ox_inventory:setPlayerInventory', function(drops, inventory, w
 	})
 	Shops.CreateShopLocations()
 	Notify({text = ox.locale('inventory_setup'), duration = 2500})
-	plyState.isBusy = false
+	plyState:set('busy', false, true)
 
 	SetInterval(1, 250, function()
 		if invOpen == false then
