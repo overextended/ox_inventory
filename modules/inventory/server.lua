@@ -588,12 +588,14 @@ RegisterServerEvent('ox_inventory:updateWeapon', function(action, value, slot)
 	local inventory = Inventories[source]
 	if not slot then slot = inventory.weapon end
 	local weapon = inventory.items[slot]
+	local syncInventory = false
 	if weapon and weapon.metadata then
 		if action == 'load' then
 			local ammo = Items(weapon.name).ammoname
 			local diff = value - weapon.metadata.ammo
 			M.RemoveItem(inventory, ammo, diff)
 			weapon.metadata.ammo = value
+			syncInventory = true
 		elseif action == 'throw' then
 			M.RemoveItem(inventory, weapon.name, 1, weapon.metadata, weapon.slot)
 		elseif action == 'component' then
@@ -604,16 +606,19 @@ RegisterServerEvent('ox_inventory:updateWeapon', function(action, value, slot)
 			elseif type == 'string' then
 				table.insert(weapon.metadata.components, component)
 			end
+			syncInventory = true
 		elseif action == 'ammo' then
 			if value < weapon.metadata.ammo then
 				local durability = Items(weapon.name).durability * math.abs(weapon.metadata.ammo - value)
 				weapon.metadata.ammo = value
 				weapon.metadata.durability = weapon.metadata.durability - durability
 			end
-		elseif weapon.metadata.durability then
-			weapon.metadata.durability = weapon.metadata.durability - (Items(weapon.name).durability or 1)
+			syncInventory = true
+		elseif action == 'melee' and value > 0 then
+			weapon.metadata.durability = weapon.metadata.durability - ((Items(weapon.name).durability or 1) * value)
+			syncInventory = true
 		end
-		M.SyncInventory(ESX.GetPlayerFromId(inventory.id), inventory)
+		if syncInventory then M.SyncInventory(ESX.GetPlayerFromId(inventory.id), inventory) end
 		if action ~= 'throw' then TriggerClientEvent('ox_inventory:updateInventory', source, {{item = weapon}}, {left=inventory.weight}) end
 		if weapon.metadata?.durability == 0 then
 			TriggerClientEvent('ox_inventory:disarm', sourcem, false)

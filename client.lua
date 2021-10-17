@@ -23,7 +23,8 @@ local SetWeapon = function(weapon, hash, ammo)
 		slot = weapon.slot,
 		label = weapon.label,
 		metadata = weapon.metadata,
-		throwable = weapon.throwable
+		throwable = weapon.throwable,
+		melee = (not weapon.throwable and not ammo) and 0,
 	} or nil
 	TriggerEvent('ox_inventory:currentWeapon', currentWeapon)
 	if currentWeapon then currentWeapon.timer = 0 end
@@ -35,7 +36,7 @@ local Disarm = function(newSlot)
 	SetPedCanSwitchWeapon(ESX.PlayerData.ped, 0)
 	SetPedEnableWeaponBlocking(ESX.PlayerData.ped, 1)
 	if currentWeapon then
-		local ammo = GetAmmoInPedWeapon(ESX.PlayerData.ped, currentWeapon.hash)
+		local ammo = currentWeapon.ammo and GetAmmoInPedWeapon(ESX.PlayerData.ped, currentWeapon.hash)
 		SetPedAmmo(ESX.PlayerData.ped, currentWeapon.hash, 0)
 		ClearPedSecondaryTask(ESX.PlayerData.ped)
 		if newSlot ~= -1 then
@@ -45,7 +46,7 @@ local Disarm = function(newSlot)
 			Wait(sleep)
 		end
 		RemoveWeaponFromPed(ESX.PlayerData.ped, currentWeapon.hash)
-		if newSlot ~= false then TriggerServerEvent('ox_inventory:updateWeapon', 'ammo', ammo, newSlot) end
+		if newSlot ~= false then TriggerServerEvent('ox_inventory:updateWeapon', ammo and 'ammo' or 'melee', ammo or currentWeapon.melee, newSlot) end
 		SetWeapon()
 	end
 end
@@ -474,7 +475,12 @@ RegisterNetEvent('ox_inventory:setPlayerInventory', function(drops, inventory, w
 			if currentWeapon then
 				DisableControlAction(0, 140, true)
 				if isBusy == false and currentWeapon.timer ~= 0 and currentWeapon.timer < GetGameTimer() then
-					TriggerServerEvent('ox_inventory:updateWeapon', 'ammo', currentWeapon.metadata.ammo)
+					if currentWeapon.metadata.ammo then
+						TriggerServerEvent('ox_inventory:updateWeapon', 'ammo', currentWeapon.metadata.ammo)
+					elseif currentWeapon.metadata.durability then
+						TriggerServerEvent('ox_inventory:updateWeapon', 'melee', currentWeapon.melee)
+						currentWeapon.melee = 0
+					end
 					currentWeapon.timer = 0
 				elseif currentWeapon.metadata.ammo then
 					if IsPedShooting(ESX.PlayerData.ped) then
@@ -505,6 +511,7 @@ RegisterNetEvent('ox_inventory:setPlayerInventory', function(drops, inventory, w
 							plyState.isBusy = false
 						end)
 					elseif IsPedPerformingMeleeAction(ESX.PlayerData.ped) then
+						currentWeapon.melee += 1
 						currentWeapon.timer = GetGameTimer() + 400
 					end
 				end
