@@ -8,7 +8,8 @@ lua54 'yes'
 use_fxv2_oal 'yes'
 
 dependencies {
-	'es_extended'
+	'es_extended',
+	'oxmysql'
 }
 
 shared_scripts {
