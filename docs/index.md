@@ -4,24 +4,18 @@ title: Getting Started
 !!! danger
 	**Not ready for production servers - this resource is still being developed**
 
-	This resource is being designed with ease of use and advanced functionality as a core principal, however that doesn't mean it is intended for _config kings_.  
-	If you do not possess a basic understanding of coding - nor the ability to read documentation - then turn back now and go use a drag-n-drop resource instead.
+	This resource is being designed with the intention of providing advanced functionality while remaining easy to use, however it is not recommended for beginners.
+	You must possess a basic understanding of coding and the ability to _read documentation_; otherwise you should not install this resource.
 
 ## Requirements
 ## OxMySQL
-A new lightweight database wrapper utilising [node-mysql2](https://github.com/sidorares/node-mysql2), unlike the abandoned ghmattimysql and mysql-async resources.
+Our spin on a database wrapper utilising [node-mysql2](https://github.com/sidorares/node-mysql2), providing improved performance and enhanced features.
 
 - Improved performance and compatibility
 - Resolves issues when using MySQL 8.0
 - Returns callbacks immediately, removing up to 50ms overhead
 - Lua sync wrappers utilise promises to remove additional overhead
-
-!!! attention
-	Modify your server config with a URI-style connection string. You can also set a warning for slow queries.
-	```
-	set mysql_connection_string "mysql://user:password@host/database?charset=utf8mb4"
-	set mysql_slow_query_warning 100
-	```
+- Optional import file to provide compatibility with MySQL-async style usage
 
 [Download :fontawesome-solid-download:](https://github.com/overextended/oxmysql/releases){ .md-button .md-button--primary }	[Documentation :fontawesome-solid-book:](https://overextended.github.io/oxmysql){ .md-button .md-button--primary }
 
@@ -65,7 +59,9 @@ ensure ox_inventory
 	- Run the query inside setup/upgrade.sql
 	- Open fxmanifest.lua and uncomment `server_script 'setup/convert.lua'`
 	- Start the server and type `convertinventory linden` into the server console
-	- Comment out the conversion file
+	- Comment out or remove the conversion file
+	
+	This will not update your items file and old items may be incompatible; refer to documentation for item creation
 
 Keep the following in mind while developing your server
 

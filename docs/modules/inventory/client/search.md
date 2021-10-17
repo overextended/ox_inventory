@@ -8,7 +8,7 @@ Returns a table containing data for the searched items, the result varying based
 	Inventory.Search(searchtype, items, metadata)
 	```
 	```lua
-	exports.ox_inventory:InventorySearch(searchtype, items, metadata)
+	exports.ox_inventory:Search(searchtype, items, metadata)
 	```
 
 	| Argument   | Type    | Optional | Explanation |
