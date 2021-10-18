@@ -54,7 +54,7 @@ end)
 
 Utils.RegisterServerCallback('ox_inventory:openInventory', function(source, cb, inv, data)
 	local left, right = Inventory(source)
-	if left.open then return cb(nil) end
+	if left.open and inv ~= 'newdrop' and inv ~= 'container' then return cb(nil) end
 	if data then
 		if inv == 'policeevidence' then
 			right = Inventory('police-'..data.id)
