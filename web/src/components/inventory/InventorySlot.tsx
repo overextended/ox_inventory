@@ -94,7 +94,7 @@ const InventorySlot: React.FC<SlotProps> = ({ inventory, item, setCurrentItem })
     if (event.ctrlKey && isSlotWithItem(item) && inventory.type !== 'shop') {
       onDrop({ item: item, inventory: inventory.type });
       setCurrentItem(undefined);
-    } else if (event.ctrlKey && isSlotWithItem(item) && inventory.type !== 'shop') {
+    } else if (event.altKey && isSlotWithItem(item) && inventory.type !== 'shop') {
       onUse(item);
       setCurrentItem(undefined);
     }
