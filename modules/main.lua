@@ -8,7 +8,7 @@ local Modules = {}
 module = function(name, shared)
 	if not Modules[name] then
 		local path = ('modules/%s/%s'):format(name, shared and 'shared.lua' or ox.server and 'server.lua' or 'client.lua')
-		local func, err = load(LoadResourceFile(ox.name, path), path, 't')
+		local func, err = load(LoadResourceFile(ox.name, path), '@@'..path, 't')
 		assert(func, err == nil or '\n^1'..err..'^7')
 		if shared then return func() else Modules[name] = func() end
 	end
