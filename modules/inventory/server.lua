@@ -84,7 +84,7 @@ M.SlotWeight = function(item, slot)
 		local ammo = {
 			type = item.ammoname,
 			count = slot.metadata.ammo,
-			weight = item.weight
+			weight = Items(item.ammoname).weight,
 		}
 		if ammo.count then weight = weight + ammo.weight * ammo.count end
 	end
