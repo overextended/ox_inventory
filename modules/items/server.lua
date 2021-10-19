@@ -37,7 +37,6 @@ CreateThread(function()
 			v.stack = v.stackable or true
 			v.description = v.description or ''
 			v.weight = v.weight or 0
-			Items[v.name] = v
 		end
 		if next(query) then
 			query = table.concat(query, ' ')
@@ -52,13 +51,15 @@ local itemFormat = [[
 		weight = %s,
 		stack = %s,
 		close = %s,
-		description = %s
+		description = '%s'
 	},
 ]]
 			for _, v in pairs(items) do
+				print(json.encode(Items[v.name]))
 				if not Items[v.name] then
 					dump[#dump+1] = ("('%s', '%s', %s),\n"):format(v.name, v.label, v.weight)
-					dump[#dump+1] = (itemFormat):format(v.name, v.label, v.weight, v.stack, v.close, v.description)
+					file[#file+1] = (itemFormat):format(v.name, v.label, v.weight, v.stack, v.close, v.description)
+					Items[v.name] = v
 				end
 				sql:write(table.concat(dump))
 				sql:close()
