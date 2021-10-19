@@ -99,7 +99,7 @@ local OpenInventory = function(inv, data)
 			left, right = Utils.AwaitServerCallback('ox_inventory:openInventory', inv, data)
 		end
 		if left then
-			if not IsPedInAnyVehicle(ESX.PlayerData.ped, false) then Utils.PlayAnim(1000, 'pickup_object', 'putdown_low', 5.0, 1.5, 1.0, 48, 0.0, 0, 0, 0) end
+			if not IsPedInAnyVehicle(ESX.PlayerData.ped, false) then Utils.PlayAnim(1000, 'pickup_object', 'putdown_low', 5.0, 1.5, -1, 48, 0.0, 0, 0, 0) end
 			invOpen = true
 			SetInterval(1, 100)
 			SetNuiFocus(true, true)
