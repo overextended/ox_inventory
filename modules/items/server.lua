@@ -41,6 +41,7 @@ CreateThread(function()
 		if next(query) then
 			query = table.concat(query, ' ')
 			local sql = io.open(GetResourcePath(ox.name):gsub('//', '/')..'/setup/dump.sql', 'a+')
+			if not sql then error('Unable to open "setup/dump.sql - check file system permissions', 1) end
 			local file = {LoadResourceFile(ox.name, 'data/items.lua')}
 			file[1] = file[1]:gsub('}$', '')
 			local dump = {}
@@ -55,7 +56,6 @@ local itemFormat = [[
 	},
 ]]
 			for _, v in pairs(items) do
-				print(json.encode(Items[v.name]))
 				if not Items[v.name] then
 					dump[#dump+1] = ("('%s', '%s', %s),\n"):format(v.name, v.label, v.weight)
 					file[#file+1] = (itemFormat):format(v.name, v.label, v.weight, v.stack, v.close, v.description)
