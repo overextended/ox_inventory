@@ -5,6 +5,7 @@ local Shops <const> = module('shops')
 local Items <const> = module('items')
 local Utils <const> = module('utils')
 local Inventory <const> = module('inventory')
+local Log <const> = module('logs')
 
 RegisterServerEvent('ox_inventory:requestPlayerInventory', function()
 	local xPlayer = ESX.GetPlayerFromId(source)
@@ -125,6 +126,8 @@ Utils.RegisterServerCallback('ox_inventory:swapItems', function(source, cb, data
 			playerInventory.items[data.fromSlot] = nil
 			Inventory.SyncInventory(ESX.GetPlayerFromId(playerInventory.id), playerInventory)
 			playerInventory.weight = playerInventory.weight - toData.weight
+
+			Log(('%s dropped %sx %s'):format(playerInventory.label, toData.count, toData.name))
 
 			TriggerEvent('ox_inventory:createDrop', source, data.toSlot, toData, function(drop, coords)
 				if fromData == playerInventory.weapon then playerInventory.weapon = nil end
