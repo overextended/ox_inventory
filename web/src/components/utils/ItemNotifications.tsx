@@ -36,7 +36,7 @@ const ItemNotification = ({
         backgroundImage: `url(${process.env.PUBLIC_URL + `/images/${item}.png`})` || 'none',
       }}
     >
-      <div className="item-label">{text}</div>
+      <div className="item-action">{text}</div>
       <div className="item-label">{Items[item]?.label || 'NO LABEL'}</div>
     </div>
   );

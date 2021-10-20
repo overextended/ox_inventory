@@ -4,6 +4,7 @@
 
 $mainFont: Signika;
 $secondFont: Oxygen;
+$thirdFont: Poppins;
 
 $mainColor: rgb(44, 62, 80);
 $secondaryColor: #34495e;
@@ -264,7 +265,7 @@ input[type='number'] {
   p {
     font-size: 1.1vh;
     text-shadow: none;
-    font-family: 'Poppins';
+    font-family: $thirdFont;
   }
 }
 
@@ -446,6 +447,19 @@ input[type='number'] {
   border-radius: $borderRadius;
   box-shadow: none;
   text-shadow: none;
+}
+
+// Item transition stuff
+.item-action {
+  width: 100%;
+  background-color: white;
+  font-family: $thirdFont;
+  color: black;
+  text-align: center;
+  text-shadow: none;
+  font-size: 1.1vh;
+  border-top-left-radius: $borderRadius;
+  border-top-right-radius: $borderRadius;
 }
 
 .item-notifications-container {
