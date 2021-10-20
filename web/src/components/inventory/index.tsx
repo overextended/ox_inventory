@@ -5,7 +5,7 @@ import InventoryControl from './InventoryControl';
 import InventoryHotbar from './InventoryHotbar';
 import Fade from '../utils/Fade';
 import { useAppDispatch, useAppSelector } from '../../store';
-import inventory, {
+import {
   selectLeftInventory,
   selectRightInventory,
   setupInventory,

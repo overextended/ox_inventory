@@ -5,7 +5,7 @@ import 'react-contexify/dist/ReactContexify.css';
 import { SlotWithItem } from '../../typings';
 import { onDrop } from '../../dnd/onDrop';
 import { Items } from '../../store/items';
-import { fetchNui } from '../../utils/nuiMessage';
+import { fetchNui } from '../../utils/fetchNui';
 
 const InventoryContext: React.FC<{ item: SlotWithItem }> = (props) => {
   const handleClick = ({

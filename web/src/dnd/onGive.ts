@@ -1,6 +1,6 @@
 import { store } from '../store';
 import { Slot } from '../typings';
-import { fetchNui } from '../utils/nuiMessage';
+import { fetchNui } from '../utils/fetchNui';
 
 export const onGive = (item: Slot) => {
   const {

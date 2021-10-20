@@ -1,5 +1,5 @@
 import { createAsyncThunk } from '@reduxjs/toolkit';
-import { fetchNui } from '../utils/nuiMessage';
+import { fetchNui } from '../utils/fetchNui';
 
 export const validateMove = createAsyncThunk(
   'inventory/validateMove',
