@@ -134,6 +134,10 @@ local GenerateSerial = function(text)
 	return ('%s%s%s'):format(math.random(100000,999999), text, math.random(100000,999999))
 end
 
+local containers = {
+	['paperbag'] = {5, 1000}
+}
+
 M.Metadata = function(xPlayer, item, metadata, count)
 	local isWeapon = item.name:find('WEAPON_')
 	if isWeapon == nil then metadata = metadata == nil and {} or type(metadata) == 'string' and {type=metadata} or metadata end
@@ -153,18 +157,21 @@ M.Metadata = function(xPlayer, item, metadata, count)
 			end
 		end
 	else
-		if item.name:find('identification') then
+		local container = containers[item.name]
+		if container then
+			count = 1
+			metadata = {
+				container = GenerateText(3)..os.time(),
+				size = container
+			}
+		elseif item.name == 'identification' then
 			count = 1
 			if next(metadata) == nil then
-				metadata = {}
-				metadata.type = xPlayer.name
-				metadata.description = ox.locale('identification', (xPlayer.variables.sex or xPlayer.sex) and ox.locale('male') or ox.locale('female'), xPlayer.variables.dateofbirth or xPlayer.dateofbirth)
+				metadata = {
+					type = xPlayer.name,
+					description = ox.locale('identification', (xPlayer.variables.sex or xPlayer.sex) and ox.locale('male') or ox.locale('female'), xPlayer.variables.dateofbirth or xPlayer.dateofbirth)
+				}
 			end
-		elseif item.name:find('paperbag') then
-			count = 1
-			metadata = {}
-			metadata.container = GenerateText(3)..os.time()
-			metadata.size = {5, 1000}
 		end
 		if not metadata?.durability then
 			local durability = Items[item.name].degrade
