@@ -447,3 +447,38 @@ input[type='number'] {
   box-shadow: none;
   text-shadow: none;
 }
+
+.item-notifications-container {
+  display: flex;
+  gap: 2px;
+  position: absolute;
+  bottom: 20vh;
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+.item-notification {
+  @extend .item-container;
+  width: 100px;
+  height: 100px;
+  justify-content: space-between;
+}
+
+.item-notification-enter {
+  opacity: 0;
+  transform: translateX(100%);
+}
+.item-notification-enter-active {
+  opacity: 1;
+  transform: translateX(0%);
+  transition: opacity 500ms, transform 500ms ease;
+}
+.item-notification-exit {
+  opacity: 1;
+  transform: translateX(0%);
+}
+.item-notification-exit-active {
+  opacity: 0;
+  transform: translateX(-100%);
+  transition: opacity 500ms, transform 500ms ease;
+}

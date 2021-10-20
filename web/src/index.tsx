@@ -10,6 +10,7 @@ import App from './components/App';
 import './index.scss';
 import process from 'process';
 import { isEnvBrowser } from './utils/misc';
+import { ItemNotificationsProvider } from './components/utils/ItemNotifications';
 
 if (!process.env.IN_GAME_DEV && !isEnvBrowser())
   Sentry.init({
@@ -23,7 +24,9 @@ ReactDOM.render(
   <React.StrictMode>
     <Provider store={store}>
       <DndProvider backend={TouchBackend} options={{ enableMouseEvents: true }}>
-        <App />
+        <ItemNotificationsProvider>
+          <App />
+        </ItemNotificationsProvider>
       </DndProvider>
     </Provider>
   </React.StrictMode>,
