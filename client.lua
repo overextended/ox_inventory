@@ -122,10 +122,10 @@ local OpenInventory = function(inv, data)
 				}
 			})
 		else
-			if invOpen == false then Notify({type = 'error', text = ox.locale('inventory_cannot_open_other'), duration = 2500}) end
+			if invOpen == false then Notify({type = 'error', text = ox.locale('inventory_right_access'), duration = 2500}) end
 			TriggerEvent('ox_inventory:closeInventory')
 		end
-	elseif not isBusy then Notify({type = 'error', text = ox.locale('inventory_cannot_open'), duration = 2500}) end
+	elseif not isBusy then Notify({type = 'error', text = ox.locale('inventory_player_access'), duration = 2500}) end
 end
 RegisterNetEvent('ox_inventory:openInventory', OpenInventory)
 
@@ -616,10 +616,10 @@ end)
 
 RegisterCommand('inv2', function()
 	if not invOpen then
-		if isBusy then return Notify({type = 'error', text = ox.locale('inventory_cannot_open'), duration = 2500})
+		if isBusy then return Notify({type = 'error', text = ox.locale('inventory_player_access'), duration = 2500})
 		elseif currentInventory then TriggerEvent('ox_inventory:closeInventory')
 		else
-			if not CanOpenInventory() then return Notify({type = 'error', text = ox.locale('inventory_cannot_open'), duration = 2500}) end
+			if not CanOpenInventory() then return Notify({type = 'error', text = ox.locale('inventory_player_access'), duration = 2500}) end
 			if IsPedInAnyVehicle(ESX.PlayerData.ped, false) then
 				local vehicle = GetVehiclePedIsIn(ESX.PlayerData.ped, false)
 				if NetworkGetEntityIsNetworked(vehicle) then

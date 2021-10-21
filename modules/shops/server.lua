@@ -58,10 +58,8 @@ Utils.RegisterServerCallback('ox_inventory:buyItem', function(source, cb, data)
 			if fromData.count == 0 then
 				return cb(false, nil, {type = 'error', text = ox.locale('shop_nostock')})
 			elseif fromData.license and not exports.oxmysql:scalarSync('SELECT 1 FROM user_licenses WHERE type = ? AND owner = ?', { fromData.license, player.owner }) then
-				-- Change this later, querying the database each time is silly
 				return cb(false, nil, {type = 'error', text = ox.locale('item_unlicensed')})
 			elseif fromData.grade and xPlayer.job.grade < fromData.grade then
-				-- Needs new/updated locale
 				return cb(false, nil, {type = 'error', text = ox.locale('stash_lowgrade')})
 			end
 			local currency = fromData.currency or 'money'
