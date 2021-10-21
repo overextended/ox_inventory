@@ -70,7 +70,7 @@ Utils.RegisterServerCallback('ox_inventory:buyItem', function(source, cb, data)
 			if fromData.count and data.count > fromData.count then data.count = fromData.count end
 			local metadata, count = Items.Metadata(xPlayer, fromItem, fromData.metadata or {}, data.count)
 			local price = count * fromData.price
-			if toData == nil or (fromItem.name == toItem.name and fromItem.stack == toItem.stack and Utils.MatchTables(toData.metadata, metadata)) then
+			if toData == nil or (fromItem.name == toItem.name and fromItem.stack and Utils.MatchTables(toData.metadata, metadata)) then
 				local canAfford = Inventory.GetItem(source, currency, false, true) >= price
 				if canAfford then
 					local newWeight
