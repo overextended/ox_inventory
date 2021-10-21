@@ -12,7 +12,9 @@ local isBusy = true
 local plyState = LocalPlayer.state
 
 AddStateBagChangeHandler('busy', nil, function(bagName, key, value, reserved, replicated)
-	isBusy = value
+	if bagName:find(playerId) then
+		isBusy = value
+	end
 end)
 
 local SetWeapon = function(weapon, hash, ammo)
