@@ -6,7 +6,7 @@ for k, v in pairs(Items) do
 	v.name = k
 	v.weight = v.weight or 0
 	v.close = v.close or true
-	v.stack = v.stack or true
+	v.stack = v.stack == nil and true or v.stack
 	if v.client then
 		if not v.consume and (v.client.consume or v.client.status or v.client.usetime) then
 			v.consume = 1
@@ -21,7 +21,7 @@ for k, v in pairs(Data.Weapons) do
 	v.name = k
 	v.hash = joaat(k)
 	v.stack = v.stack or false
-	v.close = v.stack or true
+	v.close = true
 	if ox.server then
 		v.client = nil
 	else v.server = nil end
