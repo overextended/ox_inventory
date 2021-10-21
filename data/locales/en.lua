@@ -47,7 +47,7 @@ return {
 	['locker_number'] = "Locker number",
 	['locker_no_value'] = "Must contain value to open locker",
 	['locker_must_number'] = "Locker must be a number",
-	['weapon_hand_required'] = "'You must have a weapon in hand",
+	['weapon_hand_required'] = "You must have a weapon in hand",
 	['weapon_hand_wrong'] = "Wrong weapon in hand",
 	['open_player_inventory'] = "Open player inventory~",
 	['open_secondary_inventory'] = "Open secondary inventory~",

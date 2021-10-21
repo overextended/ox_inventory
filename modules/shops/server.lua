@@ -73,19 +73,25 @@ Utils.RegisterServerCallback('ox_inventory:buyItem', function(source, cb, data)
 			if toData == nil or (fromItem.name == toItem.name and fromItem.stack == toItem.stack and Utils.MatchTables(toData.metadata, metadata)) then
 				local canAfford = Inventory.GetItem(source, currency, false, true) >= price
 				if canAfford then
+					local newWeight
 					if toData == nil and (fromData.count == nil or count <= fromData.count) then
 						if fromData.count then fromData.count = fromData.count - count end
 						toData = table.clone(fromItem)
 						toData.count = count
 						toData.slot = data.toSlot
 						toData.weight = Inventory.SlotWeight(fromItem, toData)
-						player.weight = player.weight + toData.weight
+						newWeight = player.weight + toData.weight
 					else
 						if fromData.count then fromData.count = fromData.count - count end
 						toData.count = toData.count + count
 						toData.weight = Inventory.SlotWeight(toItem, toData)
-						player.weight = player.weight + toData.weight
+						newWeight = player.weight + toData.weight
 					end
+
+					if newWeight > player.maxWeight then
+						return cb(false, nil, {type = 'error', text = { ox.locale('cannot_carry')}})
+					else player.weight = newWeight end
+
 					toData.metadata = metadata
 					shop.items[data.fromSlot], player.items[data.toSlot] = fromData, toData
 					Inventory.RemoveItem(source, currency, price)
