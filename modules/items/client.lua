@@ -62,7 +62,7 @@ Item('armour', function(data, slot)
 	if GetPedArmour(ESX.PlayerData.ped) < 100 then
 		TriggerEvent('ox_inventory:item', data, function(data)
 			if data then
-				SetPlayerMaxArmour(playerID, 100)
+				SetPlayerMaxArmour(PlayerId(), 100)
 				SetPedArmour(ESX.PlayerData.ped, 100)
 			end
 		end)
@@ -75,10 +75,14 @@ Item('parachute', function(data, slot)
 		TriggerEvent('ox_inventory:item', data, function(data)
 			if data then
 				local chute = `GADGET_PARACHUTE`
+				SetPlayerParachuteTintIndex(PlayerId(), -1)
 				GiveWeaponToPed(ESX.PlayerData.ped, chute, 0, true, false)
 				SetPedGadget(ESX.PlayerData.ped, chute, true)
 				ESX.Streaming.RequestModel(1269906701)
 				ox.parachute = CreateParachuteBagObject(ESX.PlayerData.ped, true, true)
+				if slot.metadata.type then
+					SetPlayerParachuteTintIndex(PlayerId(), slot.metadata.type)
+				end
 			end
 		end)
 	end
