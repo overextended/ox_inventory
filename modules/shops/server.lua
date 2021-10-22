@@ -52,18 +52,23 @@ Utils.RegisterServerCallback('ox_inventory:openShop', function(source, cb, data)
 	cb({id=left.label, type=left.type, slots=left.slots, weight=left.weight, maxWeight=left.maxWeight}, shop)
 end)
 
+local Log <const> = module('logs')
 Utils.RegisterServerCallback('ox_inventory:buyItem', function(source, cb, data)
 	if data.toType == 'player' then
 		if data.count == nil then data.count = 1 end
-		local player, items = Inventory(source), {}
+		local player = Inventory(source)
 		local xPlayer = ESX.GetPlayerFromId(source)
 		local split = player.open:match('^.*() ')
 		local shop = M[player.open:sub(0, split-1)][tonumber(player.open:sub(split+1))]
 		local fromData = shop.items[data.fromSlot]
 		local toData = player.items[data.toSlot]
 		if fromData then
-			if fromData.count == 0 then
-				return cb(false, nil, {type = 'error', text = ox.locale('shop_nostock')})
+			if fromData.count then
+				if fromData.count == 0 then
+					return cb(false, nil, {type = 'error', text = ox.locale('shop_nostock')})
+				elseif data.count > fromData.count then
+					data.count = fromData.count
+				end
 			elseif fromData.license and not exports.oxmysql:scalarSync('SELECT 1 FROM user_licenses WHERE type = ? AND owner = ?', { fromData.license, player.owner }) then
 				return cb(false, nil, {type = 'error', text = ox.locale('item_unlicensed')})
 			elseif fromData.grade and xPlayer.job.grade < fromData.grade then
@@ -72,37 +77,25 @@ Utils.RegisterServerCallback('ox_inventory:buyItem', function(source, cb, data)
 			local currency = fromData.currency or 'money'
 			local fromItem = Items(fromData.name)
 			local toItem = toData and Items(toData.name)
-			if fromData.count and data.count > fromData.count then data.count = fromData.count end
 			local metadata, count = Items.Metadata(xPlayer, fromItem, fromData.metadata or {}, data.count)
 			local price = count * fromData.price
 			if toData == nil or (fromItem.name == toItem.name and fromItem.stack and Utils.MatchTables(toData.metadata, metadata)) then
 				local canAfford = Inventory.GetItem(source, currency, false, true) >= price
 				if canAfford then
-					local newWeight
-					if toData == nil and (fromData.count == nil or count <= fromData.count) then
-						if fromData.count then fromData.count = fromData.count - count end
-						toData = table.clone(fromItem)
-						toData.count = count
-						toData.slot = data.toSlot
-						toData.weight = Inventory.SlotWeight(fromItem, toData)
-						newWeight = player.weight + toData.weight
-					else
-						if fromData.count then fromData.count = fromData.count - count end
-						toData.count = toData.count + count
-						toData.weight = Inventory.SlotWeight(toItem, toData)
-						newWeight = player.weight + toData.weight
-					end
-
+					local newWeight = player.weight + (fromItem.weight + (metadata?.weight or 0)) * count
 					if newWeight > player.maxWeight then
 						return cb(false, nil, {type = 'error', text = { ox.locale('cannot_carry')}})
-					else player.weight = newWeight end
-
-					toData.metadata = metadata
-					shop.items[data.fromSlot], player.items[data.toSlot] = fromData, toData
+					else
+						Inventory.SetSlot(player, fromItem, count, metadata, data.toSlot)
+						if fromData.count then shop.items[data.fromSlot].count = fromData.count - count end
+						player.weight = newWeight
+					end
 					Inventory.RemoveItem(source, currency, price)
 					Inventory.SyncInventory(xPlayer, player)
 
-					return cb(true, {data.toSlot, toData, weight}, {type = 'success', text = ox.locale('purchased_for', count, fromItem.label, (currency == 'money' and ox.locale('$') or price), (currency == 'money' and price or ' '..currency))})
+					local message = ox.locale('purchased_for', count, fromItem.label, (currency == 'money' and ox.locale('$') or price), (currency == 'money' and price or ' '..currency))
+					Log(player, player.open, message)
+					return cb(true, {data.toSlot, player.items[data.toSlot], weight}, {type = 'success', text = message})
 				else
 					return cb(false, nil, {type = 'error', text = ox.locale('cannot_afford', ('%s%s'):format((currency == 'money' and ox.locale('$') or price), (currency == 'money' and price or ' '..currency)))})
 				end
