@@ -362,7 +362,7 @@ input[type='number'] {
 .keyboard-container {
   height: fit-content;
   z-index: 999;
-  width: 35vh;
+  width: 30vh;
   background-color: $mainColor;
   position: absolute;
   top: 50%;
@@ -372,12 +372,11 @@ input[type='number'] {
 
   .keyboard-header {
     text-shadow: none;
-    font-size: 2.6vh;
+    font-size: 2vh;
     display: flex;
     justify-content: center;
     align-items: center;
-    padding: 2vh;
-    padding-bottom: 1vh;
+    padding: 0.5vh;
     letter-spacing: 0.08vh;
     border-bottom: 0.3vh solid grey;
   }
@@ -387,20 +386,22 @@ input[type='number'] {
     flex-direction: column;
     justify-content: center;
     padding: 1.7vh;
+    padding-top: 0.6vh;
+    padding-bottom: 0.5vh;
     align-items: center;
     p {
       margin-left: 0.4vh;
       text-shadow: none;
-      font-size: 2vh;
+      font-size: 1.6vh;
       align-self: flex-start;
     }
     input {
       border-radius: $borderRadius;
       text-shadow: none;
       background-color: $secondaryColor;
-      height: 3vh;
-      width: 30vh;
-      font-size: 1.8vh;
+      height: 2.4vh;
+      width: 25vh;
+      font-size: 1.5vh;
       padding: 0.4vh;
       border: none;
       outline: none;
@@ -411,13 +412,13 @@ input[type='number'] {
     display: flex;
     justify-content: center;
     align-items: center;
-    padding: 3vh;
+    padding: 1vh;
 
     button {
       border: none;
       outline: none;
-      font-size: 2vh;
-      padding: 0.7vh;
+      font-size: 1.6vh;
+      padding: 0.6vh;
       border-radius: $borderRadius;
       background-color: #4caf50;
     }
