@@ -23,11 +23,11 @@ local file = init()
 
 if file then
 	local time = '%H:%M:%S'
-	local string = _format([[{ "date": "%s/%s/%s", "time": "%s", "content": "%s" },
-	]], day, month:sub(0, 3), year, '%s', '%s')
+	local message = _format('\r{ "date": "%s/%s/%s", "time": "%s", "source": "%s", "content": "%s" },', day, month:sub(0, 3), year, '%s', '%s [%s] - %s', '%s')
 
-	local write = function(message)
-		file:write(_format(string, os.date(time), message))
+	local write = function(inv, target, ...)
+		local content = string.strjoin(' ', string.tostringall(...))
+		file:write(_format(message, os.date(time), inv.label, inv.id, target or inv.owner or inv.name, content))
 	end
 
 	return write
