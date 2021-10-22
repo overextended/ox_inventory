@@ -41,7 +41,7 @@ return {
 	['identification'] = "Sex: %s\nDate of birth: %s",
 	['search_dumpster'] = "Search Dumpster",
 	['open_shop'] = "Open %s",
-	['purchased_for'] = "Purchased %sx %s for %s%s",
+	['purchased_for'] = "Purchased %s %s for %s%s",
 	['unable_stack_items'] = "You're unable to stack these items",
 	['police_evidence'] = "Police Evidence",
 	['locker_number'] = "Locker number",
@@ -55,5 +55,5 @@ return {
 	['reload_weapon'] = "Reload weapon~",
 	['use_hotbar'] = "Use hotbar item %s~",
 	['no_durability'] = "Item durability is depleted",
-	['cannot_give'] = "Unable to give %sx %s to the target",
+	['cannot_give'] = "Unable to give %s %s to the target",
 }

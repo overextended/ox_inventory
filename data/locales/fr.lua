@@ -41,7 +41,7 @@ return {
         ['identification'] = "Sexe : %s naissance : %s",
         ['search_dumpster'] = "Chercher dans la benne",
         ['open_shop'] = "Ouvrir %s",
-        ['purchased_for'] = "Vous avez acheté %sx %s pour %s%s",
+        ['purchased_for'] = "Vous avez acheté %s %s pour %s%s",
         ['unable_stack_items'] = "Vous ne pouvez pas empiler ces objets" ,
         ['police_evidence'] = "Preuves de police",
         ['locker_number'] = "Numéro de casier",

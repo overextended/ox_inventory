@@ -41,7 +41,7 @@ return {
 	['identification'] = "Sesso: %s\nData di nascita: %s",
 	['search_dumpster'] = "Cercando nel cassonetto",
 	['open_shop'] = "Apri %s",
-	['purchased_for'] = "Hai comprato %sx %s per %s%s",
+	['purchased_for'] = "Hai comprato %s %s per %s%s",
 	['unable_stack_items'] = "Non puoi impilare questi oggetti",
 	['police_evidence'] = "Prove Polizia",
 	['locker_number'] = "Numero Armadietto",

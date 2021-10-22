@@ -41,7 +41,7 @@ return {
 	['identification'] = "Sexo: %s\nFecha de Nacimiento: %s",
 	['search_dumpster'] = "Buscar en el Basurero",
 	['open_shop'] = "Abrir %s",
-	['purchased_for'] = "Comprar %sx %s por %s%s",
+	['purchased_for'] = "Comprar %s %s por %s%s",
 	['unable_stack_items'] = "¡No puedes apilar estos items!",
 	['police_evidence'] = "Evidencia Policial",
 	['locker_number'] = "Número de Casillero",
@@ -55,5 +55,5 @@ return {
 	['reload_weapon'] = "Recargar arma~",
 	['use_hotbar'] = "Usar item de la barra de acceso rápido %s~",
 	['no_durability'] = "¡La durabilidad del item se ha agotado!",
-	['cannot_give'] = "No se pudo dar %sx %s al objetivo",
+	['cannot_give'] = "No se pudo dar %s %s al objetivo",
 }

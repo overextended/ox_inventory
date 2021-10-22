@@ -41,7 +41,7 @@ return {
 	['identification'] = "Køn: %s\nFødselsdato: %s",
 	['search_dumpster'] = "Led i containere",
 	['open_shop'] = "Åben %s",
-	['purchased_for'] = "Købte %sx %s for %s%s",
+	['purchased_for'] = "Købte %s %s for %s%s",
 	['unable_stack_items'] = "Du kan ikke lægge disse ting i en stak",
 	['police_evidence'] = "Politi Beviser",
 	['locker_number'] = "Skabs nummer",
@@ -55,5 +55,5 @@ return {
 	['reload_weapon'] = "Lad våben~",
 	['use_hotbar'] = "Brug hotbar ting %s~",
 	['no_durability'] = "Tingens holdbarhed er udtømt",
-	['cannot_give'] = "Kunne ikke give %sx %s til personen",
+	['cannot_give'] = "Kunne ikke give %s %s til personen",
 }

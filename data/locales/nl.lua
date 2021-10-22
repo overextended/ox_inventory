@@ -41,7 +41,7 @@ return {
 	['identification'] = "Geslacht: %s\nGeboortedatum: %s",
 	['search_dumpster'] = "Vuilnisbak Doorzoeken",
 	['open_shop'] = "Open %s",
-	['purchased_for'] = "%sx %s gekocht voor %s%s",
+	['purchased_for'] = "%s %s gekocht voor %s%s",
 	['unable_stack_items'] = "Je kan deze items niet op elkaar stapelen",
 	['police_evidence'] = "Politie Bewijs",
 	['locker_number'] = "Kluis nummer",

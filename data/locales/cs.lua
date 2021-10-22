@@ -41,7 +41,7 @@ return {
 	['identification'] = "Pohlaví: %s\nDatum narození: %s",
 	['search_dumpster'] = "Prohledat popelnici",
 	['open_shop'] = "Otevřít %s",
-	['purchased_for'] = "Zakoupili jste %sx %s za %s%s",
+	['purchased_for'] = "Zakoupili jste %s %s za %s%s",
 	['unable_stack_items'] = "Tyto předměty nelze skládat na sebe",
 	['police_evidence'] = "Policejní důkazy",
 	['locker_number'] = "Číslo skříňky",
@@ -55,5 +55,5 @@ return {
 	['reload_weapon'] = "Přebít zbraň~",
 	['use_hotbar'] = "Použít předmět v hotbaru %s~",
 	['no_durability'] = "Předmět je rozbitý",
-	['cannot_give'] = "Této osobě nemůžete dát %sx %s",
+	['cannot_give'] = "Této osobě nemůžete dát %s %s",
 }
