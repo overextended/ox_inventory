@@ -55,7 +55,7 @@ end)
 
 Utils.RegisterServerCallback('ox_inventory:openInventory', function(source, cb, inv, data)
 	local left, right = Inventory(source)
-	if left.open and inv ~= 'newdrop' and inv ~= 'container' then return cb(nil) end
+	if left.open and inv ~= 'drop' and inv ~= 'container' then return cb(nil) end
 	if data then
 		if inv == 'policeevidence' then
 			right = Inventory('police-'..data.id)
@@ -127,10 +127,9 @@ Utils.RegisterServerCallback('ox_inventory:swapItems', function(source, cb, data
 			Inventory.SyncInventory(ESX.GetPlayerFromId(playerInventory.id), playerInventory)
 			playerInventory.weight = playerInventory.weight - toData.weight
 
-			Log(('%s dropped %sx %s'):format(playerInventory.label, toData.count, toData.name))
-
 			TriggerEvent('ox_inventory:createDrop', source, data.toSlot, toData, function(drop, coords)
 				if fromData == playerInventory.weapon then playerInventory.weapon = nil end
+				Log(playerInventory, drop, 'Dropped', toData.count, toData.name)
 				TriggerClientEvent('ox_inventory:createDrop', -1, {drop, coords}, playerInventory.open and source, fromData.slot)
 			end)
 
