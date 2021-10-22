@@ -385,7 +385,7 @@ RegisterNetEvent('ox_inventory:setPlayerInventory', function(drops, inventory, w
 			-- todo: finish police evidence system
 			local distance = #(playerCoords - vec3(-22.4, -1105.5, 26.7))
 			local marker = nearbyMarkers['policeevidence']
-			if distance < 1.2 then
+			if distance < 1 then
 				if not marker then nearbyMarkers['policeevidence'] = mat(vec3(-22.4, -1105.5, 26.7), vec3(30, 30, 150)) end
 				if closestMarker[1] == nil or (closestMarker and distance < closestMarker[1]) then
 					closestMarker = {distance, 1, 'policeevidence'}

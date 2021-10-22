@@ -4,7 +4,7 @@ return {
 		weight = 115,
 		client = {
 			anim = { dict = 'missheistdockssetup1clipboard@idle_a', clip = 'idle_a', flag = 49 },
-			prop = { model = 'prop_rolled_sock_02', pos = { x = -0.14, y = -0.14, z = -0.08}, rot = { x = -50.0, y = -50.0, z = 0.0} },
+			prop = { model = `prop_rolled_sock_02`, pos = vec3(-0.14, -0.14, -0.08), rot = vec3(-50.0, -50.0, 0.0) },
 			disable = { move = true, car = true, combat = true },
 			usetime = 2500,
 		}
@@ -21,7 +21,7 @@ return {
 		client = {
 			status = { hunger = 200000 },
 			anim = { dict = 'mp_player_inteat@burger', clip = 'mp_player_int_eat_burger_fp' },
-			prop = { model = 'prop_cs_burger_01', pos = { x = 0.02, y = 0.02, z = -0.02}, rot = { x = 0.0, y = 0.0, z = 0.0} },
+			prop = { model = `prop_cs_burger_01`, pos = vec3(0.02, 0.02, -0.02), rot = vec3(0.0, 0.0, 0.0) },
 			usetime = 2500,
 		}
 	},
@@ -32,7 +32,7 @@ return {
 		client = {
 			status = { thirst = 200000 },
 			anim = { dict = 'mp_player_intdrink', clip = 'loop_bottle' },
-			prop = { model = 'prop_ecola_can', pos = { x = 0.01, y = 0.01, z = 0.06}, rot = { x = 5.0, y = 5.0, z = -180.5} },
+			prop = { model = `prop_ecola_can`, pos = vec3(0.01, 0.01, 0.06), rot = vec3(5.0, 5.0, -180.5) },
 			usetime = 2500,
 		}
 	},
@@ -70,7 +70,7 @@ return {
 		client = {
 			status = { thirst = -100000, stress = -25000 },
 			anim = { dict = 'mp_player_intdrink', clip = 'loop_bottle' },
-			prop = { model = 'prop_cs_panties_02', pos = { x = 0.03, y = 0.0, z = 0.02 }, rot = { x = 0.0, y = -13.5, z = -1.5 } },
+			prop = { model = `prop_cs_panties_02`, pos = vec3(0.03, 0.0, 0.02), rot = vec3(0.0, -13.5, -1.5) },
 			usetime = 2500,
 		}
 	},
@@ -108,7 +108,7 @@ return {
 		client = {
 			status = { hunger = 25000, thirst = 25000 },
 			anim = { dict = 'mp_player_intdrink', clip = 'loop_bottle' },
-			prop = { model = 'prop_food_mustard', pos = { x = 0.01, y = 0.0, z = -0.07 }, rot = { x = 1.0, y = -1.0, z = -1.5 } },
+			prop = { model = `prop_food_mustard`, pos = vec3(0.01, 0.0, -0.07), rot = vec3(1.0, 1.0, -1.5) },
 			usetime = 2500,
 		}
 	},
@@ -119,7 +119,7 @@ return {
 		client = {
 			status = { thirst = 200000 },
 			anim = { dict = 'mp_player_intdrink', clip = 'loop_bottle' },
-			prop = { model = 'prop_ld_flow_bottle', pos = { x = 0.03, y = 0.03, z = 0.02}, rot = { x = 0.0, y = 0.0, z = -1.5} },
+			prop = { model = `prop_ld_flow_bottle`, pos = vec3(0.03, 0.03, 0.02), rot = vec3(0.0, 0.0, -1.5) },
 			usetime = 2500,
 			cancel = true
 		}
