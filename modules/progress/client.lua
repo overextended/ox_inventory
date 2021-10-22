@@ -1,23 +1,20 @@
 local Disable = {}
 local Active = false
 
-local canCancel, anim, scenario, prop, propTwo, progressCallback = false, false, false, false, false, nil
+local canCancel, anim, scenario, progressCallback = false, false, false, nil
+local prop = table.create(2, 0)
 
 local PlayerReset = function()
     if anim or scenario then
         ClearPedTasks(ESX.PlayerData.ped)
-		Disable = {}
+		Disable = table.wipe(Disable)
     end
-    if prop and NetToObj(prop) ~= 0 and NetToObj(prop) ~= nil then
-        DetachEntity(NetToObj(prop), 1, 1)
-        DeleteEntity(NetToObj(prop))
-        prop = false
-    end
-    if propTwo and NetToObj(propTwo) ~= 0 and NetToObj(propTwo) ~= nil then
-        DetachEntity(NetToObj(propTwo), 1, 1)
-        DeleteEntity(NetToObj(propTwo))
-    	propTwo = false
-    end
+	for i=1, #prop do
+		local entity = NetToObj(prop[i])
+		DetachEntity(entity, 1, 1)
+		DeleteEntity(entity)
+	end
+	prop = table.wipe(prop)
 	Active = false
 end
 
@@ -42,8 +39,6 @@ local Start = function(options, completed)
 		if not IsEntityDead(ESX.PlayerData.ped) or options.useWhileDead then
 			Active = true
 			anim = false
-			prop = false
-			propTwo = false
 
 			canCancel = options.canCancel or false
 
@@ -74,76 +69,29 @@ local Start = function(options, completed)
 				RemoveAnimDict(options.anim.dict)
 			end
 
-			if options.prop ~= nil and not prop then
-				local model = options.prop.model
+			for i=1, 2 do
+				local option = i==1 and options.prop or options.propTwo
+				if option then
 
-				RequestModel(model)
+					local model = option.model
+					model = type(model) == 'string' and joaat(model) or model
 
-				local modelHash = joaat(model)
-				while not HasModelLoaded(modelHash) do
-					Wait(0)
+					RequestModel(model)
+					while not HasModelLoaded(model) do Wait(0) end
+
+					local pCoords = GetOffsetFromEntityInWorldCoords(ESX.PlayerData.ped, 0.0, 0.0, 0.0)
+					local modelSpawn = CreateObject(model, pCoords.x, pCoords.y, pCoords.z, true, true, true)
+
+					local netid = ObjToNet(modelSpawn)
+					SetNetworkIdExistsOnAllMachines(netid, true)
+					NetworkSetNetworkIdDynamic(netid, true)
+					SetNetworkIdCanMigrate(netid, false)
+
+					AttachEntityToEntity(modelSpawn, ESX.PlayerData.ped, GetPedBoneIndex(ESX.PlayerData.ped, option.bone or 60309), option.pos.x or 0.0, option.pos.y or 0.0, option.pos.z or 0.0, option.rot.x or 0.0, option.rot.y or 0.0, option.rot.z or 0.0, 1, 1, 0, 1, 0, 1)
+					prop[i] = netid
+
+					SetModelAsNoLongerNeeded(model)
 				end
-
-				local pCoords = GetOffsetFromEntityInWorldCoords(ESX.PlayerData.ped, 0.0, 0.0, 0.0)
-				local modelSpawn = CreateObject(modelHash, pCoords.x, pCoords.y, pCoords.z, true, true, true)
-
-				local netid = ObjToNet(modelSpawn)
-				SetNetworkIdExistsOnAllMachines(netid, true)
-				NetworkSetNetworkIdDynamic(netid, true)
-				SetNetworkIdCanMigrate(netid, false)
-
-
-				if options.prop.bone == nil then
-					options.prop.bone = 60309
-				end
-
-				if options.prop.pos == nil then
-					options.prop.pos = { x = 0.0, y = 0.0, z = 0.0 }
-				end
-
-				if options.prop.rot == nil then
-					options.prop.rot = { x = 0.0, y = 0.0, z = 0.0 }
-				end
-
-				AttachEntityToEntity(modelSpawn, ESX.PlayerData.ped, GetPedBoneIndex(ESX.PlayerData.ped, options.prop.bone), options.prop.pos.x, options.prop.pos.y, options.prop.pos.z, options.prop.rot.x, options.prop.rot.y, options.prop.rot.z, 1, 1, 0, 1, 0, 1)
-				prop = netid
-
-				SetModelAsNoLongerNeeded(model)
-			end
-
-			if options.propTwo ~= nil then
-				local model = options.propTwo.model
-
-				RequestModel(model)
-
-				local modelHash = joaat(model)
-				while not HasModelLoaded(modelHash) do
-					Wait(0)
-				end
-
-				local pCoords = GetOffsetFromEntityInWorldCoords(ESX.PlayerData.ped, 0.0, 0.0, 0.0)
-				local modelSpawn = CreateObject(modelHash, pCoords.x, pCoords.y, pCoords.z, true, true, true)
-
-				local netid = ObjToNet(modelSpawn)
-				SetNetworkIdExistsOnAllMachines(netid, true)
-				NetworkSetNetworkIdDynamic(netid, true)
-				SetNetworkIdCanMigrate(netid, false)
-				if options.propTwo.bone == nil then
-					options.propTwo.bone = 60309
-				end
-
-				if options.propTwo.pos == nil then
-					options.propTwo.pos = { x = 0.0, y = 0.0, z = 0.0 }
-				end
-
-				if options.propTwo.rot == nil then
-					options.propTwo.rot = { x = 0.0, y = 0.0, z = 0.0 }
-				end
-
-				AttachEntityToEntity(modelSpawn, ESX.PlayerData.ped, GetPedBoneIndex(ESX.PlayerData.ped, options.propTwo.bone), options.propTwo.coords.x, options.propTwo.coords.y, options.propTwo.coords.z, options.propTwo.rotation.x, options.propTwo.rotation.y, options.propTwo.rotation.z, 1, 1, 0, 1, 0, 1)
-				propTwo = netid
-
-				SetModelAsNoLongerNeeded(model)
 			end
 			Disable = options.disable or table.wipe(Disable)
 		end
