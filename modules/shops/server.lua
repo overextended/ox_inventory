@@ -10,7 +10,7 @@ for shopName, shopDetails in pairs(data('shops')) do
 		M[shopName][i] = {
 			label = shopDetails.name,
 			id = shopName..' '..i,
-			job = shopDetails.job,
+			jobs = shopDetails.jobs,
 			items = table.clone(shopDetails.inventory),
 			slots = #shopDetails.inventory,
 			type = 'shop'
@@ -40,6 +40,13 @@ Utils.RegisterServerCallback('ox_inventory:openShop', function(source, cb, data)
 	local left, shop = Inventory(source)
 	if data then
 		shop = M[data.type][data.id]
+		if shop.jobs then
+			local playerJob = ESX.GetPlayerFromId(source).job
+			local shopGrade = shop.jobs[playerJob.name]
+			if not shopGrade or shopGrade < playerJob.grade then
+				return cb()
+			end
+		end
 		left.open = shop.id
 	end
 	cb({id=left.label, type=left.type, slots=left.slots, weight=left.weight, maxWeight=left.maxWeight}, shop)
