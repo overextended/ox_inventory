@@ -25,6 +25,9 @@ if ox.server == false then
 	-- Reload empty weapons automatically
 	Config.AutoReload = false
 
+	-- Enable io logfiles
+	Config.Logs = true
+
 else
 	-- Check the latest available version
 	Config.CheckVersion = false
