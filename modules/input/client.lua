@@ -21,11 +21,11 @@ end
 exports('Keyboard', Input)
 
 RegisterNUICallback('inputData', function(data, cb)
+    cb(1)
     if not p then return end
     if not data then p:resolve() else p:resolve(data) end
     SetNuiFocus(false, false)
     p = nil
-    cb(1)
 end)
 
 --[[ Example:

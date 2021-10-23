@@ -724,6 +724,7 @@ RegisterCommand('steal', function()
 end)
 
 RegisterNUICallback('removeComponent', function(data, cb)
+	cb(1)
 	if not currentWeapon then return Notify({type = 'error', text = ox.locale('weapon_hand_required')}) end
 	if data.slot ~= currentWeapon.slot then return Notify({type = 'error', text = ox.locale('weapon_hand_wrong')}) end
 	local itemSlot = ESX.PlayerData.inventory[currentWeapon.slot]
@@ -739,7 +740,6 @@ RegisterNUICallback('removeComponent', function(data, cb)
 			end
 		end
 	end
-	cb(1)
 end)
 
 RegisterCommand('hotbar', function()
