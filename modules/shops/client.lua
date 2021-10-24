@@ -3,7 +3,7 @@ local Blips = {}
 local Stores = data('shops')
 
 local CreateLocationBlip = function(name, blip, location)
-	local blipId = #Blips
+	local blipId = #Blips + 1
 	Blips[blipId] = AddBlipForCoord(location.x, location.y)
 	SetBlipSprite(Blips[blipId], blip.id)
 	SetBlipDisplay(Blips[blipId], 4)
@@ -17,7 +17,7 @@ end
 
 local CreateShopLocations = function()
 	if next(Blips) then
-		for i=1, #Blips do RemoveBlip(i) end
+		for i=1, #Blips do RemoveBlip(Blips[i]) end
 		Blips = table.wipe(Blips)
 	end
 	for type, shop in pairs(Stores) do
