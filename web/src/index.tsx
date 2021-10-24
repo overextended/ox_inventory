@@ -12,13 +12,13 @@ import process from 'process';
 import { isEnvBrowser } from './utils/misc';
 import { ItemNotificationsProvider } from './components/utils/ItemNotifications';
 
-if (!process.env.IN_GAME_DEV && !isEnvBrowser())
+if (!process.env.IN_GAME_DEV && !isEnvBrowser()) {
   Sentry.init({
-    dsn: 'https://babf676ec51e4f699fd229b2f5460f6c@o1019866.ingest.sentry.io/5985641',
+    dsn: 'https://826c6bee82d84629aae35643b30b68e9@sentry.projecterror.dev/4',
     integrations: [new Integrations.BrowserTracing()],
-    autoSessionTracking: true,
     tracesSampleRate: 1.0,
   });
+}
 
 ReactDOM.render(
   <React.StrictMode>
