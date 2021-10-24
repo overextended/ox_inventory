@@ -41,9 +41,20 @@ Utils.RegisterServerCallback('ox_inventory:openShop', function(source, cb, data)
 	if data then
 		shop = M[data.type][data.id]
 		if shop.jobs then
+			local data = {}
 			local playerJob = ESX.GetPlayerFromId(source).job
 			local shopGrade = shop.jobs[playerJob.name]
-			if not shopGrade or shopGrade < playerJob.grade then
+			for k, v in pairs(shop.items) do
+				if v.grade and playerJob.grade >= v.grade then
+					data[#data+1] = v
+				end
+				if not v.grade then
+					data[#data+1] = v
+				end
+			end
+			shop.items = data
+			shop.slots = #data
+			if not shopGrade or playerJob.grade < shopGrade then
 				return cb()
 			end
 		end
