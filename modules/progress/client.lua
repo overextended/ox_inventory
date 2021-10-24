@@ -7,14 +7,14 @@ local prop = table.create(2, 0)
 local PlayerReset = function()
     if anim or scenario then
         ClearPedTasks(ESX.PlayerData.ped)
-		Disable = table.wipe(Disable)
+		table.wipe(Disable)
     end
 	for i=1, #prop do
 		local entity = NetToObj(prop[i])
 		DetachEntity(entity, 1, 1)
 		DeleteEntity(entity)
 	end
-	prop = table.wipe(prop)
+	table.wipe(prop)
 	Active = false
 end
 

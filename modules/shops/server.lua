@@ -43,7 +43,7 @@ Utils.RegisterServerCallback('ox_inventory:openShop', function(source, cb, data)
 		if shop.jobs then
 			local playerJob = ESX.GetPlayerFromId(source).job
 			local shopGrade = shop.jobs[playerJob.name]
-			if not shopGrade or shopGrade < playerJob.grade then
+			if not shopGrade or shopGrade > playerJob.grade then
 				return cb()
 			end
 		end

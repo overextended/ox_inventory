@@ -106,7 +106,7 @@ return {
 
 	PoliceArmoury = {
 		name = 'Police Armoury',
-		jobs = { ['police'] = 0 },
+		jobs = { ['police'] = 2 },
 		blip = {
 			id = 110, colour = 84, scale = 0.8
 		}, inventory = {

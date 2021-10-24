@@ -17,7 +17,7 @@ end
 local CreateShopLocations = function()
 	if next(Blips) then
 		for i=1, #Blips do RemoveBlip(Blips[i]) end
-		Blips = table.wipe(Blips)
+		table.wipe(Blips)
 	end
 	local blipId = 0
 	for type, shop in pairs(Stores) do

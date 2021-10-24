@@ -1,5 +1,5 @@
 data = function(name)
-    local func, err = load(LoadResourceFile(ox.name, 'data/'..name..'.lua'), name, 't')
+    local func, err = load(LoadResourceFile(ox.name, 'data/'..name..'.lua'), '@@'..name, 't')
     assert(func, err == nil or '\n^1'..err..'^7')
     return func()
 end
@@ -27,6 +27,6 @@ ox.locale = function(string, ...)
 	return string
 end
 
-local func, err = load(LoadResourceFile(ox.name, ox.server and 'server.lua' or 'client.lua'), ox.server and 'server.lua' or 'client.lua', 't')
+local func, err = load(LoadResourceFile(ox.name, ox.server and 'server.lua' or 'client.lua'), ox.server and '@@server.lua' or '@@client.lua', 't')
 assert(func, err == nil or '\n^1'..err..'^7')
 func()
