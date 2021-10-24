@@ -55,22 +55,27 @@ local itemFormat = [[
 		description = '%s'
 	},
 ]]
+			local saveSql = false
 			for _, v in pairs(items) do
 				if not Items[v.name] then
+					if not saveSql then saveSql = true end
 					dump[#dump+1] = ("('%s', '%s', %s),\n"):format(v.name, v.label, v.weight)
 					file[#file+1] = (itemFormat):format(v.name, v.label, v.weight, v.stack, v.close, v.description)
 					Items[v.name] = v
 				end
-				file[#file+1] = '}'
-				SaveResourceFile(ox.name, 'data/items.lua', table.concat(file), -1)
-				SaveResourceFile(ox.name, 'setup/dump.lua', dump, -1)
-				-- exports.oxmysql:update(query, {}, function(result)
-				-- 	if result > 0 then
-				-- 		ox.info('Removed '..result..' items from the database')
-				-- 	end
-				-- end)
-				ox.info(result..' items have been copied from the database')
 			end
+			file[#file+1] = '}'
+			if saveSql then
+				dump = ('%s%s'):format(sql, table.concat(dump))
+				SaveResourceFile(ox.name, 'setup/dump.sql', dump, -1)
+			end
+			SaveResourceFile(ox.name, 'data/items.lua', table.concat(file), -1)
+			-- exports.oxmysql:update(query, {}, function(result)
+			-- 	if result > 0 then
+			-- 		ox.info('Removed '..result..' items from the database')
+			-- 	end
+			-- end)
+			if items then ox.info(#items..' items have been copied from the database') end
 		end
 	end
 	Wait(2000)
