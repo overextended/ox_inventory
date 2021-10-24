@@ -1,59 +1,64 @@
 local Items <const> = module('items')
 local Inventory <const> = module('inventory')
 local Utils <const> = module('utils')
-
 local M = {}
 
-for shopName, shopDetails in pairs(data('shops')) do
-	M[shopName] = {}
-	for i=1, #shopDetails.locations do
-		M[shopName][i] = {
-			label = shopDetails.name,
-			id = shopName..' '..i,
-			jobs = shopDetails.jobs,
-			items = table.clone(shopDetails.inventory),
-			slots = #shopDetails.inventory,
-			type = 'shop'
-		}
-		for j=1, M[shopName][i].slots do
-			local slot = M[shopName][i].items[j]
-			local Item = Items(slot.name)
-			if Item then
-				slot = {
-					name = Item.name,
-					slot = j,
-					weight = Item.weight,
-					count = slot.count,
-					price = (math.floor(slot.price * (math.random(8, 12)/10))),
-					metadata = slot.metadata,
-					license = slot.license,
-					currency = slot.currency,
-					grade = slot.grade
-				}
-				M[shopName][i].items[j] = slot
+local getShopItems = function()
+	for shopName, shopDetails in pairs(data('shops')) do
+		M[shopName] = {}
+		for i=1, #shopDetails.locations do
+			M[shopName][i] = {
+				label = shopDetails.name,
+				id = shopName..' '..i,
+				jobs = shopDetails.jobs,
+				items = table.clone(shopDetails.inventory),
+				slots = #shopDetails.inventory,
+				type = 'shop'
+			}
+			for j=1, M[shopName][i].slots do
+				local slot = M[shopName][i].items[j]
+				local Item = Items(slot.name)
+				if Item then
+					slot = {
+						name = Item.name,
+						slot = j,
+						weight = Item.weight,
+						count = slot.count,
+						price = (math.floor(slot.price * (math.random(8, 12)/10))),
+						metadata = slot.metadata,
+						license = slot.license,
+						currency = slot.currency,
+						grade = slot.grade
+					}
+					M[shopName][i].items[j] = slot
+				end
 			end
 		end
 	end
 end
+getShopItems()
+AddEventHandler('esx:setJob', function(job)
+	getShopItems()
+end)
 
 Utils.RegisterServerCallback('ox_inventory:openShop', function(source, cb, data)
 	local left, shop = Inventory(source)
 	if data then
 		shop = M[data.type][data.id]
 		if shop.jobs then
-			local data = {}
+			local itemsData = {}
 			local playerJob = ESX.GetPlayerFromId(source).job
 			local shopGrade = shop.jobs[playerJob.name]
 			for k, v in pairs(shop.items) do
 				if v.grade and playerJob.grade >= v.grade then
-					data[#data+1] = v
+					itemsData[#itemsData+1] = v
 				end
 				if not v.grade then
-					data[#data+1] = v
+					itemsData[#itemsData+1] = v
 				end
 			end
-			shop.items = data
-			shop.slots = #data
+			shop.items = itemsData
+			shop.slots = #itemsData
 			if not shopGrade or playerJob.grade < shopGrade then
 				return cb()
 			end
