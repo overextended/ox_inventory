@@ -373,7 +373,13 @@ RegisterNetEvent('ox_inventory:setPlayerInventory', function(drops, inventory, w
 			playerCoords = GetEntityCoords(ESX.PlayerData.ped)
 			closestMarker = table.wipe(closestMarker)
 			Markers(Drops, 'drop', vec3(150, 30, 30))
-			Markers(Stashes, 'stash', vec3(30, 30, 150))
+			for k, v in pairs (Stashes) do
+				if v.job == nil or (v.job == ESX.PlayerData.job.name) then
+					local data = {}
+					data[k] = Stashes[k]
+					Markers(data, 'stash', vec3(30, 30, 150))
+				end
+			end
 			if not Config.Target then
 				for k, v in pairs(Shops.Stores) do
 					if v.jobs == nil or (v.jobs[ESX.PlayerData.job.name] and ESX.PlayerData.job.grade >= v.jobs[ESX.PlayerData.job.name]) then
