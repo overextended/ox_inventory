@@ -235,25 +235,31 @@ end
 
 local Drops, nearbyMarkers, closestMarker, playerCoords = {}, {}, {}, nil
 local Markers = function(tb, type, rgb, name)
-	for k, v in pairs(tb) do
-		local coords = v.coords or v
-		local distance = #(playerCoords - coords)
-		local id = name and type..name..k or type..k
-		local marker = nearbyMarkers[id]
-		if distance < 1.2 then
-			if not marker then nearbyMarkers[id] = mat(vec3(coords), vec3(rgb)) end
-			if closestMarker[1] == nil or (closestMarker and distance < closestMarker[1]) then
-				closestMarker[1] = distance
-				closestMarker[2] = k
-				closestMarker[3] = type
-				closestMarker[4] = name or v.name
-			end
-		elseif not marker and distance < 8 then nearbyMarkers[id] = mat(vec3(coords), vec3(rgb)) elseif marker and distance > 8 then nearbyMarkers[id] = nil end
+	for i=1, #tb do
+		local v = tb[i]
+		local markerJob = v.jobs and v.jobs[ESX.PlayerData.job.name]
+		if not v.jobs or (markerJob and ESX.PlayerData.job.grade >= markerJob) then
+			local coords = v.coords or v
+			local distance = #(playerCoords - coords)
+			local id = name and type..name..i or type..i
+			local marker = nearbyMarkers[id]
+			if distance < 1.2 then
+				if not marker then nearbyMarkers[id] = mat(vec3(coords), vec3(rgb)) end
+				if closestMarker[1] == nil or (closestMarker and distance < closestMarker[1]) then
+					closestMarker[1] = distance
+					closestMarker[2] = i
+					closestMarker[3] = type
+					closestMarker[4] = name or v.name
+				end
+			elseif not marker and distance < 8 then nearbyMarkers[id] = mat(vec3(coords), vec3(rgb)) elseif marker and distance > 8 then nearbyMarkers[id] = nil end
+		end
 	end
 end
 
 OnPlayerData = function(key, val)
-	if key == 'job' then Shops.CreateShopLocations()
+	if key == 'job' then
+		Shops.CreateShopLocations()
+		table.wipe(nearbyMarkers)
 	elseif key == 'dead' and val then
 		Disarm(-1)
 		TriggerEvent('ox_inventory:closeInventory')
@@ -285,7 +291,7 @@ RegisterNetEvent('ox_inventory:closeInventory', function(options)
 			SetVehicleDoorShut(currentInventory.entity, currentInventory.door, false)
 		end
 		SendNUIMessage({ action = 'closeInventory' })
-		SetInterval(1, 250)
+		SetInterval(1, 200)
 		Wait(200)
 		if currentInventory then TriggerServerEvent('ox_inventory:closeInventory') end
 		invOpen, currentInventory = false, nil
@@ -313,7 +319,7 @@ end)
 RegisterNetEvent('ox_inventory:inventoryConfiscated', function(message)
 	if message then Notify({text = ox.locale('items_confiscated'), duration = 2500}) end
 	TriggerEvent('ox_inventory:closeInventory')
-	ESX.PlayerData.inventory = table.wipe(ESX.PlayerData.inventory)
+	table.wipe(ESX.PlayerData.inventory)
 	ESX.SetPlayerData('weight', 0)
 end)
 
@@ -329,7 +335,7 @@ RegisterNetEvent('ox_inventory:createDrop', function(data, owner, slot)
 end)
 
 RegisterNetEvent('ox_inventory:removeDrop', function(id)
-	if closestMarker?[3] == id then closestMarker = table.wipe(closestMarker) end
+	if closestMarker?[3] == id then table.wipe(closestMarker) end
 	if Drops then Drops[id] = nil end
 	nearbyMarkers['drop'..id] = nil
 end)
@@ -368,15 +374,15 @@ RegisterNetEvent('ox_inventory:setPlayerInventory', function(drops, inventory, w
 	Notify({text = ox.locale('inventory_setup'), duration = 2500})
 	plyState:set('busy', false, true)
 
-	SetInterval(1, 250, function()
+	SetInterval(1, 200, function()
 		if invOpen == false then
 			playerCoords = GetEntityCoords(ESX.PlayerData.ped)
-			closestMarker = table.wipe(closestMarker)
+			table.wipe(closestMarker)
 			Markers(Drops, 'drop', vec3(150, 30, 30))
 			Markers(Stashes, 'stash', vec3(30, 30, 150))
 			if not Config.Target then
 				for k, v in pairs(Shops.Stores) do
-					if v.jobs == nil or (v.jobs[ESX.PlayerData.job.name] and ESX.PlayerData.job.grade >= v.jobs[ESX.PlayerData.job.name]) then
+					if not v.jobs or (v.jobs[ESX.PlayerData.job.name] and ESX.PlayerData.job.grade >= v.jobs[ESX.PlayerData.job.name]) then
 						Markers(v.locations, 'shop', vec3(30, 150, 30), k)
 					end
 				end
@@ -392,7 +398,7 @@ RegisterNetEvent('ox_inventory:setPlayerInventory', function(drops, inventory, w
 				end
 			elseif not marker and distance < 8 then nearbyMarkers['policeevidence'] = mat(vec3(-22.4, -1105.5, 26.7), vec3(30, 30, 150)) elseif marker and distance > 8 then nearbyMarkers['policeevidence'] = nil end
 			----------------
-			if IsPedInAnyVehicle(ESX.PlayerData.ped, false) then closestMarker = table.wipe(closestMarker) end
+			if IsPedInAnyVehicle(ESX.PlayerData.ped, false) then table.wipe(closestMarker) end
 			SetPedCanSwitchWeapon(ESX.PlayerData.ped, false)
 			SetPedEnableWeaponBlocking(ESX.PlayerData.ped, true)
 		elseif invOpen == true then
