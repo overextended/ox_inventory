@@ -2,8 +2,7 @@
 local Blips = {}
 local Stores = data('shops')
 
-local CreateLocationBlip = function(name, blip, location)
-	local blipId = #Blips + 1
+local CreateLocationBlip = function(blipId, name, blip, location)
 	Blips[blipId] = AddBlipForCoord(location.x, location.y)
 	SetBlipSprite(Blips[blipId], blip.id)
 	SetBlipDisplay(Blips[blipId], 4)
@@ -20,8 +19,10 @@ local CreateShopLocations = function()
 		for i=1, #Blips do RemoveBlip(Blips[i]) end
 		Blips = table.wipe(Blips)
 	end
+	local blipId = 0
 	for type, shop in pairs(Stores) do
 		if shop.jobs == nil or (shop.jobs[ESX.PlayerData.job.name] and ESX.PlayerData.job.grade >= shop.jobs[ESX.PlayerData.job.name]) then
+			blipId += 1
 			if Config.Target then
 				local OpenShop = function(data)
 					TriggerEvent('ox_inventory:openInventory', 'shop', data)
@@ -29,7 +30,7 @@ local CreateShopLocations = function()
 				for id=1, #shop.targets do
 					local target = shop.targets[id]
 					local shopid = type..'-'..id
-					if shop.blip then CreateLocationBlip(shop.name, shop.blip, target.loc) end
+					if shop.blip then CreateLocationBlip(blipId, shop.name, shop.blip, target.loc) end
 					exports.qtarget:AddBoxZone(shopid, target.loc, target.length or 0.5, target.width or 0.5, {
 						name=shopid,
 						heading=target.heading or 0.0,
@@ -52,7 +53,8 @@ local CreateShopLocations = function()
 				end
 			elseif shop.blip then
 				for i=1, #shop.locations do
-					CreateLocationBlip(shop.name, shop.blip, shop.locations[i])
+					blipId += 1
+					CreateLocationBlip(blipId, shop.name, shop.blip, shop.locations[i])
 				end
 			end
 		end
