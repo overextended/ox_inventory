@@ -40,15 +40,15 @@ CreateThread(function()
 		end
 		if next(query) then
 			query = table.concat(query, ' ')
-			local sql = io.open(GetResourcePath(ox.name):gsub('//', '/')..'/setup/dump.sql', 'a+')
-			if not sql then error('Unable to open "setup/dump.sql - check file system permissions', 1) end
+			local sql = LoadResourceFile(ox.name, 'setup/dump.sql')
+			if not sql then error('Unable to load "setup/dump.sql', 1) end
 			local file = {LoadResourceFile(ox.name, 'data/items.lua')}
 			file[1] = file[1]:gsub('}$', '')
 			local dump = {}
 local itemFormat = [[
 
 	['%s'] = {
-		label = %s,
+		label = '%s',
 		weight = %s,
 		stack = %s,
 		close = %s,
@@ -61,15 +61,15 @@ local itemFormat = [[
 					file[#file+1] = (itemFormat):format(v.name, v.label, v.weight, v.stack, v.close, v.description)
 					Items[v.name] = v
 				end
-				sql:write(table.concat(dump))
-				sql:close()
 				file[#file+1] = '}'
 				SaveResourceFile(ox.name, 'data/items.lua', table.concat(file), -1)
-				exports.oxmysql:update(query, {}, function(result)
-					if result > 0 then
-						ox.info('Removed '..result..' items from the database')
-					end
-				end)
+				SaveResourceFile(ox.name, 'setup/dump.lua', dump, -1)
+				-- exports.oxmysql:update(query, {}, function(result)
+				-- 	if result > 0 then
+				-- 		ox.info('Removed '..result..' items from the database')
+				-- 	end
+				-- end)
+				ox.info(result..' items have been copied from the database')
 			end
 		end
 	end
