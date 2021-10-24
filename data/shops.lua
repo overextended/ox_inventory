@@ -126,7 +126,7 @@ return {
 
 	Medicine = {
 		name = 'Medicine Cabinet',
-		jobs = 'ambulance',
+		jobs = { ['ambulance'] = 0 },
 		blip = {
 			id = 403, colour = 69, scale = 0.8
 		}, inventory = {
