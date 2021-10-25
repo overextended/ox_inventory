@@ -3,9 +3,7 @@ import { validateMove } from '../thunks/validateItems';
 import { store } from '../store';
 import { DragSource, DropTarget, SlotWithItem } from '../typings';
 import { moveSlots, stackSlots, swapSlots } from '../store/inventory';
-import toast from 'react-hot-toast';
 import { Items } from '../store/items';
-import { isEnvBrowser } from '../utils/misc';
 
 export const onDrop = (source: DragSource, target?: DropTarget) => {
   const { inventory: state } = store.getState();
@@ -13,7 +11,7 @@ export const onDrop = (source: DragSource, target?: DropTarget) => {
   const { sourceInventory, targetInventory } = getTargetInventory(
     state,
     source.inventory,
-    target?.inventory
+    target?.inventory,
   );
 
   const sourceSlot = sourceInventory.items[source.item.slot - 1] as SlotWithItem;
@@ -21,11 +19,11 @@ export const onDrop = (source: DragSource, target?: DropTarget) => {
   const sourceData = Items[sourceSlot.name];
 
   if (sourceData === undefined) {
-    return console.error(`${sourceSlot.name} item data undefined!`);
+    throw new Error(`${sourceSlot.name} item data undefined!`);
   }
 
   if (targetInventory.type === 'container' && sourceSlot?.metadata?.container) {
-    return console.error(`Unable to store ${sourceSlot.name} inside itself!`)
+    throw new Error(`Unable to store ${sourceSlot.name} inside itself!`);
   }
 
   const targetSlot = target
@@ -33,7 +31,7 @@ export const onDrop = (source: DragSource, target?: DropTarget) => {
     : findAvailableSlot(sourceSlot, sourceData, targetInventory.items);
 
   if (targetSlot === undefined) {
-    return console.error('Target slot undefined!');
+    throw new Error('Target slot undefined!');
   }
 
   const count =
@@ -51,35 +49,27 @@ export const onDrop = (source: DragSource, target?: DropTarget) => {
     count: count,
   };
 
-  if (!isEnvBrowser()) {
-    const promise = store.dispatch(
-      validateMove({
-        ...data,
-        fromSlot: sourceSlot.slot,
-        toSlot: targetSlot.slot,
-      })
-    );
-
-    toast.promise(promise, {
-      loading: 'VALIDATING',
-      success: 'VALIDATED',
-      error: 'ERROR',
-    });
-  }
-
   isSlotWithItem(targetSlot, true)
     ? sourceData.stack && canStack(sourceSlot, targetSlot)
       ? store.dispatch(
           stackSlots({
             ...data,
             toSlot: targetSlot,
-          })
+          }),
         )
       : store.dispatch(
           swapSlots({
             ...data,
             toSlot: targetSlot,
-          })
+          }),
         )
     : store.dispatch(moveSlots(data));
+
+  store.dispatch(
+    validateMove({
+      ...data,
+      fromSlot: sourceSlot.slot,
+      toSlot: targetSlot.slot,
+    }),
+  );
 };

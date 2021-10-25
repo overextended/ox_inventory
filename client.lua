@@ -360,6 +360,12 @@ RegisterNetEvent('ox_inventory:setPlayerInventory', function(drops, inventory, w
     SendNUIMessage({
 		action = 'init',
 		data = {
+			sentry = Config.Sentry,
+			locale = {
+				use = ox.locale('use'),
+				give = ox.locale('give'),
+				close = ox.locale('close'),
+			},
 			items = ItemData,
 			leftInventory = {
 				id = playerId,

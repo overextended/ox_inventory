@@ -28,6 +28,8 @@ if ox.server == false then
 	-- Enable io logfiles
 	Config.Logs = true
 
+	-- Enable sentry logging
+	Config.Sentry = false
 else
 	-- Check the latest available version
 	Config.CheckVersion = false

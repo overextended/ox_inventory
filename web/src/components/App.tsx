@@ -11,6 +11,10 @@ import { Items } from '../store/items';
 import InventoryComponent from './inventory';
 import { debugData } from '../utils/debugData';
 import { Inventory } from '../typings';
+import * as Sentry from '@sentry/react';
+import { Integrations } from '@sentry/tracing';
+import { isEnvBrowser } from '../utils/misc';
+import { Locale } from '../store/locale';
 
 debugData([
   {
@@ -44,16 +48,27 @@ const App: React.FC = () => {
 
   const dispatch = useAppDispatch();
 
-  useNuiEvent<{ items: typeof Items; leftInventory: Inventory }>(
-    'init',
-    ({ items, leftInventory }) => {
-      for (const [name, data] of Object.entries(items)) {
-        Items[name] = data;
-      }
-      dispatch(setupInventory({ leftInventory }));
-    }
-  );
+  useNuiEvent<{
+    sentry: boolean;
+    locale: { [key: string]: string };
+    items: typeof Items;
+    leftInventory: Inventory;
+  }>('init', ({ sentry, locale, items, leftInventory }) => {
+    if (sentry && !process.env.IN_GAME_DEV && !isEnvBrowser())
+      Sentry.init({
+        dsn: 'https://826c6bee82d84629aae35643b30b68e9@sentry.projecterror.dev/4',
+        integrations: [new Integrations.BrowserTracing()],
+        tracesSampleRate: 1.0,
+      });
 
+    for (const [name, data] of Object.entries(locale)) Locale[name] = data;
+
+    for (const [name, data] of Object.entries(items)) Items[name] = data;
+
+    dispatch(setupInventory({ leftInventory }));
+  });
+
+  //TODO: refactor
   React.useEffect(() => {
     dispatch(setShiftPressed(shiftPressed));
   }, [shiftPressed, dispatch]);

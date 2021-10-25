@@ -10,6 +10,7 @@ import { faInfoCircle, faTimes } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import Fade from '../utils/Fade';
 import { Notify } from '../utils/Notifications';
+import { Locale } from '../../store/locale';
 
 const InfoScreen: React.FC<{
   infoVisible: boolean;
@@ -74,13 +75,13 @@ const InventoryControl: React.FC = () => {
           onChange={inputHandler}
         />
         <button ref={use} className="button">
-          Use
+          {Locale.use}
         </button>
         <button ref={give} className="button">
-          Give
+          {Locale.give}
         </button>
         <button className="button" onClick={() => fetchNui('exit')}>
-          Close
+          {Locale.close}
         </button>
         <div className="misc-btns">
           <button onClick={() => setInfoVisible(true)}>

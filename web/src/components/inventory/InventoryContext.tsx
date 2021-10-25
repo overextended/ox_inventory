@@ -6,6 +6,7 @@ import { SlotWithItem } from '../../typings';
 import { onDrop } from '../../dnd/onDrop';
 import { Items } from '../../store/items';
 import { fetchNui } from '../../utils/fetchNui';
+import { Locale } from '../../store/locale';
 
 const InventoryContext: React.FC<{ item: SlotWithItem }> = (props) => {
   const handleClick = ({
@@ -31,13 +32,13 @@ const InventoryContext: React.FC<{ item: SlotWithItem }> = (props) => {
     <>
       <Menu id={`slot-context-${props.item.slot}-${props.item.name}`} theme="dark" animation="fade">
         <Item onClick={handleClick} data={{ action: 'use' }}>
-          Use
+          {Locale.use}
         </Item>
         <Item onClick={handleClick} data={{ action: 'give' }}>
-          Give
+          {Locale.give}
         </Item>
         <Item onClick={handleClick} data={{ action: 'drop' }}>
-          Drop
+          {Locale.drop}
         </Item>
         {props.item.name.startsWith('WEAPON_') &&
           props.item.metadata &&
