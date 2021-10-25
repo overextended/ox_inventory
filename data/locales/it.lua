@@ -1,4 +1,7 @@
 return {
+	['use'] = "Usa",
+	['give'] = "Dai",
+	['close'] = "Chiudi",
 	['$'] = "$",
 	['male'] = "Uomo",
 	['female'] = "Donna",
