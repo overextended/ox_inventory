@@ -26,6 +26,7 @@ for k, v in pairs(Data.Weapons) do
 		v.client = nil
 	else v.server = nil end
 	Items[k] = v
+	if not v.durability then v.durability = 1 end
 	Weapons[v.hash] = k
 end
 
