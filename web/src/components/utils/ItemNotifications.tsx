@@ -25,8 +25,10 @@ const ItemNotification = ({
   onClose: () => void;
 }) => {
   React.useEffect(() => {
-    const timeout = setTimeout(onClose, 2500);
-    return () => clearTimeout(timeout);
+    const timeout = setTimeout(() => {
+      onClose();
+      clearTimeout(timeout);
+    }, 2500);
   }, [onClose]);
 
   return (
@@ -46,7 +48,7 @@ export const ItemNotificationsProvider = ({ children }: { children: React.ReactN
   const [queue, setQueue] = React.useState<{ id: number; item: string; text: string }[]>([]);
 
   const add = (item: string, text: string) =>
-    setQueue((prevQueue) => [...prevQueue, { id: Date.now(), item, text }]);
+    setQueue((prevQueue) => [{ id: Date.now(), item, text }, ...prevQueue]);
 
   const remove = (id: number) =>
     setQueue((prevQueue) => prevQueue.filter((notification) => notification.id !== id));

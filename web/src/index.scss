@@ -481,19 +481,19 @@ input[type='number'] {
 
 .item-notification-enter {
   opacity: 0;
-  transform: translateX(100%);
+  transform: scale(0);
 }
 .item-notification-enter-active {
   opacity: 1;
-  transform: translateX(0%);
+  transform: scale(1);
   transition: opacity 500ms, transform 500ms ease;
 }
 .item-notification-exit {
   opacity: 1;
-  transform: translateX(0%);
+  transform: scale(1);
 }
 .item-notification-exit-active {
   opacity: 0;
-  transform: translateX(-100%);
+  transform: scale(0);
   transition: opacity 500ms, transform 500ms ease;
 }
