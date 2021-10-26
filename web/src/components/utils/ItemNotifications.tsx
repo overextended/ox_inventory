@@ -18,19 +18,10 @@ export const useItemNotifications = () => {
 const ItemNotification = ({
   item,
   text,
-  onClose,
 }: {
   item: string;
   text: string;
-  onClose: () => void;
 }) => {
-  React.useEffect(() => {
-    const timeout = setTimeout(() => {
-      onClose();
-      clearTimeout(timeout);
-    }, 2500);
-  }, [onClose]);
-
   return (
     <div
       className="item-notification"
@@ -47,8 +38,13 @@ const ItemNotification = ({
 export const ItemNotificationsProvider = ({ children }: { children: React.ReactNode }) => {
   const [queue, setQueue] = React.useState<{ id: number; item: string; text: string }[]>([]);
 
-  const add = (item: string, text: string) =>
-    setQueue((prevQueue) => [{ id: Date.now(), item, text }, ...prevQueue]);
+  const add = (item: string, text: string) => {
+    const notification = { id: Date.now(), item, text };
+
+    setQueue((prevQueue) => [notification, ...prevQueue]);
+
+    setTimeout(() => remove(notification.id), 2500);
+  }
 
   const remove = (id: number) =>
     setQueue((prevQueue) => prevQueue.filter((notification) => notification.id !== id));
@@ -66,7 +62,6 @@ export const ItemNotificationsProvider = ({ children }: { children: React.ReactN
               <ItemNotification
                 item={notification.item}
                 text={notification.text}
-                onClose={() => remove(notification.id)}
               />
             </CSSTransition>
           ))}
