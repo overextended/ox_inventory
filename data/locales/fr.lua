@@ -1,4 +1,7 @@
 return {
+	['use'] = "Utiliser",
+	['give'] = "Donner",
+	['close'] = "Fermer",
         ['$'] = "$",
         ['mal'] = "Homme",
         ['female'] = "Femme",
@@ -54,4 +57,6 @@ return {
         ['disable_hotbar'] = "Afficher la hotbar de l’inventaire~",
         ['reload_weapon'] = "Recharger l’arme~",
         ['use_hotbar'] = "Utiliser l’objet hotbar %s~",
+	['no_durability'] = "La durabilité de l'item a expiré",
+	['cannot_give'] = "Impossible de donner %s %s à cet inventaire",
 }
