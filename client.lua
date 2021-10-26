@@ -235,7 +235,7 @@ end
 
 local Drops, nearbyMarkers, closestMarker, playerCoords = {}, {}, {}, nil
 local Markers = function(tb, type, rgb, name)
-	for k, v in pairs do
+	for k, v in pairs(tb) do
 		if not v.jobs or v.jobs[ESX.PlayerData.job.name] then
 			local coords = v.coords or v
 			local distance = #(playerCoords - coords)
