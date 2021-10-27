@@ -32,6 +32,8 @@ local SetWeapon = function(weapon, hash, ammo)
 	if currentWeapon then currentWeapon.timer = 0 end
 end
 
+local itemNotify = function(data) SendNUIMessage({action = 'itemNotify', data = data}) end
+
 local Disarm = function(newSlot)
 	SetWeaponsNoAutoswap(1)
 	SetWeaponsNoAutoreload(1)
@@ -47,6 +49,7 @@ local Disarm = function(newSlot)
 			Utils.PlayAnimAdvanced(sleep, (sleep == 450 and 'reaction@intimidation@cop@unarmed' or 'reaction@intimidation@1h'), 'outro', coords.x, coords.y, coords.z, 0, 0, GetEntityHeading(ESX.PlayerData.ped), 8.0, 3.0, -1, 50, 0, 0, 0)
 			Wait(sleep)
 		end
+		itemNotify({item = currentWeapon.name, text = "Holstered"})
 		RemoveWeaponFromPed(ESX.PlayerData.ped, currentWeapon.hash)
 		if newSlot ~= false then TriggerServerEvent('ox_inventory:updateWeapon', ammo and 'ammo' or 'melee', ammo or currentWeapon.melee, newSlot) end
 		SetWeapon()
@@ -171,6 +174,7 @@ local UseSlot = function(slot)
 						Wait(0)
 						RefillAmmoInstantly(ESX.PlayerData.ped)
 						SetWeapon(item, data.hash, data.ammoname)
+						itemNotify({item = item.name, text = "Withdrew"})
 						Wait(sleep)
 						ClearPedSecondaryTask(ESX.PlayerData.ped)
 					end
@@ -298,7 +302,7 @@ end)
 
 RegisterNetEvent('ox_inventory:updateInventory', function(items, weights, name, count, removed)
 	SendNUIMessage({ action = 'refreshSlots', data = items })
-	if count then Notify({text = (removed and 'Removed' or 'Added')..' '..count..'x '..name, duration = 2500}) end
+	if count then itemNotify({text = (removed and 'Removed' or 'Added')..' '..count..'x ', item = items[1].item.name}) end
 	for i=1, #items do
 		local i = items[i].item
 		ESX.PlayerData.inventory[i.slot] = i.name and i or nil
