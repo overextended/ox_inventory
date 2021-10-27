@@ -1,7 +1,7 @@
 return {
-	['use'] = "Usa",
-	['give'] = "Dai",
-	['close'] = "Chiudi",
+	['ui_use'] = "Usa",
+	['ui_give'] = "Dai",
+	['ui_close'] = "Chiudi",
 	['$'] = "$",
 	['male'] = "Uomo",
 	['female'] = "Donna",

@@ -45,7 +45,7 @@ const InventoryContext: React.FC<{ item: SlotWithItem }> = (props) => {
           props.item.metadata?.components?.length > 0 && (
             <>
               <Separator />
-              <Submenu label="Remove Attachments">
+              <Submenu label={Locale.removeatt}>
                 {props.item.metadata.components.map((component: string, index: number) => (
                   <Item
                     key={index}

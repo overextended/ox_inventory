@@ -1,8 +1,9 @@
 return {
-	['use'] = "Use",
-	['give'] = "Give",
-	['close'] = "Close",
-	['drop'] = "Drop",
+	['ui_use'] = "Uses",
+	['ui_give'] = "Give",
+	['ui_close'] = "Close",
+	['ui_drop'] = "Drop",
+	['ui_removeattachments'] = "Remove attachments",
 	['$'] = "$",
 	['male'] = "Male",
 	['female'] = "Female",

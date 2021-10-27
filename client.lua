@@ -364,10 +364,11 @@ RegisterNetEvent('ox_inventory:setPlayerInventory', function(drops, inventory, w
 		data = {
 			sentry = Config.Sentry,
 			locale = {
-				use = ox.locale('use'),
-				give = ox.locale('give'),
-				close = ox.locale('close'),
-				drop = ox.locale('drop')
+				use = ox.locale('ui_use'),
+				give = ox.locale('ui_give'),
+				close = ox.locale('ui_close'),
+				drop = ox.locale('ui_drop'),
+				removeatt = ox.locale('ui_removeattachments')
 			},
 			items = ItemData,
 			leftInventory = {
