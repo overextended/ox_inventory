@@ -7,6 +7,7 @@ import ReactTooltip from 'react-tooltip';
 
 const InventoryGrid: React.FC<{ inventory: Inventory }> = ({ inventory }) => {
   const [currentItem, setCurrentItem] = React.useState<SlotWithItem>();
+  const [contextVisible, setContextVisible] = React.useState<boolean>(false);
 
   const weight = React.useMemo(
     () =>
@@ -23,6 +24,12 @@ const InventoryGrid: React.FC<{ inventory: Inventory }> = ({ inventory }) => {
   useEffect(() => {
     ReactTooltip.rebuild();
   }, [currentItem]);
+
+  // Fixes an issue where hovering an item after exiting context menu would apply no styling
+  // But have to rehover on item to get tooltip, there's probably a better solution?
+  useEffect(() => {
+    setCurrentItem(undefined);
+  }, [contextVisible]);
 
   return (
     <>
@@ -46,11 +53,12 @@ const InventoryGrid: React.FC<{ inventory: Inventory }> = ({ inventory }) => {
               item={item}
               inventory={inventory}
               setCurrentItem={setCurrentItem}
+              setContextVisible={setContextVisible}
             />
           ))}
         </div>
 
-        {currentItem && (
+        {currentItem && contextVisible === false && (
           <ReactTooltip
             id="item-tooltip"
             className="item-info"

@@ -17,9 +17,15 @@ interface SlotProps {
   inventory: Inventory;
   item: Slot;
   setCurrentItem: React.Dispatch<React.SetStateAction<SlotWithItem | undefined>>;
+  setContextVisible: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
-const InventorySlot: React.FC<SlotProps> = ({ inventory, item, setCurrentItem }) => {
+const InventorySlot: React.FC<SlotProps> = ({
+  inventory,
+  item,
+  setCurrentItem,
+  setContextVisible,
+}) => {
   const isBusy = useAppSelector(selectIsBusy);
 
   const [{ isDragging }, drag] = useDrag<DragSource, void, { isDragging: boolean }>(
@@ -87,6 +93,7 @@ const InventorySlot: React.FC<SlotProps> = ({ inventory, item, setCurrentItem })
 
   const handleContext = (event: React.MouseEvent<HTMLDivElement>) => {
     isSlotWithItem(item) && inventory.type === 'player' && show(event);
+    setCurrentItem(undefined);
     ReactTooltip.hide();
   };
 
@@ -121,7 +128,7 @@ const InventorySlot: React.FC<SlotProps> = ({ inventory, item, setCurrentItem })
       >
         {isSlotWithItem(item) && (
           <>
-            <InventoryContext item={item} />
+            <InventoryContext item={item} setContextVisible={setContextVisible} />
             <div className="item-count">
               <span>
                 {item.weight > 0

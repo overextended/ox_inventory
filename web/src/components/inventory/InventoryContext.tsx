@@ -8,7 +8,10 @@ import { Items } from '../../store/items';
 import { fetchNui } from '../../utils/fetchNui';
 import { Locale } from '../../store/locale';
 
-const InventoryContext: React.FC<{ item: SlotWithItem }> = (props) => {
+const InventoryContext: React.FC<{
+  item: SlotWithItem;
+  setContextVisible: React.Dispatch<React.SetStateAction<boolean>>;
+}> = (props) => {
   const handleClick = ({
     data,
   }: ItemParams<undefined, { action: string; component?: string; slot?: number }>) => {
@@ -30,7 +33,17 @@ const InventoryContext: React.FC<{ item: SlotWithItem }> = (props) => {
 
   return (
     <>
-      <Menu id={`slot-context-${props.item.slot}-${props.item.name}`} theme="dark" animation="fade">
+      <Menu
+        id={`slot-context-${props.item.slot}-${props.item.name}`}
+        theme="dark"
+        animation="fade"
+        onShown={() => {
+          props.setContextVisible(true);
+        }}
+        onHidden={() => {
+          props.setContextVisible(false);
+        }}
+      >
         <Item onClick={handleClick} data={{ action: 'use' }}>
           {Locale.use}
         </Item>
