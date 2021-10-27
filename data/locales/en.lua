@@ -2,6 +2,7 @@ return {
 	['use'] = "Use",
 	['give'] = "Give",
 	['close'] = "Close",
+	['drop'] = "Drop",
 	['$'] = "$",
 	['male'] = "Male",
 	['female'] = "Female",

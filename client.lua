@@ -367,6 +367,7 @@ RegisterNetEvent('ox_inventory:setPlayerInventory', function(drops, inventory, w
 				use = ox.locale('use'),
 				give = ox.locale('give'),
 				close = ox.locale('close'),
+				drop = ox.locale('drop')
 			},
 			items = ItemData,
 			leftInventory = {
