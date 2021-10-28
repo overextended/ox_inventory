@@ -60,6 +60,8 @@ local Search = function(search, item, metadata)
 	return false
 end
 
+exports('Search', Search)
+
 return {
 	Dumpsters = Dumpsters, Search = Search
 }
