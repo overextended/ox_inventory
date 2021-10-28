@@ -1,5 +1,5 @@
 return {
-	['ui_use'] = "Uses",
+	['ui_use'] = "Use",
 	['ui_give'] = "Give",
 	['ui_close'] = "Close",
 	['ui_drop'] = "Drop",
