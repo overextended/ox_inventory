@@ -1,4 +1,9 @@
 return {
+	['ui_use'] = "Usar",
+	['ui_give'] = "Dar",
+	['ui_close'] = "Cerrar",
+	['ui_drop'] = "Tirar",
+	['ui_removeattachments'] = "Remover accesorio",
 	['$'] = "$",
 	['male'] = "Hombre",
 	['female'] = "Mujer",
