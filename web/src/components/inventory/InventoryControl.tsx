@@ -47,12 +47,16 @@ const InventoryControl: React.FC = () => {
 
   const [, use] = useDrop<DragSource, void, any>(() => ({
     accept: 'SLOT',
-    drop: (source) => onUse(source.item),
+    drop: (source) => {
+      source.inventory === 'player' && onUse(source.item);
+    },
   }));
 
   const [, give] = useDrop<DragSource, void, any>(() => ({
     accept: 'SLOT',
-    drop: (source) => onGive(source.item),
+    drop: (source) => {
+      source.inventory === 'player' && onGive(source.item);
+    },
   }));
 
   const inputHandler = (event: React.ChangeEvent<HTMLInputElement>) => {
