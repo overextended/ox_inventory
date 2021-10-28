@@ -590,7 +590,7 @@ RegisterServerEvent('ox_inventory:updateWeapon', function(action, value, slot)
 	local weapon = inventory.items[slot]
 	local syncInventory = false
 	if weapon and weapon.metadata then
-		if action == 'load' then
+		if action == 'load' and weapon.metadata?.durability > 0 then
 			local ammo = Items(weapon.name).ammoname
 			local diff = value - weapon.metadata.ammo
 			M.RemoveItem(inventory, ammo, diff)
@@ -620,7 +620,7 @@ RegisterServerEvent('ox_inventory:updateWeapon', function(action, value, slot)
 		end
 		if syncInventory then M.SyncInventory(ESX.GetPlayerFromId(inventory.id), inventory) end
 		if action ~= 'throw' then TriggerClientEvent('ox_inventory:updateInventory', source, {{item = weapon}}, {left=inventory.weight}) end
-		if weapon.metadata?.durability <= 0 then
+		if weapon.metadata?.durability <= 0 and action ~= 'load' and action ~= 'component' then
 			TriggerClientEvent('ox_inventory:disarm', source, false)
 		end
 	end
