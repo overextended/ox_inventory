@@ -277,20 +277,13 @@ RegisterNetEvent('ox_inventory:closeInventory', function(options)
 		SetNuiFocusKeepInput(false)
 		TriggerScreenblurFadeOut(0)
 		if currentInventory and currentInventory.type == 'trunk' then
-			local animDict = 'anim@heists@fleeca_bank@scope_out@return_case'
-			local anim = 'trevor_action'
-			RequestAnimDict(animDict)
-			while not HasAnimDictLoaded(animDict) do
-				Wait(100)
-			end
-			ClearPedTasks(ESX.PlayerData.ped)
-			Wait(100)
 			local coords = GetEntityCoords(ESX.PlayerData.ped, true)
-			TaskPlayAnimAdvanced(ESX.PlayerData.ped, animDict, anim, coords.x, coords.y, coords.z, 0, 0, GetEntityHeading(ESX.PlayerData.ped), 2.0, 2.0, 1000, 49, 0.25, 0, 0)
-			Wait(900)
-			ClearPedTasks(ESX.PlayerData.ped)
-			RemoveAnimDict(animDict)
-			SetVehicleDoorShut(currentInventory.entity, currentInventory.door, false)
+			Utils.PlayAnimAdvanced(900, 'anim@heists@fleeca_bank@scope_out@return_case', 'trevor_action', coords.x, coords.y, coords.z, 0, 0, GetEntityHeading(ESX.PlayerData.ped), 2.0, 2.0, 1000, 49, 0.25)
+			CreateThread(function()
+				local entity, door = currentInventory.entity, currentInventory.door
+				Wait(900)
+				SetVehicleDoorShut(entity, door, false)
+			end)
 		end
 		SendNUIMessage({ action = 'closeInventory' })
 		SetInterval(1, 200)
