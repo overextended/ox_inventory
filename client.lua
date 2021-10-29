@@ -506,6 +506,7 @@ RegisterNetEvent('ox_inventory:setPlayerInventory', function(drops, inventory, w
 							if Config.AutoReload and Progress.Active == false and IsPedRagdoll(ESX.PlayerData.ped) == false and IsPedFalling(ESX.PlayerData.ped) == false then
 								local ammo = Inventory.Search(1, currentWeapon.ammo)
 								if ammo[1] then
+									TriggerServerEvent('ox_inventory:updateWeapon', 'ammo', currentWeapon.metadata.ammo)
 									currentWeapon.timer = 0
 									UseSlot(ammo[1].slot)
 								end
