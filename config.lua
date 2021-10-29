@@ -28,8 +28,8 @@ if ox.server == false then
 	-- Enable io logfiles
 	Config.Logs = true
 
-	-- Enable sentry logging
-	Config.Sentry = false
+	-- Enable sentry logging (this reports UI errors and general performance statistics to the Ox team, anonymously)
+	Config.Sentry = true
 else
 	-- Check the latest available version
 	Config.CheckVersion = false

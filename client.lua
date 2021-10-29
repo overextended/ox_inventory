@@ -104,7 +104,9 @@ local OpenInventory = function(inv, data)
 			left, right = Utils.AwaitServerCallback('ox_inventory:openInventory', inv, data)
 		end
 		if left then
-			if not IsPedInAnyVehicle(ESX.PlayerData.ped, false) then Utils.PlayAnim(1000, 'pickup_object', 'putdown_low', 5.0, 1.5, -1, 48, 0.0, 0, 0, 0) end
+			if inv ~= 'trunk' and not IsPedInAnyVehicle(ESX.PlayerData.ped, false) then
+				Utils.PlayAnim(1000, 'pickup_object', 'putdown_low', 5.0, 1.5, -1, 48, 0.0, 0, 0, 0)
+			end
 			invOpen = true
 			SetInterval(1, 100)
 			SetNuiFocus(true, true)
@@ -281,7 +283,7 @@ RegisterNetEvent('ox_inventory:closeInventory', function(options)
 		TriggerScreenblurFadeOut(0)
 		if currentInventory and currentInventory.type == 'trunk' then
 			local coords = GetEntityCoords(ESX.PlayerData.ped, true)
-			Utils.PlayAnimAdvanced(900, 'anim@heists@fleeca_bank@scope_out@return_case', 'trevor_action', coords.x, coords.y, coords.z, 0, 0, GetEntityHeading(ESX.PlayerData.ped), 2.0, 2.0, 1000, 49, 0.25)
+			Utils.PlayAnimAdvanced(900, 'anim@heists@fleeca_bank@scope_out@return_case', 'trevor_action', coords.x, coords.y, coords.z, 0.0, 0.0, GetEntityHeading(ESX.PlayerData.ped), 2.0, 2.0, 1000, 49, 0.25)
 			CreateThread(function()
 				local entity, door = currentInventory.entity, currentInventory.door
 				Wait(900)
@@ -700,7 +702,7 @@ RegisterCommand('inv2', function()
 							end
 							SetVehicleDoorOpen(vehicle, open, false, false)
 							Wait(200)
-							Utils.PlayAnim(100, 'anim@heists@prison_heiststation@cop_reactions', 'cop_b_idle', 3.0, 3.0, -1, 49, 0, 0, 0, 0)
+							Utils.PlayAnim(0, 'anim@heists@prison_heiststation@cop_reactions', 'cop_b_idle', 3.0, 3.0, -1, 49, 0.0, 0, 0, 0)
 							currentInventory.entity = lastVehicle
 							currentInventory.door = open
 							while true do

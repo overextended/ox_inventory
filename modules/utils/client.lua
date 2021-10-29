@@ -37,7 +37,7 @@ M.PlayAnim = function(wait, dict, name, blendIn, blendOut, duration, flag, rate,
 		repeat Wait(0) until HasAnimDictLoaded(dict)
 		TaskPlayAnim(ESX.PlayerData.ped, dict, name, blendIn, blendOut, duration, flag, rate, lockX, lockY, lockZ)
 		Wait(wait)
-		ClearPedSecondaryTask(ESX.PlayerData.ped)
+		if wait > 0 then ClearPedSecondaryTask(ESX.PlayerData.ped) end
 		RemoveAnimDict(dict)
 	end)
 end
