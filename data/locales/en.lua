@@ -1,9 +1,17 @@
 return {
+	-- Buttons, context menu
 	['ui_use'] = "Use",
 	['ui_give'] = "Give",
 	['ui_close'] = "Close",
 	['ui_drop'] = "Drop",
 	['ui_removeattachments'] = "Remove attachments",
+	-- Tooltip
+	['ui_durability'] = "Durability",
+	['ui_ammo'] = "Ammo",
+	['ui_serial'] = "Serial number",
+	['ui_components'] = "Components",
+	['ui_tint'] = "Tint",
+	--
 	['$'] = "$",
 	['male'] = "Male",
 	['female'] = "Female",

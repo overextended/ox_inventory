@@ -4,6 +4,7 @@ import { Inventory, SlotWithItem } from '../../typings';
 import WeightBar from '../utils/WeightBar';
 import InventorySlot from './InventorySlot';
 import ReactTooltip from 'react-tooltip';
+import { Locale } from '../../store/locale';
 
 const InventoryGrid: React.FC<{ inventory: Inventory }> = ({ inventory }) => {
   const [currentItem, setCurrentItem] = React.useState<SlotWithItem>();
@@ -78,14 +79,30 @@ const InventoryGrid: React.FC<{ inventory: Inventory }> = ({ inventory }) => {
                 <p>{Items[currentItem.name]?.description}</p>
               )}
               {currentItem?.durability !== undefined && (
-                <p>Durability: {Math.trunc(currentItem.durability)}</p>
+                <p>
+                  {Locale.ui_durability}: {Math.trunc(currentItem.durability)}
+                </p>
               )}
-              {currentItem.metadata?.ammo !== undefined && <p>Ammo: {currentItem.metadata.ammo}</p>}
-              {currentItem.metadata?.serial && <p>Serial number: {currentItem.metadata.serial}</p>}
+              {currentItem.metadata?.ammo !== undefined && (
+                <p>
+                  {Locale.ui_ammo}: {currentItem.metadata.ammo}
+                </p>
+              )}
+              {currentItem.metadata?.serial && (
+                <p>
+                  {Locale.ui_serial}: {currentItem.metadata.serial}
+                </p>
+              )}
               {currentItem.metadata?.components && currentItem.metadata?.components[0] && (
-                <p>Components: {currentItem.metadata.components}</p>
+                <p>
+                  {Locale.ui_components}: {currentItem.metadata.components}
+                </p>
               )}
-              {currentItem.metadata?.weapontint && <p>Tint: {currentItem.metadata.weapontint}</p>}
+              {currentItem.metadata?.weapontint && (
+                <p>
+                  {Locale.ui_tint}: {currentItem.metadata.weapontint}
+                </p>
+              )}
             </>
           </ReactTooltip>
         )}
