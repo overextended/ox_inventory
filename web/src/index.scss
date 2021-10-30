@@ -474,8 +474,8 @@ input[type='number'] {
 
 .item-notification {
   @extend .item-container;
-  width: 100px;
-  height: 100px;
+  width: $gridSize;
+  height: $gridSize + 1vh;
   justify-content: space-between;
 }
 

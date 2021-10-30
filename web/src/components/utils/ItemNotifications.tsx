@@ -15,13 +15,7 @@ export const useItemNotifications = () => {
   return itemNotificationsContext;
 };
 
-const ItemNotification = ({
-  item,
-  text,
-}: {
-  item: string;
-  text: string;
-}) => {
+const ItemNotification = ({ item, text }: { item: string; text: string }) => {
   return (
     <div
       className="item-notification"
@@ -44,7 +38,7 @@ export const ItemNotificationsProvider = ({ children }: { children: React.ReactN
     setQueue((prevQueue) => [notification, ...prevQueue]);
 
     setTimeout(() => remove(notification.id), 2500);
-  }
+  };
 
   const remove = (id: number) =>
     setQueue((prevQueue) => prevQueue.filter((notification) => notification.id !== id));
@@ -59,10 +53,7 @@ export const ItemNotificationsProvider = ({ children }: { children: React.ReactN
         <TransitionGroup className="item-notifications-container">
           {queue.map((notification) => (
             <CSSTransition key={notification.id} timeout={500} classNames="item-notification">
-              <ItemNotification
-                item={notification.item}
-                text={notification.text}
-              />
+              <ItemNotification item={notification.item} text={notification.text} />
             </CSSTransition>
           ))}
         </TransitionGroup>,
