@@ -299,8 +299,11 @@ RegisterNetEvent('ox_inventory:closeInventory', function(options)
 end)
 
 RegisterNetEvent('ox_inventory:updateInventory', function(items, weights, name, count, removed)
+	local itemName = items[1].item.name
+	-- have to send name through items data but if it doesn't have the label data then it's not the last item
+	if not items[1].item.label then items[1].item.name = nil end 
 	SendNUIMessage({ action = 'refreshSlots', data = items })
-	if count then itemNotify({text = (removed and 'Removed' or 'Added')..' '..count..'x ', item = items[1].item.name}) end
+	if count then itemNotify({text = (removed and 'Removed' or 'Added')..' '..count..'x ', item = itemName}) end
 	for i=1, #items do
 		local i = items[i].item
 		ESX.PlayerData.inventory[i.slot] = i.name and i or nil

@@ -396,7 +396,7 @@ M.RemoveItem = function(inv, item, count, metadata, slot)
 			local array = table.create(#slots, 0)
 			for k, v in pairs(slots) do
 				if type(v) == 'number' then
-					array[k] = {item = {slot=v}, inventory = inv.type}
+					array[k] = {item = {slot = v, name = item.name}, inventory = inv.type}
 				else
 					array[k] = {item = v, inventory = inv.type}
 				end
