@@ -48,8 +48,8 @@ local Disarm = function(newSlot)
 			local coords = GetEntityCoords(ESX.PlayerData.ped, true)
 			Utils.PlayAnimAdvanced(sleep, (sleep == 450 and 'reaction@intimidation@cop@unarmed' or 'reaction@intimidation@1h'), 'outro', coords.x, coords.y, coords.z, 0, 0, GetEntityHeading(ESX.PlayerData.ped), 8.0, 3.0, -1, 50, 0, 0, 0)
 			Wait(sleep)
+			itemNotify({item = currentWeapon.name, text = "Holstered"})
 		end
-		itemNotify({item = currentWeapon.name, text = "Holstered"})
 		RemoveWeaponFromPed(ESX.PlayerData.ped, currentWeapon.hash)
 		if newSlot ~= false then TriggerServerEvent('ox_inventory:updateWeapon', ammo and 'ammo' or 'melee', ammo or currentWeapon.melee, newSlot) end
 		SetWeapon()
@@ -773,6 +773,7 @@ RegisterNUICallback('giveItem', function(data, cb)
 	if closestPlayer.x < 2.5 then
 		Utils.PlayAnim(2000, 'mp_common', 'givetake1_a', 1.0, 1.0, -1, 50, 0.0, 0, 0, 0)
 		TriggerServerEvent('ox_inventory:giveItem', data.slot, GetPlayerServerId(closestPlayer.y), data.count)
+		if data.slot == currentWeapon?.slot then Disarm(-1) end
 	end
 	cb(1)
 end)
