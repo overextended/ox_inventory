@@ -45,13 +45,13 @@ const InventoryContext: React.FC<{
         }}
       >
         <Item onClick={handleClick} data={{ action: 'use' }}>
-          {Locale.use}
+          {Locale.ui_use}
         </Item>
         <Item onClick={handleClick} data={{ action: 'give' }}>
-          {Locale.give}
+          {Locale.ui_give}
         </Item>
         <Item onClick={handleClick} data={{ action: 'drop' }}>
-          {Locale.drop}
+          {Locale.ui_drop}
         </Item>
         {props.item.name.startsWith('WEAPON_') &&
           props.item.metadata &&

@@ -79,13 +79,13 @@ const InventoryControl: React.FC = () => {
           onChange={inputHandler}
         />
         <button ref={use} className="button">
-          {Locale.use}
+          {Locale.ui_use}
         </button>
         <button ref={give} className="button">
-          {Locale.give}
+          {Locale.ui_give}
         </button>
         <button className="button" onClick={() => fetchNui('exit')}>
-          {Locale.close}
+          {Locale.ui_close}
         </button>
         <div className="misc-btns">
           <button onClick={() => setInfoVisible(true)}>

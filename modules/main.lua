@@ -23,6 +23,7 @@ end
 
 local Locales = data('locales/'..Config.Locale)
 ox.locale = function(string, ...)
+	if not string then return Locales end
 	if Locales[string] then return Locales[string]:format(...) end
 	return string
 end

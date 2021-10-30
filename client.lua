@@ -357,17 +357,13 @@ RegisterNetEvent('ox_inventory:setPlayerInventory', function(drops, inventory, w
 			description = v.description
         }
     end
+	local locales = {}
+	for k, v in pairs(ox.locale()) do if k:find('ui_') then locales[k] = v end end
     SendNUIMessage({
 		action = 'init',
 		data = {
 			sentry = Config.Sentry,
-			locale = {
-				use = ox.locale('ui_use'),
-				give = ox.locale('ui_give'),
-				close = ox.locale('ui_close'),
-				drop = ox.locale('ui_drop'),
-				removeatt = ox.locale('ui_removeattachments')
-			},
+			locale = locales,
 			items = ItemData,
 			leftInventory = {
 				id = playerId,
@@ -378,6 +374,7 @@ RegisterNetEvent('ox_inventory:setPlayerInventory', function(drops, inventory, w
 			}
 		}
 	})
+	table.wipe(locales)
 	Shops.CreateShopLocations()
 	Notify({text = ox.locale('inventory_setup'), duration = 2500})
 	plyState:set('busy', false, true)
