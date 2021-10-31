@@ -9,14 +9,14 @@ return {
 			minZ = 29.49,
 			maxZ = 32.09
 		},
-		name = 'policelocker', 
+		name = 'policelocker',
 		label = 'Personal locker',
-		owner = true, 
-		slots = 70, 
-		weight = 70000, 
+		owner = true,
+		slots = 70,
+		weight = 70000,
 		jobs = {['police'] = 0}
 	},
-	{ 
+	{
 		coords = vec3(301.3, -600.23, 43.28),
 		target = {
 			loc = vec3(301.82, -600.99, 43.29),
@@ -26,11 +26,11 @@ return {
 			minZ = 43.34,
 			maxZ = 44.74
 		},
-		name = 'emslocker', 
-		label = 'Personal Locker', 
-		owner = true, 
-		slots = 70, 
-		weight = 70000, 
-		jobs = {['ambulance'] = 0} 
+		name = 'emslocker',
+		label = 'Personal Locker',
+		owner = true,
+		slots = 70,
+		weight = 70000,
+		jobs = {['ambulance'] = 0}
 	}
 }
