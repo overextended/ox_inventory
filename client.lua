@@ -571,7 +571,7 @@ AddEventHandler('ox_inventory:item', function(data, cb)
 				data = data.client
 				Progress.Start({
 					duration = data.usetime,
-					label = 'Using '..result.label,
+					label = ox.locale("using")..result.label,
 					useWhileDead = data.useWhileDead or false,
 					canCancel = data.cancel or false,
 					disable = data.disable,

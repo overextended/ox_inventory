@@ -73,4 +73,5 @@ return {
 	['Holstered'] = "Holstered",
 	['Removed'] = "Removed",
 	['Added'] = "Added",
+	['using'] = "Using ",
 }

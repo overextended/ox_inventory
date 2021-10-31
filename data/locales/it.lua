@@ -71,4 +71,5 @@ return {
 	['Holstered'] = "Fondina",
 	['Removed'] = "Rimosso",
 	['Added'] = "Aggiunto",
+	['using'] = "Usando ",
 }
