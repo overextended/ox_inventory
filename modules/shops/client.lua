@@ -30,6 +30,7 @@ local CreateShopLocations = function()
 				for id=1, #shop.targets do
 					local target = shop.targets[id]
 					local shopid = type..'-'..id
+					exports.qtarget:RemoveZone(shopid)
 					if shop.blip then CreateLocationBlip(blipId, shop.name, shop.blip, target.loc) end
 					exports.qtarget:AddBoxZone(shopid, target.loc, target.length or 0.5, target.width or 0.5, {
 						name=shopid,

@@ -1,10 +1,10 @@
-local Stashes <const> = data('stashes')
 local Vehicles <const> = data('vehicles')
 local Licenses <const> = data('licenses')
 local Items <const>, Weapons <const> = table.unpack(module('items'))
 local Utils <const> = module('utils')
 local Progress <const> = module('progress')
 local Shops <const> = module('shops')
+local Stashes <const> = module('stashes')
 local Inventory <const> = module('inventory')
 local Keyboard <const> = module('input')
 local invOpen, playerId, currentWeapon
@@ -266,6 +266,7 @@ end
 OnPlayerData = function(key, val)
 	if key == 'job' then
 		Shops.CreateShopLocations()
+		Stashes.CreateStashes()
 		table.wipe(nearbyMarkers)
 	elseif key == 'dead' and val then
 		Disarm(-1)
@@ -379,6 +380,7 @@ RegisterNetEvent('ox_inventory:setPlayerInventory', function(drops, inventory, w
 	})
 	table.wipe(locales)
 	Shops.CreateShopLocations()
+	Stashes.CreateStashes()
 	Notify({text = ox.locale('inventory_setup'), duration = 2500})
 	plyState:set('busy', false, true)
 
@@ -387,10 +389,10 @@ RegisterNetEvent('ox_inventory:setPlayerInventory', function(drops, inventory, w
 			playerCoords = GetEntityCoords(ESX.PlayerData.ped)
 			table.wipe(closestMarker)
 			Markers(Drops, 'drop', vec3(150, 30, 30))
-			Markers(Stashes, 'stash', vec3(30, 30, 150))
 			if not Config.Target then
 				for k, v in pairs(Shops.Stores) do
 					if not v.jobs or (v.jobs[ESX.PlayerData.job.name] and ESX.PlayerData.job.grade >= v.jobs[ESX.PlayerData.job.name]) then
+						Markers(Stashes.Stashes, 'stash', vec3(30, 30, 150))
 						Markers(v.locations, 'shop', vec3(30, 150, 30), k)
 					end
 				end
