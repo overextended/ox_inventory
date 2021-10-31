@@ -1,7 +1,17 @@
 return {
+	-- Tasti, menu contestuale
 	['ui_use'] = "Usa",
 	['ui_give'] = "Dai",
 	['ui_close'] = "Chiudi",
+	['ui_drop'] = "Drop",
+	['ui_removeattachments'] = "Rimuovi accessori",
+	-- Tooltip
+	['ui_durability'] = "Durabilità",
+	['ui_ammo'] = "Munizioni",
+	['ui_serial'] = "Numero Seriale",
+	['ui_components'] = "Componenti",
+	['ui_tint'] = "Tinta",
+	--
 	['$'] = "$",
 	['male'] = "Uomo",
 	['female'] = "Donna",
@@ -57,4 +67,8 @@ return {
 	['disable_hotbar'] = "Visualizza la hotbar dell'inventario~",
 	['reload_weapon'] = "Ricarica arma~",
 	['use_hotbar'] = "Usa oggetto hotbar %s~",
+	['Withdrew'] = "Usato",
+	['Holstered'] = "Fondina",
+	['Removed'] = "Rimosso",
+	['Added'] = "Aggiunto",
 }
