@@ -37,22 +37,22 @@ const InventoryHotbar: React.FC<{ items: Slot[] }> = ({ items }) => {
               <>
                 <div className="item-count">
                   <span>
-                    {item.weight >= 1000
-                      ? `${(item.weight / 1000).toLocaleString('en-us', {
-                          minimumFractionDigits: 2,
-                        })}kg`
-                      : `${item.weight.toLocaleString('en-us', {
-                          minimumFractionDigits: 0,
-                        })}g`}{' '}
+                    {item.weight > 0
+                      ? item.weight >= 1000
+                        ? `${(item.weight / 1000).toLocaleString('en-us', {
+                            minimumFractionDigits: 2,
+                          })}kg `
+                        : `${item.weight.toLocaleString('en-us', {
+                            minimumFractionDigits: 0,
+                          })}g `
+                      : ''}
                     {item.count?.toLocaleString('en-us')}x
                   </span>
                 </div>
                 {item?.durability !== undefined && (
                   <WeightBar percent={item.durability} durability />
                 )}
-                <div className="item-label">
-                  [{item.slot}] {Items[item.name]?.label || 'NO LABEL'}
-                </div>
+                <div className="item-label">{Items[item.name]?.label || 'NO LABEL'}</div>
               </>
             )}
           </div>
