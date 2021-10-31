@@ -23,7 +23,7 @@ M.CreateStashes = function()
                     {
                         icon = "fas fa-warehouse",
                         label = "Open Stash",
-                        job = {['police'] = 1},
+                        job = stash.jobs,
                         action = function()
                             OpenStash(stash)
                         end
