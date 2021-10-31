@@ -9,7 +9,7 @@ local CreateStashes = function()
             exports.qtarget:AddBoxZone(stash.name, stash.target.loc, stash.target.length or 0.5, stash.target.width or 0.5, {
                 name=stash.name,
                 heading=stash.target.heading or 0.0,
-                debugPoly=true,
+                debugPoly=false,
                 minZ=stash.target.minZ,
                 maxZ=stash.target.maxZ
             }, {
