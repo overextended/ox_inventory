@@ -390,9 +390,9 @@ RegisterNetEvent('ox_inventory:setPlayerInventory', function(drops, inventory, w
 			table.wipe(closestMarker)
 			Markers(Drops, 'drop', vec3(150, 30, 30))
 			if not Config.Target then
+				Markers(Stashes(), 'stash', vec3(30, 30, 150))
 				for k, v in pairs(Shops.Stores) do
 					if not v.jobs or (v.jobs[ESX.PlayerData.job.name] and ESX.PlayerData.job.grade >= v.jobs[ESX.PlayerData.job.name]) then
-						Markers(Stashes.Stashes, 'stash', vec3(30, 30, 150))
 						Markers(v.locations, 'shop', vec3(30, 150, 30), k)
 					end
 				end

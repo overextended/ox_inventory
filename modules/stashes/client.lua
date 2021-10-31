@@ -1,8 +1,14 @@
 local Stashes <const> = data('stashes')
+local M = {}
 
-local CreateStashes = function()
+setmetatable(M, {
+    __call = function()
+        return Stashes
+    end
+})
+
+M.CreateStashes = function()
     for _, stash in pairs(Stashes) do
-        -- print(ESX.DumpTable(stash))
         if Config.Target then
             local OpenStash = function(data) TriggerEvent('ox_inventory:openInventory', 'stash', data) end
             exports.qtarget:RemoveZone(stash.name)
@@ -29,7 +35,4 @@ local CreateStashes = function()
     end
 end
 
-return {
-    CreateStashes = CreateStashes,
-    Stashes = Stashes
-}
+return M
