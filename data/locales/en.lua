@@ -4,7 +4,7 @@ return {
 	['ui_give'] = "Give",
 	['ui_close'] = "Close",
 	['ui_drop'] = "Drop",
-	['ui_removeattachments'] = "Remove attachments",
+	['ui_removeattachments'] = "Remove Attachments",
 	-- Tooltip
 	['ui_durability'] = "Durability",
 	['ui_ammo'] = "Ammo",
@@ -69,4 +69,9 @@ return {
 	['use_hotbar'] = "Use hotbar item %s~",
 	['no_durability'] = "Item durability is depleted",
 	['cannot_give'] = "Unable to give %s %s to the target",
+	['Withdrew'] = "Withdrew",
+	['Holstered'] = "Holstered",
+	['Removed'] = "Removed",
+	['Added'] = "Added",
+	['using'] = "Using ",
 }
