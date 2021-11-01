@@ -23,12 +23,12 @@ const InfoScreen: React.FC<{
         onClick={() => setInfoVisible(false)}
         className="info-exit-icon"
       />
-      <h2>Useful Controls</h2>
-      <p>[RMB] - Open item context menu</p>
-      <p>[CTRL + LMB] - Fast move stack of items into another inventory</p>
-      <p>[SHIFT + Drag] - Split item quantity into half</p>
-      <p>[CTRL + SHIFT + LMB] - Fast move half a stack of items into another inventory</p>
-      <p>[ALT + LMB] - Fast use item</p>
+      <h2>{Locale.ui_InfoHeader}</h2>
+      <p>{Locale.ui_rmb}</p>
+      <p>{Locale.ui_fastmove}</p>
+      <p>{Locale.ui_split}</p>
+      <p>{Locale.ui_fastmovehalf}</p>
+      <p>{Locale.ui_fastuselabel}</p>
       <span
         className="info-ox"
         onClick={() => Notify({ text: 'Made with 🐂 by the Overextended team' })}

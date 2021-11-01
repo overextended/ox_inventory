@@ -74,4 +74,10 @@ return {
 	['Removed'] = "Removed",
 	['Added'] = "Added",
 	['using'] = "Using ",
+	['ui_InfoHeader'] = "Controlli Rapidi",
+	['ui_rmb'] = "[RMB] - Apri menu contestuale(item)",
+	['ui_fastmove'] = "[CTRL + LMB] - Muovi velocemente degli oggetti da un inventario all'altro",
+	['ui_split'] = "[MAIUSC + Trascina] - Dividi la quantità di item",
+	['ui_fastmovehalf'] = "[CTRL + SHIFT + LMB] - Sposta velocemente mezzo stack di oggetti in un altro inventario",
+	['ui_fastuselabel'] = "[ALT + LMB] - Usa rapido",
 }
