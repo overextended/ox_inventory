@@ -11,6 +11,13 @@ return {
 	['ui_serial'] = "Numero Seriale",
 	['ui_components'] = "Componenti",
 	['ui_tint'] = "Tinta",
+	-- Controlli Utili/Rapidi
+	['ui_usefulcontrols'] = "Controlli utili",
+	['ui_rmb'] = "Apri menu contestuale(item)",
+	['ui_ctrl_lmb'] = "Sposta velocemente uno stack a di oggetti in un altro inventario",
+	['ui_shift_drag'] = "Dividi uno stack di oggetti a metà",
+	['ui_ctrl_shift_lmb'] = "Sposta velocemente mezzo stack di oggetti in un altro inventario",
+	['ui_alt_lmb'] = "Usa velocemente un oggetto",
 	--
 	['$'] = "$",
 	['male'] = "Uomo",
@@ -72,10 +79,4 @@ return {
 	['Removed'] = "Rimosso",
 	['Added'] = "Aggiunto",
 	['using'] = "Usando ",
-	['ui_InfoHeader'] = "Controlli Rapidi",
-	['ui_rmb'] = "[RMB] - Apri menu contestuale(item)",
-	['ui_fastmove'] = "[CTRL + LMB] - Muovi velocemente degli oggetti da un inventario all'altro",
-	['ui_split'] = "[MAIUSC + Trascina] - Dividi la quantità di item",
-	['ui_fastmovehalf'] = "[CTRL + SHIFT + LMB] - Sposta velocemente mezzo stack di oggetti in un altro inventario",
-	['ui_fastuselabel'] = "[ALT + LMB] - Usa rapido",
 }
