@@ -1,5 +1,5 @@
 data = function(name)
-    local func, err = load(LoadResourceFile(ox.name, 'data/'..name..'.lua'), '@@'..name, 't')
+    local func, err = load(LoadResourceFile(ox.name, 'data/'..name..'.lua'), '@@data/'..name, 't')
     assert(func, err == nil or '\n^1'..err..'^7')
     return func()
 end

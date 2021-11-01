@@ -71,10 +71,10 @@ Utils.RegisterServerCallback('ox_inventory:openInventory', function(source, cb, 
 				stash.weight = tonumber(stash.weight)
 				stash.coords = stash.coords
 			end
-			stash.owner = stash.owner == true and left.owner or stash.owner
-			right = Inventory(stash.owner and stash.name..stash.owner or stash.name)
+			local owner = stash.owner == true and left.owner or stash.owner
+			right = Inventory(owner and stash.name..owner or stash.name)
 			if not right then
-				right = Inventory.Create(stash.owner and stash.name..stash.owner or stash.name, stash.label or stash.name, inv, stash.slots, 0, stash.weight, stash.owner or false)
+				right = Inventory.Create(owner and stash.name..owner or stash.name, stash.label or stash.name, inv, stash.slots, 0, stash.weight, owner or false)
 				right.coords = stash.coords
 			end
 		elseif inv == 'container' then

@@ -49,6 +49,14 @@ export const onDrop = (source: DragSource, target?: DropTarget) => {
     count: count,
   };
 
+  store.dispatch(
+    validateMove({
+      ...data,
+      fromSlot: sourceSlot.slot,
+      toSlot: targetSlot.slot,
+    }),
+  );
+
   isSlotWithItem(targetSlot, true)
     ? sourceData.stack && canStack(sourceSlot, targetSlot)
       ? store.dispatch(
@@ -64,12 +72,4 @@ export const onDrop = (source: DragSource, target?: DropTarget) => {
           }),
         )
     : store.dispatch(moveSlots(data));
-
-  store.dispatch(
-    validateMove({
-      ...data,
-      fromSlot: sourceSlot.slot,
-      toSlot: targetSlot.slot,
-    }),
-  );
 };

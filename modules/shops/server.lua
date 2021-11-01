@@ -4,16 +4,19 @@ local Utils <const> = module('utils')
 
 local M = {}
 
+local locations = Config.Target and 'targets' or 'locations'
+
 for shopName, shopDetails in pairs(data('shops')) do
 	M[shopName] = {}
-	for i=1, #shopDetails.locations do
+	for i=1, #shopDetails[locations] do
 		M[shopName][i] = {
 			label = shopDetails.name,
 			id = shopName..' '..i,
 			jobs = shopDetails.jobs,
 			items = table.clone(shopDetails.inventory),
 			slots = #shopDetails.inventory,
-			type = 'shop'
+			type = 'shop',
+			coords = Config.Target and shopDetails[locations][i].loc or shopDetails[locations][i]
 		}
 		for j=1, M[shopName][i].slots do
 			local slot = M[shopName][i].items[j]
@@ -46,6 +49,9 @@ Utils.RegisterServerCallback('ox_inventory:openShop', function(source, cb, data)
 			if not shopGrade or shopGrade > playerJob.grade then
 				return cb()
 			end
+		end
+		if #(GetEntityCoords(GetPlayerPed(source)) - shop.coords) > 10 then
+			return cb()
 		end
 		left.open = shop.id
 	end

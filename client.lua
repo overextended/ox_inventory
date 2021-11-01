@@ -1,17 +1,17 @@
-local Stashes <const> = data('stashes')
 local Vehicles <const> = data('vehicles')
 local Licenses <const> = data('licenses')
 local Items <const>, Weapons <const> = table.unpack(module('items'))
 local Utils <const> = module('utils')
 local Progress <const> = module('progress')
 local Shops <const> = module('shops')
+local Stashes <const> = module('stashes')
 local Inventory <const> = module('inventory')
 local Keyboard <const> = module('input')
 local invOpen, playerId, currentWeapon
 local isBusy = true
 local plyState = LocalPlayer.state
 
-AddStateBagChangeHandler('busy', nil, function(bagName, key, value, reserved, replicated)
+AddStateBagChangeHandler('busy', nil, function(bagName, _, value, _, _)
 	if bagName:find(playerId) then
 		isBusy = value
 	end
@@ -32,7 +32,7 @@ local SetWeapon = function(weapon, hash, ammo)
 	if currentWeapon then currentWeapon.timer = 0 end
 end
 
-local itemNotify = function(data) SendNUIMessage({action = 'itemNotify', data = data}) end
+local ItemNotify = function(data) SendNUIMessage({action = 'itemNotify', data = data}) end
 
 local Disarm = function(newSlot)
 	SetWeaponsNoAutoswap(1)
@@ -48,7 +48,11 @@ local Disarm = function(newSlot)
 			local coords = GetEntityCoords(ESX.PlayerData.ped, true)
 			Utils.PlayAnimAdvanced(sleep, (sleep == 450 and 'reaction@intimidation@cop@unarmed' or 'reaction@intimidation@1h'), 'outro', coords.x, coords.y, coords.z, 0, 0, GetEntityHeading(ESX.PlayerData.ped), 8.0, 3.0, -1, 50, 0, 0, 0)
 			Wait(sleep)
+<<<<<<< HEAD
 			itemNotify({item = currentWeapon.name, text = ox.locale("Holstered")})
+=======
+			ItemNotify({item = currentWeapon.name, text = ox.locale("Holstered")})
+>>>>>>> efbfe6f75ce6c9b6cd44d23a2d057aebc179ceb8
 		end
 		RemoveWeaponFromPed(ESX.PlayerData.ped, currentWeapon.hash)
 		if newSlot ~= false then TriggerServerEvent('ox_inventory:updateWeapon', ammo and 'ammo' or 'melee', ammo or currentWeapon.melee, newSlot) end
@@ -178,7 +182,11 @@ local UseSlot = function(slot)
 						Wait(0)
 						RefillAmmoInstantly(playerPed)
 						SetWeapon(item, data.hash, data.ammoname)
+<<<<<<< HEAD
 						itemNotify({item = item.name, text = ox.locale('Withdrew')})
+=======
+						ItemNotify({item = item.name, text = ox.locale('Withdrew')})
+>>>>>>> efbfe6f75ce6c9b6cd44d23a2d057aebc179ceb8
 						Wait(sleep)
 						ClearPedSecondaryTask(playerPed)
 					end
@@ -265,7 +273,8 @@ end
 
 OnPlayerData = function(key, val)
 	if key == 'job' then
-		Shops.CreateShopLocations()
+		Shops()
+		Stashes()
 		table.wipe(nearbyMarkers)
 	elseif key == 'dead' and val then
 		Disarm(-1)
@@ -303,7 +312,11 @@ RegisterNetEvent('ox_inventory:updateInventory', function(items, weights, name, 
 	-- have to send name through items data but if it doesn't have the label data then it's not the last item
 	if not items[1].item.label then items[1].item.name = nil end 
 	SendNUIMessage({ action = 'refreshSlots', data = items })
+<<<<<<< HEAD
 	if count then itemNotify({text = (removed and ox.locale("Removed") or ox.locale("Added"))..' '..count..'x ', item = itemName}) end
+=======
+	if count then ItemNotify({text = (removed and ox.locale("Removed") or ox.locale("Added"))..' '..count..'x ', item = itemName}) end
+>>>>>>> efbfe6f75ce6c9b6cd44d23a2d057aebc179ceb8
 	for i=1, #items do
 		local i = items[i].item
 		ESX.PlayerData.inventory[i.slot] = i.name and i or nil
@@ -378,7 +391,8 @@ RegisterNetEvent('ox_inventory:setPlayerInventory', function(drops, inventory, w
 		}
 	})
 	table.wipe(locales)
-	Shops.CreateShopLocations()
+	Shops()
+	Stashes()
 	Notify({text = ox.locale('inventory_setup'), duration = 2500})
 	plyState:set('busy', false, true)
 
@@ -387,9 +401,9 @@ RegisterNetEvent('ox_inventory:setPlayerInventory', function(drops, inventory, w
 			playerCoords = GetEntityCoords(ESX.PlayerData.ped)
 			table.wipe(closestMarker)
 			Markers(Drops, 'drop', vec3(150, 30, 30))
-			Markers(Stashes, 'stash', vec3(30, 30, 150))
 			if not Config.Target then
-				for k, v in pairs(Shops.Stores) do
+				Markers(Stashes, 'stash', vec3(30, 30, 150))
+				for k, v in pairs(Shops) do
 					if not v.jobs or (v.jobs[ESX.PlayerData.job.name] and ESX.PlayerData.job.grade >= v.jobs[ESX.PlayerData.job.name]) then
 						Markers(v.locations, 'shop', vec3(30, 150, 30), k)
 					end
