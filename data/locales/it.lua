@@ -11,6 +11,13 @@ return {
 	['ui_serial'] = "Numero Seriale",
 	['ui_components'] = "Componenti",
 	['ui_tint'] = "Tinta",
+	-- Controlli Utili/Rapidi
+	['ui_usefulcontrols'] = "Controlli utili",
+	['ui_rmb'] = "Apri menu contestuale(item)",
+	['ui_ctrl_lmb'] = "Sposta velocemente uno stack a di oggetti in un altro inventario",
+	['ui_shift_drag'] = "Dividi uno stack di oggetti a metà",
+	['ui_ctrl_shift_lmb'] = "Sposta velocemente mezzo stack di oggetti in un altro inventario",
+	['ui_alt_lmb'] = "Usa velocemente un oggetto",
 	--
 	['$'] = "$",
 	['male'] = "Uomo",
