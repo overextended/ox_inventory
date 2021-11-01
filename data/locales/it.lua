@@ -3,7 +3,7 @@ return {
 	['ui_use'] = "Usa",
 	['ui_give'] = "Dai",
 	['ui_close'] = "Chiudi",
-	['ui_drop'] = "Drop",
+	['ui_drop'] = "Butta",
 	['ui_removeattachments'] = "Rimuovi accessori",
 	-- Tooltip
 	['ui_durability'] = "Durabilità",
@@ -74,6 +74,7 @@ return {
 	['disable_hotbar'] = "Visualizza la hotbar dell'inventario~",
 	['reload_weapon'] = "Ricarica arma~",
 	['use_hotbar'] = "Usa oggetto hotbar %s~",
+	['no_durability'] = "Oggetto usurato",
 	['Withdrew'] = "Usato",
 	['Holstered'] = "Fondina",
 	['Removed'] = "Rimosso",
