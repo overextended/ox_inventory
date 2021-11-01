@@ -11,6 +11,13 @@ return {
 	['ui_serial'] = "Serial number",
 	['ui_components'] = "Components",
 	['ui_tint'] = "Tint",
+	-- Useful controls
+	['ui_usefulcontrols'] = "Useful Controls",
+	['ui_rmb'] = "Open item context menu",
+	['ui_ctrl_lmb'] = "Fast move a stack of items into another inventory",
+	['ui_shift_drag'] = "Split item quantity into half",
+	['ui_ctrl_shift_lmb'] = "Fast move half a stack of items into another inventory",
+	['ui_alt_lmb'] = "Fast use an item",
 	--
 	['$'] = "$",
 	['male'] = "Male",
