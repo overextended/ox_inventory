@@ -48,7 +48,7 @@ local Disarm = function(newSlot)
 			local coords = GetEntityCoords(ESX.PlayerData.ped, true)
 			Utils.PlayAnimAdvanced(sleep, (sleep == 450 and 'reaction@intimidation@cop@unarmed' or 'reaction@intimidation@1h'), 'outro', coords.x, coords.y, coords.z, 0, 0, GetEntityHeading(ESX.PlayerData.ped), 8.0, 3.0, -1, 50, 0, 0, 0)
 			Wait(sleep)
-			ItemNotify({item = currentWeapon.name, text = ox.locale("Holstered")})
+			ItemNotify({item = currentWeapon.name, text = ox.locale('holstered')})
 		end
 		RemoveWeaponFromPed(ESX.PlayerData.ped, currentWeapon.hash)
 		if newSlot ~= false then TriggerServerEvent('ox_inventory:updateWeapon', ammo and 'ammo' or 'melee', ammo or currentWeapon.melee, newSlot) end
@@ -178,7 +178,7 @@ local UseSlot = function(slot)
 						Wait(0)
 						RefillAmmoInstantly(playerPed)
 						SetWeapon(item, data.hash, data.ammoname)
-						ItemNotify({item = item.name, text = ox.locale('Withdrew')})
+						ItemNotify({item = item.name, text = ox.locale('equipped')})
 						Wait(sleep)
 						ClearPedSecondaryTask(playerPed)
 					end
@@ -304,7 +304,7 @@ RegisterNetEvent('ox_inventory:updateInventory', function(items, weights, name, 
 	-- have to send name through items data but if it doesn't have the label data then it's not the last item
 	if not items[1].item.label then items[1].item.name = nil end 
 	SendNUIMessage({ action = 'refreshSlots', data = items })
-	if count then ItemNotify({text = (removed and ox.locale("Removed") or ox.locale("Added"))..' '..count..'x ', item = itemName}) end
+	if count then ItemNotify({text = ox.locale(removed and 'removed' or 'added', count), item = itemName}) end
 	for i=1, #items do
 		local i = items[i].item
 		ESX.PlayerData.inventory[i.slot] = i.name and i or nil
@@ -573,7 +573,7 @@ AddEventHandler('ox_inventory:item', function(data, cb)
 				data = data.client
 				Progress.Start({
 					duration = data.usetime,
-					label = ox.locale("using")..result.label,
+					label = ox.locale('using', result.label),
 					useWhileDead = data.useWhileDead or false,
 					canCancel = data.cancel or false,
 					disable = data.disable,
