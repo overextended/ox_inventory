@@ -145,7 +145,7 @@ local containers = {
 
 M.Metadata = function(xPlayer, item, metadata, count)
 	local isWeapon = item.name:find('WEAPON_')
-	if isWeapon == nil then metadata = metadata == nil and {} or type(metadata) == 'string' and {type=metadata} or metadata end
+	if isWeapon == nil then metadata = not metadata and {} or type(metadata) == 'string' and {type=metadata} or metadata end
 	if isWeapon then
 		if not item.ammoname then
 			metadata = {}

@@ -92,6 +92,17 @@ M.SlotWeight = function(item, slot)
 	return weight
 end
 
+M.CalculateWeight = function(items)
+	local weight = 0
+	for _, v in pairs(items) do
+		local item = Items(v.name)
+		if item then
+			weight = weight + M.SlotWeight(item, v)
+		end
+	end
+	return weight
+end
+
 M.Create = function(id, label, invType, slots, weight, maxWeight, owner, items)
 	if maxWeight then
 		local self = {
@@ -102,7 +113,7 @@ M.Create = function(id, label, invType, slots, weight, maxWeight, owner, items)
 			weight = weight,
 			maxWeight = maxWeight,
 			owner = owner,
-			items = type(items) == 'table' and items or nil,
+			items = type(items) == 'table' and items,
 			open = false,
 			set = Set,
 			get = Get,
@@ -110,8 +121,17 @@ M.Create = function(id, label, invType, slots, weight, maxWeight, owner, items)
 			time = os.time()
 		}
 
-		if self.type == 'drop' then self.datastore = true else self.changed = false end
-		if not self.items then self.items, self.weight, self.datastore = M.Load(self.id, self.type, self.owner) end
+		if self.type == 'drop' then
+			self.datastore = true
+		else
+			self.changed = false
+		end
+
+		if not self.items then
+			self.items, self.weight, self.datastore = M.Load(self.id, self.type, self.owner)
+		elseif self.weight == 0 and next(self.items) then
+			self.weight = M.CalculateWeight(self.items)
+		end
 
 		Inventories[self.id] = self
 		return Inventories[self.id]
@@ -178,7 +198,6 @@ end
 M.Load = function(id, invType, owner)
 	local isVehicle, datastore, result = Vehicle[invType], nil, nil
 	if id and invType then
-		-- todo: check what's getting sent to the queries. parameters prevents sql injection, but we can still check for suss behaviour and give warnings
 		if isVehicle then
 			local plate = id:sub(6)
 			if Config.TrimPlate then plate = string.strtrim(plate) end
@@ -704,6 +723,41 @@ exports('Inventory', function(arg)
 		if Inventories[arg] then return Inventories[arg] else return false end
 	end
 	return M
+end)
+
+-- Takes traditional item data and updates it to support ox_inventory, i.e.
+-- Old: {"cola":1, "bread":3}
+-- New: [{"slot":1,"name":"cola","count":1}, {"slot":2,"name":"bread","count":3}]
+local ConvertItems = function(playerId, items)
+	if type(items) == 'table' then
+		local returnData, totalWeight = table.create(#items, 0), 0
+		local xPlayer = ESX.GetPlayerFromId(playerId)
+		local slot = 0
+		for name, count in pairs(items) do
+			local item = Items(name)
+			local metadata = Items.Metadata(xPlayer, item, false, count)
+			local weight = M.SlotWeight(item, {count=count, metadata=metadata})
+			totalWeight = totalWeight + weight
+			slot += 1
+			returnData[slot] = {name = item.name, label = item.label, weight = weight, slot = slot, count = count, description = item.description, metadata = metadata, stack = item.stack, close = item.close}
+		end
+		return returnData, weight
+	end
+end
+exports('ConvertItems', ConvertItems)
+
+-- For simple integration with other resources that want to create stashes.
+-- Accepts items using ox_inventory or traditional data formats.
+-- Items should only be sent when creating the stash for the first time, otherwise leave it empty and the data will be loaded from the database.
+exports('CreateStash', function(id, label, slots, maxWeight, owner, items)
+	local weight = 0
+	if items then
+		local firstItem = next(items)
+		if firstItem and not firstItem.slot then
+			items, weight = ConvertItems(items)
+		end
+	end
+	M.Create(id, label, 'stash', slots, weight, maxWeight, owner, items)
 end)
 
 return M
