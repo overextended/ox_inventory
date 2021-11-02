@@ -156,21 +156,22 @@ Utils.RegisterServerCallback('ox_inventory:swapItems', function(source, cb, data
 
 					if toData and ((toData.name ~= fromData.name) or not toData.stack or (not Utils.MatchTables(toData.metadata, fromData.metadata))) then
 						-- Swap items
-						toData, fromData = Inventory.SwapSlots(fromInventory, toInventory, data.fromSlot, data.toSlot)
+						local toWeight = not sameInventory and (toInventory.weight - toData.weight + fromData.weight)
+						local fromWeight = not sameInventory and (fromInventory.weight + toData.weight - fromData.weight)
+
 						if not sameInventory then
-							local newWeight = toInventory.weight + toData.weight
-							if newWeight <= toInventory.maxWeight then
-								if not sameInventory then
-									fromInventory.weight = fromInventory.weight - toData.weight
-									toInventory.weight = newWeight
-								end
+							if toWeight <= toInventory.maxWeight and fromWeight <= fromInventory.maxWeight then
+								toData, fromData = Inventory.SwapSlots(fromInventory, toInventory, data.fromSlot, data.toSlot)
+								fromInventory.weight = fromWeight
+								toInventory.weight = toWeight
 							else return cb(false) end
-						end
+						else toData, fromData = Inventory.SwapSlots(fromInventory, toInventory, data.fromSlot, data.toSlot) end
+
 					elseif toData and toData.name == fromData.name and Utils.MatchTables(toData.metadata, fromData.metadata) then
 						-- Stack items
 						toData.count = toData.count + data.count
 						local weight = Inventory.SlotWeight(Items(toData.name), toData)
-						local newWeight = toInventory.weight + weight
+						local newWeight = toInventory.weight + (weight - toData.weight)
 						if sameInventory or newWeight <= toInventory.maxWeight then
 							toData.weight = weight
 							fromData.count = fromData.count - data.count

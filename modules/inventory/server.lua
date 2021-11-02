@@ -247,7 +247,6 @@ M.GetItem = function(inv, item, metadata, returnsCount)
 			return item
 		end
 	end
-	return
 end
 
 M.SwapSlots = function(fromInventory, toInventory, slot1, slot2)
