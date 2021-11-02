@@ -23,7 +23,7 @@ export const onDrop = (source: DragSource, target?: DropTarget) => {
   }
 
   if (targetInventory.type === 'container' && sourceSlot?.metadata?.container) {
-    throw new Error(`Unable to store ${sourceSlot.name} inside itself!`);
+    // throw new Error(`Unable to store ${sourceSlot.name} inside itself!`);
   }
 
   const targetSlot = target
