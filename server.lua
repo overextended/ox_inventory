@@ -115,12 +115,14 @@ end)
 
 local isPlayer = {.player, .otherplayer}
 Utils.RegisterServerCallback('ox_inventory:swapItems', function(source, cb, data)
+	-- todo: refactor and setup some helper functions; should also move into inventory module
 	if data.count > 0 and data.toType ~= 'shop' then
 		local playerInventory, items, ret = Inventory(source), {}, nil
 
 		if data.toType == 'newdrop' then
 			local fromData = playerInventory.items[data.fromSlot]
 			if fromData then
+				if data.count > fromData.count then data.count = fromData.count end
 				local toData = table.clone(fromData)
 				toData.slot = data.toSlot
 				toData.count = data.count
@@ -128,16 +130,13 @@ Utils.RegisterServerCallback('ox_inventory:swapItems', function(source, cb, data
 				fromData.weight = Inventory.SlotWeight(Items(fromData.name), fromData)
 				toData.weight = Inventory.SlotWeight(Items(toData.name), toData)
 				playerInventory.weight = playerInventory.weight - toData.weight
-	
+
 				local slot = fromData.slot
 				if fromData.count < 1 then fromData = nil end
 				items[data.fromSlot] = fromData or false
 				playerInventory.items[data.fromSlot] = fromData
-	
-				if next(items) then
-					Inventory.SyncInventory(ESX.GetPlayerFromId(playerInventory.id), playerInventory)
-				end
-				
+				Inventory.SyncInventory(ESX.GetPlayerFromId(playerInventory.id), playerInventory)
+
 				TriggerEvent('ox_inventory:createDrop', source, data.toSlot, toData, function(drop, coords)
 					if fromData == playerInventory.weapon then playerInventory.weapon = nil end
 					Log(playerInventory, drop, 'Dropped', toData.count, toData.name)
