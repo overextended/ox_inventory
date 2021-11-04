@@ -1,4 +1,5 @@
 local M = data('shops')
+local Utils <const> = module('utils')
 
 local Blips = {}
 local CreateLocationBlip = function(blipId, name, blip, location)
@@ -30,27 +31,33 @@ setmetatable(M, {
 					for id=1, #shop.targets do
 						local target = shop.targets[id]
 						local shopid = type..'-'..id
-						exports.qtarget:RemoveZone(shopid)
+						local options = {{
+							icon = 'fas fa-shopping-basket',
+							label = ox.locale('open_shop', shop.name),
+							job = shop.job,
+							action = function()
+								OpenShop({id=id, type=type})
+							end
+						}}
+						if target.ped then
+							exports.qtarget:RemoveZone(shopid)
+							local ped = Utils.CreatePed(target.ped, target.loc, target.heading, target.task)
+							exports.qtarget:AddEntityZone(shopid, ped, {
+								name=shopid,
+								heading=target.heading or 0.0,
+								debugPoly=false
+							}, { options = options, distance = target.distance or 1.5 })
+						else
+							exports.qtarget:RemoveZone(shopid)
+							exports.qtarget:AddBoxZone(shopid, target.loc, target.length or 0.5, target.width or 0.5, {
+								name=shopid,
+								heading=target.heading or 0.0,
+								debugPoly=false,
+								minZ=target.minZ,
+								maxZ=target.maxZ
+							}, { options = options, distance = target.distance or 3.0 })
+						end
 						if shop.blip then CreateLocationBlip(blipId, shop.name, shop.blip, target.loc) end
-						exports.qtarget:AddBoxZone(shopid, target.loc, target.length or 0.5, target.width or 0.5, {
-							name=shopid,
-							heading=target.heading or 0.0,
-							debugPoly=false,
-							minZ=target.minZ,
-							maxZ=target.maxZ
-						}, {
-							options = {
-								{
-									icon = "fas fa-shopping-basket",
-									label = ox.locale('open_shop', shop.name),
-									job = shop.job,
-									action = function()
-										OpenShop({id=id, type=type})
-									end
-								},
-							},
-							distance = target.distance or 3.0
-						})
 					end
 				elseif shop.blip then
 					for i=1, #shop.locations do
