@@ -39,8 +39,8 @@ setmetatable(M, {
 								OpenShop({id=id, type=type})
 							end
 						}}
+						exports.qtarget:RemoveZone(shopid)
 						if target.ped then
-							exports.qtarget:RemoveZone(shopid)
 							local ped = Utils.CreatePed(target.ped, target.loc, target.heading, target.task)
 							exports.qtarget:AddEntityZone(shopid, ped, {
 								name=shopid,
@@ -48,7 +48,6 @@ setmetatable(M, {
 								debugPoly=false
 							}, { options = options, distance = target.distance or 1.5 })
 						else
-							exports.qtarget:RemoveZone(shopid)
 							exports.qtarget:AddBoxZone(shopid, target.loc, target.length or 0.5, target.width or 0.5, {
 								name=shopid,
 								heading=target.heading or 0.0,
