@@ -151,19 +151,19 @@ Utils.RegisterServerCallback('ox_inventory:swapItems', function(source, cb, data
 			local sameInventory = fromInventory.id == toInventory.id or false
 
 			if toInventory and fromInventory and (fromInventory.id ~= toInventory.id or data.fromSlot ~= data.toSlot) then
-				local movedWeapon = fromInventory.weapon == data.fromSlot
 				local fromData = fromInventory.items[data.fromSlot]
-				local toData = toInventory.items[data.toSlot]
-
-				if movedWeapon then
-					fromInventory.weapon = data.toSlot
-					fromInventory.weapon = data.fromSlot
-					if fromInventory.type == 'otherplayer' then movedWeapon = false end
-					TriggerClientEvent('ox_inventory:disarm', fromInventory.id, -1)
-				end
-
 				if fromData and (not fromData.metadata.container or fromData.metadata.container and toInventory.type ~= 'container') then
 					if data.count > fromData.count then data.count = fromData.count end
+
+					local toData = toInventory.items[data.toSlot]
+					local movedWeapon = fromInventory.weapon == data.fromSlot
+
+					if movedWeapon then
+						fromInventory.weapon = data.toSlot
+						fromInventory.weapon = data.fromSlot
+						if fromInventory.type == 'otherplayer' then movedWeapon = false end
+						TriggerClientEvent('ox_inventory:disarm', fromInventory.id, -1)
+					end
 
 					if toData and ((toData.name ~= fromData.name) or not toData.stack or (not Utils.MatchTables(toData.metadata, fromData.metadata))) then
 						-- Swap items
