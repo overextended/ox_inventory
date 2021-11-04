@@ -148,9 +148,11 @@ return {
 			{ name = 'ammo-rifle', price = 1000 },
 			{ name = 'ammo-rifle2', price = 1000 }
 		}, locations = {
-			vec3(309.09, -913.75, 56.46)
+			vec3(210.55, -1989.15, 19.71),
+			vec3(336.08, -2021.74, 22.35)
 		}, targets = {
-
+			{ loc = vec3(210.55, -1989.15, 19.71), length = 0.5, width = 1.5, heading = 320.0, minZ = 18.5, maxZ = 21.25, distance = 3.0 },
+			{ loc = vec3(336.08, -2021.74, 21.35), heading = 140.0, distance = 1.5, ped = `mp_g_m_pros_01`, task = 'WORLD_HUMAN_AA_SMOKE' }
 		}
 	}
 }
