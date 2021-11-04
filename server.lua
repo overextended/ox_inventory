@@ -120,20 +120,32 @@ Utils.RegisterServerCallback('ox_inventory:swapItems', function(source, cb, data
 
 		if data.toType == 'newdrop' then
 			local fromData = playerInventory.items[data.fromSlot]
-			local toData = table.clone(fromData)
-			toData.slot = data.toSlot
-			local items = {[data.fromSlot] = false}
-			playerInventory.items[data.fromSlot] = nil
-			Inventory.SyncInventory(ESX.GetPlayerFromId(playerInventory.id), playerInventory)
-			playerInventory.weight = playerInventory.weight - toData.weight
+			if fromData then
+				local toData = table.clone(fromData)
+				toData.slot = data.toSlot
+				toData.count = data.count
+				fromData.count = fromData.count - data.count
+				fromData.weight = Inventory.SlotWeight(Items(fromData.name), fromData)
+				toData.weight = Inventory.SlotWeight(Items(toData.name), toData)
+				playerInventory.weight = playerInventory.weight - toData.weight
+	
+				local slot = fromData.slot
+				if fromData.count < 1 then fromData = nil end
+				items[data.fromSlot] = fromData or false
+				playerInventory.items[data.fromSlot] = fromData
+	
+				if next(items) then
+					Inventory.SyncInventory(ESX.GetPlayerFromId(playerInventory.id), playerInventory)
+				end
+				
+				TriggerEvent('ox_inventory:createDrop', source, data.toSlot, toData, function(drop, coords)
+					if fromData == playerInventory.weapon then playerInventory.weapon = nil end
+					Log(playerInventory, drop, 'Dropped', toData.count, toData.name)
+					TriggerClientEvent('ox_inventory:createDrop', -1, {drop, coords}, playerInventory.open and source, slot)
+				end)
 
-			TriggerEvent('ox_inventory:createDrop', source, data.toSlot, toData, function(drop, coords)
-				if fromData == playerInventory.weapon then playerInventory.weapon = nil end
-				Log(playerInventory, drop, 'Dropped', toData.count, toData.name)
-				TriggerClientEvent('ox_inventory:createDrop', -1, {drop, coords}, playerInventory.open and source, fromData.slot)
-			end)
-
-			return cb(true, {weight=playerInventory.weight, items=items})
+				return cb(true, {weight=playerInventory.weight, items=items})
+			end
 		else
 			local toInventory = (data.toType == 'player' and playerInventory) or Inventory(playerInventory.open)
 			local fromInventory = (data.fromType == 'player' and playerInventory) or Inventory(playerInventory.open)
