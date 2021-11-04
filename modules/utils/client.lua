@@ -87,4 +87,28 @@ M.GetClosestPlayer = function()
 	return closestPlayer, coords
 end
 
+M.CreatePed = function(hk, loc, heading, task)
+	M.LoadModel(hk)
+
+	local ped = CreatePed(21, hk, loc.x, loc.y, loc.z, heading, false, false)
+	SetBlockingOfNonTemporaryEvents(ped, true)
+	SetEntityInvincible(ped, true)
+	FreezeEntityPosition(ped, true)
+	SetPedDefaultComponentVariation(ped)
+
+	if task then TaskStartScenarioInPlace(ped, task, 0, false) end
+
+	M.ReleaseModel(hk)
+	return ped
+end
+
+M.LoadModel = function(hk)
+	RequestModel(hk)
+	repeat Wait(0) until HasModelLoaded(hk)
+end
+
+M.ReleaseModel = function(hk)
+	if HasModelLoaded(hk) then SetModelAsNoLongerNeeded(hk) end
+end
+
 return M
