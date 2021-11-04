@@ -115,25 +115,36 @@ end)
 
 local isPlayer = {.player, .otherplayer}
 Utils.RegisterServerCallback('ox_inventory:swapItems', function(source, cb, data)
+	-- todo: refactor and setup some helper functions; should also move into inventory module
 	if data.count > 0 and data.toType ~= 'shop' then
 		local playerInventory, items, ret = Inventory(source), {}, nil
 
 		if data.toType == 'newdrop' then
 			local fromData = playerInventory.items[data.fromSlot]
-			local toData = table.clone(fromData)
-			toData.slot = data.toSlot
-			local items = {[data.fromSlot] = false}
-			playerInventory.items[data.fromSlot] = nil
-			Inventory.SyncInventory(ESX.GetPlayerFromId(playerInventory.id), playerInventory)
-			playerInventory.weight = playerInventory.weight - toData.weight
+			if fromData then
+				if data.count > fromData.count then data.count = fromData.count end
+				local toData = table.clone(fromData)
+				toData.slot = data.toSlot
+				toData.count = data.count
+				fromData.count = fromData.count - data.count
+				fromData.weight = Inventory.SlotWeight(Items(fromData.name), fromData)
+				toData.weight = Inventory.SlotWeight(Items(toData.name), toData)
+				playerInventory.weight = playerInventory.weight - toData.weight
 
-			TriggerEvent('ox_inventory:createDrop', source, data.toSlot, toData, function(drop, coords)
-				if fromData == playerInventory.weapon then playerInventory.weapon = nil end
-				Log(playerInventory, drop, 'Dropped', toData.count, toData.name)
-				TriggerClientEvent('ox_inventory:createDrop', -1, {drop, coords}, playerInventory.open and source, fromData.slot)
-			end)
+				local slot = fromData.slot
+				if fromData.count < 1 then fromData = nil end
+				items[data.fromSlot] = fromData or false
+				playerInventory.items[data.fromSlot] = fromData
+				Inventory.SyncInventory(ESX.GetPlayerFromId(playerInventory.id), playerInventory)
 
-			return cb(true, {weight=playerInventory.weight, items=items})
+				TriggerEvent('ox_inventory:createDrop', source, data.toSlot, toData, function(drop, coords)
+					if fromData == playerInventory.weapon then playerInventory.weapon = nil end
+					Log(playerInventory, drop, 'Dropped', toData.count, toData.name)
+					TriggerClientEvent('ox_inventory:createDrop', -1, {drop, coords}, playerInventory.open and source, slot)
+				end)
+
+				return cb(true, {weight=playerInventory.weight, items=items})
+			end
 		else
 			local toInventory = (data.toType == 'player' and playerInventory) or Inventory(playerInventory.open)
 			local fromInventory = (data.fromType == 'player' and playerInventory) or Inventory(playerInventory.open)
