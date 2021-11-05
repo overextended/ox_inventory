@@ -725,7 +725,14 @@ end, true, {help = 'Returns confiscated items to a player', validate = true, arg
 
 ESX.RegisterCommand('clearinv', 'admin', function(xPlayer, args, showError)
 	TriggerEvent('ox_inventory:clearPlayerInventory', args.playerId)
-end, true, {help = 'Returns confiscated items to a player', validate = true, arguments = {
+end, true, {help = 'Clear the inventory of a player', validate = true, arguments = {
+	{name = 'playerId', help = 'player id', type = 'player'},
+}})
+
+ESX.RegisterCommand('viewinv', 'admin', function(xPlayer, args, showError)
+	if args.playerId.source == xPlayer.source then return end
+	TriggerClientEvent('ox_inventory:openInventory', xPlayer.source, 'player', {id = args.playerId.source})
+end, true, {help = 'View the inventory of a player', validate = true, arguments = {
 	{name = 'playerId', help = 'player id', type = 'player'},
 }})
 

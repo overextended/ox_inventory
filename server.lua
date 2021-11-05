@@ -356,3 +356,7 @@ Utils.RegisterServerCallback('ox_inventory:useItem', function(source, cb, item, 
 	end
 	cb(false)
 end)
+
+Utils.RegisterServerCallback('ox_inventory:getGroup', function(source, cb)
+	cb(ESX.GetPlayerFromId(source).getGroup())
+end)

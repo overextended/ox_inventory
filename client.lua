@@ -421,7 +421,7 @@ RegisterNetEvent('ox_inventory:setPlayerInventory', function(drops, inventory, w
 						local id = GetPlayerFromServerId(currentInventory.id)
 						local ped = GetPlayerPed(id)
 						local pedCoords = GetEntityCoords(ped)
-						if not id or #(playerCoords - pedCoords) > 1.8 or not (ESX.PlayerData.job.name == 'police' or CanOpenTarget(ped)) then
+						if not id or (#(playerCoords - pedCoords) > 1.8 or not (ESX.PlayerData.job.name == 'police' or CanOpenTarget(ped)) and ESX.PlayerData.group ~= 'admin') then
 							TriggerEvent('ox_inventory:closeInventory')
 							Notify({type = 'error', text = ox.locale('inventory_lost_access'), duration = 2500})
 						else
@@ -606,6 +606,7 @@ end)
 RegisterNetEvent('esx:playerLoaded', function(xPlayer)
 	ESX.PlayerData = xPlayer
 	ESX.PlayerLoaded = true
+	ESX.SetPlayerData('group', Utils.AwaitServerCallback('ox_inventory:getGroup'))
 end)
 
 RegisterNetEvent('esx:onPlayerLogout', function()
