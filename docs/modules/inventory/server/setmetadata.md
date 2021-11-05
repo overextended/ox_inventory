@@ -8,15 +8,14 @@ Replaces the metadata table on an item with new values.
 	local Inventory = exports.ox_inventory:Inventory()
 	```
 	```lua
-	Inventory.SetMetadata(source, item, metadata, slot)
+	Inventory.SetMetadata(source, slot, metadata)
 	```
 
 	| Argument   | Type    | Optional | Explanation |
 	| ---------- | ------- | -------- | ----------- |
 	| source     | integer | no       | The id of the inventory being accessed |
-	| item       | string  | no       | Name of the item |
+	| slot       | integer | no      | The slot being modified |
 	| metadata   | table   | no       | New metadata values |
-	| slot       | integer | yes      | The slot being modified |
 	
 	This will replace all metadata values, so if you want to change a value you need to get the item data first.
 
@@ -30,9 +29,7 @@ Replaces the metadata table on an item with new values.
 			print(v.name, 'slot: '..v.slot, 'metadata: '..json.encode(v.metadata))
 			water = v
 		end
-		water.metadata = {
-			type = 'clean'
-		}
-		Inventory.SetMetadata(xPlayer.source, water.name, water.metadata, water.slot)
+		water.metadata.type = 'clean'
+		Inventory.SetMetadata(xPlayer.source, water.slot, water.metadata)
 		print('Player 3 has '..count..' water')
 		```
