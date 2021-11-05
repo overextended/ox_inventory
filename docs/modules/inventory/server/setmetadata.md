@@ -33,6 +33,6 @@ Replaces the metadata table on an item with new values.
 		water.metadata = {
 			type = 'clean'
 		}
-		Inventory.SetMetadata(xPlayer.source, v.name, water.metadata, water.slot)
+		Inventory.SetMetadata(xPlayer.source, water.name, water.metadata, water.slot)
 		print('Player 3 has '..count..' water')
 		```
