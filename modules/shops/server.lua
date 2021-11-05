@@ -100,7 +100,16 @@ Utils.RegisterServerCallback('ox_inventory:buyItem', function(source, cb, data)
 					Inventory.SyncInventory(xPlayer, player)
 
 					local message = ox.locale('purchased_for', count, fromItem.label, (currency == 'money' and ox.locale('$') or price), (currency == 'money' and price or ' '..currency))
-					Log(player, player.open, message)
+
+					-- Only log purchases for items worth $500 or more
+					if fromData.price >= 500 then
+						Log(
+							player.open,
+							('%s [%s] - %s'):format(player.label, player.id, player.owner),
+							message, metadata.serial and ('(%s)'):format(metadata.serial)
+						)
+					end
+
 					return cb(true, {data.toSlot, player.items[data.toSlot], weight}, {type = 'success', text = message})
 				else
 					return cb(false, nil, {type = 'error', text = ox.locale('cannot_afford', ('%s%s'):format((currency == 'money' and ox.locale('$') or price), (currency == 'money' and price or ' '..currency)))})

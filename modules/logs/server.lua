@@ -5,30 +5,33 @@ if Config.Logs then
 	local path = GetResourcePath(ox.name):gsub('//', '/')
 	path = ('%s/modules/logs'):format(path)
 
-	local _format = string.format
+	local strformat = string.format
 
 	local function init()
-		local file = _format('%s-%s-%s.json', year, month, day)
+		local file = strformat('%s-%s-%s.log', year, month, day)
 		local system = os.getenv('OS')
 		if system and system:match('Windows') then
 			path = path:gsub('/', '\\')
-			os.execute(_format('mkdir %s\\%s\\%s', path, year, month))
-			return io.open(_format('%s\\%s\\%s\\%s', path, year, month, file), 'a+')
+			os.execute(strformat('mkdir %s\\%s\\%s', path, year, month))
+			return io.open(strformat('%s\\%s\\%s\\%s', path, year, month, file), 'a+')
 		else
-			os.execute(_format('mkdir -p %s/%s/%s', path, year, month))
-			return io.open(_format('%s/%s/%s/%s', path, year, month, file), 'a+')
+			os.execute(strformat('mkdir -p %s/%s/%s', path, year, month))
+			return io.open(strformat('%s/%s/%s/%s', path, year, month, file), 'a+')
 		end
 	end
 
 	local file = init()
 
 	if file then
+		month = month:sub(0, 3)
+		local osdate = os.date
 		local time = '%H:%M:%S'
-		local message = _format('\r{ "date": "%s/%s/%s", "time": "%s", "source": "%s", "content": "%s" },', day, month:sub(0, 3), year, '%s', '%s [%s] - %s', '%s')
+		local message = strformat('\r"date": "%s/%s/%s", "time": "%s", "source": "%s", "target": "%s", "content": "%s"', day, month, year, '%s', '%s', '%s', '%s')
+		local none = 'n/a'
 
-		local write = function(inv, target, ...)
+		local write = function(source, target, ...)
 			local content = string.strjoin(' ', string.tostringall(...))
-			file:write(_format(message, os.date(time), inv.label, inv.id, target or inv.owner or inv.name, content))
+			file:write(strformat(message, osdate(time), source, target or none, content))
 		end
 
 		return write

@@ -25,9 +25,6 @@ if ox.server == false then
 	-- Reload empty weapons automatically
 	Config.AutoReload = false
 
-	-- Enable io logfiles
-	Config.Logs = true
-
 	-- Enable sentry logging (this reports UI errors and general performance statistics to the Ox team, anonymously)
 	Config.Sentry = true
 else
@@ -38,7 +35,7 @@ else
 	Config.DBCleanup = '6 MONTH'
 
 	-- Enable integrated logging
-	Config.Logs = false
+	Config.Logs = true
 
 	-- Adds some random item spawns into unowned inventories
 	Config.RandomLoot = true

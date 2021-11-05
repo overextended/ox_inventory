@@ -139,7 +139,11 @@ Utils.RegisterServerCallback('ox_inventory:swapItems', function(source, cb, data
 
 				TriggerEvent('ox_inventory:createDrop', source, data.toSlot, toData, function(drop, coords)
 					if fromData == playerInventory.weapon then playerInventory.weapon = nil end
-					Log(playerInventory, drop, 'Dropped', toData.count, toData.name)
+					Log(
+						('%s [%s] - %s'):format(playerInventory.label, playerInventory.id, playerInventory.owner),
+						drop,
+						('Dropped %s %s'):format(toData.count, toData.name)
+					)
 					TriggerClientEvent('ox_inventory:createDrop', -1, {drop, coords}, playerInventory.open and source, slot)
 				end)
 
@@ -175,6 +179,13 @@ Utils.RegisterServerCallback('ox_inventory:swapItems', function(source, cb, data
 								toData, fromData = Inventory.SwapSlots(fromInventory, toInventory, data.fromSlot, data.toSlot)
 								fromInventory.weight = fromWeight
 								toInventory.weight = toWeight
+
+								Log(
+									('%s [%s] - %s'):format(fromInventory.label, fromInventory.id, fromInventory.owner),
+									('%s [%s] - %s'):format(toInventory.label, toInventory.id, toInventory.owner),
+									('Swapped %s %s for %s %s'):format(fromData.count, fromData.name, toData.count, toData.name)
+								)
+
 							else return cb(false) end
 						else toData, fromData = Inventory.SwapSlots(fromInventory, toInventory, data.fromSlot, data.toSlot) end
 
@@ -190,6 +201,13 @@ Utils.RegisterServerCallback('ox_inventory:swapItems', function(source, cb, data
 							if not sameInventory then
 								fromInventory.weight = fromInventory.weight - toData.weight
 								toInventory.weight = newWeight
+
+								Log(
+									('%s [%s] - %s'):format(fromInventory.label, fromInventory.id, fromInventory.owner),
+									('%s [%s] - %s'):format(toInventory.label, toInventory.id, toInventory.owner),
+									('Transferred %s %s'):format(data.count, fromData.name)
+								)
+
 							end
 						else
 							toData.count = toData.count - data.count
@@ -207,6 +225,13 @@ Utils.RegisterServerCallback('ox_inventory:swapItems', function(source, cb, data
 							if not sameInventory then
 								fromInventory.weight = fromInventory.weight - toData.weight
 								toInventory.weight = toInventory.weight + toData.weight
+
+								Log(
+									('%s [%s] - %s'):format(fromInventory.label, fromInventory.id, fromInventory.owner),
+									('%s [%s] - %s'):format(toInventory.label, toInventory.id, toInventory.owner),
+									('Transferred %s %s'):format(data.count, fromData.name)
+								)
+
 							end
 						else return cb(false) end
 					end

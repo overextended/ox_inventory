@@ -2,6 +2,7 @@ local M = {}
 local Inventories = {}
 local Utils <const> = module('utils')
 local Items <const> = module('items')
+local Log <const> = module('logs')
 
 setmetatable(M, {
 	__call = function(self, arg)
@@ -646,7 +647,16 @@ end)
 
 ESX.RegisterCommand({'giveitem', 'additem'}, 'admin', function(xPlayer, args, showError)
 	args.item = Items(args.item)
-	if args.item then M.AddItem(args.player.source, args.item.name, args.count, args.type) end
+	if args.item and args.count then
+		M.AddItem(args.player.source, args.item.name, args.count, args.type)
+		local inventory = Inventories[args.player.source]
+
+		Log(
+			('%s [%s] - %s'):format(xPlayer.name, xPlayer.source, xPlayer.identifier),
+			('%s [%s] - %s'):format(inventory.label, inventory.id, inventory.owner),
+			('Given %s %s by an admin'):format(args.count, args.item.name)
+		)
+	end
 end, true, {help = 'give an item to a player', validate = false, arguments = {
 	{name = 'player', help = 'player id', type = 'player'},
 	{name = 'item', help = 'item name', type = 'string'},
@@ -656,7 +666,16 @@ end, true, {help = 'give an item to a player', validate = false, arguments = {
 
 ESX.RegisterCommand('removeitem', 'admin', function(xPlayer, args, showError)
 	args.item = Items(args.item)
-	if args.item then M.RemoveItem(args.player.source, args.item.name, args.count, args.type) end
+	if args.item and args.count then
+		M.RemoveItem(args.player.source, args.item.name, args.count, args.type)
+		local inventory = Inventories[args.player.source]
+
+		Log(
+			('%s [%s] - %s'):format(xPlayer.name, xPlayer.source, xPlayer.identifier),
+			('%s [%s] - %s'):format(inventory.label, inventory.id, inventory.owner),
+			('%s %s removed by an admin'):format(args.count, args.item.name)
+		)
+	end
 end, true, {help = 'remove an item from a player', validate = false, arguments = {
 	{name = 'player', help = 'player id', type = 'player'},
 	{name = 'item', help = 'item name', type = 'string'},
@@ -666,7 +685,16 @@ end, true, {help = 'remove an item from a player', validate = false, arguments =
 
 ESX.RegisterCommand('setitem', 'admin', function(xPlayer, args, showError)
 	args.item = Items(args.item)
-	if args.item then M.SetItem(args.player.source, args.item.name, args.count, args.type) end
+	if args.item then
+		M.SetItem(args.player.source, args.item.name, args.count, args.type)
+		local inventory = Inventories[args.player.source]
+
+		Log(
+			('%s [%s] - %s'):format(xPlayer.name, xPlayer.source, xPlayer.identifier),
+			('%s [%s] - %s'):format(inventory.label, inventory.id, inventory.owner),
+			('%s count set to %s by an admin'):format(args.count, args.item.name)
+		)
+	end
 end, true, {help = 'give an item to a player', validate = false, arguments = {
 	{name = 'player', help = 'player id', type = 'player'},
 	{name = 'item', help = 'item name', type = 'string'},
