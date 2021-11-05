@@ -111,7 +111,7 @@ local OpenInventory = function(inv, data)
 			SetInterval(1, 100)
 			SetNuiFocus(true, true)
 			SetNuiFocusKeepInput(true)
-			TriggerScreenblurFadeIn(0)
+			if Config.EnableBlur then TriggerScreenblurFadeIn(0) end
 			currentInventory = right or defaultInventory
 			left.items = ESX.PlayerData.inventory
 			SendNUIMessage({
