@@ -83,7 +83,7 @@ Utils.RegisterServerCallback('ox_inventory:buyItem', function(source, cb, data)
 			local currency = fromData.currency or 'money'
 			local fromItem = Items(fromData.name)
 			local toItem = toData and Items(toData.name)
-			local metadata, count = Items.Metadata(xPlayer, fromItem, fromData.metadata or {}, data.count)
+			local metadata, count = Items.Metadata(xPlayer, fromItem, fromData.metadata and table.clone(fromData.metadata) or {}, data.count)
 			local price = count * fromData.price
 			if toData == nil or (fromItem.name == toItem.name and fromItem.stack and Utils.MatchTables(toData.metadata, metadata)) then
 				local canAfford = Inventory.GetItem(source, currency, false, true) >= price
