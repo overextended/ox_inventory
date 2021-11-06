@@ -1,8 +1,8 @@
 ---
-title: Create items
+title: Defining item data
 ---
 All static item data is loaded from files in the `data` folder rather than the database.  
-The item table defines a basic template to reference when working with an instance of that item name, and can contain custom data.
+The item table defines a basic template to reference when working with an instance of that item type, and can contain custom data.
 
 !!! example
 	=== "Standard Burger"
@@ -48,7 +48,7 @@ The item table defines a basic template to reference when working with an instan
 			}
 		}
 		```
-		Combined with several new functions and events you could easily create a crafting system.
+		Combined with several new functions and events you could easily create your own crafting system.
 
 !!! summary "Standard options"
 	=== "Shared"
