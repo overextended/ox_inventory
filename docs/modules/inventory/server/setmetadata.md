@@ -14,7 +14,7 @@ Replaces the metadata table on an item with new values.
 	| Argument   | Type    | Optional | Explanation |
 	| ---------- | ------- | -------- | ----------- |
 	| source     | integer | no       | The id of the inventory being accessed |
-	| slot       | integer | no      | The slot being modified |
+	| slot       | integer | no       | The slot being modified |
 	| metadata   | table   | no       | New metadata values |
 	
 	This will replace all metadata values, so if you want to change a value you need to get the item data first.

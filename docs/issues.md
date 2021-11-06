@@ -2,12 +2,16 @@
 title: Common issues
 ---
 
-### Inventory doesn't open and screen is blurry
+### Unable to access the inventory
+If the inventory is not displaying after starting the resource, either an error has occurred (view the console) or you have downloaded the source code.
 You most likely downloaded the source code and didn't download the release zip of the inventory or you didn't build the UI.
 !!! check "Solution"
-	Either download the release zip from [here](https://github.com/overextended/ox_inventory/releases/latest) or build the UI yourself using `yarn`.
+	Download the [latest release](https://github.com/overextended/ox_inventory/releases/latest) and not the file marked `-src`, or build the UI manually with `yarn`.
 
-	Although if you're reading this you probably shouldn't attempt to build the UI yourself.
+	If the cause was an error, view the source of the error; if you are unable to determine the cause, post an [issue](https://github.com/overextended/ox_inventory/issues/new) with all relevent information (error message, the code throwing an error).
+
+
+<br><br>
 
 ### Unable to access inventory after death
 You are not triggering the correct event after respawning, so the variable to store if you are dead is set as true.  
