@@ -54,49 +54,64 @@ AddEventHandler('ox_inventory:setPlayerInventory', function(xPlayer, data)
 end)
 
 Utils.RegisterServerCallback('ox_inventory:openInventory', function(source, cb, inv, data)
-	local left, right = Inventory(source)
-	if left.open and inv ~= 'drop' and inv ~= 'container' then return cb(nil) end
+	local left = Inventory(source)
+	local right = left.open and Inventory(left.open)
+	if right then
+		right:set('open', false)
+		left:set('open', false)
+		right = nil
+	end
+
 	if data then
-		if inv == 'policeevidence' then
-			right = Inventory('police-'..data.id)
-			if not right then
-				right = Inventory.Create('police-'..data.id, ox.locale('police_evidence'), inv, 100, 0, 100000, false)
-			end
-		elseif inv == 'stash' then
-			local stash = Stashes[data.id]
-			if not stash then
-				stash = data
-				stash.name = stash.name
-				stash.slots = tonumber(stash.slots)
-				stash.weight = tonumber(stash.weight)
-				stash.coords = stash.coords
-			end
-			local owner = stash.owner == true and left.owner or stash.owner
-			right = Inventory(owner and stash.name..owner or stash.name)
-			if not right then
-				right = Inventory.Create(owner and stash.name..owner or stash.name, stash.label or stash.name, inv, stash.slots, 0, stash.weight, owner or false)
-				right.coords = stash.coords
-			end
-		elseif inv == 'container' then
-			data = left.items[data]
-			right = Inventory(data.metadata.container)
-			if not right then
-				right = Inventory.Create(data.metadata.container, data.label, inv, data.metadata.size[1], 0, data.metadata.size[2], false)
-			end
-		elseif inv == 'dumpster' then
-			right = Inventory(data.id)
-			if not right then
-				right = Inventory.Create(data.id, 'Dumpster', inv, 15, 0, 100000, false)
-			end
-		else
-			right = Inventory(data.id)
-			if not right then
-				if data.class then
+		if type(data) == 'table' then
+			if inv == 'stash' then
+				local stash = Stashes[data.id]
+				if not stash then
+					stash = data
+					stash.name = stash.name
+					stash.slots = tonumber(stash.slots)
+					stash.weight = tonumber(stash.weight)
+					stash.coords = stash.coords
+				end
+				local owner = stash.owner == true and left.owner or stash.owner
+				right = Inventory(owner and stash.name..owner or stash.name)
+				if not right then
+					right = Inventory.Create(owner and stash.name..owner or stash.name, stash.label or stash.name, inv, stash.slots, 0, stash.weight, owner or false)
+					right.coords = stash.coords
+				end
+
+			elseif data.class then
+				right = Inventory(data.id)
+				if not right then
 					local vehicle = Vehicle[inv][data.class]
 					right = Inventory.Create(data.id, data.id:sub(6), inv, vehicle[1], 0, vehicle[2], false)
 				end
-			end
+
+			else right = Inventory(data.id) end
+		else
+			if inv == 'policeevidence' then
+				data = ('police-%s'):format(data)
+				right = Inventory(data)
+				if not right then
+					right = Inventory.Create(data, ox.locale('police_evidence'), inv, 100, 0, 100000, false)
+				end
+
+			elseif inv == 'dumpster' then
+				right = Inventory(data)
+				if not right then
+					right = Inventory.Create(data, 'Dumpster', inv, 15, 0, 100000, false)
+				end
+
+			elseif inv == 'container' then
+				data = left.items[data]
+				right = Inventory(data.metadata.container)
+				if not right then
+					right = Inventory.Create(data.metadata.container, data.label, inv, data.metadata.size[1], 0, data.metadata.size[2], false)
+				end
+
+			else right = Inventory(data) end
 		end
+
 		if right then
 			if right.open == true then return cb(false) end
 			local otherplayer = right.type == 'player'

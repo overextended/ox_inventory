@@ -86,7 +86,6 @@ local CanOpenInventory = function()
 	and IsPedFatallyInjured(ESX.PlayerData.ped, 1) == false
 end
 
-local currentInventory = nil
 local defaultInventory <const> = {
 	type = 'newdrop',
 	slots = Config.PlayerSlots,
@@ -94,13 +93,19 @@ local defaultInventory <const> = {
 	maxWeight = Config.DefaultWeight,
 	items = table.create(0,0)
 }
+local currentInventory = defaultInventory
 
 local OpenInventory = function(inv, data)
 	if CanOpenInventory() then
+
+		if invOpen and inv == 'container' and currentInventory.id == ESX.PlayerData.inventory[data].metadata.container then
+			return TriggerEvent('ox_inventory:closeInventory')
+		end
+
 		local left, right
 		if inv == 'shop' and invOpen == false then
 			left, right = Utils.AwaitServerCallback('ox_inventory:openShop', data)
-		elseif invOpen == false or (invOpen == true and currentInventory?.type == 'newdrop' and (inv == 'drop' or inv == 'container')) then
+		elseif invOpen ~= nil then
 			if inv == 'policeevidence' then
 				local input = Keyboard.Input(ox.locale('police_evidence'), {ox.locale('locker_number')})
 
@@ -113,7 +118,7 @@ local OpenInventory = function(inv, data)
 				if type(input) ~= 'number' then
 					return Notify({text = ox.locale('locker_must_number'), type = 'error'})
 				else
-					data = {id=input}
+					data = input
 				end
 			end
 			left, right = Utils.AwaitServerCallback('ox_inventory:openInventory', inv, data)
@@ -144,7 +149,7 @@ local OpenInventory = function(inv, data)
 			})
 		else
 			if invOpen == false then Notify({type = 'error', text = ox.locale('inventory_right_access'), duration = 2500}) end
-			TriggerEvent('ox_inventory:closeInventory')
+			if invOpen then TriggerEvent('ox_inventory:closeInventory') end
 		end
 	elseif not isBusy then Notify({type = 'error', text = ox.locale('inventory_player_access'), duration = 2500}) end
 end
@@ -339,7 +344,7 @@ local RegisterCommands = function()
 								SetNetworkIdExistsOnAllMachines(netId)
 								SetNetworkIdCanMigrate(netId, true)
 							end
-							return OpenInventory('dumpster', {id='dumpster'..netId})
+							return OpenInventory('dumpster', 'dumpster'..netId)
 						end
 					elseif type == 2 then
 						vehicle, position = entity, GetEntityCoords(entity)
@@ -406,7 +411,7 @@ local RegisterCommands = function()
 			local closestPlayer, coords = Utils.GetClosestPlayer()
 			if closestPlayer.x < 2 and (ESX.PlayerData.job.name == 'police' or CanOpenTarget(closestPlayer.z)) then
 				Utils.PlayAnim(2000, 'mp_common', 'givetake1_a', 1.0, 1.0, -1, 50, 0.0, 0, 0, 0)
-				OpenInventory('player', {id=GetPlayerServerId(closestPlayer.y)})
+				OpenInventory('player', GetPlayerServerId(closestPlayer.y))
 			end
 		end
 	end)
@@ -473,7 +478,7 @@ RegisterNetEvent('ox_inventory:createDrop', function(data, owner, slot)
 	if owner == playerId and invOpen and #(GetEntityCoords(ESX.PlayerData.ped) - coords) <= 1 then
 		if currentWeapon?.slot == slot then Disarm(-1) end
 		if not IsPedInAnyVehicle(ESX.PlayerData.ped, false) then
-			OpenInventory('drop', {id=data[1]})
+			OpenInventory('drop', data[1])
 		end
 	end
 end)
