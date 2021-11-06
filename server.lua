@@ -48,9 +48,10 @@ AddEventHandler('ox_inventory:setPlayerInventory', function(xPlayer, data)
 			if money[v.name] then money[v.name] = money[v.name] + v.count end
 		end
 	end
-	Inventory.Create(xPlayer.source, xPlayer.name, 'player', Config.PlayerSlots, totalWeight, Config.DefaultWeight, xPlayer.identifier, inventory)
+	local inv = Inventory.Create(xPlayer.source, xPlayer.name, 'player', Config.PlayerSlots, totalWeight, Config.DefaultWeight, xPlayer.identifier, inventory)
+	inv.job = xPlayer.job
 	xPlayer.syncInventory(totalWeight, Config.DefaultWeight, inventory, money)
-	TriggerClientEvent('ox_inventory:setPlayerInventory', xPlayer.source, Inventory.Drops, inventory, totalWeight, ESX.UsableItemsCallbacks, ('%s - %s'):format(xPlayer.name, xPlayer.job.name))
+	TriggerClientEvent('ox_inventory:setPlayerInventory', xPlayer.source, Inventory.Drops, inventory, totalWeight, ESX.UsableItemsCallbacks, xPlayer.name)
 end)
 
 Utils.RegisterServerCallback('ox_inventory:openInventory', function(source, cb, inv, data)
@@ -190,13 +191,11 @@ Utils.RegisterServerCallback('ox_inventory:swapItems', function(source, cb, data
 			local sameInventory = fromInventory.id == toInventory.id or false
 
 			if fromInventory.type == 'policeevidence' and not sameInventory then
-				-- todo: store xplayer data in inventory
-				local xPlayer = ESX.GetPlayerFromId(source)
-				local job = xPlayer.getJob()
-				if job.name == 'police' and  job.grade < Config.TakeFromEvidence then 
+				if not toInventory.job.name == 'police' then return cb(false) end
+				if Config.TakeFromEvidence > toInventory.job.grade then
 					TriggerClientEvent('ox_inventory:Notify', source, {type = 'error', text = ox.locale('evidence_cannot_take')})
-					return cb(false) 
-				end 
+					return cb(false)
+				end
 			end
 
 

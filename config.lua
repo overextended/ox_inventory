@@ -38,7 +38,7 @@ else
 	Config.Logs = true
 
 	-- Police grade at which somoene can take items from evidence
-	Config.TakeFromEvidence = 1
+	Config.TakeFromEvidence = 2
 
 	-- Adds some random item spawns into unowned inventories
 	Config.RandomLoot = true

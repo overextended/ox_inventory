@@ -563,6 +563,10 @@ AddEventHandler('esx:playerDropped', function(playerId)
 	end
 end)
 
+AddEventHandler('esx:setJob', function(playerId, job)
+	Inventories[playerId].job = job
+end)
+
 local SaveInventories = function()
 	local time = os.time()
 	for id, inv in pairs(Inventories) do
