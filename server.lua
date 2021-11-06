@@ -56,6 +56,7 @@ end)
 Utils.RegisterServerCallback('ox_inventory:openInventory', function(source, cb, inv, data)
 	local left = Inventory(source)
 	local right = left.open and Inventory(left.open)
+
 	if right then
 		right:set('open', false)
 		left:set('open', false)
@@ -63,67 +64,86 @@ Utils.RegisterServerCallback('ox_inventory:openInventory', function(source, cb, 
 	end
 
 	if data then
-		if type(data) == 'table' then
-			if inv == 'stash' then
-				local stash = Stashes[data.id]
-				if not stash then
-					stash = data
-					stash.name = stash.name
-					stash.slots = tonumber(stash.slots)
-					stash.weight = tonumber(stash.weight)
-					stash.coords = stash.coords
-				end
+		if inv == 'stash' then
+			local stash = Stashes[data.id]
+			if stash then
 				local owner = stash.owner == true and left.owner or stash.owner
 				right = Inventory(owner and stash.name..owner or stash.name)
+
 				if not right then
 					right = Inventory.Create(owner and stash.name..owner or stash.name, stash.label or stash.name, inv, stash.slots, 0, stash.weight, owner or false)
-					right.coords = stash.coords
 				end
 
-			elseif data.class then
+			else
+				stash = Inventory.CustomStash[data.id or data]
+				if stash then
+					local owner = stash.owner == true and left.owner or stash.owner
+					data = (owner and ('%s%s'):format(data.id or data, owner)) or data.id or data
+
+					right = Inventory(data)
+					if not right then
+						right = Inventory.Create(data, stash.label or stash.name, inv, stash.slots, 0, stash.weight, owner or false)
+					end
+
+				else
+					ox.warning(('%s [%s] (%s) attempted to open an invalid stash (%s)\nIf this stash should exist, add it to `data/stashes` or create it on the server first with `exports.ox_inventory:CreateStash`'):format(GetPlayerName(source), source, left.owner, json.encode(data)))
+					return cb(false)
+				end
+			end
+
+		elseif type(data) == 'table' then
+			if data.class then
 				right = Inventory(data.id)
 				if not right then
 					local vehicle = Vehicle[inv][data.class]
 					right = Inventory.Create(data.id, data.id:sub(6), inv, vehicle[1], 0, vehicle[2], false)
 				end
-
-			else right = Inventory(data.id) end
-		else
-			if inv == 'policeevidence' then
-				data = ('police-%s'):format(data)
-				right = Inventory(data)
+			else
+				right = Inventory(data.id)
 				if not right then
-					right = Inventory.Create(data, ox.locale('police_evidence'), inv, 100, 0, 100000, false)
+					ox.warning(('%s [%s] (%s) attempted to open an invalid stash (%s)\nIf this stash should exist, add it to `data/stashes` or create it on the server first with `exports.ox_inventory:CreateStash`'):format(GetPlayerName(source), source, left.owner, json.encode(data)))
+					return cb(false)
 				end
+			end
 
-			elseif inv == 'dumpster' then
-				right = Inventory(data)
-				if not right then
-					right = Inventory.Create(data, 'Dumpster', inv, 15, 0, 100000, false)
-				end
+		elseif inv == 'policeevidence' then
+			data = ('police-%s'):format(data)
+			right = Inventory(data)
+			if not right then
+				right = Inventory.Create(data, ox.locale('police_evidence'), inv, 100, 0, 100000, false)
+			end
 
-			elseif inv == 'container' then
-				data = left.items[data]
-				right = Inventory(data.metadata.container)
-				if not right then
-					right = Inventory.Create(data.metadata.container, data.label, inv, data.metadata.size[1], 0, data.metadata.size[2], false)
-				end
+		elseif inv == 'dumpster' then
+			right = Inventory(data)
+			if not right then
+				right = Inventory.Create(data, 'Dumpster', inv, 15, 0, 100000, false)
+			end
 
-			else right = Inventory(data) end
-		end
+		elseif inv == 'container' then
+			data = left.items[data]
+			right = Inventory(data.metadata.container)
+			if not right then
+				right = Inventory.Create(data.metadata.container, data.label, inv, data.metadata.size[1], 0, data.metadata.size[2], false)
+			end
+
+		else right = Inventory(data) end
 
 		if right then
 			if right.open == true then return cb(false) end
+
 			local otherplayer = right.type == 'player'
 			if otherplayer then right.coords = GetEntityCoords(GetPlayerPed(right.id)) end
+
 			if right.coords == nil or #(right.coords - GetEntityCoords(GetPlayerPed(source))) < 10 then
 				right.open = source
 				left.open = right.id
 				if otherplayer then
 					right:set('type', 'otherplayer')
 				end
+
 			else return cb(false) end
 		end
+
 	else left.open = true end
 	cb({id=left.label, type=left.type, slots=left.slots, weight=left.weight, maxWeight=left.maxWeight}, right)
 end)

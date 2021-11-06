@@ -317,7 +317,7 @@ local RegisterCommands = function()
 					local vehicle = GetVehiclePedIsIn(ESX.PlayerData.ped, false)
 					if NetworkGetEntityIsNetworked(vehicle) then
 						local plate = Config.TrimPlate and string.strtrim(GetVehicleNumberPlateText(vehicle)) or GetVehicleNumberPlateText(vehicle)
-						OpenInventory('glovebox', {id='glove'..plate, label=plate, class=GetVehicleClass(vehicle)})
+						OpenInventory('glovebox', {id='glove'..plate, class=GetVehicleClass(vehicle)})
 						Wait(100)
 						while true do
 							Wait(100)
@@ -367,7 +367,7 @@ local RegisterCommands = function()
 								local plate = Config.TrimPlate and string.strtrim(GetVehicleNumberPlateText(vehicle)) or GetVehicleNumberPlateText(vehicle)
 								TaskTurnPedToFaceCoord(ESX.PlayerData.ped, position.x, position.y, position.z)
 								lastVehicle = vehicle
-								OpenInventory('trunk', {id='trunk'..plate, label=plate, class=class})
+								OpenInventory('trunk', {id='trunk'..plate, class=class})
 								local timeout = 20
 								repeat Wait(50)
 									timeout -= 1
@@ -844,7 +844,8 @@ TriggerEvent('chat:removeSuggestion', '/inv2')
 TriggerEvent('chat:removeSuggestion', '/hotbar')
 TriggerEvent('chat:removeSuggestion', '/reload')
 for i=1, 5 do
-	RegisterCommand('hotkey'..i, function() if not invOpen then UseSlot(i) end end)
-	RegisterKeyMapping('hotkey'..i, ox.locale('use_hotbar', i), 'keyboard', i)
-	TriggerEvent('chat:removeSuggestion', '/hotkey'..i)
+	local hotkey = ('hotkey%s'):format(i)
+	RegisterCommand(hotkey, function() if not invOpen then UseSlot(i) end end)
+	RegisterKeyMapping(hotkey, ox.locale('use_hotbar', i), 'keyboard', i)
+	TriggerEvent('chat:removeSuggestion', '/'..hotkey)
 end

@@ -104,6 +104,7 @@ M.CalculateWeight = function(items)
 	return weight
 end
 
+-- This should only be utilised internally! To create a stash, please use `exports.ox_inventory:CreateStash` instead.
 M.Create = function(id, label, invType, slots, weight, maxWeight, owner, items)
 	if maxWeight then
 		local self = {
@@ -752,7 +753,7 @@ TriggerEvent('ox_inventory:loadInventory', M)
 
 exports('Inventory', function(arg)
 	if arg then
-		if Inventories[arg] then return Inventories[arg] else return false end
+		if Inventories[arg] then return Inventories[arg] else return nil end
 	end
 	return M
 end)
@@ -778,10 +779,11 @@ local ConvertItems = function(playerId, items)
 end
 exports('ConvertItems', ConvertItems)
 
+M.CustomStash = table.create(0, 0)
 -- For simple integration with other resources that want to create stashes.
 -- Accepts items using ox_inventory or traditional data formats.
 -- Items should only be sent when creating the stash for the first time, otherwise leave it empty and the data will be loaded from the database.
-exports('CreateStash', function(id, label, slots, maxWeight, owner, items)
+local CreateStash = function(id, label, slots, maxWeight, owner, items)
 	local weight = 0
 	if items then
 		local firstItem = next(items)
@@ -789,7 +791,20 @@ exports('CreateStash', function(id, label, slots, maxWeight, owner, items)
 			items, weight = ConvertItems(items)
 		end
 	end
+
+	-- Allows the stash to be requested by clients.
+	if not M.CustomStash[id] then
+		M.CustomStash[id] = {
+			name = id,
+			label = label,
+			owner = owner and true,
+			slots = slots,
+			weight = maxWeight
+		}
+	end
+
 	M.Create(id, label, 'stash', slots, weight, maxWeight, owner, items)
-end)
+end
+exports('CreateStash', CreateStash)
 
 return M

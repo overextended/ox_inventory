@@ -16,6 +16,7 @@ return {
 		weight = 70000,
 		jobs = {['police'] = 0}
 	},
+
 	{
 		coords = vec3(301.3, -600.23, 43.28),
 		target = {
@@ -32,5 +33,5 @@ return {
 		slots = 70,
 		weight = 70000,
 		jobs = {['ambulance'] = 0}
-	}
+	},
 }
