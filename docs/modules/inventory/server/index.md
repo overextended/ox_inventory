@@ -4,6 +4,8 @@ title: Server module
 The inventory module handles most inventory-related functions and stores all current inventory data.  
 Many of the functions provided in this module are similar to the `xPlayer` functions, however they can be used for non-player inventories too.
 
+The inventory module _is exported_ - add `local Inventory = exports.ox_inventory:Inventory()` near the top of your script to utilise its functions.
+
 !!! info
 	```lua
 	Inventory(id)
