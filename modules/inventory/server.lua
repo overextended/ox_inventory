@@ -276,16 +276,21 @@ M.SetItem = function(inv, item, count, metadata)
 	end
 end
 
-M.SetMetadata = function(inv, item, metadata, slot)
-	if type(item) ~= 'table' then item = Items(item) end
-	if item and slot then
-		if type(inv) ~= 'table' then inv = Inventories[inv] end
+M.SetMetadata = function(inv, slot, metadata)
+	if type(inv) ~= 'table' then inv = Inventories[inv] end
+	slot = type(slot) == 'number' and (inv and inv.items[slot])
+	if inv and slot then
 		if inv then
 			local xPlayer = inv.type == 'player' and ESX.GetPlayerFromId(inv.id)
-			inv.items[slot].metadata = type(metadata) == 'table' and metadata or {type = metadata}
+			slot.metadata = type(metadata) == 'table' and metadata or {type = metadata}
+			if metadata.weight then
+				inv.weight -= slot.weight
+				slot.weight = M.SlotWeight(Items(item), slot)
+				inv.weight += slot.weight
+			end
 			if xPlayer then
 				M.SyncInventory(xPlayer, inv)
-				TriggerClientEvent('ox_inventory:updateInventory', xPlayer.source, {{item = inv.items[slot], inventory = inv.type}}, {left=inv.weight, right=inv.open and Inventories[inv.open]?.weight})
+				TriggerClientEvent('ox_inventory:updateInventory', xPlayer.source, {{item = slot, inventory = inv.type}}, {left=inv.weight, right=inv.open and Inventories[inv.open]?.weight})
 			end
 		end
 	end
