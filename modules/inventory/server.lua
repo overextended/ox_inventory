@@ -7,7 +7,7 @@ local Log <const> = module('logs')
 setmetatable(M, {
 	__call = function(self, arg)
 		if arg then
-			if Inventories[arg] then return Inventories[arg] else return false end
+			if Inventories[arg] then return Inventories[arg] else return nil end
 		end
 		return self
 	end
