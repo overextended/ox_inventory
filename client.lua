@@ -1,5 +1,6 @@
 local Vehicles <const> = data('vehicles')
 local Licenses <const> = data('licenses')
+local Evidence <const> = data('evidence')
 local Items <const>, Weapons <const> = table.unpack(module('items'))
 local Utils <const> = module('utils')
 local Progress <const> = module('progress')
@@ -85,7 +86,15 @@ local CanOpenInventory = function()
 	and IsPedFatallyInjured(ESX.PlayerData.ped, 1) == false
 end
 
-local defaultInventory, currentInventory = {type='newdrop', slots=Config.PlayerSlots, weight=0, maxWeight=Config.DefaultWeight, items=table.create(0,0)}, nil
+local currentInventory = nil
+local defaultInventory <const> = {
+	type = 'newdrop',
+	slots = Config.PlayerSlots,
+	weight = 0,
+	maxWeight = Config.DefaultWeight,
+	items = table.create(0,0)
+}
+
 local OpenInventory = function(inv, data)
 	if CanOpenInventory() then
 		local left, right
@@ -94,15 +103,22 @@ local OpenInventory = function(inv, data)
 		elseif invOpen == false or (invOpen == true and currentInventory?.type == 'newdrop' and (inv == 'drop' or inv == 'container')) then
 			if inv == 'policeevidence' then
 				local input = Keyboard.Input(ox.locale('police_evidence'), {ox.locale('locker_number')})
+
 				if input then
 					input = tonumber(input[1])
 				else
 					return Notify({text = ox.locale('locker_no_value'), type = 'error'})
 				end
-				if type(input) ~= 'number' then return Notify({text = ox.locale('locker_must_number'), type = 'error'}) else data = {id=input} end
+
+				if type(input) ~= 'number' then
+					return Notify({text = ox.locale('locker_must_number'), type = 'error'})
+				else
+					data = {id=input}
+				end
 			end
 			left, right = Utils.AwaitServerCallback('ox_inventory:openInventory', inv, data)
 		end
+
 		if left then
 			if inv ~= 'trunk' and not IsPedInAnyVehicle(ESX.PlayerData.ped, false) then
 				Utils.PlayAnim(1000, 'pickup_object', 'putdown_low', 5.0, 1.5, -1, 48, 0.0, 0, 0, 0)
@@ -277,6 +293,129 @@ OnPlayerData = function(key, val)
 	SetWeaponsNoAutoreload(1)
 end
 
+local RegisterCommands = function()
+
+	RegisterCommand('inv', function()
+		if closestMarker[1] and closestMarker[3] ~= 'license' and closestMarker[3] ~= 'policeevidence' then
+			OpenInventory(closestMarker[3], {id=closestMarker[2], type=closestMarker[4]})
+		else OpenInventory() end
+	end)
+
+	RegisterCommand('inv2', function()
+		if not invOpen then
+			if isBusy then return Notify({type = 'error', text = ox.locale('inventory_player_access'), duration = 2500})
+			elseif currentInventory then TriggerEvent('ox_inventory:closeInventory')
+			else
+				if not CanOpenInventory() then return Notify({type = 'error', text = ox.locale('inventory_player_access'), duration = 2500}) end
+				if IsPedInAnyVehicle(ESX.PlayerData.ped, false) then
+					local vehicle = GetVehiclePedIsIn(ESX.PlayerData.ped, false)
+					if NetworkGetEntityIsNetworked(vehicle) then
+						local plate = Config.TrimPlate and string.strtrim(GetVehicleNumberPlateText(vehicle)) or GetVehicleNumberPlateText(vehicle)
+						OpenInventory('glovebox', {id='glove'..plate, label=plate, class=GetVehicleClass(vehicle)})
+						Wait(100)
+						while true do
+							Wait(100)
+							if not invOpen then break
+							elseif not IsPedInAnyVehicle(ESX.PlayerData.ped, false) then
+								TriggerEvent('ox_inventory:closeInventory')
+								break
+							end
+						end
+					end
+				else
+					local entity, type = Utils.Raycast()
+					if entity == false then return end
+					local vehicle, position
+					if not Config.Target then
+						if type == 2 then vehicle, position = entity, GetEntityCoords(entity)
+						elseif type == 3 and Utils.CheckTable(Inventory.Dumpsters, GetEntityModel(entity)) then
+							local netId = NetworkGetEntityIsNetworked(entity) and NetworkGetNetworkIdFromEntity(entity) or false
+							if netId == false then
+								SetEntityAsMissionEntity(entity)
+								NetworkRegisterEntityAsNetworked(entity)
+								netId = NetworkGetNetworkIdFromEntity(entity)
+								NetworkUseHighPrecisionBlending(netId, false)
+								SetNetworkIdExistsOnAllMachines(netId)
+								SetNetworkIdCanMigrate(netId, true)
+							end
+							return OpenInventory('dumpster', {id='dumpster'..netId})
+						end
+					elseif type == 2 then
+						vehicle, position = entity, GetEntityCoords(entity)
+					else return end
+					local lastVehicle = nil
+					local class = GetVehicleClass(vehicle)
+					if vehicle and Vehicles.trunk[class] and #(playerCoords - position) < 6 and NetworkGetEntityIsNetworked(vehicle) then
+						local locked = GetVehicleDoorLockStatus(vehicle)
+						if locked == 0 or locked == 1 then
+							local vehHash = GetEntityModel(vehicle)
+							local checkVehicle = Vehicles.Storage[vehHash]
+							local open, vehBone
+							if checkVehicle == 1 then open, vehBone = 4, GetEntityBoneIndexByName(vehicle, 'bonnet')
+							elseif checkVehicle == nil then open, vehBone = 5, GetEntityBoneIndexByName(vehicle, 'boot') elseif checkVehicle == 2 then open, vehBone = 5, GetEntityBoneIndexByName(vehicle, 'boot') else --[[no vehicle nearby]] return end
+							if vehBone == -1 then vehBone = GetEntityBoneIndexByName(vehicle, 'platelight') end
+							position = GetWorldPositionOfEntityBone(vehicle, vehBone)
+							local distance = #(playerCoords - position)
+							local closeToVehicle = distance < 2 and (open == 5 and (checkVehicle == nil and true or 2) or open == 4)
+							if closeToVehicle then
+								local plate = Config.TrimPlate and string.strtrim(GetVehicleNumberPlateText(vehicle)) or GetVehicleNumberPlateText(vehicle)
+								TaskTurnPedToFaceCoord(ESX.PlayerData.ped, position.x, position.y, position.z)
+								lastVehicle = vehicle
+								OpenInventory('trunk', {id='trunk'..plate, label=plate, class=class})
+								local timeout = 20
+								repeat Wait(50)
+									timeout -= 1
+								until (currentInventory and currentInventory.type == 'trunk') or timeout == 0
+								if timeout == 0 then
+									closeToVehicle, lastVehicle = false, nil
+									return
+								end
+								SetVehicleDoorOpen(vehicle, open, false, false)
+								Wait(200)
+								Utils.PlayAnim(0, 'anim@heists@prison_heiststation@cop_reactions', 'cop_b_idle', 3.0, 3.0, -1, 49, 0.0, 0, 0, 0)
+								currentInventory.entity = lastVehicle
+								currentInventory.door = open
+								while true do
+									Wait(50)
+									if closeToVehicle and invOpen then
+										position = GetWorldPositionOfEntityBone(vehicle, vehBone)
+										if #(GetEntityCoords(ESX.PlayerData.ped) - position) >= 2 or not DoesEntityExist(vehicle) then
+											break
+										else TaskTurnPedToFaceCoord(ESX.PlayerData.ped, position.x, position.y, position.z) end
+									else break end
+								end
+								if lastVehicle then TriggerEvent('ox_inventory:closeInventory') end
+							end
+						else Notify({type = 'error', text = ox.locale('vehicle_locked'), duration = 2500}) end
+					end
+				end
+			end
+		end
+	end)
+
+	RegisterCommand('reload', function()
+		if currentWeapon?.ammo then
+			local ammo = Inventory.Search(1, currentWeapon.ammo)
+			if ammo[1] then UseSlot(ammo[1].slot) end
+		end
+	end)
+
+	RegisterCommand('steal', function()
+		if CanOpenInventory() then
+			local closestPlayer, coords = Utils.GetClosestPlayer()
+			if closestPlayer.x < 2 and (ESX.PlayerData.job.name == 'police' or CanOpenTarget(closestPlayer.z)) then
+				Utils.PlayAnim(2000, 'mp_common', 'givetake1_a', 1.0, 1.0, -1, 50, 0.0, 0, 0, 0)
+				OpenInventory('player', {id=GetPlayerServerId(closestPlayer.y)})
+			end
+		end
+	end)
+
+	RegisterCommand('hotbar', function()
+		SendNUIMessage({ action = 'toggleHotbar' })
+	end)
+
+end
+
 RegisterNetEvent('ox_inventory:closeInventory', function(options)
 	if invOpen then invOpen = nil
 		SetNuiFocus(false, false)
@@ -378,16 +517,17 @@ RegisterNetEvent('ox_inventory:setPlayerInventory', function(drops, inventory, w
 			}
 		}
 	})
-	table.wipe(locales)
 	Shops()
 	Stashes()
 	Notify({text = ox.locale('inventory_setup'), duration = 2500})
+	RegisterCommands()
 	plyState:set('busy', false, true)
 
 	SetInterval(1, 200, function()
 		if invOpen == false then
 			playerCoords = GetEntityCoords(ESX.PlayerData.ped)
 			table.wipe(closestMarker)
+
 			Markers(Drops, 'drop', vec3(150, 30, 30))
 			if not Config.Target then
 				Markers(Stashes, 'stash', vec3(30, 30, 150))
@@ -398,16 +538,8 @@ RegisterNetEvent('ox_inventory:setPlayerInventory', function(drops, inventory, w
 				end
 			end
 			Markers(Licenses, 'license', vec(30, 150, 30))
-			-- todo: finish police evidence system
-			local distance = #(playerCoords - vec3(-22.4, -1105.5, 26.7))
-			local marker = nearbyMarkers['policeevidence']
-			if distance < 1 then
-				if not marker then nearbyMarkers['policeevidence'] = mat(vec3(-22.4, -1105.5, 26.7), vec3(30, 30, 150)) end
-				if closestMarker[1] == nil or (closestMarker and distance < closestMarker[1]) then
-					closestMarker = {distance, 1, 'policeevidence'}
-				end
-			elseif not marker and distance < 8 then nearbyMarkers['policeevidence'] = mat(vec3(-22.4, -1105.5, 26.7), vec3(30, 30, 150)) elseif marker and distance > 8 then nearbyMarkers['policeevidence'] = nil end
-			----------------
+			Markers(Evidence, 'policeevidence', vec(30, 30, 150))
+
 			if IsPedInAnyVehicle(ESX.PlayerData.ped, false) then table.wipe(closestMarker) end
 			SetPedCanSwitchWeapon(ESX.PlayerData.ped, false)
 			SetPedEnableWeaponBlocking(ESX.PlayerData.ped, true)
@@ -627,121 +759,6 @@ RegisterNetEvent('esx_policejob:unrestrain', function()
 	TriggerEvent('ox_inventory:closeInventory')
 end)
 
-RegisterCommand('inv', function()
-	if closestMarker[1] and closestMarker[3] ~= 'license' and closestMarker[3] ~= 'policeevidence' then
-		OpenInventory(closestMarker[3], {id=closestMarker[2], type=closestMarker[4]})
-	else OpenInventory() end
-end)
-
-RegisterCommand('inv2', function()
-	if not invOpen then
-		if isBusy then return Notify({type = 'error', text = ox.locale('inventory_player_access'), duration = 2500})
-		elseif currentInventory then TriggerEvent('ox_inventory:closeInventory')
-		else
-			if not CanOpenInventory() then return Notify({type = 'error', text = ox.locale('inventory_player_access'), duration = 2500}) end
-			if IsPedInAnyVehicle(ESX.PlayerData.ped, false) then
-				local vehicle = GetVehiclePedIsIn(ESX.PlayerData.ped, false)
-				if NetworkGetEntityIsNetworked(vehicle) then
-					local plate = Config.TrimPlate and string.strtrim(GetVehicleNumberPlateText(vehicle)) or GetVehicleNumberPlateText(vehicle)
-					OpenInventory('glovebox', {id='glove'..plate, label=plate, class=GetVehicleClass(vehicle)})
-					Wait(100)
-					while true do
-						Wait(100)
-						if not invOpen then break
-						elseif not IsPedInAnyVehicle(ESX.PlayerData.ped, false) then
-							TriggerEvent('ox_inventory:closeInventory')
-							break
-						end
-					end
-				end
-			else
-				local entity, type = Utils.Raycast()
-				if entity == false then return end
-				local vehicle, position
-				if not Config.Target then
-					if type == 2 then vehicle, position = entity, GetEntityCoords(entity)
-					elseif type == 3 and Utils.CheckTable(Inventory.Dumpsters, GetEntityModel(entity)) then
-						local netId = NetworkGetEntityIsNetworked(entity) and NetworkGetNetworkIdFromEntity(entity) or false
-						if netId == false then
-							SetEntityAsMissionEntity(entity)
-							NetworkRegisterEntityAsNetworked(entity)
-							netId = NetworkGetNetworkIdFromEntity(entity)
-							NetworkUseHighPrecisionBlending(netId, false)
-							SetNetworkIdExistsOnAllMachines(netId)
-							SetNetworkIdCanMigrate(netId, true)
-						end
-						return OpenInventory('dumpster', {id='dumpster'..netId})
-					end
-				elseif type == 2 then
-					vehicle, position = entity, GetEntityCoords(entity)
-				else return end
-				local lastVehicle = nil
-				local class = GetVehicleClass(vehicle)
-				if vehicle and Vehicles.trunk[class] and #(playerCoords - position) < 6 and NetworkGetEntityIsNetworked(vehicle) then
-					local locked = GetVehicleDoorLockStatus(vehicle)
-					if locked == 0 or locked == 1 then
-						local vehHash = GetEntityModel(vehicle)
-						local checkVehicle = Vehicles.Storage[vehHash]
-						local open, vehBone
-						if checkVehicle == 1 then open, vehBone = 4, GetEntityBoneIndexByName(vehicle, 'bonnet')
-						elseif checkVehicle == nil then open, vehBone = 5, GetEntityBoneIndexByName(vehicle, 'boot') elseif checkVehicle == 2 then open, vehBone = 5, GetEntityBoneIndexByName(vehicle, 'boot') else --[[no vehicle nearby]] return end
-						if vehBone == -1 then vehBone = GetEntityBoneIndexByName(vehicle, 'platelight') end
-						position = GetWorldPositionOfEntityBone(vehicle, vehBone)
-						local distance = #(playerCoords - position)
-						local closeToVehicle = distance < 2 and (open == 5 and (checkVehicle == nil and true or 2) or open == 4)
-						if closeToVehicle then
-							local plate = Config.TrimPlate and string.strtrim(GetVehicleNumberPlateText(vehicle)) or GetVehicleNumberPlateText(vehicle)
-							TaskTurnPedToFaceCoord(ESX.PlayerData.ped, position.x, position.y, position.z)
-							lastVehicle = vehicle
-							OpenInventory('trunk', {id='trunk'..plate, label=plate, class=class})
-							local timeout = 20
-							repeat Wait(50)
-								timeout -= 1
-							until (currentInventory and currentInventory.type == 'trunk') or timeout == 0
-							if timeout == 0 then
-								closeToVehicle, lastVehicle = false, nil
-								return
-							end
-							SetVehicleDoorOpen(vehicle, open, false, false)
-							Wait(200)
-							Utils.PlayAnim(0, 'anim@heists@prison_heiststation@cop_reactions', 'cop_b_idle', 3.0, 3.0, -1, 49, 0.0, 0, 0, 0)
-							currentInventory.entity = lastVehicle
-							currentInventory.door = open
-							while true do
-								Wait(50)
-								if closeToVehicle and invOpen then
-									position = GetWorldPositionOfEntityBone(vehicle, vehBone)
-									if #(GetEntityCoords(ESX.PlayerData.ped) - position) >= 2 or not DoesEntityExist(vehicle) then
-										break
-									else TaskTurnPedToFaceCoord(ESX.PlayerData.ped, position.x, position.y, position.z) end
-								else break end
-							end
-							if lastVehicle then TriggerEvent('ox_inventory:closeInventory') end
-						end
-					else Notify({type = 'error', text = ox.locale('vehicle_locked'), duration = 2500}) end
-				end
-			end
-		end
-	end
-end)
-
-RegisterCommand('reload', function()
-	if currentWeapon?.ammo then
-		local ammo = Inventory.Search(1, currentWeapon.ammo)
-		if ammo[1] then UseSlot(ammo[1].slot) end
-	end
-end)
-
-RegisterCommand('steal', function()
-	if CanOpenInventory() then
-		local closestPlayer, coords = Utils.GetClosestPlayer()
-		if closestPlayer.x < 2 and (ESX.PlayerData.job.name == 'police' or CanOpenTarget(closestPlayer.z)) then
-			Utils.PlayAnim(2000, 'mp_common', 'givetake1_a', 1.0, 1.0, -1, 50, 0.0, 0, 0, 0)
-			OpenInventory('player', {id=GetPlayerServerId(closestPlayer.y)})
-		end
-	end
-end)
-
 RegisterNUICallback('removeComponent', function(data, cb)
 	cb(1)
 	if not currentWeapon then return Notify({type = 'error', text = ox.locale('weapon_hand_required')}) end
@@ -759,10 +776,6 @@ RegisterNUICallback('removeComponent', function(data, cb)
 			end
 		end
 	end
-end)
-
-RegisterCommand('hotbar', function()
-	SendNUIMessage({ action = 'toggleHotbar' })
 end)
 
 RegisterNUICallback('useItem', function(slot, cb)
