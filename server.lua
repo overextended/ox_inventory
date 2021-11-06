@@ -158,7 +158,6 @@ Utils.RegisterServerCallback('ox_inventory:swapItems', function(source, cb, data
 				-- todo: store xplayer data in inventory
 				local xPlayer = ESX.GetPlayerFromId(source)
 				local job = xPlayer.getJob()
-				print(Config.TakeFromEvidence)
 				if job.name == 'police' and  job.grade < Config.TakeFromEvidence then 
 					TriggerClientEvent('ox_inventory:Notify', source, {type = 'error', text = ox.locale('evidence_cannot_take')})
 					return cb(false) 
