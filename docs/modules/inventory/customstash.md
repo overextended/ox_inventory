@@ -6,7 +6,8 @@ Stashes will not always have a defined template, so it is necessary to create th
 
 !!! info
 	```lua
-	exports.ox_inventory:CreateStash('someid', 'Inventory label', 10, 10000, true)
+	exports.ox_inventory:CreateStash(id, label, slots, maxWeight, owner, items)
+	exports.ox_inventory:CreateStash('someid', 'Inventory label', 10, 10000, true, {cola=1, bread=3})
 	```
 	
 	| Argument  | Type    | Optional | Explanation |
@@ -18,7 +19,8 @@ Stashes will not always have a defined template, so it is necessary to create th
 	| owner     | string  | yes      | The identifier of the stash owner, or true for personal stashes |
 	| items     | table   | yes      | Items to be loaded in the stash |
 
-	Items should only be defined for newly created stashes and for converting key-value pairs into compatible items.
-	`{"cola":1, "bread":3}` will be converted to `[{"slot":1,"name":"cola","count":1}, {"slot":2,"name":"bread","count":3}]`
+	Items should only be defined for newly created stashes and for converting key-value pairs into compatible items.  
+	`{cola = 1, bread = 3}` will be converted to `{{slot = 1, name = cola, count = 1}, {slot = 2 name = bread, count = 3}}`
+
 
 The reasoning for this function is to provide easier integration with other resources and prevention of arbitrarily created stashes defined by the client.
