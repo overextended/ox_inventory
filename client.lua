@@ -1,11 +1,11 @@
 local Vehicles <const> = data('vehicles')
 local Licenses <const> = data('licenses')
-local Evidence <const> = data('evidence')
 local Items <const>, Weapons <const> = table.unpack(module('items'))
 local Utils <const> = module('utils')
 local Progress <const> = module('progress')
 local Shops <const> = module('shops')
 local Stashes <const> = module('stashes')
+local Evidence <const> = module('evidence')
 local Inventory <const> = module('inventory')
 local Keyboard <const> = module('input')
 local invOpen, playerId, currentWeapon
@@ -283,6 +283,7 @@ OnPlayerData = function(key, val)
 	if key == 'job' then
 		Shops()
 		Stashes()
+		Evidence()
 		table.wipe(nearbyMarkers)
 	elseif key == 'dead' and val then
 		Disarm(-1)
@@ -519,6 +520,7 @@ RegisterNetEvent('ox_inventory:setPlayerInventory', function(drops, inventory, w
 	})
 	Shops()
 	Stashes()
+	Evidence()
 	Notify({text = ox.locale('inventory_setup'), duration = 2500})
 	RegisterCommands()
 	plyState:set('busy', false, true)
@@ -530,6 +532,7 @@ RegisterNetEvent('ox_inventory:setPlayerInventory', function(drops, inventory, w
 
 			Markers(Drops, 'drop', vec3(150, 30, 30))
 			if not Config.Target then
+				Markers(Evidence, 'policeevidence', vec(30, 30, 150))
 				Markers(Stashes, 'stash', vec3(30, 30, 150))
 				for k, v in pairs(Shops) do
 					if not v.jobs or (v.jobs[ESX.PlayerData.job.name] and ESX.PlayerData.job.grade >= v.jobs[ESX.PlayerData.job.name]) then
@@ -538,7 +541,6 @@ RegisterNetEvent('ox_inventory:setPlayerInventory', function(drops, inventory, w
 				end
 			end
 			Markers(Licenses, 'license', vec(30, 150, 30))
-			Markers(Evidence, 'policeevidence', vec(30, 30, 150))
 
 			if IsPedInAnyVehicle(ESX.PlayerData.ped, false) then table.wipe(closestMarker) end
 			SetPedCanSwitchWeapon(ESX.PlayerData.ped, false)
