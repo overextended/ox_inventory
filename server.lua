@@ -154,6 +154,18 @@ Utils.RegisterServerCallback('ox_inventory:swapItems', function(source, cb, data
 			local fromInventory = (data.fromType == 'player' and playerInventory) or Inventory(playerInventory.open)
 			local sameInventory = fromInventory.id == toInventory.id or false
 
+			if fromInventory.type == 'policeevidence' and not sameInventory then
+				-- todo: store xplayer data in inventory
+				local xPlayer = ESX.GetPlayerFromId(source)
+				local job = xPlayer.getJob()
+				print(Config.TakeFromEvidence)
+				if job.name == 'police' and  job.grade < Config.TakeFromEvidence then 
+					TriggerClientEvent('ox_inventory:Notify', source, {type = 'error', text = ox.locale('evidence_cannot_take')})
+					return cb(false) 
+				end 
+			end
+
+
 			if toInventory and fromInventory and (fromInventory.id ~= toInventory.id or data.fromSlot ~= data.toSlot) then
 				local fromData = fromInventory.items[data.fromSlot]
 				if fromData and (not fromData.metadata.container or fromData.metadata.container and toInventory.type ~= 'container') then
