@@ -15,25 +15,31 @@ export const useItemNotifications = () => {
   return itemNotificationsContext;
 };
 
-const ItemNotification = ({ item, text }: { item: string; text: string }) => {
-  return (
-    <div
-      className="item-notification"
-      style={{
-        backgroundImage: `url(${process.env.PUBLIC_URL + `/images/${item}.png`})` || 'none',
-      }}
-    >
-      <div className="item-action">{text}</div>
-      <div className="item-label">{Items[item]?.label || 'NO LABEL'}</div>
-    </div>
-  );
-};
+const ItemNotification = React.forwardRef(
+  (props: { item: string; text: string }, ref: React.ForwardedRef<HTMLDivElement>) => {
+    return (
+      <div
+        className="item-notification"
+        ref={ref}
+        style={{
+          backgroundImage: `url(${process.env.PUBLIC_URL + `/images/${props.item}.png`})` || 'none',
+        }}
+      >
+        <div className="item-action">{props.text}</div>
+        <div className="item-label">{Items[props.item]?.label || 'NO LABEL'}</div>
+      </div>
+    );
+  },
+);
 
 export const ItemNotificationsProvider = ({ children }: { children: React.ReactNode }) => {
-  const [queue, setQueue] = React.useState<{ id: number; item: string; text: string }[]>([]);
+  const [queue, setQueue] = React.useState<
+    { id: number; item: string; text: string; ref: React.RefObject<HTMLDivElement> }[]
+  >([]);
 
   const add = (item: string, text: string) => {
-    const notification = { id: Date.now(), item, text };
+    const ref = React.createRef<HTMLDivElement>();
+    const notification = { id: Date.now(), item, text, ref: ref };
 
     setQueue((prevQueue) => [notification, ...prevQueue]);
 
@@ -52,8 +58,17 @@ export const ItemNotificationsProvider = ({ children }: { children: React.ReactN
       {createPortal(
         <TransitionGroup className="item-notifications-container">
           {queue.map((notification) => (
-            <CSSTransition key={notification.id} timeout={500} classNames="item-notification">
-              <ItemNotification item={notification.item} text={notification.text} />
+            <CSSTransition
+              key={notification.id}
+              nodeRef={notification.ref}
+              timeout={500}
+              classNames="item-notification"
+            >
+              <ItemNotification
+                item={notification.item}
+                text={notification.text}
+                ref={notification.ref}
+              />
             </CSSTransition>
           ))}
         </TransitionGroup>,
