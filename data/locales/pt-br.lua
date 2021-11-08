@@ -1,9 +1,24 @@
 return {
+	-- Buttons, context menu
 	['ui_use'] = "Usar",
 	['ui_give'] = "Dar",
 	['ui_close'] = "Fechar",
 	['ui_drop'] = "Soltar",
 	['ui_removeattachments'] = "Remover acessórios",
+	-- Tooltip
+	['ui_durability'] = "Durabilidade",
+	['ui_ammo'] = "Munição",
+	['ui_serial'] = "Número de Série",
+	['ui_components'] = "Componentes",
+	['ui_tint'] = "Pintura",
+	-- Useful controls
+	['ui_usefulcontrols'] = "Controles úteis",
+	['ui_rmb'] = "Abrir o menu de contexto do item",
+	['ui_ctrl_lmb'] = "Mova rapidamente uma pilha de itens para outro inventário",
+	['ui_shift_drag'] = "Divida a quantidade do item pela metade",
+	['ui_ctrl_shift_lmb'] = "Mova rapidamente meia pilha de itens para outro inventário",
+	['ui_alt_lmb'] = "Uso rápido de um item",
+	--
 	['$'] = "R$",
 	['male'] = "Homem",
 	['female'] = "Mulher",
@@ -12,6 +27,7 @@ return {
 	['added'] = "Adcionado",
 	['holstered'] = "Armado",
 	['equipped'] = "Equipado",
+	['using'] = "Usando %s",
 	['inventory_setup'] = "O inventário está pronto para usar",
 	['inventory_player_access'] = "Você não pode abrir seu inventário agora",
 	['inventory_right_access'] = "Você não pode abrir este inventário",
