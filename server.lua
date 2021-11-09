@@ -193,7 +193,7 @@ Utils.RegisterServerCallback('ox_inventory:swapItems', function(source, cb, data
 			if fromInventory.type == 'policeevidence' and not sameInventory then
 				if not toInventory.job.name == 'police' then return cb(false) end
 				if Config.TakeFromEvidence > toInventory.job.grade then
-					TriggerClientEvent('ox_inventory:Notify', source, {type = 'error', text = ox.locale('evidence_cannot_take')})
+					TriggerClientEvent('ox_inventory:notify', source, {type = 'error', text = ox.locale('evidence_cannot_take')})
 					return cb(false)
 				end
 			end
@@ -369,11 +369,11 @@ Utils.RegisterServerCallback('ox_inventory:useItem', function(source, cb, item, 
 			if durability > 100 then
 				if os.time() > durability then
 					inventory.items[slot].metadata.durability = 0
-					TriggerClientEvent('ox_inventory:Notify', source, {type = 'error', text = ox.locale('no_durability', data.name), duration = 2500})
+					TriggerClientEvent('ox_inventory:notify', source, {type = 'error', text = ox.locale('no_durability', data.name), duration = 2500})
 					return cb(false)
 				end
 			elseif durability <= 0 then 
-				TriggerClientEvent('ox_inventory:Notify', source, {type = 'error', text = ox.locale('no_durability', data.name), duration = 2500})
+				TriggerClientEvent('ox_inventory:notify', source, {type = 'error', text = ox.locale('no_durability', data.name), duration = 2500})
 				return cb(false)
 			end
 		end
@@ -394,7 +394,7 @@ Utils.RegisterServerCallback('ox_inventory:useItem', function(source, cb, item, 
 				if item.consume and data.count >= item.consume then
 					return cb(data)
 				else
-					TriggerClientEvent('ox_inventory:Notify', source, {type = 'error', text = ox.locale('item_not_enough', item.name), duration = 2500})
+					TriggerClientEvent('ox_inventory:notify', source, {type = 'error', text = ox.locale('item_not_enough', item.name), duration = 2500})
 				end
 			end
 		end

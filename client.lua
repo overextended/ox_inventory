@@ -71,8 +71,8 @@ end
 RegisterNetEvent('ox_inventory:clearWeapons', ClearWeapons)
 
 local Notify = function(data) SendNUIMessage({ action = 'showNotif', data = data }) end
-RegisterNetEvent('ox_inventory:Notify', Notify)
-exports('Notify', Notify)
+RegisterNetEvent('ox_inventory:notify', notify)
+exports('notify', Notify)
 
 local isCuffed = false
 local CanOpenInventory = function()

@@ -16,7 +16,7 @@ end
 Item('burger', function(data, slot)
 	TriggerEvent('ox_inventory:item', data, function(data)
 		if data then
-			TriggerEvent('ox_inventory:Notify', {text = 'You ate a delicious '..data.name})
+			TriggerEvent('ox_inventory:notify', {text = 'You ate a delicious '..data.name})
 		end
 	end)
 end)
@@ -24,7 +24,7 @@ end)
 Item('water', function(data, slot)
 	TriggerEvent('ox_inventory:item', data, function(data)
 		if data then
-			TriggerEvent('ox_inventory:Notify', {text = 'You drank some refreshing '..data.name})
+			TriggerEvent('ox_inventory:notify', {text = 'You drank some refreshing '..data.name})
 		end
 	end)
 end)
@@ -32,7 +32,7 @@ end)
 Item('cola', function(data, slot)
 	TriggerEvent('ox_inventory:item', data, function(data)
 		if data then
-			TriggerEvent('ox_inventory:Notify', {text = 'You drank some delicious '..data.name})
+			TriggerEvent('ox_inventory:notify', {text = 'You drank some delicious '..data.name})
 		end
 	end)
 end)
@@ -40,7 +40,7 @@ end)
 Item('mustard', function(data, slot)
 	TriggerEvent('ox_inventory:item', data, function(data)
 		if data then
-			TriggerEvent('ox_inventory:Notify', {text = 'You.. drank '..data.name})
+			TriggerEvent('ox_inventory:notify', {text = 'You.. drank '..data.name})
 		end
 	end)
 end)
@@ -52,7 +52,7 @@ Item('bandage', function(data, slot)
 		TriggerEvent('ox_inventory:item', data, function(data)
 			if data then
 				SetEntityHealth(ESX.PlayerData.ped, math.min(maxHealth, math.floor(health + maxHealth / 16)))
-				TriggerEvent('ox_inventory:Notify', {text = 'You feel better already'})
+				TriggerEvent('ox_inventory:notify', {text = 'You feel better already'})
 			end
 		end)
 	end

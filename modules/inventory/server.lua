@@ -608,7 +608,7 @@ RegisterServerEvent('ox_inventory:giveItem', function(slot, target, count)
 				M.AddItem(toInventory, item, count, data.metadata)
 			end
 		else
-			TriggerClientEvent('ox_inventory:Notify', source, {type = 'error', text = ox.locale('cannot_give', count, data.label), duration = 2500})
+			TriggerClientEvent('ox_inventory:notify', source, {type = 'error', text = ox.locale('cannot_give', count, data.label), duration = 2500})
 		end
 	end
 end)
