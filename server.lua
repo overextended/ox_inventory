@@ -59,6 +59,7 @@ Utils.RegisterServerCallback('ox_inventory:openInventory', function(source, cb, 
 	local right = left.open and Inventory(left.open)
 
 	if right then
+		if right.open ~= source then return cb(false) end
 		right:set('open', false)
 		left:set('open', false)
 		right = nil
