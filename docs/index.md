@@ -104,7 +104,7 @@ You should read through the modules section for further information, but the fol
 		...
 		...
 		local items = Inventory.Search(source, 2, {'acetone', 'antifreeze', 'sudo'})
-		if items and inventory.acetone > 2 and inventory.antifreeze > 4 and inventory.sudo > 9 then
+		if items and items.acetone > 2 and items.antifreeze > 4 and items.sudo > 9 then
 			Inventory.RemoveItem(source, 'acetone', 3)
 			Inventory.RemoveItem(source, 'antifreeze', 5)
 			Inventory.RemoveItem(source, 'sudo', 10)
