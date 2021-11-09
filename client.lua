@@ -98,7 +98,7 @@ local currentInventory = defaultInventory
 local OpenInventory = function(inv, data)
 	if CanOpenInventory() then
 
-		if invOpen and inv == 'container' and currentInventory.id == ESX.PlayerData.inventory[data].metadata.container then
+		if invOpen and ((not inv and currentInventory.type == 'newdrop') or (inv == 'container' and currentInventory.id == ESX.PlayerData.inventory[data].metadata.container)) then
 			return TriggerEvent('ox_inventory:closeInventory')
 		end
 
