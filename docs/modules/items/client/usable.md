@@ -33,7 +33,7 @@ It is still possible to use items through ESX.RegisterUsableItem, though it is l
 				TriggerEvent('ox_inventory:item', data, function(data)
 					if data then
 						SetEntityHealth(ESX.PlayerData.ped, math.min(maxHealth, math.floor(health + maxHealth / 16)))
-						TriggerEvent('ox_inventory:Notify', {text = 'You feel better already'})
+						TriggerEvent('ox_inventory:notify', {text = 'You feel better already'})
 					end
 				end)
 			end

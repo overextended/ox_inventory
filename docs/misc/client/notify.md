@@ -8,7 +8,7 @@ Triggers the builtin notification system, utilising [react-hot-toast](https://gi
 	Notify(data)
 	```
 	```lua
-	exports.ox_inventory:Notify(data)
+	exports.ox_inventory:notify(data)
 	```
 	```lua
 	TriggerEvent('ox_inventory:notify', data)
@@ -25,5 +25,5 @@ Triggers the builtin notification system, utilising [react-hot-toast](https://gi
 
 !!! example
 	```lua
-	Notify({type = 'error', text = 'Lost access to the target inventory', duration = 2500})
+	TriggerEvent('ox_inventory:notify', {type = 'error', text = 'Lost access to the target inventory'})
 	```
