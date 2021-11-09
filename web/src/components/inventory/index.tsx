@@ -3,6 +3,7 @@ import useNuiEvent from '../../hooks/useNuiEvent';
 import InventoryGrid from './InventoryGrid';
 import InventoryControl from './InventoryControl';
 import InventoryHotbar from './InventoryHotbar';
+import ShowNearby from './ShowNearby';
 import Fade from '../utils/Fade';
 import { useAppDispatch, useAppSelector } from '../../store';
 import {
@@ -43,6 +44,7 @@ const Inventory: React.FC = () => {
         <InventoryControl />
         <InventoryGrid inventory={rightInventory} />
       </Fade>
+      <ShowNearby isInventoryOpen={inventoryVisible} />
       <InventoryHotbar items={leftInventory.items.slice(0, 5)} />
     </>
   );

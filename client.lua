@@ -790,13 +790,44 @@ RegisterNUICallback('useItem', function(slot, cb)
 	cb(1)
 end)
 
-RegisterNUICallback('giveItem', function(data, cb)
-	local closestPlayer, coords = Utils.GetClosestPlayer()
-	if closestPlayer.x < 2.5 then
-		Utils.PlayAnim(2000, 'mp_common', 'givetake1_a', 1.0, 1.0, -1, 50, 0.0, 0, 0, 0)
-		TriggerServerEvent('ox_inventory:giveItem', data.slot, GetPlayerServerId(closestPlayer.y), data.count)
-		if data.slot == currentWeapon?.slot then Disarm(-1) end
+RegisterNUICallback('getNearPlayers', function(data, cb)
+	local playerPed = PlayerPedId()
+	local players, nearbyPlayer = ESX.Game.GetPlayersInArea(GetEntityCoords(playerPed), 3.0)
+	local foundPlayers = false
+	local elements = {}
+
+	for i = 1, #players, 1 do
+		if players[i] ~= PlayerId() then
+			foundPlayers = true
+			table.insert(elements, {player = GetPlayerServerId(players[i])})
+        end
+    end
+
+	if not foundPlayers then
+		Notify({type = 'error', text = ox.locale('nobody_nearby')})
+	else
+		if #players == 1 then
+			Utils.PlayAnim(2000, 'mp_common', 'givetake1_a', 1.0, 1.0, -1, 50, 0.0, 0, 0, 0)
+			TriggerServerEvent('ox_inventory:giveItem', data.slot, elements[1].player, data.count)
+			if data.slot == currentWeapon?.slot then Disarm(-1) end
+		else
+			SendNUIMessage({
+				action = 'showNearby',
+				data = {
+					players = elements,
+					slot = data.slot,
+					count = data.count
+				}
+			})
+		end
 	end
+	cb(1)
+end)
+
+RegisterNUICallback('giveItem', function(data, cb)
+	Utils.PlayAnim(2000, 'mp_common', 'givetake1_a', 1.0, 1.0, -1, 50, 0.0, 0, 0, 0)
+	TriggerServerEvent('ox_inventory:giveItem', data.slot, data.target, data.count)
+	if data.slot == currentWeapon?.slot then Disarm(-1) end
 	cb(1)
 end)
 

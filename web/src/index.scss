@@ -194,6 +194,33 @@ img {
   }
 }
 
+.nearby-box {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background-color: rgba(12, 12, 12, 0.35);
+  border: 0.1vh solid rgba(0, 0, 0, 0.1);
+  border-radius: $borderRadius;
+  padding: 0.9vh;
+  width: 7.5vw;
+  min-height: 10vh;
+  display: grid;
+  grid-template-columns: auto auto auto;
+
+  .player-id {
+    height: fit-content;
+    text-align: center;
+    background-color: $mainColor;
+    opacity: 0.8;
+
+    &:hover {
+      background-color: $secondaryColor;
+      opacity: 0.8;
+    }
+  }
+}
+
 .misc-btns {
   position: absolute;
   bottom: 1vh;
