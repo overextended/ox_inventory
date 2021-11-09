@@ -294,6 +294,38 @@ Utils.RegisterServerCallback('ox_inventory:swapItems', function(source, cb, data
 					fromInventory.items[data.fromSlot] = fromData
 					toInventory.items[data.toSlot] = toData
 
+					if fromInventory.changed ~= nil then fromInventory.changed = true end
+					if toInventory.changed ~= nil then toInventory.changed = true end
+
+					if sameInventory and fromInventory.type == 'otherplayer' then
+						TriggerClientEvent('ox_inventory:updateInventory', fromInventory.id,{
+							{
+								item = fromInventory.items[data.toSlot] or {slot=data.toSlot},
+								inventory = fromInventory.type
+							},
+							{
+								item = fromInventory.items[data.fromSlot] or {slot=data.fromSlot},
+								inventory = fromInventory.type
+							}
+						}, {left=fromInventory.weight})
+
+					elseif toInventory.type == 'otherplayer' then
+						TriggerClientEvent('ox_inventory:updateInventory', fromInventory.id,{
+							{
+								item = toInventory.items[data.toSlot] or {slot=data.toSlot},
+								inventory = toInventory.type
+							}
+						}, {left=toInventory.weight})
+
+					elseif fromInventory.type == 'otherplayer' then
+						TriggerClientEvent('ox_inventory:updateInventory', fromInventory.id,{
+							{
+								item = fromInventory.items[data.fromSlot] or {slot=data.fromSlot},
+								inventory = fromInventory.type
+							}
+						}, {left=fromInventory.weight})
+					end
+
 					if next(items) then
 						ret = {weight=playerInventory.weight, items=items}
 						if isPlayer[fromInventory.type] then
@@ -304,15 +336,6 @@ Utils.RegisterServerCallback('ox_inventory:swapItems', function(source, cb, data
 						end
 					end
 
-					if fromInventory.changed ~= nil then fromInventory.changed = true end
-					if toInventory.changed ~= nil then toInventory.changed = true end
-
-					if not sameInventory then
-						local otherplayer = fromInventory.type == 'otherplayer' and fromInventory or toInventory.type == 'otherplayer' and toInventory
-						if otherplayer then
-							TriggerClientEvent('ox_inventory:updateInventory', otherplayer.id, {{item = otherplayer.items[data.toSlot] or {slot=data.toSlot}, inventory = otherplayer.type}, {item = otherplayer.items[data.fromSlot] or {slot=data.fromSlot}, inventory = otherplayer.type}}, {left=otherplayer.weight}--[[, item.label, removed, true]])
-						end
-					end
 					return cb(true, ret, movedWeapon and fromInventory.weapon)
 				end
 			end
@@ -372,7 +395,7 @@ Utils.RegisterServerCallback('ox_inventory:useItem', function(source, cb, item, 
 					TriggerClientEvent('ox_inventory:notify', source, {type = 'error', text = ox.locale('no_durability', data.name), duration = 2500})
 					return cb(false)
 				end
-			elseif durability <= 0 then 
+			elseif durability <= 0 then
 				TriggerClientEvent('ox_inventory:notify', source, {type = 'error', text = ox.locale('no_durability', data.name), duration = 2500})
 				return cb(false)
 			end

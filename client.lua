@@ -444,10 +444,10 @@ RegisterNetEvent('ox_inventory:closeInventory', function(options)
 	end
 end)
 
-RegisterNetEvent('ox_inventory:updateInventory', function(items, weights, name, count, removed)
+RegisterNetEvent('ox_inventory:updateInventory', function(items, weights, count, removed)
 	local itemName = items[1].item.name
 	-- have to send name through items data but if it doesn't have the label data then it's not the last item
-	if not items[1].item.label then items[1].item.name = nil end 
+	if not items[1].item.label then items[1].item.name = nil end
 	SendNUIMessage({ action = 'refreshSlots', data = items })
 	if count then ItemNotify({text = ox.locale(removed and 'removed' or 'added', count), item = itemName}) end
 	for i=1, #items do
