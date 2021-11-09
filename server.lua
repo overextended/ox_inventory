@@ -310,7 +310,7 @@ Utils.RegisterServerCallback('ox_inventory:swapItems', function(source, cb, data
 						}, {left=fromInventory.weight})
 
 					elseif toInventory.type == 'otherplayer' then
-						TriggerClientEvent('ox_inventory:updateInventory', fromInventory.id,{
+						TriggerClientEvent('ox_inventory:updateInventory', toInventory.id,{
 							{
 								item = toInventory.items[data.toSlot] or {slot=data.toSlot},
 								inventory = toInventory.type
