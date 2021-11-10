@@ -75,16 +75,23 @@ Utils.RegisterServerCallback('ox_inventory:buyItem', function(source, cb, data)
 				elseif data.count > fromData.count then
 					data.count = fromData.count
 				end
+
 			elseif fromData.license and not exports.oxmysql:scalarSync('SELECT 1 FROM user_licenses WHERE type = ? AND owner = ?', { fromData.license, player.owner }) then
 				return cb(false, nil, {type = 'error', text = ox.locale('item_unlicensed')})
+
 			elseif fromData.grade and xPlayer.job.grade < fromData.grade then
 				return cb(false, nil, {type = 'error', text = ox.locale('stash_lowgrade')})
 			end
+
+			local result = Items[fromItem.name] and Items[fromItem.name](fromData.name, 'buying', player, data.fromSlot, shop)
+			if result == false then return cb(false) end
+
 			local currency = fromData.currency or 'money'
 			local fromItem = Items(fromData.name)
 			local toItem = toData and Items(toData.name)
 			local metadata, count = Items.Metadata(xPlayer, fromItem, fromData.metadata and table.clone(fromData.metadata) or {}, data.count)
 			local price = count * fromData.price
+
 			if toData == nil or (fromItem.name == toItem.name and fromItem.stack and Utils.MatchTables(toData.metadata, metadata)) then
 				local canAfford = Inventory.GetItem(source, currency, false, true) >= price
 				if canAfford then

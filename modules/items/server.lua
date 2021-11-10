@@ -197,7 +197,7 @@ CreateThread(function() Inventory = exports[ox.name]:Inventory() end)
 -- Serverside item functions
 -----------------------------------------------------------------------------------------------
 
-Item('burger', function(item, event, inventory, slot)
+Item('testburger', function(item, event, inventory, slot, data)
 	if event == 'usingItem' then
 		if Inventory.GetItem(inventory, item, inventory.items[slot].metadata, true) > 100 then
 			return {
@@ -209,6 +209,9 @@ Item('burger', function(item, event, inventory, slot)
 	elseif event == 'usedItem' then
 		print(('%s just ate a %s from slot %s'):format(inventory.label, item.label, slot))
 		TriggerClientEvent('ox_inventory:notify', inventory.id, {text = item.server.test})
+
+	elseif event == 'buying' then
+		print(data.id, data.coords, json.encode(data.items[slot], {indent=true}))
 	end
 end)
 

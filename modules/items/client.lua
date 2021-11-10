@@ -20,6 +20,14 @@ end
 Item('burger', function(data, slot)
 	TriggerEvent('ox_inventory:item', data, function(data)
 		if data then
+			TriggerEvent('ox_inventory:notify', {text = 'You ate a delicious '..data.name})
+		end
+	end)
+end)
+
+Item('testburger', function(data, slot)
+	TriggerEvent('ox_inventory:item', data, function(data)
+		if data then
 			if data.server then print(json.encode(data.server, {indent=true})) end
 			TriggerEvent('ox_inventory:notify', {text = 'You ate a delicious '..data.name})
 		end
