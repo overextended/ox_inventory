@@ -1,5 +1,5 @@
 local M = {}
-local Items <const> = module('items', true)[1]
+local Items <const> = include('items', true)[1]
 
 local GetItem = function(item)
 	local type

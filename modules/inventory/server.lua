@@ -1,8 +1,8 @@
 local M = {}
 local Inventories = {}
-local Utils <const> = module('utils')
-local Items <const> = module('items')
-local Log <const> = module('logs')
+local Utils <const> = include 'utils'
+local Items <const> = include 'items'
+local Log <const> = include 'logs'
 
 setmetatable(M, {
 	__call = function(self, arg)

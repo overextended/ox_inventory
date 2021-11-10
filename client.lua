@@ -1,13 +1,13 @@
-local Vehicles <const> = data('vehicles')
-local Licenses <const> = data('licenses')
-local Items <const>, Weapons <const> = table.unpack(module('items'))
-local Utils <const> = module('utils')
-local Progress <const> = module('progress')
-local Shops <const> = module('shops')
-local Stashes <const> = module('stashes')
-local Evidence <const> = module('evidence')
-local Inventory <const> = module('inventory')
-local Keyboard <const> = module('input')
+local Vehicles <const> = data 'vehicles'
+local Licenses <const> = data 'licenses'
+local Items <const>, Weapons <const> = table.unpack(include 'items')
+local Utils <const> = include 'utils'
+local Progress <const> = include 'progress'
+local Shops <const> = include 'shops'
+local Stashes <const> = include 'stashes'
+local Evidence <const> = include 'evidence'
+local Inventory <const> = include 'inventory'
+local Keyboard <const> = include 'input'
 local invOpen, playerId, currentWeapon
 local isBusy = true
 local plyState = LocalPlayer.state

@@ -1,5 +1,5 @@
 local ServerCallbacks = {}
-local M = module('utils', true)
+local M = include('utils', true)
 
 local CallbackTimer = function(event, delay)
 	local time = GetGameTimer()

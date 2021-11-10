@@ -1,4 +1,4 @@
-local Items = module('items')
+local Items = include 'items'
 
 --[[
 	You should remove this file from fxmanifest.lua if it is not required

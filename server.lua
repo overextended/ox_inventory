@@ -1,11 +1,11 @@
-local Stashes <const> = data('stashes')
-local Vehicle <const> = data('vehicles')
-local Licenses <const> = data('licenses')
-local Shops <const> = module('shops')
-local Items <const> = module('items')
-local Utils <const> = module('utils')
-local Inventory <const> = module('inventory')
-local Log <const> = module('logs')
+local Stashes <const> = data 'stashes'
+local Vehicle <const> = data 'vehicles'
+local Licenses <const> = data 'licenses'
+local Shops <const> = include 'shops'
+local Items <const> = include 'items'
+local Utils <const> = include 'utils'
+local Inventory <const> = include 'inventory'
+local Log <const> = include 'logs'
 
 RegisterServerEvent('ox_inventory:requestPlayerInventory', function()
 	local xPlayer = ESX.GetPlayerFromId(source)

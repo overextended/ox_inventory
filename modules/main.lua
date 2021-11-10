@@ -5,7 +5,7 @@ data = function(name)
 end
 
 local Modules = {}
-module = function(name, shared)
+include = function(name, shared)
 	if not Modules[name] then
 		local path = ('modules/%s/%s'):format(name, shared and 'shared.lua' or ox.server and 'server.lua' or 'client.lua')
 		local func, err = load(LoadResourceFile(ox.name, path), '@@'..path, 't')

@@ -1,4 +1,4 @@
-local M = module('utils', true)
+local M = include('utils', true)
 
 local ServerCallbacks = {}
 

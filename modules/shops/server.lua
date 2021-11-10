@@ -1,6 +1,6 @@
-local Items <const> = module('items')
-local Inventory <const> = module('inventory')
-local Utils <const> = module('utils')
+local Items <const> = include 'items'
+local Inventory <const> = include 'inventory'
+local Utils <const> = include 'utils'
 
 local M = {}
 
@@ -58,7 +58,7 @@ Utils.RegisterServerCallback('ox_inventory:openShop', function(source, cb, data)
 	cb({id=left.label, type=left.type, slots=left.slots, weight=left.weight, maxWeight=left.maxWeight}, shop)
 end)
 
-local Log <const> = module('logs')
+local Log <const> = include 'logs'
 Utils.RegisterServerCallback('ox_inventory:buyItem', function(source, cb, data)
 	if data.toType == 'player' then
 		if data.count == nil then data.count = 1 end

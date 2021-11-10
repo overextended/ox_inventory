@@ -1,5 +1,5 @@
-local M = data('evidence')
-local Keyboard = module('input')
+local M = data 'evidence'
+local Keyboard = include 'input'
 
 setmetatable(M, {
     __call = function()

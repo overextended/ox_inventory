@@ -1,4 +1,4 @@
-local M = module('items', true)
+local M = include('items', true)
 
 local GetItem = function(item)
 	if item then
