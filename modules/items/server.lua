@@ -192,7 +192,7 @@ end
 
 ---@module 'modules.inventory.server'
 local Inventory
-CreateThread(function() Inventory = exports[ox.name]:Inventory() end)
+CreateThread(function() Inventory = include 'inventory' end)
 -----------------------------------------------------------------------------------------------
 -- Serverside item functions
 -----------------------------------------------------------------------------------------------
