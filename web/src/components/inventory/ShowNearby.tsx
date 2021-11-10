@@ -3,26 +3,26 @@ import useNuiEvent from '../../hooks/useNuiEvent';
 import { giveTo } from '../../dnd/onGive';
 import { useExitListener } from '../../hooks/useExitListener';
 
-interface Player {
-  player: number;
+interface GiveData {
+  players: Array<number>;
+  slot: number;
+  count: number;
 }
 
 const ShowNearby: React.FC<{ isInventoryOpen: boolean }> = ({ isInventoryOpen }) => {
   const [nearbyVisible, setNearbyVisible] = useState(false);
-  const [nearbyPlayers, setNearbyPlayers] = useState([]);
-  const [currentSlot, setSlot] = useState(0);
-  const [currentAmount, setAmount] = useState(0);
+  const [giveData, setGiveData] = useState<GiveData>({
+    players: [],
+    slot: 0,
+    count: 0,
+  });
 
   useNuiEvent('showNearby', (data) => {
     if (nearbyVisible) {
-      setNearbyPlayers([]);
-      setSlot(0);
-      setAmount(0);
+      setGiveData({ players: [], slot: 0, count: 0 });
       setNearbyVisible(false);
     } else {
-      setNearbyPlayers(data.players);
-      setSlot(data.slot);
-      setAmount(data.count);
+      setGiveData({ players: data.players, slot: data.slot, count: data.count });
       setNearbyVisible(true);
     }
   });
@@ -30,9 +30,7 @@ const ShowNearby: React.FC<{ isInventoryOpen: boolean }> = ({ isInventoryOpen })
   useExitListener(setNearbyVisible);
 
   const closeNearbyMenu = () => {
-    setNearbyPlayers([]);
-    setSlot(0);
-    setAmount(0);
+    setGiveData({ players: [], slot: 0, count: 0 });
     setNearbyVisible(false);
   };
 
@@ -40,8 +38,8 @@ const ShowNearby: React.FC<{ isInventoryOpen: boolean }> = ({ isInventoryOpen })
     closeNearbyMenu();
     giveTo({
       target: player,
-      slot: currentSlot,
-      count: currentAmount,
+      slot: giveData.slot,
+      count: giveData.count,
     });
   };
 
@@ -50,10 +48,10 @@ const ShowNearby: React.FC<{ isInventoryOpen: boolean }> = ({ isInventoryOpen })
       {isInventoryOpen && (
         <div className="center-wrapper">
           <div className="nearby-box" style={{ visibility: nearbyVisible ? 'visible' : 'hidden' }}>
-            {nearbyPlayers.map((player: Player) => {
+            {giveData.players.map((player) => {
               return (
-                <div className="player-id" onClick={() => triggerGiveTo(player.player)}>
-                  {player.player}
+                <div className="player-id" onClick={() => triggerGiveTo(player)}>
+                  {player}
                 </div>
               );
             })}

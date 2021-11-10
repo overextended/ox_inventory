@@ -799,7 +799,7 @@ RegisterNUICallback('getNearPlayers', function(data, cb)
 	for i = 1, #players, 1 do
 		if players[i] ~= PlayerId() then
 			foundPlayers = true
-			table.insert(elements, {player = GetPlayerServerId(players[i])})
+			table.insert(elements, GetPlayerServerId(players[i]))
         end
     end
 
@@ -808,7 +808,7 @@ RegisterNUICallback('getNearPlayers', function(data, cb)
 	else
 		if #players == 1 then
 			Utils.PlayAnim(2000, 'mp_common', 'givetake1_a', 1.0, 1.0, -1, 50, 0.0, 0, 0, 0)
-			TriggerServerEvent('ox_inventory:giveItem', data.slot, elements[1].player, data.count)
+			TriggerServerEvent('ox_inventory:giveItem', data.slot, elements[1], data.count)
 			if data.slot == currentWeapon?.slot then Disarm(-1) end
 		else
 			SendNUIMessage({
