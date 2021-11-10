@@ -95,6 +95,20 @@ local defaultInventory <const> = {
 }
 local currentInventory = defaultInventory
 
+local CloseTrunk = function()
+	if currentInventory?.type == 'trunk' then
+		local entity = currentInventory.entity
+		local door = currentInventory.door
+		local coords = GetEntityCoords(ESX.PlayerData.ped, true)
+		Utils.PlayAnimAdvanced(900, 'anim@heists@fleeca_bank@scope_out@return_case', 'trevor_action', coords.x, coords.y, coords.z, 0.0, 0.0, GetEntityHeading(ESX.PlayerData.ped), 2.0, 2.0, 1000, 49, 0.25)
+		CreateThread(function()
+			local entity, door = entity, door
+			Wait(900)
+			SetVehicleDoorShut(entity, door, false)
+		end)
+	end
+end
+
 local OpenInventory = function(inv, data)
 	if CanOpenInventory() then
 
@@ -134,6 +148,7 @@ local OpenInventory = function(inv, data)
 			SetNuiFocus(true, true)
 			SetNuiFocusKeepInput(true)
 			if Config.EnableBlur then TriggerScreenblurFadeIn(0) end
+			CloseTrunk()
 			currentInventory = right or defaultInventory
 			left.items = ESX.PlayerData.inventory
 			SendNUIMessage({
@@ -311,7 +326,6 @@ local RegisterCommands = function()
 	RegisterCommand('inv2', function()
 		if not invOpen then
 			if isBusy then return Notify({type = 'error', text = ox.locale('inventory_player_access'), duration = 2500})
-			elseif currentInventory then TriggerEvent('ox_inventory:closeInventory')
 			else
 				if not CanOpenInventory() then return Notify({type = 'error', text = ox.locale('inventory_player_access'), duration = 2500}) end
 				if IsPedInAnyVehicle(ESX.PlayerData.ped, false) then
@@ -429,15 +443,7 @@ RegisterNetEvent('ox_inventory:closeInventory', function(options)
 		SetNuiFocus(false, false)
 		SetNuiFocusKeepInput(false)
 		TriggerScreenblurFadeOut(0)
-		if currentInventory and currentInventory.type == 'trunk' then
-			local coords = GetEntityCoords(ESX.PlayerData.ped, true)
-			Utils.PlayAnimAdvanced(900, 'anim@heists@fleeca_bank@scope_out@return_case', 'trevor_action', coords.x, coords.y, coords.z, 0.0, 0.0, GetEntityHeading(ESX.PlayerData.ped), 2.0, 2.0, 1000, 49, 0.25)
-			CreateThread(function()
-				local entity, door = currentInventory.entity, currentInventory.door
-				Wait(900)
-				SetVehicleDoorShut(entity, door, false)
-			end)
-		end
+		CloseTrunk()
 		SendNUIMessage({ action = 'closeInventory' })
 		SetInterval(1, 200)
 		Wait(200)
