@@ -416,7 +416,7 @@ Utils.RegisterServerCallback('ox_inventory:useItem', function(source, cb, item, 
 				ESX.UseItem(source, item.name)
 			else
 				if item.consume and data.count >= item.consume then
-					local result = Items[data.name] and Items[data.name](item, 'usingItem', inventory, slot)
+					local result = Items[data.name] and Items[data.name]('usingItem', item, inventory, slot)
 					if result == false then return cb(false) end
 					if result ~= nil then
 						data.server = result

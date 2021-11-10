@@ -83,7 +83,7 @@ Utils.RegisterServerCallback('ox_inventory:buyItem', function(source, cb, data)
 				return cb(false, nil, {type = 'error', text = ox.locale('stash_lowgrade')})
 			end
 
-			local result = Items[fromItem.name] and Items[fromItem.name](fromData.name, 'buying', player, data.fromSlot, shop)
+			local result = Items[fromItem.name] and Items[fromItem.name]('buying', fromData.name, player, data.fromSlot, shop)
 			if result == false then return cb(false) end
 
 			local currency = fromData.currency or 'money'
