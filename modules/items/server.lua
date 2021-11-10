@@ -186,5 +186,21 @@ M.Metadata = function(xPlayer, item, metadata, count)
 	return metadata, count
 end
 
+local Item = function(name, cb)
+	if Items[name] then M[name] = cb end
+end
+
+-----------------------------------------------------------------------------------------------
+-- Serverside item functions
+-----------------------------------------------------------------------------------------------
+
+Item('burger', function(item, on, inventory, slot)
+	if on == 'use' then
+		print(('%s just ate a %s from slot %s'):format(inventory.label, item.label, slot))
+		TriggerClientEvent('ox_inventory:notify', inventory.id, {text = item.server.test})
+	end
+end)
+
+-----------------------------------------------------------------------------------------------
 exports('Items', GetItem)
 return M

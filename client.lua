@@ -71,7 +71,7 @@ end
 RegisterNetEvent('ox_inventory:clearWeapons', ClearWeapons)
 
 local Notify = function(data) SendNUIMessage({ action = 'showNotif', data = data }) end
-RegisterNetEvent('ox_inventory:notify', notify)
+RegisterNetEvent('ox_inventory:notify', Notify)
 exports('notify', Notify)
 
 local isCuffed = false
@@ -727,7 +727,7 @@ AddEventHandler('ox_inventory:item', function(data, cb)
 			else used = true end
 			while used == nil do Wait(data.usetime/2) end
 			if used then
-				if result.consume and result.consume ~= 0 then TriggerServerEvent('ox_inventory:removeItem', result.name, result.consume, result.metadata, result.slot) end
+				if result.consume and result.consume ~= 0 then TriggerServerEvent('ox_inventory:removeItem', result.name, result.consume, result.metadata, result.slot, true) end
 				if data.status then
 					for k, v in pairs(data.status) do
 						if v > 0 then TriggerEvent('esx_status:add', k, v) else TriggerEvent('esx_status:remove', k, -v) end

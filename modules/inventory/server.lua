@@ -537,13 +537,21 @@ M.CanSwapItem = function(inv, firstItem, firstItemCount, testItem, testItemCount
 	return false
 end
 
-RegisterServerEvent('ox_inventory:removeItem', function(item, count, metadata, slot)
+RegisterServerEvent('ox_inventory:removeItem', function(name, count, metadata, slot, used)
 	local inventory = Inventories[source]
-	if inventory.items[slot].name == item and inventory.items[slot].name:find('at_') and inventory.weapon then
+
+	if inventory.items[slot].name == name and inventory.items[slot].name:find('at_') and inventory.weapon then
 		local weapon = inventory.items[inventory.weapon]
 		table.insert(weapon.metadata.components, item)
 	end
-	M.RemoveItem(source, item, count, metadata, slot)
+
+	M.RemoveItem(source, name, count, metadata, slot)
+
+	if used then
+		if Items[name] then
+			Items[name](Items(name), 'use', inventory, slot)
+		end
+	end
 end)
 
 local GenerateDropId = function()

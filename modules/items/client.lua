@@ -13,6 +13,10 @@ local Item = function(name, cb)
 	if M[1][name] then M[1][name].effect = cb end
 end
 
+-----------------------------------------------------------------------------------------------
+-- Clientside item use functions
+-----------------------------------------------------------------------------------------------
+
 Item('burger', function(data, slot)
 	TriggerEvent('ox_inventory:item', data, function(data)
 		if data then
@@ -87,6 +91,8 @@ Item('parachute', function(data, slot)
 		end)
 	end
 end)
+
+-----------------------------------------------------------------------------------------------
 
 exports('Items', GetItem)
 return M
