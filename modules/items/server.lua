@@ -190,17 +190,29 @@ local Item = function(name, cb)
 	if Items[name] then M[name] = cb end
 end
 
+---@module 'modules.inventory.server'
+local Inventory
+CreateThread(function() Inventory = exports[ox.name]:Inventory() end)
 -----------------------------------------------------------------------------------------------
 -- Serverside item functions
 -----------------------------------------------------------------------------------------------
 
-Item('burger', function(item, on, inventory, slot)
-	if on == 'use' then
+Item('burger', function(item, event, inventory, slot)
+	if event == 'usingItem' then
+		if Inventory.GetItem(inventory, item, inventory.items[slot].metadata, true) > 100 then
+			return {
+				inventory.label, inventory.owner, event,
+				'so many delicious burgers'
+			}
+		end
+
+	elseif event == 'usedItem' then
 		print(('%s just ate a %s from slot %s'):format(inventory.label, item.label, slot))
 		TriggerClientEvent('ox_inventory:notify', inventory.id, {text = item.server.test})
 	end
 end)
 
 -----------------------------------------------------------------------------------------------
+
 exports('Items', GetItem)
 return M

@@ -549,7 +549,7 @@ RegisterServerEvent('ox_inventory:removeItem', function(name, count, metadata, s
 
 	if used then
 		if Items[name] then
-			Items[name](Items(name), 'use', inventory, slot)
+			Items[name](Items(name), 'usedItem', inventory, slot)
 		end
 	end
 end)
