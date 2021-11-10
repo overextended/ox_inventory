@@ -39,7 +39,9 @@ for shopName, shopDetails in pairs(data('shops')) do
 	end
 end
 
-Utils.RegisterServerCallback('ox_inventory:openShop', function(source, cb, data)
+local ServerCallback = import 'callbacks'
+
+ServerCallback.Register('ox_inventory:openShop', function(source, cb, data)
 	local left, shop = Inventory(source)
 	if data then
 		shop = M[data.type][data.id]
@@ -59,7 +61,7 @@ Utils.RegisterServerCallback('ox_inventory:openShop', function(source, cb, data)
 end)
 
 local Log <const> = include 'logs'
-Utils.RegisterServerCallback('ox_inventory:buyItem', function(source, cb, data)
+ServerCallback.Register('ox_inventory:buyItem', function(source, cb, data)
 	if data.toType == 'player' then
 		if data.count == nil then data.count = 1 end
 		local player = Inventory(source)

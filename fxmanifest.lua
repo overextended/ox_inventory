@@ -14,10 +14,12 @@ description  'local function ReleaseDate() local soon_tm = promise.new(); Citize
 --[[ Manifest ]]--
 dependencies {
 	'es_extended',
-	'oxmysql'
+	'oxmysql',
+	'pe-lualib'
 }
 
 shared_scripts {
+	'@pe-lualib/init.lua',
 	'@es_extended/imports.lua',
 	'config.lua',
 	'modules/*.lua'
