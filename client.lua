@@ -129,6 +129,7 @@ local OpenInventory = function(inv, data)
 				Utils.PlayAnim(1000, 'pickup_object', 'putdown_low', 5.0, 1.5, -1, 48, 0.0, 0, 0, 0)
 			end
 			invOpen = true
+			plyState:set('invOpen', true, false)
 			SetInterval(1, 100)
 			SetNuiFocus(true, true)
 			SetNuiFocusKeepInput(true)
@@ -424,6 +425,7 @@ end
 
 RegisterNetEvent('ox_inventory:closeInventory', function(options)
 	if invOpen then invOpen = nil
+		plyState:set('invOpen', false, false)
 		SetNuiFocus(false, false)
 		SetNuiFocusKeepInput(false)
 		TriggerScreenblurFadeOut(0)
