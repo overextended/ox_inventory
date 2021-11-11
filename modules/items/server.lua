@@ -23,7 +23,7 @@ setmetatable(M, {
 CreateThread(function()
 	local OneSync = GetConvar('onesync_enabled', false) == 'true'
 	local Infinity = GetConvar('onesync_enableInfinity', false) == 'true'
-	if not OneSync and not Infinity then return ox.error('OneSync is not enabled on this server - refer to the documentation')
+	if not OneSync and not Infinity then return error('OneSync is not enabled on this server - refer to the documentation')
 	elseif Infinity then ox.info('Server is running OneSync Infinity') else ox.info('Server is running OneSync Legacy') end
 	local items = exports.oxmysql:fetchSync('SELECT * FROM items')
 	if items then
