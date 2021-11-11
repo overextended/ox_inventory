@@ -5,10 +5,10 @@ local canCancel, anim, scenario, progressCallback = false, false, false, nil
 local prop = table.create(2, 0)
 
 local PlayerReset = function()
-    if anim or scenario then
-        ClearPedTasks(ESX.PlayerData.ped)
+	if anim or scenario then
+		ClearPedTasks(ESX.PlayerData.ped)
 		table.wipe(Disable)
-    end
+	end
 	for i=1, #prop do
 		local entity = NetToObj(prop[i])
 		DetachEntity(entity, 1, 1)
@@ -103,14 +103,14 @@ exports('CancelProgress', Cancelled)
 exports('ProgressActive', function() return Active end)
 
 RegisterNUICallback('progressComplete', function(data, cb)
-    Completed()
+	Completed()
 	cb(1)
 end)
 
 RegisterCommand('cancelprogress', function()
-    if Active and canCancel then
-        Cancelled()
-    end
+	if Active and canCancel then
+		Cancelled()
+	end
 end)
 
 RegisterKeyMapping('cancelprogress', 'Cancel current progress bar', 'keyboard', 'x')

@@ -505,21 +505,21 @@ RegisterNetEvent('ox_inventory:setPlayerInventory', function(drops, inventory, w
 	Drops, ESX.PlayerData.inventory = drops, inventory
 	ESX.SetPlayerData('inventory', ESX.PlayerData.inventory)
 	ESX.SetPlayerData('weight', weight)
-    local ItemData = table.create(0, #Items)
-    for _, v in pairs(Items) do
+	local ItemData = table.create(0, #Items)
+	for _, v in pairs(Items) do
 		v.usable = (v.client and next(v.client) or v.consume == 0 or esxItem[v.name] or v.name:find('WEAPON_') or v.name:find('ammo-') or v.name:find('at_')) and true or false
-        ItemData[v.name] = {
-            label = v.label,
-            usable = v.usable,
-            stack = v.stack,
-            close = v.close,
+		ItemData[v.name] = {
+			label = v.label,
+			usable = v.usable,
+			stack = v.stack,
+			close = v.close,
 			description = v.description
-        }
-    end
+		}
+	end
 	local locales = {}
 	for k, v in pairs(ox.locale()) do if k:find('ui_') then locales[k] = v end end
 	while not uiLoaded do Wait(0) end
-    SendNUIMessage({
+	SendNUIMessage({
 		action = 'init',
 		data = {
 			sentry = Config.Sentry,
