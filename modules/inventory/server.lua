@@ -722,7 +722,7 @@ RegisterServerEvent('ox_inventory:updateWeapon', function(action, value, slot)
 				M.AddItem(inventory, weapon.metadata.components[value], 1)
 				table.remove(weapon.metadata.components, value)
 			elseif type == 'string' then
-				table.insert(weapon.metadata.components, component)
+				table.insert(weapon.metadata.components, value)
 			end
 			syncInventory = true
 		elseif action == 'ammo' then
