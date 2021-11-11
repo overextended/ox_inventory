@@ -42,7 +42,7 @@ CreateThread(function()
 			query = table.concat(query, ' ')
 			local sql = LoadResourceFile(ox.name, 'setup/dump.sql')
 			if not sql then error('Unable to load "setup/dump.sql', 1) end
-			local file = {LoadResourceFile(ox.name, 'data/items.lua')}
+			local file = {string.strtrim(LoadResourceFile(ox.name, 'data/items.lua'))}
 			file[1] = file[1]:gsub('}$', '')
 			local dump = {}
 local itemFormat = [[
