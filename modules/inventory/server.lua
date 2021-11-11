@@ -267,7 +267,7 @@ M.Load = function(id, invType, owner)
 	return returnData, weight, datastore
 end
 
-local Utils <const> = include 'utils'
+local table = import 'table'
 
 ---@param inv any
 ---@param item table|string
@@ -283,7 +283,7 @@ M.GetItem = function(inv, item, metadata, returnsCount)
 		if inv then
 			metadata = not metadata and false or type(metadata) == 'string' and {type=metadata} or metadata
 			for _, v in pairs(inv.items) do
-				if v and v.name == item.name and (not metadata or Utils.TableContains(v.metadata, metadata)) then
+				if v and v.name == item.name and (not metadata or table.contains(v.metadata, metadata)) then
 					count += v.count
 				end
 			end
@@ -366,7 +366,7 @@ M.AddItem = function(inv, item, count, metadata, slot)
 		local existing = false
 		if slot then
 			local slotItem = inv.items[slot]
-			if not slotItem or item.stack and slotItem and slotItem.name == item.name and Utils.MatchTables(slotItem.metadata, metadata) then
+			if not slotItem or item.stack and slotItem and slotItem.name == item.name and table.matches(slotItem.metadata, metadata) then
 				existing = nil
 			end
 		end
@@ -374,7 +374,7 @@ M.AddItem = function(inv, item, count, metadata, slot)
 			local items, toSlot = inv.items, nil
 			for i=1, Config.PlayerSlots do
 				local slotItem = items[i]
-				if item.stack and slotItem ~= nil and slotItem.name == item.name and Utils.MatchTables(slotItem.metadata, metadata) then
+				if item.stack and slotItem ~= nil and slotItem.name == item.name and table.matches(slotItem.metadata, metadata) then
 					toSlot, existing = i, true break
 				elseif not toSlot and slotItem == nil then
 					toSlot = i
@@ -410,7 +410,7 @@ M.Search = function(inv, search, item, metadata)
 			for _, v in pairs(inv) do
 				if v.name == item then
 					if not v.metadata then v.metadata = {} end
-					if not metadata or Utils.TableContains(v.metadata, metadata) then
+					if not metadata or table.contains(v.metadata, metadata) then
 						if search == 1 then returnData[item][#returnData[item]+1] = inv[v.slot]
 						elseif search == 2 then
 							returnData[item] += v.count
@@ -436,7 +436,7 @@ local GetItemSlots = function(inv, item, metadata)
 			if metadata and v.metadata == nil then
 				v.metadata = {}
 			end
-			if not metadata or Utils.MatchTables(v.metadata, metadata) then
+			if not metadata or table.matches(v.metadata, metadata) then
 				totalCount = totalCount + v.count
 				slots[k] = v.count
 			end

@@ -1,6 +1,5 @@
 local Items <const> = include 'items'
 local Inventory <const> = include 'inventory'
-local Utils <const> = include 'utils'
 
 local M = {}
 
@@ -60,6 +59,8 @@ ServerCallback.Register('ox_inventory:openShop', function(source, cb, data)
 	cb({id=left.label, type=left.type, slots=left.slots, weight=left.weight, maxWeight=left.maxWeight}, shop)
 end)
 
+local table = import 'table'
+
 local Log <const> = include 'logs'
 ServerCallback.Register('ox_inventory:buyItem', function(source, cb, data)
 	if data.toType == 'player' then
@@ -95,7 +96,7 @@ ServerCallback.Register('ox_inventory:buyItem', function(source, cb, data)
 			local metadata, count = Items.Metadata(xPlayer, fromItem, fromData.metadata and table.clone(fromData.metadata) or {}, data.count)
 			local price = count * fromData.price
 
-			if toData == nil or (fromItem.name == toItem.name and fromItem.stack and Utils.MatchTables(toData.metadata, metadata)) then
+			if toData == nil or (fromItem.name == toItem.name and fromItem.stack and table.matches(toData.metadata, metadata)) then
 				local canAfford = Inventory.GetItem(source, currency, false, true) >= price
 				if canAfford then
 					local newWeight = player.weight + (fromItem.weight + (metadata?.weight or 0)) * count

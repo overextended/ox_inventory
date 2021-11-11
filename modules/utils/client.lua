@@ -1,4 +1,4 @@
-local M = include('utils', true)
+local M = {}
 
 M.PlayAnim = function(wait, dict, name, blendIn, blendOut, duration, flag, rate, lockX, lockY, lockZ)
 	RequestAnimDict(dict)

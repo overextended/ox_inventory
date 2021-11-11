@@ -3,7 +3,6 @@ local Vehicle <const> = data 'vehicles'
 local Licenses <const> = data 'licenses'
 local Shops <const> = include 'shops'
 local Items <const> = include 'items'
-local Utils <const> = include 'utils'
 local Inventory <const> = include 'inventory'
 local Log <const> = include 'logs'
 
@@ -152,6 +151,8 @@ ServerCallback.Register('ox_inventory:openInventory', function(source, cb, inv, 
 	cb({id=left.label, type=left.type, slots=left.slots, weight=left.weight, maxWeight=left.maxWeight}, right)
 end)
 
+local table = import 'table'
+
 local isPlayer = {.player, .otherplayer}
 ServerCallback.Register('ox_inventory:swapItems', function(source, cb, data)
 	-- todo: refactor and setup some helper functions; should also move into inventory module
@@ -217,7 +218,7 @@ ServerCallback.Register('ox_inventory:swapItems', function(source, cb, data)
 						TriggerClientEvent('ox_inventory:disarm', fromInventory.id, -1)
 					end
 
-					if toData and ((toData.name ~= fromData.name) or not toData.stack or (not Utils.MatchTables(toData.metadata, fromData.metadata))) then
+					if toData and ((toData.name ~= fromData.name) or not toData.stack or (not table.matches(toData.metadata, fromData.metadata))) then
 						-- Swap items
 						local toWeight = not sameInventory and (toInventory.weight - toData.weight + fromData.weight)
 						local fromWeight = not sameInventory and (fromInventory.weight + toData.weight - fromData.weight)
@@ -237,7 +238,7 @@ ServerCallback.Register('ox_inventory:swapItems', function(source, cb, data)
 							else return cb(false) end
 						else toData, fromData = Inventory.SwapSlots(fromInventory, toInventory, data.fromSlot, data.toSlot) end
 
-					elseif toData and toData.name == fromData.name and Utils.MatchTables(toData.metadata, fromData.metadata) then
+					elseif toData and toData.name == fromData.name and table.matches(toData.metadata, fromData.metadata) then
 						-- Stack items
 						toData.count = toData.count + data.count
 						local weight = Inventory.SlotWeight(Items(toData.name), toData)
