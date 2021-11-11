@@ -196,7 +196,7 @@ CreateThread(function() Inventory = include 'inventory' end)
 -- Serverside item functions
 -----------------------------------------------------------------------------------------------
 
-Item('testburger', function(item, event, inventory, slot, data)
+Item('testburger', function(event, item, inventory, slot, data)
 	if event == 'usingItem' then
 		if Inventory.GetItem(inventory, item, inventory.items[slot].metadata, true) > 100 then
 			return {
