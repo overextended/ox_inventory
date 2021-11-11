@@ -499,7 +499,7 @@ RegisterNetEvent('ox_inventory:removeDrop', function(id)
 	nearbyMarkers['drop'..id] = nil
 end)
 
-RegisterNetEvent('ox_inventory:setPlayerInventory', function(drops, inventory, weight, esxitem, label)
+RegisterNetEvent('ox_inventory:setPlayerInventory', function(drops, inventory, weight, esxItem, label)
 	playerId, ESX.PlayerData.ped, invOpen, isCuffed, currentWeapon = GetPlayerServerId(PlayerId()), ESX.PlayerData.ped, false, false, nil
 	ClearWeapons()
 	Drops, ESX.PlayerData.inventory = drops, inventory
@@ -507,7 +507,7 @@ RegisterNetEvent('ox_inventory:setPlayerInventory', function(drops, inventory, w
 	ESX.SetPlayerData('weight', weight)
     local ItemData = table.create(0, #Items)
     for _, v in pairs(Items) do
-		v.usable = (v.client and next(v.client) or v.consume == 0 or esxitem[v.name] or v.name:find('WEAPON_') or v.name:find('ammo-') or v.name:find('at_')) and true or false
+		v.usable = (v.client and next(v.client) or v.consume == 0 or esxItem[v.name] or v.name:find('WEAPON_') or v.name:find('ammo-') or v.name:find('at_')) and true or false
         ItemData[v.name] = {
             label = v.label,
             usable = v.usable,
@@ -518,6 +518,7 @@ RegisterNetEvent('ox_inventory:setPlayerInventory', function(drops, inventory, w
     end
 	local locales = {}
 	for k, v in pairs(ox.locale()) do if k:find('ui_') then locales[k] = v end end
+	while not uiLoaded do Wait(0) end
     SendNUIMessage({
 		action = 'init',
 		data = {
@@ -776,7 +777,10 @@ RegisterNetEvent('esx_policejob:unrestrain', function()
 	TriggerEvent('ox_inventory:closeInventory')
 end)
 
-RegisterNUICallback('uiLoaded', function(data, cb) cb({}) uiLoaded = true end)
+RegisterNUICallback('uiLoaded', function(data, cb)
+	uiLoaded = true
+	cb(1)
+end)
 
 RegisterNUICallback('removeComponent', function(data, cb)
 	cb(1)
