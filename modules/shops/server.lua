@@ -85,11 +85,12 @@ ServerCallback.Register('ox_inventory:buyItem', function(source, cb, data)
 				return cb(false, nil, {type = 'error', text = ox.locale('stash_lowgrade')})
 			end
 
-			local result = Items[fromItem.name] and Items[fromItem.name]('buying', fromData.name, player, data.fromSlot, shop)
-			if result == false then return cb(false) end
-
 			local currency = fromData.currency or 'money'
 			local fromItem = Items(fromData.name)
+
+			local result = Items[fromItem.name] and Items[fromItem.name]('buying', fromItem, player, data.fromSlot, shop)
+			if result == false then return cb(false) end
+
 			local toItem = toData and Items(toData.name)
 			local metadata, count = Items.Metadata(xPlayer, fromItem, fromData.metadata and table.clone(fromData.metadata) or {}, data.count)
 			local price = count * fromData.price
