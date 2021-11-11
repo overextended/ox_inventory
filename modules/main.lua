@@ -16,10 +16,11 @@ include = function(name, shared)
 end
 
 if ox.server then
-	ox.error = function(...) print(string.strjoin(' ', '^1[error]^7', ...)) end
 	ox.info = function(...) print(string.strjoin(' ', '^2[info]^7', ...)) end
 	ox.warning = function(...) print(string.strjoin(' ', '^3[warning]^7', ...)) end
 end
+
+if ESX == nil or SetInterval == nil or import == nil then error('Unable to locate dependencies - refer to the documentation') end
 
 local Locales = data('locales/'..Config.Locale)
 ox.locale = function(string, ...)

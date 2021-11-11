@@ -21,7 +21,6 @@ setmetatable(M, {
 })
 
 CreateThread(function()
-	if ESX == nil or SetInterval == nil then return ox.error('Unable to locate dependencies - refer to the documentation') end
 	local OneSync = GetConvar('onesync_enabled', false) == 'true'
 	local Infinity = GetConvar('onesync_enableInfinity', false) == 'true'
 	if not OneSync and not Infinity then return ox.error('OneSync is not enabled on this server - refer to the documentation')
