@@ -7,7 +7,7 @@ title: Getting Started
 	This resource is being designed with the intention of providing advanced functionality while remaining easy to use, however it is not recommended for beginners.
 	You must possess a basic understanding of coding and the ability to _read documentation_; otherwise you should not install this resource.
 
-## Requirements
+## Dependencies
 ## OxMySQL
 Our spin on a database wrapper utilising [node-mysql2](https://github.com/sidorares/node-mysql2), providing improved performance and enhanced features.
 
@@ -17,7 +17,21 @@ Our spin on a database wrapper utilising [node-mysql2](https://github.com/sidora
 - Lua sync wrappers utilise promises to remove additional overhead
 - Optional import file to provide compatibility with MySQL-async style usage
 
-[Download :fontawesome-solid-download:](https://github.com/overextended/oxmysql/releases){ .md-button .md-button--primary }	[Documentation :fontawesome-solid-book:](https://overextended.github.io/oxmysql){ .md-button .md-button--primary }
+[Download :fontawesome-solid-arrow-circle-down:](https://github.com/overextended/oxmysql/releases){ .md-button .md-button--primary }	[Documentation :fontawesome-solid-book:](https://overextended.github.io/oxmysql){ .md-button .md-button--primary }
+
+<br>
+
+## Lua Library
+A resource designed to provide reusable functions that can be loaded into any resource with simple variable declarations rather than through fxmanifest.
+
+Still a work in progress.
+
+- [x] Server Callbacks
+- [ ] Table utilities (contains, match, iterators, etc.)
+- [ ] OxMySQL library (similar to included lib, but not designed as a drop-in for mysql-async)
+- [ ] Native wrappers (animations, spawning, etc.)
+
+[GitHub :fontawesome-solid-github:](https://github.com/project-error/pe-lualib){ .md-button .md-button--primary }
 
 <br>
 
@@ -34,7 +48,7 @@ There should be no changes which break compatibility with other resources with t
 !!! tip "Modifying your framework"
 	We do not provide a guide for manually converting your ESX to support Ox Inventory; instead you will need to manually reference changes in the [github diff](https://github.com/overextended/es_extended/compare/58042fb6926769aeab35fe26fa98d568971ba0be...ox).
 
-[Standard :fontawesome-solid-download:](https://github.com/overextended/es_extended){ .md-button .md-button--primary }
+[GitHub :fontawesome-solid-github:](https://github.com/overextended/es_extended){ .md-button .md-button--primary }
 
 
 ## Installation
