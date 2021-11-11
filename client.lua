@@ -9,7 +9,7 @@ local Evidence <const> = include 'evidence'
 local Inventory <const> = include 'inventory'
 local Keyboard <const> = include 'input'
 local invOpen, playerId, currentWeapon
-local isBusy = true
+local isBusy, uiLoaded = true, false
 local plyState = LocalPlayer.state
 
 AddStateBagChangeHandler('busy', nil, function(bagName, _, value, _, _)
@@ -775,6 +775,8 @@ RegisterNetEvent('esx_policejob:unrestrain', function()
 	isCuffed = false
 	TriggerEvent('ox_inventory:closeInventory')
 end)
+
+RegisterNUICallback('uiLoaded', function(data, cb) cb({}) uiLoaded = true end)
 
 RegisterNUICallback('removeComponent', function(data, cb)
 	cb(1)

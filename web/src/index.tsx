@@ -7,6 +7,9 @@ import { store } from './store';
 import App from './components/App';
 import './index.scss';
 import { ItemNotificationsProvider } from './components/utils/ItemNotifications';
+import { fetchNui } from './utils/fetchNui';
+
+fetchNui('uiLoaded', {});
 
 ReactDOM.render(
   <React.StrictMode>
