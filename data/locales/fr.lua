@@ -77,4 +77,5 @@ return {
         ['use_hotbar'] = "Utiliser l’objet hotbar %s~",
 	['no_durability'] = "La durabilité de l'item a expiré",
 	['cannot_give'] = "Impossible de donner %s %s à cet inventaire",
+	['evidence_cannot_take'] = "Votre grade ne vous permet pas de récupérer des preuves"
 }
