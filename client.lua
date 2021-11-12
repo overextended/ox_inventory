@@ -74,6 +74,11 @@ local Notify = function(data) SendNUIMessage({ action = 'showNotif', data = data
 RegisterNetEvent('ox_inventory:notify', Notify)
 exports('notify', Notify)
 
+local StashTarget
+exports('setStashTarget', function(id, owner)
+	StashTarget = id and {id=id, owner=owner} or nil
+end)
+
 local isCuffed = false
 local CanOpenInventory = function()
 	return ESX.PlayerLoaded
@@ -330,7 +335,9 @@ local RegisterCommands = function()
 			if isBusy then return Notify({type = 'error', text = ox.locale('inventory_player_access'), duration = 2500})
 			else
 				if not CanOpenInventory() then return Notify({type = 'error', text = ox.locale('inventory_player_access'), duration = 2500}) end
-				if IsPedInAnyVehicle(ESX.PlayerData.ped, false) then
+				if StashTarget then
+					OpenInventory('stash', StashTarget)
+				elseif IsPedInAnyVehicle(ESX.PlayerData.ped, false) then
 					local vehicle = GetVehiclePedIsIn(ESX.PlayerData.ped, false)
 					if NetworkGetEntityIsNetworked(vehicle) then
 						local plate = Config.TrimPlate and string.strtrim(GetVehicleNumberPlateText(vehicle)) or GetVehicleNumberPlateText(vehicle)
