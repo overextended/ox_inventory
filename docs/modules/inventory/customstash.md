@@ -6,8 +6,8 @@ Stashes will not always have a defined template, so it is necessary to create th
 
 !!! info
 	```lua
-	exports.ox_inventory:CreateStash(id, label, slots, maxWeight, owner, items)
-	exports.ox_inventory:CreateStash('someid', 'Inventory label', 10, 10000, true, {cola=1, bread=3})
+	exports.ox_inventory:CreateStash(id, label, slots, maxWeight, owner)
+	exports.ox_inventory:CreateStash('someid', 'Inventory label', 10, 10000, true)
 	```
 	
 	| Argument  | Type    | Optional | Explanation |
@@ -17,10 +17,8 @@ Stashes will not always have a defined template, so it is necessary to create th
 	| slots     | integer | no       | The number of slots for storing items |
 	| maxWeight | integer | no       | The maximum amount of weight that can be held |
 	| owner     | string  | yes      | The identifier of the stash owner, or true for personal stashes |
-	| items     | table   | yes      | Items to be loaded in the stash |
 
-	Items should only be defined for newly created stashes and for converting key-value pairs into compatible items.  
-	`{cola = 1, bread = 3}` will be converted to `{{slot = 1, name = cola, count = 1}, {slot = 2 name = bread, count = 3}}`
+	The reasoning for this function is to provide easier integration with other resources and prevention of arbitrarily created stashes defined by the client.
 
 
-The reasoning for this function is to provide easier integration with other resources and prevention of arbitrarily created stashes defined by the client.
+You can reference [esx_property](https://github.com/thelindat/esx_property/commit/0dfe120ac4401dce17946b79b12c1b6049851d98#diff-d4503a9550899ea7880582e02d5404019dbce696d1b27a7c63f18b99eddeb088) for a sample of utilising this export.
