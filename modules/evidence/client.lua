@@ -1,11 +1,13 @@
 local M = data 'evidence'
-local Keyboard = include 'input'
+
+local OpenEvidence = function()
+	TriggerEvent('ox_inventory:openInventory', 'policeevidence')
+end
 
 setmetatable(M, {
 	__call = function()
 		for _, evidence in pairs(M) do
 			if Config.Target then
-				local OpenEvidence = function() TriggerEvent('ox_inventory:openInventory', 'policeevidence') end
 				exports.qtarget:RemoveZone(evidence.target.name)
 				exports.qtarget:AddBoxZone(evidence.target.name, evidence.target.loc, evidence.target.length or 0.5, evidence.target.width or 0.5,
 				{
