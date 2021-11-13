@@ -80,7 +80,7 @@ ServerCallback.Register('ox_inventory:openInventory', function(source, cb, inv, 
 			else
 				stash = Inventory.CustomStash[data.id or data]
 				if stash then
-					local owner = stash.owner == true and left.owner or stash.owner
+					local owner = (stash.owner == nil and nil) or (type(stash.owner) == 'string' and stash.owner) or data.owner or stash.owner and left.owner
 					data = (owner and ('%s%s'):format(data.id or data, owner)) or data.id or data
 
 					right = Inventory(data)
