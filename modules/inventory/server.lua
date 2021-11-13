@@ -875,31 +875,35 @@ end
 exports('ConvertItems', ConvertItems)
 
 M.CustomStash = table.create(0, 0)
---- For simple integration with other resources that want to create stashes.\
---- Accepts items using ox_inventory or traditional data formats.\
---- Items should only be sent when creating the stash for the first time, otherwise leave it empty and the data will be loaded from the database.
-local CreateStash = function(id, label, slots, maxWeight, owner, items)
-	local weight = 0
-	if items then
-		local firstItem = next(items)
-		if firstItem and not firstItem.slot then
-			items, weight = ConvertItems(items)
-		end
-	end
+---@param id string|number stash identifier when loading from the database
+---@param label string display name when inventory is open
+---@param slots number
+---@param maxWeight number
+---@param owner string|boolean|nil
+--- For simple integration with other resources that want to create valid stashes.  
+--- This needs to be triggered before a player can open a stash.
+--- ```
+--- Owner sets the stash permissions.
+--- string: can only access the stash linked to the owner (usually player identifier)
+--- true: each player has a unique stash, but can request other player's stashes
+--- nil: always shared
+--- ```
+local RegisterStash = function(id, label, slots, maxWeight, owner)
 
-	-- Allows the stash to be requested by clients.
 	if not M.CustomStash[id] then
 		M.CustomStash[id] = {
 			name = id,
 			label = label,
-			owner = owner and true,
+			owner = owner,
 			slots = slots,
 			weight = maxWeight
 		}
 	end
 
-	M.Create(id, label, 'stash', slots, weight, maxWeight, owner, items)
 end
-exports('CreateStash', CreateStash)
+exports('RegisterStash', RegisterStash)
+exports('CreateStash', function()
+	ox.warning('CreateStash has been deprecated and the functionality changed! Sorry for the inconvenience.\nRefer to documentation for usage and sample usage.')
+end)
 
 return M
