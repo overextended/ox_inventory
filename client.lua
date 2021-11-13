@@ -322,6 +322,8 @@ OnPlayerData = function(key, val)
 	SetWeaponsNoAutoreload(1)
 end
 
+local table = import 'table'
+
 local RegisterCommands = function()
 
 	RegisterCommand('inv', function()
@@ -358,7 +360,7 @@ local RegisterCommands = function()
 					local vehicle, position
 					if not Config.Target then
 						if type == 2 then vehicle, position = entity, GetEntityCoords(entity)
-						elseif type == 3 and Utils.CheckTable(Inventory.Dumpsters, GetEntityModel(entity)) then
+						elseif type == 3 and table.contains(Inventory.Dumpsters, GetEntityModel(entity)) then
 							local netId = NetworkGetEntityIsNetworked(entity) and NetworkGetNetworkIdFromEntity(entity) or false
 							if netId == false then
 								SetEntityAsMissionEntity(entity)
