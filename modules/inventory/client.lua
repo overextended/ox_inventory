@@ -12,7 +12,7 @@ if Config.Target then
 			SetNetworkIdExistsOnAllMachines(netId)
 			SetNetworkIdCanMigrate(netId, true)
 		end
-		TriggerEvent('ox_inventory:openInventory', 'dumpster', {id='dumpster'..netId})
+		TriggerEvent('ox_inventory:openInventory', 'dumpster', 'dumpster'..netId)
 	end
 
 	exports.qtarget:AddTargetModel(Dumpsters, {
