@@ -153,7 +153,6 @@ end)
 
 local table = import 'table'
 
-local isPlayer = {.player, .otherplayer}
 ServerCallback.Register('ox_inventory:swapItems', function(source, cb, data)
 	-- todo: refactor and setup some helper functions; should also move into inventory module
 	if data.count > 0 and data.toType ~= 'shop' then
@@ -332,10 +331,10 @@ ServerCallback.Register('ox_inventory:swapItems', function(source, cb, data)
 
 					if next(items) then
 						ret = {weight=playerInventory.weight, items=items}
-						if isPlayer[fromInventory.type] then
+						if fromInventory.type == 'player' or fromInventory.type == 'otherplayer' then
 							Inventory.SyncInventory(ESX.GetPlayerFromId(fromInventory.id), fromInventory)
 						end
-						if not sameInventory and isPlayer[toInventory.type] then
+						if not sameInventory and (toInventory.type == 'player' or toInventory.type == 'otherplayer') then
 							Inventory.SyncInventory(ESX.GetPlayerFromId(toInventory.id), toInventory)
 						end
 					end
