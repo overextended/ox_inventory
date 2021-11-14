@@ -88,7 +88,7 @@ local CanOpenInventory = function()
 	and ESX.PlayerData.dead == false
 	and (currentWeapon == nil or currentWeapon.timer == 0)
 	and IsPauseMenuActive() == false
-	and IsPedFatallyInjured(ESX.PlayerData.ped, 1) == false
+	and IsPedFatallyInjured(ESX.PlayerData.ped) == false
 end
 
 local defaultInventory <const> = {
