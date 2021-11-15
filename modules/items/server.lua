@@ -25,7 +25,7 @@ CreateThread(function()
 	local Infinity = GetConvar('onesync_enableInfinity', false) == 'true'
 	if not OneSync and not Infinity then return error('OneSync is not enabled on this server - refer to the documentation')
 	elseif Infinity then ox.info('Server is running OneSync Infinity') else ox.info('Server is running OneSync Legacy') end
-	local items = exports.oxmysql:fetchSync('SELECT * FROM items')
+	local items = exports.oxmysql:executeSync('SELECT * FROM items')
 	if items then
 		local query = {}
 		for i=1, #items do

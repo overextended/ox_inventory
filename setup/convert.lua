@@ -14,12 +14,12 @@ local Print = function(arg)
 end
 
 local Upgrade = function()
-	exports.oxmysql:fetch('SELECT name FROM linden_inventory', {}, function(result)
+	exports.oxmysql:execute('SELECT name FROM linden_inventory', {}, function(result)
 		if result ~= nil then
 			Print('Please run upgrade.sql before upgrading')
 		else
-			local trunk = exports.oxmysql:fetchSync('SELECT owner, name, data FROM ox_inventory WHERE name LIKE ?', {'trunk-%'})
-			local glovebox = exports.oxmysql:fetchSync('SELECT owner, name, data FROM ox_inventory WHERE name LIKE ?', {'glovebox-%'})
+			local trunk = exports.oxmysql:executeSync('SELECT owner, name, data FROM ox_inventory WHERE name LIKE ?', {'trunk-%'})
+			local glovebox = exports.oxmysql:executeSync('SELECT owner, name, data FROM ox_inventory WHERE name LIKE ?', {'glovebox-%'})
 			local total = 0
 			if #trunk > 0 or #glovebox > 0 then
 				local vehicles = {}
@@ -74,7 +74,7 @@ local GenerateSerial = function(text)
 end
 
 local Convert = function()
-	local users = exports.oxmysql:fetchSync('SELECT identifier, inventory, loadout, accounts FROM users')
+	local users = exports.oxmysql:executeSync('SELECT identifier, inventory, loadout, accounts FROM users')
 	local total, count = #users, 0
 	Print(('Converting %s user inventories to new data format'):format(total))
 	for i=1, #users do
