@@ -1,13 +1,13 @@
 ---
 title: Creating custom stashes
 ---
-The client can request inventory data from any inventory type and id and the server will attempt to create one if there is a data template.  
-Stashes will not always have a defined template, so it is necessary to create them on the server before a client can request it.  
+The client can request inventory data from any inventory type and id and the server will create one if the id is valid.  
+Stashes will not always have a defined template, so it is necessary to register them on the server before a client can request it.  
 
 !!! info
 	```lua
-	exports.ox_inventory:CreateStash(id, label, slots, maxWeight, owner)
-	exports.ox_inventory:CreateStash('someid', 'Inventory label', 10, 10000, true)
+	exports.ox_inventory:RegisterStash(id, label, slots, maxWeight, owner)
+	exports.ox_inventory:RegisterStash('someid', 'Inventory label', 10, 10000, true)
 	```
 	
 	| Argument  | Type    | Optional | Explanation |

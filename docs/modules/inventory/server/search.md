@@ -50,7 +50,7 @@ Returns a table containing data for the searched items, the result varying based
 		```
 	=== "Single item count"
 		```lua
-		local count = Inventory.Search('trunk-GEZ 461', 'water')
+		local count = Inventory.Search('trunk-GEZ 461', 2, 'water')
 		print('Vehicle contains '..count.. ' water')
 		```
 	=== "Multiple items count"

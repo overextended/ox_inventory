@@ -8,7 +8,11 @@ title: Getting Started
 	You must possess a basic understanding of coding and the ability to _read documentation_; otherwise you should not install this resource.
 
 ## Dependencies
-## OxMySQL
+
+### FXServer
+Currently incompatible with the recommended build (4394 was released August 21st); you can either download the optional build or just the latest.
+
+### OxMySQL
 Our spin on a database wrapper utilising [node-mysql2](https://github.com/sidorares/node-mysql2), providing improved performance and enhanced features.
 
 - Improved performance and compatibility
@@ -21,21 +25,20 @@ Our spin on a database wrapper utilising [node-mysql2](https://github.com/sidora
 
 <br>
 
-## Lua Library
+### Lua Library
 A resource designed to provide reusable functions that can be loaded into any resource with simple variable declarations rather than through fxmanifest.
 
-Still a work in progress.
+Still a work in progress.  
 
+**Currently used for**
 - [x] Server Callbacks
-- [ ] Table utilities (contains, match, iterators, etc.)
-- [ ] OxMySQL library (similar to included lib, but not designed as a drop-in for mysql-async)
-- [ ] Native wrappers (animations, spawning, etc.)
+- [x] Table utilities (contains, matches)
 
 [GitHub :fontawesome-brands-github:](https://github.com/project-error/pe-lualib){ .md-button .md-button--primary }
 
 <br>
 
-## Framework
+### Framework
 The inventory has been designed to work for a _modified_ version of **ESX Legacy** and will not work with anything else.  
 For convenience, we provide a fork with all the necessary changes as well as several new features and performance changes.  
 
@@ -56,6 +59,7 @@ Once you have downloaded and configured the required resources, you will need to
 ```
 ensure oxmysql
 ensure es_extended
+ensure pe-lualib
 ensure ox_inventory
 ```
 
@@ -96,8 +100,8 @@ Ox Inventory provides a complete suite of tools to replace the built-in items an
 - Shops from esx_shops or the armoury from esx_policejob should be removed
 - Resources like esx_inventoryhud, esx_trunkinventory, esx_addoninventory, etc. should be removed
 
-### xPlayer functions vs Inventory functions
-All item related functions from xPlayer, such as `xPlayer.getInventoryItem`, have been modified for compatibility purposes; however they are considered deprecated and should not be used.
+### xPlayer vs Inventory
+All item related functions from xPlayer, such as `xPlayer.getInventoryItem`, have been modified for compatibility purposes; however they are considered deprecated.
 
 The reasoning is fairly simple - there's now additional function references and overhead to consider. Fortunately, the new Inventory functions can be used directly and offer a great deal of improvements over the old ones.
 
