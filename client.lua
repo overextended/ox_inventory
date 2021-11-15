@@ -344,7 +344,6 @@ local RegisterCommands = function()
 					if NetworkGetEntityIsNetworked(vehicle) then
 						local plate = Config.TrimPlate and string.strtrim(GetVehicleNumberPlateText(vehicle)) or GetVehicleNumberPlateText(vehicle)
 						OpenInventory('glovebox', {id='glove'..plate, class=GetVehicleClass(vehicle)})
-						Wait(100)
 						while true do
 							Wait(100)
 							if not invOpen then break
@@ -356,13 +355,13 @@ local RegisterCommands = function()
 					end
 				else
 					local entity, type = Utils.Raycast()
-					if entity == false then return end
+					if not entity then return end
 					local vehicle, position
 					if not Config.Target then
 						if type == 2 then vehicle, position = entity, GetEntityCoords(entity)
 						elseif type == 3 and table.contains(Inventory.Dumpsters, GetEntityModel(entity)) then
-							local netId = NetworkGetEntityIsNetworked(entity) and NetworkGetNetworkIdFromEntity(entity) or false
-							if netId == false then
+							local netId = NetworkGetEntityIsNetworked(entity) and NetworkGetNetworkIdFromEntity(entity)
+							if netId then
 								SetEntityAsMissionEntity(entity)
 								NetworkRegisterEntityAsNetworked(entity)
 								netId = NetworkGetNetworkIdFromEntity(entity)
@@ -465,7 +464,6 @@ end)
 
 RegisterNetEvent('ox_inventory:updateInventory', function(items, weights, count, removed)
 	local itemName = items[1].item.name
-	-- have to send name through items data but if it doesn't have the label data then it's not the last item
 	if not items[1].item.label then items[1].item.name = nil end
 	SendNUIMessage({ action = 'refreshSlots', data = items })
 	if count then ItemNotify({text = ox.locale(removed and 'removed' or 'added', count), item = itemName}) end
@@ -493,7 +491,7 @@ end)
 
 RegisterNetEvent('ox_inventory:createDrop', function(data, owner, slot)
 	local coords = vec3(data[2].x, data[2].y, data[2].z-0.2)
-	Drops[data[1]] = {coords=coords}
+	Drops[data[1]] = coords
 	if owner == playerId and invOpen and #(GetEntityCoords(ESX.PlayerData.ped) - coords) <= 1 then
 		if currentWeapon?.slot == slot then Disarm(-1) end
 		if not IsPedInAnyVehicle(ESX.PlayerData.ped, false) then
