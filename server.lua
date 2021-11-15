@@ -89,7 +89,7 @@ ServerCallback.Register('ox_inventory:openInventory', function(source, cb, inv, 
 					end
 
 				else
-					ox.warning(('%s [%s] (%s) attempted to open an invalid stash (%s)\nIf this stash should exist, add it to `data/stashes` or create it on the server first with `exports.ox_inventory:CreateStash`'):format(GetPlayerName(source), source, left.owner, json.encode(data)))
+					ox.warning(('%s [%s] (%s) attempted to open an invalid stash (%s)\nIf this stash should exist, add it to `data/stashes` or create it on the server first with `exports.ox_inventory:RegisterStash`'):format(GetPlayerName(source), source, left.owner, json.encode(data)))
 					return cb(false)
 				end
 			end
@@ -104,7 +104,7 @@ ServerCallback.Register('ox_inventory:openInventory', function(source, cb, inv, 
 			else
 				right = Inventory(data.id)
 				if not right then
-					ox.warning(('%s [%s] (%s) attempted to open an invalid stash (%s)\nIf this stash should exist, add it to `data/stashes` or create it on the server first with `exports.ox_inventory:CreateStash`'):format(GetPlayerName(source), source, left.owner, json.encode(data)))
+					ox.warning(('%s [%s] (%s) attempted to open an invalid stash (%s)\nIf this stash should exist, add it to `data/stashes` or create it on the server first with `exports.ox_inventory:RegisterStash`'):format(GetPlayerName(source), source, left.owner, json.encode(data)))
 					return cb(false)
 				end
 			end
