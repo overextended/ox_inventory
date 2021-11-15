@@ -30,9 +30,9 @@ A resource designed to provide reusable functions that can be loaded into any re
 
 Still a work in progress.  
 
-**Currently used for**
-- [x] Server Callbacks
-- [x] Table utilities (contains, matches)
+**Currently used for**  
+- Server Callbacks
+- Table utilities (contains, matches)
 
 [GitHub :fontawesome-brands-github:](https://github.com/project-error/pe-lualib){ .md-button .md-button--primary }
 
@@ -42,8 +42,7 @@ Still a work in progress.
 The inventory has been designed to work for a _modified_ version of **ESX Legacy** and will not work with anything else.  
 For convenience, we provide a fork with all the necessary changes as well as several new features and performance changes.  
 
-There should be no changes which break compatibility with other resources with the exception of what is necessary to support the inventory and new item system.
-
+There should be no changes which break compatibility with other resources with the exception of what is necessary to support the inventory and new item system.  
 - Loadouts do not exist, so errors will occur in third-party resources attempting to manipulate them
 - Inventories are slot-based and items can exist in multiple slots, which can throw off item counting
 - Resources attempting to iterate through inventories in order will not work if a slot is empty
