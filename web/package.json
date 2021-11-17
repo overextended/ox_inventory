@@ -35,7 +35,8 @@
   "scripts": {
     "start": "craco start",
     "start:game": "cross-env IN_GAME_DEV=1 craco start",
-    "build": "craco build"
+    "build": "craco build",
+    "format": "prettier --write \"./src/**/*.{ts,tsx,css}\""
   },
   "eslintConfig": {
     "extends": [

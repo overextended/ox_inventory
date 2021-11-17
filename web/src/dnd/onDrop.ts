@@ -11,7 +11,7 @@ export const onDrop = (source: DragSource, target?: DropTarget) => {
   const { sourceInventory, targetInventory } = getTargetInventory(
     state,
     source.inventory,
-    target?.inventory,
+    target?.inventory
   );
 
   const sourceSlot = sourceInventory.items[source.item.slot - 1] as SlotWithItem;
@@ -54,7 +54,7 @@ export const onDrop = (source: DragSource, target?: DropTarget) => {
       ...data,
       fromSlot: sourceSlot.slot,
       toSlot: targetSlot.slot,
-    }),
+    })
   );
 
   isSlotWithItem(targetSlot, true)
@@ -63,13 +63,13 @@ export const onDrop = (source: DragSource, target?: DropTarget) => {
           stackSlots({
             ...data,
             toSlot: targetSlot,
-          }),
+          })
         )
       : store.dispatch(
           swapSlots({
             ...data,
             toSlot: targetSlot,
-          }),
+          })
         )
     : store.dispatch(moveSlots(data));
 };

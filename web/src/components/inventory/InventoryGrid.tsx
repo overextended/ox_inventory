@@ -15,10 +15,10 @@ const InventoryGrid: React.FC<{ inventory: Inventory }> = ({ inventory }) => {
       inventory.maxWeight !== undefined
         ? inventory.items.reduce<number>(
             (totalWeight, slot) => (slot.weight ? totalWeight + slot.weight : totalWeight),
-            0,
+            0
           )
         : 0,
-    [inventory.maxWeight, inventory.items],
+    [inventory.maxWeight, inventory.items]
   );
 
   // Need to rebuild tooltip for items in a map

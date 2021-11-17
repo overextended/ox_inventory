@@ -17,7 +17,7 @@ export const setupInventoryReducer: CaseReducer<
       ...leftInventory,
       items: Array.from(Array(leftInventory.slots), (_, index) => {
         const item = Object.values(leftInventory.items).find(
-          (item) => item?.slot === index + 1,
+          (item) => item?.slot === index + 1
         ) || {
           slot: index + 1,
         };
@@ -32,7 +32,7 @@ export const setupInventoryReducer: CaseReducer<
       ...rightInventory,
       items: Array.from(Array(rightInventory.slots), (_, index) => {
         const item = Object.values(rightInventory.items).find(
-          (item) => item?.slot === index + 1,
+          (item) => item?.slot === index + 1
         ) || {
           slot: index + 1,
         };

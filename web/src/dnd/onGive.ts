@@ -6,5 +6,5 @@ export const onGive = (item: Slot) => {
   const {
     inventory: { itemAmount },
   } = store.getState();
-  fetchNui('giveItem', {slot: item.slot, count: itemAmount})
+  fetchNui('giveItem', { slot: item.slot, count: itemAmount });
 };
