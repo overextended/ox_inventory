@@ -37,12 +37,12 @@ const InventorySlot: React.FC<SlotProps> = ({
       item: () =>
         isSlotWithItem(item, inventory.type !== InventoryType.SHOP)
           ? {
-              inventory: inventory.type,
-              item: {
-                name: item.name,
-                slot: item.slot,
-              },
-            }
+            inventory: inventory.type,
+            item: {
+              name: item.name,
+              slot: item.slot,
+            },
+          }
           : null,
       canDrag: !isBusy,
     }),
@@ -58,17 +58,17 @@ const InventorySlot: React.FC<SlotProps> = ({
       drop: (source) =>
         source.inventory === InventoryType.SHOP
           ? onBuy(source, {
-              inventory: inventory.type,
-              item: {
-                slot: item.slot,
-              },
-            })
+            inventory: inventory.type,
+            item: {
+              slot: item.slot,
+            },
+          })
           : onDrop(source, {
-              inventory: inventory.type,
-              item: {
-                slot: item.slot,
-              },
-            }),
+            inventory: inventory.type,
+            item: {
+              slot: item.slot,
+            },
+          }),
       canDrop: (source) =>
         !isBusy &&
         (source.item.slot !== item.slot || source.inventory !== inventory.type) &&
@@ -92,12 +92,14 @@ const InventorySlot: React.FC<SlotProps> = ({
   const { show } = useContextMenu({ id: `slot-context-${item.slot}-${item.name}` });
 
   const handleContext = (event: React.MouseEvent<HTMLDivElement>) => {
-    isSlotWithItem(item) && inventory.type === 'player' && show(event);
+    !isBusy && isSlotWithItem(item) && inventory.type === 'player' && show(event);
     setCurrentItem(undefined);
     ReactTooltip.hide();
   };
 
   const handleClick = (event: React.MouseEvent<HTMLDivElement>) => {
+    if (isBusy) return;
+
     if (event.ctrlKey && isSlotWithItem(item) && inventory.type !== 'shop') {
       onDrop({ item: item, inventory: inventory.type });
       setCurrentItem(undefined);
@@ -134,11 +136,11 @@ const InventorySlot: React.FC<SlotProps> = ({
                 {item.weight > 0
                   ? item.weight >= 1000
                     ? `${(item.weight / 1000).toLocaleString('en-us', {
-                        minimumFractionDigits: 2,
-                      })}kg `
+                      minimumFractionDigits: 2,
+                    })}kg `
                     : `${item.weight.toLocaleString('en-us', {
-                        minimumFractionDigits: 0,
-                      })}g `
+                      minimumFractionDigits: 0,
+                    })}g `
                   : ''}
                 {item.count?.toLocaleString('en-us')}x
               </span>
@@ -149,9 +151,9 @@ const InventorySlot: React.FC<SlotProps> = ({
             {inventory.type === 'shop' && item?.price !== undefined && (
               <>
                 {item?.currency !== 'money' &&
-                item?.currency !== 'black_money' &&
-                item.price > 0 &&
-                item?.currency ? (
+                  item?.currency !== 'black_money' &&
+                  item.price > 0 &&
+                  item?.currency ? (
                   <div className="item-price" style={{ color: '#2ECC71' }}>
                     <img
                       className="item-currency"
