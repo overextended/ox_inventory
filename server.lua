@@ -55,7 +55,7 @@ end)
 
 local ServerCallback = import 'callbacks'
 
-ServerCallback.Register('ox_inventory:openInventory', function(source, cb, inv, data)
+ServerCallback.Register('openInventory', function(source, cb, inv, data)
 	local left = Inventory(source)
 	local right = left.open and Inventory(left.open)
 
@@ -153,7 +153,7 @@ end)
 
 local table = import 'table'
 
-ServerCallback.Register('ox_inventory:swapItems', function(source, cb, data)
+ServerCallback.Register('swapItems', function(source, cb, data)
 	-- todo: refactor and setup some helper functions; should also move into inventory module
 	if data.count > 0 and data.toType ~= 'shop' then
 		local playerInventory, items, ret = Inventory(source), {}, nil
@@ -347,7 +347,7 @@ ServerCallback.Register('ox_inventory:swapItems', function(source, cb, data)
 	cb(false)
 end)
 
-ServerCallback.Register('ox_inventory:buyLicense', function(source, cb, id)
+ServerCallback.Register('buyLicense', function(source, cb, id)
 	local license = Licenses[id]
 	if license then
 		local inventory = Inventory(source)
@@ -366,12 +366,12 @@ ServerCallback.Register('ox_inventory:buyLicense', function(source, cb, id)
 	else cb() end
 end)
 
-ServerCallback.Register('ox_inventory:getItemCount', function(source, cb, item, metadata, target)
+ServerCallback.Register('getItemCount', function(source, cb, item, metadata, target)
 	local inventory = target and Inventory(target) or Inventory(source)
 	cb((inventory and Inventory.GetItem(inventory, item, metadata, true)) or 0)
 end)
 
-ServerCallback.Register('ox_inventory:getInventory', function(source, cb, id)
+ServerCallback.Register('getInventory', function(source, cb, id)
 	local inventory = Inventory(id or source)
 	return inventory and cb({
 		id = inventory.id,
@@ -385,7 +385,7 @@ ServerCallback.Register('ox_inventory:getInventory', function(source, cb, id)
 	}) or cb()
 end)
 
-ServerCallback.Register('ox_inventory:useItem', function(source, cb, item, slot, metadata)
+ServerCallback.Register('useItem', function(source, cb, item, slot, metadata)
 	local inventory = Inventory(source)
 	if inventory.type == 'player' then
 		local item, type = Items(item)

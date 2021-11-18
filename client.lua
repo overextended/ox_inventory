@@ -125,7 +125,7 @@ local OpenInventory = function(inv, data)
 
 		local left, right
 		if inv == 'shop' and invOpen == false then
-			left, right = ServerCallback.Await(ox.name, 'ox_inventory:openShop', 200, data)
+			left, right = ServerCallback.Await(ox.name, 'openShop', 200, data)
 		elseif invOpen ~= nil then
 			if inv == 'policeevidence' then
 				local input = Keyboard.Input(ox.locale('police_evidence'), {ox.locale('locker_number')})
@@ -142,7 +142,7 @@ local OpenInventory = function(inv, data)
 					data = input
 				end
 			end
-			left, right = ServerCallback.Await(ox.name, 'ox_inventory:openInventory', 200, inv, data)
+			left, right = ServerCallback.Await(ox.name, 'openInventory', 200, inv, data)
 		end
 
 		if left then
@@ -638,7 +638,7 @@ RegisterNetEvent('ox_inventory:setPlayerInventory', function(drops, inventory, w
 			end
 			if closestMarker and IsControlJustReleased(0, 38) then
 				if closestMarker[3] == 'license' then
-					ServerCallback.Async(ox.name, 'ox_inventory:buyLicense', 200, function(success, message)
+					ServerCallback.Async(ox.name, 'buyLicense', 200, function(success, message)
 						if success == false then
 							Notify({type = 'error', text = ox.locale(message), duration = 2500})
 						else
@@ -717,7 +717,7 @@ AddEventHandler('ox_inventory:item', function(data, cb)
 		if currentWeapon and currentWeapon?.timer > 100 then return end
 		isBusy = true
 		if invOpen and data.close then TriggerEvent('ox_inventory:closeInventory') end
-		local result = ServerCallback.Await(ox.name, 'ox_inventory:useItem', 200, data.name, data.slot, ESX.PlayerData.inventory[data.slot].metadata)
+		local result = ServerCallback.Await(ox.name, 'useItem', 200, data.name, data.slot, ESX.PlayerData.inventory[data.slot].metadata)
 		if cb == nil then
 			isBusy = false
 			return
@@ -843,7 +843,7 @@ RegisterNUICallback('exit', function(data, cb)
 end)
 
 RegisterNUICallback('swapItems', function(data, cb)
-	local response, data, weapon = ServerCallback.Await(ox.name, 'ox_inventory:swapItems', false, data)
+	local response, data, weapon = ServerCallback.Await(ox.name, 'swapItems', false, data)
 	if data then
 		for k, v in pairs(data.items) do
 			ESX.PlayerData.inventory[k] = v and v or nil
@@ -859,7 +859,7 @@ RegisterNUICallback('swapItems', function(data, cb)
 end)
 
 RegisterNUICallback('buyItem', function(data, cb)
-	local response, data, message = ServerCallback.Await(ox.name, 'ox_inventory:buyItem', 100, data)
+	local response, data, message = ServerCallback.Await(ox.name, 'buyItem', 100, data)
 	if data then
 		ESX.PlayerData.inventory[data[1]] = data[2]
 		ESX.SetPlayerData('inventory', ESX.PlayerData.inventory)
