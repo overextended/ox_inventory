@@ -191,10 +191,9 @@ local UseSlot = function(slot)
 			elseif data.effect then
 				data:effect({name = item.name, slot = item.slot, metadata = item.metadata})
 			elseif item.name:find('WEAPON_') then
-				TriggerEvent('ox_inventory:item', data, function(data)
-					if data then
+				TriggerEvent('ox_inventory:item', data, function(result)
+					if result then
 						local playerPed = ESX.PlayerData.ped
-						local data = Items[item.name]
 						if data.throwable then item.throwable = true end
 						ClearPedSecondaryTask(playerPed)
 						if currentWeapon then Disarm(data.slot) end
@@ -718,7 +717,7 @@ AddEventHandler('ox_inventory:item', function(data, cb)
 		if currentWeapon and currentWeapon?.timer > 100 then return end
 		isBusy = true
 		if invOpen and data.close then TriggerEvent('ox_inventory:closeInventory') end
-		local result = ServerCallback.Await(ox.name, 'ox_inventory:useItem', 200, data.name, data.slot, data.metadata)
+		local result = ServerCallback.Await(ox.name, 'ox_inventory:useItem', 200, data.name, data.slot, ESX.PlayerData.inventory[data.slot].metadata)
 		if cb == nil then
 			isBusy = false
 			return
