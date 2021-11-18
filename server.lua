@@ -415,7 +415,7 @@ ServerCallback.Register('useItem', function(source, cb, item, slot, metadata)
 				data.consume = 1
 				return cb(data)
 			elseif ESX.UsableItemsCallbacks[item.name] then
-				ESX.UseItem(source, item.name)
+				ESX.UseItem(source, data.name, data)
 			else
 				if item.consume and data.count >= item.consume then
 					local result = Items[item.name] and Items[item.name]('usingItem', item, inventory, slot)
