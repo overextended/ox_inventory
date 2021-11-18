@@ -842,6 +842,14 @@ ESX.RegisterCommand('saveinv', 'admin', function(xPlayer, args, showError)
 	end
 end, true, {help = 'Save all inventories', validate = true, arguments = {}})
 
+ESX.RegisterCommand('viewinv', 'admin', function(xPlayer, args, showError)
+	local inventory = Inventories[args.id] or Inventories[tonumber(args.id)]
+	TriggerClientEvent('ox_inventory:viewInventory', xPlayer.source, inventory)
+end, false, {help = 'Spectate the provided inventory id', validate = true, arguments = {
+	{name = 'id', help = 'inventory id', type = 'any'},
+	--todo: support for viewing unloaded inventories
+}})
+
 TriggerEvent('ox_inventory:loadInventory', M)
 
 exports('Inventory', function(arg)

@@ -784,6 +784,21 @@ RegisterNetEvent('esx_policejob:unrestrain', function()
 	TriggerEvent('ox_inventory:closeInventory')
 end)
 
+RegisterNetEvent('ox_inventory:viewInventory', function(data)
+	if data and invOpen == false then
+		data.type = 'admin'
+		invOpen = true
+		currentInventory = data
+		SendNUIMessage({
+			action = 'setupInventory',
+			data = {
+				rightInventory = currentInventory,
+			}
+		})
+		SetNuiFocus(true, true)
+	end
+end)
+
 RegisterNUICallback('uiLoaded', function(data, cb)
 	uiLoaded = true
 	cb(1)
