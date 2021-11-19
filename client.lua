@@ -203,7 +203,7 @@ local UseSlot = function(slot)
 						Utils.PlayAnimAdvanced(sleep*2, sleep == 400 and 'reaction@intimidation@cop@unarmed' or 'reaction@intimidation@1h', 'intro', coords.x, coords.y, coords.z, 0, 0, GetEntityHeading(playerPed), 8.0, 3.0, -1, 50, 0.1)
 						Wait(sleep)
 						GiveWeaponToPed(playerPed, data.hash, 0, false, true)
-						if item.metadata.weapontint then SetPedWeaponTintIndex(playerPed, data.hash, item.metadata.weapontint) end
+						if item.metadata.tint then SetPedWeaponTintIndex(playerPed, data.hash, item.metadata.tint) end
 						if item.metadata.components then
 							for i=1, #item.metadata.components do
 								local components = Items[item.metadata.components[i]].client.component
