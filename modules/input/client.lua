@@ -2,30 +2,30 @@ local p = nil
 
 local Input = function(header, rows)
 
-    if p then return end
-    
-    p = promise.new()
+	if p then return end
+	
+	p = promise.new()
 
-    SetNuiFocus(true, true)
-    SendNUIMessage({
-        action = 'openInput',
-        data = {
-            header = header,
-            rows = rows
-        }
-    })
+	SetNuiFocus(true, true)
+	SendNUIMessage({
+		action = 'openInput',
+		data = {
+			header = header,
+			rows = rows
+		}
+	})
 
-    return Citizen.Await(p)
+	return Citizen.Await(p)
 end
 
 exports('Keyboard', Input)
 
 RegisterNUICallback('inputData', function(data, cb)
-    cb(1)
-    if not p then return end
-    if not data then p:resolve() else p:resolve(data) end
-    SetNuiFocus(false, false)
-    p = nil
+	cb(1)
+	if not p then return end
+	if not data then p:resolve() else p:resolve(data) end
+	SetNuiFocus(false, false)
+	p = nil
 end)
 
 --[[ Example:
@@ -36,5 +36,5 @@ end)
 ]]--
 
 return {
-    Input = Input
+	Input = Input
 }

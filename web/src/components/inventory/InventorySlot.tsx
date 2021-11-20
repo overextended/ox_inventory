@@ -46,7 +46,7 @@ const InventorySlot: React.FC<SlotProps> = ({
           : null,
       canDrag: !isBusy,
     }),
-    [isBusy, inventory, item],
+    [isBusy, inventory, item]
   );
 
   const [{ isOver }, drop] = useDrop<DragSource, void, { isOver: boolean }>(
@@ -74,30 +74,32 @@ const InventorySlot: React.FC<SlotProps> = ({
         (source.item.slot !== item.slot || source.inventory !== inventory.type) &&
         inventory.type !== InventoryType.SHOP,
     }),
-    [isBusy, inventory, item],
+    [isBusy, inventory, item]
   );
 
   const connectRef = (element: HTMLDivElement) => drag(drop(element));
 
   const onMouseEnter = React.useCallback(
     () => isSlotWithItem(item) && setCurrentItem(item),
-    [item, setCurrentItem],
+    [item, setCurrentItem]
   );
 
   const onMouseLeave = React.useCallback(
     () => isSlotWithItem(item) && setCurrentItem(undefined),
-    [item, setCurrentItem],
+    [item, setCurrentItem]
   );
 
   const { show } = useContextMenu({ id: `slot-context-${item.slot}-${item.name}` });
 
   const handleContext = (event: React.MouseEvent<HTMLDivElement>) => {
-    isSlotWithItem(item) && inventory.type === 'player' && show(event);
+    !isBusy && isSlotWithItem(item) && inventory.type === 'player' && show(event);
     setCurrentItem(undefined);
     ReactTooltip.hide();
   };
 
   const handleClick = (event: React.MouseEvent<HTMLDivElement>) => {
+    if (isBusy) return;
+
     if (event.ctrlKey && isSlotWithItem(item) && inventory.type !== 'shop') {
       onDrop({ item: item, inventory: inventory.type });
       setCurrentItem(undefined);

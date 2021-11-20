@@ -39,5 +39,5 @@ if Config.Logs then
 	ox.warning('Unable to initilise logging module')
 end
 
-local function write() return end
+local function write() end
 return write

@@ -29,7 +29,7 @@ const ItemNotification = React.forwardRef(
         <div className="item-label">{Items[props.item]?.label || 'NO LABEL'}</div>
       </div>
     );
-  },
+  }
 );
 
 export const ItemNotificationsProvider = ({ children }: { children: React.ReactNode }) => {
@@ -72,7 +72,7 @@ export const ItemNotificationsProvider = ({ children }: { children: React.ReactN
             </CSSTransition>
           ))}
         </TransitionGroup>,
-        document.body,
+        document.body
       )}
     </ItemNotificationsContext.Provider>
   );

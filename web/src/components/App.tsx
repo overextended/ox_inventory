@@ -15,6 +15,7 @@ import * as Sentry from '@sentry/react';
 import { Integrations } from '@sentry/tracing';
 import { isEnvBrowser } from '../utils/misc';
 import { Locale } from '../store/locale';
+import { fetchNui } from '../utils/fetchNui';
 
 debugData([
   {
@@ -45,8 +46,9 @@ debugData([
 
 const App: React.FC = () => {
   const shiftPressed = useKeyPress('Shift');
-
   const dispatch = useAppDispatch();
+
+  fetchNui('uiLoaded', {});
 
   useNuiEvent<{
     sentry: boolean;

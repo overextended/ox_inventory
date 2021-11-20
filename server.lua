@@ -1,11 +1,10 @@
-local Stashes <const> = data('stashes')
-local Vehicle <const> = data('vehicles')
-local Licenses <const> = data('licenses')
-local Shops <const> = module('shops')
-local Items <const> = module('items')
-local Utils <const> = module('utils')
-local Inventory <const> = module('inventory')
-local Log <const> = module('logs')
+local Stashes <const> = data 'stashes'
+local Vehicle <const> = data 'vehicles'
+local Licenses <const> = data 'licenses'
+local Shops <const> = include 'shops'
+local Items <const> = include 'items'
+local Inventory <const> = include 'inventory'
+local Log <const> = include 'logs'
 
 RegisterServerEvent('ox_inventory:requestPlayerInventory', function()
 	local xPlayer = ESX.GetPlayerFromId(source)
@@ -54,7 +53,9 @@ AddEventHandler('ox_inventory:setPlayerInventory', function(xPlayer, data)
 	TriggerClientEvent('ox_inventory:setPlayerInventory', xPlayer.source, Inventory.Drops, inventory, totalWeight, ESX.UsableItemsCallbacks, xPlayer.name)
 end)
 
-Utils.RegisterServerCallback('ox_inventory:openInventory', function(source, cb, inv, data)
+local ServerCallback = import 'callbacks'
+
+ServerCallback.Register('openInventory', function(source, cb, inv, data)
 	local left = Inventory(source)
 	local right = left.open and Inventory(left.open)
 
@@ -79,7 +80,7 @@ Utils.RegisterServerCallback('ox_inventory:openInventory', function(source, cb, 
 			else
 				stash = Inventory.CustomStash[data.id or data]
 				if stash then
-					local owner = stash.owner == true and left.owner or stash.owner
+					local owner = (stash.owner == nil and nil) or (type(stash.owner) == 'string' and stash.owner) or data.owner or stash.owner and left.owner
 					data = (owner and ('%s%s'):format(data.id or data, owner)) or data.id or data
 
 					right = Inventory(data)
@@ -88,7 +89,7 @@ Utils.RegisterServerCallback('ox_inventory:openInventory', function(source, cb, 
 					end
 
 				else
-					ox.warning(('%s [%s] (%s) attempted to open an invalid stash (%s)\nIf this stash should exist, add it to `data/stashes` or create it on the server first with `exports.ox_inventory:CreateStash`'):format(GetPlayerName(source), source, left.owner, json.encode(data)))
+					ox.warning(('%s [%s] (%s) attempted to open an invalid stash (%s)\nIf this stash should exist, add it to `data/stashes` or create it on the server first with `exports.ox_inventory:RegisterStash`'):format(GetPlayerName(source), source, left.owner, json.encode(data)))
 					return cb(false)
 				end
 			end
@@ -103,7 +104,7 @@ Utils.RegisterServerCallback('ox_inventory:openInventory', function(source, cb, 
 			else
 				right = Inventory(data.id)
 				if not right then
-					ox.warning(('%s [%s] (%s) attempted to open an invalid stash (%s)\nIf this stash should exist, add it to `data/stashes` or create it on the server first with `exports.ox_inventory:CreateStash`'):format(GetPlayerName(source), source, left.owner, json.encode(data)))
+					ox.warning(('%s [%s] (%s) attempted to open an invalid stash (%s)\nIf this stash should exist, add it to `data/stashes` or create it on the server first with `exports.ox_inventory:RegisterStash`'):format(GetPlayerName(source), source, left.owner, json.encode(data)))
 					return cb(false)
 				end
 			end
@@ -150,8 +151,9 @@ Utils.RegisterServerCallback('ox_inventory:openInventory', function(source, cb, 
 	cb({id=left.label, type=left.type, slots=left.slots, weight=left.weight, maxWeight=left.maxWeight}, right)
 end)
 
-local isPlayer = {.player, .otherplayer}
-Utils.RegisterServerCallback('ox_inventory:swapItems', function(source, cb, data)
+local table = import 'table'
+
+ServerCallback.Register('swapItems', function(source, cb, data)
 	-- todo: refactor and setup some helper functions; should also move into inventory module
 	if data.count > 0 and data.toType ~= 'shop' then
 		local playerInventory, items, ret = Inventory(source), {}, nil
@@ -215,7 +217,7 @@ Utils.RegisterServerCallback('ox_inventory:swapItems', function(source, cb, data
 						TriggerClientEvent('ox_inventory:disarm', fromInventory.id, -1)
 					end
 
-					if toData and ((toData.name ~= fromData.name) or not toData.stack or (not Utils.MatchTables(toData.metadata, fromData.metadata))) then
+					if toData and ((toData.name ~= fromData.name) or not toData.stack or (not table.matches(toData.metadata, fromData.metadata))) then
 						-- Swap items
 						local toWeight = not sameInventory and (toInventory.weight - toData.weight + fromData.weight)
 						local fromWeight = not sameInventory and (fromInventory.weight + toData.weight - fromData.weight)
@@ -235,7 +237,7 @@ Utils.RegisterServerCallback('ox_inventory:swapItems', function(source, cb, data
 							else return cb(false) end
 						else toData, fromData = Inventory.SwapSlots(fromInventory, toInventory, data.fromSlot, data.toSlot) end
 
-					elseif toData and toData.name == fromData.name and Utils.MatchTables(toData.metadata, fromData.metadata) then
+					elseif toData and toData.name == fromData.name and table.matches(toData.metadata, fromData.metadata) then
 						-- Stack items
 						toData.count = toData.count + data.count
 						local weight = Inventory.SlotWeight(Items(toData.name), toData)
@@ -329,10 +331,10 @@ Utils.RegisterServerCallback('ox_inventory:swapItems', function(source, cb, data
 
 					if next(items) then
 						ret = {weight=playerInventory.weight, items=items}
-						if isPlayer[fromInventory.type] then
+						if fromInventory.type == 'player' or fromInventory.type == 'otherplayer' then
 							Inventory.SyncInventory(ESX.GetPlayerFromId(fromInventory.id), fromInventory)
 						end
-						if not sameInventory and isPlayer[toInventory.type] then
+						if not sameInventory and (toInventory.type == 'player' or toInventory.type == 'otherplayer') then
 							Inventory.SyncInventory(ESX.GetPlayerFromId(toInventory.id), toInventory)
 						end
 					end
@@ -345,7 +347,7 @@ Utils.RegisterServerCallback('ox_inventory:swapItems', function(source, cb, data
 	cb(false)
 end)
 
-Utils.RegisterServerCallback('ox_inventory:buyLicense', function(source, cb, id)
+ServerCallback.Register('buyLicense', function(source, cb, id)
 	local license = Licenses[id]
 	if license then
 		local inventory = Inventory(source)
@@ -364,12 +366,12 @@ Utils.RegisterServerCallback('ox_inventory:buyLicense', function(source, cb, id)
 	else cb() end
 end)
 
-Utils.RegisterServerCallback('ox_inventory:getItemCount', function(source, cb, item, metadata, target)
+ServerCallback.Register('getItemCount', function(source, cb, item, metadata, target)
 	local inventory = target and Inventory(target) or Inventory(source)
 	cb((inventory and Inventory.GetItem(inventory, item, metadata, true)) or 0)
 end)
 
-Utils.RegisterServerCallback('ox_inventory:getInventory', function(source, cb, id)
+ServerCallback.Register('getInventory', function(source, cb, id)
 	local inventory = Inventory(id or source)
 	return inventory and cb({
 		id = inventory.id,
@@ -383,7 +385,7 @@ Utils.RegisterServerCallback('ox_inventory:getInventory', function(source, cb, i
 	}) or cb()
 end)
 
-Utils.RegisterServerCallback('ox_inventory:useItem', function(source, cb, item, slot, metadata)
+ServerCallback.Register('useItem', function(source, cb, item, slot, metadata)
 	local inventory = Inventory(source)
 	if inventory.type == 'player' then
 		local item, type = Items(item)
@@ -413,9 +415,14 @@ Utils.RegisterServerCallback('ox_inventory:useItem', function(source, cb, item, 
 				data.consume = 1
 				return cb(data)
 			elseif ESX.UsableItemsCallbacks[item.name] then
-				ESX.UseItem(source, item.name)
+				ESX.UseItem(source, data.name, data)
 			else
 				if item.consume and data.count >= item.consume then
+					local result = Items[item.name] and Items[item.name]('usingItem', item, inventory, slot)
+					if result == false then return cb(false) end
+					if result ~= nil then
+						data.server = result
+					end
 					return cb(data)
 				else
 					TriggerClientEvent('ox_inventory:notify', source, {type = 'error', text = ox.locale('item_not_enough', item.name), duration = 2500})

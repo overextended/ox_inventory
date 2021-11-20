@@ -1,5 +1,5 @@
 local M = {}
-local Items <const> = module('items', true)[1]
+local Items <const> = include('items', true)[1]
 
 local GetItem = function(item)
 	local type
@@ -21,12 +21,11 @@ setmetatable(M, {
 })
 
 CreateThread(function()
-	if ESX == nil or SetInterval == nil then return ox.error('Unable to locate dependencies - refer to the documentation') end
 	local OneSync = GetConvar('onesync_enabled', false) == 'true'
 	local Infinity = GetConvar('onesync_enableInfinity', false) == 'true'
-	if not OneSync and not Infinity then return ox.error('OneSync is not enabled on this server - refer to the documentation')
+	if not OneSync and not Infinity then return error('OneSync is not enabled on this server - refer to the documentation')
 	elseif Infinity then ox.info('Server is running OneSync Infinity') else ox.info('Server is running OneSync Legacy') end
-	local items = exports.oxmysql:fetchSync('SELECT * FROM items')
+	local items = exports.oxmysql:executeSync('SELECT * FROM items')
 	if items then
 		local query = {}
 		for i=1, #items do
@@ -42,7 +41,7 @@ CreateThread(function()
 			query = table.concat(query, ' ')
 			local sql = LoadResourceFile(ox.name, 'setup/dump.sql')
 			if not sql then error('Unable to load "setup/dump.sql', 1) end
-			local file = {LoadResourceFile(ox.name, 'data/items.lua')}
+			local file = {string.strtrim(LoadResourceFile(ox.name, 'data/items.lua'))}
 			file[1] = file[1]:gsub('}$', '')
 			local dump = {}
 local itemFormat = [[
@@ -185,6 +184,37 @@ M.Metadata = function(xPlayer, item, metadata, count)
 	end
 	return metadata, count
 end
+
+local Item = function(name, cb)
+	if Items[name] then M[name] = cb end
+end
+
+---@module 'modules.inventory.server'
+local Inventory
+CreateThread(function() Inventory = include 'inventory' end)
+-----------------------------------------------------------------------------------------------
+-- Serverside item functions
+-----------------------------------------------------------------------------------------------
+
+Item('testburger', function(event, item, inventory, slot, data)
+	if event == 'usingItem' then
+		if Inventory.GetItem(inventory, item, inventory.items[slot].metadata, true) > 100 then
+			return {
+				inventory.label, inventory.owner, event,
+				'so many delicious burgers'
+			}
+		end
+
+	elseif event == 'usedItem' then
+		print(('%s just ate a %s from slot %s'):format(inventory.label, item.label, slot))
+		TriggerClientEvent('ox_inventory:notify', inventory.id, {text = item.server.test})
+
+	elseif event == 'buying' then
+		print(data.id, data.coords, json.encode(data.items[slot], {indent=true}))
+	end
+end)
+
+-----------------------------------------------------------------------------------------------
 
 exports('Items', GetItem)
 return M

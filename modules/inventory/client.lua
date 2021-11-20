@@ -1,5 +1,3 @@
-local Utils <const> = module('utils')
-
 local Dumpsters = {218085040, 666561306, -58485588, -206690185, 1511880420, 682791951}
 
 if Config.Target then
@@ -14,7 +12,7 @@ if Config.Target then
 			SetNetworkIdExistsOnAllMachines(netId)
 			SetNetworkIdCanMigrate(netId, true)
 		end
-		TriggerEvent('ox_inventory:openInventory', 'dumpster', {id='dumpster'..netId})
+		TriggerEvent('ox_inventory:openInventory', 'dumpster', 'dumpster'..netId)
 	end
 
 	exports.qtarget:AddTargetModel(Dumpsters, {
@@ -32,6 +30,8 @@ if Config.Target then
 
 end
 
+local table = import 'table'
+
 local Search = function(search, item, metadata)
 	if item then
 		if type(item) == 'string' then item = {item} end
@@ -46,7 +46,7 @@ local Search = function(search, item, metadata)
 			for _, v in pairs(ESX.PlayerData.inventory) do
 				if v.name == item then
 					if not v.metadata then v.metadata = {} end
-					if not metadata or Utils.TableContains(v.metadata, metadata) then
+					if not metadata or table.contains(v.metadata, metadata) then
 						if search == 1 then returnData[item][#returnData[item]+1] = ESX.PlayerData.inventory[v.slot]
 						elseif search == 2 then
 							returnData[item] += v.count

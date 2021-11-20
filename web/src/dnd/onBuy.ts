@@ -50,6 +50,6 @@ export const onBuy = (source: DragSource, target: DropTarget) => {
       ...data,
       fromSlot: sourceSlot.slot,
       toSlot: targetSlot.slot,
-    }),
+    })
   );
 };

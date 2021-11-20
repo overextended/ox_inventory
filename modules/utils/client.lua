@@ -1,35 +1,4 @@
-local ServerCallbacks = {}
-local M = module('utils', true)
-
-local CallbackTimer = function(event, delay)
-	local time = GetGameTimer()
-	if (ServerCallbacks[event] or 0) > time then
-		return false
-	end
-	ServerCallbacks[event] = time + delay
-end
-
-M.AwaitServerCallback = function(event, ...)
-	CallbackTimer(event, 200)
-	event = 'cb:'..event
-	TriggerServerEvent('ox_inventory:ServerCallback', event, ...)
-	local p = promise.new()
-	event = RegisterNetEvent(event, function(...)
-		p:resolve({...})
-		RemoveEventHandler(event)
-	end)
-	return table.unpack(Citizen.Await(p))
-end
-
-M.TriggerServerCallback = function(event, cb, timer, ...)
-	if timer then CallbackTimer(event, timer) end
-	event = 'cb:'..event
-	TriggerServerEvent('ox_inventory:ServerCallback', event, ...)
-	event = RegisterNetEvent(event, function(...)
-		cb(...)
-		RemoveEventHandler(event)
-	end)
-end
+local M = {}
 
 M.PlayAnim = function(wait, dict, name, blendIn, blendOut, duration, flag, rate, lockX, lockY, lockZ)
 	RequestAnimDict(dict)

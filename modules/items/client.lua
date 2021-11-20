@@ -1,4 +1,4 @@
-local M = module('items', true)
+local M = include('items', true)
 
 local GetItem = function(item)
 	if item then
@@ -13,9 +13,22 @@ local Item = function(name, cb)
 	if M[1][name] then M[1][name].effect = cb end
 end
 
+-----------------------------------------------------------------------------------------------
+-- Clientside item use functions
+-----------------------------------------------------------------------------------------------
+
 Item('burger', function(data, slot)
 	TriggerEvent('ox_inventory:item', data, function(data)
 		if data then
+			TriggerEvent('ox_inventory:notify', {text = 'You ate a delicious '..data.name})
+		end
+	end)
+end)
+
+Item('testburger', function(data, slot)
+	TriggerEvent('ox_inventory:item', data, function(data)
+		if data then
+			if data.server then print(json.encode(data.server, {indent=true})) end
 			TriggerEvent('ox_inventory:notify', {text = 'You ate a delicious '..data.name})
 		end
 	end)
@@ -87,6 +100,8 @@ Item('parachute', function(data, slot)
 		end)
 	end
 end)
+
+-----------------------------------------------------------------------------------------------
 
 exports('Items', GetItem)
 return M

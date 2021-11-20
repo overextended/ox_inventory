@@ -39,7 +39,7 @@ export const itemDurability = (metadata: any, curTime: number) => {
   let durability = undefined;
   if (metadata?.durability) {
     metadata.durability > 100
-      ? (durability = ((metadata.durability - curTime) / (60 * metadata.degrade) * 100))
+      ? (durability = ((metadata.durability - curTime) / (60 * metadata.degrade)) * 100)
       : (durability = metadata.durability);
     if (durability && durability < 0) durability = 0;
   }
