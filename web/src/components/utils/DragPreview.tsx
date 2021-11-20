@@ -1,6 +1,7 @@
 import React, { RefObject, useRef } from 'react';
-import { DragLayerMonitor, useDragLayer, XYCoord } from 'react-dnd';
+import { DragLayerMonitor, useDragDropManager, useDragLayer, XYCoord } from 'react-dnd';
 import { DragSource } from '../../typings';
+import useNuiEvent from '../../hooks/useNuiEvent';
 
 interface DragLayerProps {
   data: DragSource;
@@ -49,6 +50,12 @@ const DragPreview: React.FC = () => {
     currentOffset: calculatePointerPosition(monitor, element),
     isDragging: monitor.isDragging(),
   }));
+
+  const manager = useDragDropManager();
+
+  useNuiEvent('closeInventory', () => {
+    manager.dispatch({ type: 'dnd-core/END_DRAG' });
+  });
 
   return (
     <>
