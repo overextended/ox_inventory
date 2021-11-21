@@ -130,6 +130,7 @@ return {
 	['water'] = {
 		label = 'Water',
 		weight = 500,
+		limit = 15,
 		client = {
 			status = { thirst = 200000 },
 			anim = { dict = 'mp_player_intdrink', clip = 'loop_bottle' },
