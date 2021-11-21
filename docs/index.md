@@ -52,6 +52,18 @@ There should be no changes which break compatibility with other resources with t
 
 [GitHub :fontawesome-brands-github:](https://github.com/overextended/es_extended){ .md-button .md-button--primary }
 
+## Optionals
+### qtarget
+A completely rewritten and optimised targeting solution based on bt-target.
+
+It replaces all markers with zones you can use qtarget to interact with.
+
+!!! attention
+	If you wish to use it first you must ensure that `Config.Target` is set to true in the config.lua file of the inventory.
+
+	Make sure you are starting qtarget in your server.cfg before starting the inventory.
+
+[GitHub :fontawesome-brands-github:](https://github.com/overextended/qtarget){ .md-button .md-button--primary }
 
 ## Installation
 Once you have downloaded and configured the required resources, you will need to update your server config.
