@@ -829,11 +829,46 @@ RegisterNUICallback('useItem', function(slot, cb)
 end)
 
 RegisterNUICallback('giveItem', function(data, cb)
-	local closestPlayer, coords = Utils.GetClosestPlayer()
-	if closestPlayer.x < 2.5 then
-		Utils.PlayAnim(2000, 'mp_common', 'givetake1_a', 1.0, 1.0, -1, 50, 0.0, 0, 0, 0)
-		TriggerServerEvent('ox_inventory:giveItem', data.slot, GetPlayerServerId(closestPlayer.y), data.count)
-		if data.slot == currentWeapon?.slot then Disarm(-1) end
+	local vehicle = GetVehiclePedIsIn(ESX.PlayerData.ped, false)
+	if vehicle then
+		local passenger = GetVehicleMaxNumberOfPassengers(vehicle) - 1
+		if passenger >= 0 then
+			local playerSeat
+			for i = -1, passenger do
+				if i == -1 then passenger = {} end
+				if not IsVehicleSeatFree(vehicle, i) then
+					local entity = GetPedInVehicleSeat(vehicle, i)
+					if entity == ESX.PlayerData.ped then
+						playerSeat = i
+					else
+						passenger[i] = entity
+					end
+				end
+			end
+			--todo: make this less depressing to look at
+			--ref: https://docs.fivem.net/natives/?_0x22AC59A870E6A669
+			if playerSeat == -1 and passenger[0] then
+				passenger = GetPlayerServerId(NetworkGetPlayerIndexFromPed(passenger[0]))
+			elseif playerSeat == 0 and passenger[-1] then
+				passenger = GetPlayerServerId(NetworkGetPlayerIndexFromPed(passenger[-1]))
+			elseif playerSeat == 2 and passenger[3] then
+				passenger = GetPlayerServerId(NetworkGetPlayerIndexFromPed(passenger[3]))
+			elseif playerSeat == 3 and passenger[2] then
+				passenger = GetPlayerServerId(NetworkGetPlayerIndexFromPed(passenger[2]))
+			else return end
+			if passenger then
+				TriggerServerEvent('ox_inventory:giveItem', data.slot, passenger, data.count)
+				if data.slot == currentWeapon?.slot then Disarm(-1) end
+			end
+		end
+	else
+		local target = Utils.Raycast()
+		if target and IsPedAPlayer(target) and #(GetEntityCoords(ESX.PlayerData.ped, true) - GetEntityCoords(target, true)) < 2 then
+			target = GetPlayerServerId(NetworkGetPlayerIndexFromPed(target))
+			Utils.PlayAnim(2000, 'mp_common', 'givetake1_a', 1.0, 1.0, -1, 50, 0.0, 0, 0, 0)
+			TriggerServerEvent('ox_inventory:giveItem', data.slot, target, data.count)
+			if data.slot == currentWeapon?.slot then Disarm(-1) end
+		end
 	end
 	cb(1)
 end)
