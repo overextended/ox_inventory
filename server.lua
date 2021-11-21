@@ -193,6 +193,14 @@ ServerCallback.Register('swapItems', function(source, cb, data)
 			local fromInventory = (data.fromType == 'player' and playerInventory) or Inventory(playerInventory.open)
 			local sameInventory = fromInventory.id == toInventory.id or false
 
+			if not sameInventory and toInventory.type == 'player' then
+				local fromData = fromInventory.items[data.fromSlot]
+				local fromItem = Items(fromData.name)
+				if fromItem.limit and (Inventory.Search(source, 2, fromData.name, fromData.metadata) + data.count) > fromItem.limit then
+					return cb(false, nil, {type = 'error', text = { ox.locale('cannot_carry')}})
+				end
+			end
+
 			if fromInventory.type == 'policeevidence' and not sameInventory then
 				if not toInventory.job.name == 'police' then return cb(false) end
 				if Config.TakeFromEvidence > toInventory.job.grade then
