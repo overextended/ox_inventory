@@ -288,21 +288,23 @@ end
 
 local Drops, nearbyMarkers, closestMarker, playerCoords = {}, {}, {}, nil
 local Markers = function(tb, type, rgb, name)
-	for k, v in pairs(tb) do
-		if not v.jobs or v.jobs[ESX.PlayerData.job.name] then
-			local coords = v.coords or v
-			local distance = #(playerCoords - coords)
-			local id = name and type..name..k or type..k
-			local marker = nearbyMarkers[id]
-			if distance < 1.2 then
-				if not marker then nearbyMarkers[id] = mat(vec3(coords), vec3(rgb)) end
-				if closestMarker[1] == nil or (closestMarker and distance < closestMarker[1]) then
-					closestMarker[1] = distance
-					closestMarker[2] = k
-					closestMarker[3] = type
-					closestMarker[4] = name or v.name
-				end
-			elseif not marker and distance < 8 then nearbyMarkers[id] = mat(vec3(coords), vec3(rgb)) elseif marker and distance > 8 then nearbyMarkers[id] = nil end
+	if tb then
+		for k, v in pairs(tb) do
+			if not v.jobs or v.jobs[ESX.PlayerData.job.name] then
+				local coords = v.coords or v
+				local distance = #(playerCoords - coords)
+				local id = name and type..name..k or type..k
+				local marker = nearbyMarkers[id]
+				if distance < 1.2 then
+					if not marker then nearbyMarkers[id] = mat(vec3(coords), vec3(rgb)) end
+					if closestMarker[1] == nil or (closestMarker and distance < closestMarker[1]) then
+						closestMarker[1] = distance
+						closestMarker[2] = k
+						closestMarker[3] = type
+						closestMarker[4] = name or v.name
+					end
+				elseif not marker and distance < 8 then nearbyMarkers[id] = mat(vec3(coords), vec3(rgb)) elseif marker and distance > 8 then nearbyMarkers[id] = nil end
+			end
 		end
 	end
 end

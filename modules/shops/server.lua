@@ -7,32 +7,61 @@ local locations = Config.Target and 'targets' or 'locations'
 
 for shopName, shopDetails in pairs(data('shops')) do
 	M[shopName] = {}
-	for i=1, #shopDetails[locations] do
-		M[shopName][i] = {
+	if shopDetails[locations] then
+		for i=1, #shopDetails[locations] do
+			M[shopName][i] = {
+				label = shopDetails.name,
+				id = shopName..' '..i,
+				jobs = shopDetails.jobs,
+				items = table.clone(shopDetails.inventory),
+				slots = #shopDetails.inventory,
+				type = 'shop',
+				coords = Config.Target and shopDetails[locations][i].loc or shopDetails[locations][i]
+			}
+			for j=1, M[shopName][i].slots do
+				local slot = M[shopName][i].items[j]
+				local Item = Items(slot.name)
+				if Item then
+					slot = {
+						name = Item.name,
+						slot = j,
+						weight = Item.weight,
+						count = slot.count,
+						price = (math.floor(slot.price * (math.random(8, 12)/10))),
+						metadata = slot.metadata,
+						license = slot.license,
+						currency = slot.currency,
+						grade = slot.grade
+					}
+					M[shopName][i].items[j] = slot
+				end
+			end
+		end
+	else
+		M[shopName] = {
 			label = shopDetails.name,
-			id = shopName..' '..i,
+			id = shopName,
 			jobs = shopDetails.jobs,
-			items = table.clone(shopDetails.inventory),
+			items = shopDetails.inventory,
 			slots = #shopDetails.inventory,
 			type = 'shop',
-			coords = Config.Target and shopDetails[locations][i].loc or shopDetails[locations][i]
 		}
-		for j=1, M[shopName][i].slots do
-			local slot = M[shopName][i].items[j]
+		for i=1, M[shopName].slots do
+			local slot = M[shopName].items[i]
 			local Item = Items(slot.name)
 			if Item then
 				slot = {
 					name = Item.name,
-					slot = j,
+					slot = i,
 					weight = Item.weight,
 					count = slot.count,
-					price = (math.floor(slot.price * (math.random(8, 12)/10))),
+					price = (math.floor(slot.price * (math.random(9, 11)/10))),
 					metadata = slot.metadata,
 					license = slot.license,
 					currency = slot.currency,
 					grade = slot.grade
 				}
-				M[shopName][i].items[j] = slot
+				M[shopName].items[i] = slot
 			end
 		end
 	end
@@ -43,7 +72,7 @@ local ServerCallback = import 'callbacks'
 ServerCallback.Register('openShop', function(source, cb, data)
 	local left, shop = Inventory(source)
 	if data then
-		shop = M[data.type][data.id]
+		shop = data.id and M[data.type][data.id] or M[data.type]
 		if shop.jobs then
 			local playerJob = ESX.GetPlayerFromId(source).job
 			local shopGrade = shop.jobs[playerJob.name]
@@ -51,7 +80,7 @@ ServerCallback.Register('openShop', function(source, cb, data)
 				return cb()
 			end
 		end
-		if #(GetEntityCoords(GetPlayerPed(source)) - shop.coords) > 10 then
+		if shop.coords and #(GetEntityCoords(GetPlayerPed(source)) - shop.coords) > 10 then
 			return cb()
 		end
 		left.open = shop.id
@@ -68,7 +97,7 @@ ServerCallback.Register('buyItem', function(source, cb, data)
 		local player = Inventory(source)
 		local xPlayer = ESX.GetPlayerFromId(source)
 		local split = player.open:match('^.*() ')
-		local shop = M[player.open:sub(0, split-1)][tonumber(player.open:sub(split+1))]
+		local shop = split and M[player.open:sub(0, split-1)][tonumber(player.open:sub(split+1))] or M[player.open]
 		local fromData = shop.items[data.fromSlot]
 		local toData = player.items[data.toSlot]
 		if fromData then
