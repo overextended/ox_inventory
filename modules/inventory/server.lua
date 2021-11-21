@@ -511,6 +511,7 @@ M.CanCarryItem = function(inv, item, count, metadata)
 		if type(inv) ~= 'table' then inv = Inventories[inv] end
 		local itemSlots, _, emptySlots = GetItemSlots(inv, item, metadata == nil and {} or type(metadata) == 'string' and {type=metadata} or metadata)
 		if #itemSlots > 0 or emptySlots > 0 then
+			if inv.type == 'player' and item.limit and (toCount + count) > item.limit then return false end
 			if item.weight == 0 then return true end
 			if count == nil then count = 1 end
 			local newWeight = inv.weight + (item.weight * count)
