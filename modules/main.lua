@@ -1,3 +1,11 @@
+ox.info = function(...) print(string.strjoin(' ', '^2[info]^7', ...)) end
+ox.warning = function(...) print(string.strjoin(' ', '^3[warning]^7', ...)) end
+
+if Config.Target and GetResourceState('qtarget') ~= 'started' then
+	Config.Target = false
+	ox.info('qtarget is not running; disabled compatibility mode')
+end
+
 data = function(name)
 	local func, err = load(LoadResourceFile(ox.name, 'data/'..name..'.lua'), '@@data/'..name, 't')
 	assert(func, err == nil or '\n^1'..err..'^7')
@@ -13,11 +21,6 @@ include = function(name, shared)
 		if shared then return func() else Modules[name] = func() end
 	end
 	return Modules[name]
-end
-
-if ox.server then
-	ox.info = function(...) print(string.strjoin(' ', '^2[info]^7', ...)) end
-	ox.warning = function(...) print(string.strjoin(' ', '^3[warning]^7', ...)) end
 end
 
 if ESX == nil or SetInterval == nil or import == nil then error('Unable to locate dependencies - refer to the documentation') end
