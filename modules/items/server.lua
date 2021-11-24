@@ -2,15 +2,15 @@ local M = {}
 local Items <const> = include('items', true)[1]
 
 local GetItem = function(item)
-	local type
 	if item then
+		local type
 		item = string.lower(item)
 		if item:find('weapon_') then type, item = 1, string.upper(item)
 		elseif item:find('ammo-') then type = 2
 		elseif item:sub(0, 3) == 'at_' then type = 3 end
 		return Items[item] or false, type
 	end
-	return M
+	return Items
 end
 
 setmetatable(M, {
