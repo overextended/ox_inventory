@@ -10,7 +10,7 @@ Config.PlayerSlots = 50
 -- If vehicle plates are stored with a trailing space, set to false (i.e. `XXX 000 `)
 Config.TrimPlate = true
 
--- Adds compatibility for qtarget (https://github.com/QuantusRP/qtarget)
+-- Adds compatibility for qtarget (https://github.com/QuantusRP/qtarget) Ox_INVENTORY must be started after QTARGET if this is TRUE
 Config.Target = false
 
 -------------------------------------------------------------------------------------
