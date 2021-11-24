@@ -1,10 +1,13 @@
 local M = data('stashes')
 
+local OpenStash = function(data)
+	TriggerEvent('ox_inventory:openInventory', 'stash', data)
+end
+
 setmetatable(M, {
 	__call = function()
-		for _, stash in pairs(M) do
+		for id, stash in pairs(M) do
 			if Config.Target then
-				local OpenStash = function(data) TriggerEvent('ox_inventory:openInventory', 'stash', data) end
 				exports.qtarget:RemoveZone(stash.name)
 				exports.qtarget:AddBoxZone(stash.name, stash.target.loc, stash.target.length or 0.5, stash.target.width or 0.5,
 				{
@@ -20,7 +23,7 @@ setmetatable(M, {
 							label = "Open Stash",
 							job = stash.jobs,
 							action = function()
-								OpenStash(stash)
+								OpenStash({id=id})
 							end
 						},
 					},
