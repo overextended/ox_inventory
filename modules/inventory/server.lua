@@ -910,8 +910,5 @@ local RegisterStash = function(id, label, slots, maxWeight, owner)
 
 end
 exports('RegisterStash', RegisterStash)
-exports('CreateStash', function()
-	ox.warning('CreateStash has been deprecated and the functionality changed! Sorry for the inconvenience.\nRefer to documentation for usage and sample usage.')
-end)
 
 return M
