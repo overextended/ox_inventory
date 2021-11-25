@@ -1,3 +1,6 @@
+# Archived until people learn to read
+
+
 <h1 align='center'><a href='https://overextended.github.io/ox_inventory/'>Documentation</a></h1><p align='center'>Click the link above for information on setup, installation, and improving compatibility with other resources.
 
 <h2 align='center'>This project is still a work-in-progress - only recommended for competent developers.</h2> 
