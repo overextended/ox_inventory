@@ -239,16 +239,16 @@ ServerCallback.Register('swapItems', function(source, cb, data)
 
 					elseif toData and toData.name == fromData.name and table.matches(toData.metadata, fromData.metadata) then
 						-- Stack items
-						toData.count = toData.count + data.count
-						local weight = Inventory.SlotWeight(Items(toData.name), toData)
-						local newWeight = toInventory.weight + (weight - toData.weight)
-						if sameInventory or newWeight <= toInventory.maxWeight then
-							toData.weight = weight
-							fromData.count = fromData.count - data.count
-							fromData.weight = Inventory.SlotWeight(Items(fromData.name), fromData)
+						toData.count += data.count
+						fromData.count -= data.count
+						local toSlotWeight = Inventory.SlotWeight(Items(toData.name), toData)
+						local totalWeight = toInventory.weight - toData.weight + toSlotWeight
+						if sameInventory or totalWeight <= toInventory.maxWeight then
+							local fromSlotWeight = Inventory.SlotWeight(Items(fromData.name), fromData)
+							toData.weight = toSlotWeight
 							if not sameInventory then
-								fromInventory.weight = fromInventory.weight - toData.weight
-								toInventory.weight = newWeight
+								fromInventory.weight = fromInventory.weight - fromData.weight + fromSlotWeight
+								toInventory.weight = totalWeight
 
 								Log(
 									('%s [%s] - %s'):format(fromInventory.label, fromInventory.id, fromInventory.owner),
@@ -257,8 +257,10 @@ ServerCallback.Register('swapItems', function(source, cb, data)
 								)
 
 							end
+							fromData.weight = fromSlotWeight
 						else
-							toData.count = toData.count - data.count
+							toData.count -= data.count
+							fromData.count += data.count
 							return cb(false)
 						end
 					elseif data.count <= fromData.count then
