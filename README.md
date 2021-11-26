@@ -1,4 +1,4 @@
-# Archived until people learn to read
+# Support will not be given to people who do not read the documentation.
 
 
 <h1 align='center'><a href='https://overextended.github.io/ox_inventory/'>Documentation</a></h1><p align='center'>Click the link above for information on setup, installation, and improving compatibility with other resources.
