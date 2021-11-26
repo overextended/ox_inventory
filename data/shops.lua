@@ -156,13 +156,24 @@ return {
 	},
 
 	VendingMachineDrinks = {
-		name = 'Vending Machine',
+		name = 'Vending Drink Machine',
 		inventory = {
 			{ name = 'water', price = 10 },
 			{ name = 'cola', price = 10 },
 		},
 		model = {
 			`prop_vend_soda_02`, `prop_vend_fridge01`, `prop_vend_water_01`, `prop_vend_soda_01`
+		}
+	}
+	
+	VendingMachineSnacks = {
+		name = 'Vending Snack Machine',
+		inventory = {
+			{ name = 'chips', price = 8 },
+			{ name = 'chocolatbar', price = 7 },
+		},
+		model = {
+			`prop_vend_snak_01`, `prop_vend_snak_01_tu`
 		}
 	}
 }
