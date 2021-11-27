@@ -91,7 +91,7 @@ const InventorySlot: React.FC<SlotProps> = ({
   const { show } = useContextMenu({ id: `slot-context-${item.slot}-${item.name}` });
 
   const handleContext = (event: React.MouseEvent<HTMLDivElement>) => {
-    !isBusy && inventory.type === 'player' && show(event);
+    !isBusy && inventory.type === 'player' && isSlotWithItem(item) && show(event);
     setCurrentItem(undefined);
     ReactTooltip.hide();
   };
