@@ -6,7 +6,6 @@ import InventorySlot from './InventorySlot';
 import ReactTooltip from 'react-tooltip';
 import { Locale } from '../../store/locale';
 import InventoryContext from './InventoryContext';
-import { isSlotWithItem } from '../../helpers';
 
 const InventoryGrid: React.FC<{ inventory: Inventory }> = ({ inventory }) => {
   const [currentItem, setCurrentItem] = React.useState<SlotWithItem>();
