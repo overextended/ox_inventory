@@ -425,7 +425,7 @@ end
 ---@param inv any
 ---@param item table|string
 ---@param metadata? table
-local GetItemSlots = function(inv, item, metadata)
+M.GetItemSlots = function(inv, item, metadata)
 	if type(inv) ~= 'table' then inv = Inventories[inv] end
 	local totalCount, slots, emptySlots = 0, {}, inv.slots
 	for k, v in pairs(inv.items) do
@@ -457,7 +457,7 @@ M.RemoveItem = function(inv, item, count, metadata, slot)
 		if metadata ~= nil then
 			metadata = type(metadata) == 'string' and {type=metadata} or metadata
 		end
-		local itemSlots, totalCount = GetItemSlots(inv, item, metadata)
+		local itemSlots, totalCount = M.GetItemSlots(inv, item, metadata)
 		if count > totalCount then count = totalCount end
 		local removed, total, slots = 0, count, {}
 		if slot and itemSlots[slot] then
@@ -509,9 +509,9 @@ M.CanCarryItem = function(inv, item, count, metadata)
 	if type(item) ~= 'table' then item = Items(item) end
 	if item then
 		if type(inv) ~= 'table' then inv = Inventories[inv] end
-		local itemSlots, toCount, emptySlots = GetItemSlots(inv, item, metadata == nil and {} or type(metadata) == 'string' and {type=metadata} or metadata)
+		local itemSlots, totalCount, emptySlots = M.GetItemSlots(inv, item, metadata == nil and {} or type(metadata) == 'string' and {type=metadata} or metadata)
 		if #itemSlots > 0 or emptySlots > 0 then
-			if inv.type == 'player' and item.limit and (toCount + count) > item.limit then return false end
+			if inv.type == 'player' and item.limit and (totalCount + count) > item.limit then return false end
 			if item.weight == 0 then return true end
 			if count == nil then count = 1 end
 			local newWeight = inv.weight + (item.weight * count)
