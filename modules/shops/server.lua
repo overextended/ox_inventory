@@ -125,7 +125,8 @@ ServerCallback.Register('buyItem', function(source, cb, data)
 			local metadata, count = Items.Metadata(xPlayer, fromItem, fromData.metadata and table.clone(fromData.metadata) or {}, data.count)
 			local price = count * fromData.price
 				
-			if fromItem.limit and (Inventory.Search(xPlayer.source, 2, fromItem.name, fromItem.metadata) + data.count) > fromItem.limit then
+			local _, totalCount, _ = Inventory.GetItemSlots(xPlayer.source, fromItem, fromItem.metadata)
+			if fromItem.limit and (totalCount + data.count) > fromItem.limit then
 				return cb(false, nil, {type = 'error', text = { ox.locale('cannot_carry')}})
 			end
 
