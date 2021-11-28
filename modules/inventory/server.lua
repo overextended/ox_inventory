@@ -129,7 +129,7 @@ end
 ---@param owner string
 ---@param items? table
 --- This should only be utilised internally!
---- To create a stash, please use `exports.ox_inventory:CreateStash` instead.
+--- To create a stash, please use `exports.ox_inventory:RegisterStash` instead.
 M.Create = function(id, label, invType, slots, weight, maxWeight, owner, items)
 	if maxWeight then
 		local self = {
