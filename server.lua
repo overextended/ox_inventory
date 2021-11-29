@@ -193,6 +193,20 @@ ServerCallback.Register('swapItems', function(source, cb, data)
 			local fromInventory = (data.fromType == 'player' and playerInventory) or Inventory(playerInventory.open)
 			local sameInventory = fromInventory.id == toInventory.id or false
 
+			if not sameInventory and toInventory.type == 'player' or toInventory.type == 'otherplayer' then
+				local fromData = fromInventory.items[data.fromSlot]
+				local fromItem = Items(fromData.name)
+				local _, totalCount, _ = Inventory.GetItemSlots(toInventory, fromItem, fromItem.metadata)
+				if fromItem.limit and (totalCount + data.count) > fromItem.limit then
+					if toInventory.type == 'player' then
+						TriggerClientEvent('ox_inventory:notify', source, {type = 'error', text = { ox.locale('cannot_carry')}})
+					elseif toInventory.type == 'otherplayer' then
+						TriggerClientEvent('ox_inventory:notify', source, {type = 'error', text = { ox.locale('cannot_carry_other')}})
+					end
+					return cb(false)
+				end
+			end
+
 			if fromInventory.type == 'policeevidence' and not sameInventory then
 				if not toInventory.job.name == 'police' then return cb(false) end
 				if Config.TakeFromEvidence > toInventory.job.grade then
