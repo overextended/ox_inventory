@@ -363,7 +363,7 @@ local RegisterCommands = function()
 						if type == 2 then vehicle, position = entity, GetEntityCoords(entity)
 						elseif type == 3 and table.contains(Inventory.Dumpsters, GetEntityModel(entity)) then
 							local netId = NetworkGetEntityIsNetworked(entity) and NetworkGetNetworkIdFromEntity(entity)
-							if netId then
+							if not netId then
 								SetEntityAsMissionEntity(entity)
 								NetworkRegisterEntityAsNetworked(entity)
 								netId = NetworkGetNetworkIdFromEntity(entity)
