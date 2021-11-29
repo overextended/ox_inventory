@@ -91,6 +91,17 @@ local CanOpenInventory = function()
 	and IsPedFatallyInjured(ESX.PlayerData.ped) == false
 end
 
+local OpenNearbyInventory = function()
+	if CanOpenInventory() then
+		local closestPlayer, coords = Utils.GetClosestPlayer()
+		if closestPlayer.x < 2 and (ESX.PlayerData.job.name == 'police' or CanOpenTarget(closestPlayer.z)) then
+			Utils.PlayAnim(2000, 'mp_common', 'givetake1_a', 1.0, 1.0, -1, 50, 0.0, 0, 0, 0)
+			OpenInventory('player', GetPlayerServerId(closestPlayer.y))
+		end
+	end
+end
+exports('openNearbyInventory', OpenNearbyInventory)
+
 local defaultInventory <const> = {
 	type = 'newdrop',
 	slots = Config.PlayerSlots,
@@ -434,13 +445,7 @@ local RegisterCommands = function()
 	end)
 
 	RegisterCommand('steal', function()
-		if CanOpenInventory() then
-			local closestPlayer, coords = Utils.GetClosestPlayer()
-			if closestPlayer.x < 2 and (ESX.PlayerData.job.name == 'police' or CanOpenTarget(closestPlayer.z)) then
-				Utils.PlayAnim(2000, 'mp_common', 'givetake1_a', 1.0, 1.0, -1, 50, 0.0, 0, 0, 0)
-				OpenInventory('player', GetPlayerServerId(closestPlayer.y))
-			end
-		end
+		OpenNearbyInventory()
 	end)
 
 	RegisterCommand('hotbar', function()

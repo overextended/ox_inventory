@@ -9,7 +9,6 @@ import { selectIsBusy } from '../../store/inventory';
 import { Items } from '../../store/items';
 import { isSlotWithItem } from '../../helpers';
 import { useContextMenu } from 'react-contexify';
-import InventoryContext from './InventoryContext';
 import { onUse } from '../../dnd/onUse';
 import ReactTooltip from 'react-tooltip';
 
@@ -92,7 +91,7 @@ const InventorySlot: React.FC<SlotProps> = ({
   const { show } = useContextMenu({ id: `slot-context-${item.slot}-${item.name}` });
 
   const handleContext = (event: React.MouseEvent<HTMLDivElement>) => {
-    !isBusy && isSlotWithItem(item) && inventory.type === 'player' && show(event);
+    !isBusy && inventory.type === 'player' && isSlotWithItem(item) && show(event);
     setCurrentItem(undefined);
     ReactTooltip.hide();
   };
@@ -130,7 +129,6 @@ const InventorySlot: React.FC<SlotProps> = ({
       >
         {isSlotWithItem(item) && (
           <>
-            <InventoryContext item={item} setContextVisible={setContextVisible} />
             <div className="item-count">
               <span>
                 {item.weight > 0

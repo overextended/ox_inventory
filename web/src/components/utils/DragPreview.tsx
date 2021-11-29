@@ -2,6 +2,7 @@ import React, { RefObject, useRef } from 'react';
 import { DragLayerMonitor, useDragDropManager, useDragLayer, XYCoord } from 'react-dnd';
 import { DragSource } from '../../typings';
 import useNuiEvent from '../../hooks/useNuiEvent';
+import { useContextMenu } from 'react-contexify';
 
 interface DragLayerProps {
   data: DragSource;
@@ -53,9 +54,15 @@ const DragPreview: React.FC = () => {
 
   const manager = useDragDropManager();
 
+  const { hideAll } = useContextMenu();
+
   useNuiEvent('closeInventory', () => {
     manager.dispatch({ type: 'dnd-core/END_DRAG' });
   });
+
+  React.useEffect(() => {
+    hideAll();
+  }, [isDragging, hideAll]);
 
   return (
     <>
