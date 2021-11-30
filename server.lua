@@ -95,10 +95,10 @@ ServerCallback.Register('openInventory', function(source, cb, inv, data)
 			end
 
 		elseif type(data) == 'table' then
-			if data.class then
+			if data.class and data.model then
 				right = Inventory(data.id)
 				if not right then
-					local vehicle = Vehicle[inv][data.class]
+					local vehicle = Vehicle[inv]['models'][data.model] or Vehicle[inv][data.class]
 					right = Inventory.Create(data.id, data.id:sub(6), inv, vehicle[1], 0, vehicle[2], false)
 				end
 			else
