@@ -837,7 +837,7 @@ end)
 
 RegisterNUICallback('giveItem', function(data, cb)
 	local vehicle = GetVehiclePedIsIn(ESX.PlayerData.ped, false)
-	if vehicle then
+	if vehicle ~= 0 then
 		local passenger = GetVehicleMaxNumberOfPassengers(vehicle) - 1
 		if passenger >= 0 then
 			local playerSeat
