@@ -368,18 +368,24 @@ M.AddItem = function(inv, item, count, metadata, slot)
 				existing = nil
 			end
 		end
-		if existing == false then
-			local items, toSlot = inv.items, nil
-			for i=1, Config.PlayerSlots do
-				local slotItem = items[i]
-				if item.stack and slotItem ~= nil and slotItem.name == item.name and table.matches(slotItem.metadata, metadata) then
-					toSlot, existing = i, true break
-				elseif not toSlot and slotItem == nil then
-					toSlot = i
-				end
-			end
-			slot = toSlot
-		end
+        if existing == false then
+            local items, toSlot = inv.items, nil
+            for i=1, Config.PlayerSlots do
+                local slotItem = items[i]
+                local isnil = false
+                if slotItem ~= nil then
+                if next(slotItem.metadata) == nil then
+                    isnil = nil
+                end
+                end
+                if (item.stack and slotItem ~= nil and slotItem.name == item.name and slotItem.metadata.type == metadata) or (item.stack and slotItem ~= nil and slotItem.name == item.name and isnil == metadata) then
+                    toSlot, existing = i, true break
+                elseif not toSlot and slotItem == nil then
+                    toSlot = i
+                end
+            end
+            slot = toSlot
+        end
 		metadata, count = Items.Metadata(xPlayer, item, metadata or {}, count)
 		M.SetSlot(inv, item, count, metadata, slot)
 		inv.weight = inv.weight + (item.weight + (metadata?.weight or 0)) * count
