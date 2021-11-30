@@ -361,6 +361,7 @@ M.AddItem = function(inv, item, count, metadata, slot)
 	count = math.floor(count + 0.5)
 	if item and inv and count > 0 then
 		local xPlayer = inv.type == 'player' and ESX.GetPlayerFromId(inv.id) or false
+		metadata, count = Items.Metadata(xPlayer, item, metadata or {}, count)
 		local existing = false
 		if slot then
 			local slotItem = inv.items[slot]
@@ -380,7 +381,6 @@ M.AddItem = function(inv, item, count, metadata, slot)
 			end
 			slot = toSlot
 		end
-		metadata, count = Items.Metadata(xPlayer, item, metadata or {}, count)
 		M.SetSlot(inv, item, count, metadata, slot)
 		inv.weight = inv.weight + (item.weight + (metadata?.weight or 0)) * count
 		if xPlayer then
