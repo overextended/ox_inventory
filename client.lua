@@ -91,17 +91,6 @@ local CanOpenInventory = function()
 	and IsPedFatallyInjured(ESX.PlayerData.ped) == false
 end
 
-local OpenNearbyInventory = function()
-	if CanOpenInventory() then
-		local closestPlayer, coords = Utils.GetClosestPlayer()
-		if closestPlayer.x < 2 and (ESX.PlayerData.job.name == 'police' or CanOpenTarget(closestPlayer.z)) then
-			Utils.PlayAnim(2000, 'mp_common', 'givetake1_a', 1.0, 1.0, -1, 50, 0.0, 0, 0, 0)
-			OpenInventory('player', GetPlayerServerId(closestPlayer.y))
-		end
-	end
-end
-exports('openNearbyInventory', OpenNearbyInventory)
-
 local defaultInventory <const> = {
 	type = 'newdrop',
 	slots = Config.PlayerSlots,
@@ -188,6 +177,17 @@ local OpenInventory = function(inv, data)
 	elseif not isBusy then Notify({type = 'error', text = ox.locale('inventory_player_access'), duration = 2500}) end
 end
 RegisterNetEvent('ox_inventory:openInventory', OpenInventory)
+
+local OpenNearbyInventory = function()
+	if CanOpenInventory() then
+		local closestPlayer, coords = Utils.GetClosestPlayer()
+		if closestPlayer.x < 2 and (ESX.PlayerData.job.name == 'police' or CanOpenTarget(closestPlayer.z)) then
+			Utils.PlayAnim(2000, 'mp_common', 'givetake1_a', 1.0, 1.0, -1, 50, 0.0, 0, 0, 0)
+			OpenInventory('player', GetPlayerServerId(closestPlayer.y))
+		end
+	end
+end
+exports('openNearbyInventory', OpenNearbyInventory)
 
 local UseSlot = function(slot)
 	if ESX.PlayerLoaded and isBusy == false and Progress.Active == false then
