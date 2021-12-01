@@ -8,29 +8,28 @@
     "@fortawesome/free-solid-svg-icons": "^5.15.4",
     "@fortawesome/react-fontawesome": "^0.1.15",
     "@reduxjs/toolkit": "^1.6.1",
-    "@sentry/react": "^6.13.3",
-    "@sentry/tracing": "^6.13.3",
+    "@sentry/react": "^6.15.0",
+    "@sentry/tracing": "^6.15.0",
     "@types/lodash": "^4.14.173",
-    "@types/node": "^16.9.4",
-    "@types/react": "^17.0.22",
-    "@types/react-dnd": "^3.0.2",
-    "@types/react-dom": "^17.0.9",
-    "@types/react-transition-group": "^4.4.3",
+    "@types/node": "^16.11.11",
+    "@types/react": "^17.0.37",
+    "@types/react-dom": "^17.0.11",
+    "@types/react-transition-group": "^4.4.4",
     "lodash": "^4.17.21",
     "react": "^17.0.2",
     "react-contexify": "^5.0.0",
-    "react-dnd": "^14.0.2",
-    "react-dnd-touch-backend": "^14.0.0",
+    "react-dnd": "^14.0.4",
+    "react-dnd-touch-backend": "^14.1.1",
     "react-dom": "^17.0.2",
     "react-hot-toast": "^2.1.1",
-    "react-redux": "^7.2.4",
+    "react-redux": "^7.2.6",
     "react-scripts": "4.0.3",
     "react-tooltip": "^4.2.21",
     "react-transition-group": "^4.4.2",
-    "redux": "^4.1.0",
+    "redux": "^4.1.2",
     "redux-devtools": "^3.7.0",
-    "sass": "^1.42.0",
-    "typescript": "^4.4.3"
+    "sass": "^1.44.0",
+    "typescript": "^4.5.2"
   },
   "scripts": {
     "start": "craco start",
@@ -56,8 +55,8 @@
     ]
   },
   "devDependencies": {
-    "@craco/craco": "^6.3.0",
+    "@craco/craco": "^6.4.2",
     "cross-env": "^7.0.3",
-    "prettier": "^2.4.1"
+    "prettier": "^2.5.0"
   }
 }
