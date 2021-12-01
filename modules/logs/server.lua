@@ -29,7 +29,7 @@ if Config.Logs then
 		local message = strformat('\r"date": "%s/%s/%s", "time": "%s", "source": "%s", "target": "%s", "content": "%s"', day, month, year, '%s', '%s', '%s', '%s')
 		local none = 'n/a'
 
-		local write = function(source, target, ...)
+		local function write(source, target, ...)
 			local content = string.strjoin(' ', string.tostringall(...))
 			file:write(strformat(message, osdate(time), source, target or none, content))
 		end

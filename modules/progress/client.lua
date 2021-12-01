@@ -4,7 +4,7 @@ local Active = false
 local canCancel, anim, scenario, progressCallback = false, false, false, nil
 local prop = table.create(2, 0)
 
-local PlayerReset = function()
+local function PlayerReset()
 	if anim or scenario then
 		ClearPedTasks(ESX.PlayerData.ped)
 		table.wipe(Disable)
@@ -18,14 +18,14 @@ local PlayerReset = function()
 	Active = false
 end
 
-local Completed = function()
+local function Completed()
 	if Active then
 		progressCallback(false)
 		PlayerReset()
 	end
 end
 
-local Cancelled = function()
+local function Cancelled()
 	if Active and canCancel then
 		progressCallback(true)
 		PlayerReset()
@@ -33,7 +33,7 @@ local Cancelled = function()
 	end
 end
 
-local Start = function(options, completed)
+local function Start(options, completed)
 	if Active == false then
 		progressCallback = completed
 		if not IsEntityDead(ESX.PlayerData.ped) or options.useWhileDead then

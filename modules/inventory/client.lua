@@ -2,7 +2,7 @@ local Dumpsters = {218085040, 666561306, -58485588, -206690185, 1511880420, 6827
 
 if Config.Target then
 
-	local OpenDumpster = function(entity)
+	local function OpenDumpster(entity)
 		local netId = NetworkGetEntityIsNetworked(entity) and NetworkGetNetworkIdFromEntity(entity) or false
 		if netId == false then
 			SetEntityAsMissionEntity(entity)
@@ -32,7 +32,7 @@ end
 
 local table = import 'table'
 
-local Search = function(search, item, metadata)
+local function Search(search, item, metadata)
 	if item then
 		if type(item) == 'string' then item = {item} end
 		if type(metadata) == 'string' then metadata = {type=metadata} end

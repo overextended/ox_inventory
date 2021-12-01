@@ -1,7 +1,7 @@
 local M = {}
 local Items <const> = include('items', true)[1]
 
-local GetItem = function(item)
+local function GetItem(item)
 	if item then
 		local type
 		item = string.lower(item)
@@ -124,7 +124,7 @@ local itemFormat = [[
 	end]]
 end)
 
-local GenerateText = function(num)
+local function GenerateText(num)
 	local str
 	repeat str = {}
 		for i=1, num do str[i] = string.char(math.random(65, 90)) end
@@ -133,7 +133,7 @@ local GenerateText = function(num)
 	return str
 end
 
-local GenerateSerial = function(text)
+local function GenerateSerial(text)
 	text = text == nil and GenerateText(3) or text:len() > 3 and text
 	return ('%s%s%s'):format(math.random(100000,999999), text, math.random(100000,999999))
 end
@@ -142,7 +142,7 @@ local containers = {
 	['paperbag'] = {5, 1000}
 }
 
-M.Metadata = function(xPlayer, item, metadata, count)
+function M.Metadata(xPlayer, item, metadata, count)
 	local isWeapon = item.name:find('WEAPON_')
 	if isWeapon == nil then metadata = not metadata and {} or type(metadata) == 'string' and {type=metadata} or metadata end
 	if isWeapon then
@@ -185,7 +185,7 @@ M.Metadata = function(xPlayer, item, metadata, count)
 	return metadata, count
 end
 
-local Item = function(name, cb)
+local function Item(name, cb)
 	if Items[name] then M[name] = cb end
 end
 

@@ -18,7 +18,7 @@ AddStateBagChangeHandler('busy', nil, function(bagName, _, value, _, _)
 	end
 end)
 
-local SetWeapon = function(weapon, hash, ammo)
+local function SetWeapon(weapon, hash, ammo)
 	currentWeapon = weapon and {
 		hash = hash,
 		ammo = ammo,
@@ -33,9 +33,9 @@ local SetWeapon = function(weapon, hash, ammo)
 	if currentWeapon then currentWeapon.timer = 0 end
 end
 
-local ItemNotify = function(data) SendNUIMessage({action = 'itemNotify', data = data}) end
+local function ItemNotify(data) SendNUIMessage({action = 'itemNotify', data = data}) end
 
-local Disarm = function(newSlot)
+local function Disarm(newSlot)
 	SetWeaponsNoAutoswap(1)
 	SetWeaponsNoAutoreload(1)
 	SetPedCanSwitchWeapon(ESX.PlayerData.ped, 0)
@@ -58,7 +58,7 @@ local Disarm = function(newSlot)
 end
 RegisterNetEvent('ox_inventory:disarm', Disarm)
 
-local ClearWeapons = function()
+local function ClearWeapons()
 	Disarm(-1)
 	for k in pairs(Weapons) do SetPedAmmo(ESX.PlayerData.ped, k, 0) end
 	RemoveAllPedWeapons(ESX.PlayerData.ped, true)
@@ -70,7 +70,7 @@ local ClearWeapons = function()
 end
 RegisterNetEvent('ox_inventory:clearWeapons', ClearWeapons)
 
-local Notify = function(data) SendNUIMessage({ action = 'showNotif', data = data }) end
+local function Notify(data) SendNUIMessage({ action = 'showNotif', data = data }) end
 RegisterNetEvent('ox_inventory:notify', Notify)
 exports('notify', Notify)
 
@@ -80,7 +80,7 @@ exports('setStashTarget', function(id, owner)
 end)
 
 local isCuffed = false
-local CanOpenInventory = function()
+local function CanOpenInventory()
 	return ESX.PlayerLoaded
 	and invOpen ~= nil
 	and isBusy == false
@@ -100,7 +100,7 @@ local defaultInventory <const> = {
 }
 local currentInventory = defaultInventory
 
-local CloseTrunk = function()
+local function CloseTrunk()
 	if currentInventory?.type == 'trunk' then
 		local entity = currentInventory.entity
 		local door = currentInventory.door
@@ -116,7 +116,7 @@ end
 
 local ServerCallback = import 'callbacks'
 
-local OpenInventory = function(inv, data)
+local function OpenInventory(inv, data)
 	if CanOpenInventory() then
 
 		if invOpen and ((not inv and currentInventory.type == 'newdrop') or (inv == 'container' and currentInventory.id == ESX.PlayerData.inventory[data].metadata.container)) then
@@ -178,7 +178,7 @@ local OpenInventory = function(inv, data)
 end
 RegisterNetEvent('ox_inventory:openInventory', OpenInventory)
 
-local OpenNearbyInventory = function()
+local function OpenNearbyInventory()
 	if CanOpenInventory() then
 		local closestPlayer, coords = Utils.GetClosestPlayer()
 		if closestPlayer.x < 2 and (ESX.PlayerData.job.name == 'police' or CanOpenTarget(closestPlayer.z)) then
@@ -189,7 +189,7 @@ local OpenNearbyInventory = function()
 end
 exports('openNearbyInventory', OpenNearbyInventory)
 
-local UseSlot = function(slot)
+local function UseSlot(slot)
 	if ESX.PlayerLoaded and isBusy == false and Progress.Active == false then
 		local item = ESX.PlayerData.inventory[slot]
 		local data = item and Items[item.name]
@@ -288,7 +288,7 @@ local UseSlot = function(slot)
 	end
 end
 
-local CanOpenTarget = function(ped)
+local function CanOpenTarget(ped)
 	return IsPedFatallyInjured(ped)
 	or IsEntityPlayingAnim(ped, 'dead', 'dead_a', 3)
 	or IsEntityPlayingAnim(ped, 'mp_arresting', 'idle', 3)
@@ -298,7 +298,7 @@ local CanOpenTarget = function(ped)
 end
 
 local Drops, nearbyMarkers, closestMarker, playerCoords = {}, {}, {}, nil
-local Markers = function(tb, type, rgb, name)
+local function Markers(tb, type, rgb, name)
 	if tb then
 		for k, v in pairs(tb) do
 			if not v.jobs or v.jobs[ESX.PlayerData.job.name] then
@@ -320,7 +320,7 @@ local Markers = function(tb, type, rgb, name)
 	end
 end
 
-OnPlayerData = function(key, val)
+function OnPlayerData(key, val)
 	if key == 'job' then
 		Shops()
 		Stashes()
@@ -337,7 +337,7 @@ end
 
 local table = import 'table'
 
-local RegisterCommands = function()
+local function RegisterCommands()
 
 	RegisterCommand('inv', function()
 		if closestMarker[1] and closestMarker[3] ~= 'license' and closestMarker[3] ~= 'policeevidence' then

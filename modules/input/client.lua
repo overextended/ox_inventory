@@ -1,6 +1,6 @@
 local p = nil
 
-local Input = function(header, rows)
+local function Input(header, rows)
 
 	if p then return end
 	

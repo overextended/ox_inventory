@@ -9,11 +9,11 @@ local Items = include 'items'
 
 local started = false
 
-local Print = function(arg)
+local function Print(arg)
 	print(('^3=================================================================\n^0%s\n^3=================================================================^0'):format(arg))
 end
 
-local Upgrade = function()
+local function Upgrade()
 	exports.oxmysql:execute('SELECT name FROM linden_inventory', {}, function(result)
 		if result ~= nil then
 			Print('Please run upgrade.sql before upgrading')
@@ -59,7 +59,7 @@ local Upgrade = function()
 	end)
 end
 
-local GenerateText = function(num)
+local function GenerateText(num)
 	local str
 	repeat str = {}
 		for i=1, num do str[i] = string.char(math.random(65, 90)) end
@@ -68,12 +68,12 @@ local GenerateText = function(num)
 	return str
 end
 
-local GenerateSerial = function(text)
+local function GenerateSerial(text)
 	if not text then GenerateText(3) elseif text:len() > 3 then return text end
 	return ('%s%s%s'):format(math.random(100000,999999), text, math.random(100000,999999))
 end
 
-local Convert = function()
+local function Convert()
 	local users = exports.oxmysql:executeSync('SELECT identifier, inventory, loadout, accounts FROM users')
 	local total, count = #users, 0
 	Print(('Converting %s user inventories to new data format'):format(total))

@@ -1,7 +1,7 @@
 local M = data('shops')
 
 local Blips = {}
-local CreateLocationBlip = function(blipId, name, blip, location)
+local function CreateLocationBlip(blipId, name, blip, location)
 	Blips[blipId] = AddBlipForCoord(location.x, location.y)
 	SetBlipSprite(Blips[blipId], blip.id)
 	SetBlipDisplay(Blips[blipId], 4)
@@ -38,7 +38,7 @@ setmetatable(M, {
 							distance = 2
 						})
 					else
-						local OpenShop = function(data)
+						local function OpenShop(data)
 							TriggerEvent('ox_inventory:openInventory', 'shop', data)
 						end
 						for id=1, #shop.targets do

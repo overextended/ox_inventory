@@ -1,15 +1,14 @@
 local M = include('items', true)
 
-local GetItem = function(item)
+local function GetItem(item)
 	if item then
 		item = string.lower(item)
 		if item:find('weapon_') then item = string.upper(item) end
 		return Items[item]
 	end
-	return
 end
 
-local Item = function(name, cb)
+local function Item(name, cb)
 	if M[1][name] then M[1][name].effect = cb end
 end
 

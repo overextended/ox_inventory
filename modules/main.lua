@@ -6,14 +6,14 @@ if Config.Target and GetResourceState('qtarget') ~= 'started' then
 	ox.info('qtarget is not running; disabled compatibility mode')
 end
 
-data = function(name)
+function data(name)
 	local func, err = load(LoadResourceFile(ox.name, 'data/'..name..'.lua'), '@@data/'..name, 't')
 	assert(func, err == nil or '\n^1'..err..'^7')
 	return func()
 end
 
 local Modules = {}
-include = function(name, shared)
+function include(name, shared)
 	if not Modules[name] then
 		local path = ('modules/%s/%s'):format(name, shared and 'shared.lua' or ox.server and 'server.lua' or 'client.lua')
 		local func, err = load(LoadResourceFile(ox.name, path), '@@'..path, 't')

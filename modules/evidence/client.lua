@@ -1,6 +1,6 @@
 local M = data 'evidence'
 
-local OpenEvidence = function()
+local function OpenEvidence()
 	TriggerEvent('ox_inventory:openInventory', 'policeevidence')
 end
 

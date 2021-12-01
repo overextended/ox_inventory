@@ -1,6 +1,6 @@
 local M = data('stashes')
 
-local OpenStash = function(data)
+local function OpenStash(data)
 	TriggerEvent('ox_inventory:openInventory', 'stash', data)
 end
 

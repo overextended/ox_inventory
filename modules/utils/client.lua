@@ -1,6 +1,6 @@
 local M = {}
 
-M.PlayAnim = function(wait, dict, name, blendIn, blendOut, duration, flag, rate, lockX, lockY, lockZ)
+function M.PlayAnim(wait, dict, name, blendIn, blendOut, duration, flag, rate, lockX, lockY, lockZ)
 	RequestAnimDict(dict)
 	CreateThread(function()
 		repeat Wait(0) until HasAnimDictLoaded(dict)
@@ -11,7 +11,7 @@ M.PlayAnim = function(wait, dict, name, blendIn, blendOut, duration, flag, rate,
 	end)
 end
 
-M.PlayAnimAdvanced = function(wait, dict, name, posX, posY, posZ, rotX, rotY, rotZ, animEnter, animExit, duration, flag, time)
+function M.PlayAnimAdvanced(wait, dict, name, posX, posY, posZ, rotX, rotY, rotZ, animEnter, animExit, duration, flag, time)
 	RequestAnimDict(dict)
 	CreateThread(function()
 		repeat Wait(0) until HasAnimDictLoaded(dict)
@@ -22,7 +22,7 @@ M.PlayAnimAdvanced = function(wait, dict, name, posX, posY, posZ, rotX, rotY, ro
 	end)
 end
 
-M.Raycast = function()
+function M.Raycast()
 	local playerCoords = GetEntityCoords(ESX.PlayerData.ped)
 	local plyOffset = GetOffsetFromEntityInWorldCoords(ESX.PlayerData.ped, 0.0, 3.0, -0.05)
 	local rayHandle = StartShapeTestLosProbe(playerCoords.x, playerCoords.y, playerCoords.z, plyOffset.x, plyOffset.y, plyOffset.z, 30, ESX.PlayerData.ped)
@@ -40,7 +40,7 @@ M.Raycast = function()
 	end
 end
 
-M.GetClosestPlayer = function()
+function M.GetClosestPlayer()
 	local closestPlayer, playerId, playerCoords = vec3(10, 0, 0), PlayerId(), GetEntityCoords(ESX.PlayerData.ped)
 	local coords
 	for k, player in pairs(GetActivePlayers()) do
