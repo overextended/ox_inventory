@@ -7,7 +7,7 @@
 <table><tr><td>
 Ox Inventory for ESX Legacy  
 
-Copyright (C) 2021  Overextended
+Copyright © 2021  Overextended
 
 
 This program is free software: you can redistribute it and/or modify
