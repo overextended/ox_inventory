@@ -646,13 +646,13 @@ RegisterNetEvent('ox_inventory:setPlayerInventory', function(drops, inventory, w
 			end
 			if closestMarker and IsControlJustReleased(0, 38) then
 				if closestMarker[3] == 'license' then
-					ServerCallback.Async(ox.name, 'buyLicense', 200, function(success, message)
+					ServerCallback.Async(ox.name, 'buyLicense', 1000, function(success, message)
 						if success == false then
 							Notify({type = 'error', text = ox.locale(message), duration = 2500})
 						else
 							Notify({text = ox.locale(success), duration = 2500})
 						end
-					end, 1000, closestMarker[2])
+					end, closestMarker[2])
 				elseif closestMarker[3] == 'shop' then OpenInventory(closestMarker[3], {id=closestMarker[2], type=closestMarker[4]})
 				elseif closestMarker[3] == 'policeevidence' then OpenInventory(closestMarker[3]) end
 			end
