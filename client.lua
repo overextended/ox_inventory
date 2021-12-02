@@ -356,7 +356,7 @@ local function RegisterCommands()
 					local vehicle = GetVehiclePedIsIn(ESX.PlayerData.ped, false)
 					if NetworkGetEntityIsNetworked(vehicle) then
 						local plate = Config.TrimPlate and string.strtrim(GetVehicleNumberPlateText(vehicle)) or GetVehicleNumberPlateText(vehicle)
-						OpenInventory('glovebox', {id='glove'..plate, class=GetVehicleClass(vehicle)})
+						OpenInventory('glovebox', {id='glove'..plate, class=GetVehicleClass(vehicle), model=GetEntityModel(vehicle)})
 						while true do
 							Wait(100)
 							if not invOpen then break
@@ -389,10 +389,10 @@ local function RegisterCommands()
 					else return end
 					local lastVehicle = nil
 					local class = GetVehicleClass(vehicle)
-					if vehicle and Vehicles.trunk[class] and #(playerCoords - position) < 6 and NetworkGetEntityIsNetworked(vehicle) then
+					local vehHash = GetEntityModel(vehicle)
+					if vehicle and Vehicles.trunk['models'][vehHash] or Vehicles.trunk[class] and #(playerCoords - position) < 6 and NetworkGetEntityIsNetworked(vehicle) then
 						local locked = GetVehicleDoorLockStatus(vehicle)
 						if locked == 0 or locked == 1 then
-							local vehHash = GetEntityModel(vehicle)
 							local checkVehicle = Vehicles.Storage[vehHash]
 							local open, vehBone
 							if checkVehicle == 1 then open, vehBone = 4, GetEntityBoneIndexByName(vehicle, 'bonnet')
@@ -405,7 +405,7 @@ local function RegisterCommands()
 								local plate = Config.TrimPlate and string.strtrim(GetVehicleNumberPlateText(vehicle)) or GetVehicleNumberPlateText(vehicle)
 								TaskTurnPedToFaceCoord(ESX.PlayerData.ped, position.x, position.y, position.z)
 								lastVehicle = vehicle
-								OpenInventory('trunk', {id='trunk'..plate, class=class})
+								OpenInventory('trunk', {id='trunk'..plate, class=class, model=vehHash})
 								local timeout = 20
 								repeat Wait(50)
 									timeout -= 1

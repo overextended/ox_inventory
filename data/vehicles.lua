@@ -52,7 +52,10 @@ return {
 		[17] = {11, 88000}, -- service
 		[18] = {11, 88000}, -- emergency
 		[19] = {11, 88000}, -- military
-		[20] = {11, 88000} -- commercial (trucks)
+		[20] = {11, 88000}, -- commercial (trucks)
+		['models'] = {
+			[`xa21`] = {11, 88000}
+		}		
 	},
 
 	trunk = {
@@ -75,6 +78,9 @@ return {
 		[17] = {41, 328000}, -- service
 		[18] = {41, 328000}, -- emergency
 		[19] = {41, 328000}, -- military
-		[20] = {61, 488000} -- commercial
+		[20] = {61, 488000}, -- commercial
+		['models'] = {
+			[`xa21`] = {11, 10000}
+		}		
 	}
 }
