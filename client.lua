@@ -82,13 +82,13 @@ end)
 local isCuffed = false
 local function CanOpenInventory()
 	return ESX.PlayerLoaded
-	and invOpen ~= nil
 	and isBusy == false
 	and isCuffed == false
 	and ESX.PlayerData.dead == false
 	and (currentWeapon == nil or currentWeapon.timer == 0)
 	and IsPauseMenuActive() == false
 	and IsPedFatallyInjured(ESX.PlayerData.ped) == false
+	and invOpen ~= nil
 end
 
 local defaultInventory <const> = {
@@ -783,12 +783,14 @@ end)
 
 RegisterNetEvent('esx_policejob:handcuff', function()
 	isCuffed = not isCuffed
-	if isCuffed then Disarm(-1) TriggerEvent('ox_inventory:closeInventory') end
+	if isCuffed then
+		Disarm(-1)
+		if invOpen then TriggerEvent('ox_inventory:closeInventory') end
+	end
 end)
 
 RegisterNetEvent('esx_policejob:unrestrain', function()
 	isCuffed = false
-	TriggerEvent('ox_inventory:closeInventory')
 end)
 
 RegisterNetEvent('ox_inventory:viewInventory', function(data)
