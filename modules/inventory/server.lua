@@ -168,7 +168,10 @@ end
 ---@param id string|number
 ---@param type string
 function M.Remove(id, type)
-	if type == 'drop' then TriggerClientEvent('ox_inventory:removeDrop', -1, id) end
+	if type == 'drop' then
+		TriggerClientEvent('ox_inventory:removeDrop', -1, id)
+		M.Drops[id] = nil
+	end
 	Inventories[id] = nil
 end
 
