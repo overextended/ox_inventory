@@ -27,6 +27,7 @@ if ox.server == false then
 
 	-- Enable sentry logging (this reports UI errors and general performance statistics to the Ox team, anonymously)
 	Config.Sentry = true
+
 else
 	-- Check the latest available version
 	Config.CheckVersion = false
@@ -36,6 +37,9 @@ else
 
 	-- Enable integrated logging
 	Config.Logs = true
+
+	-- Prices on items in shop go up or down from shop to shop on resource start
+	Config.VariableShopPrices = true
 
 	-- Police grade at which somoene can take items from evidence
 	Config.TakeFromEvidence = 2
