@@ -178,17 +178,6 @@ local function OpenInventory(inv, data)
 end
 RegisterNetEvent('ox_inventory:openInventory', OpenInventory)
 
-local function OpenNearbyInventory()
-	if CanOpenInventory() then
-		local closestPlayer, coords = Utils.GetClosestPlayer()
-		if closestPlayer.x < 2 and (ESX.PlayerData.job.name == 'police' or CanOpenTarget(closestPlayer.z)) then
-			Utils.PlayAnim(2000, 'mp_common', 'givetake1_a', 1.0, 1.0, -1, 50, 0.0, 0, 0, 0)
-			OpenInventory('player', GetPlayerServerId(closestPlayer.y))
-		end
-	end
-end
-exports('openNearbyInventory', OpenNearbyInventory)
-
 local function UseSlot(slot)
 	if ESX.PlayerLoaded and isBusy == false and Progress.Active == false then
 		local item = ESX.PlayerData.inventory[slot]
@@ -296,6 +285,17 @@ local function CanOpenTarget(ped)
 	or IsEntityPlayingAnim(ped, 'missminuteman_1ig_2', 'handsup_enter', 3)
 	or IsEntityPlayingAnim(ped, 'random@mugging3', 'handsup_standing_base', 3)
 end
+
+local function OpenNearbyInventory()
+	if CanOpenInventory() then
+		local closestPlayer, coords = Utils.GetClosestPlayer()
+		if closestPlayer.x < 2 and (ESX.PlayerData.job.name == 'police' or CanOpenTarget(closestPlayer.z)) then
+			Utils.PlayAnim(2000, 'mp_common', 'givetake1_a', 1.0, 1.0, -1, 50, 0.0, 0, 0, 0)
+			OpenInventory('player', GetPlayerServerId(closestPlayer.y))
+		end
+	end
+end
+exports('openNearbyInventory', OpenNearbyInventory)
 
 local Drops, nearbyMarkers, closestMarker, playerCoords = {}, {}, {}, nil
 local function Markers(tb, type, rgb, name)
