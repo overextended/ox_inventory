@@ -1,5 +1,5 @@
-local M = {}
-local Items <const> = include('items', true)[1]
+local Items = {}
+local ItemList = shared 'items'
 
 local function GetItem(item)
 	if item then
@@ -8,12 +8,12 @@ local function GetItem(item)
 		if item:find('weapon_') then type, item = 1, string.upper(item)
 		elseif item:find('ammo-') then type = 2
 		elseif item:sub(0, 3) == 'at_' then type = 3 end
-		return Items[item] or false, type
+		return ItemList[item] or false, type
 	end
-	return Items
+	return ItemList
 end
 
-setmetatable(M, {
+setmetatable(Items, {
 	__call = function(self, item)
 		if item then return GetItem(item) end
 		return self
@@ -56,11 +56,11 @@ local itemFormat = [[
 ]]
 			local saveSql = false
 			for _, v in pairs(items) do
-				if not Items[v.name] then
+				if not ItemList[v.name] then
 					if not saveSql then saveSql = true end
 					dump[#dump+1] = ("('%s', '%s', %s),\n"):format(v.name, v.label, v.weight)
 					file[#file+1] = (itemFormat):format(v.name, v.label, v.weight, v.stack, v.close, v.description)
-					Items[v.name] = v
+					ItemList[v.name] = v
 				end
 			end
 			file[#file+1] = '}'
@@ -77,15 +77,21 @@ local itemFormat = [[
 			if items then ox.info(#items..' items have been copied from the database') end
 		end
 	end
+
+	if Config.DBCleanup then
+		exports.oxmysql:executeSync('DELETE FROM ox_inventory WHERE lastupdated < (NOW() - INTERVAL '..Config.DBCleanup..') OR data = "[]"')
+	end
+
 	Wait(2000)
-	TriggerEvent('ox_inventory:itemList', Items)
-	if Config.DBCleanup then exports.oxmysql:executeSync('DELETE FROM ox_inventory WHERE lastupdated < (NOW() - INTERVAL '..Config.DBCleanup..') OR data = "[]"') end
 	ESX.UsableItemsCallbacks = ESX.GetUsableItems()
+
 	local count = 0
-	for _, v in pairs(Items) do
+	for _, v in pairs(ItemList) do
 		if v.consume and v.consume > 0 and ESX.UsableItemsCallbacks[v.name] then ESX.UsableItemsCallbacks[v.name] = nil end
 		count += 1
 	end
+
+	TriggerEvent('ox_inventory:itemList', ItemList)
 	ox.info('Inventory has loaded '..count..' items')
 	collectgarbage('collect') -- clean up from initialisation
 	ox.ready = true
@@ -142,7 +148,7 @@ local containers = {
 	['paperbag'] = {5, 1000}
 }
 
-function M.Metadata(xPlayer, item, metadata, count)
+function Items.Metadata(xPlayer, item, metadata, count)
 	local isWeapon = item.name:find('WEAPON_')
 	if isWeapon == nil then metadata = not metadata and {} or type(metadata) == 'string' and {type=metadata} or metadata end
 	if isWeapon then
@@ -178,7 +184,7 @@ function M.Metadata(xPlayer, item, metadata, count)
 			end
 		end
 		if not metadata?.durability then
-			local durability = Items[item.name].degrade
+			local durability = ItemList[item.name].degrade
 			if durability then metadata.durability = os.time()+(durability * 60) metadata.degrade = durability end
 		end
 	end
@@ -186,12 +192,11 @@ function M.Metadata(xPlayer, item, metadata, count)
 end
 
 local function Item(name, cb)
-	if Items[name] then M[name] = cb end
+	if ItemList[name] then Items[name] = cb end
 end
 
----@module 'modules.inventory.server'
 local Inventory
-CreateThread(function() Inventory = include 'inventory' end)
+CreateThread(function() Inventory = server.inventory end)
 -----------------------------------------------------------------------------------------------
 -- Serverside item functions
 -----------------------------------------------------------------------------------------------
@@ -216,5 +221,5 @@ end)
 
 -----------------------------------------------------------------------------------------------
 
-exports('Items', GetItem)
-return M
+exports('ItemList', GetItem)
+server.items = Items

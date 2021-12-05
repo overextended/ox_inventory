@@ -1,4 +1,4 @@
-local M = include('items', true)
+local Items = shared 'items'
 
 local function GetItem(item)
 	if item then
@@ -9,7 +9,7 @@ local function GetItem(item)
 end
 
 local function Item(name, cb)
-	if M[1][name] then M[1][name].effect = cb end
+	if Items[name] then Items[name].effect = cb end
 end
 
 -----------------------------------------------------------------------------------------------
@@ -60,14 +60,14 @@ end)
 Item('bandage', function(data, slot)
 	local maxHealth = 200
 	local health = GetEntityHealth(ESX.PlayerData.ped)
-	if health < maxHealth then
+	-- if health < maxHealth then
 		TriggerEvent('ox_inventory:item', data, function(data)
 			if data then
 				SetEntityHealth(ESX.PlayerData.ped, math.min(maxHealth, math.floor(health + maxHealth / 16)))
 				TriggerEvent('ox_inventory:notify', {text = 'You feel better already'})
 			end
 		end)
-	end
+	-- end
 end)
 
 Item('armour', function(data, slot)
@@ -103,4 +103,4 @@ end)
 -----------------------------------------------------------------------------------------------
 
 exports('Items', GetItem)
-return M
+client.items = Items

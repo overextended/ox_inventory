@@ -26,7 +26,7 @@ if Config.Logs then
 		month = month:sub(0, 3)
 		local osdate = os.date
 		local time = '%H:%M:%S'
-		local message = strformat('\r"date": "%s/%s/%s", "time": "%s", "source": "%s", "target": "%s", "content": "%s"', day, month, year, '%s', '%s', '%s', '%s')
+		local message = strformat('\r{"date": "%s/%s/%s", "time": "%s", "source": "%s", "target": "%s", "content": "%s"}', day, month, year, '%s', '%s', '%s', '%s')
 		local none = 'n/a'
 
 		local function write(source, target, ...)
@@ -34,10 +34,10 @@ if Config.Logs then
 			file:write(strformat(message, osdate(time), source, target or none, content))
 		end
 
-		return write
+		server.logs = write
+		return
 	end
 	ox.warning('Unable to initilise logging module')
 end
 
-local function write() end
-return write
+server.logs = function() end

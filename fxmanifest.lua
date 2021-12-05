@@ -19,10 +19,23 @@ dependencies {
 }
 
 shared_scripts {
-	'@pe-lualib/init.lua',
 	'@es_extended/imports.lua',
+	'@pe-lualib/init.lua',
 	'config.lua',
-	'modules/*.lua'
+	'modules/main.lua'
+}
+
+client_scripts {
+	'modules/**/client.lua',
+	'client.lua'
+}
+
+server_scripts {
+	'modules/logs/server.lua',
+	'modules/items/server.lua',
+	'modules/inventory/server.lua',
+	'modules/shops/server.lua',
+	'server.lua'
 }
 
 --server_script 'setup/convert.lua'
@@ -33,8 +46,6 @@ files {
 	'web/build/index.html',
 	'web/build/**/*',
 	'modules/**/shared.lua',
-	'modules/**/client.lua',
 	'data/*.lua',
-	'data/**/*.lua',
-	'cl*.lua'
+	'data/**/*.lua'
 }

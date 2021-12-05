@@ -1,7 +1,8 @@
-local Dumpsters = {218085040, 666561306, -58485588, -206690185, 1511880420, 682791951}
+local Inventory = {}
+
+Inventory.Dumpsters = {218085040, 666561306, -58485588, -206690185, 1511880420, 682791951}
 
 if Config.Target then
-
 	local function OpenDumpster(entity)
 		local netId = NetworkGetEntityIsNetworked(entity) and NetworkGetNetworkIdFromEntity(entity) or false
 		if netId == false then
@@ -15,7 +16,7 @@ if Config.Target then
 		TriggerEvent('ox_inventory:openInventory', 'dumpster', 'dumpster'..netId)
 	end
 
-	exports.qtarget:AddTargetModel(Dumpsters, {
+	exports.qtarget:AddTargetModel(Inventory.Dumpsters, {
 		options = {
 			{
 				icon = "fas fa-dumpster",
@@ -27,12 +28,11 @@ if Config.Target then
 		},
 		distance = 2
 	})
-
 end
 
 local table = import 'table'
 
-local function Search(search, item, metadata)
+function Inventory.Search(search, item, metadata)
 	if item then
 		if type(item) == 'string' then item = {item} end
 		if type(metadata) == 'string' then metadata = {type=metadata} end
@@ -59,9 +59,74 @@ local function Search(search, item, metadata)
 	end
 	return false
 end
+exports('Search', Inventory.Search)
 
-exports('Search', Search)
+local function OpenEvidence()
+	TriggerEvent('ox_inventory:openInventory', 'policeevidence')
+end
 
-return {
-	Dumpsters = Dumpsters, Search = Search
-}
+Inventory.Evidence = setmetatable(data('evidence'), {
+	__call = function(self)
+		for _, evidence in pairs(self) do
+			if Config.Target then
+				exports.qtarget:RemoveZone(evidence.target.name)
+				exports.qtarget:AddBoxZone(evidence.target.name, evidence.target.loc, evidence.target.length or 0.5, evidence.target.width or 0.5,
+				{
+					name=evidence.target.name,
+					heading=evidence.target.heading or 0.0,
+					debugPoly=false,
+					minZ=evidence.target.minZ,
+					maxZ=evidence.target.maxZ
+				}, {
+					options = {
+						{
+							icon = "fas fa-warehouse",
+							label = "Open Police Evidence",
+							job = 'police',
+							action = function()
+								OpenEvidence()
+							end
+						},
+					},
+					distance = evidence.target.distance or 3.0
+				})
+			end
+		end
+	end
+})
+
+local function OpenStash(data)
+	TriggerEvent('ox_inventory:openInventory', 'stash', data)
+end
+
+Inventory.Stashes = setmetatable(data('stashes'), {
+	__call = function(self)
+		for id, stash in pairs(self) do
+			if Config.Target then
+				exports.qtarget:RemoveZone(stash.name)
+				exports.qtarget:AddBoxZone(stash.name, stash.target.loc, stash.target.length or 0.5, stash.target.width or 0.5,
+				{
+					name=stash.name,
+					heading=stash.target.heading or 0.0,
+					debugPoly=false,
+					minZ=stash.target.minZ,
+					maxZ=stash.target.maxZ
+				}, {
+					options = {
+						{
+							icon = "fas fa-warehouse",
+							label = "Open Stash",
+							job = stash.jobs,
+							action = function()
+								OpenStash({id=id})
+							end
+						},
+					},
+					distance = stash.target.distance or 3.0
+				})
+			end
+		end
+	end
+})
+
+client.inventory = Inventory

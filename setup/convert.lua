@@ -1,4 +1,4 @@
-local Items = include 'items'
+local Items = server.items
 
 --[[
 	You should remove this file from fxmanifest.lua if it is not required

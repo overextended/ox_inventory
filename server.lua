@@ -1,11 +1,3 @@
-local Stashes <const> = data 'stashes'
-local Vehicle <const> = data 'vehicles'
-local Licenses <const> = data 'licenses'
-local Shops <const> = include 'shops'
-local Items <const> = include 'items'
-local Inventory <const> = include 'inventory'
-local Log <const> = include 'logs'
-
 RegisterServerEvent('ox_inventory:requestPlayerInventory', function()
 	local xPlayer = ESX.GetPlayerFromId(source)
 	if xPlayer then
@@ -21,6 +13,8 @@ RegisterServerEvent('ox_inventory:requestPlayerInventory', function()
 	end
 end)
 
+local Inventory = server.inventory
+
 RegisterServerEvent('ox_inventory:closeInventory', function()
 	local inventory = Inventory(source)
 	if inventory?.open then
@@ -29,6 +23,8 @@ RegisterServerEvent('ox_inventory:closeInventory', function()
 		inventory:set('open', false)
 	end
 end)
+
+local Items = server.items
 
 AddEventHandler('ox_inventory:setPlayerInventory', function(xPlayer, data)
 	local money, inventory, totalWeight = {money=0, black_money=0}, {}, 0
@@ -53,6 +49,8 @@ AddEventHandler('ox_inventory:setPlayerInventory', function(xPlayer, data)
 	TriggerClientEvent('ox_inventory:setPlayerInventory', xPlayer.source, Inventory.Drops, inventory, totalWeight, ESX.UsableItemsCallbacks, xPlayer.name)
 end)
 
+local Stashes = data 'stashes'
+local Vehicles = data 'vehicles'
 local ServerCallback = import 'callbacks'
 
 ServerCallback.Register('openInventory', function(source, cb, inv, data)
@@ -98,7 +96,7 @@ ServerCallback.Register('openInventory', function(source, cb, inv, data)
 			if data.class and data.model then
 				right = Inventory(data.id)
 				if not right then
-					local vehicle = Vehicle[inv]['models'][data.model] or Vehicle[inv][data.class]
+					local vehicle = Vehicles[inv]['models'][data.model] or Vehicles[inv][data.class]
 					right = Inventory.Create(data.id, data.id:sub(6), inv, vehicle[1], 0, vehicle[2], false)
 				end
 			else
@@ -152,9 +150,10 @@ ServerCallback.Register('openInventory', function(source, cb, inv, data)
 end)
 
 local table = import 'table'
+local Log = server.logs
 
 ServerCallback.Register('swapItems', function(source, cb, data)
-	-- todo: refactor and setup some helper functions; should also move into inventory module
+	-- todo: refactor and setup some helper functions
 	if data.count > 0 and data.toType ~= 'shop' then
 		local playerInventory, items, ret = Inventory(source), {}, nil
 
@@ -362,6 +361,8 @@ ServerCallback.Register('swapItems', function(source, cb, data)
 	end
 	cb(false)
 end)
+
+local Licenses = data 'licenses'
 
 ServerCallback.Register('buyLicense', function(source, cb, id)
 	local license = Licenses[id]

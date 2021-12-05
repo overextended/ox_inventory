@@ -1,15 +1,15 @@
-local Items <const> = include 'items'
-local Inventory <const> = include 'inventory'
+local Items = server.items
+local Inventory = server.inventory
 
-local M = {}
+local Shops = {}
 
 local locations = Config.Target and 'targets' or 'locations'
 
 for shopName, shopDetails in pairs(data('shops')) do
-	M[shopName] = {}
+	Shops[shopName] = {}
 	if shopDetails[locations] then
 		for i=1, #shopDetails[locations] do
-			M[shopName][i] = {
+			Shops[shopName][i] = {
 				label = shopDetails.name,
 				id = shopName..' '..i,
 				jobs = shopDetails.jobs,
@@ -18,8 +18,8 @@ for shopName, shopDetails in pairs(data('shops')) do
 				type = 'shop',
 				coords = Config.Target and shopDetails[locations][i].loc or shopDetails[locations][i]
 			}
-			for j=1, M[shopName][i].slots do
-				local slot = M[shopName][i].items[j]
+			for j=1, Shops[shopName][i].slots do
+				local slot = Shops[shopName][i].items[j]
 				local Item = Items(slot.name)
 				if Item then
 					slot = {
@@ -33,12 +33,12 @@ for shopName, shopDetails in pairs(data('shops')) do
 						currency = slot.currency,
 						grade = slot.grade
 					}
-					M[shopName][i].items[j] = slot
+					Shops[shopName][i].items[j] = slot
 				end
 			end
 		end
 	else
-		M[shopName] = {
+		Shops[shopName] = {
 			label = shopDetails.name,
 			id = shopName,
 			jobs = shopDetails.jobs,
@@ -46,8 +46,8 @@ for shopName, shopDetails in pairs(data('shops')) do
 			slots = #shopDetails.inventory,
 			type = 'shop',
 		}
-		for i=1, M[shopName].slots do
-			local slot = M[shopName].items[i]
+		for i=1, Shops[shopName].slots do
+			local slot = Shops[shopName].items[i]
 			local Item = Items(slot.name)
 			if Item then
 				slot = {
@@ -61,7 +61,7 @@ for shopName, shopDetails in pairs(data('shops')) do
 					currency = slot.currency,
 					grade = slot.grade
 				}
-				M[shopName].items[i] = slot
+				Shops[shopName].items[i] = slot
 			end
 		end
 	end
@@ -72,7 +72,7 @@ local ServerCallback = import 'callbacks'
 ServerCallback.Register('openShop', function(source, cb, data)
 	local left, shop = Inventory(source)
 	if data then
-		shop = data.id and M[data.type][data.id] or M[data.type]
+		shop = data.id and Shops[data.type][data.id] or Shops[data.type]
 		if shop.jobs then
 			local playerJob = ESX.GetPlayerFromId(source).job
 			local shopGrade = shop.jobs[playerJob.name]
@@ -89,15 +89,15 @@ ServerCallback.Register('openShop', function(source, cb, data)
 end)
 
 local table = import 'table'
+local Log = server.logs
 
-local Log <const> = include 'logs'
 ServerCallback.Register('buyItem', function(source, cb, data)
 	if data.toType == 'player' then
 		if data.count == nil then data.count = 1 end
 		local player = Inventory(source)
 		local xPlayer = ESX.GetPlayerFromId(source)
 		local split = player.open:match('^.*() ')
-		local shop = split and M[player.open:sub(0, split-1)][tonumber(player.open:sub(split+1))] or M[player.open]
+		local shop = split and Shops[player.open:sub(0, split-1)][tonumber(player.open:sub(split+1))] or Shops[player.open]
 		local fromData = shop.items[data.fromSlot]
 		local toData = player.items[data.toSlot]
 		if fromData then
@@ -124,7 +124,7 @@ ServerCallback.Register('buyItem', function(source, cb, data)
 			local toItem = toData and Items(toData.name)
 			local metadata, count = Items.Metadata(xPlayer, fromItem, fromData.metadata and table.clone(fromData.metadata) or {}, data.count)
 			local price = count * fromData.price
-				
+
 			local _, totalCount, _ = Inventory.GetItemSlots(xPlayer.source, fromItem, fromItem.metadata)
 			if fromItem.limit and (totalCount + data.count) > fromItem.limit then
 				return cb(false, nil, {type = 'error', text = { ox.locale('cannot_carry')}})
@@ -166,4 +166,4 @@ ServerCallback.Register('buyItem', function(source, cb, data)
 	cb(false)
 end)
 
-return M
+server.shops = Shops

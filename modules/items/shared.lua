@@ -1,6 +1,4 @@
-local Items = data('items')
-local Data = data('weapons')
-local Weapons = {}
+local Items = data 'items'
 
 for k, v in pairs(Items) do
 	v.name = k
@@ -17,38 +15,35 @@ for k, v in pairs(Items) do
 	else v.server = nil end
 end
 
-for k, v in pairs(Data.Weapons) do
-	v.name = k
-	v.hash = joaat(k)
-	v.stack = v.stack or false
-	v.close = true
-	if ox.server then
-		v.client = nil
-	else v.server = nil end
-	Items[k] = v
-	if not v.durability then v.durability = 1 end
-	Weapons[v.hash] = k
+for type, data in pairs(data('weapons')) do
+	if type == 'Weapons' then
+		for k, v in pairs(data) do
+			v.name = k
+			v.hash = joaat(k)
+			v.stack = v.stack or false
+			v.close = true
+			if ox.server then
+				v.client = nil
+			else
+				v.server = nil
+			end
+			if not v.durability then v.durability = 1 end
+			Items[k] = v
+		end
+	else
+		for k, v in pairs(data) do
+			v.name = k
+			v.consume = 1
+			v.stack = true
+			v.close = type == 'Components' and true or false
+			if ox.server then
+				v.client = nil
+			else
+				v.server = nil
+			end
+			Items[k] = v
+		end
+	end
 end
 
-for k, v in pairs(Data.Components) do
-	v.name = k
-	v.consume = 1
-	v.stack = true
-	v.close = true
-	if ox.server then
-		v.client = nil
-	else v.server = nil end
-	Items[k] = v
-end
-
-for k, v in pairs(Data.Ammo) do
-	v.name = k
-	v.consume = 1
-	v.stack = true
-	v.close = false
-	if ox.server then
-		v.client = nil
-	else v.server = nil end
-	Items[k] = v
-end
-return {Items, Weapons}
+return Items

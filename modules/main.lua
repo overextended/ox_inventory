@@ -1,3 +1,9 @@
+if ox.server then
+	server = {}
+else
+	client = {}
+end
+
 ox.info = function(...) print(string.strjoin(' ', '^2[info]^7', ...)) end
 ox.warning = function(...) print(string.strjoin(' ', '^3[warning]^7', ...)) end
 
@@ -6,24 +12,21 @@ if Config.Target and GetResourceState('qtarget') ~= 'started' then
 	ox.info('qtarget is not running; disabled compatibility mode')
 end
 
-function data(name)
-	local func, err = load(LoadResourceFile(ox.name, 'data/'..name..'.lua'), '@@data/'..name, 't')
-	assert(func, err == nil or '\n^1'..err..'^7')
+local function loadfile(path)
+	local func, err = load(LoadResourceFile(ox.name, path), ('@@ox_inventory/%s'):format(path), 't')
+	if err then error('^1'..err..'^0', 0) end
 	return func()
 end
 
-local Modules = {}
-function include(name, shared)
-	if not Modules[name] then
-		local path = ('modules/%s/%s'):format(name, shared and 'shared.lua' or ox.server and 'server.lua' or 'client.lua')
-		local func, err = load(LoadResourceFile(ox.name, path), '@@'..path, 't')
-		assert(func, err == nil or '\n^1'..err..'^7')
-		if shared then return func() else Modules[name] = func() end
-	end
-	return Modules[name]
+function data(name)
+	return loadfile(('data/%s.lua'):format(name))
 end
 
-if ESX == nil or SetInterval == nil or import == nil then error('Unable to locate dependencies - refer to the documentation') end
+function shared(name)
+	return loadfile(('modules/%s/shared.lua'):format(name))
+end
+
+if ESX == nil or SetInterval == nil then error('Ox Inventory requires a modified version of ESX, refer to the documentation.') end
 
 local Locales = data('locales/'..Config.Locale)
 ox.locale = function(string, ...)
@@ -31,7 +34,3 @@ ox.locale = function(string, ...)
 	if Locales[string] then return Locales[string]:format(...) end
 	return string
 end
-
-local func, err = load(LoadResourceFile(ox.name, ox.server and 'server.lua' or 'client.lua'), ox.server and '@@server.lua' or '@@client.lua', 't')
-assert(func, err == nil or '\n^1'..err..'^7')
-func()

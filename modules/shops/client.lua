@@ -1,6 +1,5 @@
-local M = data('shops')
-
 local Blips = {}
+
 local function CreateLocationBlip(blipId, name, blip, location)
 	Blips[blipId] = AddBlipForCoord(location.x, location.y)
 	SetBlipSprite(Blips[blipId], blip.id)
@@ -13,14 +12,19 @@ local function CreateLocationBlip(blipId, name, blip, location)
 	EndTextCommandSetBlipName(Blips[blipId])
 end
 
-setmetatable(M, {
-	__call = function()
+local function OpenShop(data)
+	TriggerEvent('ox_inventory:openInventory', 'shop', data)
+end
+
+client.shops = setmetatable(data('shops'), {
+	__call = function(self)
 		if next(Blips) then
 			for i=1, #Blips do RemoveBlip(Blips[i]) end
 			table.wipe(Blips)
 		end
+
 		local blipId = 0
-		for type, shop in pairs(M) do
+		for type, shop in pairs(self) do
 			if shop.jobs == nil or (shop.jobs[ESX.PlayerData.job.name] and ESX.PlayerData.job.grade >= shop.jobs[ESX.PlayerData.job.name]) then
 				if shop.blip then blipId += 1 end
 				if Config.Target then
@@ -38,9 +42,6 @@ setmetatable(M, {
 							distance = 2
 						})
 					else
-						local function OpenShop(data)
-							TriggerEvent('ox_inventory:openInventory', 'shop', data)
-						end
 						for id=1, #shop.targets do
 							local target = shop.targets[id]
 							local shopid = type..'-'..id
@@ -77,5 +78,3 @@ setmetatable(M, {
 		end
 	end
 })
-
-return M
