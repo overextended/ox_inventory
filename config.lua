@@ -102,6 +102,6 @@ if IsDuplicityVersion then
 	}
 
 	_G.server = table.wipe(server)
-end
+else client = {} end
 
 _G.ox = ox
