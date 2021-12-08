@@ -24,8 +24,8 @@ return {
 	['female'] = "Mulher",
 	['used'] = "Usou",
 	['removed'] = "Removido",
-	['added'] = "Adcionado",
-	['holstered'] = "Armado",
+	['added'] = "Adicionado",
+	['holstered'] = "Guardado",
 	['equipped'] = "Equipado",
 	['using'] = "Usando %s",
 	['inventory_setup'] = "O inventário está pronto para usar",
@@ -77,4 +77,5 @@ return {
 	['use_hotbar'] = "Usar item da hotbar %s~",
 	['no_durability'] = "A durabilidade do item está esgotada",
 	['cannot_give'] = "Incapaz de dar %s %s ao alvo",
+	['evidence_cannot_take'] = "Grau não alto o suficiente para tirar da evidência"
 }
