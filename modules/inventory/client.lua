@@ -2,7 +2,7 @@ local Inventory = {}
 
 Inventory.Dumpsters = {218085040, 666561306, -58485588, -206690185, 1511880420, 682791951}
 
-if Config.Target then
+if ox.qtarget then
 	local function OpenDumpster(entity)
 		local netId = NetworkGetEntityIsNetworked(entity) and NetworkGetNetworkIdFromEntity(entity) or false
 		if netId == false then
@@ -68,7 +68,7 @@ end
 Inventory.Evidence = setmetatable(data('evidence'), {
 	__call = function(self)
 		for _, evidence in pairs(self) do
-			if Config.Target then
+			if ox.qtarget then
 				exports.qtarget:RemoveZone(evidence.target.name)
 				exports.qtarget:AddBoxZone(evidence.target.name, evidence.target.loc, evidence.target.length or 0.5, evidence.target.width or 0.5,
 				{
@@ -102,7 +102,7 @@ end
 Inventory.Stashes = setmetatable(data('stashes'), {
 	__call = function(self)
 		for id, stash in pairs(self) do
-			if Config.Target then
+			if ox.qtarget then
 				exports.qtarget:RemoveZone(stash.name)
 				exports.qtarget:AddBoxZone(stash.name, stash.target.loc, stash.target.length or 0.5, stash.target.width or 0.5,
 				{

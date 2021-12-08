@@ -10,7 +10,7 @@ for k, v in pairs(Items) do
 			v.consume = 1
 		end
 	end
-	if ox.server then
+	if IsDuplicityVersion then
 		v.client = nil
 	else v.server = nil end
 end
@@ -22,7 +22,7 @@ for type, data in pairs(data('weapons')) do
 			v.hash = joaat(k)
 			v.stack = v.stack or false
 			v.close = true
-			if ox.server then
+			if IsDuplicityVersion then
 				v.client = nil
 			else
 				v.server = nil
@@ -36,7 +36,7 @@ for type, data in pairs(data('weapons')) do
 			v.consume = 1
 			v.stack = true
 			v.close = type == 'Components' and true or false
-			if ox.server then
+			if IsDuplicityVersion then
 				v.client = nil
 			else
 				v.server = nil

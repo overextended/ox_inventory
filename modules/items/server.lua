@@ -39,9 +39,9 @@ CreateThread(function()
 		end
 		if next(query) then
 			query = table.concat(query, ' ')
-			local sql = LoadResourceFile(ox.name, 'setup/dump.sql')
+			local sql = LoadResourceFile(ox.resource, 'setup/dump.sql')
 			if not sql then error('Unable to load "setup/dump.sql', 1) end
-			local file = {string.strtrim(LoadResourceFile(ox.name, 'data/items.lua'))}
+			local file = {string.strtrim(LoadResourceFile(ox.resource, 'data/items.lua'))}
 			file[1] = file[1]:gsub('}$', '')
 			local dump = {}
 local itemFormat = [[
@@ -66,9 +66,9 @@ local itemFormat = [[
 			file[#file+1] = '}'
 			if saveSql then
 				dump = ('%s%s'):format(sql, table.concat(dump))
-				SaveResourceFile(ox.name, 'setup/dump.sql', dump, -1)
+				SaveResourceFile(ox.resource, 'setup/dump.sql', dump, -1)
 			end
-			SaveResourceFile(ox.name, 'data/items.lua', table.concat(file), -1)
+			SaveResourceFile(ox.resource, 'data/items.lua', table.concat(file), -1)
 			-- exports.oxmysql:update(query, {}, function(result)
 			-- 	if result > 0 then
 			-- 		ox.info('Removed '..result..' items from the database')
@@ -78,8 +78,8 @@ local itemFormat = [[
 		end
 	end
 
-	if Config.DBCleanup then
-		exports.oxmysql:executeSync('DELETE FROM ox_inventory WHERE lastupdated < (NOW() - INTERVAL '..Config.DBCleanup..') OR data = "[]"')
+	if ox.clearstashes then
+		exports.oxmysql:executeSync('DELETE FROM ox_inventory WHERE lastupdated < (NOW() - INTERVAL '..ox.clearstashes..') OR data = "[]"')
 	end
 
 	Wait(2000)

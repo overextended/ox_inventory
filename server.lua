@@ -43,9 +43,9 @@ AddEventHandler('ox_inventory:setPlayerInventory', function(xPlayer, data)
 			if money[v.name] then money[v.name] = money[v.name] + v.count end
 		end
 	end
-	local inv = Inventory.Create(xPlayer.source, xPlayer.name, 'player', Config.PlayerSlots, totalWeight, Config.DefaultWeight, xPlayer.identifier, inventory)
+	local inv = Inventory.Create(xPlayer.source, xPlayer.name, 'player', ox.playerslots, totalWeight, ox.playerweight, xPlayer.identifier, inventory)
 	inv.job = xPlayer.job
-	xPlayer.syncInventory(totalWeight, Config.DefaultWeight, inventory, money)
+	xPlayer.syncInventory(totalWeight, ox.playerweight, inventory, money)
 	TriggerClientEvent('ox_inventory:setPlayerInventory', xPlayer.source, Inventory.Drops, inventory, totalWeight, ESX.UsableItemsCallbacks, xPlayer.name)
 end)
 
@@ -68,7 +68,7 @@ ServerCallback.Register('openInventory', function(source, cb, inv, data)
 		if inv == 'stash' then
 			local stash = Stashes[data.id]
 			if stash then
-				local owner = stash.owner == true and left.owner or stash.owner
+				local owner = stash.owner and left.owner or stash.owner
 				right = Inventory(owner and stash.name..owner or stash.name)
 
 				if not right then
@@ -208,7 +208,7 @@ ServerCallback.Register('swapItems', function(source, cb, data)
 
 			if fromInventory.type == 'policeevidence' and not sameInventory then
 				if not toInventory.job.name == 'police' then return cb(false) end
-				if Config.TakeFromEvidence > toInventory.job.grade then
+				if ox.evidencegrade > toInventory.job.grade then
 					TriggerClientEvent('ox_inventory:notify', source, {type = 'error', text = ox.locale('evidence_cannot_take')})
 					return cb(false)
 				end

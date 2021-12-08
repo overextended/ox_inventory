@@ -3,7 +3,7 @@ local Inventory = server.inventory
 
 local Shops = {}
 
-local locations = Config.Target and 'targets' or 'locations'
+local locations = ox.qtarget and 'targets' or 'locations'
 
 for shopName, shopDetails in pairs(data('shops')) do
 	Shops[shopName] = {}
@@ -16,7 +16,7 @@ for shopName, shopDetails in pairs(data('shops')) do
 				items = table.clone(shopDetails.inventory),
 				slots = #shopDetails.inventory,
 				type = 'shop',
-				coords = Config.Target and shopDetails[locations][i].loc or shopDetails[locations][i]
+				coords = ox.qtarget and shopDetails[locations][i].loc or shopDetails[locations][i]
 			}
 			for j=1, Shops[shopName][i].slots do
 				local slot = Shops[shopName][i].items[j]
@@ -27,7 +27,7 @@ for shopName, shopDetails in pairs(data('shops')) do
 						slot = j,
 						weight = Item.weight,
 						count = slot.count,
-						price = Config.VariableShopPrices == true and (math.floor(slot.price * (math.random(8, 12)/10))) or slot.price,
+						price = ox.randomprices and (math.floor(slot.price * (math.random(8, 12)/10))) or slot.price,
 						metadata = slot.metadata,
 						license = slot.license,
 						currency = slot.currency,
@@ -55,7 +55,7 @@ for shopName, shopDetails in pairs(data('shops')) do
 					slot = i,
 					weight = Item.weight,
 					count = slot.count,
-					price = Config.VariableShopPrices == true and (math.floor(slot.price * (math.random(9, 11)/10))) or slot.price,
+					price = ox.randomprices and (math.floor(slot.price * (math.random(9, 11)/10))) or slot.price,
 					metadata = slot.metadata,
 					license = slot.license,
 					currency = slot.currency,

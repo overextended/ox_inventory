@@ -183,7 +183,7 @@ function Inventory.Save(inv)
 	else
 		if inv.type == 'trunk' or inv.type == 'glovebox' then
 			local plate = inv.id:sub(6)
-			if Config.TrimPlate then plate = string.strtrim(plate) end
+			if ox.playerslots then plate = string.strtrim(plate) end
 			exports.oxmysql:updateSync('UPDATE owned_vehicles SET ?? = ? WHERE plate = ?', { inv.type, inventory, plate })
 		else
 			exports.oxmysql:updateSync('INSERT INTO ox_inventory (owner, name, data) VALUES (:owner, :name, :data) ON DUPLICATE KEY UPDATE data = :data', {
@@ -198,7 +198,7 @@ end
 local function RandomLoot(loot)
 	local max, items = #loot, {}
 	for i=1, math.random(1,3) do
-		if math.random(math.floor(Config.LootChance/i), 100) then
+		if math.random(math.floor(ox.lootchance/i), 100) then
 			local randomItem = loot[math.random(1, max)]
 			local count = math.random(randomItem[2], randomItem[3])
 			if count > 0 then items[#items+1] = {randomItem[1], count} end
@@ -214,9 +214,9 @@ end
 local function GenerateItems(id, invType, items)
 	if items == nil then
 		if invType == 'dumpster' then
-			items = RandomLoot(Config.DumpsterLoot)
+			items = RandomLoot(ox.dumpsterloot)
 		else
-			items = RandomLoot(Config.Loot)
+			items = RandomLoot(ox.loottable)
 		end
 	end
 	local returnData, totalWeight = table.create(#items, 0), 0
@@ -240,16 +240,16 @@ function Inventory.Load(id, invType, owner)
 	if id and invType then
 		if isVehicle then
 			local plate = id:sub(6)
-			if Config.TrimPlate then plate = string.strtrim(plate) end
+			if ox.playerslots then plate = string.strtrim(plate) end
 			result = exports.oxmysql:singleSync('SELECT ?? FROM owned_vehicles WHERE plate = ?', { invType, plate })
 			if result then result = json.decode(result[invType])
-			elseif Config.RandomLoot then return GenerateItems(id, invType)
+			elseif ox.randomloot then return GenerateItems(id, invType)
 			else datastore = true end
 		elseif owner then
 			result = exports.oxmysql:scalarSync('SELECT data FROM ox_inventory WHERE owner = ? AND name = ?', { owner, id })
 			if result then result = json.decode(result) end
 		elseif invType == 'dumpster' then
-			if Config.RandomLoot then return GenerateItems(id, invType) else datastore = true end
+			if ox.randomloot then return GenerateItems(id, invType) else datastore = true end
 		else
 			result = exports.oxmysql:scalarSync('SELECT data FROM ox_inventory WHERE owner = ? AND name = ?', { '', id })
 			if result then result = json.decode(result) end
@@ -374,7 +374,7 @@ function Inventory.AddItem(inv, item, count, metadata, slot)
 		end
 		if existing == false then
 			local items, toSlot = inv.items, nil
-			for i=1, Config.PlayerSlots do
+			for i=1, ox.playerslots do
 				local slotItem = items[i]
 				if item.stack and slotItem ~= nil and slotItem.name == item.name and table.matches(slotItem.metadata, metadata) then
 					toSlot, existing = i, true break
@@ -568,7 +568,7 @@ end
 Inventory.Drops = {}
 AddEventHandler('ox_inventory:createDrop', function(source, slot, toSlot, cb)
 	local drop = GenerateDropId()
-	local inventory = Inventory.Create(drop, 'Drop '..drop, 'drop', Config.PlayerSlots, toSlot.weight, Config.DefaultWeight, false, {[slot] = table.clone(toSlot)})
+	local inventory = Inventory.Create(drop, 'Drop '..drop, 'drop', ox.playerslots, toSlot.weight, ox.playerweight, false, {[slot] = table.clone(toSlot)})
 	local coords = GetEntityCoords(GetPlayerPed(source))
 	inventory.coords = vec3(coords.x, coords.y, coords.z-0.2)
 	Inventory.Drops[drop] = inventory.coords
@@ -578,7 +578,7 @@ end)
 AddEventHandler('ox_inventory:customDrop', function(prefix, items, coords, slots, maxWeight)
 	local drop = GenerateDropId()
 	local items, weight = GenerateItems(drop, 'drop', items)
-	local inventory = Inventory.Create(drop, prefix..' '..drop, 'drop', slots or Config.PlayerSlots, weight, maxWeight or Config.DefaultWeight, false, items)
+	local inventory = Inventory.Create(drop, prefix..' '..drop, 'drop', slots or ox.playerslots, weight, maxWeight or ox.playerweight, false, items)
 	inventory.coords = coords
 	Inventory.Drops[drop] = inventory.coords
 	TriggerClientEvent('ox_inventory:createDrop', -1, {drop, coords}, inventory.open and source)
@@ -681,7 +681,7 @@ AddEventHandler('txAdmin:events:scheduledRestart', function(eventData)
 end)
 
 AddEventHandler('onResourceStop', function(resource)
-	if resource == ox.name then
+	if resource == ox.resource then
 		SaveInventories()
 	end
 end)

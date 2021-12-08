@@ -5,9 +5,9 @@ AddStateBagChangeHandler('busy', nil, function(bagName, _, value, _, _)
 	if bagName:find(playerId) then
 		isBusy = value
 		if isBusy then
-			DisableControlActions:Add(23, 25, 263)
+			DisableControlActions:Add(23, 25, 36, 263)
 		else
-			DisableControlActions:Remove(23, 25, 263)
+			DisableControlActions:Remove(23, 25, 36, 263)
 		end
 	end
 end)
@@ -47,9 +47,9 @@ end
 
 local defaultInventory = {
 	type = 'newdrop',
-	slots = Config.PlayerSlots,
+	slots = ox.playerslots,
 	weight = 0,
-	maxWeight = Config.DefaultWeight,
+	maxWeight = ox.playerweight,
 	items = table.create(0,0)
 }
 local currentInventory = defaultInventory
@@ -81,7 +81,7 @@ local function OpenInventory(inv, data)
 
 		local left, right
 		if inv == 'shop' and invOpen == false then
-			left, right = ServerCallback.Await(ox.name, 'openShop', 200, data)
+			left, right = ServerCallback.Await(ox.resource, 'openShop', 200, data)
 		elseif invOpen ~= nil then
 			if inv == 'policeevidence' then
 				local input = Interface.Keyboard(ox.locale('police_evidence'), {ox.locale('locker_number')})
@@ -98,7 +98,7 @@ local function OpenInventory(inv, data)
 					data = input
 				end
 			end
-			left, right = ServerCallback.Await(ox.name, 'openInventory', 200, inv, data)
+			left, right = ServerCallback.Await(ox.resource, 'openInventory', 200, inv, data)
 		end
 
 		if left then
@@ -110,7 +110,7 @@ local function OpenInventory(inv, data)
 			SetInterval[1] = 100
 			SetNuiFocus(true, true)
 			SetNuiFocusKeepInput(true)
-			if Config.EnableBlur then TriggerScreenblurFadeIn(0) end
+			if ox.blurscreen then TriggerScreenblurFadeIn(0) end
 			CloseTrunk()
 			currentInventory = right or defaultInventory
 			left.items = ESX.PlayerData.inventory
@@ -135,7 +135,7 @@ end
 RegisterNetEvent('ox_inventory:openInventory', OpenInventory)
 
 local function UseSlot(slot)
-	if ESX.PlayerLoaded and isBusy == false and Interface.ProgressActive == false then
+	if ESX.PlayerLoaded and not isBusy and not Interface.ProgressActive then
 		local item = ESX.PlayerData.inventory[slot]
 		local data = item and Items[item.name]
 		if item and data.usable then
@@ -284,7 +284,7 @@ local Inventory = client.inventory
 function OnPlayerData(key, val)
 	if key == 'job' then
 		Shops()
-		if Config.Target then
+		if ox.qtarget then
 			Inventory.Stashes()
 			Inventory.Evidence()
 		end
@@ -305,7 +305,7 @@ local function RegisterCommands()
 			OpenInventory(closestMarker[3], {id=closestMarker[2], type=closestMarker[4]})
 		else OpenInventory() end
 	end)
-	RegisterKeyMapping('inv', ox.locale('open_player_inventory'), 'keyboard', Config.Keys[1])
+	RegisterKeyMapping('inv', ox.locale('open_player_inventory'), 'keyboard', ox.keys[1])
 	TriggerEvent('chat:removeSuggestion', '/inv')
 
 	local Vehicles = data 'vehicles'
@@ -320,7 +320,7 @@ local function RegisterCommands()
 				elseif IsPedInAnyVehicle(ESX.PlayerData.ped, false) then
 					local vehicle = GetVehiclePedIsIn(ESX.PlayerData.ped, false)
 					if NetworkGetEntityIsNetworked(vehicle) then
-						local plate = Config.TrimPlate and string.strtrim(GetVehicleNumberPlateText(vehicle)) or GetVehicleNumberPlateText(vehicle)
+						local plate = ox.playerslots and string.strtrim(GetVehicleNumberPlateText(vehicle)) or GetVehicleNumberPlateText(vehicle)
 						OpenInventory('glovebox', {id='glove'..plate, class=GetVehicleClass(vehicle), model=GetEntityModel(vehicle)})
 						while true do
 							Wait(100)
@@ -335,7 +335,7 @@ local function RegisterCommands()
 					local entity, type = Utils.Raycast()
 					if not entity then return end
 					local vehicle, position
-					if not Config.Target then
+					if not ox.qtarget then
 						if type == 2 then vehicle, position = entity, GetEntityCoords(entity)
 						elseif type == 3 and table.contains(Inventory.Dumpsters, GetEntityModel(entity)) then
 							local netId = NetworkGetEntityIsNetworked(entity) and NetworkGetNetworkIdFromEntity(entity)
@@ -367,7 +367,7 @@ local function RegisterCommands()
 							local distance = #(playerCoords - position)
 							local closeToVehicle = distance < 2 and (open == 5 and (checkVehicle == nil and true or 2) or open == 4)
 							if closeToVehicle then
-								local plate = Config.TrimPlate and string.strtrim(GetVehicleNumberPlateText(vehicle)) or GetVehicleNumberPlateText(vehicle)
+								local plate = ox.playerslots and string.strtrim(GetVehicleNumberPlateText(vehicle)) or GetVehicleNumberPlateText(vehicle)
 								TaskTurnPedToFaceCoord(ESX.PlayerData.ped, position.x, position.y, position.z)
 								lastVehicle = vehicle
 								OpenInventory('trunk', {id='trunk'..plate, class=class, model=vehHash})
@@ -401,7 +401,7 @@ local function RegisterCommands()
 			end
 		end
 	end)
-	RegisterKeyMapping('inv2', ox.locale('open_secondary_inventory'), 'keyboard', Config.Keys[2])
+	RegisterKeyMapping('inv2', ox.locale('open_secondary_inventory'), 'keyboard', ox.keys[2])
 	TriggerEvent('chat:removeSuggestion', '/inv2')
 
 	RegisterCommand('reload', function()
@@ -416,7 +416,7 @@ local function RegisterCommands()
 	RegisterCommand('hotbar', function()
 		SendNUIMessage({ action = 'toggleHotbar' })
 	end)
-	RegisterKeyMapping('hotbar', ox.locale('disable_hotbar'), 'keyboard', Config.Keys[3])
+	RegisterKeyMapping('hotbar', ox.locale('disable_hotbar'), 'keyboard', ox.keys[3])
 	TriggerEvent('chat:removeSuggestion', '/hotbar')
 
 	RegisterCommand('steal', function()
@@ -515,14 +515,14 @@ RegisterNetEvent('ox_inventory:setPlayerInventory', function(currentDrops, inven
 	SendNUIMessage({
 		action = 'init',
 		data = {
-			sentry = Config.Sentry,
+			sentry = ox.sentry,
 			locale = locales,
 			items = ItemData,
 			leftInventory = {
 				id = playerId,
-				slots = Config.PlayerSlots,
+				slots = ox.playerslots,
 				items = ESX.PlayerData.inventory,
-				maxWeight = Config.DefaultWeight,
+				maxWeight = ox.playerweight,
 				label = label
 			}
 		}
@@ -541,7 +541,7 @@ RegisterNetEvent('ox_inventory:setPlayerInventory', function(currentDrops, inven
 			table.wipe(closestMarker)
 
 			Markers(drops, 'drop', vec3(150, 30, 30))
-			if not Config.Target then
+			if not ox.qtarget then
 				if ESX.PlayerData.job.name == 'police' then Markers(Inventory.Evidence, 'policeevidence', vec(30, 30, 150)) end
 				Markers(Inventory.Stashes, 'stash', vec3(30, 30, 150))
 				for k, v in pairs(Shops) do
@@ -588,6 +588,10 @@ RegisterNetEvent('ox_inventory:setPlayerInventory', function(currentDrops, inven
 			DisableAllControlActions(0)
 			HideHudAndRadarThisFrame()
 
+			for i=1, #s do
+				EnableControlAction(0, keys[i], true)
+			end
+
 			if currentInventory.type == 'newdrop' then
 				EnableControlAction(0, 30, true)
 				EnableControlAction(0, 31, true)
@@ -602,7 +606,7 @@ RegisterNetEvent('ox_inventory:setPlayerInventory', function(currentDrops, inven
 
 			if closestMarker and IsControlJustReleased(0, 38) then
 				if closestMarker[3] == 'license' then
-					ServerCallback.Async(ox.name, 'buyLicense', 1000, function(success, message)
+					ServerCallback.Async(ox.resource, 'buyLicense', 1000, function(success, message)
 						if success == false then
 							Utils.Notify({type = 'error', text = ox.locale(message), duration = 2500})
 						else
@@ -614,7 +618,7 @@ RegisterNetEvent('ox_inventory:setPlayerInventory', function(currentDrops, inven
 			end
 			if currentWeapon then
 				DisableControlAction(0, 140, true)
-				if isBusy == false and currentWeapon.timer ~= 0 and currentWeapon.timer < GetGameTimer() then
+				if not isBusy and currentWeapon.timer ~= 0 and currentWeapon.timer < GetGameTimer() then
 					if currentWeapon.metadata.ammo then
 						TriggerServerEvent('ox_inventory:updateWeapon', 'ammo', currentWeapon.metadata.ammo)
 					elseif currentWeapon.metadata.durability then
@@ -631,7 +635,7 @@ RegisterNetEvent('ox_inventory:setPlayerInventory', function(currentDrops, inven
 							ClearPedTasks(playerPed)
 							SetCurrentPedWeapon(playerPed, currentWeapon.hash, true)
 							SetPedCurrentWeaponVisible(playerPed, true, false, false, false)
-							if Config.AutoReload and Interface.ProgressActive == false and IsPedRagdoll(playerPed) == false and IsPedFalling(playerPed) == false then
+							if ox.autoreload and not Interface.ProgressActive and not IsPedRagdoll(playerPed) and not IsPedFalling(playerPed) then
 								local ammo = Inventory.Search(1, currentWeapon.ammo)
 								if ammo[1] then
 									TriggerServerEvent('ox_inventory:updateWeapon', 'ammo', currentWeapon.metadata.ammo)
@@ -666,7 +670,7 @@ RegisterNetEvent('ox_inventory:setPlayerInventory', function(currentDrops, inven
 end)
 
 AddEventHandler('onResourceStop', function(resourceName)
-	if ox.name == resourceName then
+	if ox.resource == resourceName then
 		if ox.parachute then ESX.Game.DeleteObject(ox.parachute) end
 		if invOpen then
 			SetNuiFocus(false, false)
@@ -677,11 +681,11 @@ AddEventHandler('onResourceStop', function(resourceName)
 end)
 
 AddEventHandler('ox_inventory:item', function(data, cb)
-	if isBusy == false and Interface.ProgressActive == false and IsPedRagdoll(ESX.PlayerData.ped) == false and IsPedFalling(ESX.PlayerData.ped) == false then
+	if not isBusy and not Interface.ProgressActive and not IsPedRagdoll(ESX.PlayerData.ped) and not IsPedFalling(ESX.PlayerData.ped) then
 		if currentWeapon and currentWeapon?.timer > 100 then return end
 		isBusy = true
 		if invOpen and data.close then TriggerEvent('ox_inventory:closeInventory') end
-		local result = ServerCallback.Await(ox.name, 'useItem', 200, data.name, data.slot, ESX.PlayerData.inventory[data.slot].metadata)
+		local result = ServerCallback.Await(ox.resource, 'useItem', 200, data.name, data.slot, ESX.PlayerData.inventory[data.slot].metadata)
 		if cb == nil then
 			isBusy = false
 			return
@@ -847,7 +851,7 @@ RegisterNUICallback('exit', function(data, cb)
 end)
 
 RegisterNUICallback('swapItems', function(data, cb)
-	local response, data, weapon = ServerCallback.Await(ox.name, 'swapItems', false, data)
+	local response, data, weapon = ServerCallback.Await(ox.resource, 'swapItems', false, data)
 	if data then
 		for k, v in pairs(data.items) do
 			ESX.PlayerData.inventory[k] = v and v or nil
@@ -863,7 +867,7 @@ RegisterNUICallback('swapItems', function(data, cb)
 end)
 
 RegisterNUICallback('buyItem', function(data, cb)
-	local response, data, message = ServerCallback.Await(ox.name, 'buyItem', 100, data)
+	local response, data, message = ServerCallback.Await(ox.resource, 'buyItem', 100, data)
 	if data then
 		ESX.PlayerData.inventory[data[1]] = data[2]
 		ESX.SetPlayerData('inventory', ESX.PlayerData.inventory)

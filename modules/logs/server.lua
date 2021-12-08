@@ -1,8 +1,8 @@
-if Config.Logs then
+if ox.logs then
 	local io = io
 	local os = os
 	local day, month, year = string.strsplit('-', os.date('%d-%B-%Y'))
-	local path = GetResourcePath(ox.name):gsub('//', '/')
+	local path = GetResourcePath(ox.resource):gsub('//', '/')
 	path = ('%s/modules/logs'):format(path)
 
 	local strformat = string.format
@@ -40,4 +40,4 @@ if Config.Logs then
 	ox.warning('Unable to initilise logging module')
 end
 
-server.logs = function() end
+function server.logs() end
