@@ -52,7 +52,11 @@ ox = {
     -- Set the keybinds for primary, secondary, and hotbar
     keys = ox.keys or {
         'F2', 'K', 'TAB'
-    }
+    },
+
+	enablekeys = ox.enablekeys or {
+		249
+	}
 }
 
 ox.resource = GetCurrentResourceName()

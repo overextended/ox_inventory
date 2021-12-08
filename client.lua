@@ -581,6 +581,7 @@ RegisterNetEvent('ox_inventory:setPlayerInventory', function(currentDrops, inven
 		if ox.parachute and GetPedParachuteState(ESX.PlayerData.ped) ~= -1 then ESX.Game.DeleteObject(ox.parachute) ox.parachute = false end
 	end, 200)
 
+	local EnableKeys = ox.enablekeys
 	SetInterval(function()
 		DisablePlayerVehicleRewards(playerId)
 
@@ -588,8 +589,8 @@ RegisterNetEvent('ox_inventory:setPlayerInventory', function(currentDrops, inven
 			DisableAllControlActions(0)
 			HideHudAndRadarThisFrame()
 
-			for i=1, #s do
-				EnableControlAction(0, keys[i], true)
+			for i=1, #EnableKeys do
+				EnableControlAction(0, EnableKeys[i], true)
 			end
 
 			if currentInventory.type == 'newdrop' then
