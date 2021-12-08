@@ -19,7 +19,8 @@ export const onDrop = (source: DragSource, target?: DropTarget) => {
   const sourceData = Items[sourceSlot.name];
 
   if (sourceData === undefined) {
-    throw new Error(`${sourceSlot.name} item data undefined!`);
+    return
+    // throw new Error(`${sourceSlot.name} item data undefined!`);
   }
 
   if (targetInventory.type === 'container' && sourceSlot?.metadata?.container) {
@@ -31,7 +32,8 @@ export const onDrop = (source: DragSource, target?: DropTarget) => {
     : findAvailableSlot(sourceSlot, sourceData, targetInventory.items);
 
   if (targetSlot === undefined) {
-    throw new Error('Target slot undefined!');
+    return
+    // throw new Error('Target slot undefined!');
   }
 
   const count =
