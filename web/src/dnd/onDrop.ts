@@ -32,7 +32,7 @@ export const onDrop = (source: DragSource, target?: DropTarget) => {
     : findAvailableSlot(sourceSlot, sourceData, targetInventory.items);
 
   if (targetSlot === undefined) {
-    return
+    return console.error('Target slot undefined!');
     // throw new Error('Target slot undefined!');
   }
 

@@ -23,13 +23,13 @@ export const onBuy = (source: DragSource, target: DropTarget) => {
   const sourceData = Items[sourceSlot.name];
 
   if (sourceData === undefined) 
-    return
+    return console.error(`Item ${sourceSlot.name} data undefined!`)
     // throw new Error(`Item ${sourceSlot.name} data undefined!`);
 
   const targetSlot = targetInventory.items[target.item.slot - 1];
 
   if (targetSlot === undefined)
-    return
+    return console.error(`Target slot undefined`)
     // throw new Error(`Target slot undefined`);
 
   const count =
