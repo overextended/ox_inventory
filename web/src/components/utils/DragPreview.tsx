@@ -62,7 +62,7 @@ const DragPreview: React.FC = () => {
 
   React.useEffect(() => {
     hideAll();
-  }, [isDragging, hideAll]);
+  }, [isDragging]);
 
   return (
     <>
