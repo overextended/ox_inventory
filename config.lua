@@ -8,7 +8,7 @@
 		"locale": "cs",
 		"qtarget": true,
 		"keys": [
-        	"F2", "K", "TAB"
+			"F2", "K", "TAB"
 		]
 	}
 
@@ -29,30 +29,30 @@
 local ox = json.decode(GetConvar('ox_inventory', '{}'))
 
 ox = {
-    locale = ox.locale or 'en',
+	locale = ox.locale or 'en',
 
-    -- If vehicle plates are stored with a trailing space, set to false (i.e. `XXX 000 `)
-    trimplate = ox.trimplate or true,
+	-- If vehicle plates are stored with a trailing space, set to false (i.e. `XXX 000 `)
+	trimplate = ox.trimplate or true,
 
-    -- Adds compatibility for qtarget (https://github.com/overextended/qtarget)
-    qtarget = ox.qtarget or false,
+	-- Adds compatibility for qtarget (https://github.com/overextended/qtarget)
+	qtarget = ox.qtarget or false,
 
-    -- Number of slots in the player inventory
-    playerslots = ox.playerslots or 50,
+	-- Number of slots in the player inventory
+	playerslots = ox.playerslots or 50,
 
-    -- Blurs the screen while the inventory is open
-    blurscreen = ox.blurscreen or true,
+	-- Blurs the screen while the inventory is open
+	blurscreen = ox.blurscreen or true,
 
-    -- Reload empty weapons automatically
-    autoreload = ox.autoreload or true,
+	-- Reload empty weapons automatically
+	autoreload = ox.autoreload or true,
 
-    -- Enable sentry logging (this reports UI errors and general performance statistics to the Ox team, anonymously)
-    sentry = ox.sentry or true,
+	-- Enable sentry logging (this reports UI errors and general performance statistics to the Ox team, anonymously)
+	sentry = ox.sentry or true,
 
-    -- Set the keybinds for primary, secondary, and hotbar
-    keys = ox.keys or {
-        'F2', 'K', 'TAB'
-    },
+	-- Set the keybinds for primary, secondary, and hotbar
+	keys = ox.keys or {
+		'F2', 'K', 'TAB'
+	},
 
 	enablekeys = ox.enablekeys or {
 		249
