@@ -29,6 +29,9 @@
 local ox = json.decode(GetConvar('ox_inventory', '{}'))
 
 ox = {
+	-- Enable support for es_extended (defaults to true, for now)
+	esx = ox.esx or true,
+
     locale = ox.locale or 'en',
 
     -- If vehicle plates are stored with a trailing space, set to false (i.e. `XXX 000 `)
@@ -56,11 +59,12 @@ ox = {
 
 	enablekeys = ox.enablekeys or {
 		249
-	}
+	},
+
+	playerweight = ox.playerweight or 30000
 }
 
 ox.resource = GetCurrentResourceName()
-ox.playerweight = ESX.GetConfig().MaxWeight
 IsDuplicityVersion = IsDuplicityVersion()
 
 if IsDuplicityVersion then

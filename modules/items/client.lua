@@ -15,6 +15,7 @@ end
 -----------------------------------------------------------------------------------------------
 -- Clientside item use functions
 -----------------------------------------------------------------------------------------------
+local PlayerData = PlayerData
 
 Item('burger', function(data, slot)
 	TriggerEvent('ox_inventory:item', data, function(data)
@@ -59,11 +60,11 @@ end)
 
 Item('bandage', function(data, slot)
 	local maxHealth = 200
-	local health = GetEntityHealth(ESX.PlayerData.ped)
+	local health = GetEntityHealth(PlayerData.ped)
 	-- if health < maxHealth then
 		TriggerEvent('ox_inventory:item', data, function(data)
 			if data then
-				SetEntityHealth(ESX.PlayerData.ped, math.min(maxHealth, math.floor(health + maxHealth / 16)))
+				SetEntityHealth(PlayerData.ped, math.min(maxHealth, math.floor(health + maxHealth / 16)))
 				TriggerEvent('ox_inventory:notify', {text = 'You feel better already'})
 			end
 		end)
@@ -71,11 +72,11 @@ Item('bandage', function(data, slot)
 end)
 
 Item('armour', function(data, slot)
-	if GetPedArmour(ESX.PlayerData.ped) < 100 then
+	if GetPedArmour(PlayerData.ped) < 100 then
 		TriggerEvent('ox_inventory:item', data, function(data)
 			if data then
-				SetPlayerMaxArmour(PlayerId(), 100)
-				SetPedArmour(ESX.PlayerData.ped, 100)
+				SetPlayerMaxArmour(PlayerData.id, 100)
+				SetPedArmour(PlayerData.ped, 100)
 			end
 		end)
 	end
@@ -87,13 +88,13 @@ Item('parachute', function(data, slot)
 		TriggerEvent('ox_inventory:item', data, function(data)
 			if data then
 				local chute = `GADGET_PARACHUTE`
-				SetPlayerParachuteTintIndex(PlayerId(), -1)
-				GiveWeaponToPed(ESX.PlayerData.ped, chute, 0, true, false)
-				SetPedGadget(ESX.PlayerData.ped, chute, true)
+				SetPlayerParachuteTintIndex(PlayerData.id, -1)
+				GiveWeaponToPed(PlayerData.ped, chute, 0, true, false)
+				SetPedGadget(PlayerData.ped, chute, true)
 				ESX.Streaming.RequestModel(1269906701)
-				ox.parachute = CreateParachuteBagObject(ESX.PlayerData.ped, true, true)
+				ox.parachute = CreateParachuteBagObject(PlayerData.ped, true, true)
 				if slot.metadata.type then
-					SetPlayerParachuteTintIndex(PlayerId(), slot.metadata.type)
+					SetPlayerParachuteTintIndex(PlayerData.id, slot.metadata.type)
 				end
 			end
 		end)

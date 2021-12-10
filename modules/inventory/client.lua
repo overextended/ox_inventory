@@ -1,3 +1,4 @@
+local PlayerData = PlayerData
 local Inventory = {}
 
 Inventory.Dumpsters = {218085040, 666561306, -58485588, -206690185, 1511880420, 682791951}
@@ -43,11 +44,11 @@ function Inventory.Search(search, item, metadata)
 			if item:find('weapon_') then item = string.upper(item) end
 			if search == 1 then returnData[item] = {}
 			elseif search == 2 then returnData[item] = 0 end
-			for _, v in pairs(ESX.PlayerData.inventory) do
+			for _, v in pairs(PlayerData.inventory) do
 				if v.name == item then
 					if not v.metadata then v.metadata = {} end
 					if not metadata or table.contains(v.metadata, metadata) then
-						if search == 1 then returnData[item][#returnData[item]+1] = ESX.PlayerData.inventory[v.slot]
+						if search == 1 then returnData[item][#returnData[item]+1] = PlayerData.inventory[v.slot]
 						elseif search == 2 then
 							returnData[item] += v.count
 						end

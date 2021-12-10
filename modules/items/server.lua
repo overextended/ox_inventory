@@ -82,12 +82,14 @@ local itemFormat = [[
 		exports.oxmysql:executeSync('DELETE FROM ox_inventory WHERE lastupdated < (NOW() - INTERVAL '..ox.clearstashes..') OR data = "[]"')
 	end
 
-	Wait(2000)
-	ESX.UsableItemsCallbacks = ESX.GetUsableItems()
-
 	local count = 0
+	if ox.UsableItemsCallbacks then
+		Wait(2000)
+		ox.UsableItemsCallbacks = ox.UsableItemsCallbacks()
+	else ox.UsableItemsCallbacks = {} end
+
 	for _, v in pairs(ItemList) do
-		if v.consume and v.consume > 0 and ESX.UsableItemsCallbacks[v.name] then ESX.UsableItemsCallbacks[v.name] = nil end
+		if v.consume and v.consume > 0 and ox.UsableItemsCallbacks[v.name] then ox.UsableItemsCallbacks[v.name] = nil end
 		count += 1
 	end
 
@@ -148,7 +150,11 @@ local containers = {
 	['paperbag'] = {5, 1000}
 }
 
-function Items.Metadata(xPlayer, item, metadata, count)
+local Inventory
+CreateThread(function() Inventory = server.inventory end)
+
+function Items.Metadata(inv, item, metadata, count)
+	if type(inv) ~= 'table' then inv = Inventory(inv) end
 	local isWeapon = item.name:find('WEAPON_')
 	if isWeapon == nil then metadata = not metadata and {} or type(metadata) == 'string' and {type=metadata} or metadata end
 	if isWeapon then
@@ -162,7 +168,7 @@ function Items.Metadata(xPlayer, item, metadata, count)
 			if not metadata.ammo and item.ammoname then metadata.ammo = 0 end
 			if not metadata.components then metadata.components = {} end
 			if metadata.registered ~= false then
-				metadata.registered = type(metadata.registered) == 'string' and metadata.registered or xPlayer.name
+				metadata.registered = type(metadata.registered) == 'string' and metadata.registered or inv.name
 				metadata.serial = metadata.serial or GenerateSerial(metadata.serial)
 			end
 		end
@@ -178,8 +184,8 @@ function Items.Metadata(xPlayer, item, metadata, count)
 			count = 1
 			if next(metadata) == nil then
 				metadata = {
-					type = xPlayer.name,
-					description = ox.locale('identification', (xPlayer.variables.sex or xPlayer.sex) and ox.locale('male') or ox.locale('female'), xPlayer.variables.dateofbirth or xPlayer.dateofbirth)
+					type = inv.name,
+					description = ox.locale('identification', (inv.player.sex) and ox.locale('male') or ox.locale('female'), inv.player.dateofbirth)
 				}
 			end
 		end
@@ -194,9 +200,6 @@ end
 local function Item(name, cb)
 	if ItemList[name] then Items[name] = cb end
 end
-
-local Inventory
-CreateThread(function() Inventory = server.inventory end)
 -----------------------------------------------------------------------------------------------
 -- Serverside item functions
 -----------------------------------------------------------------------------------------------

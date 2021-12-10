@@ -21,14 +21,20 @@ dependencies {
 }
 
 shared_scripts {
-	'@es_extended/imports.lua',
 	'@pe-lualib/init.lua',
 	'config.lua',
-	'modules/main.lua'
 }
 
+server_script 'modules/player/server.lua'
+shared_script 'modules/main.lua'
+
 client_scripts {
-	'modules/**/client.lua',
+	'modules/items/client.lua',
+	'modules/utils/client.lua',
+	'modules/player/client.lua',
+	'modules/interface/client.lua',
+	'modules/shops/client.lua',
+	'modules/inventory/client.lua',
 	'client.lua'
 }
 

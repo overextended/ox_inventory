@@ -31,10 +31,10 @@ local function Set(inv, k, v)
 end
 
 ---@param inv any
----@param k string
-local function Get(inv, k)
+---@param key string
+local function Get(inv, key)
 	if type(inv) ~= 'table' then inv = Inventories[inv] end
-	return inv[k]
+	return inv[key]
 end
 
 ---@param inv any
@@ -56,18 +56,18 @@ local function Minimal(inv)
 	return inventory
 end
 
----@param xPlayer table
----@param inv any
+---@param inv table
 --- Syncs inventory data with the xPlayer object for compatibility with shit resources
-function Inventory.SyncInventory(xPlayer, inv)
-	if type(inv) ~= 'table' then inv = Inventories[inv] end
-	local money = {money=0, black_money=0}
+function Inventory.SyncInventory(inv)
+	local money = { money = 0, black_money = 0}
+
 	for _, v in pairs(inv.items) do
 		if money[v.name] then
 			money[v.name] = money[v.name] + v.count
 		end
 	end
-	xPlayer.syncInventory(inv.weight, inv.maxWeight, inv.items, money)
+
+	ox.GetPlayerFromId(inv.id).syncInventory(inv.weight, inv.maxWeight, inv.items, money)
 end
 
 ---@param inv any
@@ -207,11 +207,11 @@ local function RandomLoot(loot)
 	return items
 end
 
----@param id string|number
+---@param inv string|number
 ---@param invType string
 ---@param items? table
 ---@return table returnData, number totalWeight, boolean true
-local function GenerateItems(id, invType, items)
+local function GenerateItems(inv, invType, items)
 	if items == nil then
 		if invType == 'dumpster' then
 			items = RandomLoot(ox.dumpsterloot)
@@ -219,16 +219,21 @@ local function GenerateItems(id, invType, items)
 			items = RandomLoot(ox.loottable)
 		end
 	end
+
+	if type(inv) ~= 'table' then
+		inv = Inventories[inv]
+	end
+
 	local returnData, totalWeight = table.create(#items, 0), 0
-	local xPlayer = type(id) == 'number' and ESX.GetPlayerFromId(id) or false
 	for i=1, #items do
 		local v = items[i]
 		local item = Items(v[1])
-		local metadata, count = Items.Metadata(xPlayer, item, v[3] or {}, v[2])
+		local metadata, count = Items.Metadata(inv, item, v[3] or {}, v[2])
 		local weight = Inventory.SlotWeight(item, {count=count, metadata=metadata})
 		totalWeight = totalWeight + weight
 		returnData[i] = {name = item.name, label = item.label, weight = weight, slot = i, count = count, description = item.description, metadata = metadata, stack = item.stack, close = item.close}
 	end
+
 	return returnData, totalWeight, true
 end
 
@@ -338,16 +343,17 @@ function Inventory.SetMetadata(inv, slot, metadata)
 	slot = type(slot) == 'number' and (inv and inv.items[slot])
 	if inv and slot then
 		if inv then
-			local xPlayer = inv.type == 'player' and ESX.GetPlayerFromId(inv.id)
 			slot.metadata = type(metadata) == 'table' and metadata or {type = metadata}
+
 			if metadata.weight then
 				inv.weight -= slot.weight
 				slot.weight = Inventory.SlotWeight(Items(item), slot)
 				inv.weight += slot.weight
 			end
-			if xPlayer then
-				Inventory.SyncInventory(xPlayer, inv)
-				TriggerClientEvent('ox_inventory:updateInventory', xPlayer.source, {{item = slot, inventory = inv.type}}, {left=inv.weight, right=inv.open and Inventories[inv.open]?.weight})
+
+			if inv.type == 'player' then
+				if ox.esx then Inventory.SyncInventory(inv) end
+				TriggerClientEvent('ox_inventory:updateInventory', inv.id, {{item = slot, inventory = inv.type}}, {left=inv.weight, right=inv.open and Inventories[inv.open]?.weight})
 			end
 		end
 	end
@@ -363,15 +369,16 @@ function Inventory.AddItem(inv, item, count, metadata, slot)
 	if type(inv) ~= 'table' then inv = Inventories[inv] end
 	count = math.floor(count + 0.5)
 	if item and inv and count > 0 then
-		local xPlayer = inv.type == 'player' and ESX.GetPlayerFromId(inv.id) or false
-		metadata, count = Items.Metadata(xPlayer, item, metadata or {}, count)
+		metadata, count = Items.Metadata(inv.id, item, metadata or {}, count)
 		local existing = false
+
 		if slot then
 			local slotItem = inv.items[slot]
 			if not slotItem or item.stack and slotItem and slotItem.name == item.name and table.matches(slotItem.metadata, metadata) then
 				existing = nil
 			end
 		end
+
 		if existing == false then
 			local items, toSlot = inv.items, nil
 			for i=1, ox.playerslots do
@@ -384,11 +391,13 @@ function Inventory.AddItem(inv, item, count, metadata, slot)
 			end
 			slot = toSlot
 		end
+
 		Inventory.SetSlot(inv, item, count, metadata, slot)
 		inv.weight = inv.weight + (item.weight + (metadata?.weight or 0)) * count
-		if xPlayer then
-			Inventory.SyncInventory(xPlayer, inv)
-			TriggerClientEvent('ox_inventory:updateInventory', xPlayer.source, {{item = inv.items[slot], inventory = inv.type}}, {left=inv.weight, right=inv.open and Inventories[inv.open]?.weight}, count, false)
+
+		if inv.type == 'player' then
+			if ox.esx then Inventory.SyncInventory(inv) end
+			TriggerClientEvent('ox_inventory:updateInventory', inv.id, {{item = inv.items[slot], inventory = inv.type}}, {left=inv.weight, right=inv.open and Inventories[inv.open]?.weight}, count, false)
 		end
 	end
 end
@@ -456,10 +465,11 @@ function Inventory.RemoveItem(inv, item, count, metadata, slot)
 	count = math.floor(count + 0.5)
 	if item and count > 0 then
 		if type(inv) ~= 'table' then inv = Inventories[inv] end
-		local xPlayer = inv.type == 'player' and ESX.GetPlayerFromId(inv.id) or false
+
 		if metadata ~= nil then
 			metadata = type(metadata) == 'string' and {type=metadata} or metadata
 		end
+
 		local itemSlots, totalCount = Inventory.GetItemSlots(inv, item, metadata)
 		if count > totalCount then count = totalCount end
 		local removed, total, slots = 0, count, {}
@@ -488,10 +498,12 @@ function Inventory.RemoveItem(inv, item, count, metadata, slot)
 				else break end
 			end
 		end
+
 		inv.weight = inv.weight - (item.weight + (metadata?.weight or 0)) * removed
-		if removed > 0 and xPlayer then
-			Inventory.SyncInventory(xPlayer, inv)
+		if removed > 0 and inv.type == 'player' then
+			if ox.esx then Inventory.SyncInventory(inv) end
 			local array = table.create(#slots, 0)
+
 			for k, v in pairs(slots) do
 				if type(v) == 'number' then
 					array[k] = {item = {slot = v, name = item.name}, inventory = inv.type}
@@ -499,7 +511,8 @@ function Inventory.RemoveItem(inv, item, count, metadata, slot)
 					array[k] = {item = v, inventory = inv.type}
 				end
 			end
-			TriggerClientEvent('ox_inventory:updateInventory', xPlayer.source, array, {left=inv.weight, right=inv.open and Inventories[inv.open]?.weight}, removed, true)
+
+			TriggerClientEvent('ox_inventory:updateInventory', inv.id, array, {left=inv.weight, right=inv.open and Inventories[inv.open]?.weight}, removed, true)
 		end
 	end
 end
@@ -513,6 +526,7 @@ function Inventory.CanCarryItem(inv, item, count, metadata)
 	if item then
 		if type(inv) ~= 'table' then inv = Inventories[inv] end
 		local itemSlots, totalCount, emptySlots = Inventory.GetItemSlots(inv, item, metadata == nil and {} or type(metadata) == 'string' and {type=metadata} or metadata)
+
 		if #itemSlots > 0 or emptySlots > 0 then
 			if inv.type == 'player' and item.limit and (totalCount + count) > item.limit then return false end
 			if item.weight == 0 then return true end
@@ -520,6 +534,7 @@ function Inventory.CanCarryItem(inv, item, count, metadata)
 			local newWeight = inv.weight + (item.weight * count)
 			return newWeight <= inv.maxWeight
 		end
+
 	end
 end
 
@@ -584,9 +599,8 @@ AddEventHandler('ox_inventory:customDrop', function(prefix, items, coords, slots
 	TriggerClientEvent('ox_inventory:createDrop', -1, {drop, coords}, inventory.open and source)
 end)
 
-AddEventHandler('ox_inventory:confiscatePlayerInventory', function(xPlayer)
-	xPlayer = type(xPlayer) == 'table' and xPlayer or ESX.GetPlayerFromId(xPlayer)
-	local inv = xPlayer and Inventories[xPlayer.source]
+AddEventHandler('ox_inventory:confiscatePlayerInventory', function(source)
+	local inv = Inventories[source]
 	if inv then
 		local inventory = json.encode(Minimal(inv))
 		exports.oxmysql:update('INSERT INTO ox_inventory (owner, name, data) VALUES (:owner, :name, :data) ON DUPLICATE KEY UPDATE data = :data', {
@@ -598,21 +612,21 @@ AddEventHandler('ox_inventory:confiscatePlayerInventory', function(xPlayer)
 				inv.items = {}
 				inv.weight = 0
 				TriggerClientEvent('ox_inventory:inventoryConfiscated', inv.id)
-				Inventory.SyncInventory(xPlayer, inv)
+				if ox.esx then Inventory.SyncInventory(inv) end
 			end
 		end)
 	end
 end)
 
-AddEventHandler('ox_inventory:returnPlayerInventory', function(xPlayer)
-	xPlayer = type(xPlayer) == 'table' and xPlayer or ESX.GetPlayerFromId(xPlayer)
-	local inv = xPlayer and Inventories[xPlayer.source]
+AddEventHandler('ox_inventory:returnPlayerInventory', function(source)
+	local inv = Inventories[source]
 	if inv then
 		exports.oxmysql:scalar('SELECT data FROM ox_inventory WHERE name = ?', { inv.owner }, function(data)
 			if data then
 				exports.oxmysql:execute('DELETE FROM ox_inventory WHERE name = ?', { inv.owner })
 				data = json.decode(data)
 				local money, inventory, totalWeight = {money=0, black_money=0}, {}, 0
+
 				if data and next(data) then
 					for i=1, #data do
 						local i = data[i]
@@ -626,36 +640,37 @@ AddEventHandler('ox_inventory:returnPlayerInventory', function(xPlayer)
 						end
 					end
 				end
+
 				inv.weight = totalWeight
 				inv.items = inventory
-				xPlayer.syncInventory(totalWeight, inv.maxWeight, inventory, money)
-				TriggerClientEvent('ox_inventory:inventoryReturned', xPlayer.source, {inventory, totalWeight})
+
+				if ox.esx then Inventory.SyncInventory(inv) end
+				TriggerClientEvent('ox_inventory:inventoryReturned', source, {inventory, totalWeight})
 			end
 		end)
 	end
 end)
 
-AddEventHandler('ox_inventory:clearPlayerInventory', function(xPlayer)
-	xPlayer = type(xPlayer) == 'table' and xPlayer or ESX.GetPlayerFromId(xPlayer)
-	local inv = xPlayer and Inventories[xPlayer.source]
+AddEventHandler('ox_inventory:clearPlayerInventory', function(source)
+	local inv = Inventories[source]
 	if inv then
 		inv.items = {}
 		inv.weight = 0
 		TriggerClientEvent('ox_inventory:inventoryConfiscated', inv.id)
-		Inventory.SyncInventory(xPlayer, inv)
+		if ox.esx then Inventory.SyncInventory(inv) end
 	end
 end)
 
-AddEventHandler('esx:playerDropped', function(playerId)
-	if Inventories[playerId] then
-		local openInventory = Inventories[playerId].open
-		if Inventories[openInventory]?.open == playerId then Inventories[openInventory].open = false end
-		Inventories[playerId] = nil
+AddEventHandler('esx:playerDropped', function(source)
+	if Inventories[source] then
+		local openInventory = Inventories[source].open
+		if Inventories[openInventory]?.open == source then Inventories[openInventory].open = false end
+		Inventories[source] = nil
 	end
 end)
 
-AddEventHandler('esx:setJob', function(playerId, job)
-	Inventories[playerId].job = job
+AddEventHandler('esx:setJob', function(source, job)
+	Inventories[source].data.job = job
 end)
 
 local function SaveInventories()
@@ -738,7 +753,11 @@ RegisterServerEvent('ox_inventory:updateWeapon', function(action, value, slot)
 			weapon.metadata.durability = weapon.metadata.durability - ((Items(weapon.name).durability or 1) * value)
 			syncInventory = true
 		end
-		if syncInventory then Inventory.SyncInventory(ESX.GetPlayerFromId(inventory.id), inventory) end
+
+		if ox.esx and syncInventory then
+			Inventory.SyncInventory(inventory)
+		end
+
 		if action ~= 'throw' then TriggerClientEvent('ox_inventory:updateInventory', source, {{item = weapon}}, {left=inventory.weight}) end
 		if weapon.metadata?.durability <= 0 and action ~= 'load' and action ~= 'component' then
 			TriggerClientEvent('ox_inventory:disarm', source, false)
@@ -748,91 +767,93 @@ end)
 
 local Log = server.logs
 
-ESX.RegisterCommand({'giveitem', 'additem'}, 'admin', function(xPlayer, args, showError)
-	args.item = Items(args.item)
-	if args.item and args.count then
-		Inventory.AddItem(args.player.source, args.item.name, args.count, args.type)
-		local inventory = Inventories[args.player.source]
+local function AddCommand(group, name, callback, arguments)
+	RegisterCommand(name, function(source, args)
+		if arguments then
+			for i=1, #arguments do
+				local arg, argType = string.strsplit(':', arguments[i])
+				local value = args[i]
 
+				if argType then
+
+					if arg == 'target' and value == 'me' then value = source end
+					if argType == 'number' then value = tonumber(value) end
+
+					assert(type(value) == argType or argType:find('?'), ('command.%s expected <%s> for argument %s (%s), received %s'):format(name, argType, i, arg, type(value)))
+				end
+
+				args[arg] = value
+				args[i] = nil
+			end
+		end
+		callback(tonumber(source), args)
+	end, group and true)
+
+	if group then ExecuteCommand(('add_ace %s command.%s allow'):format(group, name)) end
+end
+
+AddCommand('ox_inventory', 'additem', function(source, args)
+	args.item = Items(args.item)
+	if args.item and args.count > 0 then
+		Inventory.AddItem(args.target, args.item.name, args.count, args.metaType)
+		local inventory = Inventories[args.target]
+		source = Inventories[source]
 		Log(
-			('%s [%s] - %s'):format(xPlayer.name, xPlayer.source, xPlayer.identifier),
+			('%s [%s] - %s'):format(source.label, source.id, source.owner),
 			('%s [%s] - %s'):format(inventory.label, inventory.id, inventory.owner),
 			('Given %s %s by an admin'):format(args.count, args.item.name)
 		)
 	end
-end, true, {help = 'give an item to a player', validate = false, arguments = {
-	{name = 'player', help = 'player id', type = 'player'},
-	{name = 'item', help = 'item name', type = 'string'},
-	{name = 'count', help = 'item count', type = 'number'},
-	{name = 'type', help = 'item metadata type', type='any'}
-}})
+end, {'target:number', 'item:string', 'count:number', 'metatype:?string'})
 
-ESX.RegisterCommand('removeitem', 'admin', function(xPlayer, args, showError)
+AddCommand('ox_inventory', 'removeitem', function(source, args)
 	args.item = Items(args.item)
-	if args.item and args.count then
-		Inventory.RemoveItem(args.player.source, args.item.name, args.count, args.type)
-		local inventory = Inventories[args.player.source]
-
+	if args.item and args.count > 0 then
+		Inventory.RemoveItem(args.target, args.item.name, args.count, args.metaType)
+		local inventory = Inventories[args.target]
+		source = Inventories[source]
 		Log(
-			('%s [%s] - %s'):format(xPlayer.name, xPlayer.source, xPlayer.identifier),
+			('%s [%s] - %s'):format(source.label, source.id, source.owner),
 			('%s [%s] - %s'):format(inventory.label, inventory.id, inventory.owner),
 			('%s %s removed by an admin'):format(args.count, args.item.name)
 		)
 	end
-end, true, {help = 'remove an item from a player', validate = false, arguments = {
-	{name = 'player', help = 'player id', type = 'player'},
-	{name = 'item', help = 'item name', type = 'string'},
-	{name = 'count', help = 'item count', type = 'number'},
-	{name = 'type', help = 'item metadata type', type='any'}
-}})
+end, {'target:number', 'item:string', 'count:number', 'metatype:?string'})
 
-ESX.RegisterCommand('setitem', 'admin', function(xPlayer, args, showError)
+AddCommand('ox_inventory', 'setitem', function(source, args)
 	args.item = Items(args.item)
-	if args.item then
-		Inventory.SetItem(args.player.source, args.item.name, args.count, args.type)
-		local inventory = Inventories[args.player.source]
-
+	if args.item and args.count > 0 then
+		Inventory.SetItem(args.target, args.item.name, args.count, args.metaType)
+		local inventory = Inventories[args.target]
+		source = Inventories[source]
 		Log(
-			('%s [%s] - %s'):format(xPlayer.name, xPlayer.source, xPlayer.identifier),
+			('%s [%s] - %s'):format(source.label, source.id, source.owner),
 			('%s [%s] - %s'):format(inventory.label, inventory.id, inventory.owner),
 			('%s count set to %s by an admin'):format(args.count, args.item.name)
 		)
 	end
-end, true, {help = 'give an item to a player', validate = false, arguments = {
-	{name = 'player', help = 'player id', type = 'player'},
-	{name = 'item', help = 'item name', type = 'string'},
-	{name = 'count', help = 'item count', type = 'number'},
-	{name = 'type', help = 'item metadata type', type='any'}
-}})
+end, {'target:number', 'item:string', 'count:number', 'metatype:?string'})
 
-ESX.RegisterCommand('clearevidence', 'user', function(xPlayer, args, showError)
-	if xPlayer.job.name == 'police' and xPlayer.job.grade_name == 'boss' then
-		local id = 'evidence-'..args.evidence
-		exports.oxmysql:executeSync('DELETE FROM ox_inventory WHERE name = ?', {id})
+AddCommand(false, 'clearevidence', function(source, args)
+	local inventory = Inventories[source]
+	if inventory.data.job.name == 'police' and inventory.data.job.grade_name == 'boss' then
+		exports.oxmysql:execute('DELETE FROM ox_inventory WHERE name = ?', {('evidence-%s'):format(args.evidence)})
 	end
-end, true, {help = 'clear police evidence', validate = true, arguments = {
-	{name = 'evidence', help = 'locker number', type = 'number'}
-}})
+end, {'evidence:number'})
 
-ESX.RegisterCommand('confinv', 'admin', function(xPlayer, args, showError)
-	TriggerEvent('ox_inventory:confiscatePlayerInventory', args.playerId)
-end, true, {help = 'Confiscates items from a player', validate = true, arguments = {
-	{name = 'playerId', help = 'player id', type = 'player'},
-}})
+AddCommand('ox_inventory', 'takeinv', function(source, args)
+	TriggerEvent('ox_inventory:confiscatePlayerInventory', args.target)
+end, {'target:number'})
 
-ESX.RegisterCommand('returninv', 'admin', function(xPlayer, args, showError)
-	TriggerEvent('ox_inventory:returnPlayerInventory', args.playerId)
-end, true, {help = 'Returns confiscated items to a player', validate = true, arguments = {
-	{name = 'playerId', help = 'player id', type = 'player'},
-}})
+AddCommand('ox_inventory', 'returninv', function(source, args)
+	TriggerEvent('ox_inventory:returnPlayerInventory', args.target)
+end, {'target:number'})
 
-ESX.RegisterCommand('clearinv', 'admin', function(xPlayer, args, showError)
-	TriggerEvent('ox_inventory:clearPlayerInventory', args.playerId)
-end, true, {help = 'Returns confiscated items to a player', validate = true, arguments = {
-	{name = 'playerId', help = 'player id', type = 'player'},
-}})
+AddCommand('ox_inventory', 'clearinv', function(source, args)
+	TriggerEvent('ox_inventory:clearPlayerInventory', args.target)
+end, {'target:number'})
 
-ESX.RegisterCommand('saveinv', 'admin', function(xPlayer, args, showError)
+AddCommand('ox_inventory', 'saveinv', function(source, args)
 	local time = os.time()
 	for id, inv in pairs(Inventories) do
 		if inv.type ~= 'player' then
@@ -844,15 +865,12 @@ ESX.RegisterCommand('saveinv', 'admin', function(xPlayer, args, showError)
 			end
 		end
 	end
-end, true, {help = 'Save all inventories', validate = true, arguments = {}})
+end)
 
-ESX.RegisterCommand('viewinv', 'admin', function(xPlayer, args, showError)
-	local inventory = Inventories[args.id] or Inventories[tonumber(args.id)]
-	TriggerClientEvent('ox_inventory:viewInventory', xPlayer.source, inventory)
-end, false, {help = 'Spectate the provided inventory id', validate = true, arguments = {
-	{name = 'id', help = 'inventory id', type = 'any'},
-	--todo: support for viewing unloaded inventories
-}})
+AddCommand('ox_inventory', 'viewinv', function(source, args)
+	local inventory = Inventories[args.target] or Inventories[tonumber(args.target)]
+	TriggerClientEvent('ox_inventory:viewInventory', source, inventory)
+end, {'target'})
 
 TriggerEvent('ox_inventory:loadInventory', Inventory)
 
@@ -871,11 +889,10 @@ end)
 local function ConvertItems(playerId, items)
 	if type(items) == 'table' then
 		local returnData, totalWeight = table.create(#items, 0), 0
-		local xPlayer = ESX.GetPlayerFromId(playerId)
 		local slot = 0
 		for name, count in pairs(items) do
 			local item = Items(name)
-			local metadata = Items.Metadata(xPlayer, item, false, count)
+			local metadata = Items.Metadata(playerId, item, false, count)
 			local weight = Inventory.SlotWeight(item, {count=count, metadata=metadata})
 			totalWeight = totalWeight + weight
 			slot += 1
