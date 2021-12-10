@@ -67,7 +67,7 @@ return {
 		[5] = {31, 248000},		-- Sports Classic
 		[6] = {31, 248000},		-- Sports
 		[7] = {21, 168000},		-- Super
-		[8] = {5,  40000},		-- Motorcycle
+		[8] = {5, 40000},		-- Motorcycle
 		[9] = {51, 408000},		-- Offroad
 		[10] = {51, 408000},	-- Industrial
 		[11] = {41, 328000},	-- Utility
