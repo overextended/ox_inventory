@@ -77,4 +77,6 @@ return {
 	['use_hotbar'] = "Použít předmět v hotbaru %s~",
 	['no_durability'] = "Předmět je rozbitý",
 	['cannot_give'] = "Této osobě nemůžete dát %s %s",
+	['evidence_cannot_take'] = "Nejste dostatečně kvalifikovaný pro přístup",
+	['dumpster'] = "Popelnice"
 }

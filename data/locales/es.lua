@@ -61,4 +61,6 @@ return {
 	['use_hotbar'] = "Usar item de la barra de acceso rápido %s~",
 	['no_durability'] = "¡La durabilidad del item se ha agotado!",
 	['cannot_give'] = "No se pudo dar %s %s al objetivo",
+	['evidence_cannot_take'] = "No es una calificación lo suficientemente alta como para tomar de la evidencia", -- ACCURATE TRANSLATION NEEDED
+	['dumpster'] = "Contenedor"
 }

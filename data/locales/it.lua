@@ -77,4 +77,6 @@ return {
 	['use_hotbar'] = "Usa oggetto hotbar %s~",
 	['no_durability'] = "Oggetto usurato",
 	['cannot_give'] = "Impossibile dare %s %s al bersaglio",
+	['evidence_cannot_take'] = "Non abbastanza alto da prendere dalle prove", -- ACCURATE TRANSLATION NEEDED
+	['dumpster'] = "Cassonetto"
 }

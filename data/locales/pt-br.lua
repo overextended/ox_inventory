@@ -77,5 +77,6 @@ return {
 	['use_hotbar'] = "Usar item da hotbar %s~",
 	['no_durability'] = "A durabilidade do item está esgotada",
 	['cannot_give'] = "Incapaz de dar %s %s ao alvo",
-	['evidence_cannot_take'] = "Grau não alto o suficiente para tirar da evidência"
+	['evidence_cannot_take'] = "Grau não alto o suficiente para tirar da evidência",
+	['dumpster'] = "Lixeira"
 }

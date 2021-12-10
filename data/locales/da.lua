@@ -77,5 +77,6 @@ return {
 	['use_hotbar'] = "Brug hotbar ting %s~",
 	['no_durability'] = "Holdbarhed udløbet",
 	['cannot_give'] = "Kan ikke give %s %s til person",
-	['evidence_cannot_take'] = "Ikke høj nok rangering til at tage bevismateriale"
+	['evidence_cannot_take'] = "Ikke høj nok rangering til at tage bevismateriale", -- ACCURATE TRANSLATION NEEDED
+	['dumpster'] = "Skraldespand"
 }

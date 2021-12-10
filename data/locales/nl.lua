@@ -77,5 +77,6 @@ return {
 	['use_hotbar'] = "Gebruik hotbar item %s~",
 	['no_durability'] = "Levensduur van item is verbruikt",
 	['cannot_give'] = "Niet in staat om te geven %s %s aan het doel",
-	['evidence_cannot_take'] = "Rang is niet hoog genoeg om van bewijs te pakken"
+	['evidence_cannot_take'] = "Rang is niet hoog genoeg om van bewijs te pakken",
+	['dumpster'] = "Afvalcontainer"
 }
