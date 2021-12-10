@@ -114,7 +114,7 @@ Inventory.Stashes = setmetatable(data('stashes'), {
 					options = {
 						{
 							icon = 'fas fa-warehouse',
-							label = 'Open Stash',
+							label = stash.target.label or 'Open Stash',
 							job = stash.jobs,
 							action = function()
 								OpenStash({id=id})
