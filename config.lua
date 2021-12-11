@@ -4,55 +4,60 @@
 -- Details will be added to the documentation at some point, but you can utilise it like so...
 -- Create the file '.cfg' and add the following
 --[[
-	setr ox_inventory {
-		"locale": "cs",
-		"qtarget": true,
-		"keys": [
-        	"F2", "K", "TAB"
-		]
-	}
+setr ox_inventory {
+    "locale": "en",
+    "qtarget": true,
+    "keys": [
+        "F2", "K", "TAB"
+    ]
+}
 
-	set ox_inventory_server {
-		"logs": true,
-		"pricevariation": false,
-		"dumpsterloot": {
-			['mustard', 0, 1],
-			['garbage', 1, 7],
-			['burger', 0, 1]
-		}
-	}
+set ox_inventory_server {
+    "logs": true,
+    "pricevariation": false
+}
 
-	ensure ox_inventory
+ensure ox_inventory
 ]]
 -- Replace 'ensure ox_inventory' in your 'server.cfg' with 'exec @ox_inventory/.cfg'
 
-local ox = json.decode(GetConvar('ox_inventory', '{}'))
+local function loadConvar(name)
+	local convar = json.decode(GetConvar(name, '{}'))
+	if type(convar) == 'nil' then
+		CreateThread(function()
+			error(('^1Convar setting `%s` is malformed, ensure you are using a valid JSON format.^0'):format(name))
+		end)
+	end
+	return convar or {}
+end
+
+local ox = loadConvar('ox_inventory')
 
 ox = {
-    locale = ox.locale or 'en',
+	locale = ox.locale or 'en',
 
-    -- If vehicle plates are stored with a trailing space, set to false (i.e. `XXX 000 `)
-    trimplate = ox.trimplate or true,
+	-- If vehicle plates are stored with a trailing space, set to false (i.e. `XXX 000 `)
+	trimplate = ox.trimplate or true,
 
-    -- Adds compatibility for qtarget (https://github.com/overextended/qtarget)
-    qtarget = ox.qtarget or false,
+	-- Adds compatibility for qtarget (https://github.com/overextended/qtarget)
+	qtarget = ox.qtarget or false,
 
-    -- Number of slots in the player inventory
-    playerslots = ox.playerslots or 50,
+	-- Number of slots in the player inventory
+	playerslots = ox.playerslots or 50,
 
-    -- Blurs the screen while the inventory is open
-    blurscreen = ox.blurscreen or true,
+	-- Blurs the screen while the inventory is open
+	blurscreen = ox.blurscreen or true,
 
-    -- Reload empty weapons automatically
-    autoreload = ox.autoreload or true,
+	-- Reload empty weapons automatically
+	autoreload = ox.autoreload or true,
 
-    -- Enable sentry logging (this reports UI errors and general performance statistics to the Ox team, anonymously)
-    sentry = ox.sentry or true,
+	-- Enable sentry logging (this reports UI errors and general performance statistics to the Ox team, anonymously)
+	sentry = ox.sentry or true,
 
-    -- Set the keybinds for primary, secondary, and hotbar
-    keys = ox.keys or {
-        'F2', 'K', 'TAB'
-    },
+	-- Set the keybinds for primary, secondary, and hotbar
+	keys = ox.keys or {
+		'F2', 'K', 'TAB'
+	},
 
 	enablekeys = ox.enablekeys or {
 		249
@@ -64,7 +69,8 @@ ox.playerweight = ESX.GetConfig().MaxWeight
 IsDuplicityVersion = IsDuplicityVersion()
 
 if IsDuplicityVersion then
-	local server = json.decode(GetConvar('ox_inventory_server', '{}'))
+	local server = loadConvar('ox_inventory_server')
+
 	-- Check the latest available release
 	ox.versioncheck = server.versioncheck or false
 
@@ -87,7 +93,7 @@ if IsDuplicityVersion then
 	ox.lootchance = server.lootchance or 50
 
 	-- Items that can be acquired, with minimum and maxiumum count to be generated
-	ox.loottable = server.loottable or {
+	ox.loottable = {
 		{'cola', 0, 1},
 		{'water', 0, 2},
 		{'garbage', 0, 1},
@@ -97,7 +103,7 @@ if IsDuplicityVersion then
 	}
 
 	-- Separate loot table for dumpsters
-	ox.dumpsterloot = server.dumpsterloot or {
+	ox.dumpsterloot = {
 		{'mustard', 0, 1},
 		{'garbage', 1, 3},
 		{'panties', 0, 1},
