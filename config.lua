@@ -4,29 +4,34 @@
 -- Details will be added to the documentation at some point, but you can utilise it like so...
 -- Create the file '.cfg' and add the following
 --[[
-	setr ox_inventory {
-		"locale": "cs",
-		"qtarget": true,
-		"keys": [
-			"F2", "K", "TAB"
-		]
-	}
+setr ox_inventory {
+    "locale": "en",
+    "qtarget": true,
+    "keys": [
+        "F2", "K", "TAB"
+    ]
+}
 
-	set ox_inventory_server {
-		"logs": true,
-		"pricevariation": false,
-		"dumpsterloot": {
-			['mustard', 0, 1],
-			['garbage', 1, 7],
-			['burger', 0, 1]
-		}
-	}
+set ox_inventory_server {
+    "logs": true,
+    "pricevariation": false
+}
 
-	ensure ox_inventory
+ensure ox_inventory
 ]]
 -- Replace 'ensure ox_inventory' in your 'server.cfg' with 'exec @ox_inventory/.cfg'
 
-local ox = json.decode(GetConvar('ox_inventory', '{}'))
+local function loadConvar(name)
+	local convar = json.decode(GetConvar(name, '{}'))
+	if type(convar) == 'nil' then
+		CreateThread(function()
+			error(('^1Convar setting `%s` is malformed, ensure you are using a valid JSON format.^0'):format(name))
+		end)
+	end
+	return convar or {}
+end
+
+local ox = loadConvar('ox_inventory')
 
 ox = {
 	locale = ox.locale or 'en',
@@ -64,7 +69,8 @@ ox.playerweight = ESX.GetConfig().MaxWeight
 IsDuplicityVersion = IsDuplicityVersion()
 
 if IsDuplicityVersion then
-	local server = json.decode(GetConvar('ox_inventory_server', '{}'))
+	local server = loadConvar('ox_inventory_server')
+
 	-- Check the latest available release
 	ox.versioncheck = server.versioncheck or false
 
@@ -87,7 +93,7 @@ if IsDuplicityVersion then
 	ox.lootchance = server.lootchance or 50
 
 	-- Items that can be acquired, with minimum and maxiumum count to be generated
-	ox.loottable = server.loottable or {
+	ox.loottable = {
 		{'cola', 0, 1},
 		{'water', 0, 2},
 		{'garbage', 0, 1},
@@ -97,7 +103,7 @@ if IsDuplicityVersion then
 	}
 
 	-- Separate loot table for dumpsters
-	ox.dumpsterloot = server.dumpsterloot or {
+	ox.dumpsterloot = {
 		{'mustard', 0, 1},
 		{'garbage', 1, 3},
 		{'panties', 0, 1},
