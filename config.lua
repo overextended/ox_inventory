@@ -90,25 +90,6 @@ if IsDuplicityVersion then
 	-- Minimum chance for an inventory to generate an item
 	ox.lootchance = server.lootchance or 50
 
-	-- Items that can be acquired, with minimum and maxiumum count to be generated
-	ox.loottable = server.loottable or {
-		{'cola', 0, 1},
-		{'water', 0, 2},
-		{'garbage', 0, 1},
-		{'panties', 0, 1},
-		{'money', 0, 50},
-		{'bandage', 0, 1}
-	}
-
-	-- Separate loot table for dumpsters
-	ox.dumpsterloot = server.dumpsterloot or {
-		{'mustard', 0, 1},
-		{'garbage', 1, 3},
-		{'panties', 0, 1},
-		{'money', 0, 10},
-		{'burger', 0, 1}
-	}
-
 	_G.server = table.wipe(server)
 else client = {} end
 

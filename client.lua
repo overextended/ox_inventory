@@ -522,7 +522,7 @@ RegisterNetEvent('ox_inventory:setPlayerInventory', function(currentDrops, inven
 		end
 	end
 
-	while not uiLoaded do Wait(0) end
+	while not uiLoaded do Wait(50) end
 
 	SendNUIMessage({
 		action = 'init',
@@ -751,7 +751,6 @@ RegisterNetEvent('esx:onPlayerLogout', function()
 	ClearInterval(1)
 	ClearInterval(2)
 	Utils.Disarm(currentWeapon, -1)
-	uiLoaded = false
 end)
 
 RegisterNetEvent('ox_inventory:viewInventory', function(data)

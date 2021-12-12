@@ -1,5 +1,59 @@
 local Items = {}
-local ItemList = shared 'items'
+local ItemList = {}
+
+for k, v in pairs(data('items')) do
+	v.name = k
+	v.weight = v.weight or 0
+	v.close = v.close or true
+	v.stack = v.stack == nil and true or v.stack
+	if v.client then
+		if not v.consume and (v.client.consume or v.client.status or v.client.usetime) then
+			v.consume = 1
+		end
+	end
+	ItemList[k] = v
+end
+
+for type, data in pairs(data('weapons')) do
+	for k, v in pairs(data) do
+		v.name = k
+		v.hash = type == 'Weapons' and joaat(k)
+		v.stack = type == 'Weapons' and false or true
+		v.close = type == 'Ammo' and true or false
+
+		if type == 'Weapons' and not v.durability then
+			v.durability = 1
+		end
+
+		ItemList[k] = v
+	end
+end
+
+-- Slot count and maximum weight for containers
+ox.containers = {
+	['paperbag'] = {5, 1000}
+}
+
+-- Items that can be found, with minimum and maxiumum count to be generated
+ox.loottable = {
+	{'cola', 0, 1},
+	{'water', 0, 2},
+	{'garbage', 0, 1},
+	{'panties', 0, 1},
+	{'money', 0, 50},
+	{'bandage', 0, 1}
+}
+
+-- Separate loot table for dumpsters
+ox.dumpsterloot = {
+	{'mustard', 0, 1},
+	{'garbage', 1, 3},
+	{'panties', 0, 1},
+	{'money', 0, 10},
+	{'burger', 0, 1}
+}
+
+GlobalState.itemList = ItemList
 
 local function GetItem(item)
 	if item then
@@ -85,15 +139,14 @@ local itemFormat = [[
 	local count = 0
 	Wait(2000)
 	if ox.UsableItemsCallbacks then
-		print(ox.UsableItemsCallbacks)
 		ox.UsableItemsCallbacks = ox.UsableItemsCallbacks()
-		print(ox.UsableItemsCallbacks)
 	else ox.UsableItemsCallbacks = {} end
 
 	for _, v in pairs(ItemList) do
 		if v.consume and v.consume > 0 and ox.UsableItemsCallbacks[v.name] then ox.UsableItemsCallbacks[v.name] = nil end
 		count += 1
 	end
+	GlobalState.itemList = ItemList
 
 	TriggerEvent('ox_inventory:itemList', ItemList)
 	ox.info('Inventory has loaded '..count..' items')
@@ -148,10 +201,6 @@ local function GenerateSerial(text)
 	return ('%s%s%s'):format(math.random(100000,999999), text, math.random(100000,999999))
 end
 
-local containers = {
-	['paperbag'] = {5, 1000}
-}
-
 local Inventory
 CreateThread(function() Inventory = server.inventory end)
 
@@ -175,7 +224,7 @@ function Items.Metadata(inv, item, metadata, count)
 			end
 		end
 	else
-		local container = containers[item.name]
+		local container = ox.containers[item.name]
 		if container then
 			count = 1
 			metadata = {
