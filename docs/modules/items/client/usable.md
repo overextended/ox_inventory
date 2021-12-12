@@ -28,11 +28,11 @@ It is still possible to use items through ESX.RegisterUsableItem, though it is l
 		```lua
 		Item('bandage', function(data, slot)
 			local maxHealth = 200
-			local health = GetEntityHealth(ESX.PlayerData.ped)
+			local health = GetEntityHealth(PlayerData.ped)
 			if health < maxHealth then
 				TriggerEvent('ox_inventory:item', data, function(data)
 					if data then
-						SetEntityHealth(ESX.PlayerData.ped, math.min(maxHealth, math.floor(health + maxHealth / 16)))
+						SetEntityHealth(PlayerData.ped, math.min(maxHealth, math.floor(health + maxHealth / 16)))
 						TriggerEvent('ox_inventory:notify', {text = 'You feel better already'})
 					end
 				end)

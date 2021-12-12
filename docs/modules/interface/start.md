@@ -1,10 +1,10 @@
 ---
-title: Progress.Start
+title: Interface.Progress
 ---
 Starts the progress bar and prevents some actions such as opening the inventory, reloading, etc.
 !!! info
 	```lua
-	Progress.Start(options, completed)
+	Interface.Progress(options, completed)
 	```
 	```lua
     exports.ox_inventory:Progress(options, completed)
@@ -30,7 +30,7 @@ Starts the progress bar and prevents some actions such as opening the inventory,
 
 !!! example
     ```lua
-    Progress.Start({
+    Interface.Progress({
         duration = 2000,
         label = 'Drinking water',
         useWhileDead = false,

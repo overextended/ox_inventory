@@ -8,10 +8,10 @@ The server-side items module loads general item data, provides functions for man
 	```lua
 	Items(name)
 	```
-	```lua
-	exports.ox_inventory:Items(name)
-	```
 	The argument is optional and, if ignored, will return the full items list.
+	```lua
+	Items = GlobalState.itemList
+	```
 
 !!! example
 	```lua

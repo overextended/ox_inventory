@@ -1,11 +1,11 @@
 ---
-title: Disarm
+title: Utils.Disarm
 ---
 Forces the player to holster their current weapon. This should be used instead of usual natives.
 
 !!! info
 	```lua
-	Disarm()
+	Utils.Disarm()
 	```
 	```lua
 	TriggerEvent('ox_inventory:disarm')

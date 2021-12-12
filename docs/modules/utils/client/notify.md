@@ -1,11 +1,11 @@
 ---
-title: Notify
+title: Utils.Notify
 ---
 Triggers the builtin notification system, utilising [react-hot-toast](https://github.com/timolins/react-hot-toast).
 
 !!! info
 	```lua
-	Notify(data)
+	Utils.Notify(data)
 	```
 	```lua
 	exports.ox_inventory:notify(data)

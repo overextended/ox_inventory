@@ -1,12 +1,12 @@
 ---
-title: Progress.Cancel
+title: Interface.CancelProgress
 ---
 Cancels the current progress bar, if it can be cancelled. This function is bound to the `X` key with RegisterKeyMapping.
 
 !!! info
 	```lua
-	Progress.Cancel()
+	Interface.CancelProgress()
 	```
 	```lua
-    exports.ox_inventory:ProgressCancel()
+    exports.ox_inventory:CancelProgress()
 	```
