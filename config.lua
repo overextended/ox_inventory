@@ -2,7 +2,6 @@
 -- Modifying the values here changes the resource hash (requiring players to download everything again).
 -- It's also just convenient to leave it alone for the sake of git source control.
 -- Details will be added to the documentation at some point, but you can utilise it like so...
--- Create the file '.cfg' and add the following
 --[[
 setr ox_inventory {
     "locale": "en",
@@ -17,8 +16,12 @@ set ox_inventory_server {
     "pricevariation": false
 }
 
+add_ace group.admin ox_inventory allow
+add_ace resource.ox_inventory command.add_principal allow
+add_ace resource.ox_inventory command.remove_principal allow
 ensure ox_inventory
 ]]
+-- Save the file to the resource directory as ".cfg"
 -- Replace 'ensure ox_inventory' in your 'server.cfg' with 'exec @ox_inventory/.cfg'
 
 local function loadConvar(name)
@@ -64,7 +67,9 @@ ox = {
 		249
 	},
 
-	playerweight = ox.playerweight or 30000
+	playerweight = ox.playerweight or 30000,
+
+	locale = ox.locale or 'en'
 }
 
 ox.resource = GetCurrentResourceName()
