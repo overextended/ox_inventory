@@ -122,7 +122,7 @@ ServerCallback.Register('openInventory', function(source, cb, inv, data)
 		elseif inv == 'dumpster' then
 			right = Inventory(data)
 			if not right then
-				right = Inventory.Create(data, 'Dumpster', inv, 15, 0, 100000, false)
+				right = Inventory.Create(data, ox.locale('dumpster'), inv, 15, 0, 100000, false)
 			end
 
 		elseif inv == 'container' then

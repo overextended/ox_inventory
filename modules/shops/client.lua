@@ -48,11 +48,11 @@ client.shops = setmetatable(data('shops'), {
 							exports.qtarget:RemoveZone(shopid)
 							if shop.blip then CreateLocationBlip(blipId, shop.name, shop.blip, target.loc) end
 							exports.qtarget:AddBoxZone(shopid, target.loc, target.length or 0.5, target.width or 0.5, {
-								name=shopid,
-								heading=target.heading or 0.0,
-								debugPoly=false,
-								minZ=target.minZ,
-								maxZ=target.maxZ
+								name = shopid,
+								heading = target.heading or 0.0,
+								debugPoly = false,
+								minZ = target.minZ,
+								maxZ = target.maxZ
 							}, {
 								options = {
 									{

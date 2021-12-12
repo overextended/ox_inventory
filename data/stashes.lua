@@ -7,7 +7,8 @@ return {
 			width = 5.6,
 			heading = 0,
 			minZ = 29.49,
-			maxZ = 32.09
+			maxZ = 32.09,
+			label = 'Open personal locker'
 		},
 		name = 'policelocker',
 		label = 'Personal locker',
@@ -25,7 +26,8 @@ return {
 			width = 1.8,
 			heading = 340,
 			minZ = 43.34,
-			maxZ = 44.74
+			maxZ = 44.74,
+			label = 'Open personal locker'
 		},
 		name = 'emslocker',
 		label = 'Personal Locker',

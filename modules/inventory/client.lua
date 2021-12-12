@@ -19,7 +19,7 @@ if ox.qtarget then
 	exports.qtarget:AddTargetModel(Inventory.Dumpsters, {
 		options = {
 			{
-				icon = "fas fa-dumpster",
+				icon = 'fas fa-dumpster',
 				label = ox.locale('search_dumpster'),
 				action = function(entity)
 					OpenDumpster(entity)
@@ -72,16 +72,16 @@ Inventory.Evidence = setmetatable(data('evidence'), {
 				exports.qtarget:RemoveZone(evidence.target.name)
 				exports.qtarget:AddBoxZone(evidence.target.name, evidence.target.loc, evidence.target.length or 0.5, evidence.target.width or 0.5,
 				{
-					name=evidence.target.name,
-					heading=evidence.target.heading or 0.0,
-					debugPoly=false,
-					minZ=evidence.target.minZ,
-					maxZ=evidence.target.maxZ
+					name = evidence.target.name,
+					heading = evidence.target.heading or 0.0,
+					debugPoly = false,
+					minZ = evidence.target.minZ,
+					maxZ = evidence.target.maxZ
 				}, {
 					options = {
 						{
-							icon = "fas fa-warehouse",
-							label = "Open Police Evidence",
+							icon = 'fas fa-warehouse',
+							label = 'Open Police Evidence',
 							job = 'police',
 							action = function()
 								OpenEvidence()
@@ -106,16 +106,16 @@ Inventory.Stashes = setmetatable(data('stashes'), {
 				exports.qtarget:RemoveZone(stash.name)
 				exports.qtarget:AddBoxZone(stash.name, stash.target.loc, stash.target.length or 0.5, stash.target.width or 0.5,
 				{
-					name=stash.name,
-					heading=stash.target.heading or 0.0,
-					debugPoly=false,
-					minZ=stash.target.minZ,
-					maxZ=stash.target.maxZ
+					name = stash.name,
+					heading = stash.target.heading or 0.0,
+					debugPoly = false,
+					minZ = stash.target.minZ,
+					maxZ = stash.target.maxZ
 				}, {
 					options = {
 						{
-							icon = "fas fa-warehouse",
-							label = "Open Stash",
+							icon = 'fas fa-warehouse',
+							label = stash.target.label or 'Open Stash',
 							job = stash.jobs,
 							action = function()
 								OpenStash({id=id})
