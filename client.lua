@@ -1,8 +1,8 @@
-local playerId, isBusy = 0, true
 local DisableControlActions = import 'controls'
+local isBusy = true
 
 AddStateBagChangeHandler('busy', nil, function(bagName, _, value, _, _)
-	if bagName:find(playerId) then
+	if bagName:find(PlayerData.id) then
 		isBusy = value
 		if isBusy then
 			DisableControlActions:Add(23, 25, 36, 263)
@@ -36,12 +36,12 @@ end)
 local invOpen = false
 
 local function CanOpenInventory()
-	return ESX.PlayerLoaded
-	and isBusy == false
-	and ESX.PlayerData.dead == false
+	return PlayerData.loaded
+	and not isBusy
+	and not PlayerData.dead
 	and (currentWeapon == nil or currentWeapon.timer == 0)
-	and IsPauseMenuActive() == false
-	and IsPedFatallyInjured(ESX.PlayerData.ped) == false
+	and not IsPauseMenuActive()
+	and not IsPedFatallyInjured(PlayerData.ped)
 	and invOpen ~= nil
 end
 
@@ -58,8 +58,8 @@ local function CloseTrunk()
 	if currentInventory?.type == 'trunk' then
 		local entity = currentInventory.entity
 		local door = currentInventory.door
-		local coords = GetEntityCoords(ESX.PlayerData.ped, true)
-		Utils.PlayAnimAdvanced(900, 'anim@heists@fleeca_bank@scope_out@return_case', 'trevor_action', coords.x, coords.y, coords.z, 0.0, 0.0, GetEntityHeading(ESX.PlayerData.ped), 2.0, 2.0, 1000, 49, 0.25)
+		local coords = GetEntityCoords(PlayerData.ped, true)
+		Utils.PlayAnimAdvanced(900, 'anim@heists@fleeca_bank@scope_out@return_case', 'trevor_action', coords.x, coords.y, coords.z, 0.0, 0.0, GetEntityHeading(PlayerData.ped), 2.0, 2.0, 1000, 49, 0.25)
 		CreateThread(function()
 			local entity, door = entity, door
 			Wait(900)
@@ -75,7 +75,7 @@ local plyState = LocalPlayer.state
 local function OpenInventory(inv, data)
 	if CanOpenInventory() then
 
-		if invOpen and ((not inv and currentInventory.type == 'newdrop') or (inv == 'container' and currentInventory.id == ESX.PlayerData.inventory[data].metadata.container)) then
+		if invOpen and ((not inv and currentInventory.type == 'newdrop') or (inv == 'container' and currentInventory.id == PlayerData.inventory[data].metadata.container)) then
 			return TriggerEvent('ox_inventory:closeInventory')
 		end
 
@@ -102,7 +102,7 @@ local function OpenInventory(inv, data)
 		end
 
 		if left then
-			if inv ~= 'trunk' and not IsPedInAnyVehicle(ESX.PlayerData.ped, false) then
+			if inv ~= 'trunk' and not IsPedInAnyVehicle(PlayerData.ped, false) then
 				Utils.PlayAnim(1000, 'pickup_object', 'putdown_low', 5.0, 1.5, -1, 48, 0.0, 0, 0, 0)
 			end
 			invOpen = true
@@ -113,16 +113,16 @@ local function OpenInventory(inv, data)
 			if ox.blurscreen then TriggerScreenblurFadeIn(0) end
 			CloseTrunk()
 			currentInventory = right or defaultInventory
-			left.items = ESX.PlayerData.inventory
+			left.items = PlayerData.inventory
 			SendNUIMessage({
 				action = 'setupInventory',
 				data = {
 					leftInventory = left,
 					rightInventory = currentInventory,
 					job = {
-						grade = ESX.PlayerData.job.grade,
-						grade_label = ESX.PlayerData.job.grade_label,
-						name = ESX.PlayerData.job.name
+						grade = PlayerData.job.grade,
+						grade_label = PlayerData.job.grade_label,
+						name = PlayerData.job.name
 					}
 				}
 			})
@@ -135,8 +135,8 @@ end
 RegisterNetEvent('ox_inventory:openInventory', OpenInventory)
 
 local function UseSlot(slot)
-	if ESX.PlayerLoaded and not isBusy and not Interface.ProgressActive then
-		local item = ESX.PlayerData.inventory[slot]
+	if PlayerData.loaded and not isBusy and not Interface.ProgressActive then
+		local item = PlayerData.inventory[slot]
 		local data = item and Items[item.name]
 		if item and data.usable then
 			data.slot = slot
@@ -149,11 +149,11 @@ local function UseSlot(slot)
 			elseif item.name:find('WEAPON_') then
 				TriggerEvent('ox_inventory:item', data, function(result)
 					if result then
-						local playerPed = ESX.PlayerData.ped
+						local playerPed = PlayerData.ped
 						if data.throwable then item.throwable = true end
 						ClearPedSecondaryTask(playerPed)
 						if currentWeapon then Utils.Disarm(currentWeapon, data.slot) end
-						local sleep = (ESX.PlayerData.job.name == 'police' and GetWeapontypeGroup(data.hash) == 416676503) and 400 or 1200
+						local sleep = (PlayerData.job.name == 'police' and GetWeapontypeGroup(data.hash) == 416676503) and 400 or 1200
 						local coords = GetEntityCoords(playerPed, true)
 						Utils.PlayAnimAdvanced(sleep*2, sleep == 400 and 'reaction@intimidation@cop@unarmed' or 'reaction@intimidation@1h', 'intro', coords.x, coords.y, coords.z, 0, 0, GetEntityHeading(playerPed), 8.0, 3.0, -1, 50, 0.1)
 						Wait(sleep)
@@ -184,7 +184,7 @@ local function UseSlot(slot)
 					end
 				end)
 			elseif currentWeapon then
-				local playerPed = ESX.PlayerData.ped
+				local playerPed = PlayerData.ped
 				if item.name:find('ammo-') then
 					local maxAmmo = GetMaxAmmoInClip(playerPed, currentWeapon.hash, true)
 					local currentAmmo = GetAmmoInPedWeapon(playerPed, currentWeapon.hash)
@@ -216,7 +216,7 @@ local function UseSlot(slot)
 								TriggerEvent('ox_inventory:item', data, function(data)
 									if data then
 										GiveWeaponComponentToPed(playerPed, currentWeapon.hash, component)
-										table.insert(ESX.PlayerData.inventory[currentWeapon.slot].metadata.components, component)
+										table.insert(PlayerData.inventory[currentWeapon.slot].metadata.components, component)
 										TriggerServerEvent('ox_inventory:updateWeapon', 'component', data.name)
 									end
 								end)
@@ -245,7 +245,7 @@ end
 local function OpenNearbyInventory()
 	if CanOpenInventory() then
 		local closestPlayer, coords = Utils.GetClosestPlayer()
-		if closestPlayer.x < 2 and (ESX.PlayerData.job.name == 'police' or CanOpenTarget(closestPlayer.z)) then
+		if closestPlayer.x < 2 and (PlayerData.job.name == 'police' or CanOpenTarget(closestPlayer.z)) then
 			Utils.PlayAnim(2000, 'mp_common', 'givetake1_a', 1.0, 1.0, -1, 50, 0.0, 0, 0, 0)
 			OpenInventory('player', GetPlayerServerId(closestPlayer.y))
 		end
@@ -258,7 +258,7 @@ local drops, playerCoords
 local function Markers(tb, type, rgb, name)
 	if tb then
 		for k, v in pairs(tb) do
-			if not v.jobs or v.jobs[ESX.PlayerData.job.name] then
+			if not v.jobs or v.jobs[PlayerData.job.name] then
 				local coords = v.coords or v
 				local distance = #(playerCoords - coords)
 				local id = name and type..name..k or type..k
@@ -317,15 +317,15 @@ local function RegisterCommands()
 				if not CanOpenInventory() then return Utils.Notify({type = 'error', text = ox.locale('inventory_player_access'), duration = 2500}) end
 				if StashTarget then
 					OpenInventory('stash', StashTarget)
-				elseif IsPedInAnyVehicle(ESX.PlayerData.ped, false) then
-					local vehicle = GetVehiclePedIsIn(ESX.PlayerData.ped, false)
+				elseif IsPedInAnyVehicle(PlayerData.ped, false) then
+					local vehicle = GetVehiclePedIsIn(PlayerData.ped, false)
 					if NetworkGetEntityIsNetworked(vehicle) then
 						local plate = ox.playerslots and string.strtrim(GetVehicleNumberPlateText(vehicle)) or GetVehicleNumberPlateText(vehicle)
 						OpenInventory('glovebox', {id='glove'..plate, class=GetVehicleClass(vehicle), model=GetEntityModel(vehicle)})
 						while true do
 							Wait(100)
 							if not invOpen then break
-							elseif not IsPedInAnyVehicle(ESX.PlayerData.ped, false) then
+							elseif not IsPedInAnyVehicle(PlayerData.ped, false) then
 								TriggerEvent('ox_inventory:closeInventory')
 								break
 							end
@@ -368,7 +368,7 @@ local function RegisterCommands()
 							local closeToVehicle = distance < 2 and (open == 5 and (checkVehicle == nil and true or 2) or open == 4)
 							if closeToVehicle then
 								local plate = ox.playerslots and string.strtrim(GetVehicleNumberPlateText(vehicle)) or GetVehicleNumberPlateText(vehicle)
-								TaskTurnPedToFaceCoord(ESX.PlayerData.ped, position.x, position.y, position.z)
+								TaskTurnPedToFaceCoord(PlayerData.ped, position.x, position.y, position.z)
 								lastVehicle = vehicle
 								OpenInventory('trunk', {id='trunk'..plate, class=class, model=vehHash})
 								local timeout = 20
@@ -388,9 +388,9 @@ local function RegisterCommands()
 									Wait(50)
 									if closeToVehicle and invOpen then
 										position = GetWorldPositionOfEntityBone(vehicle, vehBone)
-										if #(GetEntityCoords(ESX.PlayerData.ped) - position) >= 2 or not DoesEntityExist(vehicle) then
+										if #(GetEntityCoords(PlayerData.ped) - position) >= 2 or not DoesEntityExist(vehicle) then
 											break
-										else TaskTurnPedToFaceCoord(ESX.PlayerData.ped, position.x, position.y, position.z) end
+										else TaskTurnPedToFaceCoord(PlayerData.ped, position.x, position.y, position.z) end
 									else break end
 								end
 								if lastVehicle then TriggerEvent('ox_inventory:closeInventory') end
@@ -454,31 +454,31 @@ RegisterNetEvent('ox_inventory:updateInventory', function(items, weights, count,
 	if count then Utils.ItemNotify({text = ox.locale(removed and 'removed' or 'added', count), item = itemName}) end
 	for i=1, #items do
 		local i = items[i].item
-		ESX.PlayerData.inventory[i.slot] = i.name and i or nil
+		PlayerData.inventory[i.slot] = i.name and i or nil
 	end
-	ESX.SetPlayerData('weight', weights.left)
+	ox.SetPlayerData('weight', weights.left)
 end)
 
 RegisterNetEvent('ox_inventory:inventoryReturned', function(data)
 	Utils.Notify({text = ox.locale('items_returned'), duration = 2500})
 	TriggerEvent('ox_inventory:closeInventory')
-	ESX.PlayerData.inventory = data[1]
-	ESX.SetPlayerData('inventory', data[1])
-	ESX.SetPlayerData('weight', data[3])
+	PlayerData.inventory = data[1]
+	ox.SetPlayerData('inventory', data[1])
+	ox.SetPlayerData('weight', data[3])
 end)
 
 RegisterNetEvent('ox_inventory:inventoryConfiscated', function(message)
 	if message then Utils.Notify({text = ox.locale('items_confiscated'), duration = 2500}) end
 	TriggerEvent('ox_inventory:closeInventory')
-	table.wipe(ESX.PlayerData.inventory)
-	ESX.SetPlayerData('weight', 0)
+	table.wipe(PlayerData.inventory)
+	ox.SetPlayerData('weight', 0)
 end)
 
 RegisterNetEvent('ox_inventory:createDrop', function(data, owner, slot)
 	drops[data[1]] = data[2]
-	if owner == playerId and invOpen and #(GetEntityCoords(ESX.PlayerData.ped) - data[2]) <= 1 then
+	if owner == PlayerData.id and invOpen and #(GetEntityCoords(PlayerData.ped) - data[2]) <= 1 then
 		if currentWeapon?.slot == slot then Utils.Disarm(currentWeapon, -1) end
-		if not IsPedInAnyVehicle(ESX.PlayerData.ped, false) then
+		if not IsPedInAnyVehicle(PlayerData.ped, false) then
 			OpenInventory('drop', data[1])
 		end
 	end
@@ -492,13 +492,18 @@ end)
 
 local uiLoaded = false
 
-RegisterNetEvent('ox_inventory:setPlayerInventory', function(currentDrops, inventory, weight, esxItem, label)
-	playerId, ESX.PlayerData.ped, invOpen, currentWeapon = GetPlayerServerId(PlayerId()), ESX.PlayerData.ped, false, nil
+RegisterNetEvent('ox_inventory:setPlayerInventory', function(currentDrops, inventory, weight, esxItem, player)
+	PlayerData = player
+	PlayerData.id = GetPlayerServerId(PlayerId())
+	PlayerData.ped = PlayerPedId()
+	ox.SetPlayerData('inventory', inventory)
+	ox.SetPlayerData('weight', weight)
+	invOpen = false
+	currentWeapon = nil
+	drops = currentDrops
 	Utils.ClearWeapons()
-	drops, ESX.PlayerData.inventory = currentDrops, inventory
-	ESX.SetPlayerData('inventory', ESX.PlayerData.inventory)
-	ESX.SetPlayerData('weight', weight)
 	local ItemData = table.create(0, #Items)
+
 	for _, v in pairs(Items) do
 		v.usable = (v.client and next(v.client) or v.consume == 0 or esxItem[v.name] or v.name:find('WEAPON_') or v.name:find('ammo-') or v.name:find('at_')) and true or false
 		ItemData[v.name] = {
@@ -509,9 +514,16 @@ RegisterNetEvent('ox_inventory:setPlayerInventory', function(currentDrops, inven
 			description = v.description
 		}
 	end
+
 	local locales = {}
-	for k, v in pairs(ox.locale()) do if k:find('ui_') then locales[k] = v end end
-	while not uiLoaded do Wait(0) end
+	for k, v in pairs(ox.locale()) do
+		if k:find('ui_') then
+			locales[k] = v
+		end
+	end
+
+	while not uiLoaded do Wait(50) end
+
 	SendNUIMessage({
 		action = 'init',
 		data = {
@@ -519,71 +531,75 @@ RegisterNetEvent('ox_inventory:setPlayerInventory', function(currentDrops, inven
 			locale = locales,
 			items = ItemData,
 			leftInventory = {
-				id = playerId,
+				id = PlayerData.id,
 				slots = ox.playerslots,
-				items = ESX.PlayerData.inventory,
+				items = PlayerData.inventory,
 				maxWeight = ox.playerweight,
-				label = label
 			}
 		}
 	})
+
 	Shops()
 	Inventory.Stashes()
 	Inventory.Evidence()
-	Utils.Notify({text = ox.locale('inventory_setup'), duration = 2500})
 	RegisterCommands()
+
 	plyState:set('busy', false, false)
+	PlayerData.loaded = true
+
+	Utils.Notify({text = ox.locale('inventory_setup'), duration = 2500})
 	local Licenses = data 'licenses'
 
 	SetInterval(function()
+		PlayerData.ped = PlayerPedId()
 		if invOpen == false then
-			playerCoords = GetEntityCoords(ESX.PlayerData.ped)
+			playerCoords = GetEntityCoords(PlayerData.ped)
 			table.wipe(closestMarker)
 
 			Markers(drops, 'drop', vec3(150, 30, 30))
 			if not ox.qtarget then
-				if ESX.PlayerData.job.name == 'police' then Markers(Inventory.Evidence, 'policeevidence', vec(30, 30, 150)) end
+				if PlayerData.job.name == 'police' then Markers(Inventory.Evidence, 'policeevidence', vec(30, 30, 150)) end
 				Markers(Inventory.Stashes, 'stash', vec3(30, 30, 150))
 				for k, v in pairs(Shops) do
-					if not v.jobs or (v.jobs[ESX.PlayerData.job.name] and ESX.PlayerData.job.grade >= v.jobs[ESX.PlayerData.job.name]) then
+					if not v.jobs or (v.jobs[PlayerData.job.name] and PlayerData.job.grade >= v.jobs[PlayerData.job.name]) then
 						Markers(v.locations, 'shop', vec3(30, 150, 30), k)
 					end
 				end
 			end
 			Markers(Licenses, 'license', vec(30, 150, 30))
 
-			if IsPedInAnyVehicle(ESX.PlayerData.ped, false) then table.wipe(closestMarker) end
-			SetPedCanSwitchWeapon(ESX.PlayerData.ped, false)
-			SetPedEnableWeaponBlocking(ESX.PlayerData.ped, true)
+			if IsPedInAnyVehicle(PlayerData.ped, false) then table.wipe(closestMarker) end
+			SetPedCanSwitchWeapon(PlayerData.ped, false)
+			SetPedEnableWeaponBlocking(PlayerData.ped, true)
 		elseif invOpen == true then
 			if not CanOpenInventory() then
 				TriggerEvent('ox_inventory:closeInventory')
 			else
-				playerCoords = GetEntityCoords(ESX.PlayerData.ped)
+				playerCoords = GetEntityCoords(PlayerData.ped)
 				if currentInventory then
 					if currentInventory.type == 'otherplayer' then
 						local id = GetPlayerFromServerId(currentInventory.id)
 						local ped = GetPlayerPed(id)
 						local pedCoords = GetEntityCoords(ped)
-						if not id or #(playerCoords - pedCoords) > 1.8 or not (ESX.PlayerData.job.name == 'police' or CanOpenTarget(ped)) then
+						if not id or #(playerCoords - pedCoords) > 1.8 or not (PlayerData.job.name == 'police' or CanOpenTarget(ped)) then
 							TriggerEvent('ox_inventory:closeInventory')
 							Utils.Notify({type = 'error', text = ox.locale('inventory_lost_access'), duration = 2500})
 						else
-							TaskTurnPedToFaceCoord(ESX.PlayerData.ped, pedCoords.x, pedCoords.y, pedCoords.z, 50)
+							TaskTurnPedToFaceCoord(PlayerData.ped, pedCoords.x, pedCoords.y, pedCoords.z, 50)
 						end
-					elseif currentInventory.coords and (#(playerCoords - currentInventory.coords) > 2 or CanOpenTarget(ESX.PlayerData.ped)) then
+					elseif currentInventory.coords and (#(playerCoords - currentInventory.coords) > 2 or CanOpenTarget(PlayerData.ped)) then
 						TriggerEvent('ox_inventory:closeInventory')
 						Utils.Notify({type = 'error', text = ox.locale('inventory_lost_access'), duration = 2500})
 					end
 				end
 			end
 		end
-		if ox.parachute and GetPedParachuteState(ESX.PlayerData.ped) ~= -1 then ESX.Game.DeleteObject(ox.parachute) ox.parachute = false end
+		if ox.parachute and GetPedParachuteState(PlayerData.ped) ~= -1 then Utils.DeleteObject(ox.parachute) ox.parachute = false end
 	end, 200)
 
 	local EnableKeys = ox.enablekeys
 	SetInterval(function()
-		DisablePlayerVehicleRewards(playerId)
+		DisablePlayerVehicleRewards(PlayerData.id)
 
 		if invOpen then
 			DisableAllControlActions(0)
@@ -599,7 +615,7 @@ RegisterNetEvent('ox_inventory:setPlayerInventory', function(currentDrops, inven
 			end
 		else
 			DisableControlActions()
-			if isBusy then DisablePlayerFiring(playerId, true) end
+			if isBusy then DisablePlayerFiring(PlayerData.id, true) end
 
 			for _, v in pairs(nearbyMarkers) do
 				DrawMarker(2, v[1].x, v[1].y, v[1].z, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.3, 0.2, 0.15, v[2].x, v[2].y, v[2].z, 222, false, false, false, true, false, false, false)
@@ -628,7 +644,7 @@ RegisterNetEvent('ox_inventory:setPlayerInventory', function(currentDrops, inven
 					end
 					currentWeapon.timer = 0
 				elseif currentWeapon.metadata.ammo then
-					local playerPed = ESX.PlayerData.ped
+					local playerPed = PlayerData.ped
 					if IsPedShooting(playerPed) then
 						local currentAmmo = GetAmmoInPedWeapon(playerPed, currentWeapon.hash)
 						currentWeapon.metadata.ammo = (currentWeapon.metadata.ammo < currentAmmo) and 0 or currentAmmo
@@ -649,7 +665,7 @@ RegisterNetEvent('ox_inventory:setPlayerInventory', function(currentDrops, inven
 					end
 				elseif IsControlJustReleased(0, 24) then
 					if currentWeapon.throwable then
-						local playerPed = ESX.PlayerData.ped
+						local playerPed = PlayerData.ped
 						plyState.isBusy = true
 						SetTimeout(700, function()
 							ClearPedSecondaryTask(playerPed)
@@ -658,7 +674,7 @@ RegisterNetEvent('ox_inventory:setPlayerInventory', function(currentDrops, inven
 							Utils.SetWeapon()
 							plyState.isBusy = false
 						end)
-					elseif IsPedPerformingMeleeAction(ESX.PlayerData.ped) then
+					elseif IsPedPerformingMeleeAction(PlayerData.ped) then
 						currentWeapon.melee += 1
 						currentWeapon.timer = GetGameTimer() + 400
 					end
@@ -672,7 +688,7 @@ end)
 
 AddEventHandler('onResourceStop', function(resourceName)
 	if ox.resource == resourceName then
-		if ox.parachute then ESX.Game.DeleteObject(ox.parachute) end
+		if ox.parachute then Utils.DeleteObject(ox.parachute) end
 		if invOpen then
 			SetNuiFocus(false, false)
 			SetNuiFocusKeepInput(false)
@@ -682,11 +698,11 @@ AddEventHandler('onResourceStop', function(resourceName)
 end)
 
 AddEventHandler('ox_inventory:item', function(data, cb)
-	if not isBusy and not Interface.ProgressActive and not IsPedRagdoll(ESX.PlayerData.ped) and not IsPedFalling(ESX.PlayerData.ped) then
+	if not isBusy and not Interface.ProgressActive and not IsPedRagdoll(PlayerData.ped) and not IsPedFalling(PlayerData.ped) then
 		if currentWeapon and currentWeapon?.timer > 100 then return end
 		isBusy = true
 		if invOpen and data.close then TriggerEvent('ox_inventory:closeInventory') end
-		local result = ServerCallback.Await(ox.resource, 'useItem', 200, data.name, data.slot, ESX.PlayerData.inventory[data.slot].metadata)
+		local result = ServerCallback.Await(ox.resource, 'useItem', 200, data.name, data.slot, PlayerData.inventory[data.slot].metadata)
 		if cb == nil then
 			isBusy = false
 			return
@@ -728,33 +744,13 @@ AddEventHandler('ox_inventory:item', function(data, cb)
 	cb(false)
 end)
 
-RegisterNetEvent('esx:playerLoaded', function(xPlayer)
-	ESX.PlayerData = xPlayer
-	ESX.PlayerLoaded = true
-end)
-
 RegisterNetEvent('esx:onPlayerLogout', function()
-	if ox.parachute then ESX.Game.DeleteObject(ox.parachute) ox.parachute = false end
+	if ox.parachute then Utils.DeleteObject(ox.parachute) ox.parachute = false end
 	TriggerEvent('ox_inventory:closeInventory')
-	ESX.PlayerLoaded = false
+	PlayerData.loaded = false
 	ClearInterval(1)
 	ClearInterval(2)
 	Utils.Disarm(currentWeapon, -1)
-end)
-
-local isCuffed = false
-RegisterNetEvent('esx_policejob:handcuff', function()
-	isCuffed = not isCuffed
-	plyState:set('busy', isCuffed, false)
-	if isCuffed then
-		Utils.Disarm(currentWeapon, -1)
-		if invOpen then TriggerEvent('ox_inventory:closeInventory') end
-	end
-end)
-
-RegisterNetEvent('esx_policejob:unrestrain', function()
-	isCuffed = false
-	plyState:set('busy', false, false)
 end)
 
 RegisterNetEvent('ox_inventory:viewInventory', function(data)
@@ -781,10 +777,10 @@ RegisterNUICallback('removeComponent', function(data, cb)
 	cb(1)
 	if not currentWeapon then return Utils.Notify({type = 'error', text = ox.locale('weapon_hand_required')}) end
 	if data.slot ~= currentWeapon.slot then return Utils.Notify({type = 'error', text = ox.locale('weapon_hand_wrong')}) end
-	local itemSlot = ESX.PlayerData.inventory[currentWeapon.slot]
+	local itemSlot = PlayerData.inventory[currentWeapon.slot]
 	for _, component in pairs(Items[data.component].client.component) do
-		if HasPedGotWeaponComponent(ESX.PlayerData.ped, currentWeapon.hash, component) then
-			RemoveWeaponComponentFromPed(ESX.PlayerData.ped, currentWeapon.hash, component)
+		if HasPedGotWeaponComponent(PlayerData.ped, currentWeapon.hash, component) then
+			RemoveWeaponComponentFromPed(PlayerData.ped, currentWeapon.hash, component)
 			for k, v in pairs(itemSlot.metadata.components) do
 				if v == data.component then
 					table.remove(itemSlot.metadata.components, k)
@@ -802,7 +798,7 @@ RegisterNUICallback('useItem', function(slot, cb)
 end)
 
 RegisterNUICallback('giveItem', function(data, cb)
-	local vehicle = GetVehiclePedIsIn(ESX.PlayerData.ped, false)
+	local vehicle = GetVehiclePedIsIn(PlayerData.ped, false)
 	if vehicle ~= 0 then
 		local passenger = GetVehicleMaxNumberOfPassengers(vehicle) - 1
 		if passenger >= 0 then
@@ -811,7 +807,7 @@ RegisterNUICallback('giveItem', function(data, cb)
 				if i == -1 then passenger = {} end
 				if not IsVehicleSeatFree(vehicle, i) then
 					local entity = GetPedInVehicleSeat(vehicle, i)
-					if entity == ESX.PlayerData.ped then
+					if entity == PlayerData.ped then
 						playerSeat = i
 					else
 						passenger[i] = entity
@@ -836,7 +832,7 @@ RegisterNUICallback('giveItem', function(data, cb)
 		end
 	else
 		local target = Utils.Raycast()
-		if target and IsPedAPlayer(target) and #(GetEntityCoords(ESX.PlayerData.ped, true) - GetEntityCoords(target, true)) < 2 then
+		if target and IsPedAPlayer(target) and #(GetEntityCoords(PlayerData.ped, true) - GetEntityCoords(target, true)) < 2 then
 			target = GetPlayerServerId(NetworkGetPlayerIndexFromPed(target))
 			Utils.PlayAnim(2000, 'mp_common', 'givetake1_a', 1.0, 1.0, -1, 50, 0.0, 0, 0, 0)
 			TriggerServerEvent('ox_inventory:giveItem', data.slot, target, data.count)
@@ -855,10 +851,10 @@ RegisterNUICallback('swapItems', function(data, cb)
 	local response, data, weapon = ServerCallback.Await(ox.resource, 'swapItems', false, data)
 	if data then
 		for k, v in pairs(data.items) do
-			ESX.PlayerData.inventory[k] = v and v or nil
+			PlayerData.inventory[k] = v and v or nil
 		end
-		ESX.SetPlayerData('inventory', ESX.PlayerData.inventory)
-		if data.weight then ESX.SetPlayerData('weight', data.weight) end
+		ox.SetPlayerData('inventory', PlayerData.inventory)
+		if data.weight then ox.SetPlayerData('weight', data.weight) end
 	end
 	if weapon and currentWeapon then
 		currentWeapon.slot = weapon
@@ -870,13 +866,13 @@ end)
 RegisterNUICallback('buyItem', function(data, cb)
 	local response, data, message = ServerCallback.Await(ox.resource, 'buyItem', 100, data)
 	if data then
-		ESX.PlayerData.inventory[data[1]] = data[2]
-		ESX.SetPlayerData('inventory', ESX.PlayerData.inventory)
-		ESX.SetPlayerData('weight', data[3])
+		PlayerData.inventory[data[1]] = data[2]
+		ox.SetPlayerData('inventory', PlayerData.inventory)
+		ox.SetPlayerData('weight', data[3])
 		SendNUIMessage({ action = 'refreshSlots', data = {item = data[2]} })
 	end
 	if message then Utils.Notify(message) end
 	cb(response)
 end)
 
-if ESX.PlayerLoaded then TriggerServerEvent('ox_inventory:requestPlayerInventory') end
+if ox.esx and PlayerData.loaded then TriggerServerEvent('ox_inventory:requestPlayerInventory') end

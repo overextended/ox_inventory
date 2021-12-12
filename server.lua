@@ -1,18 +1,3 @@
-RegisterServerEvent('ox_inventory:requestPlayerInventory', function()
-	local xPlayer = ESX.GetPlayerFromId(source)
-	if xPlayer then
-		while not ox.ready do Wait(0) end
-		if next(xPlayer.inventory) then
-			TriggerEvent('ox_inventory:setPlayerInventory', xPlayer)
-		else
-			exports.oxmysql:scalar('SELECT inventory FROM users WHERE identifier = ?', { xPlayer.identifier }, function(result)
-				if result then inventory = json.decode(result) end
-				TriggerEvent('ox_inventory:setPlayerInventory', xPlayer, result and json.decode(result))
-			end)
-		end
-	end
-end)
-
 local Inventory = server.inventory
 
 RegisterServerEvent('ox_inventory:closeInventory', function()
@@ -26,27 +11,47 @@ end)
 
 local Items = server.items
 
-AddEventHandler('ox_inventory:setPlayerInventory', function(xPlayer, data)
-	local money, inventory, totalWeight = {money=0, black_money=0}, {}, 0
-	for _, v in pairs(data or xPlayer.inventory) do
+---@param player table
+---@param data table
+--- player requires source, identifier, and name
+--- optionally, it should contain job, sex, and dateofbirth
+AddEventHandler('ox_inventory:setPlayerInventory', function(player, data)
+	while not ox.ready do Wait(0) end
+	local money = { money = 0, black_money = 0 }
+	local inventory = {}
+	local totalWeight = 0
+
+	for _, v in pairs(data) do
 		if type(v) == 'number' then break end
 		local item = Items(v.name)
+
 		if item then
 			local weight = Inventory.SlotWeight(item, v)
 			totalWeight = totalWeight + weight
+
 			if v.metadata and v.metadata.bag then
 				v.metadata.container = v.metadata.bag
 				v.metadata.size = {5, 1000}
 				v.metadata.bag = nil
 			end
+
 			inventory[v.slot] = {name = v.name, label = item.label, weight = weight, slot = v.slot, count = v.count, description = item.description, metadata = v.metadata, stack = item.stack, close = item.close}
 			if money[v.name] then money[v.name] = money[v.name] + v.count end
 		end
 	end
-	local inv = Inventory.Create(xPlayer.source, xPlayer.name, 'player', ox.playerslots, totalWeight, ox.playerweight, xPlayer.identifier, inventory)
-	inv.job = xPlayer.job
-	xPlayer.syncInventory(totalWeight, ox.playerweight, inventory, money)
-	TriggerClientEvent('ox_inventory:setPlayerInventory', xPlayer.source, Inventory.Drops, inventory, totalWeight, ESX.UsableItemsCallbacks, xPlayer.name)
+
+	local inv = Inventory.Create(player.source, player.name, 'player', ox.playerslots, totalWeight, ox.playerweight, player.identifier, inventory)
+
+	inv.data = {
+		name = player.name,
+		job = player.job,
+		sex = player.sex or player.variables.sex,
+		dateofbirth = player.dateofbirth or player.variables.dateofbirth,
+	}
+
+	if ox.esx then Inventory.SyncInventory(inv) end
+	TriggerClientEvent('ox_inventory:setPlayerInventory', player.source, Inventory.Drops, inventory, totalWeight, ox.UsableItemsCallbacks, player)
+
 end)
 
 local Stashes = data 'stashes'
@@ -173,7 +178,8 @@ ServerCallback.Register('swapItems', function(source, cb, data)
 				if fromData.count < 1 then fromData = nil end
 				items[data.fromSlot] = fromData or false
 				playerInventory.items[data.fromSlot] = fromData
-				Inventory.SyncInventory(ESX.GetPlayerFromId(playerInventory.id), playerInventory)
+
+				if ox.esx then Inventory.SyncInventory(playerInventory) end
 
 				TriggerEvent('ox_inventory:createDrop', source, data.toSlot, toData, function(drop, coords)
 					if fromData == playerInventory.weapon then playerInventory.weapon = nil end
@@ -346,11 +352,11 @@ ServerCallback.Register('swapItems', function(source, cb, data)
 
 					if next(items) then
 						ret = {weight=playerInventory.weight, items=items}
-						if fromInventory.type == 'player' or fromInventory.type == 'otherplayer' then
-							Inventory.SyncInventory(ESX.GetPlayerFromId(fromInventory.id), fromInventory)
+						if ox.esx and fromInventory.type == 'player' or fromInventory.type == 'otherplayer' then
+							Inventory.SyncInventory(fromInventory)
 						end
-						if not sameInventory and (toInventory.type == 'player' or toInventory.type == 'otherplayer') then
-							Inventory.SyncInventory(ESX.GetPlayerFromId(toInventory.id), toInventory)
+						if ox.esx and not sameInventory and (toInventory.type == 'player' or toInventory.type == 'otherplayer') then
+							Inventory.SyncInventory(toInventory)
 						end
 					end
 
@@ -365,22 +371,27 @@ end)
 local Licenses = data 'licenses'
 
 ServerCallback.Register('buyLicense', function(source, cb, id)
-	local license = Licenses[id]
-	if license then
-		local inventory = Inventory(source)
-		exports.oxmysql:scalar('SELECT 1 FROM user_licenses WHERE type = ? AND owner = ?', { license.name, inventory.owner }, function(result)
-			if result then
-				cb(false, 'has_weapon_license')
-			elseif Inventory.GetItem(inventory, 'money', false, true) < license.price then
-				cb(false, 'poor_weapon_license')
-			else
-				Inventory.RemoveItem(inventory, 'money', license.price)
-				TriggerEvent('esx_license:addLicense', source, 'weapon', function()
-					cb('bought_weapon_license')
-				end)
-			end
-		end)
-	else cb() end
+	if ox.esx then
+		local license = Licenses[id]
+		if license then
+			local inventory = Inventory(source)
+			exports.oxmysql:scalar('SELECT 1 FROM user_licenses WHERE type = ? AND owner = ?', { license.name, inventory.owner }, function(result)
+				if result then
+					cb(false, 'has_weapon_license')
+				elseif Inventory.GetItem(inventory, 'money', false, true) < license.price then
+					cb(false, 'poor_weapon_license')
+				else
+					Inventory.RemoveItem(inventory, 'money', license.price)
+					TriggerEvent('esx_license:addLicense', source, 'weapon', function()
+						cb('bought_weapon_license')
+					end)
+				end
+			end)
+		else cb() end
+	else
+		ox.warning('Licenses can only be purchased when using es_extended and esx_licenses. Integrated functionality will be added soon.')
+		cb()
+	end
 end)
 
 ServerCallback.Register('getItemCount', function(source, cb, item, metadata, target)
@@ -431,8 +442,8 @@ ServerCallback.Register('useItem', function(source, cb, item, slot, metadata)
 			elseif type == 3 then -- component
 				data.consume = 1
 				return cb(data)
-			elseif ESX.UsableItemsCallbacks[item.name] then
-				ESX.UseItem(source, data.name, data)
+			elseif ox.UsableItemsCallbacks[item.name] then
+				ox.UseItem(source, data.name, data)
 			else
 				if item.consume and data.count >= item.consume then
 					local result = Items[item.name] and Items[item.name]('usingItem', item, inventory, slot)

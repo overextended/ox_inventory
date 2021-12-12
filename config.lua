@@ -34,7 +34,8 @@ end
 local ox = loadConvar('ox_inventory')
 
 ox = {
-	locale = ox.locale or 'en',
+	-- Enable support for es_extended (defaults to true, for now)
+	esx = ox.esx or true,
 
 	-- If vehicle plates are stored with a trailing space, set to false (i.e. `XXX 000 `)
 	trimplate = ox.trimplate or true,
@@ -61,11 +62,12 @@ ox = {
 
 	enablekeys = ox.enablekeys or {
 		249
-	}
+	},
+
+	playerweight = ox.playerweight or 30000
 }
 
 ox.resource = GetCurrentResourceName()
-ox.playerweight = ESX.GetConfig().MaxWeight
 IsDuplicityVersion = IsDuplicityVersion()
 
 if IsDuplicityVersion then
@@ -91,25 +93,6 @@ if IsDuplicityVersion then
 
 	-- Minimum chance for an inventory to generate an item
 	ox.lootchance = server.lootchance or 50
-
-	-- Items that can be acquired, with minimum and maxiumum count to be generated
-	ox.loottable = {
-		{'cola', 0, 1},
-		{'water', 0, 2},
-		{'garbage', 0, 1},
-		{'panties', 0, 1},
-		{'money', 0, 50},
-		{'bandage', 0, 1}
-	}
-
-	-- Separate loot table for dumpsters
-	ox.dumpsterloot = {
-		{'mustard', 0, 1},
-		{'garbage', 1, 3},
-		{'panties', 0, 1},
-		{'money', 0, 10},
-		{'burger', 0, 1}
-	}
 
 	_G.server = table.wipe(server)
 else client = {} end

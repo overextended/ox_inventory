@@ -25,7 +25,7 @@ client.shops = setmetatable(data('shops'), {
 
 		local blipId = 0
 		for type, shop in pairs(self) do
-			if shop.jobs == nil or (shop.jobs[ESX.PlayerData.job.name] and ESX.PlayerData.job.grade >= shop.jobs[ESX.PlayerData.job.name]) then
+			if shop.jobs == nil or (shop.jobs[PlayerData.job.name] and PlayerData.job.grade >= shop.jobs[PlayerData.job.name]) then
 				if shop.blip then blipId += 1 end
 				if ox.qtarget then
 					if shop.model then
