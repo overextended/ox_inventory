@@ -42,7 +42,7 @@ AddEventHandler('ox_inventory:setPlayerInventory', function(player, data)
 
 	local inv = Inventory.Create(player.source, player.name, 'player', ox.playerslots, totalWeight, ox.playerweight, player.identifier, inventory)
 
-	inv.data = {
+	inv.player = {
 		name = player.name,
 		job = player.job,
 		sex = player.sex or player.variables.sex,

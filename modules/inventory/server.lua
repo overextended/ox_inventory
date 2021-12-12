@@ -836,7 +836,7 @@ end, {'target:number', 'item:string', 'count:number', 'metatype:?string'})
 
 AddCommand(false, 'clearevidence', function(source, args)
 	local inventory = Inventories[source]
-	if inventory.data.job.name == 'police' and inventory.data.job.grade_name == 'boss' then
+	if inventory.player.job.name == 'police' and inventory.player.job.grade_name == 'boss' then
 		exports.oxmysql:execute('DELETE FROM ox_inventory WHERE name = ?', {('evidence-%s'):format(args.evidence)})
 	end
 end, {'evidence:number'})
