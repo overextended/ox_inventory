@@ -16,7 +16,7 @@ local Items = server.items
 --- player requires source, identifier, and name
 --- optionally, it should contain job, sex, and dateofbirth
 AddEventHandler('ox_inventory:setPlayerInventory', function(player, data)
-	print(json.encode(data))
+	while not ox.ready do Wait(0) end
 	local money = { money = 0, black_money = 0 }
 	local inventory = {}
 	local totalWeight = 0

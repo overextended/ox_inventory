@@ -1,5 +1,4 @@
 local DisableControlActions = import 'controls'
-local PlayerData = PlayerData
 local isBusy = true
 
 AddStateBagChangeHandler('busy', nil, function(bagName, _, value, _, _)
@@ -491,7 +490,7 @@ RegisterNetEvent('ox_inventory:removeDrop', function(id)
 	nearbyMarkers['drop'..id] = nil
 end)
 
-local uiLoaded = promise.new()
+local uiLoaded = false
 
 RegisterNetEvent('ox_inventory:setPlayerInventory', function(currentDrops, inventory, weight, esxItem, player)
 	PlayerData = player
@@ -522,8 +521,8 @@ RegisterNetEvent('ox_inventory:setPlayerInventory', function(currentDrops, inven
 			locales[k] = v
 		end
 	end
-	Citizen.Await(uiLoaded)
-	uiLoaded = true
+
+	while not uiLoaded do Wait(0) end
 
 	SendNUIMessage({
 		action = 'init',
@@ -752,6 +751,7 @@ RegisterNetEvent('esx:onPlayerLogout', function()
 	ClearInterval(1)
 	ClearInterval(2)
 	Utils.Disarm(currentWeapon, -1)
+	uiLoaded = false
 end)
 
 RegisterNetEvent('ox_inventory:viewInventory', function(data)
@@ -770,7 +770,7 @@ RegisterNetEvent('ox_inventory:viewInventory', function(data)
 end)
 
 RegisterNUICallback('uiLoaded', function(data, cb)
-	uiLoaded:resolve()
+	uiLoaded = true
 	cb(1)
 end)
 

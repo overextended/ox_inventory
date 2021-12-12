@@ -83,9 +83,11 @@ local itemFormat = [[
 	end
 
 	local count = 0
+	Wait(2000)
 	if ox.UsableItemsCallbacks then
-		Wait(2000)
+		print(ox.UsableItemsCallbacks)
 		ox.UsableItemsCallbacks = ox.UsableItemsCallbacks()
+		print(ox.UsableItemsCallbacks)
 	else ox.UsableItemsCallbacks = {} end
 
 	for _, v in pairs(ItemList) do

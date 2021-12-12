@@ -19,7 +19,6 @@ do
 
         RegisterServerEvent('ox_inventory:requestPlayerInventory', function()
             local source = source
-            while not ox.ready do Wait(0) end
             local player = ox.GetPlayerFromId(source)
 
             if player and next(player.inventory) then

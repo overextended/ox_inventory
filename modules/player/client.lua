@@ -1,8 +1,3 @@
-function ox.SetPlayerData(key, value)
-    PlayerData[key] = value
-    OnPlayerData(key, value)
-end
-
 PlayerData = {
     job = {
         name = 'unemployed',
@@ -17,6 +12,11 @@ PlayerData = {
     cuffed = false,
     loaded = false
 }
+
+function ox.SetPlayerData(key, value)
+    PlayerData[key] = value
+    OnPlayerData(key, value)
+end
 
 local Utils = client.utils
 
