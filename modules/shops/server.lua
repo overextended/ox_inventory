@@ -75,7 +75,7 @@ ServerCallback.Register('openShop', function(source, cb, data)
 		shop = data.id and Shops[data.type][data.id] or Shops[data.type]
 
 		if shop.jobs then
-			local playerJob = left.data.job
+			local playerJob = left.player.job
 			local shopGrade = shop.jobs[playerJob.name]
 			if not shopGrade or shopGrade > playerJob.grade then
 				return cb()
