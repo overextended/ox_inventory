@@ -1,19 +1,15 @@
-client.items = GlobalState.itemList
-
-AddStateBagChangeHandler('itemList', 'global', function(bagName, key, value, reserved, replicated)
-	client.items = value
-end)
+local Items = shared 'items'
 
 local function GetItem(item)
 	if item then
 		item = string.lower(item)
 		if item:find('weapon_') then item = string.upper(item) end
-		return client.items[item]
+		return Items[item]
 	end
 end
 
 local function Item(name, cb)
-	if client.items[name] then client.items[name].effect = cb end
+	if Items[name] then Items[name].effect = cb end
 end
 
 -----------------------------------------------------------------------------------------------
@@ -106,3 +102,4 @@ end)
 -----------------------------------------------------------------------------------------------
 
 exports('Items', GetItem)
+client.items = Items
