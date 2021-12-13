@@ -670,7 +670,7 @@ AddEventHandler('esx:playerDropped', function(source)
 end)
 
 AddEventHandler('esx:setJob', function(source, job)
-	Inventories[source].data.job = job
+	Inventories[source].player.job = job
 end)
 
 local function SaveInventories()
