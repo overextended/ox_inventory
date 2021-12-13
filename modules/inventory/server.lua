@@ -743,8 +743,11 @@ RegisterServerEvent('ox_inventory:updateWeapon', function(action, value, slot)
 			end
 			syncInventory = true
 		elseif action == 'ammo' then
-			if value < weapon.metadata.ammo then
-				local durability = Items(weapon.name).durability * math.abs(weapon.metadata.ammo - value)
+			if weapon.name == 'WEAPON_FIREEXTINGUISHER' or weapon.name == 'WEAPON_PETROLCAN' then
+				weapon.metadata.durability = value
+				weapon.metadata.ammo = weapon.metadata.durability
+			elseif value < weapon.metadata.ammo then
+				local durability = Items(weapon.name).durability * math.abs((weapon.metadata.ammo or 0.1) - value)
 				weapon.metadata.ammo = value
 				weapon.metadata.durability = weapon.metadata.durability - durability
 			end
@@ -757,6 +760,8 @@ RegisterServerEvent('ox_inventory:updateWeapon', function(action, value, slot)
 		if ox.esx and syncInventory then
 			Inventory.SyncInventory(inventory)
 		end
+
+		print(json.encode(weapon, {indent=true}))
 
 		if action ~= 'throw' then TriggerClientEvent('ox_inventory:updateInventory', source, {{item = weapon}}, {left=inventory.weight}) end
 		if weapon.metadata?.durability <= 0 and action ~= 'load' and action ~= 'component' then

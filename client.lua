@@ -178,6 +178,12 @@ local function UseSlot(slot)
 						AddAmmoToPed(playerPed, data.hash, item.metadata.ammo or 100)
 						Wait(0)
 						RefillAmmoInstantly(playerPed)
+
+						if data.name == 'WEAPON_PETROLCAN' or data.name == 'WEAPON_FIREEXTINGUISHER' then
+							item.metadata.ammo = item.metadata.durability
+							SetPedInfiniteAmmo(playerPed, true, data.hash)
+						end
+
 						Utils.SetWeapon(item, data.hash, data.ammoname, 'equipped')
 						Wait(sleep)
 						ClearPedSecondaryTask(playerPed)
@@ -646,13 +652,19 @@ RegisterNetEvent('ox_inventory:setPlayerInventory', function(currentDrops, inven
 				elseif currentWeapon.metadata.ammo then
 					local playerPed = PlayerData.ped
 					if IsPedShooting(playerPed) then
-						local currentAmmo = GetAmmoInPedWeapon(playerPed, currentWeapon.hash)
+						local currentAmmo
+						if currentWeapon.name == 'WEAPON_PETROLCAN' or currentWeapon.name == 'WEAPON_FIREEXTINGUISHER' then
+							currentAmmo = currentWeapon.metadata.ammo - 0.05
+							if currentAmmo <= 0 then
+								SetPedInfiniteAmmo(playerPed, false, currentWeapon.hash)
+							end
+						else currentAmmo = GetAmmoInPedWeapon(playerPed, currentWeapon.hash) end
 						currentWeapon.metadata.ammo = (currentWeapon.metadata.ammo < currentAmmo) and 0 or currentAmmo
-						if currentAmmo == 0 then
+						if currentAmmo <= 0 then
 							ClearPedTasks(playerPed)
 							SetCurrentPedWeapon(playerPed, currentWeapon.hash, true)
 							SetPedCurrentWeaponVisible(playerPed, true, false, false, false)
-							if ox.autoreload and not Interface.ProgressActive and not IsPedRagdoll(playerPed) and not IsPedFalling(playerPed) then
+							if currentWeapon?.ammo and ox.autoreload and not Interface.ProgressActive and not IsPedRagdoll(playerPed) and not IsPedFalling(playerPed) then
 								local ammo = Inventory.Search(1, currentWeapon.ammo)
 								if ammo[1] then
 									TriggerServerEvent('ox_inventory:updateWeapon', 'ammo', currentWeapon.metadata.ammo)
