@@ -773,31 +773,37 @@ end)
 local Log = server.logs
 
 local function AddCommand(group, name, callback, arguments)
-	RegisterCommand(name, function(source, args)
-		if arguments then
-			for i=1, #arguments do
-				local arg, argType = string.strsplit(':', arguments[i])
-				local value = args[i]
-
-				if argType then
-
-					if arg == 'target' and value == 'me' then value = source end
-					if argType == 'number' then value = tonumber(value) end
-
-					assert(type(value) == argType or argType:find('?'), ('command.%s expected <%s> for argument %s (%s), received %s'):format(name, argType, i, arg, type(value)))
-				end
-
-				args[arg] = value
-				args[i] = nil
-			end
+	if type(name) == 'table' then
+		for i=1, #name do
+			AddCommand(group, name[i], callback, arguments)
 		end
-		callback(tonumber(source), args)
-	end, group and true)
+	else
+		RegisterCommand(name, function(source, args)
+			if arguments then
+				for i=1, #arguments do
+					local arg, argType = string.strsplit(':', arguments[i])
+					local value = args[i]
 
-	if group then ExecuteCommand(('add_ace %s command.%s allow'):format(group, name)) end
+					if argType then
+
+						if arg == 'target' and value == 'me' then value = source end
+						if argType == 'number' then value = tonumber(value) end
+
+						assert(type(value) == argType or argType:find('?'), ('command.%s expected <%s> for argument %s (%s), received %s'):format(name, argType, i, arg, type(value)))
+					end
+
+					args[arg] = value
+					args[i] = nil
+				end
+			end
+			callback(tonumber(source), args)
+		end, group and true)
+
+		if group then ExecuteCommand(('add_ace %s command.%s allow'):format(group, name)) end
+	end
 end
 
-AddCommand('ox_inventory', 'additem', function(source, args)
+AddCommand('ox_inventory', {'additem', 'giveitem'}, function(source, args)
 	args.item = Items(args.item)
 	if args.item and args.count > 0 then
 		Inventory.AddItem(args.target, args.item.name, args.count, args.metaType)
