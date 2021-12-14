@@ -21,22 +21,24 @@ AddEventHandler('ox_inventory:setPlayerInventory', function(player, data)
 	local inventory = {}
 	local totalWeight = 0
 
-	for _, v in pairs(data) do
-		if type(v) == 'number' then break end
-		local item = Items(v.name)
+	if data then
+		for _, v in pairs(data) do
+			if type(v) == 'number' then break end
+			local item = Items(v.name)
 
-		if item then
-			local weight = Inventory.SlotWeight(item, v)
-			totalWeight = totalWeight + weight
+			if item then
+				local weight = Inventory.SlotWeight(item, v)
+				totalWeight = totalWeight + weight
 
-			if v.metadata and v.metadata.bag then
-				v.metadata.container = v.metadata.bag
-				v.metadata.size = {5, 1000}
-				v.metadata.bag = nil
+				if v.metadata and v.metadata.bag then
+					v.metadata.container = v.metadata.bag
+					v.metadata.size = {5, 1000}
+					v.metadata.bag = nil
+				end
+
+				inventory[v.slot] = {name = v.name, label = item.label, weight = weight, slot = v.slot, count = v.count, description = item.description, metadata = v.metadata, stack = item.stack, close = item.close}
+				if money[v.name] then money[v.name] = money[v.name] + v.count end
 			end
-
-			inventory[v.slot] = {name = v.name, label = item.label, weight = weight, slot = v.slot, count = v.count, description = item.description, metadata = v.metadata, stack = item.stack, close = item.close}
-			if money[v.name] then money[v.name] = money[v.name] + v.count end
 		end
 	end
 
