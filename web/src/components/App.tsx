@@ -16,6 +16,7 @@ import { Integrations } from '@sentry/tracing';
 import { isEnvBrowser } from '../utils/misc';
 import { Locale } from '../store/locale';
 import { fetchNui } from '../utils/fetchNui';
+import { useDragDropManager } from 'react-dnd';
 
 debugData([
   {
@@ -74,6 +75,12 @@ const App: React.FC = () => {
   React.useEffect(() => {
     dispatch(setShiftPressed(shiftPressed));
   }, [shiftPressed, dispatch]);
+
+  const manager = useDragDropManager();
+
+  useNuiEvent('closeInventory', () => {
+    manager.dispatch({ type: 'dnd-core/END_DRAG' });
+  });
 
   return (
     <>

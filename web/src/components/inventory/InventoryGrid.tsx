@@ -15,9 +15,9 @@ const InventoryGrid: React.FC<{ inventory: Inventory }> = ({ inventory }) => {
     () =>
       inventory.maxWeight !== undefined
         ? inventory.items.reduce<number>(
-            (totalWeight, slot) => (slot.weight ? totalWeight + slot.weight : totalWeight),
-            0
-          )
+          (totalWeight, slot) => (slot.weight ? totalWeight + slot.weight : totalWeight),
+          0
+        )
         : 0,
     [inventory.maxWeight, inventory.items]
   );
@@ -61,7 +61,6 @@ const InventoryGrid: React.FC<{ inventory: Inventory }> = ({ inventory }) => {
                 item={item}
                 inventory={inventory}
                 setCurrentItem={setCurrentItem}
-                setContextVisible={setContextVisible}
               />
             </React.Fragment>
           ))}
