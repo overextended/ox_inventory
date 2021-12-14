@@ -544,6 +544,7 @@ end
 ---@param testItem string
 ---@param testItemCount number
 function Inventory.CanSwapItem(inv, firstItem, firstItemCount, testItem, testItemCount)
+	if type(inv) ~= 'table' then inv = Inventories[inv] end
 	local firstItemData = Inventory.GetItem(inv, firstItem)
 	local testItemData = Inventory.GetItem(inv, testItem)
 	if firstItemData.count >= firstItemCount then
