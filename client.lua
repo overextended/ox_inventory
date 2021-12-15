@@ -50,7 +50,7 @@ local defaultInventory = {
 	slots = ox.playerslots,
 	weight = 0,
 	maxWeight = ox.playerweight,
-	items = table.create(0,0)
+	items = {}
 }
 local currentInventory = defaultInventory
 
@@ -73,12 +73,21 @@ local Interface = client.interface
 local plyState = LocalPlayer.state
 
 local function OpenInventory(inv, data)
-	if CanOpenInventory() then
-
-		if invOpen and ((not inv and currentInventory.type == 'newdrop') or (inv == 'container' and currentInventory.id == PlayerData.inventory[data].metadata.container)) then
+	if invOpen then
+		if not inv and currentInventory.type == 'newdrop' then
 			return TriggerEvent('ox_inventory:closeInventory')
 		end
 
+		if inv == 'container' and currentInventory.id == PlayerData.inventory[data].metadata.container then
+			return TriggerEvent('ox_inventory:closeInventory')
+		end
+
+		if currentInventory.type == 'drop' and (not data or currentInventory.id == (type(data) == 'table' and data.id or data)) then
+			return TriggerEvent('ox_inventory:closeInventory')
+		end
+	end
+
+	if CanOpenInventory() then
 		local left, right
 		if inv == 'shop' and invOpen == false then
 			left, right = ServerCallback.Await(ox.resource, 'openShop', 200, data)
