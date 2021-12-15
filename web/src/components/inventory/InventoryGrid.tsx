@@ -38,8 +38,7 @@ const InventoryGrid: React.FC<{ inventory: Inventory }> = ({ inventory }) => {
       <div className="column-wrapper">
         <div className="inventory-label">
           <p>
-            {inventory.label && `${inventory.label} -`}
-            {inventory.id}
+            {inventory.label && `${inventory.label}`}
           </p>
           {inventory.maxWeight && (
             <div>
