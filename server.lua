@@ -155,7 +155,7 @@ ServerCallback.Register('openInventory', function(source, cb, inv, data)
 		end
 
 	else left.open = true end
-	cb({id=left.label, type=left.type, slots=left.slots, weight=left.weight, maxWeight=left.maxWeight}, right)
+	cb({id=left.label, type=left.type, slots=left.slots, weight=left.weight, maxWeight=left.maxWeight}, right and {id=right.id, label=right.label, type=right.type, slots=right.slots, weight=right.weight, maxWeight=right.maxWeight, items=right.items})
 end)
 
 local table = import 'table'
