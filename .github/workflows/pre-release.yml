@@ -50,6 +50,18 @@ jobs:
           cp -r ./web/build ./temp/ox_inventory/web/build
           cd ./temp && zip -r ox_inventory-${{ steps.get_vars.outputs.SHORT_SHA }}.zip ./ox_inventory
 
+      - name: Create Sentry release
+        uses: tclindner/sentry-releases-action@v1.2.0
+        env:
+          SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
+          SENTRY_ORG: ${{ secrets.SENTRY_ORG }}
+          SENTRY_PROJECT: ${{ secrets.SENTRY_PROJECT }}
+          SENTRY_URL: ${{ secrets.SENTRY_URL }}
+        with:
+          environment: production
+          tagName: ${{ steps.get_vars.outputs.SHORT_SHA }}
+          sourceMapOptions: '{"include": ["./temp/ox_inventory/web/builds/static/js"]}'
+
       - name: Create Release
         uses: "marvinpinto/action-automatic-releases@v1.2.1"
         id: auto_release
@@ -63,15 +75,3 @@ jobs:
         env:
           CI: false
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
-      - uses: actions/checkout@v2
-      - name: Create Sentry release
-        uses: getsentry/action-release@v1
-        env:
-          SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
-          SENTRY_ORG: ${{ secrets.SENTRY_ORG }}
-          SENTRY_PROJECT: ${{ secrets.SENTRY_PROJECT }}
-        with:
-          environment: production
-          version: ${{ steps.get_vars.outputs.SHORT_SHA }}
-          sourcemaps: ./temp/ox_inventory/web/build/static/js
