@@ -215,28 +215,25 @@ end
 ---@param items? table
 ---@return table returnData, number totalWeight, boolean true
 local function generateItems(inv, invType, items)
-	inv = Inventory(inv)
-	if inv then
-		if items == nil then
-			if invType == 'dumpster' then
-				items = randomLoot(ox.dumpsterloot)
-			else
-				items = randomLoot(ox.loottable)
-			end
+	if items == nil then
+		if invType == 'dumpster' then
+			items = randomLoot(ox.dumpsterloot)
+		else
+			items = randomLoot(ox.loottable)
 		end
-
-		local returnData, totalWeight = table.create(#items, 0), 0
-		for i=1, #items do
-			local v = items[i]
-			local item = Items(v[1])
-			local metadata, count = Items.Metadata(inv, item, v[3] or {}, v[2])
-			local weight = Inventory.SlotWeight(item, {count=count, metadata=metadata})
-			totalWeight = totalWeight + weight
-			returnData[i] = {name = item.name, label = item.label, weight = weight, slot = i, count = count, description = item.description, metadata = metadata, stack = item.stack, close = item.close}
-		end
-
-		return returnData, totalWeight, true
 	end
+
+	local returnData, totalWeight = table.create(#items, 0), 0
+	for i=1, #items do
+		local v = items[i]
+		local item = Items(v[1])
+		local metadata, count = Items.Metadata(inv, item, v[3] or {}, v[2])
+		local weight = Inventory.SlotWeight(item, {count=count, metadata=metadata})
+		totalWeight = totalWeight + weight
+		returnData[i] = {name = item.name, label = item.label, weight = weight, slot = i, count = count, description = item.description, metadata = metadata, stack = item.stack, close = item.close}
+	end
+
+	return returnData, totalWeight, true
 end
 
 ---@param id string|number
