@@ -142,6 +142,7 @@ local function OpenInventory(inv, data)
 	elseif not isBusy then Utils.Notify({type = 'error', text = ox.locale('inventory_player_access'), duration = 2500}) end
 end
 RegisterNetEvent('ox_inventory:openInventory', OpenInventory)
+exports('openInventory', OpenInventory)
 
 local function UseSlot(slot)
 	if PlayerData.loaded and not isBusy and not Interface.ProgressActive then

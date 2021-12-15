@@ -13,7 +13,7 @@ if ox.qtarget then
 			SetNetworkIdExistsOnAllMachines(netId)
 			SetNetworkIdCanMigrate(netId, true)
 		end
-		TriggerEvent('ox_inventory:openInventory', 'dumpster', 'dumpster'..netId)
+		exports.ox_inventory:openInventory('dumpster', 'dumpster'..netId)
 	end
 
 	exports.qtarget:AddTargetModel(Inventory.Dumpsters, {
@@ -62,7 +62,7 @@ end
 exports('Search', Inventory.Search)
 
 local function OpenEvidence()
-	TriggerEvent('ox_inventory:openInventory', 'policeevidence')
+	exports.ox_inventory:openInventory('policeevidence')
 end
 
 Inventory.Evidence = setmetatable(data('evidence'), {
@@ -96,7 +96,7 @@ Inventory.Evidence = setmetatable(data('evidence'), {
 })
 
 local function OpenStash(data)
-	TriggerEvent('ox_inventory:openInventory', 'stash', data)
+	exports.ox_inventory:openInventory('stash', data)
 end
 
 Inventory.Stashes = setmetatable(data('stashes'), {
