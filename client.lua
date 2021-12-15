@@ -896,4 +896,6 @@ RegisterNUICallback('buyItem', function(data, cb)
 	cb(response)
 end)
 
-if ox.esx and PlayerData.loaded then TriggerServerEvent('ox_inventory:requestPlayerInventory') end
+if ox.esx and PlayerData.loaded then 
+	TriggerServerEvent('ox_inventory:requestPlayerInventory') 
+end
