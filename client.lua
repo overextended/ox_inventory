@@ -248,6 +248,7 @@ local function UseSlot(slot)
 		end
 	end
 end
+exports('useSlot', UseSlot)
 
 local function CanOpenTarget(ped)
 	return IsPedFatallyInjured(ped)
