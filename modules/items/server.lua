@@ -54,11 +54,12 @@ CreateThread(function()
 		local query = {}
 		for i=1, #items do
 			local v = items[i]
-			if i == 1 then query[i] = "DELETE FROM items WHERE name = '"..v.name.."'"
-			else query[i] = "OR name='"..v.name.."'" end
+			if i == 1 then query[i] = ('DELETE FROM items WHERE name = "%s"'):format(v.name) else query[i] = ('OR name = "%s"'):format(v.name) end
+			v.name = v.name
+			v.label = v.label
 			v.close = v.closeonuse or true
 			v.stack = v.stackable or true
-			v.description = v.description or ''
+			v.description = (v.description or '')
 			v.weight = v.weight or 0
 		end
 		if next(query) then
@@ -67,7 +68,7 @@ CreateThread(function()
 			if not sql then error('Unable to load "setup/dump.sql', 1) end
 			local file = {string.strtrim(LoadResourceFile(ox.resource, 'data/items.lua'))}
 			file[1] = file[1]:gsub('}$', '')
-			local dump = {}
+			local dump = {'INSERT INTO `items` (`name`, `label`, `weight`, `description`) VALUES'}
 local itemFormat = [[
 
 	['%s'] = {
@@ -79,25 +80,32 @@ local itemFormat = [[
 	},
 ]]
 			local saveSql = false
+			local dumpSize = #dump
+			local fileSize = #file
 			for _, v in pairs(items) do
-				if not ItemList[v.name] then
+				local formatName = v.name:gsub("'", "\\'"):lower()
+				if not ItemList[formatName] then
 					if not saveSql then saveSql = true end
-					dump[#dump+1] = ("('%s', '%s', %s),\n"):format(v.name, v.label, v.weight)
-					file[#file+1] = (itemFormat):format(v.name, v.label, v.weight, v.stack, v.close, v.description)
-					ItemList[v.name] = v
+					dumpSize += 1
+					fileSize += 1
+					dump[dumpSize] = ('\n	("%s", "%s", %s, "%s")'):format(v.name, v.label, v.weight, v.description)
+					if dumpSize ~= 2 then dump[dumpSize] = ','..dump[dumpSize] end
+					file[fileSize] = (itemFormat):format(formatName, v.label:gsub("'", "\\'"):lower(), v.weight, v.stack, v.close, v.description:gsub("'", "\\'"))
+					ItemList[formatName] = v
 				end
 			end
-			file[#file+1] = '}'
+			dump[dumpSize+1] = ';\n\n'
+			file[fileSize+1] = '}'
 			if saveSql then
 				dump = ('%s%s'):format(sql, table.concat(dump))
 				SaveResourceFile(ox.resource, 'setup/dump.sql', dump, -1)
 			end
 			SaveResourceFile(ox.resource, 'data/items.lua', table.concat(file), -1)
-			-- exports.oxmysql:update(query, {}, function(result)
-			-- 	if result > 0 then
-			-- 		ox.info('Removed '..result..' items from the database')
-			-- 	end
-			-- end)
+			exports.oxmysql:update(query, function(result)
+				if result > 0 then
+					ox.info('Removed '..result..' items from the database')
+				end
+			end)
 			if items then ox.info(#items..' items have been copied from the database') end
 		end
 	end
