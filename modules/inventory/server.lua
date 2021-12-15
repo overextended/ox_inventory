@@ -371,11 +371,24 @@ exports('SetMetadata', Inventory.SetMetadata)
 ---@param count number
 ---@param metadata? table|string
 ---@param slot number
-function Inventory.AddItem(inv, item, count, metadata, slot)
+---@param cb function
+-- todo: add parameter checks to remove need for nil args
+-- todo: add callback with several reasons for failure
+-- ```
+-- exports.ox_inventory:AddItem(1, 'bread', 4, nil, nil, function(success, reason)
+-- if not success then
+-- 	if reason == 'overburdened' then
+-- 		TriggerClientEvent('ox_inventory:notify', source, {type = 'error', text = ox.locale('cannot_carry', count, data.label), duration = 2500})
+-- 	end
+-- end
+-- ```
+function Inventory.AddItem(inv, item, count, metadata, slot, cb)
 	if type(item) ~= 'table' then item = Items(item) end
 	inv = Inventory(inv)
 	count = math.floor(count + 0.5)
-	if item and inv and count > 0 then
+	local success, reason = false
+	if item then
+		if inv then
 			metadata, count = Items.Metadata(inv.id, item, metadata or {}, count)
 			local existing = false
 
@@ -406,8 +419,15 @@ function Inventory.AddItem(inv, item, count, metadata, slot)
 				if ox.esx then Inventory.SyncInventory(inv) end
 				TriggerClientEvent('ox_inventory:updateInventory', inv.id, {{item = inv.items[slot], inventory = inv.type}}, {left=inv.weight, right=inv.open and Inventories[inv.open]?.weight}, count, false)
 			end
+		else
+			success = false
+			reason = 'invalid_inventory'
 		end
+	else
+		success = false
+		reason = 'invalid_item'
 	end
+	if cb then cb(success, reason) end
 end
 exports('AddItem', Inventory.AddItem)
 
