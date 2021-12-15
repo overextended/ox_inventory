@@ -690,14 +690,28 @@ AddEventHandler('ox_inventory:returnPlayerInventory', function(source)
 	end
 end)
 
-AddEventHandler('ox_inventory:clearPlayerInventory', function(source)
-	local inv = Inventories[source]
+---@param inv any
+---@param keep nil
+--- todo: support the keep argument, allowing users to define a list of item "types" to keep  
+--- i.e. {'money', 'weapons'} would keep money and weapons, but remove ammo, attachments, and other items
+function Inventory.Clear(inv, keep)
+	inv = Inventory(inv)
 	if inv then
-		inv.items = {}
-		inv.weight = 0
-		TriggerClientEvent('ox_inventory:inventoryConfiscated', inv.id)
-		if ox.esx then Inventory.SyncInventory(inv) end
+		if not keep then
+			table.wipe(inv.items)
+			inv.weight = 0
+			if inv.player then
+				TriggerClientEvent('ox_inventory:inventoryConfiscated', inv.id)
+				if ox.esx then Inventory.SyncInventory(inv) end
+			end
+		end
 	end
+end
+exports('ClearInventory', Inventory.Clear)
+
+AddEventHandler('ox_inventory:clearPlayerInventory', function(source)
+	ox.warning('ox_inventory:clearPlayerInventory is deprecated! Use `exports.ox_inventory:ClearInventory(id)` instead')
+	Inventory.Wipe(source)
 end)
 
 AddEventHandler('esx:playerDropped', function(source)
