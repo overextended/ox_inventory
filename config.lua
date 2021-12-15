@@ -16,7 +16,7 @@ set ox_inventory_server {
     "pricevariation": false
 }
 
-add_ace group.admin ox_inventory allow
+add_principal group.admin ox_inventory
 add_ace resource.ox_inventory command.add_principal allow
 add_ace resource.ox_inventory command.remove_principal allow
 ensure ox_inventory

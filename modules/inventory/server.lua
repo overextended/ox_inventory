@@ -813,8 +813,6 @@ RegisterServerEvent('ox_inventory:updateWeapon', function(action, value, slot)
 			Inventory.SyncInventory(inventory)
 		end
 
-		print(json.encode(weapon, {indent=true}))
-
 		if action ~= 'throw' then TriggerClientEvent('ox_inventory:updateInventory', source, {{item = weapon}}, {left=inventory.weight}) end
 		if weapon.metadata?.durability <= 0 and action ~= 'load' and action ~= 'component' then
 			TriggerClientEvent('ox_inventory:disarm', source, false)
@@ -830,6 +828,8 @@ local function AddCommand(group, name, callback, arguments)
 			AddCommand(group, name[i], callback, arguments)
 		end
 	else
+		if not group then group = 'builtin.everyone' end
+
 		RegisterCommand(name, function(source, args)
 			if arguments then
 				for i=1, #arguments do
@@ -851,7 +851,8 @@ local function AddCommand(group, name, callback, arguments)
 			callback(tonumber(source), args)
 		end, group and true)
 
-		if group then ExecuteCommand(('add_ace %s command.%s allow'):format(group, name)) end
+		name = ('command.%s'):format(name)
+		if not IsPrincipalAceAllowed(group, name) then ExecuteCommand(('add_ace %s %s allow'):format(group, name)) end
 	end
 end
 
