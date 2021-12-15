@@ -252,5 +252,8 @@ end)
 
 -----------------------------------------------------------------------------------------------
 
+-- Support both names
+exports('Items', GetItem)
 exports('ItemList', GetItem)
+
 server.items = Items
