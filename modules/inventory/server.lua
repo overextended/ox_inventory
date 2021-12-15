@@ -591,7 +591,7 @@ end
 exports('CanSwapItem', Inventory.CanSwapItem)
 
 RegisterServerEvent('ox_inventory:removeItem', function(name, count, metadata, slot, used)
-	local inv = Inventory(inv)
+	local inv = Inventory(source)
 
 	if inv.items[slot].name == name and inv.items[slot].name:find('at_') and inv.weapon then
 		local weapon = inv.items[inv.weapon]
