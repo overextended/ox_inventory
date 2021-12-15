@@ -185,7 +185,7 @@ ServerCallback.Register('swapItems', function(source, cb, data)
 
 				if ox.esx then Inventory.SyncInventory(playerInventory) end
 
-				TriggerEvent('ox_inventory:createDrop', source, data.toSlot, toData, function(drop, coords)
+				Inventory.CreateDrop(source, data.toSlot, toData, function(drop, coords)
 					if fromData == playerInventory.weapon then playerInventory.weapon = nil end
 					Log(
 						('%s [%s] - %s'):format(playerInventory.label, playerInventory.id, playerInventory.owner),
