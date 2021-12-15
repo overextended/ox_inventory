@@ -304,6 +304,7 @@ function Inventory.GetItem(inv, item, metadata, returnsCount)
 		end
 	end
 end
+exports('GetItem', Inventory.GetItem)
 
 ---@param fromInventory table
 ---@param toInventory table
@@ -317,6 +318,7 @@ function Inventory.SwapSlots(fromInventory, toInventory, slot1, slot2)
 	fromInventory.items[slot1], toInventory.items[slot2] = toSlot, fromSlot
 	return fromSlot, toSlot
 end
+exports('SwapSlots', Inventory.SwapSlots)
 
 ---@param inv any
 ---@param item table|string
@@ -362,6 +364,7 @@ function Inventory.SetMetadata(inv, slot, metadata)
 		end
 	end
 end
+exports('SetMetadata', Inventory.SetMetadata)
 
 ---@param inv any
 ---@param item table|string
@@ -373,38 +376,40 @@ function Inventory.AddItem(inv, item, count, metadata, slot)
 	inv = Inventory(inv)
 	count = math.floor(count + 0.5)
 	if item and inv and count > 0 then
-		metadata, count = Items.Metadata(inv.id, item, metadata or {}, count)
-		local existing = false
+			metadata, count = Items.Metadata(inv.id, item, metadata or {}, count)
+			local existing = false
 
-		if slot then
-			local slotItem = inv.items[slot]
-			if not slotItem or item.stack and slotItem and slotItem.name == item.name and table.matches(slotItem.metadata, metadata) then
-				existing = nil
-			end
-		end
-
-		if existing == false then
-			local items, toSlot = inv.items, nil
-			for i=1, ox.playerslots do
-				local slotItem = items[i]
-				if item.stack and slotItem ~= nil and slotItem.name == item.name and table.matches(slotItem.metadata, metadata) then
-					toSlot, existing = i, true break
-				elseif not toSlot and slotItem == nil then
-					toSlot = i
+			if slot then
+				local slotItem = inv.items[slot]
+				if not slotItem or item.stack and slotItem and slotItem.name == item.name and table.matches(slotItem.metadata, metadata) then
+					existing = nil
 				end
 			end
-			slot = toSlot
-		end
 
-		Inventory.SetSlot(inv, item, count, metadata, slot)
-		inv.weight = inv.weight + (item.weight + (metadata?.weight or 0)) * count
+			if existing == false then
+				local items, toSlot = inv.items, nil
+				for i=1, ox.playerslots do
+					local slotItem = items[i]
+					if item.stack and slotItem ~= nil and slotItem.name == item.name and table.matches(slotItem.metadata, metadata) then
+						toSlot, existing = i, true break
+					elseif not toSlot and slotItem == nil then
+						toSlot = i
+					end
+				end
+				slot = toSlot
+			end
 
-		if inv.type == 'player' then
-			if ox.esx then Inventory.SyncInventory(inv) end
-			TriggerClientEvent('ox_inventory:updateInventory', inv.id, {{item = inv.items[slot], inventory = inv.type}}, {left=inv.weight, right=inv.open and Inventories[inv.open]?.weight}, count, false)
+			Inventory.SetSlot(inv, item, count, metadata, slot)
+			inv.weight = inv.weight + (item.weight + (metadata?.weight or 0)) * count
+
+			if inv.type == 'player' then
+				if ox.esx then Inventory.SyncInventory(inv) end
+				TriggerClientEvent('ox_inventory:updateInventory', inv.id, {{item = inv.items[slot], inventory = inv.type}}, {left=inv.weight, right=inv.open and Inventories[inv.open]?.weight}, count, false)
+			end
 		end
 	end
 end
+exports('AddItem', Inventory.AddItem)
 
 ---@param inv any
 ---@param search number '1: return all slots; 2: return total count'
@@ -438,6 +443,7 @@ function Inventory.Search(inv, search, item, metadata)
 	end
 	return false
 end
+exports('Search', Inventory.Search)
 
 ---@param inv any
 ---@param item table|string
@@ -459,6 +465,7 @@ function Inventory.GetItemSlots(inv, item, metadata)
 	end
 	return slots, totalCount, emptySlots
 end
+exports('GetItemSlots', Inventory.GetItemSlots)
 
 ---@param inv any
 ---@param item table|string
@@ -521,6 +528,7 @@ function Inventory.RemoveItem(inv, item, count, metadata, slot)
 		end
 	end
 end
+exports('RemoveItem', Inventory.RemoveItem)
 
 ---@param inv any
 ---@param item table|string
@@ -542,6 +550,7 @@ function Inventory.CanCarryItem(inv, item, count, metadata)
 
 	end
 end
+exports('CanCarryItem', Inventory.CanCarryItem)
 
 ---@param inv any
 ---@param firstItem string
@@ -559,6 +568,7 @@ function Inventory.CanSwapItem(inv, firstItem, firstItemCount, testItem, testIte
 	end
 	return false
 end
+exports('CanSwapItem', Inventory.CanSwapItem)
 
 RegisterServerEvent('ox_inventory:removeItem', function(name, count, metadata, slot, used)
 	local inv = Inventory(inv)
