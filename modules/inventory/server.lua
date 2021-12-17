@@ -914,7 +914,7 @@ AddCommand('ox_inventory', 'returninv', function(source, args)
 end, {'target:number'})
 
 AddCommand('ox_inventory', 'clearinv', function(source, args)
-	TriggerEvent('ox_inventory:clearPlayerInventory', args.target)
+	exports.ox_inventory:ClearInventory(args.target)
 end, {'target:number'})
 
 AddCommand('ox_inventory', 'saveinv', function(source, args)
