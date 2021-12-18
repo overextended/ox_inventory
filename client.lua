@@ -169,6 +169,7 @@ local function UseSlot(slot)
 						Wait(sleep)
 						SetPedAmmo(playerPed, data.hash, 0)
 						GiveWeaponToPed(playerPed, data.hash, 0, false, true)
+
 						if item.metadata.tint then SetPedWeaponTintIndex(playerPed, data.hash, item.metadata.tint) end
 						if item.metadata.components then
 							for i=1, #item.metadata.components do
@@ -183,6 +184,11 @@ local function UseSlot(slot)
 								end
 							end
 						end
+
+						item.hash = data.hash
+						item.ammo = data.ammoname
+						item.melee = (not item.throwable and not data.ammoname) and 0
+						item.timer = 0
 						SetCurrentPedWeapon(playerPed, data.hash, true)
 						SetPedCurrentWeaponVisible(playerPed, true, false, false, false)
 						AddAmmoToPed(playerPed, data.hash, item.metadata.ammo or 100)
@@ -194,7 +200,8 @@ local function UseSlot(slot)
 							SetPedInfiniteAmmo(playerPed, true, data.hash)
 						end
 
-						Utils.SetWeapon(item, data.hash, data.ammoname, 'equipped')
+						TriggerEvent('ox_inventory:currentWeapon', item)
+						Utils.ItemNotify({item = item.name, text = ox.locale('equipped')})
 						Wait(sleep)
 						ClearPedSecondaryTask(playerPed)
 					end
@@ -696,7 +703,7 @@ RegisterNetEvent('ox_inventory:setPlayerInventory', function(currentDrops, inven
 							ClearPedSecondaryTask(playerPed)
 							RemoveWeaponFromPed(playerPed, currentWeapon.hash)
 							TriggerServerEvent('ox_inventory:updateWeapon', 'throw')
-							Utils.SetWeapon()
+							TriggerEvent('ox_inventory:currentWeapon')
 							plyState.isBusy = false
 						end)
 					elseif IsPedPerformingMeleeAction(PlayerData.ped) then

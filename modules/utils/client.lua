@@ -82,25 +82,7 @@ function Utils.Disarm(currentWeapon, newSlot)
 			TriggerServerEvent('ox_inventory:updateWeapon', ammo and 'ammo' or 'melee', ammo or currentWeapon.melee, newSlot)
 		end
 
-		Utils.SetWeapon()
-	end
-end
-
-function Utils.SetWeapon(weapon, hash, ammo, text)
-	weapon = weapon and {
-		hash = hash,
-		ammo = ammo,
-		name = weapon.name,
-		slot = weapon.slot,
-		label = weapon.label,
-		metadata = weapon.metadata,
-		throwable = weapon.throwable,
-		melee = (not weapon.throwable and not ammo) and 0,
-		timer = 0
-	}
-	TriggerEvent('ox_inventory:currentWeapon', weapon)
-	if text then
-		Utils.ItemNotify({item = weapon.name, text = ox.locale(text)})
+		TriggerEvent('ox_inventory:currentWeapon')
 	end
 end
 
