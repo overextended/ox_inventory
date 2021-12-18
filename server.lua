@@ -112,10 +112,14 @@ ServerCallback.Register('openInventory', function(source, cb, inv, data)
 					local vehicle = Vehicles[inv]['models'][data.model] or Vehicles[inv][data.class]
 					right = Inventory.Create(data.id, data.id:sub(6), inv, vehicle[1], 0, vehicle[2], false)
 				end
-			else return cb(false) end
+			elseif inv == 'drop' then
+				right = Inventory(data.id)
+			else
+				cb(false)
+			end
 
 		elseif inv == 'policeevidence' then
-			if left.player.job == 'police' then
+			if left.player.job.name == 'police' then
 				data = ('police-%s'):format(data)
 				right = Inventory(data)
 				if not right then
