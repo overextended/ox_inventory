@@ -66,9 +66,9 @@ function Utils.Disarm(currentWeapon, newSlot)
 	if currentWeapon then
 		local ammo = currentWeapon.ammo and GetAmmoInPedWeapon(PlayerData.ped, currentWeapon.hash)
 		SetPedAmmo(PlayerData.ped, currentWeapon.hash, 0)
-		ClearPedSecondaryTask(PlayerData.ped)
 
 		if newSlot ~= -1 then
+			ClearPedSecondaryTask(PlayerData.ped)
 			local sleep = (PlayerData.job.name == 'police' and GetWeapontypeGroup(currentWeapon.hash) == 416676503) and 450 or 1400
 			local coords = GetEntityCoords(PlayerData.ped, true)
 			Utils.PlayAnimAdvanced(sleep, (sleep == 450 and 'reaction@intimidation@cop@unarmed' or 'reaction@intimidation@1h'), 'outro', coords.x, coords.y, coords.z, 0, 0, GetEntityHeading(PlayerData.ped), 8.0, 3.0, -1, 50, 0)

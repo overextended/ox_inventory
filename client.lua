@@ -611,6 +611,8 @@ RegisterNetEvent('ox_inventory:setPlayerInventory', function(currentDrops, inven
 				end
 			end
 		end
+
+		if currentWeapon and GetSelectedPedWeapon(PlayerData.ped) ~= currentWeapon.hash then Utils.Disarm(currentWeapon, -1) end
 		if ox.parachute and GetPedParachuteState(PlayerData.ped) ~= -1 then Utils.DeleteObject(ox.parachute) ox.parachute = false end
 	end, 200)
 
