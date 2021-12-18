@@ -383,7 +383,7 @@ function Inventory.AddItem(inv, item, count, metadata, slot, cb)
 	if type(item) ~= 'table' then item = Items(item) end
 	inv = Inventory(inv)
 	count = math.floor(count + 0.5)
-	local success, reason = false
+	local success, reason = false, nil
 	if item then
 		if inv then
 			metadata, count = Items.Metadata(inv.id, item, metadata or {}, count)
@@ -592,7 +592,7 @@ RegisterServerEvent('ox_inventory:removeItem', function(name, count, metadata, s
 
 	if inv.items[slot].name == name and inv.items[slot].name:find('at_') and inv.weapon then
 		local weapon = inv.items[inv.weapon]
-		table.insert(weapon.metadata.components, item)
+		table.insert(weapon.metadata.components, name)
 	end
 
 	Inventory.RemoveItem(source, name, count, metadata, slot)
@@ -635,9 +635,9 @@ end
 AddEventHandler('ox_inventory:customDrop', customDrop)
 exports('CustomDrop', CustomDrop)
 
-AddEventHandler('ox_inventory:confiscatePlayerInventory', function(source)
+function Inventory.Confiscate(source)
 	local inv = Inventories[source]
-	if inv then
+	if inv?.player then
 		local inventory = json.encode(minimal(inv))
 		exports.oxmysql:update('INSERT INTO ox_inventory (owner, name, data) VALUES (:owner, :name, :data) ON DUPLICATE KEY UPDATE data = :data', {
 			owner = inv.owner,
@@ -652,11 +652,17 @@ AddEventHandler('ox_inventory:confiscatePlayerInventory', function(source)
 			end
 		end)
 	end
+end
+exports('ConfiscateInventory', Inventory.Return)
+
+AddEventHandler('ox_inventory:confiscatePlayerInventory', function(source)
+	ox.warning('ox_inventory:confiscatePlayerInventory is deprecated! Use `exports.ox_inventory:ConfiscateInventory(id)` instead')
+	Inventory.Return(source)
 end)
 
-AddEventHandler('ox_inventory:returnPlayerInventory', function(source)
+function Inventory.Return(source)
 	local inv = Inventories[source]
-	if inv then
+	if inv?.player then
 		exports.oxmysql:scalar('SELECT data FROM ox_inventory WHERE name = ?', { inv.owner }, function(data)
 			if data then
 				exports.oxmysql:execute('DELETE FROM ox_inventory WHERE name = ?', { inv.owner })
@@ -685,6 +691,12 @@ AddEventHandler('ox_inventory:returnPlayerInventory', function(source)
 			end
 		end)
 	end
+end
+exports('ReturnInventory', Inventory.Return)
+
+AddEventHandler('ox_inventory:returnPlayerInventory', function(source)
+	ox.warning('ox_inventory:returnPlayerInventory is deprecated! Use `exports.ox_inventory:ReturnInventory(id)` instead')
+	Inventory.Return(source)
 end)
 
 ---@param inv any
@@ -906,15 +918,15 @@ AddCommand(false, 'clearevidence', function(source, args)
 end, {'evidence:number'})
 
 AddCommand('ox_inventory', 'takeinv', function(source, args)
-	TriggerEvent('ox_inventory:confiscatePlayerInventory', args.target)
+	Inventory.Confiscate(args.target)
 end, {'target:number'})
 
 AddCommand('ox_inventory', 'returninv', function(source, args)
-	TriggerEvent('ox_inventory:returnPlayerInventory', args.target)
+	Inventory.Return(args.target)
 end, {'target:number'})
 
 AddCommand('ox_inventory', 'clearinv', function(source, args)
-	TriggerEvent('ox_inventory:clearPlayerInventory', args.target)
+	Inventory.Clear(args.target)
 end, {'target:number'})
 
 AddCommand('ox_inventory', 'saveinv', function(source, args)
