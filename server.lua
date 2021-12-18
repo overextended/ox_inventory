@@ -77,22 +77,26 @@ ServerCallback.Register('openInventory', function(source, cb, inv, data)
 		if inv == 'stash' then
 			local stash = Stashes[data.id]
 			if stash then
-				local owner = stash.owner and left.owner or stash.owner
-				right = Inventory(owner and stash.name..owner or stash.name)
+				if not stash.jobs or (stash.jobs[left.player.job.name] and left.player.job.grade >= stash.jobs[left.player.job.name]) then
+					local owner = stash.owner and left.owner or stash.owner
+					right = Inventory(owner and stash.name..owner or stash.name)
 
-				if not right then
-					right = Inventory.Create(owner and stash.name..owner or stash.name, stash.label or stash.name, inv, stash.slots, 0, stash.weight, owner or false)
+					if not right then
+						right = Inventory.Create(owner and stash.name..owner or stash.name, stash.label or stash.name, inv, stash.slots, 0, stash.weight, owner or false)
+					end
 				end
 
 			else
 				stash = Inventory.CustomStash[data.id or data]
 				if stash then
-					local owner = (stash.owner == nil and nil) or (type(stash.owner) == 'string' and stash.owner) or data.owner or stash.owner and left.owner
-					data = (owner and ('%s%s'):format(data.id or data, owner)) or data.id or data
+					if not stash.jobs or (stash.jobs[left.player.job.name] and left.player.job.grade >= stash.jobs[left.player.job.name]) then
+						local owner = (stash.owner == nil and nil) or (type(stash.owner) == 'string' and stash.owner) or data.owner or stash.owner and left.owner
+						data = (owner and ('%s%s'):format(data.id or data, owner)) or data.id or data
 
-					right = Inventory(data)
-					if not right then
-						right = Inventory.Create(data, stash.label or stash.name, inv, stash.slots, 0, stash.weight, owner or false)
+						right = Inventory(data)
+						if not right then
+							right = Inventory.Create(data, stash.label or stash.name, inv, stash.slots, 0, stash.weight, owner or false)
+						end
 					end
 
 				else
@@ -117,10 +121,12 @@ ServerCallback.Register('openInventory', function(source, cb, inv, data)
 			end
 
 		elseif inv == 'policeevidence' then
-			data = ('police-%s'):format(data)
-			right = Inventory(data)
-			if not right then
-				right = Inventory.Create(data, ox.locale('police_evidence'), inv, 100, 0, 100000, false)
+			if left.player.job == 'police' then
+				data = ('police-%s'):format(data)
+				right = Inventory(data)
+				if not right then
+					right = Inventory.Create(data, ox.locale('police_evidence'), inv, 100, 0, 100000, false)
+				end
 			end
 
 		elseif inv == 'dumpster' then
