@@ -37,9 +37,15 @@ do
 
         function ox.SetPlayerData(key, value)
             PlayerData[key] = value
-            OnPlayerData(key, value)
             ESX.SetPlayerData(key, value)
         end
+
+        AddEventHandler('esx:setPlayerData', function(key, value)
+            if GetInvokingResource() == 'es_extended' then
+                PlayerData[key] = value
+                OnPlayerData(key, value)
+            end
+        end)
 
         RegisterNetEvent('esx_policejob:handcuff', function()
             PlayerData.cuffed = not PlayerData.cuffed
