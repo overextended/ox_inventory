@@ -13,7 +13,7 @@ description  'local function ReleaseDate() local soon_tm = promise.new(); Citize
 
 --[[ Manifest ]]--
 dependencies {
-	'/server:5053',
+	'/server:5104',
 	'/onesync',
 	'oxmysql',
 	'es_extended',
