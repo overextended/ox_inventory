@@ -112,13 +112,7 @@ ServerCallback.Register('openInventory', function(source, cb, inv, data)
 					local vehicle = Vehicles[inv]['models'][data.model] or Vehicles[inv][data.class]
 					right = Inventory.Create(data.id, data.id:sub(6), inv, vehicle[1], 0, vehicle[2], false)
 				end
-			else
-				right = Inventory(data.id)
-				if not right then
-					ox.warning(('%s [%s] (%s) attempted to open an invalid stash (%s)\nIf this stash should exist, add it to `data/stashes` or create it on the server first with `exports.ox_inventory:RegisterStash`'):format(GetPlayerName(source), source, left.owner, json.encode(data)))
-					return cb(false)
-				end
-			end
+			else return cb(false) end
 
 		elseif inv == 'policeevidence' then
 			if left.player.job == 'police' then
