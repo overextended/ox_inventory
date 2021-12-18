@@ -985,6 +985,7 @@ Inventory.CustomStash = table.create(0, 0)
 ---@param slots number
 ---@param maxWeight number
 ---@param owner string|boolean|nil
+---@param jobs table
 --- For simple integration with other resources that want to create valid stashes.  
 --- This needs to be triggered before a player can open a stash.
 --- ```
@@ -992,8 +993,10 @@ Inventory.CustomStash = table.create(0, 0)
 --- string: can only access the stash linked to the owner (usually player identifier)
 --- true: each player has a unique stash, but can request other player's stashes
 --- nil: always shared
+---
+--- Jobs: { ['police'] = 0 }
 --- ```
-local function RegisterStash(id, label, slots, maxWeight, owner)
+local function RegisterStash(id, label, slots, maxWeight, owner, jobs)
 
 	if not Inventory.CustomStash[id] then
 		Inventory.CustomStash[id] = {
@@ -1001,7 +1004,8 @@ local function RegisterStash(id, label, slots, maxWeight, owner)
 			label = label,
 			owner = owner,
 			slots = slots,
-			weight = maxWeight
+			weight = maxWeight,
+			jobs = jobs
 		}
 	end
 
