@@ -221,8 +221,8 @@ ServerCallback.Register('swapItems', function(source, cb, data)
 			end
 
 			if fromInventory.type == 'policeevidence' and not sameInventory then
-				if not toInventory.job.name == 'police' then return cb(false) end
-				if ox.evidencegrade > toInventory.job.grade then
+				if not toInventory.player.job.name == 'police' then return cb(false) end
+				if ox.evidencegrade > toInventory.player.job.grade then
 					TriggerClientEvent('ox_inventory:notify', source, {type = 'error', text = ox.locale('evidence_cannot_take')})
 					return cb(false)
 				end
