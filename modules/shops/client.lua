@@ -58,7 +58,7 @@ client.shops = setmetatable(data('shops'), {
 									{
 										icon = 'fas fa-shopping-basket',
 										label = ox.locale('open_shop', shop.name),
-										job = shop.job,
+										job = shop.jobs,
 										action = function()
 											OpenShop({id=id, type=type})
 										end
