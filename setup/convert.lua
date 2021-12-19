@@ -69,7 +69,7 @@ local function GenerateText(num)
 end
 
 local function GenerateSerial(text)
-	if not text then GenerateText(3) elseif text:len() > 3 then return text end
+	if not text then text = GenerateText(3) elseif text:len() > 3 then return text end
 	return ('%s%s%s'):format(math.random(100000,999999), text, math.random(100000,999999))
 end
 
