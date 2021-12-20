@@ -848,11 +848,10 @@ local function AddCommand(group, name, callback, arguments)
 					local arg, argType = string.strsplit(':', arguments[i])
 					local value = args[i]
 
+					if arg == 'target' and value == 'me' then value = source end
+
 					if argType then
-
-						if arg == 'target' and value == 'me' then value = source end
 						if argType == 'number' then value = tonumber(value) end
-
 						assert(type(value) == argType or argType:find('?'), ('command.%s expected <%s> for argument %s (%s), received %s'):format(name, argType, i, arg, type(value)))
 					end
 
