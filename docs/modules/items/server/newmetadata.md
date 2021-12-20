@@ -7,6 +7,7 @@ This function is used internally when adding or buying items to define metadata.
 	```lua
 	Items.Metadata(xPlayer, item, metadata, count)
 	```
+
 	| Argument   | Type | Explanation |
 	| ---------- | ----------- |
 	| xPlayer    | class | Player triggering the function |

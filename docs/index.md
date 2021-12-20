@@ -14,6 +14,7 @@ The minimum required version of FXServer is build [5053](https://runtime.fivem.n
 
 ### OxMySQL
 We utilise our own resource to communicate with MySQL databases via the [node-mysql2](https://github.com/sidorares/node-mysql2) package. The backend is actively maintained and updated unlike the package used by mysql-async, providing improved performance, security, and features. We provide full backwards compatibility with mysql-async and build for the current Cfx architecture.  
+
 - Improved performance, stability, and compatibility with MySQL 8.0
 - Support for prepared statements, providing increased security
 - Import library provides full compatibility with mysql-async
@@ -30,6 +31,7 @@ A resource designed to provide reusable functions that can be loaded into any re
 Still a work in progress.  
 
 **Currently used for**  
+
 - SetInterval
 - Server Callbacks
 - Table utilities (contains, matches)
@@ -45,6 +47,7 @@ The inventory is being moved towards a _standalone_ design, with compatibility f
 For convenience, we provide a fork with all the necessary changes as well as several new features and performance improvements.  
 
 There should be no changes which break compatibility with other resources with the exception of what is necessary to support the inventory and new item system.  
+
 - Loadouts do not exist, so errors will occur in third-party resources attempting to manipulate them
 - Inventories are slot-based and items can exist in multiple slots, which can throw off item counting
 - Resources attempting to iterate through inventories in order will not work if a slot is empty
@@ -74,16 +77,32 @@ Default inventory settings are stored in `config.lua`, however the recommended m
 You can either add these directly to your `server.cfg`, or create a file called `.cfg` in the resource folder.
 ```
 setr ox_inventory {
-    "locale": "en",
-    "qtarget": true,
-    "keys": [
-        "F2", "K", "TAB"
-    ]
+	"esx": true,
+	"trimplate": true,
+	"qtarget": false,
+	"playerslots": 50,
+	"blurscreen": true,
+	"autoreload": false,
+	"sentry": true,
+    "keys": ["F2", "K", "TAB"],
+	"enablekeys": [249],
+	"playerweight": 30000,
+    "locale": "en"
 }
+
 set ox_inventory_server {
-    "logs": true,
-    "pricevariation": false
+	"versioncheck": false,
+	"clearstashes": "6 MONTH",
+    "logs": false,
+	"randomprice": true,
+	"evidencegrade": 2,
+	"randomloot": true,
+	"lootchance": 50
 }
+
+add_principal group.admin ox_inventory
+add_ace resource.ox_inventory command.add_principal allow
+add_ace resource.ox_inventory command.remove_principal allow
 ensure ox_inventory
 ```
 If you create your own config file you can load it with `exec @ox_inventory/.cfg` instead of ensure.

@@ -6,10 +6,18 @@ The client-side items module holds general item data, and provides functions whe
 ###Retrieve item data
 !!! info
 	```lua
-	Items = GlobalState.itemList
+	Items(name)
+	```
+	The argument is optional and, if ignored, will return the full items list.
+	```lua
+	Items = exports.ox_inventory:Items(name)
+	```
 
-	AddStateBagChangeHandler('itemList', 'global', function(bagName, key, value, reserved, replicated)
-		client.items = value
-	end)
+!!! example
+	```lua
+	local item = Items(name)
+	if item then
+		print(item.name, item.weight)
+	end
 	```
 	

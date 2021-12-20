@@ -1,3 +1,5 @@
 /web
 .vscode
 .idea
+.cfg
+/modules
