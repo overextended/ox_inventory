@@ -15,9 +15,9 @@ const InventoryGrid: React.FC<{ inventory: Inventory }> = ({ inventory }) => {
     () =>
       inventory.maxWeight !== undefined
         ? inventory.items.reduce<number>(
-          (totalWeight, slot) => (slot.weight ? totalWeight + slot.weight : totalWeight),
-          0
-        )
+            (totalWeight, slot) => (slot.weight ? totalWeight + slot.weight : totalWeight),
+            0
+          )
         : 0,
     [inventory.maxWeight, inventory.items]
   );
@@ -37,9 +37,7 @@ const InventoryGrid: React.FC<{ inventory: Inventory }> = ({ inventory }) => {
     <>
       <div className="column-wrapper">
         <div className="inventory-label">
-          <p>
-            {inventory.label && `${inventory.label}`}
-          </p>
+          <p>{inventory.label && `${inventory.label}`}</p>
           {inventory.maxWeight && (
             <div>
               {weight / 1000}/{inventory.maxWeight / 1000}kg
@@ -101,7 +99,13 @@ const InventoryGrid: React.FC<{ inventory: Inventory }> = ({ inventory }) => {
               )}
               {currentItem.metadata?.components && currentItem.metadata?.components[0] && (
                 <p>
-                  {Locale.ui_components}: {currentItem.metadata.components}
+                  {Locale.ui_components}:{' '}
+                  {(currentItem.metadata?.components).map(
+                    (component: string, index: number, array: []) =>
+                      index + 1 === array.length
+                        ? Items[component]?.label
+                        : Items[component]?.label + ', '
+                  )}
                 </p>
               )}
               {currentItem.metadata?.weapontint && (
