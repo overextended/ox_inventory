@@ -783,6 +783,19 @@ RegisterServerEvent('ox_inventory:giveItem', function(slot, target, count)
 	end
 end)
 
+local function hasValue( tbl, str )
+    local f = false
+    for i = 1, #tbl do
+        if type( tbl[i] ) == "table" then
+            f = hasValue( tbl[i], str )  --  return value from recursion
+            if f then break end  --  if it returned true, break out of loop
+        elseif tbl[i] == str then
+            return true
+        end
+    end
+    return f
+end
+
 RegisterServerEvent('ox_inventory:updateWeapon', function(action, value, slot)
 	local inventory = Inventories[source]
 	if not slot then slot = inventory.weapon end
@@ -803,7 +816,9 @@ RegisterServerEvent('ox_inventory:updateWeapon', function(action, value, slot)
 				Inventory.AddItem(inventory, weapon.metadata.components[value], 1)
 				table.remove(weapon.metadata.components, value)
 			elseif type == 'string' then
-				table.insert(weapon.metadata.components, value)
+				if not hasValue(weapon.metadata.components, value) then
+					table.insert(weapon.metadata.components, value)
+				end
 			end
 			syncInventory = true
 		elseif action == 'ammo' then
