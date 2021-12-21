@@ -9,7 +9,7 @@ $thirdFont: Poppins;
 $mainColor: rgb(44, 62, 80);
 $secondaryColor: #34495e;
 
-$borderRadius: 0.4vh;
+$borderRadius: 0.25vh;
 
 $gridCols: 5;
 $gridRows: 5;
@@ -19,6 +19,8 @@ $containerSize: calc(#{$gridRows} * #{$gridSize} + #{$gridRows} * #{$gridGap});
 
 $imageSize: $gridSize - 2.5vh;
 
+$textShadow: 0.1vh 0.1vh 0 rgba(0, 0, 0, 0.7);
+
 * {
   font-family: $mainFont;
   font-size: 1.5vh;
@@ -27,7 +29,6 @@ $imageSize: $gridSize - 2.5vh;
   user-select: none;
   margin: 0;
   color: #fff;
-  text-shadow: 0.1vh 0.1vh 0 rgba(0, 0, 0, 0.7);
 }
 
 body,
@@ -119,6 +120,7 @@ img {
   border-radius: $borderRadius;
   image-rendering: -webkit-optimize-contrast;
   position: relative;
+  text-shadow: $textShadow;
 
   .item-count {
     display: flex;
@@ -152,8 +154,9 @@ img {
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
-    border-bottom-left-radius: $borderRadius;
-    border-bottom-right-radius: $borderRadius;
+    border-bottom-left-radius: inherit;
+    border-bottom-right-radius: inherit;
+    box-sizing: border-box;
   }
 
   .item-price {
@@ -180,8 +183,8 @@ img {
 }
 
 .button {
-  background-color: rgba(12, 12, 12, 0.35);
-  border: 0.1vh solid rgba(0, 0, 0, 0.1);
+  background-color: rgba(12, 12, 12, 0.4);
+  border: 0.1vh solid rgba(0, 0, 0, 0.15);
   border-radius: $borderRadius;
   padding: 0.9vh;
   text-align: center;
@@ -231,15 +234,14 @@ input[type='number'] {
 }
 
 .weight-bar {
-  background: rgba(0, 0, 0, 0.5);
+  background: rgba(0, 0, 0, 0.4);
+  border: inset rgba(0, 0, 0, 0.1) 0.1vh;
   height: 1vh;
   border-radius: $borderRadius;
   overflow: hidden;
 
   div {
-    height: 80%;
-    border: solid rgba(0, 0, 0, 0.1) 0.1vh;
-    border-radius: inherit;
+    height: 100%;
   }
 }
 
@@ -255,12 +257,13 @@ input[type='number'] {
 
 .item-info {
   padding: 1vh !important;
-  font-size: 1.3vh !important;
+  font-size: 1.1vh !important;
   background-color: $mainColor !important;
   opacity: 1 !important;
   border-radius: $borderRadius !important;
-  width: 24vh;
-  border: none !important;
+  width: 23vh;
+  text-shadow: $textShadow;
+  border: 0.1vh solid rgba(0, 0, 0, 0.2) !important;
 
   p {
     font-size: 1.1vh;
@@ -369,6 +372,7 @@ input[type='number'] {
   left: 50%;
   transform: translate(-50%, -50%);
   border-radius: $borderRadius;
+  text-shadow: $textShadow;
 
   .keyboard-header {
     text-shadow: none;
@@ -391,13 +395,11 @@ input[type='number'] {
     align-items: center;
     p {
       margin-left: 0.4vh;
-      text-shadow: none;
       font-size: 1.6vh;
       align-self: flex-start;
     }
     input {
       border-radius: $borderRadius;
-      text-shadow: none;
       background-color: $secondaryColor;
       height: 2.4vh;
       width: 25vh;
@@ -429,11 +431,30 @@ input[type='number'] {
   border-radius: $borderRadius;
   background-color: $mainColor;
   box-shadow: none;
-  text-shadow: none;
+  border: 0.1vh inset rgba(0, 0, 0, 0.2) !important;
+  padding: 3px 0;
 }
 
-.react-contexify__theme--dark .react-contexify__separator {
-  background-color: grey;
+// Dark Theme ------------------------------------------------------- //
+.react-contexify__theme--dark {
+  font-size: 1.3vh !important;
+  background-color: $mainColor;
+
+  .react-contexify__submenu {
+    background-color: $mainColor;
+    border-radius: $borderRadius;
+    top: -3px;
+  }
+  .react-contexify__separator {
+    background-color: rgba(0, 0, 0, 0.2);
+  }
+  .react-contexify__item {
+    &__content {
+      font-size: 1.3vh !important;
+      color: #ffffff;
+      padding: 3px 6px;
+    }
+  }
 }
 
 .react-contexify__item:not(.react-contexify__item--disabled):hover
@@ -443,13 +464,6 @@ input[type='number'] {
   background-color: $secondaryColor;
 }
 
-.react-contexify .react-contexify__submenu {
-  background-color: $mainColor;
-  border-radius: $borderRadius;
-  box-shadow: none;
-  text-shadow: none;
-}
-
 // Item transition stuff
 .item-action {
   width: 100%;
@@ -457,7 +471,6 @@ input[type='number'] {
   font-family: $thirdFont;
   color: black;
   text-align: center;
-  text-shadow: none;
   font-size: 1.1vh;
   border-top-left-radius: $borderRadius;
   border-top-right-radius: $borderRadius;

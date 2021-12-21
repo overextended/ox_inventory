@@ -125,7 +125,7 @@ const InventorySlot: React.FC<SlotProps> = ({
           backgroundImage: item.name
             ? `url(${process.env.PUBLIC_URL + `/images/${item.name}.png`})`
             : 'none',
-          border: isOver ? '0.1vh dashed rgba(255,255,255,0.5)' : '0.1vh inset rgba(0,0,0,0)',
+          border: isOver ? '0.1vh dashed rgba(255,255,255,0.5)' : '0.1vh inset rgba(0,0,0,0.15)',
         }}
         onMouseEnter={onMouseEnter}
         onMouseLeave={onMouseLeave}
