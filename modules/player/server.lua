@@ -21,7 +21,7 @@ do
             local source = source
             local player = ox.GetPlayerFromId(source)
 
-            if player and next(player.inventory) then
+            if player and player.inventory then
                 TriggerEvent('ox_inventory:setPlayerInventory', player, player.inventory)
             else
                 MySQL.Async.fetchScalar('SELECT inventory FROM users WHERE identifier = ?', { player.identifier }, function(result)
