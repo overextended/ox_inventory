@@ -19,11 +19,11 @@ export const onDrop = (source: DragSource, target?: DropTarget) => {
   const sourceData = Items[sourceSlot.name];
 
   if (sourceData === undefined) {
-    return
-    // throw new Error(`${sourceSlot.name} item data undefined!`);
+    return console.error(`${sourceSlot.name} item data undefined!`);
   }
 
   if (targetInventory.type === 'container' && sourceSlot?.metadata?.container) {
+    return
     // throw new Error(`Unable to store ${sourceSlot.name} inside itself!`);
   }
 
@@ -33,7 +33,6 @@ export const onDrop = (source: DragSource, target?: DropTarget) => {
 
   if (targetSlot === undefined) {
     return console.error('Target slot undefined!');
-    // throw new Error('Target slot undefined!');
   }
 
   const count =
