@@ -71,7 +71,7 @@ jobs:
           export SENTRY_ORG=${{ secrets.SENTRY_ORG }}
           export SENTRY_PROJECT=${{ secrets.SENTRY_PROJECT }}
           export SENTRY_URL=${{ secrets.SENTRY_URL }}
-          export VERSION=${{ $steps.get_vars.outputs.SHORT_SHA }}
+          export VERSION=${{ steps.get_vars.outputs.SHORT_SHA }}
 
           sentry-cli releases new "$VERSION"
           sentry-cli releases set-commits "$VERSION" --local --auto --ignore-missing
