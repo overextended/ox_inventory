@@ -711,6 +711,7 @@ function Inventory.Clear(inv, keep)
 			inv.weight = 0
 			if inv.player then
 				TriggerClientEvent('ox_inventory:inventoryConfiscated', inv.id)
+				TriggerClientEvent('ox_inventory:disarm', inv.id, false)
 				if ox.esx then Inventory.SyncInventory(inv) end
 			end
 		end
