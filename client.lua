@@ -239,8 +239,7 @@ local function UseSlot(slot)
 								TriggerEvent('ox_inventory:item', data, function(data)
 									if data then
 										GiveWeaponComponentToPed(playerPed, currentWeapon.hash, component)
-										table.insert(PlayerData.inventory[currentWeapon.slot].metadata.components, component)
-										TriggerServerEvent('ox_inventory:updateWeapon', 'component', data.name)
+										table.insert(PlayerData.inventory[currentWeapon.slot].metadata.components, data.name)
 									end
 								end)
 							end
