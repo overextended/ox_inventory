@@ -74,7 +74,7 @@ jobs:
           export VERSION=${{ steps.get_vars.outputs.SHORT_SHA }}
 
           sentry-cli releases new "$VERSION"
-          sentry-cli releases set-commits "$VERSION" --local --auto --ignore-missing
+          sentry-cli releases set-commits "$VERSION" --local --ignore-missing
           sentry-cli releases files "$VERSION" upload-sourcemaps ./temp/ox_inventory/web/build/static/js
 
           sentry-cli releases finalize "$VERSION"
