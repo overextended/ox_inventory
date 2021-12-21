@@ -50,18 +50,6 @@ jobs:
           cp -r ./web/build ./temp/ox_inventory/web/build
           cd ./temp && zip -r ox_inventory-${{ steps.get_vars.outputs.SHORT_SHA }}.zip ./ox_inventory
 
-#       - name: Create Sentry release
-#         uses: tclindner/sentry-releases-action@v1.2.0
-#         env:
-#           SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
-#           SENTRY_ORG: ${{ secrets.SENTRY_ORG }}
-#           SENTRY_PROJECT: ${{ secrets.SENTRY_PROJECT }}
-#           SENTRY_URL: ${{ secrets.SENTRY_URL }}
-#         with:
-#           environment: production
-#           tagName: ${{ steps.get_vars.outputs.SHORT_SHA }}
-#           sourceMapOptions: '{"include": ["./temp/ox_inventory/web/builds/static/js"]}'
-
       - name: Create Release
         uses: "marvinpinto/action-automatic-releases@v1.2.1"
         id: auto_release
@@ -75,3 +63,30 @@ jobs:
         env:
           CI: false
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Sentry CLI
+        run: |
+          curl -sL https://sentry.io/get-cli/ | bash
+          export SENTRY_AUTH_TOKEN=${{ secrets.SENTRY_AUTH_TOKEN }}
+          export SENTRY_ORG=${{ secrets.SENTRY_ORG }}
+          export SENTRY_PROJECT=${{ secrets.SENTRY_PROJECT }}
+          export SENTRY_URL=${{ secrets.SENTRY_URL }}
+          export VERSION=${{ $steps.get_vars.outputs.SHORT_SHA }}
+
+          sentry-cli releases new "$VERSION"
+          sentry-cli releases set-commits "$VERSION" --local --auto --ignore-missing
+          sentry-cli releases files "$VERSION" upload-sourcemaps ./temp/ox_inventory/web/build/static/js
+
+          sentry-cli releases finalize "$VERSION"
+
+#       - name: Create Sentry release
+#         uses: tclindner/sentry-releases-action@v1.2.0
+#         env:
+#           SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
+#           SENTRY_ORG: ${{ secrets.SENTRY_ORG }}
+#           SENTRY_PROJECT: ${{ secrets.SENTRY_PROJECT }}
+#           SENTRY_URL: ${{ secrets.SENTRY_URL }}
+#         with:
+#           environment: production
+#           tagName: ${{ steps.get_vars.outputs.SHORT_SHA }}
+#           sourceMapOptions: '{"include": ["./temp/ox_inventory/web/builds/static/js"]}'
