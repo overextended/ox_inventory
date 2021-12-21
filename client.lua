@@ -484,6 +484,7 @@ end)
 
 RegisterNetEvent('ox_inventory:inventoryReturned', function(data)
 	Utils.Notify({text = ox.locale('items_returned'), duration = 2500})
+	if currentWeapon then Utils.Disarm(currentWeapon) end
 	TriggerEvent('ox_inventory:closeInventory')
 	PlayerData.inventory = data[1]
 	ox.SetPlayerData('inventory', data[1])
@@ -492,6 +493,7 @@ end)
 
 RegisterNetEvent('ox_inventory:inventoryConfiscated', function(message)
 	if message then Utils.Notify({text = ox.locale('items_confiscated'), duration = 2500}) end
+	if currentWeapon then Utils.Disarm(currentWeapon) end
 	TriggerEvent('ox_inventory:closeInventory')
 	table.wipe(PlayerData.inventory)
 	ox.SetPlayerData('weight', 0)

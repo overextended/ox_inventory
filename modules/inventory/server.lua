@@ -645,7 +645,7 @@ function Inventory.Confiscate(source)
 			data = inventory,
 		}, function (result)
 			if result > 0 then
-				inv.items = {}
+				table.wipe(inv.items)
 				inv.weight = 0
 				TriggerClientEvent('ox_inventory:inventoryConfiscated', inv.id)
 				if ox.esx then Inventory.SyncInventory(inv) end
