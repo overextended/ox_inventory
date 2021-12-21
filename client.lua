@@ -829,6 +829,7 @@ RegisterNUICallback('useItem', function(slot, cb)
 end)
 
 RegisterNUICallback('giveItem', function(data, cb)
+	cb(1)
 	local vehicle = GetVehiclePedIsIn(PlayerData.ped, false)
 	if vehicle ~= 0 then
 		local passenger = GetVehicleMaxNumberOfPassengers(vehicle) - 1
@@ -870,7 +871,6 @@ RegisterNUICallback('giveItem', function(data, cb)
 			if data.slot == currentWeapon?.slot then Utils.Disarm(currentWeapon, -1) end
 		end
 	end
-	cb(1)
 end)
 
 RegisterNUICallback('exit', function(data, cb)
