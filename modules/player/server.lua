@@ -24,7 +24,7 @@ do
             if player and next(player.inventory) then
                 TriggerEvent('ox_inventory:setPlayerInventory', player, player.inventory)
             else
-                exports.oxmysql:scalar('SELECT inventory FROM users WHERE identifier = ?', { player.identifier }, function(result)
+                MySQL.Async.fetchScalar('SELECT inventory FROM users WHERE identifier = ?', { player.identifier }, function(result)
                     TriggerEvent('ox_inventory:setPlayerInventory', player, result and json.decode(result))
                 end)
             end
