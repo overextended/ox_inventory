@@ -38,4 +38,25 @@ export const moveSlotsReducer: CaseReducer<
       : {
           slot: fromSlot.slot,
         };
+
+  // Calculating weight of the container after moving items to or from it
+  if (targetInventory.type === 'container' && sourceInventory.type !== 'container') {
+    let containerWeight: number = 0
+    for (const item of targetInventory.items) {
+      if (item.weight && item.weight !== undefined) {
+        containerWeight = containerWeight + item.weight
+      }
+    }
+    // fetchNui callback here?
+  }
+
+  if (sourceInventory.type === 'container' && targetInventory.type !== 'container') {
+    let containerWeight: number = 0
+    for (const item of sourceInventory.items) {
+      if (item.weight && item.weight !== undefined) {
+        containerWeight = containerWeight + item.weight
+      }
+    }
+    // fetchNui callback here?
+  }
 };
