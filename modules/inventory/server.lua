@@ -653,11 +653,11 @@ function Inventory.Confiscate(source)
 		end)
 	end
 end
-exports('ConfiscateInventory', Inventory.Return)
+exports('ConfiscateInventory', Inventory.Confiscate)
 
 AddEventHandler('ox_inventory:confiscatePlayerInventory', function(source)
 	ox.warning('ox_inventory:confiscatePlayerInventory is deprecated! Use `exports.ox_inventory:ConfiscateInventory(id)` instead')
-	Inventory.Return(source)
+	Inventory.Confiscate(source)
 end)
 
 function Inventory.Return(source)
