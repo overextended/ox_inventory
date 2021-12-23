@@ -5,34 +5,6 @@ import { debugData } from '../../utils/debugData';
 import toast, { Toaster, ToastPosition } from 'react-hot-toast';
 
 // API - https://github.com/timolins/react-hot-toast
-
-debugData([
-  {
-    action: 'showNotif',
-    data: {
-      text: 'Info Notification',
-    },
-  },
-]);
-debugData([
-  {
-    action: 'showNotif',
-    data: {
-      text: 'Success Notification',
-      type: 'success',
-    },
-  },
-]);
-debugData([
-  {
-    action: 'showNotif',
-    data: {
-      text: 'Error Notification',
-      type: 'error',
-    },
-  },
-]);
-
 interface NotificationProps {
   text: string;
   type?: string;
@@ -49,8 +21,8 @@ const Notify = (data: NotificationProps) => {
         data.type === undefined
           ? 'rgb(52, 152, 219)'
           : data.type === 'success'
-          ? 'rgb(39, 174, 96)'
-          : 'rgb(231, 76, 60)',
+            ? 'rgb(39, 174, 96)'
+            : 'rgb(231, 76, 60)',
     },
   });
 };

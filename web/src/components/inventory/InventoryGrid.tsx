@@ -6,6 +6,7 @@ import InventorySlot from './InventorySlot';
 import ReactTooltip from 'react-tooltip';
 import { Locale } from '../../store/locale';
 import InventoryContext from './InventoryContext';
+import { getTotalWeight } from '../../helpers';
 
 const InventoryGrid: React.FC<{ inventory: Inventory }> = ({ inventory }) => {
   const [currentItem, setCurrentItem] = React.useState<SlotWithItem>();
@@ -14,10 +15,7 @@ const InventoryGrid: React.FC<{ inventory: Inventory }> = ({ inventory }) => {
   const weight = React.useMemo(
     () =>
       inventory.maxWeight !== undefined
-        ? inventory.items.reduce<number>(
-            (totalWeight, slot) => (slot.weight ? totalWeight + slot.weight : totalWeight),
-            0
-          )
+        ? getTotalWeight(inventory.items)
         : 0,
     [inventory.maxWeight, inventory.items]
   );

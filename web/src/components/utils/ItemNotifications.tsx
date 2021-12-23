@@ -53,7 +53,6 @@ export const ItemNotificationsProvider = ({ children }: { children: React.ReactN
 
   return (
     <ItemNotificationsContext.Provider value={{ add }}>
-      {isEnvBrowser() && <button onClick={() => add('water', 'Used')}>TEST</button>}
       {children}
       {createPortal(
         <TransitionGroup className="item-notifications-container">
