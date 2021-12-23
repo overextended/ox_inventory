@@ -251,12 +251,12 @@ function Inventory.Load(id, invType, owner)
 			elseif ox.randomloot then return generateItems(id, invType)
 			else datastore = true end
 		elseif owner then
-			result = MySQL.Sync.fetchScalar('SELECT data FROM ox_inventory WHERE owner = ? AND name = ?', { owner, id })
+			result = MySQL.Sync.prepare('SELECT data FROM ox_inventory WHERE owner = ? AND name = ?', { owner, id })
 			if result then result = json.decode(result) end
 		elseif invType == 'dumpster' then
 			if ox.randomloot then return generateItems(id, invType) else datastore = true end
 		else
-			result = MySQL.Sync.fetchScalar('SELECT data FROM ox_inventory WHERE owner = ? AND name = ?', { '', id })
+			result = MySQL.Sync.prepare('SELECT data FROM ox_inventory WHERE owner = ? AND name = ?', { '', id })
 			if result then result = json.decode(result) end
 		end
 	end
