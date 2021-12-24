@@ -52,14 +52,14 @@ export const inventorySlice = createSlice({
     setShiftPressed: (state, action: PayloadAction<boolean>) => {
       state.shiftPressed = action.payload;
     },
-    calculateContainerWeight: (state) => {
+    setContainerWeight: (state, action: PayloadAction<number>) => {
       const container = state.leftInventory.items.find(
         (item) => item.metadata?.container === state.rightInventory.id
       );
 
       if (!container) return;
 
-      container.weight = getTotalWeight(state.rightInventory.items);
+      container.weight = action.payload;
     },
   },
   extraReducers: (builder) => {
@@ -92,7 +92,7 @@ export const {
   moveSlots,
   stackSlots,
   refreshSlots,
-  calculateContainerWeight,
+  setContainerWeight,
 } = inventorySlice.actions;
 export const selectLeftInventory = (state: RootState) => state.inventory.leftInventory;
 export const selectRightInventory = (state: RootState) => state.inventory.rightInventory;

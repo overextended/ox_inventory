@@ -81,8 +81,4 @@ export const onDrop = (source: DragSource, target?: DropTarget) => {
           })
         )
     : store.dispatch(moveSlots(data));
-
-  // Container weight re-calculation after item movement
-  if (isContainer(sourceInventory) || isContainer(targetInventory))
-    store.dispatch(calculateContainerWeight());
 };
