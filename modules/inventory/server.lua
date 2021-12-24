@@ -772,6 +772,9 @@ RegisterServerEvent('ox_inventory:closeInventory', function()
 			local secondary = Inventories[inventory.open]
 			if secondary then
 				secondary:set('open', false)
+				if secondary.type == 'container' then
+					inventory.containerSlot = nil
+				end
 			end
 		end
 		inventory:set('open', false)

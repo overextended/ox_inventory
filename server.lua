@@ -122,11 +122,16 @@ ServerCallback.Register('openInventory', function(source, cb, inv, data)
 			end
 
 		elseif inv == 'container' then
+			left.containerSlot = data
 			data = left.items[data]
-			right = Inventory(data.metadata.container)
-			if not right then
-				right = Inventory.Create(data.metadata.container, data.label, inv, data.metadata.size[1], 0, data.metadata.size[2], false)
-			end
+
+			if data then
+				right = Inventory(data.metadata.container)
+
+				if not right then
+					right = Inventory.Create(data.metadata.container, data.label, inv, data.metadata.size[1], 0, data.metadata.size[2], false)
+				end
+			else left.containerSlot = nil end
 
 		else right = Inventory(data) end
 
