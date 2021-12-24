@@ -266,8 +266,9 @@ function Inventory.Load(id, invType, owner)
 		for _, v in pairs(result) do
 			local item = Items(v.name)
 			if item then
-				weight = Inventory.SlotWeight(item, v)
-				returnData[v.slot] = {name = item.name, label = item.label, weight = weight, slot = v.slot, count = v.count, description = item.description, metadata = v.metadata or {}, stack = item.stack, close = item.close}
+				local slotWeight = Inventory.SlotWeight(item, v)
+				weight += slotWeight
+				returnData[v.slot] = {name = item.name, label = item.label, weight = slotWeight, slot = v.slot, count = v.count, description = item.description, metadata = v.metadata or {}, stack = item.stack, close = item.close}
 			end
 		end
 	end
