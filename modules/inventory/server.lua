@@ -765,6 +765,19 @@ AddEventHandler('onResourceStop', function(resource)
 	end
 end)
 
+RegisterServerEvent('ox_inventory:closeInventory', function()
+	local inventory = Inventories[source]
+	if inventory?.open then
+		if type(inventory.open) ~= 'boolean' then
+			local secondary = Inventories[inventory.open]
+			if secondary then
+				secondary:set('open', false)
+			end
+		end
+		inventory:set('open', false)
+	end
+end)
+
 RegisterServerEvent('ox_inventory:giveItem', function(slot, target, count)
 	local fromInventory = Inventories[source]
 	local toInventory = Inventories[target]

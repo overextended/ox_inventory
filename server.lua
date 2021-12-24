@@ -1,16 +1,4 @@
 local Inventory = server.inventory
-
-RegisterServerEvent('ox_inventory:closeInventory', function()
-	local inventory = Inventory(source)
-	if inventory?.open then
-		if type(inventory.open) ~= 'boolean' then
-			local secondary = Inventory(inventory.open)
-			if secondary then secondary:set('open', false) end
-		end
-		inventory:set('open', false)
-	end
-end)
-
 local Items = server.items
 
 ---@param player table
