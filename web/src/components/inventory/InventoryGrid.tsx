@@ -7,6 +7,7 @@ import ReactTooltip from 'react-tooltip';
 import { Locale } from '../../store/locale';
 import InventoryContext from './InventoryContext';
 import { getTotalWeight } from '../../helpers';
+import { createPortal } from 'react-dom';
 
 const InventoryGrid: React.FC<{ inventory: Inventory }> = ({ inventory }) => {
   const [currentItem, setCurrentItem] = React.useState<SlotWithItem>();
@@ -44,19 +45,19 @@ const InventoryGrid: React.FC<{ inventory: Inventory }> = ({ inventory }) => {
         </div>
         <WeightBar percent={inventory.maxWeight ? (weight / inventory.maxWeight) * 100 : 0} />
         <div className={`inventory-grid inventory-grid-${inventory.type}`}>
-          {inventory.items.map((item, index) => (
-            <React.Fragment key={index}>
-              <InventoryContext
-                item={item}
-                setContextVisible={setContextVisible}
-                key={`context-${item.slot}`}
-              />
+          {inventory.items.map((item) => (
+            <React.Fragment key={`grid-${inventory.id}-${item.slot}`}>
               <InventorySlot
                 key={`${inventory.type}-${inventory.id}-${item.slot}`}
                 item={item}
                 inventory={inventory}
                 setCurrentItem={setCurrentItem}
               />
+              {createPortal(<InventoryContext
+                item={item}
+                setContextVisible={setContextVisible}
+                key={`context-${item.slot}`}
+              />, document.body)}
             </React.Fragment>
           ))}
         </div>

@@ -3,7 +3,6 @@ import { createPortal } from 'react-dom';
 import { Items } from '../../store/items';
 import { CSSTransition, TransitionGroup } from 'react-transition-group';
 import useNuiEvent from '../../hooks/useNuiEvent';
-import { isEnvBrowser } from '../../utils/misc';
 
 export const ItemNotificationsContext = React.createContext<{
   add: (item: string, text: string) => void;

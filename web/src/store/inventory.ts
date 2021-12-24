@@ -15,7 +15,6 @@ import {
   swapSlotsReducer,
   moveSlotsReducer,
 } from '../reducers';
-import { getTotalWeight, isSlotWithItem } from '../helpers';
 
 const initialState: State = {
   leftInventory: {

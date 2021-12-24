@@ -1,6 +1,5 @@
 import React from 'react';
 import { useNuiEvent } from '../../hooks/useNuiEvent';
-import { debugData } from '../../utils/debugData';
 
 import toast, { Toaster, ToastPosition } from 'react-hot-toast';
 
