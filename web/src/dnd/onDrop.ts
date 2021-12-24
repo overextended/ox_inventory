@@ -36,6 +36,9 @@ export const onDrop = (source: DragSource, target?: DropTarget) => {
     return console.error('Target slot undefined!');
   }
 
+  if (sourceInventory.type === InventoryType.CONTAINER && targetSlot.metadata?.container)
+    return console.log(`Cannot swap item ${sourceSlot.name} with container ${targetSlot.name}`);
+
   const count =
     state.shiftPressed && sourceSlot.count > 1 && sourceInventory.type !== 'shop'
       ? Math.floor(sourceSlot.count / 2)
