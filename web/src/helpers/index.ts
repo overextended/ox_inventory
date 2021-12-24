@@ -48,11 +48,7 @@ export const itemDurability = (metadata: any, curTime: number) => {
 };
 
 export const getTotalWeight = (items: Inventory['items']) =>
-  items.reduce((totalWeight, slot) => {
-    if (!isSlotWithItem(slot)) return totalWeight;
-
-    if (slot.metadata?.weight !== undefined)
-      return totalWeight + slot.weight + slot.metadata.weight;
-
-    return totalWeight + slot.weight;
-  }, 0);
+  items.reduce(
+    (totalWeight, slot) => (isSlotWithItem(slot) ? totalWeight + slot.weight : totalWeight),
+    0
+  );
