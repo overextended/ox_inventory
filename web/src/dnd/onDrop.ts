@@ -1,7 +1,7 @@
 import { isSlotWithItem, findAvailableSlot, getTargetInventory, canStack } from '../helpers';
 import { validateMove } from '../thunks/validateItems';
 import { store } from '../store';
-import { DragSource, DropTarget, SlotWithItem } from '../typings';
+import { DragSource, DropTarget, InventoryType, SlotWithItem } from '../typings';
 import { moveSlots, stackSlots, swapSlots } from '../store/inventory';
 import { Items } from '../store/items';
 
@@ -18,13 +18,14 @@ export const onDrop = (source: DragSource, target?: DropTarget) => {
 
   const sourceData = Items[sourceSlot.name];
 
-  if (sourceData === undefined) {
-    return console.error(`${sourceSlot.name} item data undefined!`);
-  }
+  if (sourceData === undefined) return console.error(`${sourceSlot.name} item data undefined!`);
 
-  if (targetInventory.type === 'container' && sourceSlot?.metadata?.container) {
-    return
-    // throw new Error(`Unable to store ${sourceSlot.name} inside itself!`);
+  if (sourceSlot.metadata?.container !== undefined) {
+    if (targetInventory.type === InventoryType.CONTAINER)
+      return console.log(`Cannot store container ${sourceSlot.name} inside another container`);
+
+    if (targetInventory.id === sourceSlot.metadata.container)
+      return console.log(`Cannot move container ${sourceSlot.name} when opened`);
   }
 
   const targetSlot = target

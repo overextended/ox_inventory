@@ -13,6 +13,7 @@ import {
 } from '../../store/inventory';
 import { useExitListener } from '../../hooks/useExitListener';
 import ReactTooltip from 'react-tooltip';
+import type { Inventory as InventoryProps } from '../../typings';
 
 const Inventory: React.FC = () => {
   const [inventoryVisible, setInventoryVisible] = React.useState(false);
@@ -29,7 +30,10 @@ const Inventory: React.FC = () => {
 
   const dispatch = useAppDispatch();
 
-  useNuiEvent('setupInventory', (data) => {
+  useNuiEvent<{
+    leftInventory?: InventoryProps;
+    rightInventory?: InventoryProps;
+  }>('setupInventory', (data) => {
     dispatch(setupInventory(data));
     !inventoryVisible && setInventoryVisible(true);
   });
