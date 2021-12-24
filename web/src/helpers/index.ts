@@ -36,13 +36,15 @@ export const getTargetInventory = (
 
 export const itemDurability = (metadata: any, curTime: number) => {
   // sorry dunak
-  let durability = undefined;
-  if (metadata?.durability) {
-    metadata.durability > 100
-      ? (durability = ((metadata.durability - curTime) / (60 * metadata.degrade)) * 100)
-      : (durability = metadata.durability);
-    if (durability && durability < 0) durability = 0;
-  }
+  // it's ok linden i fix inventory
+  if (metadata?.durability === undefined) return;
+
+  let durability = metadata.durability;
+
+  if (durability > 100 && metadata.degrade)
+    durability = ((metadata.durability - curTime) / (60 * metadata.degrade)) * 100;
+
+  if (durability < 0) durability = 0;
 
   return durability;
 };
