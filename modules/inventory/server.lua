@@ -318,6 +318,12 @@ function Inventory.SwapSlots(fromInventory, toInventory, slot1, slot2)
 end
 exports('SwapSlots', Inventory.SwapSlots)
 
+function Inventory.ContainerWeight(container, metaWeight)
+	container.weight = Items(container.name).weight
+	container.weight += metaWeight
+	container.metadata.weight = metaWeight
+end
+
 ---@param inv any
 ---@param item table|string
 ---@param count number

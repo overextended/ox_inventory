@@ -159,7 +159,7 @@ local table = import 'table'
 local Log = server.logs
 
 ServerCallback.Register('swapItems', function(source, cb, data)
-	-- todo: refactor and setup some helper functions
+	-- TODO: requires re-re-re-refactor and helper functions to reduce repetition
 	if data.count > 0 and data.toType ~= 'shop' then
 		local playerInventory, items, ret = Inventory(source), {}, nil
 
@@ -198,6 +198,8 @@ ServerCallback.Register('swapItems', function(source, cb, data)
 			local toInventory = (data.toType == 'player' and playerInventory) or Inventory(playerInventory.open)
 			local fromInventory = (data.fromType == 'player' and playerInventory) or Inventory(playerInventory.open)
 			local sameInventory = fromInventory.id == toInventory.id or false
+			local container = (not sameInventory and playerInventory.containerSlot) and (fromInventory.type == 'container' and fromInventory or toInventory)
+			local containerItem = container and playerInventory.items[playerInventory.containerSlot]
 
 			if not sameInventory and toInventory.type == 'player' or toInventory.type == 'otherplayer' then
 				local fromData = fromInventory.items[data.fromSlot]
@@ -220,7 +222,6 @@ ServerCallback.Register('swapItems', function(source, cb, data)
 					return cb(false)
 				end
 			end
-
 
 			if toInventory and fromInventory and (fromInventory.id ~= toInventory.id or data.fromSlot ~= data.toSlot) then
 				local fromData = fromInventory.items[data.fromSlot]
@@ -248,6 +249,8 @@ ServerCallback.Register('swapItems', function(source, cb, data)
 								fromInventory.weight = fromWeight
 								toInventory.weight = toWeight
 
+								if container then Inventory.ContainerWeight(containerItem, toInventory.type == 'container' and toWeight or fromWeight) end
+
 								Log(
 									('%s [%s] - %s'):format(fromInventory.label, fromInventory.id, fromInventory.owner),
 									('%s [%s] - %s'):format(toInventory.label, toInventory.id, toInventory.owner),
@@ -263,12 +266,15 @@ ServerCallback.Register('swapItems', function(source, cb, data)
 						fromData.count -= data.count
 						local toSlotWeight = Inventory.SlotWeight(Items(toData.name), toData)
 						local totalWeight = toInventory.weight - toData.weight + toSlotWeight
+
 						if sameInventory or totalWeight <= toInventory.maxWeight then
 							local fromSlotWeight = Inventory.SlotWeight(Items(fromData.name), fromData)
 							toData.weight = toSlotWeight
 							if not sameInventory then
 								fromInventory.weight = fromInventory.weight - fromData.weight + fromSlotWeight
 								toInventory.weight = totalWeight
+
+								if container then Inventory.ContainerWeight(containerItem, toInventory.type == 'container' and toInventory.weight or fromInventory.weight) end
 
 								Log(
 									('%s [%s] - %s'):format(fromInventory.label, fromInventory.id, fromInventory.owner),
@@ -292,15 +298,20 @@ ServerCallback.Register('swapItems', function(source, cb, data)
 						if sameInventory or (toInventory.weight + toData.weight <= toInventory.maxWeight) then
 							fromData.count = fromData.count - data.count
 							fromData.weight = Inventory.SlotWeight(Items(fromData.name), fromData)
+
 							if not sameInventory then
 								fromInventory.weight = fromInventory.weight - toData.weight
 								toInventory.weight = toInventory.weight + toData.weight
+
+								if container then Inventory.ContainerWeight(containerItem, toInventory.type == 'container' and toInventory.weight or fromInventory.weight) end
 
 								Log(
 									('%s [%s] - %s'):format(fromInventory.label, fromInventory.id, fromInventory.owner),
 									('%s [%s] - %s'):format(toInventory.label, toInventory.id, toInventory.owner),
 									('Transferred %s %s'):format(data.count, fromData.name)
 								)
+
+							else
 
 							end
 						else return cb(false) end
@@ -310,10 +321,16 @@ ServerCallback.Register('swapItems', function(source, cb, data)
 
 					if fromInventory.type == 'player' then
 						items[data.fromSlot] = fromData or false
+						if toInventory.type == 'container' then
+							items[playerInventory.containerSlot] = containerItem
+						end
 					end
 
 					if toInventory.type == 'player' then
 						items[data.toSlot] = toData or false
+						if fromInventory.type == 'container' then
+							items[playerInventory.containerSlot] = containerItem
+						end
 					end
 
 					fromInventory.items[data.fromSlot] = fromData
@@ -361,7 +378,7 @@ ServerCallback.Register('swapItems', function(source, cb, data)
 						end
 					end
 
-					return cb(true, ret, movedWeapon and fromInventory.weapon)
+					return cb(container and containerItem.weight or true, ret, movedWeapon and fromInventory.weapon)
 				end
 			end
 		end
