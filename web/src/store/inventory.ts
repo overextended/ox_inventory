@@ -15,6 +15,7 @@ import {
   swapSlotsReducer,
   moveSlotsReducer,
 } from '../reducers';
+import { getTotalWeight, isSlotWithItem } from '../helpers';
 
 const initialState: State = {
   leftInventory: {
@@ -51,6 +52,15 @@ export const inventorySlice = createSlice({
     setShiftPressed: (state, action: PayloadAction<boolean>) => {
       state.shiftPressed = action.payload;
     },
+    calculateContainerWeight: (state) => {
+      const container = state.leftInventory.items.find(
+        (item) => item.metadata?.container === state.rightInventory.id
+      );
+
+      if (!container) return;
+
+      container.weight = getTotalWeight(state.rightInventory.items);
+    },
   },
   extraReducers: (builder) => {
     builder.addMatcher(isPending, (state) => {
@@ -82,6 +92,7 @@ export const {
   moveSlots,
   stackSlots,
   refreshSlots,
+  calculateContainerWeight,
 } = inventorySlice.actions;
 export const selectLeftInventory = (state: RootState) => state.inventory.leftInventory;
 export const selectRightInventory = (state: RootState) => state.inventory.rightInventory;

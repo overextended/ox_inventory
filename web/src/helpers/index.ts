@@ -52,3 +52,5 @@ export const getTotalWeight = (items: Inventory['items']) =>
     (totalWeight, slot) => (isSlotWithItem(slot) ? totalWeight + slot.weight : totalWeight),
     0
   );
+
+export const isContainer = (inventory: Inventory) => inventory.type === InventoryType.CONTAINER;

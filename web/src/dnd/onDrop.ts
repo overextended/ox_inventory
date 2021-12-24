@@ -1,8 +1,15 @@
-import { isSlotWithItem, findAvailableSlot, getTargetInventory, canStack } from '../helpers';
+import {
+  isSlotWithItem,
+  findAvailableSlot,
+  getTargetInventory,
+  canStack,
+  getTotalWeight,
+  isContainer,
+} from '../helpers';
 import { validateMove } from '../thunks/validateItems';
 import { store } from '../store';
 import { DragSource, DropTarget, InventoryType, SlotWithItem } from '../typings';
-import { moveSlots, stackSlots, swapSlots } from '../store/inventory';
+import { calculateContainerWeight, moveSlots, stackSlots, swapSlots } from '../store/inventory';
 import { Items } from '../store/items';
 
 export const onDrop = (source: DragSource, target?: DropTarget) => {
@@ -74,4 +81,8 @@ export const onDrop = (source: DragSource, target?: DropTarget) => {
           })
         )
     : store.dispatch(moveSlots(data));
+
+  // Container weight re-calculation after item movement
+  if (isContainer(sourceInventory) || isContainer(targetInventory))
+    store.dispatch(calculateContainerWeight());
 };

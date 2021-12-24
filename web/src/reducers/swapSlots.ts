@@ -27,23 +27,4 @@ export const swapSlotsReducer: CaseReducer<
       durability: itemDurability(fromSlot.metadata, curTime),
     },
   ];
-
-  // Calculates weight of the container after swapping items
-  if (targetInventory.type === 'container' || sourceInventory.type === 'container') {
-    let containerWeight: number = 0
-    if (targetInventory.type === 'container') {
-      for (const item of targetInventory.items) {
-        if (item.weight && item.weight !== undefined) {
-          containerWeight = containerWeight + item.weight
-        }
-      }
-    } else if (sourceInventory.type === 'container') {
-      for (const item of sourceInventory.items) {
-        if (item.weight && item.weight !== undefined) {
-          containerWeight = containerWeight + item.weight
-        }
-      }
-    }
-    // fetchNui callback here?
-  }
 };
