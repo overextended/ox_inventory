@@ -9,7 +9,7 @@ import {
 import { validateMove } from '../thunks/validateItems';
 import { store } from '../store';
 import { DragSource, DropTarget, InventoryType, SlotWithItem } from '../typings';
-import { calculateContainerWeight, moveSlots, stackSlots, swapSlots } from '../store/inventory';
+import { moveSlots, stackSlots, swapSlots } from '../store/inventory';
 import { Items } from '../store/items';
 
 export const onDrop = (source: DragSource, target?: DropTarget) => {
