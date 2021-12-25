@@ -14,7 +14,7 @@ setmetatable(Inventory, {
 ---@param inv any
 ---@param k string
 ---@param v any
-local function set(inv, k, v)
+function Inventory.Set(inv, k, v)
 	inv = Inventory(inv)
 	if inv then
 		if type(v) == 'number' then math.floor(v + 0.5) end
@@ -33,7 +33,7 @@ end
 
 ---@param inv any
 ---@param key string
-local function get(inv, key)
+function Inventory.Get(inv, key)
 	inv = Inventory(inv)
 	if inv then
 		return inv[key]
@@ -145,8 +145,8 @@ function Inventory.Create(id, label, invType, slots, weight, maxWeight, owner, i
 			owner = owner,
 			items = type(items) == 'table' and items,
 			open = false,
-			set = set,
-			get = get,
+			set = Inventory.Set,
+			get = Inventory.Get,
 			minimal = minimal,
 			time = os.time()
 		}
