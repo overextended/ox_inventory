@@ -75,7 +75,7 @@ jobs:
 
           sentry-cli releases new "$VERSION"
           sentry-cli releases set-commits "$VERSION" --local --ignore-missing
-          sentry-cli releases files "$VERSION" upload-sourcemaps ./temp/ox_inventory/web/build/static/js --url-prefix '--url-prefix '~/web/build/static/js''
+          sentry-cli releases files "$VERSION" upload-sourcemaps ./temp/ox_inventory/web/build/static/js --url-prefix '~/web/build/static/js'
 
           sentry-cli releases finalize "$VERSION"
 
