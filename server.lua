@@ -136,7 +136,7 @@ ServerCallback.Register('openInventory', function(source, cb, inv, data)
 		else right = Inventory(data) end
 
 		if right then
-			if right.open == true then return cb(false) end
+			if right.open then return cb(false) end
 
 			local otherplayer = right.type == 'player'
 			if otherplayer then right.coords = GetEntityCoords(GetPlayerPed(right.id)) end
