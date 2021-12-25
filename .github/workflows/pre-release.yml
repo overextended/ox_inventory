@@ -75,18 +75,8 @@ jobs:
 
           sentry-cli releases new "$VERSION"
           sentry-cli releases set-commits "$VERSION" --local --ignore-missing
-          sentry-cli releases files "$VERSION" upload-sourcemaps ./temp/ox_inventory/web/build/static/js
+          sentry-cli releases files "$VERSION" upload-sourcemaps ./temp/ox_inventory/web/build/static/js --url-prefix '--url-prefix '~/web/build/static/js''
 
           sentry-cli releases finalize "$VERSION"
 
-#       - name: Create Sentry release
-#         uses: tclindner/sentry-releases-action@v1.2.0
-#         env:
-#           SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
-#           SENTRY_ORG: ${{ secrets.SENTRY_ORG }}
-#           SENTRY_PROJECT: ${{ secrets.SENTRY_PROJECT }}
-#           SENTRY_URL: ${{ secrets.SENTRY_URL }}
-#         with:
-#           environment: production
-#           tagName: ${{ steps.get_vars.outputs.SHORT_SHA }}
-#           sourceMapOptions: '{"include": ["./temp/ox_inventory/web/builds/static/js"]}'
+          sentry-cli releases deploys "$VERSION" new -e production
