@@ -50,20 +50,6 @@ jobs:
           cp -r ./web/build ./temp/ox_inventory/web/build
           cd ./temp && zip -r ox_inventory-${{ steps.get_vars.outputs.SHORT_SHA }}.zip ./ox_inventory
 
-      - name: Create Release
-        uses: "marvinpinto/action-automatic-releases@v1.2.1"
-        id: auto_release
-        with:
-          repo_token: "${{ secrets.GITHUB_TOKEN }}"
-          title: "Experimental Build (${{ steps.get_vars.outputs.SHORT_SHA }}) | ${{ steps.get_vars.outputs.DATE }}"
-          prerelease: true
-          automatic_release_tag: "experimental"
-          files: ./temp/ox_inventory-${{ steps.get_vars.outputs.SHORT_SHA }}.zip
-
-        env:
-          CI: false
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
       - name: Sentry CLI
         run: |
           curl -sL https://sentry.io/get-cli/ | bash
@@ -78,5 +64,18 @@ jobs:
           sentry-cli releases files "$VERSION" upload-sourcemaps ./temp/ox_inventory/web/build/static/js --url-prefix '~/web/build/static/js'
 
           sentry-cli releases finalize "$VERSION"
-
           sentry-cli releases deploys "$VERSION" new -e production
+
+      - name: Create Release
+        uses: "marvinpinto/action-automatic-releases@v1.2.1"
+        id: auto_release
+        with:
+          repo_token: "${{ secrets.GITHUB_TOKEN }}"
+          title: "Experimental Build (${{ steps.get_vars.outputs.SHORT_SHA }}) | ${{ steps.get_vars.outputs.DATE }}"
+          prerelease: true
+          automatic_release_tag: "experimental"
+          files: ./temp/ox_inventory-${{ steps.get_vars.outputs.SHORT_SHA }}.zip
+
+        env:
+          CI: false
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
