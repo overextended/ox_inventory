@@ -163,7 +163,7 @@ local function UseSlot(slot)
 						if data.throwable then item.throwable = true end
 						ClearPedSecondaryTask(playerPed)
 						if currentWeapon then Utils.Disarm(currentWeapon, data.slot) end
-						local sleep = (PlayerData.job.name == 'police' and GetWeapontypeGroup(data.hash) == 416676503) and 400 or 1200
+						local sleep = (PlayerData.job.name == 'police' and (GetWeapontypeGroup(data.hash) == 416676503 or GetWeapontypeGroup(data.hash) == 690389602)) and 400 or 1200
 						local coords = GetEntityCoords(playerPed, true)
 						Utils.PlayAnimAdvanced(sleep*2, sleep == 400 and 'reaction@intimidation@cop@unarmed' or 'reaction@intimidation@1h', 'intro', coords.x, coords.y, coords.z, 0, 0, GetEntityHeading(playerPed), 8.0, 3.0, -1, 50, 0.1)
 						Wait(sleep)
