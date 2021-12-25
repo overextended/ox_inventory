@@ -184,7 +184,8 @@ CreateThread(function() Inventory = server.inventory end)
 function Items.Metadata(inv, item, metadata, count)
 	if type(inv) ~= 'table' then inv = Inventory(inv) end
 	local isWeapon = item.name:find('WEAPON_')
-	if isWeapon == nil then metadata = not metadata and {} or type(metadata) == 'string' and {type=metadata} or metadata end
+	if not isWeapon then metadata = not metadata and {} or type(metadata) == 'string' and {type=metadata} or {} end
+
 	if isWeapon then
 		if not item.ammoname then
 			metadata = {}
@@ -205,7 +206,7 @@ function Items.Metadata(inv, item, metadata, count)
 		if container then
 			count = 1
 			metadata = {
-				container = GenerateText(3)..os.time(),
+				container = metadata.container or GenerateText(3)..os.time(),
 				size = container
 			}
 		elseif item.name == 'identification' then
@@ -217,6 +218,7 @@ function Items.Metadata(inv, item, metadata, count)
 				}
 			end
 		end
+
 		if not metadata?.durability then
 			local durability = ItemList[item.name].degrade
 			if durability then metadata.durability = os.time()+(durability * 60) metadata.degrade = durability end
