@@ -98,11 +98,11 @@ local Log = server.logs
 ServerCallback.Register('buyItem', function(source, cb, data)
 	if data.toType == 'player' then
 		if data.count == nil then data.count = 1 end
-		local player = Inventory(source)
-		local split = player.open:match('^.*() ')
-		local shop = split and Shops[player.open:sub(0, split-1)][tonumber(player.open:sub(split+1))] or Shops[player.open]
+		local playerInv = Inventory(source)
+		local split = playerInv.open:match('^.*() ')
+		local shop = split and Shops[playerInv.open:sub(0, split-1)][tonumber(playerInv.open:sub(split+1))] or Shops[playerInv.open]
 		local fromData = shop.items[data.fromSlot]
-		local toData = player.items[data.toSlot]
+		local toData = playerInv.items[data.toSlot]
 
 		if fromData then
 			if fromData.count then
@@ -112,24 +112,24 @@ ServerCallback.Register('buyItem', function(source, cb, data)
 					data.count = fromData.count
 				end
 
-			elseif fromData.license and not MySQL.Sync.fetchScalar('SELECT 1 FROM user_licenses WHERE type = ? AND owner = ?', { fromData.license, player.owner }) then
+			elseif fromData.license and not MySQL.Sync.fetchScalar('SELECT 1 FROM user_licenses WHERE type = ? AND owner = ?', { fromData.license, playerInv.owner }) then
 				return cb(false, nil, {type = 'error', text = ox.locale('item_unlicensed')})
 
-			elseif fromData.grade and player.data.job.grade < fromData.grade then
+			elseif fromData.grade and playerInv.player.job.grade < fromData.grade then
 				return cb(false, nil, {type = 'error', text = ox.locale('stash_lowgrade')})
 			end
 
 			local currency = fromData.currency or 'money'
 			local fromItem = Items(fromData.name)
 
-			local result = Items[fromItem.name] and Items[fromItem.name]('buying', fromItem, player, data.fromSlot, shop)
+			local result = Items[fromItem.name] and Items[fromItem.name]('buying', fromItem, playerInv, data.fromSlot, shop)
 			if result == false then return cb(false) end
 
 			local toItem = toData and Items(toData.name)
-			local metadata, count = Items.Metadata(player, fromItem, fromData.metadata and table.clone(fromData.metadata) or {}, data.count)
+			local metadata, count = Items.Metadata(playerInv, fromItem, fromData.metadata and table.clone(fromData.metadata) or {}, data.count)
 			local price = count * fromData.price
 
-			local _, totalCount, _ = Inventory.GetItemSlots(player, fromItem, fromItem.metadata)
+			local _, totalCount, _ = Inventory.GetItemSlots(playerInv, fromItem, fromItem.metadata)
 			if fromItem.limit and (totalCount + data.count) > fromItem.limit then
 				return cb(false, nil, {type = 'error', text = { ox.locale('cannot_carry')}})
 			end
@@ -137,29 +137,29 @@ ServerCallback.Register('buyItem', function(source, cb, data)
 			if toData == nil or (fromItem.name == toItem.name and fromItem.stack and table.matches(toData.metadata, metadata)) then
 				local canAfford = Inventory.GetItem(source, currency, false, true) >= price
 				if canAfford then
-					local newWeight = player.weight + (fromItem.weight + (metadata?.weight or 0)) * count
-					if newWeight > player.maxWeight then
+					local newWeight = playerInv.weight + (fromItem.weight + (metadata?.weight or 0)) * count
+					if newWeight > playerInv.maxWeight then
 						return cb(false, nil, {type = 'error', text = { ox.locale('cannot_carry')}})
 					else
-						Inventory.SetSlot(player, fromItem, count, metadata, data.toSlot)
+						Inventory.SetSlot(playerInv, fromItem, count, metadata, data.toSlot)
 						if fromData.count then shop.items[data.fromSlot].count = fromData.count - count end
-						player.weight = newWeight
+						playerInv.weight = newWeight
 					end
 
 					Inventory.RemoveItem(source, currency, price)
-					if ox.esx then Inventory.SyncInventory(player) end
+					if ox.esx then Inventory.SyncInventory(playerInv) end
 					local message = ox.locale('purchased_for', count, fromItem.label, (currency == 'money' and ox.locale('$') or price), (currency == 'money' and price or ' '..currency))
 
 					-- Only log purchases for items worth $500 or more
 					if fromData.price >= 500 then
 						Log(
-							player.open,
-							('%s [%s] - %s'):format(player.label, player.id, player.owner),
+							playerInv.open,
+							('%s [%s] - %s'):format(playerInv.label, playerInv.id, playerInv.owner),
 							message, metadata.serial and ('(%s)'):format(metadata.serial)
 						)
 					end
 
-					return cb(true, {data.toSlot, player.items[data.toSlot], weight}, {type = 'success', text = message})
+					return cb(true, {data.toSlot, playerInv.items[data.toSlot], weight}, {type = 'success', text = message})
 				else
 					return cb(false, nil, {type = 'error', text = ox.locale('cannot_afford', ('%s%s'):format((currency == 'money' and ox.locale('$') or price), (currency == 'money' and price or ' '..currency)))})
 				end
