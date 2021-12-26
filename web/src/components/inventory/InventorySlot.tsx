@@ -122,9 +122,10 @@ const InventorySlot: React.FC<SlotProps> = ({
         data-for="item-tooltip"
         style={{
           opacity: isDragging ? 0.4 : 1.0,
-          backgroundImage: item.name
-            ? `url(${process.env.PUBLIC_URL + `/images/${item.name}.png`})`
-            : 'none',
+          backgroundImage: item.metadata?.image ? `url(${process.env.PUBLIC_URL + `/images/${item.metadata.image}.png`})`
+            : item.name
+              ? `url(${process.env.PUBLIC_URL + `/images/${item.name}.png`})`
+              : 'none',
           border: isOver ? '0.1vh dashed rgba(255,255,255,0.5)' : '0.1vh inset rgba(0,0,0,0.15)',
         }}
         onMouseEnter={onMouseEnter}
@@ -184,7 +185,7 @@ const InventorySlot: React.FC<SlotProps> = ({
                 )}
               </>
             )}
-            <div className="item-label">{Items[item.name]?.label || item.name}</div>
+            <div className="item-label">{item.metadata?.label ? item.metadata.label : Items[item.name]?.label || item.name}</div>
           </>
         )}
       </div>

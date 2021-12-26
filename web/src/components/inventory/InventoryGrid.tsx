@@ -78,7 +78,7 @@ const InventoryGrid: React.FC<{ inventory: Inventory }> = ({ inventory }) => {
                 </span>
               </p>
               <hr style={{ borderBottom: '0.1vh', marginBottom: '0.1vh' }}></hr>
-              {Items[currentItem.name]?.description && (
+              {currentItem.metadata?.description ? <p>{currentItem.metadata.description}</p> : Items[currentItem.name]?.description && (
                 <p>{Items[currentItem.name]?.description}</p>
               )}
               {currentItem?.durability !== undefined && (
