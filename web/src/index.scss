@@ -257,16 +257,16 @@ input[type='number'] {
 
 .item-info {
   padding: 1vh !important;
-  font-size: 1.1vh !important;
+  font-size: 10pt !important;
   background-color: $mainColor !important;
   opacity: 1 !important;
   border-radius: $borderRadius !important;
   width: 23vh;
+  min-width: 180px;
   text-shadow: $textShadow;
   border: 0.1vh solid rgba(0, 0, 0, 0.2) !important;
 
   p {
-    font-size: 1.1vh;
     text-shadow: none;
     font-family: $thirdFont;
   }
