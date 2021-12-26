@@ -228,7 +228,7 @@ function Items.Metadata(inv, item, metadata, count)
 			count = 1
 			if next(metadata) == nil then
 				metadata = {
-					type = inv.name,
+					type = inv.player.name,
 					description = ox.locale('identification', (inv.player.sex) and ox.locale('male') or ox.locale('female'), inv.player.dateofbirth)
 				}
 			end
