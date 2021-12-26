@@ -1,11 +1,12 @@
 import React from 'react';
 import { createPortal } from 'react-dom';
-import { Items } from '../../store/items';
 import { CSSTransition, TransitionGroup } from 'react-transition-group';
 import useNuiEvent from '../../hooks/useNuiEvent';
 
+interface ItemNotificationProps { label: string, image: string, text: string };
+
 export const ItemNotificationsContext = React.createContext<{
-  add: (item: string, text: string) => void;
+  add: (item: ItemNotificationProps) => void;
 } | null>(null);
 
 export const useItemNotifications = () => {
@@ -15,17 +16,17 @@ export const useItemNotifications = () => {
 };
 
 const ItemNotification = React.forwardRef(
-  (props: { item: string; text: string }, ref: React.ForwardedRef<HTMLDivElement>) => {
+  (props: { item: ItemNotificationProps; }, ref: React.ForwardedRef<HTMLDivElement>) => {
     return (
       <div
         className="item-notification"
         ref={ref}
         style={{
-          backgroundImage: `url(${process.env.PUBLIC_URL + `/images/${props.item}.png`})` || 'none',
+          backgroundImage: `url(${process.env.PUBLIC_URL + `/images/${props.item.image}.png`})` || 'none',
         }}
       >
-        <div className="item-action">{props.text}</div>
-        <div className="item-label">{Items[props.item]?.label || 'NO LABEL'}</div>
+        <div className="item-action">{props.item.text}</div>
+        <div className="item-label">{props.item.label}</div>
       </div>
     );
   }
@@ -33,12 +34,12 @@ const ItemNotification = React.forwardRef(
 
 export const ItemNotificationsProvider = ({ children }: { children: React.ReactNode }) => {
   const [queue, setQueue] = React.useState<
-    { id: number; item: string; text: string; ref: React.RefObject<HTMLDivElement> }[]
+    { id: number; item: ItemNotificationProps; ref: React.RefObject<HTMLDivElement> }[]
   >([]);
 
-  const add = (item: string, text: string) => {
+  const add = (item: ItemNotificationProps) => {
     const ref = React.createRef<HTMLDivElement>();
-    const notification = { id: Date.now(), item, text, ref: ref };
+    const notification = { id: Date.now(), item, ref: ref };
 
     setQueue((prevQueue) => [notification, ...prevQueue]);
 
@@ -48,7 +49,7 @@ export const ItemNotificationsProvider = ({ children }: { children: React.ReactN
   const remove = (id: number) =>
     setQueue((prevQueue) => prevQueue.filter((notification) => notification.id !== id));
 
-  useNuiEvent<{ item: string; text: string }>('itemNotify', (data) => add(data.item, data.text));
+  useNuiEvent<[label: string, image: string, text: string]>('itemNotify', (data) => add({ label: data[0], image: data[1], text: data[2] }));
 
   return (
     <ItemNotificationsContext.Provider value={{ add }}>
@@ -64,7 +65,6 @@ export const ItemNotificationsProvider = ({ children }: { children: React.ReactN
             >
               <ItemNotification
                 item={notification.item}
-                text={notification.text}
                 ref={notification.ref}
               />
             </CSSTransition>
