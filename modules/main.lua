@@ -14,7 +14,7 @@ if ox.qtarget and GetResourceState('qtarget') ~= 'started' then
 end
 
 local function loadfile(path)
-	local func, err = load(LoadResourceFile(ox.resource, path), ('@@ox_inventory/%s'):format(path), 't')
+	local func, err = load(LoadResourceFile(ox.resource, path))
 	if err then error('^1'..err..'^0', 0) end
 	return func()
 end
