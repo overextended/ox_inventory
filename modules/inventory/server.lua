@@ -902,7 +902,7 @@ end
 AddCommand('ox_inventory', {'additem', 'giveitem'}, function(source, args)
 	args.item = Items(args.item)
 	if args.item and args.count > 0 then
-		Inventory.AddItem(args.target, args.item.name, args.count, args.metaType)
+		Inventory.AddItem(args.target, args.item.name, args.count, args.metatype)
 		local inventory = Inventories[args.target]
 		source = Inventories[source]
 		Log(
