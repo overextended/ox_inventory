@@ -2,8 +2,21 @@ local Items = {}
 local ItemList = shared 'items'
 
 -- Slot count and maximum weight for containers
-ox.containers = {
+local containers = {
 	['paperbag'] = {5, 1000}
+}
+
+-- Possible metadata when creating garbage
+local trash = {
+	{description = 'An old rolled up newspaper.', weight = 200, image = 'trash_newspaper'}, 
+	{description = 'A discarded burger shot carton.', weight = 50, image = 'trash_burgershot'},
+	{description = 'An empty soda can.', weight = 20, image = 'trash_can'},
+	{description = 'A mouldy piece of bread.', weight = 70, image = 'trash_bread'},
+	{description = 'An empty ciggarette carton.', weight = 10, image = 'trash_fags'},
+	{description = 'A slightly used pair of panties.', weight = 20, image = 'panties'},
+	{description = 'An empty coffee cup.', weight = 20, image = 'trash_coffee'},
+	{description = 'A crumpled up piece of paper.', weight = 5, image = 'trash_paper'},
+	{description = 'An empty chips bag.', weight = 5, image = 'trash_chips'},
 }
 
 -- Items that can be found, with minimum and maxiumum count to be generated
@@ -24,6 +37,8 @@ ox.dumpsterloot = {
 	{'money', 0, 10},
 	{'burger', 0, 1}
 }
+
+
 
 local function GetItem(item)
 	if item then
@@ -202,7 +217,7 @@ function Items.Metadata(inv, item, metadata, count)
 			end
 		end
 	else
-		local container = ox.containers[item.name]
+		local container = containers[item.name]
 		if container then
 			count = 1
 			metadata = {
@@ -217,6 +232,11 @@ function Items.Metadata(inv, item, metadata, count)
 					description = ox.locale('identification', (inv.player.sex) and ox.locale('male') or ox.locale('female'), inv.player.dateofbirth)
 				}
 			end
+		elseif item.name == 'garbage' then
+			local trashType = trash[math.random(1, #trash)]
+			metadata.image = trashType.image
+			metadata.weight = trashType.weight
+			metadata.description = trashType.description
 		end
 
 		if not metadata?.durability then
