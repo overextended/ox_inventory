@@ -39,6 +39,7 @@ const InventorySlot: React.FC<SlotProps> = ({
               name: item.name,
               slot: item.slot,
             },
+            image: item.metadata?.image
           }
           : null,
       canDrag: !isBusy,
