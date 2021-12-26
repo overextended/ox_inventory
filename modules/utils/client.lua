@@ -73,7 +73,7 @@ function Utils.Disarm(currentWeapon, newSlot)
 			local coords = GetEntityCoords(PlayerData.ped, true)
 			Utils.PlayAnimAdvanced(sleep, (sleep == 450 and 'reaction@intimidation@cop@unarmed' or 'reaction@intimidation@1h'), 'outro', coords.x, coords.y, coords.z, 0, 0, GetEntityHeading(PlayerData.ped), 8.0, 3.0, -1, 50, 0)
 			Wait(sleep)
-			Utils.ItemNotify({item = currentWeapon.name, text = ox.locale('holstered')})
+			Utils.ItemNotify({currentWeapon.label, currentWeapon.name, ox.locale('holstered')})
 		end
 
 		RemoveWeaponFromPed(PlayerData.ped, currentWeapon.hash)

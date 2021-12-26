@@ -201,7 +201,7 @@ local function UseSlot(slot)
 						end
 
 						TriggerEvent('ox_inventory:currentWeapon', item)
-						Utils.ItemNotify({item = item.name, text = ox.locale('equipped')})
+						Utils.ItemNotify({item.label, item.name, ox.locale('equipped')})
 						Wait(sleep)
 						ClearPedSecondaryTask(playerPed)
 					end
@@ -471,10 +471,9 @@ RegisterNetEvent('ox_inventory:closeInventory', function(options)
 end)
 
 RegisterNetEvent('ox_inventory:updateInventory', function(items, weights, count, removed)
-	local itemName = items[1].item.name
-	if not items[1].item.label then items[1].item.name = nil end
+	local item = items[1].item
+	if count then Utils.ItemNotify({item.metadata?.label or item.label, item.metadata?.image or item.name, ox.locale(removed and 'removed' or 'added', count)}) end
 	SendNUIMessage({ action = 'refreshSlots', data = items })
-	if count then Utils.ItemNotify({text = ox.locale(removed and 'removed' or 'added', count), item = itemName}) end
 	for i=1, #items do
 		local i = items[i].item
 		PlayerData.inventory[i.slot] = i.name and i or nil
