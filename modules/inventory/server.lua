@@ -960,7 +960,7 @@ AddCommand('ox_inventory', 'clearinv', function(source, args)
 	Inventory.Clear(args.target)
 end, {'target:number'})
 
-AddCommand('ox_inventory', 'saveinv', function(source, args)
+AddCommand('ox_inventory', 'saveinv', function()
 	local time = os.time()
 	for id, inv in pairs(Inventories) do
 		if inv.type ~= 'player' then

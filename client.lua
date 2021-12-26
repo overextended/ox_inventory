@@ -267,7 +267,7 @@ end
 
 local function OpenNearbyInventory()
 	if CanOpenInventory() then
-		local closestPlayer, coords = Utils.GetClosestPlayer()
+		local closestPlayer = Utils.GetClosestPlayer()
 		if closestPlayer.x < 2 and (PlayerData.job.name == 'police' or CanOpenTarget(closestPlayer.z)) then
 			Utils.PlayAnim(2000, 'mp_common', 'givetake1_a', 1.0, 1.0, -1, 50, 0.0, 0, 0, 0)
 			OpenInventory('player', GetPlayerServerId(closestPlayer.y))
@@ -455,7 +455,7 @@ local function RegisterCommands()
 
 end
 
-RegisterNetEvent('ox_inventory:closeInventory', function(options)
+RegisterNetEvent('ox_inventory:closeInventory', function()
 	if invOpen then invOpen = nil
 		plyState:set('invOpen', false, false)
 		SetNuiFocus(false, false)
@@ -800,7 +800,7 @@ RegisterNetEvent('ox_inventory:viewInventory', function(data)
 	end
 end)
 
-RegisterNUICallback('uiLoaded', function(data, cb)
+RegisterNUICallback('uiLoaded', function(_, cb)
 	uiLoaded = true
 	cb(1)
 end)
@@ -874,7 +874,7 @@ RegisterNUICallback('giveItem', function(data, cb)
 	end
 end)
 
-RegisterNUICallback('exit', function(data, cb)
+RegisterNUICallback('exit', function(_, cb)
 	TriggerEvent('ox_inventory:closeInventory')
 	cb(1)
 end)
