@@ -730,19 +730,28 @@ AddEventHandler('ox_inventory:clearPlayerInventory', function(source)
 	Inventory.Wipe(source)
 end)
 
-AddEventHandler('esx:playerDropped', function(source)
+local function playerDropped(source)
 	local inv = Inventory(source)
 	if inv then
-		if inv.open and Inventories[inv.open]?.open == source then
-			Inventories[openInventory].open = false
+		local openInventory = inv.open and Inventories[inv.open]
+		if openInventory then
+			openInventory.open = false
 		end
 		Inventories[source] = nil
 	end
-end)
+end
 
-AddEventHandler('esx:setJob', function(source, job)
-	Inventories[source].player.job = job
-end)
+if ox.esx then
+	AddEventHandler('esx:playerDropped', playerDropped)
+
+	AddEventHandler('esx:setJob', function(source, job)
+		Inventories[source].player.job = job
+	end)
+else
+	AddEventHandler('playerDropped', function()
+		playerDropped(source)
+	end)
+end
 
 local function saveInventories()
 	local time = os.time()
