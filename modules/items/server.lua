@@ -184,7 +184,7 @@ CreateThread(function() Inventory = server.inventory end)
 function Items.Metadata(inv, item, metadata, count)
 	if type(inv) ~= 'table' then inv = Inventory(inv) end
 	local isWeapon = item.name:find('WEAPON_')
-	if not isWeapon then metadata = not metadata and {} or type(metadata) == 'string' and {type=metadata} or {} end
+	if not isWeapon then metadata = not metadata and {} or type(metadata) == 'string' and {type=metadata} or metadata end
 
 	if isWeapon then
 		if not item.ammoname then
