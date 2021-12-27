@@ -753,15 +753,18 @@ else
 	end)
 end
 
-local function saveInventories()
+local function saveInventories(manual)
 	local time = os.time()
 	for id, inv in pairs(Inventories) do
-		if inv.type ~= 'player' and not inv.open then
-			if inv.datastore == nil and inv.changed then
+		if not inv.player and not inv.open then
+			if not inv.datastore and inv.changed then
 				Inventory.Save(inv)
 			end
-			if time - inv.time >= 3000 then
-				Inventory.Remove(id, inv.type)
+
+			if not manual then
+				if (inv.datastore or inv.owner) and time - inv.time >= 3000 then
+					Inventory.Remove(id, inv.type)
+				end
 			end
 		end
 	end
@@ -777,7 +780,7 @@ end)
 
 AddEventHandler('onResourceStop', function(resource)
 	if resource == ox.resource then
-		saveInventories()
+		saveInventories(true)
 	end
 end)
 
@@ -961,17 +964,7 @@ AddCommand('ox_inventory', 'clearinv', function(source, args)
 end, {'target:number'})
 
 AddCommand('ox_inventory', 'saveinv', function()
-	local time = os.time()
-	for id, inv in pairs(Inventories) do
-		if inv.type ~= 'player' then
-			if inv.type ~= 'drop' and inv.datastore == nil then
-				Inventory.Save(inv)
-			end
-			if time - inv.time >= 3000 then
-				Inventory.Remove(id, inv.type)
-			end
-		end
-	end
+	saveInventories(true)
 end)
 
 AddCommand('ox_inventory', 'viewinv', function(source, args)
