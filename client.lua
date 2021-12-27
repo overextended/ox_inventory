@@ -472,14 +472,18 @@ RegisterNetEvent('ox_inventory:closeInventory', function()
 end)
 
 RegisterNetEvent('ox_inventory:updateInventory', function(items, weights, count, removed)
-	local item = items[1].item
-	if count and (item.label or item.metadata?.label) then Utils.ItemNotify({item.metadata.label or item.label, item.metadata.image or item.name, ox.locale(removed and 'removed' or 'added', count)}) end
-	if not item.label then item.name = nil end
-	SendNUIMessage({ action = 'refreshSlots', data = items })
+	if count then
+		local item = items[1].item
+		Utils.ItemNotify({item.label, item.name, ox.locale(removed and 'removed' or 'added', count)})
+	end
+
 	for i=1, #items do
 		local i = items[i].item
+		if not i.count then i.name = nil end
 		PlayerData.inventory[i.slot] = i.name and i or nil
 	end
+
+	SendNUIMessage({ action = 'refreshSlots', data = items })
 	ox.SetPlayerData('inventory', PlayerData.inventory)
 	ox.SetPlayerData('weight', weights.left)
 end)

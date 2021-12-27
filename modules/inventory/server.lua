@@ -542,7 +542,7 @@ function Inventory.RemoveItem(inv, item, count, metadata, slot)
 
 			for k, v in pairs(slots) do
 				if type(v) == 'number' then
-					array[k] = {item = {slot = v, name = item.name}, inventory = inv.type}
+					array[k] = {item = {slot = v, label = metadata.label or item.label, name = metadata.image or item.name}, inventory = inv.type}
 				else
 					array[k] = {item = v, inventory = inv.type}
 				end
