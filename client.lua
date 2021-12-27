@@ -71,6 +71,7 @@ end
 local ServerCallback = import 'callbacks'
 local Interface = client.interface
 local plyState = LocalPlayer.state
+local interval
 
 local function OpenInventory(inv, data)
 	if invOpen then
@@ -116,7 +117,7 @@ local function OpenInventory(inv, data)
 			end
 			invOpen = true
 			plyState:set('invOpen', true, false)
-			SetInterval[1] = 100
+			SetInterval(interval, 100)
 			SetNuiFocus(true, true)
 			SetNuiFocusKeepInput(true)
 			if ox.blurscreen then TriggerScreenblurFadeIn(0) end
@@ -463,7 +464,7 @@ RegisterNetEvent('ox_inventory:closeInventory', function()
 		TriggerScreenblurFadeOut(0)
 		CloseTrunk()
 		SendNUIMessage({ action = 'closeInventory' })
-		SetInterval[1] = 200
+		SetInterval(interval, 200)
 		Wait(200)
 		if currentInventory then TriggerServerEvent('ox_inventory:closeInventory') end
 		invOpen, currentInventory = false, nil
@@ -575,8 +576,7 @@ RegisterNetEvent('ox_inventory:setPlayerInventory', function(currentDrops, inven
 
 	Utils.Notify({text = ox.locale('inventory_setup'), duration = 2500})
 	local Licenses = data 'licenses'
-
-	SetInterval(function()
+	interval = SetInterval(function()
 		PlayerData.ped = PlayerPedId()
 		if invOpen == false then
 			playerCoords = GetEntityCoords(PlayerData.ped)

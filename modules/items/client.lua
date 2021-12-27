@@ -89,7 +89,7 @@ Item('parachute', function(data, slot)
 				SetPlayerParachuteTintIndex(PlayerData.id, -1)
 				GiveWeaponToPed(PlayerData.ped, chute, 0, true, false)
 				SetPedGadget(PlayerData.ped, chute, true)
-				lib:requestModel(1269906701)
+				lib.requestModel(1269906701)
 				ox.parachute = CreateParachuteBagObject(PlayerData.ped, true, true)
 				if slot.metadata.type then
 					SetPlayerParachuteTintIndex(PlayerData.id, slot.metadata.type)

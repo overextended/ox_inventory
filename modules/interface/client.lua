@@ -112,7 +112,7 @@ function Interface.Progress(options, completed)
 
 			if options.anim then
 				if options.anim.dict then
-					lib:requestAnimDict(options.anim.dict)
+					lib.requestAnimDict(options.anim.dict)
 					TaskPlayAnim(PlayerData.ped, options.anim.dict, options.anim.clip, 3.0, 1.0, -1, options.anim.flag or 1, 0, false, false, false)
 					progress.anim = true
 				end
@@ -129,7 +129,7 @@ function Interface.Progress(options, completed)
 					local model = option.model
 					model = type(model) == 'string' and joaat(model) or model
 
-					lib:requestModel(model)
+					lib.requestModel(model)
 
 					local pCoords = GetOffsetFromEntityInWorldCoords(PlayerData.ped, 0.0, 0.0, 0.0)
 					local modelSpawn = CreateObject(model, pCoords.x, pCoords.y, pCoords.z, true, true, true)

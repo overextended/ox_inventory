@@ -1,7 +1,7 @@
 local Utils = {}
 
 function Utils.PlayAnim(wait, dict, name, blendIn, blendOut, duration, flag, rate, lockX, lockY, lockZ)
-	lib:requestAnimDict(dict)
+	lib.requestAnimDict(dict)
 	CreateThread(function()
 		TaskPlayAnim(PlayerData.ped, dict, name, blendIn, blendOut, duration, flag, rate, lockX, lockY, lockZ)
 		Wait(wait)
@@ -10,7 +10,7 @@ function Utils.PlayAnim(wait, dict, name, blendIn, blendOut, duration, flag, rat
 end
 
 function Utils.PlayAnimAdvanced(wait, dict, name, posX, posY, posZ, rotX, rotY, rotZ, animEnter, animExit, duration, flag, time)
-	lib:requestAnimDict(dict)
+	lib.requestAnimDict(dict)
 	CreateThread(function()
 		TaskPlayAnimAdvanced(PlayerData.ped, dict, name, posX, posY, posZ, rotX, rotY, rotZ, animEnter, animExit, duration, flag, time, 0, 0)
 		Wait(wait)

@@ -26,7 +26,7 @@ shared_scripts {
 }
 
 server_script 'modules/player/server.lua'
-shared_script 'modules/main.lua'
+shared_script 'modules/init.lua'
 
 client_scripts {
 	'modules/items/client.lua',

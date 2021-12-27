@@ -1,10 +1,11 @@
 function ox.print(...) print(string.strjoin(' ', ...)) end
 function ox.info(...) ox.print('^2[info]^7', ...) end
 function ox.warning(...) ox.print('^3[warning]^7', ...) end
+function ox.error(...) error('\n^1[error] '.. ... ..'^7', 2) end
 
 -- Not really necessary since it's set as a dependency
 if not SetInterval or not import then
-	error('Ox Inventory the pe-lualib resource, refer to the documentation.')
+	ox.error('Ox Inventory requires the pe-lualib resource, refer to the documentation.')
 end
 
 -- Disable qtarget compatibility if it isn't running
