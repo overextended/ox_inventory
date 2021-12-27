@@ -22,6 +22,7 @@
     "react-dnd-touch-backend": "^14.1.1",
     "react-dom": "^17.0.2",
     "react-hot-toast": "^2.1.1",
+    "react-markdown": "^7.1.1",
     "react-redux": "^7.2.6",
     "react-scripts": "^4.0.3",
     "react-tooltip": "^4.2.21",

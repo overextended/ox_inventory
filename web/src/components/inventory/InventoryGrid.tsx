@@ -1,4 +1,5 @@
 import React, { useEffect } from 'react';
+import ReactMarkdown from 'react-markdown'
 import { Items } from '../../store/items';
 import { Inventory, SlotWithItem } from '../../typings';
 import WeightBar from '../utils/WeightBar';
@@ -75,12 +76,12 @@ const InventoryGrid: React.FC<{ inventory: Inventory }> = ({ inventory }) => {
                 {currentItem.metadata?.label ? currentItem.metadata.label : Items[currentItem.name]?.label || currentItem.name}
               </span>
               <span style={{ fontSize: '10pt', float: 'right' }}>
-                  {currentItem.metadata?.type}
+                {currentItem.metadata?.type}
               </span>
               <hr style={{ borderBottom: '0.1vh', marginBottom: '0.1vh' }}></hr>
-              {currentItem.metadata?.description || Items[currentItem.name]?.description && <div dangerouslySetInnerHTML={{
-                __html: `<p>${currentItem.metadata?.description || Items[currentItem.name]?.description}</p>`
-              }} />}
+              {(currentItem.metadata?.description || Items[currentItem.name]?.description) &&
+                <ReactMarkdown>{currentItem.metadata?.description || Items[currentItem.name]?.description}
+                </ReactMarkdown>}
               {currentItem?.durability !== undefined && (
                 <p>
                   {Locale.ui_durability}: {Math.trunc(currentItem.durability)}
