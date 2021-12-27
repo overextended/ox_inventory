@@ -71,6 +71,7 @@ end
 local ServerCallback = import 'callbacks'
 local Interface = client.interface
 local plyState = LocalPlayer.state
+local tick
 local interval
 
 local function OpenInventory(inv, data)
@@ -630,7 +631,7 @@ RegisterNetEvent('ox_inventory:setPlayerInventory', function(currentDrops, inven
 	end, 200)
 
 	local EnableKeys = ox.enablekeys
-	SetInterval(function()
+	tick = SetInterval(function()
 		DisablePlayerVehicleRewards(PlayerData.id)
 
 		if invOpen then
@@ -786,8 +787,8 @@ RegisterNetEvent('esx:onPlayerLogout', function()
 	if ox.parachute then Utils.DeleteObject(ox.parachute) ox.parachute = false end
 	TriggerEvent('ox_inventory:closeInventory')
 	PlayerData.loaded = false
-	ClearInterval(1)
-	ClearInterval(2)
+	ClearInterval(interval)
+	ClearInterval(tick)
 	Utils.Disarm(currentWeapon, -1)
 end)
 
