@@ -436,7 +436,7 @@ ServerCallback.Register('useItem', function(source, cb, item, slot, metadata)
 	if inventory.type == 'player' then
 		local item, type = Items(item)
 		local data = item and (slot and inventory.items[slot] or Inventory.GetItem(source, item, metadata))
-		local durability = data.metadata.durability
+		local durability = data.metadata?.durability
 		if durability then
 			if durability > 100 then
 				if os.time() > durability then
