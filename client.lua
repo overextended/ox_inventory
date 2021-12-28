@@ -134,7 +134,58 @@ end
 RegisterNetEvent('ox_inventory:openInventory', OpenInventory)
 exports('openInventory', OpenInventory)
 
-local function UseSlot(slot)
+local function useItem(data, cb)
+	if not invBusy and not Interface.ProgressActive and not IsPedRagdoll(PlayerData.ped) and not IsPedFalling(PlayerData.ped) then
+		if currentWeapon and currentWeapon?.timer > 100 then return end
+		invBusy = true
+		if invOpen and data.close then TriggerEvent('ox_inventory:closeInventory') end
+		local result = ServerCallback.Await(ox.resource, 'useItem', 200, data.name, data.slot, PlayerData.inventory[data.slot].metadata)
+		if not result or not cb then
+			Wait(500)
+			invBusy = false
+			return
+		end
+		if result and invBusy then
+			plyState.invBusy = true
+			local used
+			if data.client and data.client.usetime then
+				data = data.client
+				Interface.Progress({
+					duration = data.usetime,
+					label = data.label or ox.locale('using', result.label),
+					useWhileDead = data.useWhileDead or false,
+					canCancel = data.cancel or false,
+					disable = data.disable,
+					anim = data.anim and ({ dict = data.anim.dict, clip = data.anim.clip, flag = data.anim.flag or 49 } or {scenario = data.scenario}),
+					prop = data.prop,
+					propTwo = data.propTwo
+				}, function(cancel)
+					if cancel then used = false else used = true end
+				end)
+			else used = true end
+			while used == nil do Wait(data.usetime/2) end
+			if used then
+				if result.consume and result.consume ~= 0 then TriggerServerEvent('ox_inventory:removeItem', result.name, result.consume, result.metadata, result.slot, true) end
+				if data.status then
+					for k, v in pairs(data.status) do
+						if v > 0 then TriggerEvent('esx_status:add', k, v) else TriggerEvent('esx_status:remove', k, -v) end
+					end
+				end
+				if currentWeapon?.slot == result.slot then Utils.Disarm(currentWeapon) else cb(result) end
+				Wait(200)
+				plyState.invBusy = false
+				return
+			end
+		end
+		Wait(200)
+		plyState.invBusy = false
+	end
+	cb(false)
+end
+AddEventHandler('ox_inventory:item', useItem)
+exports('useItem', useItem)
+
+local function useSlot(slot)
 	if PlayerData.loaded and not invBusy and not Interface.ProgressActive then
 		local item = PlayerData.inventory[slot]
 		local data = item and Items[item.name]
@@ -147,7 +198,7 @@ local function UseSlot(slot)
 			elseif data.effect then
 				data:effect({name = item.name, slot = item.slot, metadata = item.metadata})
 			elseif item.name:find('WEAPON_') then
-				TriggerEvent('ox_inventory:item', data, function(result)
+				ox_inventory:useItem(data, function(result)
 					if result then
 						local playerPed = PlayerData.ped
 						if data.throwable then item.throwable = true end
@@ -202,7 +253,7 @@ local function UseSlot(slot)
 					local maxAmmo = GetMaxAmmoInClip(playerPed, currentWeapon.hash, true)
 					local currentAmmo = GetAmmoInPedWeapon(playerPed, currentWeapon.hash)
 					if currentAmmo ~= maxAmmo and currentAmmo < maxAmmo then
-						TriggerEvent('ox_inventory:item', data, function(data)
+						ox_inventory:useItem(data, function(data)
 							if data then
 								if data.name == currentWeapon.ammo then
 									local missingAmmo = 0
@@ -226,7 +277,7 @@ local function UseSlot(slot)
 							if HasPedGotWeaponComponent(playerPed, currentWeapon.hash, component) then
 								Utils.Notify({type = 'error', text = ox.locale('component_has', data.label)})
 							else
-								TriggerEvent('ox_inventory:item', data, function(data)
+								ox_inventory:useItem(data, function(data)
 									if data then
 										GiveWeaponComponentToPed(playerPed, currentWeapon.hash, component)
 										table.insert(PlayerData.inventory[currentWeapon.slot].metadata.components, data.name)
@@ -239,12 +290,12 @@ local function UseSlot(slot)
 					Utils.Notify({type = 'error', text = ox.locale('component_invalid', data.label) })
 				end
 			else
-				TriggerEvent('ox_inventory:item', data)
+				ox_inventory:useItem(data)
 			end
 		end
 	end
 end
-exports('useSlot', UseSlot)
+exports('useSlot', useSlot)
 
 local function CanOpenTarget(ped)
 	return IsPedFatallyInjured(ped)
@@ -420,7 +471,7 @@ local function RegisterCommands()
 	RegisterCommand('reload', function()
 		if currentWeapon?.ammo then
 			local ammo = Inventory.Search(1, currentWeapon.ammo)
-			if ammo[1] then UseSlot(ammo[1].slot) end
+			if ammo[1] then useSlot(ammo[1].slot) end
 		end
 	end)
 	RegisterKeyMapping('reload', ox.locale('reload_weapon'), 'keyboard', 'r')
@@ -438,7 +489,7 @@ local function RegisterCommands()
 
 	for i=1, 5 do
 		local hotkey = ('hotkey%s'):format(i)
-		RegisterCommand(hotkey, function() if not invOpen then UseSlot(i) end end)
+		RegisterCommand(hotkey, function() if not invOpen then useSlot(i) end end)
 		RegisterKeyMapping(hotkey, ox.locale('use_hotbar', i), 'keyboard', i)
 		TriggerEvent('chat:removeSuggestion', '/'..hotkey)
 	end
@@ -704,7 +755,7 @@ RegisterNetEvent('ox_inventory:setPlayerInventory', function(currentDrops, inven
 								if ammo[1] then
 									TriggerServerEvent('ox_inventory:updateWeapon', 'ammo', currentWeapon.metadata.ammo)
 									currentWeapon.timer = 0
-									UseSlot(ammo[1].slot)
+									useSlot(ammo[1].slot)
 								end
 							end
 						end
@@ -742,55 +793,6 @@ AddEventHandler('onResourceStop', function(resourceName)
 			TriggerScreenblurFadeOut(0)
 		end
 	end
-end)
-
-AddEventHandler('ox_inventory:item', function(data, cb)
-	if not invBusy and not Interface.ProgressActive and not IsPedRagdoll(PlayerData.ped) and not IsPedFalling(PlayerData.ped) then
-		if currentWeapon and currentWeapon?.timer > 100 then return end
-		invBusy = true
-		if invOpen and data.close then TriggerEvent('ox_inventory:closeInventory') end
-		local result = ServerCallback.Await(ox.resource, 'useItem', 200, data.name, data.slot, PlayerData.inventory[data.slot].metadata)
-		if not result or not cb then
-			Wait(500)
-			invBusy = false
-			return
-		end
-		if result and invBusy then
-			plyState.invBusy = true
-			local used
-			if data.client and data.client.usetime then
-				data = data.client
-				Interface.Progress({
-					duration = data.usetime,
-					label = data.label or ox.locale('using', result.label),
-					useWhileDead = data.useWhileDead or false,
-					canCancel = data.cancel or false,
-					disable = data.disable,
-					anim = data.anim and ({ dict = data.anim.dict, clip = data.anim.clip, flag = data.anim.flag or 49 } or {scenario = data.scenario}),
-					prop = data.prop,
-					propTwo = data.propTwo
-				}, function(cancel)
-					if cancel then used = false else used = true end
-				end)
-			else used = true end
-			while used == nil do Wait(data.usetime/2) end
-			if used then
-				if result.consume and result.consume ~= 0 then TriggerServerEvent('ox_inventory:removeItem', result.name, result.consume, result.metadata, result.slot, true) end
-				if data.status then
-					for k, v in pairs(data.status) do
-						if v > 0 then TriggerEvent('esx_status:add', k, v) else TriggerEvent('esx_status:remove', k, -v) end
-					end
-				end
-				if currentWeapon?.slot == result.slot then Utils.Disarm(currentWeapon) else cb(result) end
-				Wait(200)
-				plyState.invBusy = false
-				return
-			end
-		end
-		Wait(200)
-		plyState.invBusy = false
-	end
-	cb(false)
 end)
 
 RegisterNetEvent('esx:onPlayerLogout', function()
@@ -842,7 +844,7 @@ RegisterNUICallback('removeComponent', function(data, cb)
 end)
 
 RegisterNUICallback('useItem', function(slot, cb)
-	UseSlot(slot)
+	useSlot(slot)
 	cb(1)
 end)
 
