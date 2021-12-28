@@ -64,7 +64,7 @@ CreateThread(function()
 	local Infinity = GetConvar('onesync_enableInfinity', false) == 'true'
 	if not OneSync and not Infinity then return error('OneSync is not enabled on this server - refer to the documentation')
 	elseif Infinity then ox.info('Server is running OneSync Infinity') else ox.info('Server is running OneSync Legacy') end
-	local items = MySQL.Sync.fetchAll('SELECT * FROM items')
+	local items = MySQL.query.await('SELECT * FROM items')
 	if items then
 		local query = {}
 		for i=1, #items do
@@ -116,7 +116,7 @@ local itemFormat = [[
 				SaveResourceFile(ox.resource, 'setup/dump.sql', dump, -1)
 			end
 			SaveResourceFile(ox.resource, 'data/items.lua', table.concat(file), -1)
-			MySQL.Async.execute(query, function(result)
+			MySQL.update(query, function(result)
 				if result > 0 then
 					ox.info('Removed '..result..' items from the database')
 				end
@@ -126,7 +126,7 @@ local itemFormat = [[
 	end
 
 	if ox.clearstashes then
-		MySQL.Sync.fetchAll('DELETE FROM ox_inventory WHERE lastupdated < (NOW() - INTERVAL '..ox.clearstashes..') OR data = "[]"')
+		MySQL.query.await('DELETE FROM ox_inventory WHERE lastupdated < (NOW() - INTERVAL '..ox.clearstashes..') OR data = "[]"')
 	end
 
 	local count = 0

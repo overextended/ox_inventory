@@ -112,7 +112,7 @@ ServerCallback.Register('buyItem', function(source, cb, data)
 					data.count = fromData.count
 				end
 
-			elseif fromData.license and not MySQL.Sync.fetchScalar('SELECT 1 FROM user_licenses WHERE type = ? AND owner = ?', { fromData.license, playerInv.owner }) then
+			elseif fromData.license and not MySQL.scalar.await('SELECT 1 FROM user_licenses WHERE type = ? AND owner = ?', { fromData.license, playerInv.owner }) then
 				return cb(false, nil, {type = 'error', text = ox.locale('item_unlicensed')})
 
 			elseif fromData.grade and playerInv.player.job.grade < fromData.grade then

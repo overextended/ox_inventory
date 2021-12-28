@@ -182,14 +182,14 @@ function Inventory.Save(inv)
 	inv = Inventory(inv)
 	local inventory = json.encode(minimal(inv))
 	if inv.type == 'player' then
-		MySQL.Sync.execute('UPDATE users SET inventory = ? WHERE identifier = ?', { inventory, inv.owner })
+		MySQL.update.await('UPDATE users SET inventory = ? WHERE identifier = ?', { inventory, inv.owner })
 	else
 		if inv.type == 'trunk' or inv.type == 'glovebox' then
 			local plate = inv.id:sub(6)
 			if ox.playerslots then plate = string.strtrim(plate) end
-			MySQL.Sync.execute('UPDATE owned_vehicles SET ?? = ? WHERE plate = ?', { inv.type, inventory, plate })
+			MySQL.update.await('UPDATE owned_vehicles SET ?? = ? WHERE plate = ?', { inv.type, inventory, plate })
 		else
-			MySQL.Sync.execute('INSERT INTO ox_inventory (owner, name, data) VALUES (:owner, :name, :data) ON DUPLICATE KEY UPDATE data = :data', {
+			MySQL.update.await('INSERT INTO ox_inventory (owner, name, data) VALUES (:owner, :name, :data) ON DUPLICATE KEY UPDATE data = :data', {
 				owner = inv.owner or '', name = inv.id, data = inventory,
 			})
 		end
@@ -246,17 +246,17 @@ function Inventory.Load(id, invType, owner)
 		if isVehicle then
 			local plate = id:sub(6)
 			if ox.playerslots then plate = string.strtrim(plate) end
-			result = MySQL.Sync.fetchSingle('SELECT ?? FROM owned_vehicles WHERE plate = ?', { invType, plate })
+			result = MySQL.single.await('SELECT ?? FROM owned_vehicles WHERE plate = ?', { invType, plate })
 			if result then result = json.decode(result[invType])
 			elseif ox.randomloot then return generateItems(id, invType)
 			else datastore = true end
 		elseif owner then
-			result = MySQL.Sync.prepare('SELECT data FROM ox_inventory WHERE owner = ? AND name = ?', { owner, id })
+			result = MySQL.prepare.await('SELECT data FROM ox_inventory WHERE owner = ? AND name = ?', { owner, id })
 			if result then result = json.decode(result) end
 		elseif invType == 'dumpster' then
 			if ox.randomloot then return generateItems(id, invType) else datastore = true end
 		else
-			result = MySQL.Sync.prepare('SELECT data FROM ox_inventory WHERE owner = ? AND name = ?', { '', id })
+			result = MySQL.prepare.await('SELECT data FROM ox_inventory WHERE owner = ? AND name = ?', { '', id })
 			if result then result = json.decode(result) end
 		end
 	end
@@ -646,7 +646,7 @@ function Inventory.Confiscate(source)
 	local inv = Inventories[source]
 	if inv?.player then
 		local inventory = json.encode(minimal(inv))
-		MySQL.Async.execute('INSERT INTO ox_inventory (owner, name, data) VALUES (:owner, :name, :data) ON DUPLICATE KEY UPDATE data = :data', {
+		MySQL.update('INSERT INTO ox_inventory (owner, name, data) VALUES (:owner, :name, :data) ON DUPLICATE KEY UPDATE data = :data', {
 			owner = inv.owner,
 			name = inv.owner,
 			data = inventory,
@@ -670,9 +670,9 @@ end)
 function Inventory.Return(source)
 	local inv = Inventories[source]
 	if inv?.player then
-		MySQL.Async.fetchScalar('SELECT data FROM ox_inventory WHERE name = ?', { inv.owner }, function(data)
+		MySQL.scalar('SELECT data FROM ox_inventory WHERE name = ?', { inv.owner }, function(data)
 			if data then
-				MySQL.Async.fetchAll('DELETE FROM ox_inventory WHERE name = ?', { inv.owner })
+				MySQL.query('DELETE FROM ox_inventory WHERE name = ?', { inv.owner })
 				data = json.decode(data)
 				local money, inventory, totalWeight = {money=0, black_money=0}, {}, 0
 
@@ -947,7 +947,7 @@ end, {'target:number', 'item:string', 'count:number', 'metatype:?string'})
 AddCommand(false, 'clearevidence', function(source, args)
 	local inventory = Inventories[source]
 	if inventory.player.job.name == 'police' and inventory.player.job.grade_name == 'boss' then
-		MySQL.Async.fetchAll('DELETE FROM ox_inventory WHERE name = ?', {('evidence-%s'):format(args.evidence)})
+		MySQL.query('DELETE FROM ox_inventory WHERE name = ?', {('evidence-%s'):format(args.evidence)})
 	end
 end, {'evidence:number'})
 

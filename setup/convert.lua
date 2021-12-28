@@ -14,12 +14,12 @@ local function Print(arg)
 end
 
 local function Upgrade()
-	MySQL.Async.fetchAll('SELECT name FROM linden_inventory', {}, function(result)
+	MySQL.query('SELECT name FROM linden_inventory', {}, function(result)
 		if result ~= nil then
 			Print('Please run upgrade.sql before upgrading')
 		else
-			local trunk = MySQL.Sync.fetchAll('SELECT owner, name, data FROM ox_inventory WHERE name LIKE ?', {'trunk-%'})
-			local glovebox = MySQL.Sync.fetchAll('SELECT owner, name, data FROM ox_inventory WHERE name LIKE ?', {'glovebox-%'})
+			local trunk = MySQL.query.await('SELECT owner, name, data FROM ox_inventory WHERE name LIKE ?', {'trunk-%'})
+			local glovebox = MySQL.query.await('SELECT owner, name, data FROM ox_inventory WHERE name LIKE ?', {'glovebox-%'})
 			local total = 0
 			if #trunk > 0 or #glovebox > 0 then
 				local vehicles = {}
@@ -39,11 +39,11 @@ local function Upgrade()
 				local count = 0
 				for owner, v in pairs(vehicles) do
 					for plate, v in pairs(v) do
-						MySQL.Async.execute('UPDATE owned_vehicles SET trunk = ?, glovebox = ? WHERE plate = ? AND owner = ?', {v.trunk, v.glovebox, plate, owner}, function()
+						MySQL.update('UPDATE owned_vehicles SET trunk = ?, glovebox = ? WHERE plate = ? AND owner = ?', {v.trunk, v.glovebox, plate, owner}, function()
 							count += 1
 							local pct = math.floor((count/total) * 100 + 0.5)
 							if pct == '100' then
-								MySQL.Async.fetchAll('DELETE FROM ox_inventory WHERE name LIKE ? OR name LIKE ?', {'trunk-%', 'glovebox-%'}, function()
+								MySQL.query('DELETE FROM ox_inventory WHERE name LIKE ? OR name LIKE ?', {'trunk-%', 'glovebox-%'}, function()
 									Print('Completed task - you can safely delete this file')
 								end)
 							elseif string.sub(pct, 2, 2) == '0' then
@@ -74,7 +74,7 @@ local function GenerateSerial(text)
 end
 
 local function Convert()
-	local users = MySQL.Sync.fetchAll('SELECT identifier, inventory, loadout, accounts FROM users')
+	local users = MySQL.query.await('SELECT identifier, inventory, loadout, accounts FROM users')
 	local total, count = #users, 0
 	Print(('Converting %s user inventories to new data format'):format(total))
 	for i=1, #users do
@@ -109,7 +109,7 @@ local function Convert()
 			end
 		end
 		inventory = json.encode(inventory)
-		MySQL.Async.fetchAll('UPDATE users SET inventory = ? WHERE identifier = ?', {inventory, users[i].identifier}, function()
+		MySQL.query('UPDATE users SET inventory = ? WHERE identifier = ?', {inventory, users[i].identifier}, function()
 			count += 1
 			local pct = math.floor((count/total) * 100 + 0.5)
 			if pct == '100' then
