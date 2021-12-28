@@ -256,16 +256,14 @@ end
 
 Item('testburger', function(event, item, inventory, slot, data)
 	if event == 'usingItem' then
-		if Inventory.GetItem(inventory, item, inventory.items[slot].metadata, true) > 100 then
+		if Inventory.GetItem(inventory, item, inventory.items[slot].metadata, true) > 0 then
 			return {
-				inventory.label, inventory.owner, event,
-				'so many delicious burgers'
+				inventory.label, event, 'external item use poggies'
 			}
 		end
 
 	elseif event == 'usedItem' then
 		print(('%s just ate a %s from slot %s'):format(inventory.label, item.label, slot))
-		TriggerClientEvent('ox_inventory:notify', inventory.id, {text = item.server.test})
 
 	elseif event == 'buying' then
 		print(data.id, data.coords, json.encode(data.items[slot], {indent=true}))
