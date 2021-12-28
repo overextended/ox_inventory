@@ -2,7 +2,7 @@ local Items = {}
 local ItemList = shared 'items'
 
 -- Slot count and maximum weight for containers
-local containers = {
+Items.containers = {
 	['paperbag'] = {5, 1000}
 }
 
@@ -217,7 +217,7 @@ function Items.Metadata(inv, item, metadata, count)
 			end
 		end
 	else
-		local container = containers[item.name]
+		local container = Items.containers[item.name]
 		if container then
 			count = 1
 			metadata = {

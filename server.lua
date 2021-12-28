@@ -20,10 +20,18 @@ AddEventHandler('ox_inventory:setPlayerInventory', function(player, data)
 				local weight = Inventory.SlotWeight(item, v)
 				totalWeight = totalWeight + weight
 
-				if v.metadata and v.metadata.bag then
-					v.metadata.container = v.metadata.bag
-					v.metadata.size = {5, 1000}
-					v.metadata.bag = nil
+				if v.metadata then
+					-- Update old bag items to container items
+					if v.metadata.bag then
+						v.metadata.container = v.metadata.bag
+						v.metadata.size = Items.containers[v.name] or {5, 1000}
+						v.metadata.bag = nil
+					end
+
+					-- Remove invalid durability
+					if v.metadata.durability and not item.durability and not item.degrade and not v:find('WEAPON_') then
+						v.metadata.durability = nil
+					end
 				end
 
 				inventory[v.slot] = {name = v.name, label = item.label, weight = weight, slot = v.slot, count = v.count, description = item.description, metadata = v.metadata, stack = item.stack, close = item.close}

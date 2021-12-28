@@ -6,10 +6,12 @@ local function GetItem(item)
 		if item:find('weapon_') then item = string.upper(item) end
 		return Items[item]
 	end
+	return Items
 end
 
 local function Item(name, cb)
-	if Items[name] then Items[name].effect = cb end
+	local item = Items[name]
+	if item and not item.client.event then item.effect = cb end
 end
 
 -----------------------------------------------------------------------------------------------
@@ -102,4 +104,5 @@ end)
 -----------------------------------------------------------------------------------------------
 
 exports('Items', GetItem)
+exports('ItemList', GetItem)
 client.items = Items
