@@ -513,10 +513,29 @@ end)
 
 local uiLoaded = false
 
+local function setStateBagHandler(id)
+	AddStateBagChangeHandler(nil, 'player:'..id, function(bagName, key, value, _, _)
+		if key == 'invOpen' then
+			invOpen = value
+		elseif key == 'invBusy' then
+			invBusy = value
+			if value == true then
+				DisableControlActions:Add(23, 25, 36, 263)
+			else
+				DisableControlActions:Remove(23, 25, 36, 263)
+			end
+		end
+	end)
+	setStateBagHandler = nil
+end
+
 RegisterNetEvent('ox_inventory:setPlayerInventory', function(currentDrops, inventory, weight, esxItem, player)
 	PlayerData = player
 	PlayerData.id = GetPlayerServerId(PlayerId())
 	PlayerData.ped = PlayerPedId()
+
+	if setStateBagHandler then setStateBagHandler(PlayerData.id) end
+
 	ox.SetPlayerData('inventory', inventory)
 	ox.SetPlayerData('weight', weight)
 	currentWeapon = nil
