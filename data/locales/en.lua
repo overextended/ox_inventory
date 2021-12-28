@@ -59,7 +59,7 @@ return {
 	['stash_lowgrade'] = "You are not authorised to take this item",
 	['cannot_use'] = "Unable to use %s",
 	['shop_nostock'] = "Item is out of stock",
-	['identification'] = "Sex: %s\nDate of birth: %s",
+	['identification'] = "Sex: %s  \nDate of birth: %s",
 	['search_dumpster'] = "Search Dumpster",
 	['open_shop'] = "Open %s",
 	['purchased_for'] = "Purchased %s %s for %s%s",

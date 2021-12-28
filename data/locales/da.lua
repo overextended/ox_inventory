@@ -59,7 +59,7 @@ return {
 	['stash_lowgrade'] = "Du er ikke autoriseret til at tage denne ting",
 	['cannot_use'] = "Kan ikke bruge %s",
 	['shop_nostock'] = "Varen er ikke på lager",
-	['identification'] = "Køn: %s\nFødselsdato: %s",
+	['identification'] = "Køn: %s  \nFødselsdato: %s",
 	['search_dumpster'] = "Undersøg Skraldespand",
 	['open_shop'] = "Åben %s",
 	['purchased_for'] = "Købte %s %s for %s%s",

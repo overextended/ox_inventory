@@ -59,7 +59,7 @@ return {
 	['stash_lowgrade'] = "Je bent niet geautoriseerd om dit item te pakken",
 	['cannot_use'] = "Niet in staat om %s te gebruiken",
 	['shop_nostock'] = "Item is niet op voorraad",
-	['identification'] = "Geslacht: %s\nGeboortedatum: %s",
+	['identification'] = "Geslacht: %s  \nGeboortedatum: %s",
 	['search_dumpster'] = "Vuilnisbak Doorzoeken",
 	['open_shop'] = "Open %s",
 	['purchased_for'] = "%s %s gekocht voor %s%s",

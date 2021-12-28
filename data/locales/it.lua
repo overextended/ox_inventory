@@ -59,7 +59,7 @@ return {
 	['stash_lowgrade'] = "Non sei autorizzato a prendere questo oggetto",
 	['cannot_use'] = "Non puoi usare %s",
 	['shop_nostock'] = "L'articolo è esaurito",
-	['identification'] = "Sesso: %s\nData di nascita: %s",
+	['identification'] = "Sesso: %s  \nData di nascita: %s",
 	['search_dumpster'] = "Cercando nel cassonetto",
 	['open_shop'] = "Apri %s",
 	['purchased_for'] = "Hai comprato %s %s per %s%s",

@@ -59,7 +59,7 @@ return {
 	['stash_lowgrade'] = "Na tento předmět nemáte pravomoce",
 	['cannot_use'] = "Nelze použít %s",
 	['shop_nostock'] = "Položka je vyprodaná",
-	['identification'] = "Pohlaví: %s\nDatum narození: %s",
+	['identification'] = "Pohlaví: %s  \nDatum narození: %s",
 	['search_dumpster'] = "Prohledat popelnici",
 	['open_shop'] = "Otevřít %s",
 	['purchased_for'] = "Zakoupili jste %s %s za %s%s",
