@@ -77,7 +77,7 @@ ServerCallback.Register('openInventory', function(source, cb, inv, data)
 			else
 				stash = Inventory.CustomStash[data.id or data]
 				if stash then
-					if not stash.jobs or (stash.jobs[left.player.job.name] and left.player.job.grade >= stash.jobs[left.player.job.name]) then
+					if not stash.jobs or (stash.jobs[left.player.job.name] and (type(stash.jobs) == 'table' and left.player.job.grade >= stash.jobs[left.player.job.name]) or stash.jobs == left.player.job.name) then
 						local owner = (stash.owner == nil and nil) or (type(stash.owner) == 'string' and stash.owner) or data.owner or stash.owner and left.owner
 						data = (owner and ('%s%s'):format(data.id or data, owner)) or data.id or data
 
