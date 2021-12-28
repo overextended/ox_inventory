@@ -15,7 +15,7 @@ return {
 		owner = true,
 		slots = 70,
 		weight = 70000,
-		jobs = {['police'] = 0}
+		jobs = {[ox.police] = 0}
 	},
 
 	{

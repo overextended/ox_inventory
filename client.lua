@@ -1,3 +1,4 @@
+local ox_inventory = exports.ox_inventory
 local DisableControlActions = import 'controls'
 
 local Items = client.items
@@ -204,7 +205,7 @@ local function useSlot(slot)
 						if data.throwable then item.throwable = true end
 						ClearPedSecondaryTask(playerPed)
 						if currentWeapon then Utils.Disarm(currentWeapon, data.slot) end
-						local sleep = (PlayerData.job.name == 'police' and (GetWeapontypeGroup(data.hash) == 416676503 or GetWeapontypeGroup(data.hash) == 690389602)) and 400 or 1200
+						local sleep = (PlayerData.job.name == ox.police and (GetWeapontypeGroup(data.hash) == 416676503 or GetWeapontypeGroup(data.hash) == 690389602)) and 400 or 1200
 						local coords = GetEntityCoords(playerPed, true)
 						Utils.PlayAnimAdvanced(sleep*2, sleep == 400 and 'reaction@intimidation@cop@unarmed' or 'reaction@intimidation@1h', 'intro', coords.x, coords.y, coords.z, 0, 0, GetEntityHeading(playerPed), 8.0, 3.0, -1, 50, 0.1)
 						Wait(sleep)
@@ -309,7 +310,7 @@ end
 local function OpenNearbyInventory()
 	if CanOpenInventory() then
 		local closestPlayer = Utils.GetClosestPlayer()
-		if closestPlayer.x < 2 and (PlayerData.job.name == 'police' or CanOpenTarget(closestPlayer.z)) then
+		if closestPlayer.x < 2 and (PlayerData.job.name == ox.police or CanOpenTarget(closestPlayer.z)) then
 			Utils.PlayAnim(2000, 'mp_common', 'givetake1_a', 1.0, 1.0, -1, 50, 0.0, 0, 0, 0)
 			OpenInventory('player', GetPlayerServerId(closestPlayer.y))
 		end
@@ -648,7 +649,7 @@ RegisterNetEvent('ox_inventory:setPlayerInventory', function(currentDrops, inven
 
 			Markers(drops, 'drop', vec3(150, 30, 30))
 			if not ox.qtarget then
-				if PlayerData.job.name == 'police' then Markers(Inventory.Evidence, 'policeevidence', vec(30, 30, 150)) end
+				if PlayerData.job.name == ox.police then Markers(Inventory.Evidence, 'policeevidence', vec(30, 30, 150)) end
 				Markers(Inventory.Stashes, 'stash', vec3(30, 30, 150))
 				for k, v in pairs(Shops) do
 					if not v.jobs or (v.jobs[PlayerData.job.name] and PlayerData.job.grade >= v.jobs[PlayerData.job.name]) then
@@ -671,7 +672,7 @@ RegisterNetEvent('ox_inventory:setPlayerInventory', function(currentDrops, inven
 						local id = GetPlayerFromServerId(currentInventory.id)
 						local ped = GetPlayerPed(id)
 						local pedCoords = GetEntityCoords(ped)
-						if not id or #(playerCoords - pedCoords) > 1.8 or not (PlayerData.job.name == 'police' or CanOpenTarget(ped)) then
+						if not id or #(playerCoords - pedCoords) > 1.8 or not (PlayerData.job.name == ox.police or CanOpenTarget(ped)) then
 							TriggerEvent('ox_inventory:closeInventory')
 							Utils.Notify({type = 'error', text = ox.locale('inventory_lost_access'), duration = 2500})
 						else

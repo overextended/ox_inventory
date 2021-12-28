@@ -1,4 +1,4 @@
--- This file is intended for setting default config values.
+-- This file is intended for setting default ox values.
 -- Modifying the values here changes the resource hash (requiring players to download everything again).
 -- It's also just convenient to leave it alone for the sake of git source control.
 -- Details will be added to the documentation at some point, but you can utilise it like so...
@@ -63,12 +63,18 @@ ox = {
 		'F2', 'K', 'TAB'
 	},
 
+	-- Additional keys to enable when the inventory is open (i.e. push-to-talk)
 	enablekeys = ox.enablekeys or {
 		249
 	},
 
+	-- Default max weight of player inventory
 	playerweight = ox.playerweight or 30000,
 
+	-- Name of your police job
+	police = ox.police or 'police',
+
+	-- Translations
 	locale = ox.locale or 'en'
 }
 
@@ -99,7 +105,7 @@ if IsDuplicityVersion then
 	-- Minimum chance for an inventory to generate an item
 	ox.lootchance = server.lootchance or 50
 
-	_G.server = table.wipe(server)
+	_ENV.server = table.wipe(server)
 else client = {} end
 
-_G.ox = ox
+_ENV.ox = ox

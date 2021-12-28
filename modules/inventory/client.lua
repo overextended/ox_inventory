@@ -82,7 +82,7 @@ Inventory.Evidence = setmetatable(data('evidence'), {
 						{
 							icon = 'fas fa-warehouse',
 							label = 'Open Police Evidence',
-							job = 'police',
+							job = ox.police,
 							action = function()
 								OpenEvidence()
 							end
