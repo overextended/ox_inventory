@@ -731,8 +731,8 @@ AddEventHandler('ox_inventory:item', function(data, cb)
 		invBusy = true
 		if invOpen and data.close then TriggerEvent('ox_inventory:closeInventory') end
 		local result = ServerCallback.Await(ox.resource, 'useItem', 200, data.name, data.slot, PlayerData.inventory[data.slot].metadata)
-		if cb == nil then
-			isBusy = false
+		if not result or not cb then
+			Wait(500)
 			invBusy = false
 			return
 		end
