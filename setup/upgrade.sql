@@ -8,6 +8,7 @@ ALTER TABLE `linden_inventory`
 	ADD UNIQUE INDEX `owner` (`owner`, `name`);
 
 -- Setup new columns for vehicle stashes, and actually index owner
+-- This is assuming you actually have these tables, of course
 ALTER TABLE `owned_vehicles`
 	ADD COLUMN `trunk` LONGTEXT NULL,
 	ADD COLUMN `glovebox` LONGTEXT NULL,

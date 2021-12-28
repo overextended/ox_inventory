@@ -7,56 +7,56 @@ local Items = server.items
 	This conversion process is designed for ESX v1 Final and ESX Legacy!
 ]]
 
-local started = false
+local started
 
 local function Print(arg)
 	print(('^3=================================================================\n^0%s\n^3=================================================================^0'):format(arg))
 end
 
 local function Upgrade()
-	MySQL.query('SELECT name FROM linden_inventory', {}, function(result)
-		if result ~= nil then
-			Print('Please run upgrade.sql before upgrading')
-		else
-			local trunk = MySQL.query.await('SELECT owner, name, data FROM ox_inventory WHERE name LIKE ?', {'trunk-%'})
-			local glovebox = MySQL.query.await('SELECT owner, name, data FROM ox_inventory WHERE name LIKE ?', {'glovebox-%'})
-			local total = 0
-			if #trunk > 0 or #glovebox > 0 then
-				local vehicles = {}
-				for _, v in pairs(trunk) do
-					vehicles[v.owner] = vehicles[v.owner] or {}
-					vehicles[v.owner][v.name:sub(7, #v.name)] = {trunk=v.data or '[]', glovebox='[]'}
-					total += 1
-				end
-				for _, v in pairs(glovebox) do
-					if not vehicles[v.owner] then
-						vehicles[v.owner] = {}
-						total += 1
-					end
-					vehicles[v.owner][v.name:sub(10, #v.name)] = vehicles[v.owner][v.name:sub(10, #v.name)] or {trunk='[]', glovebox=v.data or '[]'}
-				end
-				Print(('Moving ^3%s^0 trunks and ^3%s^0 gloveboxes to owned_vehicles table'):format(#trunk, #glovebox))
-				local count = 0
-				for owner, v in pairs(vehicles) do
-					for plate, v in pairs(v) do
-						MySQL.update('UPDATE owned_vehicles SET trunk = ?, glovebox = ? WHERE plate = ? AND owner = ?', {v.trunk, v.glovebox, plate, owner}, function()
-							count += 1
-							local pct = math.floor((count/total) * 100 + 0.5)
-							if pct == '100' then
-								MySQL.query('DELETE FROM ox_inventory WHERE name LIKE ? OR name LIKE ?', {'trunk-%', 'glovebox-%'}, function()
-									Print('Completed task - you can safely delete this file')
-								end)
-							elseif string.sub(pct, 2, 2) == '0' then
-								Print('Task is ^3'..pct..'%^0 complete')
-							end
-						end)
-					end
-				end
-			else
-				Print('^3No inventories need to be moved! You can safely delete this file')
+	-- Throw an error if ox_inventory does not exist
+	-- User needs to use upgrade.sql first
+	MySQL.query.await('SELECT name FROM ox_inventory')
+
+	local trunk = MySQL.query.await('SELECT owner, name, data FROM ox_inventory WHERE name LIKE ?', {'trunk-%'})
+	local glovebox = MySQL.query.await('SELECT owner, name, data FROM ox_inventory WHERE name LIKE ?', {'glovebox-%'})
+	if #trunk > 0 or #glovebox > 0 then
+		local vehicles = {}
+		for _, v in pairs(trunk) do
+			vehicles[v.owner] = vehicles[v.owner] or {}
+			vehicles[v.owner][v.name:sub(7, #v.name)] = {trunk=v.data or '[]', glovebox='[]'}
+		end
+
+		for _, v in pairs(glovebox) do
+			if not vehicles[v.owner] then
+				vehicles[v.owner] = {}
+			end
+			vehicles[v.owner][v.name:sub(10, #v.name)] = vehicles[v.owner][v.name:sub(10, #v.name)] or {trunk='[]', glovebox=v.data or '[]'}
+		end
+
+		Print(('Moving ^3%s^0 trunks and ^3%s^0 gloveboxes to owned_vehicles table'):format(#trunk, #glovebox))
+		local parameters = {}
+		local count = 0
+
+		for owner, v in pairs(vehicles) do
+			for plate, v in pairs(v) do
+				count += 1
+				parameters[count] = {
+					v.trunk,
+					v.glovebox,
+					plate,
+					owner
+				}
 			end
 		end
-	end)
+
+		MySQL.prepare.await('UPDATE owned_vehicles SET trunk = ?, glovebox = ? WHERE plate = ? AND owner = ?', parameters)
+		MySQL.prepare.await('DELETE FROM ox_inventory WHERE name LIKE ? OR name LIKE ?', {'trunk-%', 'glovebox-%'})
+
+		Print('Completed task - you can safely remove setup/convert.lua')
+	else
+		Print('^3No inventories need to be moved! You can safely remove setup/convert.lua')
+	end
 end
 
 local function GenerateText(num)
@@ -75,13 +75,19 @@ end
 
 local function Convert()
 	local users = MySQL.query.await('SELECT identifier, inventory, loadout, accounts FROM users')
-	local total, count = #users, 0
+	local total = #users
+	local count = 0
+	local parameters = {}
+
 	Print(('Converting %s user inventories to new data format'):format(total))
-	for i=1, #users do
+
+	for i = 1, #users do
+		count += 1
 		local inventory, slot = {}, 0
 		local items = users[i].inventory and json.decode(users[i].inventory) or {}
 		local accounts = users[i].accounts and json.decode(users[i].accounts) or {}
 		local loadout = users[i].loadout and json.decode(users[i].loadout) or {}
+
 		for k, v in pairs(accounts) do
 			if type(v) == 'table' then break end
 			if Items(k) and v > 0 then
@@ -89,6 +95,7 @@ local function Convert()
 				inventory[slot] = {slot=slot, name=k, count=v}
 			end
 		end
+
 		for k in pairs(loadout) do
 			local item = Items(k)
 			if item then
@@ -101,6 +108,7 @@ local function Convert()
 				end
 			end
 		end
+
 		for k, v in pairs(items) do
 			if type(v) == 'table' then break end
 			if Items(k) and v > 0 then
@@ -108,27 +116,32 @@ local function Convert()
 				inventory[slot] = {slot=slot, name=k, count=v}
 			end
 		end
-		inventory = json.encode(inventory)
-		MySQL.query('UPDATE users SET inventory = ? WHERE identifier = ?', {inventory, users[i].identifier}, function()
-			count += 1
-			local pct = math.floor((count/total) * 100 + 0.5)
-			if pct == '100' then
-				Print('Completed task - you can safely delete this file')
-			elseif string.sub(pct, 2, 2) == '0' then
-				Print('Task is ^3'..pct..'%^0 complete')
-			end
-		end)
+
+		parameters[count] = {json.encode(inventory), users[i].identifier}
 	end
+
+	MySQL.prepare.await('UPDATE users SET inventory = ? WHERE identifier = ?', parameters)
+	Print('Completed task - you can safely remove setup/convert.lua')
 end
 
-RegisterCommand('convertinventory', function(source, args, raw)
-	if not started then
-		if args and args[1] == 'linden' then
-			Upgrade()
-			started = true
-		else
-			Convert()
-			started = true
+CreateThread(function()
+	repeat Wait(50) until ox.ready
+	ox.ready = false
+	Print([[Currently running in setup mode
+If you are upgrading from linden_inventory, type '/convertinventory linden'
+
+To update standard ESX player inventories to support metadata, type '/convertinventory']])
+
+	RegisterCommand('convertinventory', function(source, args, raw)
+		if not started then
+			if args and args[1] == 'linden' then
+				Upgrade()
+				started = true
+			else
+				Convert()
+				started = true
+			end
 		end
-	end
+	end)
+	
 end)

@@ -257,6 +257,7 @@ end
 Item('testburger', function(event, item, inventory, slot, data)
 	if event == 'usingItem' then
 		if Inventory.GetItem(inventory, item, inventory.items[slot].metadata, true) > 0 then
+			-- if we return false here, we can cancel item use
 			return {
 				inventory.label, event, 'external item use poggies'
 			}
