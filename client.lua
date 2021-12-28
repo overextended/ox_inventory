@@ -1,16 +1,4 @@
 local DisableControlActions = import 'controls'
-local isBusy = true
-
-AddStateBagChangeHandler('busy', nil, function(bagName, _, value, _, _)
-	if bagName:find(PlayerData.id) then
-		isBusy = value
-		if isBusy then
-			DisableControlActions:Add(23, 25, 36, 263)
-		else
-			DisableControlActions:Remove(23, 25, 36, 263)
-		end
-	end
-end)
 
 local Items = client.items
 local Utils = client.utils
@@ -33,11 +21,12 @@ exports('setStashTarget', function(id, owner)
 	StashTarget = id and {id=id, owner=owner}
 end)
 
+local invBusy = true
 local invOpen = false
 
 local function CanOpenInventory()
 	return PlayerData.loaded
-	and not isBusy
+	and not invBusy
 	and not PlayerData.dead
 	and (currentWeapon == nil or currentWeapon.timer == 0)
 	and not IsPauseMenuActive()
@@ -116,8 +105,7 @@ local function OpenInventory(inv, data)
 			if inv ~= 'trunk' and not IsPedInAnyVehicle(PlayerData.ped, false) then
 				Utils.PlayAnim(1000, 'pickup_object', 'putdown_low', 5.0, 1.5, -1, 48, 0.0, 0, 0, 0)
 			end
-			invOpen = true
-			plyState:set('invOpen', true, false)
+			plyState.invOpen = true
 			SetInterval(interval, 100)
 			SetNuiFocus(true, true)
 			SetNuiFocusKeepInput(true)
@@ -141,13 +129,13 @@ local function OpenInventory(inv, data)
 			if invOpen == false then Utils.Notify({type = 'error', text = ox.locale('inventory_right_access'), duration = 2500}) end
 			if invOpen then TriggerEvent('ox_inventory:closeInventory') end
 		end
-	elseif not isBusy then Utils.Notify({type = 'error', text = ox.locale('inventory_player_access'), duration = 2500}) end
+	elseif not invBusy then Utils.Notify({type = 'error', text = ox.locale('inventory_player_access'), duration = 2500}) end
 end
 RegisterNetEvent('ox_inventory:openInventory', OpenInventory)
 exports('openInventory', OpenInventory)
 
 local function UseSlot(slot)
-	if PlayerData.loaded and not isBusy and not Interface.ProgressActive then
+	if PlayerData.loaded and not invBusy and not Interface.ProgressActive then
 		local item = PlayerData.inventory[slot]
 		local data = item and Items[item.name]
 		if item and data.usable then
@@ -337,7 +325,7 @@ local function RegisterCommands()
 
 	RegisterCommand('inv2', function()
 		if not invOpen then
-			if isBusy then return Utils.Notify({type = 'error', text = ox.locale('inventory_player_access'), duration = 2500})
+			if invBusy then return Utils.Notify({type = 'error', text = ox.locale('inventory_player_access'), duration = 2500})
 			else
 				if not CanOpenInventory() then return Utils.Notify({type = 'error', text = ox.locale('inventory_player_access'), duration = 2500}) end
 				if StashTarget then
@@ -458,8 +446,8 @@ local function RegisterCommands()
 end
 
 RegisterNetEvent('ox_inventory:closeInventory', function()
-	if invOpen then invOpen = nil
-		plyState:set('invOpen', false, false)
+	if invOpen then
+		invOpen = nil
 		SetNuiFocus(false, false)
 		SetNuiFocusKeepInput(false)
 		TriggerScreenblurFadeOut(0)
@@ -468,7 +456,8 @@ RegisterNetEvent('ox_inventory:closeInventory', function()
 		SetInterval(interval, 200)
 		Wait(200)
 		if currentInventory then TriggerServerEvent('ox_inventory:closeInventory') end
-		invOpen, currentInventory = false, nil
+		currentInventory = false
+		plyState.invOpen = false
 	end
 end)
 
@@ -530,7 +519,6 @@ RegisterNetEvent('ox_inventory:setPlayerInventory', function(currentDrops, inven
 	PlayerData.ped = PlayerPedId()
 	ox.SetPlayerData('inventory', inventory)
 	ox.SetPlayerData('weight', weight)
-	invOpen = false
 	currentWeapon = nil
 	drops = currentDrops
 	Utils.ClearWeapons()
@@ -576,7 +564,8 @@ RegisterNetEvent('ox_inventory:setPlayerInventory', function(currentDrops, inven
 	Inventory.Evidence()
 	RegisterCommands()
 
-	plyState:set('busy', false, false)
+	plyState:set('invBusy', false, false)
+	plyState:set('invOpen', false, false)
 	PlayerData.loaded = true
 
 	Utils.Notify({text = ox.locale('inventory_setup'), duration = 2500})
@@ -648,7 +637,7 @@ RegisterNetEvent('ox_inventory:setPlayerInventory', function(currentDrops, inven
 			end
 		else
 			DisableControlActions()
-			if isBusy then DisablePlayerFiring(PlayerData.id, true) end
+			if invBusy then DisablePlayerFiring(PlayerData.id, true) end
 
 			for _, v in pairs(nearbyMarkers) do
 				DrawMarker(2, v[1].x, v[1].y, v[1].z, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.3, 0.2, 0.15, v[2].x, v[2].y, v[2].z, 222, false, false, false, true, false, false, false)
@@ -668,7 +657,7 @@ RegisterNetEvent('ox_inventory:setPlayerInventory', function(currentDrops, inven
 			end
 			if currentWeapon then
 				DisableControlAction(0, 140, true)
-				if not isBusy and currentWeapon.timer ~= 0 and currentWeapon.timer < GetGameTimer() then
+				if not invBusy and currentWeapon.timer ~= 0 and currentWeapon.timer < GetGameTimer() then
 					if currentWeapon.metadata.ammo then
 						TriggerServerEvent('ox_inventory:updateWeapon', 'ammo', currentWeapon.metadata.ammo)
 					elseif currentWeapon.metadata.durability then
@@ -705,13 +694,13 @@ RegisterNetEvent('ox_inventory:setPlayerInventory', function(currentDrops, inven
 				elseif IsControlJustReleased(0, 24) then
 					if currentWeapon.throwable then
 						local playerPed = PlayerData.ped
-						plyState.isBusy = true
+						plyState.invBusy = true
 						SetTimeout(700, function()
 							ClearPedSecondaryTask(playerPed)
 							RemoveWeaponFromPed(playerPed, currentWeapon.hash)
 							TriggerServerEvent('ox_inventory:updateWeapon', 'throw')
 							TriggerEvent('ox_inventory:currentWeapon')
-							plyState.isBusy = false
+							plyState.invBusy = false
 						end)
 					elseif IsPedPerformingMeleeAction(PlayerData.ped) then
 						currentWeapon.melee += 1
@@ -737,17 +726,18 @@ AddEventHandler('onResourceStop', function(resourceName)
 end)
 
 AddEventHandler('ox_inventory:item', function(data, cb)
-	if not isBusy and not Interface.ProgressActive and not IsPedRagdoll(PlayerData.ped) and not IsPedFalling(PlayerData.ped) then
+	if not invBusy and not Interface.ProgressActive and not IsPedRagdoll(PlayerData.ped) and not IsPedFalling(PlayerData.ped) then
 		if currentWeapon and currentWeapon?.timer > 100 then return end
-		isBusy = true
+		invBusy = true
 		if invOpen and data.close then TriggerEvent('ox_inventory:closeInventory') end
 		local result = ServerCallback.Await(ox.resource, 'useItem', 200, data.name, data.slot, PlayerData.inventory[data.slot].metadata)
 		if cb == nil then
 			isBusy = false
+			invBusy = false
 			return
 		end
-		if result and isBusy then
-			plyState:set('busy', true, false)
+		if result and invBusy then
+			plyState.invBusy = true
 			local used
 			if data.client and data.client.usetime then
 				data = data.client
@@ -774,11 +764,12 @@ AddEventHandler('ox_inventory:item', function(data, cb)
 				end
 				if currentWeapon?.slot == result.slot then Utils.Disarm(currentWeapon) else cb(result) end
 				Wait(200)
-				plyState:set('busy', false, false)
+				plyState.invBusy = false
 				return
 			end
 		end
-		plyState:set('busy', false, false)
+		Wait(200)
+		plyState.invBusy = false
 	end
 	cb(false)
 end)
@@ -795,7 +786,7 @@ end)
 RegisterNetEvent('ox_inventory:viewInventory', function(data)
 	if data and invOpen == false then
 		data.type = 'admin'
-		invOpen = true
+		plyState.invOpen = true
 		currentInventory = data
 		SendNUIMessage({
 			action = 'setupInventory',
