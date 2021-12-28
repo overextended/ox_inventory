@@ -256,8 +256,8 @@ input[type='number'] {
 }
 
 .item-info {
-  padding: 1vh !important;
-  font-size: 10pt !important;
+  padding: 0.7vh !important;
+  font-size: 0.95em !important;
   background-color: $mainColor !important;
   opacity: 1 !important;
   border-radius: $borderRadius !important;
@@ -265,10 +265,15 @@ input[type='number'] {
   min-width: 180px;
   text-shadow: $textShadow;
   border: 0.1vh solid rgba(0, 0, 0, 0.2) !important;
+  line-height: 1.1em !important;
 
-  p {
-    text-shadow: none;
-    font-family: $thirdFont;
+ p {
+    font-size: 0.95em !important;
+  }
+
+  strong {
+    font-size: 0.95em !important;
+    font-weight: 600 !important;
   }
 }
 

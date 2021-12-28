@@ -72,13 +72,13 @@ const InventoryGrid: React.FC<{ inventory: Inventory }> = ({ inventory }) => {
             delayShow={300}
           >
             <>
-              <span style={{ fontSize: '10pt' }}>
+              <span style={{ fontSize: '1em' }}>
                 {currentItem.metadata?.label ? currentItem.metadata.label : Items[currentItem.name]?.label || currentItem.name}
               </span>
-              <span style={{ fontSize: '10pt', float: 'right' }}>
+              <span style={{ fontSize: '1em', float: 'right' }}>
                 {currentItem.metadata?.type}
               </span>
-              <hr style={{ borderBottom: '0.1vh', marginBottom: '0.1vh' }}></hr>
+              <hr style={{ borderBottom: '0.3em', marginBottom: '0.3em' }}></hr>
               {(currentItem.metadata?.description || Items[currentItem.name]?.description) &&
                 <ReactMarkdown>{currentItem.metadata?.description || Items[currentItem.name]?.description}
                 </ReactMarkdown>}
