@@ -251,8 +251,12 @@ function Items.Metadata(inv, item, metadata, count)
 end
 
 local function Item(name, cb)
-	if ItemList[name] then Items[name] = cb end
+	local item = ItemList[name]
+	if item and not item.cb then
+		item.cb = cb
+	end
 end
+
 -----------------------------------------------------------------------------------------------
 -- Serverside item functions
 -----------------------------------------------------------------------------------------------

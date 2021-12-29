@@ -605,8 +605,9 @@ RegisterServerEvent('ox_inventory:removeItem', function(name, count, metadata, s
 	Inventory.RemoveItem(source, name, count, metadata, slot)
 
 	if used then
-		if Items[name] then
-			Items[name]('usedItem', Items(name), inv, slot)
+		local item = Items[name]
+		if item?.cb then
+			item.cb('usedItem', Items(name), inv, slot)
 		end
 	end
 end)

@@ -476,7 +476,7 @@ ServerCallback.Register('useItem', function(source, cb, item, slot, metadata)
 				ox.UseItem(source, data.name, data)
 			else
 				if item.consume and data.count >= item.consume then
-					local result = Items[item.name] and Items[item.name]('usingItem', item, inventory, slot)
+					local result = item.cb and item.cb('usingItem', item, inventory, slot)
 					if result == false then return cb(false) end
 					if result ~= nil then
 						data.server = result

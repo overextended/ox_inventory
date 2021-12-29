@@ -129,7 +129,7 @@ ServerCallback.Register('buyItem', function(source, cb, data)
 			local currency = fromData.currency or 'money'
 			local fromItem = Items(fromData.name)
 
-			local result = Items[fromItem.name] and Items[fromItem.name]('buying', fromItem, playerInv, data.fromSlot, shop)
+			local result = fromItem.cb and fromItem.cb('buying', fromItem, playerInv, data.fromSlot, shop)
 			if result == false then return cb(false) end
 
 			local toItem = toData and Items(toData.name)
