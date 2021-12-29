@@ -497,7 +497,7 @@ local function RegisterCommands()
 
 end
 
-RegisterNetEvent('ox_inventory:closeInventory', function()
+RegisterNetEvent('ox_inventory:closeInventory', function(server)
 	if invOpen then
 		invOpen = nil
 		SetNuiFocus(false, false)
@@ -507,7 +507,11 @@ RegisterNetEvent('ox_inventory:closeInventory', function()
 		SendNUIMessage({ action = 'closeInventory' })
 		SetInterval(interval, 200)
 		Wait(200)
-		if currentInventory then TriggerServerEvent('ox_inventory:closeInventory') end
+
+		if not server and currentInventory then
+			TriggerServerEvent('ox_inventory:closeInventory')
+		end
+
 		currentInventory = false
 		plyState.invOpen = false
 	end

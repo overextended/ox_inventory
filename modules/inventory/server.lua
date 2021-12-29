@@ -182,14 +182,14 @@ function Inventory.Save(inv)
 	inv = Inventory(inv)
 	local inventory = json.encode(minimal(inv))
 	if inv.type == 'player' then
-		MySQL.update.await('UPDATE users SET inventory = ? WHERE identifier = ?', { inventory, inv.owner })
+		MySQL.update('UPDATE users SET inventory = ? WHERE identifier = ?', { inventory, inv.owner })
 	else
 		if inv.type == 'trunk' or inv.type == 'glovebox' then
 			local plate = inv.id:sub(6)
 			if ox.playerslots then plate = string.strtrim(plate) end
-			MySQL.update.await('UPDATE owned_vehicles SET ?? = ? WHERE plate = ?', { inv.type, inventory, plate })
+			MySQL.update('UPDATE owned_vehicles SET ?? = ? WHERE plate = ?', { inv.type, inventory, plate })
 		else
-			MySQL.update.await('INSERT INTO ox_inventory (owner, name, data) VALUES (:owner, :name, :data) ON DUPLICATE KEY UPDATE data = :data', {
+			MySQL.update('INSERT INTO ox_inventory (owner, name, data) VALUES (:owner, :name, :data) ON DUPLICATE KEY UPDATE data = :data', {
 				owner = inv.owner or '', name = inv.id, data = inventory,
 			})
 		end
@@ -753,7 +753,7 @@ else
 	end)
 end
 
-local function saveInventories(manual)
+SetInterval(function()
 	local time = os.time()
 	for id, inv in pairs(Inventories) do
 		if not inv.player and not inv.open then
@@ -761,26 +761,39 @@ local function saveInventories(manual)
 				Inventory.Save(inv)
 			end
 
-			if not manual then
-				if (inv.datastore or inv.owner) and time - inv.time >= 3000 then
-					Inventory.Remove(id, inv.type)
-				end
+			if (inv.datastore or inv.owner) and time - inv.time >= 3000 then
+				Inventory.Remove(id, inv.type)
 			end
+		end
+	end
+end, 600000)
+
+local function saveInventories()
+	TriggerClientEvent('ox_inventory:closeInventory', -1, true)
+	for id, inv in pairs(Inventories) do
+		if not inv.player then
+			inv.open = true
+
+			if not inv.datastore and inv.changed then
+				Inventory.Save(inv)
+			end
+
+			inv.open = false
 		end
 	end
 end
 
-SetInterval(saveInventories, 600000)
-
 AddEventHandler('txAdmin:events:scheduledRestart', function(eventData)
 	if eventData.secondsRemaining == 60 then
-		SetTimeout(50000, saveInventories)
+		SetTimeout(50000, function()
+			saveInventories()
+		end)
 	end
 end)
 
 AddEventHandler('onResourceStop', function(resource)
 	if resource == ox.resource then
-		saveInventories(true)
+		saveInventories()
 	end
 end)
 
@@ -964,7 +977,7 @@ AddCommand('ox_inventory', 'clearinv', function(source, args)
 end, {'target:number'})
 
 AddCommand('ox_inventory', 'saveinv', function()
-	saveInventories(true)
+	saveInventories()
 end)
 
 AddCommand('ox_inventory', 'viewinv', function(source, args)
