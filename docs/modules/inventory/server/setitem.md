@@ -5,6 +5,7 @@ Sets the total count of an item in the given inventory, either adding or removin
 
 !!! info
 	```lua
-	Inventory.SetItem(inventory, item, count, metadata)
+	exports.ox_inventory:SetItem(inventory, item, count, metadata)
 	```
+
 	This function enhances the default functionality of `xPlayer.setInventoryItem`.

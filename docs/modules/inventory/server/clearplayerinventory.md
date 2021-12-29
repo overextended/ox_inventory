@@ -3,12 +3,11 @@ title: Inventory.ClearPlayerInventory
 ---
 Clears the players entire inventory.
 
-!!! server
 !!! info
 	```lua
-	TriggerEvent('ox_inventory:clearPlayerInventory', xPlayer)
+	exports.ox_inventory:ClearInventory(inv)
 	```
 	
-	| Argument | Type   | Optional | Explanation |
-	| -------- | ------ | -------- | ----------- |
-	| xPlayer  | player | no       | Either direct xPlayer, or Player ID
+	| Argument | Type    | Optional | Explanation |
+	| -------- | ------- | -------- | ----------- |
+	| inv      | str/int | no       | The id of the inventory to wipe |

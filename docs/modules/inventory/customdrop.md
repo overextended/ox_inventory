@@ -5,7 +5,7 @@ Allows server-side creation of a drop with pre-defined items and a custom prefix
 
 !!! info
 	```lua
-	TriggerEvent('ox_inventory:customDrop', prefix, items, coords, slots, maxWeight)
+	exports.ox_inventory:CustomDrop(prefix, items, coords, slots, maxWeight)
 	```
 	
 	| Argument   | Type    | Default              | Optional | Explanation |
@@ -18,7 +18,9 @@ Allows server-side creation of a drop with pre-defined items and a custom prefix
 
 !!! example "Defining items"
 	```lua
-	TriggerEvent('ox_inventory:customDrop', 'Carcass', {
+	local ox_inventory = exports.ox_inventory
+
+	ox_inventory:CustomDrop('Carcass', {
 		{'meat', 5, {grade=2, type='deer'}},
 		{'hide', 5, {grade=2, type='deer'}}
 	}, entityCoords)
