@@ -204,11 +204,13 @@ local function useSlot(slot)
 						local resource, fn = string.strsplit('.', data.client.export)
 						data.client.export = exports[resource][fn]
 					end
-					data.client.export(0, data, {name = item.name, slot = item.slot, metadata = item.metadata})
+					return data.client.export(0, data, {name = item.name, slot = item.slot, metadata = item.metadata})
 				elseif data.client.event then -- deprecated, to be removed
-					TriggerEvent(data.client.event, data, {name = item.name, slot = item.slot, metadata = item.metadata})
+					return TriggerEvent(data.client.event, data, {name = item.name, slot = item.slot, metadata = item.metadata})
 				end
-			elseif data.effect then
+			end
+
+			if data.effect then
 				data:effect({name = item.name, slot = item.slot, metadata = item.metadata})
 			elseif item.name:find('WEAPON_') then
 				ox_inventory:useItem(data, function(result)
