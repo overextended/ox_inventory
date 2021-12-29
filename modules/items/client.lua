@@ -19,18 +19,18 @@ local ox_inventory = exports[ox.resource]
 -- Clientside item use functions
 -----------------------------------------------------------------------------------------------
 
-Item('burger', function(data, slot)
+Item('testburger', function(data, slot)
 	ox_inventory:useItem(data, function(data)
 		if data then
+			if data.server then print(json.encode(data.server, {indent=true})) end
 			ox_inventory:notify({text = 'You ate a delicious '..data.name})
 		end
 	end)
 end)
 
-Item('testburger', function(data, slot)
+Item('burger', function(data, slot)
 	ox_inventory:useItem(data, function(data)
 		if data then
-			if data.server then print(json.encode(data.server, {indent=true})) end
 			ox_inventory:notify({text = 'You ate a delicious '..data.name})
 		end
 	end)

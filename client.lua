@@ -194,8 +194,16 @@ local function useSlot(slot)
 			data.slot = slot
 			if item.metadata.container then
 				OpenInventory('container', item.slot)
-			elseif data.client and data.client.event then
-				TriggerEvent(data.client.event, data, {name = item.name, slot = item.slot, metadata = item.metadata})
+			elseif data.client then
+				if data.client.export then
+					if type(data.client.export) ~= 'function' then
+						local resource, fn = string.strsplit('.', data.client.export)
+						data.client.export = exports[resource][fn]
+					end
+					data.client.export(0, data, {name = item.name, slot = item.slot, metadata = item.metadata})
+				elseif data.client.event then -- deprecated, to be removed
+					TriggerEvent(data.client.event, data, {name = item.name, slot = item.slot, metadata = item.metadata})
+				end
 			elseif data.effect then
 				data:effect({name = item.name, slot = item.slot, metadata = item.metadata})
 			elseif item.name:find('WEAPON_') then

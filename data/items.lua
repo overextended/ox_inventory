@@ -1,4 +1,21 @@
 return {
+	['testburger'] = {
+		label = 'Test Burger',
+		weight = 220,
+		degrade = 60,
+		limit = 3,
+		client = {
+			status = { hunger = 200000 },
+			anim = { dict = 'mp_player_inteat@burger', clip = 'mp_player_int_eat_burger_fp' },
+			prop = { model = `prop_cs_burger_01`, pos = vec3(0.02, 0.02, -0.02), rot = vec3(0.0, 0.0, 0.0) },
+			usetime = 2500,
+			export = 'ox_inventory_examples.testburger'
+		},
+		server = {
+			test = 'what an amazingly delicious burger, amirite?'
+		}
+	},
+
 	['bandage'] = {
 		label = 'Bandage',
 		weight = 115,
@@ -23,23 +40,6 @@ return {
 			prop = { model = `prop_cs_burger_01`, pos = vec3(0.02, 0.02, -0.02), rot = vec3(0.0, 0.0, 0.0) },
 			usetime = 2500,
 		},
-	},
-
-	['testburger'] = {
-		label = 'Test Burger',
-		weight = 220,
-		degrade = 60,
-		limit = 3,
-		client = {
-			status = { hunger = 200000 },
-			anim = { dict = 'mp_player_inteat@burger', clip = 'mp_player_int_eat_burger_fp' },
-			prop = { model = `prop_cs_burger_01`, pos = vec3(0.02, 0.02, -0.02), rot = vec3(0.0, 0.0, 0.0) },
-			usetime = 2500,
-			event = 'ox_testburger'
-		},
-		server = {
-			test = 'what an amazingly delicious burger, amirite?'
-		}
 	},
 
 	['cola'] = {
