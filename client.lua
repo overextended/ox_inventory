@@ -570,6 +570,18 @@ RegisterNetEvent('ox_inventory:createDrop', function(data, owner, slot)
 		if currentWeapon?.slot == slot then Utils.Disarm(currentWeapon, -1) end
 		if not IsPedInAnyVehicle(PlayerData.ped, false) then
 			OpenInventory('drop', data[1])
+		else
+			SendNUIMessage({
+				action = 'setupInventory',
+				data = {
+					rightInventory = currentInventory,
+					job = {
+						grade = PlayerData.job.grade,
+						grade_label = PlayerData.job.grade_label,
+						name = PlayerData.job.name
+					}
+				}
+			})
 		end
 	end
 end)
