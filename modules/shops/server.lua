@@ -95,6 +95,13 @@ end)
 local table = import 'table'
 local Log = server.logs
 
+-- http://lua-users.org/wiki/FormattingNumbers
+-- credit http://richard.warburton.it
+local function comma_value(n)
+	local left,num,right = string.match(n,'^([^%d]*%d)(%d*)(.-)$')
+	return left..(num:reverse():gsub('(%d%d%d)','%1,'):reverse())..right
+end
+
 ServerCallback.Register('buyItem', function(source, cb, data)
 	if data.toType == 'player' then
 		if data.count == nil then data.count = 1 end
@@ -148,7 +155,7 @@ ServerCallback.Register('buyItem', function(source, cb, data)
 
 					Inventory.RemoveItem(source, currency, price)
 					if ox.esx then Inventory.SyncInventory(playerInv) end
-					local message = ox.locale('purchased_for', count, fromItem.label, (currency == 'money' and ox.locale('$') or price), (currency == 'money' and price or ' '..currency))
+					local message = ox.locale('purchased_for', count, fromItem.label, (currency == 'money' and ox.locale('$') or comma_value(price)), (currency == 'money' and comma_value(price) or ' '..Items(currency).label))
 
 					-- Only log purchases for items worth $500 or more
 					if fromData.price >= 500 then
@@ -161,7 +168,7 @@ ServerCallback.Register('buyItem', function(source, cb, data)
 
 					return cb(true, {data.toSlot, playerInv.items[data.toSlot], weight}, {type = 'success', text = message})
 				else
-					return cb(false, nil, {type = 'error', text = ox.locale('cannot_afford', ('%s%s'):format((currency == 'money' and ox.locale('$') or price), (currency == 'money' and price or ' '..currency)))})
+					return cb(false, nil, {type = 'error', text = ox.locale('cannot_afford', ('%s%s'):format((currency == 'money' and ox.locale('$') or comma_value(price)), (currency == 'money' and comma_value(price) or ' '..Items(currency).label)))})
 				end
 			end
 			return cb(false, nil, {type = 'error', text = { ox.locale('unable_stack_items')}})
