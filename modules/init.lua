@@ -24,10 +24,6 @@ function data(name)
 	return loadfile(('data/%s.lua'):format(name))
 end
 
-function shared(name)
-	return loadfile(('modules/%s/shared.lua'):format(name))
-end
-
 local Locales = data('locales/'..ox.locale)
 function ox.locale(string, ...)
 	if not string then return Locales end

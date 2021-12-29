@@ -1,5 +1,5 @@
 local Items = {}
-local ItemList = shared 'items'
+local ItemList = items()
 
 -- Slot count and maximum weight for containers
 Items.containers = {

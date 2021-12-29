@@ -22,11 +22,15 @@ dependencies {
 
 shared_scripts {
 	'@pe-lualib/init.lua',
-	'config.lua',
+	'config.lua'
 }
 
 server_script 'modules/player/server.lua'
-shared_script 'modules/init.lua'
+
+shared_scripts {
+	'modules/init.lua',
+	'modules/**/shared.lua'
+}
 
 client_scripts {
 	'modules/items/client.lua',
