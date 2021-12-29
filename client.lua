@@ -126,6 +126,10 @@ local function OpenInventory(inv, data)
 					}
 				}
 			})
+
+			if not currentInventory.coords then
+				currentInventory.coords = GetEntityCoords(PlayerData.ped)
+			end
 		else
 			if invOpen == false then Utils.Notify({type = 'error', text = ox.locale('inventory_right_access'), duration = 2500}) end
 			if invOpen then TriggerEvent('ox_inventory:closeInventory') end
@@ -522,6 +526,7 @@ RegisterNetEvent('ox_inventory:closeInventory', function(server)
 
 		currentInventory = false
 		plyState.invOpen = false
+		defaultInventory.coords = nil
 	end
 end)
 
