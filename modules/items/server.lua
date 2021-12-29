@@ -189,8 +189,11 @@ local function GenerateText(num)
 end
 
 local function GenerateSerial(text)
-	text = text == nil and GenerateText(3) or text:len() > 3 and text
-	return ('%s%s%s'):format(math.random(100000,999999), text, math.random(100000,999999))
+	if text and text:len() > 3 then
+		return text
+	end
+
+	return ('%s%s%s'):format(math.random(100000,999999), text == nil and GenerateText(3) or text, math.random(100000,999999))
 end
 
 local Inventory
@@ -213,7 +216,7 @@ function Items.Metadata(inv, item, metadata, count)
 			if not metadata.components then metadata.components = {} end
 			if metadata.registered ~= false then
 				metadata.registered = type(metadata.registered) == 'string' and metadata.registered or inv.name
-				metadata.serial = metadata.serial or GenerateSerial(metadata.serial)
+				metadata.serial = GenerateSerial(metadata.serial)
 			end
 		end
 	else
