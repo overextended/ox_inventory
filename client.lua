@@ -127,7 +127,7 @@ local function OpenInventory(inv, data)
 				}
 			})
 
-			if not currentInventory.coords then
+			if not currentInventory.coords and not inv == 'container' then
 				currentInventory.coords = GetEntityCoords(PlayerData.ped)
 			end
 		else
@@ -197,7 +197,7 @@ local function useSlot(slot)
 		if item and data.usable then
 			data.slot = slot
 			if item.metadata.container then
-				OpenInventory('container', item.slot)
+				return OpenInventory('container', item.slot)
 			elseif data.client then
 				if data.client.export then
 					if type(data.client.export) ~= 'function' then
