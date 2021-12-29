@@ -14,10 +14,10 @@ local function Item(name, cb)
 	if item and not item.client?.event then item.effect = cb end
 end
 
+local ox_inventory = exports[ox.resource]
 -----------------------------------------------------------------------------------------------
 -- Clientside item use functions
 -----------------------------------------------------------------------------------------------
-local ox_inventory = exports[ox.resource]
 
 Item('burger', function(data, slot)
 	ox_inventory:useItem(data, function(data)
