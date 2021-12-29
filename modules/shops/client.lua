@@ -41,7 +41,7 @@ client.shops = setmetatable(data('shops'), {
 							},
 							distance = 2
 						})
-					else
+					elseif shop.targets then
 						for id=1, #shop.targets do
 							local target = shop.targets[id]
 							local shopid = type..'-'..id
