@@ -4,7 +4,7 @@ do
 
         -- ESX.ServerCallbacks does not exist in the Overextended fork of ESX, so throw an error
         if ESX.ServerCallbacks then
-            error('Ox Inventory requires a modified version of ESX, refer to the documentation.')
+            ox.error('Ox Inventory requires a modified version of ESX, refer to the documentation.')
         end
 
         ESX = {
