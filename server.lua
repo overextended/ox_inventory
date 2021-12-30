@@ -29,7 +29,7 @@ AddEventHandler('ox_inventory:setPlayerInventory', function(player, data)
 					end
 
 					-- Remove invalid durability
-					if v.metadata.durability and not item.durability and not item.degrade and not v:find('WEAPON_') then
+					if v.metadata.durability and not item.durability and not item.degrade and not v.name:find('WEAPON_') then
 						v.metadata.durability = nil
 					end
 				end
