@@ -67,7 +67,7 @@ function Utils.Disarm(currentWeapon, newSlot)
 		local ammo = currentWeapon.ammo and GetAmmoInPedWeapon(PlayerData.ped, currentWeapon.hash)
 		SetPedAmmo(PlayerData.ped, currentWeapon.hash, 0)
 
-		if newSlot ~= -1 then
+		if not newSlot then
 			ClearPedSecondaryTask(PlayerData.ped)
 			local sleep = (PlayerData.job.name == ox.police and (GetWeapontypeGroup(currentWeapon.hash) == 416676503 or GetWeapontypeGroup(currentWeapon.hash) == 690389602)) and 450 or 1400
 			local coords = GetEntityCoords(PlayerData.ped, true)
@@ -78,7 +78,7 @@ function Utils.Disarm(currentWeapon, newSlot)
 
 		RemoveWeaponFromPed(PlayerData.ped, currentWeapon.hash)
 
-		if newSlot ~= false then
+		if newSlot then
 			TriggerServerEvent('ox_inventory:updateWeapon', ammo and 'ammo' or 'melee', ammo or currentWeapon.melee, newSlot)
 		end
 
@@ -87,7 +87,7 @@ function Utils.Disarm(currentWeapon, newSlot)
 end
 
 function Utils.ClearWeapons(currentWeapon)
-	Utils.Disarm(currentWeapon, -1)
+	Utils.Disarm(currentWeapon)
 	RemoveAllPedWeapons(PlayerData.ped, true)
 	if ox.parachute then
 		local chute = `GADGET_PARACHUTE`

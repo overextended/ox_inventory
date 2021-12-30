@@ -218,7 +218,7 @@ local function useSlot(slot)
 						local playerPed = PlayerData.ped
 						if data.throwable then item.throwable = true end
 						ClearPedSecondaryTask(playerPed)
-						if currentWeapon then Utils.Disarm(currentWeapon, data.slot) end
+						if currentWeapon then Utils.Disarm(currentWeapon) end
 						local sleep = (PlayerData.job.name == ox.police and (GetWeapontypeGroup(data.hash) == 416676503 or GetWeapontypeGroup(data.hash) == 690389602)) and 400 or 1200
 						local coords = GetEntityCoords(playerPed, true)
 						Utils.PlayAnimAdvanced(sleep*2, sleep == 400 and 'reaction@intimidation@cop@unarmed' or 'reaction@intimidation@1h', 'intro', coords.x, coords.y, coords.z, 0, 0, GetEntityHeading(playerPed), 8.0, 3.0, -1, 50, 0.1)
@@ -369,7 +369,7 @@ function OnPlayerData(key, val)
 		end
 		table.wipe(nearbyMarkers)
 	elseif key == 'dead' and val then
-		Utils.Disarm(currentWeapon, -1)
+		Utils.Disarm(currentWeapon)
 		TriggerEvent('ox_inventory:closeInventory')
 		Wait(50)
 	end
@@ -569,7 +569,7 @@ end)
 RegisterNetEvent('ox_inventory:createDrop', function(data, owner, slot)
 	drops[data[1]] = data[2]
 	if owner == PlayerData.id and invOpen and #(GetEntityCoords(PlayerData.ped) - data[2]) <= 1 then
-		if currentWeapon?.slot == slot then Utils.Disarm(currentWeapon, -1) end
+		if currentWeapon?.slot == slot then Utils.Disarm(currentWeapon) end
 		if not IsPedInAnyVehicle(PlayerData.ped, false) then
 			OpenInventory('drop', data[1])
 		else
@@ -717,7 +717,7 @@ RegisterNetEvent('ox_inventory:setPlayerInventory', function(currentDrops, inven
 			end
 		end
 
-		if currentWeapon and GetSelectedPedWeapon(PlayerData.ped) ~= currentWeapon.hash then Utils.Disarm(currentWeapon, -1) end
+		if currentWeapon and GetSelectedPedWeapon(PlayerData.ped) ~= currentWeapon.hash then Utils.Disarm(currentWeapon) end
 		if ox.parachute and GetPedParachuteState(PlayerData.ped) ~= -1 then Utils.DeleteObject(ox.parachute) ox.parachute = false end
 	end, 200)
 
@@ -833,7 +833,7 @@ RegisterNetEvent('esx:onPlayerLogout', function()
 	PlayerData.loaded = false
 	ClearInterval(interval)
 	ClearInterval(tick)
-	Utils.Disarm(currentWeapon, -1)
+	Utils.Disarm(currentWeapon)
 end)
 
 RegisterNetEvent('ox_inventory:viewInventory', function(data)
@@ -911,7 +911,7 @@ RegisterNUICallback('giveItem', function(data, cb)
 			else return end
 			if passenger then
 				TriggerServerEvent('ox_inventory:giveItem', data.slot, passenger, data.count)
-				if data.slot == currentWeapon?.slot then Utils.Disarm(currentWeapon, -1) end
+				if data.slot == currentWeapon?.slot then Utils.Disarm(currentWeapon) end
 			end
 		end
 	else
@@ -920,7 +920,7 @@ RegisterNUICallback('giveItem', function(data, cb)
 			target = GetPlayerServerId(NetworkGetPlayerIndexFromPed(target))
 			Utils.PlayAnim(2000, 'mp_common', 'givetake1_a', 1.0, 1.0, -1, 50, 0.0, 0, 0, 0)
 			TriggerServerEvent('ox_inventory:giveItem', data.slot, target, data.count)
-			if data.slot == currentWeapon?.slot then Utils.Disarm(currentWeapon, -1) end
+			if data.slot == currentWeapon?.slot then Utils.Disarm(currentWeapon) end
 		end
 	end
 end)

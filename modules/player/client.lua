@@ -51,7 +51,7 @@ do
             PlayerData.cuffed = not PlayerData.cuffed
             LocalPlayer.state:set('busy', PlayerData.cuffed, false)
             if PlayerData.cuffed then
-                Utils.Disarm(currentWeapon, -1)
+                Utils.Disarm(currentWeapon)
                 if invOpen then TriggerEvent('ox_inventory:closeInventory') end
             end
         end)

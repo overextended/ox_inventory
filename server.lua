@@ -247,7 +247,7 @@ ServerCallback.Register('swapItems', function(source, cb, data)
 						fromInventory.weapon = data.toSlot
 						fromInventory.weapon = data.fromSlot
 						if fromInventory.type == 'otherplayer' then movedWeapon = false end
-						TriggerClientEvent('ox_inventory:disarm', fromInventory.id, -1)
+						TriggerClientEvent('ox_inventory:disarm', fromInventory.id)
 					end
 
 					if toData and ((toData.name ~= fromData.name) or not toData.stack or (not table.matches(toData.metadata, fromData.metadata))) then
