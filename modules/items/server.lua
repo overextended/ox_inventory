@@ -227,10 +227,8 @@ function Items.Metadata(inv, item, metadata, count)
 		local container = Items.containers[item.name]
 		if container then
 			count = 1
-			metadata = {
-				container = metadata.container or GenerateText(3)..os.time(),
-				size = container
-			}
+			metadata.container = metadata.container or GenerateText(3)..os.time()
+			metadata.size = container
 		elseif item.name == 'identification' then
 			count = 1
 			if next(metadata) == nil then
