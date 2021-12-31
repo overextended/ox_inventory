@@ -102,9 +102,6 @@ if IsDuplicityVersion then
 	-- Fills generated inventories with random items
 	ox.randomloot = server.randomloot or true
 
-	-- Minimum chance for an inventory to generate an item
-	ox.lootchance = server.lootchance or 50
-
 	_ENV.server = table.wipe(server)
 else client = {} end
 

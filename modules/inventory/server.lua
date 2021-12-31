@@ -197,14 +197,26 @@ function Inventory.Save(inv)
 	end
 end
 
----@param loot table
+local function randomItem(loot, items, size)
+	local item = loot[math.random(1, size)]
+	for i = 1, #items do
+		if items[i][1] == item[1] then
+			return randomItem(loot, items, size)
+		end
+	end
+	return item
+end
+
 local function randomLoot(loot)
-	local max, items = #loot, {}
-	for i=1, math.random(1,3) do
-		if math.random(math.floor(ox.lootchance/i), 100) then
-			local randomItem = loot[math.random(1, max)]
-			local count = math.random(randomItem[2], randomItem[3])
-			if count > 0 then items[#items+1] = {randomItem[1], count} end
+	local items = {}
+	local size = #loot
+	for i = 1, math.random(0, 3) do
+		local item = randomItem(loot, items, size)
+		if math.random(1, 100) <= (item[4] or 80) then
+			local count = math.random(item[2], item[3])
+			if count > 0 then
+				items[#items+1] = {item[1], count}
+			end
 		end
 	end
 	return items

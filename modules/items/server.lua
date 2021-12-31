@@ -19,26 +19,30 @@ local trash = {
 	{description = 'An empty chips bag.', weight = 5, image = 'trash_chips'},
 }
 
--- Items that can be found, with minimum and maxiumum count to be generated
+----------------------
+-- Random loot tables
+----------------------
+-- Each entry is an array, where values are
+-- [1] itemName  [2] minimum  [3] maximum  [4] chance (optional, default is 80/100)
+
+-- Unowned vehicles
 ox.loottable = {
-	{'cola', 0, 1},
-	{'water', 0, 2},
-	{'garbage', 0, 1},
-	{'panties', 0, 1},
-	{'money', 0, 50},
-	{'bandage', 0, 1}
+	{'cola', 1, 1},
+	{'water', 1, 2},
+	{'garbage', 1, 1, 20},
+	{'panties', 1, 1, 5},
+	{'money', 1, 50},
+	{'money', 200, 400, 1},
+	{'bandage', 1, 1}
 }
 
--- Separate loot table for dumpsters
+-- Dumpsters
 ox.dumpsterloot = {
-	{'mustard', 0, 1},
+	{'mustard', 1, 1},
 	{'garbage', 1, 3},
-	{'panties', 0, 1},
-	{'money', 0, 10},
-	{'burger', 0, 1}
+	{'money', 1, 10},
+	{'burger', 1, 1}
 }
-
-
 
 local function GetItem(item)
 	if item then
