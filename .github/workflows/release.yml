@@ -50,7 +50,7 @@ jobs:
           cp ./{server.lua,README.md,LICENSE,fxmanifest.lua,config.lua,client.lua} ./temp/ox_inventory
           cp -r ./{setup,modules,data} ./temp/ox_inventory
           cp -r ./web/build ./temp/ox_inventory/web/build
-          cd ./temp && zip -r ox_inventory-${{ env.RELEASE_VERSION }}.zip ./ox_inventory
+          cd ./temp && zip -r ../ox_inventory-${{ env.RELEASE_VERSION }}.zip ./ox_inventory
 
       - name: Create Release
         uses: "marvinpinto/action-automatic-releases@v1.2.1"
