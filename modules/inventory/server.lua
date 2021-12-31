@@ -683,11 +683,6 @@ function Inventory.Confiscate(source)
 end
 exports('ConfiscateInventory', Inventory.Confiscate)
 
-AddEventHandler('ox_inventory:confiscatePlayerInventory', function(source)
-	ox.warning('ox_inventory:confiscatePlayerInventory is deprecated! Use `exports.ox_inventory:ConfiscateInventory(id)` instead')
-	Inventory.Confiscate(source)
-end)
-
 function Inventory.Return(source)
 	local inv = Inventories[source]
 	if inv?.player then
@@ -722,11 +717,6 @@ function Inventory.Return(source)
 end
 exports('ReturnInventory', Inventory.Return)
 
-AddEventHandler('ox_inventory:returnPlayerInventory', function(source)
-	ox.warning('ox_inventory:returnPlayerInventory is deprecated! Use `exports.ox_inventory:ReturnInventory(id)` instead')
-	Inventory.Return(source)
-end)
-
 ---@param inv any
 ---@param keep nil
 --- todo: support the keep argument, allowing users to define a list of item "types" to keep  
@@ -745,11 +735,6 @@ function Inventory.Clear(inv, keep)
 	end
 end
 exports('ClearInventory', Inventory.Clear)
-
-AddEventHandler('ox_inventory:clearPlayerInventory', function(source)
-	ox.warning('ox_inventory:clearPlayerInventory is deprecated! Use `exports.ox_inventory:ClearInventory(id)` instead')
-	Inventory.Wipe(source)
-end)
 
 local function playerDropped(source)
 	local inv = Inventory(source)
