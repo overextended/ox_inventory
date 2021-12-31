@@ -19,31 +19,6 @@ local trash = {
 	{description = 'An empty chips bag.', weight = 5, image = 'trash_chips'},
 }
 
-----------------------
--- Random loot tables
-----------------------
--- Each entry is an array, where values are
--- [1] itemName  [2] minimum  [3] maximum  [4] chance (optional, default is 80/100)
-
--- Unowned vehicles
-ox.loottable = {
-	{'cola', 1, 1},
-	{'water', 1, 2},
-	{'garbage', 1, 1, 20},
-	{'panties', 1, 1, 5},
-	{'money', 1, 50},
-	{'money', 200, 400, 1},
-	{'bandage', 1, 1}
-}
-
--- Dumpsters
-ox.dumpsterloot = {
-	{'mustard', 1, 1},
-	{'garbage', 1, 3},
-	{'money', 1, 10},
-	{'burger', 1, 1}
-}
-
 local function GetItem(item)
 	if item then
 		local type
@@ -66,7 +41,7 @@ setmetatable(Items, {
 CreateThread(function()
 	local OneSync = GetConvar('onesync_enabled', false) == 'true'
 	local Infinity = GetConvar('onesync_enableInfinity', false) == 'true'
-	if not OneSync and not Infinity then return ox.error('OneSync is not enabled on this server - refer to the documentation')
+	if not OneSync and not Infinity then return error('OneSync is not enabled on this server - refer to the documentation')
 	elseif Infinity then ox.info('Server is running OneSync Infinity') else ox.info('Server is running OneSync Legacy') end
 	local items = MySQL.query.await('SELECT * FROM items')
 	if items then

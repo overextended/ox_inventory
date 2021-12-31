@@ -230,8 +230,8 @@ local function generateItems(inv, invType, items)
 	if items == nil then
 		if invType == 'dumpster' then
 			items = randomLoot(ox.dumpsterloot)
-		else
-			items = randomLoot(ox.loottable)
+		elseif invType == 'vehicle' then
+			items = randomLoot(ox.vehicleloot)
 		end
 	end
 
@@ -260,7 +260,7 @@ function Inventory.Load(id, invType, owner)
 			if ox.playerslots then plate = string.strtrim(plate) end
 			result = MySQL.single.await('SELECT ?? FROM owned_vehicles WHERE plate = ?', { invType, plate })
 			if result then result = json.decode(result[invType])
-			elseif ox.randomloot then return generateItems(id, invType)
+			elseif ox.randomloot then return generateItems(id, 'vehicle')
 			else datastore = true end
 		elseif owner then
 			result = MySQL.prepare.await('SELECT data FROM ox_inventory WHERE owner = ? AND name = ?', { owner, id })

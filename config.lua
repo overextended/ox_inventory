@@ -1,28 +1,61 @@
--- This file is intended for setting default ox values.
--- Modifying the values here changes the resource hash (requiring players to download everything again).
--- It's also just convenient to leave it alone for the sake of git source control.
--- Details will be added to the documentation at some point, but you can utilise it like so...
+-- Configuration settings should be modified via convars, rather than modifying this file.
+-- This file exists to load in convar settings and set defaults on any undefined settings.
+-- You can add these settings directly to your 'server.cfg', or create a new (or multiple) file to load with 'exec'
+-- Refer to the comments above a setting or documentation for more information.
+
 --[[
 setr ox_inventory {
-    "locale": "en",
-    "qtarget": true,
+    "esx": true,
+    "trimplate": true,
+    "qtarget": false,
+    "playerslots": 50,
+    "blurscreen": true,
+    "autoreload": true,
     "keys": [
         "F2", "K", "TAB"
-    ]
+    ],
+    "enablekeys": [
+        249
+    ],
+    "playerweight": 30000,
+    "police": "police",
+    "locale": "en"
 }
 
 set ox_inventory_server {
-    "logs": true,
-    "pricevariation": false
+    "versioncheck": true,
+    "clearstashes": "6 MONTH",
+    "logs": false,
+    "randomprice": true,
+    "evidencegrade": 2,
+    "randomloot": true
+}
+
+set ox_inventory_loot {
+    "vehicle": [
+        ["cola", 1, 1],
+        ["water", 1, 1],
+        ["garbage", 1, 2, 50],
+        ["panties", 1, 1, 5],
+        ["money", 1, 50],
+        ["money", 200, 400, 5],
+        ["bandage", 1, 1]
+    ],
+
+    "dumpster": [
+    	["mustard", 1, 1],
+        ["garbage", 1, 3],
+        ["money", 1, 10],
+        ["burger", 1, 1]
+    ]
 }
 
 add_principal group.admin ox_inventory
 add_ace resource.ox_inventory command.add_principal allow
 add_ace resource.ox_inventory command.remove_principal allow
+
 ensure ox_inventory
 ]]
--- Save the file to the resource directory as ".cfg"
--- Replace 'ensure ox_inventory' in your 'server.cfg' with 'exec @ox_inventory/.cfg'
 
 local function loadConvar(name)
 	local convar = json.decode(GetConvar(name, '{}'))
@@ -34,7 +67,7 @@ local function loadConvar(name)
 	return convar or {}
 end
 
-local ox = loadConvar('ox_inventory')
+ox = loadConvar('ox_inventory')
 
 ox = {
 	-- Enable support for es_extended (defaults to true, for now)
@@ -53,10 +86,7 @@ ox = {
 	blurscreen = ox.blurscreen or true,
 
 	-- Reload empty weapons automatically
-	autoreload = ox.autoreload or true,
-
-	-- Enable sentry logging (this reports UI errors and general performance statistics to the Ox team, anonymously)
-	sentry = ox.sentry or true,
+	autoreload = ox.autoreload or false,
 
 	-- Set the keybinds for primary, secondary, and hotbar
 	keys = ox.keys or {
@@ -82,10 +112,10 @@ ox.resource = GetCurrentResourceName()
 IsDuplicityVersion = IsDuplicityVersion()
 
 if IsDuplicityVersion then
-	local server = loadConvar('ox_inventory_server')
+	server = loadConvar('ox_inventory_server')
 
 	-- Check the latest available release
-	ox.versioncheck = server.versioncheck or false
+	ox.versioncheck = server.versioncheck or true
 
 	-- Removes stashes from the database if they haven't been used
 	ox.clearstashes = server.clearstashes or '6 MONTH'
@@ -102,7 +132,30 @@ if IsDuplicityVersion then
 	-- Fills generated inventories with random items
 	ox.randomloot = server.randomloot or true
 
-	_ENV.server = table.wipe(server)
-else client = {} end
+	----------------------
+	-- Random loot tables
+	----------------------
+	-- Each entry is an array, where values are
+	-- [1] itemName  [2] minimum  [3] maximum  [4] chance (optional, default is 80/100)
 
-_ENV.ox = ox
+	local loot = loadConvar('ox_inventory_loot')
+
+	ox.vehicleloot = loot.vehicle or {
+		{'cola', 1, 1},
+		{'water', 1, 2},
+		{'garbage', 1, 1, 20},
+		{'panties', 1, 1, 5},
+		{'money', 1, 50},
+		{'money', 200, 400, 1},
+		{'bandage', 1, 1}
+	}
+
+	ox.dumpsterloot = loot.dumpster or {
+		{'mustard', 1, 1},
+		{'garbage', 1, 3},
+		{'money', 1, 10},
+		{'burger', 1, 1}
+	}
+
+	server = table.wipe(server)
+else client = {} end
