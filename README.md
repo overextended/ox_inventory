@@ -1,16 +1,23 @@
-<h1 align='center'><a href='https://overextended.github.io/ox_inventory/'>Documentation</a></h1><p align='center'>Click the link above for information on setup, installation, and improving compatibility with other resources.
-
-<h2 align='center'>This project is still a work-in-progress - only recommended for competent developers.
-<br><br>
-<img src='https://user-images.githubusercontent.com/65407488/146972026-704f9932-ee4a-43e3-acb3-7e9a8b9eda04.png'/></h2>
+<div align='center'><img src='https://user-images.githubusercontent.com/65407488/147819960-cefe0749-6398-4f42-a782-fe11b1e1caf0.png'/></div>
+<h1 align='center'>Ox Inventory</h1>
+<h3 align='center'><a href='https://overextended.github.io/ox_inventory/'>Read the documentation for setup, installation, and integration</a></h3>
 
 
 
-<br><br><br><h3 align='center'>Legal Notices</h2>
-<table><tr><td>
+## Framework support
+There are plans to setup more generic events so the inventory can be used without any framework dependency, or easily ported to your framework. For the time being, our _[fork of ESX Legacy](https://github.com/overextended/es_extended/)_ has integrated support. We are working on converting some common ESX resources to showcase how easy it can be to achieve integration.
+
+
+
+![image](https://user-images.githubusercontent.com/65407488/147820717-4b684a5a-d986-4c3c-8338-c0dfa6a6c333.png)
+
+
+
+<table><tr><td><h3 align='center'>Legal Notices</h2></tr></td>
+<tr><td>
 Ox Inventory for ESX Legacy  
 
-Copyright © 2021  Overextended
+Copyright © 2021  [Linden](https://github.com/thelindat), [Dunak](https://github.com/dunak-debug), [Luke](https://github.com/LukeWasTakenn)
 
 
 This program is free software: you can redistribute it and/or modify
@@ -28,10 +35,7 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with this program.  
 If not, see <https://www.gnu.org/licenses/>
-</td></tr>
-<tr><td>
-This resource is a completely new implementation of linden_inventory, which started as a fork of <a href='https://github.com/hsnnnnn/hsn-inventory/tree/9feef47269dbf8271f9e6b477188da88c15758e3'>hsn-inventory</a>
-</td></td></table>
+</td></tr></table>
 
 
-<p align='center'><a href='https://discord.io/overextended'>Discord</a></p>
+<div align='center'><a href='https://discord.gg/overextended'>Discord Server</a></div>
