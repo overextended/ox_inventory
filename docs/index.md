@@ -10,7 +10,7 @@ title: Getting Started
 ## Dependencies
 
 ### FXServer
-The minimum required version of FXServer is build [5053](https://runtime.fivem.net/artifacts/fivem/build_server_windows/master/5053-fb44d7add0afa5021d32057164ac3930738d65b4/server.7z), anything earlier will prevent the resource from starting.
+The minimum required version of FXServer is build [5104](https://runtime.fivem.net/artifacts/fivem/build_server_windows/master/5104-5ebb6dfe826667c841027d6dbc7390e42abfb196/server.7z), anything earlier will prevent the resource from starting.
 
 ### OxMySQL
 We utilise our own resource to communicate with MySQL databases via the [node-mysql2](https://github.com/sidorares/node-mysql2) package. The backend is actively maintained and updated unlike the package used by mysql-async, providing improved performance, security, and features. We provide full backwards compatibility with mysql-async and build for the current Cfx architecture.  
@@ -56,6 +56,13 @@ Some code is being changed for later reference while a txAdmin recipe is prepare
 	This _may_ change sometime after release when we have finalised the necessary changes.
 
 [GitHub :fontawesome-brands-github:](https://github.com/overextended/es_extended){ .md-button .md-button--primary }
+
+<br>
+
+### Ox Inventory build
+The interface is written in TypeScript using the React framework, so the code included in the repository _will not do anything_. You either need to build he package yourself (more information in [guides](./guides), or download a release.
+
+[GitHub :fontawesome-brands-github:](https://github.com/overextended/ox_inventory/releases){ .md-button .md-button--primary }
 
 ## Optional resources
 ### qtarget
