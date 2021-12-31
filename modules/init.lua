@@ -4,17 +4,10 @@ function ox.warning(...) ox.print('^3[warning]^7', ...) end
 function ox.error(...) error('\n^1[error] '.. ... ..'^7', 2) end
 
 function data(name)
-	if ox.ready == nil then return {} end
+	if ox.server and ox.ready == nil then return {} end
 	local func, err = load(LoadResourceFile(ox.resource, ('data/%s.lua'):format(name)))
 	if err then error('^1'..err..'^0', 0) end
 	return func()
-end
-
-local Locales = data('locales/'..ox.locale)
-function ox.locale(string, ...)
-	if not string then return Locales end
-	if Locales[string] then return Locales[string]:format(...) end
-	return string
 end
 
 do
@@ -43,4 +36,11 @@ if ox.qtarget and GetResourceState('qtarget') ~= 'started' then
 	ox.info('qtarget is not running; disabled compatibility mode')
 end
 
-ox.ready = false
+if ox.server then ox.ready = false end
+
+local Locales = data('locales/'..ox.locale)
+function ox.locale(string, ...)
+	if not string then return Locales end
+	if Locales[string] then return Locales[string]:format(...) end
+	return string
+end

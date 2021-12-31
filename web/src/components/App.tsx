@@ -56,7 +56,7 @@ const App: React.FC = () => {
   fetchNui('uiLoaded', {});
 
   useNuiEvent<{
-    sentry: boolean;
+    // sentry: boolean;
     locale: { [key: string]: string };
     items: typeof Items;
     leftInventory: Inventory;
