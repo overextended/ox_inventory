@@ -60,13 +60,14 @@ const App: React.FC = () => {
     locale: { [key: string]: string };
     items: typeof Items;
     leftInventory: Inventory;
-  }>('init', ({ sentry, locale, items, leftInventory }) => {
-    if (sentry && !process.env.IN_GAME_DEV && !isEnvBrowser())
-      Sentry.init({
-        dsn: 'https://826c6bee82d84629aae35643b30b68e9@sentry.projecterror.dev/4',
-        integrations: [new Integrations.BrowserTracing()],
-        tracesSampleRate: 1.0,
-      });
+  }>('init', ({ locale, items, leftInventory }) => {
+    if (!process.env.IN_GAME_DEV && !isEnvBrowser())
+      // Sentry no longer being utilised; settings left behind for developers looking to track errors on their servers (more info later)
+      // Sentry.init({
+      //   dsn: '',
+      //   integrations: [new Integrations.BrowserTracing()],
+      //   tracesSampleRate: 1.0,
+      // });
 
     for (const [name, data] of Object.entries(locale)) Locale[name] = data;
 
