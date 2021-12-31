@@ -435,35 +435,39 @@ function Inventory.AddItem(inv, item, count, metadata, slot, cb)
 end
 exports('AddItem', Inventory.AddItem)
 
----@param inv any
----@param search number '1: return all slots; 2: return total count'
+---@param inv string|number
+---@param search string|number slots|1, count|2
 ---@param item table|string
 ---@param metadata? table|string
 function Inventory.Search(inv, search, item, metadata)
-	inv = Inventory(inv)
-	if inv then
-		inv = inv.items
-		if type(item) == 'string' then item = {item} end
-		if type(metadata) == 'string' then metadata = {type=metadata} end
-		local items = #item
-		local returnData = {}
-		for i=1, items do
-			local item = Items(item[i])?.name
-			if search == 1 then returnData[item] = {}
-			elseif search == 2 then returnData[item] = 0 end
-			for _, v in pairs(inv) do
-				if v.name == item then
-					if not v.metadata then v.metadata = {} end
-					if not metadata or table.contains(v.metadata, metadata) then
-						if search == 1 then returnData[item][#returnData[item]+1] = inv[v.slot]
-						elseif search == 2 then
-							returnData[item] += v.count
+	if item then
+		inv = Inventory(inv)
+		if inv then
+			inv = inv.items
+			if search == 'slots' then search = 1 elseif search == 'count' then search = 2 end
+			if type(item) == 'string' then item = {item} end
+			if type(metadata) == 'string' then metadata = {type=metadata} end
+
+			local items = #item
+			local returnData = {}
+			for i=1, items do
+				local item = Items(item[i])?.name
+				if search == 1 then returnData[item] = {}
+				elseif search == 2 then returnData[item] = 0 end
+				for _, v in pairs(inv) do
+					if v.name == item then
+						if not v.metadata then v.metadata = {} end
+						if not metadata or table.contains(v.metadata, metadata) then
+							if search == 1 then returnData[item][#returnData[item]+1] = inv[v.slot]
+							elseif search == 2 then
+								returnData[item] += v.count
+							end
 						end
 					end
 				end
 			end
+			if next(returnData) then return items == 1 and returnData[item[1]] or returnData end
 		end
-		if next(returnData) then return items == 1 and returnData[item[1]] or returnData end
 	end
 	return false
 end
