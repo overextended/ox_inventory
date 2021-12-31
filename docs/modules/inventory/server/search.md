@@ -23,7 +23,7 @@ Returns a table containing data for the searched items, the result varying based
 		```lua
 		local ox_inventory = exports.ox_inventory
 
-		local water = ox_inventory:Search(3, 1, 'water')
+		local water = ox_inventory:Search(3, 'slots', 'water')
 		local count = 0
 		for _, v in pairs(water) do
 			print(v.slot..' contains '..v.count..' water '..json.encode(v.metadata))
@@ -35,7 +35,7 @@ Returns a table containing data for the searched items, the result varying based
 		```lua
 		local ox_inventory = exports.ox_inventory
 
-		local inventory = ox_inventory:Search(377346, 1, {'meat', 'skin'}, 'deer')
+		local inventory = ox_inventory:Search(377346, 'slots', {'meat', 'skin'}, 'deer')
 		if inventory then
 			for name, data in pairs(inventory) do
 				local count = 0
@@ -53,14 +53,14 @@ Returns a table containing data for the searched items, the result varying based
 		```lua
 		local ox_inventory = exports.ox_inventory
 
-		local count = ox_inventory:Search('trunk-GEZ 461', 2, 'water')
+		local count = ox_inventory:Search('trunk-GEZ 461', 'count', 'water')
 		print('Vehicle contains '..count.. ' water')
 		```
 	=== "Multiple items count"
 		```lua
 		local ox_inventory = exports.ox_inventory
 
-		local inventory = ox_inventory:Search(1, 2, {'meat', 'skin'}, {grade=1})
+		local inventory = ox_inventory:Search(1, 'count', {'meat', 'skin'}, {grade=1})
 		if inventory then
 			for name, count in pairs(inventory) do
 				print('Player 1 has '..count..' '..name)

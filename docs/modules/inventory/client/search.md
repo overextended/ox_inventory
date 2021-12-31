@@ -5,9 +5,6 @@ Returns a table containing data for the searched items, the result varying based
 
 !!! info
 	```lua
-	Inventory.Search(searchtype, items, metadata)
-	```
-	```lua
 	exports.ox_inventory:Search(searchtype, items, metadata)
 	```
 
@@ -23,7 +20,9 @@ Returns a table containing data for the searched items, the result varying based
 !!! example
 	=== "Single item data"
 		```lua
-		local water = Inventory.Search(1, 'water')
+		local ox_inventory = exports.ox_inventory
+
+		local water = ox_inventory:Search('slots', 'water')
 		local count = 0
 		for _, v in pairs(water) do
 			print(v.slot..' contains '..v.count..' water '..json.encode(v.metadata))
@@ -33,7 +32,9 @@ Returns a table containing data for the searched items, the result varying based
 		```
 	=== "Multiple items data"
 		```lua
-		local inventory = Inventory.Search(1, {'meat', 'skin'}, 'deer')
+		local ox_inventory = exports.ox_inventory
+
+		local inventory = ox_inventory:Search('slots', {'meat', 'skin'}, 'deer')
 		if inventory then
 			for name, data in pairs(inventory) do
 				local count = 0
@@ -49,12 +50,16 @@ Returns a table containing data for the searched items, the result varying based
 		```
 	=== "Single item count"
 		```lua
-		local count = Inventory.Search(2, 'water')
+		local ox_inventory = exports.ox_inventory
+
+		local count = ox_inventory:Search('count', 'water')
 		print('You have '..count.. ' water')
 		```
 	=== "Multiple items count"
 		```lua
-		local inventory = Inventory.Search(2, {'meat', 'skin'}, {grade=1})
+		local ox_inventory = exports.ox_inventory
+
+		local inventory = ox_inventory:Search('count', {'meat', 'skin'}, {grade=1})
 		if inventory then
 			for name, count in pairs(inventory) do
 				print('You have '..count..' '..name)
