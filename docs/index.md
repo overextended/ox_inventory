@@ -1,11 +1,11 @@
 ---
 title: Getting Started
 ---
-!!! danger
-	**Not ready for production servers - this resource is still being developed**
+!!! warning
+	**Documentation is still being improved - you may find some information lacking or missing.**
 
 	This resource is being designed with the intention of providing advanced functionality while remaining easy to use, however it is not recommended for beginners.
-	You must possess a basic understanding of coding and the ability to _read documentation_; otherwise you should not install this resource.
+	You must possess a basic understanding of coding and the ability to _read_; otherwise you should not install this resource.
 
 ## Dependencies
 
@@ -15,12 +15,6 @@ The minimum required version of FXServer is build [5053](https://runtime.fivem.n
 ### OxMySQL
 We utilise our own resource to communicate with MySQL databases via the [node-mysql2](https://github.com/sidorares/node-mysql2) package. The backend is actively maintained and updated unlike the package used by mysql-async, providing improved performance, security, and features. We provide full backwards compatibility with mysql-async and build for the current Cfx architecture.  
 
-- Improved performance, stability, and compatibility with MySQL 8.0
-- Support for prepared statements, providing increased security
-- Import library provides full compatibility with mysql-async
-- Schedule resource ticks to improve export response times by 50ms
-- Utilise promises to further improve export response times by 100%
-- No overhead when using sync export variants
 
 [GitHub :fontawesome-brands-github:](https://github.com/overextended/oxmysql/releases){ .md-button .md-button--primary }	[Documentation :fontawesome-solid-book:](https://overextended.github.io/oxmysql){ .md-button .md-button--primary }
 
@@ -42,15 +36,20 @@ Still a work in progress.
 
 <br>
 
-### ESX Framework
+### "Ox" ESX
 The inventory is being moved towards a _standalone_ design, with compatibility for a modified version of **ESX Legacy**.  
 For convenience, we provide a fork with all the necessary changes as well as several new features and performance improvements.  
 
 There should be no changes which break compatibility with other resources with the exception of what is necessary to support the inventory and new item system.  
 
-- Loadouts do not exist, so errors will occur in third-party resources attempting to manipulate them
+- Loadouts do not exist, so errors may occur if a third-party resource attempts to manipulate them
 - Inventories are slot-based and items can exist in multiple slots, which can throw off item counting
 - Resources attempting to iterate through inventories in order will not work if a slot is empty
+
+We are in the process of converting some common [ESX resources](https://github.com/overextended/esx-legacy) to better support our releases.  
+Some code is being changed for later reference while a txAdmin recipe is prepared.  
+- esx_status: fixed some bugs and rework for oxmysql
+- esx_addoninventory: registers addon_inventory inventories as valid stash targets
 
 !!! tip "Modifying your framework"
 	We do not provide a guide for manually converting your ESX to support Ox Inventory; instead you will need to manually reference changes in the [github diff](https://github.com/overextended/es_extended/compare/58042fb6926769aeab35fe26fa98d568971ba0be...main).
@@ -65,7 +64,7 @@ It is being updated alongside Ox Inventory to improve support as well as add com
 All stashes and shops will utilise PolyZone's instead of markers to interact with them.
 
 !!! attention
-	If you wish to use it first you must ensure that `Config.Target` is set to true in the config.lua file of the inventory.
+	If you wish to use it first you must ensure that qtarget is enabled in the resource convars.
 	You will need to enable compatibility manually by adjusting your config - more information provided below.
 
 	You must start qtarget _before_ the inventory and _after_ es_extended.
@@ -74,44 +73,69 @@ All stashes and shops will utilise PolyZone's instead of markers to interact wit
 
 ## Configuration
 Default inventory settings are stored in `config.lua`, however the recommended method of overriding them is through convars.  
-You can either add these directly to your `server.cfg`, or create a file called `.cfg` in the resource folder.
+You can either add these directly to your `server.cfg`, or create a file called `.cfg` in the resource folder.  
+You can add these settings directly to your 'server.cfg', or create a new (or multiple) file to load with 'exec'
 ```
 setr ox_inventory {
-	"esx": true,
-	"trimplate": true,
-	"qtarget": false,
-	"playerslots": 50,
-	"blurscreen": true,
-	"autoreload": false,
-	"sentry": true,
-    "keys": ["F2", "K", "TAB"],
-	"enablekeys": [249],
-	"playerweight": 30000,
+    "esx": true,
+    "trimplate": true,
+    "qtarget": false,
+    "playerslots": 50,
+    "blurscreen": true,
+    "autoreload": true,
+    "keys": [
+        "F2", "K", "TAB"
+    ],
+    "enablekeys": [
+        249
+    ],
+    "playerweight": 30000,
+    "police": "police",
     "locale": "en"
 }
 
 set ox_inventory_server {
-	"versioncheck": false,
-	"clearstashes": "6 MONTH",
+    "versioncheck": true,
+    "clearstashes": "6 MONTH",
     "logs": false,
-	"randomprice": true,
-	"evidencegrade": 2,
-	"randomloot": true,
-	"lootchance": 50
+    "randomprice": true,
+    "evidencegrade": 2,
+    "randomloot": true
+}
+
+set ox_inventory_loot {
+    "vehicle": [
+        ["cola", 1, 1],
+        ["water", 1, 1],
+        ["garbage", 1, 2, 50],
+        ["panties", 1, 1, 5],
+        ["money", 1, 50],
+        ["money", 200, 400, 5],
+        ["bandage", 1, 1]
+    ],
+
+    "dumpster": [
+    	["mustard", 1, 1],
+        ["garbage", 1, 3],
+        ["money", 1, 10],
+        ["burger", 1, 1]
+    ]
 }
 
 add_principal group.admin ox_inventory
 add_ace resource.ox_inventory command.add_principal allow
 add_ace resource.ox_inventory command.remove_principal allow
+
 ensure ox_inventory
 ```
-If you create your own config file you can load it with `exec @ox_inventory/.cfg` instead of ensure.
 
 ## Installation
 === "Fresh ESX"
+	- Download [our fork of ESX](#esx-framework)
 	- Execute the query inside [install.sql](https://github.com/overextended/ox_inventory/blob/main/setup/install.sql)
 
 === "Convert ESX"
+	- Download [our fork of ESX](#esx-framework)
 	- Execute the query inside [install.sql](https://github.com/overextended/ox_inventory/blob/main/setup/install.sql)
 	- Open `fxmanifest.lua` and uncomment `server_script 'setup/convert.lua'`
 	- Start the server and execute the `convertinventory` command from the console
@@ -137,7 +161,7 @@ Ox Inventory provides a complete suite of tools to replace the built-in items an
 - Shops from esx_shops or the armoury from esx_policejob should be removed
 - Resources like esx_inventoryhud, esx_trunkinventory, esx_addoninventory, etc. should be removed
 
-### xPlayer vs Inventory
+### xPlayer vs exports.ox_inventory
 All item related functions from xPlayer, such as `xPlayer.getInventoryItem`, have been modified for compatibility purposes; however they are considered deprecated.
 
 The reasoning is fairly simple - there's now additional function references and overhead to consider. Fortunately, the new Inventory functions can be used directly and offer a great deal of improvements over the old ones.
@@ -162,7 +186,7 @@ You should read through the modules section for further information, but the fol
 
 		You will be able to reference any functions exposed through the export.
 		```lua
-		local items = ox_inventory:Search(source, 2, {'acetone', 'antifreeze', 'sudo'})
+		local items = ox_inventory:Search(source, 'count', {'acetone', 'antifreeze', 'sudo'})
 		if items and items.acetone > 2 and items.antifreeze > 4 and items.sudo > 9 then
 			ox_inventory:RemoveItem(source, 'acetone', 3)
 			ox_inventory:RemoveItem(source, 'antifreeze', 5)
