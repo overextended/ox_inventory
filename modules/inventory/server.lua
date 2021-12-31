@@ -105,9 +105,16 @@ function Inventory.SlotWeight(item, slot)
 			count = slot.metadata.ammo,
 			weight = Items(item.ammoname).weight
 		}
-		if ammo.count then weight = weight + ammo.weight * ammo.count end
+
+		if ammo.count then
+			weight += (ammo.weight * ammo.count)
+		end
 	end
-	if slot.metadata.weight then weight = weight + slot.metadata.weight end
+
+	if slot.metadata.weight then
+		weight += (slot.metadata.weight * slot.count)
+	end
+
 	return weight
 end
 
