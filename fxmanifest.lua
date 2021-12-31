@@ -48,7 +48,8 @@ server_scripts {
 	'modules/items/server.lua',
 	'modules/inventory/server.lua',
 	'modules/shops/server.lua',
-	'server.lua'
+	'server.lua',
+	'version.lua'
 }
 
 --server_script 'setup/convert.lua'
