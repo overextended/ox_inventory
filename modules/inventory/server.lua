@@ -239,10 +239,14 @@ local function generateItems(inv, invType, items)
 	for i=1, #items do
 		local v = items[i]
 		local item = Items(v[1])
-		local metadata, count = Items.Metadata(inv, item, v[3] or {}, v[2])
-		local weight = Inventory.SlotWeight(item, {count=count, metadata=metadata})
-		totalWeight = totalWeight + weight
-		returnData[i] = {name = item.name, label = item.label, weight = weight, slot = i, count = count, description = item.description, metadata = metadata, stack = item.stack, close = item.close}
+		if not item then
+			ox.warning('unable to generate', v[1], 'item does not exist')
+		else
+			local metadata, count = Items.Metadata(inv, item, v[3] or {}, v[2])
+			local weight = Inventory.SlotWeight(item, {count=count, metadata=metadata})
+			totalWeight = totalWeight + weight
+			returnData[i] = {name = item.name, label = item.label, weight = weight, slot = i, count = count, description = item.description, metadata = metadata, stack = item.stack, close = item.close}
+		end
 	end
 
 	return returnData, totalWeight, true
