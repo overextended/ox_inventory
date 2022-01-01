@@ -173,7 +173,7 @@ local function useItem(data, cb)
 				end)
 			end
 
-			if p and Citizen.Await(p) then
+			if not p or Citizen.Await(p) then
 				if result.consume and result.consume ~= 0 then
 					TriggerServerEvent('ox_inventory:removeItem', result.name, result.consume, result.metadata, result.slot, true)
 				end
@@ -188,19 +188,16 @@ local function useItem(data, cb)
 					Utils.Notify({text = data.notification})
 				end
 
-				if currentWeapon?.slot == result.slot then
-					Utils.Disarm(currentWeapon)
-				end
-
-				Wait(200)
+				if cb then cb(result) end
+				Wait(500)
 				plyState.invBusy = false
-				return cb and cb(result)
+				return
 			end
 		end
-		Wait(200)
-		plyState.invBusy = false
 	end
 	if cb then cb(false) end
+	Wait(200)
+	plyState.invBusy = false
 end
 AddEventHandler('ox_inventory:item', useItem)
 exports('useItem', useItem)
@@ -232,6 +229,10 @@ local function useSlot(slot)
 			elseif item.name:find('WEAPON_') then
 				useItem(data, function(result)
 					if result then
+						if currentWeapon?.slot == result.slot then
+							return Utils.Disarm(currentWeapon)
+						end
+
 						local playerPed = PlayerData.ped
 						ClearPedSecondaryTask(playerPed)
 						if data.throwable then item.throwable = true end
