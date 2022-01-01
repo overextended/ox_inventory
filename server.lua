@@ -116,7 +116,7 @@ ServerCallback.Register('openInventory', function(source, cb, inv, data)
 
 		elseif inv == 'policeevidence' then
 			if left.player.job.name == ox.police then
-				data = ('police-%s'):format(data)
+				data = ('evidence-%s'):format(data)
 				right = Inventory(data)
 				if not right then
 					right = Inventory.Create(data, ox.locale('police_evidence'), inv, 100, 0, 100000, false)
