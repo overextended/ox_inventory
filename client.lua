@@ -1,5 +1,6 @@
 local ox_inventory = exports.ox_inventory
 local DisableControlActions = import 'controls'
+local AnimationList = data('animations')
 
 local Items = client.items
 local Utils = client.utils
@@ -158,6 +159,9 @@ local function useItem(data, cb)
 			local used
 			if data.client and data.client.usetime then
 				data = data.client
+				if type(data.anim) == 'string' then data.anim = AnimationList.animations[data.anim] end
+				if type(data.prop) == 'string' then data.prop = AnimationList.props[data.prop] end
+				if type(data.propTwo) == 'string' then data.propTwo = AnimationList.props[data.propTwo] end
 				Interface.Progress({
 					duration = data.usetime,
 					label = data.label or ox.locale('using', result.label),

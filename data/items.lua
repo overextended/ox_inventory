@@ -6,8 +6,8 @@ return {
 		limit = 3,
 		client = {
 			status = { hunger = 200000 },
-			anim = { dict = 'mp_player_inteat@burger', clip = 'mp_player_int_eat_burger_fp' },
-			prop = { model = `prop_cs_burger_01`, pos = vec3(0.02, 0.02, -0.02), rot = vec3(0.0, 0.0, 0.0) },
+			anim = 'eating',
+			prop = 'burger',
 			usetime = 2500,
 			export = 'ox_inventory_examples.testburger'
 		},
@@ -36,8 +36,8 @@ return {
 		weight = 220,
 		client = {
 			status = { hunger = 200000 },
-			anim = { dict = 'mp_player_inteat@burger', clip = 'mp_player_int_eat_burger_fp' },
-			prop = { model = `prop_cs_burger_01`, pos = vec3(0.02, 0.02, -0.02), rot = vec3(0.0, 0.0, 0.0) },
+			anim = 'eating',
+			prop = 'burger',
 			usetime = 2500,
 		},
 	},
