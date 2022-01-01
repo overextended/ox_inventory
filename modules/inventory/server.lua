@@ -4,8 +4,10 @@ local Inventories = {}
 setmetatable(Inventory, {
 	__call = function(self, arg)
 		if arg then
-			local inventory = Inventories[arg]
-			return inventory and inventory or type(arg) == 'table' and arg
+			if arg and type(arg) == 'table' then
+				return arg
+			end
+			return Inventories[arg]
 		end
 		return self
 	end
@@ -411,7 +413,7 @@ exports('SetMetadata', Inventory.SetMetadata)
 -- ```
 function Inventory.AddItem(inv, item, count, metadata, slot, cb)
 	if type(item) ~= 'table' then item = Items(item) end
-	inv = Inventory(inv)
+	if type(inv) ~= 'table' then inv = Inventory(inv) end
 	count = math.floor(count + 0.5)
 	local success, reason = false, nil
 	if item then
