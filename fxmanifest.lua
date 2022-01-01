@@ -7,9 +7,9 @@ game         'gta5'
 --[[ Resource Information ]]--
 name         'ox_inventory'
 author       'Overextended'
-version      '2.0.0'
+version      '2.1.0'
 repository   'https://github.com/overextended/ox_inventory'
-description  'local function ReleaseDate() local soon_tm = promise.new(); Citizen.Await(soon_tm); end'
+description  'Overly complicated and filled with scope creep'
 
 --[[ Manifest ]]--
 dependencies {

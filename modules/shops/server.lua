@@ -69,7 +69,7 @@ end
 
 local ServerCallback = import 'callbacks'
 
-ServerCallback.Register('openShop', function(source, cb, data)
+ServerCallback.Register('openShop', function(source, data)
 	local left, shop = Inventory(source)
 	if data then
 		shop = data.id and Shops[data.type][data.id] or Shops[data.type]
@@ -78,18 +78,18 @@ ServerCallback.Register('openShop', function(source, cb, data)
 			local playerJob = left.player.job
 			local shopGrade = shop.jobs[playerJob.name]
 			if not shopGrade or shopGrade > playerJob.grade then
-				return cb()
+				return
 			end
 		end
 
 		if shop.coords and #(GetEntityCoords(GetPlayerPed(source)) - shop.coords) > 10 then
-			return cb()
+			return
 		end
 
 		left.open = shop.id
 	end
 
-	cb({id=left.label, type=left.type, slots=left.slots, weight=left.weight, maxWeight=left.maxWeight}, shop)
+	return {id=left.label, type=left.type, slots=left.slots, weight=left.weight, maxWeight=left.maxWeight}, shop
 end)
 
 local table = import 'table'
@@ -102,7 +102,7 @@ local function comma_value(n)
 	return left..(num:reverse():gsub('(%d%d%d)','%1,'):reverse())..right
 end
 
-ServerCallback.Register('buyItem', function(source, cb, data)
+ServerCallback.Register('buyItem', function(source, data)
 	if data.toType == 'player' then
 		if data.count == nil then data.count = 1 end
 		local playerInv = Inventory(source)
@@ -114,23 +114,23 @@ ServerCallback.Register('buyItem', function(source, cb, data)
 		if fromData then
 			if fromData.count then
 				if fromData.count == 0 then
-					return cb(false, nil, {type = 'error', text = ox.locale('shop_nostock')})
+					return false, false, {type = 'error', text = ox.locale('shop_nostock')}
 				elseif data.count > fromData.count then
 					data.count = fromData.count
 				end
 
 			elseif fromData.license and not MySQL.scalar.await('SELECT 1 FROM user_licenses WHERE type = ? AND owner = ?', { fromData.license, playerInv.owner }) then
-				return cb(false, nil, {type = 'error', text = ox.locale('item_unlicensed')})
+				return false, false, {type = 'error', text = ox.locale('item_unlicensed')}
 
 			elseif fromData.grade and playerInv.player.job.grade < fromData.grade then
-				return cb(false, nil, {type = 'error', text = ox.locale('stash_lowgrade')})
+				return false, false, {type = 'error', text = ox.locale('stash_lowgrade')}
 			end
 
 			local currency = fromData.currency or 'money'
 			local fromItem = Items(fromData.name)
 
 			local result = fromItem.cb and fromItem.cb('buying', fromItem, playerInv, data.fromSlot, shop)
-			if result == false then return cb(false) end
+			if result == false then return false end
 
 			local toItem = toData and Items(toData.name)
 			local metadata, count = Items.Metadata(playerInv, fromItem, fromData.metadata and table.clone(fromData.metadata) or {}, data.count)
@@ -138,7 +138,7 @@ ServerCallback.Register('buyItem', function(source, cb, data)
 
 			local _, totalCount, _ = Inventory.GetItemSlots(playerInv, fromItem, fromItem.metadata)
 			if fromItem.limit and (totalCount + data.count) > fromItem.limit then
-				return cb(false, nil, {type = 'error', text = { ox.locale('cannot_carry')}})
+				return false, false, {type = 'error', text = { ox.locale('cannot_carry')}}
 			end
 
 			if toData == nil or (fromItem.name == toItem.name and fromItem.stack and table.matches(toData.metadata, metadata)) then
@@ -146,7 +146,7 @@ ServerCallback.Register('buyItem', function(source, cb, data)
 				if canAfford then
 					local newWeight = playerInv.weight + (fromItem.weight + (metadata?.weight or 0)) * count
 					if newWeight > playerInv.maxWeight then
-						return cb(false, nil, {type = 'error', text = { ox.locale('cannot_carry')}})
+						return false, false, {type = 'error', text = { ox.locale('cannot_carry')}}
 					else
 						Inventory.SetSlot(playerInv, fromItem, count, metadata, data.toSlot)
 						if fromData.count then shop.items[data.fromSlot].count = fromData.count - count end
@@ -166,15 +166,14 @@ ServerCallback.Register('buyItem', function(source, cb, data)
 						)
 					end
 
-					return cb(true, {data.toSlot, playerInv.items[data.toSlot], weight}, {type = 'success', text = message})
+					return true, {data.toSlot, playerInv.items[data.toSlot], weight}, {type = 'success', text = message}
 				else
-					return cb(false, nil, {type = 'error', text = ox.locale('cannot_afford', ('%s%s'):format((currency == 'money' and ox.locale('$') or comma_value(price)), (currency == 'money' and comma_value(price) or ' '..Items(currency).label)))})
+					return false, false, {type = 'error', text = ox.locale('cannot_afford', ('%s%s'):format((currency == 'money' and ox.locale('$') or comma_value(price)), (currency == 'money' and comma_value(price) or ' '..Items(currency).label)))}
 				end
 			end
-			return cb(false, nil, {type = 'error', text = { ox.locale('unable_stack_items')}})
+			return false, false, {type = 'error', text = { ox.locale('unable_stack_items')}}
 		end
 	end
-	cb(false)
 end)
 
 server.shops = Shops
