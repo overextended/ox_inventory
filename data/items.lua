@@ -39,7 +39,7 @@ return {
 			anim = { dict = 'mp_player_inteat@burger', clip = 'mp_player_int_eat_burger_fp' },
 			prop = { model = `prop_cs_burger_01`, pos = vec3(0.02, 0.02, -0.02), rot = vec3(0.0, 0.0, 0.0) },
 			usetime = 2500,
-			notification = 'You ate a delicious %s'
+			notification = 'You ate a delicious burger'
 		},
 	},
 
@@ -51,7 +51,7 @@ return {
 			anim = { dict = 'mp_player_intdrink', clip = 'loop_bottle' },
 			prop = { model = `prop_ecola_can`, pos = vec3(0.01, 0.01, 0.06), rot = vec3(5.0, 5.0, -180.5) },
 			usetime = 2500,
-			notification = 'You drank some delicious %s'
+			notification = 'You quenched your thirst with cola'
 		}
 	},
 
@@ -128,7 +128,7 @@ return {
 			anim = { dict = 'mp_player_intdrink', clip = 'loop_bottle' },
 			prop = { model = `prop_food_mustard`, pos = vec3(0.01, 0.0, -0.07), rot = vec3(1.0, 1.0, -1.5) },
 			usetime = 2500,
-			notification = 'You.. drank %s'
+			notification = 'You.. drank mustard'
 		}
 	},
 
@@ -141,7 +141,7 @@ return {
 			prop = { model = `prop_ld_flow_bottle`, pos = vec3(0.03, 0.03, 0.02), rot = vec3(0.0, 0.0, -1.5) },
 			usetime = 2500,
 			cancel = true,
-			notification = 'You drank some refreshing %s'
+			notification = 'You drank some refreshing water'
 		}
 	},
 }

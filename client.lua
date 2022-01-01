@@ -183,17 +183,23 @@ local function useItem(data, cb)
 					end
 				end
 
-				if currentWeapon?.slot == result.slot then Utils.Disarm(currentWeapon) else cb(result) end
+				if data.notification then
+					Utils.Notify({text = data.notification})
+				end
+
+				if currentWeapon?.slot == result.slot then
+					Utils.Disarm(currentWeapon)
+				end
 
 				Wait(200)
 				plyState.invBusy = false
-				return
+				return cb and cb(result)
 			end
 		end
 		Wait(200)
 		plyState.invBusy = false
 	end
-	cb(false)
+	if cb then cb(false) end
 end
 AddEventHandler('ox_inventory:item', useItem)
 exports('useItem', useItem)
