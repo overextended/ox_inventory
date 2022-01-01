@@ -26,7 +26,7 @@ set ox_inventory_server {
     "versioncheck": true,
     "clearstashes": "6 MONTH",
     "logs": false,
-    "randomprice": true,
+    "randomprices": true,
     "evidencegrade": 2,
     "randomloot": true
 }
@@ -124,7 +124,7 @@ if IsDuplicityVersion then
 	ox.logs = server.logs or false
 
 	-- Prices of items will fluctuate between 80% and 120%
-	ox.randomprice = server.randomprice or true
+	ox.randomprices = server.randomprices or true
 
 	-- Police grade required to take items from evidence
 	ox.evidencegrade = server.evidencegrade or 2
