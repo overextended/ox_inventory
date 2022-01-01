@@ -401,18 +401,17 @@ ServerCallback.Register('buyLicense', function(source, id)
 		local license = Licenses[id]
 		if license then
 			local inventory = Inventory(source)
-			MySQL.scalar('SELECT 1 FROM user_licenses WHERE type = ? AND owner = ?', { license.name, inventory.owner }, function(result)
-				if result then
-					return false, 'has_weapon_license'
-				elseif Inventory.GetItem(inventory, 'money', false, true) < license.price then
-					return false, 'poor_weapon_license'
-				else
-					Inventory.RemoveItem(inventory, 'money', license.price)
-					TriggerEvent('esx_license:addLicense', source, 'weapon', function()
-						return 'bought_weapon_license'
-					end)
-				end
-			end)
+			local result = MySQL.scalar.await('SELECT 1 FROM user_licenses WHERE type = ? AND owner = ?', { license.name, inventory.owner })
+			if result then
+				return false, 'has_weapon_license'
+			elseif Inventory.GetItem(inventory, 'money', false, true) < license.price then
+				return false, 'poor_weapon_license'
+			else
+				Inventory.RemoveItem(inventory, 'money', license.price)
+				TriggerEvent('esx_license:addLicense', source, 'weapon', function()
+					return 'bought_weapon_license'
+				end)
+			end
 		end
 	else
 		ox.warning('Licenses can only be purchased when using es_extended and esx_licenses. Integrated functionality will be added soon.')
