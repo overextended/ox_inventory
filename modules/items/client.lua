@@ -23,47 +23,6 @@ local ox_inventory = exports[ox.resource]
 -- Clientside item use functions
 -----------------------------------------------------------------------------------------------
 
-Item('testburger', function(data, slot)
-	ox_inventory:useItem(data, function(data)
-		if data then
-			if data.server then print(json.encode(data.server, {indent=true})) end
-			ox_inventory:notify({text = 'You ate a delicious '..data.name})
-		end
-	end)
-end)
-
-Item('burger', function(data, slot)
-	ox_inventory:useItem(data, function(data)
-		if data then
-			ox_inventory:notify({text = 'You ate a delicious '..data.name})
-		end
-	end)
-end)
-
-Item('water', function(data, slot)
-	ox_inventory:useItem(data, function(data)
-		if data then
-			ox_inventory:notify({text = 'You drank some refreshing '..data.name})
-		end
-	end)
-end)
-
-Item('cola', function(data, slot)
-	ox_inventory:useItem(data, function(data)
-		if data then
-			ox_inventory:notify({text = 'You drank some delicious '..data.name})
-		end
-	end)
-end)
-
-Item('mustard', function(data, slot)
-	ox_inventory:useItem(data, function(data)
-		if data then
-			ox_inventory:notify({text = 'You.. drank '..data.name})
-		end
-	end)
-end)
-
 Item('bandage', function(data, slot)
 	local maxHealth = 200
 	local health = GetEntityHealth(PlayerData.ped)

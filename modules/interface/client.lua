@@ -1,13 +1,6 @@
 local Interface = {}
 local input
 
---[[ Example:
-RegisterCommand('test', function()
-	local data = Keyboard.Input('Evidence Locker', {'Locker number', 'Locker name'})
-	print(ESX.DumpTable(data)) -- data[1] first input field, data[2] second, etc...
-end)
-]]--
-
 function Interface.Keyboard(header, rows)
 	if input then return end
 	input = promise.new()
@@ -83,6 +76,8 @@ local function Complete(cancel)
 	end
 end
 
+local Animations = data 'animations'
+
 function Interface.Progress(options, completed)
 	if Interface.ProgressActive == false then
 		progress.callback = completed
@@ -110,10 +105,12 @@ function Interface.Progress(options, completed)
 				}
 			})
 
+			if type(options.anim) == 'string' then options.anim = Animations.anim[options.anim] end
+
 			if options.anim then
 				if options.anim.dict then
 					lib.requestAnimDict(options.anim.dict)
-					TaskPlayAnim(PlayerData.ped, options.anim.dict, options.anim.clip, 3.0, 1.0, -1, options.anim.flag or 1, 0, false, false, false)
+					TaskPlayAnim(PlayerData.ped, options.anim.dict, options.anim.clip, 3.0, 1.0, -1, options.anim.flag or 49, 0, false, false, false)
 					progress.anim = true
 				end
 
@@ -124,9 +121,11 @@ function Interface.Progress(options, completed)
 			end
 
 			for i=1, 2 do
-				local option = i==1 and options.prop or options.propTwo
-				if option then
-					local model = option.model
+				local prop = i == 1 and options.prop or options.propTwo
+				if type(prop) == 'string' then prop = Animations.prop[prop] end
+
+				if prop then
+					local model = prop.model
 					model = type(model) == 'string' and joaat(model) or model
 
 					lib.requestModel(model)
@@ -139,7 +138,7 @@ function Interface.Progress(options, completed)
 					NetworkSetNetworkIdDynamic(netid, true)
 					SetNetworkIdCanMigrate(netid, false)
 
-					AttachEntityToEntity(modelSpawn, PlayerData.ped, GetPedBoneIndex(PlayerData.ped, option.bone or 60309), option.pos.x or 0.0, option.pos.y or 0.0, option.pos.z or 0.0, option.rot.x or 0.0, option.rot.y or 0.0, option.rot.z or 0.0, 1, 1, 0, 1, 0, 1)
+					AttachEntityToEntity(modelSpawn, PlayerData.ped, GetPedBoneIndex(PlayerData.ped, prop.bone or 60309), prop.pos.x or 0.0, prop.pos.y or 0.0, prop.pos.z or 0.0, prop.rot.x or 0.0, prop.rot.y or 0.0, prop.rot.z or 0.0, 1, 1, 0, 1, 0, 1)
 					progress['prop'..i] = netid
 					SetModelAsNoLongerNeeded(model)
 				end

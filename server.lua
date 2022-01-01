@@ -58,12 +58,12 @@ local Stashes = data 'stashes'
 local Vehicles = data 'vehicles'
 local ServerCallback = import 'callbacks'
 
-ServerCallback.Register('openInventory', function(source, cb, inv, data)
+ServerCallback.Register('openInventory', function(source, inv, data)
 	local left = Inventory(source)
 	local right = left.open and Inventory(left.open)
 
 	if right then
-		if right.open ~= source then return cb(false) end
+		if right.open ~= source then return end
 		right:set('open', false)
 		left:set('open', false)
 		right = nil
@@ -97,7 +97,7 @@ ServerCallback.Register('openInventory', function(source, cb, inv, data)
 
 				else
 					ox.warning(('%s [%s] (%s) attempted to open an invalid stash (%s)\nIf this stash should exist, add it to `data/stashes` or create it on the server first with `exports.ox_inventory:RegisterStash`'):format(GetPlayerName(source), source, left.owner, json.encode(data)))
-					return cb(false)
+					return
 				end
 			end
 
@@ -111,7 +111,7 @@ ServerCallback.Register('openInventory', function(source, cb, inv, data)
 			elseif inv == 'drop' then
 				right = Inventory(data.id)
 			else
-				cb(false)
+				return
 			end
 
 		elseif inv == 'policeevidence' then
@@ -144,7 +144,7 @@ ServerCallback.Register('openInventory', function(source, cb, inv, data)
 		else right = Inventory(data) end
 
 		if right then
-			if right.open then return cb(false) end
+			if right.open then return end
 
 			local otherplayer = right.type == 'player'
 			if otherplayer then right.coords = GetEntityCoords(GetPlayerPed(right.id)) end
@@ -156,21 +156,18 @@ ServerCallback.Register('openInventory', function(source, cb, inv, data)
 					right:set('type', 'otherplayer')
 				end
 
-			else return cb(false) end
+			else return end
 		end
 
 	else left.open = true end
 
-	cb(
-		{id=left.id, label=left.label, type=left.type, slots=left.slots, weight=left.weight, maxWeight=left.maxWeight}, right and
-		{id=right.id, label=right.label, type=right.type, slots=right.slots, weight=right.weight, maxWeight=right.maxWeight, items=right.items, coords=right.coords}
-	)
+	return {id=left.id, label=left.label, type=left.type, slots=left.slots, weight=left.weight, maxWeight=left.maxWeight}, right and {id=right.id, label=right.label, type=right.type, slots=right.slots, weight=right.weight, maxWeight=right.maxWeight, items=right.items, coords=right.coords}
 end)
 
 local table = import 'table'
 local Log = server.logs
 
-ServerCallback.Register('swapItems', function(source, cb, data)
+ServerCallback.Register('swapItems', function(source, data)
 	-- TODO: requires re-re-re-refactor and helper functions to reduce repetition
 	if data.count > 0 and data.toType ~= 'shop' then
 		local playerInventory, items, ret = Inventory(source), {}, nil
@@ -204,7 +201,7 @@ ServerCallback.Register('swapItems', function(source, cb, data)
 					TriggerClientEvent('ox_inventory:createDrop', -1, {drop, coords}, playerInventory.open and source, slot)
 				end)
 
-				return cb(true, {weight=playerInventory.weight, items=items})
+				return true, {weight=playerInventory.weight, items=items}
 			end
 		else
 			local toInventory = (data.toType == 'player' and playerInventory) or Inventory(playerInventory.open)
@@ -223,15 +220,15 @@ ServerCallback.Register('swapItems', function(source, cb, data)
 					elseif toInventory.type == 'otherplayer' then
 						TriggerClientEvent('ox_inventory:notify', source, {type = 'error', text = { ox.locale('cannot_carry_other')}})
 					end
-					return cb(false)
+					return
 				end
 			end
 
 			if fromInventory.type == 'policeevidence' and not sameInventory then
-				if not toInventory.player.job.name == ox.police then return cb(false) end
+				if not toInventory.player.job.name == ox.police then return end
 				if ox.evidencegrade > toInventory.player.job.grade then
 					TriggerClientEvent('ox_inventory:notify', source, {type = 'error', text = ox.locale('evidence_cannot_take')})
-					return cb(false)
+					return
 				end
 			end
 
@@ -269,7 +266,7 @@ ServerCallback.Register('swapItems', function(source, cb, data)
 									('Swapped %s %s for %s %s'):format(fromData.count, fromData.name, toData.count, toData.name)
 								)
 
-							else return cb(false) end
+							else return end
 						else toData, fromData = Inventory.SwapSlots(fromInventory, toInventory, data.fromSlot, data.toSlot) end
 
 					elseif toData and toData.name == fromData.name and table.matches(toData.metadata, fromData.metadata) then
@@ -299,7 +296,7 @@ ServerCallback.Register('swapItems', function(source, cb, data)
 						else
 							toData.count -= data.count
 							fromData.count += data.count
-							return cb(false)
+							return
 						end
 					elseif data.count <= fromData.count then
 						-- Move item to an empty slot
@@ -326,7 +323,7 @@ ServerCallback.Register('swapItems', function(source, cb, data)
 							else
 
 							end
-						else return cb(false) end
+						else return end
 					end
 
 					if fromData.count < 1 then fromData = nil end
@@ -390,48 +387,46 @@ ServerCallback.Register('swapItems', function(source, cb, data)
 						end
 					end
 
-					return cb(container and containerItem.weight or true, ret, movedWeapon and fromInventory.weapon)
+					return container and containerItem.weight or true, ret, movedWeapon and fromInventory.weapon
 				end
 			end
 		end
 	end
-	cb(false)
 end)
 
 local Licenses = data 'licenses'
 
-ServerCallback.Register('buyLicense', function(source, cb, id)
+ServerCallback.Register('buyLicense', function(source, id)
 	if ox.esx then
 		local license = Licenses[id]
 		if license then
 			local inventory = Inventory(source)
 			MySQL.scalar('SELECT 1 FROM user_licenses WHERE type = ? AND owner = ?', { license.name, inventory.owner }, function(result)
 				if result then
-					cb(false, 'has_weapon_license')
+					return false, 'has_weapon_license'
 				elseif Inventory.GetItem(inventory, 'money', false, true) < license.price then
-					cb(false, 'poor_weapon_license')
+					return false, 'poor_weapon_license'
 				else
 					Inventory.RemoveItem(inventory, 'money', license.price)
 					TriggerEvent('esx_license:addLicense', source, 'weapon', function()
-						cb('bought_weapon_license')
+						return 'bought_weapon_license'
 					end)
 				end
 			end)
-		else cb() end
+		end
 	else
 		ox.warning('Licenses can only be purchased when using es_extended and esx_licenses. Integrated functionality will be added soon.')
-		cb()
 	end
 end)
 
-ServerCallback.Register('getItemCount', function(source, cb, item, metadata, target)
+ServerCallback.Register('getItemCount', function(source, item, metadata, target)
 	local inventory = target and Inventory(target) or Inventory(source)
-	cb((inventory and Inventory.GetItem(inventory, item, metadata, true)) or 0)
+	return (inventory and Inventory.GetItem(inventory, item, metadata, true)) or 0
 end)
 
-ServerCallback.Register('getInventory', function(source, cb, id)
+ServerCallback.Register('getInventory', function(source, id)
 	local inventory = Inventory(id or source)
-	return inventory and cb({
+	return inventory and {
 		id = inventory.id,
 		label = inventory.label,
 		type = inventory.type,
@@ -440,10 +435,10 @@ ServerCallback.Register('getInventory', function(source, cb, id)
 		maxWeight = inventory.maxWeight,
 		owned = inventory.owner and true or false,
 		items = inventory.items
-	}) or cb()
+	}
 end)
 
-ServerCallback.Register('useItem', function(source, cb, item, slot, metadata)
+ServerCallback.Register('useItem', function(source, item, slot, metadata)
 	local inventory = Inventory(source)
 	if inventory.type == 'player' then
 		local item, type = Items(item)
@@ -454,39 +449,38 @@ ServerCallback.Register('useItem', function(source, cb, item, slot, metadata)
 				if os.time() > durability then
 					inventory.items[slot].metadata.durability = 0
 					TriggerClientEvent('ox_inventory:notify', source, {type = 'error', text = ox.locale('no_durability', data.name), duration = 2500})
-					return cb(false)
+					return
 				end
 			elseif durability <= 0 then
 				TriggerClientEvent('ox_inventory:notify', source, {type = 'error', text = ox.locale('no_durability', data.name), duration = 2500})
-				return cb(false)
+				return
 			end
 		end
 		if item and data and data.count > 0 and data.name == item.name then
 			data = {name=data.name, label=data.label, count=data.count, slot=slot or data.slot, metadata=data.metadata, consume=item.consume}
 			if type == 1 then -- weapon
 				inventory.weapon = data.slot
-				return cb(data)
+				return data
 			elseif type == 2 then -- ammo
 				data.consume = nil
-				return cb(data)
+				return data
 			elseif type == 3 then -- component
 				data.consume = 1
-				return cb(data)
+				return data
 			elseif ox.UsableItemsCallbacks[item.name] then
 				ox.UseItem(source, data.name, data)
 			else
 				if item.consume and data.count >= item.consume then
 					local result = item.cb and item.cb('usingItem', item, inventory, slot)
-					if result == false then return cb(false) end
+					if result == false then return end
 					if result ~= nil then
 						data.server = result
 					end
-					return cb(data)
+					return data
 				else
 					TriggerClientEvent('ox_inventory:notify', source, {type = 'error', text = ox.locale('item_not_enough', item.name), duration = 2500})
 				end
 			end
 		end
 	end
-	cb(false)
 end)

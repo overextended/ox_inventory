@@ -15,7 +15,7 @@ do
 		ox.error('Ox Inventory requires the pe-lualib resource, refer to the documentation.')
 	else
 		local version = GetResourceMetadata('pe-lualib', 'version', 0) or 0
-		if version < '1.2.1' then
+		if version < '1.3.0' then
 			ox.error('A more recent version of pe-lualib is required.')
 		end
 	end
