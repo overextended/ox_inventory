@@ -1,4 +1,3 @@
-local ox_inventory = exports.ox_inventory
 local DisableControlActions = import 'controls'
 
 local Items = client.items
@@ -147,35 +146,36 @@ local function useItem(data, cb)
 		invBusy = true
 		local result = ServerCallback.Await(ox.resource, 'useItem', 200, data.name, data.slot, PlayerData.inventory[data.slot].metadata)
 
-		if not result or not cb then
+		if not result then
 			Wait(500)
 			invBusy = false
 			return
 		end
 
 		if result and invBusy then
+			local p = promise.new()
 			plyState.invBusy = true
-			local used
-			if data.client and data.client.usetime then
-				data = data.client
+			
+			if data.client then data = data.client end
+			if data.usetime then
 				Interface.Progress({
 					duration = data.usetime,
-					label = data.label or ox.locale('using', result.label),
+					label = ox.locale('using', result.label),
 					useWhileDead = data.useWhileDead or false,
 					canCancel = data.cancel or false,
 					disable = data.disable,
-					anim = data.anim and ({ dict = data.anim.dict, clip = data.anim.clip, flag = data.anim.flag or 49 } or {scenario = data.scenario}),
+					anim = data.anim or data.scenario,
 					prop = data.prop,
 					propTwo = data.propTwo
 				}, function(cancel)
-					if cancel then used = false else used = true end
+					p:resolve(cancel and false or true)
 				end)
-			else used = true end
+			else used = p:resolve(true) end
 
-			while used == nil do Wait(data.usetime/2) end
-
-			if used then
-				if result.consume and result.consume ~= 0 then TriggerServerEvent('ox_inventory:removeItem', result.name, result.consume, result.metadata, result.slot, true) end
+			if Citizen.Await(p) then
+				if result.consume and result.consume ~= 0 then
+					TriggerServerEvent('ox_inventory:removeItem', result.name, result.consume, result.metadata, result.slot, true)
+				end
 
 				if data.status then
 					for k, v in pairs(data.status) do
@@ -229,7 +229,7 @@ local function useSlot(slot)
 			if data.effect then
 				data:effect({name = item.name, slot = item.slot, metadata = item.metadata})
 			elseif item.name:find('WEAPON_') then
-				ox_inventory:useItem(data, function(result)
+				useItem(data, function(result)
 					if result then
 						local playerPed = PlayerData.ped
 						ClearPedSecondaryTask(playerPed)
@@ -286,7 +286,7 @@ local function useSlot(slot)
 					local currentAmmo = GetAmmoInPedWeapon(playerPed, currentWeapon.hash)
 
 					if currentAmmo ~= maxAmmo and currentAmmo < maxAmmo then
-						ox_inventory:useItem(data, function(data)
+						useItem(data, function(data)
 
 							if data then
 								if data.name == currentWeapon.ammo then
@@ -312,7 +312,7 @@ local function useSlot(slot)
 							if HasPedGotWeaponComponent(playerPed, currentWeapon.hash, component) then
 								Utils.Notify({type = 'error', text = ox.locale('component_has', data.label)})
 							else
-								ox_inventory:useItem(data, function(data)
+								useItem(data, function(data)
 									if data then
 										GiveWeaponComponentToPed(playerPed, currentWeapon.hash, component)
 										table.insert(PlayerData.inventory[currentWeapon.slot].metadata.components, data.name)
@@ -325,7 +325,7 @@ local function useSlot(slot)
 					Utils.Notify({type = 'error', text = ox.locale('component_invalid', data.label) })
 				end
 			else
-				ox_inventory:useItem(data)
+				useItem(data)
 			end
 		end
 	end
