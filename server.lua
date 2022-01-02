@@ -463,8 +463,14 @@ ServerCallback.Register('useItem', function(source, item, slot, metadata)
 				inventory.weapon = data.slot
 				return data
 			elseif type == 2 then -- ammo
-				data.consume = nil
-				return data
+				if inventory.weapon then
+					local weapon = inventory.items[inventory.weapon]
+					if weapon?.metadata.durability > 0 then
+						data.consume = nil
+						return data
+					end
+				end
+				return false
 			elseif type == 3 then -- component
 				data.consume = 1
 				return data
