@@ -89,7 +89,7 @@ ServerCallback.Register('openShop', function(source, data)
 		left.open = shop.id
 	end
 
-	return {id=left.label, type=left.type, slots=left.slots, weight=left.weight, maxWeight=left.maxWeight}, shop
+	return {label=left.label, type=left.type, slots=left.slots, weight=left.weight, maxWeight=left.maxWeight}, shop
 end)
 
 local table = import 'table'
