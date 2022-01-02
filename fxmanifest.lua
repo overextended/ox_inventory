@@ -7,7 +7,7 @@ game         'gta5'
 --[[ Resource Information ]]--
 name         'ox_inventory'
 author       'Overextended'
-version      '2.1.0'
+version      '2.1.1'
 repository   'https://github.com/overextended/ox_inventory'
 description  'Overly complicated and filled with scope creep'
 
