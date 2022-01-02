@@ -1,4 +1,5 @@
 local DisableControlActions = import 'controls'
+local AnimationList = data('animations')
 
 local Items = client.items
 local Utils = client.utils
@@ -156,7 +157,10 @@ local function useItem(data, cb)
 		if result and invBusy then
 			plyState.invBusy = true
 			if data.client then data = data.client end
-
+			if type(data.anim) == 'string' then data.anim = AnimationList.animations[data.anim] end
+			if type(data.prop) == 'string' then data.prop = AnimationList.props[data.prop] end
+			if type(data.propTwo) == 'string' then data.propTwo = AnimationList.props[data.propTwo] end
+			
 			if data.usetime then
 				p = promise.new()
 				Interface.Progress({
