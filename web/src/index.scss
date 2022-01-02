@@ -7,16 +7,15 @@ $secondFont: Oxygen;
 $thirdFont: Poppins;
 
 $mainColor: rgb(44, 62, 80);
-$secondaryColor: #34495e;
+$secondaryColor: rgb(52, 73, 94);
 
 $borderRadius: 0.25vh;
 
 $gridCols: 5;
 $gridRows: 5;
-$gridSize: 9.8vh;
+$gridSize: 10.2vh;
 $gridGap: 2px;
-$containerSize: calc(#{$gridRows} * #{$gridSize} + #{$gridRows} * #{$gridGap});
-
+$containerSize: calc(#{$gridRows} * #{$gridSize + 0.22vh} + #{$gridRows} * #{$gridGap});
 $imageSize: $gridSize - 2.5vh;
 
 $textShadow: 0.1vh 0.1vh 0 rgba(0, 0, 0, 0.7);
@@ -38,8 +37,8 @@ html {
 
 img {
   image-rendering: -webkit-optimize-contrast;
-  width: $imageSize;
-  height: $imageSize;
+  max-width: $imageSize;
+  max-height: $imageSize;
 }
 
 .center-wrapper {
@@ -69,7 +68,7 @@ img {
   display: grid;
   height: $containerSize;
   grid-template-columns: repeat($gridCols, $gridSize);
-  grid-auto-rows: $gridSize;
+  grid-auto-rows: $gridSize + 0.22vh;
   gap: $gridGap;
   overflow-y: scroll;
   margin-top: 0.5vh;
@@ -86,7 +85,6 @@ img {
   left: 0;
   background-repeat: no-repeat;
   background-position: center;
-  background-size: $imageSize;
   image-rendering: -webkit-optimize-contrast;
 }
 
@@ -97,7 +95,7 @@ img {
     width: 1.5vh;
     height: 1.7vh;
     line-height: 1.7vh;
-    font-size: 1vh;
+    font-size: 0.7em;
     border-top-left-radius: $borderRadius;
     border-bottom-right-radius: $borderRadius;
     font-family: $secondFont;
@@ -126,9 +124,9 @@ img {
     span {
       font-family: $secondFont;
       margin-left: auto;
-      font-size: 1vh;
+      font-size: 0.7em;
       font-weight: 300;
-      padding: 0.2vh;
+      padding: 0.2em;
       text-shadow: $textShadow;
     }
   }
@@ -136,7 +134,7 @@ img {
   .item-durability {
     margin-top: auto;
     background: rgba(0, 0, 0, 0.5);
-    height: 0.5vh;
+    height: 0.3em;
     overflow: hidden;
 
     div {
@@ -146,8 +144,9 @@ img {
 
   .item-label {
     background-color: $mainColor;
-    padding: 0.15vh;
-    font-size: 1vh;
+    padding: 0.1em;
+    margin: -1px;
+    font-size: 0.7em;
     text-align: center;
     text-transform: uppercase;
     white-space: nowrap;
@@ -155,18 +154,17 @@ img {
     text-overflow: ellipsis;
     border-bottom-left-radius: inherit;
     border-bottom-right-radius: inherit;
-    box-sizing: border-box;
+    border: inherit;
+    border-top: 1px inset rgba(0, 0, 0, 0.4);
   }
 
   .item-price {
     text-shadow: $textShadow;
     position: absolute;
-    font-size: 1.2vh;
+    font-size: 0.8em;
     bottom: 1.4vh;
     right: 0.1vh;
-
     height: 2vh;
-
     display: flex;
     justify-content: center;
     align-items: center;
@@ -184,7 +182,7 @@ img {
 
 .button {
   background-color: rgba(12, 12, 12, 0.4);
-  border: 0.1vh solid rgba(0, 0, 0, 0.15);
+  border: 1px solid rgba(0, 0, 0, 0.15);
   border-radius: $borderRadius;
   padding: 0.9vh;
   text-align: center;
@@ -207,11 +205,13 @@ img {
 
   button {
     @extend .button;
-    width: 3vh;
+    width: 2vh;
     font-size: 2.5vh;
     display: flex;
     justify-content: center;
     align-items: center;
+    background: none;
+    border: none;
   }
 }
 
@@ -235,8 +235,8 @@ input[type='number'] {
 
 .weight-bar {
   background: rgba(0, 0, 0, 0.4);
-  border: inset rgba(0, 0, 0, 0.1) 0.1vh;
-  height: 1vh;
+  border: 1px inset rgba(0, 0, 0, 0.1);
+  height: 0.7em;
   border-radius: $borderRadius;
   overflow: hidden;
 
@@ -247,12 +247,16 @@ input[type='number'] {
 
 .hotbar-grid {
   display: grid;
-  grid-template-columns: repeat(5, 100px);
-  grid-auto-rows: 100px;
+  grid-template-columns: repeat(5, $gridSize);
+  grid-auto-rows: $gridSize;
   gap: 2px;
   position: absolute;
   bottom: 2vh;
   border-radius: $borderRadius;
+
+  .item-container {
+    border: 1px inset rgba(0, 0, 0, 0.3);
+  }
 }
 
 .item-info {
@@ -264,10 +268,10 @@ input[type='number'] {
   width: 23vh;
   min-width: 180px;
   text-shadow: $textShadow;
-  border: 0.1vh solid rgba(0, 0, 0, 0.2) !important;
+  border: 1px solid rgba(0, 0, 0, 0.2) !important;
   line-height: 1.1em !important;
 
- p {
+  p {
     font-size: 0.95em !important;
   }
 
@@ -281,7 +285,7 @@ input[type='number'] {
   width: 28vh;
   height: 3.6vh;
   position: absolute;
-  bottom: 12vh;
+  bottom: 13vh;
   left: 50%;
   transform: translate(-50%, 0);
   background-color: rgba(0, 0, 0, 0.6);
@@ -298,7 +302,7 @@ input[type='number'] {
       position: absolute;
       top: 50%;
       left: 50%;
-      font-size: 2.2vh;
+      font-size: 1.25em;
       width: 100%;
       text-align: center;
       transform: translate(-50%, -50%);
@@ -436,7 +440,7 @@ input[type='number'] {
   border-radius: $borderRadius;
   background-color: $mainColor;
   box-shadow: none;
-  border: 0.1vh inset rgba(0, 0, 0, 0.2) !important;
+  border: 1px inset rgba(0, 0, 0, 0.2) !important;
   padding: 3px 0;
 }
 
@@ -492,9 +496,10 @@ input[type='number'] {
 
 .item-notification {
   @extend .item-container;
-  width: $gridSize;
-  height: $gridSize + 1vh;
+  height: calc($imageSize * 1.4);
+  width: calc($imageSize * 1.3);
   justify-content: space-between;
+  border: 1px inset rgba(0, 0, 0, 0.3);
 }
 
 .item-notification-enter {
