@@ -832,7 +832,7 @@ RegisterNetEvent('ox_inventory:setPlayerInventory', function(currentDrops, inven
 							ClearPedTasks(playerPed)
 							SetCurrentPedWeapon(playerPed, currentWeapon.hash, true)
 							SetPedCurrentWeaponVisible(playerPed, true, false, false, false)
-							if currentWeapon?.ammo and ox.autoreload and not Interface.ProgressActive and not IsPedRagdoll(playerPed) and not IsPedFalling(playerPed) then
+							if currentWeapon?.ammo and ox.autoreload and not Interface.ProgressActive and not IsPedRagdoll(playerPed) and not IsPedFalling(playerPed) and currentWeapon.durability > 0 then
 								local ammo = Inventory.Search(1, currentWeapon.ammo)
 
 								if ammo[1] then
@@ -919,20 +919,23 @@ end)
 
 RegisterNUICallback('removeComponent', function(data, cb)
 	cb(1)
-	if not currentWeapon then return Utils.Notify({type = 'error', text = ox.locale('weapon_hand_required')}) end
-	if data.slot ~= currentWeapon.slot then return Utils.Notify({type = 'error', text = ox.locale('weapon_hand_wrong')}) end
-	local itemSlot = PlayerData.inventory[currentWeapon.slot]
-	for _, component in pairs(Items[data.component].client.component) do
-		if HasPedGotWeaponComponent(PlayerData.ped, currentWeapon.hash, component) then
-			RemoveWeaponComponentFromPed(PlayerData.ped, currentWeapon.hash, component)
-			for k, v in pairs(itemSlot.metadata.components) do
-				if v == data.component then
-					table.remove(itemSlot.metadata.components, k)
-					TriggerServerEvent('ox_inventory:updateWeapon', 'component', k)
-					break
+	if currentWeapon then
+		if data.slot ~= currentWeapon.slot then return Utils.Notify({type = 'error', text = ox.locale('weapon_hand_wrong')}) end
+		local itemSlot = PlayerData.inventory[currentWeapon.slot]
+		for _, component in pairs(Items[data.component].client.component) do
+			if HasPedGotWeaponComponent(PlayerData.ped, currentWeapon.hash, component) then
+				RemoveWeaponComponentFromPed(PlayerData.ped, currentWeapon.hash, component)
+				for k, v in pairs(itemSlot.metadata.components) do
+					if v == data.component then
+						table.remove(itemSlot.metadata.components, k)
+						TriggerServerEvent('ox_inventory:updateWeapon', 'component', k)
+						break
+					end
 				end
 			end
 		end
+	else
+		TriggerServerEvent('ox_inventory:updateWeapon', 'component', data)
 	end
 end)
 

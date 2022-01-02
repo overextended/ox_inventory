@@ -443,6 +443,7 @@ ServerCallback.Register('useItem', function(source, item, slot, metadata)
 		local item, type = Items(item)
 		local data = item and (slot and inventory.items[slot] or Inventory.GetItem(source, item, metadata))
 		local durability = data.metadata?.durability
+
 		if durability then
 			if durability > 100 then
 				if os.time() > durability then
@@ -455,6 +456,7 @@ ServerCallback.Register('useItem', function(source, item, slot, metadata)
 				return
 			end
 		end
+
 		if item and data and data.count > 0 and data.name == item.name then
 			data = {name=data.name, label=data.label, count=data.count, slot=slot or data.slot, metadata=data.metadata, consume=item.consume}
 			if type == 1 then -- weapon
