@@ -82,12 +82,13 @@ function Utils.Disarm(currentWeapon, newSlot)
 			TriggerServerEvent('ox_inventory:updateWeapon', ammo and 'ammo' or 'melee', ammo or currentWeapon.melee, newSlot)
 		end
 
+		currentWeapon = nil
 		TriggerEvent('ox_inventory:currentWeapon')
 	end
 end
 
 function Utils.ClearWeapons(currentWeapon)
-	Utils.Disarm(currentWeapon)
+	currentWeapon = Utils.Disarm(currentWeapon)
 	RemoveAllPedWeapons(PlayerData.ped, true)
 	if ox.parachute then
 		local chute = `GADGET_PARACHUTE`
