@@ -20,12 +20,13 @@ function items()
 	for type, data in pairs(data('weapons')) do
 		for k, v in pairs(data) do
 			v.name = k
-			v.hash = type == 'Weapons' and joaat(k)
-			v.stack = type == 'Weapons' and false or true
 			v.close = type == 'Ammo' and true or false
-
-			if type == 'Weapons' and not v.durability then
-				v.durability = 1
+			if type == 'Weapons' then
+				v.hash = joaat(k)
+				v.stack = false
+				v.durability = v.durability or 1
+			else
+				v.stack = true
 			end
 
 			if IsDuplicityVersion then v.client = nil else v.server = nil end
