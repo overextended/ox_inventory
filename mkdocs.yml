@@ -81,20 +81,20 @@ extra:
     - icon: fontawesome/brands/github
       link: https://github.com/overextended/ox_inventory
     - icon: fontawesome/brands/discord
-      link: https://discord.io/overextended
+      link: https://discord.gg/overextended
 
 # Extensions
 markdown_extensions:
   - toc:
       toc_depth: 2
-  - markdown.extensions.admonition
-  - markdown.extensions.attr_list
-  - markdown.extensions.codehilite:
-      guess_lang: false
-      linenums: true
-  - markdown.extensions.def_list
-  - markdown.extensions.footnotes
-  - markdown.extensions.meta
+      permalink: true
+  - admonition
+  - attr_list
+  - def_list
+  - footnotes
+  - meta
+  - pymdownx.highlight:
+      anchor_linenums: true
   - markdown.extensions.toc:
       permalink: true
   - pymdownx.betterem:
