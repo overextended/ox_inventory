@@ -15,16 +15,12 @@ Trigger an event on the player to open an inventory.
 	
 
 !!! example
-
 	=== "Player"
-
 		```lua
 		TriggerEvent('ox_inventory:openInventory', 'player', targetId [int])
 		TriggerClientEvent('ox_inventory:openInventory', id, 'player', targetId [int])
 		```
-
 	=== "Stash"
-
 		```lua
 		TriggerEvent('ox_inventory:openInventory', 'stash', 'police_stash')
 		TriggerClientEvent('ox_inventory:openInventory', id, 'stash', 'police_stash')

@@ -10,7 +10,7 @@ Creates a new inventory from the given arguments. This is an _internal_ function
 
 	| Argument  | Type    | Optional | Explanation |
 	| --------- | ------- | -------- | ----------- |
-	| id        | string / integer | no       | A unique identifier for the inventory to create |
+	| id        | str/int | no       | A unique identifier for the inventory to create |
 	| label     | string  | yes      | A generic name for the inventory to display |
 	| type      | string  | no       | The inventory's type (player, stash, etc) |
 	| slots     | integer | no       | Total number of unique slots |

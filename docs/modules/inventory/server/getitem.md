@@ -12,7 +12,7 @@ Searches an inventory for an item, returning generic item data and the count.
 
 	| Argument     | Type    | Optional | Explanation |
 	| ------------ | ------- | -------- | ----------- |
-	| inv          | string / integer | no       | The id of the inventory to add an item to, such as playerid |
+	| inv          | str/int | no       | The id of the inventory to add an item to, such as playerid |
 	| item         | string  | no       | Name of the item to get |
 	| metadata     | table   | yes      | Specific metadata to search for |
 	| returnsCount | boolean | yes      | Only return the item count |

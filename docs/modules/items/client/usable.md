@@ -15,9 +15,7 @@ It is still possible to use items through ESX.RegisterUsableItem, though it is l
 	| callback | function  | no       | Creates a function to be triggered when an item is used |
 
 !!! example
-
 	=== "Sample"
-
 		```lua
 		Item(name, function(data, slot)
 			-- Trigger on use
@@ -26,9 +24,7 @@ It is still possible to use items through ESX.RegisterUsableItem, though it is l
 			end)
 		end)
 		```
-	
 	=== "Example"
-
 		```lua
 		Item('bandage', function(data, slot)
 			local maxHealth = 200

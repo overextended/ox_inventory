@@ -10,7 +10,7 @@ Adds an item to the specified inventory.
 
 	| Argument   | Type    | Optional | Explanation |
 	| ---------- | ------- | -------- | ----------- |
-	| inv        | string / integer | no       | The id of the inventory to add an item to, such as playerid |
+	| inv        | str/int | no       | The id of the inventory to add an item to, such as playerid |
 	| item       | string  | no       | Name of the item to add |
 	| count      | integer | no       | Number of items to add |
 	| metadata   | table   | yes      | Metadata to assign to the given item |
