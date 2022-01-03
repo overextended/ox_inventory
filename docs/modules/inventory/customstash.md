@@ -13,7 +13,7 @@ Stashes will not always have a defined template, so it is necessary to register 
 	
 	| Argument  | Type    | Optional | Explanation |
 	| --------- | ------- | -------- | ----------- |
-	| id        | str/int | no       | A unique identifier used to access and store the stash |
+	| id        | string / integer | no       | A unique identifier used to access and store the stash |
 	| label     | string  | no       | The text to display when the stash is opened |
 	| slots     | integer | no       | The number of slots for storing items |
 	| maxWeight | integer | no       | The maximum amount of weight that can be held |

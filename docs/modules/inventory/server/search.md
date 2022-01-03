@@ -10,7 +10,7 @@ Returns a table containing data for the searched items, the result varying based
 
 	| Argument   | Type    | Optional | Explanation |
 	| ---------- | ------- | -------- | ----------- |
-	| inventory  | str/int | no       | The id of the inventory to search, such as playerid or a plate |
+	| inventory  | string / integer | no       | The id of the inventory to search, such as playerid or a plate |
 	| searchtype | integer | no       | 1: Returns slots and data, 2: Returns total count of item |
 	| items      | table   | no       | Array of item names to search for |
 	| metadata   | table   | yes      | Metadata pairs that must exist on the found item |
@@ -20,6 +20,7 @@ Returns a table containing data for the searched items, the result varying based
 
 !!! example
 	=== "Single item data"
+
 		```lua
 		local ox_inventory = exports.ox_inventory
 
@@ -31,7 +32,9 @@ Returns a table containing data for the searched items, the result varying based
 		end
 		print('Player 3 has '..count..' water')
 		```
+		
 	=== "Multiple items data"
+
 		```lua
 		local ox_inventory = exports.ox_inventory
 
@@ -50,13 +53,16 @@ Returns a table containing data for the searched items, the result varying based
 		end
 		```
 	=== "Single item count"
+
 		```lua
 		local ox_inventory = exports.ox_inventory
 
 		local count = ox_inventory:Search('trunk-GEZ 461', 'count', 'water')
 		print('Vehicle contains '..count.. ' water')
 		```
+
 	=== "Multiple items count"
+
 		```lua
 		local ox_inventory = exports.ox_inventory
 

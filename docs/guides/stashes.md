@@ -12,7 +12,7 @@ We can setup custom stashes from outside the resource utilising the exported Reg
 	| label      | string   | no       | A display name when viewing the inventory |
 	| slots      | integer  | no       | Number of slots |
 	| weight     | integer  | no       | Maximum weight |
-	| owner      | str/bool | yes      | See below |
+	| owner      | string / boolean | yes      | See below |
 	| job        | table    | yes      | Key-value pairs of job name and minimum grade to access |
     | coords     | vector   | yes      | A vector (or table) containing x, y, z coordinates |
 
@@ -26,51 +26,57 @@ We can setup custom stashes from outside the resource utilising the exported Reg
 
 !!! example
     
-    Below the value is hardset, but it could be loaded from the database (especially if there are unknown fields, i.e. owner)
-    ```lua
-    -- Server
-    local stash = {
-        id = '42wallabyway',
-        label = '42 Wallaby Way',
-        slots = 50,
-        weight = 100000,
-        owner = 'char1:license'
-    }
+    === "1"
 
-    AddEventHandler('onServerResourceStart', function(resourceName)
-        if resourceName == 'ox_inventory' or resourceName == GetCurrentResourceName() then
-            Wait(0)
-            exports.ox_inventory:RegisterStash(stash.id, stash.label, stash.slots, stash.weight, stash.owner)
-        end
-    end)
+        Below the value is hardset, but it could be loaded from the database (especially if there are unknown fields, i.e. owner)
 
-    -- Client
-    exports.ox_inventory:openInventory('stash', {id='42wallabyway', owner=property.owner})
-    ```
+        ```lua
+        -- Server
+        local stash = {
+            id = '42wallabyway',
+            label = '42 Wallaby Way',
+            slots = 50,
+            weight = 100000,
+            owner = 'char1:license'
+        }
+
+        AddEventHandler('onServerResourceStart', function(resourceName)
+            if resourceName == 'ox_inventory' or resourceName == GetCurrentResourceName() then
+                Wait(0)
+                exports.ox_inventory:RegisterStash(stash.id, stash.label, stash.slots, stash.weight, stash.owner)
+            end
+        end)
+
+        -- Client
+        exports.ox_inventory:openInventory('stash', {id='42wallabyway', owner=property.owner})
+        ```
     
-    The following sample is based on esx_property's db data.
-    ```lua
-    -- Server
-    local properties
+    === "2"
+    
+        The following sample is based on esx_property's db data.
 
-    MySQL.query('SELECT * FROM `properties`', {}, function(result)
-        properties = result
-    end
+        ```lua
+        -- Server
+        local properties
 
-    RegisterNetEvent('ox:loadStashes', function(id)
-        local stash = properties[id]
-        if stash then
-            -- id: 1, name: WhispymoundDrive, label: 2677 Whispymound Drive, coords: {"x":118.748,"y":566.573,"z":175.697}
-	        ox_inventory:RegisterStash(stash.name, stash.label, 50, 100000, true, false, json.encode(stash.room_menu))
+        MySQL.query('SELECT * FROM `properties`', {}, function(result)
+            properties = result
         end
-    end)
 
-    -- Client
-    if ox_inventory:openInventory('stash', property.id) == false then
-        TriggerServerEvent('ox:loadStashes')
-        ox_inventory:openInventory('stash', property.id)
-    end
-    ```
-    For our actual implementation of esx_property support, you can refer to these files
-        - [client](https://github.com/overextended/esx-legacy/blob/main/%5Besx_addons%5D/esx_property/client/main.lua#L588-L619)
-        - [server](https://github.com/overextended/esx-legacy/blob/main/[esx_addons]/esx_property/server/main.lua#L62-L151)
+        RegisterNetEvent('ox:loadStashes', function(id)
+            local stash = properties[id]
+            if stash then
+                -- id: 1, name: WhispymoundDrive, label: 2677 Whispymound Drive, coords: {"x":118.748,"y":566.573,"z":175.697}
+                ox_inventory:RegisterStash(stash.name, stash.label, 50, 100000, true, false, json.encode(stash.room_menu))
+            end
+        end)
+
+        -- Client
+        if ox_inventory:openInventory('stash', property.id) == false then
+            TriggerServerEvent('ox:loadStashes')
+            ox_inventory:openInventory('stash', property.id)
+        end
+        ```
+        For our actual implementation of esx_property support, you can refer to these files
+            - [client](https://github.com/overextended/esx-legacy/blob/main/%5Besx_addons%5D/esx_property/client/main.lua#L588-L619)
+            - [server](https://github.com/overextended/esx-legacy/blob/main/[esx_addons]/esx_property/server/main.lua#L62-L151)

@@ -10,4 +10,4 @@ Clears the players entire inventory.
 	
 	| Argument | Type    | Optional | Explanation |
 	| -------- | ------- | -------- | ----------- |
-	| inv      | str/int | no       | The id of the inventory to wipe |
+	| inv      | string / integer | no       | The id of the inventory to wipe |

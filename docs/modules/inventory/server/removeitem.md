@@ -12,7 +12,7 @@ Removes an item from the provided inventory.
 
 	| Argument   | Type    | Optional | Explanation |
 	| ---------- | ------- | -------- | ----------- |
-	| inv        | str/int | no       | The id of the inventory to remove the item from |
+	| inv        | string / integer | no       | The id of the inventory to remove the item from |
 	| item       | string  | no       | Name of the item to remove |
 	| count      | integer | no       | Number of items to remove |
 	| metadata   | table   | yes      | Required metadata for removal |

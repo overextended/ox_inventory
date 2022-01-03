@@ -19,6 +19,7 @@ Returns a table containing data for the searched items, the result varying based
 
 !!! example
 	=== "Single item data"
+
 		```lua
 		local ox_inventory = exports.ox_inventory
 
@@ -30,7 +31,9 @@ Returns a table containing data for the searched items, the result varying based
 		end
 		print('You have '..count..' water')
 		```
+
 	=== "Multiple items data"
+
 		```lua
 		local ox_inventory = exports.ox_inventory
 
@@ -48,14 +51,18 @@ Returns a table containing data for the searched items, the result varying based
 			end
 		end
 		```
+
 	=== "Single item count"
+
 		```lua
 		local ox_inventory = exports.ox_inventory
 
 		local count = ox_inventory:Search('count', 'water')
 		print('You have '..count.. ' water')
 		```
+
 	=== "Multiple items count"
+
 		```lua
 		local ox_inventory = exports.ox_inventory
 

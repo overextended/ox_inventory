@@ -12,7 +12,7 @@ Checks if the provided inventory is capable of holding new items.
 
 	| Argument | Type    | Optional | Explanation |
 	| -------- | ------- | -------- | ----------- |
-	| inv      | str/int | no       | Which inventory to check |
+	| inv      | string / integer | no       | Which inventory to check |
 	| item     | string  | no       | Name of the item |
 	| count    | number  | no       | Number of items |
 	| metadata | table   | yes      | Metadata values to compare |

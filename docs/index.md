@@ -137,22 +137,26 @@ ensure ox_inventory
 ```
 
 ## Installation
-=== "Fresh ESX"
-	- Download [our fork of ESX](#esx-framework)
-	- Execute the query inside [install.sql](https://github.com/overextended/ox_inventory/blob/main/setup/install.sql)
 
-=== "Convert ESX"
-	- Download [our fork of ESX](#esx-framework)
-	- Execute the query inside [install.sql](https://github.com/overextended/ox_inventory/blob/main/setup/install.sql)
-	- Open `fxmanifest.lua` and uncomment `server_script 'setup/convert.lua'`
-	- Start the server and execute the `convertinventory` command from the console
-	- Remove the conversion file
+	=== "Fresh ESX"
 
-=== "Upgrade from Linden Inventory"
-	- Execute the query inside [upgrade.sql](https://github.com/overextended/ox_inventory/blob/main/setup/upgrade.sql)
-	- Open `fxmanifest.lua` and uncomment `server_script 'setup/convert.lua'`
-	- Start the server and execute the `convertinventory linden` command from the console
-	- Remove the conversion file
+		- Download [our fork of ESX](#esx-framework)
+		- Execute the query inside [install.sql](https://github.com/overextended/ox_inventory/blob/main/setup/install.sql)
+
+	=== "Convert ESX"
+
+		- Download [our fork of ESX](#esx-framework)
+		- Execute the query inside [install.sql](https://github.com/overextended/ox_inventory/blob/main/setup/install.sql)
+		- Open `fxmanifest.lua` and uncomment `server_script 'setup/convert.lua'`
+		- Start the server and execute the `convertinventory` command from the console
+		- Remove the conversion file
+
+	=== "Upgrade from Linden Inventory"
+
+		- Execute the query inside [upgrade.sql](https://github.com/overextended/ox_inventory/blob/main/setup/upgrade.sql)
+		- Open `fxmanifest.lua` and uncomment `server_script 'setup/convert.lua'`
+		- Start the server and execute the `convertinventory linden` command from the console (you don't need the standard one)
+		- Remove the conversion file
 
 	This will not update your items file and old items may be incompatible; refer to documentation for item creation
 
@@ -176,7 +180,9 @@ The reasoning is fairly simple - there's now additional function references and 
 You should read through the modules section for further information, but the following should give you a decent idea.
 
 !!! example "xPlayer.getInventoryItem and xPlayer.removeInventoryItem"
+
 	=== "ESX"
+
 		```lua
 		if xPlayer.getInventoryItem('acetone').count > 2 and xPlayer.getInventoryItem('antifreeze').count > 4 and xPlayer.getInventoryItem('sudo').count > 9 then 
 			xPlayer.removeInventoryItem("acetone", 3)
@@ -186,12 +192,15 @@ You should read through the modules section for further information, but the fol
 		```
 
 	=== "Inventory"
+
 		Add the following code somewhere in your resource to cache the exports metatable.
+
 		```lua
 		local ox_inventory = exports.ox_inventory
 		```
 
 		You will be able to reference any functions exposed through the export.
+
 		```lua
 		local items = ox_inventory:Search(source, 'count', {'acetone', 'antifreeze', 'sudo'})
 		if items and items.acetone > 2 and items.antifreeze > 4 and items.sudo > 9 then

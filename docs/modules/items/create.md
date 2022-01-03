@@ -5,8 +5,11 @@ All static item data is loaded from files in the `data` folder rather than the d
 The item table defines a basic template to reference when working with an instance of that item type, and can contain custom data.
 
 !!! example
+
 	=== "Standard Burger"
+
 		A normal burger item, as it appears in data/items.lua
+
 		```lua
 		['burger'] = {
 			label = 'Burger',
@@ -22,7 +25,9 @@ The item table defines a basic template to reference when working with an instan
 		}
 		```
 	=== "Custom Burger"
+
 		A modified burger item, with a description and custom crafting table.
+
 		```lua
 		['burger'] = {
 			label = 'Burger',
@@ -51,7 +56,9 @@ The item table defines a basic template to reference when working with an instan
 		Combined with several new functions and events you could easily create your own crafting system.
 
 !!! summary "Standard options"
+
 	=== "Shared"
+
 		| Argument    | Optional | Default | Explanation |
 		| ----------- | -------- | ------- | ----------- |
 		| label       | no       | -       | The display text for an item |
@@ -62,7 +69,9 @@ The item table defines a basic template to reference when working with an instan
 		| consume     | yes      | 1       | Number of an item needed to use it, and removed after use |
 		| client      | yes      | -       | Options accessible only to the client |
 		| server      | yes      | -       | Options accessible only to the server |
+
 	=== "Client"
+
 		| Argument | Explanation |
 		| -------- | ----------- |
 		| event    | Trigger a client event after use |
