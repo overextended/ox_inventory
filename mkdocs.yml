@@ -5,7 +5,7 @@ site_author: Overextended
 # Repository
 repo_name: Ox Inventory
 repo_url: https://github.com/overextended/ox_inventory
-edit_uri: ""
+edit_uri: ''
 
 # Copyright
 copyright: Copyright &copy; 2021 Overextended
@@ -108,25 +108,26 @@ markdown_extensions:
   - pymdownx.inlinehilite
   - pymdownx.keys
   - pymdownx.magiclink:
-      provider: "github"
+      provider: 'github'
       repo_url_shortener: true
       repo_url_shorthand: true
       social_url_shorthand: true
       labels:
         {
-          "commit": "Commit",
-          "compare": "Compare",
-          "issue": "Issue",
-          "pr": "Pull Request",
-          "mention": "User",
-          "repo": "Repository",
+          'commit': 'Commit',
+          'compare': 'Compare',
+          'issue': 'Issue',
+          'pr': 'Pull Request',
+          'mention': 'User',
+          'repo': 'Repository',
         }
   - pymdownx.mark
   - pymdownx.smartsymbols
   - pymdownx.snippets:
       check_paths: true
   - pymdownx.superfences
-  - pymdownx.tabbed
+  - pymdownx.tabbed:
+      alternate_style: true
   - pymdownx.tasklist:
       custom_checkbox: true
   - pymdownx.tilde
