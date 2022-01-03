@@ -11,9 +11,9 @@ import { Items } from '../store/items';
 import InventoryComponent from './inventory';
 import { debugData } from '../utils/debugData';
 import { Inventory } from '../typings';
-import * as Sentry from '@sentry/react';
-import { Integrations } from '@sentry/tracing';
-import { isEnvBrowser } from '../utils/misc';
+// import * as Sentry from '@sentry/react';
+// import { Integrations } from '@sentry/tracing';
+// import { isEnvBrowser } from '../utils/misc';
 import { Locale } from '../store/locale';
 import { fetchNui } from '../utils/fetchNui';
 import { useDragDropManager } from 'react-dnd';
@@ -29,9 +29,14 @@ debugData([
         maxWeight: 5000,
         items: [
           {
-            slot: 1, name: 'water', weight: 3000, metadata: {
-              durability: 100, description: `# Testing something  \n**Yes**`
-            }, count: 5
+            slot: 1,
+            name: 'water',
+            weight: 3000,
+            metadata: {
+              durability: 100,
+              description: `# Testing something  \n**Yes**`,
+            },
+            count: 5,
           },
           { slot: 2, name: 'money', weight: 0, count: 32000 },
           { slot: 3, name: 'cola', weight: 100, count: 1 },
@@ -61,13 +66,13 @@ const App: React.FC = () => {
     items: typeof Items;
     leftInventory: Inventory;
   }>('init', ({ locale, items, leftInventory }) => {
-    if (!process.env.IN_GAME_DEV && !isEnvBrowser())
-      // Sentry no longer being utilised; settings left behind for developers looking to track errors on their servers (more info later)
-      // Sentry.init({
-      //   dsn: '',
-      //   integrations: [new Integrations.BrowserTracing()],
-      //   tracesSampleRate: 1.0,
-      // });
+    // if (!process.env.IN_GAME_DEV && !isEnvBrowser())
+    //   // Sentry no longer being utilised; settings left behind for developers looking to track errors on their servers (more info later)
+    //   Sentry.init({
+    //     dsn: '',
+    //     integrations: [new Integrations.BrowserTracing()],
+    //     tracesSampleRate: 1.0,
+    //   });
 
     for (const [name, data] of Object.entries(locale)) Locale[name] = data;
 
