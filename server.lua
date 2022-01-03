@@ -95,10 +95,7 @@ ServerCallback.Register('openInventory', function(source, inv, data)
 						end
 					end
 
-				else
-					ox.warning(('%s [%s] (%s) attempted to open an invalid stash (%s)\nIf this stash should exist, add it to `data/stashes` or create it on the server first with `exports.ox_inventory:RegisterStash`'):format(GetPlayerName(source), source, left.owner, json.encode(data)))
-					return
-				end
+				else return false end
 			end
 
 		elseif type(data) == 'table' then
