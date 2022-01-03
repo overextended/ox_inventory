@@ -125,7 +125,12 @@ local function OpenInventory(inv, data)
 			if not currentInventory.coords and not inv == 'container' then
 				currentInventory.coords = GetEntityCoords(PlayerData.ped)
 			end
+
+			-- Stash exists (useful for custom stashes)
+			return true
 		else
+			-- Stash does not exist
+			if left == false then return false end
 			if invOpen == false then Utils.Notify({type = 'error', text = ox.locale('inventory_right_access'), duration = 2500}) end
 			if invOpen then TriggerEvent('ox_inventory:closeInventory') end
 		end
