@@ -75,6 +75,7 @@ local function OpenInventory(inv, data)
 	end
 
 	if CanOpenInventory() then
+		invBusy = true
 		local left, right
 		if inv == 'shop' and invOpen == false then
 			left, right = ServerCallback.Await(ox.resource, 'openShop', 200, data)
@@ -94,8 +95,10 @@ local function OpenInventory(inv, data)
 					data = input
 				end
 			end
-			left, right = ServerCallback.Await(ox.resource, 'openInventory', 200, inv, data)
+			left, right = ServerCallback.Await(ox.resource, 'openInventory', false, inv, data)
 		end
+
+		invBusy = false
 
 		if left then
 			if inv ~= 'trunk' and not IsPedInAnyVehicle(PlayerData.ped, false) then
@@ -642,7 +645,7 @@ local function setStateBagHandler(id)
 			invOpen = value
 		elseif key == 'invBusy' then
 			invBusy = value
-			if value == true then
+			if value then
 				DisableControlActions:Add(23, 25, 36, 263)
 			else
 				DisableControlActions:Remove(23, 25, 36, 263)
