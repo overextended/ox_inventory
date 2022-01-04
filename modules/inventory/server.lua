@@ -1037,7 +1037,6 @@ Inventory.CustomStash = table.create(0, 0)
 --- Jobs: { [ox.police] = 0 }
 --- ```
 local function RegisterStash(id, label, slots, maxWeight, owner, jobs)
-
 	if not Inventory.CustomStash[id] then
 		Inventory.CustomStash[id] = {
 			name = id,
@@ -1045,10 +1044,10 @@ local function RegisterStash(id, label, slots, maxWeight, owner, jobs)
 			owner = owner,
 			slots = slots,
 			weight = maxWeight,
-			jobs = jobs
+			jobs = jobs,
+			coords = coords
 		}
 	end
-
 end
 exports('RegisterStash', RegisterStash)
 
