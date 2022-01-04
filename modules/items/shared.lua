@@ -1,7 +1,7 @@
 function items()
-	local ItemList = data 'items'
+	local ItemList = {}
 
-	for k, v in pairs(data('items')) do
+	for k, v in pairs(data 'items') do
 		v.name = k
 		v.weight = v.weight or 0
 		v.close = v.close or true

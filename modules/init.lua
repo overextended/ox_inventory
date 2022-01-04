@@ -5,8 +5,15 @@ function ox.error(...) error('\n^1[error] '.. ... ..'^7', 2) end
 
 function data(name)
 	if ox.server and ox.ready == nil then return {} end
-	local func, err = load(LoadResourceFile(ox.resource, ('data/%s.lua'):format(name)))
-	if err then error('^1'..err..'^0', 0) end
+	local file = ('data/%s.lua'):format(name)
+	local datafile = LoadResourceFile(ox.resource, file)
+	local func, err = load(datafile, ('@@ox_inventory/%s'):format(file))
+
+	if err then
+		ox.ready = false
+		error('^1'..err..'^0', 0)
+	end
+
 	return func()
 end
 
