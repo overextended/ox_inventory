@@ -7,9 +7,9 @@ game         'gta5'
 --[[ Resource Information ]]--
 name         'ox_inventory'
 author       'Overextended'
-version      '2.1.4'
+version      '2.1.5'
 repository   'https://github.com/overextended/ox_inventory'
-description  'Overly complicated and filled with scope creep'
+description  'Slot-based inventory with metadata'
 
 --[[ Manifest ]]--
 dependencies {

@@ -85,6 +85,7 @@ img {
   left: 0;
   background-repeat: no-repeat;
   background-position: center;
+  background-size: $imageSize;
   image-rendering: -webkit-optimize-contrast;
 }
 
