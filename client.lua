@@ -75,9 +75,10 @@ local function OpenInventory(inv, data)
 	end
 
 	if CanOpenInventory() then
-		invBusy = true
 		local left, right
+
 		if inv == 'shop' and invOpen == false then
+			invBusy = true
 			left, right = ServerCallback.Await(ox.resource, 'openShop', 200, data)
 		elseif invOpen ~= nil then
 			if inv == 'policeevidence' then
@@ -95,6 +96,8 @@ local function OpenInventory(inv, data)
 					data = input
 				end
 			end
+
+			invBusy = true
 			left, right = ServerCallback.Await(ox.resource, 'openInventory', false, inv, data)
 		end
 
