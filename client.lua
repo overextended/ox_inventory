@@ -24,6 +24,7 @@ local function CanOpenInventory()
 	return PlayerData.loaded
 	and not invBusy
 	and not PlayerData.dead
+	and not GetPedConfigFlag(PlayerData.ped, 120, true)
 	and (currentWeapon == nil or currentWeapon.timer == 0)
 	and not IsPauseMenuActive()
 	and not IsPedFatallyInjured(PlayerData.ped)
@@ -343,6 +344,7 @@ exports('useSlot', useSlot)
 local function CanOpenTarget(ped)
 	return IsPedFatallyInjured(ped)
 	or IsEntityPlayingAnim(ped, 'dead', 'dead_a', 3)
+	or GetPedConfigFlag(ped, 120, true)
 	or IsEntityPlayingAnim(ped, 'mp_arresting', 'idle', 3)
 	or IsEntityPlayingAnim(ped, 'missminuteman_1ig_2', 'handsup_base', 3)
 	or IsEntityPlayingAnim(ped, 'missminuteman_1ig_2', 'handsup_enter', 3)
