@@ -110,10 +110,6 @@ return {
 		weight = 190,
 		stack = false,
 		consume = 0,
-		client = {
-			usetime = 0,
-			event = 'gcPhone:forceOpenPhone'
-		}
 	},
 
 	['money'] = {

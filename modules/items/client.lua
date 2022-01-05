@@ -66,6 +66,10 @@ Item('parachute', function(data, slot)
 	end
 end)
 
+Item('phone', function(data, slot)
+	exports.npwd:setPhoneVisible(not exports.npwd:isPhoneVisible())
+end)
+
 -----------------------------------------------------------------------------------------------
 
 exports('Items', GetItem)
