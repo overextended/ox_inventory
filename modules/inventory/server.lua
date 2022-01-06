@@ -891,7 +891,7 @@ RegisterServerEvent('ox_inventory:updateWeapon', function(action, value, slot)
 					weapon.metadata.durability = math.floor(value)
 					weapon.metadata.ammo = weapon.metadata.durability
 				elseif value < weapon.metadata.ammo then
-					local durability = math.ceil(Items(weapon.name).durability * math.abs((weapon.metadata.ammo or 0.1) - value))
+					local durability = Items(weapon.name).durability * math.abs((weapon.metadata.ammo or 0.1) - value)
 					weapon.metadata.ammo = value
 					weapon.metadata.durability = weapon.metadata.durability - durability
 				end
