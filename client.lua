@@ -212,6 +212,7 @@ local function useSlot(slot)
 		if not item then return end
 		local data = item and Items[item.name]
 		if not data or not data.usable then return end
+		if data.name:find('at_') and not currentWeapon then return end
 		data.slot = slot
 
 		if item.metadata.container then
