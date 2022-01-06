@@ -66,13 +66,13 @@ end
 
 local function Complete(cancel)
 	if Interface.ProgressActive then
+		ResetPlayer()
 		if cancel and progress.canCancel then
 			progress.callback(true)
 			SendNUIMessage({ action = 'cancelProgress', })
 		elseif not cancel then
 			progress.callback(false)
 		end
-		ResetPlayer()
 	end
 end
 
