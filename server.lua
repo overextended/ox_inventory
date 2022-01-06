@@ -409,9 +409,8 @@ ServerCallback.Register('buyLicense', function(source, id)
 				return false, 'poor_weapon_license'
 			else
 				Inventory.RemoveItem(inventory, 'money', license.price)
-				TriggerEvent('esx_license:addLicense', source, 'weapon', function()
-					return 'bought_weapon_license'
-				end)
+				TriggerEvent('esx_license:addLicense', source, 'weapon')
+				return true, 'bought_weapon_license'
 			end
 		end
 	else

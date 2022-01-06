@@ -812,7 +812,7 @@ RegisterNetEvent('ox_inventory:setPlayerInventory', function(currentDrops, inven
 						if success == false then
 							Utils.Notify({type = 'error', text = ox.locale(message), duration = 2500})
 						else
-							Utils.Notify({text = ox.locale(success), duration = 2500})
+							Utils.Notify({text = ox.locale(message), duration = 2500})
 						end
 					end, closestMarker[2])
 				elseif closestMarker[3] == 'shop' then OpenInventory(closestMarker[3], {id=closestMarker[2], type=closestMarker[4]})
