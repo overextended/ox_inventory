@@ -612,7 +612,7 @@ return {
 			label = 'Extended Shotgun Clip',
 			weight = 280,
 			client = {
-				component = {`COMPONENT_HEAVYSHOTGUN_CLIP_02`, COMPONENT_ASSAULTSHOTGUN_CLIP_02},
+				component = {`COMPONENT_HEAVYSHOTGUN_CLIP_02`, `COMPONENT_ASSAULTSHOTGUN_CLIP_02`},
 				usetime = 2500
 			}
 		},
