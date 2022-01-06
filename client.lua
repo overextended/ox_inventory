@@ -1014,7 +1014,7 @@ RegisterNUICallback('swapItems', function(data, cb)
 		currentWeapon.slot = weapon
 		TriggerEvent('ox_inventory:currentWeapon', currentWeapon)
 	end
-	cb(response)
+	cb(response or false)
 end)
 
 RegisterNUICallback('buyItem', function(data, cb)
