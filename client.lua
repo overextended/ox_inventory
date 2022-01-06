@@ -315,6 +315,15 @@ local function useSlot(slot)
 				end
 			elseif item.name:find('at_') then
 				local components = data.client.component
+				local componentType = data.type
+				local weaponComponents = PlayerData.inventory[currentWeapon.slot].metadata.components
+				-- Checks if the weapon already has the same component type attached
+				for componentIndex = 1, #weaponComponents do
+					if componentType == Items[weaponComponents[componentIndex]].type then
+						-- todo: Update locale?
+						return Utils.Notify({type = 'error', text = ox.locale('component_has', data.label)})
+					end
+				end
 				for i=1, #components do
 					local component = components[i]
 
