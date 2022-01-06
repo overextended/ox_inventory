@@ -17,7 +17,7 @@ module.exports = {
   devServer: (devServerConfig) => {
     if (process.env.IN_GAME_DEV) {
       // Used for in-game dev mode
-      devServerConfig.writeToDisk = true;
+      devServerConfig.devMiddleware.writeToDisk = true
     }
 
     return devServerConfig;
