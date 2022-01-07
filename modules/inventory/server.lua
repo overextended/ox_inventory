@@ -661,7 +661,7 @@ function Inventory.CreateDrop(source, slot, toSlot, cb)
 end
 AddEventHandler('ox_inventory:createDrop', CreateDrop)
 
-local function customDrop(prefix, items, coords, slots, maxWeight)
+local function CustomDrop(prefix, items, coords, slots, maxWeight)
 	local drop = generateDropId()
 	local items, weight = generateItems(drop, 'drop', items)
 	local inventory = Inventory.Create(drop, prefix..' '..drop, 'drop', slots or ox.playerslots, weight, maxWeight or ox.playerweight, false, items)
@@ -669,7 +669,7 @@ local function customDrop(prefix, items, coords, slots, maxWeight)
 	Inventory.Drops[drop] = inventory.coords
 	TriggerClientEvent('ox_inventory:createDrop', -1, {drop, coords}, inventory.open and source)
 end
-AddEventHandler('ox_inventory:customDrop', customDrop)
+AddEventHandler('ox_inventory:customDrop', CustomDrop)
 exports('CustomDrop', CustomDrop)
 
 function Inventory.Confiscate(source)
