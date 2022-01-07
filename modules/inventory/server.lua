@@ -510,7 +510,7 @@ function Inventory.GetItemSlots(inv, item, metadata)
 			if metadata and v.metadata == nil then
 				v.metadata = {}
 			end
-			if not metadata or table.matches(v.metadata, metadata) then
+			if not metadata or item.limit or table.matches(v.metadata, metadata) then
 				totalCount = totalCount + v.count
 				slots[k] = v.count
 			end
