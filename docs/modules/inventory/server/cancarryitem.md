@@ -23,7 +23,7 @@ Checks if the provided inventory is capable of holding new items.
 
 	local item = ox_inventory:GetItem(2, 'bread')
 	if item and item.count > 5 then
-		if ox_inventory:CanCarryItem(1, 'bread' 5) then
+		if ox_inventory:CanCarryItem(1, 'bread', 5) then
 			ox_inventory:RemoveItem(2, 'bread', 5)
 			ox_inventory:AddItem(1, 'bread', 5)
 		else
