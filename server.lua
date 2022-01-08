@@ -5,7 +5,7 @@ local Items = server.items
 ---@param data table
 --- player requires source, identifier, and name
 --- optionally, it should contain job, sex, and dateofbirth
-AddEventHandler('ox_inventory:setPlayerInventory', function(player, data)
+local function setPlayerInventory(player, data)
 	while not ox.ready do Wait(0) end
 	local money = { money = 0, black_money = 0 }
 	local inventory = {}
@@ -51,8 +51,9 @@ AddEventHandler('ox_inventory:setPlayerInventory', function(player, data)
 
 	if ox.esx then Inventory.SyncInventory(inv) end
 	TriggerClientEvent('ox_inventory:setPlayerInventory', player.source, Inventory.Drops, inventory, totalWeight, ox.UsableItemsCallbacks, player)
-
-end)
+end
+exports('setPlayerInventory', setPlayerInventory)
+AddEventHandler('ox_inventory:setPlayerInventory', setPlayerInventory)
 
 local Stashes = data 'stashes'
 local Vehicles = data 'vehicles'
