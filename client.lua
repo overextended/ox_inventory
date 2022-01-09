@@ -303,6 +303,9 @@ local function useSlot(slot)
 							if data.name == currentWeapon.ammo then
 								local missingAmmo = 0
 								local newAmmo = 0
+								local reloadinginterval = SetInterval(function() -- Disable Rolling while reloading to prevent bug
+									DisableControlAction(0, 22, 1)
+								end, 0)
 								missingAmmo = maxAmmo - currentAmmo
 								if missingAmmo > data.count then newAmmo = currentAmmo + data.count else newAmmo = maxAmmo end
 								if newAmmo < 0 then newAmmo = 0 end
@@ -310,6 +313,8 @@ local function useSlot(slot)
 								MakePedReload(playerPed)
 								currentWeapon.metadata.ammo = newAmmo
 								TriggerServerEvent('ox_inventory:updateWeapon', 'load', currentWeapon.metadata.ammo)
+								Wait(1500)
+								ClearInterval(reloadinginterval)
 							end
 						end
 					end)
