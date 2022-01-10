@@ -4,15 +4,17 @@ Inventory.Dumpsters = {218085040, 666561306, -58485588, -206690185, 1511880420, 
 
 if ox.qtarget then
 	local function OpenDumpster(entity)
-		local netId = NetworkGetEntityIsNetworked(entity) and NetworkGetNetworkIdFromEntity(entity) or false
-		if netId == false then
-			SetEntityAsMissionEntity(entity)
+		local netId = NetworkGetEntityIsNetworked(entity) and NetworkGetNetworkIdFromEntity(entity)
+
+		if not netId then
 			NetworkRegisterEntityAsNetworked(entity)
+			SetEntityAsMissionEntity(entity)
 			netId = NetworkGetNetworkIdFromEntity(entity)
 			NetworkUseHighPrecisionBlending(netId, false)
-			SetNetworkIdExistsOnAllMachines(netId)
+			SetNetworkIdExistsOnAllMachines(netId, true)
 			SetNetworkIdCanMigrate(netId, true)
 		end
+
 		exports.ox_inventory:openInventory('dumpster', 'dumpster'..netId)
 	end
 

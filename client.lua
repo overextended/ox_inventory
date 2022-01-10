@@ -465,11 +465,11 @@ local function RegisterCommands()
 							local netId = NetworkGetEntityIsNetworked(entity) and NetworkGetNetworkIdFromEntity(entity)
 
 							if not netId then
-								SetEntityAsMissionEntity(entity)
 								NetworkRegisterEntityAsNetworked(entity)
+								SetEntityAsMissionEntity(entity)
 								netId = NetworkGetNetworkIdFromEntity(entity)
 								NetworkUseHighPrecisionBlending(netId, false)
-								SetNetworkIdExistsOnAllMachines(netId)
+								SetNetworkIdExistsOnAllMachines(netId, true)
 								SetNetworkIdCanMigrate(netId, true)
 							end
 
