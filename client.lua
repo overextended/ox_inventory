@@ -173,11 +173,13 @@ local function useItem(data, cb)
 					prop = data.prop,
 					propTwo = data.propTwo
 				}, function(cancel)
-					p:resolve(cancel and false or true)
+					p:resolve(cancel)
 				end)
 			end
 
-			if not p or Citizen.Await(p) then
+			if p then Citizen.Await(p) end
+
+			if not p or not p.value then
 				if result.consume and result.consume ~= 0 then
 					TriggerServerEvent('ox_inventory:removeItem', result.name, result.consume, result.metadata, result.slot, true)
 				end
