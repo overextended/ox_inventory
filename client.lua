@@ -227,6 +227,7 @@ local function useSlot(slot)
 
 				return data.client.export(0, data, {name = item.name, slot = item.slot, metadata = item.metadata})
 			elseif data.client.event then -- deprecated, to be removed
+				print('data.client.event is deprecated, utilise exports instead.')
 				return TriggerEvent(data.client.event, data, {name = item.name, slot = item.slot, metadata = item.metadata})
 			end
 		end
