@@ -220,6 +220,7 @@ local function randomLoot(loot)
 	local items = {}
 	local size = #loot
 	for i = 1, math.random(0, 3) do
+		if i > size then return items end
 		local item = randomItem(loot, items, size)
 		if math.random(1, 100) <= (item[4] or 80) then
 			local count = math.random(item[2], item[3])
