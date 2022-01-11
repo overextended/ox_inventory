@@ -740,6 +740,7 @@ function Inventory.Clear(inv, keep)
 			if inv.player then
 				TriggerClientEvent('ox_inventory:inventoryConfiscated', inv.id)
 				if ox.esx then Inventory.SyncInventory(inv) end
+				inv.weapon = nil
 			end
 		end
 	end
