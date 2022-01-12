@@ -552,7 +552,9 @@ local function RegisterCommands()
 	TriggerEvent('chat:removeSuggestion', '/reload')
 
 	RegisterCommand('hotbar', function()
-		SendNUIMessage({ action = 'toggleHotbar' })
+		if not IsPauseMenuActive() then
+    		SendNUIMessage({ action = 'toggleHotbar' })
+		end
 	end)
 	RegisterKeyMapping('hotbar', ox.locale('disable_hotbar'), 'keyboard', ox.keys[3])
 	TriggerEvent('chat:removeSuggestion', '/hotbar')
