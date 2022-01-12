@@ -962,7 +962,7 @@ end, {'target:number', 'item:string', 'count:number', 'metatype:?string'})
 
 import.commands(false, 'clearevidence', function(source, args)
 	local inventory = Inventories[source]
-	if inventory.player.job.name == ox.police and inventory.player.job.grade_name == 'boss' then
+	if ox.isPolice(inventory.player.job.name) and inventory.player.job.grade_name == 'boss' then
 		MySQL.query('DELETE FROM ox_inventory WHERE name = ?', {('evidence-%s'):format(args.evidence)})
 	end
 end, {'evidence:number'})
@@ -1036,7 +1036,7 @@ Inventory.CustomStash = table.create(0, 0)
 --- true: each player has a unique stash, but can request other player's stashes
 --- nil: always shared
 ---
---- Jobs: { [ox.police] = 0 }
+--- Jobs: { ['police'] = 0 }
 --- ```
 local function RegisterStash(id, label, slots, maxWeight, owner, jobs)
 	if not Inventory.CustomStash[id] then

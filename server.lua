@@ -113,7 +113,7 @@ ServerCallback.Register('openInventory', function(source, inv, data)
 			end
 
 		elseif inv == 'policeevidence' then
-			if left.player.job.name == ox.police then
+			if ox.isPolice(left.player.job.name) then
 				data = ('evidence-%s'):format(data)
 				right = Inventory(data)
 				if not right then
@@ -227,7 +227,7 @@ ServerCallback.Register('swapItems', function(source, data)
 			end
 
 			if fromInventory.type == 'policeevidence' and not sameInventory then
-				if not toInventory.player.job.name == ox.police then return end
+				if not ox.isPolice(toInventory.player.job.name) then return end
 				if ox.evidencegrade > toInventory.player.job.grade then
 					TriggerClientEvent('ox_inventory:notify', source, {type = 'error', text = ox.locale('evidence_cannot_take')})
 					return
