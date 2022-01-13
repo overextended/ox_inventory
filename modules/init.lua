@@ -37,6 +37,11 @@ do
 	end
 end
 
+-- Checks if the passed job is allowed to use police-only features
+function ox.isPolice(job)
+	return ox.police == job or ox.police?[job] ~= nil
+end
+
 -- Disable qtarget compatibility if it isn't running
 if ox.qtarget and GetResourceState('qtarget') ~= 'started' then
 	ox.qtarget = false

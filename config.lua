@@ -101,7 +101,7 @@ ox = {
 	-- Default max weight of player inventory
 	playerweight = ox.playerweight or 30000,
 
-	-- Name of your police job
+	-- Name of your police job/s (string or table with grades)
 	police = ox.police or 'police',
 
 	-- Translations
