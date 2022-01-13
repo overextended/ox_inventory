@@ -76,7 +76,7 @@ function Utils.Disarm(currentWeapon, newSlot)
 			Utils.ItemNotify({currentWeapon.label, currentWeapon.name, ox.locale('holstered')})
 		end
 
-		RemoveWeaponFromPed(PlayerData.ped, currentWeapon.hash)
+		RemoveAllPedWeapons(PlayerData.ped, true)
 
 		if newSlot then
 			TriggerServerEvent('ox_inventory:updateWeapon', ammo and 'ammo' or 'melee', ammo or currentWeapon.melee, newSlot)
