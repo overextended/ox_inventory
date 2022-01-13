@@ -292,6 +292,12 @@ function Inventory.Load(id, invType, owner)
 		for _, v in pairs(result) do
 			local item = Items(v.name)
 			if item then
+
+				-- Remove invalid durability
+				if v.metadata.durability and not item.durability and not item.degrade and not v.name:find('WEAPON_') then
+					v.metadata.durability = nil
+				end
+
 				local slotWeight = Inventory.SlotWeight(item, v)
 				weight += slotWeight
 				returnData[v.slot] = {name = item.name, label = item.label, weight = slotWeight, slot = v.slot, count = v.count, description = item.description, metadata = v.metadata or {}, stack = item.stack, close = item.close}
