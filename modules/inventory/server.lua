@@ -729,7 +729,7 @@ exports('ReturnInventory', Inventory.Return)
 
 ---@param inv any
 ---@param keep nil
---- todo: support the keep argument, allowing users to define a list of item "types" to keep  
+--- todo: support the keep argument, allowing users to define a list of item "types" to keep
 --- i.e. {'money', 'weapons'} would keep money and weapons, but remove ammo, attachments, and other items
 function Inventory.Clear(inv, keep)
 	inv = Inventory(inv)
@@ -821,12 +821,10 @@ RegisterServerEvent('ox_inventory:closeInventory', function()
 			local secondary = Inventories[inventory.open]
 			if secondary then
 				secondary:set('open', false)
-				if secondary.type == 'container' then
-					inventory.containerSlot = nil
-				end
 			end
 		end
 		inventory:set('open', false)
+		inventory.containerSlot = nil
 	end
 end)
 
@@ -1028,7 +1026,7 @@ Inventory.CustomStash = table.create(0, 0)
 ---@param maxWeight number
 ---@param owner string|boolean|nil
 ---@param jobs table
---- For simple integration with other resources that want to create valid stashes.  
+--- For simple integration with other resources that want to create valid stashes.
 --- This needs to be triggered before a player can open a stash.
 --- ```
 --- Owner sets the stash permissions.
