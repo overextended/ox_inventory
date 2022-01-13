@@ -593,21 +593,32 @@ RegisterNetEvent('ox_inventory:closeInventory', function(server)
 	end
 end)
 
+local function updateInventory(items, weight)
+	-- swapslots
+	if type(weight) == 'number' then
+		for slot, v in pairs(items) do
+			PlayerData.inventory[slot] = v and v or nil
+		end
+		ox.SetPlayerData('weight', weight)
+	else
+		for i=1, #items do
+			local v = items[i].item
+			if not v.count then v.name = nil end
+			PlayerData.inventory[v.slot] = v.name and v or nil
+		end
+		ox.SetPlayerData('weight', weight.left1)
+	end
+	ox.SetPlayerData('inventory', PlayerData.inventory)
+end
+
 RegisterNetEvent('ox_inventory:updateInventory', function(items, weights, count, removed)
 	if count then
 		local item = items[1].item
 		Utils.ItemNotify({item.label, item.name, ox.locale(removed and 'removed' or 'added', count)})
 	end
 
-	for i=1, #items do
-		local i = items[i].item
-		if not i.count then i.name = nil end
-		PlayerData.inventory[i.slot] = i.name and i or nil
-	end
-
+	updateInventory(items, weights)
 	SendNUIMessage({ action = 'refreshSlots', data = items })
-	ox.SetPlayerData('inventory', PlayerData.inventory)
-	ox.SetPlayerData('weight', weights.left)
 end)
 
 RegisterNetEvent('ox_inventory:inventoryReturned', function(data)
@@ -1020,13 +1031,8 @@ end)
 
 RegisterNUICallback('swapItems', function(data, cb)
 	local response, data, weapon = ServerCallback.Await(ox.resource, 'swapItems', false, data)
-	if data then
-		for k, v in pairs(data.items) do
-			PlayerData.inventory[k] = v and v or nil
-		end
-		ox.SetPlayerData('inventory', PlayerData.inventory)
-		if data.weight then ox.SetPlayerData('weight', data.weight) end
-	end
+
+	if data then updateInventory(data.items, data.weight) end
 
 	if weapon and currentWeapon then
 		currentWeapon.slot = weapon
