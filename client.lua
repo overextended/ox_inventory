@@ -1046,5 +1046,3 @@ RegisterNUICallback('buyItem', function(data, cb)
 	if message then Utils.Notify(message) end
 	cb(response)
 end)
-
-if ox.esx and PlayerData.loaded then TriggerServerEvent('ox_inventory:requestPlayerInventory') end
