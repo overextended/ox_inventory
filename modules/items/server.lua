@@ -121,6 +121,7 @@ local itemFormat = [[
 	ox.info('Inventory has loaded '..count..' items')
 	collectgarbage('collect') -- clean up from initialisation
 	ox.ready = true
+	ox.info('A future version of ox_inventory will modify convars for simpler use and FxDK support (check config.cfg)')
 	--[[local ignore = {[0] = '?', [`WEAPON_UNARMED`] = 'unarmed', [966099553] = 'shovel'}
 	while true do
 		Wait(45000)
