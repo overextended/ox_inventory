@@ -21,10 +21,10 @@ if ox.esx then
         local player = ox.GetPlayerFromId(source)
 
         if player and player.inventory then
-            exports.ox_inventory:setPlayerInventory(player, player.inventory)
+            exports[ox.resource]:setPlayerInventory(player, player.inventory)
         else
             MySQL.scalar('SELECT inventory FROM users WHERE identifier = ?', { player.identifier }, function(result)
-                exports.ox_inventory:setPlayerInventory(player, result and json.decode(result))
+                exports[ox.resource]:setPlayerInventory(player, result and json.decode(result))
             end)
         end
     end)
