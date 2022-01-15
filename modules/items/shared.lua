@@ -11,6 +11,7 @@ function items()
 			if not v.consume and (v.client.consume or v.client.status or v.client.usetime) then
 				v.consume = 1
 			end
+			v.count = 0
 		end
 
 		if IsDuplicityVersion then v.client = nil else v.server = nil end

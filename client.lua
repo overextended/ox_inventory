@@ -593,30 +593,77 @@ RegisterNetEvent('ox_inventory:closeInventory', function(server)
 end)
 
 local function updateInventory(items, weight)
+	local changes = {}
 	-- swapslots
 	if type(weight) == 'number' then
 		for slot, v in pairs(items) do
+			local item = PlayerData.inventory[slot]
+
+			if item then
+				Items[item.name].count -= item.count
+			end
+
+			if v then
+				local data = Items[v.name]
+				if data.client?.add then data.client.add(data.count, v.count) end
+				data.count += v.count
+			else
+				local data = Items[item.name]
+				if data.client?.remove then data.client.remove() end
+			end
+
 			PlayerData.inventory[slot] = v and v or nil
+			changes[slot] = v
 		end
 		client.SetPlayerData('weight', weight)
 	else
 		for i=1, #items do
 			local v = items[i].item
-			if not v.count then v.name = nil end
-			PlayerData.inventory[v.slot] = v.name and v or nil
+
+			local item = PlayerData.inventory[v.slot]
+
+			if item?.name then
+				Items[item.name].count -= item.count
+			end
+
+			if v.count then
+				local data = Items[v.name]
+				if data.client?.add then data.client.add(data.count, v.count) end
+				data.count += v.count
+			else
+				local data = Items[v.name]
+				if data.client?.remove then data.client.remove() end
+			end
+
+			PlayerData.inventory[v.slot] = v.count and v or nil
+			changes[v.slot] = v.count and v or false
 		end
 		client.SetPlayerData('weight', weight.left)
 	end
 	client.SetPlayerData('inventory', PlayerData.inventory)
+	TriggerEvent('ox_inventory:updateInventory', changes)
 end
 
+AddEventHandler('ox_inventory:updateInventory', function(inventory)
+	for k, v in pairs(inventory) do
+		if type(v) == 'table' then
+			print(k, json.encode(v))
+		else
+			print(k, false)
+		end
+	end
+	print()
+end)
+
 RegisterNetEvent('ox_inventory:updateSlots', function(items, weights, count, removed)
+	updateInventory(items, weights)
+
 	if count then
 		local item = items[1].item
 		Utils.ItemNotify({item.label, item.name, shared.locale(removed and 'removed' or 'added', count)})
+		if (removed and item.count and item.count <= count) or not item.count then items[1].item.name = nil end
 	end
 
-	updateInventory(items, weights)
 	SendNUIMessage({ action = 'refreshSlots', data = items })
 end)
 
@@ -691,6 +738,9 @@ RegisterNetEvent('ox_inventory:setPlayerInventory', function(currentDrops, inven
 
 	if setStateBagHandler then setStateBagHandler(PlayerData.id) end
 
+	for _, data in pairs(inventory) do
+		Items[data.name].count += data.count
+	end
 	client.SetPlayerData('inventory', inventory)
 	client.SetPlayerData('weight', weight)
 	currentWeapon = nil
@@ -740,6 +790,7 @@ RegisterNetEvent('ox_inventory:setPlayerInventory', function(currentDrops, inven
 	plyState:set('invBusy', false, false)
 	plyState:set('invOpen', false, false)
 	PlayerData.loaded = true
+	TriggerEvent('ox_inventory:updateInventory', PlayerData.inventory)
 
 	Utils.Notify({text = shared.locale('inventory_setup'), duration = 2500})
 	local Licenses = data 'licenses'
