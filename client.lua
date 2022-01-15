@@ -741,6 +741,11 @@ RegisterNetEvent('ox_inventory:setPlayerInventory', function(currentDrops, inven
 	for _, data in pairs(inventory) do
 		Items[data.name].count += data.count
 	end
+
+	if Items['phone']?.count < 1 and GetResourceState('npwd') == 'started' then
+		exports.npwd:setPhoneDisabled(true)
+	end
+
 	client.SetPlayerData('inventory', inventory)
 	client.SetPlayerData('weight', weight)
 	currentWeapon = nil

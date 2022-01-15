@@ -110,6 +110,20 @@ return {
 		weight = 190,
 		stack = false,
 		consume = 0,
+		client = {
+			add = function(count, added)
+				print(count, added)
+				if count == 0 and GetResourceState('npwd') == 'started' then
+					exports.npwd:setPhoneDisabled(false)
+				end
+			end,
+
+			remove = function()
+				if GetResourceState('npwd') == 'started' then
+					exports.npwd:setPhoneDisabled(true)
+				end
+			end
+		}
 	},
 
 	['money'] = {
