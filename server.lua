@@ -50,7 +50,7 @@ local function setPlayerInventory(player, data)
 	}
 
 	if shared.esx then Inventory.SyncInventory(inv) end
-	TriggerClientEvent('ox_inventory:setPlayerInventory', player.source, Inventory.Drops, inventory, totalWeight, shared.UsableItemsCallbacks, player)
+	TriggerClientEvent('ox_inventory:setPlayerInventory', player.source, Inventory.Drops, inventory, totalWeight, server.UsableItemsCallbacks, player)
 end
 exports('setPlayerInventory', setPlayerInventory)
 AddEventHandler('ox_inventory:setPlayerInventory', setPlayerInventory)
@@ -475,8 +475,8 @@ ServerCallback.Register('useItem', function(source, item, slot, metadata)
 			elseif type == 3 then -- component
 				data.consume = 1
 				return data
-			elseif shared.UsableItemsCallbacks[item.name] then
-				shared.UseItem(source, data.name, data)
+			elseif server.UsableItemsCallbacks[item.name] then
+				server.UseItem(source, data.name, data)
 			else
 				if item.consume and data.count >= item.consume then
 					local result = item.cb and item.cb('usingItem', item, inventory, slot)

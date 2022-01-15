@@ -12,13 +12,13 @@ if shared.esx then
         UseItem = ESX.UseItem
     }
 
-    shared.UseItem = ESX.UseItem
-    shared.UsableItemsCallbacks = ESX.GetUsableItems
-    shared.GetPlayerFromId = ESX.GetPlayerFromId
+    server.UseItem = ESX.UseItem
+    server.UsableItemsCallbacks = ESX.GetUsableItems
+    server.GetPlayerFromId = ESX.GetPlayerFromId
 
     RegisterServerEvent('ox_inventory:requestPlayerInventory', function()
         local source = source
-        local player = shared.GetPlayerFromId(source)
+        local player = server.GetPlayerFromId(source)
 
         if player and player.inventory then
             exports.ox_inventory:setPlayerInventory(player, player.inventory)

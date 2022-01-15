@@ -42,12 +42,11 @@ local currentInventory = defaultInventory
 
 local function CloseTrunk()
 	if currentInventory?.type == 'trunk' then
-		local entity = currentInventory.entity
-		local door = currentInventory.door
 		local coords = GetEntityCoords(PlayerData.ped, true)
 		Utils.PlayAnimAdvanced(900, 'anim@heists@fleeca_bank@scope_out@return_case', 'trevor_action', coords.x, coords.y, coords.z, 0.0, 0.0, GetEntityHeading(PlayerData.ped), 2.0, 2.0, 1000, 49, 0.25)
 		CreateThread(function()
-			local entity, door = entity, door
+			local entity = currentInventory.entity
+			local door = currentInventory.door
 			Wait(900)
 			SetVehicleDoorShut(entity, door, false)
 		end)
@@ -599,16 +598,16 @@ local function updateInventory(items, weight)
 		for slot, v in pairs(items) do
 			PlayerData.inventory[slot] = v and v or nil
 		end
-		shared.SetPlayerData('weight', weight)
+		client.SetPlayerData('weight', weight)
 	else
 		for i=1, #items do
 			local v = items[i].item
 			if not v.count then v.name = nil end
 			PlayerData.inventory[v.slot] = v.name and v or nil
 		end
-		shared.SetPlayerData('weight', weight.left1)
+		client.SetPlayerData('weight', weight.left)
 	end
-	shared.SetPlayerData('inventory', PlayerData.inventory)
+	client.SetPlayerData('inventory', PlayerData.inventory)
 end
 
 RegisterNetEvent('ox_inventory:updateInventory', function(items, weights, count, removed)
@@ -626,8 +625,8 @@ RegisterNetEvent('ox_inventory:inventoryReturned', function(data)
 	if currentWeapon then currentWeapon = Utils.Disarm(currentWeapon) end
 	TriggerEvent('ox_inventory:closeInventory')
 	PlayerData.inventory = data[1]
-	shared.SetPlayerData('inventory', data[1])
-	shared.SetPlayerData('weight', data[3])
+	client.SetPlayerData('inventory', data[1])
+	client.SetPlayerData('weight', data[3])
 end)
 
 RegisterNetEvent('ox_inventory:inventoryConfiscated', function(message)
@@ -635,7 +634,7 @@ RegisterNetEvent('ox_inventory:inventoryConfiscated', function(message)
 	if currentWeapon then currentWeapon = Utils.Disarm(currentWeapon) end
 	TriggerEvent('ox_inventory:closeInventory')
 	table.wipe(PlayerData.inventory)
-	shared.SetPlayerData('weight', 0)
+	client.SetPlayerData('weight', 0)
 end)
 
 RegisterNetEvent('ox_inventory:createDrop', function(data, owner, slot)
@@ -692,8 +691,8 @@ RegisterNetEvent('ox_inventory:setPlayerInventory', function(currentDrops, inven
 
 	if setStateBagHandler then setStateBagHandler(PlayerData.id) end
 
-	shared.SetPlayerData('inventory', inventory)
-	shared.SetPlayerData('weight', weight)
+	client.SetPlayerData('inventory', inventory)
+	client.SetPlayerData('weight', weight)
 	currentWeapon = nil
 	drops = currentDrops
 	Utils.ClearWeapons()
@@ -795,9 +794,9 @@ RegisterNetEvent('ox_inventory:setPlayerInventory', function(currentDrops, inven
 		end
 
 		if currentWeapon and GetSelectedPedWeapon(PlayerData.ped) ~= currentWeapon.hash then currentWeapon = Utils.Disarm(currentWeapon) end
-		if shared.parachute and GetPedParachuteState(PlayerData.ped) ~= -1 then
-			Utils.DeleteObject(shared.parachute)
-			shared.parachute = false
+		if client.parachute and GetPedParachuteState(PlayerData.ped) ~= -1 then
+			Utils.DeleteObject(client.parachute)
+			client.parachute = false
 		end
 	end, 200)
 
@@ -907,8 +906,8 @@ end)
 
 AddEventHandler('onResourceStop', function(resourceName)
 	if shared.resource == resourceName then
-		if shared.parachute then
-			Utils.DeleteObject(shared.parachute)
+		if client.parachute then
+			Utils.DeleteObject(client.parachute)
 		end
 
 		if invOpen then
@@ -920,9 +919,9 @@ AddEventHandler('onResourceStop', function(resourceName)
 end)
 
 RegisterNetEvent('esx:onPlayerLogout', function()
-	if shared.parachute then
-		Utils.DeleteObject(shared.parachute)
-		shared.parachute = false
+	if client.parachute then
+		Utils.DeleteObject(client.parachute)
+		client.parachute = false
 	end
 
 	TriggerEvent('ox_inventory:closeInventory')
@@ -1045,8 +1044,8 @@ RegisterNUICallback('buyItem', function(data, cb)
 	local response, data, message = ServerCallback.Await(shared.resource, 'buyItem', 100, data)
 	if data then
 		PlayerData.inventory[data[1]] = data[2]
-		shared.SetPlayerData('inventory', PlayerData.inventory)
-		shared.SetPlayerData('weight', data[3])
+		client.SetPlayerData('inventory', PlayerData.inventory)
+		client.SetPlayerData('weight', data[3])
 		SendNUIMessage({ action = 'refreshSlots', data = {item = data[2]} })
 	end
 	if message then Utils.Notify(message) end

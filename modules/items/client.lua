@@ -47,9 +47,9 @@ Item('armour', function(data, slot)
 	end
 end)
 
-shared.parachute = false
+client.parachute = false
 Item('parachute', function(data, slot)
-	if not shared.parachute then
+	if not client.parachute then
 		ox_inventory:useItem(data, function(data)
 			if data then
 				local chute = `GADGET_PARACHUTE`
@@ -57,7 +57,7 @@ Item('parachute', function(data, slot)
 				GiveWeaponToPed(PlayerData.ped, chute, 0, true, false)
 				SetPedGadget(PlayerData.ped, chute, true)
 				lib.requestModel(1269906701)
-				shared.parachute = CreateParachuteBagObject(PlayerData.ped, true, true)
+				client.parachute = CreateParachuteBagObject(PlayerData.ped, true, true)
 				if slot.metadata.type then
 					SetPlayerParachuteTintIndex(PlayerData.id, slot.metadata.type)
 				end

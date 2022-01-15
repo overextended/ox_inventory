@@ -90,7 +90,7 @@ end
 function Utils.ClearWeapons(currentWeapon)
 	currentWeapon = Utils.Disarm(currentWeapon)
 	RemoveAllPedWeapons(PlayerData.ped, true)
-	if shared.parachute then
+	if client.parachute then
 		local chute = `GADGET_PARACHUTE`
 		GiveWeaponToPed(PlayerData.ped, chute, 0, true, false)
 		SetPedGadget(PlayerData.ped, chute, true)

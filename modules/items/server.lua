@@ -108,12 +108,12 @@ local itemFormat = [[
 
 	local count = 0
 	Wait(2000)
-	if shared.UsableItemsCallbacks then
-		shared.UsableItemsCallbacks = shared.UsableItemsCallbacks()
-	else shared.UsableItemsCallbacks = {} end
+	if server.UsableItemsCallbacks then
+		server.UsableItemsCallbacks = server.UsableItemsCallbacks()
+	else server.UsableItemsCallbacks = {} end
 
 	for _, v in pairs(ItemList) do
-		if v.consume and v.consume > 0 and shared.UsableItemsCallbacks[v.name] then shared.UsableItemsCallbacks[v.name] = nil end
+		if v.consume and v.consume > 0 and server.UsableItemsCallbacks[v.name] then server.UsableItemsCallbacks[v.name] = nil end
 		count += 1
 	end
 

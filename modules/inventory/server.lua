@@ -72,7 +72,7 @@ function Inventory.SyncInventory(inv)
 		end
 	end
 
-	shared.GetPlayerFromId(inv.id).syncInventory(inv.weight, inv.maxWeight, inv.items, money)
+	server.GetPlayerFromId(inv.id).syncInventory(inv.weight, inv.maxWeight, inv.items, money)
 end
 
 ---@param inv any
