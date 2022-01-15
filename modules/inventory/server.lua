@@ -294,7 +294,7 @@ function Inventory.Load(id, invType, owner)
 			if item then
 
 				-- Remove invalid durability
-				if v.metadata.durability and not item.durability and not item.degrade and not v.name:find('WEAPON_') then
+				if v.metadata?.durability and not item.durability and not item.degrade and not v.name:find('WEAPON_') then
 					v.metadata.durability = nil
 				end
 
