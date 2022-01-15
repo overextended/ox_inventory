@@ -11,10 +11,12 @@ function items()
 			if not v.consume and (v.client.consume or v.client.status or v.client.usetime) then
 				v.consume = 1
 			end
-			v.count = 0
 		end
 
-		if IsDuplicityVersion then v.client = nil else v.server = nil end
+		if IsDuplicityVersion then v.client = nil else
+			v.server = nil
+			v.count = 0
+		end
 		ItemList[k] = v
 	end
 
@@ -30,7 +32,11 @@ function items()
 				v.stack = true
 			end
 
-			if IsDuplicityVersion then v.client = nil else v.server = nil end
+			if IsDuplicityVersion then v.client = nil else
+				v.count = 0
+				v.server = nil
+			end
+
 			ItemList[k] = v
 		end
 	end
