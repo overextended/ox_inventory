@@ -351,7 +351,7 @@ ServerCallback.Register('swapItems', function(source, data)
 					if toInventory.changed ~= nil then toInventory.changed = true end
 
 					if sameInventory and fromInventory.type == 'otherplayer' then
-						TriggerClientEvent('ox_inventory:updateInventory', fromInventory.id,{
+						TriggerClientEvent('ox_inventory:updateSlots', fromInventory.id,{
 							{
 								item = fromInventory.items[data.toSlot] or {slot=data.toSlot},
 								inventory = fromInventory.type
@@ -363,7 +363,7 @@ ServerCallback.Register('swapItems', function(source, data)
 						}, {left=fromInventory.weight})
 
 					elseif toInventory.type == 'otherplayer' then
-						TriggerClientEvent('ox_inventory:updateInventory', toInventory.id,{
+						TriggerClientEvent('ox_inventory:updateSlots', toInventory.id,{
 							{
 								item = toInventory.items[data.toSlot] or {slot=data.toSlot},
 								inventory = toInventory.type
@@ -371,7 +371,7 @@ ServerCallback.Register('swapItems', function(source, data)
 						}, {left=toInventory.weight})
 
 					elseif fromInventory.type == 'otherplayer' then
-						TriggerClientEvent('ox_inventory:updateInventory', fromInventory.id,{
+						TriggerClientEvent('ox_inventory:updateSlots', fromInventory.id,{
 							{
 								item = fromInventory.items[data.fromSlot] or {slot=data.fromSlot},
 								inventory = fromInventory.type

@@ -395,7 +395,7 @@ function Inventory.SetMetadata(inv, slot, metadata)
 
 			if inv.type == 'player' then
 				if shared.esx then Inventory.SyncInventory(inv) end
-				TriggerClientEvent('ox_inventory:updateInventory', inv.id, {{item = slot, inventory = inv.type}}, {left=inv.weight, right=inv.open and Inventories[inv.open]?.weight})
+				TriggerClientEvent('ox_inventory:updateSlots', inv.id, {{item = slot, inventory = inv.type}}, {left=inv.weight, right=inv.open and Inventories[inv.open]?.weight})
 			end
 		end
 	end
@@ -453,7 +453,7 @@ function Inventory.AddItem(inv, item, count, metadata, slot, cb)
 
 			if inv.type == 'player' then
 				if shared.esx then Inventory.SyncInventory(inv) end
-				TriggerClientEvent('ox_inventory:updateInventory', inv.id, {{item = inv.items[slot], inventory = inv.type}}, {left=inv.weight, right=inv.open and Inventories[inv.open]?.weight}, count, false)
+				TriggerClientEvent('ox_inventory:updateSlots', inv.id, {{item = inv.items[slot], inventory = inv.type}}, {left=inv.weight, right=inv.open and Inventories[inv.open]?.weight}, count, false)
 			end
 		else
 			success = false
@@ -584,7 +584,7 @@ function Inventory.RemoveItem(inv, item, count, metadata, slot)
 				end
 			end
 
-			TriggerClientEvent('ox_inventory:updateInventory', inv.id, array, {left=inv.weight, right=inv.open and Inventories[inv.open]?.weight}, removed, true)
+			TriggerClientEvent('ox_inventory:updateSlots', inv.id, array, {left=inv.weight, right=inv.open and Inventories[inv.open]?.weight}, removed, true)
 		end
 	end
 end
@@ -866,7 +866,7 @@ RegisterServerEvent('ox_inventory:updateWeapon', function(action, value, slot)
 					if v == value.component then
 						table.remove(item.metadata.components, k)
 						Inventory.AddItem(inventory, value.component, 1)
-						return TriggerClientEvent('ox_inventory:updateInventory', source, {{item = item}}, {left=inventory.weight})
+						return TriggerClientEvent('ox_inventory:updateSlots', source, {{item = item}}, {left=inventory.weight})
 					end
 				end
 			end
@@ -911,7 +911,7 @@ RegisterServerEvent('ox_inventory:updateWeapon', function(action, value, slot)
 				Inventory.SyncInventory(inventory)
 			end
 
-			if action ~= 'throw' then TriggerClientEvent('ox_inventory:updateInventory', source, {{item = weapon}}, {left=inventory.weight}) end
+			if action ~= 'throw' then TriggerClientEvent('ox_inventory:updateSlots', source, {{item = weapon}}, {left=inventory.weight}) end
 
 			if weapon.metadata.durability and weapon.metadata.durability < 1 and action ~= 'load' and action ~= 'component' then
 				TriggerClientEvent('ox_inventory:disarm', source)

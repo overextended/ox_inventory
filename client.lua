@@ -610,7 +610,7 @@ local function updateInventory(items, weight)
 	client.SetPlayerData('inventory', PlayerData.inventory)
 end
 
-RegisterNetEvent('ox_inventory:updateInventory', function(items, weights, count, removed)
+RegisterNetEvent('ox_inventory:updateSlots', function(items, weights, count, removed)
 	if count then
 		local item = items[1].item
 		Utils.ItemNotify({item.label, item.name, shared.locale(removed and 'removed' or 'added', count)})
