@@ -6,7 +6,7 @@ local Items = server.items
 --- player requires source, identifier, and name
 --- optionally, it should contain job, sex, and dateofbirth
 local function setPlayerInventory(player, data)
-	while not ox.ready do Wait(0) end
+	while not shared.ready do Wait(0) end
 	local money = { money = 0, black_money = 0 }
 	local inventory = {}
 	local totalWeight = 0
@@ -40,7 +40,7 @@ local function setPlayerInventory(player, data)
 		end
 	end
 
-	local inv = Inventory.Create(player.source, player.name, 'player', ox.playerslots, totalWeight, ox.playerweight, player.identifier, inventory)
+	local inv = Inventory.Create(player.source, player.name, 'player', shared.playerslots, totalWeight, shared.playerweight, player.identifier, inventory)
 
 	inv.player = {
 		name = player.name,
@@ -49,8 +49,8 @@ local function setPlayerInventory(player, data)
 		dateofbirth = player.dateofbirth or player.variables.dateofbirth,
 	}
 
-	if ox.esx then Inventory.SyncInventory(inv) end
-	TriggerClientEvent('ox_inventory:setPlayerInventory', player.source, Inventory.Drops, inventory, totalWeight, ox.UsableItemsCallbacks, player)
+	if shared.esx then Inventory.SyncInventory(inv) end
+	TriggerClientEvent('ox_inventory:setPlayerInventory', player.source, Inventory.Drops, inventory, totalWeight, shared.UsableItemsCallbacks, player)
 end
 exports('setPlayerInventory', setPlayerInventory)
 AddEventHandler('ox_inventory:setPlayerInventory', setPlayerInventory)
@@ -113,18 +113,18 @@ ServerCallback.Register('openInventory', function(source, inv, data)
 			end
 
 		elseif inv == 'policeevidence' then
-			if ox.isPolice(left.player.job.name) then
+			if shared.isPolice(left.player.job.name) then
 				data = ('evidence-%s'):format(data)
 				right = Inventory(data)
 				if not right then
-					right = Inventory.Create(data, ox.locale('police_evidence'), inv, 100, 0, 100000, false)
+					right = Inventory.Create(data, shared.locale('police_evidence'), inv, 100, 0, 100000, false)
 				end
 			end
 
 		elseif inv == 'dumpster' then
 			right = Inventory(data)
 			if not right then
-				right = Inventory.Create(data, ox.locale('dumpster'), inv, 15, 0, 100000, false)
+				right = Inventory.Create(data, shared.locale('dumpster'), inv, 15, 0, 100000, false)
 			end
 
 		elseif inv == 'container' then
@@ -187,7 +187,7 @@ ServerCallback.Register('swapItems', function(source, data)
 				items[data.fromSlot] = fromData or false
 				playerInventory.items[data.fromSlot] = fromData
 
-				if ox.esx then Inventory.SyncInventory(playerInventory) end
+				if shared.esx then Inventory.SyncInventory(playerInventory) end
 
 				Inventory.CreateDrop(source, data.toSlot, toData, function(drop, coords)
 					if fromData == playerInventory.weapon then playerInventory.weapon = nil end
@@ -218,18 +218,18 @@ ServerCallback.Register('swapItems', function(source, data)
 				local _, totalCount, _ = Inventory.GetItemSlots(toInventory, fromItem, fromItem.metadata)
 				if fromItem.limit and (totalCount + data.count) > fromItem.limit then
 					if toInventory.type == 'player' then
-						TriggerClientEvent('ox_inventory:notify', source, {type = 'error', text = { ox.locale('cannot_carry')}})
+						TriggerClientEvent('ox_inventory:notify', source, {type = 'error', text = { shared.locale('cannot_carry')}})
 					elseif toInventory.type == 'otherplayer' then
-						TriggerClientEvent('ox_inventory:notify', source, {type = 'error', text = { ox.locale('cannot_carry_other')}})
+						TriggerClientEvent('ox_inventory:notify', source, {type = 'error', text = { shared.locale('cannot_carry_other')}})
 					end
 					return
 				end
 			end
 
 			if fromInventory.type == 'policeevidence' and not sameInventory then
-				if not ox.isPolice(toInventory.player.job.name) then return end
-				if ox.evidencegrade > toInventory.player.job.grade then
-					TriggerClientEvent('ox_inventory:notify', source, {type = 'error', text = ox.locale('evidence_cannot_take')})
+				if not shared.isPolice(toInventory.player.job.name) then return end
+				if shared.evidencegrade > toInventory.player.job.grade then
+					TriggerClientEvent('ox_inventory:notify', source, {type = 'error', text = shared.locale('evidence_cannot_take')})
 					return
 				end
 			end
@@ -381,10 +381,10 @@ ServerCallback.Register('swapItems', function(source, data)
 
 					if next(items) then
 						ret = {weight=playerInventory.weight, items=items}
-						if ox.esx and fromInventory.type == 'player' or fromInventory.type == 'otherplayer' then
+						if shared.esx and fromInventory.type == 'player' or fromInventory.type == 'otherplayer' then
 							Inventory.SyncInventory(fromInventory)
 						end
-						if ox.esx and not sameInventory and (toInventory.type == 'player' or toInventory.type == 'otherplayer') then
+						if shared.esx and not sameInventory and (toInventory.type == 'player' or toInventory.type == 'otherplayer') then
 							Inventory.SyncInventory(toInventory)
 						end
 					end
@@ -399,7 +399,7 @@ end)
 local Licenses = data 'licenses'
 
 ServerCallback.Register('buyLicense', function(source, id)
-	if ox.esx then
+	if shared.esx then
 		local license = Licenses[id]
 		if license then
 			local inventory = Inventory(source)
@@ -415,7 +415,7 @@ ServerCallback.Register('buyLicense', function(source, id)
 			end
 		end
 	else
-		ox.warning('Licenses can only be purchased when using es_extended and esx_licenses. Integrated functionality will be added soon.')
+		shared.warning('Licenses can only be purchased when using es_extended and esx_licenses. Integrated functionality will be added soon.')
 	end
 end)
 
@@ -449,11 +449,11 @@ ServerCallback.Register('useItem', function(source, item, slot, metadata)
 			if durability > 100 then
 				if os.time() > durability then
 					inventory.items[slot].metadata.durability = 0
-					TriggerClientEvent('ox_inventory:notify', source, {type = 'error', text = ox.locale('no_durability', data.name), duration = 2500})
+					TriggerClientEvent('ox_inventory:notify', source, {type = 'error', text = shared.locale('no_durability', data.name), duration = 2500})
 					return
 				end
 			elseif durability <= 0 then
-				TriggerClientEvent('ox_inventory:notify', source, {type = 'error', text = ox.locale('no_durability', data.name), duration = 2500})
+				TriggerClientEvent('ox_inventory:notify', source, {type = 'error', text = shared.locale('no_durability', data.name), duration = 2500})
 				return
 			end
 		end
@@ -475,8 +475,8 @@ ServerCallback.Register('useItem', function(source, item, slot, metadata)
 			elseif type == 3 then -- component
 				data.consume = 1
 				return data
-			elseif ox.UsableItemsCallbacks[item.name] then
-				ox.UseItem(source, data.name, data)
+			elseif shared.UsableItemsCallbacks[item.name] then
+				shared.UseItem(source, data.name, data)
 			else
 				if item.consume and data.count >= item.consume then
 					local result = item.cb and item.cb('usingItem', item, inventory, slot)
@@ -486,7 +486,7 @@ ServerCallback.Register('useItem', function(source, item, slot, metadata)
 					end
 					return data
 				else
-					TriggerClientEvent('ox_inventory:notify', source, {type = 'error', text = ox.locale('item_not_enough', item.name), duration = 2500})
+					TriggerClientEvent('ox_inventory:notify', source, {type = 'error', text = shared.locale('item_not_enough', item.name), duration = 2500})
 				end
 			end
 		end

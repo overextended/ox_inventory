@@ -3,7 +3,7 @@ local Inventory = server.inventory
 
 local Shops = {}
 
-local locations = ox.qtarget and 'targets' or 'locations'
+local locations = shared.qtarget and 'targets' or 'locations'
 
 for shopName, shopDetails in pairs(data('shops')) do
 	Shops[shopName] = {}
@@ -16,7 +16,7 @@ for shopName, shopDetails in pairs(data('shops')) do
 				items = table.clone(shopDetails.inventory),
 				slots = #shopDetails.inventory,
 				type = 'shop',
-				coords = ox.qtarget and shopDetails[locations][i].loc or shopDetails[locations][i]
+				coords = shared.qtarget and shopDetails[locations][i].loc or shopDetails[locations][i]
 			}
 			for j=1, Shops[shopName][i].slots do
 				local slot = Shops[shopName][i].items[j]
@@ -27,7 +27,7 @@ for shopName, shopDetails in pairs(data('shops')) do
 						slot = j,
 						weight = Item.weight,
 						count = slot.count,
-						price = ox.randomprices and (math.floor(slot.price * (math.random(80, 120)/100))) or slot.price,
+						price = shared.randomprices and (math.floor(slot.price * (math.random(80, 120)/100))) or slot.price,
 						metadata = slot.metadata,
 						license = slot.license,
 						currency = slot.currency,
@@ -55,7 +55,7 @@ for shopName, shopDetails in pairs(data('shops')) do
 					slot = i,
 					weight = Item.weight,
 					count = slot.count,
-					price = ox.randomprices and (math.floor(slot.price * (math.random(90, 110)/100))) or slot.price,
+					price = shared.randomprices and (math.floor(slot.price * (math.random(90, 110)/100))) or slot.price,
 					metadata = slot.metadata,
 					license = slot.license,
 					currency = slot.currency,
@@ -114,16 +114,16 @@ ServerCallback.Register('buyItem', function(source, data)
 		if fromData then
 			if fromData.count then
 				if fromData.count == 0 then
-					return false, false, {type = 'error', text = ox.locale('shop_nostock')}
+					return false, false, {type = 'error', text = shared.locale('shop_nostock')}
 				elseif data.count > fromData.count then
 					data.count = fromData.count
 				end
 
 			elseif fromData.license and not MySQL.scalar.await('SELECT 1 FROM user_licenses WHERE type = ? AND owner = ?', { fromData.license, playerInv.owner }) then
-				return false, false, {type = 'error', text = ox.locale('item_unlicensed')}
+				return false, false, {type = 'error', text = shared.locale('item_unlicensed')}
 
 			elseif fromData.grade and playerInv.player.job.grade < fromData.grade then
-				return false, false, {type = 'error', text = ox.locale('stash_lowgrade')}
+				return false, false, {type = 'error', text = shared.locale('stash_lowgrade')}
 			end
 
 			local currency = fromData.currency or 'money'
@@ -138,7 +138,7 @@ ServerCallback.Register('buyItem', function(source, data)
 
 			local _, totalCount, _ = Inventory.GetItemSlots(playerInv, fromItem, fromItem.metadata)
 			if fromItem.limit and (totalCount + data.count) > fromItem.limit then
-				return false, false, {type = 'error', text = { ox.locale('cannot_carry')}}
+				return false, false, {type = 'error', text = { shared.locale('cannot_carry')}}
 			end
 
 			if toData == nil or (fromItem.name == toItem.name and fromItem.stack and table.matches(toData.metadata, metadata)) then
@@ -146,7 +146,7 @@ ServerCallback.Register('buyItem', function(source, data)
 				if canAfford then
 					local newWeight = playerInv.weight + (fromItem.weight + (metadata?.weight or 0)) * count
 					if newWeight > playerInv.maxWeight then
-						return false, false, {type = 'error', text = { ox.locale('cannot_carry')}}
+						return false, false, {type = 'error', text = { shared.locale('cannot_carry')}}
 					else
 						Inventory.SetSlot(playerInv, fromItem, count, metadata, data.toSlot)
 						if fromData.count then shop.items[data.fromSlot].count = fromData.count - count end
@@ -154,8 +154,8 @@ ServerCallback.Register('buyItem', function(source, data)
 					end
 
 					Inventory.RemoveItem(source, currency, price)
-					if ox.esx then Inventory.SyncInventory(playerInv) end
-					local message = ox.locale('purchased_for', count, fromItem.label, (currency == 'money' and ox.locale('$') or comma_value(price)), (currency == 'money' and comma_value(price) or ' '..Items(currency).label))
+					if shared.esx then Inventory.SyncInventory(playerInv) end
+					local message = shared.locale('purchased_for', count, fromItem.label, (currency == 'money' and shared.locale('$') or comma_value(price)), (currency == 'money' and comma_value(price) or ' '..Items(currency).label))
 
 					-- Only log purchases for items worth $500 or more
 					if fromData.price >= 500 then
@@ -168,10 +168,10 @@ ServerCallback.Register('buyItem', function(source, data)
 
 					return true, {data.toSlot, playerInv.items[data.toSlot], weight}, {type = 'success', text = message}
 				else
-					return false, false, {type = 'error', text = ox.locale('cannot_afford', ('%s%s'):format((currency == 'money' and ox.locale('$') or comma_value(price)), (currency == 'money' and comma_value(price) or ' '..Items(currency).label)))}
+					return false, false, {type = 'error', text = shared.locale('cannot_afford', ('%s%s'):format((currency == 'money' and shared.locale('$') or comma_value(price)), (currency == 'money' and comma_value(price) or ' '..Items(currency).label)))}
 				end
 			end
-			return false, false, {type = 'error', text = { ox.locale('unable_stack_items')}}
+			return false, false, {type = 'error', text = { shared.locale('unable_stack_items')}}
 		end
 	end
 end)

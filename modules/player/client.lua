@@ -13,14 +13,14 @@ PlayerData = {
     loaded = false
 }
 
-function ox.SetPlayerData(key, value)
+function shared.SetPlayerData(key, value)
     PlayerData[key] = value
     OnPlayerData(key, value)
 end
 
 local Utils = client.utils
 
-if ox.esx then
+if shared.esx then
     local ESX = exports.es_extended:getSharedObject()
 
     PlayerData.dead = PlayerData.dead
@@ -31,7 +31,7 @@ if ox.esx then
 		PlayerLoaded = ESX.PlayerLoaded
     }
 
-    function ox.SetPlayerData(key, value)
+    function shared.SetPlayerData(key, value)
         PlayerData[key] = value
         ESX.SetPlayerData(key, value)
     end

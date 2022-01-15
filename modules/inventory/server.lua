@@ -72,7 +72,7 @@ function Inventory.SyncInventory(inv)
 		end
 	end
 
-	ox.GetPlayerFromId(inv.id).syncInventory(inv.weight, inv.maxWeight, inv.items, money)
+	shared.GetPlayerFromId(inv.id).syncInventory(inv.weight, inv.maxWeight, inv.items, money)
 end
 
 ---@param inv any
@@ -195,7 +195,7 @@ function Inventory.Save(inv)
 	else
 		if inv.type == 'trunk' or inv.type == 'glovebox' then
 			local plate = inv.id:sub(6)
-			if ox.playerslots then plate = string.strtrim(plate) end
+			if shared.playerslots then plate = string.strtrim(plate) end
 			MySQL.update('UPDATE owned_vehicles SET ?? = ? WHERE plate = ?', { inv.type, inventory, plate })
 		else
 			MySQL.update('INSERT INTO ox_inventory (owner, name, data) VALUES (:owner, :name, :data) ON DUPLICATE KEY UPDATE data = :data', {
@@ -239,9 +239,9 @@ end
 local function generateItems(inv, invType, items)
 	if items == nil then
 		if invType == 'dumpster' then
-			items = randomLoot(ox.dumpsterloot)
+			items = randomLoot(shared.dumpsterloot)
 		elseif invType == 'vehicle' then
-			items = randomLoot(ox.vehicleloot)
+			items = randomLoot(shared.vehicleloot)
 		end
 	end
 
@@ -250,7 +250,7 @@ local function generateItems(inv, invType, items)
 		local v = items[i]
 		local item = Items(v[1])
 		if not item then
-			ox.warning('unable to generate', v[1], 'item does not exist')
+			shared.warning('unable to generate', v[1], 'item does not exist')
 		else
 			local metadata, count = Items.Metadata(inv, item, v[3] or {}, v[2])
 			local weight = Inventory.SlotWeight(item, {count=count, metadata=metadata})
@@ -271,16 +271,16 @@ function Inventory.Load(id, invType, owner)
 	if id and invType then
 		if isVehicle then
 			local plate = id:sub(6)
-			if ox.playerslots then plate = string.strtrim(plate) end
+			if shared.playerslots then plate = string.strtrim(plate) end
 			result = MySQL.single.await('SELECT ?? FROM owned_vehicles WHERE plate = ?', { invType, plate })
 			if result then result = json.decode(result[invType])
-			elseif ox.randomloot then return generateItems(id, 'vehicle')
+			elseif shared.randomloot then return generateItems(id, 'vehicle')
 			else datastore = true end
 		elseif owner then
 			result = MySQL.prepare.await('SELECT data FROM ox_inventory WHERE owner = ? AND name = ?', { owner, id })
 			if result then result = json.decode(result) end
 		elseif invType == 'dumpster' then
-			if ox.randomloot then return generateItems(id, invType) else datastore = true end
+			if shared.randomloot then return generateItems(id, invType) else datastore = true end
 		else
 			result = MySQL.prepare.await('SELECT data FROM ox_inventory WHERE owner = ? AND name = ?', { '', id })
 			if result then result = json.decode(result) end
@@ -394,7 +394,7 @@ function Inventory.SetMetadata(inv, slot, metadata)
 			end
 
 			if inv.type == 'player' then
-				if ox.esx then Inventory.SyncInventory(inv) end
+				if shared.esx then Inventory.SyncInventory(inv) end
 				TriggerClientEvent('ox_inventory:updateInventory', inv.id, {{item = slot, inventory = inv.type}}, {left=inv.weight, right=inv.open and Inventories[inv.open]?.weight})
 			end
 		end
@@ -414,7 +414,7 @@ exports('SetMetadata', Inventory.SetMetadata)
 -- exports.ox_inventory:AddItem(1, 'bread', 4, nil, nil, function(success, reason)
 -- if not success then
 -- 	if reason == 'overburdened' then
--- 		TriggerClientEvent('ox_inventory:notify', source, {type = 'error', text = ox.locale('cannot_carry', count, data.label), duration = 2500})
+-- 		TriggerClientEvent('ox_inventory:notify', source, {type = 'error', text = shared.locale('cannot_carry', count, data.label), duration = 2500})
 -- 	end
 -- end
 -- ```
@@ -437,7 +437,7 @@ function Inventory.AddItem(inv, item, count, metadata, slot, cb)
 
 			if existing == false then
 				local items, toSlot = inv.items, nil
-				for i=1, ox.playerslots do
+				for i=1, shared.playerslots do
 					local slotItem = items[i]
 					if item.stack and slotItem ~= nil and slotItem.name == item.name and table.matches(slotItem.metadata, metadata) then
 						toSlot, existing = i, true break
@@ -452,7 +452,7 @@ function Inventory.AddItem(inv, item, count, metadata, slot, cb)
 			inv.weight = inv.weight + (item.weight + (metadata?.weight or 0)) * count
 
 			if inv.type == 'player' then
-				if ox.esx then Inventory.SyncInventory(inv) end
+				if shared.esx then Inventory.SyncInventory(inv) end
 				TriggerClientEvent('ox_inventory:updateInventory', inv.id, {{item = inv.items[slot], inventory = inv.type}}, {left=inv.weight, right=inv.open and Inventories[inv.open]?.weight}, count, false)
 			end
 		else
@@ -573,7 +573,7 @@ function Inventory.RemoveItem(inv, item, count, metadata, slot)
 
 		inv.weight = inv.weight - (item.weight + (metadata?.weight or 0)) * removed
 		if removed > 0 and inv.type == 'player' then
-			if ox.esx then Inventory.SyncInventory(inv) end
+			if shared.esx then Inventory.SyncInventory(inv) end
 			local array = table.create(#slots, 0)
 
 			for k, v in pairs(slots) do
@@ -660,7 +660,7 @@ end
 Inventory.Drops = {}
 function Inventory.CreateDrop(source, slot, toSlot, cb)
 	local drop = generateDropId()
-	local inventory = Inventory.Create(drop, 'Drop '..drop, 'drop', ox.playerslots, toSlot.weight, ox.playerweight, false, {[slot] = table.clone(toSlot)})
+	local inventory = Inventory.Create(drop, 'Drop '..drop, 'drop', shared.playerslots, toSlot.weight, shared.playerweight, false, {[slot] = table.clone(toSlot)})
 	local coords = GetEntityCoords(GetPlayerPed(source))
 	inventory.coords = vec3(coords.x, coords.y, coords.z-0.2)
 	Inventory.Drops[drop] = inventory.coords
@@ -671,7 +671,7 @@ AddEventHandler('ox_inventory:createDrop', CreateDrop)
 local function CustomDrop(prefix, items, coords, slots, maxWeight)
 	local drop = generateDropId()
 	local items, weight = generateItems(drop, 'drop', items)
-	local inventory = Inventory.Create(drop, prefix..' '..drop, 'drop', slots or ox.playerslots, weight, maxWeight or ox.playerweight, false, items)
+	local inventory = Inventory.Create(drop, prefix..' '..drop, 'drop', slots or shared.playerslots, weight, maxWeight or shared.playerweight, false, items)
 	inventory.coords = coords
 	Inventory.Drops[drop] = inventory.coords
 	TriggerClientEvent('ox_inventory:createDrop', -1, {drop, coords}, inventory.open and source)
@@ -692,7 +692,7 @@ function Inventory.Confiscate(source)
 				table.wipe(inv.items)
 				inv.weight = 0
 				TriggerClientEvent('ox_inventory:inventoryConfiscated', inv.id)
-				if ox.esx then Inventory.SyncInventory(inv) end
+				if shared.esx then Inventory.SyncInventory(inv) end
 			end
 		end)
 	end
@@ -725,7 +725,7 @@ function Inventory.Return(source)
 				inv.weight = totalWeight
 				inv.items = inventory
 
-				if ox.esx then Inventory.SyncInventory(inv) end
+				if shared.esx then Inventory.SyncInventory(inv) end
 				TriggerClientEvent('ox_inventory:inventoryReturned', source, {inventory, totalWeight})
 			end
 		end)
@@ -745,7 +745,7 @@ function Inventory.Clear(inv, keep)
 			inv.weight = 0
 			if inv.player then
 				TriggerClientEvent('ox_inventory:inventoryConfiscated', inv.id)
-				if ox.esx then Inventory.SyncInventory(inv) end
+				if shared.esx then Inventory.SyncInventory(inv) end
 				inv.weapon = nil
 			end
 		end
@@ -764,7 +764,7 @@ local function playerDropped(source)
 	end
 end
 
-if ox.esx then
+if shared.esx then
 	AddEventHandler('esx:playerDropped', playerDropped)
 
 	AddEventHandler('esx:setJob', function(source, job)
@@ -815,7 +815,7 @@ AddEventHandler('txAdmin:events:scheduledRestart', function(eventData)
 end)
 
 AddEventHandler('onResourceStop', function(resource)
-	if resource == ox.resource then
+	if resource == shared.resource then
 		saveInventories()
 	end
 end)
@@ -847,7 +847,7 @@ RegisterServerEvent('ox_inventory:giveItem', function(slot, target, count)
 				Inventory.AddItem(toInventory, item, count, data.metadata)
 			end
 		else
-			TriggerClientEvent('ox_inventory:notify', source, {type = 'error', text = ox.locale('cannot_give', count, data.label), duration = 2500})
+			TriggerClientEvent('ox_inventory:notify', source, {type = 'error', text = shared.locale('cannot_give', count, data.label), duration = 2500})
 		end
 	end
 end)
@@ -907,7 +907,7 @@ RegisterServerEvent('ox_inventory:updateWeapon', function(action, value, slot)
 				syncInventory = true
 			end
 
-			if ox.esx and syncInventory then
+			if shared.esx and syncInventory then
 				Inventory.SyncInventory(inventory)
 			end
 
@@ -966,7 +966,7 @@ end, {'target:number', 'item:string', 'count:number', 'metatype:?string'})
 
 import.commands(false, 'clearevidence', function(source, args)
 	local inventory = Inventories[source]
-	if ox.isPolice(inventory.player.job.name) and inventory.player.job.grade_name == 'boss' then
+	if shared.isPolice(inventory.player.job.name) and inventory.player.job.grade_name == 'boss' then
 		MySQL.query('DELETE FROM ox_inventory WHERE name = ?', {('evidence-%s'):format(args.evidence)})
 	end
 end, {'evidence:number'})

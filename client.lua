@@ -33,9 +33,9 @@ end
 
 local defaultInventory = {
 	type = 'newdrop',
-	slots = ox.playerslots,
+	slots = shared.playerslots,
 	weight = 0,
-	maxWeight = ox.playerweight,
+	maxWeight = shared.playerweight,
 	items = {}
 }
 local currentInventory = defaultInventory
@@ -79,25 +79,25 @@ local function OpenInventory(inv, data)
 		local left, right
 
 		if inv == 'shop' and invOpen == false then
-			left, right = ServerCallback.Await(ox.resource, 'openShop', 200, data)
+			left, right = ServerCallback.Await(shared.resource, 'openShop', 200, data)
 		elseif invOpen ~= nil then
 			if inv == 'policeevidence' then
-				local input = Interface.Keyboard(ox.locale('police_evidence'), {ox.locale('locker_number')})
+				local input = Interface.Keyboard(shared.locale('police_evidence'), {shared.locale('locker_number')})
 
 				if input then
 					input = tonumber(input[1])
 				else
-					return Utils.Notify({text = ox.locale('locker_no_value'), type = 'error'})
+					return Utils.Notify({text = shared.locale('locker_no_value'), type = 'error'})
 				end
 
 				if type(input) ~= 'number' then
-					return Utils.Notify({text = ox.locale('locker_must_number'), type = 'error'})
+					return Utils.Notify({text = shared.locale('locker_must_number'), type = 'error'})
 				else
 					data = input
 				end
 			end
 
-			left, right = ServerCallback.Await(ox.resource, 'openInventory', false, inv, data)
+			left, right = ServerCallback.Await(shared.resource, 'openInventory', false, inv, data)
 		end
 
 		if left then
@@ -108,7 +108,7 @@ local function OpenInventory(inv, data)
 			SetInterval(interval, 100)
 			SetNuiFocus(true, true)
 			SetNuiFocusKeepInput(true)
-			if ox.blurscreen then TriggerScreenblurFadeIn(0) end
+			if shared.blurscreen then TriggerScreenblurFadeIn(0) end
 			CloseTrunk()
 			currentInventory = right or defaultInventory
 			left.items = PlayerData.inventory
@@ -134,10 +134,10 @@ local function OpenInventory(inv, data)
 		else
 			-- Stash does not exist
 			if left == false then return false end
-			if invOpen == false then Utils.Notify({type = 'error', text = ox.locale('inventory_right_access'), duration = 2500}) end
+			if invOpen == false then Utils.Notify({type = 'error', text = shared.locale('inventory_right_access'), duration = 2500}) end
 			if invOpen then TriggerEvent('ox_inventory:closeInventory') end
 		end
-	elseif not invBusy then Utils.Notify({type = 'error', text = ox.locale('inventory_player_access'), duration = 2500}) end
+	elseif not invBusy then Utils.Notify({type = 'error', text = shared.locale('inventory_player_access'), duration = 2500}) end
 end
 RegisterNetEvent('ox_inventory:openInventory', OpenInventory)
 exports('openInventory', OpenInventory)
@@ -148,7 +148,7 @@ local function useItem(data, cb)
 		if invOpen and data.close then TriggerEvent('ox_inventory:closeInventory') end
 
 		invBusy = true
-		local result = ServerCallback.Await(ox.resource, 'useItem', 200, data.name, data.slot, PlayerData.inventory[data.slot].metadata)
+		local result = ServerCallback.Await(shared.resource, 'useItem', 200, data.name, data.slot, PlayerData.inventory[data.slot].metadata)
 
 		if not result then
 			Wait(500)
@@ -165,7 +165,7 @@ local function useItem(data, cb)
 				p = promise.new()
 				Interface.Progress({
 					duration = data.usetime,
-					label = ox.locale('using', result.label),
+					label = shared.locale('using', result.label),
 					useWhileDead = data.useWhileDead or false,
 					canCancel = data.cancel or false,
 					disable = data.disable,
@@ -214,7 +214,7 @@ local function useSlot(slot)
 		if not item then return end
 		local data = item and Items[item.name]
 		if not data or not data.usable then return end
-		if data.name:find('at_') and not currentWeapon then Utils.Notify({type = 'error', text = ox.locale('weapon_hand_required')}) return end
+		if data.name:find('at_') and not currentWeapon then Utils.Notify({type = 'error', text = shared.locale('weapon_hand_required')}) return end
 		data.slot = slot
 
 		if item.metadata.container then
@@ -248,7 +248,7 @@ local function useSlot(slot)
 					ClearPedSecondaryTask(playerPed)
 					if data.throwable then item.throwable = true end
 					if currentWeapon then currentWeapon = Utils.Disarm(currentWeapon) end
-					local sleep = (ox.isPolice(PlayerData.job.name) and (GetWeapontypeGroup(data.hash) == 416676503 or GetWeapontypeGroup(data.hash) == 690389602)) and 400 or 1200
+					local sleep = (shared.isPolice(PlayerData.job.name) and (GetWeapontypeGroup(data.hash) == 416676503 or GetWeapontypeGroup(data.hash) == 690389602)) and 400 or 1200
 					local coords = GetEntityCoords(playerPed, true)
 					Utils.PlayAnimAdvanced(sleep*2, sleep == 400 and 'reaction@intimidation@cop@unarmed' or 'reaction@intimidation@1h', 'intro', coords.x, coords.y, coords.z, 0, 0, GetEntityHeading(playerPed), 8.0, 3.0, -1, 50, 0.1)
 					Wait(sleep)
@@ -288,7 +288,7 @@ local function useSlot(slot)
 
 					currentWeapon = item
 					TriggerEvent('ox_inventory:currentWeapon', item)
-					Utils.ItemNotify({item.label, item.name, ox.locale('equipped')})
+					Utils.ItemNotify({item.label, item.name, shared.locale('equipped')})
 					Wait(sleep)
 					ClearPedSecondaryTask(playerPed)
 				end
@@ -328,7 +328,7 @@ local function useSlot(slot)
 				for componentIndex = 1, #weaponComponents do
 					if componentType == Items[weaponComponents[componentIndex]].type then
 						-- todo: Update locale?
-						return Utils.Notify({type = 'error', text = ox.locale('component_has', data.label)})
+						return Utils.Notify({type = 'error', text = shared.locale('component_has', data.label)})
 					end
 				end
 				for i=1, #components do
@@ -336,7 +336,7 @@ local function useSlot(slot)
 
 					if DoesWeaponTakeWeaponComponent(currentWeapon.hash, component) then
 						if HasPedGotWeaponComponent(playerPed, currentWeapon.hash, component) then
-							Utils.Notify({type = 'error', text = ox.locale('component_has', data.label)})
+							Utils.Notify({type = 'error', text = shared.locale('component_has', data.label)})
 						else
 							useItem(data, function(data)
 								if data then
@@ -348,7 +348,7 @@ local function useSlot(slot)
 						return
 					end
 				end
-				Utils.Notify({type = 'error', text = ox.locale('component_invalid', data.label) })
+				Utils.Notify({type = 'error', text = shared.locale('component_invalid', data.label) })
 			end
 		else
 			useItem(data)
@@ -370,7 +370,7 @@ end
 local function OpenNearbyInventory()
 	if CanOpenInventory() then
 		local closestPlayer = Utils.GetClosestPlayer()
-		if closestPlayer.x < 2 and (ox.isPolice(PlayerData.job.name) or CanOpenTarget(closestPlayer.z)) then
+		if closestPlayer.x < 2 and (shared.isPolice(PlayerData.job.name) or CanOpenTarget(closestPlayer.z)) then
 			Utils.PlayAnim(2000, 'mp_common', 'givetake1_a', 1.0, 1.0, -1, 50, 0.0, 0, 0, 0)
 			OpenInventory('player', GetPlayerServerId(closestPlayer.y))
 		end
@@ -409,7 +409,7 @@ local Inventory = client.inventory
 function OnPlayerData(key, val)
 	if key == 'job' then
 		Shops()
-		if ox.qtarget then
+		if shared.qtarget then
 			Inventory.Stashes()
 			Inventory.Evidence()
 		end
@@ -430,23 +430,23 @@ local function RegisterCommands()
 			OpenInventory(closestMarker[3], {id=closestMarker[2], type=closestMarker[4]})
 		else OpenInventory() end
 	end)
-	RegisterKeyMapping('inv', ox.locale('open_player_inventory'), 'keyboard', ox.keys[1])
+	RegisterKeyMapping('inv', shared.locale('open_player_inventory'), 'keyboard', shared.keys[1])
 	TriggerEvent('chat:removeSuggestion', '/inv')
 
 	local Vehicles = data 'vehicles'
 
 	RegisterCommand('inv2', function()
 		if not invOpen then
-			if invBusy then return Utils.Notify({type = 'error', text = ox.locale('inventory_player_access'), duration = 2500})
+			if invBusy then return Utils.Notify({type = 'error', text = shared.locale('inventory_player_access'), duration = 2500})
 			else
-				if not CanOpenInventory() then return Utils.Notify({type = 'error', text = ox.locale('inventory_player_access'), duration = 2500}) end
+				if not CanOpenInventory() then return Utils.Notify({type = 'error', text = shared.locale('inventory_player_access'), duration = 2500}) end
 				if StashTarget then
 					OpenInventory('stash', StashTarget)
 				elseif IsPedInAnyVehicle(PlayerData.ped, false) then
 					local vehicle = GetVehiclePedIsIn(PlayerData.ped, false)
 
 					if NetworkGetEntityIsNetworked(vehicle) then
-						local plate = ox.playerslots and string.strtrim(GetVehicleNumberPlateText(vehicle)) or GetVehicleNumberPlateText(vehicle)
+						local plate = shared.playerslots and string.strtrim(GetVehicleNumberPlateText(vehicle)) or GetVehicleNumberPlateText(vehicle)
 						OpenInventory('glovebox', {id='glove'..plate, class=GetVehicleClass(vehicle), model=GetEntityModel(vehicle)})
 
 						while true do
@@ -462,7 +462,7 @@ local function RegisterCommands()
 					local entity, type = Utils.Raycast()
 					if not entity then return end
 					local vehicle, position
-					if not ox.qtarget then
+					if not shared.qtarget then
 						if type == 2 then vehicle, position = entity, GetEntityCoords(entity)
 						elseif type == 3 and table.contains(Inventory.Dumpsters, GetEntityModel(entity)) then
 							local netId = NetworkGetEntityIsNetworked(entity) and NetworkGetNetworkIdFromEntity(entity)
@@ -499,7 +499,7 @@ local function RegisterCommands()
 							local closeToVehicle = distance < 2 and (open == 5 and (checkVehicle == nil and true or 2) or open == 4)
 
 							if closeToVehicle then
-								local plate = ox.playerslots and string.strtrim(GetVehicleNumberPlateText(vehicle)) or GetVehicleNumberPlateText(vehicle)
+								local plate = shared.playerslots and string.strtrim(GetVehicleNumberPlateText(vehicle)) or GetVehicleNumberPlateText(vehicle)
 								TaskTurnPedToFaceCoord(PlayerData.ped, position.x, position.y, position.z)
 								lastVehicle = vehicle
 								OpenInventory('trunk', {id='trunk'..plate, class=class, model=vehHash})
@@ -533,13 +533,13 @@ local function RegisterCommands()
 
 								if lastVehicle then TriggerEvent('ox_inventory:closeInventory') end
 							end
-						else Utils.Notify({type = 'error', text = ox.locale('vehicle_locked'), duration = 2500}) end
+						else Utils.Notify({type = 'error', text = shared.locale('vehicle_locked'), duration = 2500}) end
 					end
 				end
 			end
 		end
 	end)
-	RegisterKeyMapping('inv2', ox.locale('open_secondary_inventory'), 'keyboard', ox.keys[2])
+	RegisterKeyMapping('inv2', shared.locale('open_secondary_inventory'), 'keyboard', shared.keys[2])
 	TriggerEvent('chat:removeSuggestion', '/inv2')
 
 	RegisterCommand('reload', function()
@@ -548,7 +548,7 @@ local function RegisterCommands()
 			if ammo[1] then useSlot(ammo[1].slot) end
 		end
 	end)
-	RegisterKeyMapping('reload', ox.locale('reload_weapon'), 'keyboard', 'r')
+	RegisterKeyMapping('reload', shared.locale('reload_weapon'), 'keyboard', 'r')
 	TriggerEvent('chat:removeSuggestion', '/reload')
 
 	RegisterCommand('hotbar', function()
@@ -556,7 +556,7 @@ local function RegisterCommands()
     		SendNUIMessage({ action = 'toggleHotbar' })
 		end
 	end)
-	RegisterKeyMapping('hotbar', ox.locale('disable_hotbar'), 'keyboard', ox.keys[3])
+	RegisterKeyMapping('hotbar', shared.locale('disable_hotbar'), 'keyboard', shared.keys[3])
 	TriggerEvent('chat:removeSuggestion', '/hotbar')
 
 	RegisterCommand('steal', function()
@@ -566,7 +566,7 @@ local function RegisterCommands()
 	for i=1, 5 do
 		local hotkey = ('hotkey%s'):format(i)
 		RegisterCommand(hotkey, function() if not invOpen then useSlot(i) end end)
-		RegisterKeyMapping(hotkey, ox.locale('use_hotbar', i), 'keyboard', i)
+		RegisterKeyMapping(hotkey, shared.locale('use_hotbar', i), 'keyboard', i)
 		TriggerEvent('chat:removeSuggestion', '/'..hotkey)
 	end
 
@@ -599,22 +599,22 @@ local function updateInventory(items, weight)
 		for slot, v in pairs(items) do
 			PlayerData.inventory[slot] = v and v or nil
 		end
-		ox.SetPlayerData('weight', weight)
+		shared.SetPlayerData('weight', weight)
 	else
 		for i=1, #items do
 			local v = items[i].item
 			if not v.count then v.name = nil end
 			PlayerData.inventory[v.slot] = v.name and v or nil
 		end
-		ox.SetPlayerData('weight', weight.left1)
+		shared.SetPlayerData('weight', weight.left1)
 	end
-	ox.SetPlayerData('inventory', PlayerData.inventory)
+	shared.SetPlayerData('inventory', PlayerData.inventory)
 end
 
 RegisterNetEvent('ox_inventory:updateInventory', function(items, weights, count, removed)
 	if count then
 		local item = items[1].item
-		Utils.ItemNotify({item.label, item.name, ox.locale(removed and 'removed' or 'added', count)})
+		Utils.ItemNotify({item.label, item.name, shared.locale(removed and 'removed' or 'added', count)})
 	end
 
 	updateInventory(items, weights)
@@ -622,20 +622,20 @@ RegisterNetEvent('ox_inventory:updateInventory', function(items, weights, count,
 end)
 
 RegisterNetEvent('ox_inventory:inventoryReturned', function(data)
-	Utils.Notify({text = ox.locale('items_returned'), duration = 2500})
+	Utils.Notify({text = shared.locale('items_returned'), duration = 2500})
 	if currentWeapon then currentWeapon = Utils.Disarm(currentWeapon) end
 	TriggerEvent('ox_inventory:closeInventory')
 	PlayerData.inventory = data[1]
-	ox.SetPlayerData('inventory', data[1])
-	ox.SetPlayerData('weight', data[3])
+	shared.SetPlayerData('inventory', data[1])
+	shared.SetPlayerData('weight', data[3])
 end)
 
 RegisterNetEvent('ox_inventory:inventoryConfiscated', function(message)
-	if message then Utils.Notify({text = ox.locale('items_confiscated'), duration = 2500}) end
+	if message then Utils.Notify({text = shared.locale('items_confiscated'), duration = 2500}) end
 	if currentWeapon then currentWeapon = Utils.Disarm(currentWeapon) end
 	TriggerEvent('ox_inventory:closeInventory')
 	table.wipe(PlayerData.inventory)
-	ox.SetPlayerData('weight', 0)
+	shared.SetPlayerData('weight', 0)
 end)
 
 RegisterNetEvent('ox_inventory:createDrop', function(data, owner, slot)
@@ -692,8 +692,8 @@ RegisterNetEvent('ox_inventory:setPlayerInventory', function(currentDrops, inven
 
 	if setStateBagHandler then setStateBagHandler(PlayerData.id) end
 
-	ox.SetPlayerData('inventory', inventory)
-	ox.SetPlayerData('weight', weight)
+	shared.SetPlayerData('inventory', inventory)
+	shared.SetPlayerData('weight', weight)
 	currentWeapon = nil
 	drops = currentDrops
 	Utils.ClearWeapons()
@@ -711,7 +711,7 @@ RegisterNetEvent('ox_inventory:setPlayerInventory', function(currentDrops, inven
 	end
 
 	local locales = {}
-	for k, v in pairs(ox.locale()) do
+	for k, v in pairs(shared.locale()) do
 		if k:find('ui_') then
 			locales[k] = v
 		end
@@ -726,9 +726,9 @@ RegisterNetEvent('ox_inventory:setPlayerInventory', function(currentDrops, inven
 			items = ItemData,
 			leftInventory = {
 				id = PlayerData.id,
-				slots = ox.playerslots,
+				slots = shared.playerslots,
 				items = PlayerData.inventory,
-				maxWeight = ox.playerweight,
+				maxWeight = shared.playerweight,
 			}
 		}
 	})
@@ -742,7 +742,7 @@ RegisterNetEvent('ox_inventory:setPlayerInventory', function(currentDrops, inven
 	plyState:set('invOpen', false, false)
 	PlayerData.loaded = true
 
-	Utils.Notify({text = ox.locale('inventory_setup'), duration = 2500})
+	Utils.Notify({text = shared.locale('inventory_setup'), duration = 2500})
 	local Licenses = data 'licenses'
 
 	interval = SetInterval(function()
@@ -753,8 +753,8 @@ RegisterNetEvent('ox_inventory:setPlayerInventory', function(currentDrops, inven
 			table.wipe(closestMarker)
 
 			Markers(drops, 'drop', vec3(150, 30, 30))
-			if not ox.qtarget then
-				if ox.isPolice(PlayerData.job.name) then Markers(Inventory.Evidence, 'policeevidence', vec(30, 30, 150)) end
+			if not shared.qtarget then
+				if shared.isPolice(PlayerData.job.name) then Markers(Inventory.Evidence, 'policeevidence', vec(30, 30, 150)) end
 				Markers(Inventory.Stashes, 'stash', vec3(30, 30, 150))
 				for k, v in pairs(Shops) do
 					if not v.jobs or (v.jobs[PlayerData.job.name] and PlayerData.job.grade >= v.jobs[PlayerData.job.name]) then
@@ -779,29 +779,29 @@ RegisterNetEvent('ox_inventory:setPlayerInventory', function(currentDrops, inven
 						local ped = GetPlayerPed(id)
 						local pedCoords = GetEntityCoords(ped)
 
-						if not id or #(playerCoords - pedCoords) > 1.8 or not (ox.isPolice(PlayerData.job.name) or CanOpenTarget(ped)) then
+						if not id or #(playerCoords - pedCoords) > 1.8 or not (shared.isPolice(PlayerData.job.name) or CanOpenTarget(ped)) then
 							TriggerEvent('ox_inventory:closeInventory')
-							Utils.Notify({type = 'error', text = ox.locale('inventory_lost_access'), duration = 2500})
+							Utils.Notify({type = 'error', text = shared.locale('inventory_lost_access'), duration = 2500})
 						else
 							TaskTurnPedToFaceCoord(PlayerData.ped, pedCoords.x, pedCoords.y, pedCoords.z, 50)
 						end
 
 					elseif currentInventory.coords and (#(playerCoords - currentInventory.coords) > 2 or CanOpenTarget(PlayerData.ped)) then
 						TriggerEvent('ox_inventory:closeInventory')
-						Utils.Notify({type = 'error', text = ox.locale('inventory_lost_access'), duration = 2500})
+						Utils.Notify({type = 'error', text = shared.locale('inventory_lost_access'), duration = 2500})
 					end
 				end
 			end
 		end
 
 		if currentWeapon and GetSelectedPedWeapon(PlayerData.ped) ~= currentWeapon.hash then currentWeapon = Utils.Disarm(currentWeapon) end
-		if ox.parachute and GetPedParachuteState(PlayerData.ped) ~= -1 then
-			Utils.DeleteObject(ox.parachute)
-			ox.parachute = false
+		if shared.parachute and GetPedParachuteState(PlayerData.ped) ~= -1 then
+			Utils.DeleteObject(shared.parachute)
+			shared.parachute = false
 		end
 	end, 200)
 
-	local EnableKeys = ox.enablekeys
+	local EnableKeys = shared.enablekeys
 	tick = SetInterval(function()
 		DisablePlayerVehicleRewards(PlayerData.id)
 
@@ -827,11 +827,11 @@ RegisterNetEvent('ox_inventory:setPlayerInventory', function(currentDrops, inven
 
 			if closestMarker and IsControlJustReleased(0, 38) then
 				if closestMarker[3] == 'license' then
-					ServerCallback.Async(ox.resource, 'buyLicense', 1000, function(success, message)
+					ServerCallback.Async(shared.resource, 'buyLicense', 1000, function(success, message)
 						if success == false then
-							Utils.Notify({type = 'error', text = ox.locale(message), duration = 2500})
+							Utils.Notify({type = 'error', text = shared.locale(message), duration = 2500})
 						else
-							Utils.Notify({text = ox.locale(message), duration = 2500})
+							Utils.Notify({text = shared.locale(message), duration = 2500})
 						end
 					end, closestMarker[2])
 				elseif closestMarker[3] == 'shop' then OpenInventory(closestMarker[3], {id=closestMarker[2], type=closestMarker[4]})
@@ -868,7 +868,7 @@ RegisterNetEvent('ox_inventory:setPlayerInventory', function(currentDrops, inven
 							ClearPedTasks(playerPed)
 							SetCurrentPedWeapon(playerPed, currentWeapon.hash, true)
 							SetPedCurrentWeaponVisible(playerPed, true, false, false, false)
-							if currentWeapon?.ammo and ox.autoreload and not Interface.ProgressActive and not IsPedRagdoll(playerPed) and not IsPedFalling(playerPed) then
+							if currentWeapon?.ammo and shared.autoreload and not Interface.ProgressActive and not IsPedRagdoll(playerPed) and not IsPedFalling(playerPed) then
 								currentWeapon.timer = 0
 								local ammo = Inventory.Search(1, currentWeapon.ammo)
 
@@ -906,9 +906,9 @@ RegisterNetEvent('ox_inventory:setPlayerInventory', function(currentDrops, inven
 end)
 
 AddEventHandler('onResourceStop', function(resourceName)
-	if ox.resource == resourceName then
-		if ox.parachute then
-			Utils.DeleteObject(ox.parachute)
+	if shared.resource == resourceName then
+		if shared.parachute then
+			Utils.DeleteObject(shared.parachute)
 		end
 
 		if invOpen then
@@ -920,9 +920,9 @@ AddEventHandler('onResourceStop', function(resourceName)
 end)
 
 RegisterNetEvent('esx:onPlayerLogout', function()
-	if ox.parachute then
-		Utils.DeleteObject(ox.parachute)
-		ox.parachute = false
+	if shared.parachute then
+		Utils.DeleteObject(shared.parachute)
+		shared.parachute = false
 	end
 
 	TriggerEvent('ox_inventory:closeInventory')
@@ -955,7 +955,7 @@ end)
 RegisterNUICallback('removeComponent', function(data, cb)
 	cb(1)
 	if currentWeapon then
-		if data.slot ~= currentWeapon.slot then return Utils.Notify({type = 'error', text = ox.locale('weapon_hand_wrong')}) end
+		if data.slot ~= currentWeapon.slot then return Utils.Notify({type = 'error', text = shared.locale('weapon_hand_wrong')}) end
 		local itemSlot = PlayerData.inventory[currentWeapon.slot]
 		for _, component in pairs(Items[data.component].client.component) do
 			if HasPedGotWeaponComponent(PlayerData.ped, currentWeapon.hash, component) then
@@ -1030,7 +1030,7 @@ RegisterNUICallback('exit', function(_, cb)
 end)
 
 RegisterNUICallback('swapItems', function(data, cb)
-	local response, data, weapon = ServerCallback.Await(ox.resource, 'swapItems', false, data)
+	local response, data, weapon = ServerCallback.Await(shared.resource, 'swapItems', false, data)
 
 	if data then updateInventory(data.items, data.weight) end
 
@@ -1042,11 +1042,11 @@ RegisterNUICallback('swapItems', function(data, cb)
 end)
 
 RegisterNUICallback('buyItem', function(data, cb)
-	local response, data, message = ServerCallback.Await(ox.resource, 'buyItem', 100, data)
+	local response, data, message = ServerCallback.Await(shared.resource, 'buyItem', 100, data)
 	if data then
 		PlayerData.inventory[data[1]] = data[2]
-		ox.SetPlayerData('inventory', PlayerData.inventory)
-		ox.SetPlayerData('weight', data[3])
+		shared.SetPlayerData('inventory', PlayerData.inventory)
+		shared.SetPlayerData('weight', data[3])
 		SendNUIMessage({ action = 'refreshSlots', data = {item = data[2]} })
 	end
 	if message then Utils.Notify(message) end

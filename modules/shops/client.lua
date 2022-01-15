@@ -27,13 +27,13 @@ client.shops = setmetatable(data('shops'), {
 		for type, shop in pairs(self) do
 			if shop.jobs == nil or (shop.jobs[PlayerData.job.name] and PlayerData.job.grade >= shop.jobs[PlayerData.job.name]) then
 				if shop.blip then blipId += 1 end
-				if ox.qtarget then
+				if shared.qtarget then
 					if shop.model then
 						exports.qtarget:AddTargetModel(shop.model, {
 							options = {
 								{
 									icon = 'fas fa-shopping-basket',
-									label = ox.locale('open_shop', shop.name),
+									label = shared.locale('open_shop', shop.name),
 									action = function()
 										exports.ox_inventory:openInventory('shop', {type=type})
 									end
@@ -57,7 +57,7 @@ client.shops = setmetatable(data('shops'), {
 								options = {
 									{
 										icon = 'fas fa-shopping-basket',
-										label = ox.locale('open_shop', shop.name),
+										label = shared.locale('open_shop', shop.name),
 										job = shop.jobs,
 										action = function()
 											OpenShop({id=id, type=type})

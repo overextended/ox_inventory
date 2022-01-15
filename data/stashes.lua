@@ -15,7 +15,7 @@ return {
 		owner = true,
 		slots = 70,
 		weight = 70000,
-		jobs = ox.police
+		jobs = shared.police
 	},
 
 	{

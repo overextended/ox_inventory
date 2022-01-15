@@ -1,4 +1,4 @@
-if ox.versioncheck then
+if shared.versioncheck then
     CreateThread(function()
         Wait(1000)
         local resource = GetCurrentResourceName()

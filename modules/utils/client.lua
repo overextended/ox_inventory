@@ -69,11 +69,11 @@ function Utils.Disarm(currentWeapon, newSlot)
 
 		if not newSlot then
 			ClearPedSecondaryTask(PlayerData.ped)
-			local sleep = (ox.isPolice(PlayerData.job.name) and (GetWeapontypeGroup(currentWeapon.hash) == 416676503 or GetWeapontypeGroup(currentWeapon.hash) == 690389602)) and 450 or 1400
+			local sleep = (shared.isPolice(PlayerData.job.name) and (GetWeapontypeGroup(currentWeapon.hash) == 416676503 or GetWeapontypeGroup(currentWeapon.hash) == 690389602)) and 450 or 1400
 			local coords = GetEntityCoords(PlayerData.ped, true)
 			Utils.PlayAnimAdvanced(sleep, (sleep == 450 and 'reaction@intimidation@cop@unarmed' or 'reaction@intimidation@1h'), 'outro', coords.x, coords.y, coords.z, 0, 0, GetEntityHeading(PlayerData.ped), 8.0, 3.0, -1, 50, 0)
 			Wait(sleep)
-			Utils.ItemNotify({currentWeapon.label, currentWeapon.name, ox.locale('holstered')})
+			Utils.ItemNotify({currentWeapon.label, currentWeapon.name, shared.locale('holstered')})
 		end
 
 		RemoveAllPedWeapons(PlayerData.ped, true)
@@ -90,7 +90,7 @@ end
 function Utils.ClearWeapons(currentWeapon)
 	currentWeapon = Utils.Disarm(currentWeapon)
 	RemoveAllPedWeapons(PlayerData.ped, true)
-	if ox.parachute then
+	if shared.parachute then
 		local chute = `GADGET_PARACHUTE`
 		GiveWeaponToPed(PlayerData.ped, chute, 0, true, false)
 		SetPedGadget(PlayerData.ped, chute, true)

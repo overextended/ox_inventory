@@ -1,9 +1,9 @@
-if ox.esx then
+if shared.esx then
     local ESX = exports['es_extended']:getSharedObject()
 
     -- ESX.ServerCallbacks does not exist in the Overextended fork of ESX, so throw an error
     if ESX.ServerCallbacks then
-        ox.error('Ox Inventory requires a modified version of ESX, refer to the documentation.')
+        shared.error('Ox Inventory requires a modified version of ESX, refer to the documentation.')
     end
 
     ESX = {
@@ -12,13 +12,13 @@ if ox.esx then
         UseItem = ESX.UseItem
     }
 
-    ox.UseItem = ESX.UseItem
-    ox.UsableItemsCallbacks = ESX.GetUsableItems
-    ox.GetPlayerFromId = ESX.GetPlayerFromId
+    shared.UseItem = ESX.UseItem
+    shared.UsableItemsCallbacks = ESX.GetUsableItems
+    shared.GetPlayerFromId = ESX.GetPlayerFromId
 
     RegisterServerEvent('ox_inventory:requestPlayerInventory', function()
         local source = source
-        local player = ox.GetPlayerFromId(source)
+        local player = shared.GetPlayerFromId(source)
 
         if player and player.inventory then
             exports.ox_inventory:setPlayerInventory(player, player.inventory)

@@ -18,7 +18,7 @@ local function Item(name, cb)
 	end
 end
 
-local ox_inventory = exports[ox.resource]
+local ox_inventory = exports[shared.resource]
 -----------------------------------------------------------------------------------------------
 -- Clientside item use functions
 -----------------------------------------------------------------------------------------------
@@ -47,9 +47,9 @@ Item('armour', function(data, slot)
 	end
 end)
 
-ox.parachute = false
+shared.parachute = false
 Item('parachute', function(data, slot)
-	if not ox.parachute then
+	if not shared.parachute then
 		ox_inventory:useItem(data, function(data)
 			if data then
 				local chute = `GADGET_PARACHUTE`
@@ -57,7 +57,7 @@ Item('parachute', function(data, slot)
 				GiveWeaponToPed(PlayerData.ped, chute, 0, true, false)
 				SetPedGadget(PlayerData.ped, chute, true)
 				lib.requestModel(1269906701)
-				ox.parachute = CreateParachuteBagObject(PlayerData.ped, true, true)
+				shared.parachute = CreateParachuteBagObject(PlayerData.ped, true, true)
 				if slot.metadata.type then
 					SetPlayerParachuteTintIndex(PlayerData.id, slot.metadata.type)
 				end

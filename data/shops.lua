@@ -106,7 +106,7 @@ return {
 
 	PoliceArmoury = {
 		name = 'Police Armoury',
-		jobs = ox.police,
+		jobs = shared.police,
 		blip = {
 			id = 110, colour = 84, scale = 0.8
 		}, inventory = {

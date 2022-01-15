@@ -1,8 +1,8 @@
-if ox.logs then
+if shared.logs then
 	local io = io
 	local os = os
 	local day, month, year = string.strsplit('-', os.date('%d-%B-%Y'))
-	local path = GetResourcePath(ox.resource):gsub('//', '/')
+	local path = GetResourcePath(shared.resource):gsub('//', '/')
 	path = ('%s/modules/logs'):format(path)
 
 	local strformat = string.format
@@ -37,7 +37,7 @@ if ox.logs then
 		server.logs = write
 		return
 	end
-	ox.warning('Unable to initilise logging module')
+	shared.warning('Unable to initilise logging module')
 end
 
 function server.logs() end

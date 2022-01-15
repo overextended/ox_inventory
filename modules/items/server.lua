@@ -39,7 +39,7 @@ setmetatable(Items, {
 })
 
 CreateThread(function()
-	if ox.esx then
+	if shared.esx then
 		local items = MySQL.query.await('SELECT * FROM items')
 		if items then
 			local query = {}
@@ -55,9 +55,9 @@ CreateThread(function()
 			end
 			if next(query) then
 				query = table.concat(query, ' ')
-				local sql = LoadResourceFile(ox.resource, 'setup/dump.sql')
+				local sql = LoadResourceFile(shared.resource, 'setup/dump.sql')
 				if not sql then error('Unable to load "setup/dump.sql', 1) end
-				local file = {string.strtrim(LoadResourceFile(ox.resource, 'data/items.lua'))}
+				local file = {string.strtrim(LoadResourceFile(shared.resource, 'data/items.lua'))}
 				file[1] = file[1]:gsub('}$', '')
 				local dump = {'INSERT INTO `items` (`name`, `label`, `weight`, `description`) VALUES'}
 local itemFormat = [[
@@ -89,39 +89,39 @@ local itemFormat = [[
 				file[fileSize+1] = '}'
 				if saveSql then
 					dump = ('%s%s'):format(sql, table.concat(dump))
-					SaveResourceFile(ox.resource, 'setup/dump.sql', dump, -1)
+					SaveResourceFile(shared.resource, 'setup/dump.sql', dump, -1)
 				end
-				SaveResourceFile(ox.resource, 'data/items.lua', table.concat(file), -1)
+				SaveResourceFile(shared.resource, 'data/items.lua', table.concat(file), -1)
 				MySQL.update(query, function(result)
 					if result > 0 then
-						ox.info('Removed '..result..' items from the database')
+						shared.info('Removed '..result..' items from the database')
 					end
 				end)
-				if items then ox.info(#items..' items have been copied from the database') end
+				if items then shared.info(#items..' items have been copied from the database') end
 			end
 		end
 	end
 
-	if ox.clearstashes then
-		MySQL.query.await('DELETE FROM ox_inventory WHERE lastupdated < (NOW() - INTERVAL '..ox.clearstashes..') OR data = "[]"')
+	if shared.clearstashes then
+		MySQL.query.await('DELETE FROM ox_inventory WHERE lastupdated < (NOW() - INTERVAL '..shared.clearstashes..') OR data = "[]"')
 	end
 
 	local count = 0
 	Wait(2000)
-	if ox.UsableItemsCallbacks then
-		ox.UsableItemsCallbacks = ox.UsableItemsCallbacks()
-	else ox.UsableItemsCallbacks = {} end
+	if shared.UsableItemsCallbacks then
+		shared.UsableItemsCallbacks = shared.UsableItemsCallbacks()
+	else shared.UsableItemsCallbacks = {} end
 
 	for _, v in pairs(ItemList) do
-		if v.consume and v.consume > 0 and ox.UsableItemsCallbacks[v.name] then ox.UsableItemsCallbacks[v.name] = nil end
+		if v.consume and v.consume > 0 and shared.UsableItemsCallbacks[v.name] then shared.UsableItemsCallbacks[v.name] = nil end
 		count += 1
 	end
 
 	TriggerEvent('ox_inventory:itemList', ItemList)
-	ox.info('Inventory has loaded '..count..' items')
+	shared.info('Inventory has loaded '..count..' items')
 	collectgarbage('collect') -- clean up from initialisation
-	ox.ready = true
-	ox.info('A future version of ox_inventory will modify convars for simpler use and FxDK support (check config.cfg)')
+	shared.ready = true
+	shared.info('A future version of ox_inventory will modify convars for simpler use and FxDK support (check config.cfg)')
 	--[[local ignore = {[0] = '?', [`WEAPON_UNARMED`] = 'unarmed', [966099553] = 'shovel'}
 	while true do
 		Wait(45000)
@@ -142,12 +142,12 @@ local itemFormat = [[
 						end
 						if count == 0 then
 							-- does not own weapon; player may be cheating
-							ox.warning(inv.name, 'is using an invalid weapon (', curWeapon.name, ')')
+							shared.warning(inv.name, 'is using an invalid weapon (', curWeapon.name, ')')
 							--DropPlayer(i)
 						end
 					else
 						-- weapon doesn't exist; player may be cheating
-						ox.warning(inv.name, 'is using an unknown weapon (', hash, ')')
+						shared.warning(inv.name, 'is using an unknown weapon (', hash, ')')
 						--DropPlayer(i)
 					end
 				end
@@ -208,7 +208,7 @@ function Items.Metadata(inv, item, metadata, count)
 			if next(metadata) == nil then
 				metadata = {
 					type = inv.player.name,
-					description = ox.locale('identification', (inv.player.sex) and ox.locale('male') or ox.locale('female'), inv.player.dateofbirth)
+					description = shared.locale('identification', (inv.player.sex) and shared.locale('male') or shared.locale('female'), inv.player.dateofbirth)
 				}
 			end
 		elseif item.name == 'garbage' then

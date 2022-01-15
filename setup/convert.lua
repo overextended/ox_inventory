@@ -128,8 +128,8 @@ local function Convert()
 end
 
 CreateThread(function()
-	repeat Wait(50) until ox.ready
-	ox.ready = false
+	repeat Wait(50) until shared.ready
+	shared.ready = false
 	Print([[Currently running in setup mode
 If you are upgrading from linden_inventory, type '/convertinventory linden'
 
@@ -146,5 +146,5 @@ To update standard ESX player inventories to support metadata, type '/convertinv
 			end
 		end
 	end)
-	
+
 end)

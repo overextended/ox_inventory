@@ -67,70 +67,70 @@ local function loadConvar(name)
 	return convar or {}
 end
 
-ox = loadConvar('ox_inventory')
+shared = loadConvar('ox_inventory')
 
-ox = {
+shared = {
 	-- Enable support for es_extended (defaults to true, for now)
-	esx = ox.esx or true,
+	esx = shared.esx or true,
 
 	-- If vehicle plates are stored with a trailing space, set to false (i.e. `XXX 000 `)
-	trimplate = ox.trimplate or true,
+	trimplate = shared.trimplate or true,
 
 	-- Adds compatibility for qtarget (https://github.com/overextended/qtarget)
-	qtarget = ox.qtarget or false,
+	qtarget = shared.qtarget or false,
 
 	-- Number of slots in the player inventory
-	playerslots = ox.playerslots or 50,
+	playerslots = shared.playerslots or 50,
 
 	-- Blurs the screen while the inventory is open
-	blurscreen = ox.blurscreen or true,
+	blurscreen = shared.blurscreen or true,
 
 	-- Reload empty weapons automatically
-	autoreload = ox.autoreload or false,
+	autoreload = shared.autoreload or false,
 
 	-- Set the keybinds for primary, secondary, and hotbar
-	keys = ox.keys or {
+	keys = shared.keys or {
 		'F2', 'K', 'TAB'
 	},
 
 	-- Additional keys to enable when the inventory is open (i.e. push-to-talk)
-	enablekeys = ox.enablekeys or {
+	enablekeys = shared.enablekeys or {
 		249
 	},
 
 	-- Default max weight of player inventory
-	playerweight = ox.playerweight or 30000,
+	playerweight = shared.playerweight or 30000,
 
 	-- Name of your police job/s (string or table with grades)
-	police = ox.police or 'police',
+	police = shared.police or 'police',
 
 	-- Translations
-	locale = ox.locale or 'en'
+	locale = shared.locale or 'en'
 }
 
-ox.resource = GetCurrentResourceName()
+shared.resource = GetCurrentResourceName()
 IsDuplicityVersion = IsDuplicityVersion()
 
 if IsDuplicityVersion then
 	server = loadConvar('ox_inventory_server')
 
 	-- Check the latest available release
-	ox.versioncheck = server.versioncheck or true
+	shared.versioncheck = server.versioncheck or true
 
 	-- Removes stashes from the database if they haven't been used
-	ox.clearstashes = server.clearstashes or '6 MONTH'
+	shared.clearstashes = server.clearstashes or '6 MONTH'
 
 	-- Enables text-file logging
-	ox.logs = server.logs or false
+	shared.logs = server.logs or false
 
 	-- Prices of items will fluctuate between 80% and 120%
-	ox.randomprices = server.randomprices or true
+	shared.randomprices = server.randomprices or true
 
 	-- Police grade required to take items from evidence
-	ox.evidencegrade = server.evidencegrade or 2
+	shared.evidencegrade = server.evidencegrade or 2
 
 	-- Fills generated inventories with random items
-	ox.randomloot = server.randomloot or true
+	shared.randomloot = server.randomloot or true
 
 	----------------------
 	-- Random loot tables
@@ -140,7 +140,7 @@ if IsDuplicityVersion then
 
 	local loot = loadConvar('ox_inventory_loot')
 
-	ox.vehicleloot = loot.vehicle or {
+	shared.vehicleloot = loot.vehicle or {
 		{'cola', 1, 1},
 		{'water', 1, 2},
 		{'garbage', 1, 1, 20},
@@ -150,7 +150,7 @@ if IsDuplicityVersion then
 		{'bandage', 1, 1}
 	}
 
-	ox.dumpsterloot = loot.dumpster or {
+	shared.dumpsterloot = loot.dumpster or {
 		{'mustard', 1, 1},
 		{'garbage', 1, 3},
 		{'money', 1, 10},
