@@ -142,9 +142,9 @@ RegisterNetEvent('ox_inventory:openInventory', OpenInventory)
 exports('openInventory', OpenInventory)
 
 local function useItem(data, cb)
+	if invOpen and data.close then TriggerEvent('ox_inventory:closeInventory') end
 	if not invBusy and not Interface.ProgressActive and not IsPedRagdoll(PlayerData.ped) and not IsPedFalling(PlayerData.ped) then
 		if currentWeapon and currentWeapon?.timer > 100 then return end
-		if invOpen and data.close then TriggerEvent('ox_inventory:closeInventory') end
 
 		invBusy = true
 		local result = ServerCallback.Await(shared.resource, 'useItem', 200, data.name, data.slot, PlayerData.inventory[data.slot].metadata)
