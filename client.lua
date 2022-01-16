@@ -609,7 +609,7 @@ local function updateInventory(items, weight)
 				data.count += v.count
 			else
 				local data = Items[item.name]
-				if data.client?.remove then data.client.remove() end
+				if data.client?.remove then data.client.remove(data.count) end
 			end
 
 			PlayerData.inventory[slot] = v and v or nil
