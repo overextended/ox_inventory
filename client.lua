@@ -492,7 +492,7 @@ local function RegisterCommands()
 							local open, vehBone
 							if checkVehicle == 1 then open, vehBone = 4, GetEntityBoneIndexByName(vehicle, 'bonnet')
 							elseif checkVehicle == nil then open, vehBone = 5, GetEntityBoneIndexByName(vehicle, 'boot') elseif checkVehicle == 2 then open, vehBone = 5, GetEntityBoneIndexByName(vehicle, 'boot') else --[[no vehicle nearby]] return end
-							if vehBone == -1 then vehBone = GetEntityBoneIndexByName(vehicle, 'platelight') end
+							if vehBone == -1 then vehBone = GetEntityBoneIndexByName(vehicle, Vehicles.trunk.boneIndex[vehHash] or 'platelight') end
 							position = GetWorldPositionOfEntityBone(vehicle, vehBone)
 							local distance = #(playerCoords - position)
 							local closeToVehicle = distance < 2 and (open == 5 and (checkVehicle == nil and true or 2) or open == 4)
