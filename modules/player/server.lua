@@ -1,3 +1,7 @@
+function server.isPolice(inv)
+    return shared.police[inv.player.job.name] ~= nil
+end
+
 if shared.esx then
     local ESX = exports['es_extended']:getSharedObject()
 

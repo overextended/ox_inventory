@@ -966,7 +966,7 @@ end, {'target:number', 'item:string', 'count:number', 'metatype:?string'})
 
 import.commands(false, 'clearevidence', function(source, args)
 	local inventory = Inventories[source]
-	if shared.isPolice(inventory.player.job.name) and inventory.player.job.grade_name == 'boss' then
+	if server.isPolice(inventory) and inventory.player.job.grade_name == 'boss' then
 		MySQL.query('DELETE FROM ox_inventory WHERE name = ?', {('evidence-%s'):format(args.evidence)})
 	end
 end, {'evidence:number'})

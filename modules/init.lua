@@ -37,11 +37,6 @@ do
 	end
 end
 
--- Checks if the passed job is allowed to use police-only features
-function shared.isPolice(job)
-	return shared.police == job or shared.police?[job] ~= nil
-end
-
 -- Disable qtarget compatibility if it isn't running
 if shared.qtarget and GetResourceState('qtarget') ~= 'started' then
 	shared.qtarget = false

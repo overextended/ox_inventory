@@ -18,6 +18,10 @@ function client.SetPlayerData(key, value)
     OnPlayerData(key, value)
 end
 
+function client.isPolice()
+    return shared.police[PlayerData.job.name] ~= nil
+end
+
 local Utils = client.utils
 
 if shared.esx then
