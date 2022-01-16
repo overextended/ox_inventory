@@ -16,7 +16,6 @@ dependencies {
 	'/server:5104',
 	'/onesync',
 	'oxmysql',
-	'es_extended',
 	'pe-lualib'
 }
 
