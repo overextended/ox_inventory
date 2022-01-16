@@ -71,7 +71,7 @@ shared = loadConvar('ox_inventory')
 
 shared = {
 	-- Enable support for es_extended (defaults to true, for now)
-	esx = shared.esx or true,
+	esx = shared.esx == false and false or true,
 
 	-- If vehicle plates are stored with a trailing space, set to false (i.e. `XXX 000 `)
 	trimplate = shared.trimplate or true,
@@ -102,11 +102,24 @@ shared = {
 	playerweight = shared.playerweight or 30000,
 
 	-- Name of your police job/s (string or table with grades)
-	police = shared.police or 'police',
+	police = shared.police or {'police'},
 
 	-- Translations
 	locale = shared.locale or 'en'
 }
+
+do
+	if type(shared.police) == 'string' then
+		shared.police = {shared.police}
+	end
+
+	local police = table.create(0, #shared.police)
+
+	for i = 1, #shared.police do
+		police[shared.police[i]] = 0
+	end
+	shared.police = police
+end
 
 shared.resource = GetCurrentResourceName()
 IsDuplicityVersion = IsDuplicityVersion()
