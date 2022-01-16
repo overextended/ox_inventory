@@ -536,6 +536,7 @@ local function RegisterCommands()
 					end
 				end
 			end
+		else return TriggerEvent('ox_inventory:closeInventory')
 		end
 	end)
 	RegisterKeyMapping('inv2', shared.locale('open_secondary_inventory'), 'keyboard', shared.keys[2])
