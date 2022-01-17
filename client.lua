@@ -445,6 +445,11 @@ local function RegisterCommands()
 					local vehicle = GetVehiclePedIsIn(PlayerData.ped, false)
 
 					if NetworkGetEntityIsNetworked(vehicle) then
+						local checkVehicle = Vehicles.Storage[GetEntityModel(vehicle)]
+						if checkVehicle == 0 or checkVehicle == 2 then -- No storage or no glovebox
+							return
+						end
+
 						local plate = shared.playerslots and string.strtrim(GetVehicleNumberPlateText(vehicle)) or GetVehicleNumberPlateText(vehicle)
 						OpenInventory('glovebox', {id='glove'..plate, class=GetVehicleClass(vehicle), model=GetEntityModel(vehicle)})
 
@@ -490,9 +495,17 @@ local function RegisterCommands()
 						if locked == 0 or locked == 1 then
 							local checkVehicle = Vehicles.Storage[vehHash]
 							local open, vehBone
-							if checkVehicle == 1 then open, vehBone = 4, GetEntityBoneIndexByName(vehicle, 'bonnet')
-							elseif checkVehicle == nil then open, vehBone = 5, GetEntityBoneIndexByName(vehicle, 'boot') elseif checkVehicle == 2 then open, vehBone = 5, GetEntityBoneIndexByName(vehicle, 'boot') else --[[no vehicle nearby]] return end
+
+							if checkVehicle == nil then -- No data, normal trunk
+								open, vehBone = 5, GetEntityBoneIndexByName(vehicle, 'boot')
+							elseif checkVehicle == 3 then -- Trunk in hood
+								open, vehBone = 4, GetEntityBoneIndexByName(vehicle, 'bonnet')
+							else -- No storage or no trunk
+								return
+							end
+
 							if vehBone == -1 then vehBone = GetEntityBoneIndexByName(vehicle, Vehicles.trunk.boneIndex[vehHash] or 'platelight') end
+
 							position = GetWorldPositionOfEntityBone(vehicle, vehBone)
 							local distance = #(playerCoords - position)
 							local closeToVehicle = distance < 2 and (open == 5 and (checkVehicle == nil and true or 2) or open == 4)

@@ -1,38 +1,42 @@
 return {
 	-- 0	vehicle has no storage
-	-- 1	vehicle storage in the hood
+	-- 1	vehicle has no trunk storage
+	-- 2	vehicle has no glovebox storage
+	-- 3	vehicle has trunk in the hood
 	Storage = {
-		[`jester`] = 1,
-		[`adder`] = 1,
-		[`osiris`] = 0,
-		[`pfister811`] = 0,
-		[`penetrator`] = 0,
-		[`autarch`] = 0,
-		[`bullet`] = 0,
-		[`cheetah`] = 0,
-		[`cyclone`] = 0,
-		[`voltic`] = 0,
-		[`reaper`] = 1,
-		[`entityxf`] = 0,
-		[`t20`] = 0,
-		[`taipan`] = 0,
-		[`tezeract`] = 0,
-		[`torero`] = 1,
-		[`turismor`] = 0,
-		[`fmj`] = 0,
-		[`infernus `] = 0,
-		[`italigtb`] = 1,
-		[`italigtb2`] = 1,
-		[`nero2`] = 0,
-		[`vacca`] = 1,
-		[`vagner`] = 0,
-		[`visione`] = 0,
-		[`prototipo`] = 0,
-		[`zentorno`] = 0
+		[`jester`] = 3,
+		[`adder`] = 3,
+		[`osiris`] = 1,
+		[`pfister811`] = 1,
+		[`penetrator`] = 1,
+		[`autarch`] = 1,
+		[`bullet`] = 1,
+		[`cheetah`] = 1,
+		[`cyclone`] = 1,
+		[`voltic`] = 1,
+		[`reaper`] = 3,
+		[`entityxf`] = 1,
+		[`t20`] = 1,
+		[`taipan`] = 1,
+		[`tezeract`] = 1,
+		[`torero`] = 3,
+		[`turismor`] = 1,
+		[`fmj`] = 1,
+		[`infernus`] = 1,
+		[`italigtb`] = 3,
+		[`italigtb2`] = 3,
+		[`nero2`] = 1,
+		[`vacca`] = 3,
+		[`vagner`] = 1,
+		[`visione`] = 1,
+		[`prototipo`] = 1,
+		[`zentorno`] = 1,
+		[`trophytruck`] = 0,
+		[`trophytruck2`] = 0,
 	},
 
 	-- slots, maxWeight; default weight is 8000 per slot
-	glovebox = {	
+	glovebox = {
 		[0] = {11, 88000},		-- Compact
 		[1] = {11, 88000},		-- Sedan
 		[2] = {11, 88000},		-- SUV
@@ -53,7 +57,7 @@ return {
 		[18] = {11, 88000},		-- Emergency
 		[19] = {11, 88000},		-- Military
 		[20] = {11, 88000},		-- Commercial (trucks)
-		['models'] = {
+		models = {
 			[`xa21`] = {11, 88000}
 		}
 	},
@@ -79,7 +83,7 @@ return {
 		[18] = {41, 328000},	-- Emergency
 		[19] = {41, 328000},	-- Military
 		[20] = {61, 488000},	-- Commercial
-		['models'] = {
+		models = {
 			[`xa21`] = {11, 10000}
 		},
 		boneIndex = {
