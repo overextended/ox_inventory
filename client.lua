@@ -619,11 +619,15 @@ local function updateInventory(items, weight)
 
 			if v then
 				local data = Items[v.name]
-				if data.client?.add then data.client.add(data.count, v.count) end
+				if data.client?.add then
+					data.client.add(data.count, v.count)
+				end
 				data.count += v.count
 			else
 				local data = Items[item.name]
-				if data.client?.remove then data.client.remove() end
+				if data.count == 0 and data.client?.remove then
+					data.client.remove()
+				end
 			end
 
 			PlayerData.inventory[slot] = v and v or nil
@@ -642,43 +646,46 @@ local function updateInventory(items, weight)
 
 			if v.count then
 				local data = Items[v.name]
-				if data.client?.add then data.client.add(data.count, v.count) end
+				if data.client?.add then
+					data.client.add(data.count, v.count)
+				end
 				data.count += v.count
 			else
-				local data = Items[v.name]
-				if data.client?.remove then data.client.remove() end
+				local data = Items[item.name]
+				if data.count == 0 and data.client?.remove then
+					data.client.remove()
+				end
 			end
 
-			PlayerData.inventory[v.slot] = v.count and v or nil
 			changes[v.slot] = v.count and v or false
+			if not v.count then v.name = nil end
+			PlayerData.inventory[v.slot] = v.name and v or nil
 		end
 		client.setPlayerData('weight', weight.left)
+		SendNUIMessage({ action = 'refreshSlots', data = items })
 	end
 	client.setPlayerData('inventory', PlayerData.inventory)
 	TriggerEvent('ox_inventory:updateInventory', changes)
 end
 
-AddEventHandler('ox_inventory:updateInventory', function(inventory)
-	for k, v in pairs(inventory) do
-		if type(v) == 'table' then
-			print(k, json.encode(v))
-		else
-			print(k, false)
-		end
-	end
-	print()
-end)
+-- AddEventHandler('ox_inventory:updateInventory', function(inventory)
+-- 	for k, v in pairs(inventory) do
+-- 		if type(v) == 'table' then
+-- 			print(k, json.encode(v))
+-- 		else
+-- 			print(k, false)
+-- 		end
+-- 	end
+-- 	print()
+-- end)
 
 RegisterNetEvent('ox_inventory:updateSlots', function(items, weights, count, removed)
-	updateInventory(items, weights)
-
 	if count then
 		local item = items[1].item
 		Utils.ItemNotify({item.label, item.name, shared.locale(removed and 'removed' or 'added', count)})
-		if (removed and item.count and item.count <= count) or not item.count then items[1].item.name = nil end
 	end
 
-	SendNUIMessage({ action = 'refreshSlots', data = items })
+	updateInventory(items, weights)
 end)
 
 RegisterNetEvent('ox_inventory:inventoryReturned', function(data)
