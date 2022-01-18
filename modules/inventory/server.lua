@@ -600,7 +600,7 @@ function Inventory.CanCarryItem(inv, item, count, metadata)
 		inv = Inventory(inv)
 		local itemSlots, totalCount, emptySlots = Inventory.GetItemSlots(inv, item, metadata == nil and {} or type(metadata) == 'string' and {type=metadata} or metadata)
 
-		if #itemSlots > 0 or emptySlots > 0 then
+		if next(itemSlots) or emptySlots > 0 then
 			if inv.type == 'player' and item.limit and (totalCount + count) > item.limit then return false end
 			if item.weight == 0 then return true end
 			if count == nil then count = 1 end
