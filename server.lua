@@ -7,7 +7,6 @@ local Items = server.items
 --- optionally, it should contain job, sex, and dateofbirth
 local function setPlayerInventory(player, data)
 	while not shared.ready do Wait(0) end
-	local money = { money = 0, black_money = 0 }
 	local inventory = {}
 	local totalWeight = 0
 
@@ -35,19 +34,12 @@ local function setPlayerInventory(player, data)
 				end
 
 				inventory[v.slot] = {name = v.name, label = item.label, weight = weight, slot = v.slot, count = v.count, description = item.description, metadata = v.metadata, stack = item.stack, close = item.close}
-				if money[v.name] then money[v.name] = money[v.name] + v.count end
 			end
 		end
 	end
 
 	local inv = Inventory.Create(player.source, player.name, 'player', shared.playerslots, totalWeight, shared.playerweight, player.identifier, inventory)
-
-	inv.player = {
-		name = player.name,
-		job = player.job,
-		sex = player.sex or player.variables.sex,
-		dateofbirth = player.dateofbirth or player.variables.dateofbirth,
-	}
+	inv.player = server.setPlayerData(player)
 
 	if shared.esx then Inventory.SyncInventory(inv) end
 	TriggerClientEvent('ox_inventory:setPlayerInventory', player.source, Inventory.Drops, inventory, totalWeight, server.UsableItemsCallbacks, player)
@@ -58,6 +50,7 @@ AddEventHandler('ox_inventory:setPlayerInventory', setPlayerInventory)
 local Stashes = data 'stashes'
 local Vehicles = data 'vehicles'
 local ServerCallback = import 'callbacks'
+local table = import 'table'
 
 ServerCallback.Register('openInventory', function(source, inv, data)
 	local left = Inventory(source)
@@ -74,6 +67,7 @@ ServerCallback.Register('openInventory', function(source, inv, data)
 		if inv == 'stash' then
 			local stash = Stashes[data.id]
 			if stash then
+
 				if not stash.jobs or (stash.jobs[left.player.job.name] and left.player.job.grade >= stash.jobs[left.player.job.name]) then
 					local owner = stash.owner and left.owner or stash.owner
 					right = Inventory(owner and stash.name..owner or stash.name)
@@ -162,7 +156,6 @@ ServerCallback.Register('openInventory', function(source, inv, data)
 	return {id=left.id, label=left.label, type=left.type, slots=left.slots, weight=left.weight, maxWeight=left.maxWeight}, right and {id=right.id, label=right.label, type=right.type, slots=right.slots, weight=right.weight, maxWeight=right.maxWeight, items=right.items, coords=right.coords}
 end)
 
-local table = import 'table'
 local Log = server.logs
 
 ServerCallback.Register('swapItems', function(source, data)

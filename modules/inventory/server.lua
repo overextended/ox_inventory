@@ -64,7 +64,7 @@ end
 ---@param inv table
 --- Syncs inventory data with the xPlayer object for compatibility with shit resources
 function Inventory.SyncInventory(inv)
-	local money = { money = 0, black_money = 0}
+	local money = table.clone(server.accounts)
 
 	for _, v in pairs(inv.items) do
 		if money[v.name] then
@@ -706,7 +706,7 @@ function Inventory.Return(source)
 			if data then
 				MySQL.query('DELETE FROM ox_inventory WHERE name = ?', { inv.owner })
 				data = json.decode(data)
-				local money, inventory, totalWeight = {money=0, black_money=0}, {}, 0
+				local money, inventory, totalWeight = table.clone(server.accounts), {}, 0
 
 				if data and next(data) then
 					for i=1, #data do

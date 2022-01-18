@@ -2,6 +2,19 @@ function server.isPolice(inv)
     return shared.police[inv.player.job.name] ~= nil
 end
 
+function server.setPlayerData(player)
+    return {
+		name = player.name,
+		job = player.job,
+		sex = player.sex,
+		dateofbirth = player.dateofbirth,
+	}
+end
+
+server.accounts = {
+    money = 0,
+}
+
 if shared.esx then
     local ESX = exports['es_extended']:getSharedObject()
 
@@ -19,6 +32,17 @@ if shared.esx then
     server.UseItem = ESX.UseItem
     server.UsableItemsCallbacks = ESX.GetUsableItems
     server.GetPlayerFromId = ESX.GetPlayerFromId
+
+    server.accounts.black_money = 0
+
+    function server.setPlayerData(player)
+        return {
+            name = player.name,
+            job = player.job,
+            sex = player.sex or player.variables.sex,
+            dateofbirth = player.dateofbirth or player.variables.dateofbirth,
+        }
+    end
 
     RegisterServerEvent('ox_inventory:requestPlayerInventory', function()
         local source = source

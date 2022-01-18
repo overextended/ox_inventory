@@ -24,7 +24,7 @@ shared_scripts {
 	'config.lua'
 }
 
-server_script 'modules/player/server.lua'
+server_script 'modules/bridge/server.lua'
 
 shared_scripts {
 	'modules/init.lua',
@@ -34,7 +34,7 @@ shared_scripts {
 client_scripts {
 	'modules/items/client.lua',
 	'modules/utils/client.lua',
-	'modules/player/client.lua',
+	'modules/bridge/client.lua',
 	'modules/interface/client.lua',
 	'modules/shops/client.lua',
 	'modules/inventory/client.lua',

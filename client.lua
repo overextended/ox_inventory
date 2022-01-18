@@ -629,7 +629,7 @@ local function updateInventory(items, weight)
 			PlayerData.inventory[slot] = v and v or nil
 			changes[slot] = v
 		end
-		client.SetPlayerData('weight', weight)
+		client.setPlayerData('weight', weight)
 	else
 		for i=1, #items do
 			local v = items[i].item
@@ -652,9 +652,9 @@ local function updateInventory(items, weight)
 			PlayerData.inventory[v.slot] = v.count and v or nil
 			changes[v.slot] = v.count and v or false
 		end
-		client.SetPlayerData('weight', weight.left)
+		client.setPlayerData('weight', weight.left)
 	end
-	client.SetPlayerData('inventory', PlayerData.inventory)
+	client.setPlayerData('inventory', PlayerData.inventory)
 	TriggerEvent('ox_inventory:updateInventory', changes)
 end
 
@@ -686,8 +686,8 @@ RegisterNetEvent('ox_inventory:inventoryReturned', function(data)
 	if currentWeapon then currentWeapon = Utils.Disarm(currentWeapon) end
 	TriggerEvent('ox_inventory:closeInventory')
 	PlayerData.inventory = data[1]
-	client.SetPlayerData('inventory', data[1])
-	client.SetPlayerData('weight', data[3])
+	client.setPlayerData('inventory', data[1])
+	client.setPlayerData('weight', data[3])
 end)
 
 RegisterNetEvent('ox_inventory:inventoryConfiscated', function(message)
@@ -695,7 +695,7 @@ RegisterNetEvent('ox_inventory:inventoryConfiscated', function(message)
 	if currentWeapon then currentWeapon = Utils.Disarm(currentWeapon) end
 	TriggerEvent('ox_inventory:closeInventory')
 	table.wipe(PlayerData.inventory)
-	client.SetPlayerData('weight', 0)
+	client.setPlayerData('weight', 0)
 end)
 
 RegisterNetEvent('ox_inventory:createDrop', function(data, owner, slot)
@@ -760,8 +760,8 @@ RegisterNetEvent('ox_inventory:setPlayerInventory', function(currentDrops, inven
 		exports.npwd:setPhoneDisabled(true)
 	end
 
-	client.SetPlayerData('inventory', inventory)
-	client.SetPlayerData('weight', weight)
+	client.setPlayerData('inventory', inventory)
+	client.setPlayerData('weight', weight)
 	currentWeapon = nil
 	drops = currentDrops
 	Utils.ClearWeapons()
@@ -1114,8 +1114,8 @@ RegisterNUICallback('buyItem', function(data, cb)
 	local response, data, message = ServerCallback.Await(shared.resource, 'buyItem', 100, data)
 	if data then
 		PlayerData.inventory[data[1]] = data[2]
-		client.SetPlayerData('inventory', PlayerData.inventory)
-		client.SetPlayerData('weight', data[3])
+		client.setPlayerData('inventory', PlayerData.inventory)
+		client.setPlayerData('weight', data[3])
 		SendNUIMessage({ action = 'refreshSlots', data = {item = data[2]} })
 	end
 	if message then Utils.Notify(message) end

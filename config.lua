@@ -71,7 +71,7 @@ shared = loadConvar('ox_inventory')
 
 shared = {
 	-- Enable support for es_extended (defaults to true, for now)
-	esx = shared.esx == false and false or true,
+	esx = shared.esx or false,
 
 	-- If vehicle plates are stored with a trailing space, set to false (i.e. `XXX 000 `)
 	trimplate = shared.trimplate or true,

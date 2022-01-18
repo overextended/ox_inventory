@@ -13,7 +13,7 @@ PlayerData = {
     loaded = false
 }
 
-function client.SetPlayerData(key, value)
+function client.setPlayerData(key, value)
     PlayerData[key] = value
     OnPlayerData(key, value)
 end
@@ -35,7 +35,7 @@ if shared.esx then
 		PlayerLoaded = ESX.PlayerLoaded
     }
 
-    function client.SetPlayerData(key, value)
+    function client.setPlayerData(key, value)
         PlayerData[key] = value
         ESX.SetPlayerData(key, value)
     end
