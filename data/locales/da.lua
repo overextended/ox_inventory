@@ -50,6 +50,8 @@ return {
 	['cannot_perform'] = "Du kan ikke udføre denne handling",
 	['cannot_carry'] = "Du kan ikke bære så meget",
 	['cannot_carry_other'] = "Inventaret du prøver at lægge i kan ikke indeholde så meget",
+	['cannot_carry_limit'] = "You only can carry %s %s maximum",
+	['cannot_carry_limit_other'] = "Target only can carry %s %s maximum",
 	['items_confiscated'] = "Dine ting er blevet konfiskeret",
 	['items_returned'] = "Dine ting er blevet returneret",
 	['item_unauthorised'] = "Du har ikke tilladelse til at købe denne ting",
