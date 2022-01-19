@@ -50,6 +50,8 @@ return {
 	['cannot_perform'] = "Tuto akci nelze provést",
 	['cannot_carry'] = "Tolik toho neunesete",
 	['cannot_carry_other'] = "Druhý inventář toho tolik neunese",
+	['cannot_carry_limit'] = "You only can carry %s %s maximum",
+	['cannot_carry_limit_other'] = "Target only can carry %s %s maximum",
 	['items_confiscated'] = "Vaše předměty byly zabaveny",
 	['items_returned'] = "Vaše předměty vám byly vráceny",
 	['item_unauthorised'] = "Nemáte pravomoce k zakoupení tohoto předmětu",
