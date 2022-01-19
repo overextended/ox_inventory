@@ -845,6 +845,13 @@ RegisterServerEvent('ox_inventory:giveItem', function(slot, target, count)
 			if data and data.count >= count then
 				Inventory.RemoveItem(fromInventory, item, count, data.metadata, slot)
 				Inventory.AddItem(toInventory, item, count, data.metadata)
+
+				Log('giveItem',
+					('%s gave %sx %s to %s'):format(fromInventory.label, data.count, fromData.name, toInventory.label),
+					fromInventory.owner,
+					toInventory.owner
+				)
+
 			end
 		else
 			TriggerClientEvent('ox_inventory:notify', source, {type = 'error', text = shared.locale('cannot_give', count, data.label), duration = 2500})
@@ -928,11 +935,13 @@ import.commands('ox_inventory', {'additem', 'giveitem'}, function(source, args)
 		Inventory.AddItem(args.target, args.item.name, args.count, args.metatype)
 		local inventory = Inventories[args.target]
 		source = Inventories[source]
-		Log(
-			('%s [%s] - %s'):format(source.label, source.id, source.owner),
-			('%s [%s] - %s'):format(inventory.label, inventory.id, inventory.owner),
-			('Given %s %s by an admin'):format(args.count, args.item.name)
+
+		Log('admin',
+			('%s gave %sx %s to %s'):format(source.label, args.count, args.item.name, inventory.label),
+			source.owner,
+			inventory.owner
 		)
+
 	end
 end, {'target:number', 'item:string', 'count:number', 'metatype:?string'})
 
@@ -942,11 +951,13 @@ import.commands('ox_inventory', 'removeitem', function(source, args)
 		Inventory.RemoveItem(args.target, args.item.name, args.count, args.metaType)
 		local inventory = Inventories[args.target]
 		source = Inventories[source]
-		Log(
-			('%s [%s] - %s'):format(source.label, source.id, source.owner),
-			('%s [%s] - %s'):format(inventory.label, inventory.id, inventory.owner),
-			('%s %s removed by an admin'):format(args.count, args.item.name)
+
+		Log('admin',
+			('%s took %sx %s from %s'):format(source.label, args.count, args.item.name, inventory.label),
+			source.owner,
+			inventory.owner
 		)
+
 	end
 end, {'target:number', 'item:string', 'count:number', 'metatype:?string'})
 
@@ -956,11 +967,13 @@ import.commands('ox_inventory', 'setitem', function(source, args)
 		Inventory.SetItem(args.target, args.item.name, args.count, args.metaType)
 		local inventory = Inventories[args.target]
 		source = Inventories[source]
-		Log(
-			('%s [%s] - %s'):format(source.label, source.id, source.owner),
-			('%s [%s] - %s'):format(inventory.label, inventory.id, inventory.owner),
-			('%s count set to %s by an admin'):format(args.count, args.item.name)
+
+		Log('admin',
+			('%s set %s\' %s count to %sx (target: %s)'):format(source.label, inventory.label, args.item.name, args.count),
+			source.owner,
+			inventory.owner
 		)
+
 	end
 end, {'target:number', 'item:string', 'count:number', 'metatype:?string'})
 

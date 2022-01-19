@@ -159,11 +159,12 @@ ServerCallback.Register('buyItem', function(source, data)
 
 					-- Only log purchases for items worth $500 or more
 					if fromData.price >= 500 then
-						Log(
-							playerInv.open,
-							('%s [%s] - %s'):format(playerInv.label, playerInv.id, playerInv.owner),
-							message, metadata.serial and ('(%s)'):format(metadata.serial)
+
+						Log('buyItem',
+							('%s %s'):format(playerInv.owner, message:lower()),
+							playerInv.owner, shop
 						)
+
 					end
 
 					return true, {data.toSlot, playerInv.items[data.toSlot], weight}, {type = 'success', text = message}

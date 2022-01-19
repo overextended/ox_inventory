@@ -8,6 +8,14 @@ Currently, this requires our _**[fork of ESX Legacy](https://github.com/overexte
 
 I will be working on a guide for manually updating your own ESX _sometime soon™_, around the time I setup more event handlers to remove the last parts of the code that make ESX a dependency.
 
+# Logging
+
+The included logging module utilises datadog to store logging data, which can be expanded for improved analytics and metrics. Register an account at [datadoghq](https://www.datadoghq.com/).  
+The _free plan_ is enough for most user's purposes and provides far more utility than the typical weird discord logs utilised in other resources.  
+
+Once you have registered, generate an API key and add `set datadog:key 'apikey'` to your server config.
+
+
 # Features
 
 ### Shops

@@ -1,43 +1,30 @@
 if shared.logs then
-	local io = io
-	local os = os
-	local day, month, year = string.strsplit('-', os.date('%d-%B-%Y'))
-	local path = GetResourcePath(shared.resource):gsub('//', '/')
-	path = ('%s/modules/logs'):format(path)
+	local api = 'https://http-intake.logs.datadoghq.com/api/v2/logs'
+	local key = GetConvar('datadog:key', '')
 
-	local strformat = string.format
+	assert(key ~= '', 'datadog:key is undefined! Ensure you have generated an API key at datadoghq.com, and set the convar.')
 
-	local function init()
-		local file = strformat('%s-%s-%s.log', year, month, day)
-		local system = os.getenv('OS')
-		if system and system:match('Windows') then
-			path = path:gsub('/', '\\')
-			os.execute(strformat('mkdir %s\\%s\\%s', path, year, month))
-			return io.open(strformat('%s\\%s\\%s\\%s', path, year, month, file), 'a+')
-		else
-			os.execute(strformat('mkdir -p %s/%s/%s', path, year, month))
-			return io.open(strformat('%s/%s/%s/%s', path, year, month, file), 'a+')
-		end
+	function server.logs(service, message, source, ...)
+		local ddtags = string.strjoin(',', string.tostringall(...))
+		print(service, message, ddtags)
+		PerformHttpRequest(api, function(status, text, header)
+			print(202)
+			if status == 202 then return end
+			print(json.encode(text, {indent=true}), '\n')
+			print(json.encode(header, {indent=true}), '\n')
+		end, 'POST', json.encode({
+			hostname = shared.resource,
+			service = service,
+			message = message,
+			ddsource = source,
+			ddtags = ddtags
+		}), {
+			['Content-Type'] = 'application/json',
+			['DD-API-KEY'] = key
+		})
 	end
-
-	local file = init()
-
-	if file then
-		month = month:sub(0, 3)
-		local osdate = os.date
-		local time = '%H:%M:%S'
-		local message = strformat('\r{"date": "%s/%s/%s", "time": "%s", "source": "%s", "target": "%s", "content": "%s"}', day, month, year, '%s', '%s', '%s', '%s')
-		local none = 'n/a'
-
-		local function write(source, target, ...)
-			local content = string.strjoin(' ', string.tostringall(...))
-			file:write(strformat(message, osdate(time), source, target or none, content))
-		end
-
-		server.logs = write
-		return
-	end
-	shared.warning('Unable to initilise logging module')
 end
 
-function server.logs() end
+if not server.logs then
+	function server.logs() end
+end

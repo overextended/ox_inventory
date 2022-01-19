@@ -184,10 +184,10 @@ ServerCallback.Register('swapItems', function(source, data)
 
 				Inventory.CreateDrop(source, data.toSlot, toData, function(drop, coords)
 					if fromData == playerInventory.weapon then playerInventory.weapon = nil end
-					Log(
-						('%s [%s] - %s'):format(playerInventory.label, playerInventory.id, playerInventory.owner),
-						drop,
-						('Dropped %s %s'):format(toData.count, toData.name)
+					Log('swapSlots',
+						('%sx %s transferred from %s to %s'):format(data.count, toData.name, playerInventory.label, drop),
+						playerInventory.owner,
+						playerInventory.owner, drop
 					)
 					TriggerClientEvent('ox_inventory:createDrop', -1, {drop, coords}, playerInventory.open and source, slot)
 				end)
@@ -255,10 +255,10 @@ ServerCallback.Register('swapItems', function(source, data)
 
 								if container then Inventory.ContainerWeight(containerItem, toInventory.type == 'container' and toWeight or fromWeight) end
 
-								Log(
-									('%s [%s] - %s'):format(fromInventory.label, fromInventory.id, fromInventory.owner),
-									('%s [%s] - %s'):format(toInventory.label, toInventory.id, toInventory.owner),
-									('Swapped %s %s for %s %s'):format(fromData.count, fromData.name, toData.count, toData.name)
+								Log('swapSlots',
+									('%sx %s transferred from %s to %s for %sx %s'):format(fromData.count, fromData.name, fromInventory.owner and fromInventory.label or fromInventory.id, toInventory.owner and toInventory.label or toInventory.id, toData.count, toData.name),
+									playerInventory.owner,
+									fromInventory.owner or fromInventory.id, toInventory.owner or toInventory.id
 								)
 
 							else return end
@@ -280,10 +280,10 @@ ServerCallback.Register('swapItems', function(source, data)
 
 								if container then Inventory.ContainerWeight(containerItem, toInventory.type == 'container' and toInventory.weight or fromInventory.weight) end
 
-								Log(
-									('%s [%s] - %s'):format(fromInventory.label, fromInventory.id, fromInventory.owner),
-									('%s [%s] - %s'):format(toInventory.label, toInventory.id, toInventory.owner),
-									('Transferred %s %s'):format(data.count, fromData.name)
+								Log('swapSlots',
+									('%sx %s transferred from %s to %s'):format(data.count, fromData.name, fromInventory.owner and fromInventory.label or fromInventory.id, toInventory.owner and toInventory.label or toInventory.id),
+									playerInventory.owner,
+									fromInventory.owner or fromInventory.id, toInventory.owner or toInventory.id
 								)
 
 							end
@@ -309,10 +309,10 @@ ServerCallback.Register('swapItems', function(source, data)
 
 								if container then Inventory.ContainerWeight(containerItem, toInventory.type == 'container' and toInventory.weight or fromInventory.weight) end
 
-								Log(
-									('%s [%s] - %s'):format(fromInventory.label, fromInventory.id, fromInventory.owner),
-									('%s [%s] - %s'):format(toInventory.label, toInventory.id, toInventory.owner),
-									('Transferred %s %s'):format(data.count, fromData.name)
+								Log('swapSlots',
+									('%sx %s transferred from %s to %s'):format(data.count, fromData.name, fromInventory.owner and fromInventory.label or fromInventory.id, toInventory.owner and toInventory.label or toInventory.id),
+									playerInventory.owner,
+									fromInventory.owner or fromInventory.id, toInventory.owner or toInventory.id
 								)
 
 							else
