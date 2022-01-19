@@ -138,7 +138,7 @@ ServerCallback.Register('buyItem', function(source, data)
 
 			local _, totalCount, _ = Inventory.GetItemSlots(playerInv, fromItem, fromItem.metadata)
 			if fromItem.limit and (totalCount + data.count) > fromItem.limit then
-				return false, false, {type = 'error', text = { shared.locale('cannot_carry')}}
+				return false, false, {type = 'error', text = shared.locale('cannot_carry_limit', fromItem.limit, fromItem.label)}
 			end
 
 			if toData == nil or (fromItem.name == toItem.name and fromItem.stack and table.matches(toData.metadata, metadata)) then
@@ -146,7 +146,7 @@ ServerCallback.Register('buyItem', function(source, data)
 				if canAfford then
 					local newWeight = playerInv.weight + (fromItem.weight + (metadata?.weight or 0)) * count
 					if newWeight > playerInv.maxWeight then
-						return false, false, {type = 'error', text = { shared.locale('cannot_carry')}}
+						return false, false, {type = 'error', text = shared.locale('cannot_carry')}
 					else
 						Inventory.SetSlot(playerInv, fromItem, count, metadata, data.toSlot)
 						if fromData.count then shop.items[data.fromSlot].count = fromData.count - count end
