@@ -50,6 +50,8 @@ return {
 	['cannot_perform'] = "Du kannst diese Aktion nicht ausführen",
 	['cannot_carry'] = "Du kannst nicht so viel tragen",
 	['cannot_carry_other'] = "Das Inventar hat nicht genügend Platz",
+	['cannot_carry_limit'] = "You only can carry %s %s maximum",
+	['cannot_carry_limit_other'] = "Target only can carry %s %s maximum",
 	['items_confiscated'] = "Deine Gegenstände wurden konfisziert",
 	['items_returned'] = "Deine Gegenstände wurden dir zurückgegeben",
 	['item_unauthorised'] = "Du bist nicht autorisiert diesen Gegenstand zu kaufen",
