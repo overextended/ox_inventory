@@ -58,7 +58,7 @@ Once you have registered, generate an API key and add `set datadog:key 'apikey'`
 <tr><td>
 Ox Inventory for ESX Legacy  
 
-Copyright © 2021  [Linden](https://github.com/thelindat), [Dunak](https://github.com/dunak-debug), [Luke](https://github.com/LukeWasTakenn)
+Copyright © 2022  [Linden](https://github.com/thelindat), [Dunak](https://github.com/dunak-debug), [Luke](https://github.com/LukeWasTakenn)
 
 
 This program is free software: you can redistribute it and/or modify
