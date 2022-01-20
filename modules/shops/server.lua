@@ -171,7 +171,7 @@ ServerCallback.Register('buyItem', function(source, data)
 					return false, false, {type = 'error', text = shared.locale('cannot_afford', ('%s%s'):format((currency == 'money' and shared.locale('$') or comma_value(price)), (currency == 'money' and comma_value(price) or ' '..Items(currency).label)))}
 				end
 			end
-			return false, false, {type = 'error', text = { shared.locale('unable_stack_items')}}
+			return false, false, {type = 'error', text = shared.locale('unable_stack_items')}
 		end
 	end
 end)

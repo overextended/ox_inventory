@@ -67,6 +67,8 @@ return {
 	['purchased_for'] = "Vous avez acheté %s %s pour %s%s",
 	['unable_stack_items'] = "Vous ne pouvez pas empiler ces objets" ,
 	['police_evidence'] = "Preuves policières",
+	['open_police_evidence'] = "Accéder aux saisies",
+	['open_stash'] = "Accéder au stockage",
 	['locker_number'] = "Numéro du casier",
 	['locker_no_value'] = "Doit avoir une valeur pour ouvrir l’armoire" ,
 	['locker_must_number'] = "L’armoire doit être un nombre" ,

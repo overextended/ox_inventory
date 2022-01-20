@@ -67,6 +67,8 @@ return {
 	['purchased_for'] = "Purchased %s %s for %s%s",
 	['unable_stack_items'] = "You're unable to stack these items",
 	['police_evidence'] = "Police Evidence",
+	['open_police_evidence'] = "Open Police Evidence",
+	['open_stash'] = "Open Stash",
 	['locker_number'] = "Locker number",
 	['locker_no_value'] = "Must contain value to open locker",
 	['locker_must_number'] = "Locker must be a number",

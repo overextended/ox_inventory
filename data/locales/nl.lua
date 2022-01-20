@@ -67,6 +67,8 @@ return {
 	['purchased_for'] = "%s %s gekocht voor %s%s",
 	['unable_stack_items'] = "Je kan deze items niet op elkaar stapelen",
 	['police_evidence'] = "Politie Bewijs",
+	['open_police_evidence'] = "Open Police Evidence",
+	['open_stash'] = "Open Stash",
 	['locker_number'] = "Kluis nummer",
 	['locker_no_value'] = "Moet een waarde hebben om de kluis te openen",
 	['locker_must_number'] = "De kluis moet een nummer hebben",

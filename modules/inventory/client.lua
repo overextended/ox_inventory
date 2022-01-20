@@ -88,7 +88,7 @@ Inventory.Evidence = setmetatable(data('evidence'), {
 					options = {
 						{
 							icon = 'fas fa-warehouse',
-							label = 'Open Police Evidence',
+							label = shared.locale('open_police_evidence'),
 							job = shared.police,
 							action = function()
 								OpenEvidence()
@@ -121,8 +121,8 @@ Inventory.Stashes = setmetatable(data('stashes'), {
 				}, {
 					options = {
 						{
-							icon = stash.target.icon or 'fas fa-warehouse',
-							label = stash.target.label or 'Open Stash',
+              icon = stash.target.icon or 'fas fa-warehouse',
+              label = stash.target.label or shared.locale('open_stash'),
 							job = stash.jobs,
 							action = function()
 								OpenStash({id=id})
