@@ -705,7 +705,7 @@ RegisterNetEvent('ox_inventory:inventoryConfiscated', function(message)
 end)
 
 RegisterNetEvent('ox_inventory:createDrop', function(data, owner, slot)
-	drops[data[1]] = data[2]
+	if drops then drops[data[1]] = data[2] end
 	if owner == PlayerData.id and invOpen and #(GetEntityCoords(PlayerData.ped) - data[2]) <= 1 then
 		if currentWeapon?.slot == slot then currentWeapon = Utils.Disarm(currentWeapon) end
 
