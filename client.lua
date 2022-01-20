@@ -449,7 +449,7 @@ local function RegisterCommands()
 							return
 						end
 
-						local plate = shared.playerslots and string.strtrim(GetVehicleNumberPlateText(vehicle)) or GetVehicleNumberPlateText(vehicle)
+						local plate = client.trimplate and string.strtrim(GetVehicleNumberPlateText(vehicle)) or GetVehicleNumberPlateText(vehicle)
 						OpenInventory('glovebox', {id='glove'..plate, class=GetVehicleClass(vehicle), model=GetEntityModel(vehicle)})
 
 						while true do
@@ -510,7 +510,7 @@ local function RegisterCommands()
 							local closeToVehicle = distance < 2 and (open == 5 and (checkVehicle == nil and true or 2) or open == 4)
 
 							if closeToVehicle then
-								local plate = shared.playerslots and string.strtrim(GetVehicleNumberPlateText(vehicle)) or GetVehicleNumberPlateText(vehicle)
+								local plate = client.trimplate and string.strtrim(GetVehicleNumberPlateText(vehicle)) or GetVehicleNumberPlateText(vehicle)
 								TaskTurnPedToFaceCoord(PlayerData.ped, position.x, position.y, position.z)
 								lastVehicle = vehicle
 								OpenInventory('trunk', {id='trunk'..plate, class=class, model=vehHash})
