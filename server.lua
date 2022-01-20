@@ -211,9 +211,9 @@ ServerCallback.Register('swapItems', function(source, data)
 				local _, totalCount, _ = Inventory.GetItemSlots(toInventory, fromItem, fromItem.metadata)
 				if fromItem.limit and (totalCount + data.count) > fromItem.limit then
 					if toInventory.type == 'player' then
-						TriggerClientEvent('ox_inventory:notify', source, {type = 'error', text = { shared.locale('cannot_carry')}})
+						TriggerClientEvent('ox_inventory:notify', source, {type = 'error', text = shared.locale('cannot_carry_limit', fromItem.limit, fromItem.label)})
 					elseif toInventory.type == 'otherplayer' then
-						TriggerClientEvent('ox_inventory:notify', source, {type = 'error', text = { shared.locale('cannot_carry_other')}})
+						TriggerClientEvent('ox_inventory:notify', source, {type = 'error', text = shared.locale('cannot_carry_limit_other', fromItem.limit, fromItem.label)})
 					end
 					return
 				end

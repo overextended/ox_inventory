@@ -601,13 +601,20 @@ function Inventory.CanCarryItem(inv, item, count, metadata)
 		local itemSlots, totalCount, emptySlots = Inventory.GetItemSlots(inv, item, metadata == nil and {} or type(metadata) == 'string' and {type=metadata} or metadata)
 
 		if next(itemSlots) or emptySlots > 0 then
-			if inv.type == 'player' and item.limit and (totalCount + count) > item.limit then return false end
+			if inv.type == 'player' and item.limit and (totalCount + count) > item.limit then
+				TriggerClientEvent('ox_inventory:notify', playerId, {type = 'error', text = shared.locale('cannot_carry_limit', item.limit, item.label)})
+				return false
+			end
 			if item.weight == 0 then return true end
 			if count == nil then count = 1 end
 			local newWeight = inv.weight + (item.weight * count)
-			return newWeight <= inv.maxWeight
+			if newWeight >= inv.maxWeight then
+				TriggerClientEvent('ox_inventory:notify', playerId, {type = 'error', text = shared.locale('cannot_carry')})
+				return false
+			else
+				return true
+			end
 		end
-
 	end
 end
 exports('CanCarryItem', Inventory.CanCarryItem)
