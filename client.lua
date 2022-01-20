@@ -164,7 +164,7 @@ local function useItem(data, cb)
 				p = promise.new()
 				Interface.Progress({
 					duration = data.usetime,
-					label = shared.locale('using', result.label),
+					label = data.label or shared.locale('using', result.label),
 					useWhileDead = data.useWhileDead or false,
 					canCancel = data.cancel or false,
 					disable = data.disable,
