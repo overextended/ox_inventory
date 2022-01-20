@@ -33,7 +33,7 @@ client.shops = setmetatable(data('shops'), {
 							options = {
 								{
 									icon = 'fas fa-shopping-basket',
-									label = shared.locale('open_shop', shop.name),
+									label = shop.label or shared.locale('open_shop', shop.name),
 									action = function()
 										exports.ox_inventory:openInventory('shop', {type=type})
 									end
@@ -57,7 +57,7 @@ client.shops = setmetatable(data('shops'), {
 								options = {
 									{
 										icon = 'fas fa-shopping-basket',
-										label = shared.locale('open_shop', shop.name),
+										label = shop.label or shared.locale('open_shop', shop.name),
 										job = shop.jobs,
 										action = function()
 											OpenShop({id=id, type=type})
