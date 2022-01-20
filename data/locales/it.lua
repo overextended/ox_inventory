@@ -67,6 +67,8 @@ return {
 	['purchased_for'] = "Hai comprato %s %s per %s%s",
 	['unable_stack_items'] = "Non puoi impilare questi oggetti",
 	['police_evidence'] = "Prove Polizia",
+	['open_police_evidence'] = "Open Police Evidence",
+	['open_stash'] = "Open Stash",
 	['locker_number'] = "Numero Armadietto",
 	['locker_no_value'] = "Deve avere un valore per aprire l'armadietto",
 	['locker_must_number'] = "L'armadietto deve essere un numero",

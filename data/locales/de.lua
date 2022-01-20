@@ -67,6 +67,8 @@ return {
 	['purchased_for'] = "%s %s gekauft für %s%s",
 	['unable_stack_items'] = "Du kannst diesen Gegenstände nicht stapeln",
 	['police_evidence'] = "Polizei Asservatenkammer",
+	['open_police_evidence'] = "Open Police Evidence",
+	['open_stash'] = "Open Stash",
 	['locker_number'] = "Schließfachnummer",
 	['locker_no_value'] = "Du musst eine Nummer eingeben um ein Schließfach zu öffnen",
 	['locker_must_number'] = "Der Code darf nur aus Zahlen bestehen",

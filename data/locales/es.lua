@@ -51,6 +51,8 @@ return {
 	['purchased_for'] = "Comprar %s %s por %s%s",
 	['unable_stack_items'] = "¡No puedes apilar estos items!",
 	['police_evidence'] = "Evidencia Policial",
+	['open_police_evidence'] = "Open Police Evidence",
+	['open_stash'] = "Open Stash",
 	['locker_number'] = "Número de Casillero",
 	['locker_no_value'] = "¡Debe contener un valor para abrir el casillero!",
 	['locker_must_number'] = "¡El casillero debe ser un número!",

@@ -67,6 +67,8 @@ return {
 	['purchased_for'] = "Købte %s %s for %s%s",
 	['unable_stack_items'] = "Du kan ikke lægge disse ting i stakken",
 	['police_evidence'] = "Politi bevismateriale",
+	['open_police_evidence'] = "Open Police Evidence",
+	['open_stash'] = "Open Stash",
 	['locker_number'] = "Skabs nummer",
 	['locker_no_value'] = "Skal indeholde værdi for at åbne skabet",
 	['locker_must_number'] = "Skabet skal benytte et nummer",
