@@ -30,6 +30,7 @@ if IsDuplicityVersion then
 		versioncheck = GetConvar('inventory:versioncheck', 'true') == 'true',
 		randomloot = GetConvar('inventory:randomloot', 'true') == 'true',
 		evidencegrade = GetConvarInt('inventory:evidencegrade', 2),
+		clearstashes = GetConvar('inventory:clearstashes', '6 MONTH'),
 		vehicleloot = json.decode(GetConvar('inventory:vehicleloot', [[
 			[
 				["cola", 1, 1],
@@ -55,7 +56,6 @@ else
 		screenblur = GetConvar('inventory:screenblur', 'true') == 'true',
 		keys = json.decode(GetConvar('inventory:keys', '["F2", "K", "TAB"]')),
 		enablekeys = json.decode(GetConvar('inventory:enablekeys', '[249]')),
-		clearstashes = GetConvar('inventory:clearstashes', '6 MONTH'),
 	}
 end
 
