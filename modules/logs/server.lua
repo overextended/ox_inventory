@@ -1,20 +1,18 @@
-if shared.logs then
-	local api = 'https://http-intake.logs.datadoghq.com/api/v2/logs'
-	local key = GetConvar('datadog:key', '')
+local key = GetConvar('datadog:key', '')
 
-	assert(key ~= '', 'datadog:key is undefined! Ensure you have generated an API key at datadoghq.com, and set the convar.')
+if key ~= '' then
+	local site = GetConvar('datadog:site', 'datadoghq.com')
 
-	function server.logs(service, message, source, ...)
+	function server.logs(message, source, ...)
 		local ddtags = string.strjoin(',', string.tostringall(...))
 		print(service, message, ddtags)
-		PerformHttpRequest(api, function(status, text, header)
-			print(202)
+		PerformHttpRequest('https://http-intake.logs.'.. site ..'/api/v2/logs', function(status, text, header)
 			if status == 202 then return end
 			print(json.encode(text, {indent=true}), '\n')
 			print(json.encode(header, {indent=true}), '\n')
 		end, 'POST', json.encode({
-			hostname = shared.resource,
-			service = service,
+			hostname = 'FXServer',
+			service = shared.resource,
 			message = message,
 			ddsource = source,
 			ddtags = ddtags

@@ -107,7 +107,7 @@ local function OpenInventory(inv, data)
 			SetInterval(interval, 100)
 			SetNuiFocus(true, true)
 			SetNuiFocusKeepInput(true)
-			if shared.blurscreen then TriggerScreenblurFadeIn(0) end
+			if client.screenblur then TriggerScreenblurFadeIn(0) end
 			CloseTrunk()
 			currentInventory = right or defaultInventory
 			left.items = PlayerData.inventory
@@ -228,8 +228,7 @@ local function useSlot(slot)
 
 				return data.client.export(0, data, {name = item.name, slot = item.slot, metadata = item.metadata})
 			elseif data.client.event then -- deprecated, to be removed
-				print('data.client.event is deprecated, utilise exports instead.')
-				return TriggerEvent(data.client.event, data, {name = item.name, slot = item.slot, metadata = item.metadata})
+				return print(('unable to trigger event for %s, data.client.event has been removed. utilise exports instead.'):format(item.name))
 			end
 		end
 
@@ -429,7 +428,7 @@ local function RegisterCommands()
 			OpenInventory(closestMarker[3], {id=closestMarker[2], type=closestMarker[4]})
 		else OpenInventory() end
 	end)
-	RegisterKeyMapping('inv', shared.locale('open_player_inventory'), 'keyboard', shared.keys[1])
+	RegisterKeyMapping('inv', shared.locale('open_player_inventory'), 'keyboard', client.keys[1])
 	TriggerEvent('chat:removeSuggestion', '/inv')
 
 	local Vehicles = data 'vehicles'
@@ -552,7 +551,7 @@ local function RegisterCommands()
 		else return TriggerEvent('ox_inventory:closeInventory')
 		end
 	end)
-	RegisterKeyMapping('inv2', shared.locale('open_secondary_inventory'), 'keyboard', shared.keys[2])
+	RegisterKeyMapping('inv2', shared.locale('open_secondary_inventory'), 'keyboard', client.keys[2])
 	TriggerEvent('chat:removeSuggestion', '/inv2')
 
 	RegisterCommand('reload', function()
@@ -569,7 +568,7 @@ local function RegisterCommands()
     		SendNUIMessage({ action = 'toggleHotbar' })
 		end
 	end)
-	RegisterKeyMapping('hotbar', shared.locale('disable_hotbar'), 'keyboard', shared.keys[3])
+	RegisterKeyMapping('hotbar', shared.locale('disable_hotbar'), 'keyboard', client.keys[3])
 	TriggerEvent('chat:removeSuggestion', '/hotbar')
 
 	RegisterCommand('steal', function()
@@ -877,7 +876,7 @@ RegisterNetEvent('ox_inventory:setPlayerInventory', function(currentDrops, inven
 		end
 	end, 200)
 
-	local EnableKeys = shared.enablekeys
+	local EnableKeys = client.enablekeys
 	tick = SetInterval(function()
 		DisablePlayerVehicleRewards(PlayerData.id)
 

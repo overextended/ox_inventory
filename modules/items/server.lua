@@ -39,7 +39,7 @@ setmetatable(Items, {
 })
 
 CreateThread(function()
-	if shared.esx then
+	if shared.framework == 'esx' then
 		local items = MySQL.query.await('SELECT * FROM items')
 		if items then
 			local query = {}
@@ -102,8 +102,8 @@ local itemFormat = [[
 		end
 	end
 
-	if shared.clearstashes then
-		MySQL.query.await('DELETE FROM ox_inventory WHERE lastupdated < (NOW() - INTERVAL '..shared.clearstashes..') OR data = "[]"')
+	if server.clearstashes then
+		MySQL.query.await('DELETE FROM ox_inventory WHERE lastupdated < (NOW() - INTERVAL '..server.clearstashes..') OR data = "[]"')
 	end
 
 	local count = 0

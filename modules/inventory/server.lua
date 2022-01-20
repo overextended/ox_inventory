@@ -239,9 +239,9 @@ end
 local function generateItems(inv, invType, items)
 	if items == nil then
 		if invType == 'dumpster' then
-			items = randomLoot(shared.dumpsterloot)
+			items = randomLoot(server.dumpsterloot)
 		elseif invType == 'vehicle' then
-			items = randomLoot(shared.vehicleloot)
+			items = randomLoot(server.vehicleloot)
 		end
 	end
 
@@ -274,13 +274,13 @@ function Inventory.Load(id, invType, owner)
 			if shared.playerslots then plate = string.strtrim(plate) end
 			result = MySQL.single.await('SELECT ?? FROM owned_vehicles WHERE plate = ?', { invType, plate })
 			if result then result = json.decode(result[invType])
-			elseif shared.randomloot then return generateItems(id, 'vehicle')
+			elseif server.randomloot then return generateItems(id, 'vehicle')
 			else datastore = true end
 		elseif owner then
 			result = MySQL.prepare.await('SELECT data FROM ox_inventory WHERE owner = ? AND name = ?', { owner, id })
 			if result then result = json.decode(result) end
 		elseif invType == 'dumpster' then
-			if shared.randomloot then return generateItems(id, invType) else datastore = true end
+			if server.randomloot then return generateItems(id, invType) else datastore = true end
 		else
 			result = MySQL.prepare.await('SELECT data FROM ox_inventory WHERE owner = ? AND name = ?', { '', id })
 			if result then result = json.decode(result) end
@@ -394,7 +394,7 @@ function Inventory.SetMetadata(inv, slot, metadata)
 			end
 
 			if inv.type == 'player' then
-				if shared.esx then Inventory.SyncInventory(inv) end
+				if shared.framework == 'esx' then Inventory.SyncInventory(inv) end
 				TriggerClientEvent('ox_inventory:updateSlots', inv.id, {{item = slot, inventory = inv.type}}, {left=inv.weight, right=inv.open and Inventories[inv.open]?.weight})
 			end
 		end
@@ -452,7 +452,7 @@ function Inventory.AddItem(inv, item, count, metadata, slot, cb)
 			inv.weight = inv.weight + (item.weight + (metadata?.weight or 0)) * count
 
 			if inv.type == 'player' then
-				if shared.esx then Inventory.SyncInventory(inv) end
+				if shared.framework == 'esx' then Inventory.SyncInventory(inv) end
 				TriggerClientEvent('ox_inventory:updateSlots', inv.id, {{item = inv.items[slot], inventory = inv.type}}, {left=inv.weight, right=inv.open and Inventories[inv.open]?.weight}, count, false)
 			end
 		else
@@ -573,7 +573,7 @@ function Inventory.RemoveItem(inv, item, count, metadata, slot)
 
 		inv.weight = inv.weight - (item.weight + (metadata?.weight or 0)) * removed
 		if removed > 0 and inv.type == 'player' then
-			if shared.esx then Inventory.SyncInventory(inv) end
+			if shared.framework == 'esx' then Inventory.SyncInventory(inv) end
 			local array = table.create(#slots, 0)
 
 			for k, v in pairs(slots) do
@@ -699,7 +699,7 @@ function Inventory.Confiscate(source)
 				table.wipe(inv.items)
 				inv.weight = 0
 				TriggerClientEvent('ox_inventory:inventoryConfiscated', inv.id)
-				if shared.esx then Inventory.SyncInventory(inv) end
+				if shared.framework == 'esx' then Inventory.SyncInventory(inv) end
 			end
 		end)
 	end
@@ -732,7 +732,7 @@ function Inventory.Return(source)
 				inv.weight = totalWeight
 				inv.items = inventory
 
-				if shared.esx then Inventory.SyncInventory(inv) end
+				if shared.framework == 'esx' then Inventory.SyncInventory(inv) end
 				TriggerClientEvent('ox_inventory:inventoryReturned', source, {inventory, totalWeight})
 			end
 		end)
@@ -752,7 +752,7 @@ function Inventory.Clear(inv, keep)
 			inv.weight = 0
 			if inv.player then
 				TriggerClientEvent('ox_inventory:inventoryConfiscated', inv.id)
-				if shared.esx then Inventory.SyncInventory(inv) end
+				if shared.framework == 'esx' then Inventory.SyncInventory(inv) end
 				inv.weapon = nil
 			end
 		end
@@ -771,7 +771,7 @@ local function playerDropped(source)
 	end
 end
 
-if shared.esx then
+if shared.framework == 'esx' then
 	AddEventHandler('esx:playerDropped', playerDropped)
 
 	AddEventHandler('esx:setJob', function(source, job)
@@ -853,10 +853,9 @@ RegisterServerEvent('ox_inventory:giveItem', function(slot, target, count)
 				Inventory.RemoveItem(fromInventory, item, count, data.metadata, slot)
 				Inventory.AddItem(toInventory, item, count, data.metadata)
 
-				Log('giveItem',
-					('%s gave %sx %s to %s'):format(fromInventory.label, data.count, fromData.name, toInventory.label),
+				Log(('%s gave %sx %s to %s'):format(fromInventory.label, data.count, data.name, toInventory.label),
 					fromInventory.owner,
-					toInventory.owner
+					'giveItem', toInventory.owner
 				)
 
 			end
@@ -921,7 +920,7 @@ RegisterServerEvent('ox_inventory:updateWeapon', function(action, value, slot)
 				syncInventory = true
 			end
 
-			if shared.esx and syncInventory then
+			if shared.framework == 'esx' and syncInventory then
 				Inventory.SyncInventory(inventory)
 			end
 
@@ -943,10 +942,9 @@ import.commands('ox_inventory', {'additem', 'giveitem'}, function(source, args)
 		local inventory = Inventories[args.target]
 		source = Inventories[source]
 
-		Log('admin',
-			('%s gave %sx %s to %s'):format(source.label, args.count, args.item.name, inventory.label),
+		Log(('%s gave %sx %s to %s'):format(source.label, args.count, args.item.name, inventory.label),
 			source.owner,
-			inventory.owner
+			'admin', inventory.owner
 		)
 
 	end
@@ -959,10 +957,9 @@ import.commands('ox_inventory', 'removeitem', function(source, args)
 		local inventory = Inventories[args.target]
 		source = Inventories[source]
 
-		Log('admin',
-			('%s took %sx %s from %s'):format(source.label, args.count, args.item.name, inventory.label),
+		Log(('%s took %sx %s from %s'):format(source.label, args.count, args.item.name, inventory.label),
 			source.owner,
-			inventory.owner
+			'admin', inventory.owner
 		)
 
 	end
@@ -975,10 +972,9 @@ import.commands('ox_inventory', 'setitem', function(source, args)
 		local inventory = Inventories[args.target]
 		source = Inventories[source]
 
-		Log('admin',
-			('%s set %s\' %s count to %sx (target: %s)'):format(source.label, inventory.label, args.item.name, args.count),
+		Log(('%s set %s\' %s count to %sx (target: %s)'):format(source.label, inventory.label, args.item.name, args.count),
 			source.owner,
-			inventory.owner
+			'admin', inventory.owner
 		)
 
 	end

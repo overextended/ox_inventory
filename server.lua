@@ -41,7 +41,7 @@ local function setPlayerInventory(player, data)
 	local inv = Inventory.Create(player.source, player.name, 'player', shared.playerslots, totalWeight, shared.playerweight, player.identifier, inventory)
 	inv.player = server.setPlayerData(player)
 
-	if shared.esx then Inventory.SyncInventory(inv) end
+	if shared.framework == 'esx' then Inventory.SyncInventory(inv) end
 	TriggerClientEvent('ox_inventory:setPlayerInventory', player.source, Inventory.Drops, inventory, totalWeight, server.UsableItemsCallbacks, player)
 end
 exports('setPlayerInventory', setPlayerInventory)
@@ -180,14 +180,13 @@ ServerCallback.Register('swapItems', function(source, data)
 				items[data.fromSlot] = fromData or false
 				playerInventory.items[data.fromSlot] = fromData
 
-				if shared.esx then Inventory.SyncInventory(playerInventory) end
+				if shared.framework == 'esx' then Inventory.SyncInventory(playerInventory) end
 
 				Inventory.CreateDrop(source, data.toSlot, toData, function(drop, coords)
 					if fromData == playerInventory.weapon then playerInventory.weapon = nil end
-					Log('swapSlots',
-						('%sx %s transferred from %s to %s'):format(data.count, toData.name, playerInventory.label, drop),
+					Log(('%sx %s transferred from %s to %s'):format(data.count, toData.name, playerInventory.label, drop),
 						playerInventory.owner,
-						playerInventory.owner, drop
+						'swapSlots', playerInventory.owner, drop
 					)
 					TriggerClientEvent('ox_inventory:createDrop', -1, {drop, coords}, playerInventory.open and source, slot)
 				end)
@@ -221,7 +220,7 @@ ServerCallback.Register('swapItems', function(source, data)
 
 			if fromInventory.type == 'policeevidence' and not sameInventory then
 				if not server.isPolice(toInventory) then return end
-				if shared.evidencegrade > toInventory.player.job.grade then
+				if server.evidencegrade > toInventory.player.job.grade then
 					TriggerClientEvent('ox_inventory:notify', source, {type = 'error', text = shared.locale('evidence_cannot_take')})
 					return
 				end
@@ -255,10 +254,9 @@ ServerCallback.Register('swapItems', function(source, data)
 
 								if container then Inventory.ContainerWeight(containerItem, toInventory.type == 'container' and toWeight or fromWeight) end
 
-								Log('swapSlots',
-									('%sx %s transferred from %s to %s for %sx %s'):format(fromData.count, fromData.name, fromInventory.owner and fromInventory.label or fromInventory.id, toInventory.owner and toInventory.label or toInventory.id, toData.count, toData.name),
+								Log(('%sx %s transferred from %s to %s for %sx %s'):format(fromData.count, fromData.name, fromInventory.owner and fromInventory.label or fromInventory.id, toInventory.owner and toInventory.label or toInventory.id, toData.count, toData.name),
 									playerInventory.owner,
-									fromInventory.owner or fromInventory.id, toInventory.owner or toInventory.id
+									'swapSlots', fromInventory.owner or fromInventory.id, toInventory.owner or toInventory.id
 								)
 
 							else return end
@@ -280,10 +278,9 @@ ServerCallback.Register('swapItems', function(source, data)
 
 								if container then Inventory.ContainerWeight(containerItem, toInventory.type == 'container' and toInventory.weight or fromInventory.weight) end
 
-								Log('swapSlots',
-									('%sx %s transferred from %s to %s'):format(data.count, fromData.name, fromInventory.owner and fromInventory.label or fromInventory.id, toInventory.owner and toInventory.label or toInventory.id),
+								Log(('%sx %s transferred from %s to %s'):format(data.count, fromData.name, fromInventory.owner and fromInventory.label or fromInventory.id, toInventory.owner and toInventory.label or toInventory.id),
 									playerInventory.owner,
-									fromInventory.owner or fromInventory.id, toInventory.owner or toInventory.id
+									'swapSlots', fromInventory.owner or fromInventory.id, toInventory.owner or toInventory.id
 								)
 
 							end
@@ -309,10 +306,9 @@ ServerCallback.Register('swapItems', function(source, data)
 
 								if container then Inventory.ContainerWeight(containerItem, toInventory.type == 'container' and toInventory.weight or fromInventory.weight) end
 
-								Log('swapSlots',
-									('%sx %s transferred from %s to %s'):format(data.count, fromData.name, fromInventory.owner and fromInventory.label or fromInventory.id, toInventory.owner and toInventory.label or toInventory.id),
+								Log(('%sx %s transferred from %s to %s'):format(data.count, fromData.name, fromInventory.owner and fromInventory.label or fromInventory.id, toInventory.owner and toInventory.label or toInventory.id),
 									playerInventory.owner,
-									fromInventory.owner or fromInventory.id, toInventory.owner or toInventory.id
+									'swapSlots', fromInventory.owner or fromInventory.id, toInventory.owner or toInventory.id
 								)
 
 							else
@@ -374,10 +370,10 @@ ServerCallback.Register('swapItems', function(source, data)
 
 					if next(items) then
 						ret = {weight=playerInventory.weight, items=items}
-						if shared.esx and fromInventory.type == 'player' or fromInventory.type == 'otherplayer' then
+						if shared.framework == 'esx' and fromInventory.type == 'player' or fromInventory.type == 'otherplayer' then
 							Inventory.SyncInventory(fromInventory)
 						end
-						if shared.esx and not sameInventory and (toInventory.type == 'player' or toInventory.type == 'otherplayer') then
+						if shared.framework == 'esx' and not sameInventory and (toInventory.type == 'player' or toInventory.type == 'otherplayer') then
 							Inventory.SyncInventory(toInventory)
 						end
 					end
@@ -392,7 +388,7 @@ end)
 local Licenses = data 'licenses'
 
 ServerCallback.Register('buyLicense', function(source, id)
-	if shared.esx then
+	if shared.framework == 'esx' then
 		local license = Licenses[id]
 		if license then
 			local inventory = Inventory(source)

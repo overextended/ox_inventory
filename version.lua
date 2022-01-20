@@ -1,4 +1,4 @@
-if shared.versioncheck then
+if server.versioncheck then
     CreateThread(function()
         Wait(1000)
         local resource = GetCurrentResourceName()

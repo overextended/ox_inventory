@@ -24,7 +24,7 @@ end
 
 local Utils = client.utils
 
-if shared.esx then
+if shared.framework == 'esx' then
     local ESX = exports.es_extended:getSharedObject()
 
     PlayerData.dead = PlayerData.dead

@@ -15,7 +15,7 @@ server.accounts = {
     money = 0,
 }
 
-if shared.esx then
+if shared.framework == 'esx' then
     local ESX = exports['es_extended']:getSharedObject()
 
     -- ESX.ServerCallbacks does not exist in the Overextended fork of ESX, so throw an error

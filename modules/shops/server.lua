@@ -27,7 +27,7 @@ for shopName, shopDetails in pairs(data('shops')) do
 						slot = j,
 						weight = Item.weight,
 						count = slot.count,
-						price = shared.randomprices and (math.ceil(slot.price * (math.random(80, 120)/100))) or slot.price,
+						price = server.randomprices and (math.ceil(slot.price * (math.random(80, 120)/100))) or slot.price,
 						metadata = slot.metadata,
 						license = slot.license,
 						currency = slot.currency,
@@ -55,7 +55,7 @@ for shopName, shopDetails in pairs(data('shops')) do
 					slot = i,
 					weight = Item.weight,
 					count = slot.count,
-					price = shared.randomprices and (math.ceil(slot.price * (math.random(90, 110)/100))) or slot.price,
+					price = server.randomprices and (math.ceil(slot.price * (math.random(90, 110)/100))) or slot.price,
 					metadata = slot.metadata,
 					license = slot.license,
 					currency = slot.currency,
@@ -154,15 +154,14 @@ ServerCallback.Register('buyItem', function(source, data)
 					end
 
 					Inventory.RemoveItem(source, currency, price)
-					if shared.esx then Inventory.SyncInventory(playerInv) end
+					if shared.framework == 'esx' then Inventory.SyncInventory(playerInv) end
 					local message = shared.locale('purchased_for', count, fromItem.label, (currency == 'money' and shared.locale('$') or comma_value(price)), (currency == 'money' and comma_value(price) or ' '..Items(currency).label))
 
 					-- Only log purchases for items worth $500 or more
 					if fromData.price >= 500 then
 
-						Log('buyItem',
-							('%s %s'):format(playerInv.owner, message:lower()),
-							playerInv.owner, shop
+						Log(('%s %s'):format(playerInv.owner, message:lower()),
+							'buyItem', playerInv.owner, shop
 						)
 
 					end

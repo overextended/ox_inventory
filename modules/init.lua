@@ -1,3 +1,64 @@
+IsDuplicityVersion = IsDuplicityVersion()
+shared = {
+	resource = GetCurrentResourceName(),
+	framework = GetConvar('inventory:framework', 'esx'),
+	locale = GetConvar('inventory:locale', 'en'),
+	playerslots = GetConvarInt('inventory:slots', 50),
+	playerweight = GetConvarInt('inventory:weight', 50),
+	autoreload = GetConvar('inventory:autoreload', 'false') == 'true',
+	trimplate = GetConvar('inventory:trimplate', 'true') == 'true',
+	qtarget = GetConvar('inventory:qtarget', 'false') == 'true',
+	police = json.decode(GetConvar('inventory:police', '["police", "sheriff"]')),
+}
+
+do
+	if type(shared.police) == 'string' then
+		shared.police = {shared.police}
+	end
+
+	local police = table.create(0, #shared.police)
+
+	for i = 1, #shared.police do
+		police[shared.police[i]] = 0
+	end
+	shared.police = police
+end
+
+if IsDuplicityVersion then
+	server = {
+		randomprices = GetConvar('inventory:randomprices', 'false') == 'true',
+		versioncheck = GetConvar('inventory:versioncheck', 'true') == 'true',
+		randomloot = GetConvar('inventory:randomloot', 'true') == 'true',
+		evidencegrade = GetConvarInt('inventory:evidencegrade', 2),
+		vehicleloot = json.decode(GetConvar('inventory:vehicleloot', [[
+			[
+				["cola", 1, 1],
+				["water", 1, 1],
+				["garbage", 1, 2, 50],
+				["panties", 1, 1, 5],
+				["money", 1, 50],
+				["money", 200, 400, 5],
+				["bandage", 1, 1]
+			]
+		]])),
+		dumpsterloot = json.decode(GetConvar('inventory:dumpsterloot', [[
+			[
+				["mustard", 1, 1],
+				["garbage", 1, 3],
+				["money", 1, 10],
+				["burger", 1, 1]
+			]
+		]])),
+	}
+else
+	client = {
+		screenblur = GetConvar('inventory:screenblur', 'true') == 'true',
+		keys = json.decode(GetConvar('inventory:keys', '["F2", "K", "TAB"]')),
+		enablekeys = json.decode(GetConvar('inventory:enablekeys', '[249]')),
+		clearstashes = GetConvar('inventory:clearstashes', '6 MONTH'),
+	}
+end
+
 function shared.print(...) print(string.strjoin(' ', ...)) end
 function shared.info(...) shared.print('^2[info]^7', ...) end
 function shared.warning(...) shared.print('^3[warning]^7', ...) end
