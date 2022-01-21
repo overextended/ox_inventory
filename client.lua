@@ -307,7 +307,6 @@ local function useSlot(slot)
 
 						if data then
 							if data.name == currentWeapon.ammo then
-								DisableControlActions:Add(22)
 								local missingAmmo = 0
 								local newAmmo = 0
 								missingAmmo = maxAmmo - currentAmmo
@@ -317,8 +316,6 @@ local function useSlot(slot)
 								MakePedReload(playerPed)
 								currentWeapon.metadata.ammo = newAmmo
 								TriggerServerEvent('ox_inventory:updateWeapon', 'load', currentWeapon.metadata.ammo)
-								Wait(1500)
-								DisableControlActions:Remove(22)
 							end
 						end
 					end)
