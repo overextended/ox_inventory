@@ -155,4 +155,12 @@ return {
 			notification = 'You drank some refreshing water'
 		}
 	},
+	
+	['radio'] = {
+		label = 'Radio',
+		weight = 1000,
+		stack = false,
+		consume = 0,
+		allowArmed = true
+	},
 }

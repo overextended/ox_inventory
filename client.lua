@@ -349,6 +349,8 @@ local function useSlot(slot)
 					end
 				end
 				Utils.Notify({type = 'error', text = shared.locale('component_invalid', data.label) })
+			elseif data.allowArmed then
+				useItem(data)
 			end
 		else
 			useItem(data)
