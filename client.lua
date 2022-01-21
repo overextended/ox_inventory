@@ -284,7 +284,7 @@ local function useSlot(slot)
 					Wait(0)
 					RefillAmmoInstantly(playerPed)
 
-					if data.name == 'WEAPON_PETROLCAN' or data.name == 'WEAPON_FIREEXTINGUISHER' then
+					if data.name == 'WEAPON_PETROLCAN' or data.name == 'WEAPON_HAZARDCAN' or data.name == 'WEAPON_FIREEXTINGUISHER' then
 						item.metadata.ammo = item.metadata.durability
 						SetPedInfiniteAmmo(playerPed, true, data.hash)
 					end
@@ -934,7 +934,7 @@ RegisterNetEvent('ox_inventory:setPlayerInventory', function(currentDrops, inven
 					if IsPedShooting(playerPed) then
 						local currentAmmo
 
-						if currentWeapon.name == 'WEAPON_PETROLCAN' or currentWeapon.name == 'WEAPON_FIREEXTINGUISHER' then
+						if currentWeapon.name == 'WEAPON_PETROLCAN' or currentWeapon.name == 'WEAPON_HAZARDCAN' or currentWeapon.name == 'WEAPON_FIREEXTINGUISHER' then
 							currentAmmo = currentWeapon.metadata.ammo - 0.05
 
 							if currentAmmo <= 0 then
