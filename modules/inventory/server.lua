@@ -841,6 +841,8 @@ RegisterServerEvent('ox_inventory:closeInventory', function()
 	end
 end)
 
+local Log = server.logs
+
 RegisterServerEvent('ox_inventory:giveItem', function(slot, target, count)
 	local fromInventory = Inventories[source]
 	local toInventory = Inventories[target]
@@ -932,8 +934,6 @@ RegisterServerEvent('ox_inventory:updateWeapon', function(action, value, slot)
 		end
 	end
 end)
-
-local Log = server.logs
 
 import.commands('ox_inventory', {'additem', 'giveitem'}, function(source, args)
 	args.item = Items(args.item)

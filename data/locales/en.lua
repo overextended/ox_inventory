@@ -51,7 +51,7 @@ return {
 	['cannot_carry'] = "You can not carry that much",
 	['cannot_carry_other'] = "Target inventory can not hold that much",
 	['cannot_carry_limit'] = "You cannot carry more than %s %s",
-	['cannot_carry_limit_other'] = "Yarget cannot carry more than %s %s",
+	['cannot_carry_limit_other'] = "Target cannot carry more than %s %s",
 	['items_confiscated'] = "Your items have been confiscated",
 	['items_returned'] = "Your items have been returned",
 	['item_unauthorised'] = "You are not authorised to purchase this item",
