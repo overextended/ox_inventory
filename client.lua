@@ -248,8 +248,13 @@ local function useSlot(slot)
 					if currentWeapon then currentWeapon = Utils.Disarm(currentWeapon) end
 					local sleep = (client.isPolice() and (GetWeapontypeGroup(data.hash) == 416676503 or GetWeapontypeGroup(data.hash) == 690389602)) and 400 or 1200
 					local coords = GetEntityCoords(playerPed, true)
-					Utils.PlayAnimAdvanced(sleep*2, sleep == 400 and 'reaction@intimidation@cop@unarmed' or 'reaction@intimidation@1h', 'intro', coords.x, coords.y, coords.z, 0, 0, GetEntityHeading(playerPed), 8.0, 3.0, -1, 50, 0.1)
-					Wait(sleep)
+					if item.name == 'WEAPON_SWITCHBLADE' then
+						Utils.PlayAnimAdvanced(sleep*2, 'anim@melee@switchblade@holster', 'unholster', coords.x, coords.y, coords.z, 0, 0, GetEntityHeading(playerPed), 8.0, 3.0, -1, 48, 0.1)
+						Wait(100)
+					else
+						Utils.PlayAnimAdvanced(sleep*2, sleep == 400 and 'reaction@intimidation@cop@unarmed' or 'reaction@intimidation@1h', 'intro', coords.x, coords.y, coords.z, 0, 0, GetEntityHeading(playerPed), 8.0, 3.0, -1, 50, 0.1)
+						Wait(sleep)
+					end
 					SetPedAmmo(playerPed, data.hash, 0)
 					GiveWeaponToPed(playerPed, data.hash, 0, false, true)
 
