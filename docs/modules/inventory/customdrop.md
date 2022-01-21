@@ -2,6 +2,7 @@
 title: Creating custom drops
 ---
 Allows server-side creation of a drop with pre-defined items and a custom prefix.
+todo: more details, move to Guides
 
 !!! info
 	```lua
