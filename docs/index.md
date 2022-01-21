@@ -48,6 +48,7 @@ There should be no changes which break compatibility with other resources with t
 
 We are in the process of converting some common [ESX resources](https://github.com/overextended/esx-legacy) to better support our releases.  
 Some code is being changed for later reference while a txAdmin recipe is prepared.  
+
 - esx_status: fixed some bugs and rework for oxmysql
 - esx_addoninventory: registers addon_inventory inventories as valid stash targets
 
@@ -79,61 +80,86 @@ All stashes and shops will utilise PolyZone's instead of markers to interact wit
 [GitHub :fontawesome-brands-github:](https://github.com/overextended/qtarget){ .md-button .md-button--primary }
 
 ## Configuration
-Default inventory settings are stored in `config.lua`, however the recommended method of overriding them is through convars.  
-You can either add these directly to your `server.cfg`, or create a file called `.cfg` in the resource folder.  
-You can add these settings directly to your 'server.cfg', or create a new (or multiple) file to load with 'exec'
+You can add these settings directly to your 'server.cfg', or create a new (or multiple) file to load with 'exec'.
 ```
-setr ox_inventory {
-    "esx": true,
-    "trimplate": true,
-    "qtarget": false,
-    "playerslots": 50,
-    "blurscreen": true,
-    "autoreload": true,
-    "keys": [
-        "F2", "K", "TAB"
-    ],
-    "enablekeys": [
-        249
-    ],
-    "playerweight": 30000,
-    "police": "police",
-    "locale": "en"
-}
+# Activate specific event handlers and functions (supported: esx)
+setr inventory:framework "esx"
 
-set ox_inventory_server {
-    "versioncheck": true,
-    "clearstashes": "6 MONTH",
-    "logs": false,
-    "randomprice": true,
-    "evidencegrade": 2,
-    "randomloot": true
-}
+# Load specific language file from data/locales
+setr inventory:locale "en"
 
-set ox_inventory_loot {
-    "vehicle": [
-        ["cola", 1, 1],
-        ["water", 1, 1],
-        ["garbage", 1, 2, 50],
-        ["panties", 1, 1, 5],
-        ["money", 1, 50],
-        ["money", 200, 400, 5],
-        ["bandage", 1, 1]
-    ],
+# Number of slots for player inventories
+setr inventory:slots 50
 
-    "dumpster": [
-    	["mustard", 1, 1],
-        ["garbage", 1, 3],
-        ["money", 1, 10],
-        ["burger", 1, 1]
-    ]
-}
+# Maximum carry capacity for players, in kilograms
+setr inventory:weight 30000
+
+# Weapons will reload after reaching 0 ammo
+setr inventory:autoreload false
+
+# Blur the screen while accessing the inventory
+setr inventory:screenblur true
+
+# Trim whitespace from vehicle plates when checking owned vehicles
+setr inventory:trimplate true
+
+# Integrated support for qtarget stashes, shops, etc
+setr inventory:qtarget false
+
+# Default hotkeys to access primary and secondary inventories, and hotbar
+setr inventory:keys ["F2", "K", "TAB"]
+
+# Enable control action when inventory is open
+setr inventory:enablekeys [249]
+
+# Jobs with access to police armoury, evidence lockers, etc
+setr inventory:police ["police", "sheriff"]
+
+# Item prices fluctuate in shops
+set inventory:randomprices true
+
+# Compare current version to latest release on GitHub
+set inventory:versioncheck true
+
+# Loot will randomly generate inside unowned vehicles and dumpsters
+set inventory:randomloot true
+
+# Minimum job grade to remove items from evidence lockers
+set inventory:evidencegrade 2
+
+# Stashes will be wiped after remaining unchanged for the given time
+set inventory:clearstashes "6 MONTH"
+
+# Set the contents of randomly generated inventories
+set inventory:vehicleloot [
+    ["cola", 1, 1],
+    ["water", 1, 1],
+    ["garbage", 1, 2, 50],
+    ["panties", 1, 1, 5],
+    ["money", 1, 50],
+    ["money", 200, 400, 5],
+    ["bandage", 1, 1]
+]
+
+set inventory:dumpsterloot [
+    ["mustard", 1, 1],
+    ["garbage", 1, 3],
+    ["money", 1, 10],
+    ["burger", 1, 1]
+]
+
+# Set datadog API key for inventory logging (https://app.datadoghq.com/organization-settings/api-keys)
+set datadog:key ""
+
+# Set server intake (https://docs.datadoghq.com/api/latest/logs/#send-logs)
+set datadog:site "datadoghq.com"
+
 
 add_principal group.admin ox_inventory
 add_ace resource.ox_inventory command.add_principal allow
 add_ace resource.ox_inventory command.remove_principal allow
-
 ensure ox_inventory
+
 ```
 
 ## Installation
