@@ -220,15 +220,15 @@ ServerCallback.Register('swapItems', function(source, data)
 
 				if toInventory.type == 'player' and fromInventory.type == 'otherplayer' then
 					if shared.isPolice(playerInventory.player.job.name) == false then
-						robbery = '**ITEM ROBBERY**\n'
+						robbery = 'Robbed by'
 					else
-						robbery = '**ITEM CONFISCATION BY POLICE** ('..playerInventory.player.job.name..')\n'
+						robbery = 'Confiscated by ('..playerInventory.player.job.name..')'
 					end
 				elseif toInventory.type == 'otherplayer' and fromInventory.type == 'player' then
 					if shared.isPolice(playerInventory.player.job.name) == false then
-						robbery = '**ITEM PLANTED BY CIVILIAN**\n'
+						robbery = 'Planted by non-police'
 					else
-						robbery = '**ITEM PLANTED BY POLICE** ('..playerInventory.player.job.name..')\n'
+						robbery = 'Planted by police ('..playerInventory.player.job.name..')'
 					end
 				end
 			end
@@ -269,9 +269,9 @@ ServerCallback.Register('swapItems', function(source, data)
 
 								if container then Inventory.ContainerWeight(containerItem, toInventory.type == 'container' and toWeight or fromWeight) end
 
-								Log(('%sx %s transferred from %s to %s for %sx %s'):format(fromData.count, fromData.name, fromInventory.owner and fromInventory.label or fromInventory.id, toInventory.owner and toInventory.label or toInventory.id, toData.count, toData.name),
+								Log(('%sx %s %s %s to %s for %sx %s'):format(fromData.count, fromData.name, robbery or 'transferred from', fromInventory.owner and fromInventory.label or fromInventory.id, toInventory.owner and toInventory.label or toInventory.id, toData.count, toData.name),
 									playerInventory.owner,
-									robbery or 'swapSlots', fromInventory.owner or fromInventory.id, toInventory.owner or toInventory.id
+									'swapSlots', fromInventory.owner or fromInventory.id, toInventory.owner or toInventory.id
 								)
 
 							else return end
@@ -293,9 +293,9 @@ ServerCallback.Register('swapItems', function(source, data)
 
 								if container then Inventory.ContainerWeight(containerItem, toInventory.type == 'container' and toInventory.weight or fromInventory.weight) end
 
-								Log(('%sx %s transferred from %s to %s'):format(data.count, fromData.name, fromInventory.owner and fromInventory.label or fromInventory.id, toInventory.owner and toInventory.label or toInventory.id),
+								Log(('%sx %s %s %s to %s'):format(data.count, fromData.name, robbery or 'transferred from', fromInventory.owner and fromInventory.label or fromInventory.id, toInventory.owner and toInventory.label or toInventory.id),
 									playerInventory.owner,
-									robbery or 'swapSlots', fromInventory.owner or fromInventory.id, toInventory.owner or toInventory.id
+									'swapSlots', fromInventory.owner or fromInventory.id, toInventory.owner or toInventory.id
 								)
 
 							end
@@ -321,9 +321,9 @@ ServerCallback.Register('swapItems', function(source, data)
 
 								if container then Inventory.ContainerWeight(containerItem, toInventory.type == 'container' and toInventory.weight or fromInventory.weight) end
 
-								Log(('%sx %s transferred from %s to %s'):format(data.count, fromData.name, fromInventory.owner and fromInventory.label or fromInventory.id, toInventory.owner and toInventory.label or toInventory.id),
+								Log(('%sx %s %s %s to %s'):format(data.count, fromData.name, robbery or 'transferred from', fromInventory.owner and fromInventory.label or fromInventory.id, toInventory.owner and toInventory.label or toInventory.id),
 									playerInventory.owner,
-									robbery or 'swapSlots', fromInventory.owner or fromInventory.id, toInventory.owner or toInventory.id
+									'swapSlots', fromInventory.owner or fromInventory.id, toInventory.owner or toInventory.id
 								)
 
 							else
