@@ -199,6 +199,7 @@ ServerCallback.Register('swapItems', function(source, data)
 			local sameInventory = fromInventory.id == toInventory.id or false
 			local container = (not sameInventory and playerInventory.containerSlot) and (fromInventory.type == 'container' and fromInventory or toInventory)
 			local containerItem = container and playerInventory.items[playerInventory.containerSlot]
+			local robbery = nil
 
 			if not sameInventory and toInventory.type == 'player' or toInventory.type == 'otherplayer' then
 				local fromData = fromInventory.items[data.fromSlot]
@@ -215,6 +216,20 @@ ServerCallback.Register('swapItems', function(source, data)
 						TriggerClientEvent('ox_inventory:notify', source, {type = 'error', text = shared.locale('cannot_carry_limit_other', fromItem.limit, fromItem.label)})
 					end
 					return
+				end
+
+				if toInventory.type == 'player' and fromInventory.type == 'otherplayer' then
+					if shared.isPolice(playerInventory.player.job.name) == false then
+						robbery = '**ITEM ROBBERY**\n'
+					else
+						robbery = '**ITEM CONFISCATION BY POLICE** ('..playerInventory.player.job.name..')\n'
+					end
+				elseif toInventory.type == 'otherplayer' and fromInventory.type == 'player' then
+					if shared.isPolice(playerInventory.player.job.name) == false then
+						robbery = '**ITEM PLANTED BY CIVILIAN**\n'
+					else
+						robbery = '**ITEM PLANTED BY POLICE** ('..playerInventory.player.job.name..')\n'
+					end
 				end
 			end
 
@@ -256,7 +271,7 @@ ServerCallback.Register('swapItems', function(source, data)
 
 								Log(('%sx %s transferred from %s to %s for %sx %s'):format(fromData.count, fromData.name, fromInventory.owner and fromInventory.label or fromInventory.id, toInventory.owner and toInventory.label or toInventory.id, toData.count, toData.name),
 									playerInventory.owner,
-									'swapSlots', fromInventory.owner or fromInventory.id, toInventory.owner or toInventory.id
+									robbery or 'swapSlots', fromInventory.owner or fromInventory.id, toInventory.owner or toInventory.id
 								)
 
 							else return end
@@ -280,7 +295,7 @@ ServerCallback.Register('swapItems', function(source, data)
 
 								Log(('%sx %s transferred from %s to %s'):format(data.count, fromData.name, fromInventory.owner and fromInventory.label or fromInventory.id, toInventory.owner and toInventory.label or toInventory.id),
 									playerInventory.owner,
-									'swapSlots', fromInventory.owner or fromInventory.id, toInventory.owner or toInventory.id
+									robbery or 'swapSlots', fromInventory.owner or fromInventory.id, toInventory.owner or toInventory.id
 								)
 
 							end
@@ -308,7 +323,7 @@ ServerCallback.Register('swapItems', function(source, data)
 
 								Log(('%sx %s transferred from %s to %s'):format(data.count, fromData.name, fromInventory.owner and fromInventory.label or fromInventory.id, toInventory.owner and toInventory.label or toInventory.id),
 									playerInventory.owner,
-									'swapSlots', fromInventory.owner or fromInventory.id, toInventory.owner or toInventory.id
+									robbery or 'swapSlots', fromInventory.owner or fromInventory.id, toInventory.owner or toInventory.id
 								)
 
 							else
