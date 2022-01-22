@@ -994,16 +994,18 @@ AddEventHandler('onResourceStop', function(resourceName)
 end)
 
 RegisterNetEvent('esx:onPlayerLogout', function()
-	if client.parachute then
-		Utils.DeleteObject(client.parachute)
-		client.parachute = false
-	end
+	if PlayerData.loaded then
+		if client.parachute then
+			Utils.DeleteObject(client.parachute)
+			client.parachute = false
+		end
 
-	TriggerEvent('ox_inventory:closeInventory')
-	PlayerData.loaded = false
-	ClearInterval(interval)
-	ClearInterval(tick)
-	currentWeapon = Utils.Disarm(currentWeapon)
+		TriggerEvent('ox_inventory:closeInventory')
+		PlayerData.loaded = false
+		ClearInterval(interval)
+		ClearInterval(tick)
+		currentWeapon = Utils.Disarm(currentWeapon)
+	end
 end)
 
 RegisterNetEvent('ox_inventory:viewInventory', function(data)
