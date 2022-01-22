@@ -775,7 +775,10 @@ if shared.framework == 'esx' then
 	AddEventHandler('esx:playerDropped', playerDropped)
 
 	AddEventHandler('esx:setJob', function(source, job)
-		Inventories[source].player.job = job
+		local inventory = Inventories[source]
+		if inventory then
+			inventory.player.job = job
+		end
 	end)
 else
 	AddEventHandler('playerDropped', function()
