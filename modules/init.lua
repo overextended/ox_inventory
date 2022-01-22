@@ -1,7 +1,7 @@
 IsDuplicityVersion = IsDuplicityVersion()
 shared = {
 	resource = GetCurrentResourceName(),
-	framework = GetConvar('inventory:framework', 'esx'),
+	framework = GetConvar('inventory:framework', ''),
 	locale = GetConvar('inventory:locale', 'en'),
 	playerslots = GetConvarInt('inventory:slots', 50),
 	playerweight = GetConvarInt('inventory:weight', 50),
@@ -10,6 +10,10 @@ shared = {
 	qtarget = GetConvar('inventory:qtarget', 'false') == 'true',
 	police = json.decode(GetConvar('inventory:police', '["police", "sheriff"]')),
 }
+
+if shared.framework == '' and GetResourceState('es_extended'):find('start') then
+	shared.framework = 'esx'
+end
 
 do
 	if type(shared.police) == 'string' then
