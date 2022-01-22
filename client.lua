@@ -607,26 +607,18 @@ end)
 
 local function updateInventory(items, weight)
 	local changes = {}
+	local itemCount = {}
 	-- swapslots
 	if type(weight) == 'number' then
 		for slot, v in pairs(items) do
 			local item = PlayerData.inventory[slot]
 
 			if item then
-				Items[item.name].count -= item.count
+				itemCount[item.name] = (itemCount[item.name] or 0) - item.count
 			end
 
 			if v then
-				local data = Items[v.name]
-				if data.client?.add then
-					data.client.add(data.count, v.count)
-				end
-				data.count += v.count
-			else
-				local data = Items[item.name]
-				if data.count == 0 and data.client?.remove then
-					data.client.remove()
-				end
+				itemCount[v.name] = (itemCount[v.name] or 0) + v.count
 			end
 
 			PlayerData.inventory[slot] = v and v or nil
@@ -636,24 +628,14 @@ local function updateInventory(items, weight)
 	else
 		for i=1, #items do
 			local v = items[i].item
-
 			local item = PlayerData.inventory[v.slot]
 
 			if item?.name then
-				Items[item.name].count -= item.count
+				itemCount[item.name] = (itemCount[item.name] or 0) - item.count
 			end
 
 			if v.count then
-				local data = Items[v.name]
-				if data.client?.add then
-					data.client.add(data.count, v.count)
-				end
-				data.count += v.count
-			else
-				local data = Items[item.name]
-				if data.count == 0 and data.client?.remove then
-					data.client.remove()
-				end
+				itemCount[v.name] = (itemCount[v.name] or 0) + v.count
 			end
 
 			changes[v.slot] = v.count and v or false
@@ -663,6 +645,23 @@ local function updateInventory(items, weight)
 		client.setPlayerData('weight', weight.left)
 		SendNUIMessage({ action = 'refreshSlots', data = items })
 	end
+
+	for item, count in pairs(itemCount) do
+		local data = Items[item]
+
+		if count < 0 then
+			data.count += count
+			if data.client?.remove then
+				data.client.remove(data.count)
+			end
+		elseif count > 0 then
+			data.count += count
+			if data.client?.add then
+				data.client.add(data.count)
+			end
+		end
+	end
+
 	client.setPlayerData('inventory', PlayerData.inventory)
 	TriggerEvent('ox_inventory:updateInventory', changes)
 end

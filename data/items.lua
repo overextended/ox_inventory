@@ -111,16 +111,14 @@ return {
 		stack = false,
 		consume = 0,
 		client = {
-			add = function(count, added)
-				print('Added item', count, added)
-				if count == 0 and GetResourceState('npwd') == 'started' then
+			add = function(total)
+				if total > 0 and GetResourceState('npwd') == 'started' then
 					exports.npwd:setPhoneDisabled(false)
 				end
 			end,
 
-			remove = function()
-				print('Removed item')
-				if GetResourceState('npwd') == 'started' then
+			remove = function(total)
+				if total < 1 and GetResourceState('npwd') == 'started' then
 					exports.npwd:setPhoneDisabled(true)
 				end
 			end
