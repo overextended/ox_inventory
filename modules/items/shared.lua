@@ -26,7 +26,7 @@ function items()
 			v.close = type == 'Ammo' and true or false
 			if type == 'Weapons' then
 				v.hash = joaat(k)
-				v.stack = false
+				v.stack = v.throwable and true or false
 				v.durability = v.durability or 1
 			else
 				v.stack = true
