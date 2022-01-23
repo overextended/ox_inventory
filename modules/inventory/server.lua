@@ -602,18 +602,20 @@ function Inventory.CanCarryItem(inv, item, count, metadata)
 
 		if next(itemSlots) or emptySlots > 0 then
 			if inv.type == 'player' and item.limit and (totalCount + count) > item.limit then
-				TriggerClientEvent('ox_inventory:notify', playerId, {type = 'error', text = shared.locale('cannot_carry_limit', item.limit, item.label)})
+				TriggerClientEvent('ox_inventory:notify', inv.id, {type = 'error', text = shared.locale('cannot_carry_limit', item.limit, item.label)})
 				return false
 			end
+
 			if item.weight == 0 then return true end
 			if count == nil then count = 1 end
 			local newWeight = inv.weight + (item.weight * count)
+
 			if newWeight >= inv.maxWeight then
-				TriggerClientEvent('ox_inventory:notify', playerId, {type = 'error', text = shared.locale('cannot_carry')})
+				TriggerClientEvent('ox_inventory:notify', inv.id, {type = 'error', text = shared.locale('cannot_carry')})
 				return false
-			else
-				return true
 			end
+
+			return true
 		end
 	end
 end
@@ -633,7 +635,6 @@ function Inventory.CanSwapItem(inv, firstItem, firstItemCount, testItem, testIte
 		local weightWithTest = weightWithoutFirst + (testItemData.weight * testItemCount)
 		return weightWithTest <= inv.maxWeight
 	end
-	return false
 end
 exports('CanSwapItem', Inventory.CanSwapItem)
 
