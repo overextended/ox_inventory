@@ -219,6 +219,7 @@ local function useSlot(slot)
 		if item.metadata.container then
 			return OpenInventory('container', item.slot)
 		elseif data.client then
+			if invOpen and data.close then TriggerEvent('ox_inventory:closeInventory') end
 
 			if data.client.export then
 				if type(data.client.export) ~= 'function' then
