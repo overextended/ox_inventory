@@ -315,11 +315,12 @@ local table = import 'table'
 ---@param returnsCount? boolean
 ---@return table|number
 function Inventory.GetItem(inv, item, metadata, returnsCount)
-	item = type(item) == 'table' and item or Items(item)
 	if type(item) ~= 'table' then item = Items(item) end
+
 	if item then item = returnsCount and item or table.clone(item)
 		inv = Inventory(inv)
 		local count = 0
+
 		if inv then
 			metadata = not metadata and false or type(metadata) == 'string' and {type=metadata} or metadata
 			for _, v in pairs(inv.items) do
@@ -328,6 +329,7 @@ function Inventory.GetItem(inv, item, metadata, returnsCount)
 				end
 			end
 		end
+
 		if returnsCount then return count else
 			item.count = count
 			return item
