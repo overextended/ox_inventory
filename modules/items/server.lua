@@ -183,22 +183,18 @@ function Items.Metadata(inv, item, metadata, count)
 	if not isWeapon then metadata = not metadata and {} or type(metadata) == 'string' and {type=metadata} or metadata end
 
 	if isWeapon then
-		if not item.ammoname then
-			metadata = {}
-			if not item.throwable then count, metadata.durability = 1, 100 end
-		else
-			count = 1
-			if type(metadata) ~= 'table' then metadata = {} end
-			if not metadata.durability then metadata.durability = 100 end
-			if not metadata.ammo and item.ammoname then metadata.ammo = 0 end
-			if not metadata.components then metadata.components = {} end
-			if metadata.registered ~= false then
-				metadata.registered = type(metadata.registered) == 'string' and metadata.registered or inv.name
-				metadata.serial = GenerateSerial(metadata.serial)
-			end
+		if type(metadata) ~= 'table' then metadata = {} end
+		if not metadata.durability then metadata.durability = 100 end
+		if not metadata.ammo and item.ammoname then metadata.ammo = 0 end
+		if not metadata.components then metadata.components = {} end
+
+		if metadata.registered ~= false then
+			metadata.registered = type(metadata.registered) == 'string' and metadata.registered or inv.player.name
+			metadata.serial = GenerateSerial(metadata.serial)
 		end
 	else
 		local container = Items.containers[item.name]
+
 		if container then
 			count = 1
 			metadata.container = metadata.container or GenerateText(3)..os.time()
@@ -223,6 +219,11 @@ function Items.Metadata(inv, item, metadata, count)
 			if durability then metadata.durability = os.time()+(durability * 60) metadata.degrade = durability end
 		end
 	end
+
+	if count > 1 and not item.stack then
+		count = 1
+	end
+
 	return metadata, count
 end
 
