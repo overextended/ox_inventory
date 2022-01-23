@@ -55,6 +55,12 @@ end
 exports('setPlayerInventory', setPlayerInventory)
 AddEventHandler('ox_inventory:setPlayerInventory', setPlayerInventory)
 
+local function DeleteInventory(invId)
+	MySQL.prepare.await('DELETE FROM ox_inventory WHERE name = ?', {invId})
+end
+
+exports('deleteInventory', DeleteInventory)
+
 local Stashes = data 'stashes'
 local Vehicles = data 'vehicles'
 local ServerCallback = import 'callbacks'
