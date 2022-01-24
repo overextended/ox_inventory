@@ -377,25 +377,34 @@ local function OpenNearbyInventory()
 end
 exports('openNearbyInventory', OpenNearbyInventory)
 
+local currentInstance
+
 local nearbyMarkers, closestMarker = {}, {}
 local drops, playerCoords
 local function Markers(tb, type, rgb, name)
 	if tb then
 		for k, v in pairs(tb) do
-			if not v.jobs or v.jobs[PlayerData.job.name] then
-				local coords = v.coords or v
-				local distance = #(playerCoords - coords)
-				local id = name and type..name..k or type..k
-				local marker = nearbyMarkers[id]
-				if distance < 1.2 then
-					if not marker then nearbyMarkers[id] = mat(vec3(coords), vec3(rgb)) end
-					if closestMarker[1] == nil or (closestMarker and distance < closestMarker[1]) then
-						closestMarker[1] = distance
-						closestMarker[2] = k
-						closestMarker[3] = type
-						closestMarker[4] = name or v.name
+			if not v.instance or v.instance == currentInstance then
+				if not v.jobs or v.jobs[PlayerData.job.name] then
+					local coords = v.coords or v
+					local distance = #(playerCoords - coords)
+					local id = name and type..name..k or type..k
+					local marker = nearbyMarkers[id]
+
+					if distance < 1.2 then
+						if not marker then nearbyMarkers[id] = mat(vec3(coords), vec3(rgb)) end
+						if closestMarker[1] == nil or (closestMarker and distance < closestMarker[1]) then
+							closestMarker[1] = distance
+							closestMarker[2] = k
+							closestMarker[3] = type
+							closestMarker[4] = name or v.name
+						end
+					elseif not marker and distance < 8 then
+						nearbyMarkers[id] = mat(vec3(coords), vec3(rgb))
+					elseif marker and distance > 8 then
+						nearbyMarkers[id] = nil
 					end
-				elseif not marker and distance < 8 then nearbyMarkers[id] = mat(vec3(coords), vec3(rgb)) elseif marker and distance > 8 then nearbyMarkers[id] = nil end
+				end
 			end
 		end
 	end
@@ -704,13 +713,16 @@ RegisterNetEvent('ox_inventory:inventoryConfiscated', function(message)
 	client.setPlayerData('weight', 0)
 end)
 
-RegisterNetEvent('ox_inventory:createDrop', function(data, owner, slot)
-	if drops then drops[data[1]] = data[2] end
-	if owner == PlayerData.id and invOpen and #(GetEntityCoords(PlayerData.ped) - data[2]) <= 1 then
+RegisterNetEvent('ox_inventory:createDrop', function(drop, data, owner, slot)
+	if drops then
+		drops[drop] = data
+	end
+
+	if owner == PlayerData.id and invOpen and #(GetEntityCoords(PlayerData.ped) - data.coords) <= 1 then
 		if currentWeapon?.slot == slot then currentWeapon = Utils.Disarm(currentWeapon) end
 
 		if not IsPedInAnyVehicle(PlayerData.ped, false) then
-			OpenInventory('drop', data[1])
+			OpenInventory('drop', drop)
 		else
 			SendNUIMessage({
 				action = 'setupInventory',
@@ -827,7 +839,9 @@ RegisterNetEvent('ox_inventory:setPlayerInventory', function(currentDrops, inven
 			playerCoords = GetEntityCoords(PlayerData.ped)
 			table.wipe(closestMarker)
 
+
 			Markers(drops, 'drop', vec3(150, 30, 30))
+
 			if not shared.qtarget then
 				if client.isPolice() then Markers(Inventory.Evidence, 'policeevidence', vec(30, 30, 150)) end
 				Markers(Inventory.Stashes, 'stash', vec3(30, 30, 150))
@@ -837,6 +851,7 @@ RegisterNetEvent('ox_inventory:setPlayerInventory', function(currentDrops, inven
 					end
 				end
 			end
+
 			Markers(Licenses, 'license', vec(30, 150, 30))
 			SetPedCanSwitchWeapon(PlayerData.ped, false)
 			SetPedEnableWeaponBlocking(PlayerData.ped, true)
@@ -897,7 +912,8 @@ RegisterNetEvent('ox_inventory:setPlayerInventory', function(currentDrops, inven
 			if invBusy then DisablePlayerFiring(PlayerData.id, true) end
 
 			for _, v in pairs(nearbyMarkers) do
-				DrawMarker(2, v[1].x, v[1].y, v[1].z, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.3, 0.2, 0.15, v[2].x, v[2].y, v[2].z, 222, false, false, false, true, false, false, false)
+				local coords, rgb = v[1], v[2]
+				DrawMarker(2, coords.x, coords.y, coords.z, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.3, 0.2, 0.15, rgb.x, rgb.y, rgb.z, 222, false, false, false, true, false, false, false)
 			end
 
 			if closestMarker and IsControlJustReleased(0, 38) then
@@ -1107,9 +1123,15 @@ RegisterNUICallback('exit', function(_, cb)
 end)
 
 RegisterNUICallback('swapItems', function(data, cb)
+	if currentInstance then
+		data.instance = currentInstance
+	end
+
 	local response, data, weapon = ServerCallback.Await(shared.resource, 'swapItems', false, data)
 
-	if data then updateInventory(data.items, data.weight) end
+	if data then
+		updateInventory(data.items, data.weight)
+	end
 
 	if weapon and currentWeapon then
 		currentWeapon.slot = weapon

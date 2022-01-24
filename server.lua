@@ -182,14 +182,14 @@ ServerCallback.Register('swapItems', function(source, data)
 
 				if shared.framework == 'esx' then Inventory.SyncInventory(playerInventory) end
 
-				Inventory.CreateDrop(source, data.toSlot, toData, function(drop, coords)
+				Inventory.CreateDrop(source, data.toSlot, toData, function(drop, dropData)
 					if fromData == playerInventory.weapon then playerInventory.weapon = nil end
 					Log(('%sx %s transferred from %s to %s'):format(data.count, toData.name, playerInventory.label, drop),
 						playerInventory.owner,
 						'swapSlots', playerInventory.owner, drop
 					)
-					TriggerClientEvent('ox_inventory:createDrop', -1, {drop, coords}, playerInventory.open and source, slot)
-				end)
+					TriggerClientEvent('ox_inventory:createDrop', -1, drop, dropData, playerInventory.open and source, slot)
+				end, data.instance)
 
 				return true, {weight=playerInventory.weight, items=items}
 			end

@@ -668,23 +668,23 @@ local function generateDropId()
 end
 
 Inventory.Drops = {}
-function Inventory.CreateDrop(source, slot, toSlot, cb)
+function Inventory.CreateDrop(source, slot, toSlot, cb, instance)
 	local drop = generateDropId()
 	local inventory = Inventory.Create(drop, 'Drop '..drop, 'drop', shared.playerslots, toSlot.weight, shared.playerweight, false, {[slot] = table.clone(toSlot)})
 	local coords = GetEntityCoords(GetPlayerPed(source))
 	inventory.coords = vec3(coords.x, coords.y, coords.z-0.2)
-	Inventory.Drops[drop] = inventory.coords
-	cb(drop, coords)
+	Inventory.Drops[drop] = {coords = inventory.coords, instance = instance}
+	cb(drop, Inventory.Drops[drop])
 end
 AddEventHandler('ox_inventory:createDrop', CreateDrop)
 
-local function CustomDrop(prefix, items, coords, slots, maxWeight)
+local function CustomDrop(prefix, items, coords, slots, maxWeight, instance)
 	local drop = generateDropId()
 	local items, weight = generateItems(drop, 'drop', items)
 	local inventory = Inventory.Create(drop, prefix..' '..drop, 'drop', slots or shared.playerslots, weight, maxWeight or shared.playerweight, false, items)
 	inventory.coords = coords
-	Inventory.Drops[drop] = inventory.coords
-	TriggerClientEvent('ox_inventory:createDrop', -1, {drop, coords}, inventory.open and source)
+	Inventory.Drops[drop] = {coords = inventory.coords, instance = instance}
+	TriggerClientEvent('ox_inventory:createDrop', -1, drop, Inventory.Drops[drop], inventory.open and source)
 end
 AddEventHandler('ox_inventory:customDrop', CustomDrop)
 exports('CustomDrop', CustomDrop)
