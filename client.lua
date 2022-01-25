@@ -1108,7 +1108,7 @@ RegisterNUICallback('giveItem', function(data, cb)
 		end
 	else
 		local target = Utils.Raycast()
-		if target and IsPedAPlayer(target) and #(GetEntityCoords(PlayerData.ped, true) - GetEntityCoords(target, true)) < 2 then
+		if target and IsPedAPlayer(target) and #(GetEntityCoords(PlayerData.ped, true) - GetEntityCoords(target, true)) < 2.3 then
 			target = GetPlayerServerId(NetworkGetPlayerIndexFromPed(target))
 			Utils.PlayAnim(2000, 'mp_common', 'givetake1_a', 1.0, 1.0, -1, 50, 0.0, 0, 0, 0)
 			TriggerServerEvent('ox_inventory:giveItem', data.slot, target, data.count)

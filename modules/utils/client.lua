@@ -21,7 +21,7 @@ end
 function Utils.Raycast()
 	local playerCoords = GetEntityCoords(PlayerData.ped)
 	local plyOffset = GetOffsetFromEntityInWorldCoords(PlayerData.ped, 0.0, 2.2, -0.05)
-	local rayHandle = StartShapeTestCapsule(playerCoords.x, playerCoords.y, playerCoords.z, plyOffset.x, plyOffset.y, plyOffset.z, 2.2, 30, PlayerData.ped)
+	local rayHandle = StartShapeTestCapsule(playerCoords.x, playerCoords.y, playerCoords.z, plyOffset.x, plyOffset.y, plyOffset.z, 2.2, 12, PlayerData.ped)
 	while true do
 		Wait(0)
 		local result, _, _, _, entityHit = GetShapeTestResult(rayHandle)
