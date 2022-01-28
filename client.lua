@@ -472,7 +472,7 @@ local function RegisterCommands()
 						end
 					end
 				else
-					local entity, type = Utils.Raycast()
+					local entity, type = Utils.Raycast('inv')
 					if not entity then return end
 					local vehicle, position
 					if not shared.qtarget then
@@ -1107,7 +1107,7 @@ RegisterNUICallback('giveItem', function(data, cb)
 			end
 		end
 	else
-		local target = Utils.Raycast()
+		local target = Utils.Raycast('give')
 		if target and IsPedAPlayer(target) and #(GetEntityCoords(PlayerData.ped, true) - GetEntityCoords(target, true)) < 2.3 then
 			target = GetPlayerServerId(NetworkGetPlayerIndexFromPed(target))
 			Utils.PlayAnim(2000, 'mp_common', 'givetake1_a', 1.0, 1.0, -1, 50, 0.0, 0, 0, 0)
