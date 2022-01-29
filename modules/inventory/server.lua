@@ -187,19 +187,28 @@ function Inventory.Remove(id, type)
 	Inventories[id] = nil
 end
 
+function Inventory.GetPlateFromId(id)
+	if shared.trimplate then
+		return string.strtrim(id:sub(6))
+	end
+
+	return id:sub(6)
+end
+
 function Inventory.Save(inv)
 	inv = Inventory(inv)
 	local inventory = json.encode(minimal(inv))
+
 	if inv.type == 'player' then
-		MySQL.update('UPDATE users SET inventory = ? WHERE identifier = ?', { inventory, inv.owner })
+		MySQL.prepare('UPDATE users SET inventory = ? WHERE identifier = ?', { inventory, inv.owner })
 	else
-		if inv.type == 'trunk' or inv.type == 'glovebox' then
-			local plate = inv.id:sub(6)
-			if shared.playerslots then plate = string.strtrim(plate) end
-			MySQL.update('UPDATE owned_vehicles SET ?? = ? WHERE plate = ?', { inv.type, inventory, plate })
+		if inv.type == 'trunk' then
+			MySQL.prepare('UPDATE owned_vehicles SET trunk = ? WHERE plate = ?', { inventory, Inventory.GetPlateFromId(inv.id) })
+		elseif inv.type == 'glovebox' then
+			MySQL.prepare('UPDATE owned_vehicles SET glovebox = ? WHERE plate = ?', { inventory, Inventory.GetPlateFromId(inv.id) })
 		else
-			MySQL.update('INSERT INTO ox_inventory (owner, name, data) VALUES (:owner, :name, :data) ON DUPLICATE KEY UPDATE data = :data', {
-				owner = inv.owner or '', name = inv.id, data = inventory,
+			MySQL.prepare('INSERT INTO ox_inventory (owner, name, data) VALUES (?, ?, ?) ON DUPLICATE KEY UPDATE data = VALUES(data)', {
+				inv.owner or '', inv.id, inventory,
 			})
 		end
 		inv.changed = false
@@ -270,7 +279,7 @@ function Inventory.Load(id, invType, owner)
 
 	if id and invType then
 		if isVehicle then
-			local plate = id:sub(6)
+			local plate = Inventory.GetPlateFromId(id)
 			if shared.playerslots then plate = string.strtrim(plate) end
 			result = MySQL.single.await('SELECT ?? FROM owned_vehicles WHERE plate = ?', { invType, plate })
 			if result then result = json.decode(result[invType])

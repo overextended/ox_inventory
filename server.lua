@@ -98,7 +98,7 @@ ServerCallback.Register('openInventory', function(source, inv, data)
 				right = Inventory(data.id)
 				if not right then
 					local vehicle = Vehicles[inv]['models'][data.model] or Vehicles[inv][data.class]
-					right = Inventory.Create(data.id, data.id:sub(6), inv, vehicle[1], 0, vehicle[2], false)
+					right = Inventory.Create(data.id, Inventory.GetPlateFromId(data.id), inv, vehicle[1], 0, vehicle[2], false)
 				end
 			elseif inv == 'drop' then
 				right = Inventory(data.id)
