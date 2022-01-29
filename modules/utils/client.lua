@@ -18,10 +18,10 @@ function Utils.PlayAnimAdvanced(wait, dict, name, posX, posY, posZ, rotX, rotY, 
 	end)
 end
 
-function Utils.Raycast(type)
+function Utils.Raycast(flag)
 	local playerCoords = GetEntityCoords(PlayerData.ped)
 	local plyOffset = GetOffsetFromEntityInWorldCoords(PlayerData.ped, 0.0, 2.2, -0.05)
-	local rayHandle = StartShapeTestCapsule(playerCoords.x, playerCoords.y, playerCoords.z, plyOffset.x, plyOffset.y, plyOffset.z, 2.2, type == 'give' and 12 or 30, PlayerData.ped)
+	local rayHandle = StartShapeTestCapsule(playerCoords.x, playerCoords.y, playerCoords.z, plyOffset.x, plyOffset.y, plyOffset.z, 2.2, flag or 30, PlayerData.ped)
 	while true do
 		Wait(0)
 		local result, _, _, _, entityHit = GetShapeTestResult(rayHandle)
