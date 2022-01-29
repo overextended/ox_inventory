@@ -758,8 +758,11 @@ local function setStateBagHandler(id)
 			else
 				DisableControlActions:Remove(23, 25, 36, 263)
 			end
+		elseif key == 'instance' then
+			currentInstance = value
 		end
 	end)
+
 	setStateBagHandler = nil
 end
 
