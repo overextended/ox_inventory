@@ -760,6 +760,8 @@ local function setStateBagHandler(id)
 			end
 		elseif key == 'instance' then
 			currentInstance = value
+		elseif shared.police[key] then
+			PlayerData.group[key] = value
 		end
 	end)
 
