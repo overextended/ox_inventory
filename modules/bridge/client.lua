@@ -1,18 +1,3 @@
-PlayerData = {
-    job = {
-        name = 'unemployed',
-        label = 'Unemployed',
-        grade = 0,
-        grade_label = ''
-    },
-    inventory = {},
-    weight = 0,
-    dead = false,
-    ped = PlayerPedId(),
-    cuffed = false,
-    loaded = false
-}
-
 function client.setPlayerData(key, value)
     PlayerData[key] = value
     OnPlayerData(key, value)

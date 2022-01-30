@@ -767,9 +767,20 @@ local function setStateBagHandler(id)
 end
 
 RegisterNetEvent('ox_inventory:setPlayerInventory', function(currentDrops, inventory, weight, esxItem, player)
-	PlayerData = player
-	PlayerData.id = GetPlayerServerId(PlayerId())
-	PlayerData.ped = PlayerPedId()
+	PlayerData = {
+		job = player.job or {
+			name = 'unemployed',
+			label = 'Unemployed',
+			grade = 0,
+			grade_label = ''
+		},
+		group = player.group,
+		dead = false,
+		ped = PlayerPedId(),
+		cuffed = false,
+		loaded = false,
+		id = player.source
+	}
 
 	if setStateBagHandler then setStateBagHandler(PlayerData.id) end
 
