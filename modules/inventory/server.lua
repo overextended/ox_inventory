@@ -68,7 +68,7 @@ function Inventory.SyncInventory(inv)
 
 	for _, v in pairs(inv.items) do
 		if money[v.name] then
-			money[v.name] = money[v.name] + v.count
+			money[v.name] += v.count
 		end
 	end
 
@@ -725,7 +725,7 @@ function Inventory.Return(source)
 			if data then
 				MySQL.query('DELETE FROM ox_inventory WHERE name = ?', { inv.owner })
 				data = json.decode(data)
-				local money, inventory, totalWeight = table.clone(server.accounts), {}, 0
+				local inventory, totalWeight = {}, 0
 
 				if data and next(data) then
 					for i=1, #data do
@@ -736,7 +736,6 @@ function Inventory.Return(source)
 							local weight = Inventory.SlotWeight(item, i)
 							totalWeight = totalWeight + weight
 							inventory[i.slot] = {name = i.name, label = item.label, weight = weight, slot = i.slot, count = i.count, description = item.description, metadata = i.metadata, stack = item.stack, close = item.close}
-							if money[i.name] then money[i.name] = money[i.name] + i.count end
 						end
 					end
 				end
