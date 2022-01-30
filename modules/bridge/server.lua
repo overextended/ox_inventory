@@ -11,9 +11,12 @@ function server.setPlayerData(player)
 	}
 end
 
-server.accounts = {
-    money = 0,
-}
+if shared.framework == 'ox' then
+	function server.getInventory(identifier)
+		local inventory = MySQL.prepare.await('SELECT inventory FROM characters WHERE charid = ?', { identifier })
+		return inventory and json.decode(inventory)
+	end
+end
 
 if shared.framework == 'esx' then
     local ESX = exports['es_extended']:getSharedObject()
@@ -33,7 +36,10 @@ if shared.framework == 'esx' then
     server.UsableItemsCallbacks = ESX.GetUsableItems
     server.GetPlayerFromId = ESX.GetPlayerFromId
 
-    server.accounts.black_money = 0
+    server.accounts = {
+		money = 0,
+		black_money = 0,
+	}
 
     function server.setPlayerData(player)
         return {
@@ -44,16 +50,17 @@ if shared.framework == 'esx' then
         }
     end
 
+	function server.getInventory(identifier)
+		local inventory = MySQL.prepare.await('SELECT inventory FROM users WHERE identifier = ?', { identifier })
+		return inventory and json.decode(inventory)
+	end
+
     RegisterServerEvent('ox_inventory:requestPlayerInventory', function()
         local source = source
         local player = server.GetPlayerFromId(source)
 
-        if player and player.inventory then
-            exports.ox_inventory:setPlayerInventory(player, player.inventory)
-        else
-            MySQL.scalar('SELECT inventory FROM users WHERE identifier = ?', { player.identifier }, function(result)
-                exports.ox_inventory:setPlayerInventory(player, result and json.decode(result))
-            end)
-        end
+        if player then
+            exports.ox_inventory:setPlayerInventory(player, player?.inventory)
+		end
     end)
 end

@@ -7,6 +7,11 @@ local Items = server.items
 --- optionally, it should contain job, sex, and dateofbirth
 local function setPlayerInventory(player, data)
 	while not shared.ready do Wait(0) end
+
+	if not data then
+		data = server.getInventory(player.identifier)
+	end
+
 	local inventory = {}
 	local totalWeight = 0
 
