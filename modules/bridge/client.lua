@@ -12,9 +12,6 @@ local Utils = client.utils
 if shared.framework == 'esx' then
     local ESX = exports.es_extended:getSharedObject()
 
-    PlayerData.dead = PlayerData.dead
-    PlayerData.job = PlayerData.job
-
     ESX = {
         SetPlayerData = ESX.SetPlayerData,
 		PlayerLoaded = ESX.PlayerLoaded
@@ -49,5 +46,4 @@ if shared.framework == 'esx' then
 	if ESX.PlayerLoaded then
 		TriggerServerEvent('ox_inventory:requestPlayerInventory')
 	end
-
 end
