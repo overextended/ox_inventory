@@ -7,7 +7,7 @@ if key ~= '' then
 		local ddtags = string.strjoin(',', string.tostringall(...))
 		print(service, message, ddtags)
 		PerformHttpRequest('https://http-intake.logs.'.. site ..'/api/v2/logs', function(status, text, header)
-			if status == 202 then return end
+			if status == "202" then return end
 			print(json.encode(text, {indent=true}), '\n')
 			print(json.encode(header, {indent=true}), '\n')
 		end, 'POST', json.encode({
