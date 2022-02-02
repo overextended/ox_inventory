@@ -244,8 +244,13 @@ local function useSlot(slot)
 					if currentWeapon then currentWeapon = Utils.Disarm(currentWeapon) end
 					local sleep = (client.hasGroup(shared.police) and (GetWeapontypeGroup(data.hash) == 416676503 or GetWeapontypeGroup(data.hash) == 690389602)) and 400 or 1200
 					local coords = GetEntityCoords(playerPed, true)
-					Utils.PlayAnimAdvanced(sleep*2, sleep == 400 and 'reaction@intimidation@cop@unarmed' or 'reaction@intimidation@1h', 'intro', coords.x, coords.y, coords.z, 0, 0, GetEntityHeading(playerPed), 8.0, 3.0, -1, 50, 0.1)
-					Wait(sleep)
+					if item.name == 'WEAPON_SWITCHBLADE' then
+						Utils.PlayAnimAdvanced(sleep*2, 'anim@melee@switchblade@holster', 'unholster', coords.x, coords.y, coords.z, 0, 0, GetEntityHeading(playerPed), 8.0, 3.0, -1, 48, 0.1)
+						Wait(100)
+					else
+						Utils.PlayAnimAdvanced(sleep*2, sleep == 400 and 'reaction@intimidation@cop@unarmed' or 'reaction@intimidation@1h', 'intro', coords.x, coords.y, coords.z, 0, 0, GetEntityHeading(playerPed), 8.0, 3.0, -1, 50, 0.1)
+						Wait(sleep)
+					end
 					SetPedAmmo(playerPed, data.hash, 0)
 					GiveWeaponToPed(playerPed, data.hash, 0, false, true)
 
@@ -275,7 +280,7 @@ local function useSlot(slot)
 					Wait(0)
 					RefillAmmoInstantly(playerPed)
 
-					if data.name == 'WEAPON_PETROLCAN' or data.name == 'WEAPON_FIREEXTINGUISHER' then
+					if data.name == 'WEAPON_PETROLCAN' or data.name == 'WEAPON_HAZARDCAN' or data.name == 'WEAPON_FIREEXTINGUISHER' then
 						item.metadata.ammo = item.metadata.durability
 						SetPedInfiniteAmmo(playerPed, true, data.hash)
 					end
@@ -298,7 +303,6 @@ local function useSlot(slot)
 
 						if data then
 							if data.name == currentWeapon.ammo then
-								DisableControlActions:Add(22)
 								local missingAmmo = 0
 								local newAmmo = 0
 								missingAmmo = maxAmmo - currentAmmo
@@ -308,8 +312,6 @@ local function useSlot(slot)
 								MakePedReload(playerPed)
 								currentWeapon.metadata.ammo = newAmmo
 								TriggerServerEvent('ox_inventory:updateWeapon', 'load', currentWeapon.metadata.ammo)
-								Wait(1500)
-								DisableControlActions:Remove(22)
 							end
 						end
 					end)
@@ -343,6 +345,8 @@ local function useSlot(slot)
 					end
 				end
 				Utils.Notify({type = 'error', text = shared.locale('component_invalid', data.label) })
+			elseif data.allowArmed then
+				useItem(data)
 			end
 		else
 			useItem(data)
@@ -931,7 +935,7 @@ RegisterNetEvent('ox_inventory:setPlayerInventory', function(currentDrops, inven
 					if IsPedShooting(playerPed) then
 						local currentAmmo
 
-						if currentWeapon.name == 'WEAPON_PETROLCAN' or currentWeapon.name == 'WEAPON_FIREEXTINGUISHER' then
+						if currentWeapon.name == 'WEAPON_PETROLCAN' or currentWeapon.name == 'WEAPON_HAZARDCAN' or currentWeapon.name == 'WEAPON_FIREEXTINGUISHER' then
 							currentAmmo = currentWeapon.metadata.ammo - 0.05
 
 							if currentAmmo <= 0 then
