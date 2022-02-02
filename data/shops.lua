@@ -106,7 +106,7 @@ return {
 
 	PoliceArmoury = {
 		name = 'Police Armoury',
-		jobs = shared.police,
+		groups = shared.police,
 		blip = {
 			id = 110, colour = 84, scale = 0.8
 		}, inventory = {
@@ -126,7 +126,9 @@ return {
 
 	Medicine = {
 		name = 'Medicine Cabinet',
-		jobs = { ['ambulance'] = 0 },
+		groups = {
+			['ambulance'] = 0
+		},
 		blip = {
 			id = 403, colour = 69, scale = 0.8
 		}, inventory = {

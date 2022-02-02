@@ -47,7 +47,7 @@ local function setPlayerInventory(player, data)
 	inv.player = server.setPlayerData(player)
 
 	if shared.framework == 'esx' then Inventory.SyncInventory(inv) end
-	TriggerClientEvent('ox_inventory:setPlayerInventory', player.source, Inventory.Drops, inventory, totalWeight, server.UsableItemsCallbacks, player)
+	TriggerClientEvent('ox_inventory:setPlayerInventory', player.source, Inventory.Drops, inventory, totalWeight, server.UsableItemsCallbacks, inv.player, player.source)
 end
 exports('setPlayerInventory', setPlayerInventory)
 AddEventHandler('ox_inventory:setPlayerInventory', setPlayerInventory)
@@ -73,7 +73,7 @@ ServerCallback.Register('openInventory', function(source, inv, data)
 			local stash = Stashes[data.id]
 			if stash then
 
-				if not stash.jobs or (stash.jobs[left.player.job.name] and left.player.job.grade >= stash.jobs[left.player.job.name]) then
+				if not stash.groups or server.hasGroup(stash.groups) then
 					local owner = stash.owner and left.owner or stash.owner
 					right = Inventory(owner and stash.name..owner or stash.name)
 
@@ -85,7 +85,7 @@ ServerCallback.Register('openInventory', function(source, inv, data)
 			else
 				stash = Inventory.CustomStash[data.id or data]
 				if stash then
-					if not stash.jobs or (stash.jobs[left.player.job.name] and (type(stash.jobs) == 'table' and left.player.job.grade >= stash.jobs[left.player.job.name]) or stash.jobs == left.player.job.name) then
+					if not stash.groups or server.hasGroup(stash.groups) then
 						local owner = (stash.owner == nil and nil) or (type(stash.owner) == 'string' and stash.owner) or data.owner or stash.owner and left.owner
 						data = (owner and ('%s%s'):format(data.id or data, owner)) or data.id or data
 
@@ -112,7 +112,7 @@ ServerCallback.Register('openInventory', function(source, inv, data)
 			end
 
 		elseif inv == 'policeevidence' then
-			if server.isPolice(left) then
+			if server.hasGroup(left, shared.police) then
 				data = ('evidence-%s'):format(data)
 				right = Inventory(data)
 				if not right then
@@ -224,10 +224,12 @@ ServerCallback.Register('swapItems', function(source, data)
 			end
 
 			if fromInventory.type == 'policeevidence' and not sameInventory then
-				if not server.isPolice(toInventory) then return end
-				if server.evidencegrade > toInventory.player.job.grade then
-					TriggerClientEvent('ox_inventory:notify', source, {type = 'error', text = shared.locale('evidence_cannot_take')})
-					return
+				local group, rank = server.hasGroup(toInventory, shared.police)
+
+				if not group then return end
+
+				if server.evidencegrade > rank then
+					return TriggerClientEvent('ox_inventory:notify', source, {type = 'error', text = shared.locale('evidence_cannot_take')})
 				end
 			end
 

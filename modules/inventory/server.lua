@@ -255,7 +255,7 @@ local function generateItems(inv, invType, items)
 	end
 
 	local returnData, totalWeight = table.create(#items, 0), 0
-	for i=1, #items do
+	for i = 1, #items do
 		local v = items[i]
 		local item = Items(v[1])
 		if not item then
@@ -448,7 +448,7 @@ function Inventory.AddItem(inv, item, count, metadata, slot, cb)
 
 			if existing == false then
 				local items, toSlot = inv.items, nil
-				for i=1, shared.playerslots do
+				for i = 1, shared.playerslots do
 					local slotItem = items[i]
 					if item.stack and slotItem ~= nil and slotItem.name == item.name and table.matches(slotItem.metadata, metadata) then
 						toSlot, existing = i, true break
@@ -493,7 +493,7 @@ function Inventory.Search(inv, search, item, metadata)
 
 			local items = #item
 			local returnData = {}
-			for i=1, items do
+			for i = 1, items do
 				local item = Items(item[i])?.name
 				if search == 1 then returnData[item] = {}
 				elseif search == 2 then returnData[item] = 0 end
@@ -728,7 +728,7 @@ function Inventory.Return(source)
 				local inventory, totalWeight = {}, 0
 
 				if data and next(data) then
-					for i=1, #data do
+					for i = 1, #data do
 						local i = data[i]
 						if type(i) == 'number' then break end
 						local item = Items(i.name)
@@ -788,7 +788,7 @@ if shared.framework == 'esx' then
 	AddEventHandler('esx:setJob', function(source, job)
 		local inventory = Inventories[source]
 		if inventory then
-			inventory.player.job = job
+			inventory.player.groups[job.name] = job.grade
 		end
 	end)
 else
@@ -996,7 +996,16 @@ end, {'target:number', 'item:string', 'count:number', 'metatype:?string'})
 
 import.commands(false, 'clearevidence', function(source, args)
 	local inventory = Inventories[source]
-	if server.isPolice(inventory) and inventory.player.job.grade_name == 'boss' then
+	local hasPermission = false
+
+	if shared.framework == 'esx' then
+		if server.isPolice(inventory) and inventory.player.job.grade_name == 'boss' then hasPermission = false end
+	else
+		local group, rank = server.hasGroup(inventory, shared.police)
+		if group and rank == GlobalState.groups[group] then hasPermission = true end
+	end
+
+	if hasPermission then
 		MySQL.query('DELETE FROM ox_inventory WHERE name = ?', {('evidence-%s'):format(args.evidence)})
 	end
 end, {'evidence:number'})
