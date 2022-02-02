@@ -795,6 +795,13 @@ else
 	AddEventHandler('playerDropped', function()
 		playerDropped(source)
 	end)
+
+	AddEventHandler('ox_groups:setGroup', function(source, group, rank)
+		local inventory = Inventories[source]
+		if inventory then
+			inventory.player.groups[group] = rank
+		end
+	end)
 end
 
 SetInterval(function()
