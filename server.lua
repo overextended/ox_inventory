@@ -73,7 +73,7 @@ ServerCallback.Register('openInventory', function(source, inv, data)
 			local stash = Stashes[data.id]
 			if stash then
 
-				if not stash.groups or server.hasGroup(stash.groups) then
+				if not stash.groups or server.hasGroup(left, stash.groups) then
 					local owner = stash.owner and left.owner or stash.owner
 					right = Inventory(owner and stash.name..owner or stash.name)
 
@@ -85,7 +85,7 @@ ServerCallback.Register('openInventory', function(source, inv, data)
 			else
 				stash = Inventory.CustomStash[data.id or data]
 				if stash then
-					if not stash.groups or server.hasGroup(stash.groups) then
+					if not stash.groups or server.hasGroup(left, stash.groups) then
 						local owner = (stash.owner == nil and nil) or (type(stash.owner) == 'string' and stash.owner) or data.owner or stash.owner and left.owner
 						data = (owner and ('%s%s'):format(data.id or data, owner)) or data.id or data
 
