@@ -161,7 +161,7 @@ ServerCallback.Register('buyItem', function(source, data)
 					if fromData.price >= 500 then
 
 						Log(('%s %s'):format(playerInv.owner, message:lower()),
-							'buyItem', playerInv.owner, shop
+							'buyItem', playerInv.owner, shop.label
 						)
 
 					end
