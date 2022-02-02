@@ -13,11 +13,11 @@ return {
 	['ui_tint'] = "Tinta",
 	-- Useful controls
 	['ui_usefulcontrols'] = "Korisne kontrole",
-	['ui_rmb'] = "Item Contex Menu",
+	['ui_rmb'] = "Predmet Konteks Menu",
 	['ui_ctrl_lmb'] = "Brzo premjestite hrpu predmeta u drugi inventar",
-	['ui_shift_drag'] = "Razdvoji na pola iteme",
+	['ui_shift_drag'] = "Razdvoji predmete na pola",
 	['ui_ctrl_shift_lmb'] = "Brzo premjestite pola hrpe predmeta u drugi inventar",
-	['ui_alt_lmb'] = "Brzo iskoristi item",
+	['ui_alt_lmb'] = "Brzo iskoristi predmet",
 	--
 	['$'] = "$",
 	['male'] = "Muško",
