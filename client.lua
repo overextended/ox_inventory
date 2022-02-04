@@ -672,6 +672,7 @@ local function updateInventory(items, weight)
 	end
 
 	client.setPlayerData('inventory', PlayerData.inventory)
+	TriggerEvent('ox_inventory:updateInventory', changes)
 end
 
 RegisterNetEvent('ox_inventory:updateSlots', function(items, weights, count, removed)
@@ -817,6 +818,7 @@ RegisterNetEvent('ox_inventory:setPlayerInventory', function(currentDrops, inven
 	plyState:set('invBusy', false, false)
 	plyState:set('invOpen', false, false)
 	PlayerData.loaded = true
+	TriggerEvent('ox_inventory:updateInventory', PlayerData.inventory)
 
 	Utils.Notify({text = shared.locale('inventory_setup'), duration = 2500})
 	local Licenses = data 'licenses'
