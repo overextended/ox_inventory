@@ -659,7 +659,7 @@ return {
 			type = 'magazine',
 			weight = 280,
 			client = {
-				component = {`COMPONENT_MG_CLIP_02`, `COMPONENT_COMBATMG_CLIP_02`, `COMPONENT_GUSENBERG_CLIP_02`, COMPONENT_COMBATMG_MK2_CLIP_02},
+				component = {`COMPONENT_MG_CLIP_02`, `COMPONENT_COMBATMG_CLIP_02`, `COMPONENT_GUSENBERG_CLIP_02`, `COMPONENT_COMBATMG_MK2_CLIP_02`},
 				usetime = 2500
 			}
 		},
