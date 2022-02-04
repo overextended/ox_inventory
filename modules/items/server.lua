@@ -121,39 +121,6 @@ local itemFormat = [[
 	shared.info('Inventory has loaded '..count..' items')
 	collectgarbage('collect') -- clean up from initialisation
 	shared.ready = true
-	--[[local ignore = {[0] = '?', [`WEAPON_UNARMED`] = 'unarmed', [966099553] = 'shovel'}
-	while true do
-		Wait(45000)
-		local Players = ESX.GetPlayers()
-		for i = 1, #Players do
-			local i = Players[i]
-			--if not IsPlayerAceAllowed(i, 'command.refresh') then
-				local inv, ped = Inventory(i), GetPlayerPed(i)
-				local hash, curWeapon = GetSelectedPedWeapon(ped)
-				if not ignore[hash] then
-					curWeapon = Utils.GetWeapon(hash)
-					if curWeapon then
-						local count = 0
-						for k, v in pairs(inv.items) do
-							if v.name == curWeapon.name then
-								count = 1 break
-							end
-						end
-						if count == 0 then
-							-- does not own weapon; player may be cheating
-							shared.warning(inv.name, 'is using an invalid weapon (', curWeapon.name, ')')
-							--DropPlayer(i)
-						end
-					else
-						-- weapon doesn't exist; player may be cheating
-						shared.warning(inv.name, 'is using an unknown weapon (', hash, ')')
-						--DropPlayer(i)
-					end
-				end
-			--end
-			Wait(200)
-		end
-	end]]
 end)
 
 local function GenerateText(num)
