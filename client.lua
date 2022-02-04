@@ -706,7 +706,7 @@ RegisterNetEvent('ox_inventory:createDrop', function(drop, data, owner, slot)
 		drops[drop] = data
 	end
 
-	if owner == PlayerData.id and invOpen and #(GetEntityCoords(PlayerData.ped) - data.coords) <= 1 then
+	if owner == GetPlayerServerId(PlayerData.id) and invOpen and #(GetEntityCoords(PlayerData.ped) - data.coords) <= 1 then
 		if currentWeapon?.slot == slot then currentWeapon = Utils.Disarm(currentWeapon) end
 
 		if not IsPedInAnyVehicle(PlayerData.ped, false) then
