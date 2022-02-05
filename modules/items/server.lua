@@ -2,8 +2,20 @@ local Items = {}
 local ItemList = items()
 
 -- Slot count and maximum weight for containers
+-- Whitelist and blacklist: ['item_name'] = true
 Items.containers = {
-	['paperbag'] = {5, 1000}
+	['paperbag'] = {
+		size = {5, 1000},
+		blacklist = {
+			['testburger'] = true -- No burgers!
+		}
+	},
+	['pizzabox'] = {
+		size = {1, 1000},
+		whitelist = {
+			['pizza'] = true -- Pizza box for pizza only
+		}
+	}
 }
 
 -- Possible metadata when creating garbage
@@ -197,7 +209,7 @@ function Items.Metadata(inv, item, metadata, count)
 		if container then
 			count = 1
 			metadata.container = metadata.container or GenerateText(3)..os.time()
-			metadata.size = container
+			metadata.size = container.size
 		elseif item.name == 'identification' then
 			count = 1
 			if next(metadata) == nil then

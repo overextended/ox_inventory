@@ -28,7 +28,7 @@ local function setPlayerInventory(player, data)
 					-- Update old bag items to container items
 					if v.metadata.bag then
 						v.metadata.container = v.metadata.bag
-						v.metadata.size = Items.containers[v.name] or {5, 1000}
+						v.metadata.size = Items.containers[v.name]?.size or {5, 1000}
 						v.metadata.bag = nil
 					end
 
@@ -255,11 +255,24 @@ ServerCallback.Register('swapItems', function(source, data)
 
 						if not sameInventory then
 							if toWeight <= toInventory.maxWeight and fromWeight <= fromInventory.maxWeight then
+
+								if container then
+									local toContainer = toInventory.type == 'container'
+									if containerItem then
+										local containerWl = Items.containers[containerItem.name]?.whitelist
+										local containerBl = Items.containers[containerItem.name]?.blacklist
+										local checkItem = toContainer and fromData.name or toData.name
+
+										if (containerWl and not containerWl[checkItem]) or (containerBl and containerBl[checkItem]) then
+											return
+										end
+									end
+									Inventory.ContainerWeight(containerItem, toContainer and toWeight or fromWeight)
+								end
+
 								toData, fromData = Inventory.SwapSlots(fromInventory, toInventory, data.fromSlot, data.toSlot)
 								fromInventory.weight = fromWeight
 								toInventory.weight = toWeight
-
-								if container then Inventory.ContainerWeight(containerItem, toInventory.type == 'container' and toWeight or fromWeight) end
 
 								Log(('%sx %s transferred from %s to %s for %sx %s'):format(fromData.count, fromData.name, fromInventory.owner and fromInventory.label or fromInventory.id, toInventory.owner and toInventory.label or toInventory.id, toData.count, toData.name),
 									playerInventory.owner,
@@ -304,23 +317,36 @@ ServerCallback.Register('swapItems', function(source, data)
 						toData.slot = data.toSlot
 						toData.weight = Inventory.SlotWeight(Items(toData.name), toData)
 						if sameInventory or (toInventory.weight + toData.weight <= toInventory.maxWeight) then
-							fromData.count = fromData.count - data.count
-							fromData.weight = Inventory.SlotWeight(Items(fromData.name), fromData)
-
 							if not sameInventory then
-								fromInventory.weight = fromInventory.weight - toData.weight
-								toInventory.weight = toInventory.weight + toData.weight
 
-								if container then Inventory.ContainerWeight(containerItem, toInventory.type == 'container' and toInventory.weight or fromInventory.weight) end
+								local toContainer = toInventory.type == 'container'
+								if container then
+									if toContainer and containerItem then
+										local containerWl = Items.containers[containerItem.name]?.whitelist
+										local containerBl = Items.containers[containerItem.name]?.blacklist
+
+										if (containerWl and not containerWl[fromData.name]) or (containerBl and containerBl[fromData.name]) then
+											return
+										end
+									end
+								end
+
+								fromInventory.weight -= toData.weight
+								toInventory.weight += toData.weight
+
+								if container then
+									Inventory.ContainerWeight(containerItem, toContainer and toInventory.weight or fromInventory.weight)
+								end
 
 								Log(('%sx %s transferred from %s to %s'):format(data.count, fromData.name, fromInventory.owner and fromInventory.label or fromInventory.id, toInventory.owner and toInventory.label or toInventory.id),
 									playerInventory.owner,
 									'swapSlots', fromInventory.owner or fromInventory.id, toInventory.owner or toInventory.id
 								)
 
-							else
-
 							end
+
+							fromData.count -= data.count
+							fromData.weight = Inventory.SlotWeight(Items(fromData.name), fromData)
 						else return end
 					end
 
