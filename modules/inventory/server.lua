@@ -1006,7 +1006,7 @@ import.commands(false, 'clearevidence', function(source, args)
 	local hasPermission = false
 
 	if shared.framework == 'esx' then
-		if server.isPolice(inventory) and inventory.player.job.grade_name == 'boss' then hasPermission = false end
+		-- todo: make it work
 	else
 		local group, rank = server.hasGroup(inventory, shared.police)
 		if group and rank == GlobalState.groups[group] then hasPermission = true end
@@ -1077,7 +1077,7 @@ Inventory.CustomStash = table.create(0, 0)
 ---@param slots number
 ---@param maxWeight number
 ---@param owner string|boolean|nil
----@param jobs table
+---@param groups table
 --- For simple integration with other resources that want to create valid stashes.
 --- This needs to be triggered before a player can open a stash.
 --- ```
@@ -1086,9 +1086,9 @@ Inventory.CustomStash = table.create(0, 0)
 --- true: each player has a unique stash, but can request other player's stashes
 --- nil: always shared
 ---
---- Jobs: { ['police'] = 0 }
+--- groups: { ['police'] = 0 }
 --- ```
-local function RegisterStash(id, label, slots, maxWeight, owner, jobs)
+local function RegisterStash(id, label, slots, maxWeight, owner, groups)
 	if not Inventory.CustomStash[id] then
 		Inventory.CustomStash[id] = {
 			name = id,
@@ -1096,7 +1096,7 @@ local function RegisterStash(id, label, slots, maxWeight, owner, jobs)
 			owner = owner,
 			slots = slots,
 			weight = maxWeight,
-			jobs = jobs,
+			groups = groups,
 			coords = coords
 		}
 	end

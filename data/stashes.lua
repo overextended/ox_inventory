@@ -15,7 +15,7 @@ return {
 		owner = true,
 		slots = 70,
 		weight = 70000,
-		jobs = shared.police
+		groups = shared.police
 	},
 
 	{
@@ -34,6 +34,6 @@ return {
 		owner = true,
 		slots = 70,
 		weight = 70000,
-		jobs = {['ambulance'] = 0}
+		groups = {['ambulance'] = 0}
 	},
 }

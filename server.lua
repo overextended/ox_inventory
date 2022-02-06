@@ -4,7 +4,7 @@ local Items = server.items
 ---@param player table
 ---@param data table
 --- player requires source, identifier, and name
---- optionally, it should contain job, sex, and dateofbirth
+--- optionally, it should contain jobs/groups, sex, and dateofbirth
 local function setPlayerInventory(player, data)
 	while not shared.ready do Wait(0) end
 
