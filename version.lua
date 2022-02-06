@@ -10,7 +10,7 @@ if server.versioncheck then
 				local latest = response:match('%d%.%d+%.%d+')
 				if version < latest then
 					print(('^3An update is available for ox_inventory - please download the latest release (current version: %s)'):format(latest, version))
-print('^3	- https://github.com/overextended/ox_inventory/releases^0')
+					print('^3	- https://github.com/overextended/ox_inventory/releases^0')
 				end
 			end
 		end, 'GET')
