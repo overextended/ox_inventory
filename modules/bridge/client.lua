@@ -4,17 +4,19 @@ function client.setPlayerData(key, value)
 end
 
 function client.hasGroup(group)
-	if type(group) == 'table' then
-		for name, rank in pairs(group) do
-			local groupRank = PlayerData.groups[name]
-			if groupRank and groupRank >= (rank or 0) then
-				return name, groupRank
+	if PlayerData.loaded then
+		if type(group) == 'table' then
+			for name, rank in pairs(group) do
+				local groupRank = PlayerData.groups[name]
+				if groupRank and groupRank >= (rank or 0) then
+					return name, groupRank
+				end
 			end
-		end
-	else
-		local groupRank = PlayerData.groups[group]
-		if groupRank then
-			return group, groupRank
+		else
+			local groupRank = PlayerData.groups[group]
+			if groupRank then
+				return group, groupRank
+			end
 		end
 	end
 end
@@ -35,7 +37,7 @@ if shared.framework == 'esx' then
 	end
 
 	AddEventHandler('esx:setPlayerData', function(key, value)
-		if GetInvokingResource() == 'es_extended' then
+		if PlayerData.loaded and GetInvokingResource() == 'es_extended' then
 			if key == 'job' then
 				key = 'groups'
 				value = { [value.name] = value.grade }

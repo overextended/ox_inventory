@@ -52,6 +52,7 @@ if IsDuplicityVersion then
 		]])),
 	}
 else
+	PlayerData = {}
 	client = {
 		screenblur = GetConvar('inventory:screenblur', 'true') == 'true',
 		keys = json.decode(GetConvar('inventory:keys', '["F2", "K", "TAB"]')),
