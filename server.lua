@@ -36,6 +36,15 @@ local function setPlayerInventory(player, data)
 					if v.metadata.durability and not item.durability and not item.degrade and not v.name:find('WEAPON_') then
 						v.metadata.durability = nil
 					end
+
+					if v.metadata.components then
+						for i = 1, #v.metadata.components do
+							local component = Items(v.metadata.components[i])
+							if not component then
+								v.metadata.components[i] = nil
+							end
+						end
+					end
 				end
 
 				inventory[v.slot] = {name = v.name, label = item.label, weight = weight, slot = v.slot, count = v.count, description = item.description, metadata = v.metadata, stack = item.stack, close = item.close}

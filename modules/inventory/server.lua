@@ -307,6 +307,15 @@ function Inventory.Load(id, invType, owner)
 					v.metadata.durability = nil
 				end
 
+				if v.metadata?.components then
+					for i = 1, #v.metadata.components do
+						local component = Items(v.metadata.components[i])
+						if not component then
+							v.metadata.components[i] = nil
+						end
+					end
+				end
+
 				local slotWeight = Inventory.SlotWeight(item, v)
 				weight += slotWeight
 				returnData[v.slot] = {name = item.name, label = item.label, weight = slotWeight, slot = v.slot, count = v.count, description = item.description, metadata = v.metadata or {}, stack = item.stack, close = item.close}
