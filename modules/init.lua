@@ -100,9 +100,9 @@ do
 end
 
 -- Disable qtarget compatibility if it isn't running
-if shared.qtarget and GetResourceState('qtarget') ~= 'started' then
+if shared.qtarget and not GetResourceState('qtarget'):find('start') then
 	shared.qtarget = false
-	shared.info('qtarget is not running; disabled compatibility mode')
+	shared.warning(("qtarget compatibility has been disabled, resource state is '%s'"):format(GetResourceState('qtarget')))
 end
 
 if shared.server then shared.ready = false end
