@@ -11,10 +11,6 @@ shared = {
 	police = json.decode(GetConvar('inventory:police', '["police", "sheriff"]')),
 }
 
-if shared.framework == '' and GetResourceState('es_extended'):find('start') then
-	shared.framework = 'esx'
-end
-
 do
 	if type(shared.police) == 'string' then
 		shared.police = {shared.police}

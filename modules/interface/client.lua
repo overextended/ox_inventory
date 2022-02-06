@@ -49,7 +49,7 @@ local function ResetPlayer()
 		ClearPedTasks(PlayerData.ped)
 	end
 
-	for i=1, 2 do
+	for i = 1, 2 do
 		local prop = progress['prop'..i]
 		if prop then
 			prop = NetToObj(prop)
@@ -87,7 +87,7 @@ function Interface.Progress(options, completed)
 				for key, disable in pairs(options.disable) do
 					if disable then
 						local keys = progress[key]
-						for i=1, #keys do
+						for i = 1, #keys do
 							count += 1
 							progress.disable[count] = keys[i]
 						end
@@ -122,7 +122,7 @@ function Interface.Progress(options, completed)
 				end
 			end
 
-			for i=1, 2 do
+			for i = 1, 2 do
 				local prop = i == 1 and options.prop or options.propTwo
 				if type(prop) == 'string' then prop = Animations.prop[prop] end
 

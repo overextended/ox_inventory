@@ -62,7 +62,7 @@ end
 local function GenerateText(num)
 	local str
 	repeat str = {}
-		for i=1, num do str[i] = string.char(math.random(65, 90)) end
+		for i = 1, num do str[i] = string.char(math.random(65, 90)) end
 		str = table.concat(str)
 	until str ~= 'POL' and str ~= 'EMS'
 	return str

@@ -8,17 +8,17 @@ local locations = shared.qtarget and 'targets' or 'locations'
 for shopName, shopDetails in pairs(data('shops')) do
 	Shops[shopName] = {}
 	if shopDetails[locations] then
-		for i=1, #shopDetails[locations] do
+		for i = 1, #shopDetails[locations] do
 			Shops[shopName][i] = {
 				label = shopDetails.name,
 				id = shopName..' '..i,
-				jobs = shopDetails.jobs,
+				groups = shopDetails.groups,
 				items = table.clone(shopDetails.inventory),
 				slots = #shopDetails.inventory,
 				type = 'shop',
 				coords = shared.qtarget and shopDetails[locations][i].loc or shopDetails[locations][i]
 			}
-			for j=1, Shops[shopName][i].slots do
+			for j = 1, Shops[shopName][i].slots do
 				local slot = Shops[shopName][i].items[j]
 				local Item = Items(slot.name)
 				if Item then
@@ -41,12 +41,12 @@ for shopName, shopDetails in pairs(data('shops')) do
 		Shops[shopName] = {
 			label = shopDetails.name,
 			id = shopName,
-			jobs = shopDetails.jobs,
+			groups = shopDetails.groups,
 			items = shopDetails.inventory,
 			slots = #shopDetails.inventory,
 			type = 'shop',
 		}
-		for i=1, Shops[shopName].slots do
+		for i = 1, Shops[shopName].slots do
 			local slot = Shops[shopName].items[i]
 			local Item = Items(slot.name)
 			if Item then
@@ -74,12 +74,9 @@ ServerCallback.Register('openShop', function(source, data)
 	if data then
 		shop = data.id and Shops[data.type][data.id] or Shops[data.type]
 
-		if shop.jobs then
-			local playerJob = left.player.job
-			local shopGrade = shop.jobs[playerJob.name]
-			if not shopGrade or shopGrade > playerJob.grade then
-				return
-			end
+		if shop.groups then
+			local group = server.hasGroup(left, shop.groups)
+			if not group then return end
 		end
 
 		if shop.coords and #(GetEntityCoords(GetPlayerPed(source)) - shop.coords) > 10 then
@@ -122,8 +119,11 @@ ServerCallback.Register('buyItem', function(source, data)
 			elseif fromData.license and not MySQL.scalar.await('SELECT 1 FROM user_licenses WHERE type = ? AND owner = ?', { fromData.license, playerInv.owner }) then
 				return false, false, {type = 'error', text = shared.locale('item_unlicensed')}
 
-			elseif fromData.grade and playerInv.player.job.grade < fromData.grade then
-				return false, false, {type = 'error', text = shared.locale('stash_lowgrade')}
+			elseif fromData.grade then
+				local _, rank = server.hasGroup(playerInv, shop.groups)
+				if fromData.grade > rank then
+					return false, false, {type = 'error', text = shared.locale('stash_lowgrade')}
+				end
 			end
 
 			local currency = fromData.currency or 'money'
@@ -160,8 +160,8 @@ ServerCallback.Register('buyItem', function(source, data)
 					-- Only log purchases for items worth $500 or more
 					if fromData.price >= 500 then
 
-						Log(('%s %s'):format(playerInv.owner, message:lower()),
-							'buyItem', playerInv.owner, shop
+						Log(('%s %s'):format(playerInv.label, message:lower()),
+							'buyItem', playerInv.owner, shop.label
 						)
 
 					end

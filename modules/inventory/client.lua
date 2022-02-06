@@ -45,7 +45,7 @@ function Inventory.Search(search, item, metadata)
 
 		local items = #item
 		local returnData = {}
-		for i=1, items do
+		for i = 1, items do
 			local item = string.lower(item[i])
 			if item:find('weapon_') then item = string.upper(item) end
 			if search == 1 then returnData[item] = {}
@@ -121,9 +121,9 @@ Inventory.Stashes = setmetatable(data('stashes'), {
 				}, {
 					options = {
 						{
-              icon = stash.target.icon or 'fas fa-warehouse',
-              label = stash.target.label or shared.locale('open_stash'),
-							job = stash.jobs,
+							icon = stash.target.icon or 'fas fa-warehouse',
+							label = stash.target.label or shared.locale('open_stash'),
+							job = stash.groups,
 							action = function()
 								OpenStash({id=id})
 							end
