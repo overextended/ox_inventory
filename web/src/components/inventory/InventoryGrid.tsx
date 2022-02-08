@@ -33,6 +33,10 @@ const InventoryGrid: React.FC<{ inventory: Inventory }> = ({ inventory }) => {
     setCurrentItem(undefined);
   }, [contextVisible]);
 
+  useNuiEvent('setupInventory', () => {
+    setCurrentItem(undefined);
+    ReactTooltip.rebuild();
+  });
   return (
     <>
       <div className="column-wrapper">
