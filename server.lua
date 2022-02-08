@@ -25,26 +25,7 @@ local function setPlayerInventory(player, data)
 				totalWeight = totalWeight + weight
 
 				if v.metadata then
-					-- Update old bag items to container items
-					if v.metadata.bag then
-						v.metadata.container = v.metadata.bag
-						v.metadata.size = Items.containers[v.name]?.size or {5, 1000}
-						v.metadata.bag = nil
-					end
-
-					-- Remove invalid durability
-					if v.metadata.durability and not item.durability and not item.degrade and not v.name:find('WEAPON_') then
-						v.metadata.durability = nil
-					end
-
-					if v.metadata.components then
-						for i = 1, #v.metadata.components do
-							local component = Items(v.metadata.components[i])
-							if not component then
-								v.metadata.components[i] = nil
-							end
-						end
-					end
+					v.metadata = Items.CheckMetadata(v.metadata, item, v.name)
 				end
 
 				inventory[v.slot] = {name = v.name, label = item.label, weight = weight, slot = v.slot, count = v.count, description = item.description, metadata = v.metadata, stack = item.stack, close = item.close}

@@ -302,18 +302,8 @@ function Inventory.Load(id, invType, owner)
 			local item = Items(v.name)
 			if item then
 
-				-- Remove invalid durability
-				if v.metadata?.durability and not item.durability and not item.degrade and not v.name:find('WEAPON_') then
-					v.metadata.durability = nil
-				end
-
-				if v.metadata?.components then
-					for i = 1, #v.metadata.components do
-						local component = Items(v.metadata.components[i])
-						if not component then
-							v.metadata.components[i] = nil
-						end
-					end
+				if v.metadata then
+					v.metadata = Items.CheckMetadata(v.metadata, item. v.name)
 				end
 
 				local slotWeight = Inventory.SlotWeight(item, v)

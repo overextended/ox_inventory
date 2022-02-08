@@ -238,6 +238,44 @@ function Items.Metadata(inv, item, metadata, count)
 	return metadata, count
 end
 
+function Items.CheckMetadata(metadata, item, name)
+	-- Update old bag items to container items
+	if metadata.bag then
+		metadata.container = metadata.bag
+		metadata.size = ItemList.containers[name]?.size or {5, 1000}
+		metadata.bag = nil
+	end
+
+	-- Remove invalid durability
+	if metadata.durability and not item.durability and not item.degrade and not name:find('WEAPON_') then
+		metadata.durability = nil
+	end
+
+	-- Remove invalid components from weapons
+	if metadata.components then
+		if table.type(metadata.components) == 'array' then
+			for i = 1, #metadata.components do
+				if not ItemList[metadata.components[i]] then
+					table.remove(metadata.components, i)
+				end
+			end
+		else
+			-- Components table is not an array (contains holes)
+			local components = {}
+			local size = 0
+			for _, component in pairs(metadata.components) do
+				if component and ItemList[component] then
+					size += 1
+					components[size] = component
+				end
+			end
+			metadata.components = components
+		end
+	end
+
+	return metadata
+end
+
 local function Item(name, cb)
 	local item = ItemList[name]
 	if item and not item.cb then
