@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react';
-import ReactMarkdown from 'react-markdown'
+import ReactMarkdown from 'react-markdown';
 import { Items } from '../../store/items';
 import { Inventory, SlotWithItem } from '../../typings';
 import WeightBar from '../utils/WeightBar';
@@ -9,16 +9,14 @@ import { Locale } from '../../store/locale';
 import InventoryContext from './InventoryContext';
 import { getTotalWeight } from '../../helpers';
 import { createPortal } from 'react-dom';
+import useNuiEvent from '../../hooks/useNuiEvent';
 
 const InventoryGrid: React.FC<{ inventory: Inventory }> = ({ inventory }) => {
   const [currentItem, setCurrentItem] = React.useState<SlotWithItem>();
   const [contextVisible, setContextVisible] = React.useState<boolean>(false);
 
   const weight = React.useMemo(
-    () =>
-      inventory.maxWeight !== undefined
-        ? getTotalWeight(inventory.items)
-        : 0,
+    () => (inventory.maxWeight !== undefined ? getTotalWeight(inventory.items) : 0),
     [inventory.maxWeight, inventory.items]
   );
 
@@ -32,6 +30,11 @@ const InventoryGrid: React.FC<{ inventory: Inventory }> = ({ inventory }) => {
   useEffect(() => {
     setCurrentItem(undefined);
   }, [contextVisible]);
+
+  useNuiEvent('setupInventory', () => {
+    setCurrentItem(undefined);
+    ReactTooltip.rebuild();
+  });
 
   return (
     <>
@@ -54,11 +57,14 @@ const InventoryGrid: React.FC<{ inventory: Inventory }> = ({ inventory }) => {
                 inventory={inventory}
                 setCurrentItem={setCurrentItem}
               />
-              {createPortal(<InventoryContext
-                item={item}
-                setContextVisible={setContextVisible}
-                key={`context-${item.slot}`}
-              />, document.body)}
+              {createPortal(
+                <InventoryContext
+                  item={item}
+                  setContextVisible={setContextVisible}
+                  key={`context-${item.slot}`}
+                />,
+                document.body
+              )}
             </React.Fragment>
           ))}
         </div>
@@ -73,15 +79,17 @@ const InventoryGrid: React.FC<{ inventory: Inventory }> = ({ inventory }) => {
           >
             <>
               <span style={{ fontSize: '1em' }}>
-                {currentItem.metadata?.label ? currentItem.metadata.label : Items[currentItem.name]?.label || currentItem.name}
+                {currentItem.metadata?.label
+                  ? currentItem.metadata.label
+                  : Items[currentItem.name]?.label || currentItem.name}
               </span>
-              <span style={{ fontSize: '1em', float: 'right' }}>
-                {currentItem.metadata?.type}
-              </span>
+              <span style={{ fontSize: '1em', float: 'right' }}>{currentItem.metadata?.type}</span>
               <hr style={{ borderBottom: '0.3em', marginBottom: '0.3em' }}></hr>
-              {(currentItem.metadata?.description || Items[currentItem.name]?.description) &&
-                <ReactMarkdown>{currentItem.metadata?.description || Items[currentItem.name]?.description}
-                </ReactMarkdown>}
+              {(currentItem.metadata?.description || Items[currentItem.name]?.description) && (
+                <ReactMarkdown>
+                  {currentItem.metadata?.description || Items[currentItem.name]?.description}
+                </ReactMarkdown>
+              )}
               {currentItem?.durability !== undefined && (
                 <p>
                   {Locale.ui_durability}: {Math.trunc(currentItem.durability)}
