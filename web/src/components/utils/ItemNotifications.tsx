@@ -3,7 +3,11 @@ import { createPortal } from 'react-dom';
 import { CSSTransition, TransitionGroup } from 'react-transition-group';
 import useNuiEvent from '../../hooks/useNuiEvent';
 
-interface ItemNotificationProps { label: string, image: string, text: string };
+interface ItemNotificationProps {
+  label: string;
+  image: string;
+  text: string;
+}
 
 export const ItemNotificationsContext = React.createContext<{
   add: (item: ItemNotificationProps) => void;
@@ -16,13 +20,14 @@ export const useItemNotifications = () => {
 };
 
 const ItemNotification = React.forwardRef(
-  (props: { item: ItemNotificationProps; }, ref: React.ForwardedRef<HTMLDivElement>) => {
+  (props: { item: ItemNotificationProps }, ref: React.ForwardedRef<HTMLDivElement>) => {
     return (
       <div
         className="item-notification"
         ref={ref}
         style={{
-          backgroundImage: `url(${process.env.PUBLIC_URL + `/images/${props.item.image}.png`})` || 'none',
+          backgroundImage:
+            `url(${process.env.PUBLIC_URL + `/images/${props.item.image}.png`})` || 'none',
         }}
       >
         <div className="item-action">{props.item.text}</div>
@@ -49,7 +54,9 @@ export const ItemNotificationsProvider = ({ children }: { children: React.ReactN
   const remove = (id: number) =>
     setQueue((prevQueue) => prevQueue.filter((notification) => notification.id !== id));
 
-  useNuiEvent<[label: string, image: string, text: string]>('itemNotify', (data) => add({ label: data[0], image: data[1], text: data[2] }));
+  useNuiEvent<[label: string, image: string, text: string]>('itemNotify', (data) =>
+    add({ label: data[0], image: data[1], text: data[2] })
+  );
 
   return (
     <ItemNotificationsContext.Provider value={{ add }}>
@@ -63,10 +70,7 @@ export const ItemNotificationsProvider = ({ children }: { children: React.ReactN
               timeout={500}
               classNames="item-notification"
             >
-              <ItemNotification
-                item={notification.item}
-                ref={notification.ref}
-              />
+              <ItemNotification item={notification.item} ref={notification.ref} />
             </CSSTransition>
           ))}
         </TransitionGroup>,

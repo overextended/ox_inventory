@@ -20,8 +20,8 @@ const Notify = (data: NotificationProps) => {
         data.type === undefined
           ? 'rgb(52, 152, 219)'
           : data.type === 'success'
-            ? 'rgb(39, 174, 96)'
-            : 'rgb(231, 76, 60)',
+          ? 'rgb(39, 174, 96)'
+          : 'rgb(231, 76, 60)',
     },
   });
 };
