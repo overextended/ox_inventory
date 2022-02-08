@@ -275,29 +275,34 @@ end
 ---@param invType string
 ---@param owner string
 function Inventory.Load(id, invType, owner)
-	local isVehicle, datastore, result = (invType == 'trunk' or invType == 'glovebox'), nil, nil
+	local datastore, result
 
 	if id and invType then
-		if isVehicle then
-			local plate = Inventory.GetPlateFromId(id)
-			if shared.playerslots then plate = string.strtrim(plate) end
-			result = MySQL.single.await('SELECT ?? FROM owned_vehicles WHERE plate = ?', { invType, plate })
-			if result then result = json.decode(result[invType])
-			elseif server.randomloot then return generateItems(id, 'vehicle')
-			else datastore = true end
-		elseif owner then
-			result = MySQL.prepare.await('SELECT data FROM ox_inventory WHERE owner = ? AND name = ?', { owner, id })
-			if result then result = json.decode(result) end
-		elseif invType == 'dumpster' then
-			if server.randomloot then return generateItems(id, invType) else datastore = true end
+		if invType == 'dumpster' then
+			if server.randomloot then
+				return generateItems(id, invType)
+			else
+				datastore = true
+			end
+		elseif invType == 'trunk' or invType == 'glovebox' then
+			result = MySQL.prepare.await('SELECT '..invType..' FROM owned_vehicles WHERE plate = ?', { Inventory.GetPlateFromId(id) })
+
+			if not result then
+				if server.randomloot then
+					return generateItems(id, 'vehicle')
+				else
+					datastore = true
+				end
+			end
 		else
-			result = MySQL.prepare.await('SELECT data FROM ox_inventory WHERE owner = ? AND name = ?', { '', id })
-			if result then result = json.decode(result) end
+			result = MySQL.prepare.await('SELECT data FROM ox_inventory WHERE owner = ? AND name = ?', { owner or '', id })
 		end
 	end
 
 	local returnData, weight = {}, 0
+
 	if result then
+		result = json.decode(result)
 		for _, v in pairs(result) do
 			local item = Items(v.name)
 			if item then
@@ -312,6 +317,7 @@ function Inventory.Load(id, invType, owner)
 			end
 		end
 	end
+
 	return returnData, weight, datastore
 end
 
