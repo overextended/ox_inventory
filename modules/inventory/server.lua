@@ -308,7 +308,7 @@ function Inventory.Load(id, invType, owner)
 			if item then
 
 				if v.metadata then
-					v.metadata = Items.CheckMetadata(v.metadata, item. v.name)
+					v.metadata = Items.CheckMetadata(v.metadata, item, v.name)
 				end
 
 				local slotWeight = Inventory.SlotWeight(item, v)
