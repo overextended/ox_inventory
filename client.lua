@@ -1067,32 +1067,19 @@ RegisterNUICallback('giveItem', function(data, cb)
 	cb(1)
 	local vehicle = GetVehiclePedIsIn(PlayerData.ped, false)
 	if vehicle ~= 0 then
-		local passenger = GetVehicleMaxNumberOfPassengers(vehicle) - 1
-		if passenger >= 0 then
+		local seats = GetVehicleMaxNumberOfPassengers(vehicle) - 1
+		if seats >= 0 then
 			local playerSeat
-			for i = -1, passenger do
-				if i == -1 then passenger = {} end
-				if not IsVehicleSeatFree(vehicle, i) then
-					local entity = GetPedInVehicleSeat(vehicle, i)
-					if entity == PlayerData.ped then
-						playerSeat = i
-					else
-						passenger[i] = entity
-					end
+			for i = -1, seats do
+				if GetPedInVehicleSeat(vehicle, i) == PlayerData.ped then
+					playerSeat = i
+					break
 				end
 			end
-			--todo: make this less depressing to look at
-			--ref: https://docs.fivem.net/natives/?_0x22AC59A870E6A669
-			if playerSeat == -1 and passenger[0] then
-				passenger = GetPlayerServerId(NetworkGetPlayerIndexFromPed(passenger[0]))
-			elseif playerSeat == 0 and passenger[-1] then
-				passenger = GetPlayerServerId(NetworkGetPlayerIndexFromPed(passenger[-1]))
-			elseif playerSeat == 2 and passenger[3] then
-				passenger = GetPlayerServerId(NetworkGetPlayerIndexFromPed(passenger[3]))
-			elseif playerSeat == 3 and passenger[2] then
-				passenger = GetPlayerServerId(NetworkGetPlayerIndexFromPed(passenger[2]))
-			else return end
-			if passenger then
+
+			local passenger = GetPedInVehicleSeat(playerSeat - 2 * (playerSeat % 2) + 1)
+			if passenger ~= 0 then
+				passenger = GetPlayerServerId(NetworkGetPlayerIndexFromPed(passenger)
 				TriggerServerEvent('ox_inventory:giveItem', data.slot, passenger, data.count)
 				if data.slot == currentWeapon?.slot then currentWeapon = Utils.Disarm(currentWeapon) end
 			end
