@@ -12,7 +12,7 @@ for shopName, shopDetails in pairs(data('shops')) do
 			Shops[shopName][i] = {
 				label = shopDetails.name,
 				id = shopName..' '..i,
-				groups = shopDetails.groups,
+				groups = shopDetails.groups or shopDetails.jobs,
 				items = table.clone(shopDetails.inventory),
 				slots = #shopDetails.inventory,
 				type = 'shop',
@@ -41,7 +41,7 @@ for shopName, shopDetails in pairs(data('shops')) do
 		Shops[shopName] = {
 			label = shopDetails.name,
 			id = shopName,
-			groups = shopDetails.groups,
+			groups = shopDetails.groups or shopDetails.jobs,
 			items = shopDetails.inventory,
 			slots = #shopDetails.inventory,
 			type = 'shop',

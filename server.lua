@@ -62,6 +62,7 @@ ServerCallback.Register('openInventory', function(source, inv, data)
 		if inv == 'stash' then
 			local stash = Stashes[data.id]
 			if stash then
+				if stash.jobs then stash.groups = stash.jobs end
 
 				if not stash.groups or server.hasGroup(left, stash.groups) then
 					local owner = stash.owner and left.owner or stash.owner

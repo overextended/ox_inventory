@@ -109,7 +109,9 @@ end
 Inventory.Stashes = setmetatable(data('stashes'), {
 	__call = function(self)
 		for id, stash in pairs(self) do
-			if shared.qtarget then
+			if stash.jobs then stash.groups = stash.jobs end
+
+			if shared.qtarget and stash.target then
 				exports.qtarget:RemoveZone(stash.name)
 				exports.qtarget:AddBoxZone(stash.name, stash.target.loc, stash.target.length or 0.5, stash.target.width or 0.5,
 				{

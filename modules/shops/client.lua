@@ -25,6 +25,8 @@ client.shops = setmetatable(data('shops'), {
 
 		local blipId = 0
 		for type, shop in pairs(self) do
+			if shop.jobs then shop.groups = shop.jobs end
+
 			if not shop.groups or client.hasGroup(shop.groups) then
 				if shop.blip then blipId += 1 end
 				if shared.qtarget then
