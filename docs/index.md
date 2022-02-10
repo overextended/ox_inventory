@@ -60,8 +60,8 @@ Some code is being changed for later reference while a txAdmin recipe is prepare
 
 <br>
 
-### Ox Inventory build
-The interface is written in TypeScript using the React framework, so the code included in the repository _will not do anything_. You either need to build he package yourself (more information in [guides](./guides), or download a release.
+### Ox Inventory production build
+The interface is written in TypeScript using the React framework, so the code included in the repository _will not do anything_. You either need to build the package yourself (more information in [guides](./guides), or download a release.
 
 [GitHub :fontawesome-brands-github:](https://github.com/overextended/ox_inventory/releases){ .md-button .md-button--primary }
 
@@ -77,12 +77,20 @@ All stashes and shops will utilise PolyZone's instead of markers to interact wit
 
 	You must start qtarget _before_ the inventory and _after_ es_extended.
 
-[GitHub :fontawesome-brands-github:](https://github.com/overextended/qtarget){ .md-button .md-button--primary }
+[GitHub :fontawesome-brands-github:](https://github.com/overextended/qtarget){ .md-button .md-button--primary }	[Documentation :fontawesome-solid-book:](https://overextended.github.io/qtarget/){ .md-button .md-button--primary }
+
+### NPWD
+A standalone and feature-rich phone created by Project Error.  
+When using our fork of ESX you can simplify installation and only need to enable framework integration in the config.  
+The inventory will handle disabling the phone when the player has no item, and supports toggling the phone through item use.
+
+[GitHub :fontawesome-brands-github:](https://github.com/project-error/npwd){ .md-button .md-button--primary }	[Documentation :fontawesome-solid-book:](https://projecterror.dev/docs){ .md-button .md-button--primary }
 
 ## Configuration
-You can add these settings directly to your 'server.cfg', or create a new (or multiple) file to load with 'exec'.
+You can add these settings directly to your 'server.cfg', or create a new (or multiple) file to load with 'exec'.  
+You do _not_ need to specify convars when you are not changing the values, as they will default.
 ```
-# Activate specific event handlers and functions (supported: esx)
+# Activate specific event handlers and functions (supported: ox, esx)
 setr inventory:framework "esx"
 
 # Load specific language file from data/locales
