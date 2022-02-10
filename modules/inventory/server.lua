@@ -285,7 +285,7 @@ function Inventory.Load(id, invType, owner)
 				datastore = true
 			end
 		elseif invType == 'trunk' or invType == 'glovebox' then
-			result = MySQL.prepare.await('SELECT '..invType..' FROM owned_vehicles WHERE plate = ?', { Inventory.GetPlateFromId(id) })
+			result = MySQL.prepare.await('SELECT plate, '..invType..' FROM owned_vehicles WHERE plate = ?', { Inventory.GetPlateFromId(id) })
 
 			if not result then
 				if server.randomloot then
@@ -293,7 +293,7 @@ function Inventory.Load(id, invType, owner)
 				else
 					datastore = true
 				end
-			end
+			else result = result[invType] end
 		else
 			result = MySQL.prepare.await('SELECT data FROM ox_inventory WHERE owner = ? AND name = ?', { owner or '', id })
 		end
