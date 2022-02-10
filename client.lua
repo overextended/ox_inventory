@@ -1080,7 +1080,7 @@ RegisterNUICallback('giveItem', function(data, cb)
 
 			local passenger = GetPedInVehicleSeat(playerSeat - 2 * (playerSeat % 2) + 1)
 			if passenger ~= 0 then
-				passenger = GetPlayerServerId(NetworkGetPlayerIndexFromPed(passenger)
+				passenger = GetPlayerServerId(NetworkGetPlayerIndexFromPed(passenger))
 				TriggerServerEvent('ox_inventory:giveItem', data.slot, passenger, data.count)
 				if data.slot == currentWeapon?.slot then currentWeapon = Utils.Disarm(currentWeapon) end
 			end
