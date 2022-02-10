@@ -810,6 +810,8 @@ RegisterNetEvent('ox_inventory:setPlayerInventory', function(currentDrops, inven
 		}
 	})
 
+	PlayerData.loaded = true
+
 	Shops()
 	Inventory.Stashes()
 	Inventory.Evidence()
@@ -817,7 +819,6 @@ RegisterNetEvent('ox_inventory:setPlayerInventory', function(currentDrops, inven
 
 	plyState:set('invBusy', false, false)
 	plyState:set('invOpen', false, false)
-	PlayerData.loaded = true
 	TriggerEvent('ox_inventory:updateInventory', PlayerData.inventory)
 
 	Utils.Notify({text = shared.locale('inventory_setup'), duration = 2500})
