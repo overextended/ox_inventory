@@ -49,6 +49,29 @@ The item table defines a basic template to reference when working with an instan
 		}
 		```
 		Combined with several new functions and events you could easily create your own crafting system.
+	=== "Notify Burger"
+		A modified burger item, which gives you notifications on add and remove arguments.
+		```lua
+		['gigaburger'] = {
+				label = 'Burger',
+				weight = 220,
+				stack = true,
+				consume = 0,
+				client = {
+					add = function(total)
+						if total > 0 then
+							exports.ox_inventory:notify({text = 'Nice burger you got there!'})
+						end
+					end,
+			
+					remove = function(total)
+						if total < 1 then
+							exports.ox_inventory:notify({text = 'You lost all of your burgers!'})
+						end
+					end
+				}
+			}
+		```
 
 !!! summary "Standard options"
 	=== "Shared"
@@ -72,3 +95,5 @@ The item table defines a basic template to reference when working with an instan
 		| disable  | Disable actions during progress bar |
 		| usetime  | Time for progress bar to complete |
 		| cancel   | Able to cancel progress bar |
+		| add      | Check if player received an item |
+		| remove   | Check if player removed item |
