@@ -296,6 +296,7 @@ local function useSlot(slot)
 			local playerPed = PlayerData.ped
 			if item.name:find('ammo-') then
 				local clipSize = GetMaxAmmoInClip(playerPed, currentWeapon.hash, true)
+				local clipSizeMultiplier = shared.clipsinmagazine > 0 and shared.clipsinmagazine or 2
 				local currentAmmo = GetAmmoInPedWeapon(playerPed, currentWeapon.hash)
 
 				if currentAmmo < shared.ammohardcap  then
@@ -305,8 +306,8 @@ local function useSlot(slot)
 								local missingAmmo = 0
 								local newAmmo = 0
 								missingAmmo = shared.ammohardcap - currentAmmo
-								if missingAmmo > clipSize then 
-									newAmmo = currentAmmo + clipSize 
+								if missingAmmo > (clipSize * clipSizeMultiplier) then 
+									newAmmo = currentAmmo + (clipSize * clipSizeMultiplier)
 								else 
 									newAmmo = shared.ammohardcap -- this potentially could waste an entire magazine to load few bullets, maybe notif clip is full instead
 								end
