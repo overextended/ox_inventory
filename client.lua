@@ -430,7 +430,6 @@ function OnPlayerData(key, val)
 		TriggerEvent('ox_inventory:closeInventory')
 		Wait(50)
 	end
-	SetWeaponsNoAutoswap(1)
 end
 
 local function RegisterCommands()
@@ -839,10 +838,11 @@ RegisterNetEvent('ox_inventory:setPlayerInventory', function(currentDrops, inven
 			end
 
 			Markers(Licenses, 'license', vec(30, 150, 30))
-			SetPedCanSwitchWeapon(PlayerData.ped, false)
-			SetPedEnableWeaponBlocking(PlayerData.ped, true)
 
 			if IsPedInAnyVehicle(PlayerData.ped, false) then table.wipe(closestMarker) end
+
+			SetWeaponsNoAutoswap(true)
+			SetPedEnableWeaponBlocking(PlayerData.ped, true)
 		elseif invOpen == true then
 			if not CanOpenInventory() then
 				TriggerEvent('ox_inventory:closeInventory')
@@ -895,6 +895,8 @@ RegisterNetEvent('ox_inventory:setPlayerInventory', function(currentDrops, inven
 			end
 		else
 			DisableControlActions()
+			for i=157, 163 do DisableControlAction(0, i, true) end
+			
 			if invBusy then DisablePlayerFiring(PlayerData.id, true) end
 
 			for _, v in pairs(nearbyMarkers) do
