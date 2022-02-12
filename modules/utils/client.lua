@@ -59,7 +59,6 @@ exports('notify', Utils.Notify)
 
 function Utils.Disarm(currentWeapon, newSlot)
 	SetWeaponsNoAutoswap(1)
-	SetWeaponsNoAutoreload(1)
 	SetPedCanSwitchWeapon(PlayerData.ped, 0)
 	SetPedEnableWeaponBlocking(PlayerData.ped, 1)
 

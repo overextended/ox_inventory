@@ -987,33 +987,33 @@ return {
 
 	Ammo = {
 		['ammo-22'] = {
-			label = '.22 Long Rifle',
-			weight = 3,
+			label = '.22 Long Rifle Magazine',
+			weight = 30,
 		},
 
 		['ammo-38'] = {
-			label = '.38 Long Colt',
-			weight = 10,
+			label = '.38 Long Colt Magazine',
+			weight = 100,
 		},
 
 		['ammo-44'] = {
-			label = '.44 Magnum',
-			weight = 16,
+			label = '.44 Magnum Magazine',
+			weight = 160,
 		},
 
 		['ammo-45'] = {
-			label = '.45 ACP',
-			weight = 9,
+			label = '.45 ACP Magazine',
+			weight = 90,
 		},
 
 		['ammo-50'] = {
-			label = '.50 AE',
-			weight = 19,
+			label = '.50 AE Magazine',
+			weight = 190,
 		},
 
 		['ammo-9'] = {
-			label = '9mm',
-			weight = 8,
+			label = '9mm Magazine',
+			weight = 80,
 		},
 
 		['ammo-flare'] = {
@@ -1022,33 +1022,33 @@ return {
 		},
 
 		['ammo-heavysniper'] = {
-			label = '.50 BMG',
-			weight = 45,
+			label = '.50 BMG Magazine',
+			weight = 450,
 		},
 
 		['ammo-musket'] = {
-			label = 'Musket ammo',
-			weight = 30,
+			label = 'Musket ammo Magazine',
+			weight = 300,
 		},
 
 		['ammo-rifle'] = {
-			label = '5.56',
-			weight = 4,
+			label = '5.56 Magazine',
+			weight = 40,
 		},
 
 		['ammo-rifle2'] = {
-			label = '7.62',
-			weight = 8,
+			label = '7.62 Magazine',
+			weight = 80,
 		},
 
 		['ammo-shotgun'] = {
-			label = '12 Gauge',
-			weight = 38,
+			label = '12 Gauge Magazine',
+			weight = 380,
 		},
 
 		['ammo-sniper'] = {
-			label = '7.62 NATO',
-			weight = 11,
+			label = '7.62 NATO Magazine',
+			weight = 110,
 		}
 	}
 }

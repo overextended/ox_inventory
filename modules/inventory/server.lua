@@ -919,8 +919,7 @@ RegisterServerEvent('ox_inventory:updateWeapon', function(action, value, slot)
 		if weapon and weapon.metadata then
 			if action == 'load' and weapon.metadata.durability > 0 then
 				local ammo = Items(weapon.name).ammoname
-				local diff = value - weapon.metadata.ammo
-				Inventory.RemoveItem(inventory, ammo, diff)
+				Inventory.RemoveItem(inventory, ammo, 1)
 				weapon.metadata.ammo = value
 				syncInventory = true
 			elseif action == 'throw' then

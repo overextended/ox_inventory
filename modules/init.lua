@@ -5,7 +5,7 @@ shared = {
 	locale = GetConvar('inventory:locale', 'en'),
 	playerslots = GetConvarInt('inventory:slots', 50),
 	playerweight = GetConvarInt('inventory:weight', 30000),
-	autoreload = GetConvar('inventory:autoreload', 'false') == 'true',
+	ammohardcap = GetConvarInt('inventory:ammohardcap', 250),
 	trimplate = GetConvar('inventory:trimplate', 'true') == 'true',
 	qtarget = GetConvar('inventory:qtarget', 'false') == 'true',
 	police = json.decode(GetConvar('inventory:police', '["police", "sheriff"]')),

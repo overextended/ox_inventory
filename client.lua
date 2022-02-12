@@ -295,19 +295,21 @@ local function useSlot(slot)
 		elseif currentWeapon then
 			local playerPed = PlayerData.ped
 			if item.name:find('ammo-') then
-				local maxAmmo = GetMaxAmmoInClip(playerPed, currentWeapon.hash, true)
+				local clipSize = GetMaxAmmoInClip(playerPed, currentWeapon.hash, true)
 				local currentAmmo = GetAmmoInPedWeapon(playerPed, currentWeapon.hash)
 
-				if currentAmmo ~= maxAmmo and currentAmmo < maxAmmo then
+				if currentAmmo < shared.ammohardcap  then
 					useItem(data, function(data)
-
 						if data then
 							if data.name == currentWeapon.ammo then
 								local missingAmmo = 0
 								local newAmmo = 0
-								missingAmmo = maxAmmo - currentAmmo
-								if missingAmmo > data.count then newAmmo = currentAmmo + data.count else newAmmo = maxAmmo end
-								if newAmmo < 0 then newAmmo = 0 end
+								missingAmmo = shared.ammohardcap - currentAmmo
+								if missingAmmo > clipSize then 
+									newAmmo = currentAmmo + clipSize 
+								else 
+									newAmmo = shared.ammohardcap -- this potentially could waste an entire magazine to load few bullets, maybe notif clip is full instead
+								end
 								SetPedAmmo(playerPed, currentWeapon.hash, newAmmo)
 								MakePedReload(playerPed)
 								currentWeapon.metadata.ammo = newAmmo
@@ -315,6 +317,8 @@ local function useSlot(slot)
 							end
 						end
 					end)
+				else
+					Utils.Notify({type = 'error', text = shared.locale('hardcap_ammo') })
 				end
 			elseif item.name:find('at_') then
 				local components = data.client.component
@@ -427,7 +431,6 @@ function OnPlayerData(key, val)
 		Wait(50)
 	end
 	SetWeaponsNoAutoswap(1)
-	SetWeaponsNoAutoreload(1)
 end
 
 local function RegisterCommands()
@@ -562,15 +565,6 @@ local function RegisterCommands()
 	end)
 	RegisterKeyMapping('inv2', shared.locale('open_secondary_inventory'), 'keyboard', client.keys[2])
 	TriggerEvent('chat:removeSuggestion', '/inv2')
-
-	RegisterCommand('reload', function()
-		if currentWeapon?.ammo then
-			local ammo = Inventory.Search(1, currentWeapon.ammo)
-			if ammo[1] then useSlot(ammo[1].slot) end
-		end
-	end)
-	RegisterKeyMapping('reload', shared.locale('reload_weapon'), 'keyboard', 'r')
-	TriggerEvent('chat:removeSuggestion', '/reload')
 
 	RegisterCommand('hotbar', function()
 		if not IsPauseMenuActive() then
@@ -951,15 +945,6 @@ RegisterNetEvent('ox_inventory:setPlayerInventory', function(currentDrops, inven
 							ClearPedTasks(playerPed)
 							SetCurrentPedWeapon(playerPed, currentWeapon.hash, true)
 							SetPedCurrentWeaponVisible(playerPed, true, false, false, false)
-							if currentWeapon?.ammo and shared.autoreload and not Interface.ProgressActive and not IsPedRagdoll(playerPed) and not IsPedFalling(playerPed) then
-								currentWeapon.timer = 0
-								local ammo = Inventory.Search(1, currentWeapon.ammo)
-
-								if ammo[1] then
-									TriggerServerEvent('ox_inventory:updateWeapon', 'ammo', currentWeapon.metadata.ammo)
-									useSlot(ammo[1].slot)
-								end
-							else currentWeapon.timer = GetGameTimer() + 400 end
 						else currentWeapon.timer = GetGameTimer() + 400 end
 					end
 				elseif IsControlJustReleased(0, 24) then
