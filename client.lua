@@ -228,6 +228,7 @@ local function useSlot(slot)
 		if data.effect then
 			data:effect({name = item.name, slot = item.slot, metadata = item.metadata})
 		elseif item.name:find('WEAPON_') then
+			if client.weaponWheel then return end
 			useItem(data, function(result)
 				if result then
 					if currentWeapon?.slot == result.slot then
@@ -292,6 +293,7 @@ local function useSlot(slot)
 		elseif currentWeapon then
 			local playerPed = PlayerData.ped
 			if item.name:find('ammo-') then
+				if client.weaponWheel then return end
 				local maxAmmo = GetMaxAmmoInClip(playerPed, currentWeapon.hash, true)
 				local currentAmmo = GetAmmoInPedWeapon(playerPed, currentWeapon.hash)
 
@@ -426,12 +428,9 @@ function OnPlayerData(key, val)
 	elseif key == 'dead' and val then
 		currentWeapon = Utils.Disarm(currentWeapon)
 		TriggerEvent('ox_inventory:closeInventory')
-		Wait(50)
 	end
-	SetWeaponsNoAutoswap(true)
-	SetWeaponsNoAutoreload(true)
-	SetPedCanSwitchWeapon(PlayerData.ped, false)
-	SetPedEnableWeaponBlocking(PlayerData.ped, true)
+
+	Utils.WeaponWheel(client.weaponWheel)
 end
 
 local function RegisterCommands()
@@ -450,11 +449,14 @@ local function RegisterCommands()
 		if not invOpen then
 			if invBusy then return Utils.Notify({type = 'error', text = shared.locale('inventory_player_access'), duration = 2500})
 			else
-				if not CanOpenInventory() then return Utils.Notify({type = 'error', text = shared.locale('inventory_player_access'), duration = 2500}) end
+				if not CanOpenInventory() then
+					return Utils.Notify({type = 'error', text = shared.locale('inventory_player_access'), duration = 2500})
+				end
+
 				if StashTarget then
 					OpenInventory('stash', StashTarget)
-				elseif IsPedInAnyVehicle(PlayerData.ped, false) then
-					local vehicle = GetVehiclePedIsIn(PlayerData.ped, false)
+				elseif PlayerData.currentVehicle > 0 then
+					local vehicle = PlayerData.currentVehicle
 
 					if NetworkGetEntityIsNetworked(vehicle) then
 						local checkVehicle = Vehicles.Storage[GetEntityModel(vehicle)]
@@ -577,7 +579,7 @@ local function RegisterCommands()
 	TriggerEvent('chat:removeSuggestion', '/reload')
 
 	RegisterCommand('hotbar', function()
-		if not IsPauseMenuActive() then
+		if not client.weaponWheel and not IsPauseMenuActive() then
 			SendNUIMessage({ action = 'toggleHotbar' })
 		end
 	end)
@@ -778,6 +780,8 @@ RegisterNetEvent('ox_inventory:setPlayerInventory', function(currentDrops, inven
 	currentWeapon = nil
 	drops = currentDrops
 	Utils.ClearWeapons()
+	Utils.WeaponWheel(false)
+
 	local ItemData = table.create(0, #Items)
 
 	for _, v in pairs(Items) do
@@ -829,11 +833,20 @@ RegisterNetEvent('ox_inventory:setPlayerInventory', function(currentDrops, inven
 	local Licenses = data 'licenses'
 
 	client.interval = SetInterval(function()
-		PlayerData.ped = PlayerPedId()
+		local playerPed = PlayerPedId()
+
+		if playerPed ~= PlayerData.ped then
+			PlayerData.ped = playerPed
+			Utils.WeaponWheel(client.weaponWheel)
+		end
 
 		if invOpen == false then
-			playerCoords = GetEntityCoords(PlayerData.ped)
-			local vehicle = IsPedInAnyVehicle(PlayerData.ped, false)
+			playerCoords = GetEntityCoords(playerPed)
+			local vehicle = GetVehiclePedIsIn(playerPed, false)
+
+			if PlayerData.currentVehicle ~= vehicle then
+				PlayerData.currentVehicle = vehicle
+			end
 
 			if closestMarker[1] then
 				table.wipe(closestMarker)
@@ -861,7 +874,7 @@ RegisterNetEvent('ox_inventory:setPlayerInventory', function(currentDrops, inven
 			if not CanOpenInventory() then
 				TriggerEvent('ox_inventory:closeInventory')
 			else
-				playerCoords = GetEntityCoords(PlayerData.ped)
+				playerCoords = GetEntityCoords(playerPed)
 				if currentInventory then
 
 					if currentInventory.type == 'otherplayer' then
@@ -873,10 +886,10 @@ RegisterNetEvent('ox_inventory:setPlayerInventory', function(currentDrops, inven
 							TriggerEvent('ox_inventory:closeInventory')
 							Utils.Notify({type = 'error', text = shared.locale('inventory_lost_access'), duration = 2500})
 						else
-							TaskTurnPedToFaceCoord(PlayerData.ped, pedCoords.x, pedCoords.y, pedCoords.z, 50)
+							TaskTurnPedToFaceCoord(playerPed, pedCoords.x, pedCoords.y, pedCoords.z, 50)
 						end
 
-					elseif currentInventory.coords and (#(playerCoords - currentInventory.coords) > 2 or CanOpenTarget(PlayerData.ped)) then
+					elseif currentInventory.coords and (#(playerCoords - currentInventory.coords) > 2 or CanOpenTarget(playerPed)) then
 						TriggerEvent('ox_inventory:closeInventory')
 						Utils.Notify({type = 'error', text = shared.locale('inventory_lost_access'), duration = 2500})
 					end
@@ -884,8 +897,8 @@ RegisterNetEvent('ox_inventory:setPlayerInventory', function(currentDrops, inven
 			end
 		end
 
-		if currentWeapon and GetSelectedPedWeapon(PlayerData.ped) ~= currentWeapon.hash then currentWeapon = Utils.Disarm(currentWeapon) end
-		if client.parachute and GetPedParachuteState(PlayerData.ped) ~= -1 then
+		if currentWeapon and GetSelectedPedWeapon(playerPed) ~= currentWeapon.hash then currentWeapon = Utils.Disarm(currentWeapon) end
+		if client.parachute and GetPedParachuteState(playerPed) ~= -1 then
 			Utils.DeleteObject(client.parachute)
 			client.parachute = false
 		end
@@ -893,6 +906,7 @@ RegisterNetEvent('ox_inventory:setPlayerInventory', function(currentDrops, inven
 
 	local EnableKeys = client.enablekeys
 	client.tick = SetInterval(function()
+		local playerPed = playerPed
 		DisablePlayerVehicleRewards(PlayerData.id)
 
 		if invOpen then
@@ -941,7 +955,6 @@ RegisterNetEvent('ox_inventory:setPlayerInventory', function(currentDrops, inven
 						currentWeapon.melee = 0
 					end
 				elseif currentWeapon.metadata.ammo then
-					local playerPed = PlayerData.ped
 					if IsPedShooting(playerPed) then
 						local currentAmmo
 
@@ -972,7 +985,6 @@ RegisterNetEvent('ox_inventory:setPlayerInventory', function(currentDrops, inven
 					end
 				elseif IsControlJustReleased(0, 24) then
 					if currentWeapon.throwable then
-						local playerPed = PlayerData.ped
 						plyState.invBusy = true
 
 						SetTimeout(700, function()
@@ -984,7 +996,7 @@ RegisterNetEvent('ox_inventory:setPlayerInventory', function(currentDrops, inven
 							plyState.invBusy = false
 						end)
 
-					elseif IsPedPerformingMeleeAction(PlayerData.ped) then
+					elseif IsPedPerformingMeleeAction(playerPed) then
 						currentWeapon.melee += 1
 						currentWeapon.timer = GetGameTimer() + 400
 					end
@@ -1059,9 +1071,11 @@ end)
 
 RegisterNUICallback('giveItem', function(data, cb)
 	cb(1)
-	local vehicle = GetVehiclePedIsIn(PlayerData.ped, false)
-	if vehicle ~= 0 then
+	local vehicle = PlayerData.currentVehicle
+
+	if vehicle > 0 then
 		local seats = GetVehicleMaxNumberOfPassengers(vehicle) - 1
+
 		if seats >= 0 then
 			local playerSeat
 			for i = -1, seats do
@@ -1072,6 +1086,7 @@ RegisterNUICallback('giveItem', function(data, cb)
 			end
 
 			local passenger = GetPedInVehicleSeat(playerSeat - 2 * (playerSeat % 2) + 1)
+
 			if passenger ~= 0 then
 				passenger = GetPlayerServerId(NetworkGetPlayerIndexFromPed(passenger))
 				TriggerServerEvent('ox_inventory:giveItem', data.slot, passenger, data.count)
@@ -1080,11 +1095,15 @@ RegisterNUICallback('giveItem', function(data, cb)
 		end
 	else
 		local target = Utils.Raycast(12)
+
 		if target and IsPedAPlayer(target) and #(GetEntityCoords(PlayerData.ped, true) - GetEntityCoords(target, true)) < 2.3 then
 			target = GetPlayerServerId(NetworkGetPlayerIndexFromPed(target))
 			Utils.PlayAnim(2000, 'mp_common', 'givetake1_a', 1.0, 1.0, -1, 50, 0.0, 0, 0, 0)
 			TriggerServerEvent('ox_inventory:giveItem', data.slot, target, data.count)
-			if data.slot == currentWeapon?.slot then currentWeapon = Utils.Disarm(currentWeapon) end
+
+			if data.slot == currentWeapon?.slot then
+				currentWeapon = Utils.Disarm(currentWeapon)
+			end
 		end
 	end
 end)

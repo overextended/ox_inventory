@@ -107,4 +107,15 @@ function Utils.DeleteObject(obj)
 	DeleteObject(obj)
 end
 
+-- Enables the weapon wheel, but disables the use of inventory items
+-- Mostly used for weaponised vehicles, though could be called for "minigames"
+function Utils.WeaponWheel(state)
+	client.weaponWheel = state
+	SetWeaponsNoAutoswap(not state)
+	SetWeaponsNoAutoreload(not state)
+	SetPedCanSwitchWeapon(PlayerData.ped, state)
+	SetPedEnableWeaponBlocking(PlayerData.ped, not state)
+end
+exports('weaponWheel', Utils.WeaponWheel)
+
 client.utils = Utils
