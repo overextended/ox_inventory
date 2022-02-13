@@ -199,7 +199,7 @@ function Items.Metadata(inv, item, metadata, count)
 		if not metadata.ammo and item.ammoname then metadata.ammo = 0 end
 		if not metadata.components then metadata.components = {} end
 
-		if metadata.registered ~= false then
+		if metadata.registered ~= false and metadata.ammo then
 			metadata.registered = type(metadata.registered) == 'string' and metadata.registered or inv.player.name
 			metadata.serial = GenerateSerial(metadata.serial)
 		end
@@ -239,19 +239,16 @@ function Items.Metadata(inv, item, metadata, count)
 end
 
 function Items.CheckMetadata(metadata, item, name)
-	-- Update old bag items to container items
 	if metadata.bag then
 		metadata.container = metadata.bag
 		metadata.size = ItemList.containers[name]?.size or {5, 1000}
 		metadata.bag = nil
 	end
 
-	-- Remove invalid durability
 	if metadata.durability and not item.durability and not item.degrade and not name:find('WEAPON_') then
 		metadata.durability = nil
 	end
 
-	-- Remove invalid components from weapons
 	if metadata.components then
 		if table.type(metadata.components) == 'array' then
 			for i = 1, #metadata.components do
@@ -260,7 +257,6 @@ function Items.CheckMetadata(metadata, item, name)
 				end
 			end
 		else
-			-- Components table is not an array (contains holes)
 			local components = {}
 			local size = 0
 			for _, component in pairs(metadata.components) do
@@ -271,6 +267,10 @@ function Items.CheckMetadata(metadata, item, name)
 			end
 			metadata.components = components
 		end
+	end
+
+	if metadata.serial and item.name:find('WEAPON_') and not item.ammoname then
+		metadata.serial = nil
 	end
 
 	return metadata
