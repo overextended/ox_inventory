@@ -377,7 +377,7 @@ local currentInstance
 
 local nearbyMarkers, closestMarker = {}, {}
 local drops, playerCoords
-local function Markers(tb, type, rgb, name)
+local function Markers(tb, type, rgb, name, vehicle)
 	if tb then
 		for k, v in pairs(tb) do
 			if not v.instance or v.instance == currentInstance then
@@ -388,12 +388,17 @@ local function Markers(tb, type, rgb, name)
 					local marker = nearbyMarkers[id]
 
 					if distance < 1.2 then
-						if not marker then nearbyMarkers[id] = mat(vec3(coords), vec3(rgb)) end
-						if closestMarker[1] == nil or (closestMarker and distance < closestMarker[1]) then
-							closestMarker[1] = distance
-							closestMarker[2] = k
-							closestMarker[3] = type
-							closestMarker[4] = name or v.name
+						if not marker then
+							nearbyMarkers[id] = mat(vec3(coords), vec3(rgb))
+						end
+
+						if not vehicle then
+							if closestMarker[1] == nil or (closestMarker and distance < closestMarker[1]) then
+								closestMarker[1] = distance
+								closestMarker[2] = k
+								closestMarker[3] = type
+								closestMarker[4] = name or v.name
+							end
 						end
 					elseif not marker and distance < 8 then
 						nearbyMarkers[id] = mat(vec3(coords), vec3(rgb))
@@ -423,8 +428,10 @@ function OnPlayerData(key, val)
 		TriggerEvent('ox_inventory:closeInventory')
 		Wait(50)
 	end
-	SetWeaponsNoAutoswap(1)
-	SetWeaponsNoAutoreload(1)
+	SetWeaponsNoAutoswap(true)
+	SetWeaponsNoAutoreload(true)
+	SetPedCanSwitchWeapon(PlayerData.ped, false)
+	SetPedEnableWeaponBlocking(PlayerData.ped, true)
 end
 
 local function RegisterCommands()
@@ -826,26 +833,30 @@ RegisterNetEvent('ox_inventory:setPlayerInventory', function(currentDrops, inven
 
 		if invOpen == false then
 			playerCoords = GetEntityCoords(PlayerData.ped)
-			table.wipe(closestMarker)
+			local vehicle = IsPedInAnyVehicle(PlayerData.ped, false)
 
+			if closestMarker[1] then
+				table.wipe(closestMarker)
+			end
 
-			Markers(drops, 'drop', vec3(150, 30, 30))
+			Markers(drops, 'drop', vec3(150, 30, 30), nil, vehicle)
 
 			if not shared.qtarget then
-				if client.hasGroup(shared.police) then Markers(Inventory.Evidence, 'policeevidence', vec(30, 30, 150)) end
-				Markers(Inventory.Stashes, 'stash', vec3(30, 30, 150))
+				if client.hasGroup(shared.police) then
+					Markers(Inventory.Evidence, 'policeevidence', vec(30, 30, 150), nil, vehicle)
+				end
+
+				Markers(Inventory.Stashes, 'stash', vec3(30, 30, 150), nil, vehicle)
+
 				for k, v in pairs(Shops) do
 					if not v.groups or client.hasGroup(v.groups) then
-						Markers(v.locations, 'shop', vec3(30, 150, 30), k)
+						Markers(v.locations, 'shop', vec3(30, 150, 30), k, vehicle)
 					end
 				end
 			end
 
-			Markers(Licenses, 'license', vec(30, 150, 30))
-			SetPedCanSwitchWeapon(PlayerData.ped, false)
-			SetPedEnableWeaponBlocking(PlayerData.ped, true)
+			Markers(Licenses, 'license', vec(30, 150, 30), nil, vehicle)
 
-			if IsPedInAnyVehicle(PlayerData.ped, false) then table.wipe(closestMarker) end
 		elseif invOpen == true then
 			if not CanOpenInventory() then
 				TriggerEvent('ox_inventory:closeInventory')
