@@ -846,6 +846,28 @@ RegisterNetEvent('ox_inventory:setPlayerInventory', function(currentDrops, inven
 
 			if PlayerData.currentVehicle ~= vehicle then
 				PlayerData.currentVehicle = vehicle
+
+				if vehicle > 0 then
+					-- local seats = GetVehicleMaxNumberOfPassengers(vehicle) - 1
+
+					if DoesVehicleHaveWeapons(vehicle) then
+						client.weaponWheel = true
+						Utils.WeaponWheel(true)
+						
+						-- todo: check if current seat has weapon
+						-- local playerSeat
+
+						-- for i = -1, seats do
+						-- 	if GetPedInVehicleSeat(vehicle, i) == playerPed then
+						-- 		playerSeat = i
+						-- 		break
+						-- 	end
+						-- end
+					end
+				else
+					client.weaponWheel = false
+					Utils.WeaponWheel(false)
+				end
 			end
 
 			if closestMarker[1] then
