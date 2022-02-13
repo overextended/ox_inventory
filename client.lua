@@ -170,8 +170,8 @@ local function useItem(data, cb)
 
 			if p then Citizen.Await(p) end
 
-			if not p or not p.value then
-				if result.consume and result.consume ~= 0 then
+			if not p or not p.value  then
+				if not result.name:sub(0, 3) == 'at_' and result.consume and result.consume ~= 0 then
 					TriggerServerEvent('ox_inventory:removeItem', result.name, result.consume, result.metadata, result.slot, true)
 				end
 
@@ -205,7 +205,7 @@ local function useSlot(slot)
 		if not item then return end
 		local data = item and Items[item.name]
 		if not data or not data.usable then return end
-		if data.name:find('at_') and not currentWeapon then Utils.Notify({type = 'error', text = shared.locale('weapon_hand_required')}) return end
+		if data.name:sub(0, 3) == 'at_' and not currentWeapon then Utils.Notify({type = 'error', text = shared.locale('weapon_hand_required')}) return end
 		data.slot = slot
 
 		if item.metadata.container then
@@ -315,7 +315,7 @@ local function useSlot(slot)
 						end
 					end)
 				end
-			elseif item.name:find('at_') then
+			elseif item.name:sub(0, 3) == 'at_' then
 				local components = data.client.component
 				local componentType = data.type
 				local weaponComponents = PlayerData.inventory[currentWeapon.slot].metadata.components
@@ -337,6 +337,7 @@ local function useSlot(slot)
 								if data then
 									GiveWeaponComponentToPed(playerPed, currentWeapon.hash, component)
 									table.insert(PlayerData.inventory[currentWeapon.slot].metadata.components, data.name)
+									TriggerServerEvent('ox_inventory:updateWeapon', 'component', tostring(data.slot), currentWeapon.slot)
 								end
 							end)
 						end
@@ -455,7 +456,7 @@ local function RegisterCommands()
 
 				if StashTarget then
 					OpenInventory('stash', StashTarget)
-				elseif PlayerData.currentVehicle > 0 then
+				elseif PlayerData.currentVehicle then
 					local vehicle = PlayerData.currentVehicle
 
 					if NetworkGetEntityIsNetworked(vehicle) then
@@ -785,7 +786,7 @@ RegisterNetEvent('ox_inventory:setPlayerInventory', function(currentDrops, inven
 	local ItemData = table.create(0, #Items)
 
 	for _, v in pairs(Items) do
-		v.usable = (v.client and next(v.client) or v.consume == 0 or esxItem[v.name] or v.name:find('WEAPON_') or v.name:find('ammo-') or v.name:find('at_')) and true or false
+		v.usable = (v.client and next(v.client) or v.consume == 0 or esxItem[v.name] or v.name:find('WEAPON_') or v.name:find('ammo-') or v.name:sub(0, 3) == 'at_') and true or false
 		ItemData[v.name] = {
 			label = v.label,
 			usable = v.usable,
@@ -844,16 +845,18 @@ RegisterNetEvent('ox_inventory:setPlayerInventory', function(currentDrops, inven
 			playerCoords = GetEntityCoords(playerPed)
 			local vehicle = GetVehiclePedIsIn(playerPed, false)
 
+			if vehicle == 0 then vehicle = nil end
+
 			if PlayerData.currentVehicle ~= vehicle then
 				PlayerData.currentVehicle = vehicle
 
-				if vehicle > 0 then
+				if vehicle then
 					-- local seats = GetVehicleMaxNumberOfPassengers(vehicle) - 1
 
 					if DoesVehicleHaveWeapons(vehicle) then
 						client.weaponWheel = true
 						Utils.WeaponWheel(true)
-						
+
 						-- todo: check if current seat has weapon
 						-- local playerSeat
 
@@ -928,7 +931,7 @@ RegisterNetEvent('ox_inventory:setPlayerInventory', function(currentDrops, inven
 
 	local EnableKeys = client.enablekeys
 	client.tick = SetInterval(function()
-		local playerPed = playerPed
+		local playerPed = PlayerData.ped
 		DisablePlayerVehicleRewards(PlayerData.id)
 
 		if invOpen then
@@ -1095,7 +1098,7 @@ RegisterNUICallback('giveItem', function(data, cb)
 	cb(1)
 	local vehicle = PlayerData.currentVehicle
 
-	if vehicle > 0 then
+	if vehicle then
 		local seats = GetVehicleMaxNumberOfPassengers(vehicle) - 1
 
 		if seats >= 0 then

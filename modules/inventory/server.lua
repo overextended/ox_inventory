@@ -101,15 +101,14 @@ CreateThread(function() Items = server.items end)
 function Inventory.SlotWeight(item, slot)
 	local weight = item.weight * slot.count
 	if not slot.metadata then slot.metadata = {} end
-	if item.ammoname then
-		local ammo = {
-			type = item.ammoname,
-			count = slot.metadata.ammo,
-			weight = Items(item.ammoname).weight
-		}
 
-		if ammo.count then
-			weight += (ammo.weight * ammo.count)
+	if item.ammoname and slot.metadata.ammo then
+		weight += (Items(item.ammoname).weight * slot.metadata.ammo)
+	end
+
+	if slot.metadata.components then
+		for i = 1, #slot.metadata.components do
+			weight += Items(slot.metadata.components[i]).weight
 		end
 	end
 
@@ -656,12 +655,6 @@ exports('CanSwapItem', Inventory.CanSwapItem)
 
 RegisterServerEvent('ox_inventory:removeItem', function(name, count, metadata, slot, used)
 	local inv = Inventory(source)
-
-	if inv.items[slot].name == name and inv.items[slot].name:find('at_') and inv.weapon then
-		local weapon = inv.items[inv.weapon]
-		table.insert(weapon.metadata.components, name)
-	end
-
 	Inventory.RemoveItem(source, name, count, metadata, slot)
 
 	if used then
@@ -917,11 +910,14 @@ RegisterServerEvent('ox_inventory:updateWeapon', function(action, value, slot)
 		weapon = inventory.items[slot]
 
 		if weapon and weapon.metadata then
+			local item = Items(weapon.name)
+
 			if action == 'load' and weapon.metadata.durability > 0 then
 				local ammo = Items(weapon.name).ammoname
 				local diff = value - weapon.metadata.ammo
 				Inventory.RemoveItem(inventory, ammo, diff)
 				weapon.metadata.ammo = value
+				weapon.weight = Inventory.SlotWeight(item, weapon)
 				syncInventory = true
 			elseif action == 'throw' then
 				Inventory.RemoveItem(inventory, weapon.name, 1, weapon.metadata, weapon.slot)
@@ -929,8 +925,10 @@ RegisterServerEvent('ox_inventory:updateWeapon', function(action, value, slot)
 				if type == 'number' then
 					Inventory.AddItem(inventory, weapon.metadata.components[value], 1)
 					table.remove(weapon.metadata.components, value)
+					weapon.weight = Inventory.SlotWeight(item, weapon)
 				elseif type == 'string' then
-					table.insert(weapon.metadata.components, value)
+					table.insert(weapon.metadata.components, inventory.items[tonumber(value)].name)
+					weapon.weight = Inventory.SlotWeight(item, weapon)
 				end
 				syncInventory = true
 			elseif action == 'ammo' then
@@ -941,6 +939,7 @@ RegisterServerEvent('ox_inventory:updateWeapon', function(action, value, slot)
 					local durability = Items(weapon.name).durability * math.abs((weapon.metadata.ammo or 0.1) - value)
 					weapon.metadata.ammo = value
 					weapon.metadata.durability = weapon.metadata.durability - durability
+					weapon.weight = Inventory.SlotWeight(item, weapon)
 				end
 				syncInventory = true
 			elseif action == 'melee' and value > 0 then
