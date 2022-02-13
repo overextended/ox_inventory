@@ -1,5 +1,5 @@
 local Items = {}
-local ItemList = items()
+local ItemList = shared.items
 
 -- Slot count and maximum weight for containers
 -- Whitelist and blacklist: ['item_name'] = true

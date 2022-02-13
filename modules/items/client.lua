@@ -1,4 +1,4 @@
-local Items = items()
+local Items = shared.items
 
 local function GetItem(item)
 	if item then

@@ -1,24 +1,27 @@
-function items()
-	local ItemList = {}
+local function newItem(data)
+	data.weight = data.weight or 0
+	data.close = data.close or true
 
-	for k, v in pairs(data 'items') do
-		v.name = k
-		v.weight = v.weight or 0
-		v.close = v.close or true
-		v.stack = v.stack == nil and true or v.stack
-
-		if v.client then
-			if not v.consume and (v.client.consume or v.client.status or v.client.usetime) then
-				v.consume = 1
-			end
-		end
-
-		if IsDuplicityVersion then v.client = nil else
-			v.server = nil
-			v.count = 0
-		end
-		ItemList[k] = v
+	if data.stack == nil then
+		data.stack = true
 	end
+
+	if data.client then
+		if not data.consume and (data.client.status or data.client.usetime) then
+			data.consume = 1
+		end
+	end
+
+	if IsDuplicityVersion then data.client = nil else
+		data.server = nil
+		data.count = 0
+	end
+
+	shared.items[data.name] = data
+end
+
+do
+	local ItemList = {}
 
 	for type, data in pairs(data('weapons')) do
 		for k, v in pairs(data) do
@@ -41,6 +44,10 @@ function items()
 		end
 	end
 
-	items = nil
-	return ItemList
+	shared.items = ItemList
+
+	for k, v in pairs(data 'items') do
+		v.name = k
+		newItem(v)
+	end
 end
