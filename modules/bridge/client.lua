@@ -21,9 +21,26 @@ function client.hasGroup(group)
 	end
 end
 
+local function onLogout()
+	if PlayerData.loaded then
+		if client.parachute then
+			Utils.DeleteObject(client.parachute)
+			client.parachute = false
+		end
+
+		TriggerEvent('ox_inventory:closeInventory')
+		PlayerData.loaded = false
+		ClearInterval(client.interval)
+		ClearInterval(client.tick)
+		currentWeapon = Utils.Disarm(currentWeapon)
+	end
+end
+
 local Utils = client.utils
 
-if shared.framework == 'esx' then
+if shared.framework == 'ox' then
+	RegisterNetEvent('ox:playerLogout', onLogout)
+elseif shared.framework == 'esx' then
 	local ESX = exports.es_extended:getSharedObject()
 
 	ESX = {
@@ -35,6 +52,8 @@ if shared.framework == 'esx' then
 		PlayerData[key] = value
 		ESX.SetPlayerData(key, value)
 	end
+
+	RegisterNetEvent('esx:onPlayerLogout', onLogout)
 
 	AddEventHandler('esx:setPlayerData', function(key, value)
 		if PlayerData.loaded and GetInvokingResource() == 'es_extended' then

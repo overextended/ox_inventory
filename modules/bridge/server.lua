@@ -28,9 +28,7 @@ if shared.framework == 'ox' then
 		local inventory = MySQL.prepare.await('SELECT inventory FROM characters WHERE charid = ?', { identifier })
 		return inventory and json.decode(inventory)
 	end
-end
-
-if shared.framework == 'esx' then
+elseif shared.framework == 'esx' then
 	local ESX = exports['es_extended']:getSharedObject()
 
 	-- ESX.ServerCallbacks does not exist in the Overextended fork of ESX, so throw an error

@@ -1,5 +1,4 @@
 local DisableControlActions = import 'controls'
-
 local Items = client.items
 local Utils = client.utils
 local currentWeapon
@@ -56,8 +55,6 @@ end
 local ServerCallback = import 'callbacks'
 local Interface = client.interface
 local plyState = LocalPlayer.state
-local tick
-local interval
 
 local function OpenInventory(inv, data)
 	if invOpen then
@@ -104,7 +101,7 @@ local function OpenInventory(inv, data)
 				Utils.PlayAnim(1000, 'pickup_object', 'putdown_low', 5.0, 1.5, -1, 48, 0.0, 0, 0, 0)
 			end
 			plyState.invOpen = true
-			SetInterval(interval, 100)
+			SetInterval(client.interval, 100)
 			SetNuiFocus(true, true)
 			SetNuiFocusKeepInput(true)
 			if client.screenblur then TriggerScreenblurFadeIn(0) end
@@ -601,7 +598,7 @@ RegisterNetEvent('ox_inventory:closeInventory', function(server)
 		TriggerScreenblurFadeOut(0)
 		CloseTrunk()
 		SendNUIMessage({ action = 'closeInventory' })
-		SetInterval(interval, 200)
+		SetInterval(client.interval, 200)
 		Wait(200)
 
 		if not server and currentInventory then
@@ -824,7 +821,7 @@ RegisterNetEvent('ox_inventory:setPlayerInventory', function(currentDrops, inven
 	Utils.Notify({text = shared.locale('inventory_setup'), duration = 2500})
 	local Licenses = data 'licenses'
 
-	interval = SetInterval(function()
+	client.interval = SetInterval(function()
 		PlayerData.ped = PlayerPedId()
 
 		if invOpen == false then
@@ -884,7 +881,7 @@ RegisterNetEvent('ox_inventory:setPlayerInventory', function(currentDrops, inven
 	end, 200)
 
 	local EnableKeys = client.enablekeys
-	tick = SetInterval(function()
+	client.tick = SetInterval(function()
 		DisablePlayerVehicleRewards(PlayerData.id)
 
 		if invOpen then
@@ -999,21 +996,6 @@ AddEventHandler('onResourceStop', function(resourceName)
 			SetNuiFocusKeepInput(false)
 			TriggerScreenblurFadeOut(0)
 		end
-	end
-end)
-
-RegisterNetEvent('esx:onPlayerLogout', function()
-	if PlayerData.loaded then
-		if client.parachute then
-			Utils.DeleteObject(client.parachute)
-			client.parachute = false
-		end
-
-		TriggerEvent('ox_inventory:closeInventory')
-		PlayerData.loaded = false
-		ClearInterval(interval)
-		ClearInterval(tick)
-		currentWeapon = Utils.Disarm(currentWeapon)
 	end
 end)
 
