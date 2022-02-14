@@ -170,8 +170,8 @@ local function useItem(data, cb)
 
 			if p then Citizen.Await(p) end
 
-			if not p or not p.value  then
-				if not result.name:sub(0, 3) == 'at_' and result.consume and result.consume ~= 0 then
+			if not p or not p.value then
+				if result.name:sub(0, 3) ~= 'at_' and result.consume and result.consume ~= 0 then
 					TriggerServerEvent('ox_inventory:removeItem', result.name, result.consume, result.metadata, result.slot, true)
 				end
 
