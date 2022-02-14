@@ -472,6 +472,7 @@ ServerCallback.Register('useItem', function(source, item, slot, metadata)
 		end
 
 		if item and data and data.count > 0 and data.name == item.name then
+			inventory.usingItem = slot
 			data = {name=data.name, label=data.label, count=data.count, slot=slot or data.slot, metadata=data.metadata, consume=item.consume}
 			if type == 1 then -- weapon
 				inventory.weapon = data.slot

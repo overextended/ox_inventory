@@ -655,14 +655,20 @@ exports('CanSwapItem', Inventory.CanSwapItem)
 
 RegisterServerEvent('ox_inventory:removeItem', function(name, count, metadata, slot, used)
 	local inv = Inventory(source)
-	Inventory.RemoveItem(source, name, count, metadata, slot)
 
 	if used then
-		local item = Items(name)
+		slot = inv.items[inv.usingItem]
+		Inventory.RemoveItem(source, slot.name, count, slot.metadata, slot.slot)
+		local item = Items(slot.name)
+
 		if item?.cb then
-			item.cb('usedItem', item, inv, slot)
+			item.cb('usedItem', item, inv, slot.slot)
 		end
+	else
+		Inventory.RemoveItem(source, name, count, metadata, slot)
 	end
+
+	inv.usingItem = nil
 end)
 
 local function generateDropId()
