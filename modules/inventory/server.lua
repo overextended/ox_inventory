@@ -927,7 +927,9 @@ RegisterServerEvent('ox_inventory:updateWeapon', function(action, value, slot)
 					table.remove(weapon.metadata.components, value)
 					weapon.weight = Inventory.SlotWeight(item, weapon)
 				elseif type == 'string' then
-					table.insert(weapon.metadata.components, inventory.items[tonumber(value)].name)
+					local component = inventory.items[tonumber(value)]
+					Inventory.RemoveItem(inventory, component.name, 1)
+					table.insert(weapon.metadata.components, component.name)
 					weapon.weight = Inventory.SlotWeight(item, weapon)
 				end
 				syncInventory = true
