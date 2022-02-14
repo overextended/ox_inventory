@@ -21,6 +21,8 @@ function client.hasGroup(group)
 	end
 end
 
+local Utils = client.utils
+
 local function onLogout()
 	if PlayerData.loaded then
 		if client.parachute then
@@ -35,8 +37,6 @@ local function onLogout()
 		currentWeapon = Utils.Disarm(currentWeapon)
 	end
 end
-
-local Utils = client.utils
 
 if shared.framework == 'ox' then
 	RegisterNetEvent('ox:playerLogout', onLogout)
