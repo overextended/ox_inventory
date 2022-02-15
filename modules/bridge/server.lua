@@ -15,9 +15,13 @@ function server.hasGroup(inv, group)
 end
 
 function server.setPlayerData(player)
+	if not player.groups then
+		shared.warning(("server.setPlayerData did not receive any groups for '%s'"):format(player?.name or GetPlayerName(player)))
+	end
+
 	return {
 		name = player.name,
-		groups = player.groups,
+		groups = player.groups or {},
 		sex = player.sex,
 		dateofbirth = player.dateofbirth,
 	}
