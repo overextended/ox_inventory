@@ -1143,17 +1143,22 @@ RegisterNUICallback('swapItems', function(data, cb)
 		data.instance = currentInstance
 	end
 
-	local response, data, weapon = ServerCallback.Await(shared.resource, 'swapItems', false, data)
+	local success, response, weapon = ServerCallback.Await(shared.resource, 'swapItems', false, data)
 
-	if data then
-		updateInventory(data.items, data.weight)
+	if response then
+		updateInventory(response.items, response.weight)
 	end
 
 	if weapon and currentWeapon then
 		currentWeapon.slot = weapon
 		TriggerEvent('ox_inventory:currentWeapon', currentWeapon)
 	end
-	cb(response or false)
+
+	if data.toType == 'newdrop' then
+		Wait(50)
+	end
+
+	cb(success or false)
 end)
 
 RegisterNUICallback('buyItem', function(data, cb)

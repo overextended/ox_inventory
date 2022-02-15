@@ -176,16 +176,18 @@ ServerCallback.Register('swapItems', function(source, data)
 				items[data.fromSlot] = fromData or false
 				playerInventory.items[data.fromSlot] = fromData
 
-				if shared.framework == 'esx' then Inventory.SyncInventory(playerInventory) end
+				if fromData == playerInventory.weapon then playerInventory.weapon = nil end
 
-				Inventory.CreateDrop(source, data.toSlot, toData, function(drop, dropData)
-					if fromData == playerInventory.weapon then playerInventory.weapon = nil end
-					Log(('%sx %s transferred from %s to %s'):format(data.count, toData.name, playerInventory.label, drop),
-						playerInventory.owner,
-						'swapSlots', playerInventory.owner, drop
-					)
-					TriggerClientEvent('ox_inventory:createDrop', -1, drop, dropData, playerInventory.open and source, slot)
-				end, data.instance)
+				local drop, dropData = Inventory.CreateDrop(source, data.toSlot, toData, false, data.instance)
+
+				TriggerClientEvent('ox_inventory:createDrop', -1, drop, dropData, playerInventory.open and source, slot)
+
+				Log(('%sx %s transferred from %s to %s'):format(data.count, toData.name, playerInventory.label, drop),
+					playerInventory.owner,
+					'swapSlots', playerInventory.owner, drop
+				)
+
+				if shared.framework == 'esx' then Inventory.SyncInventory(playerInventory) end
 
 				return true, {weight=playerInventory.weight, items=items}
 			end
@@ -196,14 +198,22 @@ ServerCallback.Register('swapItems', function(source, data)
 			local container = (not sameInventory and playerInventory.containerSlot) and (fromInventory.type == 'container' and fromInventory or toInventory)
 			local containerItem = container and playerInventory.items[playerInventory.containerSlot]
 
+			if not fromInventory then
+				Wait(0)
+				fromInventory = (data.fromType == 'player' and playerInventory) or Inventory(playerInventory.open)
+			end
+
 			if not sameInventory and toInventory.type == 'player' or toInventory.type == 'otherplayer' then
 				local fromData = fromInventory.items[data.fromSlot]
+
 				if not fromData then
 					TriggerClientEvent('ox_inventory:closeInventory', source, true)
 					return
 				end
+
 				local fromItem = Items(fromData.name)
 				local _, totalCount, _ = Inventory.GetItemSlots(toInventory, fromItem, fromItem.metadata)
+
 				if fromItem.limit and (totalCount + data.count) > fromItem.limit then
 					if toInventory.type == 'player' then
 						TriggerClientEvent('ox_inventory:notify', source, {type = 'error', text = shared.locale('cannot_carry_limit', fromItem.limit, fromItem.label)})
