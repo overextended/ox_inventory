@@ -9,9 +9,6 @@ title: Getting Started
 
 ## Dependencies
 
-### FXServer
-The minimum required version of FXServer is build [5104](https://runtime.fivem.net/artifacts/fivem/build_server_windows/master/5104-5ebb6dfe826667c841027d6dbc7390e42abfb196/server.7z), anything earlier will prevent the resource from starting.
-
 ### OxMySQL
 We utilise our own resource to communicate with MySQL databases via the [node-mysql2](https://github.com/sidorares/node-mysql2) package. The backend is actively maintained and updated unlike the package used by mysql-async, providing improved performance, security, and features. We provide full backwards compatibility with mysql-async and build for the current Cfx architecture.  
 
@@ -36,7 +33,7 @@ Still a work in progress.
 
 <br>
 
-### "Ox" ESX
+### Modified ESX
 The inventory is being moved towards a _standalone_ design, with compatibility for a modified version of **ESX Legacy**.  
 For convenience, we provide a fork with all the necessary changes as well as several new features and performance improvements.  
 
@@ -46,11 +43,6 @@ There should be no changes which break compatibility with other resources with t
 - Inventories are slot-based and items can exist in multiple slots, which can throw off item counting
 - Resources attempting to iterate through inventories in order will not work if a slot is empty
 
-We are in the process of converting some common [ESX resources](https://github.com/overextended/esx-legacy) to better support our releases.  
-Some code is being changed for later reference while a txAdmin recipe is prepared.  
-
-- esx_status: fixed some bugs and rework for oxmysql
-- esx_addoninventory: registers addon_inventory inventories as valid stash targets
 
 !!! tip "Modifying your framework"
 	We do not provide a guide for manually converting your ESX to support Ox Inventory; instead you will need to manually reference changes in the [github diff](https://github.com/overextended/es_extended/compare/58042fb6926769aeab35fe26fa98d568971ba0be...main).
@@ -60,8 +52,8 @@ Some code is being changed for later reference while a txAdmin recipe is prepare
 
 <br>
 
-### Ox Inventory production build
-The interface is written in TypeScript using the React framework, so the code included in the repository _will not do anything_. You either need to build the package yourself (more information in [guides](./guides), or download a release.
+### Production build
+The interface is written in TypeScript using the React framework, so the code included in the repository _will not work_. You either need to build the package yourself (more information in [guides](./guides), or download a release.
 
 [GitHub :fontawesome-brands-github:](https://github.com/overextended/ox_inventory/releases){ .md-button .md-button--primary }
 
@@ -139,6 +131,7 @@ set inventory:evidencegrade 2
 set inventory:clearstashes "6 MONTH"
 
 # Set the contents of randomly generated inventories
+# [item name, minimum, maxiumum, loot chance]
 set inventory:vehicleloot [
     ["cola", 1, 1],
     ["water", 1, 1],
@@ -166,24 +159,22 @@ set datadog:site "datadoghq.com"
 add_principal group.admin ox_inventory
 add_ace resource.ox_inventory command.add_principal allow
 add_ace resource.ox_inventory command.remove_principal allow
-ensure ox_inventory
-
 ```
 
 ## Installation
 === "Fresh ESX"
 	- Download [our fork of ESX](#esx-framework)
-	- Execute the query inside [install.sql](https://github.com/overextended/ox_inventory/blob/main/setup/install.sql)
+	- Execute the query inside [install.sql](https://github.com/overextended/ox_inventory/blob/main/setup/install.sql) and [vehicle.sql](https://github.com/overextended/ox_inventory/blob/main/setup/vehicle.sql)
 
 === "Convert ESX"
 	- Download [our fork of ESX](#esx-framework)
-	- Execute the query inside [install.sql](https://github.com/overextended/ox_inventory/blob/main/setup/install.sql)
+	- Execute the query inside [install.sql](https://github.com/overextended/ox_inventory/blob/main/setup/install.sql) and [vehicle.sql](https://github.com/overextended/ox_inventory/blob/main/setup/vehicle.sql)
 	- Open `fxmanifest.lua` and uncomment `server_script 'setup/convert.lua'`
 	- Start the server and execute the `convertinventory` command from the console
 	- Remove the conversion file
 
 === "Upgrade from Linden Inventory"
-	- Execute the query inside [upgrade.sql](https://github.com/overextended/ox_inventory/blob/main/setup/upgrade.sql)
+	- Execute the query inside [upgrade.sql](https://github.com/overextended/ox_inventory/blob/main/setup/upgrade.sql) and [vehicle.sql](https://github.com/overextended/ox_inventory/blob/main/setup/vehicle.sql)
 	- Open `fxmanifest.lua` and uncomment `server_script 'setup/convert.lua'`
 	- Start the server and execute the `convertinventory linden` command from the console
 	- Remove the conversion file
@@ -202,7 +193,7 @@ Ox Inventory provides a complete suite of tools to replace the built-in items an
 - Shops from esx_shops or the armoury from esx_policejob should be removed
 - Resources like esx_inventoryhud, esx_trunkinventory, esx_addoninventory, etc. should be removed
 
-### xPlayer vs exports.ox_inventory
+### Optional optimisation
 All item related functions from xPlayer, such as `xPlayer.getInventoryItem`, have been modified for compatibility purposes; however they are considered deprecated.
 
 The reasoning is fairly simple - there's now additional function references and overhead to consider. Fortunately, the new Inventory functions can be used directly and offer a great deal of improvements over the old ones.

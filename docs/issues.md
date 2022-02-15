@@ -2,7 +2,7 @@
 title: Common issues
 ---
 
-### Unable to access the inventory
+### Inventory does not open
 If the inventory is not displaying after starting the resource, either an error has occurred (view the console) or you have downloaded the source code.
 You most likely downloaded the source code and didn't download the release zip of the inventory or you didn't build the UI.
 !!! check "Solution"
