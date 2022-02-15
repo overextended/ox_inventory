@@ -57,6 +57,7 @@ else
 		screenblur = GetConvar('inventory:screenblur', 'true') == 'true',
 		keys = json.decode(GetConvar('inventory:keys', '["F2", "K", "TAB"]')),
 		enablekeys = json.decode(GetConvar('inventory:enablekeys', '[249]')),
+		aimedfiring = GetConvar('inventory:aimedfiring', 'false') == 'true'
 	}
 end
 

@@ -895,6 +895,8 @@ RegisterNetEvent('ox_inventory:setPlayerInventory', function(currentDrops, inven
 
 			Markers(Licenses, 'license', vec(30, 150, 30), nil, vehicle)
 
+			if currentWeapon and IsPedUsingActionMode(PlayerData.ped) then SetPedUsingActionMode(PlayerData.ped, false, -1, 'DEFAULT_ACTION')	end
+
 		elseif invOpen == true then
 			if not CanOpenInventory() then
 				TriggerEvent('ox_inventory:closeInventory')
@@ -970,6 +972,8 @@ RegisterNetEvent('ox_inventory:setPlayerInventory', function(currentDrops, inven
 
 			if currentWeapon then
 				DisableControlAction(0, 140, true)
+
+				if client.aimedfiring and not IsPlayerFreeAiming(PlayerData.id) then DisablePlayerFiring(PlayerData.id, true) end
 
 				if not invBusy and currentWeapon.timer ~= 0 and currentWeapon.timer < GetGameTimer() then
 					currentWeapon.timer = 0
