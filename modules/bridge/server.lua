@@ -17,7 +17,7 @@ end
 function server.setPlayerData(player)
 	return {
 		name = player.name,
-		groups = player.groups or {},
+		groups = player.groups,
 		sex = player.sex,
 		dateofbirth = player.dateofbirth,
 	}
