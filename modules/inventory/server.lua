@@ -687,7 +687,8 @@ function Inventory.CreateDrop(source, slot, toSlot, cb, instance)
 	local coords = GetEntityCoords(GetPlayerPed(source))
 	inventory.coords = vec3(coords.x, coords.y, coords.z-0.2)
 	Inventory.Drops[drop] = {coords = inventory.coords, instance = instance}
-	cb(drop, Inventory.Drops[drop])
+
+	return cb and cb(drop, Inventory.Drops[drop]) or drop, Inventory.Drops[drop]
 end
 AddEventHandler('ox_inventory:createDrop', Inventory.CreateDrop)
 
