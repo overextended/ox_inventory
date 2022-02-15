@@ -393,6 +393,17 @@ function Inventory.SetItem(inv, item, count, metadata)
 end
 
 ---@param inv string | number
+---@return table item
+function Inventory.GetCurrentWeapon(inv)
+	inv = Inventory(inv)
+
+	if inv?.player then
+		return inv.items[inv.weapon]
+	end
+end
+exports('GetCurrentWeapon', Inventory.GetCurrentWeapon)
+
+---@param inv string | number
 ---@param slot number
 ---@return table item
 function Inventory.GetSlot(inv, slot)
