@@ -7,13 +7,13 @@ game         'gta5'
 --[[ Resource Information ]]--
 name         'ox_inventory'
 author       'Overextended'
-version      '2.3.5'
+version      '2.4.0'
 repository   'https://github.com/overextended/ox_inventory'
 description  'Slot-based inventory with metadata'
 
 --[[ Manifest ]]--
 dependencies {
-	'/server:5104',
+	'/server:5181',
 	'/onesync',
 	'oxmysql',
 	'pe-lualib'

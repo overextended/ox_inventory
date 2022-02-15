@@ -31,8 +31,7 @@ if shared.framework == 'ox' then
 elseif shared.framework == 'esx' then
 	local ESX = exports['es_extended']:getSharedObject()
 
-	-- ESX.ServerCallbacks does not exist in the Overextended fork of ESX, so throw an error
-	if ESX.ServerCallbacks then
+	if ESX.CreatePickup then
 		shared.error('Ox Inventory requires a modified version of ESX, refer to the documentation.')
 	end
 
