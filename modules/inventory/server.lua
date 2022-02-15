@@ -394,6 +394,34 @@ end
 
 ---@param inv string | number
 ---@param slot number
+---@return table item
+function Inventory.GetSlot(inv, slot)
+	inv = Inventory(inv)
+
+	if inv then
+		return inv.items[slot]
+	end
+end
+exports('GetSlot', Inventory.GetSlot)
+
+---@param inv string | number
+---@param slot number
+---@return table item
+function Inventory.SetDurability(inv, slot, durability)
+	inv = Inventory(inv)
+
+	if inv then
+		slot = inv.items[slot]
+
+		if slot then
+			slot.metadata.durability = durability
+		end
+	end
+end
+exports('SetDurability', Inventory.SetDurability)
+
+---@param inv string | number
+---@param slot number
 ---@param metadata table
 function Inventory.SetMetadata(inv, slot, metadata)
 	inv = Inventory(inv)
