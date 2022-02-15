@@ -426,6 +426,11 @@ function Inventory.SetDurability(inv, slot, durability)
 
 		if slot then
 			slot.metadata.durability = durability
+
+			if inv.type == 'player' then
+				if shared.framework == 'esx' then Inventory.SyncInventory(inv) end
+				TriggerClientEvent('ox_inventory:updateSlots', inv.id, {{item = slot, inventory = inv.type}}, {left=inv.weight, right=inv.open and Inventories[inv.open]?.weight})
+			end
 		end
 	end
 end
