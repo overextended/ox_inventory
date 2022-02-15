@@ -35,8 +35,8 @@ end
 local table = import 'table'
 
 ---@param search string|number slots|1, count|2
----@param item table|string
----@param metadata? table|string
+---@param item table | string
+---@param metadata? table | string
 function Inventory.Search(search, item, metadata)
 	if item then
 		if search == 'slots' then search = 1 elseif search == 'count' then search = 2 end
