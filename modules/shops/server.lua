@@ -166,7 +166,7 @@ ServerCallback.Register('buyItem', function(source, data)
 
 					end
 
-					return true, {data.toSlot, playerInv.items[data.toSlot], weight}, {type = 'success', text = message}
+					return true, {data.toSlot, playerInv.items[data.toSlot], playerInv.weight}, {type = 'success', text = message}
 				else
 					return false, false, {type = 'error', text = shared.locale('cannot_afford', ('%s%s'):format((currency == 'money' and shared.locale('$') or comma_value(price)), (currency == 'money' and comma_value(price) or ' '..Items(currency).label)))}
 				end

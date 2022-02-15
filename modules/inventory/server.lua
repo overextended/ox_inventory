@@ -404,7 +404,7 @@ function Inventory.SetMetadata(inv, slot, metadata)
 
 			if metadata.weight then
 				inv.weight -= slot.weight
-				slot.weight = Inventory.SlotWeight(Items(item), slot)
+				slot.weight = Inventory.SlotWeight(Items(slot.name), slot)
 				inv.weight += slot.weight
 			end
 
@@ -689,7 +689,7 @@ function Inventory.CreateDrop(source, slot, toSlot, cb, instance)
 	Inventory.Drops[drop] = {coords = inventory.coords, instance = instance}
 	cb(drop, Inventory.Drops[drop])
 end
-AddEventHandler('ox_inventory:createDrop', CreateDrop)
+AddEventHandler('ox_inventory:createDrop', Inventory.CreateDrop)
 
 local function CustomDrop(prefix, items, coords, slots, maxWeight, instance)
 	local drop = generateDropId()
@@ -1070,6 +1070,7 @@ local function ConvertItems(playerId, items)
 	if type(items) == 'table' then
 		local returnData, totalWeight = table.create(#items, 0), 0
 		local slot = 0
+
 		for name, count in pairs(items) do
 			local item = Items(name)
 			local metadata = Items.Metadata(playerId, item, false, count)
@@ -1078,7 +1079,8 @@ local function ConvertItems(playerId, items)
 			slot += 1
 			returnData[slot] = {name = item.name, label = item.label, weight = weight, slot = slot, count = count, description = item.description, metadata = metadata, stack = item.stack, close = item.close}
 		end
-		return returnData, weight
+
+		return returnData, totalWeight
 	end
 end
 exports('ConvertItems', ConvertItems)
@@ -1100,7 +1102,7 @@ Inventory.CustomStash = table.create(0, 0)
 ---
 --- groups: { ['police'] = 0 }
 --- ```
-local function RegisterStash(id, label, slots, maxWeight, owner, groups)
+local function RegisterStash(id, label, slots, maxWeight, owner, groups, coords)
 	if not Inventory.CustomStash[id] then
 		Inventory.CustomStash[id] = {
 			name = id,
