@@ -4,7 +4,7 @@
 
 # Framework
 
-The inventory was designed with the intention to move towards a more generic / standalone structure so it can be integrated into any framework without too much hassle. I will be writing a guide for manually setting up support _sometime soon™_. In the mean-time, it will work without any alterations if using **[ESX Legacy v1.5.0](https://github.com/esx-framework/esx-legacy)**.
+The inventory was designed with the intention to move towards a more generic / standalone structure so it can be integrated into any framework without too much hassle. I will be writing a guide for manually setting up support _sometime soon™_. In the mean-time, it will work without any alterations if using the latest updates to **[ESX Legacy](https://github.com/esx-framework/esx-legacy)**.
 
 # Config
 Refer to the [documentation](https://overextended.github.io/ox_inventory/#configuration) setting your config.  
