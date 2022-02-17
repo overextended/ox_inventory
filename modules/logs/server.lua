@@ -10,7 +10,7 @@ if key ~= '' then
 			print(json.encode(text, {indent=true}), '\n')
 			print(json.encode(header, {indent=true}), '\n')
 		end, 'POST', json.encode({
-			hostname = 'FXServer',
+			hostname = GetConvar('datadog:hostname', 'FXServer'),
 			service = shared.resource,
 			message = message,
 			ddsource = source,
