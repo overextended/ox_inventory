@@ -1018,7 +1018,7 @@ import.commands('ox_inventory', {'additem', 'giveitem'}, function(source, args)
 	if args.item and args.count > 0 then
 		Inventory.AddItem(args.target, args.item.name, args.count, args.metatype)
 		local inventory = Inventories[args.target]
-		source = Inventories[source]
+		source = Inventories[source] or {label = 'console', owner = 'console'}
 
 		Log(('%s gave %sx %s to %s'):format(source.label, args.count, args.item.name, inventory.label),
 			source.owner,
@@ -1033,7 +1033,7 @@ import.commands('ox_inventory', 'removeitem', function(source, args)
 	if args.item and args.count > 0 then
 		Inventory.RemoveItem(args.target, args.item.name, args.count, args.metaType)
 		local inventory = Inventories[args.target]
-		source = Inventories[source]
+		source = Inventories[source] or {label = 'console', owner = 'console'}
 
 		Log(('%s took %sx %s from %s'):format(source.label, args.count, args.item.name, inventory.label),
 			source.owner,
@@ -1048,9 +1048,9 @@ import.commands('ox_inventory', 'setitem', function(source, args)
 	if args.item and args.count > 0 then
 		Inventory.SetItem(args.target, args.item.name, args.count, args.metaType)
 		local inventory = Inventories[args.target]
-		source = Inventories[source]
+		source = Inventories[source] or {label = 'console', owner = 'console'}
 
-		Log(('%s set %s\' %s count to %sx (target: %s)'):format(source.label, inventory.label, args.item.name, args.count),
+		Log(('%s set %s\' %s count to %sx'):format(source.label, inventory.label, args.item.name, args.count),
 			source.owner,
 			'admin', inventory.owner
 		)
