@@ -382,11 +382,11 @@ function Inventory.SetItem(inv, item, count, metadata)
 		if inv then
 			local itemCount = Inventory.GetItem(inv, item.name, metadata, true)
 			if count > itemCount then
-				count = count - itemCount
+				count -= itemCount
 				Inventory.AddItem(inv, item.name, count, metadata)
-			elseif count < itemCount then
-				itemCount = count - count
-				Inventory.RemoveItem(inv, item.name, count, metadata)
+			elseif count <= itemCount then
+				itemCount -= count
+				Inventory.RemoveItem(inv, item.name, itemCount, metadata)
 			end
 		end
 	end
@@ -1045,7 +1045,7 @@ end, {'target:number', 'item:string', 'count:number', 'metatype:?string'})
 
 import.commands('ox_inventory', 'setitem', function(source, args)
 	args.item = Items(args.item)
-	if args.item and args.count > 0 then
+	if args.item and args.count >= 0 then
 		Inventory.SetItem(args.target, args.item.name, args.count, args.metaType)
 		local inventory = Inventories[args.target]
 		source = Inventories[source] or {label = 'console', owner = 'console'}
