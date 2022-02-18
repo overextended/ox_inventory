@@ -590,6 +590,15 @@ local function RegisterCommands()
 	RegisterCommand('steal', function()
 		OpenNearbyInventory()
 	end)
+	
+	RegisterCommand('weapondetails', function()
+		if currentWeapon and client.hasGroup(shared.police) then
+			local msg
+			if currentWeapon.metadata.registered then msg = shared.locale('weapon_registered', currentWeapon.label, currentWeapon.metadata.serial, currentWeapon.metadata.registered)
+			else msg = shared.locale('weapon_unregistered', currentWeapon.label) end
+			Utils.Notify({text = msg, duration = 8000})
+		end
+	end)
 
 	for i = 1, 5 do
 		local hotkey = ('hotkey%s'):format(i)
