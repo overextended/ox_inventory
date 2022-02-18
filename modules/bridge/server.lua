@@ -49,6 +49,7 @@ elseif shared.framework == 'esx' then
 	server.UsableItemsCallbacks = ESX.GetUsableItems
 	server.GetPlayerFromId = ESX.GetPlayerFromId
 
+	-- Accounts that need to be synced with physical items
 	server.accounts = {
 		money = 0,
 		black_money = 0,

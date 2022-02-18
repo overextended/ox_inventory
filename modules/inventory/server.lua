@@ -1096,6 +1096,7 @@ import.commands('ox_inventory', 'viewinv', function(source, args)
 end, {'target'})
 
 import.commands = nil
+Inventory.accounts = server.accounts
 
 TriggerEvent('ox_inventory:loadInventory', Inventory)
 
