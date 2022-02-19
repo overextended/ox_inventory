@@ -64,6 +64,7 @@ CreateThread(function()
 				v.stack = v.stackable or true
 				v.description = (v.description or '')
 				v.weight = v.weight or 0
+				v.limit = v.limit
 			end
 			if next(query) then
 				query = table.concat(query, ' ')
@@ -77,6 +78,7 @@ local itemFormat = [[
 	['%s'] = {
 		label = '%s',
 		weight = %s,
+		limit = %s,
 		stack = %s,
 		close = %s,
 		description = '%s'
@@ -91,7 +93,7 @@ local itemFormat = [[
 						if not saveSql then saveSql = true end
 						dumpSize += 1
 						fileSize += 1
-						dump[dumpSize] = ('\n	("%s", "%s", %s, "%s")'):format(v.name, v.label, v.weight, v.description)
+						dump[dumpSize] = ('\n	("%s", "%s", %s, %s, "%s")'):format(v.name, v.label, v.weight, v.limit, v.description)
 						if dumpSize ~= 2 then dump[dumpSize] = ','..dump[dumpSize] end
 						file[fileSize] = (itemFormat):format(formatName, v.label:gsub("'", "\\'"):lower(), v.weight, v.stack, v.close, v.description:gsub("'", "\\'"))
 						ItemList[formatName] = v
