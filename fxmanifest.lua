@@ -7,7 +7,7 @@ game         'gta5'
 --[[ Resource Information ]]--
 name         'ox_inventory'
 author       'Overextended'
-version      '2.4.1'
+version      '2.4.2'
 repository   'https://github.com/overextended/ox_inventory'
 description  'Slot-based inventory with metadata'
 

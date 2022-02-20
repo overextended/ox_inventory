@@ -240,7 +240,8 @@ ServerCallback.Register('swapItems', function(source, data)
 					if data.count > fromData.count then data.count = fromData.count end
 
 					local toData = toInventory.items[data.toSlot]
-					local movedWeapon = fromInventory.weapon == data.fromSlot
+					local movedWeapon = false
+					if fromInventory.weapon == data.fromSlot or fromInventory.weapon == data.toSlot then movedWeapon = true end
 
 					if movedWeapon then
 						fromInventory.weapon = data.toSlot

@@ -382,11 +382,11 @@ function Inventory.SetItem(inv, item, count, metadata)
 		if inv then
 			local itemCount = Inventory.GetItem(inv, item.name, metadata, true)
 			if count > itemCount then
-				count = count - itemCount
+				count -= itemCount
 				Inventory.AddItem(inv, item.name, count, metadata)
-			elseif count < itemCount then
-				itemCount = count - count
-				Inventory.RemoveItem(inv, item.name, count, metadata)
+			elseif count <= itemCount then
+				itemCount -= count
+				Inventory.RemoveItem(inv, item.name, itemCount, metadata)
 			end
 		end
 	end
@@ -1018,7 +1018,7 @@ import.commands('ox_inventory', {'additem', 'giveitem'}, function(source, args)
 	if args.item and args.count > 0 then
 		Inventory.AddItem(args.target, args.item.name, args.count, args.metatype)
 		local inventory = Inventories[args.target]
-		source = Inventories[source]
+		source = Inventories[source] or {label = 'console', owner = 'console'}
 
 		Log(('%s gave %sx %s to %s'):format(source.label, args.count, args.item.name, inventory.label),
 			source.owner,
@@ -1033,7 +1033,7 @@ import.commands('ox_inventory', 'removeitem', function(source, args)
 	if args.item and args.count > 0 then
 		Inventory.RemoveItem(args.target, args.item.name, args.count, args.metaType)
 		local inventory = Inventories[args.target]
-		source = Inventories[source]
+		source = Inventories[source] or {label = 'console', owner = 'console'}
 
 		Log(('%s took %sx %s from %s'):format(source.label, args.count, args.item.name, inventory.label),
 			source.owner,
@@ -1045,12 +1045,12 @@ end, {'target:number', 'item:string', 'count:number', 'metatype:?string'})
 
 import.commands('ox_inventory', 'setitem', function(source, args)
 	args.item = Items(args.item)
-	if args.item and args.count > 0 then
+	if args.item and args.count >= 0 then
 		Inventory.SetItem(args.target, args.item.name, args.count, args.metaType)
 		local inventory = Inventories[args.target]
-		source = Inventories[source]
+		source = Inventories[source] or {label = 'console', owner = 'console'}
 
-		Log(('%s set %s\' %s count to %sx (target: %s)'):format(source.label, inventory.label, args.item.name, args.count),
+		Log(('%s set %s\' %s count to %sx'):format(source.label, inventory.label, args.item.name, args.count),
 			source.owner,
 			'admin', inventory.owner
 		)
@@ -1096,6 +1096,7 @@ import.commands('ox_inventory', 'viewinv', function(source, args)
 end, {'target'})
 
 import.commands = nil
+Inventory.accounts = server.accounts
 
 TriggerEvent('ox_inventory:loadInventory', Inventory)
 
