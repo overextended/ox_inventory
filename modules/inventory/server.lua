@@ -21,6 +21,21 @@ function Inventory.Set(inv, k, v)
 	if inv then
 		if type(v) == 'number' then math.floor(v + 0.5) end
 		if k == 'open' and v == false then
+			if inv.degrade ~= false then
+				for a,b in pairs(inv.items) do
+					if b.metadata.refrigerate then
+						b.metadata.refrigerate = nil 
+					end
+				end
+			else
+				for a,b in pairs(inv.items) do
+					if not b.metadata.refrigerate and b.metadata.degrade then
+						b.metadata.refrigerate = math.floor((b.metadata.durability - os.time()))
+					end
+				end
+				
+			end
+
 			if inv.type ~= 'player' then
 				if inv.type == 'otherplayer' then
 					inv.type = 'player'
@@ -141,7 +156,7 @@ end
 ---@param items? table
 --- This should only be utilised internally!
 --- To create a stash, please use `exports.ox_inventory:RegisterStash` instead.
-function Inventory.Create(id, label, invType, slots, weight, maxWeight, owner, items)
+function Inventory.Create(id, label, invType, slots, weight, maxWeight, owner, items, degrade)
 	if maxWeight then
 		local self = {
 			id = id,
@@ -156,7 +171,8 @@ function Inventory.Create(id, label, invType, slots, weight, maxWeight, owner, i
 			set = Inventory.Set,
 			get = Inventory.Get,
 			minimal = minimal,
-			time = os.time()
+			time = os.time(),
+			degrade = degrade
 		}
 
 		if self.type == 'drop' then
@@ -1148,7 +1164,7 @@ Inventory.CustomStash = table.create(0, 0)
 ---
 --- groups: { ['police'] = 0 }
 --- ```
-local function RegisterStash(id, label, slots, maxWeight, owner, groups, coords)
+local function RegisterStash(id, label, slots, maxWeight, owner, groups, coords, degrade)
 	if not Inventory.CustomStash[id] then
 		Inventory.CustomStash[id] = {
 			name = id,
@@ -1157,7 +1173,8 @@ local function RegisterStash(id, label, slots, maxWeight, owner, groups, coords)
 			slots = slots,
 			weight = maxWeight,
 			groups = groups,
-			coords = coords
+			coords = coords,
+			degrade = degrade
 		}
 	end
 end

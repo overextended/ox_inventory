@@ -69,7 +69,14 @@ ServerCallback.Register('openInventory', function(source, inv, data)
 					right = Inventory(owner and stash.name..owner or stash.name)
 
 					if not right then
-						right = Inventory.Create(owner and stash.name..owner or stash.name, stash.label or stash.name, inv, stash.slots, 0, stash.weight, owner or false)
+						right = Inventory.Create(owner and stash.name..owner or stash.name, stash.label or stash.name, inv, stash.slots, 0, stash.weight, owner or false, nil, stash.degrade)
+					end
+					if stash.degrade == false then
+						for a,b in pairs(right.items) do
+							if b.metadata.refrigerate then
+								b.metadata.durability = os.time() + b.metadata.refrigerate
+							end
+						end
 					end
 				end
 
@@ -82,7 +89,14 @@ ServerCallback.Register('openInventory', function(source, inv, data)
 
 						right = Inventory(data)
 						if not right then
-							right = Inventory.Create(data, stash.label or stash.name, inv, stash.slots, 0, stash.weight, owner or false)
+							right = Inventory.Create(data, stash.label or stash.name, inv, stash.slots, 0, stash.weight, owner or false, nil, stash.degrade)
+						end
+						if stash.degrade == false then
+							for a,b in pairs(right.items) do
+								if b.metadata.refrigerate then
+									b.metadata.durability = os.time() + b.metadata.refrigerate
+								end
+							end
 						end
 					end
 

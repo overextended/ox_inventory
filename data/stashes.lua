@@ -36,4 +36,23 @@ return {
 		weight = 70000,
 		groups = {['ambulance'] = 0}
 	},
+
+	{--Example of a stash that items do not degrade in. Could be used as refrigerator or long term storage for items that degrade over time?
+		coords = vec3(32.44, -1342.32, 29.48),
+		target = {
+			loc = vec3(32.44, -1342.32, 29.48),
+			length = 3.6,
+			width = 1.8,
+			heading = 3.8,
+			minZ = 29.0,
+			maxZ = 30.74,
+			label = 'Open Cooler'
+		},
+		name = '247Cooler',
+		label = 'Cooler',
+		owner = false,
+		slots = 70,
+		weight = 70000,
+		degrade = false --This is the flag to disable item degrading in this stash
+	},
 }
