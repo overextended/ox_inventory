@@ -155,6 +155,9 @@ set datadog:key ""
 # Set server intake (https://docs.datadoghq.com/api/latest/logs/#send-logs)
 set datadog:site "datadoghq.com"
 
+# Set server hostname
+set datadog:hostname "FXServer"
+
 
 add_principal group.admin ox_inventory
 add_ace resource.ox_inventory command.add_principal allow
