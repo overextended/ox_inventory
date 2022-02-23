@@ -292,7 +292,7 @@ local function useSlot(slot)
 			end)
 		elseif currentWeapon then
 			local playerPed = PlayerData.ped
-			if item.name:find('ammo-') then
+			if item.name:find('ammo%-') then
 				if client.weaponWheel then return end
 				local maxAmmo = GetMaxAmmoInClip(playerPed, currentWeapon.hash, true)
 				local currentAmmo = GetAmmoInPedWeapon(playerPed, currentWeapon.hash)
@@ -786,7 +786,7 @@ RegisterNetEvent('ox_inventory:setPlayerInventory', function(currentDrops, inven
 	local ItemData = table.create(0, #Items)
 
 	for _, v in pairs(Items) do
-		v.usable = (v.client and next(v.client) or v.consume == 0 or esxItem[v.name] or v.name:find('WEAPON_') or v.name:find('ammo-') or v.name:sub(0, 3) == 'at_') and true or false
+		v.usable = (v.client and next(v.client) or v.consume == 0 or esxItem[v.name] or v.name:find('WEAPON_') or v.name:find('ammo%-') or v.name:sub(0, 3) == 'at_') and true or false
 		ItemData[v.name] = {
 			label = v.label,
 			usable = v.usable,
