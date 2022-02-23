@@ -23,14 +23,14 @@ function Inventory.Set(inv, k, v)
 		if k == 'open' and v == false then
 			if inv.degrade ~= false then
 				for a,b in pairs(inv.items) do
-					if b.metadata.refrigerate then
-						b.metadata.refrigerate = nil 
+					if b.metadata.degradeamount then
+						b.metadata.degradeamount = nil 
 					end
 				end
 			else
 				for a,b in pairs(inv.items) do
-					if not b.metadata.refrigerate and b.metadata.degrade then
-						b.metadata.refrigerate = math.floor((b.metadata.durability - os.time()))
+					if not b.metadata.degradeamount and b.metadata.degrade then
+						b.metadata.degradeamount = math.floor((b.metadata.durability - os.time()))
 					end
 				end
 				
