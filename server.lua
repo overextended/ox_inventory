@@ -73,8 +73,8 @@ ServerCallback.Register('openInventory', function(source, inv, data)
 					end
 					if stash.degrade == false then
 						for a,b in pairs(right.items) do
-							if b.metadata.refrigerate then
-								b.metadata.durability = os.time() + b.metadata.refrigerate
+							if b.metadata.degradeamount then
+								b.metadata.durability = os.time() + b.metadata.degradeamount
 							end
 						end
 					end
@@ -93,8 +93,8 @@ ServerCallback.Register('openInventory', function(source, inv, data)
 						end
 						if stash.degrade == false then
 							for a,b in pairs(right.items) do
-								if b.metadata.refrigerate then
-									b.metadata.durability = os.time() + b.metadata.refrigerate
+								if b.metadata.degradeamount then
+									b.metadata.durability = os.time() + b.metadata.degradeamount
 								end
 							end
 						end
