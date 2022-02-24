@@ -31,24 +31,6 @@ Still a work in progress.
 
 [GitHub :fontawesome-brands-github:](https://github.com/project-error/pe-lualib){ .md-button .md-button--primary }
 
-<br>
-
-### Modified ESX
-The inventory is being moved towards a _standalone_ design, with compatibility for a modified version of **ESX Legacy**.  
-For convenience, we provide a fork with all the necessary changes as well as several new features and performance improvements.  
-
-There should be no changes which break compatibility with other resources with the exception of what is necessary to support the inventory and new item system.  
-
-- Loadouts do not exist, so errors may occur if a third-party resource attempts to manipulate them
-- Inventories are slot-based and items can exist in multiple slots, which can throw off item counting
-- Resources attempting to iterate through inventories in order will not work if a slot is empty
-
-
-!!! tip "Modifying your framework"
-	We do not provide a guide for manually converting your ESX to support Ox Inventory; instead you will need to manually reference changes in the [github diff](https://github.com/overextended/es_extended/compare/58042fb6926769aeab35fe26fa98d568971ba0be...main).
-	This _may_ change sometime after release when we have finalised the necessary changes.
-
-[GitHub :fontawesome-brands-github:](https://github.com/overextended/es_extended){ .md-button .md-button--primary }
 
 <br>
 
@@ -73,7 +55,6 @@ All stashes and shops will utilise PolyZone's instead of markers to interact wit
 
 ### NPWD
 A standalone and feature-rich phone created by Project Error.  
-When using our fork of ESX you can simplify installation and only need to enable framework integration in the config.  
 The inventory will handle disabling the phone when the player has no item, and supports toggling the phone through item use.
 
 [GitHub :fontawesome-brands-github:](https://github.com/project-error/npwd){ .md-button .md-button--primary }	[Documentation :fontawesome-solid-book:](https://projecterror.dev/docs){ .md-button .md-button--primary }
@@ -166,11 +147,11 @@ add_ace resource.ox_inventory command.remove_principal allow
 
 ## Installation
 === "Fresh ESX"
-	- Download [our fork of ESX](#esx-framework)
+	- Use a compatible version of [ESX Legacy](https://github.com/esx-framework/esx-legacy) (1.6.0+)
 	- Execute the query inside [install.sql](https://github.com/overextended/ox_inventory/blob/main/setup/install.sql) and [vehicle.sql](https://github.com/overextended/ox_inventory/blob/main/setup/vehicle.sql)
 
 === "Convert ESX"
-	- Download [our fork of ESX](#esx-framework)
+	- Use a compatible version of [ESX Legacy](https://github.com/esx-framework/esx-legacy) (1.6.0+)
 	- Execute the query inside [install.sql](https://github.com/overextended/ox_inventory/blob/main/setup/install.sql) and [vehicle.sql](https://github.com/overextended/ox_inventory/blob/main/setup/vehicle.sql)
 	- Open `fxmanifest.lua` and uncomment `server_script 'setup/convert.lua'`
 	- Start the server and execute the `convertinventory` command from the console
@@ -183,6 +164,12 @@ add_ace resource.ox_inventory command.remove_principal allow
 	- Remove the conversion file
 
 	This will not update your items file and old items may be incompatible; refer to documentation for item creation
+
+=== "Standalone"
+	Work in progress.  
+	Refer to the "bridge" module to get an idea of how you setup support for any framework.  
+	Modifications will need to be made for licenses, owned vehicles, and jobs.  
+ 
 
 !!! attention
 	You should restart your server after the first startup to ensure everything has been correctly setup
