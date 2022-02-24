@@ -622,6 +622,7 @@ RegisterNetEvent('ox_inventory:closeInventory', function(server)
 end)
 
 local function updateInventory(items, weight)
+	-- todo: combine iterators
 	local changes = {}
 	local itemCount = {}
 	-- swapslots
@@ -667,11 +668,25 @@ local function updateInventory(items, weight)
 
 		if count < 0 then
 			data.count += count
+
+			if shared.framework == 'ESX' then
+				TriggerEvent('esx:addInventoryItem', { name = data.name }, data.count)
+			else
+				TriggerEvent('ox_inventory:itemCount', data.name, data.count)
+			end
+
 			if data.client?.remove then
 				data.client.remove(data.count)
 			end
 		elseif count > 0 then
 			data.count += count
+
+			if shared.framework == 'ESX' then
+				TriggerEvent('esx:removeInventoryItem', { name = data.name }, data.count)
+			else
+				TriggerEvent('ox_inventory:itemCount', data.name, data.count)
+			end
+
 			if data.client?.add then
 				data.client.add(data.count)
 			end
