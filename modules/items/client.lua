@@ -3,7 +3,7 @@ local Items = shared.items
 local function GetItem(item)
 	if item then
 		item = string.lower(item)
-		if item:find('weapon_') then item = string.upper(item) end
+		if item:sub(0, 7) == 'weapon_' then item = string.upper(item) end
 		return Items[item]
 	end
 	return Items

@@ -941,7 +941,7 @@ RegisterServerEvent('ox_inventory:giveItem', function(slot, target, count)
 				Inventory.RemoveItem(fromInventory, item, count, data.metadata, slot)
 				Inventory.AddItem(toInventory, item, count, data.metadata)
 
-				Log(('%s gave %sx %s to %s'):format(fromInventory.label, data.count, data.name, toInventory.label),
+				Log(('%s gave %sx %s to %s'):format(fromInventory.label, count, data.name, toInventory.label),
 					fromInventory.owner,
 					'giveItem', toInventory.owner
 				)
