@@ -669,8 +669,8 @@ local function updateInventory(items, weight)
 		if count < 0 then
 			data.count += count
 
-			if shared.framework == 'ESX' then
-				TriggerEvent('esx:addInventoryItem', { name = data.name }, data.count)
+			if shared.framework == 'esx' then
+				TriggerEvent('esx:removeInventoryItem', data.name, data.count)
 			else
 				TriggerEvent('ox_inventory:itemCount', data.name, data.count)
 			end
@@ -681,8 +681,8 @@ local function updateInventory(items, weight)
 		elseif count > 0 then
 			data.count += count
 
-			if shared.framework == 'ESX' then
-				TriggerEvent('esx:removeInventoryItem', { name = data.name }, data.count)
+			if shared.framework == 'esx' then
+				TriggerEvent('esx:addInventoryItem', data.name, data.count)
 			else
 				TriggerEvent('ox_inventory:itemCount', data.name, data.count)
 			end
