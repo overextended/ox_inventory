@@ -24,16 +24,14 @@ local ox_inventory = exports[shared.resource]
 -----------------------------------------------------------------------------------------------
 
 Item('bandage', function(data, slot)
-	local maxHealth = 200
+	local maxHealth = GetEntityMaxHealth(PlayerData.ped)
 	local health = GetEntityHealth(PlayerData.ped)
-	-- if health < maxHealth then
-		ox_inventory:useItem(data, function(data)
-			if data then
-				SetEntityHealth(PlayerData.ped, math.min(maxHealth, math.floor(health + maxHealth / 16)))
-				ox_inventory:notify({text = 'You feel better already'})
-			end
-		end)
-	-- end
+	ox_inventory:useItem(data, function(data)
+		if data then
+			SetEntityHealth(PlayerData.ped, math.min(maxHealth, math.floor(health + maxHealth / 16)))
+			ox_inventory:notify({text = 'You feel better already'})
+		end
+	end)
 end)
 
 Item('armour', function(data, slot)

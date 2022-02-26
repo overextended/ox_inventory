@@ -153,12 +153,22 @@ return {
 			notification = 'You drank some refreshing water'
 		}
 	},
-	
+
 	['radio'] = {
 		label = 'Radio',
 		weight = 1000,
 		stack = false,
 		consume = 0,
 		allowArmed = true
+	},
+
+	['armour'] = {
+		label = 'Bulletproof Vest',
+		weight = 3000,
+		stack = false,
+		client = {
+			anim = { dict = 'clothingshirt', clip = 'try_shirt_positive_d' },
+            usetime = 3500
+		}
 	},
 }
