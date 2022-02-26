@@ -858,12 +858,29 @@ else
 	end)
 end
 
+local function prepareSave(inv)
+	inv.changed = false
+
+	if inv.type == 'trunk' then
+		return 1, { json.encode(minimal(inv)), Inventory.GetPlateFromId(inv.id) }
+	elseif inv.type == 'glovebox' then
+		return 2, { json.encode(minimal(inv)), Inventory.GetPlateFromId(inv.id) }
+	else
+		return 3, { inv.owner or '', inv.id, json.encode(minimal(inv)) }
+	end
+end
+
 SetInterval(function()
 	local time = os.time()
-	for id, inv in pairs(Inventories) do
+	local parameters = { {}, {}, {} }
+	local size = { 0, 0, 0 }
+
+	for _, inv in pairs(Inventories) do
 		if not inv.player and not inv.open then
 			if not inv.datastore and inv.changed then
-				Inventory.Save(inv)
+				local i, data = prepareSave(inv)
+				size[i] += 1
+				parameters[i][size[i]] = data
 			end
 
 			if (inv.datastore or inv.owner) and time - inv.time >= 3000 then
@@ -871,6 +888,19 @@ SetInterval(function()
 			end
 		end
 	end
+
+	if #parameters[1] > 0 then
+		MySQL.prepare.await('UPDATE owned_vehicles SET trunk = ? WHERE plate = ?', parameters[1])
+	end
+
+	if #parameters[2] > 0 then
+		MySQL.prepare.await('UPDATE owned_vehicles SET glovebox = ? WHERE plate = ?', parameters[2])
+	end
+
+	if #parameters[3] > 0 then
+		MySQL.prepare.await('INSERT INTO ox_inventory (owner, name, data) VALUES (?, ?, ?) ON DUPLICATE KEY UPDATE data = VALUES(data)', parameters[3])
+	end
+
 end, 600000)
 
 local function saveInventories()
