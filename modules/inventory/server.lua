@@ -84,12 +84,17 @@ function Inventory.SetSlot(inv, item, count, metadata, slot)
 	inv = Inventory(inv)
 	local currentSlot = inv.items[slot]
 	local newCount = currentSlot and currentSlot.count + count or count
+
 	if currentSlot and newCount < 1 then
 		count = currentSlot.count
 		inv.items[slot] = nil
 	else
 		inv.items[slot] = {name = item.name, label = item.label, weight = item.weight, slot = slot, count = newCount, description = item.description, metadata = metadata, stack = item.stack, close = item.close}
 		inv.items[slot].weight = Inventory.SlotWeight(item, inv.items[slot])
+	end
+
+	if not inv.player then
+		inv.changed = true
 	end
 end
 
