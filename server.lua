@@ -67,10 +67,10 @@ lib.callback.register('ox_inventory:openInventory', function(source, inv, data)
 
 				if not stash.groups or server.hasGroup(left, stash.groups) then
 					local owner = stash.owner and left.owner or stash.owner
-					right = Inventory(owner and stash.name..owner or stash.name)
+					right = Inventory(stash.name)
 
 					if not right then
-						right = Inventory.Create(owner and stash.name..owner or stash.name, stash.label or stash.name, inv, stash.slots, 0, stash.weight, owner or false)
+						right = Inventory.Create(stash.name, stash.label or stash.name, inv, stash.slots, 0, stash.weight, owner or false)
 					end
 				end
 
@@ -79,11 +79,10 @@ lib.callback.register('ox_inventory:openInventory', function(source, inv, data)
 				if stash then
 					if not stash.groups or server.hasGroup(left, stash.groups) then
 						local owner = (stash.owner == nil and nil) or (type(stash.owner) == 'string' and stash.owner) or data.owner or stash.owner and left.owner
-						data = (owner and ('%s%s'):format(data.id or data, owner)) or data.id or data
 
-						right = Inventory(data)
+						right = Inventory(data.id or data)
 						if not right then
-							right = Inventory.Create(data, stash.label or stash.name, inv, stash.slots, 0, stash.weight, owner or false)
+							right = Inventory.Create(data.id or data, stash.label or stash.name, inv, stash.slots, 0, stash.weight, owner or false)
 						end
 					end
 

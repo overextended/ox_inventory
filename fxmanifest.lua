@@ -7,7 +7,7 @@ game         'gta5'
 --[[ Resource Information ]]--
 name         'ox_inventory'
 author       'Overextended'
-version      '2.4.5'
+version      '2.5.0'
 repository   'https://github.com/overextended/ox_inventory'
 description  'Slot-based inventory with metadata'
 
@@ -46,9 +46,9 @@ server_scripts {
 	'modules/inventory/server.lua',
 	'modules/shops/server.lua',
 	'server.lua',
+	-- 'setup/convert.lua',
+	'setup/dbcleanup.lua',
 }
-
---server_script 'setup/convert.lua'
 
 ui_page 'web/build/index.html'
 

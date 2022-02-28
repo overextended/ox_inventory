@@ -164,6 +164,10 @@ function Inventory.Create(id, label, invType, slots, weight, maxWeight, owner, i
 			time = os.time()
 		}
 
+		if self.type ~= 'player' and self.owner and type(self.owner) ~= 'boolean' then
+			self.id = ('%s:%s'):format(self.id, self.owner)
+		end
+
 		if self.type == 'drop' then
 			self.datastore = true
 		else
@@ -211,8 +215,18 @@ function Inventory.Save(inv)
 		elseif inv.type == 'glovebox' then
 			MySQL.prepare('UPDATE owned_vehicles SET glovebox = ? WHERE plate = ?', { inventory, Inventory.GetPlateFromId(inv.id) })
 		else
+			local dbId
+
+			if inv.owner and inv.owner ~= true then
+				dbId = inv.id:sub(-#inv.owner, #inv.id)
+
+				if dbId == inv.owner then
+					dbId = inv.id:sub(0, #inv.id - #dbId - 1)
+				end
+			end
+
 			MySQL.prepare('INSERT INTO ox_inventory (owner, name, data) VALUES (?, ?, ?) ON DUPLICATE KEY UPDATE data = VALUES(data)', {
-				inv.owner or '', inv.id, inventory,
+				inv.owner or '', dbId, inventory,
 			})
 		end
 		inv.changed = false
