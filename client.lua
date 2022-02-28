@@ -1,4 +1,3 @@
-local DisableControlActions = import 'controls'
 local Items = client.items
 local Utils = client.utils
 local currentWeapon
@@ -52,7 +51,7 @@ local function CloseTrunk()
 	end
 end
 
-local ServerCallback = import 'callbacks'
+local ServerCallback = lib.callbacks
 local Interface = client.interface
 local plyState = LocalPlayer.state
 
@@ -414,7 +413,7 @@ local function Markers(tb, type, rgb, name, vehicle)
 	end
 end
 
-local table = import 'table'
+local table = lib.table
 local Shops = client.shops
 local Inventory = client.inventory
 
@@ -749,6 +748,7 @@ RegisterNetEvent('ox_inventory:removeDrop', function(id)
 end)
 
 local uiLoaded = false
+local DisableControlActions = lib.controls
 
 local function setStateBagHandler(id)
 	AddStateBagChangeHandler(nil, 'player:'..id, function(bagName, key, value, _, _)

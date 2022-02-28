@@ -46,8 +46,8 @@ AddEventHandler('ox_inventory:setPlayerInventory', setPlayerInventory)
 
 local Stashes = data 'stashes'
 local Vehicles = data 'vehicles'
-local ServerCallback = import 'callbacks'
-local table = import 'table'
+local ServerCallback = lib.callbacks
+local table = lib.table
 
 ServerCallback.Register('openInventory', function(source, inv, data)
 	local left = Inventory(source)

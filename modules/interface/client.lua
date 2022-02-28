@@ -42,7 +42,7 @@ local progress = {
 
 Interface.ProgressActive = false
 
-local DisableControlActions = import 'controls'
+local DisableControlActions = lib.controls
 
 local function ResetPlayer()
 	if progress.anim or progress.scenario then

@@ -32,7 +32,7 @@ if shared.qtarget then
 	})
 end
 
-local table = import 'table'
+local table = lib.table
 
 ---@param search string|number slots|1, count|2
 ---@param item table | string

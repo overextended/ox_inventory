@@ -67,7 +67,7 @@ for shopName, shopDetails in pairs(data('shops')) do
 	end
 end
 
-local ServerCallback = import 'callbacks'
+local ServerCallback = lib.callbacks
 
 ServerCallback.Register('openShop', function(source, data)
 	local left, shop = Inventory(source)
@@ -89,7 +89,7 @@ ServerCallback.Register('openShop', function(source, data)
 	return {label=left.label, type=left.type, slots=left.slots, weight=left.weight, maxWeight=left.maxWeight}, shop
 end)
 
-local table = import 'table'
+local table = lib.table
 local Log = server.logs
 
 -- http://lua-users.org/wiki/FormattingNumbers

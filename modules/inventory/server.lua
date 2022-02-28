@@ -325,7 +325,7 @@ function Inventory.Load(id, invType, owner)
 	return returnData, weight, datastore
 end
 
-local table = import 'table'
+local table = lib.table
 
 ---@param inv string | number
 ---@param item table | string
