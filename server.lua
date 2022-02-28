@@ -46,10 +46,9 @@ AddEventHandler('ox_inventory:setPlayerInventory', setPlayerInventory)
 
 local Stashes = data 'stashes'
 local Vehicles = data 'vehicles'
-local ServerCallback = lib.callbacks
 local table = lib.table
 
-ServerCallback.Register('openInventory', function(source, inv, data)
+lib.callback.register('ox_inventory:openInventory', function(source, inv, data)
 	local left = Inventory(source)
 	local right = left.open and Inventory(left.open)
 
@@ -156,7 +155,7 @@ end)
 
 local Log = server.logs
 
-ServerCallback.Register('swapItems', function(source, data)
+lib.callback.register('ox_inventory:swapItems', function(source, data)
 	-- TODO: requires re-re-re-refactor and helper functions to reduce repetition
 	if data.count > 0 and data.toType ~= 'shop' then
 		local playerInventory, items, ret = Inventory(source), {}, nil
@@ -424,7 +423,7 @@ end)
 
 local Licenses = data 'licenses'
 
-ServerCallback.Register('buyLicense', function(source, id)
+lib.callback.register('ox_inventory:buyLicense', function(source, id)
 	if shared.framework == 'esx' then
 		local license = Licenses[id]
 		if license then
@@ -445,12 +444,12 @@ ServerCallback.Register('buyLicense', function(source, id)
 	end
 end)
 
-ServerCallback.Register('getItemCount', function(source, item, metadata, target)
+lib.callback.register('ox_inventory:getItemCount', function(source, item, metadata, target)
 	local inventory = target and Inventory(target) or Inventory(source)
 	return (inventory and Inventory.GetItem(inventory, item, metadata, true)) or 0
 end)
 
-ServerCallback.Register('getInventory', function(source, id)
+lib.callback.register('ox_inventory:getInventory', function(source, id)
 	local inventory = Inventory(id or source)
 	return inventory and {
 		id = inventory.id,
@@ -464,7 +463,7 @@ ServerCallback.Register('getInventory', function(source, id)
 	}
 end)
 
-ServerCallback.Register('useItem', function(source, item, slot, metadata)
+lib.callback.register('ox_inventory:useItem', function(source, item, slot, metadata)
 	local inventory = Inventory(source)
 	if inventory.type == 'player' then
 		local item, type = Items(item)

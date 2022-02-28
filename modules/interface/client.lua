@@ -42,8 +42,6 @@ local progress = {
 
 Interface.ProgressActive = false
 
-local DisableControlActions = lib.controls
-
 local function ResetPlayer()
 	if progress.anim or progress.scenario then
 		ClearPedTasks(PlayerData.ped)
@@ -58,7 +56,7 @@ local function ResetPlayer()
 		end
 	end
 
-	if #progress.disable > 0 then DisableControlActions:Remove(progress.disable) end
+	if #progress.disable > 0 then lib.disableControls:Remove(progress.disable) end
 	table.wipe(progress.disable)
 	Interface.ProgressActive = false
 	progress.anim = false
@@ -93,7 +91,7 @@ function Interface.Progress(options, completed)
 						end
 					end
 				end
-				if count > 0 then DisableControlActions:Add(progress.disable) end
+				if count > 0 then disableControls:Add(progress.disable) end
 			end
 
 			Interface.ProgressActive = true

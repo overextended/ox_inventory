@@ -51,7 +51,6 @@ local function CloseTrunk()
 	end
 end
 
-local ServerCallback = lib.callbacks
 local Interface = client.interface
 local plyState = LocalPlayer.state
 
@@ -74,7 +73,7 @@ local function OpenInventory(inv, data)
 		local left, right
 
 		if inv == 'shop' and invOpen == false then
-			left, right = ServerCallback.Await(shared.resource, 'openShop', 200, data)
+			left, right = lib.callback.await('ox_inventory:openShop', 200, data)
 		elseif invOpen ~= nil then
 			if inv == 'policeevidence' then
 				local input = Interface.Keyboard(shared.locale('police_evidence'), {shared.locale('locker_number')})
@@ -92,7 +91,7 @@ local function OpenInventory(inv, data)
 				end
 			end
 
-			left, right = ServerCallback.Await(shared.resource, 'openInventory', false, inv, data)
+			left, right = lib.callback.await('ox_inventory:openInventory', false, inv, data)
 		end
 
 		if left then
@@ -138,7 +137,7 @@ local function useItem(data, cb)
 		if currentWeapon and currentWeapon?.timer > 100 then return end
 
 		invBusy = true
-		local result = ServerCallback.Await(shared.resource, 'useItem', 200, data.name, data.slot, PlayerData.inventory[data.slot].metadata)
+		local result = lib.callback.await('ox_inventory:useItem', 200, data.name, data.slot, PlayerData.inventory[data.slot].metadata)
 
 		if not result then
 			Wait(500)
@@ -748,7 +747,6 @@ RegisterNetEvent('ox_inventory:removeDrop', function(id)
 end)
 
 local uiLoaded = false
-local DisableControlActions = lib.controls
 
 local function setStateBagHandler(id)
 	AddStateBagChangeHandler(nil, 'player:'..id, function(bagName, key, value, _, _)
@@ -757,9 +755,9 @@ local function setStateBagHandler(id)
 		elseif key == 'invBusy' then
 			invBusy = value
 			if value then
-				DisableControlActions:Add(23, 25, 36, 263)
+				lib.disableControls:Add(23, 25, 36, 263)
 			else
-				DisableControlActions:Remove(23, 25, 36, 263)
+				lib.disableControls:Remove(23, 25, 36, 263)
 			end
 		elseif key == 'instance' then
 			currentInstance = value
@@ -947,7 +945,7 @@ RegisterNetEvent('ox_inventory:setPlayerInventory', function(currentDrops, inven
 	end, 200)
 
 	local EnableKeys = client.enablekeys
-	client.tick = SetInterval(function()
+	client.tick = SetInterval(function(disableControls)
 		local playerPed = PlayerData.ped
 		DisablePlayerVehicleRewards(PlayerData.id)
 
@@ -964,7 +962,7 @@ RegisterNetEvent('ox_inventory:setPlayerInventory', function(currentDrops, inven
 				EnableControlAction(0, 31, true)
 			end
 		else
-			DisableControlActions()
+			disableControls()
 			if invBusy then DisablePlayerFiring(PlayerData.id, true) end
 
 			for _, v in pairs(nearbyMarkers) do
@@ -974,7 +972,7 @@ RegisterNetEvent('ox_inventory:setPlayerInventory', function(currentDrops, inven
 
 			if closestMarker and IsControlJustReleased(0, 38) then
 				if closestMarker[3] == 'license' then
-					ServerCallback.Async(shared.resource, 'buyLicense', 1000, function(success, message)
+					lib.callback.Async(shared.resource, 'buyLicense', 1000, function(success, message)
 						if success == false then
 							Utils.Notify({type = 'error', text = shared.locale(message), duration = 2500})
 						else
@@ -1047,7 +1045,7 @@ RegisterNetEvent('ox_inventory:setPlayerInventory', function(currentDrops, inven
 				end
 			end
 		end
-	end)
+	end, 0, lib.disableControls)
 
 	collectgarbage('collect')
 end)
@@ -1162,7 +1160,7 @@ RegisterNUICallback('swapItems', function(data, cb)
 		data.instance = currentInstance
 	end
 
-	local success, response, weapon = ServerCallback.Await(shared.resource, 'swapItems', false, data)
+	local success, response, weapon = lib.callback.await('ox_inventory:swapItems', false, data)
 
 	if response then
 		updateInventory(response.items, response.weight)
@@ -1181,7 +1179,7 @@ RegisterNUICallback('swapItems', function(data, cb)
 end)
 
 RegisterNUICallback('buyItem', function(data, cb)
-	local response, data, message = ServerCallback.Await(shared.resource, 'buyItem', 100, data)
+	local response, data, message = lib.callback.await('ox_inventory:buyItem', 100, data)
 	if data then
 		PlayerData.inventory[data[1]] = data[2]
 		client.setPlayerData('inventory', PlayerData.inventory)
