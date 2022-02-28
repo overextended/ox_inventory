@@ -16,11 +16,10 @@ dependencies {
 	'/server:5181',
 	'/onesync',
 	'oxmysql',
-	'pe-lualib'
 }
 
 shared_scripts {
-	'@pe-lualib/init.lua',
+	'@ox_lib/init.lua',
 	'modules/init.lua'
 }
 
@@ -47,7 +46,6 @@ server_scripts {
 	'modules/inventory/server.lua',
 	'modules/shops/server.lua',
 	'server.lua',
-	'version.lua'
 }
 
 --server_script 'setup/convert.lua'

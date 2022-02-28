@@ -1,3 +1,5 @@
+lib.versionCheck('overextended/ox_inventory')
+
 local Inventory = server.inventory
 local Items = server.items
 
