@@ -79,7 +79,7 @@ function data(name)
 	return func()
 end
 
-if not SetInterval or not import then
+if not lib then
 	error('Ox Inventory requires the ox_lib resource, refer to the documentation.')
 end
 
