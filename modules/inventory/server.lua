@@ -871,7 +871,7 @@ local function prepareSave(inv)
 	elseif inv.type == 'glovebox' then
 		return 2, { json.encode(minimal(inv)), Inventory.GetPlateFromId(inv.id) }
 	else
-		return 3, { inv.owner or '', inv.id, json.encode(minimal(inv)) }
+		return 3, { inv.owner or '', inv.dbId, json.encode(minimal(inv)) }
 	end
 end
 
