@@ -205,24 +205,39 @@ ServerCallback.Register('swapItems', function(source, data)
 				fromInventory = (data.fromType == 'player' and playerInventory) or Inventory(playerInventory.open)
 			end
 
-			if not sameInventory and toInventory.type == 'player' or toInventory.type == 'otherplayer' then
-				local fromData = fromInventory.items[data.fromSlot]
+			if not sameInventory then
+				if fromInventory.type == 'player' then
+					local toData = toInventory.items[data.toSlot]
 
-				if not fromData then
-					TriggerClientEvent('ox_inventory:closeInventory', source, true)
-					return
-				end
+					if toData then
+						local toItem = Items(toData.name)
+						local _, totalCount, _ = Inventory.GetItemSlots(toInventory, toItem, toItem.metadata)
 
-				local fromItem = Items(fromData.name)
-				local _, totalCount, _ = Inventory.GetItemSlots(toInventory, fromItem, fromItem.metadata)
-
-				if fromItem.limit and (totalCount + data.count) > fromItem.limit then
-					if toInventory.type == 'player' then
-						TriggerClientEvent('ox_inventory:notify', source, {type = 'error', text = shared.locale('cannot_carry_limit', fromItem.limit, fromItem.label)})
-					elseif toInventory.type == 'otherplayer' then
-						TriggerClientEvent('ox_inventory:notify', source, {type = 'error', text = shared.locale('cannot_carry_limit_other', fromItem.limit, fromItem.label)})
+						if toItem.limit and (totalCount + data.count) > toItem.limit then
+							TriggerClientEvent('ox_inventory:notify', source, {type = 'error', text = shared.locale('cannot_carry_limit', toItem.limit, toItem.label)})
+							return
+						end
 					end
-					return
+
+				elseif toInventory.type == 'player' or toInventory.type == 'otherplayer' then
+					local fromData = fromInventory.items[data.fromSlot]
+
+					if not fromData then
+						TriggerClientEvent('ox_inventory:closeInventory', source, true)
+						return
+					end
+
+					local fromItem = Items(fromData.name)
+					local _, totalCount, _ = Inventory.GetItemSlots(toInventory, fromItem, fromItem.metadata)
+
+					if fromItem.limit and (totalCount + data.count) > fromItem.limit then
+						if toInventory.type == 'player' then
+							TriggerClientEvent('ox_inventory:notify', source, {type = 'error', text = shared.locale('cannot_carry_limit', fromItem.limit, fromItem.label)})
+						elseif toInventory.type == 'otherplayer' then
+							TriggerClientEvent('ox_inventory:notify', source, {type = 'error', text = shared.locale('cannot_carry_limit_other', fromItem.limit, fromItem.label)})
+						end
+						return
+					end
 				end
 			end
 
