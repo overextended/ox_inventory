@@ -889,7 +889,7 @@ SetInterval(function()
 			end
 
 			if (inv.datastore or inv.owner) and time - inv.time >= 3000 then
-				Inventory.Remove(id, inv.type)
+				Inventory.Remove(inv.id, inv.type)
 			end
 		end
 	end
