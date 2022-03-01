@@ -209,16 +209,14 @@ function Inventory.Save(inv)
 	local inventory = json.encode(minimal(inv))
 
 	if inv.type == 'player' then
-		MySQL.prepare('UPDATE users SET inventory = ? WHERE identifier = ?', { inventory, inv.owner })
+		MySQL:savePlayer(inv.owner, inventory)
 	else
 		if inv.type == 'trunk' then
-			MySQL.prepare('UPDATE owned_vehicles SET trunk = ? WHERE plate = ?', { inventory, Inventory.GetPlateFromId(inv.id) })
+			MySQL:saveTrunk(Inventory.GetPlateFromId(inv.id), inventory)
 		elseif inv.type == 'glovebox' then
-			MySQL.prepare('UPDATE owned_vehicles SET glovebox = ? WHERE plate = ?', { inventory, Inventory.GetPlateFromId(inv.id) })
+			MySQL:saveGlovebox(Inventory.GetPlateFromId(inv.id), inventory)
 		else
-			MySQL.prepare('INSERT INTO ox_inventory (owner, name, data) VALUES (?, ?, ?) ON DUPLICATE KEY UPDATE data = VALUES(data)', {
-				inv.owner or '', inv.dbId, inventory,
-			})
+			MySQL:saveStash(inv.owner, inv.dbId, inventory)
 		end
 		inv.changed = false
 	end
@@ -294,7 +292,7 @@ function Inventory.Load(id, invType, owner)
 				datastore = true
 			end
 		elseif invType == 'trunk' or invType == 'glovebox' then
-			result = MySQL.prepare.await('SELECT plate, '..invType..' FROM owned_vehicles WHERE plate = ?', { Inventory.GetPlateFromId(id) })
+			result = invType == 'trunk' and MySQL:loadTrunk( Inventory.GetPlateFromId(id) ) or MySQL:loadGlovebox( Inventory.GetPlateFromId(id) )
 
 			if not result then
 				if server.randomloot then
@@ -304,7 +302,7 @@ function Inventory.Load(id, invType, owner)
 				end
 			else result = result[invType] end
 		else
-			result = MySQL.prepare.await('SELECT data FROM ox_inventory WHERE owner = ? AND name = ?', { owner or '', id })
+			result = MySQL:loadStash(owner or '', id)
 		end
 	end
 
@@ -760,19 +758,11 @@ exports('CustomDrop', CustomDrop)
 function Inventory.Confiscate(source)
 	local inv = Inventories[source]
 	if inv?.player then
-		local inventory = json.encode(minimal(inv))
-		MySQL.update('INSERT INTO ox_inventory (owner, name, data) VALUES (:owner, :name, :data) ON DUPLICATE KEY UPDATE data = :data', {
-			owner = inv.owner,
-			name = inv.owner,
-			data = inventory,
-		}, function (result)
-			if result > 0 then
-				table.wipe(inv.items)
-				inv.weight = 0
-				TriggerClientEvent('ox_inventory:inventoryConfiscated', inv.id)
-				if shared.framework == 'esx' then Inventory.SyncInventory(inv) end
-			end
-		end)
+		MySQL:saveStash(inv.owner, inv.owner, json.encode(minimal(inv)))
+		table.wipe(inv.items)
+		inv.weight = 0
+		TriggerClientEvent('ox_inventory:inventoryConfiscated', inv.id)
+		if shared.framework == 'esx' then Inventory.SyncInventory(inv) end
 	end
 end
 exports('ConfiscateInventory', Inventory.Confiscate)
@@ -894,18 +884,7 @@ SetInterval(function()
 		end
 	end
 
-	if #parameters[1] > 0 then
-		MySQL.prepare.await('UPDATE owned_vehicles SET trunk = ? WHERE plate = ?', parameters[1])
-	end
-
-	if #parameters[2] > 0 then
-		MySQL.prepare.await('UPDATE owned_vehicles SET glovebox = ? WHERE plate = ?', parameters[2])
-	end
-
-	if #parameters[3] > 0 then
-		MySQL.prepare.await('INSERT INTO ox_inventory (owner, name, data) VALUES (?, ?, ?) ON DUPLICATE KEY UPDATE data = VALUES(data)', parameters[3])
-	end
-
+	MySQL:saveInventories(parameters[1], parameters[2], parameters[3])
 end, 600000)
 
 local function saveInventories()

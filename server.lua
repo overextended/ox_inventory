@@ -11,7 +11,7 @@ local function setPlayerInventory(player, data)
 	while not shared.ready do Wait(0) end
 
 	if not data then
-		data = server.getInventory(player.identifier)
+		data = MySQL:loadPlayer(player.identifier)
 	end
 
 	local inventory = {}
@@ -427,7 +427,8 @@ lib.callback.register('ox_inventory:buyLicense', function(source, id)
 		local license = Licenses[id]
 		if license then
 			local inventory = Inventory(source)
-			local result = MySQL.scalar.await('SELECT 1 FROM user_licenses WHERE type = ? AND owner = ?', { license.name, inventory.owner })
+			local result = MySQL:selectLicense(license.name, inventory.owner)
+
 			if result then
 				return false, 'has_weapon_license'
 			elseif Inventory.GetItem(inventory, 'money', false, true) < license.price then
@@ -435,6 +436,7 @@ lib.callback.register('ox_inventory:buyLicense', function(source, id)
 			else
 				Inventory.RemoveItem(inventory, 'money', license.price)
 				TriggerEvent('esx_license:addLicense', source, 'weapon')
+
 				return true, 'bought_weapon_license'
 			end
 		end

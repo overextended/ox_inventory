@@ -114,7 +114,7 @@ lib.callback.register('ox_inventory:buyItem', function(source, data)
 					data.count = fromData.count
 				end
 
-			elseif fromData.license and not MySQL.scalar.await('SELECT 1 FROM user_licenses WHERE type = ? AND owner = ?', { fromData.license, playerInv.owner }) then
+			elseif fromData.license and shared.framework == 'esx' and not MySQL:selectLicense(fromData.license, playerInv.owner) then
 				return false, false, {type = 'error', text = shared.locale('item_unlicensed')}
 
 			elseif fromData.grade then
