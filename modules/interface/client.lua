@@ -44,7 +44,7 @@ Interface.ProgressActive = false
 
 local function ResetPlayer()
 	if progress.anim or progress.scenario then
-		ClearPedTasks(PlayerData.ped)
+		ClearPedTasks(cache.ped)
 	end
 
 	for i = 1, 2 do
@@ -79,7 +79,7 @@ local Animations = data 'animations'
 function Interface.Progress(options, completed)
 	if Interface.ProgressActive == false then
 		progress.callback = completed
-		if not IsEntityDead(PlayerData.ped) or options.useWhileDead then
+		if not IsEntityDead(cache.ped) or options.useWhileDead then
 			if options.disable then
 				local count = 0
 				for key, disable in pairs(options.disable) do
@@ -110,12 +110,12 @@ function Interface.Progress(options, completed)
 			if options.anim then
 				if options.anim.dict then
 					lib.requestAnimDict(options.anim.dict)
-					TaskPlayAnim(PlayerData.ped, options.anim.dict, options.anim.clip, 3.0, 1.0, -1, options.anim.flag or 49, 0, false, false, false)
+					TaskPlayAnim(cache.ped, options.anim.dict, options.anim.clip, 3.0, 1.0, -1, options.anim.flag or 49, 0, false, false, false)
 					progress.anim = true
 				end
 
 				if options.anim.scenario and not options.anim.dict then
-					TaskStartScenarioInPlace(PlayerData.ped, options.anim.scenario, 0, true)
+					TaskStartScenarioInPlace(cache.ped, options.anim.scenario, 0, true)
 					progress.scenario = true
 				end
 			end
@@ -130,7 +130,7 @@ function Interface.Progress(options, completed)
 
 					lib.requestModel(model)
 
-					local pCoords = GetOffsetFromEntityInWorldCoords(PlayerData.ped, 0.0, 0.0, 0.0)
+					local pCoords = GetOffsetFromEntityInWorldCoords(cache.ped, 0.0, 0.0, 0.0)
 					local modelSpawn = CreateObject(model, pCoords.x, pCoords.y, pCoords.z, true, true, true)
 
 					local netid = ObjToNet(modelSpawn)
@@ -138,7 +138,7 @@ function Interface.Progress(options, completed)
 					NetworkSetNetworkIdDynamic(netid, true)
 					SetNetworkIdCanMigrate(netid, false)
 
-					AttachEntityToEntity(modelSpawn, PlayerData.ped, GetPedBoneIndex(PlayerData.ped, prop.bone or 60309), prop.pos.x or 0.0, prop.pos.y or 0.0, prop.pos.z or 0.0, prop.rot.x or 0.0, prop.rot.y or 0.0, prop.rot.z or 0.0, 1, 1, 0, 1, 0, 1)
+					AttachEntityToEntity(modelSpawn, cache.ped, GetPedBoneIndex(cache.ped, prop.bone or 60309), prop.pos.x or 0.0, prop.pos.y or 0.0, prop.pos.z or 0.0, prop.rot.x or 0.0, prop.rot.y or 0.0, prop.rot.z or 0.0, 1, 1, 0, 1, 0, 1)
 					progress['prop'..i] = netid
 					SetModelAsNoLongerNeeded(model)
 				end

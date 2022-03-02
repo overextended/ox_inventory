@@ -219,7 +219,7 @@ local function useSlot(slot)
 
 				return data.client.export(0, data, {name = item.name, slot = item.slot, metadata = item.metadata})
 			elseif data.client.event then -- deprecated, to be removed
-				return print(('unable to trigger event for %s, data.client.event has been removed. utilise exports instead.'):format(item.name))
+				return error(('unable to trigger event for %s, data.client.event has been removed. utilise exports instead.'):format(item.name))
 			end
 		end
 
@@ -770,6 +770,21 @@ local function setStateBagHandler(id)
 	setStateBagHandler = nil
 end
 
+lib.onCache('ped', function()
+	Utils.WeaponWheel(client.weaponWheel)
+end)
+
+lib.onCache('vehicle', function(vehicle)
+	if vehicle then
+		if DoesVehicleHaveWeapons(vehicle) then
+			return Utils.WeaponWheel(true)
+			-- todo: check if current seat has weapon
+		end
+	end
+
+	Utils.WeaponWheel(false)
+end)
+
 RegisterNetEvent('ox_inventory:setPlayerInventory', function(currentDrops, inventory, weight, esxItem, player, source)
 	PlayerData = player
 	PlayerData.id = cache.playerId
@@ -778,8 +793,8 @@ RegisterNetEvent('ox_inventory:setPlayerInventory', function(currentDrops, inven
 	setmetatable(PlayerData, {
 		__index = function(self, key)
 			if key == 'ped' then
-				return cache.ped
-			else return false end
+				return PlayerPedId()
+			end
 		end
 	})
 
@@ -798,7 +813,6 @@ RegisterNetEvent('ox_inventory:setPlayerInventory', function(currentDrops, inven
 	currentWeapon = nil
 	drops = currentDrops
 	Utils.ClearWeapons()
-	Utils.WeaponWheel(false)
 
 	local ItemData = table.create(0, #Items)
 
@@ -846,24 +860,10 @@ RegisterNetEvent('ox_inventory:setPlayerInventory', function(currentDrops, inven
 	plyState:set('invBusy', false, false)
 	plyState:set('invOpen', false, false)
 	TriggerEvent('ox_inventory:updateInventory', PlayerData.inventory)
-
 	Utils.Notify({text = shared.locale('inventory_setup'), duration = 2500})
+	Utils.WeaponWheel(false)
+
 	local Licenses = data 'licenses'
-
-	lib.onCache('ped', function()
-		Utils.WeaponWheel(client.weaponWheel)
-	end)
-
-	lib.onCache('vehicle', function(vehicle)
-		if vehicle then
-			if DoesVehicleHaveWeapons(vehicle) then
-				return Utils.WeaponWheel(true)
-				-- todo: check if current seat has weapon
-			end
-		end
-
-		Utils.WeaponWheel(false)
-	end)
 
 	client.interval = SetInterval(function()
 		local playerPed = cache.ped

@@ -58,18 +58,18 @@ end
 
 function MySQL:saveInventories(trunks, gloveboxes, stashes)
 	if #trunks > 0 then
-		MySQL.prepare.await(Query.UPDATE_TRUNK, trunks)
+		self.prepare.await(Query.UPDATE_TRUNK, trunks)
 	end
 
 	if #gloveboxes > 0 then
-		MySQL.prepare.await(Query.UPDATE_GLOVEBOX, gloveboxes)
+		self.prepare.await(Query.UPDATE_GLOVEBOX, gloveboxes)
 	end
 
 	if #stashes > 0 then
-		MySQL.prepare.await(Query.UPDATE_STASH, stashes)
+		self.prepare.await(Query.UPDATE_STASH, stashes)
 	end
 end
 
 function MySQL:selectLicense(name, owner)
-	return MySQL.scalar.await('SELECT 1 FROM user_licenses WHERE type = ? AND owner = ?', { name, owner })
+	return self.scalar.await('SELECT 1 FROM user_licenses WHERE type = ? AND owner = ?', { name, owner })
 end
