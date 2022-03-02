@@ -134,11 +134,6 @@ lib.callback.register('ox_inventory:buyItem', function(source, data)
 			local metadata, count = Items.Metadata(playerInv, fromItem, fromData.metadata and table.clone(fromData.metadata) or {}, data.count)
 			local price = count * fromData.price
 
-			local _, totalCount, _ = Inventory.GetItemSlots(playerInv, fromItem, fromItem.metadata)
-			if fromItem.limit and (totalCount + data.count) > fromItem.limit then
-				return false, false, {type = 'error', text = shared.locale('cannot_carry_limit', fromItem.limit, fromItem.label)}
-			end
-
 			if toData == nil or (fromItem.name == toItem.name and fromItem.stack and table.matches(toData.metadata, metadata)) then
 				local canAfford = Inventory.GetItem(source, currency, false, true) >= price
 				if canAfford then
