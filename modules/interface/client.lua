@@ -91,7 +91,7 @@ function Interface.Progress(options, completed)
 						end
 					end
 				end
-				if count > 0 then disableControls:Add(progress.disable) end
+				if count > 0 then lib.disableControls:Add(progress.disable) end
 			end
 
 			Interface.ProgressActive = true
