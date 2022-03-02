@@ -69,16 +69,15 @@ elseif shared.framework == 'esx' then
 
 	RegisterNetEvent('esx_policejob:handcuff', function()
 		PlayerData.cuffed = not PlayerData.cuffed
-		LocalPlayer.state:set('busy', PlayerData.cuffed, false)
+		LocalPlayer.state:set('invBusy', PlayerData.cuffed, false)
 		if PlayerData.cuffed then
 			currentWeapon = Utils.Disarm(currentWeapon)
-			if invOpen then TriggerEvent('ox_inventory:closeInventory') end
 		end
 	end)
 
 	RegisterNetEvent('esx_policejob:unrestrain', function()
 		PlayerData.cuffed = false
-		LocalPlayer.state:set('busy', PlayerData.cuffed, false)
+		LocalPlayer.state:set('invBusy', PlayerData.cuffed, false)
 	end)
 
 	if ESX.PlayerLoaded then
