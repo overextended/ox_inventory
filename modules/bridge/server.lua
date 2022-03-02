@@ -27,12 +27,7 @@ function server.setPlayerData(player)
 	}
 end
 
-if shared.framework == 'ox' then
-	function server.getInventory(identifier)
-		local inventory = MySQL.prepare.await('SELECT inventory FROM characters WHERE charid = ?', { identifier })
-		return inventory and json.decode(inventory)
-	end
-elseif shared.framework == 'esx' then
+if shared.framework == 'esx' then
 	local ESX = exports['es_extended']:getSharedObject()
 
 	if ESX.CreatePickup then
@@ -66,11 +61,6 @@ elseif shared.framework == 'esx' then
 			sex = player.sex or player.variables.sex,
 			dateofbirth = player.dateofbirth or player.variables.dateofbirth,
 		}
-	end
-
-	function server.getInventory(identifier)
-		local inventory = MySQL.prepare.await('SELECT inventory FROM users WHERE identifier = ?', { identifier })
-		return inventory and json.decode(inventory)
 	end
 
 	RegisterServerEvent('ox_inventory:requestPlayerInventory', function()

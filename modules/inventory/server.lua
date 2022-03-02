@@ -99,12 +99,17 @@ function Inventory.SetSlot(inv, item, count, metadata, slot)
 	inv = Inventory(inv)
 	local currentSlot = inv.items[slot]
 	local newCount = currentSlot and currentSlot.count + count or count
+
 	if currentSlot and newCount < 1 then
 		count = currentSlot.count
 		inv.items[slot] = nil
 	else
 		inv.items[slot] = {name = item.name, label = item.label, weight = item.weight, slot = slot, count = newCount, description = item.description, metadata = metadata, stack = item.stack, close = item.close}
 		inv.items[slot].weight = Inventory.SlotWeight(item, inv.items[slot])
+	end
+
+	if not inv.player then
+		inv.changed = true
 	end
 end
 
@@ -179,10 +184,15 @@ function Inventory.Create(id, label, invType, slots, weight, maxWeight, owner, i
 			self.datastore = true
 		else
 			self.changed = false
+			self.dbId = self.id
+
+			if self.type ~= 'player' and self.owner and type(self.owner) ~= 'boolean' then
+				self.id = ('%s:%s'):format(self.id, self.owner)
+			end
 		end
 
 		if not self.items then
-			self.items, self.weight, self.datastore = Inventory.Load(self.id, self.type, self.owner)
+			self.items, self.weight, self.datastore = Inventory.Load(self.dbId, self.type, self.owner)
 		elseif self.weight == 0 and next(self.items) then
 			self.weight = Inventory.CalculateWeight(self.items)
 		end
@@ -215,16 +225,14 @@ function Inventory.Save(inv)
 	local inventory = json.encode(minimal(inv))
 
 	if inv.type == 'player' then
-		MySQL.prepare('UPDATE users SET inventory = ? WHERE identifier = ?', { inventory, inv.owner })
+		MySQL:savePlayer(inv.owner, inventory)
 	else
 		if inv.type == 'trunk' then
-			MySQL.prepare('UPDATE owned_vehicles SET trunk = ? WHERE plate = ?', { inventory, Inventory.GetPlateFromId(inv.id) })
+			MySQL:saveTrunk(Inventory.GetPlateFromId(inv.id), inventory)
 		elseif inv.type == 'glovebox' then
-			MySQL.prepare('UPDATE owned_vehicles SET glovebox = ? WHERE plate = ?', { inventory, Inventory.GetPlateFromId(inv.id) })
+			MySQL:saveGlovebox(Inventory.GetPlateFromId(inv.id), inventory)
 		else
-			MySQL.prepare('INSERT INTO ox_inventory (owner, name, data) VALUES (?, ?, ?) ON DUPLICATE KEY UPDATE data = VALUES(data)', {
-				inv.owner or '', inv.id, inventory,
-			})
+			MySQL:saveStash(inv.owner, inv.dbId, inventory)
 		end
 		inv.changed = false
 	end
@@ -300,7 +308,7 @@ function Inventory.Load(id, invType, owner)
 				datastore = true
 			end
 		elseif invType == 'trunk' or invType == 'glovebox' then
-			result = MySQL.prepare.await('SELECT plate, '..invType..' FROM owned_vehicles WHERE plate = ?', { Inventory.GetPlateFromId(id) })
+			result = invType == 'trunk' and MySQL:loadTrunk( Inventory.GetPlateFromId(id) ) or MySQL:loadGlovebox( Inventory.GetPlateFromId(id) )
 
 			if not result then
 				if server.randomloot then
@@ -310,7 +318,7 @@ function Inventory.Load(id, invType, owner)
 				end
 			else result = result[invType] end
 		else
-			result = MySQL.prepare.await('SELECT data FROM ox_inventory WHERE owner = ? AND name = ?', { owner or '', id })
+			result = MySQL:loadStash(owner or '', id)
 		end
 	end
 
@@ -336,7 +344,7 @@ function Inventory.Load(id, invType, owner)
 	return returnData, weight, datastore
 end
 
-local table = import 'table'
+local table = lib.table
 
 ---@param inv string | number
 ---@param item table | string
@@ -592,7 +600,7 @@ function Inventory.GetItemSlots(inv, item, metadata)
 			if metadata and v.metadata == nil then
 				v.metadata = {}
 			end
-			if not metadata or item.limit or table.matches(v.metadata, metadata) then
+			if not metadata or table.matches(v.metadata, metadata) then
 				totalCount = totalCount + v.count
 				slots[k] = v.count
 			end
@@ -676,11 +684,6 @@ function Inventory.CanCarryItem(inv, item, count, metadata)
 		local itemSlots, totalCount, emptySlots = Inventory.GetItemSlots(inv, item, metadata == nil and {} or type(metadata) == 'string' and {type=metadata} or metadata)
 
 		if next(itemSlots) or emptySlots > 0 then
-			if inv.type == 'player' and item.limit and (totalCount + count) > item.limit then
-				TriggerClientEvent('ox_inventory:notify', inv.id, {type = 'error', text = shared.locale('cannot_carry_limit', item.limit, item.label)})
-				return false
-			end
-
 			if item.weight == 0 then return true end
 			if count == nil then count = 1 end
 			local newWeight = inv.weight + (item.weight * count)
@@ -766,19 +769,11 @@ exports('CustomDrop', CustomDrop)
 function Inventory.Confiscate(source)
 	local inv = Inventories[source]
 	if inv?.player then
-		local inventory = json.encode(minimal(inv))
-		MySQL.update('INSERT INTO ox_inventory (owner, name, data) VALUES (:owner, :name, :data) ON DUPLICATE KEY UPDATE data = :data', {
-			owner = inv.owner,
-			name = inv.owner,
-			data = inventory,
-		}, function (result)
-			if result > 0 then
-				table.wipe(inv.items)
-				inv.weight = 0
-				TriggerClientEvent('ox_inventory:inventoryConfiscated', inv.id)
-				if shared.framework == 'esx' then Inventory.SyncInventory(inv) end
-			end
-		end)
+		MySQL:saveStash(inv.owner, inv.owner, json.encode(minimal(inv)))
+		table.wipe(inv.items)
+		inv.weight = 0
+		TriggerClientEvent('ox_inventory:inventoryConfiscated', inv.id)
+		if shared.framework == 'esx' then Inventory.SyncInventory(inv) end
 	end
 end
 exports('ConfiscateInventory', Inventory.Confiscate)
@@ -869,19 +864,38 @@ else
 	end)
 end
 
+local function prepareSave(inv)
+	inv.changed = false
+
+	if inv.type == 'trunk' then
+		return 1, { json.encode(minimal(inv)), Inventory.GetPlateFromId(inv.id) }
+	elseif inv.type == 'glovebox' then
+		return 2, { json.encode(minimal(inv)), Inventory.GetPlateFromId(inv.id) }
+	else
+		return 3, { inv.owner or '', inv.dbId, json.encode(minimal(inv)) }
+	end
+end
+
 SetInterval(function()
 	local time = os.time()
-	for id, inv in pairs(Inventories) do
+	local parameters = { {}, {}, {} }
+	local size = { 0, 0, 0 }
+
+	for _, inv in pairs(Inventories) do
 		if not inv.player and not inv.open then
 			if not inv.datastore and inv.changed then
-				Inventory.Save(inv)
+				local i, data = prepareSave(inv)
+				size[i] += 1
+				parameters[i][size[i]] = data
 			end
 
 			if (inv.datastore or inv.owner) and time - inv.time >= 3000 then
-				Inventory.Remove(id, inv.type)
+				Inventory.Remove(inv.id, inv.type)
 			end
 		end
 	end
+
+	MySQL:saveInventories(parameters[1], parameters[2], parameters[3])
 end, 600000)
 
 local function saveInventories()
@@ -1029,7 +1043,7 @@ RegisterServerEvent('ox_inventory:updateWeapon', function(action, value, slot)
 	end
 end)
 
-import.commands('ox_inventory', {'additem', 'giveitem'}, function(source, args)
+lib.addCommand('ox_inventory', {'additem', 'giveitem'}, function(source, args)
 	args.item = Items(args.item)
 	if args.item and args.count > 0 then
 		Inventory.AddItem(args.target, args.item.name, args.count, args.metatype)
@@ -1044,7 +1058,7 @@ import.commands('ox_inventory', {'additem', 'giveitem'}, function(source, args)
 	end
 end, {'target:number', 'item:string', 'count:number', 'metatype:?string'})
 
-import.commands('ox_inventory', 'removeitem', function(source, args)
+lib.addCommand('ox_inventory', 'removeitem', function(source, args)
 	args.item = Items(args.item)
 	if args.item and args.count > 0 then
 		Inventory.RemoveItem(args.target, args.item.name, args.count, args.metaType)
@@ -1059,7 +1073,7 @@ import.commands('ox_inventory', 'removeitem', function(source, args)
 	end
 end, {'target:number', 'item:string', 'count:number', 'metatype:?string'})
 
-import.commands('ox_inventory', 'setitem', function(source, args)
+lib.addCommand('ox_inventory', 'setitem', function(source, args)
 	args.item = Items(args.item)
 	if args.item and args.count >= 0 then
 		Inventory.SetItem(args.target, args.item.name, args.count, args.metaType)
@@ -1074,7 +1088,7 @@ import.commands('ox_inventory', 'setitem', function(source, args)
 	end
 end, {'target:number', 'item:string', 'count:number', 'metatype:?string'})
 
-import.commands(false, 'clearevidence', function(source, args)
+lib.addCommand(false, 'clearevidence', function(source, args)
 	local inventory = Inventories[source]
 	local hasPermission = false
 
@@ -1090,28 +1104,28 @@ import.commands(false, 'clearevidence', function(source, args)
 	end
 end, {'evidence:number'})
 
-import.commands('ox_inventory', 'takeinv', function(source, args)
+lib.addCommand('ox_inventory', 'takeinv', function(source, args)
 	Inventory.Confiscate(args.target)
 end, {'target:number'})
 
-import.commands('ox_inventory', 'returninv', function(source, args)
+lib.addCommand('ox_inventory', 'returninv', function(source, args)
 	Inventory.Return(args.target)
 end, {'target:number'})
 
-import.commands('ox_inventory', 'clearinv', function(source, args)
+lib.addCommand('ox_inventory', 'clearinv', function(source, args)
 	Inventory.Clear(args.target)
 end, {'target:number'})
 
-import.commands('ox_inventory', 'saveinv', function()
+lib.addCommand('ox_inventory', 'saveinv', function()
 	saveInventories()
 end)
 
-import.commands('ox_inventory', 'viewinv', function(source, args)
+lib.addCommand('ox_inventory', 'viewinv', function(source, args)
 	local inventory = Inventories[args.target] or Inventories[tonumber(args.target)]
 	TriggerClientEvent('ox_inventory:viewInventory', source, inventory)
 end, {'target'})
 
-import.commands = nil
+lib.addCommand = nil
 Inventory.accounts = server.accounts
 
 TriggerEvent('ox_inventory:loadInventory', Inventory)

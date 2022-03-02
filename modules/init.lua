@@ -79,30 +79,20 @@ function data(name)
 	return func()
 end
 
-do
-	if not SetInterval or not import then
-		error('Ox Inventory requires the pe-lualib resource, refer to the documentation.')
-	else
-		local version = GetResourceMetadata('pe-lualib', 'version', 0) or 0
-		if version < '1.3.0' then
-			error('A more recent version of pe-lualib is required.')
-		end
-	end
+if not lib then
+	error('Ox Inventory requires the ox_lib resource, refer to the documentation.')
+end
 
-	local version = GetResourceMetadata('oxmysql', 'version', 0) or 0
-	if version < '1.9.0' then
-		error('A more recent version of oxmysql is required.')
-	end
+if not lib.checkDependency('oxmysql', '2.0.0') or not lib.checkDependency('ox_lib', '2.0.0') then error() end
 
-	if not LoadResourceFile(shared.resource, 'web/build/index.html') then
-		error('Unable to locate ox_inventory/web/build, refer to the documentation or download a release build.')
-	end
+if not LoadResourceFile(shared.resource, 'web/build/index.html') then
+	error('UI has not been built, refer to the documentation or download a release build.')
 end
 
 -- Disable qtarget compatibility if it isn't running
 if shared.qtarget and not GetResourceState('qtarget'):find('start') then
 	shared.qtarget = false
-	shared.warning(("qtarget compatibility has been disabled, resource state is '%s'"):format(GetResourceState('qtarget')))
+	shared.warning(("qtarget is '%s' - ensure it is starting before ox_inventory"):format(GetResourceState('qtarget')))
 end
 
 if shared.server then shared.ready = false end

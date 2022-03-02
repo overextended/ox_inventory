@@ -67,9 +67,7 @@ for shopName, shopDetails in pairs(data('shops')) do
 	end
 end
 
-local ServerCallback = import 'callbacks'
-
-ServerCallback.Register('openShop', function(source, data)
+lib.callback.register('ox_inventory:openShop', function(source, data)
 	local left, shop = Inventory(source)
 	if data then
 		shop = data.id and Shops[data.type][data.id] or Shops[data.type]
@@ -89,7 +87,7 @@ ServerCallback.Register('openShop', function(source, data)
 	return {label=left.label, type=left.type, slots=left.slots, weight=left.weight, maxWeight=left.maxWeight}, shop
 end)
 
-local table = import 'table'
+local table = lib.table
 local Log = server.logs
 
 -- http://lua-users.org/wiki/FormattingNumbers
@@ -99,7 +97,7 @@ local function comma_value(n)
 	return left..(num:reverse():gsub('(%d%d%d)','%1,'):reverse())..right
 end
 
-ServerCallback.Register('buyItem', function(source, data)
+lib.callback.register('ox_inventory:buyItem', function(source, data)
 	if data.toType == 'player' then
 		if data.count == nil then data.count = 1 end
 		local playerInv = Inventory(source)
@@ -116,7 +114,7 @@ ServerCallback.Register('buyItem', function(source, data)
 					data.count = fromData.count
 				end
 
-			elseif fromData.license and not MySQL.scalar.await('SELECT 1 FROM user_licenses WHERE type = ? AND owner = ?', { fromData.license, playerInv.owner }) then
+			elseif fromData.license and shared.framework == 'esx' and not MySQL:selectLicense(fromData.license, playerInv.owner) then
 				return false, false, {type = 'error', text = shared.locale('item_unlicensed')}
 
 			elseif fromData.grade then
@@ -135,11 +133,6 @@ ServerCallback.Register('buyItem', function(source, data)
 			local toItem = toData and Items(toData.name)
 			local metadata, count = Items.Metadata(playerInv, fromItem, fromData.metadata and table.clone(fromData.metadata) or {}, data.count)
 			local price = count * fromData.price
-
-			local _, totalCount, _ = Inventory.GetItemSlots(playerInv, fromItem, fromItem.metadata)
-			if fromItem.limit and (totalCount + data.count) > fromItem.limit then
-				return false, false, {type = 'error', text = shared.locale('cannot_carry_limit', fromItem.limit, fromItem.label)}
-			end
 
 			if toData == nil or (fromItem.name == toItem.name and fromItem.stack and table.matches(toData.metadata, metadata)) then
 				local canAfford = Inventory.GetItem(source, currency, false, true) >= price

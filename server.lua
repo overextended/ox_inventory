@@ -1,3 +1,5 @@
+lib.versionCheck('overextended/ox_inventory')
+
 local Inventory = server.inventory
 local Items = server.items
 
@@ -9,7 +11,7 @@ local function setPlayerInventory(player, data)
 	while not shared.ready do Wait(0) end
 
 	if not data then
-		data = server.getInventory(player.identifier)
+		data = MySQL:loadPlayer(player.identifier)
 	end
 
 	local inventory = {}
@@ -44,10 +46,9 @@ AddEventHandler('ox_inventory:setPlayerInventory', setPlayerInventory)
 
 local Stashes = data 'stashes'
 local Vehicles = data 'vehicles'
-local ServerCallback = import 'callbacks'
-local table = import 'table'
+local table = lib.table
 
-ServerCallback.Register('openInventory', function(source, inv, data)
+lib.callback.register('ox_inventory:openInventory', function(source, inv, data)
 	local left = Inventory(source)
 	local right = left.open and Inventory(left.open)
 
@@ -66,7 +67,7 @@ ServerCallback.Register('openInventory', function(source, inv, data)
 
 				if not stash.groups or server.hasGroup(left, stash.groups) then
 					local owner = stash.owner and left.owner or stash.owner
-					right = Inventory(owner and stash.name..owner or stash.name)
+					right = Inventory(stash.name)
 
 					if not right then
 						right = Inventory.Create(owner and stash.name..owner or stash.name, stash.label or stash.name, inv, stash.slots, 0, stash.weight, owner or false, nil, stash.degrade)
@@ -85,9 +86,8 @@ ServerCallback.Register('openInventory', function(source, inv, data)
 				if stash then
 					if not stash.groups or server.hasGroup(left, stash.groups) then
 						local owner = (stash.owner == nil and nil) or (type(stash.owner) == 'string' and stash.owner) or data.owner or stash.owner and left.owner
-						data = (owner and ('%s%s'):format(data.id or data, owner)) or data.id or data
 
-						right = Inventory(data)
+						right = Inventory(data.id or data)
 						if not right then
 							right = Inventory.Create(data, stash.label or stash.name, inv, stash.slots, 0, stash.weight, owner or false, nil, stash.degrade)
 						end
@@ -168,7 +168,7 @@ end)
 
 local Log = server.logs
 
-ServerCallback.Register('swapItems', function(source, data)
+lib.callback.register('ox_inventory:swapItems', function(source, data)
 	-- TODO: requires re-re-re-refactor and helper functions to reduce repetition
 	if data.count > 0 and data.toType ~= 'shop' then
 		local playerInventory, items, ret = Inventory(source), {}, nil
@@ -215,27 +215,6 @@ ServerCallback.Register('swapItems', function(source, data)
 			if not fromInventory then
 				Wait(0)
 				fromInventory = (data.fromType == 'player' and playerInventory) or Inventory(playerInventory.open)
-			end
-
-			if not sameInventory and toInventory.type == 'player' or toInventory.type == 'otherplayer' then
-				local fromData = fromInventory.items[data.fromSlot]
-
-				if not fromData then
-					TriggerClientEvent('ox_inventory:closeInventory', source, true)
-					return
-				end
-
-				local fromItem = Items(fromData.name)
-				local _, totalCount, _ = Inventory.GetItemSlots(toInventory, fromItem, fromItem.metadata)
-
-				if fromItem.limit and (totalCount + data.count) > fromItem.limit then
-					if toInventory.type == 'player' then
-						TriggerClientEvent('ox_inventory:notify', source, {type = 'error', text = shared.locale('cannot_carry_limit', fromItem.limit, fromItem.label)})
-					elseif toInventory.type == 'otherplayer' then
-						TriggerClientEvent('ox_inventory:notify', source, {type = 'error', text = shared.locale('cannot_carry_limit_other', fromItem.limit, fromItem.label)})
-					end
-					return
-				end
 			end
 
 			if fromInventory.type == 'policeevidence' and not sameInventory then
@@ -436,12 +415,13 @@ end)
 
 local Licenses = data 'licenses'
 
-ServerCallback.Register('buyLicense', function(source, id)
+lib.callback.register('ox_inventory:buyLicense', function(source, id)
 	if shared.framework == 'esx' then
 		local license = Licenses[id]
 		if license then
 			local inventory = Inventory(source)
-			local result = MySQL.scalar.await('SELECT 1 FROM user_licenses WHERE type = ? AND owner = ?', { license.name, inventory.owner })
+			local result = MySQL:selectLicense(license.name, inventory.owner)
+
 			if result then
 				return false, 'has_weapon_license'
 			elseif Inventory.GetItem(inventory, 'money', false, true) < license.price then
@@ -449,6 +429,7 @@ ServerCallback.Register('buyLicense', function(source, id)
 			else
 				Inventory.RemoveItem(inventory, 'money', license.price)
 				TriggerEvent('esx_license:addLicense', source, 'weapon')
+
 				return true, 'bought_weapon_license'
 			end
 		end
@@ -457,12 +438,12 @@ ServerCallback.Register('buyLicense', function(source, id)
 	end
 end)
 
-ServerCallback.Register('getItemCount', function(source, item, metadata, target)
+lib.callback.register('ox_inventory:getItemCount', function(source, item, metadata, target)
 	local inventory = target and Inventory(target) or Inventory(source)
 	return (inventory and Inventory.GetItem(inventory, item, metadata, true)) or 0
 end)
 
-ServerCallback.Register('getInventory', function(source, id)
+lib.callback.register('ox_inventory:getInventory', function(source, id)
 	local inventory = Inventory(id or source)
 	return inventory and {
 		id = inventory.id,
@@ -476,7 +457,7 @@ ServerCallback.Register('getInventory', function(source, id)
 	}
 end)
 
-ServerCallback.Register('useItem', function(source, item, slot, metadata)
+lib.callback.register('ox_inventory:useItem', function(source, item, slot, metadata)
 	local inventory = Inventory(source)
 	if inventory.type == 'player' then
 		local item, type = Items(item)
