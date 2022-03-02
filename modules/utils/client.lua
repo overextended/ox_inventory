@@ -3,25 +3,25 @@ local Utils = {}
 function Utils.PlayAnim(wait, dict, name, blendIn, blendOut, duration, flag, rate, lockX, lockY, lockZ)
 	lib.requestAnimDict(dict)
 	CreateThread(function()
-		TaskPlayAnim(PlayerData.ped, dict, name, blendIn, blendOut, duration, flag, rate, lockX, lockY, lockZ)
+		TaskPlayAnim(cache.ped, dict, name, blendIn, blendOut, duration, flag, rate, lockX, lockY, lockZ)
 		Wait(wait)
-		if wait > 0 then ClearPedSecondaryTask(PlayerData.ped) end
+		if wait > 0 then ClearPedSecondaryTask(cache.ped) end
 	end)
 end
 
 function Utils.PlayAnimAdvanced(wait, dict, name, posX, posY, posZ, rotX, rotY, rotZ, animEnter, animExit, duration, flag, time)
 	lib.requestAnimDict(dict)
 	CreateThread(function()
-		TaskPlayAnimAdvanced(PlayerData.ped, dict, name, posX, posY, posZ, rotX, rotY, rotZ, animEnter, animExit, duration, flag, time, 0, 0)
+		TaskPlayAnimAdvanced(cache.ped, dict, name, posX, posY, posZ, rotX, rotY, rotZ, animEnter, animExit, duration, flag, time, 0, 0)
 		Wait(wait)
-		if wait > 0 then ClearPedSecondaryTask(PlayerData.ped) end
+		if wait > 0 then ClearPedSecondaryTask(cache.ped) end
 	end)
 end
 
 function Utils.Raycast(flag)
-	local playerCoords = GetEntityCoords(PlayerData.ped)
-	local plyOffset = GetOffsetFromEntityInWorldCoords(PlayerData.ped, 0.0, 2.2, -0.05)
-	local rayHandle = StartShapeTestCapsule(playerCoords.x, playerCoords.y, playerCoords.z, plyOffset.x, plyOffset.y, plyOffset.z, 2.2, flag or 30, PlayerData.ped)
+	local playerCoords = GetEntityCoords(cache.ped)
+	local plyOffset = GetOffsetFromEntityInWorldCoords(cache.ped, 0.0, 2.2, -0.05)
+	local rayHandle = StartShapeTestCapsule(playerCoords.x, playerCoords.y, playerCoords.z, plyOffset.x, plyOffset.y, plyOffset.z, 2.2, flag or 30, cache.ped)
 	while true do
 		Wait(0)
 		local result, _, _, _, entityHit = GetShapeTestResult(rayHandle)
@@ -37,7 +37,7 @@ function Utils.Raycast(flag)
 end
 
 function Utils.GetClosestPlayer()
-	local closestPlayer, playerId, playerCoords = vec3(10, 0, 0), PlayerId(), GetEntityCoords(PlayerData.ped)
+	local closestPlayer, playerId, playerCoords = vec3(10, 0, 0), PlayerId(), GetEntityCoords(cache.ped)
 	local coords
 	for k, player in pairs(GetActivePlayers()) do
 		if player ~= playerId then
@@ -60,28 +60,28 @@ exports('notify', Utils.Notify)
 function Utils.Disarm(currentWeapon, newSlot)
 	SetWeaponsNoAutoswap(1)
 	SetWeaponsNoAutoreload(1)
-	SetPedCanSwitchWeapon(PlayerData.ped, 0)
-	SetPedEnableWeaponBlocking(PlayerData.ped, 1)
+	SetPedCanSwitchWeapon(cache.ped, 0)
+	SetPedEnableWeaponBlocking(cache.ped, 1)
 
 	if currentWeapon then
-		local ammo = currentWeapon.ammo and GetAmmoInPedWeapon(PlayerData.ped, currentWeapon.hash)
-		SetPedAmmo(PlayerData.ped, currentWeapon.hash, 0)
+		local ammo = currentWeapon.ammo and GetAmmoInPedWeapon(cache.ped, currentWeapon.hash)
+		SetPedAmmo(cache.ped, currentWeapon.hash, 0)
 
 		if not newSlot then
-			ClearPedSecondaryTask(PlayerData.ped)
+			ClearPedSecondaryTask(cache.ped)
 			local sleep = (client.hasGroup(shared.police) and (GetWeapontypeGroup(currentWeapon.hash) == 416676503 or GetWeapontypeGroup(currentWeapon.hash) == 690389602)) and 450 or 1400
-			local coords = GetEntityCoords(PlayerData.ped, true)
+			local coords = GetEntityCoords(cache.ped, true)
 			if currentWeapon.name == 'WEAPON_SWITCHBLADE' then
-				Utils.PlayAnimAdvanced(sleep, 'anim@melee@switchblade@holster', 'holster', coords.x, coords.y, coords.z, 0, 0, GetEntityHeading(PlayerData.ped), 8.0, 3.0, -1, 48, 0)
+				Utils.PlayAnimAdvanced(sleep, 'anim@melee@switchblade@holster', 'holster', coords.x, coords.y, coords.z, 0, 0, GetEntityHeading(cache.ped), 8.0, 3.0, -1, 48, 0)
 				Wait(600)
 			else
-				Utils.PlayAnimAdvanced(sleep, (sleep == 450 and 'reaction@intimidation@cop@unarmed' or 'reaction@intimidation@1h'), 'outro', coords.x, coords.y, coords.z, 0, 0, GetEntityHeading(PlayerData.ped), 8.0, 3.0, -1, 50, 0)
+				Utils.PlayAnimAdvanced(sleep, (sleep == 450 and 'reaction@intimidation@cop@unarmed' or 'reaction@intimidation@1h'), 'outro', coords.x, coords.y, coords.z, 0, 0, GetEntityHeading(cache.ped), 8.0, 3.0, -1, 50, 0)
 				Wait(sleep)
 			end
 			Utils.ItemNotify({currentWeapon.label, currentWeapon.name, shared.locale('holstered')})
 		end
 
-		RemoveAllPedWeapons(PlayerData.ped, true)
+		RemoveAllPedWeapons(cache.ped, true)
 
 		if newSlot then
 			TriggerServerEvent('ox_inventory:updateWeapon', ammo and 'ammo' or 'melee', ammo or currentWeapon.melee, newSlot)
@@ -94,11 +94,11 @@ end
 
 function Utils.ClearWeapons(currentWeapon)
 	currentWeapon = Utils.Disarm(currentWeapon)
-	RemoveAllPedWeapons(PlayerData.ped, true)
+	RemoveAllPedWeapons(cache.ped, true)
 	if client.parachute then
 		local chute = `GADGET_PARACHUTE`
-		GiveWeaponToPed(PlayerData.ped, chute, 0, true, false)
-		SetPedGadget(PlayerData.ped, chute, true)
+		GiveWeaponToPed(cache.ped, chute, 0, true, false)
+		SetPedGadget(cache.ped, chute, true)
 	end
 end
 
@@ -113,8 +113,8 @@ function Utils.WeaponWheel(state)
 	client.weaponWheel = state
 	SetWeaponsNoAutoswap(not state)
 	SetWeaponsNoAutoreload(not state)
-	SetPedCanSwitchWeapon(PlayerData.ped, state)
-	SetPedEnableWeaponBlocking(PlayerData.ped, not state)
+	SetPedCanSwitchWeapon(cache.ped, state)
+	SetPedEnableWeaponBlocking(cache.ped, not state)
 end
 exports('weaponWheel', Utils.WeaponWheel)
 

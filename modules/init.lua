@@ -79,20 +79,20 @@ function data(name)
 	return func()
 end
 
-if not SetInterval or not import then
+if not lib then
 	error('Ox Inventory requires the ox_lib resource, refer to the documentation.')
 end
 
-if not lib.checkDependency('oxmysql', '2.0.0') or not lib.checkDependency('ox_lib', '1.5.0') then error() end
+if not lib.checkDependency('oxmysql', '2.0.0') or not lib.checkDependency('ox_lib', '2.0.0') then error() end
 
 if not LoadResourceFile(shared.resource, 'web/build/index.html') then
-	error('Unable to locate ox_inventory/web/build, refer to the documentation or download a release build.')
+	error('UI has not been built, refer to the documentation or download a release build.')
 end
 
 -- Disable qtarget compatibility if it isn't running
 if shared.qtarget and not GetResourceState('qtarget'):find('start') then
 	shared.qtarget = false
-	shared.warning(("qtarget compatibility has been disabled, resource state is '%s'"):format(GetResourceState('qtarget')))
+	shared.warning(("qtarget is '%s' - ensure it is starting before ox_inventory"):format(GetResourceState('qtarget')))
 end
 
 if shared.server then shared.ready = false end

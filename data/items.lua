@@ -3,7 +3,6 @@ return {
 		label = 'Test Burger',
 		weight = 220,
 		degrade = 60,
-		limit = 3,
 		client = {
 			status = { hunger = 200000 },
 			anim = 'eating',

@@ -187,8 +187,9 @@ CreateThread(function()
 	shared.ready = false
 	Print([[Currently running in setup mode
 If you are upgrading from linden_inventory, type '/convertinventory linden'
+To update standard ESX player inventories to support metadata, type '/convertinventory'
 
-To update standard ESX player inventories to support metadata, type '/convertinventory']])
+Remove 'setup/convert.lua' from fxmanifest.lua and restart the server when you are done]])
 
 	RegisterCommand('convertinventory', function(source, args, raw)
 		if not started then
