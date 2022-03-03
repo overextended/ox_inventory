@@ -378,7 +378,7 @@ local currentInstance
 
 local nearbyMarkers, closestMarker = {}, {}
 local drops, playerCoords
-local function Markers(tb, type, rgb, name, vehicle)
+local function markers(tb, type, rgb, name, vehicle)
 	if tb then
 		for k, v in pairs(tb) do
 			if not v.instance or v.instance == currentInstance then
@@ -865,9 +865,7 @@ RegisterNetEvent('ox_inventory:setPlayerInventory', function(currentDrops, inven
 
 	local Licenses = data 'licenses'
 
-	client.interval = SetInterval(function()
-		local playerPed = cache.ped
-
+	client.interval = SetInterval(function(playerPed, vehicle)
 		if invOpen == false then
 			playerCoords = GetEntityCoords(playerPed)
 
@@ -875,25 +873,23 @@ RegisterNetEvent('ox_inventory:setPlayerInventory', function(currentDrops, inven
 				table.wipe(closestMarker)
 			end
 
-			local vehicle = cache.vehicle
-
-			Markers(drops, 'drop', vec3(150, 30, 30), nil, vehicle)
+			markers(drops, 'drop', vec3(150, 30, 30), nil, vehicle)
 
 			if not shared.qtarget then
 				if client.hasGroup(shared.police) then
-					Markers(Inventory.Evidence, 'policeevidence', vec(30, 30, 150), nil, vehicle)
+					markers(Inventory.Evidence, 'policeevidence', vec(30, 30, 150), nil, vehicle)
 				end
 
-				Markers(Inventory.Stashes, 'stash', vec3(30, 30, 150), nil, vehicle)
+				markers(Inventory.Stashes, 'stash', vec3(30, 30, 150), nil, vehicle)
 
 				for k, v in pairs(Shops) do
 					if not v.groups or client.hasGroup(v.groups) then
-						Markers(v.locations, 'shop', vec3(30, 150, 30), k, vehicle)
+						markers(v.locations, 'shop', vec3(30, 150, 30), k, vehicle)
 					end
 				end
 			end
 
-			Markers(Licenses, 'license', vec(30, 150, 30), nil, vehicle)
+			markers(Licenses, 'license', vec(30, 150, 30), nil, vehicle)
 
 			if currentWeapon and IsPedUsingActionMode(cache.ped) then SetPedUsingActionMode(cache.ped, false, -1, 'DEFAULT_ACTION')	end
 
@@ -929,11 +925,11 @@ RegisterNetEvent('ox_inventory:setPlayerInventory', function(currentDrops, inven
 			Utils.DeleteObject(client.parachute)
 			client.parachute = false
 		end
-	end, 200)
+	end, 200, cache.ped, cache.vehicle)
 
 	local EnableKeys = client.enablekeys
-	client.tick = SetInterval(function(disableControls)
-		DisablePlayerVehicleRewards(cache.playerId)
+	client.tick = SetInterval(function(playerId, disableControls)
+		DisablePlayerVehicleRewards(playerId)
 
 		if invOpen then
 			DisableAllControlActions(0)
@@ -949,7 +945,7 @@ RegisterNetEvent('ox_inventory:setPlayerInventory', function(currentDrops, inven
 			end
 		else
 			disableControls()
-			if invBusy then DisablePlayerFiring(cache.playerId, true) end
+			if invBusy then DisablePlayerFiring(playerId, true) end
 
 			for _, v in pairs(nearbyMarkers) do
 				local coords, rgb = v[1], v[2]
@@ -972,7 +968,7 @@ RegisterNetEvent('ox_inventory:setPlayerInventory', function(currentDrops, inven
 			if currentWeapon then
 				DisableControlAction(0, 140, true)
 
-				if client.aimedfiring and not IsPlayerFreeAiming(cache.playerId) then DisablePlayerFiring(cache.playerId, true) end
+				if client.aimedfiring and not IsPlayerFreeAiming(playerId) then DisablePlayerFiring(playerId, true) end
 
 				local playerPed = cache.ped
 
@@ -1033,7 +1029,7 @@ RegisterNetEvent('ox_inventory:setPlayerInventory', function(currentDrops, inven
 				end
 			end
 		end
-	end, 0, lib.disableControls)
+	end, 0, cache.playerId, lib.disableControls)
 
 	collectgarbage('collect')
 end)
