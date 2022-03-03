@@ -61,7 +61,8 @@ lib.callback.register('ox_inventory:openInventory', function(source, inv, data)
 
 	if data then
 		if inv == 'stash' then
-			local stash = Stashes[data.id or data] or Inventory.CustomStash[data.id or data]
+			local invId = type(data) == 'table' and data.id or data
+			local stash = Stashes[invId] or Inventory.CustomStash[invId]
 
 			if stash then
 				if stash.jobs then stash.groups = stash.jobs end
