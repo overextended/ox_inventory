@@ -23,12 +23,12 @@ local function setPlayerInventory(player, data)
 			local item = Items(v.name)
 
 			if item then
-				local weight = Inventory.SlotWeight(item, v)
-				totalWeight = totalWeight + weight
-
 				if v.metadata then
 					v.metadata = Items.CheckMetadata(v.metadata, item, v.name)
 				end
+
+				local weight = Inventory.SlotWeight(item, v)
+				totalWeight = totalWeight + weight
 
 				inventory[v.slot] = {name = v.name, label = item.label, weight = weight, slot = v.slot, count = v.count, description = item.description, metadata = v.metadata, stack = item.stack, close = item.close}
 			end

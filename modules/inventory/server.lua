@@ -313,7 +313,6 @@ function Inventory.Load(id, invType, owner)
 		for _, v in pairs(result) do
 			local item = Items(v.name)
 			if item then
-
 				if v.metadata then
 					v.metadata = Items.CheckMetadata(v.metadata, item, v.name)
 				end
