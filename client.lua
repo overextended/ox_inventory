@@ -74,7 +74,7 @@ local function OpenInventory(inv, data)
 
 		if inv == 'shop' and invOpen == false then
 			left, right = lib.callback.await('ox_inventory:openShop', 200, data)
-		elseif invOpen ~= nil then
+		elseif invOpen ~= nil and not invOpen then
 			if inv == 'policeevidence' then
 				local input = Interface.Keyboard(shared.locale('police_evidence'), {shared.locale('locker_number')})
 
