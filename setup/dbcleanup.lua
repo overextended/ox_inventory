@@ -4,6 +4,7 @@
 CreateThread(function()
 	local result = MySQL.query.await("SELECT owner, name FROM ox_inventory WHERE NOT owner = ''")
 	local parameters = {}
+	local count = 0
 
 	for i = 1, #result do
 		local data = result[i]
@@ -11,7 +12,8 @@ CreateThread(function()
 
 		if data.owner == snip then
 			data.name = data.name:sub(0, #data.name - #snip)
-			parameters[i] = { data.name, snip }
+			count += 1
+			parameters[count] = { data.name, snip }
 		end
 	end
 
