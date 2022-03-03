@@ -966,6 +966,7 @@ RegisterNetEvent('ox_inventory:setPlayerInventory', function(currentDrops, inven
 			end
 
 			if currentWeapon then
+				DisableControlAction(0, 80, true)
 				DisableControlAction(0, 140, true)
 
 				if client.aimedfiring and not IsPlayerFreeAiming(playerId) then DisablePlayerFiring(playerId, true) end
