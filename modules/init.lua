@@ -83,7 +83,7 @@ if not lib then
 	error('Ox Inventory requires the ox_lib resource, refer to the documentation.')
 end
 
-if not lib.checkDependency('oxmysql', '2.0.0') or not lib.checkDependency('ox_lib', '2.0.0') then error() end
+if not lib.checkDependency('oxmysql', '2.0.0') or not lib.checkDependency('ox_lib', '2.0.1') then error() end
 
 if not LoadResourceFile(shared.resource, 'web/build/index.html') then
 	error('UI has not been built, refer to the documentation or download a release build.')

@@ -954,7 +954,7 @@ RegisterNetEvent('ox_inventory:setPlayerInventory', function(currentDrops, inven
 
 			if closestMarker and IsControlJustReleased(0, 38) then
 				if closestMarker[3] == 'license' then
-					lib.callback(shared.resource, 'buyLicense', 1000, function(success, message)
+					lib.callback('ox_inventory:buyLicense', 1000, function(success, message)
 						if success == false then
 							Utils.Notify({type = 'error', text = shared.locale(message), duration = 2500})
 						else
