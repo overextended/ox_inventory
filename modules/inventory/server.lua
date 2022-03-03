@@ -1145,7 +1145,7 @@ end
 exports('ConvertItems', ConvertItems)
 
 Inventory.CustomStash = table.create(0, 0)
----@param id string|number stash identifier when loading from the database
+---@param name string stash identifier when loading from the database
 ---@param label string display name when inventory is open
 ---@param slots number
 ---@param maxWeight number
@@ -1161,17 +1161,21 @@ Inventory.CustomStash = table.create(0, 0)
 ---
 --- groups: { ['police'] = 0 }
 --- ```
-local function RegisterStash(id, label, slots, maxWeight, owner, groups, coords)
-	if not Inventory.CustomStash[id] then
-		Inventory.CustomStash[id] = {
-			name = id,
-			label = label,
-			owner = owner,
-			slots = slots,
-			weight = maxWeight,
-			groups = groups,
-			coords = coords
-		}
+local function RegisterStash(name, label, slots, maxWeight, owner, groups, coords)
+	if type(name) == 'string' then
+		if not Inventory.CustomStash[name] then
+			Inventory.CustomStash[name] = {
+				name = name,
+				label = label,
+				owner = owner,
+				slots = slots,
+				weight = maxWeight,
+				groups = groups,
+				coords = coords
+			}
+		end
+	else
+		error(('received %s for stash name (expected string)'):format(type(name)))
 	end
 end
 exports('RegisterStash', RegisterStash)

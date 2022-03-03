@@ -61,8 +61,7 @@ lib.callback.register('ox_inventory:openInventory', function(source, inv, data)
 
 	if data then
 		if inv == 'stash' then
-			local name = data.id or data
-			local stash = Stashes[name] or Inventory.CustomStash[name]
+			local stash = Stashes[data.id or data] or Inventory.CustomStash[data.id or data]
 
 			if stash then
 				if stash.jobs then stash.groups = stash.jobs end
@@ -78,10 +77,10 @@ lib.callback.register('ox_inventory:openInventory', function(source, inv, data)
 						owner = data.owner
 					end
 
-					right = Inventory(owner and ('%s:%s'):format(name, owner) or name)
+					right = Inventory(owner and ('%s:%s'):format(stash.name, owner) or stash.name)
 
 					if not right then
-						right = Inventory.Create(name, stash.label or name, inv, stash.slots, 0, stash.weight, owner or false)
+						right = Inventory.Create(stash.name, stash.label or stash.name, inv, stash.slots, 0, stash.weight, owner or false)
 					end
 				end
 			else return false end
