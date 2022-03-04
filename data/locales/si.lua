@@ -5,7 +5,8 @@ return {
 ['ui_close'] = "Zapri",
 ['ui_drop'] = "Spusti",
 ['ui_removeattachments'] = "Odstrani priloge",
--- Tooltip
+['ui_copy'] = "Copy serial number",
+    -- Tooltip
 ['ui_durability'] = "Trajnost",
 ['ui_ammo'] = "strelivo",
 ['ui_serial'] = "Serijska številka",
@@ -18,6 +19,7 @@ return {
 ['ui_shift_drag'] = "Razdeli količino artikla na polovico",
 ['ui_ctrl_shift_lmb'] = "Hitro premaknite polovico sveženj predmetov v drug inventar",
 ['ui_alt_lmb'] = "Hitra uporaba predmeta",
+['ui_ctrl_c'] = "When hovering over a weapon, copies it's serial number",
 --
 ['$'] = "$",
 ['moški'] = "Moški",

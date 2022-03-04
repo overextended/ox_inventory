@@ -5,6 +5,7 @@ return {
 	['ui_close'] = "Zatvori",
 	['ui_drop'] = "Baci",
 	['ui_removeattachments'] = "Skini Dodatke",
+	['ui_copy'] = "Kopiraj serijski broj",
 	-- Tooltip
 	['ui_durability'] = "Izdržljivost",
 	['ui_ammo'] = "Metci",
@@ -18,6 +19,7 @@ return {
 	['ui_shift_drag'] = "Razdvoji predmete na pola",
 	['ui_ctrl_shift_lmb'] = "Brzo premjestite pola hrpe predmeta u drugi inventar",
 	['ui_alt_lmb'] = "Brzo iskoristi predmet",
+	['ui_ctrl_c'] = "Kada si mišem iznad oružija, kopira serijski broj",
 	--
 	['$'] = "$",
 	['male'] = "Muško",

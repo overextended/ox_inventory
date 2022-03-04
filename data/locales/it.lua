@@ -5,6 +5,7 @@ return {
 	['ui_close'] = "Chiudi",
 	['ui_drop'] = "Butta",
 	['ui_removeattachments'] = "Rimuovi accessori",
+	['ui_copy'] = "Copy serial number",
 	-- Tooltip
 	['ui_durability'] = "Durabilità",
 	['ui_ammo'] = "Munizioni",
@@ -18,6 +19,7 @@ return {
 	['ui_shift_drag'] = "Dividi uno stack di oggetti a metà",
 	['ui_ctrl_shift_lmb'] = "Sposta velocemente mezzo stack di oggetti in un altro inventario",
 	['ui_alt_lmb'] = "Usa velocemente un oggetto",
+	['ui_ctrl_c'] = "When hovering over a weapon, copies it's serial number",
 	--
 	['$'] = "$",
 	['male'] = "Uomo",

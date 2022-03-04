@@ -5,6 +5,7 @@ return {
 	['ui_close'] = "Luk",
 	['ui_drop'] = "Smid",
 	['ui_removeattachments'] = "Fjern tilbehør",
+	['ui_copy'] = "Copy serial number",
 	-- Tooltip
 	['ui_durability'] = "Holdbarhed",
 	['ui_ammo'] = "Ammunition",
@@ -18,6 +19,7 @@ return {
 	['ui_shift_drag'] = "Del tingene op i halvdele",
 	['ui_ctrl_shift_lmb'] = "Flyt hurtigt en halv stak ting til et andet inventar",
 	['ui_alt_lmb'] = "Brug en ting hurtigt",
+	['ui_ctrl_c'] = "When hovering over a weapon, copies it's serial number",
 	--
 	['$'] = "DKK",
 	['male'] = "Mand",

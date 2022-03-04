@@ -5,6 +5,7 @@ return {
 	['ui_close'] = "關閉",
 	['ui_drop'] = "丟下",
 	['ui_removeattachments'] = "移除配件",
+	['ui_copy'] = "Copy serial number",
 	-- Tooltip
 	['ui_durability'] = "耐久度",
 	['ui_ammo'] = "彈藥",
@@ -18,6 +19,7 @@ return {
 	['ui_shift_drag'] = "將物品數量分成一半",
 	['ui_ctrl_shift_lmb'] = "快捷移交一半的物品",
 	['ui_alt_lmb'] = "物品快捷使用",
+	['ui_ctrl_c'] = "When hovering over a weapon, copies it's serial number",
 	--
 	['$'] = "$",
 	['male'] = "男",
