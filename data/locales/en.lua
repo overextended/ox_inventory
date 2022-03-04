@@ -79,7 +79,7 @@ return {
 	['disable_hotbar'] = "Display inventory hotbar~",
 	['reload_weapon'] = "Reload weapon~",
 	['use_hotbar'] = "Use hotbar item %s~",
-	['no_durability'] = "Item durability is depleted",
+	['no_durability'] = "%s durability is depleted",
 	['cannot_give'] = "Unable to give %s %s to the target",
 	['evidence_cannot_take'] = "Not high enough grade to take from evidence",
 	['dumpster'] = "Dumpster"
