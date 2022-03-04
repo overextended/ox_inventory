@@ -291,7 +291,7 @@ local function useSlot(slot)
 		elseif currentWeapon then
 			local playerPed = cache.ped
 			if item.name:sub(0, 5) == 'ammo-' then
-				if client.weaponWheel then return end
+				if client.weaponWheel or currentWeapon.metadata.durability <= 0 then return end
 				local maxAmmo = GetMaxAmmoInClip(playerPed, currentWeapon.hash, true)
 				local currentAmmo = GetAmmoInPedWeapon(playerPed, currentWeapon.hash)
 
@@ -570,8 +570,12 @@ local function RegisterCommands()
 
 	RegisterCommand('reload', function()
 		if currentWeapon?.ammo then
-			local ammo = Inventory.Search(1, currentWeapon.ammo)
-			if ammo[1] then useSlot(ammo[1].slot) end
+			if currentWeapon.metadata.durability > 0 then
+				local ammo = Inventory.Search(1, currentWeapon.ammo)
+				if ammo[1] then useSlot(ammo[1].slot) end
+			else
+				Utils.Notify({type = 'error', text = shared.locale('no_durability', currentWeapon.label), duration = 2500})
+			end
 		end
 	end)
 	RegisterKeyMapping('reload', shared.locale('reload_weapon'), 'keyboard', 'r')
@@ -969,7 +973,11 @@ RegisterNetEvent('ox_inventory:setPlayerInventory', function(currentDrops, inven
 				DisableControlAction(0, 80, true)
 				DisableControlAction(0, 140, true)
 
-				if client.aimedfiring and not IsPlayerFreeAiming(playerId) then DisablePlayerFiring(playerId, true) end
+				if currentWeapon.metadata.durability <= 0 then
+					DisablePlayerFiring(playerId, true)
+				elseif client.aimedfiring and not IsPlayerFreeAiming(playerId) then
+					DisablePlayerFiring(playerId, true)
+				end
 
 				local playerPed = cache.ped
 
