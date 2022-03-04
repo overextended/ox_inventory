@@ -869,13 +869,17 @@ RegisterNetEvent('ox_inventory:setPlayerInventory', function(currentDrops, inven
 
 	local Licenses = data 'licenses'
 
-	client.interval = SetInterval(function(playerPed, vehicle)
+	client.interval = SetInterval(function()
+		local playerPed = cache.ped
+
 		if invOpen == false then
 			playerCoords = GetEntityCoords(playerPed)
 
 			if closestMarker[1] then
 				table.wipe(closestMarker)
 			end
+
+			local vehicle = cache.vehicle
 
 			markers(drops, 'drop', vec3(150, 30, 30), nil, vehicle)
 
@@ -929,10 +933,11 @@ RegisterNetEvent('ox_inventory:setPlayerInventory', function(currentDrops, inven
 			Utils.DeleteObject(client.parachute)
 			client.parachute = false
 		end
-	end, 200, cache.ped, cache.vehicle)
+	end, 200)
 
 	local EnableKeys = client.enablekeys
-	client.tick = SetInterval(function(playerId, disableControls)
+	client.tick = SetInterval(function(disableControls)
+		local playerId = cache.playerId
 		DisablePlayerVehicleRewards(playerId)
 
 		if invOpen then
@@ -1038,7 +1043,7 @@ RegisterNetEvent('ox_inventory:setPlayerInventory', function(currentDrops, inven
 				end
 			end
 		end
-	end, 0, cache.playerId, lib.disableControls)
+	end, 0, lib.disableControls)
 
 	collectgarbage('collect')
 end)
