@@ -5,7 +5,7 @@ return {
 	['ui_close'] = "Zavřít",
 	['ui_drop'] = "Vyhodit",
 	['ui_removeattachments'] = "Odebrat příslušenství",
-	['ui_copy'] = "Copy serial number",
+	['ui_copy'] = "Zkopírujte sériové číslo",
 	-- Popisek
 	['ui_durability'] = "Poškození",
 	['ui_ammo'] = "Náboje",
