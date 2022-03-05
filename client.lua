@@ -15,6 +15,10 @@ exports('setStashTarget', function(id, owner)
 	StashTarget = id and {id=id, owner=owner}
 end)
 
+exports('notification', function(msg, type)
+	Utils.Notify({text = msg, type = type})
+end)
+
 local invBusy = true
 local invOpen = false
 
