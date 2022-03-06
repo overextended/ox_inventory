@@ -12,6 +12,20 @@ return {
 		},
 		server = {
 			test = 'what an amazingly delicious burger, amirite?'
+		},
+		buttons = {
+			{
+				label = 'Lick it',
+				action = function(slot)
+					print('You licked the burger')
+				end
+			},
+			{
+				label = 'Squeeze it',
+				action = function(slot)
+					print('You squeezed the burger :(')
+				end
+			}
 		}
 	},
 

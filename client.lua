@@ -353,6 +353,17 @@ local function useSlot(slot)
 end
 exports('useSlot', useSlot)
 
+local function useButton(id, slot)
+	if PlayerData.loaded and not invBusy and not Interface.ProgressActive then
+		local item = PlayerData.inventory[slot]
+		if not item then return end
+		local data = item and Items[item.name]
+		if data.buttons and data.buttons[id]?.action then
+			data.buttons[id].action(slot)
+		end
+	end
+end
+
 local function CanOpenTarget(ped)
 	return IsPedFatallyInjured(ped)
 	or IsEntityPlayingAnim(ped, 'dead', 'dead_a', 3)
@@ -822,12 +833,21 @@ RegisterNetEvent('ox_inventory:setPlayerInventory', function(currentDrops, inven
 
 	for _, v in pairs(Items) do
 		v.usable = (v.client and next(v.client) or v.consume == 0 or esxItem[v.name] or v.name:sub(0, 7) == 'WEAPON_' or v.name:sub(0, 5) == 'ammo-' or v.name:sub(0, 3) == 'at_') and true or false
+
+		local buttons = {}
+		if v.buttons then
+			for id, button in pairs(v.buttons) do
+				buttons[id] = button.label
+			end
+		end
+
 		ItemData[v.name] = {
 			label = v.label,
 			usable = v.usable,
 			stack = v.stack,
 			close = v.close,
-			description = v.description
+			description = v.description,
+			buttons = buttons
 		}
 	end
 
@@ -1136,6 +1156,11 @@ RegisterNUICallback('giveItem', function(data, cb)
 			end
 		end
 	end
+end)
+
+RegisterNUICallback('useButton', function(data, cb)
+	useButton(data.id, data.slot)
+	cb(1)
 end)
 
 RegisterNUICallback('exit', function(_, cb)
