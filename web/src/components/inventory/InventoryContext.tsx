@@ -9,7 +9,6 @@ import { fetchNui } from '../../utils/fetchNui';
 import { Locale } from '../../store/locale';
 import { isSlotWithItem } from '../../helpers';
 import { setClipboard } from '../../utils/setClipboard';
-import { onCustomButton } from '../../dnd/onCustomButton';
 
 const InventoryContext: React.FC<{
   item: Slot;
@@ -38,7 +37,7 @@ const InventoryContext: React.FC<{
         data?.serial && setClipboard(data.serial);
         break;
       case 'custom':
-        onCustomButton((data?.id || 0) + 1, props.item.slot);
+        fetchNui('useButton', { id: (data?.id || 0) + 1, slot: props.item.slot });
         break;
     }
   };
