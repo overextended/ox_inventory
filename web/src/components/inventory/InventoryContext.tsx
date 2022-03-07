@@ -89,10 +89,10 @@ const InventoryContext: React.FC<{
               )}
             </>
           )}
-          {Items[props.item.name]?.buttons?.length > 0 && (
+          {(Items[props.item.name]?.buttons?.length || 0) > 0 && (
             <>
               <Separator />
-              {Items[props.item.name]?.buttons.map((label: string, index: number) => (
+              {Items[props.item.name]?.buttons?.map((label: string, index: number) => (
                 <Item
                   key={index}
                   onClick={handleClick}
