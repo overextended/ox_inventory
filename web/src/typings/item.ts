@@ -4,4 +4,5 @@ export type ItemData = {
   usable: boolean;
   close: boolean;
   description?: string;
+  buttons?: string[];
 };

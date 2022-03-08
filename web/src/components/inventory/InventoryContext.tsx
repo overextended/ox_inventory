@@ -18,7 +18,7 @@ const InventoryContext: React.FC<{
     data,
   }: ItemParams<
     undefined,
-    { action: string; component?: string; slot?: number; serial?: string }
+    { action: string; component?: string; slot?: number; serial?: string; id?: number }
   >) => {
     switch (data && data.action) {
       case 'use':
@@ -35,6 +35,9 @@ const InventoryContext: React.FC<{
         break;
       case 'copy':
         data?.serial && setClipboard(data.serial);
+        break;
+      case 'custom':
+        fetchNui('useButton', { id: (data?.id || 0) + 1, slot: props.item.slot });
         break;
     }
   };
@@ -84,6 +87,20 @@ const InventoryContext: React.FC<{
                   ))}
                 </Submenu>
               )}
+            </>
+          )}
+          {(Items[props.item.name]?.buttons?.length || 0) > 0 && (
+            <>
+              <Separator />
+              {Items[props.item.name]?.buttons?.map((label: string, index: number) => (
+                <Item
+                  key={index}
+                  onClick={handleClick}
+                  data={{ action: 'custom', id: index }}
+                >
+                  {label}
+                </Item>
+              ))}
             </>
           )}
         </Menu>
