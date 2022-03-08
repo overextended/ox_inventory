@@ -5,7 +5,7 @@ return {
 	['ui_close'] = "Sluiten",
 	['ui_drop'] = "Laat vallen",
 	['ui_removeattachments'] = "Verwijder accessoires",
-	['ui_copy'] = "Copy serial number",
+	['ui_copy'] = "Serienummer kopieren",
 	-- Tooltip
 	['ui_durability'] = "Levensduur",
 	['ui_ammo'] = "Munitie",
@@ -19,7 +19,7 @@ return {
 	['ui_shift_drag'] = "Splitst item hoeveelheid in tweeën",
 	['ui_ctrl_shift_lmb'] = "Verplaats snel een halve stapel items naar een andere inventaris",
 	['ui_alt_lmb'] = "Gebruik een item snel",
-	['ui_ctrl_c'] = "When hovering over a weapon, copies it's serial number",
+	['ui_ctrl_c'] = "Zodra je met je cursor over een wapen hovert, kopieer je het serienummer",
 	--
 	['$'] = "€",
 	['male'] = "Man",
