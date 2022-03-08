@@ -607,7 +607,7 @@ local function RegisterCommands()
 
 	for i = 1, 5 do
 		local hotkey = ('hotkey%s'):format(i)
-		RegisterCommand(hotkey, function() if not invOpen then useSlot(i) end end)
+		RegisterCommand(hotkey, function() if not invOpen and not PlayerData.dead then useSlot(i) end end)
 		RegisterKeyMapping(hotkey, shared.locale('use_hotbar', i), 'keyboard', i)
 		TriggerEvent('chat:removeSuggestion', '/'..hotkey)
 	end
