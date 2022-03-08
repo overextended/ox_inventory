@@ -94,7 +94,7 @@ function data(name)
 	return func()
 end
 
-if lib then
+if not lib then
 	spamError('Ox Inventory requires the ox_lib resource, refer to the documentation.')
 end
 
