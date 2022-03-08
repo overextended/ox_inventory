@@ -4,19 +4,21 @@
 CreateThread(function()
 	local result = MySQL.query.await("SELECT owner, name FROM ox_inventory WHERE NOT owner = ''")
 	local parameters = {}
+	local count = 0
 
 	for i = 1, #result do
 		local data = result[i]
 		local snip = data.name:sub(-#data.owner, #data.name)
 
 		if data.owner == snip then
-			data.name = data.name:sub(0, #data.name - #snip)
-			parameters[i] = { data.name, snip }
+			local name = data.name:sub(0, #data.name - #snip)
+			count += 1
+			parameters[count] = { query = 'UPDATE ox_inventory SET `name` = ? WHERE `owner` = ? AND `name` = ?', values = { name, data.owner, data.name } }
 		end
 	end
 
 	if #parameters > 1 then
-		MySQL.prepare.await("UPDATE ox_inventory SET name = ? WHERE owner = ?", parameters)
+		MySQL.transaction(parameters)
 	else
 		print("Remove 'setup/dbcleanup.lua' from fxmanifest.lua")
 	end

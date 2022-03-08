@@ -5,6 +5,7 @@ return {
 	['ui_close'] = "Zavřít",
 	['ui_drop'] = "Vyhodit",
 	['ui_removeattachments'] = "Odebrat příslušenství",
+	['ui_copy'] = "Zkopírujte sériové číslo",
 	-- Popisek
 	['ui_durability'] = "Poškození",
 	['ui_ammo'] = "Náboje",
@@ -18,6 +19,7 @@ return {
 	['ui_shift_drag'] = "Rozdělit předměty na polovinu",
 	['ui_ctrl_shift_lmb'] = "Rychle přesunout polovinu předmětů do druhého inventáře",
 	['ui_alt_lmb'] = "Rychle použít předmět",
+	['ui_ctrl_c'] = "Když najedete na zbraň, zkopírujete její sériové číslo",
 	--
 	['$'] = "$",
 	['male'] = "Muž",

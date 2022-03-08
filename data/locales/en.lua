@@ -5,6 +5,7 @@ return {
 	['ui_close'] = "Close",
 	['ui_drop'] = "Drop",
 	['ui_removeattachments'] = "Remove attachments",
+	['ui_copy'] = "Copy serial number",
 	-- Tooltip
 	['ui_durability'] = "Durability",
 	['ui_ammo'] = "Ammo",
@@ -18,6 +19,7 @@ return {
 	['ui_shift_drag'] = "Split item quantity into half",
 	['ui_ctrl_shift_lmb'] = "Fast move half a stack of items into another inventory",
 	['ui_alt_lmb'] = "Fast use an item",
+	['ui_ctrl_c'] = "When hovering over a weapon, copies it's serial number",
 	--
 	['$'] = "$",
 	['male'] = "Male",
@@ -79,7 +81,7 @@ return {
 	['disable_hotbar'] = "Display inventory hotbar~",
 	['reload_weapon'] = "Reload weapon~",
 	['use_hotbar'] = "Use hotbar item %s~",
-	['no_durability'] = "Item durability is depleted",
+	['no_durability'] = "%s durability is depleted",
 	['cannot_give'] = "Unable to give %s %s to the target",
 	['evidence_cannot_take'] = "Not high enough grade to take from evidence",
 	['dumpster'] = "Dumpster"

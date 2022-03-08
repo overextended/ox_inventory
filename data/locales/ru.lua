@@ -5,6 +5,7 @@ return {
 	['ui_close'] = "Закрыть",
 	['ui_drop'] = "Выкинуть",
 	['ui_removeattachments'] = "Снять приспособления",
+	['ui_copy'] = "Copy serial number",
 	-- Tooltip
 	['ui_durability'] = "Прочность",
 	['ui_ammo'] = "Патроны",
@@ -18,6 +19,7 @@ return {
 	['ui_shift_drag'] = "Разделить количество предметов пополам",
 	['ui_ctrl_shift_lmb'] = "Быстро переместить половину стопки предметов в другой инвентарь",
 	['ui_alt_lmb'] = "Быстрое использование предмета",
+	['ui_ctrl_c'] = "When hovering over a weapon, copies it's serial number",
 	--
 	['$'] = "$",
 	['male'] = "Мужчина",

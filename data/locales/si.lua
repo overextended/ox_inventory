@@ -4,10 +4,11 @@ return {
 ['ui_give'] = "Daj",
 ['ui_close'] = "Zapri",
 ['ui_drop'] = "Spusti",
-['ui_removeattachments'] = "Odstrani priloge",
--- Tooltip
+['ui_removeattachments'] = "Odstrani dodatke",
+['ui_copy'] = "Kopiraj serialno številko",
+    -- Tooltip
 ['ui_durability'] = "Trajnost",
-['ui_ammo'] = "strelivo",
+['ui_ammo'] = "Strelivo",
 ['ui_serial'] = "Serijska številka",
 ['ui_components'] = "Komponente",
 ['ui_tint'] = "Odtenek",
@@ -18,8 +19,9 @@ return {
 ['ui_shift_drag'] = "Razdeli količino artikla na polovico",
 ['ui_ctrl_shift_lmb'] = "Hitro premaknite polovico sveženj predmetov v drug inventar",
 ['ui_alt_lmb'] = "Hitra uporaba predmeta",
+['ui_ctrl_c'] = "Ko drzite miško naz orozjem, kopira serialno številko.",
 --
-['$'] = "$",
+['$'] = "€",
 ['moški'] = "Moški",
 ['female'] = "Ženska",
 ['used'] = "Rabljen",
@@ -81,6 +83,6 @@ return {
 ['use_hotbar'] = "Uporabi element vroče vrstice %s~",
 ['no_durability'] = "Trajnost artikla je izčrpana",
 ['cannot_give'] = "Cilju ni mogoče dati %s %s",
-['evidence_cannot_take'] = "Ni dovolj visoka ocena, da bi jemljejo iz dokazov",
-['dumpster'] = "smetnjak"
+['evidence_cannot_take'] = "Nisi dovolj veliki čin, da bi uzemal dokaze.",
+['dumpster'] = "Smetnjak"
 }

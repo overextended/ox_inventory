@@ -29,6 +29,7 @@ const InfoScreen: React.FC<{
       <p>[SHIFT + Drag] - {Locale.ui_shift_drag}</p>
       <p>[CTRL + SHIFT + LMB] - {Locale.ui_ctrl_shift_lmb}</p>
       <p>[ALT + LMB] - {Locale.ui_alt_lmb}</p>
+      <p>[CTRL + C] - {Locale.ui_ctrl_c}</p>
       <span
         className="info-ox"
         onClick={() => Notify({ text: 'Made with 🐂 by the Overextended team' })}

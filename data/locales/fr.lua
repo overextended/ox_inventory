@@ -5,6 +5,7 @@ return {
 	['ui_close'] = "Fermer",
 	['ui_drop'] = "Jeter",
 	['ui_removeattachments'] = "Retirer des accessoires",
+	['ui_copy'] = "Copy serial number",
 	-- Tooltip
 	['ui_durability'] = "Durabilité",
 	['ui_ammo'] = "Munitions",
@@ -18,6 +19,7 @@ return {
 	['ui_shift_drag'] = "Séparer une pile d'items en 2",
 	['ui_ctrl_shift_lmb'] = "Déplacer rapidement une pile d'items dans un autre inventaire tout en la séparant en 2",
 	['ui_alt_lmb'] = "Utiliser un item rapidement",
+	['ui_ctrl_c'] = "When hovering over a weapon, copies it's serial number",
 	--
 	['$'] = "$",
 	['male'] = "Homme",

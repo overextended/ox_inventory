@@ -35,6 +35,7 @@ debugData([
             metadata: {
               durability: 100,
               description: `# Testing something  \n**Yes**`,
+              serial: 'SUPERCOOLWATER9725',
             },
             count: 5,
           },

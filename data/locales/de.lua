@@ -18,6 +18,7 @@ return {
 	['ui_shift_drag'] = "Halbiere den Stapel",
 	['ui_ctrl_shift_lmb'] = "Bewege einen halben Stapel in ein anderes Inventar",
 	['ui_alt_lmb'] = "Benutze einen Gegenstand",
+	['ui_ctrl_c'] = "When hovering over a weapon, copies it's serial number",
 	--
 	['$'] = "$",
 	['male'] = "Männlich",

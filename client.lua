@@ -291,7 +291,7 @@ local function useSlot(slot)
 		elseif currentWeapon then
 			local playerPed = cache.ped
 			if item.name:sub(0, 5) == 'ammo-' then
-				if client.weaponWheel then return end
+				if client.weaponWheel or currentWeapon.metadata.durability <= 0 then return end
 				local maxAmmo = GetMaxAmmoInClip(playerPed, currentWeapon.hash, true)
 				local currentAmmo = GetAmmoInPedWeapon(playerPed, currentWeapon.hash)
 
@@ -378,7 +378,7 @@ local currentInstance
 
 local nearbyMarkers, closestMarker = {}, {}
 local drops, playerCoords
-local function Markers(tb, type, rgb, name, vehicle)
+local function markers(tb, type, rgb, name, vehicle)
 	if tb then
 		for k, v in pairs(tb) do
 			if not v.instance or v.instance == currentInstance then
@@ -570,8 +570,12 @@ local function RegisterCommands()
 
 	RegisterCommand('reload', function()
 		if currentWeapon?.ammo then
-			local ammo = Inventory.Search(1, currentWeapon.ammo)
-			if ammo[1] then useSlot(ammo[1].slot) end
+			if currentWeapon.metadata.durability > 0 then
+				local ammo = Inventory.Search(1, currentWeapon.ammo)
+				if ammo[1] then useSlot(ammo[1].slot) end
+			else
+				Utils.Notify({type = 'error', text = shared.locale('no_durability', currentWeapon.label), duration = 2500})
+			end
 		end
 	end)
 	RegisterKeyMapping('reload', shared.locale('reload_weapon'), 'keyboard', 'r')
@@ -877,23 +881,23 @@ RegisterNetEvent('ox_inventory:setPlayerInventory', function(currentDrops, inven
 
 			local vehicle = cache.vehicle
 
-			Markers(drops, 'drop', vec3(150, 30, 30), nil, vehicle)
+			markers(drops, 'drop', vec3(150, 30, 30), nil, vehicle)
 
 			if not shared.qtarget then
 				if client.hasGroup(shared.police) then
-					Markers(Inventory.Evidence, 'policeevidence', vec(30, 30, 150), nil, vehicle)
+					markers(Inventory.Evidence, 'policeevidence', vec(30, 30, 150), nil, vehicle)
 				end
 
-				Markers(Inventory.Stashes, 'stash', vec3(30, 30, 150), nil, vehicle)
+				markers(Inventory.Stashes, 'stash', vec3(30, 30, 150), nil, vehicle)
 
 				for k, v in pairs(Shops) do
 					if not v.groups or client.hasGroup(v.groups) then
-						Markers(v.locations, 'shop', vec3(30, 150, 30), k, vehicle)
+						markers(v.locations, 'shop', vec3(30, 150, 30), k, vehicle)
 					end
 				end
 			end
 
-			Markers(Licenses, 'license', vec(30, 150, 30), nil, vehicle)
+			markers(Licenses, 'license', vec(30, 150, 30), nil, vehicle)
 
 			if currentWeapon and IsPedUsingActionMode(cache.ped) then SetPedUsingActionMode(cache.ped, false, -1, 'DEFAULT_ACTION')	end
 
@@ -933,7 +937,8 @@ RegisterNetEvent('ox_inventory:setPlayerInventory', function(currentDrops, inven
 
 	local EnableKeys = client.enablekeys
 	client.tick = SetInterval(function(disableControls)
-		DisablePlayerVehicleRewards(cache.playerId)
+		local playerId = cache.playerId
+		DisablePlayerVehicleRewards(playerId)
 
 		if invOpen then
 			DisableAllControlActions(0)
@@ -949,7 +954,7 @@ RegisterNetEvent('ox_inventory:setPlayerInventory', function(currentDrops, inven
 			end
 		else
 			disableControls()
-			if invBusy then DisablePlayerFiring(cache.playerId, true) end
+			if invBusy then DisablePlayerFiring(playerId, true) end
 
 			for _, v in pairs(nearbyMarkers) do
 				local coords, rgb = v[1], v[2]
@@ -958,7 +963,7 @@ RegisterNetEvent('ox_inventory:setPlayerInventory', function(currentDrops, inven
 
 			if closestMarker and IsControlJustReleased(0, 38) then
 				if closestMarker[3] == 'license' then
-					lib.callback.Async(shared.resource, 'buyLicense', 1000, function(success, message)
+					lib.callback('ox_inventory:buyLicense', 1000, function(success, message)
 						if success == false then
 							Utils.Notify({type = 'error', text = shared.locale(message), duration = 2500})
 						else
@@ -970,9 +975,14 @@ RegisterNetEvent('ox_inventory:setPlayerInventory', function(currentDrops, inven
 			end
 
 			if currentWeapon then
+				DisableControlAction(0, 80, true)
 				DisableControlAction(0, 140, true)
 
-				if client.aimedfiring and not IsPlayerFreeAiming(cache.playerId) then DisablePlayerFiring(cache.playerId, true) end
+				if currentWeapon.metadata.durability <= 0 then
+					DisablePlayerFiring(playerId, true)
+				elseif client.aimedfiring and not IsPlayerFreeAiming(playerId) then
+					DisablePlayerFiring(playerId, true)
+				end
 
 				local playerPed = cache.ped
 
