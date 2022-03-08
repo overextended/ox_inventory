@@ -1,3 +1,5 @@
+if not lib then return end
+
 lib.versionCheck('overextended/ox_inventory')
 
 local Inventory = server.inventory

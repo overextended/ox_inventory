@@ -1,3 +1,5 @@
+if not lib then return end
+
 local Items = server.items
 local Inventory = server.inventory
 

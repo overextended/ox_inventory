@@ -65,6 +65,21 @@ function shared.print(...) print(string.strjoin(' ', ...)) end
 function shared.info(...) shared.print('^2[info]^7', ...) end
 function shared.warning(...) shared.print('^3[warning]^7', ...) end
 
+-- People like ignoring errors for some reason
+local function spamError(err)
+	lib = nil
+	shared.ready = false
+	CreateThread(function()
+		while true do
+			Wait(2000)
+			CreateThread(function()
+				error(err)
+			end)
+		end
+	end)
+	error(err)
+end
+
 function data(name)
 	if shared.server and shared.ready == nil then return {} end
 	local file = ('data/%s.lua'):format(name)
@@ -73,20 +88,22 @@ function data(name)
 
 	if err then
 		shared.ready = false
-		error('^1'..err..'^0', 0)
+		spamError(err)
 	end
 
 	return func()
 end
 
-if not lib then
-	error('Ox Inventory requires the ox_lib resource, refer to the documentation.')
+if lib then
+	spamError('Ox Inventory requires the ox_lib resource, refer to the documentation.')
 end
 
-if not lib.checkDependency('oxmysql', '2.0.0') or not lib.checkDependency('ox_lib', '2.0.1') then error() end
+if not lib.checkDependency('oxmysql', '2.0.0') or not lib.checkDependency('ox_lib', '2.0.1') then
+	spamError('Dependencies do not match the required versions (check oxmysql and ox_lib)')
+end
 
 if not LoadResourceFile(shared.resource, 'web/build/index.html') then
-	error('UI has not been built, refer to the documentation or download a release build.')
+	spamError('UI has not been built, refer to the documentation or download a release build.')
 end
 
 -- Disable qtarget compatibility if it isn't running

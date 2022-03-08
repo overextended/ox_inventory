@@ -19,7 +19,7 @@ CreateThread(function()
 
 	if #parameters > 1 then
 		MySQL.transaction(parameters)
-	else
+	elseif lib then
 		print("Remove 'setup/dbcleanup.lua' from fxmanifest.lua")
 	end
 end)
