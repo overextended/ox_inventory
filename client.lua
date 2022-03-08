@@ -499,7 +499,6 @@ local function RegisterCommands()
 
 							if not netId then
 								NetworkRegisterEntityAsNetworked(entity)
-								SetEntityAsMissionEntity(entity)
 								netId = NetworkGetNetworkIdFromEntity(entity)
 								NetworkUseHighPrecisionBlending(netId, false)
 								SetNetworkIdExistsOnAllMachines(netId, true)
