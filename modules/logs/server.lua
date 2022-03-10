@@ -1,14 +1,25 @@
 local key = GetConvar('datadog:key', '')
 
 if key ~= '' then
-	local site = GetConvar('datadog:site', 'datadoghq.com')
+	local site = ('https://http-intake.logs.%s/api/v2/logs'):format(GetConvar('datadog:site', 'datadoghq.com'))
+
+	local response = {
+		[400] = 'bad request',
+		[401] = 'unauthorized',
+		[403] = 'forbidden',
+		[408] = 'request timeout',
+		[413] = 'payload too large',
+		[429] = 'too many requests',
+		[500] = 'internal server error',
+		[503] = 'service unavailable'
+	}
 
 	function server.logs(message, source, ...)
 		local ddtags = string.strjoin(',', string.tostringall(...))
-		PerformHttpRequest('https://http-intake.logs.'.. site ..'/api/v2/logs', function(status, text, header)
-			if status == "202" then return end
-			print(json.encode(text, {indent=true}), '\n')
-			print(json.encode(header, {indent=true}), '\n')
+		PerformHttpRequest(site, function(status)
+			if status ~= 202 then
+				print(('unable to submit logs to %s (%s)'):format(site, response[status]))
+			end
 		end, 'POST', json.encode({
 			hostname = GetConvar('datadog:hostname', 'FXServer'),
 			service = shared.resource,
