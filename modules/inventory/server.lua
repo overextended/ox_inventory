@@ -793,14 +793,13 @@ lib.callback.register('ox_inventory:swapItems', function(source, data)
 			local playerInventory = Inventory(source)
 			local toInventory = (data.toType == 'player' and playerInventory) or Inventory(playerInventory.open)
 			local fromInventory = (data.fromType == 'player' and playerInventory) or Inventory(playerInventory.open)
-			local sameInventory = fromInventory.id == toInventory.id or false
-			local container = (not sameInventory and playerInventory.containerSlot) and (fromInventory.type == 'container' and fromInventory or toInventory)
-			local containerItem = container and playerInventory.items[playerInventory.containerSlot]
 
 			if not fromInventory then
 				Wait(0)
 				fromInventory = (data.fromType == 'player' and playerInventory) or Inventory(playerInventory.open)
 			end
+
+			local sameInventory = fromInventory.id == toInventory.id or false
 
 			if fromInventory.type == 'policeevidence' and not sameInventory then
 				local group, rank = server.hasGroup(toInventory, shared.police)
@@ -814,6 +813,7 @@ lib.callback.register('ox_inventory:swapItems', function(source, data)
 
 			if toInventory and fromInventory and (fromInventory.id ~= toInventory.id or data.fromSlot ~= data.toSlot) then
 				local fromData = fromInventory.items[data.fromSlot]
+
 				if fromData and (not fromData.metadata.container or fromData.metadata.container and toInventory.type ~= 'container') then
 					if data.count > fromData.count then data.count = fromData.count end
 
@@ -827,6 +827,9 @@ lib.callback.register('ox_inventory:swapItems', function(source, data)
 						if fromInventory.type == 'otherplayer' then movedWeapon = false end
 						TriggerClientEvent('ox_inventory:disarm', fromInventory.id)
 					end
+
+					local container = (not sameInventory and playerInventory.containerSlot) and (fromInventory.type == 'container' and fromInventory or toInventory)
+					local containerItem = container and playerInventory.items[playerInventory.containerSlot]
 
 					if toData and ((toData.name ~= fromData.name) or not toData.stack or (not table.matches(toData.metadata, fromData.metadata))) then
 						-- Swap items
