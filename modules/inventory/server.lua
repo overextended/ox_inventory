@@ -374,10 +374,12 @@ function Inventory.SwapSlots(fromInventory, toInventory, slot1, slot2)
 end
 exports('SwapSlots', Inventory.SwapSlots)
 
-function Inventory.ContainerWeight(container, metaWeight)
+function Inventory.ContainerWeight(container, metaWeight, playerInventory)
+	playerInventory.weight -= container.weight
 	container.weight = Items(container.name).weight
 	container.weight += metaWeight
 	container.metadata.weight = metaWeight
+	playerInventory.weight += container.weight
 end
 
 ---@param inv string | number
@@ -837,25 +839,24 @@ lib.callback.register('ox_inventory:swapItems', function(source, data)
 						local fromWeight = not sameInventory and (fromInventory.weight + toData.weight - fromData.weight)
 
 						if not sameInventory then
-							if toWeight <= toInventory.maxWeight and fromWeight <= fromInventory.maxWeight then
+							if fromInventory.type == 'container' or (toWeight <= toInventory.maxWeight and fromWeight <= fromInventory.maxWeight) then
+								fromInventory.weight = fromWeight
+								toInventory.weight = toWeight
 
 								if container then
 									local toContainer = toInventory.type == 'container'
-									if containerItem then
-										local containerWl = Items.containers[containerItem.name]?.whitelist
-										local containerBl = Items.containers[containerItem.name]?.blacklist
-										local checkItem = toContainer and fromData.name or toData.name
+									local whitelist = Items.containers[containerItem.name]?.whitelist
+									local blacklist = Items.containers[containerItem.name]?.blacklist
+									local checkItem = toContainer and fromData.name or toData.name
 
-										if (containerWl and not containerWl[checkItem]) or (containerBl and containerBl[checkItem]) then
-											return
-										end
+									if (whitelist and not whitelist[checkItem]) or (blacklist and blacklist[checkItem]) then
+										return
 									end
-									Inventory.ContainerWeight(containerItem, toContainer and toWeight or fromWeight)
+
+									Inventory.ContainerWeight(containerItem, toContainer and toWeight or fromWeight, playerInventory)
 								end
 
 								toData, fromData = Inventory.SwapSlots(fromInventory, toInventory, data.fromSlot, data.toSlot)
-								fromInventory.weight = fromWeight
-								toInventory.weight = toWeight
 
 								Log(('%sx %s transferred from %s to %s for %sx %s'):format(fromData.count, fromData.name, fromInventory.owner and fromInventory.label or fromInventory.id, toInventory.owner and toInventory.label or toInventory.id, toData.count, toData.name),
 									playerInventory.owner,
@@ -872,14 +873,16 @@ lib.callback.register('ox_inventory:swapItems', function(source, data)
 						local toSlotWeight = Inventory.SlotWeight(Items(toData.name), toData)
 						local totalWeight = toInventory.weight - toData.weight + toSlotWeight
 
-						if sameInventory or totalWeight <= toInventory.maxWeight then
+						if fromInventory.type == 'container' or sameInventory or totalWeight <= toInventory.maxWeight then
 							local fromSlotWeight = Inventory.SlotWeight(Items(fromData.name), fromData)
 							toData.weight = toSlotWeight
 							if not sameInventory then
 								fromInventory.weight = fromInventory.weight - fromData.weight + fromSlotWeight
 								toInventory.weight = totalWeight
 
-								if container then Inventory.ContainerWeight(containerItem, toInventory.type == 'container' and toInventory.weight or fromInventory.weight) end
+								if container then
+									Inventory.ContainerWeight(containerItem, toInventory.type == 'container' and toInventory.weight or fromInventory.weight, playerInventory)
+								end
 
 								Log(('%sx %s transferred from %s to %s'):format(data.count, fromData.name, fromInventory.owner and fromInventory.label or fromInventory.id, toInventory.owner and toInventory.label or toInventory.id),
 									playerInventory.owner,
@@ -899,16 +902,16 @@ lib.callback.register('ox_inventory:swapItems', function(source, data)
 						toData.count = data.count
 						toData.slot = data.toSlot
 						toData.weight = Inventory.SlotWeight(Items(toData.name), toData)
-						if sameInventory or (toInventory.weight + toData.weight <= toInventory.maxWeight) then
+						if fromInventory.type == 'container' or sameInventory or (toInventory.weight + toData.weight <= toInventory.maxWeight) then
 							if not sameInventory then
 
 								local toContainer = toInventory.type == 'container'
 								if container then
 									if toContainer and containerItem then
-										local containerWl = Items.containers[containerItem.name]?.whitelist
-										local containerBl = Items.containers[containerItem.name]?.blacklist
+										local whitelist = Items.containers[containerItem.name]?.whitelist
+										local blacklist = Items.containers[containerItem.name]?.blacklist
 
-										if (containerWl and not containerWl[fromData.name]) or (containerBl and containerBl[fromData.name]) then
+										if (whitelist and not whitelist[fromData.name]) or (blacklist and blacklist[fromData.name]) then
 											return
 										end
 									end
@@ -918,7 +921,7 @@ lib.callback.register('ox_inventory:swapItems', function(source, data)
 								toInventory.weight += toData.weight
 
 								if container then
-									Inventory.ContainerWeight(containerItem, toContainer and toInventory.weight or fromInventory.weight)
+									Inventory.ContainerWeight(containerItem, toContainer and toInventory.weight or fromInventory.weight, playerInventory)
 								end
 
 								Log(('%sx %s transferred from %s to %s'):format(data.count, fromData.name, fromInventory.owner and fromInventory.label or fromInventory.id, toInventory.owner and toInventory.label or toInventory.id),
