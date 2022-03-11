@@ -135,7 +135,7 @@ exports('openInventory', OpenInventory)
 
 local function useItem(data, cb)
 	if invOpen and data.close then TriggerEvent('ox_inventory:closeInventory') end
-	if not invBusy and not Interface.ProgressActive and not IsPedRagdoll(cache.ped) and not IsPedFalling(cache.ped) then
+	if not invBusy and not PlayerData.dead and not Interface.ProgressActive and not IsPedRagdoll(cache.ped) and not IsPedFalling(cache.ped) then
 		if currentWeapon and currentWeapon?.timer > 100 then return end
 
 		invBusy = true
@@ -164,7 +164,7 @@ local function useItem(data, cb)
 					prop = data.prop,
 					propTwo = data.propTwo
 				}, function(cancel)
-					p:resolve(cancel)
+					p:resolve(PlayerData.dead or cancel)
 				end)
 			end
 
@@ -186,7 +186,7 @@ local function useItem(data, cb)
 				end
 
 				if cb then cb(result) end
-				Wait(500)
+				Wait(200)
 				plyState.invBusy = false
 				return
 			end
@@ -200,7 +200,7 @@ AddEventHandler('ox_inventory:item', useItem)
 exports('useItem', useItem)
 
 local function useSlot(slot)
-	if PlayerData.loaded and not invBusy and not Interface.ProgressActive then
+	if PlayerData.loaded and not PlayerData.dead and not invBusy and not Interface.ProgressActive then
 		local item = PlayerData.inventory[slot]
 		if not item then return end
 		local data = item and Items[item.name]
