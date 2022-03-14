@@ -46,9 +46,7 @@ end
 exports('setPlayerInventory', setPlayerInventory)
 AddEventHandler('ox_inventory:setPlayerInventory', setPlayerInventory)
 
-local Stashes = data 'stashes'
 local Vehicles = data 'vehicles'
-local table = lib.table
 
 lib.callback.register('ox_inventory:openInventory', function(source, inv, data)
 	local left = Inventory(source)
@@ -63,30 +61,8 @@ lib.callback.register('ox_inventory:openInventory', function(source, inv, data)
 
 	if data then
 		if inv == 'stash' then
-			local invId = type(data) == 'table' and data.id or data
-			local stash = Stashes[invId] or Inventory.CustomStash[invId]
-
-			if stash then
-				if stash.jobs then stash.groups = stash.jobs end
-
-				if not stash.groups or server.hasGroup(left, stash.groups) then
-					local owner = stash.owner and left.owner or stash.owner
-
-					if stash.owner == true or data.owner == true then
-						owner = left.owner
-					elseif stash.owner then
-						owner = stash.owner
-					elseif data.owner then
-						owner = data.owner
-					end
-
-					right = Inventory(owner and ('%s:%s'):format(stash.name, owner) or stash.name)
-
-					if not right then
-						right = Inventory.Create(stash.name, stash.label or stash.name, inv, stash.slots, 0, stash.weight, owner or false)
-					end
-				end
-			else return false end
+			right = Inventory(data, left)
+			if not right then return false end
 		elseif type(data) == 'table' then
 			if data.class and data.model then
 				right = Inventory(data.id)

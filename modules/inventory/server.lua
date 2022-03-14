@@ -2,18 +2,60 @@ if not lib then return end
 
 local Inventory = {}
 local Inventories = {}
+local Stashes = data 'stashes'
+
+local function openStash(data, player)
+	local stash = Stashes[data.id] or Inventory.CustomStash[data.id]
+
+	if stash then
+		if stash.jobs then stash.groups = stash.jobs end
+
+		if not player or stash.groups or server.hasGroup(player, stash.groups) then
+			local owner = stash.owner and player.owner or stash.owner
+
+			if stash.owner == true or data.owner == true then
+				owner = player.owner
+			elseif stash.owner then
+				owner = stash.owner
+			elseif data.owner then
+				owner = data.owner
+			end
+
+			print(owner and ('%s:%s'):format(stash.name, owner) or stash.name)
+
+			local inventory = Inventories[owner and ('%s:%s'):format(stash.name, owner) or stash.name]
+
+			if not inventory then
+				inventory = Inventory.Create(stash.name, stash.label or stash.name, inv, stash.slots, 0, stash.weight, owner or false)
+			end
+
+			return inventory
+		end
+	end
+end
 
 setmetatable(Inventory, {
-	__call = function(self, arg)
-		if arg then
-			if arg and type(arg) == 'table' then
-				return arg
-			end
-			return Inventories[arg]
+	__call = function(self, inv, player)
+		if not inv then return self end
+
+		if type(inv) == 'table' then
+			if inv.items then return inv end
+			return openStash(inv, player)
 		end
-		return self
+
+		return Inventories[inv]
 	end
 })
+
+exports('Inventory', function(id, owner)
+	if not id then return Inventory end
+
+	if type(id) == 'table' then
+		return Inventory(id)
+	else
+		return Inventory({ id = id, owner = owner })
+	end
+end)
 
 ---@param inv string | number
 ---@param k string
@@ -1367,13 +1409,6 @@ end, {'target'})
 Inventory.accounts = server.accounts
 
 TriggerEvent('ox_inventory:loadInventory', Inventory)
-
-exports('Inventory', function(arg)
-	if arg then
-		if Inventories[arg] then return Inventories[arg] else return nil end
-	end
-	return Inventory
-end)
 
 --- Takes traditional item data and updates it to support ox_inventory, i.e.\
 --- ```
