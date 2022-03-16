@@ -420,7 +420,7 @@ exports('SwapSlots', Inventory.SwapSlots)
 function Inventory.ContainerWeight(container, metaWeight, playerInventory)
 	playerInventory.weight -= container.weight
 	container.weight = Items(container.name).weight
-	container.weight += metaWeight
+	container.weight += metaWeight * (Items(container.name).multiply or 1)
 	container.metadata.weight = metaWeight
 	playerInventory.weight += container.weight
 end

@@ -87,7 +87,9 @@ return {
 		weight = 1,
 		stack = false,
 		close = false,
-		consume = 0
+		consume = 0,
+		multiply = 0.95,
+		description = 'reduces weight by 5%'
 	},
 
 	['identification'] = {
