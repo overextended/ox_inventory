@@ -47,8 +47,9 @@ setmetatable(Inventory, {
 
 exports('Inventory', function(id, owner)
 	if not id then return Inventory end
+	local type = type(id)
 
-	if type(id) == 'table' then
+	if type == 'table' or type == 'number' then
 		return Inventory(id)
 	else
 		return Inventory({ id = id, owner = owner })
