@@ -777,6 +777,9 @@ local function setStateBagHandler(id)
 			end
 		elseif key == 'instance' then
 			currentInstance = value
+		elseif key == 'dead' then
+			PlayerData.dead = key
+			Utils.WeaponWheel(client.weaponWheel)
 		elseif shared.police[key] then
 			PlayerData.groups[key] = value
 			OnPlayerData('groups')
@@ -1170,6 +1173,10 @@ RegisterNUICallback('exit', function(_, cb)
 end)
 
 RegisterNUICallback('swapItems', function(data, cb)
+	if data.toType == 'newdrop' and cache.vehicle then
+        return cb(false)
+    end
+
 	if currentInstance then
 		data.instance = currentInstance
 	end
