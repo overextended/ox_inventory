@@ -10,7 +10,7 @@ local function openStash(data, player)
 	if stash then
 		if stash.jobs then stash.groups = stash.jobs end
 
-		if not player or stash.groups or server.hasGroup(player, stash.groups) then
+		if not player or not stash.groups or server.hasGroup(player, stash.groups) then
 			local owner = (player and stash.owner and player.owner) or stash.owner
 
 			if player and (stash.owner == true or data.owner == true) then
@@ -39,6 +39,8 @@ setmetatable(Inventory, {
 		if type(inv) == 'table' then
 			if inv.items then return inv end
 			return openStash(inv, player)
+		elseif not Inventories[inv] then
+			return openStash({ id = inv }, player)
 		end
 
 		return Inventories[inv]
