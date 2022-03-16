@@ -9,26 +9,25 @@ local function openStash(data, player)
 
 	if stash then
 		if stash.jobs then stash.groups = stash.jobs end
+		if player and stash.groups and not server.hasGroup(player, stash.groups) then return end
 
-		if not player or not stash.groups or server.hasGroup(player, stash.groups) then
-			local owner = (player and stash.owner and player.owner) or stash.owner
+		local owner = (player and stash.owner) and player.owner or stash.owner
 
-			if player and (stash.owner == true or data.owner == true) then
-				owner = player.owner
-			elseif stash.owner then
-				owner = stash.owner
-			elseif data.owner then
-				owner = data.owner
-			end
-
-			local inventory = Inventories[owner and ('%s:%s'):format(stash.name, owner) or stash.name]
-
-			if not inventory then
-				inventory = Inventory.Create(stash.name, stash.label or stash.name, inv, stash.slots, 0, stash.weight, owner or false)
-			end
-
-			return inventory
+		if player and (stash.owner == true or data.owner == true) then
+			owner = player.owner
+		elseif stash.owner then
+			owner = stash.owner
+		elseif data.owner then
+			owner = data.owner
 		end
+
+		local inventory = Inventories[owner and ('%s:%s'):format(stash.name, owner) or stash.name]
+
+		if not inventory then
+			inventory = Inventory.Create(stash.name, stash.label or stash.name, inv, stash.slots, 0, stash.weight, owner or false, false, stash.groups)
+		end
+
+		return inventory
 	end
 end
 
@@ -191,7 +190,7 @@ end
 ---@param items? table
 --- This should only be utilised internally!
 --- To create a stash, please use `exports.ox_inventory:RegisterStash` instead.
-function Inventory.Create(id, label, invType, slots, weight, maxWeight, owner, items)
+function Inventory.Create(id, label, invType, slots, weight, maxWeight, owner, items, groups)
 	if maxWeight then
 		local self = {
 			id = id,
@@ -207,6 +206,7 @@ function Inventory.Create(id, label, invType, slots, weight, maxWeight, owner, i
 			get = Inventory.Get,
 			minimal = minimal,
 			time = os.time(),
+			groups = groups,
 		}
 
 		if self.type == 'drop' then

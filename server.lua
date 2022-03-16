@@ -62,7 +62,6 @@ lib.callback.register('ox_inventory:openInventory', function(source, inv, data)
 	if data then
 		if inv == 'stash' then
 			right = Inventory(data, left)
-			if not right then return false end
 		elseif type(data) == 'table' then
 			if data.class and data.model then
 				right = Inventory(data.id)
@@ -106,7 +105,7 @@ lib.callback.register('ox_inventory:openInventory', function(source, inv, data)
 		else right = Inventory(data) end
 
 		if right then
-			if right.open then return end
+			if right.open or (right.groups and not server.hasGroup(left, right.groups)) then return end
 
 			local otherplayer = right.type == 'player'
 			if otherplayer then right.coords = GetEntityCoords(GetPlayerPed(right.id)) end
@@ -119,7 +118,7 @@ lib.callback.register('ox_inventory:openInventory', function(source, inv, data)
 				end
 
 			else return end
-		end
+		else return end
 
 	else left.open = true end
 
