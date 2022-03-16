@@ -790,7 +790,7 @@ local function setStateBagHandler(id)
 		elseif key == 'instance' then
 			currentInstance = value
 		elseif key == 'dead' then
-			PlayerData.dead = key
+			PlayerData.dead = value
 			Utils.WeaponWheel(client.weaponWheel)
 		elseif shared.police[key] then
 			PlayerData.groups[key] = value
