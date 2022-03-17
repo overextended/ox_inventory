@@ -560,13 +560,17 @@ function Inventory.AddItem(inv, item, count, metadata, slot, cb)
 				end
 				slot = toSlot
 			end
+			if slot then
+				Inventory.SetSlot(inv, item, count, metadata, slot)
+				inv.weight = inv.weight + (item.weight + (metadata?.weight or 0)) * count
 
-			Inventory.SetSlot(inv, item, count, metadata, slot)
-			inv.weight = inv.weight + (item.weight + (metadata?.weight or 0)) * count
-
-			if inv.type == 'player' then
-				if shared.framework == 'esx' then Inventory.SyncInventory(inv) end
-				TriggerClientEvent('ox_inventory:updateSlots', inv.id, {{item = inv.items[slot], inventory = inv.type}}, {left=inv.weight, right=inv.open and Inventories[inv.open]?.weight}, count, false)
+				if inv.type == 'player' then
+					if shared.framework == 'esx' then Inventory.SyncInventory(inv) end
+					TriggerClientEvent('ox_inventory:updateSlots', inv.id, {{item = inv.items[slot], inventory = inv.type}}, {left=inv.weight, right=inv.open and Inventories[inv.open]?.weight}, count, false)
+				end
+			else
+				success = false
+				reason = 'inventory_full'
 			end
 		else
 			success = false
