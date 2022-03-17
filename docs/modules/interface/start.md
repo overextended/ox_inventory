@@ -44,7 +44,7 @@ Starts the progress bar and prevents some actions such as opening the inventory,
         anim = {
             dict = 'mp_player_intdrink',
             clip = 'loop_bottle',
-            flags = 49,
+            flag = 49,
         },
         prop = {
             model = 'prop_ld_flow_bottle',
