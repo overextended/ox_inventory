@@ -2,6 +2,7 @@ return {
 	Weapons = {
 
 		['WEAPON_ADVANCEDRIFLE'] = {
+			hashname = 'WEAPON_ADVANCEDRIFLE',
 			label = 'Advanced Rifle',
 			weight = 3180,
 			durability = 0.03,
@@ -9,6 +10,7 @@ return {
 		},
 
 		['WEAPON_APPISTOL'] = {
+			hashname = 'WEAPON_APPISTOL',
 			label = 'AP Pistol',
 			weight = 1220,
 			durability = 0.1,
@@ -16,6 +18,7 @@ return {
 		},
 
 		['WEAPON_ASSAULTRIFLE'] = {
+			hashname = 'WEAPON_ASSAULTRIFLE',
 			label = 'Assault Rifle',
 			weight = 3470,
 			durability = 0.03,
@@ -23,6 +26,7 @@ return {
 		},
 
 		['WEAPON_ASSAULTRIFLE_MK2'] = {
+			hashname = 'WEAPON_ASSAULTRIFLE_MK2',
 			label = 'Assault Rifle MK2',
 			weight = 3300,
 			durability = 0.03,
@@ -30,6 +34,7 @@ return {
 		},
 
 		['WEAPON_ASSAULTSHOTGUN'] = {
+			hashname = 'WEAPON_ASSAULTSHOTGUN',
 			label = 'Assault Shotgun',
 			weight = 3100,
 			durability = 0.05,
@@ -37,6 +42,7 @@ return {
 		},
 
 		['WEAPON_ASSAULTSMG'] = {
+			hashname = 'WEAPON_ASSAULTSMG',
 			label = 'Assault SMG',
 			weight = 2850,
 			durability = 0.05,
@@ -44,30 +50,35 @@ return {
 		},
 
 		['WEAPON_BALL'] = {
+			hashname = 'WEAPON_BALL',
 			label = 'Ball',
 			weight = 149,
 			throwable = true,
 		},
 
 		['WEAPON_BAT'] = {
+			hashname = 'WEAPON_BAT',
 			label = 'Bat',
 			weight = 1134,
 			durability = 0.1,
 		},
 
 		['WEAPON_BATTLEAXE'] = {
+			hashname = 'WEAPON_BATTLEAXE',
 			label = 'Battle Axe',
 			weight = 1200,
 			durability = 0.1,
 		},
 
 		['WEAPON_BOTTLE'] = {
+			hashname = 'WEAPON_BOTTLE',
 			label = 'Bottle',
 			weight = 350,
 			durability = 0.1,
 		},
 
 		['WEAPON_BULLPUPRIFLE'] = {
+			hashname = 'WEAPON_BULLPUPRIFLE',
 			label = 'Bullpup Rifle',
 			weight = 2900,
 			durability = 0.03,
@@ -75,6 +86,7 @@ return {
 		},
 
 		['WEAPON_BULLPUPRIFLE_MK2'] = {
+			hashname = 'WEAPON_BULLPUPRIFLE_MK2',
 			label = 'Bullpup Rifle MK2',
 			weight = 2900,
 			durability = 0.03,
@@ -82,6 +94,7 @@ return {
 		},
 
 		['WEAPON_BULLPUPSHOTGUN'] = {
+			hashname = 'WEAPON_BULLPUPSHOTGUN',
 			label = 'Bullpup Shotgun',
 			weight = 3100,
 			durability = 0.2,
@@ -89,12 +102,14 @@ return {
 		},
 
 		['WEAPON_BZGAS'] = {
+			hashname = 'WEAPON_BZGAS',
 			label = 'BZ Gas',
 			weight = 600,
 			throwable = true,
 		},
 
 		['WEAPON_CARBINERIFLE'] = {
+			hashname = 'WEAPON_CARBINERIFLE',
 			label = 'Carbine Rifle',
 			weight = 3100,
 			durability = 0.03,
@@ -102,6 +117,7 @@ return {
 		},
 
 		['WEAPON_CARBINERIFLE_MK2'] = {
+			hashname = 'WEAPON_CARBINERIFLE_MK2',
 			label = 'Carbine Rifle MK2',
 			weight = 3000,
 			durability = 0.03,
@@ -109,6 +125,7 @@ return {
 		},
 
 		['WEAPON_CERAMICPISTOL'] = {
+			hashname = 'WEAPON_CERAMICPISTOL',
 			label = 'Ceramic Pistol',
 			weight = 700,
 			durability = 0.2,
@@ -116,6 +133,7 @@ return {
 		},
 
 		['WEAPON_COMBATMG'] = {
+			hashname = 'WEAPON_COMBATMG',
 			label = 'Combat MG',
 			weight = 10000,
 			durability = 0.02,
@@ -123,6 +141,7 @@ return {
 		},
 
 		['WEAPON_COMBATMG_MK2'] = {
+			hashname = 'WEAPON_COMBATMG_MK2',
 			label = 'Combat MG MK2',
 			weight = 10500,
 			durability = 0.02,
@@ -130,6 +149,7 @@ return {
 		},
 
 		['WEAPON_COMBATPDW'] = {
+			hashname = 'WEAPON_COMBATPDW',
 			label = 'Combat PDW',
 			weight = 2700,
 			durability = 0.1,
@@ -137,6 +157,7 @@ return {
 		},
 
 		['WEAPON_COMBATPISTOL'] = {
+			hashname = 'WEAPON_COMBATPISTOL',
 			label = 'Combat Pistol',
 			weight = 970,
 			durability = 0.2,
@@ -144,6 +165,7 @@ return {
 		},
 
 		['WEAPON_COMBATSHOTGUN'] = {
+			hashname = 'WEAPON_COMBATSHOTGUN',
 			label = 'Combat Shotgun',
 			weight = 4400,
 			durability = 0.2,
@@ -151,6 +173,7 @@ return {
 		},
 
 		['WEAPON_COMPACTRIFLE'] = {
+			hashname = 'WEAPON_COMPACTRIFLE',
 			label = 'Compact Rifle',
 			weight = 2700,
 			durability = 0.05,
@@ -158,18 +181,21 @@ return {
 		},
 
 		['WEAPON_CROWBAR'] = {
+			hashname = 'WEAPON_CROWBAR',
 			label = 'Crowbar',
 			weight = 2500,
 			durability = 0.1,
 		},
 
 		['WEAPON_DAGGER'] = {
+			hashname = 'WEAPON_DAGGER',
 			label = 'Dagger',
 			weight = 800,
 			durability = 0.1,
 		},
 
 		['WEAPON_DBSHOTGUN'] = {
+			hashname = 'WEAPON_DBSHOTGUN',
 			label = 'Double Barrel Shotgun',
 			weight = 3175,
 			durability = 0.4,
@@ -177,6 +203,7 @@ return {
 		},
 
 		['WEAPON_DOUBLEACTION'] = {
+			hashname = 'WEAPON_DOUBLEACTION',
 			label = 'Double Action Revolver',
 			weight = 940,
 			durability = 0.2,
@@ -184,23 +211,27 @@ return {
 		},
 
 		['WEAPON_FIREEXTINGUISHER'] = {
+			hashname = 'WEAPON_FIREEXTINGUISHER',
 			label = 'Fire Extinguisher',
 			weight = 8616,
 		},
 
 		['WEAPON_FIREWORK'] = {
+			hashname = 'WEAPON_FIREWORK',
 			label = 'Firework Launcher',
 			weight = 1000,
 			durability = 0.5,
 		},
 
 		['WEAPON_FLARE'] = {
+			hashname = 'WEAPON_FLARE',
 			label = 'Flare',
 			weight = 235,
 			throwable = true,
 		},
 
 		['WEAPON_FLAREGUN'] = {
+			hashname = 'WEAPON_FLAREGUN',
 			label = 'Flare Gun',
 			weight = 1000,
 			durability = 0.5,
@@ -208,24 +239,28 @@ return {
 		},
 
 		['WEAPON_FLASHLIGHT'] = {
+			hashname = 'WEAPON_FLASHLIGHT',
 			label = 'Flashlight',
 			weight = 125,
 			durability = 0.1,
 		},
 
 		['WEAPON_GOLFCLUB'] = {
+			hashname = 'WEAPON_GOLFCLUB',
 			label = 'Golf Club',
 			weight = 330,
 			durability = 0.1,
 		},
 
 		['WEAPON_GRENADE'] = {
+			hashname = 'WEAPON_GRENADE',
 			label = 'Grenade',
 			weight = 600,
 			throwable = true,
 		},
 
 		['WEAPON_GUSENBERG'] = {
+			hashname = 'WEAPON_GUSENBERG',
 			label = 'Gusenberg',
 			weight = 4900,
 			durability = 0.04,
@@ -233,23 +268,27 @@ return {
 		},
 
 		['WEAPON_HAMMER'] = {
+			hashname = 'WEAPON_HAMMER',
 			label = 'Hammer',
 			weight = 1200,
 			durability = 0.1,
 		},
 
 		['WEAPON_HATCHET'] = {
+			hashname = 'WEAPON_HATCHET',
 			label = 'Hatchet',
 			weight = 1000,
 			durability = 0.1,
 		},
 
 		['WEAPON_HAZARDCAN'] = {
+			hashname = 'WEAPON_HAZARDCAN',
 			label = 'Hazard Can',
 			weight = 12000,
 		},
 
 		['WEAPON_HEAVYPISTOL'] = {
+			hashname = 'WEAPON_HEAVYPISTOL',
 			label = 'Heavy Pistol',
 			weight = 1100,
 			durability = 0.2,
@@ -257,6 +296,7 @@ return {
 		},
 
 		['WEAPON_HEAVYSHOTGUN'] = {
+			hashname = 'WEAPON_HEAVYSHOTGUN',
 			label = 'Heavy Shotgun',
 			weight = 3600,
 			durability = 0.1,
@@ -264,6 +304,7 @@ return {
 		},
 
 		['WEAPON_HEAVYSNIPER'] = {
+			hashname = 'WEAPON_HEAVYSNIPER',
 			label = 'Heavy Sniper',
 			weight = 14000,
 			durability = 0.5,
@@ -271,6 +312,7 @@ return {
 		},
 
 		['WEAPON_HEAVYSNIPER_MK2'] = {
+			hashname = 'WEAPON_HEAVYSNIPER_MK2',
 			label = 'Heavy Sniper MK2',
 			weight = 10432,
 			durability = 0.5,
@@ -278,24 +320,28 @@ return {
 		},
 
 		['WEAPON_KNIFE'] = {
+			hashname = 'WEAPON_KNIFE',
 			label = 'Knife',
 			weight = 300,
 			durability = 0.1,
 		},
 
 		['WEAPON_KNUCKLE'] = {
+			hashname = 'WEAPON_KNUCKLE',
 			label = 'Knuckle Dusters',
 			weight = 300,
 			durability = 0.1,
 		},
 
 		['WEAPON_MACHETE'] = {
+			hashname = 'WEAPON_MACHETE',
 			label = 'Machete',
 			weight = 1000,
 			durability = 0.1,
 		},
 
 		['WEAPON_MACHINEPISTOL'] = {
+			hashname = 'WEAPON_MACHINEPISTOL',
 			label = 'Machine Pistol',
 			weight = 1400,
 			durability = 0.05,
@@ -303,6 +349,7 @@ return {
 		},
 
 		['WEAPON_MARKSMANPISTOL'] = {
+			hashname = 'WEAPON_MARKSMANPISTOL',
 			label = 'Marksman Pistol',
 			weight = 1588,
 			durability = 0.5,
@@ -310,6 +357,7 @@ return {
 		},
 
 		['WEAPON_MARKSMANRIFLE'] = {
+			hashname = 'WEAPON_MARKSMANRIFLE',
 			label = 'Marksman Rifle',
 			weight = 7500,
 			durability = 0.4,
@@ -317,6 +365,7 @@ return {
 		},
 
 		['WEAPON_MARKSMANRIFLE_MK2'] = {
+			hashname = 'WEAPON_MARKSMANRIFLE_MK2',
 			label = 'Marksman Rifle',
 			weight = 4000,
 			durability = 0.4,
@@ -324,6 +373,7 @@ return {
 		},
 
 		['WEAPON_MG'] = {
+			hashname = 'WEAPON_MG',
 			label = 'Machine Gun',
 			weight = 9000,
 			durability = 0.02,
@@ -331,6 +381,7 @@ return {
 		},
 
 		['WEAPON_MICROSMG'] = {
+			hashname = 'WEAPON_MICROSMG',
 			label = 'Micro SMG',
 			weight = 4000,
 			durability = 0.1,
@@ -338,6 +389,7 @@ return {
 		},
 
 		['WEAPON_MILITARYRIFLE'] = {
+			hashname = 'WEAPON_MILITARYRIFLE',
 			label = 'Military Rifle',
 			weight = 3600,
 			durability = 0.03,
@@ -345,6 +397,7 @@ return {
 		},
 
 		['WEAPON_MINISMG'] = {
+			hashname = 'WEAPON_MINISMG',
 			label = 'Mini SMG',
 			weight = 2770,
 			durability = 0.05,
@@ -352,12 +405,14 @@ return {
 		},
 
 		['WEAPON_MOLOTOV'] = {
+			hashname = 'WEAPON_MOLOTOV',
 			label = 'Molotov',
 			weight = 1800,
 			throwable = true,
 		},
 
 		['WEAPON_MUSKET'] = {
+			hashname = 'WEAPON_MUSKET',
 			label = 'Musket',
 			weight = 4500,
 			durability = 0.5,
@@ -365,6 +420,7 @@ return {
 		},
 
 		['WEAPON_NAVYREVOLVER'] = {
+			hashname = 'WEAPON_NAVYREVOLVER',
 			label = 'Navy Revolver',
 			weight = 2000,
 			durability = 0.2,
@@ -372,23 +428,27 @@ return {
 		},
 
 		['WEAPON_NIGHTSTICK'] = {
+			hashname = 'WEAPON_NIGHTSTICK',
 			label = 'Nightstick',
 			weight = 1000,
 			durability = 0.1,
 		},
 
 		['WEAPON_PETROLCAN'] = {
+			hashname = 'WEAPON_PETROLCAN',
 			label = 'Gas Can',
 			weight = 12000,
 		},
 
 		['WEAPON_PIPEBOMB'] = {
+			hashname = 'WEAPON_PIPEBOMB',
 			label = 'Pipe Bomb',
 			weight = 1800,
 			throwable = true,
 		},
 
 		['WEAPON_PISTOL'] = {
+			hashname = 'WEAPON_PISTOL',
 			label = 'Pistol',
 			weight = 970,
 			durability = 0.1,
@@ -396,6 +456,7 @@ return {
 		},
 
 		['WEAPON_PISTOL50'] = {
+			hashname = 'WEAPON_PISTOL50',
 			label = 'Pistol .50',
 			weight = 2000,
 			durability = 0.1,
@@ -403,6 +464,7 @@ return {
 		},
 
 		['WEAPON_PISTOL_MK2'] = {
+			hashname = 'WEAPON_PISTOL_MK2',
 			label = 'Pistol MK2',
 			weight = 970,
 			durability = 0.5,
@@ -410,18 +472,21 @@ return {
 		},
 
 		['WEAPON_POOLCUE'] = {
+			hashname = 'WEAPON_POOLCUE',
 			label = 'Pool Cue',
 			weight = 146,
 			durability = 0.1,
 		},
 
 		['WEAPON_PROXMINE'] = {
+			hashname = 'WEAPON_PROXMINE',
 			label = 'Proximity Mine',
 			weight = 2500,
 			throwable = true,
 		},
 
 		['WEAPON_PUMPSHOTGUN'] = {
+			hashname = 'WEAPON_PUMPSHOTGUN',
 			label = 'Pump Shotgun',
 			weight = 3400,
 			durability = 0.1,
@@ -429,6 +494,7 @@ return {
 		},
 
 		['WEAPON_PUMPSHOTGUN_MK2'] = {
+			hashname = 'WEAPON_PUMPSHOTGUN_MK2',
 			label = 'Pump Shotgun MK2',
 			weight = 3200,
 			durability = 0.1,
@@ -436,6 +502,7 @@ return {
 		},
 
 		['WEAPON_REVOLVER'] = {
+			hashname = 'WEAPON_REVOLVER',
 			label = 'Revolver',
 			weight = 2260,
 			durability = 0.1,
@@ -443,6 +510,7 @@ return {
 		},
 
 		['WEAPON_REVOLVER_MK2'] = {
+			hashname = 'WEAPON_REVOLVER_MK2',
 			label = 'Revolver MK2',
 			weight = 1500,
 			durability = 0.1,
@@ -450,6 +518,7 @@ return {
 		},
 
 		['WEAPON_SAWNOFFSHOTGUN'] = {
+			hashname = 'WEAPON_SAWNOFFSHOTGUN',
 			label = 'Sawn Off Shotgun',
 			weight = 2380,
 			durability = 0.1,
@@ -457,6 +526,7 @@ return {
 		},
 
 		['WEAPON_SMG'] = {
+			hashname = 'WEAPON_SMG',
 			label = 'SMG',
 			weight = 3084,
 			durability = 0.8,
@@ -464,6 +534,7 @@ return {
 		},
 
 		['WEAPON_SMG_MK2'] = {
+			hashname = 'WEAPON_SMG_MK2',
 			label = 'SMG Mk2',
 			weight = 2700,
 			durability = 0.05,
@@ -471,12 +542,14 @@ return {
 		},
 
 		['WEAPON_SMOKEGRENADE'] = {
+			hashname = 'WEAPON_SMOKEGRENADE',
 			label = 'Smoke Grenade',
 			weight = 600,
 			throwable = true,
 		},
 
 		['WEAPON_SNIPERRIFLE'] = {
+			hashname = 'WEAPON_SNIPERRIFLE',
 			label = 'Sniper Rifle',
 			weight = 6500,
 			durability = 0.5,
@@ -484,12 +557,14 @@ return {
 		},
 
 		['WEAPON_SNOWBALL'] = {
+			hashname = 'WEAPON_SNOWBALL',
 			label = 'Snow Ball',
 			weight = 5,
 			throwable = true,
 		},
 
 		['WEAPON_SNSPISTOL'] = {
+			hashname = 'WEAPON_SNSPISTOL',
 			label = 'SNS Pistol',
 			weight = 465,
 			durability = 0.1,
@@ -497,6 +572,7 @@ return {
 		},
 
 		['WEAPON_SNSPISTOL_MK2'] = {
+			hashname = 'WEAPON_SNSPISTOL_MK2',
 			label = 'SNS Pistol MK2',
 			weight = 465,
 			durability = 0.1,
@@ -504,6 +580,7 @@ return {
 		},
 
 		['WEAPON_SPECIALCARBINE'] = {
+			hashname = 'WEAPON_SPECIALCARBINE',
 			label = 'Special Carbine',
 			weight = 3000,
 			durability = 0.03,
@@ -511,6 +588,7 @@ return {
 		},
 
 		['WEAPON_SPECIALCARBINE_MK2'] = {
+			hashname = 'WEAPON_SPECIALCARBINE_MK2',
 			label = 'Special Carbine MK2',
 			weight = 3370,
 			durability = 0.03,
@@ -518,24 +596,28 @@ return {
 		},
 
 		['WEAPON_STICKYBOMB'] = {
+			hashname = 'WEAPON_STICKYBOMB',
 			label = 'Sticky Bomb',
 			weight = 1000,
 			throwable = true,
 		},
 
 		['WEAPON_STONE_HATCHET'] = {
+			hashname = 'WEAPON_STONE_HATCHET',
 			label = 'Stone Hatchet',
 			weight = 800,
 			durability = 0.1,
 		},
 
 		['WEAPON_STUNGUN'] = {
+			hashname = 'WEAPON_STUNGUN',
 			label = 'Tazer',
 			weight = 227,
 			durability = 0.1,
 		},
 
 		['WEAPON_SWEEPERSHOTGUN'] = {
+			hashname = 'WEAPON_SWEEPERSHOTGUN',
 			label = 'Sweeper Shotgun',
 			weight = 4400,
 			durability = 0.05,
@@ -543,12 +625,14 @@ return {
 		},
 
 		['WEAPON_SWITCHBLADE'] = {
+			hashname = 'WEAPON_SWITCHBLADE',
 			label = 'Switch Blade',
 			weight = 300,
 			durability = 0.1,
 		},
 
 		['WEAPON_VINTAGEPISTOL'] = {
+			hashname = 'WEAPON_VINTAGEPISTOL',
 			label = 'Vintage Pistol',
 			weight = 100,
 			durability = 0.1,
@@ -556,6 +640,7 @@ return {
 		},
 
 		['WEAPON_WRENCH'] = {
+			hashname = 'WEAPON_WRENCH',
 			label = 'Wrench',
 			weight = 2500,
 			durability = 0.1,
@@ -1050,5 +1135,296 @@ return {
 			label = '7.62 NATO',
 			weight = 11,
 		}
+	},
+
+	Tints = {
+		['tint_mk1_0'] = {
+			label = 'MK1 Black',
+			weight = 3,
+			client = {
+				usetime = 2500
+			}
+		},
+		['tint_mk1_1'] = {
+			label = 'MK1 Green',
+			weight = 3,
+			client = {
+				usetime = 2500
+			}
+		},
+		['tint_mk1_2'] = {
+			label = 'MK1 Gold',
+			weight = 3,
+			client = {
+				usetime = 2500
+			}
+		},
+		['tint_mk1_3'] = {
+			label = 'MK1 Pink',
+			weight = 3,
+			client = {
+				usetime = 2500
+			}
+		},
+		['tint_mk1_4'] = {
+			label = 'MK1 Military',
+			weight = 3,
+			client = {
+				usetime = 2500
+			}
+		},
+		['tint_mk1_5'] = {
+			label = 'MK1 Police',
+			weight = 3,
+			client = {
+				usetime = 2500
+			}
+		},
+		['tint_mk1_6'] = {
+			label = 'MK1 Orange',
+			weight = 3,
+			client = {
+				usetime = 2500
+			}
+		},
+		['tint_mk1_7'] = {
+			label = 'MK1 Platinum',
+			weight = 3,
+			client = {
+				usetime = 2500
+			}
+		},
+
+		['tint_mk2_0'] = {
+			label = 'Black',
+			weight = 3,
+			client = {
+				usetime = 2500
+			}
+		},
+		['tint_mk2_1'] = {
+			label = 'Grey',
+			weight = 3,
+			client = {
+				usetime = 2500
+			},
+		},
+		['tint_mk2_2'] = {
+			label = 'Two-tone',
+			weight = 3,
+			client = {
+				usetime = 2500
+			}
+		},
+		['tint_mk2_3'] = {
+			label = 'White',
+			weight = 3,
+			client = {
+				usetime = 2500
+			}
+		},
+		['tint_mk2_4'] = {
+			label = 'Beige',
+			weight = 3,
+			client = {
+				usetime = 2500
+			}
+		},
+		['tint_mk2_5'] = {
+			label = 'Green',
+			weight = 5,
+			client = {
+				usetime = 2500
+			}
+		},
+		['tint_mk2_6'] = {
+			label = 'Blue',
+			weight = 5,
+			client = {
+				usetime = 2500
+			}
+		},
+		['tint_mk2_7'] = {
+			label = 'Brown',
+			weight = 5,
+			client = {
+				usetime = 2500
+			}
+		},
+		['tint_mk2_8'] = {
+			label = 'Brown and Black',
+			weight = 5,
+			client = {
+				usetime = 2500
+			}
+		},
+		['tint_mk2_9'] = {
+			label = 'Contrasting Blue',
+			weight = 5,
+			client = {
+				usetime = 2500
+			}
+		},
+		['tint_mk2_10'] = {
+			label = 'Contrasting Red',
+			weight = 5,
+			client = {
+				usetime = 2500
+			}
+		},
+		['tint_mk2_11'] = {
+			label = 'Contrasting Yellow',
+			weight = 5,
+			client = {
+				usetime = 2500
+			}
+		},
+		['tint_mk2_12'] = {
+			label = 'Contrasting Orange',
+			weight = 5,
+			client = {
+				usetime = 2500
+			}
+		},
+		['tint_mk2_13'] = {
+			label = 'Bright Pink',
+			weight = 5,
+			client = {
+				usetime = 2500
+			}
+		},
+		['tint_mk2_14'] = {
+			label = 'Bright Purple and Yellow',
+			weight = 5,
+			client = {
+				usetime = 2500
+			}
+		},
+		['tint_mk2_15'] = {
+			label = 'Bright Orange',
+			weight = 5,
+			client = {
+				usetime = 2500
+			}
+		},
+		['tint_mk2_16'] = {
+			label = 'Bright Green and Purple',
+			weight = 5,
+			client = {
+				usetime = 2500
+			}
+		},
+		['tint_mk2_17'] = {
+			label = 'Bright Red',
+			weight = 5,
+			client = {
+				usetime = 2500
+			}
+		},
+		['tint_mk2_18'] = {
+			label = 'Bright Green',
+			weight = 5,
+			client = {
+				usetime = 2500
+			}
+		},
+		['tint_mk2_19'] = {
+			label = 'Bright Cyan',
+			weight = 5,
+			client = {
+				usetime = 2500
+			}
+		},
+		['tint_mk2_20'] = {
+			label = 'Bright Yellow',
+			weight = 5,
+			client = {
+				usetime = 2500
+			}
+		},
+		['tint_mk2_21'] = {
+			label = 'Bright Red and White',
+			weight = 5,
+			client = {
+				usetime = 2500
+			}
+		},
+		['tint_mk2_22'] = {
+			label = 'Bright Blue and White',
+			weight = 5,
+			client = {
+				usetime = 2500
+			}
+		},
+		['tint_mk2_23'] = {
+			label = 'Metallic Gold',
+			weight = 5,
+			client = {
+				usetime = 2500
+			}
+		},
+		['tint_mk2_24'] = {
+			label = 'Metallic Platinum',
+			weight = 5,
+			client = {
+				usetime = 2500
+			}
+		},
+		['tint_mk2_25'] = {
+			label = 'Metallic Grey and Purple',
+			weight = 5,
+			client = {
+				usetime = 2500
+			}
+		},
+		['tint_mk2_26'] = {
+			label = 'Metallic Purple and Lime',
+			weight = 5,
+			client = {
+				usetime = 2500
+			}
+		},
+		['tint_mk2_27'] = {
+			label = 'Metallic Red',
+			weight = 5,
+			client = {
+				usetime = 2500
+			}
+		},
+		['tint_mk2_28'] = {
+			label = 'Metallic Green',
+			weight = 5,
+			client = {
+				usetime = 2500
+			}
+		},
+		['tint_mk2_29'] = {
+			label = 'Metallic Blue',
+			weight = 5,
+			client = {
+				usetime = 2500
+			}
+		},
+		['tint_mk2_30'] = {
+			label = 'Metallic White And Turquoise',
+			weight = 5,
+			client = {
+				usetime = 2500
+			}
+		},
+		['tint_mk2_31'] = {
+			label = 'Metallic Red and Yellow',
+			weight = 5,
+			client = {
+				usetime = 2500
+			}
+		},
+		['tint_mk2_32'] = {
+			label = 'Ironman',
+			weight = 5,
+			client = {
+				usetime = 2500
+			}
+		},
 	}
 }

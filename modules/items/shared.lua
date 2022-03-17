@@ -28,11 +28,19 @@ do
 			v.name = k
 			v.close = type == 'Ammo' and true or false
 			if type == 'Weapons' then
-				v.hash = joaat(k)
+				v.hash = joaat(v.hashname)
 				v.stack = v.throwable and true or false
 				v.durability = v.durability or 1
 			else
 				v.stack = true
+			end
+			
+			if type == 'Tints' then
+				if v.name:find('mk2') then
+					v.description = 'MK2 Weapon tint'
+				else
+					v.description = 'Non-MK2 Weapon tint'
+				end
 			end
 
 			if IsDuplicityVersion then v.client = nil else

@@ -1,4 +1,5 @@
 local Items = shared.items
+local WeaponList = data('weapons').Weapons
 
 local function displayMetadata(metadata, value)
 	local data = metadata
@@ -13,7 +14,7 @@ exports('displayMetadata', displayMetadata)
 local function GetItem(item)
 	if item then
 		item = string.lower(item)
-		if item:sub(0, 7) == 'weapon_' then item = string.upper(item) end
+		if WeaponList[item] then item = string.upper(item) end
 		return Items[item]
 	end
 	return Items

@@ -1296,8 +1296,14 @@ RegisterServerEvent('ox_inventory:updateWeapon', function(action, value, slot)
 					weapon.weight = Inventory.SlotWeight(item, weapon)
 				end
 				syncInventory = true
+			elseif action == 'tint' then
+				local tint = inventory.items[tonumber(value)]
+				local tintIdx = tint.name:gsub("tint_mk%d_", "")
+				weapon.metadata.tint = tintIdx
+				weapon.metadata.weapontint = tint.label
+				syncInventory = true
 			elseif action == 'ammo' then
-				if weapon.name == 'WEAPON_FIREEXTINGUISHER' or weapon.name == 'WEAPON_PETROLCAN' then
+				if weapon.hashname == 'WEAPON_FIREEXTINGUISHER' or weapon.hashname == 'WEAPON_PETROLCAN' then
 					weapon.metadata.durability = math.floor(value)
 					weapon.metadata.ammo = weapon.metadata.durability
 				elseif value < weapon.metadata.ammo then

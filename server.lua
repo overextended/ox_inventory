@@ -207,6 +207,9 @@ lib.callback.register('ox_inventory:useItem', function(source, item, slot, metad
 			elseif type == 3 then -- component
 				data.consume = 1
 				return data
+			elseif type == 4 then -- tint
+				data.consume = 1
+				return data
 			elseif server.UsableItemsCallbacks[item.name] then
 				server.UseItem(source, data.name, data)
 			else
