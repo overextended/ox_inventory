@@ -876,6 +876,13 @@ RegisterNetEvent('ox_inventory:setPlayerInventory', function(currentDrops, inven
 
 	while not uiLoaded do Wait(50) end
 
+	local maxSlots = shared.playerslots
+	if #PlayerData.inventory > shared.playerslots then
+		for k,v in pairs(PlayerData.inventory) do
+			if v.slot > maxSlots then maxSlots = v.slot end
+		end
+	end
+
 	SendNUIMessage({
 		action = 'init',
 		data = {
@@ -883,7 +890,7 @@ RegisterNetEvent('ox_inventory:setPlayerInventory', function(currentDrops, inven
 			items = ItemData,
 			leftInventory = {
 				id = cache.playerId,
-				slots = shared.playerslots,
+				slots = maxSlots,
 				items = PlayerData.inventory,
 				maxWeight = shared.playerweight,
 			}

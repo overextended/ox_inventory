@@ -36,8 +36,20 @@ local function setPlayerInventory(player, data)
 			end
 		end
 	end
+	local maxSlots = shared.playerslots
+	if #inventory > shared.playerslots then
+		local count = 0
+		for k,v in pairs(inventory) do
+			count = count+1
+			if k ~= count then
+				inventory[count] = v
+				inventory[count].slot = count
+			end
+			if v.slot > maxSlots then maxSlots = v.slot  end
+		end
+	end
 
-	local inv = Inventory.Create(player.source, player.name, 'player', shared.playerslots, totalWeight, shared.playerweight, player.identifier, inventory)
+	local inv = Inventory.Create(player.source, player.name, 'player', maxSlots, totalWeight, shared.playerweight, player.identifier, inventory)
 	inv.player = server.setPlayerData(player)
 
 	if shared.framework == 'esx' then Inventory.SyncInventory(inv) end
