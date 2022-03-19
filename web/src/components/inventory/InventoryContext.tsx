@@ -65,7 +65,7 @@ const InventoryContext: React.FC<{
           <Item onClick={handleClick} data={{ action: 'drop' }}>
             {Locale.ui_drop}
           </Item>
-          {props.item.metadata?.serial && (
+          {props.item.hashname.startsWith('WEAPON_') && props.item.metadata?.serial && (
             <>
               <Separator />
               <Item
