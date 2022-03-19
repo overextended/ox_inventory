@@ -11,14 +11,14 @@ local function openStash(data, player)
 		if stash.jobs then stash.groups = stash.jobs end
 		if player and stash.groups and not server.hasGroup(player, stash.groups) then return end
 
-		local owner = (player and stash.owner) and player.owner or stash.owner
+		local owner
 
-		if player and (stash.owner == true or data.owner == true) then
-			owner = player.owner
-		elseif stash.owner then
-			owner = stash.owner
-		elseif data.owner then
-			owner = data.owner
+		if stash.owner then
+			if player and (stash.owner == true or data.owner == true) then
+				owner = player.owner
+			elseif stash.owner then
+				owner = stash.owner or data.owner
+			end
 		end
 
 		local inventory = Inventories[owner and ('%s:%s'):format(stash.name, owner) or stash.name]
