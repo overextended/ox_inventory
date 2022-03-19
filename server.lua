@@ -62,6 +62,7 @@ lib.callback.register('ox_inventory:openInventory', function(source, inv, data)
 	if data then
 		if inv == 'stash' then
 			right = Inventory(data, left)
+			if right == false then return false end
 		elseif type(data) == 'table' then
 			if data.class and data.model then
 				right = Inventory(data.id)

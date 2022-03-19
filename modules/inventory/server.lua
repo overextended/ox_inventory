@@ -28,7 +28,7 @@ local function openStash(data, player)
 		end
 
 		return inventory
-	end
+	else return false end
 end
 
 setmetatable(Inventory, {
