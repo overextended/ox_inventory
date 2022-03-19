@@ -560,6 +560,7 @@ function Inventory.AddItem(inv, item, count, metadata, slot, cb)
 				end
 				slot = toSlot
 			end
+
 			if slot then
 				Inventory.SetSlot(inv, item, count, metadata, slot)
 				inv.weight = inv.weight + (item.weight + (metadata?.weight or 0)) * count
@@ -569,17 +570,15 @@ function Inventory.AddItem(inv, item, count, metadata, slot, cb)
 					TriggerClientEvent('ox_inventory:updateSlots', inv.id, {{item = inv.items[slot], inventory = inv.type}}, {left=inv.weight, right=inv.open and Inventories[inv.open]?.weight}, count, false)
 				end
 			else
-				success = false
 				reason = 'inventory_full'
 			end
 		else
-			success = false
 			reason = 'invalid_inventory'
 		end
 	else
-		success = false
 		reason = 'invalid_item'
 	end
+
 	if cb then cb(success, reason) end
 end
 exports('AddItem', Inventory.AddItem)
