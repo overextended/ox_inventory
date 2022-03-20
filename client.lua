@@ -454,7 +454,7 @@ function OnPlayerData(key, val)
 		TriggerEvent('ox_inventory:closeInventory')
 	end
 
-	Utils.WeaponWheel(client.weaponWheel)
+	Utils.WeaponWheel()
 end
 
 local function registerCommands()
@@ -791,7 +791,7 @@ local function setStateBagHandler(id)
 			currentInstance = value
 		elseif key == 'dead' then
 			PlayerData.dead = value
-			Utils.WeaponWheel(client.weaponWheel)
+			Utils.WeaponWheel()
 		elseif shared.police[key] then
 			PlayerData.groups[key] = value
 			OnPlayerData('groups')
@@ -802,7 +802,7 @@ local function setStateBagHandler(id)
 end
 
 lib.onCache('ped', function()
-	Utils.WeaponWheel(client.weaponWheel)
+	Utils.WeaponWheel()
 end)
 
 lib.onCache('vehicle', function(vehicle)

@@ -110,6 +110,8 @@ end
 -- Enables the weapon wheel, but disables the use of inventory items
 -- Mostly used for weaponised vehicles, though could be called for "minigames"
 function Utils.WeaponWheel(state)
+	if state == nil then state = client.weaponWheel end
+
 	client.weaponWheel = state
 	SetWeaponsNoAutoswap(not state)
 	SetWeaponsNoAutoreload(not state)
