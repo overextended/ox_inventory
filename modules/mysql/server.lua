@@ -6,7 +6,7 @@ local Query = {
 	SELECT_PLAYER = 'SELECT inventory FROM `characters` WHERE charid = ?',
 	UPDATE_TRUNK = 'UPDATE `vehicles` SET trunk = ? WHERE plate = ?',
 	UPDATE_GLOVEBOX = 'UPDATE `vehicles` SET glovebox = ? WHERE plate = ?',
-	UPDATE_PLAYER = 'UPDATE `characters` SET inventory = ? WHERE identifier = ?',
+	UPDATE_PLAYER = 'UPDATE `characters` SET inventory = ? WHERE charid = ?',
 }
 
 local function replace(playerColumn, vehicleColumn)
