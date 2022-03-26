@@ -24,7 +24,7 @@ local function openStash(data, player)
 		local inventory = Inventories[owner and ('%s:%s'):format(stash.name, owner) or stash.name]
 
 		if not inventory then
-			inventory = Inventory.Create(stash.name, stash.label or stash.name, inv, stash.slots, 0, stash.weight, owner or false, false, stash.groups)
+			inventory = Inventory.Create(stash.name, stash.label or stash.name, 'stash', stash.slots, 0, stash.weight, owner, false, stash.groups)
 		end
 
 		return inventory
