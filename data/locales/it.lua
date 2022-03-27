@@ -5,7 +5,7 @@ return {
 	['ui_close'] = "Chiudi",
 	['ui_drop'] = "Butta",
 	['ui_removeattachments'] = "Rimuovi accessori",
-	['ui_copy'] = "Copy serial number",
+	['ui_copy'] = "Copia numero seriale",
 	-- Tooltip
 	['ui_durability'] = "Durabilità",
 	['ui_ammo'] = "Munizioni",
@@ -83,6 +83,6 @@ return {
 	['use_hotbar'] = "Usa oggetto dalla selezione rapida %s~",
 	['no_durability'] = "Oggetto usurato",
 	['cannot_give'] = "Impossibile dare %s %s al giocatore selezionato",
-	['evidence_cannot_take'] = "Non abbastanza alto in grado per prendere dalle prove", -- ACCURATE TRANSLATION NEEDED
+	['evidence_cannot_take'] = "Il tuo grado non può prendere oggetti dal deposito",
 	['dumpster'] = "Cassonetto"
 }
