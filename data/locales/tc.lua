@@ -5,7 +5,7 @@ return {
 	['ui_close'] = "關閉",
 	['ui_drop'] = "丟下",
 	['ui_removeattachments'] = "移除配件",
-	['ui_copy'] = "Copy serial number",
+	['ui_copy'] = "複製序列號",
 	-- Tooltip
 	['ui_durability'] = "耐久度",
 	['ui_ammo'] = "彈藥",
