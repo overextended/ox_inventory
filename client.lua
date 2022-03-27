@@ -1224,7 +1224,6 @@ RegisterNUICallback('buyItem', function(data, cb)
 	cb(response)
 end)
 
-
 exports('inventoryOpen', function()
 	return invOpen
 end)
