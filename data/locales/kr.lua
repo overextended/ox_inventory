@@ -5,6 +5,7 @@ return {
 	['ui_close'] = "닫기",
 	['ui_drop'] = "떨구기",
 	['ui_removeattachments'] = "부착물 제거",
+	['ui_copy'] = "일련 번호 복사",
 	-- Tooltip
 	['ui_durability'] = "내구도",
 	['ui_ammo'] = "탄약",
