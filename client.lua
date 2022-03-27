@@ -1223,7 +1223,3 @@ RegisterNUICallback('buyItem', function(data, cb)
 	if message then Utils.Notify(message) end
 	cb(response)
 end)
-
-exports('inventoryOpen', function()
-	return invOpen
-end)
