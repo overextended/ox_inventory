@@ -5,7 +5,7 @@ return {
 	['ui_close'] = "Luk",
 	['ui_drop'] = "Smid",
 	['ui_removeattachments'] = "Fjern tilbehør",
-	['ui_copy'] = "Copy serial number",
+	['ui_copy'] = "Kopiér serienummeret",
 	-- Tooltip
 	['ui_durability'] = "Holdbarhed",
 	['ui_ammo'] = "Ammunition",
