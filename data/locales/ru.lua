@@ -5,7 +5,7 @@ return {
 	['ui_close'] = "Закрыть",
 	['ui_drop'] = "Выкинуть",
 	['ui_removeattachments'] = "Снять приспособления",
-	['ui_copy'] = "Copy serial number",
+	['ui_copy'] = "Скопировать серийный номер",
 	-- Tooltip
 	['ui_durability'] = "Прочность",
 	['ui_ammo'] = "Патроны",
