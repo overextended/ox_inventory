@@ -175,7 +175,7 @@ local function useItem(data, cb)
 			if p then Citizen.Await(p) end
 
 			if not p or not p.value then
-				if result.name:sub(0, 3) ~= 'at_' and result.consume and result.consume ~= 0 then
+				if result.component and result.consume and result.consume ~= 0 then
 					TriggerServerEvent('ox_inventory:removeItem', result.name, result.consume, result.metadata, result.slot, true)
 				end
 
@@ -213,7 +213,11 @@ local function useSlot(slot)
 		if not item then return end
 		local data = item and Items[item.name]
 		if not data or not data.usable then return end
-		if data.name:sub(0, 3) == 'at_' and not currentWeapon then Utils.Notify({type = 'error', text = shared.locale('weapon_hand_required')}) return end
+
+		if data.component and not currentWeapon then
+			return Utils.Notify({type = 'error', text = shared.locale('weapon_hand_required')})
+		end
+
 		data.slot = slot
 
 		if item.metadata.container then
@@ -235,7 +239,7 @@ local function useSlot(slot)
 
 		if data.effect then
 			data:effect({name = item.name, slot = item.slot, metadata = item.metadata})
-		elseif item.name:sub(0, 7) == 'WEAPON_' then
+		elseif item.weapon then
 			if client.weaponWheel then return end
 			useItem(data, function(result)
 				if result then
@@ -250,7 +254,7 @@ local function useSlot(slot)
 					if currentWeapon then currentWeapon = Utils.Disarm(currentWeapon) end
 					local sleep = (client.hasGroup(shared.police) and (GetWeapontypeGroup(data.hash) == 416676503 or GetWeapontypeGroup(data.hash) == 690389602)) and 400 or 1200
 					local coords = GetEntityCoords(playerPed, true)
-					if item.name == 'WEAPON_SWITCHBLADE' then
+					if item.hash == `WEAPON_SWITCHBLADE` then
 						Utils.PlayAnimAdvanced(sleep*2, 'anim@melee@switchblade@holster', 'unholster', coords.x, coords.y, coords.z, 0, 0, GetEntityHeading(playerPed), 8.0, 3.0, -1, 48, 0.1)
 						Wait(100)
 					else
@@ -286,7 +290,7 @@ local function useSlot(slot)
 					Wait(0)
 					RefillAmmoInstantly(playerPed)
 
-					if data.name == 'WEAPON_PETROLCAN' or data.name == 'WEAPON_HAZARDCAN' or data.name == 'WEAPON_FIREEXTINGUISHER' then
+					if data.hash == `WEAPON_PETROLCAN` or data.hash == `WEAPON_HAZARDCAN` or data.hash == `WEAPON_FIREEXTINGUISHER` then
 						item.metadata.ammo = item.metadata.durability
 						SetPedInfiniteAmmo(playerPed, true, data.hash)
 					end
@@ -300,7 +304,7 @@ local function useSlot(slot)
 			end)
 		elseif currentWeapon then
 			local playerPed = cache.ped
-			if item.name:sub(0, 5) == 'ammo-' then
+			if item.ammo then
 				if client.weaponWheel or currentWeapon.metadata.durability <= 0 then return end
 				local maxAmmo = GetMaxAmmoInClip(playerPed, currentWeapon.hash, true)
 				local currentAmmo = GetAmmoInPedWeapon(playerPed, currentWeapon.hash)
@@ -323,7 +327,7 @@ local function useSlot(slot)
 						end
 					end)
 				end
-			elseif item.name:sub(0, 3) == 'at_' then
+			elseif item.component then
 				local components = data.client.component
 				local componentType = data.type
 				local weaponComponents = PlayerData.inventory[currentWeapon.slot].metadata.components
@@ -858,7 +862,7 @@ RegisterNetEvent('ox_inventory:setPlayerInventory', function(currentDrops, inven
 	local ItemData = table.create(0, #Items)
 
 	for _, v in pairs(Items) do
-		v.usable = (v.client and next(v.client) or v.consume == 0 or esxItem[v.name] or v.name:sub(0, 7) == 'WEAPON_' or v.name:sub(0, 5) == 'ammo-' or v.name:sub(0, 3) == 'at_') and true or false
+		v.usable = (v.client and next(v.client)) or v.effect or (v.consume == 0 or esxItem[v.name] or v.weapon or v.component or v.ammo or v.tint) and true
 
 		local buttons = {}
 		if v.buttons then
@@ -1044,7 +1048,7 @@ RegisterNetEvent('ox_inventory:setPlayerInventory', function(currentDrops, inven
 					if IsPedShooting(playerPed) then
 						local currentAmmo
 
-						if currentWeapon.name == 'WEAPON_PETROLCAN' or currentWeapon.name == 'WEAPON_HAZARDCAN' or currentWeapon.name == 'WEAPON_FIREEXTINGUISHER' then
+						if currentWeapon.hash == `WEAPON_PETROLCAN` or currentWeapon.hash == `WEAPON_HAZARDCAN` or currentWeapon.hash == `WEAPON_FIREEXTINGUISHER` then
 							currentAmmo = currentWeapon.metadata.ammo - 0.05
 
 							if currentAmmo <= 0 then

@@ -194,19 +194,22 @@ lib.callback.register('ox_inventory:useItem', function(source, item, slot, metad
 		if item and data and data.count > 0 and data.name == item.name then
 			inventory.usingItem = slot
 			data = {name=data.name, label=data.label, count=data.count, slot=slot or data.slot, metadata=data.metadata, consume=item.consume}
-			if type == 1 then -- weapon
+
+			if item.weapon then
 				inventory.weapon = data.slot
 				return data
-			elseif type == 2 then -- ammo
+			elseif item.ammo then
 				if inventory.weapon then
 					local weapon = inventory.items[inventory.weapon]
+
 					if weapon?.metadata.durability > 0 then
 						data.consume = nil
 						return data
 					end
 				end
+
 				return false
-			elseif type == 3 then -- component
+			elseif item.component or item.tint then
 				data.consume = 1
 				return data
 			elseif server.UsableItemsCallbacks[item.name] then
@@ -214,10 +217,13 @@ lib.callback.register('ox_inventory:useItem', function(source, item, slot, metad
 			else
 				if item.consume and data.count >= item.consume then
 					local result = item.cb and item.cb('usingItem', item, inventory, slot)
+
 					if result == false then return end
+
 					if result ~= nil then
 						data.server = result
 					end
+
 					return data
 				else
 					TriggerClientEvent('ox_inventory:notify', source, {type = 'error', text = shared.locale('item_not_enough', item.name), duration = 2500})

@@ -35,13 +35,15 @@ local trash = {
 
 local function GetItem(item)
 	if item then
-		local type
 		item = string.lower(item)
-		if item:sub(0, 7) == 'weapon_' then type, item = 1, string.upper(item)
-		elseif item:sub(0, 5) == 'ammo-' then type = 2
-		elseif item:sub(0, 3) == 'at_' then type = 3 end
+
+		if item:sub(0, 7) == 'weapon_' then
+			item = string.upper(item)
+		end
+
 		return ItemList[item] or false, type
 	end
+
 	return ItemList
 end
 
@@ -192,10 +194,9 @@ CreateThread(function() Inventory = server.inventory end)
 
 function Items.Metadata(inv, item, metadata, count)
 	if type(inv) ~= 'table' then inv = Inventory(inv) end
-	local isWeapon = item.name:sub(0, 7) == 'WEAPON_'
-	if not isWeapon then metadata = not metadata and {} or type(metadata) == 'string' and {type=metadata} or metadata end
+	if not item.weapon then metadata = not metadata and {} or type(metadata) == 'string' and {type=metadata} or metadata end
 
-	if isWeapon then
+	if item.weapon then
 		if type(metadata) ~= 'table' then metadata = {} end
 		if not metadata.durability then metadata.durability = 100 end
 		if not metadata.ammo and item.ammoname then metadata.ammo = 0 end
@@ -247,7 +248,7 @@ function Items.CheckMetadata(metadata, item, name)
 		metadata.bag = nil
 	end
 
-	if metadata.durability and not item.durability and not item.degrade and not name:sub(0, 7) == 'WEAPON_' then
+	if metadata.durability and not item.durability and not item.degrade and not item.weapon then
 		metadata.durability = nil
 	end
 
@@ -271,7 +272,7 @@ function Items.CheckMetadata(metadata, item, name)
 		end
 	end
 
-	if metadata.serial and item.name:sub(0, 7) == 'WEAPON_' and not item.ammoname then
+	if metadata.serial and item.weapon and not item.ammoname then
 		metadata.serial = nil
 	end
 

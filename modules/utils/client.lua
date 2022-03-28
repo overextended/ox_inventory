@@ -71,7 +71,7 @@ function Utils.Disarm(currentWeapon, newSlot)
 			ClearPedSecondaryTask(cache.ped)
 			local sleep = (client.hasGroup(shared.police) and (GetWeapontypeGroup(currentWeapon.hash) == 416676503 or GetWeapontypeGroup(currentWeapon.hash) == 690389602)) and 450 or 1400
 			local coords = GetEntityCoords(cache.ped, true)
-			if currentWeapon.name == 'WEAPON_SWITCHBLADE' then
+			if currentWeapon.hash == `WEAPON_SWITCHBLADE` then
 				Utils.PlayAnimAdvanced(sleep, 'anim@melee@switchblade@holster', 'holster', coords.x, coords.y, coords.z, 0, 0, GetEntityHeading(cache.ped), 8.0, 3.0, -1, 48, 0)
 				Wait(600)
 			else
