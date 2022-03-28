@@ -73,6 +73,10 @@ local function openInventory(inv, data)
 		end
 	end
 
+	if inv == 'dumpster' and cache.vehicle then
+		return Utils.Notify({type = 'error', text = shared.locale('inventory_right_access'), duration = 2500})
+	end
+
 	if canOpenInventory() then
 		local left, right
 
@@ -99,9 +103,10 @@ local function openInventory(inv, data)
 		end
 
 		if left then
-			if inv ~= 'trunk' and not IsPedInAnyVehicle(cache.ped, false) then
+			if inv ~= 'trunk' and not cache.vehicle then
 				Utils.PlayAnim(1000, 'pickup_object', 'putdown_low', 5.0, 1.5, -1, 48, 0.0, 0, 0, 0)
 			end
+
 			plyState.invOpen = true
 			SetInterval(client.interval, 100)
 			SetNuiFocus(true, true)
@@ -498,7 +503,7 @@ local function registerCommands()
 						while true do
 							Wait(100)
 							if not invOpen then break
-							elseif not IsPedInAnyVehicle(cache.ped, false) then
+							elseif not cache.vehicle then
 								TriggerEvent('ox_inventory:closeInventory')
 								break
 							end
@@ -761,7 +766,7 @@ RegisterNetEvent('ox_inventory:createDrop', function(drop, data, owner, slot)
 	if owner == PlayerData.source and invOpen and #(GetEntityCoords(cache.ped) - data.coords) <= 1 then
 		if currentWeapon?.slot == slot then currentWeapon = Utils.Disarm(currentWeapon) end
 
-		if not IsPedInAnyVehicle(cache.ped, false) then
+		if not cache.vehicle then
 			openInventory('drop', drop)
 		else
 			SendNUIMessage({
