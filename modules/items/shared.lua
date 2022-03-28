@@ -27,13 +27,17 @@ do
 		for k, v in pairs(data) do
 			v.name = k
 			v.close = type == 'Ammo' and true or false
+
 			if type == 'Weapons' then
-				v.hash = joaat(k)
+				v.hash = joaat(v.model or k)
 				v.stack = v.throwable and true or false
 				v.durability = v.durability or 1
+				v.weapon = true
 			else
 				v.stack = true
 			end
+
+			v[type == 'Ammo' and 'ammo' or type == 'Components' and 'component' or type == 'Tints' and 'tint' or 'weapon'] = true
 
 			if IsDuplicityVersion then v.client = nil else
 				v.count = 0
