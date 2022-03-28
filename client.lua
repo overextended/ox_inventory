@@ -888,7 +888,7 @@ RegisterNetEvent('ox_inventory:setPlayerInventory', function(currentDrops, inven
 
 	local locales = {}
 	for k, v in pairs(shared.locale()) do
-		if k:find('ui_') then
+		if k:find('ui_') or k == '$' then
 			locales[k] = v
 		end
 	end

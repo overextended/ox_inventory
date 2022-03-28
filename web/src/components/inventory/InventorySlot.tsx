@@ -11,6 +11,7 @@ import { isSlotWithItem } from '../../helpers';
 import { useContextMenu } from 'react-contexify';
 import { onUse } from '../../dnd/onUse';
 import ReactTooltip from 'react-tooltip';
+import { Locale } from '../../store/locale';
 
 interface SlotProps {
   inventory: Inventory;
@@ -177,7 +178,7 @@ const InventorySlot: React.FC<SlotProps> = ({ inventory, item, setCurrentItem })
                             item.currency === 'money' || !item.currency ? '#2ECC71' : '#E74C3C',
                         }}
                       >
-                        ${item.price}
+                        {Locale.$}{item.price}
                       </div>
                     )}
                   </>
