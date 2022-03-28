@@ -20,7 +20,7 @@ function server.setPlayerData(player)
 	end
 
 	return {
-		source = tonumber(player.source),
+		source = player.source,
 		name = player.name,
 		groups = player.groups or {},
 		sex = player.sex,
@@ -57,7 +57,7 @@ if shared.framework == 'esx' then
 		}
 
 		return {
-			source = tonumber(player.source),
+			source = player.source,
 			name = player.name,
 			groups = groups,
 			sex = player.sex or player.variables.sex,

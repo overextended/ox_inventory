@@ -16,8 +16,6 @@ local function setPlayerInventory(player, data)
 		data = MySQL:loadPlayer(player.identifier)
 	end
 
-	player = server.setPlayerData(player)
-
 	local inventory = {}
 	local totalWeight = 0
 
@@ -39,8 +37,9 @@ local function setPlayerInventory(player, data)
 		end
 	end
 
+	player.source = tonumber(player.source)
 	local inv = Inventory.Create(player.source, player.name, 'player', shared.playerslots, totalWeight, shared.playerweight, player.identifier, inventory)
-	inv.player = player
+	inv.player = server.setPlayerData(player)
 
 	if shared.framework == 'esx' then Inventory.SyncInventory(inv) end
 	TriggerClientEvent('ox_inventory:setPlayerInventory', player.source, Inventory.Drops, inventory, totalWeight, server.UsableItemsCallbacks, inv.player, player.source)
