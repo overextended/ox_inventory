@@ -61,6 +61,7 @@ CreateThread(function()
 		local items = MySQL.query.await('SELECT * FROM items')
 		if items then
 			local query = {}
+
 			for i = 1, #items do
 				local v = items[i]
 				if i == 1 then query[i] = ('DELETE FROM items WHERE name = "%s"'):format(v.name) else query[i] = ('OR name = "%s"'):format(v.name) end
@@ -68,9 +69,10 @@ CreateThread(function()
 				v.label = v.label
 				v.close = v.closeonuse or true
 				v.stack = v.stackable or true
-				v.description = (v.description or '')
+				v.description = v.description
 				v.weight = v.weight or 0
 			end
+
 			if next(query) then
 				query = table.concat(query, ' ')
 				local sql = LoadResourceFile(shared.resource, 'setup/dump.sql')
@@ -85,44 +87,50 @@ local itemFormat = [[
 		weight = %s,
 		stack = %s,
 		close = %s,
-		description = '%s'
+		description = %s
 	},
 ]]
 				local saveSql = false
 				local dumpSize = #dump
 				local fileSize = #file
+
 				for _, v in pairs(items) do
 					local formatName = v.name:gsub("'", "\\'"):lower()
 					if not ItemList[formatName] then
-						if not saveSql then saveSql = true end
 						dumpSize += 1
 						fileSize += 1
 						dump[dumpSize] = ('\n	("%s", "%s", %s, "%s")'):format(v.name, v.label, v.weight, v.description)
+
+						if not saveSql then saveSql = true end
 						if dumpSize ~= 2 then dump[dumpSize] = ','..dump[dumpSize] end
-						file[fileSize] = (itemFormat):format(formatName, v.label:gsub("'", "\\'"):lower(), v.weight, v.stack, v.close, v.description:gsub("'", "\\'"))
+
+						file[fileSize] = (itemFormat):format(formatName, v.label:gsub("'", "\\'"):lower(), v.weight, v.stack, v.close, v.description and ('"%s"'):format(v.description) or 'nil')
 						ItemList[formatName] = v
 					end
 				end
+
 				dump[dumpSize+1] = ';\n\n'
 				file[fileSize+1] = '}'
+
 				if saveSql then
 					dump = ('%s%s'):format(sql, table.concat(dump))
 					SaveResourceFile(shared.resource, 'setup/dump.sql', dump, -1)
 				end
+
 				SaveResourceFile(shared.resource, 'data/items.lua', table.concat(file), -1)
+
 				MySQL.update(query, function(result)
 					if result > 0 then
 						shared.info('Removed '..result..' items from the database')
 					end
 				end)
+
 				if items then shared.info(#items..' items have been copied from the database') end
 			end
 		end
 	end
 
-	if server.clearstashes then
-		MySQL.query.await('DELETE FROM ox_inventory WHERE lastupdated < (NOW() - INTERVAL '..server.clearstashes..') OR data = "[]"')
-	end
+	if server.clearstashes then MySQL.query('DELETE FROM ox_inventory WHERE lastupdated < (NOW() - INTERVAL '..server.clearstashes..') OR data = "[]"') end
 
 	local count = 0
 	Wait(2000)
