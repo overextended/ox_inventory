@@ -60,27 +60,27 @@ CreateThread(function()
 	if shared.framework == 'esx' then
 		local items = MySQL.query.await('SELECT * FROM items')
 		if items then
-			local query = {}
+			local dump = {}
+			local count = 0
 
 			for i = 1, #items do
-				local v = items[i]
-				if i == 1 then query[i] = ('DELETE FROM items WHERE name = "%s"'):format(v.name) else query[i] = ('OR name = "%s"'):format(v.name) end
-				v.name = v.name
-				v.label = v.label
-				v.close = v.closeonuse or true
-				v.stack = v.stackable or true
-				v.description = v.description
-				v.weight = v.weight or 0
+				local item = items[i]
+
+				if not ItemList[item.name] then
+					item.close = item.closeonuse or true
+					item.stack = item.stackable or true
+					item.description = item.description
+					item.weight = item.weight or 0
+					dump[i] = item
+					count += 1
+				end
 			end
 
-			if next(query) then
-				query = table.concat(query, ' ')
-				local sql = LoadResourceFile(shared.resource, 'setup/dump.sql')
-				if not sql then error('Unable to load "setup/dump.sql', 1) end
+			if next(dump) then
 				local file = {string.strtrim(LoadResourceFile(shared.resource, 'data/items.lua'))}
 				file[1] = file[1]:gsub('}$', '')
-				local dump = {'INSERT INTO `items` (`name`, `label`, `weight`, `description`) VALUES'}
-local itemFormat = [[
+
+				local itemFormat = [[
 
 	['%s'] = {
 		label = '%s',
@@ -90,43 +90,29 @@ local itemFormat = [[
 		description = %s
 	},
 ]]
-				local saveSql = false
-				local dumpSize = #dump
 				local fileSize = #file
 
-				for _, v in pairs(items) do
-					local formatName = v.name:gsub("'", "\\'"):lower()
+				for _, item in pairs(items) do
+					local formatName = item.name:gsub("'", "\\'"):lower()
 					if not ItemList[formatName] then
-						dumpSize += 1
 						fileSize += 1
-						dump[dumpSize] = ('\n	("%s", "%s", %s, "%s")'):format(v.name, v.label, v.weight, v.description)
 
-						if not saveSql then saveSql = true end
-						if dumpSize ~= 2 then dump[dumpSize] = ','..dump[dumpSize] end
-
-						file[fileSize] = (itemFormat):format(formatName, v.label:gsub("'", "\\'"):lower(), v.weight, v.stack, v.close, v.description and ('"%s"'):format(v.description) or 'nil')
+						file[fileSize] = (itemFormat):format(formatName, item.label:gsub("'", "\\'"):lower(), item.weight, item.stack, item.close, item.description and ('"%s"'):format(item.description) or 'nil')
 						ItemList[formatName] = v
 					end
 				end
 
-				dump[dumpSize+1] = ';\n\n'
 				file[fileSize+1] = '}'
 
-				if saveSql then
-					dump = ('%s%s'):format(sql, table.concat(dump))
-					SaveResourceFile(shared.resource, 'setup/dump.sql', dump, -1)
-				end
-
 				SaveResourceFile(shared.resource, 'data/items.lua', table.concat(file), -1)
-
-				MySQL.update(query, function(result)
-					if result > 0 then
-						shared.info('Removed '..result..' items from the database')
-					end
-				end)
-
-				if items then shared.info(#items..' items have been copied from the database') end
+				shared.info(count, 'items have been copied from the database')
 			end
+		end
+
+		if items then
+			shared.warning('Database contains', #items, 'items.')
+			shared.warning('These items should be cleared, but braindead Modit developers make that impossible.')
+			shared.warning('Referencing ESX.Items is too difficult when you sell resources for the same price as a AAA game.')
 		end
 	end
 
@@ -138,8 +124,8 @@ local itemFormat = [[
 		server.UsableItemsCallbacks = server.UsableItemsCallbacks()
 	else server.UsableItemsCallbacks = {} end
 
-	for _, v in pairs(ItemList) do
-		if v.consume and v.consume > 0 and server.UsableItemsCallbacks[v.name] then server.UsableItemsCallbacks[v.name] = nil end
+	for _, item in pairs(ItemList) do
+		if item.consume and item.consume > 0 and server.UsableItemsCallbacks[item.name] then server.UsableItemsCallbacks[item.name] = nil end
 		count += 1
 	end
 
