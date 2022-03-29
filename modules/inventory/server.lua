@@ -64,15 +64,21 @@ function Inventory.Set(inv, k, v)
 	inv = Inventory(inv)
 	if inv then
 		if type(v) == 'number' then math.floor(v + 0.5) end
+
 		if k == 'open' and v == false then
 			if inv.type ~= 'player' then
 				if inv.type == 'otherplayer' then
 					inv.type = 'player'
 				elseif inv.type == 'drop' and not next(inv.items) then
 					return Inventory.Remove(inv.id, inv.type)
-				else inv.time = os.time() end
+				else
+					inv.time = os.time()
+				end
 			end
+		elseif k == 'maxWeight' and v < 1000 then
+			v *= 1000
 		end
+
 		inv[k] = v
 	end
 end
