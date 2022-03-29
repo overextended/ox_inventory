@@ -1,3 +1,9 @@
+local function useExport(resource, export)
+	return function(...)
+		return exports[resource][export](nil, ...)
+	end
+end
+
 local function newItem(data)
 	data.weight = data.weight or 0
 	data.close = data.close or true
@@ -10,9 +16,20 @@ local function newItem(data)
 		if not data.consume and (data.client.status or data.client.usetime) then
 			data.consume = 1
 		end
+
+		if not IsDuplicityVersion and data.client.export then
+			data.export = useExport(string.strsplit('.', data.client.export))
+		end
 	end
 
-	if IsDuplicityVersion then data.client = nil else
+	if IsDuplicityVersion then
+		data.client = nil
+		if data.server then
+			if data.server.export then
+				data.cb = useExport(string.strsplit('.', data.server.export))
+			end
+		end
+	else
 		data.server = nil
 		data.count = 0
 	end

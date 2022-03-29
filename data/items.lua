@@ -11,6 +11,7 @@ return {
 			export = 'ox_inventory_examples.testburger'
 		},
 		server = {
+			export = 'ox_inventory_examples.testburger',
 			test = 'what an amazingly delicious burger, amirite?'
 		},
 		buttons = {

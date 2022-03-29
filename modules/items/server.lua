@@ -132,6 +132,7 @@ CreateThread(function()
 	shared.info('Inventory has loaded '..count..' items')
 	collectgarbage('collect') -- clean up from initialisation
 	shared.ready = true
+
 	--[[local ignore = {[0] = '?', [`WEAPON_UNARMED`] = 'unarmed', [966099553] = 'shovel'}
 	while true do
 		Wait(45000)
@@ -276,6 +277,7 @@ end
 
 local function Item(name, cb)
 	local item = ItemList[name]
+
 	if item and not item.cb then
 		item.cb = cb
 	end

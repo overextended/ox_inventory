@@ -230,13 +230,8 @@ local function useSlot(slot)
 		elseif data.client then
 			if invOpen and data.close then TriggerEvent('ox_inventory:closeInventory') end
 
-			if data.client.export then
-				if type(data.client.export) ~= 'function' then
-					local resource, fn = string.strsplit('.', data.client.export)
-					data.client.export = exports[resource][fn]
-				end
-
-				return data.client.export(0, data, {name = item.name, slot = item.slot, metadata = item.metadata})
+			if data.export then
+				return data.export(data, {name = item.name, slot = item.slot, metadata = item.metadata})
 			elseif data.client.event then -- deprecated, to be removed
 				return error(('unable to trigger event for %s, data.client.event has been removed. utilise exports instead.'):format(item.name))
 			end
