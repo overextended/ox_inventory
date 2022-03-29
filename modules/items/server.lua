@@ -3,6 +3,8 @@ if not lib then return end
 local Items = {}
 local ItemList = shared.items
 
+TriggerEvent('ox_inventory:itemList', ItemList)
+
 -- Slot count and maximum weight for containers
 -- Whitelist and blacklist: ['item_name'] = true
 Items.containers = {
@@ -133,7 +135,6 @@ local itemFormat = [[
 		count += 1
 	end
 
-	TriggerEvent('ox_inventory:itemList', ItemList)
 	shared.info('Inventory has loaded '..count..' items')
 	collectgarbage('collect') -- clean up from initialisation
 	shared.ready = true
