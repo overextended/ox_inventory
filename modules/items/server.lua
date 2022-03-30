@@ -111,8 +111,10 @@ CreateThread(function()
 
 		if items then
 			shared.warning('Database contains', #items, 'items.')
-			shared.warning('These items should be cleared, but braindead Modit developers make that impossible.')
-			shared.warning('Referencing ESX.Items is too difficult when you sell resources for the same price as a AAA game.')
+			shared.warning('These items should be removed, and any queries for items should instead reference ESX.Items')
+			shared.warning('These entries are no longer removed to satisfy the creators of obfuscated and encrypted resources.')
+			shared.warning('Note: Any items that exist in item data and not the database will not work in said resources.')
+			shared.warning('Apparently indexing ESX.Items is too big brain, or something.')
 		end
 	end
 
