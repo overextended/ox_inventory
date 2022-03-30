@@ -239,7 +239,7 @@ local function useSlot(slot)
 
 		if data.effect then
 			data:effect({name = item.name, slot = item.slot, metadata = item.metadata})
-		elseif item.weapon then
+		elseif data.weapon then
 			if client.weaponWheel then return end
 			useItem(data, function(result)
 				if result then
@@ -304,7 +304,7 @@ local function useSlot(slot)
 			end)
 		elseif currentWeapon then
 			local playerPed = cache.ped
-			if item.ammo then
+			if data.ammo then
 				if client.weaponWheel or currentWeapon.metadata.durability <= 0 then return end
 				local maxAmmo = GetMaxAmmoInClip(playerPed, currentWeapon.hash, true)
 				local currentAmmo = GetAmmoInPedWeapon(playerPed, currentWeapon.hash)
@@ -327,7 +327,7 @@ local function useSlot(slot)
 						end
 					end)
 				end
-			elseif item.component then
+			elseif data.component then
 				local components = data.client.component
 				local componentType = data.type
 				local weaponComponents = PlayerData.inventory[currentWeapon.slot].metadata.components
