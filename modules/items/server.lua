@@ -59,7 +59,8 @@ setmetatable(Items, {
 CreateThread(function()
 	if shared.framework == 'esx' then
 		local items = MySQL.query.await('SELECT * FROM items')
-		if items then
+
+		if items and #items > 0 then
 			local dump = {}
 			local count = 0
 
@@ -107,9 +108,7 @@ CreateThread(function()
 				SaveResourceFile(shared.resource, 'data/items.lua', table.concat(file), -1)
 				shared.info(count, 'items have been copied from the database')
 			end
-		end
 
-		if items then
 			shared.warning('Database contains', #items, 'items.')
 			shared.warning('These items should be removed, and any queries for items should instead reference ESX.Items')
 			shared.warning('These entries are no longer removed to satisfy the creators of obfuscated and encrypted resources.')
