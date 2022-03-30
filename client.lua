@@ -862,7 +862,7 @@ RegisterNetEvent('ox_inventory:setPlayerInventory', function(currentDrops, inven
 	local ItemData = table.create(0, #Items)
 
 	for _, v in pairs(Items) do
-		v.usable = (v.client and next(v.client)) or v.effect or (v.consume == 0 or esxItem[v.name] or v.weapon or v.component or v.ammo or v.tint) and true
+		v.usable = (v.client and next(v.client) or v.effect or v.consume == 0 or esxItem[v.name] or v.weapon or v.component or v.ammo or v.tint) and true
 
 		local buttons = {}
 		if v.buttons then

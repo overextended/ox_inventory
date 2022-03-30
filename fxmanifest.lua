@@ -7,9 +7,9 @@ game         'gta5'
 --[[ Resource Information ]]--
 name         'ox_inventory'
 author       'Overextended'
-version      '2.7.1'
+version      '2.7.2'
 repository   'https://github.com/overextended/ox_inventory'
-description  'Slot-based inventory with metadata'
+description  'What even is an "ESX.Items" anyway?'
 
 --[[ Manifest ]]--
 dependencies {
