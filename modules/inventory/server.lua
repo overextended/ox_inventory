@@ -727,7 +727,7 @@ function Inventory.CanCarryItem(inv, item, count, metadata)
 			if count == nil then count = 1 end
 			local newWeight = inv.weight + (item.weight * count)
 
-			if newWeight >= inv.maxWeight then
+			if newWeight > inv.maxWeight then
 				TriggerClientEvent('ox_inventory:notify', inv.id, {type = 'error', text = shared.locale('cannot_carry')})
 				return false
 			end
