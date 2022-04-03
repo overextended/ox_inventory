@@ -202,7 +202,7 @@ lib.callback.register('ox_inventory:useItem', function(source, item, slot, metad
 				if inventory.weapon then
 					local weapon = inventory.items[inventory.weapon]
 
-					if weapon?.metadata.durability > 0 then
+					if weapon and weapon?.metadata.durability > 0 then
 						data.consume = nil
 						return data
 					end
