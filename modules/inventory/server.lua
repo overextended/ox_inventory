@@ -570,6 +570,7 @@ function Inventory.AddItem(inv, item, count, metadata, slot, cb)
 			if slot then
 				Inventory.SetSlot(inv, item, count, metadata, slot)
 				inv.weight = inv.weight + (item.weight + (metadata?.weight or 0)) * count
+				success = true
 
 				if inv.type == 'player' then
 					if shared.framework == 'esx' then Inventory.SyncInventory(inv) end
