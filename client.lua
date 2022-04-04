@@ -360,7 +360,7 @@ local function useSlot(slot)
 			elseif data.allowArmed then
 				useItem(data)
 			end
-		else
+		elseif not data.ammo and not data.component then
 			useItem(data)
 		end
 	end
