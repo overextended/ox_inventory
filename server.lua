@@ -211,6 +211,7 @@ lib.callback.register('ox_inventory:useItem', function(source, item, slot, metad
 				return false
 			elseif item.component or item.tint then
 				data.consume = 1
+				data.component = true
 				return data
 			elseif server.UsableItemsCallbacks[item.name] then
 				server.UseItem(source, data.name, data)
