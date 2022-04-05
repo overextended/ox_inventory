@@ -27,6 +27,7 @@ local function canOpenInventory()
 	and (currentWeapon == nil or currentWeapon.timer == 0)
 	and not IsPauseMenuActive()
 	and not IsPedFatallyInjured(cache.ped)
+	and GlobalState.CanUseInventories
 	and invOpen ~= nil
 end
 
