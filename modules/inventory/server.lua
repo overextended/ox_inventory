@@ -3,6 +3,7 @@ if not lib then return end
 local Inventory = {}
 local Inventories = {}
 local Stashes = data 'stashes'
+GlobalState.CanUseInventories = true
 
 local function openStash(data, player)
 	local stash = Stashes[data.id] or Inventory.CustomStash[data.id]
@@ -1210,6 +1211,7 @@ end
 AddEventHandler('txAdmin:events:scheduledRestart', function(eventData)
 	if eventData.secondsRemaining == 60 then
 		SetTimeout(50000, function()
+			GlobalState.CanUseInventories = false
 			saveInventories()
 		end)
 	end
