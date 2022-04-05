@@ -21,13 +21,13 @@ local invOpen = false
 
 local function canOpenInventory()
 	return PlayerData.loaded
+	and GlobalState.CanUseInventories
 	and not invBusy
 	and not PlayerData.dead
 	and not GetPedConfigFlag(cache.ped, 120, true)
 	and (currentWeapon == nil or currentWeapon.timer == 0)
 	and not IsPauseMenuActive()
 	and not IsPedFatallyInjured(cache.ped)
-	and GlobalState.CanUseInventories
 	and invOpen ~= nil
 end
 
