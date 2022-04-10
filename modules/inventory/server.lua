@@ -1193,19 +1193,21 @@ SetInterval(function()
 end, 600000)
 
 local function saveInventories(lock)
+	local parameters = { {}, {}, {} }
+	local size = { 0, 0, 0 }
 	Inventory.Lock = lock or nil
+
 	TriggerClientEvent('ox_inventory:closeInventory', -1, true)
-	for id, inv in pairs(Inventories) do
-		if not inv.player then
-			inv.open = true
 
-			if not inv.datastore and inv.changed then
-				Inventory.Save(inv)
-			end
-
-			inv.open = false
+	for _, inv in pairs(Inventories) do
+		if not inv.player and not inv.datastore and inv.changed then
+			local i, data = prepareSave(inv)
+			size[i] += 1
+			parameters[i][size[i]] = data
 		end
 	end
+
+	MySQL:saveInventories(parameters[1], parameters[2], parameters[3])
 end
 
 AddEventHandler('txAdmin:events:scheduledRestart', function(eventData)
