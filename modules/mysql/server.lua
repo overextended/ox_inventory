@@ -58,15 +58,15 @@ end
 
 function MySQL:saveInventories(trunks, gloveboxes, stashes)
 	if #trunks > 0 then
-		self.prepare.await(Query.UPDATE_TRUNK, trunks)
+		self.prepare(Query.UPDATE_TRUNK, trunks)
 	end
 
 	if #gloveboxes > 0 then
-		self.prepare.await(Query.UPDATE_GLOVEBOX, gloveboxes)
+		self.prepare(Query.UPDATE_GLOVEBOX, gloveboxes)
 	end
 
 	if #stashes > 0 then
-		self.prepare.await(Query.UPDATE_STASH, stashes)
+		self.prepare(Query.UPDATE_STASH, stashes)
 	end
 end
 
