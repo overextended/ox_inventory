@@ -1,18 +1,18 @@
 local Query = {
 	SELECT_STASH = 'SELECT data FROM ox_inventory WHERE owner = ? AND name = ?',
 	UPDATE_STASH = 'INSERT INTO ox_inventory (owner, name, data) VALUES (?, ?, ?) ON DUPLICATE KEY UPDATE data = VALUES(data)',
-	SELECT_GLOVEBOX = 'SELECT plate, glovebox FROM `vehicles` WHERE plate = ?',
-	SELECT_TRUNK = 'SELECT plate, trunk FROM `vehicles` WHERE plate = ?',
+	SELECT_GLOVEBOX = 'SELECT plate, glovebox FROM `user_vehicles` WHERE plate = ?',
+	SELECT_TRUNK = 'SELECT plate, trunk FROM `user_vehicles` WHERE plate = ?',
 	SELECT_PLAYER = 'SELECT inventory FROM `characters` WHERE charid = ?',
-	UPDATE_TRUNK = 'UPDATE `vehicles` SET trunk = ? WHERE plate = ?',
-	UPDATE_GLOVEBOX = 'UPDATE `vehicles` SET glovebox = ? WHERE plate = ?',
+	UPDATE_TRUNK = 'UPDATE `user_vehicles` SET trunk = ? WHERE plate = ?',
+	UPDATE_GLOVEBOX = 'UPDATE `user_vehicles` SET glovebox = ? WHERE plate = ?',
 	UPDATE_PLAYER = 'UPDATE `characters` SET inventory = ? WHERE charid = ?',
 }
 
 local function replace(playerColumn, vehicleColumn)
 	for k, v in pairs(Query) do
-		if v:find('vehicles') then
-			Query[k] = v:gsub('vehicles', vehicleColumn)
+		if v:find('user_vehicles') then
+			Query[k] = v:gsub('user_vehicles', vehicleColumn)
 		elseif v:find('characters') then
 			Query[k] = v:gsub('characters', playerColumn)
 		end
