@@ -740,6 +740,19 @@ end
 exports('CanCarryItem', Inventory.CanCarryItem)
 
 ---@param inv string | number
+---@param item table | string
+function Inventory.CanCarryAmount(inv, item)
+    if type(item) ~= 'table' then item = Items(item) end
+    if item then
+        inv = Inventory(inv)
+            local availableWeight = inv.maxWeight - inv.weight
+            local canHold = math.floor(availableWeight / item.weight)
+            return canHold
+    end
+end
+exports('CanCarryAmount', Inventory.CanCarryAmount)
+
+---@param inv string | number
 ---@param firstItem string
 ---@param firstItemCount number
 ---@param testItem string
