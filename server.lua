@@ -50,6 +50,8 @@ AddEventHandler('ox_inventory:setPlayerInventory', setPlayerInventory)
 local Vehicles = data 'vehicles'
 
 lib.callback.register('ox_inventory:openInventory', function(source, inv, data)
+	if Inventory.Lock then return false end
+
 	local left = Inventory(source)
 	local right = left.open and Inventory(left.open)
 

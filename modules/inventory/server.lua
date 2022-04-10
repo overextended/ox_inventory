@@ -33,9 +33,9 @@ end
 
 setmetatable(Inventory, {
 	__call = function(self, inv, player)
-		if not inv then return self end
-
-		if type(inv) == 'table' then
+		if not inv then
+			return self
+		elseif type(inv) == 'table' then
 			if inv.items then return inv end
 			return openStash(inv, player)
 		elseif not Inventories[inv] then
@@ -1192,7 +1192,8 @@ SetInterval(function()
 	MySQL:saveInventories(parameters[1], parameters[2], parameters[3])
 end, 600000)
 
-local function saveInventories()
+local function saveInventories(lock)
+	Inventory.Lock = lock or nil
 	TriggerClientEvent('ox_inventory:closeInventory', -1, true)
 	for id, inv in pairs(Inventories) do
 		if not inv.player then
@@ -1210,14 +1211,14 @@ end
 AddEventHandler('txAdmin:events:scheduledRestart', function(eventData)
 	if eventData.secondsRemaining == 60 then
 		SetTimeout(50000, function()
-			saveInventories()
+			saveInventories(true)
 		end)
 	end
 end)
 
 AddEventHandler('onResourceStop', function(resource)
 	if resource == shared.resource then
-		saveInventories()
+		saveInventories(true)
 	end
 end)
 
@@ -1408,8 +1409,8 @@ lib.addCommand('group.admin', 'clearinv', function(source, args)
 	Inventory.Clear(args.target)
 end, {'target:number'})
 
-lib.addCommand('group.admin', 'saveinv', function()
-	saveInventories()
+lib.addCommand('group.admin', 'saveinv', function(source, args)
+	saveInventories(args[1] == 1 or args[1] == 'true')
 end)
 
 lib.addCommand('group.admin', 'viewinv', function(source, args)
