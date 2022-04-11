@@ -185,4 +185,30 @@ return {
             usetime = 3500
 		}
 	},
+	
+	-- CUSTOM ADDITIONS	
+	['joint'] = {
+		label = 'Joint',
+		weight = 10,
+		client = {
+			status = { stress = -200000 },
+			anim = 'smoking',
+			prop = 'p_amb_joint_01',
+			usetime = 2500,
+			notification = 'You smoked a good joint'
+		},
+	},
+	
+	['beer'] = {
+		label = 'Beer',
+		weight = 500,
+		client = {
+			status = { thirst = 150000 },
+			anim = { dict = 'mp_player_intdrink', clip = 'loop_bottle' },
+			prop = { model = `prop_beer_pissh`, pos = vec3(0.03, 0.03, 0.02), rot = vec3(0.0, 0.0, -1.5) },
+			usetime = 2500,
+			cancel = true,
+			notification = 'Rien de tel qu\'une bonne bière'
+		}
+	},
 }
