@@ -15,6 +15,7 @@ description  'What even is an "ESX.Items" anyway?'
 dependencies {
 	'/server:5181',
 	'/onesync',
+	'ox_lib',
 	'oxmysql',
 }
 
