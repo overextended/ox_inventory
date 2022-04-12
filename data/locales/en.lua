@@ -65,6 +65,7 @@ return {
 	['shop_nostock'] = "Item is out of stock",
 	['identification'] = "Sex: %s  \nDate of birth: %s",
 	['search_dumpster'] = "Search Dumpster",
+	['search'] = "Search",
 	['open_shop'] = "Open %s",
 	['purchased_for'] = "Purchased %s %s for %s%s",
 	['unable_stack_items'] = "You're unable to stack these items",
@@ -84,5 +85,6 @@ return {
 	['no_durability'] = "%s durability is depleted",
 	['cannot_give'] = "Unable to give %s %s to the target",
 	['evidence_cannot_take'] = "Not high enough grade to take from evidence",
-	['dumpster'] = "Dumpster"
+	['dumpster'] = "Dumpster",
+	['foodstash'] = "Food stash",
 }

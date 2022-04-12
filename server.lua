@@ -93,7 +93,11 @@ lib.callback.register('ox_inventory:openInventory', function(source, inv, data)
 			if not right then
 				right = Inventory.Create(data, shared.locale('dumpster'), inv, 15, 0, 100000, false)
 			end
-
+		elseif inv == 'food' then
+			right = Inventory(data)
+			if not right then
+				right = Inventory.Create(data, shared.locale('foodstash'), inv, 10, 0, 100000, false)
+			end
 		elseif inv == 'container' then
 			left.containerSlot = data
 			data = left.items[data]

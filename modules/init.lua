@@ -50,6 +50,14 @@ if IsDuplicityVersion then
 				["burger", 1, 1]
 			]
 		]])),
+		foodloot = json.decode(GetConvar('inventory:foodloot', [[
+			[
+				["mustard", 1, 1],
+				["burger", 1, 1],
+				["cola", 1, 1],
+				["water", 1, 1]
+			]
+		]])),
 	}
 else
 	PlayerData = {}

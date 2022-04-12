@@ -1,6 +1,7 @@
 local Inventory = {}
 
-Inventory.Dumpsters = {218085040, 666561306, -58485588, -206690185, 1511880420, 682791951}
+Inventory.Dumpsters = { 218085040, 666561306, -58485588, -206690185, 1511880420, 682791951, `prop_postbox_01a`, `prop_bin_01a`, `prop_recyclebin_04_a`, `prop_bin_beach_01a`, `prop_recyclebin_02_c`, `prop_bin_01a_old`, `prop_recyclebin_03_a`, `prop_bin_07c`, `prop_bin_10b`, `prop_bin_14a`, `prop_bin_10a`, `prop_bin_07d`, `prop_recyclebin_01a`, `prop_skid_trolley_2`, `prop_skid_trolley_1`, `prop_bin_04a`, `prop_bin_02a` }
+Inventory.FoodStash = { `prop_bbq_5`, `prop_bbq_1`, `prop_bbq_4_l1`, `prop_bbq_4`, }
 
 if shared.qtarget then
 	local function OpenDumpster(entity)
@@ -17,7 +18,7 @@ if shared.qtarget then
 
 		exports.ox_inventory:openInventory('dumpster', 'dumpster'..netId)
 	end
-
+	
 	exports.qtarget:AddTargetModel(Inventory.Dumpsters, {
 		options = {
 			{
@@ -25,6 +26,34 @@ if shared.qtarget then
 				label = shared.locale('search_dumpster'),
 				action = function(entity)
 					OpenDumpster(entity)
+				end
+			},
+		},
+		distance = 2
+	})
+	
+	local function OpenFoodStash(entity)
+		local netId = NetworkGetEntityIsNetworked(entity) and NetworkGetNetworkIdFromEntity(entity)
+
+		if not netId then
+			NetworkRegisterEntityAsNetworked(entity)
+			SetEntityAsMissionEntity(entity)
+			netId = NetworkGetNetworkIdFromEntity(entity)
+			NetworkUseHighPrecisionBlending(netId, false)
+			SetNetworkIdExistsOnAllMachines(netId, true)
+			SetNetworkIdCanMigrate(netId, true)
+		end
+
+		exports.ox_inventory:openInventory('food', 'foodstash_'..netId)
+	end
+	
+	exports.qtarget:AddTargetModel(Inventory.FoodStash, {
+		options = {
+			{
+				icon = 'fas fa-hamburger',
+				label = shared.locale('search'),
+				action = function(entity)
+					OpenFoodStash(entity)
 				end
 			},
 		},

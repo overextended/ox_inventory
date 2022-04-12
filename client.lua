@@ -73,7 +73,7 @@ local function openInventory(inv, data)
 		end
 	end
 
-	if inv == 'dumpster' and cache.vehicle then
+	if inv == 'dumpster' and cache.vehicle or inv == 'food' and cache.vehicle then
 		return Utils.Notify({type = 'error', text = shared.locale('inventory_right_access'), duration = 2500})
 	end
 
@@ -522,6 +522,18 @@ local function registerCommands()
 							end
 
 							return openInventory('dumpster', 'dumpster'..netId)
+						elseif type == 3 and table.contains(Inventory.FoodStash, GetEntityModel(entity)) then
+							local netId = NetworkGetEntityIsNetworked(entity) and NetworkGetNetworkIdFromEntity(entity)
+
+							if not netId then
+								NetworkRegisterEntityAsNetworked(entity)
+								netId = NetworkGetNetworkIdFromEntity(entity)
+								NetworkUseHighPrecisionBlending(netId, false)
+								SetNetworkIdExistsOnAllMachines(netId, true)
+								SetNetworkIdCanMigrate(netId, true)
+							end
+
+							return openInventory('food', 'foodstash_'..netId)
 						end
 					elseif type == 2 then
 						vehicle, position = entity, GetEntityCoords(entity)

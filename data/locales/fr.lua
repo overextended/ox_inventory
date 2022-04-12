@@ -65,6 +65,7 @@ return {
 	['shop_nostock'] = "L’article n'est plus en stock",
 	['identification'] = "Sexe : %s Date de naissance : %s",
 	['search_dumpster'] = "Fouiller la poubelle",
+	['search'] = "Fouiller",
 	['open_shop'] = "Ouvrir %s",
 	['purchased_for'] = "Vous avez acheté %s %s pour %s%s",
 	['unable_stack_items'] = "Vous ne pouvez pas empiler ces objets" ,
@@ -84,5 +85,6 @@ return {
 	['no_durability'] = "La durabilité de l'item a expiré",
 	['cannot_give'] = "Impossible de donner %s %s à cet inventaire",
 	['evidence_cannot_take'] = "Votre grade ne vous permet pas de récupérer des preuves",
-	['dumpster'] = "Benne"
+	['dumpster'] = "Poubelle",
+	['foodstash'] = "Cachette nourriture",
 }
