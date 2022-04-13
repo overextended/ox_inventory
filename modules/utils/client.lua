@@ -37,19 +37,26 @@ function Utils.Raycast(flag)
 end
 
 function Utils.GetClosestPlayer()
-	local closestPlayer, playerId, playerCoords = vec3(10, 0, 0), PlayerId(), GetEntityCoords(cache.ped)
-	local coords
-	for k, player in pairs(GetActivePlayers()) do
-		if player ~= playerId then
+	local players = GetActivePlayers()
+	local playerCoords = GetEntityCoords(cache.ped)
+	local targetDistance, targetId, targetPed
+
+	for i = 1, #players do
+		local player = players[i]
+
+		if player ~= cache.playerId then
 			local ped = GetPlayerPed(player)
-			coords = GetEntityCoords(ped)
-			local distance = #(playerCoords - coords)
-			if distance < closestPlayer.x then
-				closestPlayer = vec3(distance, player, ped)
+			local distance = #(playerCoords - GetEntityCoords(ped))
+
+			if distance < (targetDistance or 2) then
+				targetDistance = distance
+				targetId = player
+				targetPed = ped
 			end
 		end
 	end
-	return closestPlayer, coords
+
+	return targetDistance, targetId, targetPed
 end
 
 function Utils.Notify(data) SendNUIMessage({ action = 'showNotif', data = data }) end
