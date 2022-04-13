@@ -394,9 +394,9 @@ end
 
 local function openNearbyInventory()
 	if canOpenInventory() then
-		local distance, targetId, targetPed = Utils.GetClosestPlayer()
+		local targetId, targetPed = Utils.GetClosestPlayer()
 
-		if distance < 2 and (client.hasGroup(shared.police) or canOpenTarget(targetPed)) then
+		if targetId and (client.hasGroup(shared.police) or canOpenTarget(targetPed)) then
 			Utils.PlayAnim(2000, 'mp_common', 'givetake1_a', 1.0, 1.0, -1, 50, 0.0, 0, 0, 0)
 			openInventory('player', GetPlayerServerId(targetId))
 		end

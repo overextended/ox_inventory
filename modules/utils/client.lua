@@ -56,7 +56,7 @@ function Utils.GetClosestPlayer()
 		end
 	end
 
-	return targetDistance, targetId, targetPed
+	return targetId, targetPed
 end
 
 function Utils.Notify(data) SendNUIMessage({ action = 'showNotif', data = data }) end
