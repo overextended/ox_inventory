@@ -64,3 +64,26 @@ jobs:
         env:
           CI: false
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+  bump-manifest-version:
+    name: "Bump fxmanifest version"
+    needs: create-release
+    runs-on: ubuntu-latest
+    steps:
+      - name: Get tag
+        run: echo "RELEASE_VERSION=${GITHUB_REF#refs/*/}" >> $GITHUB_ENV
+      - name: Checkout
+        uses: actions/checkout@v2
+        with:
+          ref: ${{ github.event.repository.default_branch }}
+      - name: Bump manifest version
+        run: node .github/actions/bump-manifest-version.js
+        env:
+          TGT_RELEASE_VERSION: ${{ env.RELEASE_VERSION }}
+      - name: Push manifest change
+        uses: EndBug/add-and-commit@v8
+        with:
+          add: fxmanifest.lua
+          push: true
+          author_name: Manifest Bumper
+          author_email: 41898282+github-actions[bot]@users.noreply.github.com
+          message: "chore(bump-manifest): Bump manifest version to ${{ env.RELEASE_VERSION }}"
