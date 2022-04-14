@@ -108,7 +108,7 @@ Inventory.Evidence = setmetatable(data('evidence'), {
 					function point:nearby()
 						DrawMarker(2, self.coords.x, self.coords.y, self.coords.z, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.3, 0.2, 0.15, 30, 30, 150, 222, false, false, false, true, false, false, false)
 
-						if lib.points.closest().id == self.id and IsControlJustReleased(0, 38) then
+						if self.currentDistance < 1.2 and lib.points.closest().id == self.id and IsControlJustReleased(0, 38) then
 							openEvidence()
 						end
 					end

@@ -428,7 +428,7 @@ local function registerCommands()
 	RegisterCommand('inv', function()
 		local closest = lib.points.closest()
 
-		if closest then
+		if closest and closest.currentDistance < 1.2 then
 			if closest.inv ~= 'license' and closest.inv ~= 'policeevidence' then
 				return client.openInventory(closest.inv, { id = closest.invId, type = closest.type })
 			end
@@ -723,7 +723,7 @@ end)
 
 RegisterNetEvent('ox_inventory:createDrop', function(drop, data, owner, slot)
 	if drops then
-		local point = lib.points.new(data.coords, 16, { inv = drop, invId = drop })
+		local point = lib.points.new(data.coords, 16, { inv = 'drop', invId = drop })
 
 		function point:nearby()
 			if not data.instance or data.instance == currentInstance then
@@ -900,7 +900,7 @@ RegisterNetEvent('ox_inventory:setPlayerInventory', function(currentDrops, inven
 		function point:nearby()
 			DrawMarker(2, self.coords.x, self.coords.y, self.coords.z, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.3, 0.2, 0.15, 30, 150, 30, 222, false, false, false, true, false, false, false)
 
-			if lib.points.closest().id == self.id and IsControlJustReleased(0, 38) then
+			if self.currentDistance < 1.2 and lib.points.closest().id == self.id and IsControlJustReleased(0, 38) then
 				lib.callback('ox_inventory:buyLicense', 1000, function(success, message)
 					if success then
 						Utils.Notify({text = shared.locale(message), duration = 2500})
