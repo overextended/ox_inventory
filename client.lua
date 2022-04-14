@@ -140,11 +140,13 @@ end
 RegisterNetEvent('ox_inventory:openInventory', client.openInventory)
 exports('openInventory', client.openInventory)
 
+local Animations = data 'animations'
+
 ---@param data table
 ---@param cb function
 local function useItem(data, cb)
 	if invOpen and data.close then TriggerEvent('ox_inventory:closeInventory') end
-	if not invBusy and not PlayerData.dead and not Interface.ProgressActive and not IsPedRagdoll(cache.ped) and not IsPedFalling(cache.ped) then
+	if not invBusy and not PlayerData.dead and not lib.progressActive() and not IsPedRagdoll(cache.ped) and not IsPedFalling(cache.ped) then
 		if currentWeapon and currentWeapon?.timer > 100 then return end
 
 		invBusy = true
@@ -156,30 +158,41 @@ local function useItem(data, cb)
 			return
 		end
 
-		local p
 		if result and invBusy then
 			plyState.invBusy = true
 			if data.client then data = data.client end
 
-			if data.usetime then
-				p = promise.new()
-				Interface.Progress({
-					duration = data.usetime,
-					label = data.label or shared.locale('using', result.label),
-					useWhileDead = data.useWhileDead or false,
-					canCancel = data.cancel or false,
-					disable = data.disable,
-					anim = data.anim or data.scenario,
-					prop = data.prop,
-					propTwo = data.propTwo
-				}, function(cancel)
-					p:resolve(PlayerData.dead or cancel)
-				end)
+			if type(data.anim) == 'string' then
+				data.anim = Animations.anim[data.anim]
 			end
 
-			if p then Citizen.Await(p) end
+			if data.propTwo then
+				data.prop = { data.prop, data.propTwo }
+			end
 
-			if not p or not p.value then
+			if data.prop then
+				if data.prop[1] then
+					for i = 1, #data.prop do
+						if type(data.prop) == 'string' then
+							data.prop = Animations.prop[data.prop[i]]
+						end
+					end
+				elseif type(data.prop) == 'string' then
+					data.prop = Animations.prop[data.prop]
+				end
+			end
+
+			local success = (not data.usetime or lib.progressBar({
+				duration = data.usetime,
+				label = data.label or shared.locale('using', result.label),
+				useWhileDead = data.useWhileDead,
+				canCancel = data.cancel,
+				disable = data.disable,
+				anim = data.anim or data.scenario,
+				prop = data.prop
+			})) and not PlayerData.dead
+
+			if success then
 				if result.consume and result.consume ~= 0 and not result.component then
 					TriggerServerEvent('ox_inventory:removeItem', result.name, result.consume, result.metadata, result.slot, true)
 				end
@@ -213,7 +226,7 @@ local Items = client.items
 ---@param slot number
 ---@return boolean
 local function useSlot(slot)
-	if PlayerData.loaded and not PlayerData.dead and not invBusy and not Interface.ProgressActive then
+	if PlayerData.loaded and not PlayerData.dead and not invBusy and not lib.progressActive() then
 		local item = PlayerData.inventory[slot]
 		if not item then return end
 		local data = item and Items[item.name]
@@ -370,7 +383,7 @@ exports('useSlot', useSlot)
 ---@param id number
 ---@param slot number
 local function useButton(id, slot)
-	if PlayerData.loaded and not invBusy and not Interface.ProgressActive then
+	if PlayerData.loaded and not invBusy and not lib.progressActive() then
 		local item = PlayerData.inventory[slot]
 		if not item then return end
 		local data = item and Items[item.name]
@@ -1015,7 +1028,7 @@ RegisterNetEvent('ox_inventory:setPlayerInventory', function(currentDrops, inven
 							ClearPedTasks(playerPed)
 							SetCurrentPedWeapon(playerPed, currentWeapon.hash, true)
 							SetPedCurrentWeaponVisible(playerPed, true, false, false, false)
-							if currentWeapon?.ammo and shared.autoreload and not Interface.ProgressActive and not IsPedRagdoll(playerPed) and not IsPedFalling(playerPed) then
+							if currentWeapon?.ammo and shared.autoreload and not lib.progressActive() and not IsPedRagdoll(playerPed) and not IsPedFalling(playerPed) then
 								currentWeapon.timer = 0
 								local ammo = Inventory.Search(1, currentWeapon.ammo)
 
