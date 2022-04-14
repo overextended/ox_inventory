@@ -469,7 +469,7 @@ local function registerCommands()
 
 					if NetworkGetEntityIsNetworked(vehicle) then
 						local checkVehicle = Vehicles.Storage[GetEntityModel(vehicle)]
-						if checkVehicle == 0 or checkVehicle == 2 then -- No storage or no glovebox
+						if not checkVehicle or checkVehicle == 0 or checkVehicle == 2 then -- No storage or no glovebox
 							return
 						end
 
