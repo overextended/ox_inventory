@@ -58,7 +58,7 @@ local plyState = LocalPlayer.state
 ---@param inv string inventory type
 ---@param data table id and owner
 ---@return boolean
-local function openInventory(inv, data)
+function client.openInventory(inv, data)
 	if invOpen then
 		if not inv and currentInventory.type == 'newdrop' then
 			return TriggerEvent('ox_inventory:closeInventory')
@@ -137,8 +137,8 @@ local function openInventory(inv, data)
 		end
 	elseif invBusy then Utils.Notify({type = 'error', text = shared.locale('inventory_player_access'), duration = 2500}) end
 end
-RegisterNetEvent('ox_inventory:openInventory', openInventory)
-exports('openInventory', openInventory)
+RegisterNetEvent('ox_inventory:openInventory', client.openInventory)
+exports('openInventory', client.openInventory)
 
 ---@param data table
 ---@param cb function
@@ -226,7 +226,7 @@ local function useSlot(slot)
 		data.slot = slot
 
 		if item.metadata.container then
-			return openInventory('container', item.slot)
+			return client.openInventory('container', item.slot)
 		elseif data.client then
 			if invOpen and data.close then TriggerEvent('ox_inventory:closeInventory') end
 
@@ -398,62 +398,23 @@ local function openNearbyInventory()
 
 		if targetId and (client.hasGroup(shared.police) or canOpenTarget(targetPed)) then
 			Utils.PlayAnim(2000, 'mp_common', 'givetake1_a', 1.0, 1.0, -1, 50, 0.0, 0, 0, 0)
-			openInventory('player', GetPlayerServerId(targetId))
+			client.openInventory('player', GetPlayerServerId(targetId))
 		end
 	end
 end
 exports('openNearbyInventory', openNearbyInventory)
 
 local currentInstance
-local nearbyMarkers, closestMarker = {}, {}
 local drops, playerCoords
-
-local function markers(tb, type, rgb, name, vehicle)
-	if tb then
-		for k, v in pairs(tb) do
-			if not v.instance or v.instance == currentInstance then
-				if not v.groups or client.hasGroup(v.groups) then
-					local coords = v.coords or v
-					local distance = #(playerCoords - coords)
-					local id = name and type..name..k or type..k
-					local marker = nearbyMarkers[id]
-
-					if distance < 1.2 then
-						if not marker then
-							nearbyMarkers[id] = mat(vec3(coords), vec3(rgb))
-						end
-
-						if not vehicle then
-							if closestMarker[1] == nil or (closestMarker and distance < closestMarker[1]) then
-								closestMarker[1] = distance
-								closestMarker[2] = k
-								closestMarker[3] = type
-								closestMarker[4] = name or v.name
-							end
-						end
-					elseif not marker and distance < 8 then
-						nearbyMarkers[id] = mat(vec3(coords), vec3(rgb))
-					elseif marker and distance > 8 then
-						nearbyMarkers[id] = nil
-					end
-				end
-			end
-		end
-	end
-end
-
 local table = lib.table
 local Shops = client.shops
 local Inventory = client.inventory
 
 function OnPlayerData(key, val)
 	if key == 'groups' then
+		Inventory.Stashes()
+		Inventory.Evidence()
 		Shops()
-		if shared.qtarget then
-			Inventory.Stashes()
-			Inventory.Evidence()
-		end
-		table.wipe(nearbyMarkers)
 	elseif key == 'dead' and val then
 		currentWeapon = Utils.Disarm(currentWeapon)
 		TriggerEvent('ox_inventory:closeInventory')
@@ -465,9 +426,15 @@ end
 local function registerCommands()
 
 	RegisterCommand('inv', function()
-		if closestMarker[1] and closestMarker[3] ~= 'license' and closestMarker[3] ~= 'policeevidence' then
-			openInventory(closestMarker[3], {id=closestMarker[2], type=closestMarker[4]})
-		else openInventory() end
+		local closest = lib.points.closest()
+
+		if closest then
+			if closest.inv ~= 'license' and closest.inv ~= 'policeevidence' then
+				return client.openInventory(closest.inv, { id = closest.invId, type = closest.type })
+			end
+		end
+
+		client.openInventory()
 	end)
 	RegisterKeyMapping('inv', shared.locale('open_player_inventory'), 'keyboard', client.keys[1])
 	TriggerEvent('chat:removeSuggestion', '/inv')
@@ -483,7 +450,7 @@ local function registerCommands()
 				end
 
 				if StashTarget then
-					openInventory('stash', StashTarget)
+					client.openInventory('stash', StashTarget)
 				elseif cache.vehicle then
 					local vehicle = cache.vehicle
 
@@ -494,7 +461,7 @@ local function registerCommands()
 						end
 
 						local plate = client.trimplate and string.strtrim(GetVehicleNumberPlateText(vehicle)) or GetVehicleNumberPlateText(vehicle)
-						openInventory('glovebox', {id='glove'..plate, class=GetVehicleClass(vehicle), model=GetEntityModel(vehicle)})
+						client.openInventory('glovebox', {id='glove'..plate, class=GetVehicleClass(vehicle), model=GetEntityModel(vehicle)})
 
 						while true do
 							Wait(100)
@@ -522,7 +489,7 @@ local function registerCommands()
 								SetNetworkIdCanMigrate(netId, true)
 							end
 
-							return openInventory('dumpster', 'dumpster'..netId)
+							return client.openInventory('dumpster', 'dumpster'..netId)
 						end
 					elseif type == 2 then
 						vehicle, position = entity, GetEntityCoords(entity)
@@ -556,7 +523,7 @@ local function registerCommands()
 								local plate = client.trimplate and string.strtrim(GetVehicleNumberPlateText(vehicle)) or GetVehicleNumberPlateText(vehicle)
 								TaskTurnPedToFaceCoord(cache.ped, position.x, position.y, position.z)
 								lastVehicle = vehicle
-								openInventory('trunk', {id='trunk'..plate, class=class, model=vehHash})
+								client.openInventory('trunk', {id='trunk'..plate, class=class, model=vehHash})
 								local timeout = 20
 								repeat Wait(50)
 									timeout -= 1
@@ -756,14 +723,22 @@ end)
 
 RegisterNetEvent('ox_inventory:createDrop', function(drop, data, owner, slot)
 	if drops then
-		drops[drop] = data
+		local point = lib.points.new(data.coords, 16, { inv = drop, invId = drop })
+
+		function point:nearby()
+			if not data.instance or data.instance == currentInstance then
+				DrawMarker(2, self.coords.x, self.coords.y, self.coords.z, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.3, 0.2, 0.15, 150, 30, 30, 222, false, false, false, true, false, false, false)
+			end
+		end
+
+		drops[drop] = point
 	end
 
 	if owner == PlayerData.source and invOpen and #(GetEntityCoords(cache.ped) - data.coords) <= 1 then
 		if currentWeapon?.slot == slot then currentWeapon = Utils.Disarm(currentWeapon) end
 
 		if not cache.vehicle then
-			openInventory('drop', drop)
+			client.openInventory('drop', drop)
 		else
 			SendNUIMessage({
 				action = 'setupInventory',
@@ -774,9 +749,10 @@ RegisterNetEvent('ox_inventory:createDrop', function(drop, data, owner, slot)
 end)
 
 RegisterNetEvent('ox_inventory:removeDrop', function(id)
-	if closestMarker?[3] == id then table.wipe(closestMarker) end
-	if drops then drops[id] = nil end
-	nearbyMarkers['drop'..id] = nil
+	if drops then
+		drops[id]:remove()
+		drops[id] = nil
+	end
 end)
 
 local uiLoaded = false
@@ -799,7 +775,7 @@ local function setStateBagHandler(id)
 			Utils.WeaponWheel()
 		elseif shared.police[key] then
 			PlayerData.groups[key] = value
-			OnPlayerData('groups')
+			OnPlayerData('groups', { [key] = value })
 		end
 	end)
 
@@ -918,7 +894,23 @@ RegisterNetEvent('ox_inventory:setPlayerInventory', function(currentDrops, inven
 	Utils.Notify({text = shared.locale('inventory_setup'), duration = 2500})
 	Utils.WeaponWheel(false)
 
-	local Licenses = data 'licenses'
+	for id, data in pairs(data('licenses')) do
+		local point = lib.points.new(data.coords, 16, { inv = 'license', type = data.name, invId = id })
+
+		function point:nearby()
+			DrawMarker(2, self.coords.x, self.coords.y, self.coords.z, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.3, 0.2, 0.15, 30, 150, 30, 222, false, false, false, true, false, false, false)
+
+			if lib.points.closest().id == self.id and IsControlJustReleased(0, 38) then
+				lib.callback('ox_inventory:buyLicense', 1000, function(success, message)
+					if success then
+						Utils.Notify({text = shared.locale(message), duration = 2500})
+					elseif success == false then
+						Utils.Notify({type = 'error', text = shared.locale(message), duration = 2500})
+					end
+				end, self.invId)
+			end
+		end
+	end
 
 	client.interval = SetInterval(function()
 		local playerPed = cache.ped
@@ -926,31 +918,9 @@ RegisterNetEvent('ox_inventory:setPlayerInventory', function(currentDrops, inven
 		if invOpen == false then
 			playerCoords = GetEntityCoords(playerPed)
 
-			if closestMarker[1] then
-				table.wipe(closestMarker)
+			if currentWeapon and IsPedUsingActionMode(cache.ped) then
+				SetPedUsingActionMode(cache.ped, false, -1, 'DEFAULT_ACTION')
 			end
-
-			local vehicle = cache.vehicle
-
-			markers(drops, 'drop', vec3(150, 30, 30), nil, vehicle)
-
-			if not shared.qtarget then
-				if client.hasGroup(shared.police) then
-					markers(Inventory.Evidence, 'policeevidence', vec(30, 30, 150), nil, vehicle)
-				end
-
-				markers(Inventory.Stashes, 'stash', vec3(30, 30, 150), nil, vehicle)
-
-				for k, v in pairs(Shops) do
-					if not v.groups or client.hasGroup(v.groups) then
-						markers(v.locations, 'shop', vec3(30, 150, 30), k, vehicle)
-					end
-				end
-			end
-
-			markers(Licenses, 'license', vec(30, 150, 30), nil, vehicle)
-
-			if currentWeapon and IsPedUsingActionMode(cache.ped) then SetPedUsingActionMode(cache.ped, false, -1, 'DEFAULT_ACTION')	end
 
 		elseif invOpen == true then
 			if not canOpenInventory() then
@@ -1006,24 +976,6 @@ RegisterNetEvent('ox_inventory:setPlayerInventory', function(currentDrops, inven
 		else
 			disableControls()
 			if invBusy then DisablePlayerFiring(playerId, true) end
-
-			for _, v in pairs(nearbyMarkers) do
-				local coords, rgb = v[1], v[2]
-				DrawMarker(2, coords.x, coords.y, coords.z, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.3, 0.2, 0.15, rgb.x, rgb.y, rgb.z, 222, false, false, false, true, false, false, false)
-			end
-
-			if closestMarker and IsControlJustReleased(0, 38) then
-				if closestMarker[3] == 'license' then
-					lib.callback('ox_inventory:buyLicense', 1000, function(success, message)
-						if success == false then
-							Utils.Notify({type = 'error', text = shared.locale(message), duration = 2500})
-						else
-							Utils.Notify({text = shared.locale(message), duration = 2500})
-						end
-					end, closestMarker[2])
-				elseif closestMarker[3] == 'shop' then openInventory(closestMarker[3], {id=closestMarker[2], type=closestMarker[4]})
-				elseif closestMarker[3] == 'policeevidence' then openInventory(closestMarker[3]) end
-			end
 
 			if currentWeapon then
 				DisableControlAction(0, 80, true)
