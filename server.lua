@@ -184,11 +184,11 @@ lib.callback.register('ox_inventory:useItem', function(source, item, slot, metad
 			if durability > 100 then
 				if os.time() > durability then
 					inventory.items[slot].metadata.durability = 0
-					TriggerClientEvent('ox_inventory:notify', source, {type = 'error', text = shared.locale('no_durability', data.label), duration = 2500})
+					TriggerClientEvent('ox_lib:notify', source, { style = 'error', description = shared.locale('no_durability', data.label) })
 					return
 				end
 			elseif durability <= 0 then
-				TriggerClientEvent('ox_inventory:notify', source, {type = 'error', text = shared.locale('no_durability', data.label), duration = 2500})
+				TriggerClientEvent('ox_lib:notify', source, { style = 'error', description = shared.locale('no_durability', data.label) })
 				return
 			end
 		end
@@ -229,7 +229,7 @@ lib.callback.register('ox_inventory:useItem', function(source, item, slot, metad
 
 					return data
 				else
-					TriggerClientEvent('ox_inventory:notify', source, {type = 'error', text = shared.locale('item_not_enough', item.name), duration = 2500})
+					TriggerClientEvent('ox_lib:notify', source, { style = 'error', description = shared.locale('item_not_enough', item.name) })
 				end
 			end
 		end

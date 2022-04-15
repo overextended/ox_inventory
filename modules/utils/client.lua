@@ -59,10 +59,19 @@ function Utils.GetClosestPlayer()
 	return targetId, targetPed
 end
 
-function Utils.Notify(data) SendNUIMessage({ action = 'showNotif', data = data }) end
-function Utils.ItemNotify(data) SendNUIMessage({action = 'itemNotify', data = data}) end
+-- Replace ox_inventory notify with ox_lib (backwards compatibility)
+function Utils.Notify(data)
+	data.style = data.type
+	data.description = data.text
+	data.type = nil
+	data.text = nil
+	lib.notify(data)
+end
+
 RegisterNetEvent('ox_inventory:notify', Utils.Notify)
 exports('notify', Utils.Notify)
+
+function Utils.ItemNotify(data) SendNUIMessage({action = 'itemNotify', data = data}) end
 
 function Utils.Disarm(currentWeapon, newSlot)
 	SetWeaponsNoAutoswap(1)

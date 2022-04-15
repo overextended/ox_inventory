@@ -533,7 +533,7 @@ exports('SetMetadata', Inventory.SetMetadata)
 -- exports.ox_inventory:AddItem(1, 'bread', 4, nil, nil, function(success, reason)
 -- if not success then
 -- 	if reason == 'overburdened' then
--- 		TriggerClientEvent('ox_inventory:notify', source, {type = 'error', text = shared.locale('cannot_carry', count, data.label), duration = 2500})
+-- 		TriggerClientEvent('ox_lib:notify', source, { style = 'error', description= shared.locale('cannot_carry', count, data.label) })
 -- 	end
 -- end
 -- ```
@@ -729,7 +729,7 @@ function Inventory.CanCarryItem(inv, item, count, metadata)
 			local newWeight = inv.weight + (item.weight * count)
 
 			if newWeight > inv.maxWeight then
-				TriggerClientEvent('ox_inventory:notify', inv.id, {type = 'error', text = shared.locale('cannot_carry')})
+				TriggerClientEvent('ox_lib:notify', inv.id, { style = 'error', description = shared.locale('cannot_carry') })
 				return false
 			end
 
@@ -862,7 +862,7 @@ lib.callback.register('ox_inventory:swapItems', function(source, data)
 				if not group then return end
 
 				if server.evidencegrade > rank then
-					return TriggerClientEvent('ox_inventory:notify', source, {type = 'error', text = shared.locale('evidence_cannot_take')})
+					return TriggerClientEvent('ox_lib:notify', source, { style = 'error', description = shared.locale('evidence_cannot_take') })
 				end
 			end
 
@@ -1257,7 +1257,7 @@ RegisterServerEvent('ox_inventory:giveItem', function(slot, target, count)
 
 			end
 		else
-			TriggerClientEvent('ox_inventory:notify', source, {type = 'error', text = shared.locale('cannot_give', count, data.label), duration = 2500})
+			TriggerClientEvent('ox_lib:notify', source, { style = 'error', description = shared.locale('cannot_give', count, data.label) })
 		end
 	end
 end)
