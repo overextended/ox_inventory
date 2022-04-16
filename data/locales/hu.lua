@@ -1,10 +1,10 @@
 return {
 	-- Buttons, context menu
 	["ui_use"] = "Használ",
-	["ui_give"] = "Give",
+	["ui_give"] = "Átadás",
 	["ui_close"] = "Bezárás",
 	["ui_drop"] = "Eldobás",
-	["ui_removeattachments"] = "Remove attachments",
+	["ui_removeattachments"] = "Kiegészítők eltávolítása",
 	["ui_copy"] = "Sorozatszám másolása",
 	-- Tooltip
 	["ui_durability"] = "Tartósság",
