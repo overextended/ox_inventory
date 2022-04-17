@@ -1,7 +1,7 @@
 local Inventory = {}
 
-Inventory.Dumpsters = { 218085040, 666561306, -58485588, -206690185, 1511880420, 682791951, `prop_postbox_01a`, `prop_bin_01a`, `prop_recyclebin_04_a`, `prop_bin_beach_01a`, `prop_recyclebin_02_c`, `prop_bin_01a_old`, `prop_recyclebin_03_a`, `prop_bin_07c`, `prop_bin_10b`, `prop_bin_14a`, `prop_bin_10a`, `prop_bin_07d`, `prop_recyclebin_01a`, `prop_skid_trolley_2`, `prop_skid_trolley_1`, `prop_bin_04a`, `prop_bin_02a` }
-Inventory.FoodStash = { `prop_bbq_5`, `prop_bbq_1`, `prop_bbq_4_l1`, `prop_bbq_4`, }
+Inventory.Dumpsters = { 218085040, 666561306, -58485588, -206690185, 1511880420, 682791951, `prop_bin_07b`, `prop_bin_06a`, `prop_bin_08a`, `prop_bin_03a`, `prop_recyclebin_02_d`, `prop_bin_beach_01d`, `prop_bin_08open`, `prop_bin_12a`, `prop_bin_05a`, `prop_bin_07a`, `prop_bin_beach_01a`, `prop_recyclebin_02_c`, `zprop_bin_01a_old`, `prop_bin_14a`, `prop_postbox_01a`, `prop_bin_01a`, `prop_recyclebin_04_a`, `prop_bin_beach_01a`, `prop_recyclebin_02_c`, `prop_bin_01a_old`, `prop_recyclebin_03_a`, `prop_bin_07c`, `prop_bin_10b`, `prop_bin_14a`, `prop_bin_10a`, `prop_bin_07d`, `prop_recyclebin_01a`, `prop_skid_trolley_2`, `prop_skid_trolley_1`, `prop_bin_04a`, `prop_bin_02a` }
+Inventory.FoodStash = { `prop_bbq_5`, `prop_bbq_1`, `prop_bbq_4_l1`, `prop_bbq_4`, `v_res_tre_fridge`, `prop_cooker_03`, `v_ret_fh_dryer`, `prop_micro_04`, `v_res_fridgemodsml`, `prop_fridge_03`, `prop_micro_01`, `prop_fridge_01`, `prop_micro_02`, `v_res_fridgemoda`, `prop_hotdogstand_01`, `prop_burgerstand_01`}
 
 if shared.qtarget then
 	local function OpenDumpster(entity)
