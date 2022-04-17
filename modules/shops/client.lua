@@ -1,34 +1,44 @@
-local Blips = {}
+local shops = {}
 
-local function CreateLocationBlip(blipId, name, blip, location)
-	Blips[blipId] = AddBlipForCoord(location.x, location.y)
-	SetBlipSprite(Blips[blipId], blip.id)
-	SetBlipDisplay(Blips[blipId], 4)
-	SetBlipScale(Blips[blipId], blip.scale)
-	SetBlipColour(Blips[blipId], blip.colour)
-	SetBlipAsShortRange(Blips[blipId], true)
+local function createShopBlip(name, data, location)
+	local blip = AddBlipForCoord(location.x, location.y)
+	SetBlipSprite(blip, data.id)
+	SetBlipDisplay(blip, 4)
+	SetBlipScale(blip, data.scale)
+	SetBlipColour(blip, data.colour)
+	SetBlipAsShortRange(blip, true)
 	BeginTextCommandSetBlipName('STRING')
 	AddTextComponentString(name)
-	EndTextCommandSetBlipName(Blips[blipId])
+	EndTextCommandSetBlipName(blip)
+
+	return blip
 end
 
-local function OpenShop(data)
-	exports.ox_inventory:openInventory('shop', data)
+local function openShop(data)
+	client.openInventory('shop', data)
 end
 
 client.shops = setmetatable(data('shops'), {
 	__call = function(self)
-		if next(Blips) then
-			for i = 1, #Blips do RemoveBlip(Blips[i]) end
-			table.wipe(Blips)
+		if next(shops) then
+			for i = 1, #shops do
+				local shop = shops[i]
+				shop:remove()
+
+				if shop.blip then
+					RemoveBlip(shop.blip)
+				end
+			end
+
+			table.wipe(shops)
 		end
 
-		local blipId = 0
+		local id = 0
+
 		for type, shop in pairs(self) do
 			if shop.jobs then shop.groups = shop.jobs end
 
 			if not shop.groups or client.hasGroup(shop.groups) then
-				if shop.blip then blipId += 1 end
 				if shared.qtarget then
 					if shop.model then
 						exports.qtarget:AddTargetModel(shop.model, {
@@ -37,18 +47,23 @@ client.shops = setmetatable(data('shops'), {
 									icon = 'fas fa-shopping-basket',
 									label = shop.label or shared.locale('open_shop', shop.name),
 									action = function()
-										exports.ox_inventory:openInventory('shop', {type=type})
+										openShop({type=type})
 									end
 								},
 							},
 							distance = 2
 						})
 					elseif shop.targets then
-						for id=1, #shop.targets do
-							local target = shop.targets[id]
-							local shopid = type..'-'..id
+						for i = 1, #shop.targets do
+							local target = shop.targets[i]
+							local shopid = type..'-'..i
+							id += 1
+
+							if shop.blip then
+								shops[id] = { blip = createShopBlip(shop.name, shop.blip, target.loc) }
+							end
+
 							exports.qtarget:RemoveZone(shopid)
-							if shop.blip then CreateLocationBlip(blipId, shop.name, shop.blip, target.loc) end
 							exports.qtarget:AddBoxZone(shopid, target.loc, target.length or 0.5, target.width or 0.5, {
 								name = shopid,
 								heading = target.heading or 0.0,
@@ -62,7 +77,7 @@ client.shops = setmetatable(data('shops'), {
 										label = shop.label or shared.locale('open_shop', shop.name),
 										job = shop.groups,
 										action = function()
-											OpenShop({id=id, type=type})
+											openShop({id=i, type=type})
 										end
 									},
 								},
@@ -70,10 +85,27 @@ client.shops = setmetatable(data('shops'), {
 							})
 						end
 					end
-				elseif shop.blip then
+				elseif shop.locations then
 					for i = 1, #shop.locations do
-						blipId += 1
-						CreateLocationBlip(blipId, shop.name, shop.blip, shop.locations[i])
+						id += 1
+						local coords = shop.locations[i]
+						local point = lib.points.new(coords, 16, { inv = 'shop', invId = i, type = type })
+
+						function point:nearby()
+							DrawMarker(2, self.coords.x, self.coords.y, self.coords.z, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.3, 0.2, 0.15, 30, 150, 30, 222, false, false, false, true, false, false, false)
+
+							if self.currentDistance < 1.2 and lib.points.closest().id == self.id and IsControlJustReleased(0, 38) then
+								client.openInventory('shop', { id = self.invId, type = self.type })
+							end
+						end
+
+						if shop.blip then
+							point.blip = createShopBlip(shop.name, shop.blip, coords)
+						end
+
+						shops[id] = point
+						shop.target = nil
+						shop.model = nil
 					end
 				end
 			end

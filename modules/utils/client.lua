@@ -37,25 +37,41 @@ function Utils.Raycast(flag)
 end
 
 function Utils.GetClosestPlayer()
-	local closestPlayer, playerId, playerCoords = vec3(10, 0, 0), PlayerId(), GetEntityCoords(cache.ped)
-	local coords
-	for k, player in pairs(GetActivePlayers()) do
-		if player ~= playerId then
+	local players = GetActivePlayers()
+	local playerCoords = GetEntityCoords(cache.ped)
+	local targetDistance, targetId, targetPed
+
+	for i = 1, #players do
+		local player = players[i]
+
+		if player ~= cache.playerId then
 			local ped = GetPlayerPed(player)
-			coords = GetEntityCoords(ped)
-			local distance = #(playerCoords - coords)
-			if distance < closestPlayer.x then
-				closestPlayer = vec3(distance, player, ped)
+			local distance = #(playerCoords - GetEntityCoords(ped))
+
+			if distance < (targetDistance or 2) then
+				targetDistance = distance
+				targetId = player
+				targetPed = ped
 			end
 		end
 	end
-	return closestPlayer, coords
+
+	return targetId, targetPed
 end
 
-function Utils.Notify(data) SendNUIMessage({ action = 'showNotif', data = data }) end
-function Utils.ItemNotify(data) SendNUIMessage({action = 'itemNotify', data = data}) end
+-- Replace ox_inventory notify with ox_lib (backwards compatibility)
+function Utils.Notify(data)
+	data.style = data.type
+	data.description = data.text
+	data.type = nil
+	data.text = nil
+	lib.notify(data)
+end
+
 RegisterNetEvent('ox_inventory:notify', Utils.Notify)
 exports('notify', Utils.Notify)
+
+function Utils.ItemNotify(data) SendNUIMessage({action = 'itemNotify', data = data}) end
 
 function Utils.Disarm(currentWeapon, newSlot)
 	SetWeaponsNoAutoswap(1)
