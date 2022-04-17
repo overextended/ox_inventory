@@ -34,10 +34,12 @@ return {
 		label = 'Bandage',
 		weight = 115,
 		client = {
+			status = { bleeding = -1 },
 			anim = { dict = 'missheistdockssetup1clipboard@idle_a', clip = 'idle_a', flag = 49 },
 			prop = { model = `prop_rolled_sock_02`, pos = vec3(-0.14, -0.14, -0.08), rot = vec3(-50.0, -50.0, 0.0) },
 			disable = { move = true, car = true, combat = true },
 			usetime = 2500,
+			-- export = 'mista_status.RemoveBleeding'
 		}
 	},
 
@@ -51,7 +53,7 @@ return {
 		client = {
 			status = { hunger = 200000 },
 			anim = 'eating',
-			prop = 'burger',
+			prop = 'prop_cs_burger_01',
 			usetime = 2500,
 			notification = 'You ate a delicious burger'
 		},
@@ -95,7 +97,7 @@ return {
 		label = 'Identification',
 	},
 
-	['panties'] = {
+	['knickers'] = {
 		label = 'Knickers',
 		weight = 10,
 		consume = 0,
@@ -191,7 +193,7 @@ return {
 		label = 'Joint',
 		weight = 10,
 		client = {
-			status = { stress = -200000 },
+			status = { hunger = -200000, stress = -200000 },
 			anim = 'smoking',
 			prop = 'p_amb_joint_01',
 			usetime = 2500,
@@ -209,6 +211,236 @@ return {
 			usetime = 2500,
 			cancel = true,
 			notification = 'Rien de tel qu\'une bonne bière'
+		}
+	},
+	
+	['carokit'] = {
+		label = 'Repair Kit',
+		stack = false,
+		description = 'Un kit de réparation de véhicule, peut faire des miracles paraît-il !',
+		weight = 5000,
+		-- consume = 0,
+		client = {
+			anim = { dict = 'anim@amb@clubhouse@tutorial@bkr_tut_ig3@', clip = 'machinic_loop_mechandplayer' },
+			disable = { move = true, car = true, combat = true },
+			-- prop = { model = `prop_tool_adjspanner`, pos = vec3(0.03, 0.03, 0.02), rot = vec3(0.0, 0.0, -1.5) },
+			usetime = 30000,
+			cancel = true,
+			export = 'mista_overlay.carokit'
+		}
+	},
+	
+	['mollis'] = {
+		label = 'Mollis',
+		description = 'Destiné à combattre les troubles de l\'érection chez le mâle humain.',
+		weight = 150,
+		client = {
+			status = { thirst = -150000, stress = 200000 },
+			anim = 'eating',
+			-- prop = { model = `ng_proc_drug01a002` },
+			usetime = 2500,
+			cancel = true,
+			notification = 'SCHWING !'
+		}
+	},
+	
+	['laxomax'] = {
+		label = 'Lax O Max',
+		description = 'Des suppositoires composés d\'un laxatif un peu douteux..',
+		weight = 150,
+		client = {
+			status = { thirst = -150000 },
+			anim = 'eating',
+			-- prop = { model = `ng_proc_drug01a002` },
+			usetime = 2500,
+			cancel = true,
+			notification = 'Ou sont les toilettes ?!'
+		}
+	},
+	
+	['alcopatch'] = {
+		label = 'Alco Patch',
+		description = 'Des patchs pour arrêter de boire.. mouai',
+		weight = 150,
+		client = {
+			status = { thirst = -150000 },
+			anim = 'eating',
+			-- prop = { model = `ng_proc_drug01a002` },
+			usetime = 2500,
+			cancel = true,
+			notification = 'Ou sont les bières ?'
+		}
+	},
+	
+	['delladamol'] = {
+		label = 'Delladamol',
+		description = 'Un anti-douleur puissant, trop puissant',
+		weight = 150,
+		client = {
+			status = { thirst = -150000 },
+			anim = 'eating',
+			-- prop = { model = `ng_proc_drug01a002` },
+			usetime = 2500,
+			cancel = true,
+			notification = 'ouf, ça soulage..'
+		}
+	},
+	
+	['antibiotics'] = {
+		label = 'Antibiotiques',
+		description = 'Pas automatique, certes, mais efficace en cas d\'infection !',
+		weight = 150,
+		client = {
+			status = { infection = -200000, thirst = -150000 },
+			anim = 'eating',
+			-- prop = { model = `ng_proc_drug01a002` },
+			usetime = 2500,
+			cancel = true,
+			notification = 'Pour l\'instant, je ne sens rien de spécial..'
+		}
+	},
+	
+	['donut'] = {
+		label = 'donut',
+		weight = 220,
+		client = {
+			status = { hunger = 150000 },
+			anim = 'eating',
+			prop = 'prop_donut_01',
+			usetime = 2500,
+			notification = 'Humm des donuts..'
+		},
+	},
+	
+	['medikit'] = {
+		label = 'Trousse de soin',
+		weight = 10,
+		client = {
+			status = { stress = -200000, infection = -200000, bleeding = -1 },
+			anim = { dict = 'missheistdockssetup1clipboard@idle_a', clip = 'idle_a', flag = 49 },
+			prop = { model = `prop_rolled_sock_02`, pos = vec3(-0.14, -0.14, -0.08), rot = vec3(-50.0, -50.0, 0.0) },
+			disable = { move = true, car = true, combat = true },
+			usetime = 5000,
+			notification = 'Je me sens mieux'
+		},
+	},
+	
+	['hotdog'] = {
+		label = 'hotdog',
+		weight = 220,
+		client = {
+			status = { hunger = 180000 },
+			anim = 'eating',
+			prop = 'prop_cs_hotdog_01',
+			usetime = 2500,
+			notification = 'Même froid, un hotdog c\'est cool'
+		},
+	},
+	
+	['chipscheese'] = {
+		label = 'Chips au fromage',
+		weight = 220,
+		client = {
+			status = { hunger = 100000, thirst = -50000 },
+			anim = 'eating',
+			prop = 'v_ret_ml_chips4',
+			usetime = 2500,
+			notification = 'ça va mieux, mais ça donne soif !'
+		},
+	},
+	
+	['chipshabanero'] = {
+		label = 'Chips Habanero',
+		weight = 220,
+		client = {
+			status = { hunger = 100000, thirst = -50000 },
+			anim = 'eating',
+			prop = 'v_ret_ml_chips2',
+			usetime = 2500,
+			notification = 'ça va mieux, mais ça donne soif !'
+		},
+	},
+	
+	['chipsribs'] = {
+		label = 'Chips au porc',
+		weight = 220,
+		client = {
+			status = { hunger = 100000, thirst = -50000 },
+			anim = 'eating',
+			prop = 'v_ret_ml_chips1',
+			usetime = 2500,
+			notification = 'ça va mieux, mais ça donne soif !'
+		},
+	},
+	
+	['chipssalt'] = {
+		label = 'Chips salées',
+		weight = 220,
+		client = {
+			status = { hunger = 100000, thirst = -50000 },
+			anim = 'eating',
+			prop = 'v_ret_ml_chips3',
+			usetime = 2500,
+			notification = 'ça va mieux, mais ça donne soif !'
+		},
+	},
+	
+	['candy'] = {
+		label = 'Paquet de bombecs',
+		weight = 220,
+		client = {
+			status = { hunger = 100000, stress = -100000  },
+			anim = 'eating',
+			prop = 'prop_cs_burger_01',
+			usetime = 2500,
+			notification = 'Putain, le sucre c\'est bon !'
+		},
+	},
+	
+	['panties'] = {
+		label = 'Culotte sale',
+		description = 'Il y a certainement un fétichiste dans le coin..',	
+	},
+	
+	['binoculars'] = {
+		label = 'Jumelles',
+		description = 'Une paire de jumelle, que dire de plus..',
+		weight = 1500,
+		stack = false,
+		consume = 0,
+		client = {
+			add = function(total)
+				if total > 0 and GetResourceState('binoculars') == 'started' then
+					exports.binoculars:setEnabled(true)	
+				end
+			end,
+
+			remove = function(total)
+				if total < 1 and GetResourceState('binoculars') == 'started' then
+					exports.binoculars:setEnabled(false)
+				end
+			end
+		}
+	},
+	
+	['vehicles_map'] = {
+		label = 'Carte annotée',
+		description = 'Une carte annotée par un survivant, il ou elle y a marqué des emplacements de véhicules.',
+		weight = 250,
+		stack = false,
+		consume = 0,
+		client = {
+			add = function(total)
+				if total > 0 and GetResourceState('vehicle_spawn') == 'started' then
+					exports.vehicle_spawn:setBlipsEnabled(true)	
+				end
+			end,
+
+			remove = function(total)
+				if total < 1 and GetResourceState('vehicle_spawn') == 'started' then
+					exports.vehicle_spawn:setBlipsEnabled(false)
+				end
+			end
 		}
 	},
 }
