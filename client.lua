@@ -52,7 +52,6 @@ local function closeTrunk()
 	end
 end
 
-local Interface = client.interface
 local plyState = LocalPlayer.state
 
 ---@param inv string inventory type
@@ -84,7 +83,7 @@ function client.openInventory(inv, data)
 			left, right = lib.callback.await('ox_inventory:openShop', 200, data)
 		elseif invOpen ~= nil then
 			if inv == 'policeevidence' then
-				local input = Interface.Keyboard(shared.locale('police_evidence'), {shared.locale('locker_number')})
+				local input = lib.inputDialog(shared.locale('police_evidence'), {shared.locale('locker_number')})
 
 				if input then
 					input = tonumber(input[1])
