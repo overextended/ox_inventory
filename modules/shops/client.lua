@@ -23,7 +23,10 @@ client.shops = setmetatable(data('shops'), {
 		if next(shops) then
 			for i = 1, #shops do
 				local shop = shops[i]
-				shop:remove()
+
+				if shop.point then
+					shop:remove()
+				end
 
 				if shop.blip then
 					RemoveBlip(shop.blip)
