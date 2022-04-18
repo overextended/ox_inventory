@@ -53,7 +53,7 @@ return {
 		client = {
 			status = { hunger = 200000 },
 			anim = 'eating',
-			prop = 'prop_cs_burger_01',
+			prop = 'burger',
 			usetime = 2500,
 			notification = 'You ate a delicious burger'
 		},
