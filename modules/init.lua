@@ -98,12 +98,12 @@ if not lib then
 	spamError('Ox Inventory requires the ox_lib resource, refer to the documentation.')
 end
 
-if not lib.checkDependency('oxmysql', '2.0.0') or not lib.checkDependency('ox_lib', '2.0.1') then
-	spamError('Dependencies do not match the required versions (check oxmysql and ox_lib)')
+if not lib.checkDependency('oxmysql', '2.0.0') or not lib.checkDependency('ox_lib', '2.2.0') then
+	spamError('Dependencies do not match the required versions (check oxmysql and ox_lib for updates)')
 end
 
 if not LoadResourceFile(shared.resource, 'web/build/index.html') then
-	spamError('UI has not been built, refer to the documentation or download a release build.')
+	spamError('UI has not been built, refer to the documentation or download a release build.\n	^3https://overextended.github.io/docs/ox_inventory/^0')
 end
 
 -- Disable qtarget compatibility if it isn't running
