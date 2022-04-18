@@ -95,7 +95,19 @@ function data(name)
 end
 
 if not lib then
-	spamError('Ox Inventory requires the ox_lib resource, refer to the documentation.')
+	spamError('ox_inventory requires the ox_lib resource, refer to the documentation.')
+end
+
+local success, msg = lib.checkDependency('oxmysql', '2.0.0')
+
+if not success then
+	spamError(msg or ("ox_inventory requires version '%s' of '%s' (current version: %s)"):format(minimumVersion, resource, currentVersion))
+end
+
+success, msg = lib.checkDependency('ox_lib', '2.2.0')
+
+if not success then
+	spamError(msg or ("ox_inventory requires version '%s' of '%s' (current version: %s)"):format(minimumVersion, resource, currentVersion))
 end
 
 if not lib.checkDependency('oxmysql', '2.0.0') or not lib.checkDependency('ox_lib', '2.2.0') then
