@@ -199,7 +199,7 @@ function Items.Metadata(inv, item, metadata, count)
 		if not metadata.ammo and item.ammoname then metadata.ammo = 0 end
 		if not metadata.components then metadata.components = {} end
 
-		if metadata.registered ~= false and metadata.ammo then
+		if metadata.registered ~= false and (metadata.ammo or item.name == 'WEAPON_STUNGUN') then
 			metadata.registered = type(metadata.registered) == 'string' and metadata.registered or inv.player.name
 			metadata.serial = GenerateSerial(metadata.serial)
 		end
