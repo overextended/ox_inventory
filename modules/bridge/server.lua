@@ -32,7 +32,7 @@ if shared.framework == 'esx' then
 	local ESX = exports['es_extended']:getSharedObject()
 
 	if ESX.CreatePickup then
-		error('Ox Inventory requires a modified version of ESX, refer to the documentation.')
+		error('ox_inventory requires a ESX Legacy v1.6.0 or above, refer to the documentation.')
 	end
 
 	ESX = {

@@ -52,7 +52,6 @@ local function closeTrunk()
 	end
 end
 
-local Interface = client.interface
 local plyState = LocalPlayer.state
 
 ---@param inv string inventory type
@@ -84,7 +83,7 @@ function client.openInventory(inv, data)
 			left, right = lib.callback.await('ox_inventory:openShop', 200, data)
 		elseif invOpen ~= nil then
 			if inv == 'policeevidence' then
-				local input = Interface.Keyboard(shared.locale('police_evidence'), {shared.locale('locker_number')})
+				local input = lib.inputDialog(shared.locale('police_evidence'), {shared.locale('locker_number')})
 
 				if input then
 					input = tonumber(input[1])
@@ -1186,15 +1185,10 @@ RegisterNUICallback('swapItems', function(data, cb)
 		data.instance = currentInstance
 	end
 
-	local success, response, weapon = lib.callback.await('ox_inventory:swapItems', false, data)
+	local success, response = lib.callback.await('ox_inventory:swapItems', false, data)
 
 	if response then
 		updateInventory(response.items, response.weight)
-	end
-
-	if weapon and currentWeapon then
-		currentWeapon.slot = weapon
-		TriggerEvent('ox_inventory:currentWeapon', currentWeapon)
 	end
 
 	if data.toType == 'newdrop' then

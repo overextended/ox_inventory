@@ -543,7 +543,8 @@ function Inventory.AddItem(inv, item, count, metadata, slot, cb)
 	if type(item) ~= 'table' then item = Items(item) end
 	if type(inv) ~= 'table' then inv = Inventory(inv) end
 	count = math.floor(count + 0.5)
-	local success, reason = false, nil
+	local success, resp
+
 	if item then
 		if inv then
 			metadata, count = Items.Metadata(inv.id, item, metadata or {}, count)
@@ -572,23 +573,27 @@ function Inventory.AddItem(inv, item, count, metadata, slot, cb)
 			if slot then
 				Inventory.SetSlot(inv, item, count, metadata, slot)
 				inv.weight = inv.weight + (item.weight + (metadata?.weight or 0)) * count
-				success = true
+
+				if cb then
+					success = true
+					resp = inv.items[slot]
+				end
 
 				if inv.type == 'player' then
 					if shared.framework == 'esx' then Inventory.SyncInventory(inv) end
 					TriggerClientEvent('ox_inventory:updateSlots', inv.id, {{item = inv.items[slot], inventory = inv.type}}, {left=inv.weight, right=inv.open and Inventories[inv.open]?.weight}, count, false)
 				end
 			else
-				reason = 'inventory_full'
+				resp = cb and 'inventory_full'
 			end
 		else
-			reason = 'invalid_inventory'
+			resp = cb and 'invalid_inventory'
 		end
 	else
-		reason = 'invalid_item'
+		resp = cb and 'invalid_item'
 	end
 
-	if cb then cb(success, reason) end
+	if cb then cb(success, resp) end
 end
 exports('AddItem', Inventory.AddItem)
 
@@ -742,6 +747,19 @@ end
 exports('CanCarryItem', Inventory.CanCarryItem)
 
 ---@param inv string | number
+---@param item table | string
+function Inventory.CanCarryAmount(inv, item)
+    if type(item) ~= 'table' then item = Items(item) end
+    if item then
+        inv = Inventory(inv)
+            local availableWeight = inv.maxWeight - inv.weight
+            local canHold = math.floor(availableWeight / item.weight)
+            return canHold
+    end
+end
+exports('CanCarryAmount', Inventory.CanCarryAmount)
+
+---@param inv string | number
 ---@param firstItem string
 ---@param firstItemCount number
 ---@param testItem string
@@ -873,18 +891,7 @@ lib.callback.register('ox_inventory:swapItems', function(source, data)
 
 				if fromData and (not fromData.metadata.container or fromData.metadata.container and toInventory.type ~= 'container') then
 					if data.count > fromData.count then data.count = fromData.count end
-
 					local toData = toInventory.items[data.toSlot]
-					local movedWeapon = false
-					if fromInventory.weapon == data.fromSlot or fromInventory.weapon == data.toSlot then movedWeapon = true end
-
-					if movedWeapon then
-						fromInventory.weapon = data.toSlot
-						fromInventory.weapon = data.fromSlot
-						if fromInventory.type == 'otherplayer' then movedWeapon = false end
-						TriggerClientEvent('ox_inventory:disarm', fromInventory.id)
-					end
-
 					local container = (not sameInventory and playerInventory.containerSlot) and (fromInventory.type == 'container' and fromInventory or toInventory)
 					local containerItem = container and playerInventory.items[playerInventory.containerSlot]
 
@@ -1045,6 +1052,7 @@ lib.callback.register('ox_inventory:swapItems', function(source, data)
 					end
 
 					local resp
+
 					if next(items) then
 						resp = { weight = playerInventory.weight, items = items }
 						if shared.framework == 'esx' and fromInventory.type == 'player' or fromInventory.type == 'otherplayer' then
@@ -1055,7 +1063,23 @@ lib.callback.register('ox_inventory:swapItems', function(source, data)
 						end
 					end
 
-					return container and containerItem.weight or true, resp, movedWeapon and fromInventory.weapon
+					if toInventory.weapon == data.toSlot then
+						if sameInventory then
+							toInventory.weapon = data.fromSlot
+						else
+							TriggerClientEvent('ox_inventory:disarm', toInventory.id)
+						end
+					end
+
+					if fromInventory.weapon == data.fromSlot then
+						if sameInventory then
+							fromInventory.weapon = data.toSlot
+						else
+							TriggerClientEvent('ox_inventory:disarm', fromInventory.id)
+						end
+					end
+
+					return container and containerItem.weight or true, resp
 				end
 			end
 		end

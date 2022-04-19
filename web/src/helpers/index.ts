@@ -13,7 +13,7 @@ export const findAvailableSlot = (item: Slot, data: ItemData, items: Slot[]) => 
   if (!data.stack) return items.find((target) => target.name === undefined);
 
   const stackableSlot = items.find(
-    (target) => target.name === item.name && target.metadata === item.metadata
+    (target) => target.name === item.name && isEqual(target.metadata, item.metadata)
   );
 
   return stackableSlot || items.find((target) => target.name === undefined);
