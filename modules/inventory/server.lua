@@ -541,7 +541,8 @@ function Inventory.AddItem(inv, item, count, metadata, slot, cb)
 	if type(item) ~= 'table' then item = Items(item) end
 	if type(inv) ~= 'table' then inv = Inventory(inv) end
 	count = math.floor(count + 0.5)
-	local success, reason = false, nil
+	local success, resp
+
 	if item then
 		if inv then
 			metadata, count = Items.Metadata(inv.id, item, metadata or {}, count)
@@ -570,23 +571,27 @@ function Inventory.AddItem(inv, item, count, metadata, slot, cb)
 			if slot then
 				Inventory.SetSlot(inv, item, count, metadata, slot)
 				inv.weight = inv.weight + (item.weight + (metadata?.weight or 0)) * count
-				success = true
+
+				if cb then
+					success = true
+					resp = inv.items[slot]
+				end
 
 				if inv.type == 'player' then
 					if shared.framework == 'esx' then Inventory.SyncInventory(inv) end
 					TriggerClientEvent('ox_inventory:updateSlots', inv.id, {{item = inv.items[slot], inventory = inv.type}}, {left=inv.weight, right=inv.open and Inventories[inv.open]?.weight}, count, false)
 				end
 			else
-				reason = 'inventory_full'
+				resp = cb and 'inventory_full'
 			end
 		else
-			reason = 'invalid_inventory'
+			resp = cb and 'invalid_inventory'
 		end
 	else
-		reason = 'invalid_item'
+		resp = cb and 'invalid_item'
 	end
 
-	if cb then cb(success, reason) end
+	if cb then cb(success, resp) end
 end
 exports('AddItem', Inventory.AddItem)
 
