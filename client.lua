@@ -467,13 +467,14 @@ local function registerCommands()
 					local vehicle = cache.vehicle
 
 					if NetworkGetEntityIsNetworked(vehicle) then
-						local checkVehicle = Vehicles.Storage[GetEntityModel(vehicle)]
-						if not checkVehicle or checkVehicle == 0 or checkVehicle == 2 then -- No storage or no glovebox
-							return
-						end
+						local vehicleHash = GetEntityModel(vehicle)
+						local vehicleClass = GetVehicleClass(vehicle)
+						local checkVehicle = Vehicles.Storage[vehicleHash]
+						-- No storage or no glovebox
+						if checkVehicle == 0 or checkVehicle == 2 or not (Vehicles.glovebox[vehicleClass] and not Vehicles.glovebox.models[vehicleHash]) then return end
 
 						local plate = client.trimplate and string.strtrim(GetVehicleNumberPlateText(vehicle)) or GetVehicleNumberPlateText(vehicle)
-						client.openInventory('glovebox', {id='glove'..plate, class=GetVehicleClass(vehicle), model=GetEntityModel(vehicle)})
+						client.openInventory('glovebox', {id = 'glove'..plate, class = vehicleClass, model = vehicleHash })
 
 						while true do
 							Wait(100)
@@ -522,7 +523,7 @@ local function registerCommands()
 					local class = GetVehicleClass(vehicle)
 					local vehHash = GetEntityModel(vehicle)
 
-					if vehicle and Vehicles.trunk['models'][vehHash] or Vehicles.trunk[class] and #(playerCoords - position) < 6 and NetworkGetEntityIsNetworked(vehicle) then
+					if vehicle and Vehicles.trunk.models[vehHash] or Vehicles.trunk[class] and #(playerCoords - position) < 6 and NetworkGetEntityIsNetworked(vehicle) then
 						local locked = GetVehicleDoorLockStatus(vehicle)
 
 						if locked == 0 or locked == 1 then

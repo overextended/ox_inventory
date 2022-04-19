@@ -109,17 +109,13 @@ end
 local success, msg = lib.checkDependency('oxmysql', '2.0.0')
 
 if not success then
-	spamError(msg or ("ox_inventory requires version '%s' of '%s' (current version: %s)"):format(minimumVersion, resource, currentVersion))
+	spamError(msg or "ox_inventory requires version '2.0.0' of 'oxmysql'")
 end
 
 success, msg = lib.checkDependency('ox_lib', '2.2.0')
 
 if not success then
-	spamError(msg or ("ox_inventory requires version '%s' of '%s' (current version: %s)"):format(minimumVersion, resource, currentVersion))
-end
-
-if not lib.checkDependency('oxmysql', '2.0.0') or not lib.checkDependency('ox_lib', '2.2.0') then
-	spamError('Dependencies do not match the required versions (check oxmysql and ox_lib for updates)')
+	spamError(msg or "ox_inventory requires version '2.2.0' of 'ox_lib'")
 end
 
 if not LoadResourceFile(shared.resource, 'web/build/index.html') then
