@@ -19,7 +19,10 @@ Items.containers = {
 		whitelist = {
 			['pizza'] = true -- Pizza box for pizza only
 		}
-	}
+	},
+	['test_bagpack'] = {
+		size = {40, 30000}
+	},
 }
 
 -- Possible metadata when creating garbage

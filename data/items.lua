@@ -34,12 +34,10 @@ return {
 		label = 'Bandage',
 		weight = 115,
 		client = {
-			status = { bleeding = -1 },
 			anim = { dict = 'missheistdockssetup1clipboard@idle_a', clip = 'idle_a', flag = 49 },
 			prop = { model = `prop_rolled_sock_02`, pos = vec3(-0.14, -0.14, -0.08), rot = vec3(-50.0, -50.0, 0.0) },
 			disable = { move = true, car = true, combat = true },
 			usetime = 2500,
-			-- export = 'mista_status.RemoveBleeding'
 		}
 	},
 
@@ -165,8 +163,7 @@ return {
 			anim = { dict = 'mp_player_intdrink', clip = 'loop_bottle' },
 			prop = { model = `prop_ld_flow_bottle`, pos = vec3(0.03, 0.03, 0.02), rot = vec3(0.0, 0.0, -1.5) },
 			usetime = 2500,
-			cancel = true,
-			notification = 'You drank some refreshing water'
+			notification = 'l\'eau, c\'est la vie'
 		}
 	},
 
@@ -189,6 +186,17 @@ return {
 	},
 	
 	-- CUSTOM ADDITIONS	
+	['bandage2'] = {
+		label = 'Bandage',
+		weight = 10,
+		client = {
+			status = { bleeding = -1 },
+			usetime = 2500,
+			notification = 'Bandage utilisé..'
+			-- export = 'mista_overlay.bandage2'
+		},
+	},
+	
 	['joint'] = {
 		label = 'Joint',
 		weight = 10,
@@ -203,13 +211,12 @@ return {
 	
 	['beer'] = {
 		label = 'Beer',
-		weight = 500,
+		weight = 250,
 		client = {
-			status = { thirst = 150000 },
+			status = { thirst = 250000, hunger = 50000 },
 			anim = { dict = 'mp_player_intdrink', clip = 'loop_bottle' },
-			prop = { model = `prop_beer_pissh`, pos = vec3(0.03, 0.03, 0.02), rot = vec3(0.0, 0.0, -1.5) },
+			prop = { model = `prop_beer_pissh`, pos = vec3(0.01, 0.0, -0.07), rot = vec3(1.0, 1.0, -1.5) },
 			usetime = 2500,
-			cancel = true,
 			notification = 'Rien de tel qu\'une bonne bière'
 		}
 	},
@@ -293,10 +300,8 @@ return {
 		client = {
 			status = { infection = -200000, thirst = -150000 },
 			anim = 'eating',
-			-- prop = { model = `ng_proc_drug01a002` },
-			usetime = 2500,
-			cancel = true,
-			notification = 'Pour l\'instant, je ne sens rien de spécial..'
+			usetime = 1500,
+			notification = 'Pour l\'instant, je ne sens rien..'
 		}
 	},
 	
@@ -443,4 +448,26 @@ return {
 			end
 		}
 	},
+	
+	['test_bagpack'] = {
+		label = 'Sac à dos',
+		description = 'Un sac à dos bien pratique.',
+		weight = 2500,
+		stack = false,
+		close = false,
+		consume = 0,
+		client = {
+			add = function(total)
+				if total > 0 and GetResourceState('mista_overlay') == 'started' then
+					exports.mista_overlay:seBagpackEnabled(true)	
+				end
+			end,
+
+			remove = function(total)
+				if total < 1 and GetResourceState('mista_overlay') == 'started' then
+					exports.mista_overlay:seBagpackEnabled(false)
+				end
+			end
+		}
+	}
 }
