@@ -884,18 +884,7 @@ lib.callback.register('ox_inventory:swapItems', function(source, data)
 
 				if fromData and (not fromData.metadata.container or fromData.metadata.container and toInventory.type ~= 'container') then
 					if data.count > fromData.count then data.count = fromData.count end
-
 					local toData = toInventory.items[data.toSlot]
-					local movedWeapon = false
-					if fromInventory.weapon == data.fromSlot or fromInventory.weapon == data.toSlot then movedWeapon = true end
-
-					if movedWeapon then
-						fromInventory.weapon = data.toSlot
-						fromInventory.weapon = data.fromSlot
-						if fromInventory.type == 'otherplayer' then movedWeapon = false end
-						TriggerClientEvent('ox_inventory:disarm', fromInventory.id)
-					end
-
 					local container = (not sameInventory and playerInventory.containerSlot) and (fromInventory.type == 'container' and fromInventory or toInventory)
 					local containerItem = container and playerInventory.items[playerInventory.containerSlot]
 
@@ -1056,6 +1045,7 @@ lib.callback.register('ox_inventory:swapItems', function(source, data)
 					end
 
 					local resp
+
 					if next(items) then
 						resp = { weight = playerInventory.weight, items = items }
 						if shared.framework == 'esx' and fromInventory.type == 'player' or fromInventory.type == 'otherplayer' then
@@ -1066,7 +1056,23 @@ lib.callback.register('ox_inventory:swapItems', function(source, data)
 						end
 					end
 
-					return container and containerItem.weight or true, resp, movedWeapon and fromInventory.weapon
+					if toInventory.weapon == data.toSlot then
+						if sameInventory then
+							toInventory.weapon = data.fromSlot
+						else
+							TriggerClientEvent('ox_inventory:disarm', toInventory.id)
+						end
+					end
+
+					if fromInventory.weapon == data.fromSlot then
+						if sameInventory then
+							fromInventory.weapon = data.toSlot
+						else
+							TriggerClientEvent('ox_inventory:disarm', fromInventory.id)
+						end
+					end
+
+					return container and containerItem.weight or true, resp
 				end
 			end
 		end

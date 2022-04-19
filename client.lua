@@ -1173,15 +1173,10 @@ RegisterNUICallback('swapItems', function(data, cb)
 		data.instance = currentInstance
 	end
 
-	local success, response, weapon = lib.callback.await('ox_inventory:swapItems', false, data)
+	local success, response = lib.callback.await('ox_inventory:swapItems', false, data)
 
 	if response then
 		updateInventory(response.items, response.weight)
-	end
-
-	if weapon and currentWeapon then
-		currentWeapon.slot = weapon
-		TriggerEvent('ox_inventory:currentWeapon', currentWeapon)
 	end
 
 	if data.toType == 'newdrop' then
