@@ -449,7 +449,7 @@ return {
 		}
 	},
 	
-	['test_bagpack'] = {
+	['backpack'] = {
 		label = 'Sac à dos',
 		description = 'Un sac à dos bien pratique.',
 		weight = 2500,
@@ -459,15 +459,15 @@ return {
 		client = {
 			add = function(total)
 				if total > 0 and GetResourceState('mista_overlay') == 'started' then
-					exports.mista_overlay:seBagpackEnabled(true)	
+					exports.mista_overlay:equipBackpack(total)	
 				end
 			end,
-
 			remove = function(total)
 				if total < 1 and GetResourceState('mista_overlay') == 'started' then
-					exports.mista_overlay:seBagpackEnabled(false)
+					exports.mista_overlay:dropBackpack(total)
 				end
 			end
 		}
-	}
+	},
+	
 }

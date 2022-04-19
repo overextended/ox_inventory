@@ -20,7 +20,7 @@ Items.containers = {
 			['pizza'] = true -- Pizza box for pizza only
 		}
 	},
-	['test_bagpack'] = {
+	['backpack'] = {
 		size = {40, 30000}
 	},
 }
