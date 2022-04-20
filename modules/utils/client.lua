@@ -61,9 +61,7 @@ end
 
 -- Replace ox_inventory notify with ox_lib (backwards compatibility)
 function Utils.Notify(data)
-	data.style = data.type
 	data.description = data.text
-	data.type = nil
 	data.text = nil
 	lib.notify(data)
 end
