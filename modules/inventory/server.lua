@@ -1061,19 +1061,22 @@ lib.callback.register('ox_inventory:swapItems', function(source, data)
 						end
 					end
 
+					local movedWeapon
+
 					if toInventory.weapon == data.toSlot then
-						if sameInventory then
-							toInventory.weapon = data.fromSlot
-						else
+						if not sameInventory then
 							TriggerClientEvent('ox_inventory:disarm', toInventory.id)
+						else
+							movedWeapon = true
+							toInventory.weapon = data.fromSlot
 						end
 					end
 
 					if fromInventory.weapon == data.fromSlot then
-						if sameInventory then
-							fromInventory.weapon = data.toSlot
-						else
+						if not sameInventory then
 							TriggerClientEvent('ox_inventory:disarm', fromInventory.id)
+						elseif not movedWeapon then
+							fromInventory.weapon = data.toSlot
 						end
 					end
 
