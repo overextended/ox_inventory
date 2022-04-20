@@ -73,7 +73,7 @@ function client.openInventory(inv, data)
 	end
 
 	if inv == 'dumpster' and cache.vehicle or inv == 'food' and cache.vehicle then
-		return Utils.Notify({type = 'error', text = shared.locale('inventory_right_access')})
+		return lib.notify({ type = 'error', description = shared.locale('inventory_right_access') })
 	end
 
 	if canOpenInventory() then
