@@ -21,7 +21,11 @@ Items.containers = {
 		}
 	},
 	['backpack'] = {
-		size = {40, 30000}
+		size = {40, 30000},
+		blacklist = {
+			['paperbag'] = true,
+			['vehicles_map'] = true,
+		}
 	},
 }
 

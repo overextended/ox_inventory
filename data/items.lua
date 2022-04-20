@@ -188,24 +188,26 @@ return {
 	-- CUSTOM ADDITIONS	
 	['bandage2'] = {
 		label = 'Bandage',
+		description = 'Permet de soigner les saignements.',
 		weight = 10,
 		client = {
-			status = { bleeding = -1 },
+			anim = { dict = 'missheistdockssetup1clipboard@idle_a', clip = 'idle_a', flag = 49 },
+			prop = { model = `prop_rolled_sock_02`, pos = vec3(-0.14, -0.14, -0.08), rot = vec3(-50.0, -50.0, 0.0) },
+			disable = { move = true, car = true, combat = true },
 			usetime = 2500,
-			notification = 'Bandage utilisé..'
-			-- export = 'mista_overlay.bandage2'
+			export = 'mista_overlay.bandage2'
 		},
 	},
 	
 	['joint'] = {
-		label = 'Joint',
+		label = 'Joint de marijuana',
+		description = 'Naturel, calme le stress.',
 		weight = 10,
 		client = {
-			status = { hunger = -200000, stress = -200000 },
-			anim = 'smoking',
-			prop = 'p_amb_joint_01',
+			anim = { dict = 'missheistdockssetup1clipboard@idle_a', clip = 'idle_a', flag = 49 },
+			prop = { model = `prop_rolled_sock_02`, pos = vec3(-0.14, -0.14, -0.08), rot = vec3(-50.0, -50.0, 0.0) },
 			usetime = 2500,
-			notification = 'You smoked a good joint'
+			export = 'mista_overlay.smoke_joint'
 		},
 	},
 	
@@ -222,18 +224,17 @@ return {
 	},
 	
 	['carokit'] = {
-		label = 'Repair Kit',
+		label = 'Kit de réparation',
 		stack = false,
 		description = 'Un kit de réparation de véhicule, peut faire des miracles paraît-il !',
 		weight = 5000,
-		-- consume = 0,
 		client = {
 			anim = { dict = 'anim@amb@clubhouse@tutorial@bkr_tut_ig3@', clip = 'machinic_loop_mechandplayer' },
 			disable = { move = true, car = true, combat = true },
 			-- prop = { model = `prop_tool_adjspanner`, pos = vec3(0.03, 0.03, 0.02), rot = vec3(0.0, 0.0, -1.5) },
 			usetime = 30000,
 			cancel = true,
-			export = 'mista_overlay.carokit'
+			export = 'mista_overlay.fix_car'
 		}
 	},
 	
@@ -319,14 +320,14 @@ return {
 	
 	['medikit'] = {
 		label = 'Trousse de soin',
-		weight = 10,
+		description = 'Permet de soigner les infections, les saignements et restaure la santé.',
+		weight = 300,
 		client = {
-			status = { stress = -200000, infection = -200000, bleeding = -1 },
 			anim = { dict = 'missheistdockssetup1clipboard@idle_a', clip = 'idle_a', flag = 49 },
-			prop = { model = `prop_rolled_sock_02`, pos = vec3(-0.14, -0.14, -0.08), rot = vec3(-50.0, -50.0, 0.0) },
+			-- prop = { model = `prop_rolled_sock_02`, pos = vec3(-0.14, -0.14, -0.08), rot = vec3(-50.0, -50.0, 0.0) },
 			disable = { move = true, car = true, combat = true },
-			usetime = 5000,
-			notification = 'Je me sens mieux'
+			usetime = 6000,
+			export = 'mista_overlay.medikit'
 		},
 	},
 	
