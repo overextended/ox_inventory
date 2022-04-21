@@ -805,8 +805,11 @@ end
 
 local function CustomDrop(prefix, items, coords, slots, maxWeight, instance)
 	local drop = generateDropId()
-	local items, weight = generateItems(drop, 'drop', items)
-	local inventory = Inventory.Create(drop, prefix..' '..drop, 'drop', slots or shared.playerslots, weight, maxWeight or shared.playerweight, false, items)
+	local inventory = Inventory.Create(drop, prefix..' '..drop, 'drop', slots or shared.playerslots, 0, maxWeight or shared.playerweight, false)
+	local items, weight = generateItems(inventory, 'drop', items)
+	
+	inventory.items = items
+	inventory.weight = weight
 	inventory.coords = coords
 	Inventory.Drops[drop] = {coords = inventory.coords, instance = instance}
 	TriggerClientEvent('ox_inventory:createDrop', -1, drop, Inventory.Drops[drop], inventory.open and source)
