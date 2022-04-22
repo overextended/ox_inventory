@@ -1,6 +1,6 @@
 local Inventory = {}
 
-Inventory.Dumpsters = {} -- { 218085040, 666561306, -58485588, -206690185, 1511880420, 682791951 }
+Inventory.Dumpsters = {218085040, 666561306, -58485588, -206690185, 1511880420, 682791951}
 
 if shared.qtarget then
 	local function OpenDumpster(entity)
@@ -17,7 +17,7 @@ if shared.qtarget then
 
 		client.openInventory('dumpster', 'dumpster'..netId)
 	end
-	
+
 	exports.qtarget:AddTargetModel(Inventory.Dumpsters, {
 		options = {
 			{

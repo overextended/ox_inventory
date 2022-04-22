@@ -72,7 +72,7 @@ function client.openInventory(inv, data)
 		end
 	end
 
-	if inv == 'dumpster' and cache.vehicle or inv == 'food' and cache.vehicle then
+	if inv == 'dumpster' and cache.vehicle then
 		return lib.notify({ type = 'error', description = shared.locale('inventory_right_access') })
 	end
 
@@ -502,19 +502,7 @@ local function registerCommands()
 								SetNetworkIdCanMigrate(netId, true)
 							end
 
-							return openInventory('dumpster', 'dumpster'..netId)
-						elseif type == 3 and table.contains(Inventory.FoodStash, GetEntityModel(entity)) then
-							local netId = NetworkGetEntityIsNetworked(entity) and NetworkGetNetworkIdFromEntity(entity)
-
-							if not netId then
-								NetworkRegisterEntityAsNetworked(entity)
-								netId = NetworkGetNetworkIdFromEntity(entity)
-								NetworkUseHighPrecisionBlending(netId, false)
-								SetNetworkIdExistsOnAllMachines(netId, true)
-								SetNetworkIdCanMigrate(netId, true)
-							end
-
-							return openInventory('food', 'foodstash_'..netId)
+							return client.openInventory('dumpster', 'dumpster'..netId)
 						end
 					elseif type == 2 then
 						vehicle, position = entity, GetEntityCoords(entity)

@@ -308,7 +308,7 @@ local function generateItems(inv, invType, items)
 		if invType == 'dumpster' then
 			items = randomLoot(server.dumpsterloot)
 		elseif invType == 'vehicle' then
-			items = randomLoot(server.vehicleloot)	
+			items = randomLoot(server.vehicleloot)
 		end
 	end
 
