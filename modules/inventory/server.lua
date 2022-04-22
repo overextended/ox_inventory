@@ -603,28 +603,38 @@ exports('AddItem', Inventory.AddItem)
 
 ---@param inv string | number
 ---@param search string|number slots|1, count|2
----@param item table | string
+---@param items table | string
 ---@param metadata? table | string
-function Inventory.Search(inv, search, item, metadata)
-	if item then
+function Inventory.Search(inv, search, items, metadata)
+	if items then
 		inv = Inventory(inv)
 		if inv then
 			inv = inv.items
+
 			if search == 'slots' then search = 1 elseif search == 'count' then search = 2 end
-			if type(item) == 'string' then item = {item} end
+			if type(items) == 'string' then items = {items} end
 			if type(metadata) == 'string' then metadata = {type=metadata} end
 
-			local items = #item
+			local itemCount = #items
 			local returnData = {}
-			for i = 1, items do
-				local item = Items(item[i])?.name
-				if search == 1 then returnData[item] = {}
-				elseif search == 2 then returnData[item] = 0 end
+
+			for i = 1, itemCount do
+				local item = string.lower(items[i])
+				if item:sub(0, 7) == 'weapon_' then item = string.upper(item) end
+
+				if search == 1 then
+					returnData[item] = {}
+				elseif search == 2 then
+					returnData[item] = 0
+				end
+
 				for _, v in pairs(inv) do
 					if v.name == item then
 						if not v.metadata then v.metadata = {} end
+
 						if not metadata or table.contains(v.metadata, metadata) then
-							if search == 1 then returnData[item][#returnData[item]+1] = inv[v.slot]
+							if search == 1 then
+								returnData[item][#returnData[item]+1] = inv[v.slot]
 							elseif search == 2 then
 								returnData[item] += v.count
 							end
@@ -632,9 +642,11 @@ function Inventory.Search(inv, search, item, metadata)
 					end
 				end
 			end
-			if next(returnData) then return items == 1 and returnData[item[1]] or returnData end
+
+			if next(returnData) then return itemCount == 1 and returnData[item[1]] or returnData end
 		end
 	end
+
 	return false
 end
 exports('Search', Inventory.Search)
