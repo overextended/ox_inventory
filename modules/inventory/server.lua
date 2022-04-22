@@ -458,7 +458,13 @@ function Inventory.GetCurrentWeapon(inv)
 	inv = Inventory(inv)
 
 	if inv?.player then
-		return inv.items[inv.weapon]
+		local weapon = inv.items[inv.weapon]
+
+		if weapon and Items(weapon.name).weapon then
+			return weapon
+		end
+
+		inv.weapon = nil
 	end
 end
 exports('GetCurrentWeapon', Inventory.GetCurrentWeapon)
@@ -837,7 +843,9 @@ local function dropItem(source, data)
 	local items = { [slot] = fromData or false }
 	playerInventory.items[slot] = fromData
 
-	if slot == playerInventory.weapon then playerInventory.weapon = nil end
+	if slot == playerInventory.weapon then
+		playerInventory.weapon = nil
+	end
 
 	local dropId = generateDropId()
 	local inventory = Inventory.Create(dropId, 'Drop '..dropId, 'drop', shared.playerslots, toData.weight, shared.playerweight, false, {[data.toSlot] = toData})
@@ -1061,26 +1069,29 @@ lib.callback.register('ox_inventory:swapItems', function(source, data)
 						end
 					end
 
-					local movedWeapon
+					local weaponSlot
 
 					if toInventory.weapon == data.toSlot then
 						if not sameInventory then
+							toInventory.weapon = nil
 							TriggerClientEvent('ox_inventory:disarm', toInventory.id)
 						else
-							movedWeapon = true
-							toInventory.weapon = data.fromSlot
+							weaponSlot = data.fromSlot
+							toInventory.weapon = weaponSlot
 						end
 					end
 
 					if fromInventory.weapon == data.fromSlot then
 						if not sameInventory then
+							fromInventory.weapon = nil
 							TriggerClientEvent('ox_inventory:disarm', fromInventory.id)
-						elseif not movedWeapon then
-							fromInventory.weapon = data.toSlot
+						elseif not weaponSlot then
+							weaponSlot = data.toSlot
+							fromInventory.weapon = weaponSlot
 						end
 					end
 
-					return container and containerItem.weight or true, resp
+					return container and containerItem.weight or true, resp, weaponSlot
 				end
 			end
 		end
@@ -1293,7 +1304,6 @@ RegisterServerEvent('ox_inventory:updateWeapon', function(action, value, slot)
 	local inventory = Inventories[source]
 	local syncInventory = false
 	local type = type(value)
-	local weapon
 
 	if type == 'table' and action == 'component' then
 		local item = inventory.items[value.slot]
@@ -1310,10 +1320,15 @@ RegisterServerEvent('ox_inventory:updateWeapon', function(action, value, slot)
 		end
 	else
 		if not slot then slot = inventory.weapon end
-		weapon = inventory.items[slot]
+		local weapon = inventory.items[slot]
 
 		if weapon and weapon.metadata then
 			local item = Items(weapon.name)
+
+			if not item.weapon then
+				inventory.weapon = nil
+				return
+			end
 
 			if action == 'load' and weapon.metadata.durability > 0 then
 				local ammo = Items(weapon.name).ammoname
