@@ -1,2 +1,5 @@
 modules/logs/**/
 .cfg
+yarn.lock
+node_modules/.yarn-integrity
+config.cfg
