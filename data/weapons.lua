@@ -749,7 +749,7 @@ return {
 			type = 'sight',
 			weight = 280,
 			client = {
-				component = {`COMPONENT_AT_SCOPE_LARGE_MK2`},
+				component = {`COMPONENT_AT_SCOPE_LARGE_MK2`,`COMPONENT_AT_SCOPE_LARGE_FIXED_ZOOM_MK2`},
 				usetime = 2500
 			}
 		},
