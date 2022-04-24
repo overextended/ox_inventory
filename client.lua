@@ -442,7 +442,7 @@ local function registerCommands()
 
 		if closest and closest.currentDistance < 1.2 then
 			if closest.inv ~= 'license' and closest.inv ~= 'policeevidence' then
-				return client.openInventory(closest.inv, { id = closest.invId, type = closest.type })
+				return client.openInventory(closest.inv or 'drop', { id = closest.invId, type = closest.type })
 			end
 		end
 
@@ -734,16 +734,16 @@ RegisterNetEvent('ox_inventory:inventoryConfiscated', function(message)
 	client.setPlayerData('weight', 0)
 end)
 
+local function nearbyDrop(self)
+	if not self.instance or self.instance == currentInstance then
+		DrawMarker(2, self.coords.x, self.coords.y, self.coords.z, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.3, 0.2, 0.15, 150, 30, 30, 222, false, false, false, true, false, false, false)
+	end
+end
+
 RegisterNetEvent('ox_inventory:createDrop', function(drop, data, owner, slot)
 	if drops then
-		local point = lib.points.new(data.coords, 16, { inv = 'drop', invId = drop })
-
-		function point:nearby()
-			if not data.instance or data.instance == currentInstance then
-				DrawMarker(2, self.coords.x, self.coords.y, self.coords.z, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.3, 0.2, 0.15, 150, 30, 30, 222, false, false, false, true, false, false, false)
-			end
-		end
-
+		local point = lib.points.new(data.coords, 16, { invId = drop, instance = data.instance })
+		point.nearby = nearbyDrop
 		drops[drop] = point
 	end
 
@@ -846,7 +846,6 @@ RegisterNetEvent('ox_inventory:setPlayerInventory', function(currentDrops, inven
 	client.setPlayerData('inventory', inventory)
 	client.setPlayerData('weight', weight)
 	currentWeapon = nil
-	drops = currentDrops
 	Utils.ClearWeapons()
 
 	local ItemData = table.create(0, #Items)
@@ -872,10 +871,19 @@ RegisterNetEvent('ox_inventory:setPlayerInventory', function(currentDrops, inven
 	end
 
 	local locales = {}
+
 	for k, v in pairs(shared.locale()) do
 		if k:find('ui_') or k == '$' then
 			locales[k] = v
 		end
+	end
+
+	drops = currentDrops
+
+	for k, v in pairs(currentDrops) do
+		local point = lib.points.new(v.coords, 16, { invId = k, instance = v.instance })
+		point.nearby = nearbyDrop
+		drops[k] = point
 	end
 
 	while not uiLoaded do Wait(50) end
