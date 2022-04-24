@@ -7,7 +7,7 @@ game         'gta5'
 --[[ Resource Information ]]--
 name         'ox_inventory'
 author       'Overextended'
-version      '2.8.2'
+version      '2.8.3'
 repository   'https://github.com/overextended/ox_inventory'
 description  'What even is an "ESX.Items" anyway?'
 
