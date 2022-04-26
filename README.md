@@ -7,7 +7,7 @@
 The inventory was designed with the intention to move towards a more generic / standalone structure so it can be integrated into any framework without too much hassle. I will be writing a guide for manually setting up support _sometime soon™_. In the mean-time, it will work without any alterations if using the latest updates to **[ESX Legacy](https://github.com/esx-framework/esx-legacy)**.
 
 # Config
-Refer to the [documentation](https://overextended.github.io/ox_inventory/#configuration) setting your config.  
+Refer to the [documentation](https://overextended.github.io/docs/ox_inventory/) setting your config.  
 When set, you can add the following to your 'server.cfg'
 ```
 exec @ox_inventory/config.cfg
