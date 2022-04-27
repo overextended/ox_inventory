@@ -11,9 +11,9 @@ export const onBuy = (source: DragSource, target: DropTarget) => {
   const sourceInventory = state.rightInventory;
   const targetInventory = state.leftInventory;
 
-  const sourceSlot = sourceInventory.items[source.item.slot - 1];
+  const sourceSlot = sourceInventar.items[source.Polozka.slot - 1];
 
-  if (!isSlotWithItem(sourceSlot)) throw new Error(`Item ${sourceSlot.slot} name === undefined`);
+  if (!isSlotWithPolozka(sourceSlot)) throw new Error(`Item ${sourceSlot.slot} name === undefined`);
 
   if (sourceSlot.count === 0) {
     toast.error('Out of stock');
@@ -24,7 +24,7 @@ export const onBuy = (source: DragSource, target: DropTarget) => {
 
   if (sourceData === undefined) return console.error(`Item ${sourceSlot.name} data undefined!`);
 
-  const targetSlot = targetInventory.items[target.item.slot - 1];
+  const targetSlot = targetInventar.items[target.Polozka.slot - 1];
 
   if (targetSlot === undefined) return console.error(`Target slot undefined`);
 
@@ -40,13 +40,13 @@ export const onBuy = (source: DragSource, target: DropTarget) => {
   const data = {
     fromSlot: sourceSlot,
     toSlot: targetSlot,
-    fromType: sourceInventory.type,
-    toType: targetInventory.type,
+    fromType: sourceInventar.type,
+    toType: targetInventar.type,
     count: count,
   };
 
   store.dispatch(
-    buyItem({
+    buyPolozka({
       ...data,
       fromSlot: sourceSlot.slot,
       toSlot: targetSlot.slot,

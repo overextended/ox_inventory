@@ -25,9 +25,9 @@ for shopName, shopDetails in pairs(data('shops')) do
 				local Item = Items(slot.name)
 				if Item then
 					slot = {
-						name = Item.name,
+						name = Polozka.name,
 						slot = j,
-						weight = Item.weight,
+						weight = Polozka.weight,
 						count = slot.count,
 						price = (server.randomprices and not currency or currency == 'money') and (math.ceil(slot.price * (math.random(80, 120)/100))) or slot.price,
 						metadata = slot.metadata,
@@ -53,9 +53,9 @@ for shopName, shopDetails in pairs(data('shops')) do
 			local Item = Items(slot.name)
 			if Item then
 				slot = {
-					name = Item.name,
+					name = Polozka.name,
 					slot = i,
-					weight = Item.weight,
+					weight = Polozka.weight,
 					count = slot.count,
 					price = (server.randomprices and not currency or currency == 'money') and (math.ceil(slot.price * (math.random(90, 110)/100))) or slot.price,
 					metadata = slot.metadata,
@@ -70,20 +70,20 @@ for shopName, shopDetails in pairs(data('shops')) do
 end
 
 lib.callback.register('ox_inventory:openShop', function(source, data)
-	local left, shop = Inventory(source)
+	local left, shop = Inventar(source)
 	if data then
 		shop = data.id and Shops[data.type][data.id] or Shops[data.type]
 
-		if shop.groups then
-			local group = server.hasGroup(left, shop.groups)
+		if Obchod.groups then
+			local group = server.maSkupinu(left, Obchod.groups)
 			if not group then return end
 		end
 
-		if shop.coords and #(GetEntityCoords(GetPlayerPed(source)) - shop.coords) > 10 then
+		if Obchod.coords and #(GetEntityCoords(GetPlayerPed(source)) - Obchod.coords) > 10 then
 			return
 		end
 
-		left.open = shop.id
+		left.open = Obchod.id
 	end
 
 	return {label=left.label, type=left.type, slots=left.slots, weight=left.weight, maxWeight=left.maxWeight}, shop
@@ -102,10 +102,10 @@ end
 lib.callback.register('ox_inventory:buyItem', function(source, data)
 	if data.toType == 'player' then
 		if data.count == nil then data.count = 1 end
-		local playerInv = Inventory(source)
+		local playerInv = Inventar(source)
 		local split = playerInv.open:match('^.*() ')
 		local shop = split and Shops[playerInv.open:sub(0, split-1)][tonumber(playerInv.open:sub(split+1))] or Shops[playerInv.open]
-		local fromData = shop.items[data.fromSlot]
+		local fromData = Obchod.items[data.fromSlot]
 		local toData = playerInv.items[data.toSlot]
 
 		if fromData then
@@ -116,11 +116,11 @@ lib.callback.register('ox_inventory:buyItem', function(source, data)
 					data.count = fromData.count
 				end
 
-			elseif fromData.license and shared.framework == 'esx' and not MySQL:selectLicense(fromData.license, playerInv.owner) then
+			elseif fromData.license and shared.framework == 'esx' and not MySQL:vybratLicence(fromData.license, playerInv.owner) then
 				return false, false, { type = 'error', description = shared.locale('item_unlicensed') }
 
 			elseif fromData.grade then
-				local _, rank = server.hasGroup(playerInv, shop.groups)
+				local _, rank = server.maSkupinu(playerInv, Obchod.groups)
 				if fromData.grade > rank then
 					return false, false, { type = 'error', description = shared.locale('stash_lowgrade') }
 				end
@@ -129,34 +129,34 @@ lib.callback.register('ox_inventory:buyItem', function(source, data)
 			local currency = fromData.currency or 'money'
 			local fromItem = Items(fromData.name)
 
-			local result = fromItem.cb and fromItem.cb('buying', fromItem, playerInv, data.fromSlot, shop)
+			local result = fromPolozka.cb and fromPolozka.cb('buying', fromItem, playerInv, data.fromSlot, shop)
 			if result == false then return false end
 
 			local toItem = toData and Items(toData.name)
 			local metadata, count = Items.Metadata(playerInv, fromItem, fromData.metadata and table.clone(fromData.metadata) or {}, data.count)
 			local price = count * fromData.price
 
-			if toData == nil or (fromItem.name == toItem.name and fromItem.stack and table.matches(toData.metadata, metadata)) then
-				local canAfford = Inventory.GetItem(source, currency, false, true) >= price
+			if toData == nil or (fromPolozka.name == toPolozka.name and fromPolozka.stack and table.matches(toData.metadata, metadata)) then
+				local canAfford = Inventar.ZiskatPolozku(source, currency, false, true) >= price
 				if canAfford then
-					local newWeight = playerInv.weight + (fromItem.weight + (metadata?.weight or 0)) * count
+					local newWeight = playerInv.weight + (fromPolozka.weight + (metadata?.weight or 0)) * count
 					if newWeight > playerInv.maxWeight then
 						return false, false, { type = 'error', description = shared.locale('cannot_carry') }
 					else
-						Inventory.SetSlot(playerInv, fromItem, count, metadata, data.toSlot)
-						if fromData.count then shop.items[data.fromSlot].count = fromData.count - count end
+						Inventar.NastavitSlot(playerInv, fromItem, count, metadata, data.toSlot)
+						if fromData.count then Obchod.items[data.fromSlot].count = fromData.count - count end
 						playerInv.weight = newWeight
 					end
 
-					Inventory.RemoveItem(source, currency, price)
-					if shared.framework == 'esx' then Inventory.SyncInventory(playerInv) end
-					local message = shared.locale('purchased_for', count, fromItem.label, (currency == 'money' and shared.locale('$') or comma_value(price)), (currency == 'money' and comma_value(price) or ' '..Items(currency).label))
+					Inventar.OstranitPolozku(source, currency, price)
+					if shared.framework == 'esx' then Inventar.SynchronizovatInventar(playerInv) end
+					local message = shared.locale('purchased_for', count, fromPolozka.label, (currency == 'money' and shared.locale('$') or comma_value(price)), (currency == 'money' and comma_value(price) or ' '..Items(currency).label))
 
 					-- Only log purchases for items worth $500 or more
 					if fromData.price >= 500 then
 
 						Log(('%s %s'):format(playerInv.label, message:lower()),
-							'buyItem', playerInv.owner, shop.label
+							'buyItem', playerInv.owner, Obchod.label
 						)
 
 					end

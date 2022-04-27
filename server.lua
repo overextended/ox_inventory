@@ -9,11 +9,11 @@ local Items = server.items
 ---@param data table
 --- player requires source, identifier, and name
 --- optionally, it should contain jobs/groups, sex, and dateofbirth
-local function setPlayerInventory(player, data)
+local function nastavitHracumInventar(player, data)
 	while not shared.ready do Wait(0) end
 
 	if not data then
-		data = MySQL:loadPlayer(player.identifier)
+		data = MySQL:nacistHrace(player.identifier)
 	end
 
 	local inventory = {}
@@ -29,20 +29,20 @@ local function setPlayerInventory(player, data)
 					v.metadata = Items.CheckMetadata(v.metadata, item, v.name)
 				end
 
-				local weight = Inventory.SlotWeight(item, v)
+				local weight = Inventar.SlotVaha(item, v)
 				totalWeight = totalWeight + weight
 
-				inventory[v.slot] = {name = v.name, label = item.label, weight = weight, slot = v.slot, count = v.count, description = item.description, metadata = v.metadata, stack = item.stack, close = item.close}
+				inventory[v.slot] = {name = v.name, label = Polozka.label, weight = weight, slot = v.slot, count = v.count, description = Polozka.description, metadata = v.metadata, stack = Polozka.stack, close = Polozka.close}
 			end
 		end
 	end
 
 	player.source = tonumber(player.source)
-	local inv = Inventory.Create(player.source, player.name, 'player', shared.playerslots, totalWeight, shared.playerweight, player.identifier, inventory)
-	inv.player = server.setPlayerData(player)
+	local inv = Inventar.Vytvorit(player.source, player.name, 'player', shared.playerslots, totalWeight, shared.playerweight, player.identifier, inventory)
+	inv.player = server.nastavitHracksaData(player)
 
-	if shared.framework == 'esx' then Inventory.SyncInventory(inv) end
-	TriggerClientEvent('ox_inventory:setPlayerInventory', player.source, Inventory.Drops, inventory, totalWeight, server.UsableItemsCallbacks, inv.player, player.source)
+	if shared.framework == 'esx' then Inventar.SynchronizovatInventar(inv) end
+	TriggerClientEvent('ox_inventory:setPlayerInventory', player.source, Inventar.Drops, inventory, totalWeight, server.UsableItemsCallbacks, inv.player, player.source)
 end
 exports('setPlayerInventory', setPlayerInventory)
 AddEventHandler('ox_inventory:setPlayerInventory', setPlayerInventory)
@@ -50,10 +50,10 @@ AddEventHandler('ox_inventory:setPlayerInventory', setPlayerInventory)
 local Vehicles = data 'vehicles'
 
 lib.callback.register('ox_inventory:openInventory', function(source, inv, data)
-	if Inventory.Lock then return false end
+	if Inventar.Lock then return false end
 
-	local left = Inventory(source)
-	local right = left.open and Inventory(left.open)
+	local left = Inventar(source)
+	local right = left.open and Inventar(left.open)
 
 	if right then
 		if right.open ~= source then return end
@@ -64,34 +64,34 @@ lib.callback.register('ox_inventory:openInventory', function(source, inv, data)
 
 	if data then
 		if inv == 'stash' then
-			right = Inventory(data, left)
+			right = Inventar(data, left)
 			if right == false then return false end
 		elseif type(data) == 'table' then
 			if data.class and data.model then
-				right = Inventory(data.id)
+				right = Inventar(data.id)
 				if not right then
 					local vehicle = Vehicles[inv]['models'][data.model] or Vehicles[inv][data.class]
-					right = Inventory.Create(data.id, Inventory.GetPlateFromId(data.id), inv, vehicle[1], 0, vehicle[2], false)
+					right = Inventar.Vytvorit(data.id, Inventar.ZiskatPlateFromId(data.id), inv, vehicle[1], 0, vehicle[2], false)
 				end
 			elseif inv == 'drop' then
-				right = Inventory(data.id)
+				right = Inventar(data.id)
 			else
 				return
 			end
 
 		elseif inv == 'policeevidence' then
-			if server.hasGroup(left, shared.police) then
+			if server.maSkupinu(left, shared.police) then
 				data = ('evidence-%s'):format(data)
-				right = Inventory(data)
+				right = Inventar(data)
 				if not right then
-					right = Inventory.Create(data, shared.locale('police_evidence'), inv, 100, 0, 100000, false)
+					right = Inventar.Vytvorit(data, shared.locale('police_evidence'), inv, 100, 0, 100000, false)
 				end
 			end
 
 		elseif inv == 'dumpster' then
-			right = Inventory(data)
+			right = Inventar(data)
 			if not right then
-				right = Inventory.Create(data, shared.locale('dumpster'), inv, 15, 0, 100000, false)
+				right = Inventar.Vytvorit(data, shared.locale('dumpster'), inv, 15, 0, 100000, false)
 			end
 
 		elseif inv == 'container' then
@@ -99,17 +99,17 @@ lib.callback.register('ox_inventory:openInventory', function(source, inv, data)
 			data = left.items[data]
 
 			if data then
-				right = Inventory(data.metadata.container)
+				right = Inventar(data.metadata.container)
 
 				if not right then
-					right = Inventory.Create(data.metadata.container, data.label, inv, data.metadata.size[1], 0, data.metadata.size[2], false)
+					right = Inventar.Vytvorit(data.metadata.container, data.label, inv, data.metadata.size[1], 0, data.metadata.size[2], false)
 				end
 			else left.containerSlot = nil end
 
-		else right = Inventory(data) end
+		else right = Inventar(data) end
 
 		if right then
-			if right.open or (right.groups and not server.hasGroup(left, right.groups)) then return end
+			if right.open or (right.groups and not server.maSkupinu(left, right.groups)) then return end
 
 			local otherplayer = right.type == 'player'
 			if otherplayer then right.coords = GetEntityCoords(GetPlayerPed(right.id)) end
@@ -135,15 +135,15 @@ lib.callback.register('ox_inventory:buyLicense', function(source, id)
 	if shared.framework == 'esx' then
 		local license = Licenses[id]
 		if license then
-			local inventory = Inventory(source)
-			local result = MySQL:selectLicense(license.name, inventory.owner)
+			local inventory = Inventar(source)
+			local result = MySQL:vybratLicence(license.name, Inventar.owner)
 
 			if result then
 				return false, 'has_weapon_license'
-			elseif Inventory.GetItem(inventory, 'money', false, true) < license.price then
+			elseif Inventar.ZiskatPolozku(inventory, 'money', false, true) < license.price then
 				return false, 'poor_weapon_license'
 			else
-				Inventory.RemoveItem(inventory, 'money', license.price)
+				Inventar.OstranitPolozku(inventory, 'money', license.price)
 				TriggerEvent('esx_license:addLicense', source, 'weapon')
 
 				return true, 'bought_weapon_license'
@@ -154,36 +154,36 @@ lib.callback.register('ox_inventory:buyLicense', function(source, id)
 	end
 end)
 
-lib.callback.register('ox_inventory:getItemCount', function(source, item, metadata, target)
-	local inventory = target and Inventory(target) or Inventory(source)
-	return (inventory and Inventory.GetItem(inventory, item, metadata, true)) or 0
+lib.callback.register('ox_inventory:ZiskatPolozkuCount', function(source, item, metadata, target)
+	local inventory = target and Inventar(target) or Inventar(source)
+	return (inventory and Inventar.ZiskatPolozku(inventory, item, metadata, true)) or 0
 end)
 
 lib.callback.register('ox_inventory:getInventory', function(source, id)
-	local inventory = Inventory(id or source)
+	local inventory = Inventar(id or source)
 	return inventory and {
-		id = inventory.id,
-		label = inventory.label,
-		type = inventory.type,
-		slots = inventory.slots,
-		weight = inventory.weight,
-		maxWeight = inventory.maxWeight,
-		owned = inventory.owner and true or false,
-		items = inventory.items
+		id = Inventar.id,
+		label = Inventar.label,
+		type = Inventar.type,
+		slots = Inventar.slots,
+		weight = Inventar.weight,
+		maxWeight = Inventar.maxWeight,
+		owned = Inventar.owner and true or false,
+		items = Inventar.items
 	}
 end)
 
 lib.callback.register('ox_inventory:useItem', function(source, item, slot, metadata)
-	local inventory = Inventory(source)
-	if inventory.type == 'player' then
+	local inventory = Inventar(source)
+	if Inventar.type == 'player' then
 		local item, type = Items(item)
-		local data = item and (slot and inventory.items[slot] or Inventory.GetItem(source, item, metadata))
+		local data = item and (slot and Inventar.items[slot] or Inventar.ZiskatPolozku(source, item, metadata))
 		local durability = type ~= 1 and data.metadata?.durability
 
 		if durability then
 			if durability > 100 then
 				if os.time() > durability then
-					inventory.items[slot].metadata.durability = 0
+					Inventar.items[slot].metadata.durability = 0
 					TriggerClientEvent('ox_lib:notify', source, { type = 'error', description = shared.locale('no_durability', data.label) })
 					return
 				end
@@ -193,16 +193,16 @@ lib.callback.register('ox_inventory:useItem', function(source, item, slot, metad
 			end
 		end
 
-		if item and data and data.count > 0 and data.name == item.name then
-			inventory.usingItem = slot
-			data = {name=data.name, label=data.label, count=data.count, slot=slot or data.slot, metadata=data.metadata, consume=item.consume}
+		if item and data and data.count > 0 and data.name == Polozka.name then
+			Inventar.usingItem = slot
+			data = {name=data.name, label=data.label, count=data.count, slot=slot or data.slot, metadata=data.metadata, consume=Polozka.consume}
 
-			if item.weapon then
-				inventory.weapon = data.slot
+			if Polozka.weapon then
+				Inventar.weapon = data.slot
 				return data
-			elseif item.ammo then
-				if inventory.weapon then
-					local weapon = inventory.items[inventory.weapon]
+			elseif Polozka.ammo then
+				if Inventar.weapon then
+					local weapon = Inventar.items[Inventar.weapon]
 
 					if weapon and weapon?.metadata.durability > 0 then
 						data.consume = nil
@@ -211,15 +211,15 @@ lib.callback.register('ox_inventory:useItem', function(source, item, slot, metad
 				end
 
 				return false
-			elseif item.component or item.tint then
+			elseif Polozka.component or Polozka.tint then
 				data.consume = 1
 				data.component = true
 				return data
-			elseif server.UsableItemsCallbacks[item.name] then
-				server.UseItem(source, data.name, data)
+			elseif server.UsableItemsCallbacks[Polozka.name] then
+				server.pouzitPolozku(source, data.name, data)
 			else
-				if item.consume and data.count >= item.consume then
-					local result = item.cb and item.cb('usingItem', item, inventory, slot)
+				if Polozka.consume and data.count >= Polozka.consume then
+					local result = Polozka.cb and Polozka.cb('usingItem', item, inventory, slot)
 
 					if result == false then return end
 
@@ -229,7 +229,7 @@ lib.callback.register('ox_inventory:useItem', function(source, item, slot, metad
 
 					return data
 				else
-					TriggerClientEvent('ox_lib:notify', source, { type = 'error', description = shared.locale('item_not_enough', item.name) })
+					TriggerClientEvent('ox_lib:notify', source, { type = 'error', description = shared.locale('item_not_enough', Polozka.name) })
 				end
 			end
 		end

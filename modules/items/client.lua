@@ -1,16 +1,16 @@
 local Items = shared.items
 
-local function displayMetadata(metadata, value)
+local function zobrazitMetada(metadata, value)
 	local data = metadata
 	if type(metadata) == 'string' and value then data = { [metadata] = value } end
 	SendNUIMessage({
-		action = 'displayMetadata',
+		action = 'zobrazitMetada',
 		data = data
 	})
 end
-exports('displayMetadata', displayMetadata)
+exports('zobrazitMetada', zobrazitMetada)
 
-local function GetItem(item)
+local function ZiskatPolozku(item)
 	if item then
 		item = string.lower(item)
 		if item:sub(0, 7) == 'weapon_' then item = string.upper(item) end
@@ -19,11 +19,11 @@ local function GetItem(item)
 	return Items
 end
 
-local function Item(name, cb)
+local function Polozka(name, cb)
 	local item = Items[name]
 	if item then
-		if not item.client?.export and not item.client?.event then
-			item.effect = cb
+		if not Polozka.client?.export and not Polozka.client?.event then
+			Polozka.effect = cb
 		end
 	end
 end
@@ -33,10 +33,10 @@ local ox_inventory = exports[shared.resource]
 -- Clientside item use functions
 -----------------------------------------------------------------------------------------------
 
-Item('bandage', function(data, slot)
+Polozka('bandage', function(data, slot)
 	local maxHealth = GetEntityMaxHealth(cache.ped)
 	local health = GetEntityHealth(cache.ped)
-	ox_inventory:useItem(data, function(data)
+	ox_inventory:pouzitPolozku(data, function(data)
 		if data then
 			SetEntityHealth(cache.ped, math.min(maxHealth, math.floor(health + maxHealth / 16)))
 			lib.notify({ description = 'You feel better already' })
@@ -44,9 +44,9 @@ Item('bandage', function(data, slot)
 	end)
 end)
 
-Item('armour', function(data, slot)
+Polozka('armour', function(data, slot)
 	if GetPedArmour(cache.ped) < 100 then
-		ox_inventory:useItem(data, function(data)
+		ox_inventory:pouzitPolozku(data, function(data)
 			if data then
 				SetPlayerMaxArmour(PlayerData.id, 100)
 				SetPedArmour(cache.ped, 100)
@@ -56,9 +56,9 @@ Item('armour', function(data, slot)
 end)
 
 client.parachute = false
-Item('parachute', function(data, slot)
+Polozka('parachute', function(data, slot)
 	if not client.parachute then
-		ox_inventory:useItem(data, function(data)
+		ox_inventory:pouzitPolozku(data, function(data)
 			if data then
 				local chute = `GADGET_PARACHUTE`
 				SetPlayerParachuteTintIndex(PlayerData.id, -1)
@@ -74,12 +74,12 @@ Item('parachute', function(data, slot)
 	end
 end)
 
-Item('phone', function(data, slot)
+Polozka('phone', function(data, slot)
 	exports.npwd:setPhoneVisible(not exports.npwd:isPhoneVisible())
 end)
 
 -----------------------------------------------------------------------------------------------
 
-exports('Items', GetItem)
-exports('ItemList', GetItem)
+exports('Items', ZiskatPolozku)
+exports('ItemList', ZiskatPolozku)
 client.items = Items

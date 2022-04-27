@@ -47,7 +47,7 @@ Once you have registered, generate an API key and add `set datadog:key 'apikey'`
 - Support personal stashes, able to be opened with different identifiers.
 - Job-restricted stashes as well as a police evidence locker.
 - Server exports allow for registration of stashes from any resource (see [here](https://github.com/overextended/ox_inventory_examples/blob/main/server.lua)).
-- Access small stashes via containers, such as paperbags, from using an item.
+- Access small stashes via containers, such as paperbags, from using an Polozka.
 - Vehicle gloveboxes and trunks, for both owned and unowned.
 
 

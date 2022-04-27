@@ -27,11 +27,11 @@ const ItemNotification = React.forwardRef(
         ref={ref}
         style={{
           backgroundImage:
-            `url(${process.env.PUBLIC_URL + `/images/${props.item.image}.png`})` || 'none',
+            `url(${process.env.PUBLIC_URL + `/images/${props.Polozka.image}.png`})` || 'none',
         }}
       >
-        <div className="item-action">{props.item.text}</div>
-        <div className="item-label">{props.item.label}</div>
+        <div className="item-action">{props.Polozka.text}</div>
+        <div className="item-label">{props.Polozka.label}</div>
       </div>
     );
   }

@@ -80,7 +80,7 @@ const App: React.FC = () => {
 
     for (const [name, data] of Object.entries(items)) Items[name] = data;
 
-    dispatch(setupInventory({ leftInventory }));
+    dispatch(setupInventar({ leftInventory }));
   });
 
   //TODO: refactor

@@ -13,7 +13,7 @@ shared = {
 
 do
 	if type(shared.police) == 'string' then
-		shared.police = {shared.police}
+		shared.police = { shared.police }
 	end
 
 	local police = table.create(0, #shared.police)
@@ -28,7 +28,7 @@ if IsDuplicityVersion then
 	server = {
 		randomprices = GetConvar('inventory:randomprices', 'false') == 'true',
 		versioncheck = GetConvar('inventory:versioncheck', 'true') == 'true',
-		randomloot = GetConvar('inventory:randomloot', 'true') == 'true',
+		nahodnaKorist = GetConvar('inventory:nahodnaKorist', 'true') == 'true',
 		evidencegrade = GetConvarInt('inventory:evidencegrade', 2),
 		clearstashes = GetConvar('inventory:clearstashes', '6 MONTH'),
 		vehicleloot = json.decode(GetConvar('inventory:vehicleloot', [[
@@ -62,7 +62,9 @@ else
 end
 
 function shared.print(...) print(string.strjoin(' ', ...)) end
+
 function shared.info(...) shared.print('^2[info]^7', ...) end
+
 function shared.warning(...) shared.print('^3[warning]^7', ...) end
 
 -- People like ignoring errors for some reason
@@ -122,7 +124,7 @@ end
 
 if shared.server then shared.ready = false end
 
-local Locales = data('locales/'..shared.locale)
+local Locales = data('locales/' .. shared.locale)
 function shared.locale(string, ...)
 	if not string then return Locales end
 	if Locales[string] then return Locales[string]:format(...) end

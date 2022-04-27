@@ -104,7 +104,7 @@ local function Convert()
 			if item then
 				slot += 1
 				inventory[slot] = {slot=slot, name=k, count=1, metadata = {durability=100}}
-				if item.ammoname then
+				if Polozka.ammoname then
 					inventory[slot].metadata.ammo = 0
 					inventory[slot].metadata.components = {}
 					inventory[slot].metadata.serial = GenerateSerial()
@@ -167,7 +167,7 @@ local function Convert_Old_ESX_Property()
 					if item then
 						slot += 1
 						inventory[slot] = {slot=slot, name=obj['weapons'][b].name, count=1, metadata = {durability=100}}
-						if item.ammoname then
+						if Polozka.ammoname then
 							inventory[slot].metadata.ammo = obj['weapons'][b].ammo
 							inventory[slot].metadata.components = {}
 							inventory[slot].metadata.serial = GenerateSerial()

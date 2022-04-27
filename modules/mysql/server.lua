@@ -23,40 +23,40 @@ if shared.framework == 'esx' then
 	replace('users', 'owned_vehicles')
 end
 
-function MySQL:loadPlayer(identifier)
+function MySQL:nacistHrace(identifier)
 	local inventory = self.prepare.await(Query.SELECT_PLAYER, { identifier })
 	return inventory and json.decode(inventory)
 end
 
-function MySQL:savePlayer(owner, inventory)
+function MySQL:ulozitHrace(owner, inventory)
 	return self.prepare(Query.UPDATE_PLAYER, { inventory, owner })
 end
 
-function MySQL:saveStash(owner, dbId, inventory)
+function MySQL:ulozitSkrys(owner, dbId, inventory)
 	return self.prepare(Query.UPDATE_STASH, { owner or '', dbId, inventory })
 end
 
-function MySQL:loadStash(owner, name)
+function MySQL:nacistSkrys(owner, name)
 	return self.prepare.await(Query.SELECT_STASH, { owner or '', name })
 end
 
-function MySQL:saveGlovebox(plate, inventory)
+function MySQL:ulozitKaslik(plate, inventory)
 	return self.prepare(Query.UPDATE_GLOVEBOX, { inventory, plate })
 end
 
-function MySQL:loadGlovebox(plate)
+function MySQL:nacistKaslik(plate)
 	return self.prepare.await(Query.SELECT_GLOVEBOX, { plate })
 end
 
-function MySQL:saveTrunk(plate, inventory)
+function MySQL:ulozitKufr(plate, inventory)
 	return self.prepare(Query.UPDATE_TRUNK, { inventory, plate })
 end
 
-function MySQL:loadTrunk(plate)
+function MySQL:nacistKufr(plate)
 	return self.prepare.await(Query.SELECT_TRUNK, { plate })
 end
 
-function MySQL:saveInventories(trunks, gloveboxes, stashes)
+function MySQL:ulozitInventare(trunks, gloveboxes, stashes)
 	if #trunks > 0 then
 		self.prepare(Query.UPDATE_TRUNK, trunks)
 	end
@@ -70,6 +70,6 @@ function MySQL:saveInventories(trunks, gloveboxes, stashes)
 	end
 end
 
-function MySQL:selectLicense(name, owner)
+function MySQL:vybratLicence(name, owner)
 	return self.scalar.await('SELECT 1 FROM user_licenses WHERE type = ? AND owner = ?', { name, owner })
 end

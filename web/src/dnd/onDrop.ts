@@ -8,13 +8,13 @@ import { Items } from '../store/items';
 export const onDrop = (source: DragSource, target?: DropTarget) => {
   const { inventory: state } = store.getState();
 
-  const { sourceInventory, targetInventory } = getTargetInventory(
+  const { sourceInventory, targetInventory } = getTargetInventar(
     state,
     source.inventory,
     target?.inventory
   );
 
-  const sourceSlot = sourceInventory.items[source.item.slot - 1] as SlotWithItem;
+  const sourceSlot = sourceInventar.items[source.Polozka.slot - 1] as SlotWithItem;
 
   const sourceData = Items[sourceSlot.name];
 
@@ -23,31 +23,31 @@ export const onDrop = (source: DragSource, target?: DropTarget) => {
   // If dragging from container slot
   if (sourceSlot.metadata?.container !== undefined) {
     // Prevent storing container in container
-    if (targetInventory.type === InventoryType.CONTAINER)
+    if (targetInventar.type === InventoryType.CONTAINER)
       return console.log(`Cannot store container ${sourceSlot.name} inside another container`);
 
     // Prevent dragging of container slot when opened
-    if (state.rightInventory.id === sourceSlot.metadata.container)
+    if (state.rightInventar.id === sourceSlot.metadata.container)
       return console.log(`Cannot move container ${sourceSlot.name} when opened`);
   }
 
   const targetSlot = target
-    ? targetInventory.items[target.item.slot - 1]
-    : findAvailableSlot(sourceSlot, sourceData, targetInventory.items);
+    ? targetInventar.items[target.Polozka.slot - 1]
+    : findAvailableSlot(sourceSlot, sourceData, targetInventar.items);
 
   if (targetSlot === undefined) return console.error('Target slot undefined!');
 
   // If dropping on container slot when opened
   if (
     targetSlot.metadata?.container !== undefined &&
-    state.rightInventory.id === targetSlot.metadata.container
+    state.rightInventar.id === targetSlot.metadata.container
   )
     return console.log(
       `Cannot swap item ${sourceSlot.name} with container ${targetSlot.name} when opened`
     );
 
   const count =
-    state.shiftPressed && sourceSlot.count > 1 && sourceInventory.type !== 'shop'
+    state.shiftPressed && sourceSlot.count > 1 && sourceInventar.type !== 'shop'
       ? Math.floor(sourceSlot.count / 2)
       : state.itemAmount === 0 || state.itemAmount > sourceSlot.count
       ? sourceSlot.count
@@ -56,8 +56,8 @@ export const onDrop = (source: DragSource, target?: DropTarget) => {
   const data = {
     fromSlot: sourceSlot,
     toSlot: targetSlot,
-    fromType: sourceInventory.type,
-    toType: targetInventory.type,
+    fromType: sourceInventar.type,
+    toType: targetInventar.type,
     count: count,
   };
 
@@ -69,7 +69,7 @@ export const onDrop = (source: DragSource, target?: DropTarget) => {
     })
   );
 
-  isSlotWithItem(targetSlot, true)
+  isSlotWithPolozka(targetSlot, true)
     ? sourceData.stack && canStack(sourceSlot, targetSlot)
       ? store.dispatch(
           stackSlots({

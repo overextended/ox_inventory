@@ -34,7 +34,7 @@ const Inventory: React.FC = () => {
     leftInventory?: InventoryProps;
     rightInventory?: InventoryProps;
   }>('setupInventory', (data) => {
-    dispatch(setupInventory(data));
+    dispatch(setupInventar(data));
     !inventoryVisible && setInventoryVisible(true);
   });
 
@@ -47,7 +47,7 @@ const Inventory: React.FC = () => {
         <InventoryControl />
         <InventoryGrid inventory={rightInventory} />
       </Fade>
-      <InventoryHotbar items={leftInventory.items.slice(0, 5)} />
+      <InventoryHotbar items={leftInventar.items.slice(0, 5)} />
     </>
   );
 };

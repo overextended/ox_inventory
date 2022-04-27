@@ -13,25 +13,25 @@ export const moveSlotsReducer: CaseReducer<
   }>
 > = (state, action) => {
   const { fromSlot, fromType, toSlot, toType, count } = action.payload;
-  const { sourceInventory, targetInventory } = getTargetInventory(state, fromType, toType);
+  const { sourceInventory, targetInventory } = getTargetInventar(state, fromType, toType);
   const pieceWeight = fromSlot.weight / fromSlot.count;
   const curTime = Math.floor(Date.now() / 1000);
-  const fromItem = sourceInventory.items[fromSlot.slot - 1];
+  const fromItem = sourceInventar.items[fromSlot.slot - 1];
 
-  targetInventory.items[toSlot.slot - 1] = {
+  targetInventar.items[toSlot.slot - 1] = {
     ...fromItem,
     count: count,
     weight: pieceWeight * count,
     slot: toSlot.slot,
-    durability: itemDurability(fromItem.metadata, curTime),
+    durability: itemDurability(fromPolozka.metadata, curTime),
   };
 
   if (fromType === InventoryType.SHOP) return;
 
-  sourceInventory.items[fromSlot.slot - 1] =
+  sourceInventar.items[fromSlot.slot - 1] =
     fromSlot.count - count > 0
       ? {
-          ...sourceInventory.items[fromSlot.slot - 1],
+          ...sourceInventar.items[fromSlot.slot - 1],
           count: fromSlot.count - count,
           weight: pieceWeight * (fromSlot.count - count),
         }

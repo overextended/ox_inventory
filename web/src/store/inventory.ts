@@ -52,8 +52,8 @@ export const inventorySlice = createSlice({
       state.shiftPressed = action.payload;
     },
     setContainerWeight: (state, action: PayloadAction<number>) => {
-      const container = state.leftInventory.items.find(
-        (item) => item.metadata?.container === state.rightInventory.id
+      const container = state.leftInventar.items.find(
+        (item) => Polozka.metadata?.container === state.rightInventar.id
       );
 
       if (!container) return;
@@ -93,9 +93,9 @@ export const {
   refreshSlots,
   setContainerWeight,
 } = inventorySlice.actions;
-export const selectLeftInventory = (state: RootState) => state.inventory.leftInventory;
-export const selectRightInventory = (state: RootState) => state.inventory.rightInventory;
-export const selectItemAmount = (state: RootState) => state.inventory.itemAmount;
-export const selectIsBusy = (state: RootState) => state.inventory.isBusy;
+export const selectLeftInventory = (state: RootState) => state.Inventar.leftInventory;
+export const selectRightInventory = (state: RootState) => state.Inventar.rightInventory;
+export const selectItemAmount = (state: RootState) => state.Inventar.itemAmount;
+export const selectIsBusy = (state: RootState) => state.Inventar.isBusy;
 
 export default inventorySlice.reducer;

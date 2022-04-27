@@ -28,37 +28,37 @@ const InventoryHotbar: React.FC<{ items: Slot[] }> = ({ items }) => {
           <div
             className="item-container"
             style={{
-              backgroundImage: item.metadata?.image
-                ? `url(${process.env.PUBLIC_URL + `/images/${item.metadata.image}.png`})`
-                : item.name
-                ? `url(${process.env.PUBLIC_URL + `/images/${item.name}.png`})`
-                : 'none',
+              backgroundImage: Polozka.metadata?.image
+                ? `url(${process.env.PUBLIC_URL + `/images/${Polozka.metadata.image}.png`})`
+                : Polozka.name
+                  ? `url(${process.env.PUBLIC_URL + `/images/${Polozka.name}.png`})`
+                  : 'none',
             }}
-            key={`hotbar-${item.slot}`}
+            key={`hotbar-${Polozka.slot}`}
           >
-            {isSlotWithItem(item) && (
+            {isSlotWithPolozka(item) && (
               <>
                 <div className="item-count">
                   <span>
-                    {item.weight > 0
-                      ? item.weight >= 1000
-                        ? `${(item.weight / 1000).toLocaleString('en-us', {
-                            minimumFractionDigits: 2,
-                          })}kg `
-                        : `${item.weight.toLocaleString('en-us', {
-                            minimumFractionDigits: 0,
-                          })}g `
+                    {Polozka.weight > 0
+                      ? Polozka.weight >= 1000
+                        ? `${(Polozka.weight / 1000).toLocaleString('en-us', {
+                          minimumFractionDigits: 2,
+                        })}kg `
+                        : `${Polozka.weight.toLocaleString('en-us', {
+                          minimumFractionDigits: 0,
+                        })}g `
                       : ''}
-                    {item.count?.toLocaleString('en-us')}x
+                    {Polozka.count?.toLocaleString('en-us')}x
                   </span>
                 </div>
                 {item?.durability !== undefined && (
-                  <WeightBar percent={item.durability} durability />
+                  <WeightBar percent={Polozka.durability} durability />
                 )}
                 <div className="item-label">
-                  {item.metadata?.label
-                    ? item.metadata.label
-                    : Items[item.name]?.label || item.name}
+                  {Polozka.metadata?.label
+                    ? Polozka.metadata.label
+                    : Items[Polozka.name]?.label || Polozka.name}
                 </div>
               </>
             )}

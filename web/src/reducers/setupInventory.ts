@@ -15,14 +15,14 @@ export const setupInventoryReducer: CaseReducer<
   if (leftInventory)
     state.leftInventory = {
       ...leftInventory,
-      items: Array.from(Array(leftInventory.slots), (_, index) => {
-        const item = Object.values(leftInventory.items).find(
+      items: Array.from(Array(leftInventar.slots), (_, index) => {
+        const item = Object.values(leftInventar.items).find(
           (item) => item?.slot === index + 1
         ) || {
           slot: index + 1,
         };
 
-        item.durability = itemDurability(item.metadata, curTime);
+        Polozka.durability = itemDurability(Polozka.metadata, curTime);
         return item;
       }),
     };
@@ -30,14 +30,14 @@ export const setupInventoryReducer: CaseReducer<
   if (rightInventory)
     state.rightInventory = {
       ...rightInventory,
-      items: Array.from(Array(rightInventory.slots), (_, index) => {
-        const item = Object.values(rightInventory.items).find(
+      items: Array.from(Array(rightInventar.slots), (_, index) => {
+        const item = Object.values(rightInventar.items).find(
           (item) => item?.slot === index + 1
         ) || {
           slot: index + 1,
         };
 
-        item.durability = itemDurability(item.metadata, curTime);
+        Polozka.durability = itemDurability(Polozka.metadata, curTime);
         return item;
       }),
     };

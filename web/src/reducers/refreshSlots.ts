@@ -20,7 +20,7 @@ export const refreshSlotsReducer: CaseReducer<
           : state.leftInventory
         : state.leftInventory;
 
-      data.item.durability = itemDurability(data.item.metadata, curTime);
-      targetInventory.items[data.item.slot - 1] = data.item;
+      data.Polozka.durability = itemDurability(data.Polozka.metadata, curTime);
+      targetInventar.items[data.Polozka.slot - 1] = data.item;
     });
 };

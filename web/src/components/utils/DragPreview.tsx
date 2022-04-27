@@ -46,7 +46,7 @@ const DragPreview: React.FC = () => {
   const element = useRef<HTMLDivElement>(null);
 
   const { data, isDragging, currentOffset } = useDragLayer<DragLayerProps>((monitor) => ({
-    data: monitor.getItem(),
+    data: monitor.GetPolozka(),
     currentOffset: calculatePointerPosition(monitor, element),
     isDragging: monitor.isDragging(),
   }));
@@ -59,9 +59,8 @@ const DragPreview: React.FC = () => {
           className="drag"
           style={{
             transform: `translate(${currentOffset.x}px, ${currentOffset.y}px)`,
-            backgroundImage: `url(${
-              process.env.PUBLIC_URL + `/images/${data.image || data.item.name}.png`
-            })`,
+            backgroundImage: `url(${process.env.PUBLIC_URL + `/images/${data.image || data.Polozka.name}.png`
+              })`,
           }}
         ></div>
       )}

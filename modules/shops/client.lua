@@ -1,6 +1,6 @@
 local shops = {}
 
-local function createShopBlip(name, data, location)
+local function vytvoritObchodVykyv(name, data, location)
 	local blip = AddBlipForCoord(location.x, location.y)
 	SetBlipSprite(blip, data.id)
 	SetBlipDisplay(blip, 4)
@@ -14,8 +14,8 @@ local function createShopBlip(name, data, location)
 	return blip
 end
 
-local function openShop(data)
-	client.openInventory('shop', data)
+local function otevritObchod(data)
+	client.otevritInventar('shop', data)
 end
 
 client.shops = setmetatable(data('shops'), {
@@ -24,12 +24,12 @@ client.shops = setmetatable(data('shops'), {
 			for i = 1, #shops do
 				local shop = shops[i]
 
-				if shop.point then
+				if Obchod.point then
 					shop:remove()
 				end
 
-				if shop.blip then
-					RemoveBlip(shop.blip)
+				if Obchod.blip then
+					RemoveBlip(Obchod.blip)
 				end
 			end
 
@@ -39,31 +39,31 @@ client.shops = setmetatable(data('shops'), {
 		local id = 0
 
 		for type, shop in pairs(self) do
-			if shop.jobs then shop.groups = shop.jobs end
+			if Obchod.jobs then Obchod.groups = Obchod.jobs end
 
-			if not shop.groups or client.hasGroup(shop.groups) then
+			if not Obchod.groups or client.maSkupinu(Obchod.groups) then
 				if shared.qtarget then
-					if shop.model then
-						exports.qtarget:AddTargetModel(shop.model, {
+					if Obchod.model then
+						exports.qtarget:AddTargetModel(Obchod.model, {
 							options = {
 								{
 									icon = 'fas fa-shopping-basket',
-									label = shop.label or shared.locale('open_shop', shop.name),
+									label = Obchod.label or shared.locale('open_shop', Obchod.name),
 									action = function()
-										openShop({type=type})
+										otevritObchod({type=type})
 									end
 								},
 							},
 							distance = 2
 						})
-					elseif shop.targets then
-						for i = 1, #shop.targets do
-							local target = shop.targets[i]
+					elseif Obchod.targets then
+						for i = 1, #Obchod.targets do
+							local target = Obchod.targets[i]
 							local shopid = type..'-'..i
 							id += 1
 
-							if shop.blip then
-								shops[id] = { blip = createShopBlip(shop.name, shop.blip, target.loc) }
+							if Obchod.blip then
+								shops[id] = { blip = vytvoritObchodVykyv(Obchod.name, Obchod.blip, target.loc) }
 							end
 
 							exports.qtarget:RemoveZone(shopid)
@@ -77,10 +77,10 @@ client.shops = setmetatable(data('shops'), {
 								options = {
 									{
 										icon = 'fas fa-shopping-basket',
-										label = shop.label or shared.locale('open_shop', shop.name),
-										job = shop.groups,
+										label = Obchod.label or shared.locale('open_shop', Obchod.name),
+										job = Obchod.groups,
 										action = function()
-											openShop({id=i, type=type})
+											otevritObchod({id=i, type=type})
 										end
 									},
 								},
@@ -88,27 +88,27 @@ client.shops = setmetatable(data('shops'), {
 							})
 						end
 					end
-				elseif shop.locations then
-					for i = 1, #shop.locations do
+				elseif Obchod.locations then
+					for i = 1, #Obchod.locations do
 						id += 1
-						local coords = shop.locations[i]
+						local coords = Obchod.locations[i]
 						local point = lib.points.new(coords, 16, { inv = 'shop', invId = i, type = type })
 
 						function point:nearby()
 							DrawMarker(2, self.coords.x, self.coords.y, self.coords.z, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.3, 0.2, 0.15, 30, 150, 30, 222, false, false, false, true, false, false, false)
 
 							if self.currentDistance < 1.2 and lib.points.closest().id == self.id and IsControlJustReleased(0, 38) then
-								client.openInventory('shop', { id = self.invId, type = self.type })
+								client.otevritInventar('shop', { id = self.invId, type = self.type })
 							end
 						end
 
-						if shop.blip then
-							point.blip = createShopBlip(shop.name, shop.blip, coords)
+						if Obchod.blip then
+							point.blip = vytvoritObchodVykyv(Obchod.name, Obchod.blip, coords)
 						end
 
 						shops[id] = point
-						shop.target = nil
-						shop.model = nil
+						Obchod.target = nil
+						Obchod.model = nil
 					end
 				end
 			end

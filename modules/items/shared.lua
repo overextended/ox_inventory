@@ -1,10 +1,10 @@
-local function useExport(resource, export)
+local function pouzitVyvoz(resource, export)
 	return function(...)
 		return exports[resource][export](nil, ...)
 	end
 end
 
-local function newItem(data)
+local function novaPolozka(data)
 	data.weight = data.weight or 0
 	data.close = data.close or true
 
@@ -18,7 +18,7 @@ local function newItem(data)
 		end
 
 		if not IsDuplicityVersion and data.client.export then
-			data.export = useExport(string.strsplit('.', data.client.export))
+			data.export = pouzitVyvoz(string.strsplit('.', data.client.export))
 		end
 	end
 
@@ -26,7 +26,7 @@ local function newItem(data)
 		data.client = nil
 		if data.server then
 			if data.server.export then
-				data.cb = useExport(string.strsplit('.', data.server.export))
+				data.cb = pouzitVyvoz(string.strsplit('.', data.server.export))
 			end
 		end
 	else
@@ -69,6 +69,6 @@ do
 
 	for k, v in pairs(data 'items') do
 		v.name = k
-		newItem(v)
+		novaPolozka(v)
 	end
 end

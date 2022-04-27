@@ -1,9 +1,9 @@
-function client.setPlayerData(key, value)
+function client.nastavitHracksaData(key, value)
 	PlayerData[key] = value
-	OnPlayerData(key, value)
+	NaHracskaData(key, value)
 end
 
-function client.hasGroup(group)
+function client.maSkupinu(group)
 	if PlayerData.loaded then
 		if type(group) == 'table' then
 			for name, rank in pairs(group) do
@@ -23,23 +23,23 @@ end
 
 local Utils = client.utils
 
-local function onLogout()
+local function naOdhlaseni()
 	if PlayerData.loaded then
 		if client.parachute then
-			Utils.DeleteObject(client.parachute)
+			Utils.SmazatObjekt(client.parachute)
 			client.parachute = false
 		end
 
-		TriggerEvent('ox_inventory:closeInventory')
+		TriggerEvent('ox_inventory:zavritInventar')
 		PlayerData.loaded = false
 		ClearInterval(client.interval)
 		ClearInterval(client.tick)
-		currentWeapon = Utils.Disarm(currentWeapon)
+		currentWeapon = Utils.Odzbrojit(currentWeapon)
 	end
 end
 
 if shared.framework == 'ox' then
-	RegisterNetEvent('ox:playerLogout', onLogout)
+	RegisterNetEvent('ox:playerLogout', naOdhlaseni)
 elseif shared.framework == 'esx' then
 	local ESX = exports.es_extended:getSharedObject()
 
@@ -48,12 +48,12 @@ elseif shared.framework == 'esx' then
 		PlayerLoaded = ESX.PlayerLoaded
 	}
 
-	function client.setPlayerData(key, value)
+	function client.nastavitHracksaData(key, value)
 		PlayerData[key] = value
 		ESX.SetPlayerData(key, value)
 	end
 
-	RegisterNetEvent('esx:onPlayerLogout', onLogout)
+	RegisterNetEvent('esx:onPlayerLogout', naOdhlaseni)
 
 	AddEventHandler('esx:setPlayerData', function(key, value)
 		if PlayerData.loaded and GetInvokingResource() == 'es_extended' then
@@ -63,7 +63,7 @@ elseif shared.framework == 'esx' then
 			end
 
 			PlayerData[key] = value
-			OnPlayerData(key, value)
+			NaHracskaData(key, value)
 		end
 	end)
 
@@ -71,7 +71,7 @@ elseif shared.framework == 'esx' then
 		PlayerData.cuffed = not PlayerData.cuffed
 		LocalPlayer.state:set('invBusy', PlayerData.cuffed, false)
 		if PlayerData.cuffed then
-			currentWeapon = Utils.Disarm(currentWeapon)
+			currentWeapon = Utils.Odzbrojit(currentWeapon)
 		end
 	end)
 

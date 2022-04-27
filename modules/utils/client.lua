@@ -1,24 +1,24 @@
 local Utils = {}
 
-function Utils.PlayAnim(wait, dict, name, blendIn, blendOut, duration, flag, rate, lockX, lockY, lockZ)
+function Utils.PrehratAnimaci(wait, dict, name, blendIn, blendOut, duration, flag, rate, lockX, lockY, lockZ)
 	lib.requestAnimDict(dict)
 	CreateThread(function()
-		TaskPlayAnim(cache.ped, dict, name, blendIn, blendOut, duration, flag, rate, lockX, lockY, lockZ)
+		TaskPrehratAnimaci(cache.ped, dict, name, blendIn, blendOut, duration, flag, rate, lockX, lockY, lockZ)
 		Wait(wait)
 		if wait > 0 then ClearPedSecondaryTask(cache.ped) end
 	end)
 end
 
-function Utils.PlayAnimAdvanced(wait, dict, name, posX, posY, posZ, rotX, rotY, rotZ, animEnter, animExit, duration, flag, time)
+function Utils.PrehratAnimaciPokrocilou(wait, dict, name, posX, posY, posZ, rotX, rotY, rotZ, animEnter, animExit, duration, flag, time)
 	lib.requestAnimDict(dict)
 	CreateThread(function()
-		TaskPlayAnimAdvanced(cache.ped, dict, name, posX, posY, posZ, rotX, rotY, rotZ, animEnter, animExit, duration, flag, time, 0, 0)
+		TaskPrehratAnimaciPokrocilou(cache.ped, dict, name, posX, posY, posZ, rotX, rotY, rotZ, animEnter, animExit, duration, flag, time, 0, 0)
 		Wait(wait)
 		if wait > 0 then ClearPedSecondaryTask(cache.ped) end
 	end)
 end
 
-function Utils.Raycast(flag)
+function Utils.CaraKteraSePosleOdSouradnicDoSouradnicAHledaKoliziNaKterouNaraziAVratiTiNeco(flag)
 	local playerCoords = GetEntityCoords(cache.ped)
 	local plyOffset = GetOffsetFromEntityInWorldCoords(cache.ped, 0.0, 2.2, -0.25)
 	local rayHandle = StartShapeTestCapsule(playerCoords.x, playerCoords.y, playerCoords.z + 0.5, plyOffset.x, plyOffset.y, plyOffset.z, 2.2, flag or 30, cache.ped)
@@ -36,7 +36,7 @@ function Utils.Raycast(flag)
 	end
 end
 
-function Utils.GetClosestPlayer()
+function Utils.ZiskatNejblizsihoHrace()
 	local players = GetActivePlayers()
 	local playerCoords = GetEntityCoords(cache.ped)
 	local targetDistance, targetId, targetPed
@@ -60,18 +60,18 @@ function Utils.GetClosestPlayer()
 end
 
 -- Replace ox_inventory notify with ox_lib (backwards compatibility)
-function Utils.Notify(data)
+function Utils.Oznamit(data)
 	data.description = data.text
 	data.text = nil
 	lib.notify(data)
 end
 
-RegisterNetEvent('ox_inventory:notify', Utils.Notify)
-exports('notify', Utils.Notify)
+RegisterNetEvent('ox_inventory:notify', Utils.Oznamit)
+exports('notify', Utils.Oznamit)
 
 function Utils.ItemNotify(data) SendNUIMessage({action = 'itemNotify', data = data}) end
 
-function Utils.Disarm(currentWeapon, newSlot)
+function Utils.Odzbrojit(currentWeapon, newSlot)
 	SetWeaponsNoAutoswap(1)
 	SetWeaponsNoAutoreload(1)
 	SetPedCanSwitchWeapon(cache.ped, 0)
@@ -83,13 +83,13 @@ function Utils.Disarm(currentWeapon, newSlot)
 
 		if not newSlot then
 			ClearPedSecondaryTask(cache.ped)
-			local sleep = (client.hasGroup(shared.police) and (GetWeapontypeGroup(currentWeapon.hash) == 416676503 or GetWeapontypeGroup(currentWeapon.hash) == 690389602)) and 450 or 1400
+			local sleep = (client.maSkupinu(shared.police) and (GetWeapontypeGroup(currentWeapon.hash) == 416676503 or GetWeapontypeGroup(currentWeapon.hash) == 690389602)) and 450 or 1400
 			local coords = GetEntityCoords(cache.ped, true)
 			if currentWeapon.hash == `WEAPON_SWITCHBLADE` then
-				Utils.PlayAnimAdvanced(sleep, 'anim@melee@switchblade@holster', 'holster', coords.x, coords.y, coords.z, 0, 0, GetEntityHeading(cache.ped), 8.0, 3.0, -1, 48, 0)
+				Utils.PrehratAnimaciPokrocilou(sleep, 'anim@melee@switchblade@holster', 'holster', coords.x, coords.y, coords.z, 0, 0, GetEntityHeading(cache.ped), 8.0, 3.0, -1, 48, 0)
 				Wait(600)
 			else
-				Utils.PlayAnimAdvanced(sleep, (sleep == 450 and 'reaction@intimidation@cop@unarmed' or 'reaction@intimidation@1h'), 'outro', coords.x, coords.y, coords.z, 0, 0, GetEntityHeading(cache.ped), 8.0, 3.0, -1, 50, 0)
+				Utils.PrehratAnimaciPokrocilou(sleep, (sleep == 450 and 'reaction@intimidation@cop@unarmed' or 'reaction@intimidation@1h'), 'outro', coords.x, coords.y, coords.z, 0, 0, GetEntityHeading(cache.ped), 8.0, 3.0, -1, 50, 0)
 				Wait(sleep)
 			end
 			Utils.ItemNotify({currentWeapon.label, currentWeapon.name, shared.locale('holstered')})
@@ -98,7 +98,7 @@ function Utils.Disarm(currentWeapon, newSlot)
 		RemoveAllPedWeapons(cache.ped, true)
 
 		if newSlot then
-			TriggerServerEvent('ox_inventory:updateWeapon', ammo and 'ammo' or 'melee', ammo or currentWeapon.melee, newSlot)
+			TriggerServerEvent('ox_inventory:aktualizovatZbran', ammo and 'ammo' or 'melee', ammo or currentWeapon.melee, newSlot)
 		end
 
 		currentWeapon = nil
@@ -106,8 +106,8 @@ function Utils.Disarm(currentWeapon, newSlot)
 	end
 end
 
-function Utils.ClearWeapons(currentWeapon)
-	currentWeapon = Utils.Disarm(currentWeapon)
+function Utils.VycistitZbrane(currentWeapon)
+	currentWeapon = Utils.Odzbrojit(currentWeapon)
 	RemoveAllPedWeapons(cache.ped, true)
 	if client.parachute then
 		local chute = `GADGET_PARACHUTE`
@@ -116,22 +116,22 @@ function Utils.ClearWeapons(currentWeapon)
 	end
 end
 
-function Utils.DeleteObject(obj)
+function Utils.SmazatObjekt(obj)
 	SetEntityAsMissionEntity(obj, false, true)
-	DeleteObject(obj)
+	SmazatObjekt(obj)
 end
 
 -- Enables the weapon wheel, but disables the use of inventory items
 -- Mostly used for weaponised vehicles, though could be called for "minigames"
-function Utils.WeaponWheel(state)
-	if state == nil then state = client.weaponWheel end
+function Utils.KoloZbrani(state)
+	if state == nil then state = client.KoloZbrani end
 
-	client.weaponWheel = state
+	client.KoloZbrani = state
 	SetWeaponsNoAutoswap(not state)
 	SetWeaponsNoAutoreload(not state)
 	SetPedCanSwitchWeapon(cache.ped, state)
 	SetPedEnableWeaponBlocking(cache.ped, not state)
 end
-exports('weaponWheel', Utils.WeaponWheel)
+exports('KoloZbrani', Utils.KoloZbrani)
 
 client.utils = Utils

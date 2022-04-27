@@ -22,13 +22,13 @@ const InventoryContext: React.FC<{
   >) => {
     switch (data && data.action) {
       case 'use':
-        onUse({ name: props.item.name, slot: props.item.slot });
+        onUse({ name: props.Polozka.name, slot: props.Polozka.slot });
         break;
       case 'give':
-        onGive({ name: props.item.name, slot: props.item.slot });
+        onGive({ name: props.Polozka.name, slot: props.Polozka.slot });
         break;
       case 'drop':
-        isSlotWithItem(props.item) && onDrop({ item: props.item, inventory: 'player' });
+        isSlotWithPolozka(props.item) && onDrop({ item: props.item, inventory: 'player' });
         break;
       case 'remove':
         fetchNui('removeComponent', { component: data?.component, slot: data?.slot });
@@ -37,16 +37,16 @@ const InventoryContext: React.FC<{
         data?.serial && setClipboard(data.serial);
         break;
       case 'custom':
-        fetchNui('useButton', { id: (data?.id || 0) + 1, slot: props.item.slot });
+        fetchNui('pouzitTlacitko', { id: (data?.id || 0) + 1, slot: props.Polozka.slot });
         break;
     }
   };
 
   return (
     <>
-      {isSlotWithItem(props.item) && (
+      {isSlotWithPolozka(props.item) && (
         <Menu
-          id={`slot-context-${props.item.slot}-${props.item.name}`}
+          id={`slot-context-${props.Polozka.slot}-${props.Polozka.name}`}
           theme="dark"
           animation="fade"
           onShown={() => {
@@ -65,22 +65,22 @@ const InventoryContext: React.FC<{
           <Item onClick={handleClick} data={{ action: 'drop' }}>
             {Locale.ui_drop}
           </Item>
-          {props.item.metadata?.serial && (
+          {props.Polozka.metadata?.serial && (
             <>
               <Separator />
               <Item
                 onClick={handleClick}
-                data={{ action: 'copy', serial: props.item.metadata.serial }}
+                data={{ action: 'copy', serial: props.Polozka.metadata.serial }}
               >
                 {Locale.ui_copy}
               </Item>
-              {props.item.metadata?.components?.length > 0 && (
+              {props.Polozka.metadata?.components?.length > 0 && (
                 <Submenu label={Locale.ui_removeattachments}>
-                  {props.item.metadata.components.map((component: string, index: number) => (
+                  {props.Polozka.metadata.components.map((component: string, index: number) => (
                     <Item
                       key={index}
                       onClick={handleClick}
-                      data={{ action: 'remove', component: component, slot: props.item.slot }}
+                      data={{ action: 'remove', component: component, slot: props.Polozka.slot }}
                     >
                       {Items[component]?.label}
                     </Item>
@@ -89,10 +89,10 @@ const InventoryContext: React.FC<{
               )}
             </>
           )}
-          {(Items[props.item.name]?.buttons?.length || 0) > 0 && (
+          {(Items[props.Polozka.name]?.buttons?.length || 0) > 0 && (
             <>
               <Separator />
-              {Items[props.item.name]?.buttons?.map((label: string, index: number) => (
+              {Items[props.Polozka.name]?.buttons?.map((label: string, index: number) => (
                 <Item
                   key={index}
                   onClick={handleClick}

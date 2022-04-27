@@ -1,9 +1,9 @@
-local Inventory = {}
+local Inventar = {}
 
-Inventory.Dumpsters = {218085040, 666561306, -58485588, -206690185, 1511880420, 682791951}
+Inventar.Dumpsters = {218085040, 666561306, -58485588, -206690185, 1511880420, 682791951}
 
 if shared.qtarget then
-	local function OpenDumpster(entity)
+	local function OtevritVelkouPopelnici(entity)
 		local netId = NetworkGetEntityIsNetworked(entity) and NetworkGetNetworkIdFromEntity(entity)
 
 		if not netId then
@@ -15,16 +15,16 @@ if shared.qtarget then
 			SetNetworkIdCanMigrate(netId, true)
 		end
 
-		client.openInventory('dumpster', 'dumpster'..netId)
+		client.otevritInventar('dumpster', 'dumpster'..netId)
 	end
 
-	exports.qtarget:AddTargetModel(Inventory.Dumpsters, {
+	exports.qtarget:AddTargetModel(Inventar.Dumpsters, {
 		options = {
 			{
 				icon = 'fas fa-dumpster',
 				label = shared.locale('search_dumpster'),
 				action = function(entity)
-					OpenDumpster(entity)
+					OtevritVelkouPopelnici(entity)
 				end
 			},
 		},
@@ -37,7 +37,7 @@ local table = lib.table
 ---@param search string|number slots|1, count|2
 ---@param item table | string
 ---@param metadata? table | string
-function Inventory.Search(search, item, metadata)
+function Inventar.Vyhledat(search, item, metadata)
 	if item then
 		if search == 'slots' then search = 1 elseif search == 'count' then search = 2 end
 		if type(item) == 'string' then item = {item} end
@@ -66,20 +66,20 @@ function Inventory.Search(search, item, metadata)
 	end
 	return false
 end
-exports('Search', Inventory.Search)
+exports('Search', Inventar.Vyhledat)
 
-local function openEvidence()
-	client.openInventory('policeevidence')
+local function otevritEvidenci()
+	client.otevritInventar('policeevidence')
 end
 
-Inventory.Evidence = setmetatable(data('evidence'), {
+Inventar.Evidence = setmetatable(data('evidence'), {
 	__call = function(self)
 		for _, evidence in pairs(self) do
 			if evidence.point then
 				evidence.point:remove()
 			end
 
-			if client.hasGroup(shared.police) then
+			if client.maSkupinu(shared.police) then
 				if shared.qtarget then
 					if evidence.target then
 						exports.qtarget:RemoveZone(evidence.target.name)
@@ -96,7 +96,7 @@ Inventory.Evidence = setmetatable(data('evidence'), {
 									icon = 'fas fa-warehouse',
 									label = shared.locale('open_police_evidence'),
 									job = shared.police,
-									action = openEvidence
+									action = otevritEvidenci
 								},
 							},
 							distance = evidence.target.distance or 3.0
@@ -109,7 +109,7 @@ Inventory.Evidence = setmetatable(data('evidence'), {
 						DrawMarker(2, self.coords.x, self.coords.y, self.coords.z, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.3, 0.2, 0.15, 30, 30, 150, 222, false, false, false, true, false, false, false)
 
 						if self.currentDistance < 1.2 and lib.points.closest().id == self.id and IsControlJustReleased(0, 38) then
-							openEvidence()
+							otevritEvidenci()
 						end
 					end
 
@@ -121,11 +121,11 @@ Inventory.Evidence = setmetatable(data('evidence'), {
 	end
 })
 
-local function OpenStash(data)
-	exports.ox_inventory:openInventory('stash', data)
+local function OtevritSkrys(data)
+	exports.ox_inventory:otevritInventar('stash', data)
 end
 
-Inventory.Stashes = setmetatable(data('stashes'), {
+Inventar.Skryse = setmetatable(data('stashes'), {
 	__call = function(self)
 		for id, stash in pairs(self) do
 			if stash.jobs then stash.groups = stash.jobs end
@@ -134,7 +134,7 @@ Inventory.Stashes = setmetatable(data('stashes'), {
 				stash.point:remove()
 			end
 
-			if not stash.groups or client.hasGroup(stash.groups) then
+			if not stash.groups or client.maSkupinu(stash.groups) then
 				if shared.qtarget then
 					if stash.target then
 						exports.qtarget:RemoveZone(stash.name)
@@ -152,7 +152,7 @@ Inventory.Stashes = setmetatable(data('stashes'), {
 									label = stash.target.label or shared.locale('open_stash'),
 									job = stash.groups,
 									action = function()
-										OpenStash({id=id})
+										OtevritSkrys({id=id})
 									end
 								},
 							},
@@ -174,4 +174,4 @@ Inventory.Stashes = setmetatable(data('stashes'), {
 	end
 })
 
-client.inventory = Inventory
+client.inventar = Inventar

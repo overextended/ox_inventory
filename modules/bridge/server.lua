@@ -1,4 +1,4 @@
-function server.hasGroup(inv, group)
+function server.maSkupinu(inv, group)
 	if type(group) == 'table' then
 		for name, rank in pairs(group) do
 			local groupRank = inv.player.groups[name]
@@ -14,9 +14,9 @@ function server.hasGroup(inv, group)
 	end
 end
 
-function server.setPlayerData(player)
+function server.nastavitHracksaData(player)
 	if not player.groups then
-		shared.warning(("server.setPlayerData did not receive any groups for '%s'"):format(player?.name or GetPlayerName(player)))
+		shared.warning(("server.nastavitHracksaData did not receive any groups for '%s'"):format(player?.name or GetPlayerName(player)))
 	end
 
 	return {
@@ -51,7 +51,7 @@ if shared.framework == 'esx' then
 		black_money = 0,
 	}
 
-	function server.setPlayerData(player)
+	function server.nastavitHracksaData(player)
 		local groups = {
 			[player.job.name] = player.job.grade
 		}
@@ -70,7 +70,7 @@ if shared.framework == 'esx' then
 		local player = server.GetPlayerFromId(source)
 
 		if player then
-			exports.ox_inventory:setPlayerInventory(player, player?.inventory)
+			exports.ox_inventory:nastavitHracumInventar(player, player?.inventory)
 		end
 	end)
 end

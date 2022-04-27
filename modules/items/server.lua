@@ -35,7 +35,7 @@ local trash = {
 	{description = 'An empty chips bag.', weight = 5, image = 'trash_chips'},
 }
 
-local function GetItem(item)
+local function ZiskatPolozku(item)
 	if item then
 		item = string.lower(item)
 
@@ -51,7 +51,7 @@ end
 
 setmetatable(Items, {
 	__call = function(self, item)
-		if item then return GetItem(item) end
+		if item then return ZiskatPolozku(item) end
 		return self
 	end
 })
@@ -67,11 +67,11 @@ CreateThread(function()
 			for i = 1, #items do
 				local item = items[i]
 
-				if not ItemList[item.name] then
-					item.close = item.closeonuse or true
-					item.stack = item.stackable or true
-					item.description = item.description
-					item.weight = item.weight or 0
+				if not ItemList[Polozka.name] then
+					Polozka.close = Polozka.closeonuse or true
+					Polozka.stack = Polozka.stackable or true
+					Polozka.description = Polozka.description
+					Polozka.weight = Polozka.weight or 0
 					dump[i] = item
 					count += 1
 				end
@@ -94,11 +94,11 @@ CreateThread(function()
 				local fileSize = #file
 
 				for _, item in pairs(items) do
-					local formatName = item.name:gsub("'", "\\'"):lower()
+					local formatName = Polozka.name:gsub("'", "\\'"):lower()
 					if not ItemList[formatName] then
 						fileSize += 1
 
-						file[fileSize] = (itemFormat):format(formatName, item.label:gsub("'", "\\'"):lower(), item.weight, item.stack, item.close, item.description and ('"%s"'):format(item.description) or 'nil')
+						file[fileSize] = (itemFormat):format(formatName, Polozka.label:gsub("'", "\\'"):lower(), Polozka.weight, Polozka.stack, Polozka.close, Polozka.description and ('"%s"'):format(Polozka.description) or 'nil')
 						ItemList[formatName] = v
 					end
 				end
@@ -126,7 +126,7 @@ CreateThread(function()
 	else server.UsableItemsCallbacks = {} end
 
 	for _, item in pairs(ItemList) do
-		if item.consume and item.consume > 0 and server.UsableItemsCallbacks[item.name] then server.UsableItemsCallbacks[item.name] = nil end
+		if Polozka.consume and Polozka.consume > 0 and server.UsableItemsCallbacks[Polozka.name] then server.UsableItemsCallbacks[Polozka.name] = nil end
 		count += 1
 	end
 
@@ -141,7 +141,7 @@ CreateThread(function()
 		for i = 1, #Players do
 			local i = Players[i]
 			--if not IsPlayerAceAllowed(i, 'command.refresh') then
-				local inv, ped = Inventory(i), GetPlayerPed(i)
+				local inv, ped = Inventar(i), GetPlayerPed(i)
 				local hash, curWeapon = GetSelectedPedWeapon(ped)
 				if not ignore[hash] then
 					curWeapon = Utils.GetWeapon(hash)
@@ -190,27 +190,27 @@ local Inventory
 CreateThread(function() Inventory = server.inventory end)
 
 function Items.Metadata(inv, item, metadata, count)
-	if type(inv) ~= 'table' then inv = Inventory(inv) end
-	if not item.weapon then metadata = not metadata and {} or type(metadata) == 'string' and {type=metadata} or metadata end
+	if type(inv) ~= 'table' then inv = Inventar(inv) end
+	if not Polozka.weapon then metadata = not metadata and {} or type(metadata) == 'string' and {type=metadata} or metadata end
 
-	if item.weapon then
+	if Polozka.weapon then
 		if type(metadata) ~= 'table' then metadata = {} end
 		if not metadata.durability then metadata.durability = 100 end
-		if not metadata.ammo and item.ammoname then metadata.ammo = 0 end
+		if not metadata.ammo and Polozka.ammoname then metadata.ammo = 0 end
 		if not metadata.components then metadata.components = {} end
 
-		if metadata.registered ~= false and (metadata.ammo or item.name == 'WEAPON_STUNGUN') then
+		if metadata.registered ~= false and (metadata.ammo or Polozka.name == 'WEAPON_STUNGUN') then
 			metadata.registered = type(metadata.registered) == 'string' and metadata.registered or inv.player.name
 			metadata.serial = GenerateSerial(metadata.serial)
 		end
 	else
-		local container = Items.containers[item.name]
+		local container = Items.containers[Polozka.name]
 
 		if container then
 			count = 1
 			metadata.container = metadata.container or GenerateText(3)..os.time()
 			metadata.size = container.size
-		elseif item.name == 'identification' then
+		elseif Polozka.name == 'identification' then
 			count = 1
 			if next(metadata) == nil then
 				metadata = {
@@ -218,7 +218,7 @@ function Items.Metadata(inv, item, metadata, count)
 					description = shared.locale('identification', (inv.player.sex) and shared.locale('male') or shared.locale('female'), inv.player.dateofbirth)
 				}
 			end
-		elseif item.name == 'garbage' then
+		elseif Polozka.name == 'garbage' then
 			local trashType = trash[math.random(1, #trash)]
 			metadata.image = trashType.image
 			metadata.weight = trashType.weight
@@ -226,12 +226,12 @@ function Items.Metadata(inv, item, metadata, count)
 		end
 
 		if not metadata?.durability then
-			local durability = ItemList[item.name].degrade
+			local durability = ItemList[Polozka.name].degrade
 			if durability then metadata.durability = os.time()+(durability * 60) metadata.degrade = durability end
 		end
 	end
 
-	if count > 1 and not item.stack then
+	if count > 1 and not Polozka.stack then
 		count = 1
 	end
 
@@ -245,7 +245,7 @@ function Items.CheckMetadata(metadata, item, name)
 		metadata.bag = nil
 	end
 
-	if metadata.durability and not item.durability and not item.degrade and not item.weapon then
+	if metadata.durability and not Polozka.durability and not Polozka.degrade and not Polozka.weapon then
 		metadata.durability = nil
 	end
 
@@ -269,18 +269,18 @@ function Items.CheckMetadata(metadata, item, name)
 		end
 	end
 
-	if metadata.serial and item.weapon and not item.ammoname then
+	if metadata.serial and Polozka.weapon and not Polozka.ammoname then
 		metadata.serial = nil
 	end
 
 	return metadata
 end
 
-local function Item(name, cb)
+local function Polozka(name, cb)
 	local item = ItemList[name]
 
-	if item and not item.cb then
-		item.cb = cb
+	if item and not Polozka.cb then
+		Polozka.cb = cb
 	end
 end
 
@@ -288,17 +288,17 @@ end
 -- Serverside item functions
 -----------------------------------------------------------------------------------------------
 
-Item('testburger', function(event, item, inventory, slot, data)
+Polozka('testburger', function(event, item, inventory, slot, data)
 	if event == 'usingItem' then
-		if Inventory.GetItem(inventory, item, inventory.items[slot].metadata, true) > 0 then
+		if Inventar.ZiskatPolozku(inventory, item, Inventar.items[slot].metadata, true) > 0 then
 			-- if we return false here, we can cancel item use
 			return {
-				inventory.label, event, 'external item use poggies'
+				Inventar.label, event, 'external item use poggies'
 			}
 		end
 
 	elseif event == 'usedItem' then
-		print(('%s just ate a %s from slot %s'):format(inventory.label, item.label, slot))
+		print(('%s just ate a %s from slot %s'):format(Inventar.label, Polozka.label, slot))
 
 	elseif event == 'buying' then
 		print(data.id, data.coords, json.encode(data.items[slot], {indent=true}))
@@ -308,7 +308,7 @@ end)
 -----------------------------------------------------------------------------------------------
 
 -- Support both names
-exports('Items', GetItem)
-exports('ItemList', GetItem)
+exports('Items', ZiskatPolozku)
+exports('ItemList', ZiskatPolozku)
 
 server.items = Items

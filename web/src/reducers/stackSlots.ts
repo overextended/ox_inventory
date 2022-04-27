@@ -14,22 +14,22 @@ export const stackSlotsReducer: CaseReducer<
 > = (state, action) => {
   const { fromSlot, fromType, toSlot, toType, count } = action.payload;
 
-  const { sourceInventory, targetInventory } = getTargetInventory(state, fromType, toType);
+  const { sourceInventory, targetInventory } = getTargetInventar(state, fromType, toType);
 
   const pieceWeight = fromSlot.weight / fromSlot.count;
 
-  targetInventory.items[toSlot.slot - 1] = {
-    ...targetInventory.items[toSlot.slot - 1],
+  targetInventar.items[toSlot.slot - 1] = {
+    ...targetInventar.items[toSlot.slot - 1],
     count: toSlot.count + count,
     weight: pieceWeight * (toSlot.count + count),
   };
 
   if (fromType === InventoryType.SHOP) return;
 
-  sourceInventory.items[fromSlot.slot - 1] =
+  sourceInventar.items[fromSlot.slot - 1] =
     fromSlot.count - count > 0
       ? {
-          ...sourceInventory.items[fromSlot.slot - 1],
+          ...sourceInventar.items[fromSlot.slot - 1],
           count: fromSlot.count - count,
           weight: pieceWeight * (fromSlot.count - count),
         }

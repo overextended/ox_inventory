@@ -16,7 +16,7 @@ import { debugData } from '../../utils/debugData';
 
 // debugData([
 //   {
-//     action: 'displayMetadata',
+//     action: 'zobrazitMetada',
 //     data: { ['mustard']: 'Mustard', ['ketchup']: 'Ketchup' },
 //   },
 // ]);
@@ -30,8 +30,8 @@ const InventoryGrid: React.FC<{ inventory: Inventory }> = ({ inventory }) => {
   const isCopyPressed = useKeyPress('c');
 
   const weight = React.useMemo(
-    () => (inventory.maxWeight !== undefined ? getTotalWeight(inventory.items) : 0),
-    [inventory.maxWeight, inventory.items]
+    () => (Inventar.maxWeight !== undefined ? getTotalWeight(Inventar.items) : 0),
+    [Inventar.maxWeight, Inventar.items]
   );
 
   // Need to rebuild tooltip for items in a map
@@ -42,20 +42,20 @@ const InventoryGrid: React.FC<{ inventory: Inventory }> = ({ inventory }) => {
   // Fixes an issue where hovering an item after exiting context menu would apply no styling
   // But have to rehover on item to get tooltip, there's probably a better solution?
   useEffect(() => {
-    setCurrentItem(undefined);
+    setCurrentPolozka(undefined);
   }, [contextVisible]);
 
   useEffect(() => {
     if (!currentItem || !isControlPressed || !isCopyPressed) return;
-    currentItem?.metadata?.serial && setClipboard(currentItem.metadata.serial);
+    currentItem?.metadata?.serial && setClipboard(currentPolozka.metadata.serial);
   }, [isControlPressed, isCopyPressed]);
 
   useNuiEvent('setupInventory', () => {
-    setCurrentItem(undefined);
+    setCurrentPolozka(undefined);
     ReactTooltip.rebuild();
   });
 
-  useNuiEvent<{ [key: string]: any }>('displayMetadata', (data) =>
+  useNuiEvent<{ [key: string]: any }>('zobrazitMetada', (data) =>
     setAdditionalMetadata((oldMetadata) => ({ ...oldMetadata, ...data }))
   );
 
@@ -63,19 +63,19 @@ const InventoryGrid: React.FC<{ inventory: Inventory }> = ({ inventory }) => {
     <>
       <div className="column-wrapper">
         <div className="inventory-label">
-          <p>{inventory.label && `${inventory.label}`}</p>
-          {inventory.maxWeight && (
+          <p>{Inventar.label && `${Inventar.label}`}</p>
+          {Inventar.maxWeight && (
             <div>
-              {weight / 1000}/{inventory.maxWeight / 1000}kg
+              {weight / 1000}/{Inventar.maxWeight / 1000}kg
             </div>
           )}
         </div>
-        <WeightBar percent={inventory.maxWeight ? (weight / inventory.maxWeight) * 100 : 0} />
-        <div className={`inventory-grid inventory-grid-${inventory.type}`}>
-          {inventory.items.map((item) => (
-            <React.Fragment key={`grid-${inventory.id}-${item.slot}`}>
+        <WeightBar percent={Inventar.maxWeight ? (weight / Inventar.maxWeight) * 100 : 0} />
+        <div className={`inventory-grid inventory-grid-${Inventar.type}`}>
+          {Inventar.items.map((item) => (
+            <React.Fragment key={`grid-${Inventar.id}-${Polozka.slot}`}>
               <InventorySlot
-                key={`${inventory.type}-${inventory.id}-${item.slot}`}
+                key={`${Inventar.type}-${Inventar.id}-${Polozka.slot}`}
                 item={item}
                 inventory={inventory}
                 setCurrentItem={setCurrentItem}
@@ -84,7 +84,7 @@ const InventoryGrid: React.FC<{ inventory: Inventory }> = ({ inventory }) => {
                 <InventoryContext
                   item={item}
                   setContextVisible={setContextVisible}
-                  key={`context-${item.slot}`}
+                  key={`context-${Polozka.slot}`}
                 />,
                 document.body
               )}
@@ -102,36 +102,36 @@ const InventoryGrid: React.FC<{ inventory: Inventory }> = ({ inventory }) => {
           >
             <>
               <span style={{ fontSize: '1em' }}>
-                {currentItem.metadata?.label
-                  ? currentItem.metadata.label
-                  : Items[currentItem.name]?.label || currentItem.name}
+                {currentPolozka.metadata?.label
+                  ? currentPolozka.metadata.label
+                  : Items[currentPolozka.name]?.label || currentPolozka.name}
               </span>
-              <span style={{ fontSize: '1em', float: 'right' }}>{currentItem.metadata?.type}</span>
+              <span style={{ fontSize: '1em', float: 'right' }}>{currentPolozka.metadata?.type}</span>
               <hr style={{ borderBottom: '0.3em', marginBottom: '0.3em' }}></hr>
-              {(currentItem.metadata?.description || Items[currentItem.name]?.description) && (
+              {(currentPolozka.metadata?.description || Items[currentPolozka.name]?.description) && (
                 <ReactMarkdown>
-                  {currentItem.metadata?.description || Items[currentItem.name]?.description}
+                  {currentPolozka.metadata?.description || Items[currentPolozka.name]?.description}
                 </ReactMarkdown>
               )}
               {currentItem?.durability !== undefined && (
                 <p>
-                  {Locale.ui_durability}: {Math.trunc(currentItem.durability)}
+                  {Locale.ui_durability}: {Math.trunc(currentPolozka.durability)}
                 </p>
               )}
-              {currentItem.metadata?.ammo !== undefined && (
+              {currentPolozka.metadata?.ammo !== undefined && (
                 <p>
-                  {Locale.ui_ammo}: {currentItem.metadata.ammo}
+                  {Locale.ui_ammo}: {currentPolozka.metadata.ammo}
                 </p>
               )}
-              {currentItem.metadata?.serial && (
+              {currentPolozka.metadata?.serial && (
                 <p>
-                  {Locale.ui_serial}: {currentItem.metadata.serial}
+                  {Locale.ui_serial}: {currentPolozka.metadata.serial}
                 </p>
               )}
-              {currentItem.metadata?.components && currentItem.metadata?.components[0] && (
+              {currentPolozka.metadata?.components && currentPolozka.metadata?.components[0] && (
                 <p>
                   {Locale.ui_components}:{' '}
-                  {(currentItem.metadata?.components).map(
+                  {(currentPolozka.metadata?.components).map(
                     (component: string, index: number, array: []) =>
                       index + 1 === array.length
                         ? Items[component]?.label
@@ -139,16 +139,16 @@ const InventoryGrid: React.FC<{ inventory: Inventory }> = ({ inventory }) => {
                   )}
                 </p>
               )}
-              {currentItem.metadata?.weapontint && (
+              {currentPolozka.metadata?.weapontint && (
                 <p>
-                  {Locale.ui_tint}: {currentItem.metadata.weapontint}
+                  {Locale.ui_tint}: {currentPolozka.metadata.weapontint}
                 </p>
               )}
               {Object.keys(additionalMetadata).map((data: string, index: number) => (
                 <React.Fragment key={`metadata-${index}`}>
-                  {currentItem.metadata && currentItem.metadata[data] && (
+                  {currentPolozka.metadata && currentPolozka.metadata[data] && (
                     <p>
-                      {additionalMetadata[data]}: {currentItem.metadata[data]}
+                      {additionalMetadata[data]}: {currentPolozka.metadata[data]}
                     </p>
                   )}
                 </React.Fragment>
