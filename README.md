@@ -1,85 +1,85 @@
 <div align='center'><img src='https://user-images.githubusercontent.com/65407488/147992899-93998c0a-75fb-4055-8c06-8da8c49342d6.png'/></div>
-<div align='center'><h3><a href='https://overextended.github.io/docs/ox_inventory/'>Read the documentation for setup, installation, and integration</a></h3></div>
+<div align='center'><h3><a href='https://overextended.github.io/docs/ox_inventory/'>Přečti dokumentaci pro nastavení, instalaci a integraci</a></h3></div>
 
 
-# Framework
+# Rámec
 
-The inventory was designed with the intention to move towards a more generic / standalone structure so it can be integrated into any framework without too much hassle. I will be writing a guide for manually setting up support _sometime soon™_. In the mean-time, it will work without any alterations if using the latest updates to **[ESX Legacy](https://github.com/esx-framework/esx-legacy)**.
+Inventář byl navržen se záměrem posunout se směrem k obecnější / samostatné struktuře, aby jej bylo možné integrovat do jakéhokoli rámce bez přílišných potíží. _někdy brzy_ napíšu průvodce pro ruční nastavení podpory. Mezitím bude fungovat bez jakýchkoli změn, pokud použijete nejnovější aktualizace **[ESX Legacy](https://github.com/esx-framework/esx-legacy)**.
 
-# Config
-Refer to the [documentation](https://overextended.github.io/docs/ox_inventory/) setting your config.  
-When set, you can add the following to your 'server.cfg'
+# Konfigurace
+Viz [dokumentace](https://overextended.github.io/docs/ox_inventory/) nastavení vaší konfigurace.
+Po nastavení můžete do souboru 'server.cfg'
 ```
 exec @ox_inventory/config.cfg
 ensure ox_inventory
 ```
 
-# Logging
+# Protokolování
 
-The included logging module utilises datadog to store logging data, which can be expanded for improved analytics and metrics. Register an account at [datadoghq](https://www.datadoghq.com/).  
-The _free plan_ is enough for most user's purposes and provides far more utility than the typical weird discord logs utilised in other resources.  
+Zahrnutý protokolovací modul využívá datadog k ukládání protokolovaných dat, které lze rozšířit pro lepší analytiku a metriky. Zaregistrujte si účet na [datadoghq](https://www.datadoghq.com/).
+_bezplatný plán_ je dostačující pro většinu uživatelských účelů a poskytuje mnohem více užitečných funkcí než typické podivné protokoly neshod používané v jiných zdrojích.
 
-Once you have registered, generate an API key and add `set datadog:key 'apikey'` to your server config.
-
-
-# Features
-
-### Shops
-
-- Creates different shops for 24/7, Ammunation, Liquor Stores, Vending Machines, etc.
-- Job restricted shops, such as a Police Armoury.
-- Items can be restricted to specific job grades and licenses.
-- Define the price for each item, and even allow different currency (black money, poker chips, etc).
+Jakmile se zaregistrujete, vygenerujte klíč API a přidejte `set datadog:key 'apikey'` do konfigurace serveru.
 
 
-### Items
+# Funkce
 
-- Generic item data shared between objects.
-- Specific data stored per-slot, with metadata to hold custom information.
-- Weapons, attachments, and durability.
-- Flexible item use allows for progress bars, server callbacks, and cancellation with simple functions and exports.
-- Support for items registered with ESX.
+### Obchody
 
-
-### Stashes
-
-- Server-side security prevents arbitrary access to any stash.
-- Support personal stashes, able to be opened with different identifiers.
-- Job-restricted stashes as well as a police evidence locker.
-- Server exports allow for registration of stashes from any resource (see [here](https://github.com/overextended/ox_inventory_examples/blob/main/server.lua)).
-- Access small stashes via containers, such as paperbags, from using an Polozka.
-- Vehicle gloveboxes and trunks, for both owned and unowned.
+- Vytváří různé obchody pro 24/7, střelivo, obchody s alkoholem, prodejní automaty atd.
+- Obchody s omezeným zaměstnáním, jako je policejní zbrojnice.
+- Položky lze omezit na konkrétní pracovní zařazení a licence.
+- Definujte cenu pro každou položku a dokonce povolte jinou měnu (černé peníze, pokerové žetony atd.).
 
 
-### Temporary stashes
+### Položky
 
-- Dumpsters, drops, and non-player vehicles.
-- Loot tables allow users to find random items in dumpsters and unowned vehicles.
+- Obecná data položky sdílená mezi objekty.
+- Specifická data uložená pro každý slot s metadaty pro uložení vlastních informací.
+- Zbraně, příslušenství a odolnost.
+- Flexibilní použití položek umožňuje ukazatele průběhu, zpětná volání serveru a zrušení pomocí jednoduchých funkcí a exportů.
+- Podpora pro položky registrované u ESX.
 
 
-<br><div><h4 align='center'><a href='https://discord.gg/overextended'>Discord Server</a></h4></div><br>
+### Skrýše
+
+- Zabezpečení na straně serveru zabraňuje libovolnému přístupu k jakékoli skrýši.
+- Podpora osobních úložišť, které lze otevřít s různými identifikátory.
+- Úkryty s omezeným zaměstnáním a také skříňka na policejní důkazy.
+- Exporty serveru umožňují registraci skrýší z jakéhokoli zdroje (viz [zde](https://github.com/overextended/ox_inventory_examples/blob/main/server.lua)).
+- Přístup k malým skrýšám prostřednictvím kontejnerů, jako jsou papírové sáčky, z používání předmětu.
+- Odkládací schránky a kufry vozidel, pro vlastní i nevlastní.
 
 
-<table><tr><td><h3 align='center'>Legal Notices</h2></tr></td>
+### Dočasné skrýše
+
+- Popelnice, kapky a vozidla pro nehráče.
+- Loot tables umožňují uživatelům najít náhodné položky v kontejnerech a ve vozidlech, která nevlastní.
+
+
+<br><div><h4 align='center'><a href='https://discord.gg/overextended'>Server Discord</a></h4></div><br>
+
+
+<table><tr><td><h3 align='center'>Právní doložky</h2></tr></td>
 <tr><td>
-Ox Inventory for ESX Legacy  
+Ox Inventory pro ESX Legacy
 
-Copyright © 2022  [Linden](https://github.com/thelindat), [Dunak](https://github.com/dunak-debug), [Luke](https://github.com/LukeWasTakenn)
-
-
-This program is free software: you can redistribute it and/or modify
-it under the terms of the GNU General Public License as published by
-the Free Software Foundation, either version 3 of the License, or
-(at your option) any later version.  
+Copyright © 2022 [Linden](https://github.com/thelindat), [Dunak](https://github.com/dunak-debug), [Luke](https://github.com/LukeWasTakenn)
 
 
-This program is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.  
+Tento program je svobodný software: můžete jej dále distribuovat a/nebo upravovat
+to za podmínek GNU General Public License, jak byla zveřejněna
+Free Software Foundation, buď verze 3 licence, nebo
+(podle vašeho uvážení) jakékoli pozdější verze.
 
 
-You should have received a copy of the GNU General Public License
-along with this program.  
-If not, see <https://www.gnu.org/licenses/>
+Tento program je distribuován v naději, že bude užitečný,
+ale BEZ JAKÉKOLI ZÁRUKY; dokonce bez předpokládané záruky
+OBCHODOVATELNOST nebo VHODNOST PRO KONKRÉTNÍ ÚČEL. Viz
+Další podrobnosti naleznete v GNU General Public License.
+
+
+Měli byste obdržet kopii GNU General Public License
+spolu s tímto programem.
+Pokud ne, podívejte se na <https://www.gnu.org/licenses/>
 </td></tr></table>
