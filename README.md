@@ -1,4 +1,4 @@
-<div align='center'><img src='https://user-images.githubusercontent.com/65407488/147992899-93998c0a-75fb-4055-8c06-8da8c49342d6.png'/></div>
+<div align='center'><img src='https://i.imgur.com/UAZyugL.png'/></div>
 <div align='center'><h3><a href='https://overextended.github.io/docs/ox_inventory/'>Přečti dokumentaci pro nastavení, instalaci a integraci</a></h3></div>
 
 
