@@ -238,6 +238,20 @@ return {
 		}
 	},
 	
+	['gunkit'] = {
+		label = 'Kit de nettoyage',
+		stack = false,
+		description = 'Un kit de nettoyage d\'arme à feu, permet de redonner de l\'éclat aux flingues les plus abimés !',
+		weight = 2000,
+		allowArmed = true,
+		client = {
+			disable = { move = true, car = true, combat = true },
+			usetime = 15000,
+			cancel = true,
+			export = 'mista_overlay.fix_gun'
+		}
+	},
+	
 	['mollis'] = {
 		label = 'Mollis',
 		description = 'Destiné à combattre les troubles de l\'érection chez le mâle humain.',
@@ -454,6 +468,7 @@ return {
 		label = 'Sac à dos',
 		description = 'Un sac à dos bien pratique.',
 		weight = 2500,
+		extra_weight = 20000,
 		stack = false,
 		close = false,
 		consume = 0,
@@ -471,4 +486,80 @@ return {
 		}
 	},
 	
+	['cont_doccase'] = {
+		label = 'Porte-Document',
+		description = 'Une petite besace de metro sexuel bien pratique par les temps qui courent.',
+		weight = 500,
+		extra_weight = 3000,
+		stack = false,
+		close = false,
+		consume = 0,
+		client = {
+			add = function(total)
+			end,
+			remove = function(total)
+			end
+		}
+	},
+	
+	['cont_mediccase'] = {
+		label = 'Petit sac médical',
+		description = 'Permet de stocker tous les soins au même endroit, il faut rester organisé(e).',
+		weight = 500,
+		extra_weight = 3000,
+		stack = false,
+		close = false,
+		consume = 0,
+		client = {
+			add = function(total)
+			end,
+			remove = function(total)
+			end
+		}
+	},
+	
+	['manual_1'] = {
+		label = 'Manuel d\'instruction',
+		description = 'On dirait un genre de manuel destiné à la réparation des armes à feu.',
+		weight = 500,
+		stack = false,
+		consume = 0,
+		client = {
+			add = function(total)	
+			end,
+
+			remove = function(total)	
+			end
+		}
+	},
+	
+	['manual_2'] = {
+		label = 'La bible du DIY',
+		description = 'On dirait un genre de manuel destiné à la fabrication de divers objets.',
+		weight = 500,
+		stack = false,
+		consume = 0,
+		client = {
+			add = function(total)	
+			end,
+
+			remove = function(total)	
+			end
+		}
+	},
+	
+	['manual_3'] = {
+		label = 'La mécanique pour les nuls',
+		description = 'On dirait un genre de manuel destiné à la réparation des véhicules.',
+		weight = 500,
+		stack = false,
+		consume = 0,
+		client = {
+			add = function(total)	
+			end,
+
+			remove = function(total)	
+			end
+		}
+	},
 }
