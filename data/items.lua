@@ -562,4 +562,24 @@ return {
 			end
 		}
 	},
+	
+	['tool_gunoil'] = {
+		label = 'Huile pour arme à feu',
+		description = 'Destiné lubrifier, entretenir et protéger les composants en métal d\'une arme à feu.',
+		weight = 250,
+		stack = false
+	},
+	
+	['tool_wd40'] = {
+		label = 'WD-40',
+		description = 'Peut aider dans tout un tas de situations.',
+		weight = 410,
+		stack = false
+	},
+	
+	['garbage_rags'] = {
+		label = 'Rags (charpie)',
+		description = 'On dirait du coton, en tous cas c\'est made in USAAAAAAAAA',
+		weight = 250
+	},
 }
