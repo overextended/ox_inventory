@@ -18,7 +18,8 @@ for shopName, shopDetails in pairs(data('shops')) do
 				items = table.clone(shopDetails.inventory),
 				slots = #shopDetails.inventory,
 				type = 'shop',
-				coords = shared.qtarget and shopDetails[locations][i].loc or shopDetails[locations][i]
+				coords = shared.qtarget and shopDetails[locations][i].loc or shopDetails[locations][i],
+				distance = shared.qtarget and shopDetails[locations][i].distance + 1 or nil,
 			}
 			for j = 1, Shops[shopName][i].slots do
 				local slot = Shops[shopName][i].items[j]
