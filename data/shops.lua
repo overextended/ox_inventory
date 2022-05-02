@@ -143,6 +143,8 @@ return {
 
 	BlackMarketArms = {
 		name = 'Black Market (Arms)',
+		blip = {
+		},
 		inventory = {
 			{ name = 'WEAPON_DAGGER', price = 5000, metadata = { registered = false	}, currency = 'black_money' },
 			{ name = 'WEAPON_CERAMICPISTOL', price = 50000, metadata = { registered = false }, currency = 'black_money' },
