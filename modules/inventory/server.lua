@@ -1014,9 +1014,13 @@ lib.callback.register('ox_inventory:swapItems', function(source, data)
 
 							end
 
-							toData.metadata = table.clone(toData.metadata)
 							fromData.count -= data.count
 							fromData.weight = Inventory.SlotWeight(Items(fromData.name), fromData)
+
+							if fromData.count > 0 then
+								toData.metadata = table.clone(toData.metadata)
+							end
+
 						else return end
 					end
 
