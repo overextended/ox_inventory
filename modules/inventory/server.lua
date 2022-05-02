@@ -985,9 +985,9 @@ lib.callback.register('ox_inventory:swapItems', function(source, data)
 						toData.count = data.count
 						toData.slot = data.toSlot
 						toData.weight = Inventory.SlotWeight(Items(toData.name), toData)
+
 						if fromInventory.type == 'container' or sameInventory or (toInventory.weight + toData.weight <= toInventory.maxWeight) then
 							if not sameInventory then
-
 								local toContainer = toInventory.type == 'container'
 								if container then
 									if toContainer and containerItem then
@@ -1014,6 +1014,7 @@ lib.callback.register('ox_inventory:swapItems', function(source, data)
 
 							end
 
+							toData.metadata = table.clone(toData.metadata)
 							fromData.count -= data.count
 							fromData.weight = Inventory.SlotWeight(Items(fromData.name), fromData)
 						else return end
