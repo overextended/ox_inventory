@@ -962,7 +962,7 @@ RegisterNetEvent('ox_inventory:setPlayerInventory', function(currentDrops, inven
 							TaskTurnPedToFaceCoord(playerPed, pedCoords.x, pedCoords.y, pedCoords.z, 50)
 						end
 
-					elseif currentInventory.coords and (#(playerCoords - currentInventory.coords) > 2 or canOpenTarget(playerPed)) then
+					elseif currentInventory.coords and (#(playerCoords - currentInventory.coords) > (currentInventory.distance or 2.0) or canOpenTarget(playerPed)) then
 						TriggerEvent('ox_inventory:closeInventory')
 						lib.notify({ type = 'error', description = shared.locale('inventory_lost_access') })
 					end

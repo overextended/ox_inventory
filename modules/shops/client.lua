@@ -84,7 +84,7 @@ client.shops = setmetatable(data('shops'), {
 										end
 									},
 								},
-								distance = target.distance or 3.0
+								distance = target.distance or 2.0
 							})
 						end
 					end
