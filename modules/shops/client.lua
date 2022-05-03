@@ -1,7 +1,7 @@
 local shops = {}
 
 local function createShopBlip(name, data, location)
-	local blip = AddBlipForCoord(location.x, location.y)
+	local blip = AddBlipForCoord(location.x, location.y, location.z)
 	SetBlipSprite(blip, data.id)
 	SetBlipDisplay(blip, 4)
 	SetBlipScale(blip, data.scale)
@@ -20,22 +20,23 @@ end
 
 client.shops = setmetatable(data('shops'), {
 	__call = function(self)
-		if next(shops) then
-			for i = 1, #shops do
-				local shop = shops[i]
+		for i = 1, #shops do
+			local shop = shops[i]
 
-				if shop.point then
-					shop:remove()
-				end
-
-				if shop.blip then
-					RemoveBlip(shop.blip)
-				end
+			if shop.zoneId then
+				exports.qtarget:RemoveZone(shop.zoneId)
 			end
 
-			table.wipe(shops)
+			if shop.point then
+				shop:remove()
+			end
+
+			if shop.blip then
+				RemoveBlip(shop.blip)
+			end
 		end
 
+		table.wipe(shops)
 		local id = 0
 
 		for type, shop in pairs(self) do
@@ -62,11 +63,11 @@ client.shops = setmetatable(data('shops'), {
 							local shopid = type..'-'..i
 							id += 1
 
-							if shop.blip then
-								shops[id] = { blip = createShopBlip(shop.name, shop.blip, target.loc) }
-							end
+							shops[id] = {
+								zoneId = shopid,
+								blip = shop.blip and createShopBlip(shop.name, shop.blip, target.loc)
+							}
 
-							exports.qtarget:RemoveZone(shopid)
 							exports.qtarget:AddBoxZone(shopid, target.loc, target.length or 0.5, target.width or 0.5, {
 								name = shopid,
 								heading = target.heading or 0.0,
