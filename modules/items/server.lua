@@ -21,14 +21,14 @@ Items.containers = {
 		}
 	},
 	['backpack'] = {
-		size = {40, 20000},
+		size = {50, 30000},
 		blacklist = {
 			['paperbag'] = true,
 			['vehicles_map'] = true,
 		}
 	},
 	['cont_doccase'] = {
-		size = {10, 3000},
+		size = {10, 5000},
 		whitelist = {
 			['vehicles_map'] = true,
 			['manual_1'] = true,
@@ -37,7 +37,7 @@ Items.containers = {
 		}
 	},
 	['cont_mediccase'] = {
-		size = {10, 3000},
+		size = {10, 5000},
 		whitelist = {
 			['bandage2'] = true,
 			['joint'] = true,
