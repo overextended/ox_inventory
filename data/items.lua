@@ -468,6 +468,28 @@ return {
 		label = 'Sac à dos',
 		description = 'Un sac à dos bien pratique.',
 		weight = 2500,
+		extra_weight = 30000,
+		stack = false,
+		close = false,
+		consume = 0,
+		client = {
+			add = function(total)
+				if total > 0 and GetResourceState('mista_overlay') == 'started' then
+					exports.mista_overlay:equipBackpack(total, 'backpack')	
+				end
+			end,
+			remove = function(total)
+				if total < 1 and GetResourceState('mista_overlay') == 'started' then
+					exports.mista_overlay:dropBackpack(total)
+				end
+			end
+		}
+	},
+	
+	['backpack2'] = {
+		label = 'Sac à dos basique',
+		description = 'Un sac à dos basique, mais qui permet d\'emporter plus de choses',
+		weight = 1500,
 		extra_weight = 20000,
 		stack = false,
 		close = false,
@@ -475,7 +497,7 @@ return {
 		client = {
 			add = function(total)
 				if total > 0 and GetResourceState('mista_overlay') == 'started' then
-					exports.mista_overlay:equipBackpack(total)	
+					exports.mista_overlay:equipBackpack(total, 'backpack2')	
 				end
 			end,
 			remove = function(total)
@@ -581,5 +603,172 @@ return {
 		label = 'Rags (charpie)',
 		description = 'On dirait du coton, en tous cas c\'est made in USAAAAAAAAA',
 		weight = 250
+	},
+	
+	['garbage_scrap_electronic'] = {
+		label = 'Déchets électroniques',
+		description = 'Une poignée de divers composants électroniques',
+		weight = 250
+	},
+	
+	['garbage_scrap_metal'] = {
+		label = 'Déchets métalliques',
+		description = 'Une pile de bouts de férailles divers & variés',
+		weight = 500
+	},
+	
+	['tool_ducttape'] = {
+		label = 'Duct Tape',
+		description = 'Si tu veux pas que ça bouge, tu sais ce qu\'il te reste à faire.',
+		weight = 250
+	},
+	
+	['tool_gunpowder'] = {
+		label = 'Poudre à canon',
+		description = 'De la poudre noire, faut faire attention avec ce truc !',
+		weight = 500
+	},
+	
+	['tool_metalpipe'] = {
+		label = 'Tube en métal',
+		description = 'Un morceau de tube en métal, il a l\'air solide',
+		weight = 500
+	},
+	
+	['food_vodka'] = {
+		label = 'Bouteille de vodka',
+		description = 'De la Vodka russe, ça fout le feu ce truc, litéralement',
+		weight = 330
+	},
+	
+	['tool_fertilizer'] = {
+		label = 'Engrais',
+		description = 'Un pot d\'engrais pour plante, dans l\'ancien monde ça ne valait rien...',
+		weight = 500
+	},
+	
+	['tool_burlap'] = {
+		label = 'Sac en toile',
+		description = 'Un vulgaire sac de toile qui peut servir à beaucoup de chose',
+		weight = 150
+	},
+	
+	['diamond'] = {
+		label = 'Diamant',
+		description = 'Même de nos jours, les diamants sont une valeur refuge',
+		weight = 5
+	},
+	
+	['kit_plotpole'] = {
+		label = 'PolPlotte',
+		description = 'Défini le centre d\'un territoire.',
+		weight = 1200,
+		stack = false,
+		consume = 0,
+		client = {
+			disable = { move = true, car = true, combat = true },
+			usetime = 0,
+			cancel = false,
+			export = 'mista_placing.Place'
+		},
+		model = `prop_cs_protest_sign_01`,
+		is_door = '-1',
+		is_totem = true
+	},
+	
+	['kit_wooddoor'] = {
+		label = 'Porte en bois',
+		description = 'Comme un mur, mais qui s\'ouvre.',
+		weight = 2500,	
+		stack = false,
+		consume = 0,
+		client = {
+			disable = { move = true, car = true, combat = true },
+			usetime = 0,
+			cancel = false,
+			export = 'mista_placing.Place'
+		},
+		model = `prop_fncconstruc_ld`,
+		is_door = '1'
+	},
+	
+	['kit_woodwall'] = {
+		label = 'Mur en bois',
+		description = 'Comme une porte, mais ça ne s\'ouvre pas.',
+		weight = 2500,	
+		stack = false,
+		consume = 0,
+		client = {
+			disable = { move = true, car = true, combat = true },
+			usetime = 0,
+			cancel = false,
+			export = 'mista_placing.Place'
+		},
+		model = `prop_const_fence01b`,
+		is_door = '-1'
+	},
+	
+	['kit_woodbox'] = {
+		label = 'Caisse en bois',
+		description = 'Parfait pour ranger ses petits trésors ..',
+		weight = 2500,	
+		stack = false,
+		consume = 0,
+		client = {
+			disable = { move = true, car = true, combat = true },
+			usetime = 0,
+			cancel = false,
+			export = 'mista_placing.Place'
+		},
+		model = `prop_box_wood02a_pu`,
+		is_door = '-1',
+		stash = {
+			label = 'Caisse en bois',
+			slots = 100,
+			weight = 200000
+		}
+	},
+	
+	['kit_woodbox2'] = {
+		label = 'Petite caisse en bois',
+		description = 'Parfait pour ranger ses petits trésors ..',
+		weight = 2500,	
+		stack = false,
+		consume = 0,
+		client = {
+			disable = { move = true, car = true, combat = true },
+			usetime = 0,
+			cancel = false,
+			export = 'mista_placing.Place'
+		},
+		model = `prop_crate_07a`,
+		is_door = '-1',
+		stash = {
+			label = 'Petite caisse en bois',
+			slots = 50,
+			weight = 100000
+		}
+	},
+	
+	['kit_workbench'] = {
+		label = 'Etabli',
+		description = 'Equipement essentiel à tout camp de survivant qui se respecte',
+		weight = 2500,	
+		stack = false,
+		consume = 0,
+		client = {
+			disable = { move = true, car = true, combat = true },
+			usetime = 0,
+			cancel = false,
+			export = 'mista_placing.Place'
+		},
+		model = `prop_tool_bench02`,
+		is_door = '-1',
+		is_workbench = true,
+		stash = {
+			label = 'Etabli',
+			slots = 50,
+			weight = 100000
+		}
 	},
 }
