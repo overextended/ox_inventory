@@ -1189,7 +1189,7 @@ RegisterNUICallback('swapItems', function(data, cb)
 	end
 
 	if weaponSlot and currentWeapon then
-		currentWeapon.slot = weapon
+		currentWeapon.slot = weaponSlot
 		TriggerEvent('ox_inventory:currentWeapon', currentWeapon)
 	end
 
