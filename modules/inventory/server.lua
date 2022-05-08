@@ -1081,11 +1081,15 @@ lib.callback.register('ox_inventory:swapItems', function(source, data)
 
 					if next(items) then
 						resp = { weight = playerInventory.weight, items = items }
-						if shared.framework == 'esx' and fromInventory.type == 'player' or fromInventory.type == 'otherplayer' then
-							Inventory.SyncInventory(fromInventory)
-						end
-						if shared.framework == 'esx' and not sameInventory and (toInventory.type == 'player' or toInventory.type == 'otherplayer') then
-							Inventory.SyncInventory(toInventory)
+
+						if shared.framework == 'esx' then
+							if fromInventory.player then
+								Inventory.SyncInventory(fromInventory)
+							end
+
+							if toInventory.player and not sameInventory then
+								Inventory.SyncInventory(toInventory)
+							end
 						end
 					end
 
