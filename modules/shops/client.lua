@@ -27,7 +27,7 @@ client.shops = setmetatable(data('shops'), {
 				exports.qtarget:RemoveZone(shop.zoneId)
 			end
 
-			if shop.point then
+			if shop.remove then
 				shop:remove()
 			end
 
