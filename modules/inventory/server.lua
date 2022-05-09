@@ -693,7 +693,7 @@ function Inventory.RemoveItem(inv, item, count, metadata, slot)
 		local removed, total, slots = 0, count, {}
 		if slot and itemSlots[slot] then
 			removed = count
-			Inventory.SetSlot(inv, item, -count, metadata, slot)
+			Inventory.SetSlot(inv, item, -count, inv.items[slot].metadata, slot)
 			slots[#slots+1] = inv.items[slot] or slot
 		elseif itemSlots and totalCount > 0 then
 			for k, v in pairs(itemSlots) do
@@ -703,7 +703,7 @@ function Inventory.RemoveItem(inv, item, count, metadata, slot)
 						inv.items[k] = nil
 						slots[#slots+1] = inv.items[k] or k
 					elseif v > count then
-						Inventory.SetSlot(inv, item, -count, metadata, k)
+						Inventory.SetSlot(inv, item, -count, inv.items[k].metadata, k)
 						slots[#slots+1] = inv.items[k] or k
 						removed = total
 						count = v - count
