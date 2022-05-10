@@ -18,7 +18,8 @@ for shopName, shopDetails in pairs(data('shops')) do
 				items = table.clone(shopDetails.inventory),
 				slots = #shopDetails.inventory,
 				type = 'shop',
-				coords = shared.qtarget and shopDetails[locations][i].loc or shopDetails[locations][i]
+				coords = shared.qtarget and shopDetails[locations][i].loc or shopDetails[locations][i],
+				distance = shared.qtarget and shopDetails[locations][i].distance + 1 or nil,
 			}
 			for j = 1, Shops[shopName][i].slots do
 				local slot = Shops[shopName][i].items[j]
@@ -137,7 +138,7 @@ lib.callback.register('ox_inventory:buyItem', function(source, data)
 			local price = count * fromData.price
 
 			if toData == nil or (fromItem.name == toItem.name and fromItem.stack and table.matches(toData.metadata, metadata)) then
-				local canAfford = Inventory.GetItem(source, currency, false, true) >= price
+				local canAfford = price > 0 and Inventory.GetItem(source, currency, false, true) >= price
 				if canAfford then
 					local newWeight = playerInv.weight + (fromItem.weight + (metadata?.weight or 0)) * count
 					if newWeight > playerInv.maxWeight then

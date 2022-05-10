@@ -569,7 +569,7 @@ return {
 			weight = 120,
 			type = 'flashlight',
 			client = {
-				component = {`COMPONENT_AT_PI_FLSH`,`COMPONENT_AT_AR_FLSH`},
+				component = {`COMPONENT_AT_PI_FLSH`,`COMPONENT_AT_AR_FLSH`, `COMPONENT_AT_PI_FLSH_02`},
 				usetime = 2500
 			}
 		},
@@ -729,7 +729,7 @@ return {
 			type = 'sight',
 			weight = 280,
 			client = {
-				component = {`COMPONENT_AT_SCOPE_MEDIUM`, `COMPONENT_AT_SCOPE_MEDIUM_MK2`, `COMPONENT_AT_PI_RAIL_02`},
+				component = {`COMPONENT_AT_SCOPE_MEDIUM`, `COMPONENT_AT_SCOPE_MEDIUM_MK2`, `COMPONENT_AT_PI_RAIL_02`, `COMPONENT_AT_PI_RAIL`},
 				usetime = 2500
 			}
 		},

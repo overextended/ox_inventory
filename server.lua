@@ -32,7 +32,7 @@ local function setPlayerInventory(player, data)
 				local weight = Inventory.SlotWeight(item, v)
 				totalWeight = totalWeight + weight
 
-				inventory[v.slot] = {name = v.name, label = item.label, weight = weight, slot = v.slot, count = v.count, description = item.description, metadata = v.metadata, stack = item.stack, close = item.close}
+				inventory[v.slot] = {name = item.name, label = item.label, weight = weight, slot = v.slot, count = v.count, description = item.description, metadata = v.metadata, stack = item.stack, close = item.close}
 			end
 		end
 	end
@@ -126,7 +126,7 @@ lib.callback.register('ox_inventory:openInventory', function(source, inv, data)
 
 	else left.open = true end
 
-	return {id=left.id, label=left.label, type=left.type, slots=left.slots, weight=left.weight, maxWeight=left.maxWeight}, right and {id=right.id, label=right.label, type=right.type, slots=right.slots, weight=right.weight, maxWeight=right.maxWeight, items=right.items, coords=right.coords}
+	return {id=left.id, label=left.label, type=left.type, slots=left.slots, weight=left.weight, maxWeight=left.maxWeight}, right and {id=right.id, label=right.label, type=right.type, slots=right.slots, weight=right.weight, maxWeight=right.maxWeight, items=right.items, coords=right.coords, distance=right.distance}
 end)
 
 local Licenses = data 'licenses'

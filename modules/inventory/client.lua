@@ -99,7 +99,7 @@ Inventory.Evidence = setmetatable(data('evidence'), {
 									action = openEvidence
 								},
 							},
-							distance = evidence.target.distance or 3.0
+							distance = evidence.target.distance or 2.0
 						})
 					end
 				else
