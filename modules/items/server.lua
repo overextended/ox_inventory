@@ -9,8 +9,11 @@ TriggerEvent('ox_inventory:itemList', ItemList)
 -- Whitelist and blacklist: ['item_name'] = true
 Items.containers = {
 	['paperbag'] = {
-		size = {5, 2500},
-		blacklist = {
+		size = {5, 5000},
+		blacklist = {	
+			['paperbag'] = true,
+			['cont_doccase'] = true,
+			['cont_mediccase'] = true,
 			['testburger'] = true -- No burgers!
 		}
 	},
@@ -24,7 +27,17 @@ Items.containers = {
 		size = {50, 30000},
 		blacklist = {
 			['paperbag'] = true,
-			['vehicles_map'] = true,
+			['paperbag'] = true,
+			['cont_doccase'] = true,
+			['cont_mediccase'] = true,
+		}
+	},
+	['backpack2'] = {
+		size = {30, 20000},
+		blacklist = {
+			['paperbag'] = true,
+			['cont_doccase'] = true,
+			['cont_mediccase'] = true,
 		}
 	},
 	['cont_doccase'] = {

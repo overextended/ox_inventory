@@ -469,18 +469,19 @@ return {
 		description = 'Un sac à dos bien pratique.',
 		weight = 2500,
 		extra_weight = 30000,
+		ped_variation = 45,
 		stack = false,
 		close = false,
 		consume = 0,
 		client = {
 			add = function(total)
 				if total > 0 and GetResourceState('mista_overlay') == 'started' then
-					exports.mista_overlay:equipBackpack(total, 'backpack')	
+					exports.mista_backpack:add(total, 'backpack')
 				end
 			end,
 			remove = function(total)
 				if total < 1 and GetResourceState('mista_overlay') == 'started' then
-					exports.mista_overlay:dropBackpack(total)
+					exports.mista_backpack:remove(total, 'backpack')
 				end
 			end
 		}
@@ -491,18 +492,19 @@ return {
 		description = 'Un sac à dos basique, mais qui permet d\'emporter plus de choses',
 		weight = 1500,
 		extra_weight = 20000,
+		ped_variation = 69,
 		stack = false,
 		close = false,
 		consume = 0,
 		client = {
 			add = function(total)
 				if total > 0 and GetResourceState('mista_overlay') == 'started' then
-					exports.mista_overlay:equipBackpack(total, 'backpack2')	
+					exports.mista_backpack:add(total, 'backpack2')
 				end
 			end,
 			remove = function(total)
 				if total < 1 and GetResourceState('mista_overlay') == 'started' then
-					exports.mista_overlay:dropBackpack(total)
+					exports.mista_backpack:remove(total, 'backpack2')
 				end
 			end
 		}
@@ -659,6 +661,8 @@ return {
 		weight = 5
 	},
 	
+	-- BASE BUILDING
+	
 	['kit_plotpole'] = {
 		label = 'PolPlotte',
 		description = 'Défini le centre d\'un territoire.',
@@ -688,7 +692,9 @@ return {
 			cancel = false,
 			export = 'mista_placing.Place'
 		},
-		model = `prop_fncconstruc_ld`,
+		-- model = `prop_fncconstruc_ld`,
+		-- model = `prop_gar_door_02`,
+		model = `prop_gar_door_01`,
 		is_door = '1'
 	},
 	
@@ -705,6 +711,22 @@ return {
 			export = 'mista_placing.Place'
 		},
 		model = `prop_const_fence01b`,
+		is_door = '-1'
+	},
+	
+	['kit_woodpanel'] = {
+		label = 'Panneau de bois',
+		description = 'Comme un mur, mais un peu moins haut.',
+		weight = 2500,	
+		stack = false,
+		consume = 0,
+		client = {
+			disable = { move = true, car = true, combat = true },
+			usetime = 0,
+			cancel = false,
+			export = 'mista_placing.Place'
+		},
+		model = `prop_shuttering02`,
 		is_door = '-1'
 	},
 	
@@ -743,8 +765,72 @@ return {
 		},
 		model = `prop_crate_07a`,
 		is_door = '-1',
+		is_stackable = true,
 		stash = {
 			label = 'Petite caisse en bois',
+			slots = 50,
+			weight = 100000
+		}
+	},
+	
+	['kit_tent1'] = {
+		label = 'Une petite tonnelle',
+		description = 'Nickel pour rester à l\'ombre ou au sec ..',
+		weight = 2500,	
+		stack = false,
+		consume = 0,
+		client = {
+			disable = { move = true, car = true, combat = true },
+			usetime = 0,
+			cancel = false,
+			export = 'mista_placing.Place'
+		},
+		model = `prop_gazebo_01`,
+		is_door = '-1',
+		stash = {
+			label = 'Petite tonnelle',
+			slots = 50,
+			weight = 100000
+		}
+	},
+	
+	['kit_tent2'] = {
+		label = 'Une petite tonnelle',
+		description = 'Nickel pour rester à l\'ombre ou au sec ..',
+		weight = 2500,	
+		stack = false,
+		consume = 0,
+		client = {
+			disable = { move = true, car = true, combat = true },
+			usetime = 0,
+			cancel = false,
+			export = 'mista_placing.Place'
+		},
+		model = `prop_gazebo_02`,
+		is_door = '-1',
+		stash = {
+			label = 'Petite tonnelle',
+			slots = 50,
+			weight = 100000
+		}
+	},
+	
+	['kit_tent3'] = {
+		label = 'Une petite tonnelle',
+		description = 'Nickel pour rester à l\'ombre ou au sec ..',
+		weight = 2500,	
+		stack = false,
+		consume = 0,
+		client = {
+			disable = { move = true, car = true, combat = true },
+			usetime = 0,
+			cancel = false,
+			export = 'mista_placing.Place'
+		},
+		model = `prop_gazebo_03`,
+		is_door = '-1',
+		stash = {
+			label = 'Petite tonnelle',
 			slots = 50,
 			weight = 100000
 		}
@@ -771,4 +857,70 @@ return {
 			weight = 100000
 		}
 	},
+	
+	['kit_vault'] = {
+		label = 'Coffre-fort',
+		description = 'Pour mettre ses économies au chaud, mais surtout en sécurité!',
+		weight = 12500,	
+		stack = false,
+		consume = 0,
+		client = {
+			disable = { move = true, car = true, combat = true },
+			usetime = 0,
+			cancel = false,
+			export = 'mista_placing.Place'
+		},
+		model = `prop_ld_int_safe_01`,
+		is_door = '-1',
+		stash = {
+			label = 'Coffre-fort',
+			slots = 30,
+			weight = 100000
+		}
+	},
+	
+	['kit_guncase1'] = {
+		label = 'Caisse à arme à feu',
+		description = 'Spécialement conçues par les ingénieurs de Merryweather pour ranger les armes à feu.',
+		weight = 2500,	
+		stack = false,
+		consume = 0,
+		client = {
+			disable = { move = true, car = true, combat = true },
+			usetime = 0,
+			cancel = false,
+			export = 'mista_placing.Place'
+		},
+		model = `prop_gun_case_01`,
+		is_door = '-1',
+		is_stackable = true,
+		stash = {
+			label = 'Caisse à arme à feu',
+			slots = 50,
+			weight = 100000
+		}
+	},
+	
+	['kit_table1'] = {
+		label = 'Table en plastique',
+		description = '4 pieds, un plateau, c\'est une table quoi',
+		weight = 1500,	
+		stack = false,
+		consume = 0,
+		client = {
+			disable = { move = true, car = true, combat = true },
+			usetime = 0,
+			cancel = false,
+			export = 'mista_placing.Place'
+		},
+		model = `prop_table_03`,
+		is_door = '-1',
+		is_table = true,
+		stash = {
+			label = 'Caisse à arme à feu',
+			slots = 50,
+			weight = 100000
+		}
+	},
+	
 }
