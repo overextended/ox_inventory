@@ -134,14 +134,19 @@ function Inventory.SetSlot(inv, item, count, metadata, slot)
 	inv = Inventory(inv)
 	local currentSlot = inv.items[slot]
 	local newCount = currentSlot and currentSlot.count + count or count
+	local newWeight = currentSlot and inv.weight - currentSlot.weight or inv.weight
 
 	if currentSlot and newCount < 1 then
-		count = currentSlot.count
-		inv.items[slot] = nil
+		currentSlot = nil
 	else
-		inv.items[slot] = {name = item.name, label = item.label, weight = item.weight, slot = slot, count = newCount, description = item.description, metadata = metadata, stack = item.stack, close = item.close}
-		inv.items[slot].weight = Inventory.SlotWeight(item, inv.items[slot])
+		currentSlot = {name = item.name, label = item.label, weight = item.weight, slot = slot, count = newCount, description = item.description, metadata = metadata, stack = item.stack, close = item.close}
+		local slotWeight = Inventory.SlotWeight(item, currentSlot)
+		currentSlot.weight = slotWeight
+		newWeight += slotWeight
 	end
+
+	inv.weight = newWeight
+	inv.items[slot] = currentSlot
 
 	if not inv.player then
 		inv.changed = true
@@ -576,7 +581,6 @@ function Inventory.AddItem(inv, item, count, metadata, slot, cb)
 
 			if slot then
 				Inventory.SetSlot(inv, item, count, metadata, slot)
-				inv.weight = inv.weight + (item.weight + (metadata?.weight or 0)) * count
 
 				if cb then
 					success = true
@@ -700,6 +704,7 @@ function Inventory.RemoveItem(inv, item, count, metadata, slot)
 				if removed < total then
 					if v == count then
 						removed = total
+						inv.weight -= inv.items[k].weight
 						inv.items[k] = nil
 						slots[#slots+1] = inv.items[k] or k
 					elseif v > count then
@@ -710,6 +715,7 @@ function Inventory.RemoveItem(inv, item, count, metadata, slot)
 					else
 						removed = removed + v
 						count = count - v
+						inv.weight -= inv.items[k].weight
 						inv.items[k] = nil
 						slots[#slots+1] = k
 					end
@@ -717,7 +723,6 @@ function Inventory.RemoveItem(inv, item, count, metadata, slot)
 			end
 		end
 
-		inv.weight = inv.weight - (item.weight + (metadata?.weight or 0)) * removed
 		if removed > 0 and inv.type == 'player' then
 			if shared.framework == 'esx' then Inventory.SyncInventory(inv) end
 			local array = table.create(#slots, 0)
