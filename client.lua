@@ -471,7 +471,7 @@ local function registerCommands()
 						local vehicleClass = GetVehicleClass(vehicle)
 						local checkVehicle = Vehicles.Storage[vehicleHash]
 						-- No storage or no glovebox
-						if checkVehicle == 0 or checkVehicle == 2 or not (Vehicles.glovebox[vehicleClass] and not Vehicles.glovebox.models[vehicleHash]) then return end
+						--if checkVehicle == 0 or checkVehicle == 2 or not (Vehicles.glovebox[vehicleClass] and not Vehicles.glovebox.models[vehicleHash]) then return end
 
 						local plate = client.trimplate and string.strtrim(GetVehicleNumberPlateText(vehicle)) or GetVehicleNumberPlateText(vehicle)
 						client.openInventory('glovebox', {id = 'glove'..plate, class = vehicleClass, model = vehicleHash })
