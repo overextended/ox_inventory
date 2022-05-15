@@ -347,8 +347,18 @@ function Inventory.Load(id, invType, owner)
 			else
 				datastore = true
 			end
-		elseif invType == 'trunk' or invType == 'glovebox' then
-			result = invType == 'trunk' and MySQL:loadTrunk( Inventory.GetPlateFromId(id) ) or MySQL:loadGlovebox( Inventory.GetPlateFromId(id) )
+		elseif invType == 'trunk' then
+			result = invType == 'trunk' and MySQL:loadTrunk( Inventory.GetPlateFromId(id) ) 
+
+			if not result then
+				if server.randomloot then
+					return generateItems(id, 'vehicle')
+				else
+					datastore = true
+				end
+			else result = result[invType] end
+		elseif invType == 'glovebox' then
+			result = invType == 'glovebox' and MySQL:loadGlovebox( Inventory.GetPlateFromId(id) )
 
 			if not result then
 				if server.randomloot then
