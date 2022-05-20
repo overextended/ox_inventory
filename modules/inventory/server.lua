@@ -923,6 +923,16 @@ lib.callback.register('ox_inventory:swapItems', function(source, data)
 
 					if toData and ((toData.name ~= fromData.name) or not toData.stack or (not table.matches(toData.metadata, fromData.metadata))) then
 						-- Swap items
+						if toInventory.type == 'policeevidence' and not sameInventory then
+							local group, rank = server.hasGroup(toInventory, shared.police)
+			
+							if not group then return end
+
+							if server.evidencegrade > rank then
+								return TriggerClientEvent('ox_lib:notify', source, { type = 'error', description = shared.locale('evidence_cannot_take') })
+							end
+						end
+							
 						local toWeight = not sameInventory and (toInventory.weight - toData.weight + fromData.weight)
 						local fromWeight = not sameInventory and (fromInventory.weight + toData.weight - fromData.weight)
 
