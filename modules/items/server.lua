@@ -24,20 +24,22 @@ Items.containers = {
 		}
 	},
 	['backpack'] = {
-		size = {50, 30000},
+		size = {50, 20000},
 		blacklist = {
 			['paperbag'] = true,
 			['paperbag'] = true,
 			['cont_doccase'] = true,
 			['cont_mediccase'] = true,
+			['backpack2'] = true,
 		}
 	},
 	['backpack2'] = {
-		size = {30, 20000},
+		size = {30, 15000},
 		blacklist = {
 			['paperbag'] = true,
 			['cont_doccase'] = true,
 			['cont_mediccase'] = true,
+			['backpack'] = true,
 		}
 	},
 	['cont_doccase'] = {

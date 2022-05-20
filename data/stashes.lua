@@ -1,3 +1,6 @@
+return {}
+
+--[[
 return {
 	{
 		coords = vec3(452.3, -991.4, 30.7),
@@ -37,3 +40,4 @@ return {
 		groups = {['ambulance'] = 0}
 	},
 }
+]]--

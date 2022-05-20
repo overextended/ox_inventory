@@ -110,13 +110,13 @@ return {
 	['lockpick'] = {
 		label = 'Lockpick',
 		weight = 160,
-		consume = 0,
-		client = {
-			anim = { dict = 'anim@amb@clubhouse@tutorial@bkr_tut_ig3@', clip = 'machinic_loop_mechandplayer' },
-			disable = { move = true, car = true, combat = true },
-			usetime = 5000,
-			cancel = true
-		}
+		stack = false,
+		-- client = {
+			-- anim = { dict = 'anim@amb@clubhouse@tutorial@bkr_tut_ig3@', clip = 'machinic_loop_mechandplayer' },
+			-- disable = { move = true, car = true, combat = true },
+			-- usetime = 5000,
+			-- cancel = true
+		-- }
 	},
 
 	['phone'] = {
@@ -228,14 +228,14 @@ return {
 		stack = false,
 		description = 'Un kit de réparation de véhicule, peut faire des miracles paraît-il !',
 		weight = 5000,
-		client = {
-			anim = { dict = 'anim@amb@clubhouse@tutorial@bkr_tut_ig3@', clip = 'machinic_loop_mechandplayer' },
-			disable = { move = true, car = true, combat = true },
+		-- client = {
+			-- anim = { dict = 'anim@amb@clubhouse@tutorial@bkr_tut_ig3@', clip = 'machinic_loop_mechandplayer' },
+			-- disable = { move = true, car = true, combat = true },
 			-- prop = { model = `prop_tool_adjspanner`, pos = vec3(0.03, 0.03, 0.02), rot = vec3(0.0, 0.0, -1.5) },
-			usetime = 30000,
-			cancel = true,
-			export = 'mista_overlay.fix_car'
-		}
+			-- usetime = 30000,
+			-- cancel = true,
+			-- export = 'mista_vehicle.Fix'
+		-- }
 	},
 	
 	['gunkit'] = {
@@ -468,7 +468,7 @@ return {
 		label = 'Sac à dos',
 		description = 'Un sac à dos bien pratique.',
 		weight = 2500,
-		extra_weight = 30000,
+		extra_weight = 20000,
 		ped_variation = 45,
 		stack = false,
 		close = false,
@@ -491,7 +491,7 @@ return {
 		label = 'Sac à dos basique',
 		description = 'Un sac à dos basique, mais qui permet d\'emporter plus de choses',
 		weight = 1500,
-		extra_weight = 20000,
+		extra_weight = 15000,
 		ped_variation = 69,
 		stack = false,
 		close = false,
@@ -896,8 +896,8 @@ return {
 		is_stackable = true,
 		stash = {
 			label = 'Caisse à arme à feu',
-			slots = 50,
-			weight = 100000
+			slots = 12,
+			weight = 50000
 		}
 	},
 	
@@ -915,12 +915,48 @@ return {
 		},
 		model = `prop_table_03`,
 		is_door = '-1',
-		is_table = true,
-		stash = {
-			label = 'Caisse à arme à feu',
-			slots = 50,
-			weight = 100000
-		}
+		is_table = true
 	},
 	
+	['tool_nails'] = {
+		label = 'Boite de clous',
+		description = 'Une boite de clous, certains ne sont pas complètement rouillés',
+		weight = 500,	
+		stack = false
+	},
+	
+	['tool_planks'] = {
+		label = 'Planches de bois',
+		description = 'Une planche de bois d\'arbre, bien dure, peut servir à beaucoup de choses..',
+		weight = 500,	
+		stack = false
+	},
+	
+	['garbage_jar'] = {
+		label = 'Bocal vide',
+		description = 'Un bocal, mais il est vide.. il a quand même un couvercle',
+		weight = 150,	
+		stack = false
+	},
+	
+	['tool_charcoal'] = {
+		label = 'Charbon de bois',
+		description = 'Le charbon de bois est un combustible obtenu en carbonisant du bois en atmosphère contrôlée par pyrolyse',
+		weight = 300,	
+		stack = false
+	},
+	
+	['tool_sewing_kit'] = {
+		label = 'Kit de couture',
+		description = 'Un nécessaire de couture, tout ce qu\'il faut pour coudre et recoudre et pas que des bouts de tissus',
+		weight = 150,	
+		stack = false
+	},
+	
+	['key_vehicle'] = {
+		label = 'Clé de véhicule',
+		description = 'Une clé de véhicule, on dirait qu\'elle a été limée pour servir de passe  partout',
+		weight = 10,	
+		stack = false
+	},
 }
