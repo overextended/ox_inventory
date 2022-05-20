@@ -23,7 +23,14 @@ for shopName, shopDetails in pairs(data('shops')) do
 			}
 			for j = 1, Shops[shopName][i].slots do
 				local slot = Shops[shopName][i].items[j]
+
+				if slot.grade and not shopDetails.groups then
+					print(('^1attempted to restrict slot %s (%s) to grade %s, but %s has no job restriction^0'):format(i, slot.name, slot.grade, shopDetails.name))
+					slot.grade = nil
+				end
+
 				local Item = Items(slot.name)
+
 				if Item then
 					slot = {
 						name = Item.name,
@@ -51,7 +58,14 @@ for shopName, shopDetails in pairs(data('shops')) do
 		}
 		for i = 1, Shops[shopName].slots do
 			local slot = Shops[shopName].items[i]
+
+			if slot.grade and not shopDetails.groups then
+				print(('^1attempted to restrict slot %s (%s) to grade %s, but %s has no job restriction^0'):format(i, slot.name, slot.grade, shopDetails.name))
+				slot.grade = nil
+			end
+
 			local Item = Items(slot.name)
+
 			if Item then
 				slot = {
 					name = Item.name,
