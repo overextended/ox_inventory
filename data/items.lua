@@ -660,6 +660,48 @@ return {
 		description = 'Même de nos jours, les diamants sont une valeur refuge',
 		weight = 5
 	},
+
+	['tool_nails'] = {
+		label = 'Boite de clous',
+		description = 'Une boite de clous, certains ne sont pas complètement rouillés',
+		weight = 500,	
+		stack = false
+	},
+	
+	['tool_planks'] = {
+		label = 'Planches de bois',
+		description = 'Une planche de bois d\'arbre, bien dure, peut servir à beaucoup de choses..',
+		weight = 500,	
+		stack = false
+	},
+	
+	['garbage_jar'] = {
+		label = 'Bocal vide',
+		description = 'Un bocal, mais il est vide.. il a quand même un couvercle',
+		weight = 150,	
+		stack = false
+	},
+	
+	['tool_charcoal'] = {
+		label = 'Charbon de bois',
+		description = 'Le charbon de bois est un combustible obtenu en carbonisant du bois en atmosphère contrôlée par pyrolyse',
+		weight = 300,	
+		stack = false
+	},
+	
+	['tool_sewing_kit'] = {
+		label = 'Kit de couture',
+		description = 'Un nécessaire de couture, tout ce qu\'il faut pour coudre et recoudre et pas que des bouts de tissus',
+		weight = 150,	
+		stack = false
+	},
+	
+	['key_vehicle'] = {
+		label = 'Clé de véhicule',
+		description = 'Une clé de véhicule, on dirait qu\'elle a été limée pour servir de passe  partout',
+		weight = 10,	
+		stack = false
+	},
 	
 	-- BASE BUILDING
 	
@@ -681,8 +723,8 @@ return {
 	},
 	
 	['kit_wooddoor'] = {
-		label = 'Porte en bois',
-		description = 'Comme un mur, mais qui s\'ouvre.',
+		label = 'Porte de garage',
+		description = 'Une porte suffisament large pour laisser passer un véhicule de taille raisonnable.',
 		weight = 2500,	
 		stack = false,
 		consume = 0,
@@ -692,10 +734,33 @@ return {
 			cancel = false,
 			export = 'mista_placing.Place'
 		},
-		-- model = `prop_fncconstruc_ld`,
-		-- model = `prop_gar_door_02`,
 		model = `prop_gar_door_01`,
-		is_door = '1'
+		is_door = '1',
+		door_id = 2 -- in mista_doors config
+	},
+
+	['kit_wooddoor2'] = {
+		label = 'Petite porte en bois',
+		description = 'Une porte suffisamment large pour laisser passer un survivant, mais pas un véhicule',
+		weight = 2500,	
+		stack = false,
+		consume = 0,
+		client = {
+			disable = { move = true, car = true, combat = true },
+			usetime = 0,
+			cancel = false,
+			export = 'mista_placing.Place'
+		},
+		model = `prop_fnclink_06gatepost`,
+		is_door = '1',
+		door_id = 1, -- in mista_doors config
+		axis = vector3(0, 0, 1),
+        angle = 110,
+        translation = nil,
+		attachment = {
+            model = -1934898817,
+            offset = vector3(-0.07,-0.022,0.33)
+        },
 	},
 	
 	['kit_woodwall'] = {
@@ -711,6 +776,22 @@ return {
 			export = 'mista_placing.Place'
 		},
 		model = `prop_const_fence01b`,
+		is_door = '-1'
+	},
+
+	['kit_woodwall2'] = {
+		label = 'Mur en bois',
+		description = 'Comme une porte, mais ça ne s\'ouvre pas.',
+		weight = 2500,	
+		stack = false,
+		consume = 0,
+		client = {
+			disable = { move = true, car = true, combat = true },
+			usetime = 0,
+			cancel = false,
+			export = 'mista_placing.Place'
+		},
+		model = `prop_const_fence01a`,
 		is_door = '-1'
 	},
 	
@@ -900,6 +981,28 @@ return {
 			weight = 50000
 		}
 	},
+
+	['kit_medstation'] = {
+		label = 'Armoire à pharmacie',
+		description = 'Comme une armoire, mais dédiée au rangement des médicaments et autres utensile de médecine.',
+		weight = 2500,	
+		stack = false,
+		consume = 0,
+		client = {
+			disable = { move = true, car = true, combat = true },
+			usetime = 0,
+			cancel = false,
+			export = 'mista_placing.Place'
+		},
+		model = `prop_medstation_01`,
+		is_door = '-1',
+		is_stackable = true,
+		stash = {
+			label = 'Armoire à pharmacie',
+			slots = 25,
+			weight = 25000
+		}
+	},
 	
 	['kit_table1'] = {
 		label = 'Table en plastique',
@@ -917,46 +1020,21 @@ return {
 		is_door = '-1',
 		is_table = true
 	},
-	
-	['tool_nails'] = {
-		label = 'Boite de clous',
-		description = 'Une boite de clous, certains ne sont pas complètement rouillés',
-		weight = 500,	
-		stack = false
-	},
-	
-	['tool_planks'] = {
-		label = 'Planches de bois',
-		description = 'Une planche de bois d\'arbre, bien dure, peut servir à beaucoup de choses..',
-		weight = 500,	
-		stack = false
-	},
-	
-	['garbage_jar'] = {
-		label = 'Bocal vide',
-		description = 'Un bocal, mais il est vide.. il a quand même un couvercle',
-		weight = 150,	
-		stack = false
-	},
-	
-	['tool_charcoal'] = {
-		label = 'Charbon de bois',
-		description = 'Le charbon de bois est un combustible obtenu en carbonisant du bois en atmosphère contrôlée par pyrolyse',
-		weight = 300,	
-		stack = false
-	},
-	
-	['tool_sewing_kit'] = {
-		label = 'Kit de couture',
-		description = 'Un nécessaire de couture, tout ce qu\'il faut pour coudre et recoudre et pas que des bouts de tissus',
-		weight = 150,	
-		stack = false
-	},
-	
-	['key_vehicle'] = {
-		label = 'Clé de véhicule',
-		description = 'Une clé de véhicule, on dirait qu\'elle a été limée pour servir de passe  partout',
-		weight = 10,	
-		stack = false
+		
+	['kit_firebarrel'] = {
+		label = 'Baril à feu',
+		description = 'Pour avoir un peu de lumière et de chaleur',
+		weight = 1500,	
+		stack = false,
+		consume = 0,
+		client = {
+			disable = { move = true, car = true, combat = true },
+			usetime = 0,
+			cancel = false,
+			export = 'mista_placing.Place'
+		},
+		model = `prop_hobo_stove_01`,
+		is_door = '-1',
+		is_table = true
 	},
 }
