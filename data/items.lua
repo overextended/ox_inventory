@@ -977,14 +977,14 @@ return {
 		is_stackable = true,
 		stash = {
 			label = 'Caisse à arme à feu',
-			slots = 12,
+			slots = 15,
 			weight = 50000
 		}
 	},
 
 	['kit_medstation'] = {
 		label = 'Armoire à pharmacie',
-		description = 'Comme une armoire, mais dédiée au rangement des médicaments et autres utensile de médecine.',
+		description = 'Comme une armoire, mais dédiée au rangement des médicaments et autres utensiles de médecine.',
 		weight = 2500,	
 		stack = false,
 		consume = 0,
