@@ -751,16 +751,12 @@ return {
 			cancel = false,
 			export = 'mista_placing.Place'
 		},
-		model = `prop_fnclink_06gatepost`,
+		model = -1934898817,
 		is_door = '1',
 		door_id = 1, -- in mista_doors config
 		axis = vector3(0, 0, 1),
         angle = 110,
         translation = nil,
-		attachment = {
-            model = -1934898817,
-            offset = vector3(-0.07,-0.022,0.33)
-        },
 	},
 	
 	['kit_woodwall'] = {
@@ -795,6 +791,23 @@ return {
 		is_door = '-1'
 	},
 	
+	['kit_metalplate1'] = {
+		label = 'Plaque de metal',
+		description = 'c\'est un test ^^',
+		weight = 2500,	
+		stack = false,
+		consume = 0,
+		client = {
+			disable = { move = true, car = true, combat = true },
+			usetime = 0,
+			cancel = false,
+			export = 'mista_placing.Place'
+		},
+		model = `prop_metal_plates01`,
+		is_door = '-1',
+		is_horizontal = true
+	},
+
 	['kit_woodpanel'] = {
 		label = 'Panneau de bois',
 		description = 'Comme un mur, mais un peu moins haut.',
