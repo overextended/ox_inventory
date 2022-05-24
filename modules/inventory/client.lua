@@ -72,6 +72,14 @@ local function openEvidence()
 	client.openInventory('policeevidence')
 end
 
+local function nearbyEvidence(self)
+	DrawMarker(2, self.coords.x, self.coords.y, self.coords.z, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.3, 0.2, 0.15, 30, 30, 150, 222, false, false, false, true, false, false, false)
+
+	if self.currentDistance < 1.2 and lib.points.closest().id == self.id and IsControlJustReleased(0, 38) then
+		openEvidence()
+	end
+end
+
 Inventory.Evidence = setmetatable(data('evidence'), {
 	__call = function(self)
 		for _, evidence in pairs(self) do
@@ -103,18 +111,13 @@ Inventory.Evidence = setmetatable(data('evidence'), {
 						})
 					end
 				else
-					local point = lib.points.new(evidence.coords, 16, { inv = 'policeevidence' })
-
-					function point:nearby()
-						DrawMarker(2, self.coords.x, self.coords.y, self.coords.z, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.3, 0.2, 0.15, 30, 30, 150, 222, false, false, false, true, false, false, false)
-
-						if self.currentDistance < 1.2 and lib.points.closest().id == self.id and IsControlJustReleased(0, 38) then
-							openEvidence()
-						end
-					end
-
-					evidence.point = point
 					evidence.target = nil
+					evidence.point = lib.points.new({
+						coords = evidence.coords,
+						distance = 16,
+						inv = 'policeevidence',
+						nearby = nearbyEvidence
+					})
 				end
 			end
 		end
@@ -123,6 +126,10 @@ Inventory.Evidence = setmetatable(data('evidence'), {
 
 local function OpenStash(data)
 	exports.ox_inventory:openInventory('stash', data)
+end
+
+local function nearbyStash(self)
+	DrawMarker(2, self.coords.x, self.coords.y, self.coords.z, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.3, 0.2, 0.15, 30, 30, 150, 222, false, false, false, true, false, false, false)
 end
 
 Inventory.Stashes = setmetatable(data('stashes'), {
@@ -160,14 +167,14 @@ Inventory.Stashes = setmetatable(data('stashes'), {
 						})
 					end
 				else
-					local point = lib.points.new(stash.coords, 16, { inv = 'stash', invId = id})
-
-					function point:nearby()
-						DrawMarker(2, self.coords.x, self.coords.y, self.coords.z, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.3, 0.2, 0.15, 30, 30, 150, 222, false, false, false, true, false, false, false)
-					end
-
-					stash.point = point
 					stash.target = nil
+					stash.point = lib.points.new({
+						coords = stash.coords,
+						distance = 16,
+						inv = 'stash',
+						invId = id,
+						nearby = nearbyStash
+					})
 				end
 			end
 		end

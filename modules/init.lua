@@ -104,7 +104,7 @@ if not success then
 	spamError(msg or "ox_inventory requires version '2.0.0' of 'oxmysql'")
 end
 
-success, msg = lib.checkDependency('ox_lib', '2.2.0')
+success, msg = lib.checkDependency('ox_lib', '2.3.2')
 
 if not success then
 	spamError(msg or "ox_inventory requires version '2.2.0' of 'ox_lib'")
