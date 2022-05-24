@@ -900,14 +900,13 @@ lib.callback.register('ox_inventory:swapItems', function(source, data)
 				fromInventory = (data.fromType == 'player' and playerInventory) or Inventory(playerInventory.open)
 			end
 
-			local sameInventory = fromInventory.id == toInventory.id or false
+			local sameInventory = fromInventory.id == toInventory.id
+			local toData = toInventory.items[data.toSlot]
 
-			if fromInventory.type == 'policeevidence' and not sameInventory then
-				local group, rank = server.hasGroup(toInventory, shared.police)
+			if not sameInventory and (fromInventory.type == 'policeevidence' or (toInventory.type == 'policeevidence' and toData)) then
+				local group, rank = server.hasGroup(playerInventory, shared.police)
 
-				if not group then return end
-
-				if server.evidencegrade > rank then
+				if not group or server.evidencegrade > rank then
 					return TriggerClientEvent('ox_lib:notify', source, { type = 'error', description = shared.locale('evidence_cannot_take') })
 				end
 			end
@@ -917,7 +916,7 @@ lib.callback.register('ox_inventory:swapItems', function(source, data)
 
 				if fromData and (not fromData.metadata.container or fromData.metadata.container and toInventory.type ~= 'container') then
 					if data.count > fromData.count then data.count = fromData.count end
-					local toData = toInventory.items[data.toSlot]
+
 					local container = (not sameInventory and playerInventory.containerSlot) and (fromInventory.type == 'container' and fromInventory or toInventory)
 					local containerItem = container and playerInventory.items[playerInventory.containerSlot]
 
