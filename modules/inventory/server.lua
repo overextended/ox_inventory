@@ -1380,7 +1380,7 @@ RegisterServerEvent('ox_inventory:updateWeapon', function(action, value, slot)
 				end
 				syncInventory = true
 			elseif action == 'ammo' then
-				if weapon.hash == `WEAPON_FIREEXTINGUISHER` or weapon.hash == `WEAPON_PETROLCAN` then
+				if weapon.name == 'WEAPON_FIREEXTINGUISHER' or weapon.name == 'WEAPON_PETROLCAN' then
 					weapon.metadata.durability = math.floor(value)
 					weapon.metadata.ammo = weapon.metadata.durability
 				elseif value < weapon.metadata.ammo then
