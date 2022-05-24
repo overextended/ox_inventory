@@ -471,7 +471,7 @@ local function registerCommands()
 						local vehicleClass = GetVehicleClass(vehicle)
 						local checkVehicle = Vehicles.Storage[vehicleHash]
 						-- No storage or no glovebox
-						if checkVehicle == 0 or checkVehicle == 2 or not (Vehicles.glovebox[vehicleClass] and not Vehicles.glovebox.models[vehicleHash]) then return end
+						if (checkVehicle == 0 or checkVehicle == 2) or (not Vehicles.glovebox[vehicleClass] and not Vehicles.glovebox.models[vehicleHash]) then return end
 
 						local plate = client.trimplate and string.strtrim(GetVehicleNumberPlateText(vehicle)) or GetVehicleNumberPlateText(vehicle)
 						client.openInventory('glovebox', {id = 'glove'..plate, class = vehicleClass, model = vehicleHash })
@@ -489,6 +489,7 @@ local function registerCommands()
 					local entity, type = Utils.Raycast()
 					if not entity then return end
 					local vehicle, position
+
 					if not shared.qtarget then
 						if type == 2 then vehicle, position = entity, GetEntityCoords(entity)
 						elseif type == 3 and table.contains(Inventory.Dumpsters, GetEntityModel(entity)) then
@@ -507,15 +508,20 @@ local function registerCommands()
 					elseif type == 2 then
 						vehicle, position = entity, GetEntityCoords(entity)
 					else return end
-					local lastVehicle = nil
-					local class = GetVehicleClass(vehicle)
-					local vehHash = GetEntityModel(vehicle)
 
-					if vehicle and Vehicles.trunk.models[vehHash] or Vehicles.trunk[class] and #(playerCoords - position) < 6 and NetworkGetEntityIsNetworked(vehicle) then
+					if not vehicle then return end
+
+					local lastVehicle
+					local vehicleHash = GetEntityModel(vehicle)
+					local vehicleClass = GetVehicleClass(vehicle)
+					local checkVehicle = Vehicles.Storage[vehicleHash]
+					-- No storage or no glovebox
+					if (checkVehicle == 0 or checkVehicle == 1) or (not Vehicles.trunk[vehicleClass] and not Vehicles.trunk.models[vehicleHash]) then return end
+
+					if #(playerCoords - position) < 6 and NetworkGetEntityIsNetworked(vehicle) then
 						local locked = GetVehicleDoorLockStatus(vehicle)
 
 						if locked == 0 or locked == 1 then
-							local checkVehicle = Vehicles.Storage[vehHash]
 							local open, vehBone
 
 							if checkVehicle == nil then -- No data, normal trunk
@@ -526,7 +532,7 @@ local function registerCommands()
 								return
 							end
 
-							if vehBone == -1 then vehBone = GetEntityBoneIndexByName(vehicle, Vehicles.trunk.boneIndex[vehHash] or 'platelight') end
+							if vehBone == -1 then vehBone = GetEntityBoneIndexByName(vehicle, Vehicles.trunk.boneIndex[vehicleHash] or 'platelight') end
 
 							position = GetWorldPositionOfEntityBone(vehicle, vehBone)
 							local distance = #(playerCoords - position)
@@ -536,7 +542,7 @@ local function registerCommands()
 								local plate = client.trimplate and string.strtrim(GetVehicleNumberPlateText(vehicle)) or GetVehicleNumberPlateText(vehicle)
 								TaskTurnPedToFaceCoord(cache.ped, position.x, position.y, position.z)
 								lastVehicle = vehicle
-								client.openInventory('trunk', {id='trunk'..plate, class=class, model=vehHash})
+								client.openInventory('trunk', {id='trunk'..plate, class = vehicleClass, model = vehicleHash})
 								local timeout = 20
 								repeat Wait(50)
 									timeout -= 1
@@ -742,9 +748,13 @@ end
 
 RegisterNetEvent('ox_inventory:createDrop', function(drop, data, owner, slot)
 	if drops then
-		local point = lib.points.new(data.coords, 16, { invId = drop, instance = data.instance })
-		point.nearby = nearbyDrop
-		drops[drop] = point
+		drops[drop] = lib.points.new({
+			coords = data.coords,
+			distance = 16,
+			invId = drop,
+			instance = data.instance,
+			nearby = nearbyDrop
+		})
 	end
 
 	if owner == PlayerData.source and invOpen and #(GetEntityCoords(cache.ped) - data.coords) <= 1 then
@@ -881,9 +891,13 @@ RegisterNetEvent('ox_inventory:setPlayerInventory', function(currentDrops, inven
 	drops = currentDrops
 
 	for k, v in pairs(currentDrops) do
-		local point = lib.points.new(v.coords, 16, { invId = k, instance = v.instance })
-		point.nearby = nearbyDrop
-		drops[k] = point
+		drops[k] = lib.points.new({
+			coords = v.coords,
+			distance = 16,
+			invId = k,
+			instance = v.instance,
+			nearby = nearbyDrop
+		})
 	end
 
 	while not uiLoaded do Wait(50) end
@@ -915,22 +929,29 @@ RegisterNetEvent('ox_inventory:setPlayerInventory', function(currentDrops, inven
 	lib.notify({ description = shared.locale('inventory_setup') })
 	Utils.WeaponWheel(false)
 
-	for id, data in pairs(data('licenses')) do
-		local point = lib.points.new(data.coords, 16, { inv = 'license', type = data.name, invId = id })
+	local function nearbyLicense(self)
+		DrawMarker(2, self.coords.x, self.coords.y, self.coords.z, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.3, 0.2, 0.15, 30, 150, 30, 222, false, false, false, true, false, false, false)
 
-		function point:nearby()
-			DrawMarker(2, self.coords.x, self.coords.y, self.coords.z, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.3, 0.2, 0.15, 30, 150, 30, 222, false, false, false, true, false, false, false)
-
-			if self.currentDistance < 1.2 and lib.points.closest().id == self.id and IsControlJustReleased(0, 38) then
-				lib.callback('ox_inventory:buyLicense', 1000, function(success, message)
-					if success then
-						lib.notify ({ description = shared.locale(message) })
-					elseif success == false then
-						lib.notify ({ type = 'error', description = shared.locale(message) })
-					end
-				end, self.invId)
-			end
+		if self.currentDistance < 1.2 and lib.points.closest().id == self.id and IsControlJustReleased(0, 38) then
+			lib.callback('ox_inventory:buyLicense', 1000, function(success, message)
+				if success then
+					lib.notify ({ description = shared.locale(message) })
+				elseif success == false then
+					lib.notify ({ type = 'error', description = shared.locale(message) })
+				end
+			end, self.invId)
 		end
+	end
+
+	for id, data in pairs(data('licenses')) do
+		lib.points.new({
+			coords = data.coords,
+			distance = 16,
+			inv = 'license',
+			type = data.name,
+			invId = id,
+			nearby = nearbyLicense
+		})
 	end
 
 	client.interval = SetInterval(function()

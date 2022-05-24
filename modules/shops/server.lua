@@ -9,22 +9,26 @@ local locations = shared.qtarget and 'targets' or 'locations'
 
 for shopName, shopDetails in pairs(data('shops')) do
 	Shops[shopName] = {}
+
 	if shopDetails[locations] then
+		local groups = shopDetails.groups or shopDetails.jobs
+
 		for i = 1, #shopDetails[locations] do
 			Shops[shopName][i] = {
 				label = shopDetails.name,
 				id = shopName..' '..i,
-				groups = shopDetails.groups or shopDetails.jobs,
+				groups = groups,
 				items = table.clone(shopDetails.inventory),
 				slots = #shopDetails.inventory,
 				type = 'shop',
 				coords = shared.qtarget and shopDetails[locations][i].loc or shopDetails[locations][i],
 				distance = shared.qtarget and shopDetails[locations][i].distance + 1 or nil,
 			}
+
 			for j = 1, Shops[shopName][i].slots do
 				local slot = Shops[shopName][i].items[j]
 
-				if slot.grade and not shopDetails.groups then
+				if slot.grade and not groups then
 					print(('^1attempted to restrict slot %s (%s) to grade %s, but %s has no job restriction^0'):format(i, slot.name, slot.grade, shopDetails.name))
 					slot.grade = nil
 				end
@@ -43,23 +47,27 @@ for shopName, shopDetails in pairs(data('shops')) do
 						currency = slot.currency,
 						grade = slot.grade
 					}
+
 					Shops[shopName][i].items[j] = slot
 				end
 			end
 		end
 	else
+		local groups = shopDetails.groups or shopDetails.jobs
+
 		Shops[shopName] = {
 			label = shopDetails.name,
 			id = shopName,
-			groups = shopDetails.groups or shopDetails.jobs,
+			groups = groups,
 			items = shopDetails.inventory,
 			slots = #shopDetails.inventory,
 			type = 'shop',
 		}
+
 		for i = 1, Shops[shopName].slots do
 			local slot = Shops[shopName].items[i]
 
-			if slot.grade and not shopDetails.groups then
+			if slot.grade and not groups then
 				print(('^1attempted to restrict slot %s (%s) to grade %s, but %s has no job restriction^0'):format(i, slot.name, slot.grade, shopDetails.name))
 				slot.grade = nil
 			end
@@ -78,6 +86,7 @@ for shopName, shopDetails in pairs(data('shops')) do
 					currency = slot.currency,
 					grade = slot.grade
 				}
+
 				Shops[shopName].items[i] = slot
 			end
 		end

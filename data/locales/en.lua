@@ -84,7 +84,6 @@ return {
 	['use_hotbar'] = "Use hotbar item %s~",
 	['no_durability'] = "%s durability is depleted",
 	['cannot_give'] = "Unable to give %s %s to the target",
-	['evidence_cannot_take'] = "Not high enough grade to take from evidence",
-	['dumpster'] = "Dumpster",
-	['foodstash'] = "Food stash",
+	['evidence_cannot_take'] = "You are not authorised to withdraw evidence",
+	['dumpster'] = "Dumpster"
 }
