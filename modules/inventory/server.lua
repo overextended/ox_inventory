@@ -750,11 +750,12 @@ function Inventory.CanCarryItem(inv, item, count, metadata)
 	if item then
 		inv = Inventory(inv)
 		local itemSlots, totalCount, emptySlots = Inventory.GetItemSlots(inv, item, metadata == nil and {} or type(metadata) == 'string' and {type=metadata} or metadata)
-
+		local weight = metadata?.weight or item.weight
+		
 		if next(itemSlots) or emptySlots > 0 then
-			if item.weight == 0 then return true end
+			if weight == 0 then return true end
 			if count == nil then count = 1 end
-			local newWeight = inv.weight + (item.weight * count)
+			local newWeight = inv.weight + (weight * count)
 
 			if newWeight > inv.maxWeight then
 				TriggerClientEvent('ox_lib:notify', inv.id, { type = 'error', description = shared.locale('cannot_carry') })
