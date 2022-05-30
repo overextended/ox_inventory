@@ -54,7 +54,7 @@ function Inventory.Search(search, item, metadata)
 				if v.name == item then
 					if not v.metadata then v.metadata = {} end
 					if not metadata or table.contains(v.metadata, metadata) then
-						if search == 1 then returnData[item][#returnData[item]+1] = PlayerData.inventory[v.slot]
+						if search == 1 then returnData[item][v.slot] = PlayerData.inventory[v.slot]
 						elseif search == 2 then
 							returnData[item] += v.count
 						end
