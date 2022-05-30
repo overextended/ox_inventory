@@ -62,7 +62,7 @@ function Inventory.Search(search, item, metadata)
 				end
 			end
 		end
-		if next(returnData) then return items == 1 and returnData[item[1]] or returnData end
+		if next(returnData) then return returnData end
 	end
 	return false
 end

@@ -638,7 +638,7 @@ function Inventory.Search(inv, search, items, metadata)
 
 						if not metadata or table.contains(v.metadata, metadata) then
 							if search == 1 then
-								returnData[item][#returnData[item]+1] = inv[v.slot]
+								returnData[item][v.slot] = inv[v.slot]
 							elseif search == 2 then
 								returnData[item] += v.count
 							end
@@ -647,7 +647,7 @@ function Inventory.Search(inv, search, items, metadata)
 				end
 			end
 
-			if next(returnData) then return itemCount == 1 and returnData[items[1]] or returnData end
+			if next(returnData) then return returnData end
 		end
 	end
 
