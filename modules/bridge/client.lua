@@ -40,6 +40,12 @@ end
 
 if shared.framework == 'ox' then
 	RegisterNetEvent('ox:playerLogout', onLogout)
+
+	RegisterNetEvent('ox:setGroup', function(name, grade)
+		PlayerData.groups[name] = grade
+		OnPlayerData('groups')
+	end)
+
 elseif shared.framework == 'esx' then
 	local ESX = exports.es_extended:getSharedObject()
 

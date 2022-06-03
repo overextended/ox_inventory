@@ -751,7 +751,7 @@ function Inventory.CanCarryItem(inv, item, count, metadata)
 		inv = Inventory(inv)
 		local itemSlots, totalCount, emptySlots = Inventory.GetItemSlots(inv, item, metadata == nil and {} or type(metadata) == 'string' and {type=metadata} or metadata)
 		local weight = metadata?.weight or item.weight
-		
+
 		if next(itemSlots) or emptySlots > 0 then
 			if weight == 0 then return true end
 			if count == nil then count = 1 end
@@ -831,7 +831,7 @@ local function CustomDrop(prefix, items, coords, slots, maxWeight, instance)
 	local drop = generateDropId()
 	local inventory = Inventory.Create(drop, prefix..' '..drop, 'drop', slots or shared.playerslots, 0, maxWeight or shared.playerweight, false)
 	local items, weight = generateItems(inventory, 'drop', items)
-	
+
 	inventory.items = items
 	inventory.weight = weight
 	inventory.coords = coords
@@ -1217,10 +1217,10 @@ else
 		playerDropped(source)
 	end)
 
-	AddEventHandler('ox_groups:setGroup', function(source, group, rank)
+	AddEventHandler('ox:setGroup', function(source, name, grade)
 		local inventory = Inventories[source]
 		if inventory then
-			inventory.player.groups[group] = rank
+			inventory.player.groups[name] = grade
 		end
 	end)
 end
