@@ -329,12 +329,26 @@ local function useSlot(slot)
 								local missingAmmo = 0
 								local newAmmo = 0
 								missingAmmo = maxAmmo - currentAmmo
+
 								if missingAmmo > data.count then newAmmo = currentAmmo + data.count else newAmmo = maxAmmo end
 								if newAmmo < 0 then newAmmo = 0 end
+
 								SetPedAmmo(playerPed, currentWeapon.hash, newAmmo)
-								MakePedReload(playerPed)
+
+								if not cache.vehicle then
+									MakePedReload(playerPed)
+								else
+									lib.disableControls:Add(68)
+									RefillAmmoInstantly(playerPed)
+								end
+
 								currentWeapon.metadata.ammo = newAmmo
 								TriggerServerEvent('ox_inventory:updateWeapon', 'load', currentWeapon.metadata.ammo)
+
+								if cache.vehicle then
+									Wait(300)
+									lib.disableControls:Remove(68)
+								end
 							end
 						end
 					end)
@@ -787,9 +801,9 @@ local function setStateBagHandler(id)
 		elseif key == 'invBusy' then
 			invBusy = value
 			if value then
-				lib.disableControls:Add(23, 25, 36, 263)
+				lib.disableControls:Add(23, 25, 36, 68, 263)
 			else
-				lib.disableControls:Remove(23, 25, 36, 263)
+				lib.disableControls:Remove(23, 25, 36, 68, 263)
 			end
 		elseif key == 'instance' then
 			currentInstance = value
