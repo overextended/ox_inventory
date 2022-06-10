@@ -75,7 +75,9 @@ Item('parachute', function(data, slot)
 end)
 
 Item('phone', function(data, slot)
-	exports.npwd:setPhoneVisible(not exports.npwd:isPhoneVisible())
+	if GetResourceState('npwd') == 'started' then
+		exports.npwd:setPhoneVisible(not exports.npwd:isPhoneVisible())
+	end
 end)
 
 -----------------------------------------------------------------------------------------------
