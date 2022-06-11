@@ -13,7 +13,7 @@ local function setPlayerInventory(player, data)
 	while not shared.ready do Wait(0) end
 
 	if not data then
-		data = MySQL:loadPlayer(player.identifier)
+		data = db.loadPlayer(player.identifier)
 	end
 
 	local inventory = {}
@@ -136,7 +136,7 @@ lib.callback.register('ox_inventory:buyLicense', function(source, id)
 		local license = Licenses[id]
 		if license then
 			local inventory = Inventory(source)
-			local result = MySQL:selectLicense(license.name, inventory.owner)
+			local result = db.selectLicense(license.name, inventory.owner)
 
 			if result then
 				return false, 'has_weapon_license'

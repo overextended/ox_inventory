@@ -265,14 +265,14 @@ function Inventory.Save(inv)
 	local inventory = json.encode(minimal(inv))
 
 	if inv.type == 'player' then
-		MySQL:savePlayer(inv.owner, inventory)
+		db.savePlayer(inv.owner, inventory)
 	else
 		if inv.type == 'trunk' then
-			MySQL:saveTrunk(Inventory.GetPlateFromId(inv.id), inventory)
+			db.saveTrunk(Inventory.GetPlateFromId(inv.id), inventory)
 		elseif inv.type == 'glovebox' then
-			MySQL:saveGlovebox(Inventory.GetPlateFromId(inv.id), inventory)
+			db.saveGlovebox(Inventory.GetPlateFromId(inv.id), inventory)
 		else
-			MySQL:saveStash(inv.owner, inv.dbId, inventory)
+			db.saveStash(inv.owner, inv.dbId, inventory)
 		end
 		inv.changed = false
 	end
@@ -348,7 +348,7 @@ function Inventory.Load(id, invType, owner)
 				datastore = true
 			end
 		elseif invType == 'trunk' or invType == 'glovebox' then
-			result = invType == 'trunk' and MySQL:loadTrunk( Inventory.GetPlateFromId(id) ) or MySQL:loadGlovebox( Inventory.GetPlateFromId(id) )
+			result = invType == 'trunk' and db.loadTrunk( Inventory.GetPlateFromId(id) ) or db.loadGlovebox( Inventory.GetPlateFromId(id) )
 
 			if not result then
 				if server.randomloot then
@@ -358,7 +358,7 @@ function Inventory.Load(id, invType, owner)
 				end
 			else result = result[invType] end
 		else
-			result = MySQL:loadStash(owner or '', id)
+			result = db.loadStash(owner or '', id)
 		end
 	end
 
@@ -1130,7 +1130,7 @@ end)
 function Inventory.Confiscate(source)
 	local inv = Inventories[source]
 	if inv?.player then
-		MySQL:saveStash(inv.owner, inv.owner, json.encode(minimal(inv)))
+		db.saveStash(inv.owner, inv.owner, json.encode(minimal(inv)))
 		table.wipe(inv.items)
 		inv.weight = 0
 		TriggerClientEvent('ox_inventory:inventoryConfiscated', inv.id)
@@ -1256,7 +1256,7 @@ SetInterval(function()
 		end
 	end
 
-	MySQL:saveInventories(parameters[1], parameters[2], parameters[3])
+	db.saveInventories(parameters[1], parameters[2], parameters[3])
 end, 600000)
 
 local function saveInventories(lock)
@@ -1274,7 +1274,7 @@ local function saveInventories(lock)
 		end
 	end
 
-	MySQL:saveInventories(parameters[1], parameters[2], parameters[3])
+	db.saveInventories(parameters[1], parameters[2], parameters[3])
 end
 
 AddEventHandler('txAdmin:events:scheduledRestart', function(eventData)
