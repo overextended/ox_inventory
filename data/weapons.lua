@@ -182,6 +182,12 @@ return {
 			durability = 0.2,
 			ammoname = 'ammo-38'
 		},
+		
+		['WEAPON_EMPLAUNCHER'] = {
+			label = 'Compact EMP Launcher',
+			weight = 2750,
+			durability = 0.2
+		},
 
 		['WEAPON_FIREEXTINGUISHER'] = {
 			label = 'Fire Extinguisher',
