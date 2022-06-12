@@ -20,8 +20,8 @@ do
 		vehicleColumn = 'owned_vehicles'
 	end
 
-	for _, v in pairs(Query) do
-		v = v:gsub('{user_column}', playerColumn):gsub('{vehicle_column}', vehicleColumn)
+	for k, v in pairs(Query) do
+		Query[k] = v:gsub('{user_column}', playerColumn):gsub('{vehicle_column}', vehicleColumn)
 	end
 end
 
