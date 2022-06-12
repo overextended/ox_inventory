@@ -393,6 +393,12 @@ return {
 			label = 'Gas Can',
 			weight = 12000,
 		},
+		
+		['WEAPON_PERICOPISTOL'] = {
+			label = 'Perico Pistol',
+			weight = 1750,
+			durability = 0.1
+		},
 
 		['WEAPON_PIPEBOMB'] = {
 			label = 'Pipe Bomb',
