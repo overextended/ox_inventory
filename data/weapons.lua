@@ -249,6 +249,12 @@ return {
 			weight = 1000,
 			durability = 0.1,
 		},
+		
+		['WEAPON_HEAVYRIFLE'] = {
+			label = 'Heavy Rifle',
+			weight = 2750,
+			durability = 0.2
+		},
 
 		['WEAPON_HAZARDCAN'] = {
 			label = 'Hazard Can',
