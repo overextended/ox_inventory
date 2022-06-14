@@ -12,12 +12,15 @@ RegisterNetEvent('ox_inventory:clearWeapons', function()
 end)
 
 local StashTarget
+
 exports('setStashTarget', function(id, owner)
 	StashTarget = id and {id=id, owner=owner}
 end)
 
 local invBusy = true
 local invOpen = false
+
+plyState:set('invBusy', true, false)
 
 local function canOpenInventory()
 	return PlayerData.loaded
@@ -933,9 +936,6 @@ RegisterNetEvent('ox_inventory:setPlayerInventory', function(currentDrops, inven
 	Inventory.Stashes()
 	Inventory.Evidence()
 	registerCommands()
-
-	plyState:set('invBusy', false, false)
-	plyState:set('invOpen', false, false)
 	TriggerEvent('ox_inventory:updateInventory', PlayerData.inventory)
 	lib.notify({ description = shared.locale('inventory_setup') })
 	Utils.WeaponWheel(false)
@@ -1101,6 +1101,8 @@ RegisterNetEvent('ox_inventory:setPlayerInventory', function(currentDrops, inven
 		end
 	end, 0, lib.disableControls)
 
+	plyState:set('invBusy', false, false)
+	plyState:set('invOpen', false, false)
 	collectgarbage('collect')
 end)
 
