@@ -21,7 +21,10 @@ local function setPlayerInventory(player, data)
 
 	if data then
 		for _, v in pairs(data) do
-			if type(v) == 'number' then break end
+			if type(v) == 'number' then
+				return error(('Inventory for player.%s (%s) contains invalid data. Ensure you have converted inventories to the correct format.'):format(player.source, GetPlayerName(player.source)))
+			end
+
 			local item = Items(v.name)
 
 			if item then
