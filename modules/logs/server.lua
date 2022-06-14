@@ -20,7 +20,7 @@ if key ~= '' then
 		local ddtags = string.strjoin(',', string.tostringall(...))
 		PerformHttpRequest(site, function(status)
 			if status ~= 202 then
-				print(('unable to submit logs to %s (%s)'):format(site, response[status]))
+				print(('unable to submit logs to %s (%s)'):format(site, response[status] or status))
 			end
 		end, 'POST', json.encode({
 			hostname = GetConvar('datadog:hostname', 'FXServer'),
