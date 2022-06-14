@@ -19,6 +19,7 @@ end)
 
 local invBusy = true
 local invOpen = false
+local plyState = LocalPlayer.state
 
 plyState:set('invBusy', true, false)
 
@@ -54,8 +55,6 @@ local function closeTrunk()
 		end)
 	end
 end
-
-local plyState = LocalPlayer.state
 
 ---@param inv string inventory type
 ---@param data table id and owner
