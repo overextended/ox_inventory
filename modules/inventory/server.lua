@@ -1203,7 +1203,16 @@ local function playerDropped(source)
 	end
 end
 
-if shared.framework == 'esx' then
+if shared.framework == 'ox' then
+	AddEventHandler('ox:playerLogout', playerDropped)
+
+	AddEventHandler('ox:setGroup', function(source, name, grade)
+		local inventory = Inventories[source]
+		if inventory then
+			inventory.player.groups[name] = grade
+		end
+	end)
+elseif shared.framework == 'esx' then
 	AddEventHandler('esx:playerDropped', playerDropped)
 
 	AddEventHandler('esx:setJob', function(source, job)
@@ -1215,13 +1224,6 @@ if shared.framework == 'esx' then
 else
 	AddEventHandler('playerDropped', function()
 		playerDropped(source)
-	end)
-
-	AddEventHandler('ox:setGroup', function(source, name, grade)
-		local inventory = Inventories[source]
-		if inventory then
-			inventory.player.groups[name] = grade
-		end
 	end)
 end
 
