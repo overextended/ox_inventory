@@ -75,7 +75,13 @@ Item('parachute', function(data, slot)
 end)
 
 Item('phone', function(data, slot)
-	exports.npwd:setPhoneVisible(not exports.npwd:isPhoneVisible())
+	local success, result = pcall(function()
+		return exports.npwd:isPhoneVisible()
+	end)
+
+	if success then
+		exports.npwd:setPhoneVisible(not result)
+	end
 end)
 
 -----------------------------------------------------------------------------------------------

@@ -126,14 +126,14 @@ return {
 		consume = 0,
 		client = {
 			add = function(total)
-				if total > 0 and GetResourceState('npwd') == 'started' then
-					exports.npwd:setPhoneDisabled(false)
+				if total > 0 then
+					pcall(function() return exports.npwd:setPhoneDisabled(false) end)
 				end
 			end,
 
 			remove = function(total)
-				if total < 1 and GetResourceState('npwd') == 'started' then
-					exports.npwd:setPhoneDisabled(true)
+				if total < 1 then
+					pcall(function() return exports.npwd:setPhoneDisabled(true) end)
 				end
 			end
 		}
