@@ -129,7 +129,7 @@ lib.callback.register('ox_inventory:openInventory', function(source, inv, data)
 
 	else left.open = true end
 
-	return {id=left.id, label=left.label, type=left.type, slots=left.slots, weight=left.weight, maxWeight=left.maxWeight}, right and {id=right.id, label=right.label, type=right.type, slots=right.slots, weight=right.weight, maxWeight=right.maxWeight, items=right.items, coords=right.coords, distance=right.distance}
+	return {id=left.id, label=left.label, type=left.type, slots=left.slots, weight=left.weight, maxWeight=left.maxWeight}, right and {id=right.id, label=right.type == 'otherplayer' and '' or right.label, type=right.type, slots=right.slots, weight=right.weight, maxWeight=right.maxWeight, items=right.items, coords=right.coords, distance=right.distance}
 end)
 
 local Licenses = data 'licenses'
