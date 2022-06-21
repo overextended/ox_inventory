@@ -74,30 +74,26 @@ const InventoryContext: React.FC<{
               >
                 {Locale.ui_copy}
               </Item>
-              {props.item.metadata?.components?.length > 0 && (
-                <Submenu label={Locale.ui_removeattachments}>
-                  {props.item.metadata.components.map((component: string, index: number) => (
-                    <Item
-                      key={index}
-                      onClick={handleClick}
-                      data={{ action: 'remove', component: component, slot: props.item.slot }}
-                    >
-                      {Items[component]?.label}
-                    </Item>
-                  ))}
-                </Submenu>
-              )}
             </>
+          )}
+          {props.item.metadata?.components?.length > 0 && (
+            <Submenu label={Locale.ui_removeattachments}>
+              {props.item.metadata?.components.map((component: string, index: number) => (
+                <Item
+                  key={index}
+                  onClick={handleClick}
+                  data={{ action: 'remove', component: component, slot: props.item.slot }}
+                >
+                  {Items[component]?.label}
+                </Item>
+              ))}
+            </Submenu>
           )}
           {(Items[props.item.name]?.buttons?.length || 0) > 0 && (
             <>
               <Separator />
               {Items[props.item.name]?.buttons?.map((label: string, index: number) => (
-                <Item
-                  key={index}
-                  onClick={handleClick}
-                  data={{ action: 'custom', id: index }}
-                >
+                <Item key={index} onClick={handleClick} data={{ action: 'custom', id: index }}>
                   {label}
                 </Item>
               ))}
