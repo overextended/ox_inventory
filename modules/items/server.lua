@@ -203,6 +203,10 @@ function Items.Metadata(inv, item, metadata, count)
 			metadata.registered = type(metadata.registered) == 'string' and metadata.registered or inv.player.name
 			metadata.serial = GenerateSerial(metadata.serial)
 		end
+
+		if item.hash == `WEAPON_PETROLCAN` or item.hash == `WEAPON_HAZARDCAN` or item.hash == `WEAPON_FIREEXTINGUISHER` then
+			metadata.ammo = metadata.durability
+		end
 	else
 		local container = Items.containers[item.name]
 
