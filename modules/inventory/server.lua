@@ -154,7 +154,46 @@ function Inventory.SetSlot(inv, item, count, metadata, slot)
 end
 
 local Items
-CreateThread(function() Items = server.items end)
+
+CreateThread(function()
+	Items = server.items
+
+	-- Require "set inventory:weaponmismatch 1" to enable experimental weapon checks.
+	-- Maybe need some tweaks, and will definitely need more hashes added to the ignore list.
+	-- May even use weaponDamageEvent, depending on performance..
+	if GetConvarInt('inventory:weaponmismatch', 0) == 0 then return end
+
+	local ignore = {
+		[0] = 1, -- GetSelectedPedWeapon returns 0 when using a firetruk; likely some other cases
+		[966099553] = 1, -- I don't know
+		[`WEAPON_UNARMED`] = 1,
+		[`WEAPON_ANIMAL`] = 1,
+		[`WEAPON_COUGAR`] = 1,
+	}
+
+	while true do
+		Wait(30000)
+
+		for id, inv in pairs(Inventories) do
+			if inv.player then
+				local hash = GetSelectedPedWeapon(inv.player.ped)
+
+				if not ignore[hash] then
+					local currentWeapon = inv.items[inv.weapon]?.name
+
+					if currentWeapon then
+						currentWeapon = Items(currentWeapon)
+					end
+
+					if not currentWeapon or currentWeapon.hash ~= hash then
+						print(('Player.%s weapon mismatch (%s). Current weapon: %s'):format(id, hash, currentWeapon and ('%s (%s)'):format(currentWeapon.name, currentWeapon.hash) or nil))
+						RemoveAllPedWeapons(id, true)
+					end
+				end
+			end
+		end
+	end
+end)
 
 ---@param item table
 ---@param slot table
