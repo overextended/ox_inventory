@@ -182,12 +182,18 @@ CreateThread(function()
 					local currentWeapon = inv.items[inv.weapon]?.name
 
 					if currentWeapon then
-						currentWeapon = Items(currentWeapon)
+						local currentHash = Items(currentWeapon).hash
+
+						if currentHash ~= hash then
+							inv.weapon = nil
+							print(('Player.%s weapon mismatch (%s). Current weapon: %s (%s)'):format(id, hash, currentWeapon, currentHash))
+						end
+					else
+						print(('Player.%s weapon mismatch (%s)'):format(id, hash, currentWeapon))
 					end
 
-					if not currentWeapon or currentWeapon.hash ~= hash then
-						print(('Player.%s weapon mismatch (%s). Current weapon: %s'):format(id, hash, currentWeapon and ('%s (%s)'):format(currentWeapon.name, currentWeapon.hash) or nil))
-						RemoveAllPedWeapons(id, true)
+					if not inv.weapon then
+						TriggerClientEvent('ox_inventory:disarm', id)
 					end
 				end
 			end
