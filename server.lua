@@ -43,6 +43,7 @@ local function setPlayerInventory(player, data)
 	player.source = tonumber(player.source)
 	local inv = Inventory.Create(player.source, player.name, 'player', shared.playerslots, totalWeight, shared.playerweight, player.identifier, inventory)
 	inv.player = server.setPlayerData(player)
+	inv.player.ped = GetPlayerPed(player.source)
 
 	if shared.framework == 'esx' then Inventory.SyncInventory(inv) end
 	TriggerClientEvent('ox_inventory:setPlayerInventory', player.source, Inventory.Drops, inventory, totalWeight, server.UsableItemsCallbacks, inv.player, player.source)
