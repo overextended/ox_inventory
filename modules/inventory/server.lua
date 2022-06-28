@@ -944,6 +944,10 @@ lib.callback.register('ox_inventory:swapItems', function(source, data)
 			if not fromInventory then
 				Wait(0)
 				fromInventory = (data.fromType == 'player' and playerInventory) or Inventory(playerInventory.open)
+
+				if not fromInventory then
+					return shared.warning('Unknown error occured during swapItems\n', json.encode(data, {indent = true}))
+				end
 			end
 
 			local sameInventory = fromInventory.id == toInventory.id
