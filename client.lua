@@ -828,7 +828,6 @@ lib.onCache('seat', function(seat)
 
 		SetTimeout(0, function()
 			if DoesVehicleHaveWeapons(cache.vehicle) then
-				Utils.WeaponWheel(true)
 				local vehicleModel = GetEntityModel(cache.vehicle)
 
 				if seat == -1 then
@@ -836,7 +835,7 @@ lib.onCache('seat', function(seat)
 						SetCurrentPedVehicleWeapon(cache.ped, `VEHICLE_WEAPON_WATER_CANNON`)
 					end
 				end
-			end
+			else Utils.WeaponWheel(false) end
 		end)
 	else Utils.WeaponWheel(false) end
 end)
