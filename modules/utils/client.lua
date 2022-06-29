@@ -72,10 +72,10 @@ exports('notify', Utils.Notify)
 function Utils.ItemNotify(data) SendNUIMessage({action = 'itemNotify', data = data}) end
 
 function Utils.Disarm(currentWeapon, newSlot)
-	SetWeaponsNoAutoswap(1)
-	SetWeaponsNoAutoreload(1)
-	SetPedCanSwitchWeapon(cache.ped, 0)
-	SetPedEnableWeaponBlocking(cache.ped, 1)
+	SetWeaponsNoAutoswap(true)
+	SetWeaponsNoAutoreload(true)
+	SetPedCanSwitchWeapon(cache.ped, false)
+	SetPedEnableWeaponBlocking(cache.ped, true)
 
 	if currentWeapon then
 		local ammo = currentWeapon.ammo and GetAmmoInPedWeapon(cache.ped, currentWeapon.hash)
@@ -102,6 +102,9 @@ function Utils.Disarm(currentWeapon, newSlot)
 		end
 
 		currentWeapon = nil
+		TriggerEvent('ox_inventory:currentWeapon')
+	else
+		RemoveAllPedWeapons(cache.ped, true)
 		TriggerEvent('ox_inventory:currentWeapon')
 	end
 end
