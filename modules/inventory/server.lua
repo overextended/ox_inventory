@@ -329,19 +329,22 @@ end
 
 function Inventory.Save(inv)
 	inv = Inventory(inv)
-	local inventory = json.encode(minimal(inv))
 
-	if inv.type == 'player' then
-		db.savePlayer(inv.owner, inventory)
-	else
-		if inv.type == 'trunk' then
-			db.saveTrunk(Inventory.GetPlateFromId(inv.id), inventory)
-		elseif inv.type == 'glovebox' then
-			db.saveGlovebox(Inventory.GetPlateFromId(inv.id), inventory)
+	if inv then
+		local items = json.encode(minimal(inv))
+
+		if inv.type == 'player' then
+			db.savePlayer(inv.owner, items)
 		else
-			db.saveStash(inv.owner, inv.dbId, inventory)
+			if inv.type == 'trunk' then
+				db.saveTrunk(Inventory.GetPlateFromId(inv.id), items)
+			elseif inv.type == 'glovebox' then
+				db.saveGlovebox(Inventory.GetPlateFromId(inv.id), items)
+			else
+				db.saveStash(inv.owner, inv.dbId, items)
+			end
+			inv.changed = false
 		end
-		inv.changed = false
 	end
 end
 
