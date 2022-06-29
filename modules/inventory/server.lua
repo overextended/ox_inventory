@@ -265,21 +265,21 @@ function Inventory.Create(id, label, invType, slots, weight, maxWeight, owner, i
 			groups = groups,
 		}
 
-		if self.type == 'drop' then
+		if invType == 'drop' then
 			self.datastore = true
-		else
+		elseif invType ~= 'glovebox' and invType ~= 'trunk' then
 			self.changed = false
-			self.dbId = self.id
+			self.dbId = id
 
-			if self.type ~= 'player' and self.owner and type(self.owner) ~= 'boolean' then
-				self.id = ('%s:%s'):format(self.id, self.owner)
+			if invType ~= 'player' and owner and type(owner) ~= 'boolean' then
+				self.id = ('%s:%s'):format(self.id, owner)
 			end
 		end
 
-		if not self.items then
-			self.items, self.weight, self.datastore = Inventory.Load(self.dbId, self.type, self.owner)
-		elseif self.weight == 0 and next(self.items) then
-			self.weight = Inventory.CalculateWeight(self.items)
+		if not items then
+			self.items, self.weight, self.datastore = Inventory.Load(self.dbId, invType, owner)
+		elseif weight == 0 and next(items) then
+			self.weight = Inventory.CalculateWeight(items)
 		end
 
 		Inventories[self.id] = self
@@ -303,6 +303,28 @@ function Inventory.GetPlateFromId(id)
 	end
 
 	return id:sub(6)
+end
+
+---Update the internal reference to vehicle stashes. Does not trigger a save or update the database.
+---@param oldPlate string
+---@param newPlate string
+function Inventory.UpdateVehicle(oldPlate, newPlate)
+	local trunk = Inventory('trunk'..oldPlate)
+	local glove = Inventory('glove'..oldPlate)
+
+	if trunk then
+		Inventories[trunk.id] = nil
+		trunk.label = newPlate
+		trunk.id = 'trunk'..newPlate
+		Inventories[trunk.id] = trunk
+	end
+
+	if glove then
+		Inventories[glove.id] = nil
+		glove.label = newPlate
+		glove.id = 'glove'..newPlate
+		Inventories[glove.id] = glove
+	end
 end
 
 function Inventory.Save(inv)
