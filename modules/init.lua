@@ -1,7 +1,7 @@
 IsDuplicityVersion = IsDuplicityVersion()
 shared = {
 	resource = GetCurrentResourceName(),
-	framework = GetConvar('inventory:framework', 'esx'),
+	framework = GetConvar('inventory:framework', 'ox'),
 	locale = GetConvar('inventory:locale', 'en'),
 	playerslots = GetConvarInt('inventory:slots', 50),
 	playerweight = GetConvarInt('inventory:weight', 30000),
@@ -44,9 +44,10 @@ if IsDuplicityVersion then
 		]])),
 		dumpsterloot = json.decode(GetConvar('inventory:dumpsterloot', [[
 			[
-				["mustard", 1, 1],
 				["garbage", 1, 3],
 				["money", 1, 10],
+				["beer", 1, 10],
+				["snickers", 1, 10],
 				["burger", 1, 1]
 			]
 		]])),

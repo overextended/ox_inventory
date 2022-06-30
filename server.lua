@@ -13,7 +13,7 @@ local function setPlayerInventory(player, data)
 	while not shared.ready do Wait(0) end
 
 	if not data then
-		data = db.loadPlayer(player.identifier)
+		data = MySQL:loadPlayer(player.identifier)
 	end
 
 	local inventory = {}
@@ -21,10 +21,7 @@ local function setPlayerInventory(player, data)
 
 	if data then
 		for _, v in pairs(data) do
-			if type(v) == 'number' then
-				return error(('Inventory for player.%s (%s) contains invalid data. Ensure you have converted inventories to the correct format.'):format(player.source, GetPlayerName(player.source)))
-			end
-
+			if type(v) == 'number' then break end
 			local item = Items(v.name)
 
 			if item then
@@ -139,7 +136,7 @@ lib.callback.register('ox_inventory:buyLicense', function(source, id)
 		local license = Licenses[id]
 		if license then
 			local inventory = Inventory(source)
-			local result = db.selectLicense(license.name, inventory.owner)
+			local result = MySQL:selectLicense(license.name, inventory.owner)
 
 			if result then
 				return false, 'has_weapon_license'

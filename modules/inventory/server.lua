@@ -265,14 +265,14 @@ function Inventory.Save(inv)
 	local inventory = json.encode(minimal(inv))
 
 	if inv.type == 'player' then
-		db.savePlayer(inv.owner, inventory)
+		MySQL:savePlayer(inv.owner, inventory)
 	else
 		if inv.type == 'trunk' then
-			db.saveTrunk(Inventory.GetPlateFromId(inv.id), inventory)
+			MySQL:saveTrunk(Inventory.GetPlateFromId(inv.id), inventory)
 		elseif inv.type == 'glovebox' then
-			db.saveGlovebox(Inventory.GetPlateFromId(inv.id), inventory)
+			MySQL:saveGlovebox(Inventory.GetPlateFromId(inv.id), inventory)
 		else
-			db.saveStash(inv.owner, inv.dbId, inventory)
+			MySQL:saveStash(inv.owner, inv.dbId, inventory)
 		end
 		inv.changed = false
 	end
@@ -348,7 +348,7 @@ function Inventory.Load(id, invType, owner)
 				datastore = true
 			end
 		elseif invType == 'trunk' or invType == 'glovebox' then
-			result = invType == 'trunk' and db.loadTrunk( Inventory.GetPlateFromId(id) ) or db.loadGlovebox( Inventory.GetPlateFromId(id) )
+			result = invType == 'trunk' and MySQL:loadTrunk( Inventory.GetPlateFromId(id) ) or MySQL:loadGlovebox( Inventory.GetPlateFromId(id) )
 
 			if not result then
 				if server.randomloot then
@@ -358,7 +358,7 @@ function Inventory.Load(id, invType, owner)
 				end
 			else result = result[invType] end
 		else
-			result = db.loadStash(owner or '', id)
+			result = MySQL:loadStash(owner or '', id)
 		end
 	end
 
@@ -750,12 +750,11 @@ function Inventory.CanCarryItem(inv, item, count, metadata)
 	if item then
 		inv = Inventory(inv)
 		local itemSlots, totalCount, emptySlots = Inventory.GetItemSlots(inv, item, metadata == nil and {} or type(metadata) == 'string' and {type=metadata} or metadata)
-		local weight = metadata?.weight or item.weight
 
 		if next(itemSlots) or emptySlots > 0 then
-			if weight == 0 then return true end
+			if item.weight == 0 then return true end
 			if count == nil then count = 1 end
-			local newWeight = inv.weight + (weight * count)
+			local newWeight = inv.weight + (item.weight * count)
 
 			if newWeight > inv.maxWeight then
 				TriggerClientEvent('ox_lib:notify', inv.id, { type = 'error', description = shared.locale('cannot_carry') })
@@ -1130,7 +1129,7 @@ end)
 function Inventory.Confiscate(source)
 	local inv = Inventories[source]
 	if inv?.player then
-		db.saveStash(inv.owner, inv.owner, json.encode(minimal(inv)))
+		MySQL:saveStash(inv.owner, inv.owner, json.encode(minimal(inv)))
 		table.wipe(inv.items)
 		inv.weight = 0
 		TriggerClientEvent('ox_inventory:inventoryConfiscated', inv.id)
@@ -1217,10 +1216,10 @@ else
 		playerDropped(source)
 	end)
 
-	AddEventHandler('ox:setGroup', function(source, name, grade)
+	AddEventHandler('ox_core:setGroup', function(source, group, rank)
 		local inventory = Inventories[source]
 		if inventory then
-			inventory.player.groups[name] = grade
+			inventory.player.groups[group] = rank
 		end
 	end)
 end
@@ -1256,7 +1255,7 @@ SetInterval(function()
 		end
 	end
 
-	db.saveInventories(parameters[1], parameters[2], parameters[3])
+	MySQL:saveInventories(parameters[1], parameters[2], parameters[3])
 end, 600000)
 
 local function saveInventories(lock)
@@ -1274,7 +1273,7 @@ local function saveInventories(lock)
 		end
 	end
 
-	db.saveInventories(parameters[1], parameters[2], parameters[3])
+	MySQL:saveInventories(parameters[1], parameters[2], parameters[3])
 end
 
 AddEventHandler('txAdmin:events:scheduledRestart', function(eventData)
@@ -1409,7 +1408,7 @@ RegisterServerEvent('ox_inventory:updateWeapon', function(action, value, slot)
 	end
 end)
 
-lib.addCommand('group.admin', {'additem', 'giveitem'}, function(source, args)
+lib.addCommand('group.admin', 'giveitem', function(source, args)
 	args.item = Items(args.item)
 	if args.item and args.count > 0 then
 		Inventory.AddItem(args.target, args.item.name, args.count, args.metatype)
@@ -1432,21 +1431,6 @@ lib.addCommand('group.admin', 'removeitem', function(source, args)
 		source = Inventories[source] or {label = 'console', owner = 'console'}
 
 		Log(('%s took %sx %s from %s'):format(source.label, args.count, args.item.name, inventory.label),
-			source.owner,
-			'admin', inventory.owner
-		)
-
-	end
-end, {'target:number', 'item:string', 'count:number', 'metatype:?string'})
-
-lib.addCommand('group.admin', 'setitem', function(source, args)
-	args.item = Items(args.item)
-	if args.item and args.count >= 0 then
-		Inventory.SetItem(args.target, args.item.name, args.count, args.metaType)
-		local inventory = Inventories[args.target]
-		source = Inventories[source] or {label = 'console', owner = 'console'}
-
-		Log(('%s set %s\' %s count to %sx'):format(source.label, inventory.label, args.item.name, args.count),
 			source.owner,
 			'admin', inventory.owner
 		)

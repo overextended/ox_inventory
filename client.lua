@@ -12,16 +12,12 @@ RegisterNetEvent('ox_inventory:clearWeapons', function()
 end)
 
 local StashTarget
-
 exports('setStashTarget', function(id, owner)
 	StashTarget = id and {id=id, owner=owner}
 end)
 
 local invBusy = true
 local invOpen = false
-local plyState = LocalPlayer.state
-
-plyState:set('invBusy', true, false)
 
 local function canOpenInventory()
 	return PlayerData.loaded
@@ -55,6 +51,8 @@ local function closeTrunk()
 		end)
 	end
 end
+
+local plyState = LocalPlayer.state
 
 ---@param inv string inventory type
 ---@param data table id and owner
@@ -183,9 +181,10 @@ local function useItem(data, cb)
 				end
 			end
 
-			local success = (not data.usetime or lib.progressBar({
+			local success = (not data.usetime or lib.progressCircle({
 				duration = data.usetime,
 				label = data.label or shared.locale('using', result.label),
+				position = "bottom",
 				useWhileDead = data.useWhileDead,
 				canCancel = data.cancel,
 				disable = data.disable,
@@ -246,8 +245,8 @@ local function useSlot(slot)
 
 			if data.export then
 				return data.export(data, {name = item.name, slot = item.slot, metadata = item.metadata})
-			elseif data.client.event then -- re-add it, so I don't need to deal with morons taking screenshots of errors when using trigger event
-				return TriggerEvent(data.client.event, data, {name = item.name, slot = item.slot, metadata = item.metadata})
+			elseif data.client.event then -- deprecated, to be removed
+				return error(('unable to trigger event for %s, data.client.event has been removed. utilise exports instead.'):format(item.name))
 			end
 		end
 
@@ -331,26 +330,12 @@ local function useSlot(slot)
 								local missingAmmo = 0
 								local newAmmo = 0
 								missingAmmo = maxAmmo - currentAmmo
-
 								if missingAmmo > data.count then newAmmo = currentAmmo + data.count else newAmmo = maxAmmo end
 								if newAmmo < 0 then newAmmo = 0 end
-
 								SetPedAmmo(playerPed, currentWeapon.hash, newAmmo)
-
-								if not cache.vehicle then
-									MakePedReload(playerPed)
-								else
-									lib.disableControls:Add(68)
-									RefillAmmoInstantly(playerPed)
-								end
-
+								MakePedReload(playerPed)
 								currentWeapon.metadata.ammo = newAmmo
 								TriggerServerEvent('ox_inventory:updateWeapon', 'load', currentWeapon.metadata.ammo)
-
-								if cache.vehicle then
-									Wait(300)
-									lib.disableControls:Remove(68)
-								end
 							end
 						end
 					end)
@@ -596,6 +581,7 @@ local function registerCommands()
 		else return TriggerEvent('ox_inventory:closeInventory')
 		end
 	end)
+
 	RegisterKeyMapping('inv2', shared.locale('open_secondary_inventory'), 'keyboard', client.keys[2])
 	TriggerEvent('chat:removeSuggestion', '/inv2')
 
@@ -609,6 +595,7 @@ local function registerCommands()
 			end
 		end
 	end)
+
 	RegisterKeyMapping('reload', shared.locale('reload_weapon'), 'keyboard', 'r')
 	TriggerEvent('chat:removeSuggestion', '/reload')
 
@@ -617,6 +604,7 @@ local function registerCommands()
 			SendNUIMessage({ action = 'toggleHotbar' })
 		end
 	end)
+
 	RegisterKeyMapping('hotbar', shared.locale('disable_hotbar'), 'keyboard', client.keys[3])
 	TriggerEvent('chat:removeSuggestion', '/hotbar')
 
@@ -758,7 +746,7 @@ end)
 
 local function nearbyDrop(self)
 	if not self.instance or self.instance == currentInstance then
-		DrawMarker(2, self.coords.x, self.coords.y, self.coords.z, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.3, 0.2, 0.15, 150, 30, 30, 222, false, false, false, true, false, false, false)
+		DrawMarker(2, self.coords.x, self.coords.y, self.coords.z, 0.0, 0.0, 0.0, 0.0, 180.0, 0.0, 0.25, 0.25, 0.25, 0, 150, 255, 155, false, true, 2, nil, nil, false)
 	end
 end
 
@@ -803,15 +791,18 @@ local function setStateBagHandler(id)
 		elseif key == 'invBusy' then
 			invBusy = value
 			if value then
-				lib.disableControls:Add(23, 25, 36, 68, 263)
+				lib.disableControls:Add(23, 25, 36, 263)
 			else
-				lib.disableControls:Remove(23, 25, 36, 68, 263)
+				lib.disableControls:Remove(23, 25, 36, 263)
 			end
 		elseif key == 'instance' then
 			currentInstance = value
 		elseif key == 'dead' then
 			PlayerData.dead = value
 			Utils.WeaponWheel()
+		elseif shared.police[key] then
+			PlayerData.groups[key] = value
+			OnPlayerData('groups', { [key] = value })
 		end
 	end)
 
@@ -935,12 +926,15 @@ RegisterNetEvent('ox_inventory:setPlayerInventory', function(currentDrops, inven
 	Inventory.Stashes()
 	Inventory.Evidence()
 	registerCommands()
+
+	plyState:set('invBusy', false, false)
+	plyState:set('invOpen', false, false)
 	TriggerEvent('ox_inventory:updateInventory', PlayerData.inventory)
 	lib.notify({ description = shared.locale('inventory_setup') })
 	Utils.WeaponWheel(false)
 
 	local function nearbyLicense(self)
-		DrawMarker(2, self.coords.x, self.coords.y, self.coords.z, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.3, 0.2, 0.15, 30, 150, 30, 222, false, false, false, true, false, false, false)
+		DrawMarker(2, self.coords.x, self.coords.y, self.coords.z, 0.0, 0.0, 0.0, 0.0, 180.0, 0.0, 0.25, 0.25, 0.25, 0, 150, 255, 155, false, true, 2, nil, nil, false)
 
 		if self.currentDistance < 1.2 and lib.points.closest().id == self.id and IsControlJustReleased(0, 38) then
 			lib.callback('ox_inventory:buyLicense', 1000, function(success, message)
@@ -1100,8 +1094,6 @@ RegisterNetEvent('ox_inventory:setPlayerInventory', function(currentDrops, inven
 		end
 	end, 0, lib.disableControls)
 
-	plyState:set('invBusy', false, false)
-	plyState:set('invOpen', false, false)
 	collectgarbage('collect')
 end)
 

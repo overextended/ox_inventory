@@ -7,7 +7,7 @@ game         'gta5'
 --[[ Resource Information ]]--
 name         'ox_inventory'
 author       'Overextended'
-version      '2.8.7'
+version      '2.8.8'
 repository   'https://github.com/overextended/ox_inventory'
 description  'What even is an "ESX.Items" anyway?'
 
@@ -37,7 +37,7 @@ client_scripts {
 	'modules/interface/client.lua',
 	'modules/shops/client.lua',
 	'modules/inventory/client.lua',
-	'client.lua'
+	'client.lua',
 }
 
 server_scripts {
@@ -48,8 +48,6 @@ server_scripts {
 	'modules/inventory/server.lua',
 	'modules/shops/server.lua',
 	'server.lua',
-	-- 'setup/convert.lua',
-	'setup/dbcleanup.lua',
 }
 
 ui_page 'web/build/index.html'

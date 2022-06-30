@@ -138,7 +138,7 @@ local function Convert_Old_ESX_Property()
 	for i = 1, #inventories do
 		count += 1
 		local inventory, slot = {}, 0
-		
+
 		local addoninventory = MySQL.query.await('SELECT name,count FROM addon_inventory_items WHERE owner = ? AND inventory_name = "property"', {inventories[i].owner})
 
 		for k,v in pairs(addoninventory) do
@@ -147,7 +147,7 @@ local function Convert_Old_ESX_Property()
 				inventory[slot] = {slot=slot, name=v.name, count=v.count}
 			end
 		end
-		
+
 		local addonaccount = MySQL.query.await('SELECT money FROM addon_account_data WHERE owner = ? AND account_name = "property_black_money"', {inventories[i].owner})
 
 		for k,v in pairs(addonaccount) do
@@ -156,7 +156,7 @@ local function Convert_Old_ESX_Property()
 				inventory[slot] = {slot=slot, name="black_money", count=v.money}
 			end
 		end
-		
+
 		local datastore = MySQL.query.await('SELECT data FROM datastore_data WHERE owner = ? AND name = "property"', {inventories[i].owner})
 
 		for k,v in pairs(datastore) do
@@ -190,24 +190,4 @@ If you are upgrading from linden_inventory, type '/convertinventory linden'
 To update standard ESX player inventories to support metadata, type '/convertinventory'
 
 Remove 'setup/convert.lua' from fxmanifest.lua and restart the server when you are done]])
-
-	RegisterCommand('convertinventory', function(source, args, raw)
-		if not started then
-			if args and args[1] == 'linden' then
-				Upgrade()
-				started = true
-			else
-				Convert()
-				started = true
-			end
-		end
-	end)
-		
-	RegisterCommand('convertproperties', function(source, args, raw)
-		if not started then
-			Convert_Old_ESX_Property()
-			started = true
-		end
-	end)
-
 end)
