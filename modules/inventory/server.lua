@@ -1435,12 +1435,19 @@ RegisterServerEvent('ox_inventory:updateWeapon', function(action, value, slot)
 		if weapon and weapon.metadata then
 			local item = Items(weapon.name)
 
+<<<<<<< Updated upstream
 			if not item.weapon then
 				inventory.weapon = nil
 				return
 			end
 
 			if action == 'load' and weapon.metadata.durability > 0 then
+=======
+			if action == 'disarm' then
+				inventory.weapon = nil
+				return
+			elseif action == 'load' and weapon.metadata.durability > 0 then
+>>>>>>> Stashed changes
 				local ammo = Items(weapon.name).ammoname
 				local diff = value - weapon.metadata.ammo
 				Inventory.RemoveItem(inventory, ammo, diff)

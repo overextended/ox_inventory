@@ -93,6 +93,7 @@ function Utils.Disarm(currentWeapon, newSlot)
 				Wait(sleep)
 			end
 			Utils.ItemNotify({currentWeapon.label, currentWeapon.name, shared.locale('holstered')})
+			TriggerServerEvent('ox_inventory:updateWeapon', 'disarm', nil, currentWeapon.slot)
 		end
 
 		RemoveAllPedWeapons(cache.ped, true)
