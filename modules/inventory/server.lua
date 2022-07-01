@@ -267,12 +267,15 @@ function Inventory.Create(id, label, invType, slots, weight, maxWeight, owner, i
 
 		if invType == 'drop' then
 			self.datastore = true
-		elseif invType ~= 'glovebox' and invType ~= 'trunk' then
+		else
 			self.changed = false
-			self.dbId = id
 
-			if invType ~= 'player' and owner and type(owner) ~= 'boolean' then
-				self.id = ('%s:%s'):format(self.id, owner)
+				if invType ~= 'glovebox' and invType ~= 'trunk' then
+				self.dbId = id
+
+				if invType ~= 'player' and owner and type(owner) ~= 'boolean' then
+					self.id = ('%s:%s'):format(self.id, owner)
+				end
 			end
 		end
 
