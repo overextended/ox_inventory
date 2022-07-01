@@ -58,7 +58,7 @@ end
 
 ---@param inv string inventory type
 ---@param data table id and owner
----@return boolean
+---@return boolean?
 function client.openInventory(inv, data)
 	if invOpen then
 		if not inv and currentInventory.type == 'newdrop' then
@@ -490,7 +490,7 @@ local function registerCommands()
 						if (checkVehicle == 0 or checkVehicle == 2) or (not Vehicles.glovebox[vehicleClass] and not Vehicles.glovebox.models[vehicleHash]) then return end
 
 						local plate = client.trimplate and string.strtrim(GetVehicleNumberPlateText(vehicle)) or GetVehicleNumberPlateText(vehicle)
-						client.openInventory('glovebox', {id = 'glove'..plate, class = vehicleClass, model = vehicleHash })
+						client.openInventory('glovebox', {id = 'glove'..plate, class = vehicleClass, model = vehicleHash, netid = NetworkGetNetworkIdFromEntity(vehicle) })
 
 						while true do
 							Wait(100)
@@ -558,7 +558,7 @@ local function registerCommands()
 								local plate = client.trimplate and string.strtrim(GetVehicleNumberPlateText(vehicle)) or GetVehicleNumberPlateText(vehicle)
 								TaskTurnPedToFaceCoord(cache.ped, position.x, position.y, position.z)
 								lastVehicle = vehicle
-								client.openInventory('trunk', {id='trunk'..plate, class = vehicleClass, model = vehicleHash})
+								client.openInventory('trunk', {id='trunk'..plate, class = vehicleClass, model = vehicleHash, netid = NetworkGetNetworkIdFromEntity(vehicle)})
 								local timeout = 20
 								repeat Wait(50)
 									timeout -= 1
