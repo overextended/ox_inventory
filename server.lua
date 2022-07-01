@@ -74,8 +74,20 @@ lib.callback.register('ox_inventory:openInventory', function(source, inv, data)
 			if data.class and data.model then
 				right = Inventory(data.id)
 				if not right then
-					local vehicle = Vehicles[inv]['models'][data.model] or Vehicles[inv][data.class]
-					right = Inventory.Create(data.id, Inventory.GetPlateFromId(data.id), inv, vehicle[1], 0, vehicle[2], false)
+					local vehicleData = Vehicles[inv]['models'][data.model] or Vehicles[inv][data.class]
+					local plate = shared.trimplate and string.strtrim(data.id:sub(6)) or data.id:sub(6)
+
+					if Ox then
+						local vehicle = Ox.GetVehicle(data.netid)
+
+						if vehicle then
+							right = Inventory.Create(vehicle.id, plate, inv, vehicleData[1], 0, vehicleData[2], false)
+						end
+					end
+
+					if not right then
+						right = Inventory.Create(data.id, plate, inv, vehicleData[1], 0, vehicleData[2], false)
+					end
 				end
 			elseif inv == 'drop' then
 				right = Inventory(data.id)
