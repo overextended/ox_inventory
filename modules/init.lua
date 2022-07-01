@@ -80,6 +80,19 @@ local function spamError(err)
 	error(err)
 end
 
+if shared.framework == 'ox' then
+	local file = ('imports/%s.lua'):format(lib.service)
+	local import = LoadResourceFile('ox_core', file)
+	local func, err = load(import, ('@@ox_core/%s'):format(file))
+
+	if err then
+		shared.ready = false
+		spamError(err)
+	end
+
+	func()
+end
+
 function data(name)
 	if shared.server and shared.ready == nil then return {} end
 	local file = ('data/%s.lua'):format(name)
