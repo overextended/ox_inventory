@@ -1,27 +1,31 @@
 local Query = {
 	SELECT_STASH = 'SELECT data FROM ox_inventory WHERE owner = ? AND name = ?',
 	UPDATE_STASH = 'INSERT INTO ox_inventory (owner, name, data) VALUES (?, ?, ?) ON DUPLICATE KEY UPDATE data = VALUES(data)',
-	SELECT_GLOVEBOX = 'SELECT plate, glovebox FROM `{vehicle_column}` WHERE plate = ?',
-	SELECT_TRUNK = 'SELECT plate, trunk FROM `{vehicle_column}` WHERE plate = ?',
-	SELECT_PLAYER = 'SELECT inventory FROM `{user_column}` WHERE charid = ?',
-	UPDATE_TRUNK = 'UPDATE `{vehicle_column}` SET trunk = ? WHERE plate = ?',
-	UPDATE_GLOVEBOX = 'UPDATE `{vehicle_column}` SET glovebox = ? WHERE plate = ?',
-	UPDATE_PLAYER = 'UPDATE `{user_column}` SET inventory = ? WHERE charid = ?',
+	SELECT_GLOVEBOX = 'SELECT plate, glovebox FROM `{vehicle_table}` WHERE `{vehicle_column}` = ?',
+	SELECT_TRUNK = 'SELECT plate, trunk FROM `{vehicle_table}` WHERE `{vehicle_column}` = ?',
+	SELECT_PLAYER = 'SELECT inventory FROM `{user_table}` WHERE `{user_column}` = ?',
+	UPDATE_TRUNK = 'UPDATE `{vehicle_table}` SET trunk = ? WHERE `{vehicle_column}` = ?',
+	UPDATE_GLOVEBOX = 'UPDATE `{vehicle_table}` SET glovebox = ? WHERE `{vehicle_column}` = ?',
+	UPDATE_PLAYER = 'UPDATE `{user_table}` SET inventory = ? WHERE `{user_column}` = ?',
 }
 
 do
-	local playerColumn, vehicleColumn
+	local playerTable, playerColumn, vehicleTable, vehicleColumn
 
 	if shared.framework == 'ox' then
-		playerColumn = 'characters'
-		vehicleColumn = 'vehicles'
+		playerTable = 'characters'
+		playerColumn = 'charid'
+		vehicleTable = 'vehicles'
+		vehicleColumn = 'id'
 	elseif shared.framework == 'esx' then
-		playerColumn = 'users'
-		vehicleColumn = 'owned_vehicles'
+		playerTable = 'users'
+		playerColumn = 'identifier'
+		vehicleTable = 'owned_vehicles'
+		vehicleColumn = 'plate'
 	end
 
 	for k, v in pairs(Query) do
-		Query[k] = v:gsub('{user_column}', playerColumn):gsub('{vehicle_column}', vehicleColumn)
+		Query[k] = v:gsub('{user_table}', playerTable):gsub('{user_column}', playerColumn):gsub('{vehicle_table}', vehicleTable):gsub('{vehicle_column}', vehicleColumn)
 	end
 end
 
@@ -44,20 +48,20 @@ function db.loadStash(owner, name)
 	return MySQL.prepare.await(Query.SELECT_STASH, { owner or '', name })
 end
 
-function db.saveGlovebox(plate, inventory)
-	return MySQL.prepare(Query.UPDATE_GLOVEBOX, { inventory, plate })
+function db.saveGlovebox(id, inventory)
+	return MySQL.prepare(Query.UPDATE_GLOVEBOX, { inventory, id })
 end
 
-function db.loadGlovebox(plate)
-	return MySQL.prepare.await(Query.SELECT_GLOVEBOX, { plate })
+function db.loadGlovebox(id)
+	return MySQL.prepare.await(Query.SELECT_GLOVEBOX, { id })
 end
 
-function db.saveTrunk(plate, inventory)
-	return MySQL.prepare(Query.UPDATE_TRUNK, { inventory, plate })
+function db.saveTrunk(id, inventory)
+	return MySQL.prepare(Query.UPDATE_TRUNK, { inventory, id })
 end
 
-function db.loadTrunk(plate)
-	return MySQL.prepare.await(Query.SELECT_TRUNK, { plate })
+function db.loadTrunk(id)
+	return MySQL.prepare.await(Query.SELECT_TRUNK, { id })
 end
 
 function db.saveInventories(trunks, gloveboxes, stashes)
