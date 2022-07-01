@@ -1412,6 +1412,12 @@ end)
 
 RegisterServerEvent('ox_inventory:updateWeapon', function(action, value, slot)
 	local inventory = Inventories[source]
+
+	if not action then
+		inventory.weapon = nil
+		return
+	end
+
 	local syncInventory = false
 	local type = type(value)
 
