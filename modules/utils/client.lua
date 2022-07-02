@@ -71,20 +71,20 @@ exports('notify', Utils.Notify)
 
 function Utils.ItemNotify(data) SendNUIMessage({action = 'itemNotify', data = data}) end
 
-function Utils.Disarm(currentWeapon, newSlot)
-	SetWeaponsNoAutoswap(true)
-	SetWeaponsNoAutoreload(true)
-	SetPedCanSwitchWeapon(cache.ped, false)
-	SetPedEnableWeaponBlocking(cache.ped, true)
+function Utils.Disarm(currentWeapon)
+	if source == '' then
+		TriggerServerEvent('ox_inventory:updateWeapon')
+	end
 
 	if currentWeapon then
-		local ammo = currentWeapon.ammo and GetAmmoInPedWeapon(cache.ped, currentWeapon.hash)
 		SetPedAmmo(cache.ped, currentWeapon.hash, 0)
 
 		if not newSlot then
 			ClearPedSecondaryTask(cache.ped)
+
 			local sleep = (client.hasGroup(shared.police) and (GetWeapontypeGroup(currentWeapon.hash) == 416676503 or GetWeapontypeGroup(currentWeapon.hash) == 690389602)) and 450 or 1400
 			local coords = GetEntityCoords(cache.ped, true)
+
 			if currentWeapon.hash == `WEAPON_SWITCHBLADE` then
 				Utils.PlayAnimAdvanced(sleep, 'anim@melee@switchblade@holster', 'holster', coords.x, coords.y, coords.z, 0, 0, GetEntityHeading(cache.ped), 8.0, 3.0, -1, 48, 0)
 				Wait(600)
@@ -92,26 +92,20 @@ function Utils.Disarm(currentWeapon, newSlot)
 				Utils.PlayAnimAdvanced(sleep, (sleep == 450 and 'reaction@intimidation@cop@unarmed' or 'reaction@intimidation@1h'), 'outro', coords.x, coords.y, coords.z, 0, 0, GetEntityHeading(cache.ped), 8.0, 3.0, -1, 50, 0)
 				Wait(sleep)
 			end
+
 			Utils.ItemNotify({currentWeapon.label, currentWeapon.name, shared.locale('holstered')})
 		end
 
-		RemoveAllPedWeapons(cache.ped, true)
-
-		if newSlot then
-			TriggerServerEvent('ox_inventory:updateWeapon', ammo and 'ammo' or 'melee', ammo or currentWeapon.melee, newSlot)
-		end
-
-		currentWeapon = nil
-		TriggerEvent('ox_inventory:currentWeapon')
-	else
-		RemoveAllPedWeapons(cache.ped, true)
 		TriggerEvent('ox_inventory:currentWeapon')
 	end
+
+	Utils.WeaponWheel()
+	RemoveAllPedWeapons(cache.ped, true)
 end
 
 function Utils.ClearWeapons(currentWeapon)
-	currentWeapon = Utils.Disarm(currentWeapon)
-	RemoveAllPedWeapons(cache.ped, true)
+	Utils.Disarm(currentWeapon)
+
 	if client.parachute then
 		local chute = `GADGET_PARACHUTE`
 		GiveWeaponToPed(cache.ped, chute, 0, true, false)

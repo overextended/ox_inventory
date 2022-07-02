@@ -3,8 +3,8 @@ if not lib then return end
 local Utils = client.utils
 local currentWeapon
 
-RegisterNetEvent('ox_inventory:disarm', function(newSlot)
-	currentWeapon = Utils.Disarm(currentWeapon, newSlot)
+RegisterNetEvent('ox_inventory:disarm', function()
+	currentWeapon = Utils.Disarm(currentWeapon)
 end)
 
 RegisterNetEvent('ox_inventory:clearWeapons', function()
