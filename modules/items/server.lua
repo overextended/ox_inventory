@@ -62,9 +62,9 @@ CreateThread(function()
 	Inventory = server.inventory
 
 	if shared.framework == 'esx' then
-		local items = MySQL.query.await('SELECT * FROM items')
+		local success, items = pcall(MySQL.query.await, 'SELECT * FROM items')
 
-		if items and #items > 0 then
+		if success and #items > 0 then
 			local dump = {}
 			local count = 0
 
