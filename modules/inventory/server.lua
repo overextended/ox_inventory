@@ -439,8 +439,11 @@ function Inventory.Load(id, invType, owner)
 
 	local returnData, weight = {}, 0
 
-	if result then
+	if result and type(result) == 'string' then
 		result = json.decode(result)
+	end
+
+	if result then
 		for _, v in pairs(result) do
 			local item = Items(v.name)
 			if item then
