@@ -125,12 +125,12 @@ CreateThread(function()
 
 	local count = 0
 	Wait(2000)
-	if server.UsableItemsCallbacks then
-		server.UsableItemsCallbacks = server.UsableItemsCallbacks()
-	else server.UsableItemsCallbacks = {} end
 
 	for _, item in pairs(ItemList) do
-		if item.consume and item.consume > 0 and server.UsableItemsCallbacks[item.name] then server.UsableItemsCallbacks[item.name] = nil end
+		if item.consume and item.consume > 0 and server.UsableItemsCallbacks and server.UsableItemsCallbacks[item.name] then
+			server.UsableItemsCallbacks[item.name] = nil
+		end
+
 		count += 1
 	end
 
