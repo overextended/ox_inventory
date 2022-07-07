@@ -47,12 +47,21 @@ if shared.framework == 'ox' then
 	end)
 
 elseif shared.framework == 'esx' then
-	local ESX = exports.es_extended:getSharedObject()
+	local ESX
 
-	ESX = {
-		SetPlayerData = ESX.SetPlayerData,
-		PlayerLoaded = ESX.PlayerLoaded
-	}
+	SetTimeout(1000, function()
+		ESX = exports.es_extended:getSharedObject()
+
+		ESX = {
+			SetPlayerData = ESX.SetPlayerData,
+			PlayerLoaded = ESX.PlayerLoaded
+		}
+
+		if ESX.PlayerLoaded then
+			TriggerServerEvent('ox_inventory:requestPlayerInventory')
+		end
+	end)
+
 
 	function client.setPlayerData(key, value)
 		PlayerData[key] = value
@@ -85,8 +94,4 @@ elseif shared.framework == 'esx' then
 		PlayerData.cuffed = false
 		LocalPlayer.state:set('invBusy', PlayerData.cuffed, false)
 	end)
-
-	if ESX.PlayerLoaded then
-		TriggerServerEvent('ox_inventory:requestPlayerInventory')
-	end
 end

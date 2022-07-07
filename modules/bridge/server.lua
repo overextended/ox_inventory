@@ -29,21 +29,19 @@ function server.setPlayerData(player)
 end
 
 if shared.framework == 'esx' then
-	local ESX = exports['es_extended']:getSharedObject()
+	local ESX
 
-	if ESX.CreatePickup then
-		error('ox_inventory requires a ESX Legacy v1.6.0 or above, refer to the documentation.')
-	end
+	SetTimeout(500, function()
+		ESX = exports.es_extended:getSharedObject()
 
-	ESX = {
-		GetUsableItems = ESX.GetUsableItems,
-		GetPlayerFromId = ESX.GetPlayerFromId,
-		UseItem = ESX.UseItem
-	}
+		if ESX.CreatePickup then
+			error('ox_inventory requires a ESX Legacy v1.6.0 or above, refer to the documentation.')
+		end
 
-	server.UseItem = ESX.UseItem
-	server.UsableItemsCallbacks = ESX.GetUsableItems
-	server.GetPlayerFromId = ESX.GetPlayerFromId
+		server.UseItem = ESX.UseItem
+		server.GetPlayerFromId = ESX.GetPlayerFromId
+		server.UsableItemsCallbacks = ESX.GetUsableItems()
+	end)
 
 	-- Accounts that need to be synced with physical items
 	server.accounts = {
