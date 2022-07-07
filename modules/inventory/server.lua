@@ -1642,4 +1642,54 @@ local function RegisterStash(name, label, slots, maxWeight, owner, groups, coord
 end
 exports('RegisterStash', RegisterStash)
 
+Inventory.CustomShop = table.create(0, 0)
+
+local _RegisterShop = function (data)
+	local Items = server.items
+	local Inventory = server.inventory
+	
+	for shopName, shopDetails in pairs(data) do
+	local groups = shopDetails.groups or shopDetails.jobs
+		Inventory.CustomShop[shopName] = {}
+		Inventory.CustomShop[shopName] = {
+			label = shopDetails.name,
+			id = shopName,
+			groups = groups,
+			items = shopDetails.inventory,
+			slots = #shopDetails.inventory,
+			type = 'shop',
+		}
+		for i=1, Inventory.CustomShop[shopName].slots do
+			local slot = Inventory.CustomShop[shopName].items[i]
+
+			if slot.grade and not groups then
+				print(('^1attempted to restrict slot %s (%s) to grade %s, but %s has no job restriction^0'):format(i, slot.name, slot.grade, shopDetails.name))
+				slot.grade = nil
+			end
+
+			local Item = Items(slot.name)
+			if Item then
+				slot = {
+					name = Item.name,
+					slot = i,
+					weight = Item.weight,
+					count = slot.count,
+					price = (server.randomprices and not currency or currency == 'money') and (math.ceil(slot.price * (math.random(90, 110)/100))) or slot.price,
+					metadata = slot.metadata,
+					license = slot.license,
+					currency = slot.currency,
+					grade = slot.grade
+				}
+				Inventory.CustomShop[shopName].items[i] = slot
+			end
+		end
+	end
+end
+
+local function RegisterShop(id, label,inventory)
+	_RegisterShop({[id] = {name = label ,inventory = inventory}})
+end
+
+exports('RegisterShop', RegisterShop)
+
 server.inventory = Inventory

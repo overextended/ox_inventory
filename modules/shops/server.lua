@@ -96,7 +96,7 @@ end
 lib.callback.register('ox_inventory:openShop', function(source, data)
 	local left, shop = Inventory(source)
 	if data then
-		shop = data.id and Shops[data.type][data.id] or Shops[data.type]
+		shop = data.id and Shops[data.type][data.id] or Shops[data.type] or Inventory.CustomShop[data.type]
 
 		if shop.groups then
 			local group = server.hasGroup(left, shop.groups)
@@ -128,7 +128,7 @@ lib.callback.register('ox_inventory:buyItem', function(source, data)
 		if data.count == nil then data.count = 1 end
 		local playerInv = Inventory(source)
 		local split = playerInv.open:match('^.*() ')
-		local shop = split and Shops[playerInv.open:sub(0, split-1)][tonumber(playerInv.open:sub(split+1))] or Shops[playerInv.open]
+		local shop = split and Shops[playerInv.open:sub(0, split-1)][tonumber(playerInv.open:sub(split+1))] or Shops[playerInv.open] or Inventory.CustomShop[playerInv.open]
 		local fromData = shop.items[data.fromSlot]
 		local toData = playerInv.items[data.toSlot]
 
