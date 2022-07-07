@@ -81,7 +81,7 @@ lib.callback.register('ox_inventory:openInventory', function(source, inv, data)
 						local vehicle = Ox.GetVehicle(data.netid)
 
 						if vehicle then
-							right = Inventory.Create(vehicle.id, plate, inv, vehicleData[1], 0, vehicleData[2], false)
+							right = Inventory.Create(vehicle.id or vehicle.plate, plate, inv, vehicleData[1], 0, vehicleData[2], false)
 						end
 					end
 
