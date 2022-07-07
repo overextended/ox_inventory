@@ -121,10 +121,15 @@ CreateThread(function()
 		end
 	end
 
-	if server.clearstashes then MySQL.query('DELETE FROM ox_inventory WHERE lastupdated < (NOW() - INTERVAL '..server.clearstashes..') OR data = "[]"') end
+	local clearStashes = GetConvar('inventory:clearstashes', '6 MONTH')
+
+	if clearStashes ~= '' then
+		MySQL.query(('DELETE FROM ox_inventory WHERE lastupdated < (NOW() - INTERVAL %s) OR data = "[]"'):format(clearStashes))
+	end
 
 	local count = 0
-	Wait(2000)
+
+	Wait(1000)
 
 	for _, item in pairs(ItemList) do
 		if item.consume and item.consume > 0 and server.UsableItemsCallbacks and server.UsableItemsCallbacks[item.name] then
