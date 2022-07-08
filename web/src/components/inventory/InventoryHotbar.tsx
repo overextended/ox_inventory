@@ -29,9 +29,9 @@ const InventoryHotbar: React.FC<{ items: Slot[] }> = ({ items }) => {
             className="item-container"
             style={{
               backgroundImage: item.metadata?.image
-                ? `url(${process.env.PUBLIC_URL + `/images/${item.metadata.image}.png`})`
+                ? `url(${`images/${item.metadata.image}.png`})`
                 : item.name
-                ? `url(${process.env.PUBLIC_URL + `/images/${item.name}.png`})`
+                ? `url(${`images/${item.name}.png`})`
                 : 'none',
             }}
             key={`hotbar-${item.slot}`}

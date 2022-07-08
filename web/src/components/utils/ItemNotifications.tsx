@@ -26,8 +26,7 @@ const ItemNotification = React.forwardRef(
         className="item-notification"
         ref={ref}
         style={{
-          backgroundImage:
-            `url(${process.env.PUBLIC_URL + `/images/${props.item.image}.png`})` || 'none',
+          backgroundImage: `url(${`images/${props.item.image}.png`})` || 'none',
         }}
       >
         <div className="item-action">{props.item.text}</div>

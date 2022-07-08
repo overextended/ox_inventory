@@ -121,9 +121,9 @@ const InventorySlot: React.FC<SlotProps> = ({ inventory, item, setCurrentItem })
         style={{
           opacity: isDragging ? 0.4 : 1.0,
           backgroundImage: item.metadata?.image
-            ? `url(${process.env.PUBLIC_URL + `/images/${item.metadata.image}.png`})`
+            ? `url(${`images/${item.metadata.image}.png`})`
             : item.name
-            ? `url(${process.env.PUBLIC_URL + `/images/${item.name}.png`})`
+            ? `url(${`images/${item.name}.png`})`
             : 'none',
           border: isOver ? '1px dashed rgba(255,255,255,0.4)' : '1px inset rgba(0,0,0,0.3)',
         }}
@@ -159,11 +159,7 @@ const InventorySlot: React.FC<SlotProps> = ({ inventory, item, setCurrentItem })
                   <div className="item-price" style={{ color: '#2ECC71' }}>
                     <img
                       className="item-currency"
-                      src={
-                        item?.currency
-                          ? `${process.env.PUBLIC_URL + `/images/${item?.currency}.png`}`
-                          : ''
-                      }
+                      src={item?.currency ? `${`images/${item?.currency}.png`}` : ''}
                       alt="item"
                     ></img>
                     {item.price}
@@ -178,7 +174,8 @@ const InventorySlot: React.FC<SlotProps> = ({ inventory, item, setCurrentItem })
                             item.currency === 'money' || !item.currency ? '#2ECC71' : '#E74C3C',
                         }}
                       >
-                        {Locale.$}{item.price}
+                        {Locale.$}
+                        {item.price}
                       </div>
                     )}
                   </>

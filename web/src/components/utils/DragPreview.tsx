@@ -59,9 +59,7 @@ const DragPreview: React.FC = () => {
           className="drag"
           style={{
             transform: `translate(${currentOffset.x}px, ${currentOffset.y}px)`,
-            backgroundImage: `url(${
-              process.env.PUBLIC_URL + `/images/${data.image || data.item.name}.png`
-            })`,
+            backgroundImage: `url(${`images/${data.image || data.item.name}.png`})`,
           }}
         ></div>
       )}
