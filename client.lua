@@ -311,7 +311,7 @@ local function useSlot(slot)
 
 					currentWeapon = item
 					TriggerEvent('ox_inventory:currentWeapon', item)
-					Utils.ItemNotify({item.label, item.name, shared.locale('equipped')})
+					Utils.ItemNotify({item.label, item.name, shared.locale('equipped'), item.metadata})
 					Wait(sleep)
 					ClearPedSecondaryTask(playerPed)
 				end
@@ -733,7 +733,7 @@ end
 RegisterNetEvent('ox_inventory:updateSlots', function(items, weights, count, removed)
 	if count then
 		local item = items[1].item
-		Utils.ItemNotify({item.label, item.name, shared.locale(removed and 'removed' or 'added', count)})
+		Utils.ItemNotify({item.label, item.name, shared.locale(removed and 'removed' or 'added', count), item.metadata})
 	end
 
 	updateInventory(items, weights)
