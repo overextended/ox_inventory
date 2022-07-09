@@ -30,7 +30,7 @@ const ItemNotification = React.forwardRef(
         ref={ref}
         style={{
           backgroundImage:
-            `url(${`images/${props.item.metadata.image || props.item.label}.png`})` || 'none',
+            `url(${`images/${props.item.metadata.image || props.item.image}.png`})` || 'none',
         }}
       >
         <div className="item-action">{props.item.text}</div>
