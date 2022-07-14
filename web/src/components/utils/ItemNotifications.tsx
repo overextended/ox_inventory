@@ -7,9 +7,6 @@ interface ItemNotificationProps {
   label: string;
   image: string;
   text: string;
-  metadata: {
-    [key: string]: any;
-  };
 }
 
 export const ItemNotificationsContext = React.createContext<{
@@ -29,12 +26,11 @@ const ItemNotification = React.forwardRef(
         className="item-notification"
         ref={ref}
         style={{
-          backgroundImage:
-            `url(${`images/${props.item.metadata.image || props.item.image}.png`})` || 'none',
+          backgroundImage: `url(${`images/${props.item.image}.png`})` || 'none',
         }}
       >
         <div className="item-action">{props.item.text}</div>
-        <div className="item-label">{props.item.metadata.label || props.item.label}</div>
+        <div className="item-label">{props.item.label}</div>
       </div>
     );
   }
@@ -57,9 +53,8 @@ export const ItemNotificationsProvider = ({ children }: { children: React.ReactN
   const remove = (id: number) =>
     setQueue((prevQueue) => prevQueue.filter((notification) => notification.id !== id));
 
-  useNuiEvent<[label: string, image: string, text: string, metadata: { [key: string]: any }]>(
-    'itemNotify',
-    (data) => add({ label: data[0], image: data[1], text: data[2], metadata: data[3] })
+  useNuiEvent<[label: string, image: string, text: string]>('itemNotify', (data) =>
+    add({ label: data[0], image: data[1], text: data[2] })
   );
 
   return (
