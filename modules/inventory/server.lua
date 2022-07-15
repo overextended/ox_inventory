@@ -806,11 +806,7 @@ function Inventory.RemoveItem(inv, item, count, metadata, slot)
 			local array = table.create(#slots, 0)
 
 			for k, v in pairs(slots) do
-				if type(v) == 'number' then
-					array[k] = {item = {slot = v, label = metadata?.label or item.label, name = metadata?.image or item.name}, inventory = inv.type}
-				else
-					array[k] = {item = v, inventory = inv.type}
-				end
+				array[k] = {item = type(v) == 'number' and { slot = v } or v, inventory = inv.type}
 			end
 
 			TriggerClientEvent('ox_inventory:updateSlots', inv.id, array, {left=inv.weight, right=inv.open and Inventories[inv.open]?.weight}, removed, true)
