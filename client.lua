@@ -733,7 +733,12 @@ end
 RegisterNetEvent('ox_inventory:updateSlots', function(items, weights, count, removed)
 	if count then
 		local item = items[1].item
-		Utils.ItemNotify({item.metadata.label or item.label, item.metadata.image or item.name, shared.locale(removed and 'removed' or 'added', count)})
+
+		if not item.name then
+			item = PlayerData.inventory[item.slot]
+		end
+
+		Utils.ItemNotify({item.metadata?.label or item.label, item.metadata?.image or item.name, shared.locale(removed and 'removed' or 'added', count)})
 	end
 
 	updateInventory(items, weights)
