@@ -93,7 +93,7 @@ function Utils.Disarm(currentWeapon)
 				Wait(sleep)
 			end
 
-			Utils.ItemNotify({currentWeapon.label, currentWeapon.name, shared.locale('holstered')})
+			Utils.ItemNotify({currentWeapon.metadata.label or currentWeapon.label, currentWeapon.metadata.image or currentWeapon.name, shared.locale('holstered')})
 		end
 
 		TriggerEvent('ox_inventory:currentWeapon')
