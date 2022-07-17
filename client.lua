@@ -837,7 +837,7 @@ lib.onCache('seat', function(seat)
 
 				if seat == -1 then
 					if vehicleModel == `firetruk` then
-						SetCurrentPedVehicleWeapon(cache.ped, 1422046295)
+						SetCurrentPedVehicleWeapon(cache.ped, `WATER_CANNON`)
 					end
 				end
 			else Utils.WeaponWheel(false) end
