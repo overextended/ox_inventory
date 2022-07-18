@@ -108,8 +108,15 @@ lib.callback.register('ox_inventory:openInventory', function(source, inv, data)
 
 		elseif inv == 'dumpster' then
 			right = Inventory(data)
+
 			if not right then
-				right = Inventory.Create(data, shared.locale('dumpster'), inv, 15, 0, 100000, false)
+				local netid = tonumber(data:sub(9))
+
+				-- dumpsters do not work with entity lockdown. need to rewrite, but having to do
+				-- distance checks to some ~7000 dumpsters and freeze the entities isn't ideal
+				if netid and NetworkGetEntityFromNetworkId(netid) > 0 then
+					right = Inventory.Create(data, shared.locale('dumpster'), inv, 15, 0, 100000, false)
+				end
 			end
 
 		elseif inv == 'container' then
