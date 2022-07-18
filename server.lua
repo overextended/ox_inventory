@@ -20,6 +20,8 @@ local function setPlayerInventory(player, data)
 	local totalWeight = 0
 
 	if data then
+		local ostime = os.time()
+
 		for _, v in pairs(data) do
 			if type(v) == 'number' then
 				return error(('Inventory for player.%s (%s) contains invalid data. Ensure you have converted inventories to the correct format.'):format(player.source, GetPlayerName(player.source)))
@@ -29,7 +31,7 @@ local function setPlayerInventory(player, data)
 
 			if item then
 				if v.metadata then
-					v.metadata = Items.CheckMetadata(v.metadata, item, v.name)
+					v.metadata = Items.CheckMetadata(v.metadata, item, v.name, ostime)
 				end
 
 				local weight = Inventory.SlotWeight(item, v)

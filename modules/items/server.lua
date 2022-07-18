@@ -214,15 +214,21 @@ function Items.Metadata(inv, item, metadata, count)
 	return metadata, count
 end
 
-function Items.CheckMetadata(metadata, item, name)
+function Items.CheckMetadata(metadata, item, name, ostime)
 	if metadata.bag then
 		metadata.container = metadata.bag
 		metadata.size = ItemList.containers[name]?.size or {5, 1000}
 		metadata.bag = nil
 	end
 
-	if metadata.durability and not item.durability and not item.degrade and not item.weapon then
-		metadata.durability = nil
+	local durability = metadata.durability
+
+	if durability then
+		if not item.durability and not item.degrade and not item.weapon then
+			metadata.durability = nil
+		elseif durability > 100 and ostime >= durability then
+			metadata.durability = 0
+		end
 	end
 
 	if metadata.components then
