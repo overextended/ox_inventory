@@ -31,7 +31,7 @@ end
 if shared.framework == 'esx' then
 	local ESX
 
-	SetTimeout(500, function()
+	SetTimeout(1500, function()
 		ESX = exports.es_extended:getSharedObject()
 
 		if ESX.CreatePickup then
