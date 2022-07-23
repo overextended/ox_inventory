@@ -801,23 +801,28 @@ end)
 
 local uiLoaded = false
 
-local function setStateBagHandler(id)
-	AddStateBagChangeHandler(nil, 'player:'..id, function(bagName, key, value, _, _)
-		if key == 'invOpen' then
-			invOpen = value
-		elseif key == 'invBusy' then
-			invBusy = value
-			if value then
-				lib.disableControls:Add(23, 25, 36, 68, 263)
-			else
-				lib.disableControls:Remove(23, 25, 36, 68, 263)
-			end
-		elseif key == 'instance' then
-			currentInstance = value
-		elseif key == 'dead' then
-			PlayerData.dead = value
-			Utils.WeaponWheel()
+local function setStateBagHandler(stateId)
+	AddStateBagChangeHandler('invOpen', stateId, function(_, _, value)
+		invOpen = value
+	end)
+
+	AddStateBagChangeHandler('invBusy', stateId, function(_, _, value)
+		invBusy = value
+
+		if value then
+			lib.disableControls:Add(23, 25, 36, 68, 263)
+		else
+			lib.disableControls:Remove(23, 25, 36, 68, 263)
 		end
+	end)
+
+	AddStateBagChangeHandler('instance', stateId, function(_, _, value)
+		currentInstance = value
+	end)
+
+	AddStateBagChangeHandler('dead', stateId, function(_, _, value)
+		Utils.WeaponWheel()
+		PlayerData.dead = value
 	end)
 
 	setStateBagHandler = nil
@@ -858,7 +863,7 @@ RegisterNetEvent('ox_inventory:setPlayerInventory', function(currentDrops, inven
 		end
 	})
 
-	if setStateBagHandler then setStateBagHandler(source) end
+	if setStateBagHandler then setStateBagHandler(('player:%s'):format(source)) end
 
 	for _, data in pairs(inventory) do
 		Items[data.name].count += data.count
