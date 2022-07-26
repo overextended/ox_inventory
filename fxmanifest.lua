@@ -1,6 +1,6 @@
 --[[ FX Information ]]--
 fx_version   'cerulean'
-use_fxv2_oal 'yes'
+use_experimental_fxv2_oal 'yes'
 lua54        'yes'
 game         'gta5'
 
