@@ -277,7 +277,7 @@ function Inventory.Create(id, label, invType, slots, weight, maxWeight, owner, i
 					self.id = ('%s:%s'):format(self.id, owner)
 				end
 			else
-				if type(id) == 'number' then
+				if Ox then
 					self.dbId = id
 					self.id = (invType == 'glovebox' and 'glove' or invType)..label
 				else
