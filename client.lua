@@ -836,18 +836,14 @@ lib.onCache('seat', function(seat)
 	if seat then
 		Utils.WeaponWheel(true)
 
-		SetTimeout(0, function()
-			if DoesVehicleHaveWeapons(cache.vehicle) then
-				local vehicleModel = GetEntityModel(cache.vehicle)
-
-				if seat == -1 then
-					if vehicleModel == `firetruk` or vehicleModel == `riot2` then
-						SetCurrentPedVehicleWeapon(cache.ped, `WATER_CANNON`)
-					end
-				end
-			else Utils.WeaponWheel(false) end
+		return SetTimeout(50, function()
+			if not DoesVehicleHaveWeapons(cache.vehicle) then
+				Utils.WeaponWheel(false)
+			end
 		end)
-	else Utils.WeaponWheel(false) end
+	end
+
+	Utils.WeaponWheel(false)
 end)
 
 RegisterNetEvent('ox_inventory:setPlayerInventory', function(currentDrops, inventory, weight, esxItem, player, source)
