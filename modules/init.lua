@@ -112,15 +112,11 @@ end
 
 local success, msg = lib.checkDependency('oxmysql', '2.0.0')
 
-if not success then
-	spamError(msg or "ox_inventory requires version '2.0.0' of 'oxmysql'")
-end
+if not success then spamError(msg) end
 
-success, msg = lib.checkDependency('ox_lib', '2.3.2')
+success, msg = lib.checkDependency('ox_lib', '2.8.0')
 
-if not success then
-	spamError(msg or "ox_inventory requires version '2.2.0' of 'ox_lib'")
-end
+if not success then spamError(msg) end
 
 if not LoadResourceFile(shared.resource, 'web/build/index.html') then
 	spamError('UI has not been built, refer to the documentation or download a release build.\n	^3https://overextended.github.io/docs/ox_inventory/^0')
