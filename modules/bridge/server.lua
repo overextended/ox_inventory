@@ -65,6 +65,9 @@ if shared.framework == 'esx' then
 
 	RegisterServerEvent('ox_inventory:requestPlayerInventory', function()
 		local source = source
+
+		while not server.GetPlayerFromId do Wait(100) end
+
 		local player = server.GetPlayerFromId(source)
 
 		if player then

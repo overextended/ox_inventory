@@ -49,7 +49,7 @@ if shared.framework == 'ox' then
 elseif shared.framework == 'esx' then
 	local ESX
 
-	SetTimeout(1000, function()
+	SetTimeout(1500, function()
 		ESX = exports.es_extended:getSharedObject()
 
 		ESX = {
