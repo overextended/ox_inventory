@@ -394,7 +394,7 @@ return {
 			weight = 12000,
 		},
 
-		['WEAPON_PERICOPISTOL'] = {
+		['WEAPON_GADGETPISTOL'] = {
 			label = 'Perico Pistol',
 			weight = 1750,
 			durability = 0.1
