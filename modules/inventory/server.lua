@@ -1521,7 +1521,9 @@ end)
 lib.addCommand('group.admin', {'additem', 'giveitem'}, function(source, args)
 	args.item = Items(args.item)
 	if args.item and args.count > 0 then
-		Inventory.AddItem(args.target, args.item.name, args.count, args.metatype)
+		local metadata = args.metatype and { type = tonumber(args.metatype) or args.metatype }
+		Inventory.AddItem(args.target, args.item.name, args.count, metadata)
+
 		local inventory = Inventories[args.target]
 		source = Inventories[source] or {label = 'console', owner = 'console'}
 
@@ -1531,12 +1533,14 @@ lib.addCommand('group.admin', {'additem', 'giveitem'}, function(source, args)
 		)
 
 	end
-end, {'target:number', 'item:string', 'count:number', 'metatype:?string'})
+end, {'target:number', 'item:string', 'count:number', 'metatype'})
 
 lib.addCommand('group.admin', 'removeitem', function(source, args)
 	args.item = Items(args.item)
 	if args.item and args.count > 0 then
-		Inventory.RemoveItem(args.target, args.item.name, args.count, args.metaType)
+		local metadata = args.metatype and { type = tonumber(args.metatype) or args.metatype }
+		Inventory.RemoveItem(args.target, args.item.name, args.count, metadata)
+
 		local inventory = Inventories[args.target]
 		source = Inventories[source] or {label = 'console', owner = 'console'}
 
@@ -1546,7 +1550,7 @@ lib.addCommand('group.admin', 'removeitem', function(source, args)
 		)
 
 	end
-end, {'target:number', 'item:string', 'count:number', 'metatype:?string'})
+end, {'target:number', 'item:string', 'count:number', 'metatype'})
 
 lib.addCommand('group.admin', 'setitem', function(source, args)
 	args.item = Items(args.item)
