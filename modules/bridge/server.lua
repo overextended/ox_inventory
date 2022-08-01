@@ -41,6 +41,11 @@ if shared.framework == 'esx' then
 		server.UseItem = ESX.UseItem
 		server.GetPlayerFromId = ESX.GetPlayerFromId
 		server.UsableItemsCallbacks = ESX.GetUsableItems()
+
+		for i = 1, #ESX.Players do
+			local player = ESX.Players[i]
+			exports.ox_inventory:setPlayerInventory(player, player?.inventory)
+		end
 	end)
 
 	-- Accounts that need to be synced with physical items
@@ -62,16 +67,4 @@ if shared.framework == 'esx' then
 			dateofbirth = player.dateofbirth or player.variables.dateofbirth,
 		}
 	end
-
-	RegisterServerEvent('ox_inventory:requestPlayerInventory', function()
-		local source = source
-
-		while not server.GetPlayerFromId do Wait(100) end
-
-		local player = server.GetPlayerFromId(source)
-
-		if player then
-			exports.ox_inventory:setPlayerInventory(player, player?.inventory)
-		end
-	end)
 end
