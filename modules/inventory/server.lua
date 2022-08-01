@@ -484,7 +484,7 @@ function Inventory.GetItem(inv, item, metadata, returnsCount)
 
 		if inv then
 			local ostime = os.time()
-			metadata = not metadata and false or type(metadata) == 'string' and {type=metadata} or metadata
+			metadata = not metadata and false or type(metadata) == 'table' and metadata or  { type = metadata }
 
 			for _, v in pairs(inv.items) do
 				if v and v.name == item.name and (not metadata or table.contains(v.metadata, metadata)) then
@@ -614,7 +614,7 @@ function Inventory.SetMetadata(inv, slot, metadata)
 	slot = type(slot) == 'number' and (inv and inv.items[slot])
 	if inv and slot then
 		if inv then
-			slot.metadata = type(metadata) == 'table' and metadata or {type = metadata}
+			slot.metadata = type(metadata) == 'table' and metadata or { type = metadata }
 
 			if metadata.weight then
 				inv.weight -= slot.weight
@@ -716,7 +716,7 @@ function Inventory.Search(inv, search, items, metadata)
 
 			if search == 'slots' then search = 1 elseif search == 'count' then search = 2 end
 			if type(items) == 'string' then items = {items} end
-			if type(metadata) == 'string' then metadata = {type=metadata} end
+			if type(metadata) ~= 'table' then metadata = { type = metadata } end
 
 			local itemCount = #items
 			local returnData = {}
@@ -787,8 +787,8 @@ function Inventory.RemoveItem(inv, item, count, metadata, slot)
 	if item and count > 0 then
 		inv = Inventory(inv)
 
-		if metadata ~= nil then
-			metadata = type(metadata) == 'string' and {type=metadata} or metadata
+		if metadata then
+			metadata = type(metadata) == 'table' and metadata or { type = metadata }
 		end
 
 		local itemSlots, totalCount = Inventory.GetItemSlots(inv, item, metadata)
@@ -844,7 +844,7 @@ function Inventory.CanCarryItem(inv, item, count, metadata)
 	if type(item) ~= 'table' then item = Items(item) end
 	if item then
 		inv = Inventory(inv)
-		local itemSlots, totalCount, emptySlots = Inventory.GetItemSlots(inv, item, metadata == nil and {} or type(metadata) == 'string' and {type=metadata} or metadata)
+		local itemSlots, totalCount, emptySlots = Inventory.GetItemSlots(inv, item, metadata == nil and {} or type(metadata) == 'table' and metadata or { type = metadata })
 		local weight = metadata?.weight or item.weight
 
 		if next(itemSlots) or emptySlots > 0 then
