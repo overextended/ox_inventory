@@ -1651,17 +1651,19 @@ Inventory.CustomStash = table.create(0, 0)
 --- ```
 local function RegisterStash(name, label, slots, maxWeight, owner, groups, coords)
 	if type(name) == 'string' then
-		if not Inventory.CustomStash[name] then
-			Inventory.CustomStash[name] = {
-				name = name,
-				label = label,
-				owner = owner,
-				slots = slots,
-				weight = maxWeight,
-				groups = groups,
-				coords = coords
-			}
+		if Inventory.CustomStash[name] then
+			print(('overwriting stash %s with new data'):format(name))
 		end
+
+		Inventory.CustomStash[name] = {
+			name = name,
+			label = label,
+			owner = owner,
+			slots = slots,
+			weight = maxWeight,
+			groups = groups,
+			coords = coords
+		}
 	else
 		error(('received %s for stash name (expected string)'):format(type(name)))
 	end
