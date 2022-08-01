@@ -1658,8 +1658,8 @@ local function RegisterStash(name, label, slots, maxWeight, owner, groups, coord
 		error(('received %s for stash slots (expected number)'):format(slots))
 	end
 
-	if not weight then
-		error(('received %s for stash weight (expected number)'):format(weight))
+	if not maxWeight then
+		error(('received %s for stash maxWeight (expected number)'):format(maxWeight))
 	end
 
 	if coords then
