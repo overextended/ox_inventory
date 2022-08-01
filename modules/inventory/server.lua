@@ -1650,23 +1650,42 @@ Inventory.CustomStash = table.create(0, 0)
 --- groups: { ['police'] = 0 }
 --- ```
 local function RegisterStash(name, label, slots, maxWeight, owner, groups, coords)
-	if type(name) == 'string' then
-		if Inventory.CustomStash[name] then
-			print(('overwriting stash %s with new data'):format(name))
-		end
-
-		Inventory.CustomStash[name] = {
-			name = name,
-			label = label,
-			owner = owner,
-			slots = slots,
-			weight = maxWeight,
-			groups = groups,
-			coords = coords
-		}
-	else
+	if type(name) ~= 'string' then
 		error(('received %s for stash name (expected string)'):format(type(name)))
 	end
+
+	if not slots then
+		error(('received %s for stash slots (expected number)'):format(slots))
+	end
+
+	if not weight then
+		error(('received %s for stash weight (expected number)'):format(weight))
+	end
+
+	if coords then
+		local typeof = type(coords)
+		if typeof ~= 'vector3' then
+			if typeof == 'table' then
+				coords = vec3(coords.x or coords[1], coords.y or coords[2], coords.z or coords[3])
+			else
+				error(('received %s for stash coords (expected vector3)'):format(typeof))
+			end
+		end
+	end
+
+	if Inventory.CustomStash[name] then
+		print(('overwriting stash %s with new settings'):format(name))
+	end
+
+	Inventory.CustomStash[name] = {
+		name = name,
+		label = label,
+		owner = owner,
+		slots = slots,
+		weight = maxWeight,
+		groups = groups,
+		coords = coords
+	}
 end
 exports('RegisterStash', RegisterStash)
 
