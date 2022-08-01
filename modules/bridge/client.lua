@@ -49,49 +49,53 @@ if shared.framework == 'ox' then
 elseif shared.framework == 'esx' then
 	local ESX
 
-	SetTimeout(1500, function()
-		ESX = exports.es_extended:getSharedObject()
+    CreateThread(function()
+        while GetResourceState("es_extended") ~= "started" do
+            Wait(1000)
+        end
+        
+        ESX = exports.es_extended:getSharedObject()
 
-		ESX = {
-			SetPlayerData = ESX.SetPlayerData,
-			PlayerLoaded = ESX.PlayerLoaded
-		}
+        ESX = {
+            SetPlayerData = ESX.SetPlayerData,
+            PlayerLoaded = ESX.PlayerLoaded
+        }
+    
+        if ESX.PlayerLoaded then
+            TriggerServerEvent('ox_inventory:requestPlayerInventory')
+        end
+    
+    
+        function client.setPlayerData(key, value)
+            PlayerData[key] = value
+            ESX.SetPlayerData(key, value)
+        end
 
-		if ESX.PlayerLoaded then
-			TriggerServerEvent('ox_inventory:requestPlayerInventory')
-		end
-	end)
+        RegisterNetEvent('esx:onPlayerLogout', onLogout)
 
-
-	function client.setPlayerData(key, value)
-		PlayerData[key] = value
-		ESX.SetPlayerData(key, value)
-	end
-
-	RegisterNetEvent('esx:onPlayerLogout', onLogout)
-
-	AddEventHandler('esx:setPlayerData', function(key, value)
-		if PlayerData.loaded and GetInvokingResource() == 'es_extended' then
-			if key == 'job' then
-				key = 'groups'
-				value = { [value.name] = value.grade }
-			end
-
-			PlayerData[key] = value
-			OnPlayerData(key, value)
-		end
-	end)
-
-	RegisterNetEvent('esx_policejob:handcuff', function()
-		PlayerData.cuffed = not PlayerData.cuffed
-		LocalPlayer.state:set('invBusy', PlayerData.cuffed, false)
-		if PlayerData.cuffed then
-			currentWeapon = Utils.Disarm(currentWeapon)
-		end
-	end)
-
-	RegisterNetEvent('esx_policejob:unrestrain', function()
-		PlayerData.cuffed = false
-		LocalPlayer.state:set('invBusy', PlayerData.cuffed, false)
-	end)
+        AddEventHandler('esx:setPlayerData', function(key, value)
+            if PlayerData.loaded and GetInvokingResource() == 'es_extended' then
+                if key == 'job' then
+                    key = 'groups'
+                    value = { [value.name] = value.grade }
+                end
+    
+                PlayerData[key] = value
+                OnPlayerData(key, value)
+            end
+        end)
+    
+        RegisterNetEvent('esx_policejob:handcuff', function()
+            PlayerData.cuffed = not PlayerData.cuffed
+            LocalPlayer.state:set('invBusy', PlayerData.cuffed, false)
+            if PlayerData.cuffed then
+                currentWeapon = Utils.Disarm(currentWeapon)
+            end
+        end)
+    
+        RegisterNetEvent('esx_policejob:unrestrain', function()
+            PlayerData.cuffed = false
+            LocalPlayer.state:set('invBusy', PlayerData.cuffed, false)
+        end)
+    end)
 end
