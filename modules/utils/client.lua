@@ -71,7 +71,7 @@ exports('notify', Utils.Notify)
 
 function Utils.ItemNotify(data) SendNUIMessage({action = 'itemNotify', data = data}) end
 
-function Utils.Disarm(currentWeapon)
+function Utils.Disarm(currentWeapon, skipAnim)
 	if source == '' then
 		TriggerServerEvent('ox_inventory:updateWeapon')
 	end
@@ -79,7 +79,7 @@ function Utils.Disarm(currentWeapon)
 	if currentWeapon then
 		SetPedAmmo(cache.ped, currentWeapon.hash, 0)
 
-		if not newSlot then
+		if not skipAnim then
 			ClearPedSecondaryTask(cache.ped)
 
 			local sleep = (client.hasGroup(shared.police) and (GetWeapontypeGroup(currentWeapon.hash) == 416676503 or GetWeapontypeGroup(currentWeapon.hash) == 690389602)) and 450 or 1400
@@ -92,10 +92,9 @@ function Utils.Disarm(currentWeapon)
 				Utils.PlayAnimAdvanced(sleep, (sleep == 450 and 'reaction@intimidation@cop@unarmed' or 'reaction@intimidation@1h'), 'outro', coords.x, coords.y, coords.z, 0, 0, GetEntityHeading(cache.ped), 8.0, 3.0, -1, 50, 0)
 				Wait(sleep)
 			end
-
-			Utils.ItemNotify({currentWeapon.metadata.label or currentWeapon.label, currentWeapon.metadata.image or currentWeapon.name, shared.locale('holstered')})
 		end
 
+		Utils.ItemNotify({currentWeapon.metadata.label or currentWeapon.label, currentWeapon.metadata.image or currentWeapon.name, shared.locale('holstered')})
 		TriggerEvent('ox_inventory:currentWeapon')
 	end
 
