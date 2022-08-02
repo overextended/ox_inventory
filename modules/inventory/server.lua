@@ -617,9 +617,7 @@ function Inventory.SetMetadata(inv, slot, metadata)
 	slot = type(slot) == 'number' and (inv and inv.items[slot])
 	if inv and slot then
 		if inv then
-			if type(metadata) ~= 'table' then
-				slot.metadata = metadata and { type = metadata or nil }
-			end
+			slot.metadata = type(metadata) == 'table' and metadata or { type = metadata or nil }
 
 			if metadata.weight then
 				inv.weight -= slot.weight
@@ -852,7 +850,7 @@ function Inventory.CanCarryItem(inv, item, count, metadata)
 	if type(item) ~= 'table' then item = Items(item) end
 	if item then
 		inv = Inventory(inv)
-		local itemSlots, totalCount, emptySlots = Inventory.GetItemSlots(inv, item, metadata == nil and {} or type(metadata) == 'table' and metadata or { type = metadata })
+		local itemSlots, totalCount, emptySlots = Inventory.GetItemSlots(inv, item, type(metadata) == 'table' and metadata or { type = metadata or nil })
 		local weight = metadata?.weight or item.weight
 
 		if next(itemSlots) or emptySlots > 0 then
