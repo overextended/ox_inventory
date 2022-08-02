@@ -1006,9 +1006,15 @@ RegisterNetEvent('ox_inventory:setPlayerInventory', function(currentDrops, inven
 			end
 		end
 
-		if currentWeapon and GetSelectedPedWeapon(playerPed) ~= currentWeapon.hash then
+		local weaponHash = GetSelectedPedWeapon(playerPed)
+
+		if currentWeapon and weaponHash ~= currentWeapon.hash then
 			TriggerServerEvent('ox_inventory:updateWeapon')
-			currentWeapon = Utils.Disarm(currentWeapon)
+			currentWeapon = Utils.Disarm(currentWeapon, true)
+
+			if weaponHash == `WEAPON_HANDCUFFS` or weaponHash == `WEAPON_GARBAGEBAG` or weaponHash == `WEAPON_BRIEFCASE` or weaponHash == `WEAPON_BRIEFCASE_02` then
+				SetCurrentPedWeapon(cache.ped, weaponHash, true)
+			end
 		end
 
 		if client.parachute and GetPedParachuteState(playerPed) ~= -1 then
