@@ -65,17 +65,21 @@ function db.loadTrunk(id)
 end
 
 function db.saveInventories(trunks, gloveboxes, stashes)
-	if #trunks > 0 then
+	local numTrunk, numGlove, numStash = #trunks, #gloveboxes, #stashes
+
+	if numTrunk > 0 then
 		MySQL.prepare(Query.UPDATE_TRUNK, trunks)
 	end
 
-	if #gloveboxes > 0 then
+	if numGlove > 0 then
 		MySQL.prepare(Query.UPDATE_GLOVEBOX, gloveboxes)
 	end
 
-	if #stashes > 0 then
+	if numStash > 0 then
 		MySQL.prepare(Query.UPDATE_STASH, stashes)
 	end
+
+	shared.info(('Saving %s inventories to the database'):format(numTrunk + numGlove + numStash))
 end
 
 function db.selectLicense(name, owner)

@@ -1384,6 +1384,12 @@ local function saveInventories(lock)
 	db.saveInventories(parameters[1], parameters[2], parameters[3])
 end
 
+AddEventHandler('playerDropped', function()
+	if GetNumPlayerIndices() == 0 then
+		saveInventories()
+	end
+end)
+
 AddEventHandler('txAdmin:events:scheduledRestart', function(eventData)
 	if eventData.secondsRemaining == 60 then
 		SetTimeout(50000, function()
