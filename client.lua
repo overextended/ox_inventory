@@ -480,6 +480,9 @@ local function registerCommands()
 				if StashTarget then
 					client.openInventory('stash', StashTarget)
 				elseif cache.vehicle then
+					-- Player is still entering vehicle, so bailout
+					if not IsPedInAnyVehicle(cache.ped, false) then return end
+
 					local vehicle = cache.vehicle
 
 					if NetworkGetEntityIsNetworked(vehicle) then
