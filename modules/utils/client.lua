@@ -120,13 +120,12 @@ end
 -- Enables the weapon wheel, but disables the use of inventory items
 -- Mostly used for weaponised vehicles, though could be called for "minigames"
 function Utils.WeaponWheel(state)
-	if state == nil then state = client.weaponWheel end
+	if state == nil then state = BlockWeaponWheel end
 
-	client.weaponWheel = state
+	BlockWeaponWheel = state
 	SetWeaponsNoAutoswap(not state)
 	SetWeaponsNoAutoreload(not state)
 	SetPedCanSwitchWeapon(cache.ped, state)
-	SetPedEnableWeaponBlocking(cache.ped, not state)
 end
 exports('weaponWheel', Utils.WeaponWheel)
 

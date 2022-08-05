@@ -254,7 +254,7 @@ local function useSlot(slot)
 		if data.effect then
 			data:effect({name = item.name, slot = item.slot, metadata = item.metadata})
 		elseif data.weapon then
-			if client.weaponWheel then return end
+			if BlockWeaponWheel then return end
 			useItem(data, function(result)
 				if result then
 					if currentWeapon?.slot == result.slot then
@@ -319,7 +319,7 @@ local function useSlot(slot)
 		elseif currentWeapon then
 			local playerPed = cache.ped
 			if data.ammo then
-				if client.weaponWheel or currentWeapon.metadata.durability <= 0 then return end
+				if BlockWeaponWheel or currentWeapon.metadata.durability <= 0 then return end
 				local maxAmmo = GetMaxAmmoInClip(playerPed, currentWeapon.hash, true)
 				local currentAmmo = GetAmmoInPedWeapon(playerPed, currentWeapon.hash)
 
@@ -616,7 +616,7 @@ local function registerCommands()
 	TriggerEvent('chat:removeSuggestion', '/reload')
 
 	RegisterCommand('hotbar', function()
-		if not client.weaponWheel and not IsPauseMenuActive() then
+		if not BlockWeaponWheel and not IsPauseMenuActive() then
 			SendNUIMessage({ action = 'toggleHotbar' })
 		end
 	end)
@@ -1026,9 +1026,18 @@ RegisterNetEvent('ox_inventory:setPlayerInventory', function(currentDrops, inven
 		end
 	end, 200)
 
+	local playerId = cache.playerId
 	local EnableKeys = client.enablekeys
-	client.tick = SetInterval(function(disableControls)
-		local playerId = cache.playerId
+	local DisablePlayerVehicleRewards = DisablePlayerVehicleRewards
+	local DisableAllControlActions = DisableAllControlActions
+	local HideHudAndRadarThisFrame = HideHudAndRadarThisFrame
+	local EnableControlAction = EnableControlAction
+	local disableControls = lib.disableControls
+	local DisablePlayerFiring = DisablePlayerFiring
+	local HudWeaponWheelIgnoreSelection = HudWeaponWheelIgnoreSelection
+	local DisableControlAction = DisableControlAction
+
+	client.tick = SetInterval(function()
 		DisablePlayerVehicleRewards(playerId)
 
 		if invOpen then
@@ -1045,7 +1054,14 @@ RegisterNetEvent('ox_inventory:setPlayerInventory', function(currentDrops, inven
 			end
 		else
 			disableControls()
-			if invBusy then DisablePlayerFiring(playerId, true) end
+
+			if invBusy then
+				DisablePlayerFiring(playerId, true)
+			end
+
+			if BlockWeaponWheel then
+				HudWeaponWheelIgnoreSelection()
+			end
 
 			if currentWeapon then
 				DisableControlAction(0, 80, true)
@@ -1116,7 +1132,7 @@ RegisterNetEvent('ox_inventory:setPlayerInventory', function(currentDrops, inven
 				end
 			end
 		end
-	end, 0, lib.disableControls)
+	end)
 
 	plyState:set('invBusy', false, false)
 	plyState:set('invOpen', false, false)
