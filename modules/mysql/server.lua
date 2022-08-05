@@ -79,7 +79,11 @@ function db.saveInventories(trunks, gloveboxes, stashes)
 		MySQL.prepare(Query.UPDATE_STASH, stashes)
 	end
 
-	shared.info(('Saving %s inventories to the database'):format(numTrunk + numGlove + numStash))
+	local total = numTrunk + numGlove + numStash
+
+	if total > 0 then
+		shared.info(('Saving %s inventories to the database'):format(total))
+	end
 end
 
 function db.selectLicense(name, owner)
