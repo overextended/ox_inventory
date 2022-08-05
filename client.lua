@@ -1299,8 +1299,8 @@ RegisterNUICallback('buyItem', function(data, cb)
 	if data then
 		PlayerData.inventory[data[1]] = data[2]
 		client.setPlayerData('inventory', PlayerData.inventory)
-		client.setPlayerData('weight', data[3])
-		SendNUIMessage({ action = 'refreshSlots', data = {item = data[2]} })
+		client.setPlayerData('weight', data[4])
+		SendNUIMessage({ action = 'refreshSlots', data = data[3] and {{item = data[2]}, {item = data[3], inventory = 'shop'}} or {item = data[2]}})
 	end
 
 	if message then

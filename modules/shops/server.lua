@@ -185,7 +185,7 @@ lib.callback.register('ox_inventory:buyItem', function(source, data)
 
 					end
 
-					return true, {data.toSlot, playerInv.items[data.toSlot], playerInv.weight}, { type = 'success', description = message }
+					return true, {data.toSlot, playerInv.items[data.toSlot], shop.items[data.fromSlot].count and shop.items[data.fromSlot], playerInv.weight}, { type = 'success', description = message }
 				else
 					return false, false, { type = 'error', description = shared.locale('cannot_afford', ('%s%s'):format((currency == 'money' and shared.locale('$') or comma_value(price)), (currency == 'money' and comma_value(price) or ' '..Items(currency).label))) }
 				end
