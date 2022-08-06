@@ -147,10 +147,7 @@ function Inventory.SetSlot(inv, item, count, metadata, slot)
 
 	inv.weight = newWeight
 	inv.items[slot] = currentSlot
-
-	if not inv.player then
-		inv.changed = true
-	end
+	inv.changed = true
 end
 
 local Items
@@ -336,6 +333,7 @@ function Inventory.Save(inv)
 
 	if inv then
 		local items = json.encode(minimal(inv))
+		inv.changed = false
 
 		if inv.type == 'player' then
 			db.savePlayer(inv.owner, items)
@@ -347,8 +345,6 @@ function Inventory.Save(inv)
 			else
 				db.saveStash(inv.owner, inv.dbId, items)
 			end
-
-			inv.changed = false
 		end
 	end
 end
@@ -1342,53 +1338,57 @@ end
 local function prepareSave(inv)
 	inv.changed = false
 
-	if inv.type == 'trunk' then
-		return 1, { json.encode(minimal(inv)), inv.dbId }
-	elseif inv.type == 'glovebox' then
+	if inv.player then
+		if Ox then
+			return 1, { json.encode(minimal(inv)), inv.owner }
+		end
+	elseif inv.type == 'trunk' then
 		return 2, { json.encode(minimal(inv)), inv.dbId }
+	elseif inv.type == 'glovebox' then
+		return 3, { json.encode(minimal(inv)), inv.dbId }
 	else
-		return 3, { inv.owner or '', inv.dbId, json.encode(minimal(inv)) }
+		return 4, { inv.owner or '', inv.dbId, json.encode(minimal(inv)) }
 	end
 end
 
 SetInterval(function()
 	local time = os.time()
-	local parameters = { {}, {}, {} }
-	local size = { 0, 0, 0 }
+	local parameters = { {}, {}, {}, {} }
+	local size = { 0, 0, 0, 0 }
 
 	for _, inv in pairs(Inventories) do
-		if not inv.player and not inv.open then
+		if not inv.open then
 			if not inv.datastore and inv.changed then
 				local i, data = prepareSave(inv)
 				size[i] += 1
 				parameters[i][size[i]] = data
 			end
 
-			if (inv.datastore or inv.owner) and time - inv.time >= 3000 then
+			if not inv.player and (inv.datastore or inv.owner) and time - inv.time >= 3000 then
 				Inventory.Remove(inv.id, inv.type)
 			end
 		end
 	end
 
-	db.saveInventories(parameters[1], parameters[2], parameters[3])
+	db.saveInventories(parameters[1], parameters[2], parameters[3], parameters[4])
 end, 600000)
 
 local function saveInventories(lock)
-	local parameters = { {}, {}, {} }
-	local size = { 0, 0, 0 }
+	local parameters = { {}, {}, {}, {} }
+	local size = { 0, 0, 0, 0 }
 	Inventory.Lock = lock or nil
 
 	TriggerClientEvent('ox_inventory:closeInventory', -1, true)
 
 	for _, inv in pairs(Inventories) do
-		if not inv.player and not inv.datastore and inv.changed then
+		if not inv.datastore and inv.changed then
 			local i, data = prepareSave(inv)
 			size[i] += 1
 			parameters[i][size[i]] = data
 		end
 	end
 
-	db.saveInventories(parameters[1], parameters[2], parameters[3])
+	db.saveInventories(parameters[1], parameters[2], parameters[3], parameters[4])
 end
 
 AddEventHandler('playerDropped', function()
