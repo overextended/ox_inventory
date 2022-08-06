@@ -1300,7 +1300,7 @@ local function playerDropped(source)
 		local openInventory = inv.open and Inventories[inv.open]
 
 		if openInventory then
-			openInventory.open = false
+			openInventory:set('open', false)
 		end
 
 		if Ox then
