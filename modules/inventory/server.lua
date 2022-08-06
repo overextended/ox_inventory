@@ -1299,11 +1299,18 @@ exports('ClearInventory', Inventory.Clear)
 
 local function playerDropped(source)
 	local inv = Inventory(source)
+
 	if inv then
 		local openInventory = inv.open and Inventories[inv.open]
+
 		if openInventory then
 			openInventory.open = false
 		end
+
+		if Ox then
+			db.savePlayer(inv.owner, json.encode(minimal(inv)))
+		end
+
 		Inventories[source] = nil
 	end
 end
