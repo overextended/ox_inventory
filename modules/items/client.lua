@@ -85,12 +85,26 @@ Item('phone', function(data, slot)
 end)
 
 Item('clothing', function(data, slot)
+	local metadata = slot.metadata
+
+	if not metadata.drawable then return print('Clothing is missing drawable in metadata') end
+	if not metadata.texture then return print('Clothing is missing texture in metadata') end
+
+	if metadata.prop then
+		if not SetPedPreloadPropData(cache.ped, metadata.prop, metadata.drawable, metadata.texture) then
+			return print('Clothing has invalid prop for this ped')
+		end
+	elseif metadata.component then
+		if not IsPedComponentVariationValid(cache.ped, metadata.component, metadata.drawable, metadata.texture) then
+			return print('Clothing has invalid component for this ped')
+		end
+	else
+		return print('Clothing is missing prop/component id in metadata')
+	end
+
 	ox_inventory:useItem(data, function(data)
 		if data then
-			local metadata = data.metadata
-
-			if not metadata.drawable then return print('Clothing is missing drawable in metadata') end
-			if not metadata.texture then return print('Clothing is missing texture in metadata') end
+			metadata = data.metadata
 
 			if metadata.prop then
 				local prop = GetPedPropIndex(cache.ped, metadata.prop)
@@ -101,7 +115,6 @@ Item('clothing', function(data, slot)
 				end
 
 				-- { prop = 0, drawable = 2, texture = 1 } = grey beanie
-				print('prop', metadata.prop, prop, texture)
 				SetPedPropIndex(cache.ped, metadata.prop, metadata.drawable, metadata.texture, false);
 			elseif metadata.component then
 				local drawable = GetPedDrawableVariation(cache.ped, metadata.component)
@@ -112,7 +125,6 @@ Item('clothing', function(data, slot)
 				end
 
 				-- { component = 4, drawable = 4, texture = 1 } = jeans w/ belt
-				print('component', metadata.component, drawable, texture)
 				SetPedComponentVariation(cache.ped, metadata.component, metadata.drawable, metadata.texture, 0);
 			end
 		end
