@@ -111,11 +111,11 @@ if not lib then
 	spamError('ox_inventory requires the ox_lib resource, refer to the documentation.')
 end
 
-local success, msg = lib.checkDependency('oxmysql', '2.0.0')
+local success, msg = lib.checkDependency('oxmysql', '2.4.0')
 
 if not success then spamError(msg) end
 
-success, msg = lib.checkDependency('ox_lib', '2.8.0')
+success, msg = lib.checkDependency('ox_lib', '2.9.0')
 
 if not success then spamError(msg) end
 
