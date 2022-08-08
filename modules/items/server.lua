@@ -110,14 +110,13 @@ CreateThread(function()
 				file[fileSize+1] = '}'
 
 				SaveResourceFile(shared.resource, 'data/items.lua', table.concat(file), -1)
-				shared.info(count, 'items have been copied from the database')
+				shared.info(count, 'items have been copied from the database.')
+				shared.info('You should restart the resource to load the new items.')
 			end
 
-			shared.warning('Database contains', #items, 'items.')
-			shared.warning('These items should be removed, and any queries for items should instead reference ESX.Items')
-			shared.warning('These entries are no longer removed to satisfy the creators of obfuscated and encrypted resources.')
-			shared.warning('Note: Any items that exist in item data and not the database will not work in said resources.')
-			shared.warning('Apparently indexing ESX.Items is too big brain, or something.')
+			shared.info('Database contains', #items, 'items.')
+			shared.warning('Any resources that rely on the database for item data is incompatible with this resource.')
+			shared.warning('Utilise \'exports.ox_inventory:Items()\', or lazy-load ESX and use ESX.Items instead.')
 		end
 	end
 
