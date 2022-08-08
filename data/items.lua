@@ -185,4 +185,9 @@ return {
             usetime = 3500
 		}
 	},
+
+	['clothing'] = {
+		label = 'Clothing',
+		consume = 0,
+	},
 }
