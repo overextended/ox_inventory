@@ -101,7 +101,7 @@ Item('clothing', function(data, slot)
 				end
 
 				-- { prop = 0, drawable = 2, texture = 1 } = grey beanie
-				print('prop', metadata.prop, prop, texture)
+				--print('prop', metadata.prop, prop, texture)
 				SetPedPropIndex(cache.ped, metadata.prop, metadata.drawable, metadata.texture, false);
 			elseif metadata.component then
 				local drawable = GetPedDrawableVariation(cache.ped, metadata.component)
@@ -112,7 +112,7 @@ Item('clothing', function(data, slot)
 				end
 
 				-- { component = 4, drawable = 4, texture = 1 } = jeans w/ belt
-				print('component', metadata.component, drawable, texture)
+				--print('component', metadata.component, drawable, texture)
 				SetPedComponentVariation(cache.ped, metadata.component, metadata.drawable, metadata.texture, 0);
 			end
 		end
