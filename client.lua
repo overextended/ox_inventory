@@ -27,11 +27,11 @@ local function canOpenInventory()
 	return PlayerData.loaded
 	and not invBusy
 	and not PlayerData.dead
-	and not GetPedConfigFlag(cache.ped, 120, true)
-	and (currentWeapon == nil or currentWeapon.timer == 0)
+	and invOpen ~= nil
+	and (not currentWeapon or currentWeapon.timer == 0)
+	and not IsPedCuffed(cache.ped)
 	and not IsPauseMenuActive()
 	and not IsPedFatallyInjured(cache.ped)
-	and invOpen ~= nil
 end
 
 local defaultInventory = {
@@ -65,12 +65,18 @@ function client.openInventory(inv, data)
 			return client.closeInventory()
 		end
 
-		if inv == 'container' and currentInventory.id == PlayerData.inventory[data].metadata.container then
-			return client.closeInventory()
-		end
+		if IsNuiFocused() then
+			if inv == 'container' and currentInventory.id == PlayerData.inventory[data].metadata.container then
+				return client.closeInventory()
+			end
 
-		if currentInventory.type == 'drop' and (not data or currentInventory.id == (type(data) == 'table' and data.id or data)) then
-			return client.closeInventory()
+			if currentInventory.type == 'drop' and (not data or currentInventory.id == (type(data) == 'table' and data.id or data)) then
+				return client.closeInventory()
+			end
+
+			if inv ~= 'drop' and inv ~= 'container' then
+				return client.closeInventory()
+			end
 		end
 	end
 
@@ -414,7 +420,7 @@ end
 local function canOpenTarget(ped)
 	return IsPedFatallyInjured(ped)
 	or IsEntityPlayingAnim(ped, 'dead', 'dead_a', 3)
-	or GetPedConfigFlag(ped, 120, true)
+	or IsPedCuffed(ped, 120, true)
 	or IsEntityPlayingAnim(ped, 'mp_arresting', 'idle', 3)
 	or IsEntityPlayingAnim(ped, 'missminuteman_1ig_2', 'handsup_base', 3)
 	or IsEntityPlayingAnim(ped, 'missminuteman_1ig_2', 'handsup_enter', 3)
@@ -455,11 +461,13 @@ end
 local function registerCommands()
 
 	RegisterCommand('inv', function()
-		local closest = lib.points.closest()
+		if not invOpen then
+			local closest = lib.points.closest()
 
-		if closest and closest.currentDistance < 1.2 then
-			if closest.inv ~= 'license' and closest.inv ~= 'policeevidence' then
-				return client.openInventory(closest.inv or 'drop', { id = closest.invId, type = closest.type })
+			if closest and closest.currentDistance < 1.2 then
+				if closest.inv ~= 'license' and closest.inv ~= 'policeevidence' then
+					return client.openInventory(closest.inv or 'drop', { id = closest.invId, type = closest.type })
+				end
 			end
 		end
 
@@ -471,8 +479,13 @@ local function registerCommands()
 	local Vehicles = data 'vehicles'
 
 	RegisterCommand('inv2', function()
+		if IsNuiFocused() then
+			return invOpen and client.closeInventory()
+		end
+
 		if not invOpen then
-			if invBusy then return lib.notify({ type = 'error', description = shared.locale('inventory_player_access') })
+			if invBusy then
+				return lib.notify({ type = 'error', description = shared.locale('inventory_player_access') })
 			else
 				if not canOpenInventory() then
 					return lib.notify({ type = 'error', description = shared.locale('inventory_player_access') })
@@ -617,7 +630,7 @@ local function registerCommands()
 	TriggerEvent('chat:removeSuggestion', '/reload')
 
 	RegisterCommand('hotbar', function()
-		if not BlockWeaponWheel and not IsPauseMenuActive() then
+		if not BlockWeaponWheel and not IsPauseMenuActive() and not IsNuiFocused() then
 			SendNUIMessage({ action = 'toggleHotbar' })
 		end
 	end)
