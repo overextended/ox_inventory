@@ -62,15 +62,15 @@ end
 function client.openInventory(inv, data)
 	if invOpen then
 		if not inv and currentInventory.type == 'newdrop' then
-			return TriggerEvent('ox_inventory:closeInventory')
+			return client.closeInventory()
 		end
 
 		if inv == 'container' and currentInventory.id == PlayerData.inventory[data].metadata.container then
-			return TriggerEvent('ox_inventory:closeInventory')
+			return client.closeInventory()
 		end
 
 		if currentInventory.type == 'drop' and (not data or currentInventory.id == (type(data) == 'table' and data.id or data)) then
-			return TriggerEvent('ox_inventory:closeInventory')
+			return client.closeInventory()
 		end
 	end
 
@@ -134,7 +134,7 @@ function client.openInventory(inv, data)
 			-- Stash does not exist
 			if left == false then return false end
 			if invOpen == false then lib.notify({ type = 'error', description = shared.locale('inventory_right_access') }) end
-			if invOpen then TriggerEvent('ox_inventory:closeInventory') end
+			if invOpen then client.closeInventory() end
 		end
 	elseif invBusy then lib.notify({ type = 'error', description = shared.locale('inventory_player_access') }) end
 end
@@ -146,7 +146,8 @@ local Animations = data 'animations'
 ---@param data table
 ---@param cb function
 local function useItem(data, cb)
-	if invOpen and data.close then TriggerEvent('ox_inventory:closeInventory') end
+	if invOpen and data.close then client.closeInventory() end
+
 	if not invBusy and not PlayerData.dead and not lib.progressActive() and not IsPedRagdoll(cache.ped) and not IsPedFalling(cache.ped) then
 		if currentWeapon and currentWeapon?.timer > 100 then return end
 
@@ -225,7 +226,7 @@ exports('useItem', useItem)
 local Items = client.items
 
 ---@param slot number
----@return boolean
+---@return boolean?
 local function useSlot(slot)
 	if PlayerData.loaded and not PlayerData.dead and not invBusy and not lib.progressActive() then
 		local item = PlayerData.inventory[slot]
@@ -242,7 +243,7 @@ local function useSlot(slot)
 		if item.metadata.container then
 			return client.openInventory('container', item.slot)
 		elseif data.client then
-			if invOpen and data.close then TriggerEvent('ox_inventory:closeInventory') end
+			if invOpen and data.close then client.closeInventory() end
 
 			if data.export then
 				return data.export(data, {name = item.name, slot = item.slot, metadata = item.metadata})
@@ -445,7 +446,7 @@ function OnPlayerData(key, val)
 		Shops()
 	elseif key == 'dead' and val then
 		currentWeapon = Utils.Disarm(currentWeapon)
-		TriggerEvent('ox_inventory:closeInventory')
+		client.closeInventory()
 	end
 
 	Utils.WeaponWheel()
@@ -499,7 +500,7 @@ local function registerCommands()
 							Wait(100)
 							if not invOpen then break
 							elseif not cache.vehicle then
-								TriggerEvent('ox_inventory:closeInventory')
+								client.closeInventory()
 								break
 							end
 						end
@@ -590,13 +591,13 @@ local function registerCommands()
 									else break end
 								end
 
-								if lastVehicle then TriggerEvent('ox_inventory:closeInventory') end
+								if lastVehicle then client.closeInventory() end
 							end
 						else lib.notify({ type = 'error', description = shared.locale('vehicle_locked') }) end
 					end
 				end
 			end
-		else return TriggerEvent('ox_inventory:closeInventory')
+		else return client.closeInventory()
 		end
 	end)
 	RegisterKeyMapping('inv2', shared.locale('open_secondary_inventory'), 'keyboard', client.keys[2])
@@ -636,7 +637,7 @@ local function registerCommands()
 
 end
 
-RegisterNetEvent('ox_inventory:closeInventory', function(server)
+function client.closeInventory(server)
 	if invOpen then
 		invOpen = nil
 		SetNuiFocus(false, false)
@@ -655,7 +656,9 @@ RegisterNetEvent('ox_inventory:closeInventory', function(server)
 		plyState.invOpen = false
 		defaultInventory.coords = nil
 	end
-end)
+end
+
+RegisterNetEvent('ox_inventory:closeInventory', client.closeInventory)
 
 local function updateInventory(items, weight)
 	-- todo: combine iterators
@@ -750,7 +753,7 @@ end)
 RegisterNetEvent('ox_inventory:inventoryReturned', function(data)
 	lib.notify({ description = shared.locale('items_returned') })
 	if currentWeapon then currentWeapon = Utils.Disarm(currentWeapon) end
-	TriggerEvent('ox_inventory:closeInventory')
+	client.closeInventory()
 	PlayerData.inventory = data[1]
 	client.setPlayerData('inventory', data[1])
 	client.setPlayerData('weight', data[3])
@@ -759,7 +762,7 @@ end)
 RegisterNetEvent('ox_inventory:inventoryConfiscated', function(message)
 	if message then lib.notify({ description = shared.locale('items_confiscated') }) end
 	if currentWeapon then currentWeapon = Utils.Disarm(currentWeapon) end
-	TriggerEvent('ox_inventory:closeInventory')
+	client.closeInventory()
 	table.wipe(PlayerData.inventory)
 	client.setPlayerData('weight', 0)
 end)
@@ -984,7 +987,7 @@ RegisterNetEvent('ox_inventory:setPlayerInventory', function(currentDrops, inven
 
 		elseif invOpen == true then
 			if not canOpenInventory() then
-				TriggerEvent('ox_inventory:closeInventory')
+				client.closeInventory()
 			else
 				playerCoords = GetEntityCoords(playerPed)
 				if currentInventory then
@@ -995,14 +998,14 @@ RegisterNetEvent('ox_inventory:setPlayerInventory', function(currentDrops, inven
 						local pedCoords = GetEntityCoords(ped)
 
 						if not id or #(playerCoords - pedCoords) > 1.8 or not (client.hasGroup(shared.police) or canOpenTarget(ped)) then
-							TriggerEvent('ox_inventory:closeInventory')
+							client.closeInventory()
 							lib.notify({ type = 'error', description = shared.locale('inventory_lost_access') })
 						else
 							TaskTurnPedToFaceCoord(playerPed, pedCoords.x, pedCoords.y, pedCoords.z, 50)
 						end
 
 					elseif currentInventory.coords and (#(playerCoords - currentInventory.coords) > (currentInventory.distance or 2.0) or canOpenTarget(playerPed)) then
-						TriggerEvent('ox_inventory:closeInventory')
+						client.closeInventory()
 						lib.notify({ type = 'error', description = shared.locale('inventory_lost_access') })
 					end
 				end
@@ -1262,7 +1265,7 @@ RegisterNUICallback('useButton', function(data, cb)
 end)
 
 RegisterNUICallback('exit', function(_, cb)
-	TriggerEvent('ox_inventory:closeInventory')
+	client.closeInventory()
 	cb(1)
 end)
 

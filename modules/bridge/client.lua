@@ -30,7 +30,7 @@ local function onLogout()
 			client.parachute = false
 		end
 
-		TriggerEvent('ox_inventory:closeInventory')
+		client.closeInventory()
 		PlayerData.loaded = false
 		ClearInterval(client.interval)
 		ClearInterval(client.tick)
