@@ -7,7 +7,7 @@
 The inventory was designed with the intention to move towards a more generic / standalone structure so it can be integrated into any framework without too much hassle. I will be writing a guide for manually setting up support _sometime soon™_. In the mean-time, it will work without any alterations if using the latest updates to **[ESX Legacy](https://github.com/esx-framework/esx-legacy)**.
 
 # Config
-Refer to the [documentation](https://overextended.github.io/docs/ox_inventory/) setting your config.  
+Refer to the [documentation](https://overextended.github.io/docs/ox_inventory/) setting your config.
 When set, you can add the following to your 'server.cfg'
 ```
 exec @ox_inventory/config.cfg
@@ -16,8 +16,8 @@ ensure ox_inventory
 
 # Logging
 
-The included logging module utilises datadog to store logging data, which can be expanded for improved analytics and metrics. Register an account at [datadoghq](https://www.datadoghq.com/).  
-The _free plan_ is enough for most user's purposes and provides far more utility than the typical weird discord logs utilised in other resources.  
+The included logging module utilises datadog to store logging data, which can be expanded for improved analytics and metrics. Register an account at [datadoghq](https://www.datadoghq.com/).
+The _free plan_ is enough for most user's purposes and provides far more utility than the typical weird discord logs utilised in other resources.
 
 Once you have registered, generate an API key and add `set datadog:key 'apikey'` to your server config.
 
@@ -62,7 +62,7 @@ Once you have registered, generate an API key and add `set datadog:key 'apikey'`
 
 <table><tr><td><h3 align='center'>Legal Notices</h2></tr></td>
 <tr><td>
-Ox Inventory for ESX Legacy  
+Ox Inventory
 
 Copyright © 2022  [Linden](https://github.com/thelindat), [Dunak](https://github.com/dunak-debug), [Luke](https://github.com/LukeWasTakenn)
 
@@ -70,16 +70,16 @@ Copyright © 2022  [Linden](https://github.com/thelindat), [Dunak](https://githu
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
 the Free Software Foundation, either version 3 of the License, or
-(at your option) any later version.  
+(at your option) any later version.
 
 
 This program is distributed in the hope that it will be useful,
 but WITHOUT ANY WARRANTY; without even the implied warranty of
 MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.  
+GNU General Public License for more details.
 
 
 You should have received a copy of the GNU General Public License
-along with this program.  
+along with this program.
 If not, see <https://www.gnu.org/licenses/>
 </td></tr></table>
