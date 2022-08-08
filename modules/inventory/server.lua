@@ -1361,8 +1361,11 @@ SetInterval(function()
 		if not inv.open then
 			if not inv.datastore and inv.changed then
 				local i, data = prepareSave(inv)
-				size[i] += 1
-				parameters[i][size[i]] = data
+
+				if i then
+					size[i] += 1
+					parameters[i][size[i]] = data
+				end
 			end
 
 			if not inv.player and (inv.datastore or inv.owner) and time - inv.time >= 3000 then
@@ -1384,8 +1387,11 @@ local function saveInventories(lock)
 	for _, inv in pairs(Inventories) do
 		if not inv.datastore and inv.changed then
 			local i, data = prepareSave(inv)
-			size[i] += 1
-			parameters[i][size[i]] = data
+
+			if i then
+				size[i] += 1
+				parameters[i][size[i]] = data
+			end
 		end
 	end
 
