@@ -153,6 +153,7 @@ end
 local Items
 
 CreateThread(function()
+	TriggerEvent('ox_inventory:loadInventory', Inventory)
 	Items = server.items
 
 	-- Require "set inventory:weaponmismatch 1" to enable experimental weapon checks.
@@ -1631,8 +1632,6 @@ lib.addCommand('group.admin', 'viewinv', function(source, args)
 end, {'target'})
 
 Inventory.accounts = server.accounts
-
-TriggerEvent('ox_inventory:loadInventory', Inventory)
 
 --- Takes traditional item data and updates it to support ox_inventory, i.e.\
 --- ```
