@@ -128,7 +128,7 @@ CreateThread(function()
 
 	local count = 0
 
-	Wait(1500)
+	Wait(5000)
 
 	for _, item in pairs(ItemList) do
 		if item.consume and item.consume > 0 and server.UsableItemsCallbacks and server.UsableItemsCallbacks[item.name] then
