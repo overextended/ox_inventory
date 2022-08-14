@@ -118,6 +118,8 @@ CreateThread(function()
 			shared.warning('Any resources that rely on the database for item data is incompatible with this resource.')
 			shared.warning('Utilise \'exports.ox_inventory:Items()\', or lazy-load ESX and use ESX.Items instead.')
 		end
+
+		Wait(4000)
 	end
 
 	local clearStashes = GetConvar('inventory:clearstashes', '6 MONTH')
@@ -128,7 +130,7 @@ CreateThread(function()
 
 	local count = 0
 
-	Wait(5000)
+	Wait(1000)
 
 	for _, item in pairs(ItemList) do
 		if item.consume and item.consume > 0 and server.UsableItemsCallbacks and server.UsableItemsCallbacks[item.name] then
