@@ -128,7 +128,7 @@ if not LoadResourceFile(shared.resource, 'web/build/index.html') then
 end
 
 -- Disable qtarget compatibility if it isn't running
-if shared.qtarget and not GetResourceState('qtarget'):find('start') then
+if shared.qtarget and not GetResourceState('qtarget'):find('start') and not GetResourceState('ox_target'):find('start') then
 	shared.qtarget = false
 	shared.warning(("qtarget is '%s' - ensure it is starting before ox_inventory"):format(GetResourceState('qtarget')))
 end
