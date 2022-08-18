@@ -89,6 +89,35 @@ elseif shared.framework == 'qb' then
 				Player.PlayerData.identifier = Player.PlayerData.charinfo.citizenid
 
 				exports.ox_inventory:setPlayerInventory(Player.PlayerData, Player.PlayerData.items)
+
+				QBCore.Functions.AddPlayerMethod(Player.PlayerData.source, "AddItem", function(item, amount, slot, info)
+					exports.ox_inventory:AddItem(Player.PlayerData.source, item, amount, info, slot)
+				end)
+
+				QBCore.Functions.AddPlayerMethod(Player.PlayerData.source, "RemoveItem", function(item, amount, slot)
+					exports.ox_inventory:RemoveItem(Player.PlayerData.source, item, amount, nil, slot)
+				end)
+
+				QBCore.Functions.AddPlayerMethod(Player.PlayerData.source, "GetItemBySlot", function(slot)
+					return exports.ox_inventory:GetSlot(Player.PlayerData.source, slot)
+				end)
+
+				QBCore.Functions.AddPlayerMethod(Player.PlayerData.source, "GetItemByName", function(item)
+					return exports.ox_inventory:GetItem(Player.PlayerData.source, item, nil, false)
+				end)
+
+				QBCore.Functions.AddPlayerMethod(Player.PlayerData.source, "GetItemsByName", function(item)
+					return exports.ox_inventory:Search(Player.PlayerData.source, 'slots', item)
+				end)
+
+				QBCore.Functions.AddPlayerMethod(Player.PlayerData.source, "ClearInventory", function(filterItems)
+					exports.ox_inventory:ClearInventory(Player.PlayerData.source, filterItems)
+				end)
+
+				QBCore.Functions.AddPlayerMethod(Player.PlayerData.source, "SetInventory", function()
+					-- ox_inventory's item structure is not compatible with qb-inventory's one so we don't support it
+					shared.info('Player.Functions.SetInventory is unsupported for ox_inventory, please use exports.ox_inventory:setPlayerInventory instead.')
+				end)
 			end
 		end
 	end)
@@ -130,6 +159,35 @@ elseif shared.framework == 'qb' then
 		Player.PlayerData.identifier = Player.PlayerData.charinfo.citizenid
 
 		exports.ox_inventory:setPlayerInventory(Player.PlayerData, Player.PlayerData.items)
+
+		QBCore.Functions.AddPlayerMethod(Player.PlayerData.source, "AddItem", function(item, amount, slot, info)
+			exports.ox_inventory:AddItem(Player.PlayerData.source, item, amount, info, slot)
+		end)
+
+		QBCore.Functions.AddPlayerMethod(Player.PlayerData.source, "RemoveItem", function(item, amount, slot)
+			exports.ox_inventory:RemoveItem(Player.PlayerData.source, item, amount, nil, slot)
+		end)
+
+		QBCore.Functions.AddPlayerMethod(Player.PlayerData.source, "GetItemBySlot", function(slot)
+			return exports.ox_inventory:GetSlot(Player.PlayerData.source, slot)
+		end)
+
+		QBCore.Functions.AddPlayerMethod(Player.PlayerData.source, "GetItemByName", function(item)
+			return exports.ox_inventory:GetItem(Player.PlayerData.source, item, nil, false)
+		end)
+
+		QBCore.Functions.AddPlayerMethod(Player.PlayerData.source, "GetItemsByName", function(item)
+			return exports.ox_inventory:Search(Player.PlayerData.source, 'slots', item)
+		end)
+
+		QBCore.Functions.AddPlayerMethod(Player.PlayerData.source, "ClearInventory", function(filterItems)
+			exports.ox_inventory:ClearInventory(Player.PlayerData.source, filterItems)
+		end)
+
+		QBCore.Functions.AddPlayerMethod(Player.PlayerData.source, "SetInventory", function()
+			-- ox_inventory's item structure is not compatible with qb-inventory's one so we don't support it
+			shared.info('Player.Functions.SetInventory is unsupported for ox_inventory, please use exports.ox_inventory:setPlayerInventory instead.')
+		end)
 	end)
 
 	local usableItems = {}

@@ -174,6 +174,8 @@ CreateThread(function()
 				shared.info('You should restart the resource to load the new items.')
 			end
 		end
+
+		Wait(4000)
 	end
 
 	local clearStashes = GetConvar('inventory:clearstashes', '6 MONTH')
