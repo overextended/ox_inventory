@@ -99,6 +99,8 @@ elseif shared.framework == 'qb' then
 
 			if money?.cash then Player.Functions.SetMoney('cash', money.cash, "Sync money with inventory") end
 		end)
+
+		exports.ox_inventory:setPlayerInventory(Player.PlayerData, Player?.PlayerData.items)
 	end)
 
 	local usableItems = {}
@@ -109,11 +111,6 @@ elseif shared.framework == 'qb' then
 
 	server.UsableItemsCallbacks = usableItems
 	server.GetPlayerFromId = QBCore.Functions.GetPlayer
-
-	local qbPlayers = QBCore.Functions.GetQBPlayers()
-	for _, player in pairs(qbPlayers) do
-		exports.ox_inventory:setPlayerInventory(player.PlayerData, player?.PlayerData.items)
-	end
 
 	-- Accounts that need to be synced with physical items
 	server.accounts = {
