@@ -67,4 +67,71 @@ if shared.framework == 'esx' then
 			dateofbirth = player.dateofbirth or player.variables.dateofbirth,
 		}
 	end
+
+elseif shared.framework == 'qb' then
+	local QBCore = exports['qb-core']:GetCoreObject()
+
+	local itemCallbacks = {}
+
+	QBCore.Functions.SetMethod('CreateUseableItem', function(item, cb)
+		itemCallbacks[item] = cb
+	end)
+
+	server.UseItem = function(source, itemName, ...)
+		local callback = itemCallbacks[itemName].callback or itemCallbacks[itemName].cb or type(itemCallbacks[itemName]) == "function" and itemCallbacks[itemName]
+
+		if not callback then return end
+
+		callback(source, itemName, ...)
+	end
+
+	AddEventHandler('__cfx_export_qb-inventory_LoadInventory', function(setCB)
+		setCB(function() return {} end) -- ox_inventory loads the inventory itself so we send 0 items back and let ox_inventory do the rest
+	end)
+
+	AddEventHandler('__cfx_export_qb-inventory_SaveInventory', function(setCB)
+		setCB(function() end) -- No need for qb-core to save the inventory
+	end)
+
+	AddEventHandler('QBCore:Server:PlayerLoaded', function(Player)
+		QBCore.Functions.AddPlayerField(Player.PlayerData.source, 'syncInventory', function(_, _, items, money)
+			Player.Functions.SetPlayerData('items', items)
+
+			if money?.cash then Player.Functions.SetMoney('cash', money.cash, "Sync money with inventory") end
+		end)
+	end)
+
+	local usableItems = {}
+
+	for k, v in pairs(QBCore.Shared.Items) do
+		if v.useable then usableItems[k] = true end
+	end
+
+	server.UsableItemsCallbacks = usableItems
+	server.GetPlayerFromId = QBCore.Functions.GetPlayer
+
+	local qbPlayers = QBCore.Functions.GetQBPlayers()
+	for _, player in pairs(qbPlayers) do
+		exports.ox_inventory:setPlayerInventory(player.PlayerData, player?.PlayerData.items)
+	end
+
+	-- Accounts that need to be synced with physical items
+	server.accounts = {
+		cash = 0
+	}
+
+	function server.setPlayerData(player)
+		local groups = {
+			[player.job.name] = player.job.grade.level,
+			[player.gang.name] = player.gang.grade.level
+		}
+
+		return {
+			source = player.source,
+			name = player.name,
+			groups = groups,
+			sex = player.charinfo.gender,
+			dateofbirth = player.charinfo.birthdate,
+		}
+	end
 end

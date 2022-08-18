@@ -865,7 +865,7 @@ lib.onCache('seat', function(seat)
 	Utils.WeaponWheel(false)
 end)
 
-RegisterNetEvent('ox_inventory:setPlayerInventory', function(currentDrops, inventory, weight, esxItem, player, source)
+RegisterNetEvent('ox_inventory:setPlayerInventory', function(currentDrops, inventory, weight, itemCallbacks, player, source)
 	PlayerData = player
 	PlayerData.id = cache.playerId
 	PlayerData.source = source
@@ -898,7 +898,7 @@ RegisterNetEvent('ox_inventory:setPlayerInventory', function(currentDrops, inven
 	local ItemData = table.create(0, #Items)
 
 	for _, v in pairs(Items) do
-		v.usable = (v.client and next(v.client) or v.effect or v.consume == 0 or (esxItem and esxItem[v.name]) or v.weapon or v.component or v.ammo or v.tint) and true
+		v.usable = (v.client and next(v.client) or v.effect or v.consume == 0 or (itemCallbacks and itemCallbacks[v.name]) or v.weapon or v.component or v.ammo or v.tint) and true
 
 		local buttons = {}
 		if v.buttons then

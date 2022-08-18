@@ -47,7 +47,7 @@ local function setPlayerInventory(player, data)
 	inv.player = server.setPlayerData(player)
 	inv.player.ped = GetPlayerPed(player.source)
 
-	if shared.framework == 'esx' then Inventory.SyncInventory(inv) end
+	if shared.framework == 'esx' or shared.framework == 'qb' then Inventory.SyncInventory(inv) end
 	TriggerClientEvent('ox_inventory:setPlayerInventory', player.source, Inventory.Drops, inventory, totalWeight, server.UsableItemsCallbacks, inv.player, player.source)
 end
 exports('setPlayerInventory', setPlayerInventory)
@@ -170,6 +170,27 @@ lib.callback.register('ox_inventory:buyLicense', function(source, id)
 			else
 				Inventory.RemoveItem(inventory, 'money', license.price)
 				TriggerEvent('esx_license:addLicense', source, 'weapon')
+
+				return true, 'bought_weapon_license'
+			end
+		end
+	elseif shared.framework == 'qb' then
+		local license = Licenses[id]
+		if license then
+			local inventory = Inventory(source)
+			local player = server.GetPlayerFromId(source)
+
+			if not player then return false, 'invalid_player' end
+
+			if player.PlayerData.metadata.licences.weapon then
+				return false, 'has_weapon_license'
+			elseif Inventory.GetItem(inventory, 'money', false, true) < license.price then
+				return false, 'poor_weapon_license'
+			else
+				Inventory.RemoveItem(inventory, 'money', license.price)
+
+				player.PlayerData.metadata.licences.weapon = true
+				player.Functions.SetMetaData('licences', player.PlayerData.metadata.licences)
 
 				return true, 'bought_weapon_license'
 			end

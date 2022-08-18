@@ -4,19 +4,19 @@ function client.setPlayerData(key, value)
 end
 
 function client.hasGroup(group)
-	if PlayerData.loaded then
-		if type(group) == 'table' then
-			for name, rank in pairs(group) do
-				local groupRank = PlayerData.groups[name]
-				if groupRank and groupRank >= (rank or 0) then
-					return name, groupRank
-				end
+	if not PlayerData.loaded then return end
+
+	if type(group) == 'table' then
+		for name, rank in pairs(group) do
+			local groupRank = PlayerData.groups[name]
+			if groupRank and groupRank >= (rank or 0) then
+				return name, groupRank
 			end
-		else
-			local groupRank = PlayerData.groups[group]
-			if groupRank then
-				return group, groupRank
-			end
+		end
+	else
+		local groupRank = PlayerData.groups[group]
+		if groupRank then
+			return group, groupRank
 		end
 	end
 end
@@ -24,18 +24,18 @@ end
 local Utils = client.utils
 
 local function onLogout()
-	if PlayerData.loaded then
-		if client.parachute then
-			Utils.DeleteObject(client.parachute)
-			client.parachute = false
-		end
+	if not PlayerData.loaded then return end
 
-		client.closeInventory()
-		PlayerData.loaded = false
-		ClearInterval(client.interval)
-		ClearInterval(client.tick)
-		currentWeapon = Utils.Disarm(currentWeapon)
+	if client.parachute then
+		Utils.DeleteObject(client.parachute)
+		client.parachute = false
 	end
+
+	client.closeInventory()
+	PlayerData.loaded = false
+	ClearInterval(client.interval)
+	ClearInterval(client.tick)
+	currentWeapon = Utils.Disarm(currentWeapon)
 end
 
 if shared.framework == 'ox' then
@@ -49,7 +49,7 @@ if shared.framework == 'ox' then
 elseif shared.framework == 'esx' then
 	local ESX = table.create(0, 2)
 	setmetatable(ESX, {
-		__index = function(self, index)
+		__index = function(_, index)
 			local obj = exports.es_extended:getSharedObject()
 			ESX.SetPlayerData = obj.SetPlayerData
 			ESX.PlayerLoaded = obj.PlayerLoaded
@@ -65,10 +65,43 @@ elseif shared.framework == 'esx' then
 	RegisterNetEvent('esx:onPlayerLogout', onLogout)
 
 	AddEventHandler('esx:setPlayerData', function(key, value)
-		if PlayerData.loaded and GetInvokingResource() == 'es_extended' then
-			if key == 'job' then
+		if not PlayerData.loaded or GetInvokingResource() ~= 'es_extended' then return end
+
+		if key == 'job' then
+			key = 'groups'
+			value = { [value.name] = value.grade }
+		end
+
+		PlayerData[key] = value
+		OnPlayerData(key, value)
+	end)
+
+	RegisterNetEvent('esx_policejob:handcuff', function()
+		PlayerData.cuffed = not PlayerData.cuffed
+		LocalPlayer.state:set('invBusy', PlayerData.cuffed, false)
+
+		if not PlayerData.cuffed then return end
+
+		currentWeapon = Utils.Disarm(currentWeapon)
+	end)
+
+	RegisterNetEvent('esx_policejob:unrestrain', function()
+		PlayerData.cuffed = false
+		LocalPlayer.state:set('invBusy', PlayerData.cuffed, false)
+	end)
+
+elseif shared.framework == 'qb' then
+	RegisterNetEvent('QBCore:Client:OnPlayerUnload', onLogout)
+
+	RegisterNetEvent('QBCore:Player:SetPlayerData', function(val)
+		if source == '' or not PlayerData.loaded then return end
+
+		val.dead = val.metadata.isdead
+
+		for key, value in pairs(val) do
+			if key == 'job' or key == 'gang' then
 				key = 'groups'
-				value = { [value.name] = value.grade }
+				value = { [value.name] = value.grade.level }
 			end
 
 			PlayerData[key] = value
@@ -76,16 +109,12 @@ elseif shared.framework == 'esx' then
 		end
 	end)
 
-	RegisterNetEvent('esx_policejob:handcuff', function()
+	RegisterNetEvent('police:client:GetCuffed', function()
 		PlayerData.cuffed = not PlayerData.cuffed
 		LocalPlayer.state:set('invBusy', PlayerData.cuffed, false)
-		if PlayerData.cuffed then
-			currentWeapon = Utils.Disarm(currentWeapon)
-		end
-	end)
 
-	RegisterNetEvent('esx_policejob:unrestrain', function()
-		PlayerData.cuffed = false
-		LocalPlayer.state:set('invBusy', PlayerData.cuffed, false)
+		if not PlayerData.cuffed then return end
+
+		currentWeapon = Utils.Disarm(currentWeapon)
 	end)
 end

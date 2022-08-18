@@ -72,8 +72,8 @@ CreateThread(function()
 				local item = items[i]
 
 				if not ItemList[item.name] then
-					item.close = item.closeonuse or true
-					item.stack = item.stackable or true
+					item.close = item.closeonuse == nil and true or item.closeonuse
+					item.stack = item.stackable == nil and true or item.stackable
 					item.description = item.description
 					item.weight = item.weight or 0
 					dump[i] = item
@@ -81,7 +81,7 @@ CreateThread(function()
 				end
 			end
 
-			if next(dump) then
+			if table.type(dump) ~= "empty" then
 				local file = {string.strtrim(LoadResourceFile(shared.resource, 'data/items.lua'))}
 				file[1] = file[1]:gsub('}$', '')
 
@@ -120,6 +120,60 @@ CreateThread(function()
 		end
 
 		Wait(4000)
+
+	elseif shared.framework == 'qb' then
+		local success, items = pcall(MySQL.query.await, 'SELECT * FROM items')
+
+		if success and #items > 0 then
+			local dump = {}
+			local count = 0
+
+			for i = 1, #items do
+				local item = items[i]
+
+				if not ItemList[item.name] then
+					item.close = item.closeonuse == nil and true or item.closeonuse
+					item.stack = item.unique == nil and true or item.unique
+					item.description = item.description
+					item.weight = item.weight or 0
+					dump[i] = item
+					count += 1
+				end
+			end
+
+			if table.type(dump) ~= "empty" then
+				local file = {string.strtrim(LoadResourceFile(shared.resource, 'data/items.lua'))}
+				file[1] = file[1]:gsub('}$', '')
+
+				local itemFormat = [[
+
+	['%s'] = {
+		label = '%s',
+		weight = %s,
+		stack = %s,
+		close = %s,
+		description = %s
+	},
+]]
+				local fileSize = #file
+
+				for _, item in pairs(items) do
+					local formatName = item.name:gsub("'", "\\'"):lower()
+					if not ItemList[formatName] then
+						fileSize += 1
+
+						file[fileSize] = (itemFormat):format(formatName, item.label:gsub("'", "\\'"):lower(), item.weight, item.stack, item.close, item.description and ('"%s"'):format(item.description) or 'nil')
+						ItemList[formatName] = v
+					end
+				end
+
+				file[fileSize+1] = '}'
+
+				SaveResourceFile(shared.resource, 'data/items.lua', table.concat(file), -1)
+				shared.info(count, 'items have been copied from the QBCore.Shared.Items.')
+				shared.info('You should restart the resource to load the new items.')
+			end
+		end
 	end
 
 	local clearStashes = GetConvar('inventory:clearstashes', '6 MONTH')
