@@ -71,6 +71,28 @@ if shared.framework == 'esx' then
 elseif shared.framework == 'qb' then
 	local QBCore = exports['qb-core']:GetCoreObject()
 
+	SetTimeout(4000, function()
+		local qbPlayers = QBCore.Functions.GetQBPlayers()
+		for _, Player in pairs(qbPlayers) do
+			if Player then
+				QBCore.Functions.AddPlayerField(Player.PlayerData.source, 'syncInventory', function(_, _, items, money)
+					Player.Functions.SetPlayerData('items', items)
+					Player.Functions.SetPlayerData('inventory', items)
+
+					if money?.cash then Player.Functions.SetMoney('cash', money.cash, "Sync money with inventory") end
+				end)
+
+				Player.Functions.SetPlayerData('inventory', Player.PlayerData.items)
+
+				Player.Functions.inventory = Player.PlayerData.items
+
+				Player.PlayerData.identifier = Player.PlayerData.charinfo.citizenid
+
+				exports.ox_inventory:setPlayerInventory(Player.PlayerData, Player.PlayerData.items)
+			end
+		end
+	end)
+
 	local itemCallbacks = {}
 
 	QBCore.Functions.SetMethod('CreateUseableItem', function(item, cb)
@@ -93,20 +115,17 @@ elseif shared.framework == 'qb' then
 		setCB(function() end) -- No need for qb-core to save the inventory
 	end)
 
-	AddEventHandler('onResourceStart', function(resource)
-		if resource ~= GetCurrentResourceName() then return end
-		local qbPlayers = QBCore.Functions.GetQBPlayers()
-		for _, Player in pairs(qbPlayers) do
-			exports.ox_inventory:setPlayerInventory(Player?.PlayerData, Player?.PlayerData.items)
-		end
-	end)
-
 	AddEventHandler('QBCore:Server:PlayerLoaded', function(Player)
 		QBCore.Functions.AddPlayerField(Player.PlayerData.source, 'syncInventory', function(_, _, items, money)
 			Player.Functions.SetPlayerData('items', items)
+			Player.Functions.SetPlayerData('inventory', items)
 
 			if money?.cash then Player.Functions.SetMoney('cash', money.cash, "Sync money with inventory") end
 		end)
+
+		Player.Functions.SetPlayerData('inventory', Player.PlayerData.items)
+
+		Player.Functions.inventory = Player.PlayerData.items
 
 		Player.PlayerData.identifier = Player.PlayerData.charinfo.citizenid
 
