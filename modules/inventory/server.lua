@@ -1276,22 +1276,50 @@ end
 exports('ReturnInventory', Inventory.Return)
 
 ---@param inv string | number
----@param keep nil
+---@param keep? string | string[]
 --- todo: support the keep argument, allowing users to define a list of item "types" to keep
 --- i.e. {'money', 'weapons'} would keep money and weapons, but remove ammo, attachments, and other items
 function Inventory.Clear(inv, keep)
 	inv = Inventory(inv)
-	if inv then
-		if not keep then
-			table.wipe(inv.items)
-			inv.weight = 0
-			if inv.player then
-				TriggerClientEvent('ox_inventory:inventoryConfiscated', inv.id)
-				if shared.framework == 'esx' or shared.framework == 'qb' then Inventory.SyncInventory(inv) end
-				inv.weapon = nil
+
+	if not inv then return end
+
+	if keep then
+		local newWeight = 0
+		local keptItems = {}
+
+		local keepType = type(keep)
+		if keepType == "string" then
+			local item = Inventory.GetItem(inv, keep, nil, false)
+
+			if item then
+				keptItems[item.slot] = item
+				newWeight = item.weight
+			end
+		elseif keepType == "table" and table.type(keep) == "array" then
+			for i = 1, #keep do
+				local item = Inventory.GetItem(inv, keep[i], nil, false)
+
+				if item then
+					keptItems[item.slot] = item
+					newWeight += item.weight
+				end
 			end
 		end
+
+		table.wipe(inv.items)
+		inv.items = keptItems
+		inv.weight = newWeight
+	else
+		table.wipe(inv.items)
+		inv.weight = 0
 	end
+
+	if not inv.player then return end
+
+	TriggerClientEvent('ox_inventory:inventoryConfiscated', inv.id)
+	if shared.framework == 'esx' or shared.framework == 'qb' then Inventory.SyncInventory(inv) end
+	inv.weapon = nil
 end
 exports('ClearInventory', Inventory.Clear)
 
