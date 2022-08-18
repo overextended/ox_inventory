@@ -100,6 +100,8 @@ elseif shared.framework == 'qb' then
 			if money?.cash then Player.Functions.SetMoney('cash', money.cash, "Sync money with inventory") end
 		end)
 
+		Player.PlayerData.identifier = Player.PlayerData.charinfo.citizenid
+
 		exports.ox_inventory:setPlayerInventory(Player.PlayerData, Player?.PlayerData.items)
 	end)
 

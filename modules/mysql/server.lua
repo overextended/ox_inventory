@@ -24,7 +24,7 @@ do
 		vehicleColumn = 'plate'
 	elseif shared.framework == 'qb' then
 		playerTable = 'players'
-		playerColumn = 'license'
+		playerColumn = 'citizenid'
 		vehicleTable = 'player_vehicles'
 		vehicleColumn = 'plate'
 	end
