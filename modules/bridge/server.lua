@@ -136,14 +136,6 @@ elseif shared.framework == 'qb' then
 		callback(source, itemName, ...)
 	end
 
-	AddEventHandler('__cfx_export_qb-inventory_LoadInventory', function(setCB)
-		setCB(function() return {} end) -- ox_inventory loads the inventory itself so we send 0 items back and let ox_inventory do the rest
-	end)
-
-	AddEventHandler('__cfx_export_qb-inventory_SaveInventory', function(setCB)
-		setCB(function() end) -- No need for qb-core to save the inventory
-	end)
-
 	AddEventHandler('QBCore:Server:PlayerLoaded', function(Player)
 		QBCore.Functions.AddPlayerField(Player.PlayerData.source, 'syncInventory', function(_, _, items, money)
 			Player.Functions.SetPlayerData('items', items)
