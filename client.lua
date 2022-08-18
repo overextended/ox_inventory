@@ -472,7 +472,7 @@ local function registerCommands()
 		end
 
 		client.openInventory()
-	end)
+	end, false)
 	RegisterKeyMapping('inv', shared.locale('open_player_inventory'), 'keyboard', client.keys[1])
 	TriggerEvent('chat:removeSuggestion', '/inv')
 
@@ -612,7 +612,7 @@ local function registerCommands()
 			end
 		else return client.closeInventory()
 		end
-	end)
+	end, false)
 	RegisterKeyMapping('inv2', shared.locale('open_secondary_inventory'), 'keyboard', client.keys[2])
 	TriggerEvent('chat:removeSuggestion', '/inv2')
 
@@ -625,7 +625,7 @@ local function registerCommands()
 				lib.notify({ type = 'error', description = shared.locale('no_durability', currentWeapon.label) })
 			end
 		end
-	end)
+	end, false)
 	RegisterKeyMapping('reload', shared.locale('reload_weapon'), 'keyboard', 'r')
 	TriggerEvent('chat:removeSuggestion', '/reload')
 
@@ -633,17 +633,17 @@ local function registerCommands()
 		if not BlockWeaponWheel and not IsPauseMenuActive() and not IsNuiFocused() then
 			SendNUIMessage({ action = 'toggleHotbar' })
 		end
-	end)
+	end, false)
 	RegisterKeyMapping('hotbar', shared.locale('disable_hotbar'), 'keyboard', client.keys[3])
 	TriggerEvent('chat:removeSuggestion', '/hotbar')
 
 	RegisterCommand('steal', function()
 		openNearbyInventory()
-	end)
+	end, false)
 
 	for i = 1, 5 do
 		local hotkey = ('hotkey%s'):format(i)
-		RegisterCommand(hotkey, function() if not invOpen then useSlot(i) end end)
+		RegisterCommand(hotkey, function() if not invOpen then useSlot(i) end end, false)
 		RegisterKeyMapping(hotkey, shared.locale('use_hotbar', i), 'keyboard', i)
 		TriggerEvent('chat:removeSuggestion', '/'..hotkey)
 	end

@@ -132,7 +132,7 @@ CreateThread(function()
 				local item = items[i]
 
 				if not ItemList[item.name] then
-					item.close = item.closeonuse == nil and true or item.closeonuse
+					item.close = item.shouldClose == nil and true or item.shouldClose
 					item.stack = item.unique == nil and true or item.unique
 					item.description = item.description
 					item.weight = item.weight or 0
