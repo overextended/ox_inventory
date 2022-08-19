@@ -1333,7 +1333,7 @@ local function playerDropped(source)
 			openInventory:set('open', false)
 		end
 
-		if Ox then
+		if shared.framework ~= 'esx' then
 			db.savePlayer(inv.owner, json.encode(minimal(inv)))
 		end
 
@@ -1389,7 +1389,7 @@ local function prepareSave(inv)
 	inv.changed = false
 
 	if inv.player then
-		if Ox then
+		if shared.framework ~= 'esx' then
 			return 1, { json.encode(minimal(inv)), inv.owner }
 		end
 	elseif inv.type == 'trunk' then

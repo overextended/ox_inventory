@@ -86,9 +86,9 @@ elseif shared.framework == 'qb' then
 
 				Player.Functions.inventory = Player.PlayerData.items
 
-				Player.PlayerData.identifier = Player.PlayerData.charinfo.citizenid
+				Player.PlayerData.identifier = Player.PlayerData.citizenid
 
-				exports.ox_inventory:setPlayerInventory(Player.PlayerData, Player.PlayerData.items)
+				exports.ox_inventory:setPlayerInventory(Player.PlayerData)
 
 				QBCore.Functions.AddPlayerMethod(Player.PlayerData.source, "AddItem", function(item, amount, slot, info)
 					exports.ox_inventory:AddItem(Player.PlayerData.source, item, amount, info, slot)
@@ -148,9 +148,9 @@ elseif shared.framework == 'qb' then
 
 		Player.Functions.inventory = Player.PlayerData.items
 
-		Player.PlayerData.identifier = Player.PlayerData.charinfo.citizenid
+		Player.PlayerData.identifier = Player.PlayerData.citizenid
 
-		exports.ox_inventory:setPlayerInventory(Player.PlayerData, Player.PlayerData.items)
+		exports.ox_inventory:setPlayerInventory(Player.PlayerData)
 
 		QBCore.Functions.AddPlayerMethod(Player.PlayerData.source, "AddItem", function(item, amount, slot, info)
 			exports.ox_inventory:AddItem(Player.PlayerData.source, item, amount, info, slot)
