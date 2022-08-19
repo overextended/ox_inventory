@@ -110,7 +110,7 @@ CreateThread(function()
 				file[fileSize+1] = '}'
 
 				SaveResourceFile(shared.resource, 'data/items.lua', table.concat(file), -1)
-				shared.info(count, 'items have been copied from the database.')
+				shared.info(count, 'Items have been copied from the database.')
 				shared.info('You should restart the resource to load the new items.')
 			end
 
@@ -122,9 +122,10 @@ CreateThread(function()
 		Wait(4000)
 
 	elseif shared.framework == 'qb' then
-		local success, items = pcall(MySQL.query.await, 'SELECT * FROM items')
+		local QBCore = exports['qb-core']:GetCoreObject()
+		local items = QBCore.Shared.Items
 
-		if success and #items > 0 then
+		if #items > 0 then
 			local dump = {}
 			local count = 0
 
@@ -170,7 +171,7 @@ CreateThread(function()
 				file[fileSize+1] = '}'
 
 				SaveResourceFile(shared.resource, 'data/items.lua', table.concat(file), -1)
-				shared.info(count, 'items have been copied from the QBCore.Shared.Items.')
+				shared.info(count, 'Items have been copied from the QBCore.Shared.Items.')
 				shared.info('You should restart the resource to load the new items.')
 			end
 		end
