@@ -91,27 +91,27 @@ elseif shared.framework == 'qb' then
 				exports.ox_inventory:setPlayerInventory(Player.PlayerData)
 
 				QBCore.Functions.AddPlayerMethod(Player.PlayerData.source, "AddItem", function(item, amount, slot, info)
-					exports.ox_inventory:AddItem(Player.PlayerData.source, item, amount, info, slot)
+					server.inventory.AddItem(Player.PlayerData.source, item, amount, info, slot)
 				end)
 
 				QBCore.Functions.AddPlayerMethod(Player.PlayerData.source, "RemoveItem", function(item, amount, slot)
-					exports.ox_inventory:RemoveItem(Player.PlayerData.source, item, amount, nil, slot)
+					server.inventory.RemoveItem(Player.PlayerData.source, item, amount, nil, slot)
 				end)
 
 				QBCore.Functions.AddPlayerMethod(Player.PlayerData.source, "GetItemBySlot", function(slot)
-					return exports.ox_inventory:GetSlot(Player.PlayerData.source, slot)
+					return server.inventory.GetSlot(Player.PlayerData.source, slot)
 				end)
 
 				QBCore.Functions.AddPlayerMethod(Player.PlayerData.source, "GetItemByName", function(item)
-					return exports.ox_inventory:GetItem(Player.PlayerData.source, item, nil, false)
+					return server.inventory.GetItem(Player.PlayerData.source, item, nil, false)
 				end)
 
 				QBCore.Functions.AddPlayerMethod(Player.PlayerData.source, "GetItemsByName", function(item)
-					return exports.ox_inventory:Search(Player.PlayerData.source, 'slots', item)
+					return server.inventory.Search(Player.PlayerData.source, 'slots', item)
 				end)
 
 				QBCore.Functions.AddPlayerMethod(Player.PlayerData.source, "ClearInventory", function(filterItems)
-					exports.ox_inventory:ClearInventory(Player.PlayerData.source, filterItems)
+					server.inventory.Clear(Player.PlayerData.source, filterItems)
 				end)
 
 				QBCore.Functions.AddPlayerMethod(Player.PlayerData.source, "SetInventory", function()
@@ -136,6 +136,21 @@ elseif shared.framework == 'qb' then
 		callback(source, itemName, ...)
 	end
 
+	AddEventHandler('QBCore:Player:SetPlayerData', function(val)
+		local cash = server.inventory.GetItem(val.source, 'money', nil, false)
+
+		if not cash or cash.count == 0 then
+			if val.money.cash > 0 then server.inventory.AddItem(val.source, 'money', val.money.cash) end
+			return
+		end
+
+		if val.money.cash > 0 then
+			server.inventory.SetItem(val.source, 'money', val.money.cash)
+		else
+			server.inventory.RemoveItem(val.source, 'money', cash.count)
+		end
+	end)
+
 	AddEventHandler('QBCore:Server:PlayerLoaded', function(Player)
 		QBCore.Functions.AddPlayerField(Player.PlayerData.source, 'syncInventory', function(_, _, items, money)
 			Player.Functions.SetPlayerData('items', items)
@@ -153,27 +168,27 @@ elseif shared.framework == 'qb' then
 		exports.ox_inventory:setPlayerInventory(Player.PlayerData)
 
 		QBCore.Functions.AddPlayerMethod(Player.PlayerData.source, "AddItem", function(item, amount, slot, info)
-			exports.ox_inventory:AddItem(Player.PlayerData.source, item, amount, info, slot)
+			server.inventory.AddItem(Player.PlayerData.source, item, amount, info, slot)
 		end)
 
 		QBCore.Functions.AddPlayerMethod(Player.PlayerData.source, "RemoveItem", function(item, amount, slot)
-			exports.ox_inventory:RemoveItem(Player.PlayerData.source, item, amount, nil, slot)
+			server.inventory.RemoveItem(Player.PlayerData.source, item, amount, nil, slot)
 		end)
 
 		QBCore.Functions.AddPlayerMethod(Player.PlayerData.source, "GetItemBySlot", function(slot)
-			return exports.ox_inventory:GetSlot(Player.PlayerData.source, slot)
+			return server.inventory.GetSlot(Player.PlayerData.source, slot)
 		end)
 
 		QBCore.Functions.AddPlayerMethod(Player.PlayerData.source, "GetItemByName", function(item)
-			return exports.ox_inventory:GetItem(Player.PlayerData.source, item, nil, false)
+			return server.inventory.GetItem(Player.PlayerData.source, item, nil, false)
 		end)
 
 		QBCore.Functions.AddPlayerMethod(Player.PlayerData.source, "GetItemsByName", function(item)
-			return exports.ox_inventory:Search(Player.PlayerData.source, 'slots', item)
+			return server.inventory.Search(Player.PlayerData.source, 'slots', item)
 		end)
 
 		QBCore.Functions.AddPlayerMethod(Player.PlayerData.source, "ClearInventory", function(filterItems)
-			exports.ox_inventory:ClearInventory(Player.PlayerData.source, filterItems)
+			server.inventory.Clear(Player.PlayerData.source, filterItems)
 		end)
 
 		QBCore.Functions.AddPlayerMethod(Player.PlayerData.source, "SetInventory", function()
