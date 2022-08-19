@@ -43,7 +43,7 @@ if shared.framework == 'esx' then
 		server.UsableItemsCallbacks = ESX.GetUsableItems()
 
 		for _, player in pairs(ESX.Players) do
-			exports.ox_inventory:setPlayerInventory(player, player?.inventory)
+			server.setPlayerInventory(player, player?.inventory)
 		end
 	end)
 
@@ -100,7 +100,7 @@ elseif shared.framework == 'qb' then
 
 				Player.PlayerData.identifier = Player.PlayerData.citizenid
 
-				exports.ox_inventory:setPlayerInventory(Player.PlayerData)
+				server.setPlayerInventory(Player.PlayerData)
 
 				QBCore.Functions.AddPlayerMethod(Player.PlayerData.source, "AddItem", function(item, amount, slot, info)
 					server.inventory.AddItem(Player.PlayerData.source, item, amount, info, slot)
@@ -172,12 +172,9 @@ elseif shared.framework == 'qb' then
 		end)
 
 		Player.Functions.SetPlayerData('inventory', Player.PlayerData.items)
-
 		Player.Functions.inventory = Player.PlayerData.items
-
 		Player.PlayerData.identifier = Player.PlayerData.citizenid
-
-		exports.ox_inventory:setPlayerInventory(Player.PlayerData)
+		server.setPlayerInventory(Player.PlayerData)
 
 		QBCore.Functions.AddPlayerMethod(Player.PlayerData.source, "AddItem", function(item, amount, slot, info)
 			server.inventory.AddItem(Player.PlayerData.source, item, amount, info, slot)

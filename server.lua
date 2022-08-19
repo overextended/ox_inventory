@@ -9,7 +9,7 @@ local Items = server.items
 ---@param data table
 --- player requires source, identifier, and name
 --- optionally, it should contain jobs/groups, sex, and dateofbirth
-local function setPlayerInventory(player, data)
+function server.setPlayerInventory(player, data)
 	while not shared.ready do Wait(0) end
 
 	if not data then
@@ -50,8 +50,8 @@ local function setPlayerInventory(player, data)
 	if server.syncInventory then server.syncInventory(inv) end
 	TriggerClientEvent('ox_inventory:setPlayerInventory', player.source, Inventory.Drops, inventory, totalWeight, server.UsableItemsCallbacks, inv.player, player.source)
 end
-exports('setPlayerInventory', setPlayerInventory)
-AddEventHandler('ox_inventory:setPlayerInventory', setPlayerInventory)
+exports('setPlayerInventory', server.setPlayerInventory)
+AddEventHandler('ox_inventory:setPlayerInventory', server.setPlayerInventory)
 
 local Vehicles = data 'vehicles'
 
