@@ -173,7 +173,7 @@ lib.callback.register('ox_inventory:buyItem', function(source, data)
 					end
 
 					Inventory.RemoveItem(source, currency, price)
-					if shared.framework == 'esx' or shared.framework == 'qb' then Inventory.SyncInventory(playerInv) end
+					if server.syncInventory then server.syncInventory(playerInv) end
 					local message = shared.locale('purchased_for', count, fromItem.label, (currency == 'money' and shared.locale('$') or comma_value(price)), (currency == 'money' and comma_value(price) or ' '..Items(currency).label))
 
 					-- Only log purchases for items worth $500 or more

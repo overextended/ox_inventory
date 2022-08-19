@@ -111,20 +111,6 @@ local function minimal(inv)
 	return inventory
 end
 
----@param inv table
---- Syncs inventory data with the xPlayer object for compatibility with shit resources
-function Inventory.SyncInventory(inv)
-	local money = table.clone(server.accounts)
-
-	for _, v in pairs(inv.items) do
-		if money[v.name] then
-			money[v.name] += v.count
-		end
-	end
-
-	server.GetPlayerFromId(inv.id).syncInventory(inv.weight, inv.maxWeight, inv.items, money)
-end
-
 ---@param inv string | number
 ---@param item table item data
 ---@param count number
@@ -598,7 +584,7 @@ function Inventory.SetDurability(inv, slot, durability)
 			slot.metadata.durability = durability
 
 			if inv.type == 'player' then
-				if shared.framework == 'esx' or shared.framework == 'qb' then Inventory.SyncInventory(inv) end
+				if server.syncInventory then server.syncInventory(inv) end
 				TriggerClientEvent('ox_inventory:updateSlots', inv.id, {{item = slot, inventory = inv.type}}, {left=inv.weight, right=inv.open and Inventories[inv.open]?.weight})
 			end
 		end
@@ -623,7 +609,7 @@ function Inventory.SetMetadata(inv, slot, metadata)
 			end
 
 			if inv.type == 'player' then
-				if shared.framework == 'esx' or shared.framework == 'qb' then Inventory.SyncInventory(inv) end
+				if server.syncInventory then server.syncInventory(inv) end
 				TriggerClientEvent('ox_inventory:updateSlots', inv.id, {{item = slot, inventory = inv.type}}, {left=inv.weight, right=inv.open and Inventories[inv.open]?.weight})
 			end
 		end
@@ -687,7 +673,7 @@ function Inventory.AddItem(inv, item, count, metadata, slot, cb)
 				end
 
 				if inv.type == 'player' then
-					if shared.framework == 'esx' or shared.framework == 'qb' then Inventory.SyncInventory(inv) end
+					if server.syncInventory then server.syncInventory(inv) end
 					TriggerClientEvent('ox_inventory:updateSlots', inv.id, {{item = inv.items[slot], inventory = inv.type}}, {left=inv.weight, right=inv.open and Inventories[inv.open]?.weight}, count, false)
 				end
 			else
@@ -826,7 +812,7 @@ function Inventory.RemoveItem(inv, item, count, metadata, slot)
 		end
 
 		if removed > 0 and inv.type == 'player' then
-			if shared.framework == 'esx' or shared.framework == 'qb' then Inventory.SyncInventory(inv) end
+			if server.syncInventory then server.syncInventory(inv) end
 			local array = table.create(#slots, 0)
 
 			for k, v in pairs(slots) do
@@ -980,7 +966,7 @@ local function dropItem(source, data)
 		'swapSlots', playerInventory.owner, dropId
 	)
 
-	if shared.framework == 'esx' or shared.framework == 'qb' then Inventory.SyncInventory(playerInventory) end
+	if server.syncInventory then server.syncInventory(playerInventory) end
 
 	return true, { weight = playerInventory.weight, items = items }
 end
@@ -1190,13 +1176,13 @@ lib.callback.register('ox_inventory:swapItems', function(source, data)
 					if next(items) then
 						resp = { weight = playerInventory.weight, items = items }
 
-						if shared.framework == 'esx' or shared.framework == 'qb' then
+						if server.syncInventory then
 							if fromInventory.player then
-								Inventory.SyncInventory(fromInventory)
+								server.syncInventory(fromInventory)
 							end
 
 							if toInventory.player and not sameInventory then
-								Inventory.SyncInventory(toInventory)
+								server.syncInventory(toInventory)
 							end
 						end
 					end
@@ -1237,7 +1223,7 @@ function Inventory.Confiscate(source)
 		table.wipe(inv.items)
 		inv.weight = 0
 		TriggerClientEvent('ox_inventory:inventoryConfiscated', inv.id)
-		if shared.framework == 'esx' or shared.framework == 'qb' then Inventory.SyncInventory(inv) end
+		if server.syncInventory then server.syncInventory(inv) end
 	end
 end
 exports('ConfiscateInventory', Inventory.Confiscate)
@@ -1267,7 +1253,7 @@ function Inventory.Return(source)
 				inv.weight = totalWeight
 				inv.items = inventory
 
-				if shared.framework == 'esx' or shared.framework == 'qb' then Inventory.SyncInventory(inv) end
+				if server.syncInventory then server.syncInventory(inv) end
 				TriggerClientEvent('ox_inventory:inventoryReturned', source, {inventory, totalWeight})
 			end
 		end)
@@ -1318,7 +1304,7 @@ function Inventory.Clear(inv, keep)
 	if not inv.player then return end
 
 	TriggerClientEvent('ox_inventory:inventoryConfiscated', inv.id)
-	if shared.framework == 'esx' or shared.framework == 'qb' then Inventory.SyncInventory(inv) end
+	if server.syncInventory then server.syncInventory(inv) end
 	inv.weapon = nil
 end
 exports('ClearInventory', Inventory.Clear)
@@ -1580,8 +1566,8 @@ RegisterServerEvent('ox_inventory:updateWeapon', function(action, value, slot)
 				syncInventory = true
 			end
 
-			if (shared.framework == 'esx' or shared.framework == 'qb') and syncInventory then
-				Inventory.SyncInventory(inventory)
+			if (server.syncInventory) and syncInventory then
+				server.syncInventory(inventory)
 			end
 
 			if action ~= 'throw' then TriggerClientEvent('ox_inventory:updateSlots', source, {{item = weapon}}, {left=inventory.weight}) end

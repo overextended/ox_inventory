@@ -47,7 +47,7 @@ local function setPlayerInventory(player, data)
 	inv.player = server.setPlayerData(player)
 	inv.player.ped = GetPlayerPed(player.source)
 
-	if shared.framework == 'esx' or shared.framework == 'qb' then Inventory.SyncInventory(inv) end
+	if server.syncInventory then server.syncInventory(inv) end
 	TriggerClientEvent('ox_inventory:setPlayerInventory', player.source, Inventory.Drops, inventory, totalWeight, server.UsableItemsCallbacks, inv.player, player.source)
 end
 exports('setPlayerInventory', setPlayerInventory)

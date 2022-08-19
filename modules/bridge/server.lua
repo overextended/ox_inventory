@@ -68,6 +68,19 @@ if shared.framework == 'esx' then
 		}
 	end
 
+	function server.syncInventory(inv)
+		local money = table.clone(server.accounts)
+
+		for _, v in pairs(inv.items) do
+			if money[v.name] then
+				money[v.name] += v.count
+			end
+		end
+
+		local player = server.GetPlayerFromId(inv.id)
+		player.syncInventory(inv.weight, inv.maxWeight, inv.items, money)
+	end
+
 elseif shared.framework == 'qb' then
 	local QBCore = exports['qb-core']:GetCoreObject()
 
@@ -224,5 +237,18 @@ elseif shared.framework == 'qb' then
 			sex = player.charinfo.gender,
 			dateofbirth = player.charinfo.birthdate,
 		}
+	end
+
+	function server.syncInventory(inv)
+		local money = table.clone(server.accounts)
+
+		for _, v in pairs(inv.items) do
+			if money[v.name] then
+				money[v.name] += v.count
+			end
+		end
+
+		local player = server.GetPlayerFromId(inv.id)
+		player.syncInventory(inv.weight, inv.maxWeight, inv.items, money)
 	end
 end
