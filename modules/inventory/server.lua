@@ -598,7 +598,7 @@ function Inventory.SetDurability(inv, slot, durability)
 			slot.metadata.durability = durability
 
 			if inv.type == 'player' then
-				if shared.framework == 'esx' then Inventory.SyncInventory(inv) end
+				if shared.framework == 'esx' or shared.framework == 'qb' then Inventory.SyncInventory(inv) end
 				TriggerClientEvent('ox_inventory:updateSlots', inv.id, {{item = slot, inventory = inv.type}}, {left=inv.weight, right=inv.open and Inventories[inv.open]?.weight})
 			end
 		end
@@ -623,7 +623,7 @@ function Inventory.SetMetadata(inv, slot, metadata)
 			end
 
 			if inv.type == 'player' then
-				if shared.framework == 'esx' then Inventory.SyncInventory(inv) end
+				if shared.framework == 'esx' or shared.framework == 'qb' then Inventory.SyncInventory(inv) end
 				TriggerClientEvent('ox_inventory:updateSlots', inv.id, {{item = slot, inventory = inv.type}}, {left=inv.weight, right=inv.open and Inventories[inv.open]?.weight})
 			end
 		end
@@ -687,7 +687,7 @@ function Inventory.AddItem(inv, item, count, metadata, slot, cb)
 				end
 
 				if inv.type == 'player' then
-					if shared.framework == 'esx' then Inventory.SyncInventory(inv) end
+					if shared.framework == 'esx' or shared.framework == 'qb' then Inventory.SyncInventory(inv) end
 					TriggerClientEvent('ox_inventory:updateSlots', inv.id, {{item = inv.items[slot], inventory = inv.type}}, {left=inv.weight, right=inv.open and Inventories[inv.open]?.weight}, count, false)
 				end
 			else
@@ -826,7 +826,7 @@ function Inventory.RemoveItem(inv, item, count, metadata, slot)
 		end
 
 		if removed > 0 and inv.type == 'player' then
-			if shared.framework == 'esx' then Inventory.SyncInventory(inv) end
+			if shared.framework == 'esx' or shared.framework == 'qb' then Inventory.SyncInventory(inv) end
 			local array = table.create(#slots, 0)
 
 			for k, v in pairs(slots) do
@@ -980,7 +980,7 @@ local function dropItem(source, data)
 		'swapSlots', playerInventory.owner, dropId
 	)
 
-	if shared.framework == 'esx' then Inventory.SyncInventory(playerInventory) end
+	if shared.framework == 'esx' or shared.framework == 'qb' then Inventory.SyncInventory(playerInventory) end
 
 	return true, { weight = playerInventory.weight, items = items }
 end
@@ -1190,7 +1190,7 @@ lib.callback.register('ox_inventory:swapItems', function(source, data)
 					if next(items) then
 						resp = { weight = playerInventory.weight, items = items }
 
-						if shared.framework == 'esx' then
+						if shared.framework == 'esx' or shared.framework == 'qb' then
 							if fromInventory.player then
 								Inventory.SyncInventory(fromInventory)
 							end
@@ -1237,7 +1237,7 @@ function Inventory.Confiscate(source)
 		table.wipe(inv.items)
 		inv.weight = 0
 		TriggerClientEvent('ox_inventory:inventoryConfiscated', inv.id)
-		if shared.framework == 'esx' then Inventory.SyncInventory(inv) end
+		if shared.framework == 'esx' or shared.framework == 'qb' then Inventory.SyncInventory(inv) end
 	end
 end
 exports('ConfiscateInventory', Inventory.Confiscate)
@@ -1267,7 +1267,7 @@ function Inventory.Return(source)
 				inv.weight = totalWeight
 				inv.items = inventory
 
-				if shared.framework == 'esx' then Inventory.SyncInventory(inv) end
+				if shared.framework == 'esx' or shared.framework == 'qb' then Inventory.SyncInventory(inv) end
 				TriggerClientEvent('ox_inventory:inventoryReturned', source, {inventory, totalWeight})
 			end
 		end)
@@ -1276,22 +1276,50 @@ end
 exports('ReturnInventory', Inventory.Return)
 
 ---@param inv string | number
----@param keep nil
+---@param keep? string | string[]
 --- todo: support the keep argument, allowing users to define a list of item "types" to keep
 --- i.e. {'money', 'weapons'} would keep money and weapons, but remove ammo, attachments, and other items
 function Inventory.Clear(inv, keep)
 	inv = Inventory(inv)
-	if inv then
-		if not keep then
-			table.wipe(inv.items)
-			inv.weight = 0
-			if inv.player then
-				TriggerClientEvent('ox_inventory:inventoryConfiscated', inv.id)
-				if shared.framework == 'esx' then Inventory.SyncInventory(inv) end
-				inv.weapon = nil
+
+	if not inv then return end
+
+	if keep then
+		local newWeight = 0
+		local keptItems = {}
+
+		local keepType = type(keep)
+		if keepType == "string" then
+			local item = Inventory.GetItem(inv, keep, nil, false)
+
+			if item then
+				keptItems[item.slot] = item
+				newWeight = item.weight
+			end
+		elseif keepType == "table" and table.type(keep) == "array" then
+			for i = 1, #keep do
+				local item = Inventory.GetItem(inv, keep[i], nil, false)
+
+				if item then
+					keptItems[item.slot] = item
+					newWeight += item.weight
+				end
 			end
 		end
+
+		table.wipe(inv.items)
+		inv.items = keptItems
+		inv.weight = newWeight
+	else
+		table.wipe(inv.items)
+		inv.weight = 0
 	end
+
+	if not inv.player then return end
+
+	TriggerClientEvent('ox_inventory:inventoryConfiscated', inv.id)
+	if shared.framework == 'esx' or shared.framework == 'qb' then Inventory.SyncInventory(inv) end
+	inv.weapon = nil
 end
 exports('ClearInventory', Inventory.Clear)
 
@@ -1305,7 +1333,7 @@ local function playerDropped(source)
 			openInventory:set('open', false)
 		end
 
-		if Ox then
+		if shared.framework ~= 'esx' then
 			db.savePlayer(inv.owner, json.encode(minimal(inv)))
 		end
 
@@ -1318,18 +1346,38 @@ if shared.framework == 'ox' then
 
 	AddEventHandler('ox:setGroup', function(source, name, grade)
 		local inventory = Inventories[source]
-		if inventory then
-			inventory.player.groups[name] = grade
-		end
+
+		if not inventory then return end
+
+		inventory.player.groups[name] = grade
 	end)
 elseif shared.framework == 'esx' then
 	AddEventHandler('esx:playerDropped', playerDropped)
 
 	AddEventHandler('esx:setJob', function(source, job)
 		local inventory = Inventories[source]
-		if inventory then
-			inventory.player.groups[job.name] = job.grade
-		end
+
+		if not inventory then return end
+
+		inventory.player.groups[job.name] = job.grade
+	end)
+elseif shared.framework == 'qb' then
+	AddEventHandler('QBCore:Server:OnPlayerUnload', playerDropped)
+
+	AddEventHandler('QBCore:Server:OnJobUpdate', function(source, job)
+		local inventory = Inventories[source]
+
+		if not inventory then return end
+
+		inventory.player.groups[job.name] = job.grade.level
+	end)
+
+	AddEventHandler('QBCore:Server:OnGangUpdate', function(source, gang)
+		local inventory = Inventories[source]
+
+		if not inventory then return end
+
+		inventory.player.groups[gang.name] = gang.grade.level
 	end)
 else
 	AddEventHandler('playerDropped', function()
@@ -1341,7 +1389,7 @@ local function prepareSave(inv)
 	inv.changed = false
 
 	if inv.player then
-		if Ox then
+		if shared.framework ~= 'esx' then
 			return 1, { json.encode(minimal(inv)), inv.owner }
 		end
 	elseif inv.type == 'trunk' then
@@ -1532,7 +1580,7 @@ RegisterServerEvent('ox_inventory:updateWeapon', function(action, value, slot)
 				syncInventory = true
 			end
 
-			if shared.framework == 'esx' and syncInventory then
+			if (shared.framework == 'esx' or shared.framework == 'qb') and syncInventory then
 				Inventory.SyncInventory(inventory)
 			end
 
@@ -1599,6 +1647,8 @@ lib.addCommand(false, 'clearevidence', function(source, args)
 	local hasPermission = false
 
 	if shared.framework == 'esx' then
+		-- todo: make it work
+	elseif shared.framework == 'qb' then
 		-- todo: make it work
 	else
 		local group, rank = server.hasGroup(inventory, shared.police)

@@ -22,6 +22,11 @@ do
 		playerColumn = 'identifier'
 		vehicleTable = 'owned_vehicles'
 		vehicleColumn = 'plate'
+	elseif shared.framework == 'qb' then
+		playerTable = 'players'
+		playerColumn = 'citizenid'
+		vehicleTable = 'player_vehicles'
+		vehicleColumn = 'plate'
 	end
 
 	for k, v in pairs(Query) do

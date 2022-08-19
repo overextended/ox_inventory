@@ -472,7 +472,7 @@ local function registerCommands()
 		end
 
 		client.openInventory()
-	end)
+	end, false)
 	RegisterKeyMapping('inv', shared.locale('open_player_inventory'), 'keyboard', client.keys[1])
 	TriggerEvent('chat:removeSuggestion', '/inv')
 
@@ -612,7 +612,7 @@ local function registerCommands()
 			end
 		else return client.closeInventory()
 		end
-	end)
+	end, false)
 	RegisterKeyMapping('inv2', shared.locale('open_secondary_inventory'), 'keyboard', client.keys[2])
 	TriggerEvent('chat:removeSuggestion', '/inv2')
 
@@ -625,7 +625,7 @@ local function registerCommands()
 				lib.notify({ type = 'error', description = shared.locale('no_durability', currentWeapon.label) })
 			end
 		end
-	end)
+	end, false)
 	RegisterKeyMapping('reload', shared.locale('reload_weapon'), 'keyboard', 'r')
 	TriggerEvent('chat:removeSuggestion', '/reload')
 
@@ -633,17 +633,17 @@ local function registerCommands()
 		if not BlockWeaponWheel and not IsPauseMenuActive() and not IsNuiFocused() then
 			SendNUIMessage({ action = 'toggleHotbar' })
 		end
-	end)
+	end, false)
 	RegisterKeyMapping('hotbar', shared.locale('disable_hotbar'), 'keyboard', client.keys[3])
 	TriggerEvent('chat:removeSuggestion', '/hotbar')
 
 	RegisterCommand('steal', function()
 		openNearbyInventory()
-	end)
+	end, false)
 
 	for i = 1, 5 do
 		local hotkey = ('hotkey%s'):format(i)
-		RegisterCommand(hotkey, function() if not invOpen then useSlot(i) end end)
+		RegisterCommand(hotkey, function() if not invOpen then useSlot(i) end end, false)
 		RegisterKeyMapping(hotkey, shared.locale('use_hotbar', i), 'keyboard', i)
 		TriggerEvent('chat:removeSuggestion', '/'..hotkey)
 	end
@@ -865,7 +865,7 @@ lib.onCache('seat', function(seat)
 	Utils.WeaponWheel(false)
 end)
 
-RegisterNetEvent('ox_inventory:setPlayerInventory', function(currentDrops, inventory, weight, esxItem, player, source)
+RegisterNetEvent('ox_inventory:setPlayerInventory', function(currentDrops, inventory, weight, itemCallbacks, player, source)
 	PlayerData = player
 	PlayerData.id = cache.playerId
 	PlayerData.source = source
@@ -898,7 +898,7 @@ RegisterNetEvent('ox_inventory:setPlayerInventory', function(currentDrops, inven
 	local ItemData = table.create(0, #Items)
 
 	for _, v in pairs(Items) do
-		v.usable = (v.client and next(v.client) or v.effect or v.consume == 0 or (esxItem and esxItem[v.name]) or v.weapon or v.component or v.ammo or v.tint) and true
+		v.usable = (v.client and next(v.client) or v.effect or v.consume == 0 or (itemCallbacks and itemCallbacks[v.name]) or v.weapon or v.component or v.ammo or v.tint) and true
 
 		local buttons = {}
 		if v.buttons then
