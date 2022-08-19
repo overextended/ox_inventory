@@ -29,6 +29,7 @@ return {
 	['added'] = "Añadido %sx",
 	['holstered'] = "Guardado",
 	['equipped'] = "Equipado",
+	['using'] = "Usando %s",
 	['inventory_setup'] = "El inventario está disponible",
 	['inventory_player_access'] = "No puedes abrir el inventario en este momento",
 	['inventory_right_access'] = "No puedes abrir este inventario",
