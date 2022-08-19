@@ -42,8 +42,7 @@ if shared.framework == 'esx' then
 		server.GetPlayerFromId = ESX.GetPlayerFromId
 		server.UsableItemsCallbacks = ESX.GetUsableItems()
 
-		for i = 1, #ESX.Players do
-			local player = ESX.Players[i]
+		for _, player in pairs(ESX.Players) do
 			exports.ox_inventory:setPlayerInventory(player, player?.inventory)
 		end
 	end)
