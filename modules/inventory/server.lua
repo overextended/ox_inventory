@@ -1327,6 +1327,7 @@ local function playerDropped(source)
 	end
 end
 
+---@todo move playerDropped handling to bridge
 if shared.framework == 'ox' then
 	AddEventHandler('ox:playerLogout', playerDropped)
 

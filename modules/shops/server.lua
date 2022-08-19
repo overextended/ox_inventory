@@ -140,6 +140,7 @@ lib.callback.register('ox_inventory:buyItem', function(source, data)
 					data.count = fromData.count
 				end
 
+				---@todo move licenses to bridge
 			elseif fromData.license and (shared.framework == 'esx' and not db.selectLicense(fromData.license, playerInv.owner) or shared.framework == 'qb' and not server.GetPlayerFromId(source)?.PlayerData.metadata[fromData.license]) then
 				return false, false, { type = 'error', description = shared.locale('item_unlicensed') }
 

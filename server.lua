@@ -156,6 +156,7 @@ end)
 
 local Licenses = data 'licenses'
 
+---@todo licenses functions as part of bridge (keep the callback here)
 lib.callback.register('ox_inventory:buyLicense', function(source, id)
 	if shared.framework == 'esx' then
 		local license = Licenses[id]
