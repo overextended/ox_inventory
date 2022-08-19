@@ -97,7 +97,7 @@ CreateThread(function()
 ]]
 				local fileSize = #file
 
-				for _, item in pairs(items) do
+				for _, item in pairs(dump) do
 					local formatName = item.name:gsub("'", "\\'"):lower()
 					if not ItemList[formatName] then
 						fileSize += 1
@@ -125,19 +125,17 @@ CreateThread(function()
 		local QBCore = exports['qb-core']:GetCoreObject()
 		local items = QBCore.Shared.Items
 
-		if #items > 0 then
+		if table.type(items) ~= "empty" then
 			local dump = {}
 			local count = 0
 
-			for i = 1, #items do
-				local item = items[i]
-
+			for k, item in pairs(items) do
 				if not ItemList[item.name] then
 					item.close = item.shouldClose == nil and true or item.shouldClose
 					item.stack = item.unique == nil and true or item.unique
 					item.description = item.description
 					item.weight = item.weight or 0
-					dump[i] = item
+					dump[k] = item
 					count += 1
 				end
 			end
@@ -158,7 +156,7 @@ CreateThread(function()
 ]]
 				local fileSize = #file
 
-				for _, item in pairs(items) do
+				for _, item in pairs(dump) do
 					local formatName = item.name:gsub("'", "\\'"):lower()
 					if not ItemList[formatName] then
 						fileSize += 1
