@@ -95,11 +95,8 @@ elseif shared.framework == 'qb' then
 				end)
 
 				Player.Functions.SetPlayerData('inventory', Player.PlayerData.items)
-
-				Player.Functions.inventory = Player.PlayerData.items
-
+				Player.PlayerData.inventory = Player.PlayerData.items
 				Player.PlayerData.identifier = Player.PlayerData.citizenid
-
 				server.setPlayerInventory(Player.PlayerData)
 
 				QBCore.Functions.AddPlayerMethod(Player.PlayerData.source, "AddItem", function(item, amount, slot, info)
@@ -172,7 +169,7 @@ elseif shared.framework == 'qb' then
 		end)
 
 		Player.Functions.SetPlayerData('inventory', Player.PlayerData.items)
-		Player.Functions.inventory = Player.PlayerData.items
+		Player.PlayerData.inventory = Player.PlayerData.items
 		Player.PlayerData.identifier = Player.PlayerData.citizenid
 		server.setPlayerInventory(Player.PlayerData)
 
