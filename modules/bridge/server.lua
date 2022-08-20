@@ -83,6 +83,11 @@ if shared.framework == 'esx' then
 elseif shared.framework == 'qb' then
 	local QBCore = exports['qb-core']:GetCoreObject()
 
+	AddEventHandler('onResourceStart', function(resource)
+		if resource ~= 'qb-weapons' or resource ~= 'qb-shops' then return end
+		StopResource(resource)
+	end)
+
 	SetTimeout(4000, function()
 		local qbPlayers = QBCore.Functions.GetQBPlayers()
 		for _, Player in pairs(qbPlayers) do
@@ -129,6 +134,16 @@ elseif shared.framework == 'qb' then
 					shared.info('Player.Functions.SetInventory is unsupported for ox_inventory, please use exports.ox_inventory:setPlayerInventory instead.')
 				end)
 			end
+		end
+
+		local weapState = GetResourceState('qb-weapons')
+		if  weapState ~= 'missing' and (weapState == 'started' or weapState == 'starting') then
+			StopResource('qb-weapons')
+		end
+
+		local shopState = GetResourceState('qb-shops')
+		if  shopState ~= 'missing' and (shopState == 'started' or shopState == 'starting') then
+			StopResource('qb-shops')
 		end
 	end)
 

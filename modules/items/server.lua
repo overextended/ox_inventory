@@ -110,7 +110,7 @@ CreateThread(function()
 				file[fileSize+1] = '}'
 
 				SaveResourceFile(shared.resource, 'data/items.lua', table.concat(file), -1)
-				shared.info(count, 'Items have been copied from the database.')
+				shared.info(count, 'items have been copied from the database.')
 				shared.info('You should restart the resource to load the new items.')
 			end
 
@@ -128,9 +128,34 @@ CreateThread(function()
 		if table.type(items) ~= "empty" then
 			local dump = {}
 			local count = 0
+			local ignoreList = {
+				"weapon_",
+				"pistol_",
+				"pistol50_",
+				"revolver_",
+				"smg_",
+				"combatpdw_",
+				"shotgun_",
+				"rifle_",
+				"carbine_",
+				"gusenberg_",
+				"sniper_",
+				"snipermax_",
+				"tint_",
+				"_ammo"
+			}
+
+			local function checkIgnoredNames(name)
+				for i = 1, #ignoreList do
+					if string.find(name, ignoreList[i]) then
+						return true
+					end
+				end
+				return false
+			end
 
 			for k, item in pairs(items) do
-				if not ItemList[item.name] then
+				if not ItemList[item.name] and not checkIgnoredNames(item.name) then
 					item.close = item.shouldClose == nil and true or item.shouldClose
 					item.stack = item.unique == nil and true or item.unique
 					item.description = item.description
@@ -169,7 +194,7 @@ CreateThread(function()
 				file[fileSize+1] = '}'
 
 				SaveResourceFile(shared.resource, 'data/items.lua', table.concat(file), -1)
-				shared.info(count, 'Items have been copied from the QBCore.Shared.Items.')
+				shared.info(count, 'items have been copied from the QBCore.Shared.Items.')
 				shared.info('You should restart the resource to load the new items.')
 			end
 		end
