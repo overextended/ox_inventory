@@ -261,7 +261,7 @@ local function useSlot(slot)
 		if data.effect then
 			data:effect({name = item.name, slot = item.slot, metadata = item.metadata})
 		elseif data.weapon then
-			if BlockWeaponWheel then return end
+			if EnableWeaponWheel then return end
 			useItem(data, function(result)
 				if result then
 					if currentWeapon?.slot == result.slot then
@@ -326,7 +326,7 @@ local function useSlot(slot)
 		elseif currentWeapon then
 			local playerPed = cache.ped
 			if data.ammo then
-				if BlockWeaponWheel or currentWeapon.metadata.durability <= 0 then return end
+				if EnableWeaponWheel or currentWeapon.metadata.durability <= 0 then return end
 				local maxAmmo = GetMaxAmmoInClip(playerPed, currentWeapon.hash, true)
 				local currentAmmo = GetAmmoInPedWeapon(playerPed, currentWeapon.hash)
 
@@ -630,7 +630,7 @@ local function registerCommands()
 	TriggerEvent('chat:removeSuggestion', '/reload')
 
 	RegisterCommand('hotbar', function()
-		if not BlockWeaponWheel and not IsPauseMenuActive() and not IsNuiFocused() then
+		if not EnableWeaponWheel and not IsPauseMenuActive() and not IsNuiFocused() then
 			SendNUIMessage({ action = 'toggleHotbar' })
 		end
 	end, false)
@@ -1075,8 +1075,9 @@ RegisterNetEvent('ox_inventory:setPlayerInventory', function(currentDrops, inven
 				DisablePlayerFiring(playerId, true)
 			end
 
-			if BlockWeaponWheel then
+			if not EnableWeaponWheel then
 				HudWeaponWheelIgnoreSelection()
+				DisableControlAction(0, 37, true)
 			end
 
 			if currentWeapon then
