@@ -99,13 +99,15 @@ elseif shared.framework == 'qb' then
 		val.dead = val.metadata.isdead
 
 		for key, value in pairs(val) do
-			if key == 'job' or key == 'gang' then
-				key = 'groups'
-				value = { [value.name] = value.grade.level }
-			end
+			if key == 'job' or key == 'gang' or key == 'dead' then
+				if key == 'job' or key == 'gang' then
+					key = 'groups'
+					value = { [value.name] = value.grade.level }
+				end
 
-			PlayerData[key] = value
-			OnPlayerData(key, value)
+				PlayerData[key] = value
+				OnPlayerData(key, value)
+			end
 		end
 	end)
 

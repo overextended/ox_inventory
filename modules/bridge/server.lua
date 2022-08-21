@@ -83,6 +83,11 @@ if shared.framework == 'esx' then
 elseif shared.framework == 'qb' then
 	local QBCore = exports['qb-core']:GetCoreObject()
 
+	AddEventHandler('onResourceStart', function(resource)
+		if resource ~= 'qb-weapons' or resource ~= 'qb-shops' then return end
+		StopResource(resource)
+	end)
+
 	SetTimeout(4000, function()
 		local qbPlayers = QBCore.Functions.GetQBPlayers()
 		for _, Player in pairs(qbPlayers) do
@@ -91,16 +96,14 @@ elseif shared.framework == 'qb' then
 					Player.Functions.SetPlayerData('items', items)
 					Player.Functions.SetPlayerData('inventory', items)
 
-					if money?.cash then Player.Functions.SetMoney('cash', money.cash, "Sync money with inventory") end
+					if money.money then Player.Functions.SetMoney('cash', money.money, "Sync money with inventory") end
 				end)
 
 				Player.Functions.SetPlayerData('inventory', Player.PlayerData.items)
-
-				Player.Functions.inventory = Player.PlayerData.items
-
+				Player.PlayerData.inventory = Player.PlayerData.items
 				Player.PlayerData.identifier = Player.PlayerData.citizenid
-
 				server.setPlayerInventory(Player.PlayerData)
+				server.inventory.SetItem(Player.PlayerData.source, 'money', Player.PlayerData.money.cash)
 
 				QBCore.Functions.AddPlayerMethod(Player.PlayerData.source, "AddItem", function(item, amount, slot, info)
 					server.inventory.AddItem(Player.PlayerData.source, item, amount, info, slot)
@@ -132,15 +135,30 @@ elseif shared.framework == 'qb' then
 				end)
 			end
 		end
+
+		local weapState = GetResourceState('qb-weapons')
+		if  weapState ~= 'missing' and (weapState == 'started' or weapState == 'starting') then
+			StopResource('qb-weapons')
+		end
+
+		local shopState = GetResourceState('qb-shops')
+		if  shopState ~= 'missing' and (shopState == 'started' or shopState == 'starting') then
+			StopResource('qb-shops')
+		end
 	end)
 
 	local itemCallbacks = {}
+
+	-- Accounts that need to be synced with physical items
+	server.accounts = {
+		money = 0
+	}
 
 	QBCore.Functions.SetMethod('CreateUseableItem', function(item, cb)
 		itemCallbacks[item] = cb
 	end)
 
-	server.UseItem = function(source, itemName, ...)
+	function server.UseItem(source, itemName, ...)
 		local callback = itemCallbacks[itemName].callback or itemCallbacks[itemName].cb or type(itemCallbacks[itemName]) == "function" and itemCallbacks[itemName]
 
 		if not callback then return end
@@ -148,19 +166,10 @@ elseif shared.framework == 'qb' then
 		callback(source, itemName, ...)
 	end
 
-	AddEventHandler('QBCore:Player:SetPlayerData', function(val)
-		local cash = server.inventory.GetItem(val.source, 'money', nil, false)
+	AddEventHandler('QBCore:Server:OnMoneyChange', function(src, account, amount)
+		if account ~= "cash" then return end
 
-		if not cash or cash.count == 0 then
-			if val.money.cash > 0 then server.inventory.AddItem(val.source, 'money', val.money.cash) end
-			return
-		end
-
-		if val.money.cash > 0 then
-			server.inventory.SetItem(val.source, 'money', val.money.cash)
-		else
-			server.inventory.RemoveItem(val.source, 'money', cash.count)
-		end
+		server.inventory.SetItem(src, 'money', amount)
 	end)
 
 	AddEventHandler('QBCore:Server:PlayerLoaded', function(Player)
@@ -168,13 +177,14 @@ elseif shared.framework == 'qb' then
 			Player.Functions.SetPlayerData('items', items)
 			Player.Functions.SetPlayerData('inventory', items)
 
-			if money?.cash then Player.Functions.SetMoney('cash', money.cash, "Sync money with inventory") end
+			if money.money then Player.Functions.SetMoney('cash', money.money, "Sync money with inventory") end
 		end)
 
 		Player.Functions.SetPlayerData('inventory', Player.PlayerData.items)
-		Player.Functions.inventory = Player.PlayerData.items
+		Player.PlayerData.inventory = Player.PlayerData.items
 		Player.PlayerData.identifier = Player.PlayerData.citizenid
 		server.setPlayerInventory(Player.PlayerData)
+		server.inventory.SetItem(Player.PlayerData.source, 'money', Player.PlayerData.money.cash)
 
 		QBCore.Functions.AddPlayerMethod(Player.PlayerData.source, "AddItem", function(item, amount, slot, info)
 			server.inventory.AddItem(Player.PlayerData.source, item, amount, info, slot)
@@ -214,11 +224,6 @@ elseif shared.framework == 'qb' then
 
 	server.UsableItemsCallbacks = usableItems
 	server.GetPlayerFromId = QBCore.Functions.GetPlayer
-
-	-- Accounts that need to be synced with physical items
-	server.accounts = {
-		cash = 0
-	}
 
 	function server.setPlayerData(player)
 		local groups = {
