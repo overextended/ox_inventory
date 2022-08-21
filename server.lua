@@ -63,6 +63,11 @@ lib.callback.register('ox_inventory:openInventory', function(source, inv, data)
 
 	if right then
 		if right.open ~= source then return end
+
+		if right.player then
+			TriggerClientEvent('ox_inventory:closeInventory', right.player.source, true)
+		end
+
 		right:set('open', false)
 		left:set('open', false)
 		right = nil
