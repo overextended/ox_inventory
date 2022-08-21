@@ -67,13 +67,17 @@ function Inventory.Set(inv, k, v)
 
 		if k == 'open' and v == false then
 			if inv.type ~= 'player' then
-				if inv.type == 'otherplayer' then
+				if inv.player then
 					inv.type = 'player'
 				elseif inv.type == 'drop' and not next(inv.items) then
 					return Inventory.Remove(inv.id, inv.type)
 				else
 					inv.time = os.time()
 				end
+			end
+
+			if inv.player then
+				inv.containerSlot = nil
 			end
 		elseif k == 'maxWeight' and v < 1000 then
 			v *= 1000
@@ -1464,7 +1468,6 @@ RegisterServerEvent('ox_inventory:closeInventory', function()
 			end
 		end
 		inventory:set('open', false)
-		inventory.containerSlot = nil
 	end
 end)
 
