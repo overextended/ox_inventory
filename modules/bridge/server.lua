@@ -210,7 +210,7 @@ elseif shared.framework == 'qb' then
 	end)
 
 	function server.UseItem(source, itemName, ...)
-		local callback = itemCallbacks[itemName].callback or itemCallbacks[itemName].cb or type(itemCallbacks[itemName]) == "function" and itemCallbacks[itemName]
+		local callback = type(itemCallbacks[itemName]) == 'function' and itemCallbacks[itemName] or type(itemCallbacks[itemName]) == 'table' and (rawget(itemCallbacks[itemName], '__cfx_functionReference') and itemCallbacks[itemName] or itemCallbacks[itemName].cb or itemCallbacks[itemName].callback)
 
 		if not callback then return end
 
