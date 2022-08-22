@@ -9,7 +9,7 @@ local Query = {
 	UPDATE_PLAYER = 'UPDATE `{user_table}` SET inventory = ? WHERE `{user_column}` = ?',
 }
 
-do
+Citizen.CreateThreadNow(function()
 	local playerTable, playerColumn, vehicleTable, vehicleColumn
 
 	if shared.framework == 'ox' then
@@ -32,7 +32,28 @@ do
 	for k, v in pairs(Query) do
 		Query[k] = v:gsub('{user_table}', playerTable):gsub('{user_column}', playerColumn):gsub('{vehicle_table}', vehicleTable):gsub('{vehicle_column}', vehicleColumn)
 	end
-end
+
+	MySQL.query(('SHOW COLUMNS FROM `%s`'):format(vehicleTable), function(result)
+		local glovebox, trunk
+
+		for i = 1, #result do
+			local column = result[i]
+			if column.Field == 'glovebox' then
+				glovebox = true
+			elseif column.Field == 'trunk' then
+				trunk = true
+			end
+		end
+
+		if not glovebox then
+			MySQL.query(('ALTER TABLE `%s` ADD COLUMN `glovebox` LONGTEXT NULL'):format(vehicleTable))
+		end
+
+		if not trunk then
+			MySQL.query(('ALTER TABLE `%s` ADD COLUMN `trunk` LONGTEXT NULL'):format(vehicleTable))
+		end
+	end)
+end)
 
 db = {}
 
