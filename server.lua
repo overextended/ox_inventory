@@ -163,47 +163,13 @@ local Licenses = data 'licenses'
 
 ---@todo licenses functions as part of bridge (keep the callback here)
 lib.callback.register('ox_inventory:buyLicense', function(source, id)
-	if shared.framework == 'esx' then
-		local license = Licenses[id]
-		if license then
-			local inventory = Inventory(source)
-			local result = db.selectLicense(license.name, inventory.owner)
+	local license = Licenses[id]
+	if not license then return end
 
-			if result then
-				return false, 'has_weapon_license'
-			elseif Inventory.GetItem(inventory, 'money', false, true) < license.price then
-				return false, 'poor_weapon_license'
-			else
-				Inventory.RemoveItem(inventory, 'money', license.price)
-				TriggerEvent('esx_license:addLicense', source, 'weapon')
+	local inventory = Inventory(source)
+	if not inventory then return end
 
-				return true, 'bought_weapon_license'
-			end
-		end
-	elseif shared.framework == 'qb' then
-		local license = Licenses[id]
-		if license then
-			local inventory = Inventory(source)
-			local player = server.GetPlayerFromId(source)
-
-			if not player then return false, 'invalid_player' end
-
-			if player.PlayerData.metadata.licences.weapon then
-				return false, 'has_weapon_license'
-			elseif Inventory.GetItem(inventory, 'money', false, true) < license.price then
-				return false, 'poor_weapon_license'
-			else
-				Inventory.RemoveItem(inventory, 'money', license.price)
-
-				player.PlayerData.metadata.licences.weapon = true
-				player.Functions.SetMetaData('licences', player.PlayerData.metadata.licences)
-
-				return true, 'bought_weapon_license'
-			end
-		end
-	else
-		shared.warning('Licenses can only be purchased when using es_extended and esx_licenses. Integrated functionality will be added soon.')
-	end
+	return server.buyLicense(inventory, license)
 end)
 
 lib.callback.register('ox_inventory:getItemCount', function(source, item, metadata, target)

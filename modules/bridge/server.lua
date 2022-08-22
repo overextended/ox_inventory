@@ -28,6 +28,10 @@ function server.setPlayerData(player)
 	}
 end
 
+function server.buyLicense()
+	shared.warning('Licenses are not yet supported without esx or qb. Available soon™.')
+end
+
 local Inventory
 
 SetTimeout(0, function() Inventory = server.inventory end)
@@ -116,6 +120,19 @@ elseif shared.framework == 'esx' then
 
 		local player = server.GetPlayerFromId(inv.id)
 		player.syncInventory(inv.weight, inv.maxWeight, inv.items, money)
+	end
+
+	function server.buyLicense(inv, license)
+		if db.selectLicense(license.name, inv.owner) then
+			return false, 'has_weapon_license'
+		elseif Inventory.GetItem(inv, 'money', false, true) < license.price then
+			return false, 'poor_weapon_license'
+		end
+
+		Inventory.RemoveItem(inv, 'money', license.price)
+		TriggerEvent('esx_license:addLicense', source, 'weapon')
+
+		return true, 'bought_weapon_license'
 	end
 elseif shared.framework == 'qb' then
 	local QBCore = exports['qb-core']:GetCoreObject()
@@ -301,6 +318,23 @@ elseif shared.framework == 'qb' then
 
 		local player = server.GetPlayerFromId(inv.id)
 		player.syncInventory(inv.weight, inv.maxWeight, inv.items, money)
+	end
+
+	function server.buyLicense(inv, license)
+		local player = server.GetPlayerFromId(source)
+		if not player then return end
+
+		if player.PlayerData.metadata.licences.weapon then
+			return false, 'has_weapon_license'
+		elseif Inventory.GetItem(inv, 'money', false, true) < license.price then
+			return false, 'poor_weapon_license'
+		end
+
+		Inventory.RemoveItem(inv, 'money', license.price)
+		player.PlayerData.metadata.licences.weapon = true
+		player.Functions.SetMetaData('licences', player.PlayerData.metadata.licences)
+
+		return true, 'bought_weapon_license'
 	end
 else
 	AddEventHandler('playerDropped', function()
