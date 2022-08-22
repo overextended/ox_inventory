@@ -564,6 +564,7 @@ return {
 			label = 'Switch Blade',
 			weight = 300,
 			durability = 0.1,
+			anim = { 'anim@melee@switchblade@holster', 'unholster', 200, 'anim@melee@switchblade@holster', 'holster', 600 },
 		},
 
 		['WEAPON_VINTAGEPISTOL'] = {
