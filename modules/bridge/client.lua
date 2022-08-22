@@ -35,7 +35,7 @@ local function onLogout()
 	PlayerData.loaded = false
 	ClearInterval(client.interval)
 	ClearInterval(client.tick)
-	currentWeapon = Utils.Disarm(currentWeapon)
+	currentWeapon = Weapon.Disarm(currentWeapon)
 end
 
 if shared.framework == 'ox' then
@@ -82,7 +82,7 @@ elseif shared.framework == 'esx' then
 
 		if not PlayerData.cuffed then return end
 
-		currentWeapon = Utils.Disarm(currentWeapon)
+		currentWeapon = Weapon.Disarm(currentWeapon)
 	end)
 
 	RegisterNetEvent('esx_policejob:unrestrain', function()
@@ -117,6 +117,6 @@ elseif shared.framework == 'qb' then
 
 		if not PlayerData.cuffed then return end
 
-		currentWeapon = Utils.Disarm(currentWeapon)
+		currentWeapon = Weapon.Disarm(currentWeapon)
 	end)
 end

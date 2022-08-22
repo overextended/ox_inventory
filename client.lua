@@ -5,11 +5,11 @@ local Weapon = client.weapon
 local currentWeapon
 
 RegisterNetEvent('ox_inventory:disarm', function()
-	currentWeapon = Utils.Disarm(currentWeapon)
+	currentWeapon = Weapon.Disarm(currentWeapon)
 end)
 
 RegisterNetEvent('ox_inventory:clearWeapons', function()
-	Utils.ClearWeapons(currentWeapon)
+	Weapon.ClearAll(currentWeapon)
 end)
 
 local StashTarget
@@ -266,12 +266,9 @@ local function useSlot(slot)
 			useItem(data, function(result)
 				if result then
 					if currentWeapon?.slot == result.slot then
-						currentWeapon = Utils.Disarm(currentWeapon)
+						currentWeapon = Weapon.Disarm(currentWeapon)
 						return
 					end
-
-					if data.throwable then item.throwable = true end
-					if currentWeapon then Utils.Disarm(currentWeapon) end
 
 					currentWeapon = Weapon.Equip(item, data)
 				end
@@ -403,7 +400,7 @@ function OnPlayerData(key, val)
 		Inventory.Evidence()
 		Shops()
 	elseif key == 'dead' and val then
-		currentWeapon = Utils.Disarm(currentWeapon)
+		currentWeapon = Weapon.Disarm(currentWeapon)
 		client.closeInventory()
 	end
 
@@ -723,7 +720,7 @@ end)
 
 RegisterNetEvent('ox_inventory:inventoryReturned', function(data)
 	lib.notify({ description = shared.locale('items_returned') })
-	if currentWeapon then currentWeapon = Utils.Disarm(currentWeapon) end
+	if currentWeapon then currentWeapon = Weapon.Disarm(currentWeapon) end
 	client.closeInventory()
 	PlayerData.inventory = data[1]
 	client.setPlayerData('inventory', data[1])
@@ -732,7 +729,7 @@ end)
 
 RegisterNetEvent('ox_inventory:inventoryConfiscated', function(message)
 	if message then lib.notify({ description = shared.locale('items_confiscated') }) end
-	if currentWeapon then currentWeapon = Utils.Disarm(currentWeapon) end
+	if currentWeapon then currentWeapon = Weapon.Disarm(currentWeapon) end
 	client.closeInventory()
 	table.wipe(PlayerData.inventory)
 	client.setPlayerData('weight', 0)
@@ -756,7 +753,7 @@ RegisterNetEvent('ox_inventory:createDrop', function(drop, data, owner, slot)
 	end
 
 	if owner == PlayerData.source and invOpen and #(GetEntityCoords(cache.ped) - data.coords) <= 1 then
-		if currentWeapon?.slot == slot then currentWeapon = Utils.Disarm(currentWeapon) end
+		if currentWeapon?.slot == slot then currentWeapon = Weapon.Disarm(currentWeapon) end
 
 		if not cache.vehicle then
 			client.openInventory('drop', drop)
@@ -851,7 +848,7 @@ RegisterNetEvent('ox_inventory:setPlayerInventory', function(currentDrops, inven
 	client.setPlayerData('inventory', inventory)
 	client.setPlayerData('weight', weight)
 	currentWeapon = nil
-	Utils.ClearWeapons()
+	Weapon.ClearAll()
 
 	local ItemData = table.create(0, #Items)
 
@@ -987,7 +984,7 @@ RegisterNetEvent('ox_inventory:setPlayerInventory', function(currentDrops, inven
 
 		if currentWeapon and weaponHash ~= currentWeapon.hash then
 			TriggerServerEvent('ox_inventory:updateWeapon')
-			currentWeapon = Utils.Disarm(currentWeapon, true)
+			currentWeapon = Weapon.Disarm(currentWeapon, true)
 
 			if weaponHash == `WEAPON_HANDCUFFS` or weaponHash == `WEAPON_GARBAGEBAG` or weaponHash == `WEAPON_BRIEFCASE` or weaponHash == `WEAPON_BRIEFCASE_02` then
 				SetCurrentPedWeapon(cache.ped, weaponHash, true)
@@ -1226,7 +1223,7 @@ RegisterNUICallback('giveItem', function(data, cb)
 		TriggerServerEvent('ox_inventory:giveItem', data.slot, target, data.count)
 
 		if data.slot == currentWeapon?.slot then
-			currentWeapon = Utils.Disarm(currentWeapon)
+			currentWeapon = Weapon.Disarm(currentWeapon)
 		end
 	end
 end)

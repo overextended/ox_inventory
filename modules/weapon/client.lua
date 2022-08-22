@@ -1,22 +1,24 @@
 local Weapon = {}
+local Items = client.items
 local Utils = client.utils
 client.weapon = Weapon
+
+-- generic group animation data
+local anims = {}
+anims[`GROUP_MELEE`] = { 'anim@melee@switchblade@holster', 'unholster', 200, 'anim@melee@switchblade@holster', 'holster', 600 }
+anims[`GROUP_PISTOL`] = { 'reaction@intimidation@cop@unarmed', 'intro', 400, 'reaction@intimidation@cop@unarmed', 'outro', 450 }
+anims[`GROUP_STUNGUN`] = anims[`GROUP_PISTOL`]
 
 function Weapon.Equip(item, data)
 	local playerPed = cache.ped
 
-	---@todo rewrite and improve animations; support different animations for weapon types
 	if client.weaponanims then
 		local coords = GetEntityCoords(playerPed, true)
-		local sleep = (client.hasGroup(shared.police) and (GetWeapontypeGroup(data.hash) == 416676503 or GetWeapontypeGroup(data.hash) == 690389602)) and 400 or 1200
+		local anim = data.anim or anims[GetWeapontypeGroup(data.hash)]
+		local sleep = anim and anim[3] or 1200
 
-		if item.hash == `WEAPON_SWITCHBLADE` then
-			Utils.PlayAnimAdvanced(sleep*2, 'anim@melee@switchblade@holster', 'unholster', coords.x, coords.y, coords.z, 0, 0, GetEntityHeading(playerPed), 8.0, 3.0, -1, 48, 0.1)
-			Wait(100)
-		else
-			Utils.PlayAnimAdvanced(sleep*2, sleep == 400 and 'reaction@intimidation@cop@unarmed' or 'reaction@intimidation@1h', 'intro', coords.x, coords.y, coords.z, 0, 0, GetEntityHeading(playerPed), 8.0, 3.0, -1, 50, 0.1)
-			Wait(sleep)
-		end
+		Utils.PlayAnimAdvanced(sleep*2, anim and anim[1] or 'reaction@intimidation@1h', anim and anim[2] or 'intro', coords.x, coords.y, coords.z, 0, 0, GetEntityHeading(playerPed), 8.0, 3.0, -1, 50, 0.1)
+		Wait(sleep)
 	end
 
 	SetPedAmmo(playerPed, data.hash, 0)
@@ -42,6 +44,9 @@ function Weapon.Equip(item, data)
 	item.ammo = data.ammoname
 	item.melee = (not item.throwable and not data.ammoname) and 0
 	item.timer = 0
+
+	if data.throwable then item.throwable = true end
+
 	SetCurrentPedWeapon(playerPed, data.hash, true)
 	SetPedCurrentWeaponVisible(playerPed, true, false, false, false)
 	AddAmmoToPed(playerPed, data.hash, item.metadata.ammo or 100)
@@ -58,3 +63,44 @@ function Weapon.Equip(item, data)
 
 	return item
 end
+
+function Weapon.Disarm(currentWeapon, skipAnim)
+	if source == '' then
+		TriggerServerEvent('ox_inventory:updateWeapon')
+	end
+
+	if currentWeapon then
+		SetPedAmmo(cache.ped, currentWeapon.hash, 0)
+
+		if client.weaponanims and not skipAnim then
+			ClearPedSecondaryTask(cache.ped)
+
+			local item = Items[currentWeapon.name]
+			local coords = GetEntityCoords(cache.ped, true)
+			local anim = item.anim or anims[GetWeapontypeGroup(currentWeapon.hash)]
+			local sleep = anim and anim[6] or 1400
+
+			Utils.PlayAnimAdvanced(sleep, anim and anim[4] or 'reaction@intimidation@1h', anim and anim[5] or 'outro', coords.x, coords.y, coords.z, 0, 0, GetEntityHeading(cache.ped), 8.0, 3.0, -1, 50, 0)
+			Wait(sleep)
+		end
+
+		Utils.ItemNotify({currentWeapon.metadata.label or currentWeapon.label, currentWeapon.metadata.image or currentWeapon.name, shared.locale('holstered')})
+		TriggerEvent('ox_inventory:currentWeapon')
+	end
+
+	Utils.WeaponWheel()
+	RemoveAllPedWeapons(cache.ped, true)
+end
+
+function Weapon.ClearAll(currentWeapon)
+	Weapon.Disarm(currentWeapon)
+
+	if client.parachute then
+		local chute = `GADGET_PARACHUTE`
+		GiveWeaponToPed(cache.ped, chute, 0, true, false)
+		SetPedGadget(cache.ped, chute, true)
+	end
+end
+
+Utils.Disarm = Weapon.Disarm
+Utils.ClearWeapons = Weapon.ClearAll
