@@ -53,6 +53,12 @@ Citizen.CreateThreadNow(function()
 			MySQL.query(('ALTER TABLE `%s` ADD COLUMN `trunk` LONGTEXT NULL'):format(vehicleTable))
 		end
 	end)
+
+	local success, result = pcall(MySQL.scalar.await, ('SELECT inventory FROM `%s`'):format(playerTable))
+
+	if not success then
+		return MySQL.query(('ALTER TABLE `%s` ADD COLUMN `inventory` LONGTEXT NULL'):format(playerTable))
+	end
 end)
 
 db = {}
