@@ -79,7 +79,8 @@ function Utils.Disarm(currentWeapon, skipAnim)
 	if currentWeapon then
 		SetPedAmmo(cache.ped, currentWeapon.hash, 0)
 
-		if not skipAnim then
+		---@todo move to weapons module and support different animations for weapon groups
+		if client.weaponanims and not skipAnim then
 			ClearPedSecondaryTask(cache.ped)
 
 			local sleep = (client.hasGroup(shared.police) and (GetWeapontypeGroup(currentWeapon.hash) == 416676503 or GetWeapontypeGroup(currentWeapon.hash) == 690389602)) and 450 or 1400
@@ -120,9 +121,9 @@ end
 -- Enables the weapon wheel, but disables the use of inventory items
 -- Mostly used for weaponised vehicles, though could be called for "minigames"
 function Utils.WeaponWheel(state)
-	if state == nil then state = BlockWeaponWheel end
+	if state == nil then state = WeaponWheelEnabled end
 
-	BlockWeaponWheel = state
+	WeaponWheelEnabled = state
 	SetWeaponsNoAutoswap(not state)
 	SetWeaponsNoAutoreload(not state)
 	SetPedCanSwitchWeapon(cache.ped, state)

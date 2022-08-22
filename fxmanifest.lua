@@ -33,6 +33,7 @@ shared_scripts {
 client_scripts {
 	'modules/items/client.lua',
 	'modules/utils/client.lua',
+	'modules/weapon/client.lua',
 	'modules/bridge/client.lua',
 	'modules/interface/client.lua',
 	'modules/shops/client.lua',

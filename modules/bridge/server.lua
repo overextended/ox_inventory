@@ -28,8 +28,46 @@ function server.setPlayerData(player)
 	}
 end
 
-if shared.framework == 'esx' then
+local Inventory
+
+SetTimeout(0, function() Inventory = server.inventory end)
+
+local function playerDropped(source)
+	local inv = Inventory(source)
+
+	if inv then
+		local openInventory = inv.open and Inventories[inv.open]
+
+		if openInventory then
+			openInventory:set('open', false)
+		end
+
+		if shared.framework ~= 'esx' then
+			db.savePlayer(inv.owner, json.encode(inv:minimal()))
+		end
+
+		Inventory.Remove(source)
+	end
+end
+
+if shared.framework == 'ox' then
+	AddEventHandler('ox:playerLogout', playerDropped)
+
+	AddEventHandler('ox:setGroup', function(source, name, grade)
+		local inventory = Inventory(source)
+		if not inventory then return end
+		inventory.player.groups[name] = grade
+	end)
+elseif shared.framework == 'esx' then
 	local ESX
+
+	AddEventHandler('esx:playerDropped', playerDropped)
+
+	AddEventHandler('esx:setJob', function(source, job)
+		local inventory = Inventory(source)
+		if not inventory then return end
+		inventory.player.groups[job.name] = job.grade
+	end)
 
 	SetTimeout(4000, function()
 		ESX = exports.es_extended:getSharedObject()
@@ -79,9 +117,22 @@ if shared.framework == 'esx' then
 		local player = server.GetPlayerFromId(inv.id)
 		player.syncInventory(inv.weight, inv.maxWeight, inv.items, money)
 	end
-
 elseif shared.framework == 'qb' then
 	local QBCore = exports['qb-core']:GetCoreObject()
+
+	AddEventHandler('QBCore:Server:OnPlayerUnload', playerDropped)
+
+	AddEventHandler('QBCore:Server:OnJobUpdate', function(source, job)
+		local inventory = Inventories[source]
+		if not inventory then return end
+		inventory.player.groups[job.name] = job.grade.level
+	end)
+
+	AddEventHandler('QBCore:Server:OnGangUpdate', function(source, gang)
+		local inventory = Inventories[source]
+		if not inventory then return end
+		inventory.player.groups[gang.name] = gang.grade.level
+	end)
 
 	AddEventHandler('onResourceStart', function(resource)
 		if resource ~= 'qb-weapons' or resource ~= 'qb-shops' then return end
@@ -103,30 +154,30 @@ elseif shared.framework == 'qb' then
 				Player.PlayerData.inventory = Player.PlayerData.items
 				Player.PlayerData.identifier = Player.PlayerData.citizenid
 				server.setPlayerInventory(Player.PlayerData)
-				server.inventory.SetItem(Player.PlayerData.source, 'money', Player.PlayerData.money.cash)
+				Inventory.SetItem(Player.PlayerData.source, 'money', Player.PlayerData.money.cash)
 
 				QBCore.Functions.AddPlayerMethod(Player.PlayerData.source, "AddItem", function(item, amount, slot, info)
-					server.inventory.AddItem(Player.PlayerData.source, item, amount, info, slot)
+					Inventory.AddItem(Player.PlayerData.source, item, amount, info, slot)
 				end)
 
 				QBCore.Functions.AddPlayerMethod(Player.PlayerData.source, "RemoveItem", function(item, amount, slot)
-					server.inventory.RemoveItem(Player.PlayerData.source, item, amount, nil, slot)
+					Inventory.RemoveItem(Player.PlayerData.source, item, amount, nil, slot)
 				end)
 
 				QBCore.Functions.AddPlayerMethod(Player.PlayerData.source, "GetItemBySlot", function(slot)
-					return server.inventory.GetSlot(Player.PlayerData.source, slot)
+					return Inventory.GetSlot(Player.PlayerData.source, slot)
 				end)
 
 				QBCore.Functions.AddPlayerMethod(Player.PlayerData.source, "GetItemByName", function(item)
-					return server.inventory.GetItem(Player.PlayerData.source, item, nil, false)
+					return Inventory.GetItem(Player.PlayerData.source, item, nil, false)
 				end)
 
 				QBCore.Functions.AddPlayerMethod(Player.PlayerData.source, "GetItemsByName", function(item)
-					return server.inventory.Search(Player.PlayerData.source, 'slots', item)
+					return Inventory.Search(Player.PlayerData.source, 'slots', item)
 				end)
 
 				QBCore.Functions.AddPlayerMethod(Player.PlayerData.source, "ClearInventory", function(filterItems)
-					server.inventory.Clear(Player.PlayerData.source, filterItems)
+					Inventory.Clear(Player.PlayerData.source, filterItems)
 				end)
 
 				QBCore.Functions.AddPlayerMethod(Player.PlayerData.source, "SetInventory", function()
@@ -168,8 +219,7 @@ elseif shared.framework == 'qb' then
 
 	AddEventHandler('QBCore:Server:OnMoneyChange', function(src, account, amount)
 		if account ~= "cash" then return end
-
-		server.inventory.SetItem(src, 'money', amount)
+		Inventory.SetItem(src, 'money', amount)
 	end)
 
 	AddEventHandler('QBCore:Server:PlayerLoaded', function(Player)
@@ -184,30 +234,30 @@ elseif shared.framework == 'qb' then
 		Player.PlayerData.inventory = Player.PlayerData.items
 		Player.PlayerData.identifier = Player.PlayerData.citizenid
 		server.setPlayerInventory(Player.PlayerData)
-		server.inventory.SetItem(Player.PlayerData.source, 'money', Player.PlayerData.money.cash)
+		Inventory.SetItem(Player.PlayerData.source, 'money', Player.PlayerData.money.cash)
 
 		QBCore.Functions.AddPlayerMethod(Player.PlayerData.source, "AddItem", function(item, amount, slot, info)
-			server.inventory.AddItem(Player.PlayerData.source, item, amount, info, slot)
+			Inventory.AddItem(Player.PlayerData.source, item, amount, info, slot)
 		end)
 
 		QBCore.Functions.AddPlayerMethod(Player.PlayerData.source, "RemoveItem", function(item, amount, slot)
-			server.inventory.RemoveItem(Player.PlayerData.source, item, amount, nil, slot)
+			Inventory.RemoveItem(Player.PlayerData.source, item, amount, nil, slot)
 		end)
 
 		QBCore.Functions.AddPlayerMethod(Player.PlayerData.source, "GetItemBySlot", function(slot)
-			return server.inventory.GetSlot(Player.PlayerData.source, slot)
+			return Inventory.GetSlot(Player.PlayerData.source, slot)
 		end)
 
 		QBCore.Functions.AddPlayerMethod(Player.PlayerData.source, "GetItemByName", function(item)
-			return server.inventory.GetItem(Player.PlayerData.source, item, nil, false)
+			return Inventory.GetItem(Player.PlayerData.source, item, nil, false)
 		end)
 
 		QBCore.Functions.AddPlayerMethod(Player.PlayerData.source, "GetItemsByName", function(item)
-			return server.inventory.Search(Player.PlayerData.source, 'slots', item)
+			return Inventory.Search(Player.PlayerData.source, 'slots', item)
 		end)
 
 		QBCore.Functions.AddPlayerMethod(Player.PlayerData.source, "ClearInventory", function(filterItems)
-			server.inventory.Clear(Player.PlayerData.source, filterItems)
+			Inventory.Clear(Player.PlayerData.source, filterItems)
 		end)
 
 		QBCore.Functions.AddPlayerMethod(Player.PlayerData.source, "SetInventory", function()
@@ -252,4 +302,8 @@ elseif shared.framework == 'qb' then
 		local player = server.GetPlayerFromId(inv.id)
 		player.syncInventory(inv.weight, inv.maxWeight, inv.items, money)
 	end
+else
+	AddEventHandler('playerDropped', function()
+		playerDropped(source)
+	end)
 end

@@ -67,13 +67,17 @@ function Inventory.Set(inv, k, v)
 
 		if k == 'open' and v == false then
 			if inv.type ~= 'player' then
-				if inv.type == 'otherplayer' then
+				if inv.player then
 					inv.type = 'player'
 				elseif inv.type == 'drop' and not next(inv.items) then
 					return Inventory.Remove(inv.id, inv.type)
 				else
 					inv.time = os.time()
 				end
+			end
+
+			if inv.player then
+				inv.containerSlot = nil
 			end
 		elseif k == 'maxWeight' and v < 1000 then
 			v *= 1000
@@ -623,8 +627,6 @@ exports('SetMetadata', Inventory.SetMetadata)
 ---@param metadata? table | string
 ---@param slot number
 ---@param cb function
--- todo: add parameter checks to remove need for nil args
--- todo: add callback with several reasons for failure
 -- ```
 -- exports.ox_inventory:AddItem(1, 'bread', 4, nil, nil, function(success, reason)
 -- if not success then
@@ -1309,69 +1311,6 @@ function Inventory.Clear(inv, keep)
 end
 exports('ClearInventory', Inventory.Clear)
 
-local function playerDropped(source)
-	local inv = Inventory(source)
-
-	if inv then
-		local openInventory = inv.open and Inventories[inv.open]
-
-		if openInventory then
-			openInventory:set('open', false)
-		end
-
-		if shared.framework ~= 'esx' then
-			db.savePlayer(inv.owner, json.encode(minimal(inv)))
-		end
-
-		Inventories[source] = nil
-	end
-end
-
----@todo move playerDropped handling to bridge
-if shared.framework == 'ox' then
-	AddEventHandler('ox:playerLogout', playerDropped)
-
-	AddEventHandler('ox:setGroup', function(source, name, grade)
-		local inventory = Inventories[source]
-
-		if not inventory then return end
-
-		inventory.player.groups[name] = grade
-	end)
-elseif shared.framework == 'esx' then
-	AddEventHandler('esx:playerDropped', playerDropped)
-
-	AddEventHandler('esx:setJob', function(source, job)
-		local inventory = Inventories[source]
-
-		if not inventory then return end
-
-		inventory.player.groups[job.name] = job.grade
-	end)
-elseif shared.framework == 'qb' then
-	AddEventHandler('QBCore:Server:OnPlayerUnload', playerDropped)
-
-	AddEventHandler('QBCore:Server:OnJobUpdate', function(source, job)
-		local inventory = Inventories[source]
-
-		if not inventory then return end
-
-		inventory.player.groups[job.name] = job.grade.level
-	end)
-
-	AddEventHandler('QBCore:Server:OnGangUpdate', function(source, gang)
-		local inventory = Inventories[source]
-
-		if not inventory then return end
-
-		inventory.player.groups[gang.name] = gang.grade.level
-	end)
-else
-	AddEventHandler('playerDropped', function()
-		playerDropped(source)
-	end)
-end
-
 local function prepareSave(inv)
 	inv.changed = false
 
@@ -1464,7 +1403,6 @@ RegisterServerEvent('ox_inventory:closeInventory', function()
 			end
 		end
 		inventory:set('open', false)
-		inventory.containerSlot = nil
 	end
 end)
 

@@ -62,6 +62,7 @@ else
 		enablekeys = json.decode(GetConvar('inventory:enablekeys', '[249]')),
 		aimedfiring = GetConvar('inventory:aimedfiring', 'false') == 'true',
 		giveplayerlist = GetConvar('inventory:giveplayerlist', 'false') == 'true',
+		weaponanims = GetConvar('inventory:weaponanims', 'true') == 'true',
 	}
 end
 
