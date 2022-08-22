@@ -33,8 +33,12 @@ function server.buyLicense()
 end
 
 local Inventory
+local Items
 
-SetTimeout(0, function() Inventory = server.inventory end)
+SetTimeout(0, function()
+	Inventory = server.inventory
+	Items = server.items
+end)
 
 local function playerDropped(source)
 	local inv = Inventory(source)
@@ -133,6 +137,32 @@ elseif shared.framework == 'esx' then
 		TriggerEvent('esx_license:addLicense', source, 'weapon')
 
 		return true, 'bought_weapon_license'
+	end
+
+	--- Takes traditional item data and updates it to support ox_inventory, i.e.
+	--- ```
+	--- Old: {"cola":1, "burger":3}
+	--- New: [{"slot":1,"name":"cola","count":1}, {"slot":2,"name":"burger","count":3}]
+	---```
+	function server.convertInventory(playerId, items)
+		if type(items) == 'table' then
+			local returnData, totalWeight = table.create(#items, 0), 0
+			local slot = 0
+
+			for name, count in pairs(items) do
+				local item = Items(name)
+
+				if item then
+					local metadata = Items.Metadata(playerId, item, false, count)
+					local weight = Inventory.SlotWeight(item, {count=count, metadata=metadata})
+					totalWeight = totalWeight + weight
+					slot += 1
+					returnData[slot] = {name = item.name, label = item.label, weight = weight, slot = slot, count = count, description = item.description, metadata = metadata, stack = item.stack, close = item.close}
+				end
+			end
+
+			return returnData, totalWeight
+		end
 	end
 elseif shared.framework == 'qb' then
 	local QBCore = exports['qb-core']:GetCoreObject()
@@ -341,3 +371,5 @@ else
 		playerDropped(source)
 	end)
 end
+
+if server.convertInventory then exports('ConvertItems', server.convertInventory) end

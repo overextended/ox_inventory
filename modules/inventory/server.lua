@@ -1608,30 +1608,6 @@ end, {'target'})
 
 Inventory.accounts = server.accounts
 
---- Takes traditional item data and updates it to support ox_inventory, i.e.\
---- ```
---- Old: [{"cola":1, "bread":3}]
---- New: [{"slot":1,"name":"cola","count":1}, {"slot":2,"name":"bread","count":3}]
----```
-local function ConvertItems(playerId, items)
-	if type(items) == 'table' then
-		local returnData, totalWeight = table.create(#items, 0), 0
-		local slot = 0
-
-		for name, count in pairs(items) do
-			local item = Items(name)
-			local metadata = Items.Metadata(playerId, item, false, count)
-			local weight = Inventory.SlotWeight(item, {count=count, metadata=metadata})
-			totalWeight = totalWeight + weight
-			slot += 1
-			returnData[slot] = {name = item.name, label = item.label, weight = weight, slot = slot, count = count, description = item.description, metadata = metadata, stack = item.stack, close = item.close}
-		end
-
-		return returnData, totalWeight
-	end
-end
-exports('ConvertItems', ConvertItems)
-
 Inventory.CustomStash = table.create(0, 0)
 ---@param name string stash identifier when loading from the database
 ---@param label string display name when inventory is open
