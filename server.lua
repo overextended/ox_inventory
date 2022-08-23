@@ -19,28 +19,31 @@ function server.setPlayerInventory(player, data)
 	local inventory = {}
 	local totalWeight = 0
 
-	if data and table.type(data) ~= 'empty' then
+	if data and next(data) then
 		local ostime = os.time()
 
-		if table.type(data) == 'array' then
-			for _, v in pairs(data) do
-				local item = Items(v.name)
-
-				if item then
-					if v.metadata then
-						v.metadata = Items.CheckMetadata(v.metadata, item, v.name, ostime)
-					end
-
-					local weight = Inventory.SlotWeight(item, v)
-					totalWeight = totalWeight + weight
-
-					inventory[v.slot] = {name = item.name, label = item.label, weight = weight, slot = v.slot, count = v.count, description = item.description, metadata = v.metadata, stack = item.stack, close = item.close}
+		for _, v in pairs(data) do
+			if type(v) == 'number' then
+				if server.convertInventory then
+					inventory, totalWeight = server.convertInventory(player.source, data)
+					break
+				else
+					return error(('Inventory for player.%s (%s) contains invalid data. Ensure you have converted inventories to the correct format.'):format(player.source, GetPlayerName(player.source)))
 				end
 			end
-		elseif server.convertInventory then
-			inventory, totalWeight = server.convertInventory(player.source, data)
-		else
-			return error(('Inventory for player.%s (%s) contains invalid data. Ensure you have converted inventories to the correct format.'):format(player.source, GetPlayerName(player.source)))
+
+			local item = Items(v.name)
+
+			if item then
+				if v.metadata then
+					v.metadata = Items.CheckMetadata(v.metadata, item, v.name, ostime)
+				end
+
+				local weight = Inventory.SlotWeight(item, v)
+				totalWeight = totalWeight + weight
+
+				inventory[v.slot] = {name = item.name, label = item.label, weight = weight, slot = v.slot, count = v.count, description = item.description, metadata = v.metadata, stack = item.stack, close = item.close}
+			end
 		end
 	end
 
