@@ -19,7 +19,7 @@ function server.setPlayerInventory(player, data)
 	local inventory = {}
 	local totalWeight = 0
 
-	if data then
+	if data and table.type(data) ~= 'empty' then
 		local ostime = os.time()
 
 		if table.type(data) == 'array' then
