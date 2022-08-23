@@ -357,22 +357,22 @@ end
 -- Serverside item functions
 -----------------------------------------------------------------------------------------------
 
-Item('testburger', function(event, item, inventory, slot, data)
-	if event == 'usingItem' then
-		if Inventory.GetItem(inventory, item, inventory.items[slot].metadata, true) > 0 then
-			-- if we return false here, we can cancel item use
-			return {
-				inventory.label, event, 'external item use poggies'
-			}
-		end
+-- Item('testburger', function(event, item, inventory, slot, data)
+-- 	if event == 'usingItem' then
+-- 		if Inventory.GetItem(inventory, item, inventory.items[slot].metadata, true) > 0 then
+-- 			-- if we return false here, we can cancel item use
+-- 			return {
+-- 				inventory.label, event, 'external item use poggies'
+-- 			}
+-- 		end
 
-	elseif event == 'usedItem' then
-		print(('%s just ate a %s from slot %s'):format(inventory.label, item.label, slot))
+-- 	elseif event == 'usedItem' then
+-- 		print(('%s just ate a %s from slot %s'):format(inventory.label, item.label, slot))
 
-	elseif event == 'buying' then
-		print(data.id, data.coords, json.encode(data.items[slot], {indent=true}))
-	end
-end)
+-- 	elseif event == 'buying' then
+-- 		print(data.id, data.coords, json.encode(data.items[slot], {indent=true}))
+-- 	end
+-- end)
 
 -----------------------------------------------------------------------------------------------
 
