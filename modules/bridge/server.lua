@@ -264,9 +264,10 @@ elseif shared.framework == 'qb' then
 		callback(source, itemName, ...)
 	end
 
-	AddEventHandler('QBCore:Server:OnMoneyChange', function(src, account, amount)
+	AddEventHandler('QBCore:Server:OnMoneyChange', function(src, account, amount, changeType)
 		if account ~= "cash" then return end
-		Inventory.SetItem(src, 'money', amount)
+		local item = Inventory.GetItem(src, 'money', nil, false)
+		Inventory.SetItem(src, 'money', changeType == "set" and amount or changeType == "remove" and item.count - amount or changeType == "add" and item.count + amount)
 	end)
 
 	AddEventHandler('QBCore:Server:PlayerLoaded', function(Player)
