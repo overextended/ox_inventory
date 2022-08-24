@@ -258,3 +258,27 @@ lib.callback.register('ox_inventory:useItem', function(source, item, slot, metad
 		end
 	end
 end)
+
+local function conversionScript()
+	shared.ready = false
+
+	local file = 'setup/convert.lua'
+	local import = LoadResourceFile('ox_inventory', file)
+	local func, err = load(import, ('@@ox_inventory/%s'):format(file))
+
+	conversionScript = func()
+end
+
+RegisterCommand('convertinventory', function(source, args)
+	if source ~= 0 then return shared.warning('This command can only be executed with the server console.') end
+	if type(conversionScript) == 'function' then conversionScript() end
+	local arg = args[1]
+
+	local convert = arg and conversionScript[arg]
+
+	if not convert then
+		return shared.info('Invalid conversion argument. Valid options: esx, esxproperty, qb, linden')
+	end
+
+	CreateThread(convert)
+end, true)

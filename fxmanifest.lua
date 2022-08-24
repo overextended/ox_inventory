@@ -49,8 +49,6 @@ server_scripts {
 	'modules/inventory/server.lua',
 	'modules/shops/server.lua',
 	'server.lua',
-	-- 'setup/convert.lua',
-	'setup/dbcleanup.lua',
 }
 
 ui_page 'web/build/index.html'

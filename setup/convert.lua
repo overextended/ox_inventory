@@ -1,12 +1,4 @@
 local Items = server.items
-
---[[
-	You should remove this file from fxmanifest.lua if it is not required
-	Remember to backup your database in the event of errors
-
-	This conversion process is designed for ESX v1 Final and ESX Legacy!
-]]
-
 local started
 
 local function Print(arg)
@@ -14,12 +6,15 @@ local function Print(arg)
 end
 
 local function Upgrade()
-	-- Throw an error if ox_inventory does not exist
-	-- User needs to use upgrade.sql first
-	MySQL.query.await('SELECT name FROM ox_inventory')
+	if started then
+		return shared.warning('Data is already being converted, please wait..')
+	end
+
+	started = true
 
 	local trunk = MySQL.query.await('SELECT owner, name, data FROM ox_inventory WHERE name LIKE ?', {'trunk-%'})
 	local glovebox = MySQL.query.await('SELECT owner, name, data FROM ox_inventory WHERE name LIKE ?', {'glovebox-%'})
+
 	if #trunk > 0 and #glovebox > 0 then
 		local vehicles = {}
 		for _, v in pairs(trunk) do
@@ -53,10 +48,12 @@ local function Upgrade()
 		MySQL.prepare.await('UPDATE owned_vehicles SET trunk = ?, glovebox = ? WHERE plate = ? AND owner = ?', parameters)
 		MySQL.prepare.await('DELETE FROM ox_inventory WHERE name LIKE ? OR name LIKE ?', {'trunk-%', 'glovebox-%'})
 
-		Print('Completed task - you can safely remove setup/convert.lua')
+		Print('Successfully converted trunks and gloveboxes')
 	else
-		Print('^3No inventories need to be moved! You can safely remove setup/convert.lua')
+		Print('No inventories need to be converted')
 	end
+
+	started = false
 end
 
 local function GenerateText(num)
@@ -77,6 +74,11 @@ local function GenerateSerial(text)
 end
 
 local function ConvertESX()
+	if started then
+		return shared.warning('Data is already being converted, please wait..')
+	end
+
+	started = true
 	local users = MySQL.query.await('SELECT identifier, inventory, loadout, accounts FROM users')
 	local total = #users
 	local count = 0
@@ -124,10 +126,16 @@ local function ConvertESX()
 	end
 
 	MySQL.prepare.await('UPDATE users SET inventory = ? WHERE identifier = ?', parameters)
-	Print('Completed task - you can safely remove setup/convert.lua')
+	Print('Successfully converted user inventories')
+	started = false
 end
 
 local function ConvertQB()
+	if started then
+		return shared.warning('Data is already being converted, please wait..')
+	end
+
+	started = true
 	local users = MySQL.query.await('SELECT citizenid, inventory, money FROM players')
 	local total = #users
 	local count = 0
@@ -212,10 +220,16 @@ local function ConvertQB()
 		MySQL.prepare.await('UPDATE player_vehicles SET trunk = ?, glovebox = ? WHERE plate = ? AND citizenid = ?', parameters)
 	end
 
-	Print('Completed task - you can safely remove setup/convert.lua')
+	Print('Successfully converted user and vehicle inventories')
+	started = false
 end
 
 local function Convert_Old_ESX_Property()
+	if started then
+		return shared.warning('Data is already being converted, please wait..')
+	end
+
+	started = true
 	local inventories = MySQL.query.await('select distinct owner from ( select owner from addon_inventory_items WHERE inventory_name = "property" union all select owner from datastore_data WHERE NAME = "property" union all select owner from addon_account_data WHERE account_name = "property_black_money") a ')
 	local total = #inventories
 	local count = 0
@@ -267,38 +281,13 @@ local function Convert_Old_ESX_Property()
 		parameters[count] = {inventories[i].owner,"property"..inventories[i].owner,json.encode(inventory,{indent=false})}
 	end
 	MySQL.prepare.await('INSERT INTO ox_inventory (owner,name,data) VALUES (?,?,?)', parameters)
-	Print('Completed task - you can safely remove setup/convert.lua')
+	Print('Successfully converted user property inventories')
+	started = false
 end
 
-CreateThread(function()
-	repeat Wait(50) until shared.ready
-	shared.ready = false
-	Print([[Currently running in setup mode
-If you are upgrading from linden_inventory, type '/convertinventory linden'
-To update standard ESX player inventories to support metadata, type '/convertinventory esx'
-To update standard QBCore player inventories, vehicle trunks and gloveboxes, type '/convertinventory qb'
-
-Remove 'setup/convert.lua' from fxmanifest.lua and restart the server when you are done]])
-
-	RegisterCommand('convertinventory', function(_, args)
-		if not started then
-			if args and args[1] == 'linden' then
-				Upgrade()
-				started = true
-			elseif args and args[1] == 'esx' then
-				ConvertESX()
-				started = true
-			elseif args and args[1] == 'qb' then
-				ConvertQB()
-				started = true
-			end
-		end
-	end, false)
-
-	RegisterCommand('convertproperties', function()
-		if not started then
-			Convert_Old_ESX_Property()
-			started = true
-		end
-	end, false)
-end)
+return {
+	linden = Upgrade,
+	esx = ConvertESX,
+	qb = ConvertQB,
+	esxproperty = Convert_Old_ESX_Property,
+}
