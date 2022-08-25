@@ -71,9 +71,10 @@ elseif shared.framework == 'esx' then
 
 	AddEventHandler('esx:playerDropped', playerDropped)
 
-	AddEventHandler('esx:setJob', function(source, job)
+	AddEventHandler('esx:setJob', function(source, job, lastJob)
 		local inventory = Inventory(source)
 		if not inventory then return end
+		inventory.player.groups[lastJob.name] = nil
 		inventory.player.groups[job.name] = job.grade
 	end)
 
@@ -172,12 +173,16 @@ elseif shared.framework == 'qb' then
 	AddEventHandler('QBCore:Server:OnJobUpdate', function(source, job)
 		local inventory = Inventories[source]
 		if not inventory then return end
+		inventory.player.groups[inventory.player.job] = nil
+		inventory.player.job = job.name
 		inventory.player.groups[job.name] = job.grade.level
 	end)
 
 	AddEventHandler('QBCore:Server:OnGangUpdate', function(source, gang)
 		local inventory = Inventories[source]
 		if not inventory then return end
+		inventory.player.groups[inventory.player.gang] = nil
+		inventory.player.gang = gang.name
 		inventory.player.groups[gang.name] = gang.grade.level
 	end)
 
@@ -335,6 +340,8 @@ elseif shared.framework == 'qb' then
 			groups = groups,
 			sex = player.charinfo.gender,
 			dateofbirth = player.charinfo.birthdate,
+			job = player.job.name,
+			gang = player.gang.name,
 		}
 	end
 
