@@ -119,7 +119,7 @@ CreateThread(function()
 			shared.warning('Utilise \'exports.ox_inventory:Items()\', or lazy-load ESX and use ESX.Items instead.')
 		end
 
-		Wait(4000)
+		Wait(500)
 
 	elseif shared.framework == 'qb' then
 		local QBCore = exports['qb-core']:GetCoreObject()
@@ -199,7 +199,7 @@ CreateThread(function()
 			end
 		end
 
-		Wait(4000)
+		Wait(500)
 	end
 
 	local clearStashes = GetConvar('inventory:clearstashes', '6 MONTH')

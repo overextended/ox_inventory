@@ -78,7 +78,7 @@ elseif shared.framework == 'esx' then
 		inventory.player.groups[job.name] = job.grade
 	end)
 
-	SetTimeout(4000, function()
+	SetTimeout(500, function()
 		ESX = exports.es_extended:getSharedObject()
 
 		if ESX.CreatePickup then
@@ -190,7 +190,7 @@ elseif shared.framework == 'qb' then
 		StopResource(resource)
 	end)
 
-	SetTimeout(4000, function()
+	SetTimeout(500, function()
 		local qbPlayers = QBCore.Functions.GetQBPlayers()
 		for _, Player in pairs(qbPlayers) do
 			if Player then
