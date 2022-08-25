@@ -238,8 +238,9 @@ local function useSlot(slot)
 	if PlayerData.loaded and not PlayerData.dead and not invBusy and not lib.progressActive() then
 		local item = PlayerData.inventory[slot]
 		if not item then return end
+
 		local data = item and Items[item.name]
-		if not data or not data.usable then return end
+		if not data then return end
 
 		if data.component and not currentWeapon then
 			return lib.notify({ type = 'error', description = shared.locale('weapon_hand_required') })
@@ -820,7 +821,7 @@ lib.onCache('seat', function(seat)
 	Utils.WeaponWheel(false)
 end)
 
-RegisterNetEvent('ox_inventory:setPlayerInventory', function(currentDrops, inventory, weight, itemCallbacks, player, source)
+RegisterNetEvent('ox_inventory:setPlayerInventory', function(currentDrops, inventory, weight, player, source)
 	PlayerData = player
 	PlayerData.id = cache.playerId
 	PlayerData.source = source
@@ -853,9 +854,8 @@ RegisterNetEvent('ox_inventory:setPlayerInventory', function(currentDrops, inven
 	local ItemData = table.create(0, #Items)
 
 	for _, v in pairs(Items) do
-		v.usable = (v.client and next(v.client) or v.effect or v.consume == 0 or (itemCallbacks and itemCallbacks[v.name]) or v.weapon or v.component or v.ammo or v.tint) and true
-
 		local buttons = {}
+
 		if v.buttons then
 			for id, button in pairs(v.buttons) do
 				buttons[id] = button.label
@@ -864,7 +864,6 @@ RegisterNetEvent('ox_inventory:setPlayerInventory', function(currentDrops, inven
 
 		ItemData[v.name] = {
 			label = v.label,
-			usable = v.usable,
 			stack = v.stack,
 			close = v.close,
 			description = v.description,
