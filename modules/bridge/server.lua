@@ -146,13 +146,26 @@ elseif shared.framework == 'esx' then
 	---```
 	function server.convertInventory(playerId, items)
 		if type(items) == 'table' then
+			local player = server.GetPlayerFromId(playerId)
 			local returnData, totalWeight = table.create(#items, 0), 0
 			local slot = 0
+
+			if player then
+				for name in pairs(server.accounts) do
+					if not items[name] then
+						local account = player.getAccount(name)
+
+						if account.money then
+							items[name] = account.money
+						end
+					end
+				end
+			end
 
 			for name, count in pairs(items) do
 				local item = Items(name)
 
-				if item then
+				if item and count > 0 then
 					local metadata = Items.Metadata(playerId, item, false, count)
 					local weight = Inventory.SlotWeight(item, {count=count, metadata=metadata})
 					totalWeight = totalWeight + weight
