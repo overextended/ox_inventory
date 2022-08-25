@@ -843,7 +843,9 @@ RegisterNetEvent('ox_inventory:setPlayerInventory', function(currentDrops, inven
 		Items[data.name].count += data.count
 	end
 
-	if Items['phone']?.count < 1 then
+	local phone = Items.phone
+
+	if phone and phone.count < 1 then
 		pcall(function()
 			return exports.npwd:setPhoneDisabled(true)
 		end)
