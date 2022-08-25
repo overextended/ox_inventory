@@ -44,7 +44,7 @@ local function playerDropped(source)
 	local inv = Inventory(source)
 
 	if inv then
-		local openInventory = inv.open and Inventories[inv.open]
+		local openInventory = inv.open and Inventory(inv.open)
 
 		if openInventory then
 			openInventory:set('open', false)
@@ -183,7 +183,7 @@ elseif shared.framework == 'qb' then
 	AddEventHandler('QBCore:Server:OnPlayerUnload', playerDropped)
 
 	AddEventHandler('QBCore:Server:OnJobUpdate', function(source, job)
-		local inventory = Inventories[source]
+		local inventory = Inventory(source)
 		if not inventory then return end
 		inventory.player.groups[inventory.player.job] = nil
 		inventory.player.job = job.name
@@ -191,7 +191,7 @@ elseif shared.framework == 'qb' then
 	end)
 
 	AddEventHandler('QBCore:Server:OnGangUpdate', function(source, gang)
-		local inventory = Inventories[source]
+		local inventory = Inventory(source)
 		if not inventory then return end
 		inventory.player.groups[inventory.player.gang] = nil
 		inventory.player.gang = gang.name
