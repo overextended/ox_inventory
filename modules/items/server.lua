@@ -212,15 +212,11 @@ CreateThread(function()
 
 	Wait(1000)
 
-	for _, item in pairs(ItemList) do
-		if item.consume and item.consume > 0 and server.UsableItemsCallbacks and server.UsableItemsCallbacks[item.name] then
-			server.UsableItemsCallbacks[item.name] = nil
-		end
-
+	for _ in pairs(ItemList) do
 		count += 1
 	end
 
-	shared.info('Inventory has loaded '..count..' items')
+	shared.info(('Inventory has loaded %d items'):format(count))
 	collectgarbage('collect') -- clean up from initialisation
 	shared.ready = true
 end)

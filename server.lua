@@ -53,7 +53,7 @@ function server.setPlayerInventory(player, data)
 	inv.player.ped = GetPlayerPed(player.source)
 
 	if server.syncInventory then server.syncInventory(inv) end
-	TriggerClientEvent('ox_inventory:setPlayerInventory', player.source, Inventory.Drops, inventory, totalWeight, server.UsableItemsCallbacks, inv.player, player.source)
+	TriggerClientEvent('ox_inventory:setPlayerInventory', player.source, Inventory.Drops, inventory, totalWeight, inv.player, player.source)
 end
 exports('setPlayerInventory', server.setPlayerInventory)
 AddEventHandler('ox_inventory:setPlayerInventory', server.setPlayerInventory)
@@ -238,10 +238,8 @@ lib.callback.register('ox_inventory:useItem', function(source, item, slot, metad
 				data.consume = 1
 				data.component = true
 				return data
-			elseif server.UsableItemsCallbacks and server.UsableItemsCallbacks[item.name] then
-				server.UseItem(source, data.name, data)
-			else
-				if item.consume and data.count >= item.consume then
+			elseif item.consume then
+				if data.count >= item.consume then
 					local result = item.cb and item.cb('usingItem', item, inventory, slot)
 
 					if result == false then return end
@@ -254,6 +252,8 @@ lib.callback.register('ox_inventory:useItem', function(source, item, slot, metad
 				else
 					TriggerClientEvent('ox_lib:notify', source, { type = 'error', description = shared.locale('item_not_enough', item.name) })
 				end
+			elseif server.UseItem then
+				pcall(server.UseItem, source, data.name, data)
 			end
 		end
 	end

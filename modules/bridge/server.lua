@@ -87,7 +87,6 @@ elseif shared.framework == 'esx' then
 
 		server.UseItem = ESX.UseItem
 		server.GetPlayerFromId = ESX.GetPlayerFromId
-		server.UsableItemsCallbacks = ESX.GetUsableItems()
 
 		for _, player in pairs(ESX.Players) do
 			server.setPlayerInventory(player, player?.inventory)
@@ -319,13 +318,6 @@ elseif shared.framework == 'qb' then
 		end)
 	end)
 
-	local usableItems = {}
-
-	for k, v in pairs(QBCore.Shared.Items) do
-		if v.useable then usableItems[k] = true end
-	end
-
-	server.UsableItemsCallbacks = usableItems
 	server.GetPlayerFromId = QBCore.Functions.GetPlayer
 
 	function server.setPlayerData(player)
