@@ -64,7 +64,7 @@ CreateThread(function()
 	if shared.framework == 'esx' then
 		local success, items = pcall(MySQL.query.await, 'SELECT * FROM items')
 
-		if success and #items > 0 then
+		if success and items and next(items) then
 			local dump = {}
 			local count = 0
 
@@ -103,7 +103,7 @@ CreateThread(function()
 						fileSize += 1
 
 						file[fileSize] = (itemFormat):format(formatName, item.label:gsub("'", "\\'"):lower(), item.weight, item.stack, item.close, item.description and ('"%s"'):format(item.description) or 'nil')
-						ItemList[formatName] = v
+						ItemList[formatName] = item
 					end
 				end
 
@@ -187,7 +187,7 @@ CreateThread(function()
 						fileSize += 1
 
 						file[fileSize] = (itemFormat):format(formatName, item.label:gsub("'", "\\'"):lower(), item.weight, item.stack, item.close, item.description and ('"%s"'):format(item.description) or 'nil')
-						ItemList[formatName] = v
+						ItemList[formatName] = item
 					end
 				end
 

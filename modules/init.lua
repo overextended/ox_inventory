@@ -137,8 +137,14 @@ end
 if shared.server then shared.ready = false end
 
 local Locales = data('locales/'..shared.locale)
-function shared.locale(string, ...)
-	if not string then return Locales end
-	if Locales[string] then return Locales[string]:format(...) end
-	return string
+
+---@param str any
+---@param ... unknown
+---@return string
+function shared.locale(str, ...)
+	---@diagnostic disable-next-line: return-type-mismatch
+	if not str then return Locales end
+
+	str = Locales[str]
+	return str and str:format(...)
 end

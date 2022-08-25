@@ -57,8 +57,8 @@ local function closeTrunk()
 	end
 end
 
----@param inv string inventory type
----@param data table id and owner
+---@param inv string
+---@param data table | string | number
 ---@return boolean?
 function client.openInventory(inv, data)
 	if invOpen then
@@ -370,7 +370,7 @@ end
 local function canOpenTarget(ped)
 	return IsPedFatallyInjured(ped)
 	or IsEntityPlayingAnim(ped, 'dead', 'dead_a', 3)
-	or IsPedCuffed(ped, 120, true)
+	or IsPedCuffed(ped)
 	or IsEntityPlayingAnim(ped, 'mp_arresting', 'idle', 3)
 	or IsEntityPlayingAnim(ped, 'missminuteman_1ig_2', 'handsup_base', 3)
 	or IsEntityPlayingAnim(ped, 'missminuteman_1ig_2', 'handsup_enter', 3)
@@ -570,7 +570,10 @@ local function registerCommands()
 		if currentWeapon?.ammo then
 			if currentWeapon.metadata.durability > 0 then
 				local ammo = Inventory.Search(1, currentWeapon.ammo)
-				if ammo[1] then useSlot(ammo[1].slot) end
+
+				if ammo and ammo[1] then
+					useSlot(ammo[1].slot)
+				end
 			else
 				lib.notify({ type = 'error', description = shared.locale('no_durability', currentWeapon.label) })
 			end
@@ -1076,7 +1079,7 @@ RegisterNetEvent('ox_inventory:setPlayerInventory', function(currentDrops, inven
 								currentWeapon.timer = 0
 								local ammo = Inventory.Search(1, currentWeapon.ammo)
 
-								if ammo[1] then
+								if ammo and ammo[1] then
 									TriggerServerEvent('ox_inventory:updateWeapon', 'ammo', currentWeapon.metadata.ammo)
 									useSlot(ammo[1].slot)
 								end

@@ -383,6 +383,10 @@ local function generateItems(inv, invType, items)
 		end
 	end
 
+	if not items then
+		items = {}
+	end
+
 	local returnData, totalWeight = table.create(#items, 0), 0
 	for i = 1, #items do
 		local v = items[i]
@@ -460,7 +464,7 @@ local table = lib.table
 ---@param item table | string
 ---@param metadata? any
 ---@param returnsCount? boolean
----@return table|number
+---@return table | number | nil
 function Inventory.GetItem(inv, item, metadata, returnsCount)
 	if type(item) ~= 'table' then item = Items(item) end
 
@@ -527,7 +531,8 @@ function Inventory.SetItem(inv, item, count, metadata)
 	if item and count >= 0 then
 		inv = Inventory(inv)
 		if inv then
-			local itemCount = Inventory.GetItem(inv, item.name, metadata, true)
+			local itemCount = Inventory.GetItem(inv, item.name, metadata, true) --[[@as number]]
+
 			if count > itemCount then
 				count -= itemCount
 				Inventory.AddItem(inv, item.name, count, metadata)
@@ -876,7 +881,7 @@ function Inventory.CanSwapItem(inv, firstItem, firstItemCount, testItem, testIte
 	inv = Inventory(inv)
 	local firstItemData = Inventory.GetItem(inv, firstItem)
 	local testItemData = Inventory.GetItem(inv, testItem)
-	if firstItemData.count >= firstItemCount then
+	if firstItemData and testItemData and firstItemData.count >= firstItemCount then
 		local weightWithoutFirst = inv.weight - (firstItemData.weight * firstItemCount)
 		local weightWithTest = weightWithoutFirst + (testItemData.weight * testItemCount)
 		return weightWithTest <= inv.maxWeight
@@ -1022,7 +1027,7 @@ lib.callback.register('ox_inventory:swapItems', function(source, data)
 								fromInventory.weight = fromWeight
 								toInventory.weight = toWeight
 
-								if container then
+								if containerItem then
 									local toContainer = toInventory.type == 'container'
 									local whitelist = Items.containers[containerItem.name]?.whitelist
 									local blacklist = Items.containers[containerItem.name]?.blacklist
@@ -1035,7 +1040,7 @@ lib.callback.register('ox_inventory:swapItems', function(source, data)
 									Inventory.ContainerWeight(containerItem, toContainer and toWeight or fromWeight, playerInventory)
 								end
 
-								toData, fromData = Inventory.SwapSlots(fromInventory, toInventory, data.fromSlot, data.toSlot)
+								toData, fromData = Inventory.SwapSlots(fromInventory, toInventory, data.fromSlot, data.toSlot) --[[@as table]]
 
 								Log(('%sx %s transferred from %s to %s for %sx %s'):format(fromData.count, fromData.name, fromInventory.owner and fromInventory.label or fromInventory.id, toInventory.owner and toInventory.label or toInventory.id, toData.count, toData.name),
 									playerInventory.owner,
@@ -1120,7 +1125,7 @@ lib.callback.register('ox_inventory:swapItems', function(source, data)
 						else return end
 					end
 
-					if fromData.count < 1 then fromData = nil end
+					if fromData and fromData.count < 1 then fromData = nil end
 
 					local items = {}
 
@@ -1211,7 +1216,7 @@ lib.callback.register('ox_inventory:swapItems', function(source, data)
 						end
 					end
 
-					return container and containerItem.weight or true, resp, weaponSlot
+					return containerItem and containerItem.weight or true, resp, weaponSlot
 				end
 			end
 		end
