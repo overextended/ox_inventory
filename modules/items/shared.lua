@@ -13,7 +13,7 @@ local function newItem(data)
 	end
 
 	if data.client then
-		if not data.consume and (data.client.status or data.client.usetime) then
+		if not data.consume and (data.client.status or data.client.usetime or data.client.export or data.server.export) then
 			data.consume = 1
 		end
 
