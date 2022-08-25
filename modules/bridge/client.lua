@@ -35,7 +35,7 @@ local function onLogout()
 	PlayerData.loaded = false
 	ClearInterval(client.interval)
 	ClearInterval(client.tick)
-	currentWeapon = Weapon.Disarm(currentWeapon)
+	Weapon.Disarm()
 end
 
 if shared.framework == 'ox' then
@@ -82,7 +82,7 @@ elseif shared.framework == 'esx' then
 
 		if not PlayerData.cuffed then return end
 
-		currentWeapon = Weapon.Disarm(currentWeapon)
+		Weapon.Disarm()
 	end)
 
 	RegisterNetEvent('esx_policejob:unrestrain', function()
@@ -93,21 +93,23 @@ elseif shared.framework == 'esx' then
 elseif shared.framework == 'qb' then
 	RegisterNetEvent('QBCore:Client:OnPlayerUnload', onLogout)
 
-	RegisterNetEvent('QBCore:Player:SetPlayerData', function(val)
+	RegisterNetEvent('QBCore:Player:SetPlayerData', function(data)
 		if source == '' or not PlayerData.loaded then return end
 
-		val.dead = val.metadata.isdead
+		if data.metadata.isdead ~= PlayerData.dead then
+			PlayerData.dead = data.metadata.isdead
+			OnPlayerData('dead', PlayerData.dead)
+		end
 
-		for key, value in pairs(val) do
-			if key == 'job' or key == 'gang' or key == 'dead' then
-				if key == 'job' or key == 'gang' then
-					key = 'groups'
-					value = { [value.name] = value.grade.level }
-				end
+		local groups = PlayerData.groups
 
-				PlayerData[key] = value
-				OnPlayerData(key, value)
-			end
+		if not groups[data.job.name] or not groups[data.gang.name] or groups[data.job.name] ~= data.job.grade.level or groups[data.gang.name] ~= data.gang.grade.level then
+			PlayerData.groups = {
+				[data.job.name] = data.job.grade.level,
+				[data.gang.name] = data.gang.grade.level,
+			}
+
+			OnPlayerData('groups', PlayerData.groups)
 		end
 	end)
 
@@ -117,6 +119,6 @@ elseif shared.framework == 'qb' then
 
 		if not PlayerData.cuffed then return end
 
-		currentWeapon = Weapon.Disarm(currentWeapon)
+		Weapon.Disarm()
 	end)
 end
