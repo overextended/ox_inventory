@@ -22,6 +22,7 @@ function client.hasGroup(group)
 end
 
 local Utils = client.utils
+local Weapon = client.weapon
 
 local function onLogout()
 	if not PlayerData.loaded then return end
