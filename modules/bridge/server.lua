@@ -134,7 +134,7 @@ elseif shared.framework == 'esx' then
 		end
 
 		Inventory.RemoveItem(inv, 'money', license.price)
-		TriggerEvent('esx_license:addLicense', source, 'weapon')
+		TriggerEvent('esx_license:addLicense', inv.id, 'weapon')
 
 		return true, 'bought_weapon_license'
 	end
