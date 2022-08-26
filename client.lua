@@ -210,10 +210,8 @@ local function useItem(data, cb)
 					TriggerServerEvent('ox_inventory:removeItem', result.name, result.consume, result.metadata, result.slot, true)
 				end
 
-				if data.status then
-					for k, v in pairs(data.status) do
-						if v > 0 then TriggerEvent('esx_status:add', k, v) else TriggerEvent('esx_status:remove', k, -v) end
-					end
+				if data.status and client.setPlayerStatus then
+					client.setPlayerStatus(data.status)
 				end
 
 				if data.notification then

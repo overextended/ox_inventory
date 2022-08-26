@@ -63,6 +63,12 @@ elseif shared.framework == 'esx' then
 		ESX.SetPlayerData(key, value)
 	end
 
+	function client.setPlayerStatus(values)
+		for name, value in pairs(values) do
+			if value > 0 then TriggerEvent('esx_status:add', name, value) else TriggerEvent('esx_status:remove', name, -value) end
+		end
+	end
+
 	RegisterNetEvent('esx:onPlayerLogout', onLogout)
 
 	AddEventHandler('esx:setPlayerData', function(key, value)
