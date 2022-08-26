@@ -1,3 +1,5 @@
+if not lib then return end
+
 local Items = shared.items
 
 local function displayMetadata(metadata, value)

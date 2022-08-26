@@ -1,3 +1,5 @@
+if not lib then return end
+
 local Weapon = {}
 local Items = client.items
 local Utils = client.utils

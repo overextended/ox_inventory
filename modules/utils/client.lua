@@ -1,3 +1,5 @@
+if not lib then return end
+
 local Utils = {}
 
 function Utils.PlayAnim(wait, dict, name, blendIn, blendOut, duration, flag, rate, lockX, lockY, lockZ)

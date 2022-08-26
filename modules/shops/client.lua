@@ -1,3 +1,5 @@
+if not lib then return end
+
 local shops = {}
 
 local function createShopBlip(name, data, location)

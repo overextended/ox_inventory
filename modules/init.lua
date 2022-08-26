@@ -78,11 +78,11 @@ local function spamError(err)
 		while true do
 			Wait(2000)
 			CreateThread(function()
-				error(err)
+				error(err, 0)
 			end)
 		end
 	end)
-	error(err)
+	error(err, 0)
 end
 
 if shared.framework == 'ox' then
@@ -116,19 +116,19 @@ function data(name)
 end
 
 if not lib then
-	spamError('ox_inventory requires the ox_lib resource, refer to the documentation.')
+	return spamError('ox_inventory requires the ox_lib resource, refer to the documentation.')
 end
 
 local success, msg = lib.checkDependency('oxmysql', '2.4.0')
 
-if not success then spamError(msg) end
+if not success then return spamError(msg) end
 
 success, msg = lib.checkDependency('ox_lib', '2.9.0')
 
 if not success then spamError(msg) end
 
 if not LoadResourceFile(shared.resource, 'web/build/index.html') then
-	spamError('UI has not been built, refer to the documentation or download a release build.\n	^3https://overextended.github.io/docs/ox_inventory/^0')
+	return spamError('UI has not been built, refer to the documentation or download a release build.\n	^3https://overextended.github.io/docs/ox_inventory/^0')
 end
 
 -- Disable qtarget compatibility if it isn't running

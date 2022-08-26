@@ -1,3 +1,5 @@
+if not lib then return end
+
 local Query = {
 	SELECT_STASH = 'SELECT data FROM ox_inventory WHERE owner = ? AND name = ?',
 	UPDATE_STASH = 'INSERT INTO ox_inventory (owner, name, data) VALUES (?, ?, ?) ON DUPLICATE KEY UPDATE data = VALUES(data)',

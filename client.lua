@@ -410,6 +410,9 @@ function OnPlayerData(key, val)
 	Utils.WeaponWheel()
 end
 
+-- People consistently ignore errors when one of the "modules" failed to load
+if not Utils or not Weapon or not Items or not Shops or not Inventory then return end
+
 local function registerCommands()
 
 	RegisterCommand('inv', function()

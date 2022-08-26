@@ -1,3 +1,5 @@
+if not lib then return end
+
 function client.setPlayerData(key, value)
 	PlayerData[key] = value
 	OnPlayerData(key, value)
