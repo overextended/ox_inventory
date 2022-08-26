@@ -90,23 +90,26 @@ if shared.framework == 'ox' then
 	local import = LoadResourceFile('ox_core', file)
 	local func, err = load(import, ('@@ox_core/%s'):format(file))
 
-	if err then
+	if not func or err then
 		shared.ready = false
-		spamError(err)
+		return spamError(err)
 	end
 
 	func()
 end
 
+---@param name string
+---@return table
 function data(name)
 	if shared.server and shared.ready == nil then return {} end
 	local file = ('data/%s.lua'):format(name)
 	local datafile = LoadResourceFile(shared.resource, file)
 	local func, err = load(datafile, ('@@ox_inventory/%s'):format(file))
 
-	if err then
+	if not func or err then
 		shared.ready = false
-		spamError(err)
+		---@diagnostic disable-next-line: return-type-mismatch
+		return spamError(err)
 	end
 
 	return func()

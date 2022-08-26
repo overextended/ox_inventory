@@ -8,7 +8,7 @@ local function createShopBlip(name, data, location)
 	SetBlipColour(blip, data.colour)
 	SetBlipAsShortRange(blip, true)
 	BeginTextCommandSetBlipName('STRING')
-	AddTextComponentString(name)
+	AddTextComponentSubstringPlayerName(name)
 	EndTextCommandSetBlipName(blip)
 
 	return blip
@@ -19,7 +19,8 @@ local function openShop(data)
 end
 
 local function nearbyShop(self)
-	DrawMarker(2, self.coords.x, self.coords.y, self.coords.z, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.3, 0.2, 0.15, 30, 150, 30, 222, false, false, false, true, false, false, false)
+	---@diagnostic disable-next-line: param-type-mismatch
+	DrawMarker(2, self.coords.x, self.coords.y, self.coords.z, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.3, 0.2, 0.15, 30, 150, 30, 222, false, false, 0, true, false, false, false)
 
 	if self.currentDistance < 1.2 and lib.points.closest().id == self.id and IsControlJustReleased(0, 38) then
 		client.openInventory('shop', { id = self.invId, type = self.type })

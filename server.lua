@@ -6,7 +6,7 @@ local Inventory = server.inventory
 local Items = server.items
 
 ---@param player table
----@param data table
+---@param data table?
 --- player requires source, identifier, and name
 --- optionally, it should contain jobs/groups, sex, and dateofbirth
 function server.setPlayerInventory(player, data)
@@ -30,19 +30,19 @@ function server.setPlayerInventory(player, data)
 				else
 					return error(('Inventory for player.%s (%s) contains invalid data. Ensure you have converted inventories to the correct format.'):format(player.source, GetPlayerName(player.source)))
 				end
-			end
+			else
+				local item = Items(v.name)
 
-			local item = Items(v.name)
+				if item then
+					if v.metadata then
+						v.metadata = Items.CheckMetadata(v.metadata, item, v.name, ostime)
+					end
 
-			if item then
-				if v.metadata then
-					v.metadata = Items.CheckMetadata(v.metadata, item, v.name, ostime)
+					local weight = Inventory.SlotWeight(item, v)
+					totalWeight = totalWeight + weight
+
+					inventory[v.slot] = {name = item.name, label = item.label, weight = weight, slot = v.slot, count = v.count, description = item.description, metadata = v.metadata, stack = item.stack, close = item.close}
 				end
-
-				local weight = Inventory.SlotWeight(item, v)
-				totalWeight = totalWeight + weight
-
-				inventory[v.slot] = {name = item.name, label = item.label, weight = weight, slot = v.slot, count = v.count, description = item.description, metadata = v.metadata, stack = item.stack, close = item.close}
 			end
 		end
 	end
@@ -196,11 +196,19 @@ lib.callback.register('ox_inventory:getInventory', function(source, id)
 	}
 end)
 
-lib.callback.register('ox_inventory:useItem', function(source, item, slot, metadata)
+---@param source number
+---@param itemName string
+---@param slot number?
+---@param metadata table?
+---@return table | boolean | nil
+lib.callback.register('ox_inventory:useItem', function(source, itemName, slot, metadata)
 	local inventory = Inventory(source)
 	if inventory.type == 'player' then
-		local item, type = Items(item)
+		local item, type = Items(itemName)
 		local data = item and (slot and inventory.items[slot] or Inventory.GetItem(source, item, metadata))
+
+		if not data then return end
+
 		local durability = type ~= 1 and data.metadata?.durability
 
 		if durability then
@@ -264,7 +272,7 @@ local function conversionScript()
 
 	local file = 'setup/convert.lua'
 	local import = LoadResourceFile('ox_inventory', file)
-	local func, err = load(import, ('@@ox_inventory/%s'):format(file))
+	local func = load(import, ('@@ox_inventory/%s'):format(file)) --[[@as function]]
 
 	conversionScript = func()
 end

@@ -68,7 +68,9 @@ Citizen.CreateThreadNow(function()
 		end
 	end
 
-	MySQL.query(('SHOW COLUMNS FROM `%s`'):format(vehicleTable), function(result)
+	result = MySQL.query.await(('SHOW COLUMNS FROM `%s`'):format(vehicleTable))
+
+	if result then
 		local glovebox, trunk
 
 		for i = 1, #result do
@@ -87,7 +89,7 @@ Citizen.CreateThreadNow(function()
 		if not trunk then
 			MySQL.query(('ALTER TABLE `%s` ADD COLUMN `trunk` LONGTEXT NULL'):format(vehicleTable))
 		end
-	end)
+	end
 
 	success, result = pcall(MySQL.scalar.await, ('SELECT inventory FROM `%s`'):format(playerTable))
 

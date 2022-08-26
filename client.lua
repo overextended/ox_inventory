@@ -18,8 +18,12 @@ exports('setStashTarget', function(id, owner)
 	StashTarget = id and {id=id, owner=owner}
 end)
 
+---@type boolean?
 local invBusy = true
+
+---@type boolean?
 local invOpen = false
+
 local plyState = LocalPlayer.state
 
 plyState:set('invBusy', true, false)
@@ -603,6 +607,7 @@ local function registerCommands()
 			end
 		end, false)
 
+		---@diagnostic disable-next-line: param-type-mismatch
 		RegisterKeyMapping(hotkey, shared.locale('use_hotbar', i), 'keyboard', i)
 		TriggerEvent('chat:removeSuggestion', '/'..hotkey)
 	end
@@ -624,7 +629,7 @@ function client.closeInventory(server)
 			TriggerServerEvent('ox_inventory:closeInventory')
 		end
 
-		currentInventory = false
+		currentInventory = nil
 		plyState.invOpen = false
 		defaultInventory.coords = nil
 	end
@@ -741,7 +746,8 @@ end)
 
 local function nearbyDrop(self)
 	if not self.instance or self.instance == currentInstance then
-		DrawMarker(2, self.coords.x, self.coords.y, self.coords.z, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.3, 0.2, 0.15, 150, 30, 30, 222, false, false, false, true, false, false, false)
+		---@diagnostic disable-next-line: param-type-mismatch
+		DrawMarker(2, self.coords.x, self.coords.y, self.coords.z, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.3, 0.2, 0.15, 150, 30, 30, 222, false, false, 0, true, false, false, false)
 	end
 end
 
@@ -779,6 +785,7 @@ end)
 
 local uiLoaded = false
 
+---@type function?
 local function setStateBagHandler(stateId)
 	AddStateBagChangeHandler('invOpen', stateId, function(_, _, value)
 		invOpen = value
@@ -923,7 +930,8 @@ RegisterNetEvent('ox_inventory:setPlayerInventory', function(currentDrops, inven
 	Utils.WeaponWheel(false)
 
 	local function nearbyLicense(self)
-		DrawMarker(2, self.coords.x, self.coords.y, self.coords.z, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.3, 0.2, 0.15, 30, 150, 30, 222, false, false, false, true, false, false, false)
+		---@diagnostic disable-next-line: param-type-mismatch
+		DrawMarker(2, self.coords.x, self.coords.y, self.coords.z, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.3, 0.2, 0.15, 30, 150, 30, 222, false, false, 0, true, false, false, false)
 
 		if self.currentDistance < 1.2 and lib.points.closest().id == self.id and IsControlJustReleased(0, 38) then
 			lib.callback('ox_inventory:buyLicense', 1000, function(success, message)
