@@ -616,6 +616,10 @@ local function registerCommands()
 end
 
 function client.closeInventory(server)
+	-- because somehow people are triggering this when the inventory isn't loaded
+	-- and they're incapable of debugging, and I can't repro on a fresh install
+	if not client.interval then return end
+
 	if invOpen then
 		invOpen = nil
 		SetNuiFocus(false, false)
