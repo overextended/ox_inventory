@@ -13,6 +13,7 @@ import useNuiEvent from '../../hooks/useNuiEvent';
 import useKeyPress from '../../hooks/useKeyPress';
 import { setClipboard } from '../../utils/setClipboard';
 import { debugData } from '../../utils/debugData';
+import { Tooltip } from '@mui/material';
 
 // debugData([
 //   {
@@ -91,71 +92,6 @@ const InventoryGrid: React.FC<{ inventory: Inventory }> = ({ inventory }) => {
             </React.Fragment>
           ))}
         </div>
-
-        {currentItem && contextVisible === false && (
-          <ReactTooltip
-            id="item-tooltip"
-            className="item-info"
-            arrowColor="transparent"
-            place="right"
-            delayShow={300}
-          >
-            <>
-              <span style={{ fontSize: '1em' }}>
-                {currentItem.metadata?.label
-                  ? currentItem.metadata.label
-                  : Items[currentItem.name]?.label || currentItem.name}
-              </span>
-              <span style={{ fontSize: '1em', float: 'right' }}>{currentItem.metadata?.type}</span>
-              <hr style={{ borderBottom: '0.3em', marginBottom: '0.3em' }}></hr>
-              {(currentItem.metadata?.description || Items[currentItem.name]?.description) && (
-                <ReactMarkdown>
-                  {currentItem.metadata?.description || Items[currentItem.name]?.description}
-                </ReactMarkdown>
-              )}
-              {currentItem?.durability !== undefined && (
-                <p>
-                  {Locale.ui_durability}: {Math.trunc(currentItem.durability)}
-                </p>
-              )}
-              {currentItem.metadata?.ammo !== undefined && (
-                <p>
-                  {Locale.ui_ammo}: {currentItem.metadata.ammo}
-                </p>
-              )}
-              {currentItem.metadata?.serial && (
-                <p>
-                  {Locale.ui_serial}: {currentItem.metadata.serial}
-                </p>
-              )}
-              {currentItem.metadata?.components && currentItem.metadata?.components[0] && (
-                <p>
-                  {Locale.ui_components}:{' '}
-                  {(currentItem.metadata?.components).map(
-                    (component: string, index: number, array: []) =>
-                      index + 1 === array.length
-                        ? Items[component]?.label
-                        : Items[component]?.label + ', '
-                  )}
-                </p>
-              )}
-              {currentItem.metadata?.weapontint && (
-                <p>
-                  {Locale.ui_tint}: {currentItem.metadata.weapontint}
-                </p>
-              )}
-              {Object.keys(additionalMetadata).map((data: string, index: number) => (
-                <React.Fragment key={`metadata-${index}`}>
-                  {currentItem.metadata && currentItem.metadata[data] && (
-                    <p>
-                      {additionalMetadata[data]}: {currentItem.metadata[data]}
-                    </p>
-                  )}
-                </React.Fragment>
-              ))}
-            </>
-          </ReactTooltip>
-        )}
       </div>
     </>
   );

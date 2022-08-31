@@ -24,6 +24,8 @@ debugData([
         id: 'test',
         type: 'player',
         slots: 10,
+        name: 'Bob Smith',
+        weight: 3000,
         maxWeight: 5000,
         items: [
           {
@@ -48,7 +50,7 @@ debugData([
       },
       rightInventory: {
         id: 'shop',
-        type: 'shop',
+        type: '',
         slots: 10,
         items: [{ slot: 1, name: 'water', weight: 500 }],
       },

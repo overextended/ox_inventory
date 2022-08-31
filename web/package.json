@@ -4,9 +4,13 @@
   "homepage": "web/build",
   "private": true,
   "dependencies": {
+    "@babel/core": "^7.18.13",
+    "@emotion/react": "^11.10.4",
+    "@emotion/styled": "^11.10.4",
     "@fortawesome/fontawesome-svg-core": "^1.2.36",
     "@fortawesome/free-solid-svg-icons": "^5.15.4",
     "@fortawesome/react-fontawesome": "^0.1.16",
+    "@mui/material": "^5.10.3",
     "@reduxjs/toolkit": "^1.6.2",
     "@types/lodash": "^4.14.177",
     "@types/node": "^16.11.18",

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { DragSource, Inventory, InventoryType, Slot, SlotWithItem } from '../../typings';
 import { useDrag, useDrop } from 'react-dnd';
 import { useAppSelector } from '../../store';
@@ -12,6 +12,8 @@ import { useContextMenu } from 'react-contexify';
 import { onUse } from '../../dnd/onUse';
 import ReactTooltip from 'react-tooltip';
 import { Locale } from '../../store/locale';
+import { Typography, Tooltip } from '@mui/material';
+import ReactMarkdown from 'react-markdown';
 
 interface SlotProps {
   inventory: Inventory;
@@ -21,6 +23,7 @@ interface SlotProps {
 
 const InventorySlot: React.FC<SlotProps> = ({ inventory, item, setCurrentItem }) => {
   const isBusy = useAppSelector(selectIsBusy);
+  const [hover, setHover] = useState(false);
 
   const [{ isDragging }, drag] = useDrag<DragSource, void, { isDragging: boolean }>(
     () => ({
@@ -74,15 +77,19 @@ const InventorySlot: React.FC<SlotProps> = ({ inventory, item, setCurrentItem })
 
   const connectRef = (element: HTMLDivElement) => drag(drop(element));
 
-  const onMouseEnter = React.useCallback(
-    () => isSlotWithItem(item) && setCurrentItem(item),
-    [item, setCurrentItem]
-  );
+  const onMouseEnter = React.useCallback(() => {
+    if (isSlotWithItem(item)) {
+      setHover(true);
+      setCurrentItem(item);
+    }
+  }, [item, setCurrentItem]);
 
-  const onMouseLeave = React.useCallback(
-    () => isSlotWithItem(item) && setCurrentItem(undefined),
-    [item, setCurrentItem]
-  );
+  const onMouseLeave = React.useCallback(() => {
+    if (isSlotWithItem(item)) {
+      setCurrentItem(undefined);
+      setHover(false);
+    }
+  }, [item, setCurrentItem]);
 
   const { show, hideAll } = useContextMenu({ id: `slot-context-${item.slot}-${item.name}` });
 
@@ -110,7 +117,67 @@ const InventorySlot: React.FC<SlotProps> = ({ inventory, item, setCurrentItem })
   };
 
   return (
-    <>
+    <Tooltip
+      title={
+        <>
+          <Typography sx={{ transform: 'uppercase' }}>
+            {item.metadata?.label ? item.metadata.label : item.name}
+          </Typography>
+          <span style={{ fontSize: '1em', float: 'right' }}>{item.metadata?.type}</span>
+          <hr style={{ borderBottom: '0.3em', marginBottom: '0.3em' }}></hr>
+          {item.metadata?.description && (
+            <ReactMarkdown>{item.metadata?.description}</ReactMarkdown>
+          )}
+          {item?.durability !== undefined && (
+            <p>
+              {Locale.ui_durability}: {Math.trunc(item.durability)}
+            </p>
+          )}
+          {item.metadata?.ammo !== undefined && (
+            <p>
+              {Locale.ui_ammo}: {item.metadata.ammo}
+            </p>
+          )}
+          {item.metadata?.serial && (
+            <p>
+              {Locale.ui_serial}: {item.metadata.serial}
+            </p>
+          )}
+          {item.metadata?.components && item.metadata?.components[0] && (
+            <p>
+              {Locale.ui_components}:{' '}
+              {(item.metadata?.components).map((component: string, index: number, array: []) =>
+                index + 1 === array.length
+                  ? Items[component]?.label
+                  : Items[component]?.label + ', '
+              )}
+            </p>
+          )}
+          {item.metadata?.weapontint && (
+            <p>
+              {Locale.ui_tint}: {item.metadata.weapontint}
+            </p>
+          )}
+          {/* {Object.keys(additionalMetadata).map((data: string, index: number) => (
+            <React.Fragment key={`metadata-${index}`}>
+              {item.metadata && item.metadata[data] && (
+                <p>
+                  {additionalMetadata[data]}: {item.metadata[data]}
+                </p>
+              )}
+            </React.Fragment>
+          ))} */}
+        </>
+      }
+      sx={{ fontFamily: 'Roboto', minWidth: 200 }}
+      disableInteractive
+      followCursor
+      disableHoverListener={!isSlotWithItem(item)}
+      disableFocusListener
+      placement="right-start"
+      enterDelay={500}
+      enterNextDelay={500}
+    >
       <div
         ref={connectRef}
         onContextMenu={handleContext}
@@ -188,7 +255,7 @@ const InventorySlot: React.FC<SlotProps> = ({ inventory, item, setCurrentItem })
           </>
         )}
       </div>
-    </>
+    </Tooltip>
   );
 };
 

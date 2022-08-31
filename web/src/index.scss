@@ -21,13 +21,13 @@ $imageSize: $gridSize - 2.5vh;
 $textShadow: 0.1vh 0.1vh 0 rgba(0, 0, 0, 0.7);
 
 * {
-  font-family: $mainFont;
+  // font-family: $mainFont;
   font-size: 1.5vh;
   font-weight: 400;
   box-sizing: content-box;
   user-select: none;
   margin: 0;
-  color: #fff;
+  // color: #fff;
 }
 
 body,
