@@ -1,5 +1,5 @@
 import { Box, Stack, Typography, Button, TextField, Input, InputBase } from '@mui/material';
-import Slot from './components/Slot';
+import ItemSlot from './components/ItemSlot';
 import WeightBar from './components/utils/WeightBar';
 
 const App: React.FC = () => {
@@ -23,31 +23,31 @@ const App: React.FC = () => {
             </Box>
             <Box>
               <Box className={'inventory-grid'}>
-                <Slot />
-                <Slot />
-                <Slot />
-                <Slot />
-                <Slot />
-                <Slot />
-                <Slot />
-                <Slot />
-                <Slot />
-                <Slot />
-                <Slot />
-                <Slot />
-                <Slot />
-                <Slot />
-                <Slot />
-                <Slot />
-                <Slot />
-                <Slot />
-                <Slot />
-                <Slot />
-                <Slot />
-                <Slot />
-                <Slot />
-                <Slot />
-                <Slot />
+                <ItemSlot />
+                <ItemSlot />
+                <ItemSlot />
+                <ItemSlot />
+                <ItemSlot />
+                <ItemSlot />
+                <ItemSlot />
+                <ItemSlot />
+                <ItemSlot />
+                <ItemSlot />
+                <ItemSlot />
+                <ItemSlot />
+                <ItemSlot />
+                <ItemSlot />
+                <ItemSlot />
+                <ItemSlot />
+                <ItemSlot />
+                <ItemSlot />
+                <ItemSlot />
+                <ItemSlot />
+                <ItemSlot />
+                <ItemSlot />
+                <ItemSlot />
+                <ItemSlot />
+                <ItemSlot />
               </Box>
             </Box>
           </Stack>
@@ -83,31 +83,31 @@ const App: React.FC = () => {
             </Box>
             <Box>
               <Box className={'inventory-grid'}>
-                <Slot />
-                <Slot />
-                <Slot />
-                <Slot />
-                <Slot />
-                <Slot />
-                <Slot />
-                <Slot />
-                <Slot />
-                <Slot />
-                <Slot />
-                <Slot />
-                <Slot />
-                <Slot />
-                <Slot />
-                <Slot />
-                <Slot />
-                <Slot />
-                <Slot />
-                <Slot />
-                <Slot />
-                <Slot />
-                <Slot />
-                <Slot />
-                <Slot />
+                <ItemSlot />
+                <ItemSlot />
+                <ItemSlot />
+                <ItemSlot />
+                <ItemSlot />
+                <ItemSlot />
+                <ItemSlot />
+                <ItemSlot />
+                <ItemSlot />
+                <ItemSlot />
+                <ItemSlot />
+                <ItemSlot />
+                <ItemSlot />
+                <ItemSlot />
+                <ItemSlot />
+                <ItemSlot />
+                <ItemSlot />
+                <ItemSlot />
+                <ItemSlot />
+                <ItemSlot />
+                <ItemSlot />
+                <ItemSlot />
+                <ItemSlot />
+                <ItemSlot />
+                <ItemSlot />
               </Box>
             </Box>
           </Stack>
