@@ -8,6 +8,9 @@ import { Inventory } from './typings';
 import { useAppDispatch } from './store';
 import { debugData } from './utils/debugData';
 import DragPreview from './components/utils/DragPreview';
+import Notifications from './components/utils/Notifications';
+import { fetchNui } from './utils/fetchNui';
+import { useExitListener } from './hooks/useExitListener';
 
 debugData([
   {
@@ -36,8 +39,14 @@ debugData([
             count: 5,
           },
           { slot: 2, name: 'money', weight: 0, count: 32000 },
-          { slot: 3, name: 'cola', weight: 100, count: 1 },
-          { slot: 4, name: 'water', weight: 100, count: 1 },
+          { slot: 3, name: 'cola', weight: 100, count: 1, metadata: { type: 'Special' } },
+          {
+            slot: 4,
+            name: 'water',
+            weight: 100,
+            count: 1,
+            metadata: { description: 'Generic item description' },
+          },
           { slot: 5, name: 'water', weight: 100, count: 1 },
         ],
       },
@@ -69,9 +78,12 @@ const App: React.FC = () => {
     dispatch(setupInventory({ leftInventory }));
   });
 
+  fetchNui('uiLoaded', {});
+
   return (
     <Box sx={{ height: '100%', width: '100%', color: 'white' }}>
       <InventoryComponent />
+      <Notifications />
       <DragPreview />
     </Box>
   );

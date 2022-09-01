@@ -70,39 +70,45 @@ const InventoryGrid: React.FC<{ inventory: Inventory }> = ({ inventory }) => {
   );
 
   return (
-    <Stack spacing={1}>
-      <Box>
-        <Stack direction="row" justifyContent="space-between">
-          <Typography fontSize={16}>{inventory.label}</Typography>
-          {inventory.maxWeight && (
-            <Typography fontSize={16}>
-              {weight / 1000}/{inventory.maxWeight / 1000}kg
-            </Typography>
-          )}
-        </Stack>
-        <WeightBar percent={inventory.maxWeight ? (weight / inventory.maxWeight) * 100 : 0} />
-      </Box>
-      <StyledGrid>
-        {inventory.items.map((item) => (
-          <React.Fragment key={`grid-${inventory.id}-${item.slot}`}>
-            <InventorySlot
-              key={`${inventory.type}-${inventory.id}-${item.slot}`}
-              item={item}
-              inventory={inventory}
-              setCurrentItem={setCurrentItem}
-            />
-            {createPortal(
-              <InventoryContext
-                item={item}
-                setContextVisible={setContextVisible}
-                key={`context-${item.slot}`}
-              />,
-              document.body
+    <>
+      <Stack spacing={1}>
+        <Box>
+          <Stack direction="row" justifyContent="space-between">
+            <Typography fontSize={16}>{inventory.label}</Typography>
+            {inventory.maxWeight && (
+              <Typography fontSize={16}>
+                {weight / 1000}/{inventory.maxWeight / 1000}kg
+              </Typography>
             )}
-          </React.Fragment>
-        ))}
-      </StyledGrid>
-    </Stack>
+          </Stack>
+          <WeightBar percent={inventory.maxWeight ? (weight / inventory.maxWeight) * 100 : 0} />
+        </Box>
+        <StyledGrid>
+          <>
+            {inventory.items.map((item) => (
+              <React.Fragment key={`grid-${inventory.id}-${item.slot}`}>
+                <InventorySlot
+                  key={`${inventory.type}-${inventory.id}-${item.slot}`}
+                  contextVisible={contextVisible}
+                  item={item}
+                  inventory={inventory}
+                  additionalMetadata={additionalMetadata}
+                  setCurrentItem={setCurrentItem}
+                />
+                {createPortal(
+                  <InventoryContext
+                    item={item}
+                    setContextVisible={setContextVisible}
+                    key={`context-${item.slot}`}
+                  />,
+                  document.body
+                )}
+              </React.Fragment>
+            ))}
+          </>
+        </StyledGrid>
+      </Stack>
+    </>
   );
 };
 

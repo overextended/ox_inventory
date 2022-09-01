@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { DragSource, Inventory, InventoryType, Slot, SlotWithItem } from '../../typings';
 import { useDrag, useDrop } from 'react-dnd';
 import { useAppSelector } from '../../store';
@@ -14,11 +14,14 @@ import ReactTooltip from 'react-tooltip';
 import { Locale } from '../../store/locale';
 import { Typography, Tooltip, styled, Box, Stack } from '@mui/material';
 import ReactMarkdown from 'react-markdown';
+import SlotTooltip from './SlotTooltip';
 
 interface SlotProps {
   inventory: Inventory;
   item: Slot;
   setCurrentItem: React.Dispatch<React.SetStateAction<SlotWithItem | undefined>>;
+  contextVisible: boolean;
+  additionalMetadata: { [key: string]: any };
 }
 
 const StyledBox = styled(Box)(({ theme }) => ({
@@ -41,7 +44,13 @@ const StyledLabel = styled(Box)(({ theme }) => ({
   borderBottomRightRadius: '0.25vh',
 }));
 
-const InventorySlot: React.FC<SlotProps> = ({ inventory, item, setCurrentItem }) => {
+const InventorySlot: React.FC<SlotProps> = ({
+  inventory,
+  item,
+  setCurrentItem,
+  contextVisible,
+  additionalMetadata,
+}) => {
   const isBusy = useAppSelector(selectIsBusy);
   const [hover, setHover] = useState(false);
 
@@ -116,7 +125,8 @@ const InventorySlot: React.FC<SlotProps> = ({ inventory, item, setCurrentItem })
   const handleContext = (event: React.MouseEvent<HTMLDivElement>) => {
     !isBusy && inventory.type === 'player' && isSlotWithItem(item) && show(event);
     setCurrentItem(undefined);
-    ReactTooltip.hide();
+    // ReactTooltip.hide();
+    setHover(false);
   };
 
   React.useEffect(() => {
@@ -138,12 +148,18 @@ const InventorySlot: React.FC<SlotProps> = ({ inventory, item, setCurrentItem })
 
   return (
     <Tooltip
-      title="Metadata goes here"
+      title={
+        !isSlotWithItem(item) || contextVisible ? (
+          ''
+        ) : (
+          <SlotTooltip item={item} additionalMetadata={additionalMetadata} />
+        )
+      }
       sx={{ fontFamily: 'Roboto' }}
       disableInteractive
       followCursor
-      disableHoverListener={!isSlotWithItem(item)}
       disableFocusListener
+      disableTouchListener
       placement="right-start"
       enterDelay={500}
       enterNextDelay={500}
