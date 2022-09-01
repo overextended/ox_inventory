@@ -12,7 +12,7 @@ import { useContextMenu } from 'react-contexify';
 import { onUse } from '../../dnd/onUse';
 import ReactTooltip from 'react-tooltip';
 import { Locale } from '../../store/locale';
-import { Typography, Tooltip } from '@mui/material';
+import { Typography, Tooltip, styled, Box, Stack } from '@mui/material';
 import ReactMarkdown from 'react-markdown';
 
 interface SlotProps {
@@ -20,6 +20,26 @@ interface SlotProps {
   item: Slot;
   setCurrentItem: React.Dispatch<React.SetStateAction<SlotWithItem | undefined>>;
 }
+
+const StyledBox = styled(Box)(({ theme }) => ({
+  backgroundColor: theme.palette.secondary.main,
+  backgroundRepeat: 'no-repeat',
+  backgroundPosition: 'center',
+  borderRadius: '0.25vh',
+  imageRendering: '-webkit-optimize-contrast',
+  position: 'relative',
+  backgroundSize: '7.7vh',
+  color: theme.palette.primary.contrastText,
+}));
+
+const StyledLabel = styled(Box)(({ theme }) => ({
+  backgroundColor: theme.palette.primary.main,
+  color: theme.palette.primary.contrastText,
+  width: '100%',
+  textAlign: 'center',
+  borderBottomLeftRadius: '0.25vh',
+  borderBottomRightRadius: '0.25vh',
+}));
 
 const InventorySlot: React.FC<SlotProps> = ({ inventory, item, setCurrentItem }) => {
   const isBusy = useAppSelector(selectIsBusy);
@@ -118,58 +138,8 @@ const InventorySlot: React.FC<SlotProps> = ({ inventory, item, setCurrentItem })
 
   return (
     <Tooltip
-      title={
-        <>
-          <Typography sx={{ transform: 'uppercase' }}>
-            {item.metadata?.label ? item.metadata.label : item.name}
-          </Typography>
-          <span style={{ fontSize: '1em', float: 'right' }}>{item.metadata?.type}</span>
-          <hr style={{ borderBottom: '0.3em', marginBottom: '0.3em' }}></hr>
-          {item.metadata?.description && (
-            <ReactMarkdown>{item.metadata?.description}</ReactMarkdown>
-          )}
-          {item?.durability !== undefined && (
-            <p>
-              {Locale.ui_durability}: {Math.trunc(item.durability)}
-            </p>
-          )}
-          {item.metadata?.ammo !== undefined && (
-            <p>
-              {Locale.ui_ammo}: {item.metadata.ammo}
-            </p>
-          )}
-          {item.metadata?.serial && (
-            <p>
-              {Locale.ui_serial}: {item.metadata.serial}
-            </p>
-          )}
-          {item.metadata?.components && item.metadata?.components[0] && (
-            <p>
-              {Locale.ui_components}:{' '}
-              {(item.metadata?.components).map((component: string, index: number, array: []) =>
-                index + 1 === array.length
-                  ? Items[component]?.label
-                  : Items[component]?.label + ', '
-              )}
-            </p>
-          )}
-          {item.metadata?.weapontint && (
-            <p>
-              {Locale.ui_tint}: {item.metadata.weapontint}
-            </p>
-          )}
-          {/* {Object.keys(additionalMetadata).map((data: string, index: number) => (
-            <React.Fragment key={`metadata-${index}`}>
-              {item.metadata && item.metadata[data] && (
-                <p>
-                  {additionalMetadata[data]}: {item.metadata[data]}
-                </p>
-              )}
-            </React.Fragment>
-          ))} */}
-        </>
-      }
-      sx={{ fontFamily: 'Roboto', minWidth: 200 }}
+      title="Metadata goes here"
+      sx={{ fontFamily: 'Roboto' }}
       disableInteractive
       followCursor
       disableHoverListener={!isSlotWithItem(item)}
@@ -178,13 +148,10 @@ const InventorySlot: React.FC<SlotProps> = ({ inventory, item, setCurrentItem })
       enterDelay={500}
       enterNextDelay={500}
     >
-      <div
+      <StyledBox
         ref={connectRef}
         onContextMenu={handleContext}
         onClick={handleClick}
-        className="item-container"
-        data-tip
-        data-for="item-tooltip"
         style={{
           opacity: isDragging ? 0.4 : 1.0,
           backgroundImage: item.metadata?.image
@@ -192,15 +159,15 @@ const InventorySlot: React.FC<SlotProps> = ({ inventory, item, setCurrentItem })
             : item.name
             ? `url(${`images/${item.name}.png`})`
             : 'none',
-          border: isOver ? '1px dashed rgba(255,255,255,0.4)' : '1px inset rgba(0,0,0,0.3)',
+          border: isOver ? '1px dashed rgba(255,255,255,0.4)' : '',
         }}
         onMouseEnter={onMouseEnter}
         onMouseLeave={onMouseLeave}
       >
         {isSlotWithItem(item) && (
-          <>
-            <div className="item-count">
-              <span>
+          <Stack justifyContent="space-between" height="100%">
+            <Stack direction="row" alignSelf="flex-end" p="5px" spacing="1.5px">
+              <Typography fontSize={12}>
                 {item.weight > 0
                   ? item.weight >= 1000
                     ? `${(item.weight / 1000).toLocaleString('en-us', {
@@ -210,51 +177,75 @@ const InventorySlot: React.FC<SlotProps> = ({ inventory, item, setCurrentItem })
                         minimumFractionDigits: 0,
                       })}g `
                   : ''}
-                {/* {item.count?.toLocaleString('en-us')}x */}
+              </Typography>
+              <Typography fontSize={12}>
                 {item.count ? item.count.toLocaleString('en-us') + `x` : ''}
-              </span>
-            </div>
-            {inventory.type !== 'shop' && item?.durability !== undefined && (
-              <WeightBar percent={item.durability} durability />
-            )}
-            {inventory.type === 'shop' && item?.price !== undefined && (
-              <>
-                {item?.currency !== 'money' &&
-                item?.currency !== 'black_money' &&
-                item.price > 0 &&
-                item?.currency ? (
-                  <div className="item-price" style={{ color: '#2ECC71' }}>
-                    <img
-                      className="item-currency"
-                      src={item?.currency ? `${`images/${item?.currency}.png`}` : ''}
-                      alt="item"
-                    ></img>
-                    {item.price}
-                  </div>
-                ) : (
-                  <>
-                    {item.price > 0 && (
-                      <div
-                        className="item-price"
+              </Typography>
+            </Stack>
+            <Box>
+              {inventory.type !== 'shop' && item?.durability !== undefined && (
+                <WeightBar percent={item.durability} durability />
+              )}
+              {inventory.type === 'shop' && item?.price !== undefined && (
+                <>
+                  {item?.currency !== 'money' &&
+                  item?.currency !== 'black_money' &&
+                  item.price > 0 &&
+                  item?.currency ? (
+                    <Stack direction="row" justifyContent="flex-end" alignItems="center" pr="5px">
+                      <img
+                        src={item?.currency ? `${`images/${item?.currency}.png`}` : ''}
+                        alt="item-image"
                         style={{
-                          color:
-                            item.currency === 'money' || !item.currency ? '#2ECC71' : '#E74C3C',
+                          imageRendering: '-webkit-optimize-contrast',
+                          height: 'auto',
+                          width: '2vh',
+                          backfaceVisibility: 'hidden',
+                          transform: 'translateZ(0)',
                         }}
+                      />
+                      <Typography
+                        fontSize={14}
+                        sx={{ textShadow: '0.1vh 0.1vh 0 rgba(0, 0, 0, 0.7)' }}
                       >
-                        {Locale.$}
                         {item.price}
-                      </div>
-                    )}
-                  </>
-                )}
-              </>
-            )}
-            <div className="item-label">
-              {item.metadata?.label ? item.metadata.label : Items[item.name]?.label || item.name}
-            </div>
-          </>
+                      </Typography>
+                    </Stack>
+                  ) : (
+                    <>
+                      {item.price > 0 && (
+                        <Stack
+                          direction="row"
+                          justifyContent="flex-end"
+                          pr="5px"
+                          color={
+                            item.currency === 'money' || !item.currency ? '#2ECC71' : '#E74C3C'
+                          }
+                        >
+                          <Typography
+                            fontSize={14}
+                            sx={{ textShadow: '0.1vh 0.1vh 0 rgba(0, 0, 0, 0.7)' }}
+                          >
+                            {Locale.$ || '$'}
+                            {item.price}
+                          </Typography>
+                        </Stack>
+                      )}
+                    </>
+                  )}
+                </>
+              )}
+              <StyledLabel>
+                <Typography fontSize={14} sx={{ textTransform: 'uppercase' }} fontWeight={700}>
+                  {item.metadata?.label
+                    ? item.metadata.label
+                    : Items[item.name]?.label || item.name}
+                </Typography>
+              </StyledLabel>
+            </Box>
+          </Stack>
         )}
-      </div>
+      </StyledBox>
     </Tooltip>
   );
 };

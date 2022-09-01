@@ -21,12 +21,6 @@ const StyledLabel = styled(Box)(({ theme }) => ({
   borderBottomRightRadius: '0.25vh',
 }));
 
-const StyledDurability = styled(Box)(({ theme }) => ({
-  height: '5px',
-  width: '100%',
-  backgroundColor: theme.palette.secondary.dark,
-}));
-
 const ItemSlot: React.FC = () => {
   return (
     <StyledBox sx={{ backgroundImage: `url(${`images/${'weapon_pistol'}.png`})` }}>

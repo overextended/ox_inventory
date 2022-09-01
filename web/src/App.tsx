@@ -1,115 +1,76 @@
-import { Box, Stack, Typography, Button, InputBase, styled } from '@mui/material';
-import ItemSlot from './components/ItemSlot';
-import WeightBar from './components/utils/WeightBar';
+import { Box, styled } from '@mui/material';
+import InventoryComponent from './components/inventory';
+import useNuiEvent from './hooks/useNuiEvent';
+import { Items } from './store/items';
+import { Locale } from './store/locale';
+import { setupInventory } from './store/inventory';
+import { Inventory } from './typings';
+import { useAppDispatch } from './store';
+import { debugData } from './utils/debugData';
 
-const StyledGrid = styled(Box)(() => ({
-  display: 'grid',
-  height: 'calc((5 * 10.42vh) + (5 * 2px))',
-  gridTemplateColumns: 'repeat(5, 10.2vh)',
-  gridAutoRows: '10.42vh',
-  gap: '2px',
-  overflowY: 'scroll',
-}));
+debugData([
+  {
+    action: 'setupInventory',
+    data: {
+      leftInventory: {
+        id: 'test',
+        type: 'player',
+        slots: 10,
+        name: 'Bob Smith',
+        weight: 3000,
+        maxWeight: 5000,
+        items: [
+          {
+            slot: 1,
+            name: 'water',
+            weight: 3000,
+            metadata: {
+              durability: 100,
+              description: `# Testing something  \n**Yes**`,
+              serial: 'SUPERCOOLWATER9725',
+              mustard: '60%',
+              ketchup: '30%',
+              mayo: '10%',
+            },
+            count: 5,
+          },
+          { slot: 2, name: 'money', weight: 0, count: 32000 },
+          { slot: 3, name: 'cola', weight: 100, count: 1 },
+          { slot: 4, name: 'water', weight: 100, count: 1 },
+          { slot: 5, name: 'water', weight: 100, count: 1 },
+        ],
+      },
+      rightInventory: {
+        id: 'shop',
+        type: 'shop',
+        slots: 10,
+        name: 'Bob Smith',
+        weight: 3000,
+        maxWeight: 5000,
+        items: [{ slot: 1, name: 'water', weight: 500, price: 300 }],
+      },
+    },
+  },
+]);
 
 const App: React.FC = () => {
+  const dispatch = useAppDispatch();
+
+  useNuiEvent<{
+    locale: { [key: string]: string };
+    items: typeof Items;
+    leftInventory: Inventory;
+  }>('init', ({ locale, items, leftInventory }) => {
+    for (const [name, data] of Object.entries(locale)) Locale[name] = data;
+
+    for (const [name, data] of Object.entries(items)) Items[name] = data;
+
+    dispatch(setupInventory({ leftInventory }));
+  });
+
   return (
     <Box sx={{ height: '100%', width: '100%', color: 'white' }}>
-      <Stack direction="row" justifyContent="center" alignItems="center" height="100%" spacing={2}>
-        <Box>
-          <Stack spacing={1}>
-            <Box>
-              <Stack direction="row" justifyContent="space-between">
-                <Typography fontSize={16}>Svetozar Miletic</Typography>
-                <Typography fontSize={16}>13/30kg</Typography>
-              </Stack>
-              <WeightBar percent={(13 / 30) * 100} />
-            </Box>
-            <Box>
-              <StyledGrid>
-                <ItemSlot />
-                <ItemSlot />
-                <ItemSlot />
-                <ItemSlot />
-                <ItemSlot />
-                <ItemSlot />
-                <ItemSlot />
-                <ItemSlot />
-                <ItemSlot />
-                <ItemSlot />
-                <ItemSlot />
-                <ItemSlot />
-                <ItemSlot />
-                <ItemSlot />
-                <ItemSlot />
-                <ItemSlot />
-                <ItemSlot />
-                <ItemSlot />
-                <ItemSlot />
-                <ItemSlot />
-                <ItemSlot />
-                <ItemSlot />
-                <ItemSlot />
-                <ItemSlot />
-                <ItemSlot />
-              </StyledGrid>
-            </Box>
-          </Stack>
-        </Box>
-        <Box display="flex">
-          <Stack spacing={3} justifyContent="center" alignItems="center">
-            <InputBase />
-            <Button fullWidth variant="contained">
-              Use
-            </Button>
-            <Button fullWidth variant="contained">
-              Give
-            </Button>
-            <Button fullWidth variant="contained">
-              Close
-            </Button>
-          </Stack>
-        </Box>
-        <Box>
-          <Stack spacing={1}>
-            <Box>
-              <Stack direction="row" justifyContent="space-between">
-                <Typography fontSize={16}>Svetozar Miletic</Typography>
-                <Typography fontSize={16}>13/30kg</Typography>
-              </Stack>
-              <WeightBar percent={(13 / 30) * 100} />
-            </Box>
-            <Box>
-              <StyledGrid>
-                <ItemSlot />
-                <ItemSlot />
-                <ItemSlot />
-                <ItemSlot />
-                <ItemSlot />
-                <ItemSlot />
-                <ItemSlot />
-                <ItemSlot />
-                <ItemSlot />
-                <ItemSlot />
-                <ItemSlot />
-                <ItemSlot />
-                <ItemSlot />
-                <ItemSlot />
-                <ItemSlot />
-                <ItemSlot />
-                <ItemSlot />
-                <ItemSlot />
-                <ItemSlot />
-                <ItemSlot />
-                <ItemSlot />
-                <ItemSlot />
-                <ItemSlot />
-                <ItemSlot />
-                <ItemSlot />
-              </StyledGrid>
-            </Box>
-          </Stack>
-        </Box>
-      </Stack>
+      <InventoryComponent />
     </Box>
   );
 };

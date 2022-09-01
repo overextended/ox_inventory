@@ -3,7 +3,8 @@ import useNuiEvent from '../../hooks/useNuiEvent';
 import InventoryGrid from './InventoryGrid';
 import InventoryControl from './InventoryControl';
 import InventoryHotbar from './InventoryHotbar';
-import Fade from '../utils/Fade';
+// import Fade from '../utils/Fade';
+import { Fade, Stack } from '@mui/material';
 import { useAppDispatch, useAppSelector } from '../../store';
 import {
   selectLeftInventory,
@@ -42,12 +43,20 @@ const Inventory: React.FC = () => {
 
   return (
     <>
-      <Fade visible={inventoryVisible} className="center-wrapper">
-        <InventoryGrid inventory={leftInventory} />
-        <InventoryControl />
-        <InventoryGrid inventory={rightInventory} />
+      <Fade in={inventoryVisible} unmountOnExit>
+        <Stack
+          direction="row"
+          justifyContent="center"
+          alignItems="center"
+          height="100%"
+          spacing={2}
+        >
+          <InventoryGrid inventory={leftInventory} />
+          <InventoryControl />
+          <InventoryGrid inventory={rightInventory} />
+        </Stack>
       </Fade>
-      <InventoryHotbar items={leftInventory.items.slice(0, 5)} />
+      {/*<InventoryHotbar items={leftInventory.items.slice(0, 5)} />*/}
     </>
   );
 };

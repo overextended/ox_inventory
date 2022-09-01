@@ -13,7 +13,7 @@ import useNuiEvent from '../../hooks/useNuiEvent';
 import useKeyPress from '../../hooks/useKeyPress';
 import { setClipboard } from '../../utils/setClipboard';
 import { debugData } from '../../utils/debugData';
-import { Tooltip } from '@mui/material';
+import { Box, Stack, styled, Tooltip, Typography } from '@mui/material';
 
 // debugData([
 //   {
@@ -21,6 +21,15 @@ import { Tooltip } from '@mui/material';
 //     data: { ['mustard']: 'Mustard', ['ketchup']: 'Ketchup' },
 //   },
 // ]);
+
+const StyledGrid = styled(Box)(() => ({
+  display: 'grid',
+  height: 'calc((5 * 10.42vh) + (5 * 2px))',
+  gridTemplateColumns: 'repeat(5, 10.2vh)',
+  gridAutoRows: '10.42vh',
+  gap: '2px',
+  overflowY: 'scroll',
+}));
 
 const InventoryGrid: React.FC<{ inventory: Inventory }> = ({ inventory }) => {
   const [currentItem, setCurrentItem] = React.useState<SlotWithItem>();
@@ -61,39 +70,39 @@ const InventoryGrid: React.FC<{ inventory: Inventory }> = ({ inventory }) => {
   );
 
   return (
-    <>
-      <div className="column-wrapper">
-        <div className="inventory-label">
-          <p>{inventory.label && `${inventory.label}`}</p>
+    <Stack spacing={1}>
+      <Box>
+        <Stack direction="row" justifyContent="space-between">
+          <Typography fontSize={16}>{inventory.label}</Typography>
           {inventory.maxWeight && (
-            <div>
+            <Typography fontSize={16}>
               {weight / 1000}/{inventory.maxWeight / 1000}kg
-            </div>
+            </Typography>
           )}
-        </div>
+        </Stack>
         <WeightBar percent={inventory.maxWeight ? (weight / inventory.maxWeight) * 100 : 0} />
-        <div className={`inventory-grid inventory-grid-${inventory.type}`}>
-          {inventory.items.map((item) => (
-            <React.Fragment key={`grid-${inventory.id}-${item.slot}`}>
-              <InventorySlot
-                key={`${inventory.type}-${inventory.id}-${item.slot}`}
+      </Box>
+      <StyledGrid>
+        {inventory.items.map((item) => (
+          <React.Fragment key={`grid-${inventory.id}-${item.slot}`}>
+            <InventorySlot
+              key={`${inventory.type}-${inventory.id}-${item.slot}`}
+              item={item}
+              inventory={inventory}
+              setCurrentItem={setCurrentItem}
+            />
+            {createPortal(
+              <InventoryContext
                 item={item}
-                inventory={inventory}
-                setCurrentItem={setCurrentItem}
-              />
-              {createPortal(
-                <InventoryContext
-                  item={item}
-                  setContextVisible={setContextVisible}
-                  key={`context-${item.slot}`}
-                />,
-                document.body
-              )}
-            </React.Fragment>
-          ))}
-        </div>
-      </div>
-    </>
+                setContextVisible={setContextVisible}
+                key={`context-${item.slot}`}
+              />,
+              document.body
+            )}
+          </React.Fragment>
+        ))}
+      </StyledGrid>
+    </Stack>
   );
 };
 
