@@ -13,7 +13,7 @@ description  'Slot-based inventory with item metadata support'
 
 --[[ Manifest ]]--
 dependencies {
-	'/server:5181',
+	'/server:5848',
 	'/onesync',
 	'oxmysql',
 	'ox_lib',

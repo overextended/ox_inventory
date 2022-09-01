@@ -1381,12 +1381,8 @@ AddEventHandler('playerDropped', function()
 	end
 end)
 
-AddEventHandler('txAdmin:events:scheduledRestart', function(eventData)
-	if eventData.secondsRemaining == 60 then
-		SetTimeout(50000, function()
-			saveInventories(true)
-		end)
-	end
+AddEventHandler('txAdmin:events:serverShuttingDown', function()
+	saveInventories(true)
 end)
 
 AddEventHandler('onResourceStop', function(resource)
