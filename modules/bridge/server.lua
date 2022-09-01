@@ -1,3 +1,6 @@
+---@todo separate module into smaller submodules to handle each framework
+---starting to get bulky
+
 function server.hasGroup(inv, group)
 	if type(group) == 'table' then
 		for name, rank in pairs(group) do
@@ -124,6 +127,10 @@ elseif shared.framework == 'esx' then
 
 		local player = server.GetPlayerFromId(inv.id)
 		player.syncInventory(inv.weight, inv.maxWeight, inv.items, money)
+	end
+
+	function server.hasLicense(inv, license)
+		return db.selectLicense(license, inv.id)
 	end
 
 	function server.buyLicense(inv, license)
@@ -322,8 +329,13 @@ elseif shared.framework == 'qb' then
 		player.syncInventory(inv.weight, inv.maxWeight, inv.items, money)
 	end
 
+	function server.hasLicense(inv, license)
+		local player = server.GetPlayerFromId(inv.id)
+		return player and player.PlayerData.metadata[license]
+	end
+
 	function server.buyLicense(inv, license)
-		local player = server.GetPlayerFromId(source)
+		local player = server.GetPlayerFromId(inv.id)
 		if not player then return end
 
 		if player.PlayerData.metadata.licences.weapon then

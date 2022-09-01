@@ -1268,9 +1268,7 @@ end
 exports('ReturnInventory', Inventory.Return)
 
 ---@param inv table | string | number
----@param keep? string | string[]
---- todo: support the keep argument, allowing users to define a list of item "types" to keep
---- i.e. {'money', 'weapons'} would keep money and weapons, but remove ammo, attachments, and other items
+---@param keep? string | string[] an item or list of items to ignore while clearing items
 function Inventory.Clear(inv, keep)
 	inv = Inventory(inv)
 
