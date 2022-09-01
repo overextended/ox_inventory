@@ -68,5 +68,29 @@ customTheme = createTheme({
         },
       },
     },
+    MuiDialogContent: {
+      styleOverrides: {
+        root: {
+          backgroundColor: customTheme.palette.primary.main,
+          color: customTheme.palette.primary.contrastText,
+        },
+      },
+    },
+    MuiDialogTitle: {
+      styleOverrides: {
+        root: {
+          backgroundColor: customTheme.palette.primary.main,
+          color: customTheme.palette.primary.contrastText,
+        },
+      },
+    },
+    MuiDialogActions: {
+      styleOverrides: {
+        root: {
+          backgroundColor: customTheme.palette.primary.main,
+          color: customTheme.palette.primary.contrastText,
+        },
+      },
+    },
   },
 });

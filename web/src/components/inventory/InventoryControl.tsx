@@ -8,38 +8,21 @@ import { onGive } from '../../dnd/onGive';
 import { fetchNui } from '../../utils/fetchNui';
 import { faInfoCircle, faTimes } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import Fade from '../utils/Fade';
-import { Notify } from '../utils/Notifications';
 import { Locale } from '../../store/locale';
-import { Box, Button, InputBase, Stack } from '@mui/material';
+import { Box, Button, IconButton, InputBase, Stack, styled } from '@mui/material';
+import UsefulControls from './UsefulControls';
 
-const InfoScreen: React.FC<{
-  infoVisible: boolean;
-  setInfoVisible: React.Dispatch<React.SetStateAction<boolean>>;
-}> = ({ infoVisible, setInfoVisible }) => {
-  return (
-    <div className="info-main" style={{ visibility: infoVisible ? 'visible' : 'hidden' }}>
-      <FontAwesomeIcon
-        icon={faTimes}
-        onClick={() => setInfoVisible(false)}
-        className="info-exit-icon"
-      />
-      <h2>{Locale.ui_usefulcontrols}</h2>
-      <p>[RMB] - {Locale.ui_rmb}</p>
-      <p>[CTRL + LMB] - {Locale.ui_ctrl_lmb}</p>
-      <p>[SHIFT + Drag] - {Locale.ui_shift_drag}</p>
-      <p>[CTRL + SHIFT + LMB] - {Locale.ui_ctrl_shift_lmb}</p>
-      <p>[ALT + LMB] - {Locale.ui_alt_lmb}</p>
-      <p>[CTRL + C] - {Locale.ui_ctrl_c}</p>
-      <span
-        className="info-ox"
-        onClick={() => Notify({ text: 'Made with 🐂 by the Overextended team' })}
-      >
-        🐂
-      </span>
-    </div>
-  );
-};
+const StyledIconButton = styled(IconButton)(({ theme }) => ({
+  position: 'absolute',
+  bottom: 25,
+  right: 25,
+  transition: '200ms',
+  borderRadius: '4px',
+  backgroundColor: theme.palette.secondary.main,
+  '&:hover': {
+    backgroundColor: theme.palette.secondary.light,
+  },
+}));
 
 const InventoryControl: React.FC = () => {
   const itemAmount = useAppSelector(selectItemAmount);
@@ -73,9 +56,7 @@ const InventoryControl: React.FC = () => {
 
   return (
     <>
-      {/*<Fade visible={infoVisible} duration={0.25} className="info-fade">*/}
-      {/*  <InfoScreen infoVisible={infoVisible} setInfoVisible={setInfoVisible} />*/}
-      {/*</Fade>*/}
+      <UsefulControls infoVisible={infoVisible} setInfoVisible={setInfoVisible} />
       <Box display="flex">
         <Stack spacing={3} justifyContent="center" alignItems="center">
           <InputBase defaultValue={itemAmount} onChange={inputHandler} type="number" />
@@ -91,11 +72,9 @@ const InventoryControl: React.FC = () => {
         </Stack>
       </Box>
 
-      {/*<div className="misc-btns">*/}
-      {/*  <button onClick={() => setInfoVisible(true)}>*/}
-      {/*    <FontAwesomeIcon icon={faInfoCircle} />*/}
-      {/*  </button>*/}
-      {/*</div>*/}
+      <StyledIconButton size="large" onClick={() => setInfoVisible(true)}>
+        <FontAwesomeIcon icon={faInfoCircle} />
+      </StyledIconButton>
     </>
   );
 };
