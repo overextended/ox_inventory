@@ -1,30 +1,30 @@
 import { Box, styled, Stack, Typography } from '@mui/material';
 import WeightBar from './utils/WeightBar';
 
-const StyledBox = styled(Box)(() => ({
-  backgroundColor: 'rgba(0, 0, 0, 0.4)',
+const StyledBox = styled(Box)(({ theme }) => ({
+  backgroundColor: theme.palette.secondary.main,
   backgroundRepeat: 'no-repeat',
   backgroundPosition: 'center',
   borderRadius: '0.25vh',
   imageRendering: '-webkit-optimize-contrast',
   position: 'relative',
   backgroundSize: '7.7vh',
-  color: '#C1C2C5',
+  color: theme.palette.primary.contrastText,
 }));
 
-const StyledLabel = styled(Box)(() => ({
-  backgroundColor: '#25262B',
-  color: '#C1C2C5',
+const StyledLabel = styled(Box)(({ theme }) => ({
+  backgroundColor: theme.palette.primary.main,
+  color: theme.palette.primary.contrastText,
   width: '100%',
   textAlign: 'center',
   borderBottomLeftRadius: '0.25vh',
   borderBottomRightRadius: '0.25vh',
 }));
 
-const StyledDurability = styled(Box)(() => ({
+const StyledDurability = styled(Box)(({ theme }) => ({
   height: '5px',
   width: '100%',
-  backgroundColor: 'rgba(0, 0, 0, 0.5)',
+  backgroundColor: theme.palette.secondary.dark,
 }));
 
 const ItemSlot: React.FC = () => {
