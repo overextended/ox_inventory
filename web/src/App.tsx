@@ -7,6 +7,7 @@ import { setupInventory } from './store/inventory';
 import { Inventory } from './typings';
 import { useAppDispatch } from './store';
 import { debugData } from './utils/debugData';
+import DragPreview from './components/utils/DragPreview';
 
 debugData([
   {
@@ -71,6 +72,7 @@ const App: React.FC = () => {
   return (
     <Box sx={{ height: '100%', width: '100%', color: 'white' }}>
       <InventoryComponent />
+      <DragPreview />
     </Box>
   );
 };
