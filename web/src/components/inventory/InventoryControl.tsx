@@ -11,6 +11,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import Fade from '../utils/Fade';
 import { Notify } from '../utils/Notifications';
 import { Locale } from '../../store/locale';
+import { Box, Button, InputBase, Stack } from '@mui/material';
 
 const InfoScreen: React.FC<{
   infoVisible: boolean;
@@ -72,32 +73,29 @@ const InventoryControl: React.FC = () => {
 
   return (
     <>
-      <Fade visible={infoVisible} duration={0.25} className="info-fade">
-        <InfoScreen infoVisible={infoVisible} setInfoVisible={setInfoVisible} />
-      </Fade>
-      <div className="column-wrapper" style={{ margin: '1vh' }}>
-        <input
-          type="number"
-          className="button input"
-          min={0}
-          defaultValue={itemAmount}
-          onChange={inputHandler}
-        />
-        <button ref={use} className="button">
-          {Locale.ui_use}
-        </button>
-        <button ref={give} className="button">
-          {Locale.ui_give}
-        </button>
-        <button className="button" onClick={() => fetchNui('exit')}>
-          {Locale.ui_close}
-        </button>
-        <div className="misc-btns">
-          <button onClick={() => setInfoVisible(true)}>
-            <FontAwesomeIcon icon={faInfoCircle} />
-          </button>
-        </div>
-      </div>
+      {/*<Fade visible={infoVisible} duration={0.25} className="info-fade">*/}
+      {/*  <InfoScreen infoVisible={infoVisible} setInfoVisible={setInfoVisible} />*/}
+      {/*</Fade>*/}
+      <Box display="flex">
+        <Stack spacing={3} justifyContent="center" alignItems="center">
+          <InputBase defaultValue={itemAmount} onChange={inputHandler} type="number" />
+          <Button fullWidth variant="contained" ref={use}>
+            {Locale.ui_use || 'Use'}
+          </Button>
+          <Button fullWidth variant="contained" ref={give}>
+            {Locale.ui_give || 'Give'}
+          </Button>
+          <Button fullWidth variant="contained" onClick={() => fetchNui('exit')}>
+            {Locale.ui_close || 'Close'}
+          </Button>
+        </Stack>
+      </Box>
+
+      {/*<div className="misc-btns">*/}
+      {/*  <button onClick={() => setInfoVisible(true)}>*/}
+      {/*    <FontAwesomeIcon icon={faInfoCircle} />*/}
+      {/*  </button>*/}
+      {/*</div>*/}
     </>
   );
 };
