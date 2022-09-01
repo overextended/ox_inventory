@@ -1,18 +1,21 @@
-import { Box, Stack, Typography, Button, TextField, Input, InputBase } from '@mui/material';
+import { Box, Stack, Typography, Button, InputBase, styled } from '@mui/material';
 import ItemSlot from './components/ItemSlot';
 import WeightBar from './components/utils/WeightBar';
+
+const StyledGrid = styled(Box)(() => ({
+  display: 'grid',
+  height: 'calc((5 * 10.42vh) + (5 * 2px))',
+  gridTemplateColumns: 'repeat(5, 10.2vh)',
+  gridAutoRows: '10.42vh',
+  gap: '2px',
+  overflowY: 'scroll',
+}));
 
 const App: React.FC = () => {
   return (
     <Box sx={{ height: '100%', width: '100%', color: 'white' }}>
       <Stack direction="row" justifyContent="center" alignItems="center" height="100%" spacing={2}>
-        <Box
-          sx={
-            {
-              // height: 600,
-            }
-          }
-        >
+        <Box>
           <Stack spacing={1}>
             <Box>
               <Stack direction="row" justifyContent="space-between">
@@ -22,7 +25,7 @@ const App: React.FC = () => {
               <WeightBar percent={(13 / 30) * 100} />
             </Box>
             <Box>
-              <Box className={'inventory-grid'}>
+              <StyledGrid>
                 <ItemSlot />
                 <ItemSlot />
                 <ItemSlot />
@@ -48,7 +51,7 @@ const App: React.FC = () => {
                 <ItemSlot />
                 <ItemSlot />
                 <ItemSlot />
-              </Box>
+              </StyledGrid>
             </Box>
           </Stack>
         </Box>
@@ -66,13 +69,7 @@ const App: React.FC = () => {
             </Button>
           </Stack>
         </Box>
-        <Box
-          sx={
-            {
-              // height: 600,
-            }
-          }
-        >
+        <Box>
           <Stack spacing={1}>
             <Box>
               <Stack direction="row" justifyContent="space-between">
@@ -82,7 +79,7 @@ const App: React.FC = () => {
               <WeightBar percent={(13 / 30) * 100} />
             </Box>
             <Box>
-              <Box className={'inventory-grid'}>
+              <StyledGrid>
                 <ItemSlot />
                 <ItemSlot />
                 <ItemSlot />
@@ -108,7 +105,7 @@ const App: React.FC = () => {
                 <ItemSlot />
                 <ItemSlot />
                 <ItemSlot />
-              </Box>
+              </StyledGrid>
             </Box>
           </Stack>
         </Box>

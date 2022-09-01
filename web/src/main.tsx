@@ -5,7 +5,7 @@ import { DndProvider } from 'react-dnd';
 import { TouchBackend } from 'react-dnd-touch-backend';
 import { store } from './store';
 import App from './App';
-import './index.scss';
+// import './index.scss';
 import './index.css';
 import { ItemNotificationsProvider } from './components/utils/ItemNotifications';
 import { isEnvBrowser } from './utils/misc';
