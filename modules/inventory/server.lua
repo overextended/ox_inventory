@@ -1653,8 +1653,24 @@ local function RegisterStash(name, label, slots, maxWeight, owner, groups, coord
 		end
 	end
 
-	if Inventory.CustomStash[name] then
+	local curStash = Inventory.CustomStash[name]
+
+	if curStash then
 		print(('overwriting stash %s with new settings'):format(name))
+
+		---@todo creating proper stash classes with inheritence would simplify updating data
+		---i.e. all stashes with the same type share groups, maxweight, slots, dbid, etc.
+		---only label, owner, weight, coords, and items really need to vary
+		for _, stash in pairs(Inventories) do
+			if stash.type == 'stash' and stash.dbId == name then
+				stash.label = label or stash.label
+				stash.owner = (owner and owner ~= true) and stash.owner or owner
+				stash.slots = slots or stash.slots
+				stash.maxWeight = maxWeight or stash.maxWeight
+				stash.groups = groups or stash.groups
+				stash.coords = coords or stash.coords
+			end
+		end
 	end
 
 	Inventory.CustomStash[name] = {
