@@ -824,13 +824,9 @@ end)
 
 lib.onCache('seat', function(seat)
 	if seat then
-		Utils.WeaponWheel(true)
-
-		return SetTimeout(50, function()
-			if not DoesVehicleHaveWeapons(cache.vehicle) then
-				Utils.WeaponWheel(false)
-			end
-		end)
+		if DoesVehicleHaveWeapons(cache.vehicle) then
+			return Utils.WeaponWheel(true)
+		end
 	end
 
 	Utils.WeaponWheel(false)
