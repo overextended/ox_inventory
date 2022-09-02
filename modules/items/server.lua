@@ -35,18 +35,24 @@ local trash = {
 	{description = 'An empty chips bag.', weight = 5, image = 'trash_chips'},
 }
 
----@param _ any
----@param item string?
----@return table | false
-local function getItem(_, item)
-	if item then
-		item = string.lower(item)
+---@param internal table
+---@param name string?
+---@return table
+local function getItem(internal, name)
+	if name then
+		name = name:lower()
 
-		if item:sub(0, 7) == 'weapon_' then
-			item = string.upper(item)
+		if name:sub(0, 7) == 'weapon_' then
+			name = name:upper()
 		end
 
-		return ItemList[item] or false
+		local item = ItemList[name]
+
+		if internal and not item then
+			error(("attempted to fetch data for invalid item '%s'"):format(name))
+		end
+
+		return item
 	end
 
 	return ItemList
