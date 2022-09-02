@@ -35,7 +35,7 @@ local trash = {
 	{description = 'An empty chips bag.', weight = 5, image = 'trash_chips'},
 }
 
----@param internal table
+---@param internal table?
 ---@param name string?
 ---@return table
 local function getItem(internal, name)

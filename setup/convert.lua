@@ -15,8 +15,9 @@ local function Upgrade()
 	local trunk = MySQL.query.await('SELECT owner, name, data FROM ox_inventory WHERE name LIKE ?', {'trunk-%'})
 	local glovebox = MySQL.query.await('SELECT owner, name, data FROM ox_inventory WHERE name LIKE ?', {'glovebox-%'})
 
-	if #trunk > 0 and #glovebox > 0 then
+	if trunk and glovebox then
 		local vehicles = {}
+
 		for _, v in pairs(trunk) do
 			vehicles[v.owner] = vehicles[v.owner] or {}
 			local subbedName = v.name:sub(7, #v.name)
@@ -80,13 +81,15 @@ local function ConvertESX()
 
 	started = true
 	local users = MySQL.query.await('SELECT identifier, inventory, loadout, accounts FROM users')
+	if not users then return end
+
 	local total = #users
 	local count = 0
 	local parameters = {}
 
 	Print(('Converting %s user inventories to new data format'):format(total))
 
-	for i = 1, #users do
+	for i = 1, total do
 		count += 1
 		local inventory, slot = {}, 0
 		local items = users[i].inventory and json.decode(users[i].inventory) or {}
@@ -137,6 +140,8 @@ local function ConvertQB()
 
 	started = true
 	local users = MySQL.query.await('SELECT citizenid, inventory, money FROM players')
+	if not users then return end
+
 	local total = #users
 	local count = 0
 	local parameters = {}
@@ -181,43 +186,46 @@ local function ConvertQB()
 
 	local plates = MySQL.query.await('SELECT plate, citizenid FROM player_vehicles')
 
-	for i = 1, #plates do
-		plates[plates[i].plate] = plates[i].citizenid
-	end
-
-	local trunk = MySQL.query.await('SELECT plate, items FROM trunkitems')
-	local glovebox = MySQL.query.await('SELECT plate, items FROM gloveboxitems')
-	if #trunk > 0 and #glovebox > 0 then
-		local vehicles = {}
-		for _, v in pairs(trunk) do
-			local owner = plates[v.plate]
-			vehicles[owner] = vehicles[owner] or {}
-			vehicles[owner][v.plate] = vehicles[owner][v.plate] or {trunk=v.items or '[]', glovebox='[]'}
+	if plates then
+		for i = 1, #plates do
+			plates[plates[i].plate] = plates[i].citizenid
 		end
 
-		for _, v in pairs(glovebox) do
-			local owner = plates[v.plate]
-			vehicles[owner] = vehicles[owner] or {}
-			vehicles[owner][v.plate] = {trunk=vehicles[owner][v.plate].trunk ~= '[]' and vehicles[owner][v.plate].trunk or '[]', glovebox=vehicles[owner][v.plate].glovebox ~= '[]' and vehicles[owner][v.plate].glovebox or v.items or '[]'}
-		end
+		local trunk = MySQL.query.await('SELECT plate, items FROM trunkitems')
+		local glovebox = MySQL.query.await('SELECT plate, items FROM gloveboxitems')
 
-		Print(('Moving ^3%s^0 trunks and ^3%s^0 gloveboxes to player_vehicles table'):format(#trunk, #glovebox))
-		parameters = {}
-		count = 0
-
-		for owner, v in pairs(vehicles) do
-			for plate, v2 in pairs(v) do
-				count += 1
-				parameters[count] = {
-					v2.trunk,
-					v2.glovebox,
-					plate,
-					owner
-				}
+		if trunk and glovebox then
+			local vehicles = {}
+			for _, v in pairs(trunk) do
+				local owner = plates[v.plate]
+				vehicles[owner] = vehicles[owner] or {}
+				vehicles[owner][v.plate] = vehicles[owner][v.plate] or {trunk=v.items or '[]', glovebox='[]'}
 			end
-		end
 
-		MySQL.prepare.await('UPDATE player_vehicles SET trunk = ?, glovebox = ? WHERE plate = ? AND citizenid = ?', parameters)
+			for _, v in pairs(glovebox) do
+				local owner = plates[v.plate]
+				vehicles[owner] = vehicles[owner] or {}
+				vehicles[owner][v.plate] = {trunk=vehicles[owner][v.plate].trunk ~= '[]' and vehicles[owner][v.plate].trunk or '[]', glovebox=vehicles[owner][v.plate].glovebox ~= '[]' and vehicles[owner][v.plate].glovebox or v.items or '[]'}
+			end
+
+			Print(('Moving ^3%s^0 trunks and ^3%s^0 gloveboxes to player_vehicles table'):format(#trunk, #glovebox))
+			parameters = {}
+			count = 0
+
+			for owner, v in pairs(vehicles) do
+				for plate, v2 in pairs(v) do
+					count += 1
+					parameters[count] = {
+						v2.trunk,
+						v2.glovebox,
+						plate,
+						owner
+					}
+				end
+			end
+
+			MySQL.prepare.await('UPDATE player_vehicles SET trunk = ?, glovebox = ? WHERE plate = ? AND citizenid = ?', parameters)
+		end
 	end
 
 	Print('Successfully converted user and vehicle inventories')
@@ -231,6 +239,8 @@ local function Convert_Old_ESX_Property()
 
 	started = true
 	local inventories = MySQL.query.await('select distinct owner from ( select owner from addon_inventory_items WHERE inventory_name = "property" union all select owner from datastore_data WHERE NAME = "property" union all select owner from addon_account_data WHERE account_name = "property_black_money") a ')
+	if not inventories then return end
+
 	local total = #inventories
 	local count = 0
 	local parameters = {}
