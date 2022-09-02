@@ -43,7 +43,7 @@ const WeightBar: React.FC<{ percent: number; durability?: boolean }> = ({
         durability
           ? {
               background: 'rgba(0, 0, 0, 0.5)',
-              height: '4.8px',
+              height: '3px',
               overflow: 'hidden',
             }
           : {

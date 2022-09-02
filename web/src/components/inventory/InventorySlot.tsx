@@ -28,17 +28,27 @@ const StyledBox = styled(Box)(({ theme }) => ({
   borderRadius: '0.25vh',
   imageRendering: '-webkit-optimize-contrast',
   position: 'relative',
-  backgroundSize: '7.7vh',
+  backgroundSize: '7vh',
   color: theme.palette.primary.contrastText,
 }));
 
-const StyledLabel = styled(Box)(({ theme }) => ({
+const StyledLabelBox = styled(Box)(({ theme }) => ({
   backgroundColor: theme.palette.primary.main,
   color: theme.palette.primary.contrastText,
-  width: '100%',
   textAlign: 'center',
   borderBottomLeftRadius: '0.25vh',
   borderBottomRightRadius: '0.25vh',
+}));
+
+const StyledLabelText = styled(Typography)(({ theme }) => ({
+  textTransform: 'uppercase',
+  whiteSpace: 'nowrap',
+  overflow: 'hidden',
+  textOverflow: 'ellipsis',
+  paddingLeft: '3px',
+  paddingRight: '3px',
+  fontWeight: 600,
+  fontSize: '13px',
 }));
 
 const InventorySlot: React.FC<SlotProps> = ({
@@ -236,13 +246,13 @@ const InventorySlot: React.FC<SlotProps> = ({
                   )}
                 </>
               )}
-              <StyledLabel>
-                <Typography fontSize={14} sx={{ textTransform: 'uppercase' }} fontWeight={700}>
+              <StyledLabelBox>
+                <StyledLabelText>
                   {item.metadata?.label
                     ? item.metadata.label
                     : Items[item.name]?.label || item.name}
-                </Typography>
-              </StyledLabel>
+                </StyledLabelText>
+              </StyledLabelBox>
             </Box>
           </Stack>
         )}
