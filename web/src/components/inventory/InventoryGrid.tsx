@@ -1,11 +1,7 @@
 import React, { useEffect } from 'react';
-import ReactMarkdown from 'react-markdown';
-import { Items } from '../../store/items';
 import { Inventory, SlotWithItem } from '../../typings';
 import WeightBar from '../utils/WeightBar';
 import InventorySlot from './InventorySlot';
-import ReactTooltip from 'react-tooltip';
-import { Locale } from '../../store/locale';
 import InventoryContext from './InventoryContext';
 import { getTotalWeight } from '../../helpers';
 import { createPortal } from 'react-dom';
@@ -15,12 +11,12 @@ import { setClipboard } from '../../utils/setClipboard';
 import { debugData } from '../../utils/debugData';
 import { Box, Stack, styled, Tooltip, Typography } from '@mui/material';
 
-// debugData([
-//   {
-//     action: 'displayMetadata',
-//     data: { ['mustard']: 'Mustard', ['ketchup']: 'Ketchup' },
-//   },
-// ]);
+debugData([
+  {
+    action: 'displayMetadata',
+    data: { ['mustard']: 'Mustard', ['ketchup']: 'Ketchup' },
+  },
+]);
 
 const StyledGrid = styled(Box)(() => ({
   display: 'grid',
@@ -43,11 +39,6 @@ const InventoryGrid: React.FC<{ inventory: Inventory }> = ({ inventory }) => {
     [inventory.maxWeight, inventory.items]
   );
 
-  // Need to rebuild tooltip for items in a map
-  useEffect(() => {
-    ReactTooltip.rebuild();
-  }, [currentItem]);
-
   // Fixes an issue where hovering an item after exiting context menu would apply no styling
   // But have to rehover on item to get tooltip, there's probably a better solution?
   useEffect(() => {
@@ -61,7 +52,6 @@ const InventoryGrid: React.FC<{ inventory: Inventory }> = ({ inventory }) => {
 
   useNuiEvent('setupInventory', () => {
     setCurrentItem(undefined);
-    ReactTooltip.rebuild();
   });
 
   return (
