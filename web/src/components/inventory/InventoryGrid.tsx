@@ -34,7 +34,6 @@ const StyledGrid = styled(Box)(() => ({
 const InventoryGrid: React.FC<{ inventory: Inventory }> = ({ inventory }) => {
   const [currentItem, setCurrentItem] = React.useState<SlotWithItem>();
   const [contextVisible, setContextVisible] = React.useState<boolean>(false);
-  const [additionalMetadata, setAdditionalMetadata] = React.useState<{ [key: string]: any }>({});
 
   const isControlPressed = useKeyPress('Control');
   const isCopyPressed = useKeyPress('c');
@@ -65,10 +64,6 @@ const InventoryGrid: React.FC<{ inventory: Inventory }> = ({ inventory }) => {
     ReactTooltip.rebuild();
   });
 
-  useNuiEvent<{ [key: string]: any }>('displayMetadata', (data) =>
-    setAdditionalMetadata((oldMetadata) => ({ ...oldMetadata, ...data }))
-  );
-
   return (
     <>
       <Stack spacing={1}>
@@ -92,7 +87,6 @@ const InventoryGrid: React.FC<{ inventory: Inventory }> = ({ inventory }) => {
                   contextVisible={contextVisible}
                   item={item}
                   inventory={inventory}
-                  additionalMetadata={additionalMetadata}
                   setCurrentItem={setCurrentItem}
                 />
                 {createPortal(

@@ -6,6 +6,7 @@ export type State = {
   itemAmount: number;
   shiftPressed: boolean;
   isBusy: boolean;
+  additionalMetadata: { [key: string]: any };
   history?: {
     leftInventory: Inventory;
     rightInventory: Inventory;

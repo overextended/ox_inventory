@@ -31,6 +31,7 @@ const initialState: State = {
     maxWeight: 0,
     items: [],
   },
+  additionalMetadata: {},
   itemAmount: 0,
   shiftPressed: false,
   isBusy: false,
@@ -45,6 +46,9 @@ export const inventorySlice = createSlice({
     setupInventory: setupInventoryReducer,
     moveSlots: moveSlotsReducer,
     refreshSlots: refreshSlotsReducer,
+    setAdditionalMetadata: (state, action: PayloadAction<{ [key: string]: any }>) => {
+      state.additionalMetadata = { ...state.additionalMetadata, ...action.payload };
+    },
     setItemAmount: (state, action: PayloadAction<number>) => {
       state.itemAmount = action.payload;
     },
@@ -84,6 +88,7 @@ export const inventorySlice = createSlice({
 });
 
 export const {
+  setAdditionalMetadata,
   setItemAmount,
   setShiftPressed,
   setupInventory,

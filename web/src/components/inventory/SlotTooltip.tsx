@@ -4,12 +4,11 @@ import { Box, Divider, Stack, Typography } from '@mui/material';
 import { Items } from '../../store/items';
 import { Locale } from '../../store/locale';
 import ReactMarkdown from 'react-markdown';
+import { useAppSelector } from '../../store';
 
-// TODO: set additional metadata into redux state
-const SlotTooltip: React.FC<{ item: Slot; additionalMetadata: { [key: string]: any } }> = ({
-  item,
-  additionalMetadata,
-}) => {
+const SlotTooltip: React.FC<{ item: Slot }> = ({ item }) => {
+  const additionalMetadata = useAppSelector((state) => state.inventory.additionalMetadata);
+
   return (
     <Stack>
       <Stack justifyContent="space-between" direction="row" alignItems="center">

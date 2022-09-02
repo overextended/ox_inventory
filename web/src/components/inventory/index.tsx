@@ -3,12 +3,12 @@ import useNuiEvent from '../../hooks/useNuiEvent';
 import InventoryGrid from './InventoryGrid';
 import InventoryControl from './InventoryControl';
 import InventoryHotbar from './InventoryHotbar';
-// import Fade from '../utils/Fade';
 import { Fade, Stack } from '@mui/material';
 import { useAppDispatch, useAppSelector } from '../../store';
 import {
   selectLeftInventory,
   selectRightInventory,
+  setAdditionalMetadata,
   setupInventory,
   refreshSlots,
 } from '../../store/inventory';
@@ -40,6 +40,10 @@ const Inventory: React.FC = () => {
   });
 
   useNuiEvent('refreshSlots', (data) => dispatch(refreshSlots(data)));
+
+  useNuiEvent('displayMetadata', (data: { [key: string]: any }) => {
+    dispatch(setAdditionalMetadata(data));
+  });
 
   return (
     <>

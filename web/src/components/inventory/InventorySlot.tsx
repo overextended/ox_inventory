@@ -10,10 +10,8 @@ import { Items } from '../../store/items';
 import { isSlotWithItem } from '../../helpers';
 import { useContextMenu } from 'react-contexify';
 import { onUse } from '../../dnd/onUse';
-import ReactTooltip from 'react-tooltip';
 import { Locale } from '../../store/locale';
 import { Typography, Tooltip, styled, Box, Stack } from '@mui/material';
-import ReactMarkdown from 'react-markdown';
 import SlotTooltip from './SlotTooltip';
 
 interface SlotProps {
@@ -21,7 +19,6 @@ interface SlotProps {
   item: Slot;
   setCurrentItem: React.Dispatch<React.SetStateAction<SlotWithItem | undefined>>;
   contextVisible: boolean;
-  additionalMetadata: { [key: string]: any };
 }
 
 const StyledBox = styled(Box)(({ theme }) => ({
@@ -49,10 +46,8 @@ const InventorySlot: React.FC<SlotProps> = ({
   item,
   setCurrentItem,
   contextVisible,
-  additionalMetadata,
 }) => {
   const isBusy = useAppSelector(selectIsBusy);
-  const [hover, setHover] = useState(false);
 
   const [{ isDragging }, drag] = useDrag<DragSource, void, { isDragging: boolean }>(
     () => ({
@@ -108,7 +103,6 @@ const InventorySlot: React.FC<SlotProps> = ({
 
   const onMouseEnter = React.useCallback(() => {
     if (isSlotWithItem(item)) {
-      setHover(true);
       setCurrentItem(item);
     }
   }, [item, setCurrentItem]);
@@ -116,7 +110,6 @@ const InventorySlot: React.FC<SlotProps> = ({
   const onMouseLeave = React.useCallback(() => {
     if (isSlotWithItem(item)) {
       setCurrentItem(undefined);
-      setHover(false);
     }
   }, [item, setCurrentItem]);
 
@@ -125,8 +118,6 @@ const InventorySlot: React.FC<SlotProps> = ({
   const handleContext = (event: React.MouseEvent<HTMLDivElement>) => {
     !isBusy && inventory.type === 'player' && isSlotWithItem(item) && show(event);
     setCurrentItem(undefined);
-    // ReactTooltip.hide();
-    setHover(false);
   };
 
   React.useEffect(() => {
@@ -148,13 +139,7 @@ const InventorySlot: React.FC<SlotProps> = ({
 
   return (
     <Tooltip
-      title={
-        !isSlotWithItem(item) || contextVisible ? (
-          ''
-        ) : (
-          <SlotTooltip item={item} additionalMetadata={additionalMetadata} />
-        )
-      }
+      title={!isSlotWithItem(item) || contextVisible ? '' : <SlotTooltip item={item} />}
       sx={{ fontFamily: 'Roboto' }}
       disableInteractive
       followCursor
