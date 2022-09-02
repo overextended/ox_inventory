@@ -629,15 +629,7 @@ exports('SetMetadata', Inventory.SetMetadata)
 ---@param count number
 ---@param metadata? table | string
 ---@param slot number
----@param cb function
--- ```
--- exports.ox_inventory:AddItem(1, 'bread', 4, nil, nil, function(success, reason)
--- if not success then
--- 	if reason == 'overburdened' then
--- 		TriggerClientEvent('ox_lib:notify', source, { type = 'error', description= shared.locale('cannot_carry', count, data.label) })
--- 	end
--- end
--- ```
+---@param cb fun(success: boolean, reason: string?)
 function Inventory.AddItem(inv, item, count, metadata, slot, cb)
 	if type(item) ~= 'table' then item = Items(item) end
 	if type(inv) ~= 'table' then inv = Inventory(inv) end
@@ -1046,7 +1038,7 @@ lib.callback.register('ox_inventory:swapItems', function(source, data)
 									'swapSlots', fromInventory.owner or fromInventory.id, toInventory.owner or toInventory.id
 								)
 
-							else return end
+							else return false, 'cannot_carry' end
 						else toData, fromData = Inventory.SwapSlots(fromInventory, toInventory, data.fromSlot, data.toSlot) end
 
 					elseif toData and toData.name == fromData.name and table.matches(toData.metadata, fromData.metadata) then
@@ -1077,7 +1069,7 @@ lib.callback.register('ox_inventory:swapItems', function(source, data)
 						else
 							toData.count -= data.count
 							fromData.count += data.count
-							return
+							return false, 'cannot_carry'
 						end
 					elseif data.count <= fromData.count then
 						-- Move item to an empty slot
@@ -1121,7 +1113,7 @@ lib.callback.register('ox_inventory:swapItems', function(source, data)
 								toData.metadata = table.clone(toData.metadata)
 							end
 
-						else return end
+						else return false, 'cannot_carry' end
 					end
 
 					if fromData and fromData.count < 1 then fromData = nil end
