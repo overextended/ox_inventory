@@ -21,7 +21,7 @@ interface SlotProps {
   contextVisible: boolean;
 }
 
-const StyledBox = styled(Box)(({ theme }) => ({
+export const StyledBox = styled(Box)(({ theme }) => ({
   backgroundColor: theme.palette.secondary.main,
   backgroundRepeat: 'no-repeat',
   backgroundPosition: 'center',
@@ -32,7 +32,7 @@ const StyledBox = styled(Box)(({ theme }) => ({
   color: theme.palette.primary.contrastText,
 }));
 
-const StyledLabelBox = styled(Box)(({ theme }) => ({
+export const StyledLabelBox = styled(Box)(({ theme }) => ({
   backgroundColor: theme.palette.primary.main,
   color: theme.palette.primary.contrastText,
   textAlign: 'center',
@@ -40,7 +40,7 @@ const StyledLabelBox = styled(Box)(({ theme }) => ({
   borderBottomRightRadius: '0.25vh',
 }));
 
-const StyledLabelText = styled(Typography)(({ theme }) => ({
+export const StyledLabelText = styled(Typography)(({ theme }) => ({
   textTransform: 'uppercase',
   whiteSpace: 'nowrap',
   overflow: 'hidden',

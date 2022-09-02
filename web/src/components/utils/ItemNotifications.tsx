@@ -1,7 +1,10 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { createPortal } from 'react-dom';
 import { CSSTransition, TransitionGroup } from 'react-transition-group';
 import useNuiEvent from '../../hooks/useNuiEvent';
+import { Box, Grow, Stack, styled, Typography, Collapse, Fade, Slide, Zoom } from '@mui/material';
+import { StyledBox, StyledLabelBox, StyledLabelText } from '../inventory/InventorySlot';
+import useQueue from '../../hooks/useQueue';
 
 interface ItemNotificationProps {
   label: string;
@@ -19,39 +22,78 @@ export const useItemNotifications = () => {
   return itemNotificationsContext;
 };
 
+const StyledTransitionGroup = styled(TransitionGroup)(() => ({
+  display: 'flex',
+  overflowX: 'scroll',
+  flexWrap: 'nowrap',
+  gap: '2px',
+  position: 'absolute',
+  bottom: '20vh',
+  left: '50%',
+  width: '100%',
+  marginLeft: 'calc(50% - 5.21vh)',
+  transform: 'translateX(-50%)',
+}));
+
+const StyledActionBox = styled(Box)(({ theme }) => ({
+  width: '100%',
+  color: theme.palette.primary.contrastText,
+  backgroundColor: theme.palette.secondary.main,
+  textTransform: 'uppercase',
+  textAlign: 'center',
+  borderTopLeftRadius: '0.25vh',
+  borderTopRightRadius: '0.25vh',
+}));
+
+const ItemBox = styled(StyledBox)(() => ({
+  height: '10.42vh',
+  width: '10.42vh',
+}));
+
 const ItemNotification = React.forwardRef(
-  (props: { item: ItemNotificationProps }, ref: React.ForwardedRef<HTMLDivElement>) => {
+  (
+    props: { item: ItemNotificationProps; style?: React.CSSProperties },
+    ref: React.ForwardedRef<HTMLDivElement>
+  ) => {
     return (
-      <div
-        className="item-notification"
+      <ItemBox
+        style={props.style}
+        sx={{ backgroundImage: `url(${`images/${props.item.image}.png`})` || 'none' }}
         ref={ref}
-        style={{
-          backgroundImage: `url(${`images/${props.item.image}.png`})` || 'none',
-        }}
       >
-        <div className="item-action">{props.item.text}</div>
-        <div className="item-label">{props.item.label}</div>
-      </div>
+        <Stack justifyContent="space-between" sx={{ height: '100%' }}>
+          <StyledActionBox>
+            <Typography fontSize={11} p="2px" fontWeight={600}>
+              {props.item.text}
+            </Typography>
+          </StyledActionBox>
+          <StyledLabelBox>
+            <StyledLabelText>{props.item.label}</StyledLabelText>
+          </StyledLabelBox>
+        </Stack>
+      </ItemBox>
     );
   }
 );
 
 export const ItemNotificationsProvider = ({ children }: { children: React.ReactNode }) => {
-  const [queue, setQueue] = React.useState<
-    { id: number; item: ItemNotificationProps; ref: React.RefObject<HTMLDivElement> }[]
-  >([]);
+  const queue = useQueue<{
+    id: number;
+    item: ItemNotificationProps;
+    ref: React.RefObject<HTMLDivElement>;
+  }>();
 
   const add = (item: ItemNotificationProps) => {
     const ref = React.createRef<HTMLDivElement>();
     const notification = { id: Date.now(), item, ref: ref };
 
-    setQueue((prevQueue) => [notification, ...prevQueue]);
+    queue.add(notification);
 
-    setTimeout(() => remove(notification.id), 2500);
+    const timeout = setTimeout(() => {
+      queue.remove();
+      clearTimeout(timeout);
+    }, 2500);
   };
-
-  const remove = (id: number) =>
-    setQueue((prevQueue) => prevQueue.filter((notification) => notification.id !== id));
 
   useNuiEvent<[label: string, image: string, text: string]>('itemNotify', (data) =>
     add({ label: data[0], image: data[1], text: data[2] })
@@ -61,18 +103,13 @@ export const ItemNotificationsProvider = ({ children }: { children: React.ReactN
     <ItemNotificationsContext.Provider value={{ add }}>
       {children}
       {createPortal(
-        <TransitionGroup className="item-notifications-container">
-          {queue.map((notification) => (
-            <CSSTransition
-              key={notification.id}
-              nodeRef={notification.ref}
-              timeout={500}
-              classNames="item-notification"
-            >
+        <StyledTransitionGroup>
+          {queue.values.map((notification, index) => (
+            <Fade key={`item-notification-${index}`}>
               <ItemNotification item={notification.item} ref={notification.ref} />
-            </CSSTransition>
+            </Fade>
           ))}
-        </TransitionGroup>,
+        </StyledTransitionGroup>,
         document.body
       )}
     </ItemNotificationsContext.Provider>
