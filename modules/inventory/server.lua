@@ -995,7 +995,7 @@ lib.callback.register('ox_inventory:swapItems', function(source, data)
 				local group, rank = server.hasGroup(playerInventory, shared.police)
 
 				if not group or server.evidencegrade > rank then
-					return TriggerClientEvent('ox_lib:notify', source, { type = 'error', description = shared.locale('evidence_cannot_take') })
+					return false, 'evidence_cannot_take'
 				end
 			end
 
