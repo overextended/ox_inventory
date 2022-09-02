@@ -204,12 +204,12 @@ end)
 lib.callback.register('ox_inventory:useItem', function(source, itemName, slot, metadata)
 	local inventory = Inventory(source)
 	if inventory.type == 'player' then
-		local item, type = Items(itemName)
+		local item = Items(itemName)
 		local data = item and (slot and inventory.items[slot] or Inventory.GetItem(source, item, metadata))
 
 		if not data then return end
 
-		local durability = type ~= 1 and data.metadata?.durability
+		local durability = data.metadata?.durability
 
 		if durability then
 			if durability > 100 then

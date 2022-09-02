@@ -35,7 +35,10 @@ local trash = {
 	{description = 'An empty chips bag.', weight = 5, image = 'trash_chips'},
 }
 
-local function GetItem(item)
+---@param _ any
+---@param item string?
+---@return table | false
+local function getItem(_, item)
 	if item then
 		item = string.lower(item)
 
@@ -43,18 +46,19 @@ local function GetItem(item)
 			item = string.upper(item)
 		end
 
-		return ItemList[item] or false, type
+		return ItemList[item] or false
 	end
 
 	return ItemList
 end
 
 setmetatable(Items, {
-	__call = function(self, item)
-		if item then return GetItem(item) end
-		return self
-	end
+	__call = getItem
 })
+
+-- Support both names
+exports('Items', function(item) return getItem(nil, item) end)
+exports('ItemList', function(item) return getItem(nil, item) end)
 
 local Inventory
 
@@ -300,7 +304,7 @@ end
 function Items.CheckMetadata(metadata, item, name, ostime)
 	if metadata.bag then
 		metadata.container = metadata.bag
-		metadata.size = ItemList.containers[name]?.size or {5, 1000}
+		metadata.size = Items.containers[name]?.size or {5, 1000}
 		metadata.bag = nil
 	end
 
@@ -371,9 +375,5 @@ end
 -- end)
 
 -----------------------------------------------------------------------------------------------
-
--- Support both names
-exports('Items', GetItem)
-exports('ItemList', GetItem)
 
 server.items = Items
