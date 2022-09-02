@@ -11,10 +11,19 @@ anims[`GROUP_MELEE`] = { 'melee@holster', 'unholster', 200, 'melee@holster', 'ho
 anims[`GROUP_PISTOL`] = { 'reaction@intimidation@cop@unarmed', 'intro', 400, 'reaction@intimidation@cop@unarmed', 'outro', 450 }
 anims[`GROUP_STUNGUN`] = anims[`GROUP_PISTOL`]
 
+local function vehicleIsCycle(vehicle)
+	local class = GetVehicleClass(vehicle)
+	return class == 8 or class == 13
+end
+
 function Weapon.Equip(item, data)
 	local playerPed = cache.ped
 
 	if client.weaponanims then
+		if cache.vehicle and vehicleIsCycle(cache.vehicle) then
+			goto skipAnim
+		end
+
 		local coords = GetEntityCoords(playerPed, true)
 		local anim = data.anim or anims[GetWeapontypeGroup(data.hash)]
 
@@ -27,6 +36,8 @@ function Weapon.Equip(item, data)
 		Utils.PlayAnimAdvanced(sleep*2, anim and anim[1] or 'reaction@intimidation@1h', anim and anim[2] or 'intro', coords.x, coords.y, coords.z, 0, 0, GetEntityHeading(playerPed), 8.0, 3.0, -1, 50, 0.1)
 		Wait(sleep)
 	end
+
+	::skipAnim::
 
 	SetPedAmmo(playerPed, data.hash, 0)
 	GiveWeaponToPed(playerPed, data.hash, 0, false, true)
@@ -71,7 +82,7 @@ function Weapon.Equip(item, data)
 	return item
 end
 
-function Weapon.Disarm(currentWeapon, skipAnim)
+function Weapon.Disarm(currentWeapon, noAnim)
 	if source == '' then
 		TriggerServerEvent('ox_inventory:updateWeapon')
 	end
@@ -79,7 +90,11 @@ function Weapon.Disarm(currentWeapon, skipAnim)
 	if currentWeapon then
 		SetPedAmmo(cache.ped, currentWeapon.hash, 0)
 
-		if client.weaponanims and not skipAnim then
+		if client.weaponanims and not noAnim then
+			if cache.vehicle and vehicleIsCycle(cache.vehicle) then
+				goto skipAnim
+			end
+
 			ClearPedSecondaryTask(cache.ped)
 
 			local item = Items[currentWeapon.name]
@@ -95,6 +110,8 @@ function Weapon.Disarm(currentWeapon, skipAnim)
 			Utils.PlayAnimAdvanced(sleep, anim and anim[4] or 'reaction@intimidation@1h', anim and anim[5] or 'outro', coords.x, coords.y, coords.z, 0, 0, GetEntityHeading(cache.ped), 8.0, 3.0, -1, 50, 0)
 			Wait(sleep)
 		end
+
+		::skipAnim::
 
 		Utils.ItemNotify({currentWeapon.metadata.label or currentWeapon.label, currentWeapon.metadata.image or currentWeapon.name, shared.locale('holstered')})
 		TriggerEvent('ox_inventory:currentWeapon')
