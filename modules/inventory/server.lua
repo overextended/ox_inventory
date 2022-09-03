@@ -638,30 +638,26 @@ function Inventory.AddItem(inv, item, count, metadata, slot, cb)
 
 	if item then
 		if inv then
-			---@type table, number
-			local slotMetadata, slotCount
-
-			---@type boolean?
-			local existing, toSlot = false
+			local toSlot, slotMetadata, slotCount
 
 			if slot then
 				local slotItem = inv.items[slot]
 				slotMetadata, slotCount = Items.Metadata(inv.id, item, metadata or {}, count)
 
 				if not slotItem or (item.stack and slotItem.name == item.name and table.matches(slotItem.metadata, slotMetadata)) then
-					existing = nil
+					toSlot = slot
 				end
 			end
 
-			if existing == false then
+			if not toSlot then
 				local items = inv.items
 
-				for i = 1, shared.playerslots do
+				for i = 1, inv.slots do
 					slotMetadata, slotCount = Items.Metadata(inv.id, item, metadata and table.clone(metadata) or {}, count)
 					local slotItem = items[i]
 
 					if item.stack and slotItem ~= nil and slotItem.name == item.name and table.matches(slotItem.metadata, slotMetadata) then
-						toSlot, existing = i, true
+						toSlot = i
 						break
 					elseif not item.stack and not slotItem then
 						if not toSlot then toSlot = {} end
