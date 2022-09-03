@@ -628,7 +628,7 @@ exports('SetMetadata', Inventory.SetMetadata)
 ---@param item table | string
 ---@param count number
 ---@param metadata? table | string
----@param slot number
+---@param slot number?
 ---@param cb fun(success: boolean, reason: string?)
 function Inventory.AddItem(inv, item, count, metadata, slot, cb)
 	if type(item) ~= 'table' then item = Items(item) end
@@ -638,41 +638,84 @@ function Inventory.AddItem(inv, item, count, metadata, slot, cb)
 
 	if item then
 		if inv then
-			metadata, count = Items.Metadata(inv.id, item, metadata or {}, count)
+			---@type table, number
+			local slotMetadata, slotCount
+
 			---@type boolean?
-			local existing = false
+			local existing, toSlot = false
 
 			if slot then
 				local slotItem = inv.items[slot]
-				if not slotItem or item.stack and slotItem and slotItem.name == item.name and table.matches(slotItem.metadata, metadata) then
+				slotMetadata, slotCount = Items.Metadata(inv.id, item, metadata or {}, count)
+
+				if not slotItem or (item.stack and slotItem.name == item.name and table.matches(slotItem.metadata, slotMetadata)) then
 					existing = nil
 				end
 			end
 
 			if existing == false then
-				local items, toSlot = inv.items, nil
+				local items = inv.items
+
 				for i = 1, shared.playerslots do
+					slotMetadata, slotCount = Items.Metadata(inv.id, item, metadata or {}, count)
 					local slotItem = items[i]
-					if item.stack and slotItem ~= nil and slotItem.name == item.name and table.matches(slotItem.metadata, metadata) then
-						toSlot, existing = i, true break
-					elseif not toSlot and slotItem == nil then
+
+					if item.stack and slotItem ~= nil and slotItem.name == item.name and table.matches(slotItem.metadata, slotMetadata) then
+						toSlot, existing = i, true
+						break
+					elseif not item.stack and not slotItem then
+						if not toSlot then toSlot = {} end
+
+						toSlot[#toSlot + 1] = { slot = i, count = slotCount, metadata = slotMetadata }
+
+						if count == slotCount then
+							break
+						end
+
+						count -= 1
+					elseif not toSlot and not slotItem then
 						toSlot = i
+						break
 					end
 				end
-				slot = toSlot
 			end
 
-			if slot then
-				Inventory.SetSlot(inv, item, count, metadata, slot)
+			if toSlot then
+				if type(toSlot) == 'number' then
+					Inventory.SetSlot(inv, item, slotCount, slotMetadata, toSlot)
 
-				if cb then
-					success = true
-					resp = inv.items[slot]
-				end
+					if inv.type == 'player' then
+						if server.syncInventory then server.syncInventory(inv) end
+						TriggerClientEvent('ox_inventory:updateSlots', inv.id, {{item = inv.items[toSlot], inventory = inv.type}}, {left=inv.weight, right=inv.open and Inventories[inv.open]?.weight}, slotCount, false)
+					end
 
-				if inv.type == 'player' then
-					if server.syncInventory then server.syncInventory(inv) end
-					TriggerClientEvent('ox_inventory:updateSlots', inv.id, {{item = inv.items[slot], inventory = inv.type}}, {left=inv.weight, right=inv.open and Inventories[inv.open]?.weight}, count, false)
+					if cb then
+						success = true
+						resp = inv.items[toSlot]
+					end
+				else
+					local added = 0
+
+					for i = 1, #toSlot do
+						local data = toSlot[i]
+						added += data.count
+						Inventory.SetSlot(inv, item, data.count, data.metadata, data.slot)
+						toSlot[i] = { item = inv.items[data.slot], inventory = inv.type }
+					end
+
+					if inv.type == 'player' then
+						if server.syncInventory then server.syncInventory(inv) end
+						TriggerClientEvent('ox_inventory:updateSlots', inv.id, toSlot, {left=inv.weight, right=inv.open and Inventories[inv.open]?.weight}, added, false)
+					end
+
+					if cb then
+						for i = 1, #toSlot do
+							toSlot[i] = toSlot[i].item
+						end
+
+						success = true
+						resp = toSlot
+					end
 				end
 			else
 				resp = cb and 'inventory_full'
