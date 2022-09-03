@@ -7,7 +7,7 @@ import {
   PayloadAction,
 } from '@reduxjs/toolkit';
 import type { RootState } from '.';
-import { State } from '../typings';
+import { Slot, State } from '../typings';
 import {
   setupInventoryReducer,
   refreshSlotsReducer,
@@ -32,6 +32,7 @@ const initialState: State = {
     items: [],
   },
   additionalMetadata: {},
+  contextMenu: { coords: null },
   itemAmount: 0,
   shiftPressed: false,
   isBusy: false,
@@ -46,6 +47,12 @@ export const inventorySlice = createSlice({
     setupInventory: setupInventoryReducer,
     moveSlots: moveSlotsReducer,
     refreshSlots: refreshSlotsReducer,
+    setContextMenu: (
+      state,
+      action: PayloadAction<{ coords: { mouseX: number; mouseY: number } | null; item?: Slot }>
+    ) => {
+      state.contextMenu = action.payload;
+    },
     setAdditionalMetadata: (state, action: PayloadAction<{ [key: string]: any }>) => {
       state.additionalMetadata = { ...state.additionalMetadata, ...action.payload };
     },
@@ -89,6 +96,7 @@ export const inventorySlice = createSlice({
 
 export const {
   setAdditionalMetadata,
+  setContextMenu,
   setItemAmount,
   setShiftPressed,
   setupInventory,

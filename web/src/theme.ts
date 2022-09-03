@@ -92,5 +92,22 @@ customTheme = createTheme({
         },
       },
     },
+    MuiMenu: {
+      styleOverrides: {
+        list: {
+          minWidth: 200,
+          backgroundColor: customTheme.palette.primary.main,
+          color: customTheme.palette.primary.contrastText,
+          padding: '4px',
+        },
+      },
+    },
+    MuiMenuItem: {
+      styleOverrides: {
+        gutters: {
+          padding: '6px 16px !important',
+        },
+      },
+    },
   },
 });

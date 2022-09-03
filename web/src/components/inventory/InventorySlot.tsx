@@ -1,18 +1,18 @@
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import { DragSource, Inventory, InventoryType, Slot, SlotWithItem } from '../../typings';
 import { useDrag, useDrop } from 'react-dnd';
-import { useAppSelector } from '../../store';
+import { useAppDispatch, useAppSelector } from '../../store';
 import WeightBar from '../utils/WeightBar';
 import { onDrop } from '../../dnd/onDrop';
 import { onBuy } from '../../dnd/onBuy';
 import { selectIsBusy } from '../../store/inventory';
 import { Items } from '../../store/items';
 import { isSlotWithItem } from '../../helpers';
-import { useContextMenu } from 'react-contexify';
 import { onUse } from '../../dnd/onUse';
 import { Locale } from '../../store/locale';
 import { Typography, Tooltip, styled, Box, Stack } from '@mui/material';
 import SlotTooltip from './SlotTooltip';
+import { setContextMenu } from '../../store/inventory';
 
 interface SlotProps {
   inventory: Inventory;
@@ -58,6 +58,7 @@ const InventorySlot: React.FC<SlotProps> = ({
   contextVisible,
 }) => {
   const isBusy = useAppSelector(selectIsBusy);
+  const dispatch = useAppDispatch();
 
   const [{ isDragging }, drag] = useDrag<DragSource, void, { isDragging: boolean }>(
     () => ({
@@ -123,17 +124,15 @@ const InventorySlot: React.FC<SlotProps> = ({
     }
   }, [item, setCurrentItem]);
 
-  const { show, hideAll } = useContextMenu({ id: `slot-context-${item.slot}-${item.name}` });
-
   const handleContext = (event: React.MouseEvent<HTMLDivElement>) => {
-    !isBusy && inventory.type === 'player' && isSlotWithItem(item) && show(event);
+    event.preventDefault();
+
+    !isBusy &&
+      inventory.type === 'player' &&
+      isSlotWithItem(item) &&
+      dispatch(setContextMenu({ coords: { mouseX: event.clientX, mouseY: event.clientY }, item }));
     setCurrentItem(undefined);
   };
-
-  React.useEffect(() => {
-    hideAll();
-    //eslint-disable-next-line
-  }, [isDragging]);
 
   const handleClick = (event: React.MouseEvent<HTMLDivElement>) => {
     if (isBusy) return;

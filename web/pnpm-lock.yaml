@@ -1,5 +1,10 @@
 lockfileVersion: 5.4
 
+patchedDependencies:
+  mui-nested-menu@2.1.2:
+    hash: j566i5nblqgruu7n2evbzkfzzm
+    path: patches/mui-nested-menu@2.1.2.patch
+
 specifiers:
   '@babel/core': ^7.18.13
   '@emotion/react': ^11.10.4
@@ -19,6 +24,7 @@ specifiers:
   cross-env: ^7.0.3
   csstype: ^2.6.2
   lodash: ^4.17.21
+  mui-nested-menu: ^2.1.2
   prettier: ^2.5.1
   react: ^17.0.2
   react-contexify: ^5.0.0
@@ -53,6 +59,7 @@ dependencies:
   '@types/react-transition-group': 4.4.5
   '@vitejs/plugin-react': 1.3.2
   lodash: 4.17.21
+  mui-nested-menu: 2.1.2_j566i5nblqgruu7n2evbzkfzzm_@mui+material@5.10.3
   react: 17.0.2
   react-contexify: 5.0.0_sfoxds7t5ydpegc3knd667wn6m
   react-dnd: 14.0.5_3joqvbia7y5smepi7xncg3gome
@@ -1806,6 +1813,15 @@ packages:
   /ms/2.1.2:
     resolution: {integrity: sha512-sGkPx+VjMtmA6MX27oA4FBFELFCZZ4S4XqeGOXCv68tT+jb3vk/RyaKWP0PTKyWtmLSM0b+adUTEvbs1PEaH2w==}
     dev: false
+
+  /mui-nested-menu/2.1.2_j566i5nblqgruu7n2evbzkfzzm_@mui+material@5.10.3:
+    resolution: {integrity: sha512-3BEKS26njebbxZYesjKUKMhC8VoCL0gwnwJZhrKT/Wbf7PfEELsh5O6jEp4WWGQ34qt5qLxOc1AfdLmnR6Gykw==}
+    peerDependencies:
+      '@mui/material': ^5.0.0
+    dependencies:
+      '@mui/material': 5.10.3_k6hr2hiyqflxfqoozh6nsu3gbi
+    dev: false
+    patched: true
 
   /nanoid/3.3.4:
     resolution: {integrity: sha512-MqBkQh/OHTS2egovRtLk45wEyNXwF+cokD+1YPf9u5VfJiRdAiRwB2froX5Co9Rh20xs4siNPm8naNotSD6RBw==}

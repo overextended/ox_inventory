@@ -71,24 +71,15 @@ const InventoryGrid: React.FC<{ inventory: Inventory }> = ({ inventory }) => {
         <StyledGrid>
           <>
             {inventory.items.map((item) => (
-              <React.Fragment key={`grid-${inventory.id}-${item.slot}`}>
-                <InventorySlot
-                  key={`${inventory.type}-${inventory.id}-${item.slot}`}
-                  contextVisible={contextVisible}
-                  item={item}
-                  inventory={inventory}
-                  setCurrentItem={setCurrentItem}
-                />
-                {createPortal(
-                  <InventoryContext
-                    item={item}
-                    setContextVisible={setContextVisible}
-                    key={`context-${item.slot}`}
-                  />,
-                  document.body
-                )}
-              </React.Fragment>
+              <InventorySlot
+                key={`${inventory.type}-${inventory.id}-${item.slot}`}
+                contextVisible={contextVisible}
+                item={item}
+                inventory={inventory}
+                setCurrentItem={setCurrentItem}
+              />
             ))}
+            {inventory.type === 'player' && createPortal(<InventoryContext />, document.body)}
           </>
         </StyledGrid>
       </Stack>
