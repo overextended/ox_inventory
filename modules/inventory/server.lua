@@ -639,8 +639,9 @@ function Inventory.AddItem(inv, item, count, metadata, slot, cb)
 	if item then
 		if inv then
 			local totalCount = count
-			metadata, count = Items.Metadata(inv.id, item, metadata or {}, count)
 			for i = 1, totalCount do
+				metadata, count = Items.Metadata(inv.id, item, metadata or {}, count)
+				
 				---@type boolean?
 				local existing = false
 
