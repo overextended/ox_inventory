@@ -13,7 +13,6 @@ import {
   refreshSlots,
 } from '../../store/inventory';
 import { useExitListener } from '../../hooks/useExitListener';
-import ReactTooltip from 'react-tooltip';
 import type { Inventory as InventoryProps } from '../../typings';
 
 const Inventory: React.FC = () => {
@@ -22,7 +21,6 @@ const Inventory: React.FC = () => {
   useNuiEvent<boolean>('setInventoryVisible', setInventoryVisible);
   useNuiEvent<false>('closeInventory', () => {
     setInventoryVisible(false);
-    ReactTooltip.hide();
   });
   useExitListener(setInventoryVisible);
 

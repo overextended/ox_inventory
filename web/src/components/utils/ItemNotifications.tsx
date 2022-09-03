@@ -1,8 +1,8 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import { createPortal } from 'react-dom';
-import { CSSTransition, TransitionGroup } from 'react-transition-group';
+import { TransitionGroup } from 'react-transition-group';
 import useNuiEvent from '../../hooks/useNuiEvent';
-import { Box, Grow, Stack, styled, Typography, Collapse, Fade, Slide, Zoom } from '@mui/material';
+import { Box, Stack, styled, Typography, Fade } from '@mui/material';
 import { StyledBox, StyledLabelBox, StyledLabelText } from '../inventory/InventorySlot';
 import useQueue from '../../hooks/useQueue';
 

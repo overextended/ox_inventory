@@ -27,15 +27,13 @@ specifiers:
   mui-nested-menu: ^2.1.2
   prettier: ^2.5.1
   react: ^17.0.2
-  react-contexify: ^5.0.0
   react-dnd: ^14.0.4
   react-dnd-touch-backend: ^14.1.1
   react-dom: ^17.0.2
   react-hot-toast: ^2.1.1
   react-markdown: ^7.1.1
   react-redux: ^7.2.6
-  react-tooltip: ^4.2.21
-  react-transition-group: ^4.4.2
+  react-transition-group: ^4.4.5
   redux: ^4.1.2
   redux-devtools: ^3.7.0
   sass: ^1.45.2
@@ -61,14 +59,12 @@ dependencies:
   lodash: 4.17.21
   mui-nested-menu: 2.1.2_j566i5nblqgruu7n2evbzkfzzm_@mui+material@5.10.3
   react: 17.0.2
-  react-contexify: 5.0.0_sfoxds7t5ydpegc3knd667wn6m
   react-dnd: 14.0.5_3joqvbia7y5smepi7xncg3gome
   react-dnd-touch-backend: 14.1.1
   react-dom: 17.0.2_react@17.0.2
   react-hot-toast: 2.3.0_qiux6hspzncx2s5nvxxkh5cxbe
   react-markdown: 7.1.2_skqlhrap4das3cz5b6iqdn2lqi
   react-redux: 7.2.8_sfoxds7t5ydpegc3knd667wn6m
-  react-tooltip: 4.2.21_sfoxds7t5ydpegc3knd667wn6m
   react-transition-group: 4.4.5_sfoxds7t5ydpegc3knd667wn6m
   redux: 4.2.0
   redux-devtools: 3.7.0_wg4fnfwg4uptisero4viplg5nm
@@ -1915,18 +1911,6 @@ packages:
     resolution: {integrity: sha512-NuaNSa6flKT5JaSYQzJok04JzTL1CA6aGhv5rfLW3PgqA+M2ChpZQnAC8h8i4ZFkBS8X5RqkDBHA7r4hej3K9A==}
     dev: true
 
-  /react-contexify/5.0.0_sfoxds7t5ydpegc3knd667wn6m:
-    resolution: {integrity: sha512-2FIp7lxJ6dtfGr8EZ4uVV5p5TQjd0n2h/JU7PrejNIMiCeZWvSVPFh4lj1ZvjXosglBvP7q5JQQ8yUCdSaMSaw==}
-    engines: {node: '>=10'}
-    peerDependencies:
-      react: '>=16'
-      react-dom: '>=16'
-    dependencies:
-      clsx: 1.2.1
-      react: 17.0.2
-      react-dom: 17.0.2_react@17.0.2
-    dev: false
-
   /react-dnd-touch-backend/14.1.1:
     resolution: {integrity: sha512-ITmfzn3fJrkUBiVLO6aJZcnu7T8C+GfwZitFryGsXKn5wYcUv+oQBeh9FYcMychmVbDdeUCfvEtTk9O+DKmAaw==}
     dependencies:
@@ -2046,19 +2030,6 @@ packages:
   /react-refresh/0.13.0:
     resolution: {integrity: sha512-XP8A9BT0CpRBD+NYLLeIhld/RqG9+gktUjW1FkE+Vm7OCinbG1SshcK5tb9ls4kzvjZr9mOQc7HYgBngEyPAXg==}
     engines: {node: '>=0.10.0'}
-    dev: false
-
-  /react-tooltip/4.2.21_sfoxds7t5ydpegc3knd667wn6m:
-    resolution: {integrity: sha512-zSLprMymBDowknr0KVDiJ05IjZn9mQhhg4PRsqln0OZtURAJ1snt1xi5daZfagsh6vfsziZrc9pErPTDY1ACig==}
-    engines: {npm: '>=6.13'}
-    peerDependencies:
-      react: '>=16.0.0'
-      react-dom: '>=16.0.0'
-    dependencies:
-      prop-types: 15.8.1
-      react: 17.0.2
-      react-dom: 17.0.2_react@17.0.2
-      uuid: 7.0.3
     dev: false
 
   /react-transition-group/4.4.5_sfoxds7t5ydpegc3knd667wn6m:
@@ -2383,11 +2354,6 @@ packages:
       browserslist: 4.21.3
       escalade: 3.1.1
       picocolors: 1.0.0
-    dev: false
-
-  /uuid/7.0.3:
-    resolution: {integrity: sha512-DPSke0pXhTZgoF/d+WSt2QaKMCFSfx7QegxEWT+JOuHF5aWrKEn0G+ztjuJg/gG8/ItK+rbPCD/yNv8yyih6Cg==}
-    hasBin: true
     dev: false
 
   /uvu/0.5.6:
