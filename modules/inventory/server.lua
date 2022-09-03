@@ -638,44 +638,49 @@ function Inventory.AddItem(inv, item, count, metadata, slot, cb)
 
 	if item then
 		if inv then
+			local totalCount = count
 			metadata, count = Items.Metadata(inv.id, item, metadata or {}, count)
-			---@type boolean?
-			local existing = false
+			for i = 1, totalCount do
+				---@type boolean?
+				local existing = false
 
-			if slot then
-				local slotItem = inv.items[slot]
-				if not slotItem or item.stack and slotItem and slotItem.name == item.name and table.matches(slotItem.metadata, metadata) then
-					existing = nil
-				end
-			end
-
-			if existing == false then
-				local items, toSlot = inv.items, nil
-				for i = 1, shared.playerslots do
-					local slotItem = items[i]
-					if item.stack and slotItem ~= nil and slotItem.name == item.name and table.matches(slotItem.metadata, metadata) then
-						toSlot, existing = i, true break
-					elseif not toSlot and slotItem == nil then
-						toSlot = i
+				if slot then
+					local slotItem = inv.items[slot]
+					if not slotItem or item.stack and slotItem and slotItem.name == item.name and table.matches(slotItem.metadata, metadata) then
+						existing = nil
 					end
 				end
-				slot = toSlot
-			end
 
-			if slot then
-				Inventory.SetSlot(inv, item, count, metadata, slot)
-
-				if cb then
-					success = true
-					resp = inv.items[slot]
+				if existing == false then
+					local items, toSlot = inv.items, nil
+					for i = 1, shared.playerslots do
+						local slotItem = items[i]
+						if item.stack and slotItem ~= nil and slotItem.name == item.name and table.matches(slotItem.metadata, metadata) then
+							toSlot, existing = i, true break
+						elseif not toSlot and slotItem == nil then
+							toSlot = i
+						end
+					end
+					slot = toSlot
 				end
 
-				if inv.type == 'player' then
-					if server.syncInventory then server.syncInventory(inv) end
-					TriggerClientEvent('ox_inventory:updateSlots', inv.id, {{item = inv.items[slot], inventory = inv.type}}, {left=inv.weight, right=inv.open and Inventories[inv.open]?.weight}, count, false)
+				if slot then
+					Inventory.SetSlot(inv, item, count, metadata, slot)
+
+					if cb then
+						success = true
+						resp = inv.items[slot]
+					end
+
+					if inv.type == 'player' then
+						if server.syncInventory then server.syncInventory(inv) end
+						TriggerClientEvent('ox_inventory:updateSlots', inv.id, {{item = inv.items[slot], inventory = inv.type}}, {left=inv.weight, right=inv.open and Inventories[inv.open]?.weight}, count, false)
+					end
+				else
+					resp = cb and 'inventory_full'
+					break -- not sure about this one?!
 				end
-			else
-				resp = cb and 'inventory_full'
+				if totalCount == count then break end
 			end
 		else
 			resp = cb and 'invalid_inventory'
