@@ -657,7 +657,7 @@ function Inventory.AddItem(inv, item, count, metadata, slot, cb)
 				local items = inv.items
 
 				for i = 1, shared.playerslots do
-					slotMetadata, slotCount = Items.Metadata(inv.id, item, metadata or {}, count)
+					slotMetadata, slotCount = Items.Metadata(inv.id, item, metadata and table.clone(metadata) or {}, count)
 					local slotItem = items[i]
 
 					if item.stack and slotItem ~= nil and slotItem.name == item.name and table.matches(slotItem.metadata, slotMetadata) then
