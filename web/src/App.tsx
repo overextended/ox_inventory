@@ -1,16 +1,18 @@
-import { Box, styled } from '@mui/material';
+import { Box } from '@mui/material';
 import InventoryComponent from './components/inventory';
 import useNuiEvent from './hooks/useNuiEvent';
 import { Items } from './store/items';
 import { Locale } from './store/locale';
-import { setupInventory } from './store/inventory';
+import { setShiftPressed, setupInventory } from './store/inventory';
 import { Inventory } from './typings';
 import { useAppDispatch } from './store';
 import { debugData } from './utils/debugData';
 import DragPreview from './components/utils/DragPreview';
 import Notifications from './components/utils/Notifications';
 import { fetchNui } from './utils/fetchNui';
-import { useExitListener } from './hooks/useExitListener';
+import useKeyPress from './hooks/useKeyPress';
+import { useEffect } from 'react';
+import { useDragDropManager } from 'react-dnd';
 
 debugData([
   {
@@ -65,6 +67,8 @@ debugData([
 
 const App: React.FC = () => {
   const dispatch = useAppDispatch();
+  const manager = useDragDropManager();
+  const shiftPressed = useKeyPress('Shift');
 
   useNuiEvent<{
     locale: { [key: string]: string };
@@ -78,7 +82,15 @@ const App: React.FC = () => {
     dispatch(setupInventory({ leftInventory }));
   });
 
+  useEffect(() => {
+    dispatch(setShiftPressed(shiftPressed));
+  }, [shiftPressed, dispatch]);
+
   fetchNui('uiLoaded', {});
+
+  useNuiEvent('closeInventory', () => {
+    manager.dispatch({ type: 'dnd-core/END_DRAG' });
+  });
 
   return (
     <Box sx={{ height: '100%', width: '100%', color: 'white' }}>
