@@ -5,6 +5,7 @@ import useNuiEvent from '../../hooks/useNuiEvent';
 import { Box, Stack, styled, Typography, Fade } from '@mui/material';
 import { StyledBox, StyledLabelBox, StyledLabelText } from '../inventory/InventorySlot';
 import useQueue from '../../hooks/useQueue';
+import { Locale } from '../../store/locale';
 
 interface ItemNotificationProps {
   label: string;
@@ -92,8 +93,11 @@ export const ItemNotificationsProvider = ({ children }: { children: React.ReactN
     }, 2500);
   };
 
-  useNuiEvent<[label: string, image: string, text: string]>('itemNotify', (data) =>
-    add({ label: data[0], image: data[1], text: data[2] })
+  useNuiEvent<[label: string, image: string, text: string, count?: number]>(
+    'itemNotify',
+    ([label, image, text, count]) => {
+      add({ label: label, image: image, text: count ? `${Locale[text]} ${count}x` : `${Locale[text]}` });
+    }
   );
 
   return (
