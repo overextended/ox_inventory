@@ -58,7 +58,7 @@ const Inventory: React.FC = () => {
           <InventoryGrid inventory={rightInventory} />
         </Stack>
       </Fade>
-      {/*<InventoryHotbar items={leftInventory.items.slice(0, 5)} />*/}
+      <InventoryHotbar items={leftInventory.items.slice(0, 5)} />
     </>
   );
 };
