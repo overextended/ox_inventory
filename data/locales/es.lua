@@ -25,10 +25,10 @@ return {
 	['male'] = "Hombre",
 	['female'] = "Mujer",
 	['used'] = "Usado",
-	['removed'] = "Eliminado %sx",
-	['added'] = "Añadido %sx",
-	['holstered'] = "Guardado",
-	['equipped'] = "Equipado",
+	['ui_removed'] = "Eliminado",
+	['ui_added'] = "Añadido",
+	['ui_holstered'] = "Guardado",
+	['ui_equipped'] = "Equipado",
 	['using'] = "Usando %s",
 	['inventory_setup'] = "El inventario está disponible",
 	['inventory_player_access'] = "No puedes abrir el inventario en este momento",
@@ -83,6 +83,6 @@ return {
 	['use_hotbar'] = "Usar ítem de la barra de acceso rápido %s~",
 	['no_durability'] = "¡La durabilidad del ítem se ha agotado!",
 	['cannot_give'] = "No se pudo dar %s %s al objetivo",
-	['evidence_cannot_take'] = "No tienes el suficiente rango para coger esta prueba", 
+	['evidence_cannot_take'] = "No tienes el suficiente rango para coger esta prueba",
 	['dumpster'] = "Contenedor"
 }
