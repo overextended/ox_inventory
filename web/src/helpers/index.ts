@@ -12,9 +12,7 @@ export const canStack = (sourceSlot: Slot, targetSlot: Slot) =>
 export const findAvailableSlot = (item: Slot, data: ItemData, items: Slot[]) => {
   if (!data.stack) return items.find((target) => target.name === undefined);
 
-  const stackableSlot = items.find(
-    (target) => target.name === item.name && isEqual(target.metadata, item.metadata)
-  );
+  const stackableSlot = items.find((target) => target.name === item.name && isEqual(target.metadata, item.metadata));
 
   return stackableSlot || items.find((target) => target.name === undefined);
 };
@@ -50,9 +48,6 @@ export const itemDurability = (metadata: any, curTime: number) => {
 };
 
 export const getTotalWeight = (items: Inventory['items']) =>
-  items.reduce(
-    (totalWeight, slot) => (isSlotWithItem(slot) ? totalWeight + slot.weight : totalWeight),
-    0
-  );
+  items.reduce((totalWeight, slot) => (isSlotWithItem(slot) ? totalWeight + slot.weight : totalWeight), 0);
 
 export const isContainer = (inventory: Inventory) => inventory.type === InventoryType.CONTAINER;

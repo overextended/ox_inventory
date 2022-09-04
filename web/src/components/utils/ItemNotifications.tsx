@@ -51,10 +51,7 @@ const ItemBox = styled(StyledBox)(() => ({
 }));
 
 const ItemNotification = React.forwardRef(
-  (
-    props: { item: ItemNotificationProps; style?: React.CSSProperties },
-    ref: React.ForwardedRef<HTMLDivElement>
-  ) => {
+  (props: { item: ItemNotificationProps; style?: React.CSSProperties }, ref: React.ForwardedRef<HTMLDivElement>) => {
     return (
       <ItemBox
         style={props.style}

@@ -164,13 +164,9 @@ const InventorySlot: React.FC<SlotProps> = ({ inventory, item }) => {
           <Stack justifyContent="space-between" height="100%">
             <Stack
               direction="row"
-              justifyContent={
-                inventory.type === 'player' && item.slot <= 5 ? 'space-between' : 'flex-end'
-              }
+              justifyContent={inventory.type === 'player' && item.slot <= 5 ? 'space-between' : 'flex-end'}
             >
-              {inventory.type === 'player' && item.slot <= 5 && (
-                <StyledSlotNumber>{item.slot}</StyledSlotNumber>
-              )}
+              {inventory.type === 'player' && item.slot <= 5 && <StyledSlotNumber>{item.slot}</StyledSlotNumber>}
               <Stack direction="row" alignSelf="flex-end" p="5px" spacing="1.5px">
                 <Typography fontSize={12}>
                   {item.weight > 0
@@ -183,9 +179,7 @@ const InventorySlot: React.FC<SlotProps> = ({ inventory, item }) => {
                         })}g `
                     : ''}
                 </Typography>
-                <Typography fontSize={12}>
-                  {item.count ? item.count.toLocaleString('en-us') + `x` : ''}
-                </Typography>
+                <Typography fontSize={12}>{item.count ? item.count.toLocaleString('en-us') + `x` : ''}</Typography>
               </Stack>
             </Stack>
             <Box>
@@ -210,10 +204,7 @@ const InventorySlot: React.FC<SlotProps> = ({ inventory, item }) => {
                           transform: 'translateZ(0)',
                         }}
                       />
-                      <Typography
-                        fontSize={14}
-                        sx={{ textShadow: '0.1vh 0.1vh 0 rgba(0, 0, 0, 0.7)' }}
-                      >
+                      <Typography fontSize={14} sx={{ textShadow: '0.1vh 0.1vh 0 rgba(0, 0, 0, 0.7)' }}>
                         {item.price}
                       </Typography>
                     </Stack>
@@ -224,14 +215,9 @@ const InventorySlot: React.FC<SlotProps> = ({ inventory, item }) => {
                           direction="row"
                           justifyContent="flex-end"
                           pr="5px"
-                          color={
-                            item.currency === 'money' || !item.currency ? '#2ECC71' : '#E74C3C'
-                          }
+                          color={item.currency === 'money' || !item.currency ? '#2ECC71' : '#E74C3C'}
                         >
-                          <Typography
-                            fontSize={14}
-                            sx={{ textShadow: '0.1vh 0.1vh 0 rgba(0, 0, 0, 0.7)' }}
-                          >
+                          <Typography fontSize={14} sx={{ textShadow: '0.1vh 0.1vh 0 rgba(0, 0, 0, 0.7)' }}>
                             {Locale.$ || '$'}
                             {item.price}
                           </Typography>
@@ -243,9 +229,7 @@ const InventorySlot: React.FC<SlotProps> = ({ inventory, item }) => {
               )}
               <StyledLabelBox>
                 <StyledLabelText>
-                  {item.metadata?.label
-                    ? item.metadata.label
-                    : Items[item.name]?.label || item.name}
+                  {item.metadata?.label ? item.metadata.label : Items[item.name]?.label || item.name}
                 </StyledLabelText>
               </StyledLabelBox>
             </Box>

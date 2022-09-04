@@ -61,19 +61,13 @@ const InventoryContext: React.FC = () => {
         open={contextMenu.coords !== null}
         anchorReference="anchorPosition"
         anchorPosition={
-          contextMenu.coords !== null
-            ? { top: contextMenu.coords.mouseY, left: contextMenu.coords.mouseX }
-            : undefined
+          contextMenu.coords !== null ? { top: contextMenu.coords.mouseY, left: contextMenu.coords.mouseX } : undefined
         }
         onClose={() => dispatch(setContextMenu({ coords: null }))}
       >
         <MenuItem onClick={() => handleClick({ action: 'use' })}>{Locale.ui_use || 'Use'}</MenuItem>
-        <MenuItem onClick={() => handleClick({ action: 'give' })}>
-          {Locale.ui_give || 'Give'}
-        </MenuItem>
-        <MenuItem onClick={() => handleClick({ action: 'drop' })}>
-          {Locale.ui_drop || 'Drop'}
-        </MenuItem>
+        <MenuItem onClick={() => handleClick({ action: 'give' })}>{Locale.ui_give || 'Give'}</MenuItem>
+        <MenuItem onClick={() => handleClick({ action: 'drop' })}>{Locale.ui_drop || 'Drop'}</MenuItem>
         {item && item.metadata?.serial && <Divider />}
         {item && item.metadata?.serial && (
           <MenuItem onClick={() => handleClick({ action: 'copy', serial: item.metadata?.serial })}>
@@ -85,10 +79,7 @@ const InventoryContext: React.FC = () => {
           <NestedMenuItem parentMenuOpen={!!contextMenu} label={Locale.ui_removeattachments}>
             {item &&
               item.metadata?.components.map((component: string, index: number) => (
-                <MenuItem
-                  key={index}
-                  onClick={() => handleClick({ action: 'remove', component, slot: item.slot })}
-                >
+                <MenuItem key={index} onClick={() => handleClick({ action: 'remove', component, slot: item.slot })}>
                   {Items[component]?.label}
                 </MenuItem>
               ))}

@@ -46,11 +46,7 @@ const InventoryControl: React.FC = () => {
   }));
 
   const inputHandler = (event: React.ChangeEvent<HTMLInputElement>) => {
-    if (
-      event.target.valueAsNumber % 1 !== 0 ||
-      isNaN(event.target.valueAsNumber) ||
-      event.target.valueAsNumber < 0
-    )
+    if (event.target.valueAsNumber % 1 !== 0 || isNaN(event.target.valueAsNumber) || event.target.valueAsNumber < 0)
       event.target.valueAsNumber = 0;
     dispatch(setItemAmount(event.target.valueAsNumber));
   };

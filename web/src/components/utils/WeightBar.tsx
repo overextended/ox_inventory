@@ -21,10 +21,7 @@ const COLORS = {
   accentColor: [211, 84, 0], // Orange (Oragne)
 };
 
-const WeightBar: React.FC<{ percent: number; durability?: boolean }> = ({
-  percent,
-  durability,
-}) => {
+const WeightBar: React.FC<{ percent: number; durability?: boolean }> = ({ percent, durability }) => {
   const color = React.useMemo(
     () =>
       durability

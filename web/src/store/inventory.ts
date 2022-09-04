@@ -1,11 +1,4 @@
-import {
-  createSlice,
-  current,
-  isFulfilled,
-  isPending,
-  isRejected,
-  PayloadAction,
-} from '@reduxjs/toolkit';
+import { createSlice, current, isFulfilled, isPending, isRejected, PayloadAction } from '@reduxjs/toolkit';
 import type { RootState } from '.';
 import { Slot, State } from '../typings';
 import {
@@ -63,9 +56,7 @@ export const inventorySlice = createSlice({
       state.shiftPressed = action.payload;
     },
     setContainerWeight: (state, action: PayloadAction<number>) => {
-      const container = state.leftInventory.items.find(
-        (item) => item.metadata?.container === state.rightInventory.id
-      );
+      const container = state.leftInventory.items.find((item) => item.metadata?.container === state.rightInventory.id);
 
       if (!container) return;
 

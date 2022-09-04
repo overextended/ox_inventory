@@ -63,20 +63,14 @@ const InventoryHotbar: React.FC<{ items: Slot[] }> = ({ items }) => {
                             })}g `
                         : ''}
                     </Typography>
-                    <Typography fontSize={12}>
-                      {item.count ? item.count.toLocaleString('en-us') + `x` : ''}
-                    </Typography>
+                    <Typography fontSize={12}>{item.count ? item.count.toLocaleString('en-us') + `x` : ''}</Typography>
                   </Stack>
                 </Stack>
                 <Box>
-                  {item?.durability !== undefined && (
-                    <WeightBar percent={item.durability} durability />
-                  )}
+                  {item?.durability !== undefined && <WeightBar percent={item.durability} durability />}
                   <StyledLabelBox>
                     <StyledLabelText>
-                      {item.metadata?.label
-                        ? item.metadata.label
-                        : Items[item.name]?.label || item.name}
+                      {item.metadata?.label ? item.metadata.label : Items[item.name]?.label || item.name}
                     </StyledLabelText>
                   </StyledLabelBox>
                 </Box>

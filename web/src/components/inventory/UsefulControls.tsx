@@ -1,13 +1,4 @@
-import {
-  Dialog,
-  DialogActions,
-  DialogContent,
-  DialogTitle,
-  IconButton,
-  Slide,
-  Stack,
-  Typography,
-} from '@mui/material';
+import { Dialog, DialogActions, DialogContent, DialogTitle, IconButton, Slide, Stack, Typography } from '@mui/material';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faTimes } from '@fortawesome/free-solid-svg-icons';
 import { Locale } from '../../store/locale';

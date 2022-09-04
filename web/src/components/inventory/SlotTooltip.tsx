@@ -20,9 +20,7 @@ const SlotTooltip: React.FC<{ item: Slot }> = ({ item }) => {
       <Divider />
       <Box>
         {(item.metadata?.description || (item.name && Items[item.name]?.description)) && (
-          <ReactMarkdown>
-            {item.metadata?.description || (item.name && Items[item.name]?.description)}
-          </ReactMarkdown>
+          <ReactMarkdown>{item.metadata?.description || (item.name && Items[item.name]?.description)}</ReactMarkdown>
         )}
         {item.durability !== undefined && (
           <Typography>

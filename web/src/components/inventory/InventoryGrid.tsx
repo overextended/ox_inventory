@@ -28,7 +28,6 @@ const StyledGrid = styled(Box)(() => ({
 }));
 
 const InventoryGrid: React.FC<{ inventory: Inventory }> = ({ inventory }) => {
-
   const weight = React.useMemo(
     () => (inventory.maxWeight !== undefined ? getTotalWeight(inventory.items) : 0),
     [inventory.maxWeight, inventory.items]
@@ -51,11 +50,7 @@ const InventoryGrid: React.FC<{ inventory: Inventory }> = ({ inventory }) => {
         <StyledGrid>
           <>
             {inventory.items.map((item) => (
-              <InventorySlot
-                key={`${inventory.type}-${inventory.id}-${item.slot}`}
-                item={item}
-                inventory={inventory}
-              />
+              <InventorySlot key={`${inventory.type}-${inventory.id}-${item.slot}`} item={item} inventory={inventory} />
             ))}
             {inventory.type === 'player' && createPortal(<InventoryContext />, document.body)}
           </>

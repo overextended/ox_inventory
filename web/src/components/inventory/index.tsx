@@ -46,13 +46,7 @@ const Inventory: React.FC = () => {
   return (
     <>
       <Fade in={inventoryVisible} unmountOnExit>
-        <Stack
-          direction="row"
-          justifyContent="center"
-          alignItems="center"
-          height="100%"
-          spacing={2}
-        >
+        <Stack direction="row" justifyContent="center" alignItems="center" height="100%" spacing={2}>
           <InventoryGrid inventory={leftInventory} />
           <InventoryControl />
           <InventoryGrid inventory={rightInventory} />

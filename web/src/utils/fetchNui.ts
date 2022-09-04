@@ -11,9 +11,7 @@
 
 import { isEnvBrowser } from './misc';
 
-const resourceName = (window as any).GetParentResourceName
-  ? (window as any).GetParentResourceName()
-  : 'ox_inventory';
+const resourceName = (window as any).GetParentResourceName ? (window as any).GetParentResourceName() : 'ox_inventory';
 
 export async function fetchNui<T>(eventName: string, data?: unknown): Promise<T> {
   if (isEnvBrowser()) return undefined as any; // HACK FOR BORING ERRORS IN DEV
