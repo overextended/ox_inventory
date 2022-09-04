@@ -5,7 +5,7 @@ import { Items } from '../../store/items';
 import { Slot } from '../../typings';
 import WeightBar from '../utils/WeightBar';
 import { Box, Slide, Stack, Typography } from '@mui/material';
-import { StyledBox, StyledLabelBox, StyledLabelText } from './InventorySlot';
+import { StyledBox, StyledLabelBox, StyledLabelText, StyledSlotNumber } from './InventorySlot';
 
 const InventoryHotbar: React.FC<{ items: Slot[] }> = ({ items }) => {
   const [hotbarVisible, setHotbarVisible] = useState(false);
@@ -47,21 +47,26 @@ const InventoryHotbar: React.FC<{ items: Slot[] }> = ({ items }) => {
           >
             {isSlotWithItem(item) && (
               <Stack justifyContent="space-between" height="100%">
-                <Stack direction="row" alignSelf="flex-end" p="5px" spacing="1.5px">
-                  <Typography fontSize={12}>
-                    {item.weight > 0
-                      ? item.weight >= 1000
-                        ? `${(item.weight / 1000).toLocaleString('en-us', {
-                            minimumFractionDigits: 2,
-                          })}kg `
-                        : `${item.weight.toLocaleString('en-us', {
-                            minimumFractionDigits: 0,
-                          })}g `
-                      : ''}
-                  </Typography>
-                  <Typography fontSize={12}>
-                    {item.count ? item.count.toLocaleString('en-us') + `x` : ''}
-                  </Typography>
+                <Stack direction="row" justifyContent="space-between">
+                  <StyledSlotNumber display="flex" justifyContent="center" alignItems="center">
+                    {item.slot}
+                  </StyledSlotNumber>
+                  <Stack direction="row" alignSelf="flex-end" p="5px" spacing="1.5px">
+                    <Typography fontSize={12}>
+                      {item.weight > 0
+                        ? item.weight >= 1000
+                          ? `${(item.weight / 1000).toLocaleString('en-us', {
+                              minimumFractionDigits: 2,
+                            })}kg `
+                          : `${item.weight.toLocaleString('en-us', {
+                              minimumFractionDigits: 0,
+                            })}g `
+                        : ''}
+                    </Typography>
+                    <Typography fontSize={12}>
+                      {item.count ? item.count.toLocaleString('en-us') + `x` : ''}
+                    </Typography>
+                  </Stack>
                 </Stack>
                 <Box>
                   {item?.durability !== undefined && (

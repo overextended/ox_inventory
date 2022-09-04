@@ -51,6 +51,16 @@ export const StyledLabelText = styled(Typography)(({ theme }) => ({
   fontSize: '13px',
 }));
 
+export const StyledSlotNumber = styled(Box)(() => ({
+  backgroundColor: 'white',
+  color: 'black',
+  height: '12.75px',
+  borderTopLeftRadius: '0.25vh',
+  borderBottomRightRadius: '0.25vh',
+  padding: '3px',
+  fontSize: '12px',
+}));
+
 const InventorySlot: React.FC<SlotProps> = ({
   inventory,
   item,
@@ -176,21 +186,31 @@ const InventorySlot: React.FC<SlotProps> = ({
       >
         {isSlotWithItem(item) && (
           <Stack justifyContent="space-between" height="100%">
-            <Stack direction="row" alignSelf="flex-end" p="5px" spacing="1.5px">
-              <Typography fontSize={12}>
-                {item.weight > 0
-                  ? item.weight >= 1000
-                    ? `${(item.weight / 1000).toLocaleString('en-us', {
-                        minimumFractionDigits: 2,
-                      })}kg `
-                    : `${item.weight.toLocaleString('en-us', {
-                        minimumFractionDigits: 0,
-                      })}g `
-                  : ''}
-              </Typography>
-              <Typography fontSize={12}>
-                {item.count ? item.count.toLocaleString('en-us') + `x` : ''}
-              </Typography>
+            <Stack
+              direction="row"
+              justifyContent={
+                inventory.type === 'player' && item.slot <= 5 ? 'space-between' : 'flex-end'
+              }
+            >
+              {inventory.type === 'player' && item.slot <= 5 && (
+                <StyledSlotNumber>{item.slot}</StyledSlotNumber>
+              )}
+              <Stack direction="row" alignSelf="flex-end" p="5px" spacing="1.5px">
+                <Typography fontSize={12}>
+                  {item.weight > 0
+                    ? item.weight >= 1000
+                      ? `${(item.weight / 1000).toLocaleString('en-us', {
+                          minimumFractionDigits: 2,
+                        })}kg `
+                      : `${item.weight.toLocaleString('en-us', {
+                          minimumFractionDigits: 0,
+                        })}g `
+                    : ''}
+                </Typography>
+                <Typography fontSize={12}>
+                  {item.count ? item.count.toLocaleString('en-us') + `x` : ''}
+                </Typography>
+              </Stack>
             </Stack>
             <Box>
               {inventory.type !== 'shop' && item?.durability !== undefined && (
