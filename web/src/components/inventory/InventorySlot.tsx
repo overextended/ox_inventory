@@ -17,8 +17,6 @@ import { setContextMenu } from '../../store/inventory';
 interface SlotProps {
   inventory: Inventory;
   item: Slot;
-  setCurrentItem: React.Dispatch<React.SetStateAction<SlotWithItem | undefined>>;
-  contextVisible: boolean;
 }
 
 export const StyledBox = styled(Box)(({ theme }) => ({
@@ -61,12 +59,7 @@ export const StyledSlotNumber = styled(Box)(() => ({
   fontSize: '12px',
 }));
 
-const InventorySlot: React.FC<SlotProps> = ({
-  inventory,
-  item,
-  setCurrentItem,
-  contextVisible,
-}) => {
+const InventorySlot: React.FC<SlotProps> = ({ inventory, item }) => {
   const isBusy = useAppSelector(selectIsBusy);
   const dispatch = useAppDispatch();
 
@@ -122,18 +115,6 @@ const InventorySlot: React.FC<SlotProps> = ({
 
   const connectRef = (element: HTMLDivElement) => drag(drop(element));
 
-  const onMouseEnter = React.useCallback(() => {
-    if (isSlotWithItem(item)) {
-      setCurrentItem(item);
-    }
-  }, [item, setCurrentItem]);
-
-  const onMouseLeave = React.useCallback(() => {
-    if (isSlotWithItem(item)) {
-      setCurrentItem(undefined);
-    }
-  }, [item, setCurrentItem]);
-
   const handleContext = (event: React.MouseEvent<HTMLDivElement>) => {
     event.preventDefault();
 
@@ -141,7 +122,6 @@ const InventorySlot: React.FC<SlotProps> = ({
       inventory.type === 'player' &&
       isSlotWithItem(item) &&
       dispatch(setContextMenu({ coords: { mouseX: event.clientX, mouseY: event.clientY }, item }));
-    setCurrentItem(undefined);
   };
 
   const handleClick = (event: React.MouseEvent<HTMLDivElement>) => {
@@ -149,17 +129,15 @@ const InventorySlot: React.FC<SlotProps> = ({
 
     if (event.ctrlKey && isSlotWithItem(item) && inventory.type !== 'shop') {
       onDrop({ item: item, inventory: inventory.type });
-      setCurrentItem(undefined);
     } else if (event.altKey && isSlotWithItem(item) && inventory.type === 'player') {
       onUse(item);
-      setCurrentItem(undefined);
     }
   };
 
   return (
     <Tooltip
-      title={!isSlotWithItem(item) || contextVisible ? '' : <SlotTooltip item={item} />}
-      sx={{ fontFamily: 'Roboto' }}
+      title={!isSlotWithItem(item) ? '' : <SlotTooltip item={item} />}
+      sx={(theme) => ({ fontFamily: theme.typography.fontFamily })}
       disableInteractive
       followCursor
       disableFocusListener
@@ -181,8 +159,6 @@ const InventorySlot: React.FC<SlotProps> = ({
             : 'none',
           border: isOver ? '1px dashed rgba(255,255,255,0.4)' : '',
         }}
-        onMouseEnter={onMouseEnter}
-        onMouseLeave={onMouseLeave}
       >
         {isSlotWithItem(item) && (
           <Stack justifyContent="space-between" height="100%">

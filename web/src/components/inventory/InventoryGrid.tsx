@@ -28,31 +28,11 @@ const StyledGrid = styled(Box)(() => ({
 }));
 
 const InventoryGrid: React.FC<{ inventory: Inventory }> = ({ inventory }) => {
-  const [currentItem, setCurrentItem] = React.useState<SlotWithItem>();
-  const [contextVisible, setContextVisible] = React.useState<boolean>(false);
-
-  const isControlPressed = useKeyPress('Control');
-  const isCopyPressed = useKeyPress('c');
 
   const weight = React.useMemo(
     () => (inventory.maxWeight !== undefined ? getTotalWeight(inventory.items) : 0),
     [inventory.maxWeight, inventory.items]
   );
-
-  // Fixes an issue where hovering an item after exiting context menu would apply no styling
-  // But have to rehover on item to get tooltip, there's probably a better solution?
-  useEffect(() => {
-    setCurrentItem(undefined);
-  }, [contextVisible]);
-
-  useEffect(() => {
-    if (!currentItem || !isControlPressed || !isCopyPressed) return;
-    currentItem?.metadata?.serial && setClipboard(currentItem.metadata.serial);
-  }, [isControlPressed, isCopyPressed]);
-
-  useNuiEvent('setupInventory', () => {
-    setCurrentItem(undefined);
-  });
 
   return (
     <>
@@ -73,10 +53,8 @@ const InventoryGrid: React.FC<{ inventory: Inventory }> = ({ inventory }) => {
             {inventory.items.map((item) => (
               <InventorySlot
                 key={`${inventory.type}-${inventory.id}-${item.slot}`}
-                contextVisible={contextVisible}
                 item={item}
                 inventory={inventory}
-                setCurrentItem={setCurrentItem}
               />
             ))}
             {inventory.type === 'player' && createPortal(<InventoryContext />, document.body)}
