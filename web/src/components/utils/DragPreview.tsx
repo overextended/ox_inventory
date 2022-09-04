@@ -53,7 +53,7 @@ const StyledDrag = styled(Box)(() => ({
   left: 0,
   backgroundRepeat: 'no-repeat',
   backgroundPosition: 'center',
-  backgroundSize: '7.7vh',
+  backgroundSize: '7vh',
   imageRendering: '-webkit-optimize-contrast',
 }));
 
@@ -71,7 +71,7 @@ const DragPreview: React.FC = () => {
       {isDragging && currentOffset && data.item && (
         <StyledDrag
           ref={element}
-          sx={{
+          style={{
             transform: `translate(${currentOffset.x}px, ${currentOffset.y}px)`,
             backgroundImage: `url(${`images/${data.image || data.item.name}.png`})`,
           }}
