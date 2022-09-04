@@ -28,6 +28,9 @@ export const StyledBox = styled(Box)(({ theme }) => ({
   position: 'relative',
   backgroundSize: '7vh',
   color: theme.palette.primary.contrastText,
+  borderColor: 'rgba(0,0,0,0.2)',
+  borderStyle: 'inset',
+  borderWidth: 1,
 }));
 
 export const StyledLabelBox = styled(Box)(({ theme }) => ({
@@ -36,6 +39,9 @@ export const StyledLabelBox = styled(Box)(({ theme }) => ({
   textAlign: 'center',
   borderBottomLeftRadius: '0.25vh',
   borderBottomRightRadius: '0.25vh',
+  borderTopColor: 'rgba(0,0,0,0.2)',
+  borderTopStyle: 'inset',
+  borderTopWidth: 1,
 }));
 
 export const StyledLabelText = styled(Typography)(({ theme }) => ({

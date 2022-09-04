@@ -5,7 +5,7 @@ export let customTheme = createTheme({
   palette: {
     mode: 'dark',
     primary: {
-      main: '#25262B',
+      main: '#22232c',
       contrastText: '#C1C2C5',
     },
     secondary: {
@@ -36,6 +36,10 @@ customTheme = createTheme({
           backgroundColor: customTheme.palette.primary.main,
           minWidth: 200,
           color: customTheme.palette.primary.contrastText,
+          borderRadius: 4,
+          borderColor: 'rgba(0,0,0,0.2)',
+          borderStyle: 'inset',
+          borderWidth: 1,
         },
       },
     },
@@ -99,6 +103,9 @@ customTheme = createTheme({
           backgroundColor: customTheme.palette.primary.main,
           color: customTheme.palette.primary.contrastText,
           padding: '4px',
+          borderColor: 'rgba(0,0,0,0.2)',
+          borderStyle: 'inset',
+          borderWidth: 1,
         },
       },
     },
