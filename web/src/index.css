@@ -32,3 +32,17 @@ input[type='number']::-webkit-outer-spin-button {
 .MuiMenuItem-root > div > p {
   padding: 0 !important;
 }
+
+.item-drag-preview {
+  width: 7.7vh;
+  height: 7.7vh;
+  z-index: 1;
+  position: fixed;
+  pointer-events: none;
+  top: 0;
+  left: 0;
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: 7vh;
+  image-rendering: -webkit-optimize-contrast;
+}

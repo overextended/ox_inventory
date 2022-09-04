@@ -66,13 +66,14 @@ const DragPreview: React.FC = () => {
   return (
     <>
       {isDragging && currentOffset && data.item && (
-        <StyledDrag
+        <div
+          className="item-drag-preview"
           ref={element}
           style={{
             transform: `translate(${currentOffset.x}px, ${currentOffset.y}px)`,
             backgroundImage: `url(${`images/${data.image || data.item.name}.png`})`,
           }}
-        ></StyledDrag>
+        />
       )}
     </>
   );
