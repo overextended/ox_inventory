@@ -6,9 +6,12 @@ import { Slot } from '../../typings';
 import WeightBar from '../utils/WeightBar';
 import { Box, Slide, Stack, Typography } from '@mui/material';
 import { StyledBox, StyledLabelBox, StyledLabelText, StyledSlotNumber } from './InventorySlot';
+import { useAppSelector } from '../../store';
+import { selectLeftInventory } from '../../store/inventory';
 
-const InventoryHotbar: React.FC<{ items: Slot[] }> = ({ items }) => {
+const InventoryHotbar: React.FC = () => {
   const [hotbarVisible, setHotbarVisible] = useState(false);
+  const items = useAppSelector(selectLeftInventory).items.slice(0, 5);
 
   //stupid fix for timeout
   const [handle, setHandle] = useState<NodeJS.Timeout>();

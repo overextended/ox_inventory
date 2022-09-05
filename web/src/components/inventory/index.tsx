@@ -1,19 +1,14 @@
 import React from 'react';
 import useNuiEvent from '../../hooks/useNuiEvent';
-import InventoryGrid from './InventoryGrid';
 import InventoryControl from './InventoryControl';
 import InventoryHotbar from './InventoryHotbar';
 import { Fade, Stack } from '@mui/material';
-import { useAppDispatch, useAppSelector } from '../../store';
-import {
-  selectLeftInventory,
-  selectRightInventory,
-  setAdditionalMetadata,
-  setupInventory,
-  refreshSlots,
-} from '../../store/inventory';
+import { useAppDispatch } from '../../store';
+import { setAdditionalMetadata, setupInventory, refreshSlots } from '../../store/inventory';
 import { useExitListener } from '../../hooks/useExitListener';
 import type { Inventory as InventoryProps } from '../../typings';
+import RightInventory from './RightInventory';
+import LeftInventory from './LeftInventory';
 
 const Inventory: React.FC = () => {
   const [inventoryVisible, setInventoryVisible] = React.useState(false);
@@ -23,9 +18,6 @@ const Inventory: React.FC = () => {
     setInventoryVisible(false);
   });
   useExitListener(setInventoryVisible);
-
-  const leftInventory = useAppSelector(selectLeftInventory);
-  const rightInventory = useAppSelector(selectRightInventory);
 
   const dispatch = useAppDispatch();
 
@@ -47,12 +39,12 @@ const Inventory: React.FC = () => {
     <>
       <Fade in={inventoryVisible} unmountOnExit>
         <Stack direction="row" justifyContent="center" alignItems="center" height="100%" spacing={2}>
-          <InventoryGrid inventory={leftInventory} />
+          <LeftInventory />
           <InventoryControl />
-          <InventoryGrid inventory={rightInventory} />
+          <RightInventory />
         </Stack>
       </Fade>
-      <InventoryHotbar items={leftInventory.items.slice(0, 5)} />
+      <InventoryHotbar />
     </>
   );
 };
