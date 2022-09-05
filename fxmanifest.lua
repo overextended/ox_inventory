@@ -55,7 +55,9 @@ ui_page 'web/build/index.html'
 
 files {
 	'web/build/index.html',
-	'web/build/**/*',
+	'web/build/assets/*.js',
+	'web/build/assets/*.css',
+	'web/images/*.png',
 	'modules/**/shared.lua',
 	'data/*.lua',
 	'data/**/*.lua'
