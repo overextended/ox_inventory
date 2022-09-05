@@ -6,6 +6,7 @@ import { Box, Stack, styled, Typography, Fade } from '@mui/material';
 import { StyledBox, StyledLabelBox, StyledLabelText } from '../inventory/InventorySlot';
 import useQueue from '../../hooks/useQueue';
 import { Locale } from '../../store/locale';
+import { imagepath } from '../../store/imagepath';
 
 interface ItemNotificationProps {
   label: string;
@@ -56,7 +57,7 @@ const ItemNotification = React.forwardRef(
     return (
       <ItemBox
         style={props.style}
-        sx={{ backgroundImage: `url(${`images/${props.item.image}.png`})` || 'none' }}
+        sx={{ backgroundImage: `url(${`${imagepath}/${props.item.image}.png`})` || 'none' }}
         ref={ref}
       >
         <Stack justifyContent="space-between" sx={{ height: '100%' }}>

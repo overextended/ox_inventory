@@ -13,6 +13,7 @@ import { Locale } from '../../store/locale';
 import { Typography, Tooltip, styled, Box, Stack } from '@mui/material';
 import SlotTooltip from './SlotTooltip';
 import { setContextMenu } from '../../store/inventory';
+import { imagepath } from '../../store/imagepath';
 
 interface SlotProps {
   inventory: Inventory;
@@ -158,11 +159,7 @@ const InventorySlot: React.FC<SlotProps> = ({ inventory, item }) => {
         onClick={handleClick}
         style={{
           opacity: isDragging ? 0.4 : 1.0,
-          backgroundImage: item.metadata?.image
-            ? `url(${`images/${item.metadata.image}.png`})`
-            : item.name
-            ? `url(${`images/${item.name}.png`})`
-            : 'none',
+          backgroundImage: `url(${`${imagepath}/${item.metadata?.image ? item.metadata.image : item.name}.png`})`,
           border: isOver ? '1px dashed rgba(255,255,255,0.4)' : '',
         }}
       >
@@ -200,7 +197,7 @@ const InventorySlot: React.FC<SlotProps> = ({ inventory, item }) => {
                   item?.currency ? (
                     <Stack direction="row" justifyContent="flex-end" alignItems="center" pr="3px">
                       <img
-                        src={item?.currency ? `${`images/${item?.currency}.png`}` : ''}
+                        src={item?.currency ? `${`${imagepath}/${item?.currency}.png`}` : ''}
                         alt="item-image"
                         style={{
                           imageRendering: '-webkit-optimize-contrast',

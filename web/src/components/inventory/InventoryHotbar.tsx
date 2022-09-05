@@ -7,6 +7,7 @@ import { Box, Slide, Stack, Typography } from '@mui/material';
 import { StyledBox, StyledLabelBox, StyledLabelText, StyledSlotNumber } from './InventorySlot';
 import { useAppSelector } from '../../store';
 import { selectLeftInventory } from '../../store/inventory';
+import { imagepath } from '../../store/imagepath';
 
 const InventoryHotbar: React.FC = () => {
   const [hotbarVisible, setHotbarVisible] = useState(false);
@@ -39,11 +40,7 @@ const InventoryHotbar: React.FC = () => {
             width="10.42vh"
             height="10.42vh"
             style={{
-              backgroundImage: item.metadata?.image
-                ? `url(${`images/${item.metadata.image}.png`})`
-                : item.name
-                ? `url(${`images/${item.name}.png`})`
-                : 'none',
+              backgroundImage: `url(${`${imagepath}/${item.metadata?.image ? item.metadata.image : item.name}.png`})`,
             }}
             key={`hotbar-${item.slot}`}
           >

@@ -920,7 +920,8 @@ RegisterNetEvent('ox_inventory:setPlayerInventory', function(currentDrops, inven
 				slots = shared.playerslots,
 				items = PlayerData.inventory,
 				maxWeight = shared.playerweight,
-			}
+			},
+			imagepath = GetConvar('inventory:imagepath', 'nui://ox_inventory/web/images')
 		}
 	})
 
