@@ -848,7 +848,11 @@ RegisterNetEvent('ox_inventory:setPlayerInventory', function(currentDrops, inven
 	if setStateBagHandler then setStateBagHandler(('player:%s'):format(source)) end
 
 	for _, data in pairs(inventory) do
-		Items[data.name].count += data.count
+		local item = Items[data.name]
+
+		if item then
+			item.count += data.count
+		end
 	end
 
 	local phone = Items.phone
