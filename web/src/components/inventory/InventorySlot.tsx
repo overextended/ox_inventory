@@ -1,5 +1,5 @@
 import React from 'react';
-import { DragSource, Inventory, InventoryType, Slot, SlotWithItem } from '../../typings';
+import { DragSource, Inventory, InventoryType, Slot } from '../../typings';
 import { useDrag, useDrop } from 'react-dnd';
 import { useAppDispatch, useAppSelector } from '../../store';
 import WeightBar from '../utils/WeightBar';
@@ -44,7 +44,7 @@ export const StyledLabelBox = styled(Box)(({ theme }) => ({
   borderTopWidth: 1,
 }));
 
-export const StyledLabelText = styled(Typography)(({ theme }) => ({
+export const StyledLabelText = styled(Typography)(() => ({
   textTransform: 'uppercase',
   whiteSpace: 'nowrap',
   overflow: 'hidden',

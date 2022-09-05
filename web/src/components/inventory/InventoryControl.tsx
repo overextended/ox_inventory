@@ -6,12 +6,11 @@ import { DragSource } from '../../typings';
 import { onUse } from '../../dnd/onUse';
 import { onGive } from '../../dnd/onGive';
 import { fetchNui } from '../../utils/fetchNui';
-import { faInfoCircle, faTimes } from '@fortawesome/free-solid-svg-icons';
+import { faInfoCircle } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { Locale } from '../../store/locale';
 import { Box, Button, IconButton, InputBase, Stack, styled } from '@mui/material';
 import UsefulControls from './UsefulControls';
-import InventoryContext from './InventoryContext';
 
 const StyledIconButton = styled(IconButton)(({ theme }) => ({
   position: 'absolute',

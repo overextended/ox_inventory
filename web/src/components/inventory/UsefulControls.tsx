@@ -42,7 +42,7 @@ const UsefulControls: React.FC<Props> = ({ infoVisible, setInfoVisible }) => {
       TransitionComponent={Transition}
     >
       <DialogTitle>
-        <Typography fontSize={18}>Useful Controls</Typography>
+        <Typography fontSize={18}>{Locale.ui_usefulcontrols}</Typography>
         <IconButton
           aria-label="close"
           onClick={() => setInfoVisible(false)}

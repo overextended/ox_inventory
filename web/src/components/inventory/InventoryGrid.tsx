@@ -1,15 +1,12 @@
-import React, { useEffect } from 'react';
-import { Inventory, SlotWithItem } from '../../typings';
+import React from 'react';
+import { Inventory } from '../../typings';
 import WeightBar from '../utils/WeightBar';
 import InventorySlot from './InventorySlot';
 import InventoryContext from './InventoryContext';
 import { getTotalWeight } from '../../helpers';
 import { createPortal } from 'react-dom';
-import useNuiEvent from '../../hooks/useNuiEvent';
-import useKeyPress from '../../hooks/useKeyPress';
-import { setClipboard } from '../../utils/setClipboard';
 import { debugData } from '../../utils/debugData';
-import { Box, Stack, styled, Tooltip, Typography } from '@mui/material';
+import { Box, Stack, styled, Typography } from '@mui/material';
 
 debugData([
   {

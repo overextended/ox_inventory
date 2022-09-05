@@ -2,7 +2,6 @@ import React, { useState } from 'react';
 import { isSlotWithItem } from '../../helpers';
 import useNuiEvent from '../../hooks/useNuiEvent';
 import { Items } from '../../store/items';
-import { Slot } from '../../typings';
 import WeightBar from '../utils/WeightBar';
 import { Box, Slide, Stack, Typography } from '@mui/material';
 import { StyledBox, StyledLabelBox, StyledLabelText, StyledSlotNumber } from './InventorySlot';

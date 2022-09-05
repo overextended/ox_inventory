@@ -1,7 +1,6 @@
-import React, { RefObject, useEffect, useRef } from 'react';
+import React, { RefObject, useRef } from 'react';
 import { DragLayerMonitor, useDragLayer, XYCoord } from 'react-dnd';
 import { DragSource } from '../../typings';
-import { Box, styled } from '@mui/material';
 
 interface DragLayerProps {
   data: DragSource;
@@ -39,20 +38,6 @@ export const calculatePointerPosition = (monitor: DragLayerMonitor, childRef: Re
   const middle = { x: bb.width / 2, y: bb.height / 2 };
   return subtract(offset, middle);
 };
-
-const StyledDrag = styled(Box)(() => ({
-  width: '7.7vh',
-  height: '7.7vh',
-  zIndex: 1,
-  position: 'fixed',
-  pointerEvents: 'none',
-  top: 0,
-  left: 0,
-  backgroundRepeat: 'no-repeat',
-  backgroundPosition: 'center',
-  backgroundSize: '7vh',
-  imageRendering: '-webkit-optimize-contrast',
-}));
 
 const DragPreview: React.FC = () => {
   const element = useRef<HTMLDivElement>(null);
