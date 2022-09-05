@@ -13,6 +13,7 @@ import { fetchNui } from './utils/fetchNui';
 import useKeyPress from './hooks/useKeyPress';
 import { useEffect } from 'react';
 import { useDragDropManager } from 'react-dnd';
+import KeyPress from './components/utils/KeyPress';
 
 debugData([
   {
@@ -68,7 +69,6 @@ debugData([
 const App: React.FC = () => {
   const dispatch = useAppDispatch();
   const manager = useDragDropManager();
-  const shiftPressed = useKeyPress('Shift');
 
   useNuiEvent<{
     locale: { [key: string]: string };
@@ -82,10 +82,6 @@ const App: React.FC = () => {
     dispatch(setupInventory({ leftInventory }));
   });
 
-  useEffect(() => {
-    dispatch(setShiftPressed(shiftPressed));
-  }, [shiftPressed, dispatch]);
-
   fetchNui('uiLoaded', {});
 
   useNuiEvent('closeInventory', () => {
@@ -97,6 +93,7 @@ const App: React.FC = () => {
       <InventoryComponent />
       <Notifications />
       <DragPreview />
+      <KeyPress />
     </Box>
   );
 };
