@@ -59,12 +59,31 @@ const UsefulControls: React.FC<Props> = ({ infoVisible, setInfoVisible }) => {
       </DialogTitle>
       <DialogContent>
         <Stack>
-          <p>[RMB] - {Locale.ui_rmb}</p>
-          <p>[CTRL + LMB] - {Locale.ui_ctrl_lmb}</p>
-          <p>[SHIFT + Drag] - {Locale.ui_shift_drag}</p>
-          <p>[CTRL + SHIFT + LMB] - {Locale.ui_ctrl_shift_lmb}</p>
-          <p>[ALT + LMB] - {Locale.ui_alt_lmb}</p>
-          <p>[CTRL + C] - {Locale.ui_ctrl_c}</p>
+          <p>
+            <kbd>RMB</kbd>
+            <br />
+            {Locale.ui_rmb}
+          </p>
+          <p>
+            <kbd>ALT + LMB</kbd>
+            <br />
+            {Locale.ui_alt_lmb}
+          </p>
+          <p>
+            <kbd>CTRL + LMB</kbd>
+            <br />
+            {Locale.ui_ctrl_lmb}
+          </p>
+          <p>
+            <kbd>SHIFT + Drag</kbd>
+            <br />
+            {Locale.ui_shift_drag}
+          </p>
+          <p>
+            <kbd>CTRL + SHIFT + LMB</kbd>
+            <br />
+            {Locale.ui_ctrl_shift_lmb}
+          </p>
         </Stack>
       </DialogContent>
       <DialogActions>
