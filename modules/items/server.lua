@@ -37,7 +37,7 @@ local trash = {
 
 ---@param internal table?
 ---@param name string?
----@return table
+---@return table?
 local function getItem(internal, name)
 	if name then
 		name = name:lower()
@@ -46,13 +46,7 @@ local function getItem(internal, name)
 			name = name:upper()
 		end
 
-		local item = ItemList[name]
-
-		if internal and not item then
-			error(("attempted to fetch data for invalid item '%s'"):format(name))
-		end
-
-		return item
+		return ItemList[name]
 	end
 
 	return ItemList
