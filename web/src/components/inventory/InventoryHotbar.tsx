@@ -53,7 +53,7 @@ const InventoryHotbar: React.FC = () => {
                   <StyledSlotNumber display="flex" justifyContent="center" alignItems="center">
                     {item.slot}
                   </StyledSlotNumber>
-                  <Stack direction="row" alignSelf="flex-end" p="5px" spacing="1.5px">
+                  <Stack direction="row" alignSelf="flex-end" p="3px" spacing="3px">
                     <Typography fontSize={12}>
                       {item.weight > 0
                         ? item.weight >= 1000

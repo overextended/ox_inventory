@@ -19,7 +19,7 @@ export let customTheme = createTheme({
 
 customTheme = createTheme({
   palette: { ...customTheme.palette },
-  typography: { fontFamily: 'Roboto' },
+  typography: { fontFamily: 'Roboto', fontSize: 12 },
   breakpoints: {
     values: {
       xs: 0,
@@ -46,6 +46,7 @@ customTheme = createTheme({
     MuiButton: {
       styleOverrides: {
         contained: {
+          fontSize: 14,
           color: customTheme.palette.secondary.contrastText,
           backgroundColor: customTheme.palette.secondary.main,
           '&:hover': {
@@ -112,7 +113,8 @@ customTheme = createTheme({
     MuiMenuItem: {
       styleOverrides: {
         gutters: {
-          padding: '6px 16px !important',
+          padding: '4px 16px !important',
+          fontSize: 16,
         },
       },
     },

@@ -51,14 +51,14 @@ export const StyledLabelText = styled(Typography)(() => ({
   textOverflow: 'ellipsis',
   paddingLeft: '3px',
   paddingRight: '3px',
-  fontWeight: 600,
-  fontSize: '13px',
+  fontWeight: 400,
+  fontSize: '12px',
 }));
 
 export const StyledSlotNumber = styled(Box)(() => ({
   backgroundColor: 'white',
   color: 'black',
-  height: '12.75px',
+  height: '12px',
   borderTopLeftRadius: '0.25vh',
   borderBottomRightRadius: '0.25vh',
   padding: '3px',
@@ -173,7 +173,7 @@ const InventorySlot: React.FC<SlotProps> = ({ inventory, item }) => {
               justifyContent={inventory.type === 'player' && item.slot <= 5 ? 'space-between' : 'flex-end'}
             >
               {inventory.type === 'player' && item.slot <= 5 && <StyledSlotNumber>{item.slot}</StyledSlotNumber>}
-              <Stack direction="row" alignSelf="flex-end" p="5px" spacing="1.5px">
+              <Stack direction="row" alignSelf="flex-end" p="3px" spacing="3px">
                 <Typography fontSize={12}>
                   {item.weight > 0
                     ? item.weight >= 1000
@@ -198,7 +198,7 @@ const InventorySlot: React.FC<SlotProps> = ({ inventory, item }) => {
                   item?.currency !== 'black_money' &&
                   item.price > 0 &&
                   item?.currency ? (
-                    <Stack direction="row" justifyContent="flex-end" alignItems="center" pr="5px">
+                    <Stack direction="row" justifyContent="flex-end" alignItems="center" pr="3px">
                       <img
                         src={item?.currency ? `${`images/${item?.currency}.png`}` : ''}
                         alt="item-image"
@@ -220,7 +220,7 @@ const InventorySlot: React.FC<SlotProps> = ({ inventory, item }) => {
                         <Stack
                           direction="row"
                           justifyContent="flex-end"
-                          pr="5px"
+                          pr="3px"
                           color={item.currency === 'money' || !item.currency ? '#2ECC71' : '#E74C3C'}
                         >
                           <Typography fontSize={14} sx={{ textShadow: '0.1vh 0.1vh 0 rgba(0, 0, 0, 0.7)' }}>
