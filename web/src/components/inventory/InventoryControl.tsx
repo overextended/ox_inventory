@@ -56,7 +56,7 @@ const InventoryControl: React.FC = () => {
       <UsefulControls infoVisible={infoVisible} setInfoVisible={setInfoVisible} />
       <Box display="flex">
         <Stack spacing={3} justifyContent="center" alignItems="center">
-          <InputBase defaultValue={itemAmount} onChange={inputHandler} type="number" />
+          <InputBase defaultValue={itemAmount} onChange={inputHandler} type="number" sx={{ boxShadow: 3 }} />
           <Button fullWidth variant="contained" ref={use}>
             {Locale.ui_use || 'Use'}
           </Button>
