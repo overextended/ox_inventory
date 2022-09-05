@@ -3,15 +3,12 @@ import InventoryComponent from './components/inventory';
 import useNuiEvent from './hooks/useNuiEvent';
 import { Items } from './store/items';
 import { Locale } from './store/locale';
-import { setShiftPressed, setupInventory } from './store/inventory';
+import { setupInventory } from './store/inventory';
 import { Inventory } from './typings';
 import { useAppDispatch } from './store';
 import { debugData } from './utils/debugData';
 import DragPreview from './components/utils/DragPreview';
-import Notifications from './components/utils/Notifications';
 import { fetchNui } from './utils/fetchNui';
-import useKeyPress from './hooks/useKeyPress';
-import { useEffect } from 'react';
 import { useDragDropManager } from 'react-dnd';
 import KeyPress from './components/utils/KeyPress';
 
@@ -91,7 +88,6 @@ const App: React.FC = () => {
   return (
     <Box sx={{ height: '100%', width: '100%', color: 'white' }}>
       <InventoryComponent />
-      <Notifications />
       <DragPreview />
       <KeyPress />
     </Box>

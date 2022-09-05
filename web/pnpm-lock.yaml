@@ -30,7 +30,6 @@ specifiers:
   react-dnd: ^14.0.4
   react-dnd-touch-backend: ^14.1.1
   react-dom: ^17.0.2
-  react-hot-toast: ^2.1.1
   react-markdown: ^7.1.1
   react-redux: ^7.2.6
   react-transition-group: ^4.4.5
@@ -62,7 +61,6 @@ dependencies:
   react-dnd: 14.0.5_3joqvbia7y5smepi7xncg3gome
   react-dnd-touch-backend: 14.1.1
   react-dom: 17.0.2_react@17.0.2
-  react-hot-toast: 2.3.0_qiux6hspzncx2s5nvxxkh5cxbe
   react-markdown: 7.1.2_skqlhrap4das3cz5b6iqdn2lqi
   react-redux: 7.2.8_sfoxds7t5ydpegc3knd667wn6m
   react-transition-group: 4.4.5_sfoxds7t5ydpegc3knd667wn6m
@@ -1085,6 +1083,7 @@ packages:
 
   /csstype/2.6.20:
     resolution: {integrity: sha512-/WwNkdXfckNgw6S5R125rrW8ez139lBHWouiBvX8dfMFtcn6V81REDqnH7+CRpRipfYlyU1CmOnOxrmGcFOjeA==}
+    dev: true
 
   /csstype/3.1.0:
     resolution: {integrity: sha512-uX1KG+x9h5hIJsaKR9xHUeUraxf8IODOwq9JLNPq6BwB04a/xgpq3rcx47l5BZu5zBPlgD342tdke3Hom/nJRA==}
@@ -1407,14 +1406,6 @@ packages:
   /globals/11.12.0:
     resolution: {integrity: sha512-WOBp/EEGUiIsJSp7wcv/y6MO+lV9UoncWqxuFfm8eBwzWNgyfBd6Gz+IeKQ9jCmyhoH99g15M3T+QaVHFjizVA==}
     engines: {node: '>=4'}
-    dev: false
-
-  /goober/2.1.10_csstype@2.6.20:
-    resolution: {integrity: sha512-7PpuQMH10jaTWm33sQgBQvz45pHR8N4l3Cu3WMGEWmHShAcTuuP7I+5/DwKo39fwti5A80WAjvqgz6SSlgWmGA==}
-    peerDependencies:
-      csstype: ^3.0.10
-    dependencies:
-      csstype: 2.6.20
     dev: false
 
   /has-flag/3.0.0:
@@ -1952,20 +1943,6 @@ packages:
       object-assign: 4.1.1
       react: 17.0.2
       scheduler: 0.20.2
-    dev: false
-
-  /react-hot-toast/2.3.0_qiux6hspzncx2s5nvxxkh5cxbe:
-    resolution: {integrity: sha512-/RxV+bfjld7tSJR1SCLzMAXgFuNW7fCpK6+vbYqfmbGSWcqTMz2rizrvfWKvtcPH5HK0NqxmBaC5SrAy1F42zA==}
-    engines: {node: '>=10'}
-    peerDependencies:
-      react: '>=16'
-      react-dom: '>=16'
-    dependencies:
-      goober: 2.1.10_csstype@2.6.20
-      react: 17.0.2
-      react-dom: 17.0.2_react@17.0.2
-    transitivePeerDependencies:
-      - csstype
     dev: false
 
   /react-is/16.13.1:

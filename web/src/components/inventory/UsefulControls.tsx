@@ -1,9 +1,19 @@
-import { Dialog, DialogActions, DialogContent, DialogTitle, IconButton, Slide, Stack, Typography } from '@mui/material';
+import {
+  Alert,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogTitle,
+  IconButton,
+  Slide,
+  Snackbar,
+  Stack,
+  Typography,
+} from '@mui/material';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faTimes } from '@fortawesome/free-solid-svg-icons';
 import { Locale } from '../../store/locale';
-import { Notify } from '../utils/Notifications';
-import React from 'react';
+import React, { useState } from 'react';
 import { TransitionProps } from '@mui/material/transitions';
 
 interface Props {
@@ -21,6 +31,8 @@ const Transition = React.forwardRef(function Transition(
 });
 
 const UsefulControls: React.FC<Props> = ({ infoVisible, setInfoVisible }) => {
+  const [open, setOpen] = useState(false);
+
   return (
     <Dialog
       open={infoVisible}
@@ -56,8 +68,18 @@ const UsefulControls: React.FC<Props> = ({ infoVisible, setInfoVisible }) => {
         </Stack>
       </DialogContent>
       <DialogActions>
-        <span onClick={() => Notify({ text: 'Made with 🐂 by the Overextended team' })}>🐂</span>
+        <span onClick={() => setOpen(true)}>🐂</span>
       </DialogActions>
+      <Snackbar
+        open={open}
+        onClose={() => setOpen(false)}
+        autoHideDuration={2000}
+        anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
+      >
+        <Alert severity="success" color="info" sx={{ width: '100%' }}>
+          Made with 🐂 by the Overextended team
+        </Alert>
+      </Snackbar>
     </Dialog>
   );
 };
