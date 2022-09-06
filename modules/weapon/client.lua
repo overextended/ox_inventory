@@ -70,6 +70,7 @@ function Weapon.Equip(item, data)
 	AddAmmoToPed(playerPed, data.hash, item.metadata.ammo or 100)
 	Wait(0)
 	RefillAmmoInstantly(playerPed)
+	SetWeaponsNoAutoswap(true)
 
 	if data.hash == `WEAPON_PETROLCAN` or data.hash == `WEAPON_HAZARDCAN` or data.hash == `WEAPON_FIREEXTINGUISHER` then
 		item.metadata.ammo = item.metadata.durability
