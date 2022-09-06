@@ -208,7 +208,7 @@ const InventorySlot: React.FC<SlotProps> = ({ inventory, item }) => {
                         }}
                       />
                       <Typography fontSize={14} sx={{ textShadow: '0.1vh 0.1vh 0 rgba(0, 0, 0, 0.7)' }}>
-                        {item.price}
+                        {item.price.toLocaleString('en-us')}
                       </Typography>
                     </Stack>
                   ) : (
@@ -222,7 +222,7 @@ const InventorySlot: React.FC<SlotProps> = ({ inventory, item }) => {
                         >
                           <Typography fontSize={14} sx={{ textShadow: '0.1vh 0.1vh 0 rgba(0, 0, 0, 0.7)' }}>
                             {Locale.$ || '$'}
-                            {item.price}
+                            {item.price.toLocaleString('en-us')}
                           </Typography>
                         </Stack>
                       )}
