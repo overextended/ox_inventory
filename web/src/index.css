@@ -33,6 +33,10 @@ input[type='number']::-webkit-outer-spin-button {
   padding: 0 !important;
 }
 
+.tooltip-markdown > p {
+  margin: 0
+}
+
 .item-drag-preview {
   width: 7.7vh;
   height: 7.7vh;

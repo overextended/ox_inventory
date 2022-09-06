@@ -5,15 +5,7 @@ import InventorySlot from './InventorySlot';
 import InventoryContext from './InventoryContext';
 import { getTotalWeight } from '../../helpers';
 import { createPortal } from 'react-dom';
-import { debugData } from '../../utils/debugData';
 import { Box, Stack, styled, Typography } from '@mui/material';
-
-debugData([
-  {
-    action: 'displayMetadata',
-    data: { ['mustard']: 'Mustard', ['ketchup']: 'Ketchup' },
-  },
-]);
 
 const StyledGrid = styled(Box)(() => ({
   display: 'grid',

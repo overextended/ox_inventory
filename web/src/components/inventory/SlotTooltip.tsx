@@ -10,7 +10,7 @@ const SlotTooltip: React.FC<{ item: Slot }> = ({ item }) => {
   const additionalMetadata = useAppSelector((state) => state.inventory.additionalMetadata);
 
   return (
-    <Stack>
+    <Stack fontSize={12}>
       <Stack justifyContent="space-between" direction="row" alignItems="center">
         <Typography fontSize={15}>
           {item.metadata?.label || (item.name && Items[item.name]?.label) || item.name}
@@ -20,7 +20,9 @@ const SlotTooltip: React.FC<{ item: Slot }> = ({ item }) => {
       <Divider />
       {(item.metadata?.description || (item.name && Items[item.name]?.description)) && (
         <Typography>
-          <ReactMarkdown>{item.metadata?.description || (item.name && Items[item.name]?.description)}</ReactMarkdown>
+          <ReactMarkdown className="tooltip-markdown">
+            {item.metadata?.description || (item.name && Items[item.name]?.description)}
+          </ReactMarkdown>
         </Typography>
       )}
       {item.durability !== undefined && (

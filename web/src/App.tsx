@@ -30,9 +30,8 @@ debugData([
             name: 'water',
             weight: 3000,
             metadata: {
-              durability: 100,
-              description: `# Testing something  \n**Yes**`,
-              serial: 'SUPERCOOLWATER9725',
+              description: `name: Svetozar Miletic  \n Gender: Male`,
+              ammo: 3,
               mustard: '60%',
               ketchup: '30%',
               mayo: '10%',
@@ -76,7 +75,7 @@ const App: React.FC = () => {
   }>('init', ({ locale, items, leftInventory, imagepath }) => {
     for (const [name, data] of Object.entries(locale)) Locale[name] = data;
     for (const [name, data] of Object.entries(items)) Items[name] = data;
-    setImagePath(imagepath)
+    setImagePath(imagepath);
 
     dispatch(setupInventory({ leftInventory }));
   });
