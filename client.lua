@@ -397,7 +397,10 @@ local table = lib.table
 local Shops = client.shops
 local Inventory = client.inventory
 
+---@todo remove or replace when the bridge module gets restructured
 function OnPlayerData(key, val)
+	if key ~= 'groups' and key ~= 'ped' and key ~= 'dead' then return end
+
 	if key == 'groups' then
 		Inventory.Stashes()
 		Inventory.Evidence()
@@ -932,7 +935,6 @@ RegisterNetEvent('ox_inventory:setPlayerInventory', function(currentDrops, inven
 	registerCommands()
 	TriggerEvent('ox_inventory:updateInventory', PlayerData.inventory)
 	lib.notify({ description = shared.locale('inventory_setup') })
-	Utils.WeaponWheel(false)
 
 	local function nearbyLicense(self)
 		---@diagnostic disable-next-line: param-type-mismatch
