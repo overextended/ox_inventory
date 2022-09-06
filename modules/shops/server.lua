@@ -179,7 +179,7 @@ lib.callback.register('ox_inventory:buyItem', function(source, data)
 					if fromData.price >= 500 then
 
 						Log(('%s %s'):format(playerInv.label, message:lower()),
-							'buyItem', playerInv.owner, shop.label
+							playerInv.owner, shop.label
 						)
 
 					end
