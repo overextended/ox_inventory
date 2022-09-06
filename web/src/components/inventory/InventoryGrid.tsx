@@ -5,16 +5,7 @@ import InventorySlot from './InventorySlot';
 import InventoryContext from './InventoryContext';
 import { getTotalWeight } from '../../helpers';
 import { createPortal } from 'react-dom';
-import { Box, Stack, styled, Typography } from '@mui/material';
-
-const StyledGrid = styled(Box)(() => ({
-  display: 'grid',
-  height: 'calc((5 * 10.42vh) + (5 * 2px))',
-  gridTemplateColumns: 'repeat(5, 10.2vh)',
-  gridAutoRows: '10.42vh',
-  gap: '2px',
-  overflowY: 'scroll',
-}));
+import { Typography } from '@mui/material';
 
 const InventoryGrid: React.FC<{ inventory: Inventory }> = ({ inventory }) => {
   const weight = React.useMemo(
@@ -24,27 +15,27 @@ const InventoryGrid: React.FC<{ inventory: Inventory }> = ({ inventory }) => {
 
   return (
     <>
-      <Stack spacing={1}>
-        <Box>
-          <Stack direction="row" justifyContent="space-between">
-            <Typography fontSize={16}>{inventory.label}</Typography>
+      <div className="inventory-grid-wrapper">
+        <div>
+          <div className="inventory-grid-header-wrapper">
+            <Typography style={{ fontSize: 16 }}>{inventory.label}</Typography>
             {inventory.maxWeight && (
-              <Typography fontSize={16}>
+              <Typography style={{ fontSize: 16 }}>
                 {weight / 1000}/{inventory.maxWeight / 1000}kg
               </Typography>
             )}
-          </Stack>
+          </div>
           <WeightBar percent={inventory.maxWeight ? (weight / inventory.maxWeight) * 100 : 0} />
-        </Box>
-        <StyledGrid>
+        </div>
+        <div className="inventory-grid-container">
           <>
             {inventory.items.map((item) => (
               <InventorySlot key={`${inventory.type}-${inventory.id}-${item.slot}`} item={item} inventory={inventory} />
             ))}
             {inventory.type === 'player' && createPortal(<InventoryContext />, document.body)}
           </>
-        </StyledGrid>
-      </Stack>
+        </div>
+      </div>
     </>
   );
 };

@@ -1,5 +1,4 @@
 import React from 'react';
-import { Box } from '@mui/material';
 
 const colorChannelMixer = (colorChannelA: number, colorChannelB: number, amountToMix: number) => {
   let channelA = colorChannelA * amountToMix;
@@ -35,8 +34,8 @@ const WeightBar: React.FC<{ percent: number; durability?: boolean }> = ({ percen
   );
 
   return (
-    <Box
-      sx={
+    <div
+      style={
         durability
           ? {
               background: 'rgba(0, 0, 0, 0.5)',
@@ -52,7 +51,7 @@ const WeightBar: React.FC<{ percent: number; durability?: boolean }> = ({ percen
             }
       }
     >
-      <Box
+      <div
         style={{
           visibility: percent > 0 ? 'visible' : 'hidden',
           height: '100%',
@@ -60,8 +59,8 @@ const WeightBar: React.FC<{ percent: number; durability?: boolean }> = ({ percen
           backgroundColor: color,
           transition: `background ${0.3}s ease, width ${0.3}s ease`,
         }}
-      ></Box>
-    </Box>
+      ></div>
+    </div>
   );
 };
 export default WeightBar;

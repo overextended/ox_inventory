@@ -43,22 +43,12 @@ const UsefulControls: React.FC<Props> = ({ infoVisible, setInfoVisible }) => {
     >
       <DialogTitle>
         <Typography fontSize={18}>{Locale.ui_usefulcontrols}</Typography>
-        <IconButton
-          aria-label="close"
-          onClick={() => setInfoVisible(false)}
-          sx={{
-            position: 'absolute',
-            right: 8,
-            top: 8,
-            borderRadius: '4px',
-            color: (theme) => theme.palette.grey[500],
-          }}
-        >
+        <IconButton className="useful-controls-exit-button" aria-label="close" onClick={() => setInfoVisible(false)}>
           <FontAwesomeIcon icon={faTimes} />
         </IconButton>
       </DialogTitle>
       <DialogContent>
-        <Stack>
+        <div className="useful-controls-content-wrapper">
           <p>
             <kbd>RMB</kbd>
             <br />
@@ -84,7 +74,7 @@ const UsefulControls: React.FC<Props> = ({ infoVisible, setInfoVisible }) => {
             <br />
             {Locale.ui_ctrl_shift_lmb}
           </p>
-        </Stack>
+        </div>
       </DialogContent>
       <DialogActions>
         <span onClick={() => setOpen(true)}>🐂</span>

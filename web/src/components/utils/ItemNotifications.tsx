@@ -2,8 +2,7 @@ import React from 'react';
 import { createPortal } from 'react-dom';
 import { TransitionGroup } from 'react-transition-group';
 import useNuiEvent from '../../hooks/useNuiEvent';
-import { Box, Stack, styled, Typography, Fade } from '@mui/material';
-import { StyledBox, StyledLabelBox, StyledLabelText } from '../inventory/InventorySlot';
+import { Typography, Fade } from '@mui/material';
 import useQueue from '../../hooks/useQueue';
 import { Locale } from '../../store/locale';
 import { imagepath } from '../../store/imagepath';
@@ -24,53 +23,28 @@ export const useItemNotifications = () => {
   return itemNotificationsContext;
 };
 
-const StyledTransitionGroup = styled(TransitionGroup)(() => ({
-  display: 'flex',
-  overflowX: 'scroll',
-  flexWrap: 'nowrap',
-  gap: '2px',
-  position: 'absolute',
-  bottom: '20vh',
-  left: '50%',
-  width: '100%',
-  marginLeft: 'calc(50% - 5.21vh)',
-  transform: 'translateX(-50%)',
-}));
-
-const StyledActionBox = styled(Box)(({ theme }) => ({
-  width: '100%',
-  color: theme.palette.primary.contrastText,
-  backgroundColor: theme.palette.secondary.main,
-  textTransform: 'uppercase',
-  textAlign: 'center',
-  borderTopLeftRadius: '0.25vh',
-  borderTopRightRadius: '0.25vh',
-}));
-
-const ItemBox = styled(StyledBox)(() => ({
-  height: '10.42vh',
-  width: '10.42vh',
-}));
-
 const ItemNotification = React.forwardRef(
   (props: { item: ItemNotificationProps; style?: React.CSSProperties }, ref: React.ForwardedRef<HTMLDivElement>) => {
     return (
-      <ItemBox
-        style={props.style}
-        sx={{ backgroundImage: `url(${`${imagepath}/${props.item.image}.png`})` || 'none' }}
+      <div
+        className="item-notification-item-box"
+        style={{
+          backgroundImage: `url(${`${imagepath}/${props.item.image}.png`})` || 'none',
+          ...props.style,
+        }}
         ref={ref}
       >
-        <Stack justifyContent="space-between" sx={{ height: '100%' }}>
-          <StyledActionBox>
+        <div className="item-slot-wrapper">
+          <div className="item-notification-action-box">
             <Typography fontSize={11} p="2px" fontWeight={600}>
               {props.item.text}
             </Typography>
-          </StyledActionBox>
-          <StyledLabelBox>
-            <StyledLabelText>{props.item.label}</StyledLabelText>
-          </StyledLabelBox>
-        </Stack>
-      </ItemBox>
+          </div>
+          <div className="inventory-slot-label-box">
+            <div className="inventory-slot-label-text">{props.item.label}</div>
+          </div>
+        </div>
+      </div>
     );
   }
 );
@@ -105,13 +79,13 @@ export const ItemNotificationsProvider = ({ children }: { children: React.ReactN
     <ItemNotificationsContext.Provider value={{ add }}>
       {children}
       {createPortal(
-        <StyledTransitionGroup>
+        <TransitionGroup className="item-notification-container">
           {queue.values.map((notification, index) => (
             <Fade key={`item-notification-${index}`}>
               <ItemNotification item={notification.item} ref={notification.ref} />
             </Fade>
           ))}
-        </StyledTransitionGroup>,
+        </TransitionGroup>,
         document.body
       )}
     </ItemNotificationsContext.Provider>

@@ -9,20 +9,8 @@ import { fetchNui } from '../../utils/fetchNui';
 import { faInfoCircle } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { Locale } from '../../store/locale';
-import { Box, Button, IconButton, InputBase, Stack, styled } from '@mui/material';
+import { IconButton } from '@mui/material';
 import UsefulControls from './UsefulControls';
-
-const StyledIconButton = styled(IconButton)(({ theme }) => ({
-  position: 'absolute',
-  bottom: 25,
-  right: 25,
-  transition: '200ms',
-  borderRadius: '4px',
-  backgroundColor: theme.palette.secondary.main,
-  '&:hover': {
-    backgroundColor: theme.palette.secondary.light,
-  },
-}));
 
 const InventoryControl: React.FC = () => {
   const itemAmount = useAppSelector(selectItemAmount);
@@ -53,24 +41,24 @@ const InventoryControl: React.FC = () => {
   return (
     <>
       <UsefulControls infoVisible={infoVisible} setInfoVisible={setInfoVisible} />
-      <Box display="flex">
-        <Stack spacing={3} justifyContent="center" alignItems="center">
-          <InputBase defaultValue={itemAmount} onChange={inputHandler} type="number" sx={{ boxShadow: 3 }} />
-          <Button fullWidth variant="contained" ref={use}>
+      <div className="inventory-control">
+        <div className="inventory-control-wrapper">
+          <input className="inventory-control-input" type="number" defaultValue={itemAmount} onChange={inputHandler} />
+          <button className="inventory-control-button" ref={use}>
             {Locale.ui_use || 'Use'}
-          </Button>
-          <Button fullWidth variant="contained" ref={give}>
+          </button>
+          <button className="inventory-control-button" ref={give}>
             {Locale.ui_give || 'Give'}
-          </Button>
-          <Button fullWidth variant="contained" onClick={() => fetchNui('exit')}>
+          </button>
+          <button className="inventory-control-button" onClick={() => fetchNui('exit')}>
             {Locale.ui_close || 'Close'}
-          </Button>
-        </Stack>
-      </Box>
+          </button>
+        </div>
+      </div>
 
-      <StyledIconButton size="large" onClick={() => setInfoVisible(true)}>
+      <IconButton className="useful-controls-button" size="large" onClick={() => setInfoVisible(true)}>
         <FontAwesomeIcon icon={faInfoCircle} />
-      </StyledIconButton>
+      </IconButton>
     </>
   );
 };

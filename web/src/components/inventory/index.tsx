@@ -38,11 +38,11 @@ const Inventory: React.FC = () => {
   return (
     <>
       <Fade in={inventoryVisible} unmountOnExit>
-        <Stack direction="row" justifyContent="center" alignItems="center" height="100%" spacing={2}>
+        <div className="inventory-wrapper">
           <LeftInventory />
           <InventoryControl />
           <RightInventory />
-        </Stack>
+        </div>
       </Fade>
       <InventoryHotbar />
     </>

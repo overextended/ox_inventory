@@ -5,11 +5,11 @@ import { DndProvider } from 'react-dnd';
 import { TouchBackend } from 'react-dnd-touch-backend';
 import { store } from './store';
 import App from './App';
-import './index.css';
+import './index.scss';
 import { ItemNotificationsProvider } from './components/utils/ItemNotifications';
 import { isEnvBrowser } from './utils/misc';
 import { ThemeProvider } from '@mui/material';
-import { customTheme } from './theme';
+import { createTheme } from '@mui/material';
 
 if (isEnvBrowser()) {
   const root = document.getElementById('root');
@@ -24,7 +24,7 @@ if (isEnvBrowser()) {
 ReactDOM.render(
   <React.StrictMode>
     <Provider store={store}>
-      <ThemeProvider theme={customTheme}>
+      <ThemeProvider theme={createTheme({ palette: { mode: 'dark' } })}>
         <DndProvider backend={TouchBackend} options={{ enableMouseEvents: true }}>
           <ItemNotificationsProvider>
             <App />

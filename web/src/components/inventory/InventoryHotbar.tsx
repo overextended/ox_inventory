@@ -3,8 +3,7 @@ import { isSlotWithItem } from '../../helpers';
 import useNuiEvent from '../../hooks/useNuiEvent';
 import { Items } from '../../store/items';
 import WeightBar from '../utils/WeightBar';
-import { Box, Slide, Stack, Typography } from '@mui/material';
-import { StyledBox, StyledLabelBox, StyledLabelText, StyledSlotNumber } from './InventorySlot';
+import { Slide, Typography } from '@mui/material';
 import { useAppSelector } from '../../store';
 import { selectLeftInventory } from '../../store/inventory';
 import { imagepath } from '../../store/imagepath';
@@ -27,30 +26,22 @@ const InventoryHotbar: React.FC = () => {
 
   return (
     <Slide in={hotbarVisible} direction="up" unmountOnExit>
-      <Box
-        display="flex"
-        alignItems="center"
-        gap="2px"
-        justifyContent="center"
-        width="100%"
-        sx={{ position: 'absolute', bottom: '2vh' }}
-      >
+      <div className="hotbar-container">
         {items.map((item) => (
-          <StyledBox
-            width="10.42vh"
-            height="10.42vh"
+          <div
+            className="hotbar-item-slot"
             style={{
+              width: '10.42vh',
+              height: '10.42vh',
               backgroundImage: `url(${`${imagepath}/${item.metadata?.image ? item.metadata.image : item.name}.png`})`,
             }}
             key={`hotbar-${item.slot}`}
           >
             {isSlotWithItem(item) && (
-              <Stack justifyContent="space-between" height="100%">
-                <Stack direction="row" justifyContent="space-between">
-                  <StyledSlotNumber display="flex" justifyContent="center" alignItems="center">
-                    {item.slot}
-                  </StyledSlotNumber>
-                  <Stack direction="row" alignSelf="flex-end" p="3px" spacing="3px">
+              <div className="item-slot-wrapper">
+                <div className="hotbar-slot-header-wrapper">
+                  <div className="inventory-slot-number">{item.slot}</div>
+                  <div className="item-slot-info-wrapper">
                     <Typography fontSize={12}>
                       {item.weight > 0
                         ? item.weight >= 1000
@@ -63,21 +54,21 @@ const InventoryHotbar: React.FC = () => {
                         : ''}
                     </Typography>
                     <Typography fontSize={12}>{item.count ? item.count.toLocaleString('en-us') + `x` : ''}</Typography>
-                  </Stack>
-                </Stack>
-                <Box>
+                  </div>
+                </div>
+                <div>
                   {item?.durability !== undefined && <WeightBar percent={item.durability} durability />}
-                  <StyledLabelBox>
-                    <StyledLabelText>
+                  <div className="inventory-slot-label-box">
+                    <div className="inventory-slot-label-text">
                       {item.metadata?.label ? item.metadata.label : Items[item.name]?.label || item.name}
-                    </StyledLabelText>
-                  </StyledLabelBox>
-                </Box>
-              </Stack>
+                    </div>
+                  </div>
+                </div>
+              </div>
             )}
-          </StyledBox>
+          </div>
         ))}
-      </Box>
+      </div>
     </Slide>
   );
 };

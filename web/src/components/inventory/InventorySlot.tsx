@@ -10,7 +10,7 @@ import { Items } from '../../store/items';
 import { isSlotWithItem } from '../../helpers';
 import { onUse } from '../../dnd/onUse';
 import { Locale } from '../../store/locale';
-import { Typography, Tooltip, styled, Box, Stack } from '@mui/material';
+import { Typography, Tooltip } from '@mui/material';
 import SlotTooltip from './SlotTooltip';
 import { setContextMenu } from '../../store/inventory';
 import { imagepath } from '../../store/imagepath';
@@ -19,52 +19,6 @@ interface SlotProps {
   inventory: Inventory;
   item: Slot;
 }
-
-export const StyledBox = styled(Box)(({ theme }) => ({
-  backgroundColor: theme.palette.secondary.main,
-  backgroundRepeat: 'no-repeat',
-  backgroundPosition: 'center',
-  borderRadius: '0.25vh',
-  imageRendering: '-webkit-optimize-contrast',
-  position: 'relative',
-  backgroundSize: '7vh',
-  color: theme.palette.primary.contrastText,
-  borderColor: 'rgba(0,0,0,0.2)',
-  borderStyle: 'inset',
-  borderWidth: 1,
-}));
-
-export const StyledLabelBox = styled(Box)(({ theme }) => ({
-  backgroundColor: theme.palette.primary.main,
-  color: theme.palette.primary.contrastText,
-  textAlign: 'center',
-  borderBottomLeftRadius: '0.25vh',
-  borderBottomRightRadius: '0.25vh',
-  borderTopColor: 'rgba(0,0,0,0.2)',
-  borderTopStyle: 'inset',
-  borderTopWidth: 1,
-}));
-
-export const StyledLabelText = styled(Typography)(() => ({
-  textTransform: 'uppercase',
-  whiteSpace: 'nowrap',
-  overflow: 'hidden',
-  textOverflow: 'ellipsis',
-  paddingLeft: '3px',
-  paddingRight: '3px',
-  fontWeight: 400,
-  fontSize: '12px',
-}));
-
-export const StyledSlotNumber = styled(Box)(() => ({
-  backgroundColor: 'white',
-  color: 'black',
-  height: '12px',
-  borderTopLeftRadius: '0.25vh',
-  borderBottomRightRadius: '0.25vh',
-  padding: '3px',
-  fontSize: '12px',
-}));
 
 const InventorySlot: React.FC<SlotProps> = ({ inventory, item }) => {
   const isBusy = useAppSelector(selectIsBusy);
@@ -153,10 +107,11 @@ const InventorySlot: React.FC<SlotProps> = ({ inventory, item }) => {
       enterDelay={500}
       enterNextDelay={500}
     >
-      <StyledBox
+      <div
         ref={connectRef}
         onContextMenu={handleContext}
         onClick={handleClick}
+        className="inventory-slot"
         style={{
           opacity: isDragging ? 0.4 : 1.0,
           backgroundImage: `url(${`${imagepath}/${item.metadata?.image ? item.metadata.image : item.name}.png`})`,
@@ -164,13 +119,15 @@ const InventorySlot: React.FC<SlotProps> = ({ inventory, item }) => {
         }}
       >
         {isSlotWithItem(item) && (
-          <Stack justifyContent="space-between" height="100%">
-            <Stack
-              direction="row"
-              justifyContent={inventory.type === 'player' && item.slot <= 5 ? 'space-between' : 'flex-end'}
+          <div className="item-slot-wrapper">
+            <div
+              className="item-slot-header-wrapper"
+              style={{ justifyContent: inventory.type === 'player' && item.slot <= 5 ? 'space-between' : 'flex-end' }}
             >
-              {inventory.type === 'player' && item.slot <= 5 && <StyledSlotNumber>{item.slot}</StyledSlotNumber>}
-              <Stack direction="row" alignSelf="flex-end" p="3px" spacing="3px">
+              {inventory.type === 'player' && item.slot <= 5 && (
+                <div className="inventory-slot-number">{item.slot}</div>
+              )}
+              <div className="item-slot-info-wrapper">
                 <Typography fontSize={12}>
                   {item.weight > 0
                     ? item.weight >= 1000
@@ -183,9 +140,9 @@ const InventorySlot: React.FC<SlotProps> = ({ inventory, item }) => {
                     : ''}
                 </Typography>
                 <Typography fontSize={12}>{item.count ? item.count.toLocaleString('en-us') + `x` : ''}</Typography>
-              </Stack>
-            </Stack>
-            <Box>
+              </div>
+            </div>
+            <div>
               {inventory.type !== 'shop' && item?.durability !== undefined && (
                 <WeightBar percent={item.durability} durability />
               )}
@@ -195,7 +152,7 @@ const InventorySlot: React.FC<SlotProps> = ({ inventory, item }) => {
                   item?.currency !== 'black_money' &&
                   item.price > 0 &&
                   item?.currency ? (
-                    <Stack direction="row" justifyContent="flex-end" alignItems="center" pr="3px">
+                    <div className="item-slot-currency-wrapper">
                       <img
                         src={item?.currency ? `${`${imagepath}/${item?.currency}.png`}` : ''}
                         alt="item-image"
@@ -210,35 +167,33 @@ const InventorySlot: React.FC<SlotProps> = ({ inventory, item }) => {
                       <Typography fontSize={14} sx={{ textShadow: '0.1vh 0.1vh 0 rgba(0, 0, 0, 0.7)' }}>
                         {item.price.toLocaleString('en-us')}
                       </Typography>
-                    </Stack>
+                    </div>
                   ) : (
                     <>
                       {item.price > 0 && (
-                        <Stack
-                          direction="row"
-                          justifyContent="flex-end"
-                          pr="3px"
-                          color={item.currency === 'money' || !item.currency ? '#2ECC71' : '#E74C3C'}
+                        <div
+                          className="item-slot-price-wrapper"
+                          style={{ color: item.currency === 'money' || !item.currency ? '#2ECC71' : '#E74C3C' }}
                         >
                           <Typography fontSize={14} sx={{ textShadow: '0.1vh 0.1vh 0 rgba(0, 0, 0, 0.7)' }}>
                             {Locale.$ || '$'}
                             {item.price.toLocaleString('en-us')}
                           </Typography>
-                        </Stack>
+                        </div>
                       )}
                     </>
                   )}
                 </>
               )}
-              <StyledLabelBox>
-                <StyledLabelText>
+              <div className="inventory-slot-label-box">
+                <div className="inventory-slot-label-text">
                   {item.metadata?.label ? item.metadata.label : Items[item.name]?.label || item.name}
-                </StyledLabelText>
-              </StyledLabelBox>
-            </Box>
-          </Stack>
+                </div>
+              </div>
+            </div>
+          </div>
         )}
-      </StyledBox>
+      </div>
     </Tooltip>
   );
 };

@@ -20,7 +20,7 @@ debugData([
       leftInventory: {
         id: 'test',
         type: 'player',
-        slots: 10,
+        slots: 50,
         name: 'Bob Smith',
         weight: 3000,
         maxWeight: 5000,
@@ -53,7 +53,7 @@ debugData([
       rightInventory: {
         id: 'shop',
         type: 'shop',
-        slots: 10,
+        slots: 50,
         name: 'Bob Smith',
         weight: 3000,
         maxWeight: 5000,
