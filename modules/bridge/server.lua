@@ -331,14 +331,14 @@ elseif shared.framework == 'qb' then
 
 	function server.hasLicense(inv, license)
 		local player = server.GetPlayerFromId(inv.id)
-		return player and player.PlayerData.metadata[license]
+		return player and player.PlayerData.metadata.licences[license]
 	end
 
 	function server.buyLicense(inv, license)
 		local player = server.GetPlayerFromId(inv.id)
 		if not player then return end
 
-		if player.PlayerData.metadata.licences.weapon then
+		if player.PlayerData.metadata.licences[license] then
 			return false, 'has_weapon_license'
 		elseif Inventory.GetItem(inv, 'money', false, true) < license.price then
 			return false, 'poor_weapon_license'
