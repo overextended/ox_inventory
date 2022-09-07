@@ -37,7 +37,7 @@ const Inventory: React.FC = () => {
 
   return (
     <>
-      <Fade in={inventoryVisible} unmountOnExit>
+      <Fade in={inventoryVisible}>
         <div className="inventory-wrapper">
           <LeftInventory />
           <InventoryControl />

@@ -106,6 +106,7 @@ const InventorySlot: React.FC<SlotProps> = ({ inventory, item }) => {
       placement="right-start"
       enterDelay={500}
       enterNextDelay={500}
+      PopperProps={{ disablePortal: true }}
     >
       <div
         ref={connectRef}
@@ -139,7 +140,7 @@ const InventorySlot: React.FC<SlotProps> = ({ inventory, item }) => {
                         })}g `
                     : ''}
                 </p>
-                <p >{item.count ? item.count.toLocaleString('en-us') + `x` : ''}</p>
+                <p>{item.count ? item.count.toLocaleString('en-us') + `x` : ''}</p>
               </div>
             </div>
             <div>
@@ -164,9 +165,7 @@ const InventorySlot: React.FC<SlotProps> = ({ inventory, item }) => {
                           transform: 'translateZ(0)',
                         }}
                       />
-                      <p>
-                        {item.price.toLocaleString('en-us')}
-                      </p>
+                      <p>{item.price.toLocaleString('en-us')}</p>
                     </div>
                   ) : (
                     <>
