@@ -12,53 +12,53 @@ const SlotTooltip: React.FC<{ item: Slot }> = ({ item }) => {
   return (
     <div className="tooltip-wrapper">
       <div className="tooltip-header-wrapper">
-        <Typography fontSize={15}>
+        <p>
           {item.metadata?.label || (item.name && Items[item.name]?.label) || item.name}
-        </Typography>
-        <Typography fontSize={15}>{item.metadata?.type}</Typography>
+        </p>
+        <p>{item.metadata?.type}</p>
       </div>
       <Divider />
       {(item.metadata?.description || (item.name && Items[item.name]?.description)) && (
-        <Typography fontSize={14}>
+        <p>
           <ReactMarkdown className="tooltip-markdown">
             {item.metadata?.description || (item.name && Items[item.name]?.description)}
           </ReactMarkdown>
-        </Typography>
+        </p>
       )}
       {item.durability !== undefined && (
-        <Typography fontSize={14}>
+        <p>
           {Locale.ui_durability}: {item.durability}
-        </Typography>
+        </p>
       )}
       {item.metadata?.ammo !== undefined && (
-        <Typography fontSize={14}>
+        <p>
           {Locale.ui_ammo}: {item.metadata.ammo}
-        </Typography>
+        </p>
       )}
       {item.metadata?.serial && (
-        <Typography fontSize={14}>
+        <p>
           {Locale.ui_serial}: {item.metadata.serial}
-        </Typography>
+        </p>
       )}
       {item.metadata?.components && item.metadata?.components[0] && (
-        <Typography fontSize={14}>
+        <p>
           {Locale.ui_components}:{' '}
           {(item.metadata?.components).map((component: string, index: number, array: []) =>
             index + 1 === array.length ? Items[component]?.label : Items[component]?.label + ', '
           )}
-        </Typography>
+        </p>
       )}
       {item.metadata?.weapontint && (
-        <Typography fontSize={14}>
+        <p>
           {Locale.ui_tint}: {item.metadata.weapontint}
-        </Typography>
+        </p>
       )}
       {Object.keys(additionalMetadata).map((data: string, index: number) => (
         <Fragment key={`metadata-${index}`}>
           {item.metadata && item.metadata[data] && (
-            <Typography fontSize={14}>
+            <p>
               {additionalMetadata[data]}: {item.metadata[data]}
-            </Typography>
+            </p>
           )}
         </Fragment>
       ))}

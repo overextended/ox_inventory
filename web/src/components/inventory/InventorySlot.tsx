@@ -128,7 +128,7 @@ const InventorySlot: React.FC<SlotProps> = ({ inventory, item }) => {
                 <div className="inventory-slot-number">{item.slot}</div>
               )}
               <div className="item-slot-info-wrapper">
-                <Typography fontSize={12}>
+                <p>
                   {item.weight > 0
                     ? item.weight >= 1000
                       ? `${(item.weight / 1000).toLocaleString('en-us', {
@@ -138,8 +138,8 @@ const InventorySlot: React.FC<SlotProps> = ({ inventory, item }) => {
                           minimumFractionDigits: 0,
                         })}g `
                     : ''}
-                </Typography>
-                <Typography fontSize={12}>{item.count ? item.count.toLocaleString('en-us') + `x` : ''}</Typography>
+                </p>
+                <p >{item.count ? item.count.toLocaleString('en-us') + `x` : ''}</p>
               </div>
             </div>
             <div>
@@ -164,9 +164,9 @@ const InventorySlot: React.FC<SlotProps> = ({ inventory, item }) => {
                           transform: 'translateZ(0)',
                         }}
                       />
-                      <Typography fontSize={14} sx={{ textShadow: '0.1vh 0.1vh 0 rgba(0, 0, 0, 0.7)' }}>
+                      <p>
                         {item.price.toLocaleString('en-us')}
-                      </Typography>
+                      </p>
                     </div>
                   ) : (
                     <>
@@ -175,10 +175,10 @@ const InventorySlot: React.FC<SlotProps> = ({ inventory, item }) => {
                           className="item-slot-price-wrapper"
                           style={{ color: item.currency === 'money' || !item.currency ? '#2ECC71' : '#E74C3C' }}
                         >
-                          <Typography fontSize={14} sx={{ textShadow: '0.1vh 0.1vh 0 rgba(0, 0, 0, 0.7)' }}>
+                          <p>
                             {Locale.$ || '$'}
                             {item.price.toLocaleString('en-us')}
-                          </Typography>
+                          </p>
                         </div>
                       )}
                     </>

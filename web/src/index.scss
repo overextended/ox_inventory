@@ -262,6 +262,9 @@ button:active {
   flex-direction: column;
   justify-content: space-between;
   height: 100%;
+  p {
+    font-size: 12px;
+  }
 }
 
 .item-slot-header-wrapper {
@@ -283,6 +286,10 @@ button:active {
   justify-content: flex-end;
   align-items: center;
   padding-right: 3px;
+  p {
+    font-size: 14px;
+    text-shadow: 0.1vh 0.1vh 0 rgba(0, 0, 0, 0.7);
+  }
 }
 
 .item-slot-price-wrapper {
@@ -290,6 +297,10 @@ button:active {
   flex-direction: row;
   justify-content: flex-end;
   padding-right: 3px;
+  p {
+    font-size: 14px;
+    text-shadow: 0.1vh 0.1vh 0 rgba(0, 0, 0, 0.7);
+  }
 }
 
 // slot tooltip
@@ -307,7 +318,10 @@ button:active {
 .tooltip-wrapper {
   display: flex;
   flex-direction: column;
-  font-size: 12px;
+  p {
+    font-size: 14px;
+    font-weight: 400;
+  }
 }
 
 .tooltip-header-wrapper {
@@ -315,7 +329,10 @@ button:active {
   flex-direction: row;
   justify-content: space-between;
   align-items: center;
-  font-size: 15px;
+  p {
+    font-size: 15px;
+    font-weight: 400;
+  }
 }
 
 // hotbar
