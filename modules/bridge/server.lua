@@ -130,7 +130,7 @@ elseif shared.framework == 'esx' then
 	end
 
 	function server.hasLicense(inv, license)
-		return db.selectLicense(license, inv.id)
+		return db.selectLicense(license, inv.owner)
 	end
 
 	function server.buyLicense(inv, license)
