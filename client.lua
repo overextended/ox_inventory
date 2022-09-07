@@ -397,7 +397,10 @@ local table = lib.table
 local Shops = client.shops
 local Inventory = client.inventory
 
+---@todo remove or replace when the bridge module gets restructured
 function OnPlayerData(key, val)
+	if key ~= 'groups' and key ~= 'ped' and key ~= 'dead' then return end
+
 	if key == 'groups' then
 		Inventory.Stashes()
 		Inventory.Evidence()
@@ -824,13 +827,9 @@ end)
 
 lib.onCache('seat', function(seat)
 	if seat then
-		Utils.WeaponWheel(true)
-
-		return SetTimeout(50, function()
-			if not DoesVehicleHaveWeapons(cache.vehicle) then
-				Utils.WeaponWheel(false)
-			end
-		end)
+		if DoesVehicleHaveWeapons(cache.vehicle) then
+			return Utils.WeaponWheel(true)
+		end
 	end
 
 	Utils.WeaponWheel(false)
@@ -852,7 +851,11 @@ RegisterNetEvent('ox_inventory:setPlayerInventory', function(currentDrops, inven
 	if setStateBagHandler then setStateBagHandler(('player:%s'):format(source)) end
 
 	for _, data in pairs(inventory) do
-		Items[data.name].count += data.count
+		local item = Items[data.name]
+
+		if item then
+			item.count += data.count
+		end
 	end
 
 	local phone = Items.phone
@@ -933,7 +936,6 @@ RegisterNetEvent('ox_inventory:setPlayerInventory', function(currentDrops, inven
 	registerCommands()
 	TriggerEvent('ox_inventory:updateInventory', PlayerData.inventory)
 	lib.notify({ description = shared.locale('inventory_setup') })
-	Utils.WeaponWheel(false)
 
 	local function nearbyLicense(self)
 		---@diagnostic disable-next-line: param-type-mismatch
@@ -1268,13 +1270,18 @@ RegisterNUICallback('swapItems', function(data, cb)
 
 	local success, response, weaponSlot = lib.callback.await('ox_inventory:swapItems', false, data)
 
-	if response then
-		updateInventory(response.items, response.weight)
-	end
+	if success then
+		if response then
+			updateInventory(response.items, response.weight)
 
-	if weaponSlot and currentWeapon then
-		currentWeapon.slot = weaponSlot
-		TriggerEvent('ox_inventory:currentWeapon', currentWeapon)
+			if weaponSlot and currentWeapon then
+				currentWeapon.slot = weaponSlot
+				TriggerEvent('ox_inventory:currentWeapon', currentWeapon)
+			end
+
+		end
+	elseif response then
+		lib.notify({ type = 'error', description = shared.locale(response) })
 	end
 
 	if data.toType == 'newdrop' then

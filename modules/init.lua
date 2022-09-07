@@ -96,6 +96,8 @@ if shared.framework == 'ox' then
 	end
 
 	func()
+
+	Ox = Ox
 end
 
 ---@param name string
