@@ -1,7 +1,6 @@
 import { isSlotWithItem } from '../helpers';
 import { store } from '../store';
 import { DragSource, DropTarget } from '../typings';
-import toast from 'react-hot-toast';
 import { Items } from '../store/items';
 import { buyItem } from '../thunks/buyItem';
 
@@ -15,10 +14,7 @@ export const onBuy = (source: DragSource, target: DropTarget) => {
 
   if (!isSlotWithItem(sourceSlot)) throw new Error(`Item ${sourceSlot.slot} name === undefined`);
 
-  if (sourceSlot.count === 0) {
-    toast.error('Out of stock');
-    return;
-  }
+  if (sourceSlot.count === 0) return;
 
   const sourceData = Items[sourceSlot.name];
 

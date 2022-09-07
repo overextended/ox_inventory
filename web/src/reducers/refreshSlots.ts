@@ -4,9 +4,7 @@ import { InventoryType, Slot, State } from '../typings';
 
 export const refreshSlotsReducer: CaseReducer<
   State,
-  PayloadAction<
-    { item: Slot; inventory?: InventoryType }[] | { item: Slot; inventory?: InventoryType }
-  >
+  PayloadAction<{ item: Slot; inventory?: InventoryType }[] | { item: Slot; inventory?: InventoryType }>
 > = (state, action) => {
   if (!Array.isArray(action.payload)) action.payload = [action.payload];
   const curTime = Math.floor(Date.now() / 1000);

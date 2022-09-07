@@ -1,26 +1,28 @@
 import React from 'react';
-import { DragSource, Inventory, InventoryType, Slot, SlotWithItem } from '../../typings';
+import { DragSource, Inventory, InventoryType, Slot } from '../../typings';
 import { useDrag, useDrop } from 'react-dnd';
-import { useAppSelector } from '../../store';
+import { useAppDispatch, useAppSelector } from '../../store';
 import WeightBar from '../utils/WeightBar';
 import { onDrop } from '../../dnd/onDrop';
 import { onBuy } from '../../dnd/onBuy';
 import { selectIsBusy } from '../../store/inventory';
 import { Items } from '../../store/items';
 import { isSlotWithItem } from '../../helpers';
-import { useContextMenu } from 'react-contexify';
 import { onUse } from '../../dnd/onUse';
-import ReactTooltip from 'react-tooltip';
 import { Locale } from '../../store/locale';
+import { Typography, Tooltip } from '@mui/material';
+import SlotTooltip from './SlotTooltip';
+import { setContextMenu } from '../../store/inventory';
+import { imagepath } from '../../store/imagepath';
 
 interface SlotProps {
   inventory: Inventory;
   item: Slot;
-  setCurrentItem: React.Dispatch<React.SetStateAction<SlotWithItem | undefined>>;
 }
 
-const InventorySlot: React.FC<SlotProps> = ({ inventory, item, setCurrentItem }) => {
+const InventorySlot: React.FC<SlotProps> = ({ inventory, item }) => {
   const isBusy = useAppSelector(selectIsBusy);
+  const dispatch = useAppDispatch();
 
   const [{ isDragging }, drag] = useDrag<DragSource, void, { isDragging: boolean }>(
     () => ({
@@ -74,121 +76,124 @@ const InventorySlot: React.FC<SlotProps> = ({ inventory, item, setCurrentItem })
 
   const connectRef = (element: HTMLDivElement) => drag(drop(element));
 
-  const onMouseEnter = React.useCallback(
-    () => isSlotWithItem(item) && setCurrentItem(item),
-    [item, setCurrentItem]
-  );
-
-  const onMouseLeave = React.useCallback(
-    () => isSlotWithItem(item) && setCurrentItem(undefined),
-    [item, setCurrentItem]
-  );
-
-  const { show, hideAll } = useContextMenu({ id: `slot-context-${item.slot}-${item.name}` });
-
   const handleContext = (event: React.MouseEvent<HTMLDivElement>) => {
-    !isBusy && inventory.type === 'player' && isSlotWithItem(item) && show(event);
-    setCurrentItem(undefined);
-    ReactTooltip.hide();
-  };
+    event.preventDefault();
 
-  React.useEffect(() => {
-    hideAll();
-    //eslint-disable-next-line
-  }, [isDragging]);
+    !isBusy &&
+      inventory.type === 'player' &&
+      isSlotWithItem(item) &&
+      dispatch(setContextMenu({ coords: { mouseX: event.clientX, mouseY: event.clientY }, item }));
+  };
 
   const handleClick = (event: React.MouseEvent<HTMLDivElement>) => {
     if (isBusy) return;
 
     if (event.ctrlKey && isSlotWithItem(item) && inventory.type !== 'shop') {
       onDrop({ item: item, inventory: inventory.type });
-      setCurrentItem(undefined);
     } else if (event.altKey && isSlotWithItem(item) && inventory.type === 'player') {
       onUse(item);
-      setCurrentItem(undefined);
     }
   };
 
   return (
-    <>
+    <Tooltip
+      title={!isSlotWithItem(item) || isOver || isDragging ? '' : <SlotTooltip item={item} />}
+      sx={(theme) => ({ fontFamily: theme.typography.fontFamily })}
+      disableInteractive
+      followCursor
+      disableFocusListener
+      disableTouchListener
+      placement="right-start"
+      enterDelay={500}
+      enterNextDelay={500}
+      PopperProps={{ disablePortal: true }}
+    >
       <div
         ref={connectRef}
         onContextMenu={handleContext}
         onClick={handleClick}
-        className="item-container"
-        data-tip
-        data-for="item-tooltip"
+        className="inventory-slot"
         style={{
           opacity: isDragging ? 0.4 : 1.0,
-          backgroundImage: item.metadata?.image
-            ? `url(${`images/${item.metadata.image}.png`})`
-            : item.name
-            ? `url(${`images/${item.name}.png`})`
-            : 'none',
-          border: isOver ? '1px dashed rgba(255,255,255,0.4)' : '1px inset rgba(0,0,0,0.3)',
+          backgroundImage: `url(${`${imagepath}/${item.metadata?.image ? item.metadata.image : item.name}.png`})`,
+          border: isOver ? '1px dashed rgba(255,255,255,0.4)' : '',
         }}
-        onMouseEnter={onMouseEnter}
-        onMouseLeave={onMouseLeave}
       >
         {isSlotWithItem(item) && (
-          <>
-            <div className="item-count">
-              <span>
-                {item.weight > 0
-                  ? item.weight >= 1000
-                    ? `${(item.weight / 1000).toLocaleString('en-us', {
-                        minimumFractionDigits: 2,
-                      })}kg `
-                    : `${item.weight.toLocaleString('en-us', {
-                        minimumFractionDigits: 0,
-                      })}g `
-                  : ''}
-                {/* {item.count?.toLocaleString('en-us')}x */}
-                {item.count ? item.count.toLocaleString('en-us') + `x` : ''}
-              </span>
+          <div className="item-slot-wrapper">
+            <div
+              className="item-slot-header-wrapper"
+              style={{ justifyContent: inventory.type === 'player' && item.slot <= 5 ? 'space-between' : 'flex-end' }}
+            >
+              {inventory.type === 'player' && item.slot <= 5 && (
+                <div className="inventory-slot-number">{item.slot}</div>
+              )}
+              <div className="item-slot-info-wrapper">
+                <p>
+                  {item.weight > 0
+                    ? item.weight >= 1000
+                      ? `${(item.weight / 1000).toLocaleString('en-us', {
+                          minimumFractionDigits: 2,
+                        })}kg `
+                      : `${item.weight.toLocaleString('en-us', {
+                          minimumFractionDigits: 0,
+                        })}g `
+                    : ''}
+                </p>
+                <p>{item.count ? item.count.toLocaleString('en-us') + `x` : ''}</p>
+              </div>
             </div>
-            {inventory.type !== 'shop' && item?.durability !== undefined && (
-              <WeightBar percent={item.durability} durability />
-            )}
-            {inventory.type === 'shop' && item?.price !== undefined && (
-              <>
-                {item?.currency !== 'money' &&
-                item?.currency !== 'black_money' &&
-                item.price > 0 &&
-                item?.currency ? (
-                  <div className="item-price" style={{ color: '#2ECC71' }}>
-                    <img
-                      className="item-currency"
-                      src={item?.currency ? `${`images/${item?.currency}.png`}` : ''}
-                      alt="item"
-                    ></img>
-                    {item.price}
-                  </div>
-                ) : (
-                  <>
-                    {item.price > 0 && (
-                      <div
-                        className="item-price"
+            <div>
+              {inventory.type !== 'shop' && item?.durability !== undefined && (
+                <WeightBar percent={item.durability} durability />
+              )}
+              {inventory.type === 'shop' && item?.price !== undefined && (
+                <>
+                  {item?.currency !== 'money' &&
+                  item?.currency !== 'black_money' &&
+                  item.price > 0 &&
+                  item?.currency ? (
+                    <div className="item-slot-currency-wrapper">
+                      <img
+                        src={item?.currency ? `${`${imagepath}/${item?.currency}.png`}` : ''}
+                        alt="item-image"
                         style={{
-                          color:
-                            item.currency === 'money' || !item.currency ? '#2ECC71' : '#E74C3C',
+                          imageRendering: '-webkit-optimize-contrast',
+                          height: 'auto',
+                          width: '2vh',
+                          backfaceVisibility: 'hidden',
+                          transform: 'translateZ(0)',
                         }}
-                      >
-                        {Locale.$}
-                        {item.price}
-                      </div>
-                    )}
-                  </>
-                )}
-              </>
-            )}
-            <div className="item-label">
-              {item.metadata?.label ? item.metadata.label : Items[item.name]?.label || item.name}
+                      />
+                      <p>{item.price.toLocaleString('en-us')}</p>
+                    </div>
+                  ) : (
+                    <>
+                      {item.price > 0 && (
+                        <div
+                          className="item-slot-price-wrapper"
+                          style={{ color: item.currency === 'money' || !item.currency ? '#2ECC71' : '#E74C3C' }}
+                        >
+                          <p>
+                            {Locale.$ || '$'}
+                            {item.price.toLocaleString('en-us')}
+                          </p>
+                        </div>
+                      )}
+                    </>
+                  )}
+                </>
+              )}
+              <div className="inventory-slot-label-box">
+                <div className="inventory-slot-label-text">
+                  {item.metadata?.label ? item.metadata.label : Items[item.name]?.label || item.name}
+                </div>
+              </div>
             </div>
-          </>
+          </div>
         )}
       </div>
-    </>
+    </Tooltip>
   );
 };
 

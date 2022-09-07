@@ -1,2 +1,4 @@
 modules/logs/**/
 .cfg
+node_modules
+.idea

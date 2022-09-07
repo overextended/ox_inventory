@@ -1,13 +1,6 @@
-import {
-  createSlice,
-  current,
-  isFulfilled,
-  isPending,
-  isRejected,
-  PayloadAction,
-} from '@reduxjs/toolkit';
+import { createSlice, current, isFulfilled, isPending, isRejected, PayloadAction } from '@reduxjs/toolkit';
 import type { RootState } from '.';
-import { State } from '../typings';
+import { Slot, State } from '../typings';
 import {
   setupInventoryReducer,
   refreshSlotsReducer,
@@ -31,6 +24,8 @@ const initialState: State = {
     maxWeight: 0,
     items: [],
   },
+  additionalMetadata: {},
+  contextMenu: { coords: null },
   itemAmount: 0,
   shiftPressed: false,
   isBusy: false,
@@ -45,6 +40,15 @@ export const inventorySlice = createSlice({
     setupInventory: setupInventoryReducer,
     moveSlots: moveSlotsReducer,
     refreshSlots: refreshSlotsReducer,
+    setContextMenu: (
+      state,
+      action: PayloadAction<{ coords: { mouseX: number; mouseY: number } | null; item?: Slot }>
+    ) => {
+      state.contextMenu = action.payload;
+    },
+    setAdditionalMetadata: (state, action: PayloadAction<{ [key: string]: any }>) => {
+      state.additionalMetadata = { ...state.additionalMetadata, ...action.payload };
+    },
     setItemAmount: (state, action: PayloadAction<number>) => {
       state.itemAmount = action.payload;
     },
@@ -52,9 +56,7 @@ export const inventorySlice = createSlice({
       state.shiftPressed = action.payload;
     },
     setContainerWeight: (state, action: PayloadAction<number>) => {
-      const container = state.leftInventory.items.find(
-        (item) => item.metadata?.container === state.rightInventory.id
-      );
+      const container = state.leftInventory.items.find((item) => item.metadata?.container === state.rightInventory.id);
 
       if (!container) return;
 
@@ -84,6 +86,8 @@ export const inventorySlice = createSlice({
 });
 
 export const {
+  setAdditionalMetadata,
+  setContextMenu,
   setItemAmount,
   setShiftPressed,
   setupInventory,

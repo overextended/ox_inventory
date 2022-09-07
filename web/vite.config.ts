@@ -6,7 +6,7 @@ import checker from 'vite-plugin-checker';
 export default defineConfig({
   plugins: [react(), checker({ typescript: true })],
   base: './',
-  publicDir: 'public',
+  publicDir: false,
   build: {
     outDir: 'build',
     target: 'esnext',

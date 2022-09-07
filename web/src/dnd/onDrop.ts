@@ -8,11 +8,7 @@ import { Items } from '../store/items';
 export const onDrop = (source: DragSource, target?: DropTarget) => {
   const { inventory: state } = store.getState();
 
-  const { sourceInventory, targetInventory } = getTargetInventory(
-    state,
-    source.inventory,
-    target?.inventory
-  );
+  const { sourceInventory, targetInventory } = getTargetInventory(state, source.inventory, target?.inventory);
 
   const sourceSlot = sourceInventory.items[source.item.slot - 1] as SlotWithItem;
 
@@ -38,13 +34,8 @@ export const onDrop = (source: DragSource, target?: DropTarget) => {
   if (targetSlot === undefined) return console.error('Target slot undefined!');
 
   // If dropping on container slot when opened
-  if (
-    targetSlot.metadata?.container !== undefined &&
-    state.rightInventory.id === targetSlot.metadata.container
-  )
-    return console.log(
-      `Cannot swap item ${sourceSlot.name} with container ${targetSlot.name} when opened`
-    );
+  if (targetSlot.metadata?.container !== undefined && state.rightInventory.id === targetSlot.metadata.container)
+    return console.log(`Cannot swap item ${sourceSlot.name} with container ${targetSlot.name} when opened`);
 
   const count =
     state.shiftPressed && sourceSlot.count > 1 && sourceInventory.type !== 'shop'

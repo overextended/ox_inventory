@@ -1,6 +1,7 @@
 import React, { RefObject, useRef } from 'react';
 import { DragLayerMonitor, useDragLayer, XYCoord } from 'react-dnd';
 import { DragSource } from '../../typings';
+import { imagepath } from '../../store/imagepath';
 
 interface DragLayerProps {
   data: DragSource;
@@ -24,10 +25,7 @@ const calculateParentOffset = (monitor: DragLayerMonitor): XYCoord => {
   return subtract(client, source);
 };
 
-export const calculatePointerPosition = (
-  monitor: DragLayerMonitor,
-  childRef: RefObject<Element>
-): XYCoord | null => {
+export const calculatePointerPosition = (monitor: DragLayerMonitor, childRef: RefObject<Element>): XYCoord | null => {
   const offset = monitor.getClientOffset();
   if (offset === null) {
     return null;
@@ -55,13 +53,13 @@ const DragPreview: React.FC = () => {
     <>
       {isDragging && currentOffset && data.item && (
         <div
+          className="item-drag-preview"
           ref={element}
-          className="drag"
           style={{
             transform: `translate(${currentOffset.x}px, ${currentOffset.y}px)`,
-            backgroundImage: `url(${`images/${data.image || data.item.name}.png`})`,
+            backgroundImage: `url(${`${imagepath}/${data.image || data.item.name}.png`})`,
           }}
-        ></div>
+        />
       )}
     </>
   );

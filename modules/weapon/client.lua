@@ -78,7 +78,7 @@ function Weapon.Equip(item, data)
 	end
 
 	TriggerEvent('ox_inventory:currentWeapon', item)
-	Utils.ItemNotify({item.metadata.label or item.label, item.metadata.image or item.name, shared.locale('equipped')})
+	Utils.ItemNotify({item.metadata.label or item.label, item.metadata.image or item.name, 'ui_equipped'})
 
 	return item
 end
@@ -114,7 +114,7 @@ function Weapon.Disarm(currentWeapon, noAnim)
 
 		::skipAnim::
 
-		Utils.ItemNotify({currentWeapon.metadata.label or currentWeapon.label, currentWeapon.metadata.image or currentWeapon.name, shared.locale('holstered')})
+		Utils.ItemNotify({currentWeapon.metadata.label or currentWeapon.label, currentWeapon.metadata.image or currentWeapon.name, 'ui_holstered'})
 		TriggerEvent('ox_inventory:currentWeapon')
 	end
 

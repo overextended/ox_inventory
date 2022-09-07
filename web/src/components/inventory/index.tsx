@@ -1,34 +1,25 @@
 import React from 'react';
 import useNuiEvent from '../../hooks/useNuiEvent';
-import InventoryGrid from './InventoryGrid';
 import InventoryControl from './InventoryControl';
 import InventoryHotbar from './InventoryHotbar';
-import Fade from '../utils/Fade';
-import { useAppDispatch, useAppSelector } from '../../store';
-import {
-  selectLeftInventory,
-  selectRightInventory,
-  setupInventory,
-  refreshSlots,
-} from '../../store/inventory';
+import { Fade, Stack } from '@mui/material';
+import { useAppDispatch } from '../../store';
+import { setAdditionalMetadata, setupInventory, refreshSlots, setContextMenu } from '../../store/inventory';
 import { useExitListener } from '../../hooks/useExitListener';
-import ReactTooltip from 'react-tooltip';
 import type { Inventory as InventoryProps } from '../../typings';
+import RightInventory from './RightInventory';
+import LeftInventory from './LeftInventory';
 
 const Inventory: React.FC = () => {
   const [inventoryVisible, setInventoryVisible] = React.useState(false);
+  const dispatch = useAppDispatch();
 
   useNuiEvent<boolean>('setInventoryVisible', setInventoryVisible);
   useNuiEvent<false>('closeInventory', () => {
     setInventoryVisible(false);
-    ReactTooltip.hide();
+    dispatch(setContextMenu({ coords: null }));
   });
   useExitListener(setInventoryVisible);
-
-  const leftInventory = useAppSelector(selectLeftInventory);
-  const rightInventory = useAppSelector(selectRightInventory);
-
-  const dispatch = useAppDispatch();
 
   useNuiEvent<{
     leftInventory?: InventoryProps;
@@ -40,14 +31,20 @@ const Inventory: React.FC = () => {
 
   useNuiEvent('refreshSlots', (data) => dispatch(refreshSlots(data)));
 
+  useNuiEvent('displayMetadata', (data: { [key: string]: any }) => {
+    dispatch(setAdditionalMetadata(data));
+  });
+
   return (
     <>
-      <Fade visible={inventoryVisible} className="center-wrapper">
-        <InventoryGrid inventory={leftInventory} />
-        <InventoryControl />
-        <InventoryGrid inventory={rightInventory} />
+      <Fade in={inventoryVisible}>
+        <div className="inventory-wrapper">
+          <LeftInventory />
+          <InventoryControl />
+          <RightInventory />
+        </div>
       </Fade>
-      <InventoryHotbar items={leftInventory.items.slice(0, 5)} />
+      <InventoryHotbar />
     </>
   );
 };
