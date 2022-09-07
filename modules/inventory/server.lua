@@ -638,6 +638,10 @@ function Inventory.AddItem(inv, item, count, metadata, slot, cb)
 
 	if item then
 		if inv then
+			if metadata and type(metadata) ~= 'table' then
+				metadata = metadata and { type = metadata or nil }
+			end
+
 			local toSlot, slotMetadata, slotCount
 
 			if slot then
