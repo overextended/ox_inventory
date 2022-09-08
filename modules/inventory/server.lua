@@ -629,7 +629,7 @@ exports('SetMetadata', Inventory.SetMetadata)
 ---@param count number
 ---@param metadata? table | string
 ---@param slot number?
----@param cb fun(success: boolean, reason: string?)
+---@param cb fun(success: boolean, reason?: string|table)
 function Inventory.AddItem(inv, item, count, metadata, slot, cb)
 	if type(item) ~= 'table' then item = Items(item) end
 	if type(inv) ~= 'table' then inv = Inventory(inv) end
