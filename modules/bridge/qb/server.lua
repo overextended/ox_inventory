@@ -101,9 +101,9 @@ server.accounts = {
 	money = 0
 }
 
-function server.UseItem(source, itemName, ...)
+function server.UseItem(source, itemName, data)
 	local cb = QBCore.Functions.CanUseItem(itemName)
-	return cb and cb(source, itemName, ...)
+	return cb and cb(source, data)
 end
 
 AddEventHandler('QBCore:Server:OnMoneyChange', function(src, account, amount, changeType)
