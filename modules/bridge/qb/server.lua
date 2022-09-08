@@ -80,9 +80,7 @@ AddEventHandler('QBCore:Server:PlayerLoaded', setupPlayer)
 
 SetTimeout(500, function()
 	QBCore = exports['qb-core']:GetCoreObject()
-
-	for _, Player in pairs(QBCore.Functions.GetQBPlayers()) do setupPlayer(Player) end
-
+	server.GetPlayerFromId = QBCore.Functions.GetPlayer
 	local weapState = GetResourceState('qb-weapons')
 
 	if weapState ~= 'missing' and (weapState == 'started' or weapState == 'starting') then
@@ -94,25 +92,18 @@ SetTimeout(500, function()
 	if shopState ~= 'missing' and (shopState == 'started' or shopState == 'starting') then
 		StopResource('qb-shops')
 	end
-end)
 
-local itemCallbacks = {}
+	for _, Player in pairs(QBCore.Functions.GetQBPlayers()) do setupPlayer(Player) end
+end)
 
 -- Accounts that need to be synced with physical items
 server.accounts = {
 	money = 0
 }
 
-QBCore.Functions.SetMethod('CreateUseableItem', function(item, cb)
-	itemCallbacks[item] = cb
-end)
-
 function server.UseItem(source, itemName, ...)
-	local callback = type(itemCallbacks[itemName]) == 'function' and itemCallbacks[itemName] or type(itemCallbacks[itemName]) == 'table' and (rawget(itemCallbacks[itemName], '__cfx_functionReference') and itemCallbacks[itemName] or itemCallbacks[itemName].cb or itemCallbacks[itemName].callback)
-
-	if not callback then return end
-
-	callback(source, itemName, ...)
+	local cb = QBCore.Functions.CanUseItem(itemName)
+	return cb and cb(source, itemName, ...)
 end
 
 AddEventHandler('QBCore:Server:OnMoneyChange', function(src, account, amount, changeType)
@@ -120,8 +111,6 @@ AddEventHandler('QBCore:Server:OnMoneyChange', function(src, account, amount, ch
 	local item = Inventory.GetItem(src, 'money', nil, false)
 	Inventory.SetItem(src, 'money', changeType == "set" and amount or changeType == "remove" and item.count - amount or changeType == "add" and item.count + amount)
 end)
-
-server.GetPlayerFromId = QBCore.Functions.GetPlayer
 
 function server.setPlayerData(player)
 	local groups = {
