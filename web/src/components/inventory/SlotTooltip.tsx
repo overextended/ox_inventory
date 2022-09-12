@@ -27,7 +27,7 @@ const SlotTooltip: React.FC<{ item: Slot }> = ({ item }) => {
       )}
       {item.durability !== undefined && (
         <p>
-          {Locale.ui_durability}: {item.durability}
+          {Locale.ui_durability}: {Math.trunc(item.durability)}
         </p>
       )}
       {item.metadata?.ammo !== undefined && (
