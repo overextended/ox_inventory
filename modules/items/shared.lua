@@ -6,32 +6,34 @@ end
 
 local function newItem(data)
 	data.weight = data.weight or 0
-	data.close = data.close or true
+
+	if data.close == nil then
+		data.close = true
+	end
 
 	if data.stack == nil then
 		data.stack = true
 	end
 
-	if data.client then
-		if not data.consume and (data.client.status or data.client.usetime or data.client.export or data.server?.export) then
-			data.consume = 1
-		end
+	local client, server = data.client, data.server
 
-		if not IsDuplicityVersion and data.client.export then
-			data.export = useExport(string.strsplit('.', data.client.export))
-		end
+	if not data.consume and (client and (client.status or client.usetime or client.export) or server?.export) then
+		data.consume = 1
 	end
 
 	if IsDuplicityVersion then
 		data.client = nil
-		if data.server then
-			if data.server.export then
-				data.cb = useExport(string.strsplit('.', data.server.export))
-			end
+
+		if server?.export then
+			data.cb = useExport(string.strsplit('.', server.export))
 		end
 	else
 		data.server = nil
 		data.count = 0
+
+		if client?.export then
+			data.export = useExport(string.strsplit('.', client.export))
+		end
 	end
 
 	shared.items[data.name] = data
