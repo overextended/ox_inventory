@@ -11,9 +11,18 @@ AddEventHandler("ND:characterUnloaded", playerDropped)
 SetTimeout(500, function()
     NDCore = exports["ND_Core"]:GetCoreObject()
     server.GetPlayerFromId = NDCore.Functions.GetPlayer
-    for _, player in pairs(NDCore.Functions.GetPlayers()) do
-        server.setPlayerInventory(player, player.inventory)
-        Inventory.SetItem(player.source, "money", player.cash)
+    for _, character in pairs(NDCore.Functions.GetPlayers()) do
+        character.identifier = character.id
+        character.name = tostring(character.firstName) .. " " .. tostring(character.lastName)
+        character.dateofbirth = character.dob
+        character.sex = character.gender
+        local groups = {}
+        for group, info in pairs(character.groups) do
+            groups[group] = info.lvl
+        end
+        character.groups = groups
+        server.setPlayerInventory(character, character.inventory)
+        Inventory.SetItem(character.source, "money", character.cash)
     end
 end)
 
@@ -22,13 +31,8 @@ server.accounts = {
     money = 0
 }
 
-RegisterNetEvent("ND:moneyChange", function(player, account, amount, changeType)
-    if account ~= "cash" then return end
-    local item = Inventory.GetItem(player, "money", nil, true)
-    Inventory.SetItem(player, "money", changeType == "set" and amount or changeType == "remove" and item - amount or changeType == "add" and item + amount)
-end)
-
 RegisterNetEvent("ND:characterLoaded", function(character)
+    if not character then return end
     character.identifier = character.id
     character.name = tostring(character.firstName) .. " " .. tostring(character.lastName)
     character.dateofbirth = character.dob
@@ -38,10 +42,30 @@ RegisterNetEvent("ND:characterLoaded", function(character)
         groups[group] = info.lvl
     end
     character.groups = groups
-    NDCore.Functions.SetPlayerData(character.source, "inventory", character.inventory)
     server.setPlayerInventory(character, character.inventory)
     Inventory.SetItem(character.source, "money", character.cash)
 end)
+
+RegisterNetEvent("ND:moneyChange", function(player, account, amount, changeType)
+    if account ~= "cash" then return end
+    local item = Inventory.GetItem(player, "money", nil, true)
+    Inventory.SetItem(player, "money", changeType == "set" and amount or changeType == "remove" and item - amount or changeType == "add" and item + amount)
+end)
+
+function server.syncInventory(inv)
+    local money = table.clone(server.accounts)
+    
+    for _, v in pairs(inv.items) do
+        if money[v.name] then
+            money[v.name] += v.count
+        end
+    end
+    
+    if money then
+        NDCore.Functions.SetPlayerData(inv.id, "cash", money.money)
+        NDCore.Functions.SetPlayerData(inv.id, "inventory", inv.items)
+    end
+end
 
 function server.setPlayerData(player)
     local groups = {}
@@ -58,19 +82,6 @@ function server.setPlayerData(player)
         dateofbirth = player.dob,
         job = player.job
     }
-end
-
-function server.syncInventory(inv)
-    local money = table.clone(server.accounts)
-
-    for _, v in pairs(inv.items) do
-        if money[v.name] then
-            money[v.name] += v.count
-        end
-    end
-
-    NDCore.Functions.SetPlayerData(inv.id, "inventory", inv.items)
-    if money then NDCore.Functions.SetPlayerData(inv.id, "cash", money.money) end
 end
 
 function server.buyLicense(inv, license)
