@@ -655,9 +655,9 @@ function Inventory.AddItem(inv, item, count, metadata, slot, cb)
 
 			if not toSlot then
 				local items = inv.items
+				slotMetadata, slotCount = Items.Metadata(inv.id, item, metadata and table.clone(metadata) or {}, count)
 
 				for i = 1, inv.slots do
-					slotMetadata, slotCount = Items.Metadata(inv.id, item, metadata and table.clone(metadata) or {}, count)
 					local slotItem = items[i]
 
 					if item.stack and slotItem ~= nil and slotItem.name == item.name and table.matches(slotItem.metadata, slotMetadata) then
@@ -673,6 +673,7 @@ function Inventory.AddItem(inv, item, count, metadata, slot, cb)
 						end
 
 						count -= 1
+						slotMetadata, slotCount = Items.Metadata(inv.id, item, metadata and table.clone(metadata) or {}, count)
 					elseif not toSlot and not slotItem then
 						toSlot = i
 						break
