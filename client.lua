@@ -18,7 +18,7 @@ exports('setStashTarget', function(id, owner)
 	StashTarget = id and {id=id, owner=owner}
 end)
 
----@type boolean?
+---@type boolean | number | nil
 local invBusy = true
 
 ---@type boolean?
@@ -162,7 +162,7 @@ local function useItem(data, cb)
 	if not invBusy and not PlayerData.dead and not lib.progressActive() and not IsPedRagdoll(cache.ped) and not IsPedFalling(cache.ped) then
 		if currentWeapon and currentWeapon?.timer > 100 then return end
 
-		invBusy = true
+		invBusy = 1
 		local result = lib.callback.await('ox_inventory:useItem', 200, data.name, data.slot, PlayerData.inventory[data.slot].metadata)
 
 		if not result then
@@ -1044,9 +1044,10 @@ RegisterNetEvent('ox_inventory:setPlayerInventory', function(currentDrops, inven
 				EnableControlAction(0, 31, true)
 			end
 		else
+			local playerPed = cache.ped
 			disableControls()
 
-			if invBusy then
+			if invBusy == 1 or IsPedCuffed() then
 				DisablePlayerFiring(playerId, true)
 			end
 
@@ -1064,8 +1065,6 @@ RegisterNetEvent('ox_inventory:setPlayerInventory', function(currentDrops, inven
 				elseif client.aimedfiring and not currentWeapon.melee and not IsPlayerFreeAiming(playerId) then
 					DisablePlayerFiring(playerId, true)
 				end
-
-				local playerPed = cache.ped
 
 				if not invBusy and currentWeapon.timer ~= 0 and currentWeapon.timer < GetGameTimer() then
 					currentWeapon.timer = 0
