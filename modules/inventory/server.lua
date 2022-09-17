@@ -1306,45 +1306,65 @@ exports('ReturnInventory', Inventory.Return)
 ---@param keep? string | string[] an item or list of items to ignore while clearing items
 function Inventory.Clear(inv, keep)
 	inv = Inventory(inv)
-
 	if not inv then return end
 
+	local updateSlots = inv.player and {}
+	local newWeight = 0
+	local inc = 0
+
 	if keep then
-		local newWeight = 0
 		local keptItems = {}
-
 		local keepType = type(keep)
-		if keepType == "string" then
-			local item = Inventory.GetItem(inv, keep, nil, false)
 
-			if item then
-				keptItems[item.slot] = item
-				newWeight = item.weight
-			end
-		elseif keepType == "table" and table.type(keep) == "array" then
-			for i = 1, #keep do
-				local item = Inventory.GetItem(inv, keep[i], nil, false)
-
-				if item then
-					keptItems[item.slot] = item
-					newWeight += item.weight
+		if keepType == 'string' then
+			for slot, v in pairs(inv.items) do
+				if v.name == keep then
+					keptItems[v.slot] = v
+					newWeight += v.weight
+				elseif updateSlots then
+					inc += 1
+					updateSlots[inc] = { item = { slot = slot }, inventory = inv.type }
 				end
+			end
+		elseif keepType == 'table' and table.type(keep) == 'array' then
+			for slot, v in pairs(inv.items) do
+				for i = 1, #keep do
+					if v.name == keep[i] then
+						keptItems[v.slot] = v
+						newWeight += v.weight
+						goto foundItem
+					end
+				end
+
+				if updateSlots then
+					inc += 1
+					updateSlots[inc] = { item = { slot = slot }, inventory = inv.type }
+				end
+
+				::foundItem::
 			end
 		end
 
 		table.wipe(inv.items)
 		inv.items = keptItems
-		inv.weight = newWeight
 	else
+		for slot in pairs(inv.items) do
+			inc += 1
+			updateSlots[inc] = { item = { slot = slot }, inventory = inv.type }
+		end
+
 		table.wipe(inv.items)
-		inv.weight = 0
 	end
 
-	if not inv.player then return end
+	inv.weight = newWeight
+	inv.changed = true
 
-	TriggerClientEvent('ox_inventory:inventoryConfiscated', inv.id)
+	if not inv.player then return end
 	if server.syncInventory then server.syncInventory(inv) end
+
 	inv.weapon = nil
+
+	TriggerClientEvent('ox_inventory:updateSlots', inv.id, updateSlots, { left = inv.weight, right = inv.open and Inventories[inv.open]?.weight })
 end
 exports('ClearInventory', Inventory.Clear)
 
