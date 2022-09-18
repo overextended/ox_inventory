@@ -63,7 +63,6 @@ function server.syncInventory(inv)
     
     if money then
         NDCore.Functions.SetPlayerData(inv.id, "cash", money.money)
-        NDCore.Functions.SetPlayerData(inv.id, "inventory", inv.items)
     end
 end
 
