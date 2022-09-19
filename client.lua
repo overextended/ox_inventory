@@ -155,7 +155,7 @@ exports('openInventory', client.openInventory)
 local Animations = data 'animations'
 
 ---@param data table
----@param cb function
+---@param cb function?
 local function useItem(data, cb)
 	if invOpen and data.close then client.closeInventory() end
 
@@ -417,7 +417,6 @@ end
 if not Utils or not Weapon or not Items or not Shops or not Inventory then return end
 
 local function registerCommands()
-
 	RegisterCommand('inv', function()
 		if not invOpen then
 			local closest = lib.points.closest()
@@ -531,7 +530,7 @@ local function registerCommands()
 
 							if closeToVehicle then
 								local plate = client.trimplate and string.strtrim(GetVehicleNumberPlateText(vehicle)) or GetVehicleNumberPlateText(vehicle)
-								TaskTurnPedToFaceCoord(cache.ped, position.x, position.y, position.z)
+								TaskTurnPedToFaceCoord(cache.ped, position.x, position.y, position.z, 0)
 								lastVehicle = vehicle
 								client.openInventory('trunk', {id='trunk'..plate, class = vehicleClass, model = vehicleHash, netid = NetworkGetNetworkIdFromEntity(vehicle)})
 								local timeout = 20
@@ -558,7 +557,7 @@ local function registerCommands()
 
 										if #(GetEntityCoords(cache.ped) - position) >= 2 or not DoesEntityExist(vehicle) then
 											break
-										else TaskTurnPedToFaceCoord(cache.ped, position.x, position.y, position.z) end
+										else TaskTurnPedToFaceCoord(cache.ped, position.x, position.y, position.z, 0) end
 									else break end
 								end
 
@@ -1007,7 +1006,7 @@ RegisterNetEvent('ox_inventory:setPlayerInventory', function(currentDrops, inven
 			currentWeapon = Weapon.Disarm(currentWeapon, true)
 
 			if weaponHash == `WEAPON_HANDCUFFS` or weaponHash == `WEAPON_GARBAGEBAG` or weaponHash == `WEAPON_BRIEFCASE` or weaponHash == `WEAPON_BRIEFCASE_02` then
-				SetCurrentPedWeapon(cache.ped, weaponHash, true)
+				SetCurrentPedWeapon(cache.ped, weaponHash --[[@as number]], true)
 			end
 		end
 
@@ -1047,7 +1046,7 @@ RegisterNetEvent('ox_inventory:setPlayerInventory', function(currentDrops, inven
 			local playerPed = cache.ped
 			disableControls()
 
-			if invBusy == 1 or IsPedCuffed() then
+			if invBusy == 1 or IsPedCuffed(playerPed) then
 				DisablePlayerFiring(playerId, true)
 			end
 
@@ -1187,7 +1186,7 @@ RegisterNUICallback('removeComponent', function(data, cb)
 end)
 
 RegisterNUICallback('useItem', function(slot, cb)
-	useSlot(slot)
+	useSlot(slot --[[@as number]])
 	cb(1)
 end)
 
@@ -1223,7 +1222,7 @@ RegisterNUICallback('giveItem', function(data, cb)
 		local seats = GetVehicleMaxNumberOfPassengers(cache.vehicle) - 1
 
 		if seats >= 0 then
-			local passenger = GetPedInVehicleSeat(cache.seat - 2 * (cache.seat % 2) + 1)
+			local passenger = GetPedInVehicleSeat(cache.vehicle, cache.seat - 2 * (cache.seat % 2) + 1)
 
 			if passenger ~= 0 then
 				target = GetPlayerServerId(NetworkGetPlayerIndexFromPed(passenger))

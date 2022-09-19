@@ -120,7 +120,7 @@ function server.setPlayerData(player)
 
 	return {
 		source = player.source,
-		name = ('%s %s'):format(PlayerData.charinfo.firstname, PlayerData.charinfo.lastname),
+		name = ('%s %s'):format(player.charinfo.firstname, player.charinfo.lastname),
 		groups = groups,
 		sex = player.charinfo.gender,
 		dateofbirth = player.charinfo.birthdate,
