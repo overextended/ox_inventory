@@ -629,7 +629,7 @@ exports('SetMetadata', Inventory.SetMetadata)
 ---@param count number
 ---@param metadata? table | string
 ---@param slot number?
----@param cb fun(success: boolean, reason?: string|table)
+---@param cb fun(success: boolean, reason?: string|table)?
 function Inventory.AddItem(inv, item, count, metadata, slot, cb)
 	if type(item) ~= 'table' then item = Items(item) end
 	if type(inv) ~= 'table' then inv = Inventory(inv) end
@@ -811,7 +811,7 @@ exports('GetItemSlots', Inventory.GetItemSlots)
 ---@param item table | string
 ---@param count number
 ---@param metadata? table | string
----@param slot number
+---@param slot number?
 function Inventory.RemoveItem(inv, item, count, metadata, slot)
 	if type(item) ~= 'table' then item = Items(item) end
 	count = math.floor(count + 0.5)
@@ -1631,6 +1631,7 @@ lib.addCommand(false, 'clearevidence', function(source, args)
 		-- todo: make it work
 	else
 		local group, rank = server.hasGroup(inventory, shared.police)
+		---@diagnostic disable-next-line: undefined-field
 		if group and rank == GlobalState.groups[group] then hasPermission = true end
 	end
 
