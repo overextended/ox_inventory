@@ -10,7 +10,7 @@ if shared.qtarget then
 
 		if not netId then
 			NetworkRegisterEntityAsNetworked(entity)
-			SetEntityAsMissionEntity(entity)
+			SetEntityAsMissionEntity(entity, false, false)
 			netId = NetworkGetNetworkIdFromEntity(entity)
 			NetworkUseHighPrecisionBlending(netId, false)
 			SetNetworkIdExistsOnAllMachines(netId, true)
