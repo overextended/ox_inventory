@@ -165,7 +165,7 @@ local function ConvertQB()
 		for _, v in pairs(items) do
 			if Items(v?.name) then
 				slot += 1
-				inventory[slot] = {slot=slot, name=v.name, count=v.amount}
+				inventory[slot] = {slot=slot, name=v.name, count=v.amount, metadata = {}}
 				if v.type == "weapon" then
 					inventory[slot].metadata.durability = v.info.quality
 					inventory[slot].metadata.ammo = v.info.ammo
