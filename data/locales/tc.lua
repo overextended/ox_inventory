@@ -26,7 +26,7 @@ return {
 	['female'] = "女",
 	['used'] = "使用",
 	['ui_removed'] = "移除了",
-	['addeincompatibled'] = "增加了",
+	['ui_added'] = "增加了",
 	['ui_holstered'] = "收起武器",
 	['ui_equipped'] = "裝備武器",
 	['using'] = "使用 %s中",
