@@ -271,8 +271,8 @@ local function conversionScript()
 	shared.ready = false
 
 	local file = 'setup/convert.lua'
-	local import = LoadResourceFile('ox_inventory', file)
-	local func = load(import, ('@@ox_inventory/%s'):format(file)) --[[@as function]]
+	local import = LoadResourceFile(shared.resource, file)
+	local func = load(import, ('@@%s/%s'):format(shared.resource, file)) --[[@as function]]
 
 	conversionScript = func()
 end

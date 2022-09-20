@@ -106,7 +106,7 @@ function data(name)
 	if shared.server and shared.ready == nil then return {} end
 	local file = ('data/%s.lua'):format(name)
 	local datafile = LoadResourceFile(shared.resource, file)
-	local func, err = load(datafile, ('@@ox_inventory/%s'):format(file))
+	local func, err = load(datafile, ('@@%s/%s'):format(shared.resource, file))
 
 	if not func or err then
 		shared.ready = false
