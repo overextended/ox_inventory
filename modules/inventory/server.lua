@@ -318,7 +318,7 @@ function Inventory.UpdateVehicle(oldPlate, newPlate)
 		Inventories[glove.id] = glove
 	end
 end
-
+exports('UpdateVehicle', Inventory.UpdateVehicle)
 function Inventory.Save(inv)
 	inv = Inventory(inv)
 
