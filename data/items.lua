@@ -110,13 +110,6 @@ return {
 	['lockpick'] = {
 		label = 'Lockpick',
 		weight = 160,
-		consume = 0,
-		client = {
-			anim = { dict = 'anim@amb@clubhouse@tutorial@bkr_tut_ig3@', clip = 'machinic_loop_mechandplayer' },
-			disable = { move = true, car = true, combat = true },
-			usetime = 5000,
-			cancel = true
-		}
 	},
 
 	['phone'] = {
