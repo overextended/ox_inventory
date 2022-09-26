@@ -83,7 +83,7 @@ function client.openInventory(inv, data)
 				return client.closeInventory()
 			end
 		end
-	end
+	elseif IsNuiFocused() then return end
 
 	if inv == 'dumpster' and cache.vehicle then
 		return lib.notify({ type = 'error', description = shared.locale('inventory_right_access') })
