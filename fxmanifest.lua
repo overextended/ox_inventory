@@ -48,6 +48,7 @@ server_scripts {
 	'modules/items/server.lua',
 	'modules/inventory/server.lua',
 	'modules/shops/server.lua',
+	'modules/pefcl/server.lua',
 	'server.lua',
 }
 
