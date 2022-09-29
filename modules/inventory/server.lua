@@ -924,13 +924,38 @@ function Inventory.CanSwapItem(inv, firstItem, firstItemCount, testItem, testIte
 end
 exports('CanSwapItem', Inventory.CanSwapItem)
 
+---@param name string
+---@param count number
+---@param metadata table
+---@param slot number
+---@param used boolean
 RegisterServerEvent('ox_inventory:removeItem', function(name, count, metadata, slot, used)
 	local inv = Inventory(source)
 
 	if used then
 		slot = inv.items[inv.usingItem]
-		Inventory.RemoveItem(source, slot.name, count, slot.metadata, slot.slot)
 		local item = Items(slot.name)
+		local durability = not item.stack and slot.metadata.durability --[[@as number | false]]
+
+		if durability then
+			durability -= item.consume * 100
+			slot.metadata.durability = durability
+
+			if durability <= 0 then
+				durability = false
+			end
+		end
+
+		if not durability then
+			Inventory.RemoveItem(source, slot.name, item.consume < 1 and 1 or item.consume, nil, slot.slot)
+		else
+			TriggerClientEvent('ox_inventory:updateSlots', source, {
+				{
+					item = slot,
+					inventory = inv.type
+				}
+			}, { left = inv.weight })
+		end
 
 		if item?.cb then
 			item.cb('usedItem', item, inv, slot.slot)
