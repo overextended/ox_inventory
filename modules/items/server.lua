@@ -310,12 +310,8 @@ function Items.CheckMetadata(metadata, item, name, ostime)
 
 	local durability = metadata.durability
 
-	if durability then
-		if not item.durability and not item.degrade and not item.weapon then
-			metadata.durability = nil
-		elseif durability > 100 and ostime >= durability then
-			metadata.durability = 0
-		end
+	if durability and durability > 100 and ostime >= durability then
+		metadata.durability = 0
 	end
 
 	if metadata.components then
