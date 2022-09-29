@@ -1109,10 +1109,11 @@ RegisterNetEvent('ox_inventory:setPlayerInventory', function(currentDrops, inven
 				elseif IsControlJustReleased(0, 24) then
 					if currentWeapon.throwable then
 						plyState.invBusy = true
+						local weapon = currentWeapon
 
 						SetTimeout(700, function()
 							ClearPedSecondaryTask(playerPed)
-							RemoveWeaponFromPed(playerPed, currentWeapon.hash)
+							RemoveWeaponFromPed(playerPed, weapon.hash)
 							TriggerServerEvent('ox_inventory:updateWeapon', 'throw')
 							currentWeapon = nil
 							TriggerEvent('ox_inventory:currentWeapon')
