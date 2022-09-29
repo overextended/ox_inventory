@@ -82,9 +82,10 @@ client.shops = setmetatable(data('shops'), {
 							exports.qtarget:AddBoxZone(shopid, target.loc, target.length or 0.5, target.width or 0.5, {
 								name = shopid,
 								heading = target.heading or 0.0,
-								debugPoly = false,
+								debugPoly = target.debug,
 								minZ = target.minZ,
-								maxZ = target.maxZ
+								maxZ = target.maxZ,
+								drawSprite = target.drawSprite,
 							}, {
 								options = {
 									{

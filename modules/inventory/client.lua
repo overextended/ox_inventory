@@ -98,9 +98,10 @@ Inventory.Evidence = setmetatable(data('evidence'), {
 						{
 							name = evidence.target.name,
 							heading = evidence.target.heading or 0.0,
-							debugPoly = false,
+							debugPoly = evidence.target.debug,
 							minZ = evidence.target.minZ,
-							maxZ = evidence.target.maxZ
+							maxZ = evidence.target.maxZ,
+							drawSprite = evidence.target.drawSprite,
 						}, {
 							options = {
 								{
@@ -153,9 +154,10 @@ Inventory.Stashes = setmetatable(data('stashes'), {
 						{
 							name = stash.name,
 							heading = stash.target.heading or 0.0,
-							debugPoly = false,
+							debugPoly = stash.target.debug,
 							minZ = stash.target.minZ,
-							maxZ = stash.target.maxZ
+							maxZ = stash.target.maxZ,
+							drawSprite = stash.target.drawSprite,
 						}, {
 							options = {
 								{
