@@ -2,18 +2,34 @@ if not lib then return end
 
 local Items = server.items
 local Inventory = server.inventory
-
 local Shops = {}
-
 local locations = shared.qtarget and 'targets' or 'locations'
 
-for shopName, shopDetails in pairs(data('shops')) do
+---@class OxShopServer : OxShop
+---@field id string
+---@field coords vector3
+
+---@class OxShopItem
+---@field name string
+---@field slot number
+---@field weight number
+---@field price number
+---@field metadata? { [string]: any }
+---@field license? string
+---@field currency? string
+---@field grade? number
+
+---@param shopName string
+---@param shopDetails OxShop
+local function createShop(shopName, shopDetails)
 	Shops[shopName] = {}
 
 	if shopDetails[locations] then
+		---@diagnostic disable-next-line: undefined-field
 		local groups = shopDetails.groups or shopDetails.jobs
 
 		for i = 1, #shopDetails[locations] do
+			---@type OxShopServer
 			Shops[shopName][i] = {
 				label = shopDetails.name,
 				id = shopName..' '..i,
@@ -36,6 +52,7 @@ for shopName, shopDetails in pairs(data('shops')) do
 				local Item = Items(slot.name)
 
 				if Item then
+					---@type OxShopItem
 					slot = {
 						name = Item.name,
 						slot = j,
@@ -53,8 +70,10 @@ for shopName, shopDetails in pairs(data('shops')) do
 			end
 		end
 	else
+		---@diagnostic disable-next-line: undefined-field
 		local groups = shopDetails.groups or shopDetails.jobs
 
+		---@type OxShopServer
 		Shops[shopName] = {
 			label = shopDetails.name,
 			id = shopName,
@@ -75,6 +94,7 @@ for shopName, shopDetails in pairs(data('shops')) do
 			local Item = Items(slot.name)
 
 			if Item then
+				---@type OxShopItem
 				slot = {
 					name = Item.name,
 					slot = i,
@@ -93,10 +113,15 @@ for shopName, shopDetails in pairs(data('shops')) do
 	end
 end
 
+for shopName, shopDetails in pairs(data('shops')) do
+	createShop(shopName, shopDetails)
+end
+
 lib.callback.register('ox_inventory:openShop', function(source, data)
 	local left, shop = Inventory(source)
+
 	if data then
-		shop = data.id and Shops[data.type][data.id] or Shops[data.type]
+		shop = data.id and Shops[data.type][data.id] or Shops[data.type] --[[@as OxShopServer]]
 
 		if shop.groups then
 			local group = server.hasGroup(left, shop.groups)
