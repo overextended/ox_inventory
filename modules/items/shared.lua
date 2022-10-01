@@ -1,9 +1,35 @@
+---wip types
+
+---@class OxItem
+---@field name string
+---@field label string
+---@field weight number Weight of the item in grams.
+---@field description? string Text to display in the item tooltip.
+---@field consume? number Number of items to remove on use.<br>Using a value under 1 will remove durability, if the item cannot be stacked.
+---@field degrade? number Amount of time for the item durability to degrade to 0, in minutes.
+---@field stack? boolean Set to false to prevent the item from stacking.
+---@field close? boolean Set to false to keep the inventory open on item use.
+---@field allowArmed? boolean Set to true to allow an item to be used while a weapon is equipped.
+---@field buttons? { label: string, action: fun(slot: number) }[] Add interactions when right-clicking an item.
+---@field client? { status?: { [string]: number }, anim: string | { dict?: string, clip: string, flag?: number, blendIn?: number, blendOut?: number, duration?: number, playbackRate?: number, lockX?: boolean, lockY?: boolean, lockZ?: boolean, scenario?: string, playEnter?: boolean }, prop: string | ProgressPropProps, usetime?: number, label?: string, useWhileDead?: boolean, canCancel?: boolean, disable?: { move?: boolean, car?: boolean, combat?: boolean, mouse?: boolean }, export: string }
+---@field server? { export: string }
+
+---@class OxWeapon : OxItem
+---@field hash number
+---@field durability number
+---@field weapon? true
+---@field ammo? true
+---@field component? true
+---@field throwable? boolean
+---@field model? string
+
 local function useExport(resource, export)
 	return function(...)
 		return exports[resource][export](nil, ...)
 	end
 end
 
+---@param data OxItem
 local function newItem(data)
 	data.weight = data.weight or 0
 
@@ -16,6 +42,8 @@ local function newItem(data)
 	end
 
 	local client, server = data.client, data.server
+	---@cast client -nil
+	---@cast server -nil
 
 	if not data.consume and (client and (client.status or client.usetime or client.export) or server?.export) then
 		data.consume = 1
@@ -40,6 +68,7 @@ local function newItem(data)
 end
 
 do
+	---@type { [string]: OxItem }
 	local ItemList = {}
 
 	for type, data in pairs(data('weapons')) do
@@ -48,6 +77,7 @@ do
 			v.close = type == 'Ammo' and true or false
 
 			if type == 'Weapons' then
+				---@cast v OxWeapon
 				v.hash = joaat(v.model or k)
 				v.stack = v.throwable and true or false
 				v.durability = v.durability or 1
