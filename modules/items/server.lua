@@ -333,6 +333,9 @@ function Items.CheckMetadata(metadata, item, name, ostime)
 			local components = {}
 			local size = 0
 			for _, component in pairs(metadata.components) do
+				if type(component) == "string" then
+					component = {name = component, hash = {}}
+				end
 				if component and ItemList[component.name] then
 					size += 1
 					components[size] = component.name
