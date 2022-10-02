@@ -42,9 +42,9 @@ const SlotTooltip: React.FC<{ item: Slot }> = ({ item }) => {
       )}
       {item.metadata?.components && item.metadata?.components[0] && (
         <p>
-          {Locale.ui_components}:{' '}
-          {(item.metadata?.components).map((component: string, index: number, array: []) =>
-            index + 1 === array.length ? Items[component]?.label : Items[component]?.label + ', '
+        {Locale.ui_components}:{' '}
+          {(item.metadata?.components).map((component: {name: string, hash: number[]}, index: number, array: []) =>
+            index + 1 === array.length ? Items[component.name]?.label : Items[component.name]?.label + ', '
           )}
         </p>
       )}

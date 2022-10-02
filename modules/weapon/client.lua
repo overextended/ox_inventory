@@ -46,7 +46,7 @@ function Weapon.Equip(item, data)
 
 	if item.metadata.components then
 		for i = 1, #item.metadata.components do
-			local components = Items[item.metadata.components[i]].client.component
+			local components = Items[item.metadata.components[i].name].client.component
 			for v=1, #components do
 				local component = components[v]
 				if DoesWeaponTakeWeaponComponent(data.hash, component) then

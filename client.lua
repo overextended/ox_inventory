@@ -318,32 +318,45 @@ local function useSlot(slot)
 				local components = data.client.component
 				local componentType = data.type
 				local weaponComponents = PlayerData.inventory[currentWeapon.slot].metadata.components
-				-- Checks if the weapon already has the same component type attached
-				for componentIndex = 1, #weaponComponents do
-					if componentType == Items[weaponComponents[componentIndex]].type then
+				local newComponents = {}
+				-- -- Checks if the weapon already has the same component type attached
+				for k,v in pairs(weaponComponents) do
+					if componentType == Items[v.name].type then
 						-- todo: Update locale?
 						return lib.notify({ type = 'error', description = shared.locale('component_has', data.label) })
 					end
 				end
+
+				-- This is for modulars addon weapons, lots of them requires multiples components at the same time
+				-- ex: Sniper scopes also needs a rail, some silencer also needs a barrel ect.
 				for i = 1, #components do
 					local component = components[i]
-
 					if DoesWeaponTakeWeaponComponent(currentWeapon.hash, component) then
 						if HasPedGotWeaponComponent(playerPed, currentWeapon.hash, component) then
-							lib.notify({ type = 'error', description = shared.locale('component_has', data.label) })
-						else
-							useItem(data, function(data)
-								if data then
-									GiveWeaponComponentToPed(playerPed, currentWeapon.hash, component)
-									table.insert(PlayerData.inventory[currentWeapon.slot].metadata.components, data.name)
-									TriggerServerEvent('ox_inventory:updateWeapon', 'component', tostring(data.slot), currentWeapon.slot)
-								end
-							end)
+							return lib.notify({ type = 'error', description = shared.locale('component_has', data.label) })
 						end
-						return
+						table.insert(newComponents, component)
 					end
 				end
-				lib.notify({ type = 'error', description = shared.locale('component_invalid', data.label) })
+
+				if #newComponents < 1 then
+					return lib.notify({ type = 'error', description = shared.locale('component_invalid', data.label) })
+				end
+
+				useItem(data, function(data)
+					if data then
+						local component_hashs = {}
+						for i = 1, #newComponents do
+							local component = newComponents[i]
+							GiveWeaponComponentToPed(playerPed, currentWeapon.hash, component)
+							table.insert(component_hashs, component)
+						end
+
+						table.insert(PlayerData.inventory[currentWeapon.slot].metadata.components, {name = data.name, hash = component_hashs})
+
+						TriggerServerEvent('ox_inventory:updateWeapon', 'component', tostring(data.slot), currentWeapon.slot, PlayerData.inventory[currentWeapon.slot].metadata.components)
+					end
+				end)
 			elseif data.allowArmed then
 				useItem(data)
 			end
@@ -1172,7 +1185,7 @@ RegisterNUICallback('removeComponent', function(data, cb)
 			if HasPedGotWeaponComponent(cache.ped, currentWeapon.hash, component) then
 				RemoveWeaponComponentFromPed(cache.ped, currentWeapon.hash, component)
 				for k, v in pairs(itemSlot.metadata.components) do
-					if v == data.component then
+					if v.name == data.component then
 						table.remove(itemSlot.metadata.components, k)
 						TriggerServerEvent('ox_inventory:updateWeapon', 'component', k)
 						break
