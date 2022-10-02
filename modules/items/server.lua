@@ -321,6 +321,10 @@ function Items.CheckMetadata(metadata, item, name, ostime)
 	if metadata.components then
 		if table.type(metadata.components) == 'array' then
 			for i = 1, #metadata.components do
+				if type(metadata.components[i]) == "string" then
+					metadata.components[i] = {name = metadata.components[i], hash = {}}
+				end
+
 				if not ItemList[metadata.components[i].name] then
 					table.remove(metadata.components, i)
 				end
