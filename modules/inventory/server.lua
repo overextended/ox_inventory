@@ -1537,9 +1537,25 @@ RegisterServerEvent('ox_inventory:updateWeapon', function(action, value, slot, d
 					table.remove(weapon.metadata.components, value)
 					weapon.weight = Inventory.SlotWeight(item, weapon)
 				elseif type == 'string' then
+					local newComponents = {}
+					for k,v in pairs(data) do
+						local thisComponent = {name = v.name, hash = {}}
+						if not Items(v.name) or not v.name:find("at_") then
+							return
+						end
+						for _,hash in pairs(v.hash) do
+							if tonumber(hash) then
+								table.insert(thisComponent.hash, hash)
+							end
+						end
+
+						table.insert(newComponents, thisComponent)
+					end
+
 					local component = inventory.items[tonumber(value)]
+
 					Inventory.RemoveItem(inventory, component.name, 1)
-					weapon.metadata.components = data
+					weapon.metadata.components = newComponents
 					weapon.weight = Inventory.SlotWeight(item, weapon)
 				end
 				syncInventory = true
