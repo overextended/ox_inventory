@@ -182,4 +182,10 @@ return {
 		label = 'Clothing',
 		consume = 0,
 	},
+
+	['mastercard'] = {
+		label = 'Mastercard',
+		stack = false,
+		weight = 10,
+	}
 }
