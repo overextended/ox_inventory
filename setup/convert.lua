@@ -224,7 +224,10 @@ local function ConvertQB()
 				end
 			end
 
-			MySQL.prepare.await('UPDATE player_vehicles SET trunk = ?, glovebox = ? WHERE plate = ? AND citizenid = ?', parameters)
+
+			if #parameters > 0 then
+				MySQL.prepare.await('UPDATE player_vehicles SET trunk = ?, glovebox = ? WHERE plate = ? AND citizenid = ?', parameters)
+			end
 		end
 	end
 
