@@ -7,10 +7,10 @@ import { onDrop } from '../../dnd/onDrop';
 import { onBuy } from '../../dnd/onBuy';
 import { selectIsBusy } from '../../store/inventory';
 import { Items } from '../../store/items';
-import { isSlotWithItem } from '../../helpers';
+import { isShopStockEmpty, isSlotWithItem } from '../../helpers';
 import { onUse } from '../../dnd/onUse';
 import { Locale } from '../../store/locale';
-import { Typography, Tooltip } from '@mui/material';
+import { Tooltip } from '@mui/material';
 import SlotTooltip from './SlotTooltip';
 import { setContextMenu } from '../../store/inventory';
 import { imagepath } from '../../store/imagepath';
@@ -41,7 +41,7 @@ const InventorySlot: React.FC<SlotProps> = ({ inventory, item }) => {
               image: item.metadata?.image,
             }
           : null,
-      canDrag: !isBusy,
+      canDrag: !isBusy && !isShopStockEmpty(item.count, inventory.type),
     }),
     [isBusy, inventory, item]
   );
@@ -114,6 +114,7 @@ const InventorySlot: React.FC<SlotProps> = ({ inventory, item }) => {
         onClick={handleClick}
         className="inventory-slot"
         style={{
+          filter: isShopStockEmpty(item.count, inventory.type) ? 'brightness(80%) grayscale(100%)' : undefined,
           opacity: isDragging ? 0.4 : 1.0,
           backgroundImage: `url(${`${imagepath}/${item.metadata?.image ? item.metadata.image : item.name}.png`})`,
           border: isOver ? '1px dashed rgba(255,255,255,0.4)' : '',

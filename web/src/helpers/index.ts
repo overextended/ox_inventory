@@ -2,6 +2,12 @@
 import { Inventory, State, Slot, SlotWithItem, InventoryType, ItemData } from '../typings';
 import { isEqual } from 'lodash';
 
+export const isShopStockEmpty = (itemCount: number | undefined, inventoryType: string) => {
+  if (inventoryType === 'shop' && itemCount !== undefined && itemCount === 0) return true;
+
+  return false;
+};
+
 export const isSlotWithItem = (slot: Slot, strict: boolean = false): slot is SlotWithItem =>
   (slot.name !== undefined && slot.weight !== undefined) ||
   (strict && slot.name !== undefined && slot.count !== undefined && slot.weight !== undefined);
