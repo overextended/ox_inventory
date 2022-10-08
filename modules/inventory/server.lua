@@ -1027,11 +1027,7 @@ local function dropItem(source, data)
 	playerInventory.changed = true
 
 	TriggerClientEvent('ox_inventory:createDrop', -1, dropId, Inventory.Drops[dropId], playerInventory.open and source, slot)
-
-	Log(('%sx %s transferred from %s to %s'):format(data.count, toData.name, playerInventory.label, dropId),
-		playerInventory.owner,
-		'swapSlots', playerInventory.owner, dropId
-	)
+	lib.logger(playerInventory.owner, 'swapSlots', ('%sx %s transferred from "%s" to "%s"'):format(data.count, toData.name, playerInventory.label, dropId))
 
 	if server.syncInventory then server.syncInventory(playerInventory) end
 
@@ -1102,11 +1098,7 @@ lib.callback.register('ox_inventory:swapItems', function(source, data)
 
 								toData, fromData = Inventory.SwapSlots(fromInventory, toInventory, data.fromSlot, data.toSlot) --[[@as table]]
 
-								Log(('%sx %s transferred from %s to %s for %sx %s'):format(fromData.count, fromData.name, fromInventory.owner and fromInventory.label or fromInventory.id, toInventory.owner and toInventory.label or toInventory.id, toData.count, toData.name),
-									playerInventory.owner,
-									'swapSlots', fromInventory.owner or fromInventory.id, toInventory.owner or toInventory.id
-								)
-
+								lib.logger(playerInventory.owner, 'swapSlots', ('%sx %s transferred from "%s" to "%s" for %sx %s'):format(fromData.count, fromData.name, fromInventory.owner and fromInventory.label or fromInventory.id, toInventory.owner and toInventory.label or toInventory.id, toData.count, toData.name))
 							else return false, 'cannot_carry' end
 						else toData, fromData = Inventory.SwapSlots(fromInventory, toInventory, data.fromSlot, data.toSlot) end
 
@@ -1128,12 +1120,9 @@ lib.callback.register('ox_inventory:swapItems', function(source, data)
 									Inventory.ContainerWeight(containerItem, toInventory.type == 'container' and toInventory.weight or fromInventory.weight, playerInventory)
 								end
 
-								Log(('%sx %s transferred from %s to %s'):format(data.count, fromData.name, fromInventory.owner and fromInventory.label or fromInventory.id, toInventory.owner and toInventory.label or toInventory.id),
-									playerInventory.owner,
-									'swapSlots', fromInventory.owner or fromInventory.id, toInventory.owner or toInventory.id
-								)
-
+								lib.logger(playerInventory.owner, 'swapSlots', ('%sx %s transferred from "%s" to "%s"'):format(data.count, fromData.name, fromInventory.owner and fromInventory.label or fromInventory.id, toInventory.owner and toInventory.label or toInventory.id))
 							end
+
 							fromData.weight = fromSlotWeight
 						else
 							toData.count -= data.count
@@ -1168,11 +1157,7 @@ lib.callback.register('ox_inventory:swapItems', function(source, data)
 									Inventory.ContainerWeight(containerItem, toContainer and toInventory.weight or fromInventory.weight, playerInventory)
 								end
 
-								Log(('%sx %s transferred from %s to %s'):format(data.count, fromData.name, fromInventory.owner and fromInventory.label or fromInventory.id, toInventory.owner and toInventory.label or toInventory.id),
-									playerInventory.owner,
-									'swapSlots', fromInventory.owner or fromInventory.id, toInventory.owner or toInventory.id
-								)
-
+								lib.logger(playerInventory.owner, 'swapSlots', ('%sx %s transferred from "%s" to "%s"'):format(data.count, fromData.name, fromInventory.owner and fromInventory.label or fromInventory.id, toInventory.owner and toInventory.label or toInventory.id))
 							end
 
 							fromData.count -= data.count
@@ -1496,12 +1481,7 @@ RegisterServerEvent('ox_inventory:giveItem', function(slot, target, count)
 			if data and data.count >= count then
 				Inventory.RemoveItem(fromInventory, item, count, data.metadata, slot)
 				Inventory.AddItem(toInventory, item, count, data.metadata)
-
-				Log(('%s gave %sx %s to %s'):format(fromInventory.label, count, data.name, toInventory.label),
-					fromInventory.owner,
-					'giveItem', toInventory.owner
-				)
-
+				lib.logger(fromInventory.owner, 'giveItem', ('"%s" gave %sx %s to "%s"'):format(fromInventory.label, count, data.name, toInventory.label))
 			end
 		else
 			TriggerClientEvent('ox_lib:notify', source, { type = 'error', description = shared.locale('cannot_give', count, data.label) })
@@ -1604,13 +1584,9 @@ lib.addCommand('group.admin', {'additem', 'giveitem'}, function(source, args)
 		Inventory.AddItem(args.target, args.item.name, args.count, metadata)
 
 		local inventory = Inventories[args.target]
-		source = Inventories[source] or {label = 'console', owner = 'console'}
+		source = Inventories[source] or { label = 'console', owner = 'console' }
 
-		Log(('%s gave %sx %s to %s'):format(source.label, args.count, args.item.name, inventory.label),
-			source.owner,
-			'admin', inventory.owner
-		)
-
+		lib.logger(source.owner, 'admin', ('"%s" gave %sx %s to "%s"'):format(source.label, args.count, args.item.name, inventory.label))
 	end
 end, {'target:number', 'item:string', 'count:number', 'metatype'})
 
@@ -1623,11 +1599,7 @@ lib.addCommand('group.admin', 'removeitem', function(source, args)
 		local inventory = Inventories[args.target]
 		source = Inventories[source] or {label = 'console', owner = 'console'}
 
-		Log(('%s took %sx %s from %s'):format(source.label, args.count, args.item.name, inventory.label),
-			source.owner,
-			'admin', inventory.owner
-		)
-
+		lib.logger(source.owner, 'admin', ('"%s" removed %sx %s from "%s"'):format(source.label, args.count, args.item.name, inventory.label))
 	end
 end, {'target:number', 'item:string', 'count:number', 'metatype'})
 
@@ -1638,11 +1610,7 @@ lib.addCommand('group.admin', 'setitem', function(source, args)
 		local inventory = Inventories[args.target]
 		source = Inventories[source] or {label = 'console', owner = 'console'}
 
-		Log(('%s set %s\' %s count to %sx'):format(source.label, inventory.label, args.item.name, args.count),
-			source.owner,
-			'admin', inventory.owner
-		)
-
+		lib.logger(source.owner, 'admin', ('"%s" set "%s" %s count to %sx'):format(source.label, inventory.label, args.item.name, args.count))
 	end
 end, {'target:number', 'item:string', 'count:number', 'metatype:?string'})
 

@@ -202,11 +202,7 @@ lib.callback.register('ox_inventory:buyItem', function(source, data)
 
 					-- Only log purchases for items worth $500 or more
 					if fromData.price >= 500 then
-
-						Log(('%s %s'):format(playerInv.label, message:lower()),
-							'buyItem', playerInv.owner, shop.label
-						)
-
+						lib.logger(playerInv.owner, 'buyItem', ('"%s" %s'):format(playerInv.label, message:lower()), ('shop:%s'):format(shop.label))
 					end
 
 					return true, {data.toSlot, playerInv.items[data.toSlot], shop.items[data.fromSlot].count and shop.items[data.fromSlot], playerInv.weight}, { type = 'success', description = message }
