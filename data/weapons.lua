@@ -253,7 +253,8 @@ return {
 		['WEAPON_HEAVYRIFLE'] = {
 			label = 'Heavy Rifle',
 			weight = 2750,
-			durability = 0.2
+			durability = 0.2,
+			ammoname = 'ammo-rifle'
 		},
 
 		['WEAPON_HAZARDCAN'] = {
