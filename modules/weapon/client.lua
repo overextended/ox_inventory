@@ -72,7 +72,7 @@ function Weapon.Equip(item, data)
 	RefillAmmoInstantly(playerPed)
 	SetWeaponsNoAutoswap(true)
 
-	if data.hash == `WEAPON_PETROLCAN` or data.hash == `WEAPON_HAZARDCAN` or data.hash == `WEAPON_FIREEXTINGUISHER` then
+	if data.hash == `WEAPON_PETROLCAN` or data.hash == `WEAPON_HAZARDCAN` or data.hash == `WEAPON_FERTILIZERCAN` or data.hash == `WEAPON_FIREEXTINGUISHER` then
 		item.metadata.ammo = item.metadata.durability
 		SetPedInfiniteAmmo(playerPed, true, data.hash)
 	end
