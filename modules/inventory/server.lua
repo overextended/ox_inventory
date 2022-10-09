@@ -1079,7 +1079,7 @@ lib.callback.register('ox_inventory:swapItems', function(source, data)
 						local fromWeight = not sameInventory and (fromInventory.weight + toData.weight - fromData.weight)
 
 						if not sameInventory then
-							if fromInventory.type == 'container' or (toWeight <= toInventory.maxWeight and fromWeight <= fromInventory.maxWeight) then
+							if (toWeight <= toInventory.maxWeight and fromWeight <= fromInventory.maxWeight) then
 								fromInventory.weight = fromWeight
 								toInventory.weight = toWeight
 
