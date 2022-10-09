@@ -605,7 +605,7 @@ local function registerCommands()
 		local hotkey = ('hotkey%s'):format(i)
 
 		RegisterCommand(hotkey, function()
-			if not invOpen then
+			if not invOpen and not IsPauseMenuActive() and not IsNuiFocused() then
 				CreateThread(function() useSlot(i) end)
 			end
 		end, false)
