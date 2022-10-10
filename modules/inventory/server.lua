@@ -1046,7 +1046,10 @@ local function dropItem(source, data)
 	playerInventory.changed = true
 
 	TriggerClientEvent('ox_inventory:createDrop', -1, dropId, Inventory.Drops[dropId], playerInventory.open and source, slot)
-	lib.logger(playerInventory.owner, 'swapSlots', ('%sx %s transferred from "%s" to "%s"'):format(data.count, toData.name, playerInventory.label, dropId))
+
+	if server.loglevel > 0 then
+		lib.logger(playerInventory.owner, 'swapSlots', ('%sx %s transferred from "%s" to "%s"'):format(data.count, toData.name, playerInventory.label, dropId))
+	end
 
 	if server.syncInventory then server.syncInventory(playerInventory) end
 
@@ -1117,7 +1120,9 @@ lib.callback.register('ox_inventory:swapItems', function(source, data)
 
 								toData, fromData = Inventory.SwapSlots(fromInventory, toInventory, data.fromSlot, data.toSlot) --[[@as table]]
 
-								lib.logger(playerInventory.owner, 'swapSlots', ('%sx %s transferred from "%s" to "%s" for %sx %s'):format(fromData.count, fromData.name, fromInventory.owner and fromInventory.label or fromInventory.id, toInventory.owner and toInventory.label or toInventory.id, toData.count, toData.name))
+								if server.loglevel > 0 then
+									lib.logger(playerInventory.owner, 'swapSlots', ('%sx %s transferred from "%s" to "%s" for %sx %s'):format(fromData.count, fromData.name, fromInventory.owner and fromInventory.label or fromInventory.id, toInventory.owner and toInventory.label or toInventory.id, toData.count, toData.name))
+								end
 							else return false, 'cannot_carry' end
 						else toData, fromData = Inventory.SwapSlots(fromInventory, toInventory, data.fromSlot, data.toSlot) end
 
@@ -1139,7 +1144,9 @@ lib.callback.register('ox_inventory:swapItems', function(source, data)
 									Inventory.ContainerWeight(containerItem, toInventory.type == 'container' and toInventory.weight or fromInventory.weight, playerInventory)
 								end
 
-								lib.logger(playerInventory.owner, 'swapSlots', ('%sx %s transferred from "%s" to "%s"'):format(data.count, fromData.name, fromInventory.owner and fromInventory.label or fromInventory.id, toInventory.owner and toInventory.label or toInventory.id))
+								if server.loglevel > 0 then
+									lib.logger(playerInventory.owner, 'swapSlots', ('%sx %s transferred from "%s" to "%s"'):format(data.count, fromData.name, fromInventory.owner and fromInventory.label or fromInventory.id, toInventory.owner and toInventory.label or toInventory.id))
+								end
 							end
 
 							fromData.weight = fromSlotWeight
@@ -1176,7 +1183,9 @@ lib.callback.register('ox_inventory:swapItems', function(source, data)
 									Inventory.ContainerWeight(containerItem, toContainer and toInventory.weight or fromInventory.weight, playerInventory)
 								end
 
-								lib.logger(playerInventory.owner, 'swapSlots', ('%sx %s transferred from "%s" to "%s"'):format(data.count, fromData.name, fromInventory.owner and fromInventory.label or fromInventory.id, toInventory.owner and toInventory.label or toInventory.id))
+								if server.loglevel > 0 then
+									lib.logger(playerInventory.owner, 'swapSlots', ('%sx %s transferred from "%s" to "%s"'):format(data.count, fromData.name, fromInventory.owner and fromInventory.label or fromInventory.id, toInventory.owner and toInventory.label or toInventory.id))
+								end
 							end
 
 							fromData.count -= data.count
@@ -1500,7 +1509,10 @@ RegisterServerEvent('ox_inventory:giveItem', function(slot, target, count)
 			if data and data.count >= count then
 				Inventory.RemoveItem(fromInventory, item, count, data.metadata, slot)
 				Inventory.AddItem(toInventory, item, count, data.metadata)
-				lib.logger(fromInventory.owner, 'giveItem', ('"%s" gave %sx %s to "%s"'):format(fromInventory.label, count, data.name, toInventory.label))
+
+				if server.loglevel > 0 then
+					lib.logger(fromInventory.owner, 'giveItem', ('"%s" gave %sx %s to "%s"'):format(fromInventory.label, count, data.name, toInventory.label))
+				end
 			end
 		else
 			TriggerClientEvent('ox_lib:notify', source, { type = 'error', description = shared.locale('cannot_give', count, data.label) })
@@ -1605,7 +1617,9 @@ lib.addCommand('group.admin', {'additem', 'giveitem'}, function(source, args)
 		local inventory = Inventories[args.target]
 		source = Inventories[source] or { label = 'console', owner = 'console' }
 
-		lib.logger(source.owner, 'admin', ('"%s" gave %sx %s to "%s"'):format(source.label, args.count, args.item.name, inventory.label))
+		if server.loglevel > 0 then
+			lib.logger(source.owner, 'admin', ('"%s" gave %sx %s to "%s"'):format(source.label, args.count, args.item.name, inventory.label))
+		end
 	end
 end, {'target:number', 'item:string', 'count:number', 'metatype'})
 
@@ -1618,7 +1632,9 @@ lib.addCommand('group.admin', 'removeitem', function(source, args)
 		local inventory = Inventories[args.target]
 		source = Inventories[source] or {label = 'console', owner = 'console'}
 
-		lib.logger(source.owner, 'admin', ('"%s" removed %sx %s from "%s"'):format(source.label, args.count, args.item.name, inventory.label))
+		if server.loglevel > 0 then
+			lib.logger(source.owner, 'admin', ('"%s" removed %sx %s from "%s"'):format(source.label, args.count, args.item.name, inventory.label))
+		end
 	end
 end, {'target:number', 'item:string', 'count:number', 'metatype'})
 
@@ -1629,7 +1645,9 @@ lib.addCommand('group.admin', 'setitem', function(source, args)
 		local inventory = Inventories[args.target]
 		source = Inventories[source] or {label = 'console', owner = 'console'}
 
-		lib.logger(source.owner, 'admin', ('"%s" set "%s" %s count to %sx'):format(source.label, inventory.label, args.item.name, args.count))
+		if server.loglevel > 0 then
+			lib.logger(source.owner, 'admin', ('"%s" set "%s" %s count to %sx'):format(source.label, inventory.label, args.item.name, args.count))
+		end
 	end
 end, {'target:number', 'item:string', 'count:number', 'metatype:?string'})
 

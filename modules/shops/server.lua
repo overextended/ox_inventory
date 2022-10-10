@@ -200,8 +200,10 @@ lib.callback.register('ox_inventory:buyItem', function(source, data)
 					if server.syncInventory then server.syncInventory(playerInv) end
 					local message = shared.locale('purchased_for', count, fromItem.label, (currency == 'money' and shared.locale('$') or comma_value(price)), (currency == 'money' and comma_value(price) or ' '..Items(currency).label))
 
-					if fromData.price >= 500 or server.loglevel > 1 then
-						lib.logger(playerInv.owner, 'buyItem', ('"%s" %s'):format(playerInv.label, message:lower()), ('shop:%s'):format(shop.label))
+					if server.loglevel > 0 then
+						if server.loglevel > 1 or fromData.price >= 500 then
+							lib.logger(playerInv.owner, 'buyItem', ('"%s" %s'):format(playerInv.label, message:lower()), ('shop:%s'):format(shop.label))
+						end
 					end
 
 					return true, {data.toSlot, playerInv.items[data.toSlot], shop.items[data.fromSlot].count and shop.items[data.fromSlot], playerInv.weight}, { type = 'success', description = message }
