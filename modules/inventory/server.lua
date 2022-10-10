@@ -690,6 +690,12 @@ function Inventory.AddItem(inv, item, count, metadata, slot, cb)
 						TriggerClientEvent('ox_inventory:updateSlots', inv.id, {{item = inv.items[toSlot], inventory = inv.type}}, {left=inv.weight, right=inv.open and Inventories[inv.open]?.weight}, slotCount, false)
 					end
 
+					local invokingResource = server.loglevel > 1 and GetInvokingResource()
+
+					if invokingResource then
+						lib.logger(inv.owner, 'addItem', ('"%s" added %sx %s to "%s"'):format(invokingResource, count, item.name, inv.label))
+					end
+
 					if cb then
 						success = true
 						resp = inv.items[toSlot]
@@ -707,6 +713,12 @@ function Inventory.AddItem(inv, item, count, metadata, slot, cb)
 					if inv.type == 'player' then
 						if server.syncInventory then server.syncInventory(inv) end
 						TriggerClientEvent('ox_inventory:updateSlots', inv.id, toSlot, {left=inv.weight, right=inv.open and Inventories[inv.open]?.weight}, added, false)
+					end
+
+					local invokingResource = server.loglevel > 1 and GetInvokingResource()
+
+					if invokingResource then
+						lib.logger(inv.owner, 'addItem', ('"%s" added %sx %s to "%s"'):format(invokingResource, added, item.name, inv.label))
 					end
 
 					if cb then
@@ -855,6 +867,7 @@ function Inventory.RemoveItem(inv, item, count, metadata, slot)
 
 		if removed > 0 and inv.type == 'player' then
 			if server.syncInventory then server.syncInventory(inv) end
+
 			local array = table.create(#slots, 0)
 
 			for k, v in pairs(slots) do
@@ -862,6 +875,12 @@ function Inventory.RemoveItem(inv, item, count, metadata, slot)
 			end
 
 			TriggerClientEvent('ox_inventory:updateSlots', inv.id, array, {left=inv.weight, right=inv.open and Inventories[inv.open]?.weight}, removed, true)
+
+			local invokingResource = server.loglevel > 1 and GetInvokingResource()
+
+			if invokingResource then
+				lib.logger(inv.owner, 'removeItem', ('"%s" removed %sx %s from "%s"'):format(invokingResource, removed, item.name, inv.label))
+			end
 		end
 	end
 end

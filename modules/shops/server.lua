@@ -200,8 +200,7 @@ lib.callback.register('ox_inventory:buyItem', function(source, data)
 					if server.syncInventory then server.syncInventory(playerInv) end
 					local message = shared.locale('purchased_for', count, fromItem.label, (currency == 'money' and shared.locale('$') or comma_value(price)), (currency == 'money' and comma_value(price) or ' '..Items(currency).label))
 
-					-- Only log purchases for items worth $500 or more
-					if fromData.price >= 500 then
+					if fromData.price >= 500 or server.loglevel > 1 then
 						lib.logger(playerInv.owner, 'buyItem', ('"%s" %s'):format(playerInv.label, message:lower()), ('shop:%s'):format(shop.label))
 					end
 
