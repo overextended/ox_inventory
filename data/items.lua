@@ -187,5 +187,5 @@ return {
 		label = 'Mastercard',
 		stack = false,
 		weight = 10,
-	}
+	},
 }
