@@ -83,7 +83,12 @@ function client.openInventory(inv, data)
 				return client.closeInventory()
 			end
 		end
-	elseif IsNuiFocused() then return end
+	elseif IsNuiFocused() then
+		-- If triggering event from another nui such as qtarget, may need to wait for focus to end
+		Wait(100)
+
+		if IsNuiFocused() then return end
+	end
 
 	if inv == 'dumpster' and cache.vehicle then
 		return lib.notify({ type = 'error', description = shared.locale('inventory_right_access') })
