@@ -1276,6 +1276,12 @@ RegisterNUICallback('swapItems', function(data, cb)
 		data.instance = currentInstance
 	end
 
+	if currentWeapon and data.fromType ~= data.toType then
+		if (data.fromType == 'player' and data.fromSlot == currentWeapon.slot) or (data.toType == 'player' and data.toSlot == currentWeapon.slot) then
+			currentWeapon = Weapon.Disarm(currentWeapon, true)
+		end
+	end
+
 	local success, response, weaponSlot = lib.callback.await('ox_inventory:swapItems', false, data)
 
 	if success then
@@ -1286,7 +1292,6 @@ RegisterNUICallback('swapItems', function(data, cb)
 				currentWeapon.slot = weaponSlot
 				TriggerEvent('ox_inventory:currentWeapon', currentWeapon)
 			end
-
 		end
 	elseif response then
 		lib.notify({ type = 'error', description = shared.locale(response) })
