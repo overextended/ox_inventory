@@ -104,6 +104,7 @@ function client.openInventory(inv, data)
 				local input = lib.inputDialog(shared.locale('police_evidence'), {shared.locale('locker_number')})
 
 				if input then
+					---@diagnostic disable-next-line: cast-local-type
 					input = tonumber(input[1])
 				else
 					return lib.notify({ description = shared.locale('locker_no_value'), type = 'error' })
@@ -246,7 +247,7 @@ local function useSlot(slot)
 		local item = PlayerData.inventory[slot]
 		if not item then return end
 
-		local data = item and Items[item.name]
+		local data = Items[item.name]
 		if not data then return end
 
 		if data.component and not currentWeapon then
@@ -365,9 +366,12 @@ local function useButton(id, slot)
 	if PlayerData.loaded and not invBusy and not lib.progressActive() then
 		local item = PlayerData.inventory[slot]
 		if not item then return end
-		local data = item and Items[item.name]
-		if data.buttons and data.buttons[id]?.action then
-			data.buttons[id].action(slot)
+
+		local data = Items[item.name]
+		local buttons = data?.buttons
+
+		if buttons and buttons[id]?.action then
+			buttons[id].action(slot)
 		end
 	end
 end
