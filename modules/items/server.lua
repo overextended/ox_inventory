@@ -1,7 +1,9 @@
 if not lib then return end
 
+---@overload fun(name: string): OxServerItem
 local Items = {}
 local ItemList = shared.items
+---@cast ItemList { [string]: OxServerItem }
 
 TriggerEvent('ox_inventory:itemList', ItemList)
 
@@ -35,10 +37,10 @@ local trash = {
 	{description = 'An empty chips bag.', weight = 5, image = 'trash_chips'},
 }
 
----@param internal table?
+---@param _ table?
 ---@param name string?
 ---@return table?
-local function getItem(internal, name)
+local function getItem(_, name)
 	if name then
 		name = name:lower()
 
@@ -52,7 +54,7 @@ local function getItem(internal, name)
 	return ItemList
 end
 
-setmetatable(Items, {
+setmetatable(Items --[[@as table]], {
 	__call = getItem
 })
 

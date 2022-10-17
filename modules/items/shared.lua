@@ -11,8 +11,25 @@
 ---@field close? boolean Set to false to keep the inventory open on item use.
 ---@field allowArmed? boolean Set to true to allow an item to be used while a weapon is equipped.
 ---@field buttons? { label: string, action: fun(slot: number) }[] Add interactions when right-clicking an item.
----@field client? { status?: { [string]: number }, anim: string | { dict?: string, clip: string, flag?: number, blendIn?: number, blendOut?: number, duration?: number, playbackRate?: number, lockX?: boolean, lockY?: boolean, lockZ?: boolean, scenario?: string, playEnter?: boolean }, prop: string | ProgressPropProps, usetime?: number, label?: string, useWhileDead?: boolean, canCancel?: boolean, disable?: { move?: boolean, car?: boolean, combat?: boolean, mouse?: boolean }, export: string }
----@field server? { export: string }
+---@field [string] any
+
+---@class OxClientProps
+---@field status? { [string]: number }
+---@field anim? string | { dict?: string, clip: string, flag?: number, blendIn?: number, blendOut?: number, duration?: number, playbackRate?: number, lockX?: boolean, lockY?: boolean, lockZ?: boolean, scenario?: string, playEnter?: boolean }
+---@field prop? string | ProgressPropProps
+---@field usetime? number
+---@field label? string
+---@field useWhileDead? boolean
+---@field canCancel? boolean
+---@field disable? { move?: boolean, car?: boolean, combat?: boolean, mouse?: boolean }
+---@field export string
+---@field [string] any
+
+---@class OxClientItem : OxItem
+---@field client? OxClientProps
+
+---@class OxServerItem : OxItem
+---@field server? { export: string, [string]: any }
 
 ---@class OxWeapon : OxItem
 ---@field hash number
@@ -68,7 +85,6 @@ local function newItem(data)
 end
 
 do
-	---@type { [string]: OxItem }
 	local ItemList = {}
 
 	for type, data in pairs(data('weapons')) do
