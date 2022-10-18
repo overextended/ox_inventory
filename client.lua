@@ -599,7 +599,7 @@ local function registerCommands()
 	TriggerEvent('chat:removeSuggestion', '/reload')
 
 	RegisterCommand('hotbar', function()
-		if not EnableWeaponWheel and not IsPauseMenuActive() and not IsNuiFocused() then
+		if not EnableWeaponWheel and not IsPauseMenuActive() and not IsNuiFocused() and not lib.progressActive() then
 			SendNUIMessage({ action = 'toggleHotbar' })
 		end
 	end, false)
