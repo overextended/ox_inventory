@@ -78,9 +78,9 @@ const InventoryContext: React.FC = () => {
         {item && item.metadata?.components && item.metadata?.components.length > 0 && (
           <NestedMenuItem parentMenuOpen={!!contextMenu} label={Locale.ui_removeattachments}>
             {item &&
-              item.metadata?.components.map((component: string, index: number) => (
-                <MenuItem key={index} onClick={() => handleClick({ action: 'remove', component, slot: item.slot })}>
-                  {Items[component]?.label}
+              item.metadata?.components.map((component: {name: string, hash: number[]}, index: number) => (
+                <MenuItem key={index} onClick={() => handleClick({ action: 'remove', component: component.name, slot: item.slot })}>
+                  {Items[component.name]?.label}
                 </MenuItem>
               ))}
           </NestedMenuItem>
