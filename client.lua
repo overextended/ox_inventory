@@ -1101,9 +1101,11 @@ RegisterNetEvent('ox_inventory:setPlayerInventory', function(currentDrops, inven
 						currentWeapon.metadata.ammo = (currentWeapon.metadata.ammo < currentAmmo) and 0 or currentAmmo
 
 						if currentAmmo <= 0 then
-							ClearPedTasks(playerPed)
-							SetCurrentPedWeapon(playerPed, currentWeapon.hash, true)
-							SetPedCurrentWeaponVisible(playerPed, true, false, false, false)
+							if cache.vehicle then
+								SetCurrentPedWeapon(playerPed, currentWeapon.hash, true)
+								SetPedCurrentWeaponVisible(playerPed, true, false, false, false)
+							end
+
 							if currentWeapon?.ammo and client.autoreload and not lib.progressActive() and not IsPedRagdoll(playerPed) and not IsPedFalling(playerPed) then
 								currentWeapon.timer = 0
 								local ammo = Inventory.Search(1, currentWeapon.ammo)

@@ -86,7 +86,6 @@ function Utils.WeaponWheel(state)
 	EnableWeaponWheel = state
 	SetWeaponsNoAutoswap(not state)
 	SetWeaponsNoAutoreload(not state)
-	SetPedCanSwitchWeapon(cache.ped, state)
 end
 exports('weaponWheel', Utils.WeaponWheel)
 
