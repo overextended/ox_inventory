@@ -760,10 +760,12 @@ RegisterNetEvent('ox_inventory:inventoryConfiscated', function(message)
 	client.setPlayerData('weight', 0)
 end)
 
-local function nearbyDrop(self)
-	if not self.instance or self.instance == currentInstance then
+
+---@param point CPoint
+local function nearbyDrop(point)
+	if not point.instance or point.instance == currentInstance then
 		---@diagnostic disable-next-line: param-type-mismatch
-		DrawMarker(2, self.coords.x, self.coords.y, self.coords.z, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.3, 0.2, 0.15, 150, 30, 30, 222, false, false, 0, true, false, false, false)
+		DrawMarker(2, point.coords.x, point.coords.y, point.coords.z, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.3, 0.2, 0.15, 150, 30, 30, 222, false, false, 0, true, false, false, false)
 	end
 end
 
@@ -949,18 +951,19 @@ RegisterNetEvent('ox_inventory:setPlayerInventory', function(currentDrops, inven
 	TriggerEvent('ox_inventory:updateInventory', PlayerData.inventory)
 	lib.notify({ description = shared.locale('inventory_setup') })
 
-	local function nearbyLicense(self)
+	---@param point CPoint
+	local function nearbyLicense(point)
 		---@diagnostic disable-next-line: param-type-mismatch
-		DrawMarker(2, self.coords.x, self.coords.y, self.coords.z, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.3, 0.2, 0.15, 30, 150, 30, 222, false, false, 0, true, false, false, false)
+		DrawMarker(2, point.coords.x, point.coords.y, point.coords.z, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.3, 0.2, 0.15, 30, 150, 30, 222, false, false, 0, true, false, false, false)
 
-		if self.currentDistance < 1.2 and lib.points.closest().id == self.id and IsControlJustReleased(0, 38) then
+		if point.isClosest and point.currentDistance < 1.2 and IsControlJustReleased(0, 38) then
 			lib.callback('ox_inventory:buyLicense', 1000, function(success, message)
 				if success then
 					lib.notify ({ description = shared.locale(message) })
 				elseif success == false then
 					lib.notify ({ type = 'error', description = shared.locale(message) })
 				end
-			end, self.invId)
+			end, point.invId)
 		end
 	end
 
@@ -1039,6 +1042,8 @@ RegisterNetEvent('ox_inventory:setPlayerInventory', function(currentDrops, inven
 	local DisablePlayerFiring = DisablePlayerFiring
 	local HudWeaponWheelIgnoreSelection = HudWeaponWheelIgnoreSelection
 	local DisableControlAction = DisableControlAction
+	local IsPedShooting = IsPedShooting
+	local IsControlJustReleased = IsControlJustReleased
 
 	client.tick = SetInterval(function()
 		DisablePlayerVehicleRewards(playerId)
