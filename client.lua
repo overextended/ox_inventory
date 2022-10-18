@@ -91,7 +91,7 @@ function client.openInventory(inv, data)
 	end
 
 	if inv == 'dumpster' and cache.vehicle then
-		return lib.notify({ type = 'error', description = shared.locale('inventory_right_access') })
+		return lib.notify({ type = 'error', description = locale('inventory_right_access') })
 	end
 
 	if canOpenInventory() then
@@ -101,17 +101,17 @@ function client.openInventory(inv, data)
 			left, right = lib.callback.await('ox_inventory:openShop', 200, data)
 		elseif invOpen ~= nil then
 			if inv == 'policeevidence' then
-				local input = lib.inputDialog(shared.locale('police_evidence'), {shared.locale('locker_number')})
+				local input = lib.inputDialog(locale('police_evidence'), {locale('locker_number')})
 
 				if input then
 					---@diagnostic disable-next-line: cast-local-type
 					input = tonumber(input[1])
 				else
-					return lib.notify({ description = shared.locale('locker_no_value'), type = 'error' })
+					return lib.notify({ description = locale('locker_no_value'), type = 'error' })
 				end
 
 				if type(input) ~= 'number' then
-					return lib.notify({ description = shared.locale('locker_must_number'), type = 'error' })
+					return lib.notify({ description = locale('locker_must_number'), type = 'error' })
 				else
 					data = input
 				end
@@ -150,10 +150,10 @@ function client.openInventory(inv, data)
 		else
 			-- Stash does not exist
 			if left == false then return false end
-			if invOpen == false then lib.notify({ type = 'error', description = shared.locale('inventory_right_access') }) end
+			if invOpen == false then lib.notify({ type = 'error', description = locale('inventory_right_access') }) end
 			if invOpen then client.closeInventory() end
 		end
-	elseif invBusy then lib.notify({ type = 'error', description = shared.locale('inventory_player_access') }) end
+	elseif invBusy then lib.notify({ type = 'error', description = locale('inventory_player_access') }) end
 end
 RegisterNetEvent('ox_inventory:openInventory', client.openInventory)
 exports('openInventory', client.openInventory)
@@ -203,7 +203,7 @@ local function useItem(data, cb)
 
 			local success = (not data.usetime or lib.progressBar({
 				duration = data.usetime,
-				label = data.label or shared.locale('using', result.label),
+				label = data.label or locale('using', result.label),
 				useWhileDead = data.useWhileDead,
 				canCancel = data.cancel,
 				disable = data.disable,
@@ -251,7 +251,7 @@ local function useSlot(slot)
 		if not data then return end
 
 		if data.component and not currentWeapon then
-			return lib.notify({ type = 'error', description = shared.locale('weapon_hand_required') })
+			return lib.notify({ type = 'error', description = locale('weapon_hand_required') })
 		end
 
 		data.slot = slot
@@ -328,7 +328,7 @@ local function useSlot(slot)
 				for componentIndex = 1, #weaponComponents do
 					if componentType == Items[weaponComponents[componentIndex]].type then
 						-- todo: Update locale?
-						return lib.notify({ type = 'error', description = shared.locale('component_has', data.label) })
+						return lib.notify({ type = 'error', description = locale('component_has', data.label) })
 					end
 				end
 				for i = 1, #components do
@@ -336,7 +336,7 @@ local function useSlot(slot)
 
 					if DoesWeaponTakeWeaponComponent(currentWeapon.hash, component) then
 						if HasPedGotWeaponComponent(playerPed, currentWeapon.hash, component) then
-							lib.notify({ type = 'error', description = shared.locale('component_has', data.label) })
+							lib.notify({ type = 'error', description = locale('component_has', data.label) })
 						else
 							useItem(data, function(data)
 								if data then
@@ -349,7 +349,7 @@ local function useSlot(slot)
 						return
 					end
 				end
-				lib.notify({ type = 'error', description = shared.locale('component_invalid', data.label) })
+				lib.notify({ type = 'error', description = locale('component_invalid', data.label) })
 			elseif data.allowArmed then
 				useItem(data)
 			end
@@ -439,7 +439,7 @@ local function registerCommands()
 
 		client.openInventory()
 	end, false)
-	RegisterKeyMapping('inv', shared.locale('open_player_inventory'), 'keyboard', client.keys[1])
+	RegisterKeyMapping('inv', locale('open_player_inventory'), 'keyboard', client.keys[1])
 	TriggerEvent('chat:removeSuggestion', '/inv')
 
 	local Vehicles = data 'vehicles'
@@ -451,10 +451,10 @@ local function registerCommands()
 
 		if not invOpen then
 			if invBusy then
-				return lib.notify({ type = 'error', description = shared.locale('inventory_player_access') })
+				return lib.notify({ type = 'error', description = locale('inventory_player_access') })
 			else
 				if not canOpenInventory() then
-					return lib.notify({ type = 'error', description = shared.locale('inventory_player_access') })
+					return lib.notify({ type = 'error', description = locale('inventory_player_access') })
 				end
 
 				if StashTarget then
@@ -572,14 +572,14 @@ local function registerCommands()
 
 								if lastVehicle then client.closeInventory() end
 							end
-						else lib.notify({ type = 'error', description = shared.locale('vehicle_locked') }) end
+						else lib.notify({ type = 'error', description = locale('vehicle_locked') }) end
 					end
 				end
 			end
 		else return client.closeInventory()
 		end
 	end, false)
-	RegisterKeyMapping('inv2', shared.locale('open_secondary_inventory'), 'keyboard', client.keys[2])
+	RegisterKeyMapping('inv2', locale('open_secondary_inventory'), 'keyboard', client.keys[2])
 	TriggerEvent('chat:removeSuggestion', '/inv2')
 
 	RegisterCommand('reload', function()
@@ -591,11 +591,11 @@ local function registerCommands()
 					useSlot(ammo[1].slot)
 				end
 			else
-				lib.notify({ type = 'error', description = shared.locale('no_durability', currentWeapon.label) })
+				lib.notify({ type = 'error', description = locale('no_durability', currentWeapon.label) })
 			end
 		end
 	end, false)
-	RegisterKeyMapping('reload', shared.locale('reload_weapon'), 'keyboard', 'r')
+	RegisterKeyMapping('reload', locale('reload_weapon'), 'keyboard', 'r')
 	TriggerEvent('chat:removeSuggestion', '/reload')
 
 	RegisterCommand('hotbar', function()
@@ -603,7 +603,7 @@ local function registerCommands()
 			SendNUIMessage({ action = 'toggleHotbar' })
 		end
 	end, false)
-	RegisterKeyMapping('hotbar', shared.locale('disable_hotbar'), 'keyboard', client.keys[3])
+	RegisterKeyMapping('hotbar', locale('disable_hotbar'), 'keyboard', client.keys[3])
 	TriggerEvent('chat:removeSuggestion', '/hotbar')
 
 	RegisterCommand('steal', function()
@@ -620,7 +620,7 @@ local function registerCommands()
 		end, false)
 
 		---@diagnostic disable-next-line: param-type-mismatch
-		RegisterKeyMapping(hotkey, shared.locale('use_hotbar', i), 'keyboard', i)
+		RegisterKeyMapping(hotkey, locale('use_hotbar', i), 'keyboard', i)
 		TriggerEvent('chat:removeSuggestion', '/'..hotkey)
 	end
 
@@ -744,7 +744,7 @@ RegisterNetEvent('ox_inventory:updateSlots', function(items, weights, count, rem
 end)
 
 RegisterNetEvent('ox_inventory:inventoryReturned', function(data)
-	lib.notify({ description = shared.locale('items_returned') })
+	lib.notify({ description = locale('items_returned') })
 	if currentWeapon then currentWeapon = Weapon.Disarm(currentWeapon) end
 	client.closeInventory()
 	PlayerData.inventory = data[1]
@@ -753,7 +753,7 @@ RegisterNetEvent('ox_inventory:inventoryReturned', function(data)
 end)
 
 RegisterNetEvent('ox_inventory:inventoryConfiscated', function(message)
-	if message then lib.notify({ description = shared.locale('items_confiscated') }) end
+	if message then lib.notify({ description = locale('items_confiscated') }) end
 	if currentWeapon then currentWeapon = Weapon.Disarm(currentWeapon) end
 	client.closeInventory()
 	table.wipe(PlayerData.inventory)
@@ -907,7 +907,7 @@ RegisterNetEvent('ox_inventory:setPlayerInventory', function(currentDrops, inven
 
 	local locales = {}
 
-	for k, v in pairs(shared.locale()) do
+	for k, v in pairs(lib.getLocales()) do
 		if k:find('ui_') or k == '$' then
 			locales[k] = v
 		end
@@ -949,7 +949,7 @@ RegisterNetEvent('ox_inventory:setPlayerInventory', function(currentDrops, inven
 	Inventory.Evidence()
 	registerCommands()
 	TriggerEvent('ox_inventory:updateInventory', PlayerData.inventory)
-	lib.notify({ description = shared.locale('inventory_setup') })
+	lib.notify({ description = locale('inventory_setup') })
 
 	---@param point CPoint
 	local function nearbyLicense(point)
@@ -959,9 +959,9 @@ RegisterNetEvent('ox_inventory:setPlayerInventory', function(currentDrops, inven
 		if point.isClosest and point.currentDistance < 1.2 and IsControlJustReleased(0, 38) then
 			lib.callback('ox_inventory:buyLicense', 1000, function(success, message)
 				if success then
-					lib.notify ({ description = shared.locale(message) })
+					lib.notify ({ description = locale(message) })
 				elseif success == false then
-					lib.notify ({ type = 'error', description = shared.locale(message) })
+					lib.notify ({ type = 'error', description = locale(message) })
 				end
 			end, point.invId)
 		end
@@ -1002,14 +1002,14 @@ RegisterNetEvent('ox_inventory:setPlayerInventory', function(currentDrops, inven
 
 						if not id or #(playerCoords - pedCoords) > 1.8 or not (client.hasGroup(shared.police) or canOpenTarget(ped)) then
 							client.closeInventory()
-							lib.notify({ type = 'error', description = shared.locale('inventory_lost_access') })
+							lib.notify({ type = 'error', description = locale('inventory_lost_access') })
 						else
 							TaskTurnPedToFaceCoord(playerPed, pedCoords.x, pedCoords.y, pedCoords.z, 50)
 						end
 
 					elseif currentInventory.coords and (#(playerCoords - currentInventory.coords) > (currentInventory.distance or 2.0) or canOpenTarget(playerPed)) then
 						client.closeInventory()
-						lib.notify({ type = 'error', description = shared.locale('inventory_lost_access') })
+						lib.notify({ type = 'error', description = locale('inventory_lost_access') })
 					end
 				end
 			end
@@ -1187,7 +1187,7 @@ end)
 RegisterNUICallback('removeComponent', function(data, cb)
 	cb(1)
 	if currentWeapon then
-		if data.slot ~= currentWeapon.slot then return lib.notify({ type = 'error', description = shared.locale('weapon_hand_wrong') }) end
+		if data.slot ~= currentWeapon.slot then return lib.notify({ type = 'error', description = locale('weapon_hand_wrong') }) end
 		local itemSlot = PlayerData.inventory[currentWeapon.slot]
 		for _, component in pairs(Items[data.component].client.component) do
 			if HasPedGotWeaponComponent(cache.ped, currentWeapon.hash, component) then
@@ -1305,7 +1305,7 @@ RegisterNUICallback('swapItems', function(data, cb)
 			end
 		end
 	elseif response then
-		lib.notify({ type = 'error', description = shared.locale(response) })
+		lib.notify({ type = 'error', description = locale(response) })
 	end
 
 	if data.toType == 'newdrop' then

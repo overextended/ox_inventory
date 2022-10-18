@@ -903,7 +903,7 @@ function Inventory.CanCarryItem(inv, item, count, metadata)
 			local newWeight = inv.weight + (weight * count)
 
 			if newWeight > inv.maxWeight then
-				TriggerClientEvent('ox_lib:notify', inv.id, { type = 'error', description = shared.locale('cannot_carry') })
+				TriggerClientEvent('ox_lib:notify', inv.id, { type = 'error', description = locale('cannot_carry') })
 				return false
 			end
 
@@ -1515,7 +1515,7 @@ RegisterServerEvent('ox_inventory:giveItem', function(slot, target, count)
 				end
 			end
 		else
-			TriggerClientEvent('ox_lib:notify', source, { type = 'error', description = shared.locale('cannot_give', count, data.label) })
+			TriggerClientEvent('ox_lib:notify', source, { type = 'error', description = locale('cannot_give', count, data.label) })
 		end
 	end
 end)

@@ -280,7 +280,7 @@ function Items.Metadata(inv, item, metadata, count)
 			if next(metadata) == nil then
 				metadata = {
 					type = inv.player.name,
-					description = shared.locale('identification', (inv.player.sex) and shared.locale('male') or shared.locale('female'), inv.player.dateofbirth)
+					description = locale('identification', (inv.player.sex) and locale('male') or locale('female'), inv.player.dateofbirth)
 				}
 			end
 		elseif item.name == 'garbage' then

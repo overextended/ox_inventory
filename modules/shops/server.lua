@@ -160,17 +160,17 @@ lib.callback.register('ox_inventory:buyItem', function(source, data)
 		if fromData then
 			if fromData.count then
 				if fromData.count == 0 then
-					return false, false, { type = 'error', description = shared.locale('shop_nostock') }
+					return false, false, { type = 'error', description = locale('shop_nostock') }
 				elseif data.count > fromData.count then
 					data.count = fromData.count
 				end
 			elseif fromData.license and server.hasLicense and not server.hasLicense(playerInv, fromData.license) then
-				return false, false, { type = 'error', description = shared.locale('item_unlicensed') }
+				return false, false, { type = 'error', description = locale('item_unlicensed') }
 
 			elseif fromData.grade then
 				local _, rank = server.hasGroup(playerInv, shop.groups)
 				if fromData.grade > rank then
-					return false, false, { type = 'error', description = shared.locale('stash_lowgrade') }
+					return false, false, { type = 'error', description = locale('stash_lowgrade') }
 				end
 			end
 
@@ -189,7 +189,7 @@ lib.callback.register('ox_inventory:buyItem', function(source, data)
 				if canAfford then
 					local newWeight = playerInv.weight + (fromItem.weight + (metadata?.weight or 0)) * count
 					if newWeight > playerInv.maxWeight then
-						return false, false, { type = 'error', description = shared.locale('cannot_carry') }
+						return false, false, { type = 'error', description = locale('cannot_carry') }
 					else
 						Inventory.SetSlot(playerInv, fromItem, count, metadata, data.toSlot)
 						if fromData.count then shop.items[data.fromSlot].count = fromData.count - count end
@@ -198,7 +198,7 @@ lib.callback.register('ox_inventory:buyItem', function(source, data)
 
 					Inventory.RemoveItem(source, currency, price)
 					if server.syncInventory then server.syncInventory(playerInv) end
-					local message = shared.locale('purchased_for', count, fromItem.label, (currency == 'money' and shared.locale('$') or comma_value(price)), (currency == 'money' and comma_value(price) or ' '..Items(currency).label))
+					local message = locale('purchased_for', count, fromItem.label, (currency == 'money' and locale('$') or comma_value(price)), (currency == 'money' and comma_value(price) or ' '..Items(currency).label))
 
 					if server.loglevel > 0 then
 						if server.loglevel > 1 or fromData.price >= 500 then
@@ -208,10 +208,10 @@ lib.callback.register('ox_inventory:buyItem', function(source, data)
 
 					return true, {data.toSlot, playerInv.items[data.toSlot], shop.items[data.fromSlot].count and shop.items[data.fromSlot], playerInv.weight}, { type = 'success', description = message }
 				else
-					return false, false, { type = 'error', description = shared.locale('cannot_afford', ('%s%s'):format((currency == 'money' and shared.locale('$') or comma_value(price)), (currency == 'money' and comma_value(price) or ' '..Items(currency).label))) }
+					return false, false, { type = 'error', description = locale('cannot_afford', ('%s%s'):format((currency == 'money' and locale('$') or comma_value(price)), (currency == 'money' and comma_value(price) or ' '..Items(currency).label))) }
 				end
 			end
-			return false, false, { type = 'error', description = shared.locale('unable_stack_items') }
+			return false, false, { type = 'error', description = locale('unable_stack_items') }
 		end
 	end
 end)

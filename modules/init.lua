@@ -1,4 +1,5 @@
 IsDuplicityVersion = IsDuplicityVersion()
+lib.locale()
 
 -- Don't be an idiot and change these convar getters (yes, people do that).
 -- https://overextended.github.io/docs/ox_inventory/config
@@ -143,16 +144,3 @@ if shared.qtarget and not GetResourceState('qtarget'):find('start') and not GetR
 end
 
 if shared.server then shared.ready = false end
-
-local Locales = data('locales/' .. shared.locale)
-
----@param str any
----@param ... unknown
----@return string
-function shared.locale(str, ...)
-	---@diagnostic disable-next-line: return-type-mismatch
-	if not str then return Locales end
-
-	str = Locales[str]
-	return str and str:format(...)
-end

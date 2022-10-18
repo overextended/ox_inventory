@@ -1,17 +1,17 @@
---[[ FX Information ]]--
-fx_version   'cerulean'
+--[[ FX Information ]] --
+fx_version 'cerulean'
 use_experimental_fxv2_oal 'yes'
-lua54        'yes'
-game         'gta5'
+lua54 'yes'
+game 'gta5'
 
---[[ Resource Information ]]--
-name         'ox_inventory'
-author       'Overextended'
-version      '2.13.2'
-repository   'https://github.com/overextended/ox_inventory'
-description  'Slot-based inventory with item metadata support'
+--[[ Resource Information ]] --
+name 'ox_inventory'
+author 'Overextended'
+version '2.13.2'
+repository 'https://github.com/overextended/ox_inventory'
+description 'Slot-based inventory with item metadata support'
 
---[[ Manifest ]]--
+--[[ Manifest ]] --
 dependencies {
 	'/server:5848',
 	'/onesync',
@@ -55,6 +55,7 @@ server_scripts {
 ui_page 'web/build/index.html'
 
 files {
+	'locales/*.json',
 	'web/build/index.html',
 	'web/build/assets/*.js',
 	'web/build/assets/*.css',
@@ -62,5 +63,4 @@ files {
 	'modules/**/shared.lua',
 	'modules/bridge/**/client.lua',
 	'data/*.lua',
-	'data/**/*.lua'
 }

@@ -112,7 +112,7 @@ lib.callback.register('ox_inventory:openInventory', function(source, inv, data)
 				data = ('evidence-%s'):format(data)
 				right = Inventory(data)
 				if not right then
-					right = Inventory.Create(data, shared.locale('police_evidence'), inv, 100, 0, 100000, false)
+					right = Inventory.Create(data, locale('police_evidence'), inv, 100, 0, 100000, false)
 				end
 			end
 
@@ -125,7 +125,7 @@ lib.callback.register('ox_inventory:openInventory', function(source, inv, data)
 				-- dumpsters do not work with entity lockdown. need to rewrite, but having to do
 				-- distance checks to some ~7000 dumpsters and freeze the entities isn't ideal
 				if netid and NetworkGetEntityFromNetworkId(netid) > 0 then
-					right = Inventory.Create(data, shared.locale('dumpster'), inv, 15, 0, 100000, false)
+					right = Inventory.Create(data, locale('dumpster'), inv, 15, 0, 100000, false)
 				end
 			end
 
@@ -215,11 +215,11 @@ lib.callback.register('ox_inventory:useItem', function(source, itemName, slot, m
 			if durability > 100 then
 				if os.time() > durability then
 					inventory.items[slot].metadata.durability = 0
-					TriggerClientEvent('ox_lib:notify', source, { type = 'error', description = shared.locale('no_durability', data.label) })
+					TriggerClientEvent('ox_lib:notify', source, { type = 'error', description = locale('no_durability', data.label) })
 					return
 				end
 			elseif durability <= 0 then
-				TriggerClientEvent('ox_lib:notify', source, { type = 'error', description = shared.locale('no_durability', data.label) })
+				TriggerClientEvent('ox_lib:notify', source, { type = 'error', description = locale('no_durability', data.label) })
 				return
 			end
 		end
@@ -258,7 +258,7 @@ lib.callback.register('ox_inventory:useItem', function(source, itemName, slot, m
 
 					return data
 				else
-					TriggerClientEvent('ox_lib:notify', source, { type = 'error', description = shared.locale('item_not_enough', item.name) })
+					TriggerClientEvent('ox_lib:notify', source, { type = 'error', description = locale('item_not_enough', item.name) })
 				end
 			elseif server.UseItem then
 				pcall(server.UseItem, source, data.name, data)

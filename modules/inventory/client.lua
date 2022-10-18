@@ -24,7 +24,7 @@ if shared.qtarget then
 		options = {
 			{
 				icon = 'fas fa-dumpster',
-				label = shared.locale('search_dumpster'),
+				label = locale('search_dumpster'),
 				action = function(entity)
 					OpenDumpster(entity)
 				end
@@ -107,7 +107,7 @@ Inventory.Evidence = setmetatable(data('evidence'), {
 							options = {
 								{
 									icon = 'fas fa-warehouse',
-									label = shared.locale('open_police_evidence'),
+									label = locale('open_police_evidence'),
 									job = shared.police,
 									action = openEvidence
 								},
@@ -163,7 +163,7 @@ Inventory.Stashes = setmetatable(data('stashes'), {
 							options = {
 								{
 									icon = stash.target.icon or 'fas fa-warehouse',
-									label = stash.target.label or shared.locale('open_stash'),
+									label = stash.target.label or locale('open_stash'),
 									job = stash.groups,
 									action = function()
 										OpenStash({id=id})
