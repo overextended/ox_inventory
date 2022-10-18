@@ -426,204 +426,211 @@ end
 if not Utils or not Weapon or not Items or not Shops or not Inventory then return end
 
 local function registerCommands()
-	RegisterCommand('inv', function()
-		if not invOpen then
-			local closest = lib.points.closest()
-
-			if closest and closest.currentDistance < 1.2 then
-				if closest.inv ~= 'license' and closest.inv ~= 'policeevidence' then
-					return client.openInventory(closest.inv or 'drop', { id = closest.invId, type = closest.type })
-				end
-			end
-		end
-
-		client.openInventory()
-	end, false)
-	RegisterKeyMapping('inv', locale('open_player_inventory'), 'keyboard', client.keys[1])
-	TriggerEvent('chat:removeSuggestion', '/inv')
-
-	local Vehicles = data 'vehicles'
-
-	RegisterCommand('inv2', function()
-		if IsNuiFocused() then
-			return invOpen and client.closeInventory()
-		end
-
-		if not invOpen then
-			if invBusy then
-				return lib.notify({ type = 'error', description = locale('inventory_player_access') })
-			else
-				if not canOpenInventory() then
-					return lib.notify({ type = 'error', description = locale('inventory_player_access') })
-				end
-
-				if StashTarget then
-					client.openInventory('stash', StashTarget)
-				elseif cache.vehicle then
-					-- Player is still entering vehicle, so bailout
-					if not IsPedInAnyVehicle(cache.ped, false) then return end
-
-					local vehicle = cache.vehicle
-
-					if NetworkGetEntityIsNetworked(vehicle) then
-						local vehicleHash = GetEntityModel(vehicle)
-						local vehicleClass = GetVehicleClass(vehicle)
-						local checkVehicle = Vehicles.Storage[vehicleHash]
-						-- No storage or no glovebox
-						if (checkVehicle == 0 or checkVehicle == 2) or (not Vehicles.glovebox[vehicleClass] and not Vehicles.glovebox.models[vehicleHash]) then return end
-
-						local plate = client.trimplate and string.strtrim(GetVehicleNumberPlateText(vehicle)) or GetVehicleNumberPlateText(vehicle)
-						client.openInventory('glovebox', {id = 'glove'..plate, class = vehicleClass, model = vehicleHash, netid = NetworkGetNetworkIdFromEntity(vehicle) })
-
-						while true do
-							Wait(100)
-							if not invOpen then break
-							elseif not cache.vehicle then
-								client.closeInventory()
-								break
-							end
-						end
-					end
-				else
-					local entity, type = Utils.Raycast()
-					if not entity then return end
-					local vehicle, position
-
-					if not shared.qtarget then
-						if type == 2 then vehicle, position = entity, GetEntityCoords(entity)
-						elseif type == 3 and table.contains(Inventory.Dumpsters, GetEntityModel(entity)) then
-							local netId = NetworkGetEntityIsNetworked(entity) and NetworkGetNetworkIdFromEntity(entity)
-
-							if not netId then
-								NetworkRegisterEntityAsNetworked(entity)
-								netId = NetworkGetNetworkIdFromEntity(entity)
-								NetworkUseHighPrecisionBlending(netId, false)
-								SetNetworkIdExistsOnAllMachines(netId, true)
-								SetNetworkIdCanMigrate(netId, true)
-							end
-
-							return client.openInventory('dumpster', 'dumpster'..netId)
-						end
-					elseif type == 2 then
-						vehicle, position = entity, GetEntityCoords(entity)
-					else return end
-
-					if not vehicle then return end
-
-					local lastVehicle
-					local vehicleHash = GetEntityModel(vehicle)
-					local vehicleClass = GetVehicleClass(vehicle)
-					local checkVehicle = Vehicles.Storage[vehicleHash]
-					-- No storage or no glovebox
-					if (checkVehicle == 0 or checkVehicle == 1) or (not Vehicles.trunk[vehicleClass] and not Vehicles.trunk.models[vehicleHash]) then return end
-
-					if #(playerCoords - position) < 6 and NetworkGetEntityIsNetworked(vehicle) then
-						local locked = GetVehicleDoorLockStatus(vehicle)
-
-						if locked == 0 or locked == 1 then
-							local open, vehBone
-
-							if checkVehicle == nil then -- No data, normal trunk
-								open, vehBone = 5, GetEntityBoneIndexByName(vehicle, 'boot')
-							elseif checkVehicle == 3 then -- Trunk in hood
-								open, vehBone = 4, GetEntityBoneIndexByName(vehicle, 'bonnet')
-							else -- No storage or no trunk
-								return
-							end
-
-							if vehBone == -1 then vehBone = GetEntityBoneIndexByName(vehicle, Vehicles.trunk.boneIndex[vehicleHash] or 'platelight') end
-
-							position = GetWorldPositionOfEntityBone(vehicle, vehBone)
-							local distance = #(playerCoords - position)
-							local closeToVehicle = distance < 2 and (open == 5 and (checkVehicle == nil and true or 2) or open == 4)
-
-							if closeToVehicle then
-								local plate = client.trimplate and string.strtrim(GetVehicleNumberPlateText(vehicle)) or GetVehicleNumberPlateText(vehicle)
-								TaskTurnPedToFaceCoord(cache.ped, position.x, position.y, position.z, 0)
-								lastVehicle = vehicle
-								client.openInventory('trunk', {id='trunk'..plate, class = vehicleClass, model = vehicleHash, netid = NetworkGetNetworkIdFromEntity(vehicle)})
-								local timeout = 20
-								repeat Wait(50)
-									timeout -= 1
-								until (currentInventory and currentInventory.type == 'trunk') or timeout == 0
-
-								if timeout == 0 then
-									closeToVehicle, lastVehicle = false, nil
-									return
-								end
-
-								SetVehicleDoorOpen(vehicle, open, false, false)
-								Wait(200)
-								Utils.PlayAnim(0, 'anim@heists@prison_heiststation@cop_reactions', 'cop_b_idle', 3.0, 3.0, -1, 49, 0.0, 0, 0, 0)
-								currentInventory.entity = lastVehicle
-								currentInventory.door = open
-
-								while true do
-									Wait(50)
-
-									if closeToVehicle and invOpen then
-										position = GetWorldPositionOfEntityBone(vehicle, vehBone)
-
-										if #(GetEntityCoords(cache.ped) - position) >= 2 or not DoesEntityExist(vehicle) then
-											break
-										else TaskTurnPedToFaceCoord(cache.ped, position.x, position.y, position.z, 0) end
-									else break end
-								end
-
-								if lastVehicle then client.closeInventory() end
-							end
-						else lib.notify({ type = 'error', description = locale('vehicle_locked') }) end
-					end
-				end
-			end
-		else return client.closeInventory()
-		end
-	end, false)
-	RegisterKeyMapping('inv2', locale('open_secondary_inventory'), 'keyboard', client.keys[2])
-	TriggerEvent('chat:removeSuggestion', '/inv2')
-
-	RegisterCommand('reload', function()
-		if currentWeapon?.ammo then
-			if currentWeapon.metadata.durability > 0 then
-				local ammo = Inventory.Search(1, currentWeapon.ammo)
-
-				if ammo and ammo[1] then
-					useSlot(ammo[1].slot)
-				end
-			else
-				lib.notify({ type = 'error', description = locale('no_durability', currentWeapon.label) })
-			end
-		end
-	end, false)
-	RegisterKeyMapping('reload', locale('reload_weapon'), 'keyboard', 'r')
-	TriggerEvent('chat:removeSuggestion', '/reload')
-
-	RegisterCommand('hotbar', function()
-		if not EnableWeaponWheel and not IsPauseMenuActive() and not IsNuiFocused() and not lib.progressActive() then
-			SendNUIMessage({ action = 'toggleHotbar' })
-		end
-	end, false)
-	RegisterKeyMapping('hotbar', locale('disable_hotbar'), 'keyboard', client.keys[3])
-	TriggerEvent('chat:removeSuggestion', '/hotbar')
-
 	RegisterCommand('steal', function()
 		openNearbyInventory()
 	end, false)
 
-	for i = 1, 5 do
-		local hotkey = ('hotkey%s'):format(i)
+	lib.addKeybind({
+		name = 'inv',
+		description = locale('open_player_inventory'),
+		defaultKey = client.keys[1],
+		onPressed = function()
+			if not invOpen then
+				local closest = lib.points.closest()
 
-		RegisterCommand(hotkey, function()
-			if not invOpen and not IsPauseMenuActive() and not IsNuiFocused() then
-				CreateThread(function() useSlot(i) end)
+				if closest and closest.currentDistance < 1.2 then
+					if closest.inv ~= 'license' and closest.inv ~= 'policeevidence' then
+						return client.openInventory(closest.inv or 'drop', { id = closest.invId, type = closest.type })
+					end
+				end
 			end
-		end, false)
 
-		---@diagnostic disable-next-line: param-type-mismatch
-		RegisterKeyMapping(hotkey, locale('use_hotbar', i), 'keyboard', i)
-		TriggerEvent('chat:removeSuggestion', '/'..hotkey)
+			client.openInventory()
+		end
+	})
+
+	local Vehicles = data 'vehicles'
+
+	lib.addKeybind({
+		name = 'inv2',
+		description = locale('open_secondary_inventory'),
+		defaultKey = client.keys[2],
+		onPressed = function()
+			if invOpen then
+				return client.closeInventory()
+			end
+
+			if invBusy then
+				return lib.notify({ type = 'error', description = locale('inventory_player_access') })
+			end
+
+			if not canOpenInventory() then
+				return lib.notify({ type = 'error', description = locale('inventory_player_access') })
+			end
+
+			if StashTarget then
+				client.openInventory('stash', StashTarget)
+			elseif cache.vehicle then
+				-- Player is still entering vehicle, so bailout
+				if not IsPedInAnyVehicle(cache.ped, false) then return end
+
+				local vehicle = cache.vehicle
+
+				if NetworkGetEntityIsNetworked(vehicle) then
+					local vehicleHash = GetEntityModel(vehicle)
+					local vehicleClass = GetVehicleClass(vehicle)
+					local checkVehicle = Vehicles.Storage[vehicleHash]
+					-- No storage or no glovebox
+					if (checkVehicle == 0 or checkVehicle == 2) or (not Vehicles.glovebox[vehicleClass] and not Vehicles.glovebox.models[vehicleHash]) then return end
+
+					local plate = client.trimplate and string.strtrim(GetVehicleNumberPlateText(vehicle)) or GetVehicleNumberPlateText(vehicle)
+					client.openInventory('glovebox', {id = 'glove'..plate, class = vehicleClass, model = vehicleHash, netid = NetworkGetNetworkIdFromEntity(vehicle) })
+
+					while true do
+						Wait(100)
+						if not invOpen then break
+						elseif not cache.vehicle then
+							client.closeInventory()
+							break
+						end
+					end
+				end
+			else
+				local entity, type = Utils.Raycast()
+				if not entity then return end
+				local vehicle, position
+
+				if not shared.qtarget then
+					if type == 2 then vehicle, position = entity, GetEntityCoords(entity)
+					elseif type == 3 and table.contains(Inventory.Dumpsters, GetEntityModel(entity)) then
+						local netId = NetworkGetEntityIsNetworked(entity) and NetworkGetNetworkIdFromEntity(entity)
+
+						if not netId then
+							NetworkRegisterEntityAsNetworked(entity)
+							netId = NetworkGetNetworkIdFromEntity(entity)
+							NetworkUseHighPrecisionBlending(netId, false)
+							SetNetworkIdExistsOnAllMachines(netId, true)
+							SetNetworkIdCanMigrate(netId, true)
+						end
+
+						return client.openInventory('dumpster', 'dumpster'..netId)
+					end
+				elseif type == 2 then
+					vehicle, position = entity, GetEntityCoords(entity)
+				else return end
+
+				if not vehicle then return end
+
+				local lastVehicle
+				local vehicleHash = GetEntityModel(vehicle)
+				local vehicleClass = GetVehicleClass(vehicle)
+				local checkVehicle = Vehicles.Storage[vehicleHash]
+				-- No storage or no glovebox
+				if (checkVehicle == 0 or checkVehicle == 1) or (not Vehicles.trunk[vehicleClass] and not Vehicles.trunk.models[vehicleHash]) then return end
+
+				if #(playerCoords - position) < 6 and NetworkGetEntityIsNetworked(vehicle) then
+					local locked = GetVehicleDoorLockStatus(vehicle)
+
+					if locked == 0 or locked == 1 then
+						local open, vehBone
+
+						if checkVehicle == nil then -- No data, normal trunk
+							open, vehBone = 5, GetEntityBoneIndexByName(vehicle, 'boot')
+						elseif checkVehicle == 3 then -- Trunk in hood
+							open, vehBone = 4, GetEntityBoneIndexByName(vehicle, 'bonnet')
+						else -- No storage or no trunk
+							return
+						end
+
+						if vehBone == -1 then vehBone = GetEntityBoneIndexByName(vehicle, Vehicles.trunk.boneIndex[vehicleHash] or 'platelight') end
+
+						position = GetWorldPositionOfEntityBone(vehicle, vehBone)
+						local distance = #(playerCoords - position)
+						local closeToVehicle = distance < 2 and (open == 5 and (checkVehicle == nil and true or 2) or open == 4)
+
+						if closeToVehicle then
+							local plate = client.trimplate and string.strtrim(GetVehicleNumberPlateText(vehicle)) or GetVehicleNumberPlateText(vehicle)
+							TaskTurnPedToFaceCoord(cache.ped, position.x, position.y, position.z, 0)
+							lastVehicle = vehicle
+							client.openInventory('trunk', {id='trunk'..plate, class = vehicleClass, model = vehicleHash, netid = NetworkGetNetworkIdFromEntity(vehicle)})
+							local timeout = 20
+							repeat Wait(50)
+								timeout -= 1
+							until (currentInventory and currentInventory.type == 'trunk') or timeout == 0
+
+							if timeout == 0 then
+								closeToVehicle, lastVehicle = false, nil
+								return
+							end
+
+							SetVehicleDoorOpen(vehicle, open, false, false)
+							Wait(200)
+							Utils.PlayAnim(0, 'anim@heists@prison_heiststation@cop_reactions', 'cop_b_idle', 3.0, 3.0, -1, 49, 0.0, 0, 0, 0)
+							currentInventory.entity = lastVehicle
+							currentInventory.door = open
+
+							while true do
+								Wait(50)
+
+								if closeToVehicle and invOpen then
+									position = GetWorldPositionOfEntityBone(vehicle, vehBone)
+
+									if #(GetEntityCoords(cache.ped) - position) >= 2 or not DoesEntityExist(vehicle) then
+										break
+									else TaskTurnPedToFaceCoord(cache.ped, position.x, position.y, position.z, 0) end
+								else break end
+							end
+
+							if lastVehicle then client.closeInventory() end
+						end
+					else lib.notify({ type = 'error', description = locale('vehicle_locked') }) end
+				end
+			end
+		end
+	})
+
+	lib.addKeybind({
+		name = 'reload',
+		description = locale('reload_weapon'),
+		defaultKey = 'r',
+		onPressed = function(self)
+			if not currentWeapon then return end
+
+			if currentWeapon.ammo then
+				if currentWeapon.metadata.durability > 0 then
+					local ammo = Inventory.Search(1, currentWeapon.ammo)?[1]
+
+					if ammo then
+						useSlot(ammo.slot)
+					end
+				else
+					lib.notify({ type = 'error', description = locale('no_durability', currentWeapon.label) })
+				end
+			end
+		end
+	})
+
+	lib.addKeybind({
+		name = 'hotbar',
+		description = locale('disable_hotbar'),
+		defaultKey = client.keys[3],
+		onPressed = function()
+			if EnableWeaponWheel or IsNuiFocused() or lib.progressActive() then return end
+			SendNUIMessage({ action = 'toggleHotbar' })
+		end
+	})
+
+	for i = 1, 5 do
+		lib.addKeybind({
+			name = ('hotkey%s'):format(i),
+			description = locale('use_hotbar', i),
+			defaultKey = tostring(i),
+			onPressed = function()
+				if invOpen or IsNuiFocused() then return end
+				useSlot(i)
+			end
+		})
 	end
-
 end
 
 function client.closeInventory(server)
