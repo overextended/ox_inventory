@@ -163,3 +163,49 @@ function server.buyLicense(inv, license)
 
 	return true, 'bought_weapon_license'
 end
+
+--- Takes traditional item data and updates it to support ox_inventory, i.e.
+--- ```
+--- Old: {1:{"name": "cola", "amount": 1, "label": "Cola", "slot": 1}, 2:{"name": "burger", "amount": 3, "label": "Burger", "slot": 2}}
+--- New: [{"slot":1,"name":"cola","count":1}, {"slot":2,"name":"burger","count":3}]
+---```
+function server.convertInventory(playerId, items)
+	if type(items) == 'table' then
+		local player = server.GetPlayerFromId(playerId)
+		local returnData, totalWeight = table.create(#items, 0), 0
+		local slot = 0
+
+		if player then
+			for name in pairs(server.accounts) do
+				local hasThis = false
+				for _, data in pairs(items) do
+					if data.name == name then
+						hasThis = true
+					end
+				end
+
+				if not hasThis then
+					local account = player.getAccount(name)
+
+					if account.money then
+						items[#items + 1] = {amount = account.money}
+					end
+				end
+			end
+		end
+
+		for _, data in pairs(items) do
+			local item = Items(data.name)
+
+			if item and data then
+				local metadata = Items.Metadata(playerId, item, data.info, data.amount)
+				local weight = Inventory.SlotWeight(item, {count = data.amount, metadata = metadata})
+				totalWeight += weight
+				slot += 1
+				returnData[slot] = {name = item.name, label = item.label, weight = weight, slot = slot, count = data.amount, description = item.description, metadata = metadata, stack = item.stack, close = item.close}
+			end
+		end
+
+		return returnData, totalWeight
+	end
+end
