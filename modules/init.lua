@@ -16,7 +16,7 @@ shared = {
 
 do
 	if type(shared.police) == 'string' then
-		shared.police = {shared.police}
+		shared.police = { shared.police }
 	end
 
 	local police = table.create(0, #shared.police)
@@ -59,7 +59,7 @@ else
 	client = {
 		autoreload = GetConvar('inventory:autoreload', 'false') == 'true',
 		screenblur = GetConvar('inventory:screenblur', 'true') == 'true',
-		keys = json.decode(GetConvar('inventory:keys', '["F2", "K", "TAB"]')),
+		keys = json.decode(GetConvar('inventory:keys', '')) or { 'F2', 'K', 'TAB' },
 		enablekeys = json.decode(GetConvar('inventory:enablekeys', '[249]')),
 		aimedfiring = GetConvar('inventory:aimedfiring', 'false') == 'true',
 		giveplayerlist = GetConvar('inventory:giveplayerlist', 'false') == 'true',
@@ -68,7 +68,9 @@ else
 end
 
 function shared.print(...) print(string.strjoin(' ', ...)) end
+
 function shared.info(...) shared.print('^2[info]^7', ...) end
+
 function shared.warning(...) shared.print('^3[warning]^7', ...) end
 
 -- People like ignoring errors for some reason
@@ -142,7 +144,7 @@ end
 
 if shared.server then shared.ready = false end
 
-local Locales = data('locales/'..shared.locale)
+local Locales = data('locales/' .. shared.locale)
 
 ---@param str any
 ---@param ... unknown
