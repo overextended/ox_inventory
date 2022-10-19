@@ -1,8 +1,9 @@
 local playerDropped = ...
-local Inventory
+local Inventory, Items
 
 CreateThread(function()
 	Inventory = server.inventory
+	Items = server.items
 end)
 
 local QBCore
