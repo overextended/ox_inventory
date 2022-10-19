@@ -191,7 +191,7 @@ lib.callback.register('ox_inventory:buyItem', function(source, data)
 					if newWeight > playerInv.maxWeight then
 						return false, false, { type = 'error', description = locale('cannot_carry') }
 					else
-						Inventory.SetSlot(playerInv, fromItem, count, metadata, data.toSlot)
+						Inventory.AddItem(playerInv, fromItem, count, metadata, data.toSlot)
 						if fromData.count then shop.items[data.fromSlot].count = fromData.count - count end
 						playerInv.weight = newWeight
 					end
