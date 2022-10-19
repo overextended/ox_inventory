@@ -889,6 +889,8 @@ RegisterNetEvent('ox_inventory:setPlayerInventory', function(currentDrops, inven
 			description = v.description,
 			buttons = buttons
 		}
+
+		v.count = 0
 	end
 
 	for _, data in pairs(inventory) do
