@@ -32,7 +32,7 @@ function server.setPlayerData(player)
 end
 
 function server.buyLicense()
-	shared.warning('Licenses are not yet supported without esx or qb. Available soon™.')
+	shared.warning('Licenses are not supported for the current framework.')
 end
 
 local Inventory
