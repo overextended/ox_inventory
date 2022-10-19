@@ -1324,10 +1324,9 @@ end)
 
 RegisterNUICallback('buyItem', function(data, cb)
 	local response, data, message = lib.callback.await('ox_inventory:buyItem', 100, data)
+
 	if data then
-		PlayerData.inventory[data[1]] = data[2]
-		client.setPlayerData('inventory', PlayerData.inventory)
-		client.setPlayerData('weight', data[4])
+		updateInventory({[data[1]] = data[2]}, data[4])
 		SendNUIMessage({ action = 'refreshSlots', data = data[3] and {{item = data[2]}, {item = data[3], inventory = 'shop'}} or {item = data[2]}})
 	end
 
