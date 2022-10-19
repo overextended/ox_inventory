@@ -871,27 +871,6 @@ RegisterNetEvent('ox_inventory:setPlayerInventory', function(currentDrops, inven
 
 	if setStateBagHandler then setStateBagHandler(('player:%s'):format(source)) end
 
-	for _, data in pairs(inventory) do
-		local item = Items[data.name]
-
-		if item then
-			item.count += data.count
-		end
-	end
-
-	local phone = Items.phone
-
-	if phone and phone.count < 1 then
-		pcall(function()
-			return exports.npwd:setPhoneDisabled(true)
-		end)
-	end
-
-	client.setPlayerData('inventory', inventory)
-	client.setPlayerData('weight', weight)
-	currentWeapon = nil
-	Weapon.ClearAll()
-
 	local ItemData = table.create(0, #Items)
 
 	for _, v in pairs(Items) do
@@ -911,6 +890,32 @@ RegisterNetEvent('ox_inventory:setPlayerInventory', function(currentDrops, inven
 			buttons = buttons
 		}
 	end
+
+	for _, data in pairs(inventory) do
+		local item = Items[data.name]
+
+		if item then
+			item.count += data.count
+			local add = item.client?.add
+
+			if add then
+				add(item.count)
+			end
+		end
+	end
+
+	local phone = Items.phone
+
+	if phone and phone.count < 1 then
+		pcall(function()
+			return exports.npwd:setPhoneDisabled(true)
+		end)
+	end
+
+	client.setPlayerData('inventory', inventory)
+	client.setPlayerData('weight', weight)
+	currentWeapon = nil
+	Weapon.ClearAll()
 
 	local locales = {}
 
