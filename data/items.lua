@@ -27,8 +27,9 @@ return {
   ['lockpick'] = {
     label = 'Lockpick',
     weight = 160,
+    consume = 1,
     client = {
-      event = "ceeb_vehiclekey:UseLockPick"
+      export = "ceeb_vehiclekey.lockpick"
     }
   },
 
