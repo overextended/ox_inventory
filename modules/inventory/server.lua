@@ -522,6 +522,10 @@ function Inventory.ContainerWeight(container, metaWeight, playerInventory)
 	playerInventory.weight += container.weight
 end
 
+function Inventory.PhoneNumber(container, metaPhonenumber)
+	container.metadata.phonenumber = metaPhonenumber
+end
+
 ---@param inv table | string | number
 ---@param item table | string
 ---@param count number
@@ -1114,7 +1118,15 @@ lib.callback.register('ox_inventory:swapItems', function(source, data)
 									if (whitelist and not whitelist[checkItem]) or (blacklist and blacklist[checkItem]) then
 										return
 									end
-
+                  -- if toContainer then
+                  --     print("On swap vers le container")
+                  --     fromData
+                  -- else
+                  --     print("On swap vers l'inventaire")
+                  --     toData
+                  -- end
+                  Inventory.PhoneNumber(containerItem, toContainer and fromData.metadata.phonenumber or toData.metadata.phonenumber)
+                  containerItem.phonenumber = toContainer and fromData.metadata.phonenumber or toData.metadata.phonenumber
 									Inventory.ContainerWeight(containerItem, toContainer and toWeight or fromWeight, playerInventory)
 								end
 
@@ -1180,6 +1192,8 @@ lib.callback.register('ox_inventory:swapItems', function(source, data)
 								toInventory.weight += toData.weight
 
 								if container then
+                  Inventory.PhoneNumber(containerItem, toContainer and toData.metadata.phonenumber or "Aucune carte SIM")
+                  containerItem.phonenumber = toContainer and toData.metadata.phonenumber or "Aucune carte SIM"
 									Inventory.ContainerWeight(containerItem, toContainer and toInventory.weight or fromInventory.weight, playerInventory)
 								end
 
@@ -1289,7 +1303,7 @@ lib.callback.register('ox_inventory:swapItems', function(source, data)
 						end
 					end
 
-					return containerItem and containerItem.weight or true, resp, weaponSlot
+					return containerItem or true, resp, weaponSlot
 				end
 			end
 		end

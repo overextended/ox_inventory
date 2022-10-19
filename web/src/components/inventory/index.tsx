@@ -11,42 +11,47 @@ import RightInventory from './RightInventory';
 import LeftInventory from './LeftInventory';
 
 const Inventory: React.FC = () => {
-  const [inventoryVisible, setInventoryVisible] = React.useState(false);
-  const dispatch = useAppDispatch();
+    const [inventoryVisible, setInventoryVisible] = React.useState(false);
+    const dispatch = useAppDispatch();
 
-  useNuiEvent<boolean>('setInventoryVisible', setInventoryVisible);
-  useNuiEvent<false>('closeInventory', () => {
-    setInventoryVisible(false);
-    dispatch(setContextMenu({ coords: null }));
-  });
-  useExitListener(setInventoryVisible);
+    useNuiEvent<boolean>('setInventoryVisible', setInventoryVisible);
+    useNuiEvent<false>('closeInventory', () => {
+        setInventoryVisible(false);
+        dispatch(setContextMenu({ coords: null }));
+    });
+    useExitListener(setInventoryVisible);
 
-  useNuiEvent<{
-    leftInventory?: InventoryProps;
-    rightInventory?: InventoryProps;
-  }>('setupInventory', (data) => {
-    dispatch(setupInventory(data));
-    !inventoryVisible && setInventoryVisible(true);
-  });
+    useNuiEvent<{
+        leftInventory?: InventoryProps;
+        rightInventory?: InventoryProps;
+    }>('setupInventory', (data) => {
+        dispatch(setupInventory(data));
+        !inventoryVisible && setInventoryVisible(true);
+    });
 
-  useNuiEvent('refreshSlots', (data) => dispatch(refreshSlots(data)));
+    useNuiEvent('refreshSlots', (data) => dispatch(refreshSlots(data)));
 
-  useNuiEvent('displayMetadata', (data: { [key: string]: any }) => {
-    dispatch(setAdditionalMetadata(data));
-  });
+    useNuiEvent('displayMetadata', (data: { [key: string]: any }) => {
+        dispatch(setAdditionalMetadata(data));
+    });
 
-  return (
-    <>
-      <Fade in={inventoryVisible}>
-        <div className="inventory-wrapper">
-          <LeftInventory />
-          <InventoryControl />
-          <RightInventory />
-        </div>
-      </Fade>
-      <InventoryHotbar />
-    </>
-  );
+    return (
+        <>
+            <Fade in={inventoryVisible}>
+                <div className="inventory-wrapper">
+                    <div className="inventory-wrapper-leftside">
+                        <LeftInventory />
+                        <InventoryControl />
+                    </div>
+
+                    <div className="inventory-wrapper-rightside">
+                        <RightInventory />
+                    </div>
+                </div>
+            </Fade>
+            <InventoryHotbar />
+        </>
+    );
 };
 
 export default Inventory;

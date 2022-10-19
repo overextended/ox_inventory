@@ -41,7 +41,7 @@ end
 
 local defaultInventory = {
 	type = 'newdrop',
-	slots = shared.playerslots,
+    slots = shared.playerslots,
 	weight = 0,
 	maxWeight = shared.playerweight,
 	items = {}
@@ -236,6 +236,16 @@ local function useItem(data, cb)
 	plyState.invBusy = false
 end
 AddEventHandler('ox_inventory:item', useItem)
+
+exports('openSIM', openSIM)
+---@param slot number
+---@return boolean?
+function openSIM(slot)
+    local item = PlayerData.inventory[slot]
+    if not item then return end
+    return client.openInventory('container', item.slot)
+end
+
 exports('useItem', useItem)
 
 local Items = client.items
@@ -256,7 +266,7 @@ local function useSlot(slot)
 
 		data.slot = slot
 
-		if item.metadata.container then
+		if item.metadata.container and item.name ~= "phone" then
 			return client.openInventory('container', item.slot)
 		elseif data.client then
 			if invOpen and data.close then client.closeInventory() end
@@ -476,15 +486,21 @@ local function registerCommands()
 
 				local vehicle = cache.vehicle
 
-				if NetworkGetEntityIsNetworked(vehicle) then
-					local vehicleHash = GetEntityModel(vehicle)
-					local vehicleClass = GetVehicleClass(vehicle)
-					local checkVehicle = Vehicles.Storage[vehicleHash]
-					-- No storage or no glovebox
-					if (checkVehicle == 0 or checkVehicle == 2) or (not Vehicles.glovebox[vehicleClass] and not Vehicles.glovebox.models[vehicleHash]) then return end
+					if NetworkGetEntityIsNetworked(vehicle) then
+						local vehicleHash = GetEntityModel(vehicle)
+						local vehicleClass = GetVehicleClass(vehicle)
+						local checkVehicle = Vehicles.Storage[vehicleHash]
+                        local vehicleEntity = Entity(vehicle)
+						-- No storage or no glovebox
+						if (checkVehicle == 0 or checkVehicle == 2) or (not Vehicles.glovebox[vehicleClass] and not Vehicles.glovebox.models[vehicleHash]) then return end
+                        local plate = ""
+                        if vehicleEntity.state and vehicleEntity.state.plateRemoved then
+                            plate = client.trimplate and string.strtrim(vehicleEntity.state.realPlate) or vehicleEntity.state.realPlate
+                        else
+                            plate = client.trimplate and string.strtrim(GetVehicleNumberPlateText(vehicle)) or GetVehicleNumberPlateText(vehicle)
+                        end
 
-					local plate = client.trimplate and string.strtrim(GetVehicleNumberPlateText(vehicle)) or GetVehicleNumberPlateText(vehicle)
-					client.openInventory('glovebox', {id = 'glove'..plate, class = vehicleClass, model = vehicleHash, netid = NetworkGetNetworkIdFromEntity(vehicle) })
+						client.openInventory('glovebox', {id = 'glove'..plate, class = vehicleClass, model = vehicleHash, netid = NetworkGetNetworkIdFromEntity(vehicle) })
 
 					while true do
 						Wait(100)
@@ -528,11 +544,12 @@ local function registerCommands()
 				-- No storage or no glovebox
 				if (checkVehicle == 0 or checkVehicle == 1) or (not Vehicles.trunk[vehicleClass] and not Vehicles.trunk.models[vehicleHash]) then return end
 
-				if #(playerCoords - position) < 6 and NetworkGetEntityIsNetworked(vehicle) then
-					local locked = GetVehicleDoorLockStatus(vehicle)
+					if #(playerCoords - position) < 6 and NetworkGetEntityIsNetworked(vehicle) then
+						local vehEnt = Entity(vehicle)
+            local unlocked = vehEnt.state and vehEnt.state.isOpen or false
 
-					if locked == 0 or locked == 1 then
-						local open, vehBone
+						if unlocked then
+							local open, vehBone
 
 						if checkVehicle == nil then -- No data, normal trunk
 							open, vehBone = 5, GetEntityBoneIndexByName(vehicle, 'boot')
@@ -617,6 +634,7 @@ local function registerCommands()
 		onPressed = function()
 			if EnableWeaponWheel or IsNuiFocused() or lib.progressActive() then return end
 			SendNUIMessage({ action = 'toggleHotbar' })
+      TriggerEvent("ceeb_hud:switchStatus")
 		end
 	})
 
@@ -772,7 +790,12 @@ end)
 local function nearbyDrop(point)
 	if not point.instance or point.instance == currentInstance then
 		---@diagnostic disable-next-line: param-type-mismatch
-		DrawMarker(2, point.coords.x, point.coords.y, point.coords.z, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.3, 0.2, 0.15, 150, 30, 30, 222, false, false, 0, true, false, false, false)
+        if not self.object then
+            self.object = CreateObject("prop_cs_box_clothes", self.coords.x, self.coords.y, self.coords.z, 0, 1, 0)
+            PlaceObjectOnGroundProperly(self.object)
+            FreezeEntityPosition(self.object, true)
+        end
+		-- DrawMarker(2, self.coords.x, self.coords.y, self.coords.z, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.3, 0.2, 0.15, 150, 30, 30, 222, false, false, 0, true, false, false, false)
 	end
 end
 
@@ -807,6 +830,7 @@ end)
 
 RegisterNetEvent('ox_inventory:removeDrop', function(id)
 	if drops then
+    DeleteObject(drops[id].object)
 		drops[id]:remove()
 		drops[id] = nil
 	end
@@ -906,14 +930,6 @@ RegisterNetEvent('ox_inventory:setPlayerInventory', function(currentDrops, inven
 		end
 	end
 
-	local phone = Items.phone
-
-	if phone and phone.count < 1 then
-		pcall(function()
-			return exports.npwd:setPhoneDisabled(true)
-		end)
-	end
-
 	client.setPlayerData('inventory', inventory)
 	client.setPlayerData('weight', weight)
 	currentWeapon = nil
@@ -963,12 +979,12 @@ RegisterNetEvent('ox_inventory:setPlayerInventory', function(currentDrops, inven
 	Inventory.Evidence()
 	registerCommands()
 	TriggerEvent('ox_inventory:updateInventory', PlayerData.inventory)
-	lib.notify({ description = locale('inventory_setup') })
+	-- lib.notify({ description = shared.locale('inventory_setup') })
 
 	---@param point CPoint
 	local function nearbyLicense(point)
 		---@diagnostic disable-next-line: param-type-mismatch
-		DrawMarker(2, point.coords.x, point.coords.y, point.coords.z, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.3, 0.2, 0.15, 30, 150, 30, 222, false, false, 0, true, false, false, false)
+		-- DrawMarker(2, self.coords.x, self.coords.y, self.coords.z, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.3, 0.2, 0.15, 30, 150, 30, 222, false, false, 0, true, false, false, false)
 
 		if point.isClosest and point.currentDistance < 1.2 and IsControlJustReleased(0, 38) then
 			lib.callback('ox_inventory:buyLicense', 1000, function(success, message)
@@ -1342,4 +1358,52 @@ RegisterNUICallback('buyItem', function(data, cb)
 	end
 
 	cb(response)
+end)
+
+AddEventHandler("ox_inventory:checkSIM", function (data)
+    TriggerServerEvent("ox_inventory:checkSIMServer", data.slot)
+end)
+
+RegisterNetEvent("ox_inventory:disablePhone")
+AddEventHandler("ox_inventory:disablePhone", function ()
+    local isVisible = exports.npwd:isPhoneVisible()
+    if isVisible then
+        ExecuteCommand("phone")
+    end
+end)
+
+RegisterNetEvent("ox_inventory:openPhone")
+AddEventHandler("ox_inventory:openPhone", function ()
+  exports.npwd:setPhoneDisabled(false)
+  ExecuteCommand("phone")
+end)
+
+exports("checkSim", function()
+  local myNumber = exports.npwd:getPhoneNumber()
+  local havePhoneForThisNumber = exports.ox_inventory:Search('count', 'phone', { phonenumber = myNumber}) > 0
+  
+  return havePhoneForThisNumber
+end)
+
+
+CreateThread(function ()
+    while not canOpenInventory() do
+        Wait(500)
+    end
+
+    while true do
+        local myNumber = exports.npwd:getPhoneNumber()
+        local havePhoneForThisNumber = exports.ox_inventory:Search('count', 'phone', { phonenumber = myNumber}) > 0
+        if havePhoneForThisNumber then
+            exports.npwd:setPhoneDisabled(false)
+        else
+            local isVisible = exports.npwd:isPhoneVisible()
+            if isVisible then
+                exports.npwd:setPhoneVisible(false)
+            end
+            exports.npwd:setPhoneDisabled(true)
+        end
+        
+        Citizen.Wait(500)
+    end
 end)

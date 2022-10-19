@@ -33,13 +33,13 @@ const InventorySlot: React.FC<SlotProps> = ({ inventory, item }) => {
       item: () =>
         isSlotWithItem(item, inventory.type !== InventoryType.SHOP)
           ? {
-              inventory: inventory.type,
-              item: {
-                name: item.name,
-                slot: item.slot,
-              },
-              image: item.metadata?.image,
-            }
+            inventory: inventory.type,
+            item: {
+              name: item.name,
+              slot: item.slot,
+            },
+            image: item.metadata?.image,
+          }
           : null,
       canDrag: !isBusy && !isShopStockEmpty(item.count, inventory.type),
     }),
@@ -55,17 +55,17 @@ const InventorySlot: React.FC<SlotProps> = ({ inventory, item }) => {
       drop: (source) =>
         source.inventory === InventoryType.SHOP
           ? onBuy(source, {
-              inventory: inventory.type,
-              item: {
-                slot: item.slot,
-              },
-            })
+            inventory: inventory.type,
+            item: {
+              slot: item.slot,
+            },
+          })
           : onDrop(source, {
-              inventory: inventory.type,
-              item: {
-                slot: item.slot,
-              },
-            }),
+            inventory: inventory.type,
+            item: {
+              slot: item.slot,
+            },
+          }),
       canDrop: (source) =>
         !isBusy &&
         (source.item.slot !== item.slot || source.inventory !== inventory.type) &&
@@ -112,12 +112,12 @@ const InventorySlot: React.FC<SlotProps> = ({ inventory, item }) => {
         ref={connectRef}
         onContextMenu={handleContext}
         onClick={handleClick}
-        className="inventory-slot"
+        className={isSlotWithItem(item) ? "inventory-slot occupied" : "inventory-slot"}
         style={{
           filter: isShopStockEmpty(item.count, inventory.type) ? 'brightness(80%) grayscale(100%)' : undefined,
           opacity: isDragging ? 0.4 : 1.0,
           backgroundImage: `url(${`${imagepath}/${item.metadata?.image ? item.metadata.image : item.name}.png`})`,
-          border: isOver ? '1px dashed rgba(255,255,255,0.4)' : '',
+          boxShadow: isOver ? '0px 0px 10px 0px rgba(0, 225, 255, 1)' : '',
         }}
       >
         {isSlotWithItem(item) && (
@@ -134,11 +134,11 @@ const InventorySlot: React.FC<SlotProps> = ({ inventory, item }) => {
                   {item.weight > 0
                     ? item.weight >= 1000
                       ? `${(item.weight / 1000).toLocaleString('en-us', {
-                          minimumFractionDigits: 2,
-                        })}kg `
+                        minimumFractionDigits: 2,
+                      })}kg `
                       : `${item.weight.toLocaleString('en-us', {
-                          minimumFractionDigits: 0,
-                        })}g `
+                        minimumFractionDigits: 0,
+                      })}g `
                     : ''}
                 </p>
                 <p>{item.count ? item.count.toLocaleString('en-us') + `x` : ''}</p>
@@ -151,9 +151,9 @@ const InventorySlot: React.FC<SlotProps> = ({ inventory, item }) => {
               {inventory.type === 'shop' && item?.price !== undefined && (
                 <>
                   {item?.currency !== 'money' &&
-                  item?.currency !== 'black_money' &&
-                  item.price > 0 &&
-                  item?.currency ? (
+                    item?.currency !== 'black_money' &&
+                    item.price > 0 &&
+                    item?.currency ? (
                     <div className="item-slot-currency-wrapper">
                       <img
                         src={item?.currency ? `${`${imagepath}/${item?.currency}.png`}` : ''}

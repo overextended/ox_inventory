@@ -62,7 +62,8 @@ local function createShop(shopName, shopDetails)
 						metadata = slot.metadata,
 						license = slot.license,
 						currency = slot.currency,
-						grade = slot.grade
+						grade = slot.grade,
+            isIllegal = slot.isIllegal
 					}
 
 					Shops[shopName][i].items[j] = slot
@@ -174,7 +175,7 @@ lib.callback.register('ox_inventory:buyItem', function(source, data)
 				end
 			end
 
-			local currency = fromData.currency or 'money'
+			local currency = data.paymentMethod
 			local fromItem = Items(fromData.name)
 
 			local result = fromItem.cb and fromItem.cb('buying', fromItem, playerInv, data.fromSlot, shop)
@@ -185,20 +186,29 @@ lib.callback.register('ox_inventory:buyItem', function(source, data)
 			local price = count * fromData.price
 
 			if toData == nil or (fromItem.name == toItem.name and fromItem.stack and table.matches(toData.metadata, metadata)) then
-				local canAfford = price >= 0 and Inventory.GetItem(source, currency, false, true) >= price
+        ESX = exports.es_extended.getSharedObject()
+        local xPlayer = ESX.GetPlayerFromId(source)
+        local moneyOnAccount = xPlayer.getAccount(currency).money
+				local canAfford = price >= 0 and moneyOnAccount >= price
+        if currency == "bank" and fromData.isIllegal then 
+					return false, false, { type = 'error', description = "J'ai une gueule à prendre la carte ?!" }
+        end
 				if canAfford then
 					local newWeight = playerInv.weight + (fromItem.weight + (metadata?.weight or 0)) * count
 					if newWeight > playerInv.maxWeight then
 						return false, false, { type = 'error', description = locale('cannot_carry') }
 					else
+            if fromItem.name == "sim" then
+                metadata.phonenumber = exports.npwd:generatePhoneNumber()
+            end
 						Inventory.SetSlot(playerInv, fromItem, count, metadata, data.toSlot)
 						if fromData.count then shop.items[data.fromSlot].count = fromData.count - count end
 						playerInv.weight = newWeight
 					end
 
-					Inventory.RemoveItem(source, currency, price)
+					xPlayer.removeAccountMoney(currency, price, "Magasins")
 					if server.syncInventory then server.syncInventory(playerInv) end
-					local message = locale('purchased_for', count, fromItem.label, (currency == 'money' and locale('$') or comma_value(price)), (currency == 'money' and comma_value(price) or ' '..Items(currency).label))
+					local message = locale('purchased_for', count, fromItem.label, (currency == 'money' and locale('$') or comma_value(price)), (currency == 'money' and comma_value(price) or ' '.. currency))
 
 					if server.loglevel > 0 then
 						if server.loglevel > 1 or fromData.price >= 500 then

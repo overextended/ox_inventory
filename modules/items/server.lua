@@ -10,18 +10,12 @@ TriggerEvent('ox_inventory:itemList', ItemList)
 -- Slot count and maximum weight for containers
 -- Whitelist and blacklist: ['item_name'] = true
 Items.containers = {
-	['paperbag'] = {
-		size = {5, 1000},
-		blacklist = {
-			['testburger'] = true -- No burgers!
-		}
+	['phone'] = {
+		size = {1, 1},
+        whitelist = {
+            ['sim'] = true
+        }
 	},
-	['pizzabox'] = {
-		size = {1, 1000},
-		whitelist = {
-			['pizza'] = true -- Pizza box for pizza only
-		}
-	}
 }
 
 -- Possible metadata when creating garbage
@@ -218,7 +212,32 @@ CreateThread(function()
 
 	Wait(1000)
 
-	for _ in pairs(ItemList) do
+  local function CopyFile(old_path, new_path)
+    local old_file = io.open(old_path, "rb")
+    local new_file = io.open(new_path, "wb")
+    local old_file_sz, new_file_sz = 0, 0
+    if not old_file or not new_file then
+      return false
+    end
+    while true do
+      local block = old_file:read(2^13)
+      if not block then 
+        old_file_sz = old_file:seek( "end" )
+        break
+      end
+      new_file:write(block)
+    end
+    old_file:close()
+    new_file_sz = new_file:seek( "end" )
+    new_file:close()
+    return new_file_sz == old_file_sz
+  end
+
+	for _,v in pairs(ItemList) do
+    local image = io.open(GetResourcePath(GetCurrentResourceName()) .. "/web/images/" .. v.name .. ".png", "r")
+    if image == nil then
+      print("Il manque l'image de " .. v.name)
+    end
 		count += 1
 	end
 

@@ -1,191 +1,383 @@
 return {
-	['testburger'] = {
-		label = 'Test Burger',
-		weight = 220,
-		degrade = 60,
-		client = {
-			status = { hunger = 200000 },
-			anim = 'eating',
-			prop = 'burger',
-			usetime = 2500,
-			export = 'ox_inventory_examples.testburger'
-		},
-		server = {
-			export = 'ox_inventory_examples.testburger',
-			test = 'what an amazingly delicious burger, amirite?'
-		},
-		buttons = {
-			{
-				label = 'Lick it',
-				action = function(slot)
-					print('You licked the burger')
-				end
-			},
-			{
-				label = 'Squeeze it',
-				action = function(slot)
-					print('You squeezed the burger :(')
-				end
-			}
-		}
-	},
+  ['bandage'] = {
+    label = 'Bandage',
+    weight = 115,
+    client = {
+      anim = { dict = 'missheistdockssetup1clipboard@idle_a', clip = 'idle_a', flag = 49 },
+      prop = { model = `prop_rolled_sock_02`, pos = vec3(-0.14, -0.14, -0.08), rot = vec3(-50.0, -50.0, 0.0) },
+      disable = { move = true, car = true, combat = true },
+      usetime = 2500,
+    }
+  },
 
-	['bandage'] = {
-		label = 'Bandage',
-		weight = 115,
-		client = {
-			anim = { dict = 'missheistdockssetup1clipboard@idle_a', clip = 'idle_a', flag = 49 },
-			prop = { model = `prop_rolled_sock_02`, pos = vec3(-0.14, -0.14, -0.08), rot = vec3(-50.0, -50.0, 0.0) },
-			disable = { move = true, car = true, combat = true },
-			usetime = 2500,
-		}
-	},
+  ['black_money'] = {
+    label = 'Argent sale',
+  },
 
-	['black_money'] = {
-		label = 'Dirty Money',
-	},
+  ['parachute'] = {
+    label = 'Parachute',
+    weight = 8000,
+    stack = false,
+    client = {
+      anim = { dict = 'clothingshirt', clip = 'try_shirt_positive_d' },
+      usetime = 1500
+    }
+  },
 
-	['burger'] = {
-		label = 'Burger',
-		weight = 220,
-		client = {
-			status = { hunger = 200000 },
-			anim = 'eating',
-			prop = 'burger',
-			usetime = 2500,
-			notification = 'You ate a delicious burger'
-		},
-	},
+  ['lockpick'] = {
+    label = 'Lockpick',
+    weight = 160,
+    client = {
+      event = "ceeb_vehiclekey:UseLockPick"
+    }
+  },
 
-	['cola'] = {
-		label = 'eCola',
-		weight = 350,
-		client = {
-			status = { thirst = 200000 },
-			anim = { dict = 'mp_player_intdrink', clip = 'loop_bottle' },
-			prop = { model = `prop_ecola_can`, pos = vec3(0.01, 0.01, 0.06), rot = vec3(5.0, 5.0, -180.5) },
-			usetime = 2500,
-			notification = 'You quenched your thirst with cola'
-		}
-	},
+  ['phone'] = {
+    label = 'Téléphone',
+    weight = 190,
+    stack = false,
+    consume = 0,
+    client = {
+      event = "ox_inventory:checkSIM",
+    },
+    buttons = {
+      {
+        label = "Voir l'interieur",
+        action = function(slot)
+          openSIM(slot)
+        end
+      },
+    }
+  },
 
-	['parachute'] = {
-		label = 'Parachute',
-		weight = 8000,
-		stack = false,
-		client = {
-			anim = { dict = 'clothingshirt', clip = 'try_shirt_positive_d' },
-			usetime = 1500
-		}
-	},
+  ['money'] = {
+    label = 'Money',
+  },
 
-	['garbage'] = {
-		label = 'Garbage',
-	},
+  ['radio'] = {
+    label = 'Radio',
+    weight = 1000,
+    stack = false,
+    allowArmed = true
+  },
 
-	['paperbag'] = {
-		label = 'Paper Bag',
-		weight = 1,
-		stack = false,
-		close = false,
-		consume = 0
-	},
+  ['armour'] = {
+    label = 'Gilet pare-balles',
+    weight = 3000,
+    stack = false,
+    consume = 1,
+    client = {
+      event = "ceeb_shieldshop:use",
+      anim = { dict = 'clothingshirt', clip = 'try_shirt_positive_d' },
+      usetime = 3500
+    }
+  },
 
-	['identification'] = {
-		label = 'Identification',
-	},
+  ['mask'] = {
+    label = 'Masque',
+    weight = 150,
+    stack = false,
+    consume = 1,
+    client = {
+      event = "ceeb_maskshop:use",
+      anim = { dict = 'clothingshirt', clip = 'try_shirt_positive_d' },
+      usetime = 1500
+    }
+  },
 
-	['panties'] = {
-		label = 'Knickers',
-		weight = 10,
-		consume = 0,
-		client = {
-			status = { thirst = -100000, stress = -25000 },
-			anim = { dict = 'mp_player_intdrink', clip = 'loop_bottle' },
-			prop = { model = `prop_cs_panties_02`, pos = vec3(0.03, 0.0, 0.02), rot = vec3(0.0, -13.5, -1.5) },
-			usetime = 2500,
-		}
-	},
+  ['hat'] = {
+    label = 'Chapeau / Casque',
+    weight = 150,
+    stack = false,
+    consume = 1,
+    client = {
+      event = "ceeb_hatshop:use",
+      anim = { dict = 'clothingshirt', clip = 'try_shirt_positive_d' },
+      usetime = 1500
+    }
+  },
 
-	['lockpick'] = {
-		label = 'Lockpick',
-		weight = 160,
-	},
+  ['cannabis'] = {
+    label = 'cannabis',
+    weight = 0.07,
+    stack = true,
+    close = true,
+    description = nil
+  },
 
-	['phone'] = {
-		label = 'Phone',
-		weight = 190,
-		stack = false,
-		consume = 0,
-		client = {
-			add = function(total)
-				if total > 0 then
-					pcall(function() return exports.npwd:setPhoneDisabled(false) end)
-				end
-			end,
+  ['cubancigar'] = {
+    label = 'cigare cubain',
+    weight = 0.02,
+    stack = true,
+    close = true,
+    description = nil
+  },
 
-			remove = function(total)
-				if total < 1 then
-					pcall(function() return exports.npwd:setPhoneDisabled(true) end)
-				end
-			end
-		}
-	},
+  ['davidoffcigar'] = {
+    label = 'cigare davidoff',
+    weight = 0.02,
+    stack = true,
+    close = true,
+    description = nil
+  },
 
-	['money'] = {
-		label = 'Money',
-	},
+  ['defibrilator'] = {
+    label = 'defibrilateur',
+    weight = 2.5,
+    stack = true,
+    close = true,
+    description = nil
+  },
 
-	['mustard'] = {
-		label = 'Mustard',
-		weight = 500,
-		client = {
-			status = { hunger = 25000, thirst = 25000 },
-			anim = { dict = 'mp_player_intdrink', clip = 'loop_bottle' },
-			prop = { model = `prop_food_mustard`, pos = vec3(0.01, 0.0, -0.07), rot = vec3(1.0, 1.0, -1.5) },
-			usetime = 2500,
-			notification = 'You.. drank mustard'
-		}
-	},
+  ['fixtool'] = {
+    label = 'outils de réparations',
+    weight = 4.2,
+    stack = true,
+    close = true,
+    consume = 1,
+    client = {
+      event = "ceeb_repairkit:doRepair",
+    }
+  },
 
-	['water'] = {
-		label = 'Water',
-		weight = 500,
-		client = {
-			status = { thirst = 200000 },
-			anim = { dict = 'mp_player_intdrink', clip = 'loop_bottle' },
-			prop = { model = `prop_ld_flow_bottle`, pos = vec3(0.03, 0.03, 0.02), rot = vec3(0.0, 0.0, -1.5) },
-			usetime = 2500,
-			cancel = true,
-			notification = 'You drank some refreshing water'
-		}
-	},
+  ['lighter'] = {
+    label = 'briquet',
+    weight = 0.03,
+    stack = true,
+    close = true,
+    description = nil
+  },
 
-	['radio'] = {
-		label = 'Radio',
-		weight = 1000,
-		stack = false,
-		allowArmed = true
-	},
+  ['marijuana'] = {
+    label = 'marijuana',
+    weight = 0.09,
+    stack = true,
+    close = true,
+    description = nil
+  },
 
-	['armour'] = {
-		label = 'Bulletproof Vest',
-		weight = 3000,
-		stack = false,
-		client = {
-			anim = { dict = 'clothingshirt', clip = 'try_shirt_positive_d' },
-            usetime = 3500
-		}
-	},
+  ['marlboro'] = {
+    label = 'paquet de marlbarey ',
+    weight = 0.04,
+    stack = true,
+    close = true,
+    description = nil
+  },
 
-	['clothing'] = {
-		label = 'Clothing',
-		consume = 0,
-	},
+  ['marlborocig'] = {
+    label = 'cigarette marlbarey',
+    weight = 0.01,
+    stack = true,
+    close = true,
+    description = nil
+  },
 
-	['mastercard'] = {
-		label = 'Mastercard',
-		stack = false,
-		weight = 10,
-	},
+  ['handcuff'] = {
+    label = 'menottes',
+    weight = 0.3,
+    stack = true,
+    close = true,
+    description = nil
+  },
+
+  ['coke_pooch'] = {
+    label = 'pochon de coke',
+    weight = 0.02,
+    stack = true,
+    close = true,
+    description = nil
+  },
+
+  ['coca_leaf'] = {
+    label = 'feuille de coca',
+    weight = 0.01,
+    stack = true,
+    close = true,
+    description = nil
+  },
+
+  ['weed_seed'] = {
+    label = 'graine de weed',
+    weight = 0.01,
+    stack = true,
+    close = true,
+    description = nil
+  },
+
+  ['weed_fertilizer'] = {
+    label = 'engrais',
+    weight = 0.9,
+    stack = true,
+    close = true,
+    description = nil
+  },
+
+  ['coca_seed'] = {
+    label = 'graine de coca',
+    weight = 0.01,
+    stack = true,
+    close = true,
+    description = nil
+  },
+
+  ['illegal_medical_pass'] = {
+    label = 'pass médical illégal',
+    weight = 0.02,
+    stack = true,
+    close = true,
+    description = nil
+  },
+
+  ['spike'] = {
+    label = 'herse',
+    weight = 3,
+    stack = true,
+    close = true,
+    description = nil
+  },
+
+  ['jumelles'] = {
+    label = 'jumelles',
+    weight = 0,
+    stack = true,
+    close = true,
+    description = nil
+  },
+
+  ['pochon'] = {
+    label = 'pochon vide',
+    weight = 0.02,
+    stack = true,
+    close = true,
+    description = nil
+  },
+
+  ['timerbomb'] = {
+    label = 'bombe à retardement',
+    weight = 5,
+    stack = true,
+    close = true,
+    description = nil
+  },
+
+  ['speedbomb'] = {
+    label = 'bombe à vitesse max',
+    weight = 5,
+    stack = true,
+    close = true,
+    description = nil
+  },
+
+  ['remotebomb'] = {
+    label = 'bombe télécommandée',
+    weight = 5,
+    stack = true,
+    close = true,
+    description = nil
+  },
+
+  ['instantbomb'] = {
+    label = 'bombe instantannée',
+    weight = 5,
+    stack = true,
+    close = true,
+    description = nil
+  },
+
+  ['cv_repas'] = {
+    label = 'repas',
+    weight = 1,
+    stack = true,
+    close = true,
+    description = nil
+  },
+
+  ['cv_boisson'] = {
+    label = 'boisson',
+    weight = 1,
+    stack = true,
+    close = true,
+    description = nil
+  },
+
+  ['sim'] = {
+    label = 'Carte SIM',
+    weight = 0.02,
+    stack = true,
+    close = true,
+    description = nil
+  },
+
+  ['braceletgps'] = {
+    label = 'bracelet gps actif',
+    weight = 1,
+    stack = true,
+    close = true,
+    description = nil
+  },
+
+  ['braceletgps_off'] = {
+    label = 'bracelet gps inactif',
+    weight = 1,
+    stack = true,
+    close = true,
+    description = nil
+  },
+
+  ['coupebracelet'] = {
+    label = 'pince coupante',
+    weight = 1,
+    stack = true,
+    close = true,
+    description = nil
+  },
+
+  ['screwdriver'] = {
+    client = {
+      event = "ceeb_platechanger:changeplate"
+    },
+    label = 'tournevis',
+    weight = 0.2,
+    stack = true,
+    close = true,
+    description = nil
+  },
+
+  ['fakeplate'] = {
+    label = 'fausse plaque',
+    weight = 0.2,
+    stack = true,
+    close = true,
+    description = nil
+  },
+
+  ['briefcasemoney'] = {
+    label = 'Valise d\'argent fermée',
+    weight = 3.36,
+    stack = true,
+    close = true,
+    description = nil
+  },
+
+  ['fishingrod'] = {
+    label = 'Canne a peche',
+    weight = 3.36,
+    stack = true,
+    close = true,
+    description = nil
+  },
+
+  ['bait'] = {
+    label = 'Appât',
+    weight = 0.30,
+    stack = true,
+    close = true,
+    description = nil
+  },
+
+  ['mastercard'] = {
+    label = 'Mastercard',
+    stack = false,
+    weight = 10,
+  },
 }

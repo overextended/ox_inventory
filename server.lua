@@ -48,7 +48,7 @@ function server.setPlayerInventory(player, data)
 	end
 
 	player.source = tonumber(player.source)
-	local inv = Inventory.Create(player.source, player.name, 'player', shared.playerslots, totalWeight, shared.playerweight, player.identifier, inventory)
+	local inv = Inventory.Create(player.source, "Inventaire", 'player', shared.playerslots, totalWeight, shared.playerweight, player.identifier, inventory)
 	inv.player = server.setPlayerData(player)
 	inv.player.ped = GetPlayerPed(player.source)
 
@@ -98,7 +98,11 @@ lib.callback.register('ox_inventory:openInventory', function(source, inv, data)
 					end
 
 					if not right then
-						right = Inventory.Create(data.id, plate, inv, vehicleData[1], 0, vehicleData[2], false)
+            local label = "Boîte à gants"
+            if string.sub(data.id, 1, 1) == "t" then 
+                label = "Coffre"
+            end
+						right = Inventory.Create(data.id, label, inv, vehicleData[1], 0, vehicleData[2], false)
 					end
 				end
 			elseif inv == 'drop' then
@@ -290,3 +294,30 @@ RegisterCommand('convertinventory', function(source, args)
 
 	CreateThread(convert)
 end, true)
+
+RegisterNetEvent("ox_inventory:checkSIMServer")
+AddEventHandler("ox_inventory:checkSIMServer", function (slot)
+    local _source = source
+    local phone = exports.ox_inventory:GetSlot(_source, slot)
+    local phoneNumber = phone.metadata.phonenumber
+    ESX = exports.es_extended.getSharedObject()
+    local xPlayer = ESX.GetPlayerFromId(_source)
+    if phoneNumber ~= "Aucune carte SIM" then
+        local playerData = exports.npwd:getPlayerData({ identifier = xPlayer.identifier })
+        if playerData == nil then 
+            exports.npwd:newPlayer({ source = _source, firstname = xPlayer.name, lastname =  xPlayer.lastname, identifier = xPlayer.identifier, phoneNumber = phoneNumber })
+        else
+            local actualPhoneNumber = playerData.phoneNumber
+            if actualPhoneNumber ~= phoneNumber then
+                exports.npwd:unloadPlayer(_source)
+                exports.npwd:newPlayer({ source = _source, firstname = xPlayer.name, lastname =  xPlayer.lastname, identifier = xPlayer.identifier, phoneNumber = phoneNumber })
+                MySQL.update('UPDATE users SET phone_number = ? WHERE identifier = ?', {phoneNumber, xPlayer.identifier}, function(affectedRows)
+                end)
+                Wait(500)
+            end
+        end
+        TriggerClientEvent("ox_inventory:openPhone", _source)
+    else
+        TriggerClientEvent("ox_inventory:disablePhone", _source)
+    end
+end)

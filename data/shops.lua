@@ -9,171 +9,334 @@
 ---@field groups? string | string[] | { [string]: number }
 
 return {
-	General = {
-		name = 'Shop',
-		blip = {
-			id = 59, colour = 69, scale = 0.8
-		}, inventory = {
-			{ name = 'burger', price = 10 },
-			{ name = 'water', price = 10 },
-			{ name = 'cola', price = 10 },
-		}, locations = {
-			vec3(25.7, -1347.3, 29.49),
-			vec3(-3038.71, 585.9, 7.9),
-			vec3(-3241.47, 1001.14, 12.83),
-			vec3(1728.66, 6414.16, 35.03),
-			vec3(1697.99, 4924.4, 42.06),
-			vec3(1961.48, 3739.96, 32.34),
-			vec3(547.79, 2671.79, 42.15),
-			vec3(2679.25, 3280.12, 55.24),
-			vec3(2557.94, 382.05, 108.62),
-			vec3(373.55, 325.56, 103.56),
-		}, targets = {
-			{ loc = vec3(25.06, -1347.32, 29.5), length = 0.7, width = 0.5, heading = 0.0, minZ = 29.5, maxZ = 29.9, distance = 1.5 },
-			{ loc = vec3(-3039.18, 585.13, 7.91), length = 0.6, width = 0.5, heading = 15.0, minZ = 7.91, maxZ = 8.31, distance = 1.5 },
-			{ loc = vec3(-3242.2, 1000.58, 12.83), length = 0.6, width = 0.6, heading = 175.0, minZ = 12.83, maxZ = 13.23, distance = 1.5 },
-			{ loc = vec3(1728.39, 6414.95, 35.04), length = 0.6, width = 0.6, heading = 65.0, minZ = 35.04, maxZ = 35.44, distance = 1.5 },
-			{ loc = vec3(1698.37, 4923.43, 42.06), length = 0.5, width = 0.5, heading = 235.0, minZ = 42.06, maxZ = 42.46, distance = 1.5 },
-			{ loc = vec3(1960.54, 3740.28, 32.34), length = 0.6, width = 0.5, heading = 120.0, minZ = 32.34, maxZ = 32.74, distance = 1.5 },
-			{ loc = vec3(548.5, 2671.25, 42.16), length = 0.6, width = 0.5, heading = 10.0, minZ = 42.16, maxZ = 42.56, distance = 1.5 },
-			{ loc = vec3(2678.29, 3279.94, 55.24), length = 0.6, width = 0.5, heading = 330.0, minZ = 55.24, maxZ = 55.64, distance = 1.5 },
-			{ loc = vec3(2557.19, 381.4, 108.62), length = 0.6, width = 0.5, heading = 0.0, minZ = 108.62, maxZ = 109.02, distance = 1.5 },
-			{ loc = vec3(373.13, 326.29, 103.57), length = 0.6, width = 0.5, heading = 345.0, minZ = 103.57, maxZ = 103.97, distance = 1.5 },
-		}
-	},
+    Tests = {
+        name = 'TESTING PURPOSE',
+        blip = {
+            id = 59, colour = 69, scale = 0.8
+        }, inventory = {
+            { name = 'ammo-556', price = 1 },
+            { name = 'WEAPON_BATTLEAXE', price = 1 },
+            { name = 'at_shotgun_handguard_mk2', price = 1 },
+            { name = 'at_smg_scope_mk1', price = 1 },
+            { name = 'at_rifle_pistolgrip_mk3', price = 1 },
+            { name = 'at_rifle_grip_mk3', price = 1 },
+            { name = 'at_pistol_suppressor_mk4', price = 1 },
+            { name = 'at_sniper_laser_mk1', price = 1 },
+            { name = 'bandage', price = 1 },
+            { name = 'WEAPON_STONE_HATCHET', price = 1 },
+            { name = 'at_sniper_clip_mk3', price = 1 },
+            { name = 'at_rifle_grip_mk2', price = 1 },
+            { name = 'speedbomb', price = 1 },
+            { name = 'at_rifle_clip_mk6', price = 1 },
+            { name = 'weed_fertilizer', price = 1 },
+            { name = 'radio', price = 1 },
+            { name = 'at_rifle_suppressor_mk1', price = 1 },
+            { name = 'at_smg_suppressor_mk2', price = 1 },
+            { name = 'WEAPON_NIGHTSTICK', price = 1 },
+            { name = 'WEAPON_DAGGER', price = 1 },
+            { name = 'at_rifle_suppressor_mk4', price = 1 },
+            { name = 'at_shotgun_supressor_mk2', price = 1 },
+            { name = 'WEAPON_AXMC', price = 1 },
+            { name = 'at_rifle_handguard_mk2', price = 1 },
+            { name = 'at_rifle_holo_mk2', price = 1 },
+            { name = 'WEAPON_STUNGUN_MP', price = 1 },
+            { name = 'WEAPON_CROWBAR', price = 1 },
+            { name = 'cv_repas', price = 1 },
+            { name = 'WEAPON_FLARE', price = 1 },
+            { name = 'at_rifle_clip_mk3', price = 1 },
+            { name = 'coca_seed', price = 1 },
+            { name = 'WEAPON_BENELLIM2', price = 1 },
+            { name = 'at_pistol_slide_mk3', price = 1 },
+            { name = 'at_rifle_flashlight_mk2', price = 1 },
+            { name = 'bait', price = 1 },
+            { name = 'at_rifle_holo_mk1', price = 1 },
+            { name = 'money', price = 1 },
+            { name = 'WEAPON_MK18', price = 1 },
+            { name = 'ammo-9', price = 1 },
+            { name = 'ammo-762', price = 1 },
+            { name = 'at_rifle_dustcover_mk2', price = 1 },
+            { name = 'phone', price = 1 },
+            { name = 'WEAPON_GOLFCLUB', price = 1 },
+            { name = 'at_rifle_stock_mk5', price = 1 },
+            { name = 'at_shotgun_scope', price = 1 },
+            { name = 'WEAPON_MINIUZI', price = 1 },
+            { name = 'cv_boisson', price = 1 },
+            { name = 'fishingrod', price = 1 },
+            { name = 'at_rifle_clip_mk5', price = 1 },
+            { name = 'pochon', price = 1 },
+            { name = 'at_rifle_handguard_mk4', price = 1 },
+            { name = 'at_rifle_stock_mk6', price = 1 },
+            { name = 'at_rifle_handguard_mk3', price = 1 },
+            { name = 'at_smg_clip_mk3', price = 1 },
+            { name = 'WEAPON_SNOWBALL', price = 1 },
+            { name = 'WEAPON_POOLCUE', price = 1 },
+            { name = 'ammo-50', price = 1 },
+            { name = 'WEAPON_AKM', price = 1 },
+            { name = 'at_rifle_clip_mk4', price = 1 },
+            { name = 'at_rifle_suppressor_mk3', price = 1 },
+            { name = 'sim', price = 1 },
+            { name = 'WEAPON_G17', price = 1 },
+            { name = 'WEAPON_SMOKEGRENADE', price = 1 },
+            { name = 'defibrilator', price = 1 },
+            { name = 'ammo-flare', price = 1 },
+            { name = 'WEAPON_GRENADE', price = 1 },
+            { name = 'WEAPON_BAT', price = 1 },
+            { name = 'at_sniper_barrel4_mk2', price = 1 },
+            { name = 'WEAPON_MACHETE', price = 1 },
+            { name = 'cubancigar', price = 1 },
+            { name = 'at_pistol_scope_reflex', price = 1 },
+            { name = 'at_pistol_scope_reddot', price = 1 },
+            { name = 'at_pistol_scope_holo', price = 1 },
+            { name = 'WEAPON_2011', price = 1 },
+            { name = 'at_rifle_reflex_mk1', price = 1 },
+            { name = 'at_rifle_stock_mk9', price = 1 },
+            { name = 'WEAPON_BALL', price = 1 },
+            { name = 'at_sniper_handguard_mk2', price = 1 },
+            { name = 'at_pistol_barrel_mk2', price = 1 },
+            { name = 'WEAPON_PETROLCAN', price = 1 },
+            { name = 'parachute', price = 1 },
+            { name = 'black_money', price = 1 },
+            { name = 'screwdriver', price = 1 },
+            { name = 'marlborocig', price = 1 },
+            { name = 'WEAPON_MOLOTOV', price = 1 },
+            { name = 'at_smg_stock_mk2', price = 1 },
+            { name = 'briefcasemoney', price = 1 },
+            { name = 'at_pistol_extented_clip_mk2', price = 1 },
+            { name = 'coke_pooch', price = 1 },
+            { name = 'at_rifle_stock_mk8', price = 1 },
+            { name = 'at_sniper_barrel8_silencecieux_mk2', price = 1 },
+            { name = 'at_rifle_frame_mk2', price = 1 },
+            { name = 'marijuana', price = 1 },
+            { name = 'WEAPON_MP5', price = 1 },
+            { name = 'illegal_medical_pass', price = 1 },
+            { name = 'at_smg_clip_mk2', price = 1 },
+            { name = 'WEAPON_NSR9', price = 1 },
+            { name = 'jumelles', price = 1 },
+            { name = 'fixtool', price = 1 },
+            { name = 'at_rifle_stock_mk3', price = 1 },
+            { name = 'ammo-45', price = 1 },
+            { name = 'at_sniper_grip1_bipod', price = 1 },
+            { name = 'WEAPON_FLAREGUN', price = 1 },
+            { name = 'instantbomb', price = 1 },
+            { name = 'weed_seed', price = 1 },
+            { name = 'spike', price = 1 },
+            { name = 'remotebomb', price = 1 },
+            { name = 'davidoffcigar', price = 1 },
+            { name = 'ammo-shotgun', price = 1 },
+            { name = 'handcuff', price = 1 },
+            { name = 'mastercard', price = 1 },
+            { name = 'marlboro', price = 1 },
+            { name = 'at_rifle_flashlight_mk1', price = 1 },
+            { name = 'at_sniper_clip_mk2', price = 1 },
+            { name = 'lighter', price = 1 },
+            { name = 'WEAPON_HATCHET', price = 1 },
+            { name = 'coca_leaf', price = 1 },
+            { name = 'braceletgps', price = 1 },
+            { name = 'at_pistol_muzzle_mk2', price = 1 },
+            { name = 'armour', price = 1 },
+            { name = 'cannabis', price = 1 },
+            { name = 'timerbomb', price = 1 },
+            { name = 'hat', price = 1 },
+            { name = 'at_rifle_grip_mk1', price = 1 },
+            { name = 'at_smg_suppressor_mk1', price = 1 },
+            { name = 'at_shotgun_supressor_mk1_02', price = 1 },
+            { name = 'coupebracelet', price = 1 },
+            { name = 'lockpick', price = 1 },
+            { name = 'WEAPON_KNUCKLE', price = 1 },
+            { name = 'fakeplate', price = 1 },
+            { name = 'at_pistol_suppressor_mk2', price = 1 },
+            { name = 'at_smg_scope_mk2', price = 1 },
+            { name = 'at_pistol_suppressor_mk3', price = 1 },
+            { name = 'mask', price = 1 },
+            { name = 'WEAPON_BOTTLE', price = 1 },
+            { name = 'WEAPON_WRENCH', price = 1 },
+            { name = 'WEAPON_M9', price = 1 },
+            { name = 'at_shotgun_supressor_mk2_02', price = 1 },
+            { name = 'at_pistol_slide_mk4', price = 1 },
+            { name = 'at_rifle_stock_mk7', price = 1 },
+            { name = 'WEAPON_KNIFE', price = 1 },
+            { name = 'WEAPON_DOUBLEBARRELFM', price = 1 },
+            { name = 'at_rifle_stock_mk4', price = 1 },
+            { name = 'WEAPON_M870', price = 1 },
+            { name = 'WEAPON_GUSENBERG', price = 1 },
+            { name = 'at_shotgun_flashlight', price = 1 },
+            { name = 'WEAPON_M4', price = 1 },
+            { name = 'at_shotgun_supressor_mk1', price = 1 },
+            { name = 'at_sniper_barrel5_silencieux_mk1', price = 1 },
+            { name = 'at_pistol_frame_mk2', price = 1 },
+            { name = 'at_pistol_flashlight', price = 1 },
+            { name = 'at_rifle_clip_mk7', price = 1 },
+            { name = 'at_rifle_frame_mk3', price = 1 },
+            { name = 'WEAPON_L5', price = 1 },
+            { name = 'at_rifle_suppressor_mk2', price = 1 },
+            { name = 'at_shotgun_barrel_mk2', price = 1 },
+            { name = 'WEAPON_SWITCHBLADE', price = 1 },
+            { name = 'braceletgps_off', price = 1 },
+            { name = 'at_shotgun_stock', price = 1 },
+            { name = 'WEAPON_HAMMER', price = 1 },
+            { name = 'at_pistol_muzzle_mk1', price = 1 },
+            { name = 'at_rifle_stock_mk2', price = 1 },
+            { name = 'at_rifle_acog_mk1', price = 1 },
+            { name = 'at_rifle_clip_mk2', price = 1 },
+            { name = 'at_rifle_pistolgrip_mk2', price = 1 },
+            { name = 'at_pistol_slide_mk2', price = 1 },
+            { name = 'WEAPON_FLASHLIGHT', price = 1 },
+            { name = 'at_pistol_barrel_mk3', price = 1 },
+            { name = 'ammo-sniper', price = 1 },
+        }, locations = {
+            vec3(234.8596, -785.7424, 30.6173)
+        }
+    },
 
-	Liquor = {
-		name = 'Liquor Store',
-		blip = {
-			id = 93, colour = 69, scale = 0.8
-		}, inventory = {
-			{ name = 'water', price = 10 },
-			{ name = 'cola', price = 10 },
-			{ name = 'burger', price = 15 },
-		}, locations = {
-			vec3(1135.808, -982.281, 46.415),
-			vec3(-1222.915, -906.983, 12.326),
-			vec3(-1487.553, -379.107, 40.163),
-			vec3(-2968.243, 390.910, 15.043),
-			vec3(1166.024, 2708.930, 38.157),
-			vec3(1392.562, 3604.684, 34.980),
-			vec3(-1393.409, -606.624, 30.319)
-		}, targets = {
-			{ loc = vec3(1134.9, -982.34, 46.41), length = 0.5, width = 0.5, heading = 96.0, minZ = 46.4, maxZ = 46.8, distance = 1.5 },
-			{ loc = vec3(-1222.33, -907.82, 12.43), length = 0.6, width = 0.5, heading = 32.7, minZ = 12.3, maxZ = 12.7, distance = 1.5 },
-			{ loc = vec3(-1486.67, -378.46, 40.26), length = 0.6, width = 0.5, heading = 133.77, minZ = 40.1, maxZ = 40.5, distance = 1.5 },
-			{ loc = vec3(-2967.0, 390.9, 15.14), length = 0.7, width = 0.5, heading = 85.23, minZ = 15.0, maxZ = 15.4, distance = 1.5 },
-			{ loc = vec3(1165.95, 2710.20, 38.26), length = 0.6, width = 0.5, heading = 178.84, minZ = 38.1, maxZ = 38.5, distance = 1.5 },
-			{ loc = vec3(1393.0, 3605.95, 35.11), length = 0.6, width = 0.6, heading = 200.0, minZ = 35.0, maxZ = 35.4, distance = 1.5 }
-		}
-	},
+    General = {
+        name = '24/7 Superette',
+        blip = {
+            id = 59, colour = 69, scale = 0.8
+        }, inventory = {
+            { name = 'water', price = 2 },
+            { name = 'cubancigar', price = 10 },
+            { name = 'marlboro', price = 20 },
+            { name = 'lighter', price = 6 },
+        }, locations = {
+            vec3(373.8, 325.8, 103.5), vec3(2557.4, 382.2, 108.6), vec3(-3038.9, 585.9, 7.9),
+            vec3(-3241.9, 1001.4, 12.8), vec3(547.4, 2671.7, 42.1), vec3(1961.4, 3740.6, 32.3),
+            vec3(2678.9, 3280.6, 55.2), vec3(1729.2, 6414.1, 35.0),
+            vec3(25.747049331665, -1346.6291503906, 29.497022628784), vec3(1135.8, -982.2, 46.4),
+            vec3(-1222.9, -906.9, 12.3),
+            vec3(-1487.5, -379.1, 40.1), vec3(-2968.2, 390.9, 15.0), vec3(1166.0, 2708.9, 38.1),
+            vec3(1392.5, 3604.6, 34.9),
+            vec3(-48.5, -1757.5, 29.4), vec3(1163.3, -323.8, 69.2), vec3(-707.5, -914.2, 19.2),
+            vec3(-1820.5, 792.5, 138.1),
+            vec3(1698.3, 4924.4, 42.0), vec3(161.7914, 6641.0703, 31.6989), vec3(814.2743, -781.0761, 26.1750),
+            vec3(303.5167, -580.4360, 47.2809)
+        }, targets = {
+        }
+    },
 
-	YouTool = {
-		name = 'YouTool',
-		blip = {
-			id = 402, colour = 69, scale = 0.8
-		}, inventory = {
-			{ name = 'lockpick', price = 10 }
-		}, locations = {
-			vec3(2748.0, 3473.0, 55.67),
-			vec3(342.99, -1298.26, 32.51)
-		}, targets = {
-			{ loc = vec3(2746.8, 3473.13, 55.67), length = 0.6, width = 3.0, heading = 65.0, minZ = 55.0, maxZ = 56.8, distance = 3.0 }
-		}
-	},
+    Ammunation = {
+        name = 'Ammunation',
+        blip = {
+            id = 110, colour = 69, scale = 0.8
+        }, inventory = {
+            -- { name = 'weapon_heavypistol', price = 200, metadata = { registered = true }, license = 'weapon' },
+            -- { name = 'weapon_knuckle', price = 200 },
+        }, locations = {
+            vec3(-660.8675, -939.4791, 21.8293),
+            vec3(810.2, -2157.3, 29.6),
+            vec3(1693.4, 3759.5, 34.7),
+            vec3(-330.2, 6083.8, 31.4),
+            vec3(252.3, -50.0, 69.9),
+            vec3(22.0, -1107.2, 29.8),
+            vec3(2567.6, 294.3, 108.7),
+            vec3(-1117.5, 2698.6, 18.5),
+            vec3(842.4, -1033.4, 28.1)
+        }, targets = {
 
-	Ammunation = {
-		name = 'Ammunation',
-		blip = {
-			id = 110, colour = 69, scale = 0.8
-		}, inventory = {
-			{ name = 'ammo-9', price = 5, },
-			{ name = 'WEAPON_KNIFE', price = 200 },
-			{ name = 'WEAPON_BAT', price = 100 },
-			{ name = 'WEAPON_PISTOL', price = 1000, metadata = { registered = true }, license = 'weapon' }
-		}, locations = {
-			vec3(-662.180, -934.961, 21.829),
-			vec3(810.25, -2157.60, 29.62),
-			vec3(1693.44, 3760.16, 34.71),
-			vec3(-330.24, 6083.88, 31.45),
-			vec3(252.63, -50.00, 69.94),
-			vec3(22.56, -1109.89, 29.80),
-			vec3(2567.69, 294.38, 108.73),
-			vec3(-1117.58, 2698.61, 18.55),
-			vec3(842.44, -1033.42, 28.19)
-		}, targets = {
-			{ loc = vec3(-660.92, -934.10, 21.94), length = 0.6, width = 0.5, heading = 180.0, minZ = 21.8, maxZ = 22.2, distance = 2.0 },
-			{ loc = vec3(808.86, -2158.50, 29.73), length = 0.6, width = 0.5, heading = 360.0, minZ = 29.6, maxZ = 30.0, distance = 2.0 },
-			{ loc = vec3(1693.57, 3761.60, 34.82), length = 0.6, width = 0.5, heading = 227.39, minZ = 34.7, maxZ = 35.1, distance = 2.0 },
-			{ loc = vec3(-330.29, 6085.54, 31.57), length = 0.6, width = 0.5, heading = 225.0, minZ = 31.4, maxZ = 31.8, distance = 2.0 },
-			{ loc = vec3(252.85, -51.62, 70.0), length = 0.6, width = 0.5, heading = 70.0, minZ = 69.9, maxZ = 70.3, distance = 2.0 },
-			{ loc = vec3(23.68, -1106.46, 29.91), length = 0.6, width = 0.5, heading = 160.0, minZ = 29.8, maxZ = 30.2, distance = 2.0 },
-			{ loc = vec3(2566.59, 293.13, 108.85), length = 0.6, width = 0.5, heading = 360.0, minZ = 108.7, maxZ = 109.1, distance = 2.0 },
-			{ loc = vec3(-1117.61, 2700.26, 18.67), length = 0.6, width = 0.5, heading = 221.82, minZ = 18.5, maxZ = 18.9, distance = 2.0 },
-			{ loc = vec3(841.05, -1034.76, 28.31), length = 0.6, width = 0.5, heading = 360.0, minZ = 28.2, maxZ = 28.6, distance = 2.0 }
-		}
-	},
+        }
+    },
 
-	PoliceArmoury = {
-		name = 'Police Armoury',
-		groups = shared.police,
-		blip = {
-			id = 110, colour = 84, scale = 0.8
-		}, inventory = {
-			{ name = 'ammo-9', price = 5, },
-			{ name = 'ammo-rifle', price = 5, },
-			{ name = 'WEAPON_FLASHLIGHT', price = 200 },
-			{ name = 'WEAPON_NIGHTSTICK', price = 100 },
-			{ name = 'WEAPON_PISTOL', price = 500, metadata = { registered = true, serial = 'POL' }, license = 'weapon' },
-			{ name = 'WEAPON_CARBINERIFLE', price = 1000, metadata = { registered = true, serial = 'POL' }, license = 'weapon', grade = 3 },
-			{ name = 'WEAPON_STUNGUN', price = 500, metadata = { registered = true, serial = 'POL'} }
-		}, locations = {
-			vec3(451.51, -979.44, 30.68)
-		}, targets = {
-			{ loc = vec3(453.21, -980.03, 30.68), length = 0.5, width = 3.0, heading = 270.0, minZ = 30.5, maxZ = 32.0, distance = 6 }
-		}
-	},
+    Medicine = {
+        name = 'Réceptionniste Intendant',
+        groups = {
+            ['ambulance'] = 0
+        },
+        blip = {
+            id = 403, colour = 69, scale = 0.8
+        }, inventory = {
+            { name = 'defibrilator', price = 26 },
+            { name = 'bandage', price = 5 },
+            -- { name = 'tourniquet', price = 5 },
+            -- { name = 'quickclot', price = 5 },
+            -- { name = 'packing_bandage', price = 5 },
+            -- { name = 'elastic_bandage', price = 5 },
+            -- { name = 'surgical_kit', price = 5 },
+            -- { name = 'epinephrine', price = 5 },
+            -- { name = 'atropine', price = 5 },
+            -- { name = 'morphin', price = 5 },
+            -- { name = 'painkillers', price = 5 },
+            -- { name = 'blood_250', price = 5 },
+            -- { name = 'blood_500', price = 5 },
+            -- { name = 'blood_1000', price = 5 },
+        }, locations = {
+            vec3(311.0443, -579.2854, 43.2654),
+            vec3(-249.5674, 6334.8374, 32.4272)
+        }, targets = {
 
-	Medicine = {
-		name = 'Medicine Cabinet',
-		groups = {
-			['ambulance'] = 0
-		},
-		blip = {
-			id = 403, colour = 69, scale = 0.8
-		}, inventory = {
-			{ name = 'medikit', price = 26 },
-			{ name = 'bandage', price = 5 }
-		}, locations = {
-			vec3(306.3687, -601.5139, 43.28406)
-		}, targets = {
+        }
+    },
 
-		}
-	},
+    HopitalIllegal = {
+        name = 'Gunter les doigts de fée',
+        blip = {
+            id = 403, colour = 69, scale = 0.8
+        }, inventory = {
+            { name = 'illegal_medical_pass', price = 26, isIllegal = true },
+        }, locations = {
+            vec3(260.7488, -1358.6775, 24.5378),
+        }, targets = {
 
-	BlackMarketArms = {
-		name = 'Black Market (Arms)',
-		inventory = {
-			{ name = 'WEAPON_DAGGER', price = 5000, metadata = { registered = false	}, currency = 'black_money' },
-			{ name = 'WEAPON_CERAMICPISTOL', price = 50000, metadata = { registered = false }, currency = 'black_money' },
-			{ name = 'at_suppressor_light', price = 50000, currency = 'black_money' },
-			{ name = 'ammo-rifle', price = 1000, currency = 'black_money' },
-			{ name = 'ammo-rifle2', price = 1000, currency = 'black_money' }
-		}, locations = {
-			vec3(309.09, -913.75, 56.46)
-		}, targets = {
+        }
+    },
 
-		}
-	},
+    ArmesIllegales = {
+        name = 'Black Market (Arms)',
+        inventory = {
+            -- { name = 'WEAPON_DAGGER', price = 5000, metadata = { registered = false }, isIllegal = true },
+        }, locations = {
+            vec3(309.09, -913.75, 56.46)
+        }, targets = {
 
-	VendingMachineDrinks = {
-		name = 'Vending Machine',
-		inventory = {
-			{ name = 'water', price = 10 },
-			{ name = 'cola', price = 10 },
-		},
-		model = {
-			`prop_vend_soda_02`, `prop_vend_fridge01`, `prop_vend_water_01`, `prop_vend_soda_01`
-		}
-	}
+        }
+    },
+
+    Weed = {
+        name = 'Joey gros nuage',
+        inventory = {
+            { name = 'weed_seed', price = 5000, isIllegal = true },
+            { name = 'weed_fertilizer', price = 5000, isIllegal = true },
+        }, locations = {
+            vec3(-1472.2466, 2130.8174, 39.8866)
+        }, targets = {
+
+        }
+    },
+
+    Cocaine = {
+        name = 'Mike le poudré',
+        inventory = {
+            { name = 'coca_seed', price = 5000, isIllegal = true },
+            { name = 'weed_fertilizer', price = 5000, isIllegal = true },
+        }, locations = {
+            vec3(1977.2164, -2606.6401, 2.7394)
+        }, targets = {
+
+        }
+    },
+
+    ObjetIllegaux = {
+        name = 'Mamie les bons tuyaux',
+        inventory = {
+            { name = 'lockpick', price = 5000, isIllegal = true },
+            -- { name = 'hack_usb', price = 5000, isIllegal = true },
+            -- { name = 'cutter', price = 5000, isIllegal = true },
+            { name = 'spike', price = 5000, isIllegal = true },
+        }, locations = {
+            vec3(2940.1358, 4624.7635, 48.34)
+        }, targets = {
+
+        }
+    },
+
+    DigitalDen = {
+        name = 'Digital Den',
+        inventory = {
+            { name = 'phone', price = 5000 },
+            { name = 'sim', price = 5000 },
+            -- { name = 'laptop', price = 5000 },
+        }, locations = {
+            vec3(-1209.1213, -1503.2405, 4.3739)
+        }, targets = {
+
+        }
+    },
 }
