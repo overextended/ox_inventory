@@ -790,10 +790,10 @@ end)
 local function nearbyDrop(point)
 	if not point.instance or point.instance == currentInstance then
 		---@diagnostic disable-next-line: param-type-mismatch
-        if not self.object then
-            self.object = CreateObject("prop_cs_box_clothes", self.coords.x, self.coords.y, self.coords.z, 0, 1, 0)
-            PlaceObjectOnGroundProperly(self.object)
-            FreezeEntityPosition(self.object, true)
+        if not point.object then
+          point.object = CreateObject("prop_cs_box_clothes", point.coords.x, point.coords.y, point.coords.z, 0, 1, 0)
+            PlaceObjectOnGroundProperly(point.object)
+            FreezeEntityPosition(point.object, true)
         end
 		-- DrawMarker(2, self.coords.x, self.coords.y, self.coords.z, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.3, 0.2, 0.15, 150, 30, 30, 222, false, false, 0, true, false, false, false)
 	end
