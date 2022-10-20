@@ -54,13 +54,13 @@ end)
 
 function server.syncInventory(inv)
     local money = table.clone(server.accounts)
-    
+
     for _, v in pairs(inv.items) do
         if money[v.name] then
             money[v.name] += v.count
         end
     end
-    
+
     if money then
         NDCore.Functions.SetPlayerData(inv.id, "cash", money.money)
     end
@@ -81,21 +81,4 @@ function server.setPlayerData(player)
         dateofbirth = player.dob,
         job = player.job
     }
-end
-
-function server.buyLicense(inv, license)
-    local player = server.GetPlayerFromId(source)
-    if not player then return end
-
-    if player.PlayerData.metadata.licences.weapon then
-        return false, "has_weapon_license"
-    elseif Inventory.GetItem(inv, "money", false, true) < license.price then
-        return false, "poor_weapon_license"
-    end
-
-    Inventory.RemoveItem(inv, "money", license.price)
-    player.PlayerData.metadata.licences.weapon = true
-    NDCore.Functions.SetPlayerData(player.source, "licences", player.PlayerData.metadata.licences)
-
-    return true, "bought_weapon_license"
 end
