@@ -44,7 +44,6 @@ client_scripts {
 server_scripts {
 	'@oxmysql/lib/MySQL.lua',
 	'modules/mysql/server.lua',
-	'modules/logs/server.lua',
 	'modules/items/server.lua',
 	'modules/inventory/server.lua',
 	'modules/shops/server.lua',
