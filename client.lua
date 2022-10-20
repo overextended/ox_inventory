@@ -590,7 +590,7 @@ local function registerCommands()
 	})
 
 	lib.addKeybind({
-		name = 'reload',
+		name = 'reloadweapon',
 		description = locale('reload_weapon'),
 		defaultKey = 'r',
 		onPressed = function(self)
