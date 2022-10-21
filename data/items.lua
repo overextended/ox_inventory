@@ -110,6 +110,10 @@ return {
 	['lockpick'] = {
 		label = 'Lockpick',
 		weight = 160,
+		client = {
+			skillCheck = {'easy', 'easy', {areaSize = 250, speedMultiplier = 2}, 'hard'},
+			export = 'ox_inventory_examples.lockpick'
+		},
 	},
 
 	['phone'] = {

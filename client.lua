@@ -201,17 +201,25 @@ local function useItem(data, cb)
 				end
 			end
 
-			local success = (not data.usetime or lib.progressBar({
-				duration = data.usetime,
-				label = data.label or locale('using', result.label),
-				useWhileDead = data.useWhileDead,
-				canCancel = data.cancel,
-				disable = data.disable,
-				anim = data.anim or data.scenario,
-				prop = data.prop
-			})) and not PlayerData.dead
+			local success = false
 
-			if success then
+			if data.usetime then
+				success = lib.progressBar({
+					duration = data.usetime,
+					label = data.label or locale('using', result.label),
+					useWhileDead = data.useWhileDead,
+					canCancel = data.cancel,
+					disable = data.disable,
+					anim = data.anim or data.scenario,
+					prop = data.prop
+				})
+			end
+
+			if data.skillCheck then
+				success = lib.skillCheck(data.skillCheck)
+			end
+
+			if success and not PlayerData.dead then
 				if result.consume and result.consume ~= 0 and not result.component then
 					TriggerServerEvent('ox_inventory:removeItem', result.name, result.consume, result.metadata, result.slot, true)
 				end
