@@ -215,7 +215,7 @@ local function useItem(data, cb)
 				})
 			end
 
-			if data.skillCheck then
+			if not data.usetime and data.skillCheck then
 				success = lib.skillCheck(data.skillCheck)
 			end
 
