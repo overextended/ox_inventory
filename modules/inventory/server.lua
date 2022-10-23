@@ -1015,8 +1015,6 @@ end
 AddEventHandler('ox_inventory:customDrop', CustomDrop)
 exports('CustomDrop', CustomDrop)
 
-local Log = server.logs
-
 local function dropItem(source, data)
 	local playerInventory = Inventory(source)
 	local fromData = playerInventory.items[data.fromSlot]

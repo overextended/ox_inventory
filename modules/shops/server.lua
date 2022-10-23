@@ -5,10 +5,6 @@ local Inventory = server.inventory
 local Shops = {}
 local locations = shared.qtarget and 'targets' or 'locations'
 
----@class OxShopServer : OxShop
----@field id string
----@field coords vector3
-
 ---@class OxShopItem
 ---@field name string
 ---@field slot number
@@ -19,16 +15,22 @@ local locations = shared.qtarget and 'targets' or 'locations'
 ---@field currency? string
 ---@field grade? number
 
+---@class OxShopServer : OxShop
+---@field id string
+---@field coords vector3
+---@field items OxShopItem[]
+
 ---@param shopName string
 ---@param shopDetails OxShop
 local function createShop(shopName, shopDetails)
 	Shops[shopName] = {}
+	local shopLocations = shopDetails[locations] or shopDetails.locations
 
-	if shopDetails[locations] then
+	if shopLocations then
 		---@diagnostic disable-next-line: undefined-field
 		local groups = shopDetails.groups or shopDetails.jobs
 
-		for i = 1, #shopDetails[locations] do
+		for i = 1, #shopLocations do
 			---@type OxShopServer
 			Shops[shopName][i] = {
 				label = shopDetails.name,
@@ -37,8 +39,7 @@ local function createShop(shopName, shopDetails)
 				items = table.clone(shopDetails.inventory),
 				slots = #shopDetails.inventory,
 				type = 'shop',
-				coords = shared.qtarget and shopDetails[locations][i].loc or shopDetails[locations][i],
-				distance = shared.qtarget and shopDetails[locations][i].distance + 1 or nil,
+				coords = shared.qtarget and shopDetails.targets?[i]?.loc or shopLocations[i],
 			}
 
 			for j = 1, Shops[shopName][i].slots do
@@ -118,11 +119,34 @@ for shopName, shopDetails in pairs(data('shops')) do
 	createShop(shopName, shopDetails)
 end
 
+---@param shopName string
+---@param shopDetails OxShop
+exports('RegisterShop', function(shopName, shopDetails)
+	createShop(shopName, shopDetails)
+end)
+
+-- exports.ox_inventory:RegisterShop('TestShop', {
+-- 	name = 'Test shop',
+-- 	inventory = {
+-- 		{ name = 'burger', price = 10 },
+-- 		{ name = 'water', price = 10 },
+-- 		{ name = 'cola', price = 10 },
+-- 	}, locations = {
+-- 		vec3(223.832962, -792.619751, 30.695190),
+-- 	},
+-- 	groups = {
+-- 		police = 0
+-- 	},
+-- })
+-- Open on client with `exports.ox_inventory:openInventory('shop', {id=1, type='TestShop'})`
+
 lib.callback.register('ox_inventory:openShop', function(source, data)
 	local left, shop = Inventory(source)
 
 	if data then
 		shop = data.id and Shops[data.type][data.id] or Shops[data.type] --[[@as OxShopServer]]
+
+		if not shop.items then return end
 
 		if shop.groups then
 			local group = server.hasGroup(left, shop.groups)
@@ -140,7 +164,6 @@ lib.callback.register('ox_inventory:openShop', function(source, data)
 end)
 
 local table = lib.table
-local Log = server.logs
 
 -- http://lua-users.org/wiki/FormattingNumbers
 -- credit http://richard.warburton.it

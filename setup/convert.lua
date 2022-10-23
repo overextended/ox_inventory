@@ -198,14 +198,20 @@ local function ConvertQB()
 			local vehicles = {}
 			for _, v in pairs(trunk) do
 				local owner = plates[v.plate]
-				vehicles[owner] = vehicles[owner] or {}
-				vehicles[owner][v.plate] = vehicles[owner][v.plate] or {trunk=v.items or '[]', glovebox='[]'}
+
+				if owner then
+					vehicles[owner] = vehicles[owner] or {}
+					vehicles[owner][v.plate] = vehicles[owner][v.plate] or {trunk=v.items or '[]', glovebox='[]'}
+				end
 			end
 
 			for _, v in pairs(glovebox) do
 				local owner = plates[v.plate]
-				vehicles[owner] = vehicles[owner] or {}
-				vehicles[owner][v.plate] = {trunk=vehicles[owner][v.plate].trunk ~= '[]' and vehicles[owner][v.plate].trunk or '[]', glovebox=vehicles[owner][v.plate].glovebox ~= '[]' and vehicles[owner][v.plate].glovebox or v.items or '[]'}
+
+				if owner then
+					vehicles[owner] = vehicles[owner] or {}
+					vehicles[owner][v.plate] = {trunk=vehicles[owner][v.plate].trunk ~= '[]' and vehicles[owner][v.plate].trunk or '[]', glovebox=vehicles[owner][v.plate].glovebox ~= '[]' and vehicles[owner][v.plate].glovebox or v.items or '[]'}
+				end
 			end
 
 			Print(('Moving ^3%s^0 trunks and ^3%s^0 gloveboxes to player_vehicles table'):format(#trunk, #glovebox))
