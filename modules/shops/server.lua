@@ -139,7 +139,6 @@ lib.callback.register('ox_inventory:openShop', function(source, data)
 end)
 
 local table = lib.table
-local Log = server.logs
 
 -- http://lua-users.org/wiki/FormattingNumbers
 -- credit http://richard.warburton.it
