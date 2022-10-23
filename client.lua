@@ -794,6 +794,7 @@ RegisterNetEvent('ox_inventory:createDrop', function(drop, data, owner, slot)
 
 		if invOpen and #(GetEntityCoords(cache.ped) - data.coords) <= 1 then
 			if not cache.vehicle then
+				Wait(100)
 				client.openInventory('drop', drop)
 			else
 				SendNUIMessage({
