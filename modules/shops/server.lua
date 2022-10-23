@@ -5,10 +5,6 @@ local Inventory = server.inventory
 local Shops = {}
 local locations = shared.qtarget and 'targets' or 'locations'
 
----@class OxShopServer : OxShop
----@field id string
----@field coords vector3
-
 ---@class OxShopItem
 ---@field name string
 ---@field slot number
@@ -18,6 +14,11 @@ local locations = shared.qtarget and 'targets' or 'locations'
 ---@field license? string
 ---@field currency? string
 ---@field grade? number
+
+---@class OxShopServer : OxShop
+---@field id string
+---@field coords vector3
+---@field items OxShopItem[]
 
 ---@param shopName string
 ---@param shopDetails OxShop
@@ -122,6 +123,8 @@ lib.callback.register('ox_inventory:openShop', function(source, data)
 
 	if data then
 		shop = data.id and Shops[data.type][data.id] or Shops[data.type] --[[@as OxShopServer]]
+
+		if not shop.items then return end
 
 		if shop.groups then
 			local group = server.hasGroup(left, shop.groups)
