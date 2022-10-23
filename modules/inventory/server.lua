@@ -1130,6 +1130,14 @@ lib.callback.register('ox_inventory:swapItems', function(source, data)
 									Inventory.ContainerWeight(containerItem, toContainer and toWeight or fromWeight, playerInventory)
 								end
 
+								if fromInventory.type == 'otherplayer' then
+									TriggerClientEvent('ox_inventory:itemNotify', fromInventory.id, { fromData.metadata?.label or fromData.label, fromData.metadata?.image or fromData.name, 'ui_removed', fromData.count })
+									TriggerClientEvent('ox_inventory:itemNotify', fromInventory.id, { toData.metadata?.label or toData.label, toData.metadata?.image or toData.name, 'ui_added', toData.count })
+								elseif toInventory.type == 'otherplayer' then
+									TriggerClientEvent('ox_inventory:itemNotify', toInventory.id, { fromData.metadata?.label or fromData.label, fromData.metadata?.image or fromData.name, 'ui_added', fromData.count })
+									TriggerClientEvent('ox_inventory:itemNotify', toInventory.id, { toData.metadata?.label or toData.label, toData.metadata?.image or toData.name, 'ui_removed', toData.count })
+								end
+
 								toData, fromData = Inventory.SwapSlots(fromInventory, toInventory, data.fromSlot, data.toSlot) --[[@as table]]
 
 								if server.loglevel > 0 then
@@ -1148,12 +1156,19 @@ lib.callback.register('ox_inventory:swapItems', function(source, data)
 						if fromInventory.type == 'container' or sameInventory or totalWeight <= toInventory.maxWeight then
 							local fromSlotWeight = Inventory.SlotWeight(Items(fromData.name), fromData)
 							toData.weight = toSlotWeight
+
 							if not sameInventory then
 								fromInventory.weight = fromInventory.weight - fromData.weight + fromSlotWeight
 								toInventory.weight = totalWeight
 
 								if container then
 									Inventory.ContainerWeight(containerItem, toInventory.type == 'container' and toInventory.weight or fromInventory.weight, playerInventory)
+								end
+
+								if fromInventory.type == 'otherplayer' then
+									TriggerClientEvent('ox_inventory:itemNotify', fromInventory.id, { fromData.metadata?.label or fromData.label, fromData.metadata?.image or fromData.name, 'ui_removed', data.count })
+								elseif toInventory.type == 'otherplayer' then
+									TriggerClientEvent('ox_inventory:itemNotify', toInventory.id, { toData.metadata?.label or toData.label, toData.metadata?.image or toData.name, 'ui_added', data.count })
 								end
 
 								if server.loglevel > 0 then
@@ -1195,6 +1210,12 @@ lib.callback.register('ox_inventory:swapItems', function(source, data)
                   Inventory.PhoneNumber(containerItem, toContainer and toData.metadata.phonenumber or "Aucune carte SIM")
                   containerItem.phonenumber = toContainer and toData.metadata.phonenumber or "Aucune carte SIM"
 									Inventory.ContainerWeight(containerItem, toContainer and toInventory.weight or fromInventory.weight, playerInventory)
+								end
+
+								if fromInventory.type == 'otherplayer' then
+									TriggerClientEvent('ox_inventory:itemNotify', fromInventory.id, { fromData.metadata?.label or fromData.label, fromData.metadata?.image or fromData.name, 'ui_removed', data.count })
+								elseif toInventory.type == 'otherplayer' then
+									TriggerClientEvent('ox_inventory:itemNotify', toInventory.id, { fromData.metadata?.label or fromData.label, fromData.metadata?.image or fromData.name, 'ui_added', data.count })
 								end
 
 								if server.loglevel > 0 then

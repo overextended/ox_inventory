@@ -73,6 +73,8 @@ exports('notify', Utils.Notify)
 
 function Utils.ItemNotify(data) SendNUIMessage({action = 'itemNotify', data = data}) end
 
+RegisterNetEvent('ox_inventory:itemNotify', Utils.ItemNotify)
+
 function Utils.DeleteObject(obj)
 	SetEntityAsMissionEntity(obj, false, true)
 	DeleteObject(obj)
