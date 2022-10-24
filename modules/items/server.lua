@@ -291,8 +291,15 @@ function Items.Metadata(inv, item, metadata, count)
 		end
 
 		if not metadata?.durability then
-			local durability = ItemList[item.name].degrade
-			if durability then metadata.durability = os.time()+(durability * 60) metadata.degrade = durability end
+			local itemData = ItemList[item.name]
+			local degrade = itemData.degrade
+
+			if degrade then
+				metadata.durability = os.time()+(degrade * 60)
+				metadata.degrade = degrade
+			elseif itemData.consume < 1 then
+				metadata.durability = 100
+			end
 		end
 	end
 
