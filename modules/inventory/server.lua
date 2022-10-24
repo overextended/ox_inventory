@@ -632,13 +632,14 @@ exports('SetMetadata', Inventory.SetMetadata)
 ---@param item table | string
 ---@param count number
 ---@param metadata? table | string
----@param slot number?
----@param cb fun(success: boolean, reason?: string|table)?
+---@param slot? number
+---@param cb? fun(success?: boolean, response: string|OxItem|nil)
+---@return boolean? success, string|OxItem|nil response
 function Inventory.AddItem(inv, item, count, metadata, slot, cb)
 	if type(item) ~= 'table' then item = Items(item) end
 	if type(inv) ~= 'table' then inv = Inventory(inv) end
 	count = math.floor(count + 0.5)
-	local success, resp
+	local success, response
 
 	if item then
 		if inv then
@@ -702,7 +703,7 @@ function Inventory.AddItem(inv, item, count, metadata, slot, cb)
 
 					if cb then
 						success = true
-						resp = inv.items[toSlot]
+						response = inv.items[toSlot]
 					end
 				else
 					local added = 0
@@ -731,20 +732,24 @@ function Inventory.AddItem(inv, item, count, metadata, slot, cb)
 						end
 
 						success = true
-						resp = toSlot
+						response = toSlot
 					end
 				end
 			else
-				resp = cb and 'inventory_full'
+				response = 'inventory_full'
 			end
 		else
-			resp = cb and 'invalid_inventory'
+			response = 'invalid_inventory'
 		end
 	else
-		resp = cb and 'invalid_item'
+		response = 'invalid_item'
 	end
 
-	if cb then cb(success, resp) end
+	if cb then
+		return cb(success, response)
+	end
+
+	return success, response
 end
 exports('AddItem', Inventory.AddItem)
 
@@ -828,6 +833,7 @@ exports('GetItemSlots', Inventory.GetItemSlots)
 ---@param count number
 ---@param metadata? table | string
 ---@param slot number?
+---@return boolean? success
 function Inventory.RemoveItem(inv, item, count, metadata, slot)
 	if type(item) ~= 'table' then item = Items(item) end
 	count = math.floor(count + 0.5)
@@ -869,22 +875,26 @@ function Inventory.RemoveItem(inv, item, count, metadata, slot)
 			end
 		end
 
-		if removed > 0 and inv.type == 'player' then
-			if server.syncInventory then server.syncInventory(inv) end
+		if removed > 0 then
+			if inv.type == 'player' then
+				if server.syncInventory then server.syncInventory(inv) end
 
-			local array = table.create(#slots, 0)
+				local array = table.create(#slots, 0)
 
-			for k, v in pairs(slots) do
-				array[k] = {item = type(v) == 'number' and { slot = v } or v, inventory = inv.type}
+				for k, v in pairs(slots) do
+					array[k] = {item = type(v) == 'number' and { slot = v } or v, inventory = inv.type}
+				end
+
+				TriggerClientEvent('ox_inventory:updateSlots', inv.id, array, {left=inv.weight, right=inv.open and Inventories[inv.open]?.weight}, removed, true)
+
+				local invokingResource = server.loglevel > 1 and GetInvokingResource()
+
+				if invokingResource then
+					lib.logger(inv.owner, 'removeItem', ('"%s" removed %sx %s from "%s"'):format(invokingResource, removed, item.name, inv.label))
+				end
 			end
 
-			TriggerClientEvent('ox_inventory:updateSlots', inv.id, array, {left=inv.weight, right=inv.open and Inventories[inv.open]?.weight}, removed, true)
-
-			local invokingResource = server.loglevel > 1 and GetInvokingResource()
-
-			if invokingResource then
-				lib.logger(inv.owner, 'removeItem', ('"%s" removed %sx %s from "%s"'):format(invokingResource, removed, item.name, inv.label))
-			end
+			return true
 		end
 	end
 end
