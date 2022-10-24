@@ -48,11 +48,11 @@ local function setupPlayer(Player)
 	Inventory.SetItem(Player.PlayerData.source, 'money', Player.PlayerData.money.cash)
 
 	QBCore.Functions.AddPlayerMethod(Player.PlayerData.source, "AddItem", function(item, amount, slot, info)
-		Inventory.AddItem(Player.PlayerData.source, item, amount, info, slot)
+		return Inventory.AddItem(Player.PlayerData.source, item, amount, info, slot)
 	end)
 
 	QBCore.Functions.AddPlayerMethod(Player.PlayerData.source, "RemoveItem", function(item, amount, slot)
-		Inventory.RemoveItem(Player.PlayerData.source, item, amount, nil, slot)
+		return Inventory.RemoveItem(Player.PlayerData.source, item, amount, nil, slot)
 	end)
 
 	QBCore.Functions.AddPlayerMethod(Player.PlayerData.source, "GetItemBySlot", function(slot)
