@@ -313,11 +313,9 @@ AddEventHandler("ox_inventory:checkSIMServer", function (slot)
                 exports.npwd:newPlayer({ source = _source, firstname = xPlayer.name, lastname =  xPlayer.lastname, identifier = xPlayer.identifier, phoneNumber = phoneNumber })
                 MySQL.update('UPDATE users SET phone_number = ? WHERE identifier = ?', {phoneNumber, xPlayer.identifier}, function(affectedRows)
                 end)
-                Wait(500)
+              end
             end
-        end
+        Wait(500)
         TriggerClientEvent("ox_inventory:openPhone", _source)
-    else
-        TriggerClientEvent("ox_inventory:disablePhone", _source)
     end
 end)

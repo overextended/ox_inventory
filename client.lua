@@ -1365,16 +1365,7 @@ AddEventHandler("ox_inventory:checkSIM", function (data)
     TriggerServerEvent("ox_inventory:checkSIMServer", data.slot)
 end)
 
-RegisterNetEvent("ox_inventory:disablePhone")
-AddEventHandler("ox_inventory:disablePhone", function ()
-    local isVisible = exports.npwd:isPhoneVisible()
-    if isVisible then
-        ExecuteCommand("phone")
-    end
-end)
-
-RegisterNetEvent("ox_inventory:openPhone")
-AddEventHandler("ox_inventory:openPhone", function ()
+RegisterNetEvent("ox_inventory:openPhone", function ()
   exports.npwd:setPhoneDisabled(false)
   ExecuteCommand("phone")
 end)
@@ -1386,25 +1377,18 @@ exports("checkSim", function()
   return havePhoneForThisNumber
 end)
 
+exports.npwd:setPhoneDisabled(true) -- Disable phone by default 
 
-CreateThread(function ()
-    while not canOpenInventory() do
-        Wait(500)
-    end
+RegisterNetEvent("ox_inventory:updateInventory", function()
+  local havePhoneForThisNumber = exports.ox_inventory:checkSim()
 
-    while true do
-        local myNumber = exports.npwd:getPhoneNumber()
-        local havePhoneForThisNumber = exports.ox_inventory:Search('count', 'phone', { phonenumber = myNumber}) > 0
-        if havePhoneForThisNumber then
-            exports.npwd:setPhoneDisabled(false)
-        else
-            local isVisible = exports.npwd:isPhoneVisible()
-            if isVisible then
-                exports.npwd:setPhoneVisible(false)
-            end
-            exports.npwd:setPhoneDisabled(true)
-        end
-        
-        Citizen.Wait(500)
+  if havePhoneForThisNumber then
+    exports.npwd:setPhoneDisabled(false)
+  else
+    local isVisible = exports.npwd:isPhoneVisible()
+    if isVisible then
+        exports.npwd:setPhoneVisible(false)
     end
+    exports.npwd:setPhoneDisabled(true)
+  end
 end)
