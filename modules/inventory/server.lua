@@ -741,6 +741,7 @@ function Inventory.AddItem(inv, item, count, metadata, slot, cb)
 	end
 
 	if cb then cb(success, resp) end
+	return success
 end
 exports('AddItem', Inventory.AddItem)
 
@@ -882,6 +883,7 @@ function Inventory.RemoveItem(inv, item, count, metadata, slot)
 				lib.logger(inv.owner, 'removeItem', ('"%s" removed %sx %s from "%s"'):format(invokingResource, removed, item.name, inv.label))
 			end
 		end
+		return removed > 0
 	end
 end
 exports('RemoveItem', Inventory.RemoveItem)
