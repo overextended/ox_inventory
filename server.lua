@@ -1,6 +1,8 @@
 if not lib then return end
 
-lib.versionCheck('overextended/ox_inventory')
+if GetConvar('inventory:versioncheck', 'true') == 'true' then
+	lib.versionCheck('overextended/ox_inventory')
+end
 
 local Inventory = server.inventory
 local Items = server.items
