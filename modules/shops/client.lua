@@ -9,8 +9,8 @@ local function createShopBlip(name, data, location)
 	SetBlipScale(blip, data.scale)
 	SetBlipColour(blip, data.colour)
 	SetBlipAsShortRange(blip, true)
-	BeginTextCommandSetBlipName('STRING')
-	AddTextComponentSubstringPlayerName(name)
+	AddTextEntry(name, name)
+	BeginTextCommandSetBlipName(name)
 	EndTextCommandSetBlipName(blip)
 
 	return blip
