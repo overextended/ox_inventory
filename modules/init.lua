@@ -31,7 +31,6 @@ if IsDuplicityVersion then
 	server = {
 		loglevel = GetConvarInt('inventory:loglevel', 1),
 		randomprices = GetConvar('inventory:randomprices', 'false') == 'true',
-		versioncheck = GetConvar('inventory:versioncheck', 'true') == 'true',
 		randomloot = GetConvar('inventory:randomloot', 'true') == 'true',
 		evidencegrade = GetConvarInt('inventory:evidencegrade', 2),
 		trimplate = GetConvar('inventory:trimplate', 'true') == 'true',
