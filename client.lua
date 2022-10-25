@@ -164,12 +164,13 @@ local Animations = data 'animations'
 ---@param cb function?
 local function useItem(data, cb)
 	if invOpen and data.close then client.closeInventory() end
+	local result
 
 	if not invBusy and not PlayerData.dead and not lib.progressActive() and not IsPedRagdoll(cache.ped) and not IsPedFalling(cache.ped) then
 		if currentWeapon and currentWeapon?.timer > 100 then return end
 
 		invBusy = 1
-		local result = lib.callback.await('ox_inventory:useItem', 200, data.name, data.slot, PlayerData.inventory[data.slot].metadata)
+		result = lib.callback.await('ox_inventory:useItem', 200, data.name, data.slot, PlayerData.inventory[data.slot].metadata)
 
 		if not result then
 			Wait(500)
@@ -223,15 +224,18 @@ local function useItem(data, cb)
 				if data.notification then
 					lib.notify({ description = data.notification })
 				end
-
-				if cb then cb(result) end
-				Wait(200)
-				plyState.invBusy = false
-				return
 			end
 		end
 	end
-	if cb then cb(false) end
+
+	if cb then
+		local success, response = pcall(cb, result or false)
+
+		if not success and response then
+			print(('^1An error occurred while calling item "%s" callback!\n^1SCRIPT ERROR: %s^0'):format(result.name, response))
+		end
+	end
+
 	Wait(200)
 	plyState.invBusy = false
 end
