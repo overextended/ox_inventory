@@ -87,7 +87,7 @@ lib.callback.register('ox_inventory:openInventory', function(source, inv, data)
 				right = Inventory(data.id)
 				if not right then
 					local vehicleData = Vehicles[inv]['models'][data.model] or Vehicles[inv][data.class]
-					local plate = shared.trimplate and string.strtrim(data.id:sub(6)) or data.id:sub(6)
+					local plate = server.trimplate and string.strtrim(data.id:sub(6)) or data.id:sub(6)
 
 					if Ox then
 						local vehicle = Ox.GetVehicleFromNetId(data.netid)
