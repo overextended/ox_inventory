@@ -1348,3 +1348,11 @@ RegisterNUICallback('buyItem', function(data, cb)
 
 	cb(response)
 end)
+
+lib.callback.register('ox_inventory:getVehicleData', function(netid)
+	local entity = NetworkGetEntityFromNetworkId(netid)
+
+	if entity then
+		return GetEntityModel(entity), GetVehicleClass(entity)
+	end
+end)
