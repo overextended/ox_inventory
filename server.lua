@@ -91,16 +91,10 @@ lib.callback.register('ox_inventory:openInventory', function(source, inv, data)
 			else
 				return
 			end
-
 		elseif inv == 'policeevidence' then
 			if server.hasGroup(left, shared.police) then
-				data = ('evidence-%s'):format(data)
-				right = Inventory(data)
-				if not right then
-					right = Inventory.Create(data, locale('police_evidence'), inv, 100, 0, 100000, false)
-				end
+				right = Inventory(('evidence-%s'):format(data))
 			end
-
 		elseif inv == 'dumpster' then
 			right = Inventory(data)
 
@@ -113,7 +107,6 @@ lib.callback.register('ox_inventory:openInventory', function(source, inv, data)
 					right = Inventory.Create(data, locale('dumpster'), inv, 15, 0, 100000, false)
 				end
 			end
-
 		elseif inv == 'container' then
 			left.containerSlot = data
 			data = left.items[data]
@@ -125,7 +118,6 @@ lib.callback.register('ox_inventory:openInventory', function(source, inv, data)
 					right = Inventory.Create(data.metadata.container, data.label, inv, data.metadata.size[1], 0, data.metadata.size[2], false)
 				end
 			else left.containerSlot = nil end
-
 		else right = Inventory(data) end
 
 		if right then

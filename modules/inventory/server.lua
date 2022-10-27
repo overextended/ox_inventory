@@ -16,6 +16,8 @@ local function loadInventoryData(data, player)
 			data.type = 'glovebox'
 		elseif data.id:find('^trunk') then
 			data.type = 'trunk'
+		elseif data.id:find('^evidence-') then
+			data.type = 'policeevidence'
 		end
 	end
 
@@ -73,6 +75,8 @@ local function loadInventoryData(data, player)
 				inventory = Inventory.Create(data.id, plate, data.type, storage[1], 0, storage[2], false)
 			end
 		end
+	elseif data.type == 'policeevidence' then
+		inventory = Inventory.Create(data.id, locale('police_evidence'), data.type, 100, 0, 100000, false)
 	else
 		local stash = Stashes[data.id] or Inventory.CustomStash[data.id]
 
