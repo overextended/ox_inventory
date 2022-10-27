@@ -2,33 +2,103 @@ if not lib then return end
 
 local Inventory = {}
 local Inventories = {}
+local Vehicles = data 'vehicles'
 local Stashes = data 'stashes'
 
-local function openStash(data, player)
-	local stash = Stashes[data.id] or Inventory.CustomStash[data.id]
+local GetVehicleNumberPlateText = GetVehicleNumberPlateText
 
-	if stash then
-		if stash.jobs then stash.groups = stash.jobs end
-		if player and stash.groups and not server.hasGroup(player, stash.groups) then return end
+local function loadInventoryData(data, player)
+	local source = source
+	local inventory
 
-		local owner
-
-		if stash.owner then
-			if player and (stash.owner == true or data.owner == true) then
-				owner = player.owner
-			elseif stash.owner then
-				owner = stash.owner or data.owner
-			end
+	if data.id and not data.type then
+		if data.id:find('^glove') then
+			data.type = 'glovebox'
+		elseif data.id:find('^trunk') then
+			data.type = 'trunk'
 		end
+	end
 
-		local inventory = Inventories[owner and ('%s:%s'):format(stash.name, owner) or stash.name]
+	if data.type == 'trunk' or data.type == 'glovebox' then
+		inventory = Inventories[data.id]
 
 		if not inventory then
-			inventory = Inventory.Create(stash.name, stash.label or stash.name, 'stash', stash.slots, 0, stash.weight, owner, nil, stash.groups)
-		end
+			local entity
 
-		return inventory
-	else return false end
+			if data.netid then
+				entity = NetworkGetEntityFromNetworkId(data.netid)
+
+				if not entity then
+					return shared.info('Failed to load vehicle inventory data (no entity exists with given netid).')
+				end
+			else
+				local vehicles = GetAllVehicles()
+
+				for i = 1, #vehicles do
+					local vehicle = vehicles[i]
+					local plate = GetVehicleNumberPlateText(vehicle)
+
+					if data.id:find(plate) then
+						entity = vehicle
+						break
+					end
+				end
+
+				if not entity then
+					return shared.info('Failed to load vehicle inventory data (no entity exists with given plate).')
+				end
+			end
+
+			if not source then
+				source = NetworkGetEntityOwner(entity)
+
+				if not source then
+					return shared.info('Failed to load vehicle inventory data (entity is unowned).')
+				end
+			end
+
+			local model, class = lib.callback.await('ox_inventory:getVehicleData', source, data.netid)
+			local storage = Vehicles[data.type].models[model] or Vehicles[data.type][class]
+			local plate = server.trimplate and string.strtrim(data.id:sub(6)) or data.id:sub(6)
+
+			if Ox then
+				local vehicle = Ox.GetVehicle(entity)
+
+				if vehicle then
+					inventory = Inventory.Create(vehicle.id or vehicle.plate, plate, data.type, storage[1], 0, storage[2], false)
+				end
+			end
+
+			if not inventory then
+				inventory = Inventory.Create(data.id, plate, data.type, storage[1], 0, storage[2], false)
+			end
+		end
+	else
+		local stash = Stashes[data.id] or Inventory.CustomStash[data.id]
+
+		if stash then
+			if stash.jobs then stash.groups = stash.jobs end
+			if player and stash.groups and not server.hasGroup(player, stash.groups) then return end
+
+			local owner
+
+			if stash.owner then
+				if player and (stash.owner == true or data.owner == true) then
+					owner = player.owner
+				elseif stash.owner then
+					owner = stash.owner or data.owner
+				end
+			end
+
+			inventory = Inventories[owner and ('%s:%s'):format(stash.name, owner) or stash.name]
+
+			if not inventory then
+				inventory = Inventory.Create(stash.name, stash.label or stash.name, 'stash', stash.slots, 0, stash.weight, owner, nil, stash.groups)
+			end
+		end
+	end
+
+	return inventory or false
 end
 
 setmetatable(Inventory, {
@@ -37,9 +107,9 @@ setmetatable(Inventory, {
 			return self
 		elseif type(inv) == 'table' then
 			if inv.items then return inv end
-			return openStash(inv, player)
+			return loadInventoryData(inv, player)
 		elseif not Inventories[inv] then
-			return openStash({ id = inv }, player)
+			return loadInventoryData({ id = inv }, player)
 		end
 
 		return Inventories[inv]

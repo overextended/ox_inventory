@@ -60,8 +60,6 @@ end
 exports('setPlayerInventory', server.setPlayerInventory)
 AddEventHandler('ox_inventory:setPlayerInventory', server.setPlayerInventory)
 
-local Vehicles = data 'vehicles'
-
 lib.callback.register('ox_inventory:openInventory', function(source, inv, data)
 	if Inventory.Lock then return false end
 
@@ -86,23 +84,8 @@ lib.callback.register('ox_inventory:openInventory', function(source, inv, data)
 			if right == false then return false end
 		elseif type(data) == 'table' then
 			if data.class and data.model then
-				right = Inventory(data.id)
-				if not right then
-					local vehicleData = Vehicles[inv]['models'][data.model] or Vehicles[inv][data.class]
-					local plate = server.trimplate and string.strtrim(data.id:sub(6)) or data.id:sub(6)
-
-					if Ox then
-						local vehicle = Ox.GetVehicleFromNetId(data.netid)
-
-						if vehicle then
-							right = Inventory.Create(vehicle.id or vehicle.plate, plate, inv, vehicleData[1], 0, vehicleData[2], false)
-						end
-					end
-
-					if not right then
-						right = Inventory.Create(data.id, plate, inv, vehicleData[1], 0, vehicleData[2], false)
-					end
-				end
+				data.type = inv
+				right = Inventory(data)
 			elseif inv == 'drop' then
 				right = Inventory(data.id)
 			else
