@@ -697,10 +697,8 @@ function Inventory.AddItem(inv, item, count, metadata, slot, cb)
 						lib.logger(inv.owner, 'addItem', ('"%s" added %sx %s to "%s"'):format(invokingResource, count, item.name, inv.label))
 					end
 
-					if cb then
-						success = true
-						response = inv.items[toSlot]
-					end
+					success = true
+					response = inv.items[toSlot]
 				else
 					local added = 0
 
@@ -722,14 +720,12 @@ function Inventory.AddItem(inv, item, count, metadata, slot, cb)
 						lib.logger(inv.owner, 'addItem', ('"%s" added %sx %s to "%s"'):format(invokingResource, added, item.name, inv.label))
 					end
 
-					if cb then
-						for i = 1, #toSlot do
-							toSlot[i] = toSlot[i].item
-						end
-
-						success = true
-						response = toSlot
+					for i = 1, #toSlot do
+						toSlot[i] = toSlot[i].item
 					end
+
+					success = true
+					response = toSlot
 				end
 			else
 				response = 'inventory_full'
