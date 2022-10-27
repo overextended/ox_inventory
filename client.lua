@@ -164,12 +164,13 @@ local Animations = data 'animations'
 ---@param cb function?
 local function useItem(data, cb)
 	if invOpen and data.close then client.closeInventory() end
+	local result
 
 	if not invBusy and not PlayerData.dead and not lib.progressActive() and not IsPedRagdoll(cache.ped) and not IsPedFalling(cache.ped) then
 		if currentWeapon and currentWeapon?.timer > 100 then return end
 
 		invBusy = 1
-		local result = lib.callback.await('ox_inventory:useItem', 200, data.name, data.slot, PlayerData.inventory[data.slot].metadata)
+		result = lib.callback.await('ox_inventory:useItem', 200, data.name, data.slot, PlayerData.inventory[data.slot].metadata)
 
 		if not result then
 			Wait(500)
@@ -223,15 +224,18 @@ local function useItem(data, cb)
 				if data.notification then
 					lib.notify({ description = data.notification })
 				end
-
-				if cb then cb(result) end
-				Wait(200)
-				plyState.invBusy = false
-				return
 			end
 		end
 	end
-	if cb then cb(false) end
+
+	if cb then
+		local success, response = pcall(cb, result or false)
+
+		if not success and response then
+			print(('^1An error occurred while calling item "%s" callback!\n^1SCRIPT ERROR: %s^0'):format(result.name, response))
+		end
+	end
+
 	Wait(200)
 	plyState.invBusy = false
 end
@@ -500,7 +504,7 @@ local function registerCommands()
                             plate = client.trimplate and string.strtrim(GetVehicleNumberPlateText(vehicle)) or GetVehicleNumberPlateText(vehicle)
                         end
 
-						client.openInventory('glovebox', {id = 'glove'..plate, class = vehicleClass, model = vehicleHash, netid = NetworkGetNetworkIdFromEntity(vehicle) })
+                        client.openInventory('glovebox', {id = 'glove'..plate, netid = NetworkGetNetworkIdFromEntity(vehicle) })
 
 					while true do
 						Wait(100)
@@ -566,10 +570,10 @@ local function registerCommands()
 						local closeToVehicle = distance < 2 and (open == 5 and (checkVehicle == nil and true or 2) or open == 4)
 
 						if closeToVehicle then
-							local plate = client.trimplate and string.strtrim(GetVehicleNumberPlateText(vehicle)) or GetVehicleNumberPlateText(vehicle)
+							local plate = GetVehicleNumberPlateText(vehicle)
 							TaskTurnPedToFaceCoord(cache.ped, position.x, position.y, position.z, 0)
 							lastVehicle = vehicle
-							client.openInventory('trunk', {id='trunk'..plate, class = vehicleClass, model = vehicleHash, netid = NetworkGetNetworkIdFromEntity(vehicle)})
+							client.openInventory('trunk', {id='trunk'..plate, netid = NetworkGetNetworkIdFromEntity(vehicle)})
 							local timeout = 20
 							repeat Wait(50)
 								timeout -= 1
@@ -1359,6 +1363,14 @@ RegisterNUICallback('buyItem', function(data, cb)
 	end
 
 	cb(response)
+end)
+
+lib.callback.register('ox_inventory:getVehicleData', function(netid)
+	local entity = NetworkGetEntityFromNetworkId(netid)
+
+	if entity then
+		return GetEntityModel(entity), GetVehicleClass(entity)
+	end
 end)
 
 AddEventHandler("ox_inventory:checkSIM", function (data)
