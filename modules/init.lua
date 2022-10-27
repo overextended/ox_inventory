@@ -2,7 +2,7 @@ IsDuplicityVersion = IsDuplicityVersion()
 lib.locale()
 
 -- Don't be an idiot and change these convar getters (yes, people do that).
--- https://overextended.github.io/docs/ox_inventory/config
+-- https://overextended.github.io/docs/ox_inventory/Getting%20Started/config
 
 shared = {
 	resource = GetCurrentResourceName(),
