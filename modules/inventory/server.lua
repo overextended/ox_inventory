@@ -11,7 +11,7 @@ local function loadInventoryData(data, player)
 	local source = source
 	local inventory
 
-	if data.id and not data.type then
+	if not data.type then
 		if data.id:find('^glove') then
 			data.type = 'glovebox'
 		elseif data.id:find('^trunk') then
@@ -110,13 +110,10 @@ setmetatable(Inventory, {
 		if not inv then
 			return self
 		elseif type(inv) == 'table' then
-			if inv.items then return inv end
-			return loadInventoryData(inv, player)
-		elseif not Inventories[inv] then
-			return loadInventoryData({ id = inv }, player)
+			return inv.items and inv or loadInventoryData(inv, player)
 		end
 
-		return Inventories[inv]
+		return Inventories[inv] or loadInventoryData({ id = inv }, player)
 	end
 })
 
