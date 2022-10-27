@@ -11,11 +11,13 @@ local function loadInventoryData(data, player)
 	local source = source
 	local inventory
 
-	if data.id and not data.type then
+	if not data.type then
 		if data.id:find('^glove') then
 			data.type = 'glovebox'
 		elseif data.id:find('^trunk') then
 			data.type = 'trunk'
+		elseif data.id:find('^evidence-') then
+			data.type = 'policeevidence'
 		end
 	end
 
@@ -81,6 +83,8 @@ local function loadInventoryData(data, player)
 				inventory = Inventory.Create(data.id, label, data.type, storage[1], 0, storage[2], false)
 			end
 		end
+	elseif data.type == 'policeevidence' then
+		inventory = Inventory.Create(data.id, locale('police_evidence'), data.type, 100, 0, 100000, false)
 	else
 		local stash = Stashes[data.id] or Inventory.CustomStash[data.id]
 
@@ -114,25 +118,35 @@ setmetatable(Inventory, {
 		if not inv then
 			return self
 		elseif type(inv) == 'table' then
-			if inv.items then return inv end
-			return loadInventoryData(inv, player)
-		elseif not Inventories[inv] then
-			return loadInventoryData({ id = inv }, player)
+			return inv.items and inv or loadInventoryData(inv, player)
 		end
 
-		return Inventories[inv]
+		return Inventories[inv] or loadInventoryData({ id = inv }, player)
 	end
 })
 
-exports('Inventory', function(id, owner)
-	if not id then return Inventory end
-	local type = type(id)
+---@param inv string | number | table
+---@param owner? string | number
+---@return table?
+local function getInventory(inv, owner)
+	if not inv then return Inventory end
+	local type = type(inv)
 
 	if type == 'table' or type == 'number' then
-		return Inventory(id)
+		return Inventory(inv)
 	else
-		return Inventory({ id = id, owner = owner })
+		return Inventory({ id = inv, owner = owner })
 	end
+end
+
+exports('Inventory', getInventory)
+exports('GetInventory', getInventory)
+
+---@param inv string | number | table
+---@param owner? string | number
+---@return table?
+exports('GetInventoryItems', function(inv, owner)
+	return getInventory(inv, owner)?.items
 end)
 
 ---@param inv table | string | number
