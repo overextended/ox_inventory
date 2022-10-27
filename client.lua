@@ -488,7 +488,7 @@ local function registerCommands()
 					if (checkVehicle == 0 or checkVehicle == 2) or (not Vehicles.glovebox[vehicleClass] and not Vehicles.glovebox.models[vehicleHash]) then return end
 
 					local plate = GetVehicleNumberPlateText(vehicle)
-					client.openInventory('glovebox', {id = 'glove'..plate, class = vehicleClass, model = vehicleHash, netid = NetworkGetNetworkIdFromEntity(vehicle) })
+					client.openInventory('glovebox', {id = 'glove'..plate, netid = NetworkGetNetworkIdFromEntity(vehicle) })
 
 					while true do
 						Wait(100)
@@ -556,7 +556,7 @@ local function registerCommands()
 							local plate = GetVehicleNumberPlateText(vehicle)
 							TaskTurnPedToFaceCoord(cache.ped, position.x, position.y, position.z, 0)
 							lastVehicle = vehicle
-							client.openInventory('trunk', {id='trunk'..plate, class = vehicleClass, model = vehicleHash, netid = NetworkGetNetworkIdFromEntity(vehicle)})
+							client.openInventory('trunk', {id='trunk'..plate, netid = NetworkGetNetworkIdFromEntity(vehicle)})
 							local timeout = 20
 							repeat Wait(50)
 								timeout -= 1
