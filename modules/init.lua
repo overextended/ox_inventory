@@ -10,7 +10,6 @@ shared = {
 	locale = GetConvar('inventory:locale', 'en'),
 	playerslots = GetConvarInt('inventory:slots', 50),
 	playerweight = GetConvarInt('inventory:weight', 30000),
-	trimplate = GetConvar('inventory:trimplate', 'true') == 'true',
 	qtarget = GetConvar('inventory:qtarget', 'false') == 'true',
 	police = json.decode(GetConvar('inventory:police', '["police", "sheriff"]')),
 }
@@ -32,9 +31,9 @@ if IsDuplicityVersion then
 	server = {
 		loglevel = GetConvarInt('inventory:loglevel', 1),
 		randomprices = GetConvar('inventory:randomprices', 'false') == 'true',
-		versioncheck = GetConvar('inventory:versioncheck', 'true') == 'true',
 		randomloot = GetConvar('inventory:randomloot', 'true') == 'true',
 		evidencegrade = GetConvarInt('inventory:evidencegrade', 2),
+		trimplate = GetConvar('inventory:trimplate', 'true') == 'true',
 		vehicleloot = json.decode(GetConvar('inventory:vehicleloot', [[
 			[
 				["cola", 1, 1],
@@ -129,7 +128,7 @@ local success, msg = lib.checkDependency('oxmysql', '2.4.0')
 
 if not success then return spamError(msg) end
 
-success, msg = lib.checkDependency('ox_lib', '2.14.0')
+success, msg = lib.checkDependency('ox_lib', '2.14.2')
 
 if not success then spamError(msg) end
 
