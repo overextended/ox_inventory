@@ -117,15 +117,28 @@ setmetatable(Inventory, {
 	end
 })
 
-exports('Inventory', function(id, owner)
-	if not id then return Inventory end
-	local type = type(id)
+---@param inv string | number | table
+---@param owner? string | number
+---@return table?
+local function getInventory(inv, owner)
+	if not inv then return Inventory end
+	local type = type(inv)
 
 	if type == 'table' or type == 'number' then
-		return Inventory(id)
+		return Inventory(inv)
 	else
-		return Inventory({ id = id, owner = owner })
+		return Inventory({ id = inv, owner = owner })
 	end
+end
+
+exports('Inventory', getInventory)
+exports('GetInventory', getInventory)
+
+---@param inv string | number | table
+---@param owner? string | number
+---@return table?
+exports('GetInventoryItems', function(inv, owner)
+	return getInventory(inv, owner)?.items
 end)
 
 ---@param inv table | string | number
