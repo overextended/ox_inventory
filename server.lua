@@ -64,7 +64,7 @@ lib.callback.register('ox_inventory:openInventory', function(source, inv, data)
 	if Inventory.Lock then return false end
 
 	local left = Inventory(source)
-	local right = left.open and Inventory(left.open)
+	local right = left.open and left.open ~= true and Inventory(left.open) or nil
 
 	if right then
 		if right.open ~= source then return end
