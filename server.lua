@@ -83,7 +83,7 @@ lib.callback.register('ox_inventory:openInventory', function(source, inv, data)
 			right = Inventory(data, left)
 			if right == false then return false end
 		elseif type(data) == 'table' then
-			if data.class and data.model then
+			if data.netid then
 				data.type = inv
 				right = Inventory(data)
 			elseif inv == 'drop' then
