@@ -457,9 +457,11 @@ local function registerCommands()
 						return client.openInventory(closest.inv or 'drop', { id = closest.invId, type = closest.type })
 					end
 				end
+
+				return client.openInventory()
 			end
 
-			client.openInventory()
+			client.closeInventory()
 		end
 	})
 
@@ -669,6 +671,8 @@ function client.closeInventory(server)
 		SendNUIMessage({ action = 'closeInventory' })
 		SetInterval(client.interval, 200)
 		Wait(200)
+
+		if invOpen ~= nil then return end
 
 		if not server and currentInventory then
 			TriggerServerEvent('ox_inventory:closeInventory')
