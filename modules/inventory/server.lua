@@ -11,7 +11,7 @@ local function loadInventoryData(data, player)
 	local source = source
 	local inventory
 
-	if not data.type then
+	if not data.type and type(data.id) == 'string' then
 		if data.id:find('^glove') then
 			data.type = 'glovebox'
 		elseif data.id:find('^trunk') then
