@@ -33,7 +33,7 @@ Citizen.CreateThreadNow(function()
 		playerTable = 'characters'
 		playerColumn = 'character_id'
 		vehicleTable = 'vehicles'
-		vehicleColumn = 'plate'
+		vehicleColumn = 'id'
 	end
 
 	for k, v in pairs(Query) do
