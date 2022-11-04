@@ -297,7 +297,7 @@ function Items.Metadata(inv, item, metadata, count)
 			if degrade then
 				metadata.durability = os.time()+(degrade * 60)
 				metadata.degrade = degrade
-			elseif itemData.consume and itemData.consume < 1 then
+			elseif itemData.consume and itemData.consume ~= 0 and itemData.consume < 1 then
 				metadata.durability = 100
 			end
 		end
