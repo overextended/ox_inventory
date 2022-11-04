@@ -8,6 +8,10 @@ function TriggerEventHooks(event, payload)
 
     if hooks then
         for i = 1, #hooks do
+			if hook.print then
+				shared.info(('Triggering event hook "%s:%s:%s".'):format(hook.resource, event, i))
+			end
+
 			local start = microtime()
             local _, response = pcall(hooks[i], payload)
 			local executionTime = microtime() - start
@@ -25,12 +29,19 @@ function TriggerEventHooks(event, payload)
     return true
 end
 
-exports('registerHook', function(event, cb)
+exports('registerHook', function(event, cb, options)
     if not eventHooks[event] then
         eventHooks[event] = {}
     end
 
     rawset(cb, 'resource', GetInvokingResource())
+
+	if options then
+		for k, v in pairs(options) do
+			rawset(cb, k, v)
+		end
+	end
+
     eventHooks[event][#eventHooks[event] + 1] = cb
 end)
 
