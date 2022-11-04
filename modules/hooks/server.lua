@@ -7,7 +7,38 @@ function TriggerEventHooks(event, payload)
     local hooks = eventHooks[event]
 
     if hooks then
+		local fromInventory = payload.fromInventory and tostring(server.inventory(payload.fromInventory).id)
+		local toInventory = payload.toInventory and tostring(server.inventory(payload.toInventory).id)
+
         for i = 1, #hooks do
+			local hook = hooks[i]
+			local itemFilter = hook.itemFilter
+
+			if itemFilter then
+				if not itemFilter[payload.fromSlot.name] then
+					if type(payload.toSlot) ~= 'table' or not itemFilter[payload.toSlot.name] then
+						goto skipLoop
+					end
+				end
+			end
+
+			local inventoryFilter = hook.inventoryFilter
+
+			if inventoryFilter then
+				local matchedPattern
+
+				for j = 1, #inventoryFilter do
+					local pattern = inventoryFilter[j]
+
+					if fromInventory:match(pattern) or toInventory:match(pattern) then
+						matchedPattern = true
+						break
+					end
+				end
+
+				if not matchedPattern then goto skipLoop end
+			end
+
 			if hook.print then
 				shared.info(('Triggering event hook "%s:%s:%s".'):format(hook.resource, event, i))
 			end
@@ -23,6 +54,8 @@ function TriggerEventHooks(event, payload)
             if response == false then
                 return false
             end
+
+			::skipLoop::
         end
     end
 
