@@ -1182,14 +1182,26 @@ lib.callback.register('ox_inventory:swapItems', function(source, data)
 
 					local container = (not sameInventory and playerInventory.containerSlot) and (fromInventory.type == 'container' and fromInventory or toInventory)
 					local containerItem = container and playerInventory.items[playerInventory.containerSlot]
+					local hookPayload = {
+						fromInventory = fromInventory.id,
+						fromSlot = fromData,
+						fromType = fromInventory.type,
+						toInventory = toInventory.id,
+						toSlot = toData or data.toSlot,
+						toType = toInventory.type,
+						moveAmount = data.count,
+					}
 
 					if toData and ((toData.name ~= fromData.name) or not toData.stack or (not table.matches(toData.metadata, fromData.metadata))) then
 						-- Swap items
 						local toWeight = not sameInventory and (toInventory.weight - toData.weight + fromData.weight)
 						local fromWeight = not sameInventory and (fromInventory.weight + toData.weight - fromData.weight)
+						hookPayload.action = 'swap'
 
 						if not sameInventory then
 							if (toWeight <= toInventory.maxWeight and fromWeight <= fromInventory.maxWeight) then
+								if not TriggerEventHooks('swapItems', hookPayload) then return end
+
 								fromInventory.weight = fromWeight
 								toInventory.weight = toWeight
 
@@ -1220,7 +1232,11 @@ lib.callback.register('ox_inventory:swapItems', function(source, data)
 									lib.logger(playerInventory.owner, 'swapSlots', ('%sx %s transferred from "%s" to "%s" for %sx %s'):format(fromData.count, fromData.name, fromInventory.owner and fromInventory.label or fromInventory.id, toInventory.owner and toInventory.label or toInventory.id, toData.count, toData.name))
 								end
 							else return false, 'cannot_carry' end
-						else toData, fromData = Inventory.SwapSlots(fromInventory, toInventory, data.fromSlot, data.toSlot) end
+						else
+							if not TriggerEventHooks('swapItems', hookPayload) then return end
+
+							toData, fromData = Inventory.SwapSlots(fromInventory, toInventory, data.fromSlot, data.toSlot)
+						end
 
 					elseif toData and toData.name == fromData.name and table.matches(toData.metadata, fromData.metadata) then
 						-- Stack items
@@ -1230,6 +1246,14 @@ lib.callback.register('ox_inventory:swapItems', function(source, data)
 						local totalWeight = toInventory.weight - toData.weight + toSlotWeight
 
 						if fromInventory.type == 'container' or sameInventory or totalWeight <= toInventory.maxWeight then
+							hookPayload.action = 'stack'
+
+							if not TriggerEventHooks('swapItems', hookPayload) then
+								toData.count -= data.count
+								fromData.count += data.count
+								return
+							end
+
 							local fromSlotWeight = Inventory.SlotWeight(Items(fromData.name), fromData)
 							toData.weight = toSlotWeight
 
@@ -1266,8 +1290,13 @@ lib.callback.register('ox_inventory:swapItems', function(source, data)
 						toData.weight = Inventory.SlotWeight(Items(toData.name), toData)
 
 						if fromInventory.type == 'container' or sameInventory or (toInventory.weight + toData.weight <= toInventory.maxWeight) then
+							hookPayload.action = 'move'
+
+							if not TriggerEventHooks('swapItems', hookPayload) then return end
+
 							if not sameInventory then
 								local toContainer = toInventory.type == 'container'
+
 								if container then
 									if toContainer and containerItem then
 										local whitelist = Items.containers[containerItem.name]?.whitelist
@@ -1303,7 +1332,6 @@ lib.callback.register('ox_inventory:swapItems', function(source, data)
 							if fromData.count > 0 then
 								toData.metadata = table.clone(toData.metadata)
 							end
-
 						else return false, 'cannot_carry' end
 					end
 
