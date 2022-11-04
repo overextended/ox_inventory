@@ -1,13 +1,20 @@
 if not lib then return end
 
 local eventHooks = {}
+local microtime = os.microtime
 
 function TriggerEventHooks(event, payload)
     local hooks = eventHooks[event]
 
     if hooks then
         for i = 1, #hooks do
+			local start = microtime()
             local _, response = pcall(hooks[i], payload)
+			local executionTime = microtime() - start
+
+			if executionTime >= 100000 then
+				shared.warning(('Execution of event hook "%s:%s:%s" took %.2fms.'):format(hook.resource, event, i, executionTime / 1e3))
+			end
 
             if response == false then
                 return false
