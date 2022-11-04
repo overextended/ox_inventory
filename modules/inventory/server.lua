@@ -1183,6 +1183,7 @@ lib.callback.register('ox_inventory:swapItems', function(source, data)
 					local container = (not sameInventory and playerInventory.containerSlot) and (fromInventory.type == 'container' and fromInventory or toInventory)
 					local containerItem = container and playerInventory.items[playerInventory.containerSlot]
 					local hookPayload = {
+						source = source,
 						fromInventory = fromInventory.id,
 						fromSlot = fromData,
 						fromType = fromInventory.type,
