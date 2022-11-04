@@ -238,6 +238,11 @@ lib.callback.register('ox_inventory:useItem', function(source, itemName, slot, m
 					TriggerClientEvent('ox_lib:notify', source, { type = 'error', description = locale('item_not_enough', item.name) })
 				end
 			elseif server.UseItem then
+				-- This is used to call an external useItem function, i.e. ESX.UseItem / QBCore.Functions.CanUseItem
+				-- If an error is being thrown on item use there is no internal solution. We previously kept a list
+				-- of usable items which led to issues when restarting resources (for obvious reasons), but config
+				-- developers complained the inventory broke their items. Safely invoking registered item callbacks
+				-- should resolve issues, i.e. https://github.com/esx-framework/esx-legacy/commit/9fc382bbe0f5b96ff102dace73c424a53458c96e
 				pcall(server.UseItem, source, data.name, data)
 			end
 		end
