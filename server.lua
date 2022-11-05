@@ -125,8 +125,8 @@ lib.callback.register('ox_inventory:openInventory', function(source, inv, data)
 
 			if not TriggerEventHooks('openInventory', {
 				source = source,
-				id = right.id,
-				type = right.type,
+				inventoryId = right.id,
+				inventoryType = right.type,
 			}) then return end
 
 			local otherplayer = right.type == 'player'

@@ -7,8 +7,8 @@ function TriggerEventHooks(event, payload)
     local hooks = eventHooks[event]
 
     if hooks then
-		local fromInventory = payload.fromInventory and tostring(server.inventory(payload.fromInventory).id) or payload.id and tostring(payload.id)
-		local toInventory = payload.toInventory and tostring(server.inventory(payload.toInventory).id)
+		local fromInventory = payload.fromInventory and tostring(payload.fromInventory) or payload.inventoryId and tostring(payload.inventoryId)
+		local toInventory = payload.toInventory and tostring(payload.toInventory)
 
         for i = 1, #hooks do
 			local hook = hooks[i]
