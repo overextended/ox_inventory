@@ -7,7 +7,7 @@ function TriggerEventHooks(event, payload)
     local hooks = eventHooks[event]
 
     if hooks then
-		local fromInventory = payload.fromInventory and tostring(server.inventory(payload.fromInventory).id)
+		local fromInventory = payload.fromInventory and tostring(server.inventory(payload.fromInventory).id) or payload.id and tostring(payload.id)
 		local toInventory = payload.toInventory and tostring(server.inventory(payload.toInventory).id)
 
         for i = 1, #hooks do
@@ -30,7 +30,7 @@ function TriggerEventHooks(event, payload)
 				for j = 1, #inventoryFilter do
 					local pattern = inventoryFilter[j]
 
-					if fromInventory:match(pattern) or toInventory:match(pattern) then
+					if fromInventory:match(pattern) or (toInventory and toInventory:match(pattern)) then
 						matchedPattern = true
 						break
 					end
@@ -51,13 +51,21 @@ function TriggerEventHooks(event, payload)
 				shared.warning(('Execution of event hook "%s:%s:%s" took %.2fms.'):format(hook.resource, event, i, executionTime / 1e3))
 			end
 
-            if response == false then
+			if event == 'createItem' then
+				if type(response) == 'table' then
+					payload.metadata = response
+				end
+			elseif response == false then
                 return false
             end
 
 			::skipLoop::
         end
     end
+
+	if event == 'createItem' then
+		return payload.metadata
+	end
 
     return true
 end
