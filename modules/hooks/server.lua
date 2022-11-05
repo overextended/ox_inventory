@@ -15,7 +15,9 @@ function TriggerEventHooks(event, payload)
 			local itemFilter = hook.itemFilter
 
 			if itemFilter then
-				if not itemFilter[payload.fromSlot.name] then
+				local itemName = payload.fromSlot?.name or payload.item?.name
+
+				if not itemName or not itemFilter[itemName] then
 					if type(payload.toSlot) ~= 'table' or not itemFilter[payload.toSlot.name] then
 						goto skipLoop
 					end
