@@ -123,6 +123,12 @@ lib.callback.register('ox_inventory:openInventory', function(source, inv, data)
 		if right then
 			if right.open or (right.groups and not server.hasGroup(left, right.groups)) then return end
 
+			if not TriggerEventHooks('openInventory', {
+				source = source,
+				id = right.id,
+				type = right.type,
+			}) then return end
+
 			local otherplayer = right.type == 'player'
 			if otherplayer then right.coords = GetEntityCoords(GetPlayerPed(right.id)) end
 
@@ -132,7 +138,6 @@ lib.callback.register('ox_inventory:openInventory', function(source, inv, data)
 				if otherplayer then
 					right:set('type', 'otherplayer')
 				end
-
 			else return end
 		else return end
 
