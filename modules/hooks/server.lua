@@ -67,11 +67,14 @@ exports('registerHook', function(event, cb, options)
         eventHooks[event] = {}
     end
 
-    rawset(cb, 'resource', GetInvokingResource())
+	local mt = getmetatable(cb)
+	mt.__index = nil
+	mt.__newindex = nil
+   	cb.resource = GetInvokingResource()
 
 	if options then
 		for k, v in pairs(options) do
-			rawset(cb, k, v)
+			cb[k] = v
 		end
 	end
 
