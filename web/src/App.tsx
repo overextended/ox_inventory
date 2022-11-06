@@ -12,57 +12,66 @@ import DragPreview from './components/utils/DragPreview';
 import { fetchNui } from './utils/fetchNui';
 import { useDragDropManager } from 'react-dnd';
 import KeyPress from './components/utils/KeyPress';
-import CraftingComponent from './components/crafting';
 
-// debugData([
-//   {
-//     action: 'setupInventory',
-//     data: {
-//       leftInventory: {
-//         id: 'test',
-//         type: 'player',
-//         slots: 50,
-//         name: 'Bob Smith',
-//         weight: 3000,
-//         maxWeight: 5000,
-//         items: [
-//           {
-//             slot: 1,
-//             name: 'water',
-//             weight: 3000,
-//             metadata: {
-//               description: `name: Svetozar Miletic  \n Gender: Male`,
-//               ammo: 3,
-//               mustard: '60%',
-//               ketchup: '30%',
-//               mayo: '10%',
-//             },
-//             count: 5,
-//           },
-//           { slot: 2, name: 'money', weight: 0, count: 32000 },
-//           { slot: 3, name: 'cola', weight: 100, count: 1, metadata: { type: 'Special' } },
-//           {
-//             slot: 4,
-//             name: 'water',
-//             weight: 100,
-//             count: 1,
-//             metadata: { description: 'Generic item description' },
-//           },
-//           { slot: 5, name: 'water', weight: 100, count: 1 },
-//         ],
-//       },
-//       rightInventory: {
-//         id: 'shop',
-//         type: 'shop',
-//         slots: 50,
-//         name: 'Bob Smith',
-//         weight: 3000,
-//         maxWeight: 5000,
-//         items: [{ slot: 1, name: 'water', weight: 500, price: 300 }],
-//       },
-//     },
-//   },
-// ]);
+debugData([
+  {
+    action: 'setupInventory',
+    data: {
+      leftInventory: {
+        id: 'test',
+        type: 'player',
+        slots: 50,
+        name: 'Bob Smith',
+        weight: 3000,
+        maxWeight: 5000,
+        items: [
+          {
+            slot: 1,
+            name: 'water',
+            weight: 3000,
+            metadata: {
+              description: `name: Svetozar Miletic  \n Gender: Male`,
+              ammo: 3,
+              mustard: '60%',
+              ketchup: '30%',
+              mayo: '10%',
+            },
+            count: 5,
+          },
+          { slot: 2, name: 'money', weight: 0, count: 32000 },
+          { slot: 3, name: 'cola', weight: 100, count: 1, metadata: { type: 'Special' } },
+          {
+            slot: 4,
+            name: 'water',
+            weight: 100,
+            count: 1,
+            metadata: { description: 'Generic item description' },
+          },
+          { slot: 5, name: 'water', weight: 100, count: 1 },
+        ],
+      },
+      rightInventory: {
+        id: 'shop',
+        type: 'crafting',
+        slots: 50,
+        name: 'Bob Smith',
+        weight: 3000,
+        maxWeight: 5000,
+        items: [
+          {
+            slot: 1,
+            name: 'armour',
+            weight: 500,
+            price: 300,
+            metadata: {
+              description: 'Body armour that stops small caliber bullets',
+            },
+          },
+        ],
+      },
+    },
+  },
+]);
 
 const App: React.FC = () => {
   const dispatch = useAppDispatch();
@@ -89,7 +98,6 @@ const App: React.FC = () => {
 
   return (
     <Box sx={{ height: '100%', width: '100%', color: 'white' }}>
-      <CraftingComponent />
       <InventoryComponent />
       <DragPreview />
       <KeyPress />
