@@ -3,6 +3,30 @@ if not lib then return end
 local eventHooks = {}
 local microtime = os.microtime
 
+local function itemFilter(filter, item, secondItem)
+	local itemName = item?.name
+
+	if not itemName or not filter[itemName] then
+		if type(secondItem) ~= 'table' or not filter[secondItem.name] then
+			return false
+		end
+	end
+
+	return true
+end
+
+local function inventoryFilter(filter, inventory, secondInventory)
+	for i = 1, #filter do
+		local pattern = filter[i]
+
+		if inventory:match(pattern) or (secondInventory and secondInventory:match(pattern)) then
+			return true
+		end
+	end
+
+	return false
+end
+
 function TriggerEventHooks(event, payload)
     local hooks = eventHooks[event]
 
@@ -12,33 +36,13 @@ function TriggerEventHooks(event, payload)
 
         for i = 1, #hooks do
 			local hook = hooks[i]
-			local itemFilter = hook.itemFilter
 
-			if itemFilter then
-				local itemName = payload.fromSlot?.name or payload.item?.name
-
-				if not itemName or not itemFilter[itemName] then
-					if type(payload.toSlot) ~= 'table' or not itemFilter[payload.toSlot.name] then
-						goto skipLoop
-					end
-				end
+			if hook.itemFilter and not itemFilter(hook.itemFilter, payload.fromSlot or payload.item, payload.toSlot) then
+				goto skipLoop
 			end
 
-			local inventoryFilter = hook.inventoryFilter
-
-			if inventoryFilter then
-				local matchedPattern
-
-				for j = 1, #inventoryFilter do
-					local pattern = inventoryFilter[j]
-
-					if fromInventory:match(pattern) or (toInventory and toInventory:match(pattern)) then
-						matchedPattern = true
-						break
-					end
-				end
-
-				if not matchedPattern then goto skipLoop end
+			if hook.inventoryFilter and not inventoryFilter(hook.inventoryFilter, fromInventory, toInventory) then
+				goto skipLoop
 			end
 
 			if hook.print then
