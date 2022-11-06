@@ -41,7 +41,7 @@ CreateThread(function()
 	Inventory = server.inventory
 end)
 
-local function playerDropped(source)
+local function playerDropped(reason)
 	local inv = Inventory(source)
 
 	if inv then
