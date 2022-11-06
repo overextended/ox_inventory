@@ -55,7 +55,7 @@ local function playerDropped(source)
 			db.savePlayer(inv.owner, json.encode(inv:minimal()))
 		end
 
-		Inventory.Remove(source)
+		Inventory.Remove(inv)
 	end
 end
 

@@ -154,7 +154,7 @@ function Inventory.Set(inv, k, v)
 				if inv.player then
 					inv.type = 'player'
 				elseif inv.type == 'drop' and not next(inv.items) then
-					return Inventory.Remove(inv.id, inv.type)
+					return Inventory.Remove(inv)
 				else
 					inv.time = os.time()
 				end
@@ -367,16 +367,18 @@ function Inventory.Create(id, label, invType, slots, weight, maxWeight, owner, i
 		Inventories[self.id] = self
 		return Inventories[self.id]
 	end
-end
+---@param inv table | string | number
+function Inventory.Remove(inv)
+	inv = Inventory(inv)
 
----@param id string|number
----@param type string
-function Inventory.Remove(id, type)
-	if type == 'drop' then
-		TriggerClientEvent('ox_inventory:removeDrop', -1, id)
-		Inventory.Drops[id] = nil
+	if inv then
+		if inv.type == 'drop' then
+			TriggerClientEvent('ox_inventory:removeDrop', -1, inv.id)
+			Inventory.Drops[inv.id] = nil
+		end
+
+		Inventories[inv.id] = nil
 	end
-	Inventories[id] = nil
 end
 
 ---Update the internal reference to vehicle stashes. Does not trigger a save or update the database.
@@ -1578,7 +1580,7 @@ SetInterval(function()
 			end
 
 			if not inv.player and (inv.datastore or inv.owner) and time - inv.time >= 3000 then
-				Inventory.Remove(inv.id, inv.type)
+				Inventory.Remove(inv)
 			end
 		end
 	end
