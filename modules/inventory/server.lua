@@ -1654,18 +1654,27 @@ end)
 RegisterServerEvent('ox_inventory:giveItem', function(slot, target, count)
 	local fromInventory = Inventories[source]
 	local toInventory = Inventories[target]
+
 	if count <= 0 then count = 1 end
-	if toInventory.type == 'player' then
+
+	if toInventory?.type == 'player' then
 		local data = fromInventory.items[slot]
 		local item = Items(data.name)
-		if not toInventory.open and Inventory.CanCarryItem(toInventory, item, count, data.metadata) then
-			if data and data.count >= count then
-				Inventory.RemoveItem(fromInventory, item, count, data.metadata, slot)
-				Inventory.AddItem(toInventory, item, count, data.metadata)
 
-				if server.loglevel > 0 then
-					lib.logger(fromInventory.owner, 'giveItem', ('"%s" gave %sx %s to "%s"'):format(fromInventory.label, count, data.name, toInventory.label))
-				end
+		if not toInventory.open and data and data.count >= count and Inventory.CanCarryItem(toInventory, item, count, data.metadata) and TriggerEventHooks('swapItems', {
+			source = source,
+			fromInventory = fromInventory.id,
+			fromType = fromInventory.type,
+			toInventory = toInventory.id,
+			toType = toInventory.type,
+			count = data.count,
+			action = 'give',
+		}) then
+			Inventory.RemoveItem(fromInventory, item, count, data.metadata, slot)
+			Inventory.AddItem(toInventory, item, count, data.metadata)
+
+			if server.loglevel > 0 then
+				lib.logger(fromInventory.owner, 'giveItem', ('"%s" gave %sx %s to "%s"'):format(fromInventory.label, count, data.name, toInventory.label))
 			end
 		else
 			TriggerClientEvent('ox_lib:notify', source, { type = 'error', description = locale('cannot_give', count, data.label) })
