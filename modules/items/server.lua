@@ -307,6 +307,17 @@ function Items.Metadata(inv, item, metadata, count)
 		count = 1
 	end
 
+	local response = TriggerEventHooks('createItem', {
+		inventoryId = inv and inv.id,
+		metadata = metadata,
+		item = item,
+		count = count,
+	})
+
+	if type(response) == 'table' then
+		metadata = response
+	end
+
 	return metadata, count
 end
 
