@@ -308,6 +308,9 @@ function Inventory.CalculateWeight(items)
 	return weight
 end
 
+-- This should be handled by frameworks, but sometimes isn't or is exploitable in some way.
+local activeIdentifiers = {}
+
 ---@param id string|number
 ---@param label string|nil
 ---@param invType string
@@ -319,54 +322,62 @@ end
 --- This should only be utilised internally!
 --- To create a stash, please use `exports.ox_inventory:RegisterStash` instead.
 function Inventory.Create(id, label, invType, slots, weight, maxWeight, owner, items, groups)
-	if maxWeight then
-		local self = {
-			id = id,
-			label = label or id,
-			type = invType,
-			slots = slots,
-			weight = weight,
-			maxWeight = maxWeight,
-			owner = owner,
-			items = type(items) == 'table' and items,
-			open = false,
-			set = Inventory.Set,
-			get = Inventory.Get,
-			minimal = minimal,
-			time = os.time(),
-			groups = groups,
-		}
+	if invType == 'player' then
+		if activeIdentifiers[owner] then
+			DropPlayer(tostring(id), ("Character identifier '%s' is already active."):format(owner))
+		end
 
-		if invType == 'drop' then
-			self.datastore = true
+		activeIdentifiers[owner] = 1
+	end
+
+	local self = {
+		id = id,
+		label = label or id,
+		type = invType,
+		slots = slots,
+		weight = weight,
+		maxWeight = maxWeight or shared.playerweight,
+		owner = owner,
+		items = type(items) == 'table' and items,
+		open = false,
+		set = Inventory.Set,
+		get = Inventory.Get,
+		minimal = minimal,
+		time = os.time(),
+		groups = groups,
+	}
+
+	if invType == 'drop' then
+		self.datastore = true
+	else
+		self.changed = false
+
+		if invType ~= 'glovebox' and invType ~= 'trunk' then
+			self.dbId = id
+
+			if invType ~= 'player' and owner and type(owner) ~= 'boolean' then
+				self.id = ('%s:%s'):format(self.id, owner)
+			end
 		else
-			self.changed = false
-
-			if invType ~= 'glovebox' and invType ~= 'trunk' then
+			if Ox then
 				self.dbId = id
-
-				if invType ~= 'player' and owner and type(owner) ~= 'boolean' then
-					self.id = ('%s:%s'):format(self.id, owner)
-				end
+				self.id = (invType == 'glovebox' and 'glove' or invType)..label
 			else
-				if Ox then
-					self.dbId = id
-					self.id = (invType == 'glovebox' and 'glove' or invType)..label
-				else
-					self.dbId = label
-				end
+				self.dbId = label
 			end
 		end
-
-		if not items then
-			self.items, self.weight, self.datastore = Inventory.Load(self.dbId, invType, owner)
-		elseif weight == 0 and next(items) then
-			self.weight = Inventory.CalculateWeight(items)
-		end
-
-		Inventories[self.id] = self
-		return Inventories[self.id]
 	end
+
+	if not items then
+		self.items, self.weight, self.datastore = Inventory.Load(self.dbId, invType, owner)
+	elseif weight == 0 and next(items) then
+		self.weight = Inventory.CalculateWeight(items)
+	end
+
+	Inventories[self.id] = self
+	return Inventories[self.id]
+end
+
 ---@param inv table | string | number
 function Inventory.Remove(inv)
 	inv = Inventory(inv)
@@ -375,6 +386,8 @@ function Inventory.Remove(inv)
 		if inv.type == 'drop' then
 			TriggerClientEvent('ox_inventory:removeDrop', -1, inv.id)
 			Inventory.Drops[inv.id] = nil
+		elseif inv.type == 'player' then
+			activeIdentifiers[inv.owner] = nil
 		end
 
 		Inventories[inv.id] = nil

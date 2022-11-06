@@ -51,11 +51,14 @@ function server.setPlayerInventory(player, data)
 
 	player.source = tonumber(player.source)
 	local inv = Inventory.Create(player.source, player.name, 'player', shared.playerslots, totalWeight, shared.playerweight, player.identifier, inventory)
-	inv.player = server.setPlayerData(player)
-	inv.player.ped = GetPlayerPed(player.source)
 
-	if server.syncInventory then server.syncInventory(inv) end
-	TriggerClientEvent('ox_inventory:setPlayerInventory', player.source, Inventory.Drops, inventory, totalWeight, inv.player, player.source)
+	if inv then
+		inv.player = server.setPlayerData(player)
+		inv.player.ped = GetPlayerPed(player.source)
+
+		if server.syncInventory then server.syncInventory(inv) end
+		TriggerClientEvent('ox_inventory:setPlayerInventory', player.source, Inventory.Drops, inventory, totalWeight, inv.player, player.source)
+	end
 end
 exports('setPlayerInventory', server.setPlayerInventory)
 AddEventHandler('ox_inventory:setPlayerInventory', server.setPlayerInventory)
