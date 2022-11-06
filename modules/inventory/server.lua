@@ -1205,7 +1205,7 @@ lib.callback.register('ox_inventory:swapItems', function(source, data)
 						toInventory = toInventory.id,
 						toSlot = toData or data.toSlot,
 						toType = toInventory.type,
-						moveAmount = data.count,
+						count = data.count,
 					}
 
 					if toData and ((toData.name ~= fromData.name) or not toData.stack or (not table.matches(toData.metadata, fromData.metadata))) then
