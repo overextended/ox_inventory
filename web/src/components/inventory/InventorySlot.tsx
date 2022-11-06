@@ -97,7 +97,7 @@ const InventorySlot: React.FC<SlotProps> = ({ inventory, item }) => {
 
   return (
     <Tooltip
-      title={!isSlotWithItem(item) || isOver || isDragging ? '' : <SlotTooltip item={item} />}
+      title={!isSlotWithItem(item) || isOver || isDragging ? '' : <SlotTooltip item={item} inventory={inventory} />}
       sx={(theme) => ({ fontFamily: theme.typography.fontFamily })}
       disableInteractive
       followCursor
