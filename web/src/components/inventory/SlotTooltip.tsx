@@ -70,7 +70,7 @@ const SlotTooltip: React.FC<{ item: SlotWithItem; inventory: Inventory }> = ({ i
             Object.entries(item.ingredients).map((ingredient) => {
               const [item, count] = [ingredient[0], ingredient[1]];
               return (
-                <div className="tooltip-ingredient">
+                <div className="tooltip-ingredient" key={`ingredient-${item}`}>
                   <img src={`${imagepath}/${item}.png`} alt={`${item}`} />
                   <p>
                     {count >= 1
