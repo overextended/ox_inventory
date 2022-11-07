@@ -25,7 +25,7 @@ function server.setPlayerInventory(player, data)
 		local ostime = os.time()
 
 		for _, v in pairs(data) do
-			if type(v) == 'number' then
+			if type(v) == 'number' or not v.count then
 				if server.convertInventory then
 					inventory, totalWeight = server.convertInventory(player.source, data)
 					break
