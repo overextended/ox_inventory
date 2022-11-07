@@ -95,7 +95,7 @@ exports('registerHook', function(event, cb, options)
     eventHooks[event][#eventHooks[event] + 1] = cb
 end)
 
-AddEventHandler('onResourceStop', function(resource)
+local function removeResourceHooks(resource)
     for _, hooks in pairs(eventHooks) do
         for i = #hooks, 1, -1 do
             if hooks[i].resource == resource then
@@ -103,4 +103,10 @@ AddEventHandler('onResourceStop', function(resource)
             end
         end
     end
+end
+
+AddEventHandler('onResourceStop', removeResourceHooks)
+
+exports('removeHooks', function()
+	removeResourceHooks(GetInvokingResource() or cache.resource)
 end)
