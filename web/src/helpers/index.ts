@@ -20,7 +20,12 @@ export const canCraftItem = (item: Slot, inventoryType: string) => {
     const [item, count] = [ingredient[0], ingredient[1]];
     const hasItem = leftInventory.items.find((playerItem) => {
       if (isSlotWithItem(playerItem) && playerItem.name === item) {
-        if (count < 1 || playerItem.count >= count) return true;
+        if (count < 1) {
+          if (playerItem.metadata?.durability >= count * 100) return true;
+
+          return false;
+        }
+        if (playerItem.count >= count) return true;
       }
     });
 

@@ -38,7 +38,7 @@ debugData([
             },
             count: 5,
           },
-          { slot: 2, name: 'cocaine', weight: 0, count: 1 },
+          { slot: 2, name: 'powersaw', weight: 0, count: 1, metadata: { durability: 75 } },
           { slot: 3, name: 'copper', weight: 100, count: 12, metadata: { type: 'Special' } },
           {
             slot: 4,
@@ -66,10 +66,10 @@ debugData([
             ingredients: {
               iron: 5,
               copper: 12,
-              cocaine: 0,
+              powersaw: 0.1,
             },
             metadata: {
-              description: 'Body armour that stops small caliber bullets',
+              description: 'Simple lockpick that breaks easily and can pick basic door locks',
             },
           },
         ],

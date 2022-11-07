@@ -72,7 +72,13 @@ const SlotTooltip: React.FC<{ item: SlotWithItem; inventory: Inventory }> = ({ i
               return (
                 <div className="tooltip-ingredient">
                   <img src={`${imagepath}/${item}.png`} alt={`${item}`} />
-                  <p>{count > 0 ? `${count}x ${Items[item]?.label || item}` : `${Items[item]?.label || item}`}</p>
+                  <p>
+                    {count >= 1
+                      ? `${count}x ${Items[item]?.label || item}`
+                      : count === 0
+                      ? `${Items[item]?.label || item}`
+                      : count < 1 && `${count * 100}% ${Items[item]?.label || item}`}
+                  </p>
                 </div>
               );
             })}
