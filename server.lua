@@ -25,7 +25,7 @@ function server.setPlayerInventory(player, data)
 		local ostime = os.time()
 
 		for _, v in pairs(data) do
-			if type(v) == 'number' then
+			if type(v) == 'number' or not v.count then
 				if server.convertInventory then
 					inventory, totalWeight = server.convertInventory(player.source, data)
 					break
@@ -51,11 +51,14 @@ function server.setPlayerInventory(player, data)
 
 	player.source = tonumber(player.source)
 	local inv = Inventory.Create(player.source, "Inventaire", 'player', shared.playerslots, totalWeight, shared.playerweight, player.identifier, inventory)
-	inv.player = server.setPlayerData(player)
-	inv.player.ped = GetPlayerPed(player.source)
 
-	if server.syncInventory then server.syncInventory(inv) end
-	TriggerClientEvent('ox_inventory:setPlayerInventory', player.source, Inventory.Drops, inventory, totalWeight, inv.player, player.source)
+	if inv then
+		inv.player = server.setPlayerData(player)
+		inv.player.ped = GetPlayerPed(player.source)
+
+		if server.syncInventory then server.syncInventory(inv) end
+		TriggerClientEvent('ox_inventory:setPlayerInventory', player.source, Inventory.Drops, inventory, totalWeight, inv.player, player.source)
+	end
 end
 exports('setPlayerInventory', server.setPlayerInventory)
 AddEventHandler('ox_inventory:setPlayerInventory', server.setPlayerInventory)
@@ -123,6 +126,12 @@ lib.callback.register('ox_inventory:openInventory', function(source, inv, data)
 		if right then
 			if right.open or (right.groups and not server.hasGroup(left, right.groups)) then return end
 
+			if not TriggerEventHooks('openInventory', {
+				source = source,
+				inventoryId = right.id,
+				inventoryType = right.type,
+			}) then return end
+
 			local otherplayer = right.type == 'player'
 			if otherplayer then right.coords = GetEntityCoords(GetPlayerPed(right.id)) end
 
@@ -132,7 +141,6 @@ lib.callback.register('ox_inventory:openInventory', function(source, inv, data)
 				if otherplayer then
 					right:set('type', 'otherplayer')
 				end
-
 			else return end
 		else return end
 
