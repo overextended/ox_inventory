@@ -90,12 +90,13 @@ client.shops = setmetatable(data('shops'), {
 							}, {
 								options = {
 									{
-										icon = 'fas fa-shopping-basket',
+										icon = target.icon or 'fas fa-shopping-basket',
 										label = shop.label or locale('open_shop', shop.name),
 										job = shop.groups,
 										action = function()
 											openShop({id=i, type=type})
-										end
+										end,
+										iconColor = target.iconColor,
 									},
 								},
 								distance = target.distance or 2.0

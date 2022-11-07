@@ -106,10 +106,11 @@ Inventory.Evidence = setmetatable(data('evidence'), {
 						}, {
 							options = {
 								{
-									icon = 'fas fa-warehouse',
+									icon = evidence.target.icon or 'fas fa-warehouse',
 									label = locale('open_police_evidence'),
 									job = shared.police,
-									action = openEvidence
+									action = openEvidence,
+									iconColor = evidence.target.iconColor,
 								},
 							},
 							distance = evidence.target.distance or 2.0
@@ -167,7 +168,8 @@ Inventory.Stashes = setmetatable(data('stashes'), {
 									job = stash.groups,
 									action = function()
 										OpenStash({id=id})
-									end
+									end,
+									iconColor = stash.target.iconColor,
 								},
 							},
 							distance = stash.target.distance or 3.0
