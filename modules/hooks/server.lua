@@ -76,6 +76,8 @@ function TriggerEventHooks(event, payload)
     return true
 end
 
+local hookId = 0
+
 exports('registerHook', function(event, cb, options)
     if not eventHooks[event] then
         eventHooks[event] = {}
@@ -85,6 +87,8 @@ exports('registerHook', function(event, cb, options)
 	mt.__index = nil
 	mt.__newindex = nil
    	cb.resource = GetInvokingResource()
+	hookId += 1
+	cb.hookId = hookId
 
 	if options then
 		for k, v in pairs(options) do
@@ -93,12 +97,15 @@ exports('registerHook', function(event, cb, options)
 	end
 
     eventHooks[event][#eventHooks[event] + 1] = cb
+	return hookId
 end)
 
-local function removeResourceHooks(resource)
+local function removeResourceHooks(resource, id)
     for _, hooks in pairs(eventHooks) do
         for i = #hooks, 1, -1 do
-            if hooks[i].resource == resource then
+			local hook = hooks[i]
+
+            if hook.resource == resource and (not id or hook.id == id) then
                 table.remove(hooks, i)
             end
         end
