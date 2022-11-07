@@ -59,7 +59,9 @@ local function playerDropped(source)
 	end
 end
 
-AddEventHandler('playerDropped', playerDropped)
+AddEventHandler('playerDropped', function()
+	playerDropped(source)
+end)
 
 local scriptPath = ('modules/bridge/%s/server.lua'):format(shared.framework)
 local resourceFile = LoadResourceFile(cache.resource, scriptPath)
