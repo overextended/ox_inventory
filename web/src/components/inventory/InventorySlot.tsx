@@ -114,7 +114,10 @@ const InventorySlot: React.FC<SlotProps> = ({ inventory, item }) => {
         onClick={handleClick}
         className="inventory-slot"
         style={{
-          filter: isShopStockEmpty(item.count, inventory.type) ? 'brightness(80%) grayscale(100%)' : undefined,
+          filter:
+            isShopStockEmpty(item.count, inventory.type) || !canCraftItem(item, inventory.type)
+              ? 'brightness(80%) grayscale(100%)'
+              : undefined,
           opacity: isDragging ? 0.4 : 1.0,
           backgroundImage: `url(${`${imagepath}/${item.metadata?.image ? item.metadata.image : item.name}.png`})`,
           border: isOver ? '1px dashed rgba(255,255,255,0.4)' : '',
