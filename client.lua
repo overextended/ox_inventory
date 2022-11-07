@@ -23,8 +23,14 @@ local invBusy = true
 
 ---@type boolean?
 local invOpen = false
-
 local plyState = LocalPlayer.state
+local IsPedCuffed = IsPedCuffed
+local playerPed = cache.ped
+
+lib.onCache('ped', function(ped)
+	playerPed = ped
+	Utils.WeaponWheel()
+end)
 
 plyState:set('invBusy', true, false)
 
@@ -34,9 +40,9 @@ local function canOpenInventory()
 	and not PlayerData.dead
 	and invOpen ~= nil
 	and (not currentWeapon or currentWeapon.timer == 0)
-	and not IsPedCuffed(cache.ped)
+	and not IsPedCuffed(playerPed)
 	and not IsPauseMenuActive()
-	and not IsPedFatallyInjured(cache.ped)
+	and not IsPedFatallyInjured(playerPed)
 end
 
 local defaultInventory = {
@@ -50,13 +56,22 @@ local currentInventory = defaultInventory
 
 local function closeTrunk()
 	if currentInventory?.type == 'trunk' then
-		local coords = GetEntityCoords(cache.ped, true)
-		Utils.PlayAnimAdvanced(900, 'anim@heists@fleeca_bank@scope_out@return_case', 'trevor_action', coords.x, coords.y, coords.z, 0.0, 0.0, GetEntityHeading(cache.ped), 2.0, 2.0, 1000, 49, 0.25)
+		local coords = GetEntityCoords(playerPed, true)
+		---@todo animation for vans?
+		Utils.PlayAnimAdvanced(900, 'anim@heists@fleeca_bank@scope_out@return_case', 'trevor_action', coords.x, coords.y, coords.z, 0.0, 0.0, GetEntityHeading(playerPed), 2.0, 2.0, 1000, 49, 0.25)
+
 		CreateThread(function()
 			local entity = currentInventory.entity
 			local door = currentInventory.door
 			Wait(900)
-			SetVehicleDoorShut(entity, door, false)
+
+			if type(door) == 'table' then
+				for i = 1, #door do
+					SetVehicleDoorShut(entity, door[i], false)
+				end
+			else
+				SetVehicleDoorShut(entity, door, false)
+			end
 		end)
 	end
 end
@@ -142,7 +157,7 @@ function client.openInventory(inv, data)
 			})
 
 			if not currentInventory.coords and not inv == 'container' then
-				currentInventory.coords = GetEntityCoords(cache.ped)
+				currentInventory.coords = GetEntityCoords(playerPed)
 			end
 
 			-- Stash exists (useful for custom stashes)
@@ -166,7 +181,7 @@ local function useItem(data, cb)
 	if invOpen and data.close then client.closeInventory() end
 	local result
 
-	if not invBusy and not PlayerData.dead and not lib.progressActive() and not IsPedRagdoll(cache.ped) and not IsPedFalling(cache.ped) then
+	if not invBusy and not PlayerData.dead and not lib.progressActive() and not IsPedRagdoll(playerPed) and not IsPedFalling(playerPed) then
 		if currentWeapon and currentWeapon?.timer > 100 then return end
 
 		invBusy = 1
@@ -297,7 +312,6 @@ local function useSlot(slot)
 				end
 			end)
 		elseif currentWeapon then
-			local playerPed = cache.ped
 			if data.ammo then
 				if EnableWeaponWheel or currentWeapon.metadata.durability <= 0 then return end
 				local maxAmmo = GetMaxAmmoInClip(playerPed, currentWeapon.hash, true)
@@ -488,7 +502,7 @@ local function registerCommands()
 				client.openInventory('stash', StashTarget)
 			elseif cache.vehicle then
 				-- Player is still entering vehicle, so bailout
-				if not IsPedInAnyVehicle(cache.ped, false) then return end
+				if not IsPedInAnyVehicle(playerPed, false) then return end
 
 				local vehicle = cache.vehicle
 
@@ -518,13 +532,13 @@ local function registerCommands()
 					end
 				end
 			else
-				local entity, type = Utils.Raycast()
+				local entity, entityType = Utils.Raycast()
 				if not entity then return end
 				local vehicle, position
 
 				if not shared.qtarget then
-					if type == 2 then vehicle, position = entity, GetEntityCoords(entity)
-					elseif type == 3 and table.contains(Inventory.Dumpsters, GetEntityModel(entity)) then
+					if entityType == 2 then vehicle, position = entity, GetEntityCoords(entity)
+					elseif entityType == 3 and table.contains(Inventory.Dumpsters, GetEntityModel(entity)) then
 						local netId = NetworkGetEntityIsNetworked(entity) and NetworkGetNetworkIdFromEntity(entity)
 
 						if not netId then
@@ -537,7 +551,7 @@ local function registerCommands()
 
 						return client.openInventory('dumpster', 'dumpster'..netId)
 					end
-				elseif type == 2 then
+				elseif entityType == 2 then
 					vehicle, position = entity, GetEntityCoords(entity)
 				else return end
 
@@ -565,15 +579,21 @@ local function registerCommands()
 							return
 						end
 
-						if vehBone == -1 then vehBone = GetEntityBoneIndexByName(vehicle, Vehicles.trunk.boneIndex[vehicleHash] or 'platelight') end
+						if vehBone == -1 then
+							if vehicleClass == 12 then
+								open = { 2, 3 }
+							end
+
+							vehBone = GetEntityBoneIndexByName(vehicle, Vehicles.trunk.boneIndex[vehicleHash] or 'platelight')
+						end
 
 						position = GetWorldPositionOfEntityBone(vehicle, vehBone)
 						local distance = #(playerCoords - position)
-						local closeToVehicle = distance < 2 and (open == 5 and (checkVehicle == nil and true or 2) or open == 4)
+						local closeToVehicle = distance < 2 and open
 
 						if closeToVehicle then
 							local plate = GetVehicleNumberPlateText(vehicle)
-							TaskTurnPedToFaceCoord(cache.ped, position.x, position.y, position.z, 0)
+							TaskTurnPedToFaceCoord(playerPed, position.x, position.y, position.z, 0)
 							lastVehicle = vehicle
 							client.openInventory('trunk', {id='trunk'..plate, netid = NetworkGetNetworkIdFromEntity(vehicle)})
 							local timeout = 20
@@ -586,8 +606,16 @@ local function registerCommands()
 								return
 							end
 
-							SetVehicleDoorOpen(vehicle, open, false, false)
+							if type(open) == 'table' then
+								for i = 1, #open do
+									SetVehicleDoorOpen(vehicle, open[i], false, false)
+								end
+							else
+								SetVehicleDoorOpen(vehicle, open, false, false)
+							end
+
 							Wait(200)
+							---@todo animation for vans?
 							Utils.PlayAnim(0, 'anim@heists@prison_heiststation@cop_reactions', 'cop_b_idle', 3.0, 3.0, -1, 49, 0.0, 0, 0, 0)
 							currentInventory.entity = lastVehicle
 							currentInventory.door = open
@@ -598,9 +626,9 @@ local function registerCommands()
 								if closeToVehicle and invOpen then
 									position = GetWorldPositionOfEntityBone(vehicle, vehBone)
 
-									if #(GetEntityCoords(cache.ped) - position) >= 2 or not DoesEntityExist(vehicle) then
+									if #(GetEntityCoords(playerPed) - position) >= 2 or not DoesEntityExist(vehicle) then
 										break
-									else TaskTurnPedToFaceCoord(cache.ped, position.x, position.y, position.z, 0) end
+									else TaskTurnPedToFaceCoord(playerPed, position.x, position.y, position.z, 0) end
 								else break end
 							end
 
@@ -823,7 +851,7 @@ RegisterNetEvent('ox_inventory:createDrop', function(drop, data, owner, slot)
 			currentWeapon = Weapon.Disarm(currentWeapon)
 		end
 
-		if invOpen and #(GetEntityCoords(cache.ped) - data.coords) <= 1 then
+		if invOpen and #(GetEntityCoords(playerPed) - data.coords) <= 1 then
 			if not cache.vehicle then
 				client.openInventory('drop', drop)
 			else
@@ -873,10 +901,6 @@ local function setStateBagHandler(stateId)
 
 	setStateBagHandler = nil
 end
-
-lib.onCache('ped', function()
-	Utils.WeaponWheel()
-end)
 
 lib.onCache('seat', function(seat)
 	if seat then
@@ -1017,13 +1041,11 @@ RegisterNetEvent('ox_inventory:setPlayerInventory', function(currentDrops, inven
 	end
 
 	client.interval = SetInterval(function()
-		local playerPed = cache.ped
-
 		if invOpen == false then
 			playerCoords = GetEntityCoords(playerPed)
 
-			if currentWeapon and IsPedUsingActionMode(cache.ped) then
-				SetPedUsingActionMode(cache.ped, false, -1, 'DEFAULT_ACTION')
+			if currentWeapon and IsPedUsingActionMode(playerPed) then
+				SetPedUsingActionMode(playerPed, false, -1, 'DEFAULT_ACTION')
 			end
 
 		elseif invOpen == true then
@@ -1060,7 +1082,7 @@ RegisterNetEvent('ox_inventory:setPlayerInventory', function(currentDrops, inven
 			currentWeapon = Weapon.Disarm(currentWeapon, true)
 
 			if weaponHash == `WEAPON_HANDCUFFS` or weaponHash == `WEAPON_GARBAGEBAG` or weaponHash == `WEAPON_BRIEFCASE` or weaponHash == `WEAPON_BRIEFCASE_02` then
-				SetCurrentPedWeapon(cache.ped, weaponHash --[[@as number]], true)
+				SetCurrentPedWeapon(playerPed, weaponHash --[[@as number]], true)
 			end
 		end
 
@@ -1099,7 +1121,6 @@ RegisterNetEvent('ox_inventory:setPlayerInventory', function(currentDrops, inven
 				EnableControlAction(0, 31, true)
 			end
 		else
-			local playerPed = cache.ped
 			disableControls()
 
 			if invBusy == 1 or IsPedCuffed(playerPed) then
@@ -1228,8 +1249,8 @@ RegisterNUICallback('removeComponent', function(data, cb)
 		if data.slot ~= currentWeapon.slot then return lib.notify({ type = 'error', description = locale('weapon_hand_wrong') }) end
 		local itemSlot = PlayerData.inventory[currentWeapon.slot]
 		for _, component in pairs(Items[data.component].client.component) do
-			if HasPedGotWeaponComponent(cache.ped, currentWeapon.hash, component) then
-				RemoveWeaponComponentFromPed(cache.ped, currentWeapon.hash, component)
+			if HasPedGotWeaponComponent(playerPed, currentWeapon.hash, component) then
+				RemoveWeaponComponentFromPed(playerPed, currentWeapon.hash, component)
 				for k, v in pairs(itemSlot.metadata.components) do
 					if v == data.component then
 						table.remove(itemSlot.metadata.components, k)
@@ -1254,7 +1275,7 @@ RegisterNUICallback('giveItem', function(data, cb)
 	local target
 
 	if client.giveplayerlist then
-		local nearbyPlayers = lib.getNearbyPlayers(GetEntityCoords(cache.ped), 2.0)
+		local nearbyPlayers = lib.getNearbyPlayers(GetEntityCoords(playerPed), 2.0)
 
 		if #nearbyPlayers == 0 then return end
 
@@ -1290,7 +1311,7 @@ RegisterNUICallback('giveItem', function(data, cb)
 	else
 		local entity = Utils.Raycast(12)
 
-		if entity and IsPedAPlayer(entity) and #(GetEntityCoords(cache.ped, true) - GetEntityCoords(entity, true)) < 2.0 then
+		if entity and IsPedAPlayer(entity) and #(GetEntityCoords(playerPed, true) - GetEntityCoords(entity, true)) < 2.0 then
 			target = GetPlayerServerId(NetworkGetPlayerIndexFromPed(entity))
 			Utils.PlayAnim(2000, 'mp_common', 'givetake1_a', 1.0, 1.0, -1, 50, 0.0, 0, 0, 0)
 		end
