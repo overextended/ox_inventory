@@ -1,4 +1,4 @@
-import { Inventory, Slot } from '../../typings';
+import { Inventory, Slot, SlotWithItem } from '../../typings';
 import { Fragment } from 'react';
 import { Divider, Typography } from '@mui/material';
 import { Items } from '../../store/items';
@@ -7,7 +7,7 @@ import ReactMarkdown from 'react-markdown';
 import { useAppSelector } from '../../store';
 import { imagepath } from '../../store/imagepath';
 
-const SlotTooltip: React.FC<{ item: Slot; inventory: Inventory }> = ({ item, inventory }) => {
+const SlotTooltip: React.FC<{ item: SlotWithItem; inventory: Inventory }> = ({ item, inventory }) => {
   const additionalMetadata = useAppSelector((state) => state.inventory.additionalMetadata);
 
   return (
@@ -66,30 +66,16 @@ const SlotTooltip: React.FC<{ item: Slot; inventory: Inventory }> = ({ item, inv
         </>
       ) : (
         <div className="tooltip-ingredients">
-          <div className="tooltip-ingredient">
-            <img src={`${imagepath}/iron.png`} alt="item-img" />
-            <p>5x Iron</p>
-          </div>
-          <div className="tooltip-ingredient">
-            <img src={`${imagepath}/gold.png`} alt="item-img" />
-            <p>1x Gold</p>
-          </div>
-          <div className="tooltip-ingredient">
-            <img src={`${imagepath}/copper.png`} alt="item-img" />
-            <p>10x Copper</p>
-          </div>
-          <div className="tooltip-ingredient">
-            <img src={`${imagepath}/iron.png`} alt="item-img" />
-            <p>5x Iron</p>
-          </div>
-          <div className="tooltip-ingredient">
-            <img src={`${imagepath}/gold.png`} alt="item-img" />
-            <p>1x Gold</p>
-          </div>
-          <div className="tooltip-ingredient">
-            <img src={`${imagepath}/copper.png`} alt="item-img" />
-            <p>10x Copper</p>
-          </div>
+          {item.ingredients &&
+            Object.entries(item.ingredients).map((ingredient) => {
+              const [item, count] = [ingredient[0], ingredient[1]];
+              return (
+                <div className="tooltip-ingredient">
+                  <img src={`${imagepath}/${item}.png`} alt={`${item}`} />
+                  <p>{count > 0 ? `${count}x ${Items[item]?.label || item}` : `${Items[item]?.label || item}`}</p>
+                </div>
+              );
+            })}
         </div>
       )}
     </div>
