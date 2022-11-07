@@ -69,7 +69,8 @@ const InventorySlot: React.FC<SlotProps> = ({ inventory, item }) => {
       canDrop: (source) =>
         !isBusy &&
         (source.item.slot !== item.slot || source.inventory !== inventory.type) &&
-        inventory.type !== InventoryType.SHOP,
+        inventory.type !== InventoryType.SHOP &&
+        inventory.type !== InventoryType.CRAFTING,
     }),
     [isBusy, inventory, item]
   );
