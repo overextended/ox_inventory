@@ -24,7 +24,7 @@ export const stackSlotsReducer: CaseReducer<
     weight: pieceWeight * (toSlot.count + count),
   };
 
-  if (fromType === InventoryType.SHOP) return;
+  if (fromType === InventoryType.SHOP || fromType === InventoryType.CRAFTING) return;
 
   sourceInventory.items[fromSlot.slot - 1] =
     fromSlot.count - count > 0
