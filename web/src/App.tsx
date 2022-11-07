@@ -27,7 +27,7 @@ debugData([
         items: [
           {
             slot: 1,
-            name: 'water',
+            name: 'iron',
             weight: 3000,
             metadata: {
               description: `name: Svetozar Miletic  \n Gender: Male`,
@@ -38,8 +38,8 @@ debugData([
             },
             count: 5,
           },
-          { slot: 2, name: 'money', weight: 0, count: 32000 },
-          { slot: 3, name: 'cola', weight: 100, count: 1, metadata: { type: 'Special' } },
+          { slot: 2, name: 'cocaine', weight: 0, count: 1 },
+          { slot: 3, name: 'copper', weight: 100, count: 12, metadata: { type: 'Special' } },
           {
             slot: 4,
             name: 'water',
@@ -60,9 +60,14 @@ debugData([
         items: [
           {
             slot: 1,
-            name: 'armour',
+            name: 'lockpick',
             weight: 500,
             price: 300,
+            ingredients: {
+              iron: 5,
+              copper: 12,
+              cocaine: 0,
+            },
             metadata: {
               description: 'Body armour that stops small caliber bullets',
             },
