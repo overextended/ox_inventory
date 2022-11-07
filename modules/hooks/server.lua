@@ -27,6 +27,16 @@ local function inventoryFilter(filter, inventory, secondInventory)
 	return false
 end
 
+local function removeResourceHooks(resourceName)
+	for _, hooks in pairs(eventHooks) do
+        for i = #hooks, 1, -1 do
+            if hooks[i].resource == resourceName then
+                table.remove(hooks, i)
+            end
+        end
+    end
+end
+
 function TriggerEventHooks(event, payload)
     local hooks = eventHooks[event]
 
@@ -95,12 +105,9 @@ exports('registerHook', function(event, cb, options)
     eventHooks[event][#eventHooks[event] + 1] = cb
 end)
 
-AddEventHandler('onResourceStop', function(resource)
-    for _, hooks in pairs(eventHooks) do
-        for i = #hooks, 1, -1 do
-            if hooks[i].resource == resource then
-                table.remove(hooks, i)
-            end
-        end
-    end
+exports("removeHooks", function()
+	local resourceName = GetInvokingResource() and GetInvokingResource() or GetCurrentResourceName()
+	removeResourceHooks(resourceName)
 end)
+
+AddEventHandler('onResourceStop', removeResourceHooks)
