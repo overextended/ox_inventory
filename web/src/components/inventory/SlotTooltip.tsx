@@ -18,11 +18,11 @@ const SlotTooltip: React.FC<{ item: SlotWithItem; inventory: Inventory }> = ({ i
       </div>
       <Divider />
       {(item.metadata?.description || (item.name && Items[item.name]?.description)) && (
-        <p className="tooltip-description">
+        <div className="tooltip-description">
           <ReactMarkdown className="tooltip-markdown">
             {item.metadata?.description || (item.name && Items[item.name]?.description)}
           </ReactMarkdown>
-        </p>
+        </div>
       )}
       {inventory.type !== 'crafting' ? (
         <>
