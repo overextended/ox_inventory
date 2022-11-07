@@ -11,7 +11,7 @@ export const isShopStockEmpty = (itemCount: number | undefined, inventoryType: s
 
 // I hate this
 export const canCraftItem = (item: Slot, inventoryType: string) => {
-  if (!isSlotWithItem(item) || inventoryType !== 'crafting') return;
+  if (!isSlotWithItem(item) || inventoryType !== 'crafting') return true;
   if (!item.ingredients) return true;
   const leftInventory = store.getState().inventory.leftInventory;
   const ingredientItems = Object.entries(item.ingredients);
