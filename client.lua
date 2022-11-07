@@ -57,12 +57,21 @@ local currentInventory = defaultInventory
 local function closeTrunk()
 	if currentInventory?.type == 'trunk' then
 		local coords = GetEntityCoords(playerPed, true)
+		---@todo animation for vans?
 		Utils.PlayAnimAdvanced(900, 'anim@heists@fleeca_bank@scope_out@return_case', 'trevor_action', coords.x, coords.y, coords.z, 0.0, 0.0, GetEntityHeading(playerPed), 2.0, 2.0, 1000, 49, 0.25)
+
 		CreateThread(function()
 			local entity = currentInventory.entity
 			local door = currentInventory.door
 			Wait(900)
-			SetVehicleDoorShut(entity, door, false)
+
+			if type(door) == 'table' then
+				for i = 1, #door do
+					SetVehicleDoorShut(entity, door[i], false)
+				end
+			else
+				SetVehicleDoorShut(entity, door, false)
+			end
 		end)
 	end
 end
@@ -507,13 +516,13 @@ local function registerCommands()
 					end
 				end
 			else
-				local entity, type = Utils.Raycast()
+				local entity, entityType = Utils.Raycast()
 				if not entity then return end
 				local vehicle, position
 
 				if not shared.qtarget then
-					if type == 2 then vehicle, position = entity, GetEntityCoords(entity)
-					elseif type == 3 and table.contains(Inventory.Dumpsters, GetEntityModel(entity)) then
+					if entityType == 2 then vehicle, position = entity, GetEntityCoords(entity)
+					elseif entityType == 3 and table.contains(Inventory.Dumpsters, GetEntityModel(entity)) then
 						local netId = NetworkGetEntityIsNetworked(entity) and NetworkGetNetworkIdFromEntity(entity)
 
 						if not netId then
@@ -526,7 +535,7 @@ local function registerCommands()
 
 						return client.openInventory('dumpster', 'dumpster'..netId)
 					end
-				elseif type == 2 then
+				elseif entityType == 2 then
 					vehicle, position = entity, GetEntityCoords(entity)
 				else return end
 
@@ -553,11 +562,17 @@ local function registerCommands()
 							return
 						end
 
-						if vehBone == -1 then vehBone = GetEntityBoneIndexByName(vehicle, Vehicles.trunk.boneIndex[vehicleHash] or 'platelight') end
+						if vehBone == -1 then
+							if vehicleClass == 12 then
+								open = { 2, 3 }
+							end
+
+							vehBone = GetEntityBoneIndexByName(vehicle, Vehicles.trunk.boneIndex[vehicleHash] or 'platelight')
+						end
 
 						position = GetWorldPositionOfEntityBone(vehicle, vehBone)
 						local distance = #(playerCoords - position)
-						local closeToVehicle = distance < 2 and (open == 5 and (checkVehicle == nil and true or 2) or open == 4)
+						local closeToVehicle = distance < 2 and open
 
 						if closeToVehicle then
 							local plate = GetVehicleNumberPlateText(vehicle)
@@ -574,8 +589,16 @@ local function registerCommands()
 								return
 							end
 
-							SetVehicleDoorOpen(vehicle, open, false, false)
+							if type(open) == 'table' then
+								for i = 1, #open do
+									SetVehicleDoorOpen(vehicle, open[i], false, false)
+								end
+							else
+								SetVehicleDoorOpen(vehicle, open, false, false)
+							end
+
 							Wait(200)
+							---@todo animation for vans?
 							Utils.PlayAnim(0, 'anim@heists@prison_heiststation@cop_reactions', 'cop_b_idle', 3.0, 3.0, -1, 49, 0.0, 0, 0, 0)
 							currentInventory.entity = lastVehicle
 							currentInventory.door = open
