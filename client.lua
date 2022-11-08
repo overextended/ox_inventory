@@ -114,6 +114,20 @@ function client.openInventory(inv, data)
 
 		if inv == 'shop' and invOpen == false then
 			left, right = lib.callback.await('ox_inventory:openShop', 200, data)
+		elseif inv == 'crafting' then
+			left = lib.callback.await('ox_inventory:openCraftingBench', 200, data.id, data.index)
+
+			if left then
+				right = client.craftingBenches[data.id]
+				right = {
+					type = 'crafting',
+					id = data.id,
+					index = data.index,
+					slots = right.slots,
+					items = right.items,
+					coords = shared.qtarget and right.zones[data.index].coords or right.points[data.index]
+				}
+			end
 		elseif invOpen ~= nil then
 			if inv == 'policeevidence' then
 				local input = lib.inputDialog(locale('police_evidence'), {locale('locker_number')})
@@ -1336,7 +1350,13 @@ RegisterNUICallback('swapItems', function(data, cb)
 		end
 	end
 
-	local success, response, weaponSlot = lib.callback.await('ox_inventory:swapItems', false, data)
+	local success, response, weaponSlot
+
+	if data.fromType == 'crafting' then
+		success, response = lib.callback.await('ox_inventory:craftItem', false, currentInventory.id, currentInventory.index, data.fromSlot)
+	else
+		success, response, weaponSlot = lib.callback.await('ox_inventory:swapItems', false, data)
+	end
 
 	if success then
 		if response then
