@@ -114,6 +114,6 @@ end
 
 AddEventHandler('onResourceStop', removeResourceHooks)
 
-exports('removeHooks', function()
-	removeResourceHooks(GetInvokingResource() or cache.resource)
+exports('removeHooks', function(id)
+	removeResourceHooks(GetInvokingResource() or cache.resource, id)
 end)
