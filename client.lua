@@ -1329,6 +1329,14 @@ lib.callback.register('ox_inventory:startCrafting', function(id, recipe)
 		label = locale('crafting_item', Items[recipe.name].label),
 		duration = recipe.duration or 3000,
 		canCancel = true,
+		disable = {
+			move = true,
+			combat = true,
+		},
+		anim = {
+			dict = 'anim@amb@clubhouse@tutorial@bkr_tut_ig3@',
+			clip = 'machinic_loop_mechandplayer',
+		}
 	})
 end)
 
