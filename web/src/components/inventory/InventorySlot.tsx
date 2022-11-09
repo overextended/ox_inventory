@@ -24,12 +24,6 @@ const InventorySlot: React.FC<SlotProps> = ({ inventory, item }) => {
   const isBusy = useAppSelector(selectIsBusy);
   const dispatch = useAppDispatch();
 
-  const canCraft = React.useMemo(() => {
-    if (!isBusy) {
-      return canCraftItem(item, inventory.type);
-    }
-  }, [isBusy]);
-
   const [{ isDragging }, drag] = useDrag<DragSource, void, { isDragging: boolean }>(
     () => ({
       type: 'SLOT',
@@ -47,7 +41,7 @@ const InventorySlot: React.FC<SlotProps> = ({ inventory, item }) => {
               image: item.metadata?.image,
             }
           : null,
-      canDrag: !isBusy && !isShopStockEmpty(item.count, inventory.type) && canCraft,
+      canDrag: !isBusy && !isShopStockEmpty(item.count, inventory.type) && canCraftItem(item, inventory.type),
     }),
     [isBusy, inventory, item]
   );
@@ -122,7 +116,9 @@ const InventorySlot: React.FC<SlotProps> = ({ inventory, item }) => {
         className="inventory-slot"
         style={{
           filter:
-            isShopStockEmpty(item.count, inventory.type) || !canCraft ? 'brightness(80%) grayscale(100%)' : undefined,
+            isShopStockEmpty(item.count, inventory.type) || !canCraftItem(item, inventory.type)
+              ? 'brightness(80%) grayscale(100%)'
+              : undefined,
           opacity: isDragging ? 0.4 : 1.0,
           backgroundImage: `url(${`${imagepath}/${item.metadata?.image ? item.metadata.image : item.name}.png`})`,
           border: isOver ? '1px dashed rgba(255,255,255,0.4)' : '',
