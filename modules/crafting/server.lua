@@ -91,6 +91,7 @@ lib.callback.register('ox_inventory:craftItem', function(source, id, index, reci
 					end
 
 					if needs == 0 then break end
+					-- Player does not have enough items (ui should prevent crafting if lacking items, so this shouldn't trigger)
 					if needs > 0 and i == #slots then return end
 				end
 			end
@@ -100,8 +101,16 @@ lib.callback.register('ox_inventory:craftItem', function(source, id, index, reci
 			local success = lib.callback.await('ox_inventory:startCrafting', source, craftedItem.label)
 
 			if success then
+				for name, needs in pairs(recipe.ingredients) do
+					if Inventory.GetItem(left, name, nil, true) < needs then return end
+				end
+
 				for slot, count in pairs(tbl) do
-					Inventory.RemoveItem(left, left.items[slot].name, count, nil, slot)
+					local invSlot = left.items[slot]
+					local removed = invSlot and Inventory.RemoveItem(left, invSlot.name, count, nil, slot)
+
+					-- Failed to remove item (inventory state unexpectedly changed?)
+					if not removed then return end
 				end
 
 				Inventory.AddItem(left, craftedItem, 1, nil, toSlot)
