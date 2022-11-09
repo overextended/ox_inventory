@@ -4,6 +4,18 @@ local CraftingBenches = {}
 local Items = client.items
 local locations = shared.qtarget and 'zones' or 'points'
 
+local function createBlip(name, coords, settings)
+	local blip = AddBlipForCoord(coords.x, coords.y, coords.z)
+	SetBlipSprite(blip, settings.id)
+	SetBlipDisplay(blip, 4)
+	SetBlipScale(blip, settings.scale)
+	SetBlipColour(blip, settings.colour)
+	SetBlipAsShortRange(blip, true)
+	AddTextEntry(name, name)
+	BeginTextCommandSetBlipName(name)
+	EndTextCommandSetBlipName(blip)
+end
+
 ---@param id number
 ---@param data table
 local function createCraftingBench(id, data)
@@ -25,25 +37,36 @@ local function createCraftingBench(id, data)
 			data.points = nil
 
 			for i = 1, #data.zones do
-				exports.ox_target:addBoxZone({
-					name = ("craftingbench_%s:%s"):format(id, i),
-					coords = vec3(-1146.2, -2002.05, 13.2),
-					size = vec3(3.8, 1.05, 0.15),
-					rotation = 315.0,
-					id = id,
-					index = i,
-					options = {
-						{
-							label = 'Open Crafting Bench',
-							onSelect = function()
-								client.openInventory('crafting', { id = id, index = i })
-							end
-						}
+				local zone = data.zones[i]
+				zone.name = ("craftingbench_%s:%s"):format(id, i)
+				zone.id = id
+				zone.index = i
+				zone.options = {
+					{
+						label = 'Open Crafting Bench',
+						canInteract = data.groups and function()
+							return client.hasGroup(data.groups)
+						end or nil,
+						onSelect = function()
+							client.openInventory('crafting', { id = id, index = i })
+						end
 					}
-				})
+				}
+
+				exports.ox_target:addBoxZone(zone)
+
+				if data.blip then
+					createBlip(data.label or 'Crafting Bench', zone.coords, data.blip)
+				end
 			end
 		else
 			data.zones = nil
+
+			if data.blip then
+				for i = 1, #data.points do
+					createBlip(data.label or 'Crafting Bench', data.points[i], data.blip)
+				end
+			end
 		end
 
 		CraftingBenches[id] = data
