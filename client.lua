@@ -107,6 +107,7 @@ function client.openInventory(inv, data)
 				right = {
 					type = 'crafting',
 					id = data.id,
+					label = data.label or 'Crafting Bench',
 					index = data.index,
 					slots = right.slots,
 					items = right.items,
