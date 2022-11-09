@@ -1335,10 +1335,12 @@ RegisterNUICallback('exit', function(_, cb)
 	cb(1)
 end)
 
-lib.callback.register('ox_inventory:startCrafting', function(item)
+lib.callback.register('ox_inventory:startCrafting', function(id, recipe)
+	recipe = client.craftingBenches[id].items[recipe]
+
 	return lib.progressCircle({
-		label = ('Crafting %s'):format(item),
-		duration = 2000,
+		label = locale('crafting_item', Items[recipe.name].label),
+		duration = recipe.duration or 3000,
 		canCancel = true,
 	})
 end)
@@ -1367,7 +1369,6 @@ RegisterNUICallback('swapItems', function(data, cb)
 		success, response = lib.callback.await('ox_inventory:craftItem', 200, currentInventory.id, currentInventory.index, data.fromSlot, data.toSlot)
 
 		if not success then
-			---@todo locales
 			lib.notify({ type = 'error', description = locale(response or 'cannot_perform') })
 		end
 

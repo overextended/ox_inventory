@@ -80,5 +80,6 @@
   "no_durability": "%s durability is depleted",
   "cannot_give": "Unable to give %s %s to the target",
   "evidence_cannot_take": "You are not authorised to withdraw evidence",
-  "dumpster": "Dumpster"
+  "dumpster": "Dumpster",
+  "crafting_item": "Crafting %s"
 }
