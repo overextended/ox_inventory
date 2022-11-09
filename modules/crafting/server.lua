@@ -47,7 +47,7 @@ lib.callback.register('ox_inventory:openCraftingBench', function(source, id, ind
 	return { label = left.label, type = left.type, slots = left.slots, weight = left.weight, maxWeight = left.maxWeight }
 end)
 
-lib.callback.register('ox_inventory:craftItem', function(source, id, index, recipeId)
+lib.callback.register('ox_inventory:craftItem', function(source, id, index, recipeId, toSlot)
 	local left, bench = Inventory(source), CraftingBenches[id]
 
 	if bench then
@@ -60,12 +60,50 @@ lib.callback.register('ox_inventory:craftItem', function(source, id, index, reci
 		local recipe = bench.items[recipeId]
 
 		if recipe then
-			print(source, id, index, recipeId)
-			print(json.encode(recipe, {indent=true}))
+			local tbl, num = {}, 0
 
-			---@todo check if item can be crafted, add and remove necessary items
+			for name in pairs(recipe.ingredients) do
+				num += 1
+				tbl[num] = name
+			end
 
-			return true, { weight = left.weight, items = {} }
+			local craftedItem = Items(recipe.name)
+			local newWeight = left.weight + craftedItem.weight
+			---@todo new iterator or something to accept a map
+			local items = Inventory.Search(left, 'slots', tbl) or {}
+			table.wipe(tbl)
+
+			for name, needs in pairs(recipe.ingredients) do
+				local slots = items[name] or items
+
+				for i = 1, #slots do
+					local slot = slots[i]
+
+					if needs <= slot.count then
+						local itemWeight = slot.weight / slot.count
+						newWeight = (newWeight - slot.weight) + (slot.count - needs) * itemWeight
+						tbl[slot.slot] = needs
+						needs = 0
+					else
+						tbl[slot.slot] = slot.count
+						newWeight -= slot.weight
+						needs -= slot.count
+					end
+
+					if needs == 0 then goto next end
+					if needs > 0 and i == #slots then return end
+				end
+
+				::next::
+			end
+
+			if newWeight > left.maxWeight then return end
+
+			for slot, count in pairs(tbl) do
+				Inventory.RemoveItem(left, left.items[slot].name, count, nil, slot)
+			end
+
+			Inventory.AddItem(left, craftedItem, 1, nil, toSlot)
 		end
 	end
 end)
