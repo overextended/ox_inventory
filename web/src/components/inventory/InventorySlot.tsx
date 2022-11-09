@@ -95,7 +95,7 @@ const InventorySlot: React.FC<SlotProps> = ({ inventory, item }) => {
   const handleClick = (event: React.MouseEvent<HTMLDivElement>) => {
     if (isBusy) return;
 
-    if (event.ctrlKey && isSlotWithItem(item) && inventory.type !== 'shop') {
+    if (event.ctrlKey && isSlotWithItem(item) && inventory.type !== 'shop' && inventory.type !== 'crafting') {
       onDrop({ item: item, inventory: inventory.type });
     } else if (event.altKey && isSlotWithItem(item) && inventory.type === 'player') {
       onUse(item);
