@@ -1314,6 +1314,14 @@ RegisterNUICallback('exit', function(_, cb)
 	cb(1)
 end)
 
+lib.callback.register('ox_inventory:startCrafting', function(item)
+	return lib.progressCircle({
+		label = ('Crafting %s'):format(item),
+		duration = 2000,
+		canCancel = true,
+	})
+end)
+
 ---Synchronise and validate all item movement between the NUI and server.
 RegisterNUICallback('swapItems', function(data, cb)
 	if data.toType == 'newdrop' and cache.vehicle then
