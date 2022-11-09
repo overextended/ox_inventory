@@ -29,9 +29,7 @@ export const canCraftItem = (item: Slot, inventoryType: string) => {
       }
     });
 
-    if (!hasItem) return true;
-
-    return false;
+    return !hasItem;
   });
 
   return remainingItems.length === 0;
