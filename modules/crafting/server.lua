@@ -99,11 +99,15 @@ lib.callback.register('ox_inventory:craftItem', function(source, id, index, reci
 
 			if newWeight > left.maxWeight then return end
 
-			for slot, count in pairs(tbl) do
-				Inventory.RemoveItem(left, left.items[slot].name, count, nil, slot)
-			end
+			local success = lib.callback.await('ox_inventory:startCrafting', source, craftedItem.label)
 
-			Inventory.AddItem(left, craftedItem, 1, nil, toSlot)
+			if success then
+				for slot, count in pairs(tbl) do
+					Inventory.RemoveItem(left, left.items[slot].name, count, nil, slot)
+				end
+
+				Inventory.AddItem(left, craftedItem, 1, nil, toSlot)
+			end
 		end
 	end
 end)
