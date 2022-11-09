@@ -83,18 +83,16 @@ lib.callback.register('ox_inventory:craftItem', function(source, id, index, reci
 						local itemWeight = slot.weight / slot.count
 						newWeight = (newWeight - slot.weight) + (slot.count - needs) * itemWeight
 						tbl[slot.slot] = needs
-						needs = 0
+						break
 					else
 						tbl[slot.slot] = slot.count
 						newWeight -= slot.weight
 						needs -= slot.count
 					end
 
-					if needs == 0 then goto next end
+					if needs == 0 then break end
 					if needs > 0 and i == #slots then return end
 				end
-
-				::next::
 			end
 
 			if newWeight > left.maxWeight then return end
