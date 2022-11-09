@@ -68,7 +68,7 @@ lib.callback.register('ox_inventory:craftItem', function(source, id, index, reci
 			end
 
 			local craftedItem = Items(recipe.name)
-			local newWeight = left.weight + craftedItem.weight
+			local newWeight = left.weight + craftedItem.weight * recipe.amount
 			---@todo new iterator or something to accept a map
 			local items = Inventory.Search(left, 'slots', tbl) or {}
 			table.wipe(tbl)
@@ -100,7 +100,7 @@ lib.callback.register('ox_inventory:craftItem', function(source, id, index, reci
 				return false, 'cannot_carry'
 			end
 
-			local success = lib.callback.await('ox_inventory:startCrafting', source, craftedItem.label)
+			local success = lib.callback.await('ox_inventory:startCrafting', source, id, recipeId)
 
 			if success then
 				for name, needs in pairs(recipe.ingredients) do
@@ -115,7 +115,7 @@ lib.callback.register('ox_inventory:craftItem', function(source, id, index, reci
 					if not removed then return end
 				end
 
-				Inventory.AddItem(left, craftedItem, 1, nil, toSlot)
+				Inventory.AddItem(left, craftedItem, recipe.amount or 1, nil, toSlot)
 			end
 
 			return true

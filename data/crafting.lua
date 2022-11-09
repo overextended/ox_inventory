@@ -5,7 +5,9 @@ return {
 				name = 'lockpick',
 				ingredients = {
 					garbage = 3,
-				}
+				},
+				duration = 5000,
+				amount = 3,
 			},
 		},
 		points = {
