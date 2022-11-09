@@ -1345,12 +1345,16 @@ RegisterNUICallback('swapItems', function(data, cb)
 		local id, index = currentInventory.id, currentInventory.index
 		success, response = lib.callback.await('ox_inventory:craftItem', 200, currentInventory.id, currentInventory.index, data.fromSlot, data.toSlot)
 
-		if response then
+		if not success then
 			---@todo locales
-			lib.notify({ type = 'error', description = response })
+			lib.notify({ type = 'error', description = locale(response or 'cannot_perform') })
 		end
 
-		return client.openInventory('crafting', { id = id, index = index })
+		if not currentInventory or currentInventory.type ~= 'crafting' then
+			client.openInventory('crafting', { id = id, index = index })
+		end
+
+		return
 	else
 		success, response, weaponSlot = lib.callback.await('ox_inventory:swapItems', false, data)
 	end
