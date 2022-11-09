@@ -96,7 +96,9 @@ lib.callback.register('ox_inventory:craftItem', function(source, id, index, reci
 				end
 			end
 
-			if newWeight > left.maxWeight then return end
+			if newWeight > left.maxWeight then
+				return false, 'cannot_carry'
+			end
 
 			local success = lib.callback.await('ox_inventory:startCrafting', source, craftedItem.label)
 
@@ -115,6 +117,8 @@ lib.callback.register('ox_inventory:craftItem', function(source, id, index, reci
 
 				Inventory.AddItem(left, craftedItem, 1, nil, toSlot)
 			end
+
+			return true
 		end
 	end
 end)
