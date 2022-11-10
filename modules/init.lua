@@ -1,4 +1,3 @@
-IsDuplicityVersion = IsDuplicityVersion()
 lib.locale()
 
 -- Don't be an idiot and change these convar getters (yes, people do that).
@@ -27,7 +26,7 @@ do
 	shared.police = police
 end
 
-if IsDuplicityVersion then
+if IsDuplicityVersion() then
 	server = {
 		loglevel = GetConvarInt('inventory:loglevel', 1),
 		randomprices = GetConvar('inventory:randomprices', 'false') == 'true',
