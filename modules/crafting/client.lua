@@ -65,7 +65,7 @@ local function createCraftingBench(id, data)
 			---@param point CPoint
 			local function nearbyBench(point)
 				---@diagnostic disable-next-line: param-type-mismatch
-				DrawMarker(2, point.coords.x, point.coords.y, point.coords.z, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.3, 0.2, 0.15, 150, 30, 30, 222, false, false, 0, true, false, false, false)
+				DrawMarker(2, point.coords.x, point.coords.y, point.coords.z, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.3, 0.2, 0.15, 150, 150, 30, 222, false, false, 0, true, false, false, false)
 			end
 
 			for i = 1, #data.points do
