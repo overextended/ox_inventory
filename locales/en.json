@@ -61,7 +61,7 @@
   "shop_nostock": "Item is out of stock",
   "identification": "Sex: %s  \nDate of birth: %s",
   "search_dumpster": "Search Dumpster",
-  "open_shop": "Open %s",
+  "open_label": "Open %s",
   "purchased_for": "Purchased %s %s for %s%s",
   "unable_stack_items": "You're unable to stack these items",
   "police_evidence": "Police Evidence",

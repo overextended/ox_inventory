@@ -61,7 +61,7 @@
   "shop_nostock": "Der Gegenstand ist ausverkauft",
   "identification": "Geschlecht: %s  \nGeburtstag: %s",
   "search_dumpster": "Durchsuche Mülleimer",
-  "open_shop": "Öffne %s",
+  "open_label": "Öffne %s",
   "purchased_for": "%s %s gekauft für %s%s",
   "unable_stack_items": "Du kannst diesen Gegenstände nicht stapeln",
   "police_evidence": "Polizei Asservatenkammer",

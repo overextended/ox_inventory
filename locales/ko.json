@@ -59,7 +59,7 @@
   "shop_nostock": "품목이 품절되었습니다",
   "identification": "성별:%s 생년월일: %s",
   "search_dumpster": "쓰레기 수거통 검색",
-  "open_shop": "열기 %s",
+  "open_label": "열기 %s",
   "purchased_for": "%s %s을(를) %s%s에 대해 구매했습니다.",
   "unable_stack_items": "이 항목을 쌓을 수 없습니다",
   "police_evidence": "경찰 증거물",
