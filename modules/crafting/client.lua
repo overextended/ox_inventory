@@ -49,7 +49,8 @@ local function createCraftingBench(id, data)
 						end or nil,
 						onSelect = function()
 							client.openInventory('crafting', { id = id, index = i })
-						end
+						end,
+						distance = zone.distance or 2.0
 					}
 				}
 
