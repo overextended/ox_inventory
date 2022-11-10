@@ -186,10 +186,10 @@ function server.convertInventory(playerId, items)
 				end
 
 				if not hasThis then
-					local account = player.getAccount(name)
+					local amount = player.Functions.GetMoney(name == 'money' and 'cash' or name)
 
-					if account.money then
-						items[#items + 1] = {amount = account.money}
+					if amount then
+						items[#items + 1] = {amount = amount}
 					end
 				end
 			end

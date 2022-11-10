@@ -152,6 +152,8 @@ local function ConvertQB()
 
 		for k, v in pairs(accounts) do
 			if type(v) == 'table' then break end
+			if k == 'cash' then k = 'money' end
+
 			if server.accounts[k] and Items(k) and v > 0 then
 				slot += 1
 				inventory[slot] = {slot=slot, name=k, count=v}
