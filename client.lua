@@ -1434,6 +1434,11 @@ RegisterNUICallback('buyItem', function(data, cb)
 	cb(response)
 end)
 
+RegisterNUICallback('craftItem', function(data, cb)
+	cb(true)
+	print(json.encode(data))
+end)
+
 lib.callback.register('ox_inventory:getVehicleData', function(netid)
 	local entity = NetworkGetEntityFromNetworkId(netid)
 

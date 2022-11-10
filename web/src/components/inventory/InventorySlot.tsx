@@ -14,6 +14,7 @@ import { Tooltip } from '@mui/material';
 import SlotTooltip from './SlotTooltip';
 import { setContextMenu } from '../../store/inventory';
 import { imagepath } from '../../store/imagepath';
+import { onCraft } from '../../dnd/onCraft';
 
 interface SlotProps {
   inventory: Inventory;
@@ -55,6 +56,13 @@ const InventorySlot: React.FC<SlotProps> = ({ inventory, item }) => {
       drop: (source) =>
         source.inventory === InventoryType.SHOP
           ? onBuy(source, {
+              inventory: inventory.type,
+              item: {
+                slot: item.slot,
+              },
+            })
+          : source.inventory === InventoryType.CRAFTING
+          ? onCraft(source, {
               inventory: inventory.type,
               item: {
                 slot: item.slot,
