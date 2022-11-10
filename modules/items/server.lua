@@ -247,6 +247,7 @@ end
 function Items.Metadata(inv, item, metadata, count)
 	if type(inv) ~= 'table' then inv = Inventory(inv) end
 	if not item.weapon then metadata = not metadata and {} or type(metadata) == 'string' and {type=metadata} or metadata end
+	if not count then count = 1 end
 
 	if item.weapon then
 		if type(metadata) ~= 'table' then metadata = {} end
