@@ -61,7 +61,7 @@
   "shop_nostock": "Ese on läbi müüdud",
   "identification": "Sugu: %s  \nSünnikuupäev: %s",
   "search_dumpster": "Otsi prügikasti",
-  "open_shop": "Ava %s",
+  "open_label": "Ava %s",
   "purchased_for": "Ostetud %s %s %s%s eest",
   "unable_stack_items": "Sa ei saa neid asju virna laduda",
   "police_evidence": "Politsei asitõendid",

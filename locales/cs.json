@@ -61,7 +61,7 @@
   "shop_nostock": "Položka je vyprodaná",
   "identification": "Pohlaví: %s  \nDatum narození: %s",
   "search_dumpster": "Prohledat popelnici",
-  "open_shop": "Otevřít %s",
+  "open_label": "Otevřít %s",
   "purchased_for": "Zakoupili jste %s %s za %s%s",
   "unable_stack_items": "Tyto předměty nelze skládat na sebe",
   "police_evidence": "Policejní důkazy",

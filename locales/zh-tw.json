@@ -61,7 +61,7 @@
   "shop_nostock": "此商品缺貨中",
   "identification": "性別: %s  \n生日: %s",
   "search_dumpster": "搜索垃圾桶",
-  "open_shop": "打開 %s",
+  "open_label": "打開 %s",
   "purchased_for": "購買了 %s 個 %s 花了 %s%s",
   "unable_stack_items": "你無法堆疊此物品",
   "police_evidence": "警用證物櫃",

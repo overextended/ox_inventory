@@ -61,7 +61,7 @@
   "shop_nostock": "Item fora de estoque",
   "identification": "Sexo: %s  \nData de Nascimento: %s",
   "search_dumpster": "Procurar no Container",
-  "open_shop": "Abrir %s",
+  "open_label": "Abrir %s",
   "purchased_for": "Comprou %s %s por %s%s",
   "unable_stack_items": "Você não consegue empilhar esses itens",
   "police_evidence": "Provas Policiais",

@@ -61,7 +61,7 @@ client.shops = setmetatable(data('shops'), {
 							options = {
 								{
 									icon = 'fas fa-shopping-basket',
-									label = shop.label or locale('open_shop', shop.name),
+									label = shop.label or locale('open_label', shop.name),
 									action = function()
 										openShop({type=type})
 									end
@@ -90,8 +90,8 @@ client.shops = setmetatable(data('shops'), {
 							}, {
 								options = {
 									{
-										icon = target.icon or 'fas fa-shopping-basket',
-										label = shop.label or locale('open_shop', shop.name),
+										icon = 'fas fa-shopping-basket',
+										label = shop.label or locale('open_label', shop.name),
 										job = shop.groups,
 										action = function()
 											openShop({id=i, type=type})
