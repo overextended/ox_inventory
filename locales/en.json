@@ -81,5 +81,6 @@
   "cannot_give": "Unable to give %s %s to the target",
   "evidence_cannot_take": "You are not authorised to withdraw evidence",
   "dumpster": "Dumpster",
-  "crafting_item": "Crafting %s"
+  "crafting_item": "Crafting %s",
+  "crafting_bench": "Crafting Bench"
 }
