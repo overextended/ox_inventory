@@ -196,12 +196,23 @@ local function ConvertQB()
 
 		if trunk and glovebox then
 			local vehicles = {}
+
 			for _, v in pairs(trunk) do
 				local owner = plates[v.plate]
 
 				if owner then
-					vehicles[owner] = vehicles[owner] or {}
-					vehicles[owner][v.plate] = vehicles[owner][v.plate] or {trunk=v.items or '[]', glovebox='[]'}
+					if not vehicles[owner] then
+						vehicles[owner] = {}
+					end
+
+					if not vehicles[owner][v.plate] then
+						vehicles[owner][v.plate] = {}
+					end
+
+					vehicles[owner][v.plate] = vehicles[owner][v.plate] or {
+						trunk = v.items or '[]',
+						glovebox = '[]'
+					}
 				end
 			end
 
@@ -209,8 +220,17 @@ local function ConvertQB()
 				local owner = plates[v.plate]
 
 				if owner then
-					vehicles[owner] = vehicles[owner] or {}
-					vehicles[owner][v.plate] = {trunk=vehicles[owner][v.plate].trunk ~= '[]' and vehicles[owner][v.plate].trunk or '[]', glovebox=vehicles[owner][v.plate].glovebox ~= '[]' and vehicles[owner][v.plate].glovebox or v.items or '[]'}
+					if not vehicles[owner] then
+						vehicles[owner] = {}
+					end
+
+					if not vehicles[owner][v.plate] then
+						vehicles[owner][v.plate] = {}
+					end
+
+					local vehicle = vehicles[owner][v.plate]
+					vehicle.trunk = vehicle.trunk ~= '[]' and vehicle.trunk or '[]'
+					vehicle.glovebox = vehicle.glovebox ~= '[]' and vehicle.glovebox or v.items or '[]'
 				end
 			end
 
