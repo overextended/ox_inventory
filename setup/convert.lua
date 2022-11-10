@@ -145,7 +145,6 @@ local function ConvertQB()
 	local parameters = {}
 
 	for i = 1, #users do
-		count += 1
 		local inventory, slot = {}, 0
 		local user = users[i]
 		local items = user.inventory and json.decode(user.inventory) or {}
@@ -159,6 +158,8 @@ local function ConvertQB()
 			end
 		end
 
+		local shouldConvert = false
+
 		for _, v in pairs(items) do
 			if Items(v?.name) then
 				slot += 1
@@ -171,9 +172,14 @@ local function ConvertQB()
 					inventory[slot].metadata.quality = nil
 				end
 			end
+
+			shouldConvert = v.amount and true
 		end
 
-		parameters[count] = { 'UPDATE players SET inventory = ? WHERE citizenid = ?', { json.encode(inventory), user.citizenid } }
+		if shouldConvert then
+			count += 1
+			parameters[count] = { 'UPDATE players SET inventory = ? WHERE citizenid = ?', { json.encode(inventory), user.citizenid } }
+		end
 	end
 
 	Print(('Converting %s user inventories to new data format'):format(count))
