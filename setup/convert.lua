@@ -148,7 +148,7 @@ local function ConvertQB()
 		local inventory, slot = {}, 0
 		local user = users[i]
 		local items = user.inventory and json.decode(user.inventory) or {}
-		local accounts = user.money and json.decode(user.accounts) or {}
+		local accounts = user.money and json.decode(user.money) or {}
 
 		for k, v in pairs(accounts) do
 			if type(v) == 'table' then break end
