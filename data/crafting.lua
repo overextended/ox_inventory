@@ -8,6 +8,7 @@ return {
 				},
 				duration = 5000,
 				amount = 3,
+				metadata = { durability = 20 }
 			},
 		},
 		points = {
