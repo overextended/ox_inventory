@@ -3,7 +3,7 @@ if not lib then return end
 local Items = server.items
 local Inventory = server.inventory
 local Shops = {}
-local locations = shared.qtarget and 'targets' or 'locations'
+local locations = shared.target and 'targets' or 'locations'
 
 ---@class OxShopItem
 ---@field name string
@@ -39,7 +39,7 @@ local function createShop(shopName, shopDetails)
 				items = table.clone(shopDetails.inventory),
 				slots = #shopDetails.inventory,
 				type = 'shop',
-				coords = shared.qtarget and shopDetails.targets?[i]?.loc or shopLocations[i],
+				coords = shared.target and shopDetails.targets?[i]?.loc or shopLocations[i],
 			}
 
 			for j = 1, Shops[shopName][i].slots do

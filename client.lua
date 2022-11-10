@@ -119,7 +119,7 @@ function client.openInventory(inv, data)
 					index = data.index,
 					slots = right.slots,
 					items = right.items,
-					coords = shared.qtarget and right.zones[data.index].coords or right.points[data.index]
+					coords = shared.target and right.zones[data.index].coords or right.points[data.index]
 				}
 			end
 		elseif invOpen ~= nil then
@@ -529,7 +529,7 @@ local function registerCommands()
 				if not entity then return end
 				local vehicle, position
 
-				if not shared.qtarget then
+				if not shared.target then
 					if type == 2 then vehicle, position = entity, GetEntityCoords(entity)
 					elseif type == 3 and table.contains(Inventory.Dumpsters, GetEntityModel(entity)) then
 						local netId = NetworkGetEntityIsNetworked(entity) and NetworkGetNetworkIdFromEntity(entity)

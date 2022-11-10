@@ -8,7 +8,7 @@ local Inventory = server.inventory
 ---@param data table
 local function createCraftingBench(id, data)
 	CraftingBenches[id] = {}
-	local locations = shared.qtarget and data.zones or data.points
+	local locations = shared.target and data.zones or data.points
 	local recipes = data.items
 
 	if recipes and locations then
@@ -19,7 +19,7 @@ local function createCraftingBench(id, data)
 			recipe.slot = i
 		end
 
-		if shared.qtarget then
+		if shared.target then
 			data.points = nil
 		else
 			data.zones = nil
@@ -36,7 +36,7 @@ lib.callback.register('ox_inventory:openCraftingBench', function(source, id, ind
 
 	if bench then
 		local groups = bench.groups
-		local coords = shared.qtarget and bench.zones[index].coords or bench.points[index]
+		local coords = shared.target and bench.zones[index].coords or bench.points[index]
 
 		if groups and not server.hasGroup(left, groups) then return end
 		if #(GetEntityCoords(GetPlayerPed(source)) - coords) > 10 then return end
@@ -52,7 +52,7 @@ lib.callback.register('ox_inventory:craftItem', function(source, id, index, reci
 
 	if bench then
 		local groups = bench.groups
-		local coords = shared.qtarget and bench.zones[index].coords or bench.points[index]
+		local coords = shared.target and bench.zones[index].coords or bench.points[index]
 
 		if groups and not server.hasGroup(left, groups) then return end
 		if #(GetEntityCoords(GetPlayerPed(source)) - coords) > 10 then return end

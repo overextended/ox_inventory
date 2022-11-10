@@ -2,7 +2,7 @@ if not lib then return end
 
 local CraftingBenches = {}
 local Items = client.items
-local locations = shared.qtarget and 'zones' or 'points'
+local locations = shared.target and 'zones' or 'points'
 
 local function createBlip(name, coords, settings)
 	local blip = AddBlipForCoord(coords.x, coords.y, coords.z)
@@ -33,7 +33,7 @@ local function createCraftingBench(id, data)
 			recipe.slot = i
 		end
 
-		if shared.qtarget then
+		if shared.target then
 			data.points = nil
 
 			for i = 1, #data.zones do
