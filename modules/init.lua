@@ -9,7 +9,7 @@ shared = {
 	locale = GetConvar('inventory:locale', 'en'),
 	playerslots = GetConvarInt('inventory:slots', 50),
 	playerweight = GetConvarInt('inventory:weight', 30000),
-	qtarget = GetConvar('inventory:qtarget', 'false') == 'true',
+	target = GetConvar('inventory:target', 'false') == 'true',
 	police = json.decode(GetConvar('inventory:police', '["police", "sheriff"]')),
 }
 
@@ -135,10 +135,16 @@ if not LoadResourceFile(shared.resource, 'web/build/index.html') then
 	return spamError('UI has not been built, refer to the documentation or download a release build.\n	^3https://overextended.github.io/docs/ox_inventory/^0')
 end
 
--- Disable qtarget compatibility if it isn't running
-if shared.qtarget and not GetResourceState('qtarget'):find('start') and not GetResourceState('ox_target'):find('start') then
-	shared.qtarget = false
-	shared.warning(("qtarget is '%s' - ensure it is starting before ox_inventory"):format(GetResourceState('qtarget')))
+if shared.target then
+	local ox_target = GetResourceState('ox_target')
+	local qtarget = GetResourceState('qtarget')
+
+	if not ox_target:find('start') and not qtarget:find('ox_target') then
+		shared.target = false
+		return shared.warning('targeting resource is not loaded - it should start before ox_inventory')
+	end
+
+	shared.target = ox_target and 'ox_target' or 'qtarget'
 end
 
 if shared.server then shared.ready = false end
