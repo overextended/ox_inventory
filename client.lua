@@ -130,7 +130,7 @@ function client.openInventory(inv, data)
 				right = {
 					type = 'crafting',
 					id = data.id,
-					label = data.label or 'Crafting Bench',
+					label = data.label or locale('open_label', locale('crafting_bench'),
 					index = data.index,
 					slots = right.slots,
 					items = right.items,
@@ -480,7 +480,9 @@ local function registerCommands()
 				local closest = lib.points.closest()
 
 				if closest and closest.currentDistance < 1.2 then
-					if closest.inv ~= 'license' and closest.inv ~= 'policeevidence' then
+					if closest.inv == 'crafting' then
+						return client.openInventory('crafting', { id = closest.id, index = closest.index })
+					elseif closest.inv ~= 'license' and closest.inv ~= 'policeevidence' then
 						return client.openInventory(closest.inv or 'drop', { id = closest.invId, type = closest.type })
 					end
 				end

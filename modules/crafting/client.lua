@@ -56,15 +56,32 @@ local function createCraftingBench(id, data)
 				exports.ox_target:addBoxZone(zone)
 
 				if data.blip then
-					createBlip(data.label or 'Crafting Bench', zone.coords, data.blip)
+					createBlip(data.label or locale('crafting_bench'), zone.coords, data.blip)
 				end
 			end
 		else
 			data.zones = nil
 
-			if data.blip then
-				for i = 1, #data.points do
-					createBlip(data.label or 'Crafting Bench', data.points[i], data.blip)
+			---@param point CPoint
+			local function nearbyBench(point)
+				---@diagnostic disable-next-line: param-type-mismatch
+				DrawMarker(2, point.coords.x, point.coords.y, point.coords.z, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.3, 0.2, 0.15, 150, 30, 30, 222, false, false, 0, true, false, false, false)
+			end
+
+			for i = 1, #data.points do
+				local coords = data.points[i]
+
+				lib.points.new({
+					coords = coords,
+					distance = 16,
+					id = id,
+					index = i,
+					inv = 'crafting',
+					nearby = nearbyBench
+				})
+
+				if data.blip then
+					createBlip(data.label or locale('crafting_bench'), coords, data.blip)
 				end
 			end
 		end
