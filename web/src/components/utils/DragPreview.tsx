@@ -57,7 +57,7 @@ const DragPreview: React.FC = () => {
           ref={element}
           style={{
             transform: `translate(${currentOffset.x}px, ${currentOffset.y}px)`,
-            backgroundImage: `url(${`${imagepath}/${data.image || data.item.name}.png`})`,
+            backgroundImage: `url(${`${data.image ? `${imagepath}/${data.image}.png` : data.imageurl ? `${data.imageurl}` : `${imagepath}/${data.item.name}.png`}`})`,
           }}
         />
       )}

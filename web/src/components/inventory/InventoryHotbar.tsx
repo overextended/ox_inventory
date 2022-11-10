@@ -33,7 +33,7 @@ const InventoryHotbar: React.FC = () => {
             style={{
               width: '10.42vh',
               height: '10.42vh',
-              backgroundImage: `url(${`${imagepath}/${item.metadata?.image ? item.metadata.image : item.name}.png`})`,
+              backgroundImage: `url(${`${item.metadata?.image ? `${imagepath}/${item.metadata.image}.png` : item.metadata?.imageurl ? `${item.metadata.imageurl}` : `${imagepath}/${item.name}.png`}`})`,
             }}
             key={`hotbar-${item.slot}`}
           >
