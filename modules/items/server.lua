@@ -108,7 +108,7 @@ CreateThread(function()
 					if not ItemList[formatName] then
 						fileSize += 1
 
-						file[fileSize] = (itemFormat):format(formatName, item.label:gsub("'", "\\'"):lower(), item.weight, item.stack, item.close, item.description and ('"%s"'):format(item.description) or 'nil')
+						file[fileSize] = (itemFormat):format(formatName, item.label:gsub("'", "\\'"):lower(), item.weight, item.stack, item.close, item.description and json.encode(item.description) or 'nil')
 						ItemList[formatName] = item
 					end
 				end
@@ -192,7 +192,7 @@ CreateThread(function()
 					if not ItemList[formatName] then
 						fileSize += 1
 
-						file[fileSize] = (itemFormat):format(formatName, item.label:gsub("'", "\\'"):lower(), item.weight, item.stack, item.close, item.description and ('"%s"'):format(item.description) or 'nil')
+						file[fileSize] = (itemFormat):format(formatName, item.label:gsub("'", "\\'"):lower(), item.weight, item.stack, item.close, item.description and json.encode(item.description) or 'nil')
 						ItemList[formatName] = item
 					end
 				end
