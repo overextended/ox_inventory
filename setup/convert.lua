@@ -141,8 +141,6 @@ local function ConvertQB()
 	started = true
 	local users = MySQL.query.await('SELECT citizenid, inventory, money FROM players')
 	if not users then return end
-
-	local total = #users
 	local count = 0
 	local parameters = {}
 
@@ -164,12 +162,13 @@ local function ConvertQB()
 		for _, v in pairs(items) do
 			if Items(v?.name) then
 				slot += 1
-				inventory[slot] = {slot=slot, name=v.name, count=v.amount, metadata = {}}
+				inventory[slot] = {slot=slot, name=v.name, count=v.amount, metadata = type(v.info) == 'table' and v.info or {}}
 				if v.type == "weapon" then
-					inventory[slot].metadata.durability = v.info.quality
-					inventory[slot].metadata.ammo = v.info.ammo
+					inventory[slot].metadata.durability = v.info.quality or 100
+					inventory[slot].metadata.ammo = v.info.ammo or 0
 					inventory[slot].metadata.components = {}
 					inventory[slot].metadata.serial = GenerateSerial()
+					inventory[slot].metadata.quality = nil
 				end
 			end
 		end
@@ -194,9 +193,10 @@ local function ConvertQB()
 		end
 
 		local trunk = MySQL.query.await('SELECT plate, items FROM trunkitems')
-		local glovebox = MySQL.query.await('SELECT plate, items FROM gloveboxitems')
 
-		if trunk and glovebox then
+		if trunk then
+			table.wipe(parameters)
+			count = 0
 			local vehicles = {}
 
 			for _, v in pairs(trunk) do
@@ -208,15 +208,47 @@ local function ConvertQB()
 					end
 
 					if not vehicles[owner][v.plate] then
-						vehicles[owner][v.plate] = {}
-					end
+						local items = json.decode(v.items) or {}
+						local inventory, slot = {}, 0
 
-					vehicles[owner][v.plate] = vehicles[owner][v.plate] or {
-						trunk = v.items or '[]',
-						glovebox = '[]'
-					}
+						for _, v in pairs(items) do
+							if Items(v?.name) then
+								slot += 1
+								inventory[slot] = {slot=slot, name=v.name, count=v.amount, metadata = type(v.info) == 'table' and v.info or {}}
+								if v.type == "weapon" then
+									inventory[slot].metadata.durability = v.info.quality or 100
+									inventory[slot].metadata.ammo = v.info.ammo or 0
+									inventory[slot].metadata.components = {}
+									inventory[slot].metadata.serial = GenerateSerial()
+									inventory[slot].metadata.quality = nil
+								end
+							end
+						end
+
+						vehicles[owner][v.plate] = true
+						count += 1
+						parameters[count] = { 'UPDATE player_vehicles SET trunk = ? WHERE plate = ? AND citizenid = ?', { json.encode(inventory), v.plate, owner } }
+					end
 				end
 			end
+
+			Print(('Moving ^3%s^0 trunks to the player_vehicles table'):format(count))
+
+			if count > 0 then
+				if not MySQL.transaction.await(parameters) then
+					return Print('An error occurred while converting trunk inventories')
+				end
+
+				Wait(100)
+			end
+		end
+
+		local glovebox = MySQL.query.await('SELECT plate, items FROM gloveboxitems')
+
+		if glovebox then
+			table.wipe(parameters)
+			count = 0
+			local vehicles = {}
 
 			for _, v in pairs(glovebox) do
 				local owner = plates[v.plate]
@@ -227,44 +259,32 @@ local function ConvertQB()
 					end
 
 					if not vehicles[owner][v.plate] then
-						vehicles[owner][v.plate] = {}
+						local items = json.decode(v.items) or {}
+						local inventory, slot = {}, 0
+
+						for _, v in pairs(items) do
+							if Items(v?.name) then
+								slot += 1
+								inventory[slot] = {slot=slot, name=v.name, count=v.amount, metadata = type(v.info) == 'table' and v.info or {}}
+
+								if v.type == "weapon" then
+									inventory[slot].metadata.durability = v.info.quality or 100
+									inventory[slot].metadata.ammo = v.info.ammo or 0
+									inventory[slot].metadata.components = {}
+									inventory[slot].metadata.serial = GenerateSerial()
+									inventory[slot].metadata.quality = nil
+								end
+							end
+						end
+
+						vehicles[owner][v.plate] = true
+						count += 1
+						parameters[count] = { 'UPDATE player_vehicles SET glovebox = ? WHERE plate = ? AND citizenid = ?', { json.encode(inventory), v.plate, owner } }
 					end
-
-					local vehicle = vehicles[owner][v.plate]
-					vehicle.trunk = vehicle.trunk ~= '[]' and vehicle.trunk or '[]'
-					vehicle.glovebox = vehicle.glovebox ~= '[]' and vehicle.glovebox or v.items or '[]'
 				end
 			end
 
-			Print(('Moving ^3%s^0 trunks and to the player_vehicles table'):format(#trunk))
-			table.wipe(parameters)
-			count = 0
-
-			for owner, v in pairs(vehicles) do
-				for plate, v2 in pairs(v) do
-					count += 1
-					parameters[count] = { 'UPDATE player_vehicles SET trunk = ? WHERE plate = ? AND citizenid = ?', { v2.trunk, plate, owner } }
-				end
-			end
-
-			if count > 0 then
-				if not MySQL.transaction.await(parameters) then
-					return Print('An error occurred while converting trunk inventories')
-				end
-
-				Wait(100)
-			end
-
-			Print(('Moving ^3%s^0 gloveboxes and to the player_vehicles table'):format(#glovebox))
-			table.wipe(parameters)
-			count = 0
-
-			for owner, v in pairs(vehicles) do
-				for plate, v2 in pairs(v) do
-					count += 1
-					parameters[count] = { 'UPDATE player_vehicles SET glovebox = ? WHERE plate = ? AND citizenid = ?', { v2.glovebox, plate, owner } }
-				end
-			end
+			Print(('Moving ^3%s^0 gloveboxes to the player_vehicles table'):format(count))
 
 			if count > 0 then
 				if not MySQL.transaction.await(parameters) then
