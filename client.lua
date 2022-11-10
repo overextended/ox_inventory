@@ -1358,25 +1358,7 @@ RegisterNUICallback('swapItems', function(data, cb)
 		end
 	end
 
-	local success, response, weaponSlot
-
-	if data.fromType == 'crafting' then
-		cb(false)
-		local id, index = currentInventory.id, currentInventory.index
-		success, response = lib.callback.await('ox_inventory:craftItem', 200, currentInventory.id, currentInventory.index, data.fromSlot, data.toSlot)
-
-		if not success then
-			lib.notify({ type = 'error', description = locale(response or 'cannot_perform') })
-		end
-
-		if not currentInventory or currentInventory.type ~= 'crafting' then
-			client.openInventory('crafting', { id = id, index = index })
-		end
-
-		return
-	else
-		success, response, weaponSlot = lib.callback.await('ox_inventory:swapItems', false, data)
-	end
+	local success, response, weaponSlot = lib.callback.await('ox_inventory:swapItems', false, data)
 
 	if success then
 		if response then
@@ -1415,7 +1397,17 @@ end)
 
 RegisterNUICallback('craftItem', function(data, cb)
 	cb(true)
-	print(json.encode(data))
+
+	local id, index = currentInventory.id, currentInventory.index
+	local success, response = lib.callback.await('ox_inventory:craftItem', 200, currentInventory.id, currentInventory.index, data.fromSlot, data.toSlot)
+
+	if not success then
+		lib.notify({ type = 'error', description = locale(response or 'cannot_perform') })
+	end
+
+	if not currentInventory or currentInventory.type ~= 'crafting' then
+		client.openInventory('crafting', { id = id, index = index })
+	end
 end)
 
 lib.callback.register('ox_inventory:getVehicleData', function(netid)
