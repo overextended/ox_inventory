@@ -143,7 +143,7 @@ exports('ModifyShop', function(data)
 	if not Shops[data.shopname] then return end
 	if not Shops[data.shopname][data.shopindex] then return end
 	for i,item in pairs(Shops[data.shopname][data.shopindex].items or {}) do
-		if item.name == data.item then
+		if item.metadata and item.metadata.name or item.name == data.item then
 			if Shops[data.shopname][data.shopindex].items[i][data.parameter] and tonumber(data.value) and data.parameter == 'count' then
 				Shops[data.shopname][data.shopindex].items[i][data.parameter] += data.value
 			else
