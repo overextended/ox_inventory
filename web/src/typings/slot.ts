@@ -17,5 +17,5 @@ export type SlotWithItem = Slot & {
   price?: number;
   currency?: string;
   ingredients?: { [key: string]: number };
-  duration: number;
+  duration?: number;
 };
