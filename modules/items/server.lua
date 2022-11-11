@@ -24,6 +24,23 @@ Items.containers = {
 	}
 }
 
+local CreateItemContainers = function(data)
+	Items.containers[data.name] = {
+		size = data.size,
+		blacklist = data.blacklist,
+		whitelist = data.whitelist
+	}
+end
+exports('CreateItemContainers',CreateItemContainers)
+--@ usage
+-- exports.ox_inventory:CreateItemContainers({
+-- 	name = 'bag',
+-- 	size = {20,10000},
+-- 	blacklist = { 
+-- 		['bag'] = true,
+-- 	}
+-- })
+
 -- Possible metadata when creating garbage
 local trash = {
 	{description = 'An old rolled up newspaper.', weight = 200, image = 'trash_newspaper'},
