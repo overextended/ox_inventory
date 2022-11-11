@@ -4,7 +4,7 @@ local Items = server.items
 local Inventory = server.inventory
 local Shops = {}
 local locations = shared.qtarget and 'targets' or 'locations'
-
+local AllShops = {}
 ---@class OxShopItem
 ---@field name string
 ---@field slot number
@@ -24,6 +24,7 @@ local locations = shared.qtarget and 'targets' or 'locations'
 ---@param shopDetails OxShop
 local function createShop(shopName, shopDetails)
 	Shops[shopName] = {}
+	AllShops[shopName] = shopDetails
 	local shopLocations = shopDetails[locations] or shopDetails.locations
 
 	if shopLocations then
@@ -121,8 +122,10 @@ end
 
 ---@param shopName string
 ---@param shopDetails OxShop
+GlobalState.AllShops = AllShops
 exports('RegisterShop', function(shopName, shopDetails)
 	createShop(shopName, shopDetails)
+	GlobalState.AllShops = AllShops
 end)
 
 -- exports.ox_inventory:RegisterShop('TestShop', {
