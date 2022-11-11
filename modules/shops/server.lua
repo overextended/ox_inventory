@@ -143,6 +143,29 @@ end)
 -- })
 -- Open on client with `exports.ox_inventory:openInventory('shop', {id=1, type='TestShop'})`
 
+exports('ModifyShop', function(data)
+	if not Shops[data.shopname] then return end
+	if not Shops[data.shopname][data.shopindex] then return end
+	for i,item in pairs(Shops[data.shopname][data.shopindex].items or {}) do
+		if item.name == data.item then
+			if Shops[data.shopname][data.shopindex].items[i][data.parameter] and tonumber(data.value) and data.parameter == 'count' then
+				Shops[data.shopname][data.shopindex].items[i][data.parameter] += data.value
+			else
+				Shops[data.shopname][data.shopindex].items[i][data.parameter] = data.value
+			end
+			break
+		end
+	end
+end)
+
+-- exports.ox_inventory:ModifyShop({
+-- 	shopname = 'General',
+-- 	shopindex = 1,
+-- 	item = 'burger',
+-- 	value = 5, -- can be string or number. eg if count should be number. currency are string. this
+-- 	parameter = 'count' -- count, price, currency. or any shop parameter. count will add if item count is existed
+-- })
+
 lib.callback.register('ox_inventory:openShop', function(source, data)
 	local left, shop = Inventory(source)
 
