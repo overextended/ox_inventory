@@ -31,108 +31,105 @@ local function nearbyShop(point)
 end
 
 local ShopData = {}
-local function RunShops()
-	client.shops = setmetatable(ShopData, {
-		__call = function(self)
-			for i = 1, #shops do
-				local shop = shops[i]
+client.shops = setmetatable(ShopData, {
+	__call = function(self)
+		for i = 1, #shops do
+			local shop = shops[i]
 
-				if shop.zoneId then
-					exports.qtarget:RemoveZone(shop.zoneId)
-				end
-
-				if shop.remove then
-					shop:remove()
-				end
-
-				if shop.blip then
-					RemoveBlip(shop.blip)
-				end
+			if shop.zoneId then
+				exports.qtarget:RemoveZone(shop.zoneId)
 			end
 
-			table.wipe(shops)
-			local id = 0
+			if shop.remove then
+				shop:remove()
+			end
 
-			for type, shop in pairs(self) do
-				if shop.jobs then shop.groups = shop.jobs end
+			if shop.blip then
+				RemoveBlip(shop.blip)
+			end
+		end
 
-				if not shop.groups or client.hasGroup(shop.groups) then
-					if shared.qtarget then
-						if shop.model then
-							exports.qtarget:AddTargetModel(shop.model, {
+		table.wipe(shops)
+		local id = 0
+
+		for type, shop in pairs(self) do
+			if shop.jobs then shop.groups = shop.jobs end
+
+			if not shop.groups or client.hasGroup(shop.groups) then
+				if shared.qtarget then
+					if shop.model then
+						exports.qtarget:AddTargetModel(shop.model, {
+							options = {
+								{
+									icon = 'fas fa-shopping-basket',
+									label = shop.label or locale('open_shop', shop.name),
+									action = function()
+										openShop({type=type})
+									end
+								},
+							},
+							distance = 2
+						})
+					elseif shop.targets then
+						for i = 1, #shop.targets do
+							local target = shop.targets[i]
+							local shopid = type..'-'..i
+							id += 1
+
+							shops[id] = {
+								zoneId = shopid,
+								blip = shop.blip and createShopBlip(shop.name, shop.blip, target.loc)
+							}
+
+							exports.qtarget:AddBoxZone(shopid, target.loc, target.length or 0.5, target.width or 0.5, {
+								name = shopid,
+								heading = target.heading or 0.0,
+								debugPoly = target.debug,
+								minZ = target.minZ,
+								maxZ = target.maxZ,
+								drawSprite = target.drawSprite,
+							}, {
 								options = {
 									{
-										icon = 'fas fa-shopping-basket',
+										icon = target.icon or 'fas fa-shopping-basket',
 										label = shop.label or locale('open_shop', shop.name),
+										job = shop.groups,
 										action = function()
-											openShop({type=type})
-										end
+											openShop({id=i, type=type})
+										end,
+										iconColor = target.iconColor,
 									},
 								},
-								distance = 2
-							})
-						elseif shop.targets then
-							for i = 1, #shop.targets do
-								local target = shop.targets[i]
-								local shopid = type..'-'..i
-								id += 1
-
-								shops[id] = {
-									zoneId = shopid,
-									blip = shop.blip and createShopBlip(shop.name, shop.blip, target.loc)
-								}
-
-								exports.qtarget:AddBoxZone(shopid, target.loc, target.length or 0.5, target.width or 0.5, {
-									name = shopid,
-									heading = target.heading or 0.0,
-									debugPoly = target.debug,
-									minZ = target.minZ,
-									maxZ = target.maxZ,
-									drawSprite = target.drawSprite,
-								}, {
-									options = {
-										{
-											icon = target.icon or 'fas fa-shopping-basket',
-											label = shop.label or locale('open_shop', shop.name),
-											job = shop.groups,
-											action = function()
-												openShop({id=i, type=type})
-											end,
-											iconColor = target.iconColor,
-										},
-									},
-									distance = target.distance or 2.0
-								})
-							end
-						end
-					elseif shop.locations then
-						for i = 1, #shop.locations do
-							id += 1
-							local coords = shop.locations[i]
-							shop.target = nil
-							shop.model = nil
-							shops[id] = lib.points.new(coords, 16, {
-								coords = coords,
-								distance = 16,
-								inv = 'shop',
-								invId = i,
-								type = type,
-								nearby = nearbyShop,
-								blip = shop.blip and createShopBlip(shop.name, shop.blip, coords)
+								distance = target.distance or 2.0
 							})
 						end
+					end
+				elseif shop.locations then
+					for i = 1, #shop.locations do
+						id += 1
+						local coords = shop.locations[i]
+						shop.target = nil
+						shop.model = nil
+						shops[id] = lib.points.new(coords, 16, {
+							coords = coords,
+							distance = 16,
+							inv = 'shop',
+							invId = i,
+							type = type,
+							nearby = nearbyShop,
+							blip = shop.blip and createShopBlip(shop.name, shop.blip, coords)
+						})
 					end
 				end
 			end
 		end
-	})
-end
+	end
+})
 
 local function UpdateShops(shops)
 	for shopName,shopDetails in pairs(shops) do
 		ShopData[shopName] = shopDetails
 	end
-	RunShops()
 	client.shops()
 end
 UpdateShops(GlobalState.AllShops)
