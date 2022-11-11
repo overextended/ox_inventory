@@ -339,6 +339,19 @@ button:active {
   }
 }
 
+.tooltip-crafting-duration {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  svg {
+    padding-right: 3px;
+  }
+  p {
+    font-size: 14px;
+  }
+}
+
 .tooltip-ingredients {
   padding-top: 5px;
 }

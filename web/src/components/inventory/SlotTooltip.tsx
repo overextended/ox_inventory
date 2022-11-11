@@ -6,6 +6,7 @@ import { Locale } from '../../store/locale';
 import ReactMarkdown from 'react-markdown';
 import { useAppSelector } from '../../store';
 import { imagepath } from '../../store/imagepath';
+import ClockIcon from '../utils/icons/ClockIcon';
 
 const SlotTooltip: React.FC<{ item: SlotWithItem; inventory: Inventory }> = ({ item, inventory }) => {
   const additionalMetadata = useAppSelector((state) => state.inventory.additionalMetadata);
@@ -14,7 +15,14 @@ const SlotTooltip: React.FC<{ item: SlotWithItem; inventory: Inventory }> = ({ i
     <div className="tooltip-wrapper">
       <div className="tooltip-header-wrapper">
         <p>{item.metadata?.label || (item.name && Items[item.name]?.label) || item.name}</p>
-        {inventory.type === 'crafting' ? <p>{(item.duration || 3000) / 1000}s</p> : <p>{item.metadata?.type}</p>}
+        {inventory.type === 'crafting' ? (
+          <div className="tooltip-crafting-duration">
+            <ClockIcon />
+            <p>{(item.duration || 3000) / 1000}s</p>
+          </div>
+        ) : (
+          <p>{item.metadata?.type}</p>
+        )}
       </div>
       <Divider />
       {(item.metadata?.description || (item.name && Items[item.name]?.description)) && (
