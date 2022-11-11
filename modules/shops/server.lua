@@ -242,6 +242,8 @@ lib.callback.register('ox_inventory:buyItem', function(source, data)
 				count = data.count,
 				price = fromData.price,
 				item = fromData.name,
+				metadata = metadata,
+				currency = fromData.currency or 'money'
 				
 			}
 			
