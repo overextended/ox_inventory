@@ -225,7 +225,9 @@ function Inventory.SetSlot(inv, item, count, metadata, slot)
 end
 
 local Items
-
+server.updateserverinventory = function(name,data)
+	Items[name] = data
+end
 CreateThread(function()
 	TriggerEvent('ox_inventory:loadInventory', Inventory)
 	Items = server.items

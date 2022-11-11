@@ -6,7 +6,9 @@ end
 
 local Inventory = server.inventory
 local Items = server.items
-
+server.updateserveritems = function(name,data)
+	Items[name] = data
+end
 ---@param player table
 ---@param data table?
 --- player requires source, identifier, and name

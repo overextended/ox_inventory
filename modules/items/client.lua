@@ -139,3 +139,7 @@ end)
 exports('Items', GetItem)
 exports('ItemList', GetItem)
 client.items = Items
+client.updateitems = function(data)
+	Items = data
+	client.items = Items
+end

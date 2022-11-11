@@ -411,3 +411,6 @@ end
 -----------------------------------------------------------------------------------------------
 
 server.items = Items
+server.updateitems = function(data)
+	ItemList = data
+end

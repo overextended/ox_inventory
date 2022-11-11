@@ -259,6 +259,9 @@ exports('useItem', useItem)
 
 local Items = client.items
 
+client.updateclientdata = function(data)
+	Items = data
+end
 ---@param slot number
 ---@return boolean?
 local function useSlot(slot)
@@ -274,7 +277,6 @@ local function useSlot(slot)
 		end
 
 		data.slot = slot
-
 		if item.metadata.container then
 			return client.openInventory('container', item.slot)
 		elseif data.client then
