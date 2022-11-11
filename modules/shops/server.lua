@@ -124,9 +124,13 @@ end)
 -- })
 -- Open on client with `exports.ox_inventory:openInventory('shop', {id=1, type='TestShop'})`
 
-exports('RegisterSingleShop', function(shopName, shopDetails, shopIndex, vendor)
+exports('RegisterSingleShop', function(shopName, shopDetails, shopIndex, vendor, update)
 	local index = shopIndex or #Shops[shopName]+1
 	createSingleShop(shopName, shopDetails, shopIndex, vendor)
+	if update then
+		AllShops[shopName].locations[shopIndex] = shopDetails.coord
+		GlobalState.AllShops = AllShops
+	end
 end)
 
 -- @ name : string @ inventory : table @ coord : vec3 @ index : number @ vendor : bool
