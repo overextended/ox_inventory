@@ -162,12 +162,12 @@ do
 		description = %s,
 		client = %s,
 	},
-			]]
+]]
 			local fileSize = #file
 
 			fileSize += 1
 			local formatName = item.name:gsub("'", "\\'"):lower()
-			file[fileSize] = (itemFormat):format(formatName, item.label:gsub("'", "\\'"):lower(), item.weight, item.stack, item.close, item.description and json.encode(item.description) or 'nil', tableFormatter(item.client))
+			file[fileSize] = (itemFormat):format(formatName, item.label:gsub("'", "\\'"):lower(), item.weight, item.stack, item.close, item.description and json.encode(item.description) or 'nil', item.client and tableFormatter(item.client) or 'nil')
 
 			file[fileSize+1] = '}'
 			SaveResourceFile(shared.resource, 'data/items.lua', table.concat(file), -1)
