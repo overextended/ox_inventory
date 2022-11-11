@@ -741,6 +741,7 @@ local function updateInventory(items, weight)
 			PlayerData.inventory[slot] = v and v or nil
 			changes[slot] = v
 		end
+		SendNUIMessage({ action = 'refreshSlots', data = {itemCount = itemCount} })
 		client.setPlayerData('weight', weight)
 	else
 		for i = 1, #items do
@@ -759,9 +760,10 @@ local function updateInventory(items, weight)
 			if not v.count then v.name = nil end
 			PlayerData.inventory[v.slot] = v.name and v or nil
 		end
+		SendNUIMessage({ action = 'refreshSlots', data = {items = items, itemCount = itemCount} })
 		client.setPlayerData('weight', weight.left)
-		SendNUIMessage({ action = 'refreshSlots', data = items })
 	end
+
 
 	for item, count in pairs(itemCount) do
 		local data = Items[item]
@@ -930,6 +932,19 @@ RegisterNetEvent('ox_inventory:setPlayerInventory', function(currentDrops, inven
 
 	local ItemData = table.create(0, #Items)
 
+	for _, data in pairs(inventory) do
+		local item = Items[data.name]
+
+		if item then
+			item.count += data.count
+			local add = item.client?.add
+
+			if add then
+				add(item.count)
+			end
+		end
+	end
+
 	for _, v in pairs(Items) do
 		local buttons = {}
 
@@ -943,24 +958,12 @@ RegisterNetEvent('ox_inventory:setPlayerInventory', function(currentDrops, inven
 			label = v.label,
 			stack = v.stack,
 			close = v.close,
+			count = v.count,
 			description = v.description,
 			buttons = buttons
 		}
 
 		v.count = 0
-	end
-
-	for _, data in pairs(inventory) do
-		local item = Items[data.name]
-
-		if item then
-			item.count += data.count
-			local add = item.client?.add
-
-			if add then
-				add(item.count)
-			end
-		end
 	end
 
 	local phone = Items.phone
@@ -1406,7 +1409,7 @@ RegisterNUICallback('buyItem', function(data, cb)
 
 	if data then
 		updateInventory({[data[1]] = data[2]}, data[4])
-		SendNUIMessage({ action = 'refreshSlots', data = data[3] and {{item = data[2]}, {item = data[3], inventory = 'shop'}} or {item = data[2]}})
+		SendNUIMessage({ action = 'refreshSlots', data = data[3] and {items = {{item = data[2]}, {item = data[3], inventory = 'shop'}}} or {items = {item = data[2]}}})
 	end
 
 	if message then

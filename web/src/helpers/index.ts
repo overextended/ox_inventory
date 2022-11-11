@@ -2,6 +2,7 @@
 import { Inventory, State, Slot, SlotWithItem, InventoryType, ItemData } from '../typings';
 import { isEqual } from 'lodash';
 import { store } from '../store';
+import { Items } from '../store/items';
 
 export const isShopStockEmpty = (itemCount: number | undefined, inventoryType: string) => {
   if (inventoryType === 'shop' && itemCount !== undefined && itemCount === 0) return true;
@@ -18,6 +19,12 @@ export const canCraftItem = (item: Slot, inventoryType: string) => {
 
   const remainingItems = ingredientItems.filter((ingredient) => {
     const [item, count] = [ingredient[0], ingredient[1]];
+
+    if (count >= 1) {
+      // @ts-ignore
+      if (Items[item] && Items[item].count >= count) return false;
+    }
+
     const hasItem = leftInventory.items.find((playerItem) => {
       if (isSlotWithItem(playerItem) && playerItem.name === item) {
         if (count < 1) {
@@ -25,7 +32,6 @@ export const canCraftItem = (item: Slot, inventoryType: string) => {
 
           return false;
         }
-        if (playerItem.count >= count) return true;
       }
     });
 
