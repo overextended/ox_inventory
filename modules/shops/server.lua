@@ -39,8 +39,8 @@ local function createShop(shopName, shopDetails)
 				items = table.clone(shopDetails.inventory),
 				slots = #shopDetails.inventory,
 				type = 'shop',
-				coords = shared.target and shopDetails.targets?[i]?.loc or shopLocations[i],
-				distance = shared.target and shopDetails.targets?[i]?.distance,
+				coords = shared.qtarget and shopDetails.targets?[i]?.loc or shopLocations[i],
+				distance = shared.qtarget and shopDetails.targets?[i]?.distance,
 			}
 
 			for j = 1, Shops[shopName][i].slots do
@@ -153,7 +153,7 @@ lib.callback.register('ox_inventory:openShop', function(source, data)
 			if not group then return end
 		end
 
-		if shop.coords and #(GetEntityCoords(GetPlayerPed(source)) - shop.coords) > 10 then
+		if type(shop.coords) == 'vector3' and #(GetEntityCoords(GetPlayerPed(source)) - shop.coords) > 10 then
 			return
 		end
 
