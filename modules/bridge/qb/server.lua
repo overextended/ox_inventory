@@ -186,10 +186,10 @@ function server.convertInventory(playerId, items)
 				end
 
 				if not hasThis then
-					local account = player.getAccount(name)
+					local amount = player.Functions.GetMoney(name == 'money' and 'cash' or name)
 
-					if account.money then
-						items[#items + 1] = {amount = account.money}
+					if amount then
+						items[#items + 1] = {amount = amount}
 					end
 				end
 			end
@@ -199,11 +199,11 @@ function server.convertInventory(playerId, items)
 			local item = Items(data.name)
 
 			if item and data then
-				local metadata = Items.Metadata(playerId, item, data.info, data.amount)
-				local weight = Inventory.SlotWeight(item, {count = data.amount, metadata = metadata})
+				local metadata, count = Items.Metadata(playerId, item, data.info, data.amount or data.count or 1)
+				local weight = Inventory.SlotWeight(item, {count = count, metadata = metadata})
 				totalWeight += weight
 				slot += 1
-				returnData[slot] = {name = item.name, label = item.label, weight = weight, slot = slot, count = data.amount, description = item.description, metadata = metadata, stack = item.stack, close = item.close}
+				returnData[slot] = {name = item.name, label = item.label, weight = weight, slot = slot, count = count, description = item.description, metadata = metadata, stack = item.stack, close = item.close}
 			end
 		end
 
