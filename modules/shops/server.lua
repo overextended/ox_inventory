@@ -39,8 +39,8 @@ local function createShop(shopName, shopDetails)
 				items = table.clone(shopDetails.inventory),
 				slots = #shopDetails.inventory,
 				type = 'shop',
-				coords = shared.target and shopDetails.targets?[i]?.loc or shopLocations[i],
-				distance = shared.target and shopDetails.targets?[i]?.distance,
+				coords = shared.qtarget and shopDetails.targets?[i]?.loc or shopLocations[i],
+				distance = shared.qtarget and shopDetails.targets?[i]?.distance,
 			}
 
 			for j = 1, Shops[shopName][i].slots do
