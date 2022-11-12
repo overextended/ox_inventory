@@ -390,4 +390,17 @@ return {
     stack = false,
     weight = 10,
   },
+
+  ["nos"] = {
+    label = "Bouteille de NOS",
+    weight = 2000,
+    stack = false,
+    close = true,
+    client = {
+      disable = { move = true, car = true, combat = true },
+      usetime = 3500,
+      cancel = true,
+      export = "ND_Nitro.nos"
+    }
+  },
 }
