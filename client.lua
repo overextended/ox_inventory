@@ -932,26 +932,12 @@ RegisterNetEvent('ox_inventory:setPlayerInventory', function(currentDrops, inven
 
 	local ItemData = table.create(0, #Items)
 
-	for _, data in pairs(inventory) do
-		local item = Items[data.name]
-
-		if item then
-			item.count = 0
-			item.count += data.count
-			local add = item.client?.add
-
-			if add then
-				add(item.count)
-			end
-		end
-	end
-
 	for _, v in pairs(Items) do
-		local buttons = {}
+		local buttons = v.buttons and {} or nil
 
-		if v.buttons then
-			for id, button in pairs(v.buttons) do
-				buttons[id] = button.label
+		if buttons then
+			for i = 1, #v.buttons do
+				buttons[i] = v.buttons[i].label
 			end
 		end
 
@@ -959,12 +945,24 @@ RegisterNetEvent('ox_inventory:setPlayerInventory', function(currentDrops, inven
 			label = v.label,
 			stack = v.stack,
 			close = v.close,
-			count = v.count,
+			count = 0,
 			description = v.description,
 			buttons = buttons
 		}
+	end
 
-		v.count = 0
+	for _, data in pairs(inventory) do
+		local item = Items[data.name]
+
+		if item then
+			item.count += data.count
+			ItemData[data.name].count += data.count
+			local add = item.client?.add
+
+			if add then
+				add(item.count)
+			end
+		end
 	end
 
 	local phone = Items.phone
