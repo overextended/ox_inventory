@@ -27,6 +27,12 @@ export const refreshSlotsReducer: CaseReducer<State, PayloadAction<Payload>> = (
         data.item.durability = itemDurability(data.item.metadata, curTime);
         targetInventory.items[data.item.slot - 1] = data.item;
       });
+
+    // Janky workaround to force a state rerender for crafting inventory to
+    // run canCraftItem checks
+    if (state.rightInventory.type === InventoryType.CRAFTING) {
+      state.rightInventory = { ...state.rightInventory };
+    }
   }
 
   if (action.payload.itemCount) {
