@@ -80,5 +80,7 @@
   "no_durability": "La durabilité de l'item a expiré",
   "cannot_give": "Impossible de donner %s %s à cet inventaire",
   "evidence_cannot_take": "Votre grade ne vous permet pas de récupérer des preuves",
-  "dumpster": "Poubelle"
+  "dumpster": "Poubelle",
+  "crafting_item": "Fabrication %s",
+  "crafting_bench": "Table de fabrication"
 }
