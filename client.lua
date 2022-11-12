@@ -998,31 +998,11 @@ RegisterNetEvent('ox_inventory:setPlayerInventory', function(currentDrops, inven
 		})
 	end
 
-	while not uiLoaded do Wait(50) end
-
-	SendNUIMessage({
-		action = 'init',
-		data = {
-			locale = locales,
-			items = ItemData,
-			leftInventory = {
-				id = cache.playerId,
-				slots = shared.playerslots,
-				items = PlayerData.inventory,
-				maxWeight = shared.playerweight,
-			},
-			imagepath = GetConvar('inventory:imagepath', 'nui://ox_inventory/web/images')
-		}
-	})
-
-	PlayerData.loaded = true
-
 	Shops()
 	Inventory.Stashes()
 	Inventory.Evidence()
 	registerCommands()
 	TriggerEvent('ox_inventory:updateInventory', PlayerData.inventory)
-	lib.notify({ description = locale('inventory_setup') })
 
 	---@param point CPoint
 	local function nearbyLicense(point)
@@ -1050,6 +1030,27 @@ RegisterNetEvent('ox_inventory:setPlayerInventory', function(currentDrops, inven
 			nearby = nearbyLicense
 		})
 	end
+
+	while not uiLoaded do Wait(50) end
+
+	SendNUIMessage({
+		action = 'init',
+		data = {
+			locale = locales,
+			items = ItemData,
+			leftInventory = {
+				id = cache.playerId,
+				slots = shared.playerslots,
+				items = PlayerData.inventory,
+				maxWeight = shared.playerweight,
+			},
+			imagepath = GetConvar('inventory:imagepath', 'nui://ox_inventory/web/images')
+		}
+	})
+
+	PlayerData.loaded = true
+
+	lib.notify({ description = locale('inventory_setup') })
 
 	client.interval = SetInterval(function()
 		if invOpen == false then
