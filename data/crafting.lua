@@ -5,6 +5,7 @@ return {
 				name = 'lockpick',
 				ingredients = {
 					garbage = 3,
+					WEAPON_HAMMER = 0.1
 				},
 				duration = 5000,
 				amount = 3,

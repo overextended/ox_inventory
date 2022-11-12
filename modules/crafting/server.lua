@@ -79,7 +79,16 @@ lib.callback.register('ox_inventory:craftItem', function(source, id, index, reci
 				for i = 1, #slots do
 					local slot = slots[i]
 
-					if needs <= slot.count then
+					if needs == 0 then
+						if not slot.metadata.durability or slot.metadata.durability > 0 then
+							break
+						end
+					elseif needs <= 1 then
+						if slot.metadata.durability >= needs * 100 then
+							tbl[slot.slot] = needs
+							break
+						end
+					elseif needs <= slot.count then
 						local itemWeight = slot.weight / slot.count
 						newWeight = (newWeight - slot.weight) + (slot.count - needs) * itemWeight
 						tbl[slot.slot] = needs
@@ -109,10 +118,23 @@ lib.callback.register('ox_inventory:craftItem', function(source, id, index, reci
 
 				for slot, count in pairs(tbl) do
 					local invSlot = left.items[slot]
-					local removed = invSlot and Inventory.RemoveItem(left, invSlot.name, count, nil, slot)
 
-					-- Failed to remove item (inventory state unexpectedly changed?)
-					if not removed then return end
+					if count < 1 then
+						local durability = invSlot.metadata.durability
+						durability -= count * 100
+						invSlot.metadata.durability = durability
+
+						TriggerClientEvent('ox_inventory:updateSlots', source, {
+							{
+								item = invSlot,
+								inventory = left.type
+							}
+						}, { left = left.weight })
+					else
+						local removed = invSlot and Inventory.RemoveItem(left, invSlot.name, count, nil, slot)
+						-- Failed to remove item (inventory state unexpectedly changed?)
+						if not removed then return end
+					end
 				end
 
 				Inventory.AddItem(left, craftedItem, recipe.amount or 1, recipe.metadata or {}, toSlot)
