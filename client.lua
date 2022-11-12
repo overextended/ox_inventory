@@ -936,6 +936,7 @@ RegisterNetEvent('ox_inventory:setPlayerInventory', function(currentDrops, inven
 		local item = Items[data.name]
 
 		if item then
+			item.count = 0
 			item.count += data.count
 			local add = item.client?.add
 
