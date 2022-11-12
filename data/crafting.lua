@@ -11,6 +11,13 @@ return {
 				amount = 3,
 				metadata = { durability = 20 }
 			},
+			{
+				name = 'garbage',
+				ingredients = {
+					cola = 1
+				},
+				metadata = { description = 'An empty soda can.', weight = 20, image = 'trash_can' }
+			},
 		},
 		points = {
 			vec3(-1147.083008, -2002.662109, 13.180260),
@@ -21,7 +28,6 @@ return {
 				size = vec3(3.8, 1.05, 0.15),
 				distance = 1.5,
 				rotation = 315.0,
-				debug = true,
 			},
 		},
 		blip = { id = 566, colour = 31, scale = 0.8 },
