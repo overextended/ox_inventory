@@ -4,15 +4,14 @@ local CraftingBenches = {}
 local Items = client.items
 local locations = shared.target == 'ox_target' and 'zones' or 'points'
 
-local function createBlip(name, coords, settings)
+local function createBlip(settings, coords)
 	local blip = AddBlipForCoord(coords.x, coords.y, coords.z)
 	SetBlipSprite(blip, settings.id)
 	SetBlipDisplay(blip, 4)
 	SetBlipScale(blip, settings.scale)
 	SetBlipColour(blip, settings.colour)
 	SetBlipAsShortRange(blip, true)
-	AddTextEntry(name, name)
-	BeginTextCommandSetBlipName(name)
+	BeginTextCommandSetBlipName(settings.name)
 	EndTextCommandSetBlipName(blip)
 end
 
@@ -31,6 +30,13 @@ local function createCraftingBench(id, data)
 			local item = Items[recipe.name]
 			recipe.weight = item.weight
 			recipe.slot = i
+		end
+
+		local blip = data.blip
+
+		if blip then
+			blip.name = blip.name or ('ox_crafting_%s'):format(data.label and id or 0)
+			AddTextEntry(blip.name, data.label or locale('crafting_bench'))
 		end
 
 		if shared.target == 'ox_target' then
@@ -56,8 +62,8 @@ local function createCraftingBench(id, data)
 
 				exports.ox_target:addBoxZone(zone)
 
-				if data.blip then
-					createBlip(data.label or 'Crafting Bench', zone.coords, data.blip)
+				if blip then
+					createBlip(blip, zone.coords)
 				end
 			end
 		else
@@ -81,8 +87,8 @@ local function createCraftingBench(id, data)
 					nearby = nearbyBench
 				})
 
-				if data.blip then
-					createBlip(data.label or locale('crafting_bench'), coords, data.blip)
+				if blip then
+					createBlip(blip, coords)
 				end
 			end
 		end
