@@ -80,7 +80,7 @@ end
 ---@param data table | string | number
 ---@param searchPlayer boolean
 ---@return boolean?
-function client.openInventory(inv, data, searchPlayer)
+function client.openInventory(inv, data)
 	if invOpen then
 		if not inv and currentInventory.type == 'newdrop' then
 			return client.closeInventory()
@@ -137,10 +137,9 @@ function client.openInventory(inv, data, searchPlayer)
 		end
 
 		if left then
-			if inv ~= 'trunk' and not cache.vehicle and not searchPlayer then
+			if inv ~= 'trunk' and not cache.vehicle and inv ~= "otherplayer" then
 				Utils.PlayAnim(1000, 'pickup_object', 'putdown_low', 5.0, 1.5, -1, 48, 0.0, 0, 0, 0)
-			end
-      if searchPlayer then
+      elseif inv == "otherplayer" then
         ExecuteCommand("e warmth")
       end
 
@@ -425,7 +424,7 @@ local function openNearbyInventory()
 		local targetId, targetPed = Utils.GetClosestPlayer()
 
 		if targetId and (client.hasGroup(shared.police) or canOpenTarget(targetPed)) then
-			client.openInventory('player', GetPlayerServerId(targetId), true)
+			client.openInventory('player', GetPlayerServerId(targetId))
 		end
 	end
 end
