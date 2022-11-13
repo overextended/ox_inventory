@@ -1064,7 +1064,7 @@ RegisterNetEvent('ox_inventory:setPlayerInventory', function(currentDrops, inven
 
 						if not id or #(playerCoords - pedCoords) > 1.8 or not (client.hasGroup(shared.police) or canOpenTarget(ped)) then
 							client.closeInventory()
-              ClearPedSecondaryTask(ped)
+              ClearPedSecondaryTask(playerPed)
 							lib.notify({ type = 'error', description = locale('inventory_lost_access') })
 						else
 							TaskTurnPedToFaceCoord(playerPed, pedCoords.x, pedCoords.y, pedCoords.z, 50)
@@ -1072,7 +1072,7 @@ RegisterNetEvent('ox_inventory:setPlayerInventory', function(currentDrops, inven
 
 					elseif currentInventory.coords and (#(playerCoords - currentInventory.coords) > (currentInventory.distance or 2.0) or canOpenTarget(playerPed)) then
 						client.closeInventory()
-            ClearPedSecondaryTask(ped)
+            ClearPedSecondaryTask(playerPed)
 						lib.notify({ type = 'error', description = locale('inventory_lost_access') })
 					end
 				end
