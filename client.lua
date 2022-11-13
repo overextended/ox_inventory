@@ -137,7 +137,7 @@ function client.openInventory(inv, data, searchPlayer)
 		end
 
 		if left then
-			if inv ~= 'trunk' and not cache.vehicle then
+			if inv ~= 'trunk' and not cache.vehicle and not searchPlayer then
 				Utils.PlayAnim(1000, 'pickup_object', 'putdown_low', 5.0, 1.5, -1, 48, 0.0, 0, 0, 0)
 			end
       if searchPlayer then
