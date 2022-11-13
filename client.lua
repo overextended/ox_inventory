@@ -1072,6 +1072,7 @@ RegisterNetEvent('ox_inventory:setPlayerInventory', function(currentDrops, inven
 
 					elseif currentInventory.coords and (#(playerCoords - currentInventory.coords) > (currentInventory.distance or 2.0) or canOpenTarget(playerPed)) then
 						client.closeInventory()
+            ClearPedSecondaryTask(ped)
 						lib.notify({ type = 'error', description = locale('inventory_lost_access') })
 					end
 				end
