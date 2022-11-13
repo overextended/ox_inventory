@@ -141,7 +141,7 @@ function client.openInventory(inv, data, searchPlayer)
 				Utils.PlayAnim(1000, 'pickup_object', 'putdown_low', 5.0, 1.5, -1, 48, 0.0, 0, 0, 0)
 			end
       if searchPlayer then
-        Utils.PlayAnim(0, 'amb@world_human_stand_fire@male@idle_a', 'idle_a', 1.0, 1.0, -1, 50, 0.0, 0, 0, 0)
+        Utils.PlayAnim(0, 'amb@world_human_stand_fire@male@idle_a', 'idle_a', 2.0, 2.0, -1, 1, 0.0, 0, 0, 0)
       end
 
 			plyState.invOpen = true
