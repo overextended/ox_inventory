@@ -170,10 +170,7 @@ function client.openInventory(inv, data, searchPlayer)
 			-- Stash does not exist
 			if left == false then return false end
 			if invOpen == false then lib.notify({ type = 'error', description = locale('inventory_right_access') }) end
-			if invOpen then 
-        client.closeInventory() 
-        ClearPedTasks(PlayerPedId())
-      end
+			if invOpen then client.closeInventory() end
 		end
 	elseif invBusy then lib.notify({ type = 'error', description = locale('inventory_player_access') }) end
 end
@@ -1068,6 +1065,7 @@ RegisterNetEvent('ox_inventory:setPlayerInventory', function(currentDrops, inven
 
 						if not id or #(playerCoords - pedCoords) > 1.8 or not (client.hasGroup(shared.police) or canOpenTarget(ped)) then
 							client.closeInventory()
+              ClearPedSecondaryTask(ped)
 							lib.notify({ type = 'error', description = locale('inventory_lost_access') })
 						else
 							TaskTurnPedToFaceCoord(playerPed, pedCoords.x, pedCoords.y, pedCoords.z, 50)
