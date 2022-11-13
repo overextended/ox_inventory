@@ -47,17 +47,6 @@ Item('bandage', function(data, slot)
 	end)
 end)
 
-Item('armour', function(data, slot)
-	if GetPedArmour(cache.ped) < 100 then
-		ox_inventory:useItem(data, function(data)
-			if data then
-				SetPlayerMaxArmour(PlayerData.id, 100)
-				SetPedArmour(cache.ped, 100)
-			end
-		end)
-	end
-end)
-
 client.parachute = false
 Item('parachute', function(data, slot)
 	if not client.parachute then

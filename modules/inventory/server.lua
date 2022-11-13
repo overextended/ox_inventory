@@ -878,7 +878,10 @@ function Inventory.Search(inv, search, items, metadata)
 
 			for i = 1, itemCount do
 				local item = string.lower(items[i])
-				if item:sub(0, 7) == 'weapon_' then item = string.upper(item) end
+				if item:sub(0, 7) == 'weapon_' then 
+          item = string.upper(item) 
+          items[i] = item
+        end
 
 				if search == 1 then
 					returnData[item] = {}
@@ -890,17 +893,26 @@ function Inventory.Search(inv, search, items, metadata)
 					if v.name == item then
 						if not v.metadata then v.metadata = {} end
 
-						if not metadata or table.contains(v.metadata, metadata) then
-							if search == 1 then
-								returnData[item][#returnData[item]+1] = inv[v.slot]
-							elseif search == 2 then
-								returnData[item] += v.count
-							end
+						if metadata then
+              local allMetadataFound = true
+              for key, value in pairs(metadata) do
+                if not v.metadata[key] or v.metadata[key] ~= value then
+                  allMetadataFound = false
+                end
+              end
+
+              if not allMetadataFound then return end
+            end
+
+						if search == 1 then
+							returnData[item][#returnData[item]+1] = inv[v.slot]
+						elseif search == 2 then
+							returnData[item] += v.count
 						end
 					end
 				end
 			end
-
+      
 			if next(returnData) then return itemCount == 1 and returnData[items[1]] or returnData end
 		end
 	end
@@ -918,10 +930,18 @@ function Inventory.GetItemSlots(inv, item, metadata)
 	for k, v in pairs(inv.items) do
 		emptySlots -= 1
 		if v.name == item.name then
-			if metadata and v.metadata == nil then
-				v.metadata = {}
-			end
-			if not metadata or table.matches(v.metadata, metadata) then
+      local allMetadataFound = true
+      if metadata then
+        if v.metadata == nil then v.metadata = {} end
+
+        for key, value in pairs(metadata) do
+          if not v.metadata[key] or v.metadata[key] ~= value then
+            allMetadataFound = false
+          end
+        end
+      end
+
+			if allMetadataFound then
 				totalCount = totalCount + v.count
 				slots[k] = v.count
 			end
