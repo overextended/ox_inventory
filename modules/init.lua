@@ -64,6 +64,7 @@ else
 		aimedfiring = GetConvar('inventory:aimedfiring', 'false') == 'true',
 		giveplayerlist = GetConvar('inventory:giveplayerlist', 'false') == 'true',
 		weaponanims = GetConvar('inventory:weaponanims', 'true') == 'true',
+		itemnotify = GetConvar('inventory:itemnotify', 'true') == 'true',
 	}
 end
 
