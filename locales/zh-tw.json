@@ -80,5 +80,7 @@
   "no_durability": "物品耐久度已耗盡",
   "cannot_give": "無法將 %s %s 給予目標 ",
   "evidence_cannot_take": "階級不夠，無法拿取證物",
-  "dumpster": "垃圾桶"
+  "dumpster": "垃圾桶",
+  "crafting_item": "製作 %s",
+  "crafting_bench": "工作台"
 }
