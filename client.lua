@@ -137,9 +137,9 @@ function client.openInventory(inv, data)
 		end
 
 		if left then
-			if inv ~= 'trunk' and not cache.vehicle and inv ~= "otherplayer" then
+			if inv ~= 'trunk' and not cache.vehicle and currentInventory.type ~= "otherplayer" then
 				Utils.PlayAnim(1000, 'pickup_object', 'putdown_low', 5.0, 1.5, -1, 48, 0.0, 0, 0, 0)
-      elseif inv == "otherplayer" then
+      elseif currentInventory.type == "otherplayer" then
         ExecuteCommand("e warmth")
       end
 
