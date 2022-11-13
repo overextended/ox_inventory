@@ -57,7 +57,7 @@ local function createCraftingBench(id, data)
 				exports.ox_target:addBoxZone(zone)
 
 				if data.blip then
-					createBlip(data.label or locale('crafting_bench'), zone.coords, data.blip)
+					createBlip(data.label or 'Crafting Bench', zone.coords, data.blip)
 				end
 			end
 		else

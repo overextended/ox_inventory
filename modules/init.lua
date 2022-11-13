@@ -6,7 +6,6 @@ lib.locale()
 shared = {
 	resource = GetCurrentResourceName(),
 	framework = GetConvar('inventory:framework', 'esx'),
-	locale = GetConvar('inventory:locale', 'en'),
 	playerslots = GetConvarInt('inventory:slots', 50),
 	playerweight = GetConvarInt('inventory:weight', 30000),
 	target = GetConvar('inventory:target', 'false') == 'true',
