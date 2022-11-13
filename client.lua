@@ -170,7 +170,10 @@ function client.openInventory(inv, data, searchPlayer)
 			-- Stash does not exist
 			if left == false then return false end
 			if invOpen == false then lib.notify({ type = 'error', description = locale('inventory_right_access') }) end
-			if invOpen then client.closeInventory() end
+			if invOpen then 
+        client.closeInventory() 
+        ClearPedTasks(PlayerPedId())
+      end
 		end
 	elseif invBusy then lib.notify({ type = 'error', description = locale('inventory_player_access') }) end
 end
