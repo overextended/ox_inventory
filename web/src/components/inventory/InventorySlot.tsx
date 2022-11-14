@@ -135,8 +135,11 @@ const InventorySlot: React.FC<SlotProps> = ({ inventory, item }) => {
         {isSlotWithItem(item) && (
           <div className="item-slot-wrapper">
             <div
-              className="item-slot-header-wrapper"
-              style={{ justifyContent: inventory.type === 'player' && item.slot <= 5 ? 'space-between' : 'flex-end' }}
+              className={
+                inventory.type === 'player' && item.slot <= 5
+                  ? 'item-hotslot-header-wrapper'
+                  : 'item-slot-header-wrapper'
+              }
             >
               {inventory.type === 'player' && item.slot <= 5 && (
                 <div className="inventory-slot-number">{item.slot}</div>

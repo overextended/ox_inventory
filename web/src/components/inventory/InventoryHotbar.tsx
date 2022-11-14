@@ -3,7 +3,7 @@ import { isSlotWithItem } from '../../helpers';
 import useNuiEvent from '../../hooks/useNuiEvent';
 import { Items } from '../../store/items';
 import WeightBar from '../utils/WeightBar';
-import { Slide, Typography } from '@mui/material';
+import { Slide } from '@mui/material';
 import { useAppSelector } from '../../store';
 import { selectLeftInventory } from '../../store/inventory';
 import { imagepath } from '../../store/imagepath';
@@ -40,7 +40,7 @@ const InventoryHotbar: React.FC = () => {
                 <div className="hotbar-slot-header-wrapper">
                   <div className="inventory-slot-number">{item.slot}</div>
                   <div className="item-slot-info-wrapper">
-                    <Typography fontSize={12}>
+                    <p>
                       {item.weight > 0
                         ? item.weight >= 1000
                           ? `${(item.weight / 1000).toLocaleString('en-us', {
@@ -50,8 +50,8 @@ const InventoryHotbar: React.FC = () => {
                               minimumFractionDigits: 0,
                             })}g `
                         : ''}
-                    </Typography>
-                    <Typography fontSize={12}>{item.count ? item.count.toLocaleString('en-us') + `x` : ''}</Typography>
+                    </p>
+                    <p>{item.count ? item.count.toLocaleString('en-us') + `x` : ''}</p>
                   </div>
                 </div>
                 <div>
