@@ -61,7 +61,7 @@
   "shop_nostock": "Ítem sin stock",
   "identification": "Sexo: %s \nFecha de Nacimiento: %s",
   "search_dumpster": "Buscar en el Basurero",
-  "open_shop": "Abrir %s",
+  "open_label": "Abrir %s",
   "purchased_for": "Comprar %s %s por %s%s",
   "unable_stack_items": "¡No puedes apilar estos ítems!",
   "police_evidence": "Evidencia Policial",

@@ -69,6 +69,10 @@ input[type='number']::-webkit-outer-spin-button {
   font-size: 16px !important;
 }
 
+.tooltip-description {
+  padding-top: 5px;
+}
+
 .tooltip-markdown > p {
   margin: 0;
 }
@@ -115,7 +119,7 @@ button:active {
   .inventory-control-input {
     transition: 200ms;
     padding: 16px 8px;
-    border-radius: 0.25vh;
+    border-radius: 2.5%;
     font-family: $mainFont;
     font-size: 16px;
     text-align: center;
@@ -134,7 +138,7 @@ button:active {
     background-color: $seconaryColor;
     transition: 200ms;
     padding: 12px 8px;
-    border-radius: 0.25vh;
+    border-radius: 2.5%;
     border: none;
     text-transform: uppercase;
     font-family: $mainFont;
@@ -157,7 +161,7 @@ button:active {
   bottom: 25px;
   right: 25px;
   transition: 200ms !important;
-  border-radius: 4px !important;
+  border-radius: 5% !important;
   background-color: $seconaryColor !important;
   &:hover {
     background-color: $secondaryColorDark !important;
@@ -168,7 +172,7 @@ button:active {
   position: absolute !important;
   right: 8px;
   top: 8px;
-  border-radius: 0.25vh !important;
+  border-radius: 2.5% !important;
   color: grey !important;
 }
 
@@ -192,7 +196,7 @@ button:active {
 .inventory-grid-wrapper {
   display: flex;
   flex-direction: column;
-  gap: 10px;
+  gap: calc($gridGap * 2);
 }
 .inventory-grid-header-wrapper {
   display: flex;
@@ -214,7 +218,7 @@ button:active {
   background-color: $seconaryColor;
   background-repeat: no-repeat;
   background-position: center;
-  border-radius: 0.25vh;
+  border-radius: 2.5%;
   image-rendering: -webkit-optimize-contrast;
   position: relative;
   background-size: 7vh;
@@ -335,6 +339,34 @@ button:active {
   }
 }
 
+.tooltip-crafting-duration {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  svg {
+    padding-right: 3px;
+  }
+  p {
+    font-size: 14px;
+  }
+}
+
+.tooltip-ingredients {
+  padding-top: 5px;
+}
+
+.tooltip-ingredient {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  img {
+    width: 28px;
+    height: 28px;
+    padding-right: 5px;
+  }
+}
+
 // hotbar
 .hotbar-container {
   display: flex;
@@ -388,4 +420,18 @@ button:active {
   @extend .inventory-slot;
   height: $gridSize;
   width: $gridSize;
+}
+
+.durability-bar {
+  background: rgba(0, 0, 0, 0.5);
+  height: 3px;
+  overflow: hidden;
+}
+
+.weight-bar {
+  background: rgba(0, 0, 0, 0.4);
+  border: 1px inset rgba(0, 0, 0, 0.1);
+  height: 0.8vh;
+  border-radius: 5%;
+  overflow: hidden;
 }

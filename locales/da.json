@@ -61,7 +61,7 @@
   "shop_nostock": "Varen er ikke på lager",
   "identification": "Køn: %s  \nFødselsdato: %s",
   "search_dumpster": "Undersøg Skraldespand",
-  "open_shop": "Åben %s",
+  "open_label": "Åben %s",
   "purchased_for": "Købte %s %s for %s%s",
   "unable_stack_items": "Du kan ikke lægge disse ting i stakken",
   "police_evidence": "Politi bevismateriale",

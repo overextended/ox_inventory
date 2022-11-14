@@ -61,7 +61,7 @@
   "shop_nostock": "Towar jest niedostępny",
   "identification": "Płeć: %s  \nData urodzenia: %s",
   "search_dumpster": "Przeszukaj śmietnik",
-  "open_shop": "Otwórz %s",
+  "open_label": "Otwórz %s",
   "purchased_for": "Kupiono %s %s za %s%s",
   "unable_stack_items": "Nie możesz układać tych przedmiotów w stos",
   "police_evidence": "Dowody policyjne",
