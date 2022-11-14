@@ -189,7 +189,7 @@ function server.convertInventory(playerId, items)
 					local amount = player.Functions.GetMoney(name == 'money' and 'cash' or name)
 
 					if amount then
-						items[#items + 1] = { name = 'money', amount = amount }
+						items[#items + 1] = { name = name, amount = amount }
 					end
 				end
 			end
