@@ -44,7 +44,7 @@ end)
 local function playerDropped(source)
 	local inv = Inventory(source)
 
-	if inv then
+	if inv?.player then
 		local openInventory = inv.open and Inventory(inv.open)
 
 		if openInventory then
