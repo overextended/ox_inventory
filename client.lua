@@ -998,10 +998,6 @@ RegisterNetEvent('ox_inventory:setPlayerInventory', function(currentDrops, inven
 		})
 	end
 
-	Shops()
-	Inventory.Stashes()
-	Inventory.Evidence()
-	registerCommands()
 	TriggerEvent('ox_inventory:updateInventory', PlayerData.inventory)
 
 	---@param point CPoint
@@ -1051,6 +1047,10 @@ RegisterNetEvent('ox_inventory:setPlayerInventory', function(currentDrops, inven
 	PlayerData.loaded = true
 
 	lib.notify({ description = locale('inventory_setup') })
+	Shops()
+	Inventory.Stashes()
+	Inventory.Evidence()
+	registerCommands()
 
 	client.interval = SetInterval(function()
 		if invOpen == false then
