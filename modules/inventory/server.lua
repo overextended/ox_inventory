@@ -1542,9 +1542,11 @@ function Inventory.Clear(inv, keep)
 		table.wipe(inv.items)
 		inv.items = keptItems
 	else
-		for slot in pairs(inv.items) do
-			inc += 1
-			updateSlots[inc] = { item = { slot = slot }, inventory = inv.type }
+		if updateSlots then
+			for slot in pairs(inv.items) do
+				inc += 1
+				updateSlots[inc] = { item = { slot = slot }, inventory = inv.type }
+			end
 		end
 
 		table.wipe(inv.items)
@@ -1553,7 +1555,18 @@ function Inventory.Clear(inv, keep)
 	inv.weight = newWeight
 	inv.changed = true
 
-	if not inv.player then return end
+	if not inv.player then
+		if inv.open then
+			local playerInv = Inventory(inv.open)
+			TriggerClientEvent('ox_inventory:closeInventory', inv.open, true)
+			playerInv:set('open', false)
+		end
+
+		inv:set('open', false)
+
+		return
+	end
+
 	if server.syncInventory then server.syncInventory(inv) end
 
 	inv.weapon = nil
@@ -1843,8 +1856,8 @@ lib.addCommand('group.admin', 'returninv', function(source, args)
 end, {'target:number'})
 
 lib.addCommand('group.admin', 'clearinv', function(source, args)
-	Inventory.Clear(args.target)
-end, {'target:number'})
+	Inventory.Clear(tonumber(args.target) or args.target)
+end, {'target'})
 
 lib.addCommand('group.admin', 'saveinv', function(source, args)
 	saveInventories(args[1] == 1 or args[1] == 'true')
