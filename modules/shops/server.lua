@@ -3,7 +3,7 @@ if not lib then return end
 local Items = server.items
 local Inventory = server.inventory
 local Shops = {}
-local locations = shared.qtarget and 'targets' or 'locations'
+local locations = shared.target and 'targets' or 'locations'
 local AllShops = {}
 ---@class OxShopItem
 ---@field name string
@@ -26,8 +26,8 @@ local AllShops = {}
 local function createSingleShop(shopName,shopDetails,index,vendor)
 	local groups = shopDetails.groups or shopDetails.jobs
 	local data = Shops[shopName]
-	local dist = shared.qtarget and shopDetails.targets?[index]?.distance or 1.5
-	local coord = shared.qtarget and shopDetails.targets?[index]?.loc
+	local dist = shared.target and shopDetails.targets?[index]?.distance or 1.5
+	local coord = shared.target and shopDetails.targets?[index]?.loc
 	if not vendor then
 		coord = shopDetails.coord or shopDetails?.locations[index]
 		if not Shops[shopName][index] then Shops[shopName][index] = {} end
