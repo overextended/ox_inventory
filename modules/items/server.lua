@@ -293,19 +293,19 @@ function Items.Metadata(inv, item, metadata, count)
 			count = 1
 			metadata.container = metadata.container or GenerateText(3)..os.time()
 			metadata.size = container.size
-		elseif item.name == 'identification' then
-			count = 1
-			if next(metadata) == nil then
+		elseif not next(metadata) then
+			if item.name == 'identification' then
+				count = 1
 				metadata = {
 					type = inv.player.name,
 					description = locale('identification', (inv.player.sex) and locale('male') or locale('female'), inv.player.dateofbirth)
 				}
+			elseif item.name == 'garbage' then
+				local trashType = trash[math.random(1, #trash)]
+				metadata.image = trashType.image
+				metadata.weight = trashType.weight
+				metadata.description = trashType.description
 			end
-		elseif item.name == 'garbage' then
-			local trashType = trash[math.random(1, #trash)]
-			metadata.image = trashType.image
-			metadata.weight = trashType.weight
-			metadata.description = trashType.description
 		end
 
 		if not metadata?.durability then

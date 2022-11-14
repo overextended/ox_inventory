@@ -61,7 +61,7 @@
   "shop_nostock": "البضاعة غير متوفرة",
   "identification": "%s الجنس \n %s تاريخ الميلاد",
   "search_dumpster": "بحث القمامة",
-  "open_shop": "%s فتح",
+  "open_label": "%s فتح",
   "purchased_for": "%s %s = %s%s",
   "unable_stack_items": "أنت غير قادر على تكديس هذه العناصر",
   "police_evidence": "مخزن الأدلة",

@@ -61,7 +61,7 @@
   "shop_nostock": "Izdelka ni na zalogi",
   "identification": "Spol: %s \nDatum rojstva: %s",
   "search_dumpster": "Išči smetišče",
-  "open_shop": "Odpri %s",
+  "open_label": "Odpri %s",
   "purchased_for": "Kupljeno %s %s za %s%s",
   "unable_stack_items": "Teh elementov ne morete zložiti",
   "police_evidence": "Policijski dokazi",

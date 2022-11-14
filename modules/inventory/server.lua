@@ -1073,9 +1073,9 @@ RegisterServerEvent('ox_inventory:removeItem', function(name, count, metadata, s
 		end
 
 		if not durability then
-			Inventory.RemoveItem(source, slot.name, item.consume < 1 and 1 or item.consume, nil, slot.slot)
+			Inventory.RemoveItem(inv.id, slot.name, item.consume < 1 and 1 or item.consume, nil, slot.slot)
 		else
-			TriggerClientEvent('ox_inventory:updateSlots', source, {
+			TriggerClientEvent('ox_inventory:updateSlots', inv.id, {
 				{
 					item = slot,
 					inventory = inv.type
@@ -1465,6 +1465,7 @@ exports('ConfiscateInventory', Inventory.Confiscate)
 
 function Inventory.Return(source)
 	local inv = Inventories[source]
+
 	if inv?.player then
 		MySQL.scalar('SELECT data FROM ox_inventory WHERE name = ?', { inv.owner }, function(data)
 			if data then
@@ -1488,8 +1489,9 @@ function Inventory.Return(source)
 				inv.weight = totalWeight
 				inv.items = inventory
 
-				if server.syncInventory then server.syncInventory(inv) end
 				TriggerClientEvent('ox_inventory:inventoryReturned', source, {inventory, totalWeight})
+
+				if server.syncInventory then server.syncInventory(inv) end
 			end
 		end)
 	end
@@ -1542,9 +1544,11 @@ function Inventory.Clear(inv, keep)
 		table.wipe(inv.items)
 		inv.items = keptItems
 	else
-		for slot in pairs(inv.items) do
-			inc += 1
-			updateSlots[inc] = { item = { slot = slot }, inventory = inv.type }
+		if updateSlots then
+			for slot in pairs(inv.items) do
+				inc += 1
+				updateSlots[inc] = { item = { slot = slot }, inventory = inv.type }
+			end
 		end
 
 		table.wipe(inv.items)
@@ -1553,7 +1557,18 @@ function Inventory.Clear(inv, keep)
 	inv.weight = newWeight
 	inv.changed = true
 
-	if not inv.player then return end
+	if not inv.player then
+		if inv.open then
+			local playerInv = Inventory(inv.open)
+			TriggerClientEvent('ox_inventory:closeInventory', inv.open, true)
+			playerInv:set('open', false)
+		end
+
+		inv:set('open', false)
+
+		return
+	end
+
 	if server.syncInventory then server.syncInventory(inv) end
 
 	inv.weapon = nil
@@ -1664,7 +1679,7 @@ RegisterServerEvent('ox_inventory:giveItem', function(slot, target, count)
 		local item = Items(data.name)
 
 		if not toInventory.open and data and data.count >= count and Inventory.CanCarryItem(toInventory, item, count, data.metadata) and TriggerEventHooks('swapItems', {
-			source = source,
+			source = fromInventory.id,
 			fromInventory = fromInventory.id,
 			fromType = fromInventory.type,
 			toInventory = toInventory.id,
@@ -1679,7 +1694,7 @@ RegisterServerEvent('ox_inventory:giveItem', function(slot, target, count)
 				lib.logger(fromInventory.owner, 'giveItem', ('"%s" gave %sx %s to "%s"'):format(fromInventory.label, count, data.name, toInventory.label))
 			end
 		else
-			TriggerClientEvent('ox_lib:notify', source, { type = 'error', description = locale('cannot_give', count, data.label) })
+			TriggerClientEvent('ox_lib:notify', fromInventory.id, { type = 'error', description = locale('cannot_give', count, data.label) })
 		end
 	end
 end)
@@ -1705,7 +1720,7 @@ RegisterServerEvent('ox_inventory:updateWeapon', function(action, value, slot)
 					if v == value.component then
 						table.remove(item.metadata.components, k)
 						Inventory.AddItem(inventory, value.component, 1)
-						return TriggerClientEvent('ox_inventory:updateSlots', source, {{item = item}}, {left=inventory.weight})
+						return TriggerClientEvent('ox_inventory:updateSlots', inventory.id, {{item = item}}, {left=inventory.weight})
 					end
 				end
 			end
@@ -1759,14 +1774,14 @@ RegisterServerEvent('ox_inventory:updateWeapon', function(action, value, slot)
 				syncInventory = true
 			end
 
-			if (server.syncInventory) and syncInventory then
-				server.syncInventory(inventory)
-			end
-
-			if action ~= 'throw' then TriggerClientEvent('ox_inventory:updateSlots', source, {{item = weapon}}, {left=inventory.weight}) end
+			if action ~= 'throw' then TriggerClientEvent('ox_inventory:updateSlots', inventory.id, {{item = weapon}}, {left=inventory.weight}) end
 
 			if weapon.metadata.durability and weapon.metadata.durability < 1 and action ~= 'load' and action ~= 'component' then
-				TriggerClientEvent('ox_inventory:disarm', source)
+				TriggerClientEvent('ox_inventory:disarm', inventory.id)
+			end
+
+			if server.syncInventory and syncInventory then
+				server.syncInventory(inventory)
 			end
 		end
 	end
@@ -1843,8 +1858,8 @@ lib.addCommand('group.admin', 'returninv', function(source, args)
 end, {'target:number'})
 
 lib.addCommand('group.admin', 'clearinv', function(source, args)
-	Inventory.Clear(args.target)
-end, {'target:number'})
+	Inventory.Clear(tonumber(args.target) or args.target)
+end, {'target'})
 
 lib.addCommand('group.admin', 'saveinv', function(source, args)
 	saveInventories(args[1] == 1 or args[1] == 'true')

@@ -61,7 +61,7 @@
   "shop_nostock": "Tuotteita ei varastossa",
   "identification": "Sukupuoli: %s\nSyntymäaika: %s",
   "search_dumpster": "Tutki roskista",
-  "open_shop": "Avaa %s",
+  "open_label": "Avaa %s",
   "purchased_for": "Ostettu %s %s summalla %s%s",
   "unable_stack_items": "Et voi laittaa tavaroita kasaan",
   "police_evidence": "Todistusaineistot",

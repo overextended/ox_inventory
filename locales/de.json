@@ -61,7 +61,7 @@
   "shop_nostock": "Der Gegenstand ist ausverkauft",
   "identification": "Geschlecht: %s  \nGeburtstag: %s",
   "search_dumpster": "Durchsuche Mülleimer",
-  "open_shop": "Öffne %s",
+  "open_label": "Öffne %s",
   "purchased_for": "%s %s gekauft für %s%s",
   "unable_stack_items": "Du kannst diesen Gegenstände nicht stapeln",
   "police_evidence": "Polizei Asservatenkammer",
@@ -80,5 +80,7 @@
   "no_durability": "Die Haltbarkeit des Gegenstands ist verbraucht",
   "cannot_give": "%s %s kann nicht übergeben werden",
   "evidence_cannot_take": "Dein Rang ist hierfür zu niedrig",
-  "dumpster": "Mülleimer"
+  "dumpster": "Mülleimer",
+  "crafting_item": "%s herstellen",
+  "crafting_bench": "Werkbank"
 }

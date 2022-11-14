@@ -61,7 +61,7 @@
   "shop_nostock": "Tárgy elfogyott",
   "identification": "Nem: %s  \nSzületési Idő: %s",
   "search_dumpster": "Keresés a szemetesben",
-  "open_shop": "Megnyitás %s",
+  "open_label": "Megnyitás %s",
   "purchased_for": "Vásárlás %s %s számára %s%s",
   "unable_stack_items": "Nem tudod egymásra helyezni ezeket a tárgyakat",
   "police_evidence": "Rendőrségi bizonyíték",

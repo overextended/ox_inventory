@@ -61,7 +61,7 @@
   "shop_nostock": "Eşya, stokta yok",
   "identification": "Cinsiyet: %s  \nDoğum Tarihi: %s",
   "search_dumpster": "Çöpü karıştır",
-  "open_shop": "%s Aç",
+  "open_label": "%s Aç",
   "purchased_for": "%s %s karşılığında %s%s satın alındı",
   "unable_stack_items": "Bu öğeler üst üste koyulamaz",
   "police_evidence": "Polis Kanıtı",
