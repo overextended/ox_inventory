@@ -546,8 +546,8 @@ local function registerCommands()
 				local vehicle, position
 
 				if not shared.target then
-					if type == 2 then vehicle, position = entity, GetEntityCoords(entity)
-					elseif type == 3 and table.contains(Inventory.Dumpsters, GetEntityModel(entity)) then
+					if entityType == 2 then vehicle, position = entity, GetEntityCoords(entity)
+					elseif entityType == 3 and table.contains(Inventory.Dumpsters, GetEntityModel(entity)) then
 						local netId = NetworkGetEntityIsNetworked(entity) and NetworkGetNetworkIdFromEntity(entity)
 
 						if not netId then
