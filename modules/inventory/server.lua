@@ -1524,7 +1524,7 @@ function Inventory.Clear(inv, keep)
 					if v.name == keep[i] then
 						keptItems[v.slot] = v
 						newWeight += v.weight
-						break
+						goto foundItem
 					end
 				end
 
@@ -1532,6 +1532,8 @@ function Inventory.Clear(inv, keep)
 					inc += 1
 					updateSlots[inc] = { item = { slot = slot }, inventory = inv.type }
 				end
+
+				::foundItem::
 			end
 		end
 
