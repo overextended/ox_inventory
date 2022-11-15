@@ -198,7 +198,10 @@ return {
     weight = 0.02,
     stack = true,
     close = true,
-    description = nil
+    description = nil,
+    client = {
+      export = "devcore_smoke.cokeUse"
+    }
   },
 
   ['coca_leaf'] = {
