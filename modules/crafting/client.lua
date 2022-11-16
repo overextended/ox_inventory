@@ -56,7 +56,8 @@ local function createCraftingBench(id, data)
 						onSelect = function()
 							client.openInventory('crafting', { id = id, index = i })
 						end,
-						distance = zone.distance or 2.0
+						distance = zone.distance or 2.0,
+						icon = 'fas fa-wrench',
 					}
 				}
 
