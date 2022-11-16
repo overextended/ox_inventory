@@ -36,10 +36,7 @@ function server.setPlayerInventory(player, data)
 				local item = Items(v.name)
 
 				if item then
-					if v.metadata then
-						v.metadata = Items.CheckMetadata(v.metadata, item, v.name, ostime)
-					end
-
+					v.metadata = Items.CheckMetadata(v.metadata or {}, item, v.name, ostime)
 					local weight = Inventory.SlotWeight(item, v)
 					totalWeight = totalWeight + weight
 

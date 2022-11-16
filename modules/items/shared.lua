@@ -74,6 +74,12 @@ local function newItem(data)
 		if server?.export then
 			data.cb = useExport(string.strsplit('.', server.export))
 		end
+
+		if not data.durability then
+			if data.degrade or (data.consume and data.consume ~= 0 and data.consume < 1) then
+				data.durability = true
+			end
+		end
 	else
 		data.server = nil
 		data.count = 0

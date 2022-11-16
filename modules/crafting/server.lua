@@ -17,6 +17,16 @@ local function createCraftingBench(id, data)
 			local item = Items(recipe.name)
 			recipe.weight = item.weight
 			recipe.slot = i
+
+			for ingredient, needs in pairs(recipe.ingredients) do
+				if needs < 1 then
+					item = Items(ingredient)
+
+					if not item.durability then
+						item.durability = true
+					end
+				end
+			end
 		end
 
 		if shared.target then
@@ -94,7 +104,7 @@ lib.callback.register('ox_inventory:craftItem', function(source, id, index, reci
 							break
 						end
 					elseif needs < 1 then
-						if slot.metadata.durability >= needs * 100 then
+						if not slot.metadata.durability or slot.metadata.durability >= needs * 100 then
 							tbl[slot.slot] = needs
 							break
 						end
@@ -130,7 +140,7 @@ lib.callback.register('ox_inventory:craftItem', function(source, id, index, reci
 					local invSlot = left.items[slot]
 
 					if count < 1 then
-						local durability = invSlot.metadata.durability
+						local durability = invSlot.metadata.durability or 100
 						durability -= count * 100
 						invSlot.metadata.durability = durability
 
