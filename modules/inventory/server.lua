@@ -4,7 +4,6 @@ local Inventory = {}
 local Inventories = {}
 local Vehicles = data 'vehicles'
 local Stashes = data 'stashes'
-
 local GetVehicleNumberPlateText = GetVehicleNumberPlateText
 
 local function loadInventoryData(data, player)
@@ -88,7 +87,7 @@ local function loadInventoryData(data, player)
 
 			if stash.owner then
 				if stash.owner == true then
-					owner = data.owner or player.owner
+					owner = data.owner or player?.owner
 				else
 					owner = stash.owner
 				end
