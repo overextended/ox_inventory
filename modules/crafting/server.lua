@@ -104,7 +104,8 @@ lib.callback.register('ox_inventory:craftItem', function(source, id, index, reci
 							break
 						end
 					elseif needs < 1 then
-						if not slot.metadata.durability or slot.metadata.durability >= needs * 100 then
+						---@todo allow stacked items to consume durability (requires splitting stacks)
+						if slot.count == 1 and (not slot.metadata.durability or slot.metadata.durability >= needs * 100) then
 							tbl[slot.slot] = needs
 							break
 						end
