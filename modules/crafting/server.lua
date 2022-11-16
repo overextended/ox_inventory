@@ -41,7 +41,7 @@ lib.callback.register('ox_inventory:openCraftingBench', function(source, id, ind
 		if groups and not server.hasGroup(left, groups) then return end
 		if #(GetEntityCoords(GetPlayerPed(source)) - coords) > 10 then return end
 
-		if left.open ~= source then
+		if left.open and left.open ~= source then
 			local inv = Inventory(left.open)
 
 			if inv.player then
