@@ -87,10 +87,10 @@ local function loadInventoryData(data, player)
 			local owner
 
 			if stash.owner then
-				if player and (stash.owner == true or data.owner == true) then
-					owner = player.owner
-				elseif stash.owner then
-					owner = stash.owner or data.owner
+				if stash.owner == true then
+					owner = data.owner or player.owner
+				else
+					owner = stash.owner
 				end
 			end
 
@@ -1870,7 +1870,7 @@ end, {'target'})
 
 Inventory.accounts = server.accounts
 
-Inventory.CustomStash = table.create(0, 0)
+Inventory.CustomStash = {}
 ---@param name string stash identifier when loading from the database
 ---@param label string display name when inventory is open
 ---@param slots number
