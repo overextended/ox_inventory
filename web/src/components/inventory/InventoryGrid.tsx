@@ -5,7 +5,6 @@ import InventorySlot from './InventorySlot';
 import InventoryContext from './InventoryContext';
 import { getTotalWeight } from '../../helpers';
 import { createPortal } from 'react-dom';
-import { Typography } from '@mui/material';
 
 const InventoryGrid: React.FC<{ inventory: Inventory }> = ({ inventory }) => {
   const weight = React.useMemo(
@@ -18,11 +17,11 @@ const InventoryGrid: React.FC<{ inventory: Inventory }> = ({ inventory }) => {
       <div className="inventory-grid-wrapper">
         <div>
           <div className="inventory-grid-header-wrapper">
-            <Typography style={{ fontSize: 16 }}>{inventory.label}</Typography>
+            <p>{inventory.label}</p>
             {inventory.maxWeight && (
-              <Typography style={{ fontSize: 16 }}>
+              <p>
                 {weight / 1000}/{inventory.maxWeight / 1000}kg
-              </Typography>
+              </p>
             )}
           </div>
           <WeightBar percent={inventory.maxWeight ? (weight / inventory.maxWeight) * 100 : 0} />

@@ -1,15 +1,4 @@
-import {
-  Alert,
-  Dialog,
-  DialogActions,
-  DialogContent,
-  DialogTitle,
-  IconButton,
-  Slide,
-  Snackbar,
-  Stack,
-  Typography,
-} from '@mui/material';
+import { Alert, Dialog, DialogActions, DialogContent, DialogTitle, IconButton, Slide, Snackbar } from '@mui/material';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faTimes } from '@fortawesome/free-solid-svg-icons';
 import { Locale } from '../../store/locale';
@@ -42,7 +31,7 @@ const UsefulControls: React.FC<Props> = ({ infoVisible, setInfoVisible }) => {
       TransitionComponent={Transition}
     >
       <DialogTitle>
-        <Typography fontSize={18}>{Locale.ui_usefulcontrols}</Typography>
+        <p>{Locale.ui_usefulcontrols}</p>
         <IconButton className="useful-controls-exit-button" aria-label="close" onClick={() => setInfoVisible(false)}>
           <FontAwesomeIcon icon={faTimes} />
         </IconButton>
