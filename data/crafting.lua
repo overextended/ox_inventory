@@ -8,7 +8,7 @@ return {
 					WEAPON_HAMMER = 0.1
 				},
 				duration = 5000,
-				amount = 3,
+				count = 3,
 				metadata = { durability = 20 }
 			},
 			{
