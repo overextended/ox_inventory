@@ -1058,7 +1058,13 @@ RegisterServerEvent('ox_inventory:removeItem', function(name, count, metadata, s
 		local durability = not item.stack and slot.metadata.durability --[[@as number | false]]
 
 		if durability then
-			durability -= item.consume * 100
+			if durability > 100 then
+				local degrade = (slot.metadata.degrade or item.degrade) * 60
+				durability -= degrade * item.consume
+			else
+				durability -= item.consume * 100
+			end
+
 			slot.metadata.durability = durability
 
 			if durability <= 0 then
