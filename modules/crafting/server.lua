@@ -104,12 +104,12 @@ lib.callback.register('ox_inventory:craftItem', function(source, id, index, reci
 							break
 						end
 					elseif needs < 1 then
-						---@todo allow stacked items to consume durability (requires splitting stacks)
+						local item = Items(name)
 						local durability = slot.metadata.durability
 
-						if slot.count == 1 and (durability and durability >= needs * 100) then
+						if durability and durability >= needs * 100 then
 							if durability > 100 then
-								local degrade = (slot.metadata.degrade or Items(name).degrade) * 60
+								local degrade = (slot.metadata.degrade or item.degrade) * 60
 								local percentage = ((durability - os.time()) * 100) / degrade
 
 								if percentage >= needs * 100 then
@@ -153,16 +153,39 @@ lib.callback.register('ox_inventory:craftItem', function(source, id, index, reci
 					local invSlot = left.items[slot]
 
 					if count < 1 then
+						local item = Items(invSlot.name)
 						local durability = invSlot.metadata.durability or 100
 
 						if durability > 100 then
-							local degrade = (invSlot.metadata.degrade or Items(invSlot.name).degrade) * 60
+							local degrade = (invSlot.metadata.degrade or item.degrade) * 60
 							durability -= degrade * count
 						else
 							durability -= count * 100
 						end
 
-						invSlot.metadata.durability = durability < 0 and 0 or durability
+						if invSlot.count > 1 then
+							local emptySlot = Inventory.GetEmptySlot(left)
+
+							if emptySlot then
+								local newItem = Inventory.SetSlot(left, item, 1, table.deepclone(invSlot.metadata), emptySlot)
+
+								if newItem then
+									newItem.metadata.durability = durability < 0 and 0 or durability
+									durability = 0
+
+									TriggerClientEvent('ox_inventory:updateSlots', left.id, {
+										{
+											item = newItem,
+											inventory = left.type
+										}
+									}, { left = left.weight })
+								end
+							end
+
+							invSlot.count -= 1
+						else
+							invSlot.metadata.durability = durability < 0 and 0 or durability
+						end
 
 						TriggerClientEvent('ox_inventory:updateSlots', source, {
 							{

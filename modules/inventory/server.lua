@@ -221,6 +221,8 @@ function Inventory.SetSlot(inv, item, count, metadata, slot)
 	inv.weight = newWeight
 	inv.items[slot] = currentSlot
 	inv.changed = true
+
+	return currentSlot
 end
 
 local Items
@@ -1055,7 +1057,7 @@ RegisterServerEvent('ox_inventory:removeItem', function(name, count, metadata, s
 	if used then
 		slot = inv.items[inv.usingItem]
 		local item = Items(slot.name)
-		local durability = not item.stack and slot.metadata.durability --[[@as number | false]]
+		local durability = slot.metadata.durability --[[@as number | false]]
 
 		if durability then
 			if durability > 100 then
@@ -1065,7 +1067,28 @@ RegisterServerEvent('ox_inventory:removeItem', function(name, count, metadata, s
 				durability -= item.consume * 100
 			end
 
-			slot.metadata.durability = durability
+			if slot.count > 1 then
+				local emptySlot = Inventory.GetEmptySlot(inv)
+
+				if emptySlot then
+					local newItem = Inventory.SetSlot(inv, item, 1, table.deepclone(slot.metadata), emptySlot)
+
+					if newItem then
+						newItem.metadata.durability = durability
+
+						TriggerClientEvent('ox_inventory:updateSlots', inv.id, {
+							{
+								item = newItem,
+								inventory = inv.type
+							}
+						}, { left = inv.weight })
+					end
+				end
+
+				durability = 0
+			else
+				slot.metadata.durability = durability
+			end
 
 			if durability <= 0 then
 				durability = false
