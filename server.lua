@@ -214,7 +214,7 @@ lib.callback.register('ox_inventory:useItem', function(source, itemName, slot, m
 				return
 			end
 
-			if data.count > 1 and item.consume < 1 and item.consume > 0 and not Inventory.GetEmptySlot(inv) then
+			if data.count > 1 and item.consume < 1 and item.consume > 0 and not Inventory.GetEmptySlot(inventory) then
 				TriggerClientEvent('ox_lib:notify', source, { type = 'error', description = locale('cannot_use', data.label) })
 				return
 			end
