@@ -105,9 +105,21 @@ lib.callback.register('ox_inventory:craftItem', function(source, id, index, reci
 						end
 					elseif needs < 1 then
 						---@todo allow stacked items to consume durability (requires splitting stacks)
-						if slot.count == 1 and (not slot.metadata.durability or slot.metadata.durability >= needs * 100) then
-							tbl[slot.slot] = needs
-							break
+						local durability = slot.metadata.durability
+
+						if slot.count == 1 and (durability and durability >= needs * 100) then
+							if durability > 100 then
+								local degrade = (slot.metadata.degrade or Items(name).degrade) * 60
+								local percentage = ((durability - os.time()) * 100) / degrade
+
+								if percentage >= needs * 100 then
+									tbl[slot.slot] = needs
+									break
+								end
+							else
+								tbl[slot.slot] = needs
+								break
+							end
 						end
 					elseif needs <= slot.count then
 						local itemWeight = slot.weight / slot.count
@@ -142,8 +154,15 @@ lib.callback.register('ox_inventory:craftItem', function(source, id, index, reci
 
 					if count < 1 then
 						local durability = invSlot.metadata.durability or 100
-						durability -= count * 100
-						invSlot.metadata.durability = durability
+
+						if durability > 100 then
+							local degrade = (invSlot.metadata.degrade or Items(invSlot.name).degrade) * 60
+							durability -= degrade * count
+						else
+							durability -= count * 100
+						end
+
+						invSlot.metadata.durability = durability < 0 and 0 or durability
 
 						TriggerClientEvent('ox_inventory:updateSlots', source, {
 							{
