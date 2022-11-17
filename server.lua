@@ -195,10 +195,19 @@ lib.callback.register('ox_inventory:useItem', function(source, itemName, slot, m
 
 		if durability then
 			if durability > 100 then
-				if os.time() > durability then
+				local ostime = os.time()
+
+				if ostime > durability then
 					inventory.items[slot].metadata.durability = 0
 					TriggerClientEvent('ox_lib:notify', source, { type = 'error', description = locale('no_durability', data.label) })
 					return
+				else
+					local degrade = (data.metadata.degrade or item.degrade) * 60
+					local percentage = ((durability - ostime) * 100) / degrade
+
+					if percentage < item.consume * 100 then
+						return
+					end
 				end
 			elseif durability <= 0 then
 				TriggerClientEvent('ox_lib:notify', source, { type = 'error', description = locale('no_durability', data.label) })
