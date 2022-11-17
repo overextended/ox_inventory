@@ -1577,6 +1577,20 @@ function Inventory.Clear(inv, keep)
 end
 exports('ClearInventory', Inventory.Clear)
 
+function Inventory.GetEmptySlot(inv)
+	inv = Inventory(inv)
+
+	if inv then
+		local items = inv.items
+
+		for i = 1, inv.slots do
+			if not items[i] then
+				return i
+			end
+		end
+	end
+end
+
 local function prepareSave(inv)
 	inv.changed = false
 
