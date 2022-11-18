@@ -206,7 +206,7 @@ lib.callback.register('ox_inventory:useItem', function(source, itemName, slot, m
 					local percentage = ((durability - ostime) * 100) / degrade
 
 					if percentage < item.consume * 100 then
-						return TriggerClientEvent('ox_lib:notify', source, { type = 'error', description = locale('cannot_use', data.label) })
+						return TriggerClientEvent('ox_lib:notify', source, { type = 'error', description = locale('not_enough_durability', data.label) })
 					end
 				end
 			elseif durability <= 0 then
