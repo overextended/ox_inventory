@@ -192,8 +192,9 @@ lib.callback.register('ox_inventory:useItem', function(source, itemName, slot, m
 		if not data then return end
 
 		local durability = data.metadata?.durability
+		local consume = item.consume
 
-		if durability then
+		if durability and consume then
 			if durability > 100 then
 				local ostime = os.time()
 
@@ -201,11 +202,11 @@ lib.callback.register('ox_inventory:useItem', function(source, itemName, slot, m
 					inventory.items[slot].metadata.durability = 0
 
 					return TriggerClientEvent('ox_lib:notify', source, { type = 'error', description = locale('no_durability', data.label) })
-				elseif item.consume ~= 0 and item.consume < 1 then
+				elseif consume ~= 0 and consume < 1 then
 					local degrade = (data.metadata.degrade or item.degrade) * 60
 					local percentage = ((durability - ostime) * 100) / degrade
 
-					if percentage < item.consume * 100 then
+					if percentage < consume * 100 then
 						return TriggerClientEvent('ox_lib:notify', source, { type = 'error', description = locale('not_enough_durability', data.label) })
 					end
 				end
@@ -213,14 +214,14 @@ lib.callback.register('ox_inventory:useItem', function(source, itemName, slot, m
 				return TriggerClientEvent('ox_lib:notify', source, { type = 'error', description = locale('no_durability', data.label) })
 			end
 
-			if data.count > 1 and item.consume < 1 and item.consume > 0 and not Inventory.GetEmptySlot(inventory) then
+			if data.count > 1 and consume < 1 and consume > 0 and not Inventory.GetEmptySlot(inventory) then
 				return TriggerClientEvent('ox_lib:notify', source, { type = 'error', description = locale('cannot_use', data.label) })
 			end
 		end
 
 		if item and data and data.count > 0 and data.name == item.name then
 			inventory.usingItem = slot
-			data = {name=data.name, label=data.label, count=data.count, slot=slot or data.slot, metadata=data.metadata, consume=item.consume}
+			data = {name=data.name, label=data.label, count=data.count, slot=slot or data.slot, metadata=data.metadata, consume=consume}
 
 			if item.weapon then
 				inventory.weapon = inventory.weapon ~= data.slot and data.slot or nil
@@ -240,8 +241,8 @@ lib.callback.register('ox_inventory:useItem', function(source, itemName, slot, m
 				data.consume = 1
 				data.component = true
 				return data
-			elseif item.consume then
-				if data.count >= item.consume then
+			elseif consume then
+				if data.count >= consume then
 					local result = item.cb and item.cb('usingItem', item, inventory, slot)
 
 					if result == false then return end
