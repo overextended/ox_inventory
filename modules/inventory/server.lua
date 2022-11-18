@@ -1057,7 +1057,7 @@ RegisterServerEvent('ox_inventory:removeItem', function(name, count, metadata, s
 	if used then
 		slot = inv.items[inv.usingItem]
 		local item = Items(slot.name)
-		local durability = slot.metadata.durability --[[@as number | false]]
+		local durability = item.consume ~= 0 and item.consume < 1 and slot.metadata.durability --[[@as number | false]]
 
 		if durability then
 			if durability > 100 then
