@@ -1146,6 +1146,18 @@ local function dropItem(source, data)
 	local fromData = playerInventory.items[data.fromSlot]
 
 	if not fromData then return end
+
+	if not TriggerEventHooks('swapItems', {
+		source = source,
+		fromInventory = playerInventory.id,
+		fromSlot = fromData,
+		fromType = playerInventory.type,
+		toInventory = 'newdrop',
+		toSlot = data.toSlot,
+		toType = 'drop',
+		count = data.count,
+	}) then return end
+
 	if data.count > fromData.count then data.count = fromData.count end
 
 	local toData = table.clone(fromData)
