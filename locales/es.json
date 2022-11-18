@@ -81,6 +81,6 @@
   "cannot_give": "No se pudo dar %s %s al objetivo",
   "evidence_cannot_take": "No tienes el suficiente rango para coger esta prueba",
   "dumpster": "Contenedor",
-  "crafting_item": "%s elaborando",
+  "crafting_item": "Elaborando %s",
   "crafting_bench": "Mesa De Trabajo"
 }
