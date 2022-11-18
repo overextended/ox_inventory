@@ -205,7 +205,7 @@ lib.callback.register('ox_inventory:useItem', function(source, itemName, slot, m
 					local degrade = (data.metadata.degrade or item.degrade) * 60
 					local percentage = ((durability - ostime) * 100) / degrade
 
-					if percentage < item.consume * 100 then
+					if percentage > item.consume * 100 then
 						return
 					end
 				end
