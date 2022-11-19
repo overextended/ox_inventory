@@ -136,10 +136,10 @@ if not LoadResourceFile(shared.resource, 'web/build/index.html') then
 end
 
 if shared.target then
-	local ox_target = GetResourceState('ox_target')
-	local qtarget = GetResourceState('qtarget')
+	local ox_target = GetResourceState('ox_target'):find('start')
+	local qtarget = GetResourceState('qtarget'):find('start')
 
-	if not ox_target:find('start') and not qtarget:find('ox_target') then
+	if not ox_target and not qtarget then
 		shared.target = false
 		return shared.warning('targeting resource is not loaded - it should start before ox_inventory')
 	end
