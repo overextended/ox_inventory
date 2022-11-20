@@ -82,5 +82,6 @@
   "evidence_cannot_take": "Votre grade ne vous permet pas de récupérer des preuves",
   "dumpster": "Poubelle",
   "crafting_item": "Fabrication %s",
-  "crafting_bench": "Table de fabrication"
+  "crafting_bench": "Table de fabrication",
+  "not_enough_durability": "%s n'a pas assez de durabilité"
 }
