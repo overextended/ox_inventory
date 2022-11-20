@@ -1350,20 +1350,39 @@ end)
 
 lib.callback.register('ox_inventory:startCrafting', function(id, recipe)
 	recipe = client.craftingBenches[id].items[recipe]
-
-	return lib.progressCircle({
-		label = locale('crafting_item', Items[recipe.name].label),
-		duration = recipe.duration or 3000,
-		canCancel = true,
-		disable = {
-			move = true,
-			combat = true,
-		},
-		anim = {
-			dict = 'anim@amb@clubhouse@tutorial@bkr_tut_ig3@',
-			clip = 'machinic_loop_mechandplayer',
-		}
-	})
+	if not recipe.difficulty then
+		return lib.progressCircle({
+			label = locale('crafting_item', Items[recipe.name].label),
+			duration = recipe.duration or 3000,
+			canCancel = true,
+			disable = {
+				move = true,
+				combat = true,
+			},
+			anim = {
+				dict = 'anim@amb@clubhouse@tutorial@bkr_tut_ig3@',
+				clip = 'machinic_loop_mechandplayer',
+			}
+		})
+	else
+		local success = lib.skillCheck(recipe.difficulty)
+		if success then
+			return lib.progressCircle({
+				label = locale('crafting_item', Items[recipe.name].label),
+				duration = recipe.duration or 3000,
+				canCancel = true,
+				disable = {
+					move = true,
+					combat = true,
+				},
+				anim = {
+					dict = 'anim@amb@clubhouse@tutorial@bkr_tut_ig3@',
+					clip = 'machinic_loop_mechandplayer',
+				}
+			})
+		end
+	end
+	
 end)
 
 ---Synchronise and validate all item movement between the NUI and server.
