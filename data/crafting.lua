@@ -8,6 +8,7 @@ return {
 					WEAPON_HAMMER = 0.1
 				},
 				duration = 5000,
+				difficulty = {'easy', 'medium', 'hard'},
 				count = 3,
 				metadata = { durability = 20 }
 			},
