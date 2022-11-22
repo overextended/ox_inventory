@@ -4,7 +4,7 @@ local CraftingBenches = {}
 local Items = server.items
 local Inventory = server.inventory
 
----@param id number
+---@param id number|string
 ---@param data table
 local function createCraftingBench(id, data)
 	CraftingBenches[id] = {}
@@ -41,6 +41,12 @@ end
 
 for id, data in pairs(data('crafting')) do createCraftingBench(id, data) end
 
+---@param stationName string
+---@param data table
+exports('RegisterCraftStation', function(stationName, data)
+	createCraftingBench(stationName, data)
+end)
+
 lib.callback.register('ox_inventory:openCraftingBench', function(source, id, index)
 	local left, bench = Inventory(source), CraftingBenches[id]
 
@@ -64,7 +70,7 @@ lib.callback.register('ox_inventory:openCraftingBench', function(source, id, ind
 		left.open = true
 	end
 
-	return { label = left.label, type = left.type, slots = left.slots, weight = left.weight, maxWeight = left.maxWeight }
+	return { label = left.label, type = left.type, slots = left.slots, weight = left.weight, maxWeight = left.maxWeight }, bench
 end)
 
 lib.callback.register('ox_inventory:craftItem', function(source, id, index, recipeId, toSlot)
