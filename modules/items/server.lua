@@ -261,6 +261,19 @@ local function GenerateSerial(text)
 	return ('%s%s%s'):format(math.random(100000,999999), text == nil and GenerateText(3) or text, math.random(100000,999999))
 end
 
+local function setItemDurability(item, metadata)
+	local degrade = item.degrade
+
+	if degrade then
+		metadata.durability = os.time()+(degrade * 60)
+		metadata.degrade = degrade
+	elseif item.durability then
+		metadata.durability = 100
+	end
+
+	return metadata
+end
+
 function Items.Metadata(inv, item, metadata, count)
 	if type(inv) ~= 'table' then inv = Inventory(inv) end
 	if not item.weapon then metadata = not metadata and {} or type(metadata) == 'string' and {type=metadata} or metadata end
@@ -308,16 +321,8 @@ function Items.Metadata(inv, item, metadata, count)
 			end
 		end
 
-		if not metadata?.durability then
-			local itemData = ItemList[item.name]
-			local degrade = itemData.degrade
-
-			if degrade then
-				metadata.durability = os.time()+(degrade * 60)
-				metadata.degrade = degrade
-			elseif itemData.consume and itemData.consume ~= 0 and itemData.consume < 1 then
-				metadata.durability = 100
-			end
+		if not metadata.durability then
+			metadata = setItemDurability(ItemList[item.name], metadata)
 		end
 	end
 
@@ -348,8 +353,16 @@ function Items.CheckMetadata(metadata, item, name, ostime)
 
 	local durability = metadata.durability
 
-	if durability and durability > 100 and ostime >= durability then
-		metadata.durability = 0
+	if durability then
+		if durability > 100 and ostime >= durability then
+			metadata.durability = 0
+		end
+	else
+		metadata = setItemDurability(item, metadata)
+	end
+
+	if metadata.durability and not item.durability then
+		metadata.durability = nil
 	end
 
 	if metadata.components then

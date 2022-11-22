@@ -4,7 +4,6 @@ local Inventory = {}
 local Inventories = {}
 local Vehicles = data 'vehicles'
 local Stashes = data 'stashes'
-
 local GetVehicleNumberPlateText = GetVehicleNumberPlateText
 
 local function loadInventoryData(data, player)
@@ -87,10 +86,10 @@ local function loadInventoryData(data, player)
 			local owner
 
 			if stash.owner then
-				if player and (stash.owner == true or data.owner == true) then
-					owner = player.owner
-				elseif stash.owner then
-					owner = stash.owner or data.owner
+				if stash.owner == true then
+					owner = data.owner or player?.owner
+				else
+					owner = stash.owner
 				end
 			end
 
@@ -222,6 +221,8 @@ function Inventory.SetSlot(inv, item, count, metadata, slot)
 	inv.weight = newWeight
 	inv.items[slot] = currentSlot
 	inv.changed = true
+
+	return currentSlot
 end
 
 local Items
@@ -545,13 +546,10 @@ function Inventory.Load(id, invType, owner)
 		for _, v in pairs(result) do
 			local item = Items(v.name)
 			if item then
-				if v.metadata then
-					v.metadata = Items.CheckMetadata(v.metadata, item, v.name, ostime)
-				end
-
+				v.metadata = Items.CheckMetadata(v.metadata or {}, item, v.name, ostime)
 				local slotWeight = Inventory.SlotWeight(item, v)
 				weight += slotWeight
-				returnData[v.slot] = {name = item.name, label = item.label, weight = slotWeight, slot = v.slot, count = v.count, description = item.description, metadata = v.metadata or {}, stack = item.stack, close = item.close}
+				returnData[v.slot] = {name = item.name, label = item.label, weight = slotWeight, slot = v.slot, count = v.count, description = item.description, metadata = v.metadata, stack = item.stack, close = item.close}
 			end
 		end
 	end
@@ -1061,11 +1059,38 @@ RegisterServerEvent('ox_inventory:removeItem', function(name, count, metadata, s
 	if used then
 		slot = inv.items[inv.usingItem]
 		local item = Items(slot.name)
-		local durability = not item.stack and slot.metadata.durability --[[@as number | false]]
+		local durability = item.consume ~= 0 and item.consume < 1 and slot.metadata.durability --[[@as number | false]]
 
 		if durability then
-			durability -= item.consume * 100
-			slot.metadata.durability = durability
+			if durability > 100 then
+				local degrade = (slot.metadata.degrade or item.degrade) * 60
+				durability -= degrade * item.consume
+			else
+				durability -= item.consume * 100
+			end
+
+			if slot.count > 1 then
+				local emptySlot = Inventory.GetEmptySlot(inv)
+
+				if emptySlot then
+					local newItem = Inventory.SetSlot(inv, item, 1, table.deepclone(slot.metadata), emptySlot)
+
+					if newItem then
+						newItem.metadata.durability = durability
+
+						TriggerClientEvent('ox_inventory:updateSlots', inv.id, {
+							{
+								item = newItem,
+								inventory = inv.type
+							}
+						}, { left = inv.weight })
+					end
+				end
+
+				durability = 0
+			else
+				slot.metadata.durability = durability
+			end
 
 			if durability <= 0 then
 				durability = false
@@ -1123,6 +1148,18 @@ local function dropItem(source, data)
 	local fromData = playerInventory.items[data.fromSlot]
 
 	if not fromData then return end
+
+	if not TriggerEventHooks('swapItems', {
+		source = source,
+		fromInventory = playerInventory.id,
+		fromSlot = fromData,
+		fromType = playerInventory.type,
+		toInventory = 'newdrop',
+		toSlot = data.toSlot,
+		toType = 'drop',
+		count = data.count,
+	}) then return end
+
 	if data.count > fromData.count then data.count = fromData.count end
 
 	local toData = table.clone(fromData)
@@ -1577,6 +1614,20 @@ function Inventory.Clear(inv, keep)
 end
 exports('ClearInventory', Inventory.Clear)
 
+function Inventory.GetEmptySlot(inv)
+	inv = Inventory(inv)
+
+	if inv then
+		local items = inv.items
+
+		for i = 1, inv.slots do
+			if not items[i] then
+				return i
+			end
+		end
+	end
+end
+
 local function prepareSave(inv)
 	inv.changed = false
 
@@ -1872,7 +1923,7 @@ end, {'target'})
 
 Inventory.accounts = server.accounts
 
-Inventory.CustomStash = table.create(0, 0)
+Inventory.CustomStash = {}
 ---@param name string stash identifier when loading from the database
 ---@param label string display name when inventory is open
 ---@param slots number

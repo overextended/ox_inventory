@@ -82,5 +82,6 @@
   "evidence_cannot_take": "You are not authorised to withdraw evidence",
   "dumpster": "Dumpster",
   "crafting_item": "Crafting %s",
-  "crafting_bench": "Crafting Bench"
+  "crafting_bench": "Crafting Bench",
+  "not_enough_durability": "%s does not have enough durability"
 }

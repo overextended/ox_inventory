@@ -150,6 +150,10 @@ button:active {
   }
 }
 
+.useful-controls-dialog {
+  font-size: 18px;
+}
+
 .useful-controls-content-wrapper {
   display: flex;
   flex-direction: column;
@@ -202,6 +206,9 @@ button:active {
   display: flex;
   flex-direction: row;
   justify-content: space-between;
+  p {
+    font-size: 16px;
+  }
 }
 
 .inventory-grid-container {
@@ -423,6 +430,11 @@ button:active {
   border-top-left-radius: 0.25vh;
   border-top-right-radius: 0.25vh;
   font-family: $mainFont;
+  p {
+    font-size: 11px;
+    padding: 2px;
+    font-weight: 600;
+  }
 }
 
 .item-notification-item-box {

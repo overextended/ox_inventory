@@ -18,7 +18,7 @@ const SlotTooltip: React.FC<{ item: SlotWithItem; inventory: Inventory }> = ({ i
         {inventory.type === 'crafting' ? (
           <div className="tooltip-crafting-duration">
             <ClockIcon />
-            <p>{(item.duration || 3000) / 1000}s</p>
+            <p>{(item.duration !== undefined ? item.duration : 3000) / 1000}s</p>
           </div>
         ) : (
           <p>{item.metadata?.type}</p>

@@ -56,7 +56,8 @@ local function createCraftingBench(id, data)
 						onSelect = function()
 							client.openInventory('crafting', { id = id, index = i })
 						end,
-						distance = zone.distance or 2.0
+						distance = zone.distance or 2.0,
+						icon = 'fas fa-wrench',
 					}
 				}
 
@@ -73,6 +74,10 @@ local function createCraftingBench(id, data)
 			local function nearbyBench(point)
 				---@diagnostic disable-next-line: param-type-mismatch
 				DrawMarker(2, point.coords.x, point.coords.y, point.coords.z, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.3, 0.2, 0.15, 150, 150, 30, 222, false, false, 0, true, false, false, false)
+
+				if point.isClosest and point.currentDistance < 1.2 and IsControlJustReleased(0, 38) then
+					client.openInventory('crafting', { id = point.benchid, index = point.index })
+				end
 			end
 
 			for i = 1, #data.points do
@@ -81,7 +86,7 @@ local function createCraftingBench(id, data)
 				lib.points.new({
 					coords = coords,
 					distance = 16,
-					id = id,
+					benchid = id,
 					index = i,
 					inv = 'crafting',
 					nearby = nearbyBench

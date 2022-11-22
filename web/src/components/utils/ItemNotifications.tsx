@@ -2,7 +2,7 @@ import React from 'react';
 import { createPortal } from 'react-dom';
 import { TransitionGroup } from 'react-transition-group';
 import useNuiEvent from '../../hooks/useNuiEvent';
-import { Typography, Fade } from '@mui/material';
+import { Fade } from '@mui/material';
 import useQueue from '../../hooks/useQueue';
 import { Locale } from '../../store/locale';
 import { imagepath } from '../../store/imagepath';
@@ -36,9 +36,7 @@ const ItemNotification = React.forwardRef(
       >
         <div className="item-slot-wrapper">
           <div className="item-notification-action-box">
-            <Typography fontSize={11} p="2px" fontWeight={600}>
-              {props.item.text}
-            </Typography>
+            <p>{props.item.text}</p>
           </div>
           <div className="inventory-slot-label-box">
             <div className="inventory-slot-label-text">{props.item.label}</div>

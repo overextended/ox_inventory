@@ -27,7 +27,8 @@ return {
 					print('You squeezed the burger :(')
 				end
 			}
-		}
+		},
+		consume = 0.3
 	},
 
 	['bandage'] = {
