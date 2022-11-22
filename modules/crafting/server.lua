@@ -12,6 +12,7 @@ local function createCraftingBench(id, data)
 	local recipes = data.items
 
 	if recipes and locations then
+
 		for i = 1, #recipes do
 			local recipe = recipes[i]
 			local item = Items(recipe.name)
@@ -34,6 +35,8 @@ local function createCraftingBench(id, data)
 		else
 			data.zones = nil
 		end
+
+		data.slots = #data.items
 
 		CraftingBenches[id] = data
 	end
