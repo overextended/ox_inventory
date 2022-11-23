@@ -246,7 +246,22 @@ lib.callback.register('ox_inventory:buyItem', function(source, data)
 
 				if server.loglevel > 0 then
 					if server.loglevel > 1 or fromData.price >= 500 then
-						lib.logger(playerInv.owner, 'buyItem', ('"%s" %s'):format(playerInv.label, message:lower()), ('shop:%s'):format(shop.label))
+						lib.logger(playerInv.owner,
+            'buyItem',
+            ('"%s" %s'):format(playerInv.label, message:lower()),
+            {
+              to = playerInv.owner,
+              cost = price,
+              payment_method = currency,
+              count = count,
+              item = {
+                label = fromItem.label,
+                name = fromItem.name,
+              },
+              shop = shop.label,
+              type = "buy"
+            }
+          )
 					end
 				end
 
