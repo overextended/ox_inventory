@@ -92,14 +92,12 @@ local function newItem(data)
 	shared.items[data.name] = data
 end
 
-local string_lower = string.lower
-
 do
 	local ItemList = {}
 
 	for type, data in pairs(data('weapons')) do
 		for k, v in pairs(data) do
-			v.name = string_lower(k)
+			v.name = k
 			v.close = type == 'Ammo' and true or false
 
 			if type == 'Weapons' then
@@ -119,14 +117,14 @@ do
 				v.server = nil
 			end
 
-			ItemList[v.name] = v
+			ItemList[k] = v
 		end
 	end
 
 	shared.items = ItemList
 
 	for k, v in pairs(data 'items') do
-		v.name = string_lower(k)
+		v.name = k
 		newItem(v)
 	end
 end

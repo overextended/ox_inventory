@@ -864,6 +864,7 @@ function Inventory.Search(inv, search, items, metadata)
 
 			for i = 1, itemCount do
 				local item = string.lower(items[i])
+				if item:sub(0, 7) == 'weapon_' then item = string.upper(item) end
 
 				if search == 1 then
 					returnData[item] = {}

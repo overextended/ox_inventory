@@ -49,6 +49,7 @@ function Inventory.Search(search, item, metadata)
 		local returnData = {}
 		for i = 1, items do
 			local item = string.lower(item[i])
+			if item:sub(0, 7) == 'weapon_' then item = string.upper(item) end
 			if search == 1 then returnData[item] = {}
 			elseif search == 2 then returnData[item] = 0 end
 			for _, v in pairs(PlayerData.inventory) do
