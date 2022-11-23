@@ -88,7 +88,7 @@ lib.callback.register('ox_inventory:craftItem', function(source, id, index, reci
 			end
 
 			local craftedItem = Items(recipe.name)
-			local newWeight = left.weight + (craftedItem.weight + (recipe.metadata.weight or 0)) * (recipe.count or 1)
+			local newWeight = left.weight + (craftedItem.weight + (recipe.metadata?.weight or 0)) * (recipe.count or 1)
 			---@todo new iterator or something to accept a map
 			local items = Inventory.Search(left, 'slots', tbl) or {}
 			table.wipe(tbl)
