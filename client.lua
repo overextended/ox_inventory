@@ -1350,7 +1350,7 @@ end)
 
 lib.callback.register('ox_inventory:startCrafting', function(id, recipe)
 	recipe = client.craftingBenches[id].items[recipe]
-	if not recipe.difficulty then
+	if not recipe.difficulty  then
 		return lib.progressCircle({
 			label = locale('crafting_item', Items[recipe.name].label),
 			duration = recipe.duration or 3000,
@@ -1365,8 +1365,7 @@ lib.callback.register('ox_inventory:startCrafting', function(id, recipe)
 			}
 		})
 	else
-		local success = lib.skillCheck(recipe.difficulty)
-		if success then
+		if recipe.difficulty and lib.skillCheck(recipe.difficulty) then 
 			return lib.progressCircle({
 				label = locale('crafting_item', Items[recipe.name].label),
 				duration = recipe.duration or 3000,
@@ -1381,6 +1380,8 @@ lib.callback.register('ox_inventory:startCrafting', function(id, recipe)
 				}
 			})
 		end
+	end	
+end)
 	end
 	
 end)
