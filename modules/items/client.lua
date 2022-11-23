@@ -15,10 +15,9 @@ exports('displayMetadata', displayMetadata)
 
 local function GetItem(item)
 	if item then
-		item = string.lower(item)
-		if item:sub(0, 7) == 'weapon_' then item = string.upper(item) end
-		return Items[item]
+		return Items[string.lower(item)]
 	end
+
 	return Items
 end
 

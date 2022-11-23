@@ -37,18 +37,14 @@ local trash = {
 	{description = 'An empty chips bag.', weight = 5, image = 'trash_chips'},
 }
 
+local string_lower = string.lower
+
 ---@param _ table?
 ---@param name string?
 ---@return table?
 local function getItem(_, name)
 	if name then
-		name = name:lower()
-
-		if name:sub(0, 7) == 'weapon_' then
-			name = name:upper()
-		end
-
-		return ItemList[name]
+		return ItemList[string_lower(name)]
 	end
 
 	return ItemList
@@ -104,11 +100,11 @@ CreateThread(function()
 				local fileSize = #file
 
 				for _, item in pairs(dump) do
-					local formatName = item.name:gsub("'", "\\'"):lower()
+					local formatName = string_lower(item.name:gsub("'", "\\'"))
 					if not ItemList[formatName] then
 						fileSize += 1
 
-						file[fileSize] = (itemFormat):format(formatName, item.label:gsub("'", "\\'"):lower(), item.weight, item.stack, item.close, item.description and json.encode(item.description) or 'nil')
+						file[fileSize] = (itemFormat):format(formatName, item.label:gsub("'", "\\'"), item.weight, item.stack, item.close, item.description and json.encode(item.description) or 'nil')
 						ItemList[formatName] = item
 					end
 				end
@@ -188,11 +184,11 @@ CreateThread(function()
 				local fileSize = #file
 
 				for _, item in pairs(dump) do
-					local formatName = item.name:gsub("'", "\\'"):lower()
+					local formatName = string_lower(item.name:gsub("'", "\\'"))
 					if not ItemList[formatName] then
 						fileSize += 1
 
-						file[fileSize] = (itemFormat):format(formatName, item.label:gsub("'", "\\'"):lower(), item.weight, item.stack, item.close, item.description and json.encode(item.description) or 'nil')
+						file[fileSize] = (itemFormat):format(formatName, item.label:gsub("'", "\\'"), item.weight, item.stack, item.close, item.description and json.encode(item.description) or 'nil')
 						ItemList[formatName] = item
 					end
 				end
