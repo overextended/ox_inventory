@@ -80,5 +80,8 @@
   "no_durability": "%s tartósság kimerült",
   "cannot_give": "%s %s nem adható meg a célnak",
   "evidence_cannot_take": "Nem elég magas a rangod a bizonyítékok kezeléséhez",
-  "dumpster": "Szemetes"
+  "dumpster": "Szemetes",
+  "crafting_item": "%s barkácsolása ",
+  "crafting_bench": "Barkács asztal",
+  "not_enough_durability": "%s elhasználodott!"
 }
