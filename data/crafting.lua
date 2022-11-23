@@ -4,19 +4,11 @@ return {
 			{
 				name = 'lockpick',
 				ingredients = {
-					garbage = 3,
-					WEAPON_HAMMER = 0.1
+					scrapmetal = 5,
+					WEAPON_HAMMER = 0.05
 				},
 				duration = 5000,
-				count = 3,
-				metadata = { durability = 20 }
-			},
-			{
-				name = 'garbage',
-				ingredients = {
-					cola = 1
-				},
-				metadata = { description = 'An empty soda can.', weight = 20, image = 'trash_can' }
+				count = 2,
 			},
 		},
 		points = {
