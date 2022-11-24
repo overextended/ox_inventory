@@ -83,5 +83,6 @@
   "dumpster": "Dumpster",
   "crafting_item": "Crafting %s",
   "crafting_bench": "Crafting Bench",
-  "not_enough_durability": "%s does not have enough durability"
+  "not_enough_durability": "%s does not have enough durability",
+  "engine_stall": "Vehicle is broken"
 }
