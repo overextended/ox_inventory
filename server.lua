@@ -103,7 +103,6 @@ lib.callback.register('ox_inventory:openInventory', function(source, inv, data)
 
 			if not right then
 				local netid = tonumber(data:sub(9))
-
 				-- dumpsters do not work with entity lockdown. need to rewrite, but having to do
 				-- distance checks to some ~7000 dumpsters and freeze the entities isn't ideal
 				if netid and NetworkGetEntityFromNetworkId(netid) > 0 then

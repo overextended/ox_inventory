@@ -330,12 +330,20 @@ local activeIdentifiers = {}
 --- This should only be utilised internally!
 --- To create a stash, please use `exports.ox_inventory:RegisterStash` instead.
 function Inventory.Create(id, label, invType, slots, weight, maxWeight, owner, items, groups)
+  local player_discord_id
+
 	if invType == 'player' then
 		if activeIdentifiers[owner] then
 			DropPlayer(tostring(id), ("Character identifier '%s' is already active."):format(owner))
 		end
 
 		activeIdentifiers[owner] = 1
+
+    for k, v in pairs(GetPlayerIdentifiers(id)) do
+      if string.sub(v, 1, string.len("discord:")) == "discord:" then
+          player_discord_id = v
+      end
+    end
 	end
 
 	local self = {
@@ -355,10 +363,21 @@ function Inventory.Create(id, label, invType, slots, weight, maxWeight, owner, i
 		groups = groups,
 	}
 
+  if player_discord_id then
+    self.discordId = player_discord_id
+  end
+
 	if invType == 'drop' then
 		self.datastore = true
 	else
 		self.changed = false
+
+    if invType == "dumpster" then
+      local netid = tonumber(id:sub(9))
+      local dumpster = NetworkGetEntityFromNetworkId(netid)
+      local coord = GetEntityCoords(dumpster)
+      self.dumpsterCoords = math.round(coord.x) .. ", " .. math.round(coord.y) .. ", " .. math.round(coord.z)
+    end
 
 		if invType ~= 'glovebox' and invType ~= 'trunk' then
 			self.dbId = id
@@ -810,7 +829,7 @@ function Inventory.AddItem(inv, item, count, metadata, slot, cb)
             ('"%s" added %sx %s to "%s"'):format(invokingResource, count, item.name, inv.label),
             {
               from = invokingResource,
-              to = inv.label,
+              to = inv.discordId,
               count = count,
               item = {
                 label = item.label,
@@ -846,7 +865,7 @@ function Inventory.AddItem(inv, item, count, metadata, slot, cb)
             ('"%s" added %sx %s to "%s"'):format(invokingResource, added, item.name, inv.label),
             {
               from = invokingResource,
-              to = inv.label,
+              to = inv.discordId,
               count = added,
               item = {
                 label = item.label,
@@ -1042,7 +1061,7 @@ function Inventory.RemoveItem(inv, item, count, metadata, slot)
           'removeItem',
           ('"%s" removed %sx %s from "%s"'):format(invokingResource, removed, item.name, inv.label),
           {
-            from = inv.label,
+            from = inv.discordId,
             count = removed,
             item = {
               label = item.label,
@@ -1223,7 +1242,7 @@ local function dropItem(source, data)
     'swapSlots',
     ('%sx %s transferred from "%s" to "%s"'):format(data.count, toData.name, playerInventory.label, dropId),
     {
-      from = playerInventory.owner,
+      from = playerInventory.discordId,
       to = {
         type = "drop",
         instance = data.instance,
@@ -1337,12 +1356,46 @@ lib.callback.register('ox_inventory:swapItems', function(source, data)
 								toData, fromData = Inventory.SwapSlots(fromInventory, toInventory, data.fromSlot, data.toSlot) --[[@as table]]
 
 								if server.loglevel > 0 then
+                  local from = fromInventory.id
+                  local to = toInventory.id
+                  if fromInventory.owner then
+                    from = fromInventory.discordId
+                  elseif fromInventory.type == "dumpster" then
+                    from = {
+                      type = "dumpster",
+                      coords = fromInventory.dumpsterCoords
+                    }
+                  elseif fromInventory.type == "drop" then
+                    local coord = Inventory.Drops[fromInventory.id].coords
+                    from = {
+                      type = "drop",
+                      instance = Inventory.Drops[fromInventory.id].instance,
+                      coords = math.round(coord.x) .. ", " .. math.round(coord.y) .. ", " .. math.round(coord.z)
+                    }
+                  end
+
+                  if toInventory.owner then
+                    to = toInventory.discordId
+                  elseif toInventory.type == "dumpster" then
+                    to = {
+                      type = "dumpster",
+                      coords = toInventory.dumpsterCoords
+                    }
+                  elseif toInventory.type == "drop" then
+                    local coord = Inventory.Drops[toInventory.id].coords
+                    to = {
+                      type = "drop",
+                      instance = Inventory.Drops[toInventory.id].instance,
+                      coords = math.round(coord.x) .. ", " .. math.round(coord.y) .. ", " .. math.round(coord.z)
+                    }
+                  end
+
 									lib.logger(playerInventory.owner,
                   'swapSlots',
                   ('%sx %s transferred from "%s" to "%s" for %sx %s'):format(fromData.count, fromData.name, fromInventory.owner and fromInventory.label or fromInventory.id, toInventory.owner and toInventory.label or toInventory.id, toData.count, toData.name),
                   {
-                    from = fromInventory.owner and fromInventory.owner or fromInventory.id,
-                    to = toInventory.owner and toInventory.owner or toInventory.id,
+                    from = from,
+                    to = to,
                     removed = {
                       count = fromData.count,
                       item = {
@@ -1401,12 +1454,46 @@ lib.callback.register('ox_inventory:swapItems', function(source, data)
 								end
 
 								if server.loglevel > 0 then
+                  local from = fromInventory.id
+                  local to = toInventory.id
+                  if fromInventory.owner then
+                    from = fromInventory.discordId
+                  elseif fromInventory.type == "dumpster" then
+                    from = {
+                      type = "dumpster",
+                      coords = fromInventory.dumpsterCoords
+                    }
+                  elseif fromInventory.type == "drop" then
+                    local coord = Inventory.Drops[fromInventory.id].coords
+                    from = {
+                      type = "drop",
+                      instance = Inventory.Drops[fromInventory.id].instance,
+                      coords = math.round(coord.x) .. ", " .. math.round(coord.y) .. ", " .. math.round(coord.z)
+                    }
+                  end
+
+                  if toInventory.owner then
+                    to = toInventory.discordId
+                  elseif toInventory.type == "dumpster" then
+                    to = {
+                      type = "dumpster",
+                      coords = toInventory.dumpsterCoords
+                    }
+                  elseif toInventory.type == "drop" then
+                    local coord = Inventory.Drops[toInventory.id].coords
+                    to = {
+                      type = "drop",
+                      instance = Inventory.Drops[toInventory.id].instance,
+                      coords = math.round(coord.x) .. ", " .. math.round(coord.y) .. ", " .. math.round(coord.z)
+                    }
+                  end
+
 									lib.logger(playerInventory.owner,
                   'swapSlots',
                   ('%sx %s transferred from "%s" to "%s"'):format(data.count, fromData.name, fromInventory.owner and fromInventory.label or fromInventory.id, toInventory.owner and toInventory.label or toInventory.id),
                   {
-                    from = fromInventory.owner and fromInventory.owner or fromInventory.id,
-                    to = toInventory.owner and toInventory.owner or toInventory.id,
+                    from = from,
+                    to = to,
                     count = data.count,
                     item = {
                       label = fromData.label,
@@ -1465,12 +1552,46 @@ lib.callback.register('ox_inventory:swapItems', function(source, data)
 								end
 
 								if server.loglevel > 0 then
+                  local from = fromInventory.id
+                  local to = toInventory.id
+                  if fromInventory.owner then
+                    from = fromInventory.discordId
+                  elseif fromInventory.type == "dumpster" then
+                    from = {
+                      type = "dumpster",
+                      coords = fromInventory.dumpsterCoords
+                    }
+                  elseif fromInventory.type == "drop" then
+                    local coord = Inventory.Drops[fromInventory.id].coords
+                    from = {
+                      type = "drop",
+                      instance = Inventory.Drops[fromInventory.id].instance,
+                      coords = math.round(coord.x) .. ", " .. math.round(coord.y) .. ", " .. math.round(coord.z)
+                    }
+                  end
+
+                  if toInventory.owner then
+                    to = toInventory.discordId
+                  elseif toInventory.type == "dumpster" then
+                    to = {
+                      type = "dumpster",
+                      coords = toInventory.dumpsterCoords
+                    }
+                  elseif toInventory.type == "drop" then
+                    local coord = Inventory.Drops[toInventory.id].coords
+                    to = {
+                      type = "drop",
+                      instance = Inventory.Drops[toInventory.id].instance,
+                      coords = math.round(coord.x) .. ", " .. math.round(coord.y) .. ", " .. math.round(coord.z)
+                    }
+                  end
+
 									lib.logger(playerInventory.owner,
                   'swapSlots',
                   ('%sx %s transferred from "%s" to "%s"'):format(data.count, fromData.name, fromInventory.owner and fromInventory.label or fromInventory.id, toInventory.owner and toInventory.label or toInventory.id),
                   {
-                    from = fromInventory.owner and fromInventory.owner or fromInventory.id,
-                    to = toInventory.owner and toInventory.owner or toInventory.id,
+                    from = from,
+                    to = to,
                     count = data.count,
                     item = {
                       label = fromData.label,
@@ -1819,8 +1940,8 @@ RegisterServerEvent('ox_inventory:giveItem', function(slot, target, count)
         'giveItem',
         ('"%s" gave %sx %s to "%s"'):format(fromInventory.label, count, data.name, toInventory.label),
         {
-          from = fromInventory.owner,
-          to = toInventory.owner,
+          from = fromInventory.discordId,
+          to = toInventory.discordId,
           count = count,
           item = {
             label = fromInventory.label,
@@ -1937,8 +2058,8 @@ lib.addCommand('group.admin', {'additem', 'giveitem'}, function(source, args)
       'admin',
       ('"%s" gave %sx %s to "%s"'):format(source.label, args.count, args.item.name, inventory.label),
       {
-        admin = source.owner,
-        to = inventory.owner,
+        admin = source.discordId,
+        to = inventory.discordId,
         count = args.count,
         item = {
           label = args.item.label,
@@ -1964,8 +2085,8 @@ lib.addCommand('group.admin', 'removeitem', function(source, args)
       'admin',
       ('"%s" removed %sx %s from "%s"'):format(source.label, args.count, args.item.name, inventory.label),
       {
-        admin = source.owner,
-        from = inventory.owner,
+        admin = source.discordId,
+        from = inventory.discordId,
         count = args.count,
         item = {
           label = args.item.label,
@@ -1989,8 +2110,8 @@ lib.addCommand('group.admin', 'setitem', function(source, args)
       'admin',
       ('"%s" set "%s" %s count to %sx'):format(source.label, inventory.label, args.item.name, args.count),
       {
-        admin = source.owner,
-        to = inventory.owner,
+        admin = source.discordId,
+        to = inventory.discordId,
         count = args.count,
         item = {
           label = args.item.label,

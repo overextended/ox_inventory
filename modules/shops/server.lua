@@ -250,7 +250,7 @@ lib.callback.register('ox_inventory:buyItem', function(source, data)
             'buyItem',
             ('"%s" %s'):format(playerInv.label, message:lower()),
             {
-              to = playerInv.owner,
+              to = playerInv.discordId,
               cost = price,
               payment_method = currency,
               count = count,
