@@ -43,6 +43,7 @@ local function canOpenInventory()
 	and not IsPedCuffed(playerPed)
 	and not IsPauseMenuActive()
 	and not IsPedFatallyInjured(playerPed)
+	and not lib.progressActive() -- disable while progress bar is active
 end
 
 local defaultInventory = {
@@ -575,74 +576,76 @@ local function registerCommands()
 
 				if #(playerCoords - position) < 6 and NetworkGetEntityIsNetworked(vehicle) then
 					local locked = GetVehicleDoorLockStatus(vehicle)
+					local engineHealth = GetVehicleEngineHealth(vehicle)
+					if engineHealth > 100 then -- disable open while vehicle destroyed (duplicate with impound system)
+						if locked == 0 or locked == 1 then
+							local open, vehBone
 
-					if locked == 0 or locked == 1 then
-						local open, vehBone
-
-						if checkVehicle == nil then -- No data, normal trunk
-							open, vehBone = 5, GetEntityBoneIndexByName(vehicle, 'boot')
-						elseif checkVehicle == 3 then -- Trunk in hood
-							open, vehBone = 4, GetEntityBoneIndexByName(vehicle, 'bonnet')
-						else -- No storage or no trunk
-							return
-						end
-
-						if vehBone == -1 then
-							if vehicleClass == 12 then
-								open = { 2, 3 }
-							end
-
-							vehBone = GetEntityBoneIndexByName(vehicle, Vehicles.trunk.boneIndex[vehicleHash] or 'platelight')
-						end
-
-						position = GetWorldPositionOfEntityBone(vehicle, vehBone)
-						local distance = #(playerCoords - position)
-						local closeToVehicle = distance < 2 and open
-
-						if closeToVehicle then
-							local plate = GetVehicleNumberPlateText(vehicle)
-							TaskTurnPedToFaceCoord(playerPed, position.x, position.y, position.z, 0)
-							lastVehicle = vehicle
-							client.openInventory('trunk', {id='trunk'..plate, netid = NetworkGetNetworkIdFromEntity(vehicle)})
-							local timeout = 20
-							repeat Wait(50)
-								timeout -= 1
-							until (currentInventory and currentInventory.type == 'trunk') or timeout == 0
-
-							if timeout == 0 then
-								closeToVehicle, lastVehicle = false, nil
+							if checkVehicle == nil then -- No data, normal trunk
+								open, vehBone = 5, GetEntityBoneIndexByName(vehicle, 'boot')
+							elseif checkVehicle == 3 then -- Trunk in hood
+								open, vehBone = 4, GetEntityBoneIndexByName(vehicle, 'bonnet')
+							else -- No storage or no trunk
 								return
 							end
 
-							if type(open) == 'table' then
-								for i = 1, #open do
-									SetVehicleDoorOpen(vehicle, open[i], false, false)
+							if vehBone == -1 then
+								if vehicleClass == 12 then
+									open = { 2, 3 }
 								end
-							else
-								SetVehicleDoorOpen(vehicle, open, false, false)
+
+								vehBone = GetEntityBoneIndexByName(vehicle, Vehicles.trunk.boneIndex[vehicleHash] or 'platelight')
 							end
 
-							Wait(200)
-							---@todo animation for vans?
-							Utils.PlayAnim(0, 'anim@heists@prison_heiststation@cop_reactions', 'cop_b_idle', 3.0, 3.0, -1, 49, 0.0, 0, 0, 0)
-							currentInventory.entity = lastVehicle
-							currentInventory.door = open
+							position = GetWorldPositionOfEntityBone(vehicle, vehBone)
+							local distance = #(playerCoords - position)
+							local closeToVehicle = distance < 2 and open
 
-							while true do
-								Wait(50)
+							if closeToVehicle then
+								local plate = GetVehicleNumberPlateText(vehicle)
+								TaskTurnPedToFaceCoord(playerPed, position.x, position.y, position.z, 0)
+								lastVehicle = vehicle
+								client.openInventory('trunk', {id='trunk'..plate, netid = NetworkGetNetworkIdFromEntity(vehicle)})
+								local timeout = 20
+								repeat Wait(50)
+									timeout -= 1
+								until (currentInventory and currentInventory.type == 'trunk') or timeout == 0
 
-								if closeToVehicle and invOpen then
-									position = GetWorldPositionOfEntityBone(vehicle, vehBone)
+								if timeout == 0 then
+									closeToVehicle, lastVehicle = false, nil
+									return
+								end
 
-									if #(GetEntityCoords(playerPed) - position) >= 2 or not DoesEntityExist(vehicle) then
-										break
-									else TaskTurnPedToFaceCoord(playerPed, position.x, position.y, position.z, 0) end
-								else break end
+								if type(open) == 'table' then
+									for i = 1, #open do
+										SetVehicleDoorOpen(vehicle, open[i], false, false)
+									end
+								else
+									SetVehicleDoorOpen(vehicle, open, false, false)
+								end
+
+								Wait(200)
+								---@todo animation for vans?
+								Utils.PlayAnim(0, 'anim@heists@prison_heiststation@cop_reactions', 'cop_b_idle', 3.0, 3.0, -1, 49, 0.0, 0, 0, 0)
+								currentInventory.entity = lastVehicle
+								currentInventory.door = open
+
+								while true do
+									Wait(50)
+
+									if closeToVehicle and invOpen then
+										position = GetWorldPositionOfEntityBone(vehicle, vehBone)
+
+										if #(GetEntityCoords(playerPed) - position) >= 2 or not DoesEntityExist(vehicle) then
+											break
+										else TaskTurnPedToFaceCoord(playerPed, position.x, position.y, position.z, 0) end
+									else break end
+								end
+
+								if lastVehicle then client.closeInventory() end
 							end
-
-							if lastVehicle then client.closeInventory() end
-						end
-					else lib.notify({ type = 'error', description = locale('vehicle_locked') }) end
+						else lib.notify({ type = 'error', description = locale('vehicle_locked') }) end
+					else lib.notify({ type = 'error', description = locale('engine_stall') }) end
 				end
 			end
 		end
