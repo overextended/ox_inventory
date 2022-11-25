@@ -204,13 +204,6 @@ return {
       ammoname = 'ammo-shotgun'
     },
 
-    ['WEAPON_M870'] = {
-      label = 'M870',
-      weight = 3600,
-      durability = 0.03,
-      ammoname = 'ammo-shotgun'
-    },
-
     ['WEAPON_AKM'] = {
       label = 'AK',
       weight = 3140,
@@ -266,6 +259,19 @@ return {
       ammoname = 'ammo-556'
     },
 
+    ['WEAPON_M45'] = {
+      label = 'M45A1',
+      weight = 930,
+      durability = 0.03,
+      ammoname = 'ammo-45'
+    },
+
+    ['WEAPON_LV338'] = {
+      label = 'LV338',
+      weight = 4370,
+      durability = 0.03,
+      ammoname = 'ammo-sniper'
+    },
   },
 
   Components = {
