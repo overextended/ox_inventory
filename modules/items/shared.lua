@@ -46,6 +46,8 @@ local function useExport(resource, export)
 	end
 end
 
+local isServer = IsDuplicityVersion()
+
 ---@param data OxItem
 local function newItem(data)
 	data.weight = data.weight or 0
@@ -66,11 +68,17 @@ local function newItem(data)
 		data.consume = 1
 	end
 
-	if IsDuplicityVersion then
+	if isServer then
 		data.client = nil
 
 		if server?.export then
 			data.cb = useExport(string.strsplit('.', server.export))
+		end
+
+		if not data.durability then
+			if data.degrade or (data.consume and data.consume ~= 0 and data.consume < 1) then
+				data.durability = true
+			end
 		end
 	else
 		data.server = nil
@@ -104,7 +112,7 @@ do
 
 			v[type == 'Ammo' and 'ammo' or type == 'Components' and 'component' or type == 'Tints' and 'tint' or 'weapon'] = true
 
-			if IsDuplicityVersion then v.client = nil else
+			if isServer then v.client = nil else
 				v.count = 0
 				v.server = nil
 			end

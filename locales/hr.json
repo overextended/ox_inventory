@@ -61,7 +61,7 @@
   "shop_nostock": "Artikl nije na zalihama",
   "identification": "Spol: %s \nDatum rođenja: %s",
   "search_dumpster": "Pretražite kontejner za smeće",
-  "open_shop": "Otvori %s",
+  "open_label": "Otvori %s",
   "purchased_for": "Kupljeno %s %s za %s%s",
   "unable_stack_items": "Ne možeš ostaviti stvari ovdje",
   "police_evidence": "Policijski dokazi",

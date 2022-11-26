@@ -27,7 +27,7 @@ debugData([
         items: [
           {
             slot: 1,
-            name: 'water',
+            name: 'iron',
             weight: 3000,
             metadata: {
               description: `name: Svetozar Miletic  \n Gender: Male`,
@@ -38,8 +38,8 @@ debugData([
             },
             count: 5,
           },
-          { slot: 2, name: 'money', weight: 0, count: 32000 },
-          { slot: 3, name: 'cola', weight: 100, count: 1, metadata: { type: 'Special' } },
+          { slot: 2, name: 'powersaw', weight: 0, count: 1, metadata: { durability: 75 } },
+          { slot: 3, name: 'copper', weight: 100, count: 12, metadata: { type: 'Special' } },
           {
             slot: 4,
             name: 'water',
@@ -52,12 +52,27 @@ debugData([
       },
       rightInventory: {
         id: 'shop',
-        type: 'shop',
+        type: 'crafting',
         slots: 50,
         name: 'Bob Smith',
         weight: 3000,
         maxWeight: 5000,
-        items: [{ slot: 1, name: 'water', weight: 500, price: 300 }],
+        items: [
+          {
+            slot: 1,
+            name: 'lockpick',
+            weight: 500,
+            price: 300,
+            ingredients: {
+              iron: 5,
+              copper: 12,
+              powersaw: 0.1,
+            },
+            metadata: {
+              description: 'Simple lockpick that breaks easily and can pick basic door locks',
+            },
+          },
+        ],
       },
     },
   },

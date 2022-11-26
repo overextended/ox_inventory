@@ -61,7 +61,7 @@
   "shop_nostock": "Το προϊόν έχει εξαντληθεί",
   "identification": "Φύλο: %s  \nΗμερομηνια γεννησης: %s",
   "search_dumpster": "Αναζήτηση Σκουπιδιών",
-  "open_shop": "Άνοιγμα %s",
+  "open_label": "Άνοιγμα %s",
   "purchased_for": "Αγόρασες %s %s με κόστος %s%s",
   "unable_stack_items": "Δεν μπορείτε να στοιβάξετε αυτά τα στοιχεία",
   "police_evidence": "Αστυνομικά Στοιχεία",

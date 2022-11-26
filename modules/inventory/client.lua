@@ -4,7 +4,7 @@ local Inventory = {}
 
 Inventory.Dumpsters = { 218085040, 666561306, -58485588, -206690185, 1511880420, 682791951 }
 
-if shared.qtarget then
+if shared.target then
   local function OpenDumpster(entity)
     local netId = NetworkGetEntityIsNetworked(entity) and NetworkGetNetworkIdFromEntity(entity)
 
@@ -93,7 +93,7 @@ Inventory.Evidence = setmetatable(data('evidence'), {
       end
 
       if client.hasGroup(shared.police) then
-        if shared.qtarget then
+        if shared.target then
           if evidence.target then
             exports.qtarget:RemoveZone(evidence.target.name)
             exports.qtarget:AddBoxZone(evidence.target.name, evidence.target.loc, evidence.target.length or 0.5,
@@ -151,7 +151,7 @@ Inventory.Stashes = setmetatable(data('stashes'), {
       end
 
       if not stash.groups or client.hasGroup(stash.groups) then
-        if shared.qtarget then
+        if shared.target then
           if stash.target then
             exports.qtarget:RemoveZone(stash.name)
             exports.qtarget:AddBoxZone(stash.name, stash.target.loc, stash.target.length or 0.5,

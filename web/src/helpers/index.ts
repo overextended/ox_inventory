@@ -1,11 +1,44 @@
 //import { Items } from "../store/items";
 import { Inventory, State, Slot, SlotWithItem, InventoryType, ItemData } from '../typings';
 import { isEqual } from 'lodash';
+import { store } from '../store';
+import { Items } from '../store/items';
 
 export const isShopStockEmpty = (itemCount: number | undefined, inventoryType: string) => {
   if (inventoryType === 'shop' && itemCount !== undefined && itemCount === 0) return true;
 
   return false;
+};
+
+// I hate this
+export const canCraftItem = (item: Slot, inventoryType: string) => {
+  if (!isSlotWithItem(item) || inventoryType !== 'crafting') return true;
+  if (!item.ingredients) return true;
+  const leftInventory = store.getState().inventory.leftInventory;
+  const ingredientItems = Object.entries(item.ingredients);
+
+  const remainingItems = ingredientItems.filter((ingredient) => {
+    const [item, count] = [ingredient[0], ingredient[1]];
+
+    if (count >= 1) {
+      // @ts-ignore
+      if (Items[item] && Items[item].count >= count) return false;
+    }
+
+    const hasItem = leftInventory.items.find((playerItem) => {
+      if (isSlotWithItem(playerItem) && playerItem.name === item) {
+        if (count < 1) {
+          if (playerItem.metadata?.durability >= count * 100) return true;
+
+          return false;
+        }
+      }
+    });
+
+    return !hasItem;
+  });
+
+  return remainingItems.length === 0;
 };
 
 export const isSlotWithItem = (slot: Slot, strict: boolean = false): slot is SlotWithItem =>

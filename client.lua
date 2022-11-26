@@ -114,7 +114,30 @@ function client.openInventory(inv, data, searchPlayer)
 		local left, right
 
 		if inv == 'shop' and invOpen == false then
+			if cache.vehicle then
+				return lib.notify({ type = 'error', description = locale('cannot_perform') })
+			end
+
 			left, right = lib.callback.await('ox_inventory:openShop', 200, data)
+		elseif inv == 'crafting' then
+			if cache.vehicle then
+				return lib.notify({ type = 'error', description = locale('cannot_perform') })
+			end
+
+			left = lib.callback.await('ox_inventory:openCraftingBench', 200, data.id, data.index)
+
+			if left then
+				right = client.craftingBenches[data.id]
+				right = {
+					type = 'crafting',
+					id = data.id,
+					label = data.label or locale('crafting_bench'),
+					index = data.index,
+					slots = right.slots,
+					items = right.items,
+					coords = shared.target and right.zones[data.index].coords or right.points[data.index]
+				}
+			end
 		elseif invOpen ~= nil then
 			if inv == 'policeevidence' then
 				local input = lib.inputDialog(locale('police_evidence'), {locale('locker_number')})
@@ -469,7 +492,9 @@ local function registerCommands()
 				local closest = lib.points.closest()
 
 				if closest and closest.currentDistance < 1.2 then
-					if closest.inv ~= 'license' and closest.inv ~= 'policeevidence' then
+					if closest.inv == 'crafting' then
+						return client.openInventory('crafting', { id = closest.id, index = closest.index })
+					elseif closest.inv ~= 'license' and closest.inv ~= 'policeevidence' then
 						return client.openInventory(closest.inv or 'drop', { id = closest.invId, type = closest.type })
 					end
 				end
@@ -538,7 +563,7 @@ local function registerCommands()
 				if not entity then return end
 				local vehicle, position
 
-				if not shared.qtarget then
+				if not shared.target then
 					if entityType == 2 then vehicle, position = entity, GetEntityCoords(entity)
 					elseif entityType == 3 and table.contains(Inventory.Dumpsters, GetEntityModel(entity)) then
 						local netId = NetworkGetEntityIsNetworked(entity) and NetworkGetNetworkIdFromEntity(entity)
@@ -736,6 +761,7 @@ local function updateInventory(items, weight)
 			PlayerData.inventory[slot] = v and v or nil
 			changes[slot] = v
 		end
+		SendNUIMessage({ action = 'refreshSlots', data = {itemCount = itemCount} })
 		client.setPlayerData('weight', weight)
 	else
 		for i = 1, #items do
@@ -754,9 +780,10 @@ local function updateInventory(items, weight)
 			if not v.count then v.name = nil end
 			PlayerData.inventory[v.slot] = v.name and v or nil
 		end
+		SendNUIMessage({ action = 'refreshSlots', data = {items = items, itemCount = itemCount} })
 		client.setPlayerData('weight', weight.left)
-		SendNUIMessage({ action = 'refreshSlots', data = items })
 	end
+
 
 	for item, count in pairs(itemCount) do
 		local data = Items[item]
@@ -932,11 +959,11 @@ RegisterNetEvent('ox_inventory:setPlayerInventory', function(currentDrops, inven
 	local ItemData = table.create(0, #Items)
 
 	for _, v in pairs(Items) do
-		local buttons = {}
+		local buttons = v.buttons and {} or nil
 
-		if v.buttons then
-			for id, button in pairs(v.buttons) do
-				buttons[id] = button.label
+		if buttons then
+			for i = 1, #v.buttons do
+				buttons[i] = v.buttons[i].label
 			end
 		end
 
@@ -944,11 +971,10 @@ RegisterNetEvent('ox_inventory:setPlayerInventory', function(currentDrops, inven
 			label = v.label,
 			stack = v.stack,
 			close = v.close,
+			count = 0,
 			description = v.description,
 			buttons = buttons
 		}
-
-		v.count = 0
 	end
 
 	for _, data in pairs(inventory) do
@@ -956,6 +982,7 @@ RegisterNetEvent('ox_inventory:setPlayerInventory', function(currentDrops, inven
 
 		if item then
 			item.count += data.count
+			ItemData[data.name].count += data.count
 			local add = item.client?.add
 
 			if add then
@@ -989,31 +1016,7 @@ RegisterNetEvent('ox_inventory:setPlayerInventory', function(currentDrops, inven
 		})
 	end
 
-	while not uiLoaded do Wait(50) end
-
-	SendNUIMessage({
-		action = 'init',
-		data = {
-			locale = locales,
-			items = ItemData,
-			leftInventory = {
-				id = cache.playerId,
-				slots = shared.playerslots,
-				items = PlayerData.inventory,
-				maxWeight = shared.playerweight,
-			},
-			imagepath = GetConvar('inventory:imagepath', 'nui://ox_inventory/web/images')
-		}
-	})
-
-	PlayerData.loaded = true
-
-	Shops()
-	Inventory.Stashes()
-	Inventory.Evidence()
-	registerCommands()
 	TriggerEvent('ox_inventory:updateInventory', PlayerData.inventory)
-	-- lib.notify({ description = shared.locale('inventory_setup') })
 
 	---@param point CPoint
 	local function nearbyLicense(point)
@@ -1041,6 +1044,31 @@ RegisterNetEvent('ox_inventory:setPlayerInventory', function(currentDrops, inven
 			nearby = nearbyLicense
 		})
 	end
+
+	while not uiLoaded do Wait(50) end
+
+	SendNUIMessage({
+		action = 'init',
+		data = {
+			locale = locales,
+			items = ItemData,
+			leftInventory = {
+				id = cache.playerId,
+				slots = shared.playerslots,
+				items = PlayerData.inventory,
+				maxWeight = shared.playerweight,
+			},
+			imagepath = GetConvar('inventory:imagepath', 'nui://ox_inventory/web/images')
+		}
+	})
+
+	PlayerData.loaded = true
+
+	lib.notify({ description = locale('inventory_setup') })
+	Shops()
+	Inventory.Stashes()
+	Inventory.Evidence()
+	registerCommands()
 
 	client.interval = SetInterval(function()
 		if invOpen == false then
@@ -1340,6 +1368,24 @@ RegisterNUICallback('exit', function(_, cb)
 	cb(1)
 end)
 
+lib.callback.register('ox_inventory:startCrafting', function(id, recipe)
+	recipe = client.craftingBenches[id].items[recipe]
+
+	return lib.progressCircle({
+		label = locale('crafting_item', Items[recipe.name].label),
+		duration = recipe.duration or 3000,
+		canCancel = true,
+		disable = {
+			move = true,
+			combat = true,
+		},
+		anim = {
+			dict = 'anim@amb@clubhouse@tutorial@bkr_tut_ig3@',
+			clip = 'machinic_loop_mechandplayer',
+		}
+	})
+end)
+
 ---Synchronise and validate all item movement between the NUI and server.
 RegisterNUICallback('swapItems', function(data, cb)
 	if data.toType == 'newdrop' and cache.vehicle then
@@ -1383,7 +1429,7 @@ RegisterNUICallback('buyItem', function(data, cb)
 
 	if data then
 		updateInventory({[data[1]] = data[2]}, data[4])
-		SendNUIMessage({ action = 'refreshSlots', data = data[3] and {{item = data[2]}, {item = data[3], inventory = 'shop'}} or {item = data[2]}})
+		SendNUIMessage({ action = 'refreshSlots', data = data[3] and {items = {{item = data[2]}, {item = data[3], inventory = 'shop'}}} or {items = {item = data[2]}}})
 	end
 
 	if message then
@@ -1391,6 +1437,21 @@ RegisterNUICallback('buyItem', function(data, cb)
 	end
 
 	cb(response)
+end)
+
+RegisterNUICallback('craftItem', function(data, cb)
+	cb(true)
+
+	local id, index = currentInventory.id, currentInventory.index
+	local success, response = lib.callback.await('ox_inventory:craftItem', 200, currentInventory.id, currentInventory.index, data.fromSlot, data.toSlot)
+
+	if not success then
+		lib.notify({ type = 'error', description = locale(response or 'cannot_perform') })
+	end
+
+	if not currentInventory or currentInventory.type ~= 'crafting' then
+		client.openInventory('crafting', { id = id, index = index })
+	end
 end)
 
 lib.callback.register('ox_inventory:getVehicleData', function(netid)

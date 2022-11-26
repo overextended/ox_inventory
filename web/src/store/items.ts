@@ -8,11 +8,13 @@ export const Items: {
     label: 'VODA',
     stack: true,
     usable: true,
+    count: 0,
   },
   burger: {
     close: false,
     label: 'BURGR',
     stack: false,
     usable: false,
+    count: 0,
   },
 };

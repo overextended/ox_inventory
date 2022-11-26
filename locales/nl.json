@@ -61,7 +61,7 @@
   "shop_nostock": "Item is niet op voorraad",
   "identification": "Geslacht: %s  \nGeboortedatum: %s",
   "search_dumpster": "Vuilnisbak doorzoeken",
-  "open_shop": "Open %s",
+  "open_label": "Open %s",
   "purchased_for": "%s %s gekocht voor %s%s",
   "unable_stack_items": "Je kan deze items niet op elkaar stapelen",
   "police_evidence": "Politie bewijskluis",

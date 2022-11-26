@@ -1,4 +1,3 @@
-IsDuplicityVersion = IsDuplicityVersion()
 lib.locale()
 
 -- Don't be an idiot and change these convar getters (yes, people do that).
@@ -7,10 +6,9 @@ lib.locale()
 shared = {
 	resource = GetCurrentResourceName(),
 	framework = GetConvar('inventory:framework', 'esx'),
-	locale = GetConvar('inventory:locale', 'en'),
 	playerslots = GetConvarInt('inventory:slots', 50),
 	playerweight = GetConvarInt('inventory:weight', 30000),
-	qtarget = GetConvar('inventory:qtarget', 'false') == 'true',
+	target = GetConvar('inventory:target', 'false') == 'true',
 	police = json.decode(GetConvar('inventory:police', '["police", "sheriff"]')),
 }
 
@@ -27,7 +25,7 @@ do
 	shared.police = police
 end
 
-if IsDuplicityVersion then
+if IsDuplicityVersion() then
 	server = {
 		loglevel = GetConvarInt('inventory:loglevel', 1),
 		randomprices = GetConvar('inventory:randomprices', 'false') == 'true',
@@ -137,10 +135,16 @@ if not LoadResourceFile(shared.resource, 'web/build/index.html') then
 	return spamError('UI has not been built, refer to the documentation or download a release build.\n	^3https://overextended.github.io/docs/ox_inventory/^0')
 end
 
--- Disable qtarget compatibility if it isn't running
-if shared.qtarget and not GetResourceState('qtarget'):find('start') and not GetResourceState('ox_target'):find('start') then
-	shared.qtarget = false
-	shared.warning(("qtarget is '%s' - ensure it is starting before ox_inventory"):format(GetResourceState('qtarget')))
+if shared.target then
+	local ox_target = GetResourceState('ox_target'):find('start')
+	local qtarget = GetResourceState('qtarget'):find('start')
+
+	if not ox_target and not qtarget then
+		shared.target = false
+		return shared.warning('targeting resource is not loaded - it should start before ox_inventory')
+	end
+
+	shared.target = ox_target and 'ox_target' or 'qtarget'
 end
 
 if shared.server then shared.ready = false end

@@ -61,7 +61,7 @@
   "shop_nostock": "Ítem sin stock",
   "identification": "Sexo: %s \nFecha de Nacimiento: %s",
   "search_dumpster": "Buscar en el Basurero",
-  "open_shop": "Abrir %s",
+  "open_label": "Abrir %s",
   "purchased_for": "Comprar %s %s por %s%s",
   "unable_stack_items": "¡No puedes apilar estos ítems!",
   "police_evidence": "Evidencia Policial",
@@ -80,5 +80,7 @@
   "no_durability": "¡La durabilidad del ítem se ha agotado!",
   "cannot_give": "No se pudo dar %s %s al objetivo",
   "evidence_cannot_take": "No tienes el suficiente rango para coger esta prueba",
-  "dumpster": "Contenedor"
+  "dumpster": "Contenedor",
+  "crafting_item": "Elaborando %s",
+  "crafting_bench": "Mesa De Trabajo"
 }

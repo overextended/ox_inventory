@@ -61,7 +61,7 @@
   "shop_nostock": "Товара нет в наличии",
   "identification": "Пол: %s  \nДата рождения: %s",
   "search_dumpster": "Обыскать мусорку",
-  "open_shop": "Открыть %s",
+  "open_label": "Открыть %s",
   "purchased_for": "Приобретено: %s %s за %s%s",
   "unable_stack_items": "Вы не можете складывать эти предметы",
   "police_evidence": "Улика",

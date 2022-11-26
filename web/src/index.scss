@@ -13,500 +13,613 @@ $gridGap: 2px;
 $containerSize: calc(#{$gridRows} * #{$gridSize + 0.22vh} + #{$gridRows} * #{$gridGap});
 
 body {
-    margin: 0;
-    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans',
-        'Droid Sans', 'Helvetica Neue', sans-serif;
-    -webkit-font-smoothing: antialiased;
-    -moz-osx-font-smoothing: grayscale;
-    height: 100vh;
-    background: none !important;
-    overflow: hidden !important;
-    user-select: none;
+  margin: 0;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans',
+    'Droid Sans', 'Helvetica Neue', sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  height: 100vh;
+  background: none !important;
+  overflow: hidden !important;
+  user-select: none;
 }
 
 #root {
-    height: 100%;
+  height: 100%;
 }
 
 code {
-    font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New', monospace;
+  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New', monospace;
 }
 
 ::-webkit-scrollbar {
-    display: none;
+  display: none;
 }
 
 p {
-    margin: 0;
-    padding: 0;
-    font-family: $mainFont;
+  margin: 0;
+  padding: 0;
+  font-family: $mainFont;
 }
 
 input[type='number']::-webkit-inner-spin-button,
 input[type='number']::-webkit-outer-spin-button {
-    -webkit-appearance: none;
-    -moz-appearance: none;
-    appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
 }
 
 .MuiMenuItem-root>div>p {
-    padding: 0 !important;
+  padding: 0 !important;
 }
 
 .MuiMenu-list {
-    min-width: 200px;
-    background-color: $mainColor;
-    color: $textColor;
-    padding: 4px;
-    border-color: rgba(0, 0, 0, 0.2);
-    border-style: inset;
-    border-width: 1px;
-    font-size: 16px !important;
+  min-width: 200px;
+  background-color: $mainColor;
+  color: $textColor;
+  padding: 4px;
+  border-color: rgba(0, 0, 0, 0.2);
+  border-style: inset;
+  border-width: 1px;
+  font-size: 16px !important;
 }
 
 .MuiMenuItem-gutters {
-    padding: 4px 16px !important;
-    font-size: 16px !important;
+  padding: 4px 16px !important;
+  font-size: 16px !important;
+}
+
+.tooltip-description {
+  padding-top: 5px;
 }
 
 .tooltip-markdown>p {
-    margin: 0;
+  margin: 0;
 }
 
 button:active {
-    transform: translateY(3px);
+  transform: translateY(3px);
 }
 
 .item-drag-preview {
-    width: 7.7vh;
-    height: 7.7vh;
-    z-index: 1;
-    position: fixed;
-    pointer-events: none;
-    top: 0;
-    left: 0;
-    background-repeat: no-repeat;
-    background-position: center;
-    background-size: 7vh;
-    image-rendering: -webkit-optimize-contrast;
+  width: 7.7vh;
+  height: 7.7vh;
+  z-index: 1;
+  position: fixed;
+  pointer-events: none;
+  top: 0;
+  left: 0;
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: 7vh;
+  image-rendering: -webkit-optimize-contrast;
 }
 
 .inventory-wrapper {
-    display: flex;
-    flex-direction: row;
-    justify-content: center;
-    align-items: center;
-    height: 100%;
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  height: 100%;
 
-    gap: 20px;
+  gap: 20px;
 }
 
 .inventory-control {
+  display: flex;
+  position: absolute;
+  margin-top: 1em;
+  right: 0;
+  padding: 0 20px;
+
+  .inventory-control-wrapper {
     display: flex;
-    position: absolute;
-    margin-top: 1em;
-    right: 0;
-    padding: 0 20px;
+    flex-direction: row;
+    gap: 20px;
+    justify-content: center;
+    align-items: center;
+  }
 
-    .inventory-control-wrapper {
-        display: flex;
-        flex-direction: row;
-        gap: 20px;
-        justify-content: center;
-        align-items: center;
+  .inventory-control-input {
+    transition: 200ms;
+    width: 140px;
+    padding: 16px 8px;
+    border-radius: 1vh;
+    font-family: $mainFont;
+    font-size: 16px;
+    text-align: center;
+    outline: none;
+    border: none;
+    color: #fff;
+    background-color: $secondaryColorLight;
+
+    &:focus-within {
+      background-color: $secondaryColorDark;
+    }
+  }
+
+  .inventory-control-button {
+    font-size: 14px;
+    color: #fff;
+    background-color: $secondaryColorLight;
+    transition: 200ms;
+    padding: 16px 20px;
+    text-align: center;
+    border-radius: 1vh;
+    border: none;
+    text-transform: uppercase;
+    font-family: $mainFont;
+    width: 100%;
+    font-weight: 500;
+    white-space: nowrap;
+    max-height: 58px;
+
+    .iconButton {
+      display: inline-block;
+      width: 20px;
+      vertical-align: middle;
+      transform: translateY(-2px);
+
+      &--give {
+        margin-right: 10px;
+      }
+
+      &--info {
+        width: 30px;
+        margin: -5px -8px;
+      }
     }
 
-    .inventory-control-input {
-        transition: 200ms;
-        width: 140px;
-        padding: 16px 8px;
-        border-radius: 1vh;
-        font-family: $mainFont;
-        font-size: 16px;
-        text-align: center;
-        outline: none;
-        border: none;
-        color: #fff;
-        background-color: $secondaryColorLight;
-
-        &:focus-within {
-            background-color: $secondaryColorDark;
-        }
+    &:hover {
+      background-color: $secondaryColorDark;
     }
+  }
+}
 
-    .inventory-control-button {
-        font-size: 14px;
-        color: #fff;
-        background-color: $secondaryColorLight;
-        transition: 200ms;
-        padding: 16px 20px;
-        text-align: center;
-        border-radius: 1vh;
-        border: none;
-        text-transform: uppercase;
-        font-family: $mainFont;
-        width: 100%;
-        font-weight: 500;
-        white-space: nowrap;
-        max-height: 58px;
+.useful-controls-dialog {
+  font-size: 18px;
+}
 
-        .iconButton {
-            display: inline-block;
-            width: 20px;
-            vertical-align: middle;
-            transform: translateY(-2px);
-
-            &--give {
-                margin-right: 10px;
-            }
-
-            &--info {
-                width: 30px;
-                margin: -5px -8px;
-            }
-        }
-
-        &:hover {
-            background-color: $secondaryColorDark;
-        }
-    }
+.useful-controls-dialog {
+  font-size: 18px;
 }
 
 .useful-controls-content-wrapper {
-    display: flex;
-    flex-direction: column;
-    gap: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
 }
 
 .useful-controls-button {
-    position: absolute !important;
-    bottom: 25px;
-    right: 25px;
-    transition: 200ms !important;
-    border-radius: 4px !important;
-    background-color: $seconaryColor  !important;
+  position: absolute !important;
+  bottom: 25px;
+  right: 25px;
+  transition: 200ms !important;
+  border-radius: 5% !important;
+  background-color: $seconaryColor !important;
 
-    &:hover {
-        background-color: $secondaryColorDark  !important;
-    }
+  &:hover {
+    background-color: $secondaryColorDark !important;
+  }
 }
 
 .useful-controls-exit-button {
-    position: absolute !important;
-    right: 8px;
-    top: 8px;
-    border-radius: 0.25vh !important;
-    color: grey !important;
+  position: absolute !important;
+  right: 8px;
+  top: 8px;
+  border-radius: 2.5% !important;
+  color: grey !important;
 }
 
 // Dialog is used fro useful controls window
 .MuiDialogContent-root {
-    background-color: $mainColor;
-    color: $textColor;
+  background-color: $mainColor;
+  color: $textColor;
 }
 
 .MuiDialogTitle-root {
-    background-color: $mainColor;
-    color: $textColor;
+  background-color: $mainColor;
+  color: $textColor;
 }
 
 .MuiDialogActions-root {
-    background-color: $mainColor;
-    color: $textColor;
+  background-color: $mainColor;
+  color: $textColor;
 }
 
 // inventory grids
 .inventory-grid-wrapper {
-    display: flex;
-    flex-direction: column;
-    gap: 1em;
+  display: flex;
+  flex-direction: column;
+  gap: 1em;
 
-    >div:first-child {
-        padding: 0 20px;
-    }
+  >div:first-child {
+    padding: 0 20px;
+  }
 }
 
 .inventory-wrapper-leftside {
-    transform: perspective(1500px) rotateY(15deg);
+  transform: perspective(1500px) rotateY(15deg);
 }
 
 .inventory-wrapper-rightside {
-    transform: perspective(1500px) rotateY(-15deg);
+  transform: perspective(1500px) rotateY(-15deg);
 
-    &>div {
-        padding: 0 20px;
-    }
+  &>div {
+    padding: 0 20px;
+  }
 }
 
 .inventory-grid-header-wrapper {
-    display: flex;
-    flex-direction: row;
-    justify-content: space-between;
-    background: rgba(0, 0, 0, .4);
-    padding: 14px 20px;
-    border-radius: 10px;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  background: rgba(0, 0, 0, .4);
+  padding: 14px 20px;
+  border-radius: 10px;
 
-    p {
-        &:first-child {
-            font-size: 30px !important;
-            line-height: 30px !important;
-        }
-
-        &:last-child {
-            font-size: 26px !important;
-            line-height: 30px !important;
-        }
+  p {
+    &:first-child {
+      font-size: 30px !important;
+      line-height: 30px !important;
     }
+
+    &:last-child {
+      font-size: 26px !important;
+      line-height: 30px !important;
+    }
+  }
 }
 
 .inventory-grid-container {
-    display: grid;
-    height: $containerSize;
-    grid-template-columns: repeat($gridCols, $gridSize);
-    grid-auto-rows: $gridSize + 0.22vh;
-    gap: $gridGap;
-    padding: 0 20px;
-    overflow-y: scroll;
+  display: grid;
+  height: $containerSize;
+  grid-template-columns: repeat($gridCols, $gridSize);
+  grid-auto-rows: $gridSize + 0.22vh;
+  gap: $gridGap;
+  padding: 0 20px;
+  overflow-y: scroll;
 }
 
 // inventory slots
 .inventory-slot {
-    background-color: rgba(0, 0, 0, 0.2);
-    background-repeat: no-repeat;
-    background-position: center;
-    border-radius: 0.25vh;
-    image-rendering: -webkit-optimize-contrast;
-    position: relative;
-    background-size: 70%;
-    color: $textColor;
-    border-radius: 1.5vh;
-    transition: box-shadow .5s ease, transform .5s ease;
+  background-color: rgba(0, 0, 0, 0.2);
+  background-repeat: no-repeat;
+  background-position: center;
+  border-radius: 0.25vh;
+  image-rendering: -webkit-optimize-contrast;
+  position: relative;
+  background-size: 70%;
+  color: $textColor;
+  border-radius: 1.5vh;
+  transition: box-shadow .5s ease, transform .5s ease;
 
-    &.occupied {
-        background-color: $secondaryColorLight;
-        border: 1px solid rgba(255, 255, 255, .15);
-        border-right: 0;
-        border-top: 0;
-        overflow: hidden;
+  &.occupied {
+    background-color: $secondaryColorLight;
+    border: 1px solid rgba(255, 255, 255, .15);
+    border-right: 0;
+    border-top: 0;
+    overflow: hidden;
 
-        &::after {
-            content: '';
-            width: 400%;
-            background: linear-gradient(to top, rgba(255, 255, 255, 0.2) 0%, rgba(255, 255, 255, 0.1) 100%);
-            height: 70%;
-            position: absolute;
-            top: 0;
-            left: -10%;
-            transform: rotate(30deg);
-            filter: blur(3px);
-            transition: all .5s ease;
-        }
-
-        &:hover {
-            transform: rotateX(10deg) scale(1.05);
-            box-shadow: 0px 10px 15px 0px rgba(0, 0, 0, 0.75);
-
-            &::after {
-                height: 85%;
-                transform: rotate(20deg);
-                background: linear-gradient(to top, rgba(255, 255, 255, 0.3) 0%, rgba(255, 255, 255, 0.1) 100%);
-            }
-        }
+    &::after {
+      content: '';
+      width: 400%;
+      background: linear-gradient(to top, rgba(255, 255, 255, 0.2) 0%, rgba(255, 255, 255, 0.1) 100%);
+      height: 70%;
+      position: absolute;
+      top: 0;
+      left: -10%;
+      transform: rotate(30deg);
+      filter: blur(3px);
+      transition: all .5s ease;
     }
+
+    &:hover {
+      transform: rotateX(10deg) scale(1.05);
+      box-shadow: 0px 10px 15px 0px rgba(0, 0, 0, 0.75);
+
+      &::after {
+        height: 85%;
+        transform: rotate(20deg);
+        background: linear-gradient(to top, rgba(255, 255, 255, 0.3) 0%, rgba(255, 255, 255, 0.1) 100%);
+      }
+    }
+  }
 }
 
 .inventory-slot-label-box {
-    background-color: $mainColor;
-    color: $textColor;
-    text-align: center;
-    border-bottom-left-radius: 0.25vh;
-    border-bottom-right-radius: 0.25vh;
-    border-top-color: rgba(0, 0, 0, 0.2);
-    border-top-style: inset;
-    border-top-width: 1px;
-    display: none;
+  background-color: $mainColor;
+  color: $textColor;
+  text-align: center;
+  border-bottom-left-radius: 0.25vh;
+  border-bottom-right-radius: 0.25vh;
+  border-top-color: rgba(0, 0, 0, 0.2);
+  border-top-style: inset;
+  border-top-width: 1px;
+  display: none;
 }
 
 .inventory-slot-label-text {
-    text-transform: uppercase;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    padding: 2px 3px;
-    font-weight: 400;
-    font-family: $mainFont;
-    font-size: 12px;
+  text-transform: uppercase;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  padding: 2px 3px;
+  font-weight: 400;
+  font-family: $mainFont;
+  font-size: 12px;
 }
 
 .inventory-slot-number {
-    background-color: #2a7aff;
-    color: rgb(255, 255, 255);
-    height: 12px;
-    border-top-left-radius: 0.25vh;
-    border-bottom-right-radius: 0.25vh;
-    padding: 6px 6px 3px 9px;
-    font-size: 12px;
-    font-family: $mainFont;
-    font-weight: bold;
+  background-color: #2a7aff;
+  color: rgb(255, 255, 255);
+  height: 12px;
+  border-top-left-radius: 0.25vh;
+  border-bottom-right-radius: 0.25vh;
+  padding: 6px 6px 3px 9px;
+  font-size: 12px;
+  font-family: $mainFont;
+  font-weight: bold;
 }
 
 .item-slot-wrapper {
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
-    height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  height: 100%;
 
-    p {
-        font-size: 12px;
-    }
+  p {
+    font-size: 12px;
+  }
 }
 
 .item-slot-header-wrapper {
-    display: flex;
-    flex-direction: row;
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-end;
+}
+
+.item-hotslot-header-wrapper {
+  @extend .item-slot-header-wrapper;
+  justify-content: space-between !important;
 }
 
 .item-slot-info-wrapper {
-    display: flex;
-    flex-direction: row;
-    align-self: flex-end;
-    padding: 6px 8px 3px 0;
-    gap: 3px;
+  display: flex;
+  flex-direction: row;
+  align-self: flex-end;
+  padding: 6px 8px 3px 0;
+  gap: 3px;
+
+  p {
+    font-size: 12px;
+  }
 
 }
 
 .item-slot-currency-wrapper {
-    display: flex;
-    flex-direction: row;
-    justify-content: flex-end;
-    align-items: center;
-    padding-right: 3px;
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-end;
+  align-items: center;
+  padding-right: 3px;
 
-    p {
-        font-size: 14px;
-        text-shadow: 0.1vh 0.1vh 0 rgba(0, 0, 0, 0.7);
-    }
+  p {
+    font-size: 14px;
+    text-shadow: 0.1vh 0.1vh 0 rgba(0, 0, 0, 0.7);
+  }
 }
 
 .item-slot-price-wrapper {
-    display: flex;
-    flex-direction: row;
-    justify-content: flex-end;
-    padding: 0 8px 8px 0;
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-end;
+  padding: 0 8px 8px 0;
 
-    p {
-        font-size: 14px;
-        text-shadow: 0.1vh 0.1vh 0 rgba(0, 0, 0, 0.7);
-    }
+  p {
+    font-size: 14px;
+    text-shadow: 0.1vh 0.1vh 0 rgba(0, 0, 0, 0.7);
+  }
 }
 
 // slot tooltip
 .MuiTooltip-tooltip {
-    background-color: $mainColor  !important;
-    min-width: 200px !important;
-    color: $textColor  !important;
-    font-family: $mainFont  !important;
-    border-radius: 4px !important;
-    border-color: rgba(0, 0, 0, 0.2) !important;
-    border-style: inset !important;
-    border-width: 1px !important;
+  background-color: $mainColor !important;
+  min-width: 200px !important;
+  color: $textColor !important;
+  font-family: $mainFont !important;
+  border-radius: 4px !important;
+  border-color: rgba(0, 0, 0, 0.2) !important;
+  border-style: inset !important;
+  border-width: 1px !important;
 }
 
 .tooltip-wrapper {
-    display: flex;
-    flex-direction: column;
+  display: flex;
+  flex-direction: column;
 
-    p {
-        font-size: 14px;
-        font-weight: 400;
-    }
+  p {
+    font-size: 14px;
+    font-weight: 400;
+  }
 }
 
 .tooltip-header-wrapper {
-    display: flex;
-    flex-direction: row;
-    justify-content: space-between;
-    align-items: center;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
 
-    p {
-        font-size: 15px;
-        font-weight: 400;
-    }
+  p {
+    font-size: 15px;
+    font-weight: 400;
+  }
+}
+
+.tooltip-crafting-duration {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+
+  svg {
+    padding-right: 3px;
+  }
+
+  p {
+    font-size: 14px;
+  }
+}
+
+.tooltip-ingredients {
+  padding-top: 5px;
+}
+
+.tooltip-ingredient {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+
+  img {
+    width: 28px;
+    height: 28px;
+    padding-right: 5px;
+  }
+}
+
+.tooltip-crafting-duration {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+
+  svg {
+    padding-right: 3px;
+  }
+
+  p {
+    font-size: 14px;
+  }
+}
+
+.tooltip-ingredients {
+  padding-top: 5px;
+}
+
+.tooltip-ingredient {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+
+  img {
+    width: 28px;
+    height: 28px;
+    padding-right: 5px;
+  }
 }
 
 // hotbar
 .hotbar-container {
-    display: flex;
-    align-items: center;
-    gap: 1em;
-    justify-content: center;
-    width: 100%;
-    position: absolute;
-    bottom: 2vh;
+  display: flex;
+  align-items: center;
+  gap: 1em;
+  justify-content: center;
+  width: 100%;
+  position: absolute;
+  bottom: 2vh;
 }
 
 .hotbar-item-slot {
-    @extend .inventory-slot;
-    width: $gridSize;
-    height: $gridSize;
-    border-radius: 1.25vh;
-    background-color: rgba(0, 0, 0, 0.5);
-    overflow: hidden;
+  @extend .inventory-slot;
+  width: $gridSize;
+  height: $gridSize;
+  border-radius: 1.25vh;
+  background-color: rgba(0, 0, 0, 0.5);
+  overflow: hidden;
 }
 
 .hotbar-slot-header-wrapper {
-    display: flex;
-    flex-direction: row;
-    justify-content: space-between;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
 }
 
 // item notifications
 
 .item-notification-container {
-    display: flex;
-    overflow-x: scroll;
-    flex-wrap: nowrap;
-    gap: 2px;
-    position: absolute;
-    bottom: 2vh;
-    left: 50%;
-    width: 100%;
-    margin-left: calc(50% - calc($gridSize/2));
-    transform: translate(-50%);
+  display: flex;
+  overflow-x: scroll;
+  flex-wrap: nowrap;
+  gap: 2px;
+  position: absolute;
+  bottom: 2vh;
+  left: 50%;
+  width: 100%;
+  margin-left: calc(50% - calc($gridSize/2));
+  transform: translate(-50%);
 }
 
 .item-notification-action-box {
-    width: 100%;
-    color: $textColor;
-    background-color: $seconaryColor;
-    text-transform: uppercase;
-    text-align: center;
-    border-top-left-radius: 0.25vh;
-    border-top-right-radius: 0.25vh;
-    font-family: $mainFont;
+  width: 100%;
+  color: $textColor;
+  background-color: $seconaryColor;
+  text-transform: uppercase;
+  text-align: center;
+  border-top-left-radius: 0.25vh;
+  border-top-right-radius: 0.25vh;
+  font-family: $mainFont;
+
+  p {
+    font-size: 11px;
+    padding: 2px;
+    font-weight: 600;
+  }
+
+  width: 100%;
+  color: $textColor;
+  background-color: $seconaryColor;
+  text-transform: uppercase;
+  text-align: center;
+  border-top-left-radius: 0.25vh;
+  border-top-right-radius: 0.25vh;
+  font-family: $mainFont;
 }
 
 .item-notification-item-box {
-    @extend .inventory-slot;
-    height: $gridSize;
-    width: $gridSize;
+  @extend .inventory-slot;
+  height: $gridSize;
+  width: $gridSize;
 
-    border-radius: 1.25vh;
-    background-color: rgba(0, 0, 0, 0.5);
-    overflow: hidden;
+  border-radius: 1.25vh;
+  background-color: rgba(0, 0, 0, 0.5);
+  overflow: hidden;
 }
 
 .paymentMethods {
-    position: absolute;
-    bottom: -1em;
-    transform: translateY(100%);
-    right: 20px;
+  position: absolute;
+  bottom: -1em;
+  transform: translateY(100%);
+  right: 20px;
 
-    button {
+  button {
 
-        &.active,
-        &:hover {
-            background-color: #2a7aff !important;
-        }
+    &.active,
+    &:hover {
+      background-color: #2a7aff !important;
     }
+  }
+}
+
+.durability-bar {
+  background: rgba(0, 0, 0, 0.5);
+  height: 3px;
+  overflow: hidden;
+}
+
+.weight-bar {
+  background: rgba(0, 0, 0, 0.4);
+  border: 1px inset rgba(0, 0, 0, 0.1);
+  height: 0.8vh;
+  border-radius: 5%;
+  overflow: hidden;
 }

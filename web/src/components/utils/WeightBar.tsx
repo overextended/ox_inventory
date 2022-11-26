@@ -1,66 +1,66 @@
 import React from 'react';
 
 const colorChannelMixer = (colorChannelA: number, colorChannelB: number, amountToMix: number) => {
-    let channelA = colorChannelA * amountToMix;
-    let channelB = colorChannelB * (1 - amountToMix);
-    return channelA + channelB;
+  let channelA = colorChannelA * amountToMix;
+  let channelB = colorChannelB * (1 - amountToMix);
+  return channelA + channelB;
 };
 
 const colorMixer = (rgbA: number[], rgbB: number[], amountToMix: number) => {
-    let r = colorChannelMixer(rgbA[0], rgbB[0], amountToMix);
-    let g = colorChannelMixer(rgbA[1], rgbB[1], amountToMix);
-    let b = colorChannelMixer(rgbA[2], rgbB[2], amountToMix);
-    return `rgb(${r}, ${g}, ${b})`;
+  let r = colorChannelMixer(rgbA[0], rgbB[0], amountToMix);
+  let g = colorChannelMixer(rgbA[1], rgbB[1], amountToMix);
+  let b = colorChannelMixer(rgbA[2], rgbB[2], amountToMix);
+  return `rgb(${r}, ${g}, ${b})`;
 };
 
 const COLORS = {
-    // Colors used - https://materialui.co/flatuicolors
-    primaryColor: [255, 0, 84], // Red (Pomegranate)
-    secondColor: [42, 255, 237], // Green (Nephritis)
-    accentColor: [255, 132, 0], // Orange (Oragne)
+  // Colors used - https://materialui.co/flatuicolors
+  primaryColor: [255, 0, 84], // Red (Pomegranate)
+  secondColor: [42, 255, 237], // Green (Nephritis)
+  accentColor: [255, 132, 0], // Orange (Oragne)
 };
 
 const WeightBar: React.FC<{ percent: number; durability?: boolean }> = ({ percent, durability }) => {
-    const color = React.useMemo(
-        () =>
-            durability
-                ? percent < 50
-                    ? colorMixer(COLORS.accentColor, COLORS.primaryColor, percent / 100)
-                    : colorMixer(COLORS.secondColor, COLORS.accentColor, percent / 100)
-                : percent > 50
-                    ? colorMixer(COLORS.primaryColor, COLORS.accentColor, percent / 100)
-                    : colorMixer(COLORS.accentColor, COLORS.secondColor, percent / 50),
-        [durability, percent]
-    );
+  const color = React.useMemo(
+    () =>
+      durability
+        ? percent < 50
+          ? colorMixer(COLORS.accentColor, COLORS.primaryColor, percent / 100)
+          : colorMixer(COLORS.secondColor, COLORS.accentColor, percent / 100)
+        : percent > 50
+          ? colorMixer(COLORS.primaryColor, COLORS.accentColor, percent / 100)
+          : colorMixer(COLORS.accentColor, COLORS.secondColor, percent / 50),
+    [durability, percent]
+  );
 
-    return (
-        <div
-            style={
-                durability
-                    ? {
-                        background: 'rgba(0, 0, 0, 0.5)',
-                        height: '3px',
-                        overflow: 'hidden',
-                    }
-                    : {
-                        background: 'rgba(0, 0, 0, 0.5)',
-                        border: '1px inset rgba(0, 0, 0, 0.1)',
-                        height: '0.3em',
-                        borderRadius: '0.5vh',
-                        overflow: 'hidden',
-                    }
-            }
-        >
-            <div
-                style={{
-                    visibility: percent > 0 ? 'visible' : 'hidden',
-                    height: '100%',
-                    width: `${percent}%`,
-                    backgroundColor: color,
-                    transition: `background ${0.3}s ease, width ${0.3}s ease`,
-                }}
-            ></div>
-        </div>
-    );
+  return (
+    <div
+      style={
+        durability
+          ? {
+            background: 'rgba(0, 0, 0, 0.5)',
+            height: '3px',
+            overflow: 'hidden',
+          }
+          : {
+            background: 'rgba(0, 0, 0, 0.5)',
+            border: '1px inset rgba(0, 0, 0, 0.1)',
+            height: '0.3em',
+            borderRadius: '0.5vh',
+            overflow: 'hidden',
+          }
+      }
+    >
+      <div
+        style={{
+          visibility: percent > 0 ? 'visible' : 'hidden',
+          height: '100%',
+          width: `${percent}%`,
+          backgroundColor: color,
+          transition: `background ${0.3}s ease, width ${0.3}s ease`,
+        }}
+      ></div>
+    </div>
+  );
 };
 export default WeightBar;

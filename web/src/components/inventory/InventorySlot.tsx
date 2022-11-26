@@ -7,13 +7,14 @@ import { onDrop } from '../../dnd/onDrop';
 import { onBuy } from '../../dnd/onBuy';
 import { selectIsBusy } from '../../store/inventory';
 import { Items } from '../../store/items';
-import { isShopStockEmpty, isSlotWithItem } from '../../helpers';
+import { canCraftItem, isShopStockEmpty, isSlotWithItem } from '../../helpers';
 import { onUse } from '../../dnd/onUse';
 import { Locale } from '../../store/locale';
 import { Tooltip } from '@mui/material';
 import SlotTooltip from './SlotTooltip';
 import { setContextMenu } from '../../store/inventory';
 import { imagepath } from '../../store/imagepath';
+import { onCraft } from '../../dnd/onCraft';
 
 interface SlotProps {
   inventory: Inventory;
@@ -41,7 +42,7 @@ const InventorySlot: React.FC<SlotProps> = ({ inventory, item }) => {
             image: item.metadata?.image,
           }
           : null,
-      canDrag: !isBusy && !isShopStockEmpty(item.count, inventory.type),
+      canDrag: !isBusy && !isShopStockEmpty(item.count, inventory.type) && canCraftItem(item, inventory.type),
     }),
     [isBusy, inventory, item]
   );
@@ -60,16 +61,24 @@ const InventorySlot: React.FC<SlotProps> = ({ inventory, item }) => {
               slot: item.slot,
             },
           })
-          : onDrop(source, {
-            inventory: inventory.type,
-            item: {
-              slot: item.slot,
-            },
-          }),
+          : source.inventory === InventoryType.CRAFTING
+            ? onCraft(source, {
+              inventory: inventory.type,
+              item: {
+                slot: item.slot,
+              },
+            })
+            : onDrop(source, {
+              inventory: inventory.type,
+              item: {
+                slot: item.slot,
+              },
+            }),
       canDrop: (source) =>
         !isBusy &&
         (source.item.slot !== item.slot || source.inventory !== inventory.type) &&
-        inventory.type !== InventoryType.SHOP,
+        inventory.type !== InventoryType.SHOP &&
+        inventory.type !== InventoryType.CRAFTING,
     }),
     [isBusy, inventory, item]
   );
@@ -88,7 +97,7 @@ const InventorySlot: React.FC<SlotProps> = ({ inventory, item }) => {
   const handleClick = (event: React.MouseEvent<HTMLDivElement>) => {
     if (isBusy) return;
 
-    if (event.ctrlKey && isSlotWithItem(item) && inventory.type !== 'shop') {
+    if (event.ctrlKey && isSlotWithItem(item) && inventory.type !== 'shop' && inventory.type !== 'crafting') {
       onDrop({ item: item, inventory: inventory.type });
     } else if (event.altKey && isSlotWithItem(item) && inventory.type === 'player') {
       onUse(item);
@@ -97,7 +106,7 @@ const InventorySlot: React.FC<SlotProps> = ({ inventory, item }) => {
 
   return (
     <Tooltip
-      title={!isSlotWithItem(item) || isOver || isDragging ? '' : <SlotTooltip item={item} />}
+      title={!isSlotWithItem(item) || isOver || isDragging ? '' : <SlotTooltip item={item} inventory={inventory} />}
       sx={(theme) => ({ fontFamily: theme.typography.fontFamily })}
       disableInteractive
       followCursor
@@ -114,7 +123,10 @@ const InventorySlot: React.FC<SlotProps> = ({ inventory, item }) => {
         onClick={handleClick}
         className={isSlotWithItem(item) ? "inventory-slot occupied" : "inventory-slot"}
         style={{
-          filter: isShopStockEmpty(item.count, inventory.type) ? 'brightness(80%) grayscale(100%)' : undefined,
+          filter:
+            isShopStockEmpty(item.count, inventory.type) || !canCraftItem(item, inventory.type)
+              ? 'brightness(80%) grayscale(100%)'
+              : undefined,
           opacity: isDragging ? 0.4 : 1.0,
           backgroundImage: `url(${`${imagepath}/${item.metadata?.image ? item.metadata.image : item.name}.png`})`,
           boxShadow: isOver ? '0px 0px 10px 0px rgba(0, 225, 255, 1)' : '',
@@ -123,8 +135,11 @@ const InventorySlot: React.FC<SlotProps> = ({ inventory, item }) => {
         {isSlotWithItem(item) && (
           <div className="item-slot-wrapper">
             <div
-              className="item-slot-header-wrapper"
-              style={{ justifyContent: inventory.type === 'player' && item.slot <= 5 ? 'space-between' : 'flex-end' }}
+              className={
+                inventory.type === 'player' && item.slot <= 5
+                  ? 'item-hotslot-header-wrapper'
+                  : 'item-slot-header-wrapper'
+              }
             >
               {inventory.type === 'player' && item.slot <= 5 && (
                 <div className="inventory-slot-number">{item.slot}</div>

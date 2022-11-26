@@ -61,7 +61,7 @@
   "shop_nostock": "此商品缺貨中",
   "identification": "性別: %s  \n生日: %s",
   "search_dumpster": "搜索垃圾桶",
-  "open_shop": "打開 %s",
+  "open_label": "打開 %s",
   "purchased_for": "購買了 %s 個 %s 花了 %s%s",
   "unable_stack_items": "你無法堆疊此物品",
   "police_evidence": "警用證物櫃",
@@ -80,5 +80,8 @@
   "no_durability": "物品耐久度已耗盡",
   "cannot_give": "無法將 %s %s 給予目標 ",
   "evidence_cannot_take": "階級不夠，無法拿取證物",
-  "dumpster": "垃圾桶"
+  "dumpster": "垃圾桶",
+  "crafting_item": "製作 %s",
+  "crafting_bench": "工作台",
+  "not_enough_durability": "%s 沒有足夠的耐久度"
 }

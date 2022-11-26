@@ -61,7 +61,7 @@
   "shop_nostock": "Item is out of stock",
   "identification": "Sex: %s  \nDate of birth: %s",
   "search_dumpster": "Search Dumpster",
-  "open_shop": "Open %s",
+  "open_label": "Open %s",
   "purchased_for": "Purchased %s %s for %s%s",
   "unable_stack_items": "You're unable to stack these items",
   "police_evidence": "Police Evidence",
@@ -80,5 +80,8 @@
   "no_durability": "%s durability is depleted",
   "cannot_give": "Unable to give %s %s to the target",
   "evidence_cannot_take": "You are not authorised to withdraw evidence",
-  "dumpster": "Dumpster"
+  "dumpster": "Dumpster",
+  "crafting_item": "Crafting %s",
+  "crafting_bench": "Crafting Bench",
+  "not_enough_durability": "%s does not have enough durability"
 }
