@@ -36,13 +36,6 @@ client.shops = setmetatable(data('shops'), {
     for type, shop in pairs(self) do
       if shop.jobs then shop.groups = shop.jobs end
 
-      local blip = shop.blip
-
-      if blip then
-        blip.name = ('ox_shop_%s'):format(type)
-        AddTextEntry(blip.name, shop.name or type)
-      end
-
       if not shop.groups or client.hasGroup(shop.groups) then
         if shared.target then
           if shop.model then
@@ -104,7 +97,6 @@ client.shops = setmetatable(data('shops'), {
               invId = i,
               type = type,
               nearby = nearbyShop,
-              blip = blip and createBlip(blip, coords)
             })
           end
         end
