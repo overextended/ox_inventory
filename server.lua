@@ -129,21 +129,33 @@ lib.callback.register('ox_inventory:openInventory', function(source, inv, data)
 				inventoryType = right.type,
 			}) then return end
 
-			local otherplayer = right.type == 'player'
-			if otherplayer then right.coords = GetEntityCoords(GetPlayerPed(right.id)) end
+			if right.player then right.coords = GetEntityCoords(GetPlayerPed(right.id)) end
 
 			if right.coords == nil or #(right.coords - GetEntityCoords(GetPlayerPed(source))) < 10 then
 				right.open = source
 				left.open = right.id
-				if otherplayer then
-					right:set('type', 'otherplayer')
-				end
 			else return end
 		else return end
 
 	else left.open = true end
 
-	return {id=left.id, label=left.label, type=left.type, slots=left.slots, weight=left.weight, maxWeight=left.maxWeight}, right and {id=right.id, label=right.type == 'otherplayer' and '' or right.label, type=right.type, slots=right.slots, weight=right.weight, maxWeight=right.maxWeight, items=right.items, coords=right.coords, distance=right.distance}
+	return {
+		id = left.id,
+		label = left.label,
+		type = left.type,
+		slots = left.slots,
+		weight = left.weight,
+		maxWeight = left.maxWeight
+	}, right and {
+		id = right.id,
+		label = right.player and '' or right.label,
+		type = right.player and 'otherplayer' or right.type,
+		slots = right.slots,
+		weight = right.weight,
+		maxWeight = right.maxWeight,
+		items = right.items,
+		coords = right.coords,
+		distance = right.distance}
 end)
 
 local Licenses = data 'licenses'
@@ -185,7 +197,8 @@ end)
 ---@return table | boolean | nil
 lib.callback.register('ox_inventory:useItem', function(source, itemName, slot, metadata)
 	local inventory = Inventory(source)
-	if inventory.type == 'player' then
+
+	if inventory.player then
 		local item = Items(itemName)
 		local data = item and (slot and inventory.items[slot] or Inventory.GetItem(source, item, metadata))
 
