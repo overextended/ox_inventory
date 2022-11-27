@@ -31,6 +31,18 @@ AddEventHandler('onResourceStart', function(resource)
 	StopResource(resource)
 end)
 
+RegisterNetEvent('ox_inventory:qbStatus', function(values)
+	local Player = QBCore.Functions.GetPlayer(source)
+	if not Player then return end
+
+	for name, value in pairs(values) do
+		if Player.PlayerData.metadata[name] then
+			Player.PlayerData.metadata[name] += value
+			Player.Functions.SetMetaData(name, Player.PlayerData.metadata[name])
+		end
+	end
+end)
+
 local function setupPlayer(Player)
 	QBCore.Functions.AddPlayerField(Player.PlayerData.source, 'syncInventory', function(_, _, items, money)
 		Player.Functions.SetPlayerData('items', items)
