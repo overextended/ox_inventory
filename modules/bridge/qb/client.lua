@@ -1,5 +1,9 @@
 local onLogout, Weapon = ...
 
+function client.setPlayerStatus(values)
+	TriggerServerEvent('ox_inventory:qbStatus', values)
+end
+
 RegisterNetEvent('QBCore:Client:OnPlayerUnload', onLogout)
 
 RegisterNetEvent('QBCore:Player:SetPlayerData', function(data)
