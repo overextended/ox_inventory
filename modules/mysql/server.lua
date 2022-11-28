@@ -15,7 +15,7 @@ Citizen.CreateThreadNow(function()
 	local playerTable, playerColumn, vehicleTable, vehicleColumn
 
 	if shared.framework == 'ox' then
-		playerTable = 'characters'
+		playerTable = 'characters_inventory'
 		playerColumn = 'charid'
 		vehicleTable = 'vehicles'
 		vehicleColumn = 'id'
