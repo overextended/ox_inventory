@@ -245,9 +245,7 @@ lib.callback.register('ox_inventory:useItem', function(source, itemName, slot, m
 					if weapon and weapon?.metadata.durability > 0 then
 						consume = nil
 					end
-				end
-
-				return false
+				else return false end
 			elseif item.component or item.tint then
 				consume = 1
 				data.component = true
@@ -339,6 +337,8 @@ lib.callback.register('ox_inventory:useItem', function(source, itemName, slot, m
 					item.cb('usedItem', item, inventory, data.slot)
 				end
 			end
+
+			return true
 		end
 	end
 end)
