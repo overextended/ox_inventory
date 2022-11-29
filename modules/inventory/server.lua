@@ -1666,6 +1666,9 @@ RegisterServerEvent('ox_inventory:giveItem', function(slot, target, count)
 
 	if toInventory?.player then
 		local data = fromInventory.items[slot]
+
+		if not data then return end
+
 		local item = Items(data.name)
 
 		if not toInventory.open and data and data.count >= count and Inventory.CanCarryItem(toInventory, item, count, data.metadata) and TriggerEventHooks('swapItems', {
