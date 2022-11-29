@@ -200,9 +200,12 @@ local Animations = data 'animations'
 local Items = client.items
 
 lib.callback.register('ox_inventory:usingItem', function(data)
-	local item = Items[data.name]?.client
+	local item = Items[data.name]
 
 	if item and invBusy then
+		if not item.client then return true end
+		---@cast item +OxClientProps
+		item = item.client
 		plyState.invBusy = true
 
 		if type(item.anim) == 'string' then
@@ -258,13 +261,13 @@ end)
 ---@param cb function?
 local function useItem(data, cb)
 	if invOpen and data.close then client.closeInventory() end
-	local result
+	local slotData, result = PlayerData.inventory[data.slot]
 
 	if not invBusy and not PlayerData.dead and not lib.progressActive() and not IsPedRagdoll(playerPed) and not IsPedFalling(playerPed) then
 		if currentWeapon and currentWeapon?.timer > 100 then return end
 
 		invBusy = true
-		result = lib.callback.await('ox_inventory:useItem', 200, data.name, data.slot, PlayerData.inventory[data.slot].metadata)
+		result = lib.callback.await('ox_inventory:useItem', 200, data.name, data.slot, slotData.metadata)
 
 		if not result then
 			Wait(500)
@@ -274,7 +277,7 @@ local function useItem(data, cb)
 	end
 
 	if cb then
-		local success, response = pcall(cb, result or false)
+		local success, response = pcall(cb, result and slotData)
 
 		if not success and response then
 			print(('^1An error occurred while calling item "%s" callback!\n^1SCRIPT ERROR: %s^0'):format(result.name, response))
