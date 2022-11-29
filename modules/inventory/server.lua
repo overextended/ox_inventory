@@ -1046,74 +1046,13 @@ function Inventory.CanSwapItem(inv, firstItem, firstItemCount, testItem, testIte
 end
 exports('CanSwapItem', Inventory.CanSwapItem)
 
+---Mostly for internal use, but deprecated.
 ---@param name string
 ---@param count number
 ---@param metadata table
 ---@param slot number
----@param used boolean
-RegisterServerEvent('ox_inventory:removeItem', function(name, count, metadata, slot, used)
-	local inv = Inventory(source)
-
-	if used then
-		slot = inv.items[inv.usingItem]
-		local item = Items(slot.name)
-		local durability = item.consume ~= 0 and item.consume < 1 and slot.metadata.durability --[[@as number | false]]
-
-		if durability then
-			if durability > 100 then
-				local degrade = (slot.metadata.degrade or item.degrade) * 60
-				durability -= degrade * item.consume
-			else
-				durability -= item.consume * 100
-			end
-
-			if slot.count > 1 then
-				local emptySlot = Inventory.GetEmptySlot(inv)
-
-				if emptySlot then
-					local newItem = Inventory.SetSlot(inv, item, 1, table.deepclone(slot.metadata), emptySlot)
-
-					if newItem then
-						newItem.metadata.durability = durability
-
-						TriggerClientEvent('ox_inventory:updateSlots', inv.id, {
-							{
-								item = newItem,
-								inventory = inv.type
-							}
-						}, { left = inv.weight })
-					end
-				end
-
-				durability = 0
-			else
-				slot.metadata.durability = durability
-			end
-
-			if durability <= 0 then
-				durability = false
-			end
-		end
-
-		if not durability then
-			Inventory.RemoveItem(inv.id, slot.name, item.consume < 1 and 1 or item.consume, nil, slot.slot)
-		else
-			TriggerClientEvent('ox_inventory:updateSlots', inv.id, {
-				{
-					item = slot,
-					inventory = inv.type
-				}
-			}, { left = inv.weight })
-		end
-
-		if item?.cb then
-			item.cb('usedItem', item, inv, slot.slot)
-		end
-	else
-		Inventory.RemoveItem(source, name, count, metadata, slot)
-	end
-
-	inv.usingItem = nil
+RegisterServerEvent('ox_inventory:removeItem', function(name, count, metadata, slot)
+	Inventory.RemoveItem(source, name, count, metadata, slot)
 end)
 
 Inventory.Drops = {}

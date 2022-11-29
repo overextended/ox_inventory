@@ -204,6 +204,7 @@ lib.callback.register('ox_inventory:useItem', function(source, itemName, slot, m
 
 		if not data then return end
 
+		slot = data.slot
 		local durability = data.metadata?.durability
 		local consume = item.consume
 
@@ -233,27 +234,23 @@ lib.callback.register('ox_inventory:useItem', function(source, itemName, slot, m
 		end
 
 		if item and data and data.count > 0 and data.name == item.name then
-			inventory.usingItem = slot
-			data = {name=data.name, label=data.label, count=data.count, slot=slot or data.slot, metadata=data.metadata, consume=consume}
+			data = {name=data.name, label=data.label, count=data.count, slot=slot, metadata=data.metadata}
 
 			if item.weapon then
-				inventory.weapon = inventory.weapon ~= data.slot and data.slot or nil
-				return data
+				inventory.weapon = inventory.weapon ~= slot and slot or nil
 			elseif item.ammo then
 				if inventory.weapon then
 					local weapon = inventory.items[inventory.weapon]
 
 					if weapon and weapon?.metadata.durability > 0 then
-						data.consume = nil
-						return data
+						consume = nil
 					end
 				end
 
 				return false
 			elseif item.component or item.tint then
-				data.consume = 1
+				consume = 1
 				data.component = true
-				return data
 			elseif consume then
 				if data.count >= consume then
 					local result = item.cb and item.cb('usingItem', item, inventory, slot)
@@ -263,10 +260,8 @@ lib.callback.register('ox_inventory:useItem', function(source, itemName, slot, m
 					if result ~= nil then
 						data.server = result
 					end
-
-					return data
 				else
-					TriggerClientEvent('ox_lib:notify', source, { type = 'error', description = locale('item_not_enough', item.name) })
+					return TriggerClientEvent('ox_lib:notify', source, { type = 'error', description = locale('item_not_enough', item.name) })
 				end
 			elseif server.UseItem then
 				-- This is used to call an external useItem function, i.e. ESX.UseItem / QBCore.Functions.CanUseItem
@@ -274,7 +269,67 @@ lib.callback.register('ox_inventory:useItem', function(source, itemName, slot, m
 				-- of usable items which led to issues when restarting resources (for obvious reasons), but config
 				-- developers complained the inventory broke their items. Safely invoking registered item callbacks
 				-- should resolve issues, i.e. https://github.com/esx-framework/esx-legacy/commit/9fc382bbe0f5b96ff102dace73c424a53458c96e
-				pcall(server.UseItem, source, data.name, data)
+				return pcall(server.UseItem, source, data.name, data)
+			end
+
+			data.consume = consume
+
+			local success = lib.callback.await('ox_inventory:usingItem', source, data)
+
+			if success and consume and consume ~= 0 and not data.component then
+				data = inventory.items[data.slot]
+				durability = consume ~= 0 and consume < 1 and data.metadata.durability --[[@as number | false]]
+
+				if durability then
+					if durability > 100 then
+						local degrade = (data.metadata.degrade or item.degrade) * 60
+						durability -= degrade * consume
+					else
+						durability -= consume * 100
+					end
+
+					if data.count > 1 then
+						local emptySlot = Inventory.GetEmptySlot(inventory)
+
+						if emptySlot then
+							local newItem = Inventory.SetSlot(inventory, item, 1, table.deepclone(data.metadata), emptySlot)
+
+							if newItem then
+								newItem.metadata.durability = durability
+
+								TriggerClientEvent('ox_inventory:updateSlots', inventory.id, {
+									{
+										item = newItem,
+										inventory = inventory.type
+									}
+								}, { left = inventory.weight })
+							end
+						end
+
+						durability = 0
+					else
+						data.metadata.durability = durability
+					end
+
+					if durability <= 0 then
+						durability = false
+					end
+				end
+
+				if not durability then
+					Inventory.RemoveItem(inventory.id, data.name, consume < 1 and 1 or consume, nil, data.slot)
+				else
+					TriggerClientEvent('ox_inventory:updateSlots', inventory.id, {
+						{
+							item = inventory.items[data.slot],
+							inventory = inventory.type
+						}
+					}, { left = inventory.weight })
+				end
+
+				if item?.cb then
+					item.cb('usedItem', item, inventory, data.slot)
+				end
 			end
 		end
 	end

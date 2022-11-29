@@ -197,6 +197,57 @@ RegisterNetEvent('ox_inventory:openInventory', client.openInventory)
 exports('openInventory', client.openInventory)
 
 local Animations = data 'animations'
+local Items = client.items
+
+lib.callback.register('ox_inventory:usingItem', function(data)
+	local item = Items[data.name]?.client
+
+	if item and invBusy then
+		plyState.invBusy = true
+
+		if type(item.anim) == 'string' then
+			item.anim = Animations.anim[item.anim]
+		end
+
+		if item.propTwo then
+			item.prop = { item.prop, item.propTwo }
+		end
+
+		if item.prop then
+			if item.prop[1] then
+				for i = 1, #item.prop do
+					if type(item.prop) == 'string' then
+						item.prop = Animations.prop[item.prop[i]]
+					end
+				end
+			elseif type(item.prop) == 'string' then
+				item.prop = Animations.prop[item.prop]
+			end
+		end
+
+		local success = (not item.usetime or lib.progressBar({
+			duration = item.usetime,
+			label = item.label or locale('using', data.label),
+			useWhileDead = item.useWhileDead,
+			canCancel = item.cancel,
+			disable = item.disable,
+			anim = item.anim or item.scenario,
+			prop = item.prop --[[@as ProgressProps]]
+		})) and not PlayerData.dead
+
+		if success then
+			if item.status and client.setPlayerStatus then
+				client.setPlayerStatus(item.status)
+			end
+
+			if item.notification then
+				lib.notify({ description = item.notification })
+			end
+
+			return true
+		end
+	end
+end)
 
 ---@param data table
 ---@param cb function?
@@ -215,55 +266,6 @@ local function useItem(data, cb)
 			invBusy = false
 			return
 		end
-
-		if result and invBusy then
-			plyState.invBusy = true
-			if data.client then data = data.client end
-
-			if type(data.anim) == 'string' then
-				data.anim = Animations.anim[data.anim]
-			end
-
-			if data.propTwo then
-				data.prop = { data.prop, data.propTwo }
-			end
-
-			if data.prop then
-				if data.prop[1] then
-					for i = 1, #data.prop do
-						if type(data.prop) == 'string' then
-							data.prop = Animations.prop[data.prop[i]]
-						end
-					end
-				elseif type(data.prop) == 'string' then
-					data.prop = Animations.prop[data.prop]
-				end
-			end
-
-			local success = (not data.usetime or lib.progressBar({
-				duration = data.usetime,
-				label = data.label or locale('using', result.label),
-				useWhileDead = data.useWhileDead,
-				canCancel = data.cancel,
-				disable = data.disable,
-				anim = data.anim or data.scenario,
-				prop = data.prop
-			})) and not PlayerData.dead
-
-			if success then
-				if result.consume and result.consume ~= 0 and not result.component then
-					TriggerServerEvent('ox_inventory:removeItem', result.name, result.consume, result.metadata, result.slot, true)
-				end
-
-				if data.status and client.setPlayerStatus then
-					client.setPlayerStatus(data.status)
-				end
-
-				if data.notification then
-					lib.notify({ description = data.notification })
-				end
-			end
-		end
 	end
 
 	if cb then
@@ -279,8 +281,6 @@ local function useItem(data, cb)
 end
 AddEventHandler('ox_inventory:item', useItem)
 exports('useItem', useItem)
-
-local Items = client.items
 
 ---@param slot number
 ---@return boolean?
