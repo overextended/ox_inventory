@@ -236,12 +236,17 @@ lib.callback.register('ox_inventory:usingItem', function(data)
 		})) and not PlayerData.dead
 
 		if success then
-			if item.status and client.setPlayerStatus then
-				client.setPlayerStatus(item.status)
-			end
-
 			if item.notification then
 				lib.notify({ description = item.notification })
+			end
+
+			if item.status then
+				if client.setPlayerStatus then
+					client.setPlayerStatus(item.status)
+				elseif server.setPlayerStatus then
+					-- Not ideal, but compatibility and all that
+					return true, { status = item.status }
+				end
 			end
 
 			return true
