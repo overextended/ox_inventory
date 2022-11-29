@@ -54,11 +54,14 @@ lib.callback.register('ox_inventory:openCraftingBench', function(source, id, ind
 		if left.open and left.open ~= source then
 			local inv = Inventory(left.open)
 
-			if inv.player then
-				TriggerClientEvent('ox_inventory:closeInventory', inv.owner, true)
-			end
+			-- Why would the player inventory open with an invalid target? Can't repro but whatever.
+			if inv then
+				if inv.player then
+					TriggerClientEvent('ox_inventory:closeInventory', inv.owner, true)
+				end
 
-			inv:set('open', false)
+				inv:set('open', false)
+			end
 		end
 
 		left.open = true
