@@ -33,6 +33,7 @@ lib.onCache('ped', function(ped)
 end)
 
 plyState:set('invBusy', true, false)
+plyState:set('invHotkeys', false, false)
 
 local function canOpenInventory()
 	return PlayerData.loaded
@@ -474,6 +475,8 @@ end
 -- People consistently ignore errors when one of the "modules" failed to load
 if not Utils or not Weapon or not Items or not Shops or not Inventory then return end
 
+local invHotkeys = false
+
 local function registerCommands()
 	RegisterCommand('steal', function()
 		openNearbyInventory()
@@ -693,7 +696,7 @@ local function registerCommands()
 			description = locale('use_hotbar', i),
 			defaultKey = tostring(i),
 			onPressed = function()
-				if invOpen or IsNuiFocused() then return end
+				if invOpen or IsNuiFocused() or not invHotkeys then return end
 				useSlot(i)
 			end
 		})
@@ -908,6 +911,10 @@ local function setStateBagHandler(stateId)
 	AddStateBagChangeHandler('dead', stateId, function(_, _, value)
 		Utils.WeaponWheel()
 		PlayerData.dead = value
+	end)
+
+	AddStateBagChangeHandler('invHotkeys', stateId, function(_, _, value)
+		invHotkeys = value
 	end)
 
 	setStateBagHandler = nil
@@ -1226,6 +1233,7 @@ RegisterNetEvent('ox_inventory:setPlayerInventory', function(currentDrops, inven
 
 	plyState:set('invBusy', false, false)
 	plyState:set('invOpen', false, false)
+	plyState:set('invHotkeys', true, false)
 	collectgarbage('collect')
 end)
 
