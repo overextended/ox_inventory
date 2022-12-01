@@ -39,6 +39,8 @@ local table = lib.table
 ---@param item table | string
 ---@param metadata? table | string
 function Inventory.Search(search, item, metadata)
+	if not PlayerData.inventory then return false end
+	
 	if item then
 		if search == 'slots' then search = 1 elseif search == 'count' then search = 2 end
 		if type(item) == 'string' then item = {item} end
