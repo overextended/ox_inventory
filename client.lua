@@ -1019,8 +1019,6 @@ RegisterNetEvent('ox_inventory:setPlayerInventory', function(currentDrops, inven
 		})
 	end
 
-	TriggerEvent('ox_inventory:updateInventory', PlayerData.inventory)
-
 	---@param point CPoint
 	local function nearbyLicense(point)
 		---@diagnostic disable-next-line: param-type-mismatch
@@ -1072,6 +1070,8 @@ RegisterNetEvent('ox_inventory:setPlayerInventory', function(currentDrops, inven
 	Inventory.Stashes()
 	Inventory.Evidence()
 	registerCommands()
+
+	TriggerEvent('ox_inventory:updateInventory', PlayerData.inventory)
 
 	client.interval = SetInterval(function()
 		if invOpen == false then
