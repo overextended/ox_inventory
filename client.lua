@@ -782,6 +782,10 @@ local function updateInventory(items, weight)
 		local data = Items[item]
 
 		if count < 0 then
+			if currentWeapon?.slot == data.slot then
+				currentWeapon = Weapon.Disarm(currentWeapon)
+			end
+			
 			data.count += count
 
 			if shared.framework == 'esx' then
