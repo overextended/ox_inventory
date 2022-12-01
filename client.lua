@@ -564,14 +564,14 @@ local function registerCommands()
 						local netId = NetworkGetEntityIsNetworked(entity) and NetworkGetNetworkIdFromEntity(entity)
 
 						if not netId then
-							NetworkRegisterEntityAsNetworked(entity)
-							netId = NetworkGetNetworkIdFromEntity(entity)
-							NetworkUseHighPrecisionBlending(netId, false)
-							SetNetworkIdExistsOnAllMachines(netId, true)
-							SetNetworkIdCanMigrate(netId, true)
+							local coords = GetEntityCoords(entity)
+							entity = GetClosestObjectOfType(coords.x, coords.y, coords.z, 0.1, GetEntityModel(entity), true, true, true)
+							netId = entity ~= 0 and NetworkGetNetworkIdFromEntity(entity)
 						end
 
-						return client.openInventory('dumpster', 'dumpster'..netId)
+						if netId then
+							client.openInventory('dumpster', 'dumpster'..netId)
+						end
 					end
 				elseif entityType == 2 then
 					vehicle, position = entity, GetEntityCoords(entity)
