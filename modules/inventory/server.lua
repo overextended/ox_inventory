@@ -1038,6 +1038,16 @@ end
 exports('CanCarryAmount', Inventory.CanCarryAmount)
 
 ---@param inv table | string | number
+---@param weight number
+function Inventory.CanCarryWeight(inv, weight)
+	inv = Inventory(inv)
+	local availableWeight = inv.maxWeight - inv.weight
+	local canHold = availableWeight >= weight
+	return canHold, availableWeight
+end
+exports('CanCarryWeight', Inventory.CanCarryWeight)
+
+---@param inv table | string | number
 ---@param firstItem string
 ---@param firstItemCount number
 ---@param testItem string
