@@ -78,7 +78,7 @@ local function closeTrunk()
 end
 
 ---@param inv string
----@param data table | string | number
+---@param data any
 ---@return boolean?
 function client.openInventory(inv, data)
 	if invOpen then
@@ -327,9 +327,11 @@ local function useSlot(slot)
 			if EnableWeaponWheel then return end
 			useItem(data, function(result)
 				if result then
-					if currentWeapon?.slot == result.slot then
+					if currentWeapon then
+						local weaponSlot = currentWeapon.slot
 						currentWeapon = Weapon.Disarm(currentWeapon)
-						return
+
+						if weaponSlot == result.slot then return end
 					end
 
 					currentWeapon = Weapon.Equip(item, data)
@@ -785,7 +787,7 @@ local function updateInventory(items, weight)
 			if currentWeapon?.slot == data.slot then
 				currentWeapon = Weapon.Disarm(currentWeapon)
 			end
-			
+
 			data.count += count
 
 			if shared.framework == 'esx' then
