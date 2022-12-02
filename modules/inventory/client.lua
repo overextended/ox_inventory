@@ -9,15 +9,14 @@ if shared.target then
 		local netId = NetworkGetEntityIsNetworked(entity) and NetworkGetNetworkIdFromEntity(entity)
 
 		if not netId then
-			NetworkRegisterEntityAsNetworked(entity)
-			SetEntityAsMissionEntity(entity, false, false)
-			netId = NetworkGetNetworkIdFromEntity(entity)
-			NetworkUseHighPrecisionBlending(netId, false)
-			SetNetworkIdExistsOnAllMachines(netId, true)
-			SetNetworkIdCanMigrate(netId, true)
+			local coords = GetEntityCoords(entity)
+			entity = GetClosestObjectOfType(coords.x, coords.y, coords.z, 0.1, GetEntityModel(entity), true, true, true)
+			netId = entity ~= 0 and NetworkGetNetworkIdFromEntity(entity)
 		end
 
-		client.openInventory('dumpster', 'dumpster'..netId)
+		if netId then
+			client.openInventory('dumpster', 'dumpster'..netId)
+		end
 	end
 
 	exports.qtarget:AddTargetModel(Inventory.Dumpsters, {

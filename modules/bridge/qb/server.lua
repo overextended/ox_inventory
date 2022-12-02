@@ -210,3 +210,20 @@ function server.convertInventory(playerId, items)
 		return returnData, totalWeight
 	end
 end
+
+function server.setPlayerStatus(playerId, values)
+	local Player = QBCore.Functions.GetPlayer(playerId)
+
+	if not Player then return end
+
+	local playerMetadata = player.PlayerData.metadata
+
+	for name, value in pairs(values) do
+		if playerMetadata[name] then
+			if value > 100 or value < 100 then value *= 0.0001 end
+
+			Player.Functions.SetMetaData(name, playerMetadata[name] + value)
+		end
+	end
+end
+

@@ -17,7 +17,7 @@ local function vehicleIsCycle(vehicle)
 end
 
 function Weapon.Equip(item, data)
-	local playerPed = cache.ped
+	local playerPed, sleep = cache.ped, 200
 
 	if client.weaponanims then
 		if cache.vehicle and vehicleIsCycle(cache.vehicle) then
@@ -31,7 +31,7 @@ function Weapon.Equip(item, data)
 			anim = nil
 		end
 
-		local sleep = anim and anim[3] or 1200
+		sleep = anim and anim[3] or 1200
 
 		Utils.PlayAnimAdvanced(sleep*2, anim and anim[1] or 'reaction@intimidation@1h', anim and anim[2] or 'intro', coords.x, coords.y, coords.z, 0, 0, GetEntityHeading(playerPed), 8.0, 3.0, -1, 50, 0.1)
 		Wait(sleep)
@@ -79,6 +79,7 @@ function Weapon.Equip(item, data)
 
 	TriggerEvent('ox_inventory:currentWeapon', item)
 	Utils.ItemNotify({item.metadata.label or item.label, item.metadata.image or item.name, 'ui_equipped'})
+	Wait(sleep)
 
 	return item
 end

@@ -18,7 +18,7 @@ exports('setStashTarget', function(id, owner)
 	StashTarget = id and {id=id, owner=owner}
 end)
 
----@type boolean | number | nil
+---@type boolean
 local invBusy = true
 
 ---@type boolean?
@@ -33,6 +33,7 @@ lib.onCache('ped', function(ped)
 end)
 
 plyState:set('invBusy', true, false)
+plyState:set('invHotkeys', false, false)
 
 local function canOpenInventory()
 	return PlayerData.loaded
@@ -127,6 +128,8 @@ function client.openInventory(inv, data)
 
 			if left then
 				right = client.craftingBenches[data.id]
+				local coords = shared.target == 'ox_target' and right.zones[data.index].coords or right.points[data.index]
+
 				right = {
 					type = 'crafting',
 					id = data.id,
@@ -134,7 +137,7 @@ function client.openInventory(inv, data)
 					index = data.index,
 					slots = right.slots,
 					items = right.items,
-					coords = shared.target and right.zones[data.index].coords or right.points[data.index]
+					coords = coords
 				}
 			end
 		elseif invOpen ~= nil then
@@ -197,77 +200,87 @@ RegisterNetEvent('ox_inventory:openInventory', client.openInventory)
 exports('openInventory', client.openInventory)
 
 local Animations = data 'animations'
+local Items = client.items
+
+lib.callback.register('ox_inventory:usingItem', function(data)
+	local item = Items[data.name]
+
+	if item and invBusy then
+		if not item.client then return true end
+		---@cast item +OxClientProps
+		item = item.client
+		plyState.invBusy = true
+
+		if type(item.anim) == 'string' then
+			item.anim = Animations.anim[item.anim]
+		end
+
+		if item.propTwo then
+			item.prop = { item.prop, item.propTwo }
+		end
+
+		if item.prop then
+			if item.prop[1] then
+				for i = 1, #item.prop do
+					if type(item.prop) == 'string' then
+						item.prop = Animations.prop[item.prop[i]]
+					end
+				end
+			elseif type(item.prop) == 'string' then
+				item.prop = Animations.prop[item.prop]
+			end
+		end
+
+		local success = (not item.usetime or lib.progressBar({
+			duration = item.usetime,
+			label = item.label or locale('using', data.label),
+			useWhileDead = item.useWhileDead,
+			canCancel = item.cancel,
+			disable = item.disable,
+			anim = item.anim or item.scenario,
+			prop = item.prop --[[@as ProgressProps]]
+		})) and not PlayerData.dead
+
+		if success then
+			if item.notification then
+				lib.notify({ description = item.notification })
+			end
+
+			if item.status then
+				if client.setPlayerStatus then
+					client.setPlayerStatus(item.status)
+				elseif server.setPlayerStatus then
+					-- Not ideal, but compatibility and all that
+					return true, { status = item.status }
+				end
+			end
+
+			return true
+		end
+	end
+end)
 
 ---@param data table
 ---@param cb function?
 local function useItem(data, cb)
 	if invOpen and data.close then client.closeInventory() end
-	local result
+	local slotData, result = PlayerData.inventory[data.slot]
 
 	if not invBusy and not PlayerData.dead and not lib.progressActive() and not IsPedRagdoll(playerPed) and not IsPedFalling(playerPed) then
 		if currentWeapon and currentWeapon?.timer > 100 then return end
 
-		invBusy = 1
-		result = lib.callback.await('ox_inventory:useItem', 200, data.name, data.slot, PlayerData.inventory[data.slot].metadata)
+		invBusy = true
+		result = lib.callback.await('ox_inventory:useItem', 200, data.name, data.slot, slotData.metadata)
 
 		if not result then
 			Wait(500)
 			invBusy = false
 			return
 		end
-
-		if result and invBusy then
-			plyState.invBusy = true
-			if data.client then data = data.client end
-
-			if type(data.anim) == 'string' then
-				data.anim = Animations.anim[data.anim]
-			end
-
-			if data.propTwo then
-				data.prop = { data.prop, data.propTwo }
-			end
-
-			if data.prop then
-				if data.prop[1] then
-					for i = 1, #data.prop do
-						if type(data.prop) == 'string' then
-							data.prop = Animations.prop[data.prop[i]]
-						end
-					end
-				elseif type(data.prop) == 'string' then
-					data.prop = Animations.prop[data.prop]
-				end
-			end
-
-			local success = (not data.usetime or lib.progressBar({
-				duration = data.usetime,
-				label = data.label or locale('using', result.label),
-				useWhileDead = data.useWhileDead,
-				canCancel = data.cancel,
-				disable = data.disable,
-				anim = data.anim or data.scenario,
-				prop = data.prop
-			})) and not PlayerData.dead
-
-			if success then
-				if result.consume and result.consume ~= 0 and not result.component then
-					TriggerServerEvent('ox_inventory:removeItem', result.name, result.consume, result.metadata, result.slot, true)
-				end
-
-				if data.status and client.setPlayerStatus then
-					client.setPlayerStatus(data.status)
-				end
-
-				if data.notification then
-					lib.notify({ description = data.notification })
-				end
-			end
-		end
 	end
 
 	if cb then
-		local success, response = pcall(cb, result or false)
+		local success, response = pcall(cb, result and slotData)
 
 		if not success and response then
 			print(('^1An error occurred while calling item "%s" callback!\n^1SCRIPT ERROR: %s^0'):format(result.name, response))
@@ -468,6 +481,8 @@ end
 -- People consistently ignore errors when one of the "modules" failed to load
 if not Utils or not Weapon or not Items or not Shops or not Inventory then return end
 
+local invHotkeys = false
+
 local function registerCommands()
 	RegisterCommand('steal', function()
 		openNearbyInventory()
@@ -553,14 +568,14 @@ local function registerCommands()
 						local netId = NetworkGetEntityIsNetworked(entity) and NetworkGetNetworkIdFromEntity(entity)
 
 						if not netId then
-							NetworkRegisterEntityAsNetworked(entity)
-							netId = NetworkGetNetworkIdFromEntity(entity)
-							NetworkUseHighPrecisionBlending(netId, false)
-							SetNetworkIdExistsOnAllMachines(netId, true)
-							SetNetworkIdCanMigrate(netId, true)
+							local coords = GetEntityCoords(entity)
+							entity = GetClosestObjectOfType(coords.x, coords.y, coords.z, 0.1, GetEntityModel(entity), true, true, true)
+							netId = entity ~= 0 and NetworkGetNetworkIdFromEntity(entity)
 						end
 
-						return client.openInventory('dumpster', 'dumpster'..netId)
+						if netId then
+							client.openInventory('dumpster', 'dumpster'..netId)
+						end
 					end
 				elseif entityType == 2 then
 					vehicle, position = entity, GetEntityCoords(entity)
@@ -687,7 +702,7 @@ local function registerCommands()
 			description = locale('use_hotbar', i),
 			defaultKey = tostring(i),
 			onPressed = function()
-				if invOpen or IsNuiFocused() then return end
+				if invOpen or IsNuiFocused() or not invHotkeys then return end
 				useSlot(i)
 			end
 		})
@@ -771,6 +786,10 @@ local function updateInventory(items, weight)
 		local data = Items[item]
 
 		if count < 0 then
+			if currentWeapon?.slot == data.slot then
+				currentWeapon = Weapon.Disarm(currentWeapon)
+			end
+			
 			data.count += count
 
 			if shared.framework == 'esx' then
@@ -903,6 +922,10 @@ local function setStateBagHandler(stateId)
 		PlayerData.dead = value
 	end)
 
+	AddStateBagChangeHandler('invHotkeys', stateId, function(_, _, value)
+		invHotkeys = value
+	end)
+
 	setStateBagHandler = nil
 end
 
@@ -999,8 +1022,6 @@ RegisterNetEvent('ox_inventory:setPlayerInventory', function(currentDrops, inven
 		})
 	end
 
-	TriggerEvent('ox_inventory:updateInventory', PlayerData.inventory)
-
 	---@param point CPoint
 	local function nearbyLicense(point)
 		---@diagnostic disable-next-line: param-type-mismatch
@@ -1052,6 +1073,8 @@ RegisterNetEvent('ox_inventory:setPlayerInventory', function(currentDrops, inven
 	Inventory.Stashes()
 	Inventory.Evidence()
 	registerCommands()
+
+	TriggerEvent('ox_inventory:updateInventory', PlayerData.inventory)
 
 	client.interval = SetInterval(function()
 		if invOpen == false then
@@ -1136,7 +1159,7 @@ RegisterNetEvent('ox_inventory:setPlayerInventory', function(currentDrops, inven
 		else
 			disableControls()
 
-			if invBusy == 1 or IsPedCuffed(playerPed) then
+			if invBusy or IsPedCuffed(playerPed) then
 				DisablePlayerFiring(playerId, true)
 			end
 
@@ -1219,6 +1242,7 @@ RegisterNetEvent('ox_inventory:setPlayerInventory', function(currentDrops, inven
 
 	plyState:set('invBusy', false, false)
 	plyState:set('invOpen', false, false)
+	plyState:set('invHotkeys', true, false)
 	collectgarbage('collect')
 end)
 

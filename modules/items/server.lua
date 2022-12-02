@@ -125,7 +125,7 @@ CreateThread(function()
 					if not ItemList[formatName] then
 						fileSize += 1
 
-						file[fileSize] = (itemFormat):format(formatName, item.label:gsub("'", "\\'"):lower(), item.weight, item.stack, item.close, item.description and json.encode(item.description) or 'nil')
+						file[fileSize] = (itemFormat):format(formatName, item.label:gsub("'", "\\'"), item.weight, item.stack, item.close, item.description and json.encode(item.description) or 'nil')
 						ItemList[formatName] = item
 					end
 				end
@@ -209,7 +209,7 @@ CreateThread(function()
 					if not ItemList[formatName] then
 						fileSize += 1
 
-						file[fileSize] = (itemFormat):format(formatName, item.label:gsub("'", "\\'"):lower(), item.weight, item.stack, item.close, item.description and json.encode(item.description) or 'nil')
+						file[fileSize] = (itemFormat):format(formatName, item.label:gsub("'", "\\'"), item.weight, item.stack, item.close, item.description and json.encode(item.description) or 'nil')
 						ItemList[formatName] = item
 					end
 				end
@@ -367,7 +367,7 @@ function Items.CheckMetadata(metadata, item, name, ostime)
 
 	if metadata.components then
 		if table.type(metadata.components) == 'array' then
-			for i = 1, #metadata.components do
+			for i = #metadata.components, 1, -1 do
 				if not ItemList[metadata.components[i]] then
 					table.remove(metadata.components, i)
 				end

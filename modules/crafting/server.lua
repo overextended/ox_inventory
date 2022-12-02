@@ -54,11 +54,14 @@ lib.callback.register('ox_inventory:openCraftingBench', function(source, id, ind
 		if left.open and left.open ~= source then
 			local inv = Inventory(left.open)
 
-			if inv.player then
-				TriggerClientEvent('ox_inventory:closeInventory', inv.owner, true)
-			end
+			-- Why would the player inventory open with an invalid target? Can't repro but whatever.
+			if inv then
+				if inv.player then
+					TriggerClientEvent('ox_inventory:closeInventory', inv.owner, true)
+				end
 
-			inv:set('open', false)
+				inv:set('open', false)
+			end
 		end
 
 		left.open = true
@@ -88,7 +91,7 @@ lib.callback.register('ox_inventory:craftItem', function(source, id, index, reci
 			end
 
 			local craftedItem = Items(recipe.name)
-			local newWeight = left.weight + (craftedItem.weight + (recipe.metadata.weight or 0)) * (recipe.count or 1)
+			local newWeight = left.weight + (craftedItem.weight + (recipe.metadata?.weight or 0)) * (recipe.count or 1)
 			---@todo new iterator or something to accept a map
 			local items = Inventory.Search(left, 'slots', tbl) or {}
 			table.wipe(tbl)

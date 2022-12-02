@@ -21,10 +21,10 @@
   "male": "Férfi",
   "female": "Nő",
   "used": "Használt",
-  "removed": "Törölve",
-  "added": "Adva",
-  "holstered": "Tokban",
-  "equipped": "Felszerelt",
+  "ui_removed": "Törölve",
+  "ui_added": "Adva",
+  "ui_holstered": "Tokban",
+  "ui_equipped": "Felszerelt",
   "using": "Használatban: %s",
   "inventory_setup": "Inventory már használatban van!",
   "inventory_player_access": "Jelenleg nem nyithatod meg az inventory-t",
@@ -80,5 +80,8 @@
   "no_durability": "%s tartósság kimerült",
   "cannot_give": "%s %s nem adható meg a célnak",
   "evidence_cannot_take": "Nem elég magas a rangod a bizonyítékok kezeléséhez",
-  "dumpster": "Szemetes"
+  "dumpster": "Szemetes",
+  "crafting_item": "%s barkácsolása ",
+  "crafting_bench": "Barkácsasztal",
+  "not_enough_durability": "%s elhasználodott!"
 }
