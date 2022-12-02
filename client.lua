@@ -332,8 +332,7 @@ local function useSlot(slot)
 						return
 					end
 
-					local _currentWeapon = currentWeapon
-					currentWeapon = nil
+					currentWeapon = Weapon.Disarm(currentWeapon)
 					currentWeapon = Weapon.Equip(item, data, currentWeapon)
 				end
 			end)
