@@ -16,11 +16,7 @@ local function vehicleIsCycle(vehicle)
 	return class == 8 or class == 13
 end
 
-function Weapon.Equip(item, data, weapon)
-	if weapon then
-		Weapon.Disarm(weapon)
-	end
-	
+function Weapon.Equip(item, data)
 	local playerPed, sleep = cache.ped, 200
 
 	if client.weaponanims then
