@@ -249,7 +249,7 @@ lib.callback.register('ox_inventory:usingItem', function(data)
 			if item.status then
 				if client.setPlayerStatus then
 					client.setPlayerStatus(item.status)
-				elseif server.setPlayerStatus then
+				else
 					-- Not ideal, but compatibility and all that
 					return true, { status = item.status }
 				end
