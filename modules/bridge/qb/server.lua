@@ -216,7 +216,7 @@ function server.setPlayerStatus(playerId, values)
 
 	if not Player then return end
 
-	local playerMetadata = player.PlayerData.metadata
+	local playerMetadata = Player.PlayerData.metadata
 
 	for name, value in pairs(values) do
 		if playerMetadata[name] then
