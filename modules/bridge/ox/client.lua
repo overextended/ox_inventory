@@ -13,7 +13,7 @@ function client.setPlayerStatus(values)
 		-- we need to awkwardly change the value
 		if value > 100 or value < 100 then value *= 0.0001 end
 
-		if value > 0 then
+		if value < 0 then
 			player.removeStatus(name, value)
 		else
 			player.addStatus(name, value)
