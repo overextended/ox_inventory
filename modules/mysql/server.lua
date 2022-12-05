@@ -51,28 +51,29 @@ Citizen.CreateThreadNow(function()
 			UNIQUE KEY `owner` (`owner`,`name`)
 		)]])
 	else
-		result = MySQL.query.await("SELECT owner, name FROM ox_inventory WHERE NOT owner = ''")
+		-- Shouldn't be needed anymore; was used for some data conversion for v2.5.0 (back in March 2022)
+		-- result = MySQL.query.await("SELECT owner, name FROM ox_inventory WHERE NOT owner = ''")
 
-		if result and next(result) then
-			local parameters = {}
-			local count = 0
+		-- if result and next(result) then
+		-- 	local parameters = {}
+		-- 	local count = 0
 
-			for i = 1, #result do
-				local data = result[i]
-				local snip = data.name:sub(-#data.owner, #data.name)
+		-- 	for i = 1, #result do
+		-- 		local data = result[i]
+		-- 		local snip = data.name:sub(-#data.owner, #data.name)
 
-				if data.owner == snip then
-					local name = data.name:sub(0, #data.name - #snip)
+		-- 		if data.owner == snip then
+		-- 			local name = data.name:sub(0, #data.name - #snip)
 
-					count += 1
-					parameters[count] = { query = 'UPDATE ox_inventory SET `name` = ? WHERE `owner` = ? AND `name` = ?', values = { name, data.owner, data.name } }
-				end
-			end
+		-- 			count += 1
+		-- 			parameters[count] = { query = 'UPDATE ox_inventory SET `name` = ? WHERE `owner` = ? AND `name` = ?', values = { name, data.owner, data.name } }
+		-- 		end
+		-- 	end
 
-			if #parameters > 0 then
-				MySQL.transaction(parameters)
-			end
-		end
+		-- 	if #parameters > 0 then
+		-- 		MySQL.transaction(parameters)
+		-- 	end
+		-- end
 	end
 
 	result = MySQL.query.await(('SHOW COLUMNS FROM `%s`'):format(vehicleTable))
