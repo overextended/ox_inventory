@@ -929,21 +929,32 @@ exports('GetItemSlots', Inventory.GetItemSlots)
 ---@param item table | string
 ---@param count number
 ---@param metadata? table | string
----@param slot number?
+---@param slot? number
+---@param ignoreTotal? boolean
 ---@return boolean? success
-function Inventory.RemoveItem(inv, item, count, metadata, slot)
+function Inventory.RemoveItem(inv, item, count, metadata, slot, ignoreTotal)
 	if type(item) ~= 'table' then item = Items(item) end
 	count = math.floor(count + 0.5)
+
 	if item and count > 0 then
 		inv = Inventory(inv)
+
+		if not inv then return false end
 
 		if type(metadata) ~= 'table' then
 			metadata = metadata and { type = metadata or nil }
 		end
 
 		local itemSlots, totalCount = Inventory.GetItemSlots(inv, item, metadata)
-		if count > totalCount then count = totalCount end
+
+		if count > totalCount then
+			if not ignoreTotal then return false end
+
+			count = totalCount
+		end
+
 		local removed, total, slots = 0, count, {}
+
 		if slot and itemSlots[slot] then
 			removed = count
 			Inventory.SetSlot(inv, item, -count, inv.items[slot].metadata, slot)
@@ -994,6 +1005,8 @@ function Inventory.RemoveItem(inv, item, count, metadata, slot)
 			return true
 		end
 	end
+
+	return false
 end
 exports('RemoveItem', Inventory.RemoveItem)
 
@@ -1817,7 +1830,7 @@ lib.addCommand('group.admin', 'removeitem', function(source, args)
 	args.item = Items(args.item)
 	if args.item and args.count > 0 then
 		local metadata = args.metatype and { type = tonumber(args.metatype) or args.metatype }
-		Inventory.RemoveItem(args.target, args.item.name, args.count, metadata)
+		Inventory.RemoveItem(args.target, args.item.name, args.count, metadata, nil, true)
 
 		local inventory = Inventories[args.target]
 		source = Inventories[source] or {label = 'console', owner = 'console'}
