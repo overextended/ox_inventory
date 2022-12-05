@@ -1016,22 +1016,28 @@ exports('RemoveItem', Inventory.RemoveItem)
 ---@param metadata? table | string
 function Inventory.CanCarryItem(inv, item, count, metadata)
 	if type(item) ~= 'table' then item = Items(item) end
+
 	if item then
 		inv = Inventory(inv)
-		local itemSlots, totalCount, emptySlots = Inventory.GetItemSlots(inv, item, type(metadata) == 'table' and metadata or { type = metadata or nil })
-		local weight = metadata?.weight or item.weight
 
-		if next(itemSlots) or emptySlots > 0 then
-			if weight == 0 then return true end
-			if count == nil then count = 1 end
-			local newWeight = inv.weight + (weight * count)
+		if inv then
+			local itemSlots, _, emptySlots = Inventory.GetItemSlots(inv, item, type(metadata) == 'table' and metadata or { type = metadata or nil })
+			local weight = metadata?.weight or item.weight
 
-			if newWeight > inv.maxWeight then
-				TriggerClientEvent('ox_lib:notify', inv.id, { type = 'error', description = locale('cannot_carry') })
-				return false
+			if next(itemSlots) or emptySlots > 0 then
+				if not count then count = 1 end
+				if not item.stack and emptySlots < count then return false end
+				if weight == 0 then return true end
+
+				local newWeight = inv.weight + (weight * count)
+
+				if newWeight > inv.maxWeight then
+					TriggerClientEvent('ox_lib:notify', inv.id, { type = 'error', description = locale('cannot_carry') })
+					return false
+				end
+
+				return true
 			end
-
-			return true
 		end
 	end
 end
