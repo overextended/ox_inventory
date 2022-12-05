@@ -220,7 +220,9 @@ function server.setPlayerStatus(playerId, values)
 
 	for name, value in pairs(values) do
 		if playerMetadata[name] then
-			if value > 100 or value < 100 then value *= 0.0001 end
+			if value > 100 or value < -100 then
+				value = value * 0.0001
+			end
 
 			Player.Functions.SetMetaData(name, playerMetadata[name] + value)
 		end
