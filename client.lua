@@ -668,7 +668,7 @@ local function registerCommands()
 		description = locale('reload_weapon'),
 		defaultKey = 'r',
 		onPressed = function(self)
-			if not currentWeapon then return end
+			if not currentWeapon or not PlayerData.loaded or PlayerData.dead or invBusy then return end
 
 			if currentWeapon.ammo then
 				if currentWeapon.metadata.durability > 0 then
