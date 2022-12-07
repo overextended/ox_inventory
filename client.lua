@@ -142,10 +142,9 @@ function client.openInventory(inv, data)
 			end
 		elseif invOpen ~= nil then
 			if inv == 'policeevidence' then
-				local input = lib.inputDialog(locale('police_evidence'), {locale('locker_number')})
+				local input = lib.inputDialog(locale('police_evidence'), {locale('locker_number')}) --[[@as any]]
 
 				if input then
-					---@diagnostic disable-next-line: cast-local-type
 					input = tonumber(input[1])
 				else
 					return lib.notify({ description = locale('locker_no_value'), type = 'error' })
