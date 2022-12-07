@@ -260,13 +260,21 @@ lib.callback.register('ox_inventory:usingItem', function(data)
 	end
 end)
 
+local function canUseItem()
+	return PlayerData.loaded
+	and not PlayerData.dead
+	and not invBusy
+	and not lib.progressActive()
+	and IsPlayerFreeForAmbientTask(cache.playerId)
+end
+
 ---@param data table
 ---@param cb function?
 local function useItem(data, cb)
 	if invOpen and data.close then client.closeInventory() end
 	local slotData, result = PlayerData.inventory[data.slot]
 
-	if not invBusy and not PlayerData.dead and not lib.progressActive() and not IsPedRagdoll(playerPed) and not IsPedFalling(playerPed) then
+	if canUseItem() then
 		if currentWeapon and currentWeapon?.timer > 100 then return end
 
 		invBusy = true
@@ -296,7 +304,7 @@ exports('useItem', useItem)
 ---@param slot number
 ---@return boolean?
 local function useSlot(slot)
-	if PlayerData.loaded and not PlayerData.dead and not invBusy and not lib.progressActive() then
+	if canUseItem() then
 		local item = PlayerData.inventory[slot]
 		if not item then return end
 
@@ -668,7 +676,7 @@ local function registerCommands()
 		description = locale('reload_weapon'),
 		defaultKey = 'r',
 		onPressed = function(self)
-			if not currentWeapon or not PlayerData.loaded or PlayerData.dead or invBusy then return end
+			if not currentWeapon or not canUseItem() then return end
 
 			if currentWeapon.ammo then
 				if currentWeapon.metadata.durability > 0 then
@@ -1220,7 +1228,7 @@ RegisterNetEvent('ox_inventory:setPlayerInventory', function(currentDrops, inven
 								SetPedCurrentWeaponVisible(playerPed, true, false, false, false)
 							end
 
-							if currentWeapon?.ammo and client.autoreload and not lib.progressActive() and not IsPedRagdoll(playerPed) and not IsPedFalling(playerPed) then
+							if currentWeapon?.ammo and client.autoreload and canUseItem() then
 								currentWeapon.timer = 0
 								local ammo = Inventory.Search(1, currentWeapon.ammo)
 
