@@ -260,12 +260,12 @@ lib.callback.register('ox_inventory:usingItem', function(data)
 	end
 end)
 
-local function canUseItem()
+local function canUseItem(isAmmo)
 	return PlayerData.loaded
 	and not PlayerData.dead
 	and not invBusy
 	and not lib.progressActive()
-	and IsPlayerFreeForAmbientTask(cache.playerId)
+	and (IsPlayerFreeForAmbientTask(cache.playerId) or (isAmmo and currentWeapon and IsPlayerFreeAiming(cache.playerId)))
 end
 
 ---@param data table
@@ -274,7 +274,7 @@ local function useItem(data, cb)
 	if invOpen and data.close then client.closeInventory() end
 	local slotData, result = PlayerData.inventory[data.slot]
 
-	if canUseItem() then
+	if canUseItem(data.ammo and true) then
 		if currentWeapon and currentWeapon?.timer > 100 then return end
 
 		invBusy = true
@@ -304,12 +304,13 @@ exports('useItem', useItem)
 ---@param slot number
 ---@return boolean?
 local function useSlot(slot)
-	if canUseItem() then
-		local item = PlayerData.inventory[slot]
-		if not item then return end
+	local item = PlayerData.inventory[slot]
+	if not item then return end
 
-		local data = Items[item.name]
-		if not data then return end
+	local data = Items[item.name]
+	if not data then return end
+
+	if canUseItem(data.ammo and true) then
 
 		if data.component and not currentWeapon then
 			return lib.notify({ type = 'error', description = locale('weapon_hand_required') })
@@ -676,7 +677,7 @@ local function registerCommands()
 		description = locale('reload_weapon'),
 		defaultKey = 'r',
 		onPressed = function(self)
-			if not currentWeapon or not canUseItem() then return end
+			if not currentWeapon or not canUseItem(true) then return end
 
 			if currentWeapon.ammo then
 				if currentWeapon.metadata.durability > 0 then
@@ -1228,7 +1229,7 @@ RegisterNetEvent('ox_inventory:setPlayerInventory', function(currentDrops, inven
 								SetPedCurrentWeaponVisible(playerPed, true, false, false, false)
 							end
 
-							if currentWeapon?.ammo and client.autoreload and canUseItem() then
+							if currentWeapon?.ammo and client.autoreload and canUseItem(true) then
 								currentWeapon.timer = 0
 								local ammo = Inventory.Search(1, currentWeapon.ammo)
 
