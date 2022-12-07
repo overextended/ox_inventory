@@ -775,7 +775,7 @@ local function updateInventory(items, weight)
 			if not v.count then v.name = nil end
 			PlayerData.inventory[v.slot] = v.name and v or nil
 		end
-		SendNUIMessage({ action = 'refreshSlots', data = {items = items, itemCount = itemCount} })
+		SendNUIMessage({ action = 'refreshSlots', data = { items = items, itemCount = itemCount} })
 		client.setPlayerData('weight', weight.left)
 	end
 
@@ -835,18 +835,33 @@ end)
 RegisterNetEvent('ox_inventory:inventoryReturned', function(data)
 	lib.notify({ description = locale('items_returned') })
 	if currentWeapon then currentWeapon = Weapon.Disarm(currentWeapon) end
+
 	client.closeInventory()
-	PlayerData.inventory = data[1]
-	client.setPlayerData('inventory', data[1])
-	client.setPlayerData('weight', data[3])
+
+	local num, items = 0, {}
+
+	for _, slotData in pairs(data[1]) do
+		num += 1
+		items[num] = { item = slotData, inventory = 'player' }
+	end
+
+	updateInventory(items, { left = data[3] })
 end)
 
 RegisterNetEvent('ox_inventory:inventoryConfiscated', function(message)
 	if message then lib.notify({ description = locale('items_confiscated') }) end
 	if currentWeapon then currentWeapon = Weapon.Disarm(currentWeapon) end
+
 	client.closeInventory()
-	table.wipe(PlayerData.inventory)
-	client.setPlayerData('weight', 0)
+
+	local num, items = 0, {}
+
+	for slot in pairs(PlayerData.inventory) do
+		num += 1
+		items[num] = { item = { slot = slot }, inventory = 'player' }
+	end
+
+	updateInventory(items, { left = 0 })
 end)
 
 
