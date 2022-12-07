@@ -153,16 +153,16 @@ function server.buyLicense(inv, license)
 	if not player then return end
 
 	if player.PlayerData.metadata.licences[license] then
-		return false, 'has_weapon_license'
+		return false, 'already_have'
 	elseif Inventory.GetItem(inv, 'money', false, true) < license.price then
-		return false, 'poor_weapon_license'
+		return false, 'can_not_afford'
 	end
 
 	Inventory.RemoveItem(inv, 'money', license.price)
 	player.PlayerData.metadata.licences.weapon = true
 	player.Functions.SetMetaData('licences', player.PlayerData.metadata.licences)
 
-	return true, 'bought_weapon_license'
+	return true, 'have_purchased'
 end
 
 --- Takes traditional item data and updates it to support ox_inventory, i.e.

@@ -22,13 +22,13 @@ function server.buyLicense(inv, license)
 	local player = Ox.GetPlayer(inv.id)
 
 	if player.getLicense(license.name) then
-		return false, 'has_weapon_license'
+		return false, 'already_have'
 	elseif Inventory.GetItem(inv, 'money', false, true) < license.price then
-		return false, 'poor_weapon_license'
+		return false, 'can_not_afford'
 	end
 
 	Inventory.RemoveItem(inv, 'money', license.price)
 	player.addLicense(license.name)
 
-	return true, 'bought_weapon_license'
+	return true, 'have_purchased'
 end

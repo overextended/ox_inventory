@@ -1061,10 +1061,11 @@ RegisterNetEvent('ox_inventory:setPlayerInventory', function(currentDrops, inven
 
 			if IsControlJustReleased(0, 38) then
 				lib.callback('ox_inventory:buyLicense', 1000, function(success, message)
-					if success then
-						lib.notify ({ description = locale(message) })
-					elseif success == false then
-						lib.notify ({ type = 'error', description = locale(message) })
+					if success ~= nil then
+						lib.notify({
+							type = success == false and 'error' or 'success',
+							description = locale(message, locale('license', point.type:gsub("^%l", string.upper)))
+						})
 					end
 				end, point.invId)
 			end
