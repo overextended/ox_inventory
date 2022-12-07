@@ -1045,19 +1045,32 @@ RegisterNetEvent('ox_inventory:setPlayerInventory', function(currentDrops, inven
 		})
 	end
 
+	local hasTextUi = false
+	local uiOptions = { icon = 'fa-id-card' }
+
 	---@param point CPoint
 	local function nearbyLicense(point)
 		---@diagnostic disable-next-line: param-type-mismatch
 		DrawMarker(2, point.coords.x, point.coords.y, point.coords.z, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.3, 0.2, 0.15, 30, 150, 30, 222, false, false, 0, true, false, false, false)
 
-		if point.isClosest and point.currentDistance < 1.2 and IsControlJustReleased(0, 38) then
-			lib.callback('ox_inventory:buyLicense', 1000, function(success, message)
-				if success then
-					lib.notify ({ description = locale(message) })
-				elseif success == false then
-					lib.notify ({ type = 'error', description = locale(message) })
-				end
-			end, point.invId)
+		if point.isClosest and point.currentDistance < 1.2 then
+			if not hasTextUi then
+				hasTextUi = true
+				lib.showTextUI(point.message, uiOptions)
+			end
+
+			if IsControlJustReleased(0, 38) then
+				lib.callback('ox_inventory:buyLicense', 1000, function(success, message)
+					if success then
+						lib.notify ({ description = locale(message) })
+					elseif success == false then
+						lib.notify ({ type = 'error', description = locale(message) })
+					end
+				end, point.invId)
+			end
+		elseif hasTextUi then
+			hasTextUi = false
+			lib.hideTextUI()
 		end
 	end
 
@@ -1067,8 +1080,10 @@ RegisterNetEvent('ox_inventory:setPlayerInventory', function(currentDrops, inven
 			distance = 16,
 			inv = 'license',
 			type = data.name,
+			price = data.price,
 			invId = id,
-			nearby = nearbyLicense
+			nearby = nearbyLicense,
+			message = ('**%s**  \n%s'):format(locale('purchase_license', data.name), locale('interact_prompt', GetControlInstructionalButton(0, 38, true):sub(3)))
 		})
 	end
 
