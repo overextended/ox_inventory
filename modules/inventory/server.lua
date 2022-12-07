@@ -648,6 +648,7 @@ function Inventory.SetItem(inv, item, count, metadata)
 		end
 	end
 end
+exports('SetItem', Inventory.SetItem)
 
 ---@param inv table | string | number
 function Inventory.GetCurrentWeapon(inv)
