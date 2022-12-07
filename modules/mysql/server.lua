@@ -166,7 +166,3 @@ function db.saveInventories(players, trunks, gloveboxes, stashes)
 		shared.info(('Saving %s inventories to the database'):format(total))
 	end
 end
-
-function db.selectLicense(name, owner)
-	return MySQL.scalar.await('SELECT 1 FROM user_licenses WHERE type = ? AND owner = ?', { name, owner })
-end
