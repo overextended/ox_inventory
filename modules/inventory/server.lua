@@ -1771,24 +1771,30 @@ RegisterServerEvent('ox_inventory:updateWeapon', function(action, value, slot)
 			if action == 'load' and weapon.metadata.durability > 0 then
 				local ammo = Items(weapon.name).ammoname
 				local diff = value - weapon.metadata.ammo
-				Inventory.RemoveItem(inventory, ammo, diff)
-				weapon.metadata.ammo = value
-				weapon.weight = Inventory.SlotWeight(item, weapon)
-				syncInventory = true
+
+				if Inventory.RemoveItem(inventory, ammo, diff) then
+					weapon.metadata.ammo = value
+					weapon.weight = Inventory.SlotWeight(item, weapon)
+					syncInventory = true
+				end
 			elseif action == 'throw' then
 				Inventory.RemoveItem(inventory, weapon.name, 1, weapon.metadata, weapon.slot)
 			elseif action == 'component' then
 				if type == 'number' then
-					Inventory.AddItem(inventory, weapon.metadata.components[value], 1)
-					table.remove(weapon.metadata.components, value)
-					weapon.weight = Inventory.SlotWeight(item, weapon)
+					if Inventory.AddItem(inventory, weapon.metadata.components[value], 1) then
+						table.remove(weapon.metadata.components, value)
+						weapon.weight = Inventory.SlotWeight(item, weapon)
+						syncInventory = true
+					end
 				elseif type == 'string' then
 					local component = inventory.items[tonumber(value)]
-					Inventory.RemoveItem(inventory, component.name, 1)
-					table.insert(weapon.metadata.components, component.name)
-					weapon.weight = Inventory.SlotWeight(item, weapon)
+
+					if Inventory.RemoveItem(inventory, component.name, 1) then
+						table.insert(weapon.metadata.components, component.name)
+						weapon.weight = Inventory.SlotWeight(item, weapon)
+						syncInventory = true
+					end
 				end
-				syncInventory = true
 			elseif action == 'ammo' then
 				if weapon.hash == `WEAPON_FIREEXTINGUISHER` or weapon.hash == `WEAPON_PETROLCAN` then
 					weapon.metadata.durability = math.floor(value)
@@ -1799,6 +1805,7 @@ RegisterServerEvent('ox_inventory:updateWeapon', function(action, value, slot)
 					weapon.metadata.durability = weapon.metadata.durability - durability
 					weapon.weight = Inventory.SlotWeight(item, weapon)
 				end
+
 				syncInventory = true
 			elseif action == 'melee' and value > 0 then
 				weapon.metadata.durability = weapon.metadata.durability - ((Items(weapon.name).durability or 1) * value)
