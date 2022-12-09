@@ -66,11 +66,11 @@ function server.syncInventory(inv)
 end
 
 function server.hasLicense(inv, name)
-	return MySQL.scalar.await('SELECT 1 FROM user_licenses WHERE type = ? AND owner = ?', { name, inv.owner })
+	return MySQL.scalar.await('SELECT 1 FROM `user_licenses` WHERE `type` = ? AND `owner` = ?', { name, inv.owner })
 end
 
 function server.buyLicense(inv, license)
-	if server.hasLicense(license.name, inv.owner) then
+	if server.hasLicense(inv, license.name) then
 		return false, 'already_have'
 	elseif Inventory.GetItem(inv, 'money', false, true) < license.price then
 		return false, 'can_not_afford'
