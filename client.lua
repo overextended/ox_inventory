@@ -281,7 +281,7 @@ local function useItem(data, cb)
 
 		if not result then
 			Wait(500)
-			invBusy = false
+			plyState.invBusy = false
 			return
 		end
 	end
