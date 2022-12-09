@@ -36,7 +36,7 @@
   "have_purchased": "Has comprado una licencia de armas",
   "can_not_afford": "No te puedes permitir una licencia de armas",
   "purchase_license": "Comprar Licencia",
-  "interact_prompt": "Interact with [%s]",
+  "interact_prompt": "Interactuar con [%s]",
   "weapon_unregistered": "%s no está registrada",
   "weapon_registered": "%s (%s) está registrada a nombre de %s",
   "weapon_broken": "Esta arma está rota",
