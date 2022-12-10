@@ -82,20 +82,25 @@ const App: React.FC = () => {
   const dispatch = useAppDispatch();
   const manager = useDragDropManager();
 
-  useNuiEvent<{
-    locale: { [key: string]: string };
-    items: typeof Items;
-    leftInventory: Inventory;
-    imagepath: string;
-  }>('init', ({ locale, items, leftInventory, imagepath }) => {
+  setTimeout(async () => {
+    const {
+      locale,
+      items,
+      leftInventory,
+      imagepath,
+    }: {
+      locale: { [key: string]: string };
+      items: typeof Items;
+      leftInventory: Inventory;
+      imagepath: string;
+    } = await fetchNui('uiLoaded', {});
+
     for (const [name, data] of Object.entries(locale)) Locale[name] = data;
     for (const [name, data] of Object.entries(items)) Items[name] = data;
+
     setImagePath(imagepath);
-
     dispatch(setupInventory({ leftInventory }));
-  });
-
-  fetchNui('uiLoaded', {});
+  }, 500);
 
   useNuiEvent('closeInventory', () => {
     manager.dispatch({ type: 'dnd-core/END_DRAG' });
