@@ -917,6 +917,7 @@ RegisterNetEvent('ox_inventory:removeDrop', function(id)
 	end
 end)
 
+---@type boolean | function
 local uiLoaded = false
 
 ---@type function?
@@ -1088,23 +1089,21 @@ RegisterNetEvent('ox_inventory:setPlayerInventory', function(currentDrops, inven
 		})
 	end
 
-	while not uiLoaded do Wait(50) end
+	while not uiLoaded do Wait(0) end
 
-	SendNUIMessage({
-		action = 'init',
-		data = {
-			locale = locales,
-			items = ItemData,
-			leftInventory = {
-				id = cache.playerId,
-				slots = shared.playerslots,
-				items = PlayerData.inventory,
-				maxWeight = shared.playerweight,
-			},
-			imagepath = GetConvar('inventory:imagepath', 'nui://ox_inventory/web/images')
-		}
+	uiLoaded({
+		locale = locales,
+		items = ItemData,
+		leftInventory = {
+			id = cache.playerId,
+			slots = shared.playerslots,
+			items = PlayerData.inventory,
+			maxWeight = shared.playerweight,
+		},
+		imagepath = GetConvar('inventory:imagepath', 'nui://ox_inventory/web/images')
 	})
 
+	uiLoaded = true
 	PlayerData.loaded = true
 
 	lib.notify({ description = locale('inventory_setup') })
@@ -1315,8 +1314,7 @@ RegisterNetEvent('ox_inventory:viewInventory', function(data)
 end)
 
 RegisterNUICallback('uiLoaded', function(_, cb)
-	uiLoaded = true
-	cb(1)
+	uiLoaded = cb
 end)
 
 RegisterNUICallback('removeComponent', function(data, cb)
