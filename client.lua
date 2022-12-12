@@ -264,7 +264,10 @@ local function canUseItem(isAmmo)
 	and not PlayerData.dead
 	and not invBusy
 	and not lib.progressActive()
-	and (IsPlayerFreeForAmbientTask(cache.playerId) or cache.vehicle or (isAmmo and currentWeapon and IsPlayerFreeAiming(cache.playerId)))
+	and (IsPlayerFreeForAmbientTask(cache.playerId)
+		or cache.vehicle
+		or (isAmmo and currentWeapon and IsPlayerFreeAiming(cache.playerId))
+		or IsPedInCover(cache.ped, false))
 end
 
 ---@param data table
