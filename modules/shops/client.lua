@@ -106,6 +106,22 @@ client.shops = setmetatable(data('shops'), {
 								distance = target.distance or 2.0
 							})
 						end
+					elseif shop.locations and shop.targets == nil and shop.model == nil then
+						for i = 1, #shop.locations do
+							id += 1
+							local coords = shop.locations[i]
+							shop.target = nil
+							shop.model = nil
+							shops[id] = lib.points.new(coords, 16, {
+								coords = coords,
+								distance = 16,
+								inv = 'shop',
+								invId = i,
+								type = type,
+								nearby = nearbyShop,
+								blip = blip and createBlip(blip, coords)
+							})
+						end
 					end
 				elseif shop.locations then
 					for i = 1, #shop.locations do
