@@ -1087,7 +1087,7 @@ RegisterNetEvent('ox_inventory:setPlayerInventory', function(currentDrops, inven
 			price = data.price,
 			invId = id,
 			nearby = nearbyLicense,
-			message = ('**%s**  \n%s'):format(locale('purchase_license', data.label), locale('interact_prompt', GetControlInstructionalButton(0, 38, true):sub(3)))
+			message = ('**%s**  \n%s'):format(locale('purchase_license', data.label, data.price), locale('interact_prompt', GetControlInstructionalButton(0, 38, true):sub(3)))
 		})
 	end
 
