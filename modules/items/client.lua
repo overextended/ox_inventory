@@ -53,8 +53,19 @@ Item('armour', function(data, slot)
 			if data then
 				SetPlayerMaxArmour(PlayerData.id, 100)
 				SetPedArmour(cache.ped, 100)
+				if GetEntityModel(cache.ped) == `mp_m_freemode_01` then
+					SetPedComponentVariation(cache.ped, 9, 28, 9, 0) -- Hombre
+				else
+					SetPedComponentVariation(cache.ped, 9, 2, 1, 0) -- Mujer
+				end
 			end
 		end)
+		while true do
+			Citizen.Wait(1000)
+			if GetPedArmour(cache.ped) < 1 then
+				SetPedComponentVariation(cache.ped, 9, 0, 9, 0)
+			end
+		end
 	end
 end)
 
