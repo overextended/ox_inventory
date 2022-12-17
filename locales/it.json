@@ -31,12 +31,12 @@
   "inventory_right_access": "Non puoi aprire questo inventario",
   "inventory_lost_access": "Non puoi più aprire questo inventario",
   "wrong_ammo": "Non puoi caricare la %s con le munizioni per la %s",
-  "weapon_license": "Porto d'armi",
+  "license": "Licenza %s",
   "already_have": "Hai già un porto d'armi",
   "have_purchased": "Hai comprato il porto d'armi",
   "can_not_afford": "Non puoi permetterti il porto d'armi",
   "purchase_license": "Compra licenza",
-  "interact_prompt": "Interact with [%s]",
+  "interact_prompt": "Interagisci con [%s]",
   "weapon_unregistered": "%s non è intestata a nessuno",
   "weapon_registered": "%s (%s) è intestata a %s",
   "weapon_broken": "Quest'arma è rotta",
@@ -81,5 +81,8 @@
   "no_durability": "Oggetto usurato",
   "cannot_give": "Impossibile dare %s %s al giocatore selezionato",
   "evidence_cannot_take": "Il tuo grado non può prendere oggetti dal deposito",
-  "dumpster": "Cassonetto"
+  "dumpster": "Cassonetto",
+  "crafting_item": "Craftando %s",
+  "crafting_bench": "Banco da lavoro",
+  "not_enough_durability": "%s non ha abbastanza durabilità"
 }
