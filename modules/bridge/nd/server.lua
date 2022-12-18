@@ -113,12 +113,12 @@ end
 
 function server.buyLicense(inv, license)
 	if server.hasLicense(inv, license.name) then
-		return false, "has_weapon_license"
+		return false, "already_have"
 	elseif Inventory.GetItem(inv, "money", false, true) < license.price then
-		return false, "poor_weapon_license"
+		return false, "can_not_afford"
 	end
 
 	Inventory.RemoveItem(inv, "money", license.price)
 	NDCore.Functions.CreatePlayerLicense(inv.owner, "weapon")
-	return true, "bought_weapon_license"
+	return true, "have_purchased"
 end
