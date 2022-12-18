@@ -15,23 +15,23 @@ RegisterNetEvent("ND:jobChanged", function(source, job, lastJob)
 	inventory.player.groups[job.name] = job.rank
 end)
 
+local function reorderGroups(groups)
+    groups = groups or {}
+    for group, info in pairs(groups) do
+        groups[group] = info.rank
+    end
+    return groups
+end
+
 SetTimeout(500, function()
     NDCore = exports["ND_Core"]:GetCoreObject()
     server.GetPlayerFromId = NDCore.Functions.GetPlayer
     for _, character in pairs(NDCore.Functions.GetPlayers()) do
         character.identifier = character.id
-        character.name = tostring(character.firstName) .. " " .. tostring(character.lastName)
+        character.name = ("%s %s"):format(character.firstName, character.lastName)
         character.dateofbirth = character.dob
         character.sex = character.gender
-
-        local groups = {}
-        if character.data.groups then
-            for group, info in pairs(character.data.groups) do
-                groups[group] = info.rank
-            end
-        end
-
-        character.groups = groups
+        character.groups = reorderGroups(character.data.groups)
         server.setPlayerInventory(character, character.inventory)
         Inventory.SetItem(character.source, "money", character.cash)
     end
@@ -45,17 +45,11 @@ server.accounts = {
 RegisterNetEvent("ND:characterLoaded", function(character)
     if not character then return end
     character.identifier = character.id
-    character.name = tostring(character.firstName) .. " " .. tostring(character.lastName)
+    character.name = ("%s %s"):format(character.firstName, character.lastName)
     character.dateofbirth = character.dob
     character.sex = character.gender
 
-    local groups = {}
-    if character.data.groups then
-        for group, info in pairs(character.data.groups) do
-            groups[group] = info.rank
-        end
-    end
-
+    local groups = reorderGroups(character.data.groups)
     server.setPlayerInventory(character, character.inventory)
     Inventory.SetItem(character.source, "money", character.cash)
 end)
@@ -82,17 +76,11 @@ function server.syncInventory(inv)
 end
 
 function server.setPlayerData(player)
-    local groups = {}
-    if player.data.groups then
-        for group, info in pairs(player.data.groups) do
-            groups[group] = info.rank
-        end
-    end
-
+    local groups = reorderGroups(player.data.groups)
     return {
         source = player.source,
         identifier = player.id,
-        name = player.firstName .. " " .. player.lastName,
+        name = ("%s %s"):format(player.firstName, player.lastName),
         groups = groups,
         sex = player.gender,
         dateofbirth = player.dob,
