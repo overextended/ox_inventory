@@ -18,7 +18,7 @@ exports('setStashTarget', function(id, owner)
 	StashTarget = id and {id=id, owner=owner}
 end)
 
----@type boolean
+---@type boolean | number
 local invBusy = true
 
 ---@type boolean?
@@ -1203,7 +1203,7 @@ RegisterNetEvent('ox_inventory:setPlayerInventory', function(currentDrops, inven
 		else
 			disableControls()
 
-			if invBusy or IsPedCuffed(playerPed) then
+			if invBusy == true or IsPedCuffed(playerPed) then
 				DisablePlayerFiring(playerId, true)
 			end
 
@@ -1261,24 +1261,31 @@ RegisterNetEvent('ox_inventory:setPlayerInventory', function(currentDrops, inven
 							else currentWeapon.timer = GetGameTimer() + 400 end
 						else currentWeapon.timer = GetGameTimer() + 400 end
 					end
-				elseif IsControlJustReleased(0, 24) then
-					if currentWeapon.throwable then
-						plyState.invBusy = true
-						local weapon = currentWeapon
+				elseif currentWeapon.throwable then
+					if not invBusy and IsControlPressed(0, 24) then
+						invBusy = 1
 
-						SetTimeout(700, function()
-							ClearPedSecondaryTask(playerPed)
-							RemoveWeaponFromPed(playerPed, weapon.hash)
-							TriggerServerEvent('ox_inventory:updateWeapon', 'throw')
-							currentWeapon = nil
-							TriggerEvent('ox_inventory:currentWeapon')
+						CreateThread(function()
+							local weapon = currentWeapon
+
+							while currentWeapon and (not IsPedWeaponReadyToShoot(cache.ped) or IsDisabledControlPressed(0, 24)) and GetSelectedPedWeapon(playerPed) == weapon.hash do
+								Wait(0)
+							end
+
+							if GetSelectedPedWeapon(playerPed) == weapon.hash then Wait(700) end
+
+							TriggerServerEvent('ox_inventory:updateWeapon', 'throw', nil, weapon.slot)
+
 							plyState.invBusy = false
-						end)
+							currentWeapon = nil
 
-					elseif IsPedPerformingMeleeAction(playerPed) then
-						currentWeapon.melee += 1
-						currentWeapon.timer = GetGameTimer() + 400
+							RemoveWeaponFromPed(playerPed, weapon.hash)
+							TriggerEvent('ox_inventory:currentWeapon')
+						end)
 					end
+				elseif IsControlJustReleased(0, 24) and IsPedPerformingMeleeAction(playerPed) then
+					currentWeapon.melee += 1
+					currentWeapon.timer = GetGameTimer() + 400
 				end
 			end
 		end
