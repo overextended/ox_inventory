@@ -1,4 +1,4 @@
-function reorderGroups(groups)
+local function reorderGroups(groups)
     groups = groups or {}
     for group, info in pairs(groups) do
         groups[group] = info.rank
