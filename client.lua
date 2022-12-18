@@ -767,6 +767,7 @@ local function updateInventory(items, weight)
 			PlayerData.inventory[slot] = v and v or nil
 			changes[slot] = v
 		end
+
 		SendNUIMessage({ action = 'refreshSlots', data = {itemCount = itemCount} })
 		client.setPlayerData('weight', weight)
 	else
@@ -786,6 +787,7 @@ local function updateInventory(items, weight)
 			if not v.count then v.name = nil end
 			PlayerData.inventory[v.slot] = v.name and v or nil
 		end
+
 		SendNUIMessage({ action = 'refreshSlots', data = { items = items, itemCount = itemCount} })
 		client.setPlayerData('weight', weight.left)
 	end
@@ -795,7 +797,7 @@ local function updateInventory(items, weight)
 		local data = Items[item]
 
 		if count < 0 then
-			if currentWeapon?.slot == data.slot then
+			if currentWeapon and not currentWeapon.throwable and currentWeapon.slot == data.slot then
 				currentWeapon = Weapon.Disarm(currentWeapon)
 			end
 
