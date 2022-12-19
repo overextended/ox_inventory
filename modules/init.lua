@@ -108,7 +108,14 @@ function data(name)
 	if shared.server and shared.ready == nil then return {} end
 	local file = ('data/%s.lua'):format(name)
 	local datafile = LoadResourceFile(shared.resource, file)
-	local func, err = load(datafile, ('@@%s/%s'):format(shared.resource, file))
+	local path = ('@@%s/%s'):format(shared.resource, file)
+
+	if not datafile then
+		warn(('no datafile found at path %s'):format(path:gsub('@@', '')))
+		return {}
+	end
+
+	local func, err = load(datafile, path)
 
 	if not func or err then
 		shared.ready = false
