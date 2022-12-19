@@ -71,8 +71,6 @@ function shared.print(...) print(string.strjoin(' ', ...)) end
 
 function shared.info(...) shared.print('^2[info]^7', ...) end
 
-function shared.warning(...) shared.print('^3[warning]^7', ...) end
-
 -- People like ignoring errors for some reason
 local function spamError(err)
 	lib = nil
@@ -149,7 +147,7 @@ if shared.target then
 
 	if not ox_target and not qtarget then
 		shared.target = false
-		return shared.warning('targeting resource is not loaded - it should start before ox_inventory')
+		return warn('targeting resource is not loaded - it should start before ox_inventory')
 	end
 
 	shared.target = ox_target and 'ox_target' or 'qtarget'

@@ -357,14 +357,14 @@ local function conversionScript()
 end
 
 RegisterCommand('convertinventory', function(source, args)
-	if source ~= 0 then return shared.warning('This command can only be executed with the server console.') end
+	if source ~= 0 then return warn('This command can only be executed with the server console.') end
 	if type(conversionScript) == 'function' then conversionScript() end
 	local arg = args[1]
 
 	local convert = arg and conversionScript[arg]
 
 	if not convert then
-		return shared.info('Invalid conversion argument. Valid options: esx, esxproperty, qb, linden')
+		return warn('Invalid conversion argument. Valid options: esx, esxproperty, qb, linden')
 	end
 
 	CreateThread(convert)

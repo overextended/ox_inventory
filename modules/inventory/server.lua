@@ -518,7 +518,7 @@ local function generateItems(inv, invType, items)
 		local v = items[i]
 		local item = Items(v[1])
 		if not item then
-			shared.warning('unable to generate', v[1], 'item does not exist')
+			warn('unable to generate', v[1], 'item does not exist')
 		else
 			local metadata, count = Items.Metadata(inv, item, v[3] or {}, v[2])
 			local weight = Inventory.SlotWeight(item, {count=count, metadata=metadata})
@@ -1239,7 +1239,7 @@ lib.callback.register('ox_inventory:swapItems', function(source, data)
 				fromInventory = (data.fromType == 'player' and playerInventory) or Inventory(playerInventory.open)
 
 				if not fromInventory then
-					return shared.warning('Unknown error occured during swapItems\n', json.encode(data, {indent = true}))
+					return warn('Unknown error occured during swapItems\n', json.encode(data, {indent = true}))
 				end
 			end
 

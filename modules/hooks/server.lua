@@ -62,7 +62,7 @@ function TriggerEventHooks(event, payload)
 			local executionTime = microtime() - start
 
 			if executionTime >= 100000 then
-				shared.warning(('Execution of event hook "%s:%s:%s" took %.2fms.'):format(hook.resource, event, i, executionTime / 1e3))
+				warn(('Execution of event hook "%s:%s:%s" took %.2fms.'):format(hook.resource, event, i, executionTime / 1e3))
 			end
 
 			if event == 'createItem' then
