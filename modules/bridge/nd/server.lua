@@ -76,12 +76,11 @@ function server.syncInventory(inv)
 end
 
 function server.setPlayerData(player)
-    local groups = reorderGroups(player.data.groups)
     return {
         source = player.source,
         identifier = player.id,
         name = ("%s %s"):format(player.firstName, player.lastName),
-        groups = groups,
+        groups = player.data.groups,
         sex = player.gender,
         dateofbirth = player.dob,
         job = player.job
