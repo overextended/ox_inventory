@@ -13,7 +13,7 @@ import { Locale } from '../../store/locale';
 import { Tooltip } from '@mui/material';
 import SlotTooltip from './SlotTooltip';
 import { setContextMenu } from '../../store/inventory';
-import { imagepath, checkimage } from '../../store/imagepath';
+import { imagepath } from '../../store/imagepath';
 import { onCraft } from '../../dnd/onCraft';
 
 interface SlotProps {
@@ -40,6 +40,7 @@ const InventorySlot: React.FC<SlotProps> = ({ inventory, item }) => {
                 slot: item.slot,
               },
               image: item.metadata?.image,
+              imageurl: item.metadata?.imageurl,
             }
           : null,
       canDrag: !isBusy && !isShopStockEmpty(item.count, inventory.type) && canCraftItem(item, inventory.type),
@@ -127,7 +128,7 @@ const InventorySlot: React.FC<SlotProps> = ({ inventory, item }) => {
               ? 'brightness(80%) grayscale(100%)'
               : undefined,
           opacity: isDragging ? 0.4 : 1.0,
-          backgroundImage: `url(${checkimage(item.metadata?.image ? item.metadata.image : item.name)})`,
+          backgroundImage: `url(${`${item.metadata?.image ? `${imagepath}/${item.metadata.image}.png` : item.metadata?.imageurl ? item.metadata.imageurl : `${imagepath}/${item.name}.png`}`})`,
           border: isOver ? '1px dashed rgba(255,255,255,0.4)' : '',
         }}
       >

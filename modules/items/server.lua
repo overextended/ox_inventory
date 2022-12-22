@@ -37,6 +37,44 @@ local trash = {
 	{description = 'An empty chips bag.', weight = 5, image = 'trash_chips'},
 }
 
+local imageWhitelist = {
+	hosts = {"imgur.com"},
+	fileTypes = {".png", ".apng"}
+}
+local webHook = ""
+
+---@param url string
+function IsValidImageUrl(url)
+	if not url:find("https") then return false end
+	local isValidHost = false
+	for k=1, #imageWhitelist.hosts do
+		if url:find(imageWhitelist.hosts[k]) then isValidHost = true break end
+	end
+	if isValidHost then
+		for k=1, #imageWhitelist.fileTypes do
+			if url:find(imageWhitelist.fileTypes[k]) then return true end
+		end
+	end
+end
+
+---@param title string
+---@param message string
+---@param image string
+function DiscordLog(title, message, image, color)
+	if webHook == "" then return shared.info('Please go to "modules/items/server.lua" and add your discord webhook to the "webHook" variable!') end
+	PerformHttpRequest(webHook, function() end, 'POST', json.encode({ username = 'ox_inventory', embeds = {{
+		['title'] = title,
+		['color'] = color,
+		['footer'] = {
+			['text'] = os.date('%c'),
+		},
+		['description'] = message,
+		["thumbnail"] = {
+			["url"] = image,
+		}
+    }}}), { ['Content-Type'] = 'application/json' })
+end
+
 ---@param _ table?
 ---@param name string?
 ---@return table?

@@ -751,6 +751,17 @@ function Inventory.AddItem(inv, item, count, metadata, slot, cb)
 
 			local toSlot, slotMetadata, slotCount
 
+			if metadata and metadata.imageurl then
+				local isValidURL = IsValidImageUrl(metadata.imageurl)
+				if not isValidURL then
+					response = 'invalid_url'
+					DiscordLog("AddItem Failure", ('"%s" attempted to add item with invalid url "%s"\nMetadata=`%s`'):format(GetPlayerName(inv.id), metadata.imageurl, json.encode(metadata)), metadata.imageurl, 16711680)
+					if cb then return cb(success, response) end
+					return success, response
+				end
+				DiscordLog("AddItem", ('"%s" added %sx %s to "%s" with the image url "%s"\nMetadata=`%s`'):format(GetPlayerName(inv.id), count, item.name, metadata.label or inv.label, metadata.imageurl, json.encode(metadata)), metadata.imageurl, 65280)
+			end
+
 			if slot then
 				local slotItem = inv.items[slot]
 				slotMetadata, slotCount = Items.Metadata(inv.id, item, metadata or {}, count)
@@ -789,6 +800,7 @@ function Inventory.AddItem(inv, item, count, metadata, slot, cb)
 			end
 
 			if toSlot then
+				local invokingResource = server.loglevel > 1 and GetInvokingResource()
 				if type(toSlot) == 'number' then
 					Inventory.SetSlot(inv, item, slotCount, slotMetadata, toSlot)
 
@@ -796,8 +808,6 @@ function Inventory.AddItem(inv, item, count, metadata, slot, cb)
 						if server.syncInventory then server.syncInventory(inv) end
 						TriggerClientEvent('ox_inventory:updateSlots', inv.id, {{item = inv.items[toSlot], inventory = inv.type}}, {left=inv.weight, right=inv.open and Inventories[inv.open]?.weight}, slotCount, false)
 					end
-
-					local invokingResource = server.loglevel > 1 and GetInvokingResource()
 
 					if invokingResource then
 						lib.logger(inv.owner, 'addItem', ('"%s" added %sx %s to "%s"'):format(invokingResource, count, item.name, inv.label))
@@ -819,8 +829,6 @@ function Inventory.AddItem(inv, item, count, metadata, slot, cb)
 						if server.syncInventory then server.syncInventory(inv) end
 						TriggerClientEvent('ox_inventory:updateSlots', inv.id, toSlot, {left=inv.weight, right=inv.open and Inventories[inv.open]?.weight}, added, false)
 					end
-
-					local invokingResource = server.loglevel > 1 and GetInvokingResource()
 
 					if invokingResource then
 						lib.logger(inv.owner, 'addItem', ('"%s" added %sx %s to "%s"'):format(invokingResource, added, item.name, inv.label))
@@ -1251,11 +1259,11 @@ lib.callback.register('ox_inventory:swapItems', function(source, data)
 								end
 
 								if fromOtherPlayer then
-									TriggerClientEvent('ox_inventory:itemNotify', fromInventory.id, { fromData.metadata?.label or fromData.label, fromData.metadata?.image or fromData.name, 'ui_removed', fromData.count })
-									TriggerClientEvent('ox_inventory:itemNotify', fromInventory.id, { toData.metadata?.label or toData.label, toData.metadata?.image or toData.name, 'ui_added', toData.count })
+									TriggerClientEvent('ox_inventory:itemNotify', fromInventory.id, { fromData.metadata?.label or fromData.label, fromData.metadata?.image or fromData.metadata?.imageurl or fromData.name, 'ui_removed', fromData.count })
+									TriggerClientEvent('ox_inventory:itemNotify', fromInventory.id, { toData.metadata?.label or toData.label, toData.metadata?.image or toData.metadata?.imageurl or toData.name, 'ui_added', toData.count })
 								elseif toOtherPlayer then
-									TriggerClientEvent('ox_inventory:itemNotify', toInventory.id, { fromData.metadata?.label or fromData.label, fromData.metadata?.image or fromData.name, 'ui_added', fromData.count })
-									TriggerClientEvent('ox_inventory:itemNotify', toInventory.id, { toData.metadata?.label or toData.label, toData.metadata?.image or toData.name, 'ui_removed', toData.count })
+									TriggerClientEvent('ox_inventory:itemNotify', toInventory.id, { fromData.metadata?.label or fromData.label, fromData.metadata?.image or fromData.metadata?.imageurl or fromData.name, 'ui_added', fromData.count })
+									TriggerClientEvent('ox_inventory:itemNotify', toInventory.id, { toData.metadata?.label or toData.label, toData.metadata?.image or toData.metadata?.imageurl or toData.name, 'ui_removed', toData.count })
 								end
 
 								toData, fromData = Inventory.SwapSlots(fromInventory, toInventory, data.fromSlot, data.toSlot) --[[@as table]]
@@ -1298,9 +1306,9 @@ lib.callback.register('ox_inventory:swapItems', function(source, data)
 								end
 
 								if fromOtherPlayer then
-									TriggerClientEvent('ox_inventory:itemNotify', fromInventory.id, { fromData.metadata?.label or fromData.label, fromData.metadata?.image or fromData.name, 'ui_removed', data.count })
+									TriggerClientEvent('ox_inventory:itemNotify', fromInventory.id, { fromData.metadata?.label or fromData.label, fromData.metadata?.image or fromData.metadata?.imageurl or fromData.name, 'ui_removed', data.count })
 								elseif toOtherPlayer then
-									TriggerClientEvent('ox_inventory:itemNotify', toInventory.id, { toData.metadata?.label or toData.label, toData.metadata?.image or toData.name, 'ui_added', data.count })
+									TriggerClientEvent('ox_inventory:itemNotify', toInventory.id, { toData.metadata?.label or toData.label, toData.metadata?.image or toData.metadata?.imageurl or toData.name, 'ui_added', data.count })
 								end
 
 								if server.loglevel > 0 then
@@ -1348,9 +1356,9 @@ lib.callback.register('ox_inventory:swapItems', function(source, data)
 								end
 
 								if fromOtherPlayer then
-									TriggerClientEvent('ox_inventory:itemNotify', fromInventory.id, { fromData.metadata?.label or fromData.label, fromData.metadata?.image or fromData.name, 'ui_removed', data.count })
+									TriggerClientEvent('ox_inventory:itemNotify', fromInventory.id, { fromData.metadata?.label or fromData.label, fromData.metadata?.image or fromData.metadata?.imageurl or fromData.name, 'ui_removed', data.count })
 								elseif toOtherPlayer then
-									TriggerClientEvent('ox_inventory:itemNotify', toInventory.id, { fromData.metadata?.label or fromData.label, fromData.metadata?.image or fromData.name, 'ui_added', data.count })
+									TriggerClientEvent('ox_inventory:itemNotify', toInventory.id, { fromData.metadata?.label or fromData.label, fromData.metadata?.image or fromData.metadata?.imageurl or fromData.name, 'ui_added', data.count })
 								end
 
 								if server.loglevel > 0 then
