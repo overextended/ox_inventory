@@ -6,7 +6,7 @@ import WeightBar from '../utils/WeightBar';
 import { Slide } from '@mui/material';
 import { useAppSelector } from '../../store';
 import { selectLeftInventory } from '../../store/inventory';
-import { imagepath } from '../../store/imagepath';
+import { checkimage } from '../../store/imagepath';
 
 const InventoryHotbar: React.FC = () => {
   const [hotbarVisible, setHotbarVisible] = useState(false);
@@ -31,7 +31,7 @@ const InventoryHotbar: React.FC = () => {
           <div
             className="hotbar-item-slot"
             style={{
-              backgroundImage: `url(${`${imagepath}/${item.metadata?.image ? item.metadata.image : item.name}.png`})`,
+              backgroundImage: `url(${checkimage(item)})`,
             }}
             key={`hotbar-${item.slot}`}
           >

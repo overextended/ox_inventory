@@ -13,7 +13,7 @@ import { Locale } from '../../store/locale';
 import { Tooltip } from '@mui/material';
 import SlotTooltip from './SlotTooltip';
 import { setContextMenu } from '../../store/inventory';
-import { imagepath } from '../../store/imagepath';
+import { imagepath, checkimage } from '../../store/imagepath';
 import { onCraft } from '../../dnd/onCraft';
 
 interface SlotProps {
@@ -127,7 +127,7 @@ const InventorySlot: React.FC<SlotProps> = ({ inventory, item }) => {
               ? 'brightness(80%) grayscale(100%)'
               : undefined,
           opacity: isDragging ? 0.4 : 1.0,
-          backgroundImage: `url(${`${imagepath}/${item.metadata?.image ? item.metadata.image : item.name}.png`})`,
+          backgroundImage: `url(${checkimage(item)})`,
           border: isOver ? '1px dashed rgba(255,255,255,0.4)' : '',
         }}
       >
