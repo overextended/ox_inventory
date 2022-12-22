@@ -5,7 +5,7 @@ import useNuiEvent from '../../hooks/useNuiEvent';
 import { Fade } from '@mui/material';
 import useQueue from '../../hooks/useQueue';
 import { Locale } from '../../store/locale';
-import { imagepath } from '../../store/imagepath';
+import { checkimage } from '../../store/imagepath';
 
 interface ItemNotificationProps {
   label: string;
@@ -29,7 +29,7 @@ const ItemNotification = React.forwardRef(
       <div
         className="item-notification-item-box"
         style={{
-          backgroundImage: `url(${`${imagepath}/${props.item.image}.png`})` || 'none',
+          backgroundImage: `url(${checkimage(props.item.image)})` || 'none',
           ...props.style,
         }}
         ref={ref}

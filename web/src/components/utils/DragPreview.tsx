@@ -1,7 +1,7 @@
 import React, { RefObject, useRef } from 'react';
 import { DragLayerMonitor, useDragLayer, XYCoord } from 'react-dnd';
 import { DragSource } from '../../typings';
-import { imagepath } from '../../store/imagepath';
+import { checkimage } from '../../store/imagepath';
 
 interface DragLayerProps {
   data: DragSource;
@@ -57,7 +57,7 @@ const DragPreview: React.FC = () => {
           ref={element}
           style={{
             transform: `translate(${currentOffset.x}px, ${currentOffset.y}px)`,
-            backgroundImage: `url(${`${imagepath}/${data.image || data.item.name}.png`})`,
+            backgroundImage: `url(${checkimage(data?.image ? data.image : data.item.name)})`,
           }}
         />
       )}

@@ -127,7 +127,7 @@ const InventorySlot: React.FC<SlotProps> = ({ inventory, item }) => {
               ? 'brightness(80%) grayscale(100%)'
               : undefined,
           opacity: isDragging ? 0.4 : 1.0,
-          backgroundImage: `url(${checkimage(item)})`,
+          backgroundImage: `url(${checkimage(item.metadata?.image ? item.metadata.image : item.name)})`,
           border: isOver ? '1px dashed rgba(255,255,255,0.4)' : '',
         }}
       >

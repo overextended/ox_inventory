@@ -31,7 +31,7 @@ const InventoryHotbar: React.FC = () => {
           <div
             className="hotbar-item-slot"
             style={{
-              backgroundImage: `url(${checkimage(item)})`,
+              backgroundImage: `url(${checkimage(item.metadata?.image ? item.metadata.image : item.name)})`,
             }}
             key={`hotbar-${item.slot}`}
           >
