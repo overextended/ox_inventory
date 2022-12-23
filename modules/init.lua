@@ -4,7 +4,6 @@ lib.locale()
 -- https://overextended.github.io/docs/ox_inventory/Getting%20Started/config
 
 shared = {
-	resource = GetCurrentResourceName(),
 	framework = GetConvar('inventory:framework', 'esx'),
 	playerslots = GetConvarInt('inventory:slots', 50),
 	playerweight = GetConvarInt('inventory:weight', 30000),
@@ -107,8 +106,8 @@ end
 function data(name)
 	if shared.server and shared.ready == nil then return {} end
 	local file = ('data/%s.lua'):format(name)
-	local datafile = LoadResourceFile(shared.resource, file)
-	local path = ('@@%s/%s'):format(shared.resource, file)
+	local datafile = LoadResourceFile(cache.resource, file)
+	local path = ('@@%s/%s'):format(cache.resource, file)
 
 	if not datafile then
 		warn(('no datafile found at path %s'):format(path:gsub('@@', '')))
@@ -138,7 +137,7 @@ success, msg = lib.checkDependency('ox_lib', '2.19.0')
 
 if not success then spamError(msg) end
 
-if not LoadResourceFile(shared.resource, 'web/build/index.html') then
+if not LoadResourceFile(cache.resource, 'web/build/index.html') then
 	return spamError('UI has not been built, refer to the documentation or download a release build.\n	^3https://overextended.github.io/docs/ox_inventory/^0')
 end
 

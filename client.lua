@@ -1298,7 +1298,7 @@ RegisterNetEvent('ox_inventory:setPlayerInventory', function(currentDrops, inven
 end)
 
 AddEventHandler('onResourceStop', function(resourceName)
-	if shared.resource == resourceName then
+	if cache.resource == resourceName then
 		if client.parachute then
 			Utils.DeleteObject(client.parachute)
 		end

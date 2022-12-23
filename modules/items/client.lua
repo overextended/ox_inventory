@@ -31,7 +31,7 @@ local function Item(name, cb)
 	end
 end
 
-local ox_inventory = exports[shared.resource]
+local ox_inventory = exports[cache.resource]
 -----------------------------------------------------------------------------------------------
 -- Clientside item use functions
 -----------------------------------------------------------------------------------------------

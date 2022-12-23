@@ -1678,7 +1678,7 @@ AddEventHandler('txAdmin:events:serverShuttingDown', function()
 end)
 
 AddEventHandler('onResourceStop', function(resource)
-	if resource == shared.resource then
+	if resource == cache.resource then
 		saveInventories(true)
 	end
 end)

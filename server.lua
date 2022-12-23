@@ -350,8 +350,8 @@ local function conversionScript()
 	shared.ready = false
 
 	local file = 'setup/convert.lua'
-	local import = LoadResourceFile(shared.resource, file)
-	local func = load(import, ('@@%s/%s'):format(shared.resource, file)) --[[@as function]]
+	local import = LoadResourceFile(cache.resource, file)
+	local func = load(import, ('@@%s/%s'):format(cache.resource, file)) --[[@as function]]
 
 	conversionScript = func()
 end

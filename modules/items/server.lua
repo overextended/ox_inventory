@@ -88,7 +88,7 @@ CreateThread(function()
 			end
 
 			if table.type(dump) ~= "empty" then
-				local file = {string.strtrim(LoadResourceFile(shared.resource, 'data/items.lua'))}
+				local file = {string.strtrim(LoadResourceFile(cache.resource, 'data/items.lua'))}
 				file[1] = file[1]:gsub('}$', '')
 
 				local itemFormat = [[
@@ -115,7 +115,7 @@ CreateThread(function()
 
 				file[fileSize+1] = '}'
 
-				SaveResourceFile(shared.resource, 'data/items.lua', table.concat(file), -1)
+				SaveResourceFile(cache.resource, 'data/items.lua', table.concat(file), -1)
 				shared.info(count, 'items have been copied from the database.')
 				shared.info('You should restart the resource to load the new items.')
 			end
@@ -172,7 +172,7 @@ CreateThread(function()
 			end
 
 			if table.type(dump) ~= "empty" then
-				local file = {string.strtrim(LoadResourceFile(shared.resource, 'data/items.lua'))}
+				local file = {string.strtrim(LoadResourceFile(cache.resource, 'data/items.lua'))}
 				file[1] = file[1]:gsub('}$', '')
 
 				local itemFormat = [[
@@ -199,7 +199,7 @@ CreateThread(function()
 
 				file[fileSize+1] = '}'
 
-				SaveResourceFile(shared.resource, 'data/items.lua', table.concat(file), -1)
+				SaveResourceFile(cache.resource, 'data/items.lua', table.concat(file), -1)
 				shared.info(count, 'items have been copied from the QBCore.Shared.Items.')
 				shared.info('You should restart the resource to load the new items.')
 			end
