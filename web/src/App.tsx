@@ -88,10 +88,10 @@ const App: React.FC = () => {
     leftInventory: Inventory;
     imagepath: string;
   }>('init', ({ locale, items, leftInventory, imagepath }) => {
-    for (const [name, data] of Object.entries(locale)) Locale[name] = data;
-    for (const [name, data] of Object.entries(items)) Items[name] = data;
-    setImagePath(imagepath);
+    for (const name in locale) Locale[name] = locale[name];
+    for (const name in items) Items[name] = items[name];
 
+    setImagePath(imagepath);
     dispatch(setupInventory({ leftInventory }));
   });
 

@@ -65,21 +65,21 @@ function server.syncInventory(inv)
 	player.syncInventory(inv.weight, inv.maxWeight, inv.items, money)
 end
 
-function server.hasLicense(inv, license)
-	return db.selectLicense(license, inv.owner)
+function server.hasLicense(inv, name)
+	return MySQL.scalar.await('SELECT 1 FROM `user_licenses` WHERE `type` = ? AND `owner` = ?', { name, inv.owner })
 end
 
 function server.buyLicense(inv, license)
-	if db.selectLicense(license.name, inv.owner) then
-		return false, 'has_weapon_license'
+	if server.hasLicense(inv, license.name) then
+		return false, 'already_have'
 	elseif Inventory.GetItem(inv, 'money', false, true) < license.price then
-		return false, 'poor_weapon_license'
+		return false, 'can_not_afford'
 	end
 
 	Inventory.RemoveItem(inv, 'money', license.price)
-	TriggerEvent('esx_license:addLicense', inv.id, 'weapon')
+	TriggerEvent('esx_license:addLicense', inv.id, license.name)
 
-	return true, 'bought_weapon_license'
+	return true, 'have_purchased'
 end
 
 --- Takes traditional item data and updates it to support ox_inventory, i.e.

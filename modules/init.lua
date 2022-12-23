@@ -108,7 +108,14 @@ function data(name)
 	if shared.server and shared.ready == nil then return {} end
 	local file = ('data/%s.lua'):format(name)
 	local datafile = LoadResourceFile(shared.resource, file)
-	local func, err = load(datafile, ('@@%s/%s'):format(shared.resource, file))
+	local path = ('@@%s/%s'):format(shared.resource, file)
+
+	if not datafile then
+		warn(('no datafile found at path %s'):format(path:gsub('@@', '')))
+		return {}
+	end
+
+	local func, err = load(datafile, path)
 
 	if not func or err then
 		shared.ready = false
@@ -127,7 +134,7 @@ local success, msg = lib.checkDependency('oxmysql', '2.4.0')
 
 if not success then return spamError(msg) end
 
-success, msg = lib.checkDependency('ox_lib', '2.15.1')
+success, msg = lib.checkDependency('ox_lib', '2.19.0')
 
 if not success then spamError(msg) end
 

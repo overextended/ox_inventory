@@ -27,6 +27,10 @@ local function inventoryFilter(filter, inventory, secondInventory)
 	return false
 end
 
+local function typeFilter(filter, type)
+	return filter[type] or false
+end
+
 function TriggerEventHooks(event, payload)
     local hooks = eventHooks[event]
 
@@ -42,6 +46,10 @@ function TriggerEventHooks(event, payload)
 			end
 
 			if hook.inventoryFilter and not inventoryFilter(hook.inventoryFilter, fromInventory, toInventory) then
+				goto skipLoop
+			end
+
+			if hook.typeFilter and not typeFilter(hook.typeFilter, payload.inventoryType) then
 				goto skipLoop
 			end
 

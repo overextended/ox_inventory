@@ -125,11 +125,15 @@ lib.callback.register('ox_inventory:openInventory', function(source, inv, data)
 		if right then
 			if right.open or (right.groups and not server.hasGroup(left, right.groups)) then return end
 
-			if not TriggerEventHooks('openInventory', {
+			local hookPayload = {
 				source = source,
 				inventoryId = right.id,
 				inventoryType = right.type,
-			}) then return end
+			}
+
+			if inv == 'container' then hookPayload.slot = left.containerSlot end
+
+			if not TriggerEventHooks('openInventory', hookPayload) then return end
 
 			if right.player then right.coords = GetEntityCoords(GetPlayerPed(right.id)) end
 
@@ -162,7 +166,6 @@ end)
 
 local Licenses = data 'licenses'
 
----@todo licenses functions as part of bridge (keep the callback here)
 lib.callback.register('ox_inventory:buyLicense', function(source, id)
 	local license = Licenses[id]
 	if not license then return end

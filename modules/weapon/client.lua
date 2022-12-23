@@ -40,7 +40,7 @@ function Weapon.Equip(item, data)
 	::skipAnim::
 
 	SetPedAmmo(playerPed, data.hash, 0)
-	GiveWeaponToPed(playerPed, data.hash, 0, false, true)
+	GiveWeaponToPed(playerPed, data.hash, item.metadata.ammo or 100, false, true)
 
 	if item.metadata.tint then SetPedWeaponTintIndex(playerPed, data.hash, item.metadata.tint) end
 
@@ -67,9 +67,6 @@ function Weapon.Equip(item, data)
 
 	SetCurrentPedWeapon(playerPed, data.hash, true)
 	SetPedCurrentWeaponVisible(playerPed, true, false, false, false)
-	AddAmmoToPed(playerPed, data.hash, item.metadata.ammo or 100)
-	Wait(0)
-	RefillAmmoInstantly(playerPed)
 	SetWeaponsNoAutoswap(true)
 
 	if data.hash == `WEAPON_PETROLCAN` or data.hash == `WEAPON_HAZARDCAN` or data.hash == `WEAPON_FERTILIZERCAN` or data.hash == `WEAPON_FIREEXTINGUISHER` then
@@ -80,6 +77,7 @@ function Weapon.Equip(item, data)
 	TriggerEvent('ox_inventory:currentWeapon', item)
 	Utils.ItemNotify({item.metadata.label or item.label, item.metadata.image or item.name, 'ui_equipped'})
 	Wait(sleep)
+	RefillAmmoInstantly(playerPed)
 
 	return item
 end
