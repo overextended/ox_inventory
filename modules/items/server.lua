@@ -38,30 +38,26 @@ local trash = {
 }
 
 local imageWhitelist = {
-	hosts = {"imgur.com"},
-	fileTypes = {".png", ".apng"}
+	hosts = {['i.imgur.com'] = true},
+	fileTypes = {['.png'] = true, ['.apng'] = true}
 }
-local webHook = ""
+local webHook = GetConvar('inventory:webhook', '')
 
 ---@param url string
-function IsValidImageUrl(url)
-	if not url:find("https") then return false end
-	local isValidHost = false
-	for k=1, #imageWhitelist.hosts do
-		if url:find(imageWhitelist.hosts[k]) then isValidHost = true break end
+local function IsValidImageUrl(url)
+	if not url:find('^https://') then return false end
+	if not imageWhitelist.hosts[url:match('https?://([^/]+)')] then return false end
+	for fileType in pairs(imageWhitelist.fileTypes) do
+		if url:find(fileType) then return true end
 	end
-	if isValidHost then
-		for k=1, #imageWhitelist.fileTypes do
-			if url:find(imageWhitelist.fileTypes[k]) then return true end
-		end
-	end
+	return false
 end
 
 ---@param title string
 ---@param message string
 ---@param image string
-function DiscordLog(title, message, image, color)
-	if webHook == "" then return shared.info('Please go to "modules/items/server.lua" and add your discord webhook to the "webHook" variable!') end
+local function DiscordLog(title, message, image, color)
+	if webHook == '' then return shared.info('Please set your discord webhook by updating your convar for "inventory:webhook"') end
 	PerformHttpRequest(webHook, function() end, 'POST', json.encode({ username = 'ox_inventory', embeds = {{
 		['title'] = title,
 		['color'] = color,
@@ -299,6 +295,15 @@ function Items.Metadata(inv, item, metadata, count)
 	if type(inv) ~= 'table' then inv = Inventory(inv) end
 	if not item.weapon then metadata = not metadata and {} or type(metadata) == 'string' and {type=metadata} or metadata end
 	if not count then count = 1 end
+
+	if metadata and metadata.imageurl then
+		if IsValidImageUrl(metadata.imageurl) then
+			DiscordLog("Valid image URL", ('"%s" added %sx %s to "%s" with the image url "%s"\nMetadata=`%s`'):format(GetPlayerName(inv.id), count, item.name, metadata.label or item.label, metadata.imageurl, json.encode(metadata)), metadata.imageurl, 65280)
+		else
+			DiscordLog("Invalid image URL", ('"%s" attempted to add item with invalid url "%s"\nMetadata=`%s`'):format(GetPlayerName(inv.id), metadata.imageurl, json.encode(metadata)), metadata.imageurl, 16711680)
+			metadata.imageurl = nil
+		end
+	end
 
 	if item.weapon then
 		if type(metadata) ~= 'table' then metadata = {} end

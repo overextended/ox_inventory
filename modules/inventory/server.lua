@@ -751,17 +751,6 @@ function Inventory.AddItem(inv, item, count, metadata, slot, cb)
 
 			local toSlot, slotMetadata, slotCount
 
-			if metadata and metadata.imageurl then
-				local isValidURL = IsValidImageUrl(metadata.imageurl)
-				if not isValidURL then
-					response = 'invalid_url'
-					DiscordLog("AddItem Failure", ('"%s" attempted to add item with invalid url "%s"\nMetadata=`%s`'):format(GetPlayerName(inv.id), metadata.imageurl, json.encode(metadata)), metadata.imageurl, 16711680)
-					if cb then return cb(success, response) end
-					return success, response
-				end
-				DiscordLog("AddItem", ('"%s" added %sx %s to "%s" with the image url "%s"\nMetadata=`%s`'):format(GetPlayerName(inv.id), count, item.name, metadata.label or inv.label, metadata.imageurl, json.encode(metadata)), metadata.imageurl, 65280)
-			end
-
 			if slot then
 				local slotItem = inv.items[slot]
 				slotMetadata, slotCount = Items.Metadata(inv.id, item, metadata or {}, count)
