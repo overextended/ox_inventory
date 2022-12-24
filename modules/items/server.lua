@@ -65,8 +65,8 @@ local function DiscordLog(title, message, image, color)
 			['text'] = os.date('%c'),
 		},
 		['description'] = message,
-		["thumbnail"] = {
-			["url"] = image,
+		['thumbnail'] = {
+			['url'] = image,
 		}
     }}}), { ['Content-Type'] = 'application/json' })
 end
