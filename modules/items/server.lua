@@ -353,10 +353,6 @@ function Items.CheckMetadata(metadata, item, name, ostime)
 		metadata = setItemDurability(item, metadata)
 	end
 
-	if metadata.durability and not item.durability then
-		metadata.durability = nil
-	end
-
 	if metadata.components then
 		if table.type(metadata.components) == 'array' then
 			for i = #metadata.components, 1, -1 do
@@ -367,12 +363,14 @@ function Items.CheckMetadata(metadata, item, name, ostime)
 		else
 			local components = {}
 			local size = 0
+
 			for _, component in pairs(metadata.components) do
 				if component and ItemList[component] then
 					size += 1
 					components[size] = component
 				end
 			end
+
 			metadata.components = components
 		end
 	end
