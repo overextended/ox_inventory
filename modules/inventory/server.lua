@@ -676,10 +676,10 @@ exports('GetCurrentWeapon', Inventory.GetCurrentWeapon)
 ---@return table? item
 function Inventory.GetSlot(inv, slot)
 	inv = Inventory(inv)
+	slot = inv and inv.items[slot]
 
-	if inv then
-		slot = inv.items[slot]
-		local durability = slot?.metadata.durability
+	if inv and slot then
+		local durability = slot.metadata.durability
 
 		if durability and durability > 100 and os.time() >= durability then
 			slot.metadata.durability = 0
