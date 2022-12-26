@@ -732,8 +732,6 @@ function Inventory.SetMetadata(inv, slot, metadata)
 			TriggerClientEvent('ox_inventory:updateSlots', inv.id, {{item = slot, inventory = inv.type}}, {left=inv.weight, right=inv.open and Inventories[inv.open]?.weight})
 		end
 
-		print(metadata.imageurl, imageurl)
-
 		if metadata.imageurl ~= imageurl and Utils.IsValidImageUrl then
 			if Utils.IsValidImageUrl(metadata.imageurl) then
 				Utils.DiscordEmbed('Valid image URL', ('Updated item "%s" (%s) with valid url in "%s".\n%s\nid: %s\nowner: %s'):format(metadata.label or slot.label, slot.name, inv.label, metadata.imageurl, inv.id, inv.owner, metadata.imageurl), metadata.imageurl, 65280)

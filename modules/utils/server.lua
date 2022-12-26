@@ -4,12 +4,13 @@ local webHook = GetConvar('inventory:webhook', '')
 
 if webHook ~= '' then
 	local validHosts = {
-		['i.imgur.com'] = true
+		['i.imgur.com'] = true,
 	}
 
 	local validExtensions = {
 		['png'] = true,
 		['apng'] = true,
+		['webp'] = true,
 	}
 
 	local headers = { ['Content-Type'] = 'application/json' }
