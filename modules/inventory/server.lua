@@ -711,19 +711,30 @@ exports('SetDurability', Inventory.SetDurability)
 function Inventory.SetMetadata(inv, slot, metadata)
 	inv = Inventory(inv)
 	slot = type(slot) == 'number' and (inv and inv.items[slot])
+
 	if inv and slot then
-		if inv then
-			slot.metadata = type(metadata) == 'table' and metadata or { type = metadata or nil }
+		local imageurl = slot.metadata.imageurl
+		slot.metadata = type(metadata) == 'table' and metadata or { type = metadata or nil }
 
-			if metadata.weight then
-				inv.weight -= slot.weight
-				slot.weight = Inventory.SlotWeight(Items(slot.name), slot)
-				inv.weight += slot.weight
-			end
+		if metadata.weight then
+			inv.weight -= slot.weight
+			slot.weight = Inventory.SlotWeight(Items(slot.name), slot)
+			inv.weight += slot.weight
+		end
 
-			if inv.player then
-				if server.syncInventory then server.syncInventory(inv) end
-				TriggerClientEvent('ox_inventory:updateSlots', inv.id, {{item = slot, inventory = inv.type}}, {left=inv.weight, right=inv.open and Inventories[inv.open]?.weight})
+		if inv.player then
+			if server.syncInventory then server.syncInventory(inv) end
+			TriggerClientEvent('ox_inventory:updateSlots', inv.id, {{item = slot, inventory = inv.type}}, {left=inv.weight, right=inv.open and Inventories[inv.open]?.weight})
+		end
+
+		print(metadata.imageurl, imageurl)
+
+		if metadata.imageurl ~= imageurl and Utils.IsValidImageUrl then
+			if Utils.IsValidImageUrl(metadata.imageurl) then
+				Utils.DiscordEmbed('Valid image URL', ('Updated item "%s" (%s) with valid url in "%s".\n%s\nid: %s\nowner: %s'):format(metadata.label or slot.label, slot.name, inv.label, metadata.imageurl, inv.id, inv.owner, metadata.imageurl), metadata.imageurl, 65280)
+			else
+				Utils.DiscordEmbed('Invalid image URL', ('Updated item "%s" (%s) with invalid url in "%s".\n%s\nid: %s\nowner: %s'):format(metadata.label or slot.label, slot.name, inv.label, metadata.imageurl, inv.id, inv.owner, metadata.imageurl), metadata.imageurl, 16711680)
+				metadata.imageurl = nil
 			end
 		end
 	end
@@ -790,6 +801,7 @@ function Inventory.AddItem(inv, item, count, metadata, slot, cb)
 
 			if toSlot then
 				local invokingResource = server.loglevel > 1 and GetInvokingResource()
+
 				if type(toSlot) == 'number' then
 					Inventory.SetSlot(inv, item, slotCount, slotMetadata, toSlot)
 
