@@ -1363,16 +1363,21 @@ RegisterNUICallback('giveItem', function(data, cb)
 	local target
 
 	if client.giveplayerlist then
-		local nearbyPlayers = lib.getNearbyPlayers(GetEntityCoords(playerPed), 2.0)
+		local nearbyPlayers, n = lib.getNearbyPlayers(GetEntityCoords(playerPed), 2.0), 0
 
 		if #nearbyPlayers == 0 then return end
 
 		for i = 1, #nearbyPlayers do
 			local option = nearbyPlayers[i]
-			local playerName = GetPlayerName(option.id)
-			option.id = GetPlayerServerId(option.id)
-			option.label = ('[%s] %s'):format(option.id, playerName)
-			nearbyPlayers[i] = option
+			local ped = GetPlayerPed(option.id)
+
+			if ped > 0 and IsEntityVisible(ped) then
+				local playerName = GetPlayerName(option.id)
+				option.id = GetPlayerServerId(option.id)
+				option.label = ('[%s] %s'):format(option.id, playerName)
+				n += 1
+				nearbyPlayers[n] = option
+			end
 		end
 
 		local p = promise.new()
@@ -1383,6 +1388,7 @@ RegisterNUICallback('giveItem', function(data, cb)
 			options = nearbyPlayers,
 			onClose = function() p:resolve() end,
 		}, function(selected) p:resolve(selected and nearbyPlayers[selected].id) end)
+
 		lib.showMenu('ox_inventory:givePlayerList')
 
 		target = Citizen.Await(p)
@@ -1392,14 +1398,14 @@ RegisterNUICallback('giveItem', function(data, cb)
 		if seats >= 0 then
 			local passenger = GetPedInVehicleSeat(cache.vehicle, cache.seat - 2 * (cache.seat % 2) + 1)
 
-			if passenger ~= 0 then
+			if passenger ~= 0 and IsEntityVisible(passenger) then
 				target = GetPlayerServerId(NetworkGetPlayerIndexFromPed(passenger))
 			end
 		end
 	else
 		local entity = Utils.Raycast(12)
 
-		if entity and IsPedAPlayer(entity) and #(GetEntityCoords(playerPed, true) - GetEntityCoords(entity, true)) < 2.0 then
+		if entity and IsPedAPlayer(entity) and IsEntityVisible(entity) and #(GetEntityCoords(playerPed, true) - GetEntityCoords(entity, true)) < 2.0 then
 			target = GetPlayerServerId(NetworkGetPlayerIndexFromPed(entity))
 			Utils.PlayAnim(2000, 'mp_common', 'givetake1_a', 1.0, 1.0, -1, 50, 0.0, 0, 0, 0)
 		end
