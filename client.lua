@@ -886,15 +886,46 @@ local function nearbyDrop(point)
 	end
 end
 
+---@param point CPoint
+local function onEnterDrop(point)
+	if not point.instance or point.instance == currentInstance and not point.entity then
+		lib.requestModel(`prop_med_bag_01b`)
+		local entity = CreateObject(`prop_med_bag_01b`, point.coords.x, point.coords.y, point.coords.z, false, true, true)
+		SetModelAsNoLongerNeeded(`prop_med_bag_01b`)
+		PlaceObjectOnGroundProperly(entity)
+		FreezeEntityPosition(entity, true)
+		SetEntityCollision(entity, false, true)
+		point.entity = entity
+	end
+end
+
+local function onExitDrop(point)
+	local entity = point.entity
+
+	if entity and DoesEntityExist(entity) then
+		Utils.DeleteObject(entity)
+		point.entity = nil
+	end
+end
+
 RegisterNetEvent('ox_inventory:createDrop', function(drop, data, owner, slot)
 	if drops then
-		drops[drop] = lib.points.new({
+		local point = lib.points.new({
 			coords = data.coords,
 			distance = 16,
 			invId = drop,
 			instance = data.instance,
-			nearby = nearbyDrop
 		})
+
+		if client.dropprops then
+			point.distance = 30
+			point.onEnter = onEnterDrop
+			point.onExit = onExitDrop
+		else
+			point.nearby = nearbyDrop
+		end
+
+		drops[drop] = point
 	end
 
 	if owner == PlayerData.source then
@@ -917,8 +948,14 @@ end)
 
 RegisterNetEvent('ox_inventory:removeDrop', function(id)
 	if drops then
-		drops[id]:remove()
-		drops[id] = nil
+		local point = drops[id]
+
+		if point then
+			drops[id] = nil
+			point:remove()
+
+			if point.entity then Utils.DeleteObject(point.entity) end
+		end
 	end
 end)
 
@@ -1301,6 +1338,12 @@ AddEventHandler('onResourceStop', function(resourceName)
 	if shared.resource == resourceName then
 		if client.parachute then
 			Utils.DeleteObject(client.parachute)
+		end
+
+		if client.dropprops then
+			for _, point in pairs(drops) do
+				Utils.DeleteObject(point.entity)
+			end
 		end
 
 		if invOpen then

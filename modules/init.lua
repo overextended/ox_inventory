@@ -63,6 +63,7 @@ else
 		giveplayerlist = GetConvar('inventory:giveplayerlist', 'false') == 'true',
 		weaponanims = GetConvar('inventory:weaponanims', 'true') == 'true',
 		itemnotify = GetConvar('inventory:itemnotify', 'true') == 'true',
+		dropprops = GetConvarInt('inventory:dropprops', 0) == 1
 	}
 end
 
