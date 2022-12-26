@@ -41,6 +41,7 @@ local function loadInventoryData(data, player)
 
 					if data.id:find(plate) then
 						entity = vehicle
+						data.netid = NetworkGetNetworkIdFromEntity(entity)
 						break
 					end
 				end
@@ -99,6 +100,10 @@ local function loadInventoryData(data, player)
 				inventory = Inventory.Create(stash.name, stash.label or stash.name, 'stash', stash.slots, 0, stash.weight, owner, nil, stash.groups)
 			end
 		end
+	end
+
+	if data.netid then
+		inventory.netid = data.netid
 	end
 
 	return inventory or false
@@ -1646,7 +1651,11 @@ SetInterval(function()
 				end
 			end
 
-			if not inv.player and (inv.datastore or inv.owner) and time - inv.time >= 3000 then
+			if inv.datastore and inv.netid and (inv.type == 'trunk' or inv.type == 'glovebox') then
+				if NetworkGetEntityFromNetworkId(inv.netid) == 0 then
+					Inventory.Remove(inv)
+				end
+			elseif not inv.player and (inv.datastore or inv.owner) and time - inv.time >= 3000 then
 				Inventory.Remove(inv)
 			end
 		end
