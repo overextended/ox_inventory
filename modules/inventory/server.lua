@@ -767,7 +767,7 @@ function Inventory.AddItem(inv, item, count, metadata, slot, cb)
 
 			if slot then
 				local slotItem = inv.items[slot]
-				slotMetadata, slotCount = Items.Metadata(inv.id, item, metadata or {}, count)
+				slotMetadata, slotCount = Items.Metadata(inv.id, item, metadata and table.clone(metadata) or {}, count)
 
 				if not slotItem or (item.stack and slotItem.name == item.name and table.matches(slotItem.metadata, slotMetadata)) then
 					toSlot = slot
