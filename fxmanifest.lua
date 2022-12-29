@@ -24,7 +24,10 @@ shared_scripts {
 	'modules/init.lua'
 }
 
-server_script 'modules/bridge/server.lua'
+server_scripts {
+	'@oxmysql/lib/MySQL.lua',
+	'modules/bridge/server.lua',
+}
 
 shared_scripts {
 	'modules/**/shared.lua'
@@ -43,7 +46,6 @@ client_scripts {
 }
 
 server_scripts {
-	'@oxmysql/lib/MySQL.lua',
 	'modules/hooks/server.lua',
 	'modules/utils/server.lua',
 	'modules/mysql/server.lua',
