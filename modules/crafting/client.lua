@@ -28,8 +28,13 @@ local function createCraftingBench(id, data)
 		for i = 1, data.slots do
 			local recipe = recipes[i]
 			local item = Items[recipe.name]
-			recipe.weight = item.weight
-			recipe.slot = i
+
+			if item then
+				recipe.weight = item.weight
+				recipe.slot = i
+			else
+				warn(('failed to setup crafting recipe (bench: %s, slot: %s) - item "%s" does not exist'):format(id, i, recipe.name))
+			end
 		end
 
 		local blip = data.blip
