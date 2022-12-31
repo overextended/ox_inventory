@@ -106,6 +106,46 @@ client.shops = setmetatable(data('shops'), {
 								distance = target.distance or 2.0
 							})
 						end
+					elseif shop.peds then
+						for i = 1, #shop.peds do
+							local ped = shop.peds[i]
+							local shopid = type..'-'..i
+							id += 1
+
+							shops[id] = {
+								zoneId = shopid,
+								blip = blip and createBlip(blip, ped.loc)
+							}
+							local pedmodel = joaat(ped.ped)
+							RequestModel(pedmodel)
+							while not HasModelLoaded(pedmodel) do
+								Wait(0)
+							end
+							local PedId = CreatePed(0, ped.ped, ped.loc.x, ped.loc.y, ped.loc.z-1, ped.loc.w, true, true)
+							TaskStartScenarioInPlace(PedId, ped.scenario, 0, true)
+							FreezeEntityPosition(PedId, true)
+							SetEntityInvincible(PedId, true)
+							SetBlockingOfNonTemporaryEvents(PedId, true)
+							local options = {
+								{
+									type = 'client',
+									icon = 'fas fa-shopping-basket',
+									label = shop.label or locale('open_label', shop.name),
+									qtarget = true,
+									onSelect = function()
+										openShop({id=i, type=type})
+									end,
+									distance = ped.distance or 2.0
+								}
+							}
+							if shop.groups then
+								options.groups = {}
+								for k, _ in pairs(shop.groups) do
+									options.groups[#options.groups+1] = k
+								end
+							end
+							exports.ox_target:addLocalEntity(PedId, options)
+						end
 					end
 				elseif shop.locations then
 					for i = 1, #shop.locations do

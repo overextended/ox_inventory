@@ -161,8 +161,8 @@ return {
 			{ name = 'ammo-rifle2', price = 1000, currency = 'black_money' }
 		}, locations = {
 			vec3(309.09, -913.75, 56.46)
-		}, targets = {
-
+		}, peds = {
+			{loc = vector4(309.25, -913.73, 56.46, 88.81), ped = 'mp_m_avongoon', scenario = "WORLD_HUMAN_STAND_MOBILE", distance = 1.5}
 		}
 	},
 
