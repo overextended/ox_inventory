@@ -116,12 +116,8 @@ client.shops = setmetatable(data('shops'), {
 								zoneId = shopid,
 								blip = blip and createBlip(blip, ped.loc)
 							}
-							local pedmodel = joaat(ped.ped)
-							RequestModel(pedmodel)
-							while not HasModelLoaded(pedmodel) do
-								Wait(0)
-							end
-							local PedId = CreatePed(0, ped.ped, ped.loc.x, ped.loc.y, ped.loc.z-1, ped.loc.w, true, true)
+							lib.requestModel(ped.ped)
+							local PedId = CreatePed(0, ped.ped, ped.loc.x, ped.loc.y, ped.loc.z-1, ped.loc.w, false, true)
 							TaskStartScenarioInPlace(PedId, ped.scenario, 0, true)
 							FreezeEntityPosition(PedId, true)
 							SetEntityInvincible(PedId, true)
