@@ -1313,6 +1313,8 @@ RegisterNetEvent('ox_inventory:setPlayerInventory', function(currentDrops, inven
 
 							if GetSelectedPedWeapon(playerPed) == weapon.hash then Wait(700) end
 
+							while IsPedPlantingBomb(playerPed) do Wait(0) end
+
 							TriggerServerEvent('ox_inventory:updateWeapon', 'throw', nil, weapon.slot)
 
 							plyState.invBusy = false
