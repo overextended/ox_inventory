@@ -40,7 +40,7 @@ function Weapon.Equip(item, data)
 	::skipAnim::
 
 	SetPedAmmo(playerPed, data.hash, 0)
-	GiveWeaponToPed(playerPed, data.hash, item.metadata.ammo or 100, false, true)
+	GiveWeaponToPed(playerPed, data.hash, 0, false, true)
 
 	if item.metadata.tint then SetPedWeaponTintIndex(playerPed, data.hash, item.metadata.tint) end
 
@@ -67,6 +67,7 @@ function Weapon.Equip(item, data)
 
 	SetCurrentPedWeapon(playerPed, data.hash, true)
 	SetPedCurrentWeaponVisible(playerPed, true, false, false, false)
+	AddAmmoToPed(playerPed, data.hash, item.metadata.ammo or 100)
 	SetWeaponsNoAutoswap(true)
 
 	if data.hash == `WEAPON_PETROLCAN` or data.hash == `WEAPON_HAZARDCAN` or data.hash == `WEAPON_FERTILIZERCAN` or data.hash == `WEAPON_FIREEXTINGUISHER` then
