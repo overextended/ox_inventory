@@ -346,6 +346,8 @@ local function useSlot(slot)
 					end
 
 					currentWeapon = Weapon.Equip(item, data)
+
+					if IsCinematicCamRendering() then SetCinematicModeActive(false) end
 				end
 			end)
 		elseif currentWeapon then
