@@ -66,8 +66,10 @@ client.shops = setmetatable(data('shops'), {
 			if not shop.groups or client.hasGroup(shop.groups) then
 				if shared.target then
 					if shop.model then
+						exports.ox_target:removeModel(shop.model, type..'- Model')
 						exports.ox_target:addModel(shop.model, {
 							{
+								name = type..'- Model',
 								icon = 'fas fa-shopping-basket',
 								label = shop.label or locale('open_label', shop.name),
 								onSelect = function()
