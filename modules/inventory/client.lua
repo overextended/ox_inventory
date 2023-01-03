@@ -2,10 +2,15 @@ if not lib then return end
 
 local Inventory = {}
 
+local Stashes = {}
+
+local Evidences = {}
+
 Inventory.Dumpsters = {218085040, 666561306, -58485588, -206690185, 1511880420, 682791951}
 
 if shared.target then
 	local function OpenDumpster(entity)
+		entity = entity.entity
 		local netId = NetworkGetEntityIsNetworked(entity) and NetworkGetNetworkIdFromEntity(entity)
 
 		if not netId then
@@ -91,6 +96,14 @@ end
 
 Inventory.Evidence = setmetatable(data('evidence'), {
 	__call = function(self)
+		if Evidences then
+			for _, v in pairs(Evidences) do
+				exports.ox_target:removeZone(v)
+			end
+		end
+
+		table.wipe(Evidences)
+
 		for _, evidence in pairs(self) do
 			if evidence.point then
 				evidence.point:remove()
@@ -99,26 +112,20 @@ Inventory.Evidence = setmetatable(data('evidence'), {
 			if client.hasGroup(shared.police) then
 				if shared.target then
 					if evidence.target then
-						exports.qtarget:RemoveZone(evidence.target.name)
-						exports.qtarget:AddBoxZone(evidence.target.name, evidence.target.loc, evidence.target.length or 0.5, evidence.target.width or 0.5,
-						{
-							name = evidence.target.name,
-							heading = evidence.target.heading or 0.0,
-							debugPoly = evidence.target.debug,
-							minZ = evidence.target.minZ,
-							maxZ = evidence.target.maxZ,
-							drawSprite = evidence.target.drawSprite,
-						}, {
+						Evidences[#Evidences+1] = exports.ox_target:addBoxZone({
+							coords = evidence.target.loc,
+							size = vec3(evidence.target.length or 0.5, evidence.target.width or 0.5, evidence.target.maxZ - evidence.target.minZ),
+							rotation = evidence.target.heading or 0.0,
+							debug = evidence.target.debug,
 							options = {
 								{
+									name = evidence.target.name,
 									icon = evidence.target.icon or 'fas fa-warehouse',
 									label = locale('open_police_evidence'),
-									job = shared.police,
-									action = openEvidence,
-									iconColor = evidence.target.iconColor,
-								},
-							},
-							distance = evidence.target.distance or 2.0
+									onSelect = openEvidence,
+									distance = evidence.target.distance or 2.0
+								}
+							}
 						})
 					end
 				else
@@ -146,6 +153,14 @@ end
 
 Inventory.Stashes = setmetatable(data('stashes'), {
 	__call = function(self)
+		if Stashes then
+			for _, v in pairs(Stashes) do
+				exports.ox_target:removeZone(v)
+			end
+		end
+
+		table.wipe(Stashes)
+
 		for id, stash in pairs(self) do
 			if stash.jobs then stash.groups = stash.jobs end
 
@@ -154,32 +169,24 @@ Inventory.Stashes = setmetatable(data('stashes'), {
 			end
 
 			if not stash.groups or client.hasGroup(stash.groups) then
-				if shared.target then
-					if stash.target then
-						exports.qtarget:RemoveZone(stash.name)
-						exports.qtarget:AddBoxZone(stash.name, stash.target.loc, stash.target.length or 0.5, stash.target.width or 0.5,
-						{
-							name = stash.name,
-							heading = stash.target.heading or 0.0,
-							debugPoly = stash.target.debug,
-							minZ = stash.target.minZ,
-							maxZ = stash.target.maxZ,
-							drawSprite = stash.target.drawSprite,
-						}, {
-							options = {
-								{
-									icon = stash.target.icon or 'fas fa-warehouse',
-									label = stash.target.label or locale('open_stash'),
-									job = stash.groups,
-									action = function()
-										OpenStash({id=id})
-									end,
-									iconColor = stash.target.iconColor,
-								},
-							},
-							distance = stash.target.distance or 3.0
-						})
-					end
+				if shared.target and stash.target then
+					Stashes[#Stashes + 1] = exports.ox_target:addBoxZone({
+						coords = stash.target.loc,
+						size = vec3(stash.target.length or 0.5, stash.target.width or 0.5, stash.target.maxZ - stash.target.minZ),
+						rotation = stash.target.heading or 0.0,
+						debug = stash.target.debug,
+						options = {
+							{
+								name = stash.target.name,
+								icon = stash.target.icon or 'fas fa-warehouse',
+								label = stash.target.label or locale('open_stash'),
+								onSelect = function()
+									OpenStash({ id = id })
+								end,
+								distance = stash.target.distance or 3.0
+							}
+						}
+					})
 				else
 					stash.target = nil
 					stash.point = lib.points.new({
