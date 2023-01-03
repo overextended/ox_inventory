@@ -66,10 +66,10 @@ client.shops = setmetatable(data('shops'), {
 			if not shop.groups or client.hasGroup(shop.groups) then
 				if shared.target then
 					if shop.model then
-						exports.ox_target:removeModel(shop.model, type..'- Model')
+						exports.ox_target:removeModel(shop.model, 'ox_inventory:openShop:Model')
 						exports.ox_target:addModel(shop.model, {
 							{
-								name = type..'- Model',
+								name = 'ox_inventory:openShop:Model',
 								icon = 'fas fa-shopping-basket',
 								label = shop.label or locale('open_label', shop.name),
 								onSelect = function()
@@ -91,16 +91,10 @@ client.shops = setmetatable(data('shops'), {
 									onSelect = function()
 										openShop({id=i, type=type})
 									end,
-									distance = target.distance or 2.0
+									distance = target.distance or 2.0,
+									groups = shop.groups or nil
 								}
 							}
-
-							if shop.groups then
-								options.groups = {}
-								for k, _ in pairs(shop.groups) do
-									options.groups[#options.groups+1] = k
-								end
-							end
 
 							local shopid = exports.ox_target:addBoxZone({
 								coords = target.loc,
