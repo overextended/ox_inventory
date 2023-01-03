@@ -33,7 +33,12 @@ client.shops = setmetatable(data('shops'), {
 			local shop = shops[i]
 
 			if shop.zoneId then
-				exports.qtarget:RemoveZone(shop.zoneId)
+				exports.ox_target:removeZone(shop.zoneId)
+			end
+
+			if shop.pedId then
+				exports.ox_target:removeLocalEntity(shop.pedId, 'openShop')
+				DeleteEntity(shop.pedId)
 			end
 
 			if shop.remove then
@@ -61,73 +66,71 @@ client.shops = setmetatable(data('shops'), {
 			if not shop.groups or client.hasGroup(shop.groups) then
 				if shared.target then
 					if shop.model then
-						exports.qtarget:AddTargetModel(shop.model, {
-							options = {
-								{
-									icon = 'fas fa-shopping-basket',
-									label = shop.label or locale('open_label', shop.name),
-									action = function()
-										openShop({type=type})
-									end
-								},
+						exports.ox_target:addModel(shop.model, {
+							{
+								icon = 'fas fa-shopping-basket',
+								label = shop.label or locale('open_label', shop.name),
+								onSelect = function()
+									openShop({type=type})
+								end,
+								distance = 2
 							},
-							distance = 2
 						})
 					elseif shop.targets then
 						for i = 1, #shop.targets do
 							local target = shop.targets[i]
-							local shopid = type..'-'..i
 							id += 1
+
+							local options = {
+								{
+									name = type..'-'..i,
+									icon = 'fas fa-shopping-basket',
+									label = shop.label or locale('open_label', shop.name),
+									onSelect = function()
+										openShop({id=i, type=type})
+									end,
+									distance = target.distance or 2.0
+								}
+							}
+
+							if shop.groups then
+								options.groups = {}
+								for k, _ in pairs(shop.groups) do
+									options.groups[#options.groups+1] = k
+								end
+							end
+
+							local shopid = exports.ox_target:addBoxZone({
+								coords = target.loc,
+								size = vec3(target.length or 0.5, target.width or 0.5, target.maxZ - target.minZ ),
+								rotation = target.heading or 0.0,
+								debug = target.debug,
+								drawSprite = target.drawSprite,
+								options = options
+							})
 
 							shops[id] = {
 								zoneId = shopid,
 								blip = blip and createBlip(blip, target.loc)
 							}
-
-							exports.qtarget:AddBoxZone(shopid, target.loc, target.length or 0.5, target.width or 0.5, {
-								name = shopid,
-								heading = target.heading or 0.0,
-								debugPoly = target.debug,
-								minZ = target.minZ,
-								maxZ = target.maxZ,
-								drawSprite = target.drawSprite,
-							}, {
-								options = {
-									{
-										icon = 'fas fa-shopping-basket',
-										label = shop.label or locale('open_label', shop.name),
-										job = shop.groups,
-										action = function()
-											openShop({id=i, type=type})
-										end,
-										iconColor = target.iconColor,
-									},
-								},
-								distance = target.distance or 2.0
-							})
 						end
 					elseif shop.peds then
 						for i = 1, #shop.peds do
 							local ped = shop.peds[i]
-							local shopid = type..'-'..i
 							id += 1
 
-							shops[id] = {
-								zoneId = shopid,
-								blip = blip and createBlip(blip, ped.loc)
-							}
 							lib.requestModel(ped.ped)
-							local PedId = CreatePed(0, ped.ped, ped.loc.x, ped.loc.y, ped.loc.z-1, ped.loc.w, false, true)
+							local PedId = CreatePed(0, ped.ped, ped.loc.x, ped.loc.y, ped.loc.z-1, ped.loc.w, false, false) -- true)
 							TaskStartScenarioInPlace(PedId, ped.scenario, 0, true)
 							FreezeEntityPosition(PedId, true)
 							SetEntityInvincible(PedId, true)
 							SetBlockingOfNonTemporaryEvents(PedId, true)
 							local options = {
 								{
+									name = 'openShop',
 									type = 'client',
 									icon = 'fas fa-shopping-basket',
 									label = shop.label or locale('open_label', shop.name),
-									qtarget = true,
 									onSelect = function()
 										openShop({id=i, type=type})
 									end,
@@ -141,6 +144,10 @@ client.shops = setmetatable(data('shops'), {
 								end
 							end
 							exports.ox_target:addLocalEntity(PedId, options)
+							shops[id] = {
+								pedId = PedId,
+								blip = blip and createBlip(blip, ped.loc)
+							}
 						end
 					end
 				elseif shop.locations then
@@ -164,3 +171,20 @@ client.shops = setmetatable(data('shops'), {
 		end
 	end
 })
+
+AddEventHandler('onResourceStop', function(resource)
+	if resource == GetCurrentResourceName() then
+		for i = 1, #shops do
+			local shop = shops[i]
+
+			if shop.zoneId then
+				exports.ox_target:removeZone(shop.zoneId)
+			end
+
+			if shop.pedId then
+				exports.ox_target:removeLocalEntity(shop.pedId, 'openShop')
+				DeleteEntity(shop.pedId)
+			end
+		end
+	end
+ end)
