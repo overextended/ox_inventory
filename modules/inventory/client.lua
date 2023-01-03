@@ -19,17 +19,15 @@ if shared.target then
 		end
 	end
 
-	exports.qtarget:AddTargetModel(Inventory.Dumpsters, {
-		options = {
-			{
-				icon = 'fas fa-dumpster',
-				label = locale('search_dumpster'),
-				action = function(entity)
-					OpenDumpster(entity)
-				end
-			},
+	exports.ox_target:addModel(Inventory.Dumpsters, {
+		{
+			icon = 'fas fa-dumpster',
+			label = locale('search_dumpster'),
+			onSelect = function(entity)
+				OpenDumpster(entity)
+			end,
+			distance = 2
 		},
-		distance = 2
 	})
 end
 
