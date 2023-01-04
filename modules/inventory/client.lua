@@ -173,11 +173,12 @@ Inventory.Stashes = setmetatable(data('stashes'), {
 						debug = stash.target.debug,
 						options = {
 							{
-								name = stash.target.name,
+								name = stash.name,
 								icon = stash.target.icon or 'fas fa-warehouse',
 								label = stash.target.label or locale('open_stash'),
+								groups = stash.groups,
 								onSelect = function()
-										exports.ox_inventory:openInventory('stash', stash.name)
+									exports.ox_inventory:openInventory('stash', stash.name)
 								end,
 								distance = stash.target.distance or 3.0
 							}
