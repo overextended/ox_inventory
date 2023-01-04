@@ -11,7 +11,7 @@ for _, stash in pairs(data 'stashes') do
 		label = stash.label,
 		owner = stash.owner,
 		slots = stash.slots,
-		weight = stash.maxWeight,
+		weight = stash.weight,
 		groups = stash.groups or stash.jobs,
 		coords = shared.target and stash.target?.loc or stash.coords
 	}
