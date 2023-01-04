@@ -346,6 +346,8 @@ local function useSlot(slot)
 					end
 
 					currentWeapon = Weapon.Equip(item, data)
+
+					if IsCinematicCamRendering() then SetCinematicModeActive(false) end
 				end
 			end)
 		elseif currentWeapon then
@@ -1310,6 +1312,8 @@ RegisterNetEvent('ox_inventory:setPlayerInventory', function(currentDrops, inven
 							end
 
 							if GetSelectedPedWeapon(playerPed) == weapon.hash then Wait(700) end
+
+							while IsPedPlantingBomb(playerPed) do Wait(0) end
 
 							TriggerServerEvent('ox_inventory:updateWeapon', 'throw', nil, weapon.slot)
 

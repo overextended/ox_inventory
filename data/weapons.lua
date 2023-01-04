@@ -566,7 +566,7 @@ return {
 			durability = 0.1,
 		},
 
-		['WEAPON_SWEEPERSHOTGUN'] = {
+		['WEAPON_AUTOSHOTGUN'] = {
 			label = 'Sweeper Shotgun',
 			weight = 4400,
 			durability = 0.05,

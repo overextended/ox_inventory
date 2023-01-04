@@ -3,7 +3,20 @@ if not lib then return end
 local Inventory = {}
 local Inventories = {}
 local Vehicles = data 'vehicles'
-local Stashes = data 'stashes'
+local RegisteredStashes = {}
+
+for _, stash in pairs(data 'stashes') do
+	RegisteredStashes[stash.name] = {
+		name = stash.name,
+		label = stash.label,
+		owner = stash.owner,
+		slots = stash.slots,
+		weight = stash.weight,
+		groups = stash.groups or stash.jobs,
+		coords = shared.target and stash.target?.loc or stash.coords
+	}
+end
+
 local GetVehicleNumberPlateText = GetVehicleNumberPlateText
 
 local function loadInventoryData(data, player)
@@ -78,7 +91,7 @@ local function loadInventoryData(data, player)
 	elseif data.type == 'policeevidence' then
 		inventory = Inventory.Create(data.id, locale('police_evidence'), data.type, 100, 0, 100000, false)
 	else
-		local stash = Stashes[data.id] or Inventory.CustomStash[data.id]
+		local stash = RegisteredStashes[data.id]
 
 		if stash then
 			if stash.jobs then stash.groups = stash.jobs end
@@ -1108,27 +1121,50 @@ end)
 Inventory.Drops = {}
 
 local function generateDropId()
-	local drop
-	repeat
-		drop = math.random(100000, 999999)
+	while true do
+		local dropId = ('drop-%s'):format(math.random(100000, 999999))
+
+		if not Inventories[dropId] then return dropId end
+
 		Wait(0)
-	until not Inventories[drop]
-	return drop
+	end
 end
 
 local function CustomDrop(prefix, items, coords, slots, maxWeight, instance)
-	local drop = generateDropId()
-	local inventory = Inventory.Create(drop, prefix..' '..drop, 'drop', slots or shared.playerslots, 0, maxWeight or shared.playerweight, false)
+	local dropId = generateDropId()
+	local inventory = Inventory.Create(dropId, ('%s %s'):format(prefix, dropId:gsub('%D', '')), 'drop', slots or shared.playerslots, 0, maxWeight or shared.playerweight, false)
 	local items, weight = generateItems(inventory, 'drop', items)
 
 	inventory.items = items
 	inventory.weight = weight
 	inventory.coords = coords
-	Inventory.Drops[drop] = {coords = inventory.coords, instance = instance}
-	TriggerClientEvent('ox_inventory:createDrop', -1, drop, Inventory.Drops[drop], inventory.open and source)
+	Inventory.Drops[dropId] = {coords = inventory.coords, instance = instance}
+
+	TriggerClientEvent('ox_inventory:createDrop', -1, dropId, Inventory.Drops[dropId])
 end
+
 AddEventHandler('ox_inventory:customDrop', CustomDrop)
 exports('CustomDrop', CustomDrop)
+
+exports('CreateDropFromPlayer', function(playerId)
+	local playerInventory = Inventories[playerId]
+
+	if not playerInventory or not next(playerInventory.items) then return end
+
+	local dropId = generateDropId()
+	local inventory = Inventory.Create(dropId, ('Drop %s'):format(dropId:gsub('%D', '')), 'drop', playerInventory.slots, playerInventory.weight, playerInventory.maxWeight, false, table.clone(playerInventory.items))
+	local coords = GetEntityCoords(GetPlayerPed(playerId))
+	inventory.coords = vec3(coords.x, coords.y, coords.z-0.2)
+	Inventory.Drops[dropId] = {
+		coords = inventory.coords,
+		instance = Player(playerId).state.instance
+	}
+
+	Inventory.Clear(playerInventory)
+	TriggerClientEvent('ox_inventory:createDrop', -1, dropId, Inventory.Drops[dropId])
+
+	return dropId
+end)
 
 local function dropItem(source, data)
 	local playerInventory = Inventory(source)
@@ -1168,7 +1204,7 @@ local function dropItem(source, data)
 	end
 
 	local dropId = generateDropId()
-	local inventory = Inventory.Create(dropId, 'Drop '..dropId, 'drop', shared.playerslots, toData.weight, shared.playerweight, false, {[data.toSlot] = toData})
+	local inventory = Inventory.Create(dropId, ('Drop %s'):format(dropId:gsub('%D', '')), 'drop', shared.playerslots, toData.weight, shared.playerweight, false, {[data.toSlot] = toData})
 	local coords = GetEntityCoords(GetPlayerPed(source))
 	inventory.coords = vec3(coords.x, coords.y, coords.z-0.2)
 	Inventory.Drops[dropId] = {coords = inventory.coords, instance = data.instance}
@@ -1926,7 +1962,6 @@ end, {'target'})
 
 Inventory.accounts = server.accounts
 
-Inventory.CustomStash = {}
 ---@param name string stash identifier when loading from the database
 ---@param label string display name when inventory is open
 ---@param slots number
@@ -1967,7 +2002,7 @@ local function RegisterStash(name, label, slots, maxWeight, owner, groups, coord
 		end
 	end
 
-	local curStash = Inventory.CustomStash[name]
+	local curStash = RegisteredStashes[name]
 
 	if curStash then
 		---@todo creating proper stash classes with inheritence would simplify updating data
@@ -1985,7 +2020,7 @@ local function RegisterStash(name, label, slots, maxWeight, owner, groups, coord
 		end
 	end
 
-	Inventory.CustomStash[name] = {
+	RegisteredStashes[name] = {
 		name = name,
 		label = label,
 		owner = owner,
