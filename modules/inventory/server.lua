@@ -1133,6 +1133,26 @@ end
 AddEventHandler('ox_inventory:customDrop', CustomDrop)
 exports('CustomDrop', CustomDrop)
 
+exports('CreateDropFromPlayer', function(playerId)
+	local playerInventory = Inventories[playerId]
+
+	if not playerInventory or not next(playerInventory.items) then return end
+
+	local dropId = generateDropId()
+	local inventory = Inventory.Create(dropId, ('Drop %s'):format(dropId:gsub('%D', '')), 'drop', playerInventory.slots, playerInventory.weight, playerInventory.maxWeight, false, table.clone(playerInventory.items))
+	local coords = GetEntityCoords(GetPlayerPed(playerId))
+	inventory.coords = vec3(coords.x, coords.y, coords.z-0.2)
+	Inventory.Drops[dropId] = {
+		coords = inventory.coords,
+		instance = Player(playerId).state.instance
+	}
+
+	Inventory.Clear(playerInventory)
+	TriggerClientEvent('ox_inventory:createDrop', -1, dropId, Inventory.Drops[dropId])
+
+	return dropId
+end)
+
 local function dropItem(source, data)
 	local playerInventory = Inventory(source)
 	local fromData = playerInventory.items[data.fromSlot]
