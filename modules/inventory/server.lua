@@ -3,7 +3,20 @@ if not lib then return end
 local Inventory = {}
 local Inventories = {}
 local Vehicles = data 'vehicles'
-local Stashes = data 'stashes'
+local RegisteredStashes = {}
+
+for _, stash in pairs(data 'stashes') do
+	RegisteredStashes[stash.name] = {
+		name = stash.name,
+		label = stash.label,
+		owner = stash.owner,
+		slots = stash.slots,
+		weight = stash.maxWeight,
+		groups = stash.groups or stash.jobs,
+		coords = shared.target and stash.target?.loc or stash.coords
+	}
+end
+
 local GetVehicleNumberPlateText = GetVehicleNumberPlateText
 
 local function loadInventoryData(data, player)
@@ -78,7 +91,7 @@ local function loadInventoryData(data, player)
 	elseif data.type == 'policeevidence' then
 		inventory = Inventory.Create(data.id, locale('police_evidence'), data.type, 100, 0, 100000, false)
 	else
-		local stash = Stashes[data.id] or Inventory.CustomStash[data.id]
+		local stash = RegisteredStashes[data.id]
 
 		if stash then
 			if stash.jobs then stash.groups = stash.jobs end
@@ -1949,7 +1962,6 @@ end, {'target'})
 
 Inventory.accounts = server.accounts
 
-Inventory.CustomStash = {}
 ---@param name string stash identifier when loading from the database
 ---@param label string display name when inventory is open
 ---@param slots number
@@ -1990,7 +2002,7 @@ local function RegisterStash(name, label, slots, maxWeight, owner, groups, coord
 		end
 	end
 
-	local curStash = Inventory.CustomStash[name]
+	local curStash = RegisteredStashes[name]
 
 	if curStash then
 		---@todo creating proper stash classes with inheritence would simplify updating data
@@ -2008,7 +2020,7 @@ local function RegisterStash(name, label, slots, maxWeight, owner, groups, coord
 		end
 	end
 
-	Inventory.CustomStash[name] = {
+	RegisteredStashes[name] = {
 		name = name,
 		label = label,
 		owner = owner,
