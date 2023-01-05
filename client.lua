@@ -910,24 +910,28 @@ local function onExitDrop(point)
 	end
 end
 
-RegisterNetEvent('ox_inventory:createDrop', function(drop, data, owner, slot)
+local function createDrop(dropId, data)
+	local point = lib.points.new({
+		coords = data.coords,
+		distance = 16,
+		invId = dropId,
+		instance = data.instance,
+	})
+
+	if client.dropprops then
+		point.distance = 30
+		point.onEnter = onEnterDrop
+		point.onExit = onExitDrop
+	else
+		point.nearby = nearbyDrop
+	end
+
+	drops[dropId] = point
+end
+
+RegisterNetEvent('ox_inventory:createDrop', function(dropId, data, owner, slot)
 	if drops then
-		local point = lib.points.new({
-			coords = data.coords,
-			distance = 16,
-			invId = drop,
-			instance = data.instance,
-		})
-
-		if client.dropprops then
-			point.distance = 30
-			point.onEnter = onEnterDrop
-			point.onExit = onExitDrop
-		else
-			point.nearby = nearbyDrop
-		end
-
-		drops[drop] = point
+		createDrop(dropId, data)
 	end
 
 	if owner == PlayerData.source then
@@ -937,7 +941,7 @@ RegisterNetEvent('ox_inventory:createDrop', function(drop, data, owner, slot)
 
 		if invOpen and #(GetEntityCoords(playerPed) - data.coords) <= 1 then
 			if not cache.vehicle then
-				client.openInventory('drop', drop)
+				client.openInventory('drop', dropId)
 			else
 				SendNUIMessage({
 					action = 'setupInventory',
@@ -948,12 +952,12 @@ RegisterNetEvent('ox_inventory:createDrop', function(drop, data, owner, slot)
 	end
 end)
 
-RegisterNetEvent('ox_inventory:removeDrop', function(id)
+RegisterNetEvent('ox_inventory:removeDrop', function(dropId)
 	if drops then
-		local point = drops[id]
+		local point = drops[dropId]
 
 		if point then
-			drops[id] = nil
+			drops[dropId] = nil
 			point:remove()
 
 			if point.entity then Utils.DeleteObject(point.entity) end
@@ -1078,14 +1082,8 @@ RegisterNetEvent('ox_inventory:setPlayerInventory', function(currentDrops, inven
 
 	drops = currentDrops
 
-	for k, v in pairs(currentDrops) do
-		drops[k] = lib.points.new({
-			coords = v.coords,
-			distance = 16,
-			invId = k,
-			instance = v.instance,
-			nearby = nearbyDrop
-		})
+	for dropId, data in pairs(currentDrops) do
+		createDrop(dropId, data)
 	end
 
 	local hasTextUi = false
