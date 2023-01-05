@@ -11,6 +11,8 @@ local function createBlip(settings, coords)
 	SetBlipAsShortRange(blip, true)
 	BeginTextCommandSetBlipName(settings.name)
 	EndTextCommandSetBlipName(blip)
+
+	return blip
 end
 
 local function openShop(data)
