@@ -63,11 +63,14 @@ client.shops = setmetatable(data('shops'), {
 			if not shop.groups or client.hasGroup(shop.groups) then
 				if shared.target then
 					if shop.model then
+						local label = shop.label or locale('open_label', shop.name)
+
+						exports.qtarget:RemoveTargetModel(shop.model, label)
 						exports.qtarget:AddTargetModel(shop.model, {
 							options = {
 								{
 									icon = 'fas fa-shopping-basket',
-									label = shop.label or locale('open_label', shop.name),
+									label = label,
 									action = function()
 										openShop({type=type})
 									end
