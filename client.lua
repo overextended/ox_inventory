@@ -468,7 +468,7 @@ end
 exports('openNearbyInventory', openNearbyInventory)
 
 local currentInstance
-local drops, playerCoords
+local playerCoords
 local table = lib.table
 local Shops = client.shops
 local Inventory = client.inventory
@@ -1340,21 +1340,7 @@ end)
 
 AddEventHandler('onResourceStop', function(resourceName)
 	if shared.resource == resourceName then
-		if client.parachute then
-			Utils.DeleteObject(client.parachute)
-		end
-
-		if client.dropprops then
-			for _, point in pairs(drops) do
-				Utils.DeleteObject(point.entity)
-			end
-		end
-
-		if invOpen then
-			SetNuiFocus(false, false)
-			SetNuiFocusKeepInput(false)
-			TriggerScreenblurFadeOut(0)
-		end
+		client.onLogout()
 	end
 end)
 

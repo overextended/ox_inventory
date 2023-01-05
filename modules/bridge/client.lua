@@ -26,7 +26,7 @@ end
 local Utils = client.utils
 local Weapon = client.weapon
 
-local function onLogout()
+function client.onLogout()
 	if not PlayerData.loaded then return end
 
 	if client.parachute then
@@ -34,8 +34,17 @@ local function onLogout()
 		client.parachute = false
 	end
 
-	client.closeInventory()
+	if client.dropprops then
+		for _, point in pairs(drops) do
+			Utils.DeleteObject(point.entity)
+			point:remove()
+		end
+	end
+
 	PlayerData.loaded = false
+	drops = nil
+
+	client.closeInventory()
 	ClearInterval(client.interval)
 	ClearInterval(client.tick)
 	Weapon.Disarm()
@@ -56,4 +65,4 @@ if not func or err then
 	return error(err)
 end
 
-func(onLogout, client.weapon)
+func(client.onLogout, client.weapon)
