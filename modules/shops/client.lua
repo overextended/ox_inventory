@@ -1,19 +1,7 @@
 if not lib then return end
 
 local shops = {}
-
-local function createBlip(settings, coords)
-	local blip = AddBlipForCoord(coords.x, coords.y, coords.z)
-	SetBlipSprite(blip, settings.id)
-	SetBlipDisplay(blip, 4)
-	SetBlipScale(blip, settings.scale)
-	SetBlipColour(blip, settings.colour)
-	SetBlipAsShortRange(blip, true)
-	BeginTextCommandSetBlipName(settings.name)
-	EndTextCommandSetBlipName(blip)
-
-	return blip
-end
+local createBlip = client.utils.CreateBlip
 
 local function openShop(data)
 	client.openInventory('shop', data)
