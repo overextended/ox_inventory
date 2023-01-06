@@ -890,12 +890,17 @@ end
 ---@param point CPoint
 local function onEnterDrop(point)
 	if not point.instance or point.instance == currentInstance and not point.entity then
-		lib.requestModel(`prop_med_bag_01b`)
-		local entity = CreateObject(`prop_med_bag_01b`, point.coords.x, point.coords.y, point.coords.z, false, true, true)
-		SetModelAsNoLongerNeeded(`prop_med_bag_01b`)
+		local model = point.model or `prop_med_bag_01b`
+
+		lib.requestModel(model)
+
+		local entity = CreateObject(model, point.coords.x, point.coords.y, point.coords.z, false, true, true)
+
+		SetModelAsNoLongerNeeded(model)
 		PlaceObjectOnGroundProperly(entity)
 		FreezeEntityPosition(entity, true)
 		SetEntityCollision(entity, false, true)
+
 		point.entity = entity
 	end
 end
@@ -915,6 +920,7 @@ local function createDrop(dropId, data)
 		distance = 16,
 		invId = dropId,
 		instance = data.instance,
+		model = data.model
 	})
 
 	if client.dropprops then
