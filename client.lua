@@ -470,7 +470,6 @@ exports('openNearbyInventory', openNearbyInventory)
 local currentInstance
 local playerCoords
 local table = lib.table
-local Shops = client.shops
 local Inventory = client.inventory
 
 ---@todo remove or replace when the bridge module gets restructured
@@ -480,7 +479,7 @@ function OnPlayerData(key, val)
 	if key == 'groups' then
 		Inventory.Stashes()
 		Inventory.Evidence()
-		Shops()
+		client.refreshShops()
 	elseif key == 'dead' and val then
 		currentWeapon = Weapon.Disarm(currentWeapon)
 		client.closeInventory()
@@ -490,7 +489,7 @@ function OnPlayerData(key, val)
 end
 
 -- People consistently ignore errors when one of the "modules" failed to load
-if not Utils or not Weapon or not Items or not Shops or not Inventory then return end
+if not Utils or not Weapon or not Items or not Inventory then return end
 
 local invHotkeys = false
 
@@ -1150,7 +1149,7 @@ RegisterNetEvent('ox_inventory:setPlayerInventory', function(currentDrops, inven
 	PlayerData.loaded = true
 
 	lib.notify({ description = locale('inventory_setup') })
-	Shops()
+	client.refreshShops()
 	Inventory.Stashes()
 	Inventory.Evidence()
 	registerCommands()
