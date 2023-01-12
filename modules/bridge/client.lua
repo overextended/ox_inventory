@@ -35,14 +35,14 @@ function client.onLogout()
 	end
 
 	if client.dropprops then
-		for _, point in pairs(drops) do
+		for _, point in pairs(client.drops) do
 			Utils.DeleteObject(point.entity)
 			point:remove()
 		end
 	end
 
 	PlayerData.loaded = false
-	drops = nil
+	client.drops = nil
 
 	client.closeInventory()
 	ClearInterval(client.interval)
