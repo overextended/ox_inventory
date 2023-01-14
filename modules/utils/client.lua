@@ -86,6 +86,13 @@ function Utils.DeleteObject(obj)
 	DeleteObject(obj)
 end
 
+function Utils.DeleteEntity(entity)
+	if DoesEntityExist(entity) then
+		SetEntityAsMissionEntity(entity, false, true)
+		DeleteEntity(entity)
+	end
+end
+
 -- Enables the weapon wheel, but disables the use of inventory items
 -- Mostly used for weaponised vehicles, though could be called for "minigames"
 function Utils.WeaponWheel(state)
@@ -96,5 +103,18 @@ function Utils.WeaponWheel(state)
 	SetWeaponsNoAutoreload(not state)
 end
 exports('weaponWheel', Utils.WeaponWheel)
+
+function Utils.CreateBlip(settings, coords)
+	local blip = AddBlipForCoord(coords.x, coords.y, coords.z)
+	SetBlipSprite(blip, settings.id)
+	SetBlipDisplay(blip, 4)
+	SetBlipScale(blip, settings.scale)
+	SetBlipColour(blip, settings.colour)
+	SetBlipAsShortRange(blip, true)
+	BeginTextCommandSetBlipName(settings.name)
+	EndTextCommandSetBlipName(blip)
+
+	return blip
+end
 
 client.utils = Utils

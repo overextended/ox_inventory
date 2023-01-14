@@ -4,7 +4,7 @@ local shopTypes = {}
 local shops = {}
 local createBlip = client.utils.CreateBlip
 
-for shopType, shopData in pairs(data('shops')--[[@as table<string, OxShop>]] ) do
+for shopType, shopData in pairs(data('shops') --[[@as table<string, OxShop>]]) do
 	local shop = {
 		name = shopData.name,
 		groups = shopData.groups or shopData.jobs,
@@ -42,7 +42,7 @@ end
 function client.refreshShops()
 	for i = 1, #shops do
 		local shop = shops[i]
-
+    
 		if shop.zoneId then
 			exports.ox_target:removeZone(shop.zoneId)
 		end
@@ -110,7 +110,6 @@ function client.refreshShops()
 							drawSprite = target.drawSprite,
 							options = options
 						})
-
 						shops[id] = {
 							zoneId = shopid,
 							blip = blip and createBlip(blip, target.loc)
@@ -154,6 +153,21 @@ function client.refreshShops()
 							blip = blip and createBlip(blip, ped.loc)
 						}
 					end
+				end
+			elseif shop.locations then
+				for i = 1, #shop.locations do
+					local coords = shop.locations[i]
+					id += 1
+
+					shops[id] = lib.points.new(coords, 16, {
+						coords = coords,
+						distance = 16,
+						inv = 'shop',
+						invId = i,
+						type = type,
+						nearby = nearbyShop,
+						blip = blip and createBlip(blip, coords)
+					})
 				end
 			end
 
