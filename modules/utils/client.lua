@@ -20,6 +20,15 @@ function Utils.PlayAnimAdvanced(wait, dict, name, posX, posY, posZ, rotX, rotY, 
 	end)
 end
 
+function Utils.GetActualVehiclePlate(vehicle)
+	if shared.framework == "ox" then
+		local result = lib.callback.await("ox_inventory:getActualVehiclePlate", false, VehToNet(vehicle))
+		return result or GetVehicleNumberPlateText(vehicle)
+	end
+
+	return GetVehicleNumberPlateText(vehicle)
+end
+
 function Utils.Raycast(flag)
 	local playerCoords = GetEntityCoords(cache.ped)
 	local plyOffset = GetOffsetFromEntityInWorldCoords(cache.ped, 0.0, 2.2, -0.25)

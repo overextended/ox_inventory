@@ -42,3 +42,8 @@ if webHook ~= '' then
 		}), headers)
 	end
 end
+
+lib.callback.register("ox_inventory:getActualVehiclePlate", function(source, netId)
+    local vehicle = Ox.GetVehicle(NetworkGetEntityFromNetworkId(netId))
+    return vehicle?.plate or nil
+end)
