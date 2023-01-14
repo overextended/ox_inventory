@@ -86,6 +86,13 @@ function Utils.DeleteObject(obj)
 	DeleteObject(obj)
 end
 
+function Utils.DeleteEntity(entity)
+	if DoesEntityExist(entity) then
+		SetEntityAsMissionEntity(entity, false, true)
+		DeleteEntity(entity)
+	end
+end
+
 -- Enables the weapon wheel, but disables the use of inventory items
 -- Mostly used for weaponised vehicles, though could be called for "minigames"
 function Utils.WeaponWheel(state)
