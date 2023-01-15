@@ -12,12 +12,10 @@ for shopType, shopData in pairs(data('shops') --[[@as table<string, OxShop>]]) d
 		label = shopData.label,
 	}
 
-	if shared.target then
-		shop.model = shopData.model
-		shop.targets = shopData.targets
-	else
-		shop.locations = shopData.locations
-	end
+	shop.model = shopData.model
+	shop.targets = shopData.targets
+	shop.peds = shopData.peds
+	shop.locations = shopData.locations
 
 	shopTypes[shopType] = shop
 	local blip = shop.blip
@@ -42,7 +40,7 @@ end
 function client.refreshShops()
 	for i = 1, #shops do
 		local shop = shops[i]
-    
+
 		if shop.zoneId then
 			exports.ox_target:removeZone(shop.zoneId)
 		end
@@ -110,6 +108,7 @@ function client.refreshShops()
 							drawSprite = target.drawSprite,
 							options = options
 						})
+
 						shops[id] = {
 							zoneId = shopid,
 							blip = blip and createBlip(blip, target.loc)
@@ -120,11 +119,11 @@ function client.refreshShops()
 				if shop.peds then
 					for i = 1, #shop.peds do
 						local ped = shop.peds[i]
-						i += #shop.targets
+						i += shop.targets and #shop.targets or 0
 						id += 1
 
 						lib.requestModel(ped.ped)
-						local PedId = CreatePed(0, ped.ped, ped.loc.x, ped.loc.y, ped.loc.z - 1, ped.loc.w, false, false) -- true)
+						local PedId = CreatePed(0, ped.ped, ped.loc.x, ped.loc.y, ped.loc.z - 1, ped.loc.w, false, true)
 						TaskStartScenarioInPlace(PedId, ped.scenario, 0, true)
 						FreezeEntityPosition(PedId, true)
 						SetEntityInvincible(PedId, true)
@@ -154,23 +153,7 @@ function client.refreshShops()
 						}
 					end
 				end
-			elseif shop.locations then
-				for i = 1, #shop.locations do
-					local coords = shop.locations[i]
-					id += 1
-
-					shops[id] = lib.points.new(coords, 16, {
-						coords = coords,
-						distance = 16,
-						inv = 'shop',
-						invId = i,
-						type = type,
-						nearby = nearbyShop,
-						blip = blip and createBlip(blip, coords)
-					})
-				end
 			end
-
 			if shop.locations then
 				for i = 1, #shop.locations do
 					local coords = shop.locations[i]
