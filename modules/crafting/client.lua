@@ -44,7 +44,7 @@ local function createCraftingBench(id, data)
 				zone.index = i
 				zone.options = {
 					{
-						label = zone.label or 'Open Crafting Bench',
+						label = zone.label or locale('open_crafting_bench'),
 						canInteract = data.groups and function()
 							return client.hasGroup(data.groups)
 						end or nil,
