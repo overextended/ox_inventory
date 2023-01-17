@@ -49,7 +49,7 @@ local function createCraftingBench(id, data)
 							return client.hasGroup(data.groups)
 						end or nil,
 						onSelect = function()
-							client.openInventory('crafting', { id = id, index = i, label = data.label })
+							client.openInventory('crafting', { id = id, index = i })
 						end,
 						distance = zone.distance or 2.0,
 						icon = zone.icon or 'fas fa-wrench',

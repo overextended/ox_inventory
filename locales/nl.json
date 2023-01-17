@@ -84,6 +84,6 @@
   "dumpster": "Afvalcontainer",
   "crafting_item": "%s aan het maken",
   "crafting_bench": "Werkbank",
-  "open_crafting_bench": "Open Werbank",
+  "open_crafting_bench": "Open Werkbank",
   "not_enough_durability": "%s heeft niet genoeg levensduur."
 }
