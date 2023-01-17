@@ -62,23 +62,25 @@ function Weapon.Equip(item, data)
 	item.ammo = data.ammoname
 	item.melee = (not item.throwable and not data.ammoname) and 0
 	item.timer = 0
-
-	if data.throwable then item.throwable = true end
+	item.throwable = data.throwable
 
 	SetCurrentPedWeapon(playerPed, data.hash, true)
 	SetPedCurrentWeaponVisible(playerPed, true, false, false, false)
-	AddAmmoToPed(playerPed, data.hash, item.metadata.ammo or 100)
 	SetWeaponsNoAutoswap(true)
+	TriggerEvent('ox_inventory:currentWeapon', item)
+	Utils.ItemNotify({item.metadata.label or item.label, item.metadata.image or item.name, 'ui_equipped'})
+
+	if item.metadata.ammo and item.metadata.ammo > 0 then
+		AddAmmoToPed(playerPed, data.hash, item.metadata.ammo)
+	end
+
+	Wait(sleep)
+	RefillAmmoInstantly(playerPed)
 
 	if data.hash == `WEAPON_PETROLCAN` or data.hash == `WEAPON_HAZARDCAN` or data.hash == `WEAPON_FERTILIZERCAN` or data.hash == `WEAPON_FIREEXTINGUISHER` then
 		item.metadata.ammo = item.metadata.durability
 		SetPedInfiniteAmmo(playerPed, true, data.hash)
 	end
-
-	TriggerEvent('ox_inventory:currentWeapon', item)
-	Utils.ItemNotify({item.metadata.label or item.label, item.metadata.image or item.name, 'ui_equipped'})
-	Wait(sleep)
-	RefillAmmoInstantly(playerPed)
 
 	return item
 end
