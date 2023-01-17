@@ -1278,7 +1278,8 @@ RegisterNetEvent('ox_inventory:setPlayerInventory', function(currentDrops, inven
 						local currentAmmo
 
 						if currentWeapon.hash == `WEAPON_PETROLCAN` or currentWeapon.hash == `WEAPON_HAZARDCAN` or currentWeapon.hash == `WEAPON_FERTILIZERCAN` or currentWeapon.hash == `WEAPON_FIREEXTINGUISHER` then
-							currentAmmo = currentWeapon.metadata.ammo - 0.05
+							currentAmmo = currentWeapon.metadata.ammo - 0.05 < 0 and 0 or currentWeapon.metadata.ammo - 0.05
+							currentWeapon.metadata.durability = currentAmmo
 
 							if currentAmmo <= 0 then
 								SetPedInfiniteAmmo(playerPed, false, currentWeapon.hash)
