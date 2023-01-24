@@ -84,5 +84,6 @@
   "dumpster": "Dumpster",
   "crafting_item": "Crafting %s",
   "crafting_bench": "Crafting Bench",
+  "open_crafting_bench": "Open Crafting Bench",
   "not_enough_durability": "%s does not have enough durability"
 }

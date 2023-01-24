@@ -133,7 +133,7 @@ function client.openInventory(inv, data)
 				right = {
 					type = 'crafting',
 					id = data.id,
-					label = data.label or locale('crafting_bench'),
+					label = right.label or locale('crafting_bench'),
 					index = data.index,
 					slots = right.slots,
 					items = right.items,

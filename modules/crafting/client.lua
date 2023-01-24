@@ -44,7 +44,7 @@ local function createCraftingBench(id, data)
 				zone.index = i
 				zone.options = {
 					{
-						label = 'Open Crafting Bench',
+						label = zone.label or locale('open_crafting_bench'),
 						canInteract = data.groups and function()
 							return client.hasGroup(data.groups)
 						end or nil,
@@ -52,7 +52,7 @@ local function createCraftingBench(id, data)
 							client.openInventory('crafting', { id = id, index = i })
 						end,
 						distance = zone.distance or 2.0,
-						icon = 'fas fa-wrench',
+						icon = zone.icon or 'fas fa-wrench',
 					}
 				}
 
