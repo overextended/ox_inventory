@@ -208,7 +208,7 @@ lib.callback.register('ox_inventory:craftItem', function(source, id, index, reci
 					end
 				end
 
-				Inventory.AddItem(left, craftedItem, recipe.count or 1, recipe.metadata or {}, toSlot)
+				Inventory.AddItem(left, craftedItem, recipe.count or 1, recipe.metadata or {}, craftedItem.stack and toSlot or nil)
 			end
 
 			return true
