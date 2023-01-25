@@ -1,6 +1,5 @@
 return {
 	Weapons = {
-
 		['WEAPON_ADVANCEDRIFLE'] = {
 			label = 'Advanced Rifle',
 			weight = 3180,
@@ -115,6 +114,13 @@ return {
 			ammoname = 'ammo-9'
 		},
 
+		['WEAPON_PISTOLXM3'] = {
+			label = 'WM 29 Pistol',
+			weight = 1200,
+			durability = 0.2,
+			ammoname = 'ammo-9'
+		},
+
 		['WEAPON_COMBATMG'] = {
 			label = 'Combat MG',
 			weight = 10000,
@@ -148,6 +154,13 @@ return {
 			weight = 4400,
 			durability = 0.2,
 			ammoname = 'ammo-shotgun'
+		},
+
+		['WEAPON_COMPACTLAUNCHER'] = {
+			label = 'Compact Grenade Launcher',
+			weight = 2300,
+			durability = 0.05,
+			ammoname = 'ammo-grenade'
 		},
 
 		['WEAPON_COMPACTRIFLE'] = {
@@ -199,6 +212,7 @@ return {
 			label = 'Firework Launcher',
 			weight = 1000,
 			durability = 0.5,
+			ammoname = 'ammo-firework'
 		},
 
 		['WEAPON_FLARE'] = {
@@ -230,6 +244,13 @@ return {
 			label = 'Grenade',
 			weight = 600,
 			throwable = true,
+		},
+
+		['WEAPON_GRENADELAUNCHER'] = {
+			label = 'Grenade Launcher',
+			weight = 4500,
+			durability = 0.05,
+			ammoname = 'ammo-grenade'
 		},
 
 		['WEAPON_GUSENBERG'] = {
@@ -266,6 +287,13 @@ return {
 		['WEAPON_METALDETECTOR'] = {
 			label = 'Metal Detector',
 			weight = 1200,
+		},
+
+		['WEAPON_HOMINGLAUNCHER'] = {
+			label = 'Homing Launcher',
+			weight = 5000,
+			durability = 0.6,
+			ammoname = 'ammo-rocket'
 		},
 
 		['WEAPON_FERTILIZERCAN'] = {
@@ -351,6 +379,13 @@ return {
 			label = 'Machine Gun',
 			weight = 9000,
 			durability = 0.02,
+			ammoname = 'ammo-rifle2'
+		},
+
+		['WEAPON_MINIGUN'] = {
+			label = 'Minigun',
+			weight = 7000,
+			durability = 0.1,
 			ammoname = 'ammo-rifle2'
 		},
 
@@ -446,6 +481,12 @@ return {
 			durability = 0.1,
 		},
 
+		['WEAPON_CANDYCANE'] = {
+			label = 'Candy Cane',
+			weight = 85,
+			durability = 0.1,
+		},
+
 		['WEAPON_PROXMINE'] = {
 			label = 'Proximity Mine',
 			weight = 2500,
@@ -466,6 +507,33 @@ return {
 			ammoname = 'ammo-shotgun'
 		},
 
+		['WEAPON_RAILGUN'] = {
+			label = 'Railgun',
+			weight = 3570,
+			durability = 0.5,
+			ammoname = 'ammo-railgun'
+		},
+
+		['WEAPON_RAILGUNXM3'] = {
+			label = 'Railgun XM3',
+			weight = 3570,
+			durability = 0.5,
+			ammoname = 'ammo-railgun'
+		},
+
+		['WEAPON_RAYCARBINE'] = {
+			label = 'Unholy Hellbringer',
+			weight = 3620,
+			durability = 0.2,
+			ammoname = 'ammo-laser'
+		},
+
+		['WEAPON_RAYPISTOL'] = {
+			label = 'Up-n-Atomizer',
+			weight = 1540,
+			durability = 0.5
+		},
+
 		['WEAPON_REVOLVER'] = {
 			label = 'Revolver',
 			weight = 2260,
@@ -478,6 +546,13 @@ return {
 			weight = 1500,
 			durability = 0.1,
 			ammoname = 'ammo-44'
+		},
+
+		['WEAPON_RPG'] = {
+			label = 'RPG',
+			weight = 5000,
+			durability = 0.3,
+			ammoname = 'ammo-rocket'
 		},
 
 		['WEAPON_SAWNOFFSHOTGUN'] = {
@@ -574,7 +649,7 @@ return {
 		},
 
 		['WEAPON_SWITCHBLADE'] = {
-			label = 'Switch Blade',
+			label = 'Switchblade',
 			weight = 300,
 			durability = 0.1,
 			anim = { 'anim@melee@switchblade@holster', 'unholster', 200, 'anim@melee@switchblade@holster', 'holster', 600 },
@@ -585,6 +660,13 @@ return {
 			weight = 100,
 			durability = 0.1,
 			ammoname = 'ammo-9'
+		},
+
+		['WEAPON_RAYMINIGUN'] = {
+			label = 'Widowmaker',
+			weight = 7000,
+			durability = 0.1,
+			ammoname = 'ammo-laser'
 		},
 
 		['WEAPON_WRENCH'] = {
@@ -605,6 +687,12 @@ return {
 			weight = 3400,
 			durability = 0.03,
 			ammoname = 'ammo-rifle'
+		},
+
+		['WEAPON_TEARGAS'] = {
+			label = 'Tear Gas',
+			weight = 600,
+			throwable = true,
 		},
 	},
 
@@ -1061,9 +1149,19 @@ return {
 			weight = 8,
 		},
 
+		['ammo-firework'] = {
+			label = 'Firework',
+			weight = 200,
+		},
+
 		['ammo-flare'] = {
 			label = 'Flare round',
 			weight = 38,
+		},
+
+		['ammo-grenade'] = {
+			label = 'Frag round',
+			weight = 400,
 		},
 
 		['ammo-heavysniper'] = {
@@ -1071,9 +1169,19 @@ return {
 			weight = 45,
 		},
 
+		['ammo-laser'] = {
+			label = 'Laser charge',
+			weight = 1,
+		},
+
 		['ammo-musket'] = {
 			label = 'Musket round',
 			weight = 30,
+		},
+
+		['ammo-railgun'] = {
+			label = 'Railgun charge',
+			weight = 150,
 		},
 
 		['ammo-rifle'] = {
@@ -1084,6 +1192,11 @@ return {
 		['ammo-rifle2'] = {
 			label = '7.62',
 			weight = 8,
+		},
+
+		['ammo-rocket'] = {
+			label = 'Rocket',
+			weight = 500,
 		},
 
 		['ammo-shotgun'] = {
