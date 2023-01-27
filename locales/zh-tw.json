@@ -83,7 +83,7 @@
   "evidence_cannot_take": "階級不夠，無法拿取證物",
   "dumpster": "垃圾桶",
   "crafting_item": "製作 %s",
-  "crafting_bench": "工作臺",
+  "crafting_bench": "工作台",
   "open_crafting_bench": "打開工作臺",
   "not_enough_durability": "%s 沒有足夠的耐久度"
 }
