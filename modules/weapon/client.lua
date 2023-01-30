@@ -60,7 +60,7 @@ function Weapon.Equip(item, data)
 
 	item.hash = data.hash
 	item.ammo = data.ammoname
-	item.melee = (not item.throwable and not data.ammoname) and 0
+	item.melee = GetWeaponDamageType(data.hash) == 2 and 0
 	item.timer = 0
 	item.throwable = data.throwable
 
