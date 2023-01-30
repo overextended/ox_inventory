@@ -70,9 +70,9 @@ function Weapon.Equip(item, data)
 	TriggerEvent('ox_inventory:currentWeapon', item)
 	Utils.ItemNotify({item.metadata.label or item.label, item.metadata.image or item.name, 'ui_equipped'})
 
-	if item.metadata.ammo and item.metadata.ammo > 0 then
-		AddAmmoToPed(playerPed, data.hash, item.metadata.ammo)
-	end
+	local ammo = item.metadata.ammo or item.throwable and 1 or 0
+
+	if ammo > 0 then AddAmmoToPed(playerPed, data.hash, ammo) end
 
 	Wait(sleep)
 	RefillAmmoInstantly(playerPed)
