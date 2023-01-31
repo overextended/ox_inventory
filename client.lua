@@ -1194,11 +1194,19 @@ RegisterNetEvent('ox_inventory:setPlayerInventory', function(currentDrops, inven
 		local weaponHash = GetSelectedPedWeapon(playerPed)
 
 		if currentWeapon and weaponHash ~= currentWeapon.hash then
-			TriggerServerEvent('ox_inventory:updateWeapon')
-			currentWeapon = Weapon.Disarm(currentWeapon, true)
+			local weaponCount = Items[currentWeapon.name]?.count
 
-			if weaponHash == `WEAPON_HANDCUFFS` or weaponHash == `WEAPON_GARBAGEBAG` or weaponHash == `WEAPON_BRIEFCASE` or weaponHash == `WEAPON_BRIEFCASE_02` then
-				SetCurrentPedWeapon(playerPed, weaponHash --[[@as number]], true)
+			if weaponCount > 0 then
+				SetCurrentPedWeapon(playerPed, currentWeapon.hash, true)
+				SetAmmoInClip(playerPed, currentWeapon.hash, currentWeapon.metadata.ammo)
+				SetPedCurrentWeaponVisible(playerPed, true, false, false, false)
+			else
+				TriggerServerEvent('ox_inventory:updateWeapon')
+				currentWeapon = Weapon.Disarm(currentWeapon, true)
+
+				if weaponHash == `WEAPON_HANDCUFFS` or weaponHash == `WEAPON_GARBAGEBAG` or weaponHash == `WEAPON_BRIEFCASE` or weaponHash == `WEAPON_BRIEFCASE_02` then
+					SetCurrentPedWeapon(playerPed, weaponHash, true)
+				end
 			end
 		end
 
