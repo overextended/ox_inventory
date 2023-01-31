@@ -1283,8 +1283,7 @@ RegisterNetEvent('ox_inventory:setPlayerInventory', function(currentDrops, inven
 
 						if currentAmmo <= 0 then
 							if cache.vehicle then
-								SetCurrentPedWeapon(playerPed, currentWeapon.hash, true)
-								SetPedCurrentWeaponVisible(playerPed, true, false, false, false)
+								TaskSwapWeapon(playerPed, true)
 							end
 
 							if currentWeapon?.ammo and client.autoreload and canUseItem(true) then
