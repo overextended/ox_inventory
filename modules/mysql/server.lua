@@ -1,13 +1,14 @@
 if not lib then return end
+fakeColumn = false
 
 local Query = {
 	SELECT_STASH = 'SELECT data FROM ox_inventory WHERE owner = ? AND name = ?',
 	UPDATE_STASH = 'INSERT INTO ox_inventory (owner, name, data) VALUES (?, ?, ?) ON DUPLICATE KEY UPDATE data = VALUES(data)',
-	SELECT_GLOVEBOX = 'SELECT plate, glovebox FROM `{vehicle_table}` WHERE `{vehicle_column}` = ?',
-	SELECT_TRUNK = 'SELECT plate, trunk FROM `{vehicle_table}` WHERE `{vehicle_column}` = ?',
+	SELECT_GLOVEBOX = 'SELECT plate, glovebox FROM `{vehicle_table}` WHERE `{vehicle_column}`',
+	SELECT_TRUNK = 'SELECT plate, trunk FROM `{vehicle_table}` WHERE `{vehicle_column}`',
 	SELECT_PLAYER = 'SELECT inventory FROM `{user_table}` WHERE `{user_column}` = ?',
-	UPDATE_TRUNK = 'UPDATE `{vehicle_table}` SET trunk = ? WHERE `{vehicle_column}` = ?',
-	UPDATE_GLOVEBOX = 'UPDATE `{vehicle_table}` SET glovebox = ? WHERE `{vehicle_column}` = ?',
+	UPDATE_TRUNK = 'UPDATE `{vehicle_table}` SET trunk = ? WHERE `{vehicle_column}`',
+	UPDATE_GLOVEBOX = 'UPDATE `{vehicle_table}` SET glovebox = ? WHERE `{vehicle_column}`',
 	UPDATE_PLAYER = 'UPDATE `{user_table}` SET inventory = ? WHERE `{user_column}` = ?',
 }
 
@@ -19,25 +20,29 @@ Citizen.CreateThreadNow(function()
 		playerColumn = 'charid'
 		vehicleTable = 'vehicles'
 		vehicleColumn = 'id'
+		fakeColumn = 'fakeplate'
 	elseif shared.framework == 'esx' then
 		playerTable = 'users'
 		playerColumn = 'identifier'
 		vehicleTable = 'owned_vehicles'
 		vehicleColumn = 'plate'
+		fakeColumn = 'fakeplate'
 	elseif shared.framework == 'qb' then
 		playerTable = 'players'
 		playerColumn = 'citizenid'
 		vehicleTable = 'player_vehicles'
 		vehicleColumn = 'plate'
+		fakeColumn = 'fakeplate'
 	elseif shared.framework == 'nd' then
 		playerTable = 'characters'
 		playerColumn = 'character_id'
 		vehicleTable = 'vehicles'
 		vehicleColumn = 'id'
+		fakeColumn = 'fakeplate'
 	end
 
 	for k, v in pairs(Query) do
-		Query[k] = v:gsub('{user_table}', playerTable):gsub('{user_column}', playerColumn):gsub('{vehicle_table}', vehicleTable):gsub('{vehicle_column}', vehicleColumn)
+		Query[k] = v:gsub('{user_table}', playerTable):gsub('{user_column}', playerColumn):gsub('{vehicle_table}', vehicleTable):gsub('`{vehicle_column}`', vehicleColumn and (fakeColumn and '`'..vehicleColumn..'` = ? OR `'..fakeColumn..'` = ?' or '`'..vehicleColumn..'` = ?') or '`'..vehicleColumn..'` = ?')
 	end
 
 	local success, result = pcall(MySQL.scalar.await, 'SELECT 1 FROM ox_inventory')
@@ -79,7 +84,7 @@ Citizen.CreateThreadNow(function()
 	result = MySQL.query.await(('SHOW COLUMNS FROM `%s`'):format(vehicleTable))
 
 	if result then
-		local glovebox, trunk
+		local glovebox, trunk, fakeplate
 
 		for i = 1, #result do
 			local column = result[i]
@@ -87,6 +92,8 @@ Citizen.CreateThreadNow(function()
 				glovebox = true
 			elseif column.Field == 'trunk' then
 				trunk = true
+			elseif column.Field == 'fakeplate' then 
+				fakeplate = true
 			end
 		end
 
@@ -96,6 +103,10 @@ Citizen.CreateThreadNow(function()
 
 		if not trunk then
 			MySQL.query(('ALTER TABLE `%s` ADD COLUMN `trunk` LONGTEXT NULL'):format(vehicleTable))
+		end
+
+		if not fakeplate then
+			MySQL.query(('ALTER TABLE `%s` ADD COLUMN `fakeplate` VARCHAR(50) DEFAULT NULL'):format(vehicleTable))
 		end
 	end
 
@@ -126,19 +137,19 @@ function db.loadStash(owner, name)
 end
 
 function db.saveGlovebox(id, inventory)
-	return MySQL.prepare(Query.UPDATE_GLOVEBOX, { inventory, id })
+	return MySQL.prepare(Query.UPDATE_GLOVEBOX, fakeColumn and { inventory,  id, id } or {inventory, id})
 end
 
 function db.loadGlovebox(id)
-	return MySQL.prepare.await(Query.SELECT_GLOVEBOX, { id })
+	return MySQL.prepare.await(Query.SELECT_GLOVEBOX, fakeColumn and { id, id } or { id })
 end
 
 function db.saveTrunk(id, inventory)
-	return MySQL.prepare(Query.UPDATE_TRUNK, { inventory, id })
+	return MySQL.prepare(Query.UPDATE_TRUNK, fakeColumn and { inventory, id, id } or { inventory, id })
 end
 
 function db.loadTrunk(id)
-	return MySQL.prepare.await(Query.SELECT_TRUNK, { id })
+	return MySQL.prepare.await(Query.SELECT_TRUNK, fakeColumn and { id, id } or { id })
 end
 
 function db.saveInventories(players, trunks, gloveboxes, stashes)

@@ -50,7 +50,7 @@ local function loadInventoryData(data, player)
 
 				for i = 1, #vehicles do
 					local vehicle = vehicles[i]
-					local plate = GetVehicleNumberPlateText(vehicle)
+					local plate = string.strtrim(GetVehicleNumberPlateText(vehicle))
 
 					if data.id:find(plate) then
 						entity = vehicle
@@ -1665,9 +1665,9 @@ local function prepareSave(inv)
 			return 1, { json.encode(minimal(inv)), inv.owner }
 		end
 	elseif inv.type == 'trunk' then
-		return 2, { json.encode(minimal(inv)), inv.dbId }
+		return 2, fakeColumn and { json.encode(minimal(inv)), inv.dbId, inv.dbId } or { json.encode(minimal(inv)), inv.dbId }
 	elseif inv.type == 'glovebox' then
-		return 3, { json.encode(minimal(inv)), inv.dbId }
+		return 3, fakeColumn and { json.encode(minimal(inv)), inv.dbId, inv.dbId } or { json.encode(minimal(inv)), inv.dbId }
 	else
 		return 4, { inv.owner or '', inv.dbId, json.encode(minimal(inv)) }
 	end

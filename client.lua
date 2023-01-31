@@ -549,7 +549,7 @@ local function registerCommands()
 					-- No storage or no glovebox
 					if (checkVehicle == 0 or checkVehicle == 2) or (not Vehicles.glovebox[vehicleClass] and not Vehicles.glovebox.models[vehicleHash]) then return end
 
-					local plate = GetVehicleNumberPlateText(vehicle)
+					local plate = string.strtrim(GetVehicleNumberPlateText(vehicle))
 					client.openInventory('glovebox', {id = 'glove'..plate, netid = NetworkGetNetworkIdFromEntity(vehicle) })
 
 					while true do
@@ -621,7 +621,7 @@ local function registerCommands()
 						local closeToVehicle = distance < 2 and open
 
 						if closeToVehicle then
-							local plate = GetVehicleNumberPlateText(vehicle)
+							local plate = string.strtrim(GetVehicleNumberPlateText(vehicle))
 							TaskTurnPedToFaceCoord(playerPed, position.x, position.y, position.z, 0)
 							lastVehicle = vehicle
 							client.openInventory('trunk', {id='trunk'..plate, netid = NetworkGetNetworkIdFromEntity(vehicle)})
