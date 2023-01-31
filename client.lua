@@ -361,18 +361,21 @@ local function useSlot(slot)
 					useItem(data, function(data)
 						if data then
 							if data.name == currentWeapon.ammo then
-								local missingAmmo = 0
+								local missingAmmo = maxAmmo - currentAmmo
 								local newAmmo = 0
-								missingAmmo = maxAmmo - currentAmmo
 
 								if missingAmmo > data.count then newAmmo = currentAmmo + data.count else newAmmo = maxAmmo end
 								if newAmmo < 0 then newAmmo = 0 end
 
 								currentWeapon.metadata.ammo = newAmmo
 
-								SetPedAmmo(playerPed, currentWeapon.hash, newAmmo)
-								TaskReloadWeapon(playerPed, true)
-								RefillAmmoInstantly(playerPed)
+								if cache.vehicle then
+									SetAmmoInClip(playerPed, currentWeapon.hash, newAmmo)
+								else
+									SetPedAmmo(playerPed, currentWeapon.hash, newAmmo)
+									MakePedReload(playerPed)
+								end
+
 								TriggerServerEvent('ox_inventory:updateWeapon', 'load', currentWeapon.metadata.ammo)
 							end
 						end
