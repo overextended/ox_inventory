@@ -368,22 +368,12 @@ local function useSlot(slot)
 								if missingAmmo > data.count then newAmmo = currentAmmo + data.count else newAmmo = maxAmmo end
 								if newAmmo < 0 then newAmmo = 0 end
 
-								SetPedAmmo(playerPed, currentWeapon.hash, newAmmo)
-
-								if not cache.vehicle then
-									MakePedReload(playerPed)
-								else
-									lib.disableControls:Add(68)
-									RefillAmmoInstantly(playerPed)
-								end
-
 								currentWeapon.metadata.ammo = newAmmo
-								TriggerServerEvent('ox_inventory:updateWeapon', 'load', currentWeapon.metadata.ammo)
 
-								if cache.vehicle then
-									Wait(300)
-									lib.disableControls:Remove(68)
-								end
+								SetPedAmmo(playerPed, currentWeapon.hash, newAmmo)
+								TaskReloadWeapon(playerPed, true)
+								RefillAmmoInstantly(playerPed)
+								TriggerServerEvent('ox_inventory:updateWeapon', 'load', currentWeapon.metadata.ammo)
 							end
 						end
 					end)
@@ -1285,7 +1275,10 @@ RegisterNetEvent('ox_inventory:setPlayerInventory', function(currentDrops, inven
 								SetPedInfiniteAmmo(playerPed, false, currentWeapon.hash)
 							end
 
-						else currentAmmo = GetAmmoInPedWeapon(playerPed, currentWeapon.hash) end
+						else
+							currentAmmo = GetAmmoInPedWeapon(playerPed, currentWeapon.hash)
+						end
+
 						currentWeapon.metadata.ammo = (currentWeapon.metadata.ammo < currentAmmo) and 0 or currentAmmo
 
 						if currentAmmo <= 0 then
