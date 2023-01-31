@@ -658,10 +658,10 @@ function Inventory.SetItem(inv, item, count, metadata)
 
 			if count > itemCount then
 				count -= itemCount
-				Inventory.AddItem(inv, item.name, count, metadata)
+				return Inventory.AddItem(inv, item.name, count, metadata)
 			elseif count <= itemCount then
 				itemCount -= count
-				Inventory.RemoveItem(inv, item.name, itemCount, metadata)
+				return Inventory.RemoveItem(inv, item.name, itemCount, metadata)
 			end
 		end
 	end
