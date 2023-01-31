@@ -4,20 +4,18 @@ local Utils = {}
 
 function Utils.PlayAnim(wait, dict, name, blendIn, blendOut, duration, flag, rate, lockX, lockY, lockZ)
 	lib.requestAnimDict(dict)
-	CreateThread(function()
-		TaskPlayAnim(cache.ped, dict, name, blendIn, blendOut, duration, flag, rate, lockX, lockY, lockZ)
-		Wait(wait)
-		if wait > 0 then ClearPedSecondaryTask(cache.ped) end
-	end)
+	TaskPlayAnim(cache.ped, dict, name, blendIn, blendOut, duration, flag, rate, lockX, lockY, lockZ)
+	RemoveAnimDict(dict)
+
+	if wait > 0 then Wait(wait) end
 end
 
-function Utils.PlayAnimAdvanced(wait, dict, name, posX, posY, posZ, rotX, rotY, rotZ, animEnter, animExit, duration, flag, time)
+function Utils.PlayAnimAdvanced(wait, dict, name, posX, posY, posZ, rotX, rotY, rotZ, blendIn, blendOut, duration, flag, time)
 	lib.requestAnimDict(dict)
-	CreateThread(function()
-		TaskPlayAnimAdvanced(cache.ped, dict, name, posX, posY, posZ, rotX, rotY, rotZ, animEnter, animExit, duration, flag, time, 0, 0)
-		Wait(wait)
-		if wait > 0 then ClearPedSecondaryTask(cache.ped) end
-	end)
+	TaskPlayAnimAdvanced(cache.ped, dict, name, posX, posY, posZ, rotX, rotY, rotZ, blendIn, blendOut, duration, flag, time, 0, 0)
+	RemoveAnimDict(dict)
+
+	if wait > 0 then Wait(wait) end
 end
 
 function Utils.Raycast(flag)

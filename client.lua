@@ -59,7 +59,7 @@ local function closeTrunk()
 	if currentInventory?.type == 'trunk' then
 		local coords = GetEntityCoords(playerPed, true)
 		---@todo animation for vans?
-		Utils.PlayAnimAdvanced(900, 'anim@heists@fleeca_bank@scope_out@return_case', 'trevor_action', coords.x, coords.y, coords.z, 0.0, 0.0, GetEntityHeading(playerPed), 2.0, 2.0, 1000, 49, 0.25)
+		Utils.PlayAnimAdvanced(0, 'anim@heists@fleeca_bank@scope_out@return_case', 'trevor_action', coords.x, coords.y, coords.z, 0.0, 0.0, GetEntityHeading(playerPed), 2.0, 2.0, 1000, 49, 0.25)
 
 		CreateThread(function()
 			local entity = currentInventory.entity
@@ -162,7 +162,7 @@ function client.openInventory(inv, data)
 
 		if left then
 			if inv ~= 'trunk' and not cache.vehicle then
-				Utils.PlayAnim(1000, 'pickup_object', 'putdown_low', 5.0, 1.5, -1, 48, 0.0, 0, 0, 0)
+				Utils.PlayAnim(0, 'pickup_object', 'putdown_low', 5.0, 1.5, 1000, 48, 0.0, 0, 0, 0)
 			end
 
 			plyState.invOpen = true
@@ -454,7 +454,7 @@ local function openNearbyInventory()
 		local targetId, targetPed = Utils.GetClosestPlayer()
 
 		if targetId and (client.hasGroup(shared.police) or canOpenTarget(targetPed)) then
-			Utils.PlayAnim(2000, 'mp_common', 'givetake1_a', 1.0, 1.0, -1, 50, 0.0, 0, 0, 0)
+			Utils.PlayAnim(2000, 'mp_common', 'givetake1_a', 1.0, 1.0, 2000, 50, 0.0, 0, 0, 0)
 			client.openInventory('player', GetPlayerServerId(targetId))
 		end
 	end
@@ -1448,7 +1448,7 @@ RegisterNUICallback('giveItem', function(data, cb)
 
 		if entity and IsPedAPlayer(entity) and IsEntityVisible(entity) and #(GetEntityCoords(playerPed, true) - GetEntityCoords(entity, true)) < 2.0 then
 			target = GetPlayerServerId(NetworkGetPlayerIndexFromPed(entity))
-			Utils.PlayAnim(2000, 'mp_common', 'givetake1_a', 1.0, 1.0, -1, 50, 0.0, 0, 0, 0)
+			Utils.PlayAnim(0, 'mp_common', 'givetake1_a', 1.0, 1.0, 2000, 50, 0.0, 0, 0, 0)
 		end
 	end
 
