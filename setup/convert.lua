@@ -79,10 +79,11 @@ local function ConvertESX()
 		return shared.warning('Data is already being converted, please wait..')
 	end
 
-	started = true
 	local users = MySQL.query.await('SELECT identifier, inventory, loadout, accounts FROM users')
+
 	if not users then return end
 
+	started = true
 	local total = #users
 	local count = 0
 	local parameters = {}
@@ -311,10 +312,11 @@ local function Convert_Old_ESX_Property()
 		return shared.warning('Data is already being converted, please wait..')
 	end
 
-	started = true
 	local inventories = MySQL.query.await('select distinct owner from ( select owner from addon_inventory_items WHERE inventory_name = "property" union all select owner from datastore_data WHERE NAME = "property" union all select owner from addon_account_data WHERE account_name = "property_black_money") a ')
+
 	if not inventories then return end
 
+	started = true
 	local total = #inventories
 	local count = 0
 	local parameters = {}
