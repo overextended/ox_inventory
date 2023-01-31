@@ -1876,9 +1876,16 @@ lib.addCommand('group.admin', {'additem', 'giveitem'}, function(source, args)
 	args.item = Items(args.item)
 	if args.item and args.count > 0 then
 		local metadata = args.metatype and { type = tonumber(args.metatype) or args.metatype }
-		Inventory.AddItem(args.target, args.item.name, args.count, metadata)
-
 		local inventory = Inventories[args.target]
+
+		if not inventory then
+			return print(('No user is connected with the given id (%s)'):format(args.target))
+		end
+
+		if not Inventory.AddItem(inventory, args.item.name, args.count, metadata) then
+			return print(('Failed to give %sx %s to player %s'):format(args.count, args.item.name, args.target))
+		end
+
 		source = Inventories[source] or { label = 'console', owner = 'console' }
 
 		if server.loglevel > 0 then
@@ -1891,9 +1898,16 @@ lib.addCommand('group.admin', 'removeitem', function(source, args)
 	args.item = Items(args.item)
 	if args.item and args.count > 0 then
 		local metadata = args.metatype and { type = tonumber(args.metatype) or args.metatype }
-		Inventory.RemoveItem(args.target, args.item.name, args.count, metadata, nil, true)
-
 		local inventory = Inventories[args.target]
+
+		if not inventory then
+			return print(('No user is connected with the given id (%s)'):format(args.target))
+		end
+
+		if not Inventory.RemoveItem(inventory, args.item.name, args.count, metadata, nil, true) then
+			return print(('Failed to remove %sx %s from player %s'):format(args.count, args.item.name, args.target))
+		end
+
 		source = Inventories[source] or {label = 'console', owner = 'console'}
 
 		if server.loglevel > 0 then
@@ -1905,8 +1919,16 @@ end, {'target:number', 'item:string', 'count:number', 'metatype'})
 lib.addCommand('group.admin', 'setitem', function(source, args)
 	args.item = Items(args.item)
 	if args.item and args.count >= 0 then
-		Inventory.SetItem(args.target, args.item.name, args.count, args.metaType)
 		local inventory = Inventories[args.target]
+
+		if not inventory then
+			return print(('No user is connected with the given id (%s)'):format(args.target))
+		end
+
+		if not Inventory.SetItem(inventory, args.item.name, args.count, args.metaType) then
+			return print(('Failed to set %s count to %sx for player %s'):format(args.item.name, args.count, args.target))
+		end
+
 		source = Inventories[source] or {label = 'console', owner = 'console'}
 
 		if server.loglevel > 0 then
