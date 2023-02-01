@@ -121,7 +121,8 @@ CreateThread(function()
 			end
 
 			shared.info('Database contains', #items, 'items.')
-			warn('Any resources that rely on the database for item data is incompatible with this resource.\nUtilise \'exports.ox_inventory:Items()\', or lazy-load ESX and use ESX.Items instead.')
+
+			warn('Some third-party resources may conflict with item and inventory data structure.\n')
 		end
 
 		Wait(500)
