@@ -1200,7 +1200,11 @@ RegisterNetEvent('ox_inventory:setPlayerInventory', function(currentDrops, inven
 				SetCurrentPedWeapon(playerPed, currentWeapon.hash, true)
 				SetAmmoInClip(playerPed, currentWeapon.hash, currentWeapon.metadata.ammo)
 				SetPedCurrentWeaponVisible(playerPed, true, false, false, false)
-			else
+
+				weaponHash = GetSelectedPedWeapon(playerPed)
+			end
+
+			if weaponHash ~= currentWeapon.hash then
 				TriggerServerEvent('ox_inventory:updateWeapon')
 				currentWeapon = Weapon.Disarm(currentWeapon, true)
 
