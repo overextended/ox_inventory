@@ -46,6 +46,18 @@ local function canOpenInventory()
 	and not IsPedFatallyInjured(playerPed)
 end
 
+---@param ped number
+---@return boolean
+local function canOpenTarget(ped)
+	return IsPedFatallyInjured(ped)
+	or IsEntityPlayingAnim(ped, 'dead', 'dead_a', 3)
+	or IsPedCuffed(ped)
+	or IsEntityPlayingAnim(ped, 'mp_arresting', 'idle', 3)
+	or IsEntityPlayingAnim(ped, 'missminuteman_1ig_2', 'handsup_base', 3)
+	or IsEntityPlayingAnim(ped, 'missminuteman_1ig_2', 'handsup_enter', 3)
+	or IsEntityPlayingAnim(ped, 'random@mugging3', 'handsup_standing_base', 3)
+end
+
 local defaultInventory = {
 	type = 'newdrop',
 	slots = shared.playerslots,
@@ -113,6 +125,26 @@ function client.openInventory(inv, data)
 	if canOpenInventory() then
 		local left, right
 
+		if inv == 'player' then
+			local targetId, targetPed
+
+			if not data then
+				targetId, targetPed = Utils.GetClosestPlayer()
+				data = targetId and GetPlayerServerId(targetId)
+			else
+				local serverId = type(data) == 'table' and data.id or data
+
+				if serverId == cache.serverId then return end
+
+				targetId = serverId and GetPlayerFromServerId(serverId)
+				targetPed = targetId and GetPlayerPed(targetId)
+			end
+
+			if not targetId or not client.hasGroup(shared.police or not canOpenTarget(targetPed)) then
+				return lib.notify({ id = 'inventory_right_access', type = 'error', description = locale('inventory_right_access') })
+			end
+		end
+
 		if inv == 'shop' and invOpen == false then
 			if cache.vehicle then
 				return lib.notify({ id = 'cannot_perform', type = 'error', description = locale('cannot_perform') })
@@ -161,8 +193,12 @@ function client.openInventory(inv, data)
 		end
 
 		if left then
-			if inv ~= 'trunk' and not cache.vehicle then
-				Utils.PlayAnim(0, 'pickup_object', 'putdown_low', 5.0, 1.5, 1000, 48, 0.0, 0, 0, 0)
+			if not cache.vehicle then
+				if inv == 'player' then
+					Utils.PlayAnim(0, 'mp_common', 'givetake1_a', 8.0, 1.0, 2000, 50, 0.0, 0, 0, 0)
+				elseif inv ~= 'trunk' then
+					Utils.PlayAnim(0, 'pickup_object', 'putdown_low', 5.0, 1.5, 1000, 48, 0.0, 0, 0, 0)
+				end
 			end
 
 			plyState.invOpen = true
@@ -437,28 +473,8 @@ local function useButton(id, slot)
 	end
 end
 
----@param ped number
----@return boolean
-local function canOpenTarget(ped)
-	return IsPedFatallyInjured(ped)
-	or IsEntityPlayingAnim(ped, 'dead', 'dead_a', 3)
-	or IsPedCuffed(ped)
-	or IsEntityPlayingAnim(ped, 'mp_arresting', 'idle', 3)
-	or IsEntityPlayingAnim(ped, 'missminuteman_1ig_2', 'handsup_base', 3)
-	or IsEntityPlayingAnim(ped, 'missminuteman_1ig_2', 'handsup_enter', 3)
-	or IsEntityPlayingAnim(ped, 'random@mugging3', 'handsup_standing_base', 3)
-end
+local function openNearbyInventory() client.openInventory('player') end
 
-local function openNearbyInventory()
-	if canOpenInventory() then
-		local targetId, targetPed = Utils.GetClosestPlayer()
-
-		if targetId and (client.hasGroup(shared.police) or canOpenTarget(targetPed)) then
-			Utils.PlayAnim(2000, 'mp_common', 'givetake1_a', 1.0, 1.0, 2000, 50, 0.0, 0, 0, 0)
-			client.openInventory('player', GetPlayerServerId(targetId))
-		end
-	end
-end
 exports('openNearbyInventory', openNearbyInventory)
 
 local currentInstance
@@ -488,9 +504,7 @@ if not Utils or not Weapon or not Items or not Inventory then return end
 local invHotkeys = false
 
 local function registerCommands()
-	RegisterCommand('steal', function()
-		openNearbyInventory()
-	end, false)
+	RegisterCommand('steal', openNearbyInventory, false)
 
 	lib.addKeybind({
 		name = 'inv',
