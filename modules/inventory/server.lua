@@ -34,6 +34,13 @@ local function loadInventoryData(data, player)
 	end
 
 	if data.type == 'trunk' or data.type == 'glovebox' then
+		local plate = data.id:sub(6)
+
+		if server.trimplate then
+			plate = string.strtrim(plate)
+			data.id = ('%s%s'):format(data.id:sub(1, 5), plate)
+		end
+
 		inventory = Inventories[data.id]
 
 		if not inventory then
@@ -50,9 +57,9 @@ local function loadInventoryData(data, player)
 
 				for i = 1, #vehicles do
 					local vehicle = vehicles[i]
-					local plate = GetVehicleNumberPlateText(vehicle)
+					local _plate = GetVehicleNumberPlateText(vehicle)
 
-					if data.id:find(plate) then
+					if _plate:find(plate) then
 						entity = vehicle
 						data.netid = NetworkGetNetworkIdFromEntity(entity)
 						break
@@ -74,7 +81,6 @@ local function loadInventoryData(data, player)
 
 			local model, class = lib.callback.await('ox_inventory:getVehicleData', source, data.netid)
 			local storage = Vehicles[data.type].models[model] or Vehicles[data.type][class]
-			local plate = server.trimplate and string.strtrim(data.id:sub(6)) or data.id:sub(6)
 
 			if Ox then
 				local vehicle = Ox.GetVehicle(entity)
@@ -425,26 +431,44 @@ end
 ---@param oldPlate string
 ---@param newPlate string
 function Inventory.UpdateVehicle(oldPlate, newPlate)
-	local trunk = Inventory('trunk'..oldPlate)
-	local glove = Inventory('glove'..oldPlate)
+	oldPlate = oldPlate:upper()
+	newPlate = newPlate:upper()
+
+	if server.trimplate then
+		oldPlate = string.strtrim(oldPlate)
+		newPlate = string.strtrim(newPlate)
+	end
+
+	local trunk = Inventory(('trunk%s'):format(oldPlate))
+	local glove = Inventory(('glove%s'):format(oldPlate))
 
 	if trunk then
+		if trunk.open then
+			TriggerClientEvent('ox_inventory:closeInventory', trunk.open, true)
+		end
+
 		Inventories[trunk.id] = nil
 		trunk.label = newPlate
 		trunk.dbId = type(trunk.id) == 'number' and trunk.dbId or newPlate
-		trunk.id = 'trunk'..newPlate
+		trunk.id = ('trunk%s'):format(newPlate)
 		Inventories[trunk.id] = trunk
 	end
 
 	if glove then
+		if glove.open then
+			TriggerClientEvent('ox_inventory:closeInventory', glove.open, true)
+		end
+
 		Inventories[glove.id] = nil
 		glove.label = newPlate
 		glove.dbId = type(glove.id) == 'number' and glove.dbId or newPlate
-		glove.id = 'glove'..newPlate
+		glove.id = ('glove%s'):format(newPlate)
 		Inventories[glove.id] = glove
 	end
 end
+
 exports('UpdateVehicle', Inventory.UpdateVehicle)
+
 function Inventory.Save(inv)
 	inv = Inventory(inv)
 
