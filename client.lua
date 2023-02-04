@@ -115,7 +115,9 @@ function client.openInventory(inv, data)
 		-- If triggering event from another nui such as qtarget, may need to wait for focus to end
 		Wait(100)
 
-		if IsNuiFocused() then return end
+		if IsNuiFocused() then
+			return warn('Inventory did not open as another resource has NUI Focus.')
+		end
 	end
 
 	if inv == 'dumpster' and cache.vehicle then
