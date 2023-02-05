@@ -45,6 +45,7 @@ function client.onLogout()
 	client.drops = nil
 
 	client.closeInventory()
+	client.wipeShops()
 	ClearInterval(client.interval)
 	ClearInterval(client.tick)
 	Weapon.Disarm()
