@@ -127,4 +127,6 @@ do
 		v.name = k
 		newItem(v)
 	end
+
+	ItemList.cash = ItemList.money
 end
