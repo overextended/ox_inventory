@@ -17,6 +17,7 @@
   "ui_ctrl_shift_lmb": "Fast move half a stack of items into another inventory",
   "ui_alt_lmb": "Fast use an item",
   "ui_ctrl_c": "When hovering over a weapon, copies it's serial number",
+  "ui_remove_ammo": "Remove ammo",
   "ammo_type": "Ammo type",
   "$": "$",
   "male": "Male",
