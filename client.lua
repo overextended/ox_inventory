@@ -1304,8 +1304,17 @@ RegisterNetEvent('ox_inventory:setPlayerInventory', function(currentDrops, inven
 
 				if not invBusy and currentWeapon.timer ~= 0 and currentWeapon.timer < GetGameTimer() then
 					currentWeapon.timer = 0
-					if currentWeapon.metadata.ammo then
-						TriggerServerEvent('ox_inventory:updateWeapon', 'ammo', currentWeapon.metadata.ammo)
+
+					if weaponAmmo then
+						TriggerServerEvent('ox_inventory:updateWeapon', 'ammo', weaponAmmo)
+
+						if client.autoreload and weaponAmmo == 0 and currentWeapon.ammo and canUseItem(true) then
+							local ammo = Inventory.Search(1, currentWeapon.ammo)?[1]
+
+							if ammo then
+								useSlot(ammo.slot)
+							end
+						end
 					elseif currentWeapon.metadata.durability then
 						TriggerServerEvent('ox_inventory:updateWeapon', 'melee', currentWeapon.melee)
 						currentWeapon.melee = 0
@@ -1339,15 +1348,7 @@ RegisterNetEvent('ox_inventory:setPlayerInventory', function(currentDrops, inven
 								TaskSwapWeapon(playerPed, true)
 							end
 
-							if currentWeapon?.ammo and client.autoreload and canUseItem(true) then
-								currentWeapon.timer = 0
-								local ammo = Inventory.Search(1, currentWeapon.ammo)
-
-								if ammo and ammo[1] then
-									TriggerServerEvent('ox_inventory:updateWeapon', 'ammo', currentWeapon.metadata.ammo)
-									useSlot(ammo[1].slot)
-								end
-							else currentWeapon.timer = GetGameTimer() + 200 end
+							currentWeapon.timer = GetGameTimer() + 200
 						else currentWeapon.timer = GetGameTimer() + 200 end
 					end
 				elseif currentWeapon.throwable then
