@@ -1425,9 +1425,9 @@ RegisterNUICallback('removeAmmo', function(slot, cb)
 
 	if not slotData or not slotData.metadata.ammo or slotData.metadata.ammo == 0 then return end
 
-	TriggerServerEvent('ox_inventory:removeAmmoFromWeapon', slot)
+	local success = lib.callback.await('ox_inventory:removeAmmoFromWeapon', false, slot)
 
-	if slot == currentWeapon?.slot then
+	if success and slot == currentWeapon?.slot then
 		slotData.metadata.ammo = 0
 		SetPedAmmo(playerPed, currentWeapon.hash, 0)
 	end

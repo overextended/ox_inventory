@@ -1896,7 +1896,7 @@ RegisterServerEvent('ox_inventory:updateWeapon', function(action, value, slot)
 	end
 end)
 
-RegisterServerEvent('ox_inventory:removeAmmoFromWeapon', function(slot)
+lib.callback.register('ox_inventory:removeAmmoFromWeapon', function(source, slot)
 	local inventory = Inventory(source)
 
 	if not inventory then return end
@@ -1916,6 +1916,8 @@ RegisterServerEvent('ox_inventory:removeAmmoFromWeapon', function(slot)
 		TriggerClientEvent('ox_inventory:updateSlots', inventory.id, {{ item = slotData }}, { left = inventory.weight })
 
 		if server.syncInventory then server.syncInventory(inventory) end
+
+		return true
 	end
 end)
 
