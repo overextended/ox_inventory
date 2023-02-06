@@ -847,6 +847,8 @@ local function updateInventory(items, weight)
 end
 
 RegisterNetEvent('ox_inventory:updateSlots', function(items, weights, count, removed)
+	if source == '' then return end
+
 	local item = items[1].item
 
 	if currentWeapon?.slot == item.slot then
@@ -866,9 +868,10 @@ RegisterNetEvent('ox_inventory:updateSlots', function(items, weights, count, rem
 end)
 
 RegisterNetEvent('ox_inventory:inventoryReturned', function(data)
-	lib.notify({ description = locale('items_returned') })
+	if source == '' then return end
 	if currentWeapon then currentWeapon = Weapon.Disarm(currentWeapon) end
 
+	lib.notify({ description = locale('items_returned') })
 	client.closeInventory()
 
 	local num, items = 0, {}
@@ -882,6 +885,7 @@ RegisterNetEvent('ox_inventory:inventoryReturned', function(data)
 end)
 
 RegisterNetEvent('ox_inventory:inventoryConfiscated', function(message)
+	if source == '' then return end
 	if message then lib.notify({ description = locale('items_confiscated') }) end
 	if currentWeapon then currentWeapon = Weapon.Disarm(currentWeapon) end
 
@@ -1034,6 +1038,8 @@ lib.onCache('seat', function(seat)
 end)
 
 RegisterNetEvent('ox_inventory:setPlayerInventory', function(currentDrops, inventory, weight, player, source)
+	if source == '' then return end
+
 	PlayerData = player
 	PlayerData.id = cache.playerId
 	PlayerData.source = source
