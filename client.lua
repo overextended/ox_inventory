@@ -4,6 +4,10 @@ local Utils = client.utils
 local Weapon = client.weapon
 local currentWeapon
 
+exports('getCurrentWeapon', function()
+	return currentWeapon
+end)
+
 RegisterNetEvent('ox_inventory:disarm', function()
 	currentWeapon = Weapon.Disarm(currentWeapon)
 end)
