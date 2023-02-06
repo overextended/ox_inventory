@@ -10,11 +10,25 @@ import ClockIcon from '../utils/icons/ClockIcon';
 
 const SlotTooltip: React.FC<{ item: SlotWithItem; inventory: Inventory }> = ({ item, inventory }) => {
   const additionalMetadata = useAppSelector((state) => state.inventory.additionalMetadata);
+  const itemData = Items[item.name];
+
+  if (!itemData)
+    return (
+      <div className="tooltip-wrapper">
+        <div className="tooltip-header-wrapper">
+          <p>{item.name}</p>
+        </div>
+        <Divider />
+      </div>
+    );
+
+  const description = item.metadata?.description || itemData.description;
+  const ammoName = itemData.ammoName && Items[itemData.ammoName]?.label;
 
   return (
     <div className="tooltip-wrapper">
       <div className="tooltip-header-wrapper">
-        <p>{item.metadata?.label || (item.name && Items[item.name]?.label) || item.name}</p>
+        <p>{item.metadata?.label || itemData.label || item.name}</p>
         {inventory.type === 'crafting' ? (
           <div className="tooltip-crafting-duration">
             <ClockIcon />
@@ -25,11 +39,9 @@ const SlotTooltip: React.FC<{ item: SlotWithItem; inventory: Inventory }> = ({ i
         )}
       </div>
       <Divider />
-      {(item.metadata?.description || (item.name && Items[item.name]?.description)) && (
+      {description && (
         <div className="tooltip-description">
-          <ReactMarkdown className="tooltip-markdown">
-            {item.metadata?.description || (item.name && Items[item.name]?.description)}
-          </ReactMarkdown>
+          <ReactMarkdown className="tooltip-markdown">{description}</ReactMarkdown>
         </div>
       )}
       {inventory.type !== 'crafting' ? (
@@ -42,6 +54,11 @@ const SlotTooltip: React.FC<{ item: SlotWithItem; inventory: Inventory }> = ({ i
           {item.metadata?.ammo !== undefined && (
             <p>
               {Locale.ui_ammo}: {item.metadata.ammo}
+            </p>
+          )}
+          {ammoName && (
+            <p>
+              {Locale.ammo_type}: {ammoName}
             </p>
           )}
           {item.metadata?.serial && (
