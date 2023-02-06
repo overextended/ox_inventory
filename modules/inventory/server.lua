@@ -1887,10 +1887,6 @@ RegisterServerEvent('ox_inventory:updateWeapon', function(action, value, slot)
 
 			if action ~= 'throw' then TriggerClientEvent('ox_inventory:updateSlots', inventory.id, {{ item = weapon }}, { left = inventory.weight }) end
 
-			if weapon.metadata.durability and weapon.metadata.durability < 1 and action ~= 'load' and action ~= 'component' then
-				TriggerClientEvent('ox_inventory:disarm', inventory.id)
-			end
-
 			if server.syncInventory then server.syncInventory(inventory) end
 		end
 	end
