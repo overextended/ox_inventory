@@ -1056,7 +1056,8 @@ RegisterNetEvent('ox_inventory:setPlayerInventory', function(currentDrops, inven
 			close = v.close,
 			count = 0,
 			description = v.description,
-			buttons = buttons
+			buttons = buttons,
+			ammoName = v.ammoname,
 		}
 	end
 
@@ -1087,13 +1088,17 @@ RegisterNetEvent('ox_inventory:setPlayerInventory', function(currentDrops, inven
 	currentWeapon = nil
 	Weapon.ClearAll()
 
-	local locales = {}
+	local uiLocales = {}
+	local locales = lib.getLocales()
 
-	for k, v in pairs(lib.getLocales()) do
-		if k:find('ui_') or k == '$' then
-			locales[k] = v
+	for k, v in pairs(locales) do
+		if k:find('^ui_')then
+			uiLocales[k] = v
 		end
 	end
+
+	uiLocales['$'] = locales['$']
+	uiLocales.ammo_type = locales.ammo_type
 
 	client.drops = currentDrops
 
@@ -1150,7 +1155,7 @@ RegisterNetEvent('ox_inventory:setPlayerInventory', function(currentDrops, inven
 	SendNUIMessage({
 		action = 'init',
 		data = {
-			locale = locales,
+			locale = uiLocales,
 			items = ItemData,
 			leftInventory = {
 				id = cache.playerId,
