@@ -1420,7 +1420,7 @@ RegisterNUICallback('removeComponent', function(data, cb)
 end)
 
 RegisterNUICallback('removeAmmo', function(slot, cb)
-	cb()
+	cb(1)
 	local slotData = PlayerData.inventory[slot]
 
 	if not slotData or not slotData.metadata.ammo or slotData.metadata.ammo == 0 then return end
