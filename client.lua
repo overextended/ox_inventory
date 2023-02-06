@@ -1300,6 +1300,8 @@ RegisterNetEvent('ox_inventory:setPlayerInventory', function(currentDrops, inven
 					DisablePlayerFiring(playerId, true)
 				end
 
+				local weaponAmmo = currentWeapon.metadata.ammo
+
 				if not invBusy and currentWeapon.timer ~= 0 and currentWeapon.timer < GetGameTimer() then
 					currentWeapon.timer = 0
 					if currentWeapon.metadata.ammo then
@@ -1308,23 +1310,29 @@ RegisterNetEvent('ox_inventory:setPlayerInventory', function(currentDrops, inven
 						TriggerServerEvent('ox_inventory:updateWeapon', 'melee', currentWeapon.melee)
 						currentWeapon.melee = 0
 					end
-				elseif currentWeapon.metadata.ammo then
+				elseif weaponAmmo then
 					if IsPedShooting(playerPed) then
 						local currentAmmo
 
 						if currentWeapon.hash == `WEAPON_PETROLCAN` or currentWeapon.hash == `WEAPON_HAZARDCAN` or currentWeapon.hash == `WEAPON_FERTILIZERCAN` or currentWeapon.hash == `WEAPON_FIREEXTINGUISHER` then
-							currentAmmo = currentWeapon.metadata.ammo - 0.05 < 0 and 0 or currentWeapon.metadata.ammo - 0.05
+							currentAmmo = weaponAmmo - 0.05 < 0 and 0 or weaponAmmo - 0.05
 							currentWeapon.metadata.durability = currentAmmo
+							currentWeapon.metadata.ammo = (weaponAmmo < currentAmmo) and 0 or currentAmmo
 
 							if currentAmmo <= 0 then
 								SetPedInfiniteAmmo(playerPed, false, currentWeapon.hash)
 							end
-
 						else
 							currentAmmo = GetAmmoInPedWeapon(playerPed, currentWeapon.hash)
-						end
 
-						currentWeapon.metadata.ammo = (currentWeapon.metadata.ammo < currentAmmo) and 0 or currentAmmo
+							if currentAmmo < weaponAmmo then
+								currentAmmo = (weaponAmmo < currentAmmo) and 0 or currentAmmo
+
+								local durability = Items[currentWeapon.name].durability * math.abs((weaponAmmo or 0.1) - currentAmmo)
+								currentWeapon.metadata.ammo = currentAmmo
+								currentWeapon.metadata.durability = currentWeapon.metadata.durability - durability
+							end
+						end
 
 						if currentAmmo <= 0 then
 							if cache.vehicle then
