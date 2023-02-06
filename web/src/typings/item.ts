@@ -6,4 +6,5 @@ export type ItemData = {
   count: number;
   description?: string;
   buttons?: string[];
+  ammoName?: string;
 };
