@@ -847,9 +847,14 @@ local function updateInventory(items, weight)
 end
 
 RegisterNetEvent('ox_inventory:updateSlots', function(items, weights, count, removed)
-	if count then
-		local item = items[1].item
+	local item = items[1].item
 
+	if currentWeapon?.slot == item.slot then
+		currentWeapon.metadata = item.metadata
+		TriggerEvent('ox_inventory:currentWeapon', currentWeapon)
+	end
+
+	if count then
 		if not item.name then
 			item = PlayerData.inventory[item.slot]
 		end
