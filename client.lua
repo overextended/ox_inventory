@@ -1419,6 +1419,15 @@ RegisterNUICallback('removeComponent', function(data, cb)
 	end
 end)
 
+RegisterNUICallback('removeAmmo', function(slot, cb)
+	cb()
+	local slotData = PlayerData.inventory[slot]
+
+	if not slotData or not slotData.metadata.ammo or slotData.metadata.ammo == 0 then return end
+
+	TriggerServerEvent('ox_inventory:removeAmmoFromWeapon', slot)
+end)
+
 RegisterNUICallback('useItem', function(slot, cb)
 	useSlot(slot --[[@as number]])
 	cb(1)

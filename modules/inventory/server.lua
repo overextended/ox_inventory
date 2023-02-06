@@ -1885,7 +1885,7 @@ RegisterServerEvent('ox_inventory:updateWeapon', function(action, value, slot)
 				weapon.metadata.durability = weapon.metadata.durability - ((Items(weapon.name).durability or 1) * value)
 			end
 
-			if action ~= 'throw' then TriggerClientEvent('ox_inventory:updateSlots', inventory.id, {{item = weapon}}, {left=inventory.weight}) end
+			if action ~= 'throw' then TriggerClientEvent('ox_inventory:updateSlots', inventory.id, {{ item = weapon }}, { left = inventory.weight }) end
 
 			if weapon.metadata.durability and weapon.metadata.durability < 1 and action ~= 'load' and action ~= 'component' then
 				TriggerClientEvent('ox_inventory:disarm', inventory.id)
@@ -1893,6 +1893,29 @@ RegisterServerEvent('ox_inventory:updateWeapon', function(action, value, slot)
 
 			if server.syncInventory then server.syncInventory(inventory) end
 		end
+	end
+end)
+
+RegisterServerEvent('ox_inventory:removeAmmoFromWeapon', function(slot)
+	local inventory = Inventory(source)
+
+	if not inventory then return end
+
+	local slotData = inventory.items[slot]
+
+	if not slotData or not slotData.metadata.ammo or slotData.metadata.ammo < 1 then return end
+
+	local item = Items(slotData.name)
+
+	if not item or not item.ammoname then return end
+
+	if Inventory.AddItem(inventory, item.ammoname, slotData.metadata.ammo) then
+		slotData.metadata.ammo = 0
+		slotData.weight = Inventory.SlotWeight(item, slotData)
+
+		TriggerClientEvent('ox_inventory:updateSlots', inventory.id, {{ item = slotData }}, { left = inventory.weight })
+
+		if server.syncInventory then server.syncInventory(inventory) end
 	end
 end)
 
