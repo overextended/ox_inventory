@@ -1330,8 +1330,8 @@ RegisterNetEvent('ox_inventory:setPlayerInventory', function(currentDrops, inven
 									TriggerServerEvent('ox_inventory:updateWeapon', 'ammo', currentWeapon.metadata.ammo)
 									useSlot(ammo[1].slot)
 								end
-							else currentWeapon.timer = GetGameTimer() + 400 end
-						else currentWeapon.timer = GetGameTimer() + 400 end
+							else currentWeapon.timer = GetGameTimer() + 200 end
+						else currentWeapon.timer = GetGameTimer() + 200 end
 					end
 				elseif currentWeapon.throwable then
 					if not invBusy and IsControlPressed(0, 24) then
@@ -1359,7 +1359,7 @@ RegisterNetEvent('ox_inventory:setPlayerInventory', function(currentDrops, inven
 					end
 				elseif IsControlJustReleased(0, 24) and IsPedPerformingMeleeAction(playerPed) then
 					currentWeapon.melee += 1
-					currentWeapon.timer = GetGameTimer() + 400
+					currentWeapon.timer = GetGameTimer() + 200
 				end
 			end
 		end
