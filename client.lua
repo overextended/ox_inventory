@@ -146,7 +146,7 @@ function client.openInventory(inv, data)
 				targetPed = targetId and GetPlayerPed(targetId)
 			end
 
-			if not targetId or not client.hasGroup(shared.police or not canOpenTarget(targetPed)) then
+			if not targetId or not (client.hasGroup(shared.police) or canOpenTarget(targetPed)) then
 				return lib.notify({ id = 'inventory_right_access', type = 'error', description = locale('inventory_right_access') })
 			end
 		end
