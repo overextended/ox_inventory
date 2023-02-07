@@ -124,7 +124,7 @@ function client.refreshShops()
 
 		if shared.target then
 			if shop.model then
-				if not hasShopAccess(shop) then return end
+				if not hasShopAccess(shop) then goto skipLoop end
 
 				exports.qtarget:RemoveTargetModel(shop.model, label)
 				exports.qtarget:AddTargetModel(shop.model, {
@@ -201,7 +201,7 @@ function client.refreshShops()
 				end
 			end
 		elseif shop.locations then
-			if not hasShopAccess(shop) then return end
+			if not hasShopAccess(shop) then goto skipLoop end
 
 			for i = 1, #shop.locations do
 				local coords = shop.locations[i]
@@ -218,5 +218,7 @@ function client.refreshShops()
 				})
 			end
 		end
+
+		::skipLoop::
 	end
 end
