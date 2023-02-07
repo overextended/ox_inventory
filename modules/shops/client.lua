@@ -154,7 +154,6 @@ function client.refreshShops()
 							inv = 'shop',
 							invId = i,
 							type = type,
-							nearby = nearbyShop,
 							blip = blip and hasShopAccess(shop) and createBlip(blip, target.loc),
 							ped = target.ped,
 							scenario = target.scenario,
