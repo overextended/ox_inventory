@@ -17,6 +17,8 @@
   "ui_ctrl_shift_lmb": "Déplacer rapidement une pile d'items dans un autre inventaire tout en la séparant en 2",
   "ui_alt_lmb": "Utiliser un item rapidement",
   "ui_ctrl_c": "En passant la souris sur une arme, copie son numéro de série",
+  "ui_remove_ammo": "Vider le chargeur",
+  "ammo_type": "Type de munition",
   "$": "$",
   "male": "Homme",
   "female": "Femme",
@@ -84,5 +86,6 @@
   "dumpster": "Poubelle",
   "crafting_item": "Fabrication %s",
   "crafting_bench": "Table de fabrication",
+  "open_crafting_bench": "Ouvrir la table de fabrication",
   "not_enough_durability": "%s n'a pas assez de durabilité"
 }
