@@ -369,7 +369,7 @@ return {
 		},
 
 		['WEAPON_MARKSMANRIFLE_MK2'] = {
-			label = 'Marksman Rifle',
+			label = 'Marksman Rifle MK2',
 			weight = 4000,
 			durability = 0.4,
 			ammoname = 'ammo-sniper'
