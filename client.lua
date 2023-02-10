@@ -1518,11 +1518,11 @@ RegisterNUICallback('giveItem', function(data, cb)
 	end
 
 	if target then
-		TriggerServerEvent('ox_inventory:giveItem', data.slot, target, data.count)
-
 		if data.slot == currentWeapon?.slot then
 			currentWeapon = Weapon.Disarm(currentWeapon)
 		end
+
+		TriggerServerEvent('ox_inventory:giveItem', data.slot, target, data.count)
 	end
 end)
 
