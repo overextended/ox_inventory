@@ -853,7 +853,7 @@ RegisterNetEvent('ox_inventory:updateSlots', function(items, weights, count, rem
 
 	local item = items[1].item
 
-	if currentWeapon?.slot == item.slot then
+	if currentWeapon?.slot == item.slot and item.metadata then
 		currentWeapon.metadata = item.metadata
 		TriggerEvent('ox_inventory:currentWeapon', currentWeapon)
 	end
