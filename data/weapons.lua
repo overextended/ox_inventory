@@ -702,7 +702,13 @@ return {
 			weight = 120,
 			type = 'flashlight',
 			client = {
-				component = { `COMPONENT_AT_PI_FLSH`, `COMPONENT_AT_AR_FLSH`, `COMPONENT_AT_PI_FLSH_02`, `COMPONENT_AT_AR_FLSH_REH` },
+				component = {
+					`COMPONENT_AT_AR_FLSH`,
+					`COMPONENT_AT_AR_FLSH_REH`,
+					`COMPONENT_AT_PI_FLSH`,
+					`COMPONENT_AT_PI_FLSH_02`,
+					`COMPONENT_AT_PI_FLSH_03`,
+				},
 				usetime = 2500
 			}
 		},
@@ -712,7 +718,12 @@ return {
 			weight = 280,
 			type = 'barrel',
 			client = {
-				component = {`COMPONENT_AT_PI_SUPP`, `COMPONENT_AT_PI_SUPP_02`},
+				component = {
+					`COMPONENT_AT_PI_SUPP`,
+					`COMPONENT_AT_PI_SUPP_02`,
+					`COMPONENT_CERAMICPISTOL_SUPP`,
+					`COMPONENT_PISTOLXM3_SUPP`
+				},
 				usetime = 2500
 			}
 		},
@@ -722,27 +733,56 @@ return {
 			weight = 280,
 			type = 'barrel',
 			client = {
-				component = {`COMPONENT_AT_AR_SUPP`, `COMPONENT_AT_AR_SUPP_02`, `COMPONENT_AT_SR_SUPP`, `COMPONENT_AT_SR_SUPP_03`},
+				component = {
+					`COMPONENT_AT_AR_SUPP`,
+					`COMPONENT_AT_AR_SUPP_02`,
+					`COMPONENT_AT_SR_SUPP`,
+					`COMPONENT_AT_SR_SUPP_03`
+				},
 				usetime = 2500
 			}
 		},
 
 		['at_grip'] = {
-			label = 'Grip Tape',
-			type = 'grip',
+			label = 'Grip',
+			type = 'forward',
 			weight = 280,
 			client = {
-				component = {`COMPONENT_AT_AR_AFGRIP`, `COMPONENT_AT_AR_AFGRIP_02`},
+				component = {
+					`COMPONENT_AT_AR_AFGRIP`,
+					`COMPONENT_AT_AR_AFGRIP_02`
+				},
 				usetime = 2500
 			}
 		},
 
 		['at_barrel'] = {
 			label = 'Heavy Barrel',
-			type = 'barrel',
+			type = 'forward',
 			weight = 280,
 			client = {
-				component = {`COMPONENT_AT_SR_BARREL_01`,`COMPONENT_AT_MRFL_BARREL_02`,`COMPONENT_AT_MG_BARREL_02`,`COMPONENT_AT_SC_BARREL_02`, `COMPONENT_AT_CR_BARREL_02`, `COMPONENT_AT_BP_BARREL_02`},
+				component = {
+					`COMPONENT_AT_AR_BARREL_02`,
+					`COMPONENT_AT_BP_BARREL_02`,
+					`COMPONENT_AT_CR_BARREL_02`,
+					`COMPONENT_AT_MG_BARREL_02`,
+					`COMPONENT_AT_MRFL_BARREL_02`,
+					`COMPONENT_AT_SB_BARREL_02`,
+					`COMPONENT_AT_SC_BARREL_02`,
+					`COMPONENT_AT_SR_BARREL_02`,
+				},
+				usetime = 2500
+			}
+		},
+
+		['at_railcover'] = {
+			label = 'Railcover',
+			type = 'forward',
+			weight = 280,
+			client = {
+				component = {
+					`COMPONENT_AT_RAILCOVER_01`
+				},
 				usetime = 2500
 			}
 		},
@@ -752,7 +792,18 @@ return {
 			type = 'magazine',
 			weight = 280,
 			client = {
-				component = {`COMPONENT_PISTOL_CLIP_02`, `COMPONENT_APPISTOL_CLIP_02`, `COMPONENT_PISTOL_MK2_CLIP_02`, `COMPONENT_SNSPISTOL_MK2_CLIP_02`, `COMPONENT_COMBATPISTOL_CLIP_02`, `COMPONENT_PISTOL50_CLIP_02`, `COMPONENT_HEAVYPISTOL_CLIP_02`, `COMPONENT_SNSPISTOL_CLIP_02`, `COMPONENT_VINTAGEPISTOL_CLIP_02`},
+				component = {
+					`COMPONENT_APPISTOL_CLIP_02`,
+					`COMPONENT_CERAMICPISTOL_CLIP_02`,
+					`COMPONENT_COMBATPISTOL_CLIP_02`,
+					`COMPONENT_HEAVYPISTOL_CLIP_02`,
+					`COMPONENT_PISTOL_CLIP_02`,
+					`COMPONENT_PISTOL_MK2_CLIP_02`,
+					`COMPONENT_PISTOL50_CLIP_02`,
+					`COMPONENT_SNSPISTOL_CLIP_02`,
+					`COMPONENT_SNSPISTOL_MK2_CLIP_02`,
+					`COMPONENT_VINTAGEPISTOL_CLIP_02`,
+				},
 				usetime = 2500
 			}
 		},
@@ -762,7 +813,15 @@ return {
 			type = 'magazine',
 			weight = 280,
 			client = {
-				component = {`COMPONENT_SMG_CLIP_02`, `COMPONENT_SMG_MK2_CLIP_02`, `COMPONENT_ASSAULTSMG_CLIP_02`, `COMPONENT_MICROSMG_CLIP_02`, `COMPONENT_MINISMG_CLIP_02`, `COMPONENT_COMBATPDW_CLIP_02`, `COMPONENT_MACHINEPISTOL_CLIP_02`},
+				component = {
+					`COMPONENT_ASSAULTSMG_CLIP_02`,
+					`COMPONENT_COMBATPDW_CLIP_02`,
+					`COMPONENT_MACHINEPISTOL_CLIP_02`,
+					`COMPONENT_MICROSMG_CLIP_02`,
+					`COMPONENT_MINISMG_CLIP_02`,
+					`COMPONENT_SMG_CLIP_02`,
+					`COMPONENT_SMG_MK2_CLIP_02`,
+				},
 				usetime = 2500
 			}
 		},
@@ -772,7 +831,10 @@ return {
 			type = 'magazine',
 			weight = 280,
 			client = {
-				component = {`COMPONENT_HEAVYSHOTGUN_CLIP_02`, `COMPONENT_ASSAULTSHOTGUN_CLIP_02`},
+				component = {
+					`COMPONENT_ASSAULTSHOTGUN_CLIP_02`,
+					`COMPONENT_HEAVYSHOTGUN_CLIP_02`,
+				},
 				usetime = 2500
 			}
 		},
@@ -782,7 +844,21 @@ return {
 			type = 'magazine',
 			weight = 280,
 			client = {
-				component = {`COMPONENT_ASSAULTRIFLE_CLIP_02`, `COMPONENT_CARBINERIFLE_CLIP_02`, `COMPONENT_MILITARYRIFLE_CLIP_02`, `COMPONENT_ADVANCEDRIFLE_CLIP_02`, `COMPONENT_SPECIALCARBINE_CLIP_02`, `COMPONENT_BULLPUPRIFLE_CLIP_02`, `COMPONENT_COMPACTRIFLE_CLIP_02`, `COMPONENT_ASSAULTRIFLE_MK2_CLIP_02`, `COMPONENT_CARBINERIFLE_MK2_CLIP_02`, `COMPONENT_SPECIALCARBINE_MK2_CLIP_02`, `COMPONENT_BULLPUPRIFLE_MK2_CLIP_02`},
+				component = {
+					`COMPONENT_ADVANCEDRIFLE_CLIP_02`,
+					`COMPONENT_ASSAULTRIFLE_CLIP_02`,
+					`COMPONENT_ASSAULTRIFLE_MK2_CLIP_02`,
+					`COMPONENT_BULLPUPRIFLE_CLIP_02`,
+					`COMPONENT_BULLPUPRIFLE_MK2_CLIP_02`,
+					`COMPONENT_CARBINERIFLE_CLIP_02`,
+					`COMPONENT_CARBINERIFLE_MK2_CLIP_02`,
+					`COMPONENT_COMPACTRIFLE_CLIP_02`,
+					`COMPONENT_HEAVYRIFLE_CLIP_02`,
+					`COMPONENT_MILITARYRIFLE_CLIP_02`,
+					`COMPONENT_SPECIALCARBINE_CLIP_02`,
+					`COMPONENT_SPECIALCARBINE_MK2_CLIP_02`,
+					`COMPONENT_TACTICALRIFLE_CLIP_02`,
+				},
 				usetime = 2500
 			}
 		},
@@ -792,7 +868,12 @@ return {
 			type = 'magazine',
 			weight = 280,
 			client = {
-				component = {`COMPONENT_MG_CLIP_02`, `COMPONENT_COMBATMG_CLIP_02`, `COMPONENT_GUSENBERG_CLIP_02`, `COMPONENT_COMBATMG_MK2_CLIP_02`},
+				component = {
+					`COMPONENT_GUSENBERG_CLIP_02`,
+					`COMPONENT_MG_CLIP_02`,
+					`COMPONENT_COMBATMG_CLIP_02`,
+					`COMPONENT_COMBATMG_MK2_CLIP_02`,
+				},
 				usetime = 2500
 			}
 		},
@@ -802,37 +883,52 @@ return {
 			type = 'magazine',
 			weight = 280,
 			client = {
-				component = {`COMPONENT_MARKSMANRIFLE_CLIP_02`, `COMPONENT_HEAVYSNIPER_MK2_CLIP_02`, `COMPONENT_MARKSMANRIFLE_MK2_CLIP_02`},
+				component = {
+					`COMPONENT_HEAVYSNIPER_MK2_CLIP_02`,
+					`COMPONENT_MARKSMANRIFLE_CLIP_02`,
+					`COMPONENT_MARKSMANRIFLE_MK2_CLIP_02`,
+				},
 				usetime = 2500
 			}
 		},
 
 		['at_clip_drum_smg'] = {
-			label = 'SMG Drum Clip',
+			label = 'SMG Drum',
 			type = 'magazine',
 			weight = 280,
 			client = {
-				component = {`COMPONENT_MACHINEPISTOL_CLIP_03`, `COMPONENT_SMG_CLIP_03`, `COMPONENT_COMBATPDW_CLIP_03`},
+				component = {
+					`COMPONENT_COMBATPDW_CLIP_03`,
+					`COMPONENT_MACHINEPISTOL_CLIP_03`,
+					`COMPONENT_SMG_CLIP_03`,
+				},
 				usetime = 2500
 			}
 		},
 
 		['at_clip_drum_shotgun'] = {
-			label = 'Shotgun Drum Clip',
+			label = 'Shotgun Drum',
 			type = 'magazine',
 			weight = 280,
 			client = {
-				component = {`COMPONENT_HEAVYSHOTGUN_CLIP_03`},
+				component = {
+					`COMPONENT_HEAVYSHOTGUN_CLIP_03`
+				},
 				usetime = 2500
 			}
 		},
 
 		['at_clip_drum_rifle'] = {
-			label = 'Rifle Drum Clip',
+			label = 'Rifle Drum',
 			type = 'magazine',
 			weight = 280,
 			client = {
-				component = {`COMPONENT_COMPACTRIFLE_CLIP_03`, `COMPONENT_CARBINERIFLE_CLIP_03`, `COMPONENT_SPECIALCARBINE_CLIP_03`},
+				component = {
+					`COMPONENT_ASSAULTRIFLE_CLIP_03`,
+					`COMPONENT_COMPACTRIFLE_CLIP_03`,
+					`COMPONENT_CARBINERIFLE_CLIP_03`,
+					`COMPONENT_SPECIALCARBINE_CLIP_03`,
+				},
 				usetime = 2500
 			}
 		},
@@ -842,27 +938,69 @@ return {
 			type = 'barrel',
 			weight = 280,
 			client = {
-				component = {`COMPONENT_AT_PI_COMP_02`, `COMPONENT_AT_PI_COMP_03`, `COMPONENT_AT_PI_COMP`},
+				component = {
+					`COMPONENT_AT_PI_COMP`,
+					`COMPONENT_AT_PI_COMP_02`,
+					`COMPONENT_AT_PI_COMP_03`
+				},
+				usetime = 2500
+			}
+		},
+
+		['at_scope_macro'] = {
+			label = 'Macro Scope',
+			type = 'sight',
+			weight = 280,
+			client = {
+				component = {
+					`COMPONENT_AT_SCOPE_MACRO`,
+					`COMPONENT_AT_SCOPE_MACRO_02`,
+					`COMPONENT_AT_SCOPE_MACRO_MK2`,
+					`COMPONENT_AT_SCOPE_MACRO_02_MK2`,
+					`COMPONENT_AT_SCOPE_MACRO_02_SMG_MK2`
+				},
 				usetime = 2500
 			}
 		},
 
 		['at_scope_small'] = {
-			label = 'Sight',
+			label = 'Small Scope',
 			type = 'sight',
 			weight = 280,
 			client = {
-				component = {`COMPONENT_AT_SIGHTS`, `COMPONENT_AT_SCOPE_MACRO`, `COMPONENT_AT_SCOPE_MACRO_02`, `COMPONENT_AT_SCOPE_MACRO_02_MK2`, `COMPONENT_AT_SCOPE_MACRO`, `COMPONENT_AT_SCOPE_SMALL`, `COMPONENT_AT_SCOPE_SMALL_02`, `COMPONENT_AT_SCOPE_SMALL_MK2`, `COMPONENT_AT_SCOPE_MACRO_MK2`},
+				component = {
+					`COMPONENT_AT_SCOPE_SMALL`,
+					`COMPONENT_AT_SCOPE_SMALL_02`,
+					`COMPONENT_AT_SCOPE_SMALL_MK2`,
+					`COMPONENT_AT_SCOPE_SMALL_SMG_MK2`
+				},
 				usetime = 2500
 			}
 		},
 
 		['at_scope_medium'] = {
-			label = 'Scope',
+			label = 'Medium Scope',
 			type = 'sight',
 			weight = 280,
 			client = {
-				component = {`COMPONENT_AT_SCOPE_MEDIUM`, `COMPONENT_AT_SCOPE_MEDIUM_MK2`, `COMPONENT_AT_PI_RAIL_02`, `COMPONENT_AT_PI_RAIL`},
+				component = {
+					`COMPONENT_AT_SCOPE_MEDIUM`,
+					`COMPONENT_AT_SCOPE_MEDIUM_MK2`,
+					`COMPONENT_AT_PI_RAIL`,
+					`COMPONENT_AT_PI_RAIL_02`
+				},
+				usetime = 2500
+			}
+		},
+
+		['at_scope_large'] = {
+			label = 'Large Scope',
+			type = 'sight',
+			weight = 280,
+			client = {
+				component = {
+					`COMPONENT_AT_SCOPE_LARGE_MK2`
+				},
 				usetime = 2500
 			}
 		},
@@ -872,17 +1010,9 @@ return {
 			type = 'sight',
 			weight = 280,
 			client = {
-				component = {`COMPONENT_AT_SCOPE_MAX`},
-				usetime = 2500
-			}
-		},
-
-		['at_scope_zoom'] = {
-			label = 'Zoom Scope',
-			type = 'sight',
-			weight = 280,
-			client = {
-				component = {`COMPONENT_AT_SCOPE_LARGE_MK2`},
+				component = {
+					`COMPONENT_AT_SCOPE_MAX`
+				},
 				usetime = 2500
 			}
 		},
@@ -892,7 +1022,9 @@ return {
 			type = 'sight',
 			weight = 420,
 			client = {
-				component = {`COMPONENT_AT_SCOPE_NV`},
+				component = {
+					`COMPONENT_AT_SCOPE_NV`
+				},
 				usetime = 2500
 			}
 		},
@@ -902,27 +1034,22 @@ return {
 			type = 'sight',
 			weight = 420,
 			client = {
-				component = {`COMPONENT_AT_SCOPE_THERMAL`},
+				component = {
+					`COMPONENT_AT_SCOPE_THERMAL`
+				},
 				usetime = 2500
 			}
 		},
 
-		['at_muzzle_squared'] = {
-			label = 'Squared Muzzle',
-			type = 'barrel',
-			weight = 80,
+		['at_scope_holo'] = {
+			label = 'Holographic Sight',
+			type = 'sight',
+			weight = 280,
 			client = {
-				component = {`COMPONENT_AT_MUZZLE_08`},
-				usetime = 2500
-			}
-		},
-
-		['at_muzzle_bell'] = {
-			label = 'Bell Muzzle',
-			type = 'barrel',
-			weight = 80,
-			client = {
-				component = {`COMPONENT_AT_MUZZLE_09`},
+				component = {
+					`COMPONENT_AT_SIGHTS`,
+					`COMPONENT_AT_SIGHTS_SMG`,
+				},
 				usetime = 2500
 			}
 		},
@@ -932,7 +1059,9 @@ return {
 			type = 'barrel',
 			weight = 80,
 			client = {
-				component = {`COMPONENT_AT_MUZZLE_01`},
+				component = {
+					`COMPONENT_AT_MUZZLE_01`
+				},
 				usetime = 2500
 			}
 		},
@@ -942,7 +1071,9 @@ return {
 			type = 'barrel',
 			weight = 80,
 			client = {
-				component = {`COMPONENT_AT_MUZZLE_02`},
+				component = {
+					`COMPONENT_AT_MUZZLE_02`
+				},
 				usetime = 2500
 			}
 		},
@@ -952,7 +1083,9 @@ return {
 			type = 'barrel',
 			weight = 80,
 			client = {
-				component = {`COMPONENT_AT_MUZZLE_03`},
+				component = {
+					`COMPONENT_AT_MUZZLE_03`
+				},
 				usetime = 2500
 			}
 		},
@@ -962,7 +1095,9 @@ return {
 			type = 'barrel',
 			weight = 80,
 			client = {
-				component = {`COMPONENT_AT_MUZZLE_04`},
+				component = {
+					`COMPONENT_AT_MUZZLE_04`
+				},
 				usetime = 2500
 			}
 		},
@@ -972,7 +1107,9 @@ return {
 			type = 'barrel',
 			weight = 80,
 			client = {
-				component = {`COMPONENT_AT_MUZZLE_05`},
+				component = {
+					`COMPONENT_AT_MUZZLE_05`
+				},
 				usetime = 2500
 			}
 		},
@@ -982,7 +1119,9 @@ return {
 			type = 'barrel',
 			weight = 80,
 			client = {
-				component = {`COMPONENT_AT_MUZZLE_06`},
+				component = {
+					`COMPONENT_AT_MUZZLE_06`
+				},
 				usetime = 2500
 			}
 		},
@@ -992,7 +1131,33 @@ return {
 			type = 'barrel',
 			weight = 80,
 			client = {
-				component = {`COMPONENT_AT_MUZZLE_07`},
+				component = {
+					`COMPONENT_AT_MUZZLE_07`
+				},
+				usetime = 2500
+			}
+		},
+
+		['at_muzzle_squared'] = {
+			label = 'Squared Muzzle',
+			type = 'barrel',
+			weight = 80,
+			client = {
+				component = {
+					`COMPONENT_AT_MUZZLE_08`
+				},
+				usetime = 2500
+			}
+		},
+
+		['at_muzzle_bell'] = {
+			label = 'Bell Muzzle',
+			type = 'barrel',
+			weight = 80,
+			client = {
+				component = {
+					`COMPONENT_AT_MUZZLE_09`
+				},
 				usetime = 2500
 			}
 		},
