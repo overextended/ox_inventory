@@ -67,7 +67,7 @@ local function onEnterShop(point)
 				}
 			},
 
-			distance = 3
+			distance = point.shopDistance or 2.0
 		})
 
 		point.entity = entity
@@ -163,6 +163,7 @@ function client.refreshShops()
 							iconColor = target.iconColor,
 							onEnter = onEnterShop,
 							onExit = onExitShop,
+							shopDistance = target.distance,
 						})
 					elseif target.loc then
 						if not hasShopAccess(shop) then goto nextShop end
