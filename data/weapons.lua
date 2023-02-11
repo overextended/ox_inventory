@@ -1633,7 +1633,7 @@ return {
 		},
 
 		['ammo-38'] = {
-			label = '.38 Long Colt',
+			label = '.38 LC',
 			weight = 15,
 		},
 
@@ -1668,7 +1668,7 @@ return {
 		},
 
 		['ammo-grenade'] = {
-			label = 'Frag round',
+			label = '40mm Explosive',
 			weight = 400,
 		},
 
@@ -1683,7 +1683,7 @@ return {
 		},
 
 		['ammo-musket'] = {
-			label = 'Musket round',
+			label = '.50 Ball',
 			weight = 38,
 		},
 
@@ -1693,12 +1693,12 @@ return {
 		},
 
 		['ammo-rifle'] = {
-			label = '5.56',
+			label = '5.56x45',
 			weight = 4,
 		},
 
 		['ammo-rifle2'] = {
-			label = '7.62',
+			label = '7.62x39',
 			weight = 8,
 		},
 
@@ -1713,7 +1713,7 @@ return {
 		},
 
 		['ammo-sniper'] = {
-			label = '7.62 NATO',
+			label = '7.62x51',
 			weight = 9,
 		},
 
