@@ -973,9 +973,7 @@ return {
 			client = {
 				component = {
 					`COMPONENT_AT_SCOPE_MEDIUM`,
-					`COMPONENT_AT_SCOPE_MEDIUM_MK2`,
-					`COMPONENT_AT_PI_RAIL`,
-					`COMPONENT_AT_PI_RAIL_02`
+					`COMPONENT_AT_SCOPE_MEDIUM_MK2`
 				},
 				usetime = 2500
 			}
@@ -1035,8 +1033,10 @@ return {
 			weight = 280,
 			client = {
 				component = {
+					`COMPONENT_AT_PI_RAIL`,
+					`COMPONENT_AT_PI_RAIL_02`,
 					`COMPONENT_AT_SIGHTS`,
-					`COMPONENT_AT_SIGHTS_SMG`,
+					`COMPONENT_AT_SIGHTS_SMG`
 				},
 				usetime = 2500
 			}
