@@ -430,13 +430,14 @@ local function useSlot(slot)
 				local components = data.client.component
 				local componentType = data.type
 				local weaponComponents = PlayerData.inventory[currentWeapon.slot].metadata.components
+
 				-- Checks if the weapon already has the same component type attached
 				for componentIndex = 1, #weaponComponents do
 					if componentType == Items[weaponComponents[componentIndex]].type then
-						-- todo: Update locale?
-						return lib.notify({ id = 'component_has', type = 'error', description = locale('component_has', data.label) })
+						return lib.notify({ id = 'component_slot_occupied', type = 'error', description = locale('component_slot_occupied', componentType) })
 					end
 				end
+
 				for i = 1, #components do
 					local component = components[i]
 
