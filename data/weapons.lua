@@ -775,18 +775,6 @@ return {
 			}
 		},
 
-		['at_railcover'] = {
-			label = 'Railcover',
-			type = 'forward',
-			weight = 280,
-			client = {
-				component = {
-					`COMPONENT_AT_RAILCOVER_01`
-				},
-				usetime = 2500
-			}
-		},
-
 		['at_clip_extended_pistol'] = {
 			label = 'Extended Pistol Clip',
 			type = 'magazine',
