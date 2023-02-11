@@ -716,7 +716,7 @@ return {
 		['at_suppressor_light'] = {
 			label = 'Suppressor',
 			weight = 280,
-			type = 'barrel',
+			type = 'muzzle',
 			client = {
 				component = {
 					`COMPONENT_AT_PI_SUPP`,
@@ -731,7 +731,7 @@ return {
 		['at_suppressor_heavy'] = {
 			label = 'Tactical Suppressor',
 			weight = 280,
-			type = 'barrel',
+			type = 'muzzle',
 			client = {
 				component = {
 					`COMPONENT_AT_AR_SUPP`,
@@ -745,7 +745,7 @@ return {
 
 		['at_grip'] = {
 			label = 'Grip',
-			type = 'forward',
+			type = 'grip',
 			weight = 280,
 			client = {
 				component = {
@@ -758,7 +758,7 @@ return {
 
 		['at_barrel'] = {
 			label = 'Heavy Barrel',
-			type = 'forward',
+			type = 'barrel',
 			weight = 280,
 			client = {
 				component = {
@@ -923,7 +923,7 @@ return {
 
 		['at_compensator'] = {
 			label = 'Compensator',
-			type = 'barrel',
+			type = 'muzzle',
 			weight = 280,
 			client = {
 				component = {
@@ -1044,7 +1044,7 @@ return {
 
 		['at_muzzle_flat'] = {
 			label = 'Flat Muzzle',
-			type = 'barrel',
+			type = 'muzzle',
 			weight = 80,
 			client = {
 				component = {
@@ -1056,7 +1056,7 @@ return {
 
 		['at_muzzle_tactical'] = {
 			label = 'Tactical Muzzle',
-			type = 'barrel',
+			type = 'muzzle',
 			weight = 80,
 			client = {
 				component = {
@@ -1068,7 +1068,7 @@ return {
 
 		['at_muzzle_fat'] = {
 			label = 'Fat Muzzle',
-			type = 'barrel',
+			type = 'muzzle',
 			weight = 80,
 			client = {
 				component = {
@@ -1080,7 +1080,7 @@ return {
 
 		['at_muzzle_precision'] = {
 			label = 'Precision Muzzle',
-			type = 'barrel',
+			type = 'muzzle',
 			weight = 80,
 			client = {
 				component = {
@@ -1092,7 +1092,7 @@ return {
 
 		['at_muzzle_heavy'] = {
 			label = 'Heavy Muzzle',
-			type = 'barrel',
+			type = 'muzzle',
 			weight = 80,
 			client = {
 				component = {
@@ -1104,7 +1104,7 @@ return {
 
 		['at_muzzle_slanted'] = {
 			label = 'Slanted Muzzle',
-			type = 'barrel',
+			type = 'muzzle',
 			weight = 80,
 			client = {
 				component = {
@@ -1116,7 +1116,7 @@ return {
 
 		['at_muzzle_split'] = {
 			label = 'Split Muzzle',
-			type = 'barrel',
+			type = 'muzzle',
 			weight = 80,
 			client = {
 				component = {
@@ -1128,7 +1128,7 @@ return {
 
 		['at_muzzle_squared'] = {
 			label = 'Squared Muzzle',
-			type = 'barrel',
+			type = 'muzzle',
 			weight = 80,
 			client = {
 				component = {
@@ -1140,7 +1140,7 @@ return {
 
 		['at_muzzle_bell'] = {
 			label = 'Bell Muzzle',
-			type = 'barrel',
+			type = 'muzzle',
 			weight = 80,
 			client = {
 				component = {
