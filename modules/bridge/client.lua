@@ -34,11 +34,12 @@ function client.onLogout()
 		client.parachute = false
 	end
 
-	if client.dropprops then
-		for _, point in pairs(client.drops) do
+	for _, point in pairs(client.drops) do
+		if point.entity then
 			Utils.DeleteObject(point.entity)
-			point:remove()
 		end
+
+		point:remove()
 	end
 
 	PlayerData.loaded = false
