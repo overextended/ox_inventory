@@ -1245,9 +1245,13 @@ RegisterNetEvent('ox_inventory:setPlayerInventory', function(currentDrops, inven
 			if weaponHash ~= currentWeapon.hash then
 				TriggerServerEvent('ox_inventory:updateWeapon')
 				currentWeapon = Weapon.Disarm(currentWeapon, true)
+			end
+		elseif client.weaponmismatch then
+			local weaponType = GetWeapontypeGroup(weaponHash)
 
-				if weaponHash == `WEAPON_HANDCUFFS` or weaponHash == `WEAPON_GARBAGEBAG` or weaponHash == `WEAPON_BRIEFCASE` or weaponHash == `WEAPON_BRIEFCASE_02` then
-					SetCurrentPedWeapon(playerPed, weaponHash, true)
+			if weaponType ~= 0 and weaponType ~= `GROUP_UNARMED` then
+				if weaponHash ~= `WEAPON_HANDCUFFS` and weaponHash ~= `WEAPON_GARBAGEBAG` then
+					Weapon.Disarm(currentWeapon, true)
 				end
 			end
 		end
