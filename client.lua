@@ -948,7 +948,7 @@ local function createDrop(dropId, data)
 		model = data.model
 	})
 
-	if client.dropprops then
+	if point.model or client.dropprops then
 		point.distance = 30
 		point.onEnter = onEnterDrop
 		point.onExit = onExitDrop
