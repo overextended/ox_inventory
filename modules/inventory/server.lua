@@ -258,7 +258,10 @@ CreateThread(function()
 	-- Require "set inventory:weaponmismatch 1" to enable experimental weapon checks.
 	-- Maybe need some tweaks, and will definitely need more hashes added to the ignore list.
 	-- May even use weaponDamageEvent, depending on performance..
-	if GetConvarInt('inventory:weaponmismatch', 0) == 0 then return end
+	-- if GetConvarInt('inventory:weaponmismatch', 0) == 0 then return end
+
+	-- Disable this loop, client-side handling should be "good enough".
+	do return end
 
 	local ignore = {
 		[0] = 1, -- GetSelectedPedWeapon returns 0 when using a firetruk; likely some other cases
