@@ -1442,7 +1442,7 @@ lib.callback.register('ox_inventory:swapItems', function(source, data)
 							if fromData.count > 0 then
 								toData.metadata = table.clone(toData.metadata)
 							end
-						else return false, 'cannot_carry' end
+						else return false, 'cannot_carry_other' end
 					end
 
 					if fromData and fromData.count < 1 then fromData = nil end
