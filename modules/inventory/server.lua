@@ -380,7 +380,7 @@ function Inventory.Create(id, label, invType, slots, weight, maxWeight, owner, i
 		groups = groups,
 	}
 
-	if invType == 'drop' then
+	if invType == 'drop' or invType == 'temp' then
 		self.datastore = true
 	else
 		self.changed = false
@@ -1144,18 +1144,20 @@ end)
 
 Inventory.Drops = {}
 
-local function generateDropId()
+---@param prefix string
+---@return string
+local function generateInvId(prefix)
 	while true do
-		local dropId = ('drop-%s'):format(math.random(100000, 999999))
+		local invId = ('%s-%s'):format(prefix or 'drop', math.random(100000, 999999))
 
-		if not Inventories[dropId] then return dropId end
+		if not Inventories[invId] then return invId end
 
 		Wait(0)
 	end
 end
 
 local function CustomDrop(prefix, items, coords, slots, maxWeight, instance, model)
-	local dropId = generateDropId()
+	local dropId = generateInvId()
 	local inventory = Inventory.Create(dropId, ('%s %s'):format(prefix, dropId:gsub('%D', '')), 'drop', slots or shared.playerslots, 0, maxWeight or shared.playerweight, false)
 	local items, weight = generateItems(inventory, 'drop', items)
 
@@ -1179,7 +1181,7 @@ exports('CreateDropFromPlayer', function(playerId)
 
 	if not playerInventory or not next(playerInventory.items) then return end
 
-	local dropId = generateDropId()
+	local dropId = generateInvId()
 	local inventory = Inventory.Create(dropId, ('Drop %s'):format(dropId:gsub('%D', '')), 'drop', playerInventory.slots, playerInventory.weight, playerInventory.maxWeight, false, table.clone(playerInventory.items))
 	local coords = GetEntityCoords(GetPlayerPed(playerId))
 	inventory.coords = vec3(coords.x, coords.y, coords.z-0.2)
@@ -1231,7 +1233,7 @@ local function dropItem(source, data)
 		playerInventory.weapon = nil
 	end
 
-	local dropId = generateDropId()
+	local dropId = generateInvId('drop')
 	local inventory = Inventory.Create(dropId, ('Drop %s'):format(dropId:gsub('%D', '')), 'drop', shared.playerslots, toData.weight, shared.playerweight, false, {[data.toSlot] = toData})
 	local coords = GetEntityCoords(GetPlayerPed(source))
 	inventory.coords = vec3(coords.x, coords.y, coords.z-0.2)
@@ -2024,12 +2026,43 @@ end, {'target'})
 
 Inventory.accounts = server.accounts
 
+local function checkStashProperties(properties)
+	local name, slots, maxWeight, coords in properties
+
+	if type(name) ~= 'string' then
+		error(('received %s for stash name (expected string)'):format(type(name)))
+	end
+
+	if type(slots) ~= 'number' then
+		error(('received %s for stash slots (expected number)'):format(type(slots)))
+	end
+
+	if type(maxWeight) ~= 'number' then
+		error(('received %s for stash maxWeight (expected number)'):format(type(maxWeight)))
+	end
+
+	if coords then
+		local typeof = type(coords)
+
+		if typeof ~= 'vector3' then
+			if typeof == 'table' then
+				coords = vec3(coords.x or coords[1], coords.y or coords[2], coords.z or coords[3])
+			else
+				error(('received %s for stash coords (expected vector3)'):format(typeof))
+			end
+		end
+	end
+
+	return name, slots, maxWeight, coords
+end
+
 ---@param name string stash identifier when loading from the database
 ---@param label string display name when inventory is open
 ---@param slots number
 ---@param maxWeight number
 ---@param owner string|boolean|nil
 ---@param groups table
+---@param coords vector3
 --- For simple integration with other resources that want to create valid stashes.
 --- This needs to be triggered before a player can open a stash.
 --- ```
@@ -2040,29 +2073,13 @@ Inventory.accounts = server.accounts
 ---
 --- groups: { ['police'] = 0 }
 --- ```
-local function RegisterStash(name, label, slots, maxWeight, owner, groups, coords)
-	if type(name) ~= 'string' then
-		error(('received %s for stash name (expected string)'):format(type(name)))
-	end
-
-	if not slots then
-		error(('received %s for stash slots (expected number)'):format(slots))
-	end
-
-	if not maxWeight then
-		error(('received %s for stash maxWeight (expected number)'):format(maxWeight))
-	end
-
-	if coords then
-		local typeof = type(coords)
-		if typeof ~= 'vector3' then
-			if typeof == 'table' then
-				coords = vec3(coords.x or coords[1], coords.y or coords[2], coords.z or coords[3])
-			else
-				error(('received %s for stash coords (expected vector3)'):format(typeof))
-			end
-		end
-	end
+local function registerStash(name, label, slots, maxWeight, owner, groups, coords)
+	name, slots, maxWeight, coords = checkStashProperties({
+		name = name,
+		slots = slots,
+		maxweight = maxWeight,
+		coords = coords,
+	})
 
 	local curStash = RegisteredStashes[name]
 
@@ -2092,6 +2109,30 @@ local function RegisterStash(name, label, slots, maxWeight, owner, groups, coord
 		coords = coords
 	}
 end
-exports('RegisterStash', RegisterStash)
+
+exports('RegisterStash', registerStash)
+
+---@class TemporaryStashProperties
+---@field label string
+---@field slots number
+---@field maxWeight number
+---@field owner? string|number|boolean
+---@field groups? string|string[]|table<string, number>
+---@field coords? vector3
+
+---@param properties TemporaryStashProperties
+function Inventory.CreateTemporaryStash(properties)
+	properties.name = generateInvId('temp')
+
+	local name, slots, maxWeight, coords = checkStashProperties(properties)
+	local inventory = Inventory.Create(name, properties.label, 'temp', slots, 0, maxWeight, properties.owner, {}, properties.groups)
+
+	inventory.items, inventory.weight = generateItems(inventory, 'drop', properties.items)
+	inventory.coords = coords
+
+	return inventory.id
+end
+
+exports('CreateTemporaryStash', Inventory.CreateTemporaryStash)
 
 server.inventory = Inventory
