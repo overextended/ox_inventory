@@ -2080,7 +2080,7 @@ local function registerStash(name, label, slots, maxWeight, owner, groups, coord
 	name, slots, maxWeight, coords = checkStashProperties({
 		name = name,
 		slots = slots,
-		maxweight = maxWeight,
+		maxWeight = maxWeight,
 		coords = coords,
 	})
 
