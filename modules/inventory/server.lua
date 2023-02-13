@@ -24,6 +24,8 @@ local Inventory = {}
 ---@field weapon? number
 ---@field containerSlot? number
 
+---@alias inventory OxInventory | table | string | number
+
 ---@type table<any, OxInventory>
 local Inventories = {}
 local Vehicles = data 'vehicles'
@@ -169,11 +171,12 @@ setmetatable(Inventory, {
 	end
 })
 
----@param inv string | number | table
+---@param inv inventory
 ---@param owner? string | number
 ---@return table?
 local function getInventory(inv, owner)
 	if not inv then return Inventory end
+
 	local type = type(inv)
 
 	if type == 'table' or type == 'number' then
@@ -186,14 +189,14 @@ end
 exports('Inventory', getInventory)
 exports('GetInventory', getInventory)
 
----@param inv string | number | table
+---@param inv inventory
 ---@param owner? string | number
 ---@return table?
 exports('GetInventoryItems', function(inv, owner)
 	return getInventory(inv, owner)?.items
 end)
 
----@param inv table | string | number
+---@param inv inventory
 ---@param k string
 ---@param v any
 function Inventory.Set(inv, k, v)
@@ -224,7 +227,7 @@ function Inventory.Set(inv, k, v)
 	end
 end
 
----@param inv table | string | number
+---@param inv inventory
 ---@param key string
 function Inventory.Get(inv, key)
 	inv = Inventory(inv) --[[@as OxInventory]]
@@ -233,7 +236,7 @@ function Inventory.Get(inv, key)
 	end
 end
 
----@param inv table | string | number
+---@param inv inventory
 ---@return table items table containing minimal inventory data
 local function minimal(inv)
 	inv = Inventory(inv) --[[@as OxInventory]]
@@ -252,7 +255,7 @@ local function minimal(inv)
 	return inventory
 end
 
----@param inv table | string | number
+---@param inv inventory
 ---@param item table
 ---@param count number
 ---@param metadata any
@@ -448,7 +451,7 @@ function Inventory.Create(id, label, invType, slots, weight, maxWeight, owner, i
 	return Inventories[self.id]
 end
 
----@param inv table | string | number
+---@param inv inventory
 function Inventory.Remove(inv)
 	inv = Inventory(inv) --[[@as OxInventory]]
 
@@ -557,7 +560,7 @@ local function randomLoot(loot)
 	return items
 end
 
----@param inv table | string | number
+---@param inv inventory
 ---@param invType string
 ---@param items? table
 ---@return table returnData, number totalWeight, boolean true
@@ -644,7 +647,7 @@ end
 
 local table = lib.table
 
----@param inv table | string | number
+---@param inv inventory
 ---@param item table | string
 ---@param metadata? any
 ---@param returnsCount? boolean
@@ -706,7 +709,7 @@ function Inventory.ContainerWeight(container, metaWeight, playerInventory)
 	playerInventory.weight += container.weight
 end
 
----@param inv table | string | number
+---@param inv inventory
 ---@param item table | string
 ---@param count number
 ---@param metadata? table
@@ -729,7 +732,7 @@ function Inventory.SetItem(inv, item, count, metadata)
 end
 exports('SetItem', Inventory.SetItem)
 
----@param inv table | string | number
+---@param inv inventory
 function Inventory.GetCurrentWeapon(inv)
 	inv = Inventory(inv) --[[@as OxInventory]]
 
@@ -745,7 +748,7 @@ function Inventory.GetCurrentWeapon(inv)
 end
 exports('GetCurrentWeapon', Inventory.GetCurrentWeapon)
 
----@param inv table | string | number
+---@param inv inventory
 ---@param slot number
 ---@return table? item
 function Inventory.GetSlot(inv, slot)
@@ -764,7 +767,7 @@ function Inventory.GetSlot(inv, slot)
 end
 exports('GetSlot', Inventory.GetSlot)
 
----@param inv table | string | number
+---@param inv inventory
 ---@param slot number
 function Inventory.SetDurability(inv, slot, durability)
 	inv = Inventory(inv) --[[@as OxInventory]]
@@ -781,7 +784,7 @@ function Inventory.SetDurability(inv, slot, durability)
 end
 exports('SetDurability', Inventory.SetDurability)
 
----@param inv table | string | number
+---@param inv inventory
 ---@param slot number | false
 ---@param metadata table
 function Inventory.SetMetadata(inv, slot, metadata)
@@ -813,9 +816,10 @@ function Inventory.SetMetadata(inv, slot, metadata)
 		end
 	end
 end
+
 exports('SetMetadata', Inventory.SetMetadata)
 
----@param inv table | string | number
+---@param inv inventory
 ---@param item table | string
 ---@param count number
 ---@param metadata? table | string
@@ -934,7 +938,7 @@ function Inventory.AddItem(inv, item, count, metadata, slot, cb)
 end
 exports('AddItem', Inventory.AddItem)
 
----@param inv table | string | number
+---@param inv inventory
 ---@param search string|number slots|1, count|2
 ---@param items table | string
 ---@param metadata? table | string
@@ -988,7 +992,7 @@ function Inventory.Search(inv, search, items, metadata)
 end
 exports('Search', Inventory.Search)
 
----@param inv table | string | number
+---@param inv inventory
 ---@param item table | string
 ---@param metadata? table
 function Inventory.GetItemSlots(inv, item, metadata)
@@ -1015,7 +1019,7 @@ function Inventory.GetItemSlots(inv, item, metadata)
 end
 exports('GetItemSlots', Inventory.GetItemSlots)
 
----@param inv table | string | number
+---@param inv inventory
 ---@param item table | string
 ---@param count integer
 ---@param metadata? table | string
@@ -1102,7 +1106,7 @@ function Inventory.RemoveItem(inv, item, count, metadata, slot, ignoreTotal)
 end
 exports('RemoveItem', Inventory.RemoveItem)
 
----@param inv table | string | number
+---@param inv inventory
 ---@param item table | string
 ---@param count number
 ---@param metadata? table | string
@@ -1138,7 +1142,7 @@ function Inventory.CanCarryItem(inv, item, count, metadata)
 end
 exports('CanCarryItem', Inventory.CanCarryItem)
 
----@param inv table | string | number
+---@param inv inventory
 ---@param item table | string
 function Inventory.CanCarryAmount(inv, item)
     if type(item) ~= 'table' then item = Items(item) end
@@ -1152,7 +1156,7 @@ end
 
 exports('CanCarryAmount', Inventory.CanCarryAmount)
 
----@param inv table | string | number
+---@param inv inventory
 ---@param weight number
 function Inventory.CanCarryWeight(inv, weight)
 	inv = Inventory(inv) --[[@as OxInventory]]
@@ -1165,7 +1169,7 @@ function Inventory.CanCarryWeight(inv, weight)
 end
 exports('CanCarryWeight', Inventory.CanCarryWeight)
 
----@param inv table | string | number
+---@param inv inventory
 ---@param firstItem string
 ---@param firstItemCount number
 ---@param testItem string
@@ -1643,7 +1647,7 @@ function Inventory.Return(source)
 end
 exports('ReturnInventory', Inventory.Return)
 
----@param inv table | string | number
+---@param inv inventory
 ---@param keep? string | string[] an item or list of items to ignore while clearing items
 function Inventory.Clear(inv, keep)
 	inv = Inventory(inv) --[[@as OxInventory]]
