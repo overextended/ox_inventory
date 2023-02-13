@@ -17,7 +17,7 @@ local Inventory = {}
 ---@field minimal function
 ---@field time number
 ---@field owner? string|number|boolean
----@field groups? string|string[]|table<string, number>
+---@field groups? table<string, number>
 ---@field coords? vector3
 ---@field datastore? boolean
 ---@field changed? boolean
@@ -2143,9 +2143,9 @@ end
 ---@param label string display name when inventory is open
 ---@param slots number
 ---@param maxWeight number
----@param owner string|boolean|nil
----@param groups table
----@param coords vector3
+---@param owner? string|number|boolean
+---@param groups? table<string, number>
+---@param coords? vector3
 --- For simple integration with other resources that want to create valid stashes.
 --- This needs to be triggered before a player can open a stash.
 --- ```
@@ -2200,7 +2200,7 @@ exports('RegisterStash', registerStash)
 ---@field slots number
 ---@field maxWeight number
 ---@field owner? string|number|boolean
----@field groups? string|string[]|table<string, number>
+---@field groups? table<string, number>
 ---@field coords? vector3
 
 ---@param properties TemporaryStashProperties
