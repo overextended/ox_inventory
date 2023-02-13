@@ -90,6 +90,7 @@ function Weapon.Disarm(currentWeapon, noAnim)
 	end
 
 	if currentWeapon then
+		currentWeapon.timer = nil
 		SetPedAmmo(cache.ped, currentWeapon.hash, 0)
 
 		if client.weaponanims and not noAnim then

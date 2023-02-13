@@ -390,6 +390,7 @@ local function useSlot(slot)
 						if weaponSlot == result.slot then return end
 					end
 
+					currentWeapon = item
 					currentWeapon = Weapon.Equip(item, data)
 
 					if IsCinematicCamRendering() then SetCinematicModeActive(false) end
@@ -1231,22 +1232,24 @@ RegisterNetEvent('ox_inventory:setPlayerInventory', function(currentDrops, inven
 
 		local weaponHash = GetSelectedPedWeapon(playerPed)
 
-		if currentWeapon and weaponHash ~= currentWeapon.hash then
-			local weaponCount = Items[currentWeapon.name]?.count
+		if currentWeapon then
+			if weaponHash ~= currentWeapon.hash and currentWeapon.timer then
+				local weaponCount = Items[currentWeapon.name]?.count
 
-			if weaponCount > 0 then
-				SetCurrentPedWeapon(playerPed, currentWeapon.hash, true)
-				SetAmmoInClip(playerPed, currentWeapon.hash, currentWeapon.metadata.ammo)
-				SetPedCurrentWeaponVisible(playerPed, true, false, false, false)
+				if weaponCount > 0 then
+					SetCurrentPedWeapon(playerPed, currentWeapon.hash, true)
+					SetAmmoInClip(playerPed, currentWeapon.hash, currentWeapon.metadata.ammo)
+					SetPedCurrentWeaponVisible(playerPed, true, false, false, false)
 
-				weaponHash = GetSelectedPedWeapon(playerPed)
+					weaponHash = GetSelectedPedWeapon(playerPed)
+				end
+
+				if weaponHash ~= currentWeapon.hash then
+					TriggerServerEvent('ox_inventory:updateWeapon')
+					currentWeapon = Weapon.Disarm(currentWeapon, true)
+				end
 			end
-
-			if weaponHash ~= currentWeapon.hash then
-				TriggerServerEvent('ox_inventory:updateWeapon')
-				currentWeapon = Weapon.Disarm(currentWeapon, true)
-			end
-		elseif client.weaponmismatch then
+		elseif client.weaponmismatch and weaponHash ~= `WEAPON_UNARMED` then
 			local weaponType = GetWeapontypeGroup(weaponHash)
 
 			if weaponType ~= 0 and weaponType ~= `GROUP_UNARMED` then
