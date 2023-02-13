@@ -965,7 +965,7 @@ RegisterNetEvent('ox_inventory:createDrop', function(dropId, data, owner, slot)
 		createDrop(dropId, data)
 	end
 
-	if owner == PlayerData.source then
+	if owner == cache.serverId then
 		if currentWeapon?.slot == slot then
 			currentWeapon = Weapon.Disarm(currentWeapon)
 		end
@@ -1040,12 +1040,12 @@ lib.onCache('seat', function(seat)
 	Utils.WeaponWheel(false)
 end)
 
-RegisterNetEvent('ox_inventory:setPlayerInventory', function(currentDrops, inventory, weight, player, source)
+RegisterNetEvent('ox_inventory:setPlayerInventory', function(currentDrops, inventory, weight, player)
 	if source == '' then return end
 
 	PlayerData = player
 	PlayerData.id = cache.playerId
-	PlayerData.source = source
+	PlayerData.source = cache.serverId
 
 	setmetatable(PlayerData, {
 		__index = function(self, key)
@@ -1055,7 +1055,7 @@ RegisterNetEvent('ox_inventory:setPlayerInventory', function(currentDrops, inven
 		end
 	})
 
-	if setStateBagHandler then setStateBagHandler(('player:%s'):format(source)) end
+	if setStateBagHandler then setStateBagHandler(('player:%s'):format(cache.serverId)) end
 
 	local ItemData = table.create(0, #Items)
 
