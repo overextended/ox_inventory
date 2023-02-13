@@ -11,7 +11,7 @@ for _, stash in pairs(data 'stashes') do
 		label = stash.label,
 		owner = stash.owner,
 		slots = stash.slots,
-		weight = stash.weight,
+		maxWeight = stash.weight,
 		groups = stash.groups or stash.jobs,
 		coords = shared.target and stash.target?.loc or stash.coords
 	}
@@ -116,7 +116,7 @@ local function loadInventoryData(data, player)
 			inventory = Inventories[owner and ('%s:%s'):format(stash.name, owner) or stash.name]
 
 			if not inventory then
-				inventory = Inventory.Create(stash.name, stash.label or stash.name, 'stash', stash.slots, 0, stash.weight, owner, nil, stash.groups)
+				inventory = Inventory.Create(stash.name, stash.label or stash.name, 'stash', stash.slots, 0, stash.maxWeight, owner, nil, stash.groups)
 			end
 		end
 	end
@@ -2107,7 +2107,7 @@ local function registerStash(name, label, slots, maxWeight, owner, groups, coord
 		label = label,
 		owner = owner,
 		slots = slots,
-		weight = maxWeight,
+		maxWeight = maxWeight,
 		groups = groups,
 		coords = coords
 	}
