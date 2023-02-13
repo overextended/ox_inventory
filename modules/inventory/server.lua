@@ -820,6 +820,32 @@ end
 exports('SetMetadata', Inventory.SetMetadata)
 
 ---@param inv inventory
+---@param slots number
+function Inventory.SetSlotCount(inv, slots)
+	inv = Inventory(inv) --[[@as OxInventory]]
+
+	if not inv then return end
+	if type(slots) ~= 'number' then return end
+
+	inv.slots = slots
+end
+
+exports('SetSlotCount', Inventory.SetSlotCount)
+
+---@param inv inventory
+---@param maxWeight number
+function Inventory.SetMaxWeight(inv, maxWeight)
+	inv = Inventory(inv) --[[@as OxInventory]]
+
+	if not inv then return end
+	if type(maxWeight) ~= 'number' then return end
+
+	inv.maxWeight = maxWeight
+end
+
+exports('SetMaxWeight', Inventory.SetMaxWeight)
+
+---@param inv inventory
 ---@param item table | string
 ---@param count number
 ---@param metadata? table | string
