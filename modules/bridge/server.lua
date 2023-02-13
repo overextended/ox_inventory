@@ -17,6 +17,7 @@ function server.hasGroup(inv, group)
 	end
 end
 
+---@diagnostic disable-next-line: duplicate-set-field
 function server.setPlayerData(player)
 	if not player.groups then
 		warn(("server.setPlayerData did not receive any groups for '%s'"):format(player?.name or GetPlayerName(player)))
@@ -31,6 +32,7 @@ function server.setPlayerData(player)
 	}
 end
 
+---@diagnostic disable-next-line: duplicate-set-field
 function server.buyLicense()
 	warn('Licenses are not supported for the current framework.')
 end

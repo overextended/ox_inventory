@@ -113,6 +113,7 @@ AddEventHandler('QBCore:Server:OnMoneyChange', function(src, account, amount, ch
 	Inventory.SetItem(src, 'money', changeType == "set" and amount or changeType == "remove" and item.count - amount or changeType == "add" and item.count + amount)
 end)
 
+---@diagnostic disable-next-line: duplicate-set-field
 function server.setPlayerData(player)
 	local groups = {
 		[player.job.name] = player.job.grade.level,
@@ -130,6 +131,7 @@ function server.setPlayerData(player)
 	}
 end
 
+---@diagnostic disable-next-line: duplicate-set-field
 function server.syncInventory(inv)
 	local money = table.clone(server.accounts)
 
@@ -143,11 +145,13 @@ function server.syncInventory(inv)
 	player.syncInventory(inv.weight, inv.maxWeight, inv.items, money)
 end
 
+---@diagnostic disable-next-line: duplicate-set-field
 function server.hasLicense(inv, license)
 	local player = server.GetPlayerFromId(inv.id)
 	return player and player.PlayerData.metadata.licences[license]
 end
 
+---@diagnostic disable-next-line: duplicate-set-field
 function server.buyLicense(inv, license)
 	local player = server.GetPlayerFromId(inv.id)
 	if not player then return end
@@ -170,6 +174,7 @@ end
 --- Old: {1:{"name": "cola", "amount": 1, "label": "Cola", "slot": 1}, 2:{"name": "burger", "amount": 3, "label": "Burger", "slot": 2}}
 --- New: [{"slot":1,"name":"cola","count":1}, {"slot":2,"name":"burger","count":3}]
 ---```
+---@diagnostic disable-next-line: duplicate-set-field
 function server.convertInventory(playerId, items)
 	if type(items) == 'table' then
 		local player = server.GetPlayerFromId(playerId)

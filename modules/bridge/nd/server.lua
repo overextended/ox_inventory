@@ -60,6 +60,7 @@ RegisterNetEvent("ND:moneyChange", function(player, account, amount, changeType)
     Inventory.SetItem(player, "money", changeType == "set" and amount or changeType == "remove" and item - amount or changeType == "add" and item + amount)
 end)
 
+---@diagnostic disable-next-line: duplicate-set-field
 function server.syncInventory(inv)
     local money = table.clone(server.accounts)
 
@@ -75,6 +76,7 @@ function server.syncInventory(inv)
     end
 end
 
+---@diagnostic disable-next-line: duplicate-set-field
 function server.setPlayerData(player)
     return {
         source = player.source,
@@ -87,6 +89,7 @@ function server.setPlayerData(player)
     }
 end
 
+---@diagnostic disable-next-line: duplicate-set-field
 function server.hasLicense(inv, license)
     local character = NDCore.Functions.GetPlayer(inv.id)
     if not character or not character.data.licences then return end
@@ -98,6 +101,7 @@ function server.hasLicense(inv, license)
     end
 end
 
+---@diagnostic disable-next-line: duplicate-set-field
 function server.buyLicense(inv, license)
 	if server.hasLicense(inv, license.name) then
 		return false, "already_have"
