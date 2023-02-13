@@ -177,7 +177,9 @@ lib.callback.register('ox_inventory:buyItem', function(source, data)
 		if data.count == nil then data.count = 1 end
 		local playerInv = Inventory(source)
 		local split = playerInv.open:match('^.*() ')
-		local shop = split and Shops[playerInv.open:sub(0, split-1)][tonumber(playerInv.open:sub(split+1))] or Shops[playerInv.open]
+		local shopType = playerInv.open:sub(0, split-1)
+		local shopId = tonumber(playerInv.open:sub(split+1))
+		local shop = split and Shops[shopType][shopId] or Shops[playerInv.open]
 		local fromData = shop.items[data.fromSlot]
 		local toData = playerInv.items[data.toSlot]
 
@@ -220,6 +222,20 @@ lib.callback.register('ox_inventory:buyItem', function(source, data)
 				if not canAfford then
 					return false, false, { type = 'error', description = locale('cannot_afford', ('%s%s'):format((currency == 'money' and locale('$') or comma_value(price)), (currency == 'money' and comma_value(price) or ' '..Items(currency).label))) }
 				end
+
+				if not TriggerEventHooks('buyItem', {
+					source = source,
+					shopType = shopType,
+					shopId = shopId,
+					toInventory = playerInv.id,
+					toSlot = data.toSlot,
+					itemName = fromData.name,
+					metadata = metadata,
+					count = count,
+					price = fromData.price,
+					totalPrice = price,
+					currency = currency,
+				}) then return false end
 
 				Inventory.SetSlot(playerInv, fromItem, count, metadata, data.toSlot)
 				playerInv.weight = newWeight

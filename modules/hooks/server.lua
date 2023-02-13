@@ -49,7 +49,7 @@ function TriggerEventHooks(event, payload)
 				goto skipLoop
 			end
 
-			if hook.typeFilter and not typeFilter(hook.typeFilter, payload.inventoryType) then
+			if hook.typeFilter and not typeFilter(hook.typeFilter, payload.inventoryType or payload.shopType) then
 				goto skipLoop
 			end
 
