@@ -10,6 +10,7 @@ shared = {
 	playerweight = GetConvarInt('inventory:weight', 30000),
 	target = GetConvarInt('inventory:target', 0) == 1,
 	police = json.decode(GetConvar('inventory:police', '["police", "sheriff"]')),
+	distanceCheck = GetConvar('inventory:distancecheck', 'true') == 'true',
 }
 
 do
