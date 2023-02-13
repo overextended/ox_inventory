@@ -150,6 +150,15 @@ lib.callback.register('ox_inventory:craftItem', function(source, id, index, reci
 				return false, 'cannot_carry'
 			end
 
+			if not TriggerEventHooks('craftItem', {
+				source = source,
+				benchId = id,
+				benchIndex = index,
+				recipe = recipe,
+				toInventory = left.id,
+				toSlot = toSlot,
+			}) then return false end
+
 			local success = lib.callback.await('ox_inventory:startCrafting', source, id, recipeId)
 
 			if success then

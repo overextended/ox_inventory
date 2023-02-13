@@ -2202,6 +2202,7 @@ exports('RegisterStash', registerStash)
 ---@field owner? string|number|boolean
 ---@field groups? table<string, number>
 ---@field coords? vector3
+---@field items? { [number]: string, [number]: number, [number]: table | string }[]
 
 ---@param properties TemporaryStashProperties
 function Inventory.CreateTemporaryStash(properties)

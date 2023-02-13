@@ -4,7 +4,7 @@ local eventHooks = {}
 local microtime = os.microtime
 
 local function itemFilter(filter, item, secondItem)
-	local itemName = item?.name
+	local itemName = type(item) == 'table' and item.name or item
 
 	if not itemName or not filter[itemName] then
 		if type(secondItem) ~= 'table' or not filter[secondItem.name] then
@@ -41,7 +41,7 @@ function TriggerEventHooks(event, payload)
         for i = 1, #hooks do
 			local hook = hooks[i]
 
-			if hook.itemFilter and not itemFilter(hook.itemFilter, payload.fromSlot or payload.item, payload.toSlot) then
+			if hook.itemFilter and not itemFilter(hook.itemFilter, payload.fromSlot or payload.item or payload.itemName or payload.recipe, payload.toSlot) then
 				goto skipLoop
 			end
 
