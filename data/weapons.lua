@@ -606,6 +606,82 @@ return {
 			durability = 0.03,
 			ammoname = 'ammo-rifle'
 		},
+		
+		['WEAPON_PISTOLXM3'] = {
+			label = 'WM 29 Pistol',
+			weight = 970,
+			durability = 0.2,
+			ammoname = 'ammo-9'
+		},
+		
+		['WEAPON_RAILGUNXM3'] = {
+			label = 'Railgun',
+			weight = 10000,
+			durability = 0.2,
+			ammoname = 'ammo-emp'
+		},
+		
+		['WEAPON_RAYMINIGUN'] = {
+			label = 'Widowmaker',
+			weight = 12000,
+			durability = 0.2,
+			ammoname = 'ammo-emp'
+		},
+		
+		['WEAPON_RAYCARBINE'] = {
+			label = 'Unholy',
+			weight = 9000,
+			durability = 0.2,
+			ammoname = 'ammo-emp'
+		},
+		
+		['WEAPON_ACIDPACKAGE'] = {
+			label = 'Acid Package',
+			weight = 1134,
+			durability = 0.1,
+		},
+		
+		['WEAPON_CANDYCANE'] = {
+			label = 'Candy Cane',
+			weight = 1134,
+			durability = 0.1,
+		},
+
+
+		['WEAPON_MINIGUN'] = {
+			label = 'Minigun',
+			weight = 10000,
+			durability = 0.02,
+			ammoname = 'ammo-9'
+		},
+
+		['WEAPON_HOMINGLAUNCHER'] = {
+			label = 'Homing Launcher',
+			weight = 12500,
+			durability = 0.02,
+			ammoname = 'ammo-rocket'
+		},
+
+		['WEAPON_RAILGUN'] = {
+			label = 'Railgun',
+			weight = 10500,
+			durability = 0.02,
+			ammoname = 'ammo-emp'
+		},
+		
+		['WEAPON_RPG'] = {
+			label = 'RPG',
+			weight = 11500,
+			durability = 0.02,
+			ammoname = 'ammo-rocket'
+		},
+		
+		['WEAPON_GRENADELAUNCHER'] = {
+			label = 'Grenade Launcher',
+			weight = 10000,
+			durability = 0.02,
+			ammoname = 'weapon_grenade'
+		},
 	},
 
 	Components = {
@@ -1099,6 +1175,11 @@ return {
 		['ammo-emp'] = {
 			label = 'EMP round',
 			weight = 400,
+		},
+		
+		['ammo-rocket'] = {
+			label = 'Rocket',
+			weight = 800,
 		},
 	}
 }
