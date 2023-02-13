@@ -229,6 +229,9 @@ end
 ---@param slot any
 function Inventory.SetSlot(inv, item, count, metadata, slot)
 	inv = Inventory(inv)
+
+	if not inv then return end
+
 	local currentSlot = inv.items[slot]
 	local newCount = currentSlot and currentSlot.count + count or count
 	local newWeight = currentSlot and inv.weight - currentSlot.weight or inv.weight
@@ -793,7 +796,7 @@ exports('SetMetadata', Inventory.SetMetadata)
 ---@return boolean? success, string|OxItem|nil response
 function Inventory.AddItem(inv, item, count, metadata, slot, cb)
 	if type(item) ~= 'table' then item = Items(item) end
-	if type(inv) ~= 'table' then inv = Inventory(inv) end
+	inv = Inventory(inv)
 	count = math.floor(count + 0.5)
 	local success, response
 
@@ -910,6 +913,7 @@ exports('AddItem', Inventory.AddItem)
 function Inventory.Search(inv, search, items, metadata)
 	if items then
 		inv = Inventory(inv)
+
 		if inv then
 			inv = inv.items
 
@@ -961,7 +965,11 @@ exports('Search', Inventory.Search)
 ---@param metadata? table
 function Inventory.GetItemSlots(inv, item, metadata)
 	inv = Inventory(inv)
+
+	if not inv then return end
+
 	local totalCount, slots, emptySlots = 0, {}, inv.slots
+
 	for k, v in pairs(inv.items) do
 		emptySlots -= 1
 		if v.name == item.name then
@@ -974,6 +982,7 @@ function Inventory.GetItemSlots(inv, item, metadata)
 			end
 		end
 	end
+
 	return slots, totalCount, emptySlots
 end
 exports('GetItemSlots', Inventory.GetItemSlots)
@@ -1100,19 +1109,23 @@ exports('CanCarryItem', Inventory.CanCarryItem)
 ---@param item table | string
 function Inventory.CanCarryAmount(inv, item)
     if type(item) ~= 'table' then item = Items(item) end
-    if item then
-        inv = Inventory(inv)
-            local availableWeight = inv.maxWeight - inv.weight
-            local canHold = math.floor(availableWeight / item.weight)
-            return canHold
+	inv = Inventory(inv)
+
+    if inv and item then
+		local availableWeight = inv.maxWeight - inv.weight
+		return math.floor(availableWeight / item.weight)
     end
 end
+
 exports('CanCarryAmount', Inventory.CanCarryAmount)
 
 ---@param inv table | string | number
 ---@param weight number
 function Inventory.CanCarryWeight(inv, weight)
 	inv = Inventory(inv)
+
+	if not inv then return end
+
 	local availableWeight = inv.maxWeight - inv.weight
 	local canHold = availableWeight >= weight
 	return canHold, availableWeight
@@ -1126,8 +1139,12 @@ exports('CanCarryWeight', Inventory.CanCarryWeight)
 ---@param testItemCount number
 function Inventory.CanSwapItem(inv, firstItem, firstItemCount, testItem, testItemCount)
 	inv = Inventory(inv)
+
+	if not inv then return end
+
 	local firstItemData = Inventory.GetItem(inv, firstItem)
 	local testItemData = Inventory.GetItem(inv, testItem)
+
 	if firstItemData and testItemData and firstItemData.count >= firstItemCount then
 		local weightWithoutFirst = inv.weight - (firstItemData.weight * firstItemCount)
 		local weightWithTest = weightWithoutFirst + (testItemData.weight * testItemCount)
