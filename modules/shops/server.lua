@@ -176,10 +176,11 @@ lib.callback.register('ox_inventory:buyItem', function(source, data)
 	if data.toType == 'player' then
 		if data.count == nil then data.count = 1 end
 		local playerInv = Inventory(source)
-		local split = playerInv.open:match('^.*() ')
-		local shopType = playerInv.open:sub(0, split-1)
-		local shopId = tonumber(playerInv.open:sub(split+1))
-		local shop = split and Shops[shopType][shopId] or Shops[playerInv.open]
+		local shopType, shopId = string.strsplit(' ', playerInv.open)
+
+		if shopId then shopId = tonumber(shopId) end
+
+		local shop = shopId and Shops[shopType][shopId] or Shops[shopType]
 		local fromData = shop.items[data.fromSlot]
 		local toData = playerInv.items[data.toSlot]
 
