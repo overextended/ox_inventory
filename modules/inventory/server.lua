@@ -1678,7 +1678,7 @@ exports('ReturnInventory', Inventory.Return)
 function Inventory.Clear(inv, keep)
 	inv = Inventory(inv) --[[@as OxInventory]]
 	if not inv then return end
-
+    if not next(inv.items) then inv.items = {} return end
 	local updateSlots = inv.player and {}
 	local newWeight = 0
 	local inc = 0
