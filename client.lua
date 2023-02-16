@@ -1317,7 +1317,7 @@ RegisterNetEvent('ox_inventory:setPlayerInventory', function(currentDrops, inven
 
 				local weaponAmmo = currentWeapon.metadata.ammo
 
-				if not invBusy and currentWeapon.timer ~= 0 and currentWeapon.timer < GetGameTimer() then
+				if not invBusy and currentWeapon.timer ~= nil and currentWeapon.timer ~= 0 and currentWeapon.timer < GetGameTimer() then
 					currentWeapon.timer = 0
 
 					if weaponAmmo then
