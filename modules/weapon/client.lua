@@ -73,6 +73,15 @@ function Weapon.Equip(item, data)
 	GiveWeaponObjectToPed(obj, playerPed)
 	RemoveWeaponAsset(data.hash)
 
+	if item.metadata.specialAmmo then
+		local clipComponentKey = ('%s_CLIP'):format(data.model:gsub('WEAPON_', 'COMPONENT_'))
+		local specialClip = ('%s_%s'):format(clipComponentKey, item.metadata.specialAmmo:upper())
+
+		if DoesWeaponTakeWeaponComponent(data.hash, specialClip) then
+			GiveWeaponComponentToWeaponObject(obj, specialClip)
+		end
+	end
+
 	-- Sometimes the ammo fills or splits into reserves instead of loading into the weapon
 	-- Refilling without a timeout tends to lead to the weapon jamming
 	SetTimeout(0, function() RefillAmmoInstantly(playerPed) end)
