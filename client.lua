@@ -1305,7 +1305,7 @@ RegisterNetEvent('ox_inventory:setPlayerInventory', function(currentDrops, inven
 				DisableControlAction(0, 37, true)
 			end
 
-			if currentWeapon then
+			if currentWeapon and currentWeapon.timer then
 				DisableControlAction(0, 80, true)
 				DisableControlAction(0, 140, true)
 
