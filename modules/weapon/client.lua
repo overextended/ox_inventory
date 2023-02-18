@@ -85,6 +85,8 @@ function Weapon.Equip(item, data)
 end
 
 function Weapon.Disarm(currentWeapon, noAnim)
+	if not currentWeapon?.timer then return end
+
 	if source == '' then
 		TriggerServerEvent('ox_inventory:updateWeapon')
 	end
