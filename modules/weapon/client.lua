@@ -17,7 +17,7 @@ local function vehicleIsCycle(vehicle)
 end
 
 function Weapon.Equip(item, data)
-	local playerPed, sleep = cache.ped, 200
+	local playerPed = cache.ped
 
 	if client.weaponanims then
 		if cache.vehicle and vehicleIsCycle(cache.vehicle) then
@@ -31,7 +31,7 @@ function Weapon.Equip(item, data)
 			anim = nil
 		end
 
-		sleep = anim and anim[3] or 1200
+		local sleep = anim and anim[3] or 1200
 
 		Utils.PlayAnimAdvanced(sleep, anim and anim[1] or 'reaction@intimidation@1h', anim and anim[2] or 'intro', coords.x, coords.y, coords.z, 0, 0, GetEntityHeading(playerPed), 8.0, 3.0, sleep*2, 50, 0.1)
 	end
@@ -66,20 +66,20 @@ function Weapon.Equip(item, data)
 	SetCurrentPedWeapon(playerPed, data.hash, true)
 	SetPedCurrentWeaponVisible(playerPed, true, false, false, false)
 	SetWeaponsNoAutoswap(true)
-	TriggerEvent('ox_inventory:currentWeapon', item)
-	Utils.ItemNotify({item.metadata.label or item.label, item.metadata.image or item.name, 'ui_equipped'})
 
 	local ammo = item.metadata.ammo or item.throwable and 1 or 0
 
-	if ammo > 0 then AddAmmoToPed(playerPed, data.hash, ammo) end
-
-	Wait(sleep)
-	RefillAmmoInstantly(playerPed)
+	if ammo > 0 then
+		SetAmmoInClip(playerPed, data.hash, ammo)
+	end
 
 	if data.hash == `WEAPON_PETROLCAN` or data.hash == `WEAPON_HAZARDCAN` or data.hash == `WEAPON_FERTILIZERCAN` or data.hash == `WEAPON_FIREEXTINGUISHER` then
 		item.metadata.ammo = item.metadata.durability
 		SetPedInfiniteAmmo(playerPed, true, data.hash)
 	end
+
+	TriggerEvent('ox_inventory:currentWeapon', item)
+	Utils.ItemNotify({item.metadata.label or item.label, item.metadata.image or item.name, 'ui_equipped'})
 
 	return item
 end
