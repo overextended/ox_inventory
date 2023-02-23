@@ -20,6 +20,10 @@ function Weapon.Equip(item, data)
 	local playerPed = cache.ped
 	local coords = GetEntityCoords(playerPed, true)
 
+	RequestWeaponAsset(data.hash, 31, 0)
+
+	while not HasWeaponAssetLoaded(data.hash) do Wait(0) end
+
 	if client.weaponanims then
 		if cache.vehicle and vehicleIsCycle(cache.vehicle) then
 			goto skipAnim
@@ -45,7 +49,6 @@ function Weapon.Equip(item, data)
 	item.throwable = data.throwable
 
 	local ammo = item.metadata.ammo or item.throwable and 1 or 0
-
 	-- Create an object instead of adding the weapon directly to ped
 	-- Allows the components and ammo to be set more smoothly
 	local obj = CreateWeaponObject(data.hash, ammo, coords.x, coords.y, coords.z, true, 0.0, 0)
@@ -68,6 +71,7 @@ function Weapon.Equip(item, data)
 
 	SetPedAmmo(playerPed, data.hash, 0)
 	GiveWeaponObjectToPed(obj, playerPed)
+	RemoveWeaponAsset(data.hash)
 
 	-- Sometimes the ammo fills or splits into reserves instead of loading into the weapon
 	-- Refilling without a timeout tends to lead to the weapon jamming
