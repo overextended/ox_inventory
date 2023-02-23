@@ -744,7 +744,7 @@ local function registerCommands()
 
 			if currentWeapon.ammo then
 				if currentWeapon.metadata.durability > 0 then
-					local ammo = Inventory.Search(1, currentWeapon.ammo, currentWeapon.metadata.specialAmmo and { type = currentWeapon.metadata.specialAmmo } or nil)?[1]
+					local ammo = Inventory.Search(1, currentWeapon.ammo, { type = currentWeapon.metadata.specialAmmo })?[1]
 
 					if ammo then
 						useSlot(ammo.slot)
@@ -1367,7 +1367,7 @@ RegisterNetEvent('ox_inventory:setPlayerInventory', function(currentDrops, inven
 						TriggerServerEvent('ox_inventory:updateWeapon', 'ammo', weaponAmmo)
 
 						if client.autoreload and weaponAmmo == 0 and currentWeapon.ammo and canUseItem(true) then
-							local ammo = Inventory.Search(1, currentWeapon.ammo, currentWeapon.metadata.specialAmmo and { type = currentWeapon.metadata.specialAmmo } or nil)?[1]
+							local ammo = Inventory.Search(1, currentWeapon.ammo, { type = currentWeapon.metadata.specialAmmo })?[1]
 
 							if ammo then
 								useSlot(ammo.slot)
