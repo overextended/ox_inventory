@@ -471,18 +471,11 @@ lib.addCommand('clearevidence', {
 		{ name = 'locker', type = 'number', help = 'The locker id to clear' },
 	},
 }, function(source, args)
-	local inventory = Inventory(source)
-	local hasPermission = false
+	if not server.isPlayerBoss then return end
 
-	if shared.framework == 'esx' then
-		-- todo: make it work
-	elseif shared.framework == 'qb' then
-		-- todo: make it work
-	else
-		local group, rank = server.hasGroup(inventory, shared.police)
-		---@diagnostic disable-next-line: undefined-field
-		if group and rank == GlobalState.groups[group] then hasPermission = true end
-	end
+	local inventory = Inventory(source)
+	local group, grade = server.hasGroup(inventory, shared.police)
+	local hasPermission = group and server.isPlayerBoss(source, group, grade)
 
 	if hasPermission then
 		MySQL.query('DELETE FROM ox_inventory WHERE name = ?', {('evidence-%s'):format(args.evidence)})
