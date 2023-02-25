@@ -1885,7 +1885,7 @@ RegisterServerEvent('ox_inventory:giveItem', function(slot, target, count)
 			toType = toInventory.type,
 			count = data.count,
 			action = 'give',
-			item = data,
+			fromSlot = data,
 		}) then
 			Inventory.RemoveItem(fromInventory, item, count, data.metadata, slot)
 			Inventory.AddItem(toInventory, item, count, data.metadata)
