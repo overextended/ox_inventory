@@ -23,6 +23,8 @@ local Inventory = {}
 ---@field changed? boolean
 ---@field weapon? number
 ---@field containerSlot? number
+---@field player? { source: number, ped: number, groups: table, name?: string, sex?: string, dateofbirth?: string }
+---@field netid? number
 
 ---@alias inventory OxInventory | table | string | number
 
@@ -1227,7 +1229,7 @@ end)
 
 Inventory.Drops = {}
 
----@param prefix string
+---@param prefix string?
 ---@return string
 local function generateInvId(prefix)
 	while true do

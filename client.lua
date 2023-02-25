@@ -93,8 +93,8 @@ local function closeTrunk()
 	end
 end
 
----@param inv string
----@param data any
+---@param inv string?
+---@param data any?
 ---@return boolean?
 function client.openInventory(inv, data)
 	if invOpen then
