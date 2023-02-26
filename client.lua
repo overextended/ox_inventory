@@ -276,7 +276,7 @@ lib.callback.register('ox_inventory:usingItem', function(data)
 
 		local success = (not item.usetime or lib.progressBar({
 			duration = item.usetime,
-			label = item.label or locale('using', data.label),
+			label = item.label or locale('using', data.metadata.label or data.label),
 			useWhileDead = item.useWhileDead,
 			canCancel = item.cancel,
 			disable = item.disable,
