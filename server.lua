@@ -509,7 +509,7 @@ lib.addCommand('clearinv', {
 	},
 	restricted = 'group.admin',
 }, function(source, args)
-	Inventory.Clear(tonumber(args.target) or args.target)
+	Inventory.Clear(tonumber(args.invId) or args.invId == 'me' and source or args.invId)
 end)
 
 lib.addCommand('saveinv', {
