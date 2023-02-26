@@ -1995,7 +1995,7 @@ lib.callback.register('ox_inventory:removeAmmoFromWeapon', function(source, slot
 
 	if not item or not item.ammoname then return end
 
-	if Inventory.AddItem(inventory, item.ammoname, slotData.metadata.ammo) then
+	if Inventory.AddItem(inventory, item.ammoname, slotData.metadata.ammo, { type = slotData.metadata.specialAmmo or nil }) then
 		slotData.metadata.ammo = 0
 		slotData.weight = Inventory.SlotWeight(item, slotData)
 
