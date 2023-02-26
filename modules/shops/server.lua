@@ -21,6 +21,7 @@ local locations = shared.target and 'targets' or 'locations'
 ---@field coords vector3
 ---@field items OxShopItem[]
 ---@field slots number
+---@field [string] any
 
 local function setupShopItems(id, shopType, shopName, groups)
 	local shop = id and Shops[shopType][id] or Shops[shopType] --[[@as OxShopServer]]
@@ -55,81 +56,80 @@ local function setupShopItems(id, shopType, shopName, groups)
 end
 
 ---@param shopType string
----@param shopDetails OxShop
-local function createShop(shopType, shopDetails)
-	Shops[shopType] = {}
-	local shopLocations = shopDetails[locations] or shopDetails.locations
+---@param properties OxShopServer
+local function registerShopType(shopType, properties)
+	local shopLocations = properties[locations] or properties.locations
 
 	if shopLocations then
-		---@diagnostic disable-next-line: undefined-field
-		local groups = shopDetails.groups or shopDetails.jobs
-
-		for i = 1, #shopLocations do
-			---@type OxShopServer
-			Shops[shopType][i] = {
-				label = shopDetails.name,
-				id = shopType..' '..i,
-				groups = groups,
-				items = table.clone(shopDetails.inventory),
-				slots = #shopDetails.inventory,
-				type = 'shop',
-				coords = shared.target and shopDetails.targets?[i]?.loc or shopLocations[i],
-				distance = shared.target and shopDetails.targets?[i]?.distance,
-			}
-
-			setupShopItems(i, shopType, shopDetails.name, groups)
-		end
+		Shops[shopType] = properties
 	else
-		---@diagnostic disable-next-line: undefined-field
-		local groups = shopDetails.groups or shopDetails.jobs
-
-		---@type OxShopServer
 		Shops[shopType] = {
-			label = shopDetails.name,
+			label = properties.name,
 			id = shopType,
-			groups = groups,
-			items = shopDetails.inventory,
-			slots = #shopDetails.inventory,
+			groups = properties.groups or properties.jobs,
+			items = properties.inventory,
+			slots = #properties.inventory,
 			type = 'shop',
 		}
 
-
-		setupShopItems(nil, shopType, shopDetails.name, groups)
+		setupShopItems(nil, shopType, properties.name, properties.groups or properties.jobs)
 	end
 end
 
+---@param shopType string
+---@param id number
+local function createShop(shopType, id)
+	local shop = Shops[shopType]
+
+	if not shop then return end
+
+	local shopLocations = shop[locations] or shop.locations
+	local groups = shop.groups or shop.jobs
+
+	if not shopLocations or not shopLocations[id] then return end
+
+	---@type OxShopServer
+	shop[id] = {
+		label = shop.name,
+		id = shopType..' '..id,
+		groups = groups,
+		items = table.clone(shop.inventory),
+		slots = #shop.inventory,
+		type = 'shop',
+		coords = shared.target and shop.targets?[id]?.loc or shopLocations[id],
+		distance = shared.target and shop.targets?[id]?.distance,
+	}
+
+	setupShopItems(id, shopType, shop.name, groups)
+
+	return shop[id]
+end
+
 for shopType, shopDetails in pairs(data('shops')) do
-	createShop(shopType, shopDetails)
+	registerShopType(shopType, shopDetails)
 end
 
 ---@param shopType string
----@param shopDetails OxShop
+---@param shopDetails OxShopServer
 exports('RegisterShop', function(shopType, shopDetails)
-	createShop(shopType, shopDetails)
+	registerShopType(shopType, shopDetails)
 end)
-
--- exports.ox_inventory:RegisterShop('TestShop', {
--- 	name = 'Test shop',
--- 	inventory = {
--- 		{ name = 'burger', price = 10 },
--- 		{ name = 'water', price = 10 },
--- 		{ name = 'cola', price = 10 },
--- 	}, locations = {
--- 		vec3(223.832962, -792.619751, 30.695190),
--- 	},
--- 	groups = {
--- 		police = 0
--- 	},
--- })
--- Open on client with `exports.ox_inventory:openInventory('shop', {id=1, type='TestShop'})`
 
 lib.callback.register('ox_inventory:openShop', function(source, data)
 	local left, shop = Inventory(source)
 
 	if data then
-		shop = data.id and Shops[data.type][data.id] or Shops[data.type] --[[@as OxShopServer]]
+		shop = Shops[data.type]
 
-		if not shop.items then return end
+		if not shop then return end
+
+		if not shop.items then
+			shop = (data.id and shop[data.id] or createShop(data.type, data.id))
+
+			if not shop then return end
+		end
+
+		---@cast shop OxShopServer
 
 		if shop.groups then
 			local group = server.hasGroup(left, shop.groups)
