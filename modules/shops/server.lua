@@ -14,16 +14,50 @@ local locations = shared.target and 'targets' or 'locations'
 ---@field license? string
 ---@field currency? string
 ---@field grade? number
+---@field count? number
 
 ---@class OxShopServer : OxShop
 ---@field id string
 ---@field coords vector3
 ---@field items OxShopItem[]
+---@field slots number
 
----@param shopName string
+local function setupShopItems(id, shopType, shopName, groups)
+	local shop = id and Shops[shopType][id] or Shops[shopType] --[[@as OxShopServer]]
+
+	for i = 1, shop.slots do
+		local slot = shop.items[i]
+
+		if slot.grade and not groups then
+			print(('^1attempted to restrict slot %s (%s) to grade %s, but %s has no job restriction^0'):format(id, slot.name, slot.grade, shopName))
+			slot.grade = nil
+		end
+
+		local Item = Items(slot.name)
+
+		if Item then
+			---@type OxShopItem
+			slot = {
+				name = Item.name,
+				slot = i,
+				weight = Item.weight,
+				count = slot.count,
+				price = (server.randomprices and not slot.currency or slot.currency == 'money') and (math.ceil(slot.price * (math.random(80, 120)/100))) or slot.price or 0,
+				metadata = slot.metadata,
+				license = slot.license,
+				currency = slot.currency,
+				grade = slot.grade
+			}
+
+			shop.items[i] = slot
+		end
+	end
+end
+
+---@param shopType string
 ---@param shopDetails OxShop
-local function createShop(shopName, shopDetails)
-	Shops[shopName] = {}
+local function createShop(shopType, shopDetails)
+	Shops[shopType] = {}
 	local shopLocations = shopDetails[locations] or shopDetails.locations
 
 	if shopLocations then
@@ -32,9 +66,9 @@ local function createShop(shopName, shopDetails)
 
 		for i = 1, #shopLocations do
 			---@type OxShopServer
-			Shops[shopName][i] = {
+			Shops[shopType][i] = {
 				label = shopDetails.name,
-				id = shopName..' '..i,
+				id = shopType..' '..i,
 				groups = groups,
 				items = table.clone(shopDetails.inventory),
 				slots = #shopDetails.inventory,
@@ -43,86 +77,35 @@ local function createShop(shopName, shopDetails)
 				distance = shared.target and shopDetails.targets?[i]?.distance,
 			}
 
-			for j = 1, Shops[shopName][i].slots do
-				local slot = Shops[shopName][i].items[j]
-
-				if slot.grade and not groups then
-					print(('^1attempted to restrict slot %s (%s) to grade %s, but %s has no job restriction^0'):format(i, slot.name, slot.grade, shopDetails.name))
-					slot.grade = nil
-				end
-
-				local Item = Items(slot.name)
-
-				if Item then
-					---@type OxShopItem
-					slot = {
-						name = Item.name,
-						slot = j,
-						weight = Item.weight,
-						count = slot.count,
-						price = (server.randomprices and not slot.currency or slot.currency == 'money') and (math.ceil(slot.price * (math.random(80, 120)/100))) or slot.price or 0,
-						metadata = slot.metadata,
-						license = slot.license,
-						currency = slot.currency,
-						grade = slot.grade
-					}
-
-					Shops[shopName][i].items[j] = slot
-				end
-			end
+			setupShopItems(i, shopType, shopDetails.name, groups)
 		end
 	else
 		---@diagnostic disable-next-line: undefined-field
 		local groups = shopDetails.groups or shopDetails.jobs
 
 		---@type OxShopServer
-		Shops[shopName] = {
+		Shops[shopType] = {
 			label = shopDetails.name,
-			id = shopName,
+			id = shopType,
 			groups = groups,
 			items = shopDetails.inventory,
 			slots = #shopDetails.inventory,
 			type = 'shop',
 		}
 
-		for i = 1, Shops[shopName].slots do
-			local slot = Shops[shopName].items[i]
 
-			if slot.grade and not groups then
-				print(('^1attempted to restrict slot %s (%s) to grade %s, but %s has no job restriction^0'):format(i, slot.name, slot.grade, shopDetails.name))
-				slot.grade = nil
-			end
-
-			local Item = Items(slot.name)
-
-			if Item then
-				---@type OxShopItem
-				slot = {
-					name = Item.name,
-					slot = i,
-					weight = Item.weight,
-					count = slot.count,
-					price = (server.randomprices and not slot.currency or slot.currency == 'money') and (math.ceil(slot.price * (math.random(90, 110)/100))) or slot.price,
-					metadata = slot.metadata,
-					license = slot.license,
-					currency = slot.currency,
-					grade = slot.grade
-				}
-
-				Shops[shopName].items[i] = slot
-			end
-		end
+		setupShopItems(nil, shopType, shopDetails.name, groups)
 	end
 end
 
-for shopName, shopDetails in pairs(data('shops')) do
-	createShop(shopName, shopDetails)
+for shopType, shopDetails in pairs(data('shops')) do
+	createShop(shopType, shopDetails)
 end
 
----@param shopName string
+---@param shopType string
 ---@param shopDetails OxShop
-exports('RegisterShop', function(shopName, shopDetails)
-	createShop(shopName, shopDetails)
+exports('RegisterShop', function(shopType, shopDetails)
+	createShop(shopType, shopDetails)
 end)
 
 -- exports.ox_inventory:RegisterShop('TestShop', {
