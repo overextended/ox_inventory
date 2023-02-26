@@ -358,9 +358,15 @@ local function useSlot(slot)
 	if not data then return end
 
 	if canUseItem(data.ammo and true) then
-
 		if data.component and not currentWeapon then
 			return lib.notify({ id = 'weapon_hand_required', type = 'error', description = locale('weapon_hand_required') })
+		end
+
+		-- Naive durability check to get an early exit
+		-- People often don't call the 'useItem' export and then complain about "broken" items being usable
+		-- This won't work with degradation since we need access to os.time on the server
+		if (item.metadata.durability or 1) <= 0 then
+			return lib.notify({ type = 'error', description = locale('no_durability', item.metadata.label or item.label) })
 		end
 
 		data.slot = slot
