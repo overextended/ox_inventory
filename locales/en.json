@@ -48,6 +48,7 @@
   "buy_amount": "You must enter an amount to buy",
   "component_has": "This weapon already has a %s",
   "component_invalid": "This weapon is incompatible with %s",
+  "component_slot_occupied": "This weapon's %s slot is already occupied",
   "cannot_perform": "You can not perform this action",
   "cannot_carry": "You can not carry that much",
   "cannot_carry_other": "Target inventory can not hold that much",

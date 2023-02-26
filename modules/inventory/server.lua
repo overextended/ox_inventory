@@ -1899,7 +1899,7 @@ RegisterServerEvent('ox_inventory:giveItem', function(slot, target, count)
 	end
 end)
 
-RegisterServerEvent('ox_inventory:updateWeapon', function(action, value, slot)
+RegisterServerEvent('ox_inventory:updateWeapon', function(action, value, slot, specialAmmo)
 	local inventory = Inventories[source]
 
 	if not inventory then return end
@@ -1940,8 +1940,9 @@ RegisterServerEvent('ox_inventory:updateWeapon', function(action, value, slot)
 				local ammo = Items(weapon.name).ammoname
 				local diff = value - weapon.metadata.ammo
 
-				if Inventory.RemoveItem(inventory, ammo, diff) then
+				if Inventory.RemoveItem(inventory, ammo, diff, specialAmmo) then
 					weapon.metadata.ammo = value
+					weapon.metadata.specialAmmo = specialAmmo
 					weapon.weight = Inventory.SlotWeight(item, weapon)
 				end
 			elseif action == 'throw' then
