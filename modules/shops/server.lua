@@ -168,8 +168,21 @@ local table = lib.table
 -- http://lua-users.org/wiki/FormattingNumbers
 -- credit http://richard.warburton.it
 local function comma_value(n)
-	local left,num,right = string.match(n,'^([^%d]*%d)(%d*)(.-)$')
+	local left, num, right = string.match(n,'^([^%d]*%d)(%d*)(.-)$')
 	return left..(num:reverse():gsub('(%d%d%d)','%1,'):reverse())..right
+end
+
+local function canAffordItem(inv, currency, price)
+	local canAfford = price >= 0 and Inventory.GetItem(inv, currency, false, true) >= price
+
+	return canAfford or {
+		type = 'error',
+		description = locale('cannot_afford', ('%s%s'):format((currency == 'money' and locale('$') or comma_value(price)), (currency == 'money' and comma_value(price) or ' '..Items(currency).label)))
+	}
+end
+
+local function removeCurrency(inv, currency, price)
+	Inventory.RemoveItem(inv, currency, price)
 end
 
 lib.callback.register('ox_inventory:buyItem', function(source, data)
@@ -218,10 +231,10 @@ lib.callback.register('ox_inventory:buyItem', function(source, data)
 					return false, false, { type = 'error', description = locale('cannot_carry') }
 				end
 
-				local canAfford = price >= 0 and Inventory.GetItem(source, currency, false, true) >= price
+				local canAfford = canAffordItem(playerInv, currency, price)
 
-				if not canAfford then
-					return false, false, { type = 'error', description = locale('cannot_afford', ('%s%s'):format((currency == 'money' and locale('$') or comma_value(price)), (currency == 'money' and comma_value(price) or ' '..Items(currency).label))) }
+				if canAfford ~= true then
+					return false, false, canAfford
 				end
 
 				if not TriggerEventHooks('buyItem', {
@@ -240,7 +253,7 @@ lib.callback.register('ox_inventory:buyItem', function(source, data)
 
 				Inventory.SetSlot(playerInv, fromItem, count, metadata, data.toSlot)
 				playerInv.weight = newWeight
-				Inventory.RemoveItem(source, currency, price)
+				removeCurrency(playerInv, currency, price)
 
 				if fromData.count then
 					shop.items[data.fromSlot].count = fromData.count - count
