@@ -230,6 +230,8 @@ lib.callback.register('ox_inventory:useItem', function(source, itemName, slot, m
 				end
 			elseif durability <= 0 then
 				return TriggerClientEvent('ox_lib:notify', source, { type = 'error', description = locale('no_durability', label) })
+			elseif consume ~= 0 and consume < 1 and durability < consume * 100 then
+				return TriggerClientEvent('ox_lib:notify', source, { type = 'error', description = locale('not_enough_durability', label) })
 			end
 
 			if data.count > 1 and consume < 1 and consume > 0 and not Inventory.GetEmptySlot(inventory) then
