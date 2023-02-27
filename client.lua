@@ -362,11 +362,19 @@ local function useSlot(slot)
 			return lib.notify({ id = 'weapon_hand_required', type = 'error', description = locale('weapon_hand_required') })
 		end
 
+		local durability = item.metadata.durability --[[@as number?]]
+		local consume = data.consume --[[@as number?]]
+		local label = item.metadata.label or item.label --[[@as string]]
+
 		-- Naive durability check to get an early exit
 		-- People often don't call the 'useItem' export and then complain about "broken" items being usable
 		-- This won't work with degradation since we need access to os.time on the server
-		if (item.metadata.durability or 1) <= 0 then
-			return lib.notify({ type = 'error', description = locale('no_durability', item.metadata.label or item.label) })
+		if durability and durability <= 100 and consume then
+			if durability <= 0 then
+				return lib.notify({ type = 'error', description = locale('no_durability', label) })
+			elseif consume ~= 0 and consume < 1 and durability < consume * 100 then
+				return lib.notify({ type = 'error', description = locale('not_enough_durability', label) })
+			end
 		end
 
 		data.slot = slot
@@ -491,7 +499,7 @@ local function useSlot(slot)
 
 					if DoesWeaponTakeWeaponComponent(currentWeapon.hash, component) then
 						if HasPedGotWeaponComponent(playerPed, currentWeapon.hash, component) then
-							lib.notify({ id = 'component_has', type = 'error', description = locale('component_has', data.label) })
+							lib.notify({ id = 'component_has', type = 'error', description = locale('component_has', label) })
 						else
 							useItem(data, function(data)
 								if data then
@@ -504,7 +512,7 @@ local function useSlot(slot)
 						return
 					end
 				end
-				lib.notify({ id = 'component_invalid', type = 'error', description = locale('component_invalid', data.label) })
+				lib.notify({ id = 'component_invalid', type = 'error', description = locale('component_invalid', label) })
 			elseif data.allowArmed then
 				useItem(data)
 			end
