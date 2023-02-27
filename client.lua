@@ -1620,8 +1620,30 @@ end)
 
 ---Synchronise and validate all item movement between the NUI and server.
 RegisterNUICallback('swapItems', function(data, cb)
-	if data.toType == 'newdrop' and cache.vehicle then
-        return cb(false)
+	if data.toType == 'newdrop' then
+		if cache.vehicle or IsPedFalling(playerPed) then return cb(false) end
+
+		local coords = GetEntityCoords(playerPed)
+
+		if IsEntityInWater(playerPed) then
+			local destination = vec3(coords.x, coords.y, -200)
+			local handle = StartShapeTestLosProbe(coords.x, coords.y, coords.z, destination.x, destination.y, destination.z, 511, cache.ped, 4)
+
+			while true do
+				Wait(0)
+				local retval, hit, endCoords = GetShapeTestResult(handle)
+
+				if retval ~= 1 then
+					if not hit then return end
+
+					data.coords = vec3(endCoords.x, endCoords.y, endCoords.z + 1.0)
+
+					break
+				end
+			end
+		else
+			data.coords = coords
+		end
     end
 
 	if currentInstance then

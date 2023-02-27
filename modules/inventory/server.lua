@@ -1320,8 +1320,7 @@ local function dropItem(source, data)
 
 	local dropId = generateInvId('drop')
 	local inventory = Inventory.Create(dropId, ('Drop %s'):format(dropId:gsub('%D', '')), 'drop', shared.playerslots, toData.weight, shared.playerweight, false, {[data.toSlot] = toData})
-	local coords = GetEntityCoords(GetPlayerPed(source))
-	inventory.coords = vec3(coords.x, coords.y, coords.z-0.2)
+	inventory.coords = data.coords
 	Inventory.Drops[dropId] = {coords = inventory.coords, instance = data.instance}
 	playerInventory.changed = true
 
