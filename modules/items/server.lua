@@ -163,6 +163,8 @@ CreateThread(function()
 			for k, item in pairs(items) do
 				if not ItemList[item.name] and not checkIgnoredNames(item.name) then
 					local oxItem = {
+						name = item.name,
+						label = item.label,
 						close = item.shouldClose == nil and true or item.shouldClose,
 						stack = not item.unique and true,
 						description = item.description,
@@ -205,12 +207,13 @@ CreateThread(function()
 ]]
 				local fileSize = #file
 
+				local serpent = require("serpent")
 				for _, item in pairs(dump) do
 					local formatName = item.name:gsub("'", "\\'"):lower()
 					if not ItemList[formatName] then
 						fileSize += 1
-
-						file[fileSize] = (itemFormat):format(formatName, item.label:gsub("'", "\\'"), item.weight, item.stack, item.close, item.description and json.encode(item.description) or 'nil', item.status and json.encode(item.status) or 'nil')
+						file[fileSize] = serpent.block(item)
+						-- file[fileSize] = (itemFormat):format(formatName, item.label:gsub("'", "\\'"), item.weight, item.stack, item.close, item.description and json.encode(item.description) or 'nil', item.status and json.encode(item.status) or 'nil')
 						ItemList[formatName] = item
 					end
 				end
