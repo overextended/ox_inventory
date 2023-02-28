@@ -615,126 +615,108 @@ local function registerCommands()
 			end
 
 			if StashTarget then
-				client.openInventory('stash', StashTarget)
-			elseif cache.vehicle then
-				-- Player is still entering vehicle, so bailout
-				if not IsPedInAnyVehicle(playerPed, false) then return end
+				return client.openInventory('stash', StashTarget)
+			end
 
-				local vehicle = cache.vehicle
+			local vehicle = cache.vehicle
 
-				if NetworkGetEntityIsNetworked(vehicle) then
-					local vehicleHash = GetEntityModel(vehicle)
-					local vehicleClass = GetVehicleClass(vehicle)
-					local checkVehicle = Vehicles.Storage[vehicleHash]
-					-- No storage or no glovebox
-					if (checkVehicle == 0 or checkVehicle == 2) or (not Vehicles.glovebox[vehicleClass] and not Vehicles.glovebox.models[vehicleHash]) then return end
+			if vehicle then
+				if not IsPedInAnyVehicle(playerPed, false) or not NetworkGetEntityIsNetworked(vehicle) then return end
 
-					local plate = GetVehicleNumberPlateText(vehicle)
-					client.openInventory('glovebox', {id = 'glove'..plate, netid = NetworkGetNetworkIdFromEntity(vehicle) })
-
-					while true do
-						Wait(100)
-						if not invOpen then break
-						elseif not cache.vehicle then
-							client.closeInventory()
-							break
-						end
-					end
-				end
-			else
-				local entity, entityType = Utils.Raycast(2|16)
-
-				if not entity then return end
-
-				if not shared.target and entityType == 3 then
-					local model = GetEntityModel(entity)
-
-					if Inventory.Dumpsters[model] then
-						return Inventory.OpenDumpster(entity)
-					end
-				end
-
-				if entityType ~= 2 then return end
-
-				local position = GetEntityCoords(entity)
-				local lastVehicle
-				local vehicleHash = GetEntityModel(entity)
-				local vehicleClass = GetVehicleClass(entity)
+				local vehicleHash = GetEntityModel(vehicle)
+				local vehicleClass = GetVehicleClass(vehicle)
 				local checkVehicle = Vehicles.Storage[vehicleHash]
+
 				-- No storage or no glovebox
-				if (checkVehicle == 0 or checkVehicle == 1) or (not Vehicles.trunk[vehicleClass] and not Vehicles.trunk.models[vehicleHash]) then return end
+				if (checkVehicle == 0 or checkVehicle == 2) or (not Vehicles.glovebox[vehicleClass] and not Vehicles.glovebox.models[vehicleHash]) then return end
 
-				if #(playerCoords - position) < 6 and NetworkGetEntityIsNetworked(entity) then
-					local locked = GetVehicleDoorLockStatus(entity)
+				return client.openInventory('glovebox', { id = 'glove'..GetVehicleNumberPlateText(vehicle), netid = NetworkGetNetworkIdFromEntity(vehicle) })
+			end
 
-					if locked == 0 or locked == 1 then
-						local open, vehBone
+			local entity, entityType = Utils.Raycast(2|16)
 
-						if checkVehicle == nil then -- No data, normal trunk
-							open, vehBone = 5, GetEntityBoneIndexByName(entity, 'boot')
-						elseif checkVehicle == 3 then -- Trunk in hood
-							open, vehBone = 4, GetEntityBoneIndexByName(entity, 'bonnet')
-						else -- No storage or no trunk
-							return
-						end
+			if not entity then return end
 
-						if vehBone == -1 then
-							if vehicleClass == 12 then
-								open = { 2, 3 }
-							end
+			if not shared.target and entityType == 3 then
+				local model = GetEntityModel(entity)
 
-							vehBone = GetEntityBoneIndexByName(entity, Vehicles.trunk.boneIndex[vehicleHash] or 'platelight')
-						end
-
-						position = GetWorldPositionOfEntityBone(entity, vehBone)
-						local distance = #(playerCoords - position)
-						local closeToVehicle = distance < 2 and open
-
-						if closeToVehicle then
-							local plate = GetVehicleNumberPlateText(entity)
-							TaskTurnPedToFaceCoord(playerPed, position.x, position.y, position.z, 0)
-							lastVehicle = entity
-							client.openInventory('trunk', {id='trunk'..plate, netid = NetworkGetNetworkIdFromEntity(entity)})
-							local timeout = 20
-							repeat Wait(50)
-								timeout -= 1
-							until (currentInventory and currentInventory.type == 'trunk') or timeout == 0
-
-							if timeout == 0 then
-								closeToVehicle, lastVehicle = false, nil
-								return
-							end
-
-							if type(open) == 'table' then
-								for i = 1, #open do
-									SetVehicleDoorOpen(entity, open[i], false, false)
-								end
-							else
-								SetVehicleDoorOpen(entity, open, false, false)
-							end
-
-							Wait(200)
-							---@todo animation for vans?
-							Utils.PlayAnim(0, 'anim@heists@prison_heiststation@cop_reactions', 'cop_b_idle', 3.0, 3.0, -1, 49, 0.0, 0, 0, 0)
-							currentInventory.entity = lastVehicle
-							currentInventory.door = open
-
-							while true do
-								Wait(50)
-
-								if closeToVehicle and invOpen then
-									position = GetWorldPositionOfEntityBone(entity, vehBone)
-
-									if #(GetEntityCoords(playerPed) - position) >= 2 or not DoesEntityExist(entity) then
-										break
-									else TaskTurnPedToFaceCoord(playerPed, position.x, position.y, position.z, 0) end
-								else break end
-							end
-
-							if lastVehicle then client.closeInventory() end
-						end
-					else lib.notify({ id = 'vehicle_locked', type = 'error', description = locale('vehicle_locked') }) end
+				if Inventory.Dumpsters[model] then
+					return Inventory.OpenDumpster(entity)
 				end
+			end
+
+			if entityType ~= 2 then return end
+
+			local position = GetEntityCoords(entity)
+
+			if #(playerCoords - position) > 6 or GetVehiclePedIsEntering(playerPed) ~= 0 or not NetworkGetEntityIsNetworked(entity) then return end
+
+			local vehicleHash = GetEntityModel(entity)
+			local vehicleClass = GetVehicleClass(entity)
+			local checkVehicle = Vehicles.Storage[vehicleHash]
+
+			-- No storage or no glovebox
+			if (checkVehicle == 0 or checkVehicle == 1) or (not Vehicles.trunk[vehicleClass] and not Vehicles.trunk.models[vehicleHash]) then return end
+
+			if GetVehicleDoorLockStatus(entity) > 1 then
+				return lib.notify({ id = 'vehicle_locked', type = 'error', description = locale('vehicle_locked') })
+			end
+
+			local door, vehBone
+
+			if checkVehicle == nil then -- No data, normal trunk
+				door, vehBone = 5, GetEntityBoneIndexByName(entity, 'boot')
+			elseif checkVehicle == 3 then -- Trunk in hood
+				door, vehBone = 4, GetEntityBoneIndexByName(entity, 'bonnet')
+			else -- No storage or no trunk
+				return
+			end
+
+			if vehBone == -1 then
+				if vehicleClass == 12 then
+					door = { 2, 3 }
+				end
+
+				vehBone = GetEntityBoneIndexByName(entity, Vehicles.trunk.boneIndex[vehicleHash] or 'platelight')
+			end
+
+			position = GetWorldPositionOfEntityBone(entity, vehBone)
+
+			if #(playerCoords - position) < 2 and door then
+				local plate = GetVehicleNumberPlateText(entity)
+				local invId = 'trunk'..plate
+
+				TaskTurnPedToFaceCoord(playerPed, position.x, position.y, position.z, 0)
+
+				if not client.openInventory('trunk', { id = invId, netid = NetworkGetNetworkIdFromEntity(entity) }) then return end
+
+				if type(door) == 'table' then
+					for i = 1, #door do
+						SetVehicleDoorOpen(entity, door[i], false, false)
+					end
+				else
+					SetVehicleDoorOpen(entity, door, false, false)
+				end
+
+				Wait(200)
+				---@todo animation for vans?
+				Utils.PlayAnim(0, 'anim@heists@prison_heiststation@cop_reactions', 'cop_b_idle', 3.0, 3.0, -1, 49, 0.0, 0, 0, 0)
+				currentInventory.entity = entity
+				currentInventory.door = door
+
+				repeat
+					Wait(50)
+
+					position = GetWorldPositionOfEntityBone(entity, vehBone)
+
+					if #(GetEntityCoords(playerPed) - position) >= 2 or not DoesEntityExist(entity) then
+						break
+					end
+
+					TaskTurnPedToFaceCoord(playerPed, position.x, position.y, position.z, 0)
+				until currentInventory?.id ~= invId or not invOpen
+
+				if invOpen then client.closeInventory() end
 			end
 		end
 	})
@@ -1085,6 +1067,12 @@ lib.onCache('seat', function(seat)
 	end
 
 	Utils.WeaponWheel(false)
+end)
+
+lib.onCache('vehicle', function()
+	if currentInventory?.type == 'glovebox' then
+		return client.closeInventory()
+	end
 end)
 
 RegisterNetEvent('ox_inventory:setPlayerInventory', function(currentDrops, inventory, weight, player)
