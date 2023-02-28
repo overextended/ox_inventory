@@ -630,7 +630,13 @@ local function registerCommands()
 				-- No storage or no glovebox
 				if (checkVehicle == 0 or checkVehicle == 2) or (not Vehicles.glovebox[vehicleClass] and not Vehicles.glovebox.models[vehicleHash]) then return end
 
-				return client.openInventory('glovebox', { id = 'glove'..GetVehicleNumberPlateText(vehicle), netid = NetworkGetNetworkIdFromEntity(vehicle) })
+				local isOpen = client.openInventory('glovebox', { id = 'glove'..GetVehicleNumberPlateText(vehicle), netid = NetworkGetNetworkIdFromEntity(vehicle) })
+
+				if isOpen then
+					currentInventory.entity = vehicle
+				end
+
+				return
 			end
 
 			local entity, entityType = Utils.Raycast(2|16)
@@ -1069,8 +1075,8 @@ lib.onCache('seat', function(seat)
 	Utils.WeaponWheel(false)
 end)
 
-lib.onCache('vehicle', function()
-	if currentInventory?.type == 'glovebox' then
+lib.onCache('vehicle', function(vehicle)
+	if invOpen and currentInventory.entity == cache.vehicle then
 		return client.closeInventory()
 	end
 end)
