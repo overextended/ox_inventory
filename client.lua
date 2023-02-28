@@ -642,48 +642,38 @@ local function registerCommands()
 					end
 				end
 			else
-				local entity, entityType = Utils.Raycast()
+				local entity, entityType = Utils.Raycast(2|16)
+
 				if not entity then return end
-				local vehicle, position
 
-				if not shared.target then
-					if entityType == 2 then vehicle, position = entity, GetEntityCoords(entity)
-					elseif entityType == 3 and table.contains(Inventory.Dumpsters, GetEntityModel(entity)) then
-						local netId = NetworkGetEntityIsNetworked(entity) and NetworkGetNetworkIdFromEntity(entity)
+				if not shared.target and entityType == 3 then
+					local model = GetEntityModel(entity)
 
-						if not netId then
-							local coords = GetEntityCoords(entity)
-							entity = GetClosestObjectOfType(coords.x, coords.y, coords.z, 0.1, GetEntityModel(entity), true, true, true)
-							netId = entity ~= 0 and NetworkGetNetworkIdFromEntity(entity)
-						end
-
-						if netId then
-							client.openInventory('dumpster', 'dumpster'..netId)
-						end
+					if Inventory.Dumpsters[model] then
+						return Inventory.OpenDumpster(entity)
 					end
-				elseif entityType == 2 then
-					vehicle, position = entity, GetEntityCoords(entity)
-				else return end
+				end
 
-				if not vehicle then return end
+				if entityType ~= 2 then return end
 
+				local position = GetEntityCoords(entity)
 				local lastVehicle
-				local vehicleHash = GetEntityModel(vehicle)
-				local vehicleClass = GetVehicleClass(vehicle)
+				local vehicleHash = GetEntityModel(entity)
+				local vehicleClass = GetVehicleClass(entity)
 				local checkVehicle = Vehicles.Storage[vehicleHash]
 				-- No storage or no glovebox
 				if (checkVehicle == 0 or checkVehicle == 1) or (not Vehicles.trunk[vehicleClass] and not Vehicles.trunk.models[vehicleHash]) then return end
 
-				if #(playerCoords - position) < 6 and NetworkGetEntityIsNetworked(vehicle) then
-					local locked = GetVehicleDoorLockStatus(vehicle)
+				if #(playerCoords - position) < 6 and NetworkGetEntityIsNetworked(entity) then
+					local locked = GetVehicleDoorLockStatus(entity)
 
 					if locked == 0 or locked == 1 then
 						local open, vehBone
 
 						if checkVehicle == nil then -- No data, normal trunk
-							open, vehBone = 5, GetEntityBoneIndexByName(vehicle, 'boot')
+							open, vehBone = 5, GetEntityBoneIndexByName(entity, 'boot')
 						elseif checkVehicle == 3 then -- Trunk in hood
-							open, vehBone = 4, GetEntityBoneIndexByName(vehicle, 'bonnet')
+							open, vehBone = 4, GetEntityBoneIndexByName(entity, 'bonnet')
 						else -- No storage or no trunk
 							return
 						end
@@ -693,18 +683,18 @@ local function registerCommands()
 								open = { 2, 3 }
 							end
 
-							vehBone = GetEntityBoneIndexByName(vehicle, Vehicles.trunk.boneIndex[vehicleHash] or 'platelight')
+							vehBone = GetEntityBoneIndexByName(entity, Vehicles.trunk.boneIndex[vehicleHash] or 'platelight')
 						end
 
-						position = GetWorldPositionOfEntityBone(vehicle, vehBone)
+						position = GetWorldPositionOfEntityBone(entity, vehBone)
 						local distance = #(playerCoords - position)
 						local closeToVehicle = distance < 2 and open
 
 						if closeToVehicle then
-							local plate = GetVehicleNumberPlateText(vehicle)
+							local plate = GetVehicleNumberPlateText(entity)
 							TaskTurnPedToFaceCoord(playerPed, position.x, position.y, position.z, 0)
-							lastVehicle = vehicle
-							client.openInventory('trunk', {id='trunk'..plate, netid = NetworkGetNetworkIdFromEntity(vehicle)})
+							lastVehicle = entity
+							client.openInventory('trunk', {id='trunk'..plate, netid = NetworkGetNetworkIdFromEntity(entity)})
 							local timeout = 20
 							repeat Wait(50)
 								timeout -= 1
@@ -717,10 +707,10 @@ local function registerCommands()
 
 							if type(open) == 'table' then
 								for i = 1, #open do
-									SetVehicleDoorOpen(vehicle, open[i], false, false)
+									SetVehicleDoorOpen(entity, open[i], false, false)
 								end
 							else
-								SetVehicleDoorOpen(vehicle, open, false, false)
+								SetVehicleDoorOpen(entity, open, false, false)
 							end
 
 							Wait(200)
@@ -733,9 +723,9 @@ local function registerCommands()
 								Wait(50)
 
 								if closeToVehicle and invOpen then
-									position = GetWorldPositionOfEntityBone(vehicle, vehBone)
+									position = GetWorldPositionOfEntityBone(entity, vehBone)
 
-									if #(GetEntityCoords(playerPed) - position) >= 2 or not DoesEntityExist(vehicle) then
+									if #(GetEntityCoords(playerPed) - position) >= 2 or not DoesEntityExist(entity) then
 										break
 									else TaskTurnPedToFaceCoord(playerPed, position.x, position.y, position.z, 0) end
 								else break end
