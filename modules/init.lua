@@ -10,6 +10,7 @@ shared = {
 	playerweight = GetConvarInt('inventory:weight', 30000),
 	target = GetConvarInt('inventory:target', 0) == 1,
 	police = json.decode(GetConvar('inventory:police', '["police", "sheriff"]')),
+	ignoreweapons = json.decode(GetConvar('inventory:ignoreweapons', '[]'))
 }
 
 do
@@ -22,7 +23,19 @@ do
 	for i = 1, #shared.police do
 		police[shared.police[i]] = 0
 	end
+
 	shared.police = police
+
+	local ignoreweapons = table.create(0, #shared.ignoreweapons + 3)
+
+	for i = 1, #shared.ignoreweapons do
+		ignoreweapons[shared.ignoreweapons[i]] = true
+	end
+
+	shared.ignoreweapons = ignoreweapons
+	shared.ignoreweapons[`WEAPON_UNARMED`] = true
+	shared.ignoreweapons[`WEAPON_HANDCUFFS`] = true
+	shared.ignoreweapons[`WEAPON_GARBAGEBAG`] = true
 end
 
 if IsDuplicityVersion() then
