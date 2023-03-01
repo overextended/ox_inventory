@@ -3,7 +3,7 @@ local Inventory
 local NDCore
 
 CreateThread(function()
-	Inventory = server.inventory
+	Inventory = require 'modules.inventory.server'
 end)
 
 AddEventHandler("ND:characterUnloaded", playerDropped)

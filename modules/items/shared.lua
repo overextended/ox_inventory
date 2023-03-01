@@ -46,6 +46,7 @@ local function useExport(resource, export)
 	end
 end
 
+local ItemList = {}
 local isServer = IsDuplicityVersion()
 
 ---@param data OxItem
@@ -89,45 +90,41 @@ local function newItem(data)
 		end
 	end
 
-	shared.items[data.name] = data
+	ItemList[data.name] = data
 end
 
-do
-	local ItemList = {}
-
-	for type, data in pairs(data('weapons')) do
-		for k, v in pairs(data) do
-			v.name = k
-			v.close = type == 'Ammo' and true or false
-
-			if type == 'Weapons' then
-				---@cast v OxWeapon
-				v.model = v.model or k -- actually weapon type or such? model for compatibility
-				v.hash = joaat(v.model)
-				v.stack = v.throwable and true or false
-				v.durability = v.durability or 1
-				v.weapon = true
-			else
-				v.stack = true
-			end
-
-			v[type == 'Ammo' and 'ammo' or type == 'Components' and 'component' or type == 'Tints' and 'tint' or 'weapon'] = true
-
-			if isServer then v.client = nil else
-				v.count = 0
-				v.server = nil
-			end
-
-			ItemList[k] = v
-		end
-	end
-
-	shared.items = ItemList
-
-	for k, v in pairs(data 'items') do
+for type, data in pairs(data('weapons')) do
+	for k, v in pairs(data) do
 		v.name = k
-		newItem(v)
-	end
+		v.close = type == 'Ammo' and true or false
 
-	ItemList.cash = ItemList.money
+		if type == 'Weapons' then
+			---@cast v OxWeapon
+			v.model = v.model or k -- actually weapon type or such? model for compatibility
+			v.hash = joaat(v.model)
+			v.stack = v.throwable and true or false
+			v.durability = v.durability or 1
+			v.weapon = true
+		else
+			v.stack = true
+		end
+
+		v[type == 'Ammo' and 'ammo' or type == 'Components' and 'component' or type == 'Tints' and 'tint' or 'weapon'] = true
+
+		if isServer then v.client = nil else
+			v.count = 0
+			v.server = nil
+		end
+
+		ItemList[k] = v
+	end
 end
+
+for k, v in pairs(data 'items') do
+	v.name = k
+	newItem(v)
+end
+
+ItemList.cash = ItemList.money
+
+return ItemList

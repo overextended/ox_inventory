@@ -1,4 +1,4 @@
-local Items = server.items
+local Items = require 'modules.items.server'
 local started
 
 local function Print(arg)

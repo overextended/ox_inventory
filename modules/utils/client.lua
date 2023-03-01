@@ -115,4 +115,4 @@ function Utils.CreateBlip(settings, coords)
 	return blip
 end
 
-client.utils = Utils
+return Utils

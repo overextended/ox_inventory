@@ -2,7 +2,7 @@ if not lib then return end
 
 local shopTypes = {}
 local shops = {}
-local createBlip = client.utils.CreateBlip
+local createBlip = require 'modules.utils.client'.CreateBlip
 
 for shopType, shopData in pairs(data('shops') --[[@as table<string, OxShop>]]) do
 	local shop = {
@@ -74,7 +74,7 @@ local function onEnterShop(point)
 	end
 end
 
-local Utils = client.utils
+local Utils = require 'modules.utils.client'
 
 local function onExitShop(point)
 	local entity = point.entity
@@ -91,7 +91,7 @@ local function hasShopAccess(shop)
 	return not shop.groups or client.hasGroup(shop.groups)
 end
 
-function client.wipeShops()
+local function wipeShops()
 	for i = 1, #shops do
 		local shop = shops[i]
 
@@ -113,8 +113,8 @@ function client.wipeShops()
 	table.wipe(shops)
 end
 
-function client.refreshShops()
-	client.wipeShops()
+local function refreshShops()
+	wipeShops()
 
 	local id = 0
 
@@ -223,3 +223,8 @@ function client.refreshShops()
 		::skipLoop::
 	end
 end
+
+return {
+	refreshShops = refreshShops,
+	wipeShops = wipeShops,
+}

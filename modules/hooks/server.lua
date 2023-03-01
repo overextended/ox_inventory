@@ -31,7 +31,7 @@ local function typeFilter(filter, type)
 	return filter[type] or false
 end
 
-function TriggerEventHooks(event, payload)
+local function TriggerEventHooks(event, payload)
     local hooks = eventHooks[event]
 
     if hooks then
@@ -125,3 +125,5 @@ AddEventHandler('onResourceStop', removeResourceHooks)
 exports('removeHooks', function(id)
 	removeResourceHooks(GetInvokingResource() or cache.resource, id)
 end)
+
+return TriggerEventHooks

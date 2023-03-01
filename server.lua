@@ -4,8 +4,16 @@ if GetConvar('inventory:versioncheck', 'true') == 'true' then
 	lib.versionCheck('overextended/ox_inventory')
 end
 
-local Inventory = server.inventory
-local Items = server.items
+require 'modules.bridge.server'
+require 'modules.pefcl.server'
+
+local TriggerEventHooks = require 'modules.hooks.server'
+local db = require 'modules.mysql.server'
+local Items = require 'modules.items.server'
+local Inventory = require 'modules.inventory.server'
+
+require 'modules.crafting.server'
+require 'modules.shops.server'
 
 ---@param player table
 ---@param data table?
@@ -522,7 +530,7 @@ lib.addCommand('saveinv', {
 	},
 	restricted = 'group.admin',
 }, function(source, args)
-	server.saveInventories(args.lock == 'true')
+	Inventory.SaveInventories(args.lock == 'true')
 end)
 
 lib.addCommand('viewinv', {

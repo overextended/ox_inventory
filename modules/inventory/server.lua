@@ -291,7 +291,7 @@ local Items
 
 CreateThread(function()
 	TriggerEvent('ox_inventory:loadInventory', Inventory)
-	Items = server.items
+	Items = require 'modules.items.server'
 
 	-- Require "set inventory:weaponmismatch 1" to enable experimental weapon checks.
 	-- Maybe need some tweaks, and will definitely need more hashes added to the ignore list.
@@ -1281,6 +1281,8 @@ exports('CreateDropFromPlayer', function(playerId)
 	return dropId
 end)
 
+local TriggerEventHooks = require 'modules.hooks.server'
+
 local function dropItem(source, data)
 	local playerInventory = Inventory(source)
 	local fromData = playerInventory.items[data.fromSlot]
@@ -1813,7 +1815,7 @@ SetInterval(function()
 	db.saveInventories(parameters[1], parameters[2], parameters[3], parameters[4])
 end, 600000)
 
-function server.saveInventories(lock)
+function Inventory.SaveInventories(lock)
 	local parameters = { {}, {}, {}, {} }
 	local size = { 0, 0, 0, 0 }
 	Inventory.Lock = lock or nil
@@ -1836,17 +1838,17 @@ end
 
 AddEventHandler('playerDropped', function()
 	if GetNumPlayerIndices() == 0 then
-		server.saveInventories()
+		Inventory.SaveInventories()
 	end
 end)
 
 AddEventHandler('txAdmin:events:serverShuttingDown', function()
-	server.saveInventories(true)
+	Inventory.SaveInventories(true)
 end)
 
 AddEventHandler('onResourceStop', function(resource)
 	if resource == shared.resource then
-		server.saveInventories(true)
+		Inventory.SaveInventories(true)
 	end
 end)
 
@@ -2118,4 +2120,4 @@ end
 
 exports('CreateTemporaryStash', Inventory.CreateTemporaryStash)
 
-server.inventory = Inventory
+return Inventory

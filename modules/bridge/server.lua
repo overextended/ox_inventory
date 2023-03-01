@@ -40,7 +40,7 @@ end
 local Inventory
 
 CreateThread(function()
-	Inventory = server.inventory
+	Inventory = require 'modules.inventory.server'
 end)
 
 local function playerDropped(source)

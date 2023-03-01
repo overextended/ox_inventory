@@ -24,8 +24,9 @@ function client.hasGroup(group)
 	end
 end
 
-local Utils = client.utils
-local Weapon = client.weapon
+local Shops = require 'modules.shops.client'
+local Utils = require 'modules.utils.client'
+local Weapon = require 'modules.weapon.client'
 
 function client.onLogout()
 	if not PlayerData.loaded then return end
@@ -47,7 +48,7 @@ function client.onLogout()
 	client.drops = nil
 
 	client.closeInventory()
-	client.wipeShops()
+	Shops.wipeShops()
 	ClearInterval(client.interval)
 	ClearInterval(client.tick)
 	Weapon.Disarm()

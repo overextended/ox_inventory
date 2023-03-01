@@ -167,4 +167,9 @@ if shared.target then
 	shared.target = ox_target and 'ox_target' or 'qtarget'
 end
 
-if shared.server then shared.ready = false end
+if lib.context == 'server' then
+	shared.ready = false
+	return require 'server'
+end
+
+require 'client'

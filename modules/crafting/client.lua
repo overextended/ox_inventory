@@ -1,9 +1,9 @@
 if not lib then return end
 
 local CraftingBenches = {}
-local Items = client.items
+local Items = require 'modules.items.client'
 local locations = shared.target == 'ox_target' and 'zones' or 'points'
-local createBlip = client.utils.CreateBlip
+local createBlip = require 'modules.utils.client'.CreateBlip
 
 ---@param id number
 ---@param data table
@@ -99,4 +99,4 @@ end
 
 for id, data in pairs(data('crafting')) do createCraftingBench(id, data) end
 
-client.craftingBenches = CraftingBenches
+return CraftingBenches

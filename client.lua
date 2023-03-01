@@ -1,7 +1,10 @@
 if not lib then return end
 
-local Utils = client.utils
-local Weapon = client.weapon
+require 'modules.bridge.client'
+require 'modules.interface.client'
+
+local Utils = require 'modules.utils.client'
+local Weapon = require 'modules.weapon.client'
 local currentWeapon
 
 exports('getCurrentWeapon', function()
@@ -93,6 +96,8 @@ local function closeTrunk()
 	end
 end
 
+local CraftingBenches = require 'modules.crafting.client'
+
 ---@param inv string?
 ---@param data any?
 ---@return boolean?
@@ -167,7 +172,7 @@ function client.openInventory(inv, data)
 			left = lib.callback.await('ox_inventory:openCraftingBench', 200, data.id, data.index)
 
 			if left then
-				right = client.craftingBenches[data.id]
+				right = CraftingBenches[data.id]
 				local coords = shared.target == 'ox_target' and right.zones[data.index].coords or right.points[data.index]
 
 				right = {
@@ -243,7 +248,7 @@ RegisterNetEvent('ox_inventory:openInventory', client.openInventory)
 exports('openInventory', client.openInventory)
 
 local Animations = data 'animations'
-local Items = client.items
+local Items = require 'modules.items.client'
 
 lib.callback.register('ox_inventory:usingItem', function(data)
 	local item = Items[data.name]
@@ -546,7 +551,8 @@ exports('openNearbyInventory', openNearbyInventory)
 local currentInstance
 local playerCoords
 local table = lib.table
-local Inventory = client.inventory
+local Inventory = require 'modules.inventory.client'
+local Shops = require 'modules.shops.client'
 
 ---@todo remove or replace when the bridge module gets restructured
 function OnPlayerData(key, val)
@@ -555,7 +561,7 @@ function OnPlayerData(key, val)
 	if key == 'groups' then
 		Inventory.Stashes()
 		Inventory.Evidence()
-		client.refreshShops()
+		Shops.refreshShops()
 	elseif key == 'dead' and val then
 		currentWeapon = Weapon.Disarm(currentWeapon)
 		client.closeInventory()
@@ -1229,7 +1235,7 @@ RegisterNetEvent('ox_inventory:setPlayerInventory', function(currentDrops, inven
 	PlayerData.loaded = true
 
 	lib.notify({ description = locale('inventory_setup') })
-	client.refreshShops()
+	Shops.refreshShops()
 	Inventory.Stashes()
 	Inventory.Evidence()
 	registerCommands()
@@ -1585,7 +1591,7 @@ RegisterNUICallback('exit', function(_, cb)
 end)
 
 lib.callback.register('ox_inventory:startCrafting', function(id, recipe)
-	recipe = client.craftingBenches[id].items[recipe]
+	recipe = CraftingBenches[id].items[recipe]
 
 	return lib.progressCircle({
 		label = locale('crafting_item', Items[recipe.name].label),

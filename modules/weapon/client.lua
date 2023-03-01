@@ -1,9 +1,8 @@
 if not lib then return end
 
 local Weapon = {}
-local Items = client.items
-local Utils = client.utils
-client.weapon = Weapon
+local Items = require 'modules.items.client'
+local Utils = require 'modules.utils.client'
 
 -- generic group animation data
 local anims = {}
@@ -149,3 +148,5 @@ end
 
 Utils.Disarm = Weapon.Disarm
 Utils.ClearWeapons = Weapon.ClearAll
+
+return Weapon

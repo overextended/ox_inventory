@@ -201,4 +201,4 @@ Inventory.Stashes = setmetatable(data('stashes'), {
 	end
 })
 
-client.inventory = Inventory
+return Inventory

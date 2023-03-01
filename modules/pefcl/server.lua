@@ -9,7 +9,7 @@
 	This is mostly here for ox_core.
 ]]
 
-local Inventory = server.inventory
+local Inventory = require 'modules.inventory.server'
 
 ---@param source number
 ---@param amount number

@@ -40,6 +40,8 @@ Citizen.CreateThreadNow(function()
 		Query[k] = v:gsub('{user_table}', playerTable):gsub('{user_column}', playerColumn):gsub('{vehicle_table}', vehicleTable):gsub('{vehicle_column}', vehicleColumn)
 	end
 
+	Wait(0)
+
 	local success, result = pcall(MySQL.scalar.await, 'SELECT 1 FROM ox_inventory')
 
 	if not success then
@@ -166,3 +168,5 @@ function db.saveInventories(players, trunks, gloveboxes, stashes)
 		shared.info(('Saving %s inventories to the database'):format(total))
 	end
 end
+
+return db
