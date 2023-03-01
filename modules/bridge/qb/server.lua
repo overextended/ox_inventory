@@ -60,7 +60,9 @@ local function setupPlayer(Player)
 	end)
 
 	QBCore.Functions.AddPlayerMethod(Player.PlayerData.source, "GetItemByName", function(item)
-		return Inventory.GetItem(Player.PlayerData.source, item, nil, false)
+		local data = Inventory.GetItem(Player.PlayerData.source, item, nil, false)
+		data.amount = data.count
+		return data
 	end)
 
 	QBCore.Functions.AddPlayerMethod(Player.PlayerData.source, "GetItemsByName", function(item)
