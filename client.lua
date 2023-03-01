@@ -1271,6 +1271,13 @@ RegisterNetEvent('ox_inventory:setPlayerInventory', function(currentDrops, inven
 			end
 		end
 
+		if client.parachute and GetPedParachuteState(playerPed) ~= -1 then
+			Utils.DeleteObject(client.parachute)
+			client.parachute = false
+		end
+
+		if EnableWeaponWheel then return end
+
 		local weaponHash = GetSelectedPedWeapon(playerPed)
 
 		if currentWeapon then
@@ -1296,11 +1303,6 @@ RegisterNetEvent('ox_inventory:setPlayerInventory', function(currentDrops, inven
 			if weaponType ~= 0 and weaponType ~= `GROUP_UNARMED` then
 				Weapon.Disarm(currentWeapon, true)
 			end
-		end
-
-		if client.parachute and GetPedParachuteState(playerPed) ~= -1 then
-			Utils.DeleteObject(client.parachute)
-			client.parachute = false
 		end
 	end, 200)
 
