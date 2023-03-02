@@ -196,22 +196,16 @@ CreateThread(function()
 
 				local itemFormat = [[
 
-	['%s'] = {
-		label = '%s',
-		weight = %s,
-		stack = %s,
-		close = %s,
-		description = %s,
-		status = %s,
-	},
+	['%s'] = %s,
 ]]
 
 				local fileSize = #file
 				for _, item in pairs(dump) do
 					local formatName = item.name:gsub("'", "\\'"):lower()
+					item.name = nil
 					if not ItemList[formatName] then
 						fileSize += 1
-						file[fileSize] = Utils.TableToString(item, {"label", "weight", "stack", "close", "description", "client", "hunger", "thirst"})
+						file[fileSize] = (itemFormat):format(formatName, Utils.TableToString(item, {"label", "weight", "stack", "close", "description", "client", "hunger", "thirst"}))
 						-- file[fileSize] = (itemFormat):format(formatName, item.label:gsub("'", "\\'"), item.weight, item.stack, item.close, item.description and json.encode(item.description) or 'nil', item.status and json.encode(item.status) or 'nil')
 						ItemList[formatName] = item
 					end
