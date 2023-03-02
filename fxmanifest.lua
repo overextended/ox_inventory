@@ -19,14 +19,14 @@ dependencies {
 	'ox_lib',
 }
 
+shared_script '@ox_lib/init.lua'
+
 server_scripts {
 	'@oxmysql/lib/MySQL.lua',
-}
-
-shared_scripts {
-	'@ox_lib/init.lua',
 	'modules/init.lua'
 }
+
+client_script 'modules/init.lua'
 
 ui_page 'web/build/index.html'
 
