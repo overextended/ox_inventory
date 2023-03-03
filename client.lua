@@ -726,7 +726,7 @@ local function registerCommands()
 					end
 
 					TaskTurnPedToFaceCoord(playerPed, position.x, position.y, position.z, 0)
-				until currentInventory?.id ~= invId or not invOpen
+				until currentInventory?.entity ~= entity or not invOpen
 
 				if invOpen then client.closeInventory() end
 			end
