@@ -160,29 +160,10 @@ CreateThread(function()
 
 			for k, item in pairs(items) do
 				if not ItemList[item.name] and not checkIgnoredNames(item.name) then
-					local oxItem = {
-						name = item.name,
-						label = item.label,
-						close = item.shouldClose == nil and true or item.shouldClose,
-						stack = not item.unique and true,
-						description = item.description,
-						weight = item.weight or 0,
-					}
-
-					local status = {}
-					if item.hunger then
-						status.hunger = item.hunger
-					end
-					if item.thirst then
-						status.thirst = item.thirst
-					end
-
-					if next(status) then
-						oxItem.client = {
-							status = status
-						}
-					end
-
+					item.close = item.shouldClose == nil and true or item.shouldClose
+ 					item.stack = not item.unique and true
+ 					item.description = item.description
+ 					item.weight = item.weight or 0
 					dump[k] = oxItem
 					count += 1
 				end
@@ -192,19 +173,31 @@ CreateThread(function()
 				local file = {string.strtrim(LoadResourceFile(shared.resource, 'data/items.lua'))}
 				file[1] = file[1]:gsub('}$', '')
 
-				local itemFormat =
-[[
+				local itemFormat = [[
 
-	['%s'] = %s,
+	['%s'] = {
+		label = '%s',
+		weight = %s,
+		stack = %s,
+		close = %s,
+		description = %s,
+		client = {
+			status = {
+				hunger = %s,
+				thirst = %s,
+				stress = %s
+			}
+		}
+	},
 ]]
 
 				local fileSize = #file
+				
 				for _, item in pairs(dump) do
 					local formatName = item.name:gsub("'", "\\'"):lower()
-					item.name = nil
 					if not ItemList[formatName] then
 						fileSize += 1
-						file[fileSize] = (itemFormat):format(formatName, Utils.TableToString(item, {"label", "weight", "stack", "close", "description", "client", "hunger", "thirst", "stress"}))
+						file[fileSize] = (itemFormat):format(formatName, item.label:gsub("'", "\\'"), item.weight, item.stack, item.close, item.description and json.encode(item.description) or 'nil', item.hunger or 'nil', item.thirst or 'nil', item.stress or 'nil')
 						ItemList[formatName] = item
 					end
 				end
