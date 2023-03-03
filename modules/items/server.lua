@@ -164,7 +164,7 @@ CreateThread(function()
  					item.stack = not item.unique and true
  					item.description = item.description
  					item.weight = item.weight or 0
-					dump[k] = oxItem
+					dump[k] = item
 					count += 1
 				end
 			end
@@ -192,7 +192,7 @@ CreateThread(function()
 ]]
 
 				local fileSize = #file
-				
+
 				for _, item in pairs(dump) do
 					local formatName = item.name:gsub("'", "\\'"):lower()
 					if not ItemList[formatName] then
