@@ -1,4 +1,5 @@
 local onLogout, Weapon = ...
+local QBCore = exports['qb-core']:GetCoreObject()
 
 RegisterNetEvent('QBCore:Client:OnPlayerUnload', onLogout)
 
