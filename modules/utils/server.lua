@@ -153,9 +153,9 @@ local function s(t, opts)
 			end
 		end
 		local prefix = string.rep(indent or '', level)
-		local head = indent and '{\n'..prefix..indent or '{'
-		local body = table.concat(out, ','..(indent and '\n'..prefix..indent or space))
-		local tail = indent and "\n"..prefix..'}' or '}'
+		local head = indent and '{\n\t'..prefix..indent or '{'
+		local body = table.concat(out, ','..(indent and '\n\t'..prefix..indent or space))
+		local tail = indent and "\n\t"..prefix..'}' or '}'
 		return (custom and custom(tag,head,body,tail,level) or tag..head..body..tail)..comment(t, level)
 		elseif badtype[ttype] then
 		seen[t] = insref or spath
@@ -211,6 +211,6 @@ function Utils.TableToString(t, keyOrder)
 				end
 				return oneI < twoI
 			end)
-		end
+		end,
 	}))
 end

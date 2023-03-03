@@ -194,7 +194,8 @@ CreateThread(function()
 				local file = {string.strtrim(LoadResourceFile(shared.resource, 'data/items.lua'))}
 				file[1] = file[1]:gsub('}$', '')
 
-				local itemFormat = [[
+				local itemFormat =
+[[
 
 	['%s'] = %s,
 ]]
@@ -206,7 +207,6 @@ CreateThread(function()
 					if not ItemList[formatName] then
 						fileSize += 1
 						file[fileSize] = (itemFormat):format(formatName, Utils.TableToString(item, {"label", "weight", "stack", "close", "description", "client", "hunger", "thirst"}))
-						-- file[fileSize] = (itemFormat):format(formatName, item.label:gsub("'", "\\'"), item.weight, item.stack, item.close, item.description and json.encode(item.description) or 'nil', item.status and json.encode(item.status) or 'nil')
 						ItemList[formatName] = item
 					end
 				end
