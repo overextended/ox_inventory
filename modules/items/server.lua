@@ -206,7 +206,7 @@ CreateThread(function()
 					item.name = nil
 					if not ItemList[formatName] then
 						fileSize += 1
-						file[fileSize] = (itemFormat):format(formatName, Utils.TableToString(item, {"label", "weight", "stack", "close", "description", "client", "hunger", "thirst"}))
+						file[fileSize] = (itemFormat):format(formatName, Utils.TableToString(item, {"label", "weight", "stack", "close", "description", "client", "hunger", "thirst", "stress"}))
 						ItemList[formatName] = item
 					end
 				end
