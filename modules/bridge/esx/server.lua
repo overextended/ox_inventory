@@ -126,6 +126,13 @@ function server.convertInventory(playerId, items)
 	end
 end
 
+---@diagnostic disable-next-line: duplicate-set-field
+function server.isPlayerBoss(playerId)
+	local xPlayer = ESX.GetPlayerFromId(playerId)
+
+	return xPlayer.job.grade_name == 'boss'
+end
+
 MySQL.ready(function()
 	MySQL.insert('INSERT IGNORE INTO `licenses` (`type`, `label`) VALUES (?, ?)', { 'weapon', 'Weapon License'})
 end)

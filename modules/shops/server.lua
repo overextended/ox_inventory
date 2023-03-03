@@ -14,139 +14,122 @@ local locations = shared.target and 'targets' or 'locations'
 ---@field license? string
 ---@field currency? string
 ---@field grade? number
+---@field count? number
 
 ---@class OxShopServer : OxShop
 ---@field id string
 ---@field coords vector3
 ---@field items OxShopItem[]
+---@field slots number
+---@field [string] any
 
----@param shopName string
----@param shopDetails OxShop
-local function createShop(shopName, shopDetails)
-	Shops[shopName] = {}
-	local shopLocations = shopDetails[locations] or shopDetails.locations
+local function setupShopItems(id, shopType, shopName, groups)
+	local shop = id and Shops[shopType][id] or Shops[shopType] --[[@as OxShopServer]]
 
-	if shopLocations then
-		---@diagnostic disable-next-line: undefined-field
-		local groups = shopDetails.groups or shopDetails.jobs
+	for i = 1, shop.slots do
+		local slot = shop.items[i]
 
-		for i = 1, #shopLocations do
-			---@type OxShopServer
-			Shops[shopName][i] = {
-				label = shopDetails.name,
-				id = shopName..' '..i,
-				groups = groups,
-				items = table.clone(shopDetails.inventory),
-				slots = #shopDetails.inventory,
-				type = 'shop',
-				coords = shared.target and shopDetails.targets?[i]?.loc or shopLocations[i],
-				distance = shared.target and shopDetails.targets?[i]?.distance,
+		if slot.grade and not groups then
+			print(('^1attempted to restrict slot %s (%s) to grade %s, but %s has no job restriction^0'):format(id, slot.name, slot.grade, shopName))
+			slot.grade = nil
+		end
+
+		local Item = Items(slot.name)
+
+		if Item then
+			---@type OxShopItem
+			slot = {
+				name = Item.name,
+				slot = i,
+				weight = Item.weight,
+				count = slot.count,
+				price = (server.randomprices and not slot.currency or slot.currency == 'money') and (math.ceil(slot.price * (math.random(80, 120)/100))) or slot.price or 0,
+				metadata = slot.metadata,
+				license = slot.license,
+				currency = slot.currency,
+				grade = slot.grade
 			}
 
-			for j = 1, Shops[shopName][i].slots do
-				local slot = Shops[shopName][i].items[j]
-
-				if slot.grade and not groups then
-					print(('^1attempted to restrict slot %s (%s) to grade %s, but %s has no job restriction^0'):format(i, slot.name, slot.grade, shopDetails.name))
-					slot.grade = nil
-				end
-
-				local Item = Items(slot.name)
-
-				if Item then
-					---@type OxShopItem
-					slot = {
-						name = Item.name,
-						slot = j,
-						weight = Item.weight,
-						count = slot.count,
-						price = (server.randomprices and not slot.currency or slot.currency == 'money') and (math.ceil(slot.price * (math.random(80, 120)/100))) or slot.price or 0,
-						metadata = slot.metadata,
-						license = slot.license,
-						currency = slot.currency,
-						grade = slot.grade
-					}
-
-					Shops[shopName][i].items[j] = slot
-				end
-			end
-		end
-	else
-		---@diagnostic disable-next-line: undefined-field
-		local groups = shopDetails.groups or shopDetails.jobs
-
-		---@type OxShopServer
-		Shops[shopName] = {
-			label = shopDetails.name,
-			id = shopName,
-			groups = groups,
-			items = shopDetails.inventory,
-			slots = #shopDetails.inventory,
-			type = 'shop',
-		}
-
-		for i = 1, Shops[shopName].slots do
-			local slot = Shops[shopName].items[i]
-
-			if slot.grade and not groups then
-				print(('^1attempted to restrict slot %s (%s) to grade %s, but %s has no job restriction^0'):format(i, slot.name, slot.grade, shopDetails.name))
-				slot.grade = nil
-			end
-
-			local Item = Items(slot.name)
-
-			if Item then
-				---@type OxShopItem
-				slot = {
-					name = Item.name,
-					slot = i,
-					weight = Item.weight,
-					count = slot.count,
-					price = (server.randomprices and not slot.currency or slot.currency == 'money') and (math.ceil(slot.price * (math.random(90, 110)/100))) or slot.price,
-					metadata = slot.metadata,
-					license = slot.license,
-					currency = slot.currency,
-					grade = slot.grade
-				}
-
-				Shops[shopName].items[i] = slot
-			end
+			shop.items[i] = slot
 		end
 	end
 end
 
-for shopName, shopDetails in pairs(data('shops')) do
-	createShop(shopName, shopDetails)
+---@param shopType string
+---@param properties OxShopServer
+local function registerShopType(shopType, properties)
+	local shopLocations = properties[locations] or properties.locations
+
+	if shopLocations then
+		Shops[shopType] = properties
+	else
+		Shops[shopType] = {
+			label = properties.name,
+			id = shopType,
+			groups = properties.groups or properties.jobs,
+			items = properties.inventory,
+			slots = #properties.inventory,
+			type = 'shop',
+		}
+
+		setupShopItems(nil, shopType, properties.name, properties.groups or properties.jobs)
+	end
 end
 
----@param shopName string
----@param shopDetails OxShop
-exports('RegisterShop', function(shopName, shopDetails)
-	createShop(shopName, shopDetails)
-end)
+---@param shopType string
+---@param id number
+local function createShop(shopType, id)
+	local shop = Shops[shopType]
 
--- exports.ox_inventory:RegisterShop('TestShop', {
--- 	name = 'Test shop',
--- 	inventory = {
--- 		{ name = 'burger', price = 10 },
--- 		{ name = 'water', price = 10 },
--- 		{ name = 'cola', price = 10 },
--- 	}, locations = {
--- 		vec3(223.832962, -792.619751, 30.695190),
--- 	},
--- 	groups = {
--- 		police = 0
--- 	},
--- })
--- Open on client with `exports.ox_inventory:openInventory('shop', {id=1, type='TestShop'})`
+	if not shop then return end
+
+	local shopLocations = shop[locations] or shop.locations
+	local groups = shop.groups or shop.jobs
+
+	if not shopLocations or not shopLocations[id] then return end
+
+	---@type OxShopServer
+	shop[id] = {
+		label = shop.name,
+		id = shopType..' '..id,
+		groups = groups,
+		items = table.clone(shop.inventory),
+		slots = #shop.inventory,
+		type = 'shop',
+		coords = shared.target and shop.targets?[id]?.loc or shopLocations[id],
+		distance = shared.target and shop.targets?[id]?.distance,
+	}
+
+	setupShopItems(id, shopType, shop.name, groups)
+
+	return shop[id]
+end
+
+for shopType, shopDetails in pairs(data('shops')) do
+	registerShopType(shopType, shopDetails)
+end
+
+---@param shopType string
+---@param shopDetails OxShopServer
+exports('RegisterShop', function(shopType, shopDetails)
+	registerShopType(shopType, shopDetails)
+end)
 
 lib.callback.register('ox_inventory:openShop', function(source, data)
 	local left, shop = Inventory(source)
 
 	if data then
-		shop = data.id and Shops[data.type][data.id] or Shops[data.type] --[[@as OxShopServer]]
+		shop = Shops[data.type]
 
-		if not shop.items then return end
+		if not shop then return end
+
+		if not shop.items then
+			shop = (data.id and shop[data.id] or createShop(data.type, data.id))
+
+			if not shop then return end
+		end
+
+		---@cast shop OxShopServer
 
 		if shop.groups then
 			local group = server.hasGroup(left, shop.groups)
@@ -168,8 +151,21 @@ local table = lib.table
 -- http://lua-users.org/wiki/FormattingNumbers
 -- credit http://richard.warburton.it
 local function comma_value(n)
-	local left,num,right = string.match(n,'^([^%d]*%d)(%d*)(.-)$')
+	local left, num, right = string.match(n,'^([^%d]*%d)(%d*)(.-)$')
 	return left..(num:reverse():gsub('(%d%d%d)','%1,'):reverse())..right
+end
+
+local function canAffordItem(inv, currency, price)
+	local canAfford = price >= 0 and Inventory.GetItem(inv, currency, false, true) >= price
+
+	return canAfford or {
+		type = 'error',
+		description = locale('cannot_afford', ('%s%s'):format((currency == 'money' and locale('$') or comma_value(price)), (currency == 'money' and comma_value(price) or ' '..Items(currency).label)))
+	}
+end
+
+local function removeCurrency(inv, currency, price)
+	Inventory.RemoveItem(inv, currency, price)
 end
 
 lib.callback.register('ox_inventory:buyItem', function(source, data)
@@ -218,10 +214,10 @@ lib.callback.register('ox_inventory:buyItem', function(source, data)
 					return false, false, { type = 'error', description = locale('cannot_carry') }
 				end
 
-				local canAfford = price >= 0 and Inventory.GetItem(source, currency, false, true) >= price
+				local canAfford = canAffordItem(playerInv, currency, price)
 
-				if not canAfford then
-					return false, false, { type = 'error', description = locale('cannot_afford', ('%s%s'):format((currency == 'money' and locale('$') or comma_value(price)), (currency == 'money' and comma_value(price) or ' '..Items(currency).label))) }
+				if canAfford ~= true then
+					return false, false, canAfford
 				end
 
 				if not TriggerEventHooks('buyItem', {
@@ -240,7 +236,7 @@ lib.callback.register('ox_inventory:buyItem', function(source, data)
 
 				Inventory.SetSlot(playerInv, fromItem, count, metadata, data.toSlot)
 				playerInv.weight = newWeight
-				Inventory.RemoveItem(source, currency, price)
+				removeCurrency(playerInv, currency, price)
 
 				if fromData.count then
 					shop.items[data.fromSlot].count = fromData.count - count

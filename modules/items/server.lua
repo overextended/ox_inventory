@@ -121,8 +121,6 @@ CreateThread(function()
 			end
 
 			shared.info('Database contains', #items, 'items.')
-
-			warn('Some third-party resources may conflict with item and inventory data structure.\n')
 		end
 
 		Wait(500)

@@ -234,3 +234,9 @@ function server.setPlayerStatus(playerId, values)
 	end
 end
 
+---@diagnostic disable-next-line: duplicate-set-field
+function server.isPlayerBoss(playerId)
+	local Player = QBCore.Functions.GetPlayer(playerId)
+
+	return Player.PlayerData.job.isboss or Player.PlayerData.gang.isboss
+end
