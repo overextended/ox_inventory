@@ -1474,6 +1474,10 @@ RegisterNUICallback('uiLoaded', function(_, cb)
 	cb(1)
 end)
 
+RegisterNUICallback('getItemData', function(itemName, cb)
+	cb(Items[itemName])
+end)
+
 RegisterNUICallback('removeComponent', function(data, cb)
 	cb(1)
 	if currentWeapon then
