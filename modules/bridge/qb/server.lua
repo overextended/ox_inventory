@@ -216,24 +216,6 @@ function server.convertInventory(playerId, items)
 	end
 end
 
-function server.setPlayerStatus(playerId, values)
-	local Player = QBCore.Functions.GetPlayer(playerId)
-
-	if not Player then return end
-
-	local playerMetadata = Player.PlayerData.metadata
-
-	for name, value in pairs(values) do
-		if playerMetadata[name] then
-			if value > 100 or value < -100 then
-				value = value * 0.0001
-			end
-
-			Player.Functions.SetMetaData(name, playerMetadata[name] + value)
-		end
-	end
-end
-
 ---@diagnostic disable-next-line: duplicate-set-field
 function server.isPlayerBoss(playerId)
 	local Player = QBCore.Functions.GetPlayer(playerId)
