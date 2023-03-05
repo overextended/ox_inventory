@@ -222,3 +222,27 @@ function server.isPlayerBoss(playerId)
 
 	return Player.PlayerData.job.isboss or Player.PlayerData.gang.isboss
 end
+
+-- taken from qbox-core (https://github.com/Qbox-project/qb-core/blob/f4174f311aae8157181a48fa2e2bd30c8d13edb1/client/functions.lua#L25)
+-- copied from client-side implementation and completely untested (have fun)
+local function hasItem(source, items, amount)
+    amount = amount or 1
+
+    local count = Inventory.Search(source, 'count', items)
+
+    if type(items) == 'table' and type(count) == 'table' then
+        for _, v in pairs(count) do
+            if v < amount then
+                return false
+            end
+        end
+
+        return true
+    end
+
+    return count >= amount
+end
+
+AddEventHandler(('__cfx_export_qb-inventory_HasItem'), function(setCB)
+	setCB(hasItem)
+end)
