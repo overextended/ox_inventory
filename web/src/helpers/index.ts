@@ -4,6 +4,7 @@ import { isEqual } from 'lodash';
 import { store } from '../store';
 import { Items } from '../store/items';
 import { imagepath } from '../store/imagepath';
+import { fetchNui } from '../utils/fetchNui';
 
 export const isShopStockEmpty = (itemCount: number | undefined, inventoryType: string) => {
   if (inventoryType === 'shop' && itemCount !== undefined && itemCount === 0) return true;
@@ -92,9 +93,13 @@ export const getTotalWeight = (items: Inventory['items']) =>
 
 export const isContainer = (inventory: Inventory) => inventory.type === InventoryType.CONTAINER;
 
-export const getItemData = (itemName: string) => {
-  // @todo lazy data fetching
-  return Items[itemName];
+export const getItemData = async (itemName: string) => {
+  const resp: ItemData | null = await fetchNui('getItemData', itemName);
+
+  if (resp?.name) {
+    Items[itemName] = resp
+    return resp
+  }
 };
 
 export const getItemUrl = (item: SlotWithItem) => {

@@ -1,4 +1,5 @@
 export type ItemData = {
+  name: string;
   label: string;
   stack: boolean;
   usable: boolean;

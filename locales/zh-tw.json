@@ -48,6 +48,7 @@
   "buy_amount": "你必須輸入要購買的數量",
   "component_has": "這個武器已經有 %s",
   "component_invalid": "這個武器與 %s 不相容",
+  "component_slot_occupied": "這個武器的 %s 位置已有其他同類型組件",
   "cannot_perform": "無法執行這個動作",
   "cannot_carry": "背包重量已達限制",
   "cannot_carry_other": "目標攜帶重量已達限制",

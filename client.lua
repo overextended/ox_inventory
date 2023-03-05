@@ -1120,6 +1120,7 @@ RegisterNetEvent('ox_inventory:setPlayerInventory', function(currentDrops, inven
 			description = v.description,
 			buttons = buttons,
 			ammoName = v.ammoname,
+			image = v.client?.image
 		}
 	end
 
@@ -1225,7 +1226,7 @@ RegisterNetEvent('ox_inventory:setPlayerInventory', function(currentDrops, inven
 				items = PlayerData.inventory,
 				maxWeight = shared.playerweight,
 			},
-			imagepath = GetConvar('inventory:imagepath', 'nui://ox_inventory/web/images')
+			imagepath = client.imagepath
 		}
 	})
 
@@ -1472,6 +1473,10 @@ end)
 RegisterNUICallback('uiLoaded', function(_, cb)
 	uiLoaded = true
 	cb(1)
+end)
+
+RegisterNUICallback('getItemData', function(itemName, cb)
+	cb(Items[itemName])
 end)
 
 RegisterNUICallback('removeComponent', function(data, cb)
