@@ -48,7 +48,7 @@ local function setupPlayer(Player)
 	Inventory.SetItem(Player.PlayerData.source, 'money', Player.PlayerData.money.cash)
 
 	QBCore.Functions.AddPlayerMethod(Player.PlayerData.source, "AddItem", function(item, amount, slot, info)
-		local info ~= nil and info or {}
+		local info = info ~= nil and info or {}
 		local img = QBCore.Shared.Items[item] ~= nil and QBCore.Shared.Items[item].image or ''
 		if img == '' then
 			img = item..'.png'
@@ -100,6 +100,16 @@ SetTimeout(500, function()
 
 	if shopState ~= 'missing' and (shopState == 'started' or shopState == 'starting') then
 		StopResource('qb-shops')
+	end
+
+	local qbinventoryState = GetResourceState('qb-inventory')
+	if qbinventoryState ~= 'missing' and (qbinventoryState == 'started' or qbinventoryState == 'starting') then
+		StopResource('qb-inventory')
+	end
+
+	local ljinventoryState = GetResourceState('lj-inventory')
+	if ljinventoryState ~= 'missing' and (ljinventoryState == 'started' or ljinventoryState == 'starting') then
+		StopResource('lj-inventory')
 	end
 
 	for _, Player in pairs(QBCore.Functions.GetQBPlayers()) do setupPlayer(Player) end
