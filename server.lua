@@ -286,15 +286,9 @@ lib.callback.register('ox_inventory:useItem', function(source, itemName, slot, m
 
 			data.consume = consume
 
-			local success, response = lib.callback.await('ox_inventory:usingItem', source, data)
+			local success = lib.callback.await('ox_inventory:usingItem', source, data)
 
 			if not success then return end
-
-			if response then
-				if response.status and server.setPlayerStatus then
-					server.setPlayerStatus(source, response.status)
-				end
-			end
 
 			if consume and consume ~= 0 and not data.component then
 				data = inventory.items[data.slot]

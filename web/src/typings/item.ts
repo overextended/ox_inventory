@@ -1,4 +1,5 @@
 export type ItemData = {
+  name: string;
   label: string;
   stack: boolean;
   usable: boolean;
@@ -7,4 +8,5 @@ export type ItemData = {
   description?: string;
   buttons?: string[];
   ammoName?: string;
+  image?: string;
 };

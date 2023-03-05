@@ -61,11 +61,11 @@ local function newItem(data)
 		data.stack = true
 	end
 
-	local client, server = data.client, data.server
-	---@cast client -nil
-	---@cast server -nil
+	local clientData, serverData = data.client, data.server
+	---@cast clientData -nil
+	---@cast serverData -nil
 
-	if not data.consume and (client and (client.status or client.usetime or client.export) or server?.export) then
+	if not data.consume and (clientData and (clientData.status or clientData.usetime or clientData.export) or serverData?.export) then
 		data.consume = 1
 	end
 
@@ -87,6 +87,10 @@ local function newItem(data)
 
 		if client?.export then
 			data.export = useExport(string.strsplit('.', client.export))
+		end
+
+		if clientData?.image then
+			clientData.image = clientData.image:match('^[%w]+://') and ('url(%s)'):format(clientData.image) or ('url(%s/%s)'):format(client.imagepath, clientData.image)
 		end
 	end
 

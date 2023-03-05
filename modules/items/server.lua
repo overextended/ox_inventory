@@ -90,6 +90,7 @@ CreateThread(function()
 				local file = {string.strtrim(LoadResourceFile(shared.resource, 'data/items.lua'))}
 				file[1] = file[1]:gsub('}$', '')
 
+				---@todo separate into functions for reusability, properly handle nil values
 				local itemFormat = [[
 
 	['%s'] = {
@@ -107,7 +108,10 @@ CreateThread(function()
 					if not ItemList[formatName] then
 						fileSize += 1
 
-						file[fileSize] = (itemFormat):format(formatName, item.label:gsub("'", "\\'"), item.weight, item.stack, item.close, item.description and json.encode(item.description) or 'nil')
+						local itemStr = itemFormat:format(formatName, item.label:gsub("'", "\\'"), item.weight, item.stack, item.close, item.description and json.encode(item.description) or 'nil')
+						-- temporary solution for nil values
+						itemStr = itemStr:gsub('[%s]-[%w]+ = nil[,]?', '')
+						file[fileSize] = itemStr
 						ItemList[formatName] = item
 					end
 				end
@@ -160,9 +164,9 @@ CreateThread(function()
 			for k, item in pairs(items) do
 				if not ItemList[item.name] and not checkIgnoredNames(item.name) then
 					item.close = item.shouldClose == nil and true or item.shouldClose
-					item.stack = not item.unique and true
-					item.description = item.description
-					item.weight = item.weight or 0
+ 					item.stack = not item.unique and true
+ 					item.description = item.description
+ 					item.weight = item.weight or 0
 					dump[k] = item
 					count += 1
 				end
@@ -172,6 +176,7 @@ CreateThread(function()
 				local file = {string.strtrim(LoadResourceFile(shared.resource, 'data/items.lua'))}
 				file[1] = file[1]:gsub('}$', '')
 
+				---@todo separate into functions for reusability, properly handle nil values
 				local itemFormat = [[
 
 	['%s'] = {
@@ -179,9 +184,17 @@ CreateThread(function()
 		weight = %s,
 		stack = %s,
 		close = %s,
-		description = %s
+		description = %s,
+		client = {
+			status = {
+				hunger = %s,
+				thirst = %s,
+				stress = %s
+			}
+		}
 	},
 ]]
+
 				local fileSize = #file
 
 				for _, item in pairs(dump) do
@@ -189,7 +202,15 @@ CreateThread(function()
 					if not ItemList[formatName] then
 						fileSize += 1
 
-						file[fileSize] = (itemFormat):format(formatName, item.label:gsub("'", "\\'"), item.weight, item.stack, item.close, item.description and json.encode(item.description) or 'nil')
+						---@todo cry
+						local itemStr = itemFormat:format(formatName, item.label:gsub("'", "\\'"), item.weight, item.stack, item.close, item.description and json.encode(item.description) or 'nil', item.hunger or 'nil', item.thirst or 'nil', item.stress or 'nil')
+						-- temporary solution for nil values
+						itemStr = itemStr:gsub('[%s]-[%w]+ = nil[,]?', '')
+						-- temporary solution for empty status table
+						itemStr = itemStr:gsub('[%s]-[%w]+ = %{[%s]+%}', '')
+						-- temporary solution for empty client table
+						itemStr = itemStr:gsub('[%s]-[%w]+ = %{[%s]+%}', '')
+						file[fileSize] = itemStr
 						ItemList[formatName] = item
 					end
 				end

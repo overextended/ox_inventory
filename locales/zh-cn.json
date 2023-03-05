@@ -48,6 +48,7 @@
   "buy_amount": "你必须输入购买金额",
   "component_has": "这把武器已经有了 %s",
   "component_invalid": "此武器不兼容 %s",
+  "component_slot_occupied": "该武器的 %s 插槽已被占用",
   "cannot_perform": "你无法执行此操作",
   "cannot_carry": "你不能带那么多",
   "cannot_carry_other": "目标库存不能容纳那么多",

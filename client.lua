@@ -297,9 +297,6 @@ lib.callback.register('ox_inventory:usingItem', function(data)
 			if item.status then
 				if client.setPlayerStatus then
 					client.setPlayerStatus(item.status)
-				else
-					-- Not ideal, but compatibility and all that
-					return true, { status = item.status }
 				end
 			end
 
@@ -726,7 +723,7 @@ local function registerCommands()
 					end
 
 					TaskTurnPedToFaceCoord(playerPed, position.x, position.y, position.z, 0)
-				until currentInventory?.id ~= invId or not invOpen
+				until currentInventory?.entity ~= entity or not invOpen
 
 				if invOpen then client.closeInventory() end
 			end
@@ -1123,6 +1120,7 @@ RegisterNetEvent('ox_inventory:setPlayerInventory', function(currentDrops, inven
 			description = v.description,
 			buttons = buttons,
 			ammoName = v.ammoname,
+			image = v.client?.image
 		}
 	end
 
@@ -1228,7 +1226,7 @@ RegisterNetEvent('ox_inventory:setPlayerInventory', function(currentDrops, inven
 				items = PlayerData.inventory,
 				maxWeight = shared.playerweight,
 			},
-			imagepath = GetConvar('inventory:imagepath', 'nui://ox_inventory/web/images')
+			imagepath = client.imagepath
 		}
 	})
 
@@ -1358,7 +1356,7 @@ RegisterNetEvent('ox_inventory:setPlayerInventory', function(currentDrops, inven
 
 				if currentWeapon.metadata.durability <= 0 then
 					DisablePlayerFiring(playerId, true)
-				elseif client.aimedfiring and not currentWeapon.melee and not IsPlayerFreeAiming(playerId) then
+				elseif client.aimedfiring and not currentWeapon.melee and currentWeapon.group ~= `GROUP_PETROLCAN` and not IsPlayerFreeAiming(playerId) then
 					DisablePlayerFiring(playerId, true)
 				end
 
@@ -1385,7 +1383,7 @@ RegisterNetEvent('ox_inventory:setPlayerInventory', function(currentDrops, inven
 					if IsPedShooting(playerPed) then
 						local currentAmmo
 
-						if currentWeapon.hash == `WEAPON_PETROLCAN` or currentWeapon.hash == `WEAPON_HAZARDCAN` or currentWeapon.hash == `WEAPON_FERTILIZERCAN` or currentWeapon.hash == `WEAPON_FIREEXTINGUISHER` then
+						if currentWeapon.group == `GROUP_PETROLCAN` or currentWeapon.group == `GROUP_FIREEXTINGUISHER` then
 							currentAmmo = weaponAmmo - 0.05 < 0 and 0 or weaponAmmo - 0.05
 							currentWeapon.metadata.durability = currentAmmo
 							currentWeapon.metadata.ammo = (weaponAmmo < currentAmmo) and 0 or currentAmmo
@@ -1475,6 +1473,10 @@ end)
 RegisterNUICallback('uiLoaded', function(_, cb)
 	uiLoaded = true
 	cb(1)
+end)
+
+RegisterNUICallback('getItemData', function(itemName, cb)
+	cb(Items[itemName])
 end)
 
 RegisterNUICallback('removeComponent', function(data, cb)
