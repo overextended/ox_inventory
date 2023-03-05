@@ -48,6 +48,12 @@ local function setupPlayer(Player)
 	Inventory.SetItem(Player.PlayerData.source, 'money', Player.PlayerData.money.cash)
 
 	QBCore.Functions.AddPlayerMethod(Player.PlayerData.source, "AddItem", function(item, amount, slot, info)
+		local info ~= nil and info or {}
+		local img = QBCore.Shared.Items[item] ~= nil and QBCore.Shared.Items[item].image or ''
+		if img == '' then
+			img = item..'.png'
+		end
+		info.image = string.gsub(img, ".png", "")
 		return Inventory.AddItem(Player.PlayerData.source, item, amount, info, slot)
 	end)
 
