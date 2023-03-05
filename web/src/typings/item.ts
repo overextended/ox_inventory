@@ -7,4 +7,5 @@ export type ItemData = {
   description?: string;
   buttons?: string[];
   ammoName?: string;
+  image?: string;
 };

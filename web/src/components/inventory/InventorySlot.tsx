@@ -1,5 +1,5 @@
 import React from 'react';
-import { DragSource, Inventory, InventoryType, Slot } from '../../typings';
+import { DragSource, Inventory, InventoryType, Slot, SlotWithItem } from '../../typings';
 import { useDrag, useDrop } from 'react-dnd';
 import { useAppDispatch, useAppSelector } from '../../store';
 import WeightBar from '../utils/WeightBar';
@@ -7,7 +7,7 @@ import { onDrop } from '../../dnd/onDrop';
 import { onBuy } from '../../dnd/onBuy';
 import { selectIsBusy } from '../../store/inventory';
 import { Items } from '../../store/items';
-import { canCraftItem, isShopStockEmpty, isSlotWithItem } from '../../helpers';
+import { canCraftItem, getItemUrl, isShopStockEmpty, isSlotWithItem } from '../../helpers';
 import { onUse } from '../../dnd/onUse';
 import { Locale } from '../../store/locale';
 import { Tooltip } from '@mui/material';
@@ -128,7 +128,7 @@ const InventorySlot: React.FC<SlotProps> = ({ inventory, item }) => {
               ? 'brightness(80%) grayscale(100%)'
               : undefined,
           opacity: isDragging ? 0.4 : 1.0,
-          backgroundImage: `url(${`${item.metadata?.image ? `${imagepath}/${item.metadata.image}.png` : item.metadata?.imageurl ? item.metadata.imageurl : `${imagepath}/${item.name}.png`}`})`,
+          backgroundImage: getItemUrl(item as SlotWithItem) || 'none',
           border: isOver ? '1px dashed rgba(255,255,255,0.4)' : '',
         }}
       >

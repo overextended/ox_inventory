@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { isSlotWithItem } from '../../helpers';
+import { getItemUrl, isSlotWithItem } from '../../helpers';
 import useNuiEvent from '../../hooks/useNuiEvent';
 import { Items } from '../../store/items';
 import WeightBar from '../utils/WeightBar';
@@ -7,6 +7,7 @@ import { Slide } from '@mui/material';
 import { useAppSelector } from '../../store';
 import { selectLeftInventory } from '../../store/inventory';
 import { imagepath } from '../../store/imagepath';
+import { SlotWithItem } from '../../typings';
 
 const InventoryHotbar: React.FC = () => {
   const [hotbarVisible, setHotbarVisible] = useState(false);
@@ -31,7 +32,7 @@ const InventoryHotbar: React.FC = () => {
           <div
             className="hotbar-item-slot"
             style={{
-              backgroundImage: `url(${`${item.metadata?.image ? `${imagepath}/${item.metadata.image}.png` : item.metadata?.imageurl ? item.metadata.imageurl : `${imagepath}/${item.name}.png`}`})`,
+              backgroundImage: getItemUrl(item as SlotWithItem) || 'none',
             }}
             key={`hotbar-${item.slot}`}
           >
