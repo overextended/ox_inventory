@@ -1120,6 +1120,7 @@ RegisterNetEvent('ox_inventory:setPlayerInventory', function(currentDrops, inven
 			description = v.description,
 			buttons = buttons,
 			ammoName = v.ammoname,
+			image = v.client?.image
 		}
 	end
 
@@ -1225,7 +1226,7 @@ RegisterNetEvent('ox_inventory:setPlayerInventory', function(currentDrops, inven
 				items = PlayerData.inventory,
 				maxWeight = shared.playerweight,
 			},
-			imagepath = GetConvar('inventory:imagepath', 'nui://ox_inventory/web/images')
+			imagepath = client.imagepath
 		}
 	})
 
