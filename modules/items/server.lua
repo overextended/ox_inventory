@@ -160,9 +160,9 @@ CreateThread(function()
 			for k, item in pairs(items) do
 				if not ItemList[item.name] and not checkIgnoredNames(item.name) then
 					item.close = item.shouldClose == nil and true or item.shouldClose
-					item.stack = not item.unique and true
-					item.description = item.description
-					item.weight = item.weight or 0
+ 					item.stack = not item.unique and true
+ 					item.description = item.description
+ 					item.weight = item.weight or 0
 					dump[k] = item
 					count += 1
 				end
@@ -179,17 +179,24 @@ CreateThread(function()
 		weight = %s,
 		stack = %s,
 		close = %s,
-		description = %s
+		description = %s,
+		client = {
+			status = {
+				hunger = %s,
+				thirst = %s,
+				stress = %s
+			}
+		}
 	},
 ]]
+
 				local fileSize = #file
 
 				for _, item in pairs(dump) do
 					local formatName = item.name:gsub("'", "\\'"):lower()
 					if not ItemList[formatName] then
 						fileSize += 1
-
-						file[fileSize] = (itemFormat):format(formatName, item.label:gsub("'", "\\'"), item.weight, item.stack, item.close, item.description and json.encode(item.description) or 'nil')
+						file[fileSize] = (itemFormat):format(formatName, item.label:gsub("'", "\\'"), item.weight, item.stack, item.close, item.description and json.encode(item.description) or 'nil', item.hunger or 'nil', item.thirst or 'nil', item.stress or 'nil')
 						ItemList[formatName] = item
 					end
 				end
