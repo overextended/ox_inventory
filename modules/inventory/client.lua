@@ -5,6 +5,7 @@ local Inventory = {}
 Inventory.Dumpsters = {218085040, 666561306, -58485588, -206690185, 1511880420, 682791951}
 
 function Inventory.OpenDumpster(entity)
+	local dumpster = nil
 	local netId = NetworkGetEntityIsNetworked(entity) and NetworkGetNetworkIdFromEntity(entity)
 
 	if not netId then
@@ -13,8 +14,12 @@ function Inventory.OpenDumpster(entity)
 		netId = entity ~= 0 and NetworkGetNetworkIdFromEntity(entity)
 	end
 
-	if netId then
-		client.openInventory('dumpster', 'dumpster'..netId)
+	local dcoords = GetEntityCoords(entity)
+	local x = math.floor(dcoords.x)
+	local y = math.floor(dcoords.y)
+	dumpster = "dumpster|" .. x .. "|" .. y
+	if netId and dumpster then
+		client.openInventory('dumpster', 'dumpster'..dumpster)
 	end
 end
 
