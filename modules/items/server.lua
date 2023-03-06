@@ -6,22 +6,7 @@ local ItemList = require 'modules.items.shared' --[[@as { [string]: OxServerItem
 
 TriggerEvent('ox_inventory:itemList', ItemList)
 
--- Slot count and maximum weight for containers
--- Whitelist and blacklist: ['item_name'] = true
-Items.containers = {
-	['paperbag'] = {
-		size = {5, 1000},
-		blacklist = {
-			['testburger'] = true -- No burgers!
-		}
-	},
-	['pizzabox'] = {
-		size = {1, 1000},
-		whitelist = {
-			['pizza'] = true -- Pizza box for pizza only
-		}
-	}
-}
+Items.containers = require 'modules.items.containers'
 
 -- Possible metadata when creating garbage
 local trash = {
