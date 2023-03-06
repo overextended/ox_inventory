@@ -86,6 +86,17 @@ function shared.print(...) print(string.strjoin(' ', ...)) end
 
 function shared.info(...) shared.print('^2[info]^7', ...) end
 
+---Throws a formatted type error.
+---```lua
+---error("expected %s to have type '%s' (received %s)")
+---```
+---@param variable string
+---@param expected string
+---@param received string
+function TypeError(variable, expected, received)
+    error(("expected %s to have type '%s' (received %s)"):format(variable, expected, received))
+end
+
 -- People like ignoring errors for some reason
 local function spamError(err)
 	lib = nil
