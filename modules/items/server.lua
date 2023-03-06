@@ -175,7 +175,8 @@ CreateThread(function()
 				hunger = %s,
 				thirst = %s,
 				stress = %s
-			}
+			},
+			image = %s,
 		}
 	},
 ]]
@@ -188,7 +189,7 @@ CreateThread(function()
 						fileSize += 1
 
 						---@todo cry
-						local itemStr = itemFormat:format(formatName, item.label:gsub("'", "\\'"), item.weight, item.stack, item.close, item.description and json.encode(item.description) or 'nil', item.hunger or 'nil', item.thirst or 'nil', item.stress or 'nil')
+						local itemStr = itemFormat:format(formatName, item.label:gsub("'", "\\'"), item.weight, item.stack, item.close, item.description and json.encode(item.description) or 'nil', item.hunger or 'nil', item.thirst or 'nil', item.stress or 'nil', item.image or 'nil')
 						-- temporary solution for nil values
 						itemStr = itemStr:gsub('[%s]-[%w]+ = nil[,]?', '')
 						-- temporary solution for empty status table
