@@ -416,10 +416,13 @@ local function useSlot(slot)
 			if data.ammo then
 				if EnableWeaponWheel or currentWeapon.metadata.durability <= 0 then return end
 
-				local maxAmmo = GetMaxAmmoInClip(playerPed, currentWeapon.hash, true)
+				local clipSize = GetMaxAmmoInClip(playerPed, currentWeapon.hash, true)
 				local currentAmmo = GetAmmoInPedWeapon(playerPed, currentWeapon.hash)
+				local _, maxAmmo = GetMaxAmmo(playerPed, currentWeapon.hash)
 
-				if currentAmmo == maxAmmo then return end
+				if maxAmmo < clipSize then clipSize = maxAmmo end
+
+				if currentAmmo == clipSize then return end
 
 				useItem(data, function(resp)
 					if not resp or resp.name ~= currentWeapon?.ammo then return end
@@ -463,10 +466,12 @@ local function useSlot(slot)
 						end
 					end
 
-					maxAmmo = GetMaxAmmoInClip(playerPed, currentWeapon.hash, true)
-					currentAmmo = GetAmmoInPedWeapon(playerPed, currentWeapon.hash)
+					if maxAmmo > clipSize then
+						clipSize = GetMaxAmmoInClip(playerPed, currentWeapon.hash, true)
+					end
 
-					local missingAmmo = maxAmmo - currentAmmo
+					currentAmmo = GetAmmoInPedWeapon(playerPed, currentWeapon.hash)
+					local missingAmmo = clipSize - currentAmmo
 					local addAmmo = resp.count > missingAmmo and missingAmmo or resp.count
 					local newAmmo = currentAmmo + addAmmo
 
