@@ -107,7 +107,7 @@ for type, data in pairs(data('weapons')) do
 			v.model = v.model or k -- actually weapon type or such? model for compatibility
 			v.hash = joaat(v.model)
 			v.stack = v.throwable and true or false
-			v.durability = v.durability or 1
+			v.durability = v.durability or 0.05
 			v.weapon = true
 		else
 			v.stack = true
