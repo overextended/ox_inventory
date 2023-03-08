@@ -72,8 +72,8 @@ local function newItem(data)
 	if isServer then
 		data.client = nil
 
-		if server?.export then
-			data.cb = useExport(string.strsplit('.', server.export))
+		if serverData?.export then
+			data.cb = useExport(string.strsplit('.', serverData.export))
 		end
 
 		if not data.durability then
