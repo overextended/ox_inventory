@@ -72,8 +72,8 @@ local function newItem(data)
 	if isServer then
 		data.client = nil
 
-		if server?.export then
-			data.cb = useExport(string.strsplit('.', server.export))
+		if serverData?.export then
+			data.cb = useExport(string.strsplit('.', serverData.export))
 		end
 
 		if not data.durability then
@@ -85,8 +85,8 @@ local function newItem(data)
 		data.server = nil
 		data.count = 0
 
-		if client?.export then
-			data.export = useExport(string.strsplit('.', client.export))
+		if clientData?.export then
+			data.export = useExport(string.strsplit('.', clientData.export))
 		end
 
 		if clientData?.image then
