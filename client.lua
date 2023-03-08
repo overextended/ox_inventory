@@ -1387,9 +1387,10 @@ RegisterNetEvent('ox_inventory:setPlayerInventory', function(currentDrops, inven
 				elseif weaponAmmo then
 					if IsPedShooting(playerPed) then
 						local currentAmmo
+						local durabilityDrain = Items[currentWeapon.name].durability
 
 						if currentWeapon.group == `GROUP_PETROLCAN` or currentWeapon.group == `GROUP_FIREEXTINGUISHER` then
-							currentAmmo = weaponAmmo - 0.05 < 0 and 0 or weaponAmmo - 0.05
+							currentAmmo = weaponAmmo - durabilityDrain < 0 and 0 or weaponAmmo - durabilityDrain
 							currentWeapon.metadata.durability = currentAmmo
 							currentWeapon.metadata.ammo = (weaponAmmo < currentAmmo) and 0 or currentAmmo
 
@@ -1401,10 +1402,8 @@ RegisterNetEvent('ox_inventory:setPlayerInventory', function(currentDrops, inven
 
 							if currentAmmo < weaponAmmo then
 								currentAmmo = (weaponAmmo < currentAmmo) and 0 or currentAmmo
-
-								local durability = Items[currentWeapon.name].durability * math.abs((weaponAmmo or 0.1) - currentAmmo)
 								currentWeapon.metadata.ammo = currentAmmo
-								currentWeapon.metadata.durability = currentWeapon.metadata.durability - durability
+								currentWeapon.metadata.durability = currentWeapon.metadata.durability - (durabilityDrain * math.abs((weaponAmmo or 0.1) - currentAmmo))
 							end
 						end
 
