@@ -1813,7 +1813,7 @@ SetInterval(function()
 	end
 
 	db.saveInventories(parameters[1], parameters[2], parameters[3], parameters[4])
-end, GetConvarInt('inventory:saveinterval', 600000))
+end, math.max(300000, GetConvarInt('inventory:saveinterval', 600000)))
 
 function Inventory.SaveInventories(lock)
 	local parameters = { {}, {}, {}, {} }
