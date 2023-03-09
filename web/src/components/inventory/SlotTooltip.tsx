@@ -11,6 +11,10 @@ import ClockIcon from '../utils/icons/ClockIcon';
 const SlotTooltip: React.FC<{ item: SlotWithItem; inventory: Inventory }> = ({ item, inventory }) => {
   const additionalMetadata = useAppSelector((state) => state.inventory.additionalMetadata);
   const itemData = useMemo(() => Items[item.name], [item]);
+  const ingredients = useMemo(() => {
+    if (!item.ingredients) return null;
+    return Object.entries(item.ingredients).sort((a, b) => a[1] - b[1]);
+  }, [item]);
   const description = item.metadata?.description || itemData?.description;
   const ammoName = itemData?.ammoName && Items[itemData?.ammoName]?.label;
 
@@ -89,12 +93,12 @@ const SlotTooltip: React.FC<{ item: SlotWithItem; inventory: Inventory }> = ({ i
             </>
           ) : (
             <div className="tooltip-ingredients">
-              {item.ingredients &&
-                Object.entries(item.ingredients).map((ingredient) => {
+              {ingredients &&
+                ingredients.map((ingredient) => {
                   const [item, count] = [ingredient[0], ingredient[1]];
                   return (
                     <div className="tooltip-ingredient" key={`ingredient-${item}`}>
-                      <img src={`${imagepath}/${item}.png`} alt={`${item}`} />
+                      <img src={`${imagepath}/${item}.png`} />
                       <p>
                         {count >= 1
                           ? `${count}x ${Items[item]?.label || item}`
