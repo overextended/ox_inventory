@@ -32,13 +32,13 @@ function client.onLogout()
 	if not PlayerData.loaded then return end
 
 	if client.parachute then
-		Utils.DeleteObject(client.parachute)
+		Utils.DeleteEntity(client.parachute)
 		client.parachute = false
 	end
 
 	for _, point in pairs(client.drops) do
 		if point.entity then
-			Utils.DeleteObject(point.entity)
+			Utils.DeleteEntity(point.entity)
 		end
 
 		point:remove()

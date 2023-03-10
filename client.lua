@@ -982,8 +982,8 @@ end
 local function onExitDrop(point)
 	local entity = point.entity
 
-	if entity and DoesEntityExist(entity) then
-		Utils.DeleteObject(entity)
+	if entity then
+		Utils.DeleteEntity(entity)
 		point.entity = nil
 	end
 end
@@ -1039,7 +1039,7 @@ RegisterNetEvent('ox_inventory:removeDrop', function(dropId)
 			client.drops[dropId] = nil
 			point:remove()
 
-			if point.entity then Utils.DeleteObject(point.entity) end
+			if point.entity then Utils.DeleteEntity(point.entity) end
 		end
 	end
 end)
@@ -1286,7 +1286,7 @@ RegisterNetEvent('ox_inventory:setPlayerInventory', function(currentDrops, inven
 		end
 
 		if client.parachute and GetPedParachuteState(playerPed) ~= -1 then
-			Utils.DeleteObject(client.parachute)
+			Utils.DeleteEntity(client.parachute)
 			client.parachute = false
 		end
 

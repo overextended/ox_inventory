@@ -79,6 +79,7 @@ end
 
 RegisterNetEvent('ox_inventory:itemNotify', Utils.ItemNotify)
 
+---@deprecated
 function Utils.DeleteObject(obj)
 	SetEntityAsMissionEntity(obj, false, true)
 	DeleteObject(obj)
