@@ -1698,10 +1698,14 @@ RegisterNUICallback('craftItem', function(data, cb)
 	cb(true)
 
 	local id, index = currentInventory.id, currentInventory.index
-	local success, response = lib.callback.await('ox_inventory:craftItem', 200, currentInventory.id, currentInventory.index, data.fromSlot, data.toSlot)
 
-	if not success then
-		lib.notify({ type = 'error', description = locale(response or 'cannot_perform') })
+	for i = 1, data.count do
+		local success, response = lib.callback.await('ox_inventory:craftItem', 200, id, index, data.fromSlot, data.toSlot)
+
+		if not success then
+			if response then lib.notify({ type = 'error', description = locale(response or 'cannot_perform') }) end
+			break
+		end
 	end
 
 	if not currentInventory or currentInventory.type ~= 'crafting' then
