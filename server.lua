@@ -333,12 +333,16 @@ lib.callback.register('ox_inventory:useItem', function(source, itemName, slot, m
 				if not durability then
 					Inventory.RemoveItem(inventory.id, data.name, consume < 1 and 1 or consume, nil, data.slot)
 				else
+					inventory.changed = true
+
 					TriggerClientEvent('ox_inventory:updateSlots', inventory.id, {
 						{
 							item = inventory.items[data.slot],
 							inventory = inventory.type
 						}
 					}, { left = inventory.weight })
+
+					if server.syncInventory then server.syncInventory(inventory) end
 				end
 
 				if item?.cb then
