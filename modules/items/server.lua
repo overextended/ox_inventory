@@ -95,7 +95,7 @@ CreateThread(function()
 
 						local itemStr = itemFormat:format(formatName, item.label:gsub("'", "\\'"), item.weight, item.stack, item.close, item.description and json.encode(item.description) or 'nil')
 						-- temporary solution for nil values
-						itemStr = itemStr:gsub('[%s]-[%w]+ = nil[,]?', '')
+						itemStr = itemStr:gsub('[%s]-[%w]+ = nil,?', '')
 						file[fileSize] = itemStr
 						ItemList[formatName] = item
 					end
@@ -194,11 +194,11 @@ CreateThread(function()
 						---@todo cry
 						local itemStr = itemFormat:format(formatName, item.label:gsub("'", "\\'"), item.weight, item.stack, item.close, item.description and json.encode(item.description) or 'nil', item.hunger or 'nil', item.thirst or 'nil', item.stress or 'nil', item.image or 'nil')
 						-- temporary solution for nil values
-						itemStr = itemStr:gsub('[%s]-[%w]+ = nil[,]?', '')
+						itemStr = itemStr:gsub('[%s]-[%w]+ = nil,?', '')
 						-- temporary solution for empty status table
-						itemStr = itemStr:gsub('[%s]-[%w]+ = %{[%s]+%}', '')
+						itemStr = itemStr:gsub('[%s]-[%w]+ = %{[%s]+%},?', '')
 						-- temporary solution for empty client table
-						itemStr = itemStr:gsub('[%s]-[%w]+ = %{[%s]+%}', '')
+						itemStr = itemStr:gsub('[%s]-[%w]+ = %{[%s]+%},?', '')
 						file[fileSize] = itemStr
 						ItemList[formatName] = item
 					end
