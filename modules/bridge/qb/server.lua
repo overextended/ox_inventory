@@ -73,7 +73,7 @@ local function setupPlayer(Player)
 
 	QBCore.Functions.AddPlayerMethod(Player.PlayerData.source, "SetInventory", function()
 		-- ox_inventory's item structure is not compatible with qb-inventory's one so we don't support it
-		shared.info('Player.Functions.SetInventory is unsupported for ox_inventory, please use exports.ox_inventory:setPlayerInventory instead.')
+		error('Player.Functions.SetInventory is unsupported for ox_inventory. Try ClearInventory, then add the desired items.')
 	end)
 end
 
