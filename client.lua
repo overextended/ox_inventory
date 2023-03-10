@@ -284,6 +284,13 @@ lib.callback.register('ox_inventory:usingItem', function(data)
 			end
 		end
 
+		if not item.disable then
+			item.disable = { combat = true }
+		elseif item.disable.combat == nil then
+			-- Backwards compatibility; you probably don't want people shooting while eating and bandaging anyway
+			item.disable.combat = true
+		end
+
 		local success = (not item.usetime or lib.progressBar({
 			duration = item.usetime,
 			label = item.label or locale('using', data.metadata.label or data.label),
@@ -1056,10 +1063,10 @@ local function setStateBagHandler(stateId)
 		invBusy = value
 
 		if value then
-			lib.disableControls:Add(23, 25, 36, 68, 263)
-		else
-			lib.disableControls:Remove(23, 25, 36, 68, 263)
+			return lib.disableControls:Add(23, 36)
 		end
+
+		lib.disableControls:Remove(23, 36)
 	end)
 
 	AddStateBagChangeHandler('instance', stateId, function(_, _, value)
