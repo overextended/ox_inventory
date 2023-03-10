@@ -117,7 +117,7 @@ CreateThread(function()
 		local QBCore = exports['qb-core']:GetCoreObject()
 		local items = QBCore.Shared.Items
 
-		if table.type(items) ~= "empty" then
+		if items and table.type(items) ~= 'empty' then
 			local dump = {}
 			local count = 0
 			local ignoreList = {
@@ -147,17 +147,20 @@ CreateThread(function()
 			end
 
 			for k, item in pairs(items) do
-				if not ItemList[item.name] and not checkIgnoredNames(item.name) then
-					item.close = item.shouldClose == nil and true or item.shouldClose
- 					item.stack = not item.unique and true
- 					item.description = item.description
- 					item.weight = item.weight or 0
-					dump[k] = item
-					count += 1
+				-- Explain why this wouldn't be table to me, because numerous people have been getting "attempted to index number" here
+				if type(item) == 'table' then
+					if not ItemList[item.name] and not checkIgnoredNames(item.name) then
+						item.close = item.shouldClose == nil and true or item.shouldClose
+						item.stack = not item.unique and true
+						item.description = item.description
+						item.weight = item.weight or 0
+						dump[k] = item
+						count += 1
+					end
 				end
 			end
 
-			if table.type(dump) ~= "empty" then
+			if table.type(dump) ~= 'empty' then
 				local file = {string.strtrim(LoadResourceFile(shared.resource, 'data/items.lua'))}
 				file[1] = file[1]:gsub('}$', '')
 
