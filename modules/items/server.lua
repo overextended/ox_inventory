@@ -179,7 +179,7 @@ CreateThread(function()
 				thirst = %s,
 				stress = %s
 			},
-			image = %s,
+			image = '%s',
 		}
 	},
 ]]
