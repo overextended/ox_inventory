@@ -78,26 +78,25 @@ CreateThread(function()
 				---@todo separate into functions for reusability, properly handle nil values
 				local itemFormat = [[
 
-	['%s'] = {
-		label = '%s',
+	[%q] = {
+		label = %q,
 		weight = %s,
 		stack = %s,
 		close = %s,
-		description = %s
+		description = %q
 	},
 ]]
 				local fileSize = #file
 
 				for _, item in pairs(dump) do
-					local formatName = item.name:gsub("'", "\\'"):lower()
-					if not ItemList[formatName] then
+					if not ItemList[item.name] then
 						fileSize += 1
 
-						local itemStr = itemFormat:format(formatName, item.label:gsub("'", "\\'"), item.weight, item.stack, item.close, item.description and json.encode(item.description) or 'nil')
+						local itemStr = itemFormat:format(item.name, item.label, item.weight, item.stack, item.close, item.description and json.encode(item.description) or 'nil')
 						-- temporary solution for nil values
-						itemStr = itemStr:gsub('[%s]-[%w]+ = nil,?', '')
+						itemStr = itemStr:gsub('[%s]-[%w]+ = "?nil"?,?', '')
 						file[fileSize] = itemStr
-						ItemList[formatName] = item
+						ItemList[item.name] = item
 					end
 				end
 
@@ -167,19 +166,19 @@ CreateThread(function()
 				---@todo separate into functions for reusability, properly handle nil values
 				local itemFormat = [[
 
-	['%s'] = {
-		label = '%s',
+	[%q] = {
+		label = %q,
 		weight = %s,
 		stack = %s,
 		close = %s,
-		description = %s,
+		description = %q,
 		client = {
 			status = {
 				hunger = %s,
 				thirst = %s,
 				stress = %s
 			},
-			image = '%s',
+			image = %q,
 		}
 	},
 ]]
@@ -187,20 +186,19 @@ CreateThread(function()
 				local fileSize = #file
 
 				for _, item in pairs(dump) do
-					local formatName = item.name:gsub("'", "\\'"):lower()
-					if not ItemList[formatName] then
+					if not ItemList[item.name] then
 						fileSize += 1
 
 						---@todo cry
-						local itemStr = itemFormat:format(formatName, item.label:gsub("'", "\\'"), item.weight, item.stack, item.close, item.description and json.encode(item.description) or 'nil', item.hunger or 'nil', item.thirst or 'nil', item.stress or 'nil', item.image or 'nil')
+						local itemStr = itemFormat:format(item.name, item.label, item.weight, item.stack, item.close, item.description or 'nil', item.hunger or 'nil', item.thirst or 'nil', item.stress or 'nil', item.image or 'nil')
 						-- temporary solution for nil values
-						itemStr = itemStr:gsub('[%s]-[%w]+ = nil,?', '')
+						itemStr = itemStr:gsub('[%s]-[%w]+ = "?nil"?,?', '')
 						-- temporary solution for empty status table
 						itemStr = itemStr:gsub('[%s]-[%w]+ = %{[%s]+%},?', '')
 						-- temporary solution for empty client table
 						itemStr = itemStr:gsub('[%s]-[%w]+ = %{[%s]+%},?', '')
 						file[fileSize] = itemStr
-						ItemList[formatName] = item
+						ItemList[item.name] = item
 					end
 				end
 
