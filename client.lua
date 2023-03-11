@@ -495,6 +495,13 @@ local function useSlot(slot)
 						AddAmmoToPed(playerPed, currentWeapon.hash, addAmmo)
 						Wait(100)
 						MakePedReload(playerPed)
+							
+						SetTimeout(100, function()
+							while IsPedReloading(playerPed) do
+								DisableControlAction(0, 22, true)
+								Wait(0)
+							end
+						end)
 					end
 
 					currentWeapon.metadata.ammo = newAmmo
