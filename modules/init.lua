@@ -29,13 +29,15 @@ do
 	local ignoreweapons = table.create(0, (shared.ignoreweapons and #shared.ignoreweapons or 0) + 3)
 
 	for i = 1, #ignoreweapons do
-		ignoreweapons[shared.ignoreweapons[i]] = true
+		local weapon = shared.ignoreweapons[i]
+		ignoreweapons[tonumber(weapon) or joaat(weapon)] = true
 	end
 
+	ignoreweapons[`WEAPON_UNARMED`] = true
+	ignoreweapons[`WEAPON_HANDCUFFS`] = true
+	ignoreweapons[`WEAPON_GARBAGEBAG`] = true
+
 	shared.ignoreweapons = ignoreweapons
-	shared.ignoreweapons[`WEAPON_UNARMED`] = true
-	shared.ignoreweapons[`WEAPON_HANDCUFFS`] = true
-	shared.ignoreweapons[`WEAPON_GARBAGEBAG`] = true
 end
 
 if IsDuplicityVersion() then
