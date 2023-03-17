@@ -1342,7 +1342,7 @@ RegisterNetEvent('ox_inventory:setPlayerInventory', function(currentDrops, inven
 					currentWeapon = Weapon.Disarm(currentWeapon, true)
 				end
 			end
-		elseif client.weaponmismatch and not shared.ignoreweapons[weaponHash] then
+		elseif client.weaponmismatch and not client.ignoreweapons[weaponHash] then
 			local weaponType = GetWeapontypeGroup(weaponHash)
 
 			if weaponType ~= 0 and weaponType ~= `GROUP_UNARMED` then

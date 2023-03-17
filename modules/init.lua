@@ -10,7 +10,6 @@ shared = {
 	playerweight = GetConvarInt('inventory:weight', 30000),
 	target = GetConvarInt('inventory:target', 0) == 1,
 	police = json.decode(GetConvar('inventory:police', '["police", "sheriff"]')),
-	ignoreweapons = json.decode(GetConvar('inventory:ignoreweapons', '[]'))
 }
 
 do
@@ -25,19 +24,6 @@ do
 	end
 
 	shared.police = police
-
-	local ignoreweapons = table.create(0, (shared.ignoreweapons and #shared.ignoreweapons or 0) + 3)
-
-	for i = 1, #ignoreweapons do
-		local weapon = shared.ignoreweapons[i]
-		ignoreweapons[tonumber(weapon) or joaat(weapon)] = true
-	end
-
-	ignoreweapons[`WEAPON_UNARMED`] = true
-	ignoreweapons[`WEAPON_HANDCUFFS`] = true
-	ignoreweapons[`WEAPON_GARBAGEBAG`] = true
-
-	shared.ignoreweapons = ignoreweapons
 end
 
 if IsDuplicityVersion() then
@@ -81,7 +67,21 @@ else
 		imagepath = GetConvar('inventory:imagepath', 'nui://ox_inventory/web/images'),
 		dropprops = GetConvarInt('inventory:dropprops', 0) == 1,
 		weaponmismatch = GetConvarInt('inventory:weaponmismatch', 1) == 1,
+		ignoreweapons = json.decode(GetConvar('inventory:ignoreweapons', '[]'))
 	}
+
+	local ignoreweapons = table.create(0, (shared.ignoreweapons and #shared.ignoreweapons or 0) + 3)
+
+	for i = 1, #ignoreweapons do
+		local weapon = shared.ignoreweapons[i]
+		ignoreweapons[tonumber(weapon) or joaat(weapon)] = true
+	end
+
+	ignoreweapons[`WEAPON_UNARMED`] = true
+	ignoreweapons[`WEAPON_HANDCUFFS`] = true
+	ignoreweapons[`WEAPON_GARBAGEBAG`] = true
+
+	shared.ignoreweapons = ignoreweapons
 end
 
 function shared.print(...) print(string.strjoin(' ', ...)) end
