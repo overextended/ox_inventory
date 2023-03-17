@@ -70,10 +70,10 @@ else
 		ignoreweapons = json.decode(GetConvar('inventory:ignoreweapons', '[]'))
 	}
 
-	local ignoreweapons = table.create(0, (shared.ignoreweapons and #shared.ignoreweapons or 0) + 3)
+	local ignoreweapons = table.create(0, (client.ignoreweapons and #client.ignoreweapons or 0) + 3)
 
-	for i = 1, #shared.ignoreweapons do
-		local weapon = shared.ignoreweapons[i]
+	for i = 1, #client.ignoreweapons do
+		local weapon = client.ignoreweapons[i]
 		ignoreweapons[tonumber(weapon) or joaat(weapon)] = true
 	end
 
@@ -81,7 +81,7 @@ else
 	ignoreweapons[`WEAPON_HANDCUFFS`] = true
 	ignoreweapons[`WEAPON_GARBAGEBAG`] = true
 
-	shared.ignoreweapons = ignoreweapons
+	client.ignoreweapons = ignoreweapons
 end
 
 function shared.print(...) print(string.strjoin(' ', ...)) end
