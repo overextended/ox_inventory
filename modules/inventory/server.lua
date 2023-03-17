@@ -341,8 +341,9 @@ end)
 
 ---@param item table
 ---@param slot table
-function Inventory.SlotWeight(item, slot)
-	local weight = item.weight * slot.count
+function Inventory.SlotWeight(item, slot, ignoreCount)
+	local weight = ignoreCount and item.weight or item.weight * (slot.count or 1)
+
 	if not slot.metadata then slot.metadata = {} end
 
 	if item.ammoname and slot.metadata.ammo then
@@ -364,7 +365,7 @@ function Inventory.SlotWeight(item, slot)
 	end
 
 	if slot.metadata.weight then
-		weight += (slot.metadata.weight * slot.count)
+		weight += ignoreCount and slot.metadata.weight or (slot.metadata.weight * (slot.count or 1))
 	end
 
 	return weight
