@@ -19,7 +19,7 @@ do
 
 	local police = table.create(0, shared.police and #shared.police or 0)
 
-	for i = 1, #police do
+	for i = 1, #shared.police do
 		police[shared.police[i]] = 0
 	end
 
@@ -72,7 +72,7 @@ else
 
 	local ignoreweapons = table.create(0, (shared.ignoreweapons and #shared.ignoreweapons or 0) + 3)
 
-	for i = 1, #ignoreweapons do
+	for i = 1, #shared.ignoreweapons do
 		local weapon = shared.ignoreweapons[i]
 		ignoreweapons[tonumber(weapon) or joaat(weapon)] = true
 	end
