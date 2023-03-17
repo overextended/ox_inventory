@@ -50,6 +50,10 @@ local function setupShopItems(id, shopType, shopName, groups)
 				grade = slot.grade
 			}
 
+			if slot.metadata then
+				slot.weight = Inventory.SlotWeight(Item, slot, true)
+			end
+
 			shop.items[i] = slot
 		end
 	end
