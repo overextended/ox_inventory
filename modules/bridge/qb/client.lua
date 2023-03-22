@@ -50,6 +50,7 @@ function client.setPlayerStatus(values)
 			if value > 0 then
 				TriggerServerEvent('hud:server:GainStress', value)
 			else
+				value = math.abs(value)
 				TriggerServerEvent('hud:server:RelieveStress', value)
 			end
 		end
