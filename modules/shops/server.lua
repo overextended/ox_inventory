@@ -193,10 +193,11 @@ lib.callback.register('ox_inventory:buyItem', function(source, data)
 				elseif data.count > fromData.count then
 					data.count = fromData.count
 				end
-			elseif fromData.license and server.hasLicense and not server.hasLicense(playerInv, fromData.license) then
+			end
+			if fromData.license and server.hasLicense and not server.hasLicense(playerInv, fromData.license) then
 				return false, false, { type = 'error', description = locale('item_unlicensed') }
-
-			elseif fromData.grade then
+			end
+			if fromData.grade then
 				local _, rank = server.hasGroup(playerInv, shop.groups)
 				if fromData.grade > rank then
 					return false, false, { type = 'error', description = locale('stash_lowgrade') }
