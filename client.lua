@@ -1500,6 +1500,7 @@ RegisterNetEvent('ox_inventory:viewInventory', function(data)
 		data.type = 'admin'
 		plyState.invOpen = true
 		currentInventory = data
+
 		SendNUIMessage({
 			action = 'setupInventory',
 			data = {
@@ -1507,6 +1508,8 @@ RegisterNetEvent('ox_inventory:viewInventory', function(data)
 			}
 		})
 		SetNuiFocus(true, true)
+
+		if client.screenblur then TriggerScreenblurFadeIn(0) end
 	end
 end)
 
