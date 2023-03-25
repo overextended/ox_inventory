@@ -118,6 +118,11 @@ for type, data in pairs(data('weapons')) do
 		if isServer then v.client = nil else
 			v.count = 0
 			v.server = nil
+			local clientData = v.client
+
+			if clientData?.image then
+				clientData.image = clientData.image:match('^[%w]+://') and ('url(%s)'):format(clientData.image) or ('url(%s/%s)'):format(client.imagepath, clientData.image)
+			end
 		end
 
 		ItemList[k] = v
