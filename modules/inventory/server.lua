@@ -867,108 +867,103 @@ exports('SetMaxWeight', Inventory.SetMaxWeight)
 ---@return boolean? success, string|OxItem|nil response
 function Inventory.AddItem(inv, item, count, metadata, slot, cb)
 	if type(item) ~= 'table' then item = Items(item) end
+
+	if not item then return false, 'invalid_item' end
+
 	inv = Inventory(inv) --[[@as OxInventory]]
+
+	if not inv?.slots then return false, 'invalid_inventory' end
+
+	if metadata and type(metadata) ~= 'table' then
+		metadata = metadata and { type = metadata or nil }
+	end
+
+	local toSlot, slotMetadata, slotCount
+	local success, response = false
 	count = math.floor(count + 0.5)
-	local success, response
 
-	if item then
-		if inv then
-			if metadata and type(metadata) ~= 'table' then
-				metadata = metadata and { type = metadata or nil }
-			end
+	if slot then
+		local slotData = inv.items[slot]
+		slotMetadata, slotCount = Items.Metadata(inv.id, item, metadata and table.clone(metadata) or {}, count)
 
-			local toSlot, slotMetadata, slotCount
-
-			if slot then
-				local slotData = inv.items[slot]
-				slotMetadata, slotCount = Items.Metadata(inv.id, item, metadata and table.clone(metadata) or {}, count)
-
-				if not slotData or (item.stack and slotData.name == item.name and table.matches(slotData.metadata, slotMetadata)) then
-					toSlot = slot
-				end
-			end
-
-			if not toSlot then
-				local items = inv.items
-				slotMetadata, slotCount = Items.Metadata(inv.id, item, metadata and table.clone(metadata) or {}, count)
-
-				for i = 1, inv.slots do
-					local slotData = items[i]
-
-					if item.stack and slotData ~= nil and slotData.name == item.name and table.matches(slotData.metadata, slotMetadata) then
-						toSlot = i
-						break
-					elseif not item.stack and not slotData then
-						if not toSlot then toSlot = {} end
-
-						toSlot[#toSlot + 1] = { slot = i, count = slotCount, metadata = slotMetadata }
-
-						if count == slotCount then
-							break
-						end
-
-						count -= 1
-						slotMetadata, slotCount = Items.Metadata(inv.id, item, metadata and table.clone(metadata) or {}, count)
-					elseif not toSlot and not slotData then
-						toSlot = i
-						break
-					end
-				end
-			end
-
-			if toSlot then
-				inv.changed = true
-
-				local invokingResource = server.loglevel > 1 and GetInvokingResource()
-
-				if type(toSlot) == 'number' then
-					Inventory.SetSlot(inv, item, slotCount, slotMetadata, toSlot)
-
-					if inv.player then
-						if server.syncInventory then server.syncInventory(inv) end
-						TriggerClientEvent('ox_inventory:updateSlots', inv.id, {{item = inv.items[toSlot], inventory = inv.type}}, {left=inv.weight, right=inv.open and Inventories[inv.open]?.weight}, slotCount, false)
-					end
-
-					if invokingResource then
-						lib.logger(inv.owner, 'addItem', ('"%s" added %sx %s to "%s"'):format(invokingResource, count, item.name, inv.label))
-					end
-
-					success = true
-					response = inv.items[toSlot]
-				else
-					local added = 0
-
-					for i = 1, #toSlot do
-						local data = toSlot[i]
-						added += data.count
-						Inventory.SetSlot(inv, item, data.count, data.metadata, data.slot)
-						toSlot[i] = { item = inv.items[data.slot], inventory = inv.type }
-					end
-
-					if inv.player then
-						if server.syncInventory then server.syncInventory(inv) end
-						TriggerClientEvent('ox_inventory:updateSlots', inv.id, toSlot, {left=inv.weight, right=inv.open and Inventories[inv.open]?.weight}, added, false)
-					end
-
-					if invokingResource then
-						lib.logger(inv.owner, 'addItem', ('"%s" added %sx %s to "%s"'):format(invokingResource, added, item.name, inv.label))
-					end
-
-					for i = 1, #toSlot do
-						toSlot[i] = toSlot[i].item
-					end
-
-					success = true
-					response = toSlot
-				end
-			else
-				response = 'inventory_full'
-			end
-		else
-			response = 'invalid_inventory'
+		if not slotData or (item.stack and slotData.name == item.name and table.matches(slotData.metadata, slotMetadata)) then
+			toSlot = slot
 		end
+	end
+
+	if not toSlot then
+		local items = inv.items
+		slotMetadata, slotCount = Items.Metadata(inv.id, item, metadata and table.clone(metadata) or {}, count)
+
+		for i = 1, inv.slots do
+			local slotData = items[i]
+
+			if item.stack and slotData ~= nil and slotData.name == item.name and table.matches(slotData.metadata, slotMetadata) then
+				toSlot = i
+				break
+			elseif not item.stack and not slotData then
+				if not toSlot then toSlot = {} end
+
+				toSlot[#toSlot + 1] = { slot = i, count = slotCount, metadata = slotMetadata }
+
+				if count == slotCount then
+					break
+				end
+
+				count -= 1
+				slotMetadata, slotCount = Items.Metadata(inv.id, item, metadata and table.clone(metadata) or {}, count)
+			elseif not toSlot and not slotData then
+				toSlot = i
+				break
+			end
+		end
+	end
+
+	if not toSlot then return false, 'inventory_full' end
+
+	inv.changed = true
+
+	local invokingResource = server.loglevel > 1 and GetInvokingResource()
+
+	if type(toSlot) == 'number' then
+		Inventory.SetSlot(inv, item, slotCount, slotMetadata, toSlot)
+
+		if inv.player then
+			if server.syncInventory then server.syncInventory(inv) end
+			TriggerClientEvent('ox_inventory:updateSlots', inv.id, {{ item = inv.items[toSlot], inventory = inv.type }}, { left = inv.weight, right = inv.open and Inventories[inv.open]?.weight }, slotCount, false)
+		end
+
+		if invokingResource then
+			lib.logger(inv.owner, 'addItem', ('"%s" added %sx %s to "%s"'):format(invokingResource, count, item.name, inv.label))
+		end
+
+		success = true
+		response = inv.items[toSlot]
 	else
-		response = 'invalid_item'
+		local added = 0
+
+		for i = 1, #toSlot do
+			local data = toSlot[i]
+			added += data.count
+			Inventory.SetSlot(inv, item, data.count, data.metadata, data.slot)
+			toSlot[i] = { item = inv.items[data.slot], inventory = inv.type }
+		end
+
+		if inv.player then
+			if server.syncInventory then server.syncInventory(inv) end
+			TriggerClientEvent('ox_inventory:updateSlots', inv.id, toSlot, { left = inv.weight, right = inv.open and Inventories[inv.open]?.weight }, added, false)
+		end
+
+		if invokingResource then
+			lib.logger(inv.owner, 'addItem', ('"%s" added %sx %s to "%s"'):format(invokingResource, added, item.name, inv.label))
+		end
+
+		for i = 1, #toSlot do
+			toSlot[i] = toSlot[i].item
+		end
+
+		success = true
+		response = toSlot
 	end
 
 	if cb then
@@ -977,6 +972,7 @@ function Inventory.AddItem(inv, item, count, metadata, slot, cb)
 
 	return success, response
 end
+
 exports('AddItem', Inventory.AddItem)
 
 ---@param inv inventory
