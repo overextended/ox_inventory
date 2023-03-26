@@ -1822,7 +1822,9 @@ SetInterval(function()
 				if NetworkGetEntityFromNetworkId(inv.netid) == 0 then
 					Inventory.Remove(inv)
 				end
-			elseif not inv.player and (inv.datastore or inv.owner) and time - inv.time >= 3000 then
+			elseif not inv.player and (inv.datastore or inv.owner) and time - inv.time >= 1200 then
+				-- inv.time is a timestamp for when the inventory was last closed
+				-- if unopened for n seconds, the inventory is unloaded (datastore/temp stash is deleted)
 				Inventory.Remove(inv)
 			end
 		end
