@@ -1413,7 +1413,7 @@ RegisterNetEvent('ox_inventory:setPlayerInventory', function(currentDrops, inven
 							local ammo = Inventory.Search(1, currentWeapon.ammo, { type = currentWeapon.metadata.specialAmmo })?[1]
 
 							if ammo then
-								useSlot(ammo.slot)
+								CreateThread(function() useSlot(ammo.slot) end)
 							end
 						end
 					elseif currentWeapon.metadata.durability then
