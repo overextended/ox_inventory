@@ -5,11 +5,12 @@ import useNuiEvent from '../../hooks/useNuiEvent';
 import { Fade } from '@mui/material';
 import useQueue from '../../hooks/useQueue';
 import { Locale } from '../../store/locale';
-import { imagepath } from '../../store/imagepath';
+import { getItemUrl } from '../../helpers';
+import { SlotWithItem } from '../../typings';
+import { Items } from '../../store/items';
 
 interface ItemNotificationProps {
-  label: string;
-  image: string;
+  item: SlotWithItem;
   text: string;
 }
 
@@ -25,11 +26,13 @@ export const useItemNotifications = () => {
 
 const ItemNotification = React.forwardRef(
   (props: { item: ItemNotificationProps; style?: React.CSSProperties }, ref: React.ForwardedRef<HTMLDivElement>) => {
+    const slotItem = props.item.item;
+
     return (
       <div
         className="item-notification-item-box"
         style={{
-          backgroundImage: `url(${props.item.image.indexOf("https") == 0 ? `${props.item.image}` : `${imagepath}/${props.item.image}.png`})` || 'none',
+          backgroundImage: getItemUrl(slotItem) || 'none',
           ...props.style,
         }}
         ref={ref}
@@ -39,7 +42,7 @@ const ItemNotification = React.forwardRef(
             <p>{props.item.text}</p>
           </div>
           <div className="inventory-slot-label-box">
-            <div className="inventory-slot-label-text">{props.item.label}</div>
+            <div className="inventory-slot-label-text">{slotItem.metadata?.label || Items[slotItem.name]?.label}</div>
           </div>
         </div>
       </div>
@@ -66,12 +69,9 @@ export const ItemNotificationsProvider = ({ children }: { children: React.ReactN
     }, 2500);
   };
 
-  useNuiEvent<[label: string, image: string, text: string, count?: number]>(
-    'itemNotify',
-    ([label, image, text, count]) => {
-      add({ label: label, image: image, text: count ? `${Locale[text]} ${count}x` : `${Locale[text]}` });
-    }
-  );
+  useNuiEvent<[item: SlotWithItem, text: string, count?: number]>('itemNotify', ([item, text, count]) => {
+    add({ item: item, text: count ? `${Locale[text]} ${count}x` : `${Locale[text]}` });
+  });
 
   return (
     <ItemNotificationsContext.Provider value={{ add }}>
