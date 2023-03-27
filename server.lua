@@ -395,13 +395,10 @@ lib.addCommand({'additem', 'giveitem'}, {
 	if item then
 		local inventory = Inventory(args.target)
 		local count = args.count or 1
+		local success, response = Inventory.AddItem(inventory, item.name, count, args.type and { type = tonumber(args.type) or args.type })
 
-		if not inventory then
-			return print(('No user is connected with the given id (%s)'):format(args.target))
-		end
-
-		if not Inventory.AddItem(inventory, item.name, count, args.type and { type = tonumber(args.type) or args.type }) then
-			return print(('Failed to give %sx %s to player %s'):format(count, item.name, args.target))
+		if not success then
+			return Citizen.Trace(('Failed to give %sx %s to player %s (%s)'):format(count, item.name, args.target, response))
 		end
 
 		source = Inventory(source) or { label = 'console', owner = 'console' }
@@ -426,13 +423,10 @@ lib.addCommand('removeitem', {
 
 	if item and args.count > 0 then
 		local inventory = Inventory(args.target)
+		local success, response = Inventory.RemoveItem(inventory, item.name, args.count, args.type and { type = tonumber(args.type) or args.type }, nil, true)
 
-		if not inventory then
-			return print(('No user is connected with the given id (%s)'):format(args.target))
-		end
-
-		if not Inventory.RemoveItem(inventory, item.name, args.count, args.type and { type = tonumber(args.type) or args.type }, nil, true) then
-			return print(('Failed to remove %sx %s from player %s'):format(args.count, item.name, args.target))
+		if not success then
+			return Citizen.Trace(('Failed to remove %sx %s from player %s (%s)'):format(args.count, item.name, args.target, response))
 		end
 
 		source = Inventory(source) or {label = 'console', owner = 'console'}
@@ -457,13 +451,10 @@ lib.addCommand('setitem', {
 
 	if item then
 		local inventory = Inventory(args.target)
+		local success, response = Inventory.SetItem(inventory, item.name, args.count or 0, args.type and { type = tonumber(args.type) or args.type })
 
-		if not inventory then
-			return print(('No user is connected with the given id (%s)'):format(args.target))
-		end
-
-		if not Inventory.SetItem(inventory, item.name, args.count or 0, args.type and { type = tonumber(args.type) or args.type }) then
-			return print(('Failed to set %s count to %sx for player %s'):format(item.name, args.count, args.target))
+		if not success then
+			return Citizen.Trace(('Failed to set %s count to %sx for player %s (%s)'):format(item.name, args.count, args.target, response))
 		end
 
 		source = Inventory(source) or {label = 'console', owner = 'console'}
