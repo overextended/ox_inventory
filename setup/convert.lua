@@ -135,6 +135,26 @@ local function ConvertESX()
 end
 
 local function ConvertQB()
+
+	local function convertQbItems(items)
+		local converted = {}
+		local slot = 0
+		for _, v in pairs(items) do
+			if Items(v?.name) and v.amount then
+				slot += 1
+				converted[slot] = {slot=slot, name=v.name, count=v.amount, metadata = type(v.info) == 'table' and v.info or {}}
+				if v.type == "weapon" then
+					converted[slot].metadata.durability = v.info.quality or 100
+					converted[slot].metadata.ammo = v.info.ammo or 0
+					converted[slot].metadata.components = {}
+					converted[slot].metadata.serial = GenerateSerial()
+					converted[slot].metadata.quality = nil
+				end
+			end
+		end
+		return converted
+	end
+
 	if started then
 		return warn('Data is already being converted, please wait..')
 	end
@@ -299,6 +319,46 @@ local function ConvertQB()
 				if not MySQL.transaction.await(parameters) then
 					return Print('An error occurred while converting glovebox inventories')
 				end
+			end
+		end
+	end
+
+	local qbEvidence = MySQL.query.await("SELECT stash, items FROM stashitems WHERE stash LIKE '% | Drawer%'")
+
+	if qbEvidence then
+		table.wipe(parameters)
+		count = 0
+
+		---@type table<string, OxItem[]> maps stash name to inventory
+		local oxEvidence = {}
+
+		for i = 1, #qbEvidence do
+			local qbStash = qbEvidence[i]
+			local name = 'evidence-'..qbStash.stash:sub(12)
+			local items = convertQbItems(qbStash.items and json.decode(qbStash.items) or {})
+
+			--- evidence numbers can be shared between locations, so need to maintain map and merge.
+			if oxEvidence[name] then
+				for k = 1, #items do
+					oxEvidence[name][#oxEvidence[name]+1] = items[k]
+				end
+			else
+				oxEvidence[name] = items
+			end
+		end
+
+		for name, items in pairs(oxEvidence) do
+			count += 1
+			parameters[count] = { "INSERT INTO ox_inventory (owner, name, data) VALUES ('', :name, :data) ON DUPLICATE KEY UPDATE name = :name, data = :data", {
+				name = name,
+				data = json.encode(items)
+			}}
+		end
+
+		Print(('Creating ^3%s^0 evidence lockers from ^3%s^0 lockers by merging duplicate locker numbers'):format(count, #qbEvidence))
+		if count > 0 then
+			if not MySQL.transaction.await(parameters) then
+				return Print('An error occurred while converting evidence lockers')
 			end
 		end
 	end
