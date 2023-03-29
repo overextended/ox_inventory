@@ -135,26 +135,6 @@ local function ConvertESX()
 end
 
 local function ConvertQB()
-
-	local function convertQbItems(items)
-		local converted = {}
-		local slot = 0
-		for _, v in pairs(items) do
-			if Items(v?.name) and v.amount then
-				slot += 1
-				converted[slot] = {slot=slot, name=v.name, count=v.amount, metadata = type(v.info) == 'table' and v.info or {}}
-				if v.type == "weapon" then
-					converted[slot].metadata.durability = v.info.quality or 100
-					converted[slot].metadata.ammo = v.info.ammo or 0
-					converted[slot].metadata.components = {}
-					converted[slot].metadata.serial = GenerateSerial()
-					converted[slot].metadata.quality = nil
-				end
-			end
-		end
-		return converted
-	end
-
 	if started then
 		return warn('Data is already being converted, please wait..')
 	end
@@ -335,7 +315,7 @@ local function ConvertQB()
 		for i = 1, #qbEvidence do
 			local qbStash = qbEvidence[i]
 			local name = 'evidence-'..qbStash.stash:sub(12)
-			local items = convertQbItems(qbStash.items and json.decode(qbStash.items) or {})
+			local items = server.convertInventory(nil, (qbStash.items and json.decode(qbStash.items) or {}))
 
 			--- evidence numbers can be shared between locations, so need to maintain map and merge.
 			if oxEvidence[name] then
