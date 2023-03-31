@@ -329,7 +329,7 @@ local function ConvertQB()
 
 		for name, items in pairs(oxEvidence) do
 			count += 1
-			parameters[count] = { "INSERT INTO ox_inventory (owner, name, data) VALUES ('', :name, :data) ON DUPLICATE KEY UPDATE name = :name, data = :data", {
+			parameters[count] = { "INSERT INTO ox_inventory (owner, name, data) VALUES ('', ?, ?) ON DUPLICATE KEY UPDATE name = VALUES(name), data = VALUES(data)", {
 				name = name,
 				data = json.encode(items)
 			}}
