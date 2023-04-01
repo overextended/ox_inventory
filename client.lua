@@ -917,6 +917,10 @@ RegisterNetEvent('ox_inventory:updateSlots', function(items, weights, count, rem
 	local item = items[1]?.item
 
 	if currentWeapon?.slot == item?.slot and item.metadata then
+		-- Potential race condition w/ poor connection may lead to ammo/durability values
+		-- getting desynced or updated out-of-order?
+		item.metadata.ammo = currentWeapon.metadata.ammo
+		item.metadata.durability = currentWeapon.metadata.durability
 		currentWeapon.metadata = item.metadata
 		TriggerEvent('ox_inventory:currentWeapon', currentWeapon)
 	end
