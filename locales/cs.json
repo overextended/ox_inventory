@@ -17,6 +17,8 @@
   "ui_ctrl_shift_lmb": "Rychle přesunout polovinu předmětů do druhého inventáře",
   "ui_alt_lmb": "Rychle použít předmět",
   "ui_ctrl_c": "Když najedete na zbraň, zkopírujete její sériové číslo",
+  "ui_remove_ammo": "Odstranit náboje",
+  "ammo_type": "Typ nábojů",
   "$": "$",
   "male": "Muž",
   "female": "Žena",
@@ -31,7 +33,7 @@
   "inventory_right_access": "Tento inventář nemůžete otevřít",
   "inventory_lost_access": "Již nemáte přístup k tomuto inventáři",
   "wrong_ammo": "Nemůžete nabít %s s %s náboji",
-  "weapon_license": "Zbrojní průkaz",
+  "license": "Zbrojní průkaz",
   "already_have": "Již máte zbrojní průkaz",
   "have_purchased": "Zakoupili jste zbrojní průkaz",
   "can_not_afford": "Zbrojní průkaz si nemůžete dovolit",
@@ -46,6 +48,7 @@
   "buy_amount": "Musíte zadat množství k zakoupení",
   "component_has": "Tato zbraň již má %s",
   "component_invalid": "Na tuto zbraň %s nepasuje",
+  "component_slot_occupied": "Slot %s této zbraně je již obsazen",
   "cannot_perform": "Tuto akci nelze provést",
   "cannot_carry": "Tolik toho neunesete",
   "cannot_carry_other": "Druhý inventář toho tolik neunese",
@@ -83,5 +86,7 @@
   "evidence_cannot_take": "Nejste dostatečně kvalifikovaný pro přístup",
   "dumpster": "Popelnice",
   "crafting_item": "Vyrábíš %s",
-  "crafting_bench": "Pracovní stůl"
+  "crafting_bench": "Pracovní stůl",
+  "open_crafting_bench": "Otevřít řemeslnou lavici",
+  "not_enough_durability": "%s nemá dostatečnou výdrž"
 }
