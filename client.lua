@@ -130,7 +130,7 @@ function client.openInventory(inv, data)
 		Wait(100)
 
 		if IsNuiFocused() then
-			return warn('Inventory did not open as another resource has NUI Focus.')
+			warn('other scripts have nui focus and may cause issues (e.g. disable focus, prevent input, overlap inventory window)')
 		end
 	end
 
