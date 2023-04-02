@@ -177,10 +177,10 @@ if shared.target then
 
 	if not ox_target and not qtarget then
 		shared.target = false
-		return warn('targeting resource is not loaded - it should start before ox_inventory')
+		warn('targeting resource is not loaded - it should start before ox_inventory')
+	else
+		shared.target = ox_target and 'ox_target' or 'qtarget'
 	end
-
-	shared.target = ox_target and 'ox_target' or 'qtarget'
 end
 
 if lib.context == 'server' then
