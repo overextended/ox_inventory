@@ -3,7 +3,8 @@ if not lib then return end
 ---@overload fun(name: string): OxServerItem
 local Items = {}
 local ItemList = require 'modules.items.shared' --[[@as { [string]: OxServerItem }]]
-
+local Utils = require 'modules.utils.server'
+ 
 TriggerEvent('ox_inventory:itemList', ItemList)
 
 Items.containers = require 'modules.items.containers'
