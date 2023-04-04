@@ -1,4 +1,4 @@
-import React, { RefObject, useRef } from 'react';
+import React, { RefObject, useMemo, useRef } from 'react';
 import { DragLayerMonitor, useDragLayer, XYCoord } from 'react-dnd';
 import { DragSource, SlotWithItem } from '../../typings';
 import { getItemUrl } from '../../helpers';
@@ -49,6 +49,11 @@ const DragPreview: React.FC = () => {
     isDragging: monitor.isDragging(),
   }));
 
+  const image = useMemo(() => {
+    if (!data || !data.item) return 'none';
+    return getItemUrl(data.item as SlotWithItem);
+  }, [data]);
+
   return (
     <>
       {isDragging && currentOffset && data.item && (
@@ -57,7 +62,7 @@ const DragPreview: React.FC = () => {
           ref={element}
           style={{
             transform: `translate(${currentOffset.x}px, ${currentOffset.y}px)`,
-            backgroundImage: getItemUrl(data.item as SlotWithItem) || 'none',
+            backgroundImage: image,
           }}
         />
       )}
