@@ -166,7 +166,9 @@ setmetatable(Inventory, {
 		if not inv then
 			return self
 		elseif type(inv) == 'table' then
-			return inv.items and inv or loadInventoryData(inv, player)
+			if inv.items then return inv end
+
+			return not inv.owner and Inventories[inv.id] or loadInventoryData(inv, player)
 		end
 
 		return Inventories[inv] or loadInventoryData({ id = inv }, player)
