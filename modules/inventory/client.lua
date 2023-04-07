@@ -201,4 +201,16 @@ Inventory.Stashes = setmetatable(data('stashes'), {
 	end
 })
 
+RegisterNetEvent('refreshMaxWeight', function(data)
+	SendNUIMessage({
+		action = 'refreshSlots',
+		data = {
+			weightData = {
+				inventoryId = data.inventoryId,
+				maxWeight = data.maxWeight
+			}
+		}
+	})
+end)
+
 return Inventory

@@ -856,6 +856,9 @@ function Inventory.SetMaxWeight(inv, maxWeight)
 	if type(maxWeight) ~= 'number' then return end
 
 	inv.maxWeight = maxWeight
+	if not inv.open then return end
+
+	TriggerClientEvent('refreshMaxWeight', type(inv.open) == 'number' and inv.open or inv.player.source, {inventoryId = inv.id, maxWeight = inv.maxWeight})
 end
 
 exports('SetMaxWeight', Inventory.SetMaxWeight)

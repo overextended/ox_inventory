@@ -8,6 +8,7 @@ type ItemsPayload = { item: Slot; inventory?: InventoryType };
 interface Payload {
   items?: ItemsPayload | ItemsPayload[];
   itemCount?: Record<string, number>;
+  weightData?: { inventoryId: string; maxWeight: number };
 }
 
 export const refreshSlotsReducer: CaseReducer<State, PayloadAction<Payload>> = (state, action) => {
@@ -46,5 +47,21 @@ export const refreshSlotsReducer: CaseReducer<State, PayloadAction<Payload>> = (
         Items[item]!.count += count;
       } else console.log(`Item data for ${item} is undefined`);
     }
+  }
+
+  // Refresh maxWeight when SetMaxWeight is ran while an inventory is open
+  if (action.payload.weightData) {
+    const inventoryId = action.payload.weightData.inventoryId;
+    const inventoryMaxWeight = action.payload.weightData.maxWeight;
+    const inv =
+      inventoryId === state.leftInventory.id
+        ? 'leftInventory'
+        : inventoryId === state.rightInventory.id
+        ? 'rightInventory'
+        : null;
+
+    if (!inv) return;
+
+    state[inv].maxWeight = inventoryMaxWeight;
   }
 };
