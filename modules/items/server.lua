@@ -388,8 +388,8 @@ function Items.CheckMetadata(metadata, item, name, ostime)
 			metadata.serial = nil
 		end
 
-		if item.metadata.specialAmmo and type(item.metadata.specialAmmo) ~= 'string' then
-			item.metadata.specialAmmo = nil
+		if metadata.specialAmmo and type(metadata.specialAmmo) ~= 'string' then
+			metadata.specialAmmo = nil
 		end
 	end
 
