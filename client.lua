@@ -439,7 +439,7 @@ local function useSlot(slot)
 				useItem(data, function(resp)
 					if not resp or resp.name ~= currentWeapon?.ammo then return end
 
-					if currentWeapon.metadata.specialAmmo ~= resp.metadata.type then
+					if currentWeapon.metadata.specialAmmo ~= resp.metadata.type and type(currentWeapon.metadata.specialAmmo) == 'string' then
 						local clipComponentKey = ('%s_CLIP'):format(Items[currentWeapon.name].model:gsub('WEAPON_', 'COMPONENT_'))
 						local specialClip = ('%s_%s'):format(clipComponentKey, (resp.metadata.type or currentWeapon.metadata.specialAmmo):upper())
 
