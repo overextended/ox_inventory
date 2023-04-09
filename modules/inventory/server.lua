@@ -1637,33 +1637,46 @@ lib.callback.register('ox_inventory:swapItems', function(source, data)
 					if fromInventory.changed ~= nil then fromInventory.changed = true end
 					if toInventory.changed ~= nil then toInventory.changed = true end
 
-					if sameInventory and fromOtherPlayer then
-						TriggerClientEvent('ox_inventory:updateSlots', fromInventory.id,{
-							{
-								item = fromInventory.items[data.toSlot] or {slot=data.toSlot},
-								inventory = fromInventory.type
-							},
-							{
-								item = fromInventory.items[data.fromSlot] or {slot=data.fromSlot},
-								inventory = fromInventory.type
-							}
-						}, { left = fromInventory.weight })
-
-					elseif toOtherPlayer then
-						TriggerClientEvent('ox_inventory:updateSlots', toInventory.id,{
-							{
-								item = toInventory.items[data.toSlot] or {slot=data.toSlot},
-								inventory = toInventory.type
-							}
-						}, { left = toInventory.weight })
-
-					elseif fromOtherPlayer then
-						TriggerClientEvent('ox_inventory:updateSlots', fromInventory.id,{
-							{
-								item = fromInventory.items[data.fromSlot] or {slot=data.fromSlot},
-								inventory = fromInventory.type
-							}
-						}, { left = fromInventory.weight })
+					if sameInventory then
+						for pId in pairs(fromInventory.openedBy) do
+							if source ~= pId then
+								print('sync player-'..pId..' with "sameInventory" '..fromInventory.id)
+								TriggerClientEvent('ox_inventory:updateSlots', pId, {
+									{
+										item = fromInventory.items[data.toSlot] or { slot = data.toSlot },
+										inventory = fromInventory.type
+									},
+									{
+										item = fromInventory.items[data.fromSlot] or { slot = data.fromSlot },
+										inventory = fromInventory.type
+									}
+								}, { left = fromInventory.weight })
+							end
+						end
+					elseif toInventory.id ~= playerInventory.id then
+						for pId in pairs(toInventory.openedBy) do
+							if source ~= pId then
+								print('sync player-'..pId..' with "toInventory" '..toInventory.id)
+								TriggerClientEvent('ox_inventory:updateSlots', pId, {
+									{
+										item = toInventory.items[data.toSlot] or { slot = data.toSlot },
+										inventory = toInventory.type
+									}
+								}, { left = toInventory.weight })
+							end
+						end
+					elseif fromInventory.id ~= playerInventory.id then
+						for pId in pairs(fromInventory.openedBy) do
+							if source ~= pId then
+								print('sync player-'..pId..' with "fromInventory" '..fromInventory.id)
+								TriggerClientEvent('ox_inventory:updateSlots', pId, {
+									{
+										item = fromInventory.items[data.fromSlot] or { slot = data.fromSlot },
+										inventory = fromInventory.type
+									}
+								}, { left = fromInventory.weight })
+							end
+						end
 					end
 
 					local resp
