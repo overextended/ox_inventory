@@ -72,20 +72,9 @@ lib.callback.register('ox_inventory:openInventory', function(source, inv, data)
 	if Inventory.Lock then return false end
 
 	local left = Inventory(source) --[[@as OxInventory]]
-	---@type OxInventory|false|nil
-	local right = left.open and left.open ~= source and Inventory(left.open) or nil
+	local right
 
-	if right then
-		if right.open ~= source then return end
-
-		if right.player then
-			TriggerClientEvent('ox_inventory:closeInventory', right.id, true)
-		end
-
-		right:set('open', false)
-		left:set('open', false)
-		right = nil
-	end
+	Inventory.CloseAll(left)
 
 	if data then
 		if inv == 'stash' then
@@ -145,12 +134,11 @@ lib.callback.register('ox_inventory:openInventory', function(source, inv, data)
 			if right.player then right.coords = GetEntityCoords(GetPlayerPed(right.id)) end
 
 			if right.coords == nil or #(right.coords - GetEntityCoords(GetPlayerPed(source))) < 10 then
-				right.open = source
-				left.open = right.id
+				Inventory.Open(left, right)
 			else return end
 		else return end
 	else
-		left.open = source
+		Inventory.Open(left, left)
 	end
 
 	return {

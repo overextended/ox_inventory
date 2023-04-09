@@ -26,6 +26,8 @@ local Inventory = {}
 ---@field player? { source: number, ped: number, groups: table, name?: string, sex?: string, dateofbirth?: string }
 ---@field netid? number
 ---@field distance? number
+---@field openedBy { [number]: true }
+---@field currentShop? string
 
 ---@alias inventory OxInventory | table | string | number
 
@@ -200,6 +202,59 @@ exports('GetInventory', getInventory)
 exports('GetInventoryItems', function(inv, owner)
 	return getInventory(inv, owner)?.items
 end)
+
+function Inventory.Open(playerInv, inv)
+	playerInv, inv = Inventory(playerInv), Inventory(inv)
+
+	if not inv or not playerInv then return end
+
+	print(('opened playerinv-%s and inv-%s'):format(playerInv.id, inv.id))
+
+	inv:set('open', true)
+	inv.openedBy[playerInv.id] = true
+	playerInv.open = inv.id
+end
+
+function Inventory.Close(playerInv, noEvent)
+	playerInv = Inventory(playerInv)
+
+	if not playerInv or not playerInv.player then return end
+
+	local inv = playerInv.open and Inventory(playerInv.open)
+
+	if not inv then return end
+
+	print(('closed playerinv-%s and inv-%s'):format(playerInv.id, inv.id))
+
+	inv:set('open', false)
+	inv.openedBy[playerInv.id] = nil
+	playerInv.open = false
+	playerInv.currentShop = nil
+
+	if not noEvent then
+		TriggerClientEvent('ox_inventory:closeInventory', playerInv.id, true)
+	end
+end
+
+function Inventory.CloseAll(inv)
+	if not inv then
+		for _, data in pairs(Inventories) do
+			for playerId in pairs(data.openedBy) do
+				Inventory.Close(playerId, true)
+			end
+		end
+
+		return TriggerClientEvent('ox_inventory:closeInventory', -1, true)
+	end
+
+	inv = Inventory(inv)
+
+	if not inv then return end
+
+	for playerId in pairs(inv.openedBy) do
+		Inventory.Close(playerId)
+	end
+end
 
 ---@param inv inventory
 ---@param k string
@@ -424,6 +479,7 @@ function Inventory.Create(id, label, invType, slots, weight, maxWeight, owner, i
 		minimal = minimal,
 		time = os.time(),
 		groups = groups,
+		openedBy = {},
 	}
 
 	if invType == 'drop' or invType == 'temp' then
@@ -489,9 +545,7 @@ function Inventory.UpdateVehicle(oldPlate, newPlate)
 	local glove = Inventory(('glove%s'):format(oldPlate))
 
 	if trunk then
-		if trunk.open then
-			TriggerClientEvent('ox_inventory:closeInventory', trunk.open, true)
-		end
+		Inventory.CloseAll(trunk)
 
 		Inventories[trunk.id] = nil
 		trunk.label = newPlate
@@ -501,9 +555,7 @@ function Inventory.UpdateVehicle(oldPlate, newPlate)
 	end
 
 	if glove then
-		if glove.open then
-			TriggerClientEvent('ox_inventory:closeInventory', glove.open, true)
-		end
+		Inventory.CloseAll(glove)
 
 		Inventories[glove.id] = nil
 		glove.label = newPlate
@@ -1777,11 +1829,10 @@ function Inventory.Clear(inv, keep)
 
 			if not playerInv then return end
 
-			TriggerClientEvent('ox_inventory:closeInventory', playerInv.id, true)
-			playerInv:set('open', false)
+			Inventory.Close(playerInv)
 		end
 
-		inv:set('open', false)
+		Inventory.Open(inv, inv)
 
 		return
 	end
@@ -1860,7 +1911,7 @@ function Inventory.SaveInventories(lock)
 	local size = { 0, 0, 0, 0 }
 	Inventory.Lock = lock or nil
 
-	TriggerClientEvent('ox_inventory:closeInventory', -1, true)
+	Inventory.CloseAll()
 
 	for _, inv in pairs(Inventories) do
 		if not inv.datastore and inv.changed then
@@ -1895,14 +1946,14 @@ end)
 RegisterServerEvent('ox_inventory:closeInventory', function()
 	local inventory = Inventories[source]
 
-	if inventory?.open ~= source then
+	if inventory?.open then
 		local secondary = Inventories[inventory.open]
 
 		if secondary then
-			secondary:set('open', false)
+			Inventory.Close(secondary)
 		end
 
-		inventory:set('open', false)
+		Inventory.Close(inventory, true)
 	end
 end)
 
