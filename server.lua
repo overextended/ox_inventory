@@ -71,14 +71,15 @@ AddEventHandler('ox_inventory:setPlayerInventory', server.setPlayerInventory)
 lib.callback.register('ox_inventory:openInventory', function(source, inv, data)
 	if Inventory.Lock then return false end
 
-	local left = Inventory(source)
+	local left = Inventory(source) --[[@as OxInventory]]
+	---@type OxInventory|false|nil
 	local right = left.open and left.open ~= true and Inventory(left.open) or nil
 
 	if right then
 		if right.open ~= source then return end
 
 		if right.player then
-			TriggerClientEvent('ox_inventory:closeInventory', right.player.source, true)
+			TriggerClientEvent('ox_inventory:closeInventory', right.id, true)
 		end
 
 		right:set('open', false)
@@ -148,8 +149,9 @@ lib.callback.register('ox_inventory:openInventory', function(source, inv, data)
 				left.open = right.id
 			else return end
 		else return end
-
-	else left.open = true end
+	else
+		left.open = source
+	end
 
 	return {
 		id = left.id,
@@ -167,7 +169,8 @@ lib.callback.register('ox_inventory:openInventory', function(source, inv, data)
 		maxWeight = right.maxWeight,
 		items = right.items,
 		coords = right.coords,
-		distance = right.distance}
+		distance = right.distance
+	}
 end)
 
 local Licenses = data 'licenses'
@@ -207,7 +210,7 @@ end)
 ---@param metadata table?
 ---@return table | boolean | nil
 lib.callback.register('ox_inventory:useItem', function(source, itemName, slot, metadata)
-	local inventory = Inventory(source)
+	local inventory = Inventory(source) --[[@as OxInventory]]
 
 	if inventory.player then
 		local item = Items(itemName)
@@ -292,6 +295,9 @@ lib.callback.register('ox_inventory:useItem', function(source, itemName, slot, m
 
 			if consume and consume ~= 0 and not data.component then
 				data = inventory.items[data.slot]
+
+				if not data then return end
+
 				durability = consume ~= 0 and consume < 1 and data.metadata.durability --[[@as number | false]]
 
 				if durability then
@@ -393,7 +399,7 @@ lib.addCommand({'additem', 'giveitem'}, {
 	local item = Items(args.item)
 
 	if item then
-		local inventory = Inventory(args.target)
+		local inventory = Inventory(args.target) --[[@as OxInventory]]
 		local count = args.count or 1
 		local success, response = Inventory.AddItem(inventory, item.name, count, args.type and { type = tonumber(args.type) or args.type })
 
@@ -422,7 +428,7 @@ lib.addCommand('removeitem', {
 	local item = Items(args.item)
 
 	if item and args.count > 0 then
-		local inventory = Inventory(args.target)
+		local inventory = Inventory(args.target) --[[@as OxInventory]]
 		local success, response = Inventory.RemoveItem(inventory, item.name, args.count, args.type and { type = tonumber(args.type) or args.type }, nil, true)
 
 		if not success then
@@ -450,7 +456,7 @@ lib.addCommand('setitem', {
 	local item = Items(args.item)
 
 	if item then
-		local inventory = Inventory(args.target)
+		local inventory = Inventory(args.target) --[[@as OxInventory]]
 		local success, response = Inventory.SetItem(inventory, item.name, args.count or 0, args.type and { type = tonumber(args.type) or args.type })
 
 		if not success then

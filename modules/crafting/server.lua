@@ -49,6 +49,8 @@ for id, data in pairs(data('crafting')) do createCraftingBench(id, data) end
 lib.callback.register('ox_inventory:openCraftingBench', function(source, id, index)
 	local left, bench = Inventory(source), CraftingBenches[id]
 
+	if not left then return end
+
 	if bench then
 		local groups = bench.groups
 		local coords = shared.target and bench.zones[index].coords or bench.points[index]
@@ -62,14 +64,14 @@ lib.callback.register('ox_inventory:openCraftingBench', function(source, id, ind
 			-- Why would the player inventory open with an invalid target? Can't repro but whatever.
 			if inv then
 				if inv.player then
-					TriggerClientEvent('ox_inventory:closeInventory', inv.owner, true)
+					TriggerClientEvent('ox_inventory:closeInventory', inv.id, true)
 				end
 
 				inv:set('open', false)
 			end
 		end
 
-		left.open = true
+		left.open = source
 	end
 
 	return { label = left.label, type = left.type, slots = left.slots, weight = left.weight, maxWeight = left.maxWeight }
@@ -79,6 +81,8 @@ local TriggerEventHooks = require 'modules.hooks.server'
 
 lib.callback.register('ox_inventory:craftItem', function(source, id, index, recipeId, toSlot)
 	local left, bench = Inventory(source), CraftingBenches[id]
+
+	if not left then return end
 
 	if bench then
 		local groups = bench.groups
@@ -170,6 +174,8 @@ lib.callback.register('ox_inventory:craftItem', function(source, id, index, reci
 
 				for slot, count in pairs(tbl) do
 					local invSlot = left.items[slot]
+
+					if not invSlot then return end
 
 					if count < 1 then
 						local item = Items(invSlot.name)

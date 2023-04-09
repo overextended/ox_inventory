@@ -10,7 +10,7 @@ local Inventory = {}
 ---@field slots number
 ---@field weight number
 ---@field maxWeight number
----@field open number|boolean
+---@field open? number|false
 ---@field items table<number, OxServerItem?>
 ---@field set function
 ---@field get function
@@ -25,6 +25,7 @@ local Inventory = {}
 ---@field containerSlot? number
 ---@field player? { source: number, ped: number, groups: table, name?: string, sex?: string, dateofbirth?: string }
 ---@field netid? number
+---@field distance? number
 
 ---@alias inventory OxInventory | table | string | number
 
@@ -161,7 +162,6 @@ local function loadInventoryData(data, player)
 end
 
 setmetatable(Inventory, {
-	---@return OxInventory|false|nil
 	__call = function(self, inv, player)
 		if not inv then
 			return self
@@ -175,9 +175,10 @@ setmetatable(Inventory, {
 	end
 })
 
+---@cast Inventory +fun(inv: inventory, player?: inventory): OxInventory|false|nil
+
 ---@param inv inventory
 ---@param owner? string | number
----@return table?
 local function getInventory(inv, owner)
 	if not inv then return Inventory end
 
@@ -860,7 +861,7 @@ function Inventory.SetMaxWeight(inv, maxWeight)
 	inv.maxWeight = maxWeight
 	if not inv.open then return end
 
-	TriggerClientEvent('refreshMaxWeight', type(inv.open) == 'number' and inv.open or inv.player.source, {inventoryId = inv.id, maxWeight = inv.maxWeight})
+	TriggerClientEvent('refreshMaxWeight', inv.open, {inventoryId = inv.id, maxWeight = inv.maxWeight})
 end
 
 exports('SetMaxWeight', Inventory.SetMaxWeight)
@@ -1306,6 +1307,9 @@ local TriggerEventHooks = require 'modules.hooks.server'
 
 local function dropItem(source, data)
 	local playerInventory = Inventory(source)
+
+	if not playerInventory then return end
+
 	local fromData = playerInventory.items[data.fromSlot]
 
 	if not fromData then return end
@@ -1364,6 +1368,9 @@ lib.callback.register('ox_inventory:swapItems', function(source, data)
 			return dropItem(source, data)
 		else
 			local playerInventory = Inventory(source)
+
+			if not playerInventory then return end
+
 			local toInventory = (data.toType == 'player' and playerInventory) or Inventory(playerInventory.open)
 			local fromInventory = (data.fromType == 'player' and playerInventory) or Inventory(playerInventory.open)
 
@@ -1375,6 +1382,8 @@ lib.callback.register('ox_inventory:swapItems', function(source, data)
 					return warn('Unknown error occured during swapItems\n', json.encode(data, {indent = true}))
 				end
 			end
+
+			if not toInventory then return end
 
 			local sameInventory = fromInventory.id == toInventory.id
 			local fromOtherPlayer = fromInventory.player and fromInventory ~= playerInventory
@@ -1411,8 +1420,8 @@ lib.callback.register('ox_inventory:swapItems', function(source, data)
 
 					if toData and ((toData.name ~= fromData.name) or not toData.stack or (not table.matches(toData.metadata, fromData.metadata))) then
 						-- Swap items
-						local toWeight = not sameInventory and (toInventory.weight - toData.weight + fromData.weight)
-						local fromWeight = not sameInventory and (fromInventory.weight + toData.weight - fromData.weight)
+						local toWeight = not sameInventory and (toInventory.weight - toData.weight + fromData.weight) or 0
+						local fromWeight = not sameInventory and (fromInventory.weight + toData.weight - fromData.weight) or 0
 						hookPayload.action = 'swap'
 
 						if not sameInventory then
@@ -1765,6 +1774,9 @@ function Inventory.Clear(inv, keep)
 	if not inv.player then
 		if inv.open then
 			local playerInv = Inventory(inv.open)
+
+			if not playerInv then return end
+
 			TriggerClientEvent('ox_inventory:closeInventory', playerInv.id, true)
 			playerInv:set('open', false)
 		end
@@ -1882,13 +1894,14 @@ end)
 
 RegisterServerEvent('ox_inventory:closeInventory', function()
 	local inventory = Inventories[source]
-	if inventory?.open then
-		if type(inventory.open) ~= 'boolean' then
-			local secondary = Inventories[inventory.open]
-			if secondary then
-				secondary:set('open', false)
-			end
+
+	if inventory?.open ~= source then
+		local secondary = Inventories[inventory.open]
+
+		if secondary then
+			secondary:set('open', false)
 		end
+
 		inventory:set('open', false)
 	end
 end)
