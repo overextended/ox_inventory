@@ -797,6 +797,8 @@ function Inventory.SetDurability(inv, slot, durability)
 end
 exports('SetDurability', Inventory.SetDurability)
 
+local Utils = require 'modules.utils.server'
+
 ---@param inv inventory
 ---@param slot number | false
 ---@param metadata table
