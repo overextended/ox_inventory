@@ -853,20 +853,23 @@ local function updateInventory(items, weight)
 		client.setPlayerData('weight', weight)
 	else
 		for i = 1, #items do
-			local v = items[i].item
-			local item = PlayerData.inventory[v.slot]
+			if items[i].inventory == cache.serverId then
+				items[i].inventory = 'player'
+				local v = items[i].item
+				local item = PlayerData.inventory[v.slot]
 
-			if item?.name then
-				itemCount[item.name] = (itemCount[item.name] or 0) - item.count
+				if item?.name then
+					itemCount[item.name] = (itemCount[item.name] or 0) - item.count
+				end
+
+				if v.count then
+					itemCount[v.name] = (itemCount[v.name] or 0) + v.count
+				end
+
+				changes[v.slot] = v.count and v or false
+				if not v.count then v.name = nil end
+				PlayerData.inventory[v.slot] = v.name and v or nil
 			end
-
-			if v.count then
-				itemCount[v.name] = (itemCount[v.name] or 0) + v.count
-			end
-
-			changes[v.slot] = v.count and v or false
-			if not v.count then v.name = nil end
-			PlayerData.inventory[v.slot] = v.name and v or nil
 		end
 
 		SendNUIMessage({ action = 'refreshSlots', data = { items = items, itemCount = itemCount} })
@@ -912,7 +915,7 @@ local function updateInventory(items, weight)
 	TriggerEvent('ox_inventory:updateInventory', changes)
 end
 
-RegisterNetEvent('ox_inventory:updateSlots', function(items, weights, count, removed)
+RegisterNetEvent('ox_inventory:updateSlots', function(items, weights)
 	if source == '' or not next(items) then return end
 
 	local item = items[1]?.item
@@ -926,13 +929,13 @@ RegisterNetEvent('ox_inventory:updateSlots', function(items, weights, count, rem
 		TriggerEvent('ox_inventory:currentWeapon', currentWeapon)
 	end
 
-	if count then
-		if not item.name then
-			item = PlayerData.inventory[item.slot]
-		end
+	-- if count then
+	-- 	if not item.name then
+	-- 		item = PlayerData.inventory[item.slot]
+	-- 	end
 
-		Utils.ItemNotify({ item, removed and 'ui_removed' or 'ui_added', count })
-	end
+	-- 	Utils.ItemNotify({ item, removed and 'ui_removed' or 'ui_added', count })
+	-- end
 
 	updateInventory(items, weights)
 end)
