@@ -234,12 +234,10 @@ lib.callback.register('ox_inventory:buyItem', function(source, data)
 
 			local toItem = toData and Items(toData.name)
 
-			if not toItem then return end
-
 			local metadata, count = Items.Metadata(playerInv, fromItem, fromData.metadata and table.clone(fromData.metadata) or {}, data.count)
 			local price = count * fromData.price
 
-			if toData == nil or (fromItem.name == toItem.name and fromItem.stack and table.matches(toData.metadata, metadata)) then
+			if toData == nil or (fromItem.name == toItem?.name and fromItem.stack and table.matches(toData.metadata, metadata)) then
 				local newWeight = playerInv.weight + (fromItem.weight + (metadata?.weight or 0)) * count
 
 				if newWeight > playerInv.maxWeight then
