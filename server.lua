@@ -73,7 +73,7 @@ lib.callback.register('ox_inventory:openInventory', function(source, inv, data)
 
 	local left = Inventory(source) --[[@as OxInventory]]
 	---@type OxInventory|false|nil
-	local right = left.open and left.open ~= true and Inventory(left.open) or nil
+	local right = left.open and left.open ~= source and Inventory(left.open) or nil
 
 	if right then
 		if right.open ~= source then return end
