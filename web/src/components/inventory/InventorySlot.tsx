@@ -1,4 +1,4 @@
-import { FC, MouseEvent } from 'react';
+import React from 'react';
 import { DragSource, Inventory, InventoryType, Slot, SlotWithItem } from '../../typings';
 import { useDrag, useDrop } from 'react-dnd';
 import { useAppDispatch, useAppSelector } from '../../store';
@@ -7,7 +7,7 @@ import { onDrop } from '../../dnd/onDrop';
 import { onBuy } from '../../dnd/onBuy';
 import { selectIsBusy } from '../../store/inventory';
 import { Items } from '../../store/items';
-import { canCraftItem, getItemUrl, isShopStockEmpty, isSlotWithItem } from '../../helpers';
+import { canCraftItem, getItemUrl, canPurchaseItem, isSlotWithItem } from '../../helpers';
 import { onUse } from '../../dnd/onUse';
 import { Locale } from '../../store/locale';
 import { Tooltip } from '@mui/material';
@@ -21,9 +21,13 @@ interface SlotProps {
   item: Slot;
 }
 
-const InventorySlot: FC<SlotProps> = ({ inventory, item }) => {
+const InventorySlot: React.FC<SlotProps> = ({ inventory, item }) => {
   const isBusy = useAppSelector(selectIsBusy);
   const dispatch = useAppDispatch();
+
+  const canDrag = React.useCallback(() => {
+    return !isBusy && canPurchaseItem(item, inventory) && canCraftItem(item, inventory.type);
+  }, [item, inventory, isBusy]);
 
   const [{ isDragging }, drag] = useDrag<DragSource, void, { isDragging: boolean }>(
     () => ({
@@ -42,7 +46,7 @@ const InventorySlot: FC<SlotProps> = ({ inventory, item }) => {
               image: item?.name ? getItemUrl(item as SlotWithItem) : 'none',
             }
           : null,
-      canDrag: !isBusy && !isShopStockEmpty(item.count, inventory.type) && canCraftItem(item, inventory.type),
+      canDrag,
     }),
     [isBusy, inventory, item]
   );
@@ -85,7 +89,7 @@ const InventorySlot: FC<SlotProps> = ({ inventory, item }) => {
 
   const connectRef = (element: HTMLDivElement) => drag(drop(element));
 
-  const handleContext = (event: MouseEvent<HTMLDivElement>) => {
+  const handleContext = (event: React.MouseEvent<HTMLDivElement>) => {
     event.preventDefault();
 
     !isBusy &&
@@ -94,7 +98,7 @@ const InventorySlot: FC<SlotProps> = ({ inventory, item }) => {
       dispatch(setContextMenu({ coords: { mouseX: event.clientX, mouseY: event.clientY }, item }));
   };
 
-  const handleClick = (event: MouseEvent<HTMLDivElement>) => {
+  const handleClick = (event: React.MouseEvent<HTMLDivElement>) => {
     if (isBusy) return;
 
     if (event.ctrlKey && isSlotWithItem(item) && inventory.type !== 'shop' && inventory.type !== 'crafting') {
@@ -123,7 +127,7 @@ const InventorySlot: FC<SlotProps> = ({ inventory, item }) => {
         className="inventory-slot"
         style={{
           filter:
-            isShopStockEmpty(item.count, inventory.type) || !canCraftItem(item, inventory.type)
+            !canPurchaseItem(item, inventory) || !canCraftItem(item, inventory.type)
               ? 'brightness(80%) grayscale(100%)'
               : undefined,
           opacity: isDragging ? 0.4 : 1.0,

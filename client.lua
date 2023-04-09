@@ -227,6 +227,7 @@ function client.openInventory(inv, data)
 			closeTrunk()
 			currentInventory = right or defaultInventory
 			left.items = PlayerData.inventory
+			left.groups = PlayerData.groups
 			SendNUIMessage({
 				action = 'setupInventory',
 				data = {
