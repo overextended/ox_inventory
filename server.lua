@@ -138,11 +138,11 @@ lib.callback.register('ox_inventory:openInventory', function(source, inv, data)
 			end
 
 			if right.coords == nil or #(right.coords - GetEntityCoords(GetPlayerPed(source))) < 10 then
-				Inventory.Open(left, right)
+				left:openInventory(right)
 			else return end
 		else return end
 	else
-		Inventory.Open(left, left)
+		left:openInventory(left)
 	end
 
 	return {
@@ -309,7 +309,7 @@ lib.callback.register('ox_inventory:useItem', function(source, itemName, slot, m
 							if newItem then
 								newItem.metadata.durability = durability
 
-								TriggerClientEvent('ox_inventory:updateSlots', inventory.id, {
+								inventory:syncSlotsWithPlayer({
 									{
 										item = newItem,
 										inventory = inventory.type
@@ -333,7 +333,7 @@ lib.callback.register('ox_inventory:useItem', function(source, itemName, slot, m
 				else
 					inventory.changed = true
 
-					TriggerClientEvent('ox_inventory:updateSlots', inventory.id, {
+					inventory:syncSlotsWithPlayer({
 						{
 							item = inventory.items[data.slot],
 							inventory = inventory.type
