@@ -122,6 +122,8 @@ end)
 lib.callback.register('ox_inventory:openShop', function(source, data)
 	local left, shop = Inventory(source)
 
+	if not left then return end
+
 	if data then
 		shop = Shops[data.type]
 
@@ -144,10 +146,11 @@ lib.callback.register('ox_inventory:openShop', function(source, data)
 			return
 		end
 
+		---@diagnostic disable-next-line: assign-type-mismatch
 		left.open = shop.id
 	end
 
-	return {label=left.label, type=left.type, slots=left.slots, weight=left.weight, maxWeight=left.maxWeight}, shop
+	return { label = left.label, type = left.type, slots = left.slots, weight = left.weight, maxWeight = left.maxWeight }, shop
 end)
 
 local table = lib.table
@@ -190,7 +193,11 @@ end
 lib.callback.register('ox_inventory:buyItem', function(source, data)
 	if data.toType == 'player' then
 		if data.count == nil then data.count = 1 end
+
 		local playerInv = Inventory(source)
+
+		if not playerInv then return end
+
 		local shopType, shopId = playerInv.open:match('^(.-) (%d-)$')
 
 		if not shopType then shopType = playerInv.open end
@@ -226,6 +233,9 @@ lib.callback.register('ox_inventory:buyItem', function(source, data)
 			if result == false then return false end
 
 			local toItem = toData and Items(toData.name)
+
+			if not toItem then return end
+
 			local metadata, count = Items.Metadata(playerInv, fromItem, fromData.metadata and table.clone(fromData.metadata) or {}, data.count)
 			local price = count * fromData.price
 
