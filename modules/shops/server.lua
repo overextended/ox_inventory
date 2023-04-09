@@ -147,7 +147,7 @@ lib.callback.register('ox_inventory:openShop', function(source, data)
 		end
 
 		---@diagnostic disable-next-line: assign-type-mismatch
-		Inventory.Open(left, left)
+		left:openInventory(left)
 		left.currentShop = shop.id
 	end
 
