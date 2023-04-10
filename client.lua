@@ -857,13 +857,22 @@ local function updateInventory(items, weight)
 				items[i].inventory = 'player'
 				local v = items[i].item
 				local item = PlayerData.inventory[v.slot]
+				local count = 0
 
 				if item?.name then
+					count -= item.count
 					itemCount[item.name] = (itemCount[item.name] or 0) - item.count
 				end
 
 				if v.count then
+					count += v.count
 					itemCount[v.name] = (itemCount[v.name] or 0) + v.count
+				end
+
+				if count < 1 then
+					Utils.ItemNotify({ item?.name and item or v, 'ui_removed', -count })
+				else
+					Utils.ItemNotify({ v, 'ui_added', count })
 				end
 
 				changes[v.slot] = v.count and v or false
@@ -928,14 +937,6 @@ RegisterNetEvent('ox_inventory:updateSlots', function(items, weights)
 		currentWeapon.metadata = item.metadata
 		TriggerEvent('ox_inventory:currentWeapon', currentWeapon)
 	end
-
-	-- if count then
-	-- 	if not item.name then
-	-- 		item = PlayerData.inventory[item.slot]
-	-- 	end
-
-	-- 	Utils.ItemNotify({ item, removed and 'ui_removed' or 'ui_added', count })
-	-- end
 
 	updateInventory(items, weights)
 end)
