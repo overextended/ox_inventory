@@ -1713,30 +1713,32 @@ lib.callback.register('ox_inventory:swapItems', function(source, data)
 					if toInventory.changed ~= nil then toInventory.changed = true end
 
 					if sameInventory then
-						fromInventory:syncSlotsWithClients({
-							{
-								item = fromInventory.items[data.toSlot] or { slot = data.toSlot },
-								inventory = fromInventory.id
-							},
-							{
-								item = fromInventory.items[data.fromSlot] or { slot = data.fromSlot },
-								inventory = fromInventory.id
-							}
-						}, { left = fromInventory.weight })
+						if not fromOtherPlayer then
+							fromInventory:syncSlotsWithClients({
+								{
+									item = fromInventory.items[data.toSlot] or { slot = data.toSlot },
+									inventory = fromInventory.id
+								},
+								{
+									item = fromInventory.items[data.fromSlot] or { slot = data.fromSlot },
+									inventory = fromInventory.id
+								}
+							}, { left = fromInventory.weight }, true)
+						end
 					elseif toInventory.id ~= playerInventory.id then
 						toInventory:syncSlotsWithClients({
 							{
 								item = toInventory.items[data.toSlot] or { slot = data.toSlot },
 								inventory = toInventory.id
 							}
-						}, { left = toInventory.weight })
+						}, { left = toInventory.weight }, true)
 					elseif fromInventory.id ~= playerInventory.id then
 						fromInventory:syncSlotsWithClients({
 							{
 								item = fromInventory.items[data.fromSlot] or { slot = data.fromSlot },
 								inventory = fromInventory.id
 							}
-						}, { left = fromInventory.weight })
+						}, { left = fromInventory.weight }, true)
 					end
 
 					local resp
