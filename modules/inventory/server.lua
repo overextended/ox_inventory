@@ -1570,14 +1570,6 @@ lib.callback.register('ox_inventory:swapItems', function(source, data)
 									Inventory.ContainerWeight(containerItem, toContainer and toWeight or fromWeight, playerInventory)
 								end
 
-								if fromOtherPlayer then
-									TriggerClientEvent('ox_inventory:itemNotify', fromInventory.id, { fromData, 'ui_removed', fromData.count })
-									TriggerClientEvent('ox_inventory:itemNotify', fromInventory.id, { toData, 'ui_added', toData.count })
-								elseif toOtherPlayer then
-									TriggerClientEvent('ox_inventory:itemNotify', toInventory.id, { fromData, 'ui_added', fromData.count })
-									TriggerClientEvent('ox_inventory:itemNotify', toInventory.id, { toData, 'ui_removed', toData.count })
-								end
-
 								toData, fromData = Inventory.SwapSlots(fromInventory, toInventory, data.fromSlot, data.toSlot) --[[@as table]]
 
 								if server.loglevel > 0 then
@@ -1615,12 +1607,6 @@ lib.callback.register('ox_inventory:swapItems', function(source, data)
 
 								if container then
 									Inventory.ContainerWeight(containerItem, toInventory.type == 'container' and toInventory.weight or fromInventory.weight, playerInventory)
-								end
-
-								if fromOtherPlayer then
-									TriggerClientEvent('ox_inventory:itemNotify', fromInventory.id, { fromData, 'ui_removed', data.count })
-								elseif toOtherPlayer then
-									TriggerClientEvent('ox_inventory:itemNotify', toInventory.id, { toData, 'ui_added', data.count })
 								end
 
 								if server.loglevel > 0 then
@@ -1665,12 +1651,6 @@ lib.callback.register('ox_inventory:swapItems', function(source, data)
 
 								if container then
 									Inventory.ContainerWeight(containerItem, toContainer and toInventory.weight or fromInventory.weight, playerInventory)
-								end
-
-								if fromOtherPlayer then
-									TriggerClientEvent('ox_inventory:itemNotify', fromInventory.id, { fromData, 'ui_removed', data.count })
-								elseif toOtherPlayer then
-									TriggerClientEvent('ox_inventory:itemNotify', toInventory.id, { fromData, 'ui_added', data.count })
 								end
 
 								if server.loglevel > 0 then
