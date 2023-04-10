@@ -35,7 +35,7 @@ local function TriggerEventHooks(event, payload)
     local hooks = eventHooks[event]
 
     if hooks then
-		local fromInventory = payload.fromInventory and tostring(payload.fromInventory) or payload.inventoryId and tostring(payload.inventoryId)
+		local fromInventory = payload.fromInventory and tostring(payload.fromInventory) or payload.inventoryId and tostring(payload.inventoryId) or payload.shopType and tostring(payload.shopType)
 		local toInventory = payload.toInventory and tostring(payload.toInventory)
 
         for i = 1, #hooks do
