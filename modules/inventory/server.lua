@@ -1549,8 +1549,12 @@ lib.callback.register('ox_inventory:swapItems', function(source, data)
 				if fromData and (not fromData.metadata.container or fromData.metadata.container and toInventory.type ~= 'container') then
 					if data.count > fromData.count then data.count = fromData.count end
 
-					local container = (not sameInventory and playerInventory.containerSlot) and (fromInventory.type == 'container' and fromInventory or toInventory)
-					local containerItem = container and playerInventory.items[playerInventory.containerSlot]
+					local container, containerItem = (not sameInventory and playerInventory.containerSlot) and (fromInventory.type == 'container' and fromInventory or toInventory)
+
+					if container then
+						containerItem = playerInventory.items[playerInventory.containerSlot]
+					end
+
 					local hookPayload = {
 						source = source,
 						fromInventory = fromInventory.id,
@@ -1686,19 +1690,34 @@ lib.callback.register('ox_inventory:swapItems', function(source, data)
 
 					if fromData and fromData.count < 1 then fromData = nil end
 
+					---@type updateSlot[]
 					local items = {}
 
 					if fromInventory.player and not fromOtherPlayer then
-						items[data.fromSlot] = fromData or false
+						items[#items + 1] = {
+							item = fromData or { slot = data.fromSlot },
+							inventory = fromInventory.id
+						}
+
 						if toInventory.type == 'container' then
-							items[playerInventory.containerSlot] = containerItem
+							items[#items + 1] = {
+								item = containerItem,
+								inventory = playerInventory.id
+							}
 						end
 					end
 
 					if toInventory.player and not toOtherPlayer then
-						items[data.toSlot] = toData or false
+						items[#items + 1] = {
+							item = toData or { slot = data.toSlot },
+							inventory = toInventory.id
+						}
+
 						if fromInventory.type == 'container' then
-							items[playerInventory.containerSlot] = containerItem
+							items[#items + 1] = {
+								item = containerItem,
+								inventory = playerInventory.id
+							}
 						end
 					end
 
