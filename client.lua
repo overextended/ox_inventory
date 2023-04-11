@@ -834,59 +834,41 @@ local function updateInventory(items, weight)
 	-- todo: combine iterators
 	local changes = {}
 	local itemCount = {}
-	-- swapslots
-	if type(weight) == 'number' then
-		for slot, v in pairs(items) do
-			local item = PlayerData.inventory[slot]
+	local isSwapSlot = type(weight) == 'number'
 
-			if item then
+	for i = 1, #items do
+		if items[i].inventory == cache.serverId then
+			items[i].inventory = 'player'
+			local v = items[i].item
+			local item = PlayerData.inventory[v.slot]
+			local count = 0
+
+			if item?.name then
+				count -= item.count
 				itemCount[item.name] = (itemCount[item.name] or 0) - item.count
 			end
 
-			if v then
+			if v.count then
+				count += v.count
 				itemCount[v.name] = (itemCount[v.name] or 0) + v.count
 			end
 
-			PlayerData.inventory[slot] = v and v or nil
-			changes[slot] = v
-		end
-
-		SendNUIMessage({ action = 'refreshSlots', data = {itemCount = itemCount} })
-		client.setPlayerData('weight', weight)
-	else
-		for i = 1, #items do
-			if items[i].inventory == cache.serverId then
-				items[i].inventory = 'player'
-				local v = items[i].item
-				local item = PlayerData.inventory[v.slot]
-				local count = 0
-
-				if item?.name then
-					count -= item.count
-					itemCount[item.name] = (itemCount[item.name] or 0) - item.count
-				end
-
-				if v.count then
-					count += v.count
-					itemCount[v.name] = (itemCount[v.name] or 0) + v.count
-				end
-
+			if not isSwapSlot then
 				if count < 1 then
 					Utils.ItemNotify({ item?.name and item or v, 'ui_removed', -count })
 				else
 					Utils.ItemNotify({ v, 'ui_added', count })
 				end
-
-				changes[v.slot] = v.count and v or false
-				if not v.count then v.name = nil end
-				PlayerData.inventory[v.slot] = v.name and v or nil
 			end
-		end
 
-		SendNUIMessage({ action = 'refreshSlots', data = { items = items, itemCount = itemCount} })
-		client.setPlayerData('weight', weight.left)
+			changes[v.slot] = v.count and v or false
+			if not v.count then v.name = nil end
+			PlayerData.inventory[v.slot] = v.name and v or nil
+		end
 	end
 
+	SendNUIMessage({ action = 'refreshSlots', data = { items = items, itemCount = itemCount} })
+	client.setPlayerData('weight', isSwapSlot and weight or weight.left)
 
 	for item, count in pairs(itemCount) do
 		local data = Items[item]
@@ -1703,6 +1685,8 @@ RegisterNUICallback('swapItems', function(data, cb)
 		end
 	end
 
+	cb(false)
+
 	local success, response, weaponSlot = lib.callback.await('ox_inventory:swapItems', false, data)
 
 	if success then
@@ -1722,7 +1706,7 @@ RegisterNUICallback('swapItems', function(data, cb)
 		Wait(50)
 	end
 
-	cb(success or false)
+	-- cb(success or false)
 end)
 
 RegisterNUICallback('buyItem', function(data, cb)
