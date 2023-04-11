@@ -1488,6 +1488,8 @@ local function dropItem(source, data)
 	return true, { weight = playerInventory.weight, items = items }
 end
 
+local activeSlots = {}
+
 lib.callback.register('ox_inventory:swapItems', function(source, data)
 	if data.count > 0 and data.toType ~= 'shop' then
 		if data.toType == 'newdrop' then
@@ -1510,6 +1512,22 @@ lib.callback.register('ox_inventory:swapItems', function(source, data)
 			end
 
 			if not toInventory then return end
+
+			local fromRef = ('%s:%s'):format(fromInventory.id, data.fromSlot)
+			local toRef = ('%s:%s'):format(toInventory.id, data.toSlot)
+
+			while activeSlots[fromRef] or activeSlots[toRef] do
+				Wait(0)
+			end
+
+			activeSlots[fromRef] = true
+			activeSlots[toRef] = true
+
+			local _ <close> = defer(function()
+				activeSlots[fromRef] = nil
+				activeSlots[toRef] = nil
+				print('cleared', fromRef, toRef)
+			end)
 
 			local sameInventory = fromInventory.id == toInventory.id
 			local fromOtherPlayer = fromInventory.player and fromInventory ~= playerInventory
