@@ -15,17 +15,12 @@ local Inventory = require 'modules.inventory.server'
 require 'modules.crafting.server'
 require 'modules.shops.server'
 
----@param player table
----@param data table?
---- player requires source, identifier, and name
---- optionally, it should contain jobs/groups, sex, and dateofbirth
-function server.setPlayerInventory(player, data)
-	while not shared.ready do Wait(0) end
-
-	if not data then
-		data = db.loadPlayer(player.identifier)
-	end
-
+---Parses the inventory data from the database and returns a table of items and the total weight of the inventory.
+---@param source integer
+---@param data table
+---@return table inventory
+---@return integer totalWeight
+local function parsePlayerInventoryData(source, data)
 	local inventory = {}
 	local totalWeight = 0
 
@@ -35,10 +30,11 @@ function server.setPlayerInventory(player, data)
 		for _, v in pairs(data) do
 			if type(v) == 'number' or not v.count or not v.slot then
 				if server.convertInventory then
-					inventory, totalWeight = server.convertInventory(player.source, data)
+					inventory, totalWeight = server.convertInventory(source, data)
 					break
 				else
-					return error(('Inventory for player.%s (%s) contains invalid data. Ensure you have converted inventories to the correct format.'):format(player.source, GetPlayerName(player.source)))
+---@diagnostic disable-next-line: return-type-mismatch
+					return error(('Inventory for player.%s (%s) contains invalid data. Ensure you have converted inventories to the correct format.'):format(source, GetPlayerName(source)))
 				end
 			else
 				local item = Items(v.name)
@@ -53,6 +49,22 @@ function server.setPlayerInventory(player, data)
 			end
 		end
 	end
+
+	return inventory, totalWeight
+end
+
+---@param player table
+---@param data table?
+--- player requires source, identifier, and name
+--- optionally, it should contain jobs/groups, sex, and dateofbirth
+function server.setPlayerInventory(player, data)
+	while not shared.ready do Wait(0) end
+
+	if not data then
+		data = db.loadPlayer(player.identifier)
+	end
+
+	local inventory, totalWeight = parsePlayerInventoryData(player.source, data)
 
 	player.source = tonumber(player.source)
 	local inv = Inventory.Create(player.source, player.name, 'player', shared.playerslots, totalWeight, shared.playerweight, player.identifier, inventory)
@@ -537,6 +549,24 @@ lib.addCommand('viewinv', {
 }, function(source, args)
 	local invId = tonumber(args.invId) or args.invId
 	local inventory = invId ~= source and Inventory(invId)
+
+	if inventory then TriggerClientEvent('ox_inventory:viewInventory', source, inventory) end
+end)
+
+lib.addCommand('viewinvoffline', {
+	help = 'Inspect the target inventory without allowing interactions',
+	params = {
+		{ name = 'invId', help = 'The inventory to inspect' },
+	},
+	restricted = 'group.admin',
+}, function(source, args)
+	local invId = args.invId
+
+	local data = db.loadPlayer(invId)
+
+	local items, totalWeight = parsePlayerInventoryData(source, data)
+
+	local inventory = Inventory.FactoryTable(invId, ('Offline player: %s'):format(invId), 'player', shared.playerslots, totalWeight, shared.playerweight, invId, items)
 
 	if inventory then TriggerClientEvent('ox_inventory:viewInventory', source, inventory) end
 end)

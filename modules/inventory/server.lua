@@ -386,6 +386,25 @@ function Inventory.CalculateWeight(items)
 	return weight
 end
 
+function Inventory.FactoryTable(id, label, invType, slots, weight, maxWeight, owner, items, groups)
+	return {
+		id = id,
+		label = label or id,
+		type = invType,
+		slots = slots,
+		weight = weight,
+		maxWeight = maxWeight or shared.playerweight,
+		owner = owner,
+		items = type(items) == 'table' and items,
+		open = false,
+		set = Inventory.Set,
+		get = Inventory.Get,
+		minimal = minimal,
+		time = os.time(),
+		groups = groups,
+	}
+end
+
 -- This should be handled by frameworks, but sometimes isn't or is exploitable in some way.
 local activeIdentifiers = {}
 
@@ -409,22 +428,7 @@ function Inventory.Create(id, label, invType, slots, weight, maxWeight, owner, i
 		activeIdentifiers[owner] = 1
 	end
 
-	local self = {
-		id = id,
-		label = label or id,
-		type = invType,
-		slots = slots,
-		weight = weight,
-		maxWeight = maxWeight or shared.playerweight,
-		owner = owner,
-		items = type(items) == 'table' and items,
-		open = false,
-		set = Inventory.Set,
-		get = Inventory.Get,
-		minimal = minimal,
-		time = os.time(),
-		groups = groups,
-	}
+	local self = Inventory.FactoryTable(id, label, invType, slots, weight, maxWeight, owner, items, groups)
 
 	if invType == 'drop' or invType == 'temp' then
 		self.datastore = true
