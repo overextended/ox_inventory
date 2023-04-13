@@ -67,7 +67,8 @@ else
 		imagepath = GetConvar('inventory:imagepath', 'nui://ox_inventory/web/images'),
 		dropprops = GetConvarInt('inventory:dropprops', 0) == 1,
 		weaponmismatch = GetConvarInt('inventory:weaponmismatch', 1) == 1,
-		ignoreweapons = json.decode(GetConvar('inventory:ignoreweapons', '[]'))
+		ignoreweapons = json.decode(GetConvar('inventory:ignoreweapons', '[]')),
+		propModel = joaat(GetConvar('inventory:propModel', 'prop_med_bag_01b'))
 	}
 
 	local ignoreweapons = table.create(0, (client.ignoreweapons and #client.ignoreweapons or 0) + 3)
