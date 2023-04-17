@@ -1516,9 +1516,11 @@ lib.callback.register('ox_inventory:swapItems', function(source, data)
 			local fromRef = ('%s:%s'):format(fromInventory.id, data.fromSlot)
 			local toRef = ('%s:%s'):format(toInventory.id, data.toSlot)
 
-			while activeSlots[fromRef] or activeSlots[toRef] do
-				Wait(0)
-			end
+			-- while activeSlots[fromRef] or activeSlots[toRef] do
+			-- 	Wait(0)
+			-- end
+
+			if activeSlots[fromRef] or activeSlots[toRef] then return false end
 
 			activeSlots[fromRef] = true
 			activeSlots[toRef] = true
