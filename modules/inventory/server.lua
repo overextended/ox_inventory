@@ -1464,7 +1464,6 @@ local function dropItem(source, data)
 
 	playerInventory.weight -= toData.weight
 	local slot = data.fromSlot
-	local items = { [slot] = fromData or false }
 	playerInventory.items[slot] = fromData
 
 	if slot == playerInventory.weapon then
@@ -1485,7 +1484,15 @@ local function dropItem(source, data)
 
 	if server.syncInventory then server.syncInventory(playerInventory) end
 
-	return true, { weight = playerInventory.weight, items = items }
+	return true, {
+		weight = playerInventory.weight,
+		items = {
+			{
+				item = fromData or { slot = data.fromSlot },
+				inventory = playerInventory.id
+			}
+		}
+	}
 end
 
 local activeSlots = {}
