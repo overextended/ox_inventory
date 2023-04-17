@@ -149,6 +149,9 @@ CreateThread(function()
 			for k, item in pairs(items) do
 				-- Explain why this wouldn't be table to me, because numerous people have been getting "attempted to index number" here
 				if type(item) == 'table' then
+					-- Some people don't assign the name property, but it seemingly always matches the index anyway.
+					if not item.name then item.name = k end
+
 					if not ItemList[item.name] and not checkIgnoredNames(item.name) then
 						item.close = item.shouldClose == nil and true or item.shouldClose
 						item.stack = not item.unique and true
