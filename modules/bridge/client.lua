@@ -69,4 +69,4 @@ if not func or err then
 	return error(err)
 end
 
-func(client.onLogout, client.weapon)
+func(client.onLogout)
