@@ -269,7 +269,9 @@ exports('GetInventoryItems', function(inv, owner)
 	return getInventory(inv, owner)?.items
 end)
 
-function Inventory.CloseAll(inv)
+---@param inv? inventory
+---@param ignoreId? number
+function Inventory.CloseAll(inv, ignoreId)
 	if not inv then
 		for _, data in pairs(Inventories) do
 			for playerId in pairs(data.openedBy) do
@@ -282,14 +284,14 @@ function Inventory.CloseAll(inv)
 		return TriggerClientEvent('ox_inventory:closeInventory', -1, true)
 	end
 
-	inv = Inventory(inv)
+	inv = Inventory(inv) --[[@as OxInventory?]]
 
 	if not inv then return end
 
 	for playerId in pairs(inv.openedBy) do
 		local playerInv = Inventory(playerId)
 
-		if playerInv then playerInv:closeInventory() end
+		if playerInv and (not ignoreId or playerId ~= ignoreId) then playerInv:closeInventory() end
 	end
 end
 

@@ -74,7 +74,7 @@ lib.callback.register('ox_inventory:openInventory', function(source, inv, data)
 	local left = Inventory(source) --[[@as OxInventory]]
 	local right
 
-	Inventory.CloseAll(left)
+	Inventory.CloseAll(left, (inv == 'drop' or inv == 'container' or not inv) and source)
 
 	if data then
 		if inv == 'stash' then
