@@ -937,7 +937,7 @@ RegisterNetEvent('ox_inventory:inventoryReturned', function(data)
 
 	for _, slotData in pairs(data[1]) do
 		num += 1
-		items[num] = { item = slotData, inventory = 'player' }
+		items[num] = { item = slotData, inventory = cache.serverId }
 	end
 
 	updateInventory(items, { left = data[3] })
@@ -954,7 +954,7 @@ RegisterNetEvent('ox_inventory:inventoryConfiscated', function(message)
 
 	for slot in pairs(PlayerData.inventory) do
 		num += 1
-		items[num] = { item = { slot = slot }, inventory = 'player' }
+		items[num] = { item = { slot = slot }, inventory = cache.serverId }
 	end
 
 	updateInventory(items, { left = 0 })
@@ -1685,8 +1685,6 @@ RegisterNUICallback('swapItems', function(data, cb)
 		end
 	end
 
-	cb(false)
-
 	local success, response, weaponSlot = lib.callback.await('ox_inventory:swapItems', false, data)
 
 	if success then
@@ -1702,18 +1700,14 @@ RegisterNUICallback('swapItems', function(data, cb)
 		lib.notify({ type = 'error', description = locale(response) })
 	end
 
-	if data.toType == 'newdrop' then
-		Wait(50)
-	end
-
-	-- cb(success or false)
+	cb(success or false)
 end)
 
 RegisterNUICallback('buyItem', function(data, cb)
 	local response, data, message = lib.callback.await('ox_inventory:buyItem', 100, data)
 
 	if data then
-		updateInventory({[data[1]] = data[2]}, data[4])
+		updateInventory({ item = data[2], inventory = cache.serverId }, data[4])
 		SendNUIMessage({ action = 'refreshSlots', data = data[3] and {items = {{item = data[2]}, {item = data[3], inventory = 'shop'}}} or {items = {item = data[2]}}})
 	end
 
