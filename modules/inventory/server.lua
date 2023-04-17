@@ -66,6 +66,7 @@ function OxInventory:closeInventory(noEvent)
 	inv.openedBy[self.id] = nil
 	self.open = false
 	self.currentShop = nil
+	self.containerSlot = nil
 
 	if not noEvent then
 		TriggerClientEvent('ox_inventory:closeInventory', self.id, true)
