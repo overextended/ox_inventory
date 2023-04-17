@@ -4,7 +4,6 @@ import { store } from '../store';
 import { DragSource, DropTarget, InventoryType, SlotWithItem } from '../typings';
 import { moveSlots, stackSlots, swapSlots } from '../store/inventory';
 import { Items } from '../store/items';
-import { isEnvBrowser } from '../utils/misc';
 
 export const onDrop = (source: DragSource, target?: DropTarget) => {
   const { inventory: state } = store.getState();
@@ -60,9 +59,6 @@ export const onDrop = (source: DragSource, target?: DropTarget) => {
       toSlot: targetSlot.slot,
     })
   );
-
-  // Update slots if working in UI, otherwise rely on server callback
-  if (!isEnvBrowser()) return;
 
   isSlotWithItem(targetSlot, true)
     ? sourceData.stack && canStack(sourceSlot, targetSlot)
