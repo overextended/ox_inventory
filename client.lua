@@ -1480,7 +1480,7 @@ RegisterNetEvent('ox_inventory:setPlayerInventory', function(currentDrops, inven
 							TriggerEvent('ox_inventory:currentWeapon')
 						end)
 					end
-				elseif IsControlJustReleased(0, 24) and IsPedPerformingMeleeAction(playerPed) then
+				elseif currentWeapon.melee and IsControlJustReleased(0, 24) and IsPedPerformingMeleeAction(playerPed) then
 					currentWeapon.melee += 1
 					currentWeapon.timer = GetGameTimer() + 200
 				end
