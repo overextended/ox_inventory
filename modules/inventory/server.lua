@@ -11,7 +11,7 @@ local Inventory = {}
 ---@field weight number
 ---@field maxWeight number
 ---@field open? number|false
----@field items table<number, OxServerItem?>
+---@field items table<number, SlotWithItem?>
 ---@field set function
 ---@field get function
 ---@field minimal function
@@ -73,7 +73,7 @@ function OxInventory:closeInventory(noEvent)
 	end
 end
 
----@alias updateSlot { item: OxServerItem | { slot: number }, inventory: string }
+---@alias updateSlot { item: SlotWithItem | { slot: number }, inventory: string|number }
 
 ---Sync a player's inventory state.
 ---@param slots updateSlot[]
@@ -904,7 +904,7 @@ local Utils = require 'modules.utils.server'
 
 ---@param inv inventory
 ---@param slot number | false
----@param metadata table
+---@param metadata { [string]: any }
 function Inventory.SetMetadata(inv, slot, metadata)
 	inv = Inventory(inv) --[[@as OxInventory]]
 	local slotData = inv and type(slot) == 'number' and inv.items[slot]
@@ -983,8 +983,8 @@ exports('SetMaxWeight', Inventory.SetMaxWeight)
 ---@param count number
 ---@param metadata? table | string
 ---@param slot? number
----@param cb? fun(success?: boolean, response: string|OxItem|nil)
----@return boolean? success, string|OxItem|nil response
+---@param cb? fun(success?: boolean, response: string|SlotWithItem|nil)
+---@return boolean? success, string|SlotWithItem|nil response
 function Inventory.AddItem(inv, item, count, metadata, slot, cb)
 	if type(item) ~= 'table' then item = Items(item) end
 
@@ -1372,7 +1372,7 @@ exports('CanSwapItem', Inventory.CanSwapItem)
 ---Mostly for internal use, but deprecated.
 ---@param name string
 ---@param count number
----@param metadata table
+---@param metadata { [string]: any }
 ---@param slot number
 RegisterServerEvent('ox_inventory:removeItem', function(name, count, metadata, slot)
 	Inventory.RemoveItem(source, name, count, metadata, slot)
@@ -1712,7 +1712,7 @@ lib.callback.register('ox_inventory:swapItems', function(source, data)
 							inventory = fromInventory.id
 						}
 
-						if toInventory.type == 'container' then
+						if toInventory.type == 'container' and containerItem then
 							items[#items + 1] = {
 								item = containerItem,
 								inventory = playerInventory.id
@@ -1726,7 +1726,7 @@ lib.callback.register('ox_inventory:swapItems', function(source, data)
 							inventory = toInventory.id
 						}
 
-						if fromInventory.type == 'container' then
+						if fromInventory.type == 'container' and containerItem then
 							items[#items + 1] = {
 								item = containerItem,
 								inventory = playerInventory.id

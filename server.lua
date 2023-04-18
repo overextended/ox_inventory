@@ -199,7 +199,7 @@ end)
 ---@param source number
 ---@param itemName string
 ---@param slot number?
----@param metadata table?
+---@param metadata { [string]: any }?
 ---@return table | boolean | nil
 lib.callback.register('ox_inventory:useItem', function(source, itemName, slot, metadata)
 	local inventory = Inventory(source) --[[@as OxInventory]]
