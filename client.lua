@@ -339,7 +339,7 @@ local function useItem(data, cb)
 	if canUseItem(data.ammo and true) then
 		if currentWeapon and currentWeapon?.timer > 100 then return end
 
-		invBusy = true
+		plyState.invBusy = true
 		result = lib.callback.await('ox_inventory:useItem', 200, data.name, data.slot, slotData.metadata)
 
 		if not result then
@@ -355,11 +355,12 @@ local function useItem(data, cb)
 		if not success and response then
 			print(('^1An error occurred while calling item "%s" callback!\n^1SCRIPT ERROR: %s^0'):format(slotData.name, response))
 		end
-	end
 
-	Wait(200)
-	plyState.invBusy = false
+		Wait(500)
+		plyState.invBusy = false
+	end
 end
+
 AddEventHandler('ox_inventory:item', useItem)
 exports('useItem', useItem)
 
