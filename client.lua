@@ -72,6 +72,7 @@ local defaultInventory = {
 	maxWeight = shared.playerweight,
 	items = {}
 }
+
 local currentInventory = defaultInventory
 
 local function closeTrunk()
@@ -828,6 +829,8 @@ end
 
 RegisterNetEvent('ox_inventory:closeInventory', client.closeInventory)
 
+---@param items updateSlot[]
+---@param weight number | table<string, number>
 local function updateInventory(items, weight)
 	-- todo: combine iterators
 	local changes = {}
@@ -1701,10 +1704,17 @@ RegisterNUICallback('swapItems', function(data, cb)
 end)
 
 RegisterNUICallback('buyItem', function(data, cb)
+	---@type boolean, false | { [1]: number, [2]: SlotWithItem, [3]: SlotWithItem | false, [4]: number}, NotifyProps
 	local response, data, message = lib.callback.await('ox_inventory:buyItem', 100, data)
 
 	if data then
-		updateInventory({ item = data[2], inventory = cache.serverId }, data[4])
+		updateInventory({
+			{
+				item = data[2],
+				inventory = cache.serverId
+			}
+		}, data[4])
+
 		SendNUIMessage({ action = 'refreshSlots', data = data[3] and {items = {{item = data[2]}, {item = data[3], inventory = 'shop'}}} or {items = {item = data[2]}}})
 	end
 
