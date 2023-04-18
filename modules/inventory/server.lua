@@ -1428,9 +1428,6 @@ lib.callback.register('ox_inventory:swapItems', function(source, data)
 							if (toWeight <= toInventory.maxWeight and fromWeight <= fromInventory.maxWeight) then
 								if not TriggerEventHooks('swapItems', hookPayload) then return end
 
-								fromInventory.weight = fromWeight
-								toInventory.weight = toWeight
-
 								if containerItem then
 									local toContainer = toInventory.type == 'container'
 									local whitelist = Items.containers[containerItem.name]?.whitelist
@@ -1441,8 +1438,12 @@ lib.callback.register('ox_inventory:swapItems', function(source, data)
 										return
 									end
 
-									Inventory.ContainerWeight(containerItem, toContainer and toWeight or fromWeight, playerInventory)
+									Inventory.ContainerWeight(containerItem, toContainer and fromWeight or toWeight, playerInventory)
 								end
+
+								fromInventory.weight = fromWeight
+								toInventory.weight = toWeight
+								toData, fromData = Inventory.SwapSlots(fromInventory, toInventory, data.fromSlot, data.toSlot) --[[@as table]]
 
 								if fromOtherPlayer then
 									TriggerClientEvent('ox_inventory:itemNotify', fromInventory.id, { fromData, 'ui_removed', fromData.count })
