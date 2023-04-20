@@ -187,7 +187,8 @@ function client.openInventory(inv, data)
 					index = data.index,
 					slots = right.slots,
 					items = right.items,
-					coords = coords
+					coords = coords,
+					distance = right.zones[data.index].distance
 				}
 			end
 		elseif invOpen ~= nil then
