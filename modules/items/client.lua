@@ -1,6 +1,6 @@
 if not lib then return end
 
-local Items = require 'modules.items.shared' --[[@as { [string]: OxClientItem }]]
+local Items = require 'modules.items.shared' --[[@as table<string, OxClientItem>]]
 
 local function displayMetadata(metadata, value)
 	local data = metadata

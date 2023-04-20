@@ -10,7 +10,7 @@ local locations = shared.target and 'targets' or 'locations'
 ---@field slot number
 ---@field weight number
 ---@field price number
----@field metadata? { [string]: any }
+---@field metadata? table<string, any>
 ---@field license? string
 ---@field currency? string
 ---@field grade? number | number[]

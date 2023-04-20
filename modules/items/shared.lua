@@ -14,7 +14,7 @@
 ---@field [string] any
 
 ---@class OxClientProps
----@field status? { [string]: number }
+---@field status? table<string, number>
 ---@field anim? string | { dict?: string, clip: string, flag?: number, blendIn?: number, blendOut?: number, duration?: number, playbackRate?: number, lockX?: boolean, lockY?: boolean, lockZ?: boolean, scenario?: string, playEnter?: boolean }
 ---@field prop? string | ProgressPropProps
 ---@field usetime? number

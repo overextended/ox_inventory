@@ -3,8 +3,8 @@ local containers = {}
 ---@class ItemContainerProperties
 ---@field slots number
 ---@field maxWeight number
----@field whitelist? { [string]: true } | string[]
----@field blacklist? { [string]: true } | string[]
+---@field whitelist? table<string, true> | string[]
+---@field blacklist? table<string, true> | string[]
 
 local function arrayToSet(tbl)
 	local size = #tbl
