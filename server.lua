@@ -68,6 +68,26 @@ end
 exports('setPlayerInventory', server.setPlayerInventory)
 AddEventHandler('ox_inventory:setPlayerInventory', server.setPlayerInventory)
 
+---@param source number Player server ID
+---@param coordinate vector3|table<vector3> 
+---@return boolean
+local function isPlayerCloseToStashCoordinate(source, coordinate)
+	local playerCoords = GetEntityCoords(GetPlayerPed(source))
+	local distance = 10
+
+	if type(coordinate) =="table" then
+		for i = 1, #coordinate do
+			if #(coordinate[i] - playerCoords) < distance then
+				return true
+			end
+		end
+
+		return false
+	else
+		return #(coordinate - playerCoords) < distance
+	end
+end
+
 lib.callback.register('ox_inventory:openInventory', function(source, inv, data)
 	if Inventory.Lock then return false end
 
@@ -144,7 +164,7 @@ lib.callback.register('ox_inventory:openInventory', function(source, inv, data)
 
 			if right.player then right.coords = GetEntityCoords(GetPlayerPed(right.id)) end
 
-			if right.coords == nil or #(right.coords - GetEntityCoords(GetPlayerPed(source))) < 10 then
+			if right.coords == nil or isPlayerCloseToStashCoordinate(source, right.coords) then
 				right.open = source
 				left.open = right.id
 			else return end
