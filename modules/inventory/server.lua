@@ -44,8 +44,6 @@ function OxInventory:openInventory(inv)
 
 	if not inv or not self then return end
 
-	print(('opened playerinv-%s and inv-%s'):format(self.id, inv.id))
-
 	inv:set('open', true)
 	inv.openedBy[self.id] = true
 	self.open = inv.id
@@ -59,8 +57,6 @@ function OxInventory:closeInventory(noEvent)
 	local inv = self.open and Inventory(self.open)
 
 	if not inv then return end
-
-	print(('closed playerinv-%s and inv-%s'):format(self.id, inv.id))
 
 	inv:set('open', false)
 	inv.openedBy[self.id] = nil
@@ -1538,7 +1534,6 @@ lib.callback.register('ox_inventory:swapItems', function(source, data)
 			local _ <close> = defer(function()
 				activeSlots[fromRef] = nil
 				activeSlots[toRef] = nil
-				print('cleared', fromRef, toRef)
 			end)
 
 			local sameInventory = fromInventory.id == toInventory.id
