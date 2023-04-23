@@ -163,7 +163,7 @@ local success, msg = lib.checkDependency('oxmysql', '2.4.0')
 
 if not success then return spamError(msg) end
 
-success, msg = lib.checkDependency('ox_lib', '3.0.0')
+success, msg = lib.checkDependency('ox_lib', '3.2.0')
 
 if not success then spamError(msg) end
 
