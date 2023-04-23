@@ -2069,7 +2069,7 @@ RegisterServerEvent('ox_inventory:giveItem', function(slot, target, count)
 
 		local item = Items(data.name)
 
-		if not toInventory.open and data and data.count >= count and Inventory.CanCarryItem(toInventory, item, count, data.metadata) and TriggerEventHooks('swapItems', {
+		if data.count >= count and Inventory.CanCarryItem(toInventory, item, count, data.metadata) and TriggerEventHooks('swapItems', {
 			source = fromInventory.id,
 			fromInventory = fromInventory.id,
 			fromType = fromInventory.type,
