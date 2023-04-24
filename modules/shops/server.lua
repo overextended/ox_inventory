@@ -147,7 +147,8 @@ lib.callback.register('ox_inventory:openShop', function(source, data)
 		end
 
 		---@diagnostic disable-next-line: assign-type-mismatch
-		left.open = shop.id
+		left:openInventory(left)
+		left.currentShop = shop.id
 	end
 
 	return { label = left.label, type = left.type, slots = left.slots, weight = left.weight, maxWeight = left.maxWeight }, shop
@@ -196,11 +197,11 @@ lib.callback.register('ox_inventory:buyItem', function(source, data)
 
 		local playerInv = Inventory(source)
 
-		if not playerInv then return end
+		if not playerInv or not playerInv.currentShop then return end
 
-		local shopType, shopId = playerInv.open:match('^(.-) (%d-)$')
+		local shopType, shopId = playerInv.currentShop:match('^(.-) (%d-)$')
 
-		if not shopType then shopType = playerInv.open end
+		if not shopType then shopType = playerInv.currentShop end
 
 		if shopId then shopId = tonumber(shopId) end
 
@@ -216,9 +217,11 @@ lib.callback.register('ox_inventory:buyItem', function(source, data)
 					data.count = fromData.count
 				end
 			end
+
 			if fromData.license and server.hasLicense and not server.hasLicense(playerInv, fromData.license) then
 				return false, false, { type = 'error', description = locale('item_unlicensed') }
 			end
+
 			if fromData.grade then
 				local _, rank = server.hasGroup(playerInv, shop.groups)
 				if not isRequiredGrade(fromData.grade, rank) then

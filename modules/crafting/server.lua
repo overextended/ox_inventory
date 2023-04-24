@@ -59,19 +59,15 @@ lib.callback.register('ox_inventory:openCraftingBench', function(source, id, ind
 		if #(GetEntityCoords(GetPlayerPed(source)) - coords) > 10 then return end
 
 		if left.open and left.open ~= source then
-			local inv = Inventory(left.open)
+			local inv = Inventory(left.open) --[[@as OxInventory]]
 
 			-- Why would the player inventory open with an invalid target? Can't repro but whatever.
-			if inv then
-				if inv.player then
-					TriggerClientEvent('ox_inventory:closeInventory', inv.id, true)
-				end
-
-				inv:set('open', false)
+			if inv?.player then
+				inv:closeInventory()
 			end
 		end
 
-		left.open = source
+		left:openInventory(left)
 	end
 
 	return { label = left.label, type = left.type, slots = left.slots, weight = left.weight, maxWeight = left.maxWeight }
@@ -198,7 +194,7 @@ lib.callback.register('ox_inventory:craftItem', function(source, id, index, reci
 									newItem.metadata.durability = durability < 0 and 0 or durability
 									durability = 0
 
-									TriggerClientEvent('ox_inventory:updateSlots', left.id, {
+									left:syncSlotsWithPlayer({
 										{
 											item = newItem,
 											inventory = left.type
@@ -212,7 +208,7 @@ lib.callback.register('ox_inventory:craftItem', function(source, id, index, reci
 							invSlot.metadata.durability = durability < 0 and 0 or durability
 						end
 
-						TriggerClientEvent('ox_inventory:updateSlots', source, {
+						left:syncSlotsWithPlayer({
 							{
 								item = invSlot,
 								inventory = left.type

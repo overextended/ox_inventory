@@ -72,6 +72,7 @@ local defaultInventory = {
 	maxWeight = shared.playerweight,
 	items = {}
 }
+
 local currentInventory = defaultInventory
 
 local function closeTrunk()
@@ -611,7 +612,7 @@ local function registerCommands()
 				return client.closeInventory()
 			end
 
-			local closest = lib.points.closest()
+			local closest = lib.points.getClosestPoint()
 
 			if closest and closest.currentDistance < 1.2 and (not closest.instance or closest.instance == currentInstance) then
 				if closest.inv == 'crafting' then
@@ -830,51 +831,47 @@ end
 
 RegisterNetEvent('ox_inventory:closeInventory', client.closeInventory)
 
+---@param items updateSlot[]
+---@param weight number | table<string, number>
 local function updateInventory(items, weight)
 	-- todo: combine iterators
 	local changes = {}
 	local itemCount = {}
-	-- swapslots
-	if type(weight) == 'number' then
-		for slot, v in pairs(items) do
-			local item = PlayerData.inventory[slot]
+	local isSwapSlot = type(weight) == 'number'
 
-			if item then
-				itemCount[item.name] = (itemCount[item.name] or 0) - item.count
-			end
-
-			if v then
-				itemCount[v.name] = (itemCount[v.name] or 0) + v.count
-			end
-
-			PlayerData.inventory[slot] = v and v or nil
-			changes[slot] = v
-		end
-
-		SendNUIMessage({ action = 'refreshSlots', data = {itemCount = itemCount} })
-		client.setPlayerData('weight', weight)
-	else
-		for i = 1, #items do
+	for i = 1, #items do
+		if items[i].inventory == cache.serverId then
+			items[i].inventory = 'player'
 			local v = items[i].item
 			local item = PlayerData.inventory[v.slot]
+			local count = 0
 
 			if item?.name then
+				count -= item.count
 				itemCount[item.name] = (itemCount[item.name] or 0) - item.count
 			end
 
 			if v.count then
+				count += v.count
 				itemCount[v.name] = (itemCount[v.name] or 0) + v.count
+			end
+
+			if not isSwapSlot then
+				if count < 1 then
+					Utils.ItemNotify({ item?.name and item or v, 'ui_removed', -count })
+				else
+					Utils.ItemNotify({ v, 'ui_added', count })
+				end
 			end
 
 			changes[v.slot] = v.count and v or false
 			if not v.count then v.name = nil end
 			PlayerData.inventory[v.slot] = v.name and v or nil
 		end
-
-		SendNUIMessage({ action = 'refreshSlots', data = { items = items, itemCount = itemCount} })
-		client.setPlayerData('weight', weight.left)
 	end
 
+	SendNUIMessage({ action = 'refreshSlots', data = { items = items, itemCount = itemCount} })
+	client.setPlayerData('weight', isSwapSlot and weight or weight.left)
 
 	for item, count in pairs(itemCount) do
 		local data = Items[item]
@@ -914,7 +911,7 @@ local function updateInventory(items, weight)
 	TriggerEvent('ox_inventory:updateInventory', changes)
 end
 
-RegisterNetEvent('ox_inventory:updateSlots', function(items, weights, count, removed)
+RegisterNetEvent('ox_inventory:updateSlots', function(items, weights)
 	if source == '' or not next(items) then return end
 
 	local item = items[1]?.item
@@ -927,14 +924,6 @@ RegisterNetEvent('ox_inventory:updateSlots', function(items, weights, count, rem
 		-- item.metadata.durability = currentWeapon.metadata.durability
 		currentWeapon.metadata = item.metadata
 		TriggerEvent('ox_inventory:currentWeapon', currentWeapon)
-	end
-
-	if count then
-		if not item.name then
-			item = PlayerData.inventory[item.slot]
-		end
-
-		Utils.ItemNotify({ item, removed and 'ui_removed' or 'ui_added', count })
 	end
 
 	updateInventory(items, weights)
@@ -951,7 +940,7 @@ RegisterNetEvent('ox_inventory:inventoryReturned', function(data)
 
 	for _, slotData in pairs(data[1]) do
 		num += 1
-		items[num] = { item = slotData, inventory = 'player' }
+		items[num] = { item = slotData, inventory = cache.serverId }
 	end
 
 	updateInventory(items, { left = data[3] })
@@ -968,7 +957,7 @@ RegisterNetEvent('ox_inventory:inventoryConfiscated', function(message)
 
 	for slot in pairs(PlayerData.inventory) do
 		num += 1
-		items[num] = { item = { slot = slot }, inventory = 'player' }
+		items[num] = { item = { slot = slot }, inventory = cache.serverId }
 	end
 
 	updateInventory(items, { left = 0 })
@@ -1714,19 +1703,34 @@ RegisterNUICallback('swapItems', function(data, cb)
 		lib.notify({ type = 'error', description = locale(response) })
 	end
 
-	if data.toType == 'newdrop' then
-		Wait(50)
-	end
-
 	cb(success or false)
 end)
 
 RegisterNUICallback('buyItem', function(data, cb)
+	---@type boolean, false | { [1]: number, [2]: SlotWithItem, [3]: SlotWithItem | false, [4]: number}, NotifyProps
 	local response, data, message = lib.callback.await('ox_inventory:buyItem', 100, data)
 
 	if data then
-		updateInventory({[data[1]] = data[2]}, data[4])
-		SendNUIMessage({ action = 'refreshSlots', data = data[3] and {items = {{item = data[2]}, {item = data[3], inventory = 'shop'}}} or {items = {item = data[2]}}})
+		updateInventory({
+			{
+				item = data[2],
+				inventory = cache.serverId
+			}
+		}, data[4])
+
+		if data[3] then
+			SendNUIMessage({
+				action = 'refreshSlots',
+				data = {
+					items = {
+						{
+							item = data[3],
+							inventory = 'shop'
+						}
+					}
+				}
+			})
+		end
 	end
 
 	if message then
