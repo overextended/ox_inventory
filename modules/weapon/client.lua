@@ -19,9 +19,7 @@ function Weapon.Equip(item, data)
 	local playerPed = cache.ped
 	local coords = GetEntityCoords(playerPed, true)
 
-	RequestWeaponAsset(data.hash, 31, 0)
-
-	while not HasWeaponAssetLoaded(data.hash) do Wait(0) end
+	lib.requestWeaponAsset(data.hash)
 
 	if client.weaponanims then
 		if cache.vehicle and vehicleIsCycle(cache.vehicle) then
