@@ -44,20 +44,16 @@ CreateThread(function()
 end)
 
 local function playerDropped(source)
-	local inv = Inventory(source)
+	local inv = Inventory(source) --[[@as OxInventory]]
 
 	if inv?.player then
-		local openInventory = inv.open and Inventory(inv.open)
-
-		if openInventory then
-			openInventory:set('open', false)
-		end
+		inv:closeInventory()
 
 		if shared.framework ~= 'esx' then
 			db.savePlayer(inv.owner, json.encode(inv:minimal()))
 		end
 
-		Inventory.Remove(inv)
+		Inventory.Remove(inv, true)
 	end
 end
 
