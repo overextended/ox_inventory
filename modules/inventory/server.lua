@@ -199,7 +199,7 @@ local function loadInventoryData(data, player)
 
 		if stash then
 			if stash.jobs then stash.groups = stash.jobs end
-			if player and stash.groups and not server.hasGroup(player, stash.groups) then return end
+			if player and stash.groups and (not server.hasGroup(player, stash.groups) or not server.isAdmin(source)) then return end
 
 			local owner
 

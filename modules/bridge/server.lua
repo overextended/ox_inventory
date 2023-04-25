@@ -17,6 +17,10 @@ function server.hasGroup(inv, group)
 	end
 end
 
+function server.isAdmin(src)
+	return IsPlayerAceAllowed(src, 'group.admin')
+end
+
 ---@diagnostic disable-next-line: duplicate-set-field
 function server.setPlayerData(player)
 	if not player.groups then
