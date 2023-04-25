@@ -119,7 +119,7 @@ lib.callback.register('ox_inventory:openInventory', function(source, inv, data)
 		else right = Inventory(data) end
 
 		if right then
-			if right.groups and not server.hasGroup(left, right.groups) then return end
+			if right.groups and not (server.hasGroup(left, right.groups) or server.isAdmin(source)) then return end
 
 			local hookPayload = {
 				source = source,
@@ -137,7 +137,7 @@ lib.callback.register('ox_inventory:openInventory', function(source, inv, data)
 				right.coords = GetEntityCoords(right.player.ped)
 			end
 
-			if right.coords == nil or #(right.coords - GetEntityCoords(GetPlayerPed(source))) < 10 then
+			if right.coords == nil or (#(right.coords - GetEntityCoords(GetPlayerPed(source))) < 10 or server.isAdmin(source)) then
 				left:openInventory(right)
 			else return end
 		else return end
