@@ -1944,18 +1944,49 @@ end
 
 exports('ClearInventory', Inventory.Clear)
 
+---@param inv inventory
+---@return integer?
 function Inventory.GetEmptySlot(inv)
-	inv = Inventory(inv) --[[@as OxInventory]]
+	local inventory = Inventory(inv)
 
-	if inv then
-		local items = inv.items
+	if not inventory then return end
 
-		for i = 1, inv.slots do
-			if not items[i] then
-				return i
-			end
+	local items = inventory.items
+
+	for i = 1, inventory.slots do
+		if not items[i] then
+			return i
 		end
 	end
+end
+
+---@param inv inventory
+---@param itemName string
+---@param metadata any
+function Inventory.GetSlotForItem(inv, itemName, metadata)
+	local inventory = Inventory(inv)
+	local item = Items(itemName) --[[@as OxServerItem?]]
+
+	if not inventory or not item then return end
+
+	if type(metadata) ~= 'table' then
+		metadata = metadata and { type = metadata or nil }
+	end
+
+	local items = inventory.items
+	local emptySlot
+
+	for i = 1, inventory.slots do
+		local slotData = items[i]
+
+		if item.stack and slotData and slotData.name == item.name and table.matches(slotData.metadata, metadata) then
+			return i
+		elseif not item.stack and not slotData and not emptySlot then
+			emptySlot = i
+		end
+	end
+
+	return emptySlot
 end
 
 local function prepareSave(inv)
