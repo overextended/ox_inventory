@@ -2100,7 +2100,27 @@ RegisterServerEvent('ox_inventory:giveItem', function(slot, target, count)
 
 		local item = Items(data.name)
 
-		if data.count >= count and Inventory.CanCarryItem(toInventory, item, count, data.metadata) and TriggerEventHooks('swapItems', {
+		if not item or data.count < count or not Inventory.CanCarryItem(toInventory, item, count, data.metadata) then
+			return TriggerClientEvent('ox_lib:notify', fromInventory.id, { type = 'error', description = locale('cannot_give', count, data.label) })
+		end
+
+		local toSlot = Inventory.GetSlotForItem(toInventory, data.name, data.metadata)
+		local fromRef = ('%s:%s'):format(fromInventory.id, slot)
+		local toRef = ('%s:%s'):format(toInventory.id, toSlot)
+
+		if activeSlots[fromRef] or activeSlots[toRef] then
+			return TriggerClientEvent('ox_lib:notify', fromInventory.id, { type = 'error', description = locale('cannot_give', count, data.label) })
+		end
+
+		activeSlots[fromRef] = true
+		activeSlots[toRef] = true
+
+		local _ <close> = defer(function()
+			activeSlots[fromRef] = nil
+			activeSlots[toRef] = nil
+		end)
+
+		if TriggerEventHooks('swapItems', {
 			source = fromInventory.id,
 			fromInventory = fromInventory.id,
 			fromType = fromInventory.type,
@@ -2110,15 +2130,19 @@ RegisterServerEvent('ox_inventory:giveItem', function(slot, target, count)
 			action = 'give',
 			fromSlot = data,
 		}) then
-			Inventory.RemoveItem(fromInventory, item, count, data.metadata, slot)
-			Inventory.AddItem(toInventory, item, count, data.metadata)
+			---@todo manually call swapItems or something?
+			if Inventory.AddItem(toInventory, item, count, data.metadata, toSlot) then
+				if Inventory.RemoveItem(fromInventory, item, count, data.metadata, slot) then
+					if server.loglevel > 0 then
+						lib.logger(fromInventory.owner, 'giveItem', ('"%s" gave %sx %s to "%s"'):format(fromInventory.label, count, data.name, toInventory.label))
+					end
 
-			if server.loglevel > 0 then
-				lib.logger(fromInventory.owner, 'giveItem', ('"%s" gave %sx %s to "%s"'):format(fromInventory.label, count, data.name, toInventory.label))
+					return
+				end
 			end
-		else
-			TriggerClientEvent('ox_lib:notify', fromInventory.id, { type = 'error', description = locale('cannot_give', count, data.label) })
 		end
+
+		return TriggerClientEvent('ox_lib:notify', fromInventory.id, { type = 'error', description = locale('cannot_give', count, data.label) })
 	end
 end)
 
