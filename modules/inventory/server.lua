@@ -1030,7 +1030,6 @@ function Inventory.AddItem(inv, item, count, metadata, slot, cb)
 				slotMetadata, slotCount = Items.Metadata(inv.id, item, metadata and table.clone(metadata) or {}, count)
 			elseif not toSlot and not slotData then
 				toSlot = i
-				break
 			end
 		end
 	end
@@ -1040,8 +1039,9 @@ function Inventory.AddItem(inv, item, count, metadata, slot, cb)
 	inv.changed = true
 
 	local invokingResource = server.loglevel > 1 and GetInvokingResource()
+	local toSlotType = type(toSlot)
 
-	if type(toSlot) == 'number' then
+	if toSlotType == 'number' then
 		Inventory.SetSlot(inv, item, slotCount, slotMetadata, toSlot)
 
 		if inv.player then
@@ -1065,7 +1065,7 @@ function Inventory.AddItem(inv, item, count, metadata, slot, cb)
 
 		success = true
 		response = inv.items[toSlot]
-	else
+	elseif toSlotType == 'table' then
 		local added = 0
 
 		for i = 1, #toSlot do
