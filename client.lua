@@ -686,12 +686,13 @@ local function registerCommands()
 
 			local position = GetEntityCoords(entity)
 
-			if #(playerCoords - position) > 6 or GetVehiclePedIsEntering(playerPed) ~= 0 or not NetworkGetEntityIsNetworked(entity) then return end
+			if #(playerCoords - position) > 7 or GetVehiclePedIsEntering(playerPed) ~= 0 or not NetworkGetEntityIsNetworked(entity) then return end
 
 			local vehicleHash = GetEntityModel(entity)
 			local vehicleClass = GetVehicleClass(entity)
 			local checkVehicle = Vehicles.Storage[vehicleHash]
 
+			local isTrailer = (not IsThisModelABicycle(vehicleHash) and not IsThisModelABike(vehicleHash) and not IsThisModelABoat(vehicleHash) and not IsThisModelACar(vehicleHash) and not IsThisModelAHeli(vehicleHash) and not IsThisModelAJetski(vehicleHash) and not IsThisModelAPlane(vehicleHash) and not IsThisModelAQuadbike(vehicleHash) and not IsThisModelATrain(vehicleHash) and not IsThisModelAnAmphibiousCar(vehicleHash) and not IsThisModelAnAmphibiousQuadbike(vehicleHash))
 			-- No storage or no glovebox
 			if (checkVehicle == 0 or checkVehicle == 1) or (not Vehicles.trunk[vehicleClass] and not Vehicles.trunk.models[vehicleHash]) then return end
 
@@ -702,7 +703,11 @@ local function registerCommands()
 			local door, vehBone
 
 			if checkVehicle == nil then -- No data, normal trunk
-				door, vehBone = 5, GetEntityBoneIndexByName(entity, 'boot')
+				if isTrailer then
+					door, vehBone = 5, GetEntityBoneIndexByName(entity, 'wheel_rr')
+				else
+					door, vehBone = 5, GetEntityBoneIndexByName(entity, 'boot')
+				end
 			elseif checkVehicle == 3 then -- Trunk in hood
 				door, vehBone = 4, GetEntityBoneIndexByName(entity, 'bonnet')
 			else -- No storage or no trunk
@@ -719,7 +724,7 @@ local function registerCommands()
 
 			position = GetWorldPositionOfEntityBone(entity, vehBone)
 
-			if #(playerCoords - position) < 2 and door then
+			if #(playerCoords - position) < 3 and door then
 				local plate = GetVehicleNumberPlateText(entity)
 				local invId = 'trunk'..plate
 
@@ -746,7 +751,7 @@ local function registerCommands()
 
 					position = GetWorldPositionOfEntityBone(entity, vehBone)
 
-					if #(GetEntityCoords(playerPed) - position) >= 2 or not DoesEntityExist(entity) then
+					if #(GetEntityCoords(playerPed) - position) >= 3 or not DoesEntityExist(entity) then
 						break
 					end
 
