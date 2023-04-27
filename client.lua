@@ -889,7 +889,7 @@ local function updateInventory(data, weight)
 				itemCount[item.name] = (itemCount[item.name] or 0) + item.count
 			end
 
-			if not isSwapSlot then
+			if not isSwapSlot and v.notify ~= false then
 				if count < 1 then
 					Utils.ItemNotify({ curItem?.name and curItem or item, 'ui_removed', -count })
 				else
