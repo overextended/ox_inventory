@@ -222,14 +222,18 @@ function client.openInventory(inv, data)
 			end
 
 			plyState.invOpen = true
+
 			SetInterval(client.interval, 100)
 			SetNuiFocus(true, true)
 			SetNuiFocusKeepInput(true)
-			if client.screenblur then TriggerScreenblurFadeIn(0) end
 			closeTrunk()
+
+			if client.screenblur then TriggerScreenblurFadeIn(0) end
+
 			currentInventory = right or defaultInventory
 			left.items = PlayerData.inventory
 			left.groups = PlayerData.groups
+
 			SendNUIMessage({
 				action = 'setupInventory',
 				data = {
@@ -252,8 +256,35 @@ function client.openInventory(inv, data)
 		end
 	elseif invBusy then lib.notify({ id = 'inventory_player_access', type = 'error', description = locale('inventory_player_access') }) end
 end
+
 RegisterNetEvent('ox_inventory:openInventory', client.openInventory)
 exports('openInventory', client.openInventory)
+
+RegisterNetEvent('ox_inventory:forceOpenInventory', function(left, right)
+	if source == '' then return end
+
+	plyState.invOpen = true
+
+	SetInterval(client.interval, 100)
+	SetNuiFocus(true, true)
+	SetNuiFocusKeepInput(true)
+	closeTrunk()
+
+	if client.screenblur then TriggerScreenblurFadeIn(0) end
+
+	currentInventory = right or defaultInventory
+	currentInventory.ignoreSecurityChecks = true
+	left.items = PlayerData.inventory
+	left.groups = PlayerData.groups
+
+	SendNUIMessage({
+		action = 'setupInventory',
+		data = {
+			leftInventory = left,
+			rightInventory = currentInventory
+		}
+	})
+end)
 
 local Animations = data 'animations'
 local Items = require 'modules.items.client'
@@ -1291,8 +1322,8 @@ RegisterNetEvent('ox_inventory:setPlayerInventory', function(currentDrops, inven
 				client.closeInventory()
 			else
 				playerCoords = GetEntityCoords(playerPed)
-				if currentInventory then
 
+				if currentInventory and not currentInventory.ignoreSecurityChecks then
 					if currentInventory.type == 'otherplayer' then
 						local id = GetPlayerFromServerId(currentInventory.id)
 						local ped = GetPlayerPed(id)
