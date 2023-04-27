@@ -69,7 +69,7 @@ function OxInventory:closeInventory(noEvent)
 	end
 end
 
----@alias updateSlot { item: SlotWithItem | { slot: number }, inventory: string|number, notify?: boolean }
+---@alias updateSlot { item: SlotWithItem | { slot: number }, inventory: string|number }
 
 ---Sync a player's inventory state.
 ---@param slots updateSlot[]
@@ -366,12 +366,15 @@ function Inventory.SetSlot(inv, item, count, metadata, slot)
 	local newWeight = currentSlot and inv.weight - currentSlot.weight or inv.weight
 
 	if currentSlot and newCount < 1 then
+		TriggerClientEvent('ox_inventory:itemNotify', inv.id, { currentSlot, 'ui_removed', currentSlot.count })
 		currentSlot = nil
 	else
 		currentSlot = {name = item.name, label = item.label, weight = item.weight, slot = slot, count = newCount, description = item.description, metadata = metadata, stack = item.stack, close = item.close}
 		local slotWeight = Inventory.SlotWeight(item, currentSlot)
 		currentSlot.weight = slotWeight
 		newWeight += slotWeight
+
+		TriggerClientEvent('ox_inventory:itemNotify', inv.id, { currentSlot, count < 0 and 'ui_removed' or 'ui_added', math.abs(count) })
 	end
 
 	inv.weight = newWeight
@@ -1229,6 +1232,8 @@ function Inventory.RemoveItem(inv, item, count, metadata, slot, ignoreTotal)
 			for k, v in pairs(itemSlots) do
 				if removed < total then
 					if v == count then
+						TriggerClientEvent('ox_inventory:itemNotify', inv.id, { inv.items[k], 'ui_removed', v })
+
 						removed = total
 						inv.weight -= inv.items[k].weight
 						inv.items[k] = nil
@@ -1239,6 +1244,8 @@ function Inventory.RemoveItem(inv, item, count, metadata, slot, ignoreTotal)
 						removed = total
 						count = v - count
 					else
+						TriggerClientEvent('ox_inventory:itemNotify', inv.id, { inv.items[k], 'ui_removed', v })
+
 						removed = removed + v
 						count = count - v
 						inv.weight -= inv.items[k].weight
@@ -1598,6 +1605,14 @@ lib.callback.register('ox_inventory:swapItems', function(source, data)
 							Inventory.ContainerWeight(containerItem, toContainer and fromWeight or toWeight, playerInventory)
 						end
 
+						if fromOtherPlayer then
+							TriggerClientEvent('ox_inventory:itemNotify', fromInventory.id, { fromData, 'ui_removed', fromData.count })
+							TriggerClientEvent('ox_inventory:itemNotify', fromInventory.id, { toData, 'ui_added', toData.count })
+						elseif toOtherPlayer then
+							TriggerClientEvent('ox_inventory:itemNotify', toInventory.id, { fromData, 'ui_added', fromData.count })
+							TriggerClientEvent('ox_inventory:itemNotify', toInventory.id, { toData, 'ui_removed', toData.count })
+						end
+
 						fromInventory.weight = fromWeight
 						toInventory.weight = toWeight
 						toData, fromData = Inventory.SwapSlots(fromInventory, toInventory, data.fromSlot, data.toSlot) --[[@as table]]
@@ -1637,6 +1652,12 @@ lib.callback.register('ox_inventory:swapItems', function(source, data)
 
 						if container then
 							Inventory.ContainerWeight(containerItem, toInventory.type == 'container' and toInventory.weight or fromInventory.weight, playerInventory)
+						end
+
+						if fromOtherPlayer then
+							TriggerClientEvent('ox_inventory:itemNotify', fromInventory.id, { fromData, 'ui_removed', data.count })
+						elseif toOtherPlayer then
+							TriggerClientEvent('ox_inventory:itemNotify', toInventory.id, { toData, 'ui_added', data.count })
 						end
 
 						if server.loglevel > 0 then
@@ -1681,6 +1702,12 @@ lib.callback.register('ox_inventory:swapItems', function(source, data)
 
 						if container then
 							Inventory.ContainerWeight(containerItem, toContainer and toInventory.weight or fromInventory.weight, playerInventory)
+						end
+
+						if fromOtherPlayer then
+							TriggerClientEvent('ox_inventory:itemNotify', fromInventory.id, { fromData, 'ui_removed', data.count })
+						elseif toOtherPlayer then
+							TriggerClientEvent('ox_inventory:itemNotify', toInventory.id, { fromData, 'ui_added', data.count })
 						end
 
 						if server.loglevel > 0 then
@@ -1740,13 +1767,11 @@ lib.callback.register('ox_inventory:swapItems', function(source, data)
 				fromInventory:syncSlotsWithClients({
 					{
 						item = fromInventory.items[data.toSlot] or { slot = data.toSlot },
-						inventory = fromInventory.id,
-						notify = false,
+						inventory = fromInventory.id
 					},
 					{
 						item = fromInventory.items[data.fromSlot] or { slot = data.fromSlot },
-						inventory = fromInventory.id,
-						notify = false,
+						inventory = fromInventory.id
 					}
 				}, { left = fromInventory.weight }, fromInventory ~= playerInventory)
 			else

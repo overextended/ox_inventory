@@ -877,24 +877,13 @@ local function updateInventory(data, weight)
 			v.inventory = 'player'
 			local item = v.item
 			local curItem = PlayerData.inventory[item.slot]
-			local count = 0
 
 			if curItem?.name then
-				count -= curItem.count
 				itemCount[curItem.name] = (itemCount[curItem.name] or 0) - curItem.count
 			end
 
 			if item.count then
-				count += item.count
 				itemCount[item.name] = (itemCount[item.name] or 0) + item.count
-			end
-
-			if not isSwapSlot and v.notify ~= false then
-				if count < 1 then
-					Utils.ItemNotify({ curItem?.name and curItem or item, 'ui_removed', -count })
-				else
-					Utils.ItemNotify({ item, 'ui_added', count })
-				end
 			end
 
 			changes[item.slot] = item.count and item or false
