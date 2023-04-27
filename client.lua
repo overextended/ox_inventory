@@ -222,14 +222,18 @@ function client.openInventory(inv, data)
 			end
 
 			plyState.invOpen = true
+
 			SetInterval(client.interval, 100)
 			SetNuiFocus(true, true)
 			SetNuiFocusKeepInput(true)
-			if client.screenblur then TriggerScreenblurFadeIn(0) end
 			closeTrunk()
+
+			if client.screenblur then TriggerScreenblurFadeIn(0) end
+
 			currentInventory = right or defaultInventory
 			left.items = PlayerData.inventory
 			left.groups = PlayerData.groups
+
 			SendNUIMessage({
 				action = 'setupInventory',
 				data = {
@@ -252,8 +256,35 @@ function client.openInventory(inv, data)
 		end
 	elseif invBusy then lib.notify({ id = 'inventory_player_access', type = 'error', description = locale('inventory_player_access') }) end
 end
+
 RegisterNetEvent('ox_inventory:openInventory', client.openInventory)
 exports('openInventory', client.openInventory)
+
+RegisterNetEvent('ox_inventory:forceOpenInventory', function(left, right)
+	if source == '' then return end
+
+	plyState.invOpen = true
+
+	SetInterval(client.interval, 100)
+	SetNuiFocus(true, true)
+	SetNuiFocusKeepInput(true)
+	closeTrunk()
+
+	if client.screenblur then TriggerScreenblurFadeIn(0) end
+
+	currentInventory = right or defaultInventory
+	currentInventory.ignoreSecurityChecks = true
+	left.items = PlayerData.inventory
+	left.groups = PlayerData.groups
+
+	SendNUIMessage({
+		action = 'setupInventory',
+		data = {
+			leftInventory = left,
+			rightInventory = currentInventory
+		}
+	})
+end)
 
 local Animations = data 'animations'
 local Items = require 'modules.items.client'
@@ -831,46 +862,37 @@ end
 
 RegisterNetEvent('ox_inventory:closeInventory', client.closeInventory)
 
----@param items updateSlot[]
+---@param data updateSlot[]
 ---@param weight number | table<string, number>
-local function updateInventory(items, weight)
+local function updateInventory(data, weight)
 	-- todo: combine iterators
 	local changes = {}
 	local itemCount = {}
 	local isSwapSlot = type(weight) == 'number'
 
-	for i = 1, #items do
-		if items[i].inventory == cache.serverId then
-			items[i].inventory = 'player'
-			local v = items[i].item
-			local item = PlayerData.inventory[v.slot]
-			local count = 0
+	for i = 1, #data do
+		local v = data[i]
 
-			if item?.name then
-				count -= item.count
-				itemCount[item.name] = (itemCount[item.name] or 0) - item.count
+		if v.inventory == cache.serverId then
+			v.inventory = 'player'
+			local item = v.item
+			local curItem = PlayerData.inventory[item.slot]
+
+			if curItem?.name then
+				itemCount[curItem.name] = (itemCount[curItem.name] or 0) - curItem.count
 			end
 
-			if v.count then
-				count += v.count
-				itemCount[v.name] = (itemCount[v.name] or 0) + v.count
+			if item.count then
+				itemCount[item.name] = (itemCount[item.name] or 0) + item.count
 			end
 
-			if not isSwapSlot then
-				if count < 1 then
-					Utils.ItemNotify({ item?.name and item or v, 'ui_removed', -count })
-				else
-					Utils.ItemNotify({ v, 'ui_added', count })
-				end
-			end
-
-			changes[v.slot] = v.count and v or false
-			if not v.count then v.name = nil end
-			PlayerData.inventory[v.slot] = v.name and v or nil
+			changes[item.slot] = item.count and item or false
+			if not item.count then item.name = nil end
+			PlayerData.inventory[item.slot] = item.name and item or nil
 		end
 	end
 
-	SendNUIMessage({ action = 'refreshSlots', data = { items = items, itemCount = itemCount} })
+	SendNUIMessage({ action = 'refreshSlots', data = { items = data, itemCount = itemCount} })
 	client.setPlayerData('weight', isSwapSlot and weight or weight.left)
 
 	for item, count in pairs(itemCount) do
@@ -1291,8 +1313,8 @@ RegisterNetEvent('ox_inventory:setPlayerInventory', function(currentDrops, inven
 				client.closeInventory()
 			else
 				playerCoords = GetEntityCoords(playerPed)
-				if currentInventory then
 
+				if currentInventory and not currentInventory.ignoreSecurityChecks then
 					if currentInventory.type == 'otherplayer' then
 						local id = GetPlayerFromServerId(currentInventory.id)
 						local ped = GetPlayerPed(id)

@@ -88,32 +88,38 @@ local function isPlayerCloseToStashCoordinate(source, coordinate)
 	end
 end
 
-lib.callback.register('ox_inventory:openInventory', function(source, inv, data)
+---@param source number
+---@param invType string
+---@param data string|number|table
+---@param ignoreSecurityChecks boolean?
+---@return boolean|table|nil
+---@return table?
+local function openInventory(source, invType, data, ignoreSecurityChecks)
 	if Inventory.Lock then return false end
 
 	local left = Inventory(source) --[[@as OxInventory]]
 	local right
 
-	Inventory.CloseAll(left, (inv == 'drop' or inv == 'container' or not inv) and source)
+	Inventory.CloseAll(left, (invType == 'drop' or invType == 'container' or not invType) and source)
 
 	if data then
-		if inv == 'stash' then
+		if invType == 'stash' then
 			right = Inventory(data, left)
 			if right == false then return false end
 		elseif type(data) == 'table' then
 			if data.netid then
-				data.type = inv
+				data.type = invType
 				right = Inventory(data)
-			elseif inv == 'drop' then
+			elseif invType == 'drop' then
 				right = Inventory(data.id)
 			else
 				return
 			end
-		elseif inv == 'policeevidence' then
+		elseif invType == 'policeevidence' then
 			if server.hasGroup(left, shared.police) then
 				right = Inventory(('evidence-%s'):format(data))
 			end
-		elseif inv == 'dumpster' then
+		elseif invType == 'dumpster' then
 			right = Inventory(data)
 
 			if not right then
@@ -122,10 +128,10 @@ lib.callback.register('ox_inventory:openInventory', function(source, inv, data)
 				-- dumpsters do not work with entity lockdown. need to rewrite, but having to do
 				-- distance checks to some ~7000 dumpsters and freeze the entities isn't ideal
 				if netid and NetworkGetEntityFromNetworkId(netid) > 0 then
-					right = Inventory.Create(data, locale('dumpster'), inv, 15, 0, 100000, false)
+					right = Inventory.Create(data, locale('dumpster'), invType, 15, 0, 100000, false)
 				end
 			end
-		elseif inv == 'container' then
+		elseif invType == 'container' then
 			left.containerSlot = data
 			data = left.items[data]
 
@@ -133,13 +139,13 @@ lib.callback.register('ox_inventory:openInventory', function(source, inv, data)
 				right = Inventory(data.metadata.container)
 
 				if not right then
-					right = Inventory.Create(data.metadata.container, data.label, inv, data.metadata.size[1], 0, data.metadata.size[2], false)
+					right = Inventory.Create(data.metadata.container, data.label, invType, data.metadata.size[1], 0, data.metadata.size[2], false)
 				end
 			else left.containerSlot = nil end
 		else right = Inventory(data) end
 
 		if right then
-			if right.groups and not server.hasGroup(left, right.groups) then return end
+			if not ignoreSecurityChecks and right.groups and not server.hasGroup(left, right.groups) then return end
 
 			local hookPayload = {
 				source = source,
@@ -147,14 +153,14 @@ lib.callback.register('ox_inventory:openInventory', function(source, inv, data)
 				inventoryType = right.type,
 			}
 
-			if inv == 'container' then hookPayload.slot = left.containerSlot end
+			if invType == 'container' then hookPayload.slot = left.containerSlot end
 
 			if not TriggerEventHooks('openInventory', hookPayload) then return end
 
 			if right.player then
 				if right.open then return end
 
-				right.coords = GetEntityCoords(right.player.ped)
+				right.coords = not ignoreSecurityChecks and GetEntityCoords(right.player.ped) or nil
 			end
 
 			if right.coords == nil or isPlayerCloseToStashCoordinate(source, right.coords) then
@@ -183,6 +189,25 @@ lib.callback.register('ox_inventory:openInventory', function(source, inv, data)
 		coords = right.coords,
 		distance = right.distance
 	}
+end
+
+---@param source number
+---@param invType string
+---@param data string|number|table
+lib.callback.register('ox_inventory:openInventory', function(source, invType, data)
+	return openInventory(source, invType, data)
+end)
+
+---@param playerId number
+---@param invType string
+---@param data string|number|table
+exports('forceOpenInventory', function(playerId, invType, data)
+	local left, right = openInventory(playerId, invType, data)
+
+	if left and right then
+		TriggerClientEvent('ox_inventory:forceOpenInventory', playerId, left, right)
+		return right.id
+	end
 end)
 
 local Licenses = data 'licenses'

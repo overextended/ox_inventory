@@ -7,8 +7,8 @@ RegisterNetEvent('QBCore:Client:OnPlayerUnload', onLogout)
 RegisterNetEvent('QBCore:Player:SetPlayerData', function(data)
 	if source == '' or not PlayerData.loaded then return end
 
-	if data.metadata.isdead ~= PlayerData.dead then
-		PlayerData.dead = data.metadata.isdead
+	if (data.metadata.isdead or data.metadata.inlaststand) ~= PlayerData.dead then
+		PlayerData.dead = data.metadata.isdead or data.metadata.inlaststand
 		OnPlayerData('dead', PlayerData.dead)
 	end
 
