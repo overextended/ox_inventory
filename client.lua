@@ -862,46 +862,48 @@ end
 
 RegisterNetEvent('ox_inventory:closeInventory', client.closeInventory)
 
----@param items updateSlot[]
+---@param data updateSlot[]
 ---@param weight number | table<string, number>
-local function updateInventory(items, weight)
+local function updateInventory(data, weight)
 	-- todo: combine iterators
 	local changes = {}
 	local itemCount = {}
 	local isSwapSlot = type(weight) == 'number'
 
-	for i = 1, #items do
-		if items[i].inventory == cache.serverId then
-			items[i].inventory = 'player'
-			local v = items[i].item
-			local item = PlayerData.inventory[v.slot]
+	for i = 1, #data do
+		local v = data[i]
+
+		if v.inventory == cache.serverId then
+			v.inventory = 'player'
+			local item = v.item
+			local curItem = PlayerData.inventory[item.slot]
 			local count = 0
 
-			if item?.name then
-				count -= item.count
-				itemCount[item.name] = (itemCount[item.name] or 0) - item.count
+			if curItem?.name then
+				count -= curItem.count
+				itemCount[curItem.name] = (itemCount[curItem.name] or 0) - curItem.count
 			end
 
-			if v.count then
-				count += v.count
-				itemCount[v.name] = (itemCount[v.name] or 0) + v.count
+			if item.count then
+				count += item.count
+				itemCount[item.name] = (itemCount[item.name] or 0) + item.count
 			end
 
 			if not isSwapSlot then
 				if count < 1 then
-					Utils.ItemNotify({ item?.name and item or v, 'ui_removed', -count })
+					Utils.ItemNotify({ curItem?.name and curItem or item, 'ui_removed', -count })
 				else
-					Utils.ItemNotify({ v, 'ui_added', count })
+					Utils.ItemNotify({ item, 'ui_added', count })
 				end
 			end
 
-			changes[v.slot] = v.count and v or false
-			if not v.count then v.name = nil end
-			PlayerData.inventory[v.slot] = v.name and v or nil
+			changes[item.slot] = item.count and item or false
+			if not item.count then item.name = nil end
+			PlayerData.inventory[item.slot] = item.name and item or nil
 		end
 	end
 
-	SendNUIMessage({ action = 'refreshSlots', data = { items = items, itemCount = itemCount} })
+	SendNUIMessage({ action = 'refreshSlots', data = { items = data, itemCount = itemCount} })
 	client.setPlayerData('weight', isSwapSlot and weight or weight.left)
 
 	for item, count in pairs(itemCount) do
