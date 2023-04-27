@@ -1960,6 +1960,8 @@ function Inventory.GetEmptySlot(inv)
 	end
 end
 
+exports('GetEmptySlot', Inventory.GetEmptySlot)
+
 ---@param inv inventory
 ---@param itemName string
 ---@param metadata any
@@ -1988,6 +1990,8 @@ function Inventory.GetSlotForItem(inv, itemName, metadata)
 
 	return emptySlot
 end
+
+exports('GetSlotForItem', Inventory.GetSlotForItem)
 
 local function prepareSave(inv)
 	inv.changed = false
