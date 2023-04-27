@@ -69,7 +69,7 @@ function OxInventory:closeInventory(noEvent)
 	end
 end
 
----@alias updateSlot { item: SlotWithItem | { slot: number }, inventory: string|number }
+---@alias updateSlot { item: SlotWithItem | { slot: number }, inventory: string|number, notify?: boolean }
 
 ---Sync a player's inventory state.
 ---@param slots updateSlot[]
@@ -1740,11 +1740,13 @@ lib.callback.register('ox_inventory:swapItems', function(source, data)
 				fromInventory:syncSlotsWithClients({
 					{
 						item = fromInventory.items[data.toSlot] or { slot = data.toSlot },
-						inventory = fromInventory.id
+						inventory = fromInventory.id,
+						notify = false,
 					},
 					{
 						item = fromInventory.items[data.fromSlot] or { slot = data.fromSlot },
-						inventory = fromInventory.id
+						inventory = fromInventory.id,
+						notify = false,
 					}
 				}, { left = fromInventory.weight }, fromInventory ~= playerInventory)
 			else
