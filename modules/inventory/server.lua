@@ -1746,21 +1746,21 @@ lib.callback.register('ox_inventory:swapItems', function(source, data)
 						item = fromInventory.items[data.fromSlot] or { slot = data.fromSlot },
 						inventory = fromInventory.id
 					}
-				}, { left = fromInventory.weight }, true)
+				}, { left = fromInventory.weight }, fromInventory ~= playerInventory)
 			else
 				toInventory:syncSlotsWithClients({
 					{
 						item = toInventory.items[data.toSlot] or { slot = data.toSlot },
 						inventory = toInventory.id
 					}
-				}, { left = toInventory.weight }, true)
+				}, { left = toInventory.weight }, toInventory ~= playerInventory)
 
 				fromInventory:syncSlotsWithClients({
 					{
 						item = fromInventory.items[data.fromSlot] or { slot = data.fromSlot },
 						inventory = fromInventory.id
 					}
-				}, { left = fromInventory.weight }, true)
+				}, { left = fromInventory.weight }, fromInventory ~= playerInventory)
 			end
 
 			local resp
