@@ -267,7 +267,7 @@ exports('GetInventoryItems', function(inv, owner)
 end)
 
 ---@param inv? inventory
----@param ignoreId? number
+---@param ignoreId? number|false
 function Inventory.CloseAll(inv, ignoreId)
 	if not inv then
 		for _, data in pairs(Inventories) do
