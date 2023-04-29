@@ -1123,7 +1123,9 @@ end
 
 lib.onCache('seat', function(seat)
 	if seat then
-		if DoesVehicleHaveWeapons(cache.vehicle) then
+		local hasWeapon = GetCurrentPedVehicleWeapon(cache.ped)
+
+		if hasWeapon then
 			return Utils.WeaponWheel(true)
 		end
 	end
