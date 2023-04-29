@@ -180,6 +180,7 @@ function client.openInventory(inv, data)
 			if left then
 				right = CraftingBenches[data.id]
 				local coords = shared.target == 'ox_target' and right.zones[data.index].coords or right.points[data.index]
+				local distance = shared.target == 'ox_target' and right.zones[data.index].distance or 2
 
 				right = {
 					type = 'crafting',
@@ -189,7 +190,7 @@ function client.openInventory(inv, data)
 					slots = right.slots,
 					items = right.items,
 					coords = coords,
-					distance = right.zones[data.index].distance
+					distance = distance
 				}
 			end
 		elseif invOpen ~= nil then
