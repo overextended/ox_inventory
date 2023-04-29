@@ -1907,7 +1907,7 @@ function Inventory.Clear(inv, keep)
 					newWeight += v.weight
 				elseif updateSlots then
 					inc += 1
-					updateSlots[inc] = { item = { slot = slot }, inventory = inv.type }
+					updateSlots[inc] = { item = { slot = slot }, inventory = inv.id }
 				end
 			end
 		elseif keepType == 'table' and table.type(keep) == 'array' then
@@ -1922,7 +1922,7 @@ function Inventory.Clear(inv, keep)
 
 				if updateSlots then
 					inc += 1
-					updateSlots[inc] = { item = { slot = slot }, inventory = inv.type }
+					updateSlots[inc] = { item = { slot = slot }, inventory = inv.id }
 				end
 
 				::foundItem::

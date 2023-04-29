@@ -197,7 +197,6 @@ lib.callback.register('ox_inventory:craftItem', function(source, id, index, reci
 									left:syncSlotsWithPlayer({
 										{
 											item = newItem,
-											inventory = left.type
 										}
 									}, { left = left.weight })
 								end
@@ -211,7 +210,6 @@ lib.callback.register('ox_inventory:craftItem', function(source, id, index, reci
 						left:syncSlotsWithPlayer({
 							{
 								item = invSlot,
-								inventory = left.type
 							}
 						}, { left = left.weight })
 					else
