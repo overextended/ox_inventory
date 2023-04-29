@@ -865,15 +865,13 @@ RegisterNetEvent('ox_inventory:closeInventory', client.closeInventory)
 ---@param data updateSlot[]
 ---@param weight number | table<string, number>
 local function updateInventory(data, weight)
-	-- todo: combine iterators
 	local changes = {}
 	local itemCount = {}
-	local isSwapSlot = type(weight) == 'number'
 
 	for i = 1, #data do
 		local v = data[i]
 
-		if v.inventory == cache.serverId then
+		if not v.inventory or v.inventory == cache.serverId then
 			v.inventory = 'player'
 			local item = v.item
 			local curItem = PlayerData.inventory[item.slot]
@@ -893,7 +891,7 @@ local function updateInventory(data, weight)
 	end
 
 	SendNUIMessage({ action = 'refreshSlots', data = { items = data, itemCount = itemCount} })
-	client.setPlayerData('weight', isSwapSlot and weight or weight.left)
+	client.setPlayerData('weight', type(weight) == 'number' and weight or weight.left)
 
 	for item, count in pairs(itemCount) do
 		local data = Items[item]
