@@ -198,7 +198,7 @@ lib.callback.register('ox_inventory:craftItem', function(source, id, index, reci
 										{
 											item = newItem,
 										}
-									}, { left = left.weight })
+									}, left.weight)
 								end
 							end
 
@@ -211,7 +211,7 @@ lib.callback.register('ox_inventory:craftItem', function(source, id, index, reci
 							{
 								item = invSlot,
 							}
-						}, { left = left.weight })
+						}, left.weight)
 					else
 						local removed = invSlot and Inventory.RemoveItem(left, invSlot.name, count, nil, slot)
 						-- Failed to remove item (inventory state unexpectedly changed?)

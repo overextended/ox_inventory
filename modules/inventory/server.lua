@@ -73,7 +73,7 @@ end
 
 ---Sync a player's inventory state.
 ---@param slots updateSlot[]
----@param weight { left?: number, right?: number }
+---@param weight { left?: number, right?: number } | number
 function OxInventory:syncSlotsWithPlayer(slots, weight)
 	TriggerClientEvent('ox_inventory:updateSlots', self.id, slots, weight)
 end
@@ -2199,10 +2199,7 @@ RegisterServerEvent('ox_inventory:updateWeapon', function(action, value, slot, s
 						Inventory.AddItem(inventory, value.component, 1)
 						return inventory:syncSlotsWithPlayer({
 							{ item = item }
-						},
-						{
-							left = inventory.weight
-						})
+						}, inventory.weight)
 					end
 				end
 			end
@@ -2261,10 +2258,7 @@ RegisterServerEvent('ox_inventory:updateWeapon', function(action, value, slot, s
 			if action ~= 'throw' then
 				inventory:syncSlotsWithPlayer({
 					{ item = weapon }
-				},
-				{
-					left = inventory.weight
-				})
+				}, inventory.weight)
 			end
 
 			if server.syncInventory then server.syncInventory(inventory) end
@@ -2291,10 +2285,7 @@ lib.callback.register('ox_inventory:removeAmmoFromWeapon', function(source, slot
 
 		inventory:syncSlotsWithPlayer({
 			{ item = slotData }
-		},
-		{
-			left = inventory.weight
-		})
+		}, inventory.weight)
 
 		if server.syncInventory then server.syncInventory(inventory) end
 

@@ -338,7 +338,7 @@ lib.callback.register('ox_inventory:useItem', function(source, itemName, slot, m
 									{
 										item = newItem,
 									}
-								}, { left = inventory.weight })
+								}, inventory.weight)
 							end
 						end
 
@@ -361,7 +361,7 @@ lib.callback.register('ox_inventory:useItem', function(source, itemName, slot, m
 						{
 							item = inventory.items[data.slot],
 						}
-					}, { left = inventory.weight })
+					}, inventory.weight)
 
 					if server.syncInventory then server.syncInventory(inventory) end
 				end
