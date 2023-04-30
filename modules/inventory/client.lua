@@ -41,6 +41,14 @@ else
 	Inventory.Dumpsters = dumpsters
 end
 
+local function waitForPlayerDataToLoad()
+	if not coroutine.running() then
+		error('player inventory has not yet loaded.')
+	end
+
+	repeat Wait(100) until PlayerData.loaded
+end
+
 local table = lib.table
 
 ---@param search 'slots' | 1 | 'count' | 2
@@ -48,11 +56,7 @@ local table = lib.table
 ---@param metadata? table | string
 function Inventory.Search(search, item, metadata)
 	if not PlayerData.loaded then
-		if not coroutine.running() then
-			error('player inventory has not yet loaded.')
-		end
-
-		repeat Wait(100) until PlayerData.loaded
+		waitForPlayerDataToLoad()
 	end
 
 	if item then
@@ -84,6 +88,15 @@ function Inventory.Search(search, item, metadata)
 	return false
 end
 exports('Search', Inventory.Search)
+
+function Inventory.Get()
+	if not PlayerData.loaded then
+		waitForPlayerDataToLoad()
+	end
+
+	return PlayerData.inventory
+end
+exports('GetPlayerInventory', Inventory.Get)
 
 local function openEvidence()
 	client.openInventory('policeevidence')
