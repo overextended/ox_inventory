@@ -60,7 +60,16 @@ local function setupPlayer(Player)
 	end)
 
 	QBCore.Functions.AddPlayerMethod(Player.PlayerData.source, "GetItemByName", function(item)
-		return Inventory.GetItem(Player.PlayerData.source, item, nil, false)
+		local search = exports.ox_inventory:Search(Player.PlayerData.source, 'slots', item)
+		if search == {} then
+			return nil
+		end
+
+		local CurrentItem = search[1]
+		CurrentItem.info = CurrentItem.metadata
+		CurrentItem.amount = CurrentItem.count
+
+		return CurrentItem
 	end)
 
 	QBCore.Functions.AddPlayerMethod(Player.PlayerData.source, "GetItemsByName", function(item)
