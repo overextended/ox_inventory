@@ -540,9 +540,7 @@ local function useSlot(slot)
 						end)
 					end
 
-					currentWeapon.metadata.ammo = newAmmo
-
-					TriggerServerEvent('ox_inventory:updateWeapon', 'load', currentWeapon.metadata.ammo, false, currentWeapon.metadata.specialAmmo)
+					lib.callback.await('ox_inventory:updateWeapon', false, 'load', newAmmo, false, currentWeapon.metadata.specialAmmo)
 				end)
 			elseif data.component then
 				local components = data.client.component
@@ -565,9 +563,11 @@ local function useSlot(slot)
 						else
 							useItem(data, function(data)
 								if data then
-									GiveWeaponComponentToPed(playerPed, currentWeapon.hash, component)
-									table.insert(PlayerData.inventory[currentWeapon.slot].metadata.components, data.name)
-									TriggerServerEvent('ox_inventory:updateWeapon', 'component', tostring(data.slot), currentWeapon.slot)
+									local success = lib.callback.await('ox_inventory:updateWeapon', false, 'component', tostring(data.slot), currentWeapon.slot)
+
+									if success then
+										GiveWeaponComponentToPed(playerPed, currentWeapon.hash, component)
+									end
 								end
 							end)
 						end
@@ -875,6 +875,12 @@ local function updateInventory(data, weight)
 		if not v.inventory or v.inventory == cache.serverId then
 			v.inventory = 'player'
 			local item = v.item
+
+			if currentWeapon?.slot == item?.slot and item.metadata then
+				currentWeapon.metadata = item.metadata
+				TriggerEvent('ox_inventory:currentWeapon', currentWeapon)
+			end
+
 			local curItem = PlayerData.inventory[item.slot]
 
 			if curItem?.name then
@@ -933,21 +939,7 @@ local function updateInventory(data, weight)
 end
 
 RegisterNetEvent('ox_inventory:updateSlots', function(items, weights)
-	if source == '' or not next(items) then return end
-
-	local item = items[1]?.item
-
-	if currentWeapon?.slot == item?.slot and item.metadata then
-		-- Potential race condition w/ poor connection may lead to ammo/durability values
-		-- getting desynced or updated out-of-order?
-		---@todo look into updating ammo handling
-		item.metadata.ammo = currentWeapon.metadata.ammo
-		-- item.metadata.durability = currentWeapon.metadata.durability
-		currentWeapon.metadata = item.metadata
-		TriggerEvent('ox_inventory:currentWeapon', currentWeapon)
-	end
-
-	updateInventory(items, weights)
+	if source ~= '' and next(items) then updateInventory(items, weights) end
 end)
 
 RegisterNetEvent('ox_inventory:inventoryReturned', function(data)
@@ -1352,7 +1344,6 @@ RegisterNetEvent('ox_inventory:setPlayerInventory', function(currentDrops, inven
 				end
 
 				if weaponHash ~= currentWeapon.hash then
-					TriggerServerEvent('ox_inventory:updateWeapon')
 					currentWeapon = Weapon.Disarm(currentWeapon, true)
 				end
 			end
@@ -1425,13 +1416,14 @@ RegisterNetEvent('ox_inventory:setPlayerInventory', function(currentDrops, inven
 					if weaponAmmo then
 						TriggerServerEvent('ox_inventory:updateWeapon', 'ammo', weaponAmmo)
 
-						if client.autoreload and weaponAmmo == 0 and currentWeapon.ammo and canUseItem(true) then
+						if client.autoreload and currentWeapon.ammo and GetAmmoInPedWeapon(playerPed, currentWeapon.hash) == 0 then
 							local ammo = Inventory.Search(1, currentWeapon.ammo, { type = currentWeapon.metadata.specialAmmo })?[1]
 
 							if ammo then
 								CreateThread(function() useSlot(ammo.slot) end)
 							end
 						end
+
 					elseif currentWeapon.metadata.durability then
 						TriggerServerEvent('ox_inventory:updateWeapon', 'melee', currentWeapon.melee)
 						currentWeapon.melee = 0
@@ -1465,7 +1457,7 @@ RegisterNetEvent('ox_inventory:setPlayerInventory', function(currentDrops, inven
 							end
 
 							currentWeapon.timer = GetGameTimer() + 200
-						else currentWeapon.timer = GetGameTimer() + 200 end
+						else currentWeapon.timer = GetGameTimer() + 400 end
 					end
 				elseif currentWeapon.throwable then
 					if not invBusy and IsControlPressed(0, 24) then
@@ -1540,23 +1532,31 @@ end)
 
 RegisterNUICallback('removeComponent', function(data, cb)
 	cb(1)
-	if currentWeapon then
-		if data.slot ~= currentWeapon.slot then return lib.notify({ id = 'weapon_hand_wrong', type = 'error', description = locale('weapon_hand_wrong') }) end
-		local itemSlot = PlayerData.inventory[currentWeapon.slot]
-		for _, component in pairs(Items[data.component].client.component) do
-			if HasPedGotWeaponComponent(playerPed, currentWeapon.hash, component) then
-				RemoveWeaponComponentFromPed(playerPed, currentWeapon.hash, component)
-				for k, v in pairs(itemSlot.metadata.components) do
-					if v == data.component then
-						table.remove(itemSlot.metadata.components, k)
-						TriggerServerEvent('ox_inventory:updateWeapon', 'component', k)
-						break
+
+	if not currentWeapon then
+		return TriggerServerEvent('ox_inventory:updateWeapon', 'component', data)
+	end
+
+	if data.slot ~= currentWeapon.slot then
+		return lib.notify({ id = 'weapon_hand_wrong', type = 'error', description = locale('weapon_hand_wrong') })
+	end
+
+	local itemSlot = PlayerData.inventory[currentWeapon.slot]
+
+	for _, component in pairs(Items[data.component].client.component) do
+		if HasPedGotWeaponComponent(playerPed, currentWeapon.hash, component) then
+			for k, v in pairs(itemSlot.metadata.components) do
+				if v == data.component then
+					local success = lib.callback.await('ox_inventory:updateWeapon', false, 'component', k)
+
+					if success then
+						RemoveWeaponComponentFromPed(playerPed, currentWeapon.hash, component)
 					end
+
+					break
 				end
 			end
 		end
-	else
-		TriggerServerEvent('ox_inventory:updateWeapon', 'component', data)
 	end
 end)
 
@@ -1569,7 +1569,6 @@ RegisterNUICallback('removeAmmo', function(slot, cb)
 	local success = lib.callback.await('ox_inventory:removeAmmoFromWeapon', false, slot)
 
 	if success and slot == currentWeapon?.slot then
-		slotData.metadata.ammo = 0
 		SetPedAmmo(playerPed, currentWeapon.hash, 0)
 	end
 end)
@@ -1711,12 +1710,11 @@ RegisterNUICallback('swapItems', function(data, cb)
 
 	if success then
 		if response then
-			updateInventory(response.items, response.weight)
-
 			if weaponSlot and currentWeapon then
 				currentWeapon.slot = weaponSlot
-				TriggerEvent('ox_inventory:currentWeapon', currentWeapon)
 			end
+
+			updateInventory(response.items, response.weight)
 		end
 	elseif response then
 		lib.notify({ type = 'error', description = locale(response) })
