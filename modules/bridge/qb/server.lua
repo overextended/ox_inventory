@@ -61,7 +61,7 @@ local function setupPlayer(Player)
 
 	QBCore.Functions.AddPlayerMethod(Player.PlayerData.source, "GetItemByName", function(item)
 		local search = Inventory.Search(Player.PlayerData.source, 'slots', item)
-		if not next(search) then
+		if next(search) then
 			return nil
 		end
 
