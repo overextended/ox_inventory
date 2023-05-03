@@ -2177,7 +2177,7 @@ RegisterServerEvent('ox_inventory:giveItem', function(slot, target, count)
 	end
 end)
 
-RegisterServerEvent('ox_inventory:updateWeapon', function(action, value, slot, specialAmmo)
+local function updateWeapon(source, action, value, slot, specialAmmo)
 	local inventory = Inventories[source]
 
 	if not inventory then return end
@@ -2191,15 +2191,19 @@ RegisterServerEvent('ox_inventory:updateWeapon', function(action, value, slot, s
 
 	if type == 'table' and action == 'component' then
 		local item = inventory.items[value.slot]
+
 		if item then
 			if item.metadata.components then
 				for k, v in pairs(item.metadata.components) do
 					if v == value.component then
+						if not Inventory.AddItem(inventory, value.component, 1) then return end
+
 						table.remove(item.metadata.components, k)
-						Inventory.AddItem(inventory, value.component, 1)
-						return inventory:syncSlotsWithPlayer({
+						inventory:syncSlotsWithPlayer({
 							{ item = item }
 						}, inventory.weight)
+
+						return true
 					end
 				end
 			end
@@ -2220,26 +2224,26 @@ RegisterServerEvent('ox_inventory:updateWeapon', function(action, value, slot, s
 				local ammo = Items(weapon.name).ammoname
 				local diff = value - weapon.metadata.ammo
 
-				if Inventory.RemoveItem(inventory, ammo, diff, specialAmmo) then
-					weapon.metadata.ammo = value
-					weapon.metadata.specialAmmo = specialAmmo
-					weapon.weight = Inventory.SlotWeight(item, weapon)
-				end
+				if not Inventory.RemoveItem(inventory, ammo, diff, specialAmmo) then return end
+
+				weapon.metadata.ammo = value
+				weapon.metadata.specialAmmo = specialAmmo
+				weapon.weight = Inventory.SlotWeight(item, weapon)
 			elseif action == 'throw' then
-				Inventory.RemoveItem(inventory, weapon.name, 1, weapon.metadata, weapon.slot)
+				if not Inventory.RemoveItem(inventory, weapon.name, 1, weapon.metadata, weapon.slot) then return end
 			elseif action == 'component' then
 				if type == 'number' then
-					if Inventory.AddItem(inventory, weapon.metadata.components[value], 1) then
-						table.remove(weapon.metadata.components, value)
-						weapon.weight = Inventory.SlotWeight(item, weapon)
-					end
+					if not Inventory.AddItem(inventory, weapon.metadata.components[value], 1) then return false end
+
+					table.remove(weapon.metadata.components, value)
+					weapon.weight = Inventory.SlotWeight(item, weapon)
 				elseif type == 'string' then
 					local component = inventory.items[tonumber(value)]
 
-					if Inventory.RemoveItem(inventory, component.name, 1) then
-						table.insert(weapon.metadata.components, component.name)
-						weapon.weight = Inventory.SlotWeight(item, weapon)
-					end
+					if not Inventory.RemoveItem(inventory, component.name, 1) then return false end
+
+					table.insert(weapon.metadata.components, component.name)
+					weapon.weight = Inventory.SlotWeight(item, weapon)
 				end
 			elseif action == 'ammo' then
 				if item.hash == `WEAPON_FIREEXTINGUISHER` or item.hash == `WEAPON_PETROLCAN` or item.hash == `WEAPON_HAZARDCAN` or item.hash == `WEAPON_FERTILIZERCAN` then
@@ -2262,8 +2266,16 @@ RegisterServerEvent('ox_inventory:updateWeapon', function(action, value, slot, s
 			end
 
 			if server.syncInventory then server.syncInventory(inventory) end
+
+			return true
 		end
 	end
+end
+
+lib.callback.register('ox_inventory:updateWeapon', updateWeapon)
+
+RegisterNetEvent('ox_inventory:updateWeapon', function(action, value, slot, specialAmmo)
+	updateWeapon(source, action, value, slot, specialAmmo)
 end)
 
 lib.callback.register('ox_inventory:removeAmmoFromWeapon', function(source, slot)
