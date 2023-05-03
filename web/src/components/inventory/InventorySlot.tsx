@@ -1,6 +1,6 @@
 import React from 'react';
 import { DragSource, Inventory, InventoryType, Slot, SlotWithItem } from '../../typings';
-import { useDrag, useDrop } from 'react-dnd';
+import { useDrag, useDragDropManager, useDrop } from 'react-dnd';
 import { useAppDispatch, useAppSelector } from '../../store';
 import WeightBar from '../utils/WeightBar';
 import { onDrop } from '../../dnd/onDrop';
@@ -15,6 +15,8 @@ import SlotTooltip from './SlotTooltip';
 import { setContextMenu } from '../../store/inventory';
 import { imagepath } from '../../store/imagepath';
 import { onCraft } from '../../dnd/onCraft';
+import useNuiEvent from '../../hooks/useNuiEvent';
+import { ItemsPayload } from '../../reducers/refreshSlots';
 
 interface SlotProps {
   inventory: Inventory;
@@ -22,6 +24,7 @@ interface SlotProps {
 }
 
 const InventorySlot: React.FC<SlotProps> = ({ inventory, item }) => {
+  const manager = useDragDropManager();
   const isBusy = useAppSelector(selectIsBusy);
   const dispatch = useAppDispatch();
 
@@ -86,6 +89,19 @@ const InventorySlot: React.FC<SlotProps> = ({ inventory, item }) => {
     }),
     [isBusy, inventory, item]
   );
+
+  useNuiEvent('refreshSlots', (data: { items?: ItemsPayload | ItemsPayload[] }) => {
+    if (!isDragging && !data.items) return;
+    if (!Array.isArray(data.items)) return;
+
+    const itemSlot = data.items.find(
+      (dataItem) => dataItem.item.slot === item.slot && dataItem.inventory === inventory.id
+    );
+
+    if (!itemSlot) return;
+
+    manager.dispatch({ type: 'dnd-core/END_DRAG' });
+  });
 
   const connectRef = (element: HTMLDivElement) => drag(drop(element));
 
