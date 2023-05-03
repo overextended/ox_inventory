@@ -1708,6 +1708,8 @@ RegisterNUICallback('swapItems', function(data, cb)
 
 	local success, response, weaponSlot = lib.callback.await('ox_inventory:swapItems', false, data)
 
+	cb(success or false)
+
 	if success then
 		if response then
 			if weaponSlot and currentWeapon then
@@ -1717,10 +1719,12 @@ RegisterNUICallback('swapItems', function(data, cb)
 			updateInventory(response.items, response.weight)
 		end
 	elseif response then
-		lib.notify({ type = 'error', description = locale(response) })
+		if type(response) == 'table' then
+			SendNUIMessage({ action = 'refreshSlots', data = { items = response } })
+		else
+			lib.notify({ type = 'error', description = locale(response) })
+		end
 	end
-
-	cb(success or false)
 end)
 
 RegisterNUICallback('buyItem', function(data, cb)

@@ -1531,19 +1531,18 @@ lib.callback.register('ox_inventory:swapItems', function(source, data)
 	local fromRef = ('%s:%s'):format(fromInventory.id, data.fromSlot)
 	local toRef = ('%s:%s'):format(toInventory.id, data.toSlot)
 
-	-- while activeSlots[fromRef] or activeSlots[toRef] do
-	-- 	Wait(0)
-	-- end
-
-	if activeSlots[fromRef] or activeSlots[toRef] then return false end
-
-	activeSlots[fromRef] = true
-	activeSlots[toRef] = true
-
-	local _ <close> = defer(function()
-		activeSlots[fromRef] = nil
-		activeSlots[toRef] = nil
-	end)
+	if activeSlots[fromRef] or activeSlots[toRef] then
+		return false, {
+			{
+				item = toInventory.items[data.toSlot] or { slot = data.toSlot },
+				inventory = toInventory.id
+			},
+			{
+				item = fromInventory.items[data.fromSlot] or { slot = data.fromSlot },
+				inventory = fromInventory.id
+			}
+		}
+	end
 
 	local sameInventory = fromInventory.id == toInventory.id
 	local fromOtherPlayer = fromInventory.player and fromInventory ~= playerInventory
@@ -1559,8 +1558,29 @@ lib.callback.register('ox_inventory:swapItems', function(source, data)
 		end
 	end
 
+	activeSlots[fromRef] = true
+	activeSlots[toRef] = true
+
+	local _ <close> = defer(function()
+		activeSlots[fromRef] = nil
+		activeSlots[toRef] = nil
+	end)
+
 	if toInventory and fromInventory and (fromInventory.id ~= toInventory.id or data.fromSlot ~= data.toSlot) then
 		local fromData = fromInventory.items[data.fromSlot]
+
+		if not fromData then
+			return false, {
+				{
+					item = { slot = data.fromSlot },
+					inventory = fromInventory.id
+				},
+				{
+					item = toData or { slot = data.toSlot },
+					inventory = toInventory.id
+				}
+			}
+		end
 
 		if fromData and (not fromData.metadata.container or fromData.metadata.container and toInventory.type ~= 'container') then
 			if data.count > fromData.count then data.count = fromData.count end
@@ -1730,11 +1750,6 @@ lib.callback.register('ox_inventory:swapItems', function(source, data)
 			local items = {}
 
 			if fromInventory.player and not fromOtherPlayer then
-				items[#items + 1] = {
-					item = fromData or { slot = data.fromSlot },
-					inventory = fromInventory.id
-				}
-
 				if toInventory.type == 'container' and containerItem then
 					items[#items + 1] = {
 						item = containerItem,
@@ -1744,11 +1759,6 @@ lib.callback.register('ox_inventory:swapItems', function(source, data)
 			end
 
 			if toInventory.player and not toOtherPlayer then
-				items[#items + 1] = {
-					item = toData or { slot = data.toSlot },
-					inventory = toInventory.id
-				}
-
 				if fromInventory.type == 'container' and containerItem then
 					items[#items + 1] = {
 						item = containerItem,
@@ -1773,21 +1783,21 @@ lib.callback.register('ox_inventory:swapItems', function(source, data)
 						item = fromInventory.items[data.fromSlot] or { slot = data.fromSlot },
 						inventory = fromInventory.id
 					}
-				}, { left = fromInventory.weight }, fromInventory ~= playerInventory)
+				}, { left = fromInventory.weight }, true)
 			else
 				toInventory:syncSlotsWithClients({
 					{
 						item = toInventory.items[data.toSlot] or { slot = data.toSlot },
 						inventory = toInventory.id
 					}
-				}, { left = toInventory.weight }, toInventory ~= playerInventory)
+				}, { left = toInventory.weight }, true)
 
 				fromInventory:syncSlotsWithClients({
 					{
 						item = fromInventory.items[data.fromSlot] or { slot = data.fromSlot },
 						inventory = fromInventory.id
 					}
-				}, { left = fromInventory.weight }, fromInventory ~= playerInventory)
+				}, { left = fromInventory.weight }, true)
 			end
 
 			local resp
