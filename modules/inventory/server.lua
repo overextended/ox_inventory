@@ -1804,15 +1804,15 @@ lib.callback.register('ox_inventory:swapItems', function(source, data)
 
 			if next(items) then
 				resp = { weight = playerInventory.weight, items = items }
+			end
 
-				if server.syncInventory then
-					if fromInventory.player then
-						server.syncInventory(fromInventory)
-					end
+			if server.syncInventory then
+				if fromInventory.player then
+					server.syncInventory(fromInventory)
+				end
 
-					if toInventory.player and not sameInventory then
-						server.syncInventory(toInventory)
-					end
+				if toInventory.player and not sameInventory then
+					server.syncInventory(toInventory)
 				end
 			end
 
