@@ -31,6 +31,17 @@ AddEventHandler('onResourceStart', function(resource)
 	StopResource(resource)
 end)
 
+---@param item SlotWithItem?
+---@return SlotWithItem?
+local function setItemCompatibilityProps(item)
+	if not item then return end
+
+	item.info = item.metadata
+	item.amount = item.count
+
+	return item
+end
+
 local function setupPlayer(Player)
 	QBCore.Functions.AddPlayerField(Player.PlayerData.source, 'syncInventory', function(_, _, items, money)
 		Player.Functions.SetPlayerData('items', items)
@@ -56,15 +67,15 @@ local function setupPlayer(Player)
 	end)
 
 	QBCore.Functions.AddPlayerMethod(Player.PlayerData.source, "GetItemBySlot", function(slot)
-		return Inventory.GetSlot(Player.PlayerData.source, slot)
+		return setItemCompatibilityProps(Inventory.GetSlot(Player.PlayerData.source, slot))
 	end)
 
-	QBCore.Functions.AddPlayerMethod(Player.PlayerData.source, "GetItemByName", function(item)
-		return Inventory.GetItem(Player.PlayerData.source, item, nil, false)
+	QBCore.Functions.AddPlayerMethod(Player.PlayerData.source, "GetItemByName", function(itemName)
+		return setItemCompatibilityProps(Inventory.GetSlotWithItem(Player.PlayerData.source, itemName))
 	end)
 
-	QBCore.Functions.AddPlayerMethod(Player.PlayerData.source, "GetItemsByName", function(item)
-		return Inventory.Search(Player.PlayerData.source, 'slots', item)
+	QBCore.Functions.AddPlayerMethod(Player.PlayerData.source, "GetItemsByName", function(itemName)
+		return setItemCompatibilityProps(Inventory.GetSlotsWithItem(Player.PlayerData.source, itemName))
 	end)
 
 	QBCore.Functions.AddPlayerMethod(Player.PlayerData.source, "ClearInventory", function(filterItems)
@@ -243,6 +254,10 @@ local function hasItem(source, items, amount)
     return count >= amount
 end
 
-AddEventHandler(('__cfx_export_qb-inventory_HasItem'), function(setCB)
-	setCB(hasItem)
-end)
+local function exportHandler(exportName, func)
+    AddEventHandler(('__cfx_export_qb-inventory_%s'):format(exportName), function(setCB)
+        setCB(func)
+    end)
+end
+
+exportHandler('HasItem', hasItem)
