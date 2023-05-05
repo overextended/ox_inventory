@@ -2030,6 +2030,135 @@ end
 
 exports('GetSlotForItem', Inventory.GetSlotForItem)
 
+---@param inv inventory
+---@param itemName string
+---@param metadata? any
+---@param strict? boolean Strictly match metadata properties, otherwise use partial matching.
+---@return SlotWithItem?
+function Inventory.GetSlotWithItem(inv, itemName, metadata, strict)
+	local inventory = Inventory(inv)
+	local item = Items(itemName) --[[@as OxServerItem?]]
+
+	if not inventory or not item then return end
+
+	if type(metadata) ~= 'table' then
+		metadata = metadata and { type = metadata or nil }
+	end
+
+	local tablematch = strict and table.matches or table.contains
+
+	for _, slotData in pairs(inventory.items) do
+		if slotData and slotData.name == item.name and tablematch(slotData.metadata, metadata) then
+			local durability = slotData.metadata.durability
+
+			if durability and durability > 100 and os.time() >= durability then
+				slotData.metadata.durability = 0
+			end
+
+			return slotData
+		end
+	end
+end
+
+exports('GetSlotWithItem', Inventory.GetSlotWithItem)
+
+---@param inv inventory
+---@param itemName string
+---@param metadata? any
+---@param strict? boolean Strictly match metadata properties, otherwise use partial matching.
+---@return number?
+function Inventory.GetSlotIdWithItem(inv, itemName, metadata, strict)
+	return Inventory.GetSlotWithItem(inv, itemName, metadata, strict)?.slot
+end
+
+exports('GetSlotIdWithItem', Inventory.GetSlotIdWithItem)
+
+---@param inv inventory
+---@param itemName string
+---@param metadata? any
+---@param strict? boolean Strictly match metadata properties, otherwise use partial matching.
+---@return SlotWithItem[]?
+function Inventory.GetSlotsWithItem(inv, itemName, metadata, strict)
+	local inventory = Inventory(inv)
+	local item = Items(itemName) --[[@as OxServerItem?]]
+
+	if not inventory or not item then return end
+
+	if type(metadata) ~= 'table' then
+		metadata = metadata and { type = metadata or nil }
+	end
+
+	local response = {}
+	local n = 0
+	local tablematch = strict and table.matches or table.contains
+	local ostime = os.time()
+
+	for _, slotData in pairs(inventory.items) do
+		if slotData and slotData.name == item.name and tablematch(slotData.metadata, metadata) then
+			n += 1
+
+			local durability = slotData.metadata.durability
+
+			if durability and durability > 100 and ostime >= durability then
+				slotData.metadata.durability = 0
+			end
+
+			response[n] = slotData
+		end
+	end
+
+	return response
+end
+
+exports('GetSlotsWithItem', Inventory.GetSlotsWithItem)
+
+---@param inv inventory
+---@param itemName string
+---@param metadata? any
+---@param strict? boolean Strictly match metadata properties, otherwise use partial matching.
+---@return number[]?
+function Inventory.GetSlotIdsWithItem(inv, itemName, metadata, strict)
+	local items = Inventory.GetSlotsWithItem(inv, itemName, metadata, strict)
+
+	if items then
+		---@cast items +number[]
+		for i = 1, #items do
+			items[i] = items[i].slot
+		end
+
+		return items
+	end
+end
+
+---@param inv inventory
+---@param itemName string
+---@param metadata? any
+---@param strict? boolean Strictly match metadata properties, otherwise use partial matching.
+---@return number
+function Inventory.GetItemCount(inv, itemName, metadata, strict)
+	local inventory = Inventory(inv)
+	local item = Items(itemName) --[[@as OxServerItem?]]
+
+	if not inventory or not item then return 0 end
+
+	if type(metadata) ~= 'table' then
+		metadata = metadata and { type = metadata or nil }
+	end
+
+	local count = 0
+	local tablematch = strict and table.matches or table.contains
+
+	for _, slotData in pairs(inventory.items) do
+		if slotData and slotData.name == item.name and tablematch(slotData.metadata, metadata) then
+			count += slotData.count
+		end
+	end
+
+	return count
+end
+
+exports('GetItemCount', Inventory.GetItemCount)
+
 local function prepareSave(inv)
 	inv.changed = false
 
