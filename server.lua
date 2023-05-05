@@ -231,12 +231,12 @@ lib.callback.register('ox_inventory:useItem', function(source, itemName, slot, m
 
 	if inventory.player then
 		local item = Items(itemName)
-		local data = item and (slot and inventory.items[slot] or Inventory.GetItem(source, item, metadata))
+		local data = item and (slot and inventory.items[slot] or Inventory.GetSlotWithItem(inventory, item.name, metadata, true))
 
 		if not data then return end
 
 		slot = data.slot
-		local durability = data.metadata?.durability --[[@as number|boolean|nil]]
+		local durability = data.metadata.durability --[[@as number|boolean|nil]]
 		local consume = item.consume
 		local label = data.metadata.label or item.label
 
