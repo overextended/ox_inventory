@@ -1508,6 +1508,7 @@ RegisterNetEvent('ox_inventory:viewInventory', function(data)
 		data.type = 'admin'
 		plyState.invOpen = true
 		currentInventory = data
+		currentInventory.ignoreSecurityChecks = true
 
 		SendNUIMessage({
 			action = 'setupInventory',
