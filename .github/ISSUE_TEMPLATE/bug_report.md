@@ -10,6 +10,12 @@ assignees: ''
 **Describe the bug**
 A clear and concise description of what the bug is.
 
+**Framework**
+The framework your server uses for players (e.g. Ox, ESX, QB).
+
+**Resource version**
+The version number listed in fxmanifest.lua, or optionally a commit hash.
+
 **To Reproduce**
 Steps to reproduce the behavior:
 1. Go to '...'

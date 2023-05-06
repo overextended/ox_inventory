@@ -1,8 +1,7 @@
 if not lib then return end
 
----@overload fun(name: string): OxServerItem
 local Items = {}
-local ItemList = require 'modules.items.shared' --[[@as { [string]: OxServerItem }]]
+local ItemList = require 'modules.items.shared' --[[@as table<string, OxServerItem>]]
 local Utils = require 'modules.utils.server'
 
 TriggerEvent('ox_inventory:itemList', ItemList)
@@ -42,6 +41,9 @@ end
 setmetatable(Items --[[@as table]], {
 	__call = getItem
 })
+
+---@cast Items +fun(itemName: string): OxServerItem
+---@cast Items +fun(): table<string, OxServerItem>
 
 -- Support both names
 exports('Items', function(item) return getItem(nil, item) end)
@@ -149,6 +151,9 @@ CreateThread(function()
 			for k, item in pairs(items) do
 				-- Explain why this wouldn't be table to me, because numerous people have been getting "attempted to index number" here
 				if type(item) == 'table' then
+					-- Some people don't assign the name property, but it seemingly always matches the index anyway.
+					if not item.name then item.name = k end
+
 					if not ItemList[item.name] and not checkIgnoredNames(item.name) then
 						item.close = item.shouldClose == nil and true or item.shouldClose
 						item.stack = not item.unique and true
@@ -265,10 +270,18 @@ end
 
 local TriggerEventHooks = require 'modules.hooks.server'
 
+---@param inv inventory
+---@param item OxServerItem
+---@param metadata table<string, any> | string | nil
+---@param count number
+---@return table, number
+---Generates metadata for new items being created through AddItem, buyItem, etc.
 function Items.Metadata(inv, item, metadata, count)
 	if type(inv) ~= 'table' then inv = Inventory(inv) end
 	if not item.weapon then metadata = not metadata and {} or type(metadata) == 'string' and {type=metadata} or metadata end
 	if not count then count = 1 end
+
+	---@cast metadata table<string, any>
 
 	if item.weapon then
 		if type(metadata) ~= 'table' then metadata = {} end
@@ -344,6 +357,11 @@ function Items.Metadata(inv, item, metadata, count)
 	return metadata, count
 end
 
+---@param metadata table<string, any>
+---@param item OxServerItem
+---@param name string
+---@param ostime number
+---Validate (and in some cases convert) item metadata when an inventory is being loaded.
 function Items.CheckMetadata(metadata, item, name, ostime)
 	if metadata.bag then
 		metadata.container = metadata.bag

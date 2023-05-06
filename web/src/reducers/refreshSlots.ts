@@ -3,7 +3,7 @@ import { itemDurability } from '../helpers';
 import { Items } from '../store/items';
 import { InventoryType, Slot, State } from '../typings';
 
-type ItemsPayload = { item: Slot; inventory?: InventoryType };
+export type ItemsPayload = { item: Slot; inventory?: InventoryType };
 
 interface Payload {
   items?: ItemsPayload | ItemsPayload[];

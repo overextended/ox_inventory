@@ -19,10 +19,6 @@ function Weapon.Equip(item, data)
 	local playerPed = cache.ped
 	local coords = GetEntityCoords(playerPed, true)
 
-	RequestWeaponAsset(data.hash, 31, 0)
-
-	while not HasWeaponAssetLoaded(data.hash) do Wait(0) end
-
 	if client.weaponanims then
 		if cache.vehicle and vehicleIsCycle(cache.vehicle) then
 			goto skipAnim
@@ -48,12 +44,9 @@ function Weapon.Equip(item, data)
 	item.throwable = data.throwable
 	item.group = GetWeapontypeGroup(item.hash)
 
-	local ammo = item.metadata.ammo or item.throwable and 1 or 0
-	-- Create an object instead of adding the weapon directly to ped
-	-- Allows the components and ammo to be set more smoothly
-	local obj = CreateWeaponObject(data.hash, ammo, coords.x, coords.y, coords.z, true, 0.0, 0)
+	GiveWeaponToPed(playerPed, data.hash, 0, false, true)
 
-	if item.metadata.tint then SetWeaponObjectTintIndex(obj, item.metadata.tint) end
+	if item.metadata.tint then SetPedWeaponTintIndex(playerPed, data.hash, item.metadata.tint) end
 
 	if item.metadata.components then
 		for i = 1, #item.metadata.components do
@@ -61,29 +54,29 @@ function Weapon.Equip(item, data)
 			for v=1, #components do
 				local component = components[v]
 				if DoesWeaponTakeWeaponComponent(data.hash, component) then
-					if not HasWeaponGotWeaponComponent(obj, component) then
-						GiveWeaponComponentToWeaponObject(obj, component)
+					if not HasPedGotWeaponComponent(playerPed, data.hash, component) then
+						GiveWeaponComponentToPed(playerPed, data.hash, component)
 					end
 				end
 			end
 		end
 	end
 
-	SetPedAmmo(playerPed, data.hash, 0)
-	GiveWeaponObjectToPed(obj, playerPed)
-	RemoveWeaponAsset(data.hash)
-
 	if item.metadata.specialAmmo then
 		local clipComponentKey = ('%s_CLIP'):format(data.model:gsub('WEAPON_', 'COMPONENT_'))
 		local specialClip = ('%s_%s'):format(clipComponentKey, item.metadata.specialAmmo:upper())
 
 		if DoesWeaponTakeWeaponComponent(data.hash, specialClip) then
-			GiveWeaponComponentToWeaponObject(obj, specialClip)
+			GiveWeaponComponentToPed(playerPed, data.hash, specialClip)
 		end
 	end
 
-	-- Sometimes the ammo fills or splits into reserves instead of loading into the weapon
-	-- Refilling without a timeout tends to lead to the weapon jamming
+	local ammo = item.metadata.ammo or item.throwable and 1 or 0
+
+	SetPedAmmo(playerPed, data.hash, ammo)
+	SetCurrentPedWeapon(playerPed, data.hash, true)
+	SetPedCurrentWeaponVisible(playerPed, true, false, false, false)
+	SetWeaponsNoAutoswap(true)
 	SetTimeout(0, function() RefillAmmoInstantly(playerPed) end)
 
 	if item.group == `GROUP_PETROLCAN` or item.group == `GROUP_FIREEXTINGUISHER` then

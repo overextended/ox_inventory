@@ -72,6 +72,7 @@ local defaultInventory = {
 	maxWeight = shared.playerweight,
 	items = {}
 }
+
 local currentInventory = defaultInventory
 
 local function closeTrunk()
@@ -179,6 +180,7 @@ function client.openInventory(inv, data)
 			if left then
 				right = CraftingBenches[data.id]
 				local coords = shared.target == 'ox_target' and right.zones[data.index].coords or right.points[data.index]
+				local distance = shared.target == 'ox_target' and right.zones[data.index].distance or 2
 
 				right = {
 					type = 'crafting',
@@ -187,7 +189,8 @@ function client.openInventory(inv, data)
 					index = data.index,
 					slots = right.slots,
 					items = right.items,
-					coords = coords
+					coords = coords,
+					distance = distance
 				}
 			end
 		elseif invOpen ~= nil then
@@ -220,14 +223,18 @@ function client.openInventory(inv, data)
 			end
 
 			plyState.invOpen = true
+
 			SetInterval(client.interval, 100)
 			SetNuiFocus(true, true)
 			SetNuiFocusKeepInput(true)
-			if client.screenblur then TriggerScreenblurFadeIn(0) end
 			closeTrunk()
+
+			if client.screenblur then TriggerScreenblurFadeIn(0) end
+
 			currentInventory = right or defaultInventory
 			left.items = PlayerData.inventory
 			left.groups = PlayerData.groups
+
 			SendNUIMessage({
 				action = 'setupInventory',
 				data = {
@@ -250,8 +257,35 @@ function client.openInventory(inv, data)
 		end
 	elseif invBusy then lib.notify({ id = 'inventory_player_access', type = 'error', description = locale('inventory_player_access') }) end
 end
+
 RegisterNetEvent('ox_inventory:openInventory', client.openInventory)
 exports('openInventory', client.openInventory)
+
+RegisterNetEvent('ox_inventory:forceOpenInventory', function(left, right)
+	if source == '' then return end
+
+	plyState.invOpen = true
+
+	SetInterval(client.interval, 100)
+	SetNuiFocus(true, true)
+	SetNuiFocusKeepInput(true)
+	closeTrunk()
+
+	if client.screenblur then TriggerScreenblurFadeIn(0) end
+
+	currentInventory = right or defaultInventory
+	currentInventory.ignoreSecurityChecks = true
+	left.items = PlayerData.inventory
+	left.groups = PlayerData.groups
+
+	SendNUIMessage({
+		action = 'setupInventory',
+		data = {
+			leftInventory = left,
+			rightInventory = currentInventory
+		}
+	})
+end)
 
 local Animations = data 'animations'
 local Items = require 'modules.items.client'
@@ -339,7 +373,7 @@ local function useItem(data, cb)
 	if canUseItem(data.ammo and true) then
 		if currentWeapon and currentWeapon?.timer > 100 then return end
 
-		invBusy = true
+		plyState.invBusy = true
 		result = lib.callback.await('ox_inventory:useItem', 200, data.name, data.slot, slotData.metadata)
 
 		if not result then
@@ -357,9 +391,10 @@ local function useItem(data, cb)
 		end
 	end
 
-	Wait(200)
+	Wait(500)
 	plyState.invBusy = false
 end
+
 AddEventHandler('ox_inventory:item', useItem)
 exports('useItem', useItem)
 
@@ -505,9 +540,7 @@ local function useSlot(slot)
 						end)
 					end
 
-					currentWeapon.metadata.ammo = newAmmo
-
-					TriggerServerEvent('ox_inventory:updateWeapon', 'load', currentWeapon.metadata.ammo, false, currentWeapon.metadata.specialAmmo)
+					lib.callback.await('ox_inventory:updateWeapon', false, 'load', newAmmo, false, currentWeapon.metadata.specialAmmo)
 				end)
 			elseif data.component then
 				local components = data.client.component
@@ -530,9 +563,11 @@ local function useSlot(slot)
 						else
 							useItem(data, function(data)
 								if data then
-									GiveWeaponComponentToPed(playerPed, currentWeapon.hash, component)
-									table.insert(PlayerData.inventory[currentWeapon.slot].metadata.components, data.name)
-									TriggerServerEvent('ox_inventory:updateWeapon', 'component', tostring(data.slot), currentWeapon.slot)
+									local success = lib.callback.await('ox_inventory:updateWeapon', false, 'component', tostring(data.slot), currentWeapon.slot)
+
+									if success then
+										GiveWeaponComponentToPed(playerPed, currentWeapon.hash, component)
+									end
 								end
 							end)
 						end
@@ -609,7 +644,7 @@ local function registerCommands()
 				return client.closeInventory()
 			end
 
-			local closest = lib.points.closest()
+			local closest = lib.points.getClosestPoint()
 
 			if closest and closest.currentDistance < 1.2 and (not closest.instance or closest.instance == currentInstance) then
 				if closest.inv == 'crafting' then
@@ -828,51 +863,42 @@ end
 
 RegisterNetEvent('ox_inventory:closeInventory', client.closeInventory)
 
-local function updateInventory(items, weight)
-	-- todo: combine iterators
+---@param data updateSlot[]
+---@param weight number | table<string, number>
+local function updateInventory(data, weight)
 	local changes = {}
 	local itemCount = {}
-	-- swapslots
-	if type(weight) == 'number' then
-		for slot, v in pairs(items) do
-			local item = PlayerData.inventory[slot]
 
-			if item then
-				itemCount[item.name] = (itemCount[item.name] or 0) - item.count
+	for i = 1, #data do
+		local v = data[i]
+
+		if not v.inventory or v.inventory == cache.serverId then
+			v.inventory = 'player'
+			local item = v.item
+
+			if currentWeapon?.slot == item?.slot and item.metadata then
+				currentWeapon.metadata = item.metadata
+				TriggerEvent('ox_inventory:currentWeapon', currentWeapon)
 			end
 
-			if v then
-				itemCount[v.name] = (itemCount[v.name] or 0) + v.count
+			local curItem = PlayerData.inventory[item.slot]
+
+			if curItem?.name then
+				itemCount[curItem.name] = (itemCount[curItem.name] or 0) - curItem.count
 			end
 
-			PlayerData.inventory[slot] = v and v or nil
-			changes[slot] = v
+			if item.count then
+				itemCount[item.name] = (itemCount[item.name] or 0) + item.count
+			end
+
+			changes[item.slot] = item.count and item or false
+			if not item.count then item.name = nil end
+			PlayerData.inventory[item.slot] = item.name and item or nil
 		end
-
-		SendNUIMessage({ action = 'refreshSlots', data = {itemCount = itemCount} })
-		client.setPlayerData('weight', weight)
-	else
-		for i = 1, #items do
-			local v = items[i].item
-			local item = PlayerData.inventory[v.slot]
-
-			if item?.name then
-				itemCount[item.name] = (itemCount[item.name] or 0) - item.count
-			end
-
-			if v.count then
-				itemCount[v.name] = (itemCount[v.name] or 0) + v.count
-			end
-
-			changes[v.slot] = v.count and v or false
-			if not v.count then v.name = nil end
-			PlayerData.inventory[v.slot] = v.name and v or nil
-		end
-
-		SendNUIMessage({ action = 'refreshSlots', data = { items = items, itemCount = itemCount} })
-		client.setPlayerData('weight', weight.left)
 	end
 
+	SendNUIMessage({ action = 'refreshSlots', data = { items = data, itemCount = itemCount} })
+	client.setPlayerData('weight', type(weight) == 'number' and weight or weight.left)
 
 	for item, count in pairs(itemCount) do
 		local data = Items[item]
@@ -912,29 +938,8 @@ local function updateInventory(items, weight)
 	TriggerEvent('ox_inventory:updateInventory', changes)
 end
 
-RegisterNetEvent('ox_inventory:updateSlots', function(items, weights, count, removed)
-	if source == '' or not next(items) then return end
-
-	local item = items[1]?.item
-
-	if currentWeapon?.slot == item?.slot and item.metadata then
-		-- Potential race condition w/ poor connection may lead to ammo/durability values
-		-- getting desynced or updated out-of-order?
-		item.metadata.ammo = currentWeapon.metadata.ammo
-		item.metadata.durability = currentWeapon.metadata.durability
-		currentWeapon.metadata = item.metadata
-		TriggerEvent('ox_inventory:currentWeapon', currentWeapon)
-	end
-
-	if count then
-		if not item.name then
-			item = PlayerData.inventory[item.slot]
-		end
-
-		Utils.ItemNotify({ item, removed and 'ui_removed' or 'ui_added', count })
-	end
-
-	updateInventory(items, weights)
+RegisterNetEvent('ox_inventory:updateSlots', function(items, weights)
+	if source ~= '' and next(items) then updateInventory(items, weights) end
 end)
 
 RegisterNetEvent('ox_inventory:inventoryReturned', function(data)
@@ -948,7 +953,7 @@ RegisterNetEvent('ox_inventory:inventoryReturned', function(data)
 
 	for _, slotData in pairs(data[1]) do
 		num += 1
-		items[num] = { item = slotData, inventory = 'player' }
+		items[num] = { item = slotData, inventory = cache.serverId }
 	end
 
 	updateInventory(items, { left = data[3] })
@@ -965,7 +970,7 @@ RegisterNetEvent('ox_inventory:inventoryConfiscated', function(message)
 
 	for slot in pairs(PlayerData.inventory) do
 		num += 1
-		items[num] = { item = { slot = slot }, inventory = 'player' }
+		items[num] = { item = { slot = slot }, inventory = cache.serverId }
 	end
 
 	updateInventory(items, { left = 0 })
@@ -1073,12 +1078,6 @@ local function setStateBagHandler(stateId)
 
 	AddStateBagChangeHandler('invBusy', stateId, function(_, _, value)
 		invBusy = value
-
-		if value then
-			return lib.disableControls:Add(23, 36)
-		end
-
-		lib.disableControls:Remove(23, 36)
 	end)
 
 	AddStateBagChangeHandler('instance', stateId, function(_, _, value)
@@ -1116,7 +1115,9 @@ end
 
 lib.onCache('seat', function(seat)
 	if seat then
-		if DoesVehicleHaveWeapons(cache.vehicle) then
+		local hasWeapon = GetCurrentPedVehicleWeapon(cache.ped)
+
+		if hasWeapon then
 			return Utils.WeaponWheel(true)
 		end
 	end
@@ -1154,7 +1155,7 @@ RegisterNetEvent('ox_inventory:setPlayerInventory', function(currentDrops, inven
 
 		if buttons then
 			for i = 1, #v.buttons do
-				buttons[i] = v.buttons[i].label
+				buttons[i] = {label = v.buttons[i].label, group = v.buttons[i].group}
 			end
 		end
 
@@ -1299,8 +1300,8 @@ RegisterNetEvent('ox_inventory:setPlayerInventory', function(currentDrops, inven
 				client.closeInventory()
 			else
 				playerCoords = GetEntityCoords(playerPed)
-				if currentInventory then
 
+				if currentInventory and not currentInventory.ignoreSecurityChecks then
 					if currentInventory.type == 'otherplayer' then
 						local id = GetPlayerFromServerId(currentInventory.id)
 						local ped = GetPlayerPed(id)
@@ -1343,7 +1344,6 @@ RegisterNetEvent('ox_inventory:setPlayerInventory', function(currentDrops, inven
 				end
 
 				if weaponHash ~= currentWeapon.hash then
-					TriggerServerEvent('ox_inventory:updateWeapon')
 					currentWeapon = Weapon.Disarm(currentWeapon, true)
 				end
 			end
@@ -1362,7 +1362,6 @@ RegisterNetEvent('ox_inventory:setPlayerInventory', function(currentDrops, inven
 	local DisableAllControlActions = DisableAllControlActions
 	local HideHudAndRadarThisFrame = HideHudAndRadarThisFrame
 	local EnableControlAction = EnableControlAction
-	local disableControls = lib.disableControls
 	local DisablePlayerFiring = DisablePlayerFiring
 	local HudWeaponWheelIgnoreSelection = HudWeaponWheelIgnoreSelection
 	local DisableControlAction = DisableControlAction
@@ -1385,7 +1384,10 @@ RegisterNetEvent('ox_inventory:setPlayerInventory', function(currentDrops, inven
 				EnableControlAction(0, 31, true)
 			end
 		else
-			disableControls()
+			if invBusy then
+				DisableControlAction(0, 23, true)
+				DisableControlAction(0, 36, true)
+			end
 
 			if invBusy == true or IsPedCuffed(playerPed) then
 				DisablePlayerFiring(playerId, true)
@@ -1414,13 +1416,14 @@ RegisterNetEvent('ox_inventory:setPlayerInventory', function(currentDrops, inven
 					if weaponAmmo then
 						TriggerServerEvent('ox_inventory:updateWeapon', 'ammo', weaponAmmo)
 
-						if client.autoreload and weaponAmmo == 0 and currentWeapon.ammo and canUseItem(true) then
+						if client.autoreload and currentWeapon.ammo and GetAmmoInPedWeapon(playerPed, currentWeapon.hash) == 0 then
 							local ammo = Inventory.Search(1, currentWeapon.ammo, { type = currentWeapon.metadata.specialAmmo })?[1]
 
 							if ammo then
 								CreateThread(function() useSlot(ammo.slot) end)
 							end
 						end
+
 					elseif currentWeapon.metadata.durability then
 						TriggerServerEvent('ox_inventory:updateWeapon', 'melee', currentWeapon.melee)
 						currentWeapon.melee = 0
@@ -1454,7 +1457,7 @@ RegisterNetEvent('ox_inventory:setPlayerInventory', function(currentDrops, inven
 							end
 
 							currentWeapon.timer = GetGameTimer() + 200
-						else currentWeapon.timer = GetGameTimer() + 200 end
+						else currentWeapon.timer = GetGameTimer() + 400 end
 					end
 				elseif currentWeapon.throwable then
 					if not invBusy and IsControlPressed(0, 24) then
@@ -1480,7 +1483,7 @@ RegisterNetEvent('ox_inventory:setPlayerInventory', function(currentDrops, inven
 							TriggerEvent('ox_inventory:currentWeapon')
 						end)
 					end
-				elseif IsControlJustReleased(0, 24) and IsPedPerformingMeleeAction(playerPed) then
+				elseif currentWeapon.melee and IsControlJustReleased(0, 24) and IsPedPerformingMeleeAction(playerPed) then
 					currentWeapon.melee += 1
 					currentWeapon.timer = GetGameTimer() + 200
 				end
@@ -1529,23 +1532,31 @@ end)
 
 RegisterNUICallback('removeComponent', function(data, cb)
 	cb(1)
-	if currentWeapon then
-		if data.slot ~= currentWeapon.slot then return lib.notify({ id = 'weapon_hand_wrong', type = 'error', description = locale('weapon_hand_wrong') }) end
-		local itemSlot = PlayerData.inventory[currentWeapon.slot]
-		for _, component in pairs(Items[data.component].client.component) do
-			if HasPedGotWeaponComponent(playerPed, currentWeapon.hash, component) then
-				RemoveWeaponComponentFromPed(playerPed, currentWeapon.hash, component)
-				for k, v in pairs(itemSlot.metadata.components) do
-					if v == data.component then
-						table.remove(itemSlot.metadata.components, k)
-						TriggerServerEvent('ox_inventory:updateWeapon', 'component', k)
-						break
+
+	if not currentWeapon then
+		return TriggerServerEvent('ox_inventory:updateWeapon', 'component', data)
+	end
+
+	if data.slot ~= currentWeapon.slot then
+		return lib.notify({ id = 'weapon_hand_wrong', type = 'error', description = locale('weapon_hand_wrong') })
+	end
+
+	local itemSlot = PlayerData.inventory[currentWeapon.slot]
+
+	for _, component in pairs(Items[data.component].client.component) do
+		if HasPedGotWeaponComponent(playerPed, currentWeapon.hash, component) then
+			for k, v in pairs(itemSlot.metadata.components) do
+				if v == data.component then
+					local success = lib.callback.await('ox_inventory:updateWeapon', false, 'component', k)
+
+					if success then
+						RemoveWeaponComponentFromPed(playerPed, currentWeapon.hash, component)
 					end
+
+					break
 				end
 			end
 		end
-	else
-		TriggerServerEvent('ox_inventory:updateWeapon', 'component', data)
 	end
 end)
 
@@ -1558,7 +1569,6 @@ RegisterNUICallback('removeAmmo', function(slot, cb)
 	local success = lib.callback.await('ox_inventory:removeAmmoFromWeapon', false, slot)
 
 	if success and slot == currentWeapon?.slot then
-		slotData.metadata.ammo = 0
 		SetPedAmmo(playerPed, currentWeapon.hash, 0)
 	end
 end)
@@ -1698,32 +1708,50 @@ RegisterNUICallback('swapItems', function(data, cb)
 
 	local success, response, weaponSlot = lib.callback.await('ox_inventory:swapItems', false, data)
 
+	cb(success or false)
+
 	if success then
 		if response then
-			updateInventory(response.items, response.weight)
-
 			if weaponSlot and currentWeapon then
 				currentWeapon.slot = weaponSlot
-				TriggerEvent('ox_inventory:currentWeapon', currentWeapon)
 			end
+
+			updateInventory(response.items, response.weight)
 		end
 	elseif response then
-		lib.notify({ type = 'error', description = locale(response) })
+		if type(response) == 'table' then
+			SendNUIMessage({ action = 'refreshSlots', data = { items = response } })
+		else
+			lib.notify({ type = 'error', description = locale(response) })
+		end
 	end
-
-	if data.toType == 'newdrop' then
-		Wait(50)
-	end
-
-	cb(success or false)
 end)
 
 RegisterNUICallback('buyItem', function(data, cb)
+	---@type boolean, false | { [1]: number, [2]: SlotWithItem, [3]: SlotWithItem | false, [4]: number}, NotifyProps
 	local response, data, message = lib.callback.await('ox_inventory:buyItem', 100, data)
 
 	if data then
-		updateInventory({[data[1]] = data[2]}, data[4])
-		SendNUIMessage({ action = 'refreshSlots', data = data[3] and {items = {{item = data[2]}, {item = data[3], inventory = 'shop'}}} or {items = {item = data[2]}}})
+		updateInventory({
+			{
+				item = data[2],
+				inventory = cache.serverId
+			}
+		}, data[4])
+
+		if data[3] then
+			SendNUIMessage({
+				action = 'refreshSlots',
+				data = {
+					items = {
+						{
+							item = data[3],
+							inventory = 'shop'
+						}
+					}
+				}
+			})
+		end
 	end
 
 	if message then

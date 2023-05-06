@@ -10,11 +10,22 @@
 ---@field stack? boolean Set to false to prevent the item from stacking.
 ---@field close? boolean Set to false to keep the inventory open on item use.
 ---@field allowArmed? boolean Set to true to allow an item to be used while a weapon is equipped.
----@field buttons? { label: string, action: fun(slot: number) }[] Add interactions when right-clicking an item.
+---@field buttons? { label: string, group: string, action: fun(slot: number) }[] Add interactions when right-clicking an item.
 ---@field [string] any
 
+---@class SlotWithItem
+---@field name string
+---@field label string
+---@field weight number
+---@field slot number
+---@field count number
+---@field metadata { [string]: any }
+---@field description? string
+---@field stack? boolean
+---@field close? boolean
+
 ---@class OxClientProps
----@field status? { [string]: number }
+---@field status? table<string, number>
 ---@field anim? string | { dict?: string, clip: string, flag?: number, blendIn?: number, blendOut?: number, duration?: number, playbackRate?: number, lockX?: boolean, lockY?: boolean, lockZ?: boolean, scenario?: string, playEnter?: boolean }
 ---@field prop? string | ProgressPropProps
 ---@field usetime? number

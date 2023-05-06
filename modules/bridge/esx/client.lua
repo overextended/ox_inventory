@@ -1,4 +1,4 @@
-local onLogout, Weapon = ...
+local onLogout = ...
 
 local ESX = setmetatable({}, {
 	__index = function(self, index)
@@ -35,6 +35,8 @@ AddEventHandler('esx:setPlayerData', function(key, value)
 	PlayerData[key] = value
 	OnPlayerData(key, value)
 end)
+
+local Weapon = require 'modules.weapon.client'
 
 RegisterNetEvent('esx_policejob:handcuff', function()
 	PlayerData.cuffed = not PlayerData.cuffed
