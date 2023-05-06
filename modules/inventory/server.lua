@@ -2470,7 +2470,7 @@ local function checkStashProperties(properties)
 			else
 				if table.type(coords) == 'array' then
 					for i = 1, #coords do
-						coords[i] = vec3(coords[i].x or coords[i][1], coords.y or coords[i][2], coords[i].z or coords[i][3])
+						coords[i] = vec3(coords[i].x, coords[i].y, coords[i].z)
 					end
 				else
 					error(('received %s for stash coords (expected vector3 or array of vector3)'):format(typeof))
