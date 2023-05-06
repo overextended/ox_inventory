@@ -988,7 +988,7 @@ end
 ---@param point CPoint
 local function onEnterDrop(point)
 	if not point.instance or point.instance == currentInstance and not point.entity then
-		local model = point.model or client.defaultProp
+		local model = point.model or client.dropmodel
 
 		lib.requestModel(model)
 
