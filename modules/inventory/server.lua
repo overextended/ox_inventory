@@ -2465,10 +2465,16 @@ local function checkStashProperties(properties)
 		local typeof = type(coords)
 
 		if typeof ~= 'vector3' then
-			if typeof == 'table' then
+			if typeof == 'table' and table.type(coords) ~= 'array' then
 				coords = vec3(coords.x or coords[1], coords.y or coords[2], coords.z or coords[3])
 			else
-				error(('received %s for stash coords (expected vector3)'):format(typeof))
+				if table.type(coords) == 'array' then
+					for i = 1, #coords do
+						coords[i] = vec3(coords[i].x, coords[i].y, coords[i].z)
+					end
+				else
+					error(('received %s for stash coords (expected vector3 or array of vector3)'):format(typeof))
+				end
 			end
 		end
 	end
@@ -2482,7 +2488,7 @@ end
 ---@param maxWeight number
 ---@param owner? string|number|boolean
 ---@param groups? table<string, number>
----@param coords? vector3
+---@param coords? vector3|table<vector3>
 --- For simple integration with other resources that want to create valid stashes.
 --- This needs to be triggered before a player can open a stash.
 --- ```

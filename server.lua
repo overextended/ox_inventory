@@ -68,6 +68,26 @@ end
 exports('setPlayerInventory', server.setPlayerInventory)
 AddEventHandler('ox_inventory:setPlayerInventory', server.setPlayerInventory)
 
+---@param source number Player server ID
+---@param coordinate vector3|table<vector3>
+---@return vector3|false
+local function isPlayerCloseToStashCoordinate(source, coordinate)
+	local playerCoords = GetEntityCoords(GetPlayerPed(source))
+	local distance = 10
+
+	if type(coordinate) == 'table' then
+		for i = 1, #coordinate do
+			if #(coordinate[i] - playerCoords) < distance then
+				return coordinate[i]
+			end
+		end
+
+		return false
+	else
+		return #(coordinate - playerCoords) < distance and coordinate
+	end
+end
+
 ---@param source number
 ---@param invType string
 ---@param data string|number|table
@@ -78,7 +98,7 @@ local function openInventory(source, invType, data, ignoreSecurityChecks)
 	if Inventory.Lock then return false end
 
 	local left = Inventory(source) --[[@as OxInventory]]
-	local right
+	local right, closestCoords
 
 	Inventory.CloseAll(left, (invType == 'drop' or invType == 'container' or not invType) and source)
 
@@ -143,7 +163,11 @@ local function openInventory(source, invType, data, ignoreSecurityChecks)
 				right.coords = not ignoreSecurityChecks and GetEntityCoords(right.player.ped) or nil
 			end
 
-			if right.coords == nil or #(right.coords - GetEntityCoords(GetPlayerPed(source))) < 10 then
+			if right.coords == nil then
+				if right.coords then
+					closestCoords = isPlayerCloseToStashCoordinate(source, right.coords) or nil
+					if not closestCoords then return end
+				end
 				left:openInventory(right)
 			else return end
 		else return end
@@ -166,7 +190,7 @@ local function openInventory(source, invType, data, ignoreSecurityChecks)
 		weight = right.weight,
 		maxWeight = right.maxWeight,
 		items = right.items,
-		coords = right.coords,
+		coords = closestCoords or right.coords,
 		distance = right.distance
 	}
 end
