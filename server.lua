@@ -580,6 +580,10 @@ lib.addCommand('viewinv', {
 }, function(source, args)
 	local invId = tonumber(args.invId) or args.invId
 	local inventory = invId ~= source and Inventory(invId)
+	local playerInventory = Inventory(source)
 
-	if inventory then TriggerClientEvent('ox_inventory:viewInventory', source, inventory) end
+	if playerInventory and inventory then
+		playerInventory:openInventory(inventory)
+		TriggerClientEvent('ox_inventory:viewInventory', source, inventory)
+	end
 end)
