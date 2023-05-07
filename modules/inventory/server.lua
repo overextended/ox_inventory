@@ -744,6 +744,14 @@ end
 
 local table = lib.table
 
+local function assertMetadata(metadata)
+	if metadata and type(metadata) ~= 'table' then
+		metadata = metadata and { type = metadata or nil }
+	end
+
+	return metadata
+end
+
 ---@param inv inventory
 ---@param item table | string
 ---@param metadata? any
@@ -759,10 +767,7 @@ function Inventory.GetItem(inv, item, metadata, returnsCount)
 
 		if inv then
 			local ostime = os.time()
-
-			if type(metadata) ~= 'table' then
-				metadata = metadata and { type = metadata or nil }
-			end
+			metadata = assertMetadata(metadata)
 
 			for _, v in pairs(inv.items) do
 				if v and v.name == item.name and (not metadata or table.contains(v.metadata, metadata)) then
@@ -993,13 +998,10 @@ function Inventory.AddItem(inv, item, count, metadata, slot, cb)
 
 	if not inv?.slots then return false, 'invalid_inventory' end
 
-	if metadata and type(metadata) ~= 'table' then
-		metadata = metadata and { type = metadata or nil }
-	end
-
 	local toSlot, slotMetadata, slotCount
 	local success, response = false
 	count = math.floor(count + 0.5)
+	metadata = assertMetadata(metadata)
 
 	if slot then
 		local slotData = inv.items[slot]
@@ -1122,10 +1124,7 @@ function Inventory.Search(inv, search, items, metadata)
 			if search == 'slots' then search = 1 elseif search == 'count' then search = 2 end
 			if type(items) == 'string' then items = {items} end
 
-			if type(metadata) ~= 'table' then
-				metadata = metadata and { type = metadata or nil }
-			end
-
+			metadata = assertMetadata(metadata)
 			local itemCount = #items
 			local returnData = {}
 
@@ -1208,10 +1207,7 @@ function Inventory.RemoveItem(inv, item, count, metadata, slot, ignoreTotal)
 
 		if not inv?.slots then return false, 'invalid_inventory' end
 
-		if type(metadata) ~= 'table' then
-			metadata = metadata and { type = metadata or nil }
-		end
-
+		metadata = assertMetadata(metadata)
 		local itemSlots, totalCount = Inventory.GetItemSlots(inv, item, metadata)
 
 		if not itemSlots then return false end
@@ -2002,10 +1998,7 @@ function Inventory.GetSlotForItem(inv, itemName, metadata)
 
 	if not inventory or not item then return end
 
-	if type(metadata) ~= 'table' then
-		metadata = metadata and { type = metadata or nil }
-	end
-
+	metadata = assertMetadata(metadata)
 	local items = inventory.items
 	local emptySlot
 
@@ -2035,14 +2028,11 @@ function Inventory.GetSlotWithItem(inv, itemName, metadata, strict)
 
 	if not inventory or not item then return end
 
-	if type(metadata) ~= 'table' then
-		metadata = metadata and { type = metadata or nil }
-	end
-
+	metadata = assertMetadata(metadata)
 	local tablematch = strict and table.matches or table.contains
 
 	for _, slotData in pairs(inventory.items) do
-		if slotData and slotData.name == item.name and tablematch(slotData.metadata, metadata) then
+		if slotData and slotData.name == item.name and (not metadata or tablematch(slotData.metadata, metadata)) then
 			local durability = slotData.metadata.durability
 
 			if durability and durability > 100 and os.time() >= durability then
@@ -2078,10 +2068,7 @@ function Inventory.GetSlotsWithItem(inv, itemName, metadata, strict)
 
 	if not inventory or not item then return end
 
-	if type(metadata) ~= 'table' then
-		metadata = metadata and { type = metadata or nil }
-	end
-
+	metadata = assertMetadata(metadata)
 	local response = {}
 	local n = 0
 	local tablematch = strict and table.matches or table.contains
@@ -2135,15 +2122,12 @@ function Inventory.GetItemCount(inv, itemName, metadata, strict)
 
 	if not inventory or not item then return 0 end
 
-	if type(metadata) ~= 'table' then
-		metadata = metadata and { type = metadata or nil }
-	end
-
+	metadata = assertMetadata(metadata)
 	local count = 0
 	local tablematch = strict and table.matches or table.contains
 
 	for _, slotData in pairs(inventory.items) do
-		if slotData and slotData.name == item.name and tablematch(slotData.metadata, metadata) then
+		if slotData and slotData.name == item.name and (not metadata or tablematch(slotData.metadata, metadata)) then
 			count += slotData.count
 		end
 	end
