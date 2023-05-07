@@ -632,6 +632,7 @@ if not Utils or not Weapon or not Items or not Inventory then return end
 
 local invHotkeys = false
 
+---@type function?
 local function registerCommands()
 	RegisterCommand('steal', openNearbyInventory, false)
 
@@ -836,6 +837,8 @@ local function registerCommands()
 			end
 		})
 	end
+
+	registerCommands = nil
 end
 
 function client.closeInventory(server)
@@ -1287,7 +1290,8 @@ RegisterNetEvent('ox_inventory:setPlayerInventory', function(currentDrops, inven
 	Shops.refreshShops()
 	Inventory.Stashes()
 	Inventory.Evidence()
-	registerCommands()
+
+	if registerCommands then registerCommands() end
 
 	TriggerEvent('ox_inventory:updateInventory', PlayerData.inventory)
 
