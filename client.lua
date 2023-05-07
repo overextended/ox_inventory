@@ -179,13 +179,17 @@ function client.openInventory(inv, data)
 
 			if left then
 				right = CraftingBenches[data.id]
+
+				if not right?.items then return end
+
 				local coords, distance
+
 				if not right.zones and not right.points then
 					coords = GetEntityCoords(cache.ped)
 					distance = 2
 				else
-					coords = shared.target == 'ox_target' and right.zones[data.index].coords or right.points[data.index]
-					distance = shared.target == 'ox_target' and right.zones[data.index].distance or 2
+					coords = shared.target == 'ox_target' and right.zones and right.zones[data.index].coords or right.points and right.points[data.index]
+					distance = coords and shared.target == 'ox_target' and right.zones[data.index].distance or 2
 				end
 
 				right = {
