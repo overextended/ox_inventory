@@ -1517,16 +1517,10 @@ lib.callback.register('ox_inventory:swapItems', function(source, data)
 	local toInventory = (data.toType == 'player' and playerInventory) or Inventory(playerInventory.open)
 	local fromInventory = (data.fromType == 'player' and playerInventory) or Inventory(playerInventory.open)
 
-	if not fromInventory then
-		Wait(0)
-		fromInventory = (data.fromType == 'player' and playerInventory) or Inventory(playerInventory.open)
-
-		if not fromInventory then
-			return warn('Unknown error occured during swapItems\n', json.encode(data, {indent = true}))
-		end
+	if not fromInventory or not toInventory then
+		playerInventory:closeInventory()
+		return
 	end
-
-	if not toInventory then return end
 
 	local fromRef = ('%s:%s'):format(fromInventory.id, data.fromSlot)
 	local toRef = ('%s:%s'):format(toInventory.id, data.toSlot)
