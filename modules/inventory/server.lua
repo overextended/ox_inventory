@@ -38,11 +38,11 @@ OxInventory.__index = OxInventory
 ---Open a player's inventory, optionally with a secondary inventory.
 ---@param inv? inventory
 function OxInventory:openInventory(inv)
-	if not self.player then return end
+	if not self?.player then return end
 
 	inv = Inventory(inv)
 
-	if not inv or not self then return end
+	if not inv then return end
 
 	inv:set('open', true)
 	inv.openedBy[self.id] = true
@@ -89,7 +89,7 @@ function OxInventory:syncSlotsWithClients(slots, weight, syncOwner)
 		end
 	end
 
-	if syncOwner then
+	if syncOwner and self.player then
 		TriggerClientEvent('ox_inventory:updateSlots', self.id, slots, weight)
 	end
 end
@@ -881,20 +881,20 @@ function Inventory.SetDurability(inv, slot, durability)
 		inv.changed = true
 		slotData.metadata.durability = durability
 
-		if inv.player then
-			if server.syncInventory then server.syncInventory(inv) end
-
-			inv:syncSlotsWithClients({
-				{
-					item = slotData,
-					inventory = inv.id
-				}
-			},
-			{
-				left = inv.weight,
-				right = inv.open and Inventories[inv.open]?.weight or nil
-			}, true)
+		if inv.player and server.syncInventory then
+			server.syncInventory(inv)
 		end
+
+		inv:syncSlotsWithClients({
+			{
+				item = slotData,
+				inventory = inv.id
+			}
+		},
+		{
+			left = inv.weight,
+			right = inv.open and Inventories[inv.open]?.weight or nil
+		}, true)
 	end
 end
 exports('SetDurability', Inventory.SetDurability)
@@ -919,20 +919,20 @@ function Inventory.SetMetadata(inv, slot, metadata)
 			inv.weight += slotData.weight
 		end
 
-		if inv.player then
-			if server.syncInventory then server.syncInventory(inv) end
-
-			inv:syncSlotsWithClients({
-				{
-					item = slotData,
-					inventory = inv.id
-				}
-			},
-			{
-				left = inv.weight,
-				right = inv.open and Inventories[inv.open]?.weight or nil
-			}, true)
+		if inv.player and server.syncInventory then
+			server.syncInventory(inv)
 		end
+
+		inv:syncSlotsWithClients({
+			{
+				item = slotData,
+				inventory = inv.id
+			}
+		},
+		{
+			left = inv.weight,
+			right = inv.open and Inventories[inv.open]?.weight or nil
+		}, true)
 
 		if metadata.imageurl ~= imageurl and Utils.IsValidImageUrl then
 			if Utils.IsValidImageUrl(metadata.imageurl) then
@@ -1047,20 +1047,20 @@ function Inventory.AddItem(inv, item, count, metadata, slot, cb)
 	if toSlotType == 'number' then
 		Inventory.SetSlot(inv, item, slotCount, slotMetadata, toSlot)
 
-		if inv.player then
-			if server.syncInventory then server.syncInventory(inv) end
-
-			inv:syncSlotsWithClients({
-				{
-					item = inv.items[toSlot],
-					inventory = inv.id
-				}
-			},
-			{
-				left = inv.weight,
-				right = inv.open and Inventories[inv.open]?.weight or nil
-			}, true)
+		if inv.player and server.syncInventory then
+			server.syncInventory(inv)
 		end
+
+		inv:syncSlotsWithClients({
+			{
+				item = inv.items[toSlot],
+				inventory = inv.id
+			}
+		},
+		{
+			left = inv.weight,
+			right = inv.open and Inventories[inv.open]?.weight or nil
+		}, true)
 
 		if invokingResource then
 			lib.logger(inv.owner, 'addItem', ('"%s" added %sx %s to "%s"'):format(invokingResource, count, item.name, inv.label))
@@ -1078,14 +1078,14 @@ function Inventory.AddItem(inv, item, count, metadata, slot, cb)
 			toSlot[i] = { item = inv.items[data.slot], inventory = inv.id }
 		end
 
-		if inv.player then
-			if server.syncInventory then server.syncInventory(inv) end
-
-			inv:syncSlotsWithClients(toSlot, {
-				left = inv.weight,
-				right = inv.open and Inventories[inv.open]?.weight or nil
-			}, true)
+		if inv.player and server.syncInventory then
+			server.syncInventory(inv)
 		end
+
+		inv:syncSlotsWithClients(toSlot, {
+			left = inv.weight,
+			right = inv.open and Inventories[inv.open]?.weight or nil
+		}, true)
 
 		if invokingResource then
 			lib.logger(inv.owner, 'addItem', ('"%s" added %sx %s to "%s"'):format(invokingResource, added, item.name, inv.label))
@@ -1259,25 +1259,25 @@ function Inventory.RemoveItem(inv, item, count, metadata, slot, ignoreTotal)
 		if removed > 0 then
 			inv.changed = true
 
-			if inv.player then
-				if server.syncInventory then server.syncInventory(inv) end
+			if inv.player and server.syncInventory then
+				server.syncInventory(inv)
+			end
 
-				local array = table.create(#slots, 0)
+			local array = table.create(#slots, 0)
 
-				for k, v in pairs(slots) do
-					array[k] = {item = type(v) == 'number' and { slot = v } or v, inventory = inv.id}
-				end
+			for k, v in pairs(slots) do
+				array[k] = {item = type(v) == 'number' and { slot = v } or v, inventory = inv.id}
+			end
 
-				inv:syncSlotsWithClients(array, {
-					left = inv.weight,
-					right = inv.open and Inventories[inv.open]?.weight or nil
-				}, true)
+			inv:syncSlotsWithClients(array, {
+				left = inv.weight,
+				right = inv.open and Inventories[inv.open]?.weight or nil
+			}, true)
 
-				local invokingResource = server.loglevel > 1 and GetInvokingResource()
+			local invokingResource = server.loglevel > 1 and GetInvokingResource()
 
-				if invokingResource then
-					lib.logger(inv.owner, 'removeItem', ('"%s" removed %sx %s from "%s"'):format(invokingResource, removed, item.name, inv.label))
-				end
+			if invokingResource then
+				lib.logger(inv.owner, 'removeItem', ('"%s" removed %sx %s from "%s"'):format(invokingResource, removed, item.name, inv.label))
 			end
 
 			return true
@@ -1955,6 +1955,11 @@ function Inventory.Clear(inv, keep)
 	inv.weight = newWeight
 	inv.changed = true
 
+	inv:syncSlotsWithClients(updateSlots, {
+		left = inv.weight,
+		right = inv.open and Inventories[inv.open]?.weight or nil
+	}, true)
+
 	if not inv.player then
 		if inv.open then
 			local playerInv = Inventory(inv.open)
@@ -1972,11 +1977,6 @@ function Inventory.Clear(inv, keep)
 	if server.syncInventory then server.syncInventory(inv) end
 
 	inv.weapon = nil
-
-	inv:syncSlotsWithClients(updateSlots, {
-		left = inv.weight,
-		right = inv.open and Inventories[inv.open]?.weight or nil
-	}, true)
 end
 
 exports('ClearInventory', Inventory.Clear)
