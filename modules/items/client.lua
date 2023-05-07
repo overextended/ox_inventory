@@ -12,14 +12,29 @@ local function displayMetadata(metadata, value)
 end
 exports('displayMetadata', displayMetadata)
 
-local function GetItem(item)
-	if item then
-		item = string.lower(item)
-		if item:sub(0, 7) == 'weapon_' then item = string.upper(item) end
-		return Items[item]
+---@param _ table?
+---@param name string?
+---@return table?
+local function getItem(_, name)
+	if name then
+		name = name:lower()
+
+		if name:sub(0, 7) == 'weapon_' then
+			name = name:upper()
+		end
+
+		return Items[name]
 	end
+
 	return Items
 end
+
+setmetatable(Items --[[@as table]], {
+	__call = getItem
+})
+
+---@cast Items +fun(itemName: string): OxClientItem
+---@cast Items +fun(): table<string, OxClientItem>
 
 local function Item(name, cb)
 	local item = Items[name]
@@ -135,7 +150,7 @@ end)
 
 -----------------------------------------------------------------------------------------------
 
-exports('Items', GetItem)
-exports('ItemList', GetItem)
+exports('Items', getItem)
+exports('ItemList', getItem)
 
 return Items
