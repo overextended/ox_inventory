@@ -67,6 +67,8 @@ lib.callback.register('ox_inventory:openCraftingBench', function(source, id, ind
 		local groups = bench.groups
 		local coords = getCraftingCoords(source, bench, index)
 
+		if not coords then return end
+
 		if groups and not server.hasGroup(left, groups) then return end
 		if #(GetEntityCoords(GetPlayerPed(source)) - coords) > 10 then return end
 
