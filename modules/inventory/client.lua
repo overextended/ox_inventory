@@ -85,6 +85,136 @@ function Inventory.Search(search, item, metadata)
 end
 exports('Search', Inventory.Search)
 
+exports('GetPlayerItems', function()
+	return PlayerData.inventory
+end)
+
+exports('GetPlayerWeight', function()
+	return PlayerData.weight
+end)
+
+exports('GetPlayerMaxWeight', function()
+	return PlayerData.weight
+end)
+
+local Items = require 'modules.items.client'
+
+local function assertMetadata(metadata)
+	if metadata and type(metadata) ~= 'table' then
+		metadata = metadata and { type = metadata or nil }
+	end
+
+	return metadata
+end
+
+---@param itemName string
+---@param metadata? any
+---@param strict? boolean Strictly match metadata properties, otherwise use partial matching.
+---@return SlotWithItem?
+function Inventory.GetSlotWithItem(itemName, metadata, strict)
+	local inventory = PlayerData.inventory
+	local item = Items(itemName) --[[@as OxClientItem?]]
+
+	if not inventory or not item then return end
+
+	metadata = assertMetadata(metadata)
+	local tablematch = strict and table.matches or table.contains
+
+	for _, slotData in pairs(inventory) do
+		if slotData and slotData.name == item.name and (not metadata or tablematch(slotData.metadata, metadata)) then
+			return slotData
+		end
+	end
+end
+
+exports('GetSlotWithItem', Inventory.GetSlotWithItem)
+
+---@param itemName string
+---@param metadata? any
+---@param strict? boolean Strictly match metadata properties, otherwise use partial matching.
+---@return number?
+function Inventory.GetSlotIdWithItem(itemName, metadata, strict)
+	return Inventory.GetSlotWithItem(itemName, metadata, strict)?.slot
+end
+
+exports('GetSlotIdWithItem', Inventory.GetSlotIdWithItem)
+
+---@param itemName string
+---@param metadata? any
+---@param strict? boolean Strictly match metadata properties, otherwise use partial matching.
+---@return SlotWithItem[]?
+function Inventory.GetSlotsWithItem(itemName, metadata, strict)
+	local inventory = PlayerData.inventory
+	local item = Items(itemName) --[[@as OxClientItem?]]
+
+	if not inventory or not item then return end
+
+
+	metadata = assertMetadata(metadata)
+	local response = {}
+	local n = 0
+	local tablematch = strict and table.matches or table.contains
+
+	for _, slotData in pairs(inventory) do
+		if slotData and slotData.name == item.name and (not metadata or tablematch(slotData.metadata, metadata)) then
+			n += 1
+			response[n] = slotData
+		end
+	end
+
+	return response
+end
+
+exports('GetSlotsWithItem', Inventory.GetSlotsWithItem)
+
+---@param itemName string
+---@param metadata? any
+---@param strict? boolean Strictly match metadata properties, otherwise use partial matching.
+---@return number[]?
+function Inventory.GetSlotIdsWithItem(itemName, metadata, strict)
+	local items = Inventory.GetSlotsWithItem(itemName, metadata, strict)
+
+	if items then
+		---@cast items +number[]
+		for i = 1, #items do
+			items[i] = items[i].slot
+		end
+
+		return items
+	end
+end
+
+---@param itemName string
+---@param metadata? any
+---@param strict? boolean Strictly match metadata properties, otherwise use partial matching.
+---@return number
+function Inventory.GetItemCount(itemName, metadata, strict)
+	local inventory = PlayerData.inventory
+	local item = Items(itemName) --[[@as OxClientItem?]]
+
+	if not inventory or not item then return 0 end
+
+	if not metadata then
+		return item.count
+	end
+
+
+	metadata = assertMetadata(metadata)
+	local count = 0
+	local tablematch = strict and table.matches or table.contains
+
+	for _, slotData in pairs(inventory) do
+		if slotData and slotData.name == item.name and (not metadata or tablematch(slotData.metadata, metadata)) then
+			count += slotData.count
+		end
+	end
+
+	return count
+end
+
+exports('GetItemCount', Inventory.GetItemCount)
+
+
 local function openEvidence()
 	client.openInventory('policeevidence')
 end
