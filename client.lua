@@ -635,6 +635,25 @@ local invHotkeys = false
 local function registerCommands()
 	RegisterCommand('steal', openNearbyInventory, false)
 
+	local Vehicles = data 'vehicles'
+
+	local function openGlovebox(vehicle)
+		if not IsPedInAnyVehicle(playerPed, false) or not NetworkGetEntityIsNetworked(vehicle) then return end
+
+		local vehicleHash = GetEntityModel(vehicle)
+		local vehicleClass = GetVehicleClass(vehicle)
+		local checkVehicle = Vehicles.Storage[vehicleHash]
+
+		-- No storage or no glovebox
+		if (checkVehicle == 0 or checkVehicle == 2) or (not Vehicles.glovebox[vehicleClass] and not Vehicles.glovebox.models[vehicleHash]) then return end
+
+		local isOpen = client.openInventory('glovebox', { id = 'glove'..GetVehicleNumberPlateText(vehicle), netid = NetworkGetNetworkIdFromEntity(vehicle) })
+
+		if isOpen then
+			currentInventory.entity = vehicle
+		end
+	end
+
 	lib.addKeybind({
 		name = 'inv',
 		description = locale('open_player_inventory'),
@@ -642,6 +661,10 @@ local function registerCommands()
 		onPressed = function()
 			if invOpen then
 				return client.closeInventory()
+			end
+
+			if cache.vehicle then
+				return openGlovebox(cache.vehicle)
 			end
 
 			local closest = lib.points.getClosestPoint()
@@ -657,8 +680,6 @@ local function registerCommands()
 			return client.openInventory()
 		end
 	})
-
-	local Vehicles = data 'vehicles'
 
 	lib.addKeybind({
 		name = 'inv2',
@@ -681,25 +702,8 @@ local function registerCommands()
 				return client.openInventory('stash', StashTarget)
 			end
 
-			local vehicle = cache.vehicle
-
-			if vehicle then
-				if not IsPedInAnyVehicle(playerPed, false) or not NetworkGetEntityIsNetworked(vehicle) then return end
-
-				local vehicleHash = GetEntityModel(vehicle)
-				local vehicleClass = GetVehicleClass(vehicle)
-				local checkVehicle = Vehicles.Storage[vehicleHash]
-
-				-- No storage or no glovebox
-				if (checkVehicle == 0 or checkVehicle == 2) or (not Vehicles.glovebox[vehicleClass] and not Vehicles.glovebox.models[vehicleHash]) then return end
-
-				local isOpen = client.openInventory('glovebox', { id = 'glove'..GetVehicleNumberPlateText(vehicle), netid = NetworkGetNetworkIdFromEntity(vehicle) })
-
-				if isOpen then
-					currentInventory.entity = vehicle
-				end
-
-				return
+			if cache.vehicle then
+				return openGlovebox(cache.vehicle)
 			end
 
 			local entity, entityType = Utils.Raycast(2|16)
