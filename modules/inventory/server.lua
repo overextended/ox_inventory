@@ -47,6 +47,8 @@ function OxInventory:openInventory(inv)
 	inv:set('open', true)
 	inv.openedBy[self.id] = true
 	self.open = inv.id
+
+	TriggerEvent('ox_inventory:openedInventory', self.id, inv.id)
 end
 
 ---Close a player's inventory.
@@ -67,6 +69,8 @@ function OxInventory:closeInventory(noEvent)
 	if not noEvent then
 		TriggerClientEvent('ox_inventory:closeInventory', self.id, true)
 	end
+
+	TriggerEvent('ox_inventory:closedInventory', self.id, inv.id)
 end
 
 ---@alias updateSlot { item: SlotWithItem | { slot: number }, inventory: string|number }
