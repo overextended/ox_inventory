@@ -2157,7 +2157,7 @@ local function prepareSave(inv)
 	end
 end
 
-SetInterval(function()
+lib.cron.new('*/5 * * * *', function()
 	local time = os.time()
 	local parameters = { {}, {}, {}, {} }
 	local size = { 0, 0, 0, 0 }
@@ -2186,7 +2186,7 @@ SetInterval(function()
 	end
 
 	db.saveInventories(parameters[1], parameters[2], parameters[3], parameters[4])
-end, math.max(300000, GetConvarInt('inventory:saveinterval', 600000)))
+end)
 
 function Inventory.SaveInventories(lock)
 	local parameters = { {}, {}, {}, {} }
