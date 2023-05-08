@@ -71,7 +71,7 @@ jobs:
         run: |
           mkdir -p ./temp/ox_inventory
           mkdir -p ./temp/ox_inventory/web
-          cp ./{server.lua,README.md,LICENSE,fxmanifest.lua,client.lua} ./temp/ox_inventory
+          cp ./{server.lua,README.md,LICENSE,fxmanifest.lua,client.lua,init.lua} ./temp/ox_inventory
           cp -r ./{setup,modules,data,locales} ./temp/ox_inventory
           cp -r ./web/build ./temp/ox_inventory/web/build
           cp -r ./web/images ./temp/ox_inventory/web/images
