@@ -143,6 +143,8 @@ export const getItemUrl = (item: string | SlotWithItem) => {
   const isObj = typeof item === 'object';
 
   if (isObj) {
+    if (!item.name) return;
+
     const metadata = item.metadata;
 
     // @todo validate urls and support webp
