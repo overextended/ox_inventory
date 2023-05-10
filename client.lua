@@ -814,10 +814,10 @@ local function registerCommands()
 
 			if currentWeapon.ammo then
 				if currentWeapon.metadata.durability > 0 then
-					local ammo = Inventory.Search(1, currentWeapon.ammo, { type = currentWeapon.metadata.specialAmmo })?[1]
+					local slotId = Inventory.GetSlotIdWithItem(currentWeapon.ammo, { type = currentWeapon.metadata.specialAmmo }, false)
 
-					if ammo then
-						useSlot(ammo.slot)
+					if slotId then
+						useSlot(slotId)
 					end
 				else
 					lib.notify({ id = 'no_durability', type = 'error', description = locale('no_durability', currentWeapon.label) })
@@ -1435,10 +1435,10 @@ RegisterNetEvent('ox_inventory:setPlayerInventory', function(currentDrops, inven
 						TriggerServerEvent('ox_inventory:updateWeapon', 'ammo', weaponAmmo)
 
 						if client.autoreload and currentWeapon.ammo and GetAmmoInPedWeapon(playerPed, currentWeapon.hash) == 0 then
-							local ammo = Inventory.Search(1, currentWeapon.ammo, { type = currentWeapon.metadata.specialAmmo })?[1]
+							local slotId = Inventory.GetSlotIdWithItem(currentWeapon.ammo, { type = currentWeapon.metadata.specialAmmo }, false)
 
-							if ammo then
-								CreateThread(function() useSlot(ammo.slot) end)
+							if slotId then
+								CreateThread(function() useSlot(slotId) end)
 							end
 						end
 
