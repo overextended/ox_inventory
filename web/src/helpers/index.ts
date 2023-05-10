@@ -139,19 +139,26 @@ export const getItemData = async (itemName: string) => {
   }
 };
 
-export const getItemUrl = (item: SlotWithItem) => {
-  const metadata = item.metadata;
+export const getItemUrl = (item: string | SlotWithItem) => {
+  const isObj = typeof item === 'object';
 
-  // @todo validate urls and support webp
-  if (metadata?.imageurl) return `url(${metadata.imageurl})`;
-  if (metadata?.image) return `url(${imagepath}/${metadata.image}.png)`;
+  if (isObj) {
+    if (!item.name) return;
 
-  const itemData = Items[item.name];
+    const metadata = item.metadata;
 
-  if (!itemData) return `url(${imagepath}/${item.name}.png)`;
+    // @todo validate urls and support webp
+    if (metadata?.imageurl) return `${metadata.imageurl}`;
+    if (metadata?.image) return `${imagepath}/${metadata.image}.png`;
+  }
+
+  const itemName = isObj ? item.name as string : item;
+  const itemData = Items[itemName];
+
+  if (!itemData) return `${imagepath}/${itemName}.png`;
   if (itemData.image) return itemData.image;
 
-  itemData.image = `url(${imagepath}/${item.name}.png)`;
+  itemData.image = `${imagepath}/${itemName}.png`;
 
   return itemData.image;
 };

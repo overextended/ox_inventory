@@ -68,24 +68,28 @@ end
 exports('setPlayerInventory', server.setPlayerInventory)
 AddEventHandler('ox_inventory:setPlayerInventory', server.setPlayerInventory)
 
----@param source number Player server ID
----@param coordinate vector3|table<vector3>
+---@param playerPed number
+---@param coordinates vector3|table[]
+---@param distance? number
 ---@return vector3|false
-local function isPlayerCloseToStashCoordinate(source, coordinate)
-	local playerCoords = GetEntityCoords(GetPlayerPed(source))
-	local distance = 10
+local function getClosestStashCoords(playerPed, coordinates, distance)
+	local playerCoords = GetEntityCoords(playerPed)
 
-	if type(coordinate) == 'table' then
-		for i = 1, #coordinate do
-			if #(coordinate[i] - playerCoords) < distance then
-				return coordinate[i]
+	if not distance then distance = 10 end
+
+	if type(coordinates) == 'table' then
+		for i = 1, #coordinates do
+			local coords = coordinates[i]
+
+			if #(coords - playerCoords) < distance then
+				return coords
 			end
 		end
 
 		return false
-	else
-		return #(coordinate - playerCoords) < distance and coordinate
 	end
+
+	return #(coordinates - playerCoords) < distance and coordinates
 end
 
 ---@param source number
@@ -144,33 +148,33 @@ local function openInventory(source, invType, data, ignoreSecurityChecks)
 			else left.containerSlot = nil end
 		else right = Inventory(data) end
 
-		if right then
-			if not ignoreSecurityChecks and right.groups and not server.hasGroup(left, right.groups) then return end
+		if not right then return end
 
-			local hookPayload = {
-				source = source,
-				inventoryId = right.id,
-				inventoryType = right.type,
-			}
+		if not ignoreSecurityChecks and right.groups and not server.hasGroup(left, right.groups) then return end
 
-			if invType == 'container' then hookPayload.slot = left.containerSlot end
+		local hookPayload = {
+			source = source,
+			inventoryId = right.id,
+			inventoryType = right.type,
+		}
 
-			if not TriggerEventHooks('openInventory', hookPayload) then return end
+		if invType == 'container' then hookPayload.slot = left.containerSlot end
 
-			if right.player then
-				if right.open then return end
+		if not TriggerEventHooks('openInventory', hookPayload) then return end
 
-				right.coords = not ignoreSecurityChecks and GetEntityCoords(right.player.ped) or nil
-			end
+		if right.player then
+			if right.open then return end
 
-			if right.coords == nil then
-				if right.coords then
-					closestCoords = isPlayerCloseToStashCoordinate(source, right.coords) or nil
-					if not closestCoords then return end
-				end
-				left:openInventory(right)
-			else return end
-		else return end
+			right.coords = not ignoreSecurityChecks and GetEntityCoords(right.player.ped) or nil
+		end
+
+		if not ignoreSecurityChecks and right.coords then
+			closestCoords = getClosestStashCoords(left.player.ped, right.coords)
+
+			if not closestCoords then return end
+		end
+
+		left:openInventory(right)
 	else
 		left:openInventory(left)
 	end
@@ -576,6 +580,10 @@ lib.addCommand('viewinv', {
 }, function(source, args)
 	local invId = tonumber(args.invId) or args.invId
 	local inventory = invId ~= source and Inventory(invId)
+	local playerInventory = Inventory(source)
 
-	if inventory then TriggerClientEvent('ox_inventory:viewInventory', source, inventory) end
+	if playerInventory and inventory then
+		playerInventory:openInventory(inventory)
+		TriggerClientEvent('ox_inventory:viewInventory', source, inventory)
+	end
 end)

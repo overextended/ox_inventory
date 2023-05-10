@@ -101,7 +101,7 @@ local function newItem(data)
 		end
 
 		if clientData?.image then
-			clientData.image = clientData.image:match('^[%w]+://') and ('url(%s)'):format(clientData.image) or ('url(%s/%s)'):format(client.imagepath, clientData.image)
+			clientData.image = clientData.image:match('^[%w]+://') and clientData.image or ('%s/%s'):format(client.imagepath, clientData.image)
 		end
 	end
 
