@@ -94,7 +94,10 @@ function Weapon.Disarm(currentWeapon, noAnim)
 	if currentWeapon?.timer then
 		currentWeapon.timer = nil
 
-		TriggerServerEvent('ox_inventory:updateWeapon')
+		if source == '' then
+			TriggerServerEvent('ox_inventory:updateWeapon')
+		end
+
 		SetPedAmmo(cache.ped, currentWeapon.hash, 0)
 
 		if client.weaponanims and not noAnim then
