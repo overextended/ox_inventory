@@ -455,19 +455,19 @@ local function useSlot(slot)
 			data:effect({name = item.name, slot = item.slot, metadata = item.metadata})
 		elseif data.weapon then
 			if EnableWeaponWheel then return end
+
+			if IsCinematicCamRendering() then SetCinematicModeActive(false) end
+
+			if currentWeapon then
+				local weaponSlot = currentWeapon.slot
+				currentWeapon = Weapon.Disarm(currentWeapon)
+
+				if weaponSlot == data.slot then return end
+			end
+
 			useItem(data, function(result)
 				if result then
-					if currentWeapon then
-						local weaponSlot = currentWeapon.slot
-						currentWeapon = Weapon.Disarm(currentWeapon)
-
-						if weaponSlot == result.slot then return end
-					end
-
-					currentWeapon = item
 					currentWeapon = Weapon.Equip(item, data)
-
-					if IsCinematicCamRendering() then SetCinematicModeActive(false) end
 				end
 			end)
 		elseif currentWeapon then
