@@ -298,9 +298,7 @@ lib.callback.register('ox_inventory:useItem', function(source, itemName, slot, m
 		if item and data and data.count > 0 and data.name == item.name then
 			data = {name=data.name, label=label, count=data.count, slot=slot, metadata=data.metadata}
 
-			if item.weapon then
-				inventory.weapon = inventory.weapon ~= slot and slot or nil
-			elseif item.ammo then
+			if item.ammo then
 				if inventory.weapon then
 					local weapon = inventory.items[inventory.weapon]
 
@@ -335,6 +333,10 @@ lib.callback.register('ox_inventory:useItem', function(source, itemName, slot, m
 			data.consume = consume
 
 			local success = lib.callback.await('ox_inventory:usingItem', source, data)
+
+			if item.weapon then
+				inventory.weapon = success and slot or nil
+			end
 
 			if not success then return end
 
