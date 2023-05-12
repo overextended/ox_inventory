@@ -11,8 +11,8 @@ exports('getCurrentWeapon', function()
 	return currentWeapon
 end)
 
-RegisterNetEvent('ox_inventory:disarm', function()
-	currentWeapon = Weapon.Disarm(currentWeapon)
+RegisterNetEvent('ox_inventory:disarm', function(noAnim)
+	currentWeapon = Weapon.Disarm(currentWeapon, noAnim)
 end)
 
 RegisterNetEvent('ox_inventory:clearWeapons', function()
