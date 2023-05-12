@@ -321,7 +321,7 @@ lib.callback.register('ox_inventory:useItem', function(source, itemName, slot, m
 				else
 					return TriggerClientEvent('ox_lib:notify', source, { type = 'error', description = locale('item_not_enough', item.name) })
 				end
-			elseif server.UseItem then
+			elseif not item.weapon and server.UseItem then
 				-- This is used to call an external useItem function, i.e. ESX.UseItem / QBCore.Functions.CanUseItem
 				-- If an error is being thrown on item use there is no internal solution. We previously kept a list
 				-- of usable items which led to issues when restarting resources (for obvious reasons), but config
