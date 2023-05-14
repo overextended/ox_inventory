@@ -92,6 +92,8 @@ function Utils.DeleteEntity(entity)
 	end
 end
 
+local rewardTypes = 1 << 0 | 1 << 1 | 1 << 2 | 1 << 3 | 1 << 7 | 1 << 10
+
 -- Enables the weapon wheel, but disables the use of inventory items
 -- Mostly used for weaponised vehicles, though could be called for "minigames"
 function Utils.WeaponWheel(state)
@@ -100,7 +102,13 @@ function Utils.WeaponWheel(state)
 	EnableWeaponWheel = state
 	SetWeaponsNoAutoswap(not state)
 	SetWeaponsNoAutoreload(not state)
+
+	if client.suppresspickups then
+		-- CLEAR_PICKUP_REWARD_TYPE_SUPPRESSION | SUPPRESS_PICKUP_REWARD_TYPE
+		return state and N_0x762db2d380b48d04(rewardTypes) or N_0xf92099527db8e2a7(rewardTypes, true)
+	end
 end
+
 exports('weaponWheel', Utils.WeaponWheel)
 
 function Utils.CreateBlip(settings, coords)
