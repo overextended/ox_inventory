@@ -879,6 +879,7 @@ function client.closeInventory(server)
 end
 
 RegisterNetEvent('ox_inventory:closeInventory', client.closeInventory)
+exports('closeInventory', client.closeInventory)
 
 ---@param data updateSlot[]
 ---@param weight number | table<string, number>
