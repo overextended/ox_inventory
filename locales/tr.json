@@ -81,5 +81,8 @@
   "no_durability": "%s 'ın dayanıklılığı tükendi",
   "cannot_give": "Hedefe %s %s verilmedi",
   "evidence_cannot_take": "Kanıtlara erişebilmek için yeterli rütbede değilsiniz",
-  "dumpster": "Çöplük"
+  "dumpster": "Çöplük",
+  "crafting_item": "Üretılıyor %s",
+  "crafting_bench": "Üretim Tezgahı",
+  "not_enough_durability": "%s Yeterli dayanıklılığa sahip değil"
 }

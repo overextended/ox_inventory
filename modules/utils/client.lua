@@ -4,20 +4,18 @@ local Utils = {}
 
 function Utils.PlayAnim(wait, dict, name, blendIn, blendOut, duration, flag, rate, lockX, lockY, lockZ)
 	lib.requestAnimDict(dict)
-	CreateThread(function()
-		TaskPlayAnim(cache.ped, dict, name, blendIn, blendOut, duration, flag, rate, lockX, lockY, lockZ)
-		Wait(wait)
-		if wait > 0 then ClearPedSecondaryTask(cache.ped) end
-	end)
+	TaskPlayAnim(cache.ped, dict, name, blendIn, blendOut, duration, flag, rate, lockX, lockY, lockZ)
+	RemoveAnimDict(dict)
+
+	if wait > 0 then Wait(wait) end
 end
 
-function Utils.PlayAnimAdvanced(wait, dict, name, posX, posY, posZ, rotX, rotY, rotZ, animEnter, animExit, duration, flag, time)
+function Utils.PlayAnimAdvanced(wait, dict, name, posX, posY, posZ, rotX, rotY, rotZ, blendIn, blendOut, duration, flag, time)
 	lib.requestAnimDict(dict)
-	CreateThread(function()
-		TaskPlayAnimAdvanced(cache.ped, dict, name, posX, posY, posZ, rotX, rotY, rotZ, animEnter, animExit, duration, flag, time, 0, 0)
-		Wait(wait)
-		if wait > 0 then ClearPedSecondaryTask(cache.ped) end
-	end)
+	TaskPlayAnimAdvanced(cache.ped, dict, name, posX, posY, posZ, rotX, rotY, rotZ, blendIn, blendOut, duration, flag, time, 0, 0)
+	RemoveAnimDict(dict)
+
+	if wait > 0 then Wait(wait) end
 end
 
 function Utils.Raycast(flag)
@@ -86,6 +84,13 @@ function Utils.DeleteObject(obj)
 	DeleteObject(obj)
 end
 
+function Utils.DeleteEntity(entity)
+	if DoesEntityExist(entity) then
+		SetEntityAsMissionEntity(entity, false, true)
+		DeleteEntity(entity)
+	end
+end
+
 -- Enables the weapon wheel, but disables the use of inventory items
 -- Mostly used for weaponised vehicles, though could be called for "minigames"
 function Utils.WeaponWheel(state)
@@ -96,5 +101,18 @@ function Utils.WeaponWheel(state)
 	SetWeaponsNoAutoreload(not state)
 end
 exports('weaponWheel', Utils.WeaponWheel)
+
+function Utils.CreateBlip(settings, coords)
+	local blip = AddBlipForCoord(coords.x, coords.y, coords.z)
+	SetBlipSprite(blip, settings.id)
+	SetBlipDisplay(blip, 4)
+	SetBlipScale(blip, settings.scale)
+	SetBlipColour(blip, settings.colour)
+	SetBlipAsShortRange(blip, true)
+	BeginTextCommandSetBlipName(settings.name)
+	EndTextCommandSetBlipName(blip)
+
+	return blip
+end
 
 client.utils = Utils

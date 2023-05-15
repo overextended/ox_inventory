@@ -3,17 +3,7 @@ if not lib then return end
 local CraftingBenches = {}
 local Items = client.items
 local locations = shared.target == 'ox_target' and 'zones' or 'points'
-
-local function createBlip(settings, coords)
-	local blip = AddBlipForCoord(coords.x, coords.y, coords.z)
-	SetBlipSprite(blip, settings.id)
-	SetBlipDisplay(blip, 4)
-	SetBlipScale(blip, settings.scale)
-	SetBlipColour(blip, settings.colour)
-	SetBlipAsShortRange(blip, true)
-	BeginTextCommandSetBlipName(settings.name)
-	EndTextCommandSetBlipName(blip)
-end
+local createBlip = client.utils.CreateBlip
 
 ---@param id number
 ---@param data table
@@ -28,8 +18,13 @@ local function createCraftingBench(id, data)
 		for i = 1, data.slots do
 			local recipe = recipes[i]
 			local item = Items[recipe.name]
-			recipe.weight = item.weight
-			recipe.slot = i
+
+			if item then
+				recipe.weight = item.weight
+				recipe.slot = i
+			else
+				warn(('failed to setup crafting recipe (bench: %s, slot: %s) - item "%s" does not exist'):format(id, i, recipe.name))
+			end
 		end
 
 		local blip = data.blip
@@ -49,7 +44,7 @@ local function createCraftingBench(id, data)
 				zone.index = i
 				zone.options = {
 					{
-						label = 'Open Crafting Bench',
+						label = zone.label or locale('open_crafting_bench'),
 						canInteract = data.groups and function()
 							return client.hasGroup(data.groups)
 						end or nil,
@@ -57,7 +52,7 @@ local function createCraftingBench(id, data)
 							client.openInventory('crafting', { id = id, index = i })
 						end,
 						distance = zone.distance or 2.0,
-						icon = 'fas fa-wrench',
+						icon = zone.icon or 'fas fa-wrench',
 					}
 				}
 

@@ -1,20 +1,31 @@
 if not lib then return end
 
+local shopTypes = {}
 local shops = {}
+local createBlip = client.utils.CreateBlip
 
-local function createBlip(settings, coords)
-	local blip = AddBlipForCoord(coords.x, coords.y, coords.z)
-	SetBlipSprite(blip, settings.id)
-	SetBlipDisplay(blip, 4)
-	SetBlipScale(blip, settings.scale)
-	SetBlipColour(blip, settings.colour)
-	SetBlipAsShortRange(blip, true)
-	BeginTextCommandSetBlipName(settings.name)
-	EndTextCommandSetBlipName(blip)
-end
+for shopType, shopData in pairs(data('shops') --[[@as table<string, OxShop>]]) do
+	local shop = {
+		name = shopData.name,
+		groups = shopData.groups or shopData.jobs,
+		blip = shopData.blip,
+		label = shopData.label,
+	}
 
-local function openShop(data)
-	client.openInventory('shop', data)
+	if shared.target then
+		shop.model = shopData.model
+		shop.targets = shopData.targets
+	else
+		shop.locations = shopData.locations
+	end
+
+	shopTypes[shopType] = shop
+	local blip = shop.blip
+
+	if blip then
+		blip.name = ('ox_shop_%s'):format(shopType)
+		AddTextEntry(blip.name, shop.name or shopType)
+	end
 end
 
 ---@param point CPoint
@@ -27,107 +38,199 @@ local function nearbyShop(point)
 	end
 end
 
+<<<<<<< HEAD
 local ShopData = {}
 client.shops = setmetatable(ShopData, {
 	__call = function(self)
 		for i = 1, #shops do
 			local shop = shops[i]
+=======
+---@param point CPoint
+local function onEnterShop(point)
+	if not point.entity then
+		local model = lib.requestModel(point.ped)
+>>>>>>> 02fdf3aa089d8f9edb52ce53d575e11ad44bbf5d
 
-			if shop.zoneId then
-				exports.qtarget:RemoveZone(shop.zoneId)
-			end
+		if not model then return end
 
-			if shop.remove then
-				shop:remove()
-			end
+		local entity = CreatePed(0, model, point.coords.x, point.coords.y, point.coords.z, point.heading, false, true)
 
-			if shop.blip then
-				RemoveBlip(shop.blip)
-			end
+		if point.scenario then TaskStartScenarioInPlace(entity, point.scenario, 0, true) end
+
+		SetModelAsNoLongerNeeded(model)
+		FreezeEntityPosition(entity, true)
+		SetEntityInvincible(entity, true)
+		SetBlockingOfNonTemporaryEvents(entity, true)
+
+		exports.qtarget:AddTargetEntity(entity, {
+			options = {
+				{
+					icon = point.icon or 'fas fa-shopping-basket',
+					label = point.label,
+					job = point.groups,
+					action = function()
+						client.openInventory('shop', { id = point.invId, type = point.type })
+					end,
+					iconColor = point.iconColor,
+				}
+			},
+
+			distance = point.shopDistance or 2.0
+		})
+
+		point.entity = entity
+	end
+end
+
+local Utils = client.utils
+
+local function onExitShop(point)
+	local entity = point.entity
+
+	if not entity then return end
+
+	exports.qtarget:RemoveTargetEntity(entity, point.label)
+	Utils.DeleteEntity(entity)
+
+	point.entity = nil
+end
+
+local function hasShopAccess(shop)
+	return not shop.groups or client.hasGroup(shop.groups)
+end
+
+function client.wipeShops()
+	for i = 1, #shops do
+		local shop = shops[i]
+
+		if shop.zoneId then
+			exports.qtarget:RemoveZone(shop.zoneId)
 		end
 
-		table.wipe(shops)
-		local id = 0
+		if shop.remove then
+			if shop.entity then onExitShop(shop) end
 
-		for type, shop in pairs(self) do
-			if shop.jobs then shop.groups = shop.jobs end
+			shop:remove()
+		end
 
-			local blip = shop.blip
+		if shop.blip then
+			RemoveBlip(shop.blip)
+		end
+	end
 
-			if blip then
-				blip.name = ('ox_shop_%s'):format(type)
-				AddTextEntry(blip.name, shop.name or type)
-			end
+	table.wipe(shops)
+end
 
-			if not shop.groups or client.hasGroup(shop.groups) then
-				if shared.target then
-					if shop.model then
-						exports.qtarget:AddTargetModel(shop.model, {
-							options = {
-								{
-									icon = 'fas fa-shopping-basket',
-									label = shop.label or locale('open_label', shop.name),
-									action = function()
-										openShop({type=type})
-									end
-								},
-							},
-							distance = 2
-						})
-					elseif shop.targets then
-						for i = 1, #shop.targets do
-							local target = shop.targets[i]
-							local shopid = type..'-'..i
-							id += 1
+function client.refreshShops()
+	client.wipeShops()
 
-							shops[id] = {
-								zoneId = shopid,
-								blip = blip and createBlip(blip, target.loc)
-							}
+	local id = 0
 
-							exports.qtarget:AddBoxZone(shopid, target.loc, target.length or 0.5, target.width or 0.5, {
-								name = shopid,
-								heading = target.heading or 0.0,
-								debugPoly = target.debug,
-								minZ = target.minZ,
-								maxZ = target.maxZ,
-								drawSprite = target.drawSprite,
-							}, {
-								options = {
-									{
-										icon = 'fas fa-shopping-basket',
-										label = shop.label or locale('open_label', shop.name),
-										job = shop.groups,
-										action = function()
-											openShop({id=i, type=type})
-										end,
-										iconColor = target.iconColor,
-									},
-								},
-								distance = target.distance or 2.0
-							})
-						end
-					end
-				elseif shop.locations then
-					for i = 1, #shop.locations do
+	for type, shop in pairs(shopTypes) do
+		local blip = shop.blip
+		local label = shop.label or locale('open_label', shop.name)
+
+		if shared.target then
+			if shop.model then
+				if not hasShopAccess(shop) then goto skipLoop end
+
+				exports.qtarget:RemoveTargetModel(shop.model, label)
+				exports.qtarget:AddTargetModel(shop.model, {
+					options = {
+						{
+							icon = shop.icon or 'fas fa-shopping-basket',
+							label = label,
+							action = function()
+								client.openInventory('shop', { type = type })
+							end
+						},
+					},
+					distance = 2
+				})
+			elseif shop.targets then
+				for i = 1, #shop.targets do
+					local target = shop.targets[i]
+					local shopid = ('%s-%s'):format(type, i)
+
+					if target.ped then
 						id += 1
-						local coords = shop.locations[i]
-						shop.target = nil
-						shop.model = nil
-						shops[id] = lib.points.new(coords, 16, {
-							coords = coords,
-							distance = 16,
+
+						shops[id] = lib.points.new({
+							coords = target.loc,
+							heading = target.heading,
+							distance = 60,
 							inv = 'shop',
 							invId = i,
 							type = type,
-							nearby = nearbyShop,
-							blip = blip and createBlip(blip, coords)
+							blip = blip and hasShopAccess(shop) and createBlip(blip, target.loc),
+							ped = target.ped,
+							scenario = target.scenario,
+							label = label,
+							groups = shop.groups,
+							icon = shop.icon,
+							iconColor = target.iconColor,
+							onEnter = onEnterShop,
+							onExit = onExitShop,
+							shopDistance = target.distance,
+						})
+					elseif target.loc then
+						if not hasShopAccess(shop) then goto nextShop end
+
+						id += 1
+
+						shops[id] = {
+							zoneId = shopid,
+							blip = blip and createBlip(blip, target.loc)
+						}
+
+						exports.qtarget:AddBoxZone(shopid, target.loc, target.length or 0.5, target.width or 0.5, {
+							name = shopid,
+							heading = target.heading or 0.0,
+							debugPoly = target.debug,
+							minZ = target.minZ,
+							maxZ = target.maxZ,
+							drawSprite = target.drawSprite,
+						}, {
+							options = {
+								{
+									icon = 'fas fa-shopping-basket',
+									label = label,
+									job = shop.groups,
+									action = function()
+										client.openInventory('shop', { id = i, type = type })
+									end,
+									iconColor = target.iconColor,
+								},
+							},
+							distance = target.distance or 2.0
 						})
 					end
+
+					::nextShop::
 				end
 			end
+		elseif shop.locations then
+			if not hasShopAccess(shop) then goto skipLoop end
+
+			for i = 1, #shop.locations do
+				local coords = shop.locations[i]
+				id += 1
+
+				shops[id] = lib.points.new(coords, 16, {
+					coords = coords,
+					distance = 16,
+					inv = 'shop',
+					invId = i,
+					type = type,
+					nearby = nearbyShop,
+					blip = blip and createBlip(blip, coords)
+				})
+			end
 		end
+
+		::skipLoop::
 	end
+<<<<<<< HEAD
 })
 
 local function UpdateShops(shops)
@@ -143,3 +246,6 @@ AddStateBagChangeHandler("AllShops", "global", function(bagName, key, value)
 	if not value then return end
 	UpdateShops(value)
 end)
+=======
+end
+>>>>>>> 02fdf3aa089d8f9edb52ce53d575e11ad44bbf5d

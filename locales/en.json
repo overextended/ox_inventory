@@ -17,6 +17,8 @@
   "ui_ctrl_shift_lmb": "Fast move half a stack of items into another inventory",
   "ui_alt_lmb": "Fast use an item",
   "ui_ctrl_c": "When hovering over a weapon, copies it's serial number",
+  "ui_remove_ammo": "Remove ammo",
+  "ammo_type": "Ammo type",
   "$": "$",
   "male": "Male",
   "female": "Female",
@@ -46,6 +48,7 @@
   "buy_amount": "You must enter an amount to buy",
   "component_has": "This weapon already has a %s",
   "component_invalid": "This weapon is incompatible with %s",
+  "component_slot_occupied": "This weapon's %s slot is already occupied",
   "cannot_perform": "You can not perform this action",
   "cannot_carry": "You can not carry that much",
   "cannot_carry_other": "Target inventory can not hold that much",
@@ -84,5 +87,6 @@
   "dumpster": "Dumpster",
   "crafting_item": "Crafting %s",
   "crafting_bench": "Crafting Bench",
+  "open_crafting_bench": "Open Crafting Bench",
   "not_enough_durability": "%s does not have enough durability"
 }

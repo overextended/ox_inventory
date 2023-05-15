@@ -56,7 +56,7 @@ function server.setPlayerInventory(player, data)
 		inv.player.ped = GetPlayerPed(player.source)
 
 		if server.syncInventory then server.syncInventory(inv) end
-		TriggerClientEvent('ox_inventory:setPlayerInventory', player.source, Inventory.Drops, inventory, totalWeight, inv.player, player.source)
+		TriggerClientEvent('ox_inventory:setPlayerInventory', player.source, Inventory.Drops, inventory, totalWeight, inv.player)
 	end
 end
 exports('setPlayerInventory', server.setPlayerInventory)
@@ -210,7 +210,7 @@ lib.callback.register('ox_inventory:useItem', function(source, itemName, slot, m
 		if not data then return end
 
 		slot = data.slot
-		local durability = data.metadata?.durability
+		local durability = data.metadata?.durability --[[@as number|boolean|nil]]
 		local consume = item.consume
 
 		if durability and consume then
@@ -239,7 +239,7 @@ lib.callback.register('ox_inventory:useItem', function(source, itemName, slot, m
 		end
 
 		if item and data and data.count > 0 and data.name == item.name then
-			data = {name=data.name, label=data.label, count=data.count, slot=slot, metadata=data.metadata}
+			data = {name=data.name, label=data.metadata?.label or data.label, count=data.count, slot=slot, metadata=data.metadata}
 
 			if item.weapon then
 				inventory.weapon = inventory.weapon ~= slot and slot or nil
@@ -359,15 +359,180 @@ local function conversionScript()
 end
 
 RegisterCommand('convertinventory', function(source, args)
-	if source ~= 0 then return shared.warning('This command can only be executed with the server console.') end
+	if source ~= 0 then return warn('This command can only be executed with the server console.') end
 	if type(conversionScript) == 'function' then conversionScript() end
 	local arg = args[1]
 
 	local convert = arg and conversionScript[arg]
 
 	if not convert then
-		return shared.info('Invalid conversion argument. Valid options: esx, esxproperty, qb, linden')
+		return warn('Invalid conversion argument. Valid options: esx, esxproperty, qb, linden')
 	end
 
 	CreateThread(convert)
 end, true)
+
+
+lib.addCommand({'additem', 'giveitem'}, {
+	help = 'Gives an item to a player with the given id',
+	params = {
+		{ name = 'target', type = 'playerId', help = 'The player to receive the item' },
+		{ name = 'item', type = 'string', help = 'The name of the item' },
+		{ name = 'count', type = 'number', help = 'The amount of the item to give', optional = true },
+		{ name = 'type', help = 'Sets the "type" metadata to the value', optional = true },
+	},
+	restricted = 'group.admin',
+}, function(source, args)
+	local item = Items(args.item)
+
+	if item then
+		local inventory = Inventory(args.target)
+		local count = args.count or 1
+
+		if not inventory then
+			return print(('No user is connected with the given id (%s)'):format(args.target))
+		end
+
+		if not Inventory.AddItem(inventory, item.name, count, args.type and { type = tonumber(args.type) or args.type }) then
+			return print(('Failed to give %sx %s to player %s'):format(count, item.name, args.target))
+		end
+
+		source = Inventory(source) or { label = 'console', owner = 'console' }
+
+		if server.loglevel > 0 then
+			lib.logger(source.owner, 'admin', ('"%s" gave %sx %s to "%s"'):format(source.label, count, item.name, inventory.label))
+		end
+	end
+end)
+
+lib.addCommand('removeitem', {
+	help = 'Removes an item to a player with the given id',
+	params = {
+		{ name = 'target', type = 'playerId', help = 'The player to remove the item from' },
+		{ name = 'item', type = 'string', help = 'The name of the item' },
+		{ name = 'count', type = 'number', help = 'The amount of the item to take' },
+		{ name = 'type', help = 'Only remove items with a matching metadata "type"', optional = true },
+	},
+	restricted = 'group.admin',
+}, function(source, args)
+	local item = Items(args.item)
+
+	if item and args.count > 0 then
+		local inventory = Inventory(args.target)
+
+		if not inventory then
+			return print(('No user is connected with the given id (%s)'):format(args.target))
+		end
+
+		if not Inventory.RemoveItem(inventory, item.name, args.count, args.type and { type = tonumber(args.type) or args.type }, nil, true) then
+			return print(('Failed to remove %sx %s from player %s'):format(args.count, item.name, args.target))
+		end
+
+		source = Inventory(source) or {label = 'console', owner = 'console'}
+
+		if server.loglevel > 0 then
+			lib.logger(source.owner, 'admin', ('"%s" removed %sx %s from "%s"'):format(source.label, args.count, item.name, inventory.label))
+		end
+	end
+end)
+
+lib.addCommand('setitem', {
+	help = 'Sets the item count for a player, removing or adding as needed',
+	params = {
+		{ name = 'target', type = 'playerId', help = 'The player to set the items for' },
+		{ name = 'item', type = 'string', help = 'The name of the item' },
+		{ name = 'count', type = 'number', help = 'The amount of items to set', optional = true },
+		{ name = 'type', help = 'Add or remove items with the metadata "type"', optional = true },
+	},
+	restricted = 'group.admin',
+}, function(source, args)
+	local item = Items(args.item)
+
+	if item then
+		local inventory = Inventory(args.target)
+
+		if not inventory then
+			return print(('No user is connected with the given id (%s)'):format(args.target))
+		end
+
+		if not Inventory.SetItem(inventory, item.name, args.count or 0, args.type and { type = tonumber(args.type) or args.type }) then
+			return print(('Failed to set %s count to %sx for player %s'):format(item.name, args.count, args.target))
+		end
+
+		source = Inventory(source) or {label = 'console', owner = 'console'}
+
+		if server.loglevel > 0 then
+			lib.logger(source.owner, 'admin', ('"%s" set "%s" %s count to %sx'):format(source.label, inventory.label, item.name, args.count))
+		end
+	end
+end)
+
+lib.addCommand('clearevidence', {
+	help = 'Clears a police evidence locker with the given id',
+	params = {
+		{ name = 'locker', type = 'number', help = 'The locker id to clear' },
+	},
+}, function(source, args)
+	if not server.isPlayerBoss then return end
+
+	local inventory = Inventory(source)
+	local group, grade = server.hasGroup(inventory, shared.police)
+	local hasPermission = group and server.isPlayerBoss(source, group, grade)
+
+	if hasPermission then
+		MySQL.query('DELETE FROM ox_inventory WHERE name = ?', {('evidence-%s'):format(args.evidence)})
+	end
+end)
+
+lib.addCommand('takeinv', {
+	help = 'Confiscates the target inventory, to restore with /restoreinv',
+	params = {
+		{ name = 'target', type = 'playerId', help = 'The player to confiscate items from' },
+	},
+	restricted = 'group.admin',
+}, function(source, args)
+	Inventory.Confiscate(args.target)
+end)
+
+lib.addCommand({'restoreinv', 'returninv'}, {
+	help = 'Restores a previously confiscated inventory for the target',
+	params = {
+		{ name = 'target', type = 'playerId', help = 'The player to restore items to' },
+	},
+	restricted = 'group.admin',
+}, function(source, args)
+	Inventory.Return(args.target)
+end)
+
+lib.addCommand('clearinv', {
+	help = 'Wipes all items from the target inventory',
+	params = {
+		{ name = 'invId', help = 'The inventory to wipe items from' },
+	},
+	restricted = 'group.admin',
+}, function(source, args)
+	Inventory.Clear(tonumber(args.target) or args.target)
+end)
+
+lib.addCommand('saveinv', {
+	help = 'Save all pending inventory changes to the database',
+	params = {
+		{ name = 'lock', help = 'Lock inventory access, until restart or saved without a lock', optional = true },
+	},
+	restricted = 'group.admin',
+}, function(source, args)
+	server.saveInventories(args.lock == 'true')
+end)
+
+lib.addCommand('viewinv', {
+	help = 'Inspect the target inventory without allowing interactions',
+	params = {
+		{ name = 'invId', help = 'The inventory to inspect' },
+	},
+	restricted = 'group.admin',
+}, function(source, args)
+	local invId = tonumber(args.invId) or args.invId
+	local inventory = invId ~= source and Inventory(invId)
+
+	if inventory then TriggerClientEvent('ox_inventory:viewInventory', source, inventory) end
+end)

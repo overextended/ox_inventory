@@ -7,6 +7,7 @@ RegisterNetEvent('ox:setGroup', function(name, grade)
 	OnPlayerData('groups')
 end)
 
+---@diagnostic disable-next-line: duplicate-set-field
 function client.setPlayerStatus(values)
 	for name, value in pairs(values) do
 		-- Thanks to having status values setup out of 1000000 (matching esx_status's standard)
@@ -20,6 +21,7 @@ function client.setPlayerStatus(values)
 			value = value * 0.0001
 		end
 
+		---@diagnostic disable-next-line: undefined-global
 		player.addStatus(name, value)
 	end
 end

@@ -29,7 +29,11 @@ const ItemNotification = React.forwardRef(
       <div
         className="item-notification-item-box"
         style={{
+<<<<<<< HEAD
           backgroundImage: `url(${props.item.image.indexOf("http") == 0 ? `${props.item.image}` : `${imagepath}/${props.item.image}.png`})` || 'none',
+=======
+          backgroundImage: `url(${props.item.image.indexOf("https") == 0 ? `${props.item.image}` : `${imagepath}/${props.item.image}.png`})` || 'none',
+>>>>>>> 02fdf3aa089d8f9edb52ce53d575e11ad44bbf5d
           ...props.style,
         }}
         ref={ref}

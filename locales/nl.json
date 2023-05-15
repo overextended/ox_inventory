@@ -67,7 +67,7 @@
   "unable_stack_items": "Je kan deze items niet op elkaar stapelen",
   "police_evidence": "Politie bewijskluis",
   "open_police_evidence": "Open Politie bewijskluis",
-  "open_stash": "Open Stash",
+  "open_stash": "Open Opslag",
   "locker_number": "Kluisnummer",
   "locker_no_value": "Je moet een waarde invullen om de kluis te openen",
   "locker_must_number": "De waarde moet een nummer zijn",
@@ -81,5 +81,9 @@
   "no_durability": "Levensduur van item is verbruikt",
   "cannot_give": "Niet in staat om %s %s te geven aan het doel",
   "evidence_cannot_take": "Je rang is niet hoog genoeg om van de bewijskluis te pakken",
-  "dumpster": "Afvalcontainer"
+  "dumpster": "Afvalcontainer",
+  "crafting_item": "%s aan het maken",
+  "crafting_bench": "Werkbank",
+  "open_crafting_bench": "Open Werkbank",
+  "not_enough_durability": "%s heeft niet genoeg levensduur."
 }

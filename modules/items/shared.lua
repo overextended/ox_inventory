@@ -104,7 +104,8 @@ do
 
 			if type == 'Weapons' then
 				---@cast v OxWeapon
-				v.hash = joaat(v.model or k)
+				v.model = v.model or k -- actually weapon type or such? model for compatibility
+				v.hash = joaat(v.model)
 				v.stack = v.throwable and true or false
 				v.durability = v.durability or 1
 				v.weapon = true
@@ -139,6 +140,7 @@ do
 		newItem(v)
 	end
 
+<<<<<<< HEAD
 	GlobalState.NewUsableItem = ItemList
 	
 	local AddUsableItem = function(name, data)
@@ -234,4 +236,7 @@ do
 		toprint = toprint .. string.rep(" ", indent-2) .. "}"
 		return toprint
 	end
+=======
+	ItemList.cash = ItemList.money
+>>>>>>> 02fdf3aa089d8f9edb52ce53d575e11ad44bbf5d
 end

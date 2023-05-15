@@ -17,6 +17,8 @@
   "ui_ctrl_shift_lmb": "快捷移交一半的物品",
   "ui_alt_lmb": "物品快捷使用",
   "ui_ctrl_c": "將鼠標懸停在武器上時，複製其序列號",
+  "ui_remove_ammo": "移除彈藥",
+  "ammo_type": "彈藥類型",
   "$": "$",
   "male": "男",
   "female": "女",
@@ -84,5 +86,6 @@
   "dumpster": "垃圾桶",
   "crafting_item": "製作 %s",
   "crafting_bench": "工作台",
+  "open_crafting_bench": "打開工作台",
   "not_enough_durability": "%s 沒有足夠的耐久度"
 }

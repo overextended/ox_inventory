@@ -1,5 +1,6 @@
 if not lib then return end
 
+---@diagnostic disable-next-line: duplicate-set-field
 function client.setPlayerData(key, value)
 	PlayerData[key] = value
 	OnPlayerData(key, value)
@@ -26,7 +27,7 @@ end
 local Utils = client.utils
 local Weapon = client.weapon
 
-local function onLogout()
+function client.onLogout()
 	if not PlayerData.loaded then return end
 
 	if client.parachute then
@@ -34,8 +35,19 @@ local function onLogout()
 		client.parachute = false
 	end
 
-	client.closeInventory()
+	for _, point in pairs(client.drops) do
+		if point.entity then
+			Utils.DeleteObject(point.entity)
+		end
+
+		point:remove()
+	end
+
 	PlayerData.loaded = false
+	client.drops = nil
+
+	client.closeInventory()
+	client.wipeShops()
 	ClearInterval(client.interval)
 	ClearInterval(client.tick)
 	Weapon.Disarm()
@@ -56,4 +68,4 @@ if not func or err then
 	return error(err)
 end
 
-func(onLogout, client.weapon)
+func(client.onLogout, client.weapon)

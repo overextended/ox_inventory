@@ -27,7 +27,9 @@ const InventoryContext: React.FC = () => {
 
   const handleClick = (data: DataProps) => {
     if (!item) return;
+
     dispatch(setContextMenu({ coords: null }));
+
     switch (data && data.action) {
       case 'use':
         onUse({ name: item.name, slot: item.slot });
@@ -40,6 +42,9 @@ const InventoryContext: React.FC = () => {
         break;
       case 'remove':
         fetchNui('removeComponent', { component: data?.component, slot: data?.slot });
+        break;
+      case 'removeAmmo':
+        fetchNui('removeAmmo', item.slot);
         break;
       case 'copy':
         setClipboard(data.serial || '');
@@ -69,6 +74,9 @@ const InventoryContext: React.FC = () => {
         <MenuItem onClick={() => handleClick({ action: 'give' })}>{Locale.ui_give || 'Give'}</MenuItem>
         <MenuItem onClick={() => handleClick({ action: 'drop' })}>{Locale.ui_drop || 'Drop'}</MenuItem>
         {item && item.metadata?.serial && <Divider />}
+        {item && item.metadata?.ammo > 0 && (
+          <MenuItem onClick={() => handleClick({ action: 'removeAmmo' })}>{Locale.ui_remove_ammo}</MenuItem>
+        )}
         {item && item.metadata?.serial && (
           <MenuItem onClick={() => handleClick({ action: 'copy', serial: item.metadata?.serial })}>
             {Locale.ui_copy}

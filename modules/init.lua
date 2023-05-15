@@ -8,7 +8,7 @@ shared = {
 	framework = GetConvar('inventory:framework', 'esx'),
 	playerslots = GetConvarInt('inventory:slots', 50),
 	playerweight = GetConvarInt('inventory:weight', 30000),
-	target = GetConvar('inventory:target', 'false') == 'true',
+	target = GetConvarInt('inventory:target', 0) == 1,
 	police = json.decode(GetConvar('inventory:police', '["police", "sheriff"]')),
 }
 
@@ -28,10 +28,10 @@ end
 if IsDuplicityVersion() then
 	server = {
 		loglevel = GetConvarInt('inventory:loglevel', 1),
-		randomprices = GetConvar('inventory:randomprices', 'false') == 'true',
-		randomloot = GetConvar('inventory:randomloot', 'true') == 'true',
+		randomprices = GetConvarInt('inventory:randomprices', 0) == 1,
+		randomloot = GetConvarInt('inventory:randomloot', 1) == 1,
 		evidencegrade = GetConvarInt('inventory:evidencegrade', 2),
-		trimplate = GetConvar('inventory:trimplate', 'true') == 'true',
+		trimplate = GetConvarInt('inventory:trimplate', 1) == 1,
 		vehicleloot = json.decode(GetConvar('inventory:vehicleloot', [[
 			[
 				["cola", 1, 1],
@@ -55,22 +55,22 @@ if IsDuplicityVersion() then
 else
 	PlayerData = {}
 	client = {
-		autoreload = GetConvar('inventory:autoreload', 'false') == 'true',
-		screenblur = GetConvar('inventory:screenblur', 'true') == 'true',
+		autoreload = GetConvarInt('inventory:autoreload', 0) == 1,
+		screenblur = GetConvarInt('inventory:screenblur', 1) == 1,
 		keys = json.decode(GetConvar('inventory:keys', '')) or { 'F2', 'K', 'TAB' },
 		enablekeys = json.decode(GetConvar('inventory:enablekeys', '[249]')),
-		aimedfiring = GetConvar('inventory:aimedfiring', 'false') == 'true',
-		giveplayerlist = GetConvar('inventory:giveplayerlist', 'false') == 'true',
-		weaponanims = GetConvar('inventory:weaponanims', 'true') == 'true',
-		itemnotify = GetConvar('inventory:itemnotify', 'true') == 'true',
+		aimedfiring = GetConvarInt('inventory:aimedfiring', 0) == 1,
+		giveplayerlist = GetConvarInt('inventory:giveplayerlist', 0) == 1,
+		weaponanims = GetConvarInt('inventory:weaponanims', 1) == 1,
+		itemnotify = GetConvarInt('inventory:itemnotify', 1) == 1,
+		dropprops = GetConvarInt('inventory:dropprops', 0) == 1,
+		weaponmismatch = GetConvarInt('inventory:weaponmismatch', 1) == 1,
 	}
 end
 
 function shared.print(...) print(string.strjoin(' ', ...)) end
 
 function shared.info(...) shared.print('^2[info]^7', ...) end
-
-function shared.warning(...) shared.print('^3[warning]^7', ...) end
 
 -- People like ignoring errors for some reason
 local function spamError(err)
@@ -134,7 +134,7 @@ local success, msg = lib.checkDependency('oxmysql', '2.4.0')
 
 if not success then return spamError(msg) end
 
-success, msg = lib.checkDependency('ox_lib', '2.19.0')
+success, msg = lib.checkDependency('ox_lib', '3.0.0')
 
 if not success then spamError(msg) end
 
@@ -148,7 +148,7 @@ if shared.target then
 
 	if not ox_target and not qtarget then
 		shared.target = false
-		return shared.warning('targeting resource is not loaded - it should start before ox_inventory')
+		return warn('targeting resource is not loaded - it should start before ox_inventory')
 	end
 
 	shared.target = ox_target and 'ox_target' or 'qtarget'
