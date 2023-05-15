@@ -537,6 +537,10 @@ local function useSlot(slot)
 
 					if cache.vehicle then
 						SetAmmoInClip(playerPed, currentWeapon.hash, newAmmo)
+
+						if cache.seat > -1 or IsVehicleStopped(cache.vehicle) then
+							TaskReloadWeapon(playerPed, true)
+						end
 					else
 						AddAmmoToPed(playerPed, currentWeapon.hash, addAmmo)
 						Wait(100)
