@@ -468,6 +468,8 @@ local function useSlot(slot)
 			useItem(data, function(result)
 				if result then
 					currentWeapon = Weapon.Equip(item, data)
+
+					if client.weaponanims then Wait(500) end
 				end
 			end)
 		elseif currentWeapon then
