@@ -511,7 +511,7 @@ local function hasActiveInventory(playerId, owner)
 	local activePlayer = activeIdentifiers[owner]
 
 	if activePlayer then
-		local inventory = Inventory(playerId)
+		local inventory = Inventory(activePlayer)
 
 		if inventory then
 			if GetPlayerEndpoint(activePlayer) then
