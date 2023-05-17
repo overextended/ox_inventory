@@ -150,7 +150,7 @@ end)
 
 -----------------------------------------------------------------------------------------------
 
-exports('Items', getItem)
-exports('ItemList', getItem)
+exports('Items', function(item) return getItem(nil, item) end)
+exports('ItemList', function(item) return getItem(nil, item) end)
 
 return Items
