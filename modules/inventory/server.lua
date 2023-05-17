@@ -507,6 +507,29 @@ end
 -- This should be handled by frameworks, but sometimes isn't or is exploitable in some way.
 local activeIdentifiers = {}
 
+local function hasActiveInventory(playerId, owner)
+	local activePlayer = activeIdentifiers[owner]
+
+	if activePlayer then
+		local inventory = Inventory(playerId)
+
+		if inventory then
+			if GetPlayerEndpoint(activePlayer) then
+				DropPlayer(playerId, ("Character identifier '%s' is already active."):format(owner))
+
+				return true
+			end
+
+			Inventory.CloseAll(inventory)
+			db.savePlayer(owner, json.encode(inventory:minimal()))
+			Inventory.Remove(inventory)
+			Wait(100)
+		end
+	end
+
+	activeIdentifiers[owner] = playerId
+end
+
 ---@param id string|number
 ---@param label string|nil
 ---@param invType string
@@ -515,17 +538,11 @@ local activeIdentifiers = {}
 ---@param maxWeight number
 ---@param owner string | number | boolean
 ---@param items? table
----@return OxInventory
+---@return OxInventory?
 --- This should only be utilised internally!
 --- To create a stash, please use `exports.ox_inventory:RegisterStash` instead.
 function Inventory.Create(id, label, invType, slots, weight, maxWeight, owner, items, groups)
-	if invType == 'player' then
-		if activeIdentifiers[owner] then
-			DropPlayer(tostring(id), ("Character identifier '%s' is already active."):format(owner))
-		end
-
-		activeIdentifiers[owner] = 1
-	end
+	if invType == 'player' and hasActiveInventory(id, owner) then return end
 
 	local self = {
 		id = id,
@@ -1418,6 +1435,9 @@ end
 local function CustomDrop(prefix, items, coords, slots, maxWeight, instance, model)
 	local dropId = generateInvId()
 	local inventory = Inventory.Create(dropId, ('%s %s'):format(prefix, dropId:gsub('%D', '')), 'drop', slots or shared.playerslots, 0, maxWeight or shared.playerweight, false)
+
+	if not inventory then return end
+
 	local items, weight = generateItems(inventory, 'drop', items)
 
 	inventory.items = items
@@ -1442,6 +1462,9 @@ exports('CreateDropFromPlayer', function(playerId)
 
 	local dropId = generateInvId()
 	local inventory = Inventory.Create(dropId, ('Drop %s'):format(dropId:gsub('%D', '')), 'drop', playerInventory.slots, playerInventory.weight, playerInventory.maxWeight, false, table.clone(playerInventory.items))
+
+	if not inventory then return end
+
 	local coords = GetEntityCoords(GetPlayerPed(playerId))
 	inventory.coords = vec3(coords.x, coords.y, coords.z-0.2)
 	Inventory.Drops[dropId] = {
@@ -1498,6 +1521,9 @@ local function dropItem(source, data)
 
 	local dropId = generateInvId('drop')
 	local inventory = Inventory.Create(dropId, ('Drop %s'):format(dropId:gsub('%D', '')), 'drop', shared.playerslots, toData.weight, shared.playerweight, false, {[data.toSlot] = toData})
+
+	if not inventory then return end
+
 	inventory.coords = data.coords
 	Inventory.Drops[dropId] = {coords = inventory.coords, instance = data.instance}
 	playerInventory.changed = true
@@ -2555,6 +2581,8 @@ function Inventory.CreateTemporaryStash(properties)
 
 	local name, slots, maxWeight, coords = checkStashProperties(properties)
 	local inventory = Inventory.Create(name, properties.label, 'temp', slots, 0, maxWeight, properties.owner, {}, properties.groups)
+
+	if not inventory then return end
 
 	inventory.items, inventory.weight = generateItems(inventory, 'drop', properties.items)
 	inventory.coords = coords
