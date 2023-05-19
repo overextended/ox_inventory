@@ -660,7 +660,7 @@ local function registerCommands()
 		local vehicleHash = GetEntityModel(vehicle)
 		local vehicleClass = GetVehicleClass(vehicle)
 		local checkVehicle = Vehicles.Storage[vehicleHash]
-
+		
 		-- No storage or no glovebox
 		if (checkVehicle == 0 or checkVehicle == 2) or (not Vehicles.glovebox[vehicleClass] and not Vehicles.glovebox.models[vehicleHash]) then return end
 
@@ -745,7 +745,9 @@ local function registerCommands()
 			local vehicleClass = GetVehicleClass(entity)
 			local checkVehicle = Vehicles.Storage[vehicleHash]
 
-			local isTrailer = (not IsThisModelABicycle(vehicleHash) and not IsThisModelABike(vehicleHash) and not IsThisModelABoat(vehicleHash) and not IsThisModelACar(vehicleHash) and not IsThisModelAHeli(vehicleHash) and not IsThisModelAJetski(vehicleHash) and not IsThisModelAPlane(vehicleHash) and not IsThisModelAQuadbike(vehicleHash) and not IsThisModelATrain(vehicleHash) and not IsThisModelAnAmphibiousCar(vehicleHash) and not IsThisModelAnAmphibiousQuadbike(vehicleHash))
+			local netId = VehToNet(entity)
+			local isTrailer = lib.callback.await('ox_inventory:isVehicleATrailer', false, netId)
+	
 			-- No storage or no glovebox
 			if (checkVehicle == 0 or checkVehicle == 1) or (not Vehicles.trunk[vehicleClass] and not Vehicles.trunk.models[vehicleHash]) then return end
 
