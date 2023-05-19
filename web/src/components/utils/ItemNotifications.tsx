@@ -32,7 +32,7 @@ const ItemNotification = React.forwardRef(
       <div
         className="item-notification-item-box"
         style={{
-          backgroundImage: getItemUrl(slotItem) || 'none',
+          backgroundImage: `url(${getItemUrl(slotItem) || 'none'}`,
           ...props.style,
         }}
         ref={ref}

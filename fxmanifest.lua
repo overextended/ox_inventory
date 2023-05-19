@@ -7,7 +7,7 @@ game 'gta5'
 --[[ Resource Information ]] --
 name 'ox_inventory'
 author 'Overextended'
-version      '2.27.1'
+version '2.29.2'
 repository 'https://github.com/overextended/ox_inventory'
 description 'Slot-based inventory with item metadata support'
 
@@ -23,10 +23,10 @@ shared_script '@ox_lib/init.lua'
 
 server_scripts {
 	'@oxmysql/lib/MySQL.lua',
-	'modules/init.lua'
+	'init.lua'
 }
 
-client_script 'modules/init.lua'
+client_script 'init.lua'
 
 ui_page 'web/build/index.html'
 

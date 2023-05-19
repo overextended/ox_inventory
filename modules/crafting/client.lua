@@ -2,17 +2,15 @@ if not lib then return end
 
 local CraftingBenches = {}
 local Items = require 'modules.items.client'
-local locations = shared.target == 'ox_target' and 'zones' or 'points'
 local createBlip = require 'modules.utils.client'.CreateBlip
 
 ---@param id number
 ---@param data table
 local function createCraftingBench(id, data)
 	CraftingBenches[id] = {}
-	local benchLocations = data[locations]
 	local recipes = data.items
 
-	if recipes and benchLocations then
+	if recipes then
 		data.slots = #recipes
 
 		for i = 1, data.slots do
@@ -62,7 +60,7 @@ local function createCraftingBench(id, data)
 					createBlip(blip, zone.coords)
 				end
 			end
-		else
+		elseif data.points then
 			data.zones = nil
 
 			---@param point CPoint
