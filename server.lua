@@ -206,6 +206,13 @@ lib.callback.register('ox_inventory:openInventory', function(source, invType, da
 	return openInventory(source, invType, data)
 end)
 
+---@param netId number
+lib.callback.register('ox_inventory:isVehicleATrailer', function(source, netId)
+	local entity = NetworkGetEntityFromNetworkId(netId)
+	local retval = GetVehicleType(entity)
+	return retval == 'trailer'
+end)
+
 ---@param playerId number
 ---@param invType string
 ---@param data string|number|table
