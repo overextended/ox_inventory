@@ -184,6 +184,10 @@ local function loadInventoryData(data, player)
 			local model, class = lib.callback.await('ox_inventory:getVehicleData', source, data.netid)
 			local storage = Vehicles[data.type].models[model] or Vehicles[data.type][class]
 
+			if not storage then
+				return shared.info('Failed to load vehicle inventory configuration (vehicle does not have specific inventory configuration data/vehicles.lua).')
+			end
+
 			if Ox then
 				local vehicle = Ox.GetVehicle(entity)
 
