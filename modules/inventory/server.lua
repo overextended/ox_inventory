@@ -136,7 +136,7 @@ local function loadInventoryData(data, player)
 	end
 
 	if data.type == 'trunk' or data.type == 'glovebox' then
-		local plate = data.id:sub(6)
+		local plate = data.id:sub(data.type:len() + 1)
 
 		if server.trimplate then
 			plate = string.strtrim(plate)
