@@ -1,6 +1,6 @@
 import React from 'react';
 import { DragSource, Inventory, InventoryType, Slot, SlotWithItem } from '../../typings';
-import { useDrag, useDragDropManager, useDrop } from 'react-dnd';
+import { useDrag, useDrop } from 'react-dnd';
 import { useAppDispatch, useAppSelector } from '../../store';
 import WeightBar from '../utils/WeightBar';
 import { onDrop } from '../../dnd/onDrop';
@@ -13,9 +13,9 @@ import { Locale } from '../../store/locale';
 import { Tooltip } from '@mui/material';
 import SlotTooltip from './SlotTooltip';
 import { setContextMenu } from '../../store/inventory';
+import { imagepath } from '../../store/imagepath';
 import { onCraft } from '../../dnd/onCraft';
-import useNuiEvent from '../../hooks/useNuiEvent';
-import { ItemsPayload } from '../../reducers/refreshSlots';
+import { relative } from 'path';
 
 interface SlotProps {
   inventory: Inventory;
@@ -23,7 +23,6 @@ interface SlotProps {
 }
 
 const InventorySlot: React.FC<SlotProps> = ({ inventory, item }) => {
-  const manager = useDragDropManager();
   const isBusy = useAppSelector(selectIsBusy);
   const dispatch = useAppDispatch();
 
@@ -45,7 +44,7 @@ const InventorySlot: React.FC<SlotProps> = ({ inventory, item }) => {
                 name: item.name,
                 slot: item.slot,
               },
-              image: item?.name && `url(${getItemUrl(item) || 'none'}`,
+              image: item?.name ? getItemUrl(item as SlotWithItem) : 'none',
             }
           : null,
       canDrag,
@@ -88,19 +87,6 @@ const InventorySlot: React.FC<SlotProps> = ({ inventory, item }) => {
     }),
     [isBusy, inventory, item]
   );
-
-  useNuiEvent('refreshSlots', (data: { items?: ItemsPayload | ItemsPayload[] }) => {
-    if (!isDragging && !data.items) return;
-    if (!Array.isArray(data.items)) return;
-
-    const itemSlot = data.items.find(
-      (dataItem) => dataItem.item.slot === item.slot && dataItem.inventory === inventory.id
-    );
-
-    if (!itemSlot) return;
-
-    manager.dispatch({ type: 'dnd-core/END_DRAG' });
-  });
 
   const connectRef = (element: HTMLDivElement) => drag(drop(element));
 
@@ -146,47 +132,36 @@ const InventorySlot: React.FC<SlotProps> = ({ inventory, item }) => {
               ? 'brightness(80%) grayscale(100%)'
               : undefined,
           opacity: isDragging ? 0.4 : 1.0,
-          backgroundImage: `url(${item?.name ? getItemUrl(item as SlotWithItem) : 'none'}`,
-          border: isOver ? '1px dashed rgba(255,255,255,0.4)' : '',
+          backgroundImage: getItemUrl(item as SlotWithItem) || 'none',
+          border: isOver ? '1px solid rgba(37,39,43,0.4)' : '',
         }}
       >
-        {isSlotWithItem(item) && (
+        {(isSlotWithItem(item) && (
           <div className="item-slot-wrapper">
-            <div
-              className={
-                inventory.type === 'player' && item.slot <= 5
-                  ? 'item-hotslot-header-wrapper'
-                  : 'item-slot-header-wrapper'
-              }
-            >
-              {inventory.type === 'player' && item.slot <= 5 && (
-                <div className="inventory-slot-number">{item.slot}</div>
-              )}
+            <div className="item-slot-header-wrapper">
               <div className="item-slot-info-wrapper">
-                <p>
-                  {item.weight > 0
-                    ? item.weight >= 1000
+                {item.count > 0 && <p>{item.count ? item.count.toLocaleString('en-us') : ''}</p>}
+                {item.weight > 0 && (
+                  <p>
+                    {item.weight > 0
                       ? `${(item.weight / 1000).toLocaleString('en-us', {
                           minimumFractionDigits: 2,
-                        })}kg `
-                      : `${item.weight.toLocaleString('en-us', {
-                          minimumFractionDigits: 0,
-                        })}g `
-                    : ''}
-                </p>
-                <p>{item.count ? item.count.toLocaleString('en-us') + `x` : ''}</p>
+                        })}`
+                      : ''}
+                  </p>
+                )}
               </div>
             </div>
             <div>
-              {inventory.type !== 'shop' && item?.durability !== undefined && (
-                <WeightBar percent={item.durability} durability />
-              )}
               {inventory.type === 'shop' && item?.price !== undefined && (
                 <>
-                  {item?.currency !== 'money' && item.currency !== 'black_money' && item.price > 0 && item.currency ? (
+                  {item?.currency !== 'money' &&
+                  item?.currency !== 'black_money' &&
+                  item.price > 0 &&
+                  item?.currency ? (
                     <div className="item-slot-currency-wrapper">
                       <img
-                        src={item.currency ? getItemUrl(item.currency) : 'none'}
+                        src={item?.currency ? `${`${imagepath}/${item?.currency}.png`}` : ''}
                         alt="item-image"
                         style={{
                           imageRendering: '-webkit-optimize-contrast',
@@ -219,10 +194,21 @@ const InventorySlot: React.FC<SlotProps> = ({ inventory, item }) => {
                 <div className="inventory-slot-label-text">
                   {item.metadata?.label ? item.metadata.label : Items[item.name]?.label || item.name}
                 </div>
+                {inventory.type !== 'shop' && item?.durability !== undefined && (
+                  <WeightBar percent={item.durability} durability />
+                )}
+                {item?.slot <= 5 &&
+                  inventory.type !== 'shop' &&
+                  inventory.type !== 'crafting' &&
+                  inventory.type === 'player' && <div className="inventory-first-slots"> {item?.slot} </div>}
               </div>
             </div>
           </div>
-        )}
+        )) ||
+          (item?.slot <= 5 &&
+            inventory.type !== 'shop' &&
+            inventory.type !== 'crafting' &&
+            inventory.type === 'player' && <div className="inventory-first-slots"> {item?.slot} </div>)}
       </div>
     </Tooltip>
   );

@@ -23,13 +23,14 @@ debugData([
         slots: 50,
         name: 'Bob Smith',
         weight: 3000,
-        maxWeight: 5000,
+        maxWeight: 25000,
         items: [
           {
             slot: 1,
             name: 'iron',
             weight: 3000,
             metadata: {
+              durability: 100,
               description: `name: Svetozar Miletic  \n Gender: Male`,
               ammo: 3,
               mustard: '60%',
@@ -38,20 +39,26 @@ debugData([
             },
             count: 5,
           },
-          { slot: 2, name: 'powersaw', weight: 0, count: 1, metadata: { durability: 75 } },
+          { slot: 2, name: 'powersaw', weight: 10, count: 1, metadata: { durability: 75 } },
           { slot: 3, name: 'copper', weight: 100, count: 12, metadata: { type: 'Special' } },
           {
             slot: 4,
             name: 'water',
             weight: 100,
             count: 1,
-            metadata: { description: 'Generic item description' },
+            metadata: { description: 'Generic item description', durability: 90 },
           },
           { slot: 5, name: 'water', weight: 100, count: 1 },
-          { slot: 6, name: 'backwoods', weight: 100, count: 1, metadata: {
-            label: 'Russian Cream',
-            imageurl: "https://i.imgur.com/2xHhTTz.png"
-          }},
+          {
+            slot: 6,
+            name: 'backwoods',
+            weight: 100,
+            count: 1,
+            metadata: {
+              label: 'Russian Cream',
+              imageurl: 'https://i.imgur.com/2xHhTTz.png',
+            },
+          },
         ],
       },
       rightInventory: {

@@ -32,39 +32,36 @@ const InventoryHotbar: React.FC = () => {
           <div
             className="hotbar-item-slot"
             style={{
-              backgroundImage: `url(${item?.name ? getItemUrl(item as SlotWithItem) : 'none'}`,
+              backgroundImage: getItemUrl(item as SlotWithItem) || 'none',
             }}
             key={`hotbar-${item.slot}`}
           >
-            {isSlotWithItem(item) && (
+            {(isSlotWithItem(item) && (
               <div className="item-slot-wrapper">
                 <div className="hotbar-slot-header-wrapper">
-                  <div className="inventory-slot-number">{item.slot}</div>
                   <div className="item-slot-info-wrapper">
+                    <p>{item.count ? item.count.toLocaleString('en-us') : ''}</p>
                     <p>
                       {item.weight > 0
-                        ? item.weight >= 1000
-                          ? `${(item.weight / 1000).toLocaleString('en-us', {
-                              minimumFractionDigits: 2,
-                            })}kg `
-                          : `${item.weight.toLocaleString('en-us', {
-                              minimumFractionDigits: 0,
-                            })}g `
+                        ? `${(item.weight / 100).toLocaleString('en-us', {
+                            minimumFractionDigits: 2,
+                          })}`
                         : ''}
                     </p>
-                    <p>{item.count ? item.count.toLocaleString('en-us') + `x` : ''}</p>
                   </div>
                 </div>
                 <div>
-                  {item?.durability !== undefined && <WeightBar percent={item.durability} durability />}
                   <div className="inventory-slot-label-box">
                     <div className="inventory-slot-label-text">
                       {item.metadata?.label ? item.metadata.label : Items[item.name]?.label || item.name}
                     </div>
+                    {item?.durability !== undefined && <WeightBar percent={item.durability} durability />}
+                    {item?.slot <= 5 && <div className="inventory-first-slots"> {item?.slot} </div>}
                   </div>
                 </div>
               </div>
-            )}
+            )) ||
+              (item?.slot <= 5 && <div className="inventory-first-slots"> {item?.slot} </div>)}
           </div>
         ))}
       </div>
