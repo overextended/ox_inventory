@@ -113,7 +113,7 @@ local function removeResourceHooks(resource, id)
         for i = #hooks, 1, -1 do
 			local hook = hooks[i]
 
-            if hook.resource == resource and (not id or hook.id == id) then
+            if hook.resource == resource and (not id or hook.hookId == id) then
                 table.remove(hooks, i)
             end
         end
