@@ -2125,7 +2125,7 @@ function Inventory.GetSlotsWithItem(inv, itemName, metadata, strict)
 	local ostime = os.time()
 
 	for _, slotData in pairs(inventory.items) do
-		if slotData and slotData.name == item.name and tablematch(slotData.metadata, metadata) then
+		if slotData and slotData.name == item.name and (not metadata or tablematch(slotData.metadata, metadata)) then
 			n += 1
 
 			local durability = slotData.metadata.durability
