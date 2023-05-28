@@ -21,7 +21,7 @@ debugData([
         id: 'test',
         type: 'player',
         slots: 50,
-        name: 'Bob Smith',
+        label: 'Bob Smith',
         weight: 3000,
         maxWeight: 5000,
         items: [
@@ -58,7 +58,7 @@ debugData([
         id: 'shop',
         type: 'crafting',
         slots: 50,
-        name: 'Bob Smith',
+        label: 'Bob Smith',
         weight: 3000,
         maxWeight: 5000,
         items: [
