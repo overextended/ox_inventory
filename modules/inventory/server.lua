@@ -329,7 +329,7 @@ function Inventory.Set(inv, k, v)
 			if inv.type ~= 'player' then
 				if inv.player then
 					inv.type = 'player'
-				elseif inv.type == 'drop' and not next(inv.items) then
+				elseif inv.type == 'drop' and not next(inv.items) and not next(inv.openedBy) then
 					return Inventory.Remove(inv)
 				else
 					inv.time = os.time()
