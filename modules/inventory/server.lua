@@ -1788,8 +1788,9 @@ lib.callback.register('ox_inventory:swapItems', function(source, data)
 				toData.count = data.count
 				toData.slot = data.toSlot
 				toData.weight = Inventory.SlotWeight(Items(toData.name), toData)
-
-				if fromInventory.type == 'container' or sameInventory or (toInventory.weight + toData.weight <= toInventory.maxWeight) then
+                bypassWeight = toData.metadata.bypassWeight or false
+				
+				if fromInventory.type == 'container' or sameInventory or (toInventory.weight + toData.weight <= toInventory.maxWeight) or bypassWeight then
 					hookPayload.action = 'move'
 
 					if not TriggerEventHooks('swapItems', hookPayload) then return end
