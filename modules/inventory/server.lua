@@ -60,8 +60,8 @@ function OxInventory:closeInventory(noEvent)
 
 	if not inv then return end
 
-	inv:set('open', false)
 	inv.openedBy[self.id] = nil
+	inv:set('open', false)
 	self.open = false
 	self.currentShop = nil
 	self.containerSlot = nil
