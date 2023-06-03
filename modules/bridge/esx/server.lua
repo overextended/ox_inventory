@@ -1,10 +1,6 @@
 local playerDropped = ...
-local Inventory, Items
-
-CreateThread(function()
-	Inventory = require 'modules.inventory.server'
-	Items = require 'modules.items.server'
-end)
+local Inventory = require 'modules.inventory.server'
+local Items = require 'modules.items.server'
 
 AddEventHandler('esx:playerDropped', playerDropped)
 

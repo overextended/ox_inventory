@@ -408,11 +408,10 @@ function Inventory.SetSlot(inv, item, count, metadata, slot)
 	return currentSlot
 end
 
-local Items
+local Items = require 'modules.items.server'
 
 CreateThread(function()
 	TriggerEvent('ox_inventory:loadInventory', Inventory)
-	Items = require 'modules.items.server'
 
 	-- Require "set inventory:weaponmismatch 1" to enable experimental weapon checks.
 	-- Maybe need some tweaks, and will definitely need more hashes added to the ignore list.
