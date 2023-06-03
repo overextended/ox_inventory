@@ -46,7 +46,7 @@ local function setupPlayer(Player)
 	QBCore.Functions.AddPlayerField(Player.PlayerData.source, 'syncInventory', function(_, _, items, money)
 		Player.Functions.SetPlayerData('items', items)
 
-		if money.money then
+		if money.money and money.money ~= Player.Functions.GetMoney('cash') then
 			Player.Functions.SetMoney('cash', money.money, "Sync money with inventory")
 		end
 	end)
