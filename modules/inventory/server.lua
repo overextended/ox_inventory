@@ -1521,7 +1521,7 @@ local function dropItem(source, playerInventory, fromData, data)
     fromData.count -= data.count
     fromData.weight = Inventory.SlotWeight(Items(fromData.name), fromData)
 
-    if fromData.count < 0 then
+    if fromData.count < 1 then
         fromData = nil
     else
         toData.metadata = table.clone(toData.metadata)
