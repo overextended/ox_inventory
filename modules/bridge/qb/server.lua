@@ -39,14 +39,6 @@ local function setItemCompatibilityProps(item)
 end
 
 local function setupPlayer(Player)
-	QBCore.Functions.AddPlayerField(Player.PlayerData.source, 'syncInventory', function(_, _, items, money)
-		Player.Functions.SetPlayerData('items', items)
-
-		if money.money and money.money ~= Player.Functions.GetMoney('cash') then
-			Player.Functions.SetMoney('cash', money.money, "Sync money with inventory")
-		end
-	end)
-
 	Player.PlayerData.inventory = Player.PlayerData.items
 	Player.PlayerData.identifier = Player.PlayerData.citizenid
 
@@ -139,16 +131,16 @@ end
 
 ---@diagnostic disable-next-line: duplicate-set-field
 function server.syncInventory(inv)
-	local money = table.clone(server.accounts)
+	local accounts = Inventory.GetAccountItemCounts(inv)
 
-	for _, v in pairs(inv.items) do
-		if money[v.name] then
-			money[v.name] += v.count
+    if accounts then
+        local player = server.GetPlayerFromId(inv.id)
+        player.Functions.SetPlayerData('items', inv.items)
+
+        if accounts.money and accounts.money ~= player.Functions.GetMoney('cash') then
+			player.Functions.SetMoney('cash', accounts.money, "Sync money with inventory")
 		end
 	end
-
-	local player = server.GetPlayerFromId(inv.id)
-	player.syncInventory(inv.weight, inv.maxWeight, inv.items, money)
 end
 
 ---@diagnostic disable-next-line: duplicate-set-field

@@ -415,6 +415,22 @@ CreateThread(function()
     TriggerEvent('ox_inventory:loadInventory', Inventory)
 end)
 
+function Inventory.GetAccountItemCounts(inv)
+    inv = Inventory(inv)
+
+    if not inv then return end
+
+    local accounts = table.clone(server.accounts)
+
+	for _, v in pairs(inv.items) do
+		if accounts[v.name] then
+			accounts[v.name] += v.count
+		end
+	end
+
+    return accounts
+end
+
 ---@param item table
 ---@param slot table
 function Inventory.SlotWeight(item, slot, ignoreCount)

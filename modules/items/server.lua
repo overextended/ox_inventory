@@ -272,7 +272,7 @@ local TriggerEventHooks = require 'modules.hooks.server'
 
 ---@param inv inventory
 ---@param item OxServerItem
----@param metadata table<string, any> | string | nil
+---@param metadata any
 ---@param count number
 ---@return table, number
 ---Generates metadata for new items being created through AddItem, buyItem, etc.
