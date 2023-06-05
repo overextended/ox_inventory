@@ -28,11 +28,7 @@ SetTimeout(500, function()
 	end
 end)
 
--- Accounts that need to be synced with physical items
-server.accounts = {
-	money = 0,
-	black_money = 0,
-}
+server.accounts.black_money = 0
 
 ---@diagnostic disable-next-line: duplicate-set-field
 function server.setPlayerData(player)

@@ -33,11 +33,6 @@ SetTimeout(500, function()
     end
 end)
 
--- Accounts that need to be synced with physical items
-server.accounts = {
-    money = 0
-}
-
 RegisterNetEvent("ND:characterLoaded", function(character)
     if not character then return end
     character.identifier = character.id

@@ -104,11 +104,6 @@ SetTimeout(500, function()
 	for _, Player in pairs(QBCore.Functions.GetQBPlayers()) do setupPlayer(Player) end
 end)
 
--- Accounts that need to be synced with physical items
-server.accounts = {
-	money = 0
-}
-
 function server.UseItem(source, itemName, data)
 	local cb = QBCore.Functions.CanUseItem(itemName)
 	return cb and cb(source, data)

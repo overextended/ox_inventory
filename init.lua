@@ -53,6 +53,13 @@ if IsDuplicityVersion() then
 			]
 		]])),
 	}
+
+    local accounts = json.decode(GetConvar('inventory:accounts', '["money"]'))
+    server.accounts = table.create(0, #accounts)
+
+    for i = 1, #accounts do
+        server.accounts[accounts[i]] = 0
+    end
 else
 	PlayerData = {}
 	client = {
