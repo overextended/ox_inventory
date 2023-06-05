@@ -410,7 +410,10 @@ end
 
 local Items = require 'modules.items.server'
 
-CreateThread(function() TriggerEvent('ox_inventory:loadInventory', Inventory) end)
+CreateThread(function()
+    Inventory.accounts = server.accounts
+    TriggerEvent('ox_inventory:loadInventory', Inventory)
+end)
 
 ---@param item table
 ---@param slot table
@@ -2491,8 +2494,6 @@ lib.callback.register('ox_inventory:removeAmmoFromWeapon', function(source, slot
 		return true
 	end
 end)
-
-Inventory.accounts = server.accounts
 
 local function checkStashProperties(properties)
 	local name, slots, maxWeight, coords in properties
