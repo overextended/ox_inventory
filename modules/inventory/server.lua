@@ -2225,72 +2225,92 @@ end
 
 exports('GetItemCount', Inventory.GetItemCount)
 
-local function prepareSave(inv)
-	inv.changed = false
+---@param inv OxInventory
+---@param buffer table
+---@param time integer
+---@return integer | false | nil
+---@return table | nil
+local function prepareInventorySave(inv, buffer, time)
+    local n = 0
 
-	if inv.player then
-		if shared.framework ~= 'esx' then
-			return 1, { json.encode(minimal(inv)), inv.owner }
-		end
-	elseif inv.type == 'trunk' then
-		return 2, { json.encode(minimal(inv)), inv.dbId }
-	elseif inv.type == 'glovebox' then
-		return 3, { json.encode(minimal(inv)), inv.dbId }
-	else
-		return 4, { inv.owner or '', inv.dbId, json.encode(minimal(inv)) }
+    for k, v in pairs(inv.items) do
+        local durability = v.metadata.durability
+
+        if durability and durability > 100 and time >= durability then
+            v.metadata.durability = 0
+        end
+
+        if not inv.datastore and inv.changed then
+            n += 1
+            buffer[n] = {
+                name = v.name,
+                count = v.count,
+                slot = k,
+                metadata = next(v.metadata) and v.metadata or nil
+            }
+        end
 	end
+
+    if n == 0 then return end
+
+    local data = json.encode(buffer)
+    inv.changed = false
+    table.wipe(buffer)
+
+    if inv.player then
+        return shared.framework ~= 'esx' and 1, { data, inv.owner }
+    end
+
+    if inv.type == 'trunk' then
+        return 2, { data, inv.dbId }
+    end
+
+    if inv.type == 'glovebox' then
+        return 3, { data, inv.dbId }
+    end
+
+    return 4, { inv.owner or '', inv.dbId, data }
 end
 
-lib.cron.new('*/5 * * * *', function()
+local function saveInventories(manual)
 	local time = os.time()
 	local parameters = { {}, {}, {}, {} }
 	local size = { 0, 0, 0, 0 }
+    local buffer = {}
 
 	for _, inv in pairs(Inventories) do
-		if not inv.open then
-			if not inv.datastore and inv.changed then
-				local i, data = prepareSave(inv)
+        local index, data = prepareInventorySave(inv, buffer, time)
 
-				if i then
-					size[i] += 1
-					parameters[i][size[i]] = data
-				end
-			end
+        if index then
+            size[index] += 1
+            parameters[index][size[index]] = data
+        end
 
-			if inv.datastore and inv.netid and (inv.type == 'trunk' or inv.type == 'glovebox') then
-				if NetworkGetEntityFromNetworkId(inv.netid) == 0 then
-					Inventory.Remove(inv)
-				end
-			elseif not inv.player and (inv.datastore or inv.owner) and time - inv.time >= 1200 then
-				-- inv.time is a timestamp for when the inventory was last closed
-				-- if unopened for n seconds, the inventory is unloaded (datastore/temp stash is deleted)
-				Inventory.Remove(inv)
-			end
-		end
+        if not manual and not inv.open then
+            if inv.datastore and inv.netid and (inv.type == 'trunk' or inv.type == 'glovebox') then
+                if NetworkGetEntityFromNetworkId(inv.netid) == 0 then
+                    Inventory.Remove(inv)
+                end
+            elseif not inv.player and (inv.datastore or inv.owner) and time - inv.time >= 1200 then
+                -- inv.time is a timestamp for when the inventory was last closed
+                -- if unopened for n seconds, the inventory is unloaded (datastore/temp stash is deleted)
+                Inventory.Remove(inv)
+            end
+        end
 	end
 
 	db.saveInventories(parameters[1], parameters[2], parameters[3], parameters[4])
+end
+
+lib.cron.new('*/5 * * * *', function()
+    saveInventories()
 end)
 
 function Inventory.SaveInventories(lock)
-	local parameters = { {}, {}, {}, {} }
-	local size = { 0, 0, 0, 0 }
 	Inventory.Lock = lock or nil
 
 	Inventory.CloseAll()
-
-	for _, inv in pairs(Inventories) do
-		if not inv.datastore and inv.changed then
-			local i, data = prepareSave(inv)
-
-			if i then
-				size[i] += 1
-				parameters[i][size[i]] = data
-			end
-		end
-	end
-
-	db.saveInventories(parameters[1], parameters[2], parameters[3], parameters[4])
+    saveInventories(lock)
 end
 
 AddEventHandler('playerDropped', function()
