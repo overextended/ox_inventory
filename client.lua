@@ -1714,8 +1714,14 @@ lib.callback.register('ox_inventory:startCrafting', function(id, recipe)
 	})
 end)
 
+local swapActive = false
+
 ---Synchronise and validate all item movement between the NUI and server.
 RegisterNUICallback('swapItems', function(data, cb)
+    if swapActive or not invOpen or invBusy then return end
+
+    swapActive = true
+
 	if data.toType == 'newdrop' then
 		if cache.vehicle or IsPedFalling(playerPed) then return cb(false) end
 
@@ -1753,6 +1759,7 @@ RegisterNUICallback('swapItems', function(data, cb)
 	end
 
 	local success, response, weaponSlot = lib.callback.await('ox_inventory:swapItems', false, data)
+    swapActive = false
 
 	cb(success or false)
 
