@@ -154,14 +154,14 @@ function server.buyLicense(inv, license)
 	local player = server.GetPlayerFromId(inv.id)
 	if not player then return end
 
-	if player.PlayerData.metadata.licences[license] then
+	if player.PlayerData.metadata.licences[license.name] then
 		return false, 'already_have'
 	elseif Inventory.GetItem(inv, 'money', false, true) < license.price then
 		return false, 'can_not_afford'
 	end
 
 	Inventory.RemoveItem(inv, 'money', license.price)
-	player.PlayerData.metadata.licences.weapon = true
+	player.PlayerData.metadata.licences[license.name] = true
 	player.Functions.SetMetaData('licences', player.PlayerData.metadata.licences)
 
 	return true, 'have_purchased'
