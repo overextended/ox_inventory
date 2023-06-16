@@ -96,7 +96,7 @@ local function wipeShops()
 		local shop = shops[i]
 
 		if shop.zoneId then
-			exports.qtarget:RemoveZone(shop.zoneId)
+            pcall(exports.qtarget.RemoveZone, nil, shop.zoneId)
 		end
 
 		if shop.remove then
