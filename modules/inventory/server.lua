@@ -2285,8 +2285,14 @@ local function saveInventories(manual)
             size[index] += 1
             parameters[index][size[index]] = data
         end
+	end
 
-        if not manual and not inv.open then
+	db.saveInventories(parameters[1], parameters[2], parameters[3], parameters[4])
+
+    if not manual then return end
+
+    for _, inv in pairs(Inventories) do
+        if not inv.open then
             if inv.datastore and inv.netid and (inv.type == 'trunk' or inv.type == 'glovebox') then
                 if NetworkGetEntityFromNetworkId(inv.netid) == 0 then
                     Inventory.Remove(inv)
@@ -2297,9 +2303,7 @@ local function saveInventories(manual)
                 Inventory.Remove(inv)
             end
         end
-	end
-
-	db.saveInventories(parameters[1], parameters[2], parameters[3], parameters[4])
+    end
 end
 
 lib.cron.new('*/5 * * * *', function()
