@@ -148,33 +148,55 @@ end
 function db.saveInventories(players, trunks, gloveboxes, stashes)
     local numPlayer, numTrunk, numGlove, numStash = #players, #trunks, #gloveboxes, #stashes
     local total = numPlayer + numTrunk + numGlove + numStash
+    local promises
 
     if total > 0 then
+        promises = {}
         shared.info(('Saving %s inventories to the database'):format(total))
     end
 
     if numPlayer > 0 then
+        local p = promise.new()
+        promises[#promises + 1] = p
+
         MySQL.prepare(Query.UPDATE_PLAYER, players, function(affectedRows)
             shared.info(('Saved %s/%s players'):format(affectedRows, numPlayer))
+            p:resolve()
         end)
     end
 
     if numTrunk > 0 then
+        local p = promise.new()
+        promises[#promises + 1] = p
+
         MySQL.prepare(Query.UPDATE_TRUNK, trunks, function(affectedRows)
             shared.info(('Saved %s/%s trunks'):format(affectedRows, numTrunk))
+            p:resolve()
         end)
     end
 
     if numGlove > 0 then
+        local p = promise.new()
+        promises[#promises + 1] = p
+
         MySQL.prepare(Query.UPDATE_GLOVEBOX, gloveboxes, function(affectedRows)
             shared.info(('Saved %s/%s gloveboxes'):format(affectedRows, numGlove))
+            p:resolve()
         end)
     end
 
     if numStash > 0 then
+        local p = promise.new()
+        promises[#promises + 1] = p
+
         MySQL.prepare(Query.UPDATE_STASH, stashes, function(affectedRows)
             shared.info(('Saved %s/%s stashes'):format(affectedRows, numStash))
         end)
+    end
+
+    if promises then
+        -- All queries must run asynchronously on resource stop, so we'll await multiple promises instead.
+        Citizen.Await(promise.all(promises))
     end
 end
 
