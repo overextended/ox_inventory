@@ -191,6 +191,7 @@ function db.saveInventories(players, trunks, gloveboxes, stashes)
 
         MySQL.prepare(Query.UPDATE_STASH, stashes, function(affectedRows)
             shared.info(('Saved %s/%s stashes'):format(affectedRows, numStash))
+            p:resolve()
         end)
     end
 
