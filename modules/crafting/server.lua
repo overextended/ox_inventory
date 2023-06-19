@@ -58,30 +58,34 @@ local function getCraftingCoords(source, bench, index)
 	end
 end
 
-lib.callback.register('ox_inventory:openCraftingBench', function(source, id, index)
+lib.callback.register('ox_inventory:openCraftingBench', function(source, id, index, unlockpos)
 	local left, bench = Inventory(source), CraftingBenches[id]
 
+	unlockpos = unlockpos or false
 	if not left then return end
-
-	if bench then
-		local groups = bench.groups
-		local coords = getCraftingCoords(source, bench, index)
-
-		if not coords then return end
-
-		if groups and not server.hasGroup(left, groups) then return end
-		if #(GetEntityCoords(GetPlayerPed(source)) - coords) > 10 then return end
-
-		if left.open and left.open ~= source then
-			local inv = Inventory(left.open) --[[@as OxInventory]]
-
-			-- Why would the player inventory open with an invalid target? Can't repro but whatever.
-			if inv?.player then
-				inv:closeInventory()
-			end
-		end
-
+	if unlockpos then
 		left:openInventory(left)
+	else
+		if bench then
+			local groups = bench.groups
+			local coords = getCraftingCoords(source, bench, index)
+
+			if not coords then return end
+
+			if groups and not server.hasGroup(left, groups) then return end
+			if #(GetEntityCoords(GetPlayerPed(source)) - coords) > 10 then return end
+
+			if left.open and left.open ~= source then
+				local inv = Inventory(left.open) --[[@as OxInventory]]
+
+				-- Why would the player inventory open with an invalid target? Can't repro but whatever.
+				if inv?.player then
+					inv:closeInventory()
+				end
+			end
+
+			left:openInventory(left)
+		end
 	end
 
 	return { label = left.label, type = left.type, slots = left.slots, weight = left.weight, maxWeight = left.maxWeight }
