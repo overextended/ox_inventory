@@ -175,7 +175,7 @@ function client.openInventory(inv, data)
 				return lib.notify({ id = 'cannot_perform', type = 'error', description = locale('cannot_perform') })
 			end
 
-			left = lib.callback.await('ox_inventory:openCraftingBench', 200, data.id, data.index)
+			left = lib.callback.await('ox_inventory:openCraftingBench', 200, data.id, data.index, data.unlockpos)
 
 			if left then
 				right = CraftingBenches[data.id]
@@ -188,8 +188,10 @@ function client.openInventory(inv, data)
 					coords = GetEntityCoords(cache.ped)
 					distance = 2
 				else
-					coords = shared.target == 'ox_target' and right.zones and right.zones[data.index].coords or right.points and right.points[data.index]
-					distance = coords and shared.target == 'ox_target' and right.zones[data.index].distance or 2
+					if not data.unlockpos then
+						coords = shared.target == 'ox_target' and right.zones and right.zones[data.index].coords or right.points and right.points[data.index]
+						distance = coords and shared.target == 'ox_target' and right.zones[data.index].distance or 2
+					end
 				end
 
 				right = {
