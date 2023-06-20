@@ -1,7 +1,13 @@
+-- It takes a lot of skill to ignore the error telling you why lib is undefined.
+-- Some people are that skilled. By skilled I mean blind and oblivious.
+if not lib then return end
+
 lib.locale()
 
--- Don't be an idiot and change these convar getters (yes, people do that).
--- https://overextended.github.io/docs/ox_inventory/Getting%20Started/config
+-- Do not modify this file at all. This isn't a "config" file. You want to change
+-- resource settings? Use convars like you were told in the documentation.
+-- You did read the docs, right? Probably not, if you're here.
+-- https://overextended.dev/ox_inventory#config
 
 shared = {
 	resource = GetCurrentResourceName(),
