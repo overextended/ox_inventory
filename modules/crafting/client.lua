@@ -34,32 +34,33 @@ local function createCraftingBench(id, data)
 
 		if shared.target == 'ox_target' then
 			data.points = nil
-
-			for i = 1, #data.zones do
-				local zone = data.zones[i]
-				zone.name = ("craftingbench_%s:%s"):format(id, i)
-				zone.id = id
-				zone.index = i
-				zone.options = {
-					{
-						label = zone.label or locale('open_crafting_bench'),
-						canInteract = data.groups and function()
-							return client.hasGroup(data.groups)
-						end or nil,
-						onSelect = function()
-							client.openInventory('crafting', { id = id, index = i })
-						end,
-						distance = zone.distance or 2.0,
-						icon = zone.icon or 'fas fa-wrench',
-					}
-				}
-
-				exports.ox_target:addBoxZone(zone)
-
-				if blip then
-					createBlip(blip, zone.coords)
-				end
-			end
+            if data.zones then
+    			for i = 1, #data.zones do
+    				local zone = data.zones[i]
+    				zone.name = ("craftingbench_%s:%s"):format(id, i)
+    				zone.id = id
+    				zone.index = i
+    				zone.options = {
+    					{
+    						label = zone.label or locale('open_crafting_bench'),
+    						canInteract = data.groups and function()
+    							return client.hasGroup(data.groups)
+    						end or nil,
+    						onSelect = function()
+    							client.openInventory('crafting', { id = id, index = i })
+    						end,
+    						distance = zone.distance or 2.0,
+    						icon = zone.icon or 'fas fa-wrench',
+    					}
+    				}
+    
+    				exports.ox_target:addBoxZone(zone)
+    
+    				if blip then
+    					createBlip(blip, zone.coords)
+    				end
+    			end
+            end
 		elseif data.points then
 			data.zones = nil
 
