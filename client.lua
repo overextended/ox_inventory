@@ -1760,11 +1760,11 @@ RegisterNUICallback('swapItems', function(data, cb)
 	cb(success or false)
 
 	if success then
-		if response then
-			if weaponSlot and currentWeapon then
-				currentWeapon.slot = weaponSlot
-			end
+        if weaponSlot and currentWeapon then
+            currentWeapon.slot = weaponSlot
+        end
 
+		if response then
 			updateInventory(response.items, response.weight)
 		end
 	elseif response then
