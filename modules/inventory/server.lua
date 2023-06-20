@@ -2231,6 +2231,7 @@ exports('GetItemCount', Inventory.GetItemCount)
 ---@return integer | false | nil
 ---@return table | nil
 local function prepareInventorySave(inv, buffer, time)
+    local shouldSave = not inv.datastore and inv.changed
     local n = 0
 
     for k, v in pairs(inv.items) do
@@ -2240,7 +2241,7 @@ local function prepareInventorySave(inv, buffer, time)
             v.metadata.durability = 0
         end
 
-        if not inv.datastore and inv.changed then
+        if shouldSave then
             n += 1
             buffer[n] = {
                 name = v.name,
@@ -2251,14 +2252,16 @@ local function prepareInventorySave(inv, buffer, time)
         end
 	end
 
-    if n == 0 then return end
+    if not shouldSave then return end
 
     local data = json.encode(buffer)
     inv.changed = false
     table.wipe(buffer)
 
     if inv.player then
-        return shared.framework ~= 'esx' and 1, { data, inv.owner }
+        if shared.framework == 'esx' then return end
+
+        return 1, { data, inv.owner }
     end
 
     if inv.type == 'trunk' then
