@@ -16,17 +16,17 @@ exports('displayMetadata', displayMetadata)
 ---@param name string?
 ---@return table?
 local function getItem(_, name)
-	if name then
-		name = name:lower()
+    if not name then return Items end
 
-		if name:sub(0, 7) == 'weapon_' then
-			name = name:upper()
-		end
+	if type(name) ~= 'string' then return end
 
-		return Items[name]
-	end
+    name = name:lower()
 
-	return Items
+    if name:sub(0, 7) == 'weapon_' then
+        name = name:upper()
+    end
+
+    return Items[name]
 end
 
 setmetatable(Items --[[@as table]], {

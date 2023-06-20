@@ -25,17 +25,17 @@ local trash = {
 ---@param name string?
 ---@return table?
 local function getItem(_, name)
-	if name then
-		name = name:lower()
+    if not name then return ItemList end
 
-		if name:sub(0, 7) == 'weapon_' then
-			name = name:upper()
-		end
+	if type(name) ~= 'string' then return end
 
-		return ItemList[name]
-	end
+    name = name:lower()
 
-	return ItemList
+    if name:sub(0, 7) == 'weapon_' then
+        name = name:upper()
+    end
+
+    return ItemList[name]
 end
 
 setmetatable(Items --[[@as table]], {
