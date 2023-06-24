@@ -43,14 +43,25 @@ plyState:set('invBusy', true, false)
 plyState:set('invHotkeys', false, false)
 
 local function canOpenInventory()
-	return PlayerData.loaded
-	and not invBusy
-	and not PlayerData.dead
-	and invOpen ~= nil
-	and (not currentWeapon or currentWeapon.timer == 0)
-	and not IsPedCuffed(playerPed)
-	and not IsPauseMenuActive()
-	and not IsPedFatallyInjured(playerPed)
+    if not PlayerData.loaded then
+        return shared.info('cannot open inventory', '(is not loaded)')
+    end
+
+    if IsPauseMenuActive() then return end
+
+    if invBusy or invOpen == nil or (currentWeapon and currentWeapon.timer ~= 0) then
+        return shared.info('cannot open inventory', '(is busy)')
+    end
+
+    if PlayerData.dead or IsPedFatallyInjured(playerPed) then
+        return shared.info('cannot open inventory', '(fatal injury)')
+    end
+
+    if PlayerData.cuffed or IsPedCuffed(playerPed) then
+        return shared.info('cannot open inventory', '(cuffed)')
+    end
+
+    return true
 end
 
 ---@param ped number
@@ -265,7 +276,7 @@ function client.openInventory(inv, data)
 			if invOpen == false then lib.notify({ id = 'inventory_right_access', type = 'error', description = locale('inventory_right_access') }) end
 			if invOpen then client.closeInventory() end
 		end
-	elseif invBusy then lib.notify({ id = 'inventory_player_access', type = 'error', description = locale('inventory_player_access') }) end
+	else lib.notify({ id = 'inventory_player_access', type = 'error', description = locale('inventory_player_access') }) end
 end
 
 RegisterNetEvent('ox_inventory:openInventory', client.openInventory)
@@ -716,11 +727,7 @@ local function registerCommands()
 				return client.closeInventory()
 			end
 
-			if invBusy then
-				return lib.notify({ id = 'inventory_player_access', type = 'error', description = locale('inventory_player_access') })
-			end
-
-			if not canOpenInventory() then
+			if invBusy or not canOpenInventory() then
 				return lib.notify({ id = 'inventory_player_access', type = 'error', description = locale('inventory_player_access') })
 			end
 
