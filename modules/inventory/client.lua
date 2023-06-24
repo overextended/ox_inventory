@@ -94,7 +94,7 @@ exports('GetPlayerWeight', function()
 end)
 
 exports('GetPlayerMaxWeight', function()
-	return PlayerData.weight
+	return PlayerData.maxWeight
 end)
 
 local Items = require 'modules.items.client'
@@ -331,7 +331,11 @@ Inventory.Stashes = setmetatable(data('stashes'), {
 	end
 })
 
-RegisterNetEvent('refreshMaxWeight', function(data)
+RegisterNetEvent('ox_inventory:refreshMaxWeight', function(data)
+    if data.inventoryId == cache.serverId then
+        PlayerData.maxWeight = data.maxWeight
+    end
+
 	SendNUIMessage({
 		action = 'refreshSlots',
 		data = {
