@@ -1038,9 +1038,16 @@ function Inventory.SetMaxWeight(inv, maxWeight)
 	if type(maxWeight) ~= 'number' then return end
 
 	inv.maxWeight = maxWeight
-	if not inv.open then return end
 
-	TriggerClientEvent('refreshMaxWeight', inv.open, {inventoryId = inv.id, maxWeight = inv.maxWeight})
+    if inv.player then
+        TriggerClientEvent('ox_inventory:refreshMaxWeight', inv.id, {inventoryId = inv.id, maxWeight = inv.maxWeight})
+    end
+
+    for playerId in pairs(inv.openedBy) do
+        if playerId ~= inv.id then
+            TriggerClientEvent('ox_inventory:refreshMaxWeight', playerId, {inventoryId = inv.id, maxWeight = inv.maxWeight})
+        end
+	end
 end
 
 exports('SetMaxWeight', Inventory.SetMaxWeight)
