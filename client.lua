@@ -141,9 +141,11 @@ function client.openInventory(inv, data)
 		-- If triggering event from another nui such as qtarget, may need to wait for focus to end
 		Wait(100)
 
-		if IsNuiFocused() then
-			warn('other scripts have nui focus and may cause issues (e.g. disable focus, prevent input, overlap inventory window)')
-		end
+        -- People still complain about this being an "error" and ask "how fix" despite being a warning
+        -- for people with above room-temperature iqs to look into resource conflicts on their own.
+		-- if IsNuiFocused() then
+		-- 	warn('other scripts have nui focus and may cause issues (e.g. disable focus, prevent input, overlap inventory window)')
+		-- end
 	end
 
 	if inv == 'dumpster' and cache.vehicle then
