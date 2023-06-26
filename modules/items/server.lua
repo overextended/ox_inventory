@@ -219,12 +219,6 @@ CreateThread(function()
 		Wait(500)
 	end
 
-	local clearStashes = GetConvar('inventory:clearstashes', '6 MONTH')
-
-	if clearStashes ~= '' then
-		pcall(MySQL.query.await, ('DELETE FROM ox_inventory WHERE lastupdated < (NOW() - INTERVAL %s) OR data = "[]"'):format(clearStashes))
-	end
-
 	local count = 0
 
 	Wait(1000)
