@@ -1,9 +1,9 @@
 if not lib then return end
 
 local Query = {
-    SELECT_STASH = 'SELECT data FROM ox_inventory WHERE owner = ? AND name = ?',
-    UPDATE_STASH =
-    'INSERT INTO ox_inventory (owner, name, data) VALUES (?, ?, ?) ON DUPLICATE KEY UPDATE data = VALUES(data)',
+    SELECT_STASH = 'SELECT 1 AS `exists`, data FROM ox_inventory WHERE owner = ? AND name = ?',
+    UPDATE_STASH = 'UPDATE ox_inventory SET data = ? WHERE owner = ? AND name = ?',
+    INSERT_STASH = 'INSERT INTO ox_inventory (owner, name) VALUES (?, ?)',
     SELECT_GLOVEBOX = 'SELECT plate, glovebox FROM `{vehicle_table}` WHERE `{vehicle_column}` = ?',
     SELECT_TRUNK = 'SELECT plate, trunk FROM `{vehicle_table}` WHERE `{vehicle_column}` = ?',
     SELECT_PLAYER = 'SELECT inventory FROM `{user_table}` WHERE `{user_column}` = ?',
@@ -128,11 +128,18 @@ function db.savePlayer(owner, inventory)
 end
 
 function db.saveStash(owner, dbId, inventory)
-    return MySQL.prepare(Query.UPDATE_STASH, { owner or '', dbId, inventory })
+    return MySQL.prepare(Query.UPDATE_STASH, { inventory, owner and tostring(owner) or '', dbId })
 end
 
 function db.loadStash(owner, name)
-    return MySQL.prepare.await(Query.SELECT_STASH, { owner or '', name })
+    local parameters = { owner and tostring(owner) or '', name }
+    local response = MySQL.prepare.await(Query.SELECT_STASH, parameters)
+
+    if not response or not response.exists then
+        return MySQL.prepare(Query.INSERT_STASH, parameters)
+    end
+
+    return response.data
 end
 
 function db.saveGlovebox(id, inventory)

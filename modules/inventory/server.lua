@@ -2261,7 +2261,7 @@ local function prepareInventorySave(inv, buffer, time)
 
     if not shouldSave then return end
 
-    local data = json.encode(buffer)
+    local data = next(buffer) and json.encode(buffer) or nil
     inv.changed = false
     table.wipe(buffer)
 
@@ -2279,7 +2279,7 @@ local function prepareInventorySave(inv, buffer, time)
         return 3, { data, inv.dbId }
     end
 
-    return 4, { inv.owner or '', inv.dbId, data }
+    return 4, { data, inv.owner and tostring(inv.owner) or '', inv.dbId }
 end
 
 local function saveInventories(manual)
