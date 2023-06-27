@@ -916,6 +916,7 @@ exports('closeInventory', client.closeInventory)
 ---@param weight number | table<string, number>
 local function updateInventory(data, weight)
 	local changes = {}
+    ---@type table<string, number>
 	local itemCount = {}
 
 	for i = 1, #data do
@@ -949,38 +950,32 @@ local function updateInventory(data, weight)
 	SendNUIMessage({ action = 'refreshSlots', data = { items = data, itemCount = itemCount} })
 	client.setPlayerData('weight', type(weight) == 'number' and weight or weight.left)
 
-	for item, count in pairs(itemCount) do
-		local data = Items[item]
+	for itemName, count in pairs(itemCount) do
+		local item = Items(itemName)
 
-		if count < 0 then
-			if currentWeapon and not currentWeapon.throwable and currentWeapon.slot == data.slot then
-				currentWeapon = Weapon.Disarm(currentWeapon)
-			end
+        if item then
+            item.count += count
 
-			data.count += count
+            TriggerEvent('ox_inventory:itemCount', item.name, item.count)
 
-			if shared.framework == 'esx' then
-				TriggerEvent('esx:removeInventoryItem', data.name, data.count)
-			else
-				TriggerEvent('ox_inventory:itemCount', data.name, data.count)
-			end
+            if count < 0 then
+                if shared.framework == 'esx' then
+                    TriggerEvent('esx:removeInventoryItem', item.name, item.count)
+                end
 
-			if data.client?.remove then
-				data.client.remove(data.count)
-			end
-		elseif count > 0 then
-			data.count += count
+                if item.client?.remove then
+                    item.client.remove(item.count)
+                end
+            elseif count > 0 then
+                if shared.framework == 'esx' then
+                    TriggerEvent('esx:addInventoryItem', item.name, item.count)
+                end
 
-			if shared.framework == 'esx' then
-				TriggerEvent('esx:addInventoryItem', data.name, data.count)
-			else
-				TriggerEvent('ox_inventory:itemCount', data.name, data.count)
-			end
-
-			if data.client?.add then
-				data.client.add(data.count)
-			end
-		end
+                if item.client?.add then
+                    item.client.add(item.count)
+                end
+            end
+        end
 	end
 
 	client.setPlayerData('inventory', PlayerData.inventory)
