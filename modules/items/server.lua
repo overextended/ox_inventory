@@ -430,6 +430,9 @@ function Items.UpdateDurability(inv, slot, item, value, ostime)
         return Inventory.RemoveItem(inv, slot.name, slot.count, nil, slot.slot)
     end
 
+    if slot.metadata.durability == durability then return end
+
+    inv.changed = true
     slot.metadata.durability = durability
 
     inv:syncSlotsWithClients({
