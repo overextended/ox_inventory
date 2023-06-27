@@ -933,77 +933,59 @@ end
 exports('GetSlot', Inventory.GetSlot)
 
 ---@param inv inventory
----@param slot number
-function Inventory.SetDurability(inv, slot, durability)
+---@param slotId number
+function Inventory.SetDurability(inv, slotId, durability)
 	inv = Inventory(inv) --[[@as OxInventory]]
-	local slotData = inv and inv.items[slot]
+	local slot = inv and inv.items[slotId]
 
-	if inv and slotData then
-		inv.changed = true
-		slotData.metadata.durability = durability
+	if not slot then return end
 
-		if inv.player and server.syncInventory then
-			server.syncInventory(inv)
-		end
+    Items.UpdateDurability(inv, slot, Items(slot.name), durability)
 
-		inv:syncSlotsWithClients({
-			{
-				item = slotData,
-				inventory = inv.id
-			}
-		},
-		{
-			left = inv.weight,
-			right = inv.open and Inventories[inv.open]?.weight or nil
-		}, true)
-	end
+    if inv.player and server.syncInventory then
+        server.syncInventory(inv)
+    end
 end
 exports('SetDurability', Inventory.SetDurability)
 
 local Utils = require 'modules.utils.server'
 
 ---@param inv inventory
----@param slot number | false
+---@param slotId number
 ---@param metadata { [string]: any }
-function Inventory.SetMetadata(inv, slot, metadata)
+function Inventory.SetMetadata(inv, slotId, metadata)
 	inv = Inventory(inv) --[[@as OxInventory]]
-	local slotData = inv and type(slot) == 'number' and inv.items[slot]
+	local slot = inv and inv.items[slotId]
 
-	if inv and slotData then
-		inv.changed = true
-		local imageurl = slotData.metadata.imageurl
-		slotData.metadata = type(metadata) == 'table' and metadata or { type = metadata or nil }
+	if not slot then return end
 
-		if metadata.weight then
-			inv.weight -= slotData.weight
-			slotData.weight = Inventory.SlotWeight(Items(slotData.name), slotData)
-			inv.weight += slotData.weight
-		end
+    local item = Items(slot.name)
+    local imageurl = slot.metadata.imageurl
+    slot.metadata = type(metadata) == 'table' and metadata or { type = metadata or nil }
+    inv.changed = true
 
-		if inv.player and server.syncInventory then
-			server.syncInventory(inv)
-		end
+    if metadata.weight then
+        inv.weight -= slot.weight
+        slot.weight = Inventory.SlotWeight(item, slot)
+        inv.weight += slot.weight
+    end
 
-		inv:syncSlotsWithClients({
-			{
-				item = slotData,
-				inventory = inv.id
-			}
-		},
-		{
-			left = inv.weight,
-			right = inv.open and Inventories[inv.open]?.weight or nil
-		}, true)
+    if metadata.durability ~= slot.metadata.durability then
+        Items.UpdateDurability(inv, slot, item, metadata.durability)
+    end
 
-		if metadata.imageurl ~= imageurl and Utils.IsValidImageUrl then
-			if Utils.IsValidImageUrl(metadata.imageurl) then
-				Utils.DiscordEmbed('Valid image URL', ('Updated item "%s" (%s) with valid url in "%s".\n%s\nid: %s\nowner: %s'):format(metadata.label or slotData.label, slotData.name, inv.label, metadata.imageurl, inv.id, inv.owner, metadata.imageurl), metadata.imageurl, 65280)
-			else
-				Utils.DiscordEmbed('Invalid image URL', ('Updated item "%s" (%s) with invalid url in "%s".\n%s\nid: %s\nowner: %s'):format(metadata.label or slotData.label, slotData.name, inv.label, metadata.imageurl, inv.id, inv.owner, metadata.imageurl), metadata.imageurl, 16711680)
-				metadata.imageurl = nil
-			end
-		end
-	end
+    if inv.player and server.syncInventory then
+        server.syncInventory(inv)
+    end
+
+    if metadata.imageurl ~= imageurl and Utils.IsValidImageUrl then
+        if Utils.IsValidImageUrl(metadata.imageurl) then
+            Utils.DiscordEmbed('Valid image URL', ('Updated item "%s" (%s) with valid url in "%s".\n%s\nid: %s\nowner: %s'):format(metadata.label or slot.label, slot.name, inv.label, metadata.imageurl, inv.id, inv.owner, metadata.imageurl), metadata.imageurl, 65280)
+        else
+            Utils.DiscordEmbed('Invalid image URL', ('Updated item "%s" (%s) with invalid url in "%s".\n%s\nid: %s\nowner: %s'):format(metadata.label or slot.label, slot.name, inv.label, metadata.imageurl, inv.id, inv.owner, metadata.imageurl), metadata.imageurl, 16711680)
+            metadata.imageurl = nil
+        end
+    end
 end
 
 exports('SetMetadata', Inventory.SetMetadata)
