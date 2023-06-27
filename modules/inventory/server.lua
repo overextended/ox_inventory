@@ -832,14 +832,13 @@ function Inventory.GetItem(inv, item, metadata, returnsCount)
 			local ostime = os.time()
 			metadata = assertMetadata(metadata)
 
-			for _, v in pairs(inv.items) do
+			for k, v in pairs(inv.items) do
 				if v and v.name == item.name and (not metadata or table.contains(v.metadata, metadata)) then
 					count += v.count
-					local durability = v.metadata.durability
 
-					if durability and durability > 100 and ostime >= durability then
-						v.metadata.durability = 0
-					end
+                    if not Items.UpdateDurability(inv, v, item, nil, ostime) then
+                        count += v.count
+                    end
 				end
 			end
 		end
@@ -921,20 +920,14 @@ end
 exports('GetCurrentWeapon', Inventory.GetCurrentWeapon)
 
 ---@param inv inventory
----@param slot number
+---@param slotId number
 ---@return table? item
-function Inventory.GetSlot(inv, slot)
+function Inventory.GetSlot(inv, slotId)
 	inv = Inventory(inv) --[[@as OxInventory]]
-	local slotData = inv and inv.items[slot]
+	local slot = inv and inv.items[slotId]
 
-	if slotData then
-		local durability = slotData.metadata.durability
-
-		if durability and durability > 100 and os.time() >= durability then
-			slotData.metadata.durability = 0
-		end
-
-		return slotData
+	if slot and not Items.UpdateDurability(inv, slot, Items(slot.name), nil, os.time()) then
+        return slot
 	end
 end
 exports('GetSlot', Inventory.GetSlot)
@@ -2128,13 +2121,9 @@ function Inventory.GetSlotWithItem(inv, itemName, metadata, strict)
 
 	for _, slotData in pairs(inventory.items) do
 		if slotData and slotData.name == item.name and (not metadata or tablematch(slotData.metadata, metadata)) then
-			local durability = slotData.metadata.durability
-
-			if durability and durability > 100 and os.time() >= durability then
-				slotData.metadata.durability = 0
-			end
-
-			return slotData
+            if not Items.UpdateDurability(inventory, slotData, item, nil, os.time()) then
+                return slotData
+            end
 		end
 	end
 end
@@ -2171,15 +2160,10 @@ function Inventory.GetSlotsWithItem(inv, itemName, metadata, strict)
 
 	for _, slotData in pairs(inventory.items) do
 		if slotData and slotData.name == item.name and (not metadata or tablematch(slotData.metadata, metadata)) then
-			n += 1
-
-			local durability = slotData.metadata.durability
-
-			if durability and durability > 100 and ostime >= durability then
-				slotData.metadata.durability = 0
-			end
-
-			response[n] = slotData
+            if not Items.UpdateDurability(inventory, slotData, item, nil, os.time()) then
+                n += 1
+                response[n] = slotData
+            end
 		end
 	end
 
@@ -2242,13 +2226,7 @@ local function prepareInventorySave(inv, buffer, time)
     local n = 0
 
     for k, v in pairs(inv.items) do
-        local durability = v.metadata.durability
-
-        if durability and durability > 100 and time >= durability then
-            v.metadata.durability = 0
-        end
-
-        if shouldSave then
+        if not Items.UpdateDurability(inv, v, Items(v.name), nil, time) and shouldSave then
             n += 1
             buffer[n] = {
                 name = v.name,

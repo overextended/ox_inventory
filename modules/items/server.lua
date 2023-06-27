@@ -408,6 +408,38 @@ function Items.CheckMetadata(metadata, item, name, ostime)
 	return metadata
 end
 
+---Update item durability, and call `Inventory.RemoveItem` if it was removed from decay.
+---@param inv OxInventory
+---@param slot SlotWithItem
+---@param item OxServerItem
+---@param value? number
+---@param ostime? number
+---@return boolean? removed
+function Items.UpdateDurability(inv, slot, item, value, ostime)
+    local durability = slot.metadata.durability
+
+    if not durability then return end
+
+    if value then
+        durability = value
+    elseif ostime and durability > 100 and ostime >= durability then
+        durability = 0
+    end
+
+    if item.decay and durability == 0 then
+        return Inventory.RemoveItem(inv, slot.name, slot.count, nil, slot.slot)
+    end
+
+    slot.metadata.durability = durability
+
+    inv:syncSlotsWithClients({
+        {
+            item = slot,
+            inventory = inv.id
+        }
+    }, { left = inv.weight }, true)
+end
+
 local function Item(name, cb)
 	local item = ItemList[name]
 

@@ -7,6 +7,7 @@
 ---@field description? string Text to display in the item tooltip.
 ---@field consume? number Number of items to remove on use.<br>Using a value under 1 will remove durability, if the item cannot be stacked.
 ---@field degrade? number Amount of time for the item durability to degrade to 0, in minutes.
+---@field decay? boolean Remove the item at 0 durability. Not triggered immediately.
 ---@field stack? boolean Set to false to prevent the item from stacking.
 ---@field close? boolean Set to false to keep the inventory open on item use.
 ---@field allowArmed? boolean Set to true to allow an item to be used while a weapon is equipped.
