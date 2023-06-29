@@ -832,13 +832,9 @@ function Inventory.GetItem(inv, item, metadata, returnsCount)
 			local ostime = os.time()
 			metadata = assertMetadata(metadata)
 
-			for k, v in pairs(inv.items) do
-				if v and v.name == item.name and (not metadata or table.contains(v.metadata, metadata)) then
-					count += v.count
-
-                    if not Items.UpdateDurability(inv, v, item, nil, ostime) then
-                        count += v.count
-                    end
+			for _, v in pairs(inv.items) do
+				if v.name == item.name and (not metadata or table.contains(v.metadata, metadata)) and not Items.UpdateDurability(inv, v, item, nil, ostime) then
+                    count += v.count
 				end
 			end
 		end
