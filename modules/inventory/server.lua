@@ -968,6 +968,13 @@ function Inventory.SetMetadata(inv, slotId, metadata)
 
     if metadata.durability ~= slot.metadata.durability then
         Items.UpdateDurability(inv, slot, item, metadata.durability)
+    else
+        inv:syncSlotsWithClients({
+            {
+                item = slot,
+                inventory = inv.id
+            }
+        }, { left = inv.weight }, true)
     end
 
     if inv.player and server.syncInventory then
