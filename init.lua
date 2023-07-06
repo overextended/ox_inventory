@@ -1,8 +1,11 @@
--- It takes a lot of skill to ignore the error telling you why lib is undefined.
--- Some people are that skilled. By skilled I mean blind and oblivious.
-if not lib then return end
+local function addDeferral(err)
+    err = err:gsub("%^%d", "")
 
-lib.locale()
+    AddEventHandler('playerConnecting', function(_, _, deferrals)
+        deferrals.defer()
+        deferrals.done(err)
+    end)
+end
 
 -- Do not modify this file at all. This isn't a "config" file. You want to change
 -- resource settings? Use convars like you were told in the documentation.
@@ -116,16 +119,18 @@ end
 
 -- People like ignoring errors for some reason
 local function spamError(err)
-	lib = nil
 	shared.ready = false
+
 	CreateThread(function()
 		while true do
-			Wait(2000)
+			Wait(10000)
 			CreateThread(function()
 				error(err, 0)
 			end)
 		end
 	end)
+
+    addDeferral(err)
 	error(err, 0)
 end
 
@@ -173,6 +178,8 @@ end
 if not lib then
 	return spamError('ox_inventory requires the ox_lib resource, refer to the documentation.')
 end
+
+lib.locale()
 
 local success, msg = lib.checkDependency('oxmysql', '2.7.2')
 
