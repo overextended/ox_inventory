@@ -1,10 +1,6 @@
 local playerDropped = ...
-local Inventory, Items
-
-CreateThread(function()
-	Inventory = server.inventory
-	Items = server.items
-end)
+local Inventory = require 'modules.inventory.server'
+local Items = require 'modules.items.server'
 
 AddEventHandler('esx:playerDropped', playerDropped)
 
@@ -32,12 +28,9 @@ SetTimeout(500, function()
 	end
 end)
 
--- Accounts that need to be synced with physical items
-server.accounts = {
-	money = 0,
-	black_money = 0,
-}
+server.accounts.black_money = 0
 
+---@diagnostic disable-next-line: duplicate-set-field
 function server.setPlayerData(player)
 	local groups = {
 		[player.job.name] = player.job.grade
@@ -52,23 +45,22 @@ function server.setPlayerData(player)
 	}
 end
 
+---@diagnostic disable-next-line: duplicate-set-field
 function server.syncInventory(inv)
-	local money = table.clone(server.accounts)
+	local accounts = Inventory.GetAccountItemCounts(inv)
 
-	for _, v in pairs(inv.items) do
-		if money[v.name] then
-			money[v.name] += v.count
-		end
-	end
-
-	local player = server.GetPlayerFromId(inv.id)
-	player.syncInventory(inv.weight, inv.maxWeight, inv.items, money)
+    if accounts then
+        local player = server.GetPlayerFromId(inv.id)
+        player.syncInventory(inv.weight, inv.maxWeight, inv.items, accounts)
+    end
 end
 
+---@diagnostic disable-next-line: duplicate-set-field
 function server.hasLicense(inv, name)
 	return MySQL.scalar.await('SELECT 1 FROM `user_licenses` WHERE `type` = ? AND `owner` = ?', { name, inv.owner })
 end
 
+---@diagnostic disable-next-line: duplicate-set-field
 function server.buyLicense(inv, license)
 	if server.hasLicense(inv, license.name) then
 		return false, 'already_have'
@@ -87,6 +79,7 @@ end
 --- Old: {"cola":1, "burger":3}
 --- New: [{"slot":1,"name":"cola","count":1}, {"slot":2,"name":"burger","count":3}]
 ---```
+---@diagnostic disable-next-line: duplicate-set-field
 function server.convertInventory(playerId, items)
 	if type(items) == 'table' then
 		local player = server.GetPlayerFromId(playerId)
@@ -119,6 +112,13 @@ function server.convertInventory(playerId, items)
 
 		return returnData, totalWeight
 	end
+end
+
+---@diagnostic disable-next-line: duplicate-set-field
+function server.isPlayerBoss(playerId)
+	local xPlayer = ESX.GetPlayerFromId(playerId)
+
+	return xPlayer.job.grade_name == 'boss'
 end
 
 MySQL.ready(function()

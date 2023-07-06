@@ -1,5 +1,6 @@
 import { CaseReducer, PayloadAction } from '@reduxjs/toolkit';
-import { itemDurability } from '../helpers';
+import { getItemData, itemDurability } from '../helpers';
+import { Items } from '../store/items';
 import { Inventory, State } from '../typings';
 
 export const setupInventoryReducer: CaseReducer<
@@ -20,6 +21,12 @@ export const setupInventoryReducer: CaseReducer<
           slot: index + 1,
         };
 
+        if (!item.name) return item;
+
+        if (typeof Items[item.name] === 'undefined') {
+          getItemData(item.name)
+        }
+
         item.durability = itemDurability(item.metadata, curTime);
         return item;
       }),
@@ -32,6 +39,12 @@ export const setupInventoryReducer: CaseReducer<
         const item = Object.values(rightInventory.items).find((item) => item?.slot === index + 1) || {
           slot: index + 1,
         };
+
+        if (!item.name) return item;
+
+        if (typeof Items[item.name] === 'undefined') {
+          getItemData(item.name)
+        }
 
         item.durability = itemDurability(item.metadata, curTime);
         return item;

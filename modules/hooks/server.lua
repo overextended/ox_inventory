@@ -4,7 +4,7 @@ local eventHooks = {}
 local microtime = os.microtime
 
 local function itemFilter(filter, item, secondItem)
-	local itemName = item?.name
+	local itemName = type(item) == 'table' and item.name or item
 
 	if not itemName or not filter[itemName] then
 		if type(secondItem) ~= 'table' or not filter[secondItem.name] then
@@ -31,17 +31,17 @@ local function typeFilter(filter, type)
 	return filter[type] or false
 end
 
-function TriggerEventHooks(event, payload)
+local function TriggerEventHooks(event, payload)
     local hooks = eventHooks[event]
 
     if hooks then
-		local fromInventory = payload.fromInventory and tostring(payload.fromInventory) or payload.inventoryId and tostring(payload.inventoryId)
+		local fromInventory = payload.fromInventory and tostring(payload.fromInventory) or payload.inventoryId and tostring(payload.inventoryId) or payload.shopType and tostring(payload.shopType)
 		local toInventory = payload.toInventory and tostring(payload.toInventory)
 
         for i = 1, #hooks do
 			local hook = hooks[i]
 
-			if hook.itemFilter and not itemFilter(hook.itemFilter, payload.fromSlot or payload.item, payload.toSlot) then
+			if hook.itemFilter and not itemFilter(hook.itemFilter, payload.fromSlot or payload.item or payload.itemName or payload.recipe, payload.toSlot) then
 				goto skipLoop
 			end
 
@@ -49,7 +49,7 @@ function TriggerEventHooks(event, payload)
 				goto skipLoop
 			end
 
-			if hook.typeFilter and not typeFilter(hook.typeFilter, payload.inventoryType) then
+			if hook.typeFilter and not typeFilter(hook.typeFilter, payload.inventoryType or payload.shopType) then
 				goto skipLoop
 			end
 
@@ -62,7 +62,7 @@ function TriggerEventHooks(event, payload)
 			local executionTime = microtime() - start
 
 			if executionTime >= 100000 then
-				shared.warning(('Execution of event hook "%s:%s:%s" took %.2fms.'):format(hook.resource, event, i, executionTime / 1e3))
+				warn(('Execution of event hook "%s:%s:%s" took %.2fms.'):format(hook.resource, event, i, executionTime / 1e3))
 			end
 
 			if event == 'createItem' then
@@ -113,7 +113,7 @@ local function removeResourceHooks(resource, id)
         for i = #hooks, 1, -1 do
 			local hook = hooks[i]
 
-            if hook.resource == resource and (not id or hook.id == id) then
+            if hook.resource == resource and (not id or hook.hookId == id) then
                 table.remove(hooks, i)
             end
         end
@@ -125,3 +125,5 @@ AddEventHandler('onResourceStop', removeResourceHooks)
 exports('removeHooks', function(id)
 	removeResourceHooks(GetInvokingResource() or cache.resource, id)
 end)
+
+return TriggerEventHooks

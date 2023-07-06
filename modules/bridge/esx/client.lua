@@ -1,4 +1,4 @@
-local onLogout, Weapon = ...
+local onLogout = ...
 
 local ESX = setmetatable({}, {
 	__index = function(self, index)
@@ -9,11 +9,13 @@ local ESX = setmetatable({}, {
 	end
 })
 
+---@diagnostic disable-next-line: duplicate-set-field
 function client.setPlayerData(key, value)
 	PlayerData[key] = value
 	ESX.SetPlayerData(key, value)
 end
 
+---@diagnostic disable-next-line: duplicate-set-field
 function client.setPlayerStatus(values)
 	for name, value in pairs(values) do
 		if value > 0 then TriggerEvent('esx_status:add', name, value) else TriggerEvent('esx_status:remove', name, -value) end
@@ -33,6 +35,8 @@ AddEventHandler('esx:setPlayerData', function(key, value)
 	PlayerData[key] = value
 	OnPlayerData(key, value)
 end)
+
+local Weapon = require 'modules.weapon.client'
 
 RegisterNetEvent('esx_policejob:handcuff', function()
 	PlayerData.cuffed = not PlayerData.cuffed

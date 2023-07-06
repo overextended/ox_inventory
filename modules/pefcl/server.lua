@@ -1,6 +1,15 @@
--- intended for integration with pefcl, but can be used regardless
+--[[
+	Intended for use with https://github.com/project-error/pefcl
+	config.useFrameworkIntegration.resource should be set as "ox_inventory"
 
-local Inventory = server.inventory
+	This isn't intended for use with frameworks with their own accounts,
+	use the proper pefcl-framework resources and ensure item/account syncing
+	works on your own. Note that qb uses "cash" but ox_inventory expects "money".
+
+	This is mostly here for ox_core.
+]]
+
+local Inventory = require 'modules.inventory.server'
 
 ---@param source number
 ---@param amount number

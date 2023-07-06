@@ -1,4 +1,4 @@
-local Items = server.items
+local Items = require 'modules.items.server'
 local started
 
 local function Print(arg)
@@ -7,7 +7,7 @@ end
 
 local function Upgrade()
 	if started then
-		return shared.warning('Data is already being converted, please wait..')
+		return warn('Data is already being converted, please wait..')
 	end
 
 	started = true
@@ -76,13 +76,14 @@ end
 
 local function ConvertESX()
 	if started then
-		return shared.warning('Data is already being converted, please wait..')
+		return warn('Data is already being converted, please wait..')
 	end
 
-	started = true
 	local users = MySQL.query.await('SELECT identifier, inventory, loadout, accounts FROM users')
+
 	if not users then return end
 
+	started = true
 	local total = #users
 	local count = 0
 	local parameters = {}
@@ -135,7 +136,7 @@ end
 
 local function ConvertQB()
 	if started then
-		return shared.warning('Data is already being converted, please wait..')
+		return warn('Data is already being converted, please wait..')
 	end
 
 	started = true
@@ -302,19 +303,59 @@ local function ConvertQB()
 		end
 	end
 
+	local qbEvidence = MySQL.query.await("SELECT stash, items FROM stashitems WHERE stash LIKE '% | Drawer%'")
+
+	if qbEvidence then
+		table.wipe(parameters)
+		count = 0
+
+		---@type table<string, OxItem[]> maps stash name to inventory
+		local oxEvidence = {}
+
+		for i = 1, #qbEvidence do
+			local qbStash = qbEvidence[i]
+			local name = 'evidence-'..qbStash.stash:sub(12)
+			local items = server.convertInventory(nil, (qbStash.items and json.decode(qbStash.items) or {}))
+
+			--- evidence numbers can be shared between locations, so need to maintain map and merge.
+			if oxEvidence[name] then
+				for k = 1, #items do
+					oxEvidence[name][#oxEvidence[name]+1] = items[k]
+				end
+			else
+				oxEvidence[name] = items
+			end
+		end
+
+		for name, items in pairs(oxEvidence) do
+			count += 1
+			parameters[count] = { "INSERT INTO ox_inventory (owner, name, data) VALUES ('', ?, ?) ON DUPLICATE KEY UPDATE name = VALUES(name), data = VALUES(data)", {
+				name, json.encode(items)
+			}}
+		end
+
+		Print(('Creating ^3%s^0 evidence lockers from ^3%s^0 lockers by merging duplicate locker numbers'):format(count, #qbEvidence))
+		if count > 0 then
+			if not MySQL.transaction.await(parameters) then
+				return Print('An error occurred while converting evidence lockers')
+			end
+		end
+	end
+
 	Print('Successfully converted user and vehicle inventories')
 	started = false
 end
 
 local function Convert_Old_ESX_Property()
 	if started then
-		return shared.warning('Data is already being converted, please wait..')
+		return warn('Data is already being converted, please wait..')
 	end
 
-	started = true
 	local inventories = MySQL.query.await('select distinct owner from ( select owner from addon_inventory_items WHERE inventory_name = "property" union all select owner from datastore_data WHERE NAME = "property" union all select owner from addon_account_data WHERE account_name = "property_black_money") a ')
+
 	if not inventories then return end
 
+	started = true
 	local total = #inventories
 	local count = 0
 	local parameters = {}

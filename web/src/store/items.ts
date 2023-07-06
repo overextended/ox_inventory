@@ -4,6 +4,7 @@ export const Items: {
   [key: string]: ItemData | undefined;
 } = {
   water: {
+    name: 'water',
     close: false,
     label: 'VODA',
     stack: true,
@@ -11,6 +12,7 @@ export const Items: {
     count: 0,
   },
   burger: {
+    name: 'burger',
     close: false,
     label: 'BURGR',
     stack: false,

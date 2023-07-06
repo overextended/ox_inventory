@@ -1,17 +1,16 @@
 if not lib then return end
 
 local CraftingBenches = {}
-local Items = server.items
-local Inventory = server.inventory
+local Items = require 'modules.items.server'
+local Inventory = require 'modules.inventory.server'
 
 ---@param id number
 ---@param data table
 local function createCraftingBench(id, data)
 	CraftingBenches[id] = {}
-	local locations = shared.target and data.zones or data.points
 	local recipes = data.items
 
-	if recipes and locations then
+	if recipes then
 		for i = 1, #recipes do
 			local recipe = recipes[i]
 			local item = Items(recipe.name)
@@ -46,41 +45,58 @@ end
 
 for id, data in pairs(data('crafting')) do createCraftingBench(id, data) end
 
+---falls back to player coords if zones and points are both nil
+---@param source number
+---@param bench table
+---@param index number
+---@return vector3
+local function getCraftingCoords(source, bench, index)
+	if not bench.zones and not bench.points then
+		return GetEntityCoords(GetPlayerPed(source))
+	else
+		return shared.target and bench.zones[index].coords or bench.points[index]
+	end
+end
+
 lib.callback.register('ox_inventory:openCraftingBench', function(source, id, index)
 	local left, bench = Inventory(source), CraftingBenches[id]
 
+	if not left then return end
+
 	if bench then
 		local groups = bench.groups
-		local coords = shared.target and bench.zones[index].coords or bench.points[index]
+		local coords = getCraftingCoords(source, bench, index)
+
+		if not coords then return end
 
 		if groups and not server.hasGroup(left, groups) then return end
 		if #(GetEntityCoords(GetPlayerPed(source)) - coords) > 10 then return end
 
 		if left.open and left.open ~= source then
-			local inv = Inventory(left.open)
+			local inv = Inventory(left.open) --[[@as OxInventory]]
 
 			-- Why would the player inventory open with an invalid target? Can't repro but whatever.
-			if inv then
-				if inv.player then
-					TriggerClientEvent('ox_inventory:closeInventory', inv.owner, true)
-				end
-
-				inv:set('open', false)
+			if inv?.player then
+				inv:closeInventory()
 			end
 		end
 
-		left.open = true
+		left:openInventory(left)
 	end
 
 	return { label = left.label, type = left.type, slots = left.slots, weight = left.weight, maxWeight = left.maxWeight }
 end)
 
+local TriggerEventHooks = require 'modules.hooks.server'
+
 lib.callback.register('ox_inventory:craftItem', function(source, id, index, recipeId, toSlot)
 	local left, bench = Inventory(source), CraftingBenches[id]
 
+	if not left then return end
+
 	if bench then
 		local groups = bench.groups
-		local coords = shared.target and bench.zones[index].coords or bench.points[index]
+		local coords = getCraftingCoords(source, bench, index)
 
 		if groups and not server.hasGroup(left, groups) then return end
 		if #(GetEntityCoords(GetPlayerPed(source)) - coords) > 10 then return end
@@ -150,6 +166,15 @@ lib.callback.register('ox_inventory:craftItem', function(source, id, index, reci
 				return false, 'cannot_carry'
 			end
 
+			if not TriggerEventHooks('craftItem', {
+				source = source,
+				benchId = id,
+				benchIndex = index,
+				recipe = recipe,
+				toInventory = left.id,
+				toSlot = toSlot,
+			}) then return false end
+
 			local success = lib.callback.await('ox_inventory:startCrafting', source, id, recipeId)
 
 			if success then
@@ -159,6 +184,8 @@ lib.callback.register('ox_inventory:craftItem', function(source, id, index, reci
 
 				for slot, count in pairs(tbl) do
 					local invSlot = left.items[slot]
+
+					if not invSlot then return end
 
 					if count < 1 then
 						local item = Items(invSlot.name)
@@ -178,29 +205,14 @@ lib.callback.register('ox_inventory:craftItem', function(source, id, index, reci
 								local newItem = Inventory.SetSlot(left, item, 1, table.deepclone(invSlot.metadata), emptySlot)
 
 								if newItem then
-									newItem.metadata.durability = durability < 0 and 0 or durability
-									durability = 0
-
-									TriggerClientEvent('ox_inventory:updateSlots', left.id, {
-										{
-											item = newItem,
-											inventory = left.type
-										}
-									}, { left = left.weight })
+                                    Items.UpdateDurability(left, newItem, item, durability < 0 and 0 or durability)
 								end
 							end
 
 							invSlot.count -= 1
 						else
-							invSlot.metadata.durability = durability < 0 and 0 or durability
+                            Items.UpdateDurability(left, invSlot, item, durability < 0 and 0 or durability)
 						end
-
-						TriggerClientEvent('ox_inventory:updateSlots', source, {
-							{
-								item = invSlot,
-								inventory = left.type
-							}
-						}, { left = left.weight })
 					else
 						local removed = invSlot and Inventory.RemoveItem(left, invSlot.name, count, nil, slot)
 						-- Failed to remove item (inventory state unexpectedly changed?)
@@ -211,7 +223,7 @@ lib.callback.register('ox_inventory:craftItem', function(source, id, index, reci
 				Inventory.AddItem(left, craftedItem, recipe.count or 1, recipe.metadata or {}, craftedItem.stack and toSlot or nil)
 			end
 
-			return true
+			return success
 		end
 	end
 end)

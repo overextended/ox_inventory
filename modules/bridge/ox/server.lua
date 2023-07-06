@@ -1,9 +1,5 @@
 local playerDropped = ...
-local Inventory
-
-CreateThread(function()
-	Inventory = server.inventory
-end)
+local Inventory = require 'modules.inventory.server'
 
 AddEventHandler('ox:playerLogout', playerDropped)
 
@@ -13,11 +9,13 @@ AddEventHandler('ox:setGroup', function(source, name, grade)
 	inventory.player.groups[name] = grade
 end)
 
+---@diagnostic disable-next-line: duplicate-set-field
 function server.hasLicense(inv, name)
 	local player = Ox.GetPlayer(inv.id)
 	return player.getLicense(name)
 end
 
+---@diagnostic disable-next-line: duplicate-set-field
 function server.buyLicense(inv, license)
 	local player = Ox.GetPlayer(inv.id)
 
@@ -31,4 +29,11 @@ function server.buyLicense(inv, license)
 	player.addLicense(license.name)
 
 	return true, 'have_purchased'
+end
+
+---@diagnostic disable-next-line: duplicate-set-field
+function server.isPlayerBoss(playerId, group, grade)
+	local groupData = GlobalState[('group.%s'):format(group)]
+
+	return groupData and grade >= groupData.adminGrade
 end

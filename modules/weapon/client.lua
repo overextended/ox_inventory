@@ -1,9 +1,8 @@
 if not lib then return end
 
 local Weapon = {}
-local Items = client.items
-local Utils = client.utils
-client.weapon = Weapon
+local Items = require 'modules.items.client'
+local Utils = require 'modules.utils.client'
 
 -- generic group animation data
 local anims = {}
@@ -17,29 +16,34 @@ local function vehicleIsCycle(vehicle)
 end
 
 function Weapon.Equip(item, data)
-	local playerPed, sleep = cache.ped, 200
+	local playerPed = cache.ped
+	local coords = GetEntityCoords(playerPed, true)
 
 	if client.weaponanims then
 		if cache.vehicle and vehicleIsCycle(cache.vehicle) then
 			goto skipAnim
 		end
 
-		local coords = GetEntityCoords(playerPed, true)
 		local anim = data.anim or anims[GetWeapontypeGroup(data.hash)]
 
 		if anim == anims[`GROUP_PISTOL`] and not client.hasGroup(shared.police) then
 			anim = nil
 		end
 
-		sleep = anim and anim[3] or 1200
+		local sleep = anim and anim[3] or 1200
 
-		Utils.PlayAnimAdvanced(sleep*2, anim and anim[1] or 'reaction@intimidation@1h', anim and anim[2] or 'intro', coords.x, coords.y, coords.z, 0, 0, GetEntityHeading(playerPed), 8.0, 3.0, -1, 50, 0.1)
-		Wait(sleep)
+		Utils.PlayAnimAdvanced(sleep, anim and anim[1] or 'reaction@intimidation@1h', anim and anim[2] or 'intro', coords.x, coords.y, coords.z, 0, 0, GetEntityHeading(playerPed), 8.0, 3.0, sleep*2, 50, 0.1)
 	end
 
 	::skipAnim::
 
-	SetPedAmmo(playerPed, data.hash, 0)
+	item.hash = data.hash
+	item.ammo = data.ammoname
+	item.melee = GetWeaponDamageType(data.hash) == 2 and 0
+	item.timer = 0
+	item.throwable = data.throwable
+	item.group = GetWeapontypeGroup(item.hash)
+
 	GiveWeaponToPed(playerPed, data.hash, 0, false, true)
 
 	if item.metadata.tint then SetPedWeaponTintIndex(playerPed, data.hash, item.metadata.tint) end
@@ -58,39 +62,42 @@ function Weapon.Equip(item, data)
 		end
 	end
 
-	item.hash = data.hash
-	item.ammo = data.ammoname
-	item.melee = (not item.throwable and not data.ammoname) and 0
-	item.timer = 0
-	item.throwable = data.throwable
+	if item.metadata.specialAmmo then
+		local clipComponentKey = ('%s_CLIP'):format(data.model:gsub('WEAPON_', 'COMPONENT_'))
+		local specialClip = ('%s_%s'):format(clipComponentKey, item.metadata.specialAmmo:upper())
 
+		if DoesWeaponTakeWeaponComponent(data.hash, specialClip) then
+			GiveWeaponComponentToPed(playerPed, data.hash, specialClip)
+		end
+	end
+
+	local ammo = item.metadata.ammo or item.throwable and 1 or 0
+
+	SetPedAmmo(playerPed, data.hash, ammo)
 	SetCurrentPedWeapon(playerPed, data.hash, true)
 	SetPedCurrentWeaponVisible(playerPed, true, false, false, false)
 	SetWeaponsNoAutoswap(true)
-	TriggerEvent('ox_inventory:currentWeapon', item)
-	Utils.ItemNotify({item.metadata.label or item.label, item.metadata.image or item.name, 'ui_equipped'})
+	SetTimeout(0, function() RefillAmmoInstantly(playerPed) end)
 
-	if item.metadata.ammo and item.metadata.ammo > 0 then
-		AddAmmoToPed(playerPed, data.hash, item.metadata.ammo)
-	end
-
-	Wait(sleep)
-	RefillAmmoInstantly(playerPed)
-
-	if data.hash == `WEAPON_PETROLCAN` or data.hash == `WEAPON_HAZARDCAN` or data.hash == `WEAPON_FERTILIZERCAN` or data.hash == `WEAPON_FIREEXTINGUISHER` then
+	if item.group == `GROUP_PETROLCAN` or item.group == `GROUP_FIREEXTINGUISHER` then
 		item.metadata.ammo = item.metadata.durability
 		SetPedInfiniteAmmo(playerPed, true, data.hash)
 	end
+
+	TriggerEvent('ox_inventory:currentWeapon', item)
+	Utils.ItemNotify({ item, 'ui_equipped' })
 
 	return item
 end
 
 function Weapon.Disarm(currentWeapon, noAnim)
-	if source == '' then
-		TriggerServerEvent('ox_inventory:updateWeapon')
-	end
+	if currentWeapon?.timer then
+		currentWeapon.timer = nil
 
-	if currentWeapon then
+		if source == '' then
+			TriggerServerEvent('ox_inventory:updateWeapon')
+		end
+
 		SetPedAmmo(cache.ped, currentWeapon.hash, 0)
 
 		if client.weaponanims and not noAnim then
@@ -110,13 +117,12 @@ function Weapon.Disarm(currentWeapon, noAnim)
 
 			local sleep = anim and anim[6] or 1400
 
-			Utils.PlayAnimAdvanced(sleep, anim and anim[4] or 'reaction@intimidation@1h', anim and anim[5] or 'outro', coords.x, coords.y, coords.z, 0, 0, GetEntityHeading(cache.ped), 8.0, 3.0, -1, 50, 0)
-			Wait(sleep)
+			Utils.PlayAnimAdvanced(sleep, anim and anim[4] or 'reaction@intimidation@1h', anim and anim[5] or 'outro', coords.x, coords.y, coords.z, 0, 0, GetEntityHeading(cache.ped), 8.0, 3.0, sleep, 50, 0)
 		end
 
 		::skipAnim::
 
-		Utils.ItemNotify({currentWeapon.metadata.label or currentWeapon.label, currentWeapon.metadata.image or currentWeapon.name, 'ui_holstered'})
+		Utils.ItemNotify({ currentWeapon, 'ui_holstered' })
 		TriggerEvent('ox_inventory:currentWeapon')
 	end
 
@@ -136,3 +142,5 @@ end
 
 Utils.Disarm = Weapon.Disarm
 Utils.ClearWeapons = Weapon.ClearAll
+
+return Weapon

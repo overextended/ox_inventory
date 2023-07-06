@@ -1,4 +1,6 @@
-Utils = {}
+if not lib then return end
+
+local Utils = {}
 
 local webHook = GetConvar('inventory:webhook', '')
 
@@ -42,3 +44,5 @@ if webHook ~= '' then
 		}), headers)
 	end
 end
+
+return Utils

@@ -4,20 +4,18 @@ local Utils = {}
 
 function Utils.PlayAnim(wait, dict, name, blendIn, blendOut, duration, flag, rate, lockX, lockY, lockZ)
 	lib.requestAnimDict(dict)
-	CreateThread(function()
-		TaskPlayAnim(cache.ped, dict, name, blendIn, blendOut, duration, flag, rate, lockX, lockY, lockZ)
-		Wait(wait)
-		if wait > 0 then ClearPedSecondaryTask(cache.ped) end
-	end)
+	TaskPlayAnim(cache.ped, dict, name, blendIn, blendOut, duration, flag, rate, lockX, lockY, lockZ)
+	RemoveAnimDict(dict)
+
+	if wait > 0 then Wait(wait) end
 end
 
-function Utils.PlayAnimAdvanced(wait, dict, name, posX, posY, posZ, rotX, rotY, rotZ, animEnter, animExit, duration, flag, time)
+function Utils.PlayAnimAdvanced(wait, dict, name, posX, posY, posZ, rotX, rotY, rotZ, blendIn, blendOut, duration, flag, time)
 	lib.requestAnimDict(dict)
-	CreateThread(function()
-		TaskPlayAnimAdvanced(cache.ped, dict, name, posX, posY, posZ, rotX, rotY, rotZ, animEnter, animExit, duration, flag, time, 0, 0)
-		Wait(wait)
-		if wait > 0 then ClearPedSecondaryTask(cache.ped) end
-	end)
+	TaskPlayAnimAdvanced(cache.ped, dict, name, posX, posY, posZ, rotX, rotY, rotZ, blendIn, blendOut, duration, flag, time, 0, 0)
+	RemoveAnimDict(dict)
+
+	if wait > 0 then Wait(wait) end
 end
 
 function Utils.Raycast(flag)
@@ -81,6 +79,7 @@ end
 
 RegisterNetEvent('ox_inventory:itemNotify', Utils.ItemNotify)
 
+---@deprecated
 function Utils.DeleteObject(obj)
 	SetEntityAsMissionEntity(obj, false, true)
 	DeleteObject(obj)
@@ -93,6 +92,8 @@ function Utils.DeleteEntity(entity)
 	end
 end
 
+local rewardTypes = 1 << 0 | 1 << 1 | 1 << 2 | 1 << 3 | 1 << 7 | 1 << 10
+
 -- Enables the weapon wheel, but disables the use of inventory items
 -- Mostly used for weaponised vehicles, though could be called for "minigames"
 function Utils.WeaponWheel(state)
@@ -101,7 +102,13 @@ function Utils.WeaponWheel(state)
 	EnableWeaponWheel = state
 	SetWeaponsNoAutoswap(not state)
 	SetWeaponsNoAutoreload(not state)
+
+	if client.suppresspickups then
+		-- CLEAR_PICKUP_REWARD_TYPE_SUPPRESSION | SUPPRESS_PICKUP_REWARD_TYPE
+		return state and N_0x762db2d380b48d04(rewardTypes) or N_0xf92099527db8e2a7(rewardTypes, true)
+	end
 end
+
 exports('weaponWheel', Utils.WeaponWheel)
 
 function Utils.CreateBlip(settings, coords)
@@ -117,4 +124,4 @@ function Utils.CreateBlip(settings, coords)
 	return blip
 end
 
-client.utils = Utils
+return Utils

@@ -4,33 +4,41 @@ local Inventory = {}
 
 Inventory.Dumpsters = {218085040, 666561306, -58485588, -206690185, 1511880420, 682791951}
 
-if shared.target then
-	local function OpenDumpster(entity)
-		local netId = NetworkGetEntityIsNetworked(entity) and NetworkGetNetworkIdFromEntity(entity)
+function Inventory.OpenDumpster(entity)
+	local netId = NetworkGetEntityIsNetworked(entity) and NetworkGetNetworkIdFromEntity(entity)
 
-		if not netId then
-			local coords = GetEntityCoords(entity)
-			entity = GetClosestObjectOfType(coords.x, coords.y, coords.z, 0.1, GetEntityModel(entity), true, true, true)
-			netId = entity ~= 0 and NetworkGetNetworkIdFromEntity(entity)
-		end
-
-		if netId then
-			client.openInventory('dumpster', 'dumpster'..netId)
-		end
+	if not netId then
+		local coords = GetEntityCoords(entity)
+		entity = GetClosestObjectOfType(coords.x, coords.y, coords.z, 0.1, GetEntityModel(entity), true, true, true)
+		netId = entity ~= 0 and NetworkGetNetworkIdFromEntity(entity)
 	end
 
+	if netId then
+		client.openInventory('dumpster', 'dumpster'..netId)
+	end
+end
+
+if shared.target then
 	exports.qtarget:AddTargetModel(Inventory.Dumpsters, {
 		options = {
 			{
 				icon = 'fas fa-dumpster',
 				label = locale('search_dumpster'),
 				action = function(entity)
-					OpenDumpster(entity)
+					Inventory.OpenDumpster(entity)
 				end
 			},
 		},
 		distance = 2
 	})
+else
+	local dumpsters = table.create(0, #Inventory.Dumpsters)
+
+	for i = 1, #Inventory.Dumpsters do
+		dumpsters[Inventory.Dumpsters[i]] = true
+	end
+
+	Inventory.Dumpsters = dumpsters
 end
 
 local table = lib.table
@@ -76,6 +84,136 @@ function Inventory.Search(search, item, metadata)
 	return false
 end
 exports('Search', Inventory.Search)
+
+exports('GetPlayerItems', function()
+	return PlayerData.inventory
+end)
+
+exports('GetPlayerWeight', function()
+	return PlayerData.weight
+end)
+
+exports('GetPlayerMaxWeight', function()
+	return PlayerData.maxWeight
+end)
+
+local Items = require 'modules.items.client'
+
+local function assertMetadata(metadata)
+	if metadata and type(metadata) ~= 'table' then
+		metadata = metadata and { type = metadata or nil }
+	end
+
+	return metadata
+end
+
+---@param itemName string
+---@param metadata? any
+---@param strict? boolean Strictly match metadata properties, otherwise use partial matching.
+---@return SlotWithItem?
+function Inventory.GetSlotWithItem(itemName, metadata, strict)
+	local inventory = PlayerData.inventory
+	local item = Items(itemName) --[[@as OxClientItem?]]
+
+	if not inventory or not item then return end
+
+	metadata = assertMetadata(metadata)
+	local tablematch = strict and table.matches or table.contains
+
+	for _, slotData in pairs(inventory) do
+		if slotData and slotData.name == item.name and (not metadata or tablematch(slotData.metadata, metadata)) then
+			return slotData
+		end
+	end
+end
+
+exports('GetSlotWithItem', Inventory.GetSlotWithItem)
+
+---@param itemName string
+---@param metadata? any
+---@param strict? boolean Strictly match metadata properties, otherwise use partial matching.
+---@return number?
+function Inventory.GetSlotIdWithItem(itemName, metadata, strict)
+	return Inventory.GetSlotWithItem(itemName, metadata, strict)?.slot
+end
+
+exports('GetSlotIdWithItem', Inventory.GetSlotIdWithItem)
+
+---@param itemName string
+---@param metadata? any
+---@param strict? boolean Strictly match metadata properties, otherwise use partial matching.
+---@return SlotWithItem[]?
+function Inventory.GetSlotsWithItem(itemName, metadata, strict)
+	local inventory = PlayerData.inventory
+	local item = Items(itemName) --[[@as OxClientItem?]]
+
+	if not inventory or not item then return end
+
+
+	metadata = assertMetadata(metadata)
+	local response = {}
+	local n = 0
+	local tablematch = strict and table.matches or table.contains
+
+	for _, slotData in pairs(inventory) do
+		if slotData and slotData.name == item.name and (not metadata or tablematch(slotData.metadata, metadata)) then
+			n += 1
+			response[n] = slotData
+		end
+	end
+
+	return response
+end
+
+exports('GetSlotsWithItem', Inventory.GetSlotsWithItem)
+
+---@param itemName string
+---@param metadata? any
+---@param strict? boolean Strictly match metadata properties, otherwise use partial matching.
+---@return number[]?
+function Inventory.GetSlotIdsWithItem(itemName, metadata, strict)
+	local items = Inventory.GetSlotsWithItem(itemName, metadata, strict)
+
+	if items then
+		---@cast items +number[]
+		for i = 1, #items do
+			items[i] = items[i].slot
+		end
+
+		return items
+	end
+end
+
+---@param itemName string
+---@param metadata? any
+---@param strict? boolean Strictly match metadata properties, otherwise use partial matching.
+---@return number
+function Inventory.GetItemCount(itemName, metadata, strict)
+	local inventory = PlayerData.inventory
+	local item = Items(itemName) --[[@as OxClientItem?]]
+
+	if not inventory or not item then return 0 end
+
+	if not metadata then
+		return item.count
+	end
+
+
+	metadata = assertMetadata(metadata)
+	local count = 0
+	local tablematch = strict and table.matches or table.contains
+
+	for _, slotData in pairs(inventory) do
+		if slotData and slotData.name == item.name and (not metadata or tablematch(slotData.metadata, metadata)) then
+			count += slotData.count
+		end
+	end
+
+	return count
+end
+
+exports('GetItemCount', Inventory.GetItemCount)
+
 
 local function openEvidence()
 	client.openInventory('policeevidence')
@@ -193,4 +331,20 @@ Inventory.Stashes = setmetatable(data('stashes'), {
 	end
 })
 
-client.inventory = Inventory
+RegisterNetEvent('ox_inventory:refreshMaxWeight', function(data)
+    if data.inventoryId == cache.serverId then
+        PlayerData.maxWeight = data.maxWeight
+    end
+
+	SendNUIMessage({
+		action = 'refreshSlots',
+		data = {
+			weightData = {
+				inventoryId = data.inventoryId,
+				maxWeight = data.maxWeight
+			}
+		}
+	})
+end)
+
+return Inventory
