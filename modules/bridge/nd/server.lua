@@ -1,11 +1,7 @@
 local playerDropped = ...
-local Inventory
+local Inventory = require 'modules.inventory.server'
 local file = LoadResourceFile("ND_Core", "init.lua")
 load(file, "@ND_Core/init.lua")()
-
-CreateThread(function()
-	Inventory = server.inventory
-end)
 
 AddEventHandler("ND:characterUnloaded", playerDropped)
 
