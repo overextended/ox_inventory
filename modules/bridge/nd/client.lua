@@ -1,3 +1,6 @@
+local file = LoadResourceFile("ND_Core", "init.lua")
+load(file, "@ND_Core/init.lua")()
+
 local function reorderGroups(groups)
     groups = groups or {}
     for group, info in pairs(groups) do
@@ -7,31 +10,20 @@ local function reorderGroups(groups)
 end
 
 SetTimeout(500, function()
-	NDCore = exports["ND_Core"]:GetCoreObject()
-
-	local character = NDCore.Functions.GetSelectedCharacter()
-    if character then
-    	local groups = reorderGroups(character.data.groups)
-    	OnPlayerData("groups", groups)
-	end
-end)
-
-RegisterNetEvent("ND:setCharacter", function(character)
-    local groups = reorderGroups(character.data.groups)
+	local player = NDCore.getPlayer()
+    if not player then return end
+    local groups = reorderGroups(player.groups)
     OnPlayerData("groups", groups)
 end)
 
-RegisterNetEvent("ND:jobChanged", function(job, lastJob)
-    local character = NDCore.Functions.GetSelectedCharacter()
-    local groups = reorderGroups(character.data.groups)
-    groups[lastJob.name] = nil
-    groups[job.name] = job.rank
-
+RegisterNetEvent("ND:setCharacter", function(character)
+    local groups = reorderGroups(character.groups)
     OnPlayerData("groups", groups)
 end)
 
 ---@diagnostic disable-next-line: duplicate-set-field
 function client.setPlayerStatus(values)
+    if GetResourceState("ND_Status") ~= "started" then return end
 	for name, value in pairs(values) do
         if value == 0 then
             exports["ND_Status"]:setStatus(name, value)
