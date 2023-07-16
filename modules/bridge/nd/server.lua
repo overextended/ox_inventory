@@ -52,17 +52,12 @@ end)
 
 ---@diagnostic disable-next-line: duplicate-set-field
 function server.syncInventory(inv)
-    local money = table.clone(server.accounts)
+    local accounts = Inventory.GetAccountItemCounts(inv)
 
-    for _, v in pairs(inv.items) do
-        if money[v.name] then
-            money[v.name] += v.count
-        end
+    if accounts then
+        local player = NDCore.getPlayer(inv.id)
+        player.setData("cash", accounts.money)
     end
-
-    if not money then return end
-    local player = NDCore.getPlayer(inv.id)
-    player.setData("cash", money.money)
 end
 
 ---@diagnostic disable-next-line: duplicate-set-field
