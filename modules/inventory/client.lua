@@ -234,12 +234,15 @@ Inventory.Evidence = setmetatable(data('evidence'), {
 		for _, evidence in pairs(self) do
 			if evidence.point then
 				evidence.point:remove()
-			end
+            elseif evidence.zone then
+                exports.qtarget:RemoveZone(evidence.target.name)
+                evidence.zone = nil
+            end
 
 			if client.hasGroup(shared.police) then
 				if shared.target then
 					if evidence.target then
-						exports.qtarget:RemoveZone(evidence.target.name)
+                        evidence.zone = true
 						exports.qtarget:AddBoxZone(evidence.target.name, evidence.target.loc, evidence.target.length or 0.5, evidence.target.width or 0.5,
 						{
 							name = evidence.target.name,
@@ -287,12 +290,15 @@ Inventory.Stashes = setmetatable(data('stashes'), {
 
 			if stash.point then
 				stash.point:remove()
-			end
+            elseif stash.zone then
+                exports.qtarget:RemoveZone(stash.name)
+                stash.zone = nil
+            end
 
 			if not stash.groups or client.hasGroup(stash.groups) then
 				if shared.target then
 					if stash.target then
-						exports.qtarget:RemoveZone(stash.name)
+                        stash.zone = true
 						exports.qtarget:AddBoxZone(stash.name, stash.target.loc, stash.target.length or 0.5, stash.target.width or 0.5,
 						{
 							name = stash.name,
