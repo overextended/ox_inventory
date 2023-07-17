@@ -17,6 +17,8 @@
   "ui_ctrl_shift_lmb": "Fél mennyiség áthelyezése másik inventory-ba",
   "ui_alt_lmb": "Tárgy gyorshasználat",
   "ui_ctrl_c": "Kurzor alatt lévő fegyver sorozatszámának másolása",
+  "ui_remove_ammo": "Lőszer eltávolítása",
+  "ammo_type": "Lőszer típusa",
   "$": "$",
   "male": "Férfi",
   "female": "Nő",
