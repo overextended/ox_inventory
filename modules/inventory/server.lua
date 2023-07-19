@@ -1836,32 +1836,34 @@ lib.callback.register('ox_inventory:swapItems', function(source, data)
 			if fromInventory.changed ~= nil then fromInventory.changed = true end
 			if toInventory.changed ~= nil then toInventory.changed = true end
 
-			if sameInventory then
-				fromInventory:syncSlotsWithClients({
-					{
-						item = fromInventory.items[data.toSlot] or { slot = data.toSlot },
-						inventory = fromInventory.id
-					},
-					{
-						item = fromInventory.items[data.fromSlot] or { slot = data.fromSlot },
-						inventory = fromInventory.id
-					}
-				}, { left = fromInventory.weight }, true)
-			else
-				toInventory:syncSlotsWithClients({
-					{
-						item = toInventory.items[data.toSlot] or { slot = data.toSlot },
-						inventory = toInventory.id
-					}
-				}, { left = toInventory.weight }, true)
+            CreateThread(function()
+                if sameInventory then
+                    fromInventory:syncSlotsWithClients({
+                        {
+                            item = fromInventory.items[data.toSlot] or { slot = data.toSlot },
+                            inventory = fromInventory.id
+                        },
+                        {
+                            item = fromInventory.items[data.fromSlot] or { slot = data.fromSlot },
+                            inventory = fromInventory.id
+                        }
+                    }, { left = fromInventory.weight }, true)
+                else
+                    toInventory:syncSlotsWithClients({
+                        {
+                            item = toInventory.items[data.toSlot] or { slot = data.toSlot },
+                            inventory = toInventory.id
+                        }
+                    }, { left = toInventory.weight }, true)
 
-				fromInventory:syncSlotsWithClients({
-					{
-						item = fromInventory.items[data.fromSlot] or { slot = data.fromSlot },
-						inventory = fromInventory.id
-					}
-				}, { left = fromInventory.weight }, true)
-			end
+                    fromInventory:syncSlotsWithClients({
+                        {
+                            item = fromInventory.items[data.fromSlot] or { slot = data.fromSlot },
+                            inventory = fromInventory.id
+                        }
+                    }, { left = fromInventory.weight }, true)
+                end
+            end)
 
 			local resp
 
