@@ -1634,31 +1634,41 @@ RegisterNUICallback('giveItem', function(data, cb)
 
 		if #nearbyPlayers == 0 then return end
 
-		for i = 1, #nearbyPlayers do
-			local option = nearbyPlayers[i]
-			local ped = GetPlayerPed(option.id)
+		if #nearbyPlayers > 1 then
+			for i = 1, #nearbyPlayers do
+				local option = nearbyPlayers[i]
+				local ped = GetPlayerPed(option.id)
 
-			if ped > 0 and IsEntityVisible(ped) then
-				local playerName = GetPlayerName(option.id)
-				option.id = GetPlayerServerId(option.id)
-				option.label = ('[%s] %s'):format(option.id, playerName)
-				n += 1
-				nearbyPlayers[n] = option
+				if ped > 0 and IsEntityVisible(ped) then
+					local playerName = GetPlayerName(option.id)
+					option.id = GetPlayerServerId(option.id)
+					option.label = ('[%s] %s'):format(option.id, playerName)
+					n += 1
+					nearbyPlayers[n] = option
+				end
+			end
+
+			local p = promise.new()
+
+			lib.registerMenu({
+				id = 'ox_inventory:givePlayerList',
+				title = 'Give item',
+				options = nearbyPlayers,
+				onClose = function() p:resolve() end,
+			}, function(selected) p:resolve(selected and nearbyPlayers[selected].id) end)
+
+			lib.showMenu('ox_inventory:givePlayerList')
+
+			target = Citizen.Await(p)
+		else -- If there's only one person nearby, just give it to them
+			local option = nearbyPlayers[1]
+			local entity = GetPlayerPed(option.id)
+
+			if entity > 0 and IsEntityVisible(entity) then
+				target = GetPlayerServerId(option.id)
+				Utils.PlayAnim(0, 'mp_common', 'givetake1_a', 1.0, 1.0, 2000, 50, 0.0, 0, 0, 0)
 			end
 		end
-
-		local p = promise.new()
-
-		lib.registerMenu({
-			id = 'ox_inventory:givePlayerList',
-			title = 'Give item',
-			options = nearbyPlayers,
-			onClose = function() p:resolve() end,
-		}, function(selected) p:resolve(selected and nearbyPlayers[selected].id) end)
-
-		lib.showMenu('ox_inventory:givePlayerList')
-
-		target = Citizen.Await(p)
 	elseif cache.vehicle then
 		local seats = GetVehicleMaxNumberOfPassengers(cache.vehicle) - 1
 
