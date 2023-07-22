@@ -2,9 +2,22 @@ if not lib then return end
 
 local Items = require 'modules.items.shared' --[[@as table<string, OxClientItem>]]
 
-local function displayMetadata(metadata, value)
-	local data = metadata
-	if type(metadata) == 'string' and value then data = { [metadata] = value } end
+---@param metadata table|string
+---@param value? string
+---@param order? string[] if present must include all values of metadata table. Determines order metadata will be displayed in.
+local function displayMetadata(metadata, value, order)
+	local data = {}
+	if type(metadata) == 'string' and value then data = { metadata = metadata, value = value }
+	elseif order then
+		for i = 1, #order do
+			local key = order[i]
+			data[i] = {
+				metadata = key,
+				value = metadata[key]
+			}
+		end
+	end
+
 	SendNUIMessage({
 		action = 'displayMetadata',
 		data = data
