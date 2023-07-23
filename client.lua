@@ -1637,6 +1637,8 @@ local function giveItemToTarget(serverId, slotId, count)
     TriggerServerEvent('ox_inventory:giveItem', slotId, serverId, count or 0)
 end
 
+exports('giveItemToTarget', giveItemToTarget)
+
 RegisterNUICallback('giveItem', function(data, cb)
 	cb(1)
 
