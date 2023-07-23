@@ -1638,8 +1638,9 @@ RegisterNUICallback('giveItem', function(data, cb)
 
 		for i = 1, #nearbyPlayers do
 			local option = nearbyPlayers[i]
+            local entity = Utils.Raycast(1|2|4|8|16, option.coords + vec3(0, 0, 0.5), 0.2)
 
-			if IsEntityVisible(option.ped) then
+			if entity == option.ped and IsEntityVisible(option.ped) then
 				local playerName = GetPlayerName(option.id)
 				option.id = GetPlayerServerId(option.id)
 				option.label = ('[%s] %s'):format(option.id, playerName)
@@ -1673,7 +1674,7 @@ RegisterNUICallback('giveItem', function(data, cb)
 			end
 		end
 	else
-		local entity = Utils.Raycast(12)
+		local entity = Utils.Raycast(1|2|4|8|16, GetOffsetFromEntityInWorldCoords(cache.ped, 0.0, 3.0, 0.5), 0.2)
 
 		if entity and IsPedAPlayer(entity) and IsEntityVisible(entity) and #(GetEntityCoords(playerPed, true) - GetEntityCoords(entity, true)) < 3.0 then
 			target = GetPlayerServerId(NetworkGetPlayerIndexFromPed(entity))
