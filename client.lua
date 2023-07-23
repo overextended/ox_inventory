@@ -1625,14 +1625,26 @@ RegisterNUICallback('useItem', function(slot, cb)
 	cb(1)
 end)
 
+local function giveItemToTarget(serverId, slotId, count)
+    if type(slotId) ~= 'number' then return TypeError('slotId', 'number', type(slotId)) end
+    if count and type(slotId) ~= 'number' then return TypeError('count', 'number', type(count)) end
+
+    if slotId == currentWeapon?.slot then
+        currentWeapon = Weapon.Disarm(currentWeapon)
+    end
+
+    Utils.PlayAnim(0, 'mp_common', 'givetake1_a', 1.0, 1.0, 2000, 50, 0.0, 0, 0, 0)
+    TriggerServerEvent('ox_inventory:giveItem', slotId, serverId, count or 0)
+end
+
 RegisterNUICallback('giveItem', function(data, cb)
 	cb(1)
-	local target
 
 	if client.giveplayerlist then
 		local nearbyPlayers = lib.getNearbyPlayers(GetEntityCoords(playerPed), 3.0)
+        local nearbyCount = #nearbyPlayers
 
-		if #nearbyPlayers == 0 then return end
+		if nearbyCount == 0 then return end
 
         local giveList, n = {}, 0
 
@@ -1651,44 +1663,36 @@ RegisterNUICallback('giveItem', function(data, cb)
 
         if n == 0 then return end
 
-		local p = promise.new()
-
 		lib.registerMenu({
 			id = 'ox_inventory:givePlayerList',
 			title = 'Give item',
 			options = giveList,
-			onClose = function() p:resolve() end,
-		}, function(selected) p:resolve(selected and giveList[selected].id) end)
+		}, function(selected)
+            giveItemToTarget(giveList[selected].id, data.slot, data.count)
+        end)
 
-		lib.showMenu('ox_inventory:givePlayerList')
+		return lib.showMenu('ox_inventory:givePlayerList')
+	end
 
-		target = Citizen.Await(p)
-	elseif cache.vehicle then
+    if cache.vehicle then
 		local seats = GetVehicleMaxNumberOfPassengers(cache.vehicle) - 1
 
 		if seats >= 0 then
 			local passenger = GetPedInVehicleSeat(cache.vehicle, cache.seat - 2 * (cache.seat % 2) + 1)
 
 			if passenger ~= 0 and IsEntityVisible(passenger) then
-				target = GetPlayerServerId(NetworkGetPlayerIndexFromPed(passenger))
+                return giveItemToTarget(GetPlayerServerId(NetworkGetPlayerIndexFromPed(passenger)), data.slot, data.count)
 			end
 		end
-	else
-		local entity = Utils.Raycast(1|2|4|8|16, GetOffsetFromEntityInWorldCoords(cache.ped, 0.0, 3.0, 0.5), 0.2)
 
-		if entity and IsPedAPlayer(entity) and IsEntityVisible(entity) and #(GetEntityCoords(playerPed, true) - GetEntityCoords(entity, true)) < 3.0 then
-			target = GetPlayerServerId(NetworkGetPlayerIndexFromPed(entity))
-			Utils.PlayAnim(0, 'mp_common', 'givetake1_a', 1.0, 1.0, 2000, 50, 0.0, 0, 0, 0)
-		end
+        return
 	end
 
-	if target then
-		if data.slot == currentWeapon?.slot then
-			currentWeapon = Weapon.Disarm(currentWeapon)
-		end
+    local entity = Utils.Raycast(1|2|4|8|16, GetOffsetFromEntityInWorldCoords(cache.ped, 0.0, 3.0, 0.5), 0.2)
 
-		TriggerServerEvent('ox_inventory:giveItem', data.slot, target, data.count)
-	end
+    if entity and IsPedAPlayer(entity) and IsEntityVisible(entity) and #(GetEntityCoords(playerPed, true) - GetEntityCoords(entity, true)) < 3.0 then
+        return giveItemToTarget(GetPlayerServerId(NetworkGetPlayerIndexFromPed(entity)), data.slot, data.count)
+    end
 end)
 
 RegisterNUICallback('useButton', function(data, cb)
