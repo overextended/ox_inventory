@@ -1646,6 +1646,15 @@ RegisterNUICallback('giveItem', function(data, cb)
 
 		if nearbyCount == 0 then return end
 
+        if nearbyCount == 1 then
+			local option = nearbyPlayers[1]
+            local entity = Utils.Raycast(1|2|4|8|16, option.coords + vec3(0, 0, 0.5), 0.2)
+
+			if entity ~= option.ped or not IsEntityVisible(option.ped) then return end
+
+            return giveItemToTarget(GetPlayerServerId(option.id), data.slot, data.count)
+        end
+
         local giveList, n = {}, 0
 
 		for i = 1, #nearbyPlayers do
