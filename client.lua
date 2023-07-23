@@ -1630,31 +1630,34 @@ RegisterNUICallback('giveItem', function(data, cb)
 	local target
 
 	if client.giveplayerlist then
-		local nearbyPlayers, n = lib.getNearbyPlayers(GetEntityCoords(playerPed), 2.0), 0
+		local nearbyPlayers = lib.getNearbyPlayers(GetEntityCoords(playerPed), 3.0)
 
 		if #nearbyPlayers == 0 then return end
 
+        local giveList, n = {}, 0
+
 		for i = 1, #nearbyPlayers do
 			local option = nearbyPlayers[i]
-			local ped = GetPlayerPed(option.id)
 
-			if ped > 0 and IsEntityVisible(ped) then
+			if IsEntityVisible(option.ped) then
 				local playerName = GetPlayerName(option.id)
 				option.id = GetPlayerServerId(option.id)
 				option.label = ('[%s] %s'):format(option.id, playerName)
 				n += 1
-				nearbyPlayers[n] = option
+				giveList[n] = option
 			end
 		end
+
+        if n == 0 then return end
 
 		local p = promise.new()
 
 		lib.registerMenu({
 			id = 'ox_inventory:givePlayerList',
 			title = 'Give item',
-			options = nearbyPlayers,
+			options = giveList,
 			onClose = function() p:resolve() end,
-		}, function(selected) p:resolve(selected and nearbyPlayers[selected].id) end)
+		}, function(selected) p:resolve(selected and giveList[selected].id) end)
 
 		lib.showMenu('ox_inventory:givePlayerList')
 
@@ -1672,7 +1675,7 @@ RegisterNUICallback('giveItem', function(data, cb)
 	else
 		local entity = Utils.Raycast(12)
 
-		if entity and IsPedAPlayer(entity) and IsEntityVisible(entity) and #(GetEntityCoords(playerPed, true) - GetEntityCoords(entity, true)) < 2.0 then
+		if entity and IsPedAPlayer(entity) and IsEntityVisible(entity) and #(GetEntityCoords(playerPed, true) - GetEntityCoords(entity, true)) < 3.0 then
 			target = GetPlayerServerId(NetworkGetPlayerIndexFromPed(entity))
 			Utils.PlayAnim(0, 'mp_common', 'givetake1_a', 1.0, 1.0, 2000, 50, 0.0, 0, 0, 0)
 		end
