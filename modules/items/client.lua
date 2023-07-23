@@ -2,18 +2,27 @@ if not lib then return end
 
 local Items = require 'modules.items.shared' --[[@as table<string, OxClientItem>]]
 
----@param metadata table|string
+--- use array of single key value pairs to dictate order
+---@param metadata string | table<string, string> | table<string, string>[]
 ---@param value? string
----@param order? string[] if present must include all values of metadata table. Determines order metadata will be displayed in.
-local function displayMetadata(metadata, value, order)
+local function displayMetadata(metadata, value)
 	local data = {}
-	if type(metadata) == 'string' and value then data = { metadata = metadata, value = value }
-	elseif order then
-		for i = 1, #order do
-			local key = order[i]
-			data[i] = {
-				metadata = key,
-				value = metadata[key]
+
+	if type(metadata) == 'string' and value then data = { [1] = { metadata = metadata, value = value } }
+	elseif metadata[1] then -- assume its an array
+		for i = 1, #metadata do
+			for k, v in pairs(metadata[i]) do
+				data[i] = {
+					metadata = k,
+					value = v,
+				}
+			end
+		end
+	else
+		for k, v in pairs(metadata) do
+			data[#data+1] = {
+				metadata = k,
+				value = v,
 			}
 		end
 	end
