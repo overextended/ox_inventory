@@ -416,7 +416,7 @@ end
 ---@param ostime? number
 ---@return boolean? removed
 function Items.UpdateDurability(inv, slot, item, value, ostime)
-    local durability = slot.metadata.durability
+    local durability = slot.metadata.durability or 100
 
     if not durability then return end
 
