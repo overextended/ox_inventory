@@ -2,6 +2,9 @@ if not lib then return end
 
 local Inventory = {}
 
+---@type table<any, OxInventory>
+local Inventories = {}
+
 ---@class OxInventoryProperties
 ---@field id any trust me it's less annoying this way
 ---@field dbId string|number
@@ -84,22 +87,19 @@ end
 
 ---Sync an inventory's state with all player's accessing it.
 ---@param slots updateSlot[]
----@param weight { left?: number, right?: number }
 ---@param syncOwner? boolean
-function OxInventory:syncSlotsWithClients(slots, weight, syncOwner)
+function OxInventory:syncSlotsWithClients(slots, syncOwner)
 	for playerId in pairs(self.openedBy) do
 		if self.id ~= playerId then
-			TriggerClientEvent('ox_inventory:updateSlots', playerId, slots, weight)
+			TriggerClientEvent('ox_inventory:updateSlots', playerId, slots, Inventories[playerId].weight)
 		end
 	end
 
 	if syncOwner and self.player then
-		TriggerClientEvent('ox_inventory:updateSlots', self.id, slots, weight)
+		TriggerClientEvent('ox_inventory:updateSlots', self.id, slots, self.weight)
 	end
 end
 
----@type table<any, OxInventory>
-local Inventories = {}
 local Vehicles = data 'vehicles'
 local RegisteredStashes = {}
 
@@ -974,7 +974,7 @@ function Inventory.SetMetadata(inv, slotId, metadata)
                 item = slot,
                 inventory = inv.id
             }
-        }, { left = inv.weight }, true)
+        }, true)
     end
 
     if inv.player and server.syncInventory then
@@ -1106,10 +1106,6 @@ function Inventory.AddItem(inv, item, count, metadata, slot, cb)
 				item = inv.items[toSlot],
 				inventory = inv.id
 			}
-		},
-		{
-			left = inv.weight,
-			right = inv.open and Inventories[inv.open]?.weight or nil
 		}, true)
 
 		if invokingResource then
@@ -1132,10 +1128,7 @@ function Inventory.AddItem(inv, item, count, metadata, slot, cb)
 			server.syncInventory(inv)
 		end
 
-		inv:syncSlotsWithClients(toSlot, {
-			left = inv.weight,
-			right = inv.open and Inventories[inv.open]?.weight or nil
-		}, true)
+		inv:syncSlotsWithClients(toSlot, true)
 
 		if invokingResource then
 			lib.logger(inv.owner, 'addItem', ('"%s" added %sx %s to "%s"'):format(invokingResource, added, item.name, inv.label))
@@ -1313,10 +1306,7 @@ function Inventory.RemoveItem(inv, item, count, metadata, slot, ignoreTotal)
 				array[k] = {item = type(v) == 'number' and { slot = v } or v, inventory = inv.id}
 			end
 
-			inv:syncSlotsWithClients(array, {
-				left = inv.weight,
-				right = inv.open and Inventories[inv.open]?.weight or nil
-			}, true)
+			inv:syncSlotsWithClients(array, true)
 
 			local invokingResource = server.loglevel > 1 and GetInvokingResource()
 
@@ -1847,21 +1837,21 @@ lib.callback.register('ox_inventory:swapItems', function(source, data)
                             item = fromInventory.items[data.fromSlot] or { slot = data.fromSlot },
                             inventory = fromInventory.id
                         }
-                    }, { left = fromInventory.weight }, true)
+                    }, true)
                 else
                     toInventory:syncSlotsWithClients({
                         {
                             item = toInventory.items[data.toSlot] or { slot = data.toSlot },
                             inventory = toInventory.id
                         }
-                    }, { left = toInventory.weight }, true)
+                    }, true)
 
                     fromInventory:syncSlotsWithClients({
                         {
                             item = fromInventory.items[data.fromSlot] or { slot = data.fromSlot },
                             inventory = fromInventory.id
                         }
-                    }, { left = fromInventory.weight }, true)
+                    }, true)
                 end
             end)
 
@@ -2020,10 +2010,7 @@ function Inventory.Clear(inv, keep)
 	inv.weight = newWeight
 	inv.changed = true
 
-	inv:syncSlotsWithClients(updateSlots, {
-		left = inv.weight,
-		right = inv.open and Inventories[inv.open]?.weight or nil
-	}, true)
+	inv:syncSlotsWithClients(updateSlots, true)
 
 	if not inv.player then
 		if inv.open then
