@@ -2251,17 +2251,12 @@ local function saveInventories(manual)
 
 	db.saveInventories(parameters[1], parameters[2], parameters[3], parameters[4])
 
-    if not manual then return end
+    if manual then return end
 
     for _, inv in pairs(Inventories) do
-        if not inv.open then
-            if inv.datastore and inv.netid and (inv.type == 'trunk' or inv.type == 'glovebox') then
-                if NetworkGetEntityFromNetworkId(inv.netid) == 0 then
-                    Inventory.Remove(inv)
-                end
-            elseif not inv.player and (inv.datastore or inv.owner) and time - inv.time >= 1200 then
-                -- inv.time is a timestamp for when the inventory was last closed
-                -- if unopened for n seconds, the inventory is unloaded (datastore/temp stash is deleted)
+        if not inv.open and not inv.player then
+            -- clear inventory from memory if unused for 10 minutes, or invalid entity
+            if time - inv.time >= 600 or (inv.netid and NetworkGetEntityFromNetworkId(inv.netid) == 0) then
                 Inventory.Remove(inv)
             end
         end
@@ -2276,7 +2271,7 @@ function Inventory.SaveInventories(lock)
 	Inventory.Lock = lock or nil
 
 	Inventory.CloseAll()
-    saveInventories(lock)
+    saveInventories(true)
 end
 
 AddEventHandler('playerDropped', function()
