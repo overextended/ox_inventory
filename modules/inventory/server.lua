@@ -584,7 +584,7 @@ function Inventory.Create(id, label, invType, slots, weight, maxWeight, owner, i
 		openedBy = {},
 	}
 
-	if invType == 'drop' or invType == 'temp' then
+	if invType == 'drop' or invType == 'temp' or invType == 'dumpster' then
 		self.datastore = true
 	else
 		self.changed = false
@@ -606,7 +606,7 @@ function Inventory.Create(id, label, invType, slots, weight, maxWeight, owner, i
 	end
 
 	if not items then
-		self.items, self.weight, self.datastore = Inventory.Load(self.dbId, invType, owner)
+		self.items, self.weight = Inventory.Load(self.dbId, invType, owner)
 	elseif weight == 0 and next(items) then
 		self.weight = Inventory.CalculateWeight(items)
 	end
@@ -723,7 +723,7 @@ end
 ---@param inv inventory
 ---@param invType string
 ---@param items? table
----@return table returnData, number totalWeight, boolean true
+---@return table returnData, number totalWeight
 local function generateItems(inv, invType, items)
 	if items == nil then
 		if invType == 'dumpster' then
@@ -751,31 +751,27 @@ local function generateItems(inv, invType, items)
 		end
 	end
 
-	return returnData, totalWeight, true
+	return returnData, totalWeight
 end
 
 ---@param id string|number
 ---@param invType string
 ---@param owner string | number | boolean
 function Inventory.Load(id, invType, owner)
-	local datastore, result
+	local result
 
 	if id and invType then
 		if invType == 'dumpster' then
 			if server.randomloot then
 				return generateItems(id, invType)
-			else
-				datastore = true
-			end
+            end
 		elseif invType == 'trunk' or invType == 'glovebox' then
 			result = invType == 'trunk' and db.loadTrunk(id) or db.loadGlovebox(id)
 
 			if not result then
 				if server.randomloot then
 					return generateItems(id, 'vehicle')
-				else
-					datastore = true
-				end
+                end
 			else result = result[invType] end
 		else
 			result = db.loadStash(owner or '', id)
@@ -802,7 +798,7 @@ function Inventory.Load(id, invType, owner)
 		end
 	end
 
-	return returnData, weight, datastore
+	return returnData, weight
 end
 
 local table = lib.table
