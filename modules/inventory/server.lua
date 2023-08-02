@@ -1309,7 +1309,7 @@ function Inventory.CanCarryItem(inv, item, count, metadata)
 			if next(itemSlots) or emptySlots > 0 then
 				if not count then count = 1 end
 				if not item.stack and emptySlots < count then return false end
-				if weight == 0 then return true end
+				if not weight or weight == 0 then return true end
 
 				local newWeight = inv.weight + (weight * count)
 
