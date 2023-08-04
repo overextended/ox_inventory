@@ -165,7 +165,6 @@ local function countRows(rows)
     local n = 0
 
     for i = 1, #rows do
-        print(json.encode(rows[i]))
         if rows[i] == 1 then n += 1 end
     end
 
