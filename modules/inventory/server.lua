@@ -2356,6 +2356,8 @@ local function updateWeapon(source, action, value, slot, specialAmmo)
 							{ item = item }
 						}, inventory.weight)
 
+			            if server.syncInventory then server.syncInventory(inventory) end
+
 						return true
 					end
 				end
