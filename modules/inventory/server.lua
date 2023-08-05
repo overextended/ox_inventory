@@ -1884,37 +1884,41 @@ exports('ConfiscateInventory', Inventory.Confiscate)
 function Inventory.Return(source)
 	local inv = Inventories[source]
 
-	if inv?.player then
-		MySQL.scalar('SELECT data FROM ox_inventory WHERE name = ?', { inv.owner }, function(data)
-			if data then
-				MySQL.query('DELETE FROM ox_inventory WHERE name = ?', { inv.owner })
-				data = json.decode(data)
-				local inventory, totalWeight = {}, 0
+	if not inv?.player then return end
 
-				if data and next(data) then
-					for i = 1, #data do
-						local i = data[i]
-						if type(i) == 'number' then break end
-						local item = Items(i.name)
-						if item then
-							local weight = Inventory.SlotWeight(item, i)
-							totalWeight = totalWeight + weight
-							inventory[i.slot] = {name = i.name, label = item.label, weight = weight, slot = i.slot, count = i.count, description = item.description, metadata = i.metadata, stack = item.stack, close = item.close}
-						end
-					end
-				end
+	local items = MySQL.scalar.await('SELECT data FROM ox_inventory WHERE name = ?', { inv.owner })
 
-				inv.changed = true
-				inv.weight = totalWeight
-				inv.items = inventory
+    if not items then return end
 
-				TriggerClientEvent('ox_inventory:inventoryReturned', source, {inventory, totalWeight})
+	MySQL.update.await('DELETE FROM ox_inventory WHERE name = ?', { inv.owner })
 
-				if server.syncInventory then server.syncInventory(inv) end
-			end
-		end)
-	end
+    items = json.decode(items)
+    local inventory, totalWeight = {}, 0
+
+    if table.type(items) == 'array' then
+        for i = 1, #items do
+            local data = items[i]
+            if type(data) == 'number' then break end
+
+            local item = Items(data.name)
+
+            if item then
+                local weight = Inventory.SlotWeight(item, data)
+                totalWeight = totalWeight + weight
+                inventory[data.slot] = {name = data.name, label = item.label, weight = weight, slot = data.slot, count = data.count, description = item.description, metadata = data.metadata, stack = item.stack, close = item.close}
+            end
+        end
+    end
+
+    inv.changed = true
+    inv.weight = totalWeight
+    inv.items = inventory
+
+    TriggerClientEvent('ox_inventory:inventoryReturned', source, { inventory, totalWeight })
+
+    if server.syncInventory then server.syncInventory(inv) end
 end
+
 exports('ReturnInventory', Inventory.Return)
 
 ---@param inv inventory
