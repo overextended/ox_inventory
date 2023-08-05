@@ -1170,8 +1170,8 @@ lib.onCache('seat', function(seat)
 	Utils.WeaponWheel(false)
 end)
 
-lib.onCache('vehicle', function(vehicle)
-	if invOpen and currentInventory.entity == cache.vehicle then
+lib.onCache('vehicle', function()
+	if invOpen and (not currentInventory.entity or currentInventory.entity == cache.vehicle) then
 		return client.closeInventory()
 	end
 end)
