@@ -467,21 +467,21 @@ local function useSlot(slot)
 
 			if IsCinematicCamRendering() then SetCinematicModeActive(false) end
 
-            GiveWeaponToPed(playerPed, data.hash, 0, false, true)
-            SetCurrentPedWeapon(playerPed, data.hash, true)
-
-            if data.hash ~= GetSelectedPedWeapon(playerPed) then
-                return lib.notify({ type = 'error', description = locale('cannot_use', data.label) })
-            end
-
-            RemoveAllPedWeapons(cache.ped, true)
-
 			if currentWeapon then
 				local weaponSlot = currentWeapon.slot
 				currentWeapon = Weapon.Disarm(currentWeapon)
 
 				if weaponSlot == data.slot then return end
 			end
+
+            GiveWeaponToPed(playerPed, data.hash, 0, false, true)
+            SetCurrentPedWeapon(playerPed, data.hash, false)
+
+            if data.hash ~= GetSelectedPedWeapon(playerPed) then
+                return lib.notify({ type = 'error', description = locale('cannot_use', data.label) })
+            end
+
+            RemoveWeaponFromPed(cache.ped, data.hash)
 
 			useItem(data, function(result)
 				if result then
