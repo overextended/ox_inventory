@@ -682,7 +682,14 @@ local function registerCommands()
 		-- No storage or no glovebox
 		if (checkVehicle == 0 or checkVehicle == 2) or (not Vehicles.glovebox[vehicleClass] and not Vehicles.glovebox.models[vehicleHash]) then return end
 
-		local isOpen = client.openInventory('glovebox', { id = 'glove'..GetVehicleNumberPlateText(vehicle), netid = NetworkGetNetworkIdFromEntity(vehicle) })
+        local plate = GetVehicleNumberPlateText(vehicle)
+		if plate:gsub('%s+', '') == '' then
+			local statebag = Entity(vehicle).state.plate
+			if statebag ~= nil then
+				plate = statebag
+			end
+		end
+		local isOpen = client.openInventory('glovebox', { id = 'glove'..plate, netid = NetworkGetNetworkIdFromEntity(vehicle) })
 
 		if isOpen then
 			currentInventory.entity = vehicle
@@ -799,6 +806,12 @@ local function registerCommands()
 
 			if #(playerCoords - position) < 3 and door then
 				local plate = GetVehicleNumberPlateText(entity)
+                if plate:gsub('%s+', '') == '' then
+					local statebag = Entity(entity).state.plate
+					if statebag ~= nil then
+						plate = statebag
+					end
+				end
 				local invId = 'trunk'..plate
 
 				TaskTurnPedToFaceCoord(playerPed, position.x, position.y, position.z, 0)
