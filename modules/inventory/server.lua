@@ -602,6 +602,16 @@ function Inventory.Remove(inv)
 			activeIdentifiers[inv.owner] = nil
 		end
 
+        for playerId in pairs(inv.openedBy) do
+            if inv.id ~= playerId then
+                local target = Inventories[playerId]
+
+                if target then
+                    target:closeInventory()
+                end
+            end
+        end
+
 		Inventories[inv.id] = nil
 	end
 end
