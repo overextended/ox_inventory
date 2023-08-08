@@ -581,7 +581,7 @@ function Inventory.Create(id, label, invType, slots, weight, maxWeight, owner, i
 	end
 
 	if not items then
-		self.items, self.weight = Inventory.Load(self.dbId, invType, owner)
+		self.items, self.weight = Inventory.Load(self.dbId or self.id, invType, owner)
 	elseif weight == 0 and next(items) then
 		self.weight = Inventory.CalculateWeight(items)
 	end
