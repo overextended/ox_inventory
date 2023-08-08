@@ -2205,7 +2205,12 @@ local function prepareInventorySave(inv, buffer, time)
     return 4, { data, inv.owner and tostring(inv.owner) or '', inv.dbId }
 end
 
+local isSaving = false
+
 local function saveInventories(manual)
+	if isSaving then return end
+
+	isSaving = true
 	local time = os.time()
 	local parameters = { {}, {}, {}, {} }
 	local size = { 0, 0, 0, 0 }
@@ -2221,6 +2226,8 @@ local function saveInventories(manual)
 	end
 
 	db.saveInventories(parameters[1], parameters[2], parameters[3], parameters[4])
+
+	isSaving = false
 
     if manual then return end
 
