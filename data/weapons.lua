@@ -797,6 +797,7 @@ return {
 					`COMPONENT_SNSPISTOL_CLIP_02`,
 					`COMPONENT_SNSPISTOL_MK2_CLIP_02`,
 					`COMPONENT_VINTAGEPISTOL_CLIP_02`,
+                    `COMPONENT_TECPISTOL_CLIP_02`,
 				},
 				usetime = 2500
 			}
