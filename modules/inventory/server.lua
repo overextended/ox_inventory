@@ -2207,7 +2207,7 @@ end
 
 local isSaving = false
 
-local function saveInventories(manual)
+local function saveInventories(clearInventories)
 	if isSaving then return end
 
 	isSaving = true
@@ -2229,7 +2229,7 @@ local function saveInventories(manual)
 
 	isSaving = false
 
-    if manual then return end
+    if not clearInventories then return end
 
     for _, inv in pairs(Inventories) do
         if not inv.open and not inv.player then
@@ -2242,29 +2242,29 @@ local function saveInventories(manual)
 end
 
 lib.cron.new('*/5 * * * *', function()
-    saveInventories()
+    saveInventories(true)
 end)
 
-function Inventory.SaveInventories(lock)
+function Inventory.SaveInventories(lock, clearInventories)
 	Inventory.Lock = lock or nil
 
 	Inventory.CloseAll()
-    saveInventories(true)
+    saveInventories(clearInventories)
 end
 
 AddEventHandler('playerDropped', function()
 	if GetNumPlayerIndices() == 0 then
-		Inventory.SaveInventories()
+		Inventory.SaveInventories(true, true)
 	end
 end)
 
 AddEventHandler('txAdmin:events:serverShuttingDown', function()
-	Inventory.SaveInventories(true)
+	Inventory.SaveInventories(true, false)
 end)
 
 AddEventHandler('onResourceStop', function(resource)
 	if resource == shared.resource then
-		Inventory.SaveInventories(true)
+		Inventory.SaveInventories(true, false)
 	end
 end)
 

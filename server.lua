@@ -564,7 +564,7 @@ lib.addCommand('saveinv', {
 	},
 	restricted = 'group.admin',
 }, function(source, args)
-	Inventory.SaveInventories(args.lock == 'true')
+	Inventory.SaveInventories(args.lock == 'true', false)
 end)
 
 lib.addCommand('viewinv', {
