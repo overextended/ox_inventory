@@ -2262,6 +2262,12 @@ AddEventHandler('txAdmin:events:serverShuttingDown', function()
 	Inventory.SaveInventories(true, false)
 end)
 
+AddEventHandler('txAdmin:events:scheduledRestart', function(eventData)
+    if eventData.secondsRemaining ~= 60 then return end
+
+	Inventory.SaveInventories(true, true)
+end)
+
 AddEventHandler('onResourceStop', function(resource)
 	if resource == shared.resource then
 		Inventory.SaveInventories(true, false)
