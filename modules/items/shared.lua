@@ -59,6 +59,7 @@ for type, data in pairs(data('weapons')) do
 	for k, v in pairs(data) do
 		v.name = k
 		v.close = type == 'Ammo' and true or false
+        v.weight = v.weight or 0
 
 		if type == 'Weapons' then
 			---@cast v OxWeapon
