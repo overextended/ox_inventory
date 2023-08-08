@@ -140,21 +140,12 @@ lib.callback.register('ox_inventory:openShop', function(source, data)
 	return { label = left.label, type = left.type, slots = left.slots, weight = left.weight, maxWeight = left.maxWeight }, shop
 end)
 
-local table = lib.table
-
--- http://lua-users.org/wiki/FormattingNumbers
--- credit http://richard.warburton.it
-local function comma_value(n)
-	local left, num, right = string.match(n,'^([^%d]*%d)(%d*)(.-)$')
-	return left..(num:reverse():gsub('(%d%d%d)','%1,'):reverse())..right
-end
-
 local function canAffordItem(inv, currency, price)
 	local canAfford = price >= 0 and Inventory.GetItem(inv, currency, false, true) >= price
 
 	return canAfford or {
 		type = 'error',
-		description = locale('cannot_afford', ('%s%s'):format((currency == 'money' and locale('$') or comma_value(price)), (currency == 'money' and comma_value(price) or ' '..Items(currency).label)))
+		description = locale('cannot_afford', ('%s%s'):format((currency == 'money' and locale('$') or math.groupdigits(price)), (currency == 'money' and math.groupdigits(price) or ' '..Items(currency).label)))
 	}
 end
 
@@ -263,7 +254,7 @@ lib.callback.register('ox_inventory:buyItem', function(source, data)
 
 				if server.syncInventory then server.syncInventory(playerInv) end
 
-				local message = locale('purchased_for', count, fromItem.label, (currency == 'money' and locale('$') or comma_value(price)), (currency == 'money' and comma_value(price) or ' '..Items(currency).label))
+				local message = locale('purchased_for', count, fromItem.label, (currency == 'money' and locale('$') or math.groupdigits(price)), (currency == 'money' and math.groupdigits(price) or ' '..Items(currency).label))
 
 				if server.loglevel > 0 then
 					if server.loglevel > 1 or fromData.price >= 500 then

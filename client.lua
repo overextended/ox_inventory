@@ -641,7 +641,6 @@ exports('openNearbyInventory', openNearbyInventory)
 
 local currentInstance
 local playerCoords
-local table = lib.table
 local Inventory = require 'modules.inventory.client'
 local Shops = require 'modules.shops.client'
 

@@ -772,8 +772,6 @@ function Inventory.Load(id, invType, owner)
 	return returnData, weight
 end
 
-local table = lib.table
-
 local function assertMetadata(metadata)
 	if metadata and type(metadata) ~= 'table' then
 		metadata = metadata and { type = metadata or nil }

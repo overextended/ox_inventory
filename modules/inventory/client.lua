@@ -41,8 +41,6 @@ else
 	Inventory.Dumpsters = dumpsters
 end
 
-local table = lib.table
-
 ---@param search 'slots' | 1 | 'count' | 2
 ---@param item table | string
 ---@param metadata? table | string
