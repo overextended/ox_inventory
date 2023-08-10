@@ -2266,7 +2266,7 @@ end
 
 AddEventHandler('playerDropped', function()
 	if GetNumPlayerIndices() == 0 then
-		Inventory.SaveInventories(true, true)
+		Inventory.SaveInventories(false, true)
 	end
 end)
 
