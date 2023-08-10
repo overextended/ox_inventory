@@ -218,19 +218,15 @@ function client.openInventory(inv, data)
 			end
 		elseif invOpen ~= nil then
 			if inv == 'policeevidence' then
-				local input = lib.inputDialog(locale('police_evidence'), {locale('locker_number')}) --[[@as any]]
+                if not data then
+                    local input = lib.inputDialog(locale('police_evidence'), {
+                        { label = locale('locker_number'), type = 'number', required = true, icon = 'calculator' }
+                    }) --[[@as number[]? ]]
 
-				if input then
-					input = tonumber(input[1])
-				else
-					return lib.notify({ description = locale('locker_no_value'), type = 'error' })
-				end
+                    if not input then return end
 
-				if type(input) ~= 'number' then
-					return lib.notify({ description = locale('locker_must_number'), type = 'error' })
-				else
-					data = input
-				end
+                    data = input[1]
+                end
 			end
 
 			left, right = lib.callback.await('ox_inventory:openInventory', false, inv, data)
