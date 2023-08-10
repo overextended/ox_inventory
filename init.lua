@@ -181,10 +181,14 @@ if not lib then
     return spamError('ox_inventory requires the ox_lib resource, refer to the documentation.')
 end
 
-if not lib.checkDependency('oxmysql', '2.7.3', true)
-    or not lib.checkDependency('ox_lib', '3.8.1', true)
-then
-    return
+local success, msg = lib.checkDependency('oxmysql', '2.7.3')
+
+if success then
+    success, msg = lib.checkDependency('ox_lib', '3.8.1')
+end
+
+if not success then
+    return spamError(msg)
 end
 
 if not LoadResourceFile(shared.resource, 'web/build/index.html') then
