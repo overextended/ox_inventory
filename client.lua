@@ -201,8 +201,8 @@ function client.openInventory(inv, data)
 					coords = GetEntityCoords(cache.ped)
 					distance = 2
 				else
-					coords = shared.target == 'ox_target' and right.zones and right.zones[data.index].coords or right.points and right.points[data.index]
-					distance = coords and shared.target == 'ox_target' and right.zones[data.index].distance or 2
+					coords = shared.target and right.zones and right.zones[data.index].coords or right.points and right.points[data.index]
+					distance = coords and shared.target and right.zones[data.index].distance or 2
 				end
 
 				right = {
