@@ -196,16 +196,10 @@ if not LoadResourceFile(shared.resource, 'web/build/index.html') then
         'UI has not been built, refer to the documentation or download a release build.\n	^3https://overextended.dev/ox_inventory^0')
 end
 
-if shared.target then
-    local ox_target = GetResourceState('ox_target'):find('start')
-    local qtarget = GetResourceState('qtarget'):find('start')
-
-    if not ox_target and not qtarget then
-        shared.target = false
-        warn('targeting resource is not loaded - it should start before ox_inventory')
-    else
-        shared.target = ox_target and 'ox_target' or 'qtarget'
-    end
+-- No we're not going to support qtarget any longer.
+if shared.target and GetResourceState('ox_target') ~= 'started' then
+    shared.target = false
+    warn('ox_target is not loaded - it should start before ox_inventory')
 end
 
 if lib.context == 'server' then

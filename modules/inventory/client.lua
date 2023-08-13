@@ -18,18 +18,16 @@ function Inventory.OpenDumpster(entity)
 	end
 end
 
+local Utils = require 'modules.utils.client'
+
 if shared.target then
-	exports.qtarget:AddTargetModel(Inventory.Dumpsters, {
-		options = {
-			{
-				icon = 'fas fa-dumpster',
-				label = locale('search_dumpster'),
-				action = function(entity)
-					Inventory.OpenDumpster(entity)
-				end
-			},
-		},
-		distance = 2
+	exports.ox_target:addModel(Inventory.Dumpsters, {
+        {
+            icon = 'fas fa-dumpster',
+            label = locale('search_dumpster'),
+            onSelect = Inventory.OpenDumpster,
+            distance = 2
+        },
 	})
 else
 	local dumpsters = table.create(0, #Inventory.Dumpsters)
@@ -232,35 +230,23 @@ Inventory.Evidence = setmetatable(data('evidence'), {
 		for _, evidence in pairs(self) do
 			if evidence.point then
 				evidence.point:remove()
-            elseif evidence.zone then
-                exports.qtarget:RemoveZone(evidence.target.name)
+            elseif evidence.zoneId then
+                exports.ox_target:removeZone(evidence.zoneId)
                 evidence.zone = nil
             end
 
 			if client.hasGroup(shared.police) then
 				if shared.target then
 					if evidence.target then
-                        evidence.zone = true
-						exports.qtarget:AddBoxZone(evidence.target.name, evidence.target.loc, evidence.target.length or 0.5, evidence.target.width or 0.5,
-						{
-							name = evidence.target.name,
-							heading = evidence.target.heading or 0.0,
-							debugPoly = evidence.target.debug,
-							minZ = evidence.target.minZ,
-							maxZ = evidence.target.maxZ,
-							drawSprite = evidence.target.drawSprite,
-						}, {
-							options = {
-								{
-									icon = evidence.target.icon or 'fas fa-warehouse',
-									label = locale('open_police_evidence'),
-									job = shared.police,
-									action = openEvidence,
-									iconColor = evidence.target.iconColor,
-								},
-							},
-							distance = evidence.target.distance or 2.0
-						})
+                        evidence.zoneId = Utils.CreateBoxZone(evidence.target, {
+                            {
+                                icon = evidence.target.icon or 'fas fa-warehouse',
+                                label = locale('open_police_evidence'),
+                                groups = shared.police,
+                                onSelect = openEvidence,
+                                iconColor = evidence.target.iconColor,
+                            }
+                        })
 					end
 				else
 					evidence.target = nil
@@ -288,37 +274,25 @@ Inventory.Stashes = setmetatable(data('stashes'), {
 
 			if stash.point then
 				stash.point:remove()
-            elseif stash.zone then
-                exports.qtarget:RemoveZone(stash.name)
-                stash.zone = nil
+            elseif stash.zoneId then
+                exports.ox_target:removeZone(stash.zoneId)
+                stash.zoneId = nil
             end
 
 			if not stash.groups or client.hasGroup(stash.groups) then
 				if shared.target then
 					if stash.target then
-                        stash.zone = true
-						exports.qtarget:AddBoxZone(stash.name, stash.target.loc, stash.target.length or 0.5, stash.target.width or 0.5,
-						{
-							name = stash.name,
-							heading = stash.target.heading or 0.0,
-							debugPoly = stash.target.debug,
-							minZ = stash.target.minZ,
-							maxZ = stash.target.maxZ,
-							drawSprite = stash.target.drawSprite,
-						}, {
-							options = {
-								{
-									icon = stash.target.icon or 'fas fa-warehouse',
-									label = stash.target.label or locale('open_stash'),
-									job = stash.groups,
-									action = function()
-										exports.ox_inventory:openInventory('stash', stash.name)
-									end,
-									iconColor = stash.target.iconColor,
-								},
-							},
-							distance = stash.target.distance or 3.0
-						})
+                        stash.zoneId = Utils.CreateBoxZone(stash.target, {
+                            {
+                                icon = stash.target.icon or 'fas fa-warehouse',
+                                label = stash.target.label or locale('open_stash'),
+                                job = stash.groups,
+                                action = function()
+                                    exports.ox_inventory:openInventory('stash', stash.name)
+                                end,
+                                iconColor = stash.target.iconColor,
+                            },
+                        })
 					end
 				else
 					stash.target = nil

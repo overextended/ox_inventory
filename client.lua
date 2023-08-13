@@ -138,7 +138,7 @@ function client.openInventory(inv, data)
 			end
 		end
 	elseif IsNuiFocused() then
-		-- If triggering event from another nui such as qtarget, may need to wait for focus to end
+		-- If triggering from another nui, may need to wait for focus to end.
 		Wait(100)
 
         -- People still complain about this being an "error" and ask "how fix" despite being a warning
