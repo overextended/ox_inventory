@@ -155,7 +155,7 @@ function client.openInventory(inv, data)
 	if canOpenInventory() then
 		local left, right
 
-		if inv == 'player' then
+		if inv == 'player' and data ~= cache.serverId then
 			local targetId, targetPed
 
 			if not data then
