@@ -432,12 +432,12 @@ end, true)
 
 
 lib.addCommand({'additem', 'giveitem'}, {
-	help = 'Gives an item to a player with the given id',
+	help = locale('the_player_to_receive_the_item_help'),
 	params = {
-		{ name = 'target', type = 'playerId', help = 'The player to receive the item' },
-		{ name = 'item', type = 'string', help = 'The name of the item' },
-		{ name = 'count', type = 'number', help = 'The amount of the item to give', optional = true },
-		{ name = 'type', help = 'Sets the "type" metadata to the value', optional = true },
+		{ name = 'target', type = 'playerId', help = locale('the_player_to_receive_the_item') },
+		{ name = 'item', type = 'string', help = locale('the_name_of_the_item') },
+		{ name = 'count', type = 'number', help = locale('the_amount_of_the_item_to_give'), optional = true },
+		{ name = 'type', help = locale('sets_the_type_metadata_to_the_value'), optional = true },
 	},
 	restricted = 'group.admin',
 }, function(source, args)
@@ -461,12 +461,12 @@ lib.addCommand({'additem', 'giveitem'}, {
 end)
 
 lib.addCommand('removeitem', {
-	help = 'Removes an item to a player with the given id',
+	help = locale('the_player_to_remove_the_item_from_help'),
 	params = {
-		{ name = 'target', type = 'playerId', help = 'The player to remove the item from' },
-		{ name = 'item', type = 'string', help = 'The name of the item' },
-		{ name = 'count', type = 'number', help = 'The amount of the item to take' },
-		{ name = 'type', help = 'Only remove items with a matching metadata "type"', optional = true },
+		{ name = 'target', type = 'playerId', help = locale('the_player_to_remove_the_item_from') },
+		{ name = 'item', type = 'string', help = locale('the_name_of_the_item') },
+		{ name = 'count', type = 'number', help = locale('the_amount_of_the_item_to_take') },
+		{ name = 'type', help = locale('only_remove_items_with_a_matching_type_metadata'), optional = true },
 	},
 	restricted = 'group.admin',
 }, function(source, args)
@@ -489,12 +489,12 @@ lib.addCommand('removeitem', {
 end)
 
 lib.addCommand('setitem', {
-	help = 'Sets the item count for a player, removing or adding as needed',
+	help = locale('the_player_to_set_the_items_for_help'),
 	params = {
-		{ name = 'target', type = 'playerId', help = 'The player to set the items for' },
-		{ name = 'item', type = 'string', help = 'The name of the item' },
-		{ name = 'count', type = 'number', help = 'The amount of items to set', optional = true },
-		{ name = 'type', help = 'Add or remove items with the metadata "type"', optional = true },
+		{ name = 'target', type = 'playerId', help = locale('the_player_to_set_the_items_for') },
+		{ name = 'item', type = 'string', help = locale('the_name_of_the_item') },
+		{ name = 'count', type = 'number', help = locale('the_amount_of_items_to_set'), optional = true },
+		{ name = 'type', help = locale('add_or_remove_items_with_the_type_metadata'), optional = true },
 	},
 	restricted = 'group.admin',
 }, function(source, args)
@@ -517,9 +517,9 @@ lib.addCommand('setitem', {
 end)
 
 lib.addCommand('clearevidence', {
-	help = 'Clears a police evidence locker with the given id',
+	help = locale('the_locker_id_to_clear_help'),
 	params = {
-		{ name = 'locker', type = 'number', help = 'The locker id to clear' },
+		{ name = 'locker', type = 'number', help = locale('the_locker_id_to_clear') },
 	},
 }, function(source, args)
 	if not server.isPlayerBoss then return end
@@ -534,9 +534,9 @@ lib.addCommand('clearevidence', {
 end)
 
 lib.addCommand('takeinv', {
-	help = 'Confiscates the target inventory, to restore with /restoreinv',
+	help = locale('the_player_to_confiscate_items_from_help'),
 	params = {
-		{ name = 'target', type = 'playerId', help = 'The player to confiscate items from' },
+		{ name = 'target', type = 'playerId', help = locale('the_player_to_confiscate_items_from') },
 	},
 	restricted = 'group.admin',
 }, function(source, args)
@@ -544,9 +544,9 @@ lib.addCommand('takeinv', {
 end)
 
 lib.addCommand({'restoreinv', 'returninv'}, {
-	help = 'Restores a previously confiscated inventory for the target',
+	help = locale('the_player_to_restore_items_to_help'),
 	params = {
-		{ name = 'target', type = 'playerId', help = 'The player to restore items to' },
+		{ name = 'target', type = 'playerId', help = locale('the_player_to_restore_items_to') },
 	},
 	restricted = 'group.admin',
 }, function(source, args)
@@ -554,9 +554,9 @@ lib.addCommand({'restoreinv', 'returninv'}, {
 end)
 
 lib.addCommand('clearinv', {
-	help = 'Wipes all items from the target inventory',
+	help = locale('the_inventory_to_wipe_items_from_help'),
 	params = {
-		{ name = 'invId', help = 'The inventory to wipe items from' },
+		{ name = 'invId', help = locale('the_inventory_to_wipe_items_from') },
 	},
 	restricted = 'group.admin',
 }, function(source, args)
@@ -564,9 +564,9 @@ lib.addCommand('clearinv', {
 end)
 
 lib.addCommand('saveinv', {
-	help = 'Save all pending inventory changes to the database',
+	help = locale('lock_access_to_inventory_until_restart_or_unlock_help'),
 	params = {
-		{ name = 'lock', help = 'Lock inventory access, until restart or saved without a lock', optional = true },
+		{ name = 'lock', help = locale('lock_access_to_inventory_until_restart_or_unlock'), optional = true },
 	},
 	restricted = 'group.admin',
 }, function(source, args)
@@ -574,9 +574,9 @@ lib.addCommand('saveinv', {
 end)
 
 lib.addCommand('viewinv', {
-	help = 'Inspect the target inventory without allowing interactions',
+	help = locale('the_inventory_to_inspect_help'),
 	params = {
-		{ name = 'invId', help = 'The inventory to inspect' },
+		{ name = 'invId', help = locale('the_inventory_to_inspect') },
 	},
 	restricted = 'group.admin',
 }, function(source, args)
