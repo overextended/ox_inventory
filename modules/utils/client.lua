@@ -131,4 +131,39 @@ function Utils.CreateBlip(settings, coords)
 	return blip
 end
 
+---Takes OxTargetBoxZone or legacy zone data (PolyZone) and creates a zone.
+---@param data OxTargetBoxZone | { length: number, maxZ: number, loc: vector3, heading: number, width: number, distance: number }
+---@param options? OxTargetOption[]
+---@return number
+function Utils.CreateBoxZone(data, options)
+    if data.length then
+        local height = math.abs(data.maxZ - data.minZ)
+        local z = math.min(data.minZ, data.maxZ) + height/2
+        data.coords = vec3(data.loc.x, data.loc.y, z)
+        data.size = vec3(data.width, data.length, height)
+        data.rotation = data.heading
+        data.loc = nil
+        data.heading = nil
+        data.length = nil
+        data.width = nil
+        data.maxZ = nil
+        data.minZ = nil
+        data.debug = true
+    end
+
+    if not data.options and options then
+        local distance = data.distance or 2.0
+
+        for k, v in pairs(options) do
+            if not v.distance then
+                v.distance = distance
+            end
+        end
+
+        data.options = options
+    end
+
+    return exports.ox_target:addBoxZone(data)
+end
+
 return Utils
