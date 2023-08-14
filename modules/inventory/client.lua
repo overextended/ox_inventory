@@ -25,7 +25,7 @@ if shared.target then
         {
             icon = 'fas fa-dumpster',
             label = locale('search_dumpster'),
-            onSelect = Inventory.OpenDumpster,
+            onSelect = function(data) return Inventory.OpenDumpster(data.entity) end,
             distance = 2
         },
 	})
@@ -286,8 +286,8 @@ Inventory.Stashes = setmetatable(data('stashes'), {
                             {
                                 icon = stash.target.icon or 'fas fa-warehouse',
                                 label = stash.target.label or locale('open_stash'),
-                                job = stash.groups,
-                                action = function()
+                                groups = stash.groups,
+                                onSelect = function()
                                     exports.ox_inventory:openInventory('stash', stash.name)
                                 end,
                                 iconColor = stash.target.iconColor,
