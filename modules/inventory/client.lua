@@ -19,6 +19,61 @@ function Inventory.OpenDumpster(entity)
 end
 
 local Utils = require 'modules.utils.client'
+local Vehicles = data 'vehicles'
+
+function Inventory.CanAccessTrunk(entity)
+    if GetVehiclePedIsEntering(cache.ped) ~= 0 or not NetworkGetEntityIsNetworked(entity) then return end
+
+	local vehicleHash = GetEntityModel(entity)
+    local vehicleClass = GetVehicleClass(entity)
+    local checkVehicle = Vehicles.Storage[vehicleHash]
+
+    if (checkVehicle == 0 or checkVehicle == 1) or (not Vehicles.trunk[vehicleClass] and not Vehicles.trunk.models[vehicleHash]) then return end
+
+    local min, max = GetModelDimensions(vehicleHash)
+    local offset = (max - min) * (not checkVehicle and vec3(0.5, 0, 0.5) or vec3(0.5, 1, 0.5)) + min
+    offset = GetOffsetFromEntityInWorldCoords(entity, offset.x, offset.y, offset.z)
+
+    if #(GetEntityCoords(cache.ped) - offset) < 1.5 then
+        local coords = GetEntityCoords(entity)
+
+        TaskTurnPedToFaceCoord(cache.ped, coords.x, coords.y, coords.z, 0)
+
+        return checkVehicle and 4 or 5
+    end
+end
+
+function Inventory.OpenTrunk(entity)
+    ---@type number | number[] | nil
+    local door = Inventory.CanAccessTrunk(entity)
+
+    if not door then return end
+
+    if GetVehicleDoorLockStatus(entity) > 1 then
+        return lib.notify({ id = 'vehicle_locked', type = 'error', description = locale('vehicle_locked') })
+    end
+
+    local vehicleClass = GetVehicleClass(entity)
+    local plate = GetVehicleNumberPlateText(entity)
+    local invId = 'trunk'..plate
+    local coords = GetEntityCoords(entity)
+
+    if vehicleClass == 12 and GetEntityBoneIndexByName(entity, 'boot') == -1 then
+        door = { 2, 3 }
+    end
+
+    TaskTurnPedToFaceCoord(cache.ped, coords.x, coords.y, coords.z, 0)
+
+    if not client.openInventory('trunk', { id = invId, netid = NetworkGetNetworkIdFromEntity(entity), entityid = entity, door = door }) then return end
+
+    if type(door) == 'table' then
+        for i = 1, #door do
+            SetVehicleDoorOpen(entity, door[i], false, false)
+        end
+    else
+        SetVehicleDoorOpen(entity, door --[[@as number]], false, false)
+    end
+end
 
 if shared.target then
 	exports.ox_target:addModel(Inventory.Dumpsters, {
