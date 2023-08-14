@@ -22,7 +22,7 @@ local Utils = require 'modules.utils.client'
 local Vehicles = data 'vehicles'
 
 function Inventory.CanAccessTrunk(entity)
-    if GetVehiclePedIsEntering(cache.ped) ~= 0 or not NetworkGetEntityIsNetworked(entity) then return end
+    if cache.vehicle or not NetworkGetEntityIsNetworked(entity) then return end
 
 	local vehicleHash = GetEntityModel(entity)
     local vehicleClass = GetVehicleClass(entity)
@@ -53,12 +53,11 @@ function Inventory.OpenTrunk(entity)
         return lib.notify({ id = 'vehicle_locked', type = 'error', description = locale('vehicle_locked') })
     end
 
-    local vehicleClass = GetVehicleClass(entity)
     local plate = GetVehicleNumberPlateText(entity)
     local invId = 'trunk'..plate
     local coords = GetEntityCoords(entity)
 
-    if vehicleClass == 12 and GetEntityBoneIndexByName(entity, 'boot') == -1 then
+    if door == 5 and GetEntityBoneIndexByName(entity, 'boot') == -1 then
         door = { 2, 3 }
     end
 
