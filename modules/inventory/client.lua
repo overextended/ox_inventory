@@ -20,6 +20,7 @@ end
 
 local Utils = require 'modules.utils.client'
 local Vehicles = data 'vehicles'
+local backDoorIds = { 2, 3 }
 
 function Inventory.CanAccessTrunk(entity)
     if cache.vehicle or not NetworkGetEntityIsNetworked(entity) then return end
@@ -30,6 +31,19 @@ function Inventory.CanAccessTrunk(entity)
 
     if (checkVehicle == 0 or checkVehicle == 1) or (not Vehicles.trunk[vehicleClass] and not Vehicles.trunk.models[vehicleHash]) then return end
 
+    ---@type number | number[]
+    local doorId = checkVehicle and 4 or 5
+
+    if not GetIsDoorValid(entity, doorId --[[@as number]]) then
+        if vehicleClass ~= 11 and (doorId ~= 5 or GetEntityBoneIndexByName(entity, 'boot') ~= -1 or not GetIsDoorValid(entity, 2)) then
+            return
+        end
+
+        if vehicleClass ~= 11 then
+            doorId = backDoorIds
+        end
+    end
+
     local min, max = GetModelDimensions(vehicleHash)
     local offset = (max - min) * (not checkVehicle and vec3(0.5, 0, 0.5) or vec3(0.5, 1, 0.5)) + min
     offset = GetOffsetFromEntityInWorldCoords(entity, offset.x, offset.y, offset.z)
@@ -39,7 +53,7 @@ function Inventory.CanAccessTrunk(entity)
 
         TaskTurnPedToFaceCoord(cache.ped, coords.x, coords.y, coords.z, 0)
 
-        return checkVehicle and 4 or 5
+        return doorId
     end
 end
 
@@ -56,10 +70,6 @@ function Inventory.OpenTrunk(entity)
     local plate = GetVehicleNumberPlateText(entity)
     local invId = 'trunk'..plate
     local coords = GetEntityCoords(entity)
-
-    if door == 5 and GetEntityBoneIndexByName(entity, 'boot') == -1 then
-        door = { 2, 3 }
-    end
 
     TaskTurnPedToFaceCoord(cache.ped, coords.x, coords.y, coords.z, 0)
 
