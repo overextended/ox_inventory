@@ -113,5 +113,6 @@
   "lock_access_to_inventory_until_restart_or_unlock_help": "Save all pending inventory changes to the database",
   "lock_access_to_inventory_until_restart_or_unlock": "Lock inventory access, until restart or saved without a lock",
   "the_inventory_to_inspect_help": "Inspect the target inventory without allowing interactions",
-  "the_inventory_to_inspect": "The inventory to inspect"
+  "the_inventory_to_inspect": "The inventory to inspect",
+  "storage": "Storage"
 }

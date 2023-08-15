@@ -148,7 +148,6 @@ function Utils.CreateBoxZone(data, options)
         data.width = nil
         data.maxZ = nil
         data.minZ = nil
-        data.debug = true
     end
 
     if not data.options and options then

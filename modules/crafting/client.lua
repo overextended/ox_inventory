@@ -32,7 +32,7 @@ local function createCraftingBench(id, data)
 			AddTextEntry(blip.name, data.label or locale('crafting_bench'))
 		end
 
-		if shared.target == 'ox_target' then
+		if shared.target then
 			data.points = nil
             if data.zones then
     			for i = 1, #data.zones do
@@ -53,9 +53,9 @@ local function createCraftingBench(id, data)
     						icon = zone.icon or 'fas fa-wrench',
     					}
     				}
-    
+
     				exports.ox_target:addBoxZone(zone)
-    
+
     				if blip then
     					createBlip(blip, zone.coords)
     				end

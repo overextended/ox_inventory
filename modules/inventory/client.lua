@@ -19,16 +19,78 @@ function Inventory.OpenDumpster(entity)
 end
 
 local Utils = require 'modules.utils.client'
+local Vehicles = data 'vehicles'
+
+function Inventory.CanAccessTrunk(entity)
+    if cache.vehicle or not NetworkGetEntityIsNetworked(entity) then return end
+
+	local vehicleHash = GetEntityModel(entity)
+    local vehicleClass = GetVehicleClass(entity)
+    local checkVehicle = Vehicles.Storage[vehicleHash]
+
+    if (checkVehicle == 0 or checkVehicle == 1) or (not Vehicles.trunk[vehicleClass] and not Vehicles.trunk.models[vehicleHash]) then return end
+
+    local min, max = GetModelDimensions(vehicleHash)
+    local offset = (max - min) * (not checkVehicle and vec3(0.5, 0, 0.5) or vec3(0.5, 1, 0.5)) + min
+    offset = GetOffsetFromEntityInWorldCoords(entity, offset.x, offset.y, offset.z)
+
+    if #(GetEntityCoords(cache.ped) - offset) < 1.5 then
+        local coords = GetEntityCoords(entity)
+
+        TaskTurnPedToFaceCoord(cache.ped, coords.x, coords.y, coords.z, 0)
+
+        return checkVehicle and 4 or 5
+    end
+end
+
+function Inventory.OpenTrunk(entity)
+    ---@type number | number[] | nil
+    local door = Inventory.CanAccessTrunk(entity)
+
+    if not door then return end
+
+    if GetVehicleDoorLockStatus(entity) > 1 then
+        return lib.notify({ id = 'vehicle_locked', type = 'error', description = locale('vehicle_locked') })
+    end
+
+    local plate = GetVehicleNumberPlateText(entity)
+    local invId = 'trunk'..plate
+    local coords = GetEntityCoords(entity)
+
+    if door == 5 and GetEntityBoneIndexByName(entity, 'boot') == -1 then
+        door = { 2, 3 }
+    end
+
+    TaskTurnPedToFaceCoord(cache.ped, coords.x, coords.y, coords.z, 0)
+
+    if not client.openInventory('trunk', { id = invId, netid = NetworkGetNetworkIdFromEntity(entity), entityid = entity, door = door }) then return end
+
+    if type(door) == 'table' then
+        for i = 1, #door do
+            SetVehicleDoorOpen(entity, door[i], false, false)
+        end
+    else
+        SetVehicleDoorOpen(entity, door --[[@as number]], false, false)
+    end
+end
 
 if shared.target then
 	exports.ox_target:addModel(Inventory.Dumpsters, {
-        {
-            icon = 'fas fa-dumpster',
-            label = locale('search_dumpster'),
-            onSelect = Inventory.OpenDumpster,
-            distance = 2
-        },
+        icon = 'fas fa-dumpster',
+        label = locale('search_dumpster'),
+        onSelect = function(data) return Inventory.OpenDumpster(data.entity) end,
+        distance = 2
 	})
+
+    exports.ox_target:addGlobalVehicle({
+        icon = 'fas fa-truck-ramp-box',
+        label = locale('open_label', locale('storage')),
+        distance = 1.5,
+        canInteract = Inventory.CanAccessTrunk,
+        onSelect = function(data)
+            return Inventory.OpenTrunk(data.entity)
+        end
+    })
 else
 	local dumpsters = table.create(0, #Inventory.Dumpsters)
 
@@ -286,8 +348,8 @@ Inventory.Stashes = setmetatable(data('stashes'), {
                             {
                                 icon = stash.target.icon or 'fas fa-warehouse',
                                 label = stash.target.label or locale('open_stash'),
-                                job = stash.groups,
-                                action = function()
+                                groups = stash.groups,
+                                onSelect = function()
                                     exports.ox_inventory:openInventory('stash', stash.name)
                                 end,
                                 iconColor = stash.target.iconColor,
