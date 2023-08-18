@@ -138,7 +138,7 @@ end
 function Utils.CreateBoxZone(data, options)
     if data.length then
         local height = math.abs(data.maxZ - data.minZ)
-        local z = math.min(data.minZ, data.maxZ) + height/2
+        local z = data.loc.z + math.abs(data.minZ - data.maxZ) / 2
         data.coords = vec3(data.loc.x, data.loc.y, z)
         data.size = vec3(data.width, data.length, height)
         data.rotation = data.heading
