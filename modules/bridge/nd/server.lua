@@ -1,10 +1,6 @@
 local playerDropped = ...
-local Inventory
+local Inventory = require 'modules.inventory.server'
 local NDCore
-
-CreateThread(function()
-	Inventory = require 'modules.inventory.server'
-end)
 
 AddEventHandler("ND:characterUnloaded", playerDropped)
 
@@ -37,11 +33,6 @@ SetTimeout(500, function()
     end
 end)
 
--- Accounts that need to be synced with physical items
-server.accounts = {
-    money = 0
-}
-
 RegisterNetEvent("ND:characterLoaded", function(character)
     if not character then return end
     character.identifier = character.id
@@ -62,17 +53,11 @@ end)
 
 ---@diagnostic disable-next-line: duplicate-set-field
 function server.syncInventory(inv)
-    local money = table.clone(server.accounts)
+    local accounts = Inventory.GetAccountItemCounts(inv)
 
-    for _, v in pairs(inv.items) do
-        if money[v.name] then
-            money[v.name] += v.count
-        end
-    end
-
-    if money then
+    if accounts then
         local character = NDCore.Functions.GetPlayer(inv.id)
-        NDCore.Functions.SetPlayerData(character.id, "cash", money.money)
+        NDCore.Functions.SetPlayerData(character.id, "cash", accounts.money)
     end
 end
 

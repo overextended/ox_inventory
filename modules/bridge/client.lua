@@ -49,8 +49,12 @@ function client.onLogout()
 
 	client.closeInventory()
 	Shops.wipeShops()
-	ClearInterval(client.interval)
-	ClearInterval(client.tick)
+
+    if client.interval then
+        ClearInterval(client.interval)
+        ClearInterval(client.tick)
+    end
+
 	Weapon.Disarm()
 end
 

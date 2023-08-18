@@ -24,7 +24,7 @@ const initialState: State = {
     maxWeight: 0,
     items: [],
   },
-  additionalMetadata: {},
+  additionalMetadata: new Array(),
   contextMenu: { coords: null },
   itemAmount: 0,
   shiftPressed: false,
@@ -46,8 +46,8 @@ export const inventorySlice = createSlice({
     ) => {
       state.contextMenu = action.payload;
     },
-    setAdditionalMetadata: (state, action: PayloadAction<{ [key: string]: any }>) => {
-      state.additionalMetadata = { ...state.additionalMetadata, ...action.payload };
+    setAdditionalMetadata: (state, action: PayloadAction<Array<{metadata: string, value: string}>>) => {
+      state.additionalMetadata = [ ...state.additionalMetadata, ...action.payload ];
     },
     setItemAmount: (state, action: PayloadAction<number>) => {
       state.itemAmount = action.payload;

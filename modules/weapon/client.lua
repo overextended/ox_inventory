@@ -73,10 +73,10 @@ function Weapon.Equip(item, data)
 
 	local ammo = item.metadata.ammo or item.throwable and 1 or 0
 
-	SetPedAmmo(playerPed, data.hash, ammo)
 	SetCurrentPedWeapon(playerPed, data.hash, true)
 	SetPedCurrentWeaponVisible(playerPed, true, false, false, false)
 	SetWeaponsNoAutoswap(true)
+	SetPedAmmo(playerPed, data.hash, ammo)
 	SetTimeout(0, function() RefillAmmoInstantly(playerPed) end)
 
 	if item.group == `GROUP_PETROLCAN` or item.group == `GROUP_FIREEXTINGUISHER` then
@@ -94,7 +94,10 @@ function Weapon.Disarm(currentWeapon, noAnim)
 	if currentWeapon?.timer then
 		currentWeapon.timer = nil
 
-		TriggerServerEvent('ox_inventory:updateWeapon')
+		if source == '' then
+			TriggerServerEvent('ox_inventory:updateWeapon')
+		end
+
 		SetPedAmmo(cache.ped, currentWeapon.hash, 0)
 
 		if client.weaponanims and not noAnim then

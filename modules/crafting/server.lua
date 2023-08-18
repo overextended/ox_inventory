@@ -205,27 +205,14 @@ lib.callback.register('ox_inventory:craftItem', function(source, id, index, reci
 								local newItem = Inventory.SetSlot(left, item, 1, table.deepclone(invSlot.metadata), emptySlot)
 
 								if newItem then
-									newItem.metadata.durability = durability < 0 and 0 or durability
-									durability = 0
-
-									left:syncSlotsWithPlayer({
-										{
-											item = newItem,
-										}
-									}, left.weight)
+                                    Items.UpdateDurability(left, newItem, item, durability < 0 and 0 or durability)
 								end
 							end
 
 							invSlot.count -= 1
 						else
-							invSlot.metadata.durability = durability < 0 and 0 or durability
+                            Items.UpdateDurability(left, invSlot, item, durability < 0 and 0 or durability)
 						end
-
-						left:syncSlotsWithPlayer({
-							{
-								item = invSlot,
-							}
-						}, left.weight)
 					else
 						local removed = invSlot and Inventory.RemoveItem(left, invSlot.name, count, nil, slot)
 						-- Failed to remove item (inventory state unexpectedly changed?)

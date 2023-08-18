@@ -7,7 +7,7 @@ export type State = {
   itemAmount: number;
   shiftPressed: boolean;
   isBusy: boolean;
-  additionalMetadata: { [key: string]: any };
+  additionalMetadata: Array<{metadata: string, value: string}>;
   contextMenu: { coords: { mouseX: number; mouseY: number } | null; item?: Slot };
   history?: {
     leftInventory: Inventory;
