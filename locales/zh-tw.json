@@ -88,5 +88,6 @@
   "crafting_item": "製作 %s",
   "crafting_bench": "工作台",
   "open_crafting_bench": "打開工作台",
-  "not_enough_durability": "%s 沒有足夠的耐久度"
+  "not_enough_durability": "%s 沒有足夠的耐久度",
+  "storage": "儲櫃"
 }
