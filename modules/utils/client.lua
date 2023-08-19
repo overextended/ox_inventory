@@ -18,14 +18,21 @@ function Utils.PlayAnimAdvanced(wait, dict, name, posX, posY, posZ, rotX, rotY, 
 	if wait > 0 then Wait(wait) end
 end
 
-function Utils.Raycast(flag)
+---@param flag number
+---@param destination? vector3
+---@param size? number
+---@return number | false
+---@return number?
+function Utils.Raycast(flag, destination, size)
 	local playerCoords = GetEntityCoords(cache.ped)
-	local plyOffset = GetOffsetFromEntityInWorldCoords(cache.ped, 0.0, 2.2, -0.25)
-	local rayHandle = StartShapeTestCapsule(playerCoords.x, playerCoords.y, playerCoords.z + 0.5, plyOffset.x, plyOffset.y, plyOffset.z, 2.2, flag or 30, cache.ped, 4)
+	destination = destination or GetOffsetFromEntityInWorldCoords(cache.ped, 0.0, 2.2, -0.25)
+	local rayHandle = StartShapeTestCapsule(playerCoords.x, playerCoords.y, playerCoords.z + 0.5, destination.x, destination.y, destination.z, size or 2.2, flag or 30, cache.ped, 4)
 	while true do
 		Wait(0)
-		local result, _, _, _, entityHit = GetShapeTestResult(rayHandle)
+		local result, _, coords, _, entityHit = GetShapeTestResult(rayHandle)
 		if result ~= 1 then
+            -- DrawLine(playerCoords.x, playerCoords.y, playerCoords.z + 0.5, destination.x, destination.y, destination.z, 0, 0, 255, 255)
+            -- DrawLine(playerCoords.x, playerCoords.y, playerCoords.z + 0.5, coords.x, coords.y, coords.z, 255, 0, 0, 255)
 			local entityType
 			if entityHit then entityType = GetEntityType(entityHit) end
 			if entityHit and entityType ~= 0 then
@@ -122,6 +129,40 @@ function Utils.CreateBlip(settings, coords)
 	EndTextCommandSetBlipName(blip)
 
 	return blip
+end
+
+---Takes OxTargetBoxZone or legacy zone data (PolyZone) and creates a zone.
+---@param data OxTargetBoxZone | { length: number, maxZ: number, loc: vector3, heading: number, width: number, distance: number }
+---@param options? OxTargetOption[]
+---@return number
+function Utils.CreateBoxZone(data, options)
+    if data.length then
+        local height = math.abs(data.maxZ - data.minZ)
+        local z = data.loc.z + math.abs(data.minZ - data.maxZ) / 2
+        data.coords = vec3(data.loc.x, data.loc.y, z)
+        data.size = vec3(data.width, data.length, height)
+        data.rotation = data.heading
+        data.loc = nil
+        data.heading = nil
+        data.length = nil
+        data.width = nil
+        data.maxZ = nil
+        data.minZ = nil
+    end
+
+    if not data.options and options then
+        local distance = data.distance or 2.0
+
+        for k, v in pairs(options) do
+            if not v.distance then
+                v.distance = distance
+            end
+        end
+
+        data.options = options
+    end
+
+    return exports.ox_target:addBoxZone(data)
 end
 
 return Utils

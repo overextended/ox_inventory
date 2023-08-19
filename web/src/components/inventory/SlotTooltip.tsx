@@ -81,11 +81,11 @@ const SlotTooltip: React.FC<{ item: SlotWithItem; inventory: Inventory }> = ({ i
                   {Locale.ui_tint}: {item.metadata.weapontint}
                 </p>
               )}
-              {Object.keys(additionalMetadata).map((data: string, index: number) => (
+              {additionalMetadata.map((data: {metadata: string, value: string}, index: number) => (
                 <Fragment key={`metadata-${index}`}>
-                  {item.metadata && item.metadata[data] && (
+                  {item.metadata && item.metadata[data.metadata] && (
                     <p>
-                      {additionalMetadata[data]}: {item.metadata[data]}
+                      {data.value}: {item.metadata[data.metadata]}
                     </p>
                   )}
                 </Fragment>

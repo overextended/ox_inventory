@@ -1,5 +1,11 @@
 return {
 	Weapons = {
+		['WEAPON_TECPISTOL'] = {
+			label = 'Tactical SMG',
+			weight = 1500,
+			durability = 0.075,
+			ammoname = 'ammo-9',
+		},
 		['WEAPON_ADVANCEDRIFLE'] = {
 			label = 'Advanced Rifle',
 			weight = 3100,
@@ -791,6 +797,7 @@ return {
 					`COMPONENT_SNSPISTOL_CLIP_02`,
 					`COMPONENT_SNSPISTOL_MK2_CLIP_02`,
 					`COMPONENT_VINTAGEPISTOL_CLIP_02`,
+                    `COMPONENT_TECPISTOL_CLIP_02`,
 				},
 				usetime = 2500
 			}

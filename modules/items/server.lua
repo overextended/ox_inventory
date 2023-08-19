@@ -416,7 +416,7 @@ end
 ---@param ostime? number
 ---@return boolean? removed
 function Items.UpdateDurability(inv, slot, item, value, ostime)
-    local durability = slot.metadata.durability
+    local durability = slot.metadata.durability or value
 
     if not durability then return end
 
@@ -440,7 +440,7 @@ function Items.UpdateDurability(inv, slot, item, value, ostime)
             item = slot,
             inventory = inv.id
         }
-    }, { left = inv.weight }, true)
+    }, true)
 end
 
 local function Item(name, cb)
