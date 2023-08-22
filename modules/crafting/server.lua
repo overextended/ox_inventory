@@ -112,8 +112,7 @@ lib.callback.register('ox_inventory:craftItem', function(source, id, index, reci
 			end
 
 			local craftedItem = Items(recipe.name)
-			math.randomseed(os.time() + source)
-			local craftCount = (type(recipe.count) == 'number' and recipe.count) or (type(recipe.count) == 'table' and table.type(recipe.count) == 'array' and math.random(recipe.count[1], recipe.count[2])) or 1
+			local craftCount = (type(recipe.count) == 'number' and recipe.count) or (table.type(recipe.count) == 'array' and math.random(recipe.count[1], recipe.count[2])) or 1
 			local newWeight = left.weight + (craftedItem.weight + (recipe.metadata?.weight or 0)) * craftCount
 			---@todo new iterator or something to accept a map
 			local items = Inventory.Search(left, 'slots', tbl) or {}
