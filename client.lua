@@ -998,8 +998,11 @@ local function onExitDrop(point)
 end
 
 local function createDrop(dropId, data)
+	local coords = data.coords
+	local _, groundZ = GetGroundZFor_3dCoord(coords.x, coords.y, coords.z)
+	
 	local point = lib.points.new({
-		coords = data.coords,
+		coords = vector3(data.coords.x, data.coords.y, groundZ + 0.10),
 		distance = 16,
 		invId = dropId,
 		instance = data.instance,
