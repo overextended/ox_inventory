@@ -1,5 +1,8 @@
+local onLogout = ...
 local file = LoadResourceFile("ND_Core", "init.lua")
 load(file, "@ND_Core/init.lua")()
+
+RegisterNetEvent("ND:characterUnloaded", onLogout)
 
 local function reorderGroups(groups)
     groups = groups or {}
