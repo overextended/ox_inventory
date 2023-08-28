@@ -104,7 +104,8 @@ local function openInventory(source, invType, data, ignoreSecurityChecks)
 	local left = Inventory(source) --[[@as OxInventory]]
 	local right, closestCoords
 
-	Inventory.CloseAll(left, (invType == 'drop' or invType == 'container' or not invType) and source)
+    left:closeInventory(true)
+	Inventory.CloseAll(left, source)
 
     if invType == 'player' and data == source then
         data = nil
