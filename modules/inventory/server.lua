@@ -459,6 +459,10 @@ local function hasActiveInventory(playerId, owner)
 	local activePlayer = activeIdentifiers[owner]
 
 	if activePlayer then
+        if activePlayer == playerId then
+            error('attempted to load active player\'s inventory a secondary time', 0)
+        end
+
 		local inventory = Inventory(activePlayer)
 
 		if inventory then
