@@ -12,12 +12,10 @@ for shopType, shopData in pairs(data('shops') --[[@as table<string, OxShop>]]) d
 		label = shopData.label,
 	}
 
-	if shared.target then
-		shop.model = shopData.model
-		shop.targets = shopData.targets
-	else
-		shop.locations = shopData.locations
-	end
+	-- 取消shared.target判断
+	shop.model = shopData.model
+	shop.targets = shopData.targets
+	shop.locations = shopData.locations
 
 	shopTypes[shopType] = shop
 	local blip = shop.blip
@@ -120,74 +118,75 @@ local function refreshShops()
 		local blip = shop.blip
 		local label = shop.label or locale('open_label', shop.name)
 
-		if shared.target then
-			if shop.model then
-				if not hasShopAccess(shop) then goto skipLoop end
+		-- 取消shared.target判断
+		if shop.model then
+			if not hasShopAccess(shop) then goto skipLoop end
 
-				exports.ox_target:removeModel(shop.model, shop.name)
-				exports.ox_target:addModel(shop.model, {
-                    {
-                        name = shop.name,
-                        icon = shop.icon or 'fas fa-shopping-basket',
-                        label = label,
-                        onSelect = function()
-                            client.openInventory('shop', { type = type })
-                        end,
-                        distance = 2
-                    },
-				})
-			elseif shop.targets then
-				for i = 1, #shop.targets do
-					local target = shop.targets[i]
-					local shopid = ('%s-%s'):format(type, i)
+			exports.ox_target:removeModel(shop.model, shop.name)
+			exports.ox_target:addModel(shop.model, {
+				{
+					name = shop.name,
+					icon = shop.icon or 'fas fa-shopping-basket',
+					label = label,
+					onSelect = function()
+						client.openInventory('shop', { type = type })
+					end,
+					distance = 2
+				},
+			})
+		end
+		if shop.targets then
+			for i = 1, #shop.targets do
+				local target = shop.targets[i]
+				local shopid = ('%s-%s'):format(type, i)
 
-					if target.ped then
-						id += 1
+				if target.ped then
+					id += 1
 
-						shops[id] = lib.points.new({
-							coords = target.loc,
-							heading = target.heading,
-							distance = 60,
-							inv = 'shop',
-							invId = i,
-							type = type,
-							blip = blip and hasShopAccess(shop) and createBlip(blip, target.loc),
-							ped = target.ped,
-							scenario = target.scenario,
-							label = label,
-							groups = shop.groups,
-							icon = shop.icon,
-							iconColor = target.iconColor,
-							onEnter = onEnterShop,
-							onExit = onExitShop,
-							shopDistance = target.distance,
-						})
-					else
-						if not hasShopAccess(shop) then goto nextShop end
+					shops[id] = lib.points.new({
+						coords = target.loc,
+						heading = target.heading,
+						distance = 60,
+						inv = 'shop',
+						invId = i,
+						type = type,
+						blip = blip and hasShopAccess(shop) and createBlip(blip, target.loc),
+						ped = target.ped,
+						scenario = target.scenario,
+						label = label,
+						groups = shop.groups,
+						icon = shop.icon,
+						iconColor = target.iconColor,
+						onEnter = onEnterShop,
+						onExit = onExitShop,
+						shopDistance = target.distance,
+					})
+				else
+					if not hasShopAccess(shop) then goto nextShop end
 
-						id += 1
+					id += 1
 
-						shops[id] = {
-							zoneId = Utils.CreateBoxZone(target, {
-                                {
-                                    name = shopid,
-                                    icon = 'fas fa-shopping-basket',
-                                    label = label,
-                                    groups = shop.groups,
-                                    onSelect = function()
-                                        client.openInventory('shop', { id = i, type = type })
-                                    end,
-                                    iconColor = target.iconColor,
-                                }
-                            }),
-							blip = blip and createBlip(blip, target.coords)
-						}
-					end
-
-					::nextShop::
+					shops[id] = {
+						zoneId = Utils.CreateBoxZone(target, {
+							{
+								name = shopid,
+								icon = 'fas fa-shopping-basket',
+								label = label,
+								groups = shop.groups,
+								onSelect = function()
+									client.openInventory('shop', { id = i, type = type })
+								end,
+								iconColor = target.iconColor,
+							}
+						}),
+						blip = blip and createBlip(blip, target.coords)
+					}
 				end
+
+				::nextShop::
 			end
-		elseif shop.locations then
+		end
+		if shop.locations then
 			if not hasShopAccess(shop) then goto skipLoop end
 
 			for i = 1, #shop.locations do
