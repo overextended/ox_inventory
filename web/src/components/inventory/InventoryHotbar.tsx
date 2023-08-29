@@ -8,20 +8,24 @@ import { useAppSelector } from '../../store';
 import { selectLeftInventory } from '../../store/inventory';
 import { imagepath } from '../../store/imagepath';
 import { SlotWithItem } from '../../typings';
+import { fetchNui } from '../../utils/fetchNui';
 
 const InventoryHotbar: React.FC = () => {
   const [hotbarVisible, setHotbarVisible] = useState(false);
   const items = useAppSelector(selectLeftInventory).items.slice(0, 5);
 
   //stupid fix for timeout
+  //传递快捷栏状态
   const [handle, setHandle] = useState<NodeJS.Timeout>();
   useNuiEvent('toggleHotbar', () => {
     if (hotbarVisible) {
       setHotbarVisible(false);
+      fetchNui('hotbarVisible', true);
     } else {
       if (handle) clearTimeout(handle);
       setHotbarVisible(true);
-      setHandle(setTimeout(() => setHotbarVisible(false), 3000));
+      fetchNui('hotbarVisible', false);
+      setHandle(setTimeout(() => {setHotbarVisible(false);fetchNui('hotbarVisible', true);}, 3000));
     }
   });
 
