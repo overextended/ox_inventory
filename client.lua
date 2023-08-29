@@ -507,9 +507,10 @@ local function useSlot(slot)
 
 			useItem(data, function(result)
 				if result then
-					currentWeapon = Weapon.Equip(item, data)
+                    local sleep
+					currentWeapon, sleep = Weapon.Equip(item, data)
 
-					if client.weaponanims then Wait(500) end
+					if sleep then Wait(sleep) end
 				end
 			end)
 		elseif currentWeapon then
@@ -1385,7 +1386,7 @@ RegisterNetEvent('ox_inventory:setPlayerInventory', function(currentDrops, inven
 				DisableControlAction(0, 36, true)
 			end
 
-			if invBusy == true or IsPedCuffed(playerPed) then
+			if usingItem or invBusy == true or IsPedCuffed(playerPed) then
 				DisablePlayerFiring(playerId, true)
 			end
 
