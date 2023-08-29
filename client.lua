@@ -827,7 +827,7 @@ local function registerCommands()
 end
 
 -- 获取快捷栏状态
-RegisterNUICallback('hotbarVisible', function(hotbarVisible)
+RegisterNUICallback('hotbarVisible', function(hotbarVisible, cb)
 	hotbarstate = hotbarVisible
 	cb(1)
 end)
