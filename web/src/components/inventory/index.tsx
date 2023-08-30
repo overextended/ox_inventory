@@ -32,7 +32,7 @@ const Inventory: React.FC = () => {
 
   useNuiEvent('refreshSlots', (data) => dispatch(refreshSlots(data)));
 
-  useNuiEvent('displayMetadata', (data: { [key: string]: any }) => {
+  useNuiEvent('displayMetadata', (data: Array<{metadata: string, value: string}>) => {
     dispatch(setAdditionalMetadata(data));
   });
 

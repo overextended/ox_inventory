@@ -1,6 +1,7 @@
 local onLogout, Weapon = ...
 local QBCore = exports['qb-core']:GetCoreObject()
 local Inventory = require 'modules.inventory.client'
+local Weapon = require 'modules.weapon.client'
 
 RegisterNetEvent('QBCore:Client:OnPlayerUnload', onLogout)
 
