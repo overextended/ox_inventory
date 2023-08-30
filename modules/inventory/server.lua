@@ -2248,17 +2248,21 @@ local function saveInventories(clearInventories)
 	local parameters = { {}, {}, {}, {} }
 	local size = { 0, 0, 0, 0 }
     local buffer = {}
+    local total = 0
 
 	for _, inv in pairs(Inventories) do
         local index, data = prepareInventorySave(inv, buffer, time)
 
         if index then
+            total += 1
             size[index] += 1
             parameters[index][size[index]] = data
         end
 	end
 
-	db.saveInventories(parameters[1], parameters[2], parameters[3], parameters[4])
+    if total > 0 then
+	    db.saveInventories(parameters[1], parameters[2], parameters[3], parameters[4], total)
+    end
 
 	isSaving = false
 
