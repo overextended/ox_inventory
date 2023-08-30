@@ -1,16 +1,21 @@
-$mainColor: #22232c;
+$mainColor: #16161aef;
 $textColor: #c1c2c5;
 $mainFont: Roboto;
 
-$seconaryColor: rgba(12, 12, 12, 0.4);
-$secondaryColorLight: rgba(0, 0, 0, 0.5);
-$secondaryColorDark: rgba(12, 12, 12, 0.8);
+$seconaryColor: #16161aef;
+$secondaryColorLight: #16161aef;
+$secondaryColorDark: #16161aef;
 
-$gridCols: 5;
-$gridRows: 5;
+$gridCols: 6;
+$gridRows: 6;
+$gridCols-right: 4;
+$gridRows-right: 5;
 $gridSize: 10.2vh;
-$gridGap: 2px;
+$gridGap: 0.5rem;
+
 $containerSize: calc(#{$gridRows} * #{$gridSize + 0.22vh} + #{$gridRows} * #{$gridGap});
+$containerSize-right: calc(#{$gridRows-right} * #{$gridSize + 0.22vh} + #{$gridRows-right} * #{$gridGap});
+
 
 body {
   margin: 0;
@@ -22,6 +27,33 @@ body {
   background: none !important;
   overflow: hidden !important;
   user-select: none;
+}
+
+
+.hotslot-wrapper {
+  display: grid;
+  width: $gridSize;
+  height: fit-content;
+  grid-template-columns: repeat(1, $gridSize);
+  grid-template-rows: repeat(5, $gridSize);
+  gap: $gridGap;
+}
+
+
+.hotslot-container {
+  background-color: rgba(12, 12, 17, 0.966);
+  position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 15px;
+  // border-radius: 10px;
+  border-top-left-radius: 10px;
+  border-bottom-left-radius: 10px;
+  gap: 30px;
+  height: fit-content;
+  width: fit-content;
+  // margin-top: 5px;
 }
 
 #root {
@@ -48,6 +80,7 @@ input[type='number']::-webkit-outer-spin-button {
   -moz-appearance: none;
   appearance: none;
 }
+
 
 .MuiMenuItem-root > div > p {
   padding: 0 !important;
@@ -84,14 +117,14 @@ button:active {
 .item-drag-preview {
   width: 7.7vh;
   height: 7.7vh;
-  z-index: 1;
+  z-index: 100;
   position: fixed;
   pointer-events: none;
   top: 0;
   left: 0;
   background-repeat: no-repeat;
   background-position: center;
-  background-size: 7vh;
+  background-size: 5.5vh;
   image-rendering: -webkit-optimize-contrast;
 }
 
@@ -101,30 +134,46 @@ button:active {
   justify-content: center;
   align-items: center;
   height: 100%;
+  // gap: 20px;
+}
 
-  gap: 20px;
+.inventory-wrapper-container {
+  background-color: rgba(12, 12, 17, 0.966);
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: start;
+  gap: 30px;
+  padding: 20px;
+  border-radius: 10px;
+  margin-bottom: 5px;
 }
 
 .inventory-control {
   display: flex;
-
+  margin-top: 5rem;
   .inventory-control-wrapper {
     display: flex;
-    flex-direction: column;
-    gap: 20px;
-    justify-content: center;
+    padding: 1rem;
+    gap: 10px;
     align-items: center;
+    flex-direction: column;
+    justify-content: center;
+    border-radius: 5px;
   }
 
   .inventory-control-input {
     transition: 200ms;
-    padding: 16px 8px;
-    border-radius: 2.5%;
+    padding: 0.4rem 0;
+    border-radius: 5px;
+    height: 2.7vh;
+    width: 10vh;
     font-family: $mainFont;
     font-size: 16px;
     text-align: center;
     outline: none;
-    border: none;
+    border: solid 0.5px;
+    border-color: #c1c2c55a;
     color: #fff;
     background-color: $seconaryColor;
     &:focus-within {
@@ -133,17 +182,18 @@ button:active {
   }
 
   .inventory-control-button {
-    font-size: 14px;
-    color: #fff;
-    background-color: $seconaryColor;
-    transition: 200ms;
-    padding: 12px 8px;
-    border-radius: 2.5%;
-    border: none;
+    transition: 0.2s;
     text-transform: uppercase;
+    height: 2.7em;
+    width: 10vh;
     font-family: $mainFont;
-    width: 100%;
-    font-weight: 500;
+    font-size: 1.5vh;
+    outline: none;
+    border: solid 0.5px;
+    border-color: #c1c2c55a;
+    border-radius: 5px;
+    color: #c1c2c5;
+    background-color: #fff0;
     &:hover {
       background-color: $secondaryColorDark;
     }
@@ -165,10 +215,10 @@ button:active {
   bottom: 25px;
   right: 25px;
   transition: 200ms !important;
-  border-radius: 5% !important;
-  background-color: $seconaryColor !important;
+  border-radius: 5px !important;
+  background-color: #0d0d14e1 !important;
   &:hover {
-    background-color: $secondaryColorDark !important;
+    background-color: #17171f !important;
   }
 }
 
@@ -208,6 +258,7 @@ button:active {
   justify-content: space-between;
   p {
     font-size: 16px;
+    font-weight: 600;
   }
 }
 
@@ -218,32 +269,37 @@ button:active {
   grid-auto-rows: $gridSize + 0.22vh;
   gap: $gridGap;
   overflow-y: scroll;
+  overflow-x: hidden;
+}
+
+.inventory-grid-container-right {
+  display: grid;
+  height: $containerSize;
+  grid-template-columns: repeat($gridCols-right, $gridSize);
+  grid-auto-rows: $gridSize + 0.22vh;
+  gap: $gridGap;
+  overflow-y: scroll;
+  overflow-x: hidden;
 }
 
 // inventory slots
 .inventory-slot {
-  background-color: $seconaryColor;
+  background-color: $mainColor;
   background-repeat: no-repeat;
   background-position: center;
-  border-radius: 2.5%;
+  border-radius: 5px;
   image-rendering: -webkit-optimize-contrast;
   position: relative;
-  background-size: 7vh;
+  background-size: 5.5vh;
   color: $textColor;
-  border-color: rgba(0, 0, 0, 0.2);
-  border-style: inset;
-  border-width: 1px;
+  border: 1px solid #25272bd5;
 }
 
 .inventory-slot-label-box {
-  background-color: $mainColor;
   color: $textColor;
   text-align: center;
   border-bottom-left-radius: 0.25vh;
   border-bottom-right-radius: 0.25vh;
-  border-top-color: rgba(0, 0, 0, 0.2);
-  border-top-style: inset;
-  border-top-width: 1px;
 }
 
 .inventory-slot-label-text {
@@ -252,23 +308,38 @@ button:active {
   overflow: hidden;
   text-overflow: ellipsis;
   padding: 2px 3px;
-  font-weight: 400;
+  font-weight: 500;
   font-family: $mainFont;
-  font-size: 12px;
+  font-size: 11px;
 }
 
 .inventory-slot-number {
-  background-color: white;
-  color: black;
-  height: 12px;
-  border-top-left-radius: 0.25vh;
-  border-bottom-right-radius: 0.25vh;
-  padding: 3px;
-  font-size: 12px;
-  font-family: $mainFont;
+  position: absolute;
+  color: rgb(245, 245, 245);
+  font-size: 8vh;
+  left: 0;
+  right: 0;
+  margin-left: auto;
+  margin-right: auto;
+  margin-top: auto;
+  opacity: 0.1;
+  font-weight: 300;
+  text-align: center;
+  font-family: Poppins;
 }
 
+
 .item-slot-wrapper {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  height: 100%;
+  p {
+    font-size: 12px;
+  }
+}
+
+.item-slot-wrapper-left {
   display: flex;
   flex-direction: column;
   justify-content: space-between;
@@ -281,22 +352,21 @@ button:active {
 .item-slot-header-wrapper {
   display: flex;
   flex-direction: row;
-  justify-content: flex-end;
-}
-
-.item-hotslot-header-wrapper {
-  @extend .item-slot-header-wrapper;
-  justify-content: space-between !important;
 }
 
 .item-slot-info-wrapper {
   display: flex;
   flex-direction: row;
-  align-self: flex-end;
-  padding: 3px;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  padding: 5px;
   gap: 3px;
   p {
-    font-size: 12px;
+    font-size: 11px;
+    background-color: #28272acb;
+    padding: 5px;
+    border-radius: 1rem;
   }
 }
 
@@ -445,14 +515,17 @@ button:active {
 
 .durability-bar {
   background: rgba(0, 0, 0, 0.5);
-  height: 3px;
+  height: 5px;
+  border-bottom-left-radius: 5px;
+  border-bottom-right-radius: 5px;
   overflow: hidden;
 }
 
 .weight-bar {
-  background: rgba(0, 0, 0, 0.4);
+  background: #25252cef;
   border: 1px inset rgba(0, 0, 0, 0.1);
-  height: 0.8vh;
-  border-radius: 5%;
+  height: 0.6vh;
+  border-radius: 5px;
   overflow: hidden;
+  margin-top: 0.5rem;
 }

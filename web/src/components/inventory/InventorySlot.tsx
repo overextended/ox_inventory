@@ -147,22 +147,18 @@ const InventorySlot: React.FC<SlotProps> = ({ inventory, item }) => {
               : undefined,
           opacity: isDragging ? 0.4 : 1.0,
           backgroundImage: `url(${item?.name ? getItemUrl(item as SlotWithItem) : 'none'}`,
-          border: isOver ? '1px dashed rgba(255,255,255,0.4)' : '',
+          border: isOver ? '1px solid rgba(37,39,43,0.4)' : '',
         }}
       >
         {isSlotWithItem(item) && (
           <div className="item-slot-wrapper">
-            <div
-              className={
-                inventory.type === 'player' && item.slot <= 5
-                  ? 'item-hotslot-header-wrapper'
-                  : 'item-slot-header-wrapper'
-              }
-            >
-              {inventory.type === 'player' && item.slot <= 5 && (
-                <div className="inventory-slot-number">{item.slot}</div>
-              )}
+            {inventory.type === 'player' && item.slot <= 5 && (
+              <div className="inventory-slot-number">{item.slot}</div>
+            )}
+            <div className="item-slot-header-wrapper">
               <div className="item-slot-info-wrapper">
+                {item.count > 0 && <p>{item.count ? item.count.toLocaleString('en-us') + `x` : ''}</p>}
+                {item.weight > 0 && (
                 <p>
                   {item.weight > 0
                     ? item.weight >= 1000
@@ -174,13 +170,10 @@ const InventorySlot: React.FC<SlotProps> = ({ inventory, item }) => {
                         })}g `
                     : ''}
                 </p>
-                <p>{item.count ? item.count.toLocaleString('en-us') + `x` : ''}</p>
+                )}
               </div>
             </div>
             <div>
-              {inventory.type !== 'shop' && item?.durability !== undefined && (
-                <WeightBar percent={item.durability} durability />
-              )}
               {inventory.type === 'shop' && item?.price !== undefined && (
                 <>
                   {item?.currency !== 'money' && item.currency !== 'black_money' && item.price > 0 && item.currency ? (
@@ -219,6 +212,9 @@ const InventorySlot: React.FC<SlotProps> = ({ inventory, item }) => {
                 <div className="inventory-slot-label-text">
                   {item.metadata?.label ? item.metadata.label : Items[item.name]?.label || item.name}
                 </div>
+                {inventory.type !== 'shop' && item?.durability !== undefined && (
+                  <WeightBar percent={item.durability} durability />
+                )}
               </div>
             </div>
           </div>

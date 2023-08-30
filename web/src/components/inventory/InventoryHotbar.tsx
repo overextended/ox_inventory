@@ -41,6 +41,7 @@ const InventoryHotbar: React.FC = () => {
                 <div className="hotbar-slot-header-wrapper">
                   <div className="inventory-slot-number">{item.slot}</div>
                   <div className="item-slot-info-wrapper">
+                      <p>{item.count ? item.count.toLocaleString('en-us') + `x` : ''}</p>
                     <p>
                       {item.weight > 0
                         ? item.weight >= 1000
@@ -52,15 +53,14 @@ const InventoryHotbar: React.FC = () => {
                             })}g `
                         : ''}
                     </p>
-                    <p>{item.count ? item.count.toLocaleString('en-us') + `x` : ''}</p>
                   </div>
                 </div>
                 <div>
-                  {item?.durability !== undefined && <WeightBar percent={item.durability} durability />}
                   <div className="inventory-slot-label-box">
                     <div className="inventory-slot-label-text">
                       {item.metadata?.label ? item.metadata.label : Items[item.name]?.label || item.name}
                     </div>
+                  {item?.durability !== undefined && <WeightBar percent={item.durability} durability />}
                   </div>
                 </div>
               </div>
