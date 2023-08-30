@@ -6,12 +6,12 @@ import InventoryContext from './InventoryContext';
 import { getTotalWeight } from '../../helpers';
 import { createPortal } from 'react-dom';
 
-const InventoryGrid: React.FC<{ inventory: Inventory }> = ({ inventory }) => {
+const InventoryGrid: React.FC<{ inventory: Inventory, direction: 'left' | 'right'}> = ({ inventory, direction }) => {
   const weight = React.useMemo(
     () => (inventory.maxWeight !== undefined ? Math.floor(getTotalWeight(inventory.items)*1000)/1000 : 0),
     [inventory.maxWeight, inventory.items]
   );
-
+  const hotInv = inventory.items.slice(0,5)
   return (
     <>
       <div className="inventory-grid-wrapper">
@@ -26,12 +26,15 @@ const InventoryGrid: React.FC<{ inventory: Inventory }> = ({ inventory }) => {
           </div>
           <WeightBar percent={inventory.maxWeight ? (weight / inventory.maxWeight) * 100 : 0} />
         </div>
-        <div className="inventory-grid-container">
+        <div className={direction === 'left' ? 'inventory-grid-container' : 'inventory-grid-container-right'}>
           <>
-            {inventory.items.map((item) => (
-              <InventorySlot key={`${inventory.type}-${inventory.id}-${item.slot}`} item={item} inventory={inventory} />
-            ))}
-            {inventory.type === 'player' && createPortal(<InventoryContext />, document.body)}
+          {inventory.items.map((item, index) => {
+            if(index < 5 && inventory.type==='player') {
+              return ''
+            }
+            return <InventorySlot key={`${inventory.type}-${inventory.id}-${item.slot}`} item={item} inventory={inventory} />
+          })}
+            {inventory.type === 'player' && createPortal(<InventoryContext />, document.body)} 
           </>
         </div>
       </div>
