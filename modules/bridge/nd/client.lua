@@ -24,6 +24,11 @@ RegisterNetEvent("ND:setCharacter", function(character)
     OnPlayerData("groups", groups)
 end)
 
+RegisterNetEvent("ND:updateCharacter", function(character)
+    PlayerData.dead = data.metadata.isdead
+    OnPlayerData("dead", PlayerData.dead)
+end)
+
 ---@diagnostic disable-next-line: duplicate-set-field
 function client.setPlayerStatus(values)
     if GetResourceState("ND_Status") ~= "started" then return end
