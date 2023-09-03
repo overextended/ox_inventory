@@ -77,6 +77,10 @@ local function hasItem(items, amount)
     return count >= amount
 end
 
+AddStateBagChangeHandler('inv_busy', ('player:%s'):format(cache.serverId), function(_, _, value)
+	LocalPlayer.state:set('invBusy', value, false)
+end)
+
 AddEventHandler(('__cfx_export_qb-inventory_HasItem'), function(setCB)
 	setCB(hasItem)
 end)
