@@ -1692,8 +1692,32 @@ lib.callback.register('ox_inventory:swapItems', function(source, data)
 					toData, fromData = Inventory.SwapSlots(fromInventory, toInventory, data.fromSlot, data.toSlot)
 				end
 
-			elseif toData and toData.name == fromData.name and table.matches(toData.metadata, fromData.metadata) then
 				-- Stack items
+
+				-- Extract durability for comparison
+				local toDurability = toData.metadata.durability or 0
+				local fromDurability = fromData.metadata.durability or 0
+
+				-- Clone metadata for comparison without durability
+				local toMetadataClone = table.clone(toData.metadata)
+				local fromMetadataClone = table.clone(fromData.metadata)
+				toMetadataClone.durability = nil
+				fromMetadataClone.durability = nil
+
+				-- Calculate the percentage difference
+				local percentDiff = math.abs(toDurability - fromDurability) / ((toDurability + fromDurability) / 2) * 100
+				print("Percentage difference in durability:", percentDiff) -- print the check
+
+				if toData and toData.name == fromData.name and table.matches(toMetadataClone, fromMetadataClone) then
+					if percentDiff <= 20 then
+						-- Set the durability to the lower of the two values
+						local newDurability = math.min(toDurability, fromDurability)
+						toData.metadata.durability = newDurability
+						fromData.metadata.durability = newDurability
+					else
+					end
+				end
+
 				toData.count += data.count
 				fromData.count -= data.count
 				local toSlotWeight = Inventory.SlotWeight(Items(toData.name), toData)
