@@ -4,7 +4,7 @@ local CraftingBenches = {}
 local Items = require 'modules.items.client'
 local createBlip = require 'modules.utils.client'.CreateBlip
 
----@param id number
+---@param id number | string
 ---@param data table
 local function createCraftingBench(id, data)
 	CraftingBenches[id] = {}
@@ -97,5 +97,11 @@ local function createCraftingBench(id, data)
 end
 
 for id, data in pairs(data('crafting')) do createCraftingBench(id, data) end
+
+for id, data in pairs(lib.callback.await("ox_inventory:getCrafts", 200)) do createCraftingBench(id, data) end
+
+RegisterNetEvent('ox_inventory:registerCraft', function(id, data)
+	createCraftingBench(id, data)
+end)
 
 return CraftingBenches

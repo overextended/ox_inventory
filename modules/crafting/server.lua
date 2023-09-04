@@ -4,7 +4,7 @@ local CraftingBenches = {}
 local Items = require 'modules.items.server'
 local Inventory = require 'modules.inventory.server'
 
----@param id number
+---@param id number | string
 ---@param data table
 local function createCraftingBench(id, data)
 	CraftingBenches[id] = {}
@@ -44,6 +44,32 @@ local function createCraftingBench(id, data)
 end
 
 for id, data in pairs(data('crafting')) do createCraftingBench(id, data) end
+
+---@class ItemsCraft
+---@field name string
+---@field ingredients table<string, number>
+---@field duration number
+---@field count number
+---@field metadata? table
+
+
+---@class CraftingBench
+---@field items ItemsCraft[]
+---@field groups? table<string, number>
+---@field blip? { id: number, colour: number, scale: number }
+
+
+local registeredCraft = {}
+
+exports('RegisterCraft', function(id, data)
+	createCraftingBench(id, data)
+	registeredCraft[id] = data
+	TriggerClientEvent('ox_inventory:registerCraft', -1, id, data)
+end)
+
+lib.callback.register('ox_inventory:getCrafts', function(source)
+	return registeredCraft
+end)
 
 ---falls back to player coords if zones and points are both nil
 ---@param source number
