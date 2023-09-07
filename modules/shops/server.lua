@@ -73,10 +73,23 @@ local function createShop(shopType, id)
 
 	if not shop then return end
 
-	local shopLocations = shop[locations] or shop.locations
-	local groups = shop.groups or shop.jobs
+	local store = (shop[locations] or shop.locations)?[id]
 
-	if not shopLocations or not shopLocations[id] then return end
+	if not store then return end
+
+	local groups = shop.groups or shop.jobs
+    local coords
+
+    if shared.target then
+        if store.loc then
+            local z = store.loc.z + math.abs(store.minZ - store.maxZ) / 2
+            coords = vec3(store.loc.x, store.loc.y, z)
+        else
+            coords = store.coords
+        end
+    else
+        coords = store
+    end
 
 	---@type OxShop
 	shop[id] = {
@@ -86,7 +99,7 @@ local function createShop(shopType, id)
 		items = table.clone(shop.inventory),
 		slots = #shop.inventory,
 		type = 'shop',
-		coords = shared.target and shop.targets?[id]?.loc or shopLocations[id],
+		coords = coords,
 		distance = shared.target and shop.targets?[id]?.distance,
 	}
 
