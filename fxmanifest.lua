@@ -43,5 +43,6 @@ files {
     'modules/**/shared.lua',
     'modules/**/client.lua',
     'modules/bridge/**/client.lua',
+    'data/**/*.lua',
     'data/*.lua',
 }
