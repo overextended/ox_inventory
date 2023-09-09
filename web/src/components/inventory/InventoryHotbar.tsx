@@ -20,12 +20,12 @@ const InventoryHotbar: React.FC = () => {
   useNuiEvent('toggleHotbar', () => {
     if (hotbarVisible) {
       setHotbarVisible(false);
-      fetchNui('hotbarVisible', true);
+      fetchNui('hotbarVisible', false);
     } else {
       if (handle) clearTimeout(handle);
       setHotbarVisible(true);
-      fetchNui('hotbarVisible', false);
-      setHandle(setTimeout(() => {setHotbarVisible(false);fetchNui('hotbarVisible', true);}, 3000));
+      fetchNui('hotbarVisible', true);
+      setHandle(setTimeout(() => {setHotbarVisible(false);fetchNui('hotbarVisible', false);}, 3000));
     }
   });
 

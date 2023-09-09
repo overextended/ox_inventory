@@ -816,7 +816,7 @@ local function registerCommands()
 			defaultKey = tostring(i),
 			onPressed = function()
 				if invOpen or IsNuiFocused() or not invHotkeys then return end
-				if cache.vehicle ~= false and hotbarstate then return end
+				if cache.vehicle and not hotbarstate then return end
 				useSlot(i)
 			end
 		})
