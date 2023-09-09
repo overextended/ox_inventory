@@ -86,8 +86,5 @@ return {
 		models = {
 			[`xa21`] = {11, 10000}
 		},
-		boneIndex = {
-			[`pounder`] = 'wheel_rr'
-		}
 	}
 }

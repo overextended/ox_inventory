@@ -34,7 +34,7 @@ function Inventory.CanAccessTrunk(entity)
     ---@type number | number[]
     local doorId = checkVehicle and 4 or 5
 
-    if not GetIsDoorValid(entity, doorId --[[@as number]]) then
+    if not Vehicles.trunk.boneIndex[vehicleHash] and not GetIsDoorValid(entity, doorId --[[@as number]]) then
         if vehicleClass ~= 11 and (doorId ~= 5 or GetEntityBoneIndexByName(entity, 'boot') ~= -1 or not GetIsDoorValid(entity, 2)) then
             return
         end
