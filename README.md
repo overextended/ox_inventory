@@ -1,61 +1,17 @@
 <div align='center'><img src='https://user-images.githubusercontent.com/65407488/147992899-93998c0a-75fb-4055-8c06-8da8c49342d6.png'/></div>
 <div align='center'><h3><a href='https://overextended.github.io/docs/ox_inventory/'>Read the documentation for setup, installation, and integration</a></h3></div>
 
-# Framework
+# 简介
+对原版ox_inventory进行优化,汉化等操作.
 
-The inventory was designed with the intention to move towards a more generic / standalone structure so it can be integrated into any framework without too much hassle. I will be writing a guide for manually setting up support _sometime soon™_. In the mean-time, it will work without any alterations if using the latest updates to **[ESX Legacy](https://github.com/esx-framework/esx-legacy)**.
+# 改进
+* 优化载具内使用物品的逻辑(在载具内时需要按Tab呼出快捷栏后,按下数字键才能使用物品)
+* 优化商店触发方式(可同时使用locations和targets)
+* 修改items.lua结构,可根据物品种类不同等分文件管理
 
-Experimental support for [qb-core](https://github.com/qbcore-framework/qb-core) has been added, but requires a recent installation. Do not expect 100% compatibility or support.
-
-# Config
-
-Refer to the [documentation](https://overextended.github.io/docs/ox_inventory/) setting your config.
-When set, you can add the following to your 'server.cfg'
-
-```
-exec @ox_inventory/config.cfg
-ensure ox_inventory
-```
-
-# Logging
-
-The included logging module utilises datadog to store logging data, which can be expanded for improved analytics and metrics. Register an account at [datadoghq](https://www.datadoghq.com/).
-The _free plan_ is enough for most user's purposes and provides far more utility than the typical weird discord logs utilised in other resources.
-
-Once you have registered, generate an API key and add `set datadog:key 'apikey'` to your server config.
-
-# Features
-
-### Shops
-
-- Creates different shops for 24/7, Ammunation, Liquor Stores, Vending Machines, etc.
-- Job restricted shops, such as a Police Armoury.
-- Items can be restricted to specific job grades and licenses.
-- Define the price for each item, and even allow different currency (black money, poker chips, etc).
-
-### Items
-
-- Generic item data shared between objects.
-- Specific data stored per-slot, with metadata to hold custom information.
-- Weapons, attachments, and durability.
-- Flexible item use allows for progress bars, server callbacks, and cancellation with simple functions and exports.
-- Support for items registered with ESX.
-
-### Stashes
-
-- Server-side security prevents arbitrary access to any stash.
-- Support personal stashes, able to be opened with different identifiers.
-- Job-restricted stashes as well as a police evidence locker.
-- Server exports allow for registration of stashes from any resource (see [here](https://github.com/overextended/ox_inventory_examples/blob/main/server.lua)).
-- Access small stashes via containers, such as paperbags, from using an item.
-- Vehicle gloveboxes and trunks, for both owned and unowned.
-
-### Temporary stashes
-
-- Dumpsters, drops, and non-player vehicles.
-- Loot tables allow users to find random items in dumpsters and unowned vehicles.
-
-<br><div><h4 align='center'><a href='https://discord.gg/hmcmv3P7YW'>Discord Server</a></h4></div><br>
+# 链接
+* [原仓库](https://github.com/overextended/ox_inventory)
+* [文档](https://overextended.dev/ox_inventory)
 
 <table><tr><td><h3 align='center'>Legal Notices</h2></tr></td>
 <tr><td>
