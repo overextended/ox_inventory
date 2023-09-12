@@ -568,9 +568,10 @@ function Inventory.Create(id, label, invType, slots, weight, maxWeight, owner, i
 				self.id = ('%s:%s'):format(self.id, owner)
 			end
 		else
-            self.dbId = id
-
-            if not invType:find(id) then
+            if string.find(id, '^glove') or string.find(id, '^trunk') then
+                self.dbId = id:sub(6)
+            else
+                self.dbId = id
                 self.id = (invType == 'glovebox' and 'glove' or invType) .. label
             end
 		end
