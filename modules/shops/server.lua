@@ -81,11 +81,11 @@ local function createShop(shopType, id)
     local coords
 
     if shared.target then
-        if store.loc then
+        if store.length then
             local z = store.loc.z + math.abs(store.minZ - store.maxZ) / 2
             coords = vec3(store.loc.x, store.loc.y, z)
         else
-            coords = store.coords
+            coords = store.coords or store.loc
         end
     else
         coords = store
