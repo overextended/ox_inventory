@@ -132,7 +132,7 @@ function Utils.CreateBlip(settings, coords)
 end
 
 ---Takes OxTargetBoxZone or legacy zone data (PolyZone) and creates a zone.
----@param data OxTargetBoxZone | { length: number, maxZ: number, loc: vector3, heading: number, width: number, distance: number }
+---@param data OxTargetBoxZone | { length: number, minZ: number, maxZ: number, loc: vector3, heading: number, width: number, distance: number }
 ---@param options? OxTargetOption[]
 ---@return number
 function Utils.CreateBoxZone(data, options)

@@ -875,9 +875,13 @@ local function updateInventory(data, weight)
 			v.inventory = 'player'
 			local item = v.item
 
-			if currentWeapon?.slot == item?.slot and item.metadata then
-				currentWeapon.metadata = item.metadata
-				TriggerEvent('ox_inventory:currentWeapon', currentWeapon)
+			if currentWeapon?.slot == item?.slot then
+                if item.metadata then
+				    currentWeapon.metadata = item.metadata
+				    TriggerEvent('ox_inventory:currentWeapon', currentWeapon)
+                else
+                    currentWeapon = Weapon.Disarm(currentWeapon, true)
+                end
 			end
 
 			local curItem = PlayerData.inventory[item.slot]
