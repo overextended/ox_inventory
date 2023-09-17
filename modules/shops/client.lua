@@ -10,6 +10,7 @@ for shopType, shopData in pairs(data('shops') --[[@as table<string, OxShop>]]) d
 		groups = shopData.groups or shopData.jobs,
 		blip = shopData.blip,
 		label = shopData.label,
+        icon = shopData.icon
 	}
 
 	if shared.target then
