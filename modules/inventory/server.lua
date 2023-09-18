@@ -577,14 +577,13 @@ function Inventory.Create(id, label, invType, slots, weight, maxWeight, owner, i
 		end
 	end
 
-	Inventories[self.id] = setmetatable(self, OxInventory)
-
 	if not items then
 		self.items, self.weight = Inventory.Load(self.dbId or self.id, invType, owner, self.datastore)
 	elseif weight == 0 and next(items) then
 		self.weight = Inventory.CalculateWeight(items)
 	end
 
+	Inventories[self.id] = setmetatable(self, OxInventory)
 	return Inventories[self.id]
 end
 
