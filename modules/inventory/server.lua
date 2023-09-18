@@ -617,6 +617,8 @@ function Inventory.Remove(inv)
 	end
 end
 
+exports('RemoveInventory', Inventory.Remove)
+
 ---Update the internal reference to vehicle stashes. Does not trigger a save or update the database.
 ---@param oldPlate string
 ---@param newPlate string
