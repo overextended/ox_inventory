@@ -159,8 +159,7 @@ local function loadInventoryData(data, player)
 			local model, class = lib.callback.await('ox_inventory:getVehicleData', source, data.netid)
 			local storage = Vehicles[data.type].models[model] or Vehicles[data.type][class]
             local vehicleId = server.getOwnedVehicleId and server.getOwnedVehicleId(entity)
-
-            inventory = Inventories[vehicleId or data.id] or Inventory.Create(vehicleId or data.id, plate, data.type, storage[1], 0, storage[2], false)
+            inventory = Inventory.Create(vehicleId or data.id, plate, data.type, storage[1], 0, storage[2], false)
 		end
 	elseif data.type == 'policeevidence' then
 		inventory = Inventory.Create(data.id, locale('police_evidence'), data.type, 100, 0, 100000, false)
@@ -568,15 +567,14 @@ function Inventory.Create(id, label, invType, slots, weight, maxWeight, owner, i
 				self.id = ('%s:%s'):format(self.id, owner)
 			end
 		else
-            self.dbId = id
-
-            if not invType:find(id) then
+            if string.find(id, '^glove') or string.find(id, '^trunk') then
+                self.dbId = id:sub(6)
+            else
+                self.dbId = id
                 self.id = (invType == 'glovebox' and 'glove' or invType) .. label
             end
 		end
 	end
-
-	Inventories[self.id] = setmetatable(self, OxInventory)
 
 	if not items then
 		self.items, self.weight = Inventory.Load(self.dbId or self.id, invType, owner, self.datastore)
@@ -584,6 +582,7 @@ function Inventory.Create(id, label, invType, slots, weight, maxWeight, owner, i
 		self.weight = Inventory.CalculateWeight(items)
 	end
 
+	Inventories[self.id] = setmetatable(self, OxInventory)
 	return Inventories[self.id]
 end
 
@@ -616,6 +615,8 @@ function Inventory.Remove(inv)
 		Inventories[inv.id] = nil
 	end
 end
+
+exports('RemoveInventory', Inventory.Remove)
 
 ---Update the internal reference to vehicle stashes. Does not trigger a save or update the database.
 ---@param oldPlate string

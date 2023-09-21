@@ -17,6 +17,8 @@
   "ui_ctrl_shift_lmb": "Bewege einen halben Stapel in ein anderes Inventar",
   "ui_alt_lmb": "Benutze einen Gegenstand",
   "ui_ctrl_c": "Wenn du über eine Waffe gehst, kopierst du die Seriennummer",
+  "ui_remove_ammo": "Entferne Munition",
+  "ammo_type": "Munitionstyp",
   "$": "$",
   "male": "Männlich",
   "female": "Weiblich",
@@ -46,6 +48,7 @@
   "buy_amount": "Trage die Anzahl ein die du kaufen möchtest",
   "component_has": "Diese Waffe hat bereits ein/e %s",
   "component_invalid": "Diese Waffe ist nicht kompatibel mit einem %s",
+  "component_slot_occupied" : "Der %s Slot dieser Waffe ist bereits belegt",
   "cannot_perform": "Du kannst diese Aktion nicht ausführen",
   "cannot_carry": "Du kannst nicht so viel tragen",
   "cannot_carry_other": "Das Inventar hat nicht genügend Platz",
@@ -84,5 +87,6 @@
   "dumpster": "Mülleimer",
   "crafting_item": "%s herstellen",
   "crafting_bench": "Werkbank",
+  "open_crafting_bench": "Werkbank öffnen",
   "not_enough_durability": "Haltbarkeit von %s reicht nicht mehr aus"
 }
