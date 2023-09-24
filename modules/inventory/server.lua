@@ -159,8 +159,7 @@ local function loadInventoryData(data, player)
 			local model, class = lib.callback.await('ox_inventory:getVehicleData', source, data.netid)
 			local storage = Vehicles[data.type].models[model] or Vehicles[data.type][class]
             local vehicleId = server.getOwnedVehicleId and server.getOwnedVehicleId(entity)
-
-            inventory = Inventories[vehicleId or data.id] or Inventory.Create(vehicleId or data.id, plate, data.type, storage[1], 0, storage[2], false)
+            inventory = Inventory.Create(vehicleId or data.id, plate, data.type, storage[1], 0, storage[2], false)
 		end
 	elseif data.type == 'policeevidence' then
 		inventory = Inventory.Create(data.id, locale('police_evidence'), data.type, 100, 0, 100000, false)
