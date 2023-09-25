@@ -93,3 +93,10 @@ function server.buyLicense(inv, license)
     player.createLicense("weapon")
 	return true, "have_purchased"
 end
+
+---@param entityId number
+---@return number | string
+function server.getOwnedVehicleId(entityId)
+    return NDCore.getVehicle(entityId)?.id
+end
+
