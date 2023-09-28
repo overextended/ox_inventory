@@ -208,7 +208,7 @@ function db.saveInventories(players, trunks, gloveboxes, stashes, total)
         local p = promise.new()
         promises[#promises + 1] = p
 
-        MySQL.rawExecute(Query.UPSERT_STASH:gsub('%(%?, %?, %?%)', string.rep('(?, ?, ?)', numStash, ', ')), stashes, function(resp)
+        MySQL.query(Query.UPSERT_STASH:gsub('%(%?, %?, %?%)', string.rep('(?, ?, ?)', numStash, ', ')), stashes, function(resp)
             local affectedRows = resp.affectedRows
 
             if numStash == 1 then
