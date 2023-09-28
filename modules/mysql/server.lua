@@ -168,7 +168,7 @@ local function countRows(rows)
 end
 
 function db.saveInventories(players, trunks, gloveboxes, stashes, total)
-    local numPlayer, numTrunk, numGlove, numStash = #players, #trunks, #gloveboxes, #stashes
+    local numPlayer, numTrunk, numGlove, numStash = #players, #trunks, #gloveboxes, #stashes / 3
     local promises = {}
     local start = os.nanotime()
 
@@ -179,7 +179,7 @@ function db.saveInventories(players, trunks, gloveboxes, stashes, total)
         promises[#promises + 1] = p
 
         MySQL.prepare(Query.UPDATE_PLAYER, players, function(resp)
-            shared.info(('Saved %s/%s players (%.4f ms)'):format(countRows(resp), numPlayer, (os.nanotime() - start) / 1e6))
+            shared.info(('Saved %d/%d players (%.4f ms)'):format(countRows(resp), numPlayer, (os.nanotime() - start) / 1e6))
             p:resolve()
         end)
     end
@@ -189,7 +189,7 @@ function db.saveInventories(players, trunks, gloveboxes, stashes, total)
         promises[#promises + 1] = p
 
         MySQL.prepare(Query.UPDATE_TRUNK, trunks, function(resp)
-            shared.info(('Saved %s/%s trunks (%.4f ms)'):format(countRows(resp), numTrunk, (os.nanotime() - start) / 1e6))
+            shared.info(('Saved %d/%d trunks (%.4f ms)'):format(countRows(resp), numTrunk, (os.nanotime() - start) / 1e6))
             p:resolve()
         end)
     end
@@ -199,7 +199,7 @@ function db.saveInventories(players, trunks, gloveboxes, stashes, total)
         promises[#promises + 1] = p
 
         MySQL.prepare(Query.UPDATE_GLOVEBOX, gloveboxes, function(resp)
-            shared.info(('Saved %s/%s gloveboxes (%.4f ms)'):format(countRows(resp), numGlove, (os.nanotime() - start) / 1e6))
+            shared.info(('Saved %d/%d gloveboxes (%.4f ms)'):format(countRows(resp), numGlove, (os.nanotime() - start) / 1e6))
             p:resolve()
         end)
     end
@@ -208,8 +208,16 @@ function db.saveInventories(players, trunks, gloveboxes, stashes, total)
         local p = promise.new()
         promises[#promises + 1] = p
 
-        MySQL.rawExecute(Query.UPSERT_STASH, stashes, function(resp)
-            shared.info(('Saved %s/%s stashes (%.4f ms)'):format(countRows(resp), numStash, (os.nanotime() - start) / 1e6))
+        MySQL.rawExecute(Query.UPSERT_STASH:gsub('%(%?, %?, %?%)', string.rep('(?, ?, ?)', numStash, ', ')), stashes, function(resp)
+            local affectedRows = resp.affectedRows
+
+            if numStash == 1 then
+                if affectedRows == 2 then affectedRows = 1 end
+            else
+                affectedRows -= tonumber(resp.info:match('Duplicates: (%d+)'), 10) or 0
+            end
+
+            shared.info(('Saved %d/%d stashes (%.4f ms)'):format(affectedRows, numStash, (os.nanotime() - start) / 1e6))
             p:resolve()
         end)
     end
