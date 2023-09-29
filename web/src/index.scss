@@ -2,7 +2,7 @@ $mainColor: #22232c;
 $textColor: #c1c2c5;
 $mainFont: Roboto;
 
-$seconaryColor: rgba(12, 12, 12, 0.4);
+$secondaryColor: rgba(12, 12, 12, 0.4);
 $secondaryColorLight: rgba(0, 0, 0, 0.5);
 $secondaryColorDark: rgba(12, 12, 12, 0.8);
 
@@ -126,7 +126,7 @@ button:active {
     outline: none;
     border: none;
     color: #fff;
-    background-color: $seconaryColor;
+    background-color: $secondaryColor;
     &:focus-within {
       background-color: $secondaryColorDark;
     }
@@ -135,7 +135,7 @@ button:active {
   .inventory-control-button {
     font-size: 14px;
     color: #fff;
-    background-color: $seconaryColor;
+    background-color: $secondaryColor;
     transition: 200ms;
     padding: 12px 8px;
     border-radius: 2.5%;
@@ -166,7 +166,7 @@ button:active {
   right: 25px;
   transition: 200ms !important;
   border-radius: 5% !important;
-  background-color: $seconaryColor !important;
+  background-color: $secondaryColor !important;
   &:hover {
     background-color: $secondaryColorDark !important;
   }
@@ -222,7 +222,7 @@ button:active {
 
 // inventory slots
 .inventory-slot {
-  background-color: $seconaryColor;
+  background-color: $secondaryColor;
   background-repeat: no-repeat;
   background-position: center;
   border-radius: 2.5%;
@@ -323,23 +323,23 @@ button:active {
   }
 }
 
-// slot tooltip
-.MuiTooltip-tooltip {
-  background-color: $mainColor !important;
-  min-width: 200px !important;
-  color: $textColor !important;
-  font-family: $mainFont !important;
-  border-radius: 4px !important;
-  border-color: rgba(0, 0, 0, 0.2) !important;
-  border-style: inset !important;
-  border-width: 1px !important;
-}
 
 .tooltip-wrapper {
+  pointer-events: none;
   display: flex;
+  background-color: $mainColor;
+  width: 200px;
+  padding: 8px;
   flex-direction: column;
+  min-width: 200px;
+  color: $textColor;
+  font-family: $mainFont;
+  border-radius: 4px;
+  border-color: rgba(0, 0, 0, 0.2);
+  border-style: inset;
+  border-width: 1px;
   p {
-    font-size: 14px;
+    font-size: 12px;
     font-weight: 400;
   }
 }
@@ -424,7 +424,7 @@ button:active {
 .item-notification-action-box {
   width: 100%;
   color: $textColor;
-  background-color: $seconaryColor;
+  background-color: $secondaryColor;
   text-transform: uppercase;
   text-align: center;
   border-top-left-radius: 0.25vh;

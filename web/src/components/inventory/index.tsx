@@ -9,6 +9,7 @@ import { useExitListener } from '../../hooks/useExitListener';
 import type { Inventory as InventoryProps } from '../../typings';
 import RightInventory from './RightInventory';
 import LeftInventory from './LeftInventory';
+import Tooltip from '../utils/Tooltip';
 
 const Inventory: React.FC = () => {
   const [inventoryVisible, setInventoryVisible] = React.useState(false);
@@ -31,7 +32,7 @@ const Inventory: React.FC = () => {
 
   useNuiEvent('refreshSlots', (data) => dispatch(refreshSlots(data)));
 
-  useNuiEvent('displayMetadata', (data: Array<{metadata: string, value: string}>) => {
+  useNuiEvent('displayMetadata', (data: Array<{ metadata: string; value: string }>) => {
     dispatch(setAdditionalMetadata(data));
   });
 
@@ -42,6 +43,7 @@ const Inventory: React.FC = () => {
           <LeftInventory />
           <InventoryControl />
           <RightInventory />
+          <Tooltip />
         </div>
       </Fade>
       <InventoryHotbar />

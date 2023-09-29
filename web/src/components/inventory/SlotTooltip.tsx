@@ -1,5 +1,5 @@
 import { Inventory, SlotWithItem } from '../../typings';
-import { Fragment, useMemo } from 'react';
+import React, { Fragment, useMemo } from 'react';
 import { Divider } from '@mui/material';
 import { Items } from '../../store/items';
 import { Locale } from '../../store/locale';
@@ -8,7 +8,10 @@ import { useAppSelector } from '../../store';
 import ClockIcon from '../utils/icons/ClockIcon';
 import { getItemUrl } from '../../helpers';
 
-const SlotTooltip: React.FC<{ item: SlotWithItem; inventory: Inventory }> = ({ item, inventory }) => {
+const SlotTooltip: React.ForwardRefRenderFunction<
+  HTMLDivElement,
+  { item: SlotWithItem; inventory: Inventory; style: React.CSSProperties }
+> = ({ item, inventory, style }, ref) => {
   const additionalMetadata = useAppSelector((state) => state.inventory.additionalMetadata);
   const itemData = useMemo(() => Items[item.name], [item]);
   const ingredients = useMemo(() => {
@@ -21,14 +24,14 @@ const SlotTooltip: React.FC<{ item: SlotWithItem; inventory: Inventory }> = ({ i
   return (
     <>
       {!itemData ? (
-        <div className="tooltip-wrapper">
+        <div className="tooltip-wrapper" ref={ref} style={style}>
           <div className="tooltip-header-wrapper">
             <p>{item.name}</p>
           </div>
           <Divider />
         </div>
       ) : (
-        <div className="tooltip-wrapper">
+        <div style={{ ...style }} className="tooltip-wrapper" ref={ref}>
           <div className="tooltip-header-wrapper">
             <p>{item.metadata?.label || itemData.label || item.name}</p>
             {inventory.type === 'crafting' ? (
@@ -81,7 +84,7 @@ const SlotTooltip: React.FC<{ item: SlotWithItem; inventory: Inventory }> = ({ i
                   {Locale.ui_tint}: {item.metadata.weapontint}
                 </p>
               )}
-              {additionalMetadata.map((data: {metadata: string, value: string}, index: number) => (
+              {additionalMetadata.map((data: { metadata: string; value: string }, index: number) => (
                 <Fragment key={`metadata-${index}`}>
                   {item.metadata && item.metadata[data.metadata] && (
                     <p>
@@ -117,4 +120,4 @@ const SlotTooltip: React.FC<{ item: SlotWithItem; inventory: Inventory }> = ({ i
   );
 };
 
-export default SlotTooltip;
+export default React.forwardRef(SlotTooltip);

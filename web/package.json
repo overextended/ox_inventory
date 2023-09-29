@@ -6,6 +6,7 @@
   "dependencies": {
     "@emotion/react": "^11.10.5",
     "@emotion/styled": "^11.10.5",
+    "@floating-ui/react": "^0.25.4",
     "@fortawesome/fontawesome-svg-core": "^6.2.1",
     "@fortawesome/free-solid-svg-icons": "^6.2.1",
     "@fortawesome/react-fontawesome": "^0.2.0",
@@ -62,7 +63,6 @@
     "csstype": "^2.6.21",
     "prettier": "^2.8.1",
     "typescript": "^4.9.4",
-    "vite": "^4.0.0",
-    "vite-plugin-checker": "^0.4.9"
+    "vite": "^4.0.0"
   }
 }

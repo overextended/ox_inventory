@@ -1,6 +1,6 @@
 import { createSlice, current, isFulfilled, isPending, isRejected, PayloadAction } from '@reduxjs/toolkit';
 import type { RootState } from '.';
-import { Slot, State } from '../typings';
+import { Inventory, Slot, SlotWithItem, State } from '../typings';
 import {
   setupInventoryReducer,
   refreshSlotsReducer,
