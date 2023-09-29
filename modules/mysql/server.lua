@@ -156,12 +156,10 @@ end
 local function countRows(rows)
     if type(rows) == 'number' then return rows end
 
-    if table.type(rows) == 'hash' then return rows.affectedRows == 0 and 0 or 1 end
-
     local n = 0
 
     for i = 1, #rows do
-        if rows[i] == 1 or (rows[i].affectedRows or 0) > 0 then n += 1 end
+        if rows[i] == 1 then n += 1 end
     end
 
     return n
