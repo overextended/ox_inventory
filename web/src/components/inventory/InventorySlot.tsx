@@ -59,6 +59,7 @@ const InventorySlot: React.FC<SlotProps> = ({ inventory, item }) => {
         isOver: monitor.isOver(),
       }),
       drop: (source) => {
+        dispatch(closeTooltip());
         switch (source.inventory) {
           case InventoryType.SHOP:
             onBuy(source, { inventory: inventory.type, item: { slot: item.slot } });

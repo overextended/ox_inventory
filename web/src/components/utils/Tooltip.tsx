@@ -39,7 +39,7 @@ const Tooltip: React.FC = () => {
       : window.removeEventListener('mousemove', handleMouseMove);
 
     return () => window.removeEventListener('mousemove', handleMouseMove);
-  }, [hoverData]);
+  }, [hoverData.open]);
 
   return (
     <FloatingPortal>
