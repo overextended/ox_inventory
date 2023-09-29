@@ -1,7 +1,6 @@
 import React from 'react';
-import { flip, FloatingPortal, shift, useFloating, autoUpdate, offset, useTransitionStyles } from '@floating-ui/react';
-import { useAppDispatch, useAppSelector } from '../../store';
-import { setHoverData } from '../../store/inventory';
+import { flip, FloatingPortal, shift, useFloating, offset, useTransitionStyles } from '@floating-ui/react';
+import { useAppSelector } from '../../store';
 import SlotTooltip from '../inventory/SlotTooltip';
 
 const Tooltip: React.FC = () => {

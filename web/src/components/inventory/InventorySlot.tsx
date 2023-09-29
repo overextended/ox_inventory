@@ -58,27 +58,19 @@ const InventorySlot: React.FC<SlotProps> = ({ inventory, item }) => {
       collect: (monitor) => ({
         isOver: monitor.isOver(),
       }),
-      drop: (source) =>
-        source.inventory === InventoryType.SHOP
-          ? onBuy(source, {
-              inventory: inventory.type,
-              item: {
-                slot: item.slot,
-              },
-            })
-          : source.inventory === InventoryType.CRAFTING
-          ? onCraft(source, {
-              inventory: inventory.type,
-              item: {
-                slot: item.slot,
-              },
-            })
-          : onDrop(source, {
-              inventory: inventory.type,
-              item: {
-                slot: item.slot,
-              },
-            }),
+      drop: (source) => {
+        switch (source.inventory) {
+          case InventoryType.SHOP:
+            onBuy(source, { inventory: inventory.type, item: { slot: item.slot } });
+            break;
+          case InventoryType.CRAFTING:
+            onCraft(source, { inventory: inventory.type, item: { slot: item.slot } });
+            break;
+          default:
+            onDrop(source, { inventory: inventory.type, item: { slot: item.slot } });
+            break;
+        }
+      },
       canDrop: (source) =>
         !isBusy &&
         (source.item.slot !== item.slot || source.inventory !== inventory.type) &&
