@@ -8,7 +8,7 @@ import { createPortal } from 'react-dom';
 
 const InventoryGrid: React.FC<{ inventory: Inventory }> = ({ inventory }) => {
   const weight = React.useMemo(
-    () => (inventory.maxWeight !== undefined ? Math.floor(getTotalWeight(inventory.items)*1000)/1000 : 0),
+    () => (inventory.maxWeight !== undefined ? Math.floor(getTotalWeight(inventory.items) * 1000) / 1000 : 0),
     [inventory.maxWeight, inventory.items]
   );
 
@@ -31,7 +31,6 @@ const InventoryGrid: React.FC<{ inventory: Inventory }> = ({ inventory }) => {
             {inventory.items.map((item) => (
               <InventorySlot key={`${inventory.type}-${inventory.id}-${item.slot}`} item={item} inventory={inventory} />
             ))}
-            {inventory.type === 'player' && createPortal(<InventoryContext />, document.body)}
           </>
         </div>
       </div>

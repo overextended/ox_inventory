@@ -3,6 +3,7 @@ $textColor: #c1c2c5;
 $mainFont: Roboto;
 
 $secondaryColor: rgba(12, 12, 12, 0.4);
+$secondaryColorHighlight: #33343F;
 $secondaryColorLight: rgba(0, 0, 0, 0.5);
 $secondaryColorDark: rgba(12, 12, 12, 0.8);
 
@@ -49,11 +50,7 @@ input[type='number']::-webkit-outer-spin-button {
   appearance: none;
 }
 
-.MuiMenuItem-root > div > p {
-  padding: 0 !important;
-}
-
-.MuiMenu-list {
+.context-menu-list {
   min-width: 200px;
   background-color: $mainColor;
   color: $textColor;
@@ -61,12 +58,17 @@ input[type='number']::-webkit-outer-spin-button {
   border-color: rgba(0, 0, 0, 0.2);
   border-style: inset;
   border-width: 1px;
-  font-size: 16px !important;
+  border-radius: 4px;
+  outline: none;
 }
 
-.MuiMenuItem-gutters {
-  padding: 4px 16px !important;
-  font-size: 16px !important;
+.context-menu-item  {
+  padding: 8px;
+  border-radius: 4px;
+  &:hover {
+    background-color: $secondaryColorHighlight;
+    cursor: pointer;
+  }
 }
 
 .tooltip-description {

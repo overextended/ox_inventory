@@ -15,6 +15,7 @@ import { onCraft } from '../../dnd/onCraft';
 import useNuiEvent from '../../hooks/useNuiEvent';
 import { ItemsPayload } from '../../reducers/refreshSlots';
 import { openTooltip, closeTooltip } from '../../store/tooltip';
+import { openContextMenu } from '../../store/contextMenu';
 
 interface SlotProps {
   inventory: Inventory;
@@ -99,11 +100,10 @@ const InventorySlot: React.FC<SlotProps> = ({ inventory, item }) => {
 
   const handleContext = (event: React.MouseEvent<HTMLDivElement>) => {
     event.preventDefault();
+    console.log('handleContext');
+    if (isBusy || inventory.type !== 'player' || !isSlotWithItem(item)) return;
 
-    !isBusy &&
-      inventory.type === 'player' &&
-      isSlotWithItem(item) &&
-      dispatch(setContextMenu({ coords: { mouseX: event.clientX, mouseY: event.clientY }, item }));
+    dispatch(openContextMenu({ item, coords: { x: event.clientX, y: event.clientY } }));
   };
 
   const handleClick = (event: React.MouseEvent<HTMLDivElement>) => {
