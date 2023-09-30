@@ -10,6 +10,7 @@ import type { Inventory as InventoryProps } from '../../typings';
 import RightInventory from './RightInventory';
 import LeftInventory from './LeftInventory';
 import Tooltip from '../utils/Tooltip';
+import { closeTooltip } from '../../store/tooltip';
 
 const Inventory: React.FC = () => {
   const [inventoryVisible, setInventoryVisible] = React.useState(false);
@@ -19,6 +20,7 @@ const Inventory: React.FC = () => {
   useNuiEvent<false>('closeInventory', () => {
     setInventoryVisible(false);
     dispatch(setContextMenu({ coords: null }));
+    dispatch(closeTooltip());
   });
   useExitListener(setInventoryVisible);
 
