@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useRef } from 'react';
 import { DragSource, Inventory, InventoryType, Slot, SlotWithItem } from '../../typings';
 import { useDrag, useDragDropManager, useDrop } from 'react-dnd';
 import { useAppDispatch, useAppSelector } from '../../store';
@@ -25,6 +25,7 @@ const InventorySlot: React.FC<SlotProps> = ({ inventory, item }) => {
   const manager = useDragDropManager();
   const isBusy = useAppSelector(selectIsBusy);
   const dispatch = useAppDispatch();
+  const timerRef = useRef<NodeJS.Timer | null>(null);
 
   const canDrag = React.useCallback(() => {
     return !isBusy && canPurchaseItem(item, inventory) && canCraftItem(item, inventory.type);
@@ -134,8 +135,18 @@ const InventorySlot: React.FC<SlotProps> = ({ inventory, item }) => {
       {isSlotWithItem(item) && (
         <div
           className="item-slot-wrapper"
-          onMouseEnter={() => dispatch(openTooltip({ item, inventory }))}
-          onMouseLeave={() => dispatch(closeTooltip())}
+          onMouseEnter={() => {
+            timerRef.current = setTimeout(() => {
+              dispatch(openTooltip({ item, inventory }));
+            }, 500);
+          }}
+          onMouseLeave={() => {
+            dispatch(closeTooltip());
+            if (timerRef.current) {
+              clearTimeout(timerRef.current);
+              timerRef.current = null;
+            }
+          }}
         >
           <div
             className={

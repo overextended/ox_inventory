@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useRef } from 'react';
 import { flip, FloatingPortal, shift, useFloating, offset, useTransitionStyles } from '@floating-ui/react';
 import { useAppSelector } from '../../store';
 import SlotTooltip from '../inventory/SlotTooltip';
@@ -7,10 +7,13 @@ import { useDebounce } from '../../hooks/useDebounce';
 const Tooltip: React.FC = () => {
   const hoverData = useAppSelector((state) => state.tooltip);
   const debounce = useDebounce(hoverData.open, 500);
+  const [open, setOpen] = React.useState(false);
+  const openTimer = useRef<NodeJS.Timer | null>(null);
+  const canOpen = useRef(false);
 
-  const { refs, update, context, floatingStyles } = useFloating({
+  const { refs, context, floatingStyles } = useFloating({
     middleware: [flip(), shift(), offset({ mainAxis: 10, crossAxis: 10 })],
-    open: hoverData.open ? debounce : false,
+    open: hoverData.open,
     placement: 'right-start',
   });
 
@@ -36,22 +39,20 @@ const Tooltip: React.FC = () => {
   };
 
   React.useEffect(() => {
-    if (hoverData.open) {
-      window.addEventListener('mousemove', handleMouseMove);
+    window.addEventListener('mousemove', handleMouseMove);
 
-      return () => {
-        window.removeEventListener('mousemove', handleMouseMove);
-      };
-    }
-  }, [hoverData.open]);
+    return () => {
+      window.removeEventListener('mousemove', handleMouseMove);
+    };
+  }, []);
 
   return (
     <>
-      {isMounted && (
+      {isMounted && hoverData.item && hoverData.inventory && (
         <FloatingPortal>
           <SlotTooltip
             ref={refs.setFloating}
-            style={{ ...styles, ...floatingStyles }}
+            style={{ ...floatingStyles, ...styles }}
             item={hoverData.item!}
             inventory={hoverData!.inventory!}
           />
