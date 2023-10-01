@@ -153,7 +153,44 @@ button:active {
 }
 
 .useful-controls-dialog {
+  background-color: $mainColor;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  color: $textColor;
+  width: 450px;
+  display: flex;
+  flex-direction: column;
+  padding: 16px;
+  border-radius: 4px;
+  gap: 16px;
+}
+
+.useful-controls-dialog-overlay {
+  background-color: rgba(0, 0, 0, 0.5);
+}
+
+.useful-controls-dialog-title {
+  display: flex;
+  width: 100%;
+  justify-content: space-between;
+  align-items: center;
   font-size: 18px;
+}
+
+.useful-controls-dialog-close {
+  width: 25px;
+  height: 25px;
+  padding: 6px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-radius: 4px;
+  &:hover {
+    background-color: $secondaryColorHighlight;
+    cursor: pointer;
+  }
 }
 
 .useful-controls-content-wrapper {
@@ -183,20 +220,7 @@ button:active {
 }
 
 // Dialog is used fro useful controls window
-.MuiDialogContent-root {
-  background-color: $mainColor;
-  color: $textColor;
-}
 
-.MuiDialogTitle-root {
-  background-color: $mainColor;
-  color: $textColor;
-}
-
-.MuiDialogActions-root {
-  background-color: $mainColor;
-  color: $textColor;
-}
 
 // inventory grids
 .inventory-grid-wrapper {
