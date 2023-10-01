@@ -7,14 +7,13 @@ import { onDrop } from '../../dnd/onDrop';
 import { onBuy } from '../../dnd/onBuy';
 import { selectIsBusy } from '../../store/inventory';
 import { Items } from '../../store/items';
-import { canCraftItem, getItemUrl, canPurchaseItem, isSlotWithItem } from '../../helpers';
+import { canCraftItem, canPurchaseItem, getItemUrl, isSlotWithItem } from '../../helpers';
 import { onUse } from '../../dnd/onUse';
 import { Locale } from '../../store/locale';
-import { setContextMenu } from '../../store/inventory';
 import { onCraft } from '../../dnd/onCraft';
 import useNuiEvent from '../../hooks/useNuiEvent';
 import { ItemsPayload } from '../../reducers/refreshSlots';
-import { openTooltip, closeTooltip } from '../../store/tooltip';
+import { closeTooltip, openTooltip } from '../../store/tooltip';
 import { openContextMenu } from '../../store/contextMenu';
 
 interface SlotProps {

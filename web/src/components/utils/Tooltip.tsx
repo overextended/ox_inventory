@@ -1,5 +1,5 @@
 import React, { useRef } from 'react';
-import { flip, FloatingPortal, shift, useFloating, offset, useTransitionStyles } from '@floating-ui/react';
+import { flip, FloatingPortal, offset, shift, useFloating, useTransitionStyles } from '@floating-ui/react';
 import { useAppSelector } from '../../store';
 import SlotTooltip from '../inventory/SlotTooltip';
 import { useDebounce } from '../../hooks/useDebounce';

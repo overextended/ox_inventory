@@ -6,7 +6,6 @@ import WeightBar from '../utils/WeightBar';
 import { Slide } from '@mui/material';
 import { useAppSelector } from '../../store';
 import { selectLeftInventory } from '../../store/inventory';
-import { imagepath } from '../../store/imagepath';
 import { SlotWithItem } from '../../typings';
 
 const InventoryHotbar: React.FC = () => {

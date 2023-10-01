@@ -2,9 +2,7 @@ import React from 'react';
 import { Inventory } from '../../typings';
 import WeightBar from '../utils/WeightBar';
 import InventorySlot from './InventorySlot';
-import InventoryContext from './InventoryContext';
 import { getTotalWeight } from '../../helpers';
-import { createPortal } from 'react-dom';
 
 const InventoryGrid: React.FC<{ inventory: Inventory }> = ({ inventory }) => {
   const weight = React.useMemo(

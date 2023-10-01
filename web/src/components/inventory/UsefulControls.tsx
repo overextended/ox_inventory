@@ -1,9 +1,7 @@
-import { Alert, Dialog, DialogActions, DialogContent, DialogTitle, IconButton, Slide, Snackbar } from '@mui/material';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faTimes } from '@fortawesome/free-solid-svg-icons';
 import { Locale } from '../../store/locale';
-import React, { useState } from 'react';
-import { TransitionProps } from '@mui/material/transitions';
+import React from 'react';
 import {
   FloatingFocusManager,
   FloatingOverlay,

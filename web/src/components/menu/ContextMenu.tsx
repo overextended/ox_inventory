@@ -6,7 +6,6 @@ import {
   useDismiss,
   useFloating,
   useInteractions,
-  useListNavigation,
   useTransitionStyles,
 } from '@floating-ui/react';
 import React from 'react';

@@ -8,8 +8,7 @@ import App from './App';
 import './index.scss';
 import { ItemNotificationsProvider } from './components/utils/ItemNotifications';
 import { isEnvBrowser } from './utils/misc';
-import { ThemeProvider } from '@mui/material';
-import { createTheme } from '@mui/material';
+import { createTheme, ThemeProvider } from '@mui/material';
 
 const root = document.getElementById('root');
 

@@ -1,5 +1,5 @@
 //import { Items } from "../store/items";
-import { Inventory, State, Slot, SlotWithItem, InventoryType, ItemData } from '../typings';
+import { Inventory, InventoryType, ItemData, Slot, SlotWithItem, State } from '../typings';
 import { isEqual } from 'lodash';
 import { store } from '../store';
 import { Items } from '../store/items';

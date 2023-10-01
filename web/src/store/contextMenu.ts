@@ -1,5 +1,5 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { Inventory, SlotWithItem } from '../typings';
+import { SlotWithItem } from '../typings';
 
 interface ContextMenuState {
   coords: {
