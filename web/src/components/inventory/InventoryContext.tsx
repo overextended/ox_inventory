@@ -1,4 +1,5 @@
 import { onUse } from '../../dnd/onUse';
+import { onRename } from '../../dnd/onRename';
 import { onGive } from '../../dnd/onGive';
 import { onDrop } from '../../dnd/onDrop';
 import { Items } from '../../store/items';
@@ -50,6 +51,9 @@ const InventoryContext: React.FC = () => {
     switch (data && data.action) {
       case 'use':
         onUse({ name: item.name, slot: item.slot });
+        break;
+      case 'rename':
+        onRename({ name: item.name, slot: item.slot });
         break;
       case 'give':
         onGive({ name: item.name, slot: item.slot });
@@ -110,6 +114,7 @@ const InventoryContext: React.FC = () => {
         onClose={() => dispatch(setContextMenu({ coords: null }))}
       >
         <MenuItem onClick={() => handleClick({ action: 'use' })}>{Locale.ui_use || 'Use'}</MenuItem>
+        <MenuItem onClick={() => handleClick({ action: 'rename' })}>{Locale.ui_rename || 'Rename'}</MenuItem>
         <MenuItem onClick={() => handleClick({ action: 'give' })}>{Locale.ui_give || 'Give'}</MenuItem>
         <MenuItem onClick={() => handleClick({ action: 'drop' })}>{Locale.ui_drop || 'Drop'}</MenuItem>
         {item && item.metadata?.serial && <Divider />}

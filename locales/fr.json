@@ -1,5 +1,7 @@
 {
   "ui_use": "Utiliser",
+  "ui_rename": "Renommer",
+  "ui_rename_new": "Nouveau nom",
   "ui_give": "Donner",
   "ui_close": "Fermer",
   "ui_drop": "Jeter",
@@ -62,6 +64,7 @@
   "cannot_afford": "Vous ne pouvez pas vous le permettre (%s manquant)",
   "stash_lowgrade": "Vous n’êtes pas autorisé à prendre cet objet",
   "cannot_use": "Vous ne pouvez pas utiliser %s",
+  "cannot_rename": "Valeur incorrecte pour renommer. %s",
   "shop_nostock": "L’article n'est plus en stock",
   "identification": "Sexe : %s Date de naissance : %s",
   "search_dumpster": "Fouiller la poubelle",

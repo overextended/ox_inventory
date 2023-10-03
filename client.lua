@@ -1571,6 +1571,18 @@ RegisterNUICallback('useItem', function(slot, cb)
 	cb(1)
 end)
 
+RegisterNUICallback('renameItem', function(slotId, cb)
+    if type(slotId) ~= 'number' then return TypeError('slotId', 'number', type(slotId)) end
+
+	local newLabel = lib.inputDialog(locale('ui_rename'), {locale('ui_rename_new')})
+
+	if not newLabel or newLabel[1] == "" then return end
+
+	TriggerServerEvent('ox_inventory:renameItem', slotId, newLabel[1])
+
+	cb(1)
+end)
+
 local function giveItemToTarget(serverId, slotId, count)
     if type(slotId) ~= 'number' then return TypeError('slotId', 'number', type(slotId)) end
     if count and type(count) ~= 'number' then return TypeError('count', 'number', type(count)) end

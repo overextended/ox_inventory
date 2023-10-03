@@ -2325,6 +2325,24 @@ RegisterServerEvent('ox_inventory:closeInventory', function()
 	end
 end)
 
+RegisterServerEvent('ox_inventory:renameItem', function(slot, newLabel)
+	local inventory = Inventories[source]
+
+    if not type(newLabel) == "string" then return end
+
+    if newLabel == "" then
+        return TriggerClientEvent('ox_lib:notify', inventory.id, { type = 'error', description = locale('cannot_rename', data.label) })
+    end
+
+	local item = inventory.items[slot]
+
+    if not item then return end
+
+	item.metadata.label = newLabel
+
+	Inventory.SetMetadata(source, item.slot, item.metadata)
+end)
+
 RegisterServerEvent('ox_inventory:giveItem', function(slot, target, count)
 	local fromInventory = Inventories[source]
 	local toInventory = Inventories[target]
