@@ -48,13 +48,13 @@ const Tooltip: React.FC = () => {
 
   return (
     <>
-      {isMounted && hoverData.item && hoverData.inventory && (
+      {isMounted && hoverData.item && hoverData.inventoryType && (
         <FloatingPortal>
           <SlotTooltip
             ref={refs.setFloating}
             style={{ ...floatingStyles, ...styles }}
             item={hoverData.item!}
-            inventory={hoverData!.inventory!}
+            inventoryType={hoverData.inventoryType!}
           />
         </FloatingPortal>
       )}

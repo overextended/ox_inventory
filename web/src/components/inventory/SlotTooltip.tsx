@@ -10,8 +10,8 @@ import { getItemUrl } from '../../helpers';
 
 const SlotTooltip: React.ForwardRefRenderFunction<
   HTMLDivElement,
-  { item: SlotWithItem; inventory: Inventory; style: React.CSSProperties }
-> = ({ item, inventory, style }, ref) => {
+  { item: SlotWithItem; inventoryType: Inventory['type']; style: React.CSSProperties }
+> = ({ item, inventoryType, style }, ref) => {
   const additionalMetadata = useAppSelector((state) => state.inventory.additionalMetadata);
   const itemData = useMemo(() => Items[item.name], [item]);
   const ingredients = useMemo(() => {
@@ -34,7 +34,7 @@ const SlotTooltip: React.ForwardRefRenderFunction<
         <div style={{ ...style }} className="tooltip-wrapper" ref={ref}>
           <div className="tooltip-header-wrapper">
             <p>{item.metadata?.label || itemData.label || item.name}</p>
-            {inventory.type === 'crafting' ? (
+            {inventoryType === 'crafting' ? (
               <div className="tooltip-crafting-duration">
                 <ClockIcon />
                 <p>{(item.duration !== undefined ? item.duration : 3000) / 1000}s</p>
@@ -49,7 +49,7 @@ const SlotTooltip: React.ForwardRefRenderFunction<
               <ReactMarkdown className="tooltip-markdown">{description}</ReactMarkdown>
             </div>
           )}
-          {inventory.type !== 'crafting' ? (
+          {inventoryType !== 'crafting' ? (
             <>
               {item.durability !== undefined && (
                 <p>

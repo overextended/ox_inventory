@@ -4,23 +4,23 @@ import { Inventory, SlotWithItem } from '../typings';
 interface TooltipState {
   open: boolean;
   item: SlotWithItem | null;
-  inventory: Inventory | null;
+  inventoryType: Inventory['type'] | null;
 }
 
 const initialState: TooltipState = {
   open: false,
   item: null,
-  inventory: null,
+  inventoryType: null,
 };
 
 export const tooltipSlice = createSlice({
   name: 'tooltip',
   initialState,
   reducers: {
-    openTooltip(state, action: PayloadAction<{ item: SlotWithItem; inventory: Inventory }>) {
+    openTooltip(state, action: PayloadAction<{ item: SlotWithItem; inventoryType: Inventory['type'] }>) {
       state.open = true;
       state.item = action.payload.item;
-      state.inventory = action.payload.inventory;
+      state.inventoryType = action.payload.inventoryType;
     },
     closeTooltip(state) {
       state.open = false;
