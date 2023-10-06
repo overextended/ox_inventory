@@ -11,7 +11,7 @@ import RightInventory from './RightInventory';
 import LeftInventory from './LeftInventory';
 import Tooltip from '../utils/Tooltip';
 import { closeTooltip } from '../../store/tooltip';
-import ContextMenu from '../menu/ContextMenu';
+import InventoryContext from './InventoryContext';
 
 const Inventory: React.FC = () => {
   const [inventoryVisible, setInventoryVisible] = React.useState(false);
@@ -47,7 +47,7 @@ const Inventory: React.FC = () => {
           <InventoryControl />
           <RightInventory />
           <Tooltip />
-          <ContextMenu />
+          <InventoryContext />
         </div>
       </Fade>
       <InventoryHotbar />

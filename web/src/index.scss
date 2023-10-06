@@ -60,11 +60,23 @@ input[type='number']::-webkit-outer-spin-button {
   border-width: 1px;
   border-radius: 4px;
   outline: none;
+  display: flex;
+  flex-direction: column;
 }
 
 .context-menu-item  {
   padding: 8px;
   border-radius: 4px;
+  background-color: transparent;
+  outline: none;
+  border: none;
+  color: $textColor;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  &:active {
+    transform: none;
+  }
   &:hover {
     background-color: $secondaryColorHighlight;
     cursor: pointer;
