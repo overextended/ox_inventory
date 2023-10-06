@@ -3,6 +3,7 @@ import { noop } from '../utils/misc';
 import { fetchNui } from '../utils/fetchNui';
 import { closeTooltip } from '../store/tooltip';
 import { useAppDispatch } from '../store';
+import { closeContextMenu } from '../store/contextMenu';
 
 type FrameVisibleSetter = (bool: boolean) => void;
 
@@ -22,6 +23,7 @@ export const useExitListener = (visibleSetter: FrameVisibleSetter) => {
       if (LISTENED_KEYS.includes(e.code)) {
         setterRef.current(false);
         dispatch(closeTooltip());
+        dispatch(closeContextMenu());
         fetchNui('exit');
       }
     };

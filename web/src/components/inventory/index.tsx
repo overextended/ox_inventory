@@ -4,7 +4,7 @@ import InventoryControl from './InventoryControl';
 import InventoryHotbar from './InventoryHotbar';
 import { Fade } from '@mui/material';
 import { useAppDispatch } from '../../store';
-import { refreshSlots, setAdditionalMetadata, setContextMenu, setupInventory } from '../../store/inventory';
+import { refreshSlots, setAdditionalMetadata, setupInventory } from '../../store/inventory';
 import { useExitListener } from '../../hooks/useExitListener';
 import type { Inventory as InventoryProps } from '../../typings';
 import RightInventory from './RightInventory';
@@ -12,6 +12,7 @@ import LeftInventory from './LeftInventory';
 import Tooltip from '../utils/Tooltip';
 import { closeTooltip } from '../../store/tooltip';
 import InventoryContext from './InventoryContext';
+import { closeContextMenu } from '../../store/contextMenu';
 
 const Inventory: React.FC = () => {
   const [inventoryVisible, setInventoryVisible] = React.useState(false);
@@ -20,7 +21,7 @@ const Inventory: React.FC = () => {
   useNuiEvent<boolean>('setInventoryVisible', setInventoryVisible);
   useNuiEvent<false>('closeInventory', () => {
     setInventoryVisible(false);
-    dispatch(setContextMenu({ coords: null }));
+    dispatch(closeContextMenu());
     dispatch(closeTooltip());
   });
   useExitListener(setInventoryVisible);
