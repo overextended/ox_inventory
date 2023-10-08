@@ -205,6 +205,7 @@ button:active {
   justify-content: center;
   align-items: center;
   border-radius: 4px;
+  fill: $textColor;
   &:hover {
     background-color: $secondaryColorHighlight;
     cursor: pointer;
@@ -232,6 +233,10 @@ button:active {
   color: white;
   width: 52px;
   height: 52px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  fill: white;
   border-radius: 5% !important;
   background-color: $secondaryColor !important;
   &:hover {
