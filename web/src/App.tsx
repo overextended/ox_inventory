@@ -1,4 +1,3 @@
-import { Box } from '@mui/material';
 import InventoryComponent from './components/inventory';
 import useNuiEvent from './hooks/useNuiEvent';
 import { Items } from './store/items';
@@ -112,11 +111,11 @@ const App: React.FC = () => {
   });
 
   return (
-    <Box sx={{ height: '100%', width: '100%', color: 'white' }}>
+    <div className="app-wrapper">
       <InventoryComponent />
       <DragPreview />
       <KeyPress />
-    </Box>
+    </div>
   );
 };
 

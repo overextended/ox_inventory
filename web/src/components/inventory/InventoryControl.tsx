@@ -9,7 +9,6 @@ import { fetchNui } from '../../utils/fetchNui';
 import { faInfoCircle } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { Locale } from '../../store/locale';
-import { IconButton } from '@mui/material';
 import UsefulControls from './UsefulControls';
 
 const InventoryControl: React.FC = () => {
@@ -56,9 +55,9 @@ const InventoryControl: React.FC = () => {
         </div>
       </div>
 
-      <IconButton className="useful-controls-button" size="large" onClick={() => setInfoVisible(true)}>
-        <FontAwesomeIcon icon={faInfoCircle} />
-      </IconButton>
+      <button className="useful-controls-button" onClick={() => setInfoVisible(true)}>
+        <FontAwesomeIcon icon={faInfoCircle} size="2xl" />
+      </button>
     </>
   );
 };

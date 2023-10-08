@@ -8,7 +8,6 @@ import App from './App';
 import './index.scss';
 import { ItemNotificationsProvider } from './components/utils/ItemNotifications';
 import { isEnvBrowser } from './utils/misc';
-import { createTheme, ThemeProvider } from '@mui/material';
 
 const root = document.getElementById('root');
 
@@ -23,13 +22,11 @@ if (isEnvBrowser()) {
 createRoot(root!).render(
   <React.StrictMode>
     <Provider store={store}>
-      <ThemeProvider theme={createTheme({ palette: { mode: 'dark' } })}>
-        <DndProvider backend={TouchBackend} options={{ enableMouseEvents: true }}>
-          <ItemNotificationsProvider>
-            <App />
-          </ItemNotificationsProvider>
-        </DndProvider>
-      </ThemeProvider>
+      <DndProvider backend={TouchBackend} options={{ enableMouseEvents: true }}>
+        <ItemNotificationsProvider>
+          <App />
+        </ItemNotificationsProvider>
+      </DndProvider>
     </Provider>
   </React.StrictMode>
 );

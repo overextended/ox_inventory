@@ -1,12 +1,12 @@
 import { Inventory, SlotWithItem } from '../../typings';
 import React, { Fragment, useMemo } from 'react';
-import { Divider } from '@mui/material';
 import { Items } from '../../store/items';
 import { Locale } from '../../store/locale';
 import ReactMarkdown from 'react-markdown';
 import { useAppSelector } from '../../store';
 import ClockIcon from '../utils/icons/ClockIcon';
 import { getItemUrl } from '../../helpers';
+import Divider from '../utils/Divider';
 
 const SlotTooltip: React.ForwardRefRenderFunction<
   HTMLDivElement,
