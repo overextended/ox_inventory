@@ -1,13 +1,13 @@
-import React, { JSXElementConstructor, useRef } from 'react';
+import React from 'react';
 import { CSSTransition } from 'react-transition-group';
 
 interface Props {
   in?: boolean;
-  children: React.ReactElement<any, string | JSXElementConstructor<any>>;
+  children: React.ReactElement<any, string | React.JSXElementConstructor<any>>;
 }
 
 const SlideUp: React.FC<Props> = (props) => {
-  const nodeRef = useRef(null);
+  const nodeRef = React.useRef(null);
 
   return (
     <CSSTransition nodeRef={nodeRef} in={props.in} timeout={200} classNames="transition-slide-up" unmountOnExit>
