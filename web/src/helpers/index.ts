@@ -1,12 +1,12 @@
 //import { Items } from "../store/items";
-import { Inventory, State, Slot, SlotWithItem, InventoryType, ItemData } from '../typings';
+import { Inventory, InventoryType, ItemData, Slot, SlotWithItem, State } from '../typings';
 import { isEqual } from 'lodash';
 import { store } from '../store';
 import { Items } from '../store/items';
 import { imagepath } from '../store/imagepath';
 import { fetchNui } from '../utils/fetchNui';
 
-export const canPurchaseItem = (item: Slot, inventory: Inventory) => {
+export const canPurchaseItem = (item: Slot, inventory: { type: Inventory['type']; groups: Inventory['groups'] }) => {
   if (inventory.type !== 'shop' || !isSlotWithItem(item)) return true;
 
   if (item.count !== undefined && item.count === 0) return false;
@@ -49,7 +49,6 @@ export const canPurchaseItem = (item: Slot, inventory: Inventory) => {
   }
 };
 
-// I hate this
 export const canCraftItem = (item: Slot, inventoryType: string) => {
   if (!isSlotWithItem(item) || inventoryType !== 'crafting') return true;
   if (!item.ingredients) return true;
@@ -58,10 +57,10 @@ export const canCraftItem = (item: Slot, inventoryType: string) => {
 
   const remainingItems = ingredientItems.filter((ingredient) => {
     const [item, count] = [ingredient[0], ingredient[1]];
+    const globalItem = Items[item];
 
     if (count >= 1) {
-      // @ts-ignore
-      if (Items[item] && Items[item].count >= count) return false;
+      if (globalItem && globalItem.count >= count) return false;
     }
 
     const hasItem = leftInventory.items.find((playerItem) => {
@@ -152,7 +151,7 @@ export const getItemUrl = (item: string | SlotWithItem) => {
     if (metadata?.image) return `${imagepath}/${metadata.image}.png`;
   }
 
-  const itemName = isObj ? item.name as string : item;
+  const itemName = isObj ? (item.name as string) : item;
   const itemData = Items[itemName];
 
   if (!itemData) return `${imagepath}/${itemName}.png`;
