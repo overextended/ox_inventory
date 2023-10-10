@@ -14,6 +14,7 @@ import useNuiEvent from '../../hooks/useNuiEvent';
 import { ItemsPayload } from '../../reducers/refreshSlots';
 import { closeTooltip, openTooltip } from '../../store/tooltip';
 import { openContextMenu } from '../../store/contextMenu';
+import { useMergeRefs } from '@floating-ui/react';
 
 interface SlotProps {
   inventoryId: Inventory['id'];
@@ -22,7 +23,10 @@ interface SlotProps {
   item: Slot;
 }
 
-const InventorySlot: React.FC<SlotProps> = ({ item, inventoryId, inventoryType, inventoryGroups }) => {
+const InventorySlot: React.ForwardRefRenderFunction<HTMLDivElement, SlotProps> = (
+  { item, inventoryId, inventoryType, inventoryGroups },
+  ref
+) => {
   const manager = useDragDropManager();
   const dispatch = useAppDispatch();
   const timerRef = useRef<NodeJS.Timer | null>(null);
@@ -111,9 +115,11 @@ const InventorySlot: React.FC<SlotProps> = ({ item, inventoryId, inventoryType, 
     }
   };
 
+  const refs = useMergeRefs([connectRef, ref]);
+
   return (
     <div
-      ref={connectRef}
+      ref={refs}
       onContextMenu={handleContext}
       onClick={handleClick}
       className="inventory-slot"
@@ -214,4 +220,4 @@ const InventorySlot: React.FC<SlotProps> = ({ item, inventoryId, inventoryType, 
   );
 };
 
-export default React.memo(InventorySlot);
+export default React.memo(React.forwardRef(InventorySlot));
