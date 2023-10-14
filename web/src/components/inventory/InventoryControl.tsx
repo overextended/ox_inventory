@@ -40,7 +40,7 @@ const InventoryControl: React.FC = () => {
       <UsefulControls infoVisible={infoVisible} setInfoVisible={setInfoVisible} />
       <div className="inventory-control">
         <div className="inventory-control-wrapper">
-        <input className="input-inventory" type="number" defaultValue={itemAmount} onChange={inputHandler} />
+          <input className="input-inventory" type="number" defaultValue={itemAmount} onChange={inputHandler} />
           <i className='ri-box-3-fill ri-6x icon-use' ref={use}></i>
           <i className='ri-hand-coin-line ri-8x icon-give' ref={give}></i>
           <i className={'ri-close-circle-line ri-5x icon-close'} onClick={() => fetchNui('exit')}></i>

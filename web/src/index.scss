@@ -91,6 +91,11 @@ input[type='number']::-webkit-outer-spin-button {
   }
 }
 
+.MuiMenuItem-gutters {
+  padding: 4px 16px !important;
+  font-size: 16px !important;
+}
+
 .tooltip-description {
   padding-top: 5px;
 }
@@ -245,7 +250,7 @@ button:active {
   fill: white;
   border-radius: 5% !important;
   background-color: $secondaryColor !important;
-
+  
   &:hover {
     background-color: $secondaryColorDark !important;
     cursor: pointer;
@@ -534,6 +539,42 @@ button:active {
   height: 0.8vh;
   border-radius: 5%;
   overflow: hidden;
+}
+
+.transition-fade-enter {
+  opacity: 0;
+}
+
+.transition-fade-enter-active {
+  opacity: 1;
+  transition: opacity 200ms;
+}
+
+.transition-fade-exit {
+  opacity: 1;
+}
+
+.transition-fade-exit-active {
+  opacity: 0;
+  transition: opacity 200ms;
+}
+
+.transition-slide-up-enter {
+  transform: translateY(200px)
+}
+
+.transition-slide-up-enter-active {
+  transform: translateY(0px);
+  transition: all 200ms;
+}
+
+.transition-slide-up-exit {
+  transform: translateY(0px);
+}
+
+.transition-slide-up-exit-active {
+  transform: translateY(200px);
+  transition: all 200ms;
 }
 
 .transition-fade-enter {
