@@ -43,16 +43,10 @@ const InventoryControl: React.FC = () => {
       <UsefulControls infoVisible={infoVisible} setInfoVisible={setInfoVisible} />
       <div className="inventory-control">
         <div className="inventory-control-wrapper">
-          <input className="inventory-control-input" type="number" defaultValue={itemAmount} onChange={inputHandler} />
-          <button className="inventory-control-button" ref={use}>
-            {Locale.ui_use || 'Use'}
-          </button>
-          <button className="inventory-control-button" ref={give}>
-            {Locale.ui_give || 'Give'}
-          </button>
-          <button className="inventory-control-button" onClick={() => fetchNui('exit')}>
-            {Locale.ui_close || 'Close'}
-          </button>
+          <input className="input-inventory" type="number" defaultValue={itemAmount} onChange={inputHandler} />
+          <i className='ri-box-3-fill ri-6x icon-use' ref={use}></i>
+          <i className='ri-hand-coin-line ri-8x icon-give' ref={give}></i>
+          <i className={'ri-close-circle-line ri-5x icon-close'} onClick={() => fetchNui('exit')}></i>
         </div>
       </div>
 
@@ -64,3 +58,4 @@ const InventoryControl: React.FC = () => {
 };
 
 export default InventoryControl;
+
