@@ -30,8 +30,8 @@ const InventoryControl: React.FC = () => {
   }));
 
   const inputHandler = (event: React.ChangeEvent<HTMLInputElement>) => {
-    if (event.target.valueAsNumber % 1 !== 0 || isNaN(event.target.valueAsNumber) || event.target.valueAsNumber < 0)
-      event.target.valueAsNumber = 0;
+    event.target.valueAsNumber =
+      isNaN(event.target.valueAsNumber) || event.target.valueAsNumber < 0 ? 0 : Math.floor(event.target.valueAsNumber);
     dispatch(setItemAmount(event.target.valueAsNumber));
   };
 
@@ -40,7 +40,13 @@ const InventoryControl: React.FC = () => {
       <UsefulControls infoVisible={infoVisible} setInfoVisible={setInfoVisible} />
       <div className="inventory-control">
         <div className="inventory-control-wrapper">
-          <input className="inventory-control-input" type="number" defaultValue={itemAmount} onChange={inputHandler} />
+          <input
+            className="inventory-control-input"
+            type="number"
+            defaultValue={itemAmount}
+            onChange={inputHandler}
+            min={0}
+          />
           <button className="inventory-control-button" ref={use}>
             {Locale.ui_use || 'Use'}
           </button>
