@@ -1,5 +1,5 @@
 import { store } from '../store';
-import { DragSource, DropTarget, Slot } from '../typings';
+import { DragSource, DropTarget } from '../typings';
 import { isSlotWithItem } from '../helpers';
 import { Items } from '../store/items';
 import { craftItem } from '../thunks/craftItem';

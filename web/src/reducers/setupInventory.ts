@@ -24,7 +24,7 @@ export const setupInventoryReducer: CaseReducer<
         if (!item.name) return item;
 
         if (typeof Items[item.name] === 'undefined') {
-          getItemData(item.name)
+          getItemData(item.name);
         }
 
         item.durability = itemDurability(item.metadata, curTime);
@@ -43,7 +43,7 @@ export const setupInventoryReducer: CaseReducer<
         if (!item.name) return item;
 
         if (typeof Items[item.name] === 'undefined') {
-          getItemData(item.name)
+          getItemData(item.name);
         }
 
         item.durability = itemDurability(item.metadata, curTime);

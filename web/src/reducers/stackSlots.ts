@@ -1,6 +1,6 @@
 import { CaseReducer, PayloadAction } from '@reduxjs/toolkit';
 import { getTargetInventory } from '../helpers';
-import { Inventory, State, SlotWithItem, InventoryType } from '../typings';
+import { Inventory, InventoryType, SlotWithItem, State } from '../typings';
 
 export const stackSlotsReducer: CaseReducer<
   State,

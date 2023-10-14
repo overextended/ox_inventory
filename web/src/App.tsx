@@ -1,4 +1,3 @@
-import { Box } from '@mui/material';
 import InventoryComponent from './components/inventory';
 import useNuiEvent from './hooks/useNuiEvent';
 import { Items } from './store/items';
@@ -48,16 +47,22 @@ debugData([
             metadata: { description: 'Generic item description' },
           },
           { slot: 5, name: 'water', weight: 100, count: 1 },
-          { slot: 6, name: 'backwoods', weight: 100, count: 1, metadata: {
-            label: 'Russian Cream',
-            imageurl: "https://i.imgur.com/2xHhTTz.png"
-          }},
+          {
+            slot: 6,
+            name: 'backwoods',
+            weight: 100,
+            count: 1,
+            metadata: {
+              label: 'Russian Cream',
+              imageurl: 'https://i.imgur.com/2xHhTTz.png',
+            },
+          },
         ],
       },
       rightInventory: {
         id: 'shop',
         type: 'crafting',
-        slots: 50,
+        slots: 5000,
         label: 'Bob Smith',
         weight: 3000,
         maxWeight: 5000,
@@ -106,12 +111,16 @@ const App: React.FC = () => {
   });
 
   return (
-    <Box sx={{ height: '100%', width: '100%', color: 'white' }}>
+    <div className="app-wrapper">
       <InventoryComponent />
       <DragPreview />
       <KeyPress />
-    </Box>
+    </div>
   );
 };
+
+addEventListener("dragstart", function(event) {
+  event.preventDefault()
+})
 
 export default App;
