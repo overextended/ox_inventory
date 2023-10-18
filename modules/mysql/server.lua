@@ -1,9 +1,9 @@
 if not lib then return end
 
 local Query = {
-    SELECT_STASH = 'SELECT 1 AS `exists`, data FROM ox_inventory WHERE owner = ? AND name = ?',
+    SELECT_STASH = 'SELECT data FROM ox_inventory WHERE owner = ? AND name = ?',
     UPDATE_STASH = 'UPDATE ox_inventory SET data = ? WHERE owner = ? AND name = ?',
-    UPSERT_STASH = 'INSERT INTO ox_inventory (owner, name, data) VALUES (?, ?, ?) ON DUPLICATE KEY UPDATE data = VALUES(data)',
+    UPSERT_STASH = 'INSERT INTO ox_inventory (data, owner, name) VALUES (?, ?, ?) ON DUPLICATE KEY UPDATE data = VALUES(data)',
     INSERT_STASH = 'INSERT INTO ox_inventory (owner, name) VALUES (?, ?)',
     SELECT_GLOVEBOX = 'SELECT plate, glovebox FROM `{vehicle_table}` WHERE `{vehicle_column}` = ?',
     SELECT_TRUNK = 'SELECT plate, trunk FROM `{vehicle_table}` WHERE `{vehicle_column}` = ?',
@@ -133,14 +133,7 @@ function db.saveStash(owner, dbId, inventory)
 end
 
 function db.loadStash(owner, name)
-    local parameters = { owner and tostring(owner) or '', name }
-    local response = MySQL.prepare.await(Query.SELECT_STASH, parameters)
-
-    if not response or not response.exists then
-        return MySQL.prepare(Query.INSERT_STASH, parameters)
-    end
-
-    return response.data
+    return MySQL.prepare.await(Query.SELECT_STASH, { owner and tostring(owner) or '', name })
 end
 
 function db.saveGlovebox(id, inventory)
@@ -159,8 +152,9 @@ function db.loadTrunk(id)
     return MySQL.prepare.await(Query.SELECT_TRUNK, { id })
 end
 
+---@param rows number | MySQLQuery | MySQLQuery[]
 local function countRows(rows)
-    if type(rows) ~= 'table' then return rows end
+    if type(rows) == 'number' then return rows end
 
     local n = 0
 
@@ -172,7 +166,7 @@ local function countRows(rows)
 end
 
 function db.saveInventories(players, trunks, gloveboxes, stashes, total)
-    local numPlayer, numTrunk, numGlove, numStash = #players, #trunks, #gloveboxes, #stashes
+    local numPlayer, numTrunk, numGlove, numStash = #players, #trunks, #gloveboxes, #stashes / 3
     local promises = {}
     local start = os.nanotime()
 
@@ -183,7 +177,7 @@ function db.saveInventories(players, trunks, gloveboxes, stashes, total)
         promises[#promises + 1] = p
 
         MySQL.prepare(Query.UPDATE_PLAYER, players, function(resp)
-            shared.info(('Saved %s/%s (%.4f ms)'):format(countRows(resp), numPlayer, (os.nanotime() - start) / 1e6))
+            shared.info(('Saved %d/%d players (%.4f ms)'):format(countRows(resp), numPlayer, (os.nanotime() - start) / 1e6))
             p:resolve()
         end)
     end
@@ -193,7 +187,7 @@ function db.saveInventories(players, trunks, gloveboxes, stashes, total)
         promises[#promises + 1] = p
 
         MySQL.prepare(Query.UPDATE_TRUNK, trunks, function(resp)
-            shared.info(('Saved %s/%s trunks (%.4f ms)'):format(countRows(resp), numTrunk, (os.nanotime() - start) / 1e6))
+            shared.info(('Saved %d/%d trunks (%.4f ms)'):format(countRows(resp), numTrunk, (os.nanotime() - start) / 1e6))
             p:resolve()
         end)
     end
@@ -203,7 +197,7 @@ function db.saveInventories(players, trunks, gloveboxes, stashes, total)
         promises[#promises + 1] = p
 
         MySQL.prepare(Query.UPDATE_GLOVEBOX, gloveboxes, function(resp)
-            shared.info(('Saved %s/%s gloveboxes (%.4f ms)'):format(countRows(resp), numGlove, (os.nanotime() - start) / 1e6))
+            shared.info(('Saved %d/%d gloveboxes (%.4f ms)'):format(countRows(resp), numGlove, (os.nanotime() - start) / 1e6))
             p:resolve()
         end)
     end
@@ -212,8 +206,16 @@ function db.saveInventories(players, trunks, gloveboxes, stashes, total)
         local p = promise.new()
         promises[#promises + 1] = p
 
-        MySQL.prepare(Query.UPDATE_STASH, stashes, function(resp)
-            shared.info(('Saved %s/%s stashes (%.4f ms)'):format(countRows(resp), numStash, (os.nanotime() - start) / 1e6))
+        MySQL.query(Query.UPSERT_STASH:gsub('%(%?, %?, %?%)', string.rep('(?, ?, ?)', numStash, ', ')), stashes, function(resp)
+            local affectedRows = resp.affectedRows
+
+            if numStash == 1 then
+                if affectedRows == 2 then affectedRows = 1 end
+            else
+                affectedRows -= tonumber(resp.info:match('Duplicates: (%d+)'), 10) or 0
+            end
+
+            shared.info(('Saved %d/%d stashes (%.4f ms)'):format(affectedRows, numStash, (os.nanotime() - start) / 1e6))
             p:resolve()
         end)
     end

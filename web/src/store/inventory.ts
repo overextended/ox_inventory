@@ -2,11 +2,11 @@ import { createSlice, current, isFulfilled, isPending, isRejected, PayloadAction
 import type { RootState } from '.';
 import { Slot, State } from '../typings';
 import {
-  setupInventoryReducer,
+  moveSlotsReducer,
   refreshSlotsReducer,
+  setupInventoryReducer,
   stackSlotsReducer,
   swapSlotsReducer,
-  moveSlotsReducer,
 } from '../reducers';
 
 const initialState: State = {
@@ -25,7 +25,6 @@ const initialState: State = {
     items: [],
   },
   additionalMetadata: new Array(),
-  contextMenu: { coords: null },
   itemAmount: 0,
   shiftPressed: false,
   isBusy: false,
@@ -40,12 +39,6 @@ export const inventorySlice = createSlice({
     setupInventory: setupInventoryReducer,
     moveSlots: moveSlotsReducer,
     refreshSlots: refreshSlotsReducer,
-    setContextMenu: (
-      state,
-      action: PayloadAction<{ coords: { mouseX: number; mouseY: number } | null; item?: Slot }>
-    ) => {
-      state.contextMenu = action.payload;
-    },
     setAdditionalMetadata: (state, action: PayloadAction<Array<{ metadata: string; value: string }>>) => {
       const metadata = [];
 
@@ -94,7 +87,6 @@ export const inventorySlice = createSlice({
 
 export const {
   setAdditionalMetadata,
-  setContextMenu,
   setItemAmount,
   setShiftPressed,
   setupInventory,

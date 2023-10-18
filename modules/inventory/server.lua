@@ -2245,10 +2245,18 @@ local function saveInventories(clearInventories)
 	for _, inv in pairs(Inventories) do
         local index, data = prepareInventorySave(inv, buffer, time)
 
-        if index then
+        if index and data then
             total += 1
-            size[index] += 1
-            parameters[index][size[index]] = data
+
+            if index == 4 then
+                for i = 1, 3 do
+                    size[index] += 1
+                    parameters[index][size[index]] = data[i]
+                end
+            else
+                size[index] += 1
+                parameters[index][size[index]] = data
+            end
         end
 	end
 
@@ -2263,7 +2271,7 @@ local function saveInventories(clearInventories)
     for _, inv in pairs(Inventories) do
         if not inv.open and not inv.player then
             -- clear inventory from memory if unused for 10 minutes, or invalid entity
-            if time - inv.time >= 600 or (inv.netid and NetworkGetEntityFromNetworkId(inv.netid) == 0) then
+            if (not inv.netid and time - inv.time >= 600) or (inv.netid and NetworkGetEntityFromNetworkId(inv.netid) == 0) then
                 Inventory.Remove(inv)
             end
         end
