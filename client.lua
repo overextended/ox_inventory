@@ -932,11 +932,11 @@ RegisterNetEvent('ox_inventory:updateSlots', function(items, weights)
 	if source ~= '' and next(items) then updateInventory(items, weights) end
 end)
 
-RegisterNetEvent('ox_inventory:inventoryReturned', function(data)
+RegisterNetEvent('ox_inventory:inventoryReturned', function(data, message)
 	if source == '' then return end
+	if message then lib.notify({ description = locale('items_returned') }) end
 	if currentWeapon then currentWeapon = Weapon.Disarm(currentWeapon) end
 
-	lib.notify({ description = locale('items_returned') })
 	client.closeInventory()
 
 	local num, items = 0, {}
