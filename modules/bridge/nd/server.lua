@@ -35,12 +35,12 @@ server.accounts = {
     money = 0
 }
 
-RegisterNetEvent("ND:characterLoaded", function(character)
+AddEventHandler("ND:characterLoaded", function(character)
     if not character then return end
     setCharacterInventory(character)
 end)
 
-RegisterNetEvent("ND:moneyChange", function(src, account, amount, changeType, reason)
+AddEventHandler("ND:moneyChange", function(src, account, amount, changeType, reason)
     if account ~= "cash" then return end
     local item = Inventory.GetItem(src, "money", nil, true)
     Inventory.SetItem(src, "money", changeType == "set" and amount or changeType == "remove" and item - amount or changeType == "add" and item + amount)
