@@ -366,7 +366,7 @@ function Items.CheckMetadata(metadata, item, name, ostime)
 	local durability = metadata.durability
 
 	if durability then
-		if durability > 100 and ostime >= durability then
+		if durability < 0 or durability > 100 and ostime >= durability then
 			metadata.durability = 0
 		end
 	else
