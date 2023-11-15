@@ -2260,7 +2260,7 @@ local function saveInventories(clearInventories)
         if index and data then
             total[5] += 1
 
-            if index == 4 then
+            if index == 4 and server.bulkstashsave then
                 for i = 1, 3 do
 					total[index] += 1
                     parameters[index][total[index]] = data[i]

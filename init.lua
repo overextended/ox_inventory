@@ -37,6 +37,7 @@ end
 
 if IsDuplicityVersion() then
     server = {
+        bulkstashsave = GetConvarInt('inventory:bulkstashsave', 1) == 1,
         loglevel = GetConvarInt('inventory:loglevel', 1),
         randomprices = GetConvarInt('inventory:randomprices', 0) == 1,
         randomloot = GetConvarInt('inventory:randomloot', 1) == 1,

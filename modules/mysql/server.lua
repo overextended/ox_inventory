@@ -207,22 +207,40 @@ function db.saveInventories(players, trunks, gloveboxes, stashes, total)
     end
 
     if total[4] > 0 then
-        total[4] /= 3
         local p = promise.new()
         promises[#promises + 1] = p
 
-        MySQL.query(Query.UPSERT_STASH:gsub('%(%?, %?, %?%)', string.rep('(?, ?, ?)', total[4], ', ')), stashes, function(resp)
-            local affectedRows = resp.affectedRows
+        if server.bulkstashsave then
+            total[4] /= 3
 
-            if total[4] == 1 then
-                if affectedRows == 2 then affectedRows = 1 end
-            else
-                affectedRows -= tonumber(resp.info:match('Duplicates: (%d+)'), 10) or 0
-            end
+            MySQL.query(Query.UPSERT_STASH:gsub('%(%?, %?, %?%)', string.rep('(?, ?, ?)', total[4], ', ')), stashes, function(resp)
+                local affectedRows = resp.affectedRows
 
-            shared.info(('Saved %d/%d stashes (%.4f ms)'):format(affectedRows, total[4], (os.nanotime() - start) / 1e6))
-            p:resolve()
-        end)
+                if total[4] == 1 then
+                    if affectedRows == 2 then affectedRows = 1 end
+                else
+                    affectedRows -= tonumber(resp.info:match('Duplicates: (%d+)'), 10) or 0
+                end
+
+                shared.info(('Saved %d/%d stashes (%.4f ms)'):format(affectedRows, total[4], (os.nanotime() - start) / 1e6))
+                p:resolve()
+            end)
+        else
+            MySQL.rawExecute(Query.UPSERT_STASH, stashes, function(resp)
+                local affectedRows = 0
+
+                if table.type(resp) == 'hash' then
+                    if resp.affectedRows > 0 then affectedRows = 1 end
+                else
+                    for i = 1, #resp do
+                        if resp[i].affectedRows > 0 then affectedRows += 1 end
+                    end
+                end
+
+                shared.info(('Saved %s/%s stashes (%.4f ms)'):format(affectedRows, total[4], (os.nanotime() - start) / 1e6))
+                p:resolve()
+            end)
+        end
     end
 
     -- All queries must run asynchronously on resource stop, so we'll await multiple promises instead.
