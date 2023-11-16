@@ -17,6 +17,8 @@
   "ui_ctrl_shift_lmb": "Rychle přesunout polovinu předmětů do druhého inventáře",
   "ui_alt_lmb": "Rychle použít předmět",
   "ui_ctrl_c": "Když najedete na zbraň, zkopírujete její sériové číslo",
+  "ui_remove_ammo": "Odebrat náboje",
+  "ui_ammo_type": "Ráže",
   "$": "$",
   "male": "Muž",
   "female": "Žena",

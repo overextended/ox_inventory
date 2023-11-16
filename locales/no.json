@@ -18,7 +18,7 @@
     "ui_alt_lmb": "Bruk et element raskt",
     "ui_ctrl_c": "Når du svever over et våpen, kopierer du serienummeret",
     "ui_remove_ammo": "Fjern ammunisjon",
-    "ammo_type": "Ammunisjonstype",
+    "ui_ammo_type": "Ammunisjonstype",
     "$": "$",
     "male": "Mann",
     "female": "Kvinne",

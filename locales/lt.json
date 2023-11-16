@@ -18,7 +18,7 @@
 "ui_alt_lmb": "Greituju būdu panaudoti daiktą",
 "ui_ctrl_c": "Kol pelytė virš ginklo, nukopijuoja jo serijos numerį",
 "ui_remove_ammo": "Išimti kulkas",
-"ammo_type": "Kulkų tipas",
+"ui_ammo_type": "Kulkų tipas",
 "$": "$",
 "male": "Vyras",
 "female": "Moteris",

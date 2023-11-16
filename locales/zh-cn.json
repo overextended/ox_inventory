@@ -18,7 +18,7 @@
   "ui_alt_lmb": "快速使用物品",
   "ui_ctrl_c": "当悬停在武器上时，复制其序列号",
   "ui_remove_ammo": "移除弹药",
-  "ammo_type": "弹药类型",
+  "ui_ammo_type": "弹药类型",
   "$": "$",
   "male": "男性",
   "female": "女性",

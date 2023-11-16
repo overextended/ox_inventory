@@ -19,7 +19,7 @@
   "ui_alt_lmb": "Brzo iskoristi predmet",
   "ui_ctrl_c": "Dok prelazis misem preko oruzja, kopira njegov serijski broj",
   "ui_remove_ammo": "Izvadi municiju",
-  "ammo_type": "Tip municije",
+  "ui_ammo_type": "Tip municije",
   "$": "$",
   "male": "Musko",
   "female": "Zensko",

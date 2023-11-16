@@ -63,7 +63,7 @@ const SlotTooltip: React.ForwardRefRenderFunction<
               )}
               {ammoName && (
                 <p>
-                  {Locale.ammo_type}: {ammoName}
+                  {Locale.ui_ammo_type}: {ammoName}
                 </p>
               )}
               {item.metadata?.serial && (

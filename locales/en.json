@@ -18,7 +18,7 @@
   "ui_alt_lmb": "Fast use an item",
   "ui_ctrl_c": "When hovering over a weapon, copies it's serial number",
   "ui_remove_ammo": "Remove ammo",
-  "ammo_type": "Ammo type",
+  "ui_ammo_type": "Ammo type",
   "$": "$",
   "male": "Male",
   "female": "Female",

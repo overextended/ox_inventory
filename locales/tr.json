@@ -18,7 +18,7 @@
   "ui_alt_lmb": "Hızlı item kullan",
   "ui_ctrl_c": "Bir silahın üzerine imleci getirdiğinde seri numarasını kopyala",
   "ui_remove_ammo": "Mermiyi kaldır",
-  "ammo_type": "Mermi Tipi",
+  "ui_ammo_type": "Mermi Tipi",
   "$": "$",
   "male": "Erkek",
   "female": "Kadın",

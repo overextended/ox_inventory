@@ -1199,7 +1199,7 @@ RegisterNetEvent('ox_inventory:setPlayerInventory', function(currentDrops, inven
 	end
 
 	uiLocales['$'] = locales['$']
-	uiLocales.ammo_type = locales.ammo_type
+	uiLocales.ui_ammo_type = locales.ui_ammo_type
 
 	client.drops = currentDrops
 

@@ -18,7 +18,7 @@
   "ui_alt_lmb": "Käytä itemi nopeasti inventorystä",
   "ui_ctrl_c": "Hiiren ollessa aseen päällä, kopioi aseen sarjanumeron leikepöydälle",
   "ui_remove_ammo": "Poista Ammukset",
-  "ammo_type": "Ammustyyppi",
+  "ui_ammo_type": "Ammustyyppi",
   "$": "€",
   "male": "Mies",
   "female": "Nainen",

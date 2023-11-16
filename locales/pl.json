@@ -18,7 +18,7 @@
   "ui_alt_lmb": "Szybkie użycie przedmiotu",
   "ui_ctrl_c": "Po najechaniu na broń, kopiuje jej numer seryjny",
   "ui_remove_ammo": "Usuń amunicje",
-  "ammo_type": "Typ amunicji",
+  "ui_ammo_type": "Typ amunicji",
   "$": "$",
   "male": "Mężczyzna",
   "female": "Kobieta",
