@@ -25,7 +25,7 @@ RegisterNetEvent("ND:setCharacter", function(character)
 end)
 
 RegisterNetEvent("ND:updateCharacter", function(character)
-    PlayerData.dead = data.metadata.isdead
+    PlayerData.dead = character.metadata.dead
     OnPlayerData("dead", PlayerData.dead)
 end)
 
