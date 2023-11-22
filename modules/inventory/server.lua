@@ -129,6 +129,8 @@ local function loadInventoryData(data, player)
 				if not entity then
 					return shared.info('Failed to load vehicle inventory data (no entity exists with given netid).')
 				end
+
+                data.entityId = entity
 			else
 				local vehicles = GetAllVehicles()
 
@@ -138,6 +140,7 @@ local function loadInventoryData(data, player)
 
 					if _plate:find(plate) then
 						entity = vehicle
+                        data.entityId = entity
 						data.netid = NetworkGetNetworkIdFromEntity(entity)
 						break
 					end
@@ -189,6 +192,7 @@ local function loadInventoryData(data, player)
 	end
 
 	if data.netid then
+        inventory.entityId = data.entityId or NetworkGetEntityFromNetworkId(data.netid)
 		inventory.netid = data.netid
 	end
 
@@ -323,8 +327,14 @@ function Inventory.Get(inv, key)
 	end
 end
 
+---@class MinimalInventorySlot
+---@field name string
+---@field count number
+---@field slot number
+---@field metadata? table
+
 ---@param inv inventory
----@return table items table containing minimal inventory data
+---@return MinimalInventorySlot[] items
 local function minimal(inv)
 	inv = Inventory(inv) --[[@as OxInventory]]
 	local inventory, count = {}, 0
@@ -2186,11 +2196,13 @@ end
 
 exports('GetItemCount', Inventory.GetItemCount)
 
+---@alias InventorySaveData { [1]: MinimalInventorySlot, [2]: string | number, [3]: string | number | nil }
+
 ---@param inv OxInventory
 ---@param buffer table
 ---@param time integer
----@return integer | false | nil
----@return table | nil
+---@return integer?
+---@return InventorySaveData?
 local function prepareInventorySave(inv, buffer, time)
     local shouldSave = not inv.datastore and inv.changed
     local n = 0
@@ -2231,6 +2243,7 @@ local function prepareInventorySave(inv, buffer, time)
 end
 
 local isSaving = false
+local inventoryClearTime = GetConvarInt('inventory:cleartime', 5) * 60
 
 local function saveInventories(clearInventories)
 	if isSaving then return end
@@ -2238,29 +2251,28 @@ local function saveInventories(clearInventories)
 	isSaving = true
 	local time = os.time()
 	local parameters = { {}, {}, {}, {} }
-	local size = { 0, 0, 0, 0 }
+	local total = { 0, 0, 0, 0, 0 }
     local buffer = {}
-    local total = 0
 
 	for _, inv in pairs(Inventories) do
         local index, data = prepareInventorySave(inv, buffer, time)
 
         if index and data then
-            total += 1
+            total[5] += 1
 
-            if index == 4 then
+            if index == 4 and server.bulkstashsave then
                 for i = 1, 3 do
-                    size[index] += 1
-                    parameters[index][size[index]] = data[i]
+					total[index] += 1
+                    parameters[index][total[index]] = data[i]
                 end
             else
-                size[index] += 1
-                parameters[index][size[index]] = data
+				total[index] += 1
+                parameters[index][total[index]] = data
             end
         end
 	end
 
-    if total > 0 then
+    if total[5] > 0 then
 	    db.saveInventories(parameters[1], parameters[2], parameters[3], parameters[4], total)
     end
 
@@ -2270,8 +2282,12 @@ local function saveInventories(clearInventories)
 
     for _, inv in pairs(Inventories) do
         if not inv.open and not inv.player then
-            -- clear inventory from memory if unused for 10 minutes, or invalid entity
-            if (not inv.netid and time - inv.time >= 600) or (inv.netid and NetworkGetEntityFromNetworkId(inv.netid) == 0) then
+            -- clear inventory from memory if unused for x minutes, or on entity/netid mismatch
+            if inv.type == 'glovebox' or inv.type == 'trunk' then
+                if NetworkGetEntityFromNetworkId(inv.netid) ~= inv.entityId then
+                    Inventory.Remove(inv)
+                end
+            elseif time - inv.time >= inventoryClearTime then
                 Inventory.Remove(inv)
             end
         end
@@ -2467,6 +2483,10 @@ local function updateWeapon(source, action, value, slot, specialAmmo)
 			elseif action == 'melee' and value > 0 then
 				weapon.metadata.durability = weapon.metadata.durability - ((Items(weapon.name).durability or 1) * value)
 			end
+
+            if (weapon.metadata.durability or 0) < 0 then
+                weapon.metadata.durability = 0
+            end
 
 			if action ~= 'throw' then
 				inventory:syncSlotsWithPlayer({
