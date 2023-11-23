@@ -37,6 +37,7 @@ end
 
 if IsDuplicityVersion() then
     server = {
+        bulkstashsave = GetConvarInt('inventory:bulkstashsave', 1) == 1,
         loglevel = GetConvarInt('inventory:loglevel', 1),
         randomprices = GetConvarInt('inventory:randomprices', 0) == 1,
         randomloot = GetConvarInt('inventory:randomloot', 1) == 1,
@@ -184,7 +185,7 @@ end
 local success, msg = lib.checkDependency('oxmysql', '2.7.3')
 
 if success then
-    success, msg = lib.checkDependency('ox_lib', '3.8.1')
+    success, msg = lib.checkDependency('ox_lib', '3.11.0')
 end
 
 if not success then

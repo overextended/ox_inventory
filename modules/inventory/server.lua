@@ -327,8 +327,14 @@ function Inventory.Get(inv, key)
 	end
 end
 
+---@class MinimalInventorySlot
+---@field name string
+---@field count number
+---@field slot number
+---@field metadata? table
+
 ---@param inv inventory
----@return table items table containing minimal inventory data
+---@return MinimalInventorySlot[] items
 local function minimal(inv)
 	inv = Inventory(inv) --[[@as OxInventory]]
 	local inventory, count = {}, 0
@@ -2190,11 +2196,13 @@ end
 
 exports('GetItemCount', Inventory.GetItemCount)
 
+---@alias InventorySaveData { [1]: MinimalInventorySlot, [2]: string | number, [3]: string | number | nil }
+
 ---@param inv OxInventory
 ---@param buffer table
 ---@param time integer
----@return integer | false | nil
----@return table | nil
+---@return integer?
+---@return InventorySaveData?
 local function prepareInventorySave(inv, buffer, time)
     local shouldSave = not inv.datastore and inv.changed
     local n = 0
@@ -2243,29 +2251,28 @@ local function saveInventories(clearInventories)
 	isSaving = true
 	local time = os.time()
 	local parameters = { {}, {}, {}, {} }
-	local size = { 0, 0, 0, 0 }
+	local total = { 0, 0, 0, 0, 0 }
     local buffer = {}
-    local total = 0
 
 	for _, inv in pairs(Inventories) do
         local index, data = prepareInventorySave(inv, buffer, time)
 
         if index and data then
-            total += 1
+            total[5] += 1
 
-            if index == 4 then
+            if index == 4 and server.bulkstashsave then
                 for i = 1, 3 do
-                    size[index] += 1
-                    parameters[index][size[index]] = data[i]
+					total[index] += 1
+                    parameters[index][total[index]] = data[i]
                 end
             else
-                size[index] += 1
-                parameters[index][size[index]] = data
+				total[index] += 1
+                parameters[index][total[index]] = data
             end
         end
 	end
 
-    if total > 0 then
+    if total[5] > 0 then
 	    db.saveInventories(parameters[1], parameters[2], parameters[3], parameters[4], total)
     end
 

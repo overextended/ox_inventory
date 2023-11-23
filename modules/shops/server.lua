@@ -29,7 +29,7 @@ local function setupShopItems(id, shopType, shopName, groups)
 				slot = i,
 				weight = Item.weight,
 				count = slot.count,
-				price = (server.randomprices and not slot.currency or slot.currency == 'money') and (math.ceil(slot.price * (math.random(80, 120)/100))) or slot.price or 0,
+				price = (server.randomprices and (not slot.currency or slot.currency == 'money')) and (math.ceil(slot.price * (math.random(80, 120)/100))) or slot.price or 0,
 				metadata = slot.metadata,
 				license = slot.license,
 				currency = slot.currency,
