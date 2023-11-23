@@ -1,4 +1,4 @@
-<div align='center'><img src='https://user-images.githubusercontent.com/65407488/147992899-93998c0a-75fb-4055-8c06-8da8c49342d6.png'/></div>
+<div align='center'><img src='https://cdn.discordapp.com/attachments/1054794639930044416/1177311529545257072/20231123230045_1.jpg?ex=65720bce&is=655f96ce&hm=d53c0b97d5c3cd46410207130f2f814b3fb2680cd91035fdfe9241486c1cd635&'/></div>
 <div align='center'><h3><a href='https://overextended.github.io/docs/ox_inventory/'>Read the documentation for setup, installation, and integration</a></h3></div>
 
 # Framework
@@ -55,7 +55,7 @@ Once you have registered, generate an API key and add `set datadog:key 'apikey'`
 - Dumpsters, drops, and non-player vehicles.
 - Loot tables allow users to find random items in dumpsters and unowned vehicles.
 
-<br><div><h4 align='center'><a href='https://discord.gg/hmcmv3P7YW'>Discord Server</a></h4></div><br>
+<br><div><h4 align='center'><a href='https://discord.gg/fG8gtywEZ5'>Discord Server</a></h4></div><br>
 
 <table><tr><td><h3 align='center'>Legal Notices</h2></tr></td>
 <tr><td>
