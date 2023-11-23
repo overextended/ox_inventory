@@ -1,4 +1,4 @@
-$mainColor: rgb(30, 131, 204);
+$mainColor: rgb(111, 111, 111);
 $textColor: #eeeeee;
 $mainFont: Roboto;
 
@@ -125,7 +125,7 @@ button:active {
   height: 100%;
 
   gap: 20px;
-  background: -webkit-linear-gradient(90deg, rgba(255, 255, 255, 0) 0, rgba(19, 82, 128, 0.749) 100%);
+  background: -webkit-linear-gradient(90deg, rgba(255, 255, 255, 0) 0, rgba(80, 80, 80, 0.564) 100%);
 }
 
 .inventory-control {
