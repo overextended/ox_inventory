@@ -5,6 +5,10 @@ load(file, "@ND_Core/init.lua")()
 
 AddEventHandler("ND:characterUnloaded", playerDropped)
 
+if tonumber(string.sub(GetResourceMetadata("ND_Core", "version"), 1, 1)) < 2 then
+    lib.print.error("Inventory bridge is for ND v2, you're using a lower version, please update ND Core!")
+end
+
 local function reorderGroups(groups)
     groups = groups or {}
     for group, info in pairs(groups) do
