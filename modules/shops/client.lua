@@ -7,6 +7,7 @@ local createBlip = require 'modules.utils.client'.CreateBlip
 for shopType, shopData in pairs(data('shops') --[[@as table<string, OxShop>]]) do
 	local shop = {
 		name = shopData.name,
+		society = shopData.society or nil,
 		groups = shopData.groups or shopData.jobs,
 		blip = shopData.blip,
 		label = shopData.label,

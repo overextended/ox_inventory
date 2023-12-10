@@ -1,6 +1,7 @@
 return {
 	General = {
 		name = 'Shop',
+		--society = 'society_cityhall',
 		blip = {
 			id = 59, colour = 69, scale = 0.8
 		}, inventory = {
@@ -34,6 +35,7 @@ return {
 
 	Liquor = {
 		name = 'Liquor Store',
+		--society = 'society_cityhall',
 		blip = {
 			id = 93, colour = 69, scale = 0.8
 		}, inventory = {
@@ -158,6 +160,7 @@ return {
 
 	VendingMachineDrinks = {
 		name = 'Vending Machine',
+		--society = 'society_cityhall',
 		inventory = {
 			{ name = 'water', price = 10 },
 			{ name = 'cola', price = 10 },
