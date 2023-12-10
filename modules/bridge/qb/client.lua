@@ -1,9 +1,8 @@
-local onLogout, Weapon = ...
 local QBCore = exports['qb-core']:GetCoreObject()
 local Inventory = require 'modules.inventory.client'
 local Weapon = require 'modules.weapon.client'
 
-RegisterNetEvent('QBCore:Client:OnPlayerUnload', onLogout)
+RegisterNetEvent('QBCore:Client:OnPlayerUnload', client.onLogout)
 
 RegisterNetEvent('QBCore:Player:SetPlayerData', function(data)
 	if source == '' or not PlayerData.loaded then return end

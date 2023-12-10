@@ -1,11 +1,10 @@
-local playerDropped = ...
-local Inventory = require 'modules.inventory.server'
-local file = LoadResourceFile("ND_Core", "init.lua")
-load(file, "@ND_Core/init.lua")()
-
-AddEventHandler("ND:characterUnloaded", playerDropped)
+local NDCore = lib.load('@ND_Core.init')
 
 if lib.checkDependency('ND_Core', '2.0.0', true) then return end
+
+AddEventHandler("ND:characterUnloaded", server.playerDropped)
+
+local Inventory = require 'modules.inventory.server'
 
 local function reorderGroups(groups)
     groups = groups or {}

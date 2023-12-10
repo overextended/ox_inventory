@@ -1,7 +1,6 @@
-local playerDropped = ...
 local Inventory = require 'modules.inventory.server'
 
-AddEventHandler('ox:playerLogout', playerDropped)
+AddEventHandler('ox:playerLogout', server.playerDropped)
 
 AddEventHandler('ox:setGroup', function(source, name, grade)
 	local inventory = Inventory(source)

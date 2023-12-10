@@ -1,6 +1,4 @@
-local onLogout = ...
-
-RegisterNetEvent('ox:playerLogout', onLogout)
+RegisterNetEvent('ox:playerLogout', client.onLogout)
 
 RegisterNetEvent('ox:setGroup', function(name, grade)
 	PlayerData.groups[name] = grade

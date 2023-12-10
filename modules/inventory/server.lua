@@ -2309,6 +2309,8 @@ function Inventory.SaveInventories(lock, clearInventories)
 end
 
 AddEventHandler('playerDropped', function()
+	server.playerDropped(source)
+
 	if GetNumPlayerIndices() == 0 then
 		Inventory.SaveInventories(false, true)
 	end

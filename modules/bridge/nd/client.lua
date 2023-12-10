@@ -1,8 +1,8 @@
-local onLogout = ...
-local file = LoadResourceFile("ND_Core", "init.lua")
-load(file, "@ND_Core/init.lua")()
+local NDCore = lib.load('@ND_Core.init')
 
-RegisterNetEvent("ND:characterUnloaded", onLogout)
+if lib.checkDependency('ND_Core', '2.0.0', true) then return end
+
+RegisterNetEvent("ND:characterUnloaded", client.onLogout)
 
 local function reorderGroups(groups)
     groups = groups or {}
