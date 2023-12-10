@@ -232,7 +232,7 @@ exports('forceOpenInventory', function(playerId, invType, data)
 	end
 end)
 
-local Licenses = data 'licenses'
+local Licenses = lib.load('data.licenses')
 
 lib.callback.register('ox_inventory:buyLicense', function(source, id)
 	local license = Licenses[id]

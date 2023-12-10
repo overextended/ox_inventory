@@ -55,7 +55,7 @@ local function newItem(data)
 	ItemList[data.name] = data
 end
 
-for type, data in pairs(data('weapons')) do
+for type, data in pairs(lib.load('data.weapons')) do
 	for k, v in pairs(data) do
 		v.name = k
 		v.close = type == 'Ammo' and true or false
@@ -88,7 +88,7 @@ for type, data in pairs(data('weapons')) do
 	end
 end
 
-for k, v in pairs(data 'items') do
+for k, v in pairs(lib.load('data.items')) do
 	v.name = k
 	local success, response = pcall(newItem, v)
 

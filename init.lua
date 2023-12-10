@@ -156,6 +156,7 @@ end)
 
 ---@param name string
 ---@return table
+---@deprecated
 function data(name)
     if shared.server and shared.ready == nil then return {} end
     local file = ('data/%s.lua'):format(name)

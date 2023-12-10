@@ -19,7 +19,7 @@ function Inventory.OpenDumpster(entity)
 end
 
 local Utils = require 'modules.utils.client'
-local Vehicles = data 'vehicles'
+local Vehicles = lib.load('data.vehicles')
 local backDoorIds = { 2, 3 }
 
 function Inventory.CanAccessTrunk(entity)
@@ -297,7 +297,7 @@ local function nearbyEvidence(point)
 	end
 end
 
-Inventory.Evidence = setmetatable(data('evidence'), {
+Inventory.Evidence = setmetatable(lib.load('data.evidence'), {
 	__call = function(self)
 		for _, evidence in pairs(self) do
 			if evidence.point then
@@ -339,7 +339,7 @@ local function nearbyStash(self)
 	DrawMarker(2, self.coords.x, self.coords.y, self.coords.z, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.3, 0.2, 0.15, 30, 30, 150, 222, false, false, 0, true, false, false, false)
 end
 
-Inventory.Stashes = setmetatable(data('stashes'), {
+Inventory.Stashes = setmetatable(lib.load('data.stashes'), {
 	__call = function(self)
 		for id, stash in pairs(self) do
 			if stash.jobs then stash.groups = stash.jobs end

@@ -75,10 +75,10 @@ function OxInventory:syncSlotsWithClients(slots, syncOwner)
 	end
 end
 
-local Vehicles = data 'vehicles'
+local Vehicles = lib.load('data.vehicles')
 local RegisteredStashes = {}
 
-for _, stash in pairs(data 'stashes') do
+for _, stash in pairs(lib.load('data.stashes')) do
 	RegisteredStashes[stash.name] = {
 		name = stash.name,
 		label = stash.label,
