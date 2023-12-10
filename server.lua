@@ -581,12 +581,5 @@ lib.addCommand('viewinv', {
 	},
 	restricted = 'group.admin',
 }, function(source, args)
-	local invId = tonumber(args.invId) or args.invId
-	local inventory = invId ~= source and Inventory(invId)
-	local playerInventory = Inventory(source)
-
-	if playerInventory and inventory then
-		playerInventory:openInventory(inventory)
-		TriggerClientEvent('ox_inventory:viewInventory', source, inventory)
-	end
+	Inventory.InspectInventory(source, tonumber(args.invId) or args.invId)
 end)

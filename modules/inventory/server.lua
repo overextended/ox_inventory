@@ -2646,4 +2646,14 @@ end
 
 exports('CreateTemporaryStash', Inventory.CreateTemporaryStash)
 
+function Inventory.InspectInventory(playerId, invId)
+	local inventory = invId ~= playerId and Inventory(invId)
+	local playerInventory = Inventory(playerId)
+
+	if playerInventory and inventory then
+		playerInventory:openInventory(inventory)
+		TriggerClientEvent('ox_inventory:viewInventory', playerId, inventory)
+	end
+end
+
 return Inventory
