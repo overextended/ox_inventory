@@ -1113,7 +1113,7 @@ function Inventory.AddItem(inv, item, count, metadata, slot, cb)
 		}, true)
 
 		if invokingResource then
-			lib.logger(inv.owner, 'addItem', ('"%s" added %sx %s to "%s"'):format(invokingResource, count, item.name, inv.label))
+			lib.logger(inv.player.source, 'addItem', ('"%s" added %sx %s to "%s"'):format(invokingResource, count, item.name, inv.label))
 		end
 
 		success = true
@@ -1135,7 +1135,7 @@ function Inventory.AddItem(inv, item, count, metadata, slot, cb)
 		inv:syncSlotsWithClients(toSlot, true)
 
 		if invokingResource then
-			lib.logger(inv.owner, 'addItem', ('"%s" added %sx %s to "%s"'):format(invokingResource, added, item.name, inv.label))
+			lib.logger(inv.player.source, 'addItem', ('"%s" added %sx %s to "%s"'):format(invokingResource, added, item.name, inv.label))
 		end
 
 		for i = 1, #toSlot do
@@ -1315,7 +1315,7 @@ function Inventory.RemoveItem(inv, item, count, metadata, slot, ignoreTotal)
 			local invokingResource = server.loglevel > 1 and GetInvokingResource()
 
 			if invokingResource then
-				lib.logger(inv.owner, 'removeItem', ('"%s" removed %sx %s from "%s"'):format(invokingResource, removed, item.name, inv.label))
+				lib.logger(inv.player.source, 'removeItem', ('"%s" removed %sx %s from "%s"'):format(invokingResource, removed, item.name, inv.label))
 			end
 
 			return true
@@ -1544,7 +1544,7 @@ local function dropItem(source, playerInventory, fromData, data)
 	TriggerClientEvent('ox_inventory:createDrop', -1, dropId, Inventory.Drops[dropId], playerInventory.open and source, slot)
 
 	if server.loglevel > 0 then
-		lib.logger(playerInventory.owner, 'swapSlots', ('%sx %s transferred from "%s" to "%s"'):format(data.count, toData.name, playerInventory.label, dropId))
+		lib.logger(playerInventory.player.source, 'swapSlots', ('%sx %s transferred from "%s" to "%s"'):format(data.count, toData.name, playerInventory.label, dropId))
 	end
 
 	if server.syncInventory then server.syncInventory(playerInventory) end
@@ -1694,7 +1694,7 @@ lib.callback.register('ox_inventory:swapItems', function(source, data)
 						toData, fromData = Inventory.SwapSlots(fromInventory, toInventory, data.fromSlot, data.toSlot) --[[@as table]]
 
 						if server.loglevel > 0 then
-							lib.logger(playerInventory.owner, 'swapSlots', ('%sx %s transferred from "%s" to "%s" for %sx %s'):format(fromData.count, fromData.name, fromInventory.owner and fromInventory.label or fromInventory.id, toInventory.owner and toInventory.label or toInventory.id, toData.count, toData.name))
+							lib.logger(playerInventory.player.source, 'swapSlots', ('%sx %s transferred from "%s" to "%s" for %sx %s'):format(fromData.count, fromData.name, fromInventory.owner and fromInventory.label or fromInventory.id, toInventory.owner and toInventory.label or toInventory.id, toData.count, toData.name))
 						end
 					else return false, 'cannot_carry' end
 				else
@@ -1737,7 +1737,7 @@ lib.callback.register('ox_inventory:swapItems', function(source, data)
 						end
 
 						if server.loglevel > 0 then
-							lib.logger(playerInventory.owner, 'swapSlots', ('%sx %s transferred from "%s" to "%s"'):format(data.count, fromData.name, fromInventory.owner and fromInventory.label or fromInventory.id, toInventory.owner and toInventory.label or toInventory.id))
+							lib.logger(playerInventory.player.source, 'swapSlots', ('%sx %s transferred from "%s" to "%s"'):format(data.count, fromData.name, fromInventory.owner and fromInventory.label or fromInventory.id, toInventory.owner and toInventory.label or toInventory.id))
 						end
 					end
 
@@ -1787,7 +1787,7 @@ lib.callback.register('ox_inventory:swapItems', function(source, data)
 						end
 
 						if server.loglevel > 0 then
-							lib.logger(playerInventory.owner, 'swapSlots', ('%sx %s transferred from "%s" to "%s"'):format(data.count, fromData.name, fromInventory.owner and fromInventory.label or fromInventory.id, toInventory.owner and toInventory.label or toInventory.id))
+							lib.logger(playerInventory.player.source, 'swapSlots', ('%sx %s transferred from "%s" to "%s"'):format(data.count, fromData.name, fromInventory.owner and fromInventory.label or fromInventory.id, toInventory.owner and toInventory.label or toInventory.id))
 						end
 					end
 
@@ -2388,7 +2388,7 @@ RegisterServerEvent('ox_inventory:giveItem', function(slot, target, count)
 			if Inventory.AddItem(toInventory, item, count, data.metadata, toSlot) then
 				if Inventory.RemoveItem(fromInventory, item, count, data.metadata, slot) then
 					if server.loglevel > 0 then
-						lib.logger(fromInventory.owner, 'giveItem', ('"%s" gave %sx %s to "%s"'):format(fromInventory.label, count, data.name, toInventory.label))
+						lib.logger(fromInventory.player.source, 'giveItem', ('"%s" gave %sx %s to "%s"'):format(fromInventory.label, count, data.name, toInventory.label))
 					end
 
 					return
