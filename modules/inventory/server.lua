@@ -1640,7 +1640,10 @@ lib.callback.register('ox_inventory:swapItems', function(source, data)
             return dropItem(source, playerInventory, fromData, data)
         end
 
-		if fromData and (not fromData.metadata.container or fromData.metadata.container and toInventory.type ~= 'container') then
+		if fromData then
+            if fromData.metadata.container and toInventory.type == 'container' then return false end
+            if toData and toData.metadata.container and fromInventory.type == 'container' then return false end
+
 			local container, containerItem = (not sameInventory and playerInventory.containerSlot) and (fromInventory.type == 'container' and fromInventory or toInventory)
 
 			if container then
