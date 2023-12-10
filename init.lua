@@ -185,7 +185,7 @@ end
 local success, msg = lib.checkDependency('oxmysql', '2.7.3')
 
 if success then
-    success, msg = lib.checkDependency('ox_lib', '3.11.0')
+    success, msg = lib.checkDependency('ox_lib', '3.13.0')
 end
 
 if not success then
