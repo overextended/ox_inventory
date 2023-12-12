@@ -1,3 +1,5 @@
+CreateThread(function() lib.load('@ox_core.imports.server') end)
+
 local Inventory = require 'modules.inventory.server'
 
 AddEventHandler('ox:playerLogout', server.playerDropped)

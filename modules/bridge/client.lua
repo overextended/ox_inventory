@@ -58,12 +58,6 @@ function client.onLogout()
 	Weapon.Disarm()
 end
 
-if shared.framework == 'ox' then
-    CreateThread(function()
-        lib.load(('@ox_core.imports.%s'):format(lib.context))
-    end)
-end
-
 local success, result = pcall(lib.load, ('modules.bridge.%s.client'):format(shared.framework))
 
 if not success then
