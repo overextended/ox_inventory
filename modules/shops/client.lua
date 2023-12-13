@@ -57,16 +57,20 @@ local function onEnterShop(point)
 		SetBlockingOfNonTemporaryEvents(entity, true)
 
 		exports.ox_target:addLocalEntity(entity, {
-            {
-                icon = point.icon or 'fas fa-shopping-basket',
-                label = point.label,
-                groups = point.groups,
-                onSelect = function()
-                    client.openInventory('shop', { id = point.invId, type = point.type })
-                end,
-                iconColor = point.iconColor,
-                distance = point.shopDistance or 2.0
-            }
+			{
+				icon = point.icon or 'fas fa-shopping-basket',
+				label = point.label,
+				groups = point.groups,
+				onSelect = function()
+					if point.invId then
+						client.openInventory('shop', { id = point.invId, type = point.type })
+					else
+						client.openInventory('shop', { type = point.type })
+					end
+				end,
+				iconColor = point.iconColor,
+				distance = point.shopDistance or 2.0
+			}
 		})
 
 		point.entity = entity
