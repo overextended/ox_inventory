@@ -50,7 +50,4 @@ export const setupInventoryReducer: CaseReducer<
         return item;
       }),
     };
-
-  if (rightInventory?.type === 'admin') state.isBusy = true;
-  else state.isBusy = false;
 };
