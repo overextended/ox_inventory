@@ -50,4 +50,6 @@ export const setupInventoryReducer: CaseReducer<
         return item;
       }),
     };
+
+  state.isBusy = false;
 };
