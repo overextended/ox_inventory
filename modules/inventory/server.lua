@@ -1687,7 +1687,7 @@ lib.callback.register('ox_inventory:swapItems', function(source, data)
 								return
 							end
 
-							Inventory.ContainerWeight(containerItem, toContainer and fromWeight or toWeight, playerInventory)
+							Inventory.ContainerWeight(containerItem, toContainer and toWeight or fromWeight, playerInventory)
 						end
 
 						if fromOtherPlayer then
