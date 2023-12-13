@@ -623,6 +623,7 @@ local function useSlot(slot)
 
 									if success then
 										GiveWeaponComponentToPed(playerPed, currentWeapon.hash, component)
+										TriggerEvent('ox_inventory:updateWeaponComponents', "added", currentWeapon, component)
 									end
 								end
 							end)
@@ -1542,6 +1543,7 @@ RegisterNUICallback('removeComponent', function(data, cb)
 
 					if success then
 						RemoveWeaponComponentFromPed(playerPed, currentWeapon.hash, component)
+						TriggerEvent('ox_inventory:updateWeaponComponents', "removed", currentWeapon, component)
 					end
 
 					break
