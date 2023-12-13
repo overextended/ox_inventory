@@ -1,10 +1,9 @@
-local playerDropped = ...
 local Inventory = require 'modules.inventory.server'
 local Items = require 'modules.items.server'
 
 local QBCore
 
-AddEventHandler('QBCore:Server:OnPlayerUnload', playerDropped)
+AddEventHandler('QBCore:Server:OnPlayerUnload', server.playerDropped)
 
 AddEventHandler('QBCore:Server:OnJobUpdate', function(source, job)
 	local inventory = Inventory(source)

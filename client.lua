@@ -109,7 +109,7 @@ local function closeTrunk()
 end
 
 local CraftingBenches = require 'modules.crafting.client'
-local Vehicles = data 'vehicles'
+local Vehicles = lib.load('data.vehicles')
 local Inventory = require 'modules.inventory.client'
 
 ---@param inv string?
@@ -331,7 +331,7 @@ RegisterNetEvent('ox_inventory:forceOpenInventory', function(left, right)
 	})
 end)
 
-local Animations = data 'animations'
+local Animations = lib.load('data.animations')
 local Items = require 'modules.items.client'
 local usingItem = false
 
@@ -1236,7 +1236,7 @@ RegisterNetEvent('ox_inventory:setPlayerInventory', function(currentDrops, inven
 		end
 	end
 
-	for id, data in pairs(data('licenses')) do
+	for id, data in pairs(lib.load('data.licenses')) do
 		lib.points.new({
 			coords = data.coords,
 			distance = 16,

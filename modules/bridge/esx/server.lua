@@ -1,8 +1,7 @@
-local playerDropped = ...
 local Inventory = require 'modules.inventory.server'
 local Items = require 'modules.items.server'
 
-AddEventHandler('esx:playerDropped', playerDropped)
+AddEventHandler('esx:playerDropped', server.playerDropped)
 
 AddEventHandler('esx:setJob', function(source, job, lastJob)
 	local inventory = Inventory(source)

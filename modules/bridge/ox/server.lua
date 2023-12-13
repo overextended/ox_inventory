@@ -1,7 +1,8 @@
-local playerDropped = ...
+CreateThread(function() lib.load('@ox_core.imports.server') end)
+
 local Inventory = require 'modules.inventory.server'
 
-AddEventHandler('ox:playerLogout', playerDropped)
+AddEventHandler('ox:playerLogout', server.playerDropped)
 
 AddEventHandler('ox:setGroup', function(source, name, grade)
 	local inventory = Inventory(source)

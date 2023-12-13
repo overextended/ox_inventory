@@ -48,38 +48,36 @@ end
 ---@param shopType string
 ---@param properties OxShop
 local function registerShopType(shopType, properties)
-    local shopLocations = properties[locations] or properties.locations
+	local shopLocations = properties[locations] or properties.locations
 
-    if shopLocations then
-        Shops[shopType] = properties
-    else
-        Shops[shopType] = {
-            label = properties.name,
-            id = shopType,
-            groups = properties.groups or properties.jobs,
-            items = properties.inventory,
-            slots = #properties.inventory,
-            type = 'shop',
-            society = properties.society
-        }
+	if shopLocations then
+		Shops[shopType] = properties
+	else
+		Shops[shopType] = {
+			label = properties.name,
+			id = shopType,
+			groups = properties.groups or properties.jobs,
+			items = properties.inventory,
+			slots = #properties.inventory,
+			type = 'shop',
+		}
 
-        setupShopItems(nil, shopType, properties.name, properties.groups or properties.jobs)
-    end
+		setupShopItems(nil, shopType, properties.name, properties.groups or properties.jobs)
+	end
 end
-
 
 ---@param shopType string
 ---@param id number
 local function createShop(shopType, id)
-    local shop = Shops[shopType]
+	local shop = Shops[shopType]
 
-    if not shop then return end
+	if not shop then return end
 
-    local store = (shop[locations] or shop.locations)?[id]
+	local store = (shop[locations] or shop.locations)?[id]
 
-    if not store then return end
+	if not store then return end
 
-    local groups = shop.groups or shop.jobs
+	local groups = shop.groups or shop.jobs
     local coords
 
     if shared.target then
@@ -93,26 +91,24 @@ local function createShop(shopType, id)
         coords = store
     end
 
-    -- Création de l'instance de la boutique avec la propriété 'society'
-    shop[id] = {
-        label = shop.name,
-        id = shopType..' '..id,
-        groups = groups,
-        items = table.clone(shop.inventory),
-        slots = #shop.inventory,
-        type = 'shop',
-        coords = coords,
-        society = shop.society,
-        distance = shared.target and shop.targets?[id]?.distance,
-    }
+	---@type OxShop
+	shop[id] = {
+		label = shop.name,
+		id = shopType..' '..id,
+		groups = groups,
+		items = table.clone(shop.inventory),
+		slots = #shop.inventory,
+		type = 'shop',
+		coords = coords,
+		distance = shared.target and shop.targets?[id]?.distance,
+	}
 
-    setupShopItems(id, shopType, shop.name, groups)
+	setupShopItems(id, shopType, shop.name, groups)
 
-    return shop[id]
+	return shop[id]
 end
 
-
-for shopType, shopDetails in pairs(data('shops')) do
+for shopType, shopDetails in pairs(lib.load('data.shops')) do
 	registerShopType(shopType, shopDetails)
 end
 
@@ -201,7 +197,6 @@ lib.callback.register('ox_inventory:buyItem', function(source, data)
 
 		local shop = shopId and Shops[shopType][shopId] or Shops[shopType]
 		local fromData = shop.items[data.fromSlot]
-		if not fromData then return false end
 		local toData = playerInv.items[data.toSlot]
 
 		if fromData then
@@ -261,18 +256,10 @@ lib.callback.register('ox_inventory:buyItem', function(source, data)
 					totalPrice = price,
 					currency = currency,
 				}) then return false end
-	
+
 				Inventory.SetSlot(playerInv, fromItem, count, metadata, data.toSlot)
 				playerInv.weight = newWeight
 				removeCurrency(playerInv, currency, price)
-
-				if shop.society then
-					TriggerEvent('esx_addonaccount:getSharedAccount', shop.society, function(account)
-						if account then
-							account.addMoney(price)
-						end
-					end)
-				end
 
 				if fromData.count then
 					shop.items[data.fromSlot].count = fromData.count - count
