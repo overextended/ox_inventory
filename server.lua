@@ -530,7 +530,7 @@ lib.addCommand('clearevidence', {
 	local hasPermission = group and server.isPlayerBoss(source, group, grade)
 
 	if hasPermission then
-		MySQL.query('DELETE FROM ox_inventory WHERE name = ?', {('evidence-%s'):format(args.evidence)})
+		MySQL.query('DELETE FROM ox_inventory WHERE name = ?', {('evidence-%s'):format(args.locker)})
 	end
 end)
 
