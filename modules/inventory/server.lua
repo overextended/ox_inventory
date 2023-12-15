@@ -1015,13 +1015,11 @@ function Inventory.SetSlotCount(inv, slots)
 	inv.slots = slots
 
 	if inv.player then
-		print('inv.player')
         TriggerClientEvent('ox_inventory:refreshSlotCount', inv.id, {inventoryId = inv.id, slots = inv.slots})
     end
 
     for playerId in pairs(inv.openedBy) do
         if playerId ~= inv.id then
-			print('playerId')
             TriggerClientEvent('ox_inventory:refreshSlotCount', playerId, {inventoryId = inv.id, slots = inv.slots})
         end
 	end
