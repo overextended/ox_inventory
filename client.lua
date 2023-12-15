@@ -1493,23 +1493,31 @@ AddEventHandler('onResourceStop', function(resourceName)
 	end
 end)
 
-RegisterNetEvent('ox_inventory:viewInventory', function(data)
-	if data and invOpen == false then
-		data.type = 'admin'
-		plyState.invOpen = true
-		currentInventory = data
-		currentInventory.ignoreSecurityChecks = true
+RegisterNetEvent('ox_inventory:viewInventory', function(left, right)
+	if source == '' then return end
 
-		SendNUIMessage({
-			action = 'setupInventory',
-			data = {
-				rightInventory = currentInventory,
-			}
-		})
-		SetNuiFocus(true, true)
+	plyState.invOpen = true
 
-		if client.screenblur then TriggerScreenblurFadeIn(0) end
-	end
+	SetInterval(client.interval, 100)
+	SetNuiFocus(true, true)
+	SetNuiFocusKeepInput(true)
+	closeTrunk()
+
+	if client.screenblur then TriggerScreenblurFadeIn(0) end
+
+	currentInventory = right or defaultInventory
+	currentInventory.ignoreSecurityChecks = true
+    currentInventory.type = 'inspect'
+	left.items = PlayerData.inventory
+	left.groups = PlayerData.groups
+
+	SendNUIMessage({
+		action = 'setupInventory',
+		data = {
+			leftInventory = left,
+			rightInventory = currentInventory
+		}
+	})
 end)
 
 RegisterNUICallback('uiLoaded', function(_, cb)

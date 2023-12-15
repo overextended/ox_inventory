@@ -1597,6 +1597,8 @@ lib.callback.register('ox_inventory:swapItems', function(source, data)
 		return
 	end
 
+    if data.toType == 'inspect' or data.fromType == 'inspect' then return end
+
 	local fromRef = ('%s:%s'):format(fromInventory.id, data.fromSlot)
 	local toRef = ('%s:%s'):format(toInventory.id, data.toSlot)
 
@@ -2672,8 +2674,10 @@ function Inventory.InspectInventory(playerId, invId)
 
 	if playerInventory and inventory then
 		playerInventory:openInventory(inventory)
-		TriggerClientEvent('ox_inventory:viewInventory', playerId, inventory)
+		TriggerClientEvent('ox_inventory:viewInventory', playerId, playerInventory, inventory)
 	end
 end
+
+exports('InspectInventory', Inventory.InspectInventory)
 
 return Inventory
