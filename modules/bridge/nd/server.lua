@@ -1,10 +1,9 @@
-local NDCore = lib.load('@ND_Core.init')
-
-if lib.checkDependency('ND_Core', '2.0.0', true) then return end
-
-AddEventHandler("ND:characterUnloaded", server.playerDropped)
+if not lib.checkDependency('ND_Core', '2.0.0', true) then return end
 
 local Inventory = require 'modules.inventory.server'
+lib.load('@ND_Core.init')
+
+AddEventHandler("ND:characterUnloaded", server.playerDropped)
 
 local function reorderGroups(groups)
     groups = groups or {}
