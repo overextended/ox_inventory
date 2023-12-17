@@ -71,10 +71,12 @@ end
 
 ---@diagnostic disable-next-line: duplicate-set-field
 function server.hasLicense(inv, license)
-    local character = NDCore.getPlayer(inv.id)
-    if not character or not character.data.licences then return end
+    local player = NDCore.getPlayer(inv.id)
+    if not player then return end
 
-    for _, characterLicense in pairs(character.data.licences) do
+    local licenses = player.getMetadata("licenses") or {}
+    for i=1, #licenses do
+        local characterLicense = licenses[i]
         if characterLicense.type == license and characterLicense.status == "valid" then
             return characterLicense.type
         end
