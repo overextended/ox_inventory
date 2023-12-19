@@ -1,5 +1,5 @@
 <div align='center'><img src='https://user-images.githubusercontent.com/65407488/147992899-93998c0a-75fb-4055-8c06-8da8c49342d6.png'/></div>
-<div align='center'><h3><a href='https://overextended.github.io/docs/ox_inventory/'>Read the documentation for setup, installation, and integration</a></h3></div>
+<div align='center'><h3><a href='https://overextended.dev/ox_inventory'>Read the documentation for setup, installation, and integration</a></h3></div>
 
 # Framework
 
@@ -9,7 +9,7 @@ Experimental support for [qb-core](https://github.com/qbcore-framework/qb-core) 
 
 # Config
 
-Refer to the [documentation](https://overextended.github.io/docs/ox_inventory/) setting your config.
+Refer to the [documentation](https://overextended.dev/ox_inventory#config) setting your config.
 When set, you can add the following to your 'server.cfg'
 
 ```
