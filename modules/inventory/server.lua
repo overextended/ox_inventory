@@ -1347,34 +1347,32 @@ exports('RemoveItem', Inventory.RemoveItem)
 ---@param count number
 ---@param metadata? table | string
 function Inventory.CanCarryItem(inv, item, count, metadata)
+    local totalItems = type(item) == "table" and item or {[item]=count}
 	if type(item) ~= 'table' then item = Items(item) end
+    inv = Inventory(inv) --[[@as OxInventory]]
 
-	if item then
-		inv = Inventory(inv) --[[@as OxInventory]]
+    local totalWeight = 0
+    for itemName, itemCount in pairs(totalItems) do
+        local item = Items(itemName)
+        if not item then goto skip end
+        
+        local itemSlots, _, emptySlots = Inventory.GetItemSlots(inv, item, type(metadata) == 'table' and metadata or { type = metadata or nil })
+        if not itemSlots or not next(itemSlots) and emptySlots == 0 or not item.stack and emptySlots < itemCount then return end
 
-		if inv then
-			local itemSlots, _, emptySlots = Inventory.GetItemSlots(inv, item, type(metadata) == 'table' and metadata or { type = metadata or nil })
+        local weight = metadata and metadata.weight or item.weight
+        if weight == 0 then goto skip end
 
-			if not itemSlots then return end
+        local itemsWeight = (weight * itemCount)
+        local newWeight = inv.weight + 
+        totalWeight += itemsWeight
+        if newWeight > inv.maxWeight or totalWeight > inv.maxWeight then
+            TriggerClientEvent('ox_lib:notify', inv.id, { type = 'error', description = locale('cannot_carry') })
+            return false
+        end
 
-			local weight = metadata and metadata.weight or item.weight
-
-			if next(itemSlots) or emptySlots > 0 then
-				if not count then count = 1 end
-				if not item.stack and emptySlots < count then return false end
-				if weight == 0 then return true end
-
-				local newWeight = inv.weight + (weight * count)
-
-				if newWeight > inv.maxWeight then
-					TriggerClientEvent('ox_lib:notify', inv.id, { type = 'error', description = locale('cannot_carry') })
-					return false
-				end
-
-				return true
-			end
-		end
-	end
+        ::skip::
+    end
+    return true
 end
 exports('CanCarryItem', Inventory.CanCarryItem)
 
