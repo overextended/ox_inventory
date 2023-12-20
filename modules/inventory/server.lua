@@ -589,7 +589,7 @@ function Inventory.Create(id, label, invType, slots, weight, maxWeight, owner, i
 	end
 
 	if not items then
-		self.items, self.weight = Inventory.Load(self.dbId, invType, owner, self.datastore)
+		self.items, self.weight = Inventory.Load(self.dbId, invType, owner)
 	elseif weight == 0 and next(items) then
 		self.weight = Inventory.CalculateWeight(items)
 	end
@@ -768,8 +768,7 @@ end
 ---@param id string|number
 ---@param invType string
 ---@param owner string | number | boolean
----@param datastore? boolean
-function Inventory.Load(id, invType, owner, datastore)
+function Inventory.Load(id, invType, owner)
     if not invType then return end
 
 	local result
@@ -784,14 +783,12 @@ function Inventory.Load(id, invType, owner, datastore)
         else
             result = result[invType]
         end
-	elseif id then
-		if invType == 'dumpster' then
-			if server.randomloot then
-				return generateItems(id, invType)
-            end
-		elseif not datastore then
-			result = db.loadStash(owner or '', id)
+	elseif invType == 'dumpster' then
+		if server.randomloot then
+			return generateItems(id, invType)
 		end
+	elseif id then
+		result = db.loadStash(owner or '', id)
 	end
 
 	local returnData, weight = {}, 0
