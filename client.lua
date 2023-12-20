@@ -336,6 +336,7 @@ local Animations = lib.load('data.animations')
 local Items = require 'modules.items.client'
 local usingItem = false
 
+---@param data { name: string, label: string, count: number, slot: number, metadata: table<string, any>, weight: number }
 lib.callback.register('ox_inventory:usingItem', function(data)
 	local item = Items[data.name]
 
@@ -411,17 +412,18 @@ local function canUseItem(isAmmo)
 end
 
 ---@param data table
----@param cb function?
+---@param cb fun(response: SlotWithItem | false)?
 local function useItem(data, cb)
 	local slotData, result = PlayerData.inventory[data.slot]
 
-	if not canUseItem(data.ammo and true) then return end
+	if not slotData or not canUseItem(data.ammo and true) then return end
 
 	if currentWeapon?.timer and currentWeapon.timer > 100 then return end
 
     if invOpen and data.close then client.closeInventory() end
 
     usingItem = true
+    ---@type boolean?
     result = lib.callback.await('ox_inventory:useItem', 200, data.name, data.slot, slotData.metadata)
 
 	if result and cb then
@@ -601,6 +603,9 @@ local function useSlot(slot)
 				end)
 			elseif data.component then
 				local components = data.client.component
+
+                if not components then return end
+
 				local componentType = data.type
 				local weaponComponents = PlayerData.inventory[currentWeapon.slot].metadata.components
 
@@ -879,7 +884,7 @@ local function updateInventory(data, weight)
 
 			local curItem = PlayerData.inventory[item.slot]
 
-			if curItem?.name then
+			if curItem and curItem.name then
 				itemCount[curItem.name] = (itemCount[curItem.name] or 0) - curItem.count
 			end
 
@@ -1129,6 +1134,9 @@ end)
 RegisterNetEvent('ox_inventory:setPlayerInventory', function(currentDrops, inventory, weight, player)
 	if source == '' then return end
 
+    ---@class PlayerData
+    ---@field inventory table<number, SlotWithItem?>
+    ---@field weight number
 	PlayerData = player
 	PlayerData.id = cache.playerId
 	PlayerData.source = cache.serverId
@@ -1549,6 +1557,8 @@ RegisterNUICallback('removeComponent', function(data, cb)
 	end
 
 	local itemSlot = PlayerData.inventory[currentWeapon.slot]
+
+    if not itemSlot then return end
 
 	for _, component in pairs(Items[data.component].client.component) do
 		if HasPedGotWeaponComponent(playerPed, currentWeapon.hash, component) then

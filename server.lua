@@ -345,6 +345,7 @@ lib.callback.register('ox_inventory:useItem', function(source, itemName, slot, m
 
 			data.consume = consume
 
+            ---@type boolean
 			local success = lib.callback.await('ox_inventory:usingItem', source, data)
 
 			if item.weapon then
