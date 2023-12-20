@@ -41,6 +41,7 @@ end)
 
 plyState:set('invBusy', true, false)
 plyState:set('invHotkeys', false, false)
+plyState:set('canUseWeapons', false, false)
 
 local function canOpenInventory()
     if not PlayerData.loaded then
@@ -484,7 +485,7 @@ local function useSlot(slot)
 		if data.effect then
 			data:effect({name = item.name, slot = item.slot, metadata = item.metadata})
 		elseif data.weapon then
-			if EnableWeaponWheel then return end
+			if EnableWeaponWheel or not plyState.canUseWeapons then return end
 
 			if IsCinematicCamRendering() then SetCinematicModeActive(false) end
 
@@ -1068,6 +1069,12 @@ local function setStateBagHandler(stateId)
 		invBusy = value
 	end)
 
+    AddStateBagChangeHandler('canUseWeapons', stateId, function(_, _, value)
+        if not value and currentWeapon then
+            currentWeapon = Weapon.Disarm(currentWeapon)
+        end
+    end)
+
 	AddStateBagChangeHandler('instance', stateId, function(_, _, value)
 		currentInstance = value
 
@@ -1484,6 +1491,7 @@ RegisterNetEvent('ox_inventory:setPlayerInventory', function(currentDrops, inven
 	plyState:set('invBusy', false, false)
 	plyState:set('invOpen', false, false)
 	plyState:set('invHotkeys', true, false)
+	plyState:set('canUseWeapons', true, false)
 	collectgarbage('collect')
 end)
 
