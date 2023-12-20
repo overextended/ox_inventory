@@ -1,30 +1,33 @@
-<div align='center'><img src='https://user-images.githubusercontent.com/65407488/147992899-93998c0a-75fb-4055-8c06-8da8c49342d6.png'/></div>
-<div align='center'><h3><a href='https://overextended.github.io/docs/ox_inventory/'>Read the documentation for setup, installation, and integration</a></h3></div>
+<div align='center'><img src='https://user-images.githubusercontent.com/65407488/147992899-93998c0a-75fb-4055-8c06-8da8c49342d6.png'/>
+<h2><a href='https://overextended.dev/ox_inventory'>Documentation</a></h3></div>
 
-# Framework
+## Config
 
-The inventory was designed with the intention to move towards a more generic / standalone structure so it can be integrated into any framework without too much hassle. I will be writing a guide for manually setting up support _sometime soon™_. In the mean-time, it will work without any alterations if using the latest updates to **[ESX Legacy](https://github.com/esx-framework/esx-legacy)**.
+Resource configuration is handled using convars. Refer to the documentation for more information.
 
-Experimental support for [qb-core](https://github.com/qbcore-framework/qb-core) has been added, but requires a recent installation. Do not expect 100% compatibility or support.
+## Framework
 
-# Config
+The inventory was designed with limited reliability on frameworks, preferring frameworks _designed to use ox_inventory_. A framework is still necessary for handling certain features such as
 
-Refer to the [documentation](https://overextended.github.io/docs/ox_inventory/) setting your config.
-When set, you can add the following to your 'server.cfg'
+- Loading player inventories.
+- Owned vehicles.
+- Licenses.
+- Group/job systems.
 
-```
-exec @ox_inventory/config.cfg
-ensure ox_inventory
-```
+Compatibility for frameworks is handled in the "bridge" module, and by default includes
 
-# Logging
+- [ox_core](https://github.com/overextended/ox_core)
+- [es_extended](https://github.com/esx-framework/esx_core)
+- [qbx-core](https://github.com/Qbox-project/qbx_core) or [qb-core](https://github.com/qbcore-framework/qb-core)
+- [nd_core](https://github.com/ND-Framework/ND_Core)
 
-The included logging module utilises datadog to store logging data, which can be expanded for improved analytics and metrics. Register an account at [datadoghq](https://www.datadoghq.com/).
-The _free plan_ is enough for most user's purposes and provides far more utility than the typical weird discord logs utilised in other resources.
+Do not expect 100% compatibility or support for third party frameworks.
 
-Once you have registered, generate an API key and add `set datadog:key 'apikey'` to your server config.
+## Features
 
-# Features
+## Logging
+
+Logging is built-in using ox_lib's [logger](https://overextended.dev/ox_lib/Modules/Logger/Server#liblogger) module, using Datadog or Grafana Loki. Discord is not and will not be supported.
 
 ### Shops
 
@@ -57,11 +60,18 @@ Once you have registered, generate an API key and add `set datadog:key 'apikey'`
 
 <br><div><h4 align='center'><a href='https://discord.gg/hmcmv3P7YW'>Discord Server</a></h4></div><br>
 
-<table><tr><td><h3 align='center'>Legal Notices</h2></tr></td>
+<table><tr><td><h3 align='center'>License</h3></tr></td>
 <tr><td>
 Ox Inventory
 
-Copyright © 2022 [Linden](https://github.com/thelindat), [Dunak](https://github.com/dunak-debug), [Luke](https://github.com/LukeWasTakenn)
+
+Copyright © 2023 Overextended (https://github.com/overextended)
+
+Linden (https://github.com/thelindat)
+
+Luke (https://github.com/LukeWasTakenn)
+
+Dunak (https://github.com/dunak-debug)
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
