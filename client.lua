@@ -416,7 +416,7 @@ local function useItem(data, cb)
 
 	if not canUseItem(data.ammo and true) then return end
 
-	if currentWeapon and currentWeapon?.timer > 100 then return end
+	if currentWeapon?.timer and currentWeapon.timer > 100 then return end
 
     if invOpen and data.close then client.closeInventory() end
 
