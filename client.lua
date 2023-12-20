@@ -1626,6 +1626,7 @@ RegisterNUICallback('giveItem', function(data, cb)
             if isGiveTargetValid(option.ped, option.coords) then
 				local playerName = GetPlayerName(option.id)
 				option.id = GetPlayerServerId(option.id)
+                ---@diagnostic disable-next-line: inject-field
 				option.label = ('[%s] %s'):format(option.id, playerName)
 				n += 1
 				giveList[n] = option

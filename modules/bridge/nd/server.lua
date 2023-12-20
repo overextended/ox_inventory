@@ -1,6 +1,8 @@
 if not lib.checkDependency('ND_Core', '2.0.0', true) then return end
 
 local Inventory = require 'modules.inventory.server'
+NDCore = {}
+
 lib.load('@ND_Core.init')
 
 AddEventHandler("ND:characterUnloaded", server.playerDropped)
@@ -98,6 +100,7 @@ end
 
 ---@param entityId number
 ---@return number | string
+---@diagnostic disable-next-line: duplicate-set-field
 function server.getOwnedVehicleId(entityId)
     return NDCore.getVehicle(entityId)?.id
 end
