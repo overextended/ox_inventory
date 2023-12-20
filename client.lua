@@ -1591,6 +1591,16 @@ end
 
 exports('giveItemToTarget', giveItemToTarget)
 
+local function isGiveTargetValid(ped, coords)
+    if cache.vehicle and GetVehiclePedIsIn(ped, false) == cache.vehicle then
+        return true
+    end
+
+    local entity = Utils.Raycast(1|2|4|8|16, coords + vec3(0, 0, 0.5), 0.2)
+
+    return entity == ped and IsEntityVisible(ped)
+end
+
 RegisterNUICallback('giveItem', function(data, cb)
 	cb(1)
 
@@ -1602,9 +1612,8 @@ RegisterNUICallback('giveItem', function(data, cb)
 
         if nearbyCount == 1 then
 			local option = nearbyPlayers[1]
-            local entity = Utils.Raycast(1|2|4|8|16, option.coords + vec3(0, 0, 0.5), 0.2)
 
-			if entity ~= option.ped or not IsEntityVisible(option.ped) then return end
+            if not isGiveTargetValid(option.ped, option.coords) then return end
 
             return giveItemToTarget(GetPlayerServerId(option.id), data.slot, data.count)
         end
@@ -1613,9 +1622,8 @@ RegisterNUICallback('giveItem', function(data, cb)
 
 		for i = 1, #nearbyPlayers do
 			local option = nearbyPlayers[i]
-            local entity = Utils.Raycast(1|2|4|8|16, option.coords + vec3(0, 0, 0.5), 0.2)
 
-			if entity == option.ped and IsEntityVisible(option.ped) then
+            if isGiveTargetValid(option.ped, option.coords) then
 				local playerName = GetPlayerName(option.id)
 				option.id = GetPlayerServerId(option.id)
 				option.label = ('[%s] %s'):format(option.id, playerName)
