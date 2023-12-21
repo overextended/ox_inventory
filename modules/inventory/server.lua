@@ -2188,6 +2188,8 @@ function Inventory.GetSlotIdsWithItem(inv, itemName, metadata, strict)
 	end
 end
 
+exports('GetSlotIdsWithItem', Inventory.GetSlotIdsWithItem)
+
 ---@param inv inventory
 ---@param itemName string
 ---@param metadata? any
