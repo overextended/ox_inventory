@@ -397,4 +397,16 @@ RegisterNetEvent('ox_inventory:refreshMaxWeight', function(data)
 	})
 end)
 
+RegisterNetEvent('ox_inventory:refreshSlotCount', function(data)
+	SendNUIMessage({
+		action = 'refreshSlots',
+		data = {
+			slotsData = {
+				inventoryId = data.inventoryId,
+				slots = data.slots
+			}
+		}
+	})
+end)
+
 return Inventory

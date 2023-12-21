@@ -1,6 +1,8 @@
-local NDCore = lib.load('@ND_Core.init')
+if not lib.checkDependency('ND_Core', '2.0.0', true) then return end
 
-if lib.checkDependency('ND_Core', '2.0.0', true) then return end
+NDCore = {}
+
+lib.load('@ND_Core.init')
 
 RegisterNetEvent("ND:characterUnloaded", client.onLogout)
 
