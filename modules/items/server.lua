@@ -285,13 +285,8 @@ function Items.Metadata(inv, item, metadata, count)
 
 		if metadata.registered ~= false and (metadata.ammo or item.name == 'WEAPON_STUNGUN') then
 			local registered = type(metadata.registered) == 'string' and metadata.registered or inv?.player?.name
-
-			if registered then
-				metadata.registered = registered
-				metadata.serial = GenerateSerial(metadata.serial)
-			else
-				metadata.registered = nil
-			end
+			metadata.registered = registered
+			metadata.serial = GenerateSerial(metadata.serial)
 		end
 
 		if item.hash == `WEAPON_PETROLCAN` or item.hash == `WEAPON_HAZARDCAN` or item.hash == `WEAPON_FERTILIZERCAN` or item.hash == `WEAPON_FIREEXTINGUISHER` then
