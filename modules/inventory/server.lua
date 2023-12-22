@@ -1343,17 +1343,23 @@ end
 exports('RemoveItem', Inventory.RemoveItem)
 
 ---@param inv inventory
----@param items table<string, number>
+---@param items table
 function Inventory.CanCarryItems(inv, items)
     inv = Inventory(inv) --[[@as OxInventory]]
     local totalWeight = 0
 
-    for itemName, itemCount in pairs(items) do
+    for i=1, #items do
+        local info = items[i]
+        local itemName, itemCount, metadata = table.unpack(info)
+
         local item = Items(itemName)
         if not item then goto skip end
         
         local itemSlots, _, emptySlots = Inventory.GetItemSlots(inv, item, type(metadata) == 'table' and metadata or { type = metadata or nil })
-        if not itemSlots or not next(itemSlots) and emptySlots == 0 or not item.stack and emptySlots < itemCount then return end
+        if not itemSlots or not next(itemSlots) and emptySlots == 0 or not item.stack and emptySlots < itemCount then
+            TriggerClientEvent('ox_lib:notify', inv.id, { type = 'error', description = locale('cannot_carry') })
+            return false
+        end
 
         local weight = metadata and metadata.weight or item.weight
         if weight == 0 then goto skip end
