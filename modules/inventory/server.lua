@@ -1343,13 +1343,12 @@ end
 exports('RemoveItem', Inventory.RemoveItem)
 
 ---@param inv inventory
----@param items table
----@param metadata? table | string
-function Inventory.CanCarryItems(inv, items, metadata)
+---@param items table<string, number>
+function Inventory.CanCarryItems(inv, items)
     inv = Inventory(inv) --[[@as OxInventory]]
-
     local totalWeight = 0
-    for itemName, itemCount in pairs(totalItems) do
+
+    for itemName, itemCount in pairs(items) do
         local item = Items(itemName)
         if not item then goto skip end
         
@@ -1360,7 +1359,7 @@ function Inventory.CanCarryItems(inv, items, metadata)
         if weight == 0 then goto skip end
 
         local itemsWeight = (weight * itemCount)
-        local newWeight = inv.weight + 
+        local newWeight = inv.weight + itemsWeight
         totalWeight += itemsWeight
         if newWeight > inv.maxWeight or totalWeight > inv.maxWeight then
             TriggerClientEvent('ox_lib:notify', inv.id, { type = 'error', description = locale('cannot_carry') })
@@ -1369,8 +1368,10 @@ function Inventory.CanCarryItems(inv, items, metadata)
 
         ::skip::
     end
+
     return true
 end
+
 exports('CanCarryItems', Inventory.CanCarryItems)
 
 ---@param inv inventory
