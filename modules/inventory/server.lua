@@ -1456,7 +1456,7 @@ local function CustomDrop(prefix, items, coords, slots, maxWeight, instance, mod
 	inventory.coords = coords
 
     if time then
-		inventory.time = time
+		inventory.time = os.time() - time * 60
 	end
     
 	Inventory.Drops[dropId] = {
@@ -2666,7 +2666,7 @@ function Inventory.CreateTemporaryStash(properties)
 	inventory.coords = coords
 
 	if properties.time then
-		inventory.time = properties.time
+		inventory.time = os.time() - properties.time * 60
 	end
 
 	return inventory.id
