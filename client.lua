@@ -657,9 +657,23 @@ local function useButton(id, slot)
 
 		local data = Items[item.name]
 		local buttons = data?.buttons
+        local thisButton = buttons and buttons[id] or {}
 
-		if buttons and buttons[id]?.action then
-			buttons[id].action(slot)
+		if thisButton?.action then
+			thisButton.action(slot)
+		end
+
+        if thisButton?.clientEvent then
+            TriggerEvent(thisButton.clientEvent, slot)
+        end
+
+        if thisButton?.serverEvent then
+            TriggerServerEvent(thisButton.serverEvent, slot)
+        end
+
+        if thisButton?.export then
+			local resource, export = string.strsplit('.', thisButton.export)
+            exports[resource][export](nil, slot)
 		end
 	end
 end
