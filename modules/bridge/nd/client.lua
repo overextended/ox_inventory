@@ -21,7 +21,7 @@ SetTimeout(500, function()
     OnPlayerData("groups", groups)
 end)
 
-RegisterNetEvent("ND:setCharacter", function(character)
+RegisterNetEvent("ND:characterLoaded", function(character)
     local groups = reorderGroups(character.groups)
     OnPlayerData("groups", groups)
 end)
@@ -34,11 +34,15 @@ end)
 ---@diagnostic disable-next-line: duplicate-set-field
 function client.setPlayerStatus(values)
     if GetResourceState("ND_Status") ~= "started" then return end
-	for name, value in pairs(values) do
-        if value == 0 then
-            exports["ND_Status"]:setStatus(name, value)
-        else
-            exports["ND_Status"]:changeStatus(name, value)
+
+    local status = exports["ND_Status"]
+
+    for name, value in pairs(values) do
+
+        if value > 100 or value < -100 then
+            value = value * 0.0001
         end
+
+        status:changeStatus(name, value)
     end
 end
