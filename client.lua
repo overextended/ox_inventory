@@ -434,9 +434,17 @@ local function useItem(data, cb)
 		end
 	end
 
+    if result then
+        TriggerEvent('ox_inventory:usedItem', slotData.name, slotData.slot, next(slotData.metadata) and slotData.metadata)
+    end
+
 	Wait(500)
     usingItem = false
 end
+
+AddEventHandler('ox_inventory:usedItem', function(name, slot, metadata)
+    TriggerServerEvent('ox_inventory:usedItemInternal', slot)
+end)
 
 AddEventHandler('ox_inventory:item', useItem)
 exports('useItem', useItem)

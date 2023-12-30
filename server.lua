@@ -263,6 +263,25 @@ lib.callback.register('ox_inventory:getInventory', function(source, id)
 	}
 end)
 
+RegisterNetEvent('ox_inventory:usedItemInternal', function(slot)
+    local inventory = Inventory(source)
+
+    if not inventory then return end
+
+    local item = inventory.usingItem
+
+    if not item or item.slot ~= slot then
+        ---@todo
+        DropPlayer(inventory.id, 'sussy')
+
+        return
+    end
+
+    TriggerEvent('ox_inventory:usedItem', item.name, item.slot, next(item.metadata) and item.metadata)
+
+    inventory.usingItem = nil
+end)
+
 ---@param source number
 ---@param itemName string
 ---@param slot number?
@@ -344,6 +363,7 @@ lib.callback.register('ox_inventory:useItem', function(source, itemName, slot, m
 			end
 
 			data.consume = consume
+            inventory.usingItem = data
 
             ---@type boolean
 			local success = lib.callback.await('ox_inventory:usingItem', source, data)
