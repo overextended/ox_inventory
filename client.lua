@@ -1719,7 +1719,7 @@ local swapActive = false
 
 ---Synchronise and validate all item movement between the NUI and server.
 RegisterNUICallback('swapItems', function(data, cb)
-    if swapActive or not invOpen or invBusy then return end
+    if swapActive or not invOpen or invBusy or usingItem then return cb(false) end
 
     swapActive = true
 
