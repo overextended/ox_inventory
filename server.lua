@@ -277,7 +277,7 @@ RegisterNetEvent('ox_inventory:usedItemInternal', function(slot)
         return
     end
 
-    TriggerEvent('ox_inventory:usedItem', item.name, item.slot, next(item.metadata) and item.metadata)
+    TriggerEvent('ox_inventory:usedItem', inventory.id, item.name, item.slot, next(item.metadata) and item.metadata)
 
     inventory.usingItem = nil
 end)
