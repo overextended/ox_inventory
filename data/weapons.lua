@@ -6,18 +6,21 @@ return {
 			durability = 0.03,
 			ammoname = 'ammo-rifle2',
 		},
+
 		['WEAPON_SNOWLAUNCHER'] = {
 			label = 'Snowball Launcher',
 			weight = 1000,
 			durability = 0.03,
 			ammoname = 'WEAPON_SNOWBALL',
 		},
+
 		['WEAPON_TECPISTOL'] = {
 			label = 'Tactical SMG',
 			weight = 1500,
 			durability = 0.075,
 			ammoname = 'ammo-9',
 		},
+
 		['WEAPON_ADVANCEDRIFLE'] = {
 			label = 'Advanced Rifle',
 			weight = 3100,
