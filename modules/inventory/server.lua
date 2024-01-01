@@ -2665,7 +2665,7 @@ function Inventory.CreateTemporaryStash(properties)
 	inventory.items, inventory.weight = generateItems(inventory, 'drop', properties.items)
 	inventory.coords = coords
 
-	if properties.time then
+	if properties.clearTime then
 		inventory.time = os.time() - properties.clearTime * 60
 	end
 
