@@ -350,8 +350,12 @@ lib.callback.register('ox_inventory:usingItem', function(data)
 		end
 
 		if item.propTwo then
-			item.prop = { item.prop, item.propTwo }
-		end
+            if #item.prop > 1 then
+                item.prop = { item.prop[1], item.propTwo }
+            else
+                item.prop = { item.prop, item.propTwo }
+            end
+        end
 
 		if item.prop then
 			if item.prop[1] then
