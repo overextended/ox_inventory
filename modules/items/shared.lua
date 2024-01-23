@@ -28,30 +28,44 @@ local function newItem(data)
 	end
 
 	if isServer then
+        ---@cast data OxServerItem
+        serverData = data.server
 		data.client = nil
-
-		if serverData?.export then
-			data.cb = useExport(string.strsplit('.', serverData.export))
-		end
 
 		if not data.durability then
 			if data.degrade or (data.consume and data.consume ~= 0 and data.consume < 1) then
 				data.durability = true
 			end
 		end
+
+        if not serverData then goto continue end
+
+        if serverData.export then
+            data.cb = useExport(string.strsplit('.', serverData.export))
+        end
 	else
+        ---@cast data OxClientItem
+        clientData = data.client
 		data.server = nil
 		data.count = 0
 
-		if clientData?.export then
-			data.export = useExport(string.strsplit('.', clientData.export))
-		end
+        if not clientData then goto continue end
 
-		if clientData?.image then
-			clientData.image = clientData.image:match('^[%w]+://') and clientData.image or ('%s/%s'):format(client.imagepath, clientData.image)
-		end
+        if clientData.export then
+            data.export = useExport(string.strsplit('.', clientData.export))
+        end
+
+        if clientData.image then
+            clientData.image = clientData.image:match('^[%w]+://') and clientData.image or ('%s/%s'):format(client.imagepath, clientData.image)
+        end
+
+        if clientData.propTwo then
+            clientData.prop = clientData.prop and { clientData.prop, clientData.propTwo } or clientData.propTwo
+            clientData.propTwo = nil
+        end
 	end
 
+    ::continue::
 	ItemList[data.name] = data
 end
 

@@ -349,10 +349,6 @@ lib.callback.register('ox_inventory:usingItem', function(data)
 			item.anim = Animations.anim[item.anim]
 		end
 
-		if item.propTwo then
-			item.prop = { item.prop, item.propTwo }
-		end
-
 		if item.prop then
 			if item.prop[1] then
 				for i = 1, #item.prop do
