@@ -6,9 +6,14 @@ require 'modules.interface.client'
 local Utils = require 'modules.utils.client'
 local Weapon = require 'modules.weapon.client'
 local currentWeapon
+local disableWeaponCuffCheck = false
 
 exports('getCurrentWeapon', function()
 	return currentWeapon
+end)
+
+exports('disableWeaponCuffCheck', function(disable)
+    disableWeaponCuffCheck = disable
 end)
 
 RegisterNetEvent('ox_inventory:disarm', function(noAnim)
@@ -1399,7 +1404,7 @@ RegisterNetEvent('ox_inventory:setPlayerInventory', function(currentDrops, inven
 				DisableControlAction(0, 36, true)
 			end
 
-			if usingItem or invBusy == true or IsPedCuffed(playerPed) then
+			if usingItem or invBusy == true or IsPedCuffed(playerPed) and not disableWeaponCuffCheck then
 				DisablePlayerFiring(playerId, true)
 			end
 
