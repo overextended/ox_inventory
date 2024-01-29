@@ -50,17 +50,73 @@ local function setContainerProperties(itemName, properties)
 		whitelist = whitelist,
 	}
 end
-
 setContainerProperties('paperbag', {
 	slots = 5,
-	maxWeight = 1000,
-	blacklist = { 'testburger' }
+	maxWeight = 10000,
+	blacklist = { 'bburger', 'cola2', 'pie', 'pizza', 'water', 'weapon_pistol' }
 })
 
 setContainerProperties('pizzabox', {
 	slots = 5,
-	maxWeight = 1000,
+	maxWeight = 10000,
 	whitelist = { 'pizza' }
 })
+
+setContainerProperties('clothingbag', {
+	slots = 24,
+	maxWeight = 100000,
+	whitelist = { 'outfit' }
+})
+
+setContainerProperties('keychain', {
+	slots = 12,
+	maxWeight = 30000,
+	whitelist = { 'carkey', 'leasekey' }
+})
+
+setContainerProperties('largebag', {
+	slots = 30,
+	maxWeight = 30000,
+	blacklist = { 'outfit', 'fish', 'carkey', 'leasekey' }
+})
+
+setContainerProperties('icebox', {
+	slots = 32,
+	maxWeight = 30000,
+	whitelist = { 'fish' },
+})
+
+
+setContainerProperties('secureweaponscase', {
+	slots = 2,
+	maxWeight = 100000,
+	whitelist = { 'WEAPON_FM41', 'WEAPON_FM42', 'WEAPON_ASSAULTRIFLE', 'WEAPON_CARBINERIFLE', 'WEAPON_CARBINERIFLE_MK2', 'WEAPON_SNIPERRIFLE', 'WEAPON_HEAVYSNIPER', 'WEAPON_HEAVYSNIPER_MK2', 'ammo-sniper', 'ammo-rifle', 'armour', 'WEAPON_GLOCK19', 'ammo-9', 'ammo-45', 'ammo-rifle2', 'handcuffs', 'cuffkey', 'weapon_stungun' },
+})
+
+setContainerProperties('wallet', {
+	slots = 32,
+	maxWeight = 64000,
+	whitelist = { 'identification', 'money', 'dmoney', 'document', 'lockpick', 'advancedlockpick', 'phone', 'paper', 'joint', 'card', 'bookofstamps', 'ring' },
+})
+
+setContainerProperties('cardbinder', {
+	slots = 400,
+	maxWeight = 120000,
+	whitelist = { 'card' },
+})
+
+
+setContainerProperties('funkobag', {
+	slots = 120,
+	maxWeight = 120000,
+	whitelist = { 'funkobox', 'funko' },
+})
+
+setContainerProperties('cartonofcigarettes', {
+	slots = 1,
+	maxWeight = 6400,
+	whitelist = { 'cig', 'joint' },
+})
+
 
 return containers

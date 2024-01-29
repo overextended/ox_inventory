@@ -1,10 +1,54 @@
 return {
 	Weapons = {
-		['WEAPON_TECPISTOL'] = {
-			label = 'Tactical SMG',
+
+		['WEAPON_PICKAXE'] = {
+			label = 'Pickaxe',
+			weight = 800,
+			durability = 0.0001,
+		},
+
+		['WEAPON_PEPPERSPRAY'] = {
+			label = 'Pepper Spray',
+			weight = 1000,
+		},
+		['WEAPON_ANTIDOTE'] = {
+			label = 'Antidote',
+			weight = 1000,
+		},
+		['WEAPON_MEGAPHONE'] = {
+			label = 'Megaphone',
+			type = '2.0',
+			weight = 1000,
+		},
+		['WEAPON_FM41'] = {
+			label = 'AR15',
+			weight = 5000,
+			durability = 0.1,
+			ammoname = 'ammo-rifle',
+		},
+		['WEAPON_FM42'] = {
+			label = 'AR15',
+			weight = 5000,
+			durability = 0.1,
+			ammoname = 'ammo-rifle',
+		},
+		['WEAPON_FN509'] = {
+			label = 'FN509',
 			weight = 1500,
-			durability = 0.075,
+			durability = 0.1,
 			ammoname = 'ammo-9',
+		},
+		['WEAPON_GLOCK19'] = {
+			label = 'Glock 19',
+			weight = 1000,
+			durability = 0.1,
+			ammoname = 'ammo-9',
+		},
+		['WEAPON_HUNTINGRIFLE'] = {
+			label = 'Hunting Rifle',
+			weight = 1500,
+			durability = 0.01,
+			ammoname = 'ammo-22',
 		},
 		['WEAPON_ADVANCEDRIFLE'] = {
 			label = 'Advanced Rifle',
@@ -22,29 +66,36 @@ return {
 
 		['WEAPON_ASSAULTRIFLE'] = {
 			label = 'Assault Rifle',
-			weight = 4500,
-			durability = 0.03,
+			weight = 5000,
+			durability = 0.2,
 			ammoname = 'ammo-rifle2',
 		},
 
 		['WEAPON_ASSAULTRIFLE_MK2'] = {
 			label = 'Assault Rifle MK2',
-			weight = 2950,
-			durability = 0.03,
+			weight = 5000,
+			durability = 0.2,
 			ammoname = 'ammo-rifle2',
+		},
+
+		['WEAPON_BEANBAG'] = {
+			label = 'Beanbag Shotgun',
+			weight = 2000,
+			durability = 2,
+			ammoname = 'ammo-beanbag'
 		},
 
 		['WEAPON_ASSAULTSHOTGUN'] = {
 			label = 'Assault Shotgun',
-			weight = 5200,
-			durability = 0.05,
+			weight = 5000,
+			durability = 0.25,
 			ammoname = 'ammo-shotgun'
 		},
 
 		['WEAPON_ASSAULTSMG'] = {
 			label = 'Assault SMG',
-			weight = 2900,
-			durability = 0.05,
+			weight = 5000,
+			durability = 0.25,
 			ammoname = 'ammo-rifle'
 		},
 
@@ -356,7 +407,7 @@ return {
 		['WEAPON_MACHINEPISTOL'] = {
 			label = 'Machine Pistol',
 			weight = 1400,
-			durability = 0.05,
+			durability = 0.1,
 			ammoname = 'ammo-9'
 		},
 
@@ -463,7 +514,7 @@ return {
 		['WEAPON_PISTOL'] = {
 			label = 'Pistol',
 			weight = 1130,
-			durability = 0.1,
+			durability = 0.2,
 			ammoname = 'ammo-9',
 		},
 
@@ -643,7 +694,7 @@ return {
 
 		['WEAPON_STUNGUN'] = {
 			label = 'Tazer',
-			weight = 227,
+			weight = 500,
 			durability = 0.1,
 		},
 
@@ -700,9 +751,829 @@ return {
 			weight = 600,
 			throwable = true,
 		},
+		-- Lines below
+		['WEAPON_NEWSPAPER'] = {
+			label = 'Newspaper',
+			weight = 600,
+			throwable = true,
+		},
 	},
 
 	Components = {
+		['at_glock19_clip_01'] = {
+			label = 'Glock19 OEM Mag',
+			weight = 120,
+			type = 'magazine',
+			client = {
+				component = {
+					`COMPONENT_GLOCK19_CLIP_01`,
+				},
+				usetime = 2500
+			}
+		},
+		['at_glock19_clip_02'] = {
+			label = 'Glock19 21rnd Mag',
+			weight = 120,
+			type = 'magazine',
+			client = {
+				component = {
+					`COMPONENT_GLOCK19_CLIP_02`,
+				},
+				usetime = 2500
+			}
+		},
+		['at_glock19_clip_03'] = {
+			label = 'Glock19 32rnd Mag',
+			weight = 120,
+			type = 'magazine',
+			client = {
+				component = {
+					`COMPONENT_GLOCK19_CLIP_03`,
+				},
+				usetime = 2500
+			}
+		},
+
+		
+		['at_glock19_flash_01'] = {
+			label = 'Surefire X300',
+			weight = 120,
+			type = 'flashlight',
+			client = {
+				component = {
+					`COMPONENT_GLOCK19_FLSH_01`,
+				},
+				usetime = 2500
+			}
+		},
+		['at_glock19_flash_02'] = {
+			label = 'Inforce Wild2',
+			weight = 120,
+			type = 'flashlight',
+			client = {
+				component = {
+					`COMPONENT_GLOCK19_FLSH_02`,
+				},
+				usetime = 2500
+			}
+		},
+		['at_glock19_flash_03'] = {
+			label = 'Inforce Wild1',
+			weight = 120,
+			type = 'flashlight',
+			client = {
+				component = {
+					`COMPONENT_GLOCK19_FLSH_03`,
+				},
+				usetime = 2500
+			}
+		},
+		['at_glock19_flash_04'] = {
+			label = 'TLR-1',
+			weight = 120,
+			type = 'flashlight',
+			client = {
+				component = {
+					`COMPONENT_GLOCK19_FLSH_04`,
+				},
+				usetime = 2500
+			}
+		},
+		['at_glock19_flash_05'] = {
+			label = 'TLR-7',
+			weight = 120,
+			type = 'flashlight',
+			client = {
+				component = {
+					`COMPONENT_GLOCK19_FLSH_05`,
+				},
+				usetime = 2500
+			}
+		},
+		
+		['at_glock19_scope_01'] = {
+			label = 'RMR Red dot',
+			weight = 120,
+			type = 'scope',
+			client = {
+				component = {
+					`COMPONENT_GLOCK19_SCOPE_01`,
+				},
+				usetime = 2500
+			}
+		},
+
+		
+		['at_glock19_scope_02'] = {
+			label = 'FDE-RMR Red dot',
+			weight = 120,
+			type = 'scope',
+			client = {
+				component = {
+					`COMPONENT_GLOCK19_SCOPE_02`,
+				},
+				usetime = 2500
+			}
+		},
+
+		
+		['at_glock19_scope_03'] = {
+			label = 'Doctor ADE',
+			weight = 120,
+			type = 'scope',
+			client = {
+				component = {
+					`COMPONENT_GLOCK19_SCOPE_03`,
+				},
+				usetime = 2500
+			}
+		},	
+		['at_glock19_scope_04'] = {
+			label = 'FDE-Doctor ADE',
+			weight = 120,
+			type = 'scope',
+			client = {
+				component = {
+					`COMPONENT_GLOCK19_SCOPE_04`,
+				},
+				usetime = 2500
+			}
+		},	
+		['at_glock19_scope_05'] = {
+			label = 'Leopold DP Pro',
+			weight = 120,
+			type = 'scope',
+			client = {
+				component = {
+					`COMPONENT_GLOCK19_SCOPE_05`,
+				},
+				usetime = 2500
+			}
+		},	
+		['at_glock19_scope_06'] = {
+			label = 'Romeo1',
+			weight = 120,
+			type = 'scope',
+			client = {
+				component = {
+					`COMPONENT_GLOCK19_SCOPE_06`,
+				},
+				usetime = 2500
+			}
+		},	
+		['at_glock19_scope_07'] = {
+			label = 'Aimpoint Acro',
+			weight = 120,
+			type = 'scope',
+			client = {
+				component = {
+					`COMPONENT_GLOCK19_SCOPE_07`,
+				},
+				usetime = 2500
+			}
+		},	
+		['at_glock19_scope_08'] = {
+			label = 'Trijicon SRO',
+			weight = 120,
+			type = 'scope',
+			client = {
+				component = {
+					`COMPONENT_GLOCK19_SCOPE_08`,
+				},
+				usetime = 2500
+			}
+		},
+
+
+
+		['at_glock19_slide_01'] = {
+			label = 'Black Slide',
+			weight = 120,
+			type = 'slide',
+			client = {
+				component = {
+					`COMPONENT_GLOCK19_SLIDE_01`,
+				},
+				usetime = 2500
+			}
+		},
+		['at_glock19_slide_02'] = {
+			label = 'FDE Slide',
+			weight = 120,
+			type = 'slide',
+			client = {
+				component = {
+					`COMPONENT_GLOCK19_SLIDE_02`,
+				},
+				usetime = 2500
+			}
+		},
+		['at_glock19_slide_03'] = {
+			label = 'Grey Slide',
+			weight = 120,
+			type = 'slide',
+			client = {
+				component = {
+					`COMPONENT_GLOCK19_SLIDE_03`,
+				},
+				usetime = 2500
+			}
+		},
+		['at_glock19_slide_04'] = {
+			label = 'Subdued Flag',
+			weight = 120,
+			type = 'slide',
+			client = {
+				component = {
+					`COMPONENT_GLOCK19_SLIDE_04`,
+				},
+				usetime = 2500
+			}
+		},
+		['at_glock19_slide_05'] = {
+			label = 'Blue Subdued Flag',
+			weight = 120,
+			type = 'slide',
+			client = {
+				component = {
+					`COMPONENT_GLOCK19_SLIDE_05`,
+				},
+				usetime = 2500
+			}
+		},
+		['at_glock19_slide_06'] = {
+			label = 'OD Green Flag',
+			weight = 120,
+			type = 'slide',
+			client = {
+				component = {
+					`COMPONENT_GLOCK19_SLIDE_06`,
+				},
+				usetime = 2500
+			}
+		},
+		['at_glock19_slide_07'] = {
+			label = 'Digital Camo',
+			weight = 120,
+			type = 'slide',
+			client = {
+				component = {
+					`COMPONENT_GLOCK19_SLIDE_07`,
+				},
+				usetime = 2500
+			}
+		},
+
+		-- COMPONENT_GLOCK19_GLOWSIGHT_01
+
+		['at_glock19_flash2_01'] = {
+			label = 'Glock19 Glowsight',
+			weight = 120,
+			type = 'flash2',
+			client = {
+				component = {
+					`COMPONENT_GLOCK19_GLOWSIGHT_01`,
+				},
+				usetime = 2500
+			}
+		},
+
+		['at_glock19_suppressor_01'] = {
+			label = 'Silencerco Osprey 9',
+			weight = 120,
+			type = 'muzzle',
+			client = {
+				component = {
+					`COMPONENT_GLOCK19_SUPP_01`,
+				},
+				usetime = 2500
+			}
+		},
+		['at_glock19_suppressor_02'] = {
+			label = 'PGS 3206',
+			weight = 120,
+			type = 'muzzle',
+			client = {
+				component = {
+					`COMPONENT_GLOCK19_SUPP_02`,
+				},
+				usetime = 2500
+			}
+		},
+		['at_glock19_suppressor_03'] = {
+			label = 'GEMTECH GM9',
+			weight = 120,
+			type = 'muzzle',
+			client = {
+				component = {
+					`COMPONENT_GLOCK19_SUPP_03`,
+				},
+				usetime = 2500
+			}
+		},
+		['at_glock19_suppressor_04'] = {
+			label = 'Surefire Ryder 9M',
+			weight = 120,
+			type = 'muzzle',
+			client = {
+				component = {
+					`COMPONENT_GLOCK19_SUPP_04`,
+				},
+				usetime = 2500
+			}
+		},
+		['at_glock19_suppressor_05'] = {
+			label = 'Surefire Ryder 9M2',
+			weight = 120,
+			type = 'muzzle',
+			client = {
+				component = {
+					`COMPONENT_GLOCK19_SUPP_05`,
+				},
+				usetime = 2500
+			}
+		},
+		['at_glock19_suppressor_06'] = {
+			label = 'Glock Compensator',
+			weight = 120,
+			type = 'muzzle',
+			client = {
+				component = {
+					`COMPONENT_GLOCK19_SUPP_06`,
+				},
+				usetime = 2500
+			}
+		},
+		
+		['at_glock19_frame_01'] = {
+			label = 'OEM Frame',
+			weight = 120,
+			type = 'frame',
+			client = {
+				component = {
+					`COMPONENT_GLOCK19_FRAME_01`,
+				},
+				usetime = 2500
+			}
+		},
+		['at_glock19_frame_02'] = {
+			label = 'FDE Frame',
+			weight = 120,
+			type = 'frame',
+			client = {
+				component = {
+					`COMPONENT_GLOCK19_FRAME_02`,
+				},
+				usetime = 2500
+			}
+		},
+		['at_glock19_frame_03'] = {
+			label = 'OD Green Frame',
+			weight = 120,
+			type = 'frame',
+			client = {
+				component = {
+					`COMPONENT_GLOCK19_FRAME_03`,
+				},
+				usetime = 2500
+			}
+		},
+		['at_glock19_frame_04'] = {
+			label = 'Digi Camo Frame',
+			weight = 120,
+			type = 'frame',
+			client = {
+				component = {
+					`COMPONENT_GLOCK19_FRAME_04`,
+				},
+				usetime = 2500
+			}
+		},
+		['at_glock19_frame_05'] = {
+			label = 'Urban Digi-Camo',
+			weight = 120,
+			type = 'frame',
+			client = {
+				component = {
+					`COMPONENT_GLOCK19_FRAME_05`,
+				},
+				usetime = 2500
+			}
+		},
+		['at_glock19_frame_06'] = {
+			label = 'Glock19 Frame 06',
+			weight = 120,
+			type = 'frame',
+			client = {
+				component = {
+					`COMPONENT_GLOCK19_FRAME_06`,
+				},
+				usetime = 2500
+			}
+		},
+
+		-- COMPONENT_GLOCK19_SLIDE_01
+
+		['at_fn509_slide_01'] = {
+			label = 'FN509 Slide 01',
+			weight = 120,
+			type = 'frame',
+			client = {
+				component = {
+					`COMPONENT_FN509_FRAME_01`,
+				},
+				usetime = 2500
+			}
+		},
+		['at_fn509_slide_02'] = {
+			label = 'FN509 Slide 02',
+			weight = 120,
+			type = 'frame',
+			client = {
+				component = {
+					`COMPONENT_FN509_FRAME_02`,
+				},
+				usetime = 2500
+			}
+		},
+		['at_fn509_slide_03'] = {
+			label = 'FN509 Slide 03',
+			weight = 120,
+			type = 'frame',
+			client = {
+				component = {
+					`COMPONENT_FN509_FRAME_03`,
+				},
+				usetime = 2500
+			}
+		},
+		['at_fn509_slide_04'] = {
+			label = 'FN509 Slide 04',
+			weight = 120,
+			type = 'frame',
+			client = {
+				component = {
+					`COMPONENT_FN509_FRAME_04`,
+				},
+				usetime = 2500
+			}
+		},
+		['at_fn509_slide_05'] = {
+			label = 'FN509 Slide 05',
+			weight = 120,
+			type = 'frame',
+			client = {
+				component = {
+					`COMPONENT_FN509_FRAME_05`,
+				},
+				usetime = 2500
+			}
+		},
+		['at_fn509_slide_06'] = {
+			label = 'FN509 Slide 06',
+			weight = 120,
+			type = 'frame',
+			client = {
+				component = {
+					`COMPONENT_FN509_FRAME_06`,
+				},
+				usetime = 2500
+			}
+		},
+		['at_fn509_slide_07'] = {
+			label = 'FN509 Slide 07',
+			weight = 120,
+			type = 'frame',
+			client = {
+				component = {
+					`COMPONENT_FN509_FRAME_07`,
+				},
+				usetime = 2500
+			}
+		},
+		['at_fn509_slide_08'] = {
+			label = 'FN509 Slide 08',
+			weight = 120,
+			type = 'frame',
+			client = {
+				component = {
+					`COMPONENT_FN509_FRAME_08`,
+				},
+				usetime = 2500
+			}
+		},
+		['at_fn509_slide_09'] = {
+			label = 'FN509 Slide 09',
+			weight = 120,
+			type = 'frame',
+			client = {
+				component = {
+					`COMPONENT_FN509_FRAME_09`,
+				},
+				usetime = 2500
+			}
+		},
+		['at_fn509_slide_10'] = {
+			label = 'FN509 Slide 10',
+			weight = 120,
+			type = 'frame',
+			client = {
+				component = {
+					`COMPONENT_FN509_FRAME_10`,
+				},
+				usetime = 2500
+			}
+		},
+		['at_fn509_slide_11'] = {
+			label = 'FN509 Slide 11',
+			weight = 120,
+			type = 'frame',
+			client = {
+				component = {
+					`COMPONENT_FN509_FRAME_11`,
+				},
+				usetime = 2500
+			}
+		},
+		['at_f509_scope_01'] = {
+			label = 'FN509 Scope 01',
+			weight = 120,
+			type = 'scope',
+			client = {
+				component = {
+					`COMPONENT_FN509_SCOPE_01`,
+				},
+				usetime = 2500
+			}
+		},
+		['at_f509_scope_02'] = {
+			label = 'FN509 Scope 02',
+			weight = 120,
+			type = 'scope',
+			client = {
+				component = {
+					`COMPONENT_FN509_SCOPE_02`,
+				},
+				usetime = 2500
+			}
+		},
+		['at_f509_scope_03'] = {
+			label = 'FN509 Scope 03',
+			weight = 120,
+			type = 'scope',
+			client = {
+				component = {
+					`COMPONENT_FN509_SCOPE_03`,
+				},
+				usetime = 2500
+			}
+		},
+		['at_f509_suppressor_01'] = {
+			label = 'FN509 Suppressor 01',
+			weight = 120,
+			type = 'muzzle',
+			client = {
+				component = {
+					`COMPONENT_FN509_SUPP_01`,
+				},
+				usetime = 2500
+			}
+		},
+		['at_f509_suppressor_02'] = {
+			label = 'FN509 Suppressor 02',
+			weight = 120,
+			type = 'muzzle',
+			client = {
+				component = {
+					`COMPONENT_FN509_SUPP_02`,
+				},
+				usetime = 2500
+			}
+		},
+		['at_f509_suppressor_03'] = {
+			label = 'FN509 Suppressor 03',
+			weight = 120,
+			type = 'muzzle',
+			client = {
+				component = {
+					`COMPONENT_FN509_SUPP_03`,
+				},
+				usetime = 2500
+			}
+		},
+		['at_f509_suppressor_04'] = {
+			label = 'FN509 Suppressor 04',
+			weight = 120,
+			type = 'muzzle',
+			client = {
+				component = {
+					`COMPONENT_FN509_SUPP_04`,
+				},
+				usetime = 2500
+			}
+		},
+		['at_f509_suppressor_05'] = {
+			label = 'FN509 Suppressor 05',
+			weight = 120,
+			type = 'muzzle',
+			client = {
+				component = {
+					`COMPONENT_FN509_SUPP_05`,
+				},
+				usetime = 2500
+			}
+		},
+		['at_f509_flash_01'] = {
+			label = 'FN509 Flashlight 01',
+			weight = 120,
+			type = 'muzzle',
+			client = {
+				component = {
+					`COMPONENT_FN509_FLSH_01`,
+				},
+				usetime = 2500
+			}
+		},
+		['at_f509_flash_02'] = {
+			label = 'FN509 Flashlight 02',
+			weight = 120,
+			type = 'muzzle',
+			client = {
+				component = {
+					`COMPONENT_FN509_FLSH_02`,
+				},
+				usetime = 2500
+			}
+		},
+		['at_f509_flash_03'] = {
+			label = 'FN509 Flashlight 03',
+			weight = 120,
+			type = 'muzzle',
+			client = {
+				component = {
+					`COMPONENT_FN509_FLSH_03`,
+				},
+				usetime = 2500
+			}
+		},
+		['at_f509_flash_04'] = {
+			label = 'FN509 Flashlight 04',
+			weight = 120,
+			type = 'flashlight',
+			client = {
+				component = {
+					`COMPONENT_FN509_FLSH_04`,
+				},
+				usetime = 2500
+			}
+		},
+		['at_f509_clip_01'] = {
+			label = 'FN509 Clip 01',
+			weight = 120,
+			type = 'magazine',
+			client = {
+				component = {
+					`COMPONENT_FN509_CLIP_01`,
+				},
+				usetime = 2500
+			}
+		},
+		['at_f509_clip_02'] = {
+			label = 'FN509 Clip 02',
+			weight = 120,
+			type = 'magazine',
+			client = {
+				component = {
+					`COMPONENT_FN509_CLIP_02`,
+				},
+				usetime = 2500
+			}
+		},
+		['at_fm41_clip'] = {
+			label = 'AAP Clip',
+			weight = 120,
+			type = 'magazine',
+			client = {
+				component = {
+					`COMPONENT_FM41_CLIP_01`,
+					`COMPONENT_FM42_CLIP_01`,
+				},
+				usetime = 2500
+			}
+		},
+		['at_fm42_clip'] = {
+			label = 'AAP Clip 2',
+			weight = 120,
+			type = 'magazine',
+			client = {
+				component = {
+					`COMPONENT_FM42_CLIP_02`,
+				},
+				usetime = 2500
+			}
+		},
+		['at_fm41_scope'] = {
+			label = 'Aimpoint Pro',
+			weight = 120,
+			type = 'scope',
+			client = {
+				component = {
+					`COMPONENT_FMSCOPE_01`,
+				},
+				usetime = 2500
+			}
+		},
+		['at_fm41_scope_02'] = {
+			label = 'EOTECH-Magnifier',
+			weight = 120,
+			type = 'scope',
+			client = {
+				component = {
+					`COMPONENT_FMSCOPE_02`,
+				},
+				usetime = 2500
+			}
+		},
+		['at_fm41_scope_03'] = {
+			label = 'LPVO',
+			weight = 120,
+			type = 'scope',
+			client = {
+				component = {
+					`COMPONENT_FMSCOPE_03`,
+				},
+				usetime = 2500
+			}
+		},
+		['at_fm41_scope_04'] = {
+			label = 'Canted RMR',
+			weight = 120,
+			type = 'scope',
+			client = {
+				component = {
+					`COMPONENT_FMSCOPE_04`,
+				},
+				usetime = 2500
+			}
+		},
+		['at_fm41_scope_05'] = {
+			label = 'LPVO-Canted',
+			weight = 120,
+			type = 'scope',
+			client = {
+				component = {
+					`COMPONENT_FMSCOPE_05`,
+				},
+				usetime = 2500
+			}
+		},
+		['at_fm41_scope_06'] = {
+			label = 'Canted-LPVO',
+			weight = 120,
+			type = 'scope',
+			client = {
+				component = {
+					`COMPONENT_FMSCOPE_06`,
+				},
+				usetime = 2500
+			}
+		},
+		
+		['at_fm41_stock_01'] = {
+			label = 'Magpull Stock',
+			weight = 120,
+			type = 'stock',
+			client = {
+				component = {
+					`COMPONENT_FMSTOCK_01`,
+				},
+				usetime = 2500
+			}
+		},
+		['at_fm41_stock_02'] = {
+			label = 'Python Stock',
+			weight = 120,
+			type = 'stock',
+			client = {
+				component = {
+					`COMPONENT_FMSTOCK_02`,
+				},
+				usetime = 2500
+			}
+		},
+		['at_fm41_stock_03'] = {
+			label = 'SOPMOD Stock',
+			weight = 120,
+			type = 'stock',
+			client = {
+				component = {
+					`COMPONENT_FMSTOCK_03`,
+				},
+				usetime = 2500
+			}
+		},
+
+
 		['at_flashlight'] = {
 			label = 'Tactical Flashlight',
 			weight = 120,
@@ -714,6 +1585,8 @@ return {
 					`COMPONENT_AT_PI_FLSH`,
 					`COMPONENT_AT_PI_FLSH_02`,
 					`COMPONENT_AT_PI_FLSH_03`,
+					`COMPONENT_FM41_FLSH_01`,
+					`COMPONENT_FM42_FLSH_01`,
 				},
 				usetime = 2500
 			}
@@ -743,7 +1616,8 @@ return {
 					`COMPONENT_AT_AR_SUPP`,
 					`COMPONENT_AT_AR_SUPP_02`,
 					`COMPONENT_AT_SR_SUPP`,
-					`COMPONENT_AT_SR_SUPP_03`
+					`COMPONENT_AT_SR_SUPP_03`,
+					`COMPONENT_FMSUPP_01`
 				},
 				usetime = 2500
 			}
@@ -756,7 +1630,9 @@ return {
 			client = {
 				component = {
 					`COMPONENT_AT_AR_AFGRIP`,
-					`COMPONENT_AT_AR_AFGRIP_02`
+					`COMPONENT_AT_AR_AFGRIP_02`,
+					`COMPONENT_FMGRIP_01`,
+					`COMPONENT_FMGRIP_01`,
 				},
 				usetime = 2500
 			}
@@ -797,7 +1673,6 @@ return {
 					`COMPONENT_SNSPISTOL_CLIP_02`,
 					`COMPONENT_SNSPISTOL_MK2_CLIP_02`,
 					`COMPONENT_VINTAGEPISTOL_CLIP_02`,
-                    `COMPONENT_TECPISTOL_CLIP_02`,
 				},
 				usetime = 2500
 			}
@@ -1328,126 +2203,6 @@ return {
 			}
 		},
 
-		['at_skin_blagueurs'] = {
-			label = 'Blagueurs Weapon Kit',
-			type = 'skin',
-			weight = 50,
-			client = {
-				component = {
-					`COMPONENT_BAT_VARMOD_XM3`
-				},
-				usetime = 2500
-			}
-		},
-
-		['at_skin_splatter'] = {
-			label = 'Splatter Weapon Kit',
-			type = 'skin',
-			weight = 50,
-			client = {
-				component = {
-					`COMPONENT_BAT_VARMOD_XM3_01`
-				},
-				usetime = 2500
-			}
-		},
-
-		['at_skin_bulletholes'] = {
-			label = 'Bullet Holes Weapon Kit',
-			type = 'skin',
-			weight = 50,
-			client = {
-				component = {
-					`COMPONENT_BAT_VARMOD_XM3_02`
-				},
-				usetime = 2500
-			}
-		},
-
-		['at_skin_burgershot'] = {
-			label = 'Burger Shot Weapon Kit',
-			type = 'skin',
-			weight = 50,
-			client = {
-				component = {
-					`COMPONENT_BAT_VARMOD_XM3_03`
-				},
-				usetime = 2500
-			}
-		},
-
-		['at_skin_cluckinbell'] = {
-			label = 'Cluckin Bell Weapon Kit',
-			type = 'skin',
-			weight = 50,
-			client = {
-				component = {
-					`COMPONENT_BAT_VARMOD_XM3_04`
-				},
-				usetime = 2500
-			}
-		},
-
-		['at_skin_fatalincursion'] = {
-			label = 'Fatal Incursion Weapon Kit',
-			type = 'skin',
-			weight = 50,
-			client = {
-				component = {
-					`COMPONENT_BAT_VARMOD_XM3_05`
-				},
-				usetime = 2500
-			}
-		},
-
-		['at_skin_luchalibre'] = {
-			label = 'Lucha Libre Weapon Kit',
-			type = 'skin',
-			weight = 50,
-			client = {
-				component = {
-					`COMPONENT_BAT_VARMOD_XM3_06`
-				},
-				usetime = 2500
-			}
-		},
-
-		['at_skin_trippy'] = {
-			label = 'Trippy Weapon Kit',
-			type = 'skin',
-			weight = 50,
-			client = {
-				component = {
-					`COMPONENT_BAT_VARMOD_XM3_07`
-				},
-				usetime = 2500
-			}
-		},
-
-		['at_skin_tiedye'] = {
-			label = 'Tie-Dye Weapon Kit',
-			type = 'skin',
-			weight = 50,
-			client = {
-				component = {
-					`COMPONENT_BAT_VARMOD_XM3_08`
-				},
-				usetime = 2500
-			}
-		},
-
-		['at_skin_wall'] = {
-			label = 'Wall Weapon Kit',
-			type = 'skin',
-			weight = 50,
-			client = {
-				component = {
-					`COMPONENT_BAT_VARMOD_XM3_09`
-				},
-				usetime = 2500
-			}
-		},
-
 		['at_skin_vip'] = {
 			label = 'VIP Weapon Kit',
 			type = 'skin',
@@ -1756,42 +2511,42 @@ return {
 	Ammo = {
 		['ammo-22'] = {
 			label = '.22 Long Rifle',
-			weight = 3,
+			weight = 200,
 		},
 
 		['ammo-38'] = {
 			label = '.38 LC',
-			weight = 15,
+			weight = 200,
 		},
 
 		['ammo-44'] = {
 			label = '.44 Magnum',
-			weight = 16,
+			weight = 160,
 		},
 
 		['ammo-45'] = {
 			label = '.45 ACP',
-			weight = 15,
+			weight = 120,
 		},
 
 		['ammo-50'] = {
 			label = '.50 AE',
-			weight = 45,
+			weight = 190,
 		},
 
 		['ammo-9'] = {
 			label = '9mm',
-			weight = 7,
+			weight = 100,
 		},
 
 		['ammo-firework'] = {
 			label = 'Firework',
-			weight = 200,
+			weight = 500,
 		},
 
 		['ammo-flare'] = {
 			label = 'Flare round',
-			weight = 38,
+			weight = 500,
 		},
 
 		['ammo-grenade'] = {
@@ -1801,32 +2556,32 @@ return {
 
 		['ammo-heavysniper'] = {
 			label = '.50 BMG',
-			weight = 51,
+			weight = 300,
 		},
 
 		['ammo-laser'] = {
 			label = 'Laser charge',
-			weight = 1,
+			weight = 100,
 		},
 
 		['ammo-musket'] = {
 			label = '.50 Ball',
-			weight = 38,
+			weight = 500,
 		},
 
 		['ammo-railgun'] = {
 			label = 'Railgun charge',
-			weight = 150,
+			weight = 500,
 		},
 
 		['ammo-rifle'] = {
 			label = '5.56x45',
-			weight = 4,
+			weight = 135,
 		},
 
 		['ammo-rifle2'] = {
 			label = '7.62x39',
-			weight = 8,
+			weight = 135,
 		},
 
 		['ammo-rocket'] = {
@@ -1834,19 +2589,25 @@ return {
 			weight = 500,
 		},
 
+		['ammo-beanbag'] = {
+			label = 'Baton Round',
+			weight = 140,
+			stack = false,
+		},
+
 		['ammo-shotgun'] = {
 			label = '12 Gauge',
-			weight = 38,
+			weight = 175,
 		},
 
 		['ammo-sniper'] = {
 			label = '7.62x51',
-			weight = 9,
+			weight = 300,
 		},
 
 		['ammo-emp'] = {
 			label = 'EMP round',
-			weight = 400,
+			weight = 800,
 		},
 	}
 }
