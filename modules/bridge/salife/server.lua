@@ -85,7 +85,7 @@ SetTimeout(1000, function()
 		--local inventory = salrp.getInventory(uid)
 		local id = salrp.getUserIdentity(uid)
 
-		local g = salrp.getUserGroups(uid)
+		local g = salrp.getUserGroups(uid) or {}
 
 		local groups = {
 			--[player.job.name] = player.job.grade
@@ -178,7 +178,7 @@ end
 
 function server.setPlayerData(player)
 	local user_id = player.identifier
-	local g = salrp.getUserGroups(user_id)
+	local g = salrp.getUserGroups(user_id) or {}
 
 	local groups = {
 		--[player.job.name] = player.job.grade
@@ -310,7 +310,7 @@ AddEventHandler("salrp:playerSpawn", function(user_id, source, first_spawn)
 		-- {"source":3,"name":"Douglas Washington","identifier":71}
 		local id = salrp.getUserIdentity(user_id)
 
-		local g = salrp.getUserGroups(user_id)
+		local g = salrp.getUserGroups(user_id) or {}
 
 		local groups = {
 			--[player.job.name] = player.job.grade
@@ -357,7 +357,7 @@ AddEventHandler('salrp:playerJoinGroup', function(user_id, group, gtype)
 	local source = salrp.getUserSource(user_id)
 	if source then
 		local id = salrp.getUserIdentity(user_id)
-		local g = salrp.getUserGroups(user_id)
+		local g = salrp.getUserGroups(user_id) or {}
 
 		local groups = {
 			--[player.job.name] = player.job.grade
@@ -387,7 +387,7 @@ AddEventHandler('salrp:playerLeaveGroup', function(user_id, group, gtype)
 	local source = salrp.getUserSource(user_id)
 	if source then
 		local id = salrp.getUserIdentity(user_id)
-		local g = salrp.getUserGroups(user_id)
+		local g = salrp.getUserGroups(user_id) or {}
 
 		local groups = {
 			--[player.job.name] = player.job.grade
@@ -422,7 +422,7 @@ lib.callback.register('ox_inventory:loadVR', function(source)
 	--print('load VR', source)
 	local user_id = Player(source).state.user_id
 	local id = salrp.getUserIdentity(user_id)
-	local g = salrp.getUserGroups(user_id)
+	local g = salrp.getUserGroups(user_id) or {}
 
 	local groups = {
 		--[player.job.name] = player.job.grade
