@@ -25,6 +25,12 @@ exports('setStashTarget', function(id, owner)
 	StashTarget = id and {id=id, owner=owner}
 end)
 
+local shootWhileCuffed
+
+SetTimeout(60000, function()
+	shootWhileCuffed = GetConvarInt('inventory:shootwhilecuffed', 0) == 1
+end)
+
 ---@type boolean | number
 local invBusy = true
 
@@ -1399,7 +1405,7 @@ RegisterNetEvent('ox_inventory:setPlayerInventory', function(currentDrops, inven
 				DisableControlAction(0, 36, true)
 			end
 
-			if usingItem or invBusy == true or IsPedCuffed(playerPed) then
+			if usingItem or invBusy == true or IsPedCuffed(playerPed) and not shootWhileCuffed then
 				DisablePlayerFiring(playerId, true)
 			end
 
