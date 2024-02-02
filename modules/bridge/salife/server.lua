@@ -1,14 +1,4 @@
 ---@todo separate module into smaller submodules to handle each framework
----starting to get bulky
-local Tunnel = module("salrp", "lib/Tunnel")
-local Proxy = module("salrp", "lib/Proxy")
-
-salrpi = {}
-salrp = Proxy.getInterface("salrp")
-salrpclient = Tunnel.getInterface("salrp", "ox_inventory")
-Iclient = Tunnel.getInterface("ox_inventory")
-Tunnel.bindInterface("ox_inventory",salrpi)
-Proxy.addInterface("ox_inventory",salrpi)
 
 local playerDropped = ...
 local Inventory, Items
@@ -38,8 +28,8 @@ AddEventHandler('salrp:playerLeaveGroup', function(user_id, group, gtype)
 end)]]
 
 server.GetPlayerFromId = function(id)
-	local identifier = salrp.getUserId(id)
-	local identity = salrp.getUserIdentity(identifier)
+	local identifier = Player(id).state.user_id
+	local identity = Player(id).state.identity
 	local name = identity.firstname .. " " .. identity.name
 	local source = id
 	return {
@@ -51,12 +41,12 @@ end
 
 SetTimeout(1000, function()
 	server.GetPlayerFromId = function(id)
-		local identifier = salrp.getUserId(id)
-		local identity = salrp.getUserIdentity(identifier)
+		local identifier = Player(id).state.user_id
+		local identity = Player(id).state.identity
 		local name = identity.firstname .. " " .. identity.name
 		local source = id
 
-		local g = salrp.getUserGroups(identifier)
+		local g = {}
 
 		local groups = {
 			--[player.job.name] = player.job.grade
@@ -83,9 +73,9 @@ SetTimeout(1000, function()
 	local users = SAL:getUsers()
 	for uid,src in pairs(users) do
 		--local inventory = salrp.getInventory(uid)
-		local id = salrp.getUserIdentity(uid)
+		local identity = Player(uid).state.identity
 
-		local g = salrp.getUserGroups(uid) or {}
+		local g = {}or {}
 
 		local groups = {
 			--[player.job.name] = player.job.grade
@@ -114,7 +104,7 @@ SetTimeout(1000, function()
 		--weight = weight + (str * 200)
 		Player(src).state['ox_inventory:maxweight'] = math.floor(weight)
 
-		local id = salrp.getUserIdentity(uid)
+		local id = Player(src).state.identity or {firstname = "Unknown", name = "Unknown"}
 
 		server.setPlayerInventory({source = src, identifier = uid, name = id.firstname .. " " .. id.name, groups = groups})
 	end
@@ -125,16 +115,13 @@ server.accounts = {
 }
 
 function server.hasGroup(inv, group)
-	print('has group bridge', inv, group)
-	--print(json.encode(inv, {indent=true}))
-	print(json.encode(group, {indent=true}))
 	local source = inv.player.source
 	if not source then return false end
 
 	local user_id = Player(source).state.user_id
 
 	local groups = {}
-	local g = salrp.getUserGroups(user_id)
+	local g = {}
 	local groups = {
 		--[player.job.name] = player.job.grade
 	}
@@ -178,7 +165,7 @@ end
 
 function server.setPlayerData(player)
 	local user_id = player.identifier
-	local g = salrp.getUserGroups(user_id) or {}
+	local g = {}
 
 	local groups = {
 		--[player.job.name] = player.job.grade
@@ -197,7 +184,7 @@ function server.setPlayerData(player)
 	end
 
 
-	local id = salrp.getUserIdentity(user_id)
+	local id = Player(player.source).state.identity or {firstname = "Unknown", name = "Unknown"}
 
 	return {
 		source = player.source,
@@ -261,9 +248,9 @@ end]]
 
 AddEventHandler("ox_inventory:salplusMe", function(user_id, source)
 	Inventory.Save(source)
-	local id = salrp.getUserIdentity(user_id)
+	local id = Player(source).state.identity
 
-	local g = salrp.getUserGroups(user_id)
+	local g = {}
 
 	local groups = {
 		--[player.job.name] = player.job.grade
@@ -308,9 +295,9 @@ end)
 AddEventHandler("salrp:playerSpawn", function(user_id, source, first_spawn)
 	if first_spawn then
 		-- {"source":3,"name":"Douglas Washington","identifier":71}
-		local id = salrp.getUserIdentity(user_id)
+		local id = Player(source).state.identity
 
-		local g = salrp.getUserGroups(user_id) or {}
+		local g = {} or {}
 
 		local groups = {
 			--[player.job.name] = player.job.grade
@@ -339,7 +326,7 @@ AddEventHandler("salrp:playerSpawn", function(user_id, source, first_spawn)
 
 		local player = {source = source, identifier = user_id, name = id.firstname .. " " .. id.name, groups = groups}
 		server.setPlayerData(player)
-		server.GetPlayerFromId = salrp.getUserId
+		server.GetPlayerFromId =  exports.salrp:getUserSource()
 		--local users = SAL:getUsers()
 		--[[for uid,src in pairs(users) do
 			local inventory = salrp.getInventory(uid)
@@ -354,10 +341,10 @@ AddEventHandler("salrp:playerSpawn", function(user_id, source, first_spawn)
 end)
 
 AddEventHandler('salrp:playerJoinGroup', function(user_id, group, gtype)
-	local source = salrp.getUserSource(user_id)
+	local source = SAL:getUserSource(user_id)
 	if source then
-		local id = salrp.getUserIdentity(user_id)
-		local g = salrp.getUserGroups(user_id) or {}
+		local id = Player(player).state.identity
+		local g = {} or {}
 
 		local groups = {
 			--[player.job.name] = player.job.grade
@@ -384,10 +371,10 @@ AddEventHandler('salrp:playerJoinGroup', function(user_id, group, gtype)
 end)
 
 AddEventHandler('salrp:playerLeaveGroup', function(user_id, group, gtype)
-	local source = salrp.getUserSource(user_id)
+	local source = SAL:getUserSource(user_id)
 	if source then
-		local id = salrp.getUserIdentity(user_id)
-		local g = salrp.getUserGroups(user_id) or {}
+		local id = Player(source).state.identity
+		local g = {} or {}
 
 		local groups = {
 			--[player.job.name] = player.job.grade
@@ -421,8 +408,8 @@ lib.callback.register('ox_inventory:loadVR', function(source)
 	--Inventory.Save(source)
 	--print('load VR', source)
 	local user_id = Player(source).state.user_id
-	local id = salrp.getUserIdentity(user_id)
-	local g = salrp.getUserGroups(user_id) or {}
+	local id = Player(source).state.identity
+	local g = {} or {}
 
 	local groups = {
 		--[player.job.name] = player.job.grade
