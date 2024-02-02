@@ -447,7 +447,7 @@ exports('useItem', useItem)
 
 ---@param slot number
 ---@return boolean?
-local function useSlot(slot)
+local function useSlot(slot, noWeaponAnim)
 	local item = PlayerData.inventory[slot]
 	if not item then return end
 
@@ -514,7 +514,7 @@ local function useSlot(slot)
 			useItem(data, function(result)
 				if result then
                     local sleep
-					currentWeapon, sleep = Weapon.Equip(item, data)
+					currentWeapon, sleep = Weapon.Equip(item, data, noWeaponAnim)
 
 					if sleep then Wait(sleep) end
 				end

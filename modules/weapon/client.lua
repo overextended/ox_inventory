@@ -15,13 +15,13 @@ local function vehicleIsCycle(vehicle)
 	return class == 8 or class == 13
 end
 
-function Weapon.Equip(item, data)
+function Weapon.Equip(item, data, noWeaponAnim)
 	local playerPed = cache.ped
 	local coords = GetEntityCoords(playerPed, true)
     local sleep
 
 	if client.weaponanims then
-		if cache.vehicle and vehicleIsCycle(cache.vehicle) then
+		if noWeaponAnim or (cache.vehicle and vehicleIsCycle(cache.vehicle)) then
 			goto skipAnim
 		end
 
