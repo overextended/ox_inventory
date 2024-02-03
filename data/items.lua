@@ -1,4 +1,11 @@
 return {
+	["mdt"] = {
+		label = "MDT",
+		weight = 800,
+		client = {
+			export = "ND_MDT.useTablet"
+		}
+	},
 	
 	["cryptostick"] = {
 		label = "Crypto Stick",
