@@ -2440,6 +2440,7 @@ return {
 		weight = 1000.0,
 		description = "A giant liter of cola",
 		degrade = (60 * 24) * 3,
+		decay = true,
 		allowArmed = false,
 		client = {
 			status = { thirst = 100 },
