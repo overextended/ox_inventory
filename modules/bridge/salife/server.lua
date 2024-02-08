@@ -343,7 +343,7 @@ end)
 AddEventHandler('salrp:playerJoinGroup', function(user_id, group, gtype)
 	local source = SAL:getUserSource(user_id)
 	if source then
-		local id = Player(player).state.identity
+		local id = Player(source).state.identity
 		local g = {} or {}
 
 		local groups = {
