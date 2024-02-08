@@ -6,6 +6,12 @@ return {
 			export = "ND_MDT.useTablet"
 		}
 	},
+
+	["cashbox"] = {
+		label = "Cash Box",
+		weight = 10000,
+		stack = false,
+	},
 	
 	["cryptostick"] = {
 		label = "Crypto Stick",
