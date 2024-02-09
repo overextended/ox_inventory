@@ -13,7 +13,13 @@ return {
 		stack = false,
 		consume = 0,
 		client = {
-			export = 'bobcat.cashbox'
+			export = 'bobcat.cashbox',
+			add = function(total)
+				TriggerEvent('bobcat:cashboxAdd')
+			end,
+			remove = function(total)
+				TriggerEvent('bobcat:cashboxRemove')
+			end,
 		}
 	},
 	
