@@ -11,6 +11,10 @@ return {
 		label = "Cash Box",
 		weight = 10000,
 		stack = false,
+		consume = 0,
+		client = {
+			export = 'bobcat.cashbox'
+		}
 	},
 	
 	["cryptostick"] = {
