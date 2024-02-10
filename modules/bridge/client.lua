@@ -27,6 +27,7 @@ end
 local Shops = require 'modules.shops.client'
 local Utils = require 'modules.utils.client'
 local Weapon = require 'modules.weapon.client'
+local Items = require 'modules.items.client'
 
 function client.onLogout()
 	if not PlayerData.loaded then return end
@@ -43,6 +44,10 @@ function client.onLogout()
 
 		point:remove()
 	end
+
+    for _, v in pairs(Items --[[@as table]]) do
+        v.count = 0
+    end
 
 	PlayerData.loaded = false
 	client.drops = nil
