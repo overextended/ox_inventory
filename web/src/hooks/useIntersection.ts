@@ -1,4 +1,4 @@
-// https://github.com/mantinedev/mantine/blob/master/src/mantine-hooks/src/use-intersection/use-intersection.ts
+// https://github.com/mantinedev/mantine/blob/master/packages/%40mantine/hooks/src/use-intersection/use-intersection.ts
 
 import { useCallback, useRef, useState } from 'react';
 
