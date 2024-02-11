@@ -28,7 +28,7 @@ import {
   useTransitionStyles,
   useTypeahead,
 } from '@floating-ui/react';
-import * as React from 'react';
+import React from 'react';
 import { useAppSelector } from '../../../store';
 
 const MenuContext = React.createContext<{
