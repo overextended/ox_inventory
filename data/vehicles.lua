@@ -4,6 +4,8 @@ return {
     -- 2    vehicle has no glovebox storage
     -- 3    vehicle has trunk in the hood
     Storage = {
+        [`ninef`] = 3,
+        [`ninef2`] = 3,
         [`jester`] = 3,
         [`adder`] = 3,
         [`osiris`] = 1,
@@ -124,7 +126,7 @@ return {
             [`mixer2`] = 'wheel_rr',
             [`judge`] = 'wheel_rr',
             [`22b`] = 'wheel_rr',
-            [`outlaw`] = 'wheel_rr'
+            [`outlaw`] = 'wheel_rr',
         }
     }
 }

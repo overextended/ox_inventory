@@ -297,6 +297,8 @@ AddEventHandler("salrp:playerSpawn", function(user_id, source, first_spawn)
 		-- {"source":3,"name":"Douglas Washington","identifier":71}
 		local id = Player(source).state.identity
 
+		while not id do Wait(1000) end
+
 		local g = {} or {}
 
 		local groups = {
