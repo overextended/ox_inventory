@@ -3,6 +3,7 @@ return {
 		items = {
 			{
 				name = 'lockpick',
+				type = 'cook',
 				ingredients = {
 					scrapmetal = 5,
 					WEAPON_HAMMER = 0.05
@@ -17,18 +18,21 @@ return {
 		},
 		zones = {
 			{
+				label = 'Random Bench #1',
 				coords = vec3(-1146.2, -2002.05, 13.2),
 				size = vec3(3.8, 1.05, 0.15),
 				distance = 1.5,
 				rotation = 315.0,
 			},
 			{
+				label = 'Random Bench #1',
 				coords = vec3(-346.1, -130.45, 39.0),
 				size = vec3(3.8, 1.05, 0.15),
 				distance = 1.5,
 				rotation = 70.0,
 			},
 		},
+		label = 'Random Bench #1',
 		blip = { id = 566, colour = 31, scale = 0.8 },
 	},
 }

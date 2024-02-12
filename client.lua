@@ -1704,8 +1704,32 @@ end)
 lib.callback.register('ox_inventory:startCrafting', function(id, recipe)
 	recipe = CraftingBenches[id].items[recipe]
 
+	local stationTypes = {
+		craft = {
+			label = 'Crafting ',
+			dict = 'anim@gangops@facility@servers@',
+			clip = 'hotwire',
+		},
+		cook = {
+			label = 'Cooking ',
+			dict = 'amb@prop_human_bbq@male@idle_a',
+			clip = 'idle_b',
+		},
+		mix = {
+			label = 'Mixing ',
+			dict = 'anim@gangops@facility@servers@',
+			clip = 'hotwire',
+		},
+		dispense = {
+			label = 'Dispensing ',
+			dict = 'anim@gangops@facility@servers@',
+			clip = 'hotwire',
+		},
+	}
+
+	local stations = stationTypes[recipe.type]
 	return lib.progressCircle({
-		label = locale('crafting_item', recipe.metadata?.label or Items[recipe.name].label),
+		label = 'Crafting ' or stations.label .. recipe.metadata?.label or Items[recipe.name].label,
 		duration = recipe.duration or 3000,
 		canCancel = true,
 		disable = {
@@ -1713,8 +1737,8 @@ lib.callback.register('ox_inventory:startCrafting', function(id, recipe)
 			combat = true,
 		},
 		anim = {
-			dict = 'anim@amb@clubhouse@tutorial@bkr_tut_ig3@',
-			clip = 'machinic_loop_mechandplayer',
+			dict = stations.dict,
+			clip = stations.clip,
 		}
 	})
 end)
