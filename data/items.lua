@@ -1698,6 +1698,14 @@ return {
 		label = 'Paper',
 		weight = 1,
 		stack = true,
+		client = {
+			add = function(total)
+				TriggerEvent('cashexchange:paycheckAdd')
+			end,
+			remove = function(total)
+				TriggerEvent('cashexchange:paycheckRemove')
+			end,
+		}
 	},
 	['ticketbook'] = {
 		label = 'Ticket Book',
