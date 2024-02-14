@@ -27,19 +27,19 @@ AddEventHandler('salrp:playerLeaveGroup', function(user_id, group, gtype)
 	inventory.player.groups[group] = 1
 end)]]
 
-server.GetPlayerFromId = function(id)
-	local identifier = Player(id).state.user_id
-	local identity = Player(id).state.identity
-	local name = identity.firstname .. " " .. identity.name
-	local source = id
-	return {
-		source = source,
-		name = name,
-		identifier = identifier
-	}
-end 
+-- server.GetPlayerFromId = function(id)
+-- 	local identifier = Player(id).state.user_id
+-- 	local identity = Player(id).state.identity
+-- 	local name = identity.firstname .. " " .. identity.name
+-- 	local source = id
+-- 	return {
+-- 		source = source,
+-- 		name = name,
+-- 		identifier = identifier
+-- 	}
+-- end 
 
-SetTimeout(1000, function()
+SetTimeout(500, function()
 	server.GetPlayerFromId = function(id)
 		local identifier = Player(id).state.user_id
 		local identity = Player(id).state.identity
@@ -57,8 +57,16 @@ SetTimeout(1000, function()
 			--print("groups", k, 1)
 		end
 
-		local jobdata = Player(source).state["salife_oxinv:jobdata"]
-		while jobdata == nil do jobdata = Player(source).state["salife_oxinv:jobdata"] Wait(0) end
+		
+		local jobdata = Player(src).state["salife_oxinv:jobdata"]
+
+		local ok = lib.waitFor(function() 
+			jobdata = Player(src).state["salife_oxinv:jobdata"]
+			return jobdata
+		end, 'failed to load jobdata for player' .. uid .. ' ' .. src, 5000)
+
+		if not ok then jobdata = {} jobdata.jobs = {} end
+
 		for k,v in pairs(jobdata.jobs)do
 			groups[k] = v.rank
 		end
@@ -69,44 +77,61 @@ SetTimeout(1000, function()
 			identifier = identifier,
 			groups = groups
 		}
-	end 
+	end
+
 	local users = SAL:getUsers()
 	for uid,src in pairs(users) do
-		--local inventory = salrp.getInventory(uid)
-		local identity = Player(uid).state.identity
+		local s,e = pcall(function()
+			--local inventory = salrp.getInventory(uid)
+			local identity = Player(src).state.identity
+			print('setup inventory for', uid, src, (identity?.firstname .. ' ' .. identity?.name) or 'idk')
+			local g = {}
 
-		local g = {}or {}
+			local groups = {
+				--[player.job.name] = player.job.grade
+			}
 
-		local groups = {
-			--[player.job.name] = player.job.grade
-		}
+			for k,v in pairs(g) do
+				groups[k] = 1
+				--print("groups", k, 1)
+			end
 
-		for k,v in pairs(g) do
-			groups[k] = 1
-			--print("groups", k, 1)
+			local jobdata = Player(src).state["salife_oxinv:jobdata"]
+
+			local ok = lib.waitFor(function() 
+				jobdata = Player(src).state["salife_oxinv:jobdata"]
+				return jobdata
+			end, 'failed to load jobdata for player' .. uid .. ' ' .. src, 5000)
+
+			if not ok then jobdata = {} jobdata.jobs = {} end
+
+			for k,v in pairs(jobdata.jobs)do
+				groups[k] = v.rank
+			end
+
+
+
+			local weight = 30000
+			while not Player(src).state["salplus"] do Wait(100) end
+			if Player(src).state["salplus"] and Player(src).state["salplus"] > 0 then
+				weight = weight + 30000
+			end
+
+			Player(src).state['ox_inventory:maxweight'] = math.floor(weight)
+
+			local id = Player(src).state.identity or {firstname = "Unknown", name = "Unknown"}
+
+			server.setPlayerInventory({source = src, identifier = uid, name = id.firstname .. " " .. id.name, groups = groups})
+			print('finished setting up inventory for', uid, src, (id.firstname .. ' ' .. id.name))
+		end)
+
+		if not s then
+			print(e)
+			print('failed to setup inventory for', uid, src)
+			if GetResourceState('discord') == 'started' then
+				exports.discord:sendWebhook('ERROR', 'Inventory', 'Failed to setup inventory for ' .. uid .. ' ' .. src, true)
+			end
 		end
-
-		local jobdata = Player(src).state["salife_oxinv:jobdata"]
-		while jobdata == nil do jobdata = Player(src).state["salife_oxinv:jobdata"] Wait(0) end
-		while jobdata == nil do Wait(0) end
-		for k,v in pairs(jobdata.jobs)do
-			groups[k] = v.rank
-		end
-
-
-
-		local weight = 30000
-		while not Player(src).state["salplus"] do Wait(100) end
-		if Player(src).state["salplus"] and Player(src).state["salplus"] > 0 then
-			weight = weight + 30000
-		end
-		--local str = exports.salife_oxinv:getSkillLvl(src, 'strength')
-		--weight = weight + (str * 200)
-		Player(src).state['ox_inventory:maxweight'] = math.floor(weight)
-
-		local id = Player(src).state.identity or {firstname = "Unknown", name = "Unknown"}
-
-		server.setPlayerInventory({source = src, identifier = uid, name = id.firstname .. " " .. id.name, groups = groups})
 	end
 end)
 
