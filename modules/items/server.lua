@@ -21,6 +21,23 @@ local trash = {
 	{description = 'An empty chips bag.', weight = 5, image = 'trash_chips'},
 }
 
+local rarities = {
+	common = 50,
+	uncommon = 30,
+	rare = 15,
+	epic = 4,
+	legendary = 1,
+}
+
+function generateRandomRarity()
+	local items = {}
+	for rarity, amt in pairs(rarities) do
+		items[#items+1] = rarity
+	end
+
+	return items[math.random(#items)]
+end
+
 ---@param _ table?
 ---@param name string?
 ---@return table?
@@ -316,6 +333,16 @@ function Items.Metadata(inv, item, metadata, count)
 
 		if not metadata.durability then
 			metadata = setItemDurability(ItemList[item.name], metadata)
+		end
+
+		math.randomseed(os.time(), os.time())
+
+		
+		if item.rarity then
+			if item.rarity == 'random' then
+				item.rarity = generateRandomRarity()
+			end
+			metadata.rarity = item.rarity
 		end
 	end
 
