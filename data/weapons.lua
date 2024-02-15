@@ -1,6 +1,12 @@
 return {
 	Weapons = {
 
+		['WEAPON_FLAMETHROWER'] = {
+			label = 'Flamethrower',
+			weight = 2000,
+			durability = 0.0001,
+			ammo = 'ammo-9'
+		},
 		['WEAPON_PICKAXE'] = {
 			label = 'Pickaxe',
 			weight = 800,
