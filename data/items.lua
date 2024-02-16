@@ -2881,7 +2881,7 @@ return {
 	},
 
 	['clothingslot'] = {
-		name = 'Clothing Slot',
+		label = 'Clothing Slot',
 		consume = false,
 		weight = 0,
 		stack = false,
