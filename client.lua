@@ -1451,6 +1451,14 @@ RegisterNetEvent('ox_inventory:setPlayerInventory', function(currentDrops, inven
 							if currentAmmo <= 0 then
 								SetPedInfiniteAmmo(playerPed, false, currentWeapon.hash)
 							end
+						elseif currentWeapon.group == `GROUP_FLAMETHROWER` or currentWeapon.group == -1569042529 then
+							currentAmmo = weaponAmmo --- durabilityDrain < 0 and 0 or weaponAmmo - durabilityDrain
+							-- currentWeapon.metadata.durability = currentAmmo
+							-- currentWeapon.metadata.ammo = (weaponAmmo < currentAmmo) and 0 or currentAmmo
+
+							if currentAmmo <= 0 then
+								SetPedInfiniteAmmo(playerPed, false, currentWeapon.hash)
+							end
 						else
 							currentAmmo = GetAmmoInPedWeapon(playerPed, currentWeapon.hash)
 

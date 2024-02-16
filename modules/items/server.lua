@@ -306,7 +306,7 @@ function Items.Metadata(inv, item, metadata, count)
 			metadata.serial = GenerateSerial(metadata.serial)
 		end
 
-		if item.hash == `WEAPON_PETROLCAN` or item.hash == `WEAPON_HAZARDCAN` or item.hash == `WEAPON_FERTILIZERCAN` or item.hash == `WEAPON_FIREEXTINGUISHER` then
+		if item.hash == `WEAPON_PETROLCAN` or item.hash == `WEAPON_HAZARDCAN` or item.hash == `WEAPON_FERTILIZERCAN` or item.hash == `WEAPON_FIREEXTINGUISHER` or item.hash == `WEAPON_FLAMETHROWER` then
 			metadata.ammo = metadata.durability
 		end
 	else

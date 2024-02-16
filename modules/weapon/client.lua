@@ -45,6 +45,8 @@ function Weapon.Equip(item, data)
 	item.throwable = data.throwable
 	item.group = GetWeapontypeGroup(item.hash)
 
+	print(item.group, ' cheeks')
+
 	GiveWeaponToPed(playerPed, data.hash, 0, false, true)
 
 	if item.metadata.tint then SetPedWeaponTintIndex(playerPed, data.hash, item.metadata.tint) end
@@ -80,7 +82,7 @@ function Weapon.Equip(item, data)
 	SetPedAmmo(playerPed, data.hash, ammo)
 	SetTimeout(0, function() RefillAmmoInstantly(playerPed) end)
 
-	if item.group == `GROUP_PETROLCAN` or item.group == `GROUP_FIREEXTINGUISHER` then
+	if item.group == `GROUP_PETROLCAN` or item.group == `GROUP_FIREEXTINGUISHER` or item.group == `GROUP_FLAMETHROWER` then
 		item.metadata.ammo = item.metadata.durability
 		SetPedInfiniteAmmo(playerPed, true, data.hash)
 	end
