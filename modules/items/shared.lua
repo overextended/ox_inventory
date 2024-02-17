@@ -7,6 +7,12 @@ end
 local ItemList = {}
 local isServer = IsDuplicityVersion()
 
+local function setImagePath(path)
+    if path then
+        return path:match('^[%w]+://') and path or ('%s/%s'):format(client.imagepath, path)
+    end
+end
+
 ---@param data OxItem
 local function newItem(data)
 	data.weight = data.weight or 0
@@ -55,9 +61,7 @@ local function newItem(data)
             data.export = useExport(string.strsplit('.', clientData.export))
         end
 
-        if clientData.image then
-            clientData.image = clientData.image:match('^[%w]+://') and clientData.image or ('%s/%s'):format(client.imagepath, clientData.image)
-        end
+        clientData.image = setImagePath(clientData.image)
 
         if clientData.propTwo then
             clientData.prop = clientData.prop and { clientData.prop, clientData.propTwo } or clientData.propTwo
@@ -94,7 +98,7 @@ for type, data in pairs(lib.load('data.weapons')) do
 			local clientData = v.client
 
 			if clientData?.image then
-				clientData.image = clientData.image:match('^[%w]+://') and ('url(%s)'):format(clientData.image) or ('url(%s/%s)'):format(client.imagepath, clientData.image)
+                clientData.image = setImagePath(clientData.image)
 			end
 		end
 
