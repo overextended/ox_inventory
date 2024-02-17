@@ -1455,7 +1455,7 @@ local function CustomDrop(prefix, items, coords, slots, maxWeight, instance, mod
 	inventory.items, inventory.weight = generateItems(inventory, 'drop', items)
 	inventory.coords = coords
 
-    if time then
+    if clearTime then
 		inventory.time = os.time() - clearTime * 60
 	end
     
