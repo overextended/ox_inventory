@@ -19,14 +19,14 @@ return {
 	},
 
 	{
-		coords = vec3(301.3, -600.23, 43.28),
+		coords = vec3(309.0, -586.0, 38.0),
 		target = {
-			loc = vec3(301.82, -600.99, 43.29),
-			length = 0.6,
+			loc = vec3(309.0, -586.0, 38.0),
+			length = 1.5,
 			width = 1.8,
 			heading = 340,
-			minZ = 43.34,
-			maxZ = 44.74,
+			minZ = 37.8,
+			maxZ = 38.3,
 			label = 'Open personal locker'
 		},
 		name = 'emslocker',

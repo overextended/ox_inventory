@@ -1,3 +1,5 @@
+local pedlocation = Config.pedlocation
+
 return {
 	General = {
 		name = 'Shop',
@@ -129,31 +131,47 @@ return {
 		groups = {
 			['ambulance'] = 0
 		},
-		blip = {
-			id = 403, colour = 69, scale = 0.8
-		}, inventory = {
-			{ name = 'medikit', price = 26 },
-			{ name = 'bandage', price = 5 }
+		inventory = {
+			{ name = 'field_dressing', price = 0 },
+			{ name = 'packing_bandage', price = 0 },
+			{ name = 'elastic_bandage', price = 0 },
+			{ name = 'quickclot', price = 0 },
+			{ name = 'tourniquet', price = 0 },
+			{ name = 'surgical_kit', price = 0 },
+			{ name = 'defibrillator', price = 0 },
+			{ name = 'ecg_monitor', price = 0 },
+			{ name = 'bodybag', price = 0 },
+			{ name = 'emergency_revive_kit', price = 0 },
+			{ name = 'morphine', price = 0 },
+			{ name = 'epinephrine', price = 0 },
+			{ name = 'fentanyl', price = 0 },
+			{ name = 'propofol_100', price = 0 },
+			{ name = 'propofol_250', price = 0 },
+			{ name = 'blood_100', price = 0 },
+			{ name = 'blood_250', price = 0 },
+			{ name = 'blood_500', price = 0 },
+			{ name = 'blood_750', price = 0 },
+			{ name = 'blood_1000', price = 0 },
 		}, locations = {
-			vec3(306.3687, -601.5139, 43.28406)
+			vec3(328.0, -584.0, 43.0)
 		}, targets = {
-
+			{loc = vec3(328.0, -584.0, 43.0), length = 2.5, width = 2.5, heading = 344.0, minZ = 43.20, maxZ = 43.9, distance = 2.0}
 		}
 	},
 
 	BlackMarketArms = {
-		name = 'Black Market (Arms)',
+		name = 'Black Market',
 		inventory = {
-			{ name = 'WEAPON_DAGGER', price = 5000, metadata = { registered = false	}, currency = 'black_money' },
-			{ name = 'WEAPON_CERAMICPISTOL', price = 50000, metadata = { registered = false }, currency = 'black_money' },
-			{ name = 'at_suppressor_light', price = 50000, currency = 'black_money' },
-			{ name = 'ammo-rifle', price = 1000, currency = 'black_money' },
-			{ name = 'ammo-rifle2', price = 1000, currency = 'black_money' }
+			{ name = 'lockpick', price = 50, currency = 'cash' },
+			{ name = 'red_sd_card', price = 1000, currency = 'cash' },
+			{ name = 'hackingdevice', price = 4000, currency = 'cash' },
+			{ name = 'gpshackingdevice', price = 5000, currency = 'cash' },
 		}, locations = {
-			vec3(309.09, -913.75, 56.46)
+			vec3(pedlocation.x, pedlocation.y, pedlocation.z - 10)
 		}, targets = {
-
-		}
+			
+		},
+		
 	},
 
 	VendingMachineDrinks = {
