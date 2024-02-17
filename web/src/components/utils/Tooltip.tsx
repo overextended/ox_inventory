@@ -1,15 +1,10 @@
-import React, { useRef } from 'react';
 import { flip, FloatingPortal, offset, shift, useFloating, useTransitionStyles } from '@floating-ui/react';
+import React, { useEffect } from 'react';
 import { useAppSelector } from '../../store';
 import SlotTooltip from '../inventory/SlotTooltip';
-import { useDebounce } from '../../hooks/useDebounce';
 
 const Tooltip: React.FC = () => {
   const hoverData = useAppSelector((state) => state.tooltip);
-  const debounce = useDebounce(hoverData.open, 500);
-  const [open, setOpen] = React.useState(false);
-  const openTimer = useRef<NodeJS.Timer | null>(null);
-  const canOpen = useRef(false);
 
   const { refs, context, floatingStyles } = useFloating({
     middleware: [flip(), shift(), offset({ mainAxis: 10, crossAxis: 10 })],
@@ -38,7 +33,7 @@ const Tooltip: React.FC = () => {
     });
   };
 
-  React.useEffect(() => {
+  useEffect(() => {
     window.addEventListener('mousemove', handleMouseMove);
 
     return () => {

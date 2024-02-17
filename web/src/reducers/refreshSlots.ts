@@ -1,9 +1,8 @@
 import { CaseReducer, PayloadAction } from '@reduxjs/toolkit';
 import { itemDurability } from '../helpers';
+import { inventorySlice } from '../store/inventory';
 import { Items } from '../store/items';
 import { InventoryType, Slot, State } from '../typings';
-import { inventorySlice } from '../store/inventory';
-import RightInventory from '../components/inventory/RightInventory';
 
 export type ItemsPayload = { item: Slot; inventory?: InventoryType };
 
