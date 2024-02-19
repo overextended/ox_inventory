@@ -1,4 +1,11 @@
 return {
+	['tintchecker'] = {
+		label = 'Tint Checker',
+		weight = 500,
+		client = {
+			export = 'policetools.tintchecker'
+		},
+	},
 	["mdt"] = {
 		label = "MDT",
 		weight = 800,
