@@ -40,7 +40,7 @@ end
 local function setupPlayer(Player)
 	Player.PlayerData.inventory = Player.PlayerData.items
 	Player.PlayerData.identifier = Player.PlayerData.citizenid
-
+	Player.PlayerData.name = ('%s %s'):format(Player.PlayerData.charinfo.firstname, Player.PlayerData.charinfo.lastname)
 	server.setPlayerInventory(Player.PlayerData)
 
 	Inventory.SetItem(Player.PlayerData.source, 'money', Player.PlayerData.money.cash)
