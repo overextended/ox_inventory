@@ -1223,8 +1223,10 @@ exports('Search', Inventory.Search)
 ---@param item table | string
 ---@param metadata? table
 function Inventory.GetItemSlots(inv, item, metadata)
-	inv = Inventory(inv) --[[@as OxInventory]]
+	if type(item) ~= 'table' then item = Items(item) end
+	if not item then return end
 
+	inv = Inventory(inv) --[[@as OxInventory]]
 	if not inv?.slots then return end
 
 	local totalCount, slots, emptySlots = 0, {}, inv.slots
