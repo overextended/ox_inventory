@@ -1,3 +1,4 @@
+# This fork is for use with the (upcoming) Velocity Roleplay server, if you are interested in more information please visit [Velocity Discord](https://discord.gg/velocity-rp)
 <div align='center'><img src='https://user-images.githubusercontent.com/65407488/147992899-93998c0a-75fb-4055-8c06-8da8c49342d6.png'/>
 <h2><a href='https://overextended.dev/ox_inventory'>Documentation</a></h3></div>
 
