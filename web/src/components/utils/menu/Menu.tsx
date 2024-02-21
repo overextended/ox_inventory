@@ -28,7 +28,7 @@ import {
   useTransitionStyles,
   useTypeahead,
 } from '@floating-ui/react';
-import * as React from 'react';
+import React, { useContext, useEffect, useRef, useState } from 'react';
 import { useAppSelector } from '../../../store';
 
 const MenuContext = React.createContext<{
@@ -54,13 +54,13 @@ interface MenuProps {
 export const MenuComponent = React.forwardRef<HTMLButtonElement, MenuProps & React.HTMLProps<HTMLButtonElement>>(
   ({ children, label, ...props }, forwardedRef) => {
     const menu = useAppSelector((state) => state.contextMenu);
-    const [isOpen, setIsOpen] = React.useState(false);
-    const [hasFocusInside, setHasFocusInside] = React.useState(false);
-    const [activeIndex, setActiveIndex] = React.useState<number | null>(null);
+    const [isOpen, setIsOpen] = useState(false);
+    const [hasFocusInside, setHasFocusInside] = useState(false);
+    const [activeIndex, setActiveIndex] = useState<number | null>(null);
 
-    const elementsRef = React.useRef<Array<HTMLButtonElement | null>>([]);
-    const labelsRef = React.useRef<Array<string | null>>([]);
-    const parent = React.useContext(MenuContext);
+    const elementsRef = useRef<Array<HTMLButtonElement | null>>([]);
+    const labelsRef = useRef<Array<string | null>>([]);
+    const parent = useContext(MenuContext);
 
     const tree = useFloatingTree();
     const nodeId = useFloatingNodeId();
@@ -80,7 +80,7 @@ export const MenuComponent = React.forwardRef<HTMLButtonElement, MenuProps & Rea
 
     const { isMounted, styles } = useTransitionStyles(context);
 
-    React.useEffect(() => {
+    useEffect(() => {
       if (isNested) return;
       if (menu.coords) {
         refs.setPositionReference({
@@ -142,7 +142,7 @@ export const MenuComponent = React.forwardRef<HTMLButtonElement, MenuProps & Rea
     // Event emitter allows you to communicate across tree components.
     // This effect closes all menus when an item gets clicked anywhere
     // in the tree.
-    React.useEffect(() => {
+    useEffect(() => {
       if (!tree) return;
 
       function handleTreeClick() {
@@ -164,7 +164,7 @@ export const MenuComponent = React.forwardRef<HTMLButtonElement, MenuProps & Rea
       };
     }, [tree, nodeId, parentId]);
 
-    React.useEffect(() => {
+    useEffect(() => {
       if (isOpen && tree) {
         tree.events.emit('menuopen', { parentId, nodeId });
       }
@@ -242,7 +242,7 @@ export const MenuItem = React.forwardRef<
   HTMLButtonElement,
   MenuItemProps & React.ButtonHTMLAttributes<HTMLButtonElement>
 >(({ label, disabled, ...props }, forwardedRef) => {
-  const menu = React.useContext(MenuContext);
+  const menu = useContext(MenuContext);
   const item = useListItem({ label: disabled ? null : label });
   const tree = useFloatingTree();
   const isActive = item.index === menu.activeIndex;

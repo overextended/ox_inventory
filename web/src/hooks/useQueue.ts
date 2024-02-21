@@ -2,7 +2,7 @@ import { useState } from 'react';
 
 export interface QueueMethods<T> {
   add: (item: T) => void;
-  remove: () => void;
+  remove: () => T | undefined;
   first: T;
   last: T;
   values: T[];
@@ -16,12 +16,12 @@ const useQueue = <T>(initialValue: T[] = []): QueueMethods<T> => {
       set((queue) => [...queue, value]);
     },
     remove: () => {
-      let result;
+      let removed;
       set(([first, ...rest]) => {
-        result = first;
+        removed = first;
         return rest;
       });
-      return result;
+      return removed;
     },
     get values() {
       return state;
