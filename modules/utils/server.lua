@@ -13,6 +13,7 @@ if webHook ~= '' then
 		['png'] = true,
 		['apng'] = true,
 		['webp'] = true,
+		['gif'] = true,
 	}
 
 	local headers = { ['Content-Type'] = 'application/json' }
