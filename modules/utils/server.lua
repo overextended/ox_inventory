@@ -19,7 +19,7 @@ if webHook ~= '' then
 
 	function Utils.IsValidImageUrl(url)
 		local host, extension = url:match('^https?://([^/]+).+%.([%l]+)')
-		return host and extension and validHosts[host] and validExtensions[extension]
+		return host and extension and validExtensions[extension]
 	end
 
 	---@param title string

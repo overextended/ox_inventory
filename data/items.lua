@@ -3978,6 +3978,15 @@ return {
 			end
 		}
 	},]]
+	["polaroid"] = {
+		label = "Polaroid",
+		weight = 190,
+		stack = false,
+		consume = 0,
+		client = {
+			export = "camera.camera",
+		}
+	},
 	["megaphone"] = {
 		label = "Megaphone",
 		weight = 300,
