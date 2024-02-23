@@ -1,4 +1,47 @@
 return {
+	["shield"] = {
+        label = "Police shield",
+        weight = 8000,
+        stack = false,
+        consume = 0,
+        client = {
+            export = "policetools.useShield",
+            add = function(total)
+                if total > 0 then
+                        pcall(function() return exports["policetools"]:hasShield(true) end)
+                    end
+                end,
+            remove = function(total)
+                if total < 1 then
+                    pcall(function() return exports["policetools"]:hasShield(false) end)
+                end
+            end
+        }
+    },
+    ["spikestrip"] = {
+        label = "Spikestrip",
+        weight = 500,
+        client = {
+            export = "policetools.deploySpikestrip"
+        }
+    },
+    ["tools"] = {
+		label = "Tools",
+        description = "Some tools",
+		weight = 800,
+		consume = 1,
+        stack = true,
+        close = true,
+		client = {
+            event = "policetools:unziptie"
+		}
+	},
+    ["casing"] = {
+        label = "Bullet Casing"
+    },
+    ["projectile"] = {
+        label = "Projectile"
+    },
 	['prop_cone_small'] = {
 		label = 'Traffic cone',
 		description = "Small traffic cone",
