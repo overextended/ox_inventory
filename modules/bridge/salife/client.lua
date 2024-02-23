@@ -1,17 +1,7 @@
-local Tunnel = module("salrp", "lib/Tunnel")
-local Proxy = module("salrp", "lib/Proxy")
-
-salrpi = {}
-salrp = Proxy.getInterface("salrp")
-salrpclient = Tunnel.getInterface("salrp", "ox_inventory")
-Iclient = Tunnel.getInterface("ox_inventory")
-Tunnel.bindInterface("ox_inventory",salrpi)
-Proxy.addInterface("ox_inventory",salrpi)
-
-
 local onLogout = ...
 
-RegisterNetEvent('salrp:playerLeave', onLogout)
+RegisterNetEvent('salrp:playerLeave', client.onLogout)
+RegisterNetEvent('salrp:playerLeave:client', client.onLogout)
 
 function client.setPlayerStatus(values)
 	for name, value in pairs(values) do
@@ -31,4 +21,10 @@ function client.setPlayerStatus(values)
 			TriggerServerEvent("salife-survival:varyHigh", GetPlayerServerId(PlayerId()),value)
 		end
 	end
+end
+
+function client.hasGroup(group)
+	local group = group
+	local rank = exports.salife_oxinv:CheckForJobsRanks(group)
+	return rank
 end
