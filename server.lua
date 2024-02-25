@@ -22,37 +22,39 @@ require 'modules.shops.server'
 function server.setPlayerInventory(player, data)
 	while not shared.ready do Wait(0) end
 
-	if not data then
-		data = db.loadPlayer(player.identifier)
-	end
+    local inventory = {}
+    local totalWeight = 0
 
-	local inventory = {}
-	local totalWeight = 0
+    if server.db then
+        if not data then
+            data = db.loadPlayer(player.identifier)
+        end
 
-	if data and next(data) then
-		local ostime = os.time()
+        if data and next(data) then
+            local ostime = os.time()
 
-		for _, v in pairs(data) do
-			if type(v) == 'number' or not v.count or not v.slot then
-				if server.convertInventory then
-					inventory, totalWeight = server.convertInventory(player.source, data)
-					break
-				else
-					return error(('Inventory for player.%s (%s) contains invalid data. Ensure you have converted inventories to the correct format.'):format(player.source, GetPlayerName(player.source)))
-				end
-			else
-				local item = Items(v.name)
+            for _, v in pairs(data) do
+                if type(v) == 'number' or not v.count or not v.slot then
+                    if server.convertInventory then
+                        inventory, totalWeight = server.convertInventory(player.source, data)
+                        break
+                    else
+                        return error(('Inventory for player.%s (%s) contains invalid data. Ensure you have converted inventories to the correct format.'):format(player.source, GetPlayerName(player.source)))
+                    end
+                else
+                    local item = Items(v.name)
 
-				if item then
-					v.metadata = Items.CheckMetadata(v.metadata or {}, item, v.name, ostime)
-					local weight = Inventory.SlotWeight(item, v)
-					totalWeight = totalWeight + weight
+                    if item then
+                        v.metadata = Items.CheckMetadata(v.metadata or {}, item, v.name, ostime)
+                        local weight = Inventory.SlotWeight(item, v)
+                        totalWeight = totalWeight + weight
 
-					inventory[v.slot] = {name = item.name, label = item.label, weight = weight, slot = v.slot, count = v.count, description = item.description, metadata = v.metadata, stack = item.stack, close = item.close}
-				end
-			end
-		end
-	end
+                        inventory[v.slot] = {name = item.name, label = item.label, weight = weight, slot = v.slot, count = v.count, description = item.description, metadata = v.metadata, stack = item.stack, close = item.close}
+                    end
+                end
+            end
+        end
+    end
 
 	player.source = tonumber(player.source)
 	local inv = Inventory.Create(player.source, player.name, 'player', shared.playerslots, totalWeight, shared.playerweight, player.identifier, inventory)
