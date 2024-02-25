@@ -496,7 +496,7 @@ local function hasActiveInventory(playerId, owner)
 			end
 
 			Inventory.CloseAll(inventory)
-			db.savePlayer(owner, json.encode(inventory:minimal()))
+			if server.db then db.savePlayer(owner, json.encode(inventory:minimal())) end
 			Inventory.Remove(inventory)
 			Wait(100)
 		end
@@ -536,7 +536,7 @@ RegisterCommand('clearActiveIdentifier', function(source, args)
     end
 
     Inventory.CloseAll(inventory)
-    db.savePlayer(inventory.owner, json.encode(inventory:minimal()))
+    if server.db then db.savePlayer(inventory.owner, json.encode(inventory:minimal())) end
     Inventory.Remove(inventory)
 end, true)
 
@@ -669,6 +669,7 @@ end
 exports('UpdateVehicle', Inventory.UpdateVehicle)
 
 function Inventory.Save(inv)
+    if not server.db then return end
 	inv = Inventory(inv) --[[@as OxInventory]]
 
 	if not inv or inv.datastore then return end
@@ -1925,7 +1926,7 @@ function Inventory.Confiscate(source)
 	local inv = Inventories[source]
 
 	if inv?.player then
-		db.saveStash(inv.owner, inv.owner, json.encode(minimal(inv)))
+		if server.db then db.saveStash(inv.owner, inv.owner, json.encode(minimal(inv))) end
 		table.wipe(inv.items)
 		inv.weight = 0
 		inv.changed = true
@@ -2317,10 +2318,12 @@ local function saveInventories(clearInventories)
 end
 
 lib.cron.new('*/5 * * * *', function()
+    if not server.db then return end
     saveInventories(true)
 end)
 
 function Inventory.SaveInventories(lock, clearInventories)
+    if not server.db then return end
 	Inventory.Lock = lock or nil
 
 	Inventory.CloseAll()
