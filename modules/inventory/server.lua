@@ -1055,6 +1055,7 @@ exports('SetMaxWeight', Inventory.SetMaxWeight)
 ---@param cb? fun(success?: boolean, response: string|SlotWithItem|nil)
 ---@return boolean? success, string|SlotWithItem|nil response
 function Inventory.AddItem(inv, item, count, metadata, slot, cb)
+    if Inventory.CanCarryItem(inv, item, count, metadata) then
 	if type(item) ~= 'table' then item = Items(item) end
 
 	if not item then return false, 'invalid_item' end
@@ -1164,6 +1165,7 @@ function Inventory.AddItem(inv, item, count, metadata, slot, cb)
 	end
 
 	return success, response
+    end
 end
 
 exports('AddItem', Inventory.AddItem)
