@@ -409,7 +409,7 @@ end
 
 ---@param data table
 ---@param cb fun(response: SlotWithItem | false)?
----@param noAnim boolean
+---@param noAnim? boolean
 local function useItem(data, cb, noAnim)
 	local slotData, result = PlayerData.inventory[data.slot]
 
