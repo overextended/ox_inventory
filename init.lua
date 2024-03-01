@@ -81,6 +81,7 @@ else
         giveplayerlist = GetConvarInt('inventory:giveplayerlist', 0) == 1,
         weaponanims = GetConvarInt('inventory:weaponanims', 1) == 1,
         itemnotify = GetConvarInt('inventory:itemnotify', 1) == 1,
+        weaponnotify = GetConvarInt('inventory:weaponnotify', 1) == 1,
         imagepath = GetConvar('inventory:imagepath', 'nui://ox_inventory/web/images'),
         dropprops = GetConvarInt('inventory:dropprops', 0) == 1,
         dropmodel = joaat(GetConvar('inventory:dropmodel', 'prop_med_bag_01b')),
