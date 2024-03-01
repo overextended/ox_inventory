@@ -2270,7 +2270,6 @@ local inventoryClearTime = GetConvarInt('inventory:cleartime', 5) * 60
 local function saveInventories(clearInventories)
 	if isSaving then return end
 
-	isSaving = true
 	local time = os.time()
 	local parameters = { {}, {}, {}, {} }
 	local total = { 0, 0, 0, 0, 0 }
@@ -2295,10 +2294,12 @@ local function saveInventories(clearInventories)
 	end
 
     if total[5] > 0 then
-	    db.saveInventories(parameters[1], parameters[2], parameters[3], parameters[4], total)
-    end
+        isSaving = true
+        local ok, err = pcall(db.saveInventories, parameters[1], parameters[2], parameters[3], parameters[4], total)
+        isSaving = false
 
-	isSaving = false
+        if not ok and err then return lib.print.error(err) end
+    end
 
     if not clearInventories then return end
 
