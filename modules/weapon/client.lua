@@ -95,7 +95,7 @@ function Weapon.Disarm(currentWeapon, noAnim)
 	if currentWeapon?.timer then
 		currentWeapon.timer = nil
 
-		if source == '' then
+		if not source then
 			TriggerServerEvent('ox_inventory:updateWeapon')
 		end
 
