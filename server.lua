@@ -164,6 +164,7 @@ local function openInventory(source, invType, data, ignoreSecurityChecks)
 		}
 
 		if invType == 'container' then hookPayload.slot = left.containerSlot end
+		if data.netid then hookPayload.netid = data.netid end
 
 		if not TriggerEventHooks('openInventory', hookPayload) then return end
 
