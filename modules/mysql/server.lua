@@ -196,7 +196,7 @@ function db.saveInventories(players, trunks, gloveboxes, stashes, total)
             pending -= 1
 
             if resp then
-                shared.info(saveStr:format('players', countRows(resp), total[1], (os.nanotime() - start) / 1e6))
+                shared.info(saveStr:format(countRows(resp), total[1], 'players', (os.nanotime() - start) / 1e6))
             end
         end)
     end
@@ -209,7 +209,7 @@ function db.saveInventories(players, trunks, gloveboxes, stashes, total)
             pending -= 1
 
             if resp then
-                shared.info(saveStr:format('trunks', countRows(resp), total[2], (os.nanotime() - start) / 1e6))
+                shared.info(saveStr:format(countRows(resp), total[2], 'trunks', (os.nanotime() - start) / 1e6))
             end
         end)
     end
@@ -222,7 +222,7 @@ function db.saveInventories(players, trunks, gloveboxes, stashes, total)
             pending -= 1
 
             if resp then
-                shared.info(saveStr:format('gloveboxes', countRows(resp), total[3], (os.nanotime() - start) / 1e6))
+                shared.info(saveStr:format(countRows(resp), total[3], 'gloveboxes', (os.nanotime() - start) / 1e6))
             end
         end)
     end
@@ -247,7 +247,7 @@ function db.saveInventories(players, trunks, gloveboxes, stashes, total)
                         affectedRows -= tonumber(resp.info:match('Duplicates: (%d+)'), 10) or 0
                     end
 
-                    shared.info(saveStr:format('stashes', affectedRows, total[4], (os.nanotime() - start) / 1e6))
+                    shared.info(saveStr:format(affectedRows, total[4], 'stashes', (os.nanotime() - start) / 1e6))
                 end
             end)
         else
