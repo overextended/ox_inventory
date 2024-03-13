@@ -48,12 +48,14 @@ function server.playerDropped(source)
 	end
 end
 
-local success, result = pcall(lib.load, ('modules.bridge.%s.server'):format(shared.framework))
+if shared.framework ~= 'none' then
+    local success, result = pcall(lib.load, ('modules.bridge.%s.server'):format(shared.framework))
 
-if not success then
-    lib.print.error(result)
-    lib = nil
-    return
+    if not success then
+        lib.print.error(result)
+        lib = nil
+        return
+    end
 end
 
 if server.convertInventory then exports('ConvertItems', server.convertInventory) end

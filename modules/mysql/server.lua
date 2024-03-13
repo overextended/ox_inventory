@@ -1,4 +1,4 @@
-if not lib then return end
+if not lib or not server.db then return end
 
 local Query = {
     SELECT_STASH = 'SELECT data FROM ox_inventory WHERE owner = ? AND name = ?',
