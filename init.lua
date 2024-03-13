@@ -36,10 +36,15 @@ do
 end
 
 if IsDuplicityVersion() then
+	-- Try and get convars for random loot
+	-- Note: randomloot will be overriden by randomdumpsterloot / randomvehicleloot if present
 	local randomLootConvar = GetConvarInt('inventory:randomloot', 1)
 	local randomDumpsterLootConvar = GetConvarInt('inventory:randomdumpsterloot', -1)
 	local randomVehicleLootConvar = GetConvarInt('inventory:randomvehicleloot', -1)
 
+	-- Check if default value was received from the new convars
+	--    If default: check for backwards compatible randomloot convar
+	--    Else: check for specific enabling / disabling
 	local useRandomDumpsterLoot = randomDumpsterLootConvar == -1
 		and randomLootConvar == 1
 		or randomDumpsterLootConvar == 1
