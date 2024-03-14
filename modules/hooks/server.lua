@@ -41,7 +41,7 @@ local function TriggerEventHooks(event, payload)
         for i = 1, #hooks do
 			local hook = hooks[i]
 
-			if hook.itemFilter and not itemFilter(hook.itemFilter, (event ~= 'buyItem' and payload.fromSlot) or payload.item or payload.itemName or payload.recipe, payload.toSlot) then
+			if hook.itemFilter and not itemFilter(hook.itemFilter, payload.fromSlot or payload.item or payload.itemName or payload.recipe, payload.toSlot) then
 				goto skipLoop
 			end
 
