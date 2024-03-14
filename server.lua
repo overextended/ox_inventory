@@ -29,7 +29,7 @@ function server.setPlayerInventory(player, data)
 	local inventory = {}
 	local totalWeight = 0
 
-	if data and next(data) then
+	if type(data) == 'table' then
 		local ostime = os.time()
 
 		for _, v in pairs(data) do
