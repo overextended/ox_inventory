@@ -1218,9 +1218,11 @@ function Inventory.Search(inv, search, items, metadata)
 	return false
 end
 exports('Search', Inventory.Search)
+
 ---@param inv inventory
 ---@param item table | string
 ---@param metadata? table
+---@param strict? boolean
 function Inventory.GetItemSlots(inv, item, metadata, strict)
 	if type(item) ~= 'table' then item = Items(item) end
 	if not item then return end
@@ -1255,8 +1257,9 @@ exports('GetItemSlots', Inventory.GetItemSlots)
 ---@param metadata? table | string
 ---@param slot? number
 ---@param ignoreTotal? boolean
+---@param strict? boolean
 ---@return boolean? success, string? response
-function Inventory.RemoveItem(inv, item, count, metadata, slot, ignoreTotal)
+function Inventory.RemoveItem(inv, item, count, metadata, slot, ignoreTotal, strict)
 	if type(item) ~= 'table' then item = Items(item) end
 
 	if not item then return false, 'invalid_item' end
@@ -1269,7 +1272,7 @@ function Inventory.RemoveItem(inv, item, count, metadata, slot, ignoreTotal)
 		if not inv?.slots then return false, 'invalid_inventory' end
 
 		metadata = assertMetadata(metadata)
-		local itemSlots, totalCount = Inventory.GetItemSlots(inv, item, metadata)
+		local itemSlots, totalCount = Inventory.GetItemSlots(inv, item, metadata, strict)
 
 		if not itemSlots then return false end
 
