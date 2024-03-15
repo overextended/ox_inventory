@@ -1232,6 +1232,7 @@ function Inventory.GetItemSlots(inv, item, metadata, strict)
 
 	local totalCount, slots, emptySlots = 0, {}, inv.slots
 
+	if strict == nil then strict = true end
 	local tablematch = strict and table.matches or table.contains
 
 	for k, v in pairs(inv.items) do
@@ -1272,6 +1273,7 @@ function Inventory.RemoveItem(inv, item, count, metadata, slot, ignoreTotal, str
 		if not inv?.slots then return false, 'invalid_inventory' end
 
 		metadata = assertMetadata(metadata)
+		if strict == nil then strict = true end
 		local itemSlots, totalCount = Inventory.GetItemSlots(inv, item, metadata, strict)
 
 		if not itemSlots then return false end
