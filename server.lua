@@ -112,10 +112,11 @@ local function openInventory(source, invType, data, ignoreSecurityChecks)
     end
 
 	if data then
+        local isDataTable = type(data) == 'table'
 		if invType == 'stash' then
 			right = Inventory(data, left)
 			if right == false then return false end
-		elseif type(data) == 'table' then
+		elseif isDataTable then
 			if data.netid then
 				data.type = invType
 				right = Inventory(data)
@@ -164,7 +165,7 @@ local function openInventory(source, invType, data, ignoreSecurityChecks)
 		}
 
 		if invType == 'container' then hookPayload.slot = left.containerSlot end
-		if data.netid then hookPayload.netId = data.netid end
+		if isDataTable and data.netid then hookPayload.netId = data.netid end
 
 		if not TriggerEventHooks('openInventory', hookPayload) then return end
 
