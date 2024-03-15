@@ -1218,11 +1218,10 @@ function Inventory.Search(inv, search, items, metadata)
 	return false
 end
 exports('Search', Inventory.Search)
-
 ---@param inv inventory
 ---@param item table | string
 ---@param metadata? table
-function Inventory.GetItemSlots(inv, item, metadata)
+function Inventory.GetItemSlots(inv, item, metadata, strict)
 	if type(item) ~= 'table' then item = Items(item) end
 	if not item then return end
 
@@ -1231,13 +1230,15 @@ function Inventory.GetItemSlots(inv, item, metadata)
 
 	local totalCount, slots, emptySlots = 0, {}, inv.slots
 
+	local tablematch = strict and table.matches or table.contains
+
 	for k, v in pairs(inv.items) do
 		emptySlots -= 1
 		if v.name == item.name then
 			if metadata and v.metadata == nil then
 				v.metadata = {}
 			end
-			if not metadata or table.matches(v.metadata, metadata) then
+			if not metadata or tablematch(v.metadata, metadata) then
 				totalCount = totalCount + v.count
 				slots[k] = v.count
 			end
