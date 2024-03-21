@@ -1448,7 +1448,7 @@ local function generateInvId(prefix)
 	end
 end
 
-local function CustomDrop(prefix, items, coords, slots, maxWeight, instance, model)
+local function CustomDrop(prefix, items, coords, slots, maxWeight, instance, model, clearTime)
 	local dropId = generateInvId()
 	local inventory = Inventory.Create(dropId, ('%s %s'):format(prefix, dropId:gsub('%D', '')), 'drop', slots or shared.playerslots, 0, maxWeight or shared.playerweight, false, {})
 
@@ -1456,6 +1456,11 @@ local function CustomDrop(prefix, items, coords, slots, maxWeight, instance, mod
 
 	inventory.items, inventory.weight = generateItems(inventory, 'drop', items)
 	inventory.coords = coords
+
+    if clearTime then
+		inventory.time = os.time() - clearTime * 60
+	end
+    
 	Inventory.Drops[dropId] = {
 		coords = inventory.coords,
 		instance = instance,
@@ -2662,6 +2667,10 @@ function Inventory.CreateTemporaryStash(properties)
 
 	inventory.items, inventory.weight = generateItems(inventory, 'drop', properties.items)
 	inventory.coords = coords
+
+	if properties.clearTime then
+		inventory.time = os.time() - properties.clearTime * 60
+	end
 
 	return inventory.id
 end
