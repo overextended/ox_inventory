@@ -29,6 +29,6 @@ return {
 				rotation = 70.0,
 			},
 		},
-		blip = { id = 566, colour = 31, scale = 0.8 },
+		--blip = { id = 566, colour = 31, scale = 0.8 },
 	},
 }
