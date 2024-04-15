@@ -649,6 +649,11 @@ return {
 			throwable = true,
 		},
 
+		['WEAPON_PROLASER4'] = {
+			label = 'ProLaser4',
+			weight = 1000,
+		},
+
 		['WEAPON_STONE_HATCHET'] = {
 			label = 'Stone Hatchet',
 			weight = 800,

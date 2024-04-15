@@ -3260,6 +3260,94 @@ return {
 		description = "Diamond Casino V.I.P Card",
 	},
 
+	["casino_beer"] = {
+		label = "Casino Beer",
+		weight = 0,
+		stack = true,
+		close = false,
+		description = "Casino Beer",
+	},
+
+	["casino_burger"] = {
+		label = "Casino Burger",
+		weight = 0,
+		stack = true,
+		close = false,
+		description = "Casino Burger",
+	},
+
+	["casino_chips"] = {
+		label = "Casino Chips",
+		weight = 0,
+		stack = true,
+		close = false,
+		description = "Chips For Casino Gambling",
+	},
+
+	["casino_coffee"] = {
+		label = "Casino Coffee",
+		weight = 0,
+		stack = true,
+		close = false,
+		description = "Casino Coffee",
+	},
+
+	["casino_donut"] = {
+		label = "Casino Donut",
+		weight = 0,
+		stack = true,
+		close = false,
+		description = "Casino Donut",
+	},
+
+	["casino_coke"] = {
+		label = "Casino Coke",
+		weight = 0,
+		stack = true,
+		close = false,
+		description = "Casino Kofola",
+	},
+
+	["casino_ego_chaser"] = {
+		label = "Casino Ego Chaser",
+		weight = 0,
+		stack = true,
+		close = false,
+		description = "Casino Ego Chaser",
+	},
+
+	["casino_luckypotion"] = {
+		label = "Casino Lucky Potion",
+		weight = 0,
+		stack = true,
+		close = false,
+		description = "Casino Lucky Potion",
+	},
+
+	["casino_psqs"] = {
+		label = "Casino Ps & Qs",
+		weight = 0,
+		stack = true,
+		close = false,
+		description = "Casino Ps & Qs",
+	},
+
+	["casino_sandwitch"] = {
+		label = "Casino Sandwich",
+		weight = 0,
+		stack = true,
+		close = false,
+		description = "Casino Sandwich",
+	},
+
+	["casino_sprite"] = {
+		label = "Casino Sprite",
+		weight = 0,
+		stack = true,
+		close = false,
+		description = "Casino Sprite",
+	},
+
 	["burriedtreasure"] = {
 		label = "Burried treasure",
 		weight = 200,
@@ -8914,6 +9002,14 @@ return {
 		server = {
 			export = 'Renewed-Dutyblips.toggleItem'
 		}
+	},
+
+	["weapon_prolaser4"] = {
+		label = "ProLaser4",
+		weight = 1000,
+		stack = true,
+		close = false,
+		description = "Catch them filthy speeders!",
 	},
 
 	["fishinglicense"] = {
