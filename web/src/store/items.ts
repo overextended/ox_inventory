@@ -6,7 +6,7 @@ export const Items: {
   water: {
     name: 'water',
     close: false,
-    label: 'VODA',
+    label: 'Water',
     stack: true,
     usable: true,
     count: 0,
@@ -14,7 +14,7 @@ export const Items: {
   burger: {
     name: 'burger',
     close: false,
-    label: 'BURGR',
+    label: 'Burger',
     stack: false,
     usable: false,
     count: 0,

@@ -14,6 +14,10 @@ return {
 			{ name = 'handcuffs', price = 0, metadata = { description = "Police Property" }, },
 			{ name = 'gps_tracker', price = 0, metadata = { description = "Police Property" }, },
 			{ name = 'camera', price = 0, metadata = { description = "Police Property" }, },
+			{ name = 'armour', price = 0, metadata = { description = "Police Property" }, },
+			{ name = 'ifaks', price = 0, metadata = { description = "Police Property" }, },
+			{ name = 'briefcase', price = 0, metadata = { description = "Police Property" }, },
+			{ name = 'pdcamera', price = 0, metadata = { description = "Police Property" }, },
 			{ name = 'WEAPON_PISTOL', price = 0, metadata = { registered = true, description = "Police Property", components = { 'at_flashlight', 'at_scope_holo'}, tint = 5, weapontint = "LSPD Tint", police_property = true, serial = 'POL' }},
 			{ name = 'WEAPON_COMBATPISTOL', price = 0, metadata = { registered = true, description = "Police Property", components = { 'at_flashlight'}, tint = 5, weapontint = "LSPD Tint", police_property = true, serial = 'POL'},  },
 			{ name = 'WEAPON_CERAMICPISTOL', price = 0, metadata = { registered = true, description = "Police Property", tint = 5, weapontint = "LSPD Tint", police_property = true, serial = 'POL'},  },
@@ -30,7 +34,7 @@ return {
 			{ name = 'WEAPON_EMPLAUNCHER', price = 0, metadata = { description = "Police Property", serial = 'POL' } },
 			{ name = 'WEAPON_PROLASER4', price = 0, metadata = { description = "Police Property", serial = 'POL' } },
 			{ name = 'WEAPON_FLASHLIGHT', price = 0, metadata = { description = "Police Property", serial = 'POL' } },
-			{ name = 'empty_evidence_bag', price = 0, metadata = { description = "Police Property" } }
+			{ name = 'empty_evidence_bag', price = 0, metadata = { description = "Police Property" } },
 		}, locations = {
 			vec3(461.34, -982.75, 30.69),
 			vec3(456.62, -982.75, 30.69),
@@ -56,11 +60,7 @@ return {
 			{ name = 'WEAPON_KNIFE', price = 300 },
 			{ name = 'WEAPON_BAT', price = 300 },
 			{ name = 'ammo-9', price = 30 },
-			{ name = 'ammo-musket', price = 30 },
-			{ name = 'ammo-sniper', price = 60 },
 			{ name = 'WEAPON_PISTOL', price = 15000, metadata = { registered = true }, license = 'weaponlicense' },
-			{ name = 'WEAPON_MUSKET', price = 8000, metadata = { registered = true }, license = 'weaponlicense' },
-			{ name = 'WEAPON_MARKSMANRIFLE', price = 18000, metadata = { registered = true }, license = 'weaponlicense' }
 		}, locations = {
 			vec3(816.84, -2156.22, 29.77),
 			vec3(1693.44, 3760.16, 34.71),
@@ -240,14 +240,15 @@ return {
 	},
 
 	BlackMarketTwo = {
-		name = 'Black Market', 
+		name = 'Black Market',
 		inventory = {
 			{ name = 'houselaptop', price = 800, currency = 'black_money' },
 			{ name = 'mansionlaptop', price = 1200, currency = 'black_money' },
+			{ name = 'armour', price = 1200, currency = 'black_money' }
 		}, locations = {
 			vec3(-491.66, -1030.0, 52.48)
 		}, targets = {
-			{ loc = vec3(-491.66, -1030.0, 52.48), length = 0.6, width = 0.5, heading = 360.0, minZ = 28.2, maxZ = 28.6, distance = 2.0 }
+			{ loc = vec3(-491.66, -1030.0, 52.48), length = 0.6, width = 0.5, heading = 3.02, minZ = 28.2, maxZ = 28.6, distance = 2 }
 		}
 	},
 

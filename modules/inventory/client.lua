@@ -92,7 +92,7 @@ if shared.target then
         distance = 2
 	})
 
-    exports.ox_target:addGlobalVehicle({
+    --[[ exports.ox_target:addGlobalVehicle({
         icon = 'fas fa-truck-ramp-box',
         label = locale('open_label', locale('storage')),
         distance = 1.5,
@@ -101,7 +101,7 @@ if shared.target then
             return Inventory.OpenTrunk(data.entity)
         end
     })
-else
+else --]]
 	local dumpsters = table.create(0, #Inventory.Dumpsters)
 
 	for i = 1, #Inventory.Dumpsters do

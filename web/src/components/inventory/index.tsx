@@ -14,6 +14,8 @@ import InventoryContext from './InventoryContext';
 import { closeContextMenu } from '../../store/contextMenu';
 import Fade from '../utils/transitions/Fade';
 
+import bg from '../../media/bg.gif';
+
 const Inventory: React.FC = () => {
   const [inventoryVisible, setInventoryVisible] = useState(false);
   const dispatch = useAppDispatch();
@@ -44,11 +46,14 @@ const Inventory: React.FC = () => {
     <>
       <Fade in={inventoryVisible}>
         <div className="inventory-wrapper">
+          <div className="inventory-bg"></div>
+          <div className="inventory-bar-top"></div>
           <LeftInventory />
           <InventoryControl />
           <RightInventory />
           <Tooltip />
           <InventoryContext />
+          <div className="inventory-bar-bottom"></div>
         </div>
       </Fade>
       <InventoryHotbar />

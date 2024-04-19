@@ -2922,10 +2922,18 @@ return {
 
 	["camera"] = {
 		label = "Camera",
-		weight = 1000,
+		weight = 400,
 		stack = true,
 		close = true,
 		description = "Camera to take pretty pictures.",
+	},
+
+	["pdcamera"] = {
+		label = "PD Camera",
+		weight = 400,
+		stack = true,
+		close = true,
+		description = "Camera for the police department.",
 	},
 
 	["gameboy"] = {
@@ -4807,9 +4815,6 @@ return {
 	['lockpick'] = {
 		label = 'Lockpick',
 		weight = 160,
-		client = {
-		export = 'ars_policejob.breakCuffs'
-		}
 	},
 
 	["gatecrack"] = {
@@ -8341,6 +8346,14 @@ return {
 		description = "Hunting Bait",
 	},
 
+	["huntinglicense"] = {
+		label = "Hunting License",
+		weight = 1,
+		stack = true,
+		close = true,
+		description = "Hunting License",
+	},
+
 	["meatdeer"] = {
 		label = "Deer Horns",
 		weight = 100,
@@ -9036,6 +9049,116 @@ return {
 		description = "You can probably make something nice out of this",
 		client = {
 			image = "metalscrap.png",
+		}
+	},
+
+	["weed_white-widow_seed"] = {
+		label = "White Widow Seed",
+		weight = 0,
+		stack = true,
+		close = false,
+		description = "A weed seed of White Widow",
+		client = {
+			image = "weed_seed.png",
+		}
+	},
+
+	["visa"] = {
+		label = "Visa Card",
+		weight = 0,
+		stack = false,
+		close = false,
+		description = "Visa can be used via ATM",
+		client = {
+			image = "visacard.png",
+		}
+	},
+
+	["microwave"] = {
+		label = "Microwave",
+		weight = 46000,
+		stack = false,
+		close = true,
+		description = "Microwave",
+		client = {
+			image = "placeholder.png",
+		}
+	},
+
+	["toaster"] = {
+		label = "Toaster",
+		weight = 18000,
+		stack = false,
+		close = true,
+		description = "Toast",
+		client = {
+			image = "placeholder.png",
+		}
+	},
+
+	["weed_purple-haze_seed"] = {
+		label = "Purple Haze Seed",
+		weight = 0,
+		stack = true,
+		close = true,
+		description = "A weed seed of Purple Haze",
+		client = {
+			image = "weed_seed.png",
+		}
+	},
+
+	["weed_og-kush_seed"] = {
+		label = "OGKush Seed",
+		weight = 0,
+		stack = true,
+		close = true,
+		description = "A weed seed of OG Kush",
+		client = {
+			image = "weed_seed.png",
+		}
+	},
+
+	["weed_purple-haze"] = {
+		label = "Purple Haze 2g",
+		weight = 200,
+		stack = true,
+		close = false,
+		description = "A weed bag with 2g Purple Haze",
+		client = {
+			image = "weed_baggy.png",
+		}
+	},
+
+	["weed_white-widow"] = {
+		label = "White Widow 2g",
+		weight = 200,
+		stack = true,
+		close = false,
+		description = "A weed bag with 2g White Widow",
+		client = {
+			image = "weed_baggy.png",
+		}
+	},
+
+	["weed_og-kush"] = {
+		label = "OGKush 2g",
+		weight = 200,
+		stack = true,
+		close = false,
+		description = "A weed bag with 2g OG Kush",
+		client = {
+			image = "weed_baggy.png",
+		}
+	},
+
+	["small_tv"] = {
+		label = "Small TV",
+		weight = 30000,
+		stack = false,
+		close = true,
+		description = "TV",
+		client = {
+			image = "placeholder.png",
 		}
 	},
 }

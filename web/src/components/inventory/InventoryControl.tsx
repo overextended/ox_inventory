@@ -9,6 +9,8 @@ import { fetchNui } from '../../utils/fetchNui';
 import { Locale } from '../../store/locale';
 import UsefulControls from './UsefulControls';
 
+import { FaHandSparkles, FaHandshake, FaHandPeace } from 'react-icons/fa6';
+
 const InventoryControl: React.FC = () => {
   const itemAmount = useAppSelector(selectItemAmount);
   const dispatch = useAppDispatch();
@@ -47,15 +49,26 @@ const InventoryControl: React.FC = () => {
             onChange={inputHandler}
             min={0}
           />
-          <button className="inventory-control-button" ref={use}>
-            {Locale.ui_use || 'Use'}
-          </button>
-          <button className="inventory-control-button" ref={give}>
-            {Locale.ui_give || 'Give'}
-          </button>
-          <button className="inventory-control-button" onClick={() => fetchNui('exit')}>
-            {Locale.ui_close || 'Close'}
-          </button>
+          <div className="inventory-control-button-wrapper">
+            <div className="inventory-control-button-text"> {Locale.ui_use || 'Use'}</div>
+            <div className="inventory-control-button" ref={use}>
+              <FaHandSparkles className="inventory-control-icon" />
+            </div>
+          </div>
+
+          <div className="inventory-control-button-wrapper">
+            <div className="inventory-control-button-text"> {Locale.ui_give || 'Give'}</div>
+            <div className="inventory-control-button" ref={give}>
+              <FaHandshake className="inventory-control-icon" />
+            </div>
+          </div>
+
+          <div className="inventory-control-button-wrapper">
+            <div className="inventory-control-button-text">{Locale.ui_close || 'Close'}</div>
+            <div className="inventory-control-button" onClick={() => fetchNui('exit')}>
+              <FaHandPeace className="inventory-control-icon" />
+            </div>
+          </div>
         </div>
       </div>
 

@@ -1,0 +1,32 @@
+@import url("https://fonts.googleapis.com/css?family=Barlow|Tomorrow:400,700&display=swap");
+
+:root {
+  --dark-color: #031626; 
+  --red-color: pink;
+  --black-color: rgb(255, 0, 128);
+  --blue-color: #00f0ff;
+}
+
+.container {
+  border: 0;
+  outline: none;
+  background-color: var(--black-color);
+  cursor: pointer;
+  position: relative;
+  font-family: Tomorrow, sans-serif;
+  font-size: .85rem;
+  text-transform: uppercase;
+  color: var(--black-color);
+  clip-path: polygon(0 0, 100% 0, 100% 75%, 75% 100%, 0 100%, 0% 50%);
+}
+
+.content {
+  position: absolute;
+  top: 0.2vh;
+  left: 0.8vh;
+  right: 0.2vh;
+  bottom: 0.2vh;
+  background-color: var(--dark-color);
+  clip-path: inherit;
+  color: inherit;
+}
