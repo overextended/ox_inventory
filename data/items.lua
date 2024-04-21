@@ -4650,9 +4650,6 @@ return {
 		weight = 1000,
 		allowArmed = true,
 		consume = 0,
-		client = {
-			event = 'mm_radio:client:use'
-		}
 	},
 
 
