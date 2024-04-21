@@ -479,14 +479,6 @@ return {
 		description = "Grape juice is said to be healthy",
 	},
 
-	["ecola"] = {
-		label = "ECola",
-		weight = 500,
-		stack = true,
-		close = true,
-		description = "For all the thirsty out there",
-	},
-
 	["pastel-frango"] = {
 		label = "Chicken Pastel",
 		weight = 1000,
@@ -4105,13 +4097,6 @@ return {
 		description = "Briefcase Lockpicker"
    },
 
-	['medkit'] = { 
-        label = 'Medical Kit',
-        weight = 1500,
-        consume = 1,
-        description = "For them big ouchies and shit",
-    },
-
 	["arm_bandage"] = {
 		label = "Arm Bandage",
 		weight = 0,
@@ -5040,7 +5025,7 @@ return {
 	},
 
 	["rolling_paper"] = {
-		label = "Rolling Paper",
+		label = "Raw Rolling Papers",
 		weight = 10, 
 		stack = true, 
 		close = false, 
@@ -5068,7 +5053,7 @@ return {
 		weight = 100,
 		stack = true,
 		close = true,
-		description = "This hsit hits diffy",
+		description = "This shit hits diffy",
 	},
 
 	["specialcookie"] = {
@@ -5286,14 +5271,6 @@ return {
         close = true,
 		description = "A cup of lean",
     },
-
-	["loosecokestagetwo"] = {
-		label = "More Pure Loose Coke",
-		weight = 100,
-		stack = true,
-		close = true,
-		description = "",
-	},
 
 	["weedgrinder"] = {
 		label = "Weed Grinder",
@@ -5842,22 +5819,6 @@ return {
 
 	["tab_paper"] = {
 		label = "Tab Paper",
-		weight = 100,
-		stack = true,
-		close = true,
-		description = "",
-	},
-
-	["specialbrownie"] = {
-		label = "Special Brownie",
-		weight = 100,
-		stack = true,
-		close = true,
-		description = "",
-	},
-
-	["lsd_vial_three"] = {
-		label = "Good LSD",
 		weight = 100,
 		stack = true,
 		close = true,
@@ -8534,6 +8495,16 @@ return {
 		stack = true,
 		close = true,
 		description = "Check vehicle status",
+	},
+
+	['vehiclekeys'] = {
+		label = 'Vehicle Keys',
+		weight = 220,
+		stack = false,
+		consume = 0,
+		server = {
+			export = 'MrNewbVehicleKeys.vehiclekeys'
+		}
 	},
 
 	["nitro"] = {
