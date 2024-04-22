@@ -600,22 +600,49 @@ button:active {
 
 // hotbar
 .hotbar-container {
-  display: flex;
+  display: grid;
+  grid-template-columns: repeat(5, $gridSize);
+  grid-template-rows: repeat(1, $gridSize);
   align-items: center;
-  gap: 0.125rem;
+  gap: 0.2vh;
   justify-content: center;
-  left: 50%;
-  translate: -50%;
+  width: 100%;
   position: absolute;
   bottom: 2vh;
-  background: $purpleGradient;
-  box-shadow: 0 0 0.4rem 0.1rem $purpleColor;
+  // background: red;
+}
+
+.hotbar-slot-wrapper {
+  border: 0;
+  outline: none;
+  background-color: $purpleColor;
+  cursor: pointer;
+  position: relative;
+  font-size: 0.85rem;
+  text-transform: uppercase;
+  color: $blueColor;
+  height: $gridSize;
+  width: $gridSize;
+  clip-path: polygon(0 0, 100% 0, 100% 75%, 75% 100%, 0 100%, 0% 50%);
 }
 
 .hotbar-item-slot {
-  @extend .inventory-slot;
-  width: $gridSize;
-  height: $gridSize;
+  background-color: $dark;
+  background-repeat: no-repeat;
+  background-position: center;
+  border-radius: 2.5%;
+  image-rendering: -webkit-optimize-contrast;
+  position: absolute;
+  top: 0.2vh;
+  left: 0.2vh;
+  right: 0.2vh;
+  bottom: 0.2vh;
+  background-size: 7vh;
+  color: $textColor;
+  border-color: rgba(0, 0, 0, 0.2);
+  border-style: inset;
+  border-width: 0.1vh;
+  clip-path: polygon(0 0, 100% 0, 100% 75%, 75% 100%, 0 100%, 0% 50%);
 }
 
 .hotbar-slot-header-wrapper {
@@ -635,8 +662,10 @@ button:active {
   bottom: 20vh;
   left: 50%;
   width: 100%;
+  height: $gridSize;
   margin-left: calc(50% - calc($gridSize/2));
   transform: translate(-50%);
+  // background: red;
 }
 
 .item-notification-action-box {
@@ -655,10 +684,37 @@ button:active {
   }
 }
 
-.item-notification-item-box {
-  @extend .inventory-slot;
+.item-notification-item-box-wrapper {
+  border: 0;
+  outline: none;
+  background-color: $purpleColor;
+  cursor: pointer;
+  position: relative;
+  font-size: 0.85rem;
+  text-transform: uppercase;
+  color: $blueColor;
   height: $gridSize;
   width: $gridSize;
+  clip-path: polygon(0 0, 100% 0, 100% 75%, 75% 100%, 0 100%, 0% 50%);
+}
+
+.item-notification-item-box {
+  background-color: $dark;
+  background-repeat: no-repeat;
+  background-position: center;
+  border-radius: 2.5%;
+  image-rendering: -webkit-optimize-contrast;
+  position: absolute;
+  top: 0.2vh;
+  left: 0.2vh;
+  right: 0.2vh;
+  bottom: 0.2vh;
+  background-size: 7vh;
+  color: $textColor;
+  border-color: rgba(0, 0, 0, 0.2);
+  border-style: inset;
+  border-width: 0.1vh;
+  clip-path: polygon(0 0, 100% 0, 100% 75%, 75% 100%, 0 100%, 0% 50%);
 }
 
 .durability-bar-wrapper {

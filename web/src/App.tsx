@@ -14,6 +14,27 @@ import KeyPress from './components/utils/KeyPress';
 
 debugData([
   {
+    action: 'itemNotify',
+    data: [
+      {
+        slot: 1,
+        name: 'iron',
+        label: 'Iron',
+        weight: 3000,
+        metadata: {
+          description: `name: Svetozar Miletic  \n Gender: Male`,
+          ammo: 3,
+          mustard: '60%',
+          ketchup: '30%',
+          mayo: '10%',
+        },
+        count: 5,
+      },
+      'ui_added',
+      3,
+    ],
+  },
+  {
     action: 'setupInventory',
     data: {
       leftInventory: {

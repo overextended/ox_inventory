@@ -29,20 +29,22 @@ const ItemNotification = React.forwardRef(
     const slotItem = props.item.item;
 
     return (
-      <div
-        className="item-notification-item-box"
-        style={{
-          backgroundImage: `url(${getItemUrl(slotItem) || 'none'}`,
-          ...props.style,
-        }}
-        ref={ref}
-      >
-        <div className="item-slot-wrapper">
-          <div className="item-notification-action-box">
-            <p>{props.item.text}</p>
-          </div>
-          <div className="inventory-slot-label-box">
-            <div className="inventory-slot-label-text">{slotItem.metadata?.label || Items[slotItem.name]?.label}</div>
+      <div className="item-notification-item-box-wrapper">
+        <div
+          className="item-notification-item-box"
+          style={{
+            backgroundImage: `url(${getItemUrl(slotItem) || 'none'}`,
+            ...props.style,
+          }}
+          ref={ref}
+        >
+          <div className="item-slot-wrapper">
+            <div className="item-notification-action-box">
+              <p>{props.item.text}</p>
+            </div>
+            <div className="inventory-slot-label-box">
+              <div className="inventory-slot-label-text">{slotItem.metadata?.label || Items[slotItem.name]?.label}</div>
+            </div>
           </div>
         </div>
       </div>
@@ -70,6 +72,7 @@ export const ItemNotificationsProvider = ({ children }: { children: React.ReactN
   };
 
   useNuiEvent<[item: SlotWithItem, text: string, count?: number]>('itemNotify', ([item, text, count]) => {
+    console.log(item, text, count)
     add({ item: item, text: count ? `${Locale[text]} ${count}x` : `${Locale[text]}` });
   });
 
