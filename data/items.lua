@@ -4655,8 +4655,6 @@ return {
 		}
 	},
 
-
-
 	['jammer'] = {
 		label = 'Radio Jammer',
 		weight = 10000,
