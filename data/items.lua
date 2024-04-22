@@ -4651,7 +4651,7 @@ return {
 		allowArmed = true,
 		consume = 0,
 		client = {
-			event = 'qbx_radio:client:use'
+			event = 'mm_radio:client:use'
 		}
 	},
 
