@@ -4650,7 +4650,7 @@ return {
 		weight = 1000,
 		allowArmed = true,
 		consume = 0,
-		server = {
+		client = {
 			event = 'qbx_radio:client:use'
 		}
 	},
