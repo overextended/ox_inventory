@@ -512,7 +512,7 @@ button:active {
   flex-direction: row;
   justify-content: flex-end;
   align-items: center;
-  padding-right: 0.3rem;
+  translate: -5rem -8rem;
   p {
     font-size: 1vh;
     text-shadow: 0 0 0.4rem $blueColor;
@@ -523,7 +523,7 @@ button:active {
   display: flex;
   flex-direction: row;
   justify-content: flex-end;
-  padding-right: 0.3rem;
+  translate: -6.3rem -8.5rem;
   p {
     font-size: 1vh;
     text-shadow: 0 0 0.4rem $blueColor;;
