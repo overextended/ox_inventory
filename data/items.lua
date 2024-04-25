@@ -9314,4 +9314,521 @@ return {
 			image = "placeholder.png",
 		}
 	},
+
+	["gold_ring"] = {
+		label = "Gold Ring",
+		weight = 200,
+		stack = true,
+		close = false,
+		description = "",
+		client = {
+			image = "gold_ring.png",
+		}
+	},
+
+	["emerald_earring_silver"] = {
+		label = "Emerald Earrings Silver",
+		weight = 200,
+		stack = true,
+		close = false,
+		description = "",
+		client = {
+			image = "emerald_earring_silver.png",
+		}
+	},
+
+	["ruby_necklace_silver"] = {
+		label = "Ruby Necklace Silver",
+		weight = 200,
+		stack = true,
+		close = false,
+		description = "",
+		client = {
+			image = "ruby_necklace_silver.png",
+		}
+	},
+
+	["silver_ring"] = {
+		label = "Silver Ring",
+		weight = 200,
+		stack = true,
+		close = false,
+		description = "",
+		client = {
+			image = "silver_ring.png",
+		}
+	},
+
+	["goldore"] = {
+		label = "Gold Ore",
+		weight = 1000,
+		stack = true,
+		close = false,
+		description = "Gold Ore",
+		client = {
+			image = "goldore.png",
+		}
+	},
+
+	["sapphire_earring"] = {
+		label = "Sapphire Earrings",
+		weight = 200,
+		stack = true,
+		close = false,
+		description = "",
+		client = {
+			image = "sapphire_earring.png",
+		}
+	},
+
+	["bottle"] = {
+		label = "Empty Bottle",
+		weight = 10,
+		stack = true,
+		close = false,
+		description = "A glass bottle",
+		client = {
+			image = "bottle.png",
+		}
+	},
+
+	["sapphire"] = {
+		label = "Sapphire",
+		weight = 100,
+		stack = true,
+		close = false,
+		description = "A Sapphire that shimmers",
+		client = {
+			image = "sapphire.png",
+		}
+	},
+
+	["diamond_earring_silver"] = {
+		label = "Diamond Earrings Silver",
+		weight = 200,
+		stack = true,
+		close = false,
+		description = "",
+		client = {
+			image = "diamond_earring_silver.png",
+		}
+	},
+
+	["sapphire_ring_silver"] = {
+		label = "Sapphire Ring Silver",
+		weight = 200,
+		stack = true,
+		close = false,
+		description = "",
+		client = {
+			image = "sapphire_ring_silver.png",
+		}
+	},
+
+	["drillbit"] = {
+		label = "Drill Bit",
+		weight = 10,
+		stack = true,
+		close = false,
+		description = "",
+		client = {
+			image = "drillbit.png",
+		}
+	},
+
+	["diamond_necklace_silver"] = {
+		label = "Diamond Necklace Silver",
+		weight = 200,
+		stack = true,
+		close = false,
+		description = "",
+		client = {
+			image = "diamond_necklace_silver.png",
+		}
+	},
+
+	["ruby"] = {
+		label = "Ruby",
+		weight = 100,
+		stack = true,
+		close = false,
+		description = "A Ruby that shimmers",
+		client = {
+			image = "ruby.png",
+		}
+	},
+
+	["emerald_earring"] = {
+		label = "Emerald Earrings",
+		weight = 200,
+		stack = true,
+		close = false,
+		description = "",
+		client = {
+			image = "emerald_earring.png",
+		}
+	},
+
+	["ruby_ring_silver"] = {
+		label = "Ruby Ring Silver",
+		weight = 200,
+		stack = true,
+		close = false,
+		description = "",
+		client = {
+			image = "ruby_ring_silver.png",
+		}
+	},
+
+	["sapphire_necklace"] = {
+		label = "Sapphire Necklace",
+		weight = 200,
+		stack = true,
+		close = false,
+		description = "",
+		client = {
+			image = "sapphire_necklace.png",
+		}
+	},
+
+	["silverore"] = {
+		label = "Silver Ore",
+		weight = 1000,
+		stack = true,
+		close = false,
+		description = "Silver Ore",
+		client = {
+			image = "silverore.png",
+		}
+	},
+
+	["carbon"] = {
+		label = "Carbon",
+		weight = 1000,
+		stack = true,
+		close = false,
+		description = "Carbon, a base ore.",
+		client = {
+			image = "carbon.png",
+		}
+	},
+
+	["sapphire_necklace_silver"] = {
+		label = "Sapphire Necklace Silver",
+		weight = 200,
+		stack = true,
+		close = false,
+		description = "",
+		client = {
+			image = "sapphire_necklace_silver.png",
+		}
+	},
+
+	["emerald_necklace"] = {
+		label = "Emerald Necklace",
+		weight = 200,
+		stack = true,
+		close = false,
+		description = "",
+		client = {
+			image = "emerald_necklace.png",
+		}
+	},
+
+	["mininglaser"] = {
+		label = "Mining Laser",
+		weight = 900,
+		stack = true,
+		close = false,
+		description = "",
+		client = {
+			image = "mininglaser.png",
+		}
+	},
+
+	["uncut_emerald"] = {
+		label = "Uncut Emerald",
+		weight = 100,
+		stack = true,
+		close = false,
+		description = "A rough Emerald",
+		client = {
+			image = "uncut_emerald.png",
+		}
+	},
+
+	["ruby_ring"] = {
+		label = "Ruby Ring",
+		weight = 200,
+		stack = true,
+		close = false,
+		description = "",
+		client = {
+			image = "ruby_ring.png",
+		}
+	},
+
+	["diamond_earring"] = {
+		label = "Diamond Earrings",
+		weight = 200,
+		stack = true,
+		close = false,
+		description = "",
+		client = {
+			image = "diamond_earring.png",
+		}
+	},
+
+	["silverchain"] = {
+		label = "Silver Chain",
+		weight = 200,
+		stack = true,
+		close = false,
+		description = "",
+		client = {
+			image = "silverchain.png",
+		}
+	},
+
+	["uncut_diamond"] = {
+		label = "Uncut Diamond",
+		weight = 100,
+		stack = true,
+		close = false,
+		description = "A rough Diamond",
+		client = {
+			image = "uncut_diamond.png",
+		}
+	},
+
+	["miningdrill"] = {
+		label = "Mining Drill",
+		weight = 1000,
+		stack = true,
+		close = false,
+		description = "",
+		client = {
+			image = "miningdrill.png",
+		}
+	},
+
+	["diamond_necklace"] = {
+		label = "Diamond Necklace",
+		weight = 200,
+		stack = true,
+		close = false,
+		description = "",
+		client = {
+			image = "diamond_necklace.png",
+		}
+	},
+
+	["can"] = {
+		label = "Empty Can",
+		weight = 10,
+		stack = true,
+		close = false,
+		description = "An empty can, good for recycling",
+		client = {
+			image = "can.png",
+		}
+	},
+
+	["diamond_ring_silver"] = {
+		label = "Diamond Ring Silver",
+		weight = 200,
+		stack = true,
+		close = false,
+		description = "",
+		client = {
+			image = "diamond_ring_silver.png",
+		}
+	},
+
+	["emerald_necklace_silver"] = {
+		label = "Emerald Necklace Silver",
+		weight = 200,
+		stack = true,
+		close = false,
+		description = "",
+		client = {
+			image = "emerald_necklace_silver.png",
+		}
+	},
+
+	["silverearring"] = {
+		label = "Silver Earrings",
+		weight = 200,
+		stack = true,
+		close = false,
+		description = "",
+		client = {
+			image = "silver_earring.png",
+		}
+	},
+
+	["ruby_earring_silver"] = {
+		label = "Ruby Earrings Silver",
+		weight = 200,
+		stack = true,
+		close = false,
+		description = "",
+		client = {
+			image = "ruby_earring_silver.png",
+		}
+	},
+
+	["sapphire_ring"] = {
+		label = "Sapphire Ring",
+		weight = 200,
+		stack = true,
+		close = false,
+		description = "",
+		client = {
+			image = "sapphire_ring.png",
+		}
+	},
+
+	["ironore"] = {
+		label = "Iron Ore",
+		weight = 1000,
+		stack = true,
+		close = false,
+		description = "Iron, a base ore.",
+		client = {
+			image = "ironore.png",
+		}
+	},
+
+	["emerald_ring"] = {
+		label = "Emerald Ring",
+		weight = 200,
+		stack = true,
+		close = false,
+		description = "",
+		client = {
+			image = "emerald_ring.png",
+		}
+	},
+
+	["uncut_ruby"] = {
+		label = "Uncut Ruby",
+		weight = 100,
+		stack = true,
+		close = false,
+		description = "A rough Ruby",
+		client = {
+			image = "uncut_ruby.png",
+		}
+	},
+
+	["copperore"] = {
+		label = "Copper Ore",
+		weight = 1000,
+		stack = true,
+		close = false,
+		description = "Copper, a base ore.",
+		client = {
+			image = "copperore.png",
+		}
+	},
+
+	["emerald_ring_silver"] = {
+		label = "Emerald Ring Silver",
+		weight = 200,
+		stack = true,
+		close = false,
+		description = "",
+		client = {
+			image = "emerald_ring_silver.png",
+		}
+	},
+
+	["silveringot"] = {
+		label = "Silver Ingot",
+		weight = 1000,
+		stack = true,
+		close = false,
+		description = "",
+		client = {
+			image = "silveringot.png",
+		}
+	},
+
+	["goldpan"] = {
+		label = "Gold Panning Tray",
+		weight = 10,
+		stack = true,
+		close = false,
+		description = "",
+		client = {
+			image = "goldpan.png",
+		}
+	},
+
+	["goldingot"] = {
+		label = "Gold Ingot",
+		weight = 1000,
+		stack = true,
+		close = false,
+		description = "",
+		client = {
+			image = "goldingot.png",
+		}
+	},
+
+	["ruby_necklace"] = {
+		label = "Ruby Necklace",
+		weight = 200,
+		stack = true,
+		close = false,
+		description = "",
+		client = {
+			image = "ruby_necklace.png",
+		}
+	},
+
+	["goldearring"] = {
+		label = "Golden Earrings",
+		weight = 200,
+		stack = true,
+		close = false,
+		description = "",
+		client = {
+			image = "gold_earring.png",
+		}
+	},
+
+	["sapphire_earring_silver"] = {
+		label = "Sapphire Earrings Silver",
+		weight = 200,
+		stack = true,
+		close = false,
+		description = "",
+		client = {
+			image = "sapphire_earring_silver.png",
+		}
+	},
+
+	["uncut_sapphire"] = {
+		label = "Uncut Sapphire",
+		weight = 100,
+		stack = true,
+		close = false,
+		description = "A rough Sapphire",
+		client = {
+			image = "uncut_sapphire.png",
+		}
+	},
+
+	["ruby_earring"] = {
+		label = "Ruby Earrings",
+		weight = 200,
+		stack = true,
+		close = false,
+		description = "",
+		client = {
+			image = "ruby_earring.png",
+		}
+	},
 }
