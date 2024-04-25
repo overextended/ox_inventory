@@ -88,7 +88,7 @@ debugData([
       },
       rightInventory: {
         id: 'shop',
-        type: 'crafting',
+        type: 'shop',
         slots: 5000,
         label: 'Bob Smith',
         weight: 3000,
@@ -98,7 +98,8 @@ debugData([
             slot: 1,
             name: 'lockpick',
             weight: 500,
-            price: 300,
+            price: 56000,
+            currency: 'water',
             ingredients: {
               iron: 5,
               copper: 12,
