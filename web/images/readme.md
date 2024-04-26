@@ -8,11 +8,14 @@
 - burger_chicken
 - card_id
 - carkey
+- cigarette
 - cigarettes_redwood
 - cocaine
 - donut
 - fries
+- garbage
 - key
+- lockpick
 - medikit
 - meth
 - money
@@ -26,10 +29,16 @@
 - pizza_ham_box
 - pizza_ham_slice
 - radio
+- scrapmetal
+- sprunk
+- trash
+- trash_bread
+- trash_burger
+- trash_can
+- trash_chips
 - usb_black
 - water
 - weed
 - ziptie
-- scrapmetal
 
 For more images, see [this thread](https://forum.cfx.re/t/inventory-icons-pack-for-rp-server-hq-draw-24k-cloth-l-1400-objects/5203350) and get a **10%** discount when using creator code `ox10`.

@@ -29,7 +29,7 @@ function server.setPlayerInventory(player, data)
 	local inventory = {}
 	local totalWeight = 0
 
-	if data and next(data) then
+	if type(data) == 'table' then
 		local ostime = os.time()
 
 		for _, v in pairs(data) do
@@ -112,10 +112,11 @@ local function openInventory(source, invType, data, ignoreSecurityChecks)
     end
 
 	if data then
+        local isDataTable = type(data) == 'table'
 		if invType == 'stash' then
 			right = Inventory(data, left)
 			if right == false then return false end
-		elseif type(data) == 'table' then
+		elseif isDataTable then
 			if data.netid then
 				data.type = invType
 				right = Inventory(data)
@@ -164,6 +165,7 @@ local function openInventory(source, invType, data, ignoreSecurityChecks)
 		}
 
 		if invType == 'container' then hookPayload.slot = left.containerSlot end
+		if isDataTable and data.netid then hookPayload.netId = data.netid end
 
 		if not TriggerEventHooks('openInventory', hookPayload) then return end
 
@@ -287,7 +289,7 @@ end)
 ---@param slot number?
 ---@param metadata { [string]: any }?
 ---@return table | boolean | nil
-lib.callback.register('ox_inventory:useItem', function(source, itemName, slot, metadata)
+lib.callback.register('ox_inventory:useItem', function(source, itemName, slot, metadata, noAnim)
 	local inventory = Inventory(source) --[[@as OxInventory]]
 
 	if inventory.player then
@@ -366,7 +368,7 @@ lib.callback.register('ox_inventory:useItem', function(source, itemName, slot, m
 			data.consume = consume
 
             ---@type boolean
-			local success = lib.callback.await('ox_inventory:usingItem', source, data)
+			local success = lib.callback.await('ox_inventory:usingItem', source, data, noAnim)
 
 			if item.weapon then
 				inventory.weapon = success and slot or nil

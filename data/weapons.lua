@@ -1,6 +1,5 @@
 return {
 	Weapons = {
-
 		['WEAPON_FLAMETHROWER'] = {
 			label = 'Flamethrower',
 			weight = 2000,
@@ -40,6 +39,22 @@ return {
 		},
 		['WEAPON_FN509'] = {
 			label = 'FN509',
+		},
+		['WEAPON_BATTLERIFLE'] = {
+			label = 'Battle Rifle',
+			weight = 3300,
+			durability = 0.03,
+			ammoname = 'ammo-rifle2',
+		},
+		['WEAPON_SNOWLAUNCHER'] = {
+			label = 'Snowball Launcher',
+			weight = 1000,
+			durability = 0.03,
+			ammoname = 'WEAPON_SNOWBALL',
+		},
+
+		['WEAPON_TECPISTOL'] = {
+			label = 'Tactical SMG',
 			weight = 1500,
 			durability = 0.1,
 			ammoname = 'ammo-9',
@@ -56,6 +71,7 @@ return {
 			durability = 0.01,
 			ammoname = 'ammo-22',
 		},
+
 		['WEAPON_ADVANCEDRIFLE'] = {
 			label = 'Advanced Rifle',
 			weight = 3100,
@@ -1740,6 +1756,7 @@ return {
 					`COMPONENT_SPECIALCARBINE_CLIP_02`,
 					`COMPONENT_SPECIALCARBINE_MK2_CLIP_02`,
 					`COMPONENT_TACTICALRIFLE_CLIP_02`,
+					`COMPONENT_BATTLERIFLE_CLIP_02`,
 				},
 				usetime = 2500
 			}
