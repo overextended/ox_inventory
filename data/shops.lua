@@ -228,7 +228,7 @@ return {
 			{ name = 'ammo-50', price = 15, currency = 'black_money' },
 			{ name = 'ammo-9', price = 15, currency = 'black_money' },
 			{ name = 'ammo-shotgun', price = 50, currency = 'black_money' },
-			{ name = 'trojan_usb', price = 2000, currency = 'black_money' }
+			{ name = 'trojan_usb', price = 2000, currency = 'black_money' },
 		}, locations = {
 			vec3(504.7122, 2603.0120, 43.9762),
 			vec3(143.1517, -1965.5575, 18.8556),
@@ -244,13 +244,47 @@ return {
 		inventory = {
 			{ name = 'houselaptop', price = 800, currency = 'black_money' },
 			{ name = 'mansionlaptop', price = 1200, currency = 'black_money' },
-			{ name = 'armour', price = 1200, currency = 'black_money' }
+			{ name = 'armour', price = 1200, currency = 'black_money' },
 		}, locations = {
 			vec3(-491.66, -1030.0, 52.48)
 		}, targets = {
 			{ loc = vec3(-491.66, -1030.0, 52.48), length = 0.6, width = 0.5, heading = 3.02, minZ = 28.2, maxZ = 28.6, distance = 2 }
 		}
 	},
+
+	MetalDetect = {
+		name = 'Metal Detect Shop',
+		inventory = {
+			{ name = 'metaldetector', price = 500, currency = 'money' },
+		}, targets = {
+			{
+                ped = `a_m_m_mexcntry_01`,
+                scenario = 'WORLD_HUMAN_STAND_MOBILE',
+                loc = vec3(-1114.2350, -1689.48, 3.3753),
+                heading = 34.0019,
+            }
+        }
+    },
+
+	CigarShop = {
+		name = 'Cigar Shop',
+		inventory = {
+			{ name = 'rolling_paper', price = 5, currency = 'money' },
+			{ name = 'joint_roller', price = 200, currency = 'money' },			
+			{ name = 'lighter', price = 200, currency = 'money' },
+			{ name = 'butane', price = 200, currency = 'money' },
+			{ name = 'weedgrinder', price = 200, currency = 'money' },
+			{ name = 'mdwoods', price = 20, currency = 'money' },
+			{ name = 'cigar', price = 20, currency = 'money' },
+		}, targets = {
+			{
+                ped = `a_m_m_hasjew_01`,
+                scenario = 'WORLD_HUMAN_STAND_MOBILE',
+                loc = vec3(1215.2317, -463.2733, 65.4308),
+                heading = 161.9085,
+            }
+        }
+    },
 
 	VendingMachineDrinks = {
 		name = 'Vending Machine',
