@@ -128,6 +128,86 @@ return {
         }
     },
 
+	GeneralStore2 = {
+		name = 'General Store',
+		blip = {
+			id = 52, colour = 0, scale = 0.6
+		}, inventory = {
+			{ name = 'tosti', price = 10 },
+			{ name = 'water_bottle', price = 10 },
+			{ name = 'kurkakola', price = 10 },
+			{ name = 'twerks_candy', price = 10 },
+			{ name = 'snikkel_candy', price = 10 },
+			{ name = 'sandwich', price = 10 },
+			{ name = 'bandage', price = 25 },
+			{ name = 'lighter', price = 2 },
+			{ name = 'rolling_paper', price = 2 },
+			{ name = 'soda', price = 10 },
+			{ name = 'cigbox', price = 100 },
+			{ name = 'egobar', price = 10 },
+			{ name = 'crisps', price = 10 },
+			{ name = 'bakingsoda', price = 7 },
+			{ name = 'beer', price = 7 },
+			{ name = 'whiskey', price = 10 },
+			{ name = 'vodka', price = 12 },
+		}, locations = {
+			vec3(24.47, -1346.62, 29.5),
+			vec3(-3039.54, 584.38, 7.91),
+			vec3(-3242.97, 1000.01, 12.83),
+			vec3(1728.07, 6415.63, 35.04),
+			vec3(1959.82, 3740.48, 32.34),
+			vec3(549.13, 2670.85, 42.16),
+			vec3(2677.47, 3279.76, 55.24),
+			vec3(2556.66, 380.84, 108.62),
+			vec3(372.66, 326.98, 103.57),
+		}, targets = {
+			{ loc = vec3(24.47, -1346.62, 29.5), length = 1.5, width = 3.0, heading = 271.66, minZ = 41.5, maxZ = 43.0, distance = 3 },
+			{ loc = vec3(-3039.54, 584.38, 7.91), length = 1.5, width = 3.0, heading = 17.27, minZ = 41.5, maxZ = 43.0, distance = 3 },
+			{ loc = vec3(-3242.97, 1000.01, 12.83), length = 1.5, width = 3.0, heading = 357.57, minZ = 41.5, maxZ = 43.0, distance = 3 },
+			{ loc = vec3(1728.07, 6415.63, 35.04), length = 1.5, width = 3.0, heading = 242.95, minZ = 41.5, maxZ = 43.0, distance = 3 },
+			{ loc = vec3(1959.82, 3740.48, 32.34), length = 1.5, width = 3.0, heading = 301.57, minZ = 41.5, maxZ = 43.0, distance = 3 },
+			{ loc = vec3(549.13, 2670.85, 42.16), length = 1.5, width = 3.0, heading = 99.39, minZ = 41.5, maxZ = 43.0, distance = 3 },
+			{ loc = vec3(2677.47, 3279.76, 55.24), length = 1.5, width = 3.0, heading = 335.08, minZ = 41.5, maxZ = 43.0, distance = 3 },
+			{ loc = vec3(2556.66, 380.84, 108.62), length = 1.5, width = 3.0, heading = 356.67, minZ = 41.5, maxZ = 43.0, distance = 3 },
+			{ loc = vec3(372.66, 326.98, 103.57), length = 1.5, width = 3.0, heading = 253.73, minZ = 41.5, maxZ = 43.0, distance = 3 }
+		}
+    },
+
+	LTDGas = {
+		name = 'LTD Store',
+		inventory = {
+			{ name = 'tosti', price = 10 },
+			{ name = 'water_bottle', price = 10 },
+			{ name = 'kurkakola', price = 10 },
+			{ name = 'twerks_candy', price = 10 },
+			{ name = 'snikkel_candy', price = 10 },
+			{ name = 'sandwich', price = 10 },
+			{ name = 'bandage', price = 25 },
+			{ name = 'lighter', price = 2 },
+			{ name = 'rolling_paper', price = 2 },
+			{ name = 'soda', price = 10 },
+			{ name = 'cigbox', price = 100 },
+			{ name = 'egobar', price = 10 },
+			{ name = 'crisps', price = 10 },
+			{ name = 'bakingsoda', price = 7 },
+			{ name = 'beer', price = 7 },
+			{ name = 'whiskey', price = 10 },
+			{ name = 'vodka', price = 12 },
+		}, locations = {
+			vec3(-47.02, -1758.23, 28.42),
+			vec3(-706.06, -913.97, 19.22),
+			vec3(-1820.02, 794.03, 138.09),
+			vec3(1164.71, -322.94, 69.21),
+			vec3(1697.87, 4922.96, 42.06),
+		}, targets = {
+			{ loc = vec3(-47.02, -1758.23, 28.42), length = 1.5, width = 3.0, heading = 45.05, minZ = 41.5, maxZ = 43.0, distance = 3 },
+			{ loc = vec3(-706.06, -913.97, 19.22), length = 1.5, width = 3.0, heading = 88.04, minZ = 41.5, maxZ = 43.0, distance = 3 },
+			{ loc = vec3(-1820.02, 794.03, 138.09), length = 1.5, width = 3.0, heading = 135.45, minZ = 41.5, maxZ = 43.0, distance = 3 },
+			{ loc = vec3(1164.71, -322.94, 69.21), length = 1.5, width = 3.0, heading = 101.72, minZ = 41.5, maxZ = 43.0, distance = 3 },
+			{ loc = vec3(1697.87, 4922.96, 42.06), length = 1.5, width = 3.0, heading = 324.71, minZ = 41.5, maxZ = 43.0, distance = 3 }
+		}
+    },
+
 	Medicine = {
 		name = 'Medicine Cabinet',
 		groups = {
