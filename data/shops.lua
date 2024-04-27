@@ -503,8 +503,8 @@ return {
 	WeedShop = {
 		name = 'Weed Shop',
 		inventory = {
-			{ name = 'female_seed', price = 400, currency = 'money' },
-			{ name = 'male_seed', price = 200, currency = 'money' },			
+			{ name = 'female_seed', price = 3000, currency = 'money' },
+			{ name = 'male_seed', price = 3000, currency = 'money' },			
 			{ name = 'dryingrack', price = 2500, currency = 'money' },
 			{ name = 'dryingrackadvanced', price = 5000, currency = 'money' },
 		}, targets = {
