@@ -712,7 +712,7 @@ return {
 	Hotdog = {
 		name = 'Chihuahua Hotdogs',
 		blip = {
-			id = 93, colour = 0, scale = 0.6
+			id = 96, colour = 0, scale = 0.6
 		}, inventory = {
 			{ name = 'hotdog', price = 20, currency = 'money' },
 			{ name = 'mustard', price = 20, currency = 'money' },			
