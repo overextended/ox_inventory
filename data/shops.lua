@@ -939,6 +939,7 @@ return {
 			{ name = 'weapon_marksmanrifle', price = 8000, currency = 'money' },
 			{ name = 'ammo-sniper', price = 80, currency = 'money' },			
 			{ name = 'weapon_knife', price = 150, currency = 'money' },	
+			{ name = 'animal_tracker', price = 1200, currency = 'money' },	
 		}, targets = {
 			{
                 ped = `cs_hunter`,
@@ -955,7 +956,8 @@ return {
 			id = 566, colour = 0, scale = 0.6
 		}, inventory = {
 			{ name = 'miningdrill', price = 7000, currency = 'money' },
-			{ name = 'mininglaser', price = 30000, currency = 'money' },			
+			{ name = 'mininglaser', price = 30000, currency = 'money' },
+			{ name = 'campfire', price = 400, currency = 'money' },		
 			{ name = 'drillbit', price = 25, currency = 'money' },
 			{ name = 'goldpan', price = 800, currency = 'money' },
 			{ name = 'cwnotepad', price = 500, currency = 'money' },			

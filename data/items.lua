@@ -8296,12 +8296,69 @@ return {
 
 	---- HUNTING 
 
-	["huntingbait"] = {
-		label = "Hunting Bait",
-		weight = 150,
-		stack = true,
-		close = true,
-		description = "Hunting Bait",
+	['animal_tracker'] = {
+		label = 'Animal Tracker',
+		weight = 200,
+		allowArmed = true,
+		stack = false,
+	},
+	['campfire'] = {
+		label = 'Campfire',
+		weight = 200,
+		allowArmed = true,
+		stack = false,
+	},
+	
+	['huntingbait'] = {
+		label = 'Hunting Bait',
+		weight = 100,
+		allowArmed = true,
+	},
+	
+	['cooked_meat'] = {
+		label = 'Cooked Meat',
+		weight = 200,
+		consume = 1,
+        client = {
+            anim = { dict = 'mp_player_inteat@burger', clip = 'mp_player_int_eat_burger' },
+            prop = { model = 'prop_cs_burger_01', 
+            pos = vec3(-0.0100, 0.0200, -0.0100), 
+            rot = vec3(-175.1935, 97.6975, 20.9598),
+            bone = 60309},
+            usetime = 8000,
+        }
+    },
+
+	['raw_meat'] = {
+		label = 'Raw Meat',
+		weight = 200,
+	},
+	
+	['skin_deer_ruined'] = {
+		label = 'Tattered Deer Pelt',
+		weight = 200,
+		stack = false,
+	},
+	['skin_deer_low'] = {
+		label = 'Worn Deer Pelt',
+		weight = 200,
+	},
+	['skin_deer_medium'] = {
+		label = 'Supple Deer Pelt',
+		weight = 200,
+	},
+	['skin_deer_good'] = {
+		label = 'Prime Deer Pelt',
+		weight = 200,
+	},
+	['skin_deer_perfect'] = {
+		label = 'Flawless Deer Pelt',
+		weight = 200,
+	},
+	
+	['deer_horn'] = {
+		label = 'Deer Horn',
+		weight = 1000,
 	},
 
 	["huntinglicense"] = {
