@@ -1,4 +1,15 @@
 return {
+	
+	['pouch'] = {
+		label = 'Pouch',
+		weight = 100.0,
+		description = "",
+		rarity = 'random',
+		client = {
+			export = "pickpocket.pouch",
+		}
+	},
+
 	["shield"] = {
         label = "Police shield",
         weight = 8000,
@@ -3345,10 +3356,10 @@ return {
 	},
 
 	['dmoney'] = {
-		label = 'Dirty Dollars',
+		label = 'Money',
 		weight = 1,
-		decay = true,
-		degrade = (60 * 24) * 5
+		-- decay = true,
+		-- degrade = (60 * 24) * 5
 	},
 
 	['bmoney'] = {

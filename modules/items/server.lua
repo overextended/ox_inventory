@@ -27,12 +27,25 @@ local rarities = {
 }
 
 function generateRandomRarity()
-	local items = {}
-	for rarity, amt in pairs(rarities) do
-		items[#items+1] = rarity
+	local total = 0
+	for _, amt in pairs(rarities) do
+		total = total + amt
 	end
 
-	return items[math.random(#items)]
+	print('total', total)
+
+	local rand = math.random(total)
+	print(rand,' rand')
+	local cumulative = 0
+
+	for rarity, amt in pairs(rarities) do
+		cumulative = cumulative + amt
+		print('cumulative', cumulative)
+		if rand <= cumulative then
+			print('generated', rarity)
+			return rarity
+		end
+	end
 end
 
 ---@param _ table?
@@ -337,9 +350,8 @@ function Items.Metadata(inv, item, metadata, count)
 		
 		if item.rarity then
 			if item.rarity == 'random' then
-				item.rarity = generateRandomRarity()
+				metadata.rarity = generateRandomRarity()
 			end
-			metadata.rarity = item.rarity
 		end
 	end
 
