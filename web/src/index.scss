@@ -670,7 +670,7 @@ button:active {
   height: $gridSize;
   margin-left: calc(50% - calc($gridSize/2));
   transform: translate(-50%);
-  // background: red;
+  z-index: -1;
 }
 
 .item-notification-action-box {
