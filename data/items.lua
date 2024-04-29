@@ -4127,7 +4127,7 @@ return {
 		label = "Filled Evidence Bag",
 		weight = 200,
 		stack = false,
-		close = false,
+		close = true,
 		description = "A filled evidence bag to see who committed the crime >:(",
 	},
 
@@ -9218,7 +9218,7 @@ return {
 	},
 
 	['gps_tracker'] = {
-		label = 'Police Tracker',
+		label = 'Job Tracker',
 		weight = 1000,
 		stack = false,
 		consume = 0,
@@ -9886,6 +9886,94 @@ return {
 		description = "",
 		client = {
 			image = "ruby_earring.png",
+		}
+	},
+
+	["rag"] = {
+		label = "Rag",
+		weight = 100,
+		stack = true,
+		close = true,
+		description = "Could get Handy.",
+		client = {
+			image = "rag.png",
+		}
+	},
+
+	["evidencecleaningkit"] = {
+		label = "Evidence Cleaning Kit",
+		weight = 250,
+		stack = true,
+		close = true,
+		description = "Cleans every Evidence near a police Officer.",
+		client = {
+			image = "cleaningkit.png",
+		}
+	},
+
+	["cuffkeys"] = {
+		label = "Cuff Keys",
+		weight = 75,
+		stack = true,
+		close = true,
+		description = "Set them free !",
+		client = {
+			image = "cuffkeys.png",
+		}
+	},
+
+	["leo-gps"] = {
+		label = "LEO GPS",
+		weight = 2000,
+		stack = false,
+		close = true,
+		description = "Show your gps location to others",
+		client = {
+			image = "leo-gps.png",
+		}
+	},
+
+	["broken_handcuffs"] = {
+		label = "Broken Handcuffs",
+		weight = 100,
+		stack = true,
+		close = true,
+		description = "It's broken, maybe you can repair it?",
+		client = {
+			image = "broken_handcuffs.png",
+		}
+	},
+
+	["bolt_cutter"] = {
+		label = "Bolt Cutter",
+		weight = 50,
+		stack = true,
+		close = true,
+		description = "Wanna cut some metal items ?",
+		client = {
+			image = "bolt_cutter.png",
+		}
+	},
+
+	["flush_cutter"] = {
+		label = "Flush Cutter",
+		weight = 50,
+		stack = true,
+		close = true,
+		description = "Comes in handy when you want to cut zipties..",
+		client = {
+			image = "flush_cutter.png",
+		}
+	},
+
+	["ziptie"] = {
+		label = "ZipTie",
+		weight = 50,
+		stack = true,
+		close = true,
+		description = "Comes in handy when people misbehave. Maybe it can be used for something else?",
+		client = {
+			image = "ziptie.png",
 		}
 	},
 }
