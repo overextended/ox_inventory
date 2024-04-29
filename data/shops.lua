@@ -279,6 +279,7 @@ return {
 			{ name = 'WEAPON_SWITCHBLADE', price = 4000, metadata = { registered = false	}, currency = 'black_money' },
 			{ name = 'WEAPON_VINTAGEPISTOL', price = 50000, metadata = { registered = false }, currency = 'black_money' },
 			{ name = 'WEAPON_TACTICALRIFLE', price = 100000, metadata = { registered = false	}, currency = 'black_money' },
+			{ name = 'rag', price = 800, currency = 'black_money' },
 			{ name = 'keya', price = 4000, currency = 'black_money' },
 			{ name = 'moneywash_key', price = 6000, currency = 'black_money' },
 			{ name = 'at_flashlight', price = 2000, currency = 'black_money' },
@@ -377,6 +378,7 @@ return {
 			{ name = 'houselaptop', price = 800, currency = 'black_money' },
 			{ name = 'mansionlaptop', price = 1200, currency = 'black_money' },
 			{ name = 'armour', price = 1200, currency = 'black_money' },
+			{ name = 'rag', price = 800, currency = 'black_money' },
 		}, locations = {
 			vec3(-491.66, -1030.0, 52.48)
 		}, targets = {
@@ -980,6 +982,9 @@ return {
 			{ name = 'backpack', price = 500, currency = 'money' },
 			{ name = 'jerrycan', price = 350, currency = 'money' },
 			{ name = 'syphoningkit', price = 800, currency = 'money' },		
+			{ name = 'bolt_cutter', price = 800, currency = 'money' },
+			{ name = 'ziptie', price = 650, currency = 'money' },
+			{ name = 'flush_cutter', price = 600, currency = 'money' },			
 			{ name = 'advancedlockpick', price = 600, currency = 'money' },			
 			{ name = 'weapon_wrench', price = 250, currency = 'money' },
 			{ name = 'weapon_hammer', price = 250, currency = 'money' },
