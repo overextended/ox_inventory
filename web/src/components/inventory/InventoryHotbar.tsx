@@ -40,7 +40,8 @@ const InventoryHotbar: React.FC = () => {
                 <div className="hotbar-slot-header-wrapper">
                   <div className="inventory-slot-number">{item.slot}</div>
                   <div className="item-slot-info-wrapper">
-                    <p>
+                    {/* Remove weights */}
+                    {/* <p>
                       {item.weight > 0
                         ? item.weight >= 1000
                           ? `${(item.weight / 1000).toLocaleString('en-us', {
@@ -50,7 +51,7 @@ const InventoryHotbar: React.FC = () => {
                               minimumFractionDigits: 0,
                             })}g `
                         : ''}
-                    </p>
+                    </p> */}
                     <p>{item.count ? item.count.toLocaleString('en-us') + `x` : ''}</p>
                   </div>
                 </div>
