@@ -13,6 +13,7 @@ return {
 			{ name = 'ammo-emp', price = 0, metadata = { description = "Police Property" }, },
 			{ name = 'handcuffs', price = 0, metadata = { description = "Police Property" }, },
 			{ name = 'cuffkeys', price = 0, metadata = { description = "Police Property" }, },
+			{ name = 'rag', price = 0, metadata = { description = "Police Property" }, },
 			{ name = 'leo-gps', price = 0, metadata = { description = "Police Property" }, },
 			{ name = 'armour', price = 0, metadata = { description = "Police Property" }, },
 			{ name = 'ifaks', price = 0, metadata = { description = "Police Property" }, },
