@@ -128,7 +128,7 @@ return {
 			{
                 ped = `mp_m_shopkeep_01`,
                 scenario = 'WORLD_HUMAN_STAND_MOBILE',
-                loc = vec3(-548.9540, -582.9260, 33.6818), 
+                loc = vec3(-548.9540, -582.9260, 33.6818),
                 heading = 181.4278,
             }
         }
@@ -245,6 +245,59 @@ return {
 		}, targets = {
 			{ loc = vec3(330.34, -599.69, 42.79), length = 1.5, width = 3.0, heading = 270.0, minZ = 41.5, maxZ = 43.0, distance = 3 }
 
+		}
+	},
+
+	MechanicShop = {
+		name = 'Mechanic Shop',
+		groups = {
+			['mechanic'] = 0
+		}, inventory = {
+			{ name = 'engine_oil',    label = 'Engine Oil', 		price = 0  },
+			{ name = 'tyre_replacement',    label = 'Tyre Replacement', price = 0  },
+			{ name = 'clutch_replacement',    label = 'Clutch Replacement', price = 0  },
+			{ name = 'air_filter',     label = 'Air Filter',   price = 0  },
+			{ name = 'spark_plug',    label = 'Spark Plug', price = 0  },
+			{ name = 'brakepad_replacement', label = 'Brakepad Replacement', price = 0  },
+			{ name = 'suspension_parts',    label = 'Suspension Parts', 		price = 0  },
+			{ name = 'i4_engine', label = 'I4 Engine',  price = 0  },
+			{ name = 'v6_engine', label = 'V6 Engine',  	price = 0  },
+			{ name = 'v8_engine',    label = 'V8 Engine',   	price = 0  },
+			{ name = 'v12_engine',  label = 'V12 Engine',  	price = 0 },
+			{ name = 'turbocharger',  label = 'Turbocharger',  	price = 0 },
+			{ name = 'ev_motor', label = 'EV Motor', price = 0 },
+			{ name = 'ev_battery', label = 'EV Battery', price = 0 },
+			{ name = 'ev_coolant', label = 'EV Coolant', price = 0 },
+			{ name = 'awd_drivetrain', label = 'AWD Drivetrain', price = 0 },
+			{ name = 'rwd_drivetrain', label = 'RWD Drivetrain', price = 0 },
+			{ name = 'fwd_drivetrain', label = 'FWD Drivetrain', price = 0 },
+			{ name = 'slick_tyres', label = 'Slick Tyres',  price = 0 },
+			{ name = 'semi_slick_tyres', label = 'Semi Slick Tyres',  	price = 0 },
+			{ name = 'offroad_tyres',    label = 'Offroad Tyres',   	price = 0 },
+			{ name = 'drift_tuning_kit',  label = 'Drift Tuning Kit',  	price = 0 },
+			{ name = 'lighting_controller',  label = 'Lighting Controller',  	price = 0 },
+			{ name = 'stancing_kit', label = 'Stancer Kit', price = 0 },
+			{ name = 'cosmetic_part', label = 'Cosmetic Parts', price = 0 },
+			{ name = 'respray_kit', label = 'Respray Kit', price = 0 },
+			{ name = 'vehicle_wheels', label = 'Vehicle Wheels Set', price = 0 },
+			{ name = 'tyre_smoke_kit', label = 'Tyre Smoke Kit', price = 0 },
+			{ name = 'bulletproof_tyres', label = 'Bulletproof Tyres', price = 0 },
+			{ name = 'extras_kit', label = 'Extras Kit',  price = 0 },
+			{ name = 'nitrous_bottle', label = 'Nitrous Bottle',  	price = 0 },
+			{ name = 'empty_nitrous_bottle',    label = 'Empty Nitrous Bottle',   	price = 0 },
+			{ name = 'nitrous_install_kit',  label = 'Nitrous Install Kit',  	price = 0 },
+			{ name = 'cleaning_kit',  label = 'Cleaning Kit',  	price = 0 },
+			{ name = 'repair_kit', label = 'Repair Kit', price = 0 },
+			{ name = 'duct_tape', label = 'Duct Tape', price = 0 },
+			{ name = 'performance_part', label = 'Performance Parts', price = 0 },
+			{ name = 'mechanic_tablet', label = 'Mechanic Tablet', price = 0 },
+
+		}, locations = {
+			vec3(-319.3883, -131.5472, 38.9818),
+			vec3(124.1108, -3047.4905, 7.0405),
+		}, targets = {
+			{ loc = vec3(-319.3883, -131.5472, 38.9818), length = 1.5, width = 3.0, heading = 117.3, minZ = 41.5, maxZ = 43.0, distance = 3 },
+			{ loc = vec3(124.1108, -3047.4905, 7.0405), length = 1.5, width = 3.0, heading = 93.81, minZ = 41.5, maxZ = 43.0, distance = 3 },
 		}
 	},
 
