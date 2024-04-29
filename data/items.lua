@@ -9889,28 +9889,6 @@ return {
 		}
 	},
 
-	["rag"] = {
-		label = "Rag",
-		weight = 100,
-		stack = true,
-		close = true,
-		description = "Could get Handy.",
-		client = {
-			image = "rag.png",
-		}
-	},
-
-	["evidencecleaningkit"] = {
-		label = "Evidence Cleaning Kit",
-		weight = 250,
-		stack = true,
-		close = true,
-		description = "Cleans every Evidence near a police Officer.",
-		client = {
-			image = "cleaningkit.png",
-		}
-	},
-
 	["cuffkeys"] = {
 		label = "Cuff Keys",
 		weight = 75,
@@ -9919,39 +9897,6 @@ return {
 		description = "Set them free !",
 		client = {
 			image = "cuffkeys.png",
-		}
-	},
-
-	["leo-gps"] = {
-		label = "LEO GPS",
-		weight = 2000,
-		stack = false,
-		close = true,
-		description = "Show your gps location to others",
-		client = {
-			image = "leo-gps.png",
-		}
-	},
-
-	["broken_handcuffs"] = {
-		label = "Broken Handcuffs",
-		weight = 100,
-		stack = true,
-		close = true,
-		description = "It's broken, maybe you can repair it?",
-		client = {
-			image = "broken_handcuffs.png",
-		}
-	},
-
-	["bolt_cutter"] = {
-		label = "Bolt Cutter",
-		weight = 50,
-		stack = true,
-		close = true,
-		description = "Wanna cut some metal items ?",
-		client = {
-			image = "bolt_cutter.png",
 		}
 	},
 
@@ -9966,6 +9911,39 @@ return {
 		}
 	},
 
+	["broken_handcuffs"] = {
+		label = "Broken Handcuffs",
+		weight = 100,
+		stack = true,
+		close = true,
+		description = "It's broken, maybe you can repair it?",
+		client = {
+			image = "broken_handcuffs.png",
+		}
+	},
+
+	["leo-gps"] = {
+		label = "LEO GPS",
+		weight = 2000,
+		stack = false,
+		close = true,
+		description = "Show your gps location to others",
+		client = {
+			image = "leo-gps.png",
+		}
+	},
+
+	["rag"] = {
+		label = "Rag",
+		weight = 100,
+		stack = true,
+		close = true,
+		description = "Could get Handy.",
+		client = {
+			image = "rag.png",
+		}
+	},
+
 	["ziptie"] = {
 		label = "ZipTie",
 		weight = 50,
@@ -9974,6 +9952,28 @@ return {
 		description = "Comes in handy when people misbehave. Maybe it can be used for something else?",
 		client = {
 			image = "ziptie.png",
+		}
+	},
+
+	["evidencecleaningkit"] = {
+		label = "Evidence Cleaning Kit",
+		weight = 250,
+		stack = true,
+		close = true,
+		description = "Cleans every Evidence near a police Officer.",
+		client = {
+			image = "cleaningkit.png",
+		}
+	},
+
+	["bolt_cutter"] = {
+		label = "Bolt Cutter",
+		weight = 50,
+		stack = true,
+		close = true,
+		description = "Wanna cut some metal items ?",
+		client = {
+			image = "bolt_cutter.png",
 		}
 	},
 }
