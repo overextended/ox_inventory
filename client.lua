@@ -238,9 +238,9 @@ function client.openInventory(inv, data)
 		if left then
 			if not cache.vehicle then
 				if inv == 'player' then
-					Utils.PlayAnim(0, 'mp_common', 'givetake1_a', 8.0, 1.0, 2000, 50, 0.0, 0, 0, 0)
+					-- Utils.PlayAnim(0, 'mp_common', 'givetake1_a', 8.0, 1.0, 2000, 50, 0.0, 0, 0, 0)
 				elseif inv ~= 'trunk' then
-					Utils.PlayAnim(0, 'pickup_object', 'putdown_low', 5.0, 1.5, 1000, 48, 0.0, 0, 0, 0)
+					-- Utils.PlayAnim(0, 'pickup_object', 'putdown_low', 5.0, 1.5, 1000, 48, 0.0, 0, 0, 0)
 				end
 			end
 
@@ -272,7 +272,7 @@ function client.openInventory(inv, data)
             if inv == 'trunk' then
                 SetTimeout(200, function()
                     ---@todo animation for vans?
-                    Utils.PlayAnim(0, 'anim@heists@prison_heiststation@cop_reactions', 'cop_b_idle', 3.0, 3.0, -1, 49, 0.0, 0, 0, 0)
+                    -- Utils.PlayAnim(0, 'anim@heists@prison_heiststation@cop_reactions', 'cop_b_idle', 3.0, 3.0, -1, 49, 0.0, 0, 0, 0)
 
                     local entity = data.entity or NetworkGetEntityFromNetworkId(data.netid)
                     currentInventory.entity = entity

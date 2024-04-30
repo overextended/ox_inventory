@@ -51,7 +51,7 @@ function Inventory.CanAccessTrunk(entity)
     if #(GetEntityCoords(cache.ped) - offset) < 1.5 then
         local coords = GetEntityCoords(entity)
 
-        TaskTurnPedToFaceCoord(cache.ped, coords.x, coords.y, coords.z, 0)
+        -- TaskTurnPedToFaceCoord(cache.ped, coords.x, coords.y, coords.z, 0)
 
         return doorId
     end
