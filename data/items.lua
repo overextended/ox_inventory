@@ -2855,6 +2855,23 @@ return {
 		stack = true,
 	},
 
+	['pedcarkeys'] = {
+		label = "Car Keys",
+		weight = 10,
+		rarity = 'random',
+		client = {
+			export = 'pickpocket.pedcarkeys',
+		}
+	},
+
+	['pedhousekeys'] = {
+		label = "House Keys",
+		weight = 10,
+		rarity = 'random',
+		client = {
+			export = 'pickpocket.pedhousekeys',
+		}
+	},
 	['carkey'] = {
 		label = "Car Key",
 		weight = 10,
