@@ -256,12 +256,12 @@ return {
 	},
 	
 	['phone'] = {
-		label = 'Classic Phone',
+		label = 'Phone',
 		weight = 150,
 		stack = false,
 		consume = 0,
 		client = {
-			export = "qs-smartphone-pro.UsePhoneItem",
+			export = "salife_oxinv.npwdphone",
 			add = function(total)
 				TriggerServerEvent('phone:itemAdd')
 			end,
@@ -272,90 +272,6 @@ return {
 		}
 	},
 	
-	['black_phone'] = {
-		label = 'Black Phone',
-		weight = 150,
-		stack = false,
-		consume = 0,
-		client = {
-			export = "qs-smartphone-pro.UsePhoneItem",
-			add = function(total)
-				TriggerServerEvent('phone:itemAdd')
-			end,
-	
-			remove = function(total)
-				TriggerServerEvent('phone:itemDelete')
-			end
-		}
-	},
-	
-	['yellow_phone'] = {
-		label = 'Yellow Phone',
-		weight = 150,
-		stack = false,
-		consume = 0,
-		client = {
-			export = "qs-smartphone-pro.UsePhoneItem",
-			add = function(total)
-				TriggerServerEvent('phone:itemAdd')
-			end,
-	
-			remove = function(total)
-				TriggerServerEvent('phone:itemDelete')
-			end
-		}
-	},
-	
-	['red_phone'] = {
-		label = 'Red Phone',
-		weight = 150,
-		stack = false,
-		consume = 0,
-		client = {
-			export = "qs-smartphone-pro.UsePhoneItem",
-			add = function(total)
-				TriggerServerEvent('phone:itemAdd')
-			end,
-	
-			remove = function(total)
-				TriggerServerEvent('phone:itemDelete')
-			end
-		}
-	},
-	
-	['green_phone'] = {
-		label = 'Green Phone',
-		weight = 150,
-		stack = false,
-		consume = 0,
-		client = {
-			export = "qs-smartphone-pro.UsePhoneItem",
-			add = function(total)
-				TriggerServerEvent('phone:itemAdd')
-			end,
-	
-			remove = function(total)
-				TriggerServerEvent('phone:itemDelete')
-			end
-		}
-	},
-	
-	['white_phone'] = {
-		label = 'White Phone',
-		weight = 150,
-		stack = false,
-		consume = 0,
-		client = {
-			export = "qs-smartphone-pro.UsePhoneItem",
-			add = function(total)
-				TriggerServerEvent('phone:itemAdd')
-			end,
-	
-			remove = function(total)
-				TriggerServerEvent('phone:itemDelete')
-			end
-		}
-	},
 	
 	["smokebomb"] = {
 		label = "Smokebomb",
