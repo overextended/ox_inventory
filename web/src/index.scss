@@ -1,6 +1,6 @@
 $mainColor: #22232c;
 $textColor: #c1c2c5;
-$mainFont: Roboto;
+$mainFont: 'Bahnschrift';
 
 $secondaryColor: rgba(12, 12, 12, 0.4);
 $secondaryColorHighlight: #33343F;
@@ -30,7 +30,7 @@ body {
 }
 
 code {
-  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New', monospace;
+  font-family: source-code-pro, 'Bahnschrift', Menlo, Monaco, Consolas, 'Courier New', monospace;
 }
 
 ::-webkit-scrollbar {
