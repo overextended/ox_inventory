@@ -33,6 +33,60 @@ return {
 		owner = true,
 		slots = 70,
 		weight = 500000,
-		groups = {['ambulance'] = 0}
+		groups = { ['ambulance'] = 0 }
+	},
+	{
+		coords = vec3(987.07, -92.91, 74.84),
+		target = {
+			loc = vec3(987.07, -92.91, 74.84),
+			length = 1.2,
+			width = 5.6,
+			heading = 0,
+			minZ = 29.49,
+			maxZ = 32.09,
+			label = 'Open personal locker'
+		},
+		name = 'lostmc',
+		label = 'Personal locker',
+		owner = true,
+		slots = 70,
+		weight = 70000,
+		groups = { ['lostmc'] = 0 }
+	},
+	{
+		coords = vec3(977.37, -103.93, 74.84),
+		target = {
+			loc = vec3(977.37, -103.93, 74.84),
+			length = 1.2,
+			width = 5.6,
+			heading = 0,
+			minZ = 29.49,
+			maxZ = 32.09,
+			label = 'Open personal safe'
+		},
+		name = 'lostmc',
+		label = 'Personal Safe',
+		owner = true,
+		slots = 70,
+		weight = 70000,
+		groups = { ['lostmc'] = 0 }
+	},
+	{
+		coords = vec3(972.22, -98.13, 74.87),
+		target = {
+			loc = vec3(972.22, -98.13, 74.87),
+			length = 1.2,
+			width = 5.6,
+			heading = 0,
+			minZ = 29.49,
+			maxZ = 32.09,
+			label = 'Open personal locker'
+		},
+		name = 'lostmc',
+		label = 'Personal locker',
+		owner = true,
+		slots = 70,
+		weight = 70000,
+		groups = { ['lostmc'] = 0 }
 	},
 }
