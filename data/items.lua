@@ -198,7 +198,6 @@ return {
 		consume = 0,
 		description = "A cute little alien pilllow",
 		client = {
-            status = { hunger = 230000 },
             anim = { dict = 'anim@male_bskball_hold', clip = 'bskball_hold_clip' },
             prop = { model = 'pillows_pops_diner_frp_01v', 
             pos = vec3(0.0600, 0.0400, 0.1200), rot = vec3(0.0, 0.0, 40.00) },
