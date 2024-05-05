@@ -301,7 +301,9 @@ function Inventory.Set(inv, k, v)
 	inv = Inventory(inv) --[[@as OxInventory]]
 
 	if inv then
-		if type(v) == 'number' then math.floor(v + 0.5) end
+		if type(v) == 'number' then
+			v = math.floor(v + 0.5)
+		end
 
 		if k == 'open' and v == false then
 			if inv.type ~= 'player' then
@@ -1366,7 +1368,6 @@ function Inventory.CanCarryItem(inv, item, count, metadata)
 				local newWeight = inv.weight + (weight * count)
 
 				if newWeight > inv.maxWeight then
-					TriggerClientEvent('ox_lib:notify', inv.id, { type = 'error', description = locale('cannot_carry') })
 					return false
 				end
 
