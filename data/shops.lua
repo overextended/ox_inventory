@@ -15,6 +15,7 @@ return {
 			{ name = 'handcuffs',            price = 0, metadata = { description = "Police Property" }, },
 			{ name = 'cuffkeys',             price = 0, metadata = { description = "Police Property" }, },
 			{ name = 'rag',                  price = 0, metadata = { description = "Police Property" }, },
+			{ name = 'alcoholtester',        price = 0, metadata = { description = "Police Property" }, },
 			{ name = 'leo-gps',              price = 0, metadata = { description = "Police Property" }, },
 			{ name = 'armour',               price = 0, metadata = { description = "Police Property" }, },
 			{ name = 'ifaks',                price = 0, metadata = { description = "Police Property" }, },
@@ -114,11 +115,8 @@ return {
 	GeneralStore = {
 		name = 'General Store',
 		inventory = {
-			{ name = 'tosti',         price = 10 },
 			{ name = 'water_bottle',  price = 10 },
-			{ name = 'kurkakola',     price = 10 },
-			{ name = 'twerks_candy',  price = 10 },
-			{ name = 'snikkel_candy', price = 10 },
+			{ name = 'sprunk',        price = 10 },
 			{ name = 'sandwich',      price = 10 },
 			{ name = 'bandage',       price = 25 },
 			{ name = 'lighter',       price = 2 },
@@ -148,11 +146,8 @@ return {
 			id = 52, colour = 0, scale = 0.6
 		},
 		inventory = {
-			{ name = 'tosti',         price = 10 },
 			{ name = 'water_bottle',  price = 10 },
-			{ name = 'kurkakola',     price = 10 },
-			{ name = 'twerks_candy',  price = 10 },
-			{ name = 'snikkel_candy', price = 10 },
+			{ name = 'sprunk',        price = 10 },
 			{ name = 'sandwich',      price = 10 },
 			{ name = 'bandage',       price = 25 },
 			{ name = 'lighter',       price = 2 },
@@ -193,11 +188,8 @@ return {
 	LTDGas = {
 		name = 'LTD Store',
 		inventory = {
-			{ name = 'tosti',         price = 10 },
 			{ name = 'water_bottle',  price = 10 },
-			{ name = 'kurkakola',     price = 10 },
-			{ name = 'twerks_candy',  price = 10 },
-			{ name = 'snikkel_candy', price = 10 },
+			{ name = 'sprunk',        price = 10 },
 			{ name = 'sandwich',      price = 10 },
 			{ name = 'bandage',       price = 25 },
 			{ name = 'lighter',       price = 2 },
