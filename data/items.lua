@@ -10165,4 +10165,15 @@ return {
 			image = "bolt_cutter.png",
 		}
 	},
+
+	["c4_bomb"] = {
+		label = "C4 Explosive",
+		weight = 1000,
+		stack = false,
+		close = true,
+		description = "A high-yield, timed explosive charge..",
+		client = {
+			image = "weapon_stickybomb.png",
+		}
+	},
 }
