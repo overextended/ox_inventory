@@ -413,7 +413,13 @@ end
 local function useItem(data, cb, noAnim)
 	local slotData, result = PlayerData.inventory[data.slot]
 
-	if not slotData or not canUseItem(data.ammo and true) then return end
+	if not slotData or not canUseItem(data.ammo and true) then
+        if currentWeapon then
+            return lib.notify({ id = 'cannot_perform', type = 'error', description = locale('cannot_perform') })
+        end
+
+        return
+    end
 
 	if currentWeapon?.timer and currentWeapon.timer > 100 then return end
 
@@ -650,6 +656,10 @@ local function useSlot(slot, noAnim)
 			useItem(data)
 		end
 	end
+
+    if currentWeapon then
+        return lib.notify({ id = 'cannot_perform', type = 'error', description = locale('cannot_perform') })
+    end
 end
 exports('useSlot', useSlot)
 
