@@ -10177,17 +10177,138 @@ return {
 		}
 	},
 
-	["burger-sodasyrup"] = {
-		label = "Soda Syrup",
+	["burger-bun"] = {
+		label = "Bun",
 		weight = 125,
 		stack = true,
 		close = true,
-		degrade = 5760,
 		description = "An Ingredient",
 		client = {
-			image = "bs_ingredients_hfcs.png",
+			image = "bs_bun.png",
 		}
 	},
+
+	["burger-mshake"] = {
+		label = "Milkshake",
+		weight = 125,
+		stack = true,
+		close = true,
+		description = "Hand-scooped for you!",
+		client = {
+			image = "bs_milkshake.png",
+		}
+	},
+
+	["burger-moneyshot"] = {
+		label = "Moneyshot",
+		weight = 300,
+		stack = true,
+		close = true,
+		description = "Sates Hunger.",
+		client = {
+			image = "bs_money-shot.png",
+		}
+	},
+
+	["burger-heartstopper"] = {
+		label = "Heartstopper",
+		weight = 2500,
+		stack = true,
+		close = true,
+		description = "Sates Hunger.",
+		client = {
+			image = "bs_the-heart-stopper.png",
+		}
+	},
+
+	["burger-lettuce"] = {
+		label = "Lettuce",
+		weight = 125,
+		stack = true,
+		close = true,
+		description = "An Ingredient",
+		client = {
+			image = "bs_lettuce.png",
+		}
+	},
+
+	["burger-fries"] = {
+		label = "Fries",
+		weight = 125,
+		stack = true,
+		close = true,
+		description = "Sates Hunger.",
+		client = {
+			image = "bs_fries.png",
+		}
+	},
+
+	["burger-mshakeformula"] = {
+		label = "Milkshake Formula",
+		weight = 125,
+		stack = true,
+		close = true,
+		description = "An Ingredient",
+		client = {
+			image = "bs_ingredients_icecream.png",
+		}
+	},
+
+	["burger-meatfree"] = {
+		label = "MeatFree",
+		weight = 125,
+		stack = true,
+		close = true,
+		description = "Sates Hunger.",
+		client = {
+			image = "bs_meat-free.png",
+		}
+	},
+
+	["burger-softdrink"] = {
+		label = "Soft Drink",
+		weight = 125,
+		stack = true,
+		close = true,
+		description = "An Ice Cold Drink.",
+		client = {
+			image = "bs_softdrink.png",
+		}
+	},
+
+	["burger-bleeder"] = {
+		label = "Bleeder",
+		weight = 250,
+		stack = true,
+		close = true,
+		description = "Sates Hunger.",
+		client = {
+			image = "bs_the-bleeder.png",
+		}
+	},
+
+	["burger-raw"] = {
+		label = "Raw Patty",
+		weight = 125,
+		stack = true,
+		close = true,
+		description = "An Ingredient",
+		client = {
+			image = "bs_patty_raw.png",
+		}
+	},
+
+	["burger-meat"] = {
+		label = "Cooked Patty",
+		weight = 125,
+		stack = true,
+		close = true,
+		description = "An Ingredient",
+		client = {
+			image = "bs_patty.png",
+		}
+	},
+
 	["burger-tomato"] = {
 		label = "Tomato",
 		weight = 125,
@@ -10198,132 +10319,37 @@ return {
 			image = "bs_tomato.png",
 		}
 	},
-	["burger-bleeder"] = {
-		label = "Bleeder",
-		weight = 250,
-		stack = true,
-		close = true,
-		decay = true,
-		degrade = 5760,
-		description = "It's a food item dude.",
-		client = { image = "bs_the-bleeder.png", },
-		server = { export = 'randol_burgershot.burger-bleeder', },
-	},
-	["burger-moneyshot"] = {
-		label = "Moneyshot",
-		weight = 300,
-		stack = true,
-		close = true,
-		decay = true,
-		degrade = 5760,
-		description = "It's a food item dude.",
-		client = { image = "bs_money-shot.png", },
-		server = { export = 'randol_burgershot.burger-moneyshot', },
-	},
-	["burger-meatfree"] = {
-		label = "MeatFree",
+
+	["burger-sodasyrup"] = {
+		label = "Soda Syrup",
 		weight = 125,
 		stack = true,
 		close = true,
-		decay = true,
-		degrade = 5760,
-		description = "It's a food item dude.",
-		client = { image = "bs_meat-free.png", },
-		server = { export = 'randol_burgershot.burger-meatfree', },
+		description = "An Ingredient",
+		client = {
+			image = "bs_ingredients_hfcs.png",
+		}
 	},
+
 	["burger-potato"] = {
 		label = "Bag of Potatoes",
 		weight = 1500,
 		stack = true,
 		close = true,
 		description = "An Ingredient",
-		client = { image = "bs_potato.png", }
+		client = {
+			image = "bs_potato.png",
+		}
 	},
-	["burger-mshake"] = {
-		label = "Milkshake",
-		weight = 125,
-		stack = true,
-		close = true,
-		decay = true,
-		degrade = 5760,
-		description = "Hand-scooped for you!",
-		client = { image = "bs_milkshake.png", },
-		server = { export = 'randol_burgershot.burger-mshake', },
-	},
-	["burger-lettuce"] = {
-		label = "Lettuce",
-		weight = 125,
-		stack = true,
-		close = true,
-		description = "An Ingredient",
-		client = { image = "bs_lettuce.png", }
-	},
-	["burger-raw"] = {
-		label = "Raw Patty",
-		weight = 125,
-		stack = true,
-		close = true,
-		description = "An Ingredient",
-		client = { image = "bs_patty_raw.png", }
-	},
-	["burger-heartstopper"] = {
-		label = "Heartstopper",
-		weight = 2500,
-		stack = true,
-		close = true,
-		decay = true,
-		degrade = 5760,
-		description = "It's a food item dude.",
-		client = { image = "bs_the-heart-stopper.png", },
-		server = { export = 'randol_burgershot.burger-heartstopper', },
-	},
-	["burger-mshakeformula"] = {
-		label = "Milkshake Formula",
-		weight = 125,
-		stack = true,
-		close = true,
-		description = "An Ingredient",
-		client = { image = "bs_ingredients_icecream.png", }
-	},
-	["burger-fries"] = {
-		label = "Fries",
-		weight = 125,
-		stack = true,
-		close = true,
-		decay = true,
-		degrade = 5760,
-		description = "It's a food item dude.",
-		client = { image = "bs_fries.png", },
-		server = { export = 'randol_burgershot.burger-fries', },
-	},
+
 	["burger-torpedo"] = {
 		label = "Torpedo",
 		weight = 310,
 		stack = true,
 		close = true,
-		decay = true,
-		degrade = 5760,
-		description = "It's a food item dude.",
-		client = { image = "bs_torpedo.png", },
-		server = { export = 'randol_burgershot.burger-torpedo', },
-	},
-	["burger-bun"] = {
-		label = "Bun",
-		weight = 125,
-		stack = true,
-		close = true,
-		description = "An Ingredient",
-		client = { image = "bs_bun.png", }
-	},
-	["burger-softdrink"] = {
-		label = "Soft Drink",
-		weight = 125,
-		stack = true,
-		close = true,
-		decay = true,
-		degrade = 5760,
-		description = "An Ice Cold Drink.",
-		client = { image = "bs_softdrink.png", },
-		server = { export = 'randol_burgershot.burger-softdrink', },
+		description = "Sates Hunger.",
+		client = {
+			image = "bs_torpedo.png",
+		}
 	},
 }
