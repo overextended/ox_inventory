@@ -21,9 +21,9 @@ jobs:
           ref: ${{ github.event.repository.default_branch }}
 
       - name: Install pnpm
-        uses: pnpm/action-setup@v2.2.2
+        uses: pnpm/action-setup@v4.0.0
         with:
-          version: 8.1.1
+          version: 9
 
       - name: Get variables
         id: get_vars
@@ -34,7 +34,7 @@ jobs:
       - name: Setup node
         uses: actions/setup-node@v2
         with:
-          node-version: 16.x
+          node-version: 18.x
           cache: "pnpm"
           cache-dependency-path: "web/pnpm-lock.yaml"
 
