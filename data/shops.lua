@@ -1178,6 +1178,22 @@ return {
 		}
 	},
 
+	burgershot = {
+		name = 'Burgershot',
+		groups = {
+			['burgershot'] = 0
+		},
+		inventory = {
+			{ name = 'burger-bun',           price = 0 },
+			{ name = 'burger-raw',           price = 0 },
+			{ name = 'burger-tomato',        price = 0 },
+			{ name = 'burger-lettuce',       price = 0 },
+			{ name = 'burger-potato',        price = 0 },
+			{ name = 'burger-mshakeformula', price = 0 },
+			{ name = 'burger-sodasyrup',     price = 0 },
+		},
+	},
+
 	VendingMachineDrinks = {
 		name = 'Vending Machine',
 		inventory = {

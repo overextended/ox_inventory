@@ -58,6 +58,7 @@ return {
 	["limao"] = {
 		label = "Lemon",
 		weight = 1500,
+		degrade = 60*12,
 		stack = true,
 		close = true,
 		description = "",
@@ -66,6 +67,7 @@ return {
 	["frasco-nutela"] = {
 		label = "Jar of Nutella",
 		weight = 1500,
+		degrade = 60*12,
 		stack = true,
 		close = true,
 		description = "",
@@ -74,6 +76,7 @@ return {
 	["frango"] = {
 		label = "Chicken",
 		weight = 1500,
+		degrade = 60*12,
 		stack = true,
 		close = true,
 		description = "",
@@ -82,6 +85,7 @@ return {
 	["pacote-farinha"] = {
 		label = "Flour Package",
 		weight = 1500,
+		degrade = 60*12,
 		stack = true,
 		close = true,
 		description = "",
@@ -90,6 +94,7 @@ return {
 	["grape"] = {
 		label = "Grape",
 		weight = 100,
+		degrade = 60*12,
 		stack = true,
 		close = false,
 		description = "Mmmmh yummie, grapes",
@@ -106,6 +111,7 @@ return {
 	["extrato-menta"] = {
 		label = "Mint Extract",
 		weight = 1500,
+		degrade = 60*12,
 		stack = true,
 		close = true,
 		description = "",
@@ -114,6 +120,7 @@ return {
 	["flour"] = {
 		label = "Flour",
 		weight = 100,
+		degrade = 60*12,
 		stack = true,
 		close = true,
 		description = "",
@@ -122,6 +129,7 @@ return {
 	["bakingsoda"] = {
 		label = "Baking Soda",
 		weight = 300,
+		degrade = 60*12,
 		stack = true,
 		close = false,
 		description = "Household Baking Soda!",
@@ -130,6 +138,7 @@ return {
 	["graos-cafe"] = {
 		label = "Coffee Beans",
 		weight = 1500,
+		degrade = 60*12,
 		stack = true,
 		close = true,
 		description = "",
@@ -138,6 +147,7 @@ return {
 	["pacote-acucar"] = {
 		label = "Sugar Pack",
 		weight = 1500,
+		degrade = 60*12,
 		stack = true,
 		close = true,
 		description = "",
@@ -267,6 +277,7 @@ return {
 	["popcorn"] = {
 		label = "Popcorn",
 		weight = 100,
+		degrade = 60*12,
 		stack = true,
 		close = true,
 		description = "Popcorn! Are you gonna watch a movie?",
@@ -286,6 +297,7 @@ return {
 	["pho"] = {
 		label = "Pho",
 		weight = 200,
+		degrade = 60*12,
 		stack = true,
 		close = true,
 		description = "Mmmm, Pho.",
@@ -313,6 +325,7 @@ return {
 	["cake"] = {
 		label = "Unicorn Cake",
 		weight = 200,
+		degrade = 60*12,
 		stack = true,
 		close = true,
 		description = "Mmmm, Pho.",
@@ -340,6 +353,7 @@ return {
 	["strawberrycake"] = {
 		label = "Strawberry Cake",
 		weight = 200,
+		degrade = 60*12,
 		stack = true,
 		close = true,
 		description = "Mmmm, Strawberry..",
@@ -367,6 +381,7 @@ return {
 	["cupcake-limao"] = {
 		label = "Lemon Cupcake",
 		weight = 1000,
+		degrade = 60*12,
 		stack = true,
 		close = true,
 		description = "A cupcake that you can eat",
@@ -385,6 +400,7 @@ return {
 	["leite-condensado"] = {
 		label = "Condensed Milk",
 		weight = 1500,
+		degrade = 60*12,
 		stack = true,
 		close = true,
 		description = "",
@@ -393,6 +409,7 @@ return {
 	["specialmuffin"] = {
 		label = "Special Muffin",
 		weight = 100,
+		degrade = 60*12,
 		stack = true,
 		close = true,
 		description = "",
@@ -401,6 +418,7 @@ return {
 	["pacote-natas"] = {
 		label = "Package of Cream",
 		weight = 1500,
+		degrade = 60*12,
 		stack = true,
 		close = true,
 		description = "",
@@ -409,6 +427,7 @@ return {
 	["caixa-morangos"] = {
 		label = "Strawberries Box",
 		weight = 1500,
+		degrade = 60*12,
 		stack = true,
 		close = true,
 		description = "",
@@ -417,6 +436,7 @@ return {
 	["cupcake-chocolate"] = {
 		label = "Chocolate Cupcake",
 		weight = 1000,
+		degrade = 60*12,
 		stack = true,
 		close = true,
 		description = "A cupcake that you can eat",
@@ -435,6 +455,7 @@ return {
 	["barra-manteiga"] = {
 		label = "Butter Bar",
 		weight = 1500,
+		degrade = 60*12,
 		stack = true,
 		close = true,
 		description = "",
@@ -443,6 +464,7 @@ return {
 	["tosti"] = {
 		label = "Grilled Cheese Sandwich",
 		weight = 200,
+		degrade = 60*12,
 		stack = true,
 		close = true,
 		description = "Nice to eat",
@@ -451,6 +473,7 @@ return {
 	["pacote-leite"] = {
 		label = "Milk Pack",
 		weight = 1500,
+		degrade = 60*12,
 		stack = true,
 		close = true,
 		description = "",
@@ -459,6 +482,7 @@ return {
 	["caixa-amoras"] = {
 		label = "Box of Blackberries",
 		weight = 1500,
+		degrade = 60*12,
 		stack = true,
 		close = true,
 		description = "",
@@ -467,6 +491,7 @@ return {
 	["snikkel_candy"] = {
 		label = "Snikkel",
 		weight = 100,
+		degrade = 60*12,
 		stack = true,
 		close = true,
 		description = "Some delicious candy :O",
@@ -475,6 +500,7 @@ return {
 	["lollipop1"] = {
 		label = "Lolli Pop (Red)",
 		weight = 1000,
+		degrade = 60*12,
 		stack = true,
 		close = true,
 		description = "Red Lilli Pop",
@@ -494,6 +520,7 @@ return {
 	["bubble-menta"] = {
 		label = "Mint Bubble Tea",
 		weight = 1000,
+		degrade = 60*12,
 		stack = true,
 		close = true,
 		description = "Mint Bubble Tea",
@@ -513,6 +540,7 @@ return {
 	["grapejuice"] = {
 		label = "Grape Juice",
 		weight = 200,
+		degrade = 60*12,
 		stack = true,
 		close = false,
 		description = "Grape juice is said to be healthy",
@@ -521,6 +549,7 @@ return {
 	["pastel-frango"] = {
 		label = "Chicken Pastel",
 		weight = 1000,
+		degrade = 60*12,
 		stack = true,
 		close = true,
 		description = "",
@@ -529,6 +558,7 @@ return {
 	["nachos"] = {
 		label = "Nacho Chips",
 		weight = 100,
+		degrade = 60*12,
 		stack = true,
 		close = true,
 		description = "Salty Crisps",
@@ -537,6 +567,7 @@ return {
 	["egobar"] = {
 		label = "Egobar",
 		weight = 100,
+		degrade = 60*12,
 		stack = true,
 		close = true,
 		description = "",
@@ -545,6 +576,7 @@ return {
 	["bubble-amora"] = {
 		label = "Blackberry Bubble Tea",
 		weight = 1000,
+		degrade = 60*12,
 		stack = true,
 		close = true,
 		description = "Blackberry Bubble Tea",
@@ -564,6 +596,7 @@ return {
 	["extrato-baunilha"] = {
 		label = "Vanilla Extract",
 		weight = 1500,
+		degrade = 60*12,
 		stack = true,
 		close = true,
 		description = "",
@@ -572,6 +605,7 @@ return {
 	["cupcake-morango"] = {
 		label = "Strawberry Cupcake",
 		weight = 1000,
+		degrade = 60*12,
 		stack = true,
 		close = true,
 		description = "A cupcake that you can eat",
@@ -590,6 +624,7 @@ return {
 	["egochaser"] = {
 		label = "Ego Chaser",
 		weight = 100,
+		degrade = 60*12,
 		stack = true,
 		close = true,
 		description = "Chocolate bar",
@@ -598,6 +633,7 @@ return {
 	["pacote-oreo"] = {
 		label = "Oreo Pack",
 		weight = 1500,
+		degrade = 60*12,
 		stack = true,
 		close = true,
 		description = "",
@@ -606,6 +642,7 @@ return {
 	["panqueca-oreo"] = {
 		label = "Oreo Pancake",
 		weight = 1000,
+		degrade = 60*12,
 		stack = true,
 		close = true,
 		description = "",
@@ -614,6 +651,7 @@ return {
 	["gelado-chocolate"] = {
 		label = "Chocolate Icecream Sandwich",
 		weight = 1000,
+		degrade = 60*12,
 		stack = true,
 		close = true,
 		description = "A ice cream sandwich that you can eat",
@@ -632,6 +670,7 @@ return {
 	["crisps"] = {
 		label = "Phat Chips",
 		weight = 100,
+		degrade = 60*12,
 		stack = true,
 		close = true,
 		description = "Crispy crisps",
