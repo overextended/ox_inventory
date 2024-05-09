@@ -1475,7 +1475,7 @@ end
 
 local function CustomDrop(prefix, items, coords, slots, maxWeight, instance, model)
 	local dropId = generateInvId()
-	local inventory = Inventory.Create(dropId, ('%s %s'):format(prefix, dropId:gsub('%D', '')), 'drop', slots or shared.playerslots, 0, maxWeight or shared.playerweight, false, {})
+	local inventory = Inventory.Create(dropId, ('%s %s'):format(prefix, dropId:gsub('%D', '')), 'drop', slots or shared.dropslots, 0, maxWeight or shared.dropweight, false, {})
 
 	if not inventory then return end
 
@@ -1573,7 +1573,7 @@ local function dropItem(source, playerInventory, fromData, data)
 	end
 
 	local dropId = generateInvId('drop')
-	local inventory = Inventory.Create(dropId, ('Drop %s'):format(dropId:gsub('%D', '')), 'drop', shared.playerslots, toData.weight, shared.playerweight, false, {[data.toSlot] = toData})
+	local inventory = Inventory.Create(dropId, ('Drop %s'):format(dropId:gsub('%D', '')), 'drop', shared.dropslots, toData.weight, shared.dropweight, false, {[data.toSlot] = toData})
 
 	if not inventory then return end
 

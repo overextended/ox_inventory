@@ -21,6 +21,9 @@ shared = {
     police = json.decode(GetConvar('inventory:police', '["police", "sheriff"]')),
 }
 
+shared.dropslots = GetConvarInt('inventory:dropslots', shared.playerslots)
+shared.dropweight = GetConvarInt('inventory:dropslotcount', shared.playerweight)
+
 do
     if type(shared.police) == 'string' then
         shared.police = { shared.police }
