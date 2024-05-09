@@ -2430,7 +2430,7 @@ RegisterServerEvent('ox_inventory:giveItem', function(slot, target, count)
 			fromType = fromInventory.type,
 			toInventory = toInventory.id,
 			toType = toInventory.type,
-			count = data.count,
+			count = count,
 			action = 'give',
 			fromSlot = data,
 		}) then
