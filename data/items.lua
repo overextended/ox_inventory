@@ -10709,4 +10709,12 @@ return {
 			image = "coke-soda.png",
 		}
 	},
+
+	["yogamat"] = {
+		label = "Yogamat",
+		weight = 100,
+		stack = true,
+		close = false,
+		description = "You can relax with this!",
+	},
 }

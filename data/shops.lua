@@ -1080,6 +1080,7 @@ return {
 			{ name = 'cwnotepad',        price = 500,   currency = 'money' },
 			{ name = 'repair_kit',       price = 250,   currency = 'money' },
 			{ name = 'megaphone',        price = 500,   currency = 'money' },
+			{ name = 'yogamat',          price = 800,   currency = 'money' },
 			{ name = 'diving_gear',      price = 500,   currency = 'money' },
 			{ name = 'diving_fill',      price = 500,   currency = 'money' },
 			{ name = 'sprayremover',     price = 600,   currency = 'money' },
@@ -1191,6 +1192,25 @@ return {
 			{ name = 'burger-potato',        price = 0 },
 			{ name = 'burger-mshakeformula', price = 0 },
 			{ name = 'burger-sodasyrup',     price = 0 },
+		},
+	},
+
+	taco = {
+		name = 'taco',
+		groups = {
+			['taco'] = 0
+		},
+		inventory = {
+			{ name = 'tortillas',        price = 0 },
+			{ name = 'ground-beef',      price = 0 },
+			{ name = 'cheddar-cheese',   price = 0 },
+			{ name = 'butter',           price = 0 },
+			{ name = 'chicken',          price = 0 },
+			{ name = 'lettuce',          price = 0 },
+			{ name = 'tortilla-chips',   price = 0 },
+			{ name = 'carbonated-water', price = 0 },
+			{ name = 'sugar-cubes',      price = 0 },
+			{ name = 'taco-tomato',      price = 0 },
 		},
 	},
 
