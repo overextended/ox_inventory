@@ -89,4 +89,40 @@ return {
 		weight = 70000,
 		groups = { ['lostmc'] = 0 }
 	},
+	{
+		coords = vec3(-1092.83, -1669.71, 8.41),
+		target = {
+			loc = vec3(-1092.92, -1669.86, 8.41),
+			length = 1.2,
+			width = 5.6,
+			heading = 0,
+			minZ = 29.49,
+			maxZ = 32.09,
+			label = 'Open gang stash'
+		},
+		name = 'maelstrom',
+		label = 'Gang Stash',
+		owner = true,
+		slots = 70,
+		weight = 70000,
+		groups = { ['maelstrom'] = 0 }
+	},
+	{
+		coords = vec3(-1086.97, -1665.64, 8.41),
+		target = {
+			loc = vec3(-1086.88, -1665.51, 7.41),
+			length = 1.2,
+			width = 5.6,
+			heading = 0,
+			minZ = 29.49,
+			maxZ = 32.09,
+			label = 'Open personal stash'
+		},
+		name = 'maelstrom',
+		label = 'Personal Stash',
+		owner = true,
+		slots = 70,
+		weight = 70000,
+		groups = { ['maelstrom'] = 0 }
+	},
 }
