@@ -3171,10 +3171,18 @@ return {
 
 	["pacific_blueprints"] = {
 		label = "Comic Book",
-		weight = 0,
+		weight = 5,
 		stack = false,
 		close = true,
 		description = "Comic Book.",
+	},
+
+	["hunting_guide"] = {
+		label = "Hunting Guide",
+		weight = 5,
+		stack = false,
+		close = true,
+		description = "Hunting Guide.",
 	},
 
 	["ciggie"] = {

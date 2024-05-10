@@ -1048,6 +1048,7 @@ return {
 			id = 313, colour = 0, scale = 0.6
 		},
 		inventory = {
+			{ name = 'hunting_guide',        price = 5,    currency = 'money' },
 			{ name = 'huntingbait',          price = 25,   currency = 'money' },
 			{ name = 'weapon_musket',        price = 2500, currency = 'money' },
 			{ name = 'ammo-musket',          price = 50,   currency = 'money' },
