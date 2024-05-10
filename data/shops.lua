@@ -129,6 +129,7 @@ return {
 			{ name = 'beer',          price = 7 },
 			{ name = 'whiskey',       price = 10 },
 			{ name = 'vodka',         price = 12 },
+			{ name = 'hunting_guide', price = 5 },
 		},
 		targets = {
 			{
