@@ -2970,6 +2970,7 @@ return {
 		label = 'Pickaxe',
 		weight = 325,
 		stack = true,
+		consume = 0.05,
 		degrade = 30, -- This is the time in minutes it takes for a pickaxe to degrade to 0
 		decay = true -- This is a feature that deletes the item when durability reaches 0 (ox_inventory v2.31.0 or later)
 	},
@@ -9956,6 +9957,9 @@ return {
 		weight = 900,
 		stack = true,
 		close = false,
+		consume = 0.05,
+		degrade = 30, -- This is the time in minutes it takes for a pickaxe to degrade to 0
+		decay = true, -- This is a feature that deletes the item when durability reaches 0 (ox_inventory v2.31.0 or later)
 		description = "",
 		client = {
 			image = "mininglaser.png",
@@ -10022,6 +10026,9 @@ return {
 		weight = 1000,
 		stack = true,
 		close = false,
+		consume = 0.05,
+		degrade = 30, -- This is the time in minutes it takes for a pickaxe to degrade to 0
+		decay = true, -- This is a feature that deletes the item when durability reaches 0 (ox_inventory v2.31.0 or later)
 		description = "",
 		client = {
 			image = "miningdrill.png",
