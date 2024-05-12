@@ -1074,10 +1074,10 @@ return {
 			id = 566, colour = 0, scale = 0.6
 		},
 		inventory = {
-			{ name = 'miningdrill',      price = 7000,  currency = 'money' },
-			{ name = 'mininglaser',      price = 30000, currency = 'money' },
+			{ name = 'miningdrill',      price = 15000, currency = 'money' },
+			{ name = 'mininglaser',      price = 65000, currency = 'money' },
 			{ name = 'campfire',         price = 400,   currency = 'money' },
-			{ name = 'drillbit',         price = 25,    currency = 'money' },
+			{ name = 'drillbit',         price = 100,   currency = 'money' },
 			{ name = 'goldpan',          price = 800,   currency = 'money' },
 			{ name = 'cwnotepad',        price = 500,   currency = 'money' },
 			{ name = 'repair_kit',       price = 250,   currency = 'money' },
@@ -1088,7 +1088,7 @@ return {
 			{ name = 'sprayremover',     price = 600,   currency = 'money' },
 			{ name = 'wallet',           price = 500,   currency = 'money' },
 			{ name = 'gps',              price = 500,   currency = 'money' },
-			{ name = 'pickaxe',          price = 500,   currency = 'money' },
+			{ name = 'pickaxe',          price = 1500,  currency = 'money' },
 			{ name = 'fertilizer',       price = 500,   currency = 'money' },
 			{ name = 'wateringcan',      price = 500,   currency = 'money' },
 			{ name = 'backpack',         price = 500,   currency = 'money' },
