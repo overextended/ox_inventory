@@ -59,10 +59,6 @@ function Inventory.OpenTrunk(entity)
 
     if not door then return end
 
-    if GetVehicleDoorLockStatus(entity) > 1 then
-        return lib.notify({ id = 'vehicle_locked', type = 'error', description = locale('vehicle_locked') })
-    end
-
     local plate = GetVehicleNumberPlateText(entity)
     local invId = 'trunk'..plate
     local coords = GetEntityCoords(entity)
