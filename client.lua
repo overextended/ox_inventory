@@ -651,15 +651,13 @@ local function useSlot(slot, noAnim)
 				lib.notify({ id = 'component_invalid', type = 'error', description = locale('component_invalid', label) })
 			elseif data.allowArmed then
 				useItem(data)
+            else
+                return lib.notify({ id = 'cannot_perform', type = 'error', description = locale('cannot_perform') })
 			end
 		elseif not data.ammo and not data.component then
 			useItem(data)
 		end
-	end
-
-    if currentWeapon then
-        return lib.notify({ id = 'cannot_perform', type = 'error', description = locale('cannot_perform') })
-    end
+    end 
 end
 exports('useSlot', useSlot)
 
