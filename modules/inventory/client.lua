@@ -44,6 +44,10 @@ function Inventory.CanAccessTrunk(entity)
         end
     end
 
+    if GetVehicleDoorLockStatus(entity) > 1 then
+        return
+    end
+
     local min, max = GetModelDimensions(vehicleHash)
     local offset = (max - min) * (not checkVehicle and vec3(0.5, 0, 0.5) or vec3(0.5, 1, 0.5)) + min
     offset = GetOffsetFromEntityInWorldCoords(entity, offset.x, offset.y, offset.z)
