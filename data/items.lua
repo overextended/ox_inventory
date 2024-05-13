@@ -8678,6 +8678,7 @@ return {
 		degrade = 60 * 12,
 		consume = 1,
 		client = {
+			status = { hunger = 20 },
 			anim = { dict = 'mp_player_inteat@burger', clip = 'mp_player_int_eat_burger' },
 			prop = {
 				model = 'prop_cs_burger_01',
