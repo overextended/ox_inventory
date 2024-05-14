@@ -10733,4 +10733,15 @@ return {
 		close = false,
 		description = "You can relax with this!",
 	},
+
+	["recyclablematerial"] = {
+		label = "Recycle Box",
+		weight = 100,
+		stack = true,
+		close = false,
+		description = "A box of Recyclable Materials",
+		client = {
+			image = "recyclablematerial.png",
+		}
+	},
 }
