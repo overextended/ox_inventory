@@ -3025,7 +3025,7 @@ return {
 
 	["copper"] = {
 		label = "Copper",
-		weight = 100,
+		weight = 1,
 		stack = true,
 		close = false,
 		description = "Nice piece of metal that you can probably use for something",
@@ -3033,7 +3033,7 @@ return {
 
 	["iron"] = {
 		label = "Iron",
-		weight = 100,
+		weight = 1,
 		stack = true,
 		close = false,
 		description = "Handy piece of metal that you can probably use for something",
@@ -3041,7 +3041,7 @@ return {
 
 	["steel"] = {
 		label = "Steel",
-		weight = 100,
+		weight = 1,
 		stack = true,
 		close = false,
 		description = "Nice piece of metal that you can probably use for something",
@@ -3281,7 +3281,7 @@ return {
 
 	["plastic"] = {
 		label = "Plastic",
-		weight = 100,
+		weight = 1,
 		stack = true,
 		close = false,
 		description = "RECYCLE! - Greta Thunberg 2019",
@@ -3407,7 +3407,7 @@ return {
 
 	["aluminum"] = {
 		label = "Aluminium",
-		weight = 100,
+		weight = 1,
 		stack = true,
 		close = false,
 		description = "Nice piece of metal that you can probably use for something",
@@ -3423,7 +3423,7 @@ return {
 
 	["rubber"] = {
 		label = "Rubber",
-		weight = 100,
+		weight = 1,
 		stack = true,
 		close = false,
 		description = "Rubber, I believe you can make your own rubber ducky with it :D",
@@ -3865,7 +3865,7 @@ return {
 
 	["glass"] = {
 		label = "Glass",
-		weight = 100,
+		weight = 1,
 		stack = true,
 		close = false,
 		description = "It is very fragile, watch out",
@@ -5365,7 +5365,7 @@ return {
 
 	['scrapmetal'] = {
 		label = 'Scrap Metal',
-		weight = 80,
+		weight = 1,
 	},
 
 	["crackburner"] = {
@@ -9801,7 +9801,7 @@ return {
 
 	["bottle"] = {
 		label = "Empty Bottle",
-		weight = 10,
+		weight = 1,
 		stack = true,
 		close = false,
 		description = "A glass bottle",
@@ -10736,7 +10736,7 @@ return {
 
 	["recyclablematerial"] = {
 		label = "Recycle Box",
-		weight = 100,
+		weight = 1,
 		stack = true,
 		close = false,
 		description = "A box of Recyclable Materials",
