@@ -350,6 +350,34 @@ return {
 		},
 	},
 
+	["birthdaycake"] = {
+		label = "Birthday Cake",
+		weight = 15,
+		degrade = 60 * 12,
+		stack = true,
+		close = true,
+		description = "Mmmm, Pho.",
+		client = {
+			status = { hunger = 25 },
+			anim = { dict = 'anim@eat@fork', clip = 'fork_clip' },
+			prop = {
+				[1] = {
+					model = 'alcaprop_fork',
+					pos = vec3(0.14, 0.02, 0.01),
+					rot = vec3(-118.0, 192.0, 24.0),
+					bone = 57005
+				},
+				[2] = {
+					model = 'bzzz_prop_cake_birthday_001',
+					--bone = 57005	
+					pos = vec3(-0.03, 0.01, 0.05),
+					rot = vec3(0.0, 0.0, -40.0)
+				},
+			},
+			usetime = 12000,
+		},
+	},
+
 	["strawberrycake"] = {
 		label = "Strawberry Cake",
 		weight = 200,
