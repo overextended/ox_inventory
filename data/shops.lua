@@ -950,54 +950,6 @@ return {
 		}
 	},
 
-	Bar8 = {
-		name = 'Bar',
-		inventory = {
-			{ name = 'beer',                price = 0, currency = 'money' },
-			{ name = 'whiskey',             price = 0, currency = 'money' },
-			{ name = 'vodka',               price = 0, currency = 'money' },
-			{ name = 'birthdaycake',        price = 0, currency = 'money' },
-			{ name = 'popcorn',             price = 0, currency = 'money' },
-			{ name = 'alienpillow',         price = 0, currency = 'money' },
-			{ name = 'cupcake-limao',       price = 0, currency = 'money' },
-			{ name = 'cupcake-chocolate',   price = 0, currency = 'money' },
-			{ name = 'lollipop1',           price = 0, currency = 'money' },
-			{ name = 'cupcake-morango',     price = 0, currency = 'money' },
-			{ name = 'gelado-chocolate',    price = 0, currency = 'money' },
-			{ name = 'ps_qs',               price = 0, currency = 'money' },
-			{ name = 'gelado-baunilha',     price = 0, currency = 'money' },
-			{ name = 'barra-chocolate',     price = 0, currency = 'money' },
-			{ name = 'donut_chc',           price = 0, currency = 'money' },
-			{ name = 'donut_sby',           price = 0, currency = 'money' },
-			{ name = 'icecream_chr',        price = 0, currency = 'money' },
-			{ name = 'icecream_chc',        price = 0, currency = 'money' },
-			{ name = 'icecream_lmn',        price = 0, currency = 'money' },
-			{ name = 'icecream_pso',        price = 0, currency = 'money' },
-			{ name = 'icecream_rpy',        price = 0, currency = 'money' },
-			{ name = 'icecream_ckd',        price = 0, currency = 'money' },
-			{ name = 'icecream_sby',        price = 0, currency = 'money' },
-			{ name = 'icecream_vna',        price = 0, currency = 'money' },
-			{ name = 'milkshake-morango',   price = 0, currency = 'money' },
-			{ name = 'gelado-morango',      price = 0, currency = 'money' },
-			{ name = 'milkshake-chocolate', price = 0, currency = 'money' },
-			{ name = 'water',               price = 0, currency = 'money' },
-			{ name = 'cola',                price = 0, currency = 'money' },
-			{ name = 'firework1',           price = 0, currency = 'money' },
-			{ name = 'firework2',           price = 0, currency = 'money' },
-			{ name = 'firework3',           price = 0, currency = 'money' },
-			{ name = 'firework4',           price = 0, currency = 'money' },
-			{ name = 'fontain_4',           price = 0, currency = 'money' },
-		},
-		targets = {
-			{
-				ped = `s_f_y_clubbar_01`,
-				scenario = 'WORLD_HUMAN_STAND_MOBILE',
-				loc = vec3(-1507.0238, -1512.8074, 5.2979),
-				heading = 29.1715,
-			}
-		}
-	},
-
 	Fishing = {
 		name = 'Fishing Shop',
 		blip = {
