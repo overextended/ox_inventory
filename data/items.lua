@@ -5101,7 +5101,7 @@ return {
 	['bodyarmor_1'] = {
 		label = 'Light Ballistic Vest',
 		weight = 3000,
-		stack = false,
+		stack = true,
 		description = "Bullts hurt a bit less with this",
 		client = {
 			anim = { dict = 'clothingshirt', clip = 'try_shirt_positive_d' },
@@ -5112,7 +5112,7 @@ return {
 	['bodyarmor_2'] = {
 		label = 'Medium Ballistic Vest',
 		weight = 4000,
-		stack = false,
+		stack = true,
 		description = "Bullets hurt a lot less with this",
 		client = {
 			anim = { dict = 'clothingshirt', clip = 'try_shirt_positive_d' },
@@ -5123,7 +5123,7 @@ return {
 	['bodyarmor_3'] = {
 		label = 'Heavy Ballistic Vest',
 		weight = 4500,
-		stack = false,
+		stack = true,
 		description = "Keep the extra bullets for personal vest flair",
 		client = {
 			anim = { dict = 'clothingshirt', clip = 'try_shirt_positive_d' },
