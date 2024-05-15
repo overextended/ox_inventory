@@ -101,9 +101,10 @@ end
 
 local rewardTypes = 1 << 0 | 1 << 1 | 1 << 2 | 1 << 3 | 1 << 7 | 1 << 10
 
--- Enables the weapon wheel, but disables the use of inventory items
+-- Enables the weapon wheel, but disables the use of inventory weapons.
 -- Mostly used for weaponised vehicles, though could be called for "minigames"
 function Utils.WeaponWheel(state)
+    if client.disableweapons then state = true end
 	if state == nil then state = EnableWeaponWheel end
 
 	EnableWeaponWheel = state
