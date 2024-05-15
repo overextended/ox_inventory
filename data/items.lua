@@ -10333,9 +10333,10 @@ return {
 		weight = 100,
 		stack = true,
 		close = true,
-		description = "Could get Handy.",
-		client = {
-			image = "rag.png",
+		consume = 0.25,
+		description = "Could be Handy.",
+		server = {
+			export = 'lsn-evidence.rag'
 		}
 	},
 
@@ -10356,8 +10357,12 @@ return {
 		stack = true,
 		close = true,
 		description = "Cleans every Evidence near a police Officer.",
+		consume = 0.05,
 		client = {
 			image = "cleaningkit.png",
+		},
+		server = {
+			export = 'lsn-evidence.evidencecleaningkit'
 		}
 	},
 
