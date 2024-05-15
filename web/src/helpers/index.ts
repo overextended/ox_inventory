@@ -1,5 +1,5 @@
 import { Inventory, InventoryType, ItemData, Slot, SlotWithItem, State } from '../typings';
-import { isEqual } from 'lodash';
+import { isEqual } from '../utils/isEqual';
 import { store } from '../store';
 import { Items } from '../store/items';
 import { imagepath } from '../store/imagepath';
