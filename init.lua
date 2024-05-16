@@ -21,6 +21,9 @@ shared = {
     police = json.decode(GetConvar('inventory:police', '["police", "sheriff"]')),
 }
 
+shared.dropslots = GetConvarInt('inventory:dropslots', shared.playerslots)
+shared.dropweight = GetConvarInt('inventory:dropslotcount', shared.playerweight)
+
 do
     if type(shared.police) == 'string' then
         shared.police = { shared.police }
@@ -45,7 +48,7 @@ if IsDuplicityVersion() then
         trimplate = GetConvarInt('inventory:trimplate', 1) == 1,
         vehicleloot = json.decode(GetConvar('inventory:vehicleloot', [[
 			[
-				["cola", 1, 1],
+				["sprunk", 1, 1],
 				["water", 1, 1],
 				["garbage", 1, 2, 50],
 				["panties", 1, 1, 5],
@@ -88,6 +91,7 @@ else
         weaponmismatch = GetConvarInt('inventory:weaponmismatch', 1) == 1,
         ignoreweapons = json.decode(GetConvar('inventory:ignoreweapons', '[]')),
         suppresspickups = GetConvarInt('inventory:suppresspickups', 1) == 1,
+        disableweapons = GetConvarInt('inventory:disableweapons', 0) == 1,
     }
 
     local ignoreweapons = table.create(0, (client.ignoreweapons and #client.ignoreweapons or 0) + 3)
