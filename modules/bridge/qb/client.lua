@@ -24,19 +24,16 @@ RegisterNetEvent('QBCore:Player:SetPlayerData', function(data)
 	end
 end)
 
-RegisterNetEvent('police:client:GetCuffed', function()
-	PlayerData.cuffed = not PlayerData.cuffed
+RegisterNetEvent('police:client:SetCuffState', function(bool)
+	PlayerData.cuffed = bool
 	LocalPlayer.state:set('invBusy', PlayerData.cuffed, false)
-
 	if not PlayerData.cuffed then return end
-
 	Weapon.Disarm()
 end)
 
 ---@diagnostic disable-next-line: duplicate-set-field
 function client.setPlayerStatus(values)
 	for name, value in pairs(values) do
-
 		-- compatibility for ESX style values
 		if value > 100 or value < -100 then
 			value = value * 0.0001
@@ -59,19 +56,19 @@ end
 
 -- taken from qbox-core (https://github.com/Qbox-project/qb-core/blob/f4174f311aae8157181a48fa2e2bd30c8d13edb1/client/functions.lua#L25)
 local function hasItem(items, amount)
-    amount = amount or 1
+	amount = amount or 1
 
-    if type(items) == 'table' then
-        for _, v in pairs(items) do
-            if Inventory.GetItemCount(v) < amount then
-                return false
-            end
-        end
+	if type(items) == 'table' then
+		for _, v in pairs(items) do
+			if Inventory.GetItemCount(v) < amount then
+				return false
+			end
+		end
 
-        return true
-    else
-        return Inventory.GetItemCount(items) >= amount
-    end
+		return true
+	else
+		return Inventory.GetItemCount(items) >= amount
+	end
 end
 
 AddStateBagChangeHandler('inv_busy', ('player:%s'):format(cache.serverId), function(_, _, value)
