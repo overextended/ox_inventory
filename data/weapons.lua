@@ -595,6 +595,12 @@ return {
 			throwable = true,
 		},
 
+		['WEAPON_ACIDPACKAGE'] = {
+			label = 'Newspaper',
+			weight = 1,
+			throwable = true,
+		},
+
 		['WEAPON_SNIPERRIFLE'] = {
 			label = 'Sniper Rifle',
 			weight = 5000,
@@ -816,7 +822,7 @@ return {
 					`COMPONENT_SNSPISTOL_CLIP_02`,
 					`COMPONENT_SNSPISTOL_MK2_CLIP_02`,
 					`COMPONENT_VINTAGEPISTOL_CLIP_02`,
-                    `COMPONENT_TECPISTOL_CLIP_02`,
+					`COMPONENT_TECPISTOL_CLIP_02`,
 				},
 				usetime = 2500
 			}
