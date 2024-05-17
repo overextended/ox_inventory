@@ -761,10 +761,10 @@ return {
 		},
 		targets = {
 			{
-				ped = `a_m_m_mexcntry_01`,
+				ped = `u_m_m_partytarget`,
 				scenario = 'WORLD_HUMAN_STAND_MOBILE',
-				loc = vec3(-511.2321, 292.3943, 82.2959),
-				heading = 166.3387,
+				loc = vec3(-570.1756, -411.5357, 33.9170),
+				heading = 356.9491,
 			}
 		}
 	},
