@@ -3,7 +3,7 @@ if not lib then return end
 local Items = require 'modules.items.shared' --[[@as table<string, OxClientItem>]]
 
 local function sendDisplayMetadata(data)
-    SendNUIMessage({
+	SendNUIMessage({
 		action = 'displayMetadata',
 		data = data
 	})
@@ -16,9 +16,9 @@ local function displayMetadata(metadata, value)
 	local data = {}
 
 	if type(metadata) == 'string' then
-        if not value then return end
+		if not value then return end
 
-        data = { { metadata = metadata, value = value } }
+		data = { { metadata = metadata, value = value } }
 	elseif table.type(metadata) == 'array' then
 		for i = 1, #metadata do
 			for k, v in pairs(metadata[i]) do
@@ -37,15 +37,15 @@ local function displayMetadata(metadata, value)
 		end
 	end
 
-    if client.uiLoaded then
-        return sendDisplayMetadata(data)
-    end
+	if client.uiLoaded then
+		return sendDisplayMetadata(data)
+	end
 
-    CreateThread(function()
-        repeat Wait(100) until client.uiLoaded
+	CreateThread(function()
+		repeat Wait(100) until client.uiLoaded
 
-        sendDisplayMetadata(data)
-    end)
+		sendDisplayMetadata(data)
+	end)
 end
 
 exports('displayMetadata', displayMetadata)
@@ -54,17 +54,17 @@ exports('displayMetadata', displayMetadata)
 ---@param name string?
 ---@return table?
 local function getItem(_, name)
-    if not name then return Items end
+	if not name then return Items end
 
 	if type(name) ~= 'string' then return end
 
-    name = name:lower()
+	name = name:lower()
 
-    if name:sub(0, 7) == 'weapon_' then
-        name = name:upper()
-    end
+	if name:sub(0, 7) == 'weapon_' then
+		name = name:upper()
+	end
 
-    return Items[name]
+	return Items[name]
 end
 
 setmetatable(Items --[[@as table]], {

@@ -734,8 +734,8 @@ return {
 			{
 				ped = `s_f_y_clubbar_01`,
 				scenario = 'WORLD_HUMAN_STAND_MOBILE',
-				loc = vec3(-635.0684, 235.6599, 80.8818),
-				heading = 267.2443,
+				loc = vec3(280.4868, -973.1031, 28.4216),
+				heading = 355.0703,
 			}
 		}
 	},

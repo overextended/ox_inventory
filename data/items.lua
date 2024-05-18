@@ -10777,4 +10777,400 @@ return {
 			image = "recyclablematerial.png",
 		}
 	},
+
+	["bchocolatemuffin"] = {
+		label = "Chocolate Muffin",
+		weight = 1000,
+		stack = true,
+		close = true,
+		description = "Chocolate Muffin",
+		client = {
+			image = "bchocolatemuffin.png",
+		}
+	},
+
+	["bhoneyhazelnutoatlatte"] = {
+		label = "Honey Hazelnut Oat Latte",
+		weight = 1000,
+		stack = true,
+		close = true,
+		description = "Honey Hazelnut Oat Latte",
+		client = {
+			image = "bhoneyhazelnutoatlatte.png",
+		}
+	},
+
+	["bespressocoffeecup"] = {
+		label = "Espresso Coffee Cup",
+		weight = 1000,
+		stack = true,
+		close = true,
+		description = "Espresso Coffee Cup",
+		client = {
+			image = "bespressocoffeecup.png",
+		}
+	},
+
+	["bregularcup"] = {
+		label = "Regular Cup",
+		weight = 1000,
+		stack = true,
+		close = true,
+		description = "Regular Cup",
+		client = {
+			image = "bregularcup.png",
+		}
+	},
+
+	["bstrawberryvanillaoatlatte"] = {
+		label = "Strawberry Vanilla Oat Latte",
+		weight = 1000,
+		stack = true,
+		close = true,
+		description = "Strawberry Vanilla Oat Latte",
+		client = {
+			image = "bstrawberryvanillaoatlatte.png",
+		}
+	},
+
+	["bstrawberry"] = {
+		label = "Strawberry",
+		weight = 1000,
+		stack = true,
+		close = true,
+		description = "Strawberry",
+		client = {
+			image = "bstrawberry.png",
+		}
+	},
+
+	["bhighcoffeeglasscup"] = {
+		label = "High Coffee Glass",
+		weight = 1000,
+		stack = true,
+		close = true,
+		description = "Empty High Coffee Glass",
+		client = {
+			image = "bhighcoffeeglasscup.png",
+		}
+	},
+
+	["bice"] = {
+		label = "Ice",
+		weight = 1000,
+		stack = true,
+		close = true,
+		description = "Ice",
+		client = {
+			image = "bice.png",
+		}
+	},
+
+	["bjavachipfrappuccino"] = {
+		label = "Java Chip Frappuccino",
+		weight = 1000,
+		stack = true,
+		close = true,
+		description = "Java Chip Frappuccino",
+		client = {
+			image = "bjavachipfrappuccino.png",
+		}
+	},
+
+	["bcaramelsyrup"] = {
+		label = "Caramel Syrup",
+		weight = 1000,
+		stack = true,
+		close = true,
+		description = "Caramel Syrup",
+		client = {
+			image = "bcaramelsyrup.png",
+		}
+	},
+
+	["bcream"] = {
+		label = "Whipped Cream",
+		weight = 1000,
+		stack = true,
+		close = true,
+		description = "Whipped Cream",
+		client = {
+			image = "bcream.png",
+		}
+	},
+
+	["borangeslush"] = {
+		label = "Orange Slush",
+		weight = 1000,
+		stack = true,
+		close = true,
+		description = "Cup Fill With Orange Slush",
+		client = {
+			image = "borangeslush.png",
+		}
+	},
+
+	["bespresso"] = {
+		label = "Espresso",
+		weight = 1000,
+		stack = true,
+		close = true,
+		description = "Espresso",
+		client = {
+			image = "bespresso.png",
+		}
+	},
+
+	["bstrawberrycreamfrappuccino"] = {
+		label = "Strawberry Cream Frappuccino",
+		weight = 1000,
+		stack = true,
+		close = true,
+		description = "Strawberry Cream Frappuccino",
+		client = {
+			image = "bstrawberrycreamfrappuccino.png",
+		}
+	},
+
+	["bcoffeebeans"] = {
+		label = "Coffee Beans",
+		weight = 1000,
+		stack = true,
+		close = true,
+		description = "Coffee Beans",
+		client = {
+			image = "bcoffeebeans.png",
+		}
+	},
+
+	["bberrymuffin"] = {
+		label = "Berry Muffin",
+		weight = 1000,
+		stack = true,
+		close = true,
+		description = "Berry Muffin",
+		client = {
+			image = "bberrymuffin.png",
+		}
+	},
+
+	["borange"] = {
+		label = "Orange",
+		weight = 1000,
+		stack = true,
+		close = true,
+		description = "Orange",
+		client = {
+			image = "borange.png",
+		}
+	},
+
+	["bapple"] = {
+		label = "Apple",
+		weight = 1000,
+		stack = true,
+		close = true,
+		description = "Red Apple",
+		client = {
+			image = "bapple.png",
+		}
+	},
+
+	["bcloudcafe"] = {
+		label = "Cloud Cafe",
+		weight = 1000,
+		stack = true,
+		close = true,
+		description = "Cloud Cafe",
+		client = {
+			image = "bcloudcafe.png",
+		}
+	},
+
+	["bcaramelfrappucino"] = {
+		label = "Caramel Frappucino",
+		weight = 1000,
+		stack = true,
+		close = true,
+		description = "Caramel Frappucino",
+		client = {
+			image = "bcaramelfrappucino.png",
+		}
+	},
+
+	["bmenu"] = {
+		label = "Bean Machine Menu",
+		weight = 1000,
+		stack = true,
+		close = true,
+		description = "Menu",
+		client = {
+			image = "bmenu.png",
+		}
+	},
+
+	["blemonslush"] = {
+		label = "Lemon Slush",
+		weight = 1000,
+		stack = true,
+		close = true,
+		description = "Cup Fill With Lemon Slush",
+		client = {
+			image = "blemonslush.png",
+		}
+	},
+
+	["bespressomacchiato"] = {
+		label = "Espresso Macchiato",
+		weight = 1000,
+		stack = true,
+		close = true,
+		description = "Espresso Macchiato",
+		client = {
+			image = "bespressomacchiato.png",
+		}
+	},
+
+	["bhoney"] = {
+		label = "Honey",
+		weight = 1000,
+		stack = true,
+		close = true,
+		description = "Honey",
+		client = {
+			image = "bhoney.png",
+		}
+	},
+
+	["bhotchoc"] = {
+		label = "Hot Choc",
+		weight = 1000,
+		stack = true,
+		close = true,
+		description = "Hot Choc",
+		client = {
+			image = "bhotchoc.png",
+		}
+	},
+
+	["bicedcaffelatte"] = {
+		label = "Iced Caffe Latte",
+		weight = 1000,
+		stack = true,
+		close = true,
+		description = "Iced Caffe Latte",
+		client = {
+			image = "bicedcaffelatte.png",
+		}
+	},
+
+	["bhotchocolatepowder"] = {
+		label = "Hot Chocolate Powder",
+		weight = 1000,
+		stack = true,
+		close = true,
+		description = "Hot Chocolate Powder",
+		client = {
+			image = "bhotchocolatepowder.png",
+		}
+	},
+
+	["bcoffeeglass"] = {
+		label = "Coffee Glass",
+		weight = 1000,
+		stack = true,
+		close = true,
+		description = "Empty Coffee Glass",
+		client = {
+			image = "bcoffeeglass.png",
+		}
+	},
+
+	["bcoldbrewlatte"] = {
+		label = "Cold Brew Latte",
+		weight = 1000,
+		stack = true,
+		close = true,
+		description = "Cold Brew Latte",
+		client = {
+			image = "bcoldbrewlatte.png",
+		}
+	},
+
+	["bmilk"] = {
+		label = "Milk",
+		weight = 1000,
+		stack = true,
+		close = true,
+		description = "Milk",
+		client = {
+			image = "bmilk.png",
+		}
+	},
+
+	["bbanana"] = {
+		label = "Banana",
+		weight = 1000,
+		stack = true,
+		close = true,
+		description = "Banana",
+		client = {
+			image = "bbanana.png",
+		}
+	},
+
+	["bdonut"] = {
+		label = "Donut",
+		weight = 1000,
+		stack = true,
+		close = true,
+		description = "Tasty Donut",
+		client = {
+			image = "bdonut.png",
+		}
+	},
+
+	["bpepper"] = {
+		label = "DR.Pepper",
+		weight = 1000,
+		stack = true,
+		close = true,
+		description = "Cup Fill With DR.Pepper",
+		client = {
+			image = "bpepper.png",
+		}
+	},
+
+	["bmuffin"] = {
+		label = "Muffin",
+		weight = 1000,
+		stack = true,
+		close = true,
+		description = "Muffin",
+		client = {
+			image = "bmuffin.png",
+		}
+	},
+
+	["bcocacola"] = {
+		label = "CocaCola",
+		weight = 1000,
+		stack = true,
+		close = true,
+		description = "Cup Fill With Cocacola",
+		client = {
+			image = "bcocacola.png",
+		}
+	},
+
+	["bsprite"] = {
+		label = "Sprite",
+		weight = 1000,
+		stack = true,
+		close = true,
+		description = "Cup Fill With Sprite",
+		client = {
+			image = "bsprite.png",
+		}
+	},
 }
