@@ -30,16 +30,6 @@ for shopType, shopData in pairs(lib.load('data.shops') --[[@as table<string, OxS
 end
 
 ---@param point CPoint
-local function nearbyShop(point)
-	---@diagnostic disable-next-line: param-type-mismatch
-	DrawMarker(2, point.coords.x, point.coords.y, point.coords.z, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.3, 0.2, 0.15, 30, 150, 30, 222, false, false, 0, true, false, false, false)
-
-	if point.isClosest and point.currentDistance < 1.2 and IsControlJustReleased(0, 38) then
-		client.openInventory('shop', { id = point.invId, type = point.type })
-	end
-end
-
----@param point CPoint
 local function onEnterShop(point)
 	if not point.entity then
 		local model = lib.requestModel(point.ped)
@@ -111,6 +101,8 @@ local function wipeShops()
 
 	table.wipe(shops)
 end
+
+local markerColour = { 30, 150, 30 }
 
 local function refreshShops()
 	wipeShops()
@@ -190,6 +182,7 @@ local function refreshShops()
 			end
 		elseif shop.locations then
 			if not hasShopAccess(shop) then goto skipLoop end
+            local shopPrompt = { icon = 'fas fa-shopping-basket' }
 
 			for i = 1, #shop.locations do
 				local coords = shop.locations[i]
@@ -201,7 +194,12 @@ local function refreshShops()
 					inv = 'shop',
 					invId = i,
 					type = type,
-					nearby = nearbyShop,
+                    marker = markerColour,
+                    prompt = {
+                        options = shop.icon and { icon = shop.icon } or shopPrompt,
+                        message = ('**%s**  \n%s'):format(label, locale('interact_prompt', GetControlInstructionalButton(0, 38, true):sub(3)))
+                    },
+					nearby = Utils.nearbyMarker,
 					blip = blip and createBlip(blip, coords)
 				})
 			end
