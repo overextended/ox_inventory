@@ -96,10 +96,11 @@ end
 
 function Weapon.Disarm(currentWeapon, noAnim)
 	if currentWeapon?.timer then
-		currentWeapon.timer = nil
+		local tmp = currentWeapon
+		currentWeapon = nil
 
-        TriggerServerEvent('ox_inventory:updateWeapon')
-		SetPedAmmo(cache.ped, currentWeapon.hash, 0)
+		TriggerServerEvent('ox_inventory:updateWeapon')
+		SetPedAmmo(cache.ped, tmp.hash, 0)
 
 		if client.weaponanims and not noAnim then
 			if cache.vehicle and vehicleIsCycle(cache.vehicle) then
@@ -108,9 +109,9 @@ function Weapon.Disarm(currentWeapon, noAnim)
 
 			ClearPedSecondaryTask(cache.ped)
 
-			local item = Items[currentWeapon.name]
+			local item = Items[tmp.name]
 			local coords = GetEntityCoords(cache.ped, true)
-			local anim = item.anim or anims[GetWeapontypeGroup(currentWeapon.hash)]
+			local anim = item.anim or anims[GetWeapontypeGroup(tmp.hash)]
 
 			if anim == anims[`GROUP_PISTOL`] and not client.hasGroup(shared.police) then
 				anim = nil
@@ -124,7 +125,7 @@ function Weapon.Disarm(currentWeapon, noAnim)
 		::skipAnim::
 
 		if client.weaponnotify then
-			Utils.ItemNotify({ currentWeapon, 'ui_holstered' })
+			Utils.ItemNotify({ tmp, 'ui_holstered' })
 		end
 
 		TriggerEvent('ox_inventory:currentWeapon')
