@@ -1418,7 +1418,7 @@ RegisterNetEvent('ox_inventory:setPlayerInventory', function(currentDrops, inven
 				DisableControlAction(0, 36, true)
 			end
 
-			if usingItem or invBusy == true or IsPedCuffed(playerPed) then
+			if usingItem or invOpen or IsPedCuffed(playerPed) then
 				DisablePlayerFiring(playerId, true)
 			end
 
