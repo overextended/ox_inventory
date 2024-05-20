@@ -1254,7 +1254,7 @@ RegisterNetEvent('ox_inventory:setPlayerInventory', function(currentDrops, inven
 
 		if point.isClosest and point.currentDistance < 1.2 then
 			if not hasTextUi then
-				hasTextUi = true
+				hasTextUi = point
 				lib.showTextUI(point.message, uiOptions)
 			end
 
@@ -1269,7 +1269,7 @@ RegisterNetEvent('ox_inventory:setPlayerInventory', function(currentDrops, inven
 					end
 				end, point.invId)
 			end
-		elseif hasTextUi then
+		elseif hasTextUi == point then
 			hasTextUi = false
 			lib.hideTextUI()
 		end
