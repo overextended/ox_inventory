@@ -1282,6 +1282,7 @@ exports('GetItemSlots', Inventory.GetItemSlots)
 ---@param ignoreTotal? boolean
 ---@return boolean? success, string? response
 function Inventory.RemoveItem(inv, item, count, metadata, slot, ignoreTotal)
+	lib.print.info('remove item', inv.id, item, count)
 	if type(item) ~= 'table' then item = Items(item) end
 
 	if not item then return false, 'invalid_item' end
@@ -1296,15 +1297,32 @@ function Inventory.RemoveItem(inv, item, count, metadata, slot, ignoreTotal)
 		metadata = assertMetadata(metadata)
 		local itemSlots, totalCount = Inventory.GetItemSlots(inv, item, metadata)
 
-		if not itemSlots then return false end
-
+		if not itemSlots then lib.print.info('not slots') return false end
 		if totalCount and count > totalCount then
-			if not ignoreTotal then return false, 'not_enough_items' end
+			if item.name == 'money' then
+				local Walletcount = Inventory.GetItem(inv.id, 'wallet', nil, true)
 
-			count = totalCount
+				if Walletcount < 1 then return false, 'not_enough_items' end
+
+				local walletSlot = Inventory.GetSlotWithItem(inv.id, 'wallet')
+				local walletInv = Inventory.GetContainerFromSlot(inv.id, walletSlot.slot)
+				local walletCashCount = Inventory.Search(walletInv.id, 'count', 'money')
+
+				if walletCashCount >= count then
+					if Inventory.RemoveItem(walletInv, item, count) then
+						TriggerClientEvent('ox_inventory:itemNotify', inv.id, { item.name, 'ui_removed', count })
+						return true
+					end
+				end
+			else
+				if not ignoreTotal then return false, 'not_enough_items' end
+				count = totalCount
+			end
 		end
 
 		local removed, total, slots = 0, count, {}
+
+		local wallet = nil
 
 		if slot and itemSlots[slot] then
 			removed = count

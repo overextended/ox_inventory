@@ -72,7 +72,6 @@ export const ItemNotificationsProvider = ({ children }: { children: React.ReactN
   };
 
   useNuiEvent<[item: SlotWithItem, text: string, count?: number]>('itemNotify', ([item, text, count]) => {
-    console.log(item, text, count)
     add({ item: item, text: count ? `${Locale[text]} ${count}x` : `${Locale[text]}` });
   });
 
