@@ -493,6 +493,9 @@ return {
 
 	SmokeShop = {
 		name = 'Smoke Shop',
+		groups = {
+			['whitewidow'] = 0
+		},
 		inventory = {
 			{ name = 'rolling_paper',  price = 5,   currency = 'money' },
 			{ name = 'joint_roller',   price = 200, currency = 'money' },
@@ -503,14 +506,13 @@ return {
 			{ name = 'vape',           price = 200, currency = 'money' },
 			{ name = 'mdwoods',        price = 20,  currency = 'money' },
 			{ name = 'empty_weed_bag', price = 10,  currency = 'money' },
+			{ name = 'weedscissors',   price = 10,  currency = 'money' },
+		},
+		locations = {
+			vec3(185.17, -242.75, 54.12)
 		},
 		targets = {
-			{
-				ped = `a_f_y_hippie_01`,
-				scenario = 'WORLD_HUMAN_SMOKING_POT',
-				loc = vec3(187.5430, -243.3472, 53.0705),
-				heading = 243.9374,
-			}
+			{ loc = vec3(185.17, -242.75, 54.12), length = 0.6, width = 0.5, heading = 60.0, minZ = 28.2, maxZ = 28.6, distance = 2 }
 		}
 	},
 
@@ -534,8 +536,8 @@ return {
 			{
 				ped = `a_f_y_hippie_01`,
 				scenario = 'WORLD_HUMAN_SMOKING_POT',
-				loc = vec3(-1171.3345, -1571.0819, 3.6636),
-				heading = 125.6600,
+				loc = vec3(-1168.1553, -1572.5336, 3.6635),
+				heading = 118.1103,
 			}
 		}
 	},
