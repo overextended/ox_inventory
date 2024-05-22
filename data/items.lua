@@ -3214,6 +3214,14 @@ return {
 		description = "Hunting Guide.",
 	},
 
+	["burgershot_menu"] = {
+		label = "Burgershot Menu",
+		weight = 5,
+		stack = false,
+		close = true,
+		description = "Burgershot Menu.",
+	},
+
 	["ciggie"] = {
 		label = "Ciggie",
 		weight = 100,

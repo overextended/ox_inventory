@@ -1199,6 +1199,25 @@ return {
 		},
 	},
 
+	burgershot2 = {
+		name = 'Burgershot Menu',
+		inventory = {
+			{ name = 'burgershot_menu', price = 0 },
+		},
+		locations = {
+			vec3(-1185.1094, -893.1072, 13.8862),
+			vec3(-1186.3790, -885.4500, 13.8862),
+			vec3(-1189.1805, -887.4291, 13.8862),
+			vec3(-1182.3574, -891.2164, 13.8862)
+		},
+		targets = {
+			{ loc = vec3(-1185.1094, -893.1072, 13.8862), length = 0.6, width = 0.5, heading = 3.02, minZ = 28.2, maxZ = 28.6, distance = 2 },
+			{ loc = vec3(-1182.3574, -891.2164, 13.8862), length = 0.6, width = 0.5, heading = 3.02, minZ = 28.2, maxZ = 28.6, distance = 2 },
+			{ loc = vec3(-1189.1805, -887.4291, 13.8862), length = 0.6, width = 0.5, heading = 3.02, minZ = 28.2, maxZ = 28.6, distance = 2 },
+			{ loc = vec3(-1186.3790, -885.4500, 13.8862), length = 0.6, width = 0.5, heading = 3.02, minZ = 28.2, maxZ = 28.6, distance = 2 }
+		}
+	},
+
 	taco = {
 		name = 'taco',
 		groups = {
@@ -1216,6 +1235,97 @@ return {
 			{ name = 'sugar-cubes',      price = 0 },
 			{ name = 'taco-tomato',      price = 0 },
 		},
+	},
+
+	GroceryStore = {
+		name = 'Grocery Store',
+		inventory = {
+			{ name = 'milk',             price = 10, currency = 'money' },
+			{ name = 'bmilk',            price = 10, currency = 'money' },
+			{ name = 'leite-condensado', price = 10, currency = 'money' },
+			{ name = 'pacote-leite',     price = 15, currency = 'money' },
+		},
+		locations = {
+			vec3(2715.3708, 3352.0251, 57.1336)
+		},
+		targets = {
+			{ loc = vec3(2715.3708, 3352.0251, 57.1336), length = 0.6, width = 0.5, heading = 60.0, minZ = 28.2, maxZ = 28.6, distance = 2 }
+		}
+	},
+
+	GroceryStore2 = {
+		name = 'Grocery Store',
+		inventory = {
+			{ name = 'raw_meat', price = 30, currency = 'money' },
+		},
+		locations = {
+			vec3(2718.5452, 3359.1980, 57.1336)
+		},
+		targets = {
+			{ loc = vec3(2718.5452, 3359.1980, 57.1336), length = 0.6, width = 0.5, heading = 60.0, minZ = 28.2, maxZ = 28.6, distance = 2 }
+		}
+	},
+
+	GroceryStore3 = {
+		name = 'Grocery Store',
+		inventory = {
+			{ name = 'pacote-farinha', price = 15, currency = 'money' },
+			{ name = 'flour',          price = 10, currency = 'money' },
+		},
+		locations = {
+			vec3(2707.9121, 3360.9836, 57.1163)
+		},
+		targets = {
+			{ loc = vec3(2707.9121, 3360.9836, 57.1163), length = 0.6, width = 0.5, heading = 60.0, minZ = 28.2, maxZ = 28.6, distance = 2 }
+		}
+	},
+
+	GroceryStoreFront = {
+		name = 'Grocery Store',
+		inventory = {
+			{ name = 'pacote-farinha',       price = 15, currency = 'money' },
+			{ name = 'flour',                price = 10, currency = 'money' },
+			{ name = 'raw_meat',             price = 30, currency = 'money' },
+			{ name = 'milk',                 price = 10, currency = 'money' },
+			{ name = 'bmilk',                price = 10, currency = 'money' },
+			{ name = 'leite-condensado',     price = 10, currency = 'money' },
+			{ name = 'pacote-leite',         price = 15, currency = 'money' },
+			{ name = 'bcoffeebeans',         price = 15, currency = 'money' },
+			{ name = 'bcream',               price = 10, currency = 'money' },
+			{ name = 'bstrawberry',          price = 30, currency = 'money' },
+			{ name = 'bhotchocolatepowder',  price = 10, currency = 'money' },
+			{ name = 'bhoney',               price = 10, currency = 'money' },
+			{ name = 'bice',                 price = 10, currency = 'money' },
+			{ name = 'bcaramelsyrup',        price = 15, currency = 'money' },
+			{ name = 'tortillas',            price = 15, currency = 'money' },
+			{ name = 'ground-beef',          price = 10, currency = 'money' },
+			{ name = 'taco-tomato',          price = 30, currency = 'money' },
+			{ name = 'chicken',              price = 10, currency = 'money' },
+			{ name = 'lettuce',              price = 10, currency = 'money' },
+			{ name = 'burger-lettuce',       price = 10, currency = 'money' },
+			{ name = 'butter',               price = 15, currency = 'money' },
+			{ name = 'tortilla-chips',       price = 15, currency = 'money' },
+			{ name = 'cheddar-cheese',       price = 10, currency = 'money' },
+			{ name = 'burger-raw',           price = 30, currency = 'money' },
+			{ name = 'burger-bun',           price = 10, currency = 'money' },
+			{ name = 'bdonut',               price = 10, currency = 'money' },
+			{ name = 'bbanana',              price = 10, currency = 'money' },
+			{ name = 'borange',              price = 15, currency = 'money' },
+			{ name = 'bapple',               price = 15, currency = 'money' },
+			{ name = 'burger-tomato',        price = 10, currency = 'money' },
+			{ name = 'carbonated-water',     price = 30, currency = 'money' },
+			{ name = 'sugar-cubes',          price = 10, currency = 'money' },
+			{ name = 'burger-potato',        price = 10, currency = 'money' },
+			{ name = 'burger-mshakeformula', price = 10, currency = 'money' },
+		},
+		targets = {
+			{
+				ped = `a_f_y_business_01`,
+				scenario = 'WORLD_HUMAN_STAND_MOBILE',
+				loc = vec3(2688.6577, 3386.3738, 56.1163),
+				heading = 243.2518,
+			}
+		}
 	},
 
 	VendingMachineDrinks = {
