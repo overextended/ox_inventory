@@ -1282,7 +1282,7 @@ exports('GetItemSlots', Inventory.GetItemSlots)
 ---@param ignoreTotal? boolean
 ---@return boolean? success, string? response
 function Inventory.RemoveItem(inv, item, count, metadata, slot, ignoreTotal)
-	lib.print.info('remove item', inv.id, item, count)
+	--lib.print.info('remove item', inv.id, item, count)
 	if type(item) ~= 'table' then item = Items(item) end
 
 	if not item then return false, 'invalid_item' end
