@@ -497,16 +497,16 @@ return {
 			['whitewidow'] = 0
 		},
 		inventory = {
-			{ name = 'rolling_paper',  price = 5,   currency = 'money' },
-			{ name = 'joint_roller',   price = 200, currency = 'money' },
-			{ name = 'lighter',        price = 200, currency = 'money' },
-			{ name = 'butane',         price = 200, currency = 'money' },
-			{ name = 'weedgrinder',    price = 200, currency = 'money' },
-			{ name = 'dabrig',         price = 200, currency = 'money' },
-			{ name = 'vape',           price = 200, currency = 'money' },
-			{ name = 'mdwoods',        price = 20,  currency = 'money' },
-			{ name = 'empty_weed_bag', price = 10,  currency = 'money' },
-			{ name = 'weedscissors',   price = 10,  currency = 'money' },
+			{ name = 'rolling_paper',  price = 0, currency = 'money' },
+			{ name = 'joint_roller',   price = 0, currency = 'money' },
+			{ name = 'lighter',        price = 0, currency = 'money' },
+			{ name = 'butane',         price = 0, currency = 'money' },
+			{ name = 'weedgrinder',    price = 0, currency = 'money' },
+			{ name = 'dabrig',         price = 0, currency = 'money' },
+			{ name = 'vape',           price = 0, currency = 'money' },
+			{ name = 'mdwoods',        price = 0, currency = 'money' },
+			{ name = 'empty_weed_bag', price = 0, currency = 'money' },
+			{ name = 'weedscissors',   price = 0, currency = 'money' },
 		},
 		locations = {
 			vec3(185.17, -242.75, 54.12)
