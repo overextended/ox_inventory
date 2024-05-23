@@ -938,18 +938,19 @@ return {
 
 	Bar7 = {
 		name = 'Bar',
+		groups = {
+			['lux'] = 0
+		},
 		inventory = {
 			{ name = 'beer',    price = 7,  currency = 'money' },
 			{ name = 'whiskey', price = 10, currency = 'money' },
 			{ name = 'vodka',   price = 12, currency = 'money' },
 		},
+		locations = {
+			vec3(-285.1, 233.24, 78.87)
+		},
 		targets = {
-			{
-				ped = `s_f_y_clubbar_01`,
-				scenario = 'WORLD_HUMAN_STAND_MOBILE',
-				loc = vec3(-287.0603, 234.2843, 77.8263),
-				heading = 98.1887,
-			}
+			{ loc = vec3(-285.1, 233.24, 78.87), length = 0.6, width = 0.5, heading = 278.56, minZ = 28.2, maxZ = 28.6, distance = 2 }
 		}
 	},
 

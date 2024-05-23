@@ -262,4 +262,21 @@ return {
 		slots = 70,
 		weight = 70000,
 	},
+	{
+		coords = vec3(-288.2890, 234.1284, 78.8262),
+		target = {
+			loc = vec3(-288.2890, 234.1284, 78.8262),
+			length = 1.2,
+			width = 5.6,
+			heading = 0,
+			minZ = 29.49,
+			maxZ = 32.09,
+			label = 'Open Tray'
+		},
+		name = 'luxe',
+		label = 'Tray',
+		owner = true,
+		slots = 70,
+		weight = 70000,
+	},
 }
