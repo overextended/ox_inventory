@@ -8728,7 +8728,9 @@ return {
 
 	['raw_meat'] = {
 		label = 'Raw Meat',
+		degrade = 60 * 12,
 		weight = 200,
+		stack = true,
 	},
 
 	['skin_deer_ruined'] = {

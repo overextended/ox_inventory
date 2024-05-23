@@ -125,4 +125,72 @@ return {
 		weight = 70000,
 		groups = { ['maelstrom'] = 0 }
 	},
+	{
+		coords = vec3(-1196.83, -893.44, 13.89),
+		target = {
+			loc = vec3(-1196.83, -893.44, 13.89),
+			length = 1.2,
+			width = 5.6,
+			heading = 0,
+			minZ = 29.49,
+			maxZ = 32.09,
+			label = 'Open Burgershot Tray'
+		},
+		name = 'burgershot',
+		label = 'Tray',
+		owner = true,
+		slots = 70,
+		weight = 70000,
+	},
+	{
+		coords = vec3(-1194.97, -894.08, 13.89),
+		target = {
+			loc = vec3(-1194.97, -894.08, 13.89),
+			length = 1.2,
+			width = 5.6,
+			heading = 0,
+			minZ = 29.49,
+			maxZ = 32.09,
+			label = 'Open Burgershot Tray'
+		},
+		name = 'burgershot',
+		label = 'Tray',
+		owner = true,
+		slots = 70,
+		weight = 70000,
+	},
+	{
+		coords = vec3(-1192.96, -894.52, 13.89),
+		target = {
+			loc = vec3(-1192.96, -894.52, 13.89),
+			length = 1.2,
+			width = 5.6,
+			heading = 0,
+			minZ = 29.49,
+			maxZ = 32.09,
+			label = 'Open Burgershot Tray'
+		},
+		name = 'burgershot',
+		label = 'Tray',
+		owner = true,
+		slots = 70,
+		weight = 70000,
+	},
+	{
+		coords = vec3(-1191.09, -895.07, 13.89),
+		target = {
+			loc = vec3(-1191.09, -895.07, 13.89),
+			length = 1.2,
+			width = 5.6,
+			heading = 0,
+			minZ = 29.49,
+			maxZ = 32.09,
+			label = 'Open Burgershot Tray'
+		},
+		name = 'burgershot',
+		label = 'Tray',
+		owner = true,
+		slots = 70,
+		weight = 70000,
+	},
 }
