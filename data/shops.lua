@@ -19,6 +19,7 @@ return {
 			{ name = 'leo-gps',              price = 0, metadata = { description = "Police Property" }, },
 			{ name = 'armour',               price = 0, metadata = { description = "Police Property" }, },
 			{ name = 'ifaks',                price = 0, metadata = { description = "Police Property" }, },
+			{ name = 'radio',                price = 0, metadata = { description = "Police Property" }, },
 			{ name = 'briefcase',            price = 0, metadata = { description = "Police Property" }, },
 			{ name = 'pdcamera',             price = 0, metadata = { description = "Police Property" }, },
 			{ name = 'empty_evidence_bag',   price = 0, metadata = { description = "Police Property" } },
