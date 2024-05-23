@@ -1317,6 +1317,9 @@ return {
 			{ name = 'sugar-cubes',          price = 10, currency = 'money' },
 			{ name = 'burger-potato',        price = 10, currency = 'money' },
 			{ name = 'burger-mshakeformula', price = 10, currency = 'money' },
+			{ name = 'bhighcoffeeglasscup',  price = 10, currency = 'money' },
+			{ name = 'bcoffeeglass',         price = 10, currency = 'money' },
+			{ name = 'bespressocoffeecup',   price = 10, currency = 'money' },
 		},
 		targets = {
 			{
