@@ -193,4 +193,21 @@ return {
 		slots = 70,
 		weight = 70000,
 	},
+	{
+		coords = vec3(-634.3516, 235.7370, 82.1699),
+		target = {
+			loc = vec3(-634.3516, 235.7370, 82.1699),
+			length = 1.2,
+			width = 5.6,
+			heading = 0,
+			minZ = 29.49,
+			maxZ = 32.09,
+			label = 'Open Coffee Tray'
+		},
+		name = 'coffeeshop',
+		label = 'Tray',
+		owner = true,
+		slots = 70,
+		weight = 70000,
+	},
 }
