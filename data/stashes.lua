@@ -210,4 +210,39 @@ return {
 		slots = 70,
 		weight = 70000,
 	},
+	{
+		coords = vec3(17.09, -1599.67, 29.37),
+		target = {
+			loc = vec3(17.09, -1599.67, 29.37),
+			length = 1.2,
+			width = 5.6,
+			heading = 0,
+			minZ = 29.49,
+			maxZ = 32.09,
+			label = 'Open Fridge'
+		},
+		name = 'tacoshop',
+		label = 'Fridge',
+		owner = true,
+		slots = 70,
+		weight = 70000,
+		groups = { ['taco'] = 0 }
+	},
+	{
+		coords = vec3(10.19, -1604.17, 29.37),
+		target = {
+			loc = vec3(10.19, -1604.17, 29.37),
+			length = 1.2,
+			width = 5.6,
+			heading = 0,
+			minZ = 29.49,
+			maxZ = 32.09,
+			label = 'Open Taco Tray'
+		},
+		name = 'tacoshop',
+		label = 'Tray',
+		owner = true,
+		slots = 70,
+		weight = 70000,
+	},
 }
