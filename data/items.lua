@@ -1617,12 +1617,18 @@ return {
 	},
 
 	["ecola"] = {
-		label = "ECola",
-		weight = 500,
+		label = 'Cola',
+		weight = 350,
 		degrade = 60 * 12,
 		stack = true,
 		close = true,
-		description = "For all the thirsty out there",
+		client = {
+			status = { thirst = 30 },
+			anim = { dict = 'mp_player_intdrink', clip = 'loop_bottle' },
+			prop = { model = `prop_ecola_can`, pos = vec3(0.01, 0.01, 0.06), rot = vec3(5.0, 5.0, -180.5) },
+			usetime = 2500,
+			notification = 'You quenched your thirst with cola'
+		}
 	},
 
 	['sprunk'] = {
@@ -1632,6 +1638,16 @@ return {
 		stack = true,
 		close = true,
 		description = "Quinch your thirst with a sprunk",
+		client = {
+			status = { thirst = 30 },
+			anim = { dict = 'mp_player_intdrink', clip = 'loop_bottle' },
+			prop = {
+				model = 'prop_ld_can_01',
+				pos = vec3(0.0, 0.0, 0.0),
+				rot = vec3(0.0, 0.0, 130.0)
+			},
+			usetime = 5000,
+		}
 	},
 
 	['orangotang'] = { -- Carbonized syrup is good for the soul
@@ -10830,7 +10846,8 @@ return {
 
 	["bhoneyhazelnutoatlatte"] = {
 		label = "Honey Hazelnut Oat Latte",
-		weight = 1000,
+		weight = 100,
+		degrade = 60 * 12,
 		stack = true,
 		close = true,
 		description = "Honey Hazelnut Oat Latte",
@@ -10841,7 +10858,8 @@ return {
 
 	["bespressocoffeecup"] = {
 		label = "Espresso Coffee Cup",
-		weight = 1000,
+		weight = 100,
+		degrade = 60 * 12,
 		stack = true,
 		close = true,
 		description = "Espresso Coffee Cup",
@@ -10863,7 +10881,8 @@ return {
 
 	["bstrawberryvanillaoatlatte"] = {
 		label = "Strawberry Vanilla Oat Latte",
-		weight = 1000,
+		weight = 100,
+		degrade = 60 * 12,
 		stack = true,
 		close = true,
 		description = "Strawberry Vanilla Oat Latte",
@@ -10907,7 +10926,8 @@ return {
 
 	["bjavachipfrappuccino"] = {
 		label = "Java Chip Frappuccino",
-		weight = 1000,
+		weight = 100,
+		degrade = 60 * 12,
 		stack = true,
 		close = true,
 		description = "Java Chip Frappuccino",
@@ -10929,7 +10949,8 @@ return {
 
 	["bcream"] = {
 		label = "Whipped Cream",
-		weight = 1000,
+		weight = 100,
+		degrade = 60 * 12,
 		stack = true,
 		close = true,
 		description = "Whipped Cream",
@@ -10940,18 +10961,22 @@ return {
 
 	["borangeslush"] = {
 		label = "Orange Slush",
-		weight = 1000,
+		weight = 350,
+		degrade = 60 * 12,
 		stack = true,
 		close = true,
-		description = "Cup Fill With Orange Slush",
 		client = {
-			image = "borangeslush.png",
+			status = { thirst = 30 },
+			anim = { dict = 'mp_player_intdrink', clip = 'loop_bottle' },
+			prop = { model = `v_ind_cfcup`, pos = vec3(0.01, 0.01, 0.06), rot = vec3(5.0, 5.0, -180.5) },
+			usetime = 2500,
+			notification = 'You quenched your thirst with an orange slushie!'
 		}
 	},
-
 	["bespresso"] = {
 		label = "Espresso",
-		weight = 1000,
+		weight = 100,
+		degrade = 60 * 12,
 		stack = true,
 		close = true,
 		description = "Espresso",
@@ -10962,13 +10987,11 @@ return {
 
 	["bstrawberrycreamfrappuccino"] = {
 		label = "Strawberry Cream Frappuccino",
-		weight = 1000,
+		weight = 350,
+		degrade = 60 * 12,
 		stack = true,
 		close = true,
 		description = "Strawberry Cream Frappuccino",
-		client = {
-			image = "bstrawberrycreamfrappuccino.png",
-		}
 	},
 
 	["bcoffeebeans"] = {
@@ -11028,7 +11051,8 @@ return {
 
 	["bcaramelfrappucino"] = {
 		label = "Caramel Frappucino",
-		weight = 1000,
+		weight = 100,
+		degrade = 60 * 12,
 		stack = true,
 		close = true,
 		description = "Caramel Frappucino",
@@ -11050,18 +11074,23 @@ return {
 
 	["blemonslush"] = {
 		label = "Lemon Slush",
-		weight = 1000,
+		weight = 350,
+		degrade = 60 * 12,
 		stack = true,
 		close = true,
-		description = "Cup Fill With Lemon Slush",
 		client = {
-			image = "blemonslush.png",
+			status = { thirst = 30 },
+			anim = { dict = 'mp_player_intdrink', clip = 'loop_bottle' },
+			prop = { model = `v_ind_cfcup`, pos = vec3(0.01, 0.01, 0.06), rot = vec3(5.0, 5.0, -180.5) },
+			usetime = 2500,
+			notification = 'You quenched your thirst with an lemon slushie!'
 		}
 	},
 
 	["bespressomacchiato"] = {
 		label = "Espresso Macchiato",
-		weight = 1000,
+		weight = 100,
+		degrade = 60 * 12,
 		stack = true,
 		close = true,
 		description = "Espresso Macchiato",
@@ -11083,18 +11112,17 @@ return {
 
 	["bhotchoc"] = {
 		label = "Hot Choc",
-		weight = 1000,
+		weight = 100,
+		degrade = 60 * 12,
 		stack = true,
 		close = true,
-		description = "Hot Choc",
-		client = {
-			image = "bhotchoc.png",
-		}
+		description = "Hot Chocolate",
 	},
 
 	["bicedcaffelatte"] = {
 		label = "Iced Caffe Latte",
-		weight = 1000,
+		weight = 100,
+		degrade = 60 * 12,
 		stack = true,
 		close = true,
 		description = "Iced Caffe Latte",
@@ -11127,7 +11155,8 @@ return {
 
 	["bcoldbrewlatte"] = {
 		label = "Cold Brew Latte",
-		weight = 1000,
+		weight = 100,
+		degrade = 60 * 12,
 		stack = true,
 		close = true,
 		description = "Cold Brew Latte",
