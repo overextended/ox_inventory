@@ -1460,7 +1460,17 @@ return {
 		degrade = 60 * 12,
 		stack = true,
 		close = true,
-		description = "",
+		description = "A chocolate bar that you can eat",
+		client = {
+			status = { hunger = 10 },
+			anim = { dict = 'mp_player_inteat@burger', clip = 'mp_player_int_eat_burger_fp' },
+			prop = {
+				model = 'prop_choc_ego',
+				pos = vec3(0.05, -0.02, -0.03),
+				rot = vec3(150.0, 340.0, 170.0)
+			},
+			usetime = 7500,
+		}
 	},
 
 	--- DRINKS
@@ -11166,11 +11176,11 @@ return {
 	},
 
 	["bmilk"] = {
-		label = "Milk",
+		label = "Bottled Milk",
 		weight = 1000,
 		stack = true,
 		close = true,
-		description = "Milk",
+		description = "Bottled Milk",
 		client = {
 			image = "bmilk.png",
 		}
