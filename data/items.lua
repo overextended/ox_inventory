@@ -496,6 +496,16 @@ return {
 		stack = true,
 		close = true,
 		description = "Nice to eat",
+		client = {
+			status = { hunger = 25 },
+			anim = { dict = 'mp_player_inteat@burger', clip = 'mp_player_int_eat_burger_fp' },
+			prop = {
+				model = 'prop_sandwich_01',
+				pos = vec3(0.05, -0.02, -0.03),
+				rot = vec3(150.0, 340.0, 170.0)
+			},
+			usetime = 7500,
+		}
 	},
 
 	["pacote-leite"] = {
@@ -1061,6 +1071,25 @@ return {
 			anim = { dict = 'mp_player_inteat@burger', clip = 'mp_player_int_eat_burger_fp' },
 			prop = {
 				model = 'v_res_tre_banana',
+				pos = vec3(0.05, -0.02, 0.01),
+				rot = vec3(270.0, 90.0, 0.0)
+			},
+			usetime = 3000,
+		}
+	},
+
+	['orange'] = { -- banana good
+		label = 'Orange',
+		weight = 350,
+		degrade = 60 * 12,
+		stack = true,
+		close = true,
+		description = "Orange",
+		client = {
+			status = { hunger = 60, thirst = 60 },
+			anim = { dict = 'mp_player_inteat@burger', clip = 'mp_player_int_eat_burger_fp' },
+			prop = {
+				model = 'knjgh_orange',
 				pos = vec3(0.05, -0.02, 0.01),
 				rot = vec3(270.0, 90.0, 0.0)
 			},
