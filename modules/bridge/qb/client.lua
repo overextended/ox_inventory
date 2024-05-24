@@ -22,15 +22,15 @@ RegisterNetEvent('QBCore:Player:SetPlayerData', function(data)
 
 		OnPlayerData('groups', PlayerData.groups)
 	end
-end)
 
-RegisterNetEvent('police:client:GetCuffed', function()
-	PlayerData.cuffed = not PlayerData.cuffed
-	LocalPlayer.state:set('invBusy', PlayerData.cuffed, false)
-
-	if not PlayerData.cuffed then return end
-
-	Weapon.Disarm()
+    if data.metadata.ishandcuffed then
+        PlayerData.cuffed = true
+        LocalPlayer.state:set('invBusy', true, false)
+        Weapon.Disarm()
+    elseif PlayerData.cuffed then
+        PlayerData.cuffed = false
+        LocalPlayer.state:set('invBusy', false, false)
+    end
 end)
 
 ---@diagnostic disable-next-line: duplicate-set-field
