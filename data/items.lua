@@ -3207,7 +3207,7 @@ return {
 	["jerrycan"] = {
 		label = "Jerry Can",
 		weight = 1000,
-		stack = true,
+		stack = false,
 		close = false,
 		description = "I'd keep one handy if I were you..",
 	},
@@ -9103,7 +9103,7 @@ return {
 	["jerry_can"] = {
 		label = "Jerrycan 20L",
 		weight = 20000,
-		stack = true,
+		stack = false,
 		close = true,
 		description = "A can full of Fuel",
 	},
