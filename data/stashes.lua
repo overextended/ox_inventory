@@ -211,9 +211,9 @@ return {
 		weight = 70000,
 	},
 	{
-		coords = vec3(17.09, -1599.67, 29.37),
+		coords = vec3(16.14, -1598.64, 28.4),
 		target = {
-			loc = vec3(17.09, -1599.67, 29.37),
+			loc = vec3(16.14, -1598.64, 28.4),
 			length = 1.2,
 			width = 5.6,
 			heading = 0,
@@ -229,9 +229,9 @@ return {
 		groups = { ['taco'] = 0 }
 	},
 	{
-		coords = vec3(10.19, -1604.17, 29.37),
+		coords = vec3(15.88, -1602.46, 29.39),
 		target = {
-			loc = vec3(10.19, -1604.17, 29.37),
+			loc = vec3(15.88, -1602.46, 29.39),
 			length = 1.2,
 			width = 5.6,
 			heading = 0,
