@@ -279,4 +279,22 @@ return {
 		slots = 70,
 		weight = 70000,
 	},
+	{
+		coords = vec3(-579.9735, -1068.1349, 26.6141),
+		target = {
+			loc = vec3(-579.9735, -1068.1349, 26.6141),
+			length = 1.2,
+			width = 5.6,
+			heading = 0,
+			minZ = 29.49,
+			maxZ = 32.09,
+			label = 'Open Stash'
+		},
+		name = 'uwu',
+		label = 'Stash',
+		owner = false,
+		slots = 70,
+		weight = 70000,
+		groups = { ['uwu'] = 0 }
+	},
 }
