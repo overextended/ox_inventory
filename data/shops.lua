@@ -1335,6 +1335,7 @@ return {
 			{ name = 'raw_meat',    price = 20, currency = 'money' },
 			{ name = 'burger-raw',  price = 20, currency = 'money' },
 			{ name = 'ground-beef', price = 20, currency = 'money' },
+			{ name = 'chicken',     price = 20, currency = 'money' },
 		},
 		locations = {
 			vec3(2708.58, 3337.56, 57.13)
