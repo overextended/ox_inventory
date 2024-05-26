@@ -11391,4 +11391,400 @@ return {
 		close = true,
 		description = "Reward for arrest",
 	},
+
+	["paard"] = {
+		label = "Horse Mask",
+		weight = 1,
+		stack = false,
+		close = true,
+		description = "",
+		client = {
+			image = "Clothing_1_97.png",
+		}
+	},
+
+	["noselong"] = {
+		label = "Long Nose",
+		weight = 1,
+		stack = false,
+		close = true,
+		description = "",
+		client = {
+			image = "Clothing_1_12.png",
+		}
+	},
+
+	["tshirtmask"] = {
+		label = "Tshirtmask",
+		weight = 1,
+		stack = false,
+		close = true,
+		description = "",
+		client = {
+			image = "Clothing_1_54.png",
+		}
+	},
+
+	["clown"] = {
+		label = "Clown Mask",
+		weight = 1,
+		stack = false,
+		close = true,
+		description = "",
+		client = {
+			image = "Clothing_1_95.png",
+		}
+	},
+
+	["scarf"] = {
+		label = "scarf",
+		weight = 1,
+		stack = false,
+		close = true,
+		description = "",
+		client = {
+			image = "Clothing_1_115.png",
+		}
+	},
+
+	["terrorwit"] = {
+		label = "Pig Mask",
+		weight = 1,
+		stack = false,
+		close = true,
+		description = "",
+		client = {
+			image = "Clothing_1_1.png",
+		}
+	},
+
+	["helm5"] = {
+		label = "Green helmet",
+		weight = 1,
+		stack = false,
+		close = true,
+		description = "",
+		client = {
+			image = "helmet_62.png",
+		}
+	},
+
+	["helm6"] = {
+		label = "Black Open helmet",
+		weight = 1,
+		stack = false,
+		close = true,
+		description = "",
+		client = {
+			image = "helmet_67.png",
+		}
+	},
+
+	["helm7"] = {
+		label = "Spike Helmet",
+		weight = 1,
+		stack = false,
+		close = true,
+		description = "",
+		client = {
+			image = "helmet_88.png",
+		}
+	},
+
+	["paardu"] = {
+		label = "Uinicorn Mask",
+		weight = 1,
+		stack = false,
+		close = true,
+		description = "",
+		client = {
+			image = "Clothing_1_98.png",
+		}
+	},
+
+	["hockeymask"] = {
+		label = "Hockeymask",
+		weight = 1,
+		stack = false,
+		close = true,
+		description = "",
+		client = {
+			image = "Clothing_1_4.png",
+		}
+	},
+
+	["zwart2"] = {
+		label = "Skull Black Mask",
+		weight = 1,
+		stack = false,
+		close = true,
+		description = "",
+		client = {
+			image = "Clothing_1_29.png",
+		}
+	},
+
+	["helm1"] = {
+		label = "Black Silver Helmet ",
+		weight = 1,
+		stack = false,
+		close = true,
+		description = "",
+		client = {
+			image = "helmet_51.png",
+		}
+	},
+
+	["terror"] = {
+		label = "Balaclava",
+		weight = 1,
+		stack = true,
+		close = true,
+		description = "",
+		client = {
+			image = "Clothing_1_57.png",
+		}
+	},
+
+	["skullmask"] = {
+		label = "Skullmask",
+		weight = 1,
+		stack = false,
+		close = true,
+		description = "",
+		client = {
+			image = "Clothing_1_2.png",
+		}
+	},
+
+	["monkeymask"] = {
+		label = "Monkeymask",
+		weight = 1,
+		stack = false,
+		close = true,
+		description = "",
+		client = {
+			image = "Clothing_1_3.png",
+		}
+	},
+
+	["helm8"] = {
+		label = "Black Army helmet",
+		weight = 1,
+		stack = false,
+		close = true,
+		description = "",
+		client = {
+			image = "helmet_89.png",
+		}
+	},
+
+	["feest"] = {
+		label = "PartyMask",
+		weight = 1,
+		stack = false,
+		close = true,
+		description = "",
+		client = {
+			image = "Clothing_1_6.png",
+		}
+	},
+
+	["scarecrowmask"] = {
+		label = "Scarecrowmask",
+		weight = 1,
+		stack = false,
+		close = true,
+		description = "",
+		client = {
+			image = "Clothing_1_69.png",
+		}
+	},
+
+	["helm2"] = {
+		label = "Motocross Helmet",
+		weight = 1,
+		stack = false,
+		close = true,
+		description = "",
+		client = {
+			image = "helmet_16.png",
+		}
+	},
+
+	["masker3"] = {
+		label = "Face Mask",
+		weight = 1,
+		stack = false,
+		close = true,
+		description = "",
+		client = {
+			image = "Clothing_1_101.png",
+		}
+	},
+
+	["please"] = {
+		label = "Please Gold Mask",
+		weight = 1,
+		stack = false,
+		close = true,
+		description = "",
+		client = {
+			image = "Clothing_1_30.png",
+		}
+	},
+
+	["zak"] = {
+		label = "Bag Mask",
+		weight = 1,
+		stack = false,
+		close = true,
+		description = "",
+		client = {
+			image = "Clothing_1_49.png",
+		}
+	},
+
+	["helm3"] = {
+		label = "Normale Helmet",
+		weight = 1,
+		stack = false,
+		close = true,
+		description = "",
+		client = {
+			image = "helmet_17.png",
+		}
+	},
+
+	["zwart1"] = {
+		label = "Full Black Mask",
+		weight = 1,
+		stack = false,
+		close = true,
+		description = "",
+		client = {
+			image = "Clothing_1_28.png",
+		}
+	},
+
+	["gorilla"] = {
+		label = "Gorilla Mask",
+		weight = 1,
+		stack = false,
+		close = true,
+		description = "",
+		client = {
+			image = "Clothing_1_96.png",
+		}
+	},
+
+	["groen"] = {
+		label = "Green Mask",
+		weight = 1,
+		stack = false,
+		close = true,
+		description = "",
+		client = {
+			image = "Clothing_1_50.png",
+		}
+	},
+
+	["skullr"] = {
+		label = "No Skin Mask",
+		weight = 1,
+		stack = false,
+		close = true,
+		description = "",
+		client = {
+			image = "Clothing_1_99.png",
+		}
+	},
+
+	["roodc"] = {
+		label = "Red Chinese Mask",
+		weight = 1,
+		stack = false,
+		close = true,
+		description = "",
+		client = {
+			image = "Clothing_1_94.png",
+		}
+	},
+
+	["bandanab"] = {
+		label = "Blue Bandana",
+		weight = 1,
+		stack = false,
+		close = true,
+		description = "",
+		client = {
+			image = "Clothing_1_51(BLAU).png",
+		}
+	},
+
+	["skullzwart"] = {
+		label = "Skull Black Mask",
+		weight = 1,
+		stack = false,
+		close = true,
+		description = "",
+		client = {
+			image = "Clothing_1_15.png",
+		}
+	},
+
+	["helm4"] = {
+		label = "Full Black helmet",
+		weight = 1,
+		stack = false,
+		close = true,
+		description = "",
+		client = {
+			image = "helmet_50.png",
+		}
+	},
+
+	["sok"] = {
+		label = "Red Sock Mask",
+		weight = 1,
+		stack = false,
+		close = true,
+		description = "",
+		client = {
+			image = "Clothing_1_32.png",
+		}
+	},
+
+	["blauw"] = {
+		label = "Blue Mask",
+		weight = 1,
+		stack = false,
+		close = true,
+		description = "",
+		client = {
+			image = "Clothing_1_14.png",
+		}
+	},
+
+	["blackbandana"] = {
+		label = "Blackbandana",
+		weight = 1,
+		stack = false,
+		close = true,
+		description = "",
+		client = {
+			image = "Clothing_1_51.png",
+		}
+	},
+
+	["bivak1"] = {
+		label = "Balaclava 2",
+		weight = 1,
+		stack = false,
+		close = true,
+		description = "",
+		client = {
+			image = "Clothing_1_53.png",
+		}
+	},
 }

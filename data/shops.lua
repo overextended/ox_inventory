@@ -1566,6 +1566,55 @@ return {
 		}
 	},
 
+	MaskStore = {
+		name = 'Mask Store',
+		inventory = {
+			{ name = 'terror',        price = 40, currency = 'money' },
+			{ name = 'noselong',      price = 40, currency = 'money' },
+			{ name = 'tshirtmask',    price = 40, currency = 'money' },
+			{ name = 'clown',         price = 40, currency = 'money' },
+			{ name = 'scarf',         price = 40, currency = 'money' },
+			{ name = 'terrorwit',     price = 40, currency = 'money' },
+			{ name = 'helm5',         price = 40, currency = 'money' },
+			{ name = 'helm6',         price = 40, currency = 'money' },
+			{ name = 'helm7',         price = 40, currency = 'money' },
+			{ name = 'paardu',        price = 40, currency = 'money' },
+			{ name = 'hockeymask',    price = 40, currency = 'money' },
+			{ name = 'zwart2',        price = 40, currency = 'money' },
+			{ name = 'helm1',         price = 40, currency = 'money' },
+			{ name = 'skullmask',     price = 40, currency = 'money' },
+			{ name = 'monkeymask',    price = 40, currency = 'money' },
+			{ name = 'helm8',         price = 40, currency = 'money' },
+			{ name = 'feest',         price = 40, currency = 'money' },
+			{ name = 'scarecrowmask', price = 40, currency = 'money' },
+			{ name = 'helm2',         price = 40, currency = 'money' },
+			{ name = 'masker3',       price = 40, currency = 'money' },
+			{ name = 'please',        price = 40, currency = 'money' },
+			{ name = 'zak',           price = 40, currency = 'money' },
+			{ name = 'helm3',         price = 40, currency = 'money' },
+			{ name = 'zwart1',        price = 40, currency = 'money' },
+			{ name = 'gorilla',       price = 40, currency = 'money' },
+			{ name = 'groen',         price = 40, currency = 'money' },
+			{ name = 'skullr',        price = 40, currency = 'money' },
+			{ name = 'roodc',         price = 40, currency = 'money' },
+			{ name = 'bandanab',      price = 40, currency = 'money' },
+			{ name = 'skullzwart',    price = 40, currency = 'money' },
+			{ name = 'helm4',         price = 40, currency = 'money' },
+			{ name = 'sok',           price = 40, currency = 'money' },
+			{ name = 'blauw',         price = 40, currency = 'money' },
+			{ name = 'blackbandana',  price = 40, currency = 'money' },
+			{ name = 'bivak1',        price = 40, currency = 'money' },
+		},
+		targets = {
+			{
+				ped = `u_m_o_dean`,
+				scenario = 'WORLD_HUMAN_STAND_MOBILE',
+				loc = vec3(-1198.9303, -1515.5591, 3.3788),
+				heading = 125.1345,
+			}
+		}
+	},
+
 	VendingMachineDrinks = {
 		name = 'Vending Machine',
 		inventory = {
