@@ -11317,4 +11317,70 @@ return {
 			image = "scratchcard03.png",
 		}
 	},
+
+	["micard_booster_pack2"] = {
+		label = "Booster Pack",
+		weight = 0,
+		stack = true,
+		close = true,
+		description = "Contains 10 cards",
+		client = {
+			image = "micard_booster_pack2.png",
+		}
+	},
+
+	["micard_basic"] = {
+		label = "Basic Card",
+		weight = 0,
+		stack = false,
+		close = true,
+		description = "Phewww, just basic card",
+		client = {
+			image = "micard_basic.png",
+		}
+	},
+
+	["micard_legendary"] = {
+		label = "Legendary Card",
+		weight = 0,
+		stack = false,
+		close = true,
+		description = "Wow!! You have a legendary card!!",
+		client = {
+			image = "micard_legendary.png",
+		}
+	},
+
+	["micard_booster_pack1"] = {
+		label = "Booster Pack",
+		weight = 0,
+		stack = true,
+		close = true,
+		description = "Contains 5 cards",
+		client = {
+			image = "micard_booster_pack1.png",
+		}
+	},
+
+	["micard_psa"] = {
+		label = "PSA Case",
+		weight = 0,
+		stack = false,
+		close = true,
+		description = "PSA Case",
+		client = {
+			image = "micard_booster_pack2.png",
+		}
+	},
+
+	["micard_rare"] = {
+		label = "Rare Card",
+		weight = 0,
+		stack = false,
+		close = true,
+		description = "Wow!! You have a rare card!!",
+		client = {
+			image = "micard_rare.png",
+		}
+	},
 }
