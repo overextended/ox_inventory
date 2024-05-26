@@ -753,6 +753,26 @@ return {
 		}
 	},
 
+	Coffee3 = {
+		name = 'Coffee Shop',
+		inventory = {
+			{ name = 'coffee',        price = 15, currency = 'money' },
+			{ name = 'coffeefrap',    price = 50, currency = 'money' },
+			{ name = 'coffee_black',  price = 25, currency = 'money' },
+			{ name = 'coffee_mocha',  price = 30, currency = 'money' },
+			{ name = 'coffee_cpcno',  price = 20, currency = 'money' },
+			{ name = 'coffee_amrcno', price = 20, currency = 'money' },
+		},
+		targets = {
+			{
+				ped = `s_f_y_clubbar_01`,
+				scenario = 'WORLD_HUMAN_STAND_MOBILE',
+				loc = vec3(-1217.7596, -1494.8092, 3.3739),
+				heading = 37.6277,
+			}
+		}
+	},
+
 	Pizza = {
 		name = 'Pizza',
 		blip = {
@@ -964,6 +984,23 @@ return {
 		}
 	},
 
+	Bar8 = {
+		name = 'Liquor Store',
+		inventory = {
+			{ name = 'beer',    price = 7,  currency = 'money' },
+			{ name = 'whiskey', price = 10, currency = 'money' },
+			{ name = 'vodka',   price = 12, currency = 'money' },
+		},
+		targets = {
+			{
+				ped = `s_f_y_clubbar_01`,
+				scenario = 'WORLD_HUMAN_STAND_MOBILE',
+				loc = vec3(-1207.7667, -1509.2434, 3.3739),
+				heading = 24.9195,
+			}
+		}
+	},
+
 	Fishing = {
 		name = 'Fishing Shop',
 		blip = {
@@ -1035,6 +1072,31 @@ return {
 				scenario = 'WORLD_HUMAN_STAND_MOBILE',
 				loc = vec3(-529.1374, -582.7440, 33.6818),
 				heading = 176.3681,
+			}
+		}
+	},
+
+	Electronics3 = {
+		name = 'Electronics Store',
+		inventory = {
+			{ name = 'radio',        price = 100,  currency = 'money' },
+			{ name = 'laptop',       price = 1000, currency = 'money' },
+			{ name = 'keeptablet',   price = 1000, currency = 'money' },
+			{ name = 'fitbit',       price = 600,  currency = 'money' },
+			{ name = 'powerbank',    price = 150,  currency = 'money' },
+			{ name = 'phone',        price = 800,  currency = 'money' },
+			{ name = 'black_phone',  price = 800,  currency = 'money' },
+			{ name = 'yellow_phone', price = 800,  currency = 'money' },
+			{ name = 'red_phone',    price = 800,  currency = 'money' },
+			{ name = 'green_phone',  price = 800,  currency = 'money' },
+			{ name = 'white_phone',  price = 800,  currency = 'money' },
+		},
+		targets = {
+			{
+				ped = `a_f_y_smartcaspat_01`,
+				scenario = 'WORLD_HUMAN_STAND_MOBILE',
+				loc = vec3(-1207.8755, -1502.5751, 3.3739),
+				heading = 124.1069,
 			}
 		}
 	},
@@ -1384,19 +1446,6 @@ return {
 	GroceryStore10 = {
 		name = 'Grocery Store',
 		inventory = {
-			{ name = 'mustard', price = 10, currency = 'money' },
-		},
-		locations = {
-			vec3(2705.4326, 3368.8691, 57.1163)
-		},
-		targets = {
-			{ loc = vec3(2705.4326, 3368.8691, 57.1163), length = 1.0, width = 0.8, heading = 64.0, minZ = 28.2, maxZ = 28.6, distance = 2 }
-		}
-	},
-
-	GroceryStore11 = {
-		name = 'Grocery Store',
-		inventory = {
 			{ name = 'cola', price = 10, currency = 'money' },
 		},
 		locations = {
@@ -1407,7 +1456,7 @@ return {
 		}
 	},
 
-	GroceryStore12 = {
+	GroceryStore11 = {
 		name = 'Grocery Store',
 		inventory = {
 			{ name = 'sprunk', price = 10, currency = 'money' },
@@ -1420,7 +1469,7 @@ return {
 		}
 	},
 
-	GroceryStore13 = {
+	GroceryStore12 = {
 		name = 'Grocery Store',
 		inventory = {
 			{ name = 'orangotang', price = 10, currency = 'money' },
@@ -1433,7 +1482,7 @@ return {
 		}
 	},
 
-	GroceryStore14 = {
+	GroceryStore13 = {
 		name = 'Grocery Store',
 		inventory = {
 			{ name = 'water',        price = 10, currency = 'money' },
@@ -1447,7 +1496,7 @@ return {
 		}
 	},
 
-	GroceryStore15 = {
+	GroceryStore14 = {
 		name = 'Grocery Store',
 		inventory = {
 			{ name = 'ejunk', price = 10, currency = 'money' },
@@ -1460,33 +1509,20 @@ return {
 		}
 	},
 
+	GroceryStore15 = {
+		name = 'Grocery Store',
+		inventory = {
+			{ name = 'burger-bun', price = 10, currency = 'money' },
+		},
+		locations = {
+			vec3(2707.1140, 3359.1091, 57.1163)
+		},
+		targets = {
+			{ loc = vec3(2707.1140, 3359.1091, 57.1163), length = 1.0, width = 0.8, heading = 76.0, minZ = 28.2, maxZ = 28.6, distance = 2 }
+		}
+	},
+
 	GroceryStore16 = {
-		name = 'Grocery Store',
-		inventory = {
-			{ name = 'burger-bun', price = 10, currency = 'money' },
-		},
-		locations = {
-			vec3(2707.1140, 3359.1091, 57.1163)
-		},
-		targets = {
-			{ loc = vec3(2707.1140, 3359.1091, 57.1163), length = 1.0, width = 0.8, heading = 76.0, minZ = 28.2, maxZ = 28.6, distance = 2 }
-		}
-	},
-
-	GroceryStore17 = {
-		name = 'Grocery Store',
-		inventory = {
-			{ name = 'burger-bun', price = 10, currency = 'money' },
-		},
-		locations = {
-			vec3(2707.1140, 3359.1091, 57.1163)
-		},
-		targets = {
-			{ loc = vec3(2707.1140, 3359.1091, 57.1163), length = 1.0, width = 0.8, heading = 76.0, minZ = 28.2, maxZ = 28.6, distance = 2 }
-		}
-	},
-
-	GroceryStore18 = {
 		name = 'Grocery Store',
 		inventory = {
 			{ name = 'mre_1', price = 10, currency = 'money' },
@@ -1503,7 +1539,7 @@ return {
 		}
 	},
 
-	GroceryStore19 = {
+	GroceryStore17 = {
 		name = 'Grocery Store',
 		inventory = {
 			{ name = 'box_bourgeoix_liquor', price = 200, currency = 'money' },
@@ -1566,6 +1602,62 @@ return {
 		}
 	},
 
+	GroceryStoreBeach = {
+		name = 'Grocery Store',
+		inventory = {
+			{ name = 'flour',                price = 10, currency = 'money' },
+			{ name = 'bcoffeebeans',         price = 10, currency = 'money' },
+			{ name = 'bcream',               price = 10, currency = 'money' },
+			{ name = 'bstrawberry',          price = 10, currency = 'money' },
+			{ name = 'bhotchocolatepowder',  price = 10, currency = 'money' },
+			{ name = 'extrato-baunilha',     price = 10, currency = 'money' },
+			{ name = 'bhoney',               price = 10, currency = 'money' },
+			{ name = 'bice',                 price = 10, currency = 'money' },
+			{ name = 'bcaramelsyrup',        price = 10, currency = 'money' },
+			{ name = 'tortillas',            price = 10, currency = 'money' },
+			{ name = 'taco-tomato',          price = 10, currency = 'money' },
+			{ name = 'lettuce',              price = 10, currency = 'money' },
+			{ name = 'barra-manteiga',       price = 10, currency = 'money' },
+			{ name = 'tortilla-chips',       price = 10, currency = 'money' },
+			{ name = 'cheddar-cheese',       price = 10, currency = 'money' },
+			{ name = 'caixa-amoras',         price = 10, currency = 'money' },
+			{ name = 'chocolate',            price = 10, currency = 'money' },
+			{ name = 'carbonated-water',     price = 10, currency = 'money' },
+			{ name = 'sugar-cubes',          price = 10, currency = 'money' },
+			{ name = 'pacote-acucar',        price = 10, currency = 'money' },
+			{ name = 'pacote-oreo',          price = 10, currency = 'money' },
+			{ name = 'extrato-menta',        price = 10, currency = 'money' },
+			{ name = 'frasco-nutela',        price = 10, currency = 'money' },
+			{ name = 'burger-potato',        price = 10, currency = 'money' },
+			{ name = 'burger-mshakeformula', price = 10, currency = 'money' },
+			{ name = 'burger-sodasyrup',     price = 10, currency = 'money' },
+			{ name = 'bhighcoffeeglasscup',  price = 10, currency = 'money' },
+			{ name = 'bcoffeeglass',         price = 10, currency = 'money' },
+			{ name = 'bespressocoffeecup',   price = 10, currency = 'money' },
+			{ name = 'orange',               price = 10, currency = 'money' },
+			{ name = 'banana',               price = 10, currency = 'money' },
+			{ name = 'apple',                price = 10, currency = 'money' },
+			{ name = 'limao',                price = 10, currency = 'money' },
+			{ name = 'burger-bun',           price = 10, currency = 'money' },
+			{ name = 'water',                price = 10, currency = 'money' },
+			{ name = 'water_bottle',         price = 10, currency = 'money' },
+			{ name = 'mustard',              price = 10, currency = 'money' },
+			{ name = 'raw_meat',             price = 20, currency = 'money' },
+			{ name = 'burger-raw',           price = 20, currency = 'money' },
+			{ name = 'ground-beef',          price = 20, currency = 'money' },
+			{ name = 'flour',                price = 10, currency = 'money' },
+			{ name = 'milk',                 price = 10, currency = 'money' },
+		},
+		targets = {
+			{
+				ped = `a_f_y_business_01`,
+				scenario = 'WORLD_HUMAN_STAND_MOBILE',
+				loc = vec3(-1225.5598, -1484.8701, 3.3739),
+				heading = 30.0258,
+			}
+		}
+	},
+
 	MaskStore = {
 		name = 'Mask Store',
 		inventory = {
@@ -1611,6 +1703,27 @@ return {
 				scenario = 'WORLD_HUMAN_STAND_MOBILE',
 				loc = vec3(-1198.9303, -1515.5591, 3.3788),
 				heading = 125.1345,
+			}
+		}
+	},
+
+	Pharmacy4 = {
+		name = 'Pharmacy',
+		inventory = {
+			{ name = 'tylenol',     price = 20,  currency = 'money' },
+			{ name = 'aspirin',     price = 20,  currency = 'money' },
+			{ name = 'ibuprofen',   price = 20,  currency = 'money' },
+			{ name = 'bandage',     price = 20,  currency = 'money' },
+			{ name = 'painkillers', price = 50,  currency = 'money' },
+			{ name = 'emptyvial',   price = 100, currency = 'money' },
+			{ name = 'needle',      price = 200, currency = 'money' },
+		},
+		targets = {
+			{
+				ped = `s_f_y_scrubs_01`,
+				scenario = 'WORLD_HUMAN_CLIPBOARD',
+				loc = vec3(-1227.1996, -1474.9130, 3.3739),
+				heading = 124.3809,
 			}
 		}
 	},
