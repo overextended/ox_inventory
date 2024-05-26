@@ -11383,4 +11383,12 @@ return {
 			image = "micard_rare.png",
 		}
 	},
+
+	["wanted_paper"] = {
+		label = "Wanted Paper",
+		weight = 0,
+		stack = true,
+		close = true,
+		description = "Reward for arrest",
+	},
 }
