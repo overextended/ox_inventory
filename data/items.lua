@@ -11251,4 +11251,70 @@ return {
 			image = "bsprite.png",
 		}
 	},
+
+	["fx_scratchcard"] = {
+		label = "Scratch Card",
+		weight = 0,
+		stack = true,
+		close = true,
+		description = "A scratch card.",
+		client = {
+			image = "fx_scratchcard.png",
+		}
+	},
+
+	["scratchcard04"] = {
+		label = "Scratch Card 04",
+		weight = 100,
+		stack = true,
+		close = true,
+		description = "Minimum Prize: 500$  Maximium Prize: 900$  Premium Prize: 1250$",
+		client = {
+			image = "scratchcard04.png",
+		}
+	},
+
+	["scratchcard01"] = {
+		label = "Scratch Card 01",
+		weight = 100,
+		stack = true,
+		close = true,
+		description = "Minimum Prize: 10$  Maximium Prize: 100$  Premium Prize: 150$",
+		client = {
+			image = "scratchcard01.png",
+		}
+	},
+
+	["scratchcard05"] = {
+		label = "Scratch Card 05",
+		weight = 100,
+		stack = true,
+		close = true,
+		description = "Minimum Prize: 800$  Maximium Prize: 1250$  Premium Prize: 1650$",
+		client = {
+			image = "scratchcard05.png",
+		}
+	},
+
+	["scratchcard02"] = {
+		label = "Scratch Card 02",
+		weight = 100,
+		stack = true,
+		close = true,
+		description = "Minimum Prize: 50$  Maximium Prize: 300$  Premium Prize: 450$",
+		client = {
+			image = "scratchcard02.png",
+		}
+	},
+
+	["scratchcard03"] = {
+		label = "Scratch Card 03",
+		weight = 100,
+		stack = true,
+		close = true,
+		description = "Minimum Prize: 150$  Maximium Prize: 550$  Premium Prize: 750$",
+		client = {
+			image = "scratchcard03.png",
+		}
+	},
 }
