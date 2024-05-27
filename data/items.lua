@@ -10682,13 +10682,20 @@ return {
 
 	["beef-taco"] = {
 		label = "Beef Taco",
-		weight = 250,
+		weight = 350,
 		degrade = 60 * 12,
 		stack = true,
 		close = true,
-		description = "Beef Taco!",
+		description = "A taco that you can eat",
 		client = {
-			image = "beef-taco.png",
+			status = { hunger = 25 },
+			anim = { dict = 'mp_player_inteat@burger', clip = 'mp_player_int_eat_burger_fp' },
+			prop = {
+				model = 'prop_taco_01',
+				pos = vec3(0.05, -0.02, -0.03),
+				rot = vec3(150.0, 340.0, 170.0)
+			},
+			usetime = 7500,
 		}
 	},
 
