@@ -793,7 +793,7 @@ return {
 		}
 	},
 
-	Coffee3 = {
+	--[[Coffee3 = {
 		name = 'Coffee Shop',
 		inventory = {
 			{ name = 'coffee',        price = 15, currency = 'money' },
@@ -811,7 +811,7 @@ return {
 				heading = 37.6277,
 			}
 		}
-	},
+	},---]]
 
 	Pizza = {
 		name = 'Pizza',
@@ -1779,8 +1779,8 @@ return {
 			{
 				ped = `u_m_o_dean`,
 				scenario = 'WORLD_HUMAN_STAND_MOBILE',
-				loc = vec3(-1198.9303, -1515.5591, 3.3788),
-				heading = 125.1345,
+				loc = vec3(-1335.0538, -1277.0011, 3.9636),
+				heading = 110.1556,
 			}
 		}
 	},
