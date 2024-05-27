@@ -1337,6 +1337,34 @@ return {
 		}
 	},
 
+	beanmenu = {
+		name = 'Beanmachine Menu',
+		inventory = {
+			{ name = 'beanmachine_menu', price = 0 },
+		},
+		locations = {
+			vec3(-636.6, 233.79, 82.41)
+		},
+		targets = {
+			{ loc = vec3(-636.6, 233.79, 82.41), length = 0.6, width = 0.5, heading = 3.02, minZ = 28.2, maxZ = 28.6, distance = 2 }
+
+		}
+	},
+
+	tacomenu = {
+		name = 'Taco Menu',
+		inventory = {
+			{ name = 'taco_menu', price = 0 },
+		},
+		locations = {
+			vec3(20.2, -1600.78, 29.39)
+		},
+		targets = {
+			{ loc = vec3(20.2, -1600.78, 29.39), length = 0.6, width = 0.5, heading = 3.02, minZ = 28.2, maxZ = 28.6, distance = 2 }
+
+		}
+	},
+
 	taco = {
 		name = 'taco',
 		groups = {

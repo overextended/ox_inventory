@@ -3266,7 +3266,7 @@ return {
 	["pacific_blueprints"] = {
 		label = "Comic Book",
 		weight = 5,
-		stack = false,
+		stack = true,
 		close = true,
 		description = "Comic Book.",
 	},
@@ -3274,7 +3274,7 @@ return {
 	["hunting_guide"] = {
 		label = "Hunting Guide",
 		weight = 5,
-		stack = false,
+		stack = true,
 		close = true,
 		description = "Hunting Guide.",
 	},
@@ -3282,9 +3282,25 @@ return {
 	["burgershot_menu"] = {
 		label = "Burgershot Menu",
 		weight = 5,
-		stack = false,
+		stack = true,
 		close = true,
 		description = "Burgershot Menu.",
+	},
+
+	["beanmachine_menu"] = {
+		label = "Beanmachine Menu",
+		weight = 5,
+		stack = true,
+		close = true,
+		description = "Beanmachine Menu.",
+	},
+
+	["taco_menu"] = {
+		label = "Taco Menu",
+		weight = 5,
+		stack = true,
+		close = true,
+		description = "Taco Menu.",
 	},
 
 	["ciggie"] = {
