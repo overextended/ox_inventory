@@ -118,7 +118,7 @@ return {
 			maxZ = 32.09,
 			label = 'Open personal stash'
 		},
-		name = 'maelstrom',
+		name = 'maelstrom2',
 		label = 'Personal Stash',
 		owner = true,
 		slots = 70,
@@ -153,7 +153,7 @@ return {
 			maxZ = 32.09,
 			label = 'Open Burgershot Tray'
 		},
-		name = 'burgershot',
+		name = 'burgershot2',
 		label = 'Tray',
 		owner = false,
 		slots = 70,
@@ -170,7 +170,7 @@ return {
 			maxZ = 32.09,
 			label = 'Open Burgershot Tray'
 		},
-		name = 'burgershot',
+		name = 'burgershot3',
 		label = 'Tray',
 		owner = false,
 		slots = 70,
@@ -187,7 +187,7 @@ return {
 			maxZ = 32.09,
 			label = 'Open Burgershot Tray'
 		},
-		name = 'burgershot',
+		name = 'burgershot4',
 		label = 'Tray',
 		owner = false,
 		slots = 70,
@@ -239,7 +239,7 @@ return {
 			maxZ = 32.09,
 			label = 'Open Taco Tray'
 		},
-		name = 'tacoshop',
+		name = 'tacoshop2',
 		label = 'Tray',
 		owner = false,
 		slots = 70,

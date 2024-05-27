@@ -57,7 +57,7 @@ return {
 
 	["limao"] = {
 		label = "Lemon",
-		weight = 1500,
+		weight = 1,
 		degrade = 60 * 12,
 		stack = true,
 		close = true,
@@ -595,11 +595,21 @@ return {
 
 	["nachos"] = {
 		label = "Nacho Chips",
-		weight = 100,
+		weight = 1,
 		degrade = 60 * 12,
 		stack = true,
 		close = true,
-		description = "Salty Crisps",
+		description = "Nachos",
+		client = {
+			status = { hunger = 25 },
+			anim = { dict = 'mp_player_inteat@burger', clip = 'mp_player_int_eat_burger_fp' },
+			prop = {
+				model = 'prop_cs_burger_01',
+				pos = vec3(0.05, -0.02, -0.03),
+				rot = vec3(150.0, 340.0, 170.0)
+			},
+			usetime = 7500,
+		}
 	},
 
 	["egobar"] = {
@@ -762,7 +772,7 @@ return {
 
 	['sandwich'] = { -- A simple sandwich for a simple day
 		label = 'Sandwich',
-		weight = 350,
+		weight = 20,
 		degrade = 60 * 12,
 		stack = true,
 		close = true,
@@ -856,7 +866,7 @@ return {
 
 	['mustard'] = {
 		label = 'Mustard',
-		weight = 500,
+		weight = 1,
 		degrade = 60 * 12,
 		stack = true,
 		close = true,
@@ -984,7 +994,7 @@ return {
 			status = { hunger = 20 },
 			anim = { dict = 'mp_player_intdrink', clip = 'loop_bottle' },
 			prop = {
-				model = 'ng_proc_food_chips01b',
+				model = 'mxc_vend_prop_item_chips3',
 				pos = vec3(0.0, 0.08, 0.05),
 				rot = vec3(90.0, 0.0, -45.0)
 			},
@@ -1003,7 +1013,7 @@ return {
 			status = { hunger = 20 },
 			anim = { dict = 'mp_player_intdrink', clip = 'loop_bottle' },
 			prop = {
-				model = 'ng_proc_food_chips01a',
+				model = 'mxc_vend_prop_item_chips1',
 				pos = vec3(0.0, 0.08, 0.05),
 				rot = vec3(90.0, 0.0, -45.0)
 			},
@@ -1022,7 +1032,7 @@ return {
 			status = { hunger = 10 },
 			anim = { dict = 'mp_player_intdrink', clip = 'loop_bottle' },
 			prop = {
-				model = 'prop_candy_pqs',
+				model = 'mxc_vend_prop_item_candybar2',
 				pos = vec3(0.0, 0.02, 0.05),
 				rot = vec3(90.0, 0.0, -45.0)
 			},
@@ -1041,7 +1051,7 @@ return {
 
 	['apple'] = { -- Apple good
 		label = 'Apple',
-		weight = 350,
+		weight = 1,
 		degrade = 60 * 12,
 		stack = true,
 		close = true,
@@ -1061,7 +1071,7 @@ return {
 
 	['banana'] = { -- banana good
 		label = 'Banana',
-		weight = 350,
+		weight = 1,
 		degrade = 60 * 12,
 		stack = true,
 		close = true,
@@ -1080,7 +1090,7 @@ return {
 
 	['orange'] = { -- banana good
 		label = 'Orange',
-		weight = 350,
+		weight = 1,
 		degrade = 60 * 12,
 		stack = true,
 		close = true,
@@ -1527,7 +1537,7 @@ return {
 
 	['milk'] = { -- milky milky milky
 		label = 'Milk Carton',
-		weight = 350,
+		weight = 1,
 		degrade = 60 * 12,
 		stack = true,
 		close = true,
@@ -1690,7 +1700,7 @@ return {
 			status = { thirst = -5 },
 			anim = { dict = 'mp_player_intdrink', clip = 'loop_bottle' },
 			prop = {
-				model = 'sf_prop_sf_can_01a',
+				model = 'mxc_vend_prop_item_bottle2',
 				pos = vec3(0.025, 0.010, 0.05),
 				rot = vec3(5.0, 5.0, -180.5)
 			},
@@ -8783,6 +8793,7 @@ return {
 
 	['raw_meat'] = {
 		label = 'Raw Meat',
+		weight = 1,
 		degrade = 60 * 12,
 		weight = 200,
 		stack = true,
@@ -10455,7 +10466,7 @@ return {
 
 	["burger-bun"] = {
 		label = "Bun",
-		weight = 125,
+		weight = 1,
 		degrade = 60 * 12,
 		stack = true,
 		close = true,
@@ -10575,7 +10586,7 @@ return {
 
 	["burger-raw"] = {
 		label = "Raw Patty",
-		weight = 125,
+		weight = 1,
 		degrade = 60 * 12,
 		stack = true,
 		close = true,
@@ -10683,7 +10694,7 @@ return {
 
 	["chicken"] = {
 		label = "Chicken",
-		weight = 180,
+		weight = 1,
 		degrade = 60 * 12,
 		stack = true,
 		close = true,
@@ -10695,7 +10706,7 @@ return {
 
 	["ground-beef"] = {
 		label = "Ground Beef",
-		weight = 210,
+		weight = 1,
 		degrade = 60 * 12,
 		stack = true,
 		close = true,
@@ -11786,5 +11797,679 @@ return {
 		client = {
 			image = "Clothing_1_53.png",
 		}
+	},
+	["chips_cheese"] = {
+		label = "Chips Big Cheese",
+		weight = 350,
+		degrade = 60 * 12,
+		stack = true,
+		close = true,
+		description = "Salt and sauce flavored chips, made with real wood chips",
+		client = {
+			status = { hunger = 20 },
+			anim = { dict = 'mp_player_intdrink', clip = 'loop_bottle' },
+			prop = {
+				model = 'mxc_vend_prop_item_chips1',
+				pos = vec3(0.0, 0.08, 0.05),
+				rot = vec3(90.0, 0.0, -45.0)
+			},
+			usetime = 5000,
+		}
+	},
+	["chips_paprika"] = {
+		label = "Chips Paprika",
+		weight = 350,
+		degrade = 60 * 12,
+		stack = true,
+		close = true,
+		description = "Paprika flavored chips, made with real wood chips",
+		client = {
+			status = { hunger = 20 },
+			anim = { dict = 'mp_player_intdrink', clip = 'loop_bottle' },
+			prop = {
+				model = 'mxc_vend_prop_item_chips2',
+				pos = vec3(0.0, 0.08, 0.05),
+				rot = vec3(90.0, 0.0, -45.0)
+			},
+			usetime = 5000,
+		}
+	},
+	["chips_ribs"] = {
+		label = "Chips Sticky Ribs",
+		weight = 350,
+		degrade = 60 * 12,
+		stack = true,
+		close = true,
+		description = "Salt and sauce flavored chips, made with real wood chips",
+		client = {
+			status = { hunger = 20 },
+			anim = { dict = 'mp_player_intdrink', clip = 'loop_bottle' },
+			prop = {
+				model = 'mxc_vend_prop_item_chips3',
+				pos = vec3(0.0, 0.08, 0.05),
+				rot = vec3(90.0, 0.0, -45.0)
+			},
+			usetime = 5000,
+		}
+	},
+	["chips_salt"] = {
+		label = "Chips: Salt & Sauce",
+		weight = 350,
+		degrade = 60 * 12,
+		stack = true,
+		close = true,
+		description = "Salt and sauce flavored chips, made with real wood chips",
+		client = {
+			status = { hunger = 20 },
+			anim = { dict = 'mp_player_intdrink', clip = 'loop_bottle' },
+			prop = {
+				model = 'mxc_vend_prop_item_chips4',
+				pos = vec3(0.0, 0.08, 0.05),
+				rot = vec3(90.0, 0.0, -45.0)
+			},
+			usetime = 5000,
+		}
+	},
+	["chips_supersalt"] = {
+		label = "Chips: Super Salt",
+		weight = 350,
+		degrade = 60 * 12,
+		stack = true,
+		close = true,
+		description = "Super salt flavored chips, made with real wood chips",
+		client = {
+			status = { hunger = 20 },
+			anim = { dict = 'mp_player_intdrink', clip = 'loop_bottle' },
+			prop = {
+				model = 'mxc_vend_prop_item_chips5',
+				pos = vec3(0.0, 0.08, 0.05),
+				rot = vec3(90.0, 0.0, -45.0)
+			},
+			usetime = 5000,
+		}
+	},
+	["chips_habanero"] = {
+		label = "Chips: Habanero",
+		weight = 350,
+		degrade = 60 * 12,
+		stack = true,
+		close = true,
+		description = "Habanero flavored chips, made with real wood chips",
+		client = {
+			status = { hunger = 20 },
+			anim = { dict = 'mp_player_intdrink', clip = 'loop_bottle' },
+			prop = {
+				model = 'mxc_vend_prop_item_chips6',
+				pos = vec3(0.0, 0.08, 0.05),
+				rot = vec3(90.0, 0.0, -45.0)
+			},
+			usetime = 5000,
+		}
+	},
+	["chocolate_meteorite"] = {
+		label = "Candy: Meteorite",
+		weight = 1,
+		degrade = 60 * 12,
+		stack = true,
+		close = true,
+		description = "A chocolate bar that you can eat",
+		client = {
+			status = { hunger = 10 },
+			anim = { dict = 'mp_player_inteat@burger', clip = 'mp_player_int_eat_burger_fp' },
+			prop = {
+				model = 'mxc_vend_prop_item_chocolate1',
+				pos = vec3(0.05, -0.02, -0.03),
+				rot = vec3(150.0, 340.0, 170.0)
+			},
+			usetime = 7500,
+		}
+	},
+	["chocolate_captain"] = {
+		label = "Candy: Captain's Log",
+		weight = 1,
+		degrade = 60 * 12,
+		stack = true,
+		close = true,
+		description = "A chocolate bar that you can eat",
+		client = {
+			status = { hunger = 10 },
+			anim = { dict = 'mp_player_inteat@burger', clip = 'mp_player_int_eat_burger_fp' },
+			prop = {
+				model = 'mxc_vend_prop_item_chocolate2',
+				pos = vec3(0.05, -0.02, -0.03),
+				rot = vec3(150.0, 340.0, 170.0)
+			},
+			usetime = 7500,
+		}
+	},
+	["condom"] = {
+		label = "Condom: Soth Lags",
+		weight = 1,
+		stack = true,
+	},
+	["candy_zebra"] = {
+		label = "Candy: Zebrabar",
+		weight = 1,
+		degrade = 60 * 12,
+		stack = true,
+		close = true,
+		description = "A chocolate bar that you can eat",
+		client = {
+			status = { hunger = 10 },
+			anim = { dict = 'mp_player_inteat@burger', clip = 'mp_player_int_eat_burger_fp' },
+			prop = {
+				model = 'mxc_vend_prop_item_candybar1',
+				pos = vec3(0.05, -0.02, -0.03),
+				rot = vec3(150.0, 340.0, 170.0)
+			},
+			usetime = 7500,
+		}
+	},
+	["candy_psqs"] = {
+		label = "Candy: P's & Q's",
+		weight = 1,
+		degrade = 60 * 12,
+		stack = true,
+		close = true,
+		description = "A chocolate bar that you can eat",
+		client = {
+			status = { hunger = 10 },
+			anim = { dict = 'mp_player_inteat@burger', clip = 'mp_player_int_eat_burger_fp' },
+			prop = {
+				model = 'mxc_vend_prop_item_candybar2',
+				pos = vec3(0.05, -0.02, -0.03),
+				rot = vec3(150.0, 340.0, 170.0)
+			},
+			usetime = 7500,
+		}
+	},
+	["medicine_laxmax"] = {
+		label = "Medicine: Lax to the Max",
+		weight = 1,
+		stack = true,
+	},
+	["medicine_alcopatch"] = {
+		label = "Medicine: AlcoPatch",
+		weight = 1,
+		stack = true,
+	},
+	["medicine_mollis"] = {
+		label = "Medicine: Mollis",
+		weight = 1,
+		stack = true,
+	},
+	["medicine_betta"] = {
+		label = "Medicine: Betta",
+		weight = 1,
+		stack = true,
+	},
+	["gum_peppermint"] = {
+		label = "Gum: Peppermint",
+		weight = 1,
+		degrade = 60 * 12,
+		stack = true,
+		close = true,
+		description = "Candy make your tongue go brrrr",
+		client = {
+			status = { hunger = 10 },
+			anim = { dict = 'mp_player_intdrink', clip = 'loop_bottle' },
+			prop = {
+				model = 'mxc_vend_prop_item_gum1',
+				pos = vec3(0.0, 0.02, 0.05),
+				rot = vec3(90.0, 0.0, -45.0)
+			},
+			usetime = 5000,
+		}
+	},
+	["gum_cinnamon"] = {
+		label = "Gum: Cinnamon",
+		weight = 1,
+		degrade = 60 * 12,
+		stack = true,
+		close = true,
+		description = "Candy make your tongue go brrrr",
+		client = {
+			status = { hunger = 10 },
+			anim = { dict = 'mp_player_intdrink', clip = 'loop_bottle' },
+			prop = {
+				model = 'mxc_vend_prop_item_gum2',
+				pos = vec3(0.0, 0.02, 0.05),
+				rot = vec3(90.0, 0.0, -45.0)
+			},
+			usetime = 5000,
+		}
+	},
+	["gum_spearmint"] = {
+		label = "Gum: Spearmint",
+		weight = 1,
+		degrade = 60 * 12,
+		stack = true,
+		close = true,
+		description = "Candy make your tongue go brrrr",
+		client = {
+			status = { hunger = 10 },
+			anim = { dict = 'mp_player_intdrink', clip = 'loop_bottle' },
+			prop = {
+				model = 'mxc_vend_prop_item_gum3',
+				pos = vec3(0.0, 0.02, 0.05),
+				rot = vec3(90.0, 0.0, -45.0)
+			},
+			usetime = 5000,
+		}
+	},
+	["bottle_cola"] = {
+		label = "Cola",
+		weight = 350,
+		stack = true,
+		close = true,
+		client = {
+			status = { thirst = 30 },
+			anim = { dict = 'mp_player_intdrink', clip = 'loop_bottle' },
+			prop = { model = `mxc_vend_prop_item_bottle1`, pos = vec3(0.01, 0.01, 0.06), rot = vec3(5.0, 5.0, -180.5) },
+			usetime = 2500,
+			notification = 'You quenched your thirst with cola'
+		}
+	},
+	["bottle_junk"] = {
+		label = "Junk",
+		weight = 350,
+		stack = true,
+		close = true,
+		client = {
+			status = { thirst = 30 },
+			anim = { dict = 'mp_player_intdrink', clip = 'loop_bottle' },
+			prop = { model = `mxc_vend_prop_item_bottle2`, pos = vec3(0.01, 0.01, 0.06), rot = vec3(5.0, 5.0, -180.5) },
+			usetime = 2500,
+			notification = 'You quenched your thirst with cola'
+		}
+	},
+	["bottle_orang"] = {
+		label = "Orang Tang",
+		weight = 350,
+		stack = true,
+		close = true,
+		description = "I didn't even know people wanted this",
+		client = {
+			status = { thirst = 30 },
+			anim = { dict = 'mxc_vend_prop_item_bottle3', clip = 'loop_bottle' },
+			prop = {
+				model = 'mxc_vend_prop_item_bottle3',
+				pos = vec3(0.0, 0.0, 0.0),
+				rot = vec3(0.0, 0.0, 130.0)
+			},
+			usetime = 5000,
+		}
+	},
+	["bottle_tonic"] = {
+		label = "Tonic",
+		weight = 20,
+		stack = true,
+		close = true,
+		description = "I didn't even know people wanted this",
+		client = {
+			status = { thirst = 30 },
+			anim = { dict = 'mxc_vend_prop_item_bottle4', clip = 'loop_bottle' },
+			prop = {
+				model = 'mxc_vend_prop_item_bottle4',
+				pos = vec3(0.0, 0.0, 0.0),
+				rot = vec3(0.0, 0.0, 130.0)
+			},
+			usetime = 5000,
+		}
+	},
+	["bottle_water"] = {
+		label = "Water",
+		weight = 20,
+		stack = true,
+		close = true,
+		description = "I didn't even know people wanted this",
+		client = {
+			status = { thirst = 30 },
+			anim = { dict = 'mp_player_intdrink', clip = 'loop_bottle' },
+			prop = {
+				model = 'mxc_vend_prop_item_bottle5',
+				pos = vec3(0.0, 0.0, 0.0),
+				rot = vec3(0.0, 0.0, 130.0)
+			},
+			usetime = 5000,
+		}
+	},
+	["bottle_sprunk"] = {
+		label = "Sprunk",
+		weight = 20,
+		stack = true,
+		close = true,
+		description = "I didn't even know people wanted this",
+		client = {
+			status = { thirst = 30 },
+			anim = { dict = 'mp_player_intdrink', clip = 'loop_bottle' },
+			prop = {
+				model = 'mxc_vend_prop_item_bottle6',
+				pos = vec3(0.0, 0.0, 0.0),
+				rot = vec3(0.0, 0.0, 130.0)
+			},
+			usetime = 5000,
+		}
+	},
+	["can_cola"] = {
+		label = "Cola Canweight = 1,",
+		weight = 20,
+		stack = true,
+		close = true,
+		description = "I didn't even know people wanted this",
+		client = {
+			status = { thirst = 30 },
+			anim = { dict = 'mp_player_intdrink', clip = 'loop_bottle' },
+			prop = {
+				model = 'mxc_vend_prop_item_cansoda1',
+				pos = vec3(0.0, 0.0, 0.0),
+				rot = vec3(0.0, 0.0, 130.0)
+			},
+			usetime = 5000,
+		}
+	},
+	["can_orang"] = {
+		label = "Orang Tang Can",
+		weight = 20,
+		stack = true,
+		close = true,
+		description = "I didn't even know people wanted this",
+		client = {
+			status = { thirst = 30 },
+			anim = { dict = 'mp_player_intdrink', clip = 'loop_bottle' },
+			prop = {
+				model = 'mxc_vend_prop_item_cansoda2',
+				pos = vec3(0.0, 0.0, 0.0),
+				rot = vec3(0.0, 0.0, 130.0)
+			},
+			usetime = 5000,
+		}
+	},
+	["can_junk"] = {
+		label = "Junk Canweight = 1,",
+		weight = 20,
+		stack = true,
+		close = true,
+		description = "I didn't even know people wanted this",
+		client = {
+			status = { thirst = 30 },
+			anim = { dict = 'mp_player_intdrink', clip = 'loop_bottle' },
+			prop = {
+				model = 'mxc_vend_prop_item_cansoda3',
+				pos = vec3(0.0, 0.0, 0.0),
+				rot = vec3(0.0, 0.0, 130.0)
+			},
+			usetime = 5000,
+		}
+	},
+	["can_sprunk"] = {
+		label = "Sprunk Can",
+		weight = 20,
+		stack = true,
+		close = true,
+		description = "I didn't even know people wanted this",
+		client = {
+			status = { thirst = 30 },
+			anim = { dict = 'mp_player_intdrink', clip = 'loop_bottle' },
+			prop = {
+				model = 'mxc_vend_prop_item_cansoda4',
+				pos = vec3(0.0, 0.0, 0.0),
+				rot = vec3(0.0, 0.0, 130.0)
+			},
+			usetime = 5000,
+		}
+	},
+	["can_logger"] = {
+		label = "Logger Can",
+		weight = 20,
+		stack = true,
+		close = true,
+		description = "I didn't even know people wanted this",
+		client = {
+			status = { thirst = 30 },
+			anim = { dict = 'mp_player_intdrink', clip = 'loop_bottle' },
+			prop = {
+				model = 'mxc_vend_prop_item_canbeer1',
+				pos = vec3(0.0, 0.0, 0.0),
+				rot = vec3(0.0, 0.0, 130.0)
+			},
+			usetime = 5000,
+		}
+	},
+	["can_blarneys"] = {
+		label = "Blarneys Can",
+		weight = 20,
+		stack = true,
+		close = true,
+		description = "I didn't even know people wanted this",
+		client = {
+			status = { thirst = 30 },
+			anim = { dict = 'mp_player_intdrink', clip = 'loop_bottle' },
+			prop = {
+				model = 'mxc_vend_prop_item_canbeer2',
+				pos = vec3(0.0, 0.0, 0.0),
+				rot = vec3(0.0, 0.0, 130.0)
+			},
+			usetime = 5000,
+		}
+	},
+	["can_hoplivion"] = {
+		label = "Hoplivion Can",
+		weight = 20,
+		stack = true,
+		close = true,
+		description = "I didn't even know people wanted this",
+		client = {
+			status = { thirst = 30 },
+			anim = { dict = 'mp_player_intdrink', clip = 'loop_bottle' },
+			prop = {
+				model = 'mxc_vend_prop_item_canbeer3',
+				pos = vec3(0.0, 0.0, 0.0),
+				rot = vec3(0.0, 0.0, 130.0)
+			},
+			usetime = 5000,
+		}
+	},
+	["can_cerbeza"] = {
+		label = "Cerbeza Can",
+		weight = 20,
+		stack = true,
+		close = true,
+		description = "I didn't even know people wanted this",
+		client = {
+			status = { thirst = 30 },
+			anim = { dict = 'mp_player_intdrink', clip = 'loop_bottle' },
+			prop = {
+				model = 'mxc_vend_prop_item_canbeer4',
+				pos = vec3(0.0, 0.0, 0.0),
+				rot = vec3(0.0, 0.0, 130.0)
+			},
+			usetime = 5000,
+		}
+	},
+	["svapo_vaporglow1a"] = {
+		label = "Vaporglow 2",
+		weight = 1,
+		stack = true
+	},
+	["svapo_vaporglow1b"] = {
+		label = "Vaporglow 1",
+		weight = 1,
+		stack = true
+	},
+	["svapo_vaporglow1c"] = {
+		label = "Vaporglow 1",
+		weight = 1,
+		stack = true
+	},
+	["svapo_vaporglow1d"] = {
+		label = "Vaporglow 1",
+		weight = 1,
+		stack = true
+	},
+	["svapo_vaporglow1e"] = {
+		label = "Vaporglow 1",
+		weight = 1,
+		stack = true
+	},
+	["svapo_vaporglow1f"] = {
+		label = "Vaporglow 1",
+		weight = 1,
+		stack = true
+	},
+	["svapo_evape1a"] = {
+		label = "E-Vape 1",
+		weight = 1,
+		stack = true
+	},
+	["svapo_evape1b"] = {
+		label = "E-Vape 1",
+		weight = 1,
+		stack = true
+	},
+	["svapo_evape1c"] = {
+		label = "E-Vape 1",
+		weight = 1,
+		stack = true
+	},
+	["svapo_evape1d"] = {
+		label = "E-Vape 1",
+		weight = 1,
+		stack = true
+	},
+	["svapo_evape1e"] = {
+		label = "E-Vape 1",
+		weight = 1,
+		stack = true
+	},
+	["svapo_evape1f"] = {
+		label = "E-Vape 1",
+		weight = 1,
+		stack = true
+	},
+	["svapo_evape2a"] = {
+		label = "E-Vape 2",
+		weight = 1,
+		stack = true
+	},
+	["svapo_evape2b"] = {
+		label = "E-Vape 2",
+		weight = 1,
+		stack = true
+	},
+	["svapo_evape2c"] = {
+		label = "E-Vape 2",
+		weight = 1,
+		stack = true
+	},
+	["svapo_evape2d"] = {
+		label = "E-Vape 2",
+		weight = 1,
+		stack = true
+	},
+	["svapo_evape2e"] = {
+		label = "E-Vape 2",
+		weight = 1,
+		stack = true
+	},
+	["svapo_evape2f"] = {
+		label = "E-Vape 2",
+		weight = 1,
+		stack = true
+	},
+	["svapo_smoke1a"] = {
+		label = "Smoke 1",
+		weight = 1,
+		stack = true
+	},
+	["svapo_smoke1b"] = {
+		label = "Smoke 1",
+		weight = 1,
+		stack = true
+	},
+	["svapo_smoke1c"] = {
+		label = "Smoke 1",
+		weight = 1,
+		stack = true
+	},
+	["svapo_smoke1d"] = {
+		label = "Smoke 1",
+		weight = 1,
+		stack = true
+	},
+	["svapo_smoke1e"] = {
+		label = "Smoke 1",
+		weight = 1,
+		stack = true
+	},
+	["svapo_smoke1f"] = {
+		label = "Smoke 1",
+		weight = 1,
+		stack = true
+	},
+	["svapo_evape_box"] = {
+		label = "E-Vape Box",
+		weight = 1,
+		stack = true
+	},
+	["svapo_evape2_box"] = {
+		label = "E-Vape 2 Box",
+		weight = 1,
+		stack = true
+	},
+	["svapo_smoke_box"] = {
+		label = "Smoke Box",
+		weight = 1,
+		stack = true
+	},
+	["svapo_sumo_box"] = {
+		label = "Sumo Box",
+		weight = 1,
+		stack = true
+	},
+	["svapo_vaporglow_box"] = {
+		label = "Vaporglow Box",
+		weight = 1,
+		stack = true
+	},
+	["cigs_redwood"] = {
+		label = "Cigarettes: Redwood",
+		weight = 1,
+		stack = true
+	},
+	["cigs_redwood2"] = {
+		label = "Cigarettes: Redwood2",
+		weight = 1,
+		stack = true
+	},
+	["cigs_debonaireb"] = {
+		label = "Cigarettes: Debonaire Blue",
+		weight = 1,
+		stack = true
+	},
+	["cigs_debonaireg"] = {
+		label = "Cigarettes: Debonaire Green",
+		weight = 1,
+		stack = true
+	},
+	["cigs_cardiaque"] = {
+		label = "Cigarettes: Cardiaque",
+		weight = 1,
+		stack = true
+	},
+	["cigs_69brand"] = {
+		label = "Cigarettes: 69Brand",
+		weight = 1,
+		stack = true
+	},
+	["cigs_cok"] = {
+		label = "Cigarettes: CoK",
+		weight = 1,
+		stack = true
+	},
+	["cigs_estancia"] = {
+		label = "Cigars: Estancia",
+		weight = 1,
+		stack = true
 	},
 }
