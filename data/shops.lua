@@ -1339,6 +1339,9 @@ return {
 
 	beanmenu = {
 		name = 'Beanmachine Menu',
+		groups = {
+			['beanmachine'] = 0
+		},
 		inventory = {
 			{ name = 'beanmachine_menu', price = 0 },
 		},
@@ -1353,6 +1356,9 @@ return {
 
 	tacomenu = {
 		name = 'Taco Menu',
+		groups = {
+			['taco'] = 0
+		},
 		inventory = {
 			{ name = 'taco_menu', price = 0 },
 		},
