@@ -911,6 +911,22 @@ return {
 		}
 	},
 
+	['ketchup'] = {
+		label = 'Ketchup',
+		weight = 1,
+		degrade = 60 * 12,
+		decay = true,
+		stack = true,
+		close = true,
+		client = {
+			status = { hunger = 25, thirst = 25 },
+			anim = { dict = 'mp_player_intdrink', clip = 'loop_bottle' },
+			prop = { model = `prop_food_ketchup`, pos = vec3(0.01, 0.0, -0.07), rot = vec3(1.0, 1.0, -1.5) },
+			usetime = 2500,
+			notification = 'You.. drank ketchup'
+		}
+	},
+
 	--- PIZZA	
 
 	['pizza_pep'] = { -- A simple sandwich for a simple day
