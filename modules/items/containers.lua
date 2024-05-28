@@ -63,6 +63,12 @@ setContainerProperties('briefcase', {
 	whitelist = { 'money','certificate','cwnote','cwnotepad','rentalpapers','printerdocument','laptop','keeptablet', 'filled_evidence_bag', 'empty_evidence_bag', 'recoveredbullet', 'bulletcasings' }	
 })
 
+setContainerProperties('keyring', {
+	slots = 20,
+	maxWeight = 7500,
+	whitelist = { 'vehiclekeys' }	
+})
+
 setContainerProperties('box_small', {
 	slots = 5,
 	maxWeight = 7500,

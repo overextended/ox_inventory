@@ -9186,6 +9186,14 @@ return {
 		description = "Check vehicle status",
 	},
 
+	["keyring"] = {
+		label = "Keyring",
+		weight = 10,
+		stack = false,
+		close = true,
+		description = "Ring for your keys..",
+	},
+
 	['vehiclekeys'] = {
 		label = 'Vehicle Keys',
 		weight = 220,
