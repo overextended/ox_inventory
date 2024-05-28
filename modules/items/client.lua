@@ -110,6 +110,39 @@ Item('armour', function(data, slot)
 	end
 end)
 
+Item('lightarmor', function(data, slot)
+	if GetPedArmour(cache.ped) < 50 then
+		ox_inventory:useItem(data, function(data)
+			if data then
+				SetPlayerMaxArmour(PlayerData.id, 50)
+				SetPedArmour(cache.ped, 50)
+			end
+		end)
+	end
+end)
+
+Item('mediumarmor', function(data, slot)
+	if GetPedArmour(cache.ped) < 50 then
+		ox_inventory:useItem(data, function(data)
+			if data then
+				SetPlayerMaxArmour(PlayerData.id, 50)
+				SetPedArmour(cache.ped, 50)
+			end
+		end)
+	end
+end)
+
+Item('higharmor', function(data, slot)
+	if GetPedArmour(cache.ped) < 75 then
+		ox_inventory:useItem(data, function(data)
+			if data then
+				SetPlayerMaxArmour(PlayerData.id, 75)
+				SetPedArmour(cache.ped, 75)
+			end
+		end)
+	end
+end)
+
 Item('ifaks', function(data, slot)
 	local maxHealth = GetEntityMaxHealth(cache.ped)
 	local health = GetEntityHealth(cache.ped)

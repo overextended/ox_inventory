@@ -5332,45 +5332,42 @@ return {
 		}
 	},
 
+	['lightarmor'] = {
+		label = 'Light Ballistic Vest',
+		weight = 2000,
+		stack = false,
+		client = {
+			anim = { dict = 'clothingshirt', clip = 'try_shirt_positive_d' },
+			usetime = 3500
+		}
+	},
+
+	['mediumarmor'] = {
+		label = 'Medium Ballistic Vest',
+		weight = 2500,
+		stack = false,
+		client = {
+			anim = { dict = 'clothingshirt', clip = 'try_shirt_positive_d' },
+			usetime = 3500
+		}
+	},
+
+	['higharmor'] = {
+		label = 'Heavy Ballistic Vest',
+		weight = 3000,
+		stack = false,
+		client = {
+			anim = { dict = 'clothingshirt', clip = 'try_shirt_positive_d' },
+			usetime = 3500
+		}
+	},
+
 	["armor"] = {
 		label = "Armor",
 		weight = 5000,
 		stack = true,
 		close = true,
 		description = "Some protection won't hurt... right?",
-	},
-
-	['bodyarmor_1'] = {
-		label = 'Light Ballistic Vest',
-		weight = 3000,
-		stack = true,
-		description = "Bullts hurt a bit less with this",
-		client = {
-			anim = { dict = 'clothingshirt', clip = 'try_shirt_positive_d' },
-			usetime = 6500
-		}
-	},
-
-	['bodyarmor_2'] = {
-		label = 'Medium Ballistic Vest',
-		weight = 4000,
-		stack = true,
-		description = "Bullets hurt a lot less with this",
-		client = {
-			anim = { dict = 'clothingshirt', clip = 'try_shirt_positive_d' },
-			usetime = 6500
-		}
-	},
-
-	['bodyarmor_3'] = {
-		label = 'Heavy Ballistic Vest',
-		weight = 4500,
-		stack = true,
-		description = "Keep the extra bullets for personal vest flair",
-		client = {
-			anim = { dict = 'clothingshirt', clip = 'try_shirt_positive_d' },
-			usetime = 6500
-		}
 	},
 
 	["heavyarmor"] = {
