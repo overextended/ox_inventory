@@ -5325,7 +5325,7 @@ return {
 	['armour'] = {
 		label = 'Bulletproof Vest',
 		weight = 3000,
-		stack = false,
+		stack = true,
 		client = {
 			anim = { dict = 'clothingshirt', clip = 'try_shirt_positive_d' },
 			usetime = 3500
@@ -12761,5 +12761,26 @@ return {
 		label = "Cigars: Estancia",
 		weight = 1,
 		stack = true
+	},
+
+	["graham_cracker"] = {
+		label = "Graham Cracker",
+		weight = 100,
+		stack = true,
+		close = true,
+		description = "Ingredient",
+		client = {
+			image = "graham_cracker.png",
+		}
+	},
+	["marshmellow"] = {
+		label = "Marshmellow",
+		weight = 100,
+		stack = true,
+		close = true,
+		description = "Ingredient",
+		client = {
+			image = "marshmellow.png",
+		}
 	},
 }
