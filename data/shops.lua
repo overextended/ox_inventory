@@ -152,6 +152,7 @@ return {
 			{ name = 'burger-bun',           price = 10,  currency = 'money' },
 			{ name = 'water',                price = 10,  currency = 'money' },
 			{ name = 'mustard',              price = 10,  currency = 'money' },
+			{ name = 'ketchup',              price = 10,  currency = 'money' },
 			{ name = 'raw_meat',             price = 20,  currency = 'money' },
 			{ name = 'burger-raw',           price = 20,  currency = 'money' },
 			{ name = 'ground-beef',          price = 20,  currency = 'money' },
@@ -728,7 +729,8 @@ return {
 		},
 		inventory = {
 			{ name = 'hotdog',        price = 20, currency = 'money' },
-			{ name = 'mustard',       price = 20, currency = 'money' },
+			{ name = 'mustard',       price = 10, currency = 'money' },
+			{ name = 'ketchup',       price = 10, currency = 'money' },
 			{ name = 'cola',          price = 25, currency = 'money' },
 			{ name = 'water',         price = 15, currency = 'money' },
 			{ name = 'fr_fries',      price = 15, currency = 'money' },
@@ -849,7 +851,8 @@ return {
 			{ name = 'burger_chs',    price = 25, currency = 'money' },
 			{ name = 'burger_chsbcn', price = 50, currency = 'money' },
 			{ name = 'fr_fries',      price = 15, currency = 'money' },
-			{ name = 'mustard',       price = 15, currency = 'money' },
+			{ name = 'mustard',       price = 10, currency = 'money' },
+			{ name = 'ketchup',       price = 10, currency = 'money' },
 			{ name = 'cola',          price = 15, currency = 'money' },
 			{ name = 'sprunk_bottle', price = 15, currency = 'money' },
 		},
@@ -886,7 +889,8 @@ return {
 		},
 		inventory = {
 			{ name = 'hotdog',   price = 20, currency = 'money' },
-			{ name = 'mustard',  price = 20, currency = 'money' },
+			{ name = 'mustard',  price = 10, currency = 'money' },
+			{ name = 'ketchup',  price = 10, currency = 'money' },
 			{ name = 'cola',     price = 25, currency = 'money' },
 			{ name = 'water',    price = 15, currency = 'money' },
 			{ name = 'fr_fries', price = 15, currency = 'money' },
@@ -1251,7 +1255,8 @@ return {
 		inventory = {
 			{ name = 'popcorn',  price = 10, currency = 'money' },
 			{ name = 'hotdog',   price = 10, currency = 'money' },
-			{ name = 'mustard',  price = 20, currency = 'money' },
+			{ name = 'mustard',  price = 10, currency = 'money' },
+			{ name = 'ketchup',  price = 10, currency = 'money' },
 			{ name = 'cola',     price = 25, currency = 'money' },
 			{ name = 'water',    price = 8,  currency = 'money' },
 			{ name = 'fr_fries', price = 8,  currency = 'money' },
@@ -1271,7 +1276,8 @@ return {
 		inventory = {
 			{ name = 'popcorn',  price = 10, currency = 'money' },
 			{ name = 'hotdog',   price = 10, currency = 'money' },
-			{ name = 'mustard',  price = 20, currency = 'money' },
+			{ name = 'mustard',  price = 10, currency = 'money' },
+			{ name = 'ketchup',  price = 10, currency = 'money' },
 			{ name = 'cola',     price = 25, currency = 'money' },
 			{ name = 'water',    price = 8,  currency = 'money' },
 			{ name = 'fr_fries', price = 8,  currency = 'money' },
@@ -1509,6 +1515,7 @@ return {
 		name = 'Grocery Store',
 		inventory = {
 			{ name = 'mustard', price = 10, currency = 'money' },
+			{ name = 'ketchup', price = 10, currency = 'money' },
 		},
 		locations = {
 			vec3(2705.4326, 3368.8691, 57.1163)
@@ -1673,6 +1680,7 @@ return {
 			{ name = 'water',                price = 10,  currency = 'money' },
 			{ name = 'water_bottle',         price = 10,  currency = 'money' },
 			{ name = 'mustard',              price = 10,  currency = 'money' },
+			{ name = 'ketchup',              price = 10,  currency = 'money' },
 			{ name = 'raw_meat',             price = 20,  currency = 'money' },
 			{ name = 'burger-raw',           price = 20,  currency = 'money' },
 			{ name = 'ground-beef',          price = 20,  currency = 'money' },
@@ -1741,6 +1749,7 @@ return {
 			{ name = 'burger-bun',           price = 10,  currency = 'money' },
 			{ name = 'water',                price = 10,  currency = 'money' },
 			{ name = 'mustard',              price = 10,  currency = 'money' },
+			{ name = 'ketchup',              price = 10,  currency = 'money' },
 			{ name = 'raw_meat',             price = 20,  currency = 'money' },
 			{ name = 'burger-raw',           price = 20,  currency = 'money' },
 			{ name = 'ground-beef',          price = 20,  currency = 'money' },

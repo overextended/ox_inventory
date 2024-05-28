@@ -622,7 +622,7 @@ return {
 			status = { hunger = 25 },
 			anim = { dict = 'mp_player_inteat@burger', clip = 'mp_player_int_eat_burger_fp' },
 			prop = {
-				model = 'prop_cs_burger_01',
+				model = 'prop_taco_02',
 				pos = vec3(0.05, -0.02, -0.03),
 				rot = vec3(150.0, 340.0, 170.0)
 			},
@@ -10857,14 +10857,21 @@ return {
 
 	["quesadilla"] = {
 		label = "Quesadilla",
-		weight = 250,
+		weight = 350,
 		degrade = 60 * 12,
 		decay = true,
 		stack = true,
 		close = true,
-		description = "Quesadilla!",
+		description = "A taco that you can eat",
 		client = {
-			image = "quesadilla.png",
+			status = { hunger = 25 },
+			anim = { dict = 'mp_player_inteat@burger', clip = 'mp_player_int_eat_burger_fp' },
+			prop = {
+				model = 'prop_taco_02',
+				pos = vec3(0.05, -0.02, -0.03),
+				rot = vec3(150.0, 340.0, 170.0)
+			},
+			usetime = 7500,
 		}
 	},
 
@@ -10916,14 +10923,21 @@ return {
 
 	["chicken-burrito"] = {
 		label = "Chicken Burrito",
-		weight = 250,
+		weight = 350,
 		degrade = 60 * 12,
 		decay = true,
 		stack = true,
 		close = true,
-		description = "Chicken Burrito!",
+		description = "Chicken Burrito",
 		client = {
-			image = "chicken-burrito.png",
+			status = { hunger = 25 },
+			anim = { dict = 'mp_player_inteat@burger', clip = 'mp_player_int_eat_burger_fp' },
+			prop = {
+				model = 'prop_taco_02',
+				pos = vec3(0.05, -0.02, -0.03),
+				rot = vec3(150.0, 340.0, 170.0)
+			},
+			usetime = 7500,
 		}
 	},
 
