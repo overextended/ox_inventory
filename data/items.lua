@@ -5337,6 +5337,7 @@ return {
 		weight = 2000,
 		stack = false,
 		client = {
+			image = "armor_l1.png",
 			anim = { dict = 'clothingshirt', clip = 'try_shirt_positive_d' },
 			usetime = 3500
 		}
@@ -5347,6 +5348,7 @@ return {
 		weight = 2500,
 		stack = false,
 		client = {
+			image = "armor_l2.png",
 			anim = { dict = 'clothingshirt', clip = 'try_shirt_positive_d' },
 			usetime = 3500
 		}
@@ -5357,6 +5359,7 @@ return {
 		weight = 3000,
 		stack = false,
 		client = {
+			image = "armor_l3.png",
 			anim = { dict = 'clothingshirt', clip = 'try_shirt_positive_d' },
 			usetime = 3500
 		}
