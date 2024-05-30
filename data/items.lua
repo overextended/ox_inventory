@@ -10544,9 +10544,6 @@ return {
 		stack = true,
 		close = true,
 		description = "Set them free !",
-		client = {
-			image = "cuffkeys.png",
-		}
 	},
 
 	["flush_cutter"] = {
@@ -10555,9 +10552,6 @@ return {
 		stack = true,
 		close = true,
 		description = "Comes in handy when you want to cut zipties..",
-		client = {
-			image = "flush_cutter.png",
-		}
 	},
 
 	["broken_handcuffs"] = {
@@ -10566,9 +10560,6 @@ return {
 		stack = true,
 		close = true,
 		description = "It's broken, maybe you can repair it?",
-		client = {
-			image = "broken_handcuffs.png",
-		}
 	},
 
 	["leo-gps"] = {
@@ -10577,9 +10568,6 @@ return {
 		stack = false,
 		close = true,
 		description = "Show your gps location to others",
-		client = {
-			image = "leo-gps.png",
-		}
 	},
 
 	["rag"] = {
@@ -10600,9 +10588,6 @@ return {
 		stack = true,
 		close = true,
 		description = "Comes in handy when people misbehave. Maybe it can be used for something else?",
-		client = {
-			image = "ziptie.png",
-		}
 	},
 
 	["evidencecleaningkit"] = {
@@ -10626,9 +10611,6 @@ return {
 		stack = true,
 		close = true,
 		description = "Wanna cut some metal items ?",
-		client = {
-			image = "bolt_cutter.png",
-		}
 	},
 
 	["c4_bomb"] = {
@@ -12781,6 +12763,28 @@ return {
 		description = "Ingredient",
 		client = {
 			image = "marshmellow.png",
+		}
+	},
+
+	["craftingtable"] = {
+		label = "Crafting Table",
+		weight = 100,
+		stack = false,
+		close = true,
+		description = "Crafting Table",
+		client = {
+			image = "craftingtable.png",
+		}
+	},
+
+	["blueprint"] = {
+		label = "Blueprint",
+		weight = 100,
+		stack = false,
+		close = true,
+		description = "Blueprint",
+		client = {
+			image = "blueprint.png",
 		}
 	},
 }
