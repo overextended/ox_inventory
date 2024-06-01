@@ -424,7 +424,7 @@ return {
 		close = true,
 		description = "A cupcake that you can eat",
 		client = {
-			status = { hunger = 25 },
+			status = { hunger = 60 },
 			anim = { dict = 'mp_player_inteat@burger', clip = 'mp_player_int_eat_burger_fp' },
 			prop = {
 				model = 'pata_christmasfood6',
@@ -481,7 +481,7 @@ return {
 		close = true,
 		description = "A cupcake that you can eat",
 		client = {
-			status = { hunger = 25 },
+			status = { hunger = 60 },
 			anim = { dict = 'mp_player_inteat@burger', clip = 'mp_player_int_eat_burger_fp' },
 			prop = {
 				model = 'pata_christmasfood6',
@@ -510,7 +510,7 @@ return {
 		close = true,
 		description = "Nice to eat",
 		client = {
-			status = { hunger = 25 },
+			status = { hunger = 60 },
 			anim = { dict = 'mp_player_inteat@burger', clip = 'mp_player_int_eat_burger_fp' },
 			prop = {
 				model = 'prop_sandwich_01',
@@ -619,7 +619,7 @@ return {
 		close = true,
 		description = "Nachos",
 		client = {
-			status = { hunger = 25 },
+			status = { hunger = 60 },
 			anim = { dict = 'mp_player_inteat@burger', clip = 'mp_player_int_eat_burger_fp' },
 			prop = {
 				model = 'prop_taco_02',
@@ -679,7 +679,7 @@ return {
 		close = true,
 		description = "A cupcake that you can eat",
 		client = {
-			status = { hunger = 25 },
+			status = { hunger = 60 },
 			anim = { dict = 'mp_player_inteat@burger', clip = 'mp_player_int_eat_burger_fp' },
 			prop = {
 				model = 'pata_christmasfood6',
@@ -1114,7 +1114,7 @@ return {
 		close = true,
 		description = "Yes, from the trees comes deez apples",
 		client = {
-			status = { hunger = 60, thirst = 60 },
+			status = { hunger = 30 },
 			anim = { dict = 'mp_player_inteat@burger', clip = 'mp_player_int_eat_burger_fp' },
 			prop = {
 				model = 'sf_prop_sf_apple_01a',
@@ -1135,7 +1135,7 @@ return {
 		close = true,
 		description = "b a n a n a n a n a n a",
 		client = {
-			status = { hunger = 60, thirst = 60 },
+			status = { hunger = 30 },
 			anim = { dict = 'mp_player_inteat@burger', clip = 'mp_player_int_eat_burger_fp' },
 			prop = {
 				model = 'v_res_tre_banana',
@@ -1155,7 +1155,7 @@ return {
 		close = true,
 		description = "Orange",
 		client = {
-			status = { hunger = 60, thirst = 60 },
+			status = { hunger = 30 },
 			anim = { dict = 'mp_player_inteat@burger', clip = 'mp_player_int_eat_burger_fp' },
 			prop = {
 				model = 'knjgh_orange',
@@ -1247,7 +1247,7 @@ return {
 		close = true,
 		description = "Mmmmm, refrence",
 		client = {
-			status = { hunger = 20 },
+			status = { hunger = 60 },
 			anim = { dict = 'mp_player_inteat@burger', clip = 'mp_player_int_eat_burger_fp' },
 			prop = {
 				model = 'bzzz_foodpack_donut002',
@@ -1268,7 +1268,7 @@ return {
 		close = true,
 		description = "Mmmmm, refrence",
 		client = {
-			status = { hunger = 20 },
+			status = { hunger = 60 },
 			anim = { dict = 'mp_player_inteat@burger', clip = 'mp_player_int_eat_burger_fp' },
 			prop = {
 				model = 'bzzz_foodpack_donut001',
@@ -5470,6 +5470,14 @@ return {
 		stack = true,
 		close = true,
 		description = "A security card... I wonder what it goes to",
+	},
+
+	["metro_ticket"] = {
+		label = "Metro Ticket",
+		weight = 1,
+		stack = true,
+		close = true,
+		description = "A ticket to ride the metro",
 	},
 
 	--- LEO: Tools
@@ -10639,40 +10647,59 @@ return {
 
 	["burger-mshake"] = {
 		label = "Milkshake",
-		weight = 125,
-		degrade = 60 * 12,
-		decay = true,
+		weight = 200,
 		stack = true,
 		close = true,
 		description = "Hand-scooped for you!",
 		client = {
 			image = "bs_milkshake.png",
+			status = { thirst = 30 },
+			anim = { dict = 'mp_player_intdrink', clip = 'loop_bottle' },
+			prop = { model = `brum_shake_strawberry`, pos = vec3(0.03, 0.03, 0.02), rot = vec3(0.0, 0.0, -1.5) },
+			usetime = 2500,
+			cancel = true,
 		}
 	},
 
 	["burger-moneyshot"] = {
 		label = "Moneyshot",
-		weight = 300,
+		weight = 350,
 		degrade = 60 * 12,
 		decay = true,
 		stack = true,
 		close = true,
-		description = "Sates Hunger.",
+		description = "Moneyshot Burger",
 		client = {
 			image = "bs_money-shot.png",
+			status = { hunger = 30 },
+			anim = { dict = 'mp_player_inteat@burger', clip = 'mp_player_int_eat_burger_fp' },
+			prop = {
+				model = 'prop_cs_burger_01',
+				pos = vec3(0.05, -0.02, -0.03),
+				rot = vec3(150.0, 340.0, 170.0)
+			},
+			usetime = 7500,
 		}
 	},
 
 	["burger-heartstopper"] = {
 		label = "Heartstopper",
-		weight = 2500,
+		weight = 350,
 		degrade = 60 * 12,
 		decay = true,
 		stack = true,
 		close = true,
-		description = "Sates Hunger.",
+		description = "Heartstopper Burger",
 		client = {
 			image = "bs_the-heart-stopper.png",
+			status = { hunger = 30 },
+			anim = { dict = 'mp_player_inteat@burger', clip = 'mp_player_int_eat_burger_fp' },
+			prop = {
+				model = 'prop_cs_burger_01',
+				pos = vec3(0.05, -0.02, -0.03),
+				rot = vec3(150.0, 340.0, 170.0)
+			},
+			usetime = 7500,
 		}
 	},
 
@@ -10691,14 +10718,22 @@ return {
 
 	["burger-fries"] = {
 		label = "Fries",
-		weight = 125,
+		weight = 350,
 		degrade = 60 * 12,
 		decay = true,
 		stack = true,
 		close = true,
-		description = "Sates Hunger.",
+		description = "Rib flavored chips, made with real wood chips",
 		client = {
 			image = "bs_fries.png",
+			status = { hunger = 25 },
+			anim = { dict = 'mp_player_intdrink', clip = 'loop_bottle' },
+			prop = {
+				model = 'prop_food_chips',
+				pos = vec3(-0.01, 0.0, -0.02),
+				rot = vec3(0.0, 0.0, -45.0)
+			},
+			usetime = 5000,
 		}
 	},
 
@@ -10717,40 +10752,59 @@ return {
 
 	["burger-meatfree"] = {
 		label = "MeatFree",
-		weight = 125,
+		weight = 350,
 		degrade = 60 * 12,
 		decay = true,
 		stack = true,
 		close = true,
-		description = "Sates Hunger.",
+		description = "Meatfree Burger",
 		client = {
 			image = "bs_meat-free.png",
+			status = { hunger = 30 },
+			anim = { dict = 'mp_player_inteat@burger', clip = 'mp_player_int_eat_burger_fp' },
+			prop = {
+				model = 'prop_cs_burger_01',
+				pos = vec3(0.05, -0.02, -0.03),
+				rot = vec3(150.0, 340.0, 170.0)
+			},
+			usetime = 7500,
 		}
 	},
 
 	["burger-softdrink"] = {
 		label = "Soft Drink",
-		weight = 125,
-		degrade = 60 * 12,
-		decay = true,
+		weight = 200,
 		stack = true,
 		close = true,
-		description = "An Ice Cold Drink.",
+		description = "Burgershot soft drink",
 		client = {
 			image = "bs_softdrink.png",
+			status = { thirst = 30 },
+			anim = { dict = 'mp_player_intdrink', clip = 'loop_bottle' },
+			prop = { model = `prop_cs_bs_cup`, pos = vec3(0.03, 0.03, 0.02), rot = vec3(0.0, 0.0, -1.5) },
+			usetime = 2500,
+			cancel = true,
 		}
 	},
 
 	["burger-bleeder"] = {
 		label = "Bleeder",
-		weight = 250,
+		weight = 350,
 		degrade = 60 * 12,
 		decay = true,
 		stack = true,
 		close = true,
-		description = "Sates Hunger.",
+		description = "Bleeder Burger",
 		client = {
 			image = "bs_the-bleeder.png",
+			status = { hunger = 30 },
+			anim = { dict = 'mp_player_inteat@burger', clip = 'mp_player_int_eat_burger_fp' },
+			prop = {
+				model = 'prop_cs_burger_01',
+				pos = vec3(0.05, -0.02, -0.03),
+				rot = vec3(150.0, 340.0, 170.0)
+			},
+			usetime = 7500,
 		}
 	},
 
@@ -10821,14 +10875,22 @@ return {
 
 	["burger-torpedo"] = {
 		label = "Torpedo",
-		weight = 310,
+		weight = 350,
 		degrade = 60 * 12,
 		decay = true,
 		stack = true,
 		close = true,
-		description = "Sates Hunger.",
+		description = "Torpedo Burger",
 		client = {
 			image = "bs_torpedo.png",
+			status = { hunger = 30 },
+			anim = { dict = 'mp_player_inteat@burger', clip = 'mp_player_int_eat_burger_fp' },
+			prop = {
+				model = 'prop_cs_burger_01',
+				pos = vec3(0.05, -0.02, -0.03),
+				rot = vec3(150.0, 340.0, 170.0)
+			},
+			usetime = 7500,
 		}
 	},
 
@@ -10854,7 +10916,7 @@ return {
 		close = true,
 		description = "A taco that you can eat",
 		client = {
-			status = { hunger = 25 },
+			status = { hunger = 60 },
 			anim = { dict = 'mp_player_inteat@burger', clip = 'mp_player_int_eat_burger_fp' },
 			prop = {
 				model = 'prop_taco_02',
@@ -10874,7 +10936,7 @@ return {
 		close = true,
 		description = "A taco that you can eat",
 		client = {
-			status = { hunger = 25 },
+			status = { hunger = 60 },
 			anim = { dict = 'mp_player_inteat@burger', clip = 'mp_player_int_eat_burger_fp' },
 			prop = {
 				model = 'prop_taco_01',
@@ -10920,7 +10982,7 @@ return {
 		close = true,
 		description = "Chicken Burrito",
 		client = {
-			status = { hunger = 25 },
+			status = { hunger = 60 },
 			anim = { dict = 'mp_player_inteat@burger', clip = 'mp_player_int_eat_burger_fp' },
 			prop = {
 				model = 'prop_taco_02',
