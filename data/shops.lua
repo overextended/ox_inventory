@@ -343,7 +343,8 @@ return {
 			{ name = 'duct_tape',            label = 'Duct Tape',            price = 0 },
 			{ name = 'performance_part',     label = 'Performance Parts',    price = 0 },
 			{ name = 'mechanic_tablet',      label = 'Mechanic Tablet',      price = 0 },
-
+			{ name = 'kq_winch',             label = 'Mechanic Tablet',      price = 0 },
+			{ name = 'kq_tow_rope',          label = 'Mechanic Tablet',      price = 0 },
 		},
 		locations = {
 			vec3(-319.3883, -131.5472, 38.9818),
