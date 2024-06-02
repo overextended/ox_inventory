@@ -1731,9 +1731,12 @@ return {
 		client = {
 			status = { thirst = 30 },
 			anim = { dict = 'mp_player_intdrink', clip = 'loop_bottle' },
-			prop = { model = `prop_ecola_can`, pos = vec3(0.01, 0.01, 0.06), rot = vec3(5.0, 5.0, -180.5) },
-			usetime = 2500,
-			notification = 'You quenched your thirst with cola'
+			prop = {
+				model = 'apa_prop_cs_plastic_cup_01',
+				pos = vec3(0.0, 0.0, 0.0),
+				rot = vec3(0.0, 0.0, 130.0)
+			},
+			usetime = 5000,
 		}
 	},
 
@@ -1749,7 +1752,7 @@ return {
 			status = { thirst = 30 },
 			anim = { dict = 'mp_player_intdrink', clip = 'loop_bottle' },
 			prop = {
-				model = 'prop_ld_can_01',
+				model = 'apa_prop_cs_plastic_cup_01',
 				pos = vec3(0.0, 0.0, 0.0),
 				rot = vec3(0.0, 0.0, 130.0)
 			},
