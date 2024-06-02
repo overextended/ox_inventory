@@ -263,6 +263,23 @@ return {
 		weight = 70000,
 	},
 	{
+		coords = vec3(184.17364, -244.2578, 52.918201),
+		target = {
+			loc = vec3(184.17364, -244.2578, 52.918201),
+			length = 1.2,
+			width = 5.6,
+			heading = 0,
+			minZ = 29.49,
+			maxZ = 32.09,
+			label = 'Open Storage Safe'
+		},
+		name = 'weedshop2',
+		label = 'Safe',
+		owner = false,
+		slots = 70,
+		weight = 70000,
+	},
+	{
 		coords = vec3(-288.2890, 234.1284, 78.8262),
 		target = {
 			loc = vec3(-288.2890, 234.1284, 78.8262),
