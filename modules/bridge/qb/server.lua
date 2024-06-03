@@ -266,7 +266,9 @@ export('qb-inventory.OpenInventory')
 export('qb-inventory.AddItem', function(source, item, amount, slot, info)
     return exports.ox_inventory:AddItem(source, item, amount, info, slot)
 end)
-export('qb-inventory.RemoveItem')
+export('qb-inventory.RemoveItem', function(source, item, amount, slot)
+    return exports.ox_inventory:RemoveItem(source, item, amount, nil, slot)
+end)
 
 export('qb-inventory.HasItem', function(source, items, amount)
     amount = amount or 1
