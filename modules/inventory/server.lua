@@ -2585,7 +2585,10 @@ lib.callback.register('ox_inventory:removeAmmoFromWeapon', function(source, slot
 end)
 
 local function checkStashProperties(properties)
-	local name, slots, maxWeight, coords in properties
+	local name = properties.name
+	local slots = properties.slots
+	local maxWeight = properties.maxWeight
+	local coords = properties.coords
 
 	if type(name) ~= 'string' then
 		error(('received %s for stash name (expected string)'):format(type(name)))
