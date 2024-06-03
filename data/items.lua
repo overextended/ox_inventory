@@ -12852,4 +12852,92 @@ return {
 			image = "blueprint.png",
 		}
 	},
+
+	["bed1"] = {
+		label = "Lounger 1",
+		weight = 1000,
+		stack = true,
+		close = true,
+		description = "Lounger",
+		client = {
+			image = "bed1.png",
+		}
+	},
+
+	["bed3"] = {
+		label = "Lounger 3",
+		weight = 1000,
+		stack = true,
+		close = true,
+		description = "Lounger",
+		client = {
+			image = "bed3.png",
+		}
+	},
+
+	["parasailing"] = {
+		label = "Parasailing",
+		weight = 1000,
+		stack = true,
+		close = true,
+		description = "Parasailing",
+		client = {
+			image = "parasailing.png",
+		}
+	},
+
+	["circle"] = {
+		label = "Circle",
+		weight = 1000,
+		stack = true,
+		close = true,
+		description = "Circle",
+		client = {
+			image = "circle.png",
+		}
+	},
+
+	["bed4"] = {
+		label = "Lounger 4",
+		weight = 1000,
+		stack = true,
+		close = true,
+		description = "Lounger",
+		client = {
+			image = "bed4.png",
+		}
+	},
+
+	["inflatable"] = {
+		label = "Inflatable",
+		weight = 1000,
+		stack = true,
+		close = true,
+		description = "Inflatable",
+		client = {
+			image = "inflatable.png",
+		}
+	},
+
+	["ski"] = {
+		label = "Ski",
+		weight = 1000,
+		stack = true,
+		close = true,
+		description = "Ski",
+		client = {
+			image = "ski.png",
+		}
+	},
+
+	["bed2"] = {
+		label = "Lounger 2",
+		weight = 1000,
+		stack = true,
+		close = true,
+		description = "Lounger",
+		client = {
+			image = "bed2.png",
+		}
+	},
 }
