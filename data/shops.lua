@@ -1815,6 +1815,28 @@ return {
 		}
 	},
 
+	WaterActivities = {
+		name = 'Water Activities',
+		inventory = {
+			{ name = 'bed1',        price = 60,  currency = 'money' },
+			{ name = 'bed2',        price = 60,  currency = 'money' },
+			{ name = 'bed3',        price = 60,  currency = 'money' },
+			{ name = 'bed4',        price = 60,  currency = 'money' },
+			{ name = 'circle',      price = 100, currency = 'money' },
+			{ name = 'parasailing', price = 200, currency = 'money' },
+			{ name = 'inflatable',  price = 100, currency = 'money' },
+			{ name = 'ski',         price = 100, currency = 'money' },
+		},
+		targets = {
+			{
+				ped = `a_m_y_jetski_01`,
+				scenario = 'WORLD_HUMAN_STAND_MOBILE',
+				loc = vec3(-1107.3740, -1695.0557, 3.3737),
+				heading = 302.7655,
+			}
+		}
+	},
+
 	--[[VendingMachineDrinks = {
 		name = 'Vending Machine',
 		inventory = {
