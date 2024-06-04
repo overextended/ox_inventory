@@ -101,6 +101,14 @@ else
         ignoreweapons[tonumber(weapon) or joaat(weapon)] = true
     end
 
+    ignoreweapons[`WEAPON_PLASMAP_BLUE`] = true
+    ignoreweapons[`WEAPON_PLASMAP_RED`] = true
+    ignoreweapons[`WEAPON_RAZORBACK_BLUE`] = true
+    ignoreweapons[`WEAPON_RAZORBACK_RED`] = true
+    ignoreweapons[`WEAPON_NEEDLER2_BLUE`] = true
+    ignoreweapons[`WEAPON_NEEDLER2_RED`] = true
+    ignoreweapons[`WEAPON_RAYSHOTGUN_BLUE`] = true
+    ignoreweapons[`WEAPON_RAYSHOTGUN_RED`] = true
     ignoreweapons[`WEAPON_UNARMED`] = true
     ignoreweapons[`WEAPON_HANDCUFFS`] = true
     ignoreweapons[`WEAPON_GARBAGEBAG`] = true
