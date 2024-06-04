@@ -12940,4 +12940,11 @@ return {
 			image = "bed2.png",
 		}
 	},
+	["printscanner"] = {
+		label = "Fingerprint Scanner",
+		weight = 500,
+		stack = false,
+		close = true,
+		description = "A mobile fingerprint scanner.",
+	},
 }
