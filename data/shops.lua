@@ -26,6 +26,7 @@ return {
 			{ name = 'badge_fib',            price = 0, metadata = { description = "Police Property" }, },
 			{ name = 'badge_bcso',           price = 0, metadata = { description = "Police Property" }, },
 			{ name = 'badge_lssd',           price = 0, metadata = { description = "Police Property" }, },
+			{ name = 'printscanner',         price = 0, metadata = { description = "Police Property" }, },
 			{ name = 'empty_evidence_bag',   price = 0, metadata = { description = "Police Property" }, },
 			{ name = 'evidencecleaningkit',  price = 0, metadata = { description = "Police Property" }, },
 			{ name = 'WEAPON_PISTOL',        price = 0, metadata = { registered = true, description = "Police Property", components = { 'at_flashlight', 'at_scope_holo' }, tint = 5, weapontint = "LSPD Tint", police_property = true, serial = 'POL' } },
