@@ -30,6 +30,7 @@ We do not guarantee compatibility or support for third-party resources.
 - Server-side security ensures interactions with items, shops, and stashes are all validated.
 - Logging for important events, such as purchases, item movement, and item creation or removal.
 - Supports player-owned vehicles, licenses, and group systems implemented by frameworks.
+- Fully synchronised, allowing multiple players to [access the same inventory](https://user-images.githubusercontent.com/65407488/230926091-c0033732-d293-48c9-9d62-6f6ae0a8a488.mp4).
 
 ### Items
 
@@ -50,7 +51,7 @@ We do not guarantee compatibility or support for third-party resources.
 - Personal stashes, linking a stash with a specific identifier or creating per-player instances.
 - Restricted access based on groups.
 - Registration of new stashes from any resource.
-- Containers allow access to small stashes when using an item, such as a paperbag.
+- Containers allow access to stashes when using an item, like a paperbag or backpack.
 - Access gloveboxes and trunks for any vehicle.
 - Random item generation inside dumpsters and unowned vehicles.
 
