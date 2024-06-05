@@ -1127,8 +1127,8 @@ return {
 			{
 				ped = `u_m_y_caleb`,
 				scenario = 'WORLD_HUMAN_STAND_MOBILE',
-				loc = vec3(-1126.2932, -1439.3589, 4.2283),
-				heading = 302.7450,
+				loc = vec3(-1228.0260, -1437.9606, 3.3346),
+				heading = 209.8163,
 			}
 		}
 	},
