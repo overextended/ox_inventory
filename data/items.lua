@@ -5691,7 +5691,7 @@ return {
 	['oxy'] = {
 		label = 'Oxy',
 		weight = 200,
-		stack = false,
+		stack = true,
 		close = true,
 		description = 'The Label Has Been Ripped Off',
 	},
