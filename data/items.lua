@@ -8654,6 +8654,9 @@ return {
 		stack = false,
 		close = true,
 		description = "An oxygen tank and a rebreather",
+		client = {
+			event = 'qbx_divegear:client:useGear'
+		}
 	},
 
 	["antipatharia_coral"] = {
