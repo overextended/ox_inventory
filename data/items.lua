@@ -12947,4 +12947,9 @@ return {
 		close = true,
 		description = "A mobile fingerprint scanner.",
 	},
+	["poster"] = { 
+		label = "Poster", 
+		weight = 360, 
+		description = 'Blank poster for you to put your artwork on' 
+	},
 }
