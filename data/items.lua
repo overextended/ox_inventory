@@ -8674,8 +8674,8 @@ return {
 
 	["diving_fill"] = {
 		label = "Diving Tube",
-		weight = 3000,
-		stack = false,
+		weight = 300,
+		stack = true,
 		close = true,
 	},
 
@@ -12947,9 +12947,9 @@ return {
 		close = true,
 		description = "A mobile fingerprint scanner.",
 	},
-	["poster"] = { 
-		label = "Poster", 
-		weight = 360, 
-		description = 'Blank poster for you to put your artwork on' 
+	["poster"] = {
+		label = "Poster",
+		weight = 360,
+		description = 'Blank poster for you to put your artwork on'
 	},
 }
