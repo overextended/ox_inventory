@@ -12967,4 +12967,19 @@ return {
 		weight = 360,
 		description = 'Blank poster for you to put your artwork on'
 	},
+	["sportsjersey"] = {
+		label = "Signed Sports Jersey",
+		weight = 360,
+		description = 'Signed jersey from Hall Of Fame sports player.'
+	},
+	["diamondwatch"] = {
+		label = "Iced Out Watch",
+		weight = 360,
+		description = 'This hurts my eyes.'
+	},
+	["mixingboard"] = {
+		label = "Mixing Board",
+		weight = 360,
+		description = 'Pricey Mixer.'
+	},
 }
