@@ -8699,6 +8699,9 @@ return {
 		weight = 1500,
 		consume = 0,
 		description = "I can hold my breath longer than you can",
+		client = {
+			event = 'qbx_divegear:client:useGear'
+		}
 	},
 
 
