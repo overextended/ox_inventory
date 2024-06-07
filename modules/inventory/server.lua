@@ -432,6 +432,10 @@ function Inventory.SlotWeight(item, slot, ignoreCount)
 		end
 	end
 
+    if item.hash == `WEAPON_PETROLCAN` then
+        weight += 15000 * (slot.metadata.ammo / 100)
+    end
+
 	if slot.metadata.components then
 		for i = #slot.metadata.components, 1, -1 do
 			local componentWeight = Items(slot.metadata.components[i])?.weight
@@ -2536,6 +2540,10 @@ local function updateWeapon(source, action, value, slot, specialAmmo)
 
             if (weapon.metadata.durability or 0) < 0 then
                 weapon.metadata.durability = 0
+            end
+
+            if item.hash == `WEAPON_PETROLCAN` then
+                weapon.weight = Inventory.SlotWeight(item, weapon)
             end
 
 			if action ~= 'throw' then
