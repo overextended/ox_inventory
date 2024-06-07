@@ -10561,9 +10561,11 @@ return {
 		weight = 75,
 		stack = true,
 		close = true,
+		consume = 0,
 		description = "Set them free !",
 		client = {
-			export = 'qb-policejob.handcuffs'
+			export = 'qb-policejob.cuffkeys',
+			disable = { move = false, car = false, combat = false },
 		}
 	},
 
