@@ -5496,6 +5496,7 @@ return {
 		label = 'Steel Handcuffs',
 		weight = 2000,
 		stack = true,
+		consume = 0,
 		description = "A pair of handcuffs.",
 		client = {
 			export = 'qb-policejob.handcuffs'
@@ -5694,7 +5695,7 @@ return {
 	['oxy'] = {
 		label = 'Oxy',
 		weight = 200,
-		stack = false,
+		stack = true,
 		close = true,
 		description = 'The Label Has Been Ripped Off',
 	},
@@ -8653,10 +8654,13 @@ return {
 
 	["diving_gear"] = {
 		label = "Diving Gear",
-		weight = 30000,
-		stack = false,
+		weight = 300,
+		stack = true,
 		close = true,
 		description = "An oxygen tank and a rebreather",
+		client = {
+			event = 'qbx_divegear:client:useGear'
+		}
 	},
 
 	["antipatharia_coral"] = {
@@ -8677,8 +8681,8 @@ return {
 
 	["diving_fill"] = {
 		label = "Diving Tube",
-		weight = 3000,
-		stack = false,
+		weight = 300,
+		stack = true,
 		close = true,
 	},
 
@@ -12952,5 +12956,10 @@ return {
 		stack = false,
 		close = true,
 		description = "A mobile fingerprint scanner.",
+	},
+	["poster"] = {
+		label = "Poster",
+		weight = 360,
+		description = 'Blank poster for you to put your artwork on'
 	},
 }
