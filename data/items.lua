@@ -132,8 +132,6 @@ return {
 	["bakingsoda"] = {
 		label = "Baking Soda",
 		weight = 1,
-		degrade = 60 * 12,
-		decay = true,
 		stack = true,
 		close = false,
 		description = "Household Baking Soda!",
