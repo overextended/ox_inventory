@@ -1711,7 +1711,7 @@ return {
 		stack = true,
 		close = true,
 		client = {
-			status = { thirst = 30 },
+			status = { thirst = 60 },
 			anim = { dict = 'mp_player_intdrink', clip = 'loop_bottle' },
 			prop = { model = `prop_ecola_can`, pos = vec3(0.01, 0.01, 0.06), rot = vec3(5.0, 5.0, -180.5) },
 			usetime = 2500,
@@ -1747,7 +1747,7 @@ return {
 		close = true,
 		description = "Quinch your thirst with a sprunk",
 		client = {
-			status = { thirst = 30 },
+			status = { thirst = 60 },
 			anim = { dict = 'mp_player_intdrink', clip = 'loop_bottle' },
 			prop = {
 				model = 'apa_prop_cs_plastic_cup_01',
