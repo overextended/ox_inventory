@@ -795,12 +795,22 @@ return {
 
 	['sandwich'] = { -- A simple sandwich for a simple day
 		label = 'Sandwich',
-		weight = 20,
+		weight = 350,
 		degrade = 60 * 12,
 		decay = true,
 		stack = true,
 		close = true,
 		description = "A simple sandwich for a simple day",
+		client = {
+			status = { hunger = 20 },
+			anim = { dict = 'mp_player_inteat@burger', clip = 'mp_player_int_eat_burger_fp' },
+			prop = {
+				model = 'prop_sandwich_01',
+				pos = vec3(0.05, -0.02, -0.03),
+				rot = vec3(150.0, 340.0, 170.0)
+			},
+			usetime = 7500,
+		}
 	},
 
 	['burger_chs'] = { -- A test hamburger that you can eat
