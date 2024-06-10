@@ -535,6 +535,7 @@ return {
 			{ name = 'mdwoods',               price = 0, currency = 'money' },
 			{ name = 'empty_weed_bag',        price = 0, currency = 'money' },
 			{ name = 'weedscissors',          price = 0, currency = 'money' },
+			{ name = 'weed_license',          price = 0, currency = 'money' },
 		},
 		locations = {
 			vec3(185.17, -242.75, 54.12)
