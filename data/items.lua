@@ -9899,7 +9899,7 @@ return {
 
 	["fishinglicense"] = {
 		label = "Fishing License",
-		weight = 0,
+		weight = 1,
 		stack = false,
 		close = false,
 		description = "Permit to show you can fish",
@@ -9907,10 +9907,18 @@ return {
 
 	["weapon_license"] = {
 		label = "Weapon License",
-		weight = 0,
+		weight = 1,
 		stack = false,
 		close = false,
 		description = "Permit to show you can carry a firearm.",
+	},
+
+	["weed_license"] = {
+		label = "Weed License",
+		weight = 1,
+		stack = false,
+		close = false,
+		description = "Permit to grow up to 40 plants at a time legally.",
 	},
 
 	["metalscrap"] = {
