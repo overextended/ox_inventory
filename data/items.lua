@@ -4358,6 +4358,14 @@ return {
 		description = ''
 	},
 
+	['golden_dongle'] = {
+		label = 'Racing Dongle',
+		weight = 1,
+		stack = false,
+		close = true,
+		description = 'Golden Racing Dongle',
+	},
+
 	['vpn'] = {
 		label = 'VPN',
 		weight = 1,
