@@ -12291,7 +12291,7 @@ return {
 		close = true,
 		description = "A chocolate bar that you can eat",
 		client = {
-			status = { hunger = 10 },
+			status = { hunger = 20 },
 			anim = { dict = 'mp_player_inteat@burger', clip = 'mp_player_int_eat_burger_fp' },
 			prop = {
 				model = 'mxc_vend_prop_item_candybar1',
