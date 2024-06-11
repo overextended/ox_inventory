@@ -255,17 +255,34 @@ export('qb-inventory.GetTotalWeight')
 export('qb-inventory.GetMaxWeight', function()
     return GetConvarInt('inventory:weight', 30000)
 end)
-export('qb-inventory.GetItemByName')
-export('qb-inventory.GetItemsByName')
+export('qb-inventory.GetItemByName', function(source, name, metadata, returnCount)
+    return Inventory.GetItem(source, name, metadata, returnCount)
+end)
+
+export('qb-inventory.GetItemsByName', function(source, items)
+    if not type(items) == 'table' then return false end
+
+    local itemsObj = {}
+    for i, v in pairs(items) do
+        if not Inventory.GetItem(source, v.name, v.metadata or nil, v.returnCount or false) then return false end
+        table.insert(itemsObj, Inventory.GetItem(source, v.name, v.metadata or nil, v.returnCount or false))
+    end
+    return itemsObj
+end)
+
 export('qb-inventory.GetSlots')
-export('qb-inventory.GetItemCount')
+export('qb-inventory.GetItemCount', function(inv, itemName, metadata, strict)
+    return Inventory.GetItemCount(inv, itemName, metadata, strict)
+end)
 export('qb-inventory.CanAddItem', function(source, itemName, count, metadata)
     return Inventory.CanCarryItem(source, itemName, count, metadata)
 end)
 export('qb-inventory.ClearInventory', function(source, keep)
     return Inventory.Clear(source, keep)
 end)
-export('qb-inventory.CloseInventory')
+export('qb-inventory.CloseInventory', function(source, ignoreId)
+    return Inventory.CloseAll(source, ignoreId)
+end)
 export('qb-inventory.OpenInventoryById')
 export('qb-inventory.CreateShop')
 export('qb-inventory.OpenShop')
