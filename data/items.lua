@@ -10602,6 +10602,11 @@ return {
 		stack = true,
 		close = true,
 		description = "Comes in handy when you want to cut zipties..",
+		client = {
+			export = 'qb-policejob.cuffkeys',
+			disable = { move = false, car = false, combat = false },
+		}
+
 	},
 
 	["broken_handcuffs"] = {
@@ -10638,6 +10643,9 @@ return {
 		stack = true,
 		close = true,
 		description = "Comes in handy when people misbehave. Maybe it can be used for something else?",
+		client = {
+			export = 'qb-policejob.handcuffs'
+		}
 	},
 
 	["evidencecleaningkit"] = {
@@ -10661,6 +10669,9 @@ return {
 		stack = true,
 		close = true,
 		description = "Wanna cut some metal items ?",
+		client = {
+			export = 'qb-policejob.cuffkeys'
+		}
 	},
 
 	["c4_bomb"] = {
