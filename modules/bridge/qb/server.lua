@@ -7,9 +7,7 @@ AddEventHandler('QBCore:Server:OnPlayerUnload', server.playerDropped)
 
 AddEventHandler('QBCore:Server:OnJobUpdate', function(source, job)
     local inventory = Inventory(source)
-    if not inventory then
-        return
-    end
+    if not inventory then return end
     inventory.player.groups[inventory.player.job] = nil
     inventory.player.job = job.name
     inventory.player.groups[job.name] = job.grade.level
@@ -17,27 +15,21 @@ end)
 
 AddEventHandler('QBCore:Server:OnGangUpdate', function(source, gang)
     local inventory = Inventory(source)
-    if not inventory then
-        return
-    end
+    if not inventory then return end
     inventory.player.groups[inventory.player.gang] = nil
     inventory.player.gang = gang.name
     inventory.player.groups[gang.name] = gang.grade.level
 end)
 
 AddEventHandler('onResourceStart', function(resource)
-    if resource ~= 'qb-weapons' or resource ~= 'qb-shops' then
-        return
-    end
+    if resource ~= 'qb-weapons' or resource ~= 'qb-shops' then return end
     StopResource(resource)
 end)
 
 ---@param item SlotWithItem?
 ---@return SlotWithItem?
 local function setItemCompatibilityProps(item)
-    if not item then
-        return
-    end
+    if not item then return end
 
     item.info = item.metadata
     item.amount = item.count
@@ -101,9 +93,7 @@ SetTimeout(500, function()
         StopResource('qb-shops')
     end
 
-    for _, Player in pairs(QBCore.Functions.GetQBPlayers()) do
-        setupPlayer(Player)
-    end
+    for _, Player in pairs(QBCore.Functions.GetQBPlayers()) do setupPlayer(Player) end
 end)
 
 function server.UseItem(source, itemName, data)
@@ -112,19 +102,15 @@ function server.UseItem(source, itemName, data)
 end
 
 AddEventHandler('QBCore:Server:OnMoneyChange', function(src, account, amount, changeType)
-    if account ~= "cash" then
-        return
-    end
+    if account ~= "cash" then return end
 
     local item = Inventory.GetItem(src, 'money', nil, false)
 
-    if not item then
-        return
-    end
+    if not item then return end
 
     Inventory.SetItem(src, 'money',
         changeType == "set" and amount or changeType == "remove" and item.count - amount or
-            changeType == "add" and item.count + amount)
+        changeType == "add" and item.count + amount)
 end)
 
 ---@diagnostic disable-next-line: duplicate-set-field
@@ -168,9 +154,7 @@ end
 ---@diagnostic disable-next-line: duplicate-set-field
 function server.buyLicense(inv, license)
     local player = server.GetPlayerFromId(inv.id)
-    if not player then
-        return
-    end
+    if not player then return end
 
     if player.PlayerData.metadata.licences[license.name] then
         return false, 'already_have'
@@ -220,21 +204,22 @@ function server.convertInventory(playerId, items)
             local item = Items(data.name)
 
             if item?.name then
-        local metadata, count = Items.Metadata(playerId, item, data.info, data.amount or data.count or 1)
-            local weight = Inventory.SlotWeight(item, { count = count, metadata = metadata })
-        totalWeight + = weight
-        slot + = 1
-        returnData[slot] = {
-        name = item.name,
-        label = item.label,
-        weight = weight,
-        slot = slot,
-        count = count,
-        description = item.description,
-        metadata = metadata,
-        stack = item.stack,
-        close = item.close
-        }
+                local metadata, count = Items.Metadata(playerId, item, data.info, data.amount or data.count or 1)
+                local weight = Inventory.SlotWeight(item, { count = count, metadata = metadata })
+                totalWeight += weight
+                slot += 1
+                returnData[slot] = {
+                    name = item.name,
+                    label = item.label,
+                    weight = weight,
+                    slot = slot,
+                    count = count,
+                    description =
+                        item.description,
+                    metadata = metadata,
+                    stack = item.stack,
+                    close = item.close
+                }
             end
         end
 
