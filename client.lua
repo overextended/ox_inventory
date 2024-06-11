@@ -757,6 +757,8 @@ local function registerCommands()
 				return client.closeInventory()
 			end
 
+			if IsNuiFocused() then return end -- txAdmin default hotkey support
+
 			if cache.vehicle then
 				return openGlovebox(cache.vehicle)
 			end
