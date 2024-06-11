@@ -255,6 +255,7 @@ export('qb-inventory.GetTotalWeight')
 export('qb-inventory.GetMaxWeight', function()
     return GetConvarInt('inventory:weight', 30000)
 end)
+
 export('qb-inventory.GetItemByName', function(source, name, metadata, returnCount)
     return Inventory.GetItem(source, name, metadata, returnCount)
 end)
@@ -271,18 +272,23 @@ export('qb-inventory.GetItemsByName', function(source, items)
 end)
 
 export('qb-inventory.GetSlots')
+
 export('qb-inventory.GetItemCount', function(inv, itemName, metadata, strict)
     return Inventory.GetItemCount(inv, itemName, metadata, strict)
 end)
+
 export('qb-inventory.CanAddItem', function(source, itemName, count, metadata)
     return Inventory.CanCarryItem(source, itemName, count, metadata)
 end)
+
 export('qb-inventory.ClearInventory', function(source, keep)
     return Inventory.Clear(source, keep)
 end)
+
 export('qb-inventory.CloseInventory', function(source, ignoreId)
     return Inventory.CloseAll(source, ignoreId)
 end)
+
 export('qb-inventory.OpenInventoryById')
 export('qb-inventory.CreateShop')
 export('qb-inventory.OpenShop')
