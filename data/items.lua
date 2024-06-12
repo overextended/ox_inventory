@@ -6050,7 +6050,7 @@ return {
 		weight = 10,
 		stack = true,
 		close = true,
-		description = "Sour Diesel Joint",
+		description = "2 Gram Sour Diesel Joint",
 	},
 
 	["cupoflean"] = {
@@ -6355,7 +6355,7 @@ return {
 		weight = 10,
 		stack = true,
 		close = true,
-		description = "Pineapple Express Joint",
+		description = "2 Gram Pineapple Express Joint",
 	},
 
 	["xtcburner"] = {
@@ -6691,7 +6691,7 @@ return {
 		weight = 10,
 		stack = true,
 		close = true,
-		description = "Northern Lights Joint",
+		description = "2 Gram Northern Lights Joint",
 	},
 
 	["cokestagetwo"] = {
@@ -6900,6 +6900,7 @@ return {
 	['driedweed'] = {
 		label = 'Dry Bud',
 		weight = 50,
+		description = "70 Grams Of Dry Weed",
 		buttons = {
 			{
 				label = 'Make into a brick',
@@ -6930,7 +6931,8 @@ return {
 
 	['weedbrick'] = {
 		label = 'Weed Brick',
-		weight = 0,
+		description = '500 Gram Weed Brick',
+		weight = 5,
 	},
 
 	['emptybag'] = {
@@ -6940,7 +6942,7 @@ return {
 
 	['fullbag'] = {
 		label = 'Bag of Weed',
-		description = 'A 3 oz bag of weed',
+		description = '5 Gram Bag Of Weed',
 		weight = 55,
 	},
 
@@ -7063,7 +7065,7 @@ return {
 		weight = 100,
 		stack = true,
 		close = true,
-		description = "",
+		description = "70 Grams Of Wet Weed",
 	},
 
 	["sour_diesel_wet"] = {
@@ -7159,7 +7161,7 @@ return {
 		weight = 10,
 		stack = true,
 		close = true,
-		description = "Golden Goat Joint",
+		description = "2 Gram Golden Goat Joint",
 	},
 
 	["orange_pl4"] = {
@@ -7415,7 +7417,7 @@ return {
 		weight = 10,
 		stack = true,
 		close = true,
-		description = "Strawberry Kush Joint",
+		description = "2 Gram Strawberry Kush Joint",
 	},
 
 	["blue_dream_joint"] = {
@@ -7423,7 +7425,7 @@ return {
 		weight = 10,
 		stack = true,
 		close = true,
-		description = "Blue Dream Joint",
+		description = "2 Gram Blue Dream Joint",
 	},
 
 	["red_aliens2"] = {
@@ -7708,10 +7710,10 @@ return {
 
 	["joint"] = {
 		label = "Joint",
-		weight = 0,
+		weight = 2,
 		stack = true,
 		close = true,
-		description = "Sidney would be very proud of you",
+		description = "2 Gram Joint",
 	},
 
 	["bartsheet"] = {
