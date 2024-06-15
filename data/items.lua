@@ -8460,11 +8460,11 @@ return {
 	},
 
 	['meth_table'] = {
-		label = 'Table',
+		label = 'Meth Table',
 		weight = 1,
 		stack = false,
 		close = true,
-		description = 'A Table'
+		description = 'Meth Table'
 	},
 	['lab_key'] = {
 		label = 'Key',

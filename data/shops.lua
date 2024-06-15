@@ -1307,6 +1307,13 @@ return {
 		},
 	},
 
+	ingredients = {
+		name = 'Ingredients',
+		inventory = {
+			{ name = 'black_usb',           price = 0 },
+		},
+	},
+
 	burgershot2 = {
 		name = 'Burgershot Menu',
 		inventory = {
