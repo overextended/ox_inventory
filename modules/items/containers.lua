@@ -54,7 +54,7 @@ end
 setContainerProperties('wallet', {
 	slots = 12,
 	maxWeight = 3000,
-	whitelist = { 'id_card','driver_license', 'drive_a', 'drive_b', 'drive_c', 'weaponlicense', 'fishinglicense', 'huntinglicense', 'lawyerpass','bank_card','security_card_01','security_card_02','money','scard_fleeca','casino_member','casino_vip', 'gym_membership' }
+	whitelist = { 'id_card','driver_license', 'drive_a', 'drive_b', 'drive_c', 'weaponlicense', 'fishinglicense', 'huntinglicense', 'lawyerpass','bank_card','security_card_01','security_card_02','money','scard_fleeca','casino_member','casino_vip', 'gym_membership', 'weed_license' }
 })
 
 setContainerProperties('briefcase', {

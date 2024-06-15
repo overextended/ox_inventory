@@ -6878,6 +6878,22 @@ return {
 		description = "Labkey A",
 	},
 
+	["keyb"] = {
+		label = "Labkey B",
+		weight = 100,
+		stack = true,
+		close = false,
+		description = "Labkey B",
+	},
+
+	["keyc"] = {
+		label = "Labkey C",
+		weight = 100,
+		stack = true,
+		close = false,
+		description = "Labkey C",
+	},
+
 
 	['female_seed'] = {
 		label = 'Female Seed',
