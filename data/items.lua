@@ -5469,7 +5469,7 @@ return {
 
 	["id_card"] = {
 		label = "ID Card",
-		weight = 0,
+		weight = 1,
 		stack = false,
 		close = false,
 		description = "A card containing all your information to identify yourself",
@@ -5477,7 +5477,7 @@ return {
 
 	["security_card_01"] = {
 		label = "Security Card A",
-		weight = 0,
+		weight = 1,
 		stack = true,
 		close = true,
 		description = "A security card... I wonder what it goes to",
@@ -5485,7 +5485,7 @@ return {
 
 	["security_card_02"] = {
 		label = "Security Card B",
-		weight = 0,
+		weight = 1,
 		stack = true,
 		close = true,
 		description = "A security card... I wonder what it goes to",
@@ -5497,6 +5497,14 @@ return {
 		stack = true,
 		close = true,
 		description = "A ticket to ride the metro",
+	},
+
+	["specialbadge"] = {
+		label = "Official Police Badge",
+		weight = 1,
+		stack = false,
+		close = false,
+		description = "Official Police Badge",
 	},
 
 	--- LEO: Tools
