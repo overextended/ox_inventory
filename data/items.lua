@@ -5594,6 +5594,14 @@ return {
 		description = "Very useful to screw... screws...",
 	},
 
+	["weaponrepairkit"] = {
+		label = "Weapon Repair Kit",
+		weight = 1000,
+		stack = true,
+		close = false,
+		description = "Very useful to repair a weapon..",
+	},
+
 	['lockpick'] = {
 		label = 'Lockpick',
 		weight = 160,
