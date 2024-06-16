@@ -8665,8 +8665,8 @@ return {
 	['scard_fleeca'] = {
 		label = 'Fleeca Security Card',
 		weight = 350,
-		stack = false,
-		description = "Held by Fleeca Bank Managers",
+		stack = true,
+		description = "Used at the terminal by Fleeca Bank Managers",
 	},
 
 	-- INSTRUMENTS: rock club update (IN PROGRESS)
