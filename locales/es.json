@@ -87,5 +87,6 @@
   "crafting_item": "Creando %s",
   "crafting_bench": "Banco de trabajo",
   "open_crafting_bench": "Abrir banco de trabajo",
-  "not_enough_durability": "%s no tiene suficiente durabilidad"
+  "not_enough_durability": "%s no tiene suficiente durabilidad",
+  "storage": "Maletero",
 }
