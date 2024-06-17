@@ -1,17 +1,21 @@
-$mainColor: #22232c;
+$mainColor: #16161aef;
 $textColor: #c1c2c5;
 $mainFont: Roboto;
 
-$secondaryColor: rgba(12, 12, 12, 0.4);
-$secondaryColorHighlight: #33343F;
-$secondaryColorLight: rgba(0, 0, 0, 0.5);
-$secondaryColorDark: rgba(12, 12, 12, 0.8);
+$secondaryColor: #22232c; /* durple #7 */
+$secondaryColorHighlight: #33343f; /* durple #3 */
+$secondaryColorLight: rgba(0, 0, 0, 0.5); /* isnt even used? */
+$secondaryColorDark: #33343f; /* durple #3 */
 
-$gridCols: 5;
-$gridRows: 5;
-$gridSize: 10.2vh;
-$gridGap: 2px;
-$containerSize: calc(#{$gridRows} * #{$gridSize + 0.22vh} + #{$gridRows} * #{$gridGap});
+$backgroundColor: #0c0c1100; /* durple #8 */
+
+$gridColsL: 5;
+$gridRowsL: 5;
+$gridColsR: 4;
+$gridRowsR: 5;
+$gridSize: 10.12vh;
+$gridGap: 0.4rem;
+$containerSize: calc(#{$gridRowsL} * #{$gridSize + 0.22vh} + #{$gridRowsL} * #{$gridGap});
 
 body {
   margin: 0;
@@ -23,10 +27,12 @@ body {
   background: none !important;
   overflow: hidden !important;
   user-select: none;
+  
 }
 
 #root {
   height: 100%;
+  
 }
 
 code {
@@ -54,28 +60,26 @@ input[type='number']::-webkit-outer-spin-button {
   height: 100%;
   width: 100%;
   color: white;
+  
 }
 
 .context-menu-list {
-  min-width: 200px;
-  background-color: $mainColor;
+  min-width: 100px;
   color: $textColor;
   padding: 4px;
-  border-color: rgba(0, 0, 0, 0.2);
-  border-style: inset;
-  border-width: 1px;
-  border-radius: 4px;
+  gap: 4px;
   outline: none;
   display: flex;
   flex-direction: column;
 }
 
-.context-menu-item  {
-  padding: 8px;
-  border-radius: 4px;
-  background-color: transparent;
+.context-menu-item {
+  padding: 9px;
+  border-radius: calc(0.092592592vh * 0);
+  background: rgb(32, 32, 32);
+  border: 1px solid rgba(55, 55, 55, 1);
+  box-shadow: 0 0 1vh rgba(0, 0, 0, 0.3);
   outline: none;
-  border: none;
   color: $textColor;
   display: flex;
   justify-content: space-between;
@@ -84,7 +88,9 @@ input[type='number']::-webkit-outer-spin-button {
     transform: none;
   }
   &:hover {
-    background-color: $secondaryColorHighlight;
+    background:rgba(36, 135, 38, 0.22);
+    border: calc(0.092592592vh * 1.4) solid rgba(255, 255, 255, 0.15);
+    border-radius: calc(0.092592592vh * 0);
     cursor: pointer;
   }
 }
@@ -121,8 +127,19 @@ button:active {
   justify-content: center;
   align-items: center;
   height: 100%;
+  background: rgba(12, 14, 18, 0.726);
+}
 
-  gap: 20px;
+.inventory-wrapper-container {
+  background-color: $backgroundColor;
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: start;
+  gap: 10px;
+  padding: 10px;
+  border-radius: 10px;
+  margin-bottom: 8rem;
 }
 
 .inventory-control {
@@ -131,41 +148,79 @@ button:active {
   .inventory-control-wrapper {
     display: flex;
     flex-direction: column;
-    gap: 20px;
+    gap: 10px;
+    padding-top: 10.5rem;
     justify-content: center;
     align-items: center;
   }
 
   .inventory-control-input {
     transition: 200ms;
-    padding: 16px 8px;
-    border-radius: 2.5%;
+    padding: 11px 8px;
+    width: 5rem;
     font-family: $mainFont;
     font-size: 16px;
     text-align: center;
     outline: none;
-    border: none;
     color: #fff;
-    background-color: $secondaryColor;
+    background: rgba(170, 170, 170, 0.22);
+    -webkit-box-shadow: inset 0px 0px 25px 0px #000000;
+    -moz-box-shadow: inset 0px 0px 25px 0px #000000;
+    box-shadow: inset 0px 0px 30px 0px #000000;
+    border: calc(0.092592592vh * 1.4) solid rgba(255, 255, 255, 0.15);
+    border-radius: calc(0.092592592vh * 0);
+    animation: zoomOutAndShake 0.7s cubic-bezier(0.250, 0.460, 0.450, 0.940) both;
+
     &:focus-within {
-      background-color: $secondaryColorDark;
+      background: rgba(36, 135, 38, 0.22);
+      border: calc(0.092592592vh * 1.4) solid rgba(36, 135, 38, 0.22);
     }
   }
 
   .inventory-control-button {
     font-size: 14px;
     color: #fff;
-    background-color: $secondaryColor;
+    background: rgba(170, 170, 170, 0.22);
+    -webkit-box-shadow: inset 0px 0px 25px 0px #000000;
+    -moz-box-shadow: inset 0px 0px 25px 0px #000000;
+    box-shadow: inset 0px 0px 30px 0px #000000;
+    border: calc(0.092592592vh * 1.4) solid rgba(255, 255, 255, 0.15);
+    border-radius: calc(0.092592592vh * 0);
     transition: 200ms;
-    padding: 12px 8px;
-    border-radius: 2.5%;
-    border: none;
+    padding: 12px 25px;
     text-transform: uppercase;
     font-family: $mainFont;
     width: 100%;
     font-weight: 500;
+    animation: zoomOutAndShake 0.7s cubic-bezier(0.250, 0.460, 0.450, 0.940) both;
+    position: relative; /* Ensure the shine effect is positioned correctly */
+    overflow: hidden; /* Ensure the shine effect doesn't overflow the button */
+
     &:hover {
-      background-color: $secondaryColorDark;
+      background: rgba(36, 135, 38, 0.22);
+      -webkit-box-shadow: inset 0px 0px 25px 0px #000000;
+      -moz-box-shadow: inset 0px 0px 25px 0px #000000;
+      box-shadow: inset 0px 0px 30px 0px #000000;
+      border: calc(0.092592592vh * 1.4) solid rgba(255, 255, 255, 0.15);
+      border-radius: calc(0.092592592vh * 0);
+    }
+
+    &:hover::before {
+      animation: shine 3s linear infinite;
+      opacity: 1; /* Show on hover */
+    }
+
+    &::before {
+      content: '';
+      position: absolute;
+      top: -100%;
+      left: -150%;
+      width: 300%;
+      height: 300%;
+      background: linear-gradient(135deg, transparent 48%, rgba(170, 170, 170, 0.8) 50%, transparent 52%);
+      transform: rotate(90deg);
+      pointer-events: none; /* Ensure the shine effect doesn't interfere with button clicks */
+      opacity: 0; /* Initially hidden */
     }
   }
 }
@@ -207,7 +262,19 @@ button:active {
   border-radius: 4px;
   fill: $textColor;
   &:hover {
-    background-color: $secondaryColorHighlight;
+    background:rgba(36, 135, 38, 0.22);
+    -webkit-box-shadow: inset 0px 0px 25px 0px #000000;
+    -moz-box-shadow: inset 0px 0px 25px 0px #000000;
+    box-shadow:  inset 0px 0px 30px 0px #000000;
+    border: calc(0.092592592vh * 1.4) solid rgba(255, 255, 255, 0.15);
+    border-radius: calc(0.092592592vh * 0);
+    background-repeat: no-repeat;
+    background-position: center;
+    border-radius: 0.5rem;
+    image-rendering: -webkit-optimize-contrast;
+    position: relative;
+    background-size: 5.5vh;
+    color: $textColor;
     cursor: pointer;
   }
 }
@@ -225,22 +292,22 @@ button:active {
 }
 
 .useful-controls-button {
-  position: absolute !important;
-  bottom: 25px;
-  right: 25px;
   transition: 200ms !important;
   border: none;
   color: white;
-  width: 52px;
-  height: 52px;
+  padding: 7px 8px;
+  width: 100%;
   display: flex;
   justify-content: center;
   align-items: center;
   fill: white;
-  border-radius: 5% !important;
-  background-color: $secondaryColor !important;
+  background:rgba(36, 135, 38, 0.22);
+  border: calc(0.092592592vh * 1.4) solid rgba(255, 255, 255, 0.15);
+  border-radius: calc(0.092592592vh * 0);
   &:hover {
-    background-color: $secondaryColorDark !important;
+    box-shadow: 0.0rem 0.0rem 20px 5px #31d4a9 inset !important;
+    border: calc(0.092592592vh * 1.4) solid rgba(36, 135, 38, 0.22);
+    border-radius: calc(0.092592592vh * 0);
     cursor: pointer;
   }
 }
@@ -255,12 +322,13 @@ button:active {
 
 // Dialog is used fro useful controls window
 
-
 // inventory grids
 .inventory-grid-wrapper {
   display: flex;
   flex-direction: column;
   gap: calc($gridGap * 2);
+  padding: 0.625rem;
+  border-radius: 0.5rem;
 }
 .inventory-grid-header-wrapper {
   display: flex;
@@ -268,13 +336,23 @@ button:active {
   justify-content: space-between;
   p {
     font-size: 16px;
+    padding-bottom: 5px;
   }
 }
 
-.inventory-grid-container {
+.inventory-grid-container-left {
   display: grid;
   height: $containerSize;
-  grid-template-columns: repeat($gridCols, $gridSize);
+  grid-template-columns: repeat($gridColsL, $gridSize);
+  grid-auto-rows: $gridSize + 0.22vh;
+  gap: $gridGap;
+  overflow-y: scroll;
+}
+
+.inventory-grid-container-right {
+  display: grid;
+  height: $containerSize;
+  grid-template-columns: repeat($gridColsR, $gridSize);
   grid-auto-rows: $gridSize + 0.22vh;
   gap: $gridGap;
   overflow-y: scroll;
@@ -282,28 +360,90 @@ button:active {
 
 // inventory slots
 .inventory-slot {
-  background-color: $secondaryColor;
+  background: rgba(170, 170, 170, 0.158);
+  border: calc(0.092592592vh * 1.4) solid rgba(255, 255, 255, 0.15);
+  border-radius: calc(0.092592592vh * 0);
+  box-shadow: 0.0rem 0.0rem 50px 5px rgba(0, 0, 0, 0.808) inset ;
   background-repeat: no-repeat;
   background-position: center;
-  border-radius: 2.5%;
+  border-radius: 0.5rem;
   image-rendering: -webkit-optimize-contrast;
   position: relative;
-  background-size: 7vh;
+  background-size: 5.5vh;
   color: $textColor;
-  border-color: rgba(0, 0, 0, 0.2);
-  border-style: inset;
-  border-width: 1px;
+  animation: zoomOutAndShake 0.7s cubic-bezier(0.250, 0.460, 0.450, 0.940) both;
+  overflow: hidden; /* Ensure the shine effect doesn't overflow the button */
+}
+
+.inventory-slot::before {
+  content: '';
+  position: absolute;
+  top: -100%;
+  left: -150%;
+  width: 300%;
+  height: 300%;
+  background: linear-gradient(135deg, transparent 48%, rgba(170, 170, 170, 0.8) 50%, transparent 52%);
+  transform: rotate(90deg);
+  pointer-events: none; /* Ensure the shine effect doesn't interfere with button clicks */
+  opacity: 0; /* Initially hidden */
+}
+
+.inventory-slot:hover::before {
+  animation: shine 3s linear infinite;
+  opacity: 1; /* Show on hover */
+}
+
+.inventory-slot:hover {
+  background:rgba(36, 135, 38, 0.22);
+  -webkit-box-shadow: inset 0px 0px 25px 0px #000000;
+  -moz-box-shadow: inset 0px 0px 25px 0px #000000;
+  box-shadow:  inset 0px 0px 30px 0px #000000;
+  border: calc(0.092592592vh * 1.4) solid rgba(255, 255, 255, 0.15);
+  border-radius: calc(0.092592592vh * 0);
+  background-repeat: no-repeat;
+  background-position: center;
+  border-radius: 0.5rem;
+  image-rendering: -webkit-optimize-contrast;
+  position: relative;
+  background-size: 5.5vh;
+  color: $textColor;
+}
+
+@keyframes shine {
+  0% {
+    transform: translate(-100%, 100%) rotate(90deg);
+  }
+  100% {
+    transform: translate(100%, -100%) rotate(90deg);
+  }
+}
+
+.inventory-weight {
+  text-transform: uppercase;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  padding: 1px 3px;
+  font-weight: 400;
+  font-family: $mainFont;
+  font-size: 10px;
+}
+
+@keyframes zoomOutAndShake {
+  0% {
+    transform: scale(0);
+  }
+  100% {
+    transform: scale(1);
+  }
 }
 
 .inventory-slot-label-box {
-  background-color: $mainColor;
-  color: $textColor;
+  background: rgba(0, 0, 0, 0);
+  color: #FFF;
   text-align: center;
-  border-bottom-left-radius: 0.25vh;
-  border-bottom-right-radius: 0.25vh;
-  border-top-color: rgba(0, 0, 0, 0.2);
-  border-top-style: inset;
-  border-top-width: 1px;
+  border-bottom-left-radius: 0.5rem;
+  border-bottom-right-radius: 0.5rem;
 }
 
 .inventory-slot-label-text {
@@ -311,18 +451,20 @@ button:active {
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
-  padding: 2px 3px;
+  padding: 1px 3px;
   font-weight: 400;
   font-family: $mainFont;
-  font-size: 12px;
+  font-size: 10px;
 }
 
 .inventory-slot-number {
-  background-color: white;
-  color: black;
+  background-color: rgb(36, 135, 38);
+  box-shadow: 0 0 1vh #03b89a59;
+  border: 1px solid #00ffdd54;
+  color: rgb(255, 255, 255);
   height: 12px;
-  border-top-left-radius: 0.25vh;
-  border-bottom-right-radius: 0.25vh;
+  border-radius: 0.25vh;
+  border-top-left-radius: 0.5rem;
   padding: 3px;
   font-size: 12px;
   font-family: $mainFont;
@@ -353,8 +495,9 @@ button:active {
   display: flex;
   flex-direction: row;
   align-self: flex-end;
+  color: rgb(223, 223, 223);
   padding: 3px;
-  gap: 3px;
+  gap: 4px;
   p {
     font-size: 12px;
   }
@@ -383,21 +526,21 @@ button:active {
   }
 }
 
-
 .tooltip-wrapper {
   pointer-events: none;
   display: flex;
-  background-color: $mainColor;
   width: 200px;
   padding: 8px;
   flex-direction: column;
   min-width: 200px;
-  color: $textColor;
+  color:white;
   font-family: $mainFont;
-  border-radius: 4px;
-  border-color: rgba(0, 0, 0, 0.2);
-  border-style: inset;
-  border-width: 1px;
+  background:rgba(170, 170, 170, 0.295);
+  -webkit-box-shadow: inset 0px 0px 25px 0px #000000;
+  -moz-box-shadow: inset 0px 0px 25px 0px #000000;
+  box-shadow:  inset 0px 0px 40px 0px #000000;
+  border: calc(0.092592592vh * 1.4) solid rgba(255, 255, 255, 0.15);
+  border-radius: calc(0.092592592vh * 0);
   p {
     font-size: 12px;
     font-weight: 400;
@@ -443,21 +586,46 @@ button:active {
   }
 }
 
+// Hotslot
+.hotslot-wrapper {
+  display: grid;
+  height: $containerSize;
+  height: fit-content;
+  grid-template-columns: repeat(1, $gridSize);
+  grid-auto-rows: $gridSize + 0.22vh;
+  gap: $gridGap;
+}
+
+
+.hotslot-container {
+  background-color: $backgroundColor;
+  display: flex;
+  padding-top: 15px;
+  padding-bottom: 15px;
+  padding-left: 15px;
+  border-top-left-radius: 10px;
+  border-bottom-left-radius: 10px;
+  margin-top: -5.55rem;
+}
+
 // hotbar
 .hotbar-container {
   display: flex;
   align-items: center;
-  gap: 2px;
+  gap: 1px;
   justify-content: center;
   width: 100%;
   position: absolute;
-  bottom: 2vh;
+  bottom: 30vh;
+  left: 83vh;
+  flex-direction: column;
 }
 
 .hotbar-item-slot {
   @extend .inventory-slot;
   width: $gridSize;
   height: $gridSize;
+  flex-direction: row;
 }
 
 .hotbar-slot-header-wrapper {
@@ -474,21 +642,20 @@ button:active {
   flex-wrap: nowrap;
   gap: 2px;
   position: absolute;
-  bottom: 20vh;
-  left: 50%;
+  bottom: 35.5vh;
+  right: 48.3%;
   width: 100%;
-  margin-left: calc(50% - calc($gridSize/2));
-  transform: translate(-50%);
+  transform: translate(50%);
 }
+
 
 .item-notification-action-box {
   width: 100%;
   color: $textColor;
-  background-color: $secondaryColor;
+  //background-color: $mainColor;
   text-transform: uppercase;
   text-align: center;
-  border-top-left-radius: 0.25vh;
-  border-top-right-radius: 0.25vh;
+  border-radius: 0.5rem;
   font-family: $mainFont;
   p {
     font-size: 11px;
@@ -504,17 +671,19 @@ button:active {
 }
 
 .durability-bar {
-  background: rgba(0, 0, 0, 0.5);
+  background: #33343f;
   height: 3px;
+  border-radius: 0.25rem;
   overflow: hidden;
 }
 
 .weight-bar {
-  background: rgba(0, 0, 0, 0.4);
-  border: 1px inset rgba(0, 0, 0, 0.1);
+  background: #33343f;
   height: 0.8vh;
-  border-radius: 5%;
+  border-radius: 0.25rem;
   overflow: hidden;
+  animation: zoomOutAndShake 0.7s cubic-bezier(0.250, 0.460, 0.450, 0.940) both;
+
 }
 
 .transition-fade-enter {
@@ -536,7 +705,7 @@ button:active {
 }
 
 .transition-slide-up-enter {
-  transform: translateY(200px)
+  transform: translateY(200px);
 }
 
 .transition-slide-up-enter-active {
