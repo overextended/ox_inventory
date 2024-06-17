@@ -10635,6 +10635,7 @@ return {
 		weight = 50,
 		stack = true,
 		close = true,
+		consume = 0,
 		description = "Comes in handy when you want to cut zipties..",
 		client = {
 			export = 'qb-policejob.cuffkeys',
@@ -10676,6 +10677,7 @@ return {
 		weight = 50,
 		stack = true,
 		close = true,
+		consume = 0,
 		description = "Comes in handy when people misbehave. Maybe it can be used for something else?",
 		client = {
 			export = 'qb-policejob.handcuffs'

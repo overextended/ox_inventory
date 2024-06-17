@@ -132,6 +132,13 @@ function Weapon.Disarm(currentWeapon, noAnim)
 
 	Utils.WeaponWheel()
 	RemoveAllPedWeapons(cache.ped, true)
+
+	if client.parachute then
+		local chute = `GADGET_PARACHUTE`
+		GiveWeaponToPed(cache.ped, chute, 0, true, false)
+		SetPedGadget(cache.ped, chute, true)
+		SetPlayerParachuteTintIndex(PlayerData.id, client.parachute?[2] or -1)
+	end
 end
 
 function Weapon.ClearAll(currentWeapon)

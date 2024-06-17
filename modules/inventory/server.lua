@@ -432,6 +432,10 @@ function Inventory.SlotWeight(item, slot, ignoreCount)
 		end
 	end
 
+    if item.hash == `WEAPON_PETROLCAN` then
+        weight += 15000 * (slot.metadata.ammo / 100)
+    end
+
 	if slot.metadata.components then
 		for i = #slot.metadata.components, 1, -1 do
 			local componentWeight = Items(slot.metadata.components[i])?.weight
@@ -2556,6 +2560,10 @@ local function updateWeapon(source, action, value, slot, specialAmmo)
                 weapon.metadata.durability = 0
             end
 
+            if item.hash == `WEAPON_PETROLCAN` then
+                weapon.weight = Inventory.SlotWeight(item, weapon)
+            end
+
 			if action ~= 'throw' then
 				inventory:syncSlotsWithPlayer({
 					{ item = weapon }
@@ -2603,7 +2611,10 @@ lib.callback.register('ox_inventory:removeAmmoFromWeapon', function(source, slot
 end)
 
 local function checkStashProperties(properties)
-	local name, slots, maxWeight, coords in properties
+	local name = properties.name
+	local slots = properties.slots
+	local maxWeight = properties.maxWeight
+	local coords = properties.coords
 
 	if type(name) ~= 'string' then
 		error(('received %s for stash name (expected string)'):format(type(name)))

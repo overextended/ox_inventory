@@ -33,7 +33,7 @@ function client.onLogout()
 	if not PlayerData.loaded then return end
 
 	if client.parachute then
-		Utils.DeleteEntity(client.parachute)
+		Utils.DeleteEntity(client.parachute[1])
 		client.parachute = false
 	end
 
