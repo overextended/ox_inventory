@@ -243,28 +243,91 @@ local function export(exportName, func)
 end
 
 ---Imagine if somebody who uses qb/qbox would PR these functions.
-export('qb-inventory.LoadInventory')
-export('qb-inventory.SaveInventory')
+export('qb-inventory.LoadInventory', function(playerId)
+    if Inventory(playerId) then return end
+
+    local player = QBCore.Functions.GetPlayer(playerId)
+
+    if player then
+        setupPlayer(player)
+
+        return Inventory(playerId).items
+    end
+end)
+
+export('qb-inventory.SaveInventory', function(playerId)
+    if type(playerId) ~= 'number' then
+        TypeError('playerId', 'number', type(playerId))
+    end
+
+    Inventory.Save(playerId)
+end)
+
 export('qb-inventory.SetInventory')
 export('qb-inventory.SetItemData')
 export('qb-inventory.UseItem')
 export('qb-inventory.GetSlotsByItem')
 export('qb-inventory.GetFirstSlotByItem')
-export('qb-inventory.GetItemBySlot')
+
+export('qb-inventory.GetItemBySlot', function(playerId, slotId)
+    return Inventory.GetSlot(playerId, slotId)
+end)
+
 export('qb-inventory.GetTotalWeight')
-export('qb-inventory.GetItemByName')
-export('qb-inventory.GetItemsByName')
+
+export('qb-inventory.GetItemByName', function(playerId, itemName)
+    return Inventory.GetSlotWithItem(playerId, itemName)
+end)
+
+export('qb-inventory.GetItemsByName', function(playerId, itemName)
+    return Inventory.GetSlotsWithItem(playerId, itemName)
+end)
+
 export('qb-inventory.GetSlots')
 export('qb-inventory.GetItemCount')
-export('qb-inventory.CanAddItem')
-export('qb-inventory.ClearInventory')
-export('qb-inventory.CloseInventory')
-export('qb-inventory.OpenInventoryById')
+
+export('qb-inventory.CanAddItem', function(playerId, itemName, amount)
+    return (Inventory.CanCarryAmount(playerId, itemName) or 0) >= amount
+end)
+
+export('qb-inventory.ClearInventory', function(playerId, filter)
+    Inventory.Clear(playerId, filter)
+end)
+
+export('qb-inventory.CloseInventory', function(playerId, inventoryId)
+    local playerInventory = Inventory(playerId)
+
+    if not playerInventory then return end
+
+    local inventory = Inventory(playerInventory.open)
+
+    if inventory and (inventoryId == inventory.id or not inventoryId) then
+        playerInventory:closeInventory()
+    end
+end)
+
+export('qb-inventory.OpenInventory', function(playerId, invId, data)
+    local inventory = Inventory(invId)
+
+    if not inventory then return end
+
+    server.forceOpenInventory(playerId, inventory.type, inventory.id)
+end)
+
+export('qb-inventory.OpenInventoryById', function(playerId, targetId)
+    server.forceOpenInventory(playerId, 'player', targetId)
+end)
+
 export('qb-inventory.CreateShop')
 export('qb-inventory.OpenShop')
-export('qb-inventory.OpenInventory')
-export('qb-inventory.AddItem')
-export('qb-inventory.RemoveItem')
+
+export('qb-inventory.AddItem', function(invId, itemName, amount, slot, metadata)
+    return Inventory.AddItem(invId, itemName, amount, metadata, slot) and true
+end)
+
+export('qb-inventory.RemoveItem', function(invId, itemName, amount, slot)
+    return Inventory.RemoveItem(invId, itemName, amount, nil, slot) and true
+end)
 
 export('qb-inventory.HasItem', function(source, items, amount)
     amount = amount or 1
