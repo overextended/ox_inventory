@@ -235,14 +235,16 @@ end)
 ---@param playerId number
 ---@param invType string
 ---@param data string|number|table
-exports('forceOpenInventory', function(playerId, invType, data)
+function server.forceOpenInventory(playerId, invType, data)
 	local left, right = openInventory(playerId, invType, data, true)
 
 	if left and right then
 		TriggerClientEvent('ox_inventory:forceOpenInventory', playerId, left, right)
 		return right.id
 	end
-end)
+end
+
+exports('forceOpenInventory', server.forceOpenInventory)
 
 local Licenses = lib.load('data.licenses')
 
