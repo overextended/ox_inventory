@@ -38,7 +38,7 @@ function server.buyLicense(inv, license)
 
 	if player.getLicense(license.name) then
 		return false, 'already_have'
-	elseif Inventory.GetItem(inv, 'money', false, true) < license.price then
+	elseif Inventory.GetItemCount(inv, 'money') < license.price then
 		return false, 'can_not_afford'
 	end
 

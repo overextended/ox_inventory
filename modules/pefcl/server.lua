@@ -24,9 +24,9 @@ exports('removeCash', function(source, amount)
 end)
 
 ---@param source number
----@return number?
+---@return number
 exports('getCash', function(source)
-	return Inventory.GetItem(source, 'money', false, true) or 0 --[[@as number]]
+	return Inventory.GetItemCount(source, 'money')
 end)
 
 ---@param source number

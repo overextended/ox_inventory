@@ -258,7 +258,7 @@ end)
 
 lib.callback.register('ox_inventory:getItemCount', function(source, item, metadata, target)
 	local inventory = target and Inventory(target) or Inventory(source)
-	return (inventory and Inventory.GetItem(inventory, item, metadata, true)) or 0
+	return (inventory and Inventory.GetItemCount(inventory, item, metadata, true))
 end)
 
 lib.callback.register('ox_inventory:getInventory', function(source, id)
