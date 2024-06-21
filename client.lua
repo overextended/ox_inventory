@@ -513,6 +513,12 @@ local function useSlot(slot, noAnim)
 			if IsCinematicCamRendering() then SetCinematicModeActive(false) end
 
 			if currentWeapon then
+				local weaponAmmo = currentWeapon.metadata.ammo
+
+				if weaponAmmo then
+					TriggerServerEvent('ox_inventory:updateWeapon', 'ammo', weaponAmmo) -- Update the ammo, incase the weapon is still being used right now.
+				end
+
 				local weaponSlot = currentWeapon.slot
 				currentWeapon = Weapon.Disarm(currentWeapon)
 
