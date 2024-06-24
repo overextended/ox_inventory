@@ -87,5 +87,6 @@
   "dumpster": "Szemetes",
   "crafting_item": "%s barkácsolása ",
   "crafting_bench": "Barkácsasztal",
+  "open_crafting_bench": "Barkácsasztal megnyitása",
   "not_enough_durability": "%s elhasználodott!"
 }
