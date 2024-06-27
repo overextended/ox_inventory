@@ -185,14 +185,16 @@ local function ConvertQB()
 		end
 	end
 
-	Print(('Converting %s user inventories to new data format'):format(count))
-
 	if count > 0 then
+	    Print(('Converting %s user inventories to new data format'):format(count))
+
 		if not MySQL.transaction.await(parameters) then
 			return Print('An error occurred while converting player inventories')
 		end
 		Wait(100)
-	end
+	else
+        print('literally why are you even running the convert command if you have no inventory data to convert? real 500iq move there')
+    end
 
 	local plates = MySQL.query.await('SELECT plate, citizenid FROM player_vehicles')
 
@@ -201,9 +203,9 @@ local function ConvertQB()
 			plates[plates[i].plate] = plates[i].citizenid
 		end
 
-		local trunk = MySQL.query.await('SELECT plate, items FROM trunkitems')
+		local oldqbdumpsterfire, trunk = pcall(MySQL.query.await, 'SELECT plate, items FROM trunkitems')
 
-		if trunk then
+		if oldqbdumpsterfire and trunk then
 			table.wipe(parameters)
 			count = 0
 			local vehicles = {}
@@ -252,7 +254,7 @@ local function ConvertQB()
 			end
 		end
 
-		local glovebox = MySQL.query.await('SELECT plate, items FROM gloveboxitems')
+		local glovebox = oldqbdumpsterfire and MySQL.query.await('SELECT plate, items FROM gloveboxitems')
 
 		if glovebox then
 			table.wipe(parameters)
