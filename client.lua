@@ -431,7 +431,12 @@ local function useItem(data, cb, noAnim)
         return
     end
 
-	if currentWeapon?.timer and currentWeapon.timer > 100 then return end
+	if currentWeapon and currentWeapon.timer ~= 0 then
+        if IsPedShooting(playerPed) then return end
+        if currentWeapon.timer - GetGameTimer() > 100 then return end
+
+        DisablePlayerFiring(cache.playerId, true)
+    end
 
     if invOpen and data.close then client.closeInventory() end
 
