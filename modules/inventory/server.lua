@@ -1547,6 +1547,8 @@ local function dropItem(source, playerInventory, fromData, data)
 
     if toData.weight > shared.playerweight then return end
 
+    local dropId = generateInvId('drop')
+
 	if not TriggerEventHooks('swapItems', {
 		source = source,
 		fromInventory = playerInventory.id,
@@ -1557,6 +1559,7 @@ local function dropItem(source, playerInventory, fromData, data)
 		toType = 'drop',
 		count = data.count,
         action = 'move',
+        dropId = dropId,
 	}) then return end
 
     fromData.count -= data.count
@@ -1576,7 +1579,6 @@ local function dropItem(source, playerInventory, fromData, data)
 		playerInventory.weapon = nil
 	end
 
-	local dropId = generateInvId('drop')
 	local inventory = Inventory.Create(dropId, ('Drop %s'):format(dropId:gsub('%D', '')), 'drop', shared.dropslots, toData.weight, shared.dropweight, false, {[data.toSlot] = toData})
 
 	if not inventory then return end
