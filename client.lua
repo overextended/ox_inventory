@@ -1658,6 +1658,8 @@ end
 RegisterNUICallback('giveItem', function(data, cb)
 	cb(1)
 
+    if usingItem then return end
+
 	if client.giveplayerlist then
 		local nearbyPlayers = lib.getNearbyPlayers(GetEntityCoords(playerPed), 3.0)
         local nearbyCount = #nearbyPlayers
