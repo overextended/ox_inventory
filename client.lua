@@ -1057,8 +1057,8 @@ local function createDrop(dropId, data)
 		invId = dropId,
 		instance = data.instance,
 		model = data.model,
-		rot = data.rot,
-		offset = data.offset,
+		rot = data.rot or vec3(0, 0, 0),
+		offset = data.offset or vec3(0, 0, 0),
 	})
 
 	if point.model or client.dropprops then
