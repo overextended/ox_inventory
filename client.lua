@@ -1032,6 +1032,8 @@ local function onEnterDrop(point)
 
 		SetModelAsNoLongerNeeded(model)
 		PlaceObjectOnGroundProperly(entity)
+		SetEntityCoords(entity, point.coords.x + point.offset.x, point.coords.y + point.offset.y, point.coords.z + point.offset.z)
+		SetEntityRotation(entity, point.rot.x, point.rot.y, point.rot.z, 5, true)
 		FreezeEntityPosition(entity, true)
 		SetEntityCollision(entity, false, true)
 
@@ -1054,7 +1056,9 @@ local function createDrop(dropId, data)
 		distance = 16,
 		invId = dropId,
 		instance = data.instance,
-		model = data.model
+		model = data.model,
+		rot = data.rot,
+		offset = data.offset,
 	})
 
 	if point.model or client.dropprops then

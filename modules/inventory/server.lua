@@ -1483,7 +1483,7 @@ local function generateInvId(prefix)
 	end
 end
 
-local function CustomDrop(prefix, items, coords, slots, maxWeight, instance, model)
+local function CustomDrop(prefix, items, coords, slots, maxWeight, instance, model, rot, offset)
 	local dropId = generateInvId()
 	local inventory = Inventory.Create(dropId, ('%s %s'):format(prefix, dropId:gsub('%D', '')), 'drop', slots or shared.dropslots, 0, maxWeight or shared.dropweight, false, {})
 
@@ -1495,6 +1495,8 @@ local function CustomDrop(prefix, items, coords, slots, maxWeight, instance, mod
 		coords = inventory.coords,
 		instance = instance,
 		model = model,
+		rot = rot,
+		offset = offset,
 	}
 
 	TriggerClientEvent('ox_inventory:createDrop', -1, dropId, Inventory.Drops[dropId])
