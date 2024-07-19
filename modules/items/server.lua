@@ -10,12 +10,15 @@ Items.containers = require 'modules.items.containers'
 
 -- Possible metadata when creating garbage
 local trash = {
-	{description = 'A discarded burger carton.', weight = 50, image = 'trash_burger'},
+	{description = 'An old rolled up newspaper.', weight = 200, image = 'trash_newspaper'},
+	{description = 'A discarded burger shot carton.', weight = 50, image = 'trash_burgershot'},
 	{description = 'An empty soda can.', weight = 20, image = 'trash_can'},
 	{description = 'A mouldy piece of bread.', weight = 70, image = 'trash_bread'},
-	{description = 'An empty chips bag.', weight = 5, image = 'trash_chips'},
+	{description = 'An empty ciggarette carton.', weight = 10, image = 'trash_fags'},
 	{description = 'A slightly used pair of panties.', weight = 20, image = 'panties'},
-	{description = 'An old rolled up newspaper.', weight = 200, image = 'WEAPON_ACIDPACKAGE'},
+	{description = 'An empty coffee cup.', weight = 20, image = 'trash_coffee'},
+	{description = 'A crumpled up piece of paper.', weight = 5, image = 'trash_paper'},
+	{description = 'An empty chips bag.', weight = 5, image = 'trash_chips'},
 }
 
 ---@param _ table?
@@ -463,6 +466,68 @@ end
 -- 		print(data.id, data.coords, json.encode(data.items[slot], {indent=true}))
 -- 	end
 -- end)
+
+Item('wasser', function(event, item, inventory, slot, data)
+ 	if event == 'usingItem' then
+		exports.ox_inventory:AddItem(source, 'garbage', 1, {image = 'trash_bottle'})
+ 	end
+end)
+
+Item('cola', function(event, item, inventory, slot, data)
+	if event == 'usingItem' then
+	   exports.ox_inventory:AddItem(source, 'garbage', 1, {image = 'trash_ecola'})
+	end
+end)
+
+Item('burger', function(event, item, inventory, slot, data)
+	if event == 'usingItem' then
+	   exports.ox_inventory:AddItem(source, 'garbage', 1, {image = 'trash_burger', weight = 50})
+	end
+end)
+
+Item('sprunk', function(event, item, inventory, slot, data)
+	if event == 'usingItem' then
+	   exports.ox_inventory:AddItem(source, 'garbage', 1, {image = 'trash_can'})
+	end
+end)
+
+Item('chips', function(event, item, inventory, slot, data)
+	if event == 'usingItem' then
+	   exports.ox_inventory:AddItem(source, 'garbage', 1, {image = 'trash_chips'})
+	end
+end)
+
+Item('chickenburger', function(event, item, inventory, slot, data)
+	if event == 'usingItem' then
+	   exports.ox_inventory:AddItem(source, 'garbage', 1, {image = 'trash_burger'})
+	end
+end)
+
+Item('redwoodgold2', function(event, item, inventory, slot, data)
+	if event == 'usingItem' then
+	   exports.ox_inventory:AddItem(source, 'garbage', 1, {image = 'trash_paper'})
+	   exports.ox_inventory:AddItem(source, 'zigarette', 18)
+	end
+end)
+
+Item('blaettchen', function(event, item, inventory, slot, data)
+	if event == 'usingItem' then
+	   exports.ox_inventory:AddItem(source, 'garbage', 1, {image = 'trash_paper'})
+	   exports.ox_inventory:AddItem(source, 'eblaettchen', 50)
+	end
+end)
+
+Item('bag', function(event, item, inventory, slot, data)
+	if event == 'usingItem' then
+	   exports.ox_inventory:AddItem(source, 'nobag', 1)
+	end
+end)
+
+Item('bag2', function(event, item, inventory, slot, data)
+	if event == 'usingItem' then
+	   exports.ox_inventory:AddItem(source, 'nobag2', 1)
+	end
+end)
 
 -----------------------------------------------------------------------------------------------
 

@@ -70,7 +70,7 @@ return {
 		},
 
 		['WEAPON_BAT'] = {
-			label = 'Bat',
+			label = 'Baseball Schläger',
 			weight = 1134,
 			durability = 0.1,
 		},
@@ -352,7 +352,7 @@ return {
 		},
 
 		['WEAPON_KNIFE'] = {
-			label = 'Knife',
+			label = 'Messer',
 			weight = 300,
 			durability = 0.1,
 		},
@@ -471,13 +471,13 @@ return {
 		},
 
 		['WEAPON_PIPEBOMB'] = {
-			label = 'Pipe Bomb',
+			label = 'Rohr-Bombe',
 			weight = 1800,
 			throwable = true,
 		},
 
 		['WEAPON_PISTOL'] = {
-			label = 'Pistol',
+			label = 'Pistole',
 			weight = 1130,
 			durability = 0.1,
 			ammoname = 'ammo-9',
