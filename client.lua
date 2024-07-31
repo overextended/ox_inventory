@@ -1270,7 +1270,7 @@ RegisterNetEvent('ox_inventory:setPlayerInventory', function(currentDrops, inven
 
 		if point.isClosest and point.currentDistance < 1.2 then
 			if not hasTextUi then
-				hasTextUi = nil
+				hasTextUi = point
 				lib.showTextUI(point.message, uiOptions)
 			end
 
@@ -1300,7 +1300,7 @@ RegisterNetEvent('ox_inventory:setPlayerInventory', function(currentDrops, inven
 			price = data.price,
 			invId = id,
 			nearby = nearbyLicense,
-			message = ('**%s**  \n%s'):format(locale('purchase_license', data.name), locale('interact_prompt', GetControlInstructionalButton(0, 38, true):sub(3)))
+			message = ('**%s**  \n%s'):format(locale('purchase_license', data.label), locale('interact_prompt', GetControlInstructionalButton(0, 38, true):sub(3)))
 		})
 	end
 
