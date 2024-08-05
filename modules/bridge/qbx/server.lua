@@ -1,3 +1,4 @@
+assert(lib.checkDependency('qbx_vehicles', '1.2.0'), 'qbx_vehicles v1.2.0 or higher is required')
 local Inventory = require 'modules.inventory.server'
 local QBX = exports.qbx_core
 
@@ -81,4 +82,11 @@ end
 ---@diagnostic disable-next-line: duplicate-set-field
 function server.isPlayerBoss(playerId, group, grade)
     return exports.qbx_core:IsPlayerBoss(playerId, group, grade)
+end
+
+---@param entityId number
+---@return number | string
+---@diagnostic disable-next-line: duplicate-set-field
+function server.getOwnedVehicleId(entityId)
+  return Entity(entityId).vehicleid or exports.qbx_vehicles:GetVehicleIdByPlate(GetVehicleNumberPlateText(entityId)) or GetVehicleNumberPlateText(entityId)
 end
