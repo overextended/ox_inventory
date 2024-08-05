@@ -1,3 +1,7 @@
+AddStateBagChangeHandler('isLoggedIn', ('player:%s'):format(cache.serverId), function(_, _, value)
+    if not value then client.onLogout() end
+end)
+
 ---@diagnostic disable-next-line: duplicate-set-field
 function client.setPlayerStatus(values)
     local playerState = LocalPlayer.state
