@@ -2,6 +2,20 @@ AddStateBagChangeHandler('isLoggedIn', ('player:%s'):format(cache.serverId), fun
     if not value then client.onLogout() end
 end)
 
+RegisterNetEvent('qbx_core:client:onGroupUpdate', function(groupName, groupGrade)
+    local groups = PlayerData.groups
+    if not groupGrade then
+        table.remove(groups, groupName)
+    else
+        groups[groupName] = groupGrade
+    end
+    client.setPlayerData('groups', groups)
+end)
+
+RegisterNetEvent('qbx_core:client:setGroups', function(groups)
+    client.setPlayerData('groups', groups)
+end)
+
 ---@diagnostic disable-next-line: duplicate-set-field
 function client.setPlayerStatus(values)
     local playerState = LocalPlayer.state
