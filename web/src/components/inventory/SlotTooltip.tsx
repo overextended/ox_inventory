@@ -53,7 +53,7 @@ const SlotTooltip: React.ForwardRefRenderFunction<
             <>
               {item.durability !== undefined && (
                 <p>
-                  {Locale.ui_durability}: {Math.trunc(item.durability)}
+                  {Locale.ui_durability}: {Math.min(Math.trunc(item.durability), 100)}
                 </p>
               )}
               {item.metadata?.ammo !== undefined && (
