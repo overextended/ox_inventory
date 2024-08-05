@@ -23,6 +23,10 @@ SetTimeout(500, function()
 
     for _, playerData in pairs(QBX.GetPlayersData()) do setupPlayer(playerData) end
 end)
+function server.UseItem(source, itemName, data)
+    local cb = exports.qbx_core:CanUseItem(itemName)
+    return cb and cb(source, data)
+end
 end)
 ---@diagnostic disable-next-line: duplicate-set-field
 function server.setPlayerData(player)
