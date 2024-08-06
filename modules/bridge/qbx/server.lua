@@ -12,6 +12,8 @@ AddEventHandler('qbx_core:server:onGroupUpdate', function(source, groupName, gro
 end)
 
 local function setupPlayer(playerData)
+    playerData.identifier = playerData.citizenid
+    playerData.name = ('%s %s'):format(playerData.charinfo.firstname, playerData.charinfo.lastname)
     server.setPlayerInventory(playerData)
 
     Inventory.SetItem(playerData.source, 'money', playerData.money.cash)
@@ -26,7 +28,7 @@ end)
 SetTimeout(500, function()
     server.GetPlayerFromId = QBX.GetPlayer
 
-    local playersData = QBX:GetInventorySetup()
+    local playersData = QBX:GetPlayersData()
     for i = 1, #playersData do setupPlayer(playersData[i]) end
 end)
 
@@ -96,7 +98,7 @@ end
 
 ---@diagnostic disable-next-line: duplicate-set-field
 function server.isPlayerBoss(playerId, group, grade)
-    return QBX:IsPlayerBoss(playerId, group, grade)
+    return QBX:IsGradeBoss(group, grade)
 end
 
 ---@param entityId number
