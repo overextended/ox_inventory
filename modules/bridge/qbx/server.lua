@@ -12,8 +12,6 @@ AddEventHandler('qbx_core:server:onGroupUpdate', function(source, groupName, gro
 end)
 
 local function setupPlayer(playerData)
-    playerData.identifier = playerData.citizenid
-    playerData.name = ('%s %s'):format(playerData.charinfo.firstname, playerData.charinfo.lastname)
     server.setPlayerInventory(playerData)
 
     Inventory.SetItem(playerData.source, 'money', playerData.money.cash)
@@ -37,14 +35,13 @@ end
 
 ---@diagnostic disable-next-line: duplicate-set-field
 function server.setPlayerData(player)
+    local groups = QBX:GetGroups(player.source)
     return {
         source = player.source,
         name = ('%s %s'):format(player.charinfo.firstname, player.charinfo.lastname),
-        groups = player.groups,
+        groups = groups,
         sex = player.charinfo.gender,
         dateofbirth = player.charinfo.birthdate,
-        job = player.job.name,
-        gang = player.gang.name,
     }
 end
 
