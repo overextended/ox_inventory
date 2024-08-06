@@ -12,24 +12,29 @@ AddEventHandler('qbx_core:server:onGroupUpdate', function(source, groupName, gro
 end)
 
 local function setupPlayer(playerData)
-    playerData.inventory = playerData.items
     playerData.identifier = playerData.citizenid
     playerData.name = ('%s %s'):format(playerData.charinfo.firstname, playerData.charinfo.lastname)
     server.setPlayerInventory(playerData)
 
     Inventory.SetItem(playerData.source, 'money', playerData.money.cash)
 end
-exports('SetupQBXPlayer', setupPlayer)
+
+AddEventHandler('qbx_core:server:playerLoaded', function(playerData)
+    setupPlayer(playerData)
+end)
+
 SetTimeout(500, function()
     server.GetPlayerFromId = QBX.GetPlayer
 
-    for _, playerData in pairs(QBX.GetPlayersData()) do setupPlayer(playerData) end
+    local playersData = QBX:GetInventorySetup()
+    for i = 1, #playersData do setupPlayer(playersData[i]) end
 end)
+
 function server.UseItem(source, itemName, data)
     local cb = exports.qbx_core:CanUseItem(itemName)
     return cb and cb(source, data)
 end
-end)
+
 ---@diagnostic disable-next-line: duplicate-set-field
 function server.setPlayerData(player)
     return {
@@ -49,7 +54,6 @@ function server.syncInventory(inv)
 
     if accounts then
         local player = server.GetPlayerFromId(inv.id)
-        player.Functions.SetPlayerData('items', inv.items)
 
         if accounts.money and accounts.money ~= player.Functions.GetMoney('cash') then
             player.Functions.SetMoney('cash', accounts.money, "Sync money with inventory")
@@ -80,6 +84,7 @@ function server.buyLicense(inv, license)
 
     return true, 'have_purchased'
 end
+
 ---@diagnostic disable-next-line: duplicate-set-field
 function server.isPlayerBoss(playerId, group, grade)
     return QBX:IsPlayerBoss(playerId, group, grade)
