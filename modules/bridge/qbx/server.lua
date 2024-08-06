@@ -17,8 +17,10 @@ local function setupPlayer(playerData)
     Inventory.SetItem(playerData.source, 'money', playerData.money.cash)
 end
 
-AddEventHandler('qbx_core:server:playerLoaded', function(playerData)
-    setupPlayer(playerData)
+AddStateBagChangeHandler('isLoggedIn', 'player:%s', function(bagName, _, value)
+    if not value then return end
+    local plySrc = GetPlayerFromStateBagName(bagName)
+    setupPlayer(server.GetPlayerFromId(plySrc).PlayerData)
 end)
 
 SetTimeout(500, function()
@@ -29,7 +31,7 @@ SetTimeout(500, function()
 end)
 
 function server.UseItem(source, itemName, data)
-    local cb = exports.qbx_core:CanUseItem(itemName)
+    local cb = QBX:CanUseItem(itemName)
     return cb and cb(source, data)
 end
 
