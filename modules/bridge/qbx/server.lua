@@ -33,6 +33,16 @@ function server.UseItem(source, itemName, data)
     return cb and cb(source, data)
 end
 
+AddEventHandler('qbx_core:server:setMoney', function(src, account, amount)
+    if account ~= "cash" then return end
+
+    local item = Inventory.GetItem(src, 'money', nil, false)
+
+    if not item then return end
+
+    Inventory.SetItem(src, 'money', amount)
+end)
+
 ---@diagnostic disable-next-line: duplicate-set-field
 function server.setPlayerData(player)
     local groups = QBX:GetGroups(player.source)
