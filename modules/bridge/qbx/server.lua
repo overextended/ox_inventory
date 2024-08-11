@@ -19,7 +19,7 @@ local function setupPlayer(playerData)
     Inventory.SetItem(playerData.source, 'money', playerData.money.cash)
 end
 
-AddStateBagChangeHandler('isLoggedIn', nil, function(bagName, _, value)
+AddStateBagChangeHandler('loadInventory', nil, function(bagName, _, value)
     if not value then return end
     local plySrc = GetPlayerFromStateBagName(bagName)
     if not plySrc then return end
