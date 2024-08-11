@@ -37,13 +37,13 @@ function server.UseItem(source, itemName, data)
 end
 
 AddEventHandler('qbx_core:server:setMoney', function(src, account, amount)
-    if account ~= "cash" then return end
+    account = account == 'cash' and 'money' or account
 
-    local item = Inventory.GetItem(src, 'money', nil, false)
+    local item = Inventory.GetItem(src, account, nil, false)
 
     if not item then return end
 
-    Inventory.SetItem(src, 'money', amount)
+    Inventory.SetItem(src, account, amount)
 end)
 
 ---@diagnostic disable-next-line: duplicate-set-field
@@ -62,11 +62,13 @@ end
 function server.syncInventory(inv)
     local accounts = Inventory.GetAccountItemCounts(inv)
 
-    if accounts then
-        local player = QBX:GetPlayer(inv.id)
+    if not accounts then return end
+    local player = QBX:GetPlayer(inv.id)
 
-        if accounts.money and accounts.money ~= player.Functions.GetMoney('cash') then
-            player.Functions.SetMoney('cash', accounts.money, "Sync money with inventory")
+    for account, amount in pairs(accounts) do
+        account = account == 'money' and 'cash' or account
+        if player.Functions.GetMoney(account) ~= amount then
+            player.Functions.SetMoney(account, amount, ('Sync %s with inventory'):format(account))
         end
     end
 end
