@@ -19,15 +19,14 @@ local function setupPlayer(playerData)
     Inventory.SetItem(playerData.source, 'money', playerData.money.cash)
 end
 
-AddStateBagChangeHandler('isLoggedIn', 'player:%s', function(bagName, _, value)
+AddStateBagChangeHandler('isLoggedIn', nil, function(bagName, _, value)
     if not value then return end
     local plySrc = GetPlayerFromStateBagName(bagName)
-    setupPlayer(server.GetPlayerFromId(plySrc).PlayerData)
+    if not plySrc then return end
+    setupPlayer(QBX:GetPlayer(plySrc).PlayerData)
 end)
 
 SetTimeout(500, function()
-    server.GetPlayerFromId = QBX.GetPlayer
-
     local playersData = QBX:GetPlayersData()
     for i = 1, #playersData do setupPlayer(playersData[i]) end
 end)
@@ -64,7 +63,7 @@ function server.syncInventory(inv)
     local accounts = Inventory.GetAccountItemCounts(inv)
 
     if accounts then
-        local player = server.GetPlayerFromId(inv.id)
+        local player = QBX:GetPlayer(inv.id)
 
         if accounts.money and accounts.money ~= player.Functions.GetMoney('cash') then
             player.Functions.SetMoney('cash', accounts.money, "Sync money with inventory")
@@ -74,13 +73,13 @@ end
 
 ---@diagnostic disable-next-line: duplicate-set-field
 function server.hasLicense(inv, license)
-    local player = server.GetPlayerFromId(inv.id)
+    local player = QBX:GetPlayer(inv.id)
     return player and player.PlayerData.metadata.licences[license]
 end
 
 ---@diagnostic disable-next-line: duplicate-set-field
 function server.buyLicense(inv, license)
-    local player = server.GetPlayerFromId(inv.id)
+    local player = QBX:GetPlayer(inv.id)
     if not player then return end
 
     if player.PlayerData.metadata.licences[license.name] then
