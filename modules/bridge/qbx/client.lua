@@ -5,7 +5,7 @@ end)
 RegisterNetEvent('qbx_core:client:onGroupUpdate', function(groupName, groupGrade)
     local groups = PlayerData.groups
     if not groupGrade then
-        table.remove(groups, groupName)
+        groups[groupName] = nil
     else
         groups[groupName] = groupGrade
     end
