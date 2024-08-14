@@ -16,7 +16,12 @@ local function setupPlayer(playerData)
     playerData.name = ('%s %s'):format(playerData.charinfo.firstname, playerData.charinfo.lastname)
     server.setPlayerInventory(playerData)
 
-    Inventory.SetItem(playerData.source, 'money', playerData.money.cash)
+    local accounts = Inventory.GetAccountItemCounts(playerData.source)
+    if not accounts then return end
+    for account in pairs(accounts) do
+        local playerAccount = account == 'money' and 'cash' or account
+        Inventory.SetItem(playerData.source, account, playerData.money[playerAccount])
+    end
 end
 
 AddStateBagChangeHandler('loadInventory', nil, function(bagName, _, value)
