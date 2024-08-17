@@ -57,8 +57,10 @@ end
 function server.syncInventory(inv)
     local accounts = Inventory.GetAccountItemCounts(inv)
 
-    if not accounts then return end
     local player = QBX:GetPlayer(inv.id)
+    player.Functions.SetPlayerData('items', inv.items)
+
+    if not accounts then return end
 
     for account, amount in pairs(accounts) do
         account = account == 'money' and 'cash' or account
