@@ -113,7 +113,7 @@ local function openInventory(source, invType, data, ignoreSecurityChecks)
         local isDataTable = type(data) == 'table'
 
 		if invType == 'stash' then
-			right = Inventory(data, left)
+			right = Inventory(data, left, ignoreSecurityChecks)
 			if right == false then return false end
 		elseif isDataTable then
 			if data.netid then
@@ -135,7 +135,7 @@ local function openInventory(source, invType, data, ignoreSecurityChecks)
 				return
 			end
 		elseif invType == 'policeevidence' then
-			if server.hasGroup(left, shared.police) then
+			if ignoreSecurityChecks or server.hasGroup(left, shared.police) then
 				right = Inventory(('evidence-%s'):format(data))
 			end
 		elseif invType == 'dumpster' then
