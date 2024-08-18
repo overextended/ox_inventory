@@ -101,5 +101,5 @@ end
 ---@return number | string
 ---@diagnostic disable-next-line: duplicate-set-field
 function server.getOwnedVehicleId(entityId)
-    return Entity(entityId).state.vehicleid or exports.qbx_vehicles:GetVehicleIdByPlate(GetVehicleNumberPlateText(entityId)) or GetVehicleNumberPlateText(entityId)
+    return Entity(entityId).state.vehicleid or exports.qbx_vehicles:GetVehicleIdByPlate(GetVehicleNumberPlateText(entityId))
 end
