@@ -109,6 +109,8 @@ local function refreshShops()
 
 	local id = 0
 
+    local type_check = type
+
 	for type, shop in pairs(shopTypes) do
 		local blip = shop.blip
 		local label = shop.label or locale('open_label', shop.name)
@@ -145,7 +147,7 @@ local function refreshShops()
 							invId = i,
 							type = type,
 							blip = blip and hasShopAccess(shop) and createBlip(blip, target.loc),
-							ped = target.ped,
+							ped = type_check(target.ped) == "table" and target.ped[math.random(#target.ped)] or target.ped,
 							scenario = target.scenario,
 							label = label,
 							groups = shop.groups,
