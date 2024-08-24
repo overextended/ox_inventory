@@ -359,15 +359,17 @@ Inventory.Stashes = setmetatable(lib.load('data.stashes'), {
 					end
 				else
 					stash.target = nil
-					stash.point = lib.points.new({
-						coords = stash.coords,
-						distance = 16,
-						inv = 'stash',
-						invId = stash.name,
-						marker = markerColour,
-                        prompt = textPrompts.stash,
-						nearby = Utils.nearbyMarker
-					})
+					if stash.coords then
+						stash.point = lib.points.new({
+							coords = stash.coords,
+							distance = 16,
+							inv = 'stash',
+							invId = stash.name,
+							marker = markerColour,
+							prompt = textPrompts.stash,
+							nearby = Utils.nearbyMarker
+						})
+					end
 				end
 			end
 		end
