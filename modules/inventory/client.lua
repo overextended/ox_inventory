@@ -350,6 +350,22 @@ Inventory.Stashes = setmetatable(lib.load('data.stashes'), {
                                 icon = stash.target.icon or 'fas fa-warehouse',
                                 label = stash.target.label or locale('open_stash'),
                                 groups = stash.groups,
+								canInteract = function()
+									if stash.item then
+										if type(stash.item) == 'table' then
+											local count = exports.ox_inventory:Search('count', stash.item)
+											for _,c in pairs(count) do
+												if c > 0 then return true end
+											end
+											return false
+										end
+										if type(stash.item) == 'string' then
+											local count = exports.ox_inventory:GetItemCount(stash.item)
+											if count > 0 then return true else return false end
+										end
+									end
+									return true
+								end,
                                 onSelect = function()
                                     exports.ox_inventory:openInventory('stash', stash.name)
                                 end,
