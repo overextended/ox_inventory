@@ -1,4 +1,4 @@
-assert(lib.checkDependency('qbx_core', '1.18.0'), 'qbx_core v1.18.0 or higher is required')
+assert(lib.checkDependency('qbx_core', '1.18.1'), 'qbx_core v1.18.1 or higher is required')
 assert(lib.checkDependency('qbx_vehicles', '1.2.0'), 'qbx_vehicles v1.2.0 or higher is required')
 local Inventory = require 'modules.inventory.server'
 local QBX = exports.qbx_core
@@ -58,7 +58,9 @@ function server.syncInventory(inv)
     local accounts = Inventory.GetAccountItemCounts(inv)
 
     if not accounts then return end
+
     local player = QBX:GetPlayer(inv.id)
+    player.Functions.SetPlayerData('items', inv.items)
 
     for account, amount in pairs(accounts) do
         account = account == 'money' and 'cash' or account
