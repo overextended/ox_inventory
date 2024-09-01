@@ -415,6 +415,7 @@ local function canUseItem(isAmmo)
 	and not lib.progressActive()
 	and not IsPedRagdoll(ped)
 	and not IsPedFalling(ped)
+    and not IsPedShooting(playerPed)
 end
 
 ---@param data table
@@ -432,8 +433,7 @@ local function useItem(data, cb, noAnim)
     end
 
 	if currentWeapon and currentWeapon.timer ~= 0 then
-        if IsPedShooting(playerPed) then return end
-        if currentWeapon.timer - GetGameTimer() > 100 then return end
+        if not currentWeapon.timer or currentWeapon.timer - GetGameTimer() > 100 then return end
 
         DisablePlayerFiring(cache.playerId, true)
     end
@@ -518,6 +518,8 @@ local function useSlot(slot, noAnim)
 			if IsCinematicCamRendering() then SetCinematicModeActive(false) end
 
 			if currentWeapon then
+                if not currentWeapon.timer or currentWeapon.timer ~= 0 then return end
+
 				local weaponSlot = currentWeapon.slot
 				currentWeapon = Weapon.Disarm(currentWeapon)
 
@@ -528,6 +530,7 @@ local function useSlot(slot, noAnim)
             SetCurrentPedWeapon(playerPed, data.hash, false)
 
             if data.hash ~= GetSelectedPedWeapon(playerPed) then
+                lib.print.info(('%s cannot be used in current context (default game behaviour)'):format(item.name))
                 return lib.notify({ type = 'error', description = locale('cannot_use', data.label) })
             end
 
@@ -1270,7 +1273,7 @@ RegisterNetEvent('ox_inventory:setPlayerInventory', function(currentDrops, inven
 
 		if point.isClosest and point.currentDistance < 1.2 then
 			if not hasTextUi then
-				hasTextUi = nil
+				hasTextUi = point
 				lib.showTextUI(point.message, uiOptions)
 			end
 
@@ -1347,19 +1350,21 @@ RegisterNetEvent('ox_inventory:setPlayerInventory', function(currentDrops, inven
 				playerCoords = GetEntityCoords(playerPed)
 
 				if currentInventory and not currentInventory.ignoreSecurityChecks then
+                    local maxDistance = (currentInventory.distance or currentInventory.type == 'stash' and 4.8 or 1.8) + 0.2
+
 					if currentInventory.type == 'otherplayer' then
 						local id = GetPlayerFromServerId(currentInventory.id)
 						local ped = GetPlayerPed(id)
 						local pedCoords = GetEntityCoords(ped)
 
-						if not id or #(playerCoords - pedCoords) > 1.8 or not (client.hasGroup(shared.police) or canOpenTarget(ped)) then
+						if not id or #(playerCoords - pedCoords) > maxDistance or not (client.hasGroup(shared.police) or canOpenTarget(ped)) then
 							client.closeInventory()
 							lib.notify({ id = 'inventory_lost_access', type = 'error', description = locale('inventory_lost_access') })
 						else
 							TaskTurnPedToFaceCoord(playerPed, pedCoords.x, pedCoords.y, pedCoords.z, 50)
 						end
 
-					elseif currentInventory.coords and (#(playerCoords - currentInventory.coords) > (currentInventory.distance or 2.0) or canOpenTarget(playerPed)) then
+					elseif currentInventory.coords and (#(playerCoords - currentInventory.coords) > maxDistance or canOpenTarget(playerPed)) then
 						client.closeInventory()
 						lib.notify({ id = 'inventory_lost_access', type = 'error', description = locale('inventory_lost_access') })
 					end
@@ -1389,6 +1394,7 @@ RegisterNetEvent('ox_inventory:setPlayerInventory', function(currentDrops, inven
 				end
 
 				if weaponHash ~= currentWeapon.hash then
+                    lib.print.info(('%s cannot be used in current context (default game behaviour)'):format(currentWeapon.name))
 					currentWeapon = Weapon.Disarm(currentWeapon, true)
 				end
 			end
