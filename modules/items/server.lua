@@ -469,7 +469,7 @@ end
 
 Item('wasser', function(event, item, inventory, slot, data)
  	if event == 'usingItem' then
-		exports.ox_inventory:AddItem(source, 'garbage', 1, {image = 'trash_bottle'})
+		exports.ox_inventory:AddItem(source, 'pfandflasche', 1)
  	end
 end)
 

@@ -226,7 +226,7 @@ return {
 		client = {
 			status = { hunger = 320000 },
 			anim = 'eating',
-			prop = { model = `prop_taco_02`, pos = vec3(0.01, 0.01, 0.06), rot = vec3(0.0, 0.0, -1.5) },
+			prop = { model = 'prop_taco_02', pos = vec3(0.01, 0.01, 0.06), rot = vec3(0.0, 0.0, -1.5) },
 			usetime = 3000,
 			cancel = true,
 			--notification = 'Lecker Tee, der ist echt gut'
@@ -816,6 +816,13 @@ return {
 		close = true,
 		description = nil
 	},
+	['pfandflasche'] = {
+		label = 'Pfandflasche',
+		weight = 20,
+		stack = true,
+		close = true,
+		description = nil
+	},
 	['aluschrott'] = {
 		label = 'Aluminiumschrott',
 		weight = 5,
@@ -1062,8 +1069,15 @@ return {
 
 
 
-
-
+	-- Anfang Jobitems Items
+	['elektrokoffer'] = {
+		label = 'Elektriker Koffer',
+		weight = 0,
+		stack = false,
+		close = true,
+		description = 'Zur Reperatur von Elektrik, für den Job Elektriker benötigt.'
+	},
+	-- Ende Jobitems Items
 
 
 
@@ -1224,7 +1238,10 @@ return {
 
 
 
-
+	['defklammer'] = {
+		label = 'kaputte Büroklammer',
+		weight = 10,
+	},
 
 
 
@@ -1237,6 +1254,11 @@ return {
 	['lockpick'] = {
 		label = 'Dietrich',
 		weight = 160,
+		consume = 0.2,
+		decay = true,
+		client = {
+			usetime = 1500
+		}
 	},
 
 	['hotwire'] = {
