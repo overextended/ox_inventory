@@ -221,5 +221,68 @@ return {
 	['scrapmetal'] = {
 		label = 'Scrap Metal',
 		weight = 80,
+        }
 	},
+
+    ['key1'] = {
+        label = 'Key 1',
+        weight = 100,
+        stack = false,
+        close = true,
+        description = 'A key that opens something important.',
+        }
+    },
+
+    ['key2'] = {
+        label = 'Key 2',
+        weight = 100,
+        stack = false,
+        close = true,
+        description = 'Another key that opens something important.',
+        }
+    },
+    
+    ['drill'] = {
+        label = 'Drill',
+        weight = 2000,
+        stack = false,
+        close = true,
+        description = 'A powerful drill, useful for breaking into things.',
+        }
+    },
+    
+    ['diamond'] = {
+        label = 'Diamond',
+        weight = 500,
+        stack = true,
+        close = false,
+        description = 'A precious and valuable gemstone.',
+        }
+    },
+    
+    ['gold'] = {
+        label = 'Gold',
+        weight = 500,
+        stack = true,
+        close = false,
+        description = 'A bar of gold, highly valuable.',
+        }
+    },
+    
+    ['coke_pooch'] = {
+        label = 'Coke Pooch',
+        weight = 200,
+        stack = true,
+        close = false,
+        description = 'A package of cocaine, highly illegal.',
+        }
+    },
+    
+    ['nil'] = {
+        label = 'Nil',
+        weight = 1,
+        stack = false,
+        close = true,
+        description = 'An empty item placeholder.',
+    },
 }
