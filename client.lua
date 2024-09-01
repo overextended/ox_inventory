@@ -1349,19 +1349,21 @@ RegisterNetEvent('ox_inventory:setPlayerInventory', function(currentDrops, inven
 				playerCoords = GetEntityCoords(playerPed)
 
 				if currentInventory and not currentInventory.ignoreSecurityChecks then
+                    local maxDistance = (currentInventory.distance or currentInventory.type == 'stash' and 4.8 or 1.8) + 0.2
+
 					if currentInventory.type == 'otherplayer' then
 						local id = GetPlayerFromServerId(currentInventory.id)
 						local ped = GetPlayerPed(id)
 						local pedCoords = GetEntityCoords(ped)
 
-						if not id or #(playerCoords - pedCoords) > 1.8 or not (client.hasGroup(shared.police) or canOpenTarget(ped)) then
+						if not id or #(playerCoords - pedCoords) > maxDistance or not (client.hasGroup(shared.police) or canOpenTarget(ped)) then
 							client.closeInventory()
 							lib.notify({ id = 'inventory_lost_access', type = 'error', description = locale('inventory_lost_access') })
 						else
 							TaskTurnPedToFaceCoord(playerPed, pedCoords.x, pedCoords.y, pedCoords.z, 50)
 						end
 
-					elseif currentInventory.coords and (#(playerCoords - currentInventory.coords) > (currentInventory.distance or 2.0) or canOpenTarget(playerPed)) then
+					elseif currentInventory.coords and (#(playerCoords - currentInventory.coords) > maxDistance or canOpenTarget(playerPed)) then
 						client.closeInventory()
 						lib.notify({ id = 'inventory_lost_access', type = 'error', description = locale('inventory_lost_access') })
 					end
