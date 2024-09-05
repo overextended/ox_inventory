@@ -1,18 +1,5 @@
-$mainColor: #22232c;
-$textColor: #c1c2c5;
-$mainFont: Roboto;
-
-$secondaryColor: rgba(12, 12, 12, 0.4);
-$secondaryColorHighlight: #33343F;
-$secondaryColorLight: rgba(0, 0, 0, 0.5);
-$secondaryColorDark: rgba(12, 12, 12, 0.8);
-
-$gridCols: 5;
-$gridRows: 5;
-$gridSize: 10.2vh;
-$gridGap: 2px;
-$containerSize: calc(#{$gridRows} * #{$gridSize + 0.22vh} + #{$gridRows} * #{$gridGap});
-
+@import "_main.scss";
+@import "hotslot";
 body {
   margin: 0;
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans',
@@ -119,7 +106,6 @@ button:active {
   display: flex;
   flex-direction: row;
   justify-content: center;
-  align-items: center;
   height: 100%;
 
   gap: 20px;
@@ -271,7 +257,8 @@ button:active {
   }
 }
 
-.inventory-grid-container {
+
+.inventory-grid-container-left {
   display: grid;
   height: $containerSize;
   grid-template-columns: repeat($gridCols, $gridSize);
@@ -279,6 +266,16 @@ button:active {
   gap: $gridGap;
   overflow-y: scroll;
 }
+
+.inventory-grid-container-right {
+  display: grid;
+  height: $containerSize;
+  grid-template-columns: repeat($gridCols, $gridSize);
+  grid-auto-rows: $gridSize + 0.22vh;
+  gap: $gridGap;
+  overflow-y: scroll;
+}
+
 
 // inventory slots
 .inventory-slot {

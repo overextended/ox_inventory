@@ -1,0 +1,15 @@
+// Hotslot
+.hotslot-wrapper {
+  display: flex;
+  flex-direction: row;
+  width: inherit;
+  gap: $gridGap;
+  align-items: start;
+  padding-top: 20px;
+
+}
+
+.inventory-slot {
+  width: $gridSize - 0.22vh;
+  height: $gridSize;
+}

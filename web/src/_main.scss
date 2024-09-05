@@ -1,0 +1,15 @@
+$mainColor: #22232c;
+$textColor: #c1c2c5;
+$mainFont: Roboto;
+
+$secondaryColor: rgba(12, 12, 12, 0.4);
+$secondaryColorHighlight: #33343F;
+$secondaryColorLight: rgba(0, 0, 0, 0.5);
+$secondaryColorDark: rgba(12, 12, 12, 0.8);
+
+
+$gridCols: 5;
+$gridRows: 5;
+$gridSize: 10.2vh;
+$gridGap: 2px;
+$containerSize: calc(#{$gridRows} * #{$gridSize + 0.22vh} + #{$gridRows} * #{$gridGap});

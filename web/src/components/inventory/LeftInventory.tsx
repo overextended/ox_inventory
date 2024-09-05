@@ -5,7 +5,8 @@ import { selectLeftInventory } from '../../store/inventory';
 const LeftInventory: React.FC = () => {
   const leftInventory = useAppSelector(selectLeftInventory);
 
-  return <InventoryGrid inventory={leftInventory} />;
+  return <InventoryGrid inventory={leftInventory} direction='left' />;
 };
 
 export default LeftInventory;
+
