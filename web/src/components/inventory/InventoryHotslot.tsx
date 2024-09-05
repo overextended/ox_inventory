@@ -1,8 +1,8 @@
 import React from 'react';
-import { Inventory } from '../../typings';
-import InventorySlot from './InventorySlot';
-import InventoryContext from './InventoryContext';
-import { getTotalWeight } from '../../helpers';
+import { Inventory } from '../../../../../ox_inventory_BIFROST/web/src/typings';
+import InventorySlot from '../../../../../ox_inventory_BIFROST/web/src/components/inventory/InventorySlot';
+import InventoryContext from '../../../../../ox_inventory_BIFROST/web/src/components/inventory/InventoryContext';
+import { getTotalWeight } from '../../../../../ox_inventory_BIFROST/web/src/helpers';
 import { createPortal } from 'react-dom';
 
 const InventoryHotslot: React.FC<{ inventory: Inventory; direction: 'left' | 'right' }> = ({

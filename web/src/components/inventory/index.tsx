@@ -13,7 +13,7 @@ import { closeTooltip } from '../../store/tooltip';
 import InventoryContext from './InventoryContext';
 import { closeContextMenu } from '../../store/contextMenu';
 import Fade from '../utils/transitions/Fade';
-import HotslotInventory from "./HotslotInventory";
+import HotslotInventory from "../../../../../ox_inventory/web/src/components/inventory/HotslotInventory";
 
 
 const Inventory: React.FC = () => {
