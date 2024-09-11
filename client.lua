@@ -1130,19 +1130,21 @@ local function setStateBagHandler(stateId)
 	AddStateBagChangeHandler('instance', stateId, function(_, _, value)
 		currentInstance = value
 
-		-- Iterate over known drops and remove any points in a different instance (ignoring no instance)
-		for dropId, point in pairs(client.drops) do
-			if point.instance then
-				if point.instance ~= value then
-					if point.entity then
-						Utils.DeleteEntity(point.entity)
-						point.entity = nil
-					end
+		if client.drops then
+			-- Iterate over known drops and remove any points in a different instance (ignoring no instance)
+			for dropId, point in pairs(client.drops) do
+				if point.instance then
+					if point.instance ~= value then
+						if point.entity then
+							Utils.DeleteEntity(point.entity)
+							point.entity = nil
+						end
 
-					point:remove()
-				else
-					-- Recreate the drop using data from the old point
-					createDrop(dropId, point)
+						point:remove()
+					else
+						-- Recreate the drop using data from the old point
+						createDrop(dropId, point)
+					end
 				end
 			end
 		end
