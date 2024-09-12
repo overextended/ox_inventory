@@ -1029,6 +1029,10 @@ local function onEnterDrop(point)
 	if not point.instance or point.instance == currentInstance and not point.entity then
 		local model = point.model or client.dropmodel
 
+        -- Prevent breaking inventory on invalid point.model instead use default client.dropmodel
+        if not IsModelValid(model) and not IsModelInCdimage(model) then
+            model = client.dropmodel
+        end
 		lib.requestModel(model)
 
 		local entity = CreateObject(model, point.coords.x, point.coords.y, point.coords.z, false, true, true)
@@ -1126,19 +1130,21 @@ local function setStateBagHandler(stateId)
 	AddStateBagChangeHandler('instance', stateId, function(_, _, value)
 		currentInstance = value
 
-		-- Iterate over known drops and remove any points in a different instance (ignoring no instance)
-		for dropId, point in pairs(client.drops) do
-			if point.instance then
-				if point.instance ~= value then
-					if point.entity then
-						Utils.DeleteEntity(point.entity)
-						point.entity = nil
-					end
+		if client.drops then
+			-- Iterate over known drops and remove any points in a different instance (ignoring no instance)
+			for dropId, point in pairs(client.drops) do
+				if point.instance then
+					if point.instance ~= value then
+						if point.entity then
+							Utils.DeleteEntity(point.entity)
+							point.entity = nil
+						end
 
-					point:remove()
-				else
-					-- Recreate the drop using data from the old point
-					createDrop(dropId, point)
+						point:remove()
+					else
+						-- Recreate the drop using data from the old point
+						createDrop(dropId, point)
+					end
 				end
 			end
 		end
