@@ -438,7 +438,7 @@ function Inventory.SlotWeight(item, slot, ignoreCount)
 	end
 
     if item.hash == `WEAPON_PETROLCAN` then
-        weight += 15000 * (slot.metadata.ammo / 100)
+        slot.metadata.weight = 15000 * (slot.metadata.ammo / 100)
     end
 
 	if slot.metadata.components then
