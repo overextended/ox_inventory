@@ -2419,6 +2419,12 @@ local function giveItem(playerId, slot, target, count)
 
 		if not data then return end
 
+        local targetState = Player(target).state
+
+        if targetState.invBusy then
+            return { 'cannot_give', count, data.label }
+        end
+
 		local item = Items(data.name)
 
 		if not item or data.count < count or not Inventory.CanCarryItem(toInventory, item, count, data.metadata) or #(GetEntityCoords(fromInventory.player.ped) - GetEntityCoords(toInventory.player.ped)) > 15 then
