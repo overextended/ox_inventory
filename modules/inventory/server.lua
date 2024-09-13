@@ -2408,8 +2408,8 @@ RegisterServerEvent('ox_inventory:closeInventory', function()
 	end
 end)
 
-RegisterServerEvent('ox_inventory:giveItem', function(slot, target, count)
-	local fromInventory = Inventories[source]
+local function giveItem(playerId, slot, target, count)
+	local fromInventory = Inventories[playerId]
 	local toInventory = Inventories[target]
 
 	if count <= 0 then count = 1 end
@@ -2422,7 +2422,7 @@ RegisterServerEvent('ox_inventory:giveItem', function(slot, target, count)
 		local item = Items(data.name)
 
 		if not item or data.count < count or not Inventory.CanCarryItem(toInventory, item, count, data.metadata) or #(GetEntityCoords(fromInventory.player.ped) - GetEntityCoords(toInventory.player.ped)) > 15 then
-			return TriggerClientEvent('ox_lib:notify', fromInventory.id, { type = 'error', description = locale('cannot_give', count, data.label) })
+			return { 'cannot_give', count, data.label }
 		end
 
 		local toSlot = Inventory.GetSlotForItem(toInventory, data.name, data.metadata)
@@ -2430,7 +2430,7 @@ RegisterServerEvent('ox_inventory:giveItem', function(slot, target, count)
 		local toRef = ('%s:%s'):format(toInventory.id, toSlot)
 
 		if activeSlots[fromRef] or activeSlots[toRef] then
-			return TriggerClientEvent('ox_lib:notify', fromInventory.id, { type = 'error', description = locale('cannot_give', count, data.label) })
+			return { 'cannot_give', count, data.label }
 		end
 
 		activeSlots[fromRef] = true
@@ -2463,9 +2463,12 @@ RegisterServerEvent('ox_inventory:giveItem', function(slot, target, count)
 			end
 		end
 
-		return TriggerClientEvent('ox_lib:notify', fromInventory.id, { type = 'error', description = locale('cannot_give', count, data.label) })
+		return { 'cannot_give', count, data.label }
 	end
-end)
+end
+
+lib.callback.register('ox_inventory:giveItem', giveItem)
+RegisterServerEvent('ox_inventory:giveItem', function(...) giveItem(source, ...) end)
 
 local function updateWeapon(source, action, value, slot, specialAmmo)
 	local inventory = Inventories[source]
