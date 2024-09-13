@@ -121,6 +121,8 @@ lib.callback.register('ox_inventory:craftItem', function(source, id, index, reci
 			for name, needs in pairs(recipe.ingredients) do
 				local slots = items[name] or items
 
+                if #slots == 0 then return end
+
 				for i = 1, #slots do
 					local slot = slots[i]
 
