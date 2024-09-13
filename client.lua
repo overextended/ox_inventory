@@ -39,7 +39,7 @@ lib.onCache('ped', function(ped)
 	Utils.WeaponWheel()
 end)
 
-plyState:set('invBusy', true, false)
+plyState:set('invBusy', true, true)
 plyState:set('invHotkeys', false, false)
 plyState:set('canUseWeapons', false, false)
 
