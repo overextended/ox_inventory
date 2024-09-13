@@ -213,6 +213,16 @@ lib.callback.register('ox_inventory:craftItem', function(source, id, index, reci
 							end
 
 							invSlot.count -= 1
+							left:syncSlotsWithClients({
+								{
+									item = invSlot,
+									inventory = left.id
+								},
+								{
+									item = invSlot,
+									inventory = left.id
+								}
+							}, true)
 						else
                             Items.UpdateDurability(left, invSlot, item, durability < 0 and 0 or durability)
 						end
