@@ -1,5 +1,13 @@
 return {
 
+    ['business_card'] = {
+        label = 'Business Card',
+        description = 'Looks like someone important. Maybe Roman knows them.',
+        weight = 100,
+        stack = false,
+        consume = 0,
+    },
+
     ['needle'] = {
         label = 'Needle',
         weight = 100,
@@ -8,6 +16,112 @@ return {
         client = {
             export = 'crafting.needle'
         },
+    },
+
+    ['thread'] = {
+        label = 'Thread',
+        weight = 100,
+        stack = true,
+        consume = 0,
+        client = {
+            export = 'crafting.thread'
+        }
+    },
+
+    ['project_fabric'] = {
+        label = 'Fabric Project',
+        weight = 100,
+        stack = false,
+        consume = 0,
+        client = {
+            export = 'crafting.fabric'
+        }
+    },
+    ['project_fabric_linen'] = {
+        label = 'Linen Project',
+        weight = 100,
+        stack = false,
+        consume = 0,
+
+        client = {
+            image = 'project_fabric.png',
+            export = 'crafting.fabric_linen'
+        }
+    },
+    ['project_fabric_leather'] = {
+        label = 'Leather Project',
+        weight = 100,
+        stack = false,
+        consume = 0,
+        client = {
+            image = 'project_fabric.png',
+            export = 'crafting.fabric_leather'
+        }
+    },
+    ['project_fabric_denim'] = {
+        label = 'Leather Project',
+        weight = 100,
+        stack = false,
+        consume = 0,
+        client = {
+            image = 'project_fabric.png',
+            export = 'crafting.fabric_leather'
+        }
+    },
+    ['project_fabric_polyester'] = {
+        label = 'Polyester Project',
+        weight = 100,
+        stack = false,
+        consume = 0,
+        client = {
+            image = 'project_fabric.png',
+            export = 'crafting.fabric_polyester'
+        }
+    },
+    ['linen'] = {
+        label = 'Linen',
+        weight = 100,
+        stack = true,
+        consume = 0,
+        client = {
+            export = 'crafting.linen'
+        }
+    },
+    ['leather'] = {
+        label = 'Linen',
+        weight = 100,
+        stack = true,
+        consume = 0,
+        client = {
+            export = 'crafting.leather'
+        }
+    },
+    ['denim'] = {
+        label = 'Denim',
+        weight = 100,
+        stack = true,
+        consume = 0,
+        client = {
+            export = 'crafting.denim'
+        }
+    },
+    ['polyester'] = {
+        label = 'Polyester',
+        weight = 100,
+        stack = true,
+        consume = 0,
+        client = {
+            export = 'crafting.polyester'
+        }
+    },
+    ['zipper'] = {
+        label = 'Zipper',
+        weight = 100,
+        stack = true,
+        consume = 0,
+        client = {
+            export = 'crafting.zipper',
+        }
     },
 
     ['clothingbag'] = {
@@ -1015,13 +1129,6 @@ return {
     ['steel'] = {
         label = 'Steel',
         weight = 150,
-        stack = true,
-        close = true,
-        description = nil,
-    },
-    ['polyester'] = {
-        label = 'Polyester',
-        weight = 20,
         stack = true,
         close = true,
         description = nil,
@@ -3153,12 +3260,6 @@ return {
                 end
             }
         },
-        crafting = {
-            ['ironore'] = 5,
-            ['aluminium'] = 5,
-            ['copperore'] = 3
-        },
-        blueprintcrafts = 5,
     },
     ['harness'] = {
         label = "Harness",
