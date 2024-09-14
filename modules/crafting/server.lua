@@ -213,6 +213,7 @@ lib.callback.register('ox_inventory:craftItem', function(source, id, index, reci
 							end
 
 							invSlot.count -= 1
+                            invSlot.weight -= item.weight
 							left:syncSlotsWithClients({
 								{
 									item = invSlot,
