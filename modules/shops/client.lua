@@ -149,7 +149,7 @@ local function refreshShops()
 							scenario = target.scenario,
 							label = label,
 							groups = shop.groups,
-							icon = shop.icon,
+							icon = shop.icon or 'fas fa-shopping-basket',
 							iconColor = target.iconColor,
 							onEnter = onEnterShop,
 							onExit = onExitShop,
