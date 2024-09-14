@@ -164,7 +164,7 @@ local function refreshShops()
 							zoneId = Utils.CreateBoxZone(target, {
                                 {
                                     name = shopid,
-                                    icon = 'fas fa-shopping-basket',
+                                    icon = shop.icon or 'fas fa-shopping-basket',
                                     label = label,
                                     groups = shop.groups,
                                     onSelect = function()
