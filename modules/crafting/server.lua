@@ -217,10 +217,6 @@ lib.callback.register('ox_inventory:craftItem', function(source, id, index, reci
 								{
 									item = invSlot,
 									inventory = left.id
-								},
-								{
-									item = invSlot,
-									inventory = left.id
 								}
 							}, true)
 						else
