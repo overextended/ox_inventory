@@ -1532,8 +1532,8 @@ RegisterNetEvent('ox_inventory:setPlayerInventory', function(currentDrops, inven
 							while IsPedPlantingBomb(playerPed) do Wait(0) end
 
 							TriggerServerEvent('ox_inventory:updateWeapon', 'throw', nil, weapon.slot)
+							plyState:set('invBusy', false, true)
 
-							plyState.invBusy = false
 							currentWeapon = nil
 
 							RemoveWeaponFromPed(playerPed, weapon.hash)
@@ -1548,7 +1548,7 @@ RegisterNetEvent('ox_inventory:setPlayerInventory', function(currentDrops, inven
 		end
 	end)
 
-	plyState:set('invBusy', false, false)
+	plyState:set('invBusy', false, true)
 	plyState:set('invOpen', false, false)
 	plyState:set('invHotkeys', true, false)
 	plyState:set('canUseWeapons', true, false)
