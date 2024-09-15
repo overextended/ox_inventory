@@ -22,8 +22,8 @@ interface SlotProps {
   inventoryGroups: Inventory['groups'];
   item: Slot;
 }
-
-// Step 1: Define a function to return the color based on the rarity.
+  
+  // Step 1: Define a function to return the color based on the rarity.
 const getRarityColor = (rarity: string) => {
   switch (rarity) {
     case 'common':
@@ -47,7 +47,7 @@ const InventorySlot: React.ForwardRefRenderFunction<HTMLDivElement, SlotProps> =
 ) => {
   const manager = useDragDropManager();
   const dispatch = useAppDispatch();
-  const timerRef = useRef<NodeJS.Timer | null>(null);
+  const timerRef = useRef<number | null>(null);
 
   const canDrag = useCallback(() => {
     return canPurchaseItem(item, { type: inventoryType, groups: inventoryGroups }) && canCraftItem(item, inventoryType);
@@ -136,50 +136,6 @@ const InventorySlot: React.ForwardRefRenderFunction<HTMLDivElement, SlotProps> =
   };
 
   const refs = useMergeRefs([connectRef, ref]);
-
-     // this one is the blocky one that looks like shit
-  // style={{
-  //   filter:
-  //     !canPurchaseItem(item, { type: inventoryType, groups: inventoryGroups }) || !canCraftItem(item, inventoryType)
-  //       ? 'brightness(80%) grayscale(100%)'
-  //       : undefined,
-  //   opacity: isDragging ? 0.4 : 1.0,
-  //   backgroundImage: `url(${item?.name ? getItemUrl(item as SlotWithItem) : 'none'}), 
-  //     linear-gradient(to top, 
-  //     ${item.metadata?.rarity ? getRarityColor(item.metadata.rarity) : '#ffffff'} 0%, 
-  //     rgba(255, 255, 255, 0) 100%)`,
-  //   backgroundBlendMode: 'multiply',
-  //   border: isOver ? '1px dashed rgba(255,255,255,0.4)' : '',
-  // }}
-
-  // this changes the item's top left text with the item counters
-  // style={{
-  //   filter:
-  //     !canPurchaseItem(item, { type: inventoryType, groups: inventoryGroups }) || !canCraftItem(item, inventoryType)
-  //       ? 'brightness(80%) grayscale(100%)'
-  //       : undefined,
-  //   opacity: isDragging ? 0.4 : 1.0,
-  //   backgroundImage: `url(${item?.name ? getItemUrl(item as SlotWithItem) : 'none'}`,
-  //   border: isOver ? '1px dashed rgba(255,255,255,0.4)' : '',
-  //   // Step 2: Check if the item has a rarity field in its metadata.
-  //   // Step 3: If it does, use the function from step 1 to determine the color.
-  //   color: item.metadata?.rarity ? getRarityColor(item.metadata.rarity) : '#ffffff',
-  // }}
-
-  // radial gradient
-  // style={{
-  //   filter:
-  //     !canPurchaseItem(item, { type: inventoryType, groups: inventoryGroups }) || !canCraftItem(item, inventoryType)
-  //       ? 'brightness(80%) grayscale(100%)'
-  //       : undefined,
-  //   opacity: isDragging ? 0.4 : 1.0,
-  //   backgroundImage: `url(${item?.name ? getItemUrl(item as SlotWithItem) : 'none'}), 
-  //     radial-gradient(circle at center, 
-  //     rgba(255, 255, 255, 0) 0%, 
-  //     ${item.metadata?.rarity ? getRarityColor(item.metadata.rarity) : '#ffffff'} 100%)`,
-  //   backgroundBlendMode: 'multiply',
-  //   border: isOver ? '1px dashed rgba(255,255,255,0.4)' : '',
-  // }}
 
   return (
     <div

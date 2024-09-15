@@ -3,6 +3,12 @@ if not lib then return end
 local CraftingBenches = {}
 local Items = require 'modules.items.client'
 local createBlip = require 'modules.utils.client'.CreateBlip
+local Utils = require 'modules.utils.client'
+local markerColour = { 150, 150, 30 }
+local prompt = {
+    options = { icon = 'fa-wrench' },
+    message = ('**%s**  \n%s'):format(locale('open_crafting_bench'), locale('interact_prompt', GetControlInstructionalButton(0, 38, true):sub(3)))
+}
 
 ---@param id number
 ---@param data table
@@ -64,16 +70,6 @@ local function createCraftingBench(id, data)
 		elseif data.points then
 			data.zones = nil
 
-			---@param point CPoint
-			local function nearbyBench(point)
-				---@diagnostic disable-next-line: param-type-mismatch
-				DrawMarker(2, point.coords.x, point.coords.y, point.coords.z, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.3, 0.2, 0.15, 150, 150, 30, 222, false, false, 0, true, false, false, false)
-
-				if point.isClosest and point.currentDistance < 1.2 and IsControlJustReleased(0, 38) then
-					client.openInventory('crafting', { id = point.benchid, index = point.index })
-				end
-			end
-
 			for i = 1, #data.points do
 				local coords = data.points[i]
 
@@ -83,7 +79,9 @@ local function createCraftingBench(id, data)
 					benchid = id,
 					index = i,
 					inv = 'crafting',
-					nearby = nearbyBench
+                    prompt = prompt,
+                    marker = markerColour,
+					nearby = Utils.nearbyMarker
 				})
 
 				if blip then

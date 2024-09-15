@@ -27,16 +27,11 @@ Citizen.CreateThreadNow(function()
         playerColumn = 'identifier'
         vehicleTable = 'owned_vehicles'
         vehicleColumn = 'plate'
-    elseif shared.framework == 'qb' then
-        playerTable = 'players'
-        playerColumn = 'citizenid'
-        vehicleTable = 'player_vehicles'
-        vehicleColumn = 'plate'
     elseif shared.framework == 'nd' then
-		playerTable = 'nd_characters'
-		playerColumn = 'charid'
-		vehicleTable = 'nd_vehicles'
-		vehicleColumn = 'id'
+      playerTable = 'nd_characters'
+      playerColumn = 'charid'
+      vehicleTable = 'nd_vehicles'
+      vehicleColumn = 'id'
     elseif shared.framework == 'salife' then
         Query.SELECT_GLOVEBOX = 'SELECT vehicle_plate, glovebox FROM `{vehicle_table}` WHERE `{vehicle_column}` = ?'
         Query.SELECT_TRUNK = 'SELECT vehicle_plate, trunk FROM `{vehicle_table}` WHERE `{vehicle_column}` = ?'
@@ -44,6 +39,13 @@ Citizen.CreateThreadNow(function()
         playerColumn = 'user_id'
         vehicleTable = 'salrp_user_vehicles'
         vehicleColumn = 'vehicle_plate'
+    elseif shared.framework == 'qbx' then
+        playerTable = 'players'
+        playerColumn = 'citizenid'
+        vehicleTable = 'player_vehicles'
+        vehicleColumn = 'id'
+    else
+        return
     end
 
     for k, v in pairs(Query) do

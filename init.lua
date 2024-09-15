@@ -21,6 +21,9 @@ shared = {
 	police = json.decode(GetConvar("inventory:police", '["police", "sheriff"]')),
 }
 
+shared.dropslots = GetConvarInt('inventory:dropslots', shared.playerslots)
+shared.dropweight = GetConvarInt('inventory:dropslotcount', shared.playerweight)
+
 do
 	if type(shared.police) == "string" then
 		shared.police = { shared.police }
@@ -47,7 +50,7 @@ if IsDuplicityVersion() then
 			"inventory:vehicleloot",
 			[[
 			[
-				["cola", 1, 1],
+				["sprunk", 1, 1],
 				["water", 1, 1],
 				["garbage", 1, 2, 50],
 				["panties", 1, 1, 5],
@@ -77,48 +80,47 @@ if IsDuplicityVersion() then
 		server.accounts[accounts[i]] = 0
 	end
 else
-	PlayerData = {}
-	client = {
-		autoreload = GetConvarInt("inventory:autoreload", 0) == 1,
-		screenblur = GetConvarInt("inventory:screenblur", 1) == 1,
-		keys = json.decode(GetConvar("inventory:keys", "")) or { "F2", "K", "TAB" },
-		enablekeys = json.decode(GetConvar("inventory:enablekeys", "[249]")),
-		aimedfiring = GetConvarInt("inventory:aimedfiring", 0) == 1,
-		giveplayerlist = GetConvarInt("inventory:giveplayerlist", 0) == 1,
-		weaponanims = GetConvarInt("inventory:weaponanims", 1) == 1,
-		itemnotify = GetConvarInt("inventory:itemnotify", 1) == 1,
-		weaponnotify = GetConvarInt("inventory:weaponnotify", 1) == 1,
-		imagepath = GetConvar("inventory:imagepath", "nui://ox_inventory/web/images"),
-		dropprops = GetConvarInt("inventory:dropprops", 0) == 1,
-		dropmodel = joaat(GetConvar("inventory:dropmodel", "prop_med_bag_01b")),
-		weaponmismatch = GetConvarInt("inventory:weaponmismatch", 1) == 1,
-		ignoreweapons = json.decode(GetConvar("inventory:ignoreweapons", "[]")),
-		suppresspickups = GetConvarInt("inventory:suppresspickups", 1) == 1,
-	}
+    PlayerData = {}
+    client = {
+        autoreload = GetConvarInt('inventory:autoreload', 0) == 1,
+        screenblur = GetConvarInt('inventory:screenblur', 1) == 1,
+        keys = json.decode(GetConvar('inventory:keys', '')) or { 'F2', 'K', 'TAB' },
+        enablekeys = json.decode(GetConvar('inventory:enablekeys', '[249]')),
+        aimedfiring = GetConvarInt('inventory:aimedfiring', 0) == 1,
+        giveplayerlist = GetConvarInt('inventory:giveplayerlist', 0) == 1,
+        weaponanims = GetConvarInt('inventory:weaponanims', 1) == 1,
+        itemnotify = GetConvarInt('inventory:itemnotify', 1) == 1,
+        weaponnotify = GetConvarInt('inventory:weaponnotify', 1) == 1,
+        imagepath = GetConvar('inventory:imagepath', 'nui://ox_inventory/web/images'),
+        dropprops = GetConvarInt('inventory:dropprops', 0) == 1,
+        dropmodel = joaat(GetConvar('inventory:dropmodel', 'prop_med_bag_01b')),
+        weaponmismatch = GetConvarInt('inventory:weaponmismatch', 1) == 1,
+        ignoreweapons = json.decode(GetConvar('inventory:ignoreweapons', '[]')),
+        suppresspickups = GetConvarInt('inventory:suppresspickups', 1) == 1,
+        disableweapons = GetConvarInt('inventory:disableweapons', 0) == 1,
+    }
 
-	local ignoreweapons = table.create(0, (client.ignoreweapons and #client.ignoreweapons or 0) + 3)
+    local ignoreweapons = table.create(0, (client.ignoreweapons and #client.ignoreweapons or 0) + 3)
 
-	for i = 1, #client.ignoreweapons do
-		local weapon = client.ignoreweapons[i]
-		ignoreweapons[tonumber(weapon) or joaat(weapon)] = true
-	end
+    for i = 1, #client.ignoreweapons do
+        local weapon = client.ignoreweapons[i]
+        ignoreweapons[tonumber(weapon) or joaat(weapon)] = true
+    end
 
-	ignoreweapons[`WEAPON_UNARMED`] = true
-	ignoreweapons[`WEAPON_HANDCUFFS`] = true
-	ignoreweapons[`WEAPON_GARBAGEBAG`] = true
-	ignoreweapons[`OBJECT`] = true
-	ignoreweapons[`WEAPON_HOSE`] = true
+    ignoreweapons[`WEAPON_UNARMED`] = true
+    ignoreweapons[`WEAPON_HANDCUFFS`] = true
+    ignoreweapons[`WEAPON_GARBAGEBAG`] = true
+    ignoreweapons[`OBJECT`] = true
+    ignoreweapons[`WEAPON_HOSE`] = true
 
-	client.ignoreweapons = ignoreweapons
+    client.ignoreweapons = ignoreweapons
 end
 
 function shared.print(...)
 	print(string.strjoin(" ", ...))
 end
 
-function shared.info(...)
-	shared.print("^2[info]^7", ...)
-end
+function shared.info(...) lib.print.info(string.strjoin(' ', ...)) end
 
 ---Throws a formatted type error.
 ---```lua
