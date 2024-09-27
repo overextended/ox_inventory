@@ -51,6 +51,8 @@ local Inventory
 CreateThread(function()
 	Inventory = require 'modules.inventory.server'
 
+    if not lib then return end
+
 	if shared.framework == 'esx' then
 		local success, items = pcall(MySQL.query.await, 'SELECT * FROM items')
 
