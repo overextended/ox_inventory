@@ -334,6 +334,8 @@ function Items.UpdateDurability(inv, slot, item, value, ostime)
     }, true)
 end
 
+---@deprecated
+---Use the 'ox_inventory:usedItem' event or the 'usingItem' or 'buyItem' hooks
 local function Item(name, cb)
 	local item = ItemList[name]
 
