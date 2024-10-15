@@ -2412,12 +2412,19 @@ local function giveItem(playerId, slot, target, count)
 	local fromInventory = Inventories[playerId]
 	local toInventory = Inventories[target]
 
-	if count <= 0 then count = 1 end
+	if count < 0 then return end
+	
 
 	if toInventory?.player then
 		local data = fromInventory.items[slot]
 
 		if not data then return end
+
+		if count == 0 then
+			count = data.count 
+		elseif count > data.count then
+			count = data.count
+		end
 
         local targetState = Player(target).state
 
