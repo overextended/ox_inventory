@@ -99,15 +99,294 @@ Item('bandage', function(data, slot)
 	end)
 end)
 
-Item('armour', function(data, slot)
+Item('drug_lsd', function(data, slot)
+	local maxHealth = GetEntityMaxHealth(cache.ped)
+	local health = GetEntityHealth(cache.ped)
+	ox_inventory:useItem(data, function(data)
+		if data then
+			SetEntityHealth(cache.ped, math.min(maxHealth, math.floor(health + 25)))
+		end
+		local takingMethod = "pill"
+		local effectsDuration = 120 -- seconds
+		local effects = {
+			"confused_visual",
+			"foggy_visual",
+			"blue_visual"
+		}
+		TriggerEvent("drugs_creator:drugEffects", takingMethod, effects, effectsDuration)
+	end)
+end)
+
+Item('opium', function(data, slot)
+	local maxHealth = GetEntityMaxHealth(cache.ped)
+	local health = GetEntityHealth(cache.ped)
+	ox_inventory:useItem(data, function(data)
+		if data then
+			SetEntityHealth(cache.ped, math.min(maxHealth, math.floor(health + 20)))
+		end
+		local takingMethod = "smoke"
+		local effectsDuration = 90 -- seconds
+		local effects = {
+			"yellow_visual",
+			"foggy_visual"
+		}
+		TriggerEvent("drugs_creator:drugEffects", takingMethod, effects, effectsDuration)
+	end)
+end)
+
+Item('ibu_400_akut', function(data, slot)
+	local maxHealth = GetEntityMaxHealth(cache.ped)
+	local health = GetEntityHealth(cache.ped)
+	ox_inventory:useItem(data, function(data)
+		if data then
+			SetEntityHealth(cache.ped, math.min(maxHealth, math.floor(health + 50)))
+			--lib.notify({ description = 'You feel better already' })
+		end
+	end)
+end)
+
+Item('reddragon', function(data, slot)
+	local maxHealth = GetEntityMaxHealth(cache.ped)
+	local health = GetEntityHealth(cache.ped)
+	ox_inventory:useItem(data, function(data)
+		if data then
+			SetPlayerStamina(cache.ped, math.min(maxStamina, math.floor(stamina + 20)))
+			--lib.notify({ description = 'You feel better already' })
+		end
+	end)
+end)
+
+Item('orthomol', function(data, slot)
 	if GetPedArmour(cache.ped) < 100 then
 		ox_inventory:useItem(data, function(data)
 			if data then
 				SetPlayerMaxArmour(PlayerData.id, 100)
-				SetPedArmour(cache.ped, 100)
+				AddArmourToPed(cache.ped, 15)
 			end
 		end)
 	end
+end)
+
+Item('kevlar', function(data, slot)
+	if GetPedArmour(cache.ped) < 100 then
+		ox_inventory:useItem(data, function(data)
+			if data then
+				SetPlayerMaxArmour(PlayerData.id, 100)
+				AddArmourToPed(cache.ped, 100)
+			end
+		end)
+	end
+end)
+
+Item('kevlarm', function(data, slot)
+	if GetPedArmour(cache.ped) < 100 then
+		ox_inventory:useItem(data, function(data)
+			if data then
+				SetPlayerMaxArmour(PlayerData.id, 100)
+				AddArmourToPed(cache.ped, 75)
+			end
+		end)
+	end
+end)
+
+Item('kevlars', function(data, slot)
+	if GetPedArmour(cache.ped) < 100 then
+		ox_inventory:useItem(data, function(data)
+			if data then
+				SetPlayerMaxArmour(PlayerData.id, 100 )
+				AddArmourToPed(cache.ped, 40)
+			end
+		end)
+	end
+end)
+
+Item('afghan_joint', function(data, slot)
+		ox_inventory:useItem(data, function(data)
+				SetPlayerMaxArmour(PlayerData.id, 100 )
+				AddArmourToPed(cache.ped, 15)
+				--local takingMethod = "smoke"
+				local effects = {
+					"visual_shaking",
+					"green_visual",
+					"confused_visual",
+					"foggy_visual",
+				}
+				local effectsDuration = 120 -- seconds
+
+				TriggerEvent("drugs_creator:drugEffects", takingMethod, effects, effectsDuration)
+		end)
+end)
+
+Item('kokain', function(data, slot)
+		ox_inventory:useItem(data, function(data)
+				SetPlayerMaxArmour(PlayerData.id, 100 )
+				AddArmourToPed(cache.ped, 25)
+				--local takingMethod = "smoke"
+				local effectsDuration = 90 -- seconds
+				local effects = {
+					"visual_shaking",
+					"pink_visual",
+					"foggy_visual",
+					"sprint_faster",
+				}
+				TriggerEvent("drugs_creator:drugEffects", takingMethod, effects, effectsDuration)
+		end)
+	
+end)
+
+Item('kokain1000', function(data, slot)
+		ox_inventory:useItem(data, function(data)
+			TriggerServerEvent ('mor-kokain1000')
+		end)
+	
+end)
+
+Item('meth', function(data, slot)
+	if GetPedArmour(cache.ped) < 100 then
+		ox_inventory:useItem(data, function(data)
+			if data then
+				SetPlayerMaxArmour(PlayerData.id, 100 )
+				AddArmourToPed(cache.ped, 25)
+				exports["acidtrip"]:DoAcid(150000)
+			end
+		end)
+	end
+end)
+
+Item('ecstasy', function(data, slot)
+	local maxHealth = GetEntityMaxHealth(cache.ped)
+	local health = GetEntityHealth(cache.ped)
+	if GetPedArmour(cache.ped) < 100 then
+		ox_inventory:useItem(data, function(data)
+			if data then
+				SetPlayerMaxArmour(PlayerData.id, 100 )
+				AddArmourToPed(cache.ped, 30)
+				SetEntityHealth(cache.ped, math.min(maxHealth, math.floor(health + 20)))
+				exports["acidtrip"]:DoAcid(120000)
+				--lib.notify({ description = 'You feel better already' })
+			end
+		end)
+	end
+end)
+
+Item('waschset', function(data, slot)
+	ox_inventory:useItem(data, function(data)
+		if data then
+			TriggerEvent('interaction:waschen')
+		end
+	end)
+end)
+
+Item('orthomol', function(data, slot)
+	ox_inventory:useItem(data, function(data)
+		if data then
+			local amount = -40
+			TriggerServerEvent('SetStress', amount)
+		end
+	end)
+end)
+
+Item('cigarette', function(data, slot)
+	ox_inventory:useItem(data, function(data)
+		if data then
+			ExecuteCommand('e smoke2')
+		end
+	end)
+end)
+
+Item('cigar', function(data, slot)
+	ox_inventory:useItem(data, function(data)
+		if data then
+			ExecuteCommand('e cigar2')
+		end
+	end)
+end)
+
+Item('vape', function(data, slot)
+	ox_inventory:useItem(data, function(data)
+		if data then
+			TriggerEvent('esx_extraitems:vape')
+		end
+	end)
+end)
+
+Item('bag', function(data, slot)
+	ox_inventory:useItem(data, function(data)
+		if data then
+			SetPedComponentVariation(GetPlayerPed(-1), 5, 82, 0, 0)
+			Wait(100)
+            TriggerEvent("illenium-appearance:client:updateOutfit")
+			TriggerServerEvent('mor_base:bag', source)
+		end
+	end)
+end)
+
+Item('bag2', function(data, slot)
+	ox_inventory:useItem(data, function(data)
+		if data then
+			SetPedComponentVariation(GetPlayerPed(-1), 5, 41, 0, 0)
+			Wait(100)
+            TriggerEvent("illenium-appearance:client:updateOutfit")
+			TriggerServerEvent('mor_base:bag2', source)
+		end
+	end)
+end)
+
+Item('nobag', function(data, slot)
+	ox_inventory:useItem(data, function(data)
+		if data then
+			local playerWeight = exports.ox_inventory:GetPlayerWeight()
+			Wait(100)
+			if playerWeight <= 30000 then
+				SetPedComponentVariation(GetPlayerPed(-1), 5, 0, 0, 0)
+				TriggerEvent("illenium-appearance:client:updateOutfit")
+				TriggerServerEvent('mor_base:nobag', source)
+			else
+				lib.notify({
+					title = 'Tasche',
+					position = 'top-left',
+					description = 'Leider kann die Tasche nicht abgelegt werden. zuviel Gewicht.',
+					duration = 4000,
+					style = {backgroundColor = '#DBAB50', color = '#FF0000', ['.description'] = {color = '#F9F3E7'}},
+					icon = 'hand',
+					iconColor = '#FF0000'
+				})
+			end
+		end
+	end)
+end)
+
+Item('nobag2', function(data, slot)
+	ox_inventory:useItem(data, function(data)
+		if data then
+			local playerWeight = exports.ox_inventory:GetPlayerWeight()
+			Wait(100)
+			if playerWeight <= 30000 then
+				print(json.encode(playerWeight))
+				SetPedComponentVariation(GetPlayerPed(-1), 5, 0, 0, 0)
+				TriggerEvent("illenium-appearance:client:updateOutfit")
+				TriggerServerEvent('mor_base:nobag2', source)
+			else
+				lib.notify({
+					title = 'Tasche',
+					position = 'top-left',
+					description = 'Leider kann die Tasche nicht abgelegt werden. zuviel Gewicht.',
+					duration = 4000,
+					style = {backgroundColor = '#DBAB50', color = '#FF0000', ['.description'] = {color = '#F9F3E7'}},
+					icon = 'hand',
+					iconColor = '#FF0000'
+				})
+			end
+		end
+	end)
+end)
+
+Item('stancerkit', function(data, slot)
+	ox_inventory:useItem(data, function(data)
+		if data then
+			exports.renzu_stancer:OpenStancer()
+		end
+	end)
 end)
 
 client.parachute = false
@@ -120,7 +399,7 @@ Item('parachute', function(data, slot)
 				GiveWeaponToPed(cache.ped, chute, 0, true, false)
 				SetPedGadget(cache.ped, chute, true)
 				lib.requestModel(1269906701)
-				client.parachute = {CreateParachuteBagObject(cache.ped, true, true), slot?.metadata?.type or -1}
+				client.parachute = CreateParachuteBagObject(cache.ped, true, true)
 				if slot.metadata.type then
 					SetPlayerParachuteTintIndex(PlayerData.id, slot.metadata.type)
 				end
@@ -185,6 +464,92 @@ Item('clothing', function(data, slot)
 		end
 	end)
 end)
+
+Item('kleidertasche', function(data, slot)
+	ox_inventory:useItem(data, function(data)
+		if data then
+			TriggerEvent('illenium-appearance:client:openOutfitMenu')
+		end
+	end)
+end)
+
+Item('zigarette', function(data, slot)
+	ox_inventory:useItem(data, function(data)
+		if data then
+			ExecuteCommand('e smoke2')
+		end
+	end)
+end)
+
+Item('cigar', function(data, slot)
+	ox_inventory:useItem(data, function(data)
+		if data then
+			ExecuteCommand('e cigar2')
+		end
+	end)
+end)
+
+Item('redwoodgold2', function(data, slot)
+	ox_inventory:useItem(data, function(data)
+		if data then
+			ExecuteCommand('e picklock')
+			Wait(2000)
+			ExecuteCommand('e picklock')
+		end
+	end)
+end)
+
+Item('oxygen_mask', function(data, slot)
+	ox_inventory:useItem(data, function(data)
+		if data then
+			TriggerEvent('vrp:oxygen_mask')
+		end
+	end)
+end)
+
+
+Item('fixkit', function(data, slot)
+	ox_inventory:useItem(data, function(data)
+		if data then
+			TriggerEvent('mor_base:vehrepair')
+		end
+	end)
+end)
+
+Item('waschset', function(data, slot)
+	ox_inventory:useItem(data, function(data)
+		if data then
+			TriggerEvent('mor_base:vehclean')
+		end
+	end)
+end)
+
+--[[Item('joint', function(data, slot)
+	ox_inventory:useItem(data, function(data)
+			SetPlayerMaxArmour(PlayerData.id, 100 )
+			AddArmourToPed(cache.ped, 10)
+			--local takingMethod = "smoke"
+			local effects = {
+				"visual_shaking",
+				"green_visual",
+				"confused_visual",
+				"foggy_visual",
+			}
+			local effectsDuration = 120 -- seconds
+
+			TriggerEvent("drugs_creator:drugEffects", takingMethod, effects, effectsDuration)
+	end)
+end)]]
+
+--[[Item('crystel', function(data, slot)
+	ox_inventory:useItem(data, function(data)
+		if data then
+			SetPlayerMaxArmour(PlayerData.id, 100 )
+			AddArmourToPed(cache.ped, 25)
+			exports["acidtrip"]:DoAcid(120000)
+		end
+	end)
+end)]]
 
 -----------------------------------------------------------------------------------------------
 
