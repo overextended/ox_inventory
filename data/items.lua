@@ -226,7 +226,11 @@ return {
 		client = {
 			status = { hunger = 320000 },
 			anim = 'eating',
+<<<<<<< HEAD
 			prop = { model = `prop_taco_02`, pos = vec3(0.01, 0.01, 0.06), rot = vec3(0.0, 0.0, -1.5) },
+=======
+			prop = { model = 'prop_taco_02', pos = vec3(0.01, 0.01, 0.06), rot = vec3(0.0, 0.0, -1.5) },
+>>>>>>> 0535af0ae285cf54ef47f4d31fa356d71031e94e
 			usetime = 3000,
 			cancel = true,
 			--notification = 'Lecker Tee, der ist echt gut'
@@ -816,6 +820,16 @@ return {
 		close = true,
 		description = nil
 	},
+<<<<<<< HEAD
+=======
+	['pfandflasche'] = {
+		label = 'Pfandflasche',
+		weight = 20,
+		stack = true,
+		close = true,
+		description = nil
+	},
+>>>>>>> 0535af0ae285cf54ef47f4d31fa356d71031e94e
 	['aluschrott'] = {
 		label = 'Aluminiumschrott',
 		weight = 5,
@@ -1062,8 +1076,20 @@ return {
 
 
 
+<<<<<<< HEAD
 
 
+=======
+	-- Anfang Jobitems Items
+	['elektrokoffer'] = {
+		label = 'Elektriker Koffer',
+		weight = 0,
+		stack = false,
+		close = true,
+		description = 'Zur Reperatur von Elektrik, für den Job Elektriker benötigt.'
+	},
+	-- Ende Jobitems Items
+>>>>>>> 0535af0ae285cf54ef47f4d31fa356d71031e94e
 
 
 
@@ -1104,6 +1130,149 @@ return {
 			anim = { dict = 'mp_player_intdrink', clip = 'loop_bottle' },
 			prop = { model = 'prop_cs_panties_02', pos = vec3(0.03, 0.0, 0.02), rot = vec3(0.0, -13.5, -1.5) },
 			usetime = 2500
+<<<<<<< HEAD
+=======
+		}
+	},
+	['black_card'] = {
+		label = 'Waschkarte',
+		weight = 1,
+		stack = false,
+		close = true,
+		consume = 0,
+		description = 'illegal'
+	},
+	['mastercard'] = {
+		label = 'Mastercard',
+		weight = 1,
+		stack = false,
+		close = true,
+		description = nil
+	},
+	['parachute'] = {
+		label = 'Fallschirm',
+		weight = 3000,
+		stack = false,
+		client = {
+			anim = { dict = 'clothingshirt', clip = 'try_shirt_positive_d' },
+			usetime = 1500
+		}
+	},
+	['bag'] = {
+		label = 'Tasche',
+		weight = 1500,
+		stack = false,
+		close = true,
+		consume = 1,
+		description = nil,
+		client = {
+			anim = { dict = 'clothingshirt', clip = 'try_shirt_positive_d' },
+			usetime = 1500
+		}
+	},
+	['nobag'] = {
+		label = 'keine Tasche',
+		weight = 1,
+		stack = false,
+		close = true,
+		consume = 0,
+		description = nil,
+		client = {
+			anim = { dict = 'clothingshirt', clip = 'try_shirt_positive_d' },
+			usetime = 1500
+		}
+	},
+	['bag2'] = {
+		label = 'Tasche II',
+		weight = 1300,
+		stack = false,
+		close = true,
+		consume = 1,
+		description = nil,
+		client = {
+			anim = { dict = 'clothingshirt', clip = 'try_shirt_positive_d' },
+			usetime = 1500
+		}
+	},
+	['nobag2'] = {
+		label = 'keine Tasche II',
+		weight = 1,
+		stack = false,
+		close = true,
+		consume = 0,
+		description = nil,
+		client = {
+			anim = { dict = 'clothingshirt', clip = 'try_shirt_positive_d' },
+			usetime = 1500
+		}
+	},
+	['kleidertasche'] = {
+		label = "Kleidertasche",
+		description = 'Eine kleine Tasche mit Deinen Outfits',
+		weight = 2500,
+		stack = false,
+		close = true,
+		consume = 0,
+	},
+	['waschset'] = {
+		label = 'Waschset',
+		weight = 1150,
+		stack = true,
+		close = true,
+		client = {
+			usetime = 0
+		},
+		description = nil
+	},
+	['fixkit'] = {
+		label = 'Reparatur Set',
+		weight = 2500,
+		stack = true,
+		close = true,
+		description = nil
+	},
+	['blaettchen'] = {
+		label = 'Packung Blättchen',
+		weight = 50,
+		stack = true,
+		close = true,
+		consume = 1,
+		description = 'Packung'
+	},
+	['eblaettchen'] = {
+		label = 'Blättchen',
+		weight = 1,
+		stack = true,
+		close = true,
+		consume = 1,
+		description = 'einzelne Blättchen'
+	},
+
+
+
+
+
+	['defklammer'] = {
+		label = 'kaputte Büroklammer',
+		weight = 10,
+	},
+
+
+
+
+
+
+
+
+
+	['lockpick'] = {
+		label = 'Dietrich',
+		weight = 160,
+		consume = 0.2,
+		decay = true,
+		client = {
+			usetime = 1500
+>>>>>>> 0535af0ae285cf54ef47f4d31fa356d71031e94e
 		}
 	},
 	['black_card'] = {
@@ -1234,6 +1403,7 @@ return {
 
 
 
+<<<<<<< HEAD
 	['lockpick'] = {
 		label = 'Dietrich',
 		weight = 160,
@@ -1244,6 +1414,13 @@ return {
 		weight = 160,
 	},
 
+=======
+	['hotwire'] = {
+		label = 'Seitenschneider',
+		weight = 160,
+	},
+
+>>>>>>> 0535af0ae285cf54ef47f4d31fa356d71031e94e
 	['fakeplate'] = {
 		label = 'Falsches Kennzeichen',
 		consume = 0,

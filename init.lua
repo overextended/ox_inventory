@@ -14,7 +14,7 @@ end
 
 shared = {
     resource = GetCurrentResourceName(),
-    framework = GetConvar('inventory:framework', 'esx'),
+    framework = GetConvar('inventory:framework', 'ox_core'),
     playerslots = GetConvarInt('inventory:slots', 50),
     playerweight = GetConvarInt('inventory:weight', 30000),
     target = GetConvarInt('inventory:target', 0) == 1,
@@ -112,7 +112,7 @@ end
 
 function shared.print(...) print(string.strjoin(' ', ...)) end
 
-function shared.info(...) shared.print('^2[info]^7', ...) end
+function shared.info(...) lib.print.info(string.strjoin(' ', ...)) end
 
 ---Throws a formatted type error.
 ---```lua

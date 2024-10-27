@@ -171,6 +171,7 @@ local function refreshShops()
                                         client.openInventory('shop', { id = i, type = type })
                                     end,
                                     iconColor = target.iconColor,
+                                    distance = target.distance
                                 }
                             }),
 							blip = blip and createBlip(blip, target.coords)

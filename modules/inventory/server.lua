@@ -95,8 +95,9 @@ local GetVehicleNumberPlateText = GetVehicleNumberPlateText
 ---Atempts to lazily load inventory data from the database or create a new player-owned instance for "personal" stashes
 ---@param data table
 ---@param player table
+---@param ignoreSecurityChecks boolean
 ---@return OxInventory | false | nil
-local function loadInventoryData(data, player)
+local function loadInventoryData(data, player, ignoreSecurityChecks)
 	local source = source
 	local inventory
 
@@ -178,7 +179,7 @@ local function loadInventoryData(data, player)
 
 		if stash then
 			if stash.jobs then stash.groups = stash.jobs end
-			if player and stash.groups and not server.hasGroup(player, stash.groups) then return end
+			if not ignoreSecurityChecks and player and stash.groups and not server.hasGroup(player, stash.groups) then return end
 
 			local owner
 
@@ -194,6 +195,10 @@ local function loadInventoryData(data, player)
 
 			if not inventory then
 				inventory = Inventory.Create(stash.name, stash.label or stash.name, 'stash', stash.slots, 0, stash.maxWeight, owner, nil, stash.groups)
+
+                if stash.coords then
+					inventory.coords = stash.coords
+				end
 			end
 		end
 	end
@@ -207,20 +212,20 @@ local function loadInventoryData(data, player)
 end
 
 setmetatable(Inventory, {
-	__call = function(self, inv, player)
+	__call = function(self, inv, player, ignoreSecurityChecks)
 		if not inv then
 			return self
 		elseif type(inv) == 'table' then
 			if inv.__index then return inv end
 
-			return not inv.owner and Inventories[inv.id] or loadInventoryData(inv, player)
+			return not inv.owner and Inventories[inv.id] or loadInventoryData(inv, player, ignoreSecurityChecks)
 		end
 
-		return Inventories[inv] or loadInventoryData({ id = inv }, player)
+		return Inventories[inv] or loadInventoryData({ id = inv }, player, ignoreSecurityChecks)
 	end
 })
 
----@cast Inventory +fun(inv: inventory, player?: inventory): OxInventory|false|nil
+---@cast Inventory +fun(inv: inventory, player?: inventory, ignoreSecurityChecks?: boolean): OxInventory|false|nil
 
 ---@param inv inventory
 ---@param owner? string | number
