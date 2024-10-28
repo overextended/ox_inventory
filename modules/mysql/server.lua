@@ -51,12 +51,12 @@ Citizen.CreateThreadNow(function()
     local success, result = pcall(MySQL.scalar.await, 'SELECT 1 FROM ox_inventory')
 
     if not success then
-        MySQL.query([[CREATE TABLE 'ox_inventory' (
-			'owner' varchar(60) DEFAULT NULL,
-			'name' varchar(100) NOT NULL,
-			'data' longtext DEFAULT NULL,
-			'lastupdated' timestamp NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
-			UNIQUE KEY 'owner' ('owner','name')
+        MySQL.query([[CREATE TABLE `ox_inventory` (
+			`owner` varchar(60) DEFAULT NULL,
+			`name` varchar(100) NOT NULL,
+			`data` longtext DEFAULT NULL,
+			`lastupdated` timestamp NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
+			UNIQUE KEY `owner` (`owner`,`name`)
 		)]])
     else
         -- Shouldn't be needed anymore; was used for some data conversion for v2.5.0 (back in March 2022)
@@ -74,7 +74,7 @@ Citizen.CreateThreadNow(function()
         -- 			local name = data.name:sub(0, #data.name - #snip)
 
         -- 			count += 1
-        -- 			parameters[count] = { query = 'UPDATE ox_inventory SET 'name' = ? WHERE 'owner' = ? AND 'name' = ?', values = { name, data.owner, data.name } }
+        -- 			parameters[count] = { query = 'UPDATE ox_inventory SET `name` = ? WHERE `owner` = ? AND `name` = ?', values = { name, data.owner, data.name } }
         -- 		end
         -- 	end
 

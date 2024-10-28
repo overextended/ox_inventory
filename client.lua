@@ -50,7 +50,7 @@ local function canOpenInventory()
 
     if IsPauseMenuActive() then return end
 
-    if invBusy or invOpen == nil or (currentWeapon.timer or 0) > 0 then
+    if invBusy or invOpen == nil or (currentWeapon?.timer or 0) > 0 then
         return shared.info('cannot open inventory', '(is busy)')
     end
 
@@ -88,7 +88,7 @@ local defaultInventory = {
 local currentInventory = defaultInventory
 
 local function closeTrunk()
-	if currentInventory.type == 'trunk' then
+	if currentInventory?.type == 'trunk' then
 		local coords = GetEntityCoords(playerPed, true)
 		---@todo animation for vans?
 		Utils.PlayAnimAdvanced(0, 'anim@heists@fleeca_bank@scope_out@return_case', 'trevor_action', coords.x, coords.y, coords.z, 0.0, 0.0, GetEntityHeading(playerPed), 2.0, 2.0, 1000, 49, 0.25)
@@ -132,9 +132,9 @@ function client.openInventory(inv, data)
 			end
 
 			if inv ~= 'drop' and inv ~= 'container' then
-				if (data.id or data) == currentInventory.id then
+				if (data?.id or data) == currentInventory?.id then
 					-- Triggering exports.ox_inventory:openInventory('stash', 'mystash') twice in rapid succession is weird behaviour
-					return warn(("script tried to open inventory, but it is already open\n%s"):format(Citizen.InvokeNative('FORMAT_STACK_TRACE' , 0xFFFFFFFF, nil, 0, Citizen.ResultAsString())))
+					return warn(("script tried to open inventory, but it is already open\n%s"):format(Citizen.InvokeNative(`FORMAT_STACK_TRACE` & 0xFFFFFFFF, nil, 0, Citizen.ResultAsString())))
 				else
 					return client.closeInventory()
 				end
@@ -199,7 +199,7 @@ function client.openInventory(inv, data)
         if left then
             right = CraftingBenches[data.id]
 
-            if not right.items then return end
+            if not right?.items then return end
 
             local coords, distance
 
@@ -302,7 +302,7 @@ function client.openInventory(inv, data)
                 currentInventory.door = vehicleClass == 12 and { 2, 3 } or Vehicles.Storage[vehicleHash] and 4 or 5
             end
 
-            while currentInventory.entity == entity and invOpen and DoesEntityExist(entity) and Inventory.CanAccessTrunk(entity) do
+            while currentInventory?.entity == entity and invOpen and DoesEntityExist(entity) and Inventory.CanAccessTrunk(entity) do
                 Wait(100)
             end
 
@@ -557,7 +557,7 @@ local function useSlot(slot, noAnim)
 				if currentAmmo == clipSize then return end
 
 				useItem(data, function(resp)
-					if not resp or resp.name ~= currentWeapon.ammo then return end
+					if not resp or resp.name ~= currentWeapon?.ammo then return end
 
 					if currentWeapon.metadata.specialAmmo ~= resp.metadata.type and type(currentWeapon.metadata.specialAmmo) == 'string' then
 						local clipComponentKey = ('%s_CLIP'):format(Items[currentWeapon.name].model:gsub('WEAPON_', 'COMPONENT_'))
@@ -698,9 +698,9 @@ local function useButton(id, slot)
 		if not item then return end
 
 		local data = Items[item.name]
-		local buttons = data.buttons
+		local buttons = data?.buttons
 
-		if buttons and buttons[id].action then
+		if buttons and buttons[id]?.action then
 			buttons[id].action(slot)
 		end
 	end
@@ -916,7 +916,7 @@ local function updateInventory(data, weight)
 			v.inventory = 'player'
 			local item = v.item
 
-			if currentWeapon.slot == item.slot then
+			if currentWeapon?.slot == item?.slot then
                 if item.metadata then
 				    currentWeapon.metadata = item.metadata
 				    TriggerEvent('ox_inventory:currentWeapon', currentWeapon)
@@ -958,7 +958,7 @@ local function updateInventory(data, weight)
                     TriggerEvent('esx:removeInventoryItem', item.name, item.count)
                 end
 
-                if item.client.remove then
+                if item.client?.remove then
                     item.client.remove(item.count)
                 end
             elseif count > 0 then
@@ -966,7 +966,7 @@ local function updateInventory(data, weight)
                     TriggerEvent('esx:addInventoryItem', item.name, item.count)
                 end
 
-                if item.client.add then
+                if item.client?.add then
                     item.client.add(item.count)
                 end
             end
@@ -1081,7 +1081,7 @@ RegisterNetEvent('ox_inventory:createDrop', function(dropId, data, owner, slot)
 	end
 
 	if owner == cache.serverId then
-		if currentWeapon.slot == slot then
+		if currentWeapon?.slot == slot then
 			currentWeapon = Weapon.Disarm(currentWeapon)
 		end
 
@@ -1111,7 +1111,7 @@ RegisterNetEvent('ox_inventory:removeDrop', function(dropId)
 	end
 end)
 
----@type function
+---@type function?
 local function setStateBagHandler(stateId)
 	AddStateBagChangeHandler('invOpen', stateId, function(_, _, value)
 		invOpen = value
@@ -1184,7 +1184,7 @@ RegisterNetEvent('ox_inventory:setPlayerInventory', function(currentDrops, inven
 	if source == '' then return end
 
     ---@class PlayerData
-    ---@field inventory table<number, SlotWithItem>
+    ---@field inventory table<number, SlotWithItem?>
     ---@field weight number
 	PlayerData = player
 	PlayerData.id = cache.playerId
@@ -1220,7 +1220,7 @@ RegisterNetEvent('ox_inventory:setPlayerInventory', function(currentDrops, inven
 			description = v.description,
 			buttons = buttons,
 			ammoName = v.ammoname,
-			image = v.client.image
+			image = v.client?.image
 		}
 	end
 
@@ -1230,7 +1230,7 @@ RegisterNetEvent('ox_inventory:setPlayerInventory', function(currentDrops, inven
 		if item then
 			item.count += data.count
 			ItemData[data.name].count += data.count
-			local add = item.client.add
+			local add = item.client?.add
 
 			if add then
 				add(item.count)
@@ -1332,7 +1332,7 @@ RegisterNetEvent('ox_inventory:setPlayerInventory', function(currentDrops, inven
 
 	PlayerData.loaded = true
 
-	lib.notify({ description = locale('inventory_setup'), position = 'top-left' })
+	lib.notify({ description = locale('inventory_setup') })
 	Shops.refreshShops()
 	Inventory.Stashes()
 	Inventory.Evidence()
@@ -1389,7 +1389,7 @@ RegisterNetEvent('ox_inventory:setPlayerInventory', function(currentDrops, inven
 
 		if currentWeapon then
 			if weaponHash ~= currentWeapon.hash and currentWeapon.timer then
-				local weaponCount = Items[currentWeapon.name].count
+				local weaponCount = Items[currentWeapon.name]?.count
 
 				if weaponCount > 0 then
 					SetCurrentPedWeapon(playerPed, currentWeapon.hash, true)
@@ -1407,7 +1407,7 @@ RegisterNetEvent('ox_inventory:setPlayerInventory', function(currentDrops, inven
 		elseif client.weaponmismatch and not client.ignoreweapons[weaponHash] then
 			local weaponType = GetWeapontypeGroup(weaponHash)
 
-			if weaponType ~= 0 and weaponType ~= 'GROUP_UNARMED' then
+			if weaponType ~= 0 and weaponType ~= `GROUP_UNARMED` then
 				Weapon.Disarm(currentWeapon, true)
 			end
 		end
@@ -1461,7 +1461,7 @@ RegisterNetEvent('ox_inventory:setPlayerInventory', function(currentDrops, inven
 
 				if currentWeapon.metadata.durability <= 0 or not currentWeapon.timer then
 					DisablePlayerFiring(playerId, true)
-				elseif client.aimedfiring and not currentWeapon.melee and currentWeapon.group ~= 'GROUP_PETROLCAN' and not IsPlayerFreeAiming(playerId) then
+				elseif client.aimedfiring and not currentWeapon.melee and currentWeapon.group ~= `GROUP_PETROLCAN` and not IsPlayerFreeAiming(playerId) then
 					DisablePlayerFiring(playerId, true)
 				end
 
@@ -1490,7 +1490,7 @@ RegisterNetEvent('ox_inventory:setPlayerInventory', function(currentDrops, inven
 						local currentAmmo
 						local durabilityDrain = Items[currentWeapon.name].durability
 
-						if currentWeapon.group == 'GROUP_PETROLCAN' or currentWeapon.group == 'GROUP_FIREEXTINGUISHER' then
+						if currentWeapon.group == `GROUP_PETROLCAN` or currentWeapon.group == `GROUP_FIREEXTINGUISHER` then
 							currentAmmo = weaponAmmo - durabilityDrain < 0 and 0 or weaponAmmo - durabilityDrain
 							currentWeapon.metadata.durability = currentAmmo
 							currentWeapon.metadata.ammo = (weaponAmmo < currentAmmo) and 0 or currentAmmo
@@ -1638,7 +1638,7 @@ RegisterNUICallback('removeAmmo', function(slot, cb)
 
 	local success = lib.callback.await('ox_inventory:removeAmmoFromWeapon', false, slot)
 
-	if success and slot == currentWeapon.slot then
+	if success and slot == currentWeapon?.slot then
 		SetPedAmmo(playerPed, currentWeapon.hash, 0)
 	end
 end)
@@ -1652,7 +1652,7 @@ local function giveItemToTarget(serverId, slotId, count)
     if type(slotId) ~= 'number' then return TypeError('slotId', 'number', type(slotId)) end
     if count and type(count) ~= 'number' then return TypeError('count', 'number', type(count)) end
 
-    if slotId == currentWeapon.slot then
+    if slotId == currentWeapon?.slot then
         currentWeapon = Weapon.Disarm(currentWeapon)
     end
 
@@ -1759,7 +1759,7 @@ lib.callback.register('ox_inventory:startCrafting', function(id, recipe)
 	recipe = CraftingBenches[id].items[recipe]
 
 	return lib.progressCircle({
-		label = locale('crafting_item', recipe.metadata.label or Items[recipe.name].label),
+		label = locale('crafting_item', recipe.metadata?.label or Items[recipe.name].label),
 		duration = recipe.duration or 3000,
 		canCancel = true,
 		disable = {

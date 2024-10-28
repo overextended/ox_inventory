@@ -6,9 +6,9 @@ local Utils = require 'modules.utils.client'
 
 -- generic group animation data
 local anims = {}
-anims['GROUP_MELEE'] = { 'melee@holster', 'unholster', 200, 'melee@holster', 'holster', 600 }
-anims['GROUP_PISTOL'] = { 'reaction@intimidation@cop@unarmed', 'intro', 400, 'reaction@intimidation@cop@unarmed', 'outro', 450 }
-anims['GROUP_STUNGUN'] = anims['GROUP_PISTOL']
+anims[`GROUP_MELEE`] = { 'melee@holster', 'unholster', 200, 'melee@holster', 'holster', 600 }
+anims[`GROUP_PISTOL`] = { 'reaction@intimidation@cop@unarmed', 'intro', 400, 'reaction@intimidation@cop@unarmed', 'outro', 450 }
+anims[`GROUP_STUNGUN`] = anims[`GROUP_PISTOL`]
 
 local function vehicleIsCycle(vehicle)
 	local class = GetVehicleClass(vehicle)
@@ -27,7 +27,7 @@ function Weapon.Equip(item, data, noWeaponAnim)
 
 		local anim = data.anim or anims[GetWeapontypeGroup(data.hash)]
 
-		if anim == anims['GROUP_PISTOL'] and not client.hasGroup(shared.police) then
+		if anim == anims[`GROUP_PISTOL`] and not client.hasGroup(shared.police) then
 			anim = nil
 		end
 
@@ -80,7 +80,7 @@ function Weapon.Equip(item, data, noWeaponAnim)
 	SetPedAmmo(playerPed, data.hash, ammo)
 	SetTimeout(0, function() RefillAmmoInstantly(playerPed) end)
 
-	if item.group == 'GROUP_PETROLCAN' or item.group == 'GROUP_FIREEXTINGUISHER' then
+	if item.group == `GROUP_PETROLCAN` or item.group == `GROUP_FIREEXTINGUISHER` then
 		item.metadata.ammo = item.metadata.durability
 		SetPedInfiniteAmmo(playerPed, true, data.hash)
 	end
@@ -112,7 +112,7 @@ function Weapon.Disarm(currentWeapon, noAnim)
 			local coords = GetEntityCoords(cache.ped, true)
 			local anim = item.anim or anims[GetWeapontypeGroup(currentWeapon.hash)]
 
-			if anim == anims['GROUP_PISTOL'] and not client.hasGroup(shared.police) then
+			if anim == anims[`GROUP_PISTOL`] and not client.hasGroup(shared.police) then
 				anim = nil
 			end
 
@@ -134,7 +134,7 @@ function Weapon.Disarm(currentWeapon, noAnim)
 	RemoveAllPedWeapons(cache.ped, true)
 
 	if client.parachute then
-		local chute = 'GADGET_PARACHUTE'
+		local chute = `GADGET_PARACHUTE`
 		GiveWeaponToPed(cache.ped, chute, 0, true, false)
 		SetPedGadget(cache.ped, chute, true)
 		SetPlayerParachuteTintIndex(PlayerData.id, client.parachute?[2] or -1)
@@ -145,7 +145,7 @@ function Weapon.ClearAll(currentWeapon)
 	Weapon.Disarm(currentWeapon)
 
 	if client.parachute then
-		local chute = 'GADGET_PARACHUTE'
+		local chute = `GADGET_PARACHUTE`
 		GiveWeaponToPed(cache.ped, chute, 0, true, false)
 		SetPedGadget(cache.ped, chute, true)
 	end
