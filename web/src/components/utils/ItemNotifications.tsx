@@ -20,7 +20,7 @@ export const ItemNotificationsContext = React.createContext<{
 
 export const useItemNotifications = () => {
   const itemNotificationsContext = useContext(ItemNotificationsContext);
-  if (!itemNotificationsContext) throw new Error(`ItemNotificationsContext undefined`);
+  if (!itemNotificationsContext) throw new Error('ItemNotificationsContext undefined');
   return itemNotificationsContext;
 };
 
@@ -32,7 +32,7 @@ const ItemNotification = React.forwardRef(
       <div
         className="item-notification-item-box"
         style={{
-          backgroundImage: `url(${getItemUrl(slotItem) || 'none'}`,
+          backgroundImage: 'url(${getItemUrl(slotItem) || 'none'}',
           ...props.style,
         }}
         ref={ref}
@@ -70,7 +70,7 @@ export const ItemNotificationsProvider = ({ children }: { children: React.ReactN
   };
 
   useNuiEvent<[item: SlotWithItem, text: string, count?: number]>('itemNotify', ([item, text, count]) => {
-    add({ item: item, text: count ? `${Locale[text]} ${count}x` : `${Locale[text]}` });
+    add({ item: item, text: count ? '${Locale[text]} ${count}x' : '${Locale[text]}' });
   });
 
   return (
@@ -79,7 +79,7 @@ export const ItemNotificationsProvider = ({ children }: { children: React.ReactN
       {createPortal(
         <TransitionGroup className="item-notification-container">
           {queue.values.map((notification, index) => (
-            <Fade key={`item-notification-${index}`}>
+            <Fade key={'item-notification-${index}'}>
               <ItemNotification item={notification.item} ref={notification.ref} />
             </Fade>
           ))}

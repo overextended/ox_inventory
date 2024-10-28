@@ -29,7 +29,7 @@ debugData([
             name: 'iron',
             weight: 3000,
             metadata: {
-              description: `name: Svetozar Miletic  \n Gender: Male`,
+              description: 'name: Svetozar Miletic  \n Gender: Male',
               ammo: 3,
               mustard: '60%',
               ketchup: '30%',

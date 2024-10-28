@@ -85,7 +85,7 @@ const SlotTooltip: React.ForwardRefRenderFunction<
                 </p>
               )}
               {additionalMetadata.map((data: { metadata: string; value: string }, index: number) => (
-                <Fragment key={`metadata-${index}`}>
+                <Fragment key={'metadata-${index}'}>
                   {item.metadata && item.metadata[data.metadata] && (
                     <p>
                       {data.value}: {item.metadata[data.metadata]}
@@ -100,14 +100,14 @@ const SlotTooltip: React.ForwardRefRenderFunction<
                 ingredients.map((ingredient) => {
                   const [item, count] = [ingredient[0], ingredient[1]];
                   return (
-                    <div className="tooltip-ingredient" key={`ingredient-${item}`}>
+                    <div className="tooltip-ingredient" key={'ingredient-${item}'}>
                       <img src={item ? getItemUrl(item) : 'none'} alt="item-image" />
                       <p>
                         {count >= 1
-                          ? `${count}x ${Items[item]?.label || item}`
+                          ? '${count}x ${Items[item]?.label || item}'
                           : count === 0
-                          ? `${Items[item]?.label || item}`
-                          : count < 1 && `${count * 100}% ${Items[item]?.label || item}`}
+                          ? '${Items[item]?.label || item}'
+                          : count < 1 && '${count * 100}% ${Items[item]?.label || item}'}
                       </p>
                     </div>
                   );

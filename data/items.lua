@@ -183,7 +183,7 @@ return {
 		client = {
 			status = { hunger = 370000, thirst = 20000, drunk = -3000 },
 			--anim = { dict = 'mp_player_intdrink', clip = 'loop_bottle' },
-			--prop = { model = `prop_ld_flow_bottle`, pos = vec3(0.03, 0.03, 0.02), rot = vec3(0.0, 0.0, -1.5) },
+			--prop = { model = 'prop_ld_flow_bottle', pos = vec3(0.03, 0.03, 0.02), rot = vec3(0.0, 0.0, -1.5) },
 			usetime = 5000,
 			cancel = true,
 			notification = 'Hmmm, schmeckt wie selber gemacht.'
@@ -198,7 +198,7 @@ return {
 		client = {
 			status = { hunger = 350000, thirst = 10000, drunk = -3000 },
 			--anim = { dict = 'mp_player_intdrink', clip = 'loop_bottle' },
-			--prop = { model = `prop_ld_flow_bottle`, pos = vec3(0.03, 0.03, 0.02), rot = vec3(0.0, 0.0, -1.5) },
+			--prop = { model = 'prop_ld_flow_bottle', pos = vec3(0.03, 0.03, 0.02), rot = vec3(0.0, 0.0, -1.5) },
 			usetime = 5000,
 			cancel = true,
 			notification = 'Hmmm, schmeckt wie selber gemacht.'
@@ -226,14 +226,9 @@ return {
 		client = {
 			status = { hunger = 320000 },
 			anim = 'eating',
-<<<<<<< HEAD
-			prop = { model = `prop_taco_02`, pos = vec3(0.01, 0.01, 0.06), rot = vec3(0.0, 0.0, -1.5) },
-=======
 			prop = { model = 'prop_taco_02', pos = vec3(0.01, 0.01, 0.06), rot = vec3(0.0, 0.0, -1.5) },
->>>>>>> 0535af0ae285cf54ef47f4d31fa356d71031e94e
 			usetime = 3000,
 			cancel = true,
-			--notification = 'Lecker Tee, der ist echt gut'
 		}
 	},
 	['pizza_hawaii'] = {
@@ -245,10 +240,9 @@ return {
 		client = {
 			status = { hunger = 370000 },
 			anim = 'eating',
-			prop = { model = `prop_taco_02`, pos = vec3(0.01, 0.01, 0.06), rot = vec3(0.0, 0.0, -1.5) },
+			prop = { model = 'prop_taco_02', pos = vec3(0.01, 0.01, 0.06), rot = vec3(0.0, 0.0, -1.5) },
 			usetime = 3000,
 			cancel = true,
-			--notification = 'Lecker Tee, der ist echt gut'
 		}
 	},
 	['pizza_tonno'] = {
@@ -260,7 +254,7 @@ return {
 		client = {
 			status = { hunger = 310000 },
 			anim = 'eating',
-			prop = { model = `prop_taco_02`, pos = vec3(0.01, 0.01, 0.06), rot = vec3(0.0, 0.0, -1.5) },
+			prop = { model = 'prop_taco_02', pos = vec3(0.01, 0.01, 0.06), rot = vec3(0.0, 0.0, -1.5) },
 			usetime = 2900,
 			cancel = true,
 			--notification = 'Lecker Tee, der ist echt gut'
@@ -275,7 +269,7 @@ return {
 		client = {
 			status = { hunger = 310000 },
 			anim = 'eating',
-			prop = { model = `prop_taco_02`, pos = vec3(0.01, 0.01, 0.06), rot = vec3(0.0, 0.0, -1.5) },
+			prop = { model = 'prop_taco_02', pos = vec3(0.01, 0.01, 0.06), rot = vec3(0.0, 0.0, -1.5) },
 			usetime = 3800,
 			cancel = true,
 		}
@@ -356,7 +350,7 @@ return {
 		client = {
 			status = { thirst = 220000, drunk = -10000 },
 			anim = { dict = 'mp_player_intdrink', clip = 'loop_bottle' },
-			prop = { model = 'prop_fib_coffee', 
+			prop = { model = 'prop_fib_coffee',
 			pos = vec3(0.008, 0.0, 0.05), rot = vec3(0.0, 0.0, -40.0) },
 			usetime = 7500
 		}
@@ -371,7 +365,7 @@ return {
 		client = {
 			status = { thirst = 150000, drunk = -3000 },
 			anim = { dict = 'mp_player_intdrink', clip = 'loop_bottle' },
-			--prop = { model = `prop_ld_flow_bottle`, pos = vec3(0.03, 0.03, 0.02), rot = vec3(0.0, 0.0, -1.5) },
+			--prop = { model = 'prop_ld_flow_bottle', pos = vec3(0.03, 0.03, 0.02), rot = vec3(0.0, 0.0, -1.5) },
 			usetime = 1300,
 			cancel = true,
 		}
@@ -414,7 +408,7 @@ return {
 		client = {
 			status = { thirst = 30000, hunger = 12000, drunk = 50000 },
 			anim = { dict = 'mp_player_intdrink', clip = 'loop_bottle' },
-			prop = { model = `prop_tequila`, pos = vec3(0.01, 0.01, 0.06), rot = vec3(0.0, 0.0, -1.5) },
+			prop = { model = 'prop_tequila', pos = vec3(0.01, 0.01, 0.06), rot = vec3(0.0, 0.0, -1.5) },
 			usetime = 3000,
 			cancel = true,
 		}
@@ -429,7 +423,7 @@ return {
 		client = {
 			status = { thirst = 50000, drunk = 25000, },
 			anim = { dict = 'mp_player_intdrink', clip = 'loop_bottle' },
-			prop = { model = `prop_cs_beer_bot_01`, pos = vec3(0.01, 0.01, 0.06), rot = vec3(5.0, 5.0, -180.5) },
+			prop = { model = 'prop_cs_beer_bot_01', pos = vec3(0.01, 0.01, 0.06), rot = vec3(5.0, 5.0, -180.5) },
 			usetime = 7500
 		}
 	},
@@ -443,7 +437,7 @@ return {
 		client = {
 			status = { thirst = 100000, drunk = 25000, },
 			anim = { dict = 'mp_player_intdrink', clip = 'loop_bottle' },
-			prop = { model = `prop_cs_shot_glass`, pos = vec3(0.01, 0.01, 0.06), rot = vec3(5.0, 5.0, -180.5) },
+			prop = { model = 'prop_cs_shot_glass', pos = vec3(0.01, 0.01, 0.06), rot = vec3(5.0, 5.0, -180.5) },
 			usetime = 3500
 		}
 	},
@@ -457,7 +451,7 @@ return {
 		client = {
 			status = { thirst = 100000, drunk = 25000, },
 			anim = { dict = 'mp_player_intdrink', clip = 'loop_bottle' },
-			prop = { model = `prop_cs_shot_glass`, pos = vec3(0.01, 0.01, 0.06), rot = vec3(5.0, 5.0, -180.5) },
+			prop = { model = 'prop_cs_shot_glass', pos = vec3(0.01, 0.01, 0.06), rot = vec3(5.0, 5.0, -180.5) },
 			usetime = 3500
 		}
 	},
@@ -471,7 +465,7 @@ return {
 		client = {
 			status = { thirst = 320000 },
 			anim = { dict = 'mp_player_intdrink', clip = 'loop_bottle' },
-			prop = { model = `apa_prop_cs_plastic_cup_01`, pos = vec3(0.01, 0.01, 0.01), rot = vec3(5.0, 5.0, -180.5) },
+			prop = { model = 'apa_prop_cs_plastic_cup_01', pos = vec3(0.01, 0.01, 0.01), rot = vec3(5.0, 5.0, -180.5) },
 			usetime = 2500
 			}
 	},
@@ -485,7 +479,7 @@ return {
 		client = {
 			status = { thirst = 500000 },
 			anim = { dict = 'mp_player_intdrink', clip = 'loop_bottle' },
-			prop = { model = `apa_prop_cs_plastic_cup_01`, pos = vec3(0.01, 0.01, 0.01), rot = vec3(5.0, 5.0, -180.5) },
+			prop = { model = 'apa_prop_cs_plastic_cup_01', pos = vec3(0.01, 0.01, 0.01), rot = vec3(5.0, 5.0, -180.5) },
 			usetime = 2500
 			}
 	},
@@ -498,7 +492,7 @@ return {
 		client = {
 			status = { thirst = 420000 },
 			anim = { dict = 'mp_player_intdrink', clip = 'loop_bottle' },
-			prop = { model = `apa_prop_cs_plastic_cup_01`, pos = vec3(0.01, 0.01, 0.01), rot = vec3(5.0, 5.0, -180.5) },
+			prop = { model = 'apa_prop_cs_plastic_cup_01', pos = vec3(0.01, 0.01, 0.01), rot = vec3(5.0, 5.0, -180.5) },
 			usetime = 2500
 			}
 	},
@@ -509,7 +503,7 @@ return {
 		client = {
 			status = { drunk = 100000, thirst = 75000 },
 			anim = { dict = 'mp_player_intdrink', clip = 'loop_bottle' },
-			prop = { model = `prop_cocktail`, pos = vec3(0.01, 0.0, -0.07), rot = vec3(1.0, 1.0, -1.5) },
+			prop = { model = 'prop_cocktail', pos = vec3(0.01, 0.0, -0.07), rot = vec3(1.0, 1.0, -1.5) },
 			usetime = 2500,
 			notification = 'Lecker und uiuiui'
 		}
@@ -521,7 +515,7 @@ return {
 		client = {
 			status = { drunk = 100000, thirst = 75000 },
 			anim = { dict = 'mp_player_intdrink', clip = 'loop_bottle' },
-			prop = { model = `prop_cocktail`, pos = vec3(0.01, 0.0, -0.07), rot = vec3(1.0, 1.0, -1.5) },
+			prop = { model = 'prop_cocktail', pos = vec3(0.01, 0.0, -0.07), rot = vec3(1.0, 1.0, -1.5) },
 			usetime = 2500,
 			notification = 'Lecker und uiuiui'
 		}
@@ -533,7 +527,7 @@ return {
 		client = {
 			status = { drunk = 80000, thirst = 100000 },
 			anim = { dict = 'mp_player_intdrink', clip = 'loop_bottle' },
-			prop = { model = `prop_cocktail`, pos = vec3(0.01, 0.0, -0.07), rot = vec3(1.0, 1.0, -1.5) },
+			prop = { model = 'prop_cocktail', pos = vec3(0.01, 0.0, -0.07), rot = vec3(1.0, 1.0, -1.5) },
 			usetime = 2500,
 			notification = 'Lecker und uiuiui'
 		}
@@ -548,7 +542,7 @@ return {
 		client = {
 			status = { thirst = 80000, drunk = 10000 },
 			anim = { dict = 'mp_player_intdrink', clip = 'loop_bottle' },
-			--prop = { model = `prop_ld_flow_bottle`, pos = vec3(0.03, 0.03, 0.02), rot = vec3(0.0, 0.0, -1.5) },
+			--prop = { model = 'prop_ld_flow_bottle', pos = vec3(0.03, 0.03, 0.02), rot = vec3(0.0, 0.0, -1.5) },
 			usetime = 1300,
 			cancel = true,
 			--notification = 'Lecker Tee, der ist echt gut'
@@ -564,7 +558,7 @@ return {
 		client = {
 			status = { thirst = 85000, drunk = 10000 },
 			anim = { dict = 'mp_player_intdrink', clip = 'loop_bottle' },
-			--prop = { model = `prop_ld_flow_bottle`, pos = vec3(0.03, 0.03, 0.02), rot = vec3(0.0, 0.0, -1.5) },
+			--prop = { model = 'prop_ld_flow_bottle', pos = vec3(0.03, 0.03, 0.02), rot = vec3(0.0, 0.0, -1.5) },
 			usetime = 1300,
 			cancel = true,
 			--notification = 'Lecker Tee, der ist echt gut'
@@ -580,7 +574,7 @@ return {
 		client = {
 			status = { drunk = -30000, thirst = 80000 },
 			anim = { dict = 'mp_player_intdrink', clip = 'loop_bottle' },
-			prop = { model = `p_amb_coffeecup_01`, pos = vec3(0.01, 0.0, 0.05), rot = vec3(1.0, 1.0, 0.0) },
+			prop = { model = 'p_amb_coffeecup_01', pos = vec3(0.01, 0.0, 0.05), rot = vec3(1.0, 1.0, 0.0) },
 			usetime = 2500
 		}
 	},
@@ -594,7 +588,7 @@ return {
 		client = {
 			status = { drunk = -30000, thirst = 80000 },
 			anim = { dict = 'mp_player_intdrink', clip = 'loop_bottle' },
-			prop = { model = `p_amb_coffeecup_01`, pos = vec3(0.01, 0.0, 0.05), rot = vec3(1.0, 1.0, 0.0) },
+			prop = { model = 'p_amb_coffeecup_01', pos = vec3(0.01, 0.0, 0.05), rot = vec3(1.0, 1.0, 0.0) },
 			usetime = 2500
 		}
 	},
@@ -608,7 +602,7 @@ return {
 		client = {
 			status = { drunk = -30000, thirst = 80000 },
 			anim = { dict = 'mp_player_intdrink', clip = 'loop_bottle' },
-			prop = { model = `p_amb_coffeecup_01`, pos = vec3(0.01, 0.0, 0.05), rot = vec3(1.0, 1.0, 0.0) },
+			prop = { model = 'p_amb_coffeecup_01', pos = vec3(0.01, 0.0, 0.05), rot = vec3(1.0, 1.0, 0.0) },
 			usetime = 2500
 		}
 	},
@@ -622,7 +616,7 @@ return {
 		client = {
 			status = { drunk = -30000, thirst = 80000 },
 			anim = { dict = 'mp_player_intdrink', clip = 'loop_bottle' },
-			prop = { model = `p_amb_coffeecup_01`, pos = vec3(0.01, 0.0, 0.05), rot = vec3(1.0, 1.0, 0.0) },
+			prop = { model = 'p_amb_coffeecup_01', pos = vec3(0.01, 0.0, 0.05), rot = vec3(1.0, 1.0, 0.0) },
 			usetime = 2500
 		}
 	},
@@ -636,7 +630,7 @@ return {
 		client = {
 			status = { drunk = -30000, thirst = 80000 },
 			anim = { dict = 'mp_player_intdrink', clip = 'loop_bottle' },
-			prop = { model = `p_amb_coffeecup_01`, pos = vec3(0.01, 0.0, 0.05), rot = vec3(1.0, 1.0, 0.0) },
+			prop = { model = 'p_amb_coffeecup_01', pos = vec3(0.01, 0.0, 0.05), rot = vec3(1.0, 1.0, 0.0) },
 			usetime = 2500
 		}
 	},
@@ -650,7 +644,7 @@ return {
 		client = {
 			status = { drunk = -30000, thirst = 80000 },
 			anim = { dict = 'mp_player_intdrink', clip = 'loop_bottle' },
-			prop = { model = `p_amb_coffeecup_01`, pos = vec3(0.01, 0.0, 0.05), rot = vec3(1.0, 1.0, 0.0) },
+			prop = { model = 'p_amb_coffeecup_01', pos = vec3(0.01, 0.0, 0.05), rot = vec3(1.0, 1.0, 0.0) },
 			usetime = 2500
 		}
 	},
@@ -820,8 +814,6 @@ return {
 		close = true,
 		description = nil
 	},
-<<<<<<< HEAD
-=======
 	['pfandflasche'] = {
 		label = 'Pfandflasche',
 		weight = 20,
@@ -829,7 +821,6 @@ return {
 		close = true,
 		description = nil
 	},
->>>>>>> 0535af0ae285cf54ef47f4d31fa356d71031e94e
 	['aluschrott'] = {
 		label = 'Aluminiumschrott',
 		weight = 5,
@@ -1076,10 +1067,6 @@ return {
 
 
 
-<<<<<<< HEAD
-
-
-=======
 	-- Anfang Jobitems Items
 	['elektrokoffer'] = {
 		label = 'Elektriker Koffer',
@@ -1089,14 +1076,6 @@ return {
 		description = 'Zur Reperatur von Elektrik, für den Job Elektriker benötigt.'
 	},
 	-- Ende Jobitems Items
->>>>>>> 0535af0ae285cf54ef47f4d31fa356d71031e94e
-
-
-
-
-
-
-
 
 
 
@@ -1130,8 +1109,6 @@ return {
 			anim = { dict = 'mp_player_intdrink', clip = 'loop_bottle' },
 			prop = { model = 'prop_cs_panties_02', pos = vec3(0.03, 0.0, 0.02), rot = vec3(0.0, -13.5, -1.5) },
 			usetime = 2500
-<<<<<<< HEAD
-=======
 		}
 	},
 	['black_card'] = {
@@ -1272,7 +1249,6 @@ return {
 		decay = true,
 		client = {
 			usetime = 1500
->>>>>>> 0535af0ae285cf54ef47f4d31fa356d71031e94e
 		}
 	},
 	['black_card'] = {
@@ -1392,53 +1368,28 @@ return {
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-<<<<<<< HEAD
 	['lockpick'] = {
 		label = 'Dietrich',
 		weight = 160,
 	},
-
 	['hotwire'] = {
 		label = 'Seitenschneider',
 		weight = 160,
 	},
-
-=======
 	['hotwire'] = {
 		label = 'Seitenschneider',
 		weight = 160,
 	},
-
->>>>>>> 0535af0ae285cf54ef47f4d31fa356d71031e94e
 	['fakeplate'] = {
 		label = 'Falsches Kennzeichen',
 		consume = 0,
 	},
-
-
-
-
-
-
-
 	['nikkit'] = {
 		label = 'Drogentest',
 		weight = 10,
 		stack = true,
 		close = true
 	},
-
 	['drogenpaket'] = {
 		label = 'Drogenpaket',
 		weight = 50,
@@ -1503,7 +1454,7 @@ return {
 		stack = true,
 		close = true
 	},
-	
+
 	['notepad'] = {
 		label = 'Notizblock',
 		weight = 250,
@@ -1571,7 +1522,7 @@ return {
 		description = nil
 	},
 
-	
+
 
 	['tuch'] = {
 		label = 'Tuch',
@@ -1665,7 +1616,7 @@ return {
 		client = {
 			status = { thirst = -50000, hunger = 190000},
 			--anim = { dict = 'mp_player_intdrink', clip = 'loop_bottle' },
-			--prop = { model = `prop_ecola_can`, pos = vec3(0.01, 0.01, 0.06), rot = vec3(5.0, 5.0, -180.5) },
+			--prop = { model = 'prop_ecola_can', pos = vec3(0.01, 0.01, 0.06), rot = vec3(5.0, 5.0, -180.5) },
 			usetime = 2500
 			}
 	},
@@ -1774,7 +1725,7 @@ return {
 		close = true,
 		description = nil
 	},
-	
+
 	['wirecutter'] = {
 		label = 'Seitenschneider',
 		weight = 313,
@@ -1824,7 +1775,7 @@ return {
 		close = true,
 		description = nil
 	},
-	
+
 	['weaponlicense'] = {
 		label = 'Waffenschein',
 		weight = 1,
@@ -1832,7 +1783,7 @@ return {
 		close = true,
 		description = nil
 	},
-	
+
 	['lawyerpass'] = {
 		label = 'Anwalts Lizenz',
 		weight = 1,
@@ -1840,7 +1791,7 @@ return {
 		close = true,
 		description = nil
 	},
-	
+
 	['id_card'] = {
 		label = 'Ausweis',
 		weight = 1,
@@ -2042,7 +1993,7 @@ return {
 		close = true,
 		description = 'illegal'
 	},
-	
+
 	['laptop'] = {
 		label = 'Laptop',
 		weight = 1800,
@@ -2413,7 +2364,7 @@ return {
 		close = true,
 		description = 'illegal, wenn nicht im Staatsbesitz'
 	},
-	
+
 	['druckplatten'] = {
 		label = 'Druckplatten',
 		weight = 1,
@@ -2453,7 +2404,7 @@ return {
 		close = true,
 		description = nil
 	},
-	
+
 	['wasserzeichen'] = {
 		label = 'Wasserzeichen Blaupause',
 		weight = 1,
@@ -2688,7 +2639,7 @@ return {
 
 	['afghan_joint'] = {
 		label = 'Afghan Joint',
-		weight = 4, 
+		weight = 4,
 		stack = true,
 		close = true,
 		description = 'Droge',
@@ -2986,7 +2937,7 @@ return {
 		client = {
 			status = { thirst = 100000, hunger = 100000 },
 			anim = { dict = 'mp_player_intdrink', clip = 'loop_bottle' },
-			prop = { model = `xm3_prop_xm3_pill_01a`, pos = vec3(0.01, 0.0, -0.07), rot = vec3(1.0, 1.0, -1.5) },
+			prop = { model = 'xm3_prop_xm3_pill_01a', pos = vec3(0.01, 0.0, -0.07), rot = vec3(1.0, 1.0, -1.5) },
 			usetime = 2500,
 			notification = 'Lecker und uiuiui'
 		},

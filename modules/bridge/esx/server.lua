@@ -23,7 +23,7 @@ SetTimeout(500, function()
 	server.GetPlayerFromId = ESX.GetPlayerFromId
 
 	for _, player in pairs(ESX.Players) do
-		server.setPlayerInventory(player, player?.inventory)
+		server.setPlayerInventory(player, player.inventory)
 	end
 end)
 
@@ -74,10 +74,10 @@ function server.buyLicense(inv, license)
 end
 
 --- Takes traditional item data and updates it to support ox_inventory, i.e.
---- ```
+--- '''
 --- Old: {"cola":1, "burger":3}
 --- New: [{"slot":1,"name":"cola","count":1}, {"slot":2,"name":"burger","count":3}]
----```
+---'''
 ---@diagnostic disable-next-line: duplicate-set-field
 function server.convertInventory(playerId, items)
 	if type(items) == 'table' then
@@ -104,7 +104,7 @@ function server.convertInventory(playerId, items)
 				local metadata = Items.Metadata(playerId, item, false, count)
 				local weight = Inventory.SlotWeight(item, {count=count, metadata=metadata})
 				totalWeight = totalWeight + weight
-				slot += 1
+				slot = 1
 				returnData[slot] = {name = item.name, label = item.label, weight = weight, slot = slot, count = count, description = item.description, metadata = metadata, stack = item.stack, close = item.close}
 			end
 		end

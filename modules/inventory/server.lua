@@ -437,7 +437,7 @@ function Inventory.SlotWeight(item, slot, ignoreCount)
 		end
 	end
 
-    if item.hash == `WEAPON_PETROLCAN` then
+    if item.hash == 'WEAPON_PETROLCAN' then
         slot.metadata.weight = 15000 * (slot.metadata.ammo / 100)
     end
 
@@ -562,7 +562,7 @@ end, true)
 ---@param dbId? string | number
 ---@return OxInventory?
 --- This should only be utilised internally!
---- To create a stash, please use `exports.ox_inventory:RegisterStash` instead.
+--- To create a stash, please use 'exports.ox_inventory:RegisterStash' instead.
 function Inventory.Create(id, label, invType, slots, weight, maxWeight, owner, items, groups, dbId)
 	if invType == 'player' and hasActiveInventory(id, owner) then return end
 
@@ -2547,7 +2547,7 @@ local function updateWeapon(source, action, value, slot, specialAmmo)
 					weapon.weight = Inventory.SlotWeight(item, weapon)
 				end
 			elseif action == 'ammo' then
-				if item.hash == `WEAPON_FIREEXTINGUISHER` or item.hash == `WEAPON_PETROLCAN` or item.hash == `WEAPON_HAZARDCAN` or item.hash == `WEAPON_FERTILIZERCAN` then
+				if item.hash == 'WEAPON_FIREEXTINGUISHER' or item.hash == 'WEAPON_PETROLCAN' or item.hash == 'WEAPON_HAZARDCAN' or item.hash == 'WEAPON_FERTILIZERCAN' then
 					weapon.metadata.durability = math.floor(value)
 					weapon.metadata.ammo = weapon.metadata.durability
 				elseif value < weapon.metadata.ammo then
@@ -2564,7 +2564,7 @@ local function updateWeapon(source, action, value, slot, specialAmmo)
                 weapon.metadata.durability = 0
             end
 
-            if item.hash == `WEAPON_PETROLCAN` then
+            if item.hash == 'WEAPON_PETROLCAN' then
                 weapon.weight = Inventory.SlotWeight(item, weapon)
             end
 
@@ -2662,14 +2662,14 @@ end
 ---@param coords? vector3|table<vector3>
 --- For simple integration with other resources that want to create valid stashes.
 --- This needs to be triggered before a player can open a stash.
---- ```
+--- '''
 --- Owner sets the stash permissions.
 --- string: can only access the stash linked to the owner (usually player identifier)
 --- true: each player has a unique stash, but can request other player's stashes
 --- nil: always shared
 ---
 --- groups: { ['police'] = 0 }
---- ```
+--- '''
 local function registerStash(name, label, slots, maxWeight, owner, groups, coords)
 	name, slots, maxWeight, coords = checkStashProperties({
 		name = name,

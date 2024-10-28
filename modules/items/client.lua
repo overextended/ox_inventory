@@ -231,14 +231,14 @@ Item('kokain', function(data, slot)
 				}
 				TriggerEvent("drugs_creator:drugEffects", takingMethod, effects, effectsDuration)
 		end)
-	
+
 end)
 
 Item('kokain1000', function(data, slot)
 		ox_inventory:useItem(data, function(data)
 			TriggerServerEvent ('mor-kokain1000')
 		end)
-	
+
 end)
 
 Item('meth', function(data, slot)
@@ -394,7 +394,7 @@ Item('parachute', function(data, slot)
 	if not client.parachute then
 		ox_inventory:useItem(data, function(data)
 			if data then
-				local chute = `GADGET_PARACHUTE`
+				local chute = 'GADGET_PARACHUTE'
 				SetPlayerParachuteTintIndex(PlayerData.id, -1)
 				GiveWeaponToPed(cache.ped, chute, 0, true, false)
 				SetPedGadget(cache.ped, chute, true)

@@ -10,7 +10,7 @@ const colorMixer = (rgbA: number[], rgbB: number[], amountToMix: number) => {
   let r = colorChannelMixer(rgbA[0], rgbB[0], amountToMix);
   let g = colorChannelMixer(rgbA[1], rgbB[1], amountToMix);
   let b = colorChannelMixer(rgbA[2], rgbB[2], amountToMix);
-  return `rgb(${r}, ${g}, ${b})`;
+  return 'rgb(${r}, ${g}, ${b})';
 };
 
 const COLORS = {
@@ -39,9 +39,9 @@ const WeightBar: React.FC<{ percent: number; durability?: boolean }> = ({ percen
         style={{
           visibility: percent > 0 ? 'visible' : 'hidden',
           height: '100%',
-          width: `${percent}%`,
+          width: '${percent}%',
           backgroundColor: color,
-          transition: `background ${0.3}s ease, width ${0.3}s ease`,
+          transition: 'background ${0.3}s ease, width ${0.3}s ease',
         }}
       ></div>
     </div>

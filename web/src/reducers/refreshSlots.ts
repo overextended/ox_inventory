@@ -47,7 +47,7 @@ export const refreshSlotsReducer: CaseReducer<State, PayloadAction<Payload>> = (
 
       if (Items[item]!) {
         Items[item]!.count += count;
-      } else console.log(`Item data for ${item} is undefined`);
+      } else console.log('Item data for ${item} is undefined');
     }
   }
 
