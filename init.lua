@@ -101,11 +101,11 @@ else
         ignoreweapons[tonumber(weapon) or joaat(weapon)] = true
     end
 
-    ignoreweapons[`WEAPON_UNARMED`] = true
-    ignoreweapons[`WEAPON_HANDCUFFS`] = true
-    ignoreweapons[`WEAPON_GARBAGEBAG`] = true
-    ignoreweapons[`OBJECT`] = true
-    ignoreweapons[`WEAPON_HOSE`] = true
+    ignoreweapons['WEAPON_UNARMED'] = true
+    ignoreweapons['WEAPON_HANDCUFFS'] = true
+    ignoreweapons['WEAPON_GARBAGEBAG'] = true
+    ignoreweapons['OBJECT'] = true
+    ignoreweapons['WEAPON_HOSE'] = true
 
     client.ignoreweapons = ignoreweapons
 end
@@ -115,9 +115,9 @@ function shared.print(...) print(string.strjoin(' ', ...)) end
 function shared.info(...) lib.print.info(string.strjoin(' ', ...)) end
 
 ---Throws a formatted type error.
----```lua
+---'''lua
 ---error("expected %s to have type '%s' (received %s)")
----```
+---'''
 ---@param variable string
 ---@param expected string
 ---@param received string
