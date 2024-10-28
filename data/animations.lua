@@ -12,7 +12,7 @@ return {
 		['burger'] = { model = 'prop_cs_burger_01', pos = vec3(0.02, 0.02, -0.02), rot = vec3(0.0, 0.0, 0.0) },
 		['hotdog'] = { model = 'prop_cs_hotdog_01', pos = vec3(0.02, 0.02, -0.02), rot = vec3(0.0, 0.0, 0.0) },
 		['pommes'] = { model = 'prop_food_chips', pos = vec3(0.02, 0.02, -0.02), rot = vec3(0.0, 0.0, 0.0) },
-		['joint']= { model = 'p_amb_joint_01', pos = { x = 0.02, y = 0.02, y = -0.02}, rot = { x = 0.0, y = 0.0, y = 0.0} },
+		['joint']= { model = 'p_amb_joint_01', pos = vec3(0.02, 0.02, -0.02), rot = vec3(0.0, 0.0, 0.0) },
 		['sandwich'] = { model = 'prop_sandwich_01', pos = vec3(0.02, 0.02, -0.02), rot = vec3(0.0, 0.0, 0.0) },
 		['chilli'] = { model = 'prop_bar_nuts', pos = vec3(0.02, 0.02, 0.00), rot = vec3(0.0, 0.0, 0.0) },
 		['pizza'] = { model = 'knjgh_pizzaslice1', pos = vec3(0.00, 0.00, 0.00), rot = vec3(0.0, 0.0, 90.0) },

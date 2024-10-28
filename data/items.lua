@@ -1111,137 +1111,10 @@ return {
 			usetime = 2500
 		}
 	},
-	['black_card'] = {
-		label = 'Waschkarte',
-		weight = 1,
-		stack = false,
-		close = true,
-		consume = 0,
-		description = 'illegal'
-	},
-	['mastercard'] = {
-		label = 'Mastercard',
-		weight = 1,
-		stack = false,
-		close = true,
-		description = nil
-	},
-	['parachute'] = {
-		label = 'Fallschirm',
-		weight = 3000,
-		stack = false,
-		client = {
-			anim = { dict = 'clothingshirt', clip = 'try_shirt_positive_d' },
-			usetime = 1500
-		}
-	},
-	['bag'] = {
-		label = 'Tasche',
-		weight = 1500,
-		stack = false,
-		close = true,
-		consume = 1,
-		description = nil,
-		client = {
-			anim = { dict = 'clothingshirt', clip = 'try_shirt_positive_d' },
-			usetime = 1500
-		}
-	},
-	['nobag'] = {
-		label = 'keine Tasche',
-		weight = 1,
-		stack = false,
-		close = true,
-		consume = 0,
-		description = nil,
-		client = {
-			anim = { dict = 'clothingshirt', clip = 'try_shirt_positive_d' },
-			usetime = 1500
-		}
-	},
-	['bag2'] = {
-		label = 'Tasche II',
-		weight = 1300,
-		stack = false,
-		close = true,
-		consume = 1,
-		description = nil,
-		client = {
-			anim = { dict = 'clothingshirt', clip = 'try_shirt_positive_d' },
-			usetime = 1500
-		}
-	},
-	['nobag2'] = {
-		label = 'keine Tasche II',
-		weight = 1,
-		stack = false,
-		close = true,
-		consume = 0,
-		description = nil,
-		client = {
-			anim = { dict = 'clothingshirt', clip = 'try_shirt_positive_d' },
-			usetime = 1500
-		}
-	},
-	['kleidertasche'] = {
-		label = "Kleidertasche",
-		description = 'Eine kleine Tasche mit Deinen Outfits',
-		weight = 2500,
-		stack = false,
-		close = true,
-		consume = 0,
-	},
-	['waschset'] = {
-		label = 'Waschset',
-		weight = 1150,
-		stack = true,
-		close = true,
-		client = {
-			usetime = 0
-		},
-		description = nil
-	},
-	['fixkit'] = {
-		label = 'Reparatur Set',
-		weight = 2500,
-		stack = true,
-		close = true,
-		description = nil
-	},
-	['blaettchen'] = {
-		label = 'Packung Blättchen',
-		weight = 50,
-		stack = true,
-		close = true,
-		consume = 1,
-		description = 'Packung'
-	},
-	['eblaettchen'] = {
-		label = 'Blättchen',
-		weight = 1,
-		stack = true,
-		close = true,
-		consume = 1,
-		description = 'einzelne Blättchen'
-	},
-
-
-
-
-
 	['defklammer'] = {
 		label = 'kaputte Büroklammer',
 		weight = 10,
 	},
-
-
-
-
-
-
-
-
-
 	['lockpick'] = {
 		label = 'Dietrich',
 		weight = 160,
@@ -1364,22 +1237,6 @@ return {
 		consume = 1,
 		description = 'einzelne Blättchen'
 	},
-
-
-
-
-	['lockpick'] = {
-		label = 'Dietrich',
-		weight = 160,
-	},
-	['hotwire'] = {
-		label = 'Seitenschneider',
-		weight = 160,
-	},
-	['hotwire'] = {
-		label = 'Seitenschneider',
-		weight = 160,
-	},
 	['fakeplate'] = {
 		label = 'Falsches Kennzeichen',
 		consume = 0,
@@ -1397,14 +1254,12 @@ return {
 		close = true,
 		description = 'illegal'
 	},
-
 	['usednikkit'] = {
 		label = 'gebr. Drogentest',
 		weight = 12,
 		stack = false,
 		close = true
 	},
-
 	['phone'] = {
 		label = 'Handy',
 		weight = 256,
@@ -2099,8 +1954,6 @@ return {
 		description = 'Droge',
 		client = {
 			status = { thirst = -200000 },
-			anim = { dict = 'amb@world_human_aa_smoke@male@idle_a', clip = 'idle_c' },
-			prop = { model = 'prop_cs_meth_pipe', pos = { x = 0.02, y = 0.02, y = -0.02}, rot = { x = 0.0, y = 0.0, y = 0.0} },
 			usetime = 10000,
 		}
 	},
@@ -2138,8 +1991,6 @@ return {
 		close = true,
 		client = {
 			status = { hunger = -200000 },
-			anim = { dict = 'amb@world_human_aa_smoke@male@idle_a', clip = 'idle_c' },
-			prop = { model = 'prop_cs_meth_pipe', pos = { x = 0.02, y = 0.02, y = -0.02}, rot = { x = 0.0, y = 0.0, y = 0.0} },
 			usetime = 10000,
 			},
 		description = 'Droge'
