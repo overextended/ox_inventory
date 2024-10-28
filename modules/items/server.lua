@@ -368,4 +368,66 @@ end
 
 -----------------------------------------------------------------------------------------------
 
+Item('wasser', function(event, item, inventory, slot, data)
+	if event == 'usingItem' then
+	   exports.ox_inventory:AddItem(source, 'garbage', 1, {image = 'trash_bottle'})
+	end
+end)
+
+Item('cola', function(event, item, inventory, slot, data)
+   if event == 'usingItem' then
+	  exports.ox_inventory:AddItem(source, 'garbage', 1, {image = 'trash_ecola'})
+   end
+end)
+
+Item('burger', function(event, item, inventory, slot, data)
+   if event == 'usingItem' then
+	  exports.ox_inventory:AddItem(source, 'garbage', 1, {image = 'trash_burger', weight = 50})
+   end
+end)
+
+Item('sprunk', function(event, item, inventory, slot, data)
+   if event == 'usingItem' then
+	  exports.ox_inventory:AddItem(source, 'garbage', 1, {image = 'trash_can'})
+   end
+end)
+
+Item('chips', function(event, item, inventory, slot, data)
+   if event == 'usingItem' then
+	  exports.ox_inventory:AddItem(source, 'garbage', 1, {image = 'trash_chips'})
+   end
+end)
+
+Item('chickenburger', function(event, item, inventory, slot, data)
+   if event == 'usingItem' then
+	  exports.ox_inventory:AddItem(source, 'garbage', 1, {image = 'trash_burger'})
+   end
+end)
+
+Item('redwoodgold2', function(event, item, inventory, slot, data)
+   if event == 'usingItem' then
+	  exports.ox_inventory:AddItem(source, 'garbage', 1, {image = 'trash_paper'})
+	  exports.ox_inventory:AddItem(source, 'zigarette', 18)
+   end
+end)
+
+Item('blaettchen', function(event, item, inventory, slot, data)
+   if event == 'usingItem' then
+	  exports.ox_inventory:AddItem(source, 'garbage', 1, {image = 'trash_paper'})
+	  exports.ox_inventory:AddItem(source, 'eblaettchen', 50)
+   end
+end)
+
+Item('bag', function(event, item, inventory, slot, data)
+   if event == 'usingItem' then
+	  exports.ox_inventory:AddItem(source, 'nobag', 1)
+   end
+end)
+
+Item('bag2', function(event, item, inventory, slot, data)
+   if event == 'usingItem' then
+	  exports.ox_inventory:AddItem(source, 'nobag2', 1)
+   end
+end)
+
 return Items
