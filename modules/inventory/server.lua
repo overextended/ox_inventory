@@ -12,7 +12,7 @@ OxInventory.__index = OxInventory
 ---Open a player's inventory, optionally with a secondary inventory.
 ---@param inv? inventory
 function OxInventory:openInventory(inv)
-	if not self?.player then return end
+	if not self.player then return end
 
 	inv = Inventory(inv)
 
@@ -86,7 +86,7 @@ for _, stash in pairs(lib.load('data.stashes')) do
 		slots = stash.slots,
 		maxWeight = stash.weight,
 		groups = stash.groups or stash.jobs,
-		coords = shared.target and stash.target?.loc or stash.coords
+		coords = shared.target and stash.target.loc or stash.coords
 	}
 end
 
@@ -185,7 +185,7 @@ local function loadInventoryData(data, player, ignoreSecurityChecks)
 
 			if stash.owner then
 				if stash.owner == true then
-					owner = data.owner or player?.owner
+					owner = data.owner or player.owner
 				else
 					owner = stash.owner
 				end
@@ -248,7 +248,7 @@ exports('GetInventory', getInventory)
 ---@param owner? string | number
 ---@return table?
 exports('GetInventoryItems', function(inv, owner)
-	return getInventory(inv, owner)?.items
+	return getInventory(inv, owner).items
 end)
 
 ---@param inv inventory
