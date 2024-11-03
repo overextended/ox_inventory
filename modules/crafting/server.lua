@@ -45,6 +45,17 @@ end
 
 for id, data in pairs(lib.load('data.crafting')) do createCraftingBench(id, data) end
 
+---@param id number
+---@param data table
+exports('RegisterCraftingBench', function(id, data)
+	createCraftingBench(id, data)
+	lib.callback('ox_inventory:registerCraftingBench', -1, function() end, id, data)
+end)
+
+lib.callback.register('ox_inventory:getCraftingBenches', function(source)
+    return CraftingBenches
+end)
+
 ---falls back to player coords if zones and points are both nil
 ---@param source number
 ---@param bench table
