@@ -96,7 +96,6 @@ end
 
 RegisterNetEvent('ox_inventory:registerCraftingBench', function(id, data)
     createCraftingBench(id, data)
-	return true
 end)
 
 for id, data in pairs(lib.callback.await('ox_inventory:getCraftingBenches', false)) do createCraftingBench(id, data) end
