@@ -49,7 +49,7 @@ for id, data in pairs(lib.load('data.crafting')) do createCraftingBench(id, data
 ---@param data table
 exports('RegisterCraftingBench', function(id, data)
 	createCraftingBench(id, data)
-	lib.callback('ox_inventory:registerCraftingBench', -1, function() end, id, data)
+	TriggerClientEvent('ox_inventory:registerCraftingBench', -1, id, data)
 end)
 
 lib.callback.register('ox_inventory:getCraftingBenches', function(source)

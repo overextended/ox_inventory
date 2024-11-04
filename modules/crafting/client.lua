@@ -94,7 +94,7 @@ local function createCraftingBench(id, data)
 	end
 end
 
-lib.callback.register('ox_inventory:registerCraftingBench', function(id, data)
+RegisterNetEvent('ox_inventory:registerCraftingBench', function(id, data)
     createCraftingBench(id, data)
 	return true
 end)
