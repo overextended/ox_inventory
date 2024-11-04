@@ -356,6 +356,17 @@ lib.callback.register('ox_inventory:useItem', function(source, itemName, slot, m
 				consume = 1
 				data.component = true
 			elseif consume then
+                if not TriggerEventHooks('useItem', {
+                    source = source,
+                    fromInventory = inventory.id,
+                    fromType = inventory.type,
+                    itemSlot = slot,
+                    itemName = itemName,
+                    itemDurability = durability,
+                    itemConsume = consume,
+                    itemMetadata = data.metadata
+                }) then return end
+
 				if data.count >= consume then
 					local result = item.cb and item.cb('usingItem', item, inventory, slot)
 
@@ -368,6 +379,17 @@ lib.callback.register('ox_inventory:useItem', function(source, itemName, slot, m
 					return TriggerClientEvent('ox_lib:notify', source, { type = 'error', description = locale('item_not_enough', item.name) })
 				end
 			elseif not item.weapon and server.UseItem then
+                if not TriggerEventHooks('useItem', {
+                    source = source,
+                    fromInventory = inventory.id,
+                    fromType = inventory.type,
+                    itemSlot = slot,
+                    itemName = itemName,
+                    itemDurability = durability,
+                    itemConsume = consume,
+                    itemMetadata = data.metadata
+                }) then return end
+
                 inventory.usingItem = data
 				-- This is used to call an external useItem function, i.e. ESX.UseItem
 				-- If an error is being thrown on item use there is no internal solution. We previously kept a list
