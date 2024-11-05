@@ -102,7 +102,7 @@ return {
 	YouTool = {
 		name = 'Baumarkt',
 		blip = {
-			id = 402, colour = 48, scale = 0.6
+			id = 59, colour = 38, scale = 0.6
 		}, inventory = {
 			{ name = 'lockpick', price = 500 },
 			{ name = 'schere', price = 100 },
@@ -152,7 +152,7 @@ return {
 			{ ped = `S_M_M_AutoShop_01`, scenario = 'WORLD_HUMAN_AA_SMOKE', loc = vec3(-706.1183, -914.5864, 18.2156), heading = 86.8069},
 			{ ped = `S_M_M_AutoShop_01`, scenario = 'WORLD_HUMAN_AA_SMOKE', loc = vec3(-47.3256, -1758.6655, 28.4209), heading = 45.0096},
 			{ ped = `S_M_M_AutoShop_01`, scenario = 'WORLD_HUMAN_AA_SMOKE', loc = vec3(241.1945, -897.9530, 28.6232), heading = 164.5896},
-			
+
 		}
 	},
 
@@ -201,7 +201,7 @@ return {
 			{ name = 'kevlar', price = 1750 },
 			{ name = 'WEAPON_PISTOL', price = 500, grade = 1, metadata = { registered = true, serial = 'POL' }, license = 'weapon' },
 			{ name = 'WEAPON_CARBINERIFLE', price = 1000, metadata = { registered = true, serial = 'POL' }, license = 'weapon', grade = 3 },
-			{ name = 'WEAPON_STUNGUN', price = 500, metadata = { registered = true, serial = 'POL'} }			
+			{ name = 'WEAPON_STUNGUN', price = 500, metadata = { registered = true, serial = 'POL'} }
 		}, locations = {
 			vec3(449.6307, -978.3926, 30.5637)
 		}, targets = {
@@ -242,7 +242,7 @@ return {
 			{ loc = vec3(-593.28, 220.41, 74.15), length = 1.2, width = 0.8, heading = 1.0, minZ = 73.15, maxZ = 75.15, distance = 3 }
 		}
 	},
-	
+
 	BlackMarketPstolen = {
 		name = 'SM Pistolen',
 		inventory = {
@@ -261,14 +261,14 @@ return {
 			{ name = 'WEAPON_REVOLVER_MK2', price = 340000, metadata = { registered = false }, currency = 'black_money' },
 			{ name = 'WEAPON_SNSPISTOL', price = 35000, metadata = { registered = false }, currency = 'black_money' },
 			{ name = 'WEAPON_SNSPISTOL_MK2', price = 45000, metadata = { registered = false }, currency = 'black_money' },
-			{ name = 'WEAPON_VINTAGEPISTOL', price = 1200000, metadata = { registered = false }, currency = 'black_money' }			
+			{ name = 'WEAPON_VINTAGEPISTOL', price = 1200000, metadata = { registered = false }, currency = 'black_money' }
 		}, locations = {
 			vec3(-597.24, 222.36, 74.15)
 		}, targets = {
 			{ loc = vec3(-596.62, 222.44, 74.15), length = 1.2, width = 0.8, heading = 0.0, minZ = 73.15, maxZ = 74.0, distance = 3 }
 		}
 	},
-	
+
 	BlackMarketComponents = {
 		name = 'SM Komponenten',
 		inventory = {
@@ -322,7 +322,7 @@ return {
 			{ loc = vec3(-598.78, 220.53, 74.15), length = 1.0, width = 1.0, heading = 0.0, minZ = 73.35, maxZ = 74.95, distance = 3 }
 		}
 	},
-	
+
 	BlackMarketMuni = {
 		name = 'SM Munition',
 		inventory = {
@@ -345,7 +345,7 @@ return {
 			{ loc = vec3(-596.34, 224.83, 74.15), length = 0.8, width = 1.2, heading = 1.0, minZ = 73.95, maxZ = 74.55, distance = 3 }
 		}
 	},
-	
+
 	BlackMarketSMG = {
 		name = 'SM SMG',
 		inventory = {
@@ -362,7 +362,7 @@ return {
 			{ loc = vec3(-596.65, 223.69, 74.15), length = 1.35, width = 0.8, heading = 1.0, minZ = 73.75, maxZ = 74.15, distance = 3 }
 		}
 	},
-	
+
 	BlackMarketPump = {
 		name = 'SM Schrotflinten',
 		inventory = {
@@ -381,7 +381,7 @@ return {
 			{ loc = vec3(-599.2, 224.79, 74.15), length = 1.45, width = 0.8, heading = 1.0, minZ = 73.75, maxZ = 74.15, distance = 3 }
 		}
 	},
-	
+
 	BlackMarketAssault = {
 		name = 'SM Sturmgewehre',
 		inventory = {
@@ -403,7 +403,7 @@ return {
 			{ loc = vec3(-593.29, 221.83, 74.15), length = 1.4, width = 0.8, heading = 0.0, minZ = 73.75, maxZ = 74.15, distance = 3 }
 		}
 	},
-	
+
 	BlackMarketLMG = {
 		name = 'SM Maschinengewehre',
 		inventory = {
@@ -417,7 +417,7 @@ return {
 			{ loc = vec3(-593.4, 223.7, 74.15), length = 1.45, width = 0.9, heading = 0.0, minZ = 73.75, maxZ = 74.15, distance = 3 }
 		}
 	},
-	
+
 	BlackMarketSniper = {
 		name = 'SM Scharfschützengewehre',
 		inventory = {
@@ -432,7 +432,7 @@ return {
 			{ loc = vec3(-599.24, 222.63, 74.15), length = 2.55, width = 0.8, heading = 1.0, minZ = 73.55, maxZ = 73.95, distance = 3 }
 		}
 	},]]
-	
+
 	MallLieferanten1 = {
 		name = 'Mall Lieferanten1',
 		inventory = {
@@ -528,5 +528,21 @@ return {
 		model = {
 			`prop_vend_fags_01`
 		}
-	}
+	},
+
+
+
+	--[[TestShop = {
+		name = 'TestShop',
+		blip = {
+			id = 832, colour = 2, scale = 0.5
+		}, inventory = {
+			--{ name = 'bandage', price = 30 },
+			{ name = 'sandwich', price = 25, count = 0 },
+			--{ name = 'orthomol', price = 20 },
+			--{ name = 'reddragon', price = 27 },
+		}, targets = {
+			{ ped = `S_M_M_Doctor_01`, scenario = 'WORLD_HUMAN_CLIPBOARD', loc = vec3(62.5555, -1004.9807, 28.3574), heading = 344.1503},
+		}
+	},]]
 }

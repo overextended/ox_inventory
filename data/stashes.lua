@@ -182,7 +182,7 @@ return {
 		slots = 70,
 		weight = 250000
 	},
-	
+
 	{
 		coords = vec3(2894.22, 4374.49, 50.33),
 		target = {
@@ -258,7 +258,7 @@ return {
 		weight = 300000,
 		groups = {['gwa'] = 0}
 	},
-	
+
 	{ --GWA
 		coords = vec3(936.48, -1466.54, 30.1),
 		target = {
@@ -296,7 +296,7 @@ return {
 		weight = 1000000,
 		groups = {['gwa'] = 11}
 	},]]
-	
+
 	{ --GWA
 		coords = vec3(945.09, -1476.13, 30.5),
 		target = {
@@ -315,7 +315,7 @@ return {
 		weight = 200000,
 		groups = {['gwa'] = 0}
 	},
-	
+
 	{ --GWA
 		coords = vec3(944.84, -1473.38, 29.1),
 		target = {
@@ -334,7 +334,7 @@ return {
 		weight = 200000,
 		groups = {['gwa'] = 0}
 	},
-	
+
 	{
 		coords = vec3(360.69, -1384.66, 32.43),
 		target = {
@@ -353,7 +353,7 @@ return {
 		weight = 1000000,
 		groups = {['ambulance'] = 0}
 	},
-	
+
 	{
 		coords = vec3(364.87, -1406.66, 32.94),
 		target = {
@@ -372,7 +372,7 @@ return {
 		weight = 120000,
 		groups = {['ambulance'] = 0}
 	},
-	
+
 	{
 		coords = vec3(264.14,-879.66,28.12),
 		target = {
@@ -532,4 +532,22 @@ return {
 		slots = 2,
 		weight = 500
 	},
+	--[[{
+		coords = vec3(62.5555, -1004.9807, 28.3574),
+		target = {
+			loc = vec3(62.5555, -1004.9807, 28.3574),
+			length = 1.5,
+			width = 1.5,
+			heading = 0.0,
+			minZ = 27.7,
+			maxZ = 29.7,
+			label = 'TestLager'
+		},
+		id = 'testlager',
+		name = 'testlager',
+		label = 'Lager',
+		owner = false,
+		slots = 10,
+		weight = 500000
+	},]]
 }

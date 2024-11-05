@@ -1,10 +1,16 @@
 return {
 	Weapons = {
 		['WEAPON_BATTLERIFLE'] = {
-			label = 'Battle Rifle',
+			label = 'Kampfgewehr',
 			weight = 3300,
 			durability = 0.03,
 			ammoname = 'ammo-rifle2',
+			buttons = {
+				{label = 'Auf den Boden legen !!! (1x) !!! (PropSpawn)',
+				action = function(slot)
+					TriggerServerEvent('mor_base:EinzelItemDrop','WEAPON_BATTLERIFLE', 'WEAPON_BATTLERIFLE', 1, 'w_sl_battlerifle_m32')
+				end},
+			},
 		},
 
 		['WEAPON_SNOWLAUNCHER'] = {
@@ -15,28 +21,28 @@ return {
 		},
 
 		['WEAPON_TECPISTOL'] = {
-			label = 'Tactical SMG',
+			label = 'Taktische SMG',
 			weight = 1500,
 			durability = 0.075,
 			ammoname = 'ammo-9',
 		},
 
 		['WEAPON_ADVANCEDRIFLE'] = {
-			label = 'Advanced Rifle',
+			label = 'Fortschrittliches Gewehr',
 			weight = 3100,
 			durability = 0.03,
 			ammoname = 'ammo-rifle',
 		},
 
 		['WEAPON_APPISTOL'] = {
-			label = 'AP Pistol',
+			label = 'AP Pistole',
 			weight = 1400,
 			durability = 0.1,
 			ammoname = 'ammo-9',
 		},
 
 		['WEAPON_ASSAULTRIFLE'] = {
-			label = 'Assault Rifle',
+			label = 'Sturmgewehr',
 			weight = 4500,
 			durability = 0.03,
 			ammoname = 'ammo-rifle2',

@@ -774,7 +774,21 @@ return {
 	},
 	['salat'] = {
 		label = 'Salat',
-		weight = 4,
+		weight = 15,
+		stack = true,
+		close = true,
+		description = nil
+	},
+	['kuerbis'] = {
+		label = 'Kürbis',
+		weight = 15,
+		stack = true,
+		close = true,
+		description = nil
+	},
+	['zwiebel'] = {
+		label = 'Zwiebel',
+		weight = 20,
 		stack = true,
 		close = true,
 		description = nil
@@ -2991,5 +3005,18 @@ return {
 		weight = 1,
 		stack = true,
 		close = true,
+	},
+	['polabsperrung01'] = {
+		label = 'Abspereung 01',
+		weight = 500,
+		stack = true,
+		close = true,
+		description = 'Nur für Polizeibeamte. Sonst illegal.',
+		buttons = {
+			{label = 'Absperrung aufstellen',
+			action = function(slot)
+				TriggerServerEvent('mor_base:EinzelItemDrop','polabsperrung01', 'polabsperrung01', 1, 'prop_barrier_wat_03a')
+			end},
+		},
 	},
 }
