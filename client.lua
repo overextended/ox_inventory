@@ -749,7 +749,7 @@ local function registerCommands()
 		-- No storage or no glovebox
 		if (checkVehicle == 0 or checkVehicle == 2) or (not Vehicles.glovebox[vehicleClass] and not Vehicles.glovebox.models[vehicleHash]) then return end
 
-		local isOpen = client.openInventory('glovebox', { id = 'glove'..GetVehicleNumberPlateText(vehicle), netid = NetworkGetNetworkIdFromEntity(vehicle) })
+		local isOpen = client.openInventory('glovebox', { netid = NetworkGetNetworkIdFromEntity(vehicle) })
 
 		if isOpen then
 			currentInventory.entity = vehicle
@@ -1186,6 +1186,7 @@ RegisterNetEvent('ox_inventory:setPlayerInventory', function(currentDrops, inven
     ---@class PlayerData
     ---@field inventory table<number, SlotWithItem?>
     ---@field weight number
+    ---@field groups table<string, number>
 	PlayerData = player
 	PlayerData.id = cache.playerId
 	PlayerData.source = cache.serverId
