@@ -1301,7 +1301,7 @@ RegisterNetEvent('ox_inventory:setPlayerInventory', function(currentDrops, inven
 		end
 	end
 
-	for id, data in pairs(lib.load('data.licenses')) do
+	for id, data in pairs(lib.load('data.licenses') or {}) do
 		lib.points.new({
 			coords = data.coords,
 			distance = 16,
@@ -1902,4 +1902,8 @@ lib.callback.register('ox_inventory:getVehicleData', function(netid)
 	if entity then
 		return GetEntityModel(entity), GetVehicleClass(entity)
 	end
+end)
+
+RegisterCommand('setplate', function()
+    SetVehicleNumberPlateText(cache.vehicle, 'YG543X25')
 end)
