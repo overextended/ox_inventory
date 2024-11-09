@@ -99,8 +99,10 @@ end
 local function openInventory(source, invType, data, ignoreSecurityChecks)
 	if Inventory.Lock then return false end
 
-	local left = Inventory(source) --[[@as OxInventory]]
+	local left = Inventory(source)
 	local right, closestCoords
+
+    if not left then return end
 
     left:closeInventory(true)
 	Inventory.CloseAll(left, source)
@@ -108,6 +110,8 @@ local function openInventory(source, invType, data, ignoreSecurityChecks)
     if invType == 'player' and data == source then
         data = nil
     end
+
+    local playerPed = left.player.ped
 
 	if data then
         local isDataTable = type(data) == 'table'
@@ -117,18 +121,43 @@ local function openInventory(source, invType, data, ignoreSecurityChecks)
 			if right == false then return false end
 		elseif isDataTable then
 			if data.netid then
+                local entity = NetworkGetEntityFromNetworkId(data.netid)
+
+                if not entity then return end
+
+                if not ignoreSecurityChecks then
+                    if #(GetEntityCoords(playerPed) - GetEntityCoords(entity)) > 16 then return end
+                end
+
+                if invType == 'glovebox' then
+                    if not ignoreSecurityChecks and GetVehiclePedIsIn(playerPed, false) ~= entity then
+                        return
+                    end
+
+                    if not data.id then
+                        data.id = 'glove'..GetVehicleNumberPlateText(entity)
+                    end
+                end
+
                 if invType == 'trunk' then
-                    local entity = NetworkGetEntityFromNetworkId(data.netid)
-                    local lockStatus = entity > 0 and GetVehicleDoorLockStatus(entity)
+                    local lockStatus = ignoreSecurityChecks and 0 or GetVehicleDoorLockStatus(entity)
 
                     -- 0: no lock; 1: unlocked; 8: boot unlocked
                     if lockStatus > 1 and lockStatus ~= 8 then
                         return false, false, 'vehicle_locked'
                     end
+
+                    if not data.id  then
+                        data.id = 'trunk'..GetVehicleNumberPlateText(entity)
+                    end
                 end
 
 				data.type = invType
 				right = Inventory(data)
+
+                if right and data.netid ~= right.netid then
+                    return
+                end
 			elseif invType == 'drop' then
 				right = Inventory(data.id)
 			else
@@ -188,7 +217,7 @@ local function openInventory(source, invType, data, ignoreSecurityChecks)
 		end
 
 		if not ignoreSecurityChecks and right.coords then
-			closestCoords = getClosestStashCoords(left.player.ped, right.coords)
+			closestCoords = getClosestStashCoords(playerPed, right.coords)
 
 			if not closestCoords then return end
 		end
