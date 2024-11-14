@@ -108,7 +108,7 @@ local function createShop(shopType, id)
 	return shop[id]
 end
 
-for shopType, shopDetails in pairs(lib.load('data.shops')) do
+for shopType, shopDetails in pairs(lib.load('data.shops') or {}) do
 	registerShopType(shopType, shopDetails)
 end
 

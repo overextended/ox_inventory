@@ -59,13 +59,11 @@ function Inventory.OpenTrunk(entity)
 
     if not door then return end
 
-    local plate = GetVehicleNumberPlateText(entity)
-    local invId = 'trunk'..plate
     local coords = GetEntityCoords(entity)
 
     TaskTurnPedToFaceCoord(cache.ped, coords.x, coords.y, coords.z, 0)
 
-    if not client.openInventory('trunk', { id = invId, netid = NetworkGetNetworkIdFromEntity(entity), entityid = entity, door = door }) then return end
+    if not client.openInventory('trunk', { netid = NetworkGetNetworkIdFromEntity(entity), entityid = entity, door = door }) then return end
 
     if type(door) == 'table' then
         for i = 1, #door do
