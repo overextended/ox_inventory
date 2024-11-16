@@ -152,11 +152,13 @@ function client.openInventory(inv, data)
 	end
 
 	if inv == 'dumpster' and cache.vehicle then
-		return lib.notify({ id = 'inventory_right_access', type = 'error', description = locale('inventory_right_access') })
+		--return lib.notify({ id = 'inventory_right_access', type = 'error', description = locale('inventory_right_access') })
+		return TriggerEvent('PostFeed', {title = "Inventar", subtitle = "Zugriff", text = "~r~Du hast keine Rechte.\nOder stehst zuweit weg.", duration = 0.1})
 	end
 
 	if not canOpenInventory() then
-        return lib.notify({ id = 'inventory_player_access', type = 'error', description = locale('inventory_player_access') })
+        --return lib.notify({ id = 'inventory_player_access', type = 'error', description = locale('inventory_player_access') })
+		return TriggerEvent('PostFeed', {title = "Inventar", subtitle = "Zugriff", text = "~r~Du hast keine Rechte.\nOder stehst zuweit weg.", duration = 0.1})
     end
 
     local left, right, accessError
@@ -179,7 +181,8 @@ function client.openInventory(inv, data)
         local targetCoords = targetPed and GetEntityCoords(targetPed)
 
         if not targetCoords or #(targetCoords - GetEntityCoords(playerPed)) > 1.8 or not (client.hasGroup(shared.police) or canOpenTarget(targetPed)) then
-            return lib.notify({ id = 'inventory_right_access', type = 'error', description = locale('inventory_right_access') })
+            --return lib.notify({ id = 'inventory_right_access', type = 'error', description = locale('inventory_right_access') })
+			return TriggerEvent('PostFeed', {title = "Inventar", subtitle = "Zugriff", text = "~r~Du hast keine Rechte.\nOder stehst zuweit weg.", duration = 0.1})
         end
     end
 
@@ -247,7 +250,8 @@ function client.openInventory(inv, data)
         if left == false then return false end
 
         if invOpen == false then
-            return lib.notify({ id = 'inventory_right_access', type = 'error', description = locale('inventory_right_access') })
+            --return lib.notify({ id = 'inventory_right_access', type = 'error', description = locale('inventory_right_access') })
+			return TriggerEvent('PostFeed', {title = "Inventar", subtitle = "Zugriff", text = "~r~Du hast keine Rechte.\nOder stehst zuweit weg.", duration = 0.1})
         end
 
         if invOpen then return client.closeInventory() end
@@ -1333,7 +1337,8 @@ RegisterNetEvent('ox_inventory:setPlayerInventory', function(currentDrops, inven
 
 	PlayerData.loaded = true
 
-	lib.notify({ description = locale('inventory_setup') })
+	--lib.notify({ description = locale('inventory_setup') })
+	TriggerEvent('PostFeed', {title = "Inventar", subtitle = "", text = "~w~Inventar wurde erfolgreich ~g~geladen.", duration = 0.1})
 	Shops.refreshShops()
 	Inventory.Stashes()
 	Inventory.Evidence()
@@ -1367,6 +1372,7 @@ RegisterNetEvent('ox_inventory:setPlayerInventory', function(currentDrops, inven
 						if not id or #(playerCoords - pedCoords) > maxDistance or not (client.hasGroup(shared.police) or canOpenTarget(ped)) then
 							client.closeInventory()
 							lib.notify({ id = 'inventory_lost_access', type = 'error', description = locale('inventory_lost_access') })
+							TriggerEvent('PostFeed', {title = "Inventar", subtitle = "Zugriff", text = "~r~Zugriff nicht möglich.", duration = 0.1})
 						else
 							TaskTurnPedToFaceCoord(playerPed, pedCoords.x, pedCoords.y, pedCoords.z, 50)
 						end
@@ -1374,6 +1380,7 @@ RegisterNetEvent('ox_inventory:setPlayerInventory', function(currentDrops, inven
 					elseif currentInventory.coords and (#(playerCoords - currentInventory.coords) > maxDistance or canOpenTarget(playerPed)) then
 						client.closeInventory()
 						lib.notify({ id = 'inventory_lost_access', type = 'error', description = locale('inventory_lost_access') })
+						TriggerEvent('PostFeed', {title = "Inventar", subtitle = "Zugriff", text = "~r~Zugriff nicht möglich.", duration = 0.1})
 					end
 				end
 			end
@@ -1763,6 +1770,7 @@ lib.callback.register('ox_inventory:startCrafting', function(id, recipe)
 		label = locale('crafting_item', recipe.metadata?.label or Items[recipe.name].label),
 		duration = recipe.duration or 3000,
 		canCancel = true,
+		position = 'bottom',
 		disable = {
 			move = true,
 			combat = true,

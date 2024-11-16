@@ -530,6 +530,19 @@ return {
 		}
 	},
 
+	Export = {
+		name = 'Exporteur (Verkauf)',
+		blip = {
+			id = 642, colour = 3, scale = 0.5
+		}, inventory = {
+			{ name = 'money', price = 1, currency = 'salat' },
+			{ name = 'money', price = 1, currency = 'zwiebel' },
+			{ name = 'money', price = 1, currency = 'orange' },
+		}, targets = {
+			{ ped = `IG_RoosterMcCraw`, scenario = 'WORLD_HUMAN_CLIPBOARD', loc = vec3(1013.0371, -2902.2998, 4.9006), heading = 187.0048},
+		}
+	},
+
 
 
 	--[[TestShop = {
