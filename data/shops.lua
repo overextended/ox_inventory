@@ -151,8 +151,7 @@ return {
 			{ ped = `S_M_M_AutoShop_01`, scenario = 'WORLD_HUMAN_DRINKING', loc = vec3(1697.3727, 4923.4312, 41.0637), heading = 322.3297},
 			{ ped = `S_M_M_AutoShop_01`, scenario = 'WORLD_HUMAN_AA_SMOKE', loc = vec3(-706.1183, -914.5864, 18.2156), heading = 86.8069},
 			{ ped = `S_M_M_AutoShop_01`, scenario = 'WORLD_HUMAN_AA_SMOKE', loc = vec3(-47.3256, -1758.6655, 28.4209), heading = 45.0096},
-			{ ped = `S_M_M_AutoShop_01`, scenario = 'WORLD_HUMAN_AA_SMOKE', loc = vec3(241.1945, -897.9530, 28.6232), heading = 164.5896},
-
+			--{ ped = `S_M_M_AutoShop_01`, scenario = 'WORLD_HUMAN_AA_SMOKE', loc = vec3(241.1945, -897.9530, 28.6232), heading = 164.5896}, CentralPark
 		}
 	},
 
