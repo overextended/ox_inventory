@@ -86,7 +86,8 @@ for _, stash in pairs(lib.load('data.stashes') or {}) do
 		slots = stash.slots,
 		maxWeight = stash.weight,
 		groups = stash.groups or stash.jobs,
-		coords = shared.target and stash.target?.loc or stash.coords
+		coords = shared.target and stash.target?.loc or stash.coords,
+        distance = stash.distance or 10
 	}
 end
 
@@ -195,10 +196,8 @@ local function loadInventoryData(data, player, ignoreSecurityChecks)
 
 			if not inventory then
 				inventory = Inventory.Create(stash.name, stash.label or stash.name, 'stash', stash.slots, 0, stash.maxWeight, owner, nil, stash.groups)
-
-                if stash.coords then
-					inventory.coords = stash.coords
-				end
+                inventory.coords = stash.coords
+                inventory.distance = stash.distance
 			end
 		end
 	end
