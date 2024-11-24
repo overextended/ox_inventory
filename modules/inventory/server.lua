@@ -331,6 +331,8 @@ function Inventory.Set(inv, k, v)
 	end
 end
 
+exports('UpdateInventoryData', Inventory.Set)
+
 ---@param inv inventory
 ---@param key string
 function Inventory.Get(inv, key)
