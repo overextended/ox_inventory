@@ -4,7 +4,7 @@ lua54 'yes'
 game 'gta5'
 name 'ox_inventory'
 author 'Overextended'
-version '2.43.2'
+version '2.43.3'
 repository 'https://github.com/overextended/ox_inventory'
 description 'Slot-based inventory with item metadata support'
 
