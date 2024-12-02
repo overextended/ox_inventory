@@ -268,7 +268,7 @@ function db.saveInventories(players, trunks, gloveboxes, stashes, total)
                         end
                     end
 
-                    shared.info(saveStr:format('stashes', affectedRows, total[4], (os.nanotime() - start) / 1e6))
+                    shared.info(saveStr:format(affectedRows, total[4], 'stashes', (os.nanotime() - start) / 1e6))
                 end
             end)
         end
