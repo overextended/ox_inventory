@@ -134,10 +134,6 @@ local function openInventory(source, invType, data, ignoreSecurityChecks)
                     if not ignoreSecurityChecks and GetVehiclePedIsIn(playerPed, false) ~= entity then
                         return
                     end
-
-                    if not data.id then
-                        data.id = 'glove'..GetVehicleNumberPlateText(entity)
-                    end
                 end
 
                 if invType == 'trunk' then
@@ -147,9 +143,15 @@ local function openInventory(source, invType, data, ignoreSecurityChecks)
                     if lockStatus > 1 and lockStatus ~= 8 then
                         return false, false, 'vehicle_locked'
                     end
+                end
+
+                local plate = (invType == 'glovebox' or invType == 'trunk') and GetVehicleNumberPlateText(entity)
+
+                if plate then
+                    if server.trimplate then plate = string.strtrim(plate) end
 
                     if not data.id  then
-                        data.id = 'trunk'..GetVehicleNumberPlateText(entity)
+                        data.id = (invType == 'glovebox' and 'glove' or 'trunk') .. plate
                     end
                 end
 
@@ -157,7 +159,12 @@ local function openInventory(source, invType, data, ignoreSecurityChecks)
 				right = Inventory(data)
 
                 if right and data.netid ~= right.netid then
-                    return
+                    local invEntity = NetworkGetEntityFromNetworkId(right.netid)
+
+                    if DoesEntityExist(invEntity) then return end
+
+                    Inventory.Remove(right)
+                    right = Inventory(data)
                 end
 			elseif invType == 'drop' then
 				right = Inventory(data.id)
