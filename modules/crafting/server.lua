@@ -117,7 +117,7 @@ lib.callback.register('ox_inventory:craftItem', function(source, id, index, reci
 			-- Modified weight calculation
 			local newWeight = left.weight
 			local items = Inventory.Search(left, 'slots', tbl) or {}
-			
+			---@todo new iterator or something to accept a map
 			-- First subtract weight of ingredients that will be removed
 			for name, needs in pairs(recipe.ingredients) do
 				if needs > 0 then
