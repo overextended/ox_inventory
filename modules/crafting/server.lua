@@ -113,12 +113,35 @@ lib.callback.register('ox_inventory:craftItem', function(source, id, index, reci
 
 			local craftedItem = Items(recipe.name)
 			local craftCount = (type(recipe.count) == 'number' and recipe.count) or (table.type(recipe.count) == 'array' and math.random(recipe.count[1], recipe.count[2])) or 1
+			
+			-- Calculate new weight including crafted item
 			local newWeight = left.weight + (craftedItem.weight + (recipe.metadata?.weight or 0)) * craftCount
 			---@todo new iterator or something to accept a map
+			-- Calculate weight adjustments for durability changes
+			local weightAdjustment = 0
+			local items = Inventory.Search(left, 'slots', tbl)
+			
+			for name, needs in pairs(recipe.ingredients) do
+				for _, slot in pairs(items[name] or items) do
+					if needs < 1 then
+						local item = Items(name)
+						if item and item.weight then
+							weightAdjustment -= item.weight * needs
+						end
+					end
+				end
+			end
+			
+			newWeight += weightAdjustment
+
+			if newWeight > left.maxWeight then return false, 'cannot_carry' end
+
 			local items = Inventory.Search(left, 'slots', tbl) or {}
 			table.wipe(tbl)
 
 			for name, needs in pairs(recipe.ingredients) do
+				if needs == 0 then break end
+
 				local slots = items[name] or items
 
                 if #slots == 0 then return end
@@ -149,13 +172,10 @@ lib.callback.register('ox_inventory:craftItem', function(source, id, index, reci
 							end
 						end
 					elseif needs <= slot.count then
-						local itemWeight = slot.weight / slot.count
-						newWeight = (newWeight - slot.weight) + (slot.count - needs) * itemWeight
 						tbl[slot.slot] = needs
 						break
 					else
 						tbl[slot.slot] = slot.count
-						newWeight -= slot.weight
 						needs -= slot.count
 					end
 
@@ -163,10 +183,6 @@ lib.callback.register('ox_inventory:craftItem', function(source, id, index, reci
 					-- Player does not have enough items (ui should prevent crafting if lacking items, so this shouldn't trigger)
 					if needs > 0 and i == #slots then return end
 				end
-			end
-
-			if newWeight > left.maxWeight then
-				return false, 'cannot_carry'
 			end
 
 			if not TriggerEventHooks('craftItem', {
