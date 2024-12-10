@@ -65,9 +65,7 @@ export const canCraftItem = (item: Slot, inventoryType: string) => {
     const hasItem = leftInventory.items.find((playerItem) => {
       if (isSlotWithItem(playerItem) && playerItem.name === item) {
         if (count < 1) {
-          if (playerItem.metadata?.durability >= count * 100) return true;
-
-          return false;
+          return playerItem.metadata?.durability >= count * 100;
         }
       }
     });
@@ -110,7 +108,7 @@ export const getTargetInventory = (
 
 export const itemDurability = (metadata: any, curTime: number) => {
   // sorry dunak
-  // it's ok linden i fix inventory
+  // it's ok linden I fix inventory
   if (metadata?.durability === undefined) return;
 
   let durability = metadata.durability;
@@ -137,6 +135,12 @@ export const getItemData = async (itemName: string) => {
   }
 };
 
+const supportsWebp = (): boolean => {
+  if (typeof document === 'undefined') return false;
+  const canvas = document.createElement('canvas');
+  return canvas.toDataURL('image/webp').indexOf('data:image/webp') === 0;
+}
+
 export const getItemUrl = (item: string | SlotWithItem) => {
   const isObj = typeof item === 'object';
 
@@ -145,18 +149,28 @@ export const getItemUrl = (item: string | SlotWithItem) => {
 
     const metadata = item.metadata;
 
-    // @todo validate urls and support webp
+    // @todo validate urls
     if (metadata?.imageurl) return `${metadata.imageurl}`;
-    if (metadata?.image) return `${imagepath}/${metadata.image}.png`;
+    if (metadata?.image) {
+      const pngPath = `${imagepath}/${metadata.image}.png`;
+      const webpPath = `${imagepath}/${metadata.image}.webp`;
+
+      return supportsWebp() ? webpPath : pngPath;
+    }
   }
 
   const itemName = isObj ? (item.name as string) : item;
   const itemData = Items[itemName];
 
-  if (!itemData) return `${imagepath}/${itemName}.png`;
+  if (!itemData) return supportsWebp()
+    ? `${imagepath}/${itemName}.webp`
+    : `${imagepath}/${itemName}.png`;
   if (itemData.image) return itemData.image;
 
-  itemData.image = `${imagepath}/${itemName}.png`;
+
+  itemData.image = supportsWebp()
+    ? `${imagepath}/${itemName}.webp`
+    : `${imagepath}/${itemName}.png`;
 
   return itemData.image;
 };
