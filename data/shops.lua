@@ -78,8 +78,12 @@ return {
 		blip = {
 			id = 59, colour = 35, scale = 0.5
 		}, inventory = {
-			{ name = 'rinderkeule', price = 50 },
-			--{ name = 'id_card', price = 3700 },
+			{ name = 'money', price = 1, currency = 'salat' },
+			{ name = 'money', price = 1, currency = 'zwiebel' },
+			{ name = 'money', price = 1, currency = 'orange' },
+			{ name = 'money', price = 1, currency = 'tomate' },
+			{ name = 'money', price = 1, currency = 'aramidfasern' },
+			{ name = 'money', price = 1, currency = 'wolle' },
 		}, targets = {
 			{ ped = `A_M_M_Farmer_01`, scenario = 'WORLD_HUMAN_AA_SMOKE', loc = vec3(2309.0313, 4884.0757, 40.8082), heading = 39.0941},
 		}
@@ -529,19 +533,39 @@ return {
 		}
 	},
 
-	Export = {
-		name = 'Exporteur (Verkauf)',
+	Exporteur = {
+		name = 'Exporteur',
+		blip = {
+			id = 642, colour = 3, scale = 0.5
+		}, inventory = {
+			{ name = 'money', price = 1, currency = 'salat' },
+		}, targets = {
+			{ ped = `IG_RoosterMcCraw`, scenario = 'WORLD_HUMAN_CLIPBOARD', loc = vec3(1013.0371, -2902.2998, 4.9006), heading = 187.0048},
+		}
+	},
+
+	Obststand = {
+		name = 'Obststand',
 		blip = {
 			id = 642, colour = 3, scale = 0.5
 		}, inventory = {
 			{ name = 'money', price = 1, currency = 'salat' },
 			{ name = 'money', price = 1, currency = 'zwiebel' },
 			{ name = 'money', price = 1, currency = 'orange' },
+			{ name = 'money', price = 1, currency = 'tomate' },
+			{ name = 'money', price = 1, currency = 'wolle' },
+			{ name = 'salat', price = 4, currency = 'money' },
+			{ name = 'zwiebel', price = 3, currency = 'money' },
+			{ name = 'orange', price = 4, currency = 'money' },
+			{ name = 'tomate', price = 3, currency = 'money' },
 		}, targets = {
-			{ ped = `IG_RoosterMcCraw`, scenario = 'WORLD_HUMAN_CLIPBOARD', loc = vec3(1013.0371, -2902.2998, 4.9006), heading = 187.0048},
+			{ ped = `CS_Old_Man2`, scenario = 'WORLD_HUMAN_CLIPBOARD', loc = vec3(-1044.1439, 5327.8042, 43.5729), heading = 34.5952},
+			{ ped = `CS_Old_Man2`, scenario = 'WORLD_HUMAN_CLIPBOARD', loc = vec3(2529.0789, 2037.7456, 18.8392), heading = 276.2651},
+			{ ped = `CS_Old_Man2`, scenario = 'WORLD_HUMAN_CLIPBOARD', loc = vec3(-2510.8252, 3611.2319, 12.7502), heading = 233.5381},
+			{ ped = `CS_Old_Man2`, scenario = 'WORLD_HUMAN_CLIPBOARD', loc = vec3(1789.913, 4589.738, 36.683), heading = 196.567},
+			{ ped = `CS_Old_Man2`, scenario = 'WORLD_HUMAN_CLIPBOARD', loc = vec3(1266.762, 3549.688, 34.217), heading = 229.886},
 		}
 	},
-
 
 
 	--[[TestShop = {

@@ -1033,9 +1033,44 @@ return {
 		close = true,
 		description = nil
 	},
+	['faserpapier'] = {
+		label = 'Faserpapier',
+		weight = 112,
+		stack = true,
+		close = true,
+		description = 'illegal'
+	},
+	['blatt5dollarnoten'] = {
+		label = 'Blatt 5$ Noten(40)',
+		weight = 1350,
+		stack = true,
+		close = true,
+		description = 'illegal'
+	},
+	['frische5dollarfalsch'] = {
+		label = 'Frische 5$ Falschgeldnote',
+		weight = 35,
+		stack = true,
+		close = true,
+		description = 'illegal'
+	},
 	['plastik'] = {
 		label = 'Plastik',
 		weight = 250,
+		stack = true,
+		close = true,
+		description = nil
+	},
+	['holzfasern'] = {
+		label = 'Holzfasern',
+		weight = 8,
+		stack = true,
+		close = true,
+		description = nil
+	},
+	['farbfasern'] = {
+		label = 'Farbfasern',
+		weight = 10,
 		stack = true,
 		close = true,
 		description = nil
@@ -1949,7 +1984,13 @@ return {
 		stack = true,
 		close = true,
 		description = nil,
-		allowArmed = true
+		allowArmed = true,
+		client = {
+			anim = { dict = 'missheistdockssetup1clipboard@idle_a', clip = 'idle_a', flag = 49 },
+			prop = { model = 'prop_rolled_sock_02', pos = vec3(-0.14, -0.14, -0.08), rot = vec3(-50.0, -50.0, 0.0)},
+			disable = { move = true, car = true, combat = true },
+			usetime = 2500,
+		}
 	},
 
 	['medium'] = {
@@ -2311,8 +2352,8 @@ return {
 	},
 
 	['money_blueprint'] = {
-		label = 'Schwarzgeld Karte',
-		weight = 1,
+		label = 'Druckplatte',
+		weight = 250,
 		stack = true,
 		close = true,
 		description = nil

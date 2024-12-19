@@ -9,8 +9,7 @@ function Inventory.OpenDumpster(entity)
 
 	if not netId then
 		local coords = GetEntityCoords(entity)
-		entity = GetClosestObjectOfType(coords.x, coords.y, coords.z, 0.1, GetEntityModel(entity), true, true, true)
-		netId = entity ~= 0 and NetworkGetNetworkIdFromEntity(entity)
+		entity = GetClosestObjectOfType(coords.x, coords.y, coords.z, 0.5, GetEntityModel(entity), true, true, true)
 	end
 
 	if netId then
