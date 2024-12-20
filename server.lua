@@ -161,7 +161,12 @@ local function openInventory(source, invType, data, ignoreSecurityChecks)
                 if right and data.netid ~= right.netid then
                     local invEntity = NetworkGetEntityFromNetworkId(right.netid)
 
-                    if DoesEntityExist(invEntity) or plate and not string.match(GetVehicleNumberPlateText(invEntity), plate) then return end
+					if DoesEntityExist(invEntity) and plate then
+						local invEntityPlate = GetVehicleNumberPlateText(invEntity)
+						if invEntityPlate and not invEntityPlate:match(plate) then
+							return
+						end
+					end
 
                     Inventory.Remove(right)
                     right = Inventory(data)
