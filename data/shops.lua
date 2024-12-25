@@ -1,13 +1,3 @@
----wip types
-
----@class OxShop
----@field name string
----@field blip? { id: number, colour: number, scale: number }
----@field inventory { name: string, price: number, count?: number, currency?: string }
----@field locations? vector3[]
----@field targets? { loc: vector3, length: number, width: number, heading: number, minZ: number, maxZ: number, distance: number, debug?: boolean, drawSprite?: boolean }[]
----@field groups? string | string[] | { [string]: number }
-
 return {
 	General = {
 		name = 'Kiosk 24/7',
@@ -564,21 +554,7 @@ return {
 			{ ped = `CS_Old_Man2`, scenario = 'WORLD_HUMAN_CLIPBOARD', loc = vec3(-2510.8252, 3611.2319, 12.7502), heading = 233.5381},
 			{ ped = `CS_Old_Man2`, scenario = 'WORLD_HUMAN_CLIPBOARD', loc = vec3(1789.913, 4589.738, 36.683), heading = 196.567},
 			{ ped = `CS_Old_Man2`, scenario = 'WORLD_HUMAN_CLIPBOARD', loc = vec3(1266.762, 3549.688, 34.217), heading = 229.886},
+			{ ped = `CS_Old_Man2`, scenario = 'WORLD_HUMAN_CLIPBOARD', loc = vec3(1477.270, 2723.627, 36.567), heading = 32.135},
 		}
 	},
-
-
-	--[[TestShop = {
-		name = 'TestShop',
-		blip = {
-			id = 832, colour = 2, scale = 0.5
-		}, inventory = {
-			--{ name = 'bandage', price = 30 },
-			{ name = 'sandwich', price = 25, count = 0 },
-			--{ name = 'orthomol', price = 20 },
-			--{ name = 'reddragon', price = 27 },
-		}, targets = {
-			{ ped = `S_M_M_Doctor_01`, scenario = 'WORLD_HUMAN_CLIPBOARD', loc = vec3(62.5555, -1004.9807, 28.3574), heading = 344.1503},
-		}
-	},]]
 }

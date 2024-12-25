@@ -51,9 +51,8 @@ end
 local success, result = pcall(lib.load, ('modules.bridge.%s.server'):format(shared.framework))
 
 if not success then
-    lib.print.error(result)
     lib = nil
-    return
+    error(result, 0)
 end
 
 if server.convertInventory then exports('ConvertItems', server.convertInventory) end

@@ -14,7 +14,7 @@ local trash = {
 	{description = 'A discarded burger shot carton.', weight = 50, image = 'trash_burgershot'},
 	{description = 'An empty soda can.', weight = 20, image = 'trash_can'},
 	{description = 'A mouldy piece of bread.', weight = 70, image = 'trash_bread'},
-	{description = 'An empty ciggarette carton.', weight = 10, image = 'trash_fags'},
+	{description = 'An empty cigarette carton.', weight = 10, image = 'trash_fags'},
 	{description = 'A slightly used pair of panties.', weight = 20, image = 'panties'},
 	{description = 'An empty coffee cup.', weight = 20, image = 'trash_coffee'},
 	{description = 'A crumpled up piece of paper.', weight = 5, image = 'trash_paper'},
@@ -188,7 +188,7 @@ function Items.Metadata(inv, item, metadata, count)
 			metadata.serial = GenerateSerial(metadata.serial)
 		end
 
-		if item.hash == 'WEAPON_PETROLCAN' or item.hash == 'WEAPON_HAZARDCAN' or item.hash == 'WEAPON_FERTILIZERCAN' or item.hash == 'WEAPON_FIREEXTINGUISHER' then
+		if item.hash == `WEAPON_PETROLCAN` or item.hash == `WEAPON_HAZARDCAN` or item.hash == `WEAPON_FERTILIZERCAN` or item.hash == `WEAPON_FIREEXTINGUISHER` then
 			metadata.ammo = metadata.durability
 		end
 	else
@@ -302,7 +302,7 @@ function Items.CheckMetadata(metadata, item, name, ostime)
 	return metadata
 end
 
----Update item durability, and call 'Inventory.RemoveItem' if it was removed from decay.
+---Update item durability, and call `Inventory.RemoveItem` if it was removed from decay.
 ---@param inv OxInventory
 ---@param slot SlotWithItem
 ---@param item OxServerItem
@@ -369,7 +369,6 @@ end
 -- end)
 
 -----------------------------------------------------------------------------------------------
-
 Item('wasser', function(event, item, inventory, slot, data)
 	if event == 'usingItem' then
 	   exports.ox_inventory:AddItem(source, 'garbage', 1, {image = 'trash_bottle'})
