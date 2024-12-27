@@ -159,14 +159,6 @@ Item('kevlars', function(data, slot)
 	end
 end)
 
-Item('waschset', function(data, slot)
-	ox_inventory:useItem(data, function(data)
-		if data then
-			TriggerEvent('interaction:waschen')
-		end
-	end)
-end)
-
 Item('cigarette', function(data, slot)
 	ox_inventory:useItem(data, function(data)
 		if data then

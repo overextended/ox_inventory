@@ -37,6 +37,7 @@ files {
     'server.lua',
     'locales/*.json',
     'web/build/index.html',
+    'web/build/assets/SignPainterHouseScript.ttf',
     'web/build/assets/*.js',
     'web/build/assets/*.css',
     'web/images/*.png',

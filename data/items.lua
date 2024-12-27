@@ -9,9 +9,9 @@ return {
 	},
 	['identification'] = {
 		label = 'Identification',
-		client = {
-			image = 'card_id.png'
-		}
+		stack = false,
+		close = true,
+		weight = 10,
 	},
 	['mastercard'] = {
 		label = 'Fleeca Card',
@@ -48,7 +48,7 @@ return {
 		weight = 30,
 		stack = false,
 		close = false,
-		description = 'Zur Aufbewahrung von Karten'
+		description = 'Zum Beispiel zur Aufbewahrung von Karten, Geld'
 	},
 	['schluesselring'] = {
 		label = 'Schlüsselring',
@@ -890,6 +890,12 @@ return {
 		close = true,
 		description = nil
 	},
+	['gps'] = {
+		label = 'GPS System',
+		weight = 500,
+		stack = true,
+		close = true
+	},
 --- Crime ---
 	['lockpick'] = {
 		label = 'Lockpick',
@@ -1082,17 +1088,14 @@ return {
 		weight = 1150,
 		stack = true,
 		close = true,
-		client = {
-			usetime = 0
-		},
-		description = nil
+		description = 'Fahrzeugwäsche des letzten Fahrzeugs.'
 	},
 	['fixkit'] = {
 		label = 'Reparatur Set',
 		weight = 2500,
 		stack = true,
 		close = true,
-		description = nil
+		description = 'Fahrzeugreparatur des letzten Fahrzeugs.'
 	},
 	['blaettchen'] = {
 		label = 'Packung Blättchen',

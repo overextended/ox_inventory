@@ -76,7 +76,7 @@ setContainerProperties('schluesselring', {
 setContainerProperties('wallet', {
 	slots = 10,
 	maxWeight = 1000,
-	whitelist = { 'money', 'black_money', 'identification' }
+	whitelist = { 'money', 'identification' }
 })
 
 return containers
