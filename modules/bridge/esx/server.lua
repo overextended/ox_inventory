@@ -13,7 +13,7 @@ end)
 local ESX
 
 SetTimeout(500, function()
-    lib.checkDependency('es_extended', '1.12', true)
+    lib.checkDependency('es_extended', '1.12.0', true)
 
 	ESX = exports.es_extended:getSharedObject()
     local customInventory = ESX.GetConfig().CustomInventory
