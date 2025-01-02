@@ -21,11 +21,13 @@ SetTimeout(500, function()
 	if customInventory ~= nil and customInventory ~= "ox" then
         error('es_extended has not been configured to enable support for ox_inventory!\nEnsure Config.CustomInventory has been set to "ox" in your es_extended resource config.')
     end
-
+    
 	server.UseItem = ESX.UseItem
 	server.GetPlayerFromId = ESX.GetPlayerFromId
+    local players = ESX.GetExtendedPlayers()
 
-	for _, player in pairs(ESX.Players) do
+	for i=1, #players do
+        local player = players[i]
 		server.setPlayerInventory(player, player?.inventory)
 	end
 end)
