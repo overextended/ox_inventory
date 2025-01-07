@@ -1,5 +1,6 @@
 return {
 	{
+        name = 'debug_crafting',
 		items = {
 			{
 				name = 'lockpick',
