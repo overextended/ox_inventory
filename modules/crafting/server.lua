@@ -113,7 +113,7 @@ lib.callback.register('ox_inventory:craftItem', function(source, id, index, reci
 
 			local craftedItem = Items(recipe.name)
 			local craftCount = (type(recipe.count) == 'number' and recipe.count) or (table.type(recipe.count) == 'array' and math.random(recipe.count[1], recipe.count[2])) or 1
-			
+
 			-- Modified weight calculation
 			local newWeight = left.weight
 			local items = Inventory.Search(left, 'slots', tbl) or {}
@@ -127,7 +127,7 @@ lib.callback.register('ox_inventory:craftItem', function(source, id, index, reci
 					end
 				end
 			end
-			
+
 			-- Add weight of crafted item
 			newWeight += (craftedItem.weight + (recipe.metadata?.weight or 0)) * craftCount
 
@@ -186,6 +186,7 @@ lib.callback.register('ox_inventory:craftItem', function(source, id, index, reci
 				source = source,
 				benchId = id,
 				benchIndex = index,
+                benchName = bench.name or nil,
 				recipe = recipe,
 				toInventory = left.id,
 				toSlot = toSlot,
