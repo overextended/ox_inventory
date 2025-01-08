@@ -83,10 +83,17 @@ local function Item(name, cb)
 	end
 end
 
+function Notify(msg)
+    SetNotificationTextEntry("STRING")
+    AddTextComponentString(msg)
+    DrawNotification(false, false)
+end
+
 local ox_inventory = exports[shared.resource]
 -----------------------------------------------------------------------------------------------
 -- Clientside item use functions
 -----------------------------------------------------------------------------------------------
+
 
 Item('bandage', function(data, slot)
 	local maxHealth = GetEntityMaxHealth(cache.ped)
@@ -258,6 +265,16 @@ Item('kleidertasche', function(data, slot)
 	ox_inventory:useItem(data, function(data)
 		if data then
 			TriggerEvent('illenium-appearance:client:openOutfitMenu')
+		end
+	end)
+end)
+
+Item('shoes', function(data, slot)
+	ox_inventory:useItem(data, function(data)
+		if data then
+			local meta = data.metadata
+			SetPedComponentVariation(PlayerPedId(), 6, meta.comp, meta.text, 0)
+			Notify('~w~Schuhe ~g~angezogen')
 		end
 	end)
 end)
