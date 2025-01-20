@@ -208,6 +208,43 @@ return {
 		groups = {['ambulance'] = 0}
 	},
 
+	{
+		coords = vec3(1036.3435, -3202.9565, -39.1231),
+		target = {
+			loc = vec3(1036.3435, -3202.9565, -39.1231),
+			length = 1.0,
+			width = 1.0,
+			heading = 0,
+			minZ = -41.94,
+			maxZ = -38.14,
+			label = 'Öffne Trocknung'
+		},
+		name = 'vagos_feuchtablage',
+		label = 'Trocknung',
+		owner = false,
+		slots = 5,
+		weight = 40000,
+		groups = {['vagos'] = 0}
+	},
+
+	{
+		coords = vec3(1033.7821, -3202.9565, -39.1231),
+		target = {
+			loc = vec3(1033.7821, -3202.9565, -39.1231),
+			length = 1.0,
+			width = 1.0,
+			heading = 0,
+			minZ = -41.94,
+			maxZ = -38.14,
+			label = 'Öffne Getrocknetes'
+		},
+		name = 'vagos_trocken',
+		label = 'Getrocknetes',
+		owner = false,
+		slots = 6,
+		weight = 50000,
+		groups = {['vagos'] = 0}
+	},
 
 	--[[{
 		coords = vec3(62.5555, -1004.9807, 28.3574),
@@ -228,4 +265,3 @@ return {
 		weight = 500000
 	},]]
 }
-

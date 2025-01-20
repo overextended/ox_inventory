@@ -284,3 +284,37 @@ lib.callback.register('ox_inventory:buyItem', function(source, data)
 end)
 
 server.shops = Shops
+
+RegisterNetEvent('ox_inventory:sellItem', function(shop, itemName, quantity)
+    local player = Ox.GetPlayer(source)
+    local shopConfig = Shops[shop]
+
+    if not shopConfig or not shopConfig.inventory then return end
+
+    -- Suche das Item im Shop-Inventory
+    local item = nil
+    for _, shopItem in ipairs(shopConfig.inventory) do
+        if shopItem.name == itemName then
+            item = shopItem
+            break
+        end
+    end
+
+    if not item or not item.sellPrice then
+        return -- Item kann nicht verkauft werden
+    end
+
+    -- Prüfen, ob der Spieler genügend Items hat
+    local playerItem = player.getInventoryItem(itemName)
+    if not playerItem or playerItem.count < quantity then
+        return -- Spieler hat nicht genügend Items
+    end
+
+    -- Verkauf durchführen
+    local totalPrice = item.sellPrice * quantity
+    player.removeInventoryItem(itemName, quantity)
+    player.addMoney(totalPrice)
+
+    -- Erfolgsmeldung senden
+    TriggerClientEvent('ox_lib:notify', source, { type = 'success', description = ('Sold %d x %s for $%d'):format(quantity, itemName, totalPrice) })
+end)

@@ -399,8 +399,8 @@ return {
 			cancel = true
 		}
 	},
-	['apfelsaft'] = {
-		label = 'Apfelsaft',
+	['saft'] = {
+		label = 'Saft',
 		weight = 500,
 		degrade = 720,
 		stack = true,
@@ -410,20 +410,6 @@ return {
 			prop = { model = 'apa_prop_cs_plastic_cup_01', pos = vec3(0.01, 0.01, 0.01), rot = vec3(0.0, 0.0, -1.5) },
 			usetime = 3500
 		}
-	},
-	['orangensaft'] = {
-		label = 'Orangensaft',
-		weight = 500,
-		stack = true,
-		close = true,
-		degrade = 720,
-		description = nil,
-		client = {
-			status = { thirst = 330000 },
-			anim = { dict = 'mp_player_intdrink', clip = 'loop_bottle' },
-			prop = { model = 'apa_prop_cs_plastic_cup_01', pos = vec3(0.01, 0.01, 0.01), rot = vec3(5.0, 5.0, -180.5) },
-			usetime = 2500
-			}
 	},
 	['kaffee'] = {
 		label = 'Kaffee',
@@ -538,34 +524,6 @@ return {
 			prop = { model = 'prop_cs_shot_glass', pos = vec3(0.01, 0.01, 0.06), rot = vec3(5.0, 5.0, -180.5) },
 			usetime = 3500
 		}
-	},
-	['tomatensaft'] = {
-		label = 'Tomatensaft',
-		weight = 500,
-		stack = true,
-		close = true,
-		degrade = 720,
-		description = nil,
-		client = {
-			status = { thirst = 320000 },
-			anim = { dict = 'mp_player_intdrink', clip = 'loop_bottle' },
-			prop = { model = 'apa_prop_cs_plastic_cup_01', pos = vec3(0.01, 0.01, 0.01), rot = vec3(5.0, 5.0, -180.5) },
-			usetime = 2500
-			}
-	},
-	['litschisaft'] = {
-		label = 'Litschi Saft',
-		weight = 500,
-		stack = true,
-		close = true,
-		degrade = 720,
-		description = nil,
-		client = {
-			status = { thirst = 500000 },
-			anim = { dict = 'mp_player_intdrink', clip = 'loop_bottle' },
-			prop = { model = 'apa_prop_cs_plastic_cup_01', pos = vec3(0.01, 0.01, 0.01), rot = vec3(5.0, 5.0, -180.5) },
-			usetime = 2500
-			}
 	},
 	['limonadeglas'] = {
 		label = 'Glas Limonade',
@@ -735,6 +693,13 @@ return {
 --- Farming & Crafting---
 	['salat'] = {
 		label = 'Salat',
+		weight = 300,
+		stack = true,
+		close = true,
+		description = nil
+	},
+	['salatgeschnitten'] = {
+		label = 'Salat geschnitten',
 		weight = 15,
 		stack = true,
 		close = true,
@@ -743,6 +708,13 @@ return {
 	['orange'] = {
 		label = 'Orange',
 		weight = 44,
+		stack = true,
+		close = true,
+		description = nil
+	},
+	['tomate'] = {
+		label = 'Tomate',
+		weight = 41,
 		stack = true,
 		close = true,
 		description = nil
@@ -757,6 +729,20 @@ return {
 	['zwiebel'] = {
 		label = 'Zwiebel',
 		weight = 20,
+		stack = true,
+		close = true,
+		description = nil
+	},
+	['gewuerz'] = {
+		label = 'Gewürz',
+		weight = 2,
+		stack = true,
+		close = true,
+		description = nil
+	},
+	['sauce'] = {
+		label = 'Sauce',
+		weight = 250,
 		stack = true,
 		close = true,
 		description = nil
@@ -1012,6 +998,13 @@ return {
 		close = true,
 		description = 'Droge'
 	},
+	['afghandry'] = {
+		label = 'Afghan Getrocknet',
+		weight = 1,
+		stack = true,
+		close = true,
+		description = 'Droge'
+	},
 	['afghan_joint'] = {
 		label = 'Afghan Joint',
 		weight = 4,
@@ -1020,8 +1013,8 @@ return {
 		description = 'Droge',
 		client = {
 			status = { hunger = -50000 },
-			anim = 'smokejoint',
-			prop = 'joint',
+		--	anim = 'smokejoint',
+		--	prop = 'joint',
 			usetime = 8000
 		}
 	},

@@ -33,11 +33,9 @@ return {
 		blip = {
 			id = 59, colour = 1, scale = 0.5
 		}, inventory = {
-			{ name = 'bier', price = 12 },
-			{ name = 'cola', price = 15 },
-			{ name = 'burger', price = 27 },
-			{ name = 'whiskey_flasche', price = 142 },
-			{ name = 'scratch_ticket', price = 2 },
+			{ name = 'bier', price = 12, sellprice = 6 },
+			{ name = 'cola', price = 15, sellprice = 6 },
+			{ name = 'burger', price = 27, sellprice = 6 },
 		},
 		targets = {
 			{ ped = `mp_m_shopkeep_01`, scenario = 'WORLD_HUMAN_DRINKING', loc = vec3(-1486.7439, -377.5307, 39.1634), heading = 131.8548},

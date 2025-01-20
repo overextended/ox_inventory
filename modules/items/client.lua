@@ -94,7 +94,6 @@ local ox_inventory = exports[shared.resource]
 -- Clientside item use functions
 -----------------------------------------------------------------------------------------------
 
-
 Item('bandage', function(data, slot)
 	local maxHealth = GetEntityMaxHealth(cache.ped)
 	local health = GetEntityHealth(cache.ped)
@@ -189,6 +188,14 @@ Item('cigar', function(data, slot)
 		end
 	end)
 end)
+
+--[[Item('afghan_joint', function(data, slot)
+	ox_inventory:useItem(data, function(data)
+		if data then
+			ExecuteCommand('e smokeweed')
+		end
+	end)
+end)]]
 
 Item('bag', function(data, slot)
 	ox_inventory:useItem(data, function(data)
