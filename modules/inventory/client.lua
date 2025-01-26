@@ -4,18 +4,24 @@ local Inventory = {}
 
 Inventory.Dumpsters = {218085040, 666561306, -58485588, -206690185, 1511880420, 682791951}
 
+-- Make sure dumpsters are frozen to ensure persistent position across clients
+SetInterval(function()
+	local objects = GetGamePool('CObject')
+
+	for i = 1, #objects do
+		local object = objects[i]
+		local model = GetEntityModel(object)
+
+		if lib.table.contains(Inventory.Dumpsters, model) and not IsEntityPositionFrozen(object) then
+			FreezeEntityPosition(object, true)
+		end
+	end
+end, 3000)
+
 function Inventory.OpenDumpster(entity)
-	local netId = NetworkGetEntityIsNetworked(entity) and NetworkGetNetworkIdFromEntity(entity)
+	local coords = GetEntityCoords(entity)
 
-	if not netId then
-		local coords = GetEntityCoords(entity)
-		entity = GetClosestObjectOfType(coords.x, coords.y, coords.z, 0.1, GetEntityModel(entity), true, true, true)
-		netId = entity ~= 0 and NetworkGetNetworkIdFromEntity(entity)
-	end
-
-	if netId then
-		client.openInventory('dumpster', 'dumpster'..netId)
-	end
+	client.openInventory('dumpster', coords)
 end
 
 local Utils = require 'modules.utils.client'
