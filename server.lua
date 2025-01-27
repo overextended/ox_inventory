@@ -197,13 +197,26 @@ local function openInventory(source, invType, data, ignoreSecurityChecks)
 				right = Inventory(('evidence-%s'):format(data))
 			end
 		elseif invType == 'dumpster' then
-			local dumpsterId = getDumpsterFromCoords(data)
-			right = dumpsterId and Inventory(('dumpster-%s'):format(dumpsterId))
+			if shared.entitylockdown then
+				local dumpsterId = getDumpsterFromCoords(data)
+				right = dumpsterId and Inventory(('dumpster-%s'):format(dumpsterId))
 
-			if not right then
-				dumpsterId = #registeredDumpsters + 1
-				right = Inventory.Create(('dumpster-%s'):format(dumpsterId), locale('dumpster'), invType, 15, 0, 100000, false)
-				registeredDumpsters[dumpsterId] = data
+				if not right then
+					dumpsterId = #registeredDumpsters + 1
+					right = Inventory.Create(('dumpster-%s'):format(dumpsterId), locale('dumpster'), invType, 15, 0, 100000, false)
+					registeredDumpsters[dumpsterId] = data
+				end
+			else
+				---@cast data string
+				right = Inventory(data)
+
+				if not right then
+					local netid = tonumber(data:sub(9))
+	
+					if netid and NetworkGetEntityFromNetworkId(netid) > 0 then
+						right = Inventory.Create(data, locale('dumpster'), invType, 15, 0, 100000, false)
+					end
+				end
 			end
 		elseif invType == 'container' then
 			left.containerSlot = data --[[@as number]]
