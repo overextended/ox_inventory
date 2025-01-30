@@ -4,7 +4,7 @@ local Inventory = {}
 
 Inventory.Dumpsters = {218085040, 666561306, -58485588, -206690185, 1511880420, 682791951}
 
-if shared.entitylockdown then
+if shared.networkdumpsters then
 	-- Make sure dumpsters are frozen to ensure persistent position across clients
 	SetInterval(function()
 		local objects = GetGamePool('CObject')
@@ -21,7 +21,7 @@ if shared.entitylockdown then
 end
 
 function Inventory.OpenDumpster(entity)
-	if shared.entitylockdown then
+	if shared.networkdumpsters then
 		local coords = GetEntityCoords(entity)
 		client.openInventory('dumpster', coords)
 		return

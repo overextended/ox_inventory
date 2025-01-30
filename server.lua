@@ -197,7 +197,7 @@ local function openInventory(source, invType, data, ignoreSecurityChecks)
 				right = Inventory(('evidence-%s'):format(data))
 			end
 		elseif invType == 'dumpster' then
-			if shared.entitylockdown then
+			if shared.networkdumpsters then
 				local dumpsterId = getDumpsterFromCoords(data)
 				right = dumpsterId and Inventory(('dumpster-%s'):format(dumpsterId))
 
