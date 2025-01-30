@@ -186,7 +186,6 @@ lib.callback.register('ox_inventory:craftItem', function(source, id, index, reci
 				source = source,
 				benchId = id,
 				benchIndex = index,
-                benchName = bench.name or nil,
 				recipe = recipe,
 				toInventory = left.id,
 				toSlot = toSlot,
