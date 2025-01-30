@@ -212,6 +212,8 @@ end
 
 setmetatable(Inventory, {
 	__call = function(self, inv, player, ignoreSecurityChecks)
+        if Inventory.Lock then return false end
+
 		if not inv then
 			return self
 		elseif type(inv) == 'table' then
