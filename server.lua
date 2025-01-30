@@ -177,16 +177,14 @@ local function openInventory(source, invType, data, ignoreSecurityChecks)
 				data.type = invType
 				right = Inventory(data)
 
-                if right and data.netid ~= right.netid then
-                    local invEntity = NetworkGetEntityFromNetworkId(right.netid)
+				if right and data.netid ~= right.netid then
+					local invEntity = NetworkGetEntityFromNetworkId(right.netid)
 
-                    if invEntity > 0 and DoesEntityExist(invEntity) or plate and not string.match(GetVehicleNumberPlateText(invEntity) or '', plate) then
-                        return
-                    end
-
-                    Inventory.Remove(right)
-                    right = Inventory(data)
-                end
+					if not (invEntity > 0 and DoesEntityExist(invEntity)) or (plate and not string.match(GetVehicleNumberPlateText(invEntity) or '', plate)) then
+						Inventory.Remove(right)
+						right = Inventory(data)
+					end
+				end
 			elseif invType == 'drop' then
 				right = Inventory(data.id)
 			else
