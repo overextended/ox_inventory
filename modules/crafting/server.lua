@@ -43,7 +43,7 @@ local function createCraftingBench(id, data)
 	end
 end
 
-for id, data in pairs(lib.load('data.crafting') or {}) do createCraftingBench(id, data) end
+for id, data in pairs(lib.load('data.crafting') or {}) do createCraftingBench(data.name or id, data) end
 
 ---falls back to player coords if zones and points are both nil
 ---@param source number
@@ -186,7 +186,6 @@ lib.callback.register('ox_inventory:craftItem', function(source, id, index, reci
 				source = source,
 				benchId = id,
 				benchIndex = index,
-                benchName = bench.name or nil,
 				recipe = recipe,
 				toInventory = left.id,
 				toSlot = toSlot,
