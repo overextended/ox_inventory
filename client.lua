@@ -815,7 +815,7 @@ local function registerCommands()
 			if not shared.target and entityType == 3 then
 				local model = GetEntityModel(entity)
 
-				if Inventory.Dumpsters[model] then
+				if Inventory.Dumpsters:includes(model) then
 					return Inventory.OpenDumpster(entity)
 				end
 			end
