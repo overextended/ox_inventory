@@ -12,17 +12,17 @@ export const onCraft = (source: DragSource, target: DropTarget) => {
 
   const sourceSlot = sourceInventory.items[source.item.slot - 1];
 
-  if (!isSlotWithItem(sourceSlot)) throw new Error(`Item ${sourceSlot.slot} name === undefined`);
+  if (!isSlotWithItem(sourceSlot)) throw new Error('Item ${sourceSlot.slot} name === undefined');
 
   if (sourceSlot.count === 0) return;
 
   const sourceData = Items[sourceSlot.name];
 
-  if (sourceData === undefined) return console.error(`Item ${sourceSlot.name} data undefined!`);
+  if (sourceData === undefined) return console.error('Item ${sourceSlot.name} data undefined!');
 
   const targetSlot = targetInventory.items[target.item.slot - 1];
 
-  if (targetSlot === undefined) return console.error(`Target slot undefined`);
+  if (targetSlot === undefined) return console.error('Target slot undefined');
 
   const count = state.itemAmount === 0 ? 1 : state.itemAmount;
 

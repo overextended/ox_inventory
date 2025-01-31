@@ -31,9 +31,9 @@ const InventoryHotbar: React.FC = () => {
           <div
             className="hotbar-item-slot"
             style={{
-              backgroundImage: `url(${item?.name ? getItemUrl(item as SlotWithItem) : 'none'}`,
+              backgroundImage: 'url(${item?.name ? getItemUrl(item as SlotWithItem) : 'none'}',
             }}
-            key={`hotbar-${item.slot}`}
+            key={'hotbar-${item.slot}'}
           >
             {isSlotWithItem(item) && (
               <div className="item-slot-wrapper">
@@ -43,15 +43,15 @@ const InventoryHotbar: React.FC = () => {
                     <p>
                       {item.weight > 0
                         ? item.weight >= 1000
-                          ? `${(item.weight / 1000).toLocaleString('en-us', {
+                          ? '${(item.weight / 1000).toLocaleString('en-us', {
                               minimumFractionDigits: 2,
-                            })}kg `
-                          : `${item.weight.toLocaleString('en-us', {
+                            })}kg '
+                          : '${item.weight.toLocaleString('en-us', {
                               minimumFractionDigits: 0,
-                            })}g `
+                            })}g '
                         : ''}
                     </p>
-                    <p>{item.count ? item.count.toLocaleString('en-us') + `x` : ''}</p>
+                    <p>{item.count ? item.count.toLocaleString('en-us') + 'x' : ''}</p>
                   </div>
                 </div>
                 <div>

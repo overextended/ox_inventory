@@ -1,169 +1,308 @@
 return {
 	General = {
-		name = 'Shop',
+		name = 'Kiosk 24/7',
 		blip = {
-			id = 59, colour = 69, scale = 0.8
+			id = 59, colour = 69, scale = 0.5
+		},
+		inventory = {
+			{ name = 'wasser', price = 9 },
+			{ name = 'sprunk', price = 12 },
+			{ name = 'cola', price = 13 },
+			{ name = 'brot', price = 6 },
+			{ name = 'sandwich', price = 9 },
+			{ name = 'blaettchen', price = 7 },
+		},
+		targets = {
+			{ ped = `mp_m_shopkeep_01`, scenario = 'WORLD_HUMAN_AA_SMOKE', loc = vec3(372.4016, 325.8542, 102.5664), heading = 254.9931},
+			{ ped = `S_F_Y_Shop_LOW`, scenario = 'WORLD_HUMAN_AA_COFFEE', loc = vec3(29.525, -1343.552, 28.489), heading = 172.9123},
+			{ ped = `mp_m_shopkeep_01`, scenario = 'WORLD_HUMAN_AA_COFFEE', loc = vec3(-3038.4473, 584.7329, 6.9089), heading = 15.3747},
+			{ ped = `S_F_Y_Shop_MID`, scenario = 'WORLD_HUMAN_STAND_MOBILE', loc = vec3(-3243.9590, 1000.1609, 11.8307), heading = 355.6625},
+			{ ped = `S_F_Y_Shop_LOW`, scenario = 'WORLD_HUMAN_CLIPBOARD', loc = vec3(1728.6068, 6416.6738, 34.0372), heading = 246.4818},
+			{ ped = `mp_m_shopkeep_01`, scenario = 'WORLD_HUMAN_SMOKE', loc = vec3(1959.1354, 3741.5833, 31.3437), heading = 302.0530},
+			{ ped = `S_F_Y_Shop_MID`, scenario = 'WORLD_HUMAN_AA_COFFEE', loc = vec3(549.2695, 2669.6155, 41.1565), heading = 98.3292},
+			{ ped = `mp_m_shopkeep_01`, scenario = 'WORLD_HUMAN_STAND_MOBILE', loc = vec3(2676.5181, 3280.2109, 54.2411), heading = 329.0159},
+			{ ped = `S_F_Y_Shop_LOW`, scenario = 'WORLD_HUMAN_CLIPBOARD', loc = vec3(2555.4841, 380.9057, 107.6229), heading = 3.5361},
+			{ ped = `mp_m_shopkeep_01`, scenario = 'WORLD_HUMAN_AA_COFFEE', loc = vec3(159.9670, 6641.0176, 30.6985), heading = 225.7307},
+			{ ped = `S_M_Y_Shop_MASK`, scenario = 'WORLD_HUMAN_SMOKE', loc = vec3(4466.2109, -4463.9351, 3.2490), heading = 201.4549},
+			{ ped = `S_F_Y_Shop_LOW`, scenario = 'WORLD_HUMAN_AA_COFFEE', loc = vec3(-890.0961, 2837.0989, 22.5810), heading = 182.3876},
+			{ ped = `S_F_Y_Shop_LOW`, scenario = 'WORLD_HUMAN_AA_COFFEE', loc = vec3(377.5449, -1787.0211, 28.5232), heading = 320.3656},
+		}
+	},
+	Liquor = {
+		name = 'Rob`s Schnaps Laden',
+		blip = {
+			id = 59, colour = 1, scale = 0.5
 		}, inventory = {
-			{ name = 'burger', price = 10 },
-			{ name = 'water', price = 10 },
-			{ name = 'cola', price = 10 },
-		}, locations = {
-			vec3(25.7, -1347.3, 29.49),
-			vec3(-3038.71, 585.9, 7.9),
-			vec3(-3241.47, 1001.14, 12.83),
-			vec3(1728.66, 6414.16, 35.03),
-			vec3(1697.99, 4924.4, 42.06),
-			vec3(1961.48, 3739.96, 32.34),
-			vec3(547.79, 2671.79, 42.15),
-			vec3(2679.25, 3280.12, 55.24),
-			vec3(2557.94, 382.05, 108.62),
-			vec3(373.55, 325.56, 103.56),
-		}, targets = {
-			{ loc = vec3(25.06, -1347.32, 29.5), length = 0.7, width = 0.5, heading = 0.0, minZ = 29.5, maxZ = 29.9, distance = 1.5 },
-			{ loc = vec3(-3039.18, 585.13, 7.91), length = 0.6, width = 0.5, heading = 15.0, minZ = 7.91, maxZ = 8.31, distance = 1.5 },
-			{ loc = vec3(-3242.2, 1000.58, 12.83), length = 0.6, width = 0.6, heading = 175.0, minZ = 12.83, maxZ = 13.23, distance = 1.5 },
-			{ loc = vec3(1728.39, 6414.95, 35.04), length = 0.6, width = 0.6, heading = 65.0, minZ = 35.04, maxZ = 35.44, distance = 1.5 },
-			{ loc = vec3(1698.37, 4923.43, 42.06), length = 0.5, width = 0.5, heading = 235.0, minZ = 42.06, maxZ = 42.46, distance = 1.5 },
-			{ loc = vec3(1960.54, 3740.28, 32.34), length = 0.6, width = 0.5, heading = 120.0, minZ = 32.34, maxZ = 32.74, distance = 1.5 },
-			{ loc = vec3(548.5, 2671.25, 42.16), length = 0.6, width = 0.5, heading = 10.0, minZ = 42.16, maxZ = 42.56, distance = 1.5 },
-			{ loc = vec3(2678.29, 3279.94, 55.24), length = 0.6, width = 0.5, heading = 330.0, minZ = 55.24, maxZ = 55.64, distance = 1.5 },
-			{ loc = vec3(2557.19, 381.4, 108.62), length = 0.6, width = 0.5, heading = 0.0, minZ = 108.62, maxZ = 109.02, distance = 1.5 },
-			{ loc = vec3(373.13, 326.29, 103.57), length = 0.6, width = 0.5, heading = 345.0, minZ = 103.57, maxZ = 103.97, distance = 1.5 },
+			{ name = 'bier', price = 12, sellprice = 6 },
+			{ name = 'cola', price = 15, sellprice = 6 },
+			{ name = 'burger', price = 27, sellprice = 6 },
+		},
+		targets = {
+			{ ped = `mp_m_shopkeep_01`, scenario = 'WORLD_HUMAN_DRINKING', loc = vec3(-1486.7439, -377.5307, 39.1634), heading = 131.8548},
+			{ ped = `S_F_Y_Shop_LOW`, scenario = 'WORLD_HUMAN_AA_SMOKE', loc = vec3(1134.3135, -983.2003, 44.4158), heading = 275.9501},
+			{ ped = `S_F_Y_Shop_MID`, scenario = 'WORLD_HUMAN_DRINKING', loc = vec3(-1221.4283, -907.9989, 11.3263), heading = 33.5436},
+			{ ped = `mp_m_shopkeep_01`, scenario = 'WORLD_HUMAN_CLIPBOARD', loc = vec3(-2966.3926, 391.5766, 14.0433), heading = 85.4508},
+			{ ped = `S_F_Y_Shop_LOW`, scenario = 'WORLD_HUMAN_CLIPBOARD', loc = vec3(1166.8092, 2710.7844, 37.1577), heading = 181.9506},
+			{ ped = `mp_m_shopkeep_01`, scenario = 'WORLD_HUMAN_DRINKING', loc = vec3(1392.4359, 3606.2634, 33.9809), heading = 197.8445},
 		}
 	},
 
-	Liquor = {
-		name = 'Liquor Store',
+	Hackershop = {
+		name = 'Hackershop',
 		blip = {
-			id = 93, colour = 69, scale = 0.8
+			id = 606, colour = 35, scale = 0.4
 		}, inventory = {
-			{ name = 'water', price = 10 },
-			{ name = 'cola', price = 10 },
-			{ name = 'burger', price = 15 },
+			{ name = 'laptop_h', price = 5000, currency = 'black_money' },
+			{ name = 'id_card', price = 3700, currency = 'black_money' },
 		}, locations = {
-			vec3(1135.808, -982.281, 46.415),
-			vec3(-1222.915, -906.983, 12.326),
-			vec3(-1487.553, -379.107, 40.163),
-			vec3(-2968.243, 390.910, 15.043),
-			vec3(1166.024, 2708.930, 38.157),
-			vec3(1392.562, 3604.684, 34.980),
-			vec3(-1393.409, -606.624, 30.319)
+			vec3(1276.28, -1710.22, 54.77)
 		}, targets = {
-			{ loc = vec3(1134.9, -982.34, 46.41), length = 0.5, width = 0.5, heading = 96.0, minZ = 46.4, maxZ = 46.8, distance = 1.5 },
-			{ loc = vec3(-1222.33, -907.82, 12.43), length = 0.6, width = 0.5, heading = 32.7, minZ = 12.3, maxZ = 12.7, distance = 1.5 },
-			{ loc = vec3(-1486.67, -378.46, 40.26), length = 0.6, width = 0.5, heading = 133.77, minZ = 40.1, maxZ = 40.5, distance = 1.5 },
-			{ loc = vec3(-2967.0, 390.9, 15.14), length = 0.7, width = 0.5, heading = 85.23, minZ = 15.0, maxZ = 15.4, distance = 1.5 },
-			{ loc = vec3(1165.95, 2710.20, 38.26), length = 0.6, width = 0.5, heading = 178.84, minZ = 38.1, maxZ = 38.5, distance = 1.5 },
-			{ loc = vec3(1393.0, 3605.95, 35.11), length = 0.6, width = 0.6, heading = 200.0, minZ = 35.0, maxZ = 35.4, distance = 1.5 }
+			{ loc = vec3(1276.28, -1710.22, 54.77), length = 2.4, width = 0.1, heading = 25.0, minZ = 54.37, maxZ = 55.37, distance = 3.0 }
+		}
+	},
+
+	Bauernhof = {
+		name = 'Bauernhof',
+		blip = {
+			id = 59, colour = 35, scale = 0.5
+		}, inventory = {
+			{ name = 'money', price = 1, currency = 'salat' },
+			{ name = 'money', price = 1, currency = 'zwiebel' },
+			{ name = 'money', price = 1, currency = 'orange' },
+			{ name = 'money', price = 1, currency = 'tomate' },
+			{ name = 'money', price = 1, currency = 'aramidfasern' },
+			{ name = 'money', price = 1, currency = 'wolle' },
+		}, targets = {
+			{ ped = `A_M_M_Farmer_01`, scenario = 'WORLD_HUMAN_AA_SMOKE', loc = vec3(2309.0313, 4884.0757, 40.8082), heading = 39.0941},
+		}
+	},
+
+	TaschenLaden = {
+		name = 'Taschen',
+		blip = {
+			id = 59, colour = 62, scale = 0.5
+		}, inventory = {
+			{ name = 'bag', price = 3000 },
+			{ name = 'bag2', price = 5000 },
+			{ name = 'kleidertasche', price = 8000},
+		}, targets = {
+			{ ped = `a_m_y_juggalo_01`, scenario = 'WORLD_HUMAN_CLIPBOARD', loc = vec3(-1612.281, -1075.265, 12.019), heading = 100.973},
 		}
 	},
 
 	YouTool = {
-		name = 'YouTool',
+		name = 'Baumarkt',
 		blip = {
-			id = 402, colour = 69, scale = 0.8
+			id = 59, colour = 38, scale = 0.6
 		}, inventory = {
-			{ name = 'lockpick', price = 10 }
-		}, locations = {
-			vec3(2748.0, 3473.0, 55.67),
-			vec3(342.99, -1298.26, 32.51)
+			{ name = 'lockpick', price = 500 },
+			{ name = 'schere', price = 100 },
+			{ name = 'handcuffs', price = 250 },
+			{ name = 'blowpipe', price = 500 },
+			{ name = 'lithium', price = 15 },
+			{ name = 'parachute', price = 3450 },
+			{ name = 'axt', price = 250 },
+			{ name = 'WEAPON_FLASHLIGHT', price = 295 },
+		    { name = 'waschset', price = 200 },
+			{ name = 'fixkit', price = 5000 },
 		}, targets = {
-			{ loc = vec3(2746.8, 3473.13, 55.67), length = 0.6, width = 3.0, heading = 65.0, minZ = 55.0, maxZ = 56.8, distance = 3.0 }
+			{ ped = `S_M_Y_Construct_01`, scenario = 'WORLD_HUMAN_CLIPBOARD', loc = vec3(2748.3401, 3474.2588, 54.6724), heading = 226.0162},
+			{ ped = `S_M_Y_Construct_01`, scenario = 'WORLD_HUMAN_AA_SMOKE', loc = vec3(342.5627, -1297.8639, 31.5101), heading = 166.5375},
+		}
+	},
+
+	Ltd = {
+		name = 'Ron`s Shop',
+		blip = {
+			id = 628, colour = 69, scale = 0.5
+		}, inventory = {
+			{ name = 'brot', price = 7 },
+			{ name = 'cola', price = 13 },
+			{ name = 'blaettchen', price = 3 },
+			{ name = 'warndreieck', price = 50 },
+			{ name = 'warnweste', price = 25 },
+			{ name = 'waschset', price = 320 },
+			{ name = 'weapon_petrolcan', price = 220 },
+		},  targets = {
+			{ ped = `S_M_M_AutoShop_01`, scenario = 'WORLD_HUMAN_DRINKING', loc = vec3(1697.3727, 4923.4312, 41.0637), heading = 322.3297},
+			{ ped = `S_M_M_AutoShop_01`, scenario = 'WORLD_HUMAN_AA_SMOKE', loc = vec3(-706.1183, -914.5864, 18.2156), heading = 86.8069},
+			{ ped = `S_M_M_AutoShop_01`, scenario = 'WORLD_HUMAN_AA_SMOKE', loc = vec3(-47.3256, -1758.6655, 28.4209), heading = 45.0096},
+			--{ ped = `S_M_M_AutoShop_01`, scenario = 'WORLD_HUMAN_AA_SMOKE', loc = vec3(241.1945, -897.9530, 28.6232), heading = 164.5896}, CentralPark
 		}
 	},
 
 	Ammunation = {
-		name = 'Ammunation',
+		name = 'Waffenladen',
 		blip = {
-			id = 110, colour = 69, scale = 0.8
+			id = 110, colour = 69, scale = 0.5
 		}, inventory = {
 			{ name = 'ammo-9', price = 5, },
 			{ name = 'WEAPON_KNIFE', price = 200 },
 			{ name = 'WEAPON_BAT', price = 100 },
-			{ name = 'WEAPON_PISTOL', price = 1000, metadata = { registered = true }, license = 'weapon' }
-		}, locations = {
-			vec3(-662.180, -934.961, 21.829),
-			vec3(810.25, -2157.60, 29.62),
-			vec3(1693.44, 3760.16, 34.71),
-			vec3(-330.24, 6083.88, 31.45),
-			vec3(252.63, -50.00, 69.94),
-			vec3(22.56, -1109.89, 29.80),
-			vec3(2567.69, 294.38, 108.73),
-			vec3(-1117.58, 2698.61, 18.55),
-			vec3(842.44, -1033.42, 28.19)
+			{ name = 'kevlars', price = 1000 },
+			{ name = 'kevlarm', price = 1500 },
+			{ name = 'kevlar', price = 2100 },
+			{ name = 'WEAPON_PISTOL', price = 1000, metadata = { registered = true }, license = 'weapon' },
 		}, targets = {
-			{ loc = vec3(-660.92, -934.10, 21.94), length = 0.6, width = 0.5, heading = 180.0, minZ = 21.8, maxZ = 22.2, distance = 2.0 },
-			{ loc = vec3(808.86, -2158.50, 29.73), length = 0.6, width = 0.5, heading = 360.0, minZ = 29.6, maxZ = 30.0, distance = 2.0 },
-			{ loc = vec3(1693.57, 3761.60, 34.82), length = 0.6, width = 0.5, heading = 227.39, minZ = 34.7, maxZ = 35.1, distance = 2.0 },
-			{ loc = vec3(-330.29, 6085.54, 31.57), length = 0.6, width = 0.5, heading = 225.0, minZ = 31.4, maxZ = 31.8, distance = 2.0 },
-			{ loc = vec3(252.85, -51.62, 70.0), length = 0.6, width = 0.5, heading = 70.0, minZ = 69.9, maxZ = 70.3, distance = 2.0 },
-			{ loc = vec3(23.68, -1106.46, 29.91), length = 0.6, width = 0.5, heading = 160.0, minZ = 29.8, maxZ = 30.2, distance = 2.0 },
-			{ loc = vec3(2566.59, 293.13, 108.85), length = 0.6, width = 0.5, heading = 360.0, minZ = 108.7, maxZ = 109.1, distance = 2.0 },
-			{ loc = vec3(-1117.61, 2700.26, 18.67), length = 0.6, width = 0.5, heading = 221.82, minZ = 18.5, maxZ = 18.9, distance = 2.0 },
-			{ loc = vec3(841.05, -1034.76, 28.31), length = 0.6, width = 0.5, heading = 360.0, minZ = 28.2, maxZ = 28.6, distance = 2.0 }
+			{ ped = `S_M_M_AmmuCountry`, scenario = 'WORLD_HUMAN_DRINKING', loc = vec3(-661.6767, -933.5714, 20.8292), heading = 175.5425},
+			{ ped = `S_M_Y_AmmuCity_01`, scenario = 'WORLD_HUMAN_AA_SMOKE', loc = vec3(810.3133, -2159.0464, 28.6190), heading = 358.9748},
+			{ ped = `S_M_M_AmmuCountry`, scenario = 'WORLD_HUMAN_CLIPBOARD', loc = vec3(1694.8267, 3761.2852, 33.7054), heading = 135.4213},
+			{ ped = `S_M_M_AmmuCountry`, scenario = 'WORLD_HUMAN_AA_SMOKE', loc = vec3(-331.2310, 6085.4409, 30.4548), heading = 224.5500},
+			{ ped = `S_M_Y_AmmuCity_01`, scenario = 'WORLD_HUMAN_CLIPBOARD', loc = vec3(250.1848, -51.6053, 68.9411), heading = 30.6571},
+			{ ped = `S_M_Y_AmmuCity_01`, scenario = 'WORLD_HUMAN_AA_SMOKE', loc = vec3(23.9163, -1107.6727, 28.7970), heading = 70.7882},
+			{ ped = `S_M_M_AmmuCountry`, scenario = 'WORLD_HUMAN_DRINKING', loc = vec3(2568.2502, 292.5665, 106.7348), heading = 359.9678},
+			{ ped = `S_M_M_AmmuCountry`, scenario = 'WORLD_HUMAN_AA_SMOKE', loc = vec3(-1118.7694, 2700.0195, 17.5541), heading = 220.6967},
+			{ ped = `S_M_Y_AmmuCity_01`, scenario = 'WORLD_HUMAN_CLIPBOARD', loc = vec3(844.5178, -1035.2571, 27.1948), heading = 1.6867},
 		}
 	},
 
 	PoliceArmoury = {
 		name = 'Police Armoury',
-		groups = shared.police,
+		groups = {
+			['police'] = 3
+		},
 		blip = {
-			id = 110, colour = 84, scale = 0.8
+			id = 110, colour = 84, scale = 0.5
 		}, inventory = {
-			{ name = 'ammo-9', price = 5, },
-			{ name = 'ammo-rifle', price = 5, },
+			{ name = 'ammo-9', price = 5, grade = 3 },
+			{ name = 'ammo-rifle', price = 5, grade = 3 },
 			{ name = 'WEAPON_FLASHLIGHT', price = 200 },
 			{ name = 'WEAPON_NIGHTSTICK', price = 100 },
-			{ name = 'WEAPON_PISTOL', price = 500, metadata = { registered = true, serial = 'POL' }, license = 'weapon' },
+			{ name = 'uvlight', price = 100, grade = 3 },
+			{ name = 'nikkit', price = 1, grade = 3 },
+			{ name = 'handcuffs', price = 30 },
+			{ name = 'kevlars', price = 800 },
+			{ name = 'kevlarm', price = 1200 },
+			{ name = 'kevlar', price = 1750 },
+			{ name = 'WEAPON_PISTOL', price = 500, grade = 1, metadata = { registered = true, serial = 'POL' }, license = 'weapon' },
 			{ name = 'WEAPON_CARBINERIFLE', price = 1000, metadata = { registered = true, serial = 'POL' }, license = 'weapon', grade = 3 },
 			{ name = 'WEAPON_STUNGUN', price = 500, metadata = { registered = true, serial = 'POL'} }
 		}, locations = {
-			vec3(451.51, -979.44, 30.68)
+			vec3(449.6307, -978.3926, 30.5637)
 		}, targets = {
-			{ loc = vec3(453.21, -980.03, 30.68), length = 0.5, width = 3.0, heading = 270.0, minZ = 30.5, maxZ = 32.0, distance = 6 }
+			{ ped = `S_M_Y_AmmuCity_01`, scenario = 'WORLD_HUMAN_CLIPBOARD', loc = vec3(480.3083, -996.7000, 29.6898), heading = 85.7288},
 		}
 	},
 
 	Medicine = {
-		name = 'Medicine Cabinet',
+		name = 'Ambulance Shop',
 		groups = {
-			['ambulance'] = 0
+			['ambulance'] = 2
 		},
 		blip = {
-			id = 403, colour = 69, scale = 0.8
+			id = 403, colour = 69, scale = 0.5
 		}, inventory = {
-			{ name = 'medikit', price = 26 },
-			{ name = 'bandage', price = 5 }
+			--{ name = 'defibrillator', price = 200 },
+			{ name = 'medikit', price = 100 },
+			{ name = 'bandage', price = 10 }
 		}, locations = {
-			vec3(306.3687, -601.5139, 43.28406)
+			vec3(1140.0309, -1563.4537, 35.3805)
 		}, targets = {
-
-		}
-	},
-
-	BlackMarketArms = {
-		name = 'Black Market (Arms)',
-		inventory = {
-			{ name = 'WEAPON_DAGGER', price = 5000, metadata = { registered = false	}, currency = 'black_money' },
-			{ name = 'WEAPON_CERAMICPISTOL', price = 50000, metadata = { registered = false }, currency = 'black_money' },
-			{ name = 'at_suppressor_light', price = 50000, currency = 'black_money' },
-			{ name = 'ammo-rifle', price = 1000, currency = 'black_money' },
-			{ name = 'ammo-rifle2', price = 1000, currency = 'black_money' }
-		}, locations = {
-			vec3(309.09, -913.75, 56.46)
-		}, targets = {
-
+			{ loc = vec3(1140.0309, -1563.4537, 35.3805), length = 1.3, width = 1.0, heading = 0, minZ = 34.28, maxZ = 36.48, distance = 3 }
 		}
 	},
 
 	VendingMachineDrinks = {
-		name = 'Vending Machine',
+		name = 'Getränke Automat',
 		inventory = {
-			{ name = 'water', price = 10 },
+			{ name = 'wasser', price = 10 },
 			{ name = 'cola', price = 10 },
+			{ name = 'sprunk', price = 8 }
 		},
 		model = {
 			`prop_vend_soda_02`, `prop_vend_fridge01`, `prop_vend_water_01`, `prop_vend_soda_01`
 		}
-	}
+	},
+	Hamburgerstand = {
+		name = 'Burger Stand',
+		inventory = {
+			{ name = 'hamburger', price = 24 },
+			{ name = 'cola', price = 10 }
+		},
+		model = {
+			`prop_burgerstand_01`
+		}
+	},
+	HotDogstand = {
+		name = 'Hotdog Stand',
+		inventory = {
+			{ name = 'hotdog', price = 22 },
+			{ name = 'sprunk', price = 10 }
+		},
+		model = {
+			`prop_hotdogstand_01`
+		}
+	},
+	Snackautomat = {
+		name = 'Snack Automat',
+		inventory = {
+			{ name = 'chips', price = 5 },
+		},
+		model = {
+			`prop_vend_snak_01`
+		}
+	},
+	Wasserspender = {
+		name = 'Wasserspender',
+		inventory = {
+			{ name = 'wasser', price = 6 },
+		},
+		model = {
+			`prop_watercooler`
+		}
+	},
+	Zigarettenautomat = {
+		name = 'Zigarettenautomat',
+		inventory = {
+			{ name = 'redwoodgold2', price = 30 },
+		},
+		model = {
+			`prop_vend_fags_01`
+		}
+	},
+
+	Exporteur = {
+		name = 'Exporteur',
+		blip = {
+			id = 642, colour = 3, scale = 0.5
+		}, inventory = {
+			{ name = 'money', price = 1, currency = 'salat' },
+		}, targets = {
+			{ ped = `IG_RoosterMcCraw`, scenario = 'WORLD_HUMAN_CLIPBOARD', loc = vec3(1013.0371, -2902.2998, 4.9006), heading = 187.0048},
+		}
+	},
+
+	Obststand = {
+		name = 'Obststand',
+		blip = {
+			id = 642, colour = 3, scale = 0.5
+		}, inventory = {
+			{ name = 'money', price = 1, currency = 'salat' },
+			{ name = 'money', price = 1, currency = 'zwiebel' },
+			{ name = 'money', price = 1, currency = 'orange' },
+			{ name = 'money', price = 1, currency = 'tomate' },
+			{ name = 'money', price = 1, currency = 'wolle' },
+			{ name = 'salat', price = 4, currency = 'money' },
+			{ name = 'zwiebel', price = 3, currency = 'money' },
+			{ name = 'orange', price = 4, currency = 'money' },
+			{ name = 'tomate', price = 3, currency = 'money' },
+		}, targets = {
+			{ ped = `CS_Old_Man2`, scenario = 'WORLD_HUMAN_CLIPBOARD', loc = vec3(-1044.1439, 5327.8042, 43.5729), heading = 34.5952},
+			{ ped = `CS_Old_Man2`, scenario = 'WORLD_HUMAN_CLIPBOARD', loc = vec3(2529.0789, 2037.7456, 18.8392), heading = 276.2651},
+			{ ped = `CS_Old_Man2`, scenario = 'WORLD_HUMAN_CLIPBOARD', loc = vec3(-2510.8252, 3611.2319, 12.7502), heading = 233.5381},
+			{ ped = `CS_Old_Man2`, scenario = 'WORLD_HUMAN_CLIPBOARD', loc = vec3(1789.913, 4589.738, 36.683), heading = 196.567},
+			{ ped = `CS_Old_Man2`, scenario = 'WORLD_HUMAN_CLIPBOARD', loc = vec3(1266.762, 3549.688, 34.217), heading = 229.886},
+			{ ped = `CS_Old_Man2`, scenario = 'WORLD_HUMAN_CLIPBOARD', loc = vec3(1477.270, 2723.627, 36.567), heading = 32.135},
+		}
+	},
+	Muellabgabe = {
+		name = 'Müllabgabe',
+		blip = {
+			id = 642, colour = 3, scale = 0.5
+		}, inventory = {
+			{ name = 'money', price = 1, currency = 'garbage' },
+		}, targets = {
+			{ ped = `CS_Old_Man2`, scenario = 'WORLD_HUMAN_CLIPBOARD', loc = vec3(-349.618, -1568.667, 24.227), heading = 335.995},
+		}
+	},
 }

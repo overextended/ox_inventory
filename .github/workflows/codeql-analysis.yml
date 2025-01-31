@@ -6,7 +6,7 @@
 #
 # ******** NOTE ********
 # We have attempted to detect the languages in your repository. Please check
-# the `language` matrix defined below to confirm you have the correct set of
+# the 'language' matrix defined below to confirm you have the correct set of
 # supported CodeQL languages.
 #
 name: "CodeQL"

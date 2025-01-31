@@ -210,6 +210,15 @@ local function refreshShops()
 	end
 end
 
+RegisterNUICallback('sellItem', function(data, cb)
+    local shop = data.shop
+    local item = data.item
+    local quantity = tonumber(data.quantity) or 1
+
+    TriggerServerEvent('ox_inventory:sellItem', shop, item.name, quantity)
+    cb(true)
+end)
+
 return {
 	refreshShops = refreshShops,
 	wipeShops = wipeShops,

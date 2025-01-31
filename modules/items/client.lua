@@ -83,6 +83,12 @@ local function Item(name, cb)
 	end
 end
 
+function Notify(msg)
+    SetNotificationTextEntry("STRING")
+    AddTextComponentString(msg)
+    DrawNotification(false, false)
+end
+
 local ox_inventory = exports[shared.resource]
 -----------------------------------------------------------------------------------------------
 -- Clientside item use functions
@@ -99,15 +105,206 @@ Item('bandage', function(data, slot)
 	end)
 end)
 
-Item('armour', function(data, slot)
+Item('medikit', function(data, slot)
+	local maxHealth = GetEntityMaxHealth(cache.ped)
+	local health = GetEntityHealth(cache.ped)
+	ox_inventory:useItem(data, function(data)
+		if data then
+			SetEntityHealth(cache.ped, maxHealth)
+			lib.notify({ description = 'Du bist wieder vollständig Gesund.' })
+		end
+	end)
+end)
+
+Item('fixkit', function(data, slot)
+	ox_inventory:useItem(data, function(data)
+		if data then
+			TriggerEvent('mor_base:vehrepair')
+		end
+	end)
+end)
+
+Item('waschset', function(data, slot)
+	ox_inventory:useItem(data, function(data)
+		if data then
+			TriggerEvent('mor_base:vehclean')
+		end
+	end)
+end)
+
+Item('kevlar', function(data, slot)
 	if GetPedArmour(cache.ped) < 100 then
 		ox_inventory:useItem(data, function(data)
 			if data then
 				SetPlayerMaxArmour(PlayerData.id, 100)
-				SetPedArmour(cache.ped, 100)
+				AddArmourToPed(cache.ped, 100)
 			end
 		end)
 	end
+end)
+
+Item('kevlarm', function(data, slot)
+	if GetPedArmour(cache.ped) < 100 then
+		ox_inventory:useItem(data, function(data)
+			if data then
+				SetPlayerMaxArmour(PlayerData.id, 100)
+				AddArmourToPed(cache.ped, 75)
+			end
+		end)
+	end
+end)
+
+Item('kevlars', function(data, slot)
+	if GetPedArmour(cache.ped) < 100 then
+		ox_inventory:useItem(data, function(data)
+			if data then
+				SetPlayerMaxArmour(PlayerData.id, 100 )
+				AddArmourToPed(cache.ped, 40)
+			end
+		end)
+	end
+end)
+
+Item('cigarette', function(data, slot)
+	ox_inventory:useItem(data, function(data)
+		if data then
+			ExecuteCommand('e smoke2')
+		end
+	end)
+end)
+
+Item('zigarette', function(data, slot)
+	ox_inventory:useItem(data, function(data)
+		if data then
+			ExecuteCommand('e smoke2')
+		end
+	end)
+end)
+
+Item('cigar', function(data, slot)
+	ox_inventory:useItem(data, function(data)
+		if data then
+			ExecuteCommand('e cigar2')
+		end
+	end)
+end)
+
+--[[Item('afghan_joint', function(data, slot)
+	ox_inventory:useItem(data, function(data)
+		if data then
+			ExecuteCommand('e smokeweed')
+		end
+	end)
+end)]]
+
+Item('bag', function(data, slot)
+	ox_inventory:useItem(data, function(data)
+		if data then
+			SetPedComponentVariation(GetPlayerPed(-1), 5, 82, 0, 0)
+			Wait(100)
+            TriggerEvent("illenium-appearance:client:updateOutfit")
+			TriggerServerEvent('mor_base:bag', source)
+		end
+	end)
+end)
+
+Item('bag2', function(data, slot)
+	ox_inventory:useItem(data, function(data)
+		if data then
+			SetPedComponentVariation(GetPlayerPed(-1), 5, 41, 0, 0)
+			Wait(100)
+            TriggerEvent("illenium-appearance:client:updateOutfit")
+			TriggerServerEvent('mor_base:bag2', source)
+		end
+	end)
+end)
+
+Item('nobag', function(data, slot)
+	ox_inventory:useItem(data, function(data)
+		if data then
+			local playerWeight = exports.ox_inventory:GetPlayerWeight()
+			Wait(100)
+			if playerWeight <= 30000 then
+				SetPedComponentVariation(GetPlayerPed(-1), 5, 0, 0, 0)
+				TriggerEvent("illenium-appearance:client:updateOutfit")
+				TriggerServerEvent('mor_base:nobag', source)
+			else
+				lib.notify({
+					title = 'Tasche',
+					position = 'top-left',
+					description = 'Leider kann die Tasche nicht abgelegt werden. zuviel Gewicht.',
+					duration = 4000,
+					style = {backgroundColor = '#DBAB50', color = '#FF0000', ['.description'] = {color = '#F9F3E7'}},
+					icon = 'hand',
+					iconColor = '#FF0000'
+				})
+			end
+		end
+	end)
+end)
+
+Item('nobag2', function(data, slot)
+	ox_inventory:useItem(data, function(data)
+		if data then
+			local playerWeight = exports.ox_inventory:GetPlayerWeight()
+			Wait(100)
+			if playerWeight <= 30000 then
+				print(json.encode(playerWeight))
+				SetPedComponentVariation(GetPlayerPed(-1), 5, 0, 0, 0)
+				TriggerEvent("illenium-appearance:client:updateOutfit")
+				TriggerServerEvent('mor_base:nobag2', source)
+			else
+				lib.notify({
+					title = 'Tasche',
+					position = 'top-left',
+					description = 'Leider kann die Tasche nicht abgelegt werden. zuviel Gewicht.',
+					duration = 4000,
+					style = {backgroundColor = '#DBAB50', color = '#FF0000', ['.description'] = {color = '#F9F3E7'}},
+					icon = 'hand',
+					iconColor = '#FF0000'
+				})
+			end
+		end
+	end)
+end)
+
+Item('kleidertasche', function(data, slot)
+	ox_inventory:useItem(data, function(data)
+		if data then
+			TriggerEvent('illenium-appearance:client:openOutfitMenu')
+		end
+	end)
+end)
+
+Item('shoes', function(data, slot)
+	ox_inventory:useItem(data, function(data)
+		if data then
+			local meta = data.metadata
+			SetPedComponentVariation(PlayerPedId(), 6, meta.comp, meta.text, 0)
+			Notify('~w~Schuhe ~g~angezogen')
+			ClearPedTasks(PlayerPedId())
+		end
+	end)
+end)
+Item('pants', function(data, slot)
+	ox_inventory:useItem(data, function(data)
+		if data then
+			local meta = data.metadata
+			SetPedComponentVariation(PlayerPedId(), 4, meta.comp, meta.text, 0)
+			Notify('~w~Hose ~g~angezogen')
+			ClearPedTasks(PlayerPedId())
+		end
+	end)
+end)
+Item('mask', function(data, slot)
+	ox_inventory:useItem(data, function(data)
+		if data then
+			local meta = data.metadata
+			SetPedComponentVariation(PlayerPedId(), 1, meta.comp, meta.text, 0)
+			Notify('~w~Maske ~g~angelegt')
+			ClearPedTasks(PlayerPedId())
+		end
+	end)
 end)
 
 client.parachute = false
