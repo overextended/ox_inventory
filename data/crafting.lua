@@ -280,6 +280,7 @@ return {
 	--blip = { id = 467, colour = 1, scale = 0.5 },
 	},
 	{
+        name = 'debug_crafting',
 		items = {
 			{
 				name = 'gewuerz',

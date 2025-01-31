@@ -43,7 +43,7 @@ local function createCraftingBench(id, data)
 	end
 end
 
-for id, data in pairs(lib.load('data.crafting') or {}) do createCraftingBench(id, data) end
+for id, data in pairs(lib.load('data.crafting') or {}) do createCraftingBench(data.name or id, data) end
 
 ---falls back to player coords if zones and points are both nil
 ---@param source number
@@ -113,7 +113,7 @@ lib.callback.register('ox_inventory:craftItem', function(source, id, index, reci
 
 			local craftedItem = Items(recipe.name)
 			local craftCount = (type(recipe.count) == 'number' and recipe.count) or (table.type(recipe.count) == 'array' and math.random(recipe.count[1], recipe.count[2])) or 1
-			
+
 			-- Modified weight calculation
 			local newWeight = left.weight
 			local items = Inventory.Search(left, 'slots', tbl) or {}
@@ -127,7 +127,7 @@ lib.callback.register('ox_inventory:craftItem', function(source, id, index, reci
 					end
 				end
 			end
-			
+
 			-- Add weight of crafted item
 			newWeight += (craftedItem.weight + (recipe.metadata?.weight or 0)) * craftCount
 
