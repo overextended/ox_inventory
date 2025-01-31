@@ -245,6 +245,66 @@ return {
 		weight = 50000,
 		groups = {['vagos'] = 0}
 	},
+	{
+		name = 'lager01',
+		label = 'Lager 01',
+		slots = 30,
+		weight = 400000,
+	},
+	{
+		name = 'lager02',
+		label = 'Lager 02',
+		slots = 40,
+		weight = 600000,
+	},
+	{
+		name = 'lager03',
+		label = 'Lager 03',
+		slots = 32,
+		weight = 380000,
+	},
+	{
+		name = 'lager04',
+		label = 'Lager 04',
+		slots = 50,
+		weight = 1000000,
+	},
+	{
+		name = 'lager05',
+		label = 'Lager 05',
+		slots = 30,
+		weight = 400000,
+	},
+	{
+		name = 'lager06',
+		label = 'Lager 06',
+		slots = 30,
+		weight = 400000,
+	},
+	{
+		name = 'lager07',
+		label = 'Lager 07',
+		slots = 30,
+		weight = 420000,
+	},
+	{
+		name = 'lager08',
+		label = 'Lager 08',
+		slots = 30,
+		weight = 400000,
+	},
+	{
+		name = 'lager09',
+		label = 'Lager 09',
+		slots = 35,
+		weight = 480000,
+	},
+	{
+		name = 'lager10',
+		label = 'Lager 10',
+		slots = 35,
+		weight = 480000,
+	},
 
 	--[[{
 		coords = vec3(62.5555, -1004.9807, 28.3574),

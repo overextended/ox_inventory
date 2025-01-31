@@ -35,6 +35,7 @@ return {
 		close = true,
 		description = nil
 	},
+
 	['shoes'] = {
 		label = 'Schuhe',
 		weight = 500,
@@ -45,9 +46,36 @@ return {
 			anim = { dict = 'missheistdockssetup1clipboard@idle_a', clip = 'idle_a', flag = 49 },
 			prop = { model = `prop_rolled_sock_02`, pos = vec3(-0.14, -0.14, -0.08), rot = vec3(-50.0, -50.0, 0.0) },
 			disable = { move = true, car = true, combat = true },
+			usetime = 3500,
+		}
+	},
+	['pants'] = {
+		label = 'Hose',
+		weight = 1200,
+		stack = false,
+		close = true,
+		description = 'Hose Variation',
+		client = {
+			anim = { dict = 'missheistdockssetup1clipboard@idle_a', clip = 'idle_a', flag = 49 },
+			prop = { model = `prop_rolled_sock_02`, pos = vec3(-0.14, -0.14, -0.08), rot = vec3(-50.0, -50.0, 0.0) },
+			disable = { move = true, car = true, combat = true },
+			usetime = 4500,
+		}
+	},
+	['mask'] = {
+		label = 'Maske',
+		weight = 70,
+		stack = false,
+		close = true,
+		description = 'Maske Variation',
+		client = {
+			anim = { dict = 'missheistdockssetup1clipboard@idle_a', clip = 'idle_a', flag = 49 },
+			prop = { model = `prop_rolled_sock_02`, pos = vec3(-0.14, -0.14, -0.08), rot = vec3(-50.0, -50.0, 0.0) },
+			disable = { move = true, car = true, combat = true },
 			usetime = 2500,
 		}
 	},
+
 -- Container Items ---
 	['paperbag'] = {
 		label = 'Paper Bag',
@@ -768,6 +796,20 @@ return {
 		close = true,
 		description = nil
 	},
+	['eisenerz'] = {
+		label = 'Eisenerz',
+		weight = 800,
+		stack = true,
+		close = true,
+		description = nil
+	},
+	['eisenbarren'] = {
+		label = 'Eisenbarren',
+		weight = 2000,
+		stack = true,
+		close = true,
+		description = nil
+	},
 	['aramid'] = {
 		label = 'Aramid',
 		weight = 100,
@@ -885,6 +927,13 @@ return {
 	['axt'] = {
 		label = 'Axt',
 		weight = 4500,
+		stack = false,
+		close = true,
+		description = nil
+	},
+	['presslufthammer'] = {
+		label = 'Presslufthammer',
+		weight = 5500,
 		stack = false,
 		close = true,
 		description = nil
@@ -1156,7 +1205,7 @@ return {
 			status = { armour = 35 },
 			anim = { dict = 'anim@heists@narcotics@funding@gang_idle', clip = 'gang_chatting_idle01'},
 			usetime = 4000,
-			}
+		}
 	},
 	['cigarette'] = {
 		label = 'Zigarette',
@@ -1169,7 +1218,7 @@ return {
 			--anim = { dict = 'amb@world_human_smoking@male@male_a@enter', clip = 'enter' },
 			--prop = { model = 'brum_joint_98_special', pos = { x = 0.07, y = 0.07, z = 0.07}, rot = { x = 0.0, y = -13.5, z = 90.5} },
 			usetime = 1000,
-			}
+		}
 	},
 	['cigar'] = {
 		label = 'Zigarre',

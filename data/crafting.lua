@@ -328,4 +328,29 @@ return {
 		},
 		blip = { id = 651, colour = 2, scale = 0.5 },
 	},
+	{
+		items = {
+			{
+				name = 'eisenbarren',
+				ingredients = {
+					eisenerz = 4
+				},
+				duration = 11000,
+				count = 1,
+			},
+
+		},
+		points = {
+			vec3(1110.452, -2008.628, 31.83)
+		},
+		zones = {
+			{
+				coords = vec3(1110.452, -2008.628, 31.83),
+				size = vec3(1.5, 1.5, 2.5),
+				distance = 2.5,
+				rotation = 0.0,
+			},
+		},
+		blip = { id = 651, colour = 2, scale = 0.5 },
+	},
 }

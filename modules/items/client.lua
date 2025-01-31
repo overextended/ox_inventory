@@ -282,6 +282,27 @@ Item('shoes', function(data, slot)
 			local meta = data.metadata
 			SetPedComponentVariation(PlayerPedId(), 6, meta.comp, meta.text, 0)
 			Notify('~w~Schuhe ~g~angezogen')
+			ClearPedTasks(PlayerPedId())
+		end
+	end)
+end)
+Item('pants', function(data, slot)
+	ox_inventory:useItem(data, function(data)
+		if data then
+			local meta = data.metadata
+			SetPedComponentVariation(PlayerPedId(), 4, meta.comp, meta.text, 0)
+			Notify('~w~Hose ~g~angezogen')
+			ClearPedTasks(PlayerPedId())
+		end
+	end)
+end)
+Item('mask', function(data, slot)
+	ox_inventory:useItem(data, function(data)
+		if data then
+			local meta = data.metadata
+			SetPedComponentVariation(PlayerPedId(), 1, meta.comp, meta.text, 0)
+			Notify('~w~Maske ~g~angelegt')
+			ClearPedTasks(PlayerPedId())
 		end
 	end)
 end)

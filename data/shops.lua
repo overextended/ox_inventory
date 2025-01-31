@@ -14,7 +14,7 @@ return {
 		},
 		targets = {
 			{ ped = `mp_m_shopkeep_01`, scenario = 'WORLD_HUMAN_AA_SMOKE', loc = vec3(372.4016, 325.8542, 102.5664), heading = 254.9931},
-			{ ped = `S_F_Y_Shop_LOW`, scenario = 'WORLD_HUMAN_AA_COFFEE', loc = vec3(24.4929, -1347.7172, 28.4970), heading = 270.9123},
+			{ ped = `S_F_Y_Shop_LOW`, scenario = 'WORLD_HUMAN_AA_COFFEE', loc = vec3(29.525, -1343.552, 28.489), heading = 172.9123},
 			{ ped = `mp_m_shopkeep_01`, scenario = 'WORLD_HUMAN_AA_COFFEE', loc = vec3(-3038.4473, 584.7329, 6.9089), heading = 15.3747},
 			{ ped = `S_F_Y_Shop_MID`, scenario = 'WORLD_HUMAN_STAND_MOBILE', loc = vec3(-3243.9590, 1000.1609, 11.8307), heading = 355.6625},
 			{ ped = `S_F_Y_Shop_LOW`, scenario = 'WORLD_HUMAN_CLIPBOARD', loc = vec3(1728.6068, 6416.6738, 34.0372), heading = 246.4818},
@@ -119,7 +119,6 @@ return {
 			{ name = 'brot', price = 7 },
 			{ name = 'cola', price = 13 },
 			{ name = 'blaettchen', price = 3 },
-			{ name = 'lithium', price = 18 },
 			{ name = 'warndreieck', price = 50 },
 			{ name = 'warnweste', price = 25 },
 			{ name = 'waschset', price = 320 },
@@ -152,7 +151,7 @@ return {
 			{ ped = `S_M_Y_AmmuCity_01`, scenario = 'WORLD_HUMAN_CLIPBOARD', loc = vec3(250.1848, -51.6053, 68.9411), heading = 30.6571},
 			{ ped = `S_M_Y_AmmuCity_01`, scenario = 'WORLD_HUMAN_AA_SMOKE', loc = vec3(23.9163, -1107.6727, 28.7970), heading = 70.7882},
 			{ ped = `S_M_M_AmmuCountry`, scenario = 'WORLD_HUMAN_DRINKING', loc = vec3(2568.2502, 292.5665, 106.7348), heading = 359.9678},
-			{ ped = `S_M_M_AmmuCountry`, scenario = 'WORLD_HUMAN_AA_SMOKE', loc = vec3(-1118.7694, 2700.0195, 16.5541), heading = 220.6967},
+			{ ped = `S_M_M_AmmuCountry`, scenario = 'WORLD_HUMAN_AA_SMOKE', loc = vec3(-1118.7694, 2700.0195, 17.5541), heading = 220.6967},
 			{ ped = `S_M_Y_AmmuCity_01`, scenario = 'WORLD_HUMAN_CLIPBOARD', loc = vec3(844.5178, -1035.2571, 27.1948), heading = 1.6867},
 		}
 	},
