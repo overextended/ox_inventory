@@ -17,7 +17,7 @@ if shared.networkdumpsters then
                 local model = GetEntityModel(object)
                 local isDumpster = Inventory.Dumpsters:includes(model)
 
-                state.state.isDumpster = isDumpster
+                state.isDumpster = isDumpster
 
                 if isDumpster then
                     FreezeEntityPosition(object, true)
