@@ -75,6 +75,14 @@ return {
 			usetime = 2500,
 		}
 	},
+	["mdt"] = {
+		label = "MDT",
+		weight = 250,
+		client = {
+			export = "ox_mdt.openMDT"
+		}
+	},
+
 
 -- Container Items ---
 	['paperbag'] = {
@@ -519,7 +527,7 @@ return {
 		description = nil,
 		consume = 0.2,
 		client = {
-			status = { thirst = 50000, drunk = 25000, },
+			status = { thirst = 20000, drunk = 8000, },
 			anim = { dict = 'mp_player_intdrink', clip = 'loop_bottle' },
 			prop = { model = 'prop_cs_beer_bot_01', pos = vec3(0.01, 0.01, 0.06), rot = vec3(5.0, 5.0, -180.5) },
 			usetime = 7500
@@ -1061,7 +1069,7 @@ return {
 		close = true,
 		description = 'Droge',
 		client = {
-			status = { hunger = -50000 },
+			status = { hunger = -50000, joint = 20000 },
 		--	anim = 'smokejoint',
 		--	prop = 'joint',
 			usetime = 8000

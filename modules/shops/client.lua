@@ -10,7 +10,8 @@ for shopType, shopData in pairs(lib.load('data.shops') or {} --[[@as table<strin
 		groups = shopData.groups or shopData.jobs,
 		blip = shopData.blip,
 		label = shopData.label,
-        icon = shopData.icon
+        icon = shopData.icon,
+		hidden = shopData.hidden or false,
 	}
 
 	if shared.target then

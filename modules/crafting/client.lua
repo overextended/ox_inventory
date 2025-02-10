@@ -35,6 +35,7 @@ local function createCraftingBench(id, data)
 
 		if blip then
 			blip.name = blip.name or ('ox_crafting_%s'):format(data.label and id or 0)
+			blip.hidden = blip.hidden or false
 			AddTextEntry(blip.name, data.label or locale('crafting_bench'))
 		end
 

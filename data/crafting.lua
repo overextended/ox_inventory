@@ -71,7 +71,7 @@ return {
 				rotation = 0.0,
 			},
 		},
-		blip = { id = 467, colour = 1, scale = 0.5 },
+		blip = { id = 651, colour = 1, scale = 0.5, hidden = true },
 	},
 	{ --ID:4 Falschgeld Schnittstation Triads
 		items = {
@@ -95,7 +95,7 @@ return {
 				rotation = 0.0,
 			},
 		},
-		--blip = { id = 467, colour = 1, scale = 0.5 },
+		--blip = { id = 467, colour = 1, scale = 0.5, hidden = true },
 	},
 	{ --ID:5 tuch, aramid, farbfasern
 		items = {
@@ -136,7 +136,7 @@ return {
 				rotation = 0.0,
 			},
 		},
-		blip = { id = 651, colour = 2, scale = 0.5 },
+		blip = { id = 651, colour = 2, scale = 0.5, hidden = true },
 	},
 	{ --ID:6 bandage, kevlar
 		items = {
@@ -187,7 +187,7 @@ return {
 				rotation = 0.0,
 			},
 		},
-		--blip = { id = 651, colour = 2, scale = 0.5 },
+		--blip = { id = 651, colour = 2, scale = 0.5, hidden = true },
 	},
 	{ --ID:7 kautschuck, gummi, plastik
 		items = {
@@ -228,7 +228,7 @@ return {
 				rotation = 0.0,
 			},
 		},
-		blip = { id = 651, colour = 2, scale = 0.5 },
+		blip = { id = 651, colour = 2, scale = 0.5, hidden = true },
 	},
 	{ --ID:8 Afghandry Zuschneiden
 		items = {
@@ -252,7 +252,7 @@ return {
 				rotation = 0.0,
 			},
 		},
-		--blip = { id = 467, colour = 1, scale = 0.5 },
+		--blip = { id = 467, colour = 1, scale = 0.5, hidden = true },
 	},
 	{ --ID:8 Joint drehen/packen
 	items = {
@@ -277,7 +277,7 @@ return {
 			rotation = 0.0,
 		},
 	},
-	--blip = { id = 467, colour = 1, scale = 0.5 },
+	--blip = { id = 467, colour = 1, scale = 0.5, hidden = true },
 	},
 	{
         name = 'debug_crafting',
@@ -327,7 +327,7 @@ return {
 				rotation = 0.0,
 			},
 		},
-		blip = { id = 651, colour = 2, scale = 0.5 },
+		blip = { id = 651, colour = 2, scale = 0.5, hidden = true },
 	},
 	{
 		items = {
@@ -352,6 +352,6 @@ return {
 				rotation = 0.0,
 			},
 		},
-		blip = { id = 651, colour = 2, scale = 0.5 },
+		blip = { id = 651, colour = 2, scale = 0.5, hidden = true },
 	},
 }

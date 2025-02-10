@@ -245,6 +245,21 @@ return {
 		weight = 50000,
 		groups = {['vagos'] = 0}
 	},
+	---------- Staatliche Lager ----------
+	{
+		name = 'staatslager01', --legales
+		label = 'Staatslager 01',
+		slots = 50,
+		weight = 1000000,
+	},
+	{
+		name = 'staatslager02', --illegales
+		label = 'Staatslager 02',
+		slots = 50,
+		weight = 1000000,
+	},
+
+	---------- Lagerräume ----------
 	{
 		name = 'lager01',
 		label = 'Lager 01',
