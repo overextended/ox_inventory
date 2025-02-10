@@ -99,9 +99,10 @@ local function ConvertESX()
 
 		for k, v in pairs(accounts) do
 			if type(v) == 'table' then break end
-			if server.accounts[k] and Items(k) and v > 0 then
+            local amount = tonumber(v)
+			if server.accounts[k] and Items(k) and amount > 0 then
 				slot += 1
-				inventory[slot] = {slot=slot, name=k, count=v}
+				inventory[slot] = {slot=slot, name=k, count=amount}
 			end
 		end
 
