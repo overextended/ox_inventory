@@ -5,6 +5,7 @@ import InventorySlot from './InventorySlot';
 import { getTotalWeight } from '../../helpers';
 import { useAppSelector } from '../../store';
 import { useIntersection } from '../../hooks/useIntersection';
+import { Locale } from '../../store/locale';
 
 const PAGE_SIZE = 30;
 
@@ -31,7 +32,7 @@ const InventoryGrid: React.FC<{ inventory: Inventory }> = ({ inventory }) => {
             <p>{inventory.label}</p>
             {inventory.maxWeight && (
               <p>
-                {weight / 1000}/{inventory.maxWeight / 1000}kg
+                {weight / 1000}/{inventory.maxWeight / 1000}${Locale.kg}
               </p>
             )}
           </div>

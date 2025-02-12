@@ -7,6 +7,7 @@ import { useAppSelector } from '../../store';
 import { selectLeftInventory } from '../../store/inventory';
 import { SlotWithItem } from '../../typings';
 import SlideUp from '../utils/transitions/SlideUp';
+import { Locale } from '../../store/locale';
 
 const InventoryHotbar: React.FC = () => {
   const [hotbarVisible, setHotbarVisible] = useState(false);
@@ -45,7 +46,7 @@ const InventoryHotbar: React.FC = () => {
                         ? item.weight >= 1000
                           ? `${(item.weight / 1000).toLocaleString('en-us', {
                               minimumFractionDigits: 2,
-                            })}kg `
+                            })}${Locale.kg} `
                           : `${item.weight.toLocaleString('en-us', {
                               minimumFractionDigits: 0,
                             })}g `
