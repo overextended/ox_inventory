@@ -49,7 +49,7 @@ const InventoryHotbar: React.FC = () => {
                             })}${Locale.kg} `
                           : `${item.weight.toLocaleString('en-us', {
                               minimumFractionDigits: 0,
-                            })}g `
+                            })}${Locale.g} `
                         : ''}
                     </p>
                     <p>{item.count ? item.count.toLocaleString('en-us') + `x` : ''}</p>
