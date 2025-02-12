@@ -20,6 +20,8 @@
   "ui_remove_ammo": "Eliminar munición",
   "ammo_type": "Tipo de munición",
   "$": "$",
+  "kg": "kg",
+  "g": "g",
   "male": "Masculino",
   "female": "Femenino",
   "used": "Usado",

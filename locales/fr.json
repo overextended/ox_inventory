@@ -20,6 +20,8 @@
   "ui_remove_ammo": "Vider le chargeur",
   "ammo_type": "Type de munition",
   "$": "$",
+  "kg": "kg",
+  "g": "g",
   "male": "Homme",
   "female": "Femme",
   "used": "Utilisé",

@@ -20,6 +20,8 @@
   "ui_remove_ammo": "Lőszer eltávolítása",
   "ammo_type": "Lőszer típusa",
   "$": "$",
+  "kg": "kg",
+  "g": "g",
   "male": "Férfi",
   "female": "Nő",
   "used": "Használt",

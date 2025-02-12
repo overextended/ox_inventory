@@ -20,6 +20,8 @@
   "ui_remove_ammo": "Mermiyi kaldır",
   "ammo_type": "Mermi Tipi",
   "$": "$",
+  "kg": "kg",
+  "g": "g",
   "male": "Erkek",
   "female": "Kadın",
   "used": "Kullanıldı",
