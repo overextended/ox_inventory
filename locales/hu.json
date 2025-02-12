@@ -21,6 +21,7 @@
   "ammo_type": "Lőszer típusa",
   "$": "$",
   "kg": "kg",
+  "g": "g",
   "male": "Férfi",
   "female": "Nő",
   "used": "Használt",

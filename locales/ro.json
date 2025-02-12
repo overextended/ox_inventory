@@ -21,6 +21,7 @@
     "ammo_type": "Tip de muniție",
     "$": "$",
     "kg": "kg",
+  "g": "g",
     "male": "Bărbat",
     "female": "Femeie",
     "used": "Folosit",
@@ -92,4 +93,4 @@
     "not_enough_durability": "%s nu are suficientă durabilitate",
     "storage": "Depozit"
   }
-  
+

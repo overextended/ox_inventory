@@ -21,6 +21,7 @@
 "ammo_type": "Kulkų tipas",
 "$": "$",
 "kg": "kg",
+  "g": "g",
 "male": "Vyras",
 "female": "Moteris",
 "used": "Panaudota",

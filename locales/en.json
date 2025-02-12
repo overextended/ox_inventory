@@ -21,6 +21,7 @@
   "ammo_type": "Ammo type",
   "$": "$",
   "kg": "kg",
+  "g": "g",
   "male": "Male",
   "female": "Female",
   "used": "Used",

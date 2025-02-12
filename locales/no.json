@@ -21,6 +21,7 @@
     "ammo_type": "Ammunisjonstype",
     "$": "$",
     "kg": "kg",
+  "g": "g",
     "male": "Mann",
     "female": "Kvinne",
     "used": "Brukt",
@@ -91,4 +92,3 @@
     "open_crafting_bench": "Åpne lagebenk",
     "not_enough_durability": "%s har ikke nok holdbarhet"
   }
-  

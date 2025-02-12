@@ -21,6 +21,7 @@
   "ammo_type": "Tipo de munição",
   "$": "$",
   "kg": "kg",
+  "g": "g",
   "male": "Masculino",
   "female": "Feminino",
   "used": "Usado",
