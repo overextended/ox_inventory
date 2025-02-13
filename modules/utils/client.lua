@@ -173,9 +173,9 @@ local hasTextUi
 
 ---@param point CPoint
 function Utils.nearbyMarker(point)
-    DrawMarker(2, point.coords.x, point.coords.y, point.coords.z, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.3, 0.2, 0.15,
+    DrawMarker(point.marker, point.coords.x, point.coords.y, point.coords.z, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.3, 0.2, 0.15,
         ---@diagnostic disable-next-line: param-type-mismatch
-        point.marker[1], point.marker[2], point.marker[3], 222, false, false, 0, true, false, false, false)
+        point.markerColour[1], point.markerColour[2], point.markerColour[3], 222, false, false, 0, true, false, false, false)
 
     if point.isClosest and point.currentDistance < 1.2 then
         if not hasTextUi then
