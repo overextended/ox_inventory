@@ -92,7 +92,7 @@ else
         dropmarker = json.decode(GetConvar('inventory:dropmarker', [[
             {
                 "type": 2,
-                "colour": [30, 30, 150],
+                "colour": [150, 30, 30],
                 "scale": [0.3, 0.2, 0.15]
             }
         ]])),
@@ -103,7 +103,7 @@ else
         shopmarker = json.decode(GetConvar('inventory:shopmarker', [[
             {
                 "type": 29,
-                "colour": [30, 30, 150],
+                "colour": [30, 150, 30],
                 "scale": [0.5, 0.5, 0.5]
             }
         ]])),
@@ -117,20 +117,11 @@ else
         craftingmarker = json.decode(GetConvar('inventory:craftingmarker', [[
             {
                 "type": 2,
-                "colour": [30, 30, 150],
+                "colour": [150, 150, 30],
                 "scale": [0.3, 0.2, 0.15]
             }
         ]])),
     }
-
-    local default = [[
-        {
-            type: 2,
-            colour: [30, 30, 150],
-            scale: [0.3, 0.2, 0.15]
-        }
-    ]]
-    print("^5inventory:dropmarker^7", json.decode(GetConvar('inventory:dropmarker', default)))
 
     local ignoreweapons = table.create(0, (client.ignoreweapons and #client.ignoreweapons or 0) + 3)
 
