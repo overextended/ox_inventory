@@ -195,7 +195,8 @@ local function refreshShops()
 					inv = 'shop',
 					invId = i,
 					type = type,
-                    marker = markerColour,
+                    marker = client.shopmarker,
+                    markerColour = markerColour,
                     prompt = {
                         options = shop.icon and { icon = shop.icon } or shopPrompt,
                         message = ('**%s**  \n%s'):format(label, locale('interact_prompt', GetControlInstructionalButton(0, 38, true):sub(3)))
