@@ -91,9 +91,9 @@ else
         dropmodel = joaat(GetConvar('inventory:dropmodel', 'prop_med_bag_01b')),
         dropmarker = json.decode(GetConvar('inventory:dropmarker', [[
             {
-                type: 2,
-                colour: [30, 30, 150],
-                scale: [0.3, 0.2, 0.15]
+                "type": 2,
+                "colour": [30, 30, 150],
+                "scale": [0.3, 0.2, 0.15]
             }
         ]])),
         weaponmismatch = GetConvarInt('inventory:weaponmismatch', 1) == 1,
@@ -102,26 +102,35 @@ else
         disableweapons = GetConvarInt('inventory:disableweapons', 0) == 1,
         shopmarker = json.decode(GetConvar('inventory:shopmarker', [[
             {
-                type: 29,
-                colour: [30, 30, 150],
-                scale: [0.3, 0.2, 0.15]
+                "type": 29,
+                "colour": [30, 30, 150],
+                "scale": [0.5, 0.5, 0.5]
             }
         ]])),
         evidencemarker = json.decode(GetConvar('inventory:evidencemarker', [[
             {
-                type: 2,
-                colour: [30, 30, 150],
-                scale: [0.3, 0.2, 0.15]
+                "type": 2,
+                "colour": [30, 30, 150],
+                "scale": [0.3, 0.2, 0.15]
             }
         ]])),
         craftingmarker = json.decode(GetConvar('inventory:craftingmarker', [[
             {
-                type: 2,
-                colour: [30, 30, 150],
-                scale: [0.3, 0.2, 0.15]
+                "type": 2,
+                "colour": [30, 30, 150],
+                "scale": [0.3, 0.2, 0.15]
             }
         ]])),
     }
+
+    local default = [[
+        {
+            type: 2,
+            colour: [30, 30, 150],
+            scale: [0.3, 0.2, 0.15]
+        }
+    ]]
+    print("^5inventory:dropmarker^7", json.decode(GetConvar('inventory:dropmarker', default)))
 
     local ignoreweapons = table.create(0, (client.ignoreweapons and #client.ignoreweapons or 0) + 3)
 
