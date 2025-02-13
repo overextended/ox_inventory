@@ -102,8 +102,6 @@ local function wipeShops()
 	table.wipe(shops)
 end
 
-local markerColour = { 30, 150, 30 }
-
 local function refreshShops()
 	wipeShops()
 

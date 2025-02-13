@@ -303,7 +303,6 @@ local function openEvidence()
     client.openInventory('policeevidence')
 end
 
-local markerColour = { 30, 30, 150 }
 local textPrompts = {
     evidence = {
         options = { icon = 'fa-box-archive' },
