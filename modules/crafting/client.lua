@@ -4,7 +4,6 @@ local CraftingBenches = {}
 local Items = require 'modules.items.client'
 local createBlip = require 'modules.utils.client'.CreateBlip
 local Utils = require 'modules.utils.client'
-local markerColour = { 150, 150, 30 }
 local prompt = {
     options = { icon = 'fa-wrench' },
     message = ('**%s**  \n%s'):format(locale('open_crafting_bench'), locale('interact_prompt', GetControlInstructionalButton(0, 38, true):sub(3)))
@@ -80,7 +79,7 @@ local function createCraftingBench(id, data)
 					index = i,
 					inv = 'crafting',
                     prompt = prompt,
-                    marker = markerColour,
+                    marker = client.craftingmarker,
 					nearby = Utils.nearbyMarker
 				})
 
