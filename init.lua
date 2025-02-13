@@ -89,13 +89,38 @@ else
         imagepath = GetConvar('inventory:imagepath', 'nui://ox_inventory/web/images'),
         dropprops = GetConvarInt('inventory:dropprops', 0) == 1,
         dropmodel = joaat(GetConvar('inventory:dropmodel', 'prop_med_bag_01b')),
-        dropmarker = GetConvarInt('inventory:dropmarker', 2),
+        dropmarker = json.decode(GetConvar('inventory:dropmarker', [[
+            {
+                type: 2,
+                colour: [30, 30, 150],
+                scale: [0.3, 0.2, 0.15]
+            }
+        ]])),
         weaponmismatch = GetConvarInt('inventory:weaponmismatch', 1) == 1,
         ignoreweapons = json.decode(GetConvar('inventory:ignoreweapons', '[]')),
         suppresspickups = GetConvarInt('inventory:suppresspickups', 1) == 1,
         disableweapons = GetConvarInt('inventory:disableweapons', 0) == 1,
-        shopmarker = GetConvarInt('inventory:shopmarker', 29),
-        evidencemarker = GetConvarInt('inventory:shopmarker', 2),
+        shopmarker = json.decode(GetConvar('inventory:shopmarker', [[
+            {
+                type: 29,
+                colour: [30, 30, 150],
+                scale: [0.3, 0.2, 0.15]
+            }
+        ]])),
+        evidencemarker = json.decode(GetConvar('inventory:evidencemarker', [[
+            {
+                type: 2,
+                colour: [30, 30, 150],
+                scale: [0.3, 0.2, 0.15]
+            }
+        ]])),
+        craftingmarker = json.decode(GetConvar('inventory:craftingmarker', [[
+            {
+                type: 2,
+                colour: [30, 30, 150],
+                scale: [0.3, 0.2, 0.15]
+            }
+        ]])),
     }
 
     local ignoreweapons = table.create(0, (client.ignoreweapons and #client.ignoreweapons or 0) + 3)
