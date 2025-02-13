@@ -80,7 +80,7 @@ local function createCraftingBench(id, data)
 					index = i,
 					inv = 'crafting',
                     prompt = prompt,
-                    marker = markerColour,
+                    marker = client.craftingmarker,
 					nearby = Utils.nearbyMarker
 				})
 

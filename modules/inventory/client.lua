@@ -347,7 +347,6 @@ Inventory.Evidence = setmetatable(lib.load('data.evidence'), {
                         distance = 16,
                         inv = 'policeevidence',
                         marker = client.evidencemarker,
-                        markerColour = markerColour,
                         prompt = textPrompts.evidence,
                         nearby = Utils.nearbyMarker
                     })
@@ -392,7 +391,6 @@ Inventory.Stashes = setmetatable(lib.load('data.stashes'), {
                         inv = 'stash',
                         invId = stash.name,
                         marker = client.evidencemarker,
-                        markerColour = markerColour,
                         prompt = textPrompts.stash,
                         nearby = Utils.nearbyMarker
                     })
