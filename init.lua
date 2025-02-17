@@ -89,38 +89,10 @@ else
         imagepath = GetConvar('inventory:imagepath', 'nui://ox_inventory/web/images'),
         dropprops = GetConvarInt('inventory:dropprops', 0) == 1,
         dropmodel = joaat(GetConvar('inventory:dropmodel', 'prop_med_bag_01b')),
-        dropmarker = json.decode(GetConvar('inventory:dropmarker', [[
-            {
-                "type": 2,
-                "colour": [150, 30, 30],
-                "scale": [0.3, 0.2, 0.15]
-            }
-        ]])),
         weaponmismatch = GetConvarInt('inventory:weaponmismatch', 1) == 1,
         ignoreweapons = json.decode(GetConvar('inventory:ignoreweapons', '[]')),
         suppresspickups = GetConvarInt('inventory:suppresspickups', 1) == 1,
         disableweapons = GetConvarInt('inventory:disableweapons', 0) == 1,
-        shopmarker = json.decode(GetConvar('inventory:shopmarker', [[
-            {
-                "type": 29,
-                "colour": [30, 150, 30],
-                "scale": [0.5, 0.5, 0.5]
-            }
-        ]])),
-        evidencemarker = json.decode(GetConvar('inventory:evidencemarker', [[
-            {
-                "type": 2,
-                "colour": [30, 30, 150],
-                "scale": [0.3, 0.2, 0.15]
-            }
-        ]])),
-        craftingmarker = json.decode(GetConvar('inventory:craftingmarker', [[
-            {
-                "type": 2,
-                "colour": [150, 150, 30],
-                "scale": [0.3, 0.2, 0.15]
-            }
-        ]])),
     }
 
     local ignoreweapons = table.create(0, (client.ignoreweapons and #client.ignoreweapons or 0) + 3)
@@ -137,6 +109,44 @@ else
     ignoreweapons[`WEAPON_HOSE`] = true
 
     client.ignoreweapons = ignoreweapons
+
+    local fallbackmarker = {
+        type = 0,
+        colour = {150, 150, 150},
+        scale = {0.5, 0.5, 0.5}
+    }
+
+    client.shopmarker = json.decode(GetConvar('inventory:shopmarker', [[
+        {
+            "type": 29,
+            "colour": [30, 150, 30],
+            "scale": [0.5, 0.5, 0.5]
+        }
+    ]])) or fallbackmarker
+
+    client.evidencemarker = json.decode(GetConvar('inventory:evidencemarker', [[
+        {
+            "type": 2,
+            "colour": [30, 30, 150],
+            "scale": [0.3, 0.2, 0.15]
+        }
+    ]])) or fallbackmarker
+
+    client.craftingmarker = json.decode(GetConvar('inventory:craftingmarker', [[
+        {
+            "type": 2,
+            "colour": [150, 150, 30],
+            "scale": [0.3, 0.2, 0.15]
+        }
+    ]])) or fallbackmarker
+
+    client.dropmarker = json.decode(GetConvar('inventory:dropmarker', [[
+        {
+            "type": 2,
+            "colour": [150, 30, 30],
+            "scale": [0.3, 0.2, 0.15]
+        }
+    ]])) or fallbackmarker
 end
 
 function shared.print(...) print(string.strjoin(' ', ...)) end
