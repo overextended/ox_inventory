@@ -195,6 +195,7 @@ function Items.Metadata(inv, item, metadata, count)
 			count = 1
 			metadata.container = metadata.container or GenerateText(3)..os.time()
 			metadata.size = container.size
+			metadata.items = container.items or nil
 		elseif not next(metadata) then
 			if item.name == 'identification' then
 				count = 1

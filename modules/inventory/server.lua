@@ -397,6 +397,17 @@ function Inventory.SetSlot(inv, item, count, metadata, slot)
 	inv.items[slot] = currentSlot
 	inv.changed = true
 
+	if metadata.container and metadata.items then
+		local container = Inventory.GetContainerFromSlot(inv, slot)
+		local itemsToAdd = metadata.items
+		if container and itemsToAdd then
+			for i = 1, #itemsToAdd do
+				local item = itemsToAdd[i]
+				Inventory.AddItem(container, item.name, item.count)
+			end
+		end
+	end
+	
 	return currentSlot
 end
 

@@ -48,6 +48,7 @@ local function setContainerProperties(itemName, properties)
 		size = { properties.slots, properties.maxWeight },
 		blacklist = blacklist,
 		whitelist = whitelist,
+		items = properties.items or nil
 	}
 end
 
@@ -60,7 +61,10 @@ setContainerProperties('paperbag', {
 setContainerProperties('pizzabox', {
 	slots = 5,
 	maxWeight = 1000,
-	whitelist = { 'pizza' }
+	whitelist = { 'pizza' },
+	items = {
+		{ item = 'pizza', count = 1 }
+	}
 })
 
 return containers
