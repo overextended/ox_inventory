@@ -102,8 +102,6 @@ local function wipeShops()
 	table.wipe(shops)
 end
 
-local markerColour = { 30, 150, 30 }
-
 local function refreshShops()
 	wipeShops()
 
@@ -195,7 +193,7 @@ local function refreshShops()
 					inv = 'shop',
 					invId = i,
 					type = type,
-                    marker = markerColour,
+                    marker = client.shopmarker,
                     prompt = {
                         options = shop.icon and { icon = shop.icon } or shopPrompt,
                         message = ('**%s**  \n%s'):format(label, locale('interact_prompt', GetControlInstructionalButton(0, 38, true):sub(3)))
