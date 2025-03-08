@@ -23,7 +23,7 @@ shared = {
 }
 
 shared.dropslots = GetConvarInt('inventory:dropslots', shared.playerslots)
-shared.dropweight = GetConvarInt('inventory:dropslotcount', shared.playerweight)
+shared.dropweight = GetConvarInt('inventory:dropweight', shared.playerweight)
 
 do
     if type(shared.police) == 'string' then
