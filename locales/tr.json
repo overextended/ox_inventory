@@ -88,6 +88,6 @@
   "crafting_item": "Üretiliyor %s",
   "crafting_bench": "Üretim Tezgahı",
   "open_crafting_bench": "Üretim Tezgahını Aç",
-  "not_enough_durability": "%s Yeterli dayanıklılığa sahip değil"
+  "not_enough_durability": "%s Yeterli dayanıklılığa sahip değil",
   "storage": "Depo"
 }
