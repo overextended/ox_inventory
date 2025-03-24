@@ -1394,7 +1394,15 @@ function Inventory.CanCarryItem(inv, item, count, metadata)
 		inv = Inventory(inv) --[[@as OxInventory]]
 
 		if inv then
-			local itemSlots, _, emptySlots = Inventory.GetItemSlots(inv, item, type(metadata) == 'table' and metadata or { type = metadata or nil })
+			local md
+			if type(metadata) == 'table' then
+				md = metadata
+			elseif type(metadata) == 'string' then
+				md = { type = metadata }
+			else
+				md = {}
+			end
+			local itemSlots, _, emptySlots = Inventory.GetItemSlots(inv, item, md)
 
 			if not itemSlots then return end
 
