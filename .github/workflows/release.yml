@@ -1,75 +1,55 @@
-name: Release
+name: Create release
 
 on:
   push:
     tags:
-      - "v*.*.*"
+      - 'v*.*.*'
 
 jobs:
   create-release:
-    name: Build and Create Tagged release
     runs-on: ubuntu-latest
-
     steps:
-      - name: Install archive tools
+      - name: Install zip
         run: sudo apt install zip
 
-      - name: Checkout source code
-        uses: actions/checkout@v2
+      - name: Install Bun
+        uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: latest
+
+
+      - name: Get latest code
+        uses: actions/checkout@v4
         with:
           fetch-depth: 0
           ref: ${{ github.event.repository.default_branch }}
 
-      - name: Install pnpm
-        uses: pnpm/action-setup@v4.0.0
-        with:
-          version: 9
-
-      - name: Get variables
-        id: get_vars
-        run: |
-          echo '::set-output name=SHORT_SHA::$(git rev-parse --short HEAD)'
-          echo '::set-output name=DATE::$(date +'%D')'
-
-      - name: Setup node
-        uses: actions/setup-node@v2
-        with:
-          node-version: 18.x
-          cache: "pnpm"
-          cache-dependency-path: "web/pnpm-lock.yaml"
 
       - name: Install dependencies
-        run: pnpm i --frozen-lockfile
+        run: bun install --frozen-lockfile
         working-directory: web
 
-      - name: Run build
-        run: pnpm build
+      - name: Run build script
+        run: bun run build
         working-directory: web
-        env:
-          CI: false
+
 
       - name: Bump manifest version
-        run: node .github/actions/bump-manifest-version.js
+        run: bun .github/actions/bump-manifest-version.js
         env:
           TGT_RELEASE_VERSION: ${{ github.ref_name }}
 
-      - name: Push manifest change
-        uses: EndBug/add-and-commit@v8
+      - name: Push version bump change
+        uses: EndBug/add-and-commit@v9
         with:
           add: fxmanifest.lua
           push: true
-          author_name: Manifest Bumper
-          author_email: 41898282+github-actions[bot]@users.noreply.github.com
-          message: "chore: bump manifest version to ${{ github.ref_name }}"
+          default_author: github_actions
+          message: 'chore: bump version to ${{ github.ref_name }}'
 
-      - name: Update tag ref
-        uses: EndBug/latest-tag@latest
-        with:
-          tag-name: ${{ github.ref_name }}
 
       - name: Bundle files
         run: |
-          mkdir -p ./temp/ox_inventory
           mkdir -p ./temp/ox_inventory/web
           cp ./{server.lua,README.md,LICENSE,fxmanifest.lua,client.lua,init.lua} ./temp/ox_inventory
           cp -r ./{setup,modules,data,locales} ./temp/ox_inventory
@@ -78,15 +58,14 @@ jobs:
           cp -r ./web/images ./temp/ox_inventory/web/images
           cd ./temp && zip -r ../ox_inventory.zip ./ox_inventory
 
-      - name: Create Release
-        uses: "marvinpinto/action-automatic-releases@v1.2.1"
-        id: auto_release
+      - name: Create release
+        uses: 'marvinpinto/action-automatic-releases@v1.2.1'
         with:
-          repo_token: "${{ secrets.GITHUB_TOKEN }}"
-          title: "${{ env.RELEASE_VERSION }}"
+          repo_token: ${{ secrets.GITHUB_TOKEN }}
           prerelease: false
           files: ox_inventory.zip
 
-        env:
-          CI: false
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: Update tag
+        uses: EndBug/latest-tag@v1
+        with:
+          ref: ${{ github.ref_name }}

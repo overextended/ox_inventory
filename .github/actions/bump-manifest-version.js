@@ -1,13 +1,8 @@
-const fs = require("fs");
+const fxManifest = await Bun.file('./fxmanifest.lua').text();
 
-const version = process.env.TGT_RELEASE_VERSION;
-const newVersion = version.replace("v", "");
+let newVersion = process.env.TGT_RELEASE_VERSION;
+newVersion = newVersion.replace('v', '')
 
-const manifestFile = fs.readFileSync("fxmanifest.lua", { encoding: "utf8" });
+const newFileContent = fxManifest.replace(/\bversion\s+(.*)$/gm, `version '${newVersion}'`);
 
-const newFileContent = manifestFile.replace(
-  /\bversion\s+(.*)$/gm,
-  `version '${newVersion}'`
-);
-
-fs.writeFileSync("fxmanifest.lua", newFileContent);
+await Bun.write('./fxmanifest.lua', newFileContent);
