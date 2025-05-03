@@ -7,6 +7,7 @@ on:
 
 jobs:
   create-release:
+    if: github.actor_id != 210085057
     runs-on: ubuntu-latest
     steps:
       - name: Install zip
@@ -18,11 +19,19 @@ jobs:
           bun-version: latest
 
 
+      - name: Generate GitHub App token
+        id: app_token
+        uses: tibdex/github-app-token@v2
+        with:
+          app_id: ${{ secrets.APP_ID }}
+          private_key: ${{ secrets.APP_PRIVATE_KEY }}
+
       - name: Get latest code
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
           ref: ${{ github.event.repository.default_branch }}
+          token: ${{ steps.app_token.outputs.token }}
 
 
       - name: Install dependencies
@@ -35,7 +44,7 @@ jobs:
 
 
       - name: Bump manifest version
-        run: bun .github/actions/bump-manifest-version.js
+        run: bun run .github/actions/bump-manifest-version.js
         env:
           TGT_RELEASE_VERSION: ${{ github.ref_name }}
 
