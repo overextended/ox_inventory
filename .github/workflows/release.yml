@@ -34,15 +34,6 @@ jobs:
           token: ${{ steps.app_token.outputs.token }}
 
 
-      - name: Install dependencies
-        run: bun install --frozen-lockfile
-        working-directory: web
-
-      - name: Run build script
-        run: bun run build
-        working-directory: web
-
-
       - name: Bump manifest version
         run: bun run .github/actions/bump-manifest-version.js
         env:
@@ -55,6 +46,15 @@ jobs:
           push: true
           default_author: github_actions
           message: 'chore: bump version to ${{ github.ref_name }}'
+
+
+      - name: Install dependencies
+        run: bun install --frozen-lockfile
+        working-directory: web
+
+      - name: Run build script
+        run: bun run build
+        working-directory: web
 
 
       - name: Bundle files
