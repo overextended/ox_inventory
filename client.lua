@@ -1336,7 +1336,10 @@ RegisterNetEvent('ox_inventory:setPlayerInventory', function(currentDrops, inven
 
 	PlayerData.loaded = true
 
-	lib.notify({ description = locale('inventory_setup') })
+	if not client.disablesetupnotification then
+		lib.notify({ description = locale('inventory_setup') })
+	end
+
 	Shops.refreshShops()
 	Inventory.Stashes()
 	Inventory.Evidence()
