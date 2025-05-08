@@ -79,8 +79,18 @@ end
 RegisterNetEvent('ox_inventory:notify', Utils.Notify)
 exports('notify', Utils.Notify)
 
+local notifySuppressed = false
+
+---@param value boolean
+local function setNotifySuppressed(value)
+    notifySuppressed = value
+end
+
+RegisterNetEvent('ox_inventory:suppressItemNotifications', setNotifySuppressed)
+exports('suppressItemNotifications', setNotifySuppressed)
+
 function Utils.ItemNotify(data)
-    if not client.itemnotify then
+    if notifySuppressed or not client.itemnotify then
         return
     end
 
