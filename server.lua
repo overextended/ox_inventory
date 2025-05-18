@@ -373,9 +373,9 @@ end)
 ---@param metadata { [string]: any }?
 ---@return table | boolean | nil
 lib.callback.register('ox_inventory:useItem', function(source, itemName, slot, metadata, noAnim)
-	local inventory = Inventory(source) --[[@as OxInventory]]
+	local inventory = Inventory(source)
 
-	if inventory.player then
+	if inventory and inventory.player then
 		local item = Items(itemName)
 		local data = item and (slot and inventory.items[slot] or Inventory.GetSlotWithItem(inventory, item.name, metadata, true))
 
@@ -641,6 +641,8 @@ lib.addCommand('clearevidence', {
 	if not server.isPlayerBoss then return end
 
 	local inventory = Inventory(source)
+	if not inventory then return end
+
 	local group, grade = server.hasGroup(inventory, shared.police)
 	local hasPermission = group and server.isPlayerBoss(source, group, grade)
 
