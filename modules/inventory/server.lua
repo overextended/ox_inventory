@@ -2468,6 +2468,8 @@ local function giveItem(playerId, slot, target, count)
 					end
 
 					return
+				else
+					Inventory.RemoveItem(toInventory, item, count, data.metadata, toSlot)
 				end
 			end
 		end
