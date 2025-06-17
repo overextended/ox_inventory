@@ -51,6 +51,8 @@ local function setContainerProperties(itemName, properties)
 	}
 end
 
+exports('setContainerProperties', setContainerProperties)
+
 setContainerProperties('paperbag', {
 	slots = 5,
 	maxWeight = 1000,
