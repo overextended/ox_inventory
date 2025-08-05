@@ -290,10 +290,18 @@ lib.callback.register('ox_inventory:openInventory', function(source, invType, da
     if invType == 'player' and source ~= data then
         local serverId = type(data) == 'table' and data.id or data
 
-        if source == serverId or type(serverId) ~= 'number' or not Player(serverId).state.canSteal then return end
+        if source == serverId or type(serverId) ~= 'number' then return end
+
+        local left = Inventory(source)
+        if not left then return end
+
+        local isPolice = server.hasGroup(left, shared.police)
+        local isTargetStealable = Player(serverId).state.canSteal
+
+        if not isPolice and not isTargetStealable then return end
     end
 
-	return openInventory(source, invType, data)
+    return openInventory(source, invType, data)
 end)
 
 ---@param netId number
