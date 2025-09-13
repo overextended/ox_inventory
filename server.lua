@@ -231,6 +231,11 @@ local function openInventory(source, invType, data, ignoreSecurityChecks)
 
 		if not right then return end
 
+        if right.type ~= invType then
+            DropPlayer(source, 'sussy')
+            return
+         end
+
 		if not ignoreSecurityChecks and right.groups and not server.hasGroup(left, right.groups) then return end
 
 		local hookPayload = {
