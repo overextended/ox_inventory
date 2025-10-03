@@ -25,6 +25,6 @@ function client.setPlayerStatus(values)
             value = value * 0.0001
         end
 
-        playerState:set(name, playerState[name] + value, true)
+        playerState:set(name, lib.math.clamp(playerState[name] + value, 0, 100), true)
     end
 end
