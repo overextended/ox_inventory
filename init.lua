@@ -66,6 +66,12 @@ if IsDuplicityVersion() then
 				["burger", 1, 1]
 			]
 		]])),
+        validhosts = json.decode(GetConvar('inventory:validhosts', [[
+			{
+                "r2.fivemanage.com": true,
+                "i.fmfile.com": true
+            }
+		]])),
     }
 
     local accounts = json.decode(GetConvar('inventory:accounts', '["money"]'))
