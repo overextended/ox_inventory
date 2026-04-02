@@ -239,5 +239,25 @@ function Utils.blurOut()
     TriggerScreenblurFadeOut(250)
 end
 
+---@param serverID number
+---@return string
+local function defaultGetPlayerName(serverID)
+    local playerName = GetPlayerName(serverID)
+    return ('[%d] %s'):format(serverID, playerName)
+end
+
+local getPlayerName = defaultGetPlayerName
+
+exports('setGetPlayerNameMethod', function (fn)
+    if type(fn) == "function" then
+        getPlayerName = fn
+    else
+        getPlayerName = defaultGetPlayerName
+    end
+end)
+
+function Utils.getPlayerName(serverId)
+    return getPlayerName(serverId)
+end
 
 return Utils
