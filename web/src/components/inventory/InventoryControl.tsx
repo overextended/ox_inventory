@@ -32,6 +32,52 @@ const InventoryControl: React.FC = () => {
     },
   }));
 
+  const handleKeyDown = (event: React.KeyboardEvent<HTMLInputElement>) => {
+    const el = event.currentTarget;
+    const pos = el.selectionStart ?? 0;
+    const selEnd = el.selectionEnd ?? 0;
+    const rawValue = el.value;
+
+    // If there's a range selection, let default behavior handle it
+    if (pos !== selEnd) return;
+
+    if (event.key === 'Backspace' && pos > 0 && /[^0-9]/.test(rawValue[pos - 1])) {
+      // Cursor is right after a comma: delete the comma AND the digit before it
+      event.preventDefault();
+      if (pos < 2) return;
+      const newRaw = rawValue.slice(0, pos - 2) + rawValue.slice(pos);
+      const digits = newRaw.replace(/[^0-9]/g, '');
+      if (digits === '') {
+        cursorRef.current = null;
+        setValue('');
+        dispatch(setItemAmount(0));
+        return;
+      }
+      const formatted = Number(digits).toLocaleString('en-us');
+      const digitsBeforeCursor = (rawValue.slice(0, pos - 2).replace(/[^0-9]/g, '')).length;
+      setValue(formatted);
+      cursorRef.current = { digitsBefore: digitsBeforeCursor, formattedValue: formatted };
+      dispatch(setItemAmount(Math.floor(Math.max(0, Number(digits)))));
+    } else if (event.key === 'Delete' && pos < rawValue.length && /[^0-9]/.test(rawValue[pos])) {
+      // Cursor is right before a comma: delete the comma AND the digit after it
+      event.preventDefault();
+      if (pos + 1 >= rawValue.length) return;
+      const newRaw = rawValue.slice(0, pos) + rawValue.slice(pos + 2);
+      const digits = newRaw.replace(/[^0-9]/g, '');
+      if (digits === '') {
+        cursorRef.current = null;
+        setValue('');
+        dispatch(setItemAmount(0));
+        return;
+      }
+      const formatted = Number(digits).toLocaleString('en-us');
+      const digitsBeforeCursor = (rawValue.slice(0, pos).replace(/[^0-9]/g, '')).length;
+      setValue(formatted);
+      cursorRef.current = { digitsBefore: digitsBeforeCursor, formattedValue: formatted };
+      dispatch(setItemAmount(Math.floor(Math.max(0, Number(digits)))));
+    }
+  };
+
   const inputHandler = (event: React.ChangeEvent<HTMLInputElement>) => {
     const el = event.target;
     const rawValue = el.value;
@@ -40,6 +86,7 @@ const InventoryControl: React.FC = () => {
     const commaCountBefore = (beforeCursor.match(/[^0-9]/g) || []).length;
     const digits = rawValue.replace(/[^0-9]/g, "");
     if (digits === "") {
+      cursorRef.current = null;
       setValue("");
       dispatch(setItemAmount(0));
       return;
@@ -81,6 +128,7 @@ const InventoryControl: React.FC = () => {
             defaultValue={itemAmount}
             value={value}
             onChange={inputHandler}
+            onKeyDown={handleKeyDown}
             min={0}
           />
           <button className="inventory-control-button" ref={use}>
