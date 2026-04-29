@@ -1713,7 +1713,9 @@ lib.callback.register('ox_inventory:swapItems', function(source, data)
         end
 
         if data.toType == 'newdrop' then
-            return dropItem(source, playerInventory, fromData, data)
+            if data.fromType ~= 'player' then return end
+
+            return dropItem(source, fromInventory, fromData, data)
         end
 
 		if fromData then
