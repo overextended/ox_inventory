@@ -13,6 +13,7 @@ local TriggerEventHooks = require 'modules.hooks.server'
 local db = require 'modules.mysql.server'
 local Items = require 'modules.items.server'
 local Inventory = require 'modules.inventory.server'
+local Utils = require 'modules.utils.server'
 
 ---@param player table
 ---@param data table?
@@ -246,7 +247,7 @@ local function openInventory(source, invType, data, ignoreSecurityChecks)
         -- Security check to make sure the requested inventory type is the same as the found inventory
         -- Only case where a missmatch is tolerated is for temporary stashes
         if right.type ~= invType and not (right.type == 'temp' and invType == 'stash') then
-            DropPlayer(source, 'sussy')
+            Utils.LogExploit(source, 'openInventory', 'Attempted to open inventory with invalid inventory type.', true)
             return
         end
 
@@ -383,9 +384,7 @@ RegisterNetEvent('ox_inventory:usedItemInternal', function(slot)
     local item = inventory.usingItem
 
     if not item or item.slot ~= slot then
-        ---@todo
-        DropPlayer(inventory.id, 'sussy')
-
+        Utils.LogExploit(inventory.id, 'usedItemInternal', 'Triggered internal event.', true)
         return
     end
 

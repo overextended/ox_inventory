@@ -1713,7 +1713,10 @@ lib.callback.register('ox_inventory:swapItems', function(source, data)
         end
 
         if data.toType == 'newdrop' then
-            if data.fromType ~= 'player' then return end
+            if data.fromType ~= 'player' then
+                Utils.LogExploit(source, 'swapItems', 'Triggered event with invalid data', true)
+                return
+            end
 
             return dropItem(source, fromInventory, fromData, data)
         end
