@@ -1705,11 +1705,7 @@ RegisterNUICallback('giveItem', function(data, cb)
     if usingItem then return end
 
 	if client.giveplayerlist then
-		local coords=GetEntityCoords(playerPed)
-		
-		if cache.vehicle then
-			coords=GetWorldPositionOfEntityBone(playerPed, 0)
-		end
+		local coords = cache.vehicle and GetWorldPositionOfEntityBone(playerPed, 0) or GetEntityCoords(playerPed)
 	
 		local nearbyPlayers = lib.getNearbyPlayers(coords, 3.0)
         local nearbyCount = #nearbyPlayers
