@@ -184,13 +184,13 @@ function client.openInventory(inv, data)
     end
 
     if inv == 'shop' and invOpen == false then
-        if  then
+        if cache.vehicle then
             return lib.notify({ id = 'cannot_perform', type = 'error', description = locale('cannot_perform') })
         end
 
         left, right, accessError = lib.callback.await('ox_inventory:openShop', 200, data)
     elseif inv == 'crafting' then
-        if  then
+        if cache.vehicle then
             return lib.notify({ id = 'cannot_perform', type = 'error', description = locale('cannot_perform') })
         end
 
@@ -254,7 +254,7 @@ function client.openInventory(inv, data)
     end
 
 
-    if not  then
+    if not cache.vehicle then
         if inv == 'player' then
             Utils.PlayAnim(0, 'mp_common', 'givetake1_a', 8.0, 1.0, 2000, 50, 0.0, 0, 0, 0)
         elseif inv ~= 'trunk' then
@@ -1705,7 +1705,11 @@ RegisterNUICallback('giveItem', function(data, cb)
     if usingItem then return end
 
 	if client.giveplayerlist then
-		local coords = cache.vehicle and GetWorldPositionOfEntityBone(playerPed, 0) or GetEntityCoords(playerPed)
+		local coords=GetEntityCoords(playerPed)
+		
+		if cache.vehicle then
+			coords=GetWorldPositionOfEntityBone(playerPed, 0)
+		end
 	
 		local nearbyPlayers = lib.getNearbyPlayers(coords, 3.0)
         local nearbyCount = #nearbyPlayers
