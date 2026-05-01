@@ -9,7 +9,7 @@ import { fetchNui } from '../../utils/fetchNui';
 import { Locale } from '../../store/locale';
 import UsefulControls from './UsefulControls';
 
-const formatAmount = (n: number) => (n ? n.toLocaleString('en-US') : '');
+const formatAmount = (n: number) => (n > 0 ? n.toLocaleString('en-US') : '0');
 const digitsOnly = (s: string) => s.replace(/\D/g, '');
 const countDigitsBefore = (s: string, index: number) => digitsOnly(s.substring(0, index)).length;
 
