@@ -1687,14 +1687,7 @@ local function isGiveTargetValid(ped, coords)
         return true
     end
 
-    local entity = Utils.Raycast(1|2|4|8|16, coords + vec3(0, 0, 0.5), 0.2)
-
-    if GetVehiclePedIsIn(ped, false) and not cache.vehicle then
-		local currCoords=GetWorldPositionOfEntityBone(ped, 0)
-		if #(pedCoords.xy - currCoords.xy) <= 2.0 then
-			return true
-		end
-	end
+    local entity = Utils.Raycast(1|4|8|16, coords + vec3(0, 0, 0.5), 0.2)
 
     return entity == ped and IsEntityVisible(ped)
 end
