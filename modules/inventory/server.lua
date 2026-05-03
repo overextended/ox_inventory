@@ -1639,6 +1639,11 @@ local activeSlots = {}
 ---@param source number
 ---@param data SwapSlotData
 lib.callback.register('ox_inventory:swapItems', function(source, data)
+	if data.toType ~= 'player' and data.fromType ~= 'player' then
+        Utils.LogExploit(source, 'swapItems', 'Triggered event with invalid data', true)
+        return
+    end
+
 	if data.count < 1 then return end
 
 	local playerInventory = Inventory(source)
@@ -1713,11 +1718,6 @@ lib.callback.register('ox_inventory:swapItems', function(source, data)
         end
 
         if data.toType == 'newdrop' then
-            if data.fromType ~= 'player' then
-                Utils.LogExploit(source, 'swapItems', 'Triggered event with invalid data', true)
-                return
-            end
-
             return dropItem(source, fromInventory, fromData, data)
         end
 
