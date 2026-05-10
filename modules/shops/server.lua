@@ -145,12 +145,12 @@ lib.callback.register('ox_inventory:openShop', function(source, data)
 			return
 		end
 
-		local shopType, shopId = shop.id:match('^(.-) (%d-)$')
+		local shopType, shopId = shop.id:match('^(.-) (%d+)$')
 
         local hookPayload = {
             source = source,
-            shopId = shopId,
-			shopType = shopType,
+            shopId = shopId or shop.id,
+			shopType = shopType or shop.id,
             label = shop.label,
             slots = shop.slots,
             items = shop.items,
