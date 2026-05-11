@@ -491,7 +491,7 @@ lib.callback.register('ox_inventory:useItem', function(source, itemName, slot, m
                 end
             elseif not item.weapon and server.UseItem then
                 inventory.usingItem = data
-                -- This is used to call an external useItem function, i.e. ESX.UseItem
+                -- This is used to call an external useItem function, i.e. ESX.UseItem / QBCore.Functions.CanUseItem
                 -- If an error is being thrown on item use there is no internal solution. We previously kept a list
                 -- of usable items which led to issues when restarting resources (for obvious reasons), but config
                 -- developers complained the inventory broke their items. Safely invoking registered item callbacks
@@ -594,7 +594,7 @@ RegisterCommand('convertinventory', function(source, args)
     local convert = arg and conversionScript[arg]
 
     if not convert then
-        return warn('Invalid conversion argument. Valid options: esx, esxproperty')
+        return warn('Invalid conversion argument. Valid options: esx, esxproperty, qb, linden')
     end
 
     CreateThread(convert)
