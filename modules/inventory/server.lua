@@ -411,7 +411,7 @@ function Inventory.SetSlot(inv, item, count, metadata, slot)
 	inv.items[slot] = currentSlot
 	inv.changed = true
 
-	return currentSlot
+	return currentSlot or true
 end
 
 CreateThread(function()
