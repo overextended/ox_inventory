@@ -2605,12 +2605,12 @@ local function updateWeapon(source, action, value, slot, specialAmmo)
 			elseif action == 'throw' then
 				if not Inventory.RemoveItem(inventory, weapon.name, 1, weapon.metadata, weapon.slot) then return end
 			elseif action == 'component' then
-				if type == 'number' then
+				if vtype == 'number' then
 					if not Inventory.AddItem(inventory, weapon.metadata.components[value], 1) then return false end
 
 					table.remove(weapon.metadata.components, value)
 					weapon.weight = Inventory.SlotWeight(item, weapon)
-				elseif type == 'string' then
+				elseif vtype == 'string' then
 					local component = inventory.items[tonumber(value)]
 
 					if not Inventory.RemoveItem(inventory, component.name, 1) then return false end
