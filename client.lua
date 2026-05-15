@@ -294,7 +294,7 @@ function client.openInventory(inv, data)
         }
     })
 
-    if inv and not currentInventory.coords and inv ~= 'container' then
+    if inv and not currentInventory.coords and inv ~= 'container' and inv ~= 'glovebox' then
         currentInventory.coords = GetEntityCoords(playerPed)
     end
 
