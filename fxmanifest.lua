@@ -1,6 +1,5 @@
 fx_version 'cerulean'
 use_experimental_fxv2_oal 'yes'
-lua54 'yes'
 game 'gta5'
 name 'ox_inventory'
 author 'Overextended'
@@ -12,7 +11,7 @@ dependencies {
     '/server:6116',
     '/onesync',
     'oxmysql',
-    'ox_lib',
+    'ox_lib'
 }
 
 shared_script '@ox_lib/init.lua'
@@ -20,7 +19,7 @@ shared_script '@ox_lib/init.lua'
 ox_libs {
     'locale',
     'table',
-    'math',
+    'math'
 }
 
 server_scripts {
@@ -43,5 +42,5 @@ files {
     'modules/**/shared.lua',
     'modules/**/client.lua',
     'modules/bridge/**/client.lua',
-    'data/*.lua',
+    'data/*.lua'
 }
