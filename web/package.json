@@ -3,6 +3,7 @@
   "version": "1.0.0",
   "private": true,
   "homepage": "web/build",
+  "type": "module",
   "scripts": {
     "start": "vite",
     "watch": "vite build --watch",
