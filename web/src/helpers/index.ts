@@ -1,5 +1,5 @@
 import { Inventory, InventoryType, ItemData, Slot, SlotWithItem, State } from '../typings';
-import { isEqual } from 'lodash';
+import { isEqual } from 'lodash-es';
 import { store } from '../store';
 import { Items } from '../store/items';
 import { imagepath } from '../store/imagepath';
@@ -104,8 +104,8 @@ export const getTargetInventory = (
       ? state.leftInventory
       : state.rightInventory
     : sourceType === InventoryType.PLAYER
-    ? state.rightInventory
-    : state.leftInventory,
+      ? state.rightInventory
+      : state.leftInventory,
 });
 
 export const itemDurability = (metadata: any, curTime: number) => {

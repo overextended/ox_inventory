@@ -1,0 +1,12 @@
+import { defineConfig } from 'oxfmt';
+
+export default defineConfig({
+  ignorePatterns: ['node_modules/**', 'build/**'],
+  printWidth: 120,
+  singleQuote: true,
+  useTabs: false,
+  tabWidth: 2,
+  semi: true,
+  bracketSpacing: true,
+  trailingComma: 'es5',
+});

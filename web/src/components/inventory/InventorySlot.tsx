@@ -98,7 +98,10 @@ const InventorySlot: React.ForwardRefRenderFunction<HTMLDivElement, SlotProps> =
     manager.dispatch({ type: 'dnd-core/END_DRAG' });
   });
 
-  const connectRef = (element: HTMLDivElement) => drag(drop(element));
+  const connectRef = (element: HTMLDivElement | null) => {
+    if (!element) return;
+    drag(drop(element));
+  };
 
   const handleContext = (event: React.MouseEvent<HTMLDivElement>) => {
     event.preventDefault();

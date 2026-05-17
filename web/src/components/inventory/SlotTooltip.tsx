@@ -2,11 +2,11 @@ import { Inventory, SlotWithItem } from '../../typings';
 import React, { Fragment, useMemo } from 'react';
 import { Items } from '../../store/items';
 import { Locale } from '../../store/locale';
-import ReactMarkdown from 'react-markdown';
 import { useAppSelector } from '../../store';
 import ClockIcon from '../utils/icons/ClockIcon';
 import { getItemUrl } from '../../helpers';
 import Divider from '../utils/Divider';
+import Markdown from '../utils/Markdown';
 
 const SlotTooltip: React.ForwardRefRenderFunction<
   HTMLDivElement,
@@ -46,7 +46,7 @@ const SlotTooltip: React.ForwardRefRenderFunction<
           <Divider />
           {description && (
             <div className="tooltip-description">
-              <ReactMarkdown className="tooltip-markdown">{description}</ReactMarkdown>
+              <Markdown content={description} className="tooltip-markdown" />
             </div>
           )}
           {inventoryType !== 'crafting' ? (
@@ -106,8 +106,8 @@ const SlotTooltip: React.ForwardRefRenderFunction<
                         {count >= 1
                           ? `${count}x ${Items[item]?.label || item}`
                           : count === 0
-                          ? `${Items[item]?.label || item}`
-                          : count < 1 && `${count * 100}% ${Items[item]?.label || item}`}
+                            ? `${Items[item]?.label || item}`
+                            : count < 1 && `${count * 100}% ${Items[item]?.label || item}`}
                       </p>
                     </div>
                   );

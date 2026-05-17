@@ -28,8 +28,8 @@ const WeightBar: React.FC<{ percent: number; durability?: boolean }> = ({ percen
           ? colorMixer(COLORS.accentColor, COLORS.primaryColor, percent / 100)
           : colorMixer(COLORS.secondColor, COLORS.accentColor, percent / 100)
         : percent > 50
-        ? colorMixer(COLORS.primaryColor, COLORS.accentColor, percent / 100)
-        : colorMixer(COLORS.accentColor, COLORS.secondColor, percent / 50),
+          ? colorMixer(COLORS.primaryColor, COLORS.accentColor, percent / 100)
+          : colorMixer(COLORS.accentColor, COLORS.secondColor, percent / 50),
     [durability, percent]
   );
 
