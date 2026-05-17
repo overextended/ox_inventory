@@ -417,10 +417,14 @@ lib.callback.register('ox_inventory:useItem', function(source, itemName, slot, m
 
         if not data then return end
 
+        local label = data.metadata.label or item.label
+		if item.groups and not server.hasGroup(inventory, item.groups) then
+			return TriggerClientEvent('ox_lib:notify', source, { type = 'error', description = locale('cannot_use', label) })
+		end
+        
         slot = data.slot
         local durability = data.metadata.durability --[[@as number|boolean|nil]]
         local consume = item.consume
-        local label = data.metadata.label or item.label
 
         if durability and consume then
             if durability > 100 then
