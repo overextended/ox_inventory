@@ -77,7 +77,7 @@ AddEventHandler('ox_inventory:setPlayerInventory', server.setPlayerInventory)
 local registeredDumpsters = {}
 
 ---@param coords vector3
----@return string?
+---@return number?
 local function getDumpsterFromCoords(coords)
     local found
 
@@ -120,7 +120,7 @@ end
 
 ---@param source number
 ---@param invType string
----@param data? string|number|table
+---@param data? string | number | table | vector3
 ---@param ignoreSecurityChecks boolean?
 ---@return table | false | nil, table | false | nil, string?
 local function openInventory(source, invType, data, ignoreSecurityChecks)
@@ -203,7 +203,7 @@ local function openInventory(source, invType, data, ignoreSecurityChecks)
             end
         elseif invType == 'dumpster' then
             if shared.networkdumpsters then
-                local dumpsterId = getDumpsterFromCoords(data)
+                local dumpsterId = getDumpsterFromCoords(data --[[@as vector3]])
                 right = dumpsterId and Inventory(('dumpster-%s'):format(dumpsterId))
 
                 if not right then
@@ -251,7 +251,12 @@ local function openInventory(source, invType, data, ignoreSecurityChecks)
             return
         end
 
-        if not ignoreSecurityChecks and right.groups and not server.hasGroup(left, right.groups) then return end
+        if not ignoreSecurityChecks then
+            local playerState = Player(source).state
+
+            if right.groups and not server.hasGroup(left, right.groups) then return end
+            if right.instance and playerState.instance ~= right.instance then return end
+        end
 
         local hookPayload = {
             source = source,
@@ -260,9 +265,8 @@ local function openInventory(source, invType, data, ignoreSecurityChecks)
         }
 
         if invType == 'container' then hookPayload.slot = left.containerSlot end
-        if isDataTable and data.netid then hookPayload.netId = data.netid end
 
-        if not TriggerEventHooks('openInventory', hookPayload) then return end
+        if isDataTable and data.netid then hookPayload.netId = data.netid end
 
         if left == right then return end
 
@@ -278,10 +282,12 @@ local function openInventory(source, invType, data, ignoreSecurityChecks)
             if not closestCoords then return end
         end
 
-        left:openInventory(right)
-    else
-        left:openInventory(left)
+        local hooks <close> = TriggerEventHooks('openInventory', hookPayload)
+
+        if not hooks.success then return end
     end
+
+    left:openInventory(right)
 
     return {
         id = left.id,
@@ -299,7 +305,8 @@ local function openInventory(source, invType, data, ignoreSecurityChecks)
         maxWeight = right.maxWeight,
         items = right.items,
         coords = closestCoords or right.coords,
-        distance = right.distance
+        distance = right.distance,
+        instance = right.instance
     }
 end
 
@@ -393,6 +400,8 @@ RegisterNetEvent('ox_inventory:usedItemInternal', function(slot)
     inventory.usingItem = nil
 end)
 
+local GetLocks = require 'modules.locks'
+
 ---@param source number
 ---@param itemName string
 ---@param slot number?
@@ -445,6 +454,12 @@ lib.callback.register('ox_inventory:useItem', function(source, itemName, slot, m
         end
 
         if item and data and data.count > 0 and data.name == item.name then
+            local activeSlots <close> = GetLocks({
+                ('inventory-%s:slot-%s'):format(inventory.id, slot),
+            })
+
+    		if not activeSlots then return end
+
             data = { name = data.name, label = label, count = data.count, slot = slot, metadata = data.metadata, weight =
             data.weight }
 
@@ -486,14 +501,14 @@ lib.callback.register('ox_inventory:useItem', function(source, itemName, slot, m
 
             data.consume = consume
 
-            if not TriggerEventHooks('usingItem', {
-                    source = source,
-                    inventoryId = inventory and inventory.id,
-                    item = inventory.items[slot],
-                    consume = consume
-                }) then
-                return false
-            end
+            local hooks <close> = TriggerEventHooks('usingItem', {
+                source = source,
+                inventoryId = inventory and inventory.id,
+                item = inventory.items[slot],
+                consume = consume
+            })
+
+            if not hooks.success then return false end
 
             ---@type boolean
             local success = lib.callback.await('ox_inventory:usingItem', source, data, noAnim)
@@ -502,14 +517,14 @@ lib.callback.register('ox_inventory:useItem', function(source, itemName, slot, m
                 inventory.weapon = success and slot or nil
             end
 
-            if not success then return end
+            if not success then hooks.success = false return end
 
             inventory.usingItem = data
 
             if consume and consume ~= 0 and not data.component then
                 data = inventory.items[data.slot]
 
-                if not data then return end
+                if not data then hooks.success = false return end
 
                 durability = consume ~= 0 and consume < 1 and data.metadata.durability --[[@as number | false]]
 
@@ -525,11 +540,11 @@ lib.callback.register('ox_inventory:useItem', function(source, itemName, slot, m
                         local emptySlot = Inventory.GetEmptySlot(inventory)
 
                         if emptySlot then
-                            local newItem = Inventory.SetSlot(inventory, item, 1, table.deepclone(data.metadata),
+                            local ok, newItem = Inventory.SetSlot(inventory, item, 1, table.deepclone(data.metadata),
                                 emptySlot)
 
-                            if newItem then
-                                Items.UpdateDurability(inventory, newItem, item, durability)
+                            if ok and newItem then
+                                Items.UpdateDurability(inventory, newItem --[[@as SlotWithItem]], item, durability)
                             end
                         end
 

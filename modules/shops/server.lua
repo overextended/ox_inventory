@@ -145,12 +145,12 @@ lib.callback.register('ox_inventory:openShop', function(source, data)
 			return
 		end
 
-		local shopType, shopId = shop.id:match('^(.-) (%d-)$')
+		local shopType, shopId = shop.id:match('^(.-) (%d+)$')
 
         local hookPayload = {
             source = source,
-            shopId = shopId,
-			shopType = shopType,
+            shopId = shopId or shop.id,
+			shopType = shopType or shop.id,
             label = shop.label,
             slots = shop.slots,
             items = shop.items,
@@ -159,7 +159,9 @@ lib.callback.register('ox_inventory:openShop', function(source, data)
             distance = shop.distance
         }
 
-        if not TriggerEventHooks('openShop', hookPayload) then return end
+        local hooks <close> = TriggerEventHooks('openShop', hookPayload)
+
+		if not hooks.success then return end
 
 		---@diagnostic disable-next-line: assign-type-mismatch
 		playerInv:openInventory(playerInv)
@@ -257,7 +259,7 @@ lib.callback.register('ox_inventory:buyItem', function(source, data)
 					return false, false, canAfford
 				end
 
-				if not TriggerEventHooks('buyItem', {
+				local hooks <close> = TriggerEventHooks('buyItem', {
 					source = source,
 					shopType = shopType,
 					shopId = shopId,
@@ -270,7 +272,9 @@ lib.callback.register('ox_inventory:buyItem', function(source, data)
 					price = fromData.price,
 					totalPrice = price,
 					currency = currency,
-				}) then return false end
+				})
+
+				if not hooks.success then return false end
 
 				Inventory.SetSlot(playerInv, fromItem, count, metadata, data.toSlot)
 				playerInv.weight = newWeight

@@ -325,7 +325,7 @@ Inventory.Evidence = setmetatable(lib.load('data.evidence'), {
                 evidence.point:remove()
             elseif evidence.zoneId then
                 exports.ox_target:removeZone(evidence.zoneId)
-                evidence.zone = nil
+                evidence.zoneId = nil
             end
 
             if client.hasGroup(shared.police) then

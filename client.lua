@@ -77,6 +77,17 @@ local function canOpenTarget(ped)
 	or IsEntityPlayingAnim(ped, 'random@mugging3', 'handsup_standing_base', 3)
 end
 
+---@class OpenInventory
+---@field id string | integer
+---@field label string
+---@field type string
+---@field slots integer
+---@field weight integer
+---@field maxWeight integer
+---@field coords? vector3
+---@field distance? integer
+---@field instance? string | number
+---@field [string] unknown
 local defaultInventory = {
 	type = 'newdrop',
 	slots = shared.dropslots,
@@ -88,7 +99,7 @@ local defaultInventory = {
 local currentInventory = defaultInventory
 
 local function closeTrunk()
-	if currentInventory?.type == 'trunk' then
+	if currentInventory.type == 'trunk' then
 		local coords = GetEntityCoords(playerPed, true)
 		---@todo animation for vans?
 		Utils.PlayAnimAdvanced(0, 'anim@heists@fleeca_bank@scope_out@return_case', 'trevor_action', coords.x, coords.y, coords.z, 0.0, 0.0, GetEntityHeading(playerPed), 2.0, 2.0, 1000, 49, 0.25)
@@ -132,7 +143,7 @@ function client.openInventory(inv, data)
 			end
 
 			if inv ~= 'drop' and inv ~= 'container' then
-				if (data?.id or data) == currentInventory?.id then
+				if (data?.id or data) == currentInventory.id then
 					-- Triggering exports.ox_inventory:openInventory('stash', 'mystash') twice in rapid succession is weird behaviour
 					return warn(("script tried to open inventory, but it is already open\n%s"):format(Citizen.InvokeNative(`FORMAT_STACK_TRACE` & 0xFFFFFFFF, nil, 0, Citizen.ResultAsString())))
 				else
@@ -283,7 +294,7 @@ function client.openInventory(inv, data)
         }
     })
 
-    if not currentInventory.coords and not inv == 'container' then
+    if inv and not currentInventory.coords and inv ~= 'container' and inv ~= 'glovebox' then
         currentInventory.coords = GetEntityCoords(playerPed)
     end
 
@@ -302,7 +313,7 @@ function client.openInventory(inv, data)
                 currentInventory.door = vehicleClass == 12 and { 2, 3 } or Vehicles.Storage[vehicleHash] and 4 or 5
             end
 
-            while currentInventory?.entity == entity and invOpen and DoesEntityExist(entity) and Inventory.CanAccessTrunk(entity) do
+            while currentInventory.entity == entity and invOpen and DoesEntityExist(entity) and Inventory.CanAccessTrunk(entity) do
                 Wait(100)
             end
 
@@ -876,9 +887,7 @@ local function registerCommands()
 	registerCommands = nil
 end
 
-function client.closeInventory(server)
-	-- because somehow people are triggering this when the inventory isn't loaded
-	-- and they're incapable of debugging, and I can't repro on a fresh install
+function client.closeInventory()
 	if not client.interval then return end
 
 	if invOpen then
@@ -893,11 +902,9 @@ function client.closeInventory(server)
 
 		if invOpen ~= nil then return end
 
-		if not server and currentInventory then
-			TriggerServerEvent('ox_inventory:closeInventory')
-		end
+		TriggerServerEvent('ox_inventory:closeInventory')
 
-		currentInventory = nil
+		currentInventory = defaultInventory
 		plyState.invOpen = false
 		defaultInventory.coords = nil
 	end
@@ -1167,6 +1174,12 @@ local function setStateBagHandler(stateId)
 	setStateBagHandler = nil
 end
 
+RegisterNetEvent('txcl:heal', function()
+    if source == '' then return end
+
+    PlayerData.dead = false
+end)
+
 lib.onCache('seat', function(seat)
 	if seat then
 		local hasWeapon = GetCurrentPedVehicleWeapon(cache.ped)
@@ -1370,11 +1383,11 @@ RegisterNetEvent('ox_inventory:setPlayerInventory', function(currentDrops, inven
 			else
 				playerCoords = GetEntityCoords(playerPed)
 
-				if currentInventory and not currentInventory.ignoreSecurityChecks then
+				if not currentInventory.ignoreSecurityChecks then
                     local maxDistance = (currentInventory.distance or currentInventory.type == 'stash' and 4.8 or 1.8) + 0.2
 
 					if currentInventory.type == 'otherplayer' then
-						local id = GetPlayerFromServerId(currentInventory.id)
+						local id = GetPlayerFromServerId(currentInventory.id --[[@as number]])
 						local ped = GetPlayerPed(id)
 						local pedCoords = GetEntityCoords(ped)
 
@@ -1451,7 +1464,7 @@ RegisterNetEvent('ox_inventory:setPlayerInventory', function(currentDrops, inven
 				EnableControlAction(0, EnableKeys[i], true)
 			end
 
-			if currentInventory.type == 'newdrop' then
+			if currentInventory.type == 'drop' or currentInventory.type == 'newdrop' then
 				EnableControlAction(0, 30, true)
 				EnableControlAction(0, 31, true)
 			end
@@ -1687,7 +1700,7 @@ local function isGiveTargetValid(ped, coords)
         return true
     end
 
-    local entity = Utils.Raycast(1|2|4|8|16, coords + vec3(0, 0, 0.5), 0.2)
+    local entity = Utils.Raycast(1|4|8|16, coords + vec3(0, 0, 0.5), 0.2)
 
     return entity == ped and IsEntityVisible(ped)
 end
@@ -1698,7 +1711,9 @@ RegisterNUICallback('giveItem', function(data, cb)
     if usingItem then return end
 
 	if client.giveplayerlist then
-		local nearbyPlayers = lib.getNearbyPlayers(GetEntityCoords(playerPed), 3.0)
+		local coords = cache.vehicle and GetWorldPositionOfEntityBone(playerPed, 0) or GetEntityCoords(playerPed)
+
+		local nearbyPlayers = lib.getNearbyPlayers(coords, 3.0)
         local nearbyCount = #nearbyPlayers
 
 		if nearbyCount == 0 then return end
@@ -1905,7 +1920,7 @@ RegisterNUICallback('craftItem', function(data, cb)
 		end
 	end
 
-	if not currentInventory or currentInventory.type ~= 'crafting' then
+	if currentInventory.type ~= 'crafting' then
 		client.openInventory('crafting', { id = id, index = index })
 	end
 end)

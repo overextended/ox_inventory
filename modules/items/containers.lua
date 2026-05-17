@@ -1,11 +1,5 @@
 local containers = {}
 
----@class ItemContainerProperties
----@field slots number
----@field maxWeight number
----@field whitelist? table<string, true> | string[]
----@field blacklist? table<string, true> | string[]
-
 local function arrayToSet(tbl)
 	local size = #tbl
 	local set = table.create(0, size)

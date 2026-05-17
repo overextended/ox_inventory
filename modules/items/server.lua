@@ -221,15 +221,16 @@ function Items.Metadata(inv, item, metadata, count)
 		count = 1
 	end
 
-	local response = TriggerEventHooks('createItem', {
+	local hooks <close> = TriggerEventHooks('createItem', {
 		inventoryId = inv and inv.id,
 		metadata = metadata,
 		item = item,
 		count = count,
+		resource = GetInvokingResource() or shared.resource
 	})
 
-	if type(response) == 'table' then
-		metadata = response
+	if hooks.success and type(hooks.result) == 'table' then
+		metadata = hooks.result
 	end
 
 	if metadata.imageurl and Utils.IsValidImageUrl then
