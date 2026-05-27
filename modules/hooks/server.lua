@@ -47,6 +47,8 @@ local function TriggerEventHooks(event, payload)
 				self.success = false
 			end
 
+			Wait(50)
+
 			triggerPostEvents(self, self.success, payload)
 		end
 	})
