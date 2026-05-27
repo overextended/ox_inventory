@@ -1994,12 +1994,6 @@ lib.callback.register('ox_inventory:swapItems', function(source, data)
                 end
             end)
 
-			local resp
-
-			if next(items) then
-				resp = { weight = playerInventory.weight, items = items }
-			end
-
 			if server.syncInventory then
 				if fromInventory.player then
 					server.syncInventory(fromInventory)
@@ -2032,7 +2026,7 @@ lib.callback.register('ox_inventory:swapItems', function(source, data)
 				end
 			end
 
-			return containerItem and containerItem.weight or true, resp, weaponSlot
+			return containerItem and containerItem.weight or true, nil, weaponSlot
 		end
 	end
 end)
