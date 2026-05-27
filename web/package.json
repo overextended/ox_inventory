@@ -34,6 +34,7 @@
     "@types/react-transition-group": "^4.4.10",
     "@vitejs/plugin-react": "^6.0.1",
     "oxfmt": "^0.50.0",
+    "sass": "^1.100.0",
     "typescript": "^6.0.3",
     "vite": "^8.0.13"
   },
