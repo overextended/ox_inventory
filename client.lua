@@ -1129,7 +1129,6 @@ local function setStateBagHandler(stateId)
 	end)
 
 	AddStateBagChangeHandler('invBusy', stateId, function(_, _, value)
-		print('setting invBusy???', value)
 		invBusy = value
 	end)
 
