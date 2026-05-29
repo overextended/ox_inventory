@@ -41,6 +41,7 @@ end
 
 if IsDuplicityVersion() then
     server = {
+        loghookrejection = GetConvarBool('inventory:loghookrejection', true),
         bulkstashsave = GetConvarBool('inventory:bulkstashsave', true),
         loglevel = GetConvarInt('inventory:loglevel', 1),
         randomprices = GetConvarBool('inventory:randomprices', false),
