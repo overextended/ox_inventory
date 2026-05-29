@@ -84,6 +84,7 @@ if IsDuplicityVersion() then
 else
     PlayerData = {}
     client = {
+        player = lib.player:new(-1),
         autoreload = GetConvarBool('inventory:autoreload', false),
         screenblur = GetConvarBool('inventory:screenblur', true),
         keys = json.decode(GetConvar('inventory:keys', '')) or { 'F2', 'K', 'TAB' },
