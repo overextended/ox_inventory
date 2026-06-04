@@ -8,6 +8,8 @@ import { onGive } from '../../dnd/onGive';
 import { fetchNui } from '../../utils/fetchNui';
 import { Locale } from '../../store/locale';
 import UsefulControls from './UsefulControls';
+import logoBundle from '../../../logo.png';
+import { imagepath } from '../../store/imagepath';
 
 const formatAmount = (n: number) => (n > 0 ? n.toLocaleString('en-US') : '0');
 const digitsOnly = (s: string) => s.replace(/\D/g, '');
@@ -77,39 +79,49 @@ const InventoryControl: React.FC = () => {
     cursorRef.current = null;
   }, [value]);
 
+  const logoSrc = import.meta.env.DEV ? logoBundle : `${imagepath}/logo.png`;
+
   return (
     <>
       <UsefulControls infoVisible={infoVisible} setInfoVisible={setInfoVisible} />
       <div className="inventory-control">
-        <div className="inventory-control-wrapper">
-          <input
-            className="inventory-control-input"
-            type="text"
-            ref={inputRef}
-            value={value}
-            onChange={handleChange}
-            onKeyDown={handleKeyDown}
-            min={0}
-          />
-          <button
-            className="inventory-control-button"
-            ref={(el) => {
-              use(el);
-            }}
-          >
-            {Locale.ui_use || 'Use'}
-          </button>
-          <button
-            className="inventory-control-button"
-            ref={(el) => {
-              give(el);
-            }}
-          >
-            {Locale.ui_give || 'Give'}
-          </button>
-          <button className="inventory-control-button" onClick={() => fetchNui('exit')}>
-            {Locale.ui_close || 'Close'}
-          </button>
+        <div className="inventory-control-layout">
+          <div className="inventory-control-spacer" aria-hidden="true" />
+          <div className="inventory-control-body">
+            <div className="inventory-control-stack">
+              <img className="inventory-control-logo" src={logoSrc} alt="" />
+              <div className="inventory-control-wrapper">
+              <input
+                className="inventory-control-input"
+                type="text"
+                ref={inputRef}
+                value={value}
+                onChange={handleChange}
+                onKeyDown={handleKeyDown}
+                min={0}
+              />
+              <button
+                className="inventory-control-button"
+                ref={(el) => {
+                  use(el);
+                }}
+              >
+                {Locale.ui_use || 'Use'}
+              </button>
+              <button
+                className="inventory-control-button"
+                ref={(el) => {
+                  give(el);
+                }}
+              >
+                {Locale.ui_give || 'Give'}
+              </button>
+              <button className="inventory-control-button" onClick={() => fetchNui('exit')}>
+                {Locale.ui_close || 'Close'}
+              </button>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
 
