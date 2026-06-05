@@ -47,8 +47,7 @@ local function TriggerEventHooks(event, payload)
 				self.success = false
 			end
 
-			CreateThread(function()
-				Wait(50)
+			SetTimeout(50, function()
 				triggerPostEvents(self, self.success, payload)
 			end)
 		end
