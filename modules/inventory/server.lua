@@ -654,7 +654,7 @@ function Inventory.Remove(inv)
         end
     end
 
-    if not inv.datastore and inv.changed then
+    if not inv.datastore and (inv.changed or inv.player) then
         Inventory.Save(inv)
     end
 
