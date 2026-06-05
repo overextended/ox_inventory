@@ -1731,6 +1731,7 @@ lib.callback.register('ox_inventory:swapItems', function(source, data)
 	local toOtherPlayer = toInventory.player and toInventory ~= playerInventory
 	local toData = toInventory.items[data.toSlot]
 
+	---@return boolean
 	local function partiesPresent()
 		return Inventories[playerInventory.id] == playerInventory
 			and Inventories[fromInventory.id] == fromInventory
