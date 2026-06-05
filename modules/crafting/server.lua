@@ -196,7 +196,7 @@ lib.callback.register('ox_inventory:craftItem', function(source, id, index, reci
                 lockIds[#lockIds + 1] = ('inventory-%s:slot-%s'):format(left.id, slot)
             end
 
-            local activeSlots <close> = GetLocks(tbl)
+            local activeSlots <close> = GetLocks(lockIds)
 
             if not activeSlots then return end
 
