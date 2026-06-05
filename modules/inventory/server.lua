@@ -1636,6 +1636,7 @@ local function dropItem(source, playerInventory, fromData, data)
 	})
 
 	if not hooks.success then return end
+	if Inventories[playerInventory.id] ~= playerInventory then hooks.success = false return end
 
     fromData.count -= data.count
     fromData.weight = Inventory.SlotWeight(Items(fromData.name), fromData)
@@ -1800,7 +1801,7 @@ lib.callback.register('ox_inventory:swapItems', function(source, data)
 						local hooks <close> = TriggerEventHooks('swapItems', hookPayload)
 
 						if not hooks.success then return end
-						if not partiesPresent() then return end
+						if not partiesPresent() then hooks.success = false return end
 
 						if containerItem then
 							local toContainer = toInventory.type == 'container'
@@ -1836,7 +1837,7 @@ lib.callback.register('ox_inventory:swapItems', function(source, data)
 					local hooks <close> = TriggerEventHooks('swapItems', hookPayload)
 
 					if not hooks.success then return end
-					if not partiesPresent() then return end
+					if not partiesPresent() then hooks.success = false return end
 
 					toData, fromData = Inventory.SwapSlots(fromInventory, toInventory, data.fromSlot, data.toSlot)
 				end
@@ -1859,7 +1860,7 @@ lib.callback.register('ox_inventory:swapItems', function(source, data)
 					local hooks <close> = TriggerEventHooks('swapItems', hookPayload)
 
 					if not hooks.success then return end
-					if not partiesPresent() then return end
+					if not partiesPresent() then hooks.success = false return end
 
 					fromData.count, toData.count = fromCount, toCount
 					toData.weight = toSlotWeight
@@ -1900,7 +1901,7 @@ lib.callback.register('ox_inventory:swapItems', function(source, data)
 					local hooks <close> = TriggerEventHooks('swapItems', hookPayload)
 
 					if not hooks.success then return end
-					if not partiesPresent() then return end
+					if not partiesPresent() then hooks.success = false return end
 
 					if not sameInventory then
 						local toContainer = toInventory.type == 'container'
