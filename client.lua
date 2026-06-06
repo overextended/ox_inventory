@@ -1730,8 +1730,8 @@ RegisterNUICallback('giveItem', function(data, cb)
 			local option = nearbyPlayers[i]
 
             if isGiveTargetValid(option.ped, option.coords) then
-				local playerName = Utils.getPlayerName(option.id)
 				option.id = GetPlayerServerId(option.id)
+				local playerName = Utils.getPlayerName(option.id)
                 ---@diagnostic disable-next-line: inject-field
 				option.label = playerName
 				n += 1
