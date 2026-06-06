@@ -217,7 +217,7 @@ lib.callback.register('ox_inventory:buyItem', function(source, data)
 
 		if fromData then
 			if fromData.count then
-				if fromData.count == 0 then
+				if fromData.count < 1 then
 					return false, false, { type = 'error', description = locale('shop_nostock') }
 				elseif data.count > fromData.count then
 					data.count = fromData.count
@@ -259,6 +259,10 @@ lib.callback.register('ox_inventory:buyItem', function(source, data)
 					return false, false, canAfford
 				end
 
+				if fromData.count then
+					fromData.count -= count
+				end
+
 				local hooks <close> = TriggerEventHooks('buyItem', {
 					source = source,
 					shopType = shopType,
@@ -274,15 +278,16 @@ lib.callback.register('ox_inventory:buyItem', function(source, data)
 					currency = currency,
 				})
 
-				if not hooks.success then return false end
+				if not hooks.success or not Inventory.SetSlot(playerInv, fromItem, count, metadata, data.toSlot) then
+					if fromData.count then
+						fromData.count += count
+					end
 
-				Inventory.SetSlot(playerInv, fromItem, count, metadata, data.toSlot)
+					return false
+				end
+
 				playerInv.weight = newWeight
 				removeCurrency(playerInv, currency, price)
-
-				if fromData.count then
-					shop.items[data.fromSlot].count = fromData.count - count
-				end
 
 				if server.syncInventory then server.syncInventory(playerInv) end
 
