@@ -38,7 +38,7 @@ lib.onCache('ped', function(ped)
 	Utils.WeaponWheel()
 end)
 
-client.player:setr('invBusy', true)
+client.player:set('invBusy', true)
 client.player:set('invHotkeys', false)
 client.player:set('canUseWeapons', false)
 
