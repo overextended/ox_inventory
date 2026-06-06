@@ -93,7 +93,7 @@ local function TriggerEventHooks(event, payload)
 						payload.metadata = response
 					end
 				elseif response == false then
-					if hook.print or server.printhookrejection then
+					if hook.print or server.loghookrejection then
 						shared.info(('Event hook "%s" has rejected the action.'):format(hook.hookId))
 					end
 
