@@ -2513,6 +2513,8 @@ local function giveItem(playerId, slot, target, count)
 
 		local toSlot = Inventory.GetSlotForItem(toInventory, data.name, data.metadata)
 
+		if not toSlot then return { 'cannot_give', count, data.label } end
+
         local activeSlots <close> = GetLocks({
             ('inventory-%s:slot-%s'):format(fromInventory.id, slot),
             ('inventory-%s:slot-%s'):format(toInventory.id, toSlot)
