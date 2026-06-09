@@ -1,70 +1,42 @@
-import React, { RefObject, useRef } from 'react';
-import { DragLayerMonitor, useDragLayer, XYCoord } from 'react-dnd';
+import React, { useEffect, useLayoutEffect, useRef } from 'react';
+import { useDragLayer, useDragDropManager } from 'react-dnd';
 import { DragSource } from '../../typings';
 
-interface DragLayerProps {
-  data: DragSource;
-  currentOffset: XYCoord | null;
-  isDragging: boolean;
-}
-
-const subtract = (a: XYCoord, b: XYCoord): XYCoord => {
-  return {
-    x: a.x - b.x,
-    y: a.y - b.y,
-  };
-};
-
-const calculateParentOffset = (monitor: DragLayerMonitor): XYCoord => {
-  const client = monitor.getInitialClientOffset();
-  const source = monitor.getInitialSourceClientOffset();
-  if (client === null || source === null || client.x === undefined || client.y === undefined) {
-    return { x: 0, y: 0 };
-  }
-  return subtract(client, source);
-};
-
-export const calculatePointerPosition = (
-  monitor: DragLayerMonitor,
-  childRef: RefObject<Element | null>
-): XYCoord | null => {
-  const offset = monitor.getClientOffset();
-  if (offset === null) {
-    return null;
-  }
-
-  if (!childRef.current || !childRef.current.getBoundingClientRect) {
-    return subtract(offset, calculateParentOffset(monitor));
-  }
-
-  const bb = childRef.current.getBoundingClientRect();
-  const middle = { x: bb.width / 2, y: bb.height / 2 };
-  return subtract(offset, middle);
-};
-
 const DragPreview: React.FC = () => {
-  const element = useRef<HTMLDivElement>(null);
+  const manager = useDragDropManager();
+  const rootRef = useRef<HTMLDivElement>(null);
 
-  const { data, isDragging, currentOffset } = useDragLayer<DragLayerProps>((monitor) => ({
-    data: monitor.getItem(),
-    currentOffset: calculatePointerPosition(monitor, element),
+  // Only collect item/isDragging here, so we re-render on drag start/end rather than
+  // on every pointer move.
+  const { data, isDragging } = useDragLayer((monitor) => ({
+    data: monitor.getItem() as DragSource | null,
     isDragging: monitor.isDragging(),
   }));
 
-  return (
-    <>
-      {isDragging && currentOffset && data.item && (
-        <div
-          className="item-drag-preview"
-          ref={element}
-          style={{
-            transform: `translate(${currentOffset.x}px, ${currentOffset.y}px)`,
-            backgroundImage: data.image,
-          }}
-        />
-      )}
-    </>
-  );
+  useEffect(() => {
+    document.body.classList.toggle('inv-dragging', isDragging);
+    return () => document.body.classList.remove('inv-dragging');
+  }, [isDragging]);
+
+  // Write the position straight to the node so the preview tracks the cursor 1:1
+  // instead of lagging a render behind it.
+  useLayoutEffect(() => {
+    if (!isDragging) return;
+    const monitor = manager.getMonitor();
+    const el = rootRef.current;
+    const apply = () => {
+      const offset = monitor.getClientOffset();
+      if (el && offset) {
+        el.style.transform = `translate3d(${offset.x}px, ${offset.y}px, 0) translate(-50%, -50%)`;
+      }
+    };
+    apply();
+    return monitor.subscribeToOffsetChange(apply);
+  }, [isDragging, manager]);
+
+  if (!isDragging || !data?.item) return null;
+
+  return <div className="item-drag-preview" ref={rootRef} style={{ backgroundImage: data.image }} />;
 };
 
 export default DragPreview;

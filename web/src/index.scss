@@ -114,6 +114,17 @@ button:active {
   background-position: center;
   background-size: 7vh;
   image-rendering: -webkit-optimize-contrast;
+  will-change: transform;
+  backface-visibility: hidden;
+}
+
+body.inv-dragging {
+  cursor: grabbing;
+
+  // don't trigger the hover tooltip mid-drag; the slot itself stays a drop target
+  .item-slot-wrapper {
+    pointer-events: none;
+  }
 }
 
 .inventory-wrapper {
