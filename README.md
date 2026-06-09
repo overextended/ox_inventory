@@ -1,11 +1,17 @@
+<div align="center">
+
 # ox_inventory
 
-A complete inventory system for FiveM, implementing items, weapons, shops, and more without any strict framework dependency.
+A complete and modern inventory system for FiveM, providing a flexible slot-based inventory with support for shops, stashes, crafting, and vehicle storage.
 
-![](https://img.shields.io/github/downloads/overextended/ox_inventory/total?logo=github)
-![](https://img.shields.io/github/downloads/overextended/ox_inventory/latest/total?logo=github)
-![](https://img.shields.io/github/contributors/overextended/ox_inventory?logo=github)
-![](https://img.shields.io/github/v/release/overextended/ox_inventory?logo=github)
+[![](https://img.shields.io/github/downloads/overextended/ox_inventory/total?style=for-the-badge&logo=github)](https://github.com/overextended/ox_inventory/releases/latest/download/ox_inventory.zip)
+[![](https://img.shields.io/github/downloads/overextended/ox_inventory/latest/total?style=for-the-badge&logo=github)](https://github.com/overextended/ox_inventory/releases/latest/download/ox_inventory.zip)
+[![](https://img.shields.io/github/v/release/overextended/ox_inventory?style=for-the-badge&logo=github)](https://github.com/overextended/ox_inventory/releases/latest/)\
+[![](https://badges.5metrics.dev/ox_inventory/serverRank.svg?style=for-the-badge)](https://5metrics.dev/resource/ox_inventory)
+[![](https://badges.5metrics.dev/ox_inventory/servers.svg?style=for-the-badge)](https://5metrics.dev/resource/ox_inventory)
+[![](https://badges.5metrics.dev/ox_inventory/players.svg?style=for-the-badge)](https://5metrics.dev/resource/ox_inventory)
+
+</div>
 
 ## 📚 Documentation
 
