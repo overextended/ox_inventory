@@ -50,7 +50,10 @@ return {
 				end
 			}
 		},
-		consume = 0.3
+		consume = 0.3,
+		groups = {
+			['ambulance'] = 0,
+		}
 	},
 
 	['bandage'] = {
