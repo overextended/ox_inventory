@@ -163,6 +163,8 @@ end
 ---@param options? OxTargetOption[]
 ---@return number
 function Utils.CreateBoxZone(data, options)
+    local data = lib.table.deepclone(data)
+
     if data.length then
         local height = math.abs(data.maxZ - data.minZ)
         local z = data.loc.z + math.abs(data.minZ - data.maxZ) / 2
