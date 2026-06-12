@@ -172,7 +172,7 @@ local function refreshShops()
                                     distance = target.distance
                                 }
                             }),
-							blip = blip and createBlip(blip, target.coords)
+							blip = blip and createBlip(blip, target.loc)
 						}
 					end
 
