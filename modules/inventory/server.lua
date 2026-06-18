@@ -1692,7 +1692,9 @@ lib.callback.register('ox_inventory:swapItems', function(source, data)
         return
     end
 
-	if data.count < 1 then return end
+	if type(data.count) ~= 'number' or data.count < 1 then return end
+
+	data.count = math.floor(data.count)
 
 	local playerInventory = Inventory(source)
 

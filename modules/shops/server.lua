@@ -199,7 +199,13 @@ end
 
 lib.callback.register('ox_inventory:buyItem', function(source, data)
 	if data.toType == 'player' then
-		if data.count == nil then data.count = 1 end
+		if data.count == nil then
+			data.count = 1
+		elseif type(data.count) ~= 'number' or data.count < 1 then
+			return
+		else
+			data.count = math.floor(data.count)
+		end
 
 		local playerInv = Inventory(source)
 
