@@ -720,7 +720,7 @@ function Inventory.Save(inv)
         end
     end
 
-    local data = next(buffer) and json.encode(buffer) or nil
+    local data = json.encode(buffer)
     inv.changed = false
 
     if inv.player then
@@ -2365,7 +2365,7 @@ local function prepareInventorySave(inv, buffer, time)
 
     if not shouldSave then return end
 
-    local data = next(buffer) and json.encode(buffer) or nil
+    local data = json.encode(buffer)
     inv.changed = false
     table.wipe(buffer)
 
