@@ -781,7 +781,8 @@ local function registerCommands()
 				return client.closeInventory()
 			end
 
-			if cache.vehicle then
+			local canOpenGlovebox = (not client.gloveboxseatrestriction and cache.vehicle) or (cache.vehicle and (cache.seat == -1 or cache.seat == 0))
+			if canOpenGlovebox then
 				return openGlovebox(cache.vehicle)
 			end
 
@@ -820,7 +821,8 @@ local function registerCommands()
 				return client.openInventory('stash', StashTarget)
 			end
 
-			if cache.vehicle then
+			local canOpenGlovebox = (not client.gloveboxseatrestriction and cache.vehicle) or (cache.vehicle and (cache.seat == -1 or cache.seat == 0))
+			if canOpenGlovebox then
 				return openGlovebox(cache.vehicle)
 			end
 
