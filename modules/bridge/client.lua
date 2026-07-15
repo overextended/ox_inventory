@@ -21,8 +21,8 @@ function client.hasGroup(group)
 					if lib.table.contains(requiredRank, groupRank) then
 						return name, groupRank
 					end
-				else
-					if groupRank >= (requiredRank or 0) then
+				elseif type(groupRank) == "number" then
+					if groupRank >= (tonumber(requiredRank) or 0) then
 						return name, groupRank
 					end
 				end
