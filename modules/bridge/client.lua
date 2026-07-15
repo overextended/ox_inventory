@@ -21,9 +21,12 @@ function client.hasGroup(group)
 					if lib.table.contains(requiredRank, groupRank) then
 						return name, groupRank
 					end
-				elseif type(groupRank) == "number" then
-					if groupRank >= (tonumber(requiredRank) or 0) then
-						return name, groupRank
+				else
+					local rank = tonumber(groupRank)
+					local required = tonumber(requiredRank) or 0
+
+					if rank and rank >= required then
+						return name, rank
 					end
 				end
 			end
@@ -57,9 +60,9 @@ function client.onLogout()
 		point:remove()
 	end
 
-    for _, v in pairs(Items --[[@as table]]) do
-        v.count = 0
-    end
+	for _, v in pairs(Items --[[@as table]]) do
+		v.count = 0
+	end
 
 	PlayerData.loaded = false
 	client.drops = nil
@@ -67,10 +70,10 @@ function client.onLogout()
 	client.closeInventory()
 	Shops.wipeShops()
 
-    if client.interval then
-        ClearInterval(client.interval)
-        ClearInterval(client.tick)
-    end
+	if client.interval then
+		ClearInterval(client.interval)
+		ClearInterval(client.tick)
+	end
 
 	Weapon.Disarm()
 end
@@ -78,7 +81,7 @@ end
 local success, result = pcall(lib.load, ('modules.bridge.%s.client'):format(shared.framework))
 
 if not success then
-    lib.print.error(result)
-    lib = nil
-    return
+	lib.print.error(result)
+	lib = nil
+	return
 end
