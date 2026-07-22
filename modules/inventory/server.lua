@@ -254,6 +254,21 @@ end
 exports('Inventory', getInventory)
 exports('GetInventory', getInventory)
 
+---@param invType? string
+---@return OxInventory[]
+function Inventory.GetInventories(invType)
+	local returnData = {}
+
+	for _, inv in pairs(Inventories) do
+		if not invType or inv.type == invType then
+			returnData[#returnData + 1] = inv
+		end
+	end
+
+	return returnData
+end
+exports('GetInventories', Inventory.GetInventories)
+
 ---@param inv inventory
 ---@param owner? string | number
 ---@return table?
