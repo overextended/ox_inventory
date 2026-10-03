@@ -2701,7 +2701,7 @@ end)
 lib.callback.register('ox_inventory:removeAmmoFromWeapon', function(source, slot)
 	local inventory = Inventory(source)
 
-	if not inventory then return end
+	if not inventory or inventory.usingItem then return end
 
 	local slotData = inventory.items[slot]
 

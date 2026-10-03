@@ -1662,7 +1662,9 @@ RegisterNUICallback('removeAmmo', function(slot, cb)
 	cb(1)
 	local slotData = PlayerData.inventory[slot]
 
-	if not slotData or not slotData.metadata.ammo or slotData.metadata.ammo == 0 then return end
+	if usingItem or not slotData or not slotData.metadata.ammo or slotData.metadata.ammo == 0 then
+		return
+	end
 
 	local success = lib.callback.await('ox_inventory:removeAmmoFromWeapon', false, slot)
 
