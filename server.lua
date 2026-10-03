@@ -243,7 +243,7 @@ local function openInventory(source, invType, data, ignoreSecurityChecks)
             else
                 left.containerSlot = nil
             end
-        else
+        elseif invType ~= 'glovebox' and invType ~= 'trunk' then
             right = Inventory(data)
         end
 
