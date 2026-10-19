@@ -37,6 +37,7 @@
   "already_have": "You already have a %s",
   "have_purchased": "You have purchased a %s",
   "can_not_afford": "You can not afford a %s",
+  "cde_licence_from_cad": "Licences are issued by the DMV in the CAD, so this one cannot be bought here",
   "purchase_license": "Purchase a %s license",
   "interact_prompt": "Interact with [%s]",
   "weapon_unregistered": "%s is not registered to anyone",
