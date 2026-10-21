@@ -1,6 +1,13 @@
 if not lib.checkDependency('ND_Core', '2.0.0', true) then return end
 
 local Inventory = require 'modules.inventory.server'
+local db = require 'modules.mysql.server'
+
+db.setup({
+	user = { table = 'nd_characters', col = 'charid' },
+	vehicle = { table = 'nd_vehicles', col = 'id' },
+})
+
 NDCore = {}
 
 lib.load('@ND_Core.init')

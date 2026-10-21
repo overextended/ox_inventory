@@ -3,6 +3,12 @@ if not lib.checkDependency('ox_core', '0.21.3', true) then return end
 local Ox = require '@ox_core.lib.init' --[[@as OxServer]]
 
 local Inventory = require 'modules.inventory.server'
+local db = require 'modules.mysql.server'
+
+db.setup({
+	user = { table = 'character_inventory', col = 'charid' },
+	vehicle = { table = 'vehicles', col = 'id' },
+})
 
 AddEventHandler('ox:playerLogout', server.playerDropped)
 

@@ -1,5 +1,12 @@
 local Inventory = require 'modules.inventory.server'
 local Items = require 'modules.items.server'
+local db = require 'modules.mysql.server'
+
+db.setup({
+	user = { table = 'users', col = 'identifier' },
+	vehicle = { table = 'owned_vehicles', col = 'plate' },
+})
+
 local itemStatuses = {}
 
 for name, item in pairs(lib.load('data.items') or {}) do
