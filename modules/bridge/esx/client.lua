@@ -13,10 +13,12 @@ function client.setPlayerData(key, value)
 	ESX.SetPlayerData(key, value)
 end
 
----@diagnostic disable-next-line: duplicate-set-field
-function client.setPlayerStatus(values)
-	for name, value in pairs(values) do
-		if value > 0 then TriggerEvent('esx_status:add', name, value) else TriggerEvent('esx_status:remove', name, -value) end
+if not lib.checkDependency('es_extended', '1.16.0') then
+	---@diagnostic disable-next-line: duplicate-set-field
+	function client.setPlayerStatus(values)
+		for name, value in pairs(values) do
+			if value > 0 then TriggerEvent('esx_status:add', name, value) else TriggerEvent('esx_status:remove', name, -value) end
+		end
 	end
 end
 

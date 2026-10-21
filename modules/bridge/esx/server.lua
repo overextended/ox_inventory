@@ -1,5 +1,12 @@
 local Inventory = require 'modules.inventory.server'
 local Items = require 'modules.items.server'
+local itemStatuses = {}
+
+for name, item in pairs(lib.load('data.items') or {}) do
+	itemStatuses[name] = item.client?.status
+end
+
+local isESXversion = lib.checkDependency('es_extended', '1.16.0')
 
 AddEventHandler('esx:playerDropped', server.playerDropped)
 
@@ -31,6 +38,20 @@ SetTimeout(500, function()
 end)
 
 server.accounts.black_money = 0
+
+if isESXversion then
+	AddEventHandler('ox_inventory:usedItem', function(playerId, itemName)
+		local status = itemStatuses[itemName]
+
+		if not status then return end
+
+		for name, value in pairs(status) do
+			if type(value) == 'number' then
+				TriggerEvent('esx_status:add', playerId, name, value)
+			end
+		end
+	end)
+end
 
 ---@diagnostic disable-next-line: duplicate-set-field
 function server.setPlayerData(player)
