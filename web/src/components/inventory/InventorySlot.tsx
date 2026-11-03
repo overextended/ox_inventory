@@ -49,7 +49,7 @@ const InventorySlot: React.ForwardRefRenderFunction<HTMLDivElement, SlotProps> =
                 name: item.name,
                 slot: item.slot,
               },
-              image: item?.name && `url(${getItemUrl(item) || 'none'}`,
+              image: item?.name && `url(${getItemUrl(item)})`,
             }
           : null,
       canDrag,
@@ -134,7 +134,7 @@ const InventorySlot: React.ForwardRefRenderFunction<HTMLDivElement, SlotProps> =
             ? 'brightness(80%) grayscale(100%)'
             : undefined,
         opacity: isDragging ? 0.4 : 1.0,
-        backgroundImage: `url(${item?.name ? getItemUrl(item as SlotWithItem) : 'none'}`,
+        backgroundImage: item?.name ? `url(${getItemUrl(item as SlotWithItem)})` : 'none',
         border: isOver ? '1px dashed rgba(255,255,255,0.4)' : '',
       }}
     >
@@ -184,7 +184,7 @@ const InventorySlot: React.ForwardRefRenderFunction<HTMLDivElement, SlotProps> =
                 {item?.currency !== 'money' && item.currency !== 'black_money' && item.price > 0 && item.currency ? (
                   <div className="item-slot-currency-wrapper">
                     <img
-                      src={item.currency ? getItemUrl(item.currency) : 'none'}
+                      src={getItemUrl(item.currency)}
                       alt="item-image"
                       style={{
                         imageRendering: '-webkit-optimize-contrast',
