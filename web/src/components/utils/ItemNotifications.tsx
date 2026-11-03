@@ -27,12 +27,13 @@ export const useItemNotifications = () => {
 const ItemNotification = React.forwardRef(
   (props: { item: ItemNotificationProps; style?: React.CSSProperties }, ref: React.ForwardedRef<HTMLDivElement>) => {
     const slotItem = props.item.item;
+    const itemUrl = getItemUrl(slotItem);
 
     return (
       <div
         className="item-notification-item-box"
         style={{
-          backgroundImage: `url(${getItemUrl(slotItem) || 'none'}`,
+          backgroundImage: itemUrl ? `url(${itemUrl})` : 'none',
           ...props.style,
         }}
         ref={ref}
