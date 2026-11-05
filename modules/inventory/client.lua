@@ -270,6 +270,8 @@ function Inventory.GetSlotIdsWithItem(itemName, metadata, strict)
     end
 end
 
+exports('GetSlotIdsWithItem', Inventory.GetSlotIdsWithItem)
+
 ---@param itemName string
 ---@param metadata? any
 ---@param strict? boolean Strictly match metadata properties, otherwise use partial matching.
