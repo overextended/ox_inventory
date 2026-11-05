@@ -64,12 +64,15 @@ local function canOpenInventory()
     return true
 end
 
----@param ped number
+---Used to set player.state.canSteal on the local player, so other players can steal from them.
 ---@return boolean
-local function canOpenTarget(ped)
-	return IsPedFatallyInjured(ped)
-	or IsEntityPlayingAnim(ped, 'dead', 'dead_a', 3)
+local function checkCanSteal()
+	local ped = client.player.handle
+
+	return PlayerData.dead
 	or IsPedCuffed(ped)
+	or IsPedFatallyInjured(ped)
+	or IsEntityPlayingAnim(ped, 'dead', 'dead_a', 3)
 	or IsEntityPlayingAnim(ped, 'mp_arresting', 'idle', 3)
 	or IsEntityPlayingAnim(ped, 'missminuteman_1ig_2', 'handsup_base', 3)
 	or IsEntityPlayingAnim(ped, 'missminuteman_1ig_2', 'handsup_enter', 3)
@@ -1367,7 +1370,7 @@ RegisterNetEvent('ox_inventory:setPlayerInventory', function(currentDrops, inven
 	TriggerEvent('ox_inventory:updateInventory', PlayerData.inventory)
 
 	client.interval = SetInterval(function()
-        local canSteal = canOpenTarget(playerPed)
+        local canSteal = checkCanSteal()
 
         if canSteal ~= client.player:get('canSteal') then
             client.player:setr('canSteal', canSteal)
